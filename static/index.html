@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AsTeRICS Grid</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/muuri.css">
+	
+	<script src="lib/domi18n.js"></script>
+    <script src="lib/web-animations.min.js"></script>
+    <script src="lib/hammer.min.js"></script>
+	<script src="lib/muuri.min.js"></script>
+	
+</head>
+<body>
+<div id="content">
+    <header class="row" role="banner">
+		<h1 id="mainHeading" tabindex="-1" class="nine columns">AsTeRICS Grid</h1>
+    </header>
+    <main role="main">
+		<div class="grid">
+		  <div class="item">
+			<div class="item-content">
+			  <button>TEST</button>
+			</div>
+		  </div>
+
+		  <div class="item">
+			<div class="item-content">
+			  <!-- Safe zone, enter your custom markup -->
+			  <div class="my-custom-content">
+				<button>TEST2</button>
+			  </div>
+			  <!-- Safe zone ends -->
+			</div>
+		  </div>
+		  <div class="item">
+			<div class="item-content">
+			  <!-- Safe zone, enter your custom markup -->
+			  <div class="my-custom-content">
+				<button>TEST3</button>
+			  </div>
+			  <!-- Safe zone ends -->
+			</div>
+		  </div>
+		  <div class="item">
+			<div class="item-content">
+			  <!-- Safe zone, enter your custom markup -->
+			  <div class="my-custom-content">
+				<button>TEST4</button>
+				Text
+			  </div>
+			  <!-- Safe zone ends -->
+			</div>
+		  </div>
+		</div>
+    </main>
+</div>
+
+<script>
+   var grid = new Muuri('.grid', {
+    dragEnabled: true,
+  });
+</script>
+</body>
+</html>
