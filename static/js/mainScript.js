@@ -1,7 +1,9 @@
 import { tempates } from "./templates.js";
 import { Scanner } from "./scanning.js";
+import { Hover } from "./hovering.js";
 
 var scanner = new Scanner('.item-content', 'scanFocus');
+var hover = new Hover('.item-content');
 
 for(var i = 0; i<20; i++) {
     L('#grid').insertAdjacentHTML('beforeend', tempates.getGridItem(i));
@@ -28,9 +30,16 @@ scanner.setSelectionListener(function (item) {
     L.addClass(item, 'selected');
 });
 
+hover.setSelectionListener(function (item) {
+    console.log('selected: ' + item);
+    L.addClass(item, 'selected');
+});
+
 document.onkeydown = function (event) {
     console.log(event);
     if(event.keyCode == 49) {
         scanner.select();
     }
 };
+
+hover.startHovering();
