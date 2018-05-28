@@ -1,3 +1,7 @@
 .scanFocus{
     border: thick solid red;
 }
+
+.selected {
+    background: lightblue;
+}
