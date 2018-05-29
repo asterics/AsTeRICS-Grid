@@ -62,10 +62,12 @@ window.L.setVisible = function (selector, visible, visibleClass) {
 
 window.L.selectAsList = function (selector) {
     var result = L(selector);
-    if(result && result.length > 0) {
+    if(result instanceof Array) {
+        return L.flattenArrayDeep(result);
+    } else if(result instanceof NodeList) {
         return result;
     }
-    return result && !(result instanceof NodeList) ? [result]: [];
+    return [result];
 };
 
 window.L.addClass = function (selector, className) {
@@ -256,4 +258,12 @@ window.L.loadScript = function (source, fallbackSource) {
         script.src = source;
         document.head.appendChild(script);
     });
+};
+
+L.flattenArray = function (array) {
+    return [].concat.apply([], array);
+};
+
+L.flattenArrayDeep = function (arr) {
+    return arr.reduce((acc, e) => Array.isArray(e) ? acc.concat(L.flattenArrayDeep(e)) : acc.concat(e), []);
 };
