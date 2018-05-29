@@ -18,19 +18,28 @@ function Scanner(itemSelector, scanActiveClass, options) {
     var _scanTimeoutHandler = null;
     var _layoutChangeTimeoutHandler = null;
     var _scanningPaused = false;
+    var _keydownEventListeners = [];
+
+    function init() {
+        parseOptions(options);
+    }
 
     function parseOptions(options) {
         if (options) {
             scanTimeoutMs = options.scanTimeoutMs || scanTimeoutMs;
-            verticalScan = options.verticalScan || verticalScan;
             subScanRepeat = options.subScanRepeat || subScanRepeat;
             minBinarySplitThreshold = options.minBinarySplitThreshold || minBinarySplitThreshold;
-            binaryScanning = options.binaryScanning || binaryScanning;
             scanInactiveClass = options.scanInactiveClass || scanInactiveClass;
+
+            verticalScan = options.verticalScan != undefined ? options.verticalScan : verticalScan;
+            binaryScanning = options.binaryScanning != undefined ? options.binaryScanning : binaryScanning;
+        }
+        thiz.addSelectKeyCode(options.selectKeyCode);
+        thiz.addSelectKey(options.selectKey);
+        if(_keydownEventListeners.length == 0) {
+            thiz.addSelectKeyCode(32); //space as default key
         }
     }
-
-    parseOptions(options);
 
     function getGroups(elements, groupingFn) {
         groupingFn = groupingFn || getYPos;
@@ -143,8 +152,14 @@ function Scanner(itemSelector, scanActiveClass, options) {
         }
     };
 
-    thiz.updateOptions = function (options) {
+    thiz.updateOptions = function (options, restartIfRunning) {
+        if(restartIfRunning) {
+            thiz.pauseScanning();
+        }
         parseOptions(options);
+        if(restartIfRunning) {
+            thiz.resumeScanning();
+        }
     };
 
     /**
@@ -199,6 +214,33 @@ function Scanner(itemSelector, scanActiveClass, options) {
             }
         }
     };
+
+    thiz.addSelectKeyCode = function (keyCode) {
+        if (keyCode) {
+            var fn = function (event) {
+                if (event.keyCode == keyCode && _isScanning) {
+                    event.preventDefault();
+                    thiz.select();
+                }
+            };
+            document.addEventListener("keydown", fn);
+            _keydownEventListeners.push(fn);
+        }
+    };
+
+    thiz.addSelectKey = function (character) {
+        var keyCode = L.convertToKeyCode(character);
+        thiz.addSelectKeyCode(keyCode);
+    };
+
+    thiz.clearSelectKeys = function () {
+        _keydownEventListeners.forEach(function (fn) {
+            document.removeEventListener("keydown", fn);
+        });
+        _keydownEventListeners = [];
+    };
+
+    init();
 }
 
 export {Scanner};
