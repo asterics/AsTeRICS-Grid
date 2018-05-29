@@ -1,15 +1,36 @@
-function Scanner(itemSelector, scanActiveClass) {
+function Scanner(itemSelector, scanActiveClass, options) {
     var thiz = this;
-    var _itemSelector = itemSelector;
-    var _scanActiveClass = scanActiveClass;
-    var _isScanning = false;
-    var _scanTimeoutMs = 1000;
+
+    //options
+    var itemSelector = itemSelector;
+    var scanActiveClass = scanActiveClass;
+    var scanInactiveClass = '';
+    var scanTimeoutMs = 1000;
+    var verticalScan = false;
+    var subScanRepeat = 3;
+    var minBinarySplitThreshold = 3; // for binary scanning: if there are [n] or less scanning possibilities they will not be split up again, but will be scanned in linear fashion
+    var binaryScanning = false;
+
+    //internal
     var _selectionListener = null;
+    var _isScanning = false;
     var _currentActiveScanElements = null;
     var _scanTimeoutHandler = null;
-    var _verticalScan = null;
-    var _subScanRepeat = 3;
-    var _splitThreshold = 3;
+    var _layoutChangeTimeoutHandler = null;
+    var _scanningPaused = false;
+
+    function parseOptions(options) {
+        if (options) {
+            scanTimeoutMs = options.scanTimeoutMs || scanTimeoutMs;
+            verticalScan = options.verticalScan || verticalScan;
+            subScanRepeat = options.subScanRepeat || subScanRepeat;
+            minBinarySplitThreshold = options.minBinarySplitThreshold || minBinarySplitThreshold;
+            binaryScanning = options.binaryScanning || binaryScanning;
+            scanInactiveClass = options.scanInactiveClass || scanInactiveClass;
+        }
+    }
+
+    parseOptions(options);
 
     function getGroups(elements, groupingFn) {
         groupingFn = groupingFn || getYPos;
@@ -17,7 +38,7 @@ function Scanner(itemSelector, scanActiveClass) {
         var keys = [];
         var rows = {};
         elements.forEach(function (item) {
-            var yPos = groupingFn(item);
+            var yPos = groupingFn(item, elements);
             if (keys.indexOf(yPos) != -1) {
                 rows[yPos].push(item);
             } else {
@@ -37,44 +58,25 @@ function Scanner(itemSelector, scanActiveClass) {
         return item.getBoundingClientRect().left;
     }
 
-    function scan(verticalScan, index) {
-        var elements = L.selectAsList(_itemSelector);
-        _verticalScan = verticalScan;
-        L.removeClass(_itemSelector, _scanActiveClass);
-        if(_isScanning) {
-            index = index || 0;
-            var groupingFn = verticalScan ? getXPos : getYPos;
-            var rows = getGroups(elements, groupingFn);
-            if (index > rows.length - 1) {
-                index = 0;
-            }
-            L.addClass(rows[index], _scanActiveClass);
-            _currentActiveScanElements = rows[index];
-            _scanTimeoutHandler = setTimeout(function () {
-                scan(verticalScan, index + 1);
-            }, _scanTimeoutMs);
-        }
-    }
-
-    function subscan(elems, index, count) {
+    function scan(elems, index, count) {
         elems = elems || [];
         count = count || 0;
         index = index || 0;
         index = (index <= elems.length - 1) ? index : 0;
-        if(count >= _subScanRepeat * elems.length) {
-            thiz.stopScanning();
-            _isScanning = true;
-            scan(_verticalScan);
+        if (count >= subScanRepeat * elems.length) {
+            thiz.restartScanning();
             return;
         }
-        L.removeClass(_itemSelector, _scanActiveClass);
+        L.removeClass(itemSelector, scanActiveClass);
+        L.addClass(itemSelector, scanInactiveClass);
 
-        if(_isScanning) {
-            L.addClass(elems[index], _scanActiveClass);
+        if (_isScanning) {
+            L.addClass(elems[index], scanActiveClass);
+            L.removeClass(elems, scanInactiveClass);
             _currentActiveScanElements = elems[index];
             _scanTimeoutHandler = setTimeout(function () {
-                subscan(elems, index + 1, count + 1);
-            }, _scanTimeoutMs);
+                scan(elems, index + 1, count + 1);
+            }, scanTimeoutMs);
         }
     }
 
@@ -82,52 +84,121 @@ function Scanner(itemSelector, scanActiveClass) {
         var returnArray = [];
         array = array || [];
         var chunk = 1;
-        if(array.length > _splitThreshold) {
-            chunk = Math.ceil(array.length/2);
+        if (binaryScanning && array.length > minBinarySplitThreshold) {
+            chunk = Math.ceil(array.length / 2);
         }
-        for (var i=0, j=array.length; i<j; i+=chunk) {
-            var temparray = array.slice(i,i+chunk);
+        for (var i = 0, j = array.length; i < j; i += chunk) {
+            var temparray = array.slice(i, i + chunk);
             returnArray.push(temparray);
         }
         return returnArray;
     }
 
-    thiz.startScanning = function(verticalScan) {
-        if(!_isScanning) {
+    thiz.startScanning = function () {
+        if (!_isScanning) {
+            var elements = L.selectAsList(itemSelector);
+            var groupingFn = verticalScan ? getXPos : getYPos;
+            var rows = getGroups(elements, groupingFn);
             _isScanning = true;
-            scan(verticalScan);
+            scan(spitToSubarrays(rows));
         }
     };
 
-    thiz.stopScanning = function() {
+    thiz.stopScanning = function () {
         _isScanning = false;
-        if(_scanTimeoutHandler) {
+        if (_scanTimeoutHandler) {
             clearTimeout(_scanTimeoutHandler);
         }
-        L.removeClass(_itemSelector, _scanActiveClass);
+        L.removeClass(itemSelector, scanActiveClass);
+        L.removeClass(itemSelector, scanInactiveClass);
     };
 
-    thiz.setScanTimeout = function(timeoutMs) {
-        _scanTimeoutMs = timeoutMs;
+    /**
+     * stops and re-starts scanning directly afterwards
+     */
+    thiz.restartScanning = function () {
+        thiz.stopScanning();
+        thiz.startScanning(verticalScan);
     };
 
+    /**
+     * stops scanning, if it is already running. same functionality as stopScanning() with the difference that a call
+     * of resumeScanning() afterwards will re-start scanning while it will not if it was stopped with stopScanning().
+     */
+    thiz.pauseScanning = function () {
+        if (_isScanning) {
+            thiz.stopScanning();
+            _scanningPaused = true;
+        }
+    };
+
+    /**
+     * starts scanning if it was paused before with pauseScanning(). Does not start scanning if it never run or
+     * if it was stopped with stopScanning().
+     */
+    thiz.resumeScanning = function () {
+        if (_scanningPaused) {
+            thiz.startScanning();
+            _scanningPaused = false;
+        }
+    };
+
+    thiz.updateOptions = function (options) {
+        parseOptions(options);
+    };
+
+    /**
+     * sets a method that is called if an item was selected by scanning. The function will be called with the selected
+     * item as first parameter.
+     * @param fn
+     */
     thiz.setSelectionListener = function (fn) {
-        _selectionListener = fn;
+        if (L.isFunction(fn)) {
+            _selectionListener = fn;
+        }
     };
 
+    /**
+     * method to be called if the layout of elements changed and scanning should be restarted in order to adapt
+     * to new layout. If this method is called multiple times in the timeout period, restarting of scanning will
+     * be postponed to: [time of last call to layoutChanged()] + [timeout].
+     * @param timeout the timeout to wait before restarting scanning in milliseconds, default: 1000ms.
+     */
+    thiz.layoutChanged = function (timeout) {
+        timeout = timeout || 1000;
+        if (_isScanning) {
+            thiz.stopScanning();
+            _layoutChangeTimeoutHandler = setTimeout(function () {
+                _layoutChangeTimeoutHandler = null;
+                thiz.restartScanning();
+            }, timeout);
+        } else if (_layoutChangeTimeoutHandler) {
+            clearTimeout(_layoutChangeTimeoutHandler);
+            _layoutChangeTimeoutHandler = setTimeout(function () {
+                _layoutChangeTimeoutHandler = null;
+                thiz.restartScanning();
+            }, timeout);
+        }
+    };
+
+    /**
+     * method to call to select the current scan item(s). For instance it could be called inside a keyboard
+     * event listener.
+     */
     thiz.select = function () {
-        if(_isScanning) {
+        if (_isScanning) {
             thiz.stopScanning();
             _isScanning = true;
-            if(_currentActiveScanElements.length > 1) {
-                subscan(spitToSubarrays(_currentActiveScanElements));
-            } else if(_selectionListener) {
+            if (_currentActiveScanElements.length > 1) {
+                scan(spitToSubarrays(_currentActiveScanElements));
+            } else if (L.flattenArray(_currentActiveScanElements).length > 1) {
+                scan(spitToSubarrays(L.flattenArray(_currentActiveScanElements)));
+            } else if (_selectionListener) {
                 _selectionListener(_currentActiveScanElements[0]);
-                scan(_verticalScan);
+                thiz.restartScanning();
             }
         }
     };
 }
-
 
 export {Scanner};

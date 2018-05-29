@@ -2,19 +2,30 @@ import { tempates } from "./templates.js";
 import { Scanner } from "./scanning.js";
 import { Hover } from "./hovering.js";
 
-var scanner = new Scanner('.item-content', 'scanFocus');
+var scanner = new Scanner('.item-content', 'scanFocus', {
+    verticalScan: true,
+    subScanRepeat: 3,
+    binaryScanning: true,
+    scanInactiveClass: 'scanInactive'
+});
 var hover = new Hover('.item-content');
 
-for(var i = 0; i<20; i++) {
+for(var i = 0; i<70; i++) {
     L('#grid').insertAdjacentHTML('beforeend', tempates.getGridItem(i));
 }
 
 var grid = new Muuri('#grid', {
     dragEnabled: true,
 });
+grid.on('dragInit', function (items) {
+    scanner.pauseScanning();
+});
+grid.on('dragEnd', function (items) {
+    scanner.resumeScanning();
+});
 
 L('#btnStartScan').addEventListener('click', function () {
-    scanner.startScanning(true);
+    scanner.startScanning();
 });
 
 L('#btnStopScan').addEventListener('click', function () {
@@ -22,8 +33,14 @@ L('#btnStopScan').addEventListener('click', function () {
 });
 
 L('#inScanTime').addEventListener('change', function (event) {
-    scanner.setScanTimeout(event.target.value);
+    scanner.updateOptions({
+        scanTimeoutMs: event.target.value
+    });
 });
+
+window.addEventListener('resize', function(){
+    scanner.layoutChanged();
+}, true);
 
 scanner.setSelectionListener(function (item) {
     console.log('selected: ' + item);
