@@ -7,28 +7,35 @@ function Hover(itemSelector, hoverActiveClass) {
     var _isHovering = false;
     var _hoverMap = {};
 
-    thiz.startHovering = function() {
+    function mouseEnter(event) {
+        L.addClass(this, 'mouseentered');
+        _hoverMap[event.target] = setTimeout(function () {
+            if (_selectionListener) {
+                _selectionListener(event.target);
+            }
+        }, _hoverTimeoutMs);
+    }
+
+    function mouseLeave(event) {
+        L.removeClass(this, 'mouseentered');
+        clearTimeout(_hoverMap[event.target]);
+    }
+
+    thiz.startHovering = function () {
         L.selectAsList(_itemSelector).forEach(function (item) {
-            item.addEventListener('mouseenter', function (event) {
-                L.addClass(this, 'mouseentered');
-                _hoverMap[item] = setTimeout(function () {
-                    if(_selectionListener) {
-                        _selectionListener(event.target);
-                    }
-                }, _hoverTimeoutMs);
-            });
-            item.addEventListener('mouseleave', function (event) {
-                L.removeClass(this, 'mouseentered');
-                clearTimeout(_hoverMap[event.target]);
-            });
+            item.addEventListener('mouseenter', mouseEnter);
+            item.addEventListener('mouseleave', mouseLeave);
         });
     };
 
-    thiz.stopHovering = function() {
-        //TODO
+    thiz.stopHovering = function () {
+        L.selectAsList(_itemSelector).forEach(function (item) {
+            item.removeEventListener('mouseenter', mouseEnter);
+            item.removeEventListener('mouseleave', mouseLeave);
+        });
     };
 
-    thiz.setHoverTimeout = function(timeoutMs) {
+    thiz.setHoverTimeout = function (timeoutMs) {
         _hoverTimeoutMs = timeoutMs;
     };
 
