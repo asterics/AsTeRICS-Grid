@@ -73,8 +73,8 @@ window.L.selectAsList = function (selector) {
 window.L.addClass = function (selector, className) {
     var list = L.selectAsList(selector);
     list.forEach(function (elem) {
-        if(elem.className.indexOf(className) == -1) {
-            elem.className += ' ' + className;
+        if(!elem.classList.contains(className)) {
+            elem.classList.add(className);
         }
     });
 };
@@ -82,7 +82,18 @@ window.L.addClass = function (selector, className) {
 window.L.removeClass = function (selector, className) {
     var list = L.selectAsList(selector);
     list.forEach(function (elem) {
-        elem.className = L.replaceAll(elem.className, className, '');
+        elem.classList.remove(className);
+    });
+};
+
+window.L.toggleClass = function (selector, className) {
+    var list = L.selectAsList(selector);
+    list.forEach(function (elem) {
+        if(elem.classList.contains(className)) {
+            elem.classList.remove(className);
+        } else {
+            elem.classList.add(className);
+        }
     });
 };
 
@@ -266,4 +277,11 @@ L.flattenArray = function (array) {
 
 L.flattenArrayDeep = function (arr) {
     return arr.reduce((acc, e) => Array.isArray(e) ? acc.concat(L.flattenArrayDeep(e)) : acc.concat(e), []);
+};
+
+L.convertToKeyCode = function(character) {
+    if(/^[a-zA-Z0-9]$/.test(character)) {
+        return character.toUpperCase().charCodeAt(0);
+    }
+    return null;
 };
