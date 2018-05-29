@@ -3,9 +3,9 @@ import { Scanner } from "./scanning.js";
 import { Hover } from "./hovering.js";
 
 var scanner = new Scanner('.item-content', 'scanFocus', {
-    verticalScan: true,
+    verticalScan: L('#chkVerticalScanning').checked,
     subScanRepeat: 3,
-    binaryScanning: true,
+    binaryScanning: L('#chkBinaryScanning').checked,
     scanInactiveClass: 'scanInactive'
 });
 var hover = new Hover('.item-content');
@@ -20,7 +20,7 @@ var grid = new Muuri('#grid', {
 grid.on('dragInit', function (items) {
     scanner.pauseScanning();
 });
-grid.on('dragEnd', function (items) {
+grid.on('dragReleaseEnd', function (items) {
     scanner.resumeScanning();
 });
 
@@ -38,25 +38,38 @@ L('#inScanTime').addEventListener('change', function (event) {
     });
 });
 
+L('#chkVerticalScanning').addEventListener('change', function (event) {
+    scanner.updateOptions({
+        verticalScan: event.target.checked
+    }, true);
+});
+
+L('#chkBinaryScanning').addEventListener('change', function (event) {
+    scanner.updateOptions({
+        binaryScanning: event.target.checked
+    }, true);
+});
+
+L('#chkHover').addEventListener('change', function (event) {
+    if(event.target.checked) {
+        hover.startHovering();
+    } else {
+        hover.stopHovering();
+    }
+});
+
 window.addEventListener('resize', function(){
     scanner.layoutChanged();
 }, true);
 
 scanner.setSelectionListener(function (item) {
     console.log('selected: ' + item);
-    L.addClass(item, 'selected');
+    L.toggleClass(item, 'selected');
 });
 
 hover.setSelectionListener(function (item) {
     console.log('selected: ' + item);
-    L.addClass(item, 'selected');
+    L.toggleClass(item, 'selected');
 });
 
-document.onkeydown = function (event) {
-    console.log(event);
-    if(event.keyCode == 49) {
-        scanner.select();
-    }
-};
-
-hover.startHovering();
+scanner.startScanning();

@@ -19,10 +19,26 @@
         <h1 id="mainHeading" tabindex="-1" class="nine columns">AsTeRICS Grid</h1>
     </header>
     <main role="main">
-
         <button id="btnStartScan">Start Scanning</button>
         <button id="btnStopScan">Stop Scanning</button>
-        <input type="range" id="inScanTime" min="100" max="3000"/>
+        <div class="spaced inline">
+            <label for="inScanTime">Scanning Time</label>
+            <input type="range" id="inScanTime" min="100" max="3000"/>
+        </div>
+        <div class="spaced inline">
+            <label for="chkVerticalScanning">Vertical Scanning</label>
+            <input type="checkbox" id="chkVerticalScanning" checked/>
+        </div>
+        <div class="spaced inline">
+            <label for="chkBinaryScanning">Binary Scanning</label>
+            <input type="checkbox" id="chkBinaryScanning" checked/>
+        </div>
+        <div class="spaced inline">
+            <label for="chkHover">Mouse Hovering</label>
+            <input type="checkbox" id="chkHover"/>
+        </div>
+        <br/>
+        <br/>
         <div id="grid">
         </div>
     </main>
