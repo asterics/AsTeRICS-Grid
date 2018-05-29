@@ -13,3 +13,12 @@
 .scanInactive {
     background: lightgray;
 }
+
+.spaced {
+    margin-left: 2em;
+    margin-right: 2em;
+}
+
+.inline {
+    display: inline-block;
+}
