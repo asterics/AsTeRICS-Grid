@@ -1,12 +1,35 @@
 var path = require('path');
+var buildDir = 'build';
+var buildDirLegacy = 'build_legacy';
+var entryScript = './static/js/mainScript.js';
+var outputFilename = 'asterics-grid.bundle.js';
+var mode = 'development';
 
-module.exports = {
-    mode: 'development',
-    entry: './static/js/mainScript.js',
+var resolve = {
+    alias: {
+        muuri: "../../node_modules/muuri/muuri.min.js",
+        hammerjs: "../../node_modules/hammerjs/hammer.min.js"
+    }
+};
+
+var configNormal = {
+    mode: mode,
+    entry: entryScript,
     output: {
-        path: path.resolve(__dirname, '../build_legacy'),
-        filename: 'asterics-grid.bundle.js'
+        path: path.resolve(__dirname, buildDir),
+        filename: outputFilename
     },
+    resolve: resolve
+};
+
+var configLegacy = {
+    mode: mode,
+    entry: entryScript,
+    output: {
+        path: path.resolve(__dirname, buildDirLegacy),
+        filename: outputFilename
+    },
+    resolve: resolve,
     module: {
         rules: [{
             test: /\.js$/,
@@ -31,3 +54,5 @@ module.exports = {
         }],
     }
 };
+
+module.exports = [configNormal, configLegacy];
