@@ -1,3 +1,4 @@
+import { L } from "../lib/lquery.js";
 import { tempates } from "./templates.js";
 import { Scanner } from "./scanning.js";
 import { Hover } from "./hovering.js";

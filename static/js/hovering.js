@@ -1,3 +1,5 @@
+import { L } from "../lib/lquery.js";
+
 function Hover(itemSelector, hoverActiveClass) {
     var thiz = this;
     var _itemSelector = itemSelector;
