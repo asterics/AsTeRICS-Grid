@@ -6,11 +6,10 @@
     <link rel="stylesheet" href="css/custom.css">
     <link rel="stylesheet" href="css/muuri.css">
 
-    <script src="lib/domi18n.js"></script>
-    <script src="lib/web-animations.min.js"></script>
-    <script src="lib/hammer.min.js"></script>
-    <script src="lib/muuri.min.js"></script>
+    <!-- polyfills that are needed in all browsers -->
+    <script src="polyfill/web-animations.min.js"></script>
 
+    <!-- polyfills that are needed only in old browsers that do not support ES6 modules -->
     <script nomodule src="polyfill/core_js_shim.min.js"></script>
 </head>
 <body>
@@ -19,22 +18,22 @@
         <h1 id="mainHeading" tabindex="-1" class="nine columns">AsTeRICS Grid</h1>
     </header>
     <main role="main">
-        <button id="btnStartScan">Start Scanning</button>
-        <button id="btnStopScan">Stop Scanning</button>
+        <button id="btnStartScan" data-i18n>Start Scanning // Scanning starten</button>
+        <button id="btnStopScan" data-i18n>Stop Scanning // Scanning stoppen</button>
         <div class="spaced inline">
-            <label for="inScanTime">Scanning Time</label>
+            <label for="inScanTime" data-i18n>Scanning Time // Scanning Zeit</label>
             <input type="range" id="inScanTime" min="100" max="3000"/>
         </div>
         <div class="spaced inline">
-            <label for="chkVerticalScanning">Vertical Scanning</label>
+            <label for="chkVerticalScanning" data-i18n>Scanning vertikal</label>
             <input type="checkbox" id="chkVerticalScanning" checked/>
         </div>
         <div class="spaced inline">
-            <label for="chkBinaryScanning">Binary Scanning</label>
+            <label for="chkBinaryScanning" data-i18n>Scanning binär</label>
             <input type="checkbox" id="chkBinaryScanning" checked/>
         </div>
         <div class="spaced inline">
-            <label for="chkHover">Mouse Hovering</label>
+            <label for="chkHover" data-i18n>Mouse Hovering // Maus Hovering</label>
             <input type="checkbox" id="chkHover"/>
         </div>
         <br/>
