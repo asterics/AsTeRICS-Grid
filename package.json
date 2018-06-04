@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "babel-polyfill": "^6.26.0",
+    "dom-i18n": "^1.1.1",
     "muuri": "^0.5.4"
   },
   "devDependencies": {
@@ -17,8 +18,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config webpack/webpack.config.js",
-    "build-legacy": "webpack --config webpack/webpack_legacy.config.js",
+    "build": "webpack --config webpack.config.js",
+    "watch": "webpack --watch --config webpack.config.js",
     "start": "http-server"
   },
   "repository": {
