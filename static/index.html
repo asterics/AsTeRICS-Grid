@@ -10,8 +10,8 @@
     <script src="lib/web-animations.min.js"></script>
     <script src="lib/hammer.min.js"></script>
     <script src="lib/muuri.min.js"></script>
-    <script src="lib/lquery.js"></script>
 
+    <script nomodule src="polyfill/core_js_shim.min.js"></script>
 </head>
 <body>
 <div id="content">
@@ -44,9 +44,7 @@
     </main>
 </div>
 
-<script type="module" src="js/templates.js"></script>
-<script type="module" src="js/scanning.js"></script>
-<script type="module" src="js/hovering.js"></script>
-<script type="module" src="js/mainScript.js"></script>
+<script nomodule src="../build_legacy/asterics-grid.bundle.js"></script>
+<script type="module" src="../build/asterics-grid.bundle.js"></script>
 </body>
 </html>
