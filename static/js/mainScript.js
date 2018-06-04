@@ -1,76 +1,89 @@
-import { L } from "../lib/lquery.js";
-import { tempates } from "./templates.js";
-import { Scanner } from "./scanning.js";
-import { Hover } from "./hovering.js";
+import Muuri from 'muuri';
+import domI18n from '../../node_modules/dom-i18n/dist/dom-i18n.min';
+import {L} from "../lib/lquery.js";
+import {tempates} from "./templates.js";
+import {Scanner} from "./scanning.js";
+import {Hover} from "./hovering.js";
 
-var scanner = new Scanner('.item-content', 'scanFocus', {
-    verticalScan: L('#chkVerticalScanning').checked,
-    subScanRepeat: 3,
-    binaryScanning: L('#chkBinaryScanning').checked,
-    scanInactiveClass: 'scanInactive'
-});
-var hover = new Hover('.item-content');
+var thiz = {};
+function init() {
+    domI18n({
+        selector: '[data-i18n]',
+        separator: ' // ',
+        languages: ['en', 'de']
+    });
 
-for(var i = 0; i<70; i++) {
-    L('#grid').insertAdjacentHTML('beforeend', tempates.getGridItem(i));
+    thiz.scanner = new Scanner('.item-content', 'scanFocus', {
+        verticalScan: L('#chkVerticalScanning').checked,
+        subScanRepeat: 3,
+        binaryScanning: L('#chkBinaryScanning').checked,
+        scanInactiveClass: 'scanInactive'
+    });
+    thiz.hover = new Hover('.item-content');
+
+    for (var i = 0; i < 70; i++) {
+        L('#grid').insertAdjacentHTML('beforeend', tempates.getGridItem(i));
+    }
+
+    thiz.grid = new Muuri('#grid', {
+        dragEnabled: true,
+    });
 }
+init();
 
-var grid = new Muuri('#grid', {
-    dragEnabled: true,
+thiz.grid.on('dragInit', function (items) {
+    thiz.scanner.pauseScanning();
 });
-grid.on('dragInit', function (items) {
-    scanner.pauseScanning();
-});
-grid.on('dragReleaseEnd', function (items) {
-    scanner.resumeScanning();
+thiz.grid.on('dragReleaseEnd', function (items) {
+    thiz.scanner.resumeScanning();
 });
 
 L('#btnStartScan').addEventListener('click', function () {
-    scanner.startScanning();
+    thiz.scanner.startScanning();
 });
 
 L('#btnStopScan').addEventListener('click', function () {
-    scanner.stopScanning();
+    thiz.scanner.stopScanning();
 });
 
 L('#inScanTime').addEventListener('change', function (event) {
-    scanner.updateOptions({
+    thiz.scanner.updateOptions({
         scanTimeoutMs: event.target.value
     });
 });
 
 L('#chkVerticalScanning').addEventListener('change', function (event) {
-    scanner.updateOptions({
+    thiz.scanner.updateOptions({
         verticalScan: event.target.checked
     }, true);
 });
 
 L('#chkBinaryScanning').addEventListener('change', function (event) {
-    scanner.updateOptions({
+    thiz.scanner.updateOptions({
         binaryScanning: event.target.checked
     }, true);
 });
 
 L('#chkHover').addEventListener('change', function (event) {
-    if(event.target.checked) {
-        hover.startHovering();
+    if (event.target.checked) {
+        thiz.hover.startHovering();
     } else {
-        hover.stopHovering();
+        thiz.hover.stopHovering();
     }
 });
 
-window.addEventListener('resize', function(){
-    scanner.layoutChanged();
+window.addEventListener('resize', function () {
+    thiz.scanner.layoutChanged();
 }, true);
 
-scanner.setSelectionListener(function (item) {
+thiz.scanner.setSelectionListener(function (item) {
     console.log('selected: ' + item);
     L.toggleClass(item, 'selected');
 });
 
-hover.setSelectionListener(function (item) {
+thiz.hover.setSelectionListener(function (item) {
     console.log('selected: ' + item);
     L.toggleClass(item, 'selected');
 });
 
-scanner.startScanning();
+thiz.scanner.startScanning();
