@@ -21,7 +21,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.config.js",
     "watch": "webpack --watch --config webpack.config.js",
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "pages": "git stash && git checkout gh-pages && git merge master && git push origin gh-pages && git checkout master && git stash apply"
   },
   "repository": {
     "type": "git",
