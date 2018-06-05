@@ -1,7 +1,7 @@
 var path = require('path');
-var buildDir = 'build';
-var buildDirLegacy = 'build_legacy';
-var entryScript = './static/js/mainScript.js';
+var buildDir = 'package/static/build';
+var buildDirLegacy = 'package/static/build_legacy';
+var entryScript = './src/js/mainScript.js';
 var outputFilename = 'asterics-grid.bundle.js';
 var mode = 'development';
 
