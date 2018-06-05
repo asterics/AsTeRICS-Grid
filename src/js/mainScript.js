@@ -26,7 +26,7 @@ function init() {
     }
 
     thiz.grid = new Muuri('#grid', {
-        dragEnabled: false,
+        dragEnabled: true,
     });
 }
 init();
