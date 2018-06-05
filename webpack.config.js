@@ -1,6 +1,7 @@
 var path = require('path');
-var buildDir = 'package/static/build';
-var buildDirLegacy = 'package/static/build_legacy';
+var baseDir = 'package/static';
+var buildDir = '/build/';
+var buildDirLegacy = '/build_legacy/';
 var entryScript = './src/js/mainScript.js';
 var outputFilename = 'asterics-grid.bundle.js';
 var mode = 'development';
@@ -12,24 +13,39 @@ var resolve = {
     }
 };
 
+
+function getDevServer(buildDirParam) {
+    return {
+        contentBase: path.resolve(__dirname, baseDir),
+        publicPath: buildDirParam,
+        host: 'localhost',
+        port: 9090,
+        open: true
+    };
+}
+
 var configNormal = {
     mode: mode,
     entry: entryScript,
     output: {
-        path: path.resolve(__dirname, buildDir),
+        path: path.resolve(__dirname, baseDir + buildDir),
+        publicPath: buildDir,
         filename: outputFilename
     },
-    resolve: resolve
+    resolve: resolve,
+    devServer: getDevServer(buildDir)
 };
 
 var configLegacy = {
     mode: mode,
     entry: entryScript,
     output: {
-        path: path.resolve(__dirname, buildDirLegacy),
+        path: path.resolve(__dirname, baseDir + buildDirLegacy),
+        publicPath: buildDirLegacy,
         filename: outputFilename
     },
     resolve: resolve,
+    devServer: getDevServer(buildDirLegacy),
     module: {
         rules: [{
             test: /\.js$/,
