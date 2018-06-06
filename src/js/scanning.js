@@ -1,4 +1,4 @@
-import { L } from "../lib/lquery.js";
+import {L} from "../lib/lquery.js";
 
 function Scanner(itemSelector, scanActiveClass, options) {
     var thiz = this;
@@ -38,35 +38,65 @@ function Scanner(itemSelector, scanActiveClass, options) {
         }
         thiz.addSelectKeyCode(options.selectKeyCode);
         thiz.addSelectKey(options.selectKey);
-        if(_keydownEventListeners.length == 0) {
+        if (_keydownEventListeners.length == 0) {
             thiz.addSelectKeyCode(32); //space as default key
         }
     }
 
-    function getGroups(elements, groupingFn) {
-        groupingFn = groupingFn || getYPos;
-        elements = elements || [];
-        var keys = [];
-        var rows = {};
-        elements.forEach(function (item) {
-            var yPos = groupingFn(item, elements);
-            if (keys.indexOf(yPos) != -1) {
-                rows[yPos].push(item);
-            } else {
-                keys.push(yPos);
-                rows[yPos] = [item];
-            }
-        });
-        keys = keys.sort((a, b) => a - b);
-        return keys.map(key => rows[key]);
+    function getGroups(allElements, verticalScan) {
+        var minPosFn = verticalScan ? getPosXMin : getPosYMin;
+        var maxPosFn = verticalScan ? getPosXMax : getPosYMax;
+        var sortFn = function (a, b) {
+            var sizeA = maxPosFn(a) - minPosFn(a);
+            var sizeB = maxPosFn(b) - minPosFn(b);
+            var diff = minPosFn(a) - minPosFn(b);
+            diff = diff != 0 ? diff : sizeB - sizeA; // same min-positions should be ordered by size, bigger sizes first
+            diff = diff != 0 ? diff : (a.id && b.id ? a.id.localeCompare(b.id) : 0); // same min-positions should be ordered by size, bigger sizes first
+            return diff != 0 ? diff : sizeB - sizeA;
+        };
+        allElements = allElements.sort(sortFn);
+        var remainingElements = allElements.slice();
+        var groups = [];
+        var i = 0;
+        while (remainingElements.length > 0 && i < 1000) {
+            i++; //endless loop protection
+            var group = getNextGroup(remainingElements, allElements, verticalScan);
+            groups.push(group);
+            remainingElements = remainingElements.filter(el => !group.includes(el));
+        }
+        return groups;
     }
 
-    function getYPos(item) {
+    function getNextGroup(remainingElements, allElements, verticalScan) {
+        var minPosFn = verticalScan ? getPosXMin : getPosYMin;
+        var maxPosFn = verticalScan ? getPosXMax : getPosYMax;
+        var firstElem = remainingElements[0];
+        var firstMinPos = minPosFn(firstElem);
+        var firstMaxPos = maxPosFn(firstElem);
+        var allowDuplicated = false;
+        var compareElements = allowDuplicated ? allElements : remainingElements;
+        var group = compareElements.filter(item =>
+            firstMinPos >= minPosFn(item) && firstMinPos <= maxPosFn(item) ||  //minimum of first value is inbetween the size of the item
+            minPosFn(item) <= firstMaxPos && maxPosFn(item) >= firstMaxPos ||  //maximum of first value is inbetween the size of the item
+            minPosFn(item) >= firstMinPos && maxPosFn(item) <= firstMaxPos     //item is completely wrapped by first item
+        );
+        return group;
+    }
+
+    function getPosYMin(item) {
         return item.getBoundingClientRect().top;
     }
 
-    function getXPos(item) {
+    function getPosYMax(item) {
+        return item.getBoundingClientRect().bottom;
+    }
+
+    function getPosXMin(item) {
         return item.getBoundingClientRect().left;
+    }
+
+    function getPosXMax(item) {
+        return item.getBoundingClientRect().right;
     }
 
     function scan(elems, index, count) {
@@ -79,10 +109,12 @@ function Scanner(itemSelector, scanActiveClass, options) {
             return;
         }
         L.removeClass(itemSelector, scanActiveClass);
+        L.removeClass(itemSelector, 'first');
         L.addClass(itemSelector, scanInactiveClass);
 
         if (_isScanning) {
             L.addClass(elems[index], scanActiveClass);
+            L.addClass(elems[index][0][0], 'first');
             L.removeClass(elems, scanInactiveClass);
             _currentActiveScanElements = elems[index];
             _scanTimeoutHandler = setTimeout(function () {
@@ -108,8 +140,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
     thiz.startScanning = function () {
         if (!_isScanning) {
             var elements = L.selectAsList(itemSelector);
-            var groupingFn = verticalScan ? getXPos : getYPos;
-            var rows = getGroups(elements, groupingFn);
+            var rows = getGroups(elements, verticalScan);
             _isScanning = true;
             scan(spitToSubarrays(rows));
         }
@@ -155,11 +186,11 @@ function Scanner(itemSelector, scanActiveClass, options) {
     };
 
     thiz.updateOptions = function (options, restartIfRunning) {
-        if(restartIfRunning) {
+        if (restartIfRunning) {
             thiz.pauseScanning();
         }
         parseOptions(options);
-        if(restartIfRunning) {
+        if (restartIfRunning) {
             thiz.resumeScanning();
         }
     };
