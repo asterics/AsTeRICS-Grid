@@ -46,21 +46,17 @@ function Scanner(itemSelector, scanActiveClass, options) {
     function getGroups(allElements, verticalScan) {
         var minPosFn = verticalScan ? getPosXMin : getPosYMin;
         var maxPosFn = verticalScan ? getPosXMax : getPosYMax;
-        var sortFn = function (a, b) {
-            var sizeA = maxPosFn(a) - minPosFn(a);
-            var sizeB = maxPosFn(b) - minPosFn(b);
-            var diff = minPosFn(a) - minPosFn(b);
-            diff = diff != 0 ? diff : sizeB - sizeA; // same min-positions should be ordered by size, bigger sizes first
-            diff = diff != 0 ? diff : (a.id && b.id ? a.id.localeCompare(b.id) : 0); // same min-positions should be ordered by size, bigger sizes first
-            return diff != 0 ? diff : sizeB - sizeA;
-        };
-        allElements = allElements.sort(sortFn);
+        var invertedMinPosFn = !verticalScan ? getPosXMin : getPosYMin;
+        var sortFnGroupSplitting = getCombinedSortFunction(getPosSortFunction(minPosFn), getSizeSortFunction(minPosFn, maxPosFn), getIdSortFunction());
+        var sortFnOneGroup = getCombinedSortFunction(getPosSortFunction(invertedMinPosFn), getPosSortFunction(minPosFn));
+        allElements = allElements.sort(sortFnGroupSplitting);
         var remainingElements = allElements.slice();
         var groups = [];
         var i = 0;
         while (remainingElements.length > 0 && i < 1000) {
             i++; //endless loop protection
             var group = getNextGroup(remainingElements, allElements, verticalScan);
+            group = group.sort(sortFnOneGroup);
             groups.push(group);
             remainingElements = remainingElements.filter(el => !group.includes(el));
         }
@@ -81,6 +77,76 @@ function Scanner(itemSelector, scanActiveClass, options) {
             minPosFn(item) >= firstMinPos && maxPosFn(item) <= firstMaxPos     //item is completely wrapped by first item
         );
         return group;
+    }
+
+    /**
+     * returns a function that can be passed to Array.sort() for sorting an array.
+     * elements with a smallest position value evaluated by the given 'posFunction' are sorted to first places
+     *
+     * @param posFunction
+     * @return {Function}
+     */
+    function getPosSortFunction(posFunction) {
+        return function (a, b) {
+            return posFunction(a) - posFunction(b);
+        }
+    }
+
+    /**
+     * returns a function that can be passed to Array.sort() for sorting an array.
+     * elements with biggest size according to the osition values evaluated by the given 'minPosFn' and
+     * 'maxPosFn' functions are sorted to first places.
+     *
+     * @param minPosFn function that evaluates to the minimum position (e.g. most left position) of an element
+     * @param maxPosFn function that evaluates to the maximum position (e.g. most right position) of an element
+     * @return {Function}
+     */
+    function getSizeSortFunction(minPosFn, maxPosFn) {
+        return function (a, b) {
+            var sizeA = Math.abs(maxPosFn(a) - minPosFn(a));
+            var sizeB = Math.abs(maxPosFn(b) - minPosFn(b));
+            return sizeB - sizeA;
+        }
+    }
+
+    /**
+     * returns a function that can be passed to Array.sort() for sorting an array.
+     * elements are sorted by the id property, if available
+     *
+     * @return {Function}
+     */
+    function getIdSortFunction() {
+        return function (a, b) {
+            if(a.id) {
+                return a.id.localeCompare(b.id);
+            } else if(b.id) {
+                return b.id.localeCompare(a.id) * -1;
+            }
+            return 0;
+        };
+    }
+
+    /**
+     * returns a function that can be passed to Array.sort() for sorting an array.
+     * combines several sort functions that are passed as arguments. First passed functions have higher priority. If
+     * one of them evaluates to a value != 0, this value will be returned by the combined sort function.
+     *
+     * @return {Function}
+     */
+    function getCombinedSortFunction() {
+        var args = arguments;
+        return function (a, b) {
+            for(var i = 0; i<args.length; i++) {
+                if(L.isFunction(args[i])) {
+                    var result = args[i](a, b);
+                    if(result !== 0) {
+                        return result;
+                    }
+                }
+            }
+            return 0;
+        };
+
     }
 
     function getPosYMin(item) {
@@ -109,12 +175,10 @@ function Scanner(itemSelector, scanActiveClass, options) {
             return;
         }
         L.removeClass(itemSelector, scanActiveClass);
-        L.removeClass(itemSelector, 'first');
         L.addClass(itemSelector, scanInactiveClass);
 
         if (_isScanning) {
             L.addClass(elems[index], scanActiveClass);
-            L.addClass(elems[index][0][0], 'first');
             L.removeClass(elems, scanInactiveClass);
             _currentActiveScanElements = elems[index];
             _scanTimeoutHandler = setTimeout(function () {
