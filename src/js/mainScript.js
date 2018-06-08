@@ -17,26 +17,33 @@ function init() {
         verticalScan: L('#chkVerticalScanning').checked,
         subScanRepeat: 3,
         binaryScanning: L('#chkBinaryScanning').checked,
-        scanInactiveClass: 'scanInactive'
+        scanInactiveClass: 'scanInactive',
+        minBinarySplitThreshold: 3
     });
     thiz.hover = new Hover('.item-content');
+    initGrid();
+}
+init();
 
-    for (var i = 0; i < 70; i++) {
-        L('#grid').insertAdjacentHTML('beforeend', tempates.getGridItem(i));
+function initGrid() {
+    L.removeAllChildren('#grid');
+    for (var i = 0; i < 20; i++) {
+        var sizeX = L.getRandomInt(1,3);
+        var sizeY = L.getRandomInt(1,3);
+        L('#grid').insertAdjacentHTML('beforeend', tempates.getGridItem(i, sizeX, sizeY));
     }
 
     thiz.grid = new Muuri('#grid', {
         dragEnabled: true,
     });
-}
-init();
 
-thiz.grid.on('dragInit', function (items) {
-    thiz.scanner.pauseScanning();
-});
-thiz.grid.on('dragReleaseEnd', function (items) {
-    thiz.scanner.resumeScanning();
-});
+    thiz.grid.on('dragInit', function (items) {
+        thiz.scanner.pauseScanning();
+    });
+    thiz.grid.on('dragReleaseEnd', function (items) {
+        thiz.scanner.resumeScanning();
+    });
+}
 
 L('#btnStartScan').addEventListener('click', function () {
     thiz.scanner.startScanning();
