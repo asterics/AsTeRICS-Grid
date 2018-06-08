@@ -56,10 +56,11 @@ function Scanner(itemSelector, scanActiveClass, options) {
         while (remainingElements.length > 0 && i < 1000) {
             i++; //endless loop protection
             var group = getNextGroup(remainingElements, allElements, verticalScan);
-            group = group.sort(sortFnOneGroup);
             groups.push(group);
             remainingElements = remainingElements.filter(el => !group.includes(el));
         }
+        groups = refineGroups(groups);
+        groups.forEach(group => group.sort(sortFnOneGroup));
         return groups;
     }
 
@@ -78,6 +79,34 @@ function Scanner(itemSelector, scanActiveClass, options) {
         );
         return group;
     }
+
+    /**
+     * adds element of groups with only 1 element to neighbor group, and removes 1 element groups afterwards.
+     * input: [group(5), group(1), group(2), group(4), group(1), group(3), group(3), group(1)]
+     * output: [group(5), group(3), group(4), group(4), group(4)]
+     *
+     * @param groups
+     */
+    function refineGroups(groups) {
+        var groupsToRemove = [];
+        for (var i = 0; i < groups.length; i++) {
+            var group = groups[i];
+            var lastGroup = null;
+            var nextGroup = null;
+            if (i - 1 >= 0) lastGroup = groups[i - 1];
+            if (i + 1 < groups.length) nextGroup = groups[i + 1];
+            if (group.length == 1) {
+                var addToLastGroup = !nextGroup || (lastGroup && nextGroup && lastGroup.length < nextGroup.length);
+                var groupToAdd = addToLastGroup ? lastGroup : nextGroup;
+                group.forEach(function (item) {
+                    groupToAdd.push(item);
+                });
+                groupsToRemove.push(group);
+            }
+        }
+        return groups.filter(group => !groupsToRemove.includes(group));
+    }
+
 
     /**
      * returns a function that can be passed to Array.sort() for sorting an array.
@@ -117,9 +146,9 @@ function Scanner(itemSelector, scanActiveClass, options) {
      */
     function getIdSortFunction() {
         return function (a, b) {
-            if(a.id) {
+            if (a.id) {
                 return a.id.localeCompare(b.id);
-            } else if(b.id) {
+            } else if (b.id) {
                 return b.id.localeCompare(a.id) * -1;
             }
             return 0;
@@ -136,10 +165,10 @@ function Scanner(itemSelector, scanActiveClass, options) {
     function getCombinedSortFunction() {
         var args = arguments;
         return function (a, b) {
-            for(var i = 0; i<args.length; i++) {
-                if(L.isFunction(args[i])) {
+            for (var i = 0; i < args.length; i++) {
+                if (L.isFunction(args[i])) {
                     var result = args[i](a, b);
-                    if(result !== 0) {
+                    if (result !== 0) {
                         return result;
                     }
                 }
