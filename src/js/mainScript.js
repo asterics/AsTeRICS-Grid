@@ -1,4 +1,4 @@
-//import Muuri from 'muuri';
+import $ from 'jquery';
 import domI18n from '../../node_modules/dom-i18n/dist/dom-i18n.min';
 import {L} from "../lib/lquery.js";
 import {tempates} from "./templates.js";
@@ -13,36 +13,56 @@ function init() {
         languages: ['en', 'de']
     });
 
-    thiz.scanner = new Scanner('.item', 'scanFocus', {
+    thiz.scanner = new Scanner('.grid-item-content', 'scanFocus', {
         verticalScan: L('#chkVerticalScanning').checked,
         subScanRepeat: 3,
         binaryScanning: L('#chkBinaryScanning').checked,
         scanInactiveClass: 'scanInactive',
         minBinarySplitThreshold: 3
     });
-    thiz.hover = new Hover('.item');
+    thiz.hover = new Hover('.grid-item-content');
     initGrid();
 }
 init();
 
 function initGrid() {
     //L.removeAllChildren('#grid');
-    for (var i = 0; i < 30; i++) {
-        var sizeX = L.getRandomInt(1,3);
-        var sizeY = L.getRandomInt(1,3);
+    for (var i = 0; i < 50; i++) {
+        var sizeX = L.getRandomInt(1,1);
+        var sizeY = L.getRandomInt(1,1);
         L('#grid').insertAdjacentHTML('beforeend', tempates.getGridItem(i, sizeX, sizeY));
     }
 
-    /*thiz.grid = new Muuri('#grid', {
-        dragEnabled: true,
+    var grid = $('#grid').gridList({
+        lanes: 10,
+        widthHeightRatio: 1,
+        heightToFontSizeRatio: 0.25,
+    });
+    $('#grid').gridList('resize', 9);
+    $(window).resize(function() {
+        $('#grid').gridList('reflow');
     });
 
-    thiz.grid.on('dragInit', function (items) {
-        thiz.scanner.pauseScanning();
+    var itemSize = 77;
+    var border = 5;
+    $('.grid-item-content').resizable({
+        grid: [itemSize + 2 * border, itemSize + 2 * border],
+        autoHide: true,
+        handles: 'se',
+        resize: function( event, ui ) {
+            ui.element.parent().css('z-index', 1);
+            var w = Math.round(ui.element.width() / (itemSize + 2 * border));
+            var h = Math.round(ui.element.height() / (itemSize + 2 * border));
+            console.log('w: ' + w + " , h: " + h);
+            $('#grid').gridList('resizeItem', ui.element.parent(), {
+                w: w,
+                h: h
+            });
+            ui.element.css('height', '');
+            ui.element.css('width', '');
+        }
     });
-    thiz.grid.on('dragReleaseEnd', function (items) {
-        thiz.scanner.resumeScanning();
-    });*/
+
 }
 
 L('#btnStartScan').addEventListener('click', function () {
