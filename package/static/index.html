@@ -42,9 +42,13 @@
             <label for="chkHover" data-i18n>Mouse Hovering // Maus Hovering</label>
             <input type="checkbox" id="chkHover"/>
         </div>
+        <div class="spaced inline">
+            <label for="chkHover" data-i18n>Number of rows // Anzahl Zeilen</label>
+            <input type="number" id="inNumberRows" min="1" max="50" value="9"/>
+        </div>
         <br/>
         <br/>
-        <div class="grid-container">
+        <div id="grid-container" class="grid-container">
             <ul id="grid" class="grid">
                 <li class="position-highlight" style="display: none;">
                     <div class="grid-item-content"></div>
