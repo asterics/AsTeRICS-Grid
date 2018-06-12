@@ -8,19 +8,22 @@ var mode = 'development';
 
 var resolve = {
     alias: {
-        muuri: "../../node_modules/muuri/muuri.min.js",
-        hammerjs: "../../node_modules/hammerjs/hammer.min.js"
+        //muuri: "../../node_modules/muuri/muuri.min.js",
+        //hammerjs: "../../node_modules/hammerjs/hammer.min.js"
     }
 };
 
+var externals = {
+    jquery: '$'
+};
 
 function getDevServer(buildDirParam) {
     return {
         contentBase: path.resolve(__dirname, baseDir),
         publicPath: buildDirParam,
-        host: 'localhost',
+        host: '0.0.0.0',
         port: 9090,
-        open: true
+        open: false
     };
 }
 
@@ -33,7 +36,8 @@ var configNormal = {
         filename: outputFilename
     },
     resolve: resolve,
-    devServer: getDevServer(buildDir)
+    devServer: getDevServer(buildDir),
+    externals: externals
 };
 
 var configLegacy = {
@@ -46,6 +50,7 @@ var configLegacy = {
     },
     resolve: resolve,
     devServer: getDevServer(buildDirLegacy),
+    externals: externals,
     module: {
         rules: [{
             test: /\.js$/,
