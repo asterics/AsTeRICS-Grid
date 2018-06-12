@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/custom.css">
     <link rel="stylesheet" href="css/gridlist.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
 
     <!-- libraries, not provided by npm -->
     <script src="lib/jquery.min.js"></script>
@@ -55,20 +56,5 @@
 
 <script nomodule src="build_legacy/asterics-grid.bundle.js"></script>
 <script type="module" src="build/asterics-grid.bundle.js"></script>
-<script>
-    setTimeout(function () {
-        var grid = $('#grid').gridList({
-            lanes: 10,
-            widthHeightRatio: 264 / 294,
-            heightToFontSizeRatio: 0.25,
-        });
-        $('#grid').gridList('resize', 9);
-        $(window).resize(function() {
-            $('#grid').gridList('reflow');
-        });
-
-        console.log(grid);
-    }, 500);
-</script>
 </body>
 </html>
