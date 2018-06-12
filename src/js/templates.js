@@ -4,15 +4,11 @@ tempates.getGridItem = function (number, sizeX, sizeY) {
     sizeY = sizeY || 1;
 
     var template = `
-<div id="${'grid-item-' + new Date().getTime()}" class="item size-x-${sizeX} size-y-${sizeY}">
-    <div class="item-content">
-        <!-- Safe zone, enter your custom markup -->
-        <div class="my-custom-content">
-            ${number}
-        </div>
-        <!-- Safe zone ends -->
+<li id="${'grid-item-' + new Date().getTime()}" class="item" data-w="${sizeX}" data-h="${sizeY}">
+    <div class="grid-item-content">
+        ${number}
     </div>
-</div>`;
+</li>`;
     return template;
 };
 

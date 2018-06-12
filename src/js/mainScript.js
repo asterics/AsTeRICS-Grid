@@ -1,4 +1,4 @@
-import Muuri from 'muuri';
+//import Muuri from 'muuri';
 import domI18n from '../../node_modules/dom-i18n/dist/dom-i18n.min';
 import {L} from "../lib/lquery.js";
 import {tempates} from "./templates.js";
@@ -13,27 +13,27 @@ function init() {
         languages: ['en', 'de']
     });
 
-    thiz.scanner = new Scanner('.item-content', 'scanFocus', {
+    thiz.scanner = new Scanner('.item', 'scanFocus', {
         verticalScan: L('#chkVerticalScanning').checked,
         subScanRepeat: 3,
         binaryScanning: L('#chkBinaryScanning').checked,
         scanInactiveClass: 'scanInactive',
         minBinarySplitThreshold: 3
     });
-    thiz.hover = new Hover('.item-content');
+    thiz.hover = new Hover('.item');
     initGrid();
 }
 init();
 
 function initGrid() {
-    L.removeAllChildren('#grid');
-    for (var i = 0; i < 20; i++) {
+    //L.removeAllChildren('#grid');
+    for (var i = 0; i < 30; i++) {
         var sizeX = L.getRandomInt(1,3);
         var sizeY = L.getRandomInt(1,3);
         L('#grid').insertAdjacentHTML('beforeend', tempates.getGridItem(i, sizeX, sizeY));
     }
 
-    thiz.grid = new Muuri('#grid', {
+    /*thiz.grid = new Muuri('#grid', {
         dragEnabled: true,
     });
 
@@ -42,7 +42,7 @@ function initGrid() {
     });
     thiz.grid.on('dragReleaseEnd', function (items) {
         thiz.scanner.resumeScanning();
-    });
+    });*/
 }
 
 L('#btnStartScan').addEventListener('click', function () {
@@ -93,4 +93,4 @@ thiz.hover.setSelectionListener(function (item) {
     L.toggleClass(item, 'selected');
 });
 
-thiz.scanner.startScanning();
+//thiz.scanner.startScanning();

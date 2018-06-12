@@ -4,10 +4,15 @@
     <title>AsTeRICS Grid</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/custom.css">
-    <link rel="stylesheet" href="css/muuri.css">
+    <link rel="stylesheet" href="css/gridlist.css">
+
+    <!-- libraries, not provided by npm -->
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/jquery-ui.min.js"></script>
+    <script type="text/javascript" src='lib/gridList.js'></script>
+    <script type="text/javascript" src='lib/jquery.gridList.js'></script>
 
     <!-- polyfills that are needed in all browsers -->
-    <script src="polyfill/web-animations.min.js"></script>
 
     <!-- polyfills that are needed only in old browsers that do not support ES6 modules -->
     <script nomodule src="polyfill/core_js_shim.min.js"></script>
@@ -38,12 +43,32 @@
         </div>
         <br/>
         <br/>
-        <div id="grid">
+        <div class="grid-container">
+            <ul id="grid" class="grid">
+                <li class="position-highlight" style="display: none;">
+                    <div class="grid-item-content"></div>
+                </li>
+            </ul>
         </div>
     </main>
 </div>
 
 <script nomodule src="build_legacy/asterics-grid.bundle.js"></script>
 <script type="module" src="build/asterics-grid.bundle.js"></script>
+<script>
+    setTimeout(function () {
+        var grid = $('#grid').gridList({
+            lanes: 10,
+            widthHeightRatio: 264 / 294,
+            heightToFontSizeRatio: 0.25,
+        });
+        $('#grid').gridList('resize', 9);
+        $(window).resize(function() {
+            $('#grid').gridList('reflow');
+        });
+
+        console.log(grid);
+    }, 500);
+</script>
 </body>
 </html>

@@ -1,17 +1,22 @@
-.scanFocus{
-    border: thick solid red;
-}
-
-.mouseentered{
-    border: thick solid green;
-}
-
-.selected {
+.grid-item-content {
     background: lightblue;
 }
 
-.scanInactive {
-    background: lightgray;
+.selected .grid-item-content {
+    background: darkblue !important;
+}
+
+.scanFocus .grid-item-content {
+    border: thick solid red !important;
+}
+
+.mouseentered .grid-item-content{
+    border: thick solid green !important;
+}
+
+.scanInactive .grid-item-content {
+    background: lightgray !important;
+    color: darkgray !important;
 }
 
 .spaced {

@@ -1,0 +1,59 @@
+.grid-container {
+  position: absolute;
+  top: 120px;
+  left: 0;
+  right: 10px;
+  bottom: 0;
+  overflow: auto;
+}
+.grid {
+  position: relative;
+  height: 95%;
+  list-style: none;
+  /* Will be modified by the grid jquery lib, depending on the items */
+  -webkit-transition: width 0.2s,
+  height 0.2s;
+  transition: width 0.2s,
+  height 0.2s;
+}
+.grid li {
+  position: absolute;
+  z-index: 1;
+  font-weight: bold;
+  line-height: 4em;
+  text-align: center;
+  cursor: pointer;
+  -webkit-transition: top 0.2s,
+  left 0.2s,
+  width 0.2s,
+  height 0.2s,
+  font-size 0.2s,
+  line-height 0.2s;
+  transition: top 0.2s,
+  left 0.2s,
+  width 0.2s,
+  height 0.2s,
+  font-size 0.2s,
+  line-height 0.2s;
+}
+.grid li .grid-item-content {
+  position: absolute;
+  border: 1px solid #bbb;
+  top: 0;
+  bottom: 10px;
+  left: 10px;
+  right: 0;
+}
+.grid li.ui-draggable-dragging {
+  -webkit-transition: none;
+  transition: none;
+}
+.grid li.position-highlight {
+  -webkit-transition: none;
+  transition: none;
+}
+.grid li.position-highlight .grid-item-content {
+  border-style: dotted;
+  border-width: 2px;
+  background: #f9f9f9;
+}
