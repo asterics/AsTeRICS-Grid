@@ -15,6 +15,9 @@
   height 0.2s;
   transition: width 0.2s,
   height 0.2s;
+  padding: 0;
+  margin-top: 1em;
+  -webkit-padding-start: 0;
 }
 .grid li {
   position: absolute;
@@ -38,7 +41,7 @@
 }
 .grid li .grid-item-content {
   position: absolute;
-  border: 1px solid #bbb;
+  outline: 1px solid #bbb;
   top: 0;
   bottom: 10px;
   left: 10px;
@@ -53,7 +56,8 @@
   transition: none;
 }
 .grid li.position-highlight .grid-item-content {
-  border-style: dotted;
-  border-width: 2px;
-  background: #f9f9f9;
+  outline-style: dotted;
+  outline-width: 2px;
+  outline-color: darkgray;
+  background: #e6e6e6;
 }

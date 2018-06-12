@@ -2,19 +2,19 @@
     background: lightblue;
 }
 
-.selected .grid-item-content {
-    background: darkblue !important;
+.selected.grid-item-content {
+    background: dodgerblue !important;
 }
 
-.scanFocus .grid-item-content {
-    border: thick solid red !important;
+.scanFocus.grid-item-content {
+    outline: thick solid red !important;
 }
 
-.mouseentered .grid-item-content{
-    border: thick solid green !important;
+.mouseentered.grid-item-content{
+    outline: thick solid green !important;
 }
 
-.scanInactive .grid-item-content {
+.scanInactive.grid-item-content {
     background: lightgray !important;
     color: darkgray !important;
 }
