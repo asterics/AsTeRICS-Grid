@@ -1,7 +1,7 @@
-import $ from 'jquery';
 import domI18n from '../../node_modules/dom-i18n/dist/dom-i18n.min';
 import {L} from "../lib/lquery.js";
-import {tempates} from "./templates.js";
+import {Grid} from "./grid.js";
+
 import {Scanner} from "./scanning.js";
 import {Hover} from "./hovering.js";
 
@@ -26,43 +26,15 @@ function init() {
 init();
 
 function initGrid() {
-    //L.removeAllChildren('#grid');
-    for (var i = 0; i < 50; i++) {
-        var sizeX = L.getRandomInt(1,1);
-        var sizeY = L.getRandomInt(1,1);
-        L('#grid').insertAdjacentHTML('beforeend', tempates.getGridItem(i, sizeX, sizeY));
-    }
-
-    var grid = $('#grid').gridList({
-        lanes: 10,
-        widthHeightRatio: 1,
-        heightToFontSizeRatio: 0.25,
+    thiz.grid = new Grid('#grid', '.grid-item-content', {
+        enableResizing: true
     });
-    $('#grid').gridList('resize', 9);
-    $(window).resize(function() {
-        $('#grid').gridList('reflow');
+    thiz.grid.setLayoutChangedStartListener(function () {
+        thiz.scanner.pauseScanning();
     });
-
-    var itemSize = 77;
-    var border = 5;
-    $('.grid-item-content').resizable({
-        grid: [itemSize + 2 * border, itemSize + 2 * border],
-        autoHide: true,
-        handles: 'se',
-        resize: function( event, ui ) {
-            ui.element.parent().css('z-index', 1);
-            var w = Math.round(ui.element.width() / (itemSize + 2 * border));
-            var h = Math.round(ui.element.height() / (itemSize + 2 * border));
-            console.log('w: ' + w + " , h: " + h);
-            $('#grid').gridList('resizeItem', ui.element.parent(), {
-                w: w,
-                h: h
-            });
-            ui.element.css('height', '');
-            ui.element.css('width', '');
-        }
+    thiz.grid.setLayoutChangedEndListener(function () {
+        thiz.scanner.resumeScanning();
     });
-
 }
 
 L('#btnStartScan').addEventListener('click', function () {
@@ -97,6 +69,10 @@ L('#chkHover').addEventListener('change', function (event) {
     } else {
         thiz.hover.stopHovering();
     }
+});
+
+L('#inNumberRows').addEventListener('change', function (event) {
+    thiz.grid.setNumberOfRows(event.target.value);
 });
 
 window.addEventListener('resize', function () {
