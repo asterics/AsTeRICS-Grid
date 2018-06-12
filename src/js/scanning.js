@@ -12,6 +12,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
     var subScanRepeat = 3;
     var minBinarySplitThreshold = 3; // for binary scanning: if there are [n] or less scanning possibilities they will not be split up again, but will be scanned in linear fashion
     var binaryScanning = false;
+    var touchScanning = true;
 
     //internal
     var _selectionListener = null;
@@ -21,6 +22,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
     var _layoutChangeTimeoutHandler = null;
     var _scanningPaused = false;
     var _keydownEventListeners = [];
+    var _touchListener = null;
 
     function init() {
         parseOptions(options);
@@ -35,7 +37,9 @@ function Scanner(itemSelector, scanActiveClass, options) {
 
             verticalScan = options.verticalScan != undefined ? options.verticalScan : verticalScan;
             binaryScanning = options.binaryScanning != undefined ? options.binaryScanning : binaryScanning;
+            touchScanning = options.touchScanning != undefined ? options.touchScanning : touchScanning;
         }
+        if(touchScanning) thiz.enableTouchScanning();
         thiz.addSelectKeyCode(options.selectKeyCode);
         thiz.addSelectKey(options.selectKey);
         if (_keydownEventListeners.length == 0) {
@@ -364,6 +368,22 @@ function Scanner(itemSelector, scanActiveClass, options) {
             document.removeEventListener("keydown", fn);
         });
         _keydownEventListeners = [];
+    };
+
+    thiz.enableTouchScanning = function () {
+        if(!_touchListener) {
+            _touchListener = function () {
+                thiz.select();
+            };
+            document.addEventListener("touchstart", _touchListener);
+        }
+    };
+
+    thiz.disableTouchScanning = function () {
+        if(_touchListener) {
+            document.removeEventListener("touchstart", _touchListener);
+            _touchListener = null;
+        }
     };
 
     init();
