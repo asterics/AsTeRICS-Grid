@@ -4,9 +4,7 @@
   "description": "Flexible Grid System for the AsTeRICS Framework",
   "main": "index.js",
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
-    "dom-i18n": "^1.1.1",
-    "muuri": "^0.5.4"
+    "dom-i18n": "^1.1.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
