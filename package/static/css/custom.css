@@ -1,13 +1,13 @@
+.scanFocus {
+    outline: thick solid red !important;
+}
+
 .grid-item-content {
     background: lightblue;
 }
 
 .selected.grid-item-content {
     background: dodgerblue !important;
-}
-
-.scanFocus.grid-item-content {
-    outline: thick solid red !important;
 }
 
 .mouseentered.grid-item-content{
