@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import {L} from "../lib/lquery.js";
 import {templates} from "./templates.js";
+import {dataService} from "./service/dataService";
+import {GridElementConverter} from "./model/GridElement";
 
 function Grid(gridSelector, gridItemClass, options) {
     var thiz = this;
@@ -17,6 +19,8 @@ function Grid(gridSelector, gridItemClass, options) {
     var _layoutChangedStartListener = null;
     var _layoutChangedEndListener = null;
     var _animationTimeMs = 200; //see gridlist.css
+    var _gridData = null;
+    var _gridDataElements = null;
 
     function init() {
         parseOptions(options);
@@ -33,11 +37,11 @@ function Grid(gridSelector, gridItemClass, options) {
 
     function initGrid() {
         _gridElement = $(gridSelector);
-        for (var i = 0; i < 50; i++) {
-            var sizeX = L.getRandomInt(2, 2);
-            var sizeY = L.getRandomInt(1, 1);
-            L(gridSelector).insertAdjacentHTML('beforeend', templates.getGridItem(i, sizeX, sizeY));
-        }
+        _gridData = dataService.getGrid();
+        _gridDataElements = _gridData.getGridElements();
+        _gridDataElements.forEach(function (gridElement) {
+            L(gridSelector).insertAdjacentHTML('beforeend', gridElement.toHTML());
+        });
 
         _gridElement.gridList({
             lanes: gridRows,
@@ -141,6 +145,19 @@ function Grid(gridSelector, gridItemClass, options) {
     thiz.setLayoutChangedEndListener = function (fn) {
         _layoutChangedEndListener = fn;
     };
+
+    thiz.getCurrentGridId = function () {
+        return _gridData.toJSON().id;
+    };
+
+    /*thiz.toJSON = function () {
+        if(_gridListInstance && _gridListInstance.gridList && _gridListInstance.gridList.items) {
+            var elements = [];
+            _gridListInstance.gridList.items.forEach(function (item) {
+                elements.push(new GridElement().from);
+            });
+        }
+    };*/
 
     init();
 }
