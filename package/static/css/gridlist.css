@@ -39,7 +39,7 @@
   font-size 0.2s,
   line-height 0.2s;
 }
-.grid li .grid-item-content {
+.grid li .grid-item-content, .grid-item-content-placeholder {
   position: absolute;
   outline: 1px solid #bbb;
   top: 0;
@@ -55,7 +55,7 @@
   -webkit-transition: none;
   transition: none;
 }
-.grid li.position-highlight .grid-item-content {
+.grid li.position-highlight .grid-item-content-placeholder {
   outline-style: dotted;
   outline-width: 2px;
   outline-color: darkgray;
