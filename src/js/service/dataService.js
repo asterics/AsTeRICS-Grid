@@ -24,8 +24,12 @@ function generateGridData() {
 generateGridData();
 
 var dataService = {
-    getGrid: function () {
+    getGrid: function (id) {
         return grids[0];
+    },
+    getGridElement: function (gridId, gridElementId) {
+        var grid = this.getGrid(gridId);
+        return grid.getGridElements().filter(elm => elm.getId() == gridElementId)[0];
     }
 };
 
