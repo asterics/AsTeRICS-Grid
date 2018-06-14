@@ -82,8 +82,7 @@ window.addEventListener('resize', function () {
 
 thiz.scanner.setSelectionListener(function (item) {
     L.toggleClass(item, 'selected');
-    var gridElement = thiz.grid.getGridData(item.id);
-    actionService.doAction(gridElement);
+    actionService.doAction(thiz.grid.getCurrentGridId(), item.id);
 });
 
 thiz.hover.setSelectionListener(function (item) {
