@@ -1,5 +1,8 @@
+import {dataService} from "./dataService";
+
 var actionService = {
-    doAction: function (gridElement) {
+    doAction: function (gridId, gridElementId) {
+        var gridElement = dataService.getGridElement(gridId, gridElementId);
         console.log('do action for: ' + JSON.stringify(gridElement));
         if(typeof SpeechSynthesisUtterance !== 'undefined') {
             var msg = new SpeechSynthesisUtterance(gridElement.toJSON().label);
