@@ -1,6 +1,7 @@
 import domI18n from '../../node_modules/dom-i18n/dist/dom-i18n.min';
 import {L} from "../lib/lquery.js";
 import {Grid} from "./grid.js";
+import {actionService} from "./service/actionService";
 
 import {Scanner} from "./scanning.js";
 import {Hover} from "./hovering.js";
@@ -80,12 +81,12 @@ window.addEventListener('resize', function () {
 }, true);
 
 thiz.scanner.setSelectionListener(function (item) {
-    console.log('selected: ' + item);
     L.toggleClass(item, 'selected');
+    var gridElement = thiz.grid.getGridData(item.id);
+    actionService.doAction(gridElement);
 });
 
 thiz.hover.setSelectionListener(function (item) {
-    console.log('selected: ' + item);
     L.toggleClass(item, 'selected');
 });
 
