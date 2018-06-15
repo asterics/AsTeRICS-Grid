@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import {dataService} from "./service/dataService";
+import {GridData} from "./model/GridData";
 
 function Grid(gridSelector, gridItemClass, options) {
     var thiz = this;
@@ -17,7 +18,6 @@ function Grid(gridSelector, gridItemClass, options) {
     var _layoutChangedEndListener = null;
     var _animationTimeMs = 200; //see gridlist.css
     var _gridData = null;
-    var _gridDataElements = null;
 
     function init() {
         parseOptions(options);
@@ -35,8 +35,7 @@ function Grid(gridSelector, gridItemClass, options) {
     function initGrid() {
         _gridElement = $(gridSelector);
         _gridData = dataService.getGrid();
-        _gridDataElements = _gridData.gridElements;
-        _gridDataElements.forEach(function (gridElement) {
+        _gridData.gridElements.forEach(function (gridElement) {
             $(gridSelector).append(gridElement.toHTML());
         });
 
@@ -49,7 +48,9 @@ function Grid(gridSelector, gridItemClass, options) {
             stop: notifyLayoutChangeEnd
         });
         _gridListInstance = _gridElement.data('_gridList');
-        _gridElement.gridList('resize', gridRows);
+        if(!_gridData.hasSetPositions()) {
+            _gridElement.gridList('resize', gridRows);
+        }
     }
 
     function initResizing() {
@@ -99,7 +100,7 @@ function Grid(gridSelector, gridItemClass, options) {
                 _layoutChangedEndListener();
             }, _animationTimeMs);
         }
-        refreshResizeOptions();
+        dataService.saveGrid(GridData.fromGridListInstance(_gridListInstance.gridList));
     }
 
     thiz.enableElementResizing = function () {
