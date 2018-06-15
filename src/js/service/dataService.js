@@ -1,11 +1,24 @@
 import {L} from "../../lib/lquery.js";
 import {GridElement} from "../model/GridElement.js";
 import {GridData} from "../model/GridData.js";
+import {localStorageService} from "./localStorageService";
 
-var grids = [];
+var grids = null;
 var verbs = ['be', 'have', 'do', 'say', 'get', 'make', 'go', 'know', 'take', 'see', 'come', 'think', 'look', 'want', 'give', 'use', 'find', 'tell', 'ask', 'work', 'seem', 'feel', 'try', 'leave', 'call'];
+var GRIDS_SAVE_KEY = "GRIDS_SAVE_KEY";
+
+
+function getSavedGridData() {
+    var json = localStorageService.get(GRIDS_SAVE_KEY);
+    if(json) {
+        var parsed = GridData.fromJSON(json);
+        return parsed instanceof Array ? parsed : [parsed];
+    }
+    return null;
+}
 
 function generateGridData() {
+    var _grids = [];
     var grid = new GridData({
         label: 'Default-Grid',
         gridElements: []
@@ -20,9 +33,25 @@ function generateGridData() {
             label: verbs[i%verbs.length]
         }))
     }
-    grids.push(grid);
+    _grids.push(grid);
+    return _grids;
 }
-generateGridData();
+
+function saveToLocalStorage() {
+    var json = localStorageService.save(GRIDS_SAVE_KEY, JSON.stringify(grids));
+}
+
+function init() {
+    grids = getSavedGridData();
+    if(!grids) {
+        grids = generateGridData();
+        localStorageService.save(GRIDS_SAVE_KEY, JSON.stringify(grids));
+        console.log('using generated data...');
+    } else {
+        console.log('using data from local storage...');
+    }
+}
+init();
 
 var dataService = {
     getGrid: function (id) {
@@ -31,6 +60,10 @@ var dataService = {
     getGridElement: function (gridId, gridElementId) {
         var grid = this.getGrid(gridId);
         return grid.gridElements.filter(elm => elm.id == gridElementId)[0];
+    },
+    saveGrid: function (gridData) {
+        grids[0] = gridData; //TODO: adapt for more than 1 grid -> maybe object {id: GridData}?
+        saveToLocalStorage();
     }
 };
 
