@@ -8,13 +8,13 @@ var mode = 'development';
 
 var resolve = {
     alias: {
-        //muuri: "../../node_modules/muuri/muuri.min.js",
-        //hammerjs: "../../node_modules/hammerjs/hammer.min.js"
+        //objectmodel: "../../../node_modules/objectmodel/dist/object-model.js"
     }
 };
 
 var externals = {
-    jquery: '$'
+    jquery: '$',
+    objectmodel: 'Model'
 };
 
 function getDevServer(buildDirParam) {
