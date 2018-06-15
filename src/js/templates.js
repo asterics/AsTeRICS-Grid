@@ -18,8 +18,8 @@ templates.getGridItem = function (label, width, height, posX, posY, id) {
     id = id || lastId++;
 
     var template = `
-<li class="item" data-w="${width}" data-h="${height}" data-x="${posX}" data-y="${posY}">
-    <div class="grid-item-content" id="${id}">
+<li class="item" data-w="${width}" data-h="${height}" data-x="${posX}" data-y="${posY}" data-id="${id}" data-label="${label}">
+    <div class="grid-item-content" id="${id}" data-id="${id}">
         ${label}
     </div>
 </li>`;
