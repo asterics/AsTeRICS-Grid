@@ -8,11 +8,12 @@ var verbs = ['be', 'have', 'do', 'say', 'get', 'make', 'go', 'know', 'take', 'se
 function generateGridData() {
     var grid = new GridData({
         label: 'Default-Grid',
+        gridElements: []
     });
     for (var i = 0; i < 50; i++) {
         var sizeX = L.getRandomInt(2, 2);
         var sizeY = L.getRandomInt(1, 1);
-        grid.addGridElement(new GridElement({
+        grid.gridElements.push(new GridElement({
             width: sizeX,
             height: sizeY,
             speakText: verbs[i%verbs.length],
@@ -29,7 +30,7 @@ var dataService = {
     },
     getGridElement: function (gridId, gridElementId) {
         var grid = this.getGrid(gridId);
-        return grid.getGridElements().filter(elm => elm.getId() == gridElementId)[0];
+        return grid.gridElements.filter(elm => elm.id == gridElementId)[0];
     }
 };
 

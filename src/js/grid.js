@@ -1,8 +1,6 @@
 import $ from 'jquery';
 import {L} from "../lib/lquery.js";
-import {templates} from "./templates.js";
 import {dataService} from "./service/dataService";
-import {GridElementConverter} from "./model/GridElement";
 
 function Grid(gridSelector, gridItemClass, options) {
     var thiz = this;
@@ -38,7 +36,7 @@ function Grid(gridSelector, gridItemClass, options) {
     function initGrid() {
         _gridElement = $(gridSelector);
         _gridData = dataService.getGrid();
-        _gridDataElements = _gridData.getGridElements();
+        _gridDataElements = _gridData.gridElements;
         _gridDataElements.forEach(function (gridElement) {
             L(gridSelector).insertAdjacentHTML('beforeend', gridElement.toHTML());
         });
@@ -147,7 +145,7 @@ function Grid(gridSelector, gridItemClass, options) {
     };
 
     thiz.getCurrentGridId = function () {
-        return _gridData.toJSON().id;
+        return _gridData.id;
     };
 
     /*thiz.toJSON = function () {
