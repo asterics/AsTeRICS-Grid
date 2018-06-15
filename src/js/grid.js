@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import {L} from "../lib/lquery.js";
 import {dataService} from "./service/dataService";
 
 function Grid(gridSelector, gridItemClass, options) {
@@ -38,7 +37,7 @@ function Grid(gridSelector, gridItemClass, options) {
         _gridData = dataService.getGrid();
         _gridDataElements = _gridData.gridElements;
         _gridDataElements.forEach(function (gridElement) {
-            L(gridSelector).insertAdjacentHTML('beforeend', gridElement.toHTML());
+            $(gridSelector).append(gridElement.toHTML());
         });
 
         _gridElement.gridList({
@@ -89,13 +88,13 @@ function Grid(gridSelector, gridItemClass, options) {
     }
 
     function notifyLayoutChangeStart() {
-        if(L.isFunction(_layoutChangedStartListener)) {
+        if($.isFunction(_layoutChangedStartListener)) {
             _layoutChangedStartListener();
         }
     }
 
     function notifyLayoutChangeEnd() {
-        if(L.isFunction(_layoutChangedEndListener)) {
+        if($.isFunction(_layoutChangedEndListener)) {
             setTimeout(function(){
                 _layoutChangedEndListener();
             }, _animationTimeMs);
