@@ -1,17 +1,30 @@
+var errorMsg = 'could not access local storage, maybe disabled by user? Error: ';
 var storage = null;
 if (typeof(Storage) !== "undefined") {
-    var storage = window.localStorage;
+    try {
+        var storage = window.localStorage;
+    } catch (e) {
+        console.log(errorMsg + e)
+    }
 }
 
 var localStorageService = {
-    save: function(key, value) {
-        if(storage) {
-            return storage.setItem(key, value);
+    save: function (key, value) {
+        if (storage) {
+            try {
+                return storage.setItem(key, value);
+            } catch (e) {
+                console.log(errorMsg + e)
+            }
         }
     },
     get: function (key) {
-        if(storage) {
-            return storage.getItem(key);
+        if (storage) {
+            try {
+                return storage.getItem(key);
+            } catch (e) {
+                console.log(errorMsg + e)
+            }
         }
     }
 };
