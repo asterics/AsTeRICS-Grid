@@ -25,7 +25,7 @@ class GridElement extends Model({
 
     static fromJSON(jsonData) {
         var result = [];
-        var data = typeof jsonData === 'string' ? JSON.parse(jsonData): jsonData;
+        var data = modelUtil.getAsObject(jsonData);
         if(!(data instanceof Array)) {
             data = [data];
         }
