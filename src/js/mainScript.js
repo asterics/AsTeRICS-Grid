@@ -5,6 +5,7 @@ import {actionService} from "./service/actionService";
 
 import {Scanner} from "./scanning.js";
 import {Hover} from "./hovering.js";
+import {dataService} from "./service/dataService";
 
 var thiz = {};
 function init() {
@@ -23,6 +24,7 @@ function init() {
     });
     thiz.hover = new Hover('.grid-item-content');
     initGrid();
+    initUiOptions();
 }
 init();
 
@@ -36,6 +38,10 @@ function initGrid() {
     thiz.grid.setLayoutChangedEndListener(function () {
         thiz.scanner.resumeScanning();
     });
+}
+
+function initUiOptions(){
+    L('#inNumberRows').value = dataService.getGrid().rowCount;
 }
 
 L('#btnStartScan').addEventListener('click', function () {
