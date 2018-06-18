@@ -8,8 +8,8 @@ function Grid(gridSelector, gridItemClass, options) {
     //options
     var gridSelector = gridSelector;
     var gridItemClass = gridItemClass;
-    var gridRows = 9;
     var enableResizing = false;
+    var gridId = null;
 
     //internal
     var _gridListInstance = null;
@@ -18,29 +18,31 @@ function Grid(gridSelector, gridItemClass, options) {
     var _layoutChangedEndListener = null;
     var _animationTimeMs = 200; //see gridlist.css
     var _gridData = null;
+    var _gridRows = null;
 
     function init() {
-        parseOptions(options);
+        initData(options);
         initGrid();
         initResizing();
     }
 
-    function parseOptions(options) {
+    function initData(options) {
         if (options) {
-            gridRows = options.gridRows || gridRows;
+            gridId = options.gridId || gridId;
             enableResizing = options.enableResizing != undefined ? options.enableResizing : enableResizing;
         }
+        _gridData = dataService.getGrid(gridId);
+        _gridRows = _gridData.rowCount;
     }
 
     function initGrid() {
         _gridElement = $(gridSelector);
-        _gridData = dataService.getGrid();
         _gridData.gridElements.forEach(function (gridElement) {
             $(gridSelector).append(gridElement.toHTML());
         });
 
         _gridElement.gridList({
-            lanes: gridRows,
+            lanes: _gridRows,
             widthHeightRatio: 1,
             heightToFontSizeRatio: 0.25,
         }, {
@@ -49,7 +51,7 @@ function Grid(gridSelector, gridItemClass, options) {
         });
         _gridListInstance = _gridElement.data('_gridList');
         if(!_gridData.hasSetPositions()) {
-            _gridElement.gridList('resize', gridRows);
+            _gridElement.gridList('resize', _gridRows);
         }
     }
 
@@ -113,16 +115,16 @@ function Grid(gridSelector, gridItemClass, options) {
 
     thiz.addRow = function () {
         notifyLayoutChangeStart();
-        gridRows++;
-        _gridElement.gridList('resize', gridRows);
+        _gridRows++;
+        _gridElement.gridList('resize', _gridRows);
         notifyLayoutChangeEnd();
     };
 
     thiz.removeRow = function () {
         notifyLayoutChangeStart();
-        if (gridRows > 1) {
-            gridRows--;
-            _gridElement.gridList('resize', gridRows);
+        if (_gridRows > 1) {
+            _gridRows--;
+            _gridElement.gridList('resize', _gridRows);
         }
         notifyLayoutChangeEnd();
     };
@@ -130,8 +132,8 @@ function Grid(gridSelector, gridItemClass, options) {
     thiz.setNumberOfRows = function (nr) {
         notifyLayoutChangeStart();
         if (nr && nr > 0) {
-            gridRows = nr;
-            _gridElement.gridList('resize', gridRows);
+            _gridRows = nr;
+            _gridElement.gridList('resize', _gridRows);
         }
         notifyLayoutChangeEnd();
     };
@@ -147,15 +149,6 @@ function Grid(gridSelector, gridItemClass, options) {
     thiz.getCurrentGridId = function () {
         return _gridData.id;
     };
-
-    /*thiz.toJSON = function () {
-        if(_gridListInstance && _gridListInstance.gridList && _gridListInstance.gridList.items) {
-            var elements = [];
-            _gridListInstance.gridList.items.forEach(function (item) {
-                elements.push(new GridElement().from);
-            });
-        }
-    };*/
 
     init();
 }
