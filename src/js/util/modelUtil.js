@@ -24,12 +24,14 @@ modelUtil.getAsObject = function (jsonStringOrObject) {
  * @param propertyObject the object containing properties passed to the constructor
  * @param baseObject second, optional object passed to the constructor containing an old instance of the model. It is
  * used to set properties that are not set in the properties object.
+ * @param modelClass the class of the model that is created
  * @return the property object with additional properties of the baseObject
  */
-modelUtil.setDefaults = function (propertyObject, baseObject) {
-    if (baseObject && propertyObject) {
+modelUtil.setDefaults = function (propertyObject, baseObject, modelClass) {
+    if (baseObject && propertyObject && modelClass && modelClass.definition) {
+        var neededParams = Object.keys(modelClass.definition)
         Object.keys(baseObject).forEach(function (key) {
-            if (propertyObject[key] == undefined) {
+            if (neededParams.includes(key) && propertyObject[key] == undefined) {
                 propertyObject[key] = baseObject[key];
             }
         });
