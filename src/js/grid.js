@@ -1,12 +1,14 @@
 import $ from 'jquery';
 import {dataService} from "./service/dataService";
 import {GridData} from "./model/GridData";
+import {GridElement} from "./model/GridElement";
+import {templates} from "./templates";
 
-function Grid(gridSelector, gridItemClass, options) {
+function Grid(gridContainerId, gridItemClass, options) {
     var thiz = this;
 
     //options
-    var gridSelector = gridSelector;
+    var gridContainerId = gridContainerId;
     var gridItemClass = gridItemClass;
     var enableResizing = false;
     var gridId = null;
@@ -36,9 +38,10 @@ function Grid(gridSelector, gridItemClass, options) {
     }
 
     function initGrid() {
-        _gridElement = $(gridSelector);
+        $(gridContainerId).append(templates.getGridBase(_gridData.id));
+        _gridElement = $('#' + _gridData.id);
         _gridData.gridElements.forEach(function (gridElement) {
-            $(gridSelector).append(gridElement.toHTML());
+            _gridElement.append(gridElement.toHTML());
         });
 
         _gridElement.gridList({
@@ -102,7 +105,8 @@ function Grid(gridSelector, gridItemClass, options) {
                 _layoutChangedEndListener();
             }, _animationTimeMs);
         }
-        dataService.saveGrid(GridData.fromGridListInstance(_gridListInstance.gridList));
+        _gridData = thiz.toGridData();
+        dataService.saveGrid(_gridData);
     }
 
     thiz.enableElementResizing = function () {
@@ -148,6 +152,26 @@ function Grid(gridSelector, gridItemClass, options) {
 
     thiz.getCurrentGridId = function () {
         return _gridData.id;
+    };
+
+    thiz.toGridData = function () {
+        var newGridData = new GridData({
+            rowCount: Number.parseInt(_gridListInstance.options.lanes),
+            gridElements: []
+        }, _gridData);
+        _gridListInstance.items.forEach(function (item) {
+            var id = item.$element.attr('data-id');
+            var label = item.$element.attr('data-label');
+            newGridData.gridElements.push(new GridElement({
+                id: id,
+                label: label,
+                width: item.w,
+                height: item.h,
+                x: item.x,
+                y: item.y
+            }));
+        });
+        return newGridData;
     };
 
     init();
