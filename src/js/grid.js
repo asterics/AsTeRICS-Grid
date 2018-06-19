@@ -166,10 +166,8 @@ function Grid(gridContainerId, gridItemClass, options) {
                 id: id,
                 label: label,
                 width: item.w,
-                height: item.h,
-                x: item.x,
-                y: item.y
-            }));
+                height: item.h
+            }, item));
         });
         return newGridData;
     };
