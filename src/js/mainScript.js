@@ -29,7 +29,7 @@ function init() {
 init();
 
 function initGrid() {
-    thiz.grid = new Grid('#grid', '.grid-item-content', {
+    thiz.grid = new Grid('#grid-container', '.grid-item-content', {
         enableResizing: true
     });
     thiz.grid.setLayoutChangedStartListener(function () {
