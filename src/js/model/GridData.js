@@ -8,9 +8,10 @@ class GridData extends Model({
     rowCount: Number,
     gridElements: Model.Array(GridElement)
 }) {
-    constructor(...args) {
-        super(...args);
-        this.id = modelUtil.generateId('grid-data')
+    constructor(properties, elementToCopy) {
+        properties = modelUtil.setDefaults(properties, elementToCopy);
+        super(properties);
+        this.id = this.id || modelUtil.generateId('grid-data');
     }
 
     hasSetPositions() {
@@ -33,26 +34,6 @@ class GridData extends Model({
         });
 
         return result.length == 1 ? result[0] : result;
-    }
-
-    static fromGridListInstance(gridListInstance) { //converts from instance of GridList.js (library) to GridData object model
-        var gridData = new GridData({
-            rowCount: Number.parseInt(gridListInstance._options.lanes),
-            gridElements: []
-        });
-        gridListInstance.items.forEach(function (item) {
-            var id = item.$element.attr('data-id');
-            var label = item.$element.attr('data-label');
-            gridData.gridElements.push(new GridElement({
-                id: id,
-                label: label,
-                width: item.w,
-                height: item.h,
-                x: item.x,
-                y: item.y
-            }));
-        });
-        return gridData;
     }
 }
 

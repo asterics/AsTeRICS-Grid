@@ -10,9 +10,10 @@ class GridElement extends Model({
     speakText: [String],
     label: [String]
 }) {
-    constructor(...args) {
-        super(...args);
-        this.id = modelUtil.generateId('grid-element')
+    constructor(properties, elementToCopy) {
+        properties = modelUtil.setDefaults(properties, elementToCopy);
+        super(properties);
+        this.id = this.id || modelUtil.generateId('grid-element')
     }
 
     toHTML() {
@@ -43,16 +44,4 @@ GridElement.defaults({
     height: 1
 });
 
-var GridElementConverter = {
-    gridListItemToGridElement: function (gridListItem) {
-        var htmlElement = gridListItem.$element;
-        return new GridElement({
-            width: gridListItem.w,
-            height: gridListItem.h,
-            speakText: htmlElement.data('speak-text'),
-            label: htmlElement.data('label')
-        });
-    }
-};
-
-export {GridElement, GridElementConverter};
+export {GridElement};
