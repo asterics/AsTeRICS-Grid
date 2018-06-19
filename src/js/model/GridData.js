@@ -9,7 +9,7 @@ class GridData extends Model({
     gridElements: Model.Array(GridElement)
 }) {
     constructor(properties, elementToCopy) {
-        properties = modelUtil.setDefaults(properties, elementToCopy);
+        properties = modelUtil.setDefaults(properties, elementToCopy, GridData);
         super(properties);
         this.id = this.id || modelUtil.generateId('grid-data');
     }
@@ -26,11 +26,8 @@ class GridData extends Model({
         }
         data.forEach(function (item) {
             result.push(new GridData({
-                id: item.id,
-                label: item.label,
-                rowCount: item.rowCount,
                 gridElements: GridElement.fromJSON(item.gridElements)
-            }));
+            }, item));
         });
 
         return result.length == 1 ? result[0] : result;

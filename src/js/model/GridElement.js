@@ -11,7 +11,7 @@ class GridElement extends Model({
     label: [String]
 }) {
     constructor(properties, elementToCopy) {
-        properties = modelUtil.setDefaults(properties, elementToCopy);
+        properties = modelUtil.setDefaults(properties, elementToCopy, GridElement);
         super(properties);
         this.id = this.id || modelUtil.generateId('grid-element')
     }
