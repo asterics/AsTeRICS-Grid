@@ -14,7 +14,27 @@ modelUtil.generateId = function (prefix) {
  * @return {*}
  */
 modelUtil.getAsObject = function (jsonStringOrObject) {
-    return typeof jsonData === 'string' ? JSON.parse(jsonStringOrObject): jsonStringOrObject;
+    return typeof jsonStringOrObject === 'string' ? JSON.parse(jsonStringOrObject): jsonStringOrObject;
+};
+
+/**
+ * sets properties of a base object to an property object, if property is not existing on property object. To be used
+ * in constructor of model objects.
+ *
+ * @param propertyObject the object containing properties passed to the constructor
+ * @param baseObject second, optional object passed to the constructor containing an old instance of the model. It is
+ * used to set properties that are not set in the properties object.
+ * @return the property object with additional properties of the baseObject
+ */
+modelUtil.setDefaults = function (propertyObject, baseObject) {
+    if (baseObject && propertyObject) {
+        Object.keys(baseObject).forEach(function (key) {
+            if (propertyObject[key] == undefined) {
+                propertyObject[key] = baseObject[key];
+            }
+        });
+    }
+    return propertyObject;
 };
 
 export {modelUtil};
