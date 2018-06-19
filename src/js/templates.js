@@ -4,7 +4,7 @@ var lastId = 1;
 templates.getGridBase = function (gridId) {
     return `<ul id="${gridId}" class="grid">
                 <li class="position-highlight" style="display: none;">
-                    <div class="grid-item-content"></div>
+                    <div class="grid-item-content-placeholder"></div>
                 </li>
             </ul>`;
 };
