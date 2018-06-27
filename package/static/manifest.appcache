@@ -1,0 +1,24 @@
+CACHE MANIFEST
+# 43434f6b6ff9938c563d
+
+/build_legacy/asterics-grid.bundle.js
+
+CACHE:
+./build/asterics-grid.bundle.js
+./build_legacy/asterics-grid.bundle.js
+./css/custom.css
+./css/gridlist.css
+./css/jquery-ui.css
+./css/images/ui-icons_444444_256x240.png
+./lib/gridList.js
+./lib/jquery.gridList.js
+./lib/jquery.min.js
+./lib/jquery-ui.min.js
+./lib/object-model.min.js
+./polyfill/core_js_shim.min.js
+
+NETWORK:
+*
+
+SETTINGS:
+prefer-online
