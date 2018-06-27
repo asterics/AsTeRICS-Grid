@@ -7,18 +7,22 @@
     "dom-i18n": "^1.1.1"
   },
   "devDependencies": {
+    "appcache-webpack-plugin": "^1.4.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.7.0",
+    "clean-webpack-plugin": "^0.1.19",
     "webpack": "^4.10.2",
     "webpack-cli": "^2.1.4",
     "webpack-dev-server": "^3.1.4"
   },
   "scripts": {
-    "build": "webpack --config webpack.config.js",
+    "build": "webpack --config webpack.config.js --env.enableAppCache",
     "watch": "webpack --watch --config webpack.config.js",
+    "watch-appcache": "webpack --watch --config webpack.config.js --env.enableAppCache",
     "start": "webpack-dev-server",
+    "start-appcache": "webpack --config webpack.config.js --env.enableAppCache && webpack-dev-server --env.enableAppCache",
     "pages": "git checkout gh-pages && git merge master && git push origin gh-pages && git checkout master"
   },
   "repository": {
