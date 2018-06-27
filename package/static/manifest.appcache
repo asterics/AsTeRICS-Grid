@@ -1,8 +1,6 @@
 CACHE MANIFEST
 # 43434f6b6ff9938c563d
 
-/build_legacy/asterics-grid.bundle.js
-
 CACHE:
 build/asterics-grid.bundle.js
 build_legacy/asterics-grid.bundle.js

@@ -38,7 +38,8 @@ module.exports = env => {
             'polyfill/core_js_shim.min.js',
         ],
         settings: ['prefer-online'],
-        output: '../manifest.appcache'
+        output: '../manifest.appcache',
+        exclude: ['asterics-grid.bundle.js'] /*hack to prevent first line of cache manifest before CACHE. These two files are already included above.*/
     });
 
     if(env && env.enableAppCache) {
