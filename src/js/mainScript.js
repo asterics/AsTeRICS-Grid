@@ -2,12 +2,14 @@ import domI18n from '../../node_modules/dom-i18n/dist/dom-i18n.min';
 import {L} from "../lib/lquery.js";
 import {Grid} from "./grid.js";
 import {actionService} from "./service/actionService";
+import {dataService} from "./service/dataService";
 
 import {Scanner} from "./scanning.js";
 import {Hover} from "./hovering.js";
-import {dataService} from "./service/dataService";
 
 var thiz = {};
+thiz.gridId = null; //TODO
+
 function init() {
     domI18n({
         selector: '[data-i18n]',
@@ -15,10 +17,13 @@ function init() {
         languages: ['en', 'de']
     });
 
+    var scanningConfig = dataService.getScanningConfig(thiz.gridId);
+    L('#chkVerticalScanning').checked = scanningConfig.verticalScan;
+    L('#chkBinaryScanning').checked = scanningConfig.binaryScanning;
     thiz.scanner = new Scanner('.grid-item-content', 'scanFocus', {
-        verticalScan: L('#chkVerticalScanning').checked,
+        verticalScan: scanningConfig.verticalScan,
         subScanRepeat: 3,
-        binaryScanning: L('#chkBinaryScanning').checked,
+        binaryScanning: scanningConfig.binaryScanning,
         scanInactiveClass: 'scanInactive',
         minBinarySplitThreshold: 3
     });
@@ -53,19 +58,19 @@ L('#btnStopScan').addEventListener('click', function () {
 });
 
 L('#inScanTime').addEventListener('change', function (event) {
-    thiz.scanner.updateOptions({
+    updateScanningOptions({
         scanTimeoutMs: event.target.value
     });
 });
 
 L('#chkVerticalScanning').addEventListener('change', function (event) {
-    thiz.scanner.updateOptions({
+    updateScanningOptions({
         verticalScan: event.target.checked
     }, true);
 });
 
 L('#chkBinaryScanning').addEventListener('change', function (event) {
-    thiz.scanner.updateOptions({
+    updateScanningOptions({
         binaryScanning: event.target.checked
     }, true);
 });
@@ -95,4 +100,9 @@ thiz.hover.setSelectionListener(function (item) {
     L.toggleClass(item, 'selected');
 });
 
-//thiz.scanner.startScanning();
+function updateScanningOptions(optionsToUpdate, restart) {
+    thiz.scanner.updateOptions(optionsToUpdate, restart);
+    dataService.updateScanningConfig(thiz.gridId, optionsToUpdate);
+}
+
+thiz.scanner.startScanning();
