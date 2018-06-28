@@ -1,12 +1,14 @@
 import {modelUtil} from "../util/modelUtil";
 import {GridElement} from "./GridElement";
 import Model from "objectmodel"
+import {ScanningConfig} from "./ScanningConfig";
 
 class GridData extends Model({
     id: String,
     label: [String],
     rowCount: Number,
-    gridElements: Model.Array(GridElement)
+    gridElements: Model.Array(GridElement),
+    scanningConfig: ScanningConfig
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridData);
@@ -25,9 +27,7 @@ class GridData extends Model({
             data = [data];
         }
         data.forEach(function (item) {
-            result.push(new GridData({
-                gridElements: GridElement.fromJSON(item.gridElements)
-            }, item));
+            result.push(new GridData(item));
         });
 
         return result.length == 1 ? result[0] : result;
@@ -36,7 +36,8 @@ class GridData extends Model({
 
 GridData.defaults({
     id: "", //will be replaced by constructor
-    rowCount: 9
+    rowCount: 9,
+    scanningConfig: new ScanningConfig()
 });
 
 export {GridData};
