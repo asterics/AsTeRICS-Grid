@@ -23,19 +23,6 @@ class GridElement extends Model({
     hasSetPosition() {
         return this.x != null && this.x != undefined && this.y != null && this.y != undefined;
     }
-
-    static fromJSON(jsonData) {
-        var result = [];
-        var data = modelUtil.getAsObject(jsonData);
-        if(!(data instanceof Array)) {
-            data = [data];
-        }
-        data.forEach(function (item) {
-            result.push(new GridElement(item));
-        });
-
-        return result.length == 1 ? result[0] : result;
-    }
 }
 
 GridElement.defaults({
