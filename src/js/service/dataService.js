@@ -2,6 +2,7 @@ import {L} from "../../lib/lquery.js";
 import {GridElement} from "../model/GridElement.js";
 import {GridData} from "../model/GridData.js";
 import {localStorageService} from "./localStorageService";
+import {ScanningConfig} from "../model/ScanningConfig";
 
 var grids = null;
 var verbs = ['be', 'have', 'do', 'say', 'get', 'make', 'go', 'know', 'take', 'see', 'come', 'think', 'look', 'want', 'give', 'use', 'find', 'tell', 'ask', 'work', 'seem', 'feel', 'try', 'leave', 'call'];
@@ -57,13 +58,24 @@ var dataService = {
     getGrid: function (id) {
         return grids[0];
     },
+    getScanningConfig: function (id) {
+        var grid = this.getGrid(id);
+        return grid ? grid.scanningConfig : new ScanningConfig();
+    },
     getGridElement: function (gridId, gridElementId) {
         var grid = this.getGrid(gridId);
         return grid.gridElements.filter(elm => elm.id == gridElementId)[0];
     },
     saveGrid: function (gridData) {
+        console.log('saving changed grid...');
         grids[0] = gridData; //TODO: adapt for more than 1 grid -> maybe object {id: GridData}?
         saveToLocalStorage();
+    },
+    updateScanningConfig(gridId, newConfig) {
+        var grid = this.getGrid(gridId);
+        var newScanningConfig = new ScanningConfig(newConfig, grid.scanningConfig);
+        grid.scanningConfig = newScanningConfig;
+        this.saveGrid(grid);
     }
 };
 
