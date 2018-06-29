@@ -5,6 +5,7 @@ import {ScanningConfig} from "./ScanningConfig";
 
 class GridData extends Model({
     id: String,
+    modelName: String,
     label: [String],
     rowCount: Number,
     gridElements: Model.Array(GridElement),
@@ -32,10 +33,15 @@ class GridData extends Model({
 
         return result.length == 1 ? result[0] : result;
     }
+
+    static getModelName() {
+        return 'GridData'
+    }
 }
 
 GridData.defaults({
     id: "", //will be replaced by constructor
+    modelName: GridData.getModelName(),
     rowCount: 9,
     scanningConfig: new ScanningConfig()
 });
