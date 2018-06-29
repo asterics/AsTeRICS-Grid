@@ -18,7 +18,8 @@ module.exports = env => {
 
     var externals = {
         jquery: '$',
-        objectmodel: 'Model'
+        objectmodel: 'Model',
+        PouchDB: 'PouchDB'
     };
 
     var plugins = [];
