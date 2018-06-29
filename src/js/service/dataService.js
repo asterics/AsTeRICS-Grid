@@ -1,25 +1,16 @@
+import PouchDB from 'PouchDB';
+
 import {L} from "../../lib/lquery.js";
 import {GridElement} from "../model/GridElement.js";
 import {GridData} from "../model/GridData.js";
-import {localStorageService} from "./localStorageService";
 import {ScanningConfig} from "../model/ScanningConfig";
 
-var grids = null;
 var verbs = ['be', 'have', 'do', 'say', 'get', 'make', 'go', 'know', 'take', 'see', 'come', 'think', 'look', 'want', 'give', 'use', 'find', 'tell', 'ask', 'work', 'seem', 'feel', 'try', 'leave', 'call'];
-var GRIDS_SAVE_KEY = "GRIDS_SAVE_KEY";
-
-
-function getSavedGridData() {
-    var json = localStorageService.get(GRIDS_SAVE_KEY);
-    if(json) {
-        var parsed = GridData.fromJSON(json);
-        return parsed instanceof Array ? parsed : [parsed];
-    }
-    return null;
-}
+var dbName = 'asterics-ergo-grid';
+var db = null;
+var initPromise = null;
 
 function generateGridData() {
-    var _grids = [];
     var grid = new GridData({
         label: 'Default-Grid',
         gridElements: []
@@ -30,52 +21,140 @@ function generateGridData() {
         grid.gridElements.push(new GridElement({
             width: sizeX,
             height: sizeY,
-            speakText: verbs[i%verbs.length],
-            label: verbs[i%verbs.length]
+            speakText: verbs[i % verbs.length],
+            label: verbs[i % verbs.length]
         }))
     }
-    _grids.push(grid);
-    return _grids;
+    return grid;
 }
 
-function saveToLocalStorage() {
-    var json = localStorageService.save(GRIDS_SAVE_KEY, JSON.stringify(grids));
+function initPouchDB() {
+    return new Promise(resolve => {
+        db = new PouchDB(dbName);
+        console.log('create index');
+        db.createIndex({
+            index: {fields: ['modelName', 'id']}
+        }).then(() => {
+            resolve();
+        });
+    })
+}
+
+function getGridsInternal(id) {
+    return new Promise(resolve => {
+        var query = {
+            selector: {
+                modelName: GridData.getModelName()
+            }
+        };
+        if (id) query.selector.id = id;
+        db.find(query).then(function (res) {
+            var grids = [];
+            if (res.docs && res.docs.length > 0) {
+                res.docs.forEach(doc => {
+                    grids.push(new GridData(doc));
+                })
+            }
+            if(id) {
+                resolve(grids.length > 0 ? grids[0] : null);
+            } else {
+                resolve(grids);
+            }
+        }).catch(function (err) {
+            console.log(err);
+        });
+    });
 }
 
 function init() {
-    grids = getSavedGridData();
-    if(!grids) {
-        grids = generateGridData();
-        localStorageService.save(GRIDS_SAVE_KEY, JSON.stringify(grids));
-        console.log('using generated data...');
-    } else {
-        console.log('using data from local storage...');
-    }
+    initPromise = new Promise((resolve => {
+        initPouchDB().then(() => {
+            db.info().then(function (info) {
+                console.log(info);
+            });
+
+            getGridsInternal().then(grids => {
+                if(grids.length > 0) {
+                    console.log('detected saved grid, no generation of new grid.');
+                    resolve();
+                    return;
+                }
+                var grid = generateGridData();
+                db.post(JSON.parse(JSON.stringify(grid))).then(function (res) {
+                    console.log('generated and saved default grid...');
+                    resolve();
+                }).catch(function (err) {
+                    console.log(err);
+                });
+            });
+        });
+    }));
 }
+
 init();
 
 var dataService = {
     getGrid: function (id) {
-        return grids[0];
+        return this.getGrids(id);
+    },
+    getGrids: function (id) {
+        return new Promise(resolve => {
+            initPromise.then(() => {
+                getGridsInternal(id).then(grids => {
+                    resolve(grids);
+                })
+            });
+        });
     },
     getScanningConfig: function (id) {
-        var grid = this.getGrid(id);
-        return grid ? grid.scanningConfig : new ScanningConfig();
+        return new Promise(resolve => {
+            initPromise.then(() => {
+                var grid = this.getGrid(id).then(grid => {
+                    resolve(grid ? grid.scanningConfig : new ScanningConfig())
+                });
+            });
+        });
     },
     getGridElement: function (gridId, gridElementId) {
-        var grid = this.getGrid(gridId);
-        return grid.gridElements.filter(elm => elm.id == gridElementId)[0];
+        return new Promise(resolve => {
+            initPromise.then(() => {
+                var grid = this.getGrid(gridId).then(grid => {
+                    resolve(grid.gridElements.filter(elm => elm.id == gridElementId)[0]);
+                });
+            });
+        });
+
     },
     saveGrid: function (gridData) {
-        console.log('saving changed grid...');
-        grids[0] = gridData; //TODO: adapt for more than 1 grid -> maybe object {id: GridData}?
-        saveToLocalStorage();
+        var starttime = new Date().getTime();
+        console.log('saving grid...');
+        initPromise.then(() => {
+            this.getGrid(gridData.id).then(grid => {
+                var saveData = JSON.parse(JSON.stringify(gridData));
+                saveData._id = grid._id;
+                saveData._rev = grid._rev;
+                db.put(saveData).then(() => {
+                    console.log('saved grid in ' + (new Date().getTime() - starttime) + 'ms!');
+                });
+            })
+        });
+    },
+    updateGrid(gridId, newConfig) {
+        initPromise.then(() => {
+            this.getGrid(gridId).then(grid => {
+                var newGrid = new GridData(newConfig, grid);
+                this.saveGrid(grid);
+            });
+        });
     },
     updateScanningConfig(gridId, newConfig) {
-        var grid = this.getGrid(gridId);
-        var newScanningConfig = new ScanningConfig(newConfig, grid.scanningConfig);
-        grid.scanningConfig = newScanningConfig;
-        this.saveGrid(grid);
+        initPromise.then(() => {
+            this.getGrid(gridId).then(grid => {
+                var newScanningConfig = new ScanningConfig(newConfig, grid.scanningConfig);
+                grid.scanningConfig = newScanningConfig;
+                this.saveGrid(grid);
+            });
+        });
     }
 };
 

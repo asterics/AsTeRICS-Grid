@@ -21,20 +21,31 @@ function Grid(gridContainerId, gridItemClass, options) {
     var _animationTimeMs = 200; //see gridlist.css
     var _gridData = null;
     var _gridRows = null;
+    var _initPromise = null;
 
     function init() {
-        initData(options);
-        initGrid();
-        initResizing();
+        _initPromise = new Promise(resolve => {
+            initData(options).then(() => {
+                initGrid();
+                initResizing();
+                resolve();
+            });
+        });
     }
 
     function initData(options) {
-        if (options) {
-            gridId = options.gridId || gridId;
-            enableResizing = options.enableResizing != undefined ? options.enableResizing : enableResizing;
-        }
-        _gridData = dataService.getGrid(gridId);
-        _gridRows = _gridData.rowCount;
+        return new Promise(resolve => {
+            if (options) {
+                gridId = options.gridId || gridId;
+                enableResizing = options.enableResizing != undefined ? options.enableResizing : enableResizing;
+            }
+            dataService.getGrid(gridId).then(gridData => {
+                _gridData = gridData;
+                _gridRows = _gridData.rowCount;
+                resolve();
+            });
+        });
+
     }
 
     function initGrid() {
@@ -53,7 +64,7 @@ function Grid(gridContainerId, gridItemClass, options) {
             stop: notifyLayoutChangeEnd
         });
         _gridListInstance = _gridElement.data('_gridList');
-        if(!_gridData.hasSetPositions()) {
+        if (!_gridData.hasSetPositions()) {
             _gridElement.gridList('resize', _gridRows);
         }
     }
@@ -94,14 +105,14 @@ function Grid(gridContainerId, gridItemClass, options) {
     }
 
     function notifyLayoutChangeStart() {
-        if($.isFunction(_layoutChangedStartListener)) {
+        if ($.isFunction(_layoutChangedStartListener)) {
             _layoutChangedStartListener();
         }
     }
 
     function notifyLayoutChangeEnd() {
-        if($.isFunction(_layoutChangedEndListener)) {
-            setTimeout(function(){
+        if ($.isFunction(_layoutChangedEndListener)) {
+            setTimeout(function () {
                 _layoutChangedEndListener();
             }, _animationTimeMs);
         }
@@ -135,6 +146,7 @@ function Grid(gridContainerId, gridItemClass, options) {
 
     thiz.setNumberOfRows = function (nr) {
         notifyLayoutChangeStart();
+        nr = Number.parseInt(nr);
         if (nr && nr > 0) {
             _gridRows = nr;
             _gridElement.gridList('resize', _gridRows);
@@ -170,6 +182,10 @@ function Grid(gridContainerId, gridItemClass, options) {
             }, item));
         });
         return newGridData;
+    };
+
+    thiz.getInitPromise = function () {
+        return _initPromise;
     };
 
     init();

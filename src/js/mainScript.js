@@ -17,25 +17,36 @@ function init() {
         languages: ['en', 'de']
     });
 
-    var scanningConfig = dataService.getScanningConfig(thiz.gridId);
-    L('#chkVerticalScanning').checked = scanningConfig.verticalScan;
-    L('#chkBinaryScanning').checked = scanningConfig.binaryScanning;
-    thiz.scanner = new Scanner('.grid-item-content', 'scanFocus', {
-        verticalScan: scanningConfig.verticalScan,
-        subScanRepeat: 3,
-        binaryScanning: scanningConfig.binaryScanning,
-        scanInactiveClass: 'scanInactive',
-        minBinarySplitThreshold: 3
+    dataService.getGrids().then(grids => {
+        var grid = grids[0];
+        thiz.gridId = grid.id; // TODO let user choose the grid to show
+        dataService.getScanningConfig(thiz.gridId).then(scanningConfig => {
+            L('#chkVerticalScanning').checked = scanningConfig.verticalScan;
+            L('#chkBinaryScanning').checked = scanningConfig.binaryScanning;
+            L('#inScanTime').value = scanningConfig.scanTimeoutMs;
+            thiz.scanner = new Scanner('.grid-item-content', 'scanFocus', {
+                verticalScan: scanningConfig.verticalScan,
+                subScanRepeat: 3,
+                binaryScanning: scanningConfig.binaryScanning,
+                scanInactiveClass: 'scanInactive',
+                minBinarySplitThreshold: 3,
+                scanTimeoutMs: scanningConfig.scanTimeoutMs
+            });
+            thiz.hover = new Hover('.grid-item-content');
+            initGrid().then(() => {
+                initUiOptions(grid);
+                initListeners();
+                thiz.scanner.startScanning();
+            });
+        });
     });
-    thiz.hover = new Hover('.grid-item-content');
-    initGrid();
-    initUiOptions();
 }
 init();
 
 function initGrid() {
     thiz.grid = new Grid('#grid-container', '.grid-item-content', {
-        enableResizing: true
+        enableResizing: true,
+        gridId: thiz.gridId
     });
     thiz.grid.setLayoutChangedStartListener(function () {
         thiz.scanner.pauseScanning();
@@ -43,66 +54,67 @@ function initGrid() {
     thiz.grid.setLayoutChangedEndListener(function () {
         thiz.scanner.resumeScanning();
     });
+    return thiz.grid.getInitPromise();
 }
 
-function initUiOptions(){
-    L('#inNumberRows').value = dataService.getGrid().rowCount;
+function initUiOptions(grid){
+    L('#inNumberRows').value = grid.rowCount;
 }
 
-L('#btnStartScan').addEventListener('click', function () {
-    thiz.scanner.startScanning();
-});
-
-L('#btnStopScan').addEventListener('click', function () {
-    thiz.scanner.stopScanning();
-});
-
-L('#inScanTime').addEventListener('change', function (event) {
-    updateScanningOptions({
-        scanTimeoutMs: event.target.value
+function initListeners() {
+    L('#btnStartScan').addEventListener('click', function () {
+        thiz.scanner.startScanning();
     });
-});
 
-L('#chkVerticalScanning').addEventListener('change', function (event) {
-    updateScanningOptions({
-        verticalScan: event.target.checked
+    L('#btnStopScan').addEventListener('click', function () {
+        thiz.scanner.stopScanning();
+    });
+
+    L('#inScanTime').addEventListener('change', function (event) {
+        updateScanningOptions({
+            scanTimeoutMs: Number.parseInt(event.target.value)
+        });
+    });
+
+    L('#chkVerticalScanning').addEventListener('change', function (event) {
+        updateScanningOptions({
+            verticalScan: event.target.checked
+        }, true);
+    });
+
+    L('#chkBinaryScanning').addEventListener('change', function (event) {
+        updateScanningOptions({
+            binaryScanning: event.target.checked
+        }, true);
+    });
+
+    L('#chkHover').addEventListener('change', function (event) {
+        if (event.target.checked) {
+            thiz.hover.startHovering();
+        } else {
+            thiz.hover.stopHovering();
+        }
+    });
+
+    L('#inNumberRows').addEventListener('change', function (event) {
+        thiz.grid.setNumberOfRows(event.target.value);
+    });
+
+    window.addEventListener('resize', function () {
+        thiz.scanner.layoutChanged();
     }, true);
-});
 
-L('#chkBinaryScanning').addEventListener('change', function (event) {
-    updateScanningOptions({
-        binaryScanning: event.target.checked
-    }, true);
-});
+    thiz.scanner.setSelectionListener(function (item) {
+        L.toggleClass(item, 'selected');
+        actionService.doAction(thiz.grid.getCurrentGridId(), item.id);
+    });
 
-L('#chkHover').addEventListener('change', function (event) {
-    if (event.target.checked) {
-        thiz.hover.startHovering();
-    } else {
-        thiz.hover.stopHovering();
-    }
-});
-
-L('#inNumberRows').addEventListener('change', function (event) {
-    thiz.grid.setNumberOfRows(event.target.value);
-});
-
-window.addEventListener('resize', function () {
-    thiz.scanner.layoutChanged();
-}, true);
-
-thiz.scanner.setSelectionListener(function (item) {
-    L.toggleClass(item, 'selected');
-    actionService.doAction(thiz.grid.getCurrentGridId(), item.id);
-});
-
-thiz.hover.setSelectionListener(function (item) {
-    L.toggleClass(item, 'selected');
-});
+    thiz.hover.setSelectionListener(function (item) {
+        L.toggleClass(item, 'selected');
+    });
+}
 
 function updateScanningOptions(optionsToUpdate, restart) {
     thiz.scanner.updateOptions(optionsToUpdate, restart);
     dataService.updateScanningConfig(thiz.gridId, optionsToUpdate);
 }
-
-thiz.scanner.startScanning();
