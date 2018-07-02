@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="css/gridlist.css">
     <link rel="stylesheet" href="css/jquery-ui.css">
 
+    <!-- polyfills that are needed in all browsers -->
+
+    <!-- polyfills that are needed only in old browsers that do not support ES6 modules -->
+    <script nomodule src="polyfill/core_js_shim.min.js"></script>
+    <script nomodule src="polyfill/fetch.js"></script>
+
     <!-- libraries, not provided by npm -->
     <script src="lib/jquery.min.js"></script>
     <script src="lib/jquery-ui.min.js"></script>
@@ -15,11 +21,6 @@
     <script type="text/javascript" src='lib/object-model.min.js'></script>
     <script type="text/javascript" src='lib/pouchdb-7.0.0.min.js'></script>
     <script type="text/javascript" src='lib/pouchdb-find-7.0.0.min.js'></script>
-
-    <!-- polyfills that are needed in all browsers -->
-
-    <!-- polyfills that are needed only in old browsers that do not support ES6 modules -->
-    <script nomodule src="polyfill/core_js_shim.min.js"></script>
 </head>
 <body>
 <div id="content">
