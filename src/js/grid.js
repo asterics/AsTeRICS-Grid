@@ -28,7 +28,7 @@ function Grid(gridContainerId, gridItemClass, options) {
             initData(options).then(() => {
                 initGrid();
                 initResizing();
-                resolve();
+                setTimeout(() => resolve(), _animationTimeMs); // resolve with timeout in order to wait for init-animation, only resolve if grid is stable.
             });
         });
     }
