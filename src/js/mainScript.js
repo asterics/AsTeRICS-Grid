@@ -125,6 +125,7 @@ function initListeners() {
 
     thiz.hover.setSelectionListener(function (item) {
         L.toggleClass(item, 'selected');
+        actionService.doAction(thiz.gridId, item.id);
     });
 }
 
