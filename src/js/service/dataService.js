@@ -1,4 +1,5 @@
 import PouchDB from 'PouchDB';
+import FileSaver from 'file-saver';
 
 import {L} from "../../lib/lquery.js";
 import {GridElement} from "../model/GridElement.js";
@@ -40,6 +41,16 @@ function initPouchDB() {
     })
 }
 
+function resetPouchDB() {
+    return new Promise(resolve => {
+        db.destroy().then(function () {
+            initPouchDB().then(() => resolve());
+        }).catch(function (err) {
+            console.log('error destroying database: ' + err);
+        })
+    });
+}
+
 function getGridsInternal(id) {
     return new Promise(resolve => {
         var query = {
@@ -55,7 +66,7 @@ function getGridsInternal(id) {
                     grids.push(new GridData(doc));
                 })
             }
-            if(id) {
+            if (id) {
                 resolve(grids.length > 0 ? grids[0] : null);
             } else {
                 resolve(grids);
@@ -74,7 +85,7 @@ function init() {
             });
 
             getGridsInternal().then(grids => {
-                if(grids.length > 0) {
+                if (grids.length > 0) {
                     console.log('detected saved grid, no generation of new grid.');
                     resolve();
                     return;
@@ -139,7 +150,7 @@ var dataService = {
             })
         });
     },
-    updateGrid(gridId, newConfig) {
+    updateGrid: function (gridId, newConfig) {
         initPromise.then(() => {
             this.getGrid(gridId).then(grid => {
                 var newGrid = new GridData(newConfig, grid);
@@ -147,13 +158,48 @@ var dataService = {
             });
         });
     },
-    updateScanningConfig(gridId, newConfig) {
+    updateScanningConfig: function (gridId, newConfig) {
         initPromise.then(() => {
             this.getGrid(gridId).then(grid => {
                 var newScanningConfig = new ScanningConfig(newConfig, grid.scanningConfig);
                 grid.scanningConfig = newScanningConfig;
                 this.saveGrid(grid);
             });
+        });
+    },
+    downloadDB: function () {
+        var dumpedString = '';
+        var stream = new MemoryStream();
+        stream.on('data', function (chunk) {
+            dumpedString += chunk.toString();
+        });
+
+        db.dump(stream).then(function () {
+            var blob = new Blob([dumpedString], {type: "text/plain;charset=utf-8"});
+            FileSaver.saveAs(blob, "my-grids.grd");
+        }).catch(function (err) {
+            console.log('error on dumping database: ', err);
+        });
+    },
+    importDB: function (file) {
+        return new Promise(resolve => {
+            var reader = new FileReader();
+            reader.onload = (function (theFile) {
+                return function (e) {
+                    var data = e.target.result;
+                    console.log(data);
+                    resetPouchDB().then(() => {
+                        console.log('resetted pouchdb! loading from string...');
+                        db.load(data).then(function () {
+                            console.log('loaded db from string!');
+                            resolve();
+                        }).catch(function (err) {
+                            console.log('error loading db from string: ' + err);
+                        });
+                    });
+                };
+            })(file);
+            reader.readAsText(file);
         });
     }
 };
