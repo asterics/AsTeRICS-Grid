@@ -21,6 +21,9 @@
     <script type="text/javascript" src='lib/object-model.min.js'></script>
     <script type="text/javascript" src='lib/pouchdb-7.0.0.min.js'></script>
     <script type="text/javascript" src='lib/pouchdb-find-7.0.0.min.js'></script>
+    <script type="text/javascript" src='lib/pouchdb.replication-stream.min.js'></script>
+    <script type="text/javascript" src='lib/pouchdb.load.min.js'></script>
+    <script type="text/javascript" src='lib/memorystream.js'></script>
 </head>
 <body>
 <div id="content">
@@ -49,6 +52,12 @@
         <div class="spaced inline">
             <label for="chkHover" data-i18n>Number of rows // Anzahl Zeilen</label>
             <input type="number" id="inNumberRows" min="1" max="50" value="9"/>
+        </div>
+        <div class="spaced inline">
+            <button id="btnExportDB"><label for="btnExportDB" data-i18n>Export</label></button>
+        </div>
+        <div class="spaced inline">
+            <input type="file" id="inImportDB" accept=".grd"/>
         </div>
         <br/>
         <br/>
