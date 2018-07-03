@@ -154,7 +154,7 @@ var dataService = {
         initPromise.then(() => {
             this.getGrid(gridId).then(grid => {
                 var newGrid = new GridData(newConfig, grid);
-                this.saveGrid(grid);
+                this.saveGrid(newGrid);
             });
         });
     },

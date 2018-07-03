@@ -116,8 +116,11 @@ function Grid(gridContainerId, gridItemClass, options) {
                 _layoutChangedEndListener();
             }, _animationTimeMs);
         }
-        _gridData = thiz.toGridData();
-        dataService.saveGrid(_gridData);
+        _gridData.gridElements = thiz.toGridElements();
+        dataService.updateGrid(thiz.getCurrentGridId(), {
+            gridElements: _gridData.gridElements,
+            rowCount: _gridRows
+        });
     }
 
     thiz.enableElementResizing = function () {
@@ -166,22 +169,19 @@ function Grid(gridContainerId, gridItemClass, options) {
         return _gridData.id;
     };
 
-    thiz.toGridData = function () {
-        var newGridData = new GridData({
-            rowCount: Number.parseInt(_gridListInstance.options.lanes),
-            gridElements: []
-        }, _gridData);
+    thiz.toGridElements = function () {
+        var gridElements = [];
         _gridListInstance.items.forEach(function (item) {
             var id = item.$element.attr('data-id');
             var label = item.$element.attr('data-label');
-            newGridData.gridElements.push(new GridElement({
+            gridElements.push(new GridElement({
                 id: id,
                 label: label,
                 width: item.w,
                 height: item.h
             }, item));
         });
-        return newGridData;
+        return gridElements;
     };
 
     thiz.getInitPromise = function () {
