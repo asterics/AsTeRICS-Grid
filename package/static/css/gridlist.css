@@ -1,14 +1,14 @@
 .grid-container {
   position: absolute;
-  top: 120px;
+  top: 0;
   left: 0;
-  right: 10px;
   bottom: 0;
-  overflow: auto;
+  right: 0;
+  overflow-y: hidden;
 }
 .grid {
   position: relative;
-  height: 95%;
+  height: 97%;
   list-style: none;
   /* Will be modified by the grid jquery lib, depending on the items */
   -webkit-transition: width 0.2s,

@@ -1,3 +1,52 @@
+/* start of screen rules. */
+
+/* Generic pane rules */
+html,
+body {
+    height: 100%;
+    margin: 0.2em;
+    overflow-y:hidden;
+    font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#headerMinimal{
+    padding-bottom: 0;
+}
+
+#headerFull{
+    padding-bottom: 0.5em;
+}
+
+.box {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.box .row {
+    border-bottom: 2px solid lightgray;
+}
+
+.box .row.header {
+    flex: 0 1 auto;
+    /* The above is shorthand for:
+    flex-grow: 0,
+    flex-shrink: 1,
+    flex-basis: auto
+    */
+}
+
+.box .row.content {
+    flex: 1 1 auto;
+    position: relative;
+}
+
+/* end of screen rules. */
+
+h1, h1 button {
+    font-size: 2.0vh
+}
+
 .scanFocus {
     outline: thick solid red !important;
 }

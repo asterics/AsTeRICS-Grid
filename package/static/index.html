@@ -26,41 +26,44 @@
     <script type="text/javascript" src='lib/memorystream.js'></script>
 </head>
 <body>
-<div id="content">
-    <header class="row" role="banner">
-        <h1 id="mainHeading" tabindex="-1" class="nine columns">AsTeRICS Grid</h1>
+<div id="content" class="box">
+    <header class="row header" role="banner">
+        <div id="headerMinimal" style="display: none">
+            <h1>AsTeRICS Ergo Grid <button id="btnShowMenu" data-i18n>show menu // zeige Menü</button></h1>
+        </div>
+        <div id="headerFull">
+            <h1>AsTeRICS Ergo Grid <button id="btnHideMenu" data-i18n>hide menu // Menü ausblenden</button></h1>
+            <button id="btnStartScan" data-i18n>Start Scanning // Scanning starten</button>
+            <button id="btnStopScan" data-i18n>Stop Scanning // Scanning stoppen</button>
+            <div class="spaced inline">
+                <label for="inScanTime" data-i18n>Scanning Time // Scanning Zeit</label>
+                <input type="range" id="inScanTime" min="100" max="3000"/>
+            </div>
+            <div class="spaced inline">
+                <label for="chkVerticalScanning" data-i18n>Scanning vertikal</label>
+                <input type="checkbox" id="chkVerticalScanning" checked/>
+            </div>
+            <div class="spaced inline">
+                <label for="chkBinaryScanning" data-i18n>Scanning binär</label>
+                <input type="checkbox" id="chkBinaryScanning" checked/>
+            </div>
+            <div class="spaced inline">
+                <label for="chkHover" data-i18n>Mouse Hovering // Maus Hovering</label>
+                <input type="checkbox" id="chkHover"/>
+            </div>
+            <div class="spaced inline">
+                <label for="chkHover" data-i18n>Number of rows // Anzahl Zeilen</label>
+                <input type="number" id="inNumberRows" min="1" max="50" value="9"/>
+            </div>
+            <div class="spaced inline">
+                <button id="btnExportDB"><label for="btnExportDB" data-i18n>Export</label></button>
+            </div>
+            <div class="spaced inline">
+                <input type="file" id="inImportDB" accept=".grd"/>
+            </div>
+        </div>
     </header>
-    <main role="main">
-        <button id="btnStartScan" data-i18n>Start Scanning // Scanning starten</button>
-        <button id="btnStopScan" data-i18n>Stop Scanning // Scanning stoppen</button>
-        <div class="spaced inline">
-            <label for="inScanTime" data-i18n>Scanning Time // Scanning Zeit</label>
-            <input type="range" id="inScanTime" min="100" max="3000"/>
-        </div>
-        <div class="spaced inline">
-            <label for="chkVerticalScanning" data-i18n>Scanning vertikal</label>
-            <input type="checkbox" id="chkVerticalScanning" checked/>
-        </div>
-        <div class="spaced inline">
-            <label for="chkBinaryScanning" data-i18n>Scanning binär</label>
-            <input type="checkbox" id="chkBinaryScanning" checked/>
-        </div>
-        <div class="spaced inline">
-            <label for="chkHover" data-i18n>Mouse Hovering // Maus Hovering</label>
-            <input type="checkbox" id="chkHover"/>
-        </div>
-        <div class="spaced inline">
-            <label for="chkHover" data-i18n>Number of rows // Anzahl Zeilen</label>
-            <input type="number" id="inNumberRows" min="1" max="50" value="9"/>
-        </div>
-        <div class="spaced inline">
-            <button id="btnExportDB"><label for="btnExportDB" data-i18n>Export</label></button>
-        </div>
-        <div class="spaced inline">
-            <input type="file" id="inImportDB" accept=".grd"/>
-        </div>
-        <br/>
-        <br/>
+    <main role="main" class="row content">
         <div id="grid-container" class="grid-container">
         </div>
     </main>

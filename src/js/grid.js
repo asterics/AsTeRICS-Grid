@@ -73,7 +73,7 @@ function Grid(gridContainerId, gridItemClass, options) {
         $(gridItemClass).resizable(getResizeOptions());
 
         $(window).resize(function () {
-            _gridElement.gridList('reflow');
+            thiz.reflow();
         });
     }
 
@@ -155,6 +155,10 @@ function Grid(gridContainerId, gridItemClass, options) {
             _gridElement.gridList('resize', _gridRows);
         }
         notifyLayoutChangeEnd();
+    };
+
+    thiz.reflow = function() {
+        _gridElement.gridList('reflow');
     };
 
     thiz.setLayoutChangedStartListener = function (fn) {

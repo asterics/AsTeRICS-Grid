@@ -66,6 +66,16 @@ function initUiOptions(grid){
 }
 
 function initListeners() {
+    L('#btnShowMenu').addEventListener('click', function () {
+        L.toggle('#headerMinimal', '#headerFull');
+        thiz.grid.reflow();
+    });
+
+    L('#btnHideMenu').addEventListener('click', function () {
+        L.toggle('#headerMinimal', '#headerFull');
+        thiz.grid.reflow();
+    });
+
     L('#btnStartScan').addEventListener('click', function () {
         thiz.scanner.startScanning();
     });
