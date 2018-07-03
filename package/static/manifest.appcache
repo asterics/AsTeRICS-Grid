@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# b735981bdfa8873381dc
+# 0d8708507ef519a8aa4e
 
 CACHE:
 build/asterics-grid.bundle.js
@@ -12,8 +12,14 @@ lib/gridList.js
 lib/jquery.gridList.js
 lib/jquery.min.js
 lib/jquery-ui.min.js
+lib/memorystream.js
 lib/object-model.min.js
+lib/pouchdb.load.min.js
+lib/pouchdb.replication-stream.min.js
+lib/pouchdb-7.0.0.min.js
+lib/pouchdb-find-7.0.0.min.js
 polyfill/core_js_shim.min.js
+polyfill/fetch.js
 
 NETWORK:
 *
