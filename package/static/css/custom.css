@@ -51,6 +51,10 @@ h1, h1 button {
     outline: thick solid red !important;
 }
 
+#grid-container {
+    overflow: hidden;
+}
+
 .grid-item-content {
     background: lightblue;
     display: flex;
@@ -59,8 +63,8 @@ h1, h1 button {
 
 .grid-item-content .img-container {
     flex: 1;
-    display: flex; /* again also a flex child */
-    overflow: hidden; /* we'll squeeze children inside */
+    display: flex;
+    overflow: hidden;
     margin: 3%;
 }
 

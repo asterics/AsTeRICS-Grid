@@ -72,9 +72,9 @@ function Grid(gridContainerId, gridItemClass, options) {
     function initResizing() {
         $(gridItemClass).resizable(getResizeOptions());
 
-        $(window).resize(function () {
-            thiz.reflow();
-        });
+        window.addEventListener('resize', function() {
+            thiz.autosize();
+        })
     }
 
     function refreshResizeOptions() {
@@ -82,9 +82,10 @@ function Grid(gridContainerId, gridItemClass, options) {
     }
 
     function getResizeOptions() {
-        var itemSize = _gridListInstance._cellWidth;
+        var itemNormHeight = _gridListInstance._cellHeight;
+        var itemNormWidth = _gridListInstance._cellWidth;
         return {
-            grid: [itemSize, itemSize],
+            grid: [itemNormWidth, itemNormHeight],
             autoHide: true,
             handles: 'se',
             disabled: !enableResizing,
@@ -92,12 +93,14 @@ function Grid(gridContainerId, gridItemClass, options) {
             stop: notifyLayoutChangeEnd,
             resize: function (event, ui) {
                 ui.element.parent().css('z-index', 1);
-                var w = Math.round(ui.element.width() / (itemSize));
-                var h = Math.round(ui.element.height() / (itemSize));
-                _gridElement.gridList('resizeItem', ui.element.parent(), {
-                    w: w,
-                    h: h
-                });
+                var w = Math.round(ui.element.width() / itemNormWidth);
+                var h = Math.round(ui.element.height() / itemNormHeight);
+                if(h <= _gridRows) {
+                    _gridElement.gridList('resizeItem', ui.element.parent(), {
+                        w: w,
+                        h: h
+                    });
+                }
                 ui.element.css('height', '');
                 ui.element.css('width', '');
             }
@@ -121,6 +124,7 @@ function Grid(gridContainerId, gridItemClass, options) {
             gridElements: _gridData.gridElements,
             rowCount: _gridRows
         });
+        thiz.autosize();
     }
 
     thiz.enableElementResizing = function () {
@@ -157,8 +161,11 @@ function Grid(gridContainerId, gridItemClass, options) {
         notifyLayoutChangeEnd();
     };
 
-    thiz.reflow = function() {
-        _gridElement.gridList('reflow');
+    /**
+     * does automatic positioning of elements + resizing horizontal and vertical
+     */
+    thiz.autosize = function() {
+        _gridElement.gridList('autosize');
     };
 
     thiz.setLayoutChangedStartListener = function (fn) {

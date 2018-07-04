@@ -68,12 +68,12 @@ function initUiOptions(grid){
 function initListeners() {
     L('#btnShowMenu').addEventListener('click', function () {
         L.toggle('#headerMinimal', '#headerFull');
-        thiz.grid.reflow();
+        thiz.grid.autosize();
     });
 
     L('#btnHideMenu').addEventListener('click', function () {
         L.toggle('#headerMinimal', '#headerFull');
-        thiz.grid.reflow();
+        thiz.grid.autosize();
     });
 
     L('#btnStartScan').addEventListener('click', function () {

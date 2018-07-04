@@ -71,6 +71,11 @@
       this.render();
     },
 
+    autosize: function() {
+        this._calculateCellSize(true);
+        this.render();
+    },
+
     render: function() {
       this._applySizeToItems();
       this._applyPositionToItems();
@@ -101,7 +106,7 @@
       this.$positionHighlight = this.$element.find('.position-highlight').hide();
 
       this._initGridList();
-      this.reflow();
+      this.autosize();
 
       if (this.options.dragAndDrop) {
         // Init Draggable JQuery UI plugin for each of the list items
@@ -214,10 +219,18 @@
       }
     },
 
-    _calculateCellSize: function() {
+    _calculateCellSize: function(doAutoWidth) {
       if (this.options.direction === "horizontal") {
         this._cellHeight = Math.floor(this.$element.height() / this.options.lanes);
         this._cellWidth = this._cellHeight * this.options.widthHeightRatio;
+        if(doAutoWidth) {
+          var maxWidth = Math.max.apply(Math, this.items.map(function (item) {
+                return item.x + item.w
+            }));
+            if(this._cellWidth * maxWidth > $(window).width()) {
+                this._cellWidth = ($(window).width()-20) / maxWidth;
+            }
+        }
       } else {
         this._cellWidth = Math.floor(this.$element.width() / this.options.lanes);
         this._cellHeight = this._cellWidth / this.options.widthHeightRatio;
