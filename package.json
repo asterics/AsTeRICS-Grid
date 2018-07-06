@@ -5,7 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "dom-i18n": "^1.1.1",
-    "file-saver": "^1.3.8"
+    "file-saver": "^1.3.8",
+    "navigo": "^7.1.2"
   },
   "devDependencies": {
     "appcache-webpack-plugin": "^1.4.0",
