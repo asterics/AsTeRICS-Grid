@@ -43,7 +43,7 @@ body {
 
 /* end of screen rules. */
 
-h1, h1 button {
+h1, #menuButtons button {
     font-size: 2.0vh
 }
 
