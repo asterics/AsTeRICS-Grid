@@ -28,11 +28,15 @@
 <body>
 <div id="content" class="box">
     <header class="row header" role="banner">
-        <div id="headerMinimal" style="display: none">
-            <h1>AsTeRICS Ergo Grid <button id="btnShowMenu" data-i18n>show menu // zeige Menü</button></h1>
+        <div id="menuHeader">
+            <a href="#main"><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
+            <div class="inline spaced" id="menuButtons">
+                <button id="btnMenuEdit" data-i18n>Edit grid // Grid editieren</button>
+                <button id="btnMenuInputOpts" data-i18n>Input options // Eingabeoptionen</button>
+                <a class="ui-button" href="#grids" id="btnMenuManage" data-i18n>Manage grids // Grids verwalten</a>
+            </div>
         </div>
-        <div id="headerFull">
-            <h1>AsTeRICS Ergo Grid <button id="btnHideMenu" data-i18n>hide menu // Menü ausblenden</button></h1>
+        <div id="menuExpandedInputOpts" style="display: none">
             <button id="btnStartScan" data-i18n>Start Scanning // Scanning starten</button>
             <button id="btnStopScan" data-i18n>Stop Scanning // Scanning stoppen</button>
             <div class="spaced inline">
@@ -63,7 +67,7 @@
             </div>
         </div>
     </header>
-    <main role="main" class="row content">
+    <main role="main" id="main" class="row content">
         <div id="grid-container" class="grid-container">
         </div>
     </main>
