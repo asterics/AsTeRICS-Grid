@@ -11,16 +11,13 @@ body {
 
 header {
     padding-bottom: 1vh;
+    border-bottom: 2px solid lightgray;
 }
 
 .box {
     display: flex;
     flex-flow: column;
     height: 100%;
-}
-
-.box .row {
-    border-bottom: 2px solid lightgray;
 }
 
 .box .row.header {
