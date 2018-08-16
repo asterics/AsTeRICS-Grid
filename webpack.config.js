@@ -13,6 +13,7 @@ module.exports = env => {
     var resolve = {
         alias: {
             //objectmodel: "../../../node_modules/objectmodel/dist/object-model.js"
+            vue: 'vue/dist/vue.js'
         }
     };
 
