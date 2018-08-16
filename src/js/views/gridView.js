@@ -38,6 +38,7 @@ GridView.init = function() {
 GridView.destroy = function () {
     if(GridView.scanner) GridView.scanner.stopScanning();
     if(GridView.hover) GridView.hover.stopHovering();
+    GridView.grid = null;
 };
 
 
