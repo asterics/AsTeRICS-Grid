@@ -9,12 +9,8 @@ body {
     font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-#headerMinimal {
-    padding-bottom: 0;
-}
-
-#headerFull {
-    padding-bottom: 0.5em;
+header {
+    padding-bottom: 1vh;
 }
 
 .box {
@@ -43,7 +39,7 @@ body {
 
 /* end of screen rules. */
 
-h1, #menuButtons button {
+h1, #menuButtons button, a {
     font-size: 2.0vh
 }
 
