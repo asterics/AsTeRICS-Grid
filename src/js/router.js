@@ -2,12 +2,15 @@ import $ from 'jquery';
 import Navigo from 'navigo'
 import domI18n from '../../node_modules/dom-i18n/dist/dom-i18n.min';
 import {GridView} from "./views/gridView.js";
+import {AllGridsView} from "./views/allGridsView.js";
 
 var Router = {};
 var navigoInstance = null;
+var viewsFolder = 'views/';
+var filePostfix = '.html';
 var injectId = null;
 
-Router.init = function(injectIdParam) {
+Router.init = function (injectIdParam) {
     injectId = injectIdParam;
     navigoInstance = new Navigo(null, true);
     navigoInstance
@@ -16,7 +19,9 @@ Router.init = function(injectIdParam) {
                 toMain();
             },
             'grids/': function () {
-                loadView('views/allGridsView.html');
+                loadView('allGridsView').then(() => {
+                    AllGridsView.init();
+                });
             },
             'grid/:gridId': function (params) {
                 console.log('route grid with ID: ' + params.gridId);
@@ -52,7 +57,7 @@ function initI18n() {
 function loadView(viewName) {
     console.log('loading view: ' + viewName);
     return new Promise(resolve => {
-        $(injectId).load(viewName, null, function () {
+        $(injectId).load(viewsFolder + viewName + filePostfix, null, function () {
             initI18n();
             console.log('loaded view: ' + viewName);
             resolve();
@@ -61,7 +66,7 @@ function loadView(viewName) {
 }
 
 function toMain() {
-    loadView('views/gridView.html').then(() => {
+    loadView('gridView').then(() => {
         GridView.init();
     });
 }
