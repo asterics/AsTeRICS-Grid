@@ -1,1 +1,18 @@
-<p>All grids!</p>
+<div id="app">
+    <header class="row header" role="banner">
+        <div id="menuHeader">
+            <a href="#main"><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
+            <div class="inline spaced" id="menuButtons">
+                <input type="text" placeholder="Search grid" v-model="searchText">
+            </div>
+        </div>
+    </header>
+    <main role="main" class="row content">
+        <p>All saved Grids:</p>
+        <ul id="gridList">
+            <li v-for="grid in filteredGrids">
+                <a :href="'#grid/' + grid.id">{{ grid.label }}</a>
+            </li>
+        </ul>
+    </main>
+</div>
