@@ -58,7 +58,9 @@ function getGridsInternal(id) {
                 modelName: GridData.getModelName()
             }
         };
-        if (id) query.selector.id = id;
+        if (id) {
+            query.selector.id = id;
+        }
         db.find(query).then(function (res) {
             var grids = [];
             if (res.docs && res.docs.length > 0) {
@@ -66,11 +68,7 @@ function getGridsInternal(id) {
                     grids.push(new GridData(doc));
                 })
             }
-            if (id) {
-                resolve(grids.length > 0 ? grids[0] : null);
-            } else {
-                resolve(grids);
-            }
+            resolve(grids);
         }).catch(function (err) {
             console.log(err);
         });
@@ -106,7 +104,14 @@ init();
 
 var dataService = {
     getGrid: function (id) {
-        return this.getGrids(id);
+        return new Promise(resolve => {
+            initPromise.then(() => {
+                getGridsInternal(id).then(grids => {
+                    var retVal = grids.length > 0 ? grids[0] : null;
+                    resolve(retVal);
+                })
+            });
+        });
     },
     getGrids: function (id) {
         return new Promise(resolve => {
@@ -137,26 +142,48 @@ var dataService = {
 
     },
     saveGrid: function (gridData) {
-        var starttime = new Date().getTime();
         console.log('saving grid...');
-        initPromise.then(() => {
-            this.getGrid(gridData.id).then(grid => {
-                var saveData = JSON.parse(JSON.stringify(gridData));
-                saveData._id = grid._id;
-                saveData._rev = grid._rev;
-                db.put(saveData).then(() => {
-                    console.log('saved grid in ' + (new Date().getTime() - starttime) + 'ms!');
+        return new Promise(resolve => {
+            initPromise.then(() => {
+                this.getGrid(gridData.id).then(existingGrid => {
+                    var saveData = JSON.parse(JSON.stringify(gridData));
+                    if (existingGrid) {
+                        console.log('grid already existing, doing update. id: ' + existingGrid.id);
+                        this.updateGrid(existingGrid.id, gridData).then(() => {
+                            resolve();
+                        });
+                    } else {
+                        saveData._id = saveData.id;
+                        db.put(saveData).then(() => {
+                            console.log('saved grid! id: ' + saveData.id);
+                            resolve();
+                        });
+                    }
                 });
-            })
+            });
         });
     },
     updateGrid: function (gridId, newConfig) {
-        initPromise.then(() => {
-            this.getGrid(gridId).then(grid => {
-                var newGrid = new GridData(newConfig, grid);
-                this.saveGrid(newGrid);
+        return new Promise((resolve, reject) => {
+            initPromise.then(() => {
+                this.getGrid(gridId).then(existingGrid => {
+                    if (!existingGrid) {
+                        console.log('no existing grid found to update, aborting.');
+                        reject();
+                        return;
+                    }
+                    var newGrid = new GridData(newConfig, existingGrid);
+                    var saveData = JSON.parse(JSON.stringify(newGrid));
+                    saveData._id = existingGrid._id;
+                    saveData._rev = existingGrid._rev;
+                    db.put(saveData).then(() => {
+                        console.log('updated grid, id: ' + existingGrid.id);
+                        resolve();
+                    });
+                });
             });
-        });
+        })
+
     },
     updateScanningConfig: function (gridId, newConfig) {
         initPromise.then(() => {
@@ -165,6 +192,15 @@ var dataService = {
                 grid.scanningConfig = newScanningConfig;
                 this.saveGrid(grid);
             });
+        });
+    },
+    deleteGrid: function (gridId) {
+        return new Promise(resolve => {
+            this.getGrid(gridId).then(grid => {
+                db.remove(grid);
+                console.log('deleted grid from db! id: ' + gridId);
+                resolve();
+            })
         });
     },
     downloadDB: function () {
