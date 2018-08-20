@@ -239,7 +239,11 @@ function Scanner(itemSelector, scanActiveClass, options) {
             var elements = L.selectAsList(itemSelector);
             var rows = getGroups(elements, verticalScan);
             _isScanning = true;
-            scan(spitToSubarrays(rows));
+            if(rows.length == 1) {
+                scan(spitToSubarrays(L.flattenArray(rows)));
+            } else {
+                scan(spitToSubarrays(rows));
+            }
         }
     };
 
