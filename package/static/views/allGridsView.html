@@ -3,16 +3,21 @@
         <div id="menuHeader">
             <a href="#main"><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
             <div class="inline spaced" id="menuButtons">
-                <input type="text" placeholder="Search grid" v-model="searchText">
+                <input class="spaced" type="text" placeholder="Search grid" v-model="searchText">
+                <button class="spaced" @click="addGrid()" data-i18n>New Grid // Neues Grid</button>
             </div>
         </div>
     </header>
     <main role="main" class="row content">
-        <p>All saved Grids:</p>
+        <p data-i18n>All saved Grids: // Alle gespeicherten Grids</p>
         <ul id="gridList">
             <li v-for="grid in filteredGrids">
                 <a :href="'#grid/' + grid.id">{{ grid.label }}</a>
+                <button @click="deleteGrid(grid.id, grid.label)" data-i18n="">Delete // Löschen</button>
             </li>
         </ul>
+        <p v-if="filteredGrids.length == 0" data-i18n>
+            No Grids found! // Keine Ergebnisse gefunden!
+        </p>
     </main>
 </div>
