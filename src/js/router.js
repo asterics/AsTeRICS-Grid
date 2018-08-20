@@ -25,6 +25,9 @@ Router.init = function (injectIdParam) {
             },
             'grid/:gridId': function (params) {
                 console.log('route grid with ID: ' + params.gridId);
+                loadView('gridView').then(() => {
+                    GridView.init(params.gridId);
+                });
             },
             '*': function () {
                 toMain();
