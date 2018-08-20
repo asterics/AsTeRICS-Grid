@@ -62,6 +62,7 @@ function initVue(grids) {
             finishEdit: function (id, label) {
                 dataService.updateGrid(id, {label: label});
                 this.editModeId = '';
+                this.originalLabel = '';
             },
             enableEdit: function (id, label) {
                 this.editModeId = id;
@@ -70,6 +71,7 @@ function initVue(grids) {
             cancelEdit: function (id) {
                 this.editModeId = '';
                 this.grids.filter(grd => grd.id == id)[0].label = this.originalLabel;
+                this.originalLabel = '';
             },
             reload: function () {
                 dataService.getGrids().then(grids => {

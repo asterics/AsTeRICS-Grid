@@ -28,7 +28,7 @@
                 </div>
                 <div v-if="editModeId === grid.id">
                     <input v-focus v-model="grid.label"/>
-                    <button @click="cancelEdit(grid.id)" data-i18n>Cancel // Abbrechen</button>
+                    <button v-if="originalLabel" @click="cancelEdit(grid.id)" data-i18n>Cancel // Abbrechen</button>
                     <button @click="finishEdit(grid.id, grid.label)" :disabled="grids.map(g => g.label).filter(l => l == grid.label).length > 1" data-i18n>Save // Speichern</button>
                 </div>
             </li>
