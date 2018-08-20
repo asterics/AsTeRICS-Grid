@@ -17,9 +17,11 @@ function initVue(grids) {
     var app = new Vue({
         el: '#app',
         data: {
-            grids: grids,
+            grids: JSON.parse(JSON.stringify(grids)), //hack because otherwise vueJS databinding sometimes does not work
             searchText: '',
             importFile: null,
+            editModeId: '',
+            originalLabel: ''
         },
         methods: {
             deleteGrid: function (id, label) {
@@ -33,10 +35,12 @@ function initVue(grids) {
             },
             addGrid: function () {
                 console.log('add grid!');
-                dataService.saveGrid(new GridData({
-                    label: 'test' + new Date().getTime(),
+                var gridData = new GridData({
+                    label: 'newGrid - ' + new Date().getTime(),
                     gridElements: [new GridElement({label: 'Test 1'}), new GridElement({label: 'Test 2'})]
-                })).then(() => {
+                });
+                dataService.saveGrid(gridData).then(() => {
+                    this.editModeId = gridData.id;
                     this.reload();
                 });
             },
@@ -45,7 +49,7 @@ function initVue(grids) {
             },
             importFromFile: function () {
                 console.log(this.importFile);
-                if(!confirm(`Do you really want to import all grids from "${this.importFile.name}"? Warning: This will delete all currently saved grids.`)) {
+                if (!confirm(`Do you really want to import all grids from "${this.importFile.name}"? Warning: This will delete all currently saved grids.`)) {
                     return;
                 }
                 dataService.importDB(this.importFile).then(() => {
@@ -55,18 +59,30 @@ function initVue(grids) {
             changeFile: function (event) {
                 this.importFile = event.target.files[0];
             },
+            finishEdit: function (id, label) {
+                dataService.updateGrid(id, {label: label});
+                this.editModeId = '';
+            },
+            enableEdit: function (id, label) {
+                this.editModeId = id;
+                this.originalLabel = label;
+            },
+            cancelEdit: function (id) {
+                this.editModeId = '';
+                this.grids.filter(grd => grd.id == id)[0].label = this.originalLabel;
+            },
             reload: function () {
                 dataService.getGrids().then(grids => {
-                    this.grids = grids;
+                    this.grids = JSON.parse(JSON.stringify(grids));
                 });
             }
         },
         computed: {
-            filteredGrids() {
+            filteredGrids: function () {
                 return this.grids.filter(grid => {
                     return grid.label.toLowerCase().includes(this.searchText.toLowerCase())
                 })
-            }
+            },
         }
     })
 }

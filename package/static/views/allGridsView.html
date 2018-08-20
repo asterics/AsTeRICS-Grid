@@ -21,8 +21,16 @@
         <p data-i18n>All saved Grids: // Alle gespeicherten Grids</p>
         <ul id="gridList">
             <li v-for="grid in filteredGrids">
-                <a :href="'#grid/' + grid.id">{{ grid.label }}</a>
-                <button @click="deleteGrid(grid.id, grid.label)" data-i18n="">Delete // Löschen</button>
+                <div v-if="editModeId !== grid.id">
+                    <a :href="'#grid/' + grid.id">{{ grid.label }}</a>
+                    <button @click="enableEdit(grid.id, grid.label)" data-i18n="">Edit // Bearbeiten</button>
+                    <button @click="deleteGrid(grid.id, grid.label)" data-i18n="">Delete // Löschen</button>
+                </div>
+                <div v-if="editModeId === grid.id">
+                    <input v-focus v-model="grid.label"/>
+                    <button @click="cancelEdit(grid.id)" data-i18n>Cancel // Abbrechen</button>
+                    <button @click="finishEdit(grid.id, grid.label)" :disabled="grids.map(g => g.label).filter(l => l == grid.label).length > 1" data-i18n>Save // Speichern</button>
+                </div>
             </li>
         </ul>
         <p v-if="filteredGrids.length == 0" data-i18n>
