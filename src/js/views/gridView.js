@@ -9,10 +9,13 @@ import {Hover} from "../hovering.js";
 var GridView = {};
 GridView.gridId = null; //TODO
 
-GridView.init = function() {
-    dataService.getGrids().then(grids => {
-        var grid = grids[0];
-        GridView.gridId = grid.id; // TODO let user choose the grid to show
+GridView.init = function(gridId) {
+    GridView.gridId = gridId;
+    dataService.getGrid(GridView.gridId).then(grid => {
+        if(!grid) {
+            console.log('grid not found! gridId: ' + GridView.gridId);
+            return;
+        }
         dataService.getScanningConfig(GridView.gridId).then(scanningConfig => {
             L('#chkVerticalScanning').checked = scanningConfig.verticalScan;
             L('#chkBinaryScanning').checked = scanningConfig.binaryScanning;
