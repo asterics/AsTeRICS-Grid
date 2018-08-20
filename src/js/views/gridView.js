@@ -59,10 +59,6 @@ function initGrid() {
     return GridView.grid.getInitPromise();
 }
 
-function reinit() {
-    window.location.reload();
-}
-
 function initUiOptions(grid){
     L('#inNumberRows').value = grid.rowCount;
 }
@@ -109,16 +105,6 @@ function initListeners() {
 
     L('#inNumberRows').addEventListener('change', function (event) {
         GridView.grid.setNumberOfRows(event.target.value);
-    });
-
-    L('#btnExportDB').addEventListener('click', function (event) {
-        dataService.downloadDB();
-    });
-
-    L('#inImportDB').addEventListener('change', function (event) {
-        dataService.importDB(event.target.files[0]).then(() => {
-            reinit();
-        });
     });
 
     window.addEventListener('resize', function () {

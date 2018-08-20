@@ -2,9 +2,18 @@
     <header class="row header" role="banner">
         <div id="menuHeader">
             <a href="#main"><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
-            <div class="inline spaced" id="menuButtons">
-                <input class="spaced" type="text" placeholder="Search grid" v-model="searchText">
-                <button class="spaced" @click="addGrid()" data-i18n>New Grid // Neues Grid</button>
+            <div class="inline spaced">
+                <input type="text" placeholder="Search grid" v-model="searchText">
+            </div>
+            <div class="inline spaced">
+                <button @click="addGrid()" data-i18n>New Grid // Neues Grid</button>
+            </div>
+            <div class="spaced inline">
+                <button @click="exportToFile()" data-i18n>Export all to File // Alles in File exportieren</button>
+            </div>
+            <div class="spaced inline">
+                <input type="file" accept=".grd" @change="changeFile"/>
+                <button @click="importFromFile()" :disabled="!importFile" data-i18n>Import from File // Aus File importieren</button>
             </div>
         </div>
     </header>
