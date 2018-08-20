@@ -102,10 +102,12 @@ function Scanner(itemSelector, scanActiveClass, options) {
             if (group.length == 1) {
                 var addToLastGroup = !nextGroup || (lastGroup && nextGroup && lastGroup.length < nextGroup.length);
                 var groupToAdd = addToLastGroup ? lastGroup : nextGroup;
-                group.forEach(function (item) {
-                    groupToAdd.push(item);
-                });
-                groupsToRemove.push(group);
+                if(groupToAdd) {
+                    group.forEach(function (item) {
+                        groupToAdd.push(item);
+                    });
+                    groupsToRemove.push(group);
+                }
             }
         }
         return groups.filter(group => !groupsToRemove.includes(group));
