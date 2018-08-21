@@ -196,8 +196,12 @@ var dataService = {
     getGrids: function (id) {
         return new Promise(resolve => {
             getInternal(GridData, id).then(grids => {
-                var retVal = grids instanceof Array ? grids : [grids];
-                resolve(retVal);
+                if(!grids) {
+                    resolve([]);
+                } else {
+                    var retVal = grids instanceof Array ? grids : [grids];
+                    resolve(retVal);
+                }
             });
         });
     },
