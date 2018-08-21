@@ -32,12 +32,7 @@ GridView.init = function (gridId) {
             scanTimeoutMs: scanningConfig.scanTimeoutMs
         });
         GridView.hover = new Hover('.grid-item-content');
-        initGrid().then(() => {
-            initVue();
-            if(autostartScan) {
-                GridView.scanner.startScanning();
-            }
-        });
+        initVue();
     });
 };
 
@@ -75,7 +70,7 @@ function initVue() {
                 this.showInputOptions = !this.showInputOptions;
             },
             toggleScanning: function () {
-                if(this.isScanning) {
+                if (this.isScanning) {
                     GridView.scanner.stopScanning();
                 } else {
                     GridView.scanner.startScanning();
@@ -133,7 +128,12 @@ function initVue() {
             });
         },
         mounted: () => {
-            GridView.grid.autosize();
+            initGrid().then(() => {
+                GridView.grid.autosize();
+                if (autostartScan) {
+                    GridView.scanner.startScanning();
+                }
+            });
         },
         updated: () => {
             GridView.grid.autosize();
