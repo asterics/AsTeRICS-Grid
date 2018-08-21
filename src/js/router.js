@@ -3,6 +3,7 @@ import Navigo from 'navigo'
 import domI18n from '../../node_modules/dom-i18n/dist/dom-i18n.min';
 import {GridView} from "./views/gridView.js";
 import {AllGridsView} from "./views/allGridsView.js";
+import {dataService} from "./service/dataService.js";
 
 var Router = {};
 var navigoInstance = null;
@@ -69,9 +70,14 @@ function loadView(viewName) {
 }
 
 function toMain() {
-    loadView('gridView').then(() => {
-        GridView.init();
+    console.log('main view');
+    dataService.getMetadata().then(metadata => {
+        var gridId = metadata ? metadata.lastOpenedGridId : null;
+        loadView('gridView').then(() => {
+            GridView.init(gridId);
+        });
     });
+
 }
 
 export {Router};
