@@ -11,6 +11,7 @@ function Grid(gridContainerId, gridItemClass, options) {
     var gridContainerId = gridContainerId;
     var gridItemClass = gridItemClass;
     var enableResizing = false;
+    var dragAndDrop = false;
     var gridId = null;
 
     //internal
@@ -38,6 +39,7 @@ function Grid(gridContainerId, gridItemClass, options) {
             if (options) {
                 gridId = options.gridId || gridId;
                 enableResizing = options.enableResizing != undefined ? options.enableResizing : enableResizing;
+                dragAndDrop = options.dragAndDrop;
             }
             dataService.getGrid(gridId).then(gridData => {
                 _gridData = gridData;
@@ -59,6 +61,7 @@ function Grid(gridContainerId, gridItemClass, options) {
             lanes: _gridRows,
             widthHeightRatio: 1,
             heightToFontSizeRatio: 0.25,
+            dragAndDrop: dragAndDrop
         }, {
             start: notifyLayoutChangeStart,
             stop: notifyLayoutChangeEnd
