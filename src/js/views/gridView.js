@@ -1,4 +1,5 @@
 import {L} from "../../lib/lquery.js";
+import Vue from 'vue'
 import {Grid} from "../grid.js";
 import {actionService} from "../service/actionService";
 import {dataService} from "../service/dataService";
@@ -8,17 +9,16 @@ import {Scanner} from "../scanning.js";
 import {Hover} from "../hovering.js";
 
 var GridView = {};
-GridView.gridId = null;
 
 GridView.init = function (gridId) {
     dataService.getGrid(gridId).then(grid => {
         if (!grid) {
-            console.log('grid not found! gridId: ' + GridView.gridId);
+            console.log('grid not found! gridId: ' + gridId);
             return;
         }
-        GridView.gridId = grid.id;
+        GridView.gridData = grid;
         dataService.saveMetadata(new MetaData({
-            lastOpenedGridId: GridView.gridId
+            lastOpenedGridId: GridView.gridData.id
         }));
         var scanningConfig = grid.scanningConfig;
         L('#chkVerticalScanning').checked = scanningConfig.verticalScan;
@@ -34,8 +34,7 @@ GridView.init = function (gridId) {
         });
         GridView.hover = new Hover('.grid-item-content');
         initGrid().then(() => {
-            initUiOptions(grid);
-            initListeners();
+            initVue();
             GridView.scanner.startScanning();
         });
     });
@@ -51,7 +50,7 @@ GridView.destroy = function () {
 function initGrid() {
     GridView.grid = new Grid('#grid-container', '.grid-item-content', {
         enableResizing: true,
-        gridId: GridView.gridId
+        gridId: GridView.gridData.id
     });
     GridView.grid.setLayoutChangedStartListener(function () {
         GridView.scanner.pauseScanning();
@@ -62,72 +61,74 @@ function initGrid() {
     return GridView.grid.getInitPromise();
 }
 
-function initUiOptions(grid) {
-    L('#inNumberRows').value = grid.rowCount;
-}
+function initVue() {
+    var app = new Vue({
+        el: '#app',
+        data: {
+            gridData: GridView.gridData,
+        },
+        methods: {
+            toggleInputMenu: function () {
+                L.toggle('#menuExpandedInputOpts');
+                GridView.grid.autosize();
+            },
+            startScanning: function () {
+                GridView.scanner.startScanning();
+            },
+            stopScanning: function () {
+                GridView.scanner.stopScanning();
+            },
+            setHover: function (event) {
+                if (event.target.checked) {
+                    GridView.hover.startHovering();
+                } else {
+                    GridView.hover.stopHovering();
+                }
+            },
+            changeRowCount: function (event) {
+                GridView.grid.setNumberOfRows(event.target.value);
+            },
+            changeScanningMs: function (event) {
+                this.updateScanningOptions({
+                    scanTimeoutMs: Number.parseInt(event.target.value)
+                }, true);
+            },
+            setVerticalScanning: function (event) {
+                this.updateScanningOptions({
+                    verticalScan: event.target.checked
+                }, true);
+            },
+            setBinaryScanning: function (event) {
+                this.updateScanningOptions({
+                    binaryScanning: event.target.checked
+                }, true);
+            },
+            updateScanningOptions: function (optionsToUpdate, restart) {
+                GridView.scanner.updateOptions(optionsToUpdate, restart);
+                dataService.updateScanningConfig(GridView.gridData.id, optionsToUpdate);
+            }
+        },
+        computed: {
+            filteredGrids: function () {
+                return []
+            },
+        },
+        created: function () {
+            window.addEventListener('resize', function () {
+                GridView.scanner.layoutChanged();
+            }, true);
 
-function initListeners() {
-    L('#btnMenuInputOpts').addEventListener('click', function () {
-        L.toggle('#menuExpandedInputOpts');
-        GridView.grid.autosize();
-    });
+            GridView.scanner.setSelectionListener(function (item) {
+                L.toggleClass(item, 'selected');
+                actionService.doAction(GridView.grid.getCurrentGridId(), item.id);
+            });
 
-    L('#btnStartScan').addEventListener('click', function () {
-        GridView.scanner.startScanning();
-    });
-
-    L('#btnStopScan').addEventListener('click', function () {
-        GridView.scanner.stopScanning();
-    });
-
-    L('#inScanTime').addEventListener('change', function (event) {
-        updateScanningOptions({
-            scanTimeoutMs: Number.parseInt(event.target.value)
-        });
-    });
-
-    L('#chkVerticalScanning').addEventListener('change', function (event) {
-        updateScanningOptions({
-            verticalScan: event.target.checked
-        }, true);
-    });
-
-    L('#chkBinaryScanning').addEventListener('change', function (event) {
-        updateScanningOptions({
-            binaryScanning: event.target.checked
-        }, true);
-    });
-
-    L('#chkHover').addEventListener('change', function (event) {
-        if (event.target.checked) {
-            GridView.hover.startHovering();
-        } else {
-            GridView.hover.stopHovering();
+            GridView.hover.setSelectionListener(function (item) {
+                L.toggleClass(item, 'selected');
+                actionService.doAction(GridView.gridData.id, item.id);
+            });
         }
-    });
-
-    L('#inNumberRows').addEventListener('change', function (event) {
-        GridView.grid.setNumberOfRows(event.target.value);
-    });
-
-    window.addEventListener('resize', function () {
-        GridView.scanner.layoutChanged();
-    }, true);
-
-    GridView.scanner.setSelectionListener(function (item) {
-        L.toggleClass(item, 'selected');
-        actionService.doAction(GridView.grid.getCurrentGridId(), item.id);
-    });
-
-    GridView.hover.setSelectionListener(function (item) {
-        L.toggleClass(item, 'selected');
-        actionService.doAction(GridView.gridId, item.id);
-    });
-}
-
-function updateScanningOptions(optionsToUpdate, restart) {
-    GridView.scanner.updateOptions(optionsToUpdate, restart);
-    dataService.updateScanningConfig(GridView.gridId, optionsToUpdate);
+    })
 }
 
 export {GridView};

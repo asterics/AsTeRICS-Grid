@@ -1,34 +1,38 @@
-<header class="row header" role="banner">
+<header id="app" class="row header" role="banner">
     <div id="menuHeader">
         <a href="#main"><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
-        <div class="inline spaced" id="menuButtons">
-            <button id="btnMenuEdit" data-i18n>Edit grid // Grid editieren</button>
-            <button id="btnMenuInputOpts" data-i18n>Input options // Eingabeoptionen</button>
-            <a class="ui-button" href="#grids" id="btnMenuManage" data-i18n>Manage grids // Grids verwalten</a>
+        <div id="menuButtons" class="inline">
+            <div class="inline spaced">
+                <button @click="toggleInputMenu" data-i18n>Input options // Eingabeoptionen</button>
+            </div>
+            <div class="inline spaced">
+                <button id="btnMenuEdit" data-i18n>Edit grid // Grid editieren</button>
+                <a class="ui-button" href="#grids" id="btnMenuManage" data-i18n>Manage grids // Grids verwalten</a>
+            </div>
         </div>
     </div>
     <div id="menuExpandedInputOpts" style="display: none">
-        <button id="btnStartScan" data-i18n>Start Scanning // Scanning starten</button>
-        <button id="btnStopScan" data-i18n>Stop Scanning // Scanning stoppen</button>
+        <button @click="startScanning" data-i18n>Start Scanning // Scanning starten</button>
+        <button @click="stopScanning" data-i18n>Stop Scanning // Scanning stoppen</button>
         <div class="spaced inline">
             <label for="inScanTime" data-i18n>Scanning Time // Scanning Zeit</label>
-            <input type="range" id="inScanTime" min="100" max="3000"/>
+            <input type="range" id="inScanTime" v-model="gridData.scanningConfig.scanTimeoutMs" @change="changeScanningMs" min="100" max="3000"/>
         </div>
         <div class="spaced inline">
-            <label for="chkVerticalScanning" data-i18n>Scanning vertikal</label>
-            <input type="checkbox" id="chkVerticalScanning" checked/>
+            <label for="chkVerticalScanning" data-i18n>Vertical scanning // Scanning vertikal</label>
+            <input type="checkbox" id="chkVerticalScanning" v-model="gridData.scanningConfig.verticalScan" @change="setVerticalScanning" checked/>
         </div>
         <div class="spaced inline">
-            <label for="chkBinaryScanning" data-i18n>Scanning binär</label>
-            <input type="checkbox" id="chkBinaryScanning" checked/>
+            <label for="chkBinaryScanning" data-i18n>Binary scanning // Scanning binär</label>
+            <input type="checkbox" id="chkBinaryScanning" v-model="gridData.scanningConfig.binaryScanning" @change="setBinaryScanning" checked/>
         </div>
         <div class="spaced inline">
             <label for="chkHover" data-i18n>Mouse Hovering // Maus Hovering</label>
-            <input type="checkbox" id="chkHover"/>
+            <input type="checkbox" id="chkHover" @change="setHover"/>
         </div>
         <div class="spaced inline">
             <label for="chkHover" data-i18n>Number of rows // Anzahl Zeilen</label>
-            <input type="number" id="inNumberRows" min="1" max="50" value="9"/>
+            <input type="number" v-model="gridData.rowCount" @change="changeRowCount" min="1" max="50"/>
         </div>
     </div>
 </header>
