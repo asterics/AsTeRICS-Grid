@@ -73,6 +73,9 @@ function initVue(grids) {
                 this.grids.filter(grd => grd.id == id)[0].label = this.originalLabel;
                 this.originalLabel = '';
             },
+            isLabelDuplicate: function(label) {
+                return this.grids.map(g => g.label).filter(l => l == label).length > 1
+            },
             reload: function () {
                 dataService.getGrids().then(grids => {
                     this.grids = JSON.parse(JSON.stringify(grids));
