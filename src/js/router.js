@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Navigo from 'navigo'
 import domI18n from '../../node_modules/dom-i18n/dist/dom-i18n.min';
 import {GridView} from "./views/gridView.js";
+import {GridEditView} from "./views/gridEditView.js";
 import {AllGridsView} from "./views/allGridsView.js";
 import {dataService} from "./service/dataService.js";
 
@@ -30,6 +31,12 @@ Router.init = function (injectIdParam) {
                     GridView.init(params.gridId);
                 });
             },
+            'grid/edit/:gridId': function (params) {
+                console.log('route edit grid with ID: ' + params.gridId);
+                loadView('gridEditView').then(() => {
+                    GridEditView.init(params.gridId);
+                });
+            },
             '*': function () {
                 toMain();
             }
@@ -39,6 +46,7 @@ Router.init = function (injectIdParam) {
         before: function (done, params) {
             console.log('before');
             GridView.destroy();
+            GridEditView.destroy();
             done();
         },
         after: function (params) {
