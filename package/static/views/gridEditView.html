@@ -1,0 +1,20 @@
+<header id="app" class="row header" role="banner" v-cloak>
+    <div id="menuHeader">
+        <a href="#main"><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
+        <div id="menuButtons" class="inline">
+            <div class="inline spaced"><span data-i18n>Edit grid // Bearbeiten von Grid</span> "{{gridData.label}}"</div>
+            <div class="inline spaced">
+                <a :href="'#grid/' + gridData.id" class="spaced" id="btnMenuEdit" data-i18n>Exit edit view // Bearbeiten verlassen</a>
+                <a href="#grids" id="btnMenuManage" data-i18n>Manage grids // Grids verwalten</a>
+            </div>
+        </div>
+    </div>
+    <div class="spaced">
+        <label for="numRows" data-i18n>Number of rows // Anzahl Zeilen</label>
+        <input id="numRows" type="number" v-model="gridData.rowCount" @change="changeRowCount" min="1" max="50"/>
+    </div>
+</header>
+<main role="main" class="row content">
+    <div id="grid-container" class="grid-container">
+    </div>
+</main>
