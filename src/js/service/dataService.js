@@ -5,6 +5,7 @@ import {L} from "../../lib/lquery.js";
 import {GridElement} from "../model/GridElement.js";
 import {GridData} from "../model/GridData.js";
 import {ScanningConfig} from "../model/ScanningConfig";
+import {MetaData} from "../model/MetaData";
 
 var verbs = ['be', 'have', 'do', 'say', 'get', 'make', 'go', 'know', 'take', 'see', 'come', 'think', 'look', 'want', 'give', 'use', 'find', 'tell', 'ask', 'work', 'seem', 'feel', 'try', 'leave', 'call'];
 var dbName = 'asterics-ergo-grid';
@@ -51,27 +52,21 @@ function resetPouchDB() {
     });
 }
 
-function getGridsInternal(id) {
+/**
+ * returns a promise that is resolved if init is done.
+ *
+ * @param dontWait if provided, waiting is skipped and promise is resolved immediately
+ * @return {Promise}
+ */
+function waitForInit(dontWait) {
     return new Promise(resolve => {
-        var query = {
-            selector: {
-                modelName: GridData.getModelName()
-            }
-        };
-        if (id) {
-            query.selector.id = id;
+        if (dontWait) {
+            resolve();
+        } else {
+            initPromise.then(() => {
+                resolve();
+            });
         }
-        db.find(query).then(function (res) {
-            var grids = [];
-            if (res.docs && res.docs.length > 0) {
-                res.docs.forEach(doc => {
-                    grids.push(new GridData(doc));
-                })
-            }
-            resolve(grids);
-        }).catch(function (err) {
-            console.log(err);
-        });
     });
 }
 
@@ -82,18 +77,15 @@ function init() {
                 console.log(info);
             });
 
-            getGridsInternal().then(grids => {
-                if (grids.length > 0) {
+            getInternal(GridData, null, true).then(grids => {
+                if (grids) {
                     console.log('detected saved grid, no generation of new grid.');
                     resolve();
                     return;
                 }
-                var grid = generateGridData();
-                db.post(JSON.parse(JSON.stringify(grid))).then(function (res) {
+                saveInternal(GridData, generateGridData(), false, true).then(() => {
                     console.log('generated and saved default grid...');
                     resolve();
-                }).catch(function (err) {
-                    console.log(err);
                 });
             });
         });
@@ -102,96 +94,136 @@ function init() {
 
 init();
 
+/**
+ * queries for objects in database and resolves promise with result.
+ * If no elements are found 'null' is resolved, if exactly one element was found, this element is resolved,
+ * otherwise an array of the found elements is resolved.
+ *
+ * @param objectType the objectType to find, e.g. "GridData"
+ * @param id the id of the object to find (optional)
+ * @param dontWaitOnInit if true, there is no waiting for init (for calling it in init)
+ * @return {Promise}
+ */
+function getInternal(objectType, id, dontWaitOnInit) {
+    if (!objectType || !objectType.getModelName) {
+        console.error('did not specify needed parameter "objectType"!');
+    }
+
+    return new Promise((resolve, reject) => {
+        waitForInit(dontWaitOnInit).then(() => {
+            console.log('getting ' + objectType.getModelName() + '(id: ' + id + ')...');
+            var query = {
+                selector: {
+                    modelName: objectType.getModelName()
+                }
+            };
+            if (id) {
+                query.selector.id = id;
+            }
+            db.find(query).then(function (res) {
+                var objects = [];
+                if (res.docs && res.docs.length > 0) {
+                    res.docs.forEach(doc => {
+                        objects.push(new objectType(doc));
+                    })
+                }
+                console.log('found ' + objectType.getModelName() + ": " + objects.length + ' elements');
+                if (objects.length == 0) {
+                    resolve(null);
+                } else if (objects.length == 1) {
+                    resolve(objects[0]);
+                } else {
+                    resolve(objects);
+                }
+            }).catch(function (err) {
+                console.log(err);
+                reject();
+            });
+        });
+    });
+}
+
+function saveInternal(objectType, data, onlyUpdate, dontWaitOnInit) {
+    if (!data || !objectType || !objectType.getModelName) {
+        console.error('did not specify needed parameter "objectType"!');
+    }
+
+    console.log('saving ' + objectType.getModelName() + '...');
+    return new Promise((resolve, reject) => {
+        waitForInit(dontWaitOnInit).then(() => {
+            getInternal(objectType, data.id, dontWaitOnInit).then(existingObject => {
+                if (existingObject) {
+                    console.log(objectType.getModelName() + ' already existing, doing update. id: ' + existingObject.id);
+                    var newObject = new objectType(data, existingObject);
+                    var saveData = JSON.parse(JSON.stringify(newObject));
+                    saveData._id = existingObject._id;
+                    saveData._rev = existingObject._rev;
+                    db.put(saveData).then(() => {
+                        console.log('updated ' + objectType.getModelName() + ', id: ' + existingObject.id);
+                        resolve();
+                    }).catch(function (err) {
+                        console.log(err);
+                        reject();
+                    });
+                } else if (!onlyUpdate) {
+                    var saveData = JSON.parse(JSON.stringify(data));
+                    saveData._id = saveData.id;
+                    db.put(saveData).then(() => {
+                        console.log('saved ' + objectType.getModelName() + ', id: ' + saveData.id);
+                        resolve();
+                    }).catch(function (err) {
+                        console.log(err);
+                        reject();
+                    });
+                } else {
+                    console.log('no existing ' + objectType.getModelName() + ' found to update, aborting.');
+                    reject();
+                }
+            });
+        });
+    });
+}
+
 var dataService = {
     getGrid: function (id) {
         return new Promise(resolve => {
-            initPromise.then(() => {
-                getGridsInternal(id).then(grids => {
-                    var retVal = grids.length > 0 ? grids[0] : null;
-                    resolve(retVal);
-                })
+            getInternal(GridData, id).then(grids => {
+                var retVal = grids && grids.length > 0 ? grids[0] : grids;
+                resolve(retVal);
             });
         });
     },
     getGrids: function (id) {
         return new Promise(resolve => {
-            initPromise.then(() => {
-                getGridsInternal(id).then(grids => {
-                    resolve(grids);
-                })
-            });
-        });
-    },
-    getScanningConfig: function (id) {
-        return new Promise(resolve => {
-            initPromise.then(() => {
-                var grid = this.getGrid(id).then(grid => {
-                    resolve(grid ? grid.scanningConfig : new ScanningConfig())
-                });
+            getInternal(GridData, id).then(grids => {
+                var retVal = grids instanceof Array ? grids : [grids];
+                resolve(retVal);
             });
         });
     },
     getGridElement: function (gridId, gridElementId) {
         return new Promise(resolve => {
-            initPromise.then(() => {
-                var grid = this.getGrid(gridId).then(grid => {
-                    resolve(grid.gridElements.filter(elm => elm.id == gridElementId)[0]);
-                });
+            this.getGrid(gridId).then(grid => {
+                resolve(grid.gridElements.filter(elm => elm.id == gridElementId)[0]);
             });
         });
-
     },
     saveGrid: function (gridData) {
-        console.log('saving grid...');
-        return new Promise(resolve => {
-            initPromise.then(() => {
-                this.getGrid(gridData.id).then(existingGrid => {
-                    var saveData = JSON.parse(JSON.stringify(gridData));
-                    if (existingGrid) {
-                        console.log('grid already existing, doing update. id: ' + existingGrid.id);
-                        this.updateGrid(existingGrid.id, gridData).then(() => {
-                            resolve();
-                        });
-                    } else {
-                        saveData._id = saveData.id;
-                        db.put(saveData).then(() => {
-                            console.log('saved grid! id: ' + saveData.id);
-                            resolve();
-                        });
-                    }
-                });
-            });
-        });
+        return saveInternal(GridData, gridData);
     },
     updateGrid: function (gridId, newConfig) {
-        return new Promise((resolve, reject) => {
-            initPromise.then(() => {
-                this.getGrid(gridId).then(existingGrid => {
-                    if (!existingGrid) {
-                        console.log('no existing grid found to update, aborting.');
-                        reject();
-                        return;
-                    }
-                    var newGrid = new GridData(newConfig, existingGrid);
-                    var saveData = JSON.parse(JSON.stringify(newGrid));
-                    saveData._id = existingGrid._id;
-                    saveData._rev = existingGrid._rev;
-                    db.put(saveData).then(() => {
-                        console.log('updated grid, id: ' + existingGrid.id);
-                        resolve();
-                    });
-                });
-            });
-        })
-
+        newConfig.id = gridId;
+        return saveInternal(GridData, newConfig, true);
     },
     updateScanningConfig: function (gridId, newConfig) {
-        initPromise.then(() => {
-            this.getGrid(gridId).then(grid => {
-                var newScanningConfig = new ScanningConfig(newConfig, grid.scanningConfig);
-                grid.scanningConfig = newScanningConfig;
-                this.saveGrid(grid);
-            });
+        this.getGrid(gridId).then(grid => {
+            if (!grid || !grid.scanningConfig) {
+                console.log('no grid found for updating scanning config!');
+                return;
+            }
+            var newScanningConfig = new ScanningConfig(newConfig, grid.scanningConfig);
+            grid.scanningConfig = newScanningConfig;
+            return this.saveGrid(grid);
         });
     },
     deleteGrid: function (gridId) {
@@ -202,6 +234,23 @@ var dataService = {
                 resolve();
             })
         });
+    },
+    saveMetadata: function (newMetadata) {
+        return new Promise(resolve => {
+            this.getMetadata().then(existingMetadata => {
+                if (existingMetadata) {
+                    //new metadata is stored with ID of existing metadata -> there should only be one metadata object
+                    var id = existingMetadata instanceof Array ? existingMetadata[0].id : existingMetadata.id;
+                    newMetadata.id = existingMetadata.id;
+                }
+                saveInternal(MetaData, newMetadata).then(() => {
+                    resolve();
+                });
+            });
+        });
+    },
+    getMetadata: function () {
+        return getInternal(MetaData);
     },
     downloadDB: function () {
         var dumpedString = '';
@@ -236,6 +285,11 @@ var dataService = {
                 };
             })(file);
             reader.readAsText(file);
+        });
+    },
+    resetDB: function () {
+        resetPouchDB().then(() => {
+            window.location.reload();
         });
     }
 };
