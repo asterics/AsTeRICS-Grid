@@ -35,7 +35,7 @@ class GridData extends Model({
     }
 
     static getModelName() {
-        return 'GridData'
+        return this.name;
     }
 }
 
