@@ -3,17 +3,18 @@
         <a href="#main"><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
         <div id="menuButtons" class="inline">
             <div class="inline spaced">
-                <button @click="toggleInputMenu" data-i18n>Input options // Eingabeoptionen</button>
+                <button v-if="!showInputOptions" @click="toggleInputMenu" data-i18n>Show input options // Zeige Eingabeoptionen</button>
+                <button v-if="showInputOptions" @click="toggleInputMenu" data-i18n>Hide input options // Verstecke Eingabeoptionen</button>
             </div>
             <div class="inline spaced">
-                <button id="btnMenuEdit" data-i18n>Edit grid // Grid editieren</button>
-                <a class="ui-button" href="#grids" id="btnMenuManage" data-i18n>Manage grids // Grids verwalten</a>
+                <a :href="'#grid/edit/' + gridData.id" class="spaced" id="btnMenuEdit" data-i18n>Edit grid // Grid editieren</a>
+                <a href="#grids" id="btnMenuManage" data-i18n>Manage grids // Grids verwalten</a>
             </div>
         </div>
     </div>
-    <div id="menuExpandedInputOpts" style="display: none">
-        <button @click="startScanning" data-i18n>Start Scanning // Scanning starten</button>
-        <button @click="stopScanning" data-i18n>Stop Scanning // Scanning stoppen</button>
+    <div id="menuExpandedInputOpts" v-if="showInputOptions">
+        <button v-if="!isScanning" @click="toggleScanning" data-i18n>Start Scanning // Scanning starten</button>
+        <button v-if="isScanning" @click="toggleScanning" data-i18n>Stop Scanning // Scanning stoppen</button>
         <div class="spaced inline">
             <label for="inScanTime" data-i18n>Scanning Time // Scanning Zeit</label>
             <input type="range" id="inScanTime" v-model="gridData.scanningConfig.scanTimeoutMs" @change="changeScanningMs" min="100" max="3000"/>

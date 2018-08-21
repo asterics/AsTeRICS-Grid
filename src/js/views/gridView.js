@@ -65,18 +65,21 @@ function initVue() {
     var app = new Vue({
         el: '#app',
         data: {
-            gridData: GridView.gridData,
+            gridData: JSON.parse(JSON.stringify(GridView.gridData)),
+            showInputOptions: false,
+            isScanning: true
         },
         methods: {
             toggleInputMenu: function () {
-                L.toggle('#menuExpandedInputOpts');
-                GridView.grid.autosize();
+                this.showInputOptions = !this.showInputOptions;
             },
-            startScanning: function () {
-                GridView.scanner.startScanning();
-            },
-            stopScanning: function () {
-                GridView.scanner.stopScanning();
+            toggleScanning: function () {
+                if(this.isScanning) {
+                    GridView.scanner.stopScanning();
+                } else {
+                    GridView.scanner.startScanning();
+                }
+                this.isScanning = !this.isScanning;
             },
             setHover: function (event) {
                 if (event.target.checked) {
@@ -127,6 +130,12 @@ function initVue() {
                 L.toggleClass(item, 'selected');
                 actionService.doAction(GridView.gridData.id, item.id);
             });
+        },
+        mounted: () => {
+            GridView.grid.autosize();
+        },
+        updated: () => {
+            GridView.grid.autosize();
         }
     })
 }
