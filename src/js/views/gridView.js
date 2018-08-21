@@ -2,45 +2,48 @@ import {L} from "../../lib/lquery.js";
 import {Grid} from "../grid.js";
 import {actionService} from "../service/actionService";
 import {dataService} from "../service/dataService";
+import {MetaData} from "../model/MetaData.js";
 
 import {Scanner} from "../scanning.js";
 import {Hover} from "../hovering.js";
 
 var GridView = {};
-GridView.gridId = null; //TODO
+GridView.gridId = null;
 
-GridView.init = function(gridId) {
-    GridView.gridId = gridId;
-    dataService.getGrid(GridView.gridId).then(grid => {
-        if(!grid) {
+GridView.init = function (gridId) {
+    dataService.getGrid(gridId).then(grid => {
+        if (!grid) {
             console.log('grid not found! gridId: ' + GridView.gridId);
             return;
         }
-        dataService.getScanningConfig(GridView.gridId).then(scanningConfig => {
-            L('#chkVerticalScanning').checked = scanningConfig.verticalScan;
-            L('#chkBinaryScanning').checked = scanningConfig.binaryScanning;
-            L('#inScanTime').value = scanningConfig.scanTimeoutMs;
-            GridView.scanner = new Scanner('.grid-item-content', 'scanFocus', {
-                verticalScan: scanningConfig.verticalScan,
-                subScanRepeat: 3,
-                binaryScanning: scanningConfig.binaryScanning,
-                scanInactiveClass: 'scanInactive',
-                minBinarySplitThreshold: 3,
-                scanTimeoutMs: scanningConfig.scanTimeoutMs
-            });
-            GridView.hover = new Hover('.grid-item-content');
-            initGrid().then(() => {
-                initUiOptions(grid);
-                initListeners();
-                GridView.scanner.startScanning();
-            });
+        GridView.gridId = grid.id;
+        dataService.saveMetadata(new MetaData({
+            lastOpenedGridId: GridView.gridId
+        }));
+        var scanningConfig = grid.scanningConfig;
+        L('#chkVerticalScanning').checked = scanningConfig.verticalScan;
+        L('#chkBinaryScanning').checked = scanningConfig.binaryScanning;
+        L('#inScanTime').value = scanningConfig.scanTimeoutMs;
+        GridView.scanner = new Scanner('.grid-item-content', 'scanFocus', {
+            verticalScan: scanningConfig.verticalScan,
+            subScanRepeat: 3,
+            binaryScanning: scanningConfig.binaryScanning,
+            scanInactiveClass: 'scanInactive',
+            minBinarySplitThreshold: 3,
+            scanTimeoutMs: scanningConfig.scanTimeoutMs
+        });
+        GridView.hover = new Hover('.grid-item-content');
+        initGrid().then(() => {
+            initUiOptions(grid);
+            initListeners();
+            GridView.scanner.startScanning();
         });
     });
 };
 
 GridView.destroy = function () {
-    if(GridView.scanner) GridView.scanner.stopScanning();
-    if(GridView.hover) GridView.hover.stopHovering();
+    if (GridView.scanner) GridView.scanner.stopScanning();
+    if (GridView.hover) GridView.hover.stopHovering();
     GridView.grid = null;
 };
 
@@ -59,7 +62,7 @@ function initGrid() {
     return GridView.grid.getInitPromise();
 }
 
-function initUiOptions(grid){
+function initUiOptions(grid) {
     L('#inNumberRows').value = grid.rowCount;
 }
 
