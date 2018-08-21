@@ -45,7 +45,8 @@ GridView.destroy = function () {
 
 function initGrid() {
     GridView.grid = new Grid('#grid-container', '.grid-item-content', {
-        enableResizing: true,
+        enableResizing: false,
+        dragAndDrop: false,
         gridId: GridView.gridData.id
     });
     GridView.grid.setLayoutChangedStartListener(function () {
