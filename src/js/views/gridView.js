@@ -9,6 +9,7 @@ import {Scanner} from "../scanning.js";
 import {Hover} from "../hovering.js";
 
 var GridView = {};
+var autostartScan = true;
 
 GridView.init = function (gridId) {
     dataService.getGrid(gridId).then(grid => {
@@ -20,10 +21,8 @@ GridView.init = function (gridId) {
         dataService.saveMetadata(new MetaData({
             lastOpenedGridId: GridView.gridData.id
         }));
+
         var scanningConfig = grid.scanningConfig;
-        L('#chkVerticalScanning').checked = scanningConfig.verticalScan;
-        L('#chkBinaryScanning').checked = scanningConfig.binaryScanning;
-        L('#inScanTime').value = scanningConfig.scanTimeoutMs;
         GridView.scanner = new Scanner('.grid-item-content', 'scanFocus', {
             verticalScan: scanningConfig.verticalScan,
             subScanRepeat: 3,
@@ -35,7 +34,9 @@ GridView.init = function (gridId) {
         GridView.hover = new Hover('.grid-item-content');
         initGrid().then(() => {
             initVue();
-            GridView.scanner.startScanning();
+            if(autostartScan) {
+                GridView.scanner.startScanning();
+            }
         });
     });
 };
@@ -67,7 +68,7 @@ function initVue() {
         data: {
             gridData: JSON.parse(JSON.stringify(GridView.gridData)),
             showInputOptions: false,
-            isScanning: true
+            isScanning: autostartScan
         },
         methods: {
             toggleInputMenu: function () {
