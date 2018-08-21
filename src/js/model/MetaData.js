@@ -12,7 +12,7 @@ class MetaData extends Model({
     }
 
     static getModelName() {
-        return this.name;
+        return "MetaData";
     }
 }
 
