@@ -15,6 +15,9 @@
                 <input type="file" accept=".grd" @change="changeFile"/>
                 <button @click="importFromFile()" :disabled="!importFile" data-i18n>Import from File // Aus File importieren</button>
             </div>
+            <div class="spaced inline">
+                <button @click="reset()">RESET</button>
+            </div>
         </div>
     </header>
     <main role="main" class="row content">

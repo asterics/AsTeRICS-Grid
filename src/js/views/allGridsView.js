@@ -77,6 +77,10 @@ function initVue(grids) {
                 dataService.getGrids().then(grids => {
                     this.grids = JSON.parse(JSON.stringify(grids));
                 });
+            },
+            reset: () => {
+                if(confirm('Do you really want to reset the database? All data will be deleted!'))
+                dataService.resetDB();
             }
         },
         computed: {
