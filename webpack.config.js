@@ -10,6 +10,22 @@ module.exports = env => {
     var outputFilename = 'asterics-grid.bundle.js';
     var mode = 'development';
 
+    var scssRule = {
+        test: /\.(s*)css$/,
+        use: ['style-loader', 'css-loader', 'sass-loader']
+    };
+
+    var fontRule = {
+        test: /.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+        use: [{
+            loader: 'file-loader',
+            options: {
+                name: '[name].[ext]',
+                outputPath: '../css/font/'    // where the fonts will go
+            }
+        }]
+    };
+
     var resolve = {
         alias: {
             //objectmodel: "../../../node_modules/objectmodel/dist/object-model.js"
@@ -50,7 +66,7 @@ module.exports = env => {
         exclude: ['asterics-grid.bundle.js'] /*hack to prevent first line of cache manifest before CACHE. These two files are already included above.*/
     });
 
-    if(env && env.enableAppCache) {
+    if (env && env.enableAppCache) {
         console.log('appcache enabled!');
         plugins.push(appcachePlugin);
     } else {
@@ -80,7 +96,10 @@ module.exports = env => {
         },
         resolve: resolve,
         devServer: getDevServer(buildDir),
-        externals: externals
+        externals: externals,
+        module: {
+            rules: [scssRule, fontRule]
+        }
     };
 
     var configLegacy = {
@@ -116,7 +135,9 @@ module.exports = env => {
                         ],
                     },
                 },
-            }],
+            },
+                scssRule, fontRule
+            ],
         }
     };
     return [configNormal, configLegacy];
