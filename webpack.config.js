@@ -15,17 +15,6 @@ module.exports = env => {
         use: ['style-loader', 'css-loader', 'sass-loader']
     };
 
-    var fontRule = {
-        test: /.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-        use: [{
-            loader: 'file-loader',
-            options: {
-                name: '[name].[ext]',
-                outputPath: '../css/font/'    // where the fonts will go
-            }
-        }]
-    };
-
     var resolve = {
         alias: {
             //objectmodel: "../../../node_modules/objectmodel/dist/object-model.js"
@@ -98,7 +87,7 @@ module.exports = env => {
         devServer: getDevServer(buildDir),
         externals: externals,
         module: {
-            rules: [scssRule, fontRule]
+            rules: [scssRule]
         }
     };
 
@@ -136,7 +125,7 @@ module.exports = env => {
                     },
                 },
             },
-                scssRule, fontRule
+                scssRule
             ],
         }
     };
