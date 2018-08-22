@@ -1,5 +1,21 @@
 CACHE MANIFEST
-# 0d8708507ef519a8aa4e
+# 5256ab72d7c1faa36100
+
+/build_legacy/../css/font/fa-brands-400.eot
+/build_legacy/../css/font/fa-brands-400.svg
+/build_legacy/../css/font/fa-brands-400.ttf
+/build_legacy/../css/font/fa-brands-400.woff
+/build_legacy/../css/font/fa-brands-400.woff2
+/build_legacy/../css/font/fa-regular-400.eot
+/build_legacy/../css/font/fa-regular-400.svg
+/build_legacy/../css/font/fa-regular-400.ttf
+/build_legacy/../css/font/fa-regular-400.woff
+/build_legacy/../css/font/fa-regular-400.woff2
+/build_legacy/../css/font/fa-solid-900.eot
+/build_legacy/../css/font/fa-solid-900.svg
+/build_legacy/../css/font/fa-solid-900.ttf
+/build_legacy/../css/font/fa-solid-900.woff
+/build_legacy/../css/font/fa-solid-900.woff2
 
 CACHE:
 build/asterics-grid.bundle.js
