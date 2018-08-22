@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import $ from 'jquery';
 import {Grid} from "../grid.js";
 import {dataService} from "../service/dataService";
 
@@ -33,6 +34,7 @@ function initVue() {
         mounted: () => {
             initGrid().then(() => {
                 GridEditView.grid.autosize();
+                initContextmenu();
             });
         },
         updated: () => {
@@ -48,6 +50,31 @@ function initGrid() {
         gridId: GridEditView.gridData.id
     });
     return GridEditView.grid.getInitPromise();
+}
+
+function initContextmenu() {
+    $.contextMenu({
+        selector: '.grid-item-content',
+        callback: function(key, options) {
+            var m = "clicked: " + key;
+            window.console && console.log(m) || alert(m);
+        },
+        items: {
+            "edit": {name: "Edit", icon: "fas fa-edit"},
+            "cut": {name: "Cut", icon: "cut"},
+            copy: {name: "Copy", icon: "copy"},
+            "paste": {name: "Paste", icon: "paste"},
+            "delete": {name: "Delete", icon: "delete"},
+            "sep1": "---------",
+            "quit": {name: "Quit", icon: function(){
+                return 'context-menu-icon context-menu-icon-quit';
+            }}
+        }
+    });
+
+    $('.context-menu-one').on('click', function(e){
+        console.log('clicked', this);
+    })
 }
 
 export {GridEditView};
