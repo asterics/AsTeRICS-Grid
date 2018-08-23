@@ -9,9 +9,13 @@
             </div>
         </div>
     </div>
-    <div class="spaced">
+    <div class="inline spaced">
         <label for="numRows" data-i18n>Number of rows // Anzahl Zeilen</label>
         <input id="numRows" type="number" v-model="gridData.rowCount" @change="changeRowCount" min="1" max="50"/>
+    </div>
+    <div class="inline spaced">
+        <button @click="fillGaps" data-i18n>Fill gaps // Lücken füllen</button>
+        <button @click="compactLayout" data-i18n>Compact // Layout kompaktieren</button>
     </div>
 </header>
 <main role="main" class="row content">

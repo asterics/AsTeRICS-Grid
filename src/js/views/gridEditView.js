@@ -33,6 +33,12 @@ function initVue() {
             changeRowCount: function (event) {
                 GridEditView.grid.setNumberOfRows(event.target.value);
             },
+            fillGaps: function () {
+                GridEditView.grid.fillGaps();
+            },
+            compactLayout: function () {
+                GridEditView.grid.compactLayout();
+            }
         },
         mounted: () => {
             initGrid().then(() => {
