@@ -123,11 +123,6 @@ function Grid(gridContainerId, gridItemClass, options) {
     }
 
     function notifyLayoutChangeEnd() {
-        if ($.isFunction(_layoutChangedEndListener)) {
-            setTimeout(function () {
-                _layoutChangedEndListener(_gridData);
-            }, _animationTimeMs);
-        }
         _gridData.gridElements = thiz.toGridElements();
         dataService.updateGrid(thiz.getCurrentGridId(), {
             gridElements: _gridData.gridElements,
@@ -136,8 +131,13 @@ function Grid(gridContainerId, gridItemClass, options) {
             dataService.getGrid(_gridData.id).then(gridData => {
                 _gridData = gridData;
             });
+            thiz.autosize();
+            if ($.isFunction(_layoutChangedEndListener)) {
+                setTimeout(function () {
+                    _layoutChangedEndListener(_gridData);
+                }, _animationTimeMs);
+            }
         });
-        thiz.autosize();
     }
 
     thiz.enableElementResizing = function () {
