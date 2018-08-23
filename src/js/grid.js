@@ -165,6 +165,35 @@ function Grid(gridContainerId, gridItemClass, options) {
     };
 
     /**
+     * removes an element by id.
+     * fist it is removed from the UI grid and afterwards from the database.
+     * The returned promise resolves to the updated GridData object.
+     *
+     * @param idToRemove
+     * @return {Promise}
+     */
+    thiz.removeElement = function(idToRemove) {
+        //remove in UI
+        window._gridElement = _gridElement;
+        _gridListInstance.gridList.items = _gridListInstance.gridList.items.filter(item => item.$element.children()[0].id != idToRemove);
+        _gridListInstance.items = _gridListInstance.gridList.items;
+        _gridListInstance.$items = $(_gridListInstance.gridList.items.map(item => item.$element[0]));
+        console.log('removeElement items: ' + _gridListInstance.items.length)
+        console.log('removeElement gridList.items: ' + _gridListInstance.gridList.items.length)
+        $('#' + idToRemove).remove();
+
+        //remove in DB
+        return new Promise(resolve => {
+            dataService.getGrid(gridId).then(grid => {
+                grid.gridElements = grid.gridElements.filter(el => el.id != idToRemove);
+                dataService.saveGrid(grid);
+                _gridData = grid;
+                resolve(grid);
+            });
+        });
+    };
+
+    /**
      * does automatic positioning of elements + resizing horizontal and vertical
      */
     thiz.autosize = function() {
