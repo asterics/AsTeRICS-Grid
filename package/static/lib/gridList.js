@@ -241,8 +241,6 @@ GridList.prototype = {
     this._updateItemSize(item, width, height);
 
     this._resolveCollisions(item);
-
-    this._pullItemsToLeft();
   },
 
   getChangedItems: function(initialItems, idAttribute) {
@@ -477,7 +475,6 @@ GridList.prototype = {
     if (!this._tryToResolveCollisionsLocally(item)) {
       this._pullItemsToLeft(item);
     }
-    this._pullItemsToLeft();
   },
 
   _tryToResolveCollisionsLocally: function(item) {
@@ -570,7 +567,7 @@ GridList.prototype = {
           position = this._getItemPosition(item);
 
       // The fixed item keeps its exact position
-      if (fixedItem && item == fixedItem) {
+      if (fixedItem && (item == fixedItem || item.y < fixedItem.y || item.y > fixedItem.y + fixedItem.h - 1)) {
         continue;
       }
 
