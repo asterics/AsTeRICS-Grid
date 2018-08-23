@@ -1,6 +1,7 @@
 var path = require('path');
 const AppCachePlugin = require('appcache-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = env => {
     var baseDir = 'package/static';
@@ -13,6 +14,11 @@ module.exports = env => {
     var scssRule = {
         test: /\.(s*)css$/,
         use: ['style-loader', 'css-loader', 'sass-loader']
+    };
+
+    var vueRule = {
+        test: /\.vue$/,
+        loader: 'vue-loader'
     };
 
     var resolve = {
@@ -28,7 +34,7 @@ module.exports = env => {
         PouchDB: 'PouchDB'
     };
 
-    var plugins = [];
+    var plugins = [new VueLoaderPlugin()];
     var appcachePlugin = new AppCachePlugin({
         cache: [
             'build/asterics-grid.bundle.js',
@@ -103,7 +109,7 @@ module.exports = env => {
         devServer: getDevServer(buildDir),
         externals: externals,
         module: {
-            rules: [scssRule]
+            rules: [scssRule, vueRule]
         }
     };
 
@@ -141,7 +147,7 @@ module.exports = env => {
                     },
                 },
             },
-                scssRule
+                scssRule, vueRule
             ],
         }
     };
