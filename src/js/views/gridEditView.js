@@ -5,6 +5,7 @@ import {dataService} from "../service/dataService";
 import {Router} from "./../router.js";
 
 var GridEditView = {};
+var contextMenuSelector = '.grid-item-content';
 var CONTEXT_EDIT = "CONTEXT_EDIT";
 var CONTEXT_DUPLICATE = "CONTEXT_DUPLICATE";
 var CONTEXT_DELETE = "CONTEXT_DELETE";
@@ -23,6 +24,7 @@ GridEditView.init = function (gridId) {
 
 GridEditView.destroy = function () {
     GridEditView.grid = null;
+    $.contextMenu('destroy');
 };
 
 function initVue() {
@@ -84,7 +86,7 @@ function initContextmenu() {
     items[CONTEXT_DELETE] = {name: "Delete", icon: "far fa-trash-alt"};
 
     $.contextMenu({
-        selector: '.grid-item-content',
+        selector: contextMenuSelector,
         callback: function(key, options) {
             var elementId = $(this).attr('id');
             switch (key) {
