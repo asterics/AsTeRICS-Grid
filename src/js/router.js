@@ -44,16 +44,15 @@ Router.init = function (injectIdParam) {
         .resolve();
     navigoInstance.hooks({
         before: function (done, params) {
-            console.log('before');
             GridView.destroy();
             GridEditView.destroy();
             done();
         },
         after: function (params) {
-            console.log('after');
+            //console.log('after');
         },
         leave: function (params) {
-            console.log('leave');
+            //console.log('leave');
         }
     });
 };
