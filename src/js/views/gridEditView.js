@@ -2,6 +2,7 @@ import Vue from 'vue'
 import $ from 'jquery';
 import {Grid} from "../grid.js";
 import {dataService} from "../service/dataService";
+import {Router} from "./../router.js";
 
 var GridEditView = {};
 var CONTEXT_EDIT = "CONTEXT_EDIT";
@@ -12,6 +13,7 @@ GridEditView.init = function (gridId) {
     dataService.getGrid(gridId).then(grid => {
         if (!grid) {
             console.log('grid not found! gridId: ' + gridId);
+            Router.toMain();
             return;
         }
         GridEditView.gridData = grid;

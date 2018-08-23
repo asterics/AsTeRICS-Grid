@@ -18,7 +18,7 @@ Router.init = function (injectIdParam) {
     navigoInstance
         .on({
             'main': function () {
-                toMain();
+                toMainInternal();
             },
             'grids/': function () {
                 loadView('allGridsView').then(() => {
@@ -38,7 +38,7 @@ Router.init = function (injectIdParam) {
                 });
             },
             '*': function () {
-                toMain();
+                Router.toMain();
             }
         })
         .resolve();
@@ -56,6 +56,10 @@ Router.init = function (injectIdParam) {
             console.log('leave');
         }
     });
+};
+
+Router.toMain = function () {
+    location.hash = '#main';
 };
 
 function initI18n() {
@@ -77,7 +81,7 @@ function loadView(viewName) {
     })
 }
 
-function toMain() {
+function toMainInternal() {
     console.log('main view');
     dataService.getMetadata().then(metadata => {
         var gridId = metadata ? metadata.lastOpenedGridId : null;
@@ -85,7 +89,6 @@ function toMain() {
             GridView.init(gridId);
         });
     });
-
 }
 
 export {Router};

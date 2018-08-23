@@ -3,6 +3,7 @@ import Vue from 'vue'
 import {Grid} from "../grid.js";
 import {actionService} from "../service/actionService";
 import {dataService} from "../service/dataService";
+import {Router} from "./../router.js";
 import {MetaData} from "../model/MetaData.js";
 
 import {Scanner} from "../scanning.js";
@@ -15,6 +16,7 @@ GridView.init = function (gridId) {
     dataService.getGrid(gridId).then(grid => {
         if (!grid) {
             console.log('grid not found! gridId: ' + gridId);
+            Router.toMain();
             return;
         }
         GridView.gridData = grid;
