@@ -4,6 +4,8 @@ import {Grid} from "../grid.js";
 import {dataService} from "../service/dataService";
 import {Router} from "./../router.js";
 
+import EditGridModal from '../../vue-components/editGridModal.vue'
+
 var GridEditView = {};
 var contextMenuSelector = '.grid-item-content';
 var CONTEXT_EDIT = "CONTEXT_EDIT";
@@ -33,7 +35,11 @@ function initVue() {
         data: {
             gridData: JSON.parse(JSON.stringify(GridEditView.gridData)),
             canUndo: false,
-            canRedo: false
+            canRedo: false,
+            showModal: false
+        },
+        components: {
+            EditGridModal
         },
         methods: {
             changeRowCount: function (event) {
@@ -52,7 +58,7 @@ function initVue() {
                 GridEditView.grid.redo();
             },
         },
-        mounted: function() {
+        mounted: function () {
             var thiz = this;
             initGrid().then(() => {
                 GridEditView.grid.autosize();
@@ -87,7 +93,7 @@ function initContextmenu() {
 
     $.contextMenu({
         selector: contextMenuSelector,
-        callback: function(key, options) {
+        callback: function (key, options) {
             var elementId = $(this).attr('id');
             switch (key) {
                 case CONTEXT_EDIT: {
