@@ -76,6 +76,11 @@
         this.render();
     },
 
+    fillGaps: function () {
+        this.gridList.fillGaps();
+        this.render();
+    },
+
     render: function() {
       this._applySizeToItems();
       this._applyPositionToItems();

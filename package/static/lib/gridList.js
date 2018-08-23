@@ -136,6 +136,10 @@ GridList.prototype = {
     }
   },
 
+  fillGaps: function () {
+      this._pullItemsToLeft();
+  },
+
   resizeGrid: function(lanes) {
     var currentColumn = 0;
 
