@@ -173,6 +173,8 @@ function Grid(gridContainerId, gridItemClass, options) {
      * @return {Promise}
      */
     thiz.removeElement = function(idToRemove) {
+        notifyLayoutChangeStart();
+
         //remove in UI
         window._gridElement = _gridElement;
         _gridListInstance.gridList.items = _gridListInstance.gridList.items.filter(item => item.$element.children()[0].id != idToRemove);
@@ -182,15 +184,11 @@ function Grid(gridContainerId, gridItemClass, options) {
         console.log('removeElement gridList.items: ' + _gridListInstance.gridList.items.length)
         $('#' + idToRemove).remove();
 
-        //remove in DB
         return new Promise(resolve => {
-            dataService.getGrid(gridId).then(grid => {
-                grid.gridElements = grid.gridElements.filter(el => el.id != idToRemove);
-                dataService.saveGrid(grid);
-                _gridData = grid;
-                resolve(grid);
-            });
+            notifyLayoutChangeEnd();
+            resolve(_gridData);
         });
+
     };
 
     /**
@@ -198,6 +196,24 @@ function Grid(gridContainerId, gridItemClass, options) {
      */
     thiz.autosize = function() {
         _gridElement.gridList('autosize');
+    };
+
+    /**
+     * tries to fill gaps in the layout by pulling all items to the left
+     */
+    thiz.fillGaps = function() {
+        notifyLayoutChangeStart();
+        _gridElement.gridList('fillGaps');
+        notifyLayoutChangeEnd();
+    };
+
+    /**
+     * compacts the layout (no gaps, in a matrix with the given amount rows)
+     */
+    thiz.compactLayout = function() {
+        notifyLayoutChangeStart();
+        _gridElement.gridList('resize', _gridRows);
+        notifyLayoutChangeEnd();
     };
 
     thiz.setLayoutChangedStartListener = function (fn) {
