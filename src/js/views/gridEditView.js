@@ -28,6 +28,8 @@ function initVue() {
         el: '#app',
         data: {
             gridData: JSON.parse(JSON.stringify(GridEditView.gridData)),
+            canUndo: false,
+            canRedo: false
         },
         methods: {
             changeRowCount: function (event) {
@@ -38,11 +40,23 @@ function initVue() {
             },
             compactLayout: function () {
                 GridEditView.grid.compactLayout();
-            }
+            },
+            undo: function () {
+                GridEditView.grid.undo();
+            },
+            redo: function () {
+                GridEditView.grid.redo();
+            },
         },
-        mounted: () => {
+        mounted: function() {
+            var thiz = this;
             initGrid().then(() => {
                 GridEditView.grid.autosize();
+                GridEditView.grid.setLayoutChangedEndListener((newGridData) => {
+                    thiz.canUndo = GridEditView.grid.canUndo();
+                    thiz.canRedo = GridEditView.grid.canRedo();
+                    thiz.gridData.rowCount = newGridData.rowCount;
+                });
                 initContextmenu();
             });
         },
