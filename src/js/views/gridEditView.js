@@ -4,6 +4,9 @@ import {Grid} from "../grid.js";
 import {dataService} from "../service/dataService";
 
 var GridEditView = {};
+var CONTEXT_EDIT = "CONTEXT_EDIT";
+var CONTEXT_DUPLICATE = "CONTEXT_DUPLICATE";
+var CONTEXT_DELETE = "CONTEXT_DELETE";
 
 GridEditView.init = function (gridId) {
     dataService.getGrid(gridId).then(grid => {
@@ -53,28 +56,35 @@ function initGrid() {
 }
 
 function initContextmenu() {
+    var items = {};
+    items[CONTEXT_EDIT] = {name: "Edit", icon: "fas fa-edit"};
+    items[CONTEXT_DUPLICATE] = {name: "Duplicate", icon: "far fa-clone"};
+    items[CONTEXT_DELETE] = {name: "Delete", icon: "far fa-trash-alt"};
+
     $.contextMenu({
         selector: '.grid-item-content',
         callback: function(key, options) {
-            var m = "clicked: " + key;
-            window.console && console.log(m) || alert(m);
+            var elementId = $(this).attr('id');
+            switch (key) {
+                case CONTEXT_EDIT: {
+                    console.log('edit!');
+                    break;
+                }
+                case CONTEXT_DUPLICATE: {
+                    console.log('CONTEXT_DUPLICATE!');
+                    break;
+                }
+                case CONTEXT_DELETE: {
+                    console.log('deleting element: ' + elementId);
+                    GridEditView.grid.removeElement(elementId).then(newGridData => {
+                        GridEditView.gridData = newGridData;
+                    });
+                    break;
+                }
+            }
         },
-        items: {
-            "edit": {name: "Edit", icon: "fas fa-edit"},
-            "cut": {name: "Cut", icon: "cut"},
-            copy: {name: "Copy", icon: "copy"},
-            "paste": {name: "Paste", icon: "paste"},
-            "delete": {name: "Delete", icon: "delete"},
-            "sep1": "---------",
-            "quit": {name: "Quit", icon: function(){
-                return 'context-menu-icon context-menu-icon-quit';
-            }}
-        }
+        items: items
     });
-
-    $('.context-menu-one').on('click', function(e){
-        console.log('clicked', this);
-    })
 }
 
 export {GridEditView};
