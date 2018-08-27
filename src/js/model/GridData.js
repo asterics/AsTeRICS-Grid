@@ -21,10 +21,20 @@ class GridData extends Model({
         return this.gridElements.every(elm => elm.hasSetPosition());
     }
 
+    isEqual(otherGridData) {
+        var comp1 = JSON.parse(JSON.stringify(otherGridData));
+        var comp2 = JSON.parse(JSON.stringify(this));
+        delete comp1._rev;
+        delete comp2._rev;
+        delete comp1._id;
+        delete comp2._id;
+        return JSON.stringify(comp1) == JSON.stringify(comp2);
+    }
+
     static fromJSON(jsonData) {
         var result = [];
         var data = modelUtil.getAsObject(jsonData);
-        if(!(data instanceof Array)) {
+        if (!(data instanceof Array)) {
             data = [data];
         }
         data.forEach(function (item) {
