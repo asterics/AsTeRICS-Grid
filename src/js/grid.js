@@ -40,6 +40,7 @@ function Grid(gridContainerId, gridItemClass, options) {
                 });
             }
         });
+        return _initPromise;
     }
 
     function initData(options, gridData) {
@@ -196,6 +197,17 @@ function Grid(gridContainerId, gridItemClass, options) {
             resolve(_gridData);
         });
 
+    };
+
+    /**
+     * reloads the grid with updated data from dataService.
+     * useful for applying changes made e.g. in label oder image of an element
+     */
+    thiz.reinit = function () {
+        notifyLayoutChangeStart();
+        init().then(() =>  {
+            notifyLayoutChangeEnd();
+        });
     };
 
     /**
