@@ -212,6 +212,19 @@ var dataService = {
             });
         });
     },
+    updateGridElement: function (gridId, updatedGridElement) {
+        return new Promise(resolve => {
+            this.getGrid(gridId).then(grid => {
+                grid = JSON.parse(JSON.stringify(grid));
+                updatedGridElement = JSON.parse(JSON.stringify(updatedGridElement));
+                var index = grid.gridElements.map(el => el.id).indexOf(updatedGridElement.id);
+                grid.gridElements[index] = updatedGridElement;
+                this.updateGrid(gridId, grid).then(() => {
+                    resolve();
+                });
+            });
+        });
+    },
     saveGrid: function (gridData) {
         return saveInternal(GridData, gridData);
     },
