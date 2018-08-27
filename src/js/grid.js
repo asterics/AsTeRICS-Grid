@@ -25,10 +25,11 @@ function Grid(gridContainerId, gridItemClass, options) {
     var _initPromise = null;
     var _undoGridDataStack = [];
     var _redoGridDataStack = [];
+    var _redoGridDataStackBackup = [];
 
     function init(gridDataParam) {
         _initPromise = new Promise(resolve => {
-            if(gridDataParam) {
+            if (gridDataParam) {
                 initData(options, gridDataParam);
                 initGrid(_gridData);
                 setTimeout(() => resolve(), _animationTimeMs); // resolve with timeout in order to wait for init-animation, only resolve if grid is stable.
@@ -68,7 +69,9 @@ function Grid(gridContainerId, gridItemClass, options) {
             dragAndDrop: dragAndDrop
         }, {
             start: notifyLayoutChangeStart,
-            stop: notifyLayoutChangeEnd
+            stop() {
+                notifyLayoutChangeEnd();
+            }
         });
         _gridListInstance = _gridElement.data('_gridList');
         if (!gridDataParam.hasSetPositions()) {
@@ -98,7 +101,9 @@ function Grid(gridContainerId, gridItemClass, options) {
             handles: 'se',
             disabled: !enableResizing,
             start: notifyLayoutChangeStart,
-            stop: notifyLayoutChangeEnd,
+            stop() {
+                notifyLayoutChangeEnd();
+            },
             resize: function (event, ui) {
                 ui.element.parent().css('z-index', 1);
                 var w = Math.round(ui.element.width() / itemNormWidth);
@@ -120,15 +125,23 @@ function Grid(gridContainerId, gridItemClass, options) {
             _layoutChangedStartListener(_gridData);
         }
         _undoGridDataStack.push(JSON.parse(JSON.stringify(_gridData)));
+        _redoGridDataStackBackup = _redoGridDataStack;
         _redoGridDataStack = [];
     }
 
-    function notifyLayoutChangeEnd() {
-        _gridData.gridElements = thiz.toGridElements();
-        dataService.updateGrid(thiz.getCurrentGridId(), {
-            gridElements: _gridData.gridElements,
+    function notifyLayoutChangeEnd(afterUndoOrRedo) {
+        var newGridData = new GridData({
+            gridElements: thiz.toGridElements(),
             rowCount: _gridRows
-        }).then(() => {
+        }, _gridData);
+        var lastGridData = _undoGridDataStack[_undoGridDataStack.length - 1];
+        if (!afterUndoOrRedo && _undoGridDataStack.length > 0 && newGridData.isEqual(lastGridData)) {
+            _undoGridDataStack.pop();
+            _redoGridDataStack = _redoGridDataStackBackup;
+            return;
+        }
+
+        dataService.updateGrid(thiz.getCurrentGridId(), newGridData).then(() => {
             dataService.getGrid(_gridData.id).then(gridData => {
                 _gridData = gridData;
             });
@@ -205,7 +218,7 @@ function Grid(gridContainerId, gridItemClass, options) {
      */
     thiz.reinit = function () {
         notifyLayoutChangeStart();
-        init().then(() =>  {
+        init().then(() => {
             notifyLayoutChangeEnd();
         });
     };
@@ -239,11 +252,11 @@ function Grid(gridContainerId, gridItemClass, options) {
      * reverts the last layout change, if there was one
      */
     thiz.undo = function () {
-        if(_undoGridDataStack.length > 0) {
+        if (_undoGridDataStack.length > 0) {
             _redoGridDataStack.push(JSON.parse(JSON.stringify(_gridData)));
             _gridData = new GridData(_undoGridDataStack.pop());
             init(_gridData);
-            notifyLayoutChangeEnd();
+            notifyLayoutChangeEnd(true);
         }
 
     };
@@ -252,11 +265,11 @@ function Grid(gridContainerId, gridItemClass, options) {
      * reverts the last undo, if there was one
      */
     thiz.redo = function () {
-        if(_redoGridDataStack.length > 0) {
+        if (_redoGridDataStack.length > 0) {
             _undoGridDataStack.push(JSON.parse(JSON.stringify(_gridData)));
             _gridData = new GridData(_redoGridDataStack.pop());
             init(_gridData);
-            notifyLayoutChangeEnd();
+            notifyLayoutChangeEnd(true);
         }
 
     };
