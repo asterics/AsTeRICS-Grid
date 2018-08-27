@@ -5,22 +5,25 @@
                 <div class="modal-container">
 
                     <div class="modal-header">
-                        <slot name="header">
-                            default header
-                        </slot>
+                        <div name="header" data-i18n>
+                            Edit grid item // Grid-Element bearbeiten
+                        </div>
                     </div>
 
                     <div class="modal-body">
                         <slot name="body">
-                            default body
+                            <input v-if="gridElement" type="text" v-model="gridElement.label"/>
                         </slot>
                     </div>
 
                     <div class="modal-footer">
                         <slot name="footer">
                             default footer
-                            <button class="modal-default-button" @click="$emit('close')">
+                            <button class="modal-default-button" @click="save()">
                                 OK
+                            </button>
+                            <button class="modal-default-button" @click="$emit('close')">
+                                Cancel
                             </button>
                         </slot>
                     </div>
@@ -31,11 +34,38 @@
 </template>
 
 <script>
-    module.exports = {
+    import {dataService} from './../js/service/dataService'
+    import {I18nModule} from './../js/i18nModule.js';
+
+    export default {
+        props: ['gridId', 'editElementId'],
         data: function () {
             return {
-                greeting: 'Hello'
+                gridElement: null,
+                originalGridElementJSON: null
             }
+        },
+        methods: {
+            save () {
+                var thiz = this;
+                if(thiz.gridElement && thiz.originalGridElementJSON != JSON.stringify(thiz.gridElement)) {
+                    dataService.updateGridElement(thiz.gridId, thiz.gridElement).then(() => {
+                        this.$emit('reload', thiz.gridElement);
+                        this.$emit('close');
+                    });
+                } else {
+                    this.$emit('close');
+                }
+            }
+        },
+        mounted () {
+            var thiz = this;
+            console.log('opened modal: ' + thiz.editElementId);
+            I18nModule.init();
+            dataService.getGridElement(thiz.gridId, this.editElementId).then(gridElem => {
+                thiz.gridElement = gridElem;
+                thiz.originalGridElementJSON = JSON.stringify(gridElem);
+            });
         }
     }
 </script>
