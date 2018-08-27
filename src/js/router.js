@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import Navigo from 'navigo'
-import domI18n from '../../node_modules/dom-i18n/dist/dom-i18n.min';
+
+import {I18nModule} from './i18nModule.js';
 import {GridView} from "./views/gridView.js";
 import {GridEditView} from "./views/gridEditView.js";
 import {AllGridsView} from "./views/allGridsView.js";
@@ -61,19 +62,11 @@ Router.toMain = function () {
     location.hash = '#main';
 };
 
-function initI18n() {
-    domI18n({
-        selector: '[data-i18n]',
-        separator: ' // ',
-        languages: ['en', 'de']
-    });
-}
-
 function loadView(viewName) {
     console.log('loading view: ' + viewName);
     return new Promise(resolve => {
         $(injectId).load(viewsFolder + viewName + filePostfix, null, function () {
-            initI18n();
+            I18nModule.init();
             console.log('loaded view: ' + viewName);
             resolve();
         });
