@@ -7,6 +7,8 @@ import {Router} from "./../router.js";
 import EditGridModal from '../../vue-components/editGridModal.vue'
 
 var GridEditView = {};
+var vueApp = null;
+
 var contextMenuSelector = '.grid-item-content';
 var CONTEXT_EDIT = "CONTEXT_EDIT";
 var CONTEXT_DUPLICATE = "CONTEXT_DUPLICATE";
@@ -30,13 +32,14 @@ GridEditView.destroy = function () {
 };
 
 function initVue() {
-    var app = new Vue({
+    vueApp = new Vue({
         el: '#app',
         data: {
             gridData: JSON.parse(JSON.stringify(GridEditView.gridData)),
             canUndo: false,
             canRedo: false,
-            showModal: false
+            showModal: false,
+            editElementId: null
         },
         components: {
             EditGridModal
@@ -57,6 +60,10 @@ function initVue() {
             redo: function () {
                 GridEditView.grid.redo();
             },
+            reload (gridElement) {
+                console.log('doing reload: ' + gridElement.label);
+                GridEditView.grid.reinit();
+            }
         },
         mounted: function () {
             var thiz = this;
@@ -98,6 +105,8 @@ function initContextmenu() {
             switch (key) {
                 case CONTEXT_EDIT: {
                     console.log('edit!');
+                    vueApp.editElementId = elementId;
+                    vueApp.showModal = true;
                     break;
                 }
                 case CONTEXT_DUPLICATE: {
