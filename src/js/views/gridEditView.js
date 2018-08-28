@@ -104,17 +104,15 @@ function initContextmenu() {
             var elementId = $(this).attr('id');
             switch (key) {
                 case CONTEXT_EDIT: {
-                    console.log('edit!');
                     vueApp.editElementId = elementId;
                     vueApp.showModal = true;
                     break;
                 }
                 case CONTEXT_DUPLICATE: {
-                    console.log('CONTEXT_DUPLICATE!');
+                    GridEditView.grid.duplicateElement(elementId);
                     break;
                 }
                 case CONTEXT_DELETE: {
-                    console.log('deleting element: ' + elementId);
                     GridEditView.grid.removeElement(elementId).then(newGridData => {
                         GridEditView.gridData = newGridData;
                     });
