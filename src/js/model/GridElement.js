@@ -1,5 +1,6 @@
 import {modelUtil} from "../util/modelUtil";
 import {templates} from "../templates";
+import {GridImage} from "./GridImage";
 
 class GridElement extends Model({
     id: String,
@@ -8,7 +9,8 @@ class GridElement extends Model({
     x: [Number],
     y: [Number],
     speakText: [String],
-    label: [String]
+    label: [String],
+    image: [GridImage]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridElement);
@@ -23,7 +25,7 @@ class GridElement extends Model({
     }
 
     toHTML() {
-        return templates.getGridItem(this.label, this.width, this.height, this.x, this.y, this.id);
+        return templates.getGridItem(this.label, this.width, this.height, this.x, this.y, this.id, this.image);
     };
 
     hasSetPosition() {
