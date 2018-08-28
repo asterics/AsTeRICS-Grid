@@ -3,6 +3,7 @@ import {dataService} from "./service/dataService";
 import {GridData} from "./model/GridData";
 import {GridElement} from "./model/GridElement";
 import {templates} from "./templates";
+import {GridImage} from "./model/GridImage";
 
 function Grid(gridContainerId, gridItemClass, options) {
     var thiz = this;
@@ -312,11 +313,15 @@ function Grid(gridContainerId, gridItemClass, options) {
         _gridListInstance.items.forEach(function (item) {
             var id = item.$element.attr('data-id');
             var label = item.$element.attr('data-label');
+            var img = item.$element.attr('data-img');
+            var imgId = item.$element.attr('data-img-id');
+            var imageObject = imgId ? new GridImage({id: imgId, data: img}) : null;
             gridElements.push(new GridElement({
                 id: id,
                 label: label,
                 width: item.w,
-                height: item.h
+                height: item.h,
+                image: imageObject
             }, item));
         });
         return gridElements;
