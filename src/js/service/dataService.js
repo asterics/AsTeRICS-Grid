@@ -4,6 +4,7 @@ import FileSaver from 'file-saver';
 import {L} from "../../lib/lquery.js";
 import {GridElement} from "../model/GridElement.js";
 import {GridData} from "../model/GridData.js";
+import {GridImage} from "../model/GridImage";
 import {ScanningConfig} from "../model/ScanningConfig";
 import {MetaData} from "../model/MetaData";
 
@@ -268,6 +269,12 @@ var dataService = {
     },
     getMetadata: function () {
         return getInternal(MetaData);
+    },
+    saveImage: function (imgData) {
+        return saveInternal(GridImage, imgData);
+    },
+    getImage: function (imgId) {
+        return getInternal(GridImage, imgId);
     },
     downloadDB: function () {
         var dumpedString = '';
