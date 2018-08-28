@@ -76,6 +76,8 @@ function Grid(gridContainerId, gridItemClass, options) {
         _gridListInstance = _gridElement.data('_gridList');
         if (!gridDataParam.hasSetPositions()) {
             _gridElement.gridList('resize', _gridRows);
+            _gridData.gridElements = thiz.toGridElements();
+            dataService.updateGrid(_gridData.id, _gridData);
         }
         initResizing();
     }
@@ -210,6 +212,17 @@ function Grid(gridContainerId, gridItemClass, options) {
             resolve(_gridData);
         });
 
+    };
+
+    thiz.duplicateElement = function (id) {
+        notifyLayoutChangeStart();
+        var duplicatedElement = _gridData.gridElements.filter(el => el.id == id)[0].duplicate();
+        _gridData.gridElements.push(duplicatedElement);
+        var newElemId = duplicatedElement.id;
+        init(_gridData).then(() => {
+            _gridListInstance.resolveCollisions(newElemId);
+            notifyLayoutChangeEnd();
+        });
     };
 
     /**
