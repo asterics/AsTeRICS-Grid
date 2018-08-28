@@ -16,6 +16,12 @@ class GridElement extends Model({
         this.id = this.id || modelUtil.generateId('grid-element')
     }
 
+    duplicate() {
+        var newElem = new GridElement(JSON.parse(JSON.stringify(this)));
+        newElem.id = modelUtil.generateId('grid-element');
+        return newElem;
+    }
+
     toHTML() {
         return templates.getGridItem(this.label, this.width, this.height, this.x, this.y, this.id);
     };
