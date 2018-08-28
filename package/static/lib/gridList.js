@@ -140,6 +140,13 @@ GridList.prototype = {
       this._pullItemsToLeft();
   },
 
+  resolveCollisions: function(itemId) {
+    var itemToResolve = this.items.filter(item => item.$element.children()[0].id == itemId)[0];
+    if(itemToResolve) {
+        this._resolveCollisions(itemToResolve);
+    }
+  },
+
   resizeGrid: function(lanes) {
     var currentColumn = 0;
 

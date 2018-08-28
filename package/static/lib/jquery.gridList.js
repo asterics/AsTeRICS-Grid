@@ -81,6 +81,11 @@
         this.render();
     },
 
+    resolveCollisions: function(itemId) {
+        this.gridList.resolveCollisions(itemId);
+        this.render();
+    },
+
     render: function() {
       this._applySizeToItems();
       this._applyPositionToItems();
