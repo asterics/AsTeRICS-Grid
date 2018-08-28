@@ -141,7 +141,9 @@ GridList.prototype = {
   },
 
   resolveCollisions: function(itemId) {
-    var itemToResolve = this.items.filter(item => item.$element.children()[0].id == itemId)[0];
+    var itemToResolve = this.items.filter(function(item) {
+        return item.$element.children()[0].id == itemId;
+    })[0];
     if(itemToResolve) {
         this._resolveCollisions(itemToResolve);
     }
