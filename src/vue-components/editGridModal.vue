@@ -11,21 +11,25 @@
                     </div>
 
                     <div class="modal-body">
-                        <slot name="body">
-                            <input v-if="gridElement" type="text" v-model="gridElement.label"/>
-                        </slot>
+                        <div>
+                            <label for="inputLabel">Label</label>
+                            <input id="inputLabel" v-if="gridElement" type="text" v-model="gridElement.label"/>
+                        </div>
+                        <div>
+                            <label for="inputImg" data-i18n>Image // Bild</label>
+                            <input id="inputImg" type="file" @change="changedImg" accept="image/*"/>
+                            <img id="imgPreview" :src="imgDataSmall"/>
+                            <img id="fullImg" :src="imgDataFull" @load="imgLoaded" style="display: none"/>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
-                        <slot name="footer">
-                            default footer
-                            <button class="modal-default-button" @click="save()">
-                                OK
-                            </button>
-                            <button class="modal-default-button" @click="$emit('close')">
-                                Cancel
-                            </button>
-                        </slot>
+                        <button class="modal-default-button" @click="save()">
+                            OK
+                        </button>
+                        <button class="modal-default-button" @click="$emit('close')">
+                            Cancel
+                        </button>
                     </div>
                 </div>
             </div>
@@ -36,18 +40,38 @@
 <script>
     import {dataService} from './../js/service/dataService'
     import {I18nModule} from './../js/i18nModule.js';
+    import {imageUtil} from './../js/util/imageUtil';
+    import {GridImage} from "../js/model/GridImage";
 
     export default {
         props: ['gridId', 'editElementId'],
         data: function () {
             return {
                 gridElement: null,
-                originalGridElementJSON: null
+                originalGridElementJSON: null,
+                imgDataFull: null,
+                imgDataSmall: null,
+                imgDataBig: null
             }
         },
         methods: {
+            changedImg (event) {
+                imageUtil.getBase64FromInput(event.target).then(base64 => {
+                    this.imgDataFull = base64;
+                });
+            },
+            imgLoaded (event) {
+                this.imgDataSmall = imageUtil.getBase64FromImg(event.target);
+                this.imgDataBig = imageUtil.getBase64FromImg(event.target, 500);
+            },
             save () {
                 var thiz = this;
+                if(this.imgDataBig) {
+                    var imgToSave = new GridImage({data: this.imgDataBig});
+                    dataService.saveImage(imgToSave);
+                    thiz.gridElement.image = new GridImage({id: imgToSave.id, data: this.imgDataSmall});
+                }
+
                 if(thiz.gridElement && thiz.originalGridElementJSON != JSON.stringify(thiz.gridElement)) {
                     dataService.updateGridElement(thiz.gridId, thiz.gridElement).then(() => {
                         this.$emit('reload', thiz.gridElement);
@@ -91,7 +115,7 @@
     .modal-container {
         width: 300px;
         margin: 0px auto;
-        padding: 20px 30px;
+        padding: 2em;
         background-color: #fff;
         border-radius: 2px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
