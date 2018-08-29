@@ -48,6 +48,7 @@
         data: function () {
             return {
                 gridElement: null,
+                metadata: null,
                 originalGridElementJSON: null,
                 imgDataFull: null,
                 imgDataSmall: null,
@@ -69,10 +70,17 @@
             },
             save () {
                 var thiz = this;
-                if(this.imgDataBig) {
-                    var imgToSave = new GridImage({data: this.imgDataBig});
-                    dataService.saveImage(imgToSave);
-                    thiz.gridElement.image = new GridImage({id: imgToSave.id, data: this.imgDataSmall});
+                if(thiz.imgDataBig) {
+                    var imgToSave = new GridImage({data: thiz.imgDataBig});
+                    var imgHash = imageUtil.hashCode(thiz.imgDataBig);
+                    if(thiz.metadata && thiz.metadata.imageHashCodes && thiz.metadata.imageHashCodes[imgHash]) {
+                        imgToSave.id = thiz.metadata.imageHashCodes[imgHash];
+                    } else {
+                        dataService.saveImage(imgToSave);
+                        thiz.metadata.imageHashCodes[imgHash] = imgToSave.id;
+                        dataService.saveMetadata(thiz.metadata);
+                    }
+                    thiz.gridElement.image = new GridImage({id: imgToSave.id, data: thiz.imgDataSmall});
                 }
 
                 if(thiz.gridElement && thiz.originalGridElementJSON != JSON.stringify(thiz.gridElement)) {
@@ -93,6 +101,9 @@
                 thiz.gridElement = gridElem;
                 thiz.elementW = $('#' + this.gridElement.id)[0].getBoundingClientRect().width;
                 thiz.originalGridElementJSON = JSON.stringify(gridElem);
+            });
+            dataService.getMetadata().then(metadata => {
+                thiz.metadata = metadata;
             });
         }
     }
