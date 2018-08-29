@@ -51,4 +51,9 @@ imageUtil.convertBase64 = function (originalBase64, maxWidth, quality) {
     })
 };
 
+imageUtil.hashCode = function (str) {
+    return str.split('').reduce((prevHash, currVal) =>
+        (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
+};
+
 export {imageUtil};
