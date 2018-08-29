@@ -18,7 +18,7 @@
                         <div>
                             <label for="inputImg" data-i18n>Image // Bild</label>
                             <input id="inputImg" type="file" @change="changedImg" accept="image/*"/>
-                            <img id="imgPreview" :src="imgDataSmall"/>
+                            <img id="imgPreview" :src="imgDataPreview"/>
                             <img id="fullImg" :src="imgDataFull" @load="imgLoaded" style="display: none"/>
                         </div>
                     </div>
@@ -51,7 +51,9 @@
                 originalGridElementJSON: null,
                 imgDataFull: null,
                 imgDataSmall: null,
-                imgDataBig: null
+                imgDataBig: null,
+                imgDataPreview: null,
+                elementW: null
             }
         },
         methods: {
@@ -61,8 +63,9 @@
                 });
             },
             imgLoaded (event) {
-                this.imgDataSmall = imageUtil.getBase64FromImg(event.target);
-                this.imgDataBig = imageUtil.getBase64FromImg(event.target, 500);
+                this.imgDataPreview = imageUtil.getBase64FromImg(event.target);
+                this.imgDataSmall = imageUtil.getBase64FromImg(event.target, this.elementW);
+                this.imgDataBig = imageUtil.getBase64FromImg(event.target, Math.max(this.elementW, 500));
             },
             save () {
                 var thiz = this;
@@ -88,6 +91,7 @@
             I18nModule.init();
             dataService.getGridElement(thiz.gridId, this.editElementId).then(gridElem => {
                 thiz.gridElement = gridElem;
+                thiz.elementW = $('#' + this.gridElement.id)[0].getBoundingClientRect().width;
                 thiz.originalGridElementJSON = JSON.stringify(gridElem);
             });
         }
