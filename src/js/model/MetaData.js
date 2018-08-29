@@ -3,7 +3,8 @@ import {modelUtil} from "../util/modelUtil";
 class MetaData extends Model({
     id: String,
     modelName: String,
-    lastOpenedGridId: String
+    lastOpenedGridId: [String],
+    imageHashCodes: [Object] //object keys: image hashcodes, object values: image ids
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, MetaData);
@@ -18,7 +19,8 @@ class MetaData extends Model({
 
 MetaData.defaults({
     id: "", //will be replaced by constructor
-    modelName: MetaData.getModelName()
+    modelName: MetaData.getModelName(),
+    imageHashCodes: {}
 });
 
 export {MetaData};
