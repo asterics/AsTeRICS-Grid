@@ -4,6 +4,7 @@ import {GridData} from "./model/GridData";
 import {GridElement} from "./model/GridElement";
 import {templates} from "./templates";
 import {GridImage} from "./model/GridImage";
+import {imageUtil} from "./util/imageUtil";
 
 function Grid(gridContainerId, gridItemClass, options) {
     var thiz = this;
@@ -104,8 +105,28 @@ function Grid(gridContainerId, gridItemClass, options) {
             handles: 'se',
             disabled: !enableResizing,
             start: notifyLayoutChangeStart,
-            stop() {
-                notifyLayoutChangeEnd();
+            stop(event, ui) {
+                var idOfChangedElement = ui.element.attr('id');
+                var resizePromise = new Promise(resolve => {
+                    var changedElement = $('#' + idOfChangedElement).parent();
+                    var imageId = changedElement.attr('data-img-id');
+                    if (imageId) {
+                        dataService.getImage(imageId).then(gridImage => {
+                            var elementW = $('#' + idOfChangedElement)[0].getBoundingClientRect().width;
+                            imageUtil.convertBase64(gridImage.data, elementW).then(convertedBase64 => {
+                                changedElement.attr('data-img', convertedBase64);
+                                changedElement.children().children()[0].style.backgroundImage = 'url("' + convertedBase64 + '")';
+                                resolve();
+                            });
+                        });
+                    } else {
+                        resolve();
+                    }
+                });
+
+                resizePromise.then(() => {
+                    notifyLayoutChangeEnd();
+                });
             },
             resize: function (event, ui) {
                 ui.element.parent().css('z-index', 1);
