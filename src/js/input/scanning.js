@@ -13,6 +13,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
     var minBinarySplitThreshold = 3; // for binary scanning: if there are [n] or less scanning possibilities they will not be split up again, but will be scanned in linear fashion
     var scanBinary = false;
     var touchScanning = true;
+    var scanTimeoutFirstElementFactor = 1.0;
 
     //internal
     var _selectionListener = null;
@@ -38,6 +39,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
             scanVertical = options.scanVertical != undefined ? options.scanVertical : scanVertical;
             scanBinary = options.scanBinary != undefined ? options.scanBinary : scanBinary;
             touchScanning = options.touchScanning != undefined ? options.touchScanning : touchScanning;
+            scanTimeoutFirstElementFactor = options.scanTimeoutFirstElementFactor != undefined ? options.scanTimeoutFirstElementFactor : scanTimeoutFirstElementFactor;
         }
         if(touchScanning) thiz.enableTouchScanning();
         thiz.addSelectKeyCode(options.selectKeyCode);
@@ -200,7 +202,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
         return item.getBoundingClientRect().right;
     }
 
-    function scan(elems, index, count) {
+    function scan(elems, firstElementDelay, index, count) {
         elems = elems || [];
         count = count || 0;
         index = index || 0;
@@ -216,9 +218,10 @@ function Scanner(itemSelector, scanActiveClass, options) {
             L.addClass(elems[index], scanActiveClass);
             L.removeClass(elems, scanInactiveClass);
             _currentActiveScanElements = elems[index];
+            var timeout = index == 0 && firstElementDelay && elems.length > 2 ? scanTimeoutMs * scanTimeoutFirstElementFactor : scanTimeoutMs;
             _scanTimeoutHandler = setTimeout(function () {
-                scan(elems, index + 1, count + 1);
-            }, scanTimeoutMs);
+                scan(elems, true, index + 1, count + 1);
+            }, timeout);
         }
     }
 
@@ -242,9 +245,9 @@ function Scanner(itemSelector, scanActiveClass, options) {
             var rows = getGroups(elements, scanVertical);
             _isScanning = true;
             if(rows.length == 1) {
-                scan(spitToSubarrays(L.flattenArray(rows)));
+                scan(spitToSubarrays(L.flattenArray(rows)), true);
             } else {
-                scan(spitToSubarrays(rows));
+                scan(spitToSubarrays(rows), true);
             }
         }
     };
@@ -341,9 +344,9 @@ function Scanner(itemSelector, scanActiveClass, options) {
             thiz.stopScanning();
             _isScanning = true;
             if (_currentActiveScanElements.length > 1) {
-                scan(spitToSubarrays(_currentActiveScanElements));
+                scan(spitToSubarrays(_currentActiveScanElements), true);
             } else if (L.flattenArray(_currentActiveScanElements).length > 1) {
-                scan(spitToSubarrays(L.flattenArray(_currentActiveScanElements)));
+                scan(spitToSubarrays(L.flattenArray(_currentActiveScanElements)), true);
             } else if (_selectionListener) {
                 _selectionListener(_currentActiveScanElements[0]);
                 thiz.restartScanning();
