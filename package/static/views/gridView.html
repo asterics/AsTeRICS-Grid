@@ -19,15 +19,15 @@
             <button v-if="isScanning" @click="toggleScanning" data-i18n>Stop Scanning // Scanning stoppen</button>
             <div class="spaced inline">
                 <label for="inScanTime" data-i18n>Scanning Time // Scanning Zeit</label>
-                <input type="range" id="inScanTime" v-model="gridData.scanningConfig.scanTimeoutMs" @change="changeScanningMs" min="100" max="3000"/>
+                <input type="range" id="inScanTime" v-model="gridData.inputConfig.scanTimeoutMs" @change="changeScanningMs" min="100" max="3000"/>
             </div>
             <div class="spaced inline">
                 <label for="chkVerticalScanning" data-i18n>Vertical scanning // Scanning vertikal</label>
-                <input type="checkbox" id="chkVerticalScanning" v-model="gridData.scanningConfig.verticalScan" @change="setVerticalScanning" checked/>
+                <input type="checkbox" id="chkVerticalScanning" v-model="gridData.inputConfig.scanVertical" @change="setVerticalScanning" checked/>
             </div>
             <div class="spaced inline">
                 <label for="chkBinaryScanning" data-i18n>Binary scanning // Scanning binär</label>
-                <input type="checkbox" id="chkBinaryScanning" v-model="gridData.scanningConfig.binaryScanning" @change="setBinaryScanning" checked/>
+                <input type="checkbox" id="chkBinaryScanning" v-model="gridData.inputConfig.binaryScanning" @change="setBinaryScanning" checked/>
             </div>
         </fieldset>
         <fieldset class="spaced inline">

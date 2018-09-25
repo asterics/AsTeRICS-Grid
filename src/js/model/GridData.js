@@ -1,7 +1,7 @@
 import {modelUtil} from "../util/modelUtil";
 import {GridElement} from "./GridElement";
 import Model from "objectmodel"
-import {ScanningConfig} from "./ScanningConfig";
+import {InputConfig} from "./InputConfig";
 
 class GridData extends Model({
     id: String,
@@ -9,7 +9,7 @@ class GridData extends Model({
     label: [String],
     rowCount: Number,
     gridElements: Model.Array(GridElement),
-    scanningConfig: ScanningConfig
+    inputConfig: InputConfig
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridData);
@@ -53,7 +53,7 @@ GridData.defaults({
     id: "", //will be replaced by constructor
     modelName: GridData.getModelName(),
     rowCount: 9,
-    scanningConfig: new ScanningConfig()
+    inputConfig: new InputConfig()
 });
 
 export {GridData};

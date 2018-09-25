@@ -25,14 +25,14 @@ GridView.init = function (gridId) {
             lastOpenedGridId: GridView.gridData.id
         }));
 
-        var scanningConfig = grid.scanningConfig;
+        var inputConfig = grid.inputConfig;
         GridView.scanner = new Scanner('.grid-item-content', 'scanFocus', {
-            verticalScan: scanningConfig.verticalScan,
+            scanVertical: inputConfig.scanVertical,
             subScanRepeat: 3,
-            binaryScanning: scanningConfig.binaryScanning,
+            binaryScanning: inputConfig.binaryScanning,
             scanInactiveClass: 'scanInactive',
             minBinarySplitThreshold: 3,
-            scanTimeoutMs: scanningConfig.scanTimeoutMs
+            scanTimeoutMs: inputConfig.scanTimeoutMs
         });
         GridView.hover = new Hover('.grid-item-content');
         GridView.clicker = new Clicker('.grid-item-content');
@@ -103,7 +103,7 @@ function initVue() {
             },
             setVerticalScanning: function (event) {
                 this.updateScanningOptions({
-                    verticalScan: event.target.checked
+                    scanVertical: event.target.checked
                 }, true);
             },
             setBinaryScanning: function (event) {
@@ -113,7 +113,7 @@ function initVue() {
             },
             updateScanningOptions: function (optionsToUpdate, restart) {
                 GridView.scanner.updateOptions(optionsToUpdate, restart);
-                dataService.updateScanningConfig(GridView.gridData.id, optionsToUpdate);
+                dataService.updateInputConfig(GridView.gridData.id, optionsToUpdate);
             }
         },
         computed: {

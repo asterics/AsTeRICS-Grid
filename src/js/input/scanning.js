@@ -8,7 +8,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
     var scanActiveClass = scanActiveClass;
     var scanInactiveClass = '';
     var scanTimeoutMs = 1000;
-    var verticalScan = false;
+    var scanVertical = false;
     var subScanRepeat = 3;
     var minBinarySplitThreshold = 3; // for binary scanning: if there are [n] or less scanning possibilities they will not be split up again, but will be scanned in linear fashion
     var binaryScanning = false;
@@ -35,7 +35,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
             minBinarySplitThreshold = options.minBinarySplitThreshold || minBinarySplitThreshold;
             scanInactiveClass = options.scanInactiveClass || scanInactiveClass;
 
-            verticalScan = options.verticalScan != undefined ? options.verticalScan : verticalScan;
+            scanVertical = options.scanVertical != undefined ? options.scanVertical : scanVertical;
             binaryScanning = options.binaryScanning != undefined ? options.binaryScanning : binaryScanning;
             touchScanning = options.touchScanning != undefined ? options.touchScanning : touchScanning;
         }
@@ -47,10 +47,10 @@ function Scanner(itemSelector, scanActiveClass, options) {
         }
     }
 
-    function getGroups(allElements, verticalScan) {
-        var minPosFn = verticalScan ? getPosXMin : getPosYMin;
-        var maxPosFn = verticalScan ? getPosXMax : getPosYMax;
-        var invertedMinPosFn = !verticalScan ? getPosXMin : getPosYMin;
+    function getGroups(allElements, scanVertical) {
+        var minPosFn = scanVertical ? getPosXMin : getPosYMin;
+        var maxPosFn = scanVertical ? getPosXMax : getPosYMax;
+        var invertedMinPosFn = !scanVertical ? getPosXMin : getPosYMin;
         var sortFnGroupSplitting = getCombinedSortFunction(getPosSortFunction(minPosFn), getSizeSortFunction(minPosFn, maxPosFn), getIdSortFunction());
         var sortFnOneGroup = getCombinedSortFunction(getPosSortFunction(invertedMinPosFn), getPosSortFunction(minPosFn));
         allElements = allElements.sort(sortFnGroupSplitting);
@@ -59,7 +59,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
         var i = 0;
         while (remainingElements.length > 0 && i < 1000) {
             i++; //endless loop protection
-            var group = getNextGroup(remainingElements, allElements, verticalScan);
+            var group = getNextGroup(remainingElements, allElements, scanVertical);
             groups.push(group);
             remainingElements = remainingElements.filter(el => !group.includes(el));
         }
@@ -68,9 +68,9 @@ function Scanner(itemSelector, scanActiveClass, options) {
         return groups;
     }
 
-    function getNextGroup(remainingElements, allElements, verticalScan) {
-        var minPosFn = verticalScan ? getPosXMin : getPosYMin;
-        var maxPosFn = verticalScan ? getPosXMax : getPosYMax;
+    function getNextGroup(remainingElements, allElements, scanVertical) {
+        var minPosFn = scanVertical ? getPosXMin : getPosYMin;
+        var maxPosFn = scanVertical ? getPosXMax : getPosYMax;
         var firstElem = remainingElements[0];
         var firstMinPos = minPosFn(firstElem);
         var firstMaxPos = maxPosFn(firstElem);
@@ -239,7 +239,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
     thiz.startScanning = function () {
         if (!_isScanning) {
             var elements = L.selectAsList(itemSelector);
-            var rows = getGroups(elements, verticalScan);
+            var rows = getGroups(elements, scanVertical);
             _isScanning = true;
             if(rows.length == 1) {
                 scan(spitToSubarrays(L.flattenArray(rows)));
@@ -263,7 +263,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
      */
     thiz.restartScanning = function () {
         thiz.stopScanning();
-        thiz.startScanning(verticalScan);
+        thiz.startScanning(scanVertical);
     };
 
     /**

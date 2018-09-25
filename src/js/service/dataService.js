@@ -5,7 +5,7 @@ import {L} from "../../lib/lquery.js";
 import {GridElement} from "../model/GridElement.js";
 import {GridData} from "../model/GridData.js";
 import {GridImage} from "../model/GridImage";
-import {ScanningConfig} from "../model/ScanningConfig";
+import {InputConfig} from "../model/InputConfig";
 import {MetaData} from "../model/MetaData";
 
 var verbs = ['be', 'have', 'do', 'say', 'get', 'make', 'go', 'know', 'take', 'see', 'come', 'think', 'look', 'want', 'give', 'use', 'find', 'tell', 'ask', 'work', 'seem', 'feel', 'try', 'leave', 'call'];
@@ -233,14 +233,14 @@ var dataService = {
         newConfig.id = gridId;
         return saveInternal(GridData, newConfig, true);
     },
-    updateScanningConfig: function (gridId, newConfig) {
+    updateInputConfig: function (gridId, newConfig) {
         this.getGrid(gridId).then(grid => {
-            if (!grid || !grid.scanningConfig) {
-                console.log('no grid found for updating scanning config!');
+            if (!grid || !grid.inputConfig) {
+                console.log('no grid found for updating input config!');
                 return;
             }
-            var newScanningConfig = new ScanningConfig(newConfig, grid.scanningConfig);
-            grid.scanningConfig = newScanningConfig;
+            var newInputConfig = new InputConfig(newConfig, grid.inputConfig);
+            grid.inputConfig = newInputConfig;
             return this.saveGrid(grid);
         });
     },
