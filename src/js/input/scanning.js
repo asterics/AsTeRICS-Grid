@@ -11,7 +11,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
     var scanVertical = false;
     var subScanRepeat = 3;
     var minBinarySplitThreshold = 3; // for binary scanning: if there are [n] or less scanning possibilities they will not be split up again, but will be scanned in linear fashion
-    var binaryScanning = false;
+    var scanBinary = false;
     var touchScanning = true;
 
     //internal
@@ -36,7 +36,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
             scanInactiveClass = options.scanInactiveClass || scanInactiveClass;
 
             scanVertical = options.scanVertical != undefined ? options.scanVertical : scanVertical;
-            binaryScanning = options.binaryScanning != undefined ? options.binaryScanning : binaryScanning;
+            scanBinary = options.scanBinary != undefined ? options.scanBinary : scanBinary;
             touchScanning = options.touchScanning != undefined ? options.touchScanning : touchScanning;
         }
         if(touchScanning) thiz.enableTouchScanning();
@@ -226,7 +226,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
         var returnArray = [];
         array = array || [];
         var chunk = 1;
-        if (binaryScanning && array.length > minBinarySplitThreshold) {
+        if (scanBinary && array.length > minBinarySplitThreshold) {
             chunk = Math.ceil(array.length / 2);
         }
         for (var i = 0, j = array.length; i < j; i += chunk) {

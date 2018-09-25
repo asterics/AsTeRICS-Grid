@@ -29,7 +29,7 @@ GridView.init = function (gridId) {
         GridView.scanner = new Scanner('.grid-item-content', 'scanFocus', {
             scanVertical: inputConfig.scanVertical,
             subScanRepeat: 3,
-            binaryScanning: inputConfig.binaryScanning,
+            scanBinary: inputConfig.scanBinary,
             scanInactiveClass: 'scanInactive',
             minBinarySplitThreshold: 3,
             scanTimeoutMs: inputConfig.scanTimeoutMs
@@ -108,7 +108,7 @@ function initVue() {
             },
             setBinaryScanning: function (event) {
                 this.updateScanningOptions({
-                    binaryScanning: event.target.checked
+                    scanBinary: event.target.checked
                 }, true);
             },
             updateScanningOptions: function (optionsToUpdate, restart) {
