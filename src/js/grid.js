@@ -101,7 +101,7 @@ function Grid(gridContainerId, gridItemClass, options) {
         var itemNormWidth = _gridListInstance._cellWidth;
         return {
             grid: [itemNormWidth, itemNormHeight],
-            autoHide: true,
+            autoHide: false,
             handles: 'se',
             disabled: !enableResizing,
             start: notifyLayoutChangeStart,
