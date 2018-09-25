@@ -9,6 +9,7 @@ class InputConfig extends Model({
     scanVertical: [Boolean],
     scanBinary: [Boolean],
     hoverEnabled: [Boolean],
+    hoverTimeoutMs: Number,
     mouseclickEnabled: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
@@ -23,7 +24,8 @@ InputConfig.defaults({
     scanAutostart: true,
     scanTimeoutMs: 1000,
     scanTimeoutFirstElementFactor: 1.5,
-    scanBinary: true
+    scanBinary: true,
+    hoverTimeoutMs: 1000
 });
 
 export {InputConfig};
