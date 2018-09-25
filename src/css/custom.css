@@ -67,6 +67,7 @@ h1, #menuButtons button, a {
 
 .grid-item-content .text-container {
     flex: 0 1 auto;
+    padding-bottom: 0.3em;
 }
 
 .selected.grid-item-content {
