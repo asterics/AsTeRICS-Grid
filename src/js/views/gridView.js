@@ -68,11 +68,31 @@ function initVue() {
         data: {
             gridData: JSON.parse(JSON.stringify(GridView.gridData)),
             showInputOptions: false,
-            isScanning: autostartScan
+            isScanning: GridView.gridData.inputConfig.scanAutostart
         },
         methods: {
             toggleInputMenu: function () {
                 this.showInputOptions = !this.showInputOptions;
+            },
+            setHover: function (event) {
+                if (event.target.checked) {
+                    GridView.hover.startHovering();
+                } else {
+                    GridView.hover.stopHovering();
+                }
+                dataService.updateInputConfig(GridView.gridData.id, {
+                    hoverEnabled: event.target.checked
+                });
+            },
+            setClickControl: function (event) {
+                if (event.target.checked) {
+                    GridView.clicker.startClickcontrol();
+                } else {
+                    GridView.clicker.stopClickcontrol();
+                }
+                dataService.updateInputConfig(GridView.gridData.id, {
+                    mouseclickEnabled: event.target.checked
+                });
             },
             toggleScanning: function () {
                 if (this.isScanning) {
@@ -81,20 +101,9 @@ function initVue() {
                     GridView.scanner.startScanning();
                 }
                 this.isScanning = !this.isScanning;
-            },
-            setHover: function (event) {
-                if (event.target.checked) {
-                    GridView.hover.startHovering();
-                } else {
-                    GridView.hover.stopHovering();
-                }
-            },
-            setClickControl: function (event) {
-                if (event.target.checked) {
-                    GridView.clicker.startClickcontrol();
-                } else {
-                    GridView.clicker.stopClickcontrol();
-                }
+                dataService.updateInputConfig(GridView.gridData.id, {
+                    scanAutostart: this.isScanning
+                });
             },
             changeScanningMs: function (event) {
                 this.updateScanningOptions({
@@ -144,10 +153,15 @@ function initVue() {
         mounted: () => {
             initGrid().then(() => {
                 GridView.grid.autosize();
-                if (autostartScan) {
+                if (GridView.gridData.inputConfig.scanAutostart) {
                     GridView.scanner.startScanning();
                 }
-                GridView.clicker.startClickcontrol();
+                if (GridView.gridData.inputConfig.hoverEnabled) {
+                    GridView.hover.startHovering();
+                }
+                if (GridView.gridData.inputConfig.mouseclickEnabled) {
+                    GridView.clicker.startClickcontrol();
+                }
             });
         },
         updated: () => {

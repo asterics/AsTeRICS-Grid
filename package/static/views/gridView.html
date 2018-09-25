@@ -23,22 +23,22 @@
             </div>
             <div class="spaced inline">
                 <label for="chkVerticalScanning" data-i18n>Vertical scanning // Scanning vertikal</label>
-                <input type="checkbox" id="chkVerticalScanning" v-model="gridData.inputConfig.scanVertical" @change="setVerticalScanning" checked/>
+                <input type="checkbox" id="chkVerticalScanning" v-model="gridData.inputConfig.scanVertical" @change="setVerticalScanning"/>
             </div>
             <div class="spaced inline">
                 <label for="chkBinaryScanning" data-i18n>Binary scanning // Scanning binär</label>
-                <input type="checkbox" id="chkBinaryScanning" v-model="gridData.inputConfig.scanBinary" @change="setBinaryScanning" checked/>
+                <input type="checkbox" id="chkBinaryScanning" v-model="gridData.inputConfig.scanBinary" @change="setBinaryScanning"/>
             </div>
         </fieldset>
         <fieldset class="spaced inline">
             <legend data-i18n>Other options // Andere Optionen</legend>
             <div class="spaced inline">
                 <label for="chkHover">Hovering</label>
-                <input type="checkbox" id="chkHover" @change="setHover"/>
+                <input type="checkbox" id="chkHover" v-model="gridData.inputConfig.hoverEnabled" @change="setHover"/>
             </div>
             <div class="spaced inline">
                 <label for="chkMouse" data-i18n>Select with mouse click // Auswahl mit Mausklick</label>
-                <input type="checkbox" id="chkMouse" checked @change="setClickControl"/>
+                <input type="checkbox" id="chkMouse" v-model="gridData.inputConfig.mouseclickEnabled" @change="setClickControl"/>
             </div>
         </fieldset>
     </div>

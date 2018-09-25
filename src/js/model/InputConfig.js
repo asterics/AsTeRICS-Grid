@@ -7,7 +7,9 @@ class InputConfig extends Model({
     scanTimeoutMs: Number,
     scanTimeoutFirstElementFactor: Number, //factor for first element scanning time, e.g. scanTimeoutMs = 1000, scanTimeoutFirstElementFactor = 2 => scanning time for first element = 2000ms
     scanVertical: [Boolean],
-    scanBinary: Boolean
+    scanBinary: [Boolean],
+    hoverEnabled: [Boolean],
+    mouseclickEnabled: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, InputConfig);
