@@ -6,8 +6,8 @@ import {dataService} from "../service/dataService";
 import {Router} from "./../router.js";
 import {MetaData} from "../model/MetaData.js";
 
-import {Scanner} from "../scanning.js";
-import {Hover} from "../hovering.js";
+import {Scanner} from "../input/scanning.js";
+import {Hover} from "../input/hovering.js";
 
 var GridView = {};
 var autostartScan = true;
