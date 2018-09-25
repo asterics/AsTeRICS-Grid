@@ -8,6 +8,7 @@ import {MetaData} from "../model/MetaData.js";
 
 import {Scanner} from "../input/scanning.js";
 import {Hover} from "../input/hovering.js";
+import {Clicker} from "../input/clicking.js";
 
 var GridView = {};
 var autostartScan = true;
@@ -34,6 +35,7 @@ GridView.init = function (gridId) {
             scanTimeoutMs: scanningConfig.scanTimeoutMs
         });
         GridView.hover = new Hover('.grid-item-content');
+        GridView.clicker = new Clicker('.grid-item-content');
         initVue();
     });
 };
@@ -41,9 +43,9 @@ GridView.init = function (gridId) {
 GridView.destroy = function () {
     if (GridView.scanner) GridView.scanner.stopScanning();
     if (GridView.hover) GridView.hover.stopHovering();
+    if (GridView.clicker) GridView.clicker.stopClickcontrol();
     GridView.grid = null;
 };
-
 
 function initGrid() {
     GridView.grid = new Grid('#grid-container', '.grid-item-content', {
@@ -87,8 +89,12 @@ function initVue() {
                     GridView.hover.stopHovering();
                 }
             },
-            changeRowCount: function (event) {
-                GridView.grid.setNumberOfRows(event.target.value);
+            setClickControl: function (event) {
+                if (event.target.checked) {
+                    GridView.clicker.startClickcontrol();
+                } else {
+                    GridView.clicker.stopClickcontrol();
+                }
             },
             changeScanningMs: function (event) {
                 this.updateScanningOptions({
@@ -129,6 +135,11 @@ function initVue() {
                 L.toggleClass(item, 'selected');
                 actionService.doAction(GridView.gridData.id, item.id);
             });
+
+            GridView.clicker.setSelectionListener(function (item) {
+                L.toggleClass(item, 'selected');
+                actionService.doAction(GridView.gridData.id, item.id);
+            });
         },
         mounted: () => {
             initGrid().then(() => {
@@ -136,6 +147,7 @@ function initVue() {
                 if (autostartScan) {
                     GridView.scanner.startScanning();
                 }
+                GridView.clicker.startClickcontrol();
             });
         },
         updated: () => {

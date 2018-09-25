@@ -13,28 +13,34 @@
         </div>
     </div>
     <div id="menuExpandedInputOpts" v-if="showInputOptions">
-        <button v-if="!isScanning" @click="toggleScanning" data-i18n>Start Scanning // Scanning starten</button>
-        <button v-if="isScanning" @click="toggleScanning" data-i18n>Stop Scanning // Scanning stoppen</button>
-        <div class="spaced inline">
-            <label for="inScanTime" data-i18n>Scanning Time // Scanning Zeit</label>
-            <input type="range" id="inScanTime" v-model="gridData.scanningConfig.scanTimeoutMs" @change="changeScanningMs" min="100" max="3000"/>
-        </div>
-        <div class="spaced inline">
-            <label for="chkVerticalScanning" data-i18n>Vertical scanning // Scanning vertikal</label>
-            <input type="checkbox" id="chkVerticalScanning" v-model="gridData.scanningConfig.verticalScan" @change="setVerticalScanning" checked/>
-        </div>
-        <div class="spaced inline">
-            <label for="chkBinaryScanning" data-i18n>Binary scanning // Scanning binär</label>
-            <input type="checkbox" id="chkBinaryScanning" v-model="gridData.scanningConfig.binaryScanning" @change="setBinaryScanning" checked/>
-        </div>
-        <div class="spaced inline">
-            <label for="chkHover" data-i18n>Mouse Hovering // Maus Hovering</label>
-            <input type="checkbox" id="chkHover" @change="setHover"/>
-        </div>
-        <div class="spaced inline">
-            <label for="chkHover" data-i18n>Number of rows // Anzahl Zeilen</label>
-            <input type="number" v-model="gridData.rowCount" @change="changeRowCount" min="1" max="50"/>
-        </div>
+        <fieldset class="spaced inline">
+            <legend>Scanning</legend>
+            <button v-if="!isScanning" @click="toggleScanning" data-i18n>Start Scanning // Scanning starten</button>
+            <button v-if="isScanning" @click="toggleScanning" data-i18n>Stop Scanning // Scanning stoppen</button>
+            <div class="spaced inline">
+                <label for="inScanTime" data-i18n>Scanning Time // Scanning Zeit</label>
+                <input type="range" id="inScanTime" v-model="gridData.scanningConfig.scanTimeoutMs" @change="changeScanningMs" min="100" max="3000"/>
+            </div>
+            <div class="spaced inline">
+                <label for="chkVerticalScanning" data-i18n>Vertical scanning // Scanning vertikal</label>
+                <input type="checkbox" id="chkVerticalScanning" v-model="gridData.scanningConfig.verticalScan" @change="setVerticalScanning" checked/>
+            </div>
+            <div class="spaced inline">
+                <label for="chkBinaryScanning" data-i18n>Binary scanning // Scanning binär</label>
+                <input type="checkbox" id="chkBinaryScanning" v-model="gridData.scanningConfig.binaryScanning" @change="setBinaryScanning" checked/>
+            </div>
+        </fieldset>
+        <fieldset class="spaced inline">
+            <legend data-i18n>Other options // Andere Optionen</legend>
+            <div class="spaced inline">
+                <label for="chkHover">Hovering</label>
+                <input type="checkbox" id="chkHover" @change="setHover"/>
+            </div>
+            <div class="spaced inline">
+                <label for="chkMouse" data-i18n>Select with mouse click // Auswahl mit Mausklick</label>
+                <input type="checkbox" id="chkMouse" checked @change="setClickControl"/>
+            </div>
+        </fieldset>
     </div>
 </header>
 <main role="main" class="row content">
