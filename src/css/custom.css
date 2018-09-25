@@ -101,3 +101,11 @@ h1, #menuButtons button, a {
 .inline {
     display: inline-block;
 }
+
+#menuExpandedInputOpts input[type=range] {
+    width: 5em;
+}
+
+#menuExpandedInputOpts input[type=number] {
+    width: 2.5em;
+}

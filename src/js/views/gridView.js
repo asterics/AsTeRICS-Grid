@@ -32,9 +32,10 @@ GridView.init = function (gridId) {
             scanBinary: inputConfig.scanBinary,
             scanInactiveClass: 'scanInactive',
             minBinarySplitThreshold: 3,
-            scanTimeoutMs: inputConfig.scanTimeoutMs
+            scanTimeoutMs: inputConfig.scanTimeoutMs,
+            scanTimeoutFirstElementFactor: inputConfig.scanTimeoutFirstElementFactor
         });
-        GridView.hover = new Hover('.grid-item-content');
+        GridView.hover = new Hover('.grid-item-content', inputConfig.hoverTimeoutMs);
         GridView.clicker = new Clicker('.grid-item-content');
         initVue();
     });
@@ -84,6 +85,13 @@ function initVue() {
                     hoverEnabled: event.target.checked
                 });
             },
+            changeHoverMs: function (event) {
+                var newOptions = {
+                    hoverTimeoutMs: Number.parseInt(event.target.value)
+                };
+                GridView.hover.setHoverTimeout(newOptions.hoverTimeoutMs);
+                dataService.updateInputConfig(GridView.gridData.id, newOptions);
+            },
             setClickControl: function (event) {
                 if (event.target.checked) {
                     GridView.clicker.startClickcontrol();
@@ -105,11 +113,6 @@ function initVue() {
                     scanAutostart: this.isScanning
                 });
             },
-            changeScanningMs: function (event) {
-                this.updateScanningOptions({
-                    scanTimeoutMs: Number.parseInt(event.target.value)
-                }, true);
-            },
             setVerticalScanning: function (event) {
                 this.updateScanningOptions({
                     scanVertical: event.target.checked
@@ -119,6 +122,16 @@ function initVue() {
                 this.updateScanningOptions({
                     scanBinary: event.target.checked
                 }, true);
+            },
+            changeScanningMs: function (event) {
+                this.updateScanningOptions({
+                    scanTimeoutMs: Number.parseInt(event.target.value)
+                });
+            },
+            changeFirstElementFactor: function (event) {
+                this.updateScanningOptions({
+                    scanTimeoutFirstElementFactor: Number.parseFloat(event.target.value)
+                });
             },
             updateScanningOptions: function (optionsToUpdate, restart) {
                 GridView.scanner.updateOptions(optionsToUpdate, restart);
