@@ -62,6 +62,7 @@ module.exports = env => {
             'lib/jquery.gridList.js',
             'lib/jquery.min.js',
             'lib/jquery.ui.position.min.js',
+            'lib/jquery.ui.touchpunch.min.js',
             'lib/jquery-ui.min.js',
             'lib/memorystream.js',
             'lib/object-model.min.js',
