@@ -21,11 +21,11 @@
                                 <input type="file" class="five columns" id="inputImg" size="200"  @change="changedImg" accept="image/*"/>
                                 <span><i class="fas fa-file-upload"/> <span data-i18n>Choose file // Datei auswählen</span></span>
                             </button>
-                            <button class="five columns" v-show="imgDataPreview"><i class="fas fa-times"/> <span data-i18n>Clear image // Bild löschen</span></button>
+                            <button class="five columns" v-show="imgDataPreview" @click="clearImage"><i class="fas fa-times"/> <span data-i18n>Clear image // Bild löschen</span></button>
                         </div>
                         <div class="row">
                             <div class="img-preview offset-by-two ten columns">
-                                <span v-if="!imgDataPreview"><i class="fas fa-image"/> <span data-i18n>no image chosen // kein Bild ausgewählt</span></span>
+                                <span v-show="!imgDataPreview"><i class="fas fa-image"/> <span data-i18n>no image chosen // kein Bild ausgewählt</span></span>
                                 <img v-if="imgDataPreview" id="imgPreview" :src="imgDataPreview"/>
                                 <img v-show="false" id="fullImg" :src="imgDataFull" @load="imgLoaded"/>
                             </div>
@@ -77,6 +77,9 @@
                 this.imgDataSmall = imageUtil.getBase64FromImg(event.target, this.elementW);
                 this.imgDataBig = imageUtil.getBase64FromImg(event.target, Math.max(this.elementW, 500));
             },
+            clearImage() {
+                this.imgDataPreview = this.imgDataSmall = this.imgDataBig = null;
+            },
             save () {
                 var thiz = this;
                 if(thiz.imgDataBig) {
@@ -90,6 +93,8 @@
                         dataService.saveMetadata(thiz.metadata);
                     }
                     thiz.gridElement.image = new GridImage({id: imgToSave.id, data: thiz.imgDataSmall});
+                } else {
+                    thiz.gridElement.image = null;
                 }
 
                 if(thiz.gridElement && thiz.originalGridElementJSON != JSON.stringify(thiz.gridElement)) {
