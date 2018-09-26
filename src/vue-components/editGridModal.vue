@@ -5,9 +5,9 @@
                 <div class="modal-container">
 
                     <div class="modal-header">
-                        <div name="header" data-i18n>
+                        <h1 name="header" data-i18n>
                             Edit grid item // Grid-Element bearbeiten
-                        </div>
+                        </h1>
                     </div>
 
                     <div class="modal-body">
@@ -18,6 +18,8 @@
                         <div>
                             <label for="inputImg" data-i18n>Image // Bild</label>
                             <input id="inputImg" type="file" @change="changedImg" accept="image/*"/>
+                        </div>
+                        <div>
                             <img id="imgPreview" :src="imgDataPreview"/>
                             <img id="fullImg" :src="imgDataFull" @load="imgLoaded" style="display: none"/>
                         </div>
@@ -128,7 +130,8 @@
     }
 
     .modal-container {
-        width: 300px;
+        width: 80%;
+        max-width: 500px;
         margin: 0px auto;
         padding: 2em;
         background-color: #fff;
@@ -145,6 +148,17 @@
 
     .modal-body {
         margin: 20px 0;
+    }
+
+    .modal-body label {
+        width: 5em;
+        margin-bottom: 1em;
+        display: inline-block;
+    }
+
+    .modal-body img {
+        margin-left: 5em;
+        border: 1px solid lightgray;
     }
 
     .modal-default-button {
