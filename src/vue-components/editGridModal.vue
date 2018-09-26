@@ -10,26 +10,33 @@
                         </h1>
                     </div>
 
-                    <div class="modal-body">
-                        <div>
-                            <label for="inputLabel">Label</label>
-                            <input id="inputLabel" v-if="gridElement" type="text" v-model="gridElement.label"/>
+                    <div class="modal-body container">
+                        <div class="row">
+                            <label class="two columns" for="inputLabel">Label</label>
+                            <input type="text" class="ten columns" id="inputLabel" v-if="gridElement" v-model="gridElement.label"/>
                         </div>
-                        <div>
-                            <label for="inputImg" data-i18n>Image // Bild</label>
-                            <input id="inputImg" type="file" @change="changedImg" accept="image/*"/>
+                        <div class="row">
+                            <label for="inputImg" class="two columns" data-i18n>Image // Bild</label>
+                            <button onclick="document.getElementById('inputImg').click();" class="five columns file-input">
+                                <input type="file" class="five columns" id="inputImg" size="200"  @change="changedImg" accept="image/*"/>
+                                <span><i class="fas fa-file-upload"/> <span data-i18n>Choose file // Datei auswählen</span></span>
+                            </button>
+                            <button class="five columns" v-show="imgDataPreview"><i class="fas fa-times"/> <span data-i18n>Clear image // Bild löschen</span></button>
                         </div>
-                        <div>
-                            <img id="imgPreview" :src="imgDataPreview"/>
-                            <img id="fullImg" :src="imgDataFull" @load="imgLoaded" style="display: none"/>
+                        <div class="row">
+                            <div class="img-preview offset-by-two ten columns">
+                                <span v-if="!imgDataPreview"><i class="fas fa-image"/> <span data-i18n>no image chosen // kein Bild ausgewählt</span></span>
+                                <img v-if="imgDataPreview" id="imgPreview" :src="imgDataPreview"/>
+                                <img v-show="false" id="fullImg" :src="imgDataFull" @load="imgLoaded"/>
+                            </div>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <button class="modal-default-button" @click="save()">
+                        <button class="u-pull-right" @click="save()">
                             OK
                         </button>
-                        <button class="modal-default-button" @click="$emit('close')">
+                        <button class="u-pull-right spaced" @click="$emit('close')">
                             Cancel
                         </button>
                     </div>
@@ -101,6 +108,11 @@
             I18nModule.init();
             dataService.getGridElement(thiz.gridId, this.editElementId).then(gridElem => {
                 thiz.gridElement = gridElem;
+                if(gridElem.image) {
+                    imageUtil.convertBase64(gridElem.image.data).then(response => {
+                        thiz.imgDataPreview = response;
+                    });
+                }
                 thiz.elementW = $('#' + this.gridElement.id)[0].getBoundingClientRect().width;
                 thiz.originalGridElementJSON = JSON.stringify(gridElem);
             });
@@ -130,10 +142,10 @@
     }
 
     .modal-container {
-        width: 80%;
-        max-width: 500px;
+        max-width: 800px;
+        max-height: 90%;
         margin: 0px auto;
-        padding: 2em;
+        padding: 2em 4em 2em 4em;
         background-color: #fff;
         border-radius: 2px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
@@ -150,19 +162,18 @@
         margin: 20px 0;
     }
 
-    .modal-body label {
-        width: 5em;
-        margin-bottom: 1em;
-        display: inline-block;
+    .img-preview > span {
+        border: 1px solid lightgray;
+        padding: 0.3em;
+        width: 150px;
     }
 
     .modal-body img {
-        margin-left: 5em;
         border: 1px solid lightgray;
     }
 
-    .modal-default-button {
-        float: right;
+    label {
+        font-weight: bold;
     }
 
     /*

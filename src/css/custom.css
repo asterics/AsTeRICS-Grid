@@ -40,7 +40,7 @@ header {
 
 /* end of screen rules. */
 
-h1, #menuButtons button, a {
+#menuHeader h1, #menuButtons button, #menuHeader a {
     font-size: 2.0vh
 }
 
@@ -108,4 +108,19 @@ h1, #menuButtons button, a {
 
 #menuExpandedInputOpts input[type=number] {
     width: 2.5em;
+}
+
+/* File input custom style */
+.file-input input[type="file"] {
+    position:absolute;
+    top: -1000px;
+}
+
+.modal-container {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.modal h1 {
+    font-size: 1.5em;
 }
