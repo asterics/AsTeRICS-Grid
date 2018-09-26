@@ -42,6 +42,10 @@ imageUtil.getBase64FromInput = function (input) {
 
 imageUtil.convertBase64 = function (originalBase64, maxWidth, quality) {
     return new Promise(resolve => {
+        if(!originalBase64) {
+            resolve(null);
+            return;
+        }
         maxWidth = maxWidth || 150;
         var img = document.createElement('img');
         img.onload = function () {
