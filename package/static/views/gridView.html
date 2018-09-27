@@ -1,7 +1,11 @@
-<header id="app" class="row header" role="banner" v-cloak>
+<header v-show="showHeader" id="app" class="row header" role="banner" v-cloak>
     <div id="menuHeader">
         <a href="#main"><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
         <div id="menuButtons" class="inline">
+            <div class="inline spaced">
+                <label for="inHeaderPinned"><i class="fas fa-thumbtack"/> <span data-i18n>Header pinned // Header angepinnt</span></label>
+                <input id="inHeaderPinned" type="checkbox" @change="setHeaderPinned" v-model="headerPinned"/>
+            </div>
             <div class="inline spaced">
                 <button v-if="!showInputOptions" @click="toggleInputMenu"><i class="fas fa-cog"/> <span data-i18n>Show input options // Zeige Eingabeoptionen</span></button>
                 <button v-if="showInputOptions" @click="toggleInputMenu"><i class="fas fa-cog"/> <span data-i18n>Hide input options // Verstecke Eingabeoptionen</span></button>
