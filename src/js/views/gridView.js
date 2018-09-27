@@ -5,13 +5,15 @@ import {actionService} from "../service/actionService";
 import {dataService} from "../service/dataService";
 import {Router} from "./../router.js";
 import {MetaData} from "../model/MetaData.js";
+import {InputEventHandler} from "../util/inputEventHandler";
 
 import {Scanner} from "../input/scanning.js";
 import {Hover} from "../input/hovering.js";
 import {Clicker} from "../input/clicking.js";
 
 var GridView = {};
-var autostartScan = true;
+var headerHideTimeout = 10000;
+var inputEventHandler = new InputEventHandler();
 
 GridView.init = function (gridId) {
     dataService.getGrid(gridId).then(grid => {
@@ -21,9 +23,6 @@ GridView.init = function (gridId) {
             return;
         }
         GridView.gridData = grid;
-        dataService.saveMetadata(new MetaData({
-            lastOpenedGridId: GridView.gridData.id
-        }));
 
         var inputConfig = grid.inputConfig;
         GridView.scanner = new Scanner('.grid-item-content', 'scanFocus', {
@@ -37,7 +36,15 @@ GridView.init = function (gridId) {
         });
         GridView.hover = new Hover('.grid-item-content', inputConfig.hoverTimeoutMs);
         GridView.clicker = new Clicker('.grid-item-content');
-        initVue();
+
+        dataService.getMetadata().then(metadata => {
+            GridView.metadata = metadata;
+            dataService.saveMetadata(new MetaData({
+                lastOpenedGridId: GridView.gridData.id
+            }));
+            initVue();
+        });
+
     });
 };
 
@@ -46,6 +53,8 @@ GridView.destroy = function () {
     if (GridView.hover) GridView.hover.stopHovering();
     if (GridView.clicker) GridView.clicker.stopClickcontrol();
     GridView.grid = null;
+    inputEventHandler.stopListening();
+    inputEventHandler = null;
 };
 
 function initGrid() {
@@ -69,11 +78,43 @@ function initVue() {
         data: {
             gridData: JSON.parse(JSON.stringify(GridView.gridData)),
             showInputOptions: false,
-            isScanning: GridView.gridData.inputConfig.scanAutostart
+            isScanning: GridView.gridData.inputConfig.scanAutostart,
+            showHeader: null,
+            headerPinned: GridView.metadata.headerPinned,
+            headerHideTimeoutHandler: null
         },
         methods: {
+            hideHeaderFn() {
+                var thiz = this;
+                if(!thiz.showHeader && thiz.showHeader != null) return;
+
+                thiz.showHeader = false;
+                inputEventHandler.waitMouseUpperBorder().then(thiz.showHeaderFn);
+                inputEventHandler.waitSwipedDown().then(thiz.showHeaderFn);
+
+            },
+            showHeaderFn() {
+                var thiz = this;
+
+                thiz.showHeader = true;
+                inputEventHandler.waitSwipedUp().then(thiz.hideHeaderFn);
+                if(!thiz.headerPinned) {
+                    thiz.headerHideTimeoutHandler = setTimeout(function () {
+                        thiz.hideHeaderFn();
+                    }, headerHideTimeout)
+                } else {
+                    clearTimeout(thiz.headerHideTimeoutHandler)
+                }
+            },
             toggleInputMenu: function () {
                 this.showInputOptions = !this.showInputOptions;
+            },
+            setHeaderPinned: function (event) {
+                this.headerPinned = event.target.checked;
+                this.showHeaderFn();
+                dataService.saveMetadata(new MetaData({
+                    headerPinned: this.headerPinned
+                }));
             },
             setHover: function (event) {
                 if (event.target.checked) {
@@ -162,6 +203,12 @@ function initVue() {
                 L.toggleClass(item, 'selected');
                 actionService.doAction(GridView.gridData.id, item.id);
             });
+
+            if(GridView.metadata.headerPinned) {
+                this.showHeaderFn();
+            } else {
+                this.hideHeaderFn();
+            }
         },
         mounted: () => {
             initGrid().then(() => {
@@ -178,7 +225,7 @@ function initVue() {
             });
         },
         updated: () => {
-            GridView.grid.autosize();
+            if(GridView.grid) GridView.grid.autosize();
         }
     })
 }
