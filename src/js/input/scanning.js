@@ -384,13 +384,13 @@ function Scanner(itemSelector, scanActiveClass, options) {
             _touchListener = function () {
                 thiz.select();
             };
-            L('#grid-container').addEventListener("touchstart", _touchListener);
+            L('#grid-container').addEventListener("click", _touchListener);
         }
     };
 
     thiz.disableTouchScanning = function () {
         if(_touchListener) {
-            L('#grid-container').removeEventListener("touchstart", _touchListener);
+            L('#grid-container').removeEventListener("click", _touchListener);
             _touchListener = null;
         }
     };
