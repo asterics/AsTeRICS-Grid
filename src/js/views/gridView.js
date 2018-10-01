@@ -26,19 +26,6 @@ GridView.init = function (gridId) {
         }
         GridView.gridData = grid;
 
-        var inputConfig = grid.inputConfig;
-        GridView.scanner = new Scanner('.grid-item-content', 'scanFocus', {
-            scanVertical: inputConfig.scanVertical,
-            subScanRepeat: 3,
-            scanBinary: inputConfig.scanBinary,
-            scanInactiveClass: 'scanInactive',
-            minBinarySplitThreshold: 3,
-            scanTimeoutMs: inputConfig.scanTimeoutMs,
-            scanTimeoutFirstElementFactor: inputConfig.scanTimeoutFirstElementFactor
-        });
-        GridView.hover = new Hover('.grid-item-content', inputConfig.hoverTimeoutMs);
-        GridView.clicker = new Clicker('.grid-item-content');
-
         dataService.getMetadata().then(savedMetadata => {
             GridView.metadata = savedMetadata || new MetaData();
             initVue();
@@ -50,9 +37,7 @@ GridView.init = function (gridId) {
 };
 
 GridView.destroy = function () {
-    if (GridView.scanner) GridView.scanner.stopScanning();
-    if (GridView.hover) GridView.hover.stopHovering();
-    if (GridView.clicker) GridView.clicker.stopClickcontrol();
+    stopInputMethods();
     GridView.grid = null;
     if(_inputEventHandler) {
         _inputEventHandler.stopListening();
@@ -60,17 +45,17 @@ GridView.destroy = function () {
     }
 };
 
+function stopInputMethods() {
+    if (GridView.scanner) GridView.scanner.stopScanning();
+    if (GridView.hover) GridView.hover.stopHovering();
+    if (GridView.clicker) GridView.clicker.stopClickcontrol();
+}
+
 function initGrid() {
     GridView.grid = new Grid('#grid-container', '.grid-item-content', {
         enableResizing: false,
         dragAndDrop: false,
         gridId: GridView.gridData.id
-    });
-    GridView.grid.setLayoutChangedStartListener(function () {
-        GridView.scanner.pauseScanning();
-    });
-    GridView.grid.setLayoutChangedEndListener(function () {
-        GridView.scanner.resumeScanning();
     });
     return GridView.grid.getInitPromise();
 }
@@ -85,9 +70,9 @@ function initVue() {
             showHeader: null,
             headerPinned: GridView.metadata.headerPinned,
             headerHideTimeoutHandler: null,
-            scanner: GridView.scanner,
-            hover: GridView.hover,
-            clicker: GridView.clicker,
+            scanner: null,
+            hover: null,
+            clicker: null,
             showModal: false
         },
         components: {
@@ -137,6 +122,63 @@ function initVue() {
                 dataService.saveMetadata(new MetaData({
                     headerPinned: this.headerPinned
                 }));
+            },
+            initInputMethods() {
+                var inputConfig = this.gridData.inputConfig;
+                this.scanner = GridView.scanner = new Scanner('.grid-item-content', 'scanFocus', {
+                    scanVertical: inputConfig.scanVertical,
+                    subScanRepeat: 3,
+                    scanBinary: inputConfig.scanBinary,
+                    scanInactiveClass: 'scanInactive',
+                    minBinarySplitThreshold: 3,
+                    scanTimeoutMs: inputConfig.scanTimeoutMs,
+                    scanTimeoutFirstElementFactor: inputConfig.scanTimeoutFirstElementFactor
+                });
+                this. hover = GridView.hover = new Hover('.grid-item-content', inputConfig.hoverTimeoutMs);
+                this.clicker = GridView.clicker = new Clicker('.grid-item-content');
+
+                GridView.grid.setLayoutChangedStartListener(function () {
+                    GridView.scanner.pauseScanning();
+                });
+                GridView.grid.setLayoutChangedEndListener(function () {
+                    GridView.scanner.resumeScanning();
+                });
+
+                window.addEventListener('resize', function () {
+                    GridView.scanner.layoutChanged();
+                }, true);
+
+                GridView.scanner.setSelectionListener(function (item) {
+                    L.toggleClass(item, 'selected');
+                    actionService.doAction(GridView.grid.getCurrentGridId(), item.id);
+                });
+
+                GridView.hover.setSelectionListener(function (item) {
+                    L.toggleClass(item, 'selected');
+                    actionService.doAction(GridView.gridData.id, item.id);
+                });
+
+                GridView.clicker.setSelectionListener(function (item) {
+                    L.toggleClass(item, 'selected');
+                    actionService.doAction(GridView.gridData.id, item.id);
+                });
+
+                if (inputConfig.scanAutostart) {
+                    GridView.scanner.startScanning();
+                }
+                if (inputConfig.hoverEnabled) {
+                    GridView.hover.startHovering();
+                }
+                if (inputConfig.mouseclickEnabled) {
+                    GridView.clicker.startClickcontrol();
+                }
+            },
+            reinitInputMethods() {
+                stopInputMethods();
+                dataService.getGrid(GridView.gridData.id).then(gridData => {
+                    this.gridData.inputConfig = JSON.parse(JSON.stringify(gridData.inputConfig));
+                    this.initInputMethods();
+                });
             }
         },
         computed: {
@@ -145,43 +187,17 @@ function initVue() {
             },
         },
         created: function () {
-            window.addEventListener('resize', function () {
-                GridView.scanner.layoutChanged();
-            }, true);
-
-            GridView.scanner.setSelectionListener(function (item) {
-                L.toggleClass(item, 'selected');
-                actionService.doAction(GridView.grid.getCurrentGridId(), item.id);
-            });
-
-            GridView.hover.setSelectionListener(function (item) {
-                L.toggleClass(item, 'selected');
-                actionService.doAction(GridView.gridData.id, item.id);
-            });
-
-            GridView.clicker.setSelectionListener(function (item) {
-                L.toggleClass(item, 'selected');
-                actionService.doAction(GridView.gridData.id, item.id);
-            });
-
             if(GridView.metadata.headerPinned) {
                 this.showHeaderFn();
             } else {
                 this.hideHeaderFn();
             }
         },
-        mounted: () => {
+        mounted: function () {
+            var thiz = this;
             initGrid().then(() => {
                 GridView.grid.autosize();
-                if (GridView.gridData.inputConfig.scanAutostart) {
-                    GridView.scanner.startScanning();
-                }
-                if (GridView.gridData.inputConfig.hoverEnabled) {
-                    GridView.hover.startHovering();
-                }
-                if (GridView.gridData.inputConfig.mouseclickEnabled) {
-                    GridView.clicker.startClickcontrol();
-                }
+                thiz.initInputMethods();
             });
         },
         updated: () => {

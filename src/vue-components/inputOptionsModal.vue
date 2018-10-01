@@ -96,7 +96,7 @@
     import './../css/modal.css';
 
     export default {
-        props: ['gridData', 'scanner', 'hover', 'clicker'],
+        props: ['gridData', 'scanner', 'hover', 'clicker', 'reinit'],
         data: function () {
             return {
                 gridElement: null,
@@ -107,10 +107,14 @@
         methods: {
             cancel () {
                 var thiz = this;
-                dataService.saveGrid(thiz.originalGridData).then(() => {
-                    Router.toGrid(thiz.originalGridData.id);
+                if(JSON.stringify(thiz.originalGridData) != JSON.stringify(thiz.gridData)) {
+                    dataService.saveGrid(thiz.originalGridData).then(() => {
+                        this.reinit();
+                        this.$emit('close');
+                    });
+                } else {
                     this.$emit('close');
-                });
+                }
             },
             setHover: function (event) {
                 if (event.target.checked) {

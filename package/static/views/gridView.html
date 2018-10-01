@@ -13,7 +13,7 @@
             </div>
         </div>
     </div>
-    <input-options-modal v-if="showModal" v-bind:grid-data="gridData" v-bind:scanner="scanner" v-bind:hover="hover" v-bind:clicker="clicker" @close="showModal = false"/>
+    <input-options-modal v-if="showModal" v-bind:grid-data="gridData" v-bind:scanner="scanner" v-bind:hover="hover" v-bind:clicker="clicker" v-bind:reinit="reinitInputMethods" @close="showModal = false"/>
 </header>
 <main role="main" class="row content">
     <div id="grid-container" class="grid-container">
