@@ -62,6 +62,10 @@ Router.toMain = function () {
     location.hash = '#main';
 };
 
+Router.toGrid = function (id) {
+    location.hash = '#grid/' + id + "?time=" + new Date().getTime();
+};
+
 function loadView(viewName) {
     console.log('loading view: ' + viewName);
     return new Promise(resolve => {
