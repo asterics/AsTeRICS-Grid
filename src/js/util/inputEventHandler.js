@@ -1,4 +1,4 @@
-function InputEventHandler() {
+function InputEventHandler(touchElementId) {
     var thiz = this;
     
     // options
@@ -13,6 +13,7 @@ function InputEventHandler() {
     var _promiseSwipeUpResolve = null;
     var _promiseSwipeDown = null;
     var _promiseSwipeDownResolve = null;
+    var _touchElement = document.getElementById(touchElementId) || document;
 
     function initPromises() {
         _promiseMouseUpperBorder = new Promise(function (resolve) {
@@ -77,15 +78,15 @@ function InputEventHandler() {
 
     thiz.startListening = function () {
         document.addEventListener('mousemove', mouseMoveListener);
-        document.addEventListener('touchmove', touchMoveListener);
-        document.addEventListener('touchend', touchEndListener);
+        _touchElement.addEventListener('touchmove', touchMoveListener);
+        _touchElement.addEventListener('touchend', touchEndListener);
     };
 
     thiz.stopListening = function () {
         initPromises();
         document.removeEventListener('mousemove', mouseMoveListener);
-        document.removeEventListener('touchmove', touchMoveListener);
-        document.removeEventListener('touchend', touchEndListener);
+        _touchElement.removeEventListener('touchmove', touchMoveListener);
+        _touchElement.removeEventListener('touchend', touchEndListener);
     };
 
     thiz.waitMouseUpperBorder = function () {
