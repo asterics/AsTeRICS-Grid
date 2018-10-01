@@ -11,11 +11,13 @@ import {Scanner} from "../input/scanning.js";
 import {Hover} from "../input/hovering.js";
 import {Clicker} from "../input/clicking.js";
 
+import InputOptionsModal from '../../vue-components/inputOptionsModal.vue'
+
 var GridView = {};
 var _inputEventHandler = null;
 
 GridView.init = function (gridId) {
-    _inputEventHandler = new InputEventHandler();
+    _inputEventHandler = new InputEventHandler('grid-container');
     dataService.getGrid(gridId).then(grid => {
         if (!grid) {
             console.log('grid not found! gridId: ' + gridId);
@@ -82,7 +84,14 @@ function initVue() {
             isScanning: GridView.gridData.inputConfig.scanAutostart,
             showHeader: null,
             headerPinned: GridView.metadata.headerPinned,
-            headerHideTimeoutHandler: null
+            headerHideTimeoutHandler: null,
+            scanner: GridView.scanner,
+            hover: GridView.hover,
+            clicker: GridView.clicker,
+            showModal: false
+        },
+        components: {
+            InputOptionsModal
         },
         methods: {
             hideHeaderFn() {
@@ -111,7 +120,11 @@ function initVue() {
                 if(thiz.showHeader && !thiz.headerPinned) {
                     var headerHideTimeout = t || 3000;
                     thiz.headerHideTimeoutHandler = setTimeout(function () {
-                        thiz.hideHeaderFn();
+                        if(thiz.showModal) {
+                            thiz.resetHeaderHideTimeout(t)
+                        } else {
+                            thiz.hideHeaderFn();
+                        }
                     }, headerHideTimeout)
                 }
             },
@@ -124,68 +137,6 @@ function initVue() {
                 dataService.saveMetadata(new MetaData({
                     headerPinned: this.headerPinned
                 }));
-            },
-            setHover: function (event) {
-                if (event.target.checked) {
-                    GridView.hover.startHovering();
-                } else {
-                    GridView.hover.stopHovering();
-                }
-                dataService.updateInputConfig(GridView.gridData.id, {
-                    hoverEnabled: event.target.checked
-                });
-            },
-            changeHoverMs: function (event) {
-                var newOptions = {
-                    hoverTimeoutMs: Number.parseInt(event.target.value)
-                };
-                GridView.hover.setHoverTimeout(newOptions.hoverTimeoutMs);
-                dataService.updateInputConfig(GridView.gridData.id, newOptions);
-            },
-            setClickControl: function (event) {
-                if (event.target.checked) {
-                    GridView.clicker.startClickcontrol();
-                } else {
-                    GridView.clicker.stopClickcontrol();
-                }
-                dataService.updateInputConfig(GridView.gridData.id, {
-                    mouseclickEnabled: event.target.checked
-                });
-            },
-            toggleScanning: function () {
-                if (this.isScanning) {
-                    GridView.scanner.stopScanning();
-                } else {
-                    GridView.scanner.startScanning();
-                }
-                this.isScanning = !this.isScanning;
-                dataService.updateInputConfig(GridView.gridData.id, {
-                    scanAutostart: this.isScanning
-                });
-            },
-            setVerticalScanning: function (event) {
-                this.updateScanningOptions({
-                    scanVertical: event.target.checked
-                }, true);
-            },
-            setBinaryScanning: function (event) {
-                this.updateScanningOptions({
-                    scanBinary: event.target.checked
-                }, true);
-            },
-            changeScanningMs: function (event) {
-                this.updateScanningOptions({
-                    scanTimeoutMs: Number.parseInt(event.target.value)
-                });
-            },
-            changeFirstElementFactor: function (event) {
-                this.updateScanningOptions({
-                    scanTimeoutFirstElementFactor: Number.parseFloat(event.target.value)
-                });
-            },
-            updateScanningOptions: function (optionsToUpdate, restart) {
-                GridView.scanner.updateOptions(optionsToUpdate, restart);
-                dataService.updateInputConfig(GridView.gridData.id, optionsToUpdate);
             }
         },
         computed: {
