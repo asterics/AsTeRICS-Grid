@@ -15,9 +15,15 @@ function InputEventHandler() {
     var _promiseSwipeDownResolve = null;
 
     function initPromises() {
-        resolveMouseUpperBorder();
-        resolveSwipeDown();
-        resolveSwipeUp();
+        _promiseMouseUpperBorder = new Promise(function (resolve) {
+            _promiseMouseUpperBorderResolve = resolve;
+        });
+        _promiseSwipeDown = new Promise(function (resolve) {
+            _promiseSwipeDownResolve = resolve;
+        });
+        _promiseSwipeUp = new Promise(function (resolve) {
+            _promiseSwipeUpResolve = resolve;
+        });
     }
 
     function resolveMouseUpperBorder() {
