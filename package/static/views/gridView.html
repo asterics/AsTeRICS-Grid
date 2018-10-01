@@ -1,4 +1,4 @@
-<header v-show="showHeader" id="app" class="row header" role="banner" v-cloak>
+<header v-show="showHeader" @mousemove="resetHeaderHideTimeout()" @touchstart="resetHeaderHideTimeout(5000)" id="app" class="row header" role="banner" v-cloak>
     <div id="menuHeader">
         <a href="#main"><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
         <div id="menuButtons" class="inline">

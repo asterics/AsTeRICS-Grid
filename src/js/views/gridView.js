@@ -12,10 +12,10 @@ import {Hover} from "../input/hovering.js";
 import {Clicker} from "../input/clicking.js";
 
 var GridView = {};
-var headerHideTimeout = 10000;
-var inputEventHandler = new InputEventHandler();
+var _inputEventHandler = null;
 
 GridView.init = function (gridId) {
+    _inputEventHandler = new InputEventHandler();
     dataService.getGrid(gridId).then(grid => {
         if (!grid) {
             console.log('grid not found! gridId: ' + gridId);
@@ -37,14 +37,13 @@ GridView.init = function (gridId) {
         GridView.hover = new Hover('.grid-item-content', inputConfig.hoverTimeoutMs);
         GridView.clicker = new Clicker('.grid-item-content');
 
-        dataService.getMetadata().then(metadata => {
-            GridView.metadata = metadata;
+        dataService.getMetadata().then(savedMetadata => {
+            GridView.metadata = savedMetadata || new MetaData();
+            initVue();
             dataService.saveMetadata(new MetaData({
                 lastOpenedGridId: GridView.gridData.id
             }));
-            initVue();
         });
-
     });
 };
 
@@ -53,8 +52,10 @@ GridView.destroy = function () {
     if (GridView.hover) GridView.hover.stopHovering();
     if (GridView.clicker) GridView.clicker.stopClickcontrol();
     GridView.grid = null;
-    inputEventHandler.stopListening();
-    inputEventHandler = null;
+    if(_inputEventHandler) {
+        _inputEventHandler.stopListening();
+        _inputEventHandler = null;
+    }
 };
 
 function initGrid() {
@@ -89,21 +90,29 @@ function initVue() {
                 if(!thiz.showHeader && thiz.showHeader != null) return;
 
                 thiz.showHeader = false;
-                inputEventHandler.waitMouseUpperBorder().then(thiz.showHeaderFn);
-                inputEventHandler.waitSwipedDown().then(thiz.showHeaderFn);
+                _inputEventHandler.waitMouseUpperBorder().then(thiz.showHeaderFn);
+                _inputEventHandler.waitSwipedDown().then(() => {
+                    thiz.showHeaderFn(10000);
+                });
 
             },
-            showHeaderFn() {
+            showHeaderFn(hideTimeout) {
                 var thiz = this;
 
                 thiz.showHeader = true;
-                inputEventHandler.waitSwipedUp().then(thiz.hideHeaderFn);
-                if(!thiz.headerPinned) {
+                _inputEventHandler.waitSwipedUp().then(thiz.hideHeaderFn);
+                thiz.resetHeaderHideTimeout(hideTimeout);
+            },
+            resetHeaderHideTimeout(t) {
+                var thiz = this;
+                if(thiz.headerHideTimeoutHandler) {
+                    clearTimeout(thiz.headerHideTimeoutHandler)
+                }
+                if(thiz.showHeader && !thiz.headerPinned) {
+                    var headerHideTimeout = t || 3000;
                     thiz.headerHideTimeoutHandler = setTimeout(function () {
                         thiz.hideHeaderFn();
                     }, headerHideTimeout)
-                } else {
-                    clearTimeout(thiz.headerHideTimeoutHandler)
                 }
             },
             toggleInputMenu: function () {
