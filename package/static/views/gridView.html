@@ -8,8 +8,6 @@
         <div id="menuButtons" class="inline">
             <div class="inline spaced">
                 <button v-if="!showInputOptions" @click="showModal = true"><i class="fas fa-cog"/> <span data-i18n>Input options // Eingabeoptionen</span></button>
-            </div>
-            <div class="inline spaced">
                 <a :href="'#grid/edit/' + gridData.id" class="spaced" id="btnMenuEdit" data-i18n>Edit grid // Grid bearbeiten</a>
                 <a href="#grids" id="btnMenuManage" data-i18n>Manage grids // Grids verwalten</a>
             </div>
