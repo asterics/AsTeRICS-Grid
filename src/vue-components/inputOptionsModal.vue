@@ -31,21 +31,22 @@
                                             <label for="chkBinaryScanning" data-i18n>Binary scanning // Scanning binär</label>
                                         </div>
                                     </div>
+                                    <div class="space"/>
                                     <div class="row" v-show="gridData.inputConfig.scanAutostart">
-                                        <div class="six columns">
-                                            <label for="inScanTime" style="display: block" data-i18n>Scanning Time (ms) // Scanning Zeit (ms)</label>
+                                        <div class="six columns slidergroup">
+                                            <label for="inScanTime" data-i18n>Scanning Time (ms) // Scanning Zeit (ms)</label>
                                             <input type="range" id="inScanTime" v-model="gridData.inputConfig.scanTimeoutMs" @change="changeScanningMs" min="100" max="3000" step="100"/>
-                                            <input type="number" v-model="gridData.inputConfig.scanTimeoutMs" @change="changeScanningMs" min="100" max="3000" step="100" style="width: 5.5em"/>
+                                            <input type="number" v-model="gridData.inputConfig.scanTimeoutMs" @change="changeScanningMs" min="100" max="3000" step="100"/>
                                         </div>
-                                        <div class="six columns">
-                                            <label for="inFirstElement" style="display: block" data-i18n>Time factor first element // Zeit-Faktor erstes Element</label>
+                                        <div class="six columns slidergroup">
+                                            <label for="inFirstElement" data-i18n>Time factor first element // Zeit-Faktor erstes Element</label>
                                             <input type="range" id="inFirstElement" v-model="gridData.inputConfig.scanTimeoutFirstElementFactor" @change="changeFirstElementFactor" min="1" max="5" step="0.1"/>
-                                            <input type="number" v-model="gridData.inputConfig.scanTimeoutFirstElementFactor" @change="changeFirstElementFactor" min="1" max="5" step="0.5"/>
+                                            <input type="number" v-model="gridData.inputConfig.scanTimeoutFirstElementFactor" @change="changeFirstElementFactor" min="1" max="5" step="0.5" />
                                         </div>
                                     </div>
                             </div>
                         </div>
-                        <div class="space"/>
+                        <div class="space-2x"/>
                         <div class="row">
                             <h2 class="two columns">Hovering</h2>
 
@@ -54,8 +55,9 @@
                                     <div class="five columns">
                                         <input type="checkbox" id="chkHover" v-model="gridData.inputConfig.hoverEnabled" @change="setHover"/>
                                         <label for="chkHover"data-i18n>Enable Hovering // Hovering aktivieren</label>
+                                        <div class="space"/>
                                     </div>
-                                    <div class="seven columns">
+                                    <div class="seven columns slidergroup">
                                         <label for="inHoverTime" data-i18n>Hover Time (ms) // Hover Zeit (ms)</label>
                                         <input type="range" id="inHoverTime" v-model="gridData.inputConfig.hoverTimeoutMs" @change="changeHoverMs" min="100" max="3000" step="100"/>
                                         <input type="number" v-model="gridData.inputConfig.hoverTimeoutMs" @change="changeHoverMs" min="100" max="3000" step="100" style="width: 5.5em"/>
@@ -63,7 +65,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="space"/>
+                        <div class="space-2x"/>
                         <div class="row">
                             <h2 class="two columns" data-i18n>Others // Anderes</h2>
                             <div class="ten columns">
@@ -79,8 +81,8 @@
                         <button class="u-pull-right" @click="$emit('close')">
                             OK
                         </button>
-                        <button class="u-pull-right spaced" @click="cancel()">
-                            Cancel
+                        <button class="u-pull-right spaced" @click="cancel()" data-i18n>
+                            Cancel // Abbrechen
                         </button>
                     </div>
                 </div>
@@ -199,6 +201,26 @@
     }
 
     .space {
-        margin-top: 1.0em;
+        margin-top: 1.25em;
+    }
+
+    .space-2x {
+        margin-top: 2.5em;
+    }
+
+    .slidergroup{
+    }
+
+    .slidergroup label{
+        display: block;
+    }
+
+    .slidergroup input[type="range"] {
+        width: 40%;
+    }
+
+    .slidergroup input[type="number"] {
+        width: 5em;
+        margin-left: 0.5em;
     }
 </style>
