@@ -31,7 +31,7 @@ GridView.init = function (gridId) {
             initVue();
             dataService.saveMetadata(new MetaData({
                 lastOpenedGridId: GridView.gridData.id
-            }));
+            }, savedMetadata));
         });
     });
 };
