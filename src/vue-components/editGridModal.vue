@@ -135,4 +135,8 @@
         padding: 0.3em;
         width: 150px;
     }
+
+    .row {
+        margin-top: 1em;
+    }
 </style>
