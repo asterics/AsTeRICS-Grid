@@ -1,7 +1,7 @@
 <header id="app" class="row header" role="banner" v-cloak>
     <div id="menuHeader">
         <a href="#main"><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
-        <div class="inline spaced"><span data-i18n>Edit grid // Bearbeiten von Grid</span> "{{gridData.label}}"</div>
+        <div class="inline spaced hide-mobile"><span data-i18n>Edit grid // Bearbeiten von Grid</span> "{{gridData.label}}"</div>
         <div id="menuButtons" class="inline">
             <div class="inline spaced">
                 <button @click="undo" title="Undo" :disabled="!canUndo"><i class="fas fa-undo"></i></button>
