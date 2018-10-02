@@ -21,7 +21,7 @@
         <button @click="fillGaps" data-i18n>Fill gaps // Lücken füllen</button>
         <button @click="compactLayout" data-i18n>Compact // Layout kompaktieren</button>
     </div>
-    <edit-grid-modal v-if="showModal" v-bind:edit-element-id="editElementId" v-bind:grid-id="gridData.id" @close="showModal = false" @reload="reload"/>
+    <edit-grid-modal v-if="showModal" v-bind:edit-element-id="editElementId" v-bind:grid-data="gridData" @close="showModal = false" @reload="reload"/>
 </header>
 <main role="main" class="row content">
     <div id="grid-container" class="grid-container">
