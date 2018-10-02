@@ -2,14 +2,16 @@
     <div id="menuHeader">
         <a href="#main"><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
         <div class="inline spaced">
-            <label class="inline" for="inHeaderPinned"><i class="fas fa-thumbtack"/> <span data-i18n>Header pinned // Header angepinnt</span></label>
+            <label class="inline" for="inHeaderPinned"><i class="fas fa-thumbtack"/> <span class="hide-mobile" data-i18n>Header pinned // Header angepinnt</span></label>
             <input id="inHeaderPinned" type="checkbox" @change="setHeaderPinned" v-model="headerPinned"/>
         </div>
         <div id="menuButtons" class="inline">
             <div class="inline spaced">
                 <button v-if="!showInputOptions" @click="showModal = true"><i class="fas fa-cog"/> <span data-i18n>Input options // Eingabeoptionen</span></button>
-                <a :href="'#grid/edit/' + gridData.id" class="spaced" id="btnMenuEdit" data-i18n>Edit grid // Grid bearbeiten</a>
-                <a href="#grids" id="btnMenuManage" data-i18n>Manage grids // Grids verwalten</a>
+                <div class="inline">
+                    <a :href="'#grid/edit/' + gridData.id" class="spaced" id="btnMenuEdit" data-i18n>Edit grid // Grid bearbeiten</a>
+                    <a href="#grids" id="btnMenuManage" data-i18n>Manage grids // Grids verwalten</a>
+                </div>
             </div>
         </div>
     </div>
