@@ -36,8 +36,8 @@
                         <button class="u-pull-right" @click="save()">
                             OK
                         </button>
-                        <button class="u-pull-right spaced" @click="$emit('close')">
-                            Cancel
+                        <button class="u-pull-right spaced" @click="$emit('close')" data-i18n>
+                            Cancel // Abbrechen
                         </button>
                     </div>
                 </div>
