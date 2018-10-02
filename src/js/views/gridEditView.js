@@ -3,16 +3,12 @@ import $ from 'jquery';
 import {Grid} from "../grid.js";
 import {dataService} from "../service/dataService";
 import {Router} from "./../router.js";
+import {I18nModule} from "./../i18nModule.js";
 
 import EditGridModal from '../../vue-components/editGridModal.vue'
 
 var GridEditView = {};
 var vueApp = null;
-
-var contextMenuSelector = '.grid-item-content';
-var CONTEXT_EDIT = "CONTEXT_EDIT";
-var CONTEXT_DUPLICATE = "CONTEXT_DUPLICATE";
-var CONTEXT_DELETE = "CONTEXT_DELETE";
 
 GridEditView.init = function (gridId) {
     dataService.getGrid(gridId).then(grid => {
@@ -69,8 +65,20 @@ function initVue() {
             },
             reload (gridElement) {
                 console.log('doing reload: ' + gridElement.label);
+                var thiz = this;
                 GridEditView.grid.reinit();
-            }
+                dataService.getGrid(thiz.gridData.id).then(data => {
+                    thiz.gridData = data;
+                })
+            },
+            editElement(elementId) {
+                this.editElementId = elementId;
+                this.showModal = true;
+            },
+            newElement() {
+                this.editElementId = null;
+                this.showModal = true;
+            },
         },
         mounted: function () {
             var thiz = this;
@@ -80,9 +88,13 @@ function initVue() {
                     thiz.canUndo = GridEditView.grid.canUndo();
                     thiz.canRedo = GridEditView.grid.canRedo();
                     thiz.doingUndoRedo = false;
-                    thiz.gridData.rowCount = newGridData.rowCount;
+                    dataService.getGrid(thiz.gridData.id).then(data => {
+                        thiz.gridData = data;
+                    });
+
                 });
                 initContextmenu();
+                I18nModule.init();
             });
         },
         updated: () => {
@@ -101,35 +113,78 @@ function initGrid() {
 }
 
 function initContextmenu() {
-    var items = {};
-    items[CONTEXT_EDIT] = {name: "Edit", icon: "fas fa-edit"};
-    items[CONTEXT_DUPLICATE] = {name: "Duplicate", icon: "far fa-clone"};
-    items[CONTEXT_DELETE] = {name: "Delete", icon: "far fa-trash-alt"};
+    //see https://swisnl.github.io/jQuery-contextMenu/demo.html
+
+    var contextMenuSelector = '.grid-item-content';
+
+    var CONTEXT_EDIT = "CONTEXT_EDIT";
+    var CONTEXT_DUPLICATE = "CONTEXT_DUPLICATE";
+    var CONTEXT_DELETE = "CONTEXT_DELETE";
+
+    var CONTEXT_NEW_GROUP = "CONTEXT_NEW_GROUP";
+    var CONTEXT_NEW_SINGLE = "CONTEXT_NEW_SINGLE";
+    var CONTEXT_NEW_MASS = "CONTEXT_NEW_MASS";
+
+    var itemsGlobal = {
+        CONTEXT_NEW_GROUP: {
+            name: "New // Neu", icon: "fas fa-plus-circle", items: {
+                'CONTEXT_NEW_SINGLE': {name: "New Element // Neues Element", icon: "fas fa-plus"},
+                'CONTEXT_NEW_MASS': {name: "Many new elements // Mehrere neue Elemente", icon: "fas fa-clone"}
+            }
+        }
+    };
+
+    var itemsElem = {
+        CONTEXT_EDIT: {name: "Edit // Bearbeiten", icon: "fas fa-edit"},
+        CONTEXT_DUPLICATE: {name: "Duplicate // Klonen", icon: "far fa-clone"},
+        CONTEXT_DELETE: {name: "Delete // Löschen", icon: "far fa-trash-alt"},
+        SEP1: "---------",
+        CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP]
+    };
 
     $.contextMenu({
         selector: contextMenuSelector,
         callback: function (key, options) {
             var elementId = $(this).attr('id');
-            switch (key) {
-                case CONTEXT_EDIT: {
-                    vueApp.editElementId = elementId;
-                    vueApp.showModal = true;
-                    break;
-                }
-                case CONTEXT_DUPLICATE: {
-                    GridEditView.grid.duplicateElement(elementId);
-                    break;
-                }
-                case CONTEXT_DELETE: {
-                    GridEditView.grid.removeElement(elementId).then(newGridData => {
-                        GridEditView.gridData = newGridData;
-                    });
-                    break;
-                }
-            }
+            handleContextMenu(key, elementId);
         },
-        items: items
+        items: itemsElem
     });
+
+    $.contextMenu({
+        selector: '.grid-container',
+        callback: function (key, options) {
+            handleContextMenu(key);
+        },
+        items: itemsGlobal
+    });
+
+    function handleContextMenu(key, elementId) {
+        switch (key) {
+            case CONTEXT_EDIT: {
+                vueApp.editElement(elementId);
+                break;
+            }
+            case CONTEXT_DUPLICATE: {
+                GridEditView.grid.duplicateElement(elementId);
+                break;
+            }
+            case CONTEXT_DELETE: {
+                GridEditView.grid.removeElement(elementId).then(newGridData => {
+                    GridEditView.gridData = newGridData;
+                });
+                break;
+            }
+            case CONTEXT_NEW_SINGLE: {
+                vueApp.newElement();
+                break;
+            }
+            case CONTEXT_NEW_MASS: {
+                console.log('new mass');
+                break;
+            }
+        }
+    }
 }
 
 export {GridEditView};
