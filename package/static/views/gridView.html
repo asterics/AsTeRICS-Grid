@@ -1,22 +1,31 @@
-<header v-show="showHeader" @mousemove="resetHeaderHideTimeout()" @touchstart="resetHeaderHideTimeout(5000)" id="app" class="row header" role="banner" v-cloak>
-    <div id="menuHeader">
-        <a href="#main"><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
-        <div class="inline spaced">
-            <label class="inline" for="inHeaderPinned"><i class="fas fa-thumbtack"/> <span class="hide-mobile" data-i18n>Header pinned // Header angepinnt</span></label>
-            <input id="inHeaderPinned" type="checkbox" @change="setHeaderPinned" v-model="headerPinned"/>
-        </div>
-        <div id="menuButtons" class="inline">
+<div id="app" v-cloak>
+    <header v-show="showHeader" @mousemove="resetHeaderHideTimeout()" @touchstart="resetHeaderHideTimeout(5000)" class="row header" role="banner">
+        <div id="menuHeader">
+            <a href="#main"><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
             <div class="inline spaced">
-                <button v-if="!showInputOptions" @click="showModal = true"><i class="fas fa-cog"/> <span data-i18n>Input options // Eingabeoptionen</span></button>
-                <div class="inline">
-                    <a :href="'#grid/edit/' + gridData.id" class="spaced" id="btnMenuEdit" data-i18n>Edit grid // Grid bearbeiten</a>
-                    <a href="#grids" id="btnMenuManage" data-i18n>Manage grids // Grids verwalten</a>
+                <label class="inline" for="inHeaderPinned"><i class="fas fa-thumbtack"/> <span class="hide-mobile" data-i18n>Header pinned // Header angepinnt</span></label>
+                <input id="inHeaderPinned" type="checkbox" @change="setHeaderPinned" v-model="headerPinned"/>
+            </div>
+            <div id="menuButtons" class="inline">
+                <div class="inline spaced">
+                    <button v-if="!showInputOptions" @click="showModal = true"><i class="fas fa-cog"/> <span data-i18n>Input options // Eingabeoptionen</span></button>
+                    <div class="inline">
+                        <a :href="'#grid/edit/' + gridData.id" class="spaced" id="btnMenuEdit" data-i18n>Edit grid // Grid bearbeiten</a>
+                        <a href="#grids" id="btnMenuManage" data-i18n>Manage grids // Grids verwalten</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <input-options-modal v-if="showModal" v-bind:grid-data="gridData" v-bind:scanner="scanner" v-bind:hover="hover" v-bind:clicker="clicker" v-bind:reinit="reinitInputMethods" @close="showModal = false"/>
-</header>
+        <input-options-modal v-if="showModal" v-bind:grid-data="gridData" v-bind:scanner="scanner" v-bind:hover="hover" v-bind:clicker="clicker" v-bind:reinit="reinitInputMethods" @close="showModal = false"/>
+    </header>
+    <main class="spaced" v-show="!gridData.gridElements || gridData.gridElements.length == 0" role="main" class="row content">
+        <div data-i18n="" style="margin-top: 2em">
+            <span>No elements, click <a :href="'#grid/edit/' + gridData.id">Edit grid</a> to enter edit mode.</span>
+            <span>Keine Elemente, klicke auf <a :href="'#grid/edit/' + gridData.id">Grid bearbeiten</a> um das Grid zu bearbeiten.</span>
+        </div>
+    </main>
+</div>
+
 <main role="main" class="row content">
     <div id="grid-container" class="grid-container">
     </div>
