@@ -16,6 +16,7 @@ templates.getGridItem = function (label, width, height, posX, posY, id, image) {
     posX = posX || 0;
     posY = posY || 0;
     id = id || lastId++;
+    label = label || "";
     var imgData = '';
     var imgId = '';
     var txtContainerStyle = '';
