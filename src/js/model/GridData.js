@@ -21,6 +21,41 @@ class GridData extends Model({
         return this.gridElements.every(elm => elm.hasSetPosition());
     }
 
+    /**
+     * returns object with x and y keys containing an x/y position where to insert a new element
+     * @return {*}
+     */
+    getNewXYPos() {
+        var maxXPos = Math.max.apply(null, this.gridElements.map(el => el.x));
+        var elemsMaxX = this.gridElements.filter(elem => elem.x == maxXPos);
+        var maxYPos = Math.max.apply(null, elemsMaxX.map(el => el.y));
+        if(maxYPos == this.rowCount - 1) {
+            var minWidth = Math.min.apply(null, elemsMaxX.map(elem => elem.width));
+            var elemsMinWidth = elemsMaxX.filter(elem => elem.width == minWidth);
+            console.log(elemsMinWidth);
+            return {
+                x: (elemsMinWidth[0].width - 1) + maxXPos + 1,
+                y: elemsMinWidth[0].y
+            };
+        } else {
+            var finalY = maxYPos + 1;
+            var elemsFinalY = this.gridElements.filter(elem => elem.y == finalY);
+
+            var finalX = 0;
+            if(elemsFinalY.length > 0) {
+                var maxXPos = Math.max.apply(null, elemsFinalY.map(el => el.x));
+                console.log(maxXPos);
+                var elemsMaxX = elemsFinalY.filter(el => el.x == maxXPos);
+                console.log(elemsMaxX);
+                finalX = elemsMaxX[0].x + elemsMaxX[0].width;
+            }
+            return {
+                x: finalX,
+                y: finalY
+            };
+        }
+    }
+
     isEqual(otherGridData) {
         var comp1 = JSON.parse(JSON.stringify(otherGridData));
         var comp2 = JSON.parse(JSON.stringify(this));
