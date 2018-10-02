@@ -242,6 +242,9 @@ function Scanner(itemSelector, scanActiveClass, options) {
     thiz.startScanning = function () {
         if (!_isScanning) {
             var elements = L.selectAsList(itemSelector);
+            if(elements.length == 0) {
+                return;
+            }
             var rows = getGroups(elements, scanVertical);
             _isScanning = true;
             if(rows.length == 1) {
