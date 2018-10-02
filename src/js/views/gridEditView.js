@@ -38,6 +38,7 @@ function initVue() {
             gridData: JSON.parse(JSON.stringify(GridEditView.gridData)),
             canUndo: false,
             canRedo: false,
+            doingUndoRedo: false,
             showModal: false,
             editElementId: null
         },
@@ -55,10 +56,16 @@ function initVue() {
                 GridEditView.grid.compactLayout();
             },
             undo: function () {
-                GridEditView.grid.undo();
+                this.doingUndoRedo = true;
+                setTimeout(function () {
+                    GridEditView.grid.undo();
+                }, 10);
             },
             redo: function () {
-                GridEditView.grid.redo();
+                this.doingUndoRedo = true;
+                setTimeout(function () {
+                    GridEditView.grid.redo();
+                }, 10);
             },
             reload (gridElement) {
                 console.log('doing reload: ' + gridElement.label);
@@ -72,6 +79,7 @@ function initVue() {
                 GridEditView.grid.setLayoutChangedEndListener((newGridData) => {
                     thiz.canUndo = GridEditView.grid.canUndo();
                     thiz.canRedo = GridEditView.grid.canRedo();
+                    thiz.doingUndoRedo = false;
                     thiz.gridData.rowCount = newGridData.rowCount;
                 });
                 initContextmenu();
