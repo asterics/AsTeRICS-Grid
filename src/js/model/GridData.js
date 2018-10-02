@@ -26,27 +26,31 @@ class GridData extends Model({
      * @return {*}
      */
     getNewXYPos() {
+        if(!this.gridElements || this.gridElements.length == 0) {
+            return {
+                x: 0,
+                y: 0
+            }
+        }
         var maxXPos = Math.max.apply(null, this.gridElements.map(el => el.x));
         var elemsMaxX = this.gridElements.filter(elem => elem.x == maxXPos);
         var maxYPos = Math.max.apply(null, elemsMaxX.map(el => el.y));
         if(maxYPos == this.rowCount - 1) {
             var minWidth = Math.min.apply(null, elemsMaxX.map(elem => elem.width));
             var elemsMinWidth = elemsMaxX.filter(elem => elem.width == minWidth);
-            console.log(elemsMinWidth);
             return {
                 x: (elemsMinWidth[0].width - 1) + maxXPos + 1,
                 y: elemsMinWidth[0].y
             };
         } else {
-            var finalY = maxYPos + 1;
+            var elemsMaxYPos = elemsMaxX.filter(el => el.y == maxYPos);
+            var finalY = maxYPos + elemsMaxYPos[0].height;
             var elemsFinalY = this.gridElements.filter(elem => elem.y == finalY);
 
-            var finalX = 0;
+            var finalX = elemsMaxX[elemsMaxX.length - 1].x;
             if(elemsFinalY.length > 0) {
                 var maxXPos = Math.max.apply(null, elemsFinalY.map(el => el.x));
-                console.log(maxXPos);
                 var elemsMaxX = elemsFinalY.filter(el => el.x == maxXPos);
-                console.log(elemsMaxX);
                 finalX = elemsMaxX[0].x + elemsMaxX[0].width;
             }
             return {
