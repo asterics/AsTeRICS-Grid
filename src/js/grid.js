@@ -100,7 +100,7 @@ function Grid(gridContainerId, gridItemClass, options) {
         var itemNormHeight = _gridListInstance._cellHeight;
         var itemNormWidth = _gridListInstance._cellWidth;
         return {
-            grid: [itemNormWidth, itemNormHeight],
+            //grid: [itemNormWidth, itemNormHeight],
             autoHide: false,
             handles: 'se',
             disabled: !enableResizing,
@@ -132,6 +132,7 @@ function Grid(gridContainerId, gridItemClass, options) {
                 ui.element.parent().css('z-index', 1);
                 var w = Math.round(ui.element.width() / itemNormWidth);
                 var h = Math.round(ui.element.height() / itemNormHeight);
+                h = h <= _gridRows ? h : _gridRows;
                 if (h <= _gridRows) {
                     _gridElement.gridList('resizeItem', ui.element.parent(), {
                         w: w,
@@ -263,6 +264,7 @@ function Grid(gridContainerId, gridItemClass, options) {
      */
     thiz.autosize = function () {
         _gridElement.gridList('autosize');
+        refreshResizeOptions();
     };
 
     /**
