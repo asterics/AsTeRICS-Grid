@@ -259,7 +259,7 @@ var dataService = {
                 if (existingMetadata) {
                     //new metadata is stored with ID of existing metadata -> there should only be one metadata object
                     var id = existingMetadata instanceof Array ? existingMetadata[0].id : existingMetadata.id;
-                    newMetadata.id = existingMetadata.id;
+                    newMetadata.id = id;
                 }
                 saveInternal(MetaData, newMetadata).then(() => {
                     resolve();
