@@ -40,6 +40,10 @@ header {
 
 /* end of screen rules. */
 
+#menuHeader {
+    margin-left: 1.0em;
+}
+
 #menuHeader h1, #menuButtons button, #menuHeader a, #menuHeader label {
     font-size: 1.2em;
 }
