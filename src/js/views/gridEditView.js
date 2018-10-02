@@ -43,7 +43,7 @@ function initVue() {
         },
         methods: {
             changeRowCount: function (event) {
-                GridEditView.grid.setNumberOfRows(event.target.value);
+                GridEditView.grid.setNumberOfRows(Number.parseInt(event.target.value));
             },
             fillGaps: function () {
                 GridEditView.grid.fillGaps();
@@ -68,7 +68,7 @@ function initVue() {
                 var thiz = this;
                 GridEditView.grid.reinit();
                 dataService.getGrid(thiz.gridData.id).then(data => {
-                    thiz.gridData = data;
+                    thiz.gridData = JSON.parse(JSON.stringify(data));
                 })
             },
             editElement(elementId) {
@@ -89,7 +89,7 @@ function initVue() {
                     thiz.canRedo = GridEditView.grid.canRedo();
                     thiz.doingUndoRedo = false;
                     dataService.getGrid(thiz.gridData.id).then(data => {
-                        thiz.gridData = data;
+                        thiz.gridData = JSON.parse(JSON.stringify(data));
                     });
 
                 });
