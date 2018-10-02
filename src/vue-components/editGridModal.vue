@@ -52,9 +52,11 @@
     import {imageUtil} from './../js/util/imageUtil';
     import {GridImage} from "../js/model/GridImage";
     import './../css/modal.css';
+    import {GridElement} from "../js/model/GridElement";
+    import {GridData} from "../js/model/GridData";
 
     export default {
-        props: ['gridId', 'editElementId'],
+        props: ['editElementId', 'gridData'],
         data: function () {
             return {
                 gridElement: null,
@@ -99,7 +101,7 @@
                 }
 
                 if(thiz.gridElement && thiz.originalGridElementJSON != JSON.stringify(thiz.gridElement)) {
-                    dataService.updateGridElement(thiz.gridId, thiz.gridElement).then(() => {
+                    dataService.updateOrAddGridElement(thiz.gridData.id, thiz.gridElement).then(() => {
                         this.$emit('reload', thiz.gridElement);
                         this.$emit('close');
                     });
@@ -110,18 +112,31 @@
         },
         mounted () {
             var thiz = this;
-            console.log('opened modal: ' + thiz.editElementId);
             I18nModule.init();
-            dataService.getGridElement(thiz.gridId, this.editElementId).then(gridElem => {
-                thiz.gridElement = gridElem;
-                if(gridElem.image) {
-                    imageUtil.convertBase64(gridElem.image.data).then(response => {
-                        thiz.imgDataPreview = response;
-                    });
-                }
-                thiz.elementW = $('#' + this.gridElement.id)[0].getBoundingClientRect().width;
-                thiz.originalGridElementJSON = JSON.stringify(gridElem);
-            });
+            if(thiz.editElementId) {
+                dataService.getGridElement(thiz.gridData.id, this.editElementId).then(gridElem => {
+                    console.log('editing element: ' + gridElem.label);
+                    thiz.gridElement = gridElem;
+                    if(gridElem.image) {
+                        imageUtil.convertBase64(gridElem.image.data).then(response => {
+                            thiz.imgDataPreview = response;
+                        });
+                    }
+                    thiz.elementW = $('#' + this.gridElement.id)[0].getBoundingClientRect().width;
+                    thiz.originalGridElementJSON = JSON.stringify(gridElem);
+                });
+            } else {
+                var newXYPos = new GridData(thiz.gridData).getNewXYPos();
+                console.log('creating element: x ' + newXYPos.x + ' / y ' + newXYPos.y);
+                thiz.gridElement = new GridElement({
+                    x: newXYPos.x,
+                    y: newXYPos.y
+                });
+                var oneElemHeight = Math.round($('#grid-container')[0].getBoundingClientRect().height / thiz.gridData.rowCount);
+                thiz.elementW = 2 * oneElemHeight;
+                thiz.originalGridElementJSON = JSON.stringify(thiz.gridElement);
+            }
+
             dataService.getMetadata().then(metadata => {
                 thiz.metadata = metadata;
             });
