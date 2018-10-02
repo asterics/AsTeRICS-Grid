@@ -311,6 +311,10 @@ GridList.prototype = {
     for (var i = 0; i < this.items.length; i++) {
       var item = this.items[i];
 
+      if(item.h > this._options.lanes) {
+        item.h = this._options.lanes;
+      }
+
       // This can happen only the first time items are checked.
       // We need the property to have a value for all the items so that the
       // `cloneItems` method will merge the properties properly. If we only set
