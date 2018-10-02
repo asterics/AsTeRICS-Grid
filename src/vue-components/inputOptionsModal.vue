@@ -205,7 +205,7 @@
     }
 
     .space-2x {
-        margin-top: 2.5em;
+        margin-top: 2.0em;
     }
 
     .slidergroup{
