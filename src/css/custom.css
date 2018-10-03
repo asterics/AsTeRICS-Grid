@@ -72,6 +72,7 @@ header {
 .grid-item-content .text-container {
     flex: 0 1 auto;
     padding-bottom: 0.3em;
+    word-wrap: break-word;
 }
 
 .grid-item-content .text-container span {
