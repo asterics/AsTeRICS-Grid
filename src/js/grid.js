@@ -135,7 +135,7 @@ function Grid(gridContainerId, gridItemClass, options) {
                 var w = Math.max(Math.round(ui.element.width() / itemNormWidth), 1);
                 var h = Math.max(Math.round(ui.element.height() / itemNormHeight), 1);
                 h = h <= _gridRows ? h : _gridRows;
-                fontUtil.adaptFontSize(el, _gridRows, w, h);
+                fontUtil.adaptFontSize(el);
                 _gridElement.gridList('resizeItem', ui.element.parent(), {
                     w: w,
                     h: h
@@ -211,7 +211,6 @@ function Grid(gridContainerId, gridItemClass, options) {
             _gridRows = nr;
             _gridElement.gridList('resize', _gridRows);
         }
-        fontUtil.adaptFontSize($('#grid-container .item'), _gridRows);
         notifyLayoutChangeEnd();
     };
 
@@ -266,6 +265,9 @@ function Grid(gridContainerId, gridItemClass, options) {
      */
     thiz.autosize = function () {
         _gridElement.gridList('autosize');
+        setTimeout(function () {
+            fontUtil.adaptFontSizeForGridElements();
+        }, _animationTimeMs);
         refreshResizeOptions();
     };
 
