@@ -96,7 +96,7 @@
                         dataService.saveMetadata(thiz.metadata);
                     }
                     thiz.gridElement.image = new GridImage({id: imgToSave.id, data: thiz.imgDataSmall});
-                } else {
+                } else if(!thiz.imgDataPreview) {
                     thiz.gridElement.image = null;
                 }
 

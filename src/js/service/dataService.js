@@ -221,7 +221,7 @@ var dataService = {
                 var index = grid.gridElements.map(el => el.id).indexOf(updatedGridElement.id);
 
                 if(index != -1) {
-                    grid.gridElements[index] = new GridElement(updatedGridElement, grid.gridElements[index]);
+                    grid.gridElements[index] = updatedGridElement;
                 } else {
                     grid.gridElements.push(updatedGridElement);
                 }
