@@ -1,3 +1,5 @@
+import {fontUtil} from "./util/fontUtil";
+
 var templates = {};
 var lastId = 1;
 
@@ -19,12 +21,12 @@ templates.getGridItem = function (label, width, height, posX, posY, id, image) {
     label = label || "";
     var imgData = '';
     var imgId = '';
-    var txtContainerStyle = '';
+    var txtContainerStyle = 'font-size: ' + fontUtil.getFontSizePercent(label, width, height, image) + ';';
     if(image) {
         imgData = image.data;
         imgId = image.id;
     } else {
-        txtContainerStyle = 'flex: 1 1 auto;';
+        txtContainerStyle += 'flex: 1 1 auto;';
     }
 
     var template = `

@@ -5,6 +5,7 @@ import {GridElement} from "./model/GridElement";
 import {templates} from "./templates";
 import {GridImage} from "./model/GridImage";
 import {imageUtil} from "./util/imageUtil";
+import {fontUtil} from "./util/fontUtil";
 
 function Grid(gridContainerId, gridItemClass, options) {
     var thiz = this;
@@ -106,16 +107,16 @@ function Grid(gridContainerId, gridItemClass, options) {
             disabled: !enableResizing,
             start: notifyLayoutChangeStart,
             stop(event, ui) {
+                var el = ui.element.parent();
                 var idOfChangedElement = ui.element.attr('id');
                 var resizePromise = new Promise(resolve => {
-                    var changedElement = $('#' + idOfChangedElement).parent();
-                    var imageId = changedElement.attr('data-img-id');
+                    var imageId = el.attr('data-img-id');
                     if (imageId) {
                         dataService.getImage(imageId).then(gridImage => {
                             var elementW = $('#' + idOfChangedElement)[0].getBoundingClientRect().width;
                             imageUtil.convertBase64(gridImage.data, elementW).then(convertedBase64 => {
-                                changedElement.attr('data-img', convertedBase64);
-                                changedElement.children().children()[0].style.backgroundImage = 'url("' + convertedBase64 + '")';
+                                el.attr('data-img', convertedBase64);
+                                el.children().children()[0].style.backgroundImage = 'url("' + convertedBase64 + '")';
                                 resolve();
                             });
                         });
@@ -129,16 +130,16 @@ function Grid(gridContainerId, gridItemClass, options) {
                 });
             },
             resize: function (event, ui) {
-                ui.element.parent().css('z-index', 1);
-                var w = Math.round(ui.element.width() / itemNormWidth);
-                var h = Math.round(ui.element.height() / itemNormHeight);
+                var el = ui.element.parent();
+                el.css('z-index', 1);
+                var w = Math.max(Math.round(ui.element.width() / itemNormWidth), 1);
+                var h = Math.max(Math.round(ui.element.height() / itemNormHeight), 1);
                 h = h <= _gridRows ? h : _gridRows;
-                if (h <= _gridRows) {
-                    _gridElement.gridList('resizeItem', ui.element.parent(), {
-                        w: w,
-                        h: h
-                    });
-                }
+                fontUtil.adaptFontSize(el, _gridRows, w, h);
+                _gridElement.gridList('resizeItem', ui.element.parent(), {
+                    w: w,
+                    h: h
+                });
                 ui.element.css('height', '');
                 ui.element.css('width', '');
             }
@@ -210,6 +211,7 @@ function Grid(gridContainerId, gridItemClass, options) {
             _gridRows = nr;
             _gridElement.gridList('resize', _gridRows);
         }
+        fontUtil.adaptFontSize($('#grid-container .item'), _gridRows);
         notifyLayoutChangeEnd();
     };
 
