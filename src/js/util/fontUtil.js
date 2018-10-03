@@ -1,43 +1,40 @@
 var fontUtil = {};
 
 /**
- * returns font size in percent for a grid element by parameters of the element
- *
- * @param label
- * @param width
- * @param height
- * @param image
- * @return {string} the string that can be used for font-size css property, e.g. "70%"
+ * returns the optimal font size in px for a given grid element
+ * @param elem
+ * @return {*}
  */
-fontUtil.getFontSizePercent = function(label, width, height, image) {
-    var lineLength = width * 5;
-    var imgFactor = image ? 1 : 0;
-    var maxLines = 2*height-(height*imgFactor);
-    if(!label || label.length < lineLength * maxLines) {
-        return "100%";
+fontUtil.getFontSizePx = function (elem) {
+    var label = elem.attr('data-label');
+    var imageId = elem.attr('data-img-id');
+    if (!label) {
+        return "10px";
     }
 
-    var tooBigFactor = label.length / (lineLength * maxLines);
-    return (100 * Math.exp(-tooBigFactor/4)) + '%';
+    var rectElem = elem[0].getBoundingClientRect();
+    var areaElem = rectElem.height * rectElem.width / (imageId ? 2 : 1);
+    var fontSize = Math.floor(Math.sqrt(areaElem * 0.5 / Math.max(10, label.length)));
+
+    return Math.min(fontSize, rectElem.height / 2) + "px";
 };
 
 /**
  * adapts font size on one or several elements
- * @param elemOrElems a NodeList (result of jquery query) or a single element
- * @param maxH maximum height of element (numberOfRows of the grid)
- * @param w current element width (optional if data-h is incorrect)
- * @param h current element height (optional if data-w is incorrect)
  */
-fontUtil.adaptFontSize = function (elemOrElems, maxH, w, h) {
-    var elems = elemOrElems instanceof NodeList ? elemOrElems : [elemOrElems];
+fontUtil.adaptFontSize = function (elems) {
     for(var i=0; i<elems.length; i++) {
         var elem = elems[i];
-        w = w || elem.attr('data-w');
-        h = h || elem.attr('data-h');
-        h = Math.min(h, maxH);
-        elem.find('.text-container')[0].style.fontSize = fontUtil.getFontSizePercent(elem.attr('data-label'), w, h,  elem.attr('data-img-id'));
+        $(elem).find('.text-container')[0].style.fontSize = fontUtil.getFontSizePx($(elem));
     }
 
+};
+
+/**
+ * adapts font size for all grid elements
+ */
+fontUtil.adaptFontSizeForGridElements = function() {
+    fontUtil.adaptFontSize($('#grid-container .item'));
 };
 
 export {fontUtil};
