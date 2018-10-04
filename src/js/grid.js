@@ -82,13 +82,13 @@ function Grid(gridContainerId, gridItemClass, options) {
             _gridData.gridElements = thiz.toGridElements();
             dataService.updateGrid(_gridData.id, _gridData);
         }
-        if(enableResizing) {
-            initResizing();
-        }
+        initResizing();
     }
 
     function initResizing() {
-        $(gridItemClass).resizable(getResizeOptions());
+        if(enableResizing) {
+            $(gridItemClass).resizable(getResizeOptions());
+        }
 
         window.addEventListener('resize', function () {
             thiz.autosize();
