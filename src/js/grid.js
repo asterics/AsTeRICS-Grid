@@ -82,7 +82,9 @@ function Grid(gridContainerId, gridItemClass, options) {
             _gridData.gridElements = thiz.toGridElements();
             dataService.updateGrid(_gridData.id, _gridData);
         }
-        initResizing();
+        if(enableResizing) {
+            initResizing();
+        }
     }
 
     function initResizing() {
@@ -94,7 +96,9 @@ function Grid(gridContainerId, gridItemClass, options) {
     }
 
     function refreshResizeOptions() {
-        $(gridItemClass).resizable('option', getResizeOptions());
+        if(enableResizing) {
+            $(gridItemClass).resizable('option', getResizeOptions());
+        }
     }
 
     function getResizeOptions() {
