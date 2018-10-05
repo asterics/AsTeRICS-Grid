@@ -75,7 +75,7 @@ header {
     word-wrap: break-word;
 }
 
-.grid-item-content .text-container span {
+.grid, .grid-item-content .text-container span {
     /* make non-selectable */
     -webkit-user-select: none; /* Safari */
     -moz-user-select: none; /* Firefox */
