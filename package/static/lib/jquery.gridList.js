@@ -32,7 +32,7 @@
     draggableDefaults: {
       zIndex: 2,
       scroll: false,
-      containment: "parent"
+      containment: "false"
     },
 
     destroy: function() {
