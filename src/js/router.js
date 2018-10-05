@@ -63,7 +63,11 @@ Router.toMain = function () {
 };
 
 Router.toGrid = function (id) {
-    location.hash = '#grid/' + id + "?time=" + new Date().getTime();
+    location.hash = '#grid/' + id;
+};
+
+Router.toEditGrid = function (id) {
+    location.hash = '#grid/edit/' + id;
 };
 
 function loadView(viewName) {
