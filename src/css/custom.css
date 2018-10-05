@@ -4,9 +4,13 @@
 html,
 body {
     height: 100%;
-    margin: 0.2em;
-    overflow-y: hidden;
+    margin: 0;
+    overflow: hidden;
     font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#app {
+    overflow-y: auto;
 }
 
 header {
@@ -40,7 +44,7 @@ header {
 
 /* end of screen rules. */
 
-#menuHeader {
+#menuHeader, #allGridsContent {
     margin-left: 1.0em;
 }
 
