@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# aae453b80874769460b3
+# 4e601cd058e6581b2108
 
 CACHE:
 build/asterics-grid.bundle.js
@@ -22,6 +22,7 @@ css/fontawesome/webfonts/fa-solid-900.woff
 css/fontawesome/webfonts/fa-solid-900.woff2
 css/jquery-ui.css
 css/images/ui-icons_444444_256x240.png
+css/skeleton.css
 lib/gridList.js
 lib/jquery.contextMenu.min.js
 lib/jquery.gridList.js
@@ -37,6 +38,9 @@ lib/pouchdb-7.0.0.min.js
 lib/pouchdb-find-7.0.0.min.js
 polyfill/core_js_shim.min.js
 polyfill/fetch.js
+views/allGridsView.html
+views/gridEditView.html
+views/gridView.html
 
 NETWORK:
 *
