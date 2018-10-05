@@ -15,6 +15,7 @@ import InputOptionsModal from '../../vue-components/inputOptionsModal.vue'
 
 var GridView = {};
 var _inputEventHandler = null;
+var _headerHideTimeoutHandler = null;
 
 GridView.init = function (gridId) {
     _inputEventHandler = new InputEventHandler('grid-container');
@@ -38,6 +39,7 @@ GridView.init = function (gridId) {
 
 GridView.destroy = function () {
     stopInputMethods();
+    clearTimeout(_headerHideTimeoutHandler);
     GridView.grid = null;
     if(_inputEventHandler) {
         _inputEventHandler.stopListening();
@@ -69,7 +71,6 @@ function initVue() {
             isScanning: GridView.gridData.inputConfig.scanAutostart,
             showHeader: null,
             headerPinned: GridView.metadata.headerPinned,
-            headerHideTimeoutHandler: null,
             scanner: null,
             hover: null,
             clicker: null,
@@ -99,12 +100,12 @@ function initVue() {
             },
             resetHeaderHideTimeout(t) {
                 var thiz = this;
-                if(thiz.headerHideTimeoutHandler) {
-                    clearTimeout(thiz.headerHideTimeoutHandler)
+                if(_headerHideTimeoutHandler) {
+                    clearTimeout(_headerHideTimeoutHandler)
                 }
                 if(thiz.showHeader && !thiz.headerPinned) {
                     var headerHideTimeout = t || 3000;
-                    thiz.headerHideTimeoutHandler = setTimeout(function () {
+                    _headerHideTimeoutHandler = setTimeout(function () {
                         if(thiz.showModal) {
                             thiz.resetHeaderHideTimeout(t)
                         } else {
