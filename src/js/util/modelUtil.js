@@ -18,6 +18,23 @@ modelUtil.getAsObject = function (jsonStringOrObject) {
 };
 
 /**
+ * model to get a new (unique) name for labels
+ * @param baseName the new label
+ * @param existingNames existing labels
+ * @return a new label that is non-conflicting with existingLabels.
+ * e.g. if baseName == 'grid' and existingNames.includes('grid'), 'grid (1)' will be returned.
+ */
+modelUtil.getNewName = function (baseName, existingNames) {
+    var i = 1;
+    var returnName = baseName;
+    while (existingNames.includes(returnName)) {
+        returnName = baseName +' (' + i + ')';
+        i++;
+    }
+    return returnName;
+};
+
+/**
  * sets properties of a base object to an property object, if property is not existing on property object. To be used
  * in constructor of model objects.
  *
