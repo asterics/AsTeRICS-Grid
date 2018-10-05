@@ -16,7 +16,8 @@
   transition: width 0.2s,
   height 0.2s;
   padding: 0;
-  margin-top: 1%;
+  margin-top: 1.5%;
+  margin-bottom: 1.5%;
   -webkit-padding-start: 0;
 }
 .grid li {
