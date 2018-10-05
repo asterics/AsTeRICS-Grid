@@ -307,14 +307,10 @@ var dataService = {
     },
     importSingleGrid(file) {
         var thiz = this;
-        console.log('here1')
         return new Promise(resolve => {
-            console.log('here2')
             var reader = new FileReader();
             reader.onload = (function (theFile) {
-                console.log('here3')
                 return function (e) {
-                    console.log('here4')
                     var data = e.target.result;
                     var gridData = JSON.parse(data);
                     gridData.id = modelUtil.generateId('grid-data');
@@ -334,7 +330,6 @@ var dataService = {
             reader.onload = (function (theFile) {
                 return function (e) {
                     var data = e.target.result;
-                    console.log(data);
                     resetPouchDB().then(() => {
                         console.log('resetted pouchdb! loading from string...');
                         db.load(data).then(function () {
