@@ -43,12 +43,23 @@ function initVue(grids) {
                     this.reload();
                 });
             },
-            importFromFile: function () {
+            importFromFile: function (event) {
                 var importFile = event.target.files[0];
-                if (confirm(`Do you really want to import all grids from "${importFile.name}"? Warning: This will delete all currently saved grids.`)) {
-                    dataService.importDB(importFile).then(() => {
-                        reinit();
+                if(!importFile || !importFile.name) {
+                    return;
+                }
+
+                var fileExtension = importFile.name.substring(importFile.name.length-4);
+                if(fileExtension == '.grd') {
+                    dataService.importSingleGrid(importFile).then(() => {
+                        this.reload();
                     });
+                } else if(fileExtension == '.grs') {
+                    if (confirm(`Do you really want to import all grids from "${importFile.name}"? Warning: This will delete all currently saved grids.`)) {
+                        dataService.importDB(importFile).then(() => {
+                            reinit();
+                        });
+                    }
                 }
             },
             finishEdit: function (id, label) {
@@ -76,7 +87,7 @@ function initVue(grids) {
             },
             exportToFile(gridId) {
                 if(gridId) {
-                    console.log('exporting...')
+                    dataService.downloadSingleGrid(gridId);
                 } else {
                     dataService.downloadDB();
                 }

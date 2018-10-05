@@ -10,11 +10,11 @@
                     <button @click="addGrid()"><i class="fas fa-plus"/> <span data-i18n="">New Grid // Neues Grid</span></button>
                 </div>
                 <div class="spaced inline">
-                    <button @click="exportToFile()"><i class="fas fa-hdd"/> <span data-i18n="">Export all Grids // Alle Grids exportieren</span></button>
+                    <button @click="exportToFile()" title="Export whole configuration to a file."><i class="fas fa-hdd"/> <span data-i18n="">Export all // Alles exportieren</span></button>
                 </div>
                 <div class="spaced inline">
                     <button onclick="document.getElementById('inputFile').click();" class="file-input">
-                        <input type="file" id="inputFile" size="200"  @change="importFromFile()" accept=".grd"/>
+                        <input type="file" id="inputFile" size="200"  @change="importFromFile" accept=".grd,.grs"/>
                         <span><i class="fas fa-file-upload"/> <span data-i18n>Import grids // Grids importieren</span></span>
                     </button>
                 </div>
