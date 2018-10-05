@@ -288,7 +288,7 @@
           var maxWidth = Math.max.apply(Math, this.items.map(function (item) {
               return item.x + item.w
           }));
-        this.$element.width(maxWidth * this._cellWidth);
+        this.$element.width($(window).width());
       } else {
         this.$element.height(
           (this.gridList.grid.length + this._tallestItem) * this._cellHeight);
@@ -317,7 +317,7 @@
       row = Math.max(row, 0);
 
       if (this.options.direction === "horizontal") {
-        col = Math.min(col, this._maxGridCols);
+        //col = Math.min(col, this._maxGridCols);
         row = Math.min(row, this.options.lanes - item.h);
       } else {
         col = Math.min(col, this.options.lanes - item.w);
