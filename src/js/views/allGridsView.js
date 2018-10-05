@@ -37,7 +37,7 @@ function initVue(grids) {
                 console.log('add grid!');
                 var gridData = new GridData({
                     label: 'newGrid - ' + new Date().getTime(),
-                    gridElements: [new GridElement({label: 'Test 1'}), new GridElement({label: 'Test 2'})]
+                    gridElements: []
                 });
                 dataService.saveGrid(gridData).then(() => {
                     this.editModeId = gridData.id;
