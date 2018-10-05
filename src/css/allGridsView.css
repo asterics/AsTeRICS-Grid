@@ -2,6 +2,10 @@
     list-style-type: none;
 }
 
+.all-grids-view li button {
+    padding: 0 20px;
+}
+
 .all-grids-view a {
     font-size: 1.2em;
 }
