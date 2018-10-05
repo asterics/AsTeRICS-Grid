@@ -14,6 +14,10 @@
     height: 25px;
 }
 
+.all-grids-view .table-headers{
+    margin-top: 1.0em;
+}
+
 /* Smaller than tablet */
 @media (max-width: 750px) {
     .all-grids-view a {

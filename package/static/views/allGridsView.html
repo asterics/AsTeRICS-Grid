@@ -1,38 +1,58 @@
-<div id="app" v-cloak>
+<div id="app" v-cloak class="all-grids-view">
     <header class="row header" role="banner">
         <div id="menuHeader">
             <a href="#main"><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
             <div class="inline spaced">
                 <input type="text" placeholder="Search grid" v-model="searchText">
             </div>
-            <div class="inline spaced">
-                <button @click="addGrid()" data-i18n>New Grid // Neues Grid</button>
-            </div>
-            <div class="spaced inline">
-                <button @click="exportToFile()" data-i18n>Export all to File // Alles in File exportieren</button>
-            </div>
-            <div class="spaced inline">
-                <input type="file" accept=".grd" @change="changeFile"/>
-                <button @click="importFromFile()" :disabled="!importFile" data-i18n>Import from File // Aus File importieren</button>
-            </div>
-            <div class="spaced inline">
-                <button @click="reset()">RESET</button>
+            <div class="inline">
+                <div class="inline spaced">
+                    <button @click="addGrid()"><i class="fas fa-plus"/> <span data-i18n="">New Grid // Neues Grid</span></button>
+                </div>
+                <div class="spaced inline">
+                    <button @click="exportToFile()"><i class="fas fa-hdd"/> <span data-i18n="">Export all Grids // Alle Grids exportieren</span></button>
+                </div>
+                <div class="spaced inline">
+                    <button onclick="document.getElementById('inputFile').click();" class="file-input">
+                        <input type="file" id="inputFile" size="200"  @change="importFromFile()" accept=".grd"/>
+                        <span><i class="fas fa-file-upload"/> <span data-i18n>Import grids // Grids importieren</span></span>
+                    </button>
+                </div>
+                <div class="spaced inline">
+                    <button @click="reset()"><i class="fas fa-minus-circle"/> RESET</button>
+                </div>
             </div>
         </div>
     </header>
-    <main role="main" class="row content">
-        <p data-i18n>All saved Grids: // Alle gespeicherten Grids</p>
-        <ul id="gridList">
+    <main role="main" class="row content" id="allGridsContent">
+        <h2 data-i18n>Saved Grids // Gespeicherte Grids</h2>
+        <ul id="gridList" v-show="filteredGrids.length > 0">
+            <li class="hide-mobile table-headers">
+                <span class="four columns">Name</span>
+                <span class="four columns" data-i18n="">Actions // Aktionen</span><br/>
+            </li>
             <li v-for="grid in filteredGrids">
-                <div v-if="editModeId !== grid.id">
-                    <a :href="'#grid/' + grid.id">{{ grid.label }}</a>
-                    <button @click="enableEdit(grid.id, grid.label)" data-i18n="">Edit // Bearbeiten</button>
-                    <button @click="deleteGrid(grid.id, grid.label)" data-i18n="">Delete // Löschen</button>
-                </div>
-                <div v-if="editModeId === grid.id">
-                    <input v-focus="" v-model="grid.label"/>
-                    <button v-if="originalLabel" @click="cancelEdit(grid.id)" data-i18n>Cancel // Abbrechen</button>
-                    <button @click="finishEdit(grid.id, grid.label)" :disabled="isLabelDuplicate(grid.label)" data-i18n>Save // Speichern</button>
+                <div class="row">
+                    <div class="four columns">
+                        <div v-if="editModeId !== grid.id">
+                            <a :href="'#grid/' + grid.id">{{ grid.label }}</a>
+                            <button class="small-button" @click="enableEdit(grid.id, grid.label)"><i class="far fa-edit"/></button>
+                        </div>
+                        <div v-if="editModeId === grid.id">
+                            <input type="text" v-focus="" v-model="grid.label"/>
+                            <div class="inline">
+                                <button class="small-button" v-if="originalLabel" @click="cancelEdit(grid.id)"><i class="fas fa-times"/></button>
+                                <button class="small-button" @click="finishEdit(grid.id, grid.label)" :disabled="isLabelDuplicate(grid.label)"><i class="fas fa-check"/></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="eight columns">
+                        <div class="four columns show-mobile" style="margin: 0.5em 0 0 0.2em" data-i18n="">Actions // Aktionen</div>
+                        <button @click="show(grid.id)"><i class="far fa-eye"/> <span class="hide-mobile" data-i18n="">Show // Öffnen</span></button>
+                        <button @click="edit(grid.id)"><i class="far fa-edit"/> <span class="hide-mobile" data-i18n="">Edit // Bearbeiten</span></button>
+                        <button @click="deleteGrid(grid.id, grid.label)"><i class="far fa-trash-alt"/> <span class="hide-mobile" data-i18n="">Delete // Löschen</span></button>
+                        <button @click="exportToFile(grid.id)"><i class="fas fa-file-export"/> <span class="hide-mobile" data-i18n="">Export // Exportieren</span></button>
+                    </div>
                 </div>
             </li>
         </ul>

@@ -1,6 +1,6 @@
 import {dataService} from "../service/dataService";
 import {GridData} from "../model/GridData.js";
-import {GridElement} from "../model/GridElement.js";
+import {Router} from "../router";
 import Vue from 'vue'
 
 var AllGridsView = {};
@@ -19,7 +19,6 @@ function initVue(grids) {
         data: {
             grids: JSON.parse(JSON.stringify(grids)), //hack because otherwise vueJS databinding sometimes does not work
             searchText: '',
-            importFile: null,
             editModeId: '',
             originalLabel: ''
         },
@@ -44,20 +43,13 @@ function initVue(grids) {
                     this.reload();
                 });
             },
-            exportToFile: function () {
-                dataService.downloadDB();
-            },
             importFromFile: function () {
-                console.log(this.importFile);
-                if (!confirm(`Do you really want to import all grids from "${this.importFile.name}"? Warning: This will delete all currently saved grids.`)) {
-                    return;
+                var importFile = event.target.files[0];
+                if (confirm(`Do you really want to import all grids from "${importFile.name}"? Warning: This will delete all currently saved grids.`)) {
+                    dataService.importDB(importFile).then(() => {
+                        reinit();
+                    });
                 }
-                dataService.importDB(this.importFile).then(() => {
-                    reinit();
-                });
-            },
-            changeFile: function (event) {
-                this.importFile = event.target.files[0];
             },
             finishEdit: function (id, label) {
                 dataService.updateGrid(id, {label: label});
@@ -75,6 +67,19 @@ function initVue(grids) {
             },
             isLabelDuplicate: function(label) {
                 return this.grids.map(g => g.label).filter(l => l == label).length > 1
+            },
+            show(gridId) {
+                Router.toGrid(gridId);
+            },
+            edit(gridId) {
+                Router.toEditGrid(gridId);
+            },
+            exportToFile(gridId) {
+                if(gridId) {
+                    console.log('exporting...')
+                } else {
+                    dataService.downloadDB();
+                }
             },
             reload: function () {
                 dataService.getGrids().then(grids => {
