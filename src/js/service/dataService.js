@@ -7,6 +7,7 @@ import {GridData} from "../model/GridData.js";
 import {GridImage} from "../model/GridImage";
 import {InputConfig} from "../model/InputConfig";
 import {MetaData} from "../model/MetaData";
+import {modelUtil} from "../util/modelUtil";
 
 var verbs = ['be', 'have', 'do', 'say', 'get', 'make', 'go', 'know', 'take', 'see', 'come', 'think', 'look', 'want', 'give', 'use', 'find', 'tell', 'ask', 'work', 'seem', 'feel', 'try', 'leave', 'call'];
 var dbName = 'asterics-ergo-grid';
@@ -291,9 +292,40 @@ var dataService = {
 
         db.dump(stream).then(function () {
             var blob = new Blob([dumpedString], {type: "text/plain;charset=utf-8"});
-            FileSaver.saveAs(blob, "my-grids.grd");
+            FileSaver.saveAs(blob, "my-grids.grs");
         }).catch(function (err) {
             console.log('error on dumping database: ', err);
+        });
+    },
+    downloadSingleGrid(gridId) {
+        this.getGrid(gridId).then(gridData => {
+            if(gridData) {
+                var blob = new Blob([JSON.stringify(gridData)], {type: "text/plain;charset=utf-8"});
+                FileSaver.saveAs(blob, gridData.label + ".grd");
+            }
+        });
+    },
+    importSingleGrid(file) {
+        var thiz = this;
+        console.log('here1')
+        return new Promise(resolve => {
+            console.log('here2')
+            var reader = new FileReader();
+            reader.onload = (function (theFile) {
+                console.log('here3')
+                return function (e) {
+                    console.log('here4')
+                    var data = e.target.result;
+                    var gridData = JSON.parse(data);
+                    gridData.id = modelUtil.generateId('grid-data');
+                    gridData._id = null;
+                    gridData._rev = null;
+                    thiz.saveGrid(gridData).then(() => {
+                        resolve();
+                    })
+                }
+            })(file);
+            reader.readAsText(file);
         });
     },
     importDB: function (file) {
