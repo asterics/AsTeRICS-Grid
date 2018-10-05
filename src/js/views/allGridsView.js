@@ -1,6 +1,7 @@
 import {dataService} from "../service/dataService";
 import {GridData} from "../model/GridData.js";
 import {Router} from "../router";
+import {modelUtil} from "../util/modelUtil";
 import Vue from 'vue'
 
 var AllGridsView = {};
@@ -35,14 +36,8 @@ function initVue(grids) {
             addGrid: function () {
                 console.log('add grid!');
                 var existingNames = this.grids.map(grid => grid.label);
-                var newLabel = 'newGrid';
-                var i = 1;
-                while (existingNames.includes(newLabel)) {
-                    newLabel = 'newGrid (' + i + ')';
-                    i++;
-                }
                 var gridData = new GridData({
-                    label: newLabel,
+                    label: modelUtil.getNewName('newGrid', existingNames),
                     gridElements: []
                 });
                 dataService.saveGrid(gridData).then(() => {

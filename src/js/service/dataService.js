@@ -313,12 +313,16 @@ var dataService = {
                 return function (e) {
                     var data = e.target.result;
                     var gridData = JSON.parse(data);
-                    gridData.id = modelUtil.generateId('grid-data');
-                    gridData._id = null;
-                    gridData._rev = null;
-                    thiz.saveGrid(gridData).then(() => {
-                        resolve();
-                    })
+                    thiz.getGrids().then(grids => {
+                        var existingNames = grids.map(grid => grid.label);
+                        gridData.label = modelUtil.getNewName(gridData.label, existingNames);
+                        gridData.id = modelUtil.generateId('grid-data');
+                        gridData._id = null;
+                        gridData._rev = null;
+                        thiz.saveGrid(gridData).then(() => {
+                            resolve();
+                        })
+                    });
                 }
             })(file);
             reader.readAsText(file);
