@@ -34,8 +34,15 @@ function initVue(grids) {
             },
             addGrid: function () {
                 console.log('add grid!');
+                var existingNames = this.grids.map(grid => grid.label);
+                var newLabel = 'newGrid';
+                var i = 1;
+                while (existingNames.includes(newLabel)) {
+                    newLabel = 'newGrid (' + i + ')';
+                    i++;
+                }
                 var gridData = new GridData({
-                    label: 'newGrid - ' + new Date().getTime(),
+                    label: newLabel,
                     gridElements: []
                 });
                 dataService.saveGrid(gridData).then(() => {
