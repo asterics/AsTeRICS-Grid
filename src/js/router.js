@@ -12,6 +12,7 @@ var navigoInstance = null;
 var viewsFolder = 'views/';
 var filePostfix = '.html';
 var injectId = null;
+var lastHash = null;
 
 Router.init = function (injectIdParam) {
     injectId = injectIdParam;
@@ -59,20 +60,33 @@ Router.init = function (injectIdParam) {
 };
 
 Router.toMain = function () {
-    location.hash = '#main';
+    setHash('#main');
 };
 
 Router.toGrid = function (id) {
-    location.hash = '#grid/' + id;
+    setHash('#grid/' + id);
 };
 
 Router.toEditGrid = function (id) {
-    location.hash = '#grid/edit/' + id;
+    setHash('#grid/edit/' + id);
 };
 
 Router.toManageGrids = function () {
-    location.hash = '#grids';
+    setHash('#grids');
 };
+
+Router.back = function () {
+    if(lastHash) {
+        setHash(lastHash);
+    } else {
+        this.toMain();
+    }
+};
+
+function setHash(hash) {
+    lastHash = location.hash;
+    location.hash = hash;
+}
 
 function loadView(viewName) {
     console.log('loading view: ' + viewName);
