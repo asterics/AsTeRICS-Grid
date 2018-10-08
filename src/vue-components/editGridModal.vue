@@ -5,8 +5,11 @@
                 <div class="modal-container">
 
                     <div class="modal-header">
-                        <h1 name="header" data-i18n>
+                        <h1 v-if="editElementId" name="header" data-i18n>
                             Edit grid item // Grid-Element bearbeiten
+                        </h1>
+                        <h1 v-if="!editElementId" name="header" data-i18n>
+                            New grid item // Neues Grid-Element
                         </h1>
                     </div>
 
