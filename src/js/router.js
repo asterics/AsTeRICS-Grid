@@ -70,6 +70,10 @@ Router.toEditGrid = function (id) {
     location.hash = '#grid/edit/' + id;
 };
 
+Router.toManageGrids = function () {
+    location.hash = '#grids';
+};
+
 function loadView(viewName) {
     console.log('loading view: ' + viewName);
     return new Promise(resolve => {
