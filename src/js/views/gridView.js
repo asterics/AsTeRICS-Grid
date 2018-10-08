@@ -67,7 +67,6 @@ function initVue() {
         el: '#app',
         data: {
             gridData: JSON.parse(JSON.stringify(GridView.gridData)),
-            showInputOptions: false,
             isScanning: GridView.gridData.inputConfig.scanAutostart,
             showHeader: null,
             headerPinned: GridView.metadata.headerPinned,
@@ -113,9 +112,6 @@ function initVue() {
                         }
                     }, headerHideTimeout)
                 }
-            },
-            toggleInputMenu: function () {
-                this.showInputOptions = !this.showInputOptions;
             },
             setHeaderPinned: function (event) {
                 this.headerPinned = event.target.checked;
@@ -180,6 +176,12 @@ function initVue() {
                     this.gridData.inputConfig = JSON.parse(JSON.stringify(gridData.inputConfig));
                     this.initInputMethods();
                 });
+            },
+            toEditGrid() {
+                Router.toEditGrid(this.gridData.id);
+            },
+            toManageGrids() {
+                Router.toManageGrids();
             }
         },
         computed: {

@@ -1,17 +1,21 @@
 <div id="app" v-cloak>
     <header v-show="showHeader" @mousemove="resetHeaderHideTimeout()" @touchstart="resetHeaderHideTimeout(5000)" class="row header" role="banner">
         <div id="menuHeader">
-            <a href="#main"><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
+            <a href="#main"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline hide-mobile">AsTeRICS Ergo Grid</h1></a>
             <div class="inline spaced">
                 <label class="inline" for="inHeaderPinned"><i class="fas fa-thumbtack"/> <span class="hide-mobile" data-i18n>Header pinned // Header angepinnt</span></label>
                 <input id="inHeaderPinned" type="checkbox" @change="setHeaderPinned" v-model="headerPinned"/>
             </div>
             <div id="menuButtons" class="inline">
                 <div class="inline spaced">
-                    <button v-if="!showInputOptions" @click="showModal = true"><i class="fas fa-cog"/> <span data-i18n>Input options // Eingabeoptionen</span></button>
-                    <div class="inline">
+                    <button @click="showModal = true"><i class="fas fa-cog"/> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
+                    <div class="inline hide-mobile">
                         <a :href="'#grid/edit/' + gridData.id" class="spaced" id="btnMenuEdit" data-i18n>Edit grid // Grid bearbeiten</a>
                         <a href="#grids" id="btnMenuManage" data-i18n>Manage grids // Grids verwalten</a>
+                    </div>
+                    <div class="inline show-mobile">
+                        <button @click="toEditGrid"><i class="fas fa-edit"/></button>
+                        <button @click="toManageGrids"><i class="fas fa-list-ul"/></button>
                     </div>
                 </div>
             </div>

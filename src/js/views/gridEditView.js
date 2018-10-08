@@ -45,6 +45,14 @@ function initVue() {
             changeRowCount: function (event) {
                 GridEditView.grid.setNumberOfRows(Number.parseInt(event.target.value));
             },
+            addRow: function (event) {
+                GridEditView.grid.setNumberOfRows(this.gridData.rowCount + 1);
+            },
+            removeRow: function (event) {
+                if (this.gridData.rowCount > 1) {
+                    GridEditView.grid.setNumberOfRows(this.gridData.rowCount - 1);
+                }
+            },
             fillGaps: function () {
                 GridEditView.grid.fillGaps();
             },
@@ -70,6 +78,9 @@ function initVue() {
                 dataService.getGrid(thiz.gridData.id).then(data => {
                     thiz.gridData = JSON.parse(JSON.stringify(data));
                 })
+            },
+            back() {
+                Router.toGrid(this.gridData.id);
             },
             editElement(elementId) {
                 this.editElementId = elementId;
@@ -125,6 +136,11 @@ function initContextmenu() {
     var CONTEXT_NEW_SINGLE = "CONTEXT_NEW_SINGLE";
     var CONTEXT_NEW_MASS = "CONTEXT_NEW_MASS";
 
+    var CONTEXT_LAYOUT_COMPACT = "CONTEXT_LAYOUT_COMPACT";
+    var CONTEXT_LAYOUT_FILL = "CONTEXT_LAYOUT_FILL";
+    var CONTEXT_LAYOUT_MOREROWS = "CONTEXT_LAYOUT_MOREROWS";
+    var CONTEXT_LAYOUT_LESSROWS = "CONTEXT_LAYOUT_LESSROWS";
+
     var itemsGlobal = {
         CONTEXT_NEW_GROUP: {
             name: "New // Neu", icon: "fas fa-plus-circle", items: {
@@ -142,6 +158,16 @@ function initContextmenu() {
         CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP]
     };
 
+    var itemsMoreMenu = {
+        'CONTEXT_NEW_SINGLE': itemsGlobal[CONTEXT_NEW_GROUP].items[CONTEXT_NEW_SINGLE],
+        'CONTEXT_NEW_MASS': itemsGlobal[CONTEXT_NEW_GROUP].items[CONTEXT_NEW_MASS],
+        SEP1: "---------",
+        'CONTEXT_LAYOUT_COMPACT': {name: "Automatic layout // Automatisches Layout", icon: "fas fa-th"},
+        'CONTEXT_LAYOUT_FILL': {name: "Fill gaps // Lücken füllen", icon: "fas fa-angle-double-left"},
+        'CONTEXT_LAYOUT_MOREROWS': {name: "Add row // Zeile hinzufügen", icon: "far fa-plus-square"},
+        'CONTEXT_LAYOUT_LESSROWS': {name: "Remove row // Zeile entfernen", icon: "far fa-minus-square"}
+    };
+
     $.contextMenu({
         selector: contextMenuSelector,
         callback: function (key, options) {
@@ -157,6 +183,15 @@ function initContextmenu() {
             handleContextMenu(key);
         },
         items: itemsGlobal
+    });
+
+    $.contextMenu({
+        selector: '#moreButton',
+        callback: function (key, options) {
+            handleContextMenu(key);
+        },
+        trigger: 'left',
+        items: itemsMoreMenu
     });
 
     function handleContextMenu(key, elementId) {
@@ -181,6 +216,22 @@ function initContextmenu() {
             }
             case CONTEXT_NEW_MASS: {
                 console.log('new mass');
+                break;
+            }
+            case CONTEXT_LAYOUT_COMPACT: {
+                vueApp.compactLayout();
+                break;
+            }
+            case CONTEXT_LAYOUT_FILL: {
+                vueApp.fillGaps();
+                break;
+            }
+            case CONTEXT_LAYOUT_MOREROWS: {
+                vueApp.addRow();
+                break;
+            }
+            case CONTEXT_LAYOUT_LESSROWS: {
+                vueApp.removeRow();
                 break;
             }
         }
