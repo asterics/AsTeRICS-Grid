@@ -412,6 +412,15 @@ there.
     .hide-mobile {
         display: none !important;
     }
+    .right-mobile {
+        float: right;
+    }
+    .left-mobile {
+        float: left;
+    }
+    .third-space-mobile {
+        width: 33%;
+    }
 }
 
 /* Smaller than tablet */
@@ -435,6 +444,9 @@ there.
 @media (min-width: 750px) {
     .show-mobile {
         display: none !important;
+    }
+    .inline-desktop {
+        display: inline-block;
     }
 }
 

@@ -1,25 +1,24 @@
 <div id="app" v-cloak class="all-grids-view">
     <header class="row header" role="banner">
-        <div id="menuHeader">
-            <a href="#main"><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
-            <div class="inline spaced">
-                <input type="text" placeholder="Search grid" v-model="searchText">
-            </div>
-            <div class="inline">
+        <div id="menuHeader" class="menuHeader">
+            <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
+            <div id="buttons" class="menuButtons inline-desktop">
                 <div class="inline spaced">
-                    <button @click="addGrid()"><i class="fas fa-plus"/> <span data-i18n="">New Grid // Neues Grid</span></button>
+                    <button @click="back" title="Back"><i class="fas fa-angle-left"/> <span class="hide-mobile" data-i18n>Back // Zurück</span></button>
                 </div>
-                <div class="spaced inline">
-                    <button @click="exportToFile()" title="Export whole configuration to a file."><i class="fas fa-hdd"/> <span data-i18n="">Export all // Alles exportieren</span></button>
+                <div class="inline spaced third-space-mobile">
+                    <input type="text" placeholder="Search grid" v-model="searchText" style="width: 100%">
                 </div>
-                <div class="spaced inline">
-                    <button onclick="document.getElementById('inputFile').click();" class="file-input">
+                <div class="inline spaced right-mobile">
+                    <div class="inline hide-mobile">
+                        <button @click="addGrid()"><i class="fas fa-plus"/> <span data-i18n="">New Grid // Neues Grid</span></button>
+                    </div>
+                    <div class="spaced inline" style="display: none">
                         <input type="file" id="inputFile" size="200"  @change="importFromFile" accept=".grd,.grs"/>
-                        <span><i class="fas fa-file-upload"/> <span data-i18n>Import grids // Grids importieren</span></span>
-                    </button>
-                </div>
-                <div class="spaced inline">
-                    <button @click="reset()"><i class="fas fa-minus-circle"/> RESET</button>
+                    </div>
+                    <div class="spaced inline">
+                        <button id="moreButton" title="More"><i class="fas fa-bars"></i> <span class="hide-mobile" data-i18n>More // Mehr</span></button>
+                    </div>
                 </div>
             </div>
         </div>

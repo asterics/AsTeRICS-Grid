@@ -80,7 +80,7 @@ function initVue() {
                 })
             },
             back() {
-                Router.toGrid(this.gridData.id);
+                Router.back();
             },
             editElement(elementId) {
                 this.editElementId = elementId;

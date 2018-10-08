@@ -11,6 +11,7 @@ body {
 
 #app {
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 header {
@@ -55,11 +56,11 @@ header {
     margin-left: 1.0em;
 }
 
-#menuHeader h1, #menuButtons button, #menuHeader a, #menuHeader label {
+.menuHeader h1, .menuButtons button, .menuHeader a, .menuHeader label {
     font-size: 1.2em;
 }
 
-#menuButtons{
+.menuButtons{
     margin-top: 0.5em;
 }
 

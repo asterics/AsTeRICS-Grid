@@ -2,9 +2,11 @@ import {dataService} from "../service/dataService";
 import {GridData} from "../model/GridData.js";
 import {Router} from "../router";
 import {modelUtil} from "../util/modelUtil";
-import Vue from 'vue'
+import Vue from 'vue';
+import {I18nModule} from "./../i18nModule.js";
 
 var AllGridsView = {};
+var vueApp = null;
 
 AllGridsView.init = function () {
 
@@ -15,7 +17,7 @@ AllGridsView.init = function () {
 };
 
 function initVue(grids) {
-    var app = new Vue({
+    vueApp = new Vue({
         el: '#app',
         data: {
             grids: JSON.parse(JSON.stringify(grids)), //hack because otherwise vueJS databinding sometimes does not work
@@ -87,6 +89,9 @@ function initVue(grids) {
             edit(gridId) {
                 Router.toEditGrid(gridId);
             },
+            back() {
+                Router.back();
+            },
             exportToFile(gridId) {
                 if(gridId) {
                     dataService.downloadSingleGrid(gridId);
@@ -110,12 +115,62 @@ function initVue(grids) {
                     return grid.label.toLowerCase().includes(this.searchText.toLowerCase())
                 })
             },
+        },
+        mounted: function () {
+            initContextmenu();
+            I18nModule.init();
         }
     })
 }
 
 function reinit() {
     window.location.reload();
+}
+
+function initContextmenu() {
+    //see https://swisnl.github.io/jQuery-contextMenu/demo.html
+
+    var CONTEXT_NEW = "CONTEXT_NEW";
+    var CONTEXT_EXPORT = "CONTEXT_EXPORT";
+    var CONTEXT_IMPORT = "CONTEXT_IMPORT";
+    var CONTEXT_RESET = "CONTEXT_RESET";
+
+    var itemsMoreMenu = {
+        CONTEXT_NEW: {name: "New grid // Neues Grid", icon: "fas fa-plus"},
+        CONTEXT_IMPORT: {name: "Import grids // Grid importieren", icon: "fas fa-file-upload"},
+        CONTEXT_EXPORT: {name: "Export database // Datenbank exportieren", icon: "fas fa-hdd"},
+        CONTEXT_RESET: {name: "Reset database // Datenbank zurücksetzen", icon: "fas fa-minus-circle"},
+    };
+
+    $.contextMenu({
+        selector: '#moreButton',
+        callback: function (key, options) {
+            handleContextMenu(key);
+        },
+        trigger: 'left',
+        items: itemsMoreMenu
+    });
+
+    function handleContextMenu(key, elementId) {
+        switch (key) {
+            case CONTEXT_NEW: {
+                vueApp.addGrid();
+                break;
+            }
+            case CONTEXT_IMPORT: {
+                document.getElementById('inputFile').click();
+                break;
+            }
+            case CONTEXT_EXPORT: {
+                vueApp.exportToFile();
+                break;
+            }
+            case CONTEXT_RESET: {
+                vueApp.reset();
+                break;
+            }
+        }
+    }
 }
 
 export {AllGridsView};
