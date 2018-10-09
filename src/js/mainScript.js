@@ -7,7 +7,18 @@ import './../css/jquery.contextMenu.css';
 import './../css/allGridsView.css';
 
 function init() {
-   Router.init('#content');
-   VueDirectives.init();
+    Router.init('#content');
+    VueDirectives.init();
+    reloadOnAppcacheUpdate();
 }
 init();
+
+function reloadOnAppcacheUpdate() {
+    function onUpdateReady() {
+        window.location.reload();
+    }
+    window.applicationCache.addEventListener('updateready', onUpdateReady);
+    if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
+        onUpdateReady();
+    }
+}
