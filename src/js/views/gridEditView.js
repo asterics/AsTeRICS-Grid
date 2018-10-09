@@ -6,6 +6,7 @@ import {Router} from "./../router.js";
 import {I18nModule} from "./../i18nModule.js";
 
 import EditGridModal from '../../vue-components/editGridModal.vue'
+import AddMultipleModal from '../../vue-components/addMultipleModal.vue'
 
 var GridEditView = {};
 var vueApp = null;
@@ -35,16 +36,14 @@ function initVue() {
             canUndo: false,
             canRedo: false,
             doingUndoRedo: false,
-            showModal: false,
+            showEditModal: false,
+            showMultipleModal: false,
             editElementId: null
         },
         components: {
-            EditGridModal
+            EditGridModal, AddMultipleModal
         },
         methods: {
-            changeRowCount: function (event) {
-                GridEditView.grid.setNumberOfRows(Number.parseInt(event.target.value));
-            },
             addRow: function (event) {
                 GridEditView.grid.setNumberOfRows(this.gridData.rowCount + 1);
             },
@@ -71,8 +70,7 @@ function initVue() {
                     GridEditView.grid.redo();
                 }, 10);
             },
-            reload (gridElement) {
-                console.log('doing reload: ' + gridElement.label);
+            reload () {
                 var thiz = this;
                 GridEditView.grid.reinit();
                 dataService.getGrid(thiz.gridData.id).then(data => {
@@ -84,11 +82,22 @@ function initVue() {
             },
             editElement(elementId) {
                 this.editElementId = elementId;
-                this.showModal = true;
+                this.showEditModal = true;
             },
             newElement() {
                 this.editElementId = null;
-                this.showModal = true;
+                this.showEditModal = true;
+            },
+            newElements() {
+                this.showMultipleModal = true;
+            },
+            clearElements() {
+                if(confirm('Do you really want to delete all elements of the current grid?')) {
+                    this.gridData.gridElements = [];
+                    dataService.saveGrid(this.gridData).then(() => {
+                        this.reload();
+                    })
+                }
             },
         },
         mounted: function () {
@@ -131,6 +140,7 @@ function initContextmenu() {
     var CONTEXT_EDIT = "CONTEXT_EDIT";
     var CONTEXT_DUPLICATE = "CONTEXT_DUPLICATE";
     var CONTEXT_DELETE = "CONTEXT_DELETE";
+    var CONTEXT_DELETE_ALL = "CONTEXT_DELETE_ALL";
 
     var CONTEXT_NEW_GROUP = "CONTEXT_NEW_GROUP";
     var CONTEXT_NEW_SINGLE = "CONTEXT_NEW_SINGLE";
@@ -161,11 +171,12 @@ function initContextmenu() {
     var itemsMoreMenu = {
         'CONTEXT_NEW_SINGLE': itemsGlobal[CONTEXT_NEW_GROUP].items[CONTEXT_NEW_SINGLE],
         'CONTEXT_NEW_MASS': itemsGlobal[CONTEXT_NEW_GROUP].items[CONTEXT_NEW_MASS],
+        'CONTEXT_DELETE_ALL': {name: "Delete all elements // Alle Elemente löschen", icon: "fas fa-minus-circle"},
         SEP1: "---------",
-        'CONTEXT_LAYOUT_COMPACT': {name: "Automatic layout // Automatisches Layout", icon: "fas fa-th"},
-        'CONTEXT_LAYOUT_FILL': {name: "Fill gaps // Lücken füllen", icon: "fas fa-angle-double-left"},
         'CONTEXT_LAYOUT_MOREROWS': {name: "Add row // Zeile hinzufügen", icon: "far fa-plus-square"},
-        'CONTEXT_LAYOUT_LESSROWS': {name: "Remove row // Zeile entfernen", icon: "far fa-minus-square"}
+        'CONTEXT_LAYOUT_LESSROWS': {name: "Remove row // Zeile entfernen", icon: "far fa-minus-square"},
+        'CONTEXT_LAYOUT_COMPACT': {name: "Automatic layout // Automatisches Layout", icon: "fas fa-th"},
+        'CONTEXT_LAYOUT_FILL': {name: "Fill gaps // Lücken füllen", icon: "fas fa-angle-double-left"}
     };
 
     $.contextMenu({
@@ -215,7 +226,11 @@ function initContextmenu() {
                 break;
             }
             case CONTEXT_NEW_MASS: {
-                console.log('new mass');
+                vueApp.newElements();
+                break;
+            }
+            case CONTEXT_DELETE_ALL: {
+                vueApp.clearElements();
                 break;
             }
             case CONTEXT_LAYOUT_COMPACT: {
