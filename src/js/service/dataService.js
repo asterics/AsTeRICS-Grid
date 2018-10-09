@@ -233,6 +233,17 @@ var dataService = {
             });
         });
     },
+    addGridElements: function (gridId, newGridElements) {
+        return new Promise(resolve => {
+            this.getGrid(gridId).then(grid => {
+                grid = JSON.parse(JSON.stringify(grid));
+                grid.gridElements = grid.gridElements.concat(newGridElements);
+                this.updateGrid(gridId, grid).then(() => {
+                    resolve();
+                });
+            });
+        });
+    },
     saveGrid: function (gridData) {
         return saveInternal(GridData, gridData);
     },
