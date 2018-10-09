@@ -88,7 +88,6 @@ header {
 .grid-item-content .text-container {
     flex: 0 1 auto;
     padding-bottom: 0.3em;
-    word-wrap: break-word;
 }
 
 .grid, .grid-item-content .text-container span {
@@ -137,4 +136,21 @@ header {
 
 #menuExpandedInputOpts input[type=number] {
     width: 2.5em;
+}
+
+.break-word {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+
+    -ms-word-break: break-all;
+    /* This is the dangerous one in WebKit, as it breaks things wherever */
+    word-break: break-all;
+    /* Instead use this non-standard one: */
+    word-break: break-word;
+
+    /* Adds a hyphen where the word breaks, if supported (No Blink) */
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
 }

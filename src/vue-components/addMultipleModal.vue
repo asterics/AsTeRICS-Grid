@@ -23,7 +23,7 @@
                             <div v-show="parsedElems.length > 0" class="nine columns">
                                 <span>{{parsedElems.length}}</span>
                                 <span data-i18n>Element(s) // Element(e)</span>
-                                <span style="word-break: break-all;">{{JSON.stringify(parsedElems)}}</span>
+                                <span class="break-word">{{JSON.stringify(parsedElems)}}</span>
                             </div>
                             <div v-show="parsedElems.length == 0" class="nine columns">
                                 <span data-i18n>No elements // Keine Elemente</span>
