@@ -146,17 +146,17 @@ function initVue() {
                 }, true);
 
                 GridView.scanner.setSelectionListener(function (item) {
-                    L.toggleClass(item, 'selected');
+                    L.removeAddClass(item, 'selected');
                     actionService.doAction(GridView.grid.getCurrentGridId(), item.id);
                 });
 
                 GridView.hover.setSelectionListener(function (item) {
-                    L.toggleClass(item, 'selected');
+                    L.removeAddClass(item, 'selected');
                     actionService.doAction(GridView.gridData.id, item.id);
                 });
 
                 GridView.clicker.setSelectionListener(function (item) {
-                    L.toggleClass(item, 'selected');
+                    L.removeAddClass(item, 'selected');
                     actionService.doAction(GridView.gridData.id, item.id);
                 });
 

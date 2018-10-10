@@ -99,7 +99,18 @@ header {
 }
 
 .selected.grid-item-content {
-    background: dodgerblue !important;
+    -webkit-animation: background 5s cubic-bezier(1,0,0,1);
+    animation: background 5s cubic-bezier(1,0,0,1);
+}
+
+@-webkit-keyframes background {
+    0% { background-color: dodgerblue; }
+    100% { background-color: lightblue; }
+}
+
+@keyframes background {
+    0% { background-color: dodgerblue; }
+    100% { background-color: lightblue; }
 }
 
 .mouseentered.grid-item-content {
