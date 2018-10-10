@@ -16,7 +16,7 @@ init();
 function reloadOnAppcacheUpdate() {
     function onUpdateReady() {
         console.log('appcache: updateready');
-        //window.location.reload();
+        window.location.reload();
     }
 
     window.applicationCache.addEventListener('updateready', onUpdateReady);
