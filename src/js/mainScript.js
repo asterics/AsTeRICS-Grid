@@ -29,8 +29,9 @@ function reloadOnAppcacheUpdate() {
     window.applicationCache.addEventListener('progress', function () {
         console.log('appcache: progress');
     });
-    window.applicationCache.addEventListener('error', function () {
+    window.applicationCache.addEventListener('error', function (event) {
         console.log('appcache: error');
+        console.log(event);
     });
     window.applicationCache.addEventListener('obsolete', function () {
         console.log('appcache: obsolete');
