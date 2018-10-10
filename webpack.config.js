@@ -58,6 +58,7 @@ module.exports = env => {
             'css/jquery-ui.css',
             'css/images/ui-icons_444444_256x240.png',
             'css/skeleton.css',
+            'img/asterics_icon.png',
             'lib/gridList.js',
             'lib/jquery.contextMenu.min.js',
             'lib/jquery.gridList.js',
