@@ -3,7 +3,7 @@
         <div class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container">
-
+                    <a class="inline close-button" href="javascript:void(0);" @click="cancel()"><i class="fas fa-times"/></a>
                     <div class="modal-header">
                         <h1 name="header" data-i18n>
                             Input Options // Eingabeoptionen

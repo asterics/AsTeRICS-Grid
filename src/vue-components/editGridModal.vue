@@ -3,7 +3,7 @@
         <div class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container">
-
+                    <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                     <div class="modal-header">
                         <h1 v-if="editElementId" name="header" data-i18n>
                             Edit grid item // Grid-Element bearbeiten

@@ -79,3 +79,9 @@
     position:absolute;
     top: -1000px;
 }
+
+.close-button {
+    float: right;
+    padding: 1em;
+    color: black;
+}
