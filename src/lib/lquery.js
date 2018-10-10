@@ -86,6 +86,15 @@ L.removeClass = function (selector, className) {
     });
 };
 
+L.removeAddClass = function (selector, className) {
+    var list = L.selectAsList(selector);
+    L.removeClass(selector, className);
+    list.forEach(function (elem) {
+        void elem.offsetWidth; //needed to re-trigger css animations
+    });
+    L.addClass(selector, className);
+};
+
 L.toggleClass = function (selector, className) {
     var list = L.selectAsList(selector);
     list.forEach(function (elem) {
