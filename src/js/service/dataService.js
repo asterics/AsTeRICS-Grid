@@ -25,7 +25,6 @@ function generateGridData() {
         grid.gridElements.push(new GridElement({
             width: sizeX,
             height: sizeY,
-            speakText: verbs[i % verbs.length],
             label: verbs[i % verbs.length]
         }))
     }

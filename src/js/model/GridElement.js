@@ -8,7 +8,6 @@ class GridElement extends Model({
     height: Number,
     x: [Number],
     y: [Number],
-    speakText: [String],
     label: [String],
     image: [GridImage]
 }) {
