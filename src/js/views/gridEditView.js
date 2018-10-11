@@ -4,6 +4,7 @@ import {Grid} from "../grid.js";
 import {dataService} from "../service/dataService";
 import {Router} from "./../router.js";
 import {I18nModule} from "./../i18nModule.js";
+import {MetaData} from "./../model/MetaData";
 
 import EditGridModal from '../../vue-components/editGridModal.vue'
 import AddMultipleModal from '../../vue-components/addMultipleModal.vue'
@@ -19,6 +20,11 @@ GridEditView.init = function (gridId) {
             return;
         }
         GridEditView.gridData = grid;
+        dataService.getMetadata().then(savedMetadata => {
+            dataService.saveMetadata(new MetaData({
+                lastOpenedGridId: GridEditView.gridData.id
+            }, savedMetadata));
+        });
         initVue();
     });
 };

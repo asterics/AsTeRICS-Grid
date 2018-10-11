@@ -77,14 +77,14 @@ Router.toManageGrids = function () {
 
 Router.back = function () {
     if(lastHash) {
-        setHash(lastHash);
+        setHash(lastHash, true);
     } else {
         this.toMain();
     }
 };
 
-function setHash(hash) {
-    lastHash = location.hash;
+function setHash(hash, reset) {
+    lastHash = reset ? null : location.hash;
     location.hash = hash;
 }
 
