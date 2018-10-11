@@ -1,5 +1,6 @@
 import {Router} from "./router.js";
 import {VueDirectives} from "./vue/directives";
+import {logger} from "./util/logger";
 
 import './../css/custom.css';
 import './../css/gridlist.css';
@@ -9,41 +10,42 @@ import './../css/allGridsView.css';
 function init() {
     Router.init('#content');
     VueDirectives.init();
+    logger.installGlobal(logger.LOGLEVEL_WARN);
     reloadOnAppcacheUpdate();
 }
 init();
 
 function reloadOnAppcacheUpdate() {
     function onUpdateReady() {
-        console.log('appcache: updateready');
+        logger.info('appcache: updateready');
         window.location.reload();
     }
 
     window.applicationCache.addEventListener('updateready', onUpdateReady);
     window.applicationCache.addEventListener('checking', function () {
-        console.log('appcache: checking');
+        logger.debug('appcache: checking');
     });
     window.applicationCache.addEventListener('downloading', function () {
-        console.log('appcache: downloading');
+        logger.debug('appcache: downloading');
     });
     window.applicationCache.addEventListener('progress', function () {
-        console.log('appcache: progress');
+        logger.debug('appcache: progress');
     });
     window.applicationCache.addEventListener('error', function (event) {
-        console.log('appcache: error');
-        console.log(event);
+        logger.debug('appcache: error');
+        logger.debug(event);
     });
     window.applicationCache.addEventListener('obsolete', function () {
-        console.log('appcache: obsolete');
+        logger.debug('appcache: obsolete');
     });
     window.applicationCache.addEventListener('cached', function () {
-        console.log('appcache: cached');
+        logger.debug('appcache: cached');
     });
     window.applicationCache.addEventListener('noupdate', function () {
-        console.log('appcache: noupdate');
+        logger.debug('appcache: noupdate');
     });
     window.applicationCache.addEventListener('updateready', function () {
-        console.log('appcache: updateready');
+        logger.debug('appcache: updateready');
     });
 
     if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
