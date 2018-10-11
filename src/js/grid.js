@@ -316,6 +316,20 @@ function Grid(gridContainerId, gridItemClass, options) {
         }
     };
 
+    /**
+     * reverts the last undo, if there was one
+     */
+    thiz.updateGridWithUndo = function (gridData) {
+        _undoService.updateGrid(gridData).then(updated => {
+            if (updated) {
+                notifyLayoutChangeStart();
+                init().then(() => {
+                    notifyLayoutChangeEnd();
+                });
+            }
+        });
+    };
+
     thiz.canUndo = () => {
         return _undoService.canUndo();
     };
