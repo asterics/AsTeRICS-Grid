@@ -21,7 +21,7 @@ GridView.init = function (gridId) {
     _inputEventHandler = new InputEventHandler('grid-container');
     dataService.getGrid(gridId).then(grid => {
         if (!grid) {
-            console.log('grid not found! gridId: ' + gridId);
+            log.warn('grid not found! gridId: ' + gridId);
             Router.toMain();
             return;
         }

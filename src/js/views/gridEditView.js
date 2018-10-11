@@ -14,7 +14,7 @@ var vueApp = null;
 GridEditView.init = function (gridId) {
     dataService.getGrid(gridId).then(grid => {
         if (!grid) {
-            console.log('grid not found! gridId: ' + gridId);
+            log.warn('grid not found! gridId: ' + gridId);
             Router.toMain();
             return;
         }

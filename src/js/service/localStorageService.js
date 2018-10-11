@@ -4,7 +4,7 @@ if (typeof(Storage) !== "undefined") {
     try {
         var storage = window.localStorage;
     } catch (e) {
-        console.log(errorMsg + e)
+        log.error(errorMsg + e)
     }
 }
 
@@ -14,7 +14,7 @@ var localStorageService = {
             try {
                 return storage.setItem(key, value);
             } catch (e) {
-                console.log(errorMsg + e)
+                log.error(errorMsg + e)
             }
         }
     },
@@ -23,7 +23,7 @@ var localStorageService = {
             try {
                 return storage.getItem(key);
             } catch (e) {
-                console.log(errorMsg + e)
+                log.error(errorMsg + e)
             }
         }
     }

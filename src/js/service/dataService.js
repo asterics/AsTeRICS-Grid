@@ -35,7 +35,7 @@ function generateGridData() {
 function initPouchDB() {
     return new Promise(resolve => {
         db = new PouchDB(dbName);
-        console.log('create index');
+        log.debug('create index');
         db.createIndex({
             index: {fields: ['modelName', 'id']}
         }).then(() => {
@@ -49,7 +49,7 @@ function resetPouchDB() {
         db.destroy().then(function () {
             initPouchDB().then(() => resolve());
         }).catch(function (err) {
-            console.log('error destroying database: ' + err);
+            log.error('error destroying database: ' + err);
         })
     });
 }
@@ -76,17 +76,17 @@ function init() {
     initPromise = new Promise((resolve => {
         initPouchDB().then(() => {
             db.info().then(function (info) {
-                console.log(info);
+                log.debug(info);
             });
 
             getInternal(GridData, null, true).then(grids => {
                 if (grids) {
-                    console.log('detected saved grid, no generation of new grid.');
+                    log.debug('detected saved grid, no generation of new grid.');
                     resolve();
                     return;
                 }
                 saveInternal(GridData, generateGridData(), false, true).then(() => {
-                    console.log('generated and saved default grid...');
+                    log.debug('generated and saved default grid...');
                     resolve();
                 });
             });
@@ -108,12 +108,12 @@ init();
  */
 function getInternal(objectType, id, dontWaitOnInit) {
     if (!objectType || !objectType.getModelName) {
-        console.error('did not specify needed parameter "objectType"!');
+        log.error('did not specify needed parameter "objectType"!');
     }
 
     return new Promise((resolve, reject) => {
         waitForInit(dontWaitOnInit).then(() => {
-            console.log('getting ' + objectType.getModelName() + '(id: ' + id + ')...');
+            log.debug('getting ' + objectType.getModelName() + '(id: ' + id + ')...');
             var query = {
                 selector: {
                     modelName: objectType.getModelName()
@@ -129,7 +129,7 @@ function getInternal(objectType, id, dontWaitOnInit) {
                         objects.push(new objectType(doc));
                     })
                 }
-                console.log('found ' + objectType.getModelName() + ": " + objects.length + ' elements');
+                log.debug('found ' + objectType.getModelName() + ": " + objects.length + ' elements');
                 if (objects.length == 0) {
                     resolve(null);
                 } else if (objects.length == 1) {
@@ -138,7 +138,7 @@ function getInternal(objectType, id, dontWaitOnInit) {
                     resolve(objects);
                 }
             }).catch(function (err) {
-                console.log(err);
+                log.error(err);
                 reject();
             });
         });
@@ -147,38 +147,38 @@ function getInternal(objectType, id, dontWaitOnInit) {
 
 function saveInternal(objectType, data, onlyUpdate, dontWaitOnInit) {
     if (!data || !objectType || !objectType.getModelName) {
-        console.error('did not specify needed parameter "objectType"!');
+        log.error('did not specify needed parameter "objectType"!');
     }
 
-    console.log('saving ' + objectType.getModelName() + '...');
+    log.debug('saving ' + objectType.getModelName() + '...');
     return new Promise((resolve, reject) => {
         waitForInit(dontWaitOnInit).then(() => {
             getInternal(objectType, data.id, dontWaitOnInit).then(existingObject => {
                 if (existingObject) {
-                    console.log(objectType.getModelName() + ' already existing, doing update. id: ' + existingObject.id);
+                    log.debug(objectType.getModelName() + ' already existing, doing update. id: ' + existingObject.id);
                     var newObject = new objectType(data, existingObject);
                     var saveData = JSON.parse(JSON.stringify(newObject));
                     saveData._id = existingObject._id;
                     saveData._rev = existingObject._rev;
                     db.put(saveData).then(() => {
-                        console.log('updated ' + objectType.getModelName() + ', id: ' + existingObject.id);
+                        log.debug('updated ' + objectType.getModelName() + ', id: ' + existingObject.id);
                         resolve();
                     }).catch(function (err) {
-                        console.log(err);
+                        log.error(err);
                         reject();
                     });
                 } else if (!onlyUpdate) {
                     var saveData = JSON.parse(JSON.stringify(data));
                     saveData._id = saveData.id;
                     db.put(saveData).then(() => {
-                        console.log('saved ' + objectType.getModelName() + ', id: ' + saveData.id);
+                        log.debug('saved ' + objectType.getModelName() + ', id: ' + saveData.id);
                         resolve();
                     }).catch(function (err) {
-                        console.log(err);
+                        log.error(err);
                         reject();
                     });
                 } else {
-                    console.log('no existing ' + objectType.getModelName() + ' found to update, aborting.');
+                    log.warn('no existing ' + objectType.getModelName() + ' found to update, aborting.');
                     reject();
                 }
             });
@@ -254,7 +254,7 @@ var dataService = {
     updateInputConfig: function (gridId, newConfig) {
         this.getGrid(gridId).then(grid => {
             if (!grid || !grid.inputConfig) {
-                console.log('no grid found for updating input config!');
+                log.warn('no grid found for updating input config!');
                 return;
             }
             var newInputConfig = new InputConfig(newConfig, grid.inputConfig);
@@ -266,7 +266,7 @@ var dataService = {
         return new Promise(resolve => {
             this.getGrid(gridId).then(grid => {
                 db.remove(grid);
-                console.log('deleted grid from db! id: ' + gridId);
+                log.debug('deleted grid from db! id: ' + gridId);
                 resolve();
             })
         });
@@ -305,7 +305,7 @@ var dataService = {
             var blob = new Blob([dumpedString], {type: "text/plain;charset=utf-8"});
             FileSaver.saveAs(blob, "my-grids.grs");
         }).catch(function (err) {
-            console.log('error on dumping database: ', err);
+            log.error('error on dumping database: ', err);
         });
     },
     downloadSingleGrid(gridId) {
@@ -346,12 +346,12 @@ var dataService = {
                 return function (e) {
                     var data = e.target.result;
                     resetPouchDB().then(() => {
-                        console.log('resetted pouchdb! loading from string...');
+                        log.debug('resetted pouchdb! loading from string...');
                         db.load(data).then(function () {
-                            console.log('loaded db from string!');
+                            log.debug('loaded db from string!');
                             resolve();
                         }).catch(function (err) {
-                            console.log('error loading db from string: ' + err);
+                            log.error('error loading db from string: ' + err);
                         });
                     });
                 };

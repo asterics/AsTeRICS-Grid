@@ -28,13 +28,13 @@ Router.init = function (injectIdParam) {
                 });
             },
             'grid/:gridId': function (params) {
-                console.log('route grid with ID: ' + params.gridId);
+                log.debug('route grid with ID: ' + params.gridId);
                 loadView('gridView').then(() => {
                     GridView.init(params.gridId);
                 });
             },
             'grid/edit/:gridId': function (params) {
-                console.log('route edit grid with ID: ' + params.gridId);
+                log.debug('route edit grid with ID: ' + params.gridId);
                 loadView('gridEditView').then(() => {
                     GridEditView.init(params.gridId);
                 });
@@ -51,10 +51,10 @@ Router.init = function (injectIdParam) {
             done();
         },
         after: function (params) {
-            //console.log('after');
+            //log.debug('after');
         },
         leave: function (params) {
-            //console.log('leave');
+            //log.debug('leave');
         }
     });
 };
@@ -89,18 +89,18 @@ function setHash(hash) {
 }
 
 function loadView(viewName) {
-    console.log('loading view: ' + viewName);
+    log.info('loading view: ' + viewName);
     return new Promise(resolve => {
         $(injectId).load(viewsFolder + viewName + filePostfix, null, function () {
             I18nModule.init();
-            console.log('loaded view: ' + viewName);
+            log.debug('loaded view: ' + viewName);
             resolve();
         });
     })
 }
 
 function toMainInternal() {
-    console.log('main view');
+    window.log.debug('main view');
     dataService.getMetadata().then(metadata => {
         var gridId = metadata ? metadata.lastOpenedGridId : null;
         loadView('gridView').then(() => {

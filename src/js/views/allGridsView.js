@@ -11,7 +11,7 @@ var vueApp = null;
 AllGridsView.init = function () {
 
     dataService.getGrids().then(grids => {
-        console.log(grids);
+        log.debug(grids);
         initVue(grids);
     });
 };
@@ -27,7 +27,7 @@ function initVue(grids) {
         },
         methods: {
             deleteGrid: function (id, label) {
-                console.log('delete: ' + id)
+                log.debug('delete: ' + id)
                 if (!confirm(`Do you really want to delete the grid "${label}"?`)) {
                     return;
                 }
@@ -36,7 +36,7 @@ function initVue(grids) {
                 });
             },
             addGrid: function () {
-                console.log('add grid!');
+                log.debug('add grid!');
                 var existingNames = this.grids.map(grid => grid.label);
                 var gridData = new GridData({
                     label: modelUtil.getNewName('newGrid', existingNames),

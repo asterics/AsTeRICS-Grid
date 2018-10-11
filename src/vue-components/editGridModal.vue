@@ -118,7 +118,7 @@
             I18nModule.init();
             if(thiz.editElementId) {
                 dataService.getGridElement(thiz.gridData.id, this.editElementId).then(gridElem => {
-                    console.log('editing element: ' + gridElem.label);
+                    log.debug('editing element: ' + gridElem.label);
                     thiz.gridElement = gridElem;
                     if(gridElem.image) {
                         imageUtil.convertBase64(gridElem.image.data).then(response => {
@@ -130,7 +130,7 @@
                 });
             } else {
                 var newXYPos = new GridData(thiz.gridData).getNewXYPos();
-                console.log('creating element: x ' + newXYPos.x + ' / y ' + newXYPos.y);
+                log.debug('creating element: x ' + newXYPos.x + ' / y ' + newXYPos.y);
                 thiz.gridElement = new GridElement({
                     x: newXYPos.x,
                     y: newXYPos.y

@@ -182,7 +182,7 @@
         },
         mounted () {
             var thiz = this;
-            console.log('opened modal: ' + thiz.gridId);
+            log.debug('opened modal: ' + thiz.gridId);
             thiz.originalGridData = JSON.parse(JSON.stringify(thiz.gridData));
             I18nModule.init();
         }
