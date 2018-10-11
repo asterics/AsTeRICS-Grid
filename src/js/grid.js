@@ -76,8 +76,10 @@ function Grid(gridContainerId, gridItemClass, options) {
         _gridListInstance = _gridElement.data('_gridList');
         if (!gridDataParam.hasSetPositions()) {
             _gridElement.gridList('resize', _gridRows);
-            _gridData.gridElements = thiz.toGridData();
-            dataService.updateGrid(_gridData.id, _gridData);
+            thiz.toGridData().then(gridData => {
+                _gridData = gridData;
+                dataService.updateGrid(_gridData.id, _gridData);
+            });
         }
         initResizing();
         autosize();
