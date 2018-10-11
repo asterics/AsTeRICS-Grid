@@ -1,6 +1,7 @@
 import {modelUtil} from "../util/modelUtil";
 import {templates} from "../templates";
 import {GridImage} from "./GridImage";
+import {GridActionSpeak} from "./GridActionSpeak";
 
 class GridElement extends Model({
     id: String,
@@ -9,7 +10,8 @@ class GridElement extends Model({
     x: [Number],
     y: [Number],
     label: [String],
-    image: [GridImage]
+    image: [GridImage],
+    actions: [Object]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridElement);
@@ -35,7 +37,8 @@ class GridElement extends Model({
 GridElement.defaults({
     id: "", //will be replaced by constructor
     width: 2,
-    height: 1
+    height: 1,
+    actions: [new GridActionSpeak()]
 });
 
 export {GridElement};
