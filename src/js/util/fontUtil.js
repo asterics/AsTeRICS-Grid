@@ -25,7 +25,10 @@ fontUtil.getFontSizePx = function (elem) {
 fontUtil.adaptFontSize = function (elems) {
     for(var i=0; i<elems.length; i++) {
         var elem = elems[i];
-        $(elem).find('.text-container')[0].style.fontSize = fontUtil.getFontSizePx($(elem));
+        var textContainerElem = $(elem).find('.text-container')[0];
+        if(textContainerElem) {
+            textContainerElem.style.fontSize = fontUtil.getFontSizePx($(elem));
+        }
     }
 
 };

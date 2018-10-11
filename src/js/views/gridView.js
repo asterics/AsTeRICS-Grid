@@ -199,12 +199,8 @@ function initVue() {
         mounted: function () {
             var thiz = this;
             initGrid().then(() => {
-                GridView.grid.autosize();
                 thiz.initInputMethods();
             });
-        },
-        updated: () => {
-            if(GridView.grid) GridView.grid.autosize();
         }
     })
 }
