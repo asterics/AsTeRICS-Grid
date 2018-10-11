@@ -82,7 +82,7 @@ function Grid(gridContainerId, gridItemClass, options) {
             });
         }
         initResizing();
-        autosize();
+        thiz.autosize();
     }
 
     function initResizing() {
@@ -91,7 +91,7 @@ function Grid(gridContainerId, gridItemClass, options) {
         }
 
         window.addEventListener('resize', function () {
-            autosize();
+            thiz.autosize();
         })
     }
 
@@ -170,7 +170,7 @@ function Grid(gridContainerId, gridItemClass, options) {
                 _undoService.updateGrid(currentGridData).then(updated => {
                     if(updated) {
                         _gridData = currentGridData;
-                        autosize();
+                        thiz.autosize();
                         notifyLayoutChangeEnd();
                     }
                     resolve();
@@ -182,13 +182,16 @@ function Grid(gridContainerId, gridItemClass, options) {
     /**
      * does automatic positioning of elements + resizing horizontal and vertical
      */
-    function autosize () {
-        _gridElement.gridList('autosize');
-        setTimeout(function () {
-            fontUtil.adaptFontSizeForGridElements();
-        }, _animationTimeMs);
-        refreshResizeOptions();
-    }
+    thiz.autosize = function(timeout) {
+        timeout = timeout || 0;
+        setTimeout(function() {
+            _gridElement.gridList('autosize');
+            setTimeout(function () {
+                fontUtil.adaptFontSizeForGridElements();
+            }, _animationTimeMs);
+            refreshResizeOptions();
+        }, timeout);
+    };
     
     thiz.enableElementResizing = function () {
         $(gridItemClass).resizable("enable");

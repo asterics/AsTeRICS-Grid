@@ -84,6 +84,7 @@ function initVue() {
                 if(!thiz.showHeader && thiz.showHeader != null) return;
 
                 thiz.showHeader = false;
+                GridView.grid.autosize(100);
                 _inputEventHandler.waitMouseUpperBorder().then(thiz.showHeaderFn);
                 _inputEventHandler.waitSwipedDown().then(() => {
                     thiz.showHeaderFn(10000);
@@ -94,6 +95,7 @@ function initVue() {
                 var thiz = this;
 
                 thiz.showHeader = true;
+                GridView.grid.autosize(100);
                 _inputEventHandler.waitSwipedUp().then(thiz.hideHeaderFn);
                 thiz.resetHeaderHideTimeout(hideTimeout);
             },
@@ -189,16 +191,14 @@ function initVue() {
                 return []
             },
         },
-        created: function () {
-            if(GridView.metadata.headerPinned) {
-                this.showHeaderFn();
-            } else {
-                this.hideHeaderFn();
-            }
-        },
         mounted: function () {
             var thiz = this;
             initGrid().then(() => {
+                if(GridView.metadata.headerPinned) {
+                    this.showHeaderFn();
+                } else {
+                    this.hideHeaderFn();
+                }
                 thiz.initInputMethods();
             });
         }
