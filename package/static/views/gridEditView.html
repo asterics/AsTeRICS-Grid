@@ -32,6 +32,9 @@
     <div>
         <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" @close="showMultipleModal = false" @reload="reload"/>
     </div>
+    <div>
+        <edit-actions-modal v-if="showActionsModal" v-bind:edit-element-id="editElementId" v-bind:grid-data="gridData" @close="showActionsModal = false" @reload="reload"/>
+    </div>
 </div>
 
 <main role="main" class="row content">

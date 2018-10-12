@@ -8,6 +8,7 @@ import {MetaData} from "./../model/MetaData";
 
 import EditGridModal from '../../vue-components/editGridModal.vue'
 import AddMultipleModal from '../../vue-components/addMultipleModal.vue'
+import EditActionsModal from '../../vue-components/editActionsModal.vue'
 
 var GridEditView = {};
 var vueApp = null;
@@ -44,10 +45,11 @@ function initVue() {
             doingUndoRedo: false,
             showEditModal: false,
             showMultipleModal: false,
+            showActionsModal: false,
             editElementId: null
         },
         components: {
-            EditGridModal, AddMultipleModal
+            EditGridModal, AddMultipleModal, EditActionsModal
         },
         methods: {
             addRow: function (event) {
@@ -94,22 +96,23 @@ function initVue() {
                 this.editElementId = null;
                 this.showEditModal = true;
             },
+            editActions(elementId) {
+                this.editElementId = elementId;
+                this.showActionsModal = true;
+            },
             newElements() {
                 this.showMultipleModal = true;
             },
             clearElements() {
                 if(confirm('Do you really want to delete all elements of the current grid?')) {
                     this.gridData.gridElements = [];
-                    dataService.saveGrid(this.gridData).then(() => {
-                        this.reload();
-                    })
+                    GridEditView.grid.updateGridWithUndo(this.gridData);
                 }
             },
         },
         mounted: function () {
             var thiz = this;
             initGrid().then(() => {
-                GridEditView.grid.autosize();
                 GridEditView.grid.setLayoutChangedEndListener((newGridData) => {
                     thiz.canUndo = GridEditView.grid.canUndo();
                     thiz.canRedo = GridEditView.grid.canRedo();
@@ -122,9 +125,6 @@ function initVue() {
                 initContextmenu();
                 I18nModule.init();
             });
-        },
-        updated: () => {
-            GridEditView.grid.autosize();
         }
     })
 }
@@ -145,6 +145,7 @@ function initContextmenu() {
 
     var CONTEXT_EDIT = "CONTEXT_EDIT";
     var CONTEXT_DUPLICATE = "CONTEXT_DUPLICATE";
+    var CONTEXT_ACTIONS = "CONTEXT_ACTIONS";
     var CONTEXT_DELETE = "CONTEXT_DELETE";
     var CONTEXT_DELETE_ALL = "CONTEXT_DELETE_ALL";
 
@@ -169,6 +170,7 @@ function initContextmenu() {
     var itemsElem = {
         CONTEXT_EDIT: {name: "Edit // Bearbeiten", icon: "fas fa-edit"},
         CONTEXT_DUPLICATE: {name: "Duplicate // Klonen", icon: "far fa-clone"},
+        CONTEXT_ACTIONS: {name: "Actions // Aktionen", icon: "fas fa-bolt"},
         CONTEXT_DELETE: {name: "Delete // Löschen", icon: "far fa-trash-alt"},
         SEP1: "---------",
         CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP]
@@ -219,6 +221,10 @@ function initContextmenu() {
             }
             case CONTEXT_DUPLICATE: {
                 GridEditView.grid.duplicateElement(elementId);
+                break;
+            }
+            case CONTEXT_ACTIONS: {
+                vueApp.editActions(elementId);
                 break;
             }
             case CONTEXT_DELETE: {
