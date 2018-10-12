@@ -68,7 +68,7 @@ function initVue() {
         data: {
             gridData: JSON.parse(JSON.stringify(GridView.gridData)),
             isScanning: GridView.gridData.inputConfig.scanAutostart,
-            showHeader: null,
+            showHeader: GridView.metadata.headerPinned,
             headerPinned: GridView.metadata.headerPinned,
             scanner: null,
             hover: null,
@@ -79,20 +79,21 @@ function initVue() {
             InputOptionsModal
         },
         methods: {
-            hideHeaderFn() {
+            hideHeaderFn(alsoIfHidden) {
                 var thiz = this;
-                if(!thiz.showHeader && thiz.showHeader != null) return;
+                if(!alsoIfHidden && !thiz.showHeader) return;
 
                 thiz.showHeader = false;
                 GridView.grid.autosize(100);
                 _inputEventHandler.waitMouseUpperBorder().then(thiz.showHeaderFn);
                 _inputEventHandler.waitSwipedDown().then(() => {
-                    thiz.showHeaderFn(10000);
+                    thiz.showHeaderFn(false, 10000);
                 });
 
             },
-            showHeaderFn(hideTimeout) {
+            showHeaderFn(alsoIfShown, hideTimeout) {
                 var thiz = this;
+                if(!alsoIfShown && thiz.showHeader) return;
 
                 thiz.showHeader = true;
                 GridView.grid.autosize(100);
@@ -195,9 +196,9 @@ function initVue() {
             var thiz = this;
             initGrid().then(() => {
                 if(GridView.metadata.headerPinned) {
-                    this.showHeaderFn();
+                    this.showHeaderFn(true);
                 } else {
-                    this.hideHeaderFn();
+                    this.hideHeaderFn(true);
                 }
                 thiz.initInputMethods();
             });
