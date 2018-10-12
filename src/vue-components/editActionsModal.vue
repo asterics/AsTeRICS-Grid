@@ -17,11 +17,11 @@
                                 <select v-model="selectedNewAction">
                                     <option v-for="type in actionTypes" :value="type.getModelName()">{{type.getModelName() | translate}}</option>
                                 </select>
-                                <button @click="addAction()"><i class="fas fa-plus"/> <span class="hide-mobile" data-i18n="">Add action // Aktion hinzufügen</span></button>
+                                <button @click="addAction()" class="spaced"><i class="fas fa-plus"/> <span class="hide-mobile" data-i18n="">Add action // Aktion hinzufügen</span></button>
                             </div>
                         </div>
                         <div class="row">
-                            <label for="actionList" class="twelve columns" data-i18n="" style="margin-top: 1em">Current actions // Aktuelle Aktionen</label>
+                            <label for="actionList" class="twelve columns" data-i18n="" style="margin-top: 1em; font-size: 1.2em">Current actions // Aktuelle Aktionen</label>
                         </div>
                         <ul id="actionList">
                             <span v-show="gridElement.actions.length == 0" class="row" data-i18n="">
@@ -39,28 +39,40 @@
                                     </div>
                                 </div>
                                 <div v-show="editActionId == action.id">
-                                    <div class="four columns">
+                                    <div class>
                                         <b>{{action.modelName | translate}}</b>
                                     </div>
-                                    <div v-show="action.modelName == 'GridActionSpeak'">
-                                        <div class="four columns">
-                                            <input type="text" v-model="action.speakLanguage" />
+                                    <div>
+                                        <div v-show="action.modelName == 'GridActionSpeak'">
+                                            <div class="row">
+                                                <div class="twelve columns">
+                                                    <label for="selectLang" class="normal-text" data-i18n>Language // Sprache</label>
+                                                    <select id="selectLang" type="text" v-model="action.speakLanguage">
+                                                        <option v-for="lang in voiceLangs" :value="lang">
+                                                            {{lang | translate}}
+                                                        </option>
+                                                    </select>
+                                                    <button @click="testAction(action)" class="inline spaced"><i class="fas fa-bolt"/> <span class="hide-mobile" data-i18n="">Test // Testen</span></button>
+                                                </div>
+                                            </div>
+                                            <div class="row right">
+                                                <button @click="endEditAction()"><i class="fas fa-check"/> <span class="hide-mobile">OK</span></button>
+                                            </div>
                                         </div>
-                                        <div class="four columns">
-                                            <button @click="testAction(action)"><i class="fas fa-bolt"/> <span class="hide-mobile" data-i18n="">Test // Testen</span></button>
-                                            <button @click="endEditAction()"><i class="fas fa-check"/> <span class="hide-mobile">OK</span></button>
-                                        </div>
-                                    </div>
-                                    <div v-show="action.modelName == 'GridActionNavigate'">
-                                        <div class="four columns">
-                                            <select type="text" v-model="action.toGridId">
-                                                <option v-for="(label, id) in gridLabels" :value="id">
-                                                    {{label}}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="four columns">
-                                            <button @click="endEditAction()"><i class="fas fa-check"/> <span class="hide-mobile">OK</span></button>
+                                        <div v-show="action.modelName == 'GridActionNavigate'">
+                                            <div class="row">
+                                                <div class="five columns">
+                                                    <label for="selectGrid" class="normal-text" data-i18n>Grid to navigate // Navigieren zu Grid</label>
+                                                    <select id="selectGrid" type="text" v-model="action.toGridId">
+                                                        <option v-for="(label, id) in gridLabels" :value="id" v-bind:selected="index === 0">
+                                                            {{label}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="five columns">
+                                                    <button @click="endEditAction()"><i class="fas fa-check"/> <span class="hide-mobile">OK</span></button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -100,7 +112,8 @@
                 editActionId: null,
                 selectedNewAction: GridElement.getActionTypes()[0].getModelName(),
                 gridLabels: null,
-                actionTypes: GridElement.getActionTypes()
+                actionTypes: GridElement.getActionTypes(),
+                voiceLangs: actionService.getVoicesLangs()
             }
         },
         methods: {
@@ -118,6 +131,9 @@
             },
             addAction () {
                 var newAction = GridElement.getActionInstance(this.selectedNewAction);
+                if(newAction instanceof GridActionNavigate) {
+                    newAction.toGridId = Object.keys(this.gridLabels)[0];
+                }
                 this.gridElement.actions.push(newAction);
                 this.editActionId = newAction.id;
             },
@@ -151,9 +167,15 @@
 
     ul li {
         list-style: none;
+        outline: 1px solid lightgray;
+        padding: 0.5em;
     }
 
     [v-cloak] {
         display: none !important;
+    }
+
+    .normal-text {
+        font-weight: normal;
     }
 </style>
