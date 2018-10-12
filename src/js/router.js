@@ -64,11 +64,15 @@ Router.toMain = function () {
 };
 
 Router.toGrid = function (id) {
-    setHash('#grid/' + id);
+    if(id) {
+        setHash('#grid/' + id);
+    }
 };
 
 Router.toEditGrid = function (id) {
-    setHash('#grid/edit/' + id);
+    if(id) {
+        setHash('#grid/edit/' + id);
+    }
 };
 
 Router.toManageGrids = function () {
