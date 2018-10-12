@@ -1,21 +1,35 @@
 import {dataService} from "./dataService";
 import {Router} from "./../router";
 
+var _allVoices = null;
+var _voicesLangs = [];
+var _voicesLangMap = {};
 if (typeof SpeechSynthesisUtterance !== 'undefined') {
-    window.speechSynthesis.getVoices();
+    _allVoices = window.speechSynthesis.getVoices();
+    setTimeout(function () {
+        _allVoices = window.speechSynthesis.getVoices(); //first call in chrome returns [] sometimes
+        _voicesLangs = _allVoices.map(voice => voice.lang.substring(0,2).toLowerCase());
+        _voicesLangs = _voicesLangs.filter(function(item, pos, self) {
+            return self.indexOf(item) == pos;
+        })
+    }, 1000);
 }
-var _voices = {};
 
-var actionService = {
-    doAction: function (gridId, gridElementId) {
-        dataService.getGridElement(gridId, gridElementId).then(gridElement => {
-            log.info('do actions for: ' + gridElement.label);
-            doActions(gridElement);
-        });
-    },
-    testAction: function (gridElement, action) {
-        doAction(gridElement, action);
-    }
+var actionService = {};
+
+actionService.doAction = function (gridId, gridElementId) {
+    dataService.getGridElement(gridId, gridElementId).then(gridElement => {
+        log.info('do actions for: ' + gridElement.label);
+        doActions(gridElement);
+    });
+};
+
+actionService.testAction = function (gridElement, action) {
+    doAction(gridElement, action);
+};
+
+actionService.getVoicesLangs = function () {
+    return _voicesLangs;
 };
 
 function doActions(gridElement) {
@@ -28,7 +42,9 @@ function doAction(gridElement, action) {
     switch (action.modelName) {
         case 'GridActionSpeak':
             log.debug('action speak');
-            speak(gridElement.label, action);
+            if(gridElement.label) {
+                speak(gridElement.label, action);
+            }
             break;
         case 'GridActionNavigate':
             log.debug('action navigate');
@@ -47,15 +63,14 @@ function speak(text, action) {
 }
 
 function getVoice(lang) {
-    if (_voices[lang]) {
-        return _voices[lang];
+    if (_voicesLangMap[lang]) {
+        return _voicesLangMap[lang];
     }
 
-    var voices = window.speechSynthesis.getVoices();
-    for (var i = 0; i < voices.length; i++) {
-        if (voices[i].lang.includes(lang)) {
-            _voices[lang] = voices[i];
-            return voices[i];
+    for (var i = 0; i < _allVoices.length; i++) {
+        if (_allVoices[i].lang.includes(lang)) {
+            _voicesLangMap[lang] = _allVoices[i];
+            return _allVoices[i];
         }
     }
     return null;
