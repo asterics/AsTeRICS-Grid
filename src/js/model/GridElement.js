@@ -2,6 +2,7 @@ import {modelUtil} from "../util/modelUtil";
 import {templates} from "../templates";
 import {GridImage} from "./GridImage";
 import {GridActionSpeak} from "./GridActionSpeak";
+import {GridActionNavigate} from "./GridActionNavigate";
 
 class GridElement extends Model({
     id: String,
@@ -31,6 +32,19 @@ class GridElement extends Model({
 
     hasSetPosition() {
         return this.x != null && this.x != undefined && this.y != null && this.y != undefined;
+    }
+
+    static getActionTypes() {
+        return [GridActionSpeak, GridActionNavigate];
+    }
+
+    static getActionInstance(modelName) {
+        var constructor = this.getActionTypes().filter(type => type.getModelName() == modelName)[0];
+        if(constructor) {
+            return new constructor();
+        } else {
+            log.warn('action type not found: ' + modelName);
+        }
     }
 }
 
