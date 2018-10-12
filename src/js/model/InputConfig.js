@@ -23,7 +23,7 @@ InputConfig.defaults({
     id: "", //will be replaced by constructor
     scanAutostart: true,
     scanTimeoutMs: 1000,
-    scanTimeoutFirstElementFactor: 1.5,
+    scanTimeoutFirstElementFactor: 1,
     scanBinary: true,
     hoverTimeoutMs: 1000
 });
