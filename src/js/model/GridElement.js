@@ -2,6 +2,7 @@ import {modelUtil} from "../util/modelUtil";
 import {templates} from "../templates";
 import {GridImage} from "./GridImage";
 import {GridActionSpeak} from "./GridActionSpeak";
+import {GridActionSpeakCustom} from "./GridActionSpeakCustom";
 import {GridActionNavigate} from "./GridActionNavigate";
 
 class GridElement extends Model({
@@ -35,7 +36,7 @@ class GridElement extends Model({
     }
 
     static getActionTypes() {
-        return [GridActionSpeak, GridActionNavigate];
+        return [GridActionSpeak, GridActionNavigate, GridActionSpeakCustom];
     }
 
     static getActionInstance(modelName) {

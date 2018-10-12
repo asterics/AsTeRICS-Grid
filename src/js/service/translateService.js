@@ -19,12 +19,42 @@ translateService.translate = function (key) {
 translateService.translations = {};
 translateService.translations['en'] = {
     GridActionSpeak: 'Speak label',
-    GridActionNavigate: 'Navigate to other grid'
+    GridActionSpeakCustom: 'Speak custom text',
+    GridActionNavigate: 'Navigate to other grid',
+    de: 'German',
+    en: 'English',
+    es: 'Spanish',
+    fr: 'French',
+    hi: 'Hindi',
+    id: 'Indonesian',
+    it: 'Italian',
+    ja: 'Japanese',
+    ko: 'Korean',
+    nl: 'Dutch',
+    pl: 'Polish',
+    pt: 'Portuguese',
+    ru: 'Russian',
+    zh: 'Chinese'
 };
 
 translateService.translations['de'] = {
     GridActionSpeak: 'Label aussprechen',
-    GridActionNavigate: 'Zu anderem Grid navigieren'
+    GridActionSpeakCustom: 'Benutzerdefinierten Text aussprechen',
+    GridActionNavigate: 'Zu anderem Grid navigieren',
+    de: 'Deutsch',
+    en: 'Englisch',
+    es: 'Spanisch',
+    fr: 'Französisch',
+    hi: 'Hindi',
+    id: 'Indonesisch',
+    it: 'Italienisch',
+    ja: 'Japanisch',
+    ko: 'Koreanisch',
+    nl: 'Holländisch',
+    pl: 'Polnisch',
+    pt: 'Portugiesisch',
+    ru: 'Russisch',
+    zh: 'Chinesisch'
 };
 
 export {translateService};

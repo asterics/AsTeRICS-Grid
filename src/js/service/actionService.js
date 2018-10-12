@@ -43,7 +43,13 @@ function doAction(gridElement, action) {
         case 'GridActionSpeak':
             log.debug('action speak');
             if(gridElement.label) {
-                speak(gridElement.label, action);
+                speak(gridElement.label, action.speakLanguage);
+            }
+            break;
+        case 'GridActionSpeakCustom':
+            log.debug('action speak custom');
+            if(action.speakText) {
+                speak(action.speakText, action.speakLanguage);
             }
             break;
         case 'GridActionNavigate':
@@ -53,10 +59,11 @@ function doAction(gridElement, action) {
     }
 }
 
-function speak(text, action) {
+function speak(text, lang) {
+    lang = lang || 'en';
     if (typeof SpeechSynthesisUtterance !== 'undefined') {
         var msg = new SpeechSynthesisUtterance(text);
-        msg.voice = getVoice(action.speakLanguage);
+        msg.voice = getVoice(lang);
         //log.info('used voice: ' + msg.voice.name);
         window.speechSynthesis.speak(msg);
     }
