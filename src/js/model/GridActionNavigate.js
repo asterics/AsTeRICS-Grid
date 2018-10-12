@@ -3,7 +3,7 @@ import {modelUtil} from "../util/modelUtil";
 class GridActionNavigate extends Model({
     id: String,
     modelName: String,
-    toGridId: String
+    toGridId: [String]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionNavigate);
