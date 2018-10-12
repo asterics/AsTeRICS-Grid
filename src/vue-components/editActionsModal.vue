@@ -13,12 +13,10 @@
                     <div class="modal-body container">
                         <div class="row">
                             <label class="three columns" data-i18n="">New Action // Neue Aktion</label>
-                            <div class="nine columns">
-                                <select v-model="selectedNewAction">
-                                    <option v-for="type in actionTypes" :value="type.getModelName()">{{type.getModelName() | translate}}</option>
-                                </select>
-                                <button @click="addAction()" class="spaced"><i class="fas fa-plus"/> <span class="hide-mobile" data-i18n="">Add action // Aktion hinzufügen</span></button>
-                            </div>
+                            <select class="four columns" v-model="selectedNewAction" style="margin-bottom: 0.5em">
+                                <option v-for="type in actionTypes" :value="type.getModelName()">{{type.getModelName() | translate}}</option>
+                            </select>
+                            <button class="four columns" @click="addAction()"><i class="fas fa-plus"/> <span data-i18n="">Add action // Aktion hinzufügen</span></button>
                         </div>
                         <div class="row">
                             <label for="actionList" class="twelve columns" data-i18n="" style="margin-top: 1em; font-size: 1.2em">Current actions // Aktuelle Aktionen</label>
@@ -45,9 +43,11 @@
                                     <div>
                                         <div v-show="action.modelName == 'GridActionSpeak'">
                                             <div class="row">
-                                                <div class="twelve columns">
+                                                <div class="three columns">
                                                     <label for="selectLang" class="normal-text" data-i18n>Language // Sprache</label>
-                                                    <select id="selectLang" type="text" v-model="action.speakLanguage">
+                                                </div>
+                                                <div class="nine columns">
+                                                    <select id="selectLang" v-model="action.speakLanguage" style="width: 55%">
                                                         <option v-for="lang in voiceLangs" :value="lang">
                                                             {{lang | translate}}
                                                         </option>
@@ -55,23 +55,47 @@
                                                     <button @click="testAction(action)" class="inline spaced"><i class="fas fa-bolt"/> <span class="hide-mobile" data-i18n="">Test // Testen</span></button>
                                                 </div>
                                             </div>
-                                            <div class="row right">
-                                                <button @click="endEditAction()"><i class="fas fa-check"/> <span class="hide-mobile">OK</span></button>
+                                            <div class="row">
+                                                <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
+                                            </div>
+                                        </div>
+                                        <div v-show="action.modelName == 'GridActionSpeakCustom'">
+                                            <div class="row">
+                                                <div class="three columns">
+                                                    <label for="selectLang2" class="normal-text" data-i18n>Language // Sprache</label>
+                                                </div>
+                                                <select class="eight columns" id="selectLang2" v-model="action.speakLanguage">
+                                                    <option v-for="lang in voiceLangs" :value="lang">
+                                                        {{lang | translate}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="row">
+                                                <div class="three columns">
+                                                    <label for="inCustomText" class="normal-text" data-i18n>Text to speak // Auszusprechender Text</label>
+                                                </div>
+                                                <div class="nine columns">
+                                                    <input id="inCustomText" type="text" v-model="action.speakText" style="width: 70%"/>
+                                                    <button @click="testAction(action)"><i class="fas fa-bolt"/> <span class="hide-mobile" data-i18n="">Test // Testen</span></button>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
                                             </div>
                                         </div>
                                         <div v-show="action.modelName == 'GridActionNavigate'">
                                             <div class="row">
-                                                <div class="five columns">
+                                                <div class="three columns">
                                                     <label for="selectGrid" class="normal-text" data-i18n>Grid to navigate // Navigieren zu Grid</label>
-                                                    <select id="selectGrid" type="text" v-model="action.toGridId">
-                                                        <option v-for="(label, id) in gridLabels" :value="id" v-bind:selected="index === 0">
-                                                            {{label}}
-                                                        </option>
-                                                    </select>
                                                 </div>
-                                                <div class="five columns">
-                                                    <button @click="endEditAction()"><i class="fas fa-check"/> <span class="hide-mobile">OK</span></button>
-                                                </div>
+                                                <select class="eight columns" id="selectGrid" type="text" v-model="action.toGridId">
+                                                    <option v-for="(label, id) in gridLabels" :value="id">
+                                                        {{label}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="row">
+                                                <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
                                             </div>
                                         </div>
                                     </div>
@@ -113,7 +137,7 @@
                 selectedNewAction: GridElement.getActionTypes()[0].getModelName(),
                 gridLabels: null,
                 actionTypes: GridElement.getActionTypes(),
-                voiceLangs: actionService.getVoicesLangs()
+                voiceLangs: actionService.getVoicesLangs(),
             }
         },
         methods: {
