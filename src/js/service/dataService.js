@@ -213,6 +213,23 @@ var dataService = {
             });
         });
     },
+    /**
+     * returns a map with keys == gridIds and values of the given attribute parameter
+     * e.g. attribute == "label" will return a map of <gridIds -> gridLabel>
+     * @param attribute
+     * @return {Promise}
+     */
+    getGridsAttribute(attribute) {
+        return new Promise(resolve => {
+            this.getGrids().then(grids => {
+                var returnMap = {};
+                grids.forEach(grid => {
+                    returnMap[grid.id] = grid[attribute];
+                });
+                resolve(returnMap);
+            })
+        });
+    },
     updateOrAddGridElement: function (gridId, updatedGridElement) {
         return new Promise(resolve => {
             this.getGrid(gridId).then(grid => {
