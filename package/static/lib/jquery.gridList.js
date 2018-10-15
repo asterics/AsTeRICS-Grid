@@ -266,7 +266,7 @@
         });
       }
       if (this.options.heightToFontSizeRatio) {
-        this.$items.css('font-size', this._fontSize);
+        //this.$items.css('font-size', this._fontSize);
       }
     },
 
