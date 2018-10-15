@@ -55,15 +55,12 @@ function initVue(grids) {
 
                 var fileExtension = importFile.name.substring(importFile.name.length-4);
                 if(fileExtension == '.grd') {
-                    dataService.importSingleGrid(importFile).then(() => {
+                    dataService.importGridsFromFile(importFile).then(() => {
                         this.reload();
+                        var $el = $(event.target); //reset file input
+                        $el.wrap('<form>').closest('form').get(0).reset();
+                        $el.unwrap();
                     });
-                } else if(fileExtension == '.grs') {
-                    if (confirm(`Do you really want to import all grids from "${importFile.name}"? Warning: This will delete all currently saved grids.`)) {
-                        dataService.importDB(importFile).then(() => {
-                            reinit();
-                        });
-                    }
                 }
             },
             finishEdit: function (id, label) {
@@ -96,7 +93,7 @@ function initVue(grids) {
                 if(gridId) {
                     dataService.downloadSingleGrid(gridId);
                 } else {
-                    dataService.downloadDB();
+                    dataService.downloadAllGrids();
                 }
             },
             reload: function () {
@@ -112,7 +109,7 @@ function initVue(grids) {
         computed: {
             filteredGrids: function () {
                 return this.grids.filter(grid => {
-                    return grid.label.toLowerCase().includes(this.searchText.toLowerCase())
+                    return grid.label ? grid.label.toLowerCase().includes(this.searchText.toLowerCase()) : false;
                 })
             },
         },
@@ -137,8 +134,8 @@ function initContextmenu() {
 
     var itemsMoreMenu = {
         CONTEXT_NEW: {name: "New grid // Neues Grid", icon: "fas fa-plus"},
-        CONTEXT_IMPORT: {name: "Import grids // Grid importieren", icon: "fas fa-file-upload"},
-        CONTEXT_EXPORT: {name: "Export database // Datenbank exportieren", icon: "fas fa-hdd"},
+        CONTEXT_IMPORT: {name: "Import grid(s) from file // Grid(s) aus Datei importieren", icon: "fas fa-file-upload"},
+        CONTEXT_EXPORT: {name: "Export all grids // Alle Grids exportieren", icon: "fas fa-hdd"},
         CONTEXT_RESET: {name: "Reset database // Datenbank zurücksetzen", icon: "fas fa-minus-circle"},
     };
 

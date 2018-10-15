@@ -308,7 +308,7 @@ var dataService = {
 
         db.dump(stream).then(function () {
             var blob = new Blob([dumpedString], {type: "text/plain;charset=utf-8"});
-            FileSaver.saveAs(blob, "my-grids.grs");
+            FileSaver.saveAs(blob, "my-grids.grd");
         }).catch(function (err) {
             log.error('error on dumping database: ', err);
         });
@@ -321,23 +321,46 @@ var dataService = {
             }
         });
     },
-    importSingleGrid(file) {
+    downloadAllGrids() {
+        this.getGrids().then(grids => {
+            if(grids) {
+                var blob = new Blob([JSON.stringify(grids)], {type: "text/plain;charset=utf-8"});
+                FileSaver.saveAs(blob, "my-gridset.grd");
+            }
+        });
+    },
+    importGridsFromFile(file) {
         var thiz = this;
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             var reader = new FileReader();
             reader.onload = (function (theFile) {
                 return function (e) {
                     var data = e.target.result;
                     var gridData = JSON.parse(data);
+                    if(!(gridData instanceof Array)) {
+                        gridData = [gridData];
+                    }
                     thiz.getGrids().then(grids => {
                         var existingNames = grids.map(grid => grid.label);
-                        gridData.label = modelUtil.getNewName(gridData.label, existingNames);
-                        gridData.id = modelUtil.generateId('grid-data');
-                        gridData._id = null;
-                        gridData._rev = null;
-                        thiz.saveGrid(gridData).then(() => {
+                        var existingIds = grids.map(grid => grid.id);
+                        var resolveFns = [];
+                        var failed = false;
+                        gridData.forEach(grid => {
+                            if (!failed) {
+                                if (existingIds.includes(grid.id)) {
+                                    alert('Grid "' + grid.label + '" cannot be imported because it has the same ID as an already existing grid! Maybe this file was already imported?!');
+                                    failed = true;
+                                    return;
+                                }
+                                grid.label = modelUtil.getNewName(grid.label, existingNames);
+                                grid._id = null;
+                                grid._rev = null;
+                                resolveFns.push(thiz.saveGrid(grid));
+                            }
+                        });
+                        Promise.all(resolveFns).then(() => {
                             resolve();
-                        })
+                        });
                     });
                 }
             })(file);
