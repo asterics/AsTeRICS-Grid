@@ -1,4 +1,4 @@
-<div id="app" v-cloak>
+<div id="app" v-cloak class="box">
     <header class="row header" role="banner">
         <div id="menuHeader" class="menuHeader">
             <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
@@ -19,8 +19,7 @@
             </div>
         </div>
     </header>
-    <div class="spaced" v-show="!gridData.gridElements || gridData.gridElements.length == 0" role="main" class="row content">
-
+    <div class="row content spaced" v-if="!gridData.gridElements || gridData.gridElements.length == 0" role="main">
         <div style="margin-top: 2em">
             <span data-i18n>No elements. // Keine Elemente.</span> <a href="javascript:void(0);" @click="newElements()" data-i18n="">Create new elements // Neue Elemente anlegen</a>
             <div data-i18n="">Elements also can be created using a right mouse click. // Elemente können auch über einen rechten Mausklick hinzugefügt werden.</div>
@@ -35,9 +34,8 @@
     <div>
         <edit-actions-modal v-if="showActionsModal" v-bind:edit-element-id="editElementId" v-bind:grid-data="gridData" @close="showActionsModal = false" @reload="reload"/>
     </div>
+    <main role="main" class="row content">
+        <div id="grid-container" class="grid-container">
+        </div>
+    </main>
 </div>
-
-<main role="main" class="row content">
-    <div id="grid-container" class="grid-container">
-    </div>
-</main>
