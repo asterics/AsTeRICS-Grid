@@ -151,27 +151,34 @@ GridList.prototype = {
 
   resizeGrid: function(lanes) {
     var currentColumn = 0;
-
+    var oldLanes = this._options.lanes;
     this._options.lanes = lanes;
     this._adjustSizeOfItems();
 
-    this._sortItemsByPosition();
-    this._resetGrid();
-
-    // The items will be sorted based on their index within the this.items array,
-    // that is their "1d position"
+    var lastRowHasElems = false;
     for (var i = 0; i < this.items.length; i++) {
-      var item = this.items[i],
-          position = this._getItemPosition(item);
-
-      this._updateItemPosition(
-        item, this.findPositionForItem(item, {x: currentColumn, y: 0}));
-
-      // New items should never be placed to the left of previous items
-      currentColumn = Math.max(currentColumn, position.x);
+        var position = this._getItemPosition(this.items[i]);
+        if(position.y + position.h >= lanes) lastRowHasElems = true;
     }
+    if(lastRowHasElems && oldLanes > lanes) {
+        this._sortItemsByPosition();
+        this._resetGrid();
 
-    this._pullItemsToLeft();
+        // The items will be sorted based on their index within the this.items array,
+        // that is their "1d position"
+        for (var i = 0; i < this.items.length; i++) {
+            var item = this.items[i],
+                position = this._getItemPosition(item);
+
+            this._updateItemPosition(
+                item, this.findPositionForItem(item, {x: currentColumn, y: 0}));
+
+            // New items should never be placed to the left of previous items
+            currentColumn = Math.max(currentColumn, position.x);
+        }
+
+        this._pullItemsToLeft();
+    }
   },
 
   findPositionForItem: function(item, start, fixedRow) {
