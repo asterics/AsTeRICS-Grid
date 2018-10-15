@@ -16,32 +16,32 @@
                             <div class="ten columns">
                                     <div class="row" >
                                         <div class="twelve columns">
-                                            <input type="checkbox" id="enableScanning" v-model="gridData.inputConfig.scanAutostart" @change="toggleScanning"/>
+                                            <input type="checkbox" id="enableScanning" v-model="metadata.inputConfig.scanAutostart" @change="toggleScanning"/>
                                             <label class="inline" for="enableScanning" data-i18n>Enable Scanning // Scanning aktivieren</label>
                                         </div>
                                     </div>
 
-                                    <div class="row" v-show="gridData.inputConfig.scanAutostart">
+                                    <div class="row" v-show="metadata.inputConfig.scanAutostart">
                                         <div class="six columns">
-                                            <input type="checkbox" id="chkVerticalScanning" v-model="gridData.inputConfig.scanVertical" @change="setVerticalScanning"/>
+                                            <input type="checkbox" id="chkVerticalScanning" v-model="metadata.inputConfig.scanVertical" @change="setVerticalScanning"/>
                                             <label for="chkVerticalScanning" data-i18n>Vertical scanning // Scanning vertikal</label>
                                         </div>
                                         <div class="six columns">
-                                            <input type="checkbox" id="chkBinaryScanning" v-model="gridData.inputConfig.scanBinary" @change="setBinaryScanning"/>
+                                            <input type="checkbox" id="chkBinaryScanning" v-model="metadata.inputConfig.scanBinary" @change="setBinaryScanning"/>
                                             <label for="chkBinaryScanning" data-i18n>Binary scanning // Scanning binär</label>
                                         </div>
                                     </div>
                                     <div class="space"/>
-                                    <div class="row" v-show="gridData.inputConfig.scanAutostart">
+                                    <div class="row" v-show="metadata.inputConfig.scanAutostart">
                                         <div class="six columns slidergroup">
                                             <label for="inScanTime" data-i18n>Scanning Time (ms) // Scanning Zeit (ms)</label>
-                                            <input type="range" id="inScanTime" v-model="gridData.inputConfig.scanTimeoutMs" @change="changeScanningMs" min="100" max="3000" step="100"/>
-                                            <input type="number" v-model="gridData.inputConfig.scanTimeoutMs" @change="changeScanningMs" min="100" max="3000" step="100"/>
+                                            <input type="range" id="inScanTime" v-model.number="metadata.inputConfig.scanTimeoutMs" @change="changeScanningMs" min="100" max="3000" step="100"/>
+                                            <input type="number" v-model.number="metadata.inputConfig.scanTimeoutMs" @change="changeScanningMs" min="100" max="3000" step="100"/>
                                         </div>
                                         <div class="six columns slidergroup">
                                             <label for="inFirstElement" data-i18n>Time factor first element // Zeit-Faktor erstes Element</label>
-                                            <input type="range" id="inFirstElement" v-model="gridData.inputConfig.scanTimeoutFirstElementFactor" @change="changeFirstElementFactor" min="1" max="5" step="0.1"/>
-                                            <input type="number" v-model="gridData.inputConfig.scanTimeoutFirstElementFactor" @change="changeFirstElementFactor" min="1" max="5" step="0.5" />
+                                            <input type="range" id="inFirstElement" v-model.number="metadata.inputConfig.scanTimeoutFirstElementFactor" @change="changeFirstElementFactor" min="1" max="5" step="0.1"/>
+                                            <input type="number" v-model.number="metadata.inputConfig.scanTimeoutFirstElementFactor" @change="changeFirstElementFactor" min="1" max="5" step="0.5" />
                                         </div>
                                     </div>
                             </div>
@@ -53,14 +53,14 @@
                             <div class="ten columns">
                                 <div class="row" >
                                     <div class="five columns">
-                                        <input type="checkbox" id="chkHover" v-model="gridData.inputConfig.hoverEnabled" @change="setHover"/>
+                                        <input type="checkbox" id="chkHover" v-model="metadata.inputConfig.hoverEnabled" @change="setHover"/>
                                         <label for="chkHover"data-i18n>Enable Hovering // Hovering aktivieren</label>
                                         <div class="space"/>
                                     </div>
                                     <div class="seven columns slidergroup">
                                         <label for="inHoverTime" data-i18n>Hover Time (ms) // Hover Zeit (ms)</label>
-                                        <input type="range" id="inHoverTime" v-model="gridData.inputConfig.hoverTimeoutMs" @change="changeHoverMs" min="100" max="3000" step="100"/>
-                                        <input type="number" v-model="gridData.inputConfig.hoverTimeoutMs" @change="changeHoverMs" min="100" max="3000" step="100" style="width: 5.5em"/>
+                                        <input type="range" id="inHoverTime" v-model.number="metadata.inputConfig.hoverTimeoutMs" @change="changeHoverMs" min="100" max="3000" step="100"/>
+                                        <input type="number" v-model.number="metadata.inputConfig.hoverTimeoutMs" @change="changeHoverMs" min="100" max="3000" step="100" style="width: 5.5em"/>
                                     </div>
                                 </div>
                             </div>
@@ -70,7 +70,7 @@
                             <h2 class="two columns" data-i18n>Others // Anderes</h2>
                             <div class="ten columns">
                                 <div class="row" >
-                                    <input type="checkbox" id="chkMouse" v-model="gridData.inputConfig.mouseclickEnabled" @change="setClickControl"/>
+                                    <input type="checkbox" id="chkMouse" v-model="metadata.inputConfig.mouseclickEnabled" @change="setClickControl"/>
                                     <label for="chkMouse" data-i18n>Select with mouse click // Auswahl mit Mausklick</label>
                                 </div>
                             </div>
@@ -98,19 +98,17 @@
     import './../css/modal.css';
 
     export default {
-        props: ['gridData', 'scanner', 'hover', 'clicker', 'reinit'],
+        props: ['metadata', 'scanner', 'hover', 'clicker', 'reinit'],
         data: function () {
             return {
-                gridElement: null,
-                metadata: null,
-                originalGridData: null,
+                originalMetadata: null,
             }
         },
         methods: {
             cancel () {
                 var thiz = this;
-                if(JSON.stringify(thiz.originalGridData) != JSON.stringify(thiz.gridData)) {
-                    dataService.saveGrid(thiz.originalGridData).then(() => {
+                if(JSON.stringify(thiz.originalMetadata) != JSON.stringify(thiz.metadata)) {
+                    dataService.saveMetadata(thiz.originalMetadata).then(() => {
                         this.reinit();
                         this.$emit('close');
                     });
@@ -124,16 +122,12 @@
                 } else {
                     this.hover.stopHovering();
                 }
-                dataService.updateInputConfig(this.gridData.id, {
-                    hoverEnabled: event.target.checked
-                });
+                dataService.saveMetadata(this.metadata);
             },
             changeHoverMs: function (event) {
-                var newOptions = {
-                    hoverTimeoutMs: Number.parseInt(event.target.value)
-                };
-                this.hover.setHoverTimeout(newOptions.hoverTimeoutMs);
-                dataService.updateInputConfig(this.gridData.id, newOptions);
+                this.metadata.inputConfig.hoverTimeoutMs = Number.parseInt(event.target.value);
+                this.hover.setHoverTimeout(this.metadata.inputConfig.hoverTimeoutMs);
+                dataService.saveMetadata(this.metadata);
             },
             setClickControl: function (event) {
                 if (event.target.checked) {
@@ -141,9 +135,7 @@
                 } else {
                     this.clicker.stopClickcontrol();
                 }
-                dataService.updateInputConfig(this.gridData.id, {
-                    mouseclickEnabled: event.target.checked
-                });
+                dataService.saveMetadata(this.metadata);
             },
             toggleScanning: function (event) {
                 if (event.target.checked) {
@@ -151,9 +143,8 @@
                 } else {
                     this.scanner.stopScanning();
                 }
-                dataService.updateInputConfig(this.gridData.id, {
-                    scanAutostart: event.target.checked
-                });
+                dataService.saveMetadata(this.metadata);
+                log.warn(this.metadata.inputConfig.scanAutostart)
             },
             setVerticalScanning: function (event) {
                 this.updateScanningOptions({
@@ -176,14 +167,15 @@
                 });
             },
             updateScanningOptions: function (optionsToUpdate, restart) {
-                this.scanner.updateOptions(optionsToUpdate, restart);
-                dataService.updateInputConfig(this.gridData.id, optionsToUpdate);
+                var thiz = this;
+                thiz.scanner.updateOptions(optionsToUpdate, restart);
+                dataService.saveMetadata(thiz.metadata);
             }
         },
         mounted () {
             var thiz = this;
             log.debug('opened modal: ' + thiz.gridId);
-            thiz.originalGridData = JSON.parse(JSON.stringify(thiz.gridData));
+            thiz.originalMetadata = JSON.parse(JSON.stringify(thiz.metadata));
             I18nModule.init();
         }
     }

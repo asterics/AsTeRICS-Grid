@@ -8,8 +8,7 @@ class GridData extends Model({
     modelName: String,
     label: [String],
     rowCount: Number,
-    gridElements: Model.Array(GridElement),
-    inputConfig: InputConfig
+    gridElements: Model.Array(GridElement)
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridData);
@@ -91,8 +90,7 @@ class GridData extends Model({
 GridData.defaults({
     id: "", //will be replaced by constructor
     modelName: GridData.getModelName(),
-    rowCount: 9,
-    inputConfig: new InputConfig()
+    rowCount: 9
 });
 
 export {GridData};

@@ -267,17 +267,6 @@ var dataService = {
         newConfig.id = gridId;
         return saveInternal(GridData, newConfig, true);
     },
-    updateInputConfig: function (gridId, newConfig) {
-        this.getGrid(gridId).then(grid => {
-            if (!grid || !grid.inputConfig) {
-                log.warn('no grid found for updating input config!');
-                return;
-            }
-            var newInputConfig = new InputConfig(newConfig, grid.inputConfig);
-            grid.inputConfig = newInputConfig;
-            return this.saveGrid(grid);
-        });
-    },
     deleteGrid: function (gridId) {
         return new Promise(resolve => {
             this.getGrid(gridId).then(grid => {

@@ -28,7 +28,7 @@ GridView.init = function (gridId) {
         GridView.gridData = grid;
 
         dataService.getMetadata().then(savedMetadata => {
-            GridView.metadata = savedMetadata || new MetaData();
+            GridView.metadata = new MetaData(savedMetadata) || new MetaData();
             initVue();
             dataService.saveMetadata(new MetaData({
                 lastOpenedGridId: GridView.gridData.id
@@ -67,9 +67,9 @@ function initVue() {
         el: '#app',
         data: {
             gridData: JSON.parse(JSON.stringify(GridView.gridData)),
-            isScanning: GridView.gridData.inputConfig.scanAutostart,
+            metadata: JSON.parse(JSON.stringify(GridView.metadata)),
+            isScanning: GridView.metadata.inputConfig.scanAutostart,
             showHeader: GridView.metadata.headerPinned,
-            headerPinned: GridView.metadata.headerPinned,
             scanner: null,
             hover: null,
             clicker: null,
@@ -105,7 +105,7 @@ function initVue() {
                 if(_headerHideTimeoutHandler) {
                     clearTimeout(_headerHideTimeoutHandler)
                 }
-                if(thiz.showHeader && !thiz.headerPinned) {
+                if(thiz.showHeader && !thiz.metadata.headerPinned) {
                     var headerHideTimeout = t || 3000;
                     _headerHideTimeoutHandler = setTimeout(function () {
                         if(thiz.showModal) {
@@ -117,14 +117,12 @@ function initVue() {
                 }
             },
             setHeaderPinned: function (event) {
-                this.headerPinned = event.target.checked;
+                this.metadata.headerPinned = event.target.checked;
                 this.showHeaderFn();
-                dataService.saveMetadata(new MetaData({
-                    headerPinned: this.headerPinned
-                }));
+                dataService.saveMetadata(this.metadata);
             },
             initInputMethods() {
-                var inputConfig = this.gridData.inputConfig;
+                var inputConfig = this.metadata.inputConfig;
                 this.scanner = GridView.scanner = new Scanner('.grid-item-content', 'scanFocus', {
                     scanVertical: inputConfig.scanVertical,
                     subScanRepeat: 3,
@@ -175,8 +173,8 @@ function initVue() {
             },
             reinitInputMethods() {
                 stopInputMethods();
-                dataService.getGrid(GridView.gridData.id).then(gridData => {
-                    this.gridData.inputConfig = JSON.parse(JSON.stringify(gridData.inputConfig));
+                dataService.getMetadata().then(newMetadata => {
+                    this.metadata = GridView.metadata = JSON.parse(JSON.stringify(newMetadata));
                     this.initInputMethods();
                 });
             },
