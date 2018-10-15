@@ -28,19 +28,19 @@ function UndoService() {
      */
     thiz.updateGrid = function (newGridData) {
         return new Promise((resolve) => {
-            var lastGridData = _undoGridDataStack[_undoGridDataStack.length - 1];
-            if (!lastGridData || !newGridData.isEqual(lastGridData)) {
-                dataService.getGrid(newGridData.id).then(savedGrid => {
+            dataService.getGrid(newGridData.id).then(savedGrid => {
+                if (!newGridData.isEqual(savedGrid)) {
                     _undoGridDataStack.push(JSON.parse(JSON.stringify(savedGrid)));
                     _redoGridDataStack = [];
                     dataService.saveGrid(newGridData).then(() => {
                         resolve(true);
                     });
-                });
-            } else {
-                log.debug('grid not updated, do noting');
-                resolve(false);
-            }
+                } else {
+                    log.debug('grid not updated, do noting');
+                    resolve(false);
+                }
+
+            });
         });
     };
 
