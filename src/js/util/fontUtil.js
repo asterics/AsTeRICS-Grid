@@ -14,7 +14,7 @@ fontUtil.getFontSizePx = function (elem) {
 
     var rectElem = elem[0].getBoundingClientRect();
     var areaElem = rectElem.height * rectElem.width / (imageId ? 2 : 1);
-    var fontSize = Math.floor(Math.sqrt(areaElem * 0.5 / Math.max(10, label.length)));
+    var fontSize = Math.floor(Math.sqrt(areaElem * 0.5 / Math.max(15, label.length)));
 
     return Math.min(fontSize, rectElem.height / 2) + "px";
 };
