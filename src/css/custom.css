@@ -82,12 +82,11 @@ header {
     flex: 1;
     display: flex;
     overflow: hidden;
-    margin: 3%;
+    margin: 1%;
 }
 
 .grid-item-content .text-container {
     flex: 0 1 auto;
-    padding-bottom: 0.3em;
 }
 
 .grid, .grid-item-content .text-container span {
