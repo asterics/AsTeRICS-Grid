@@ -28,7 +28,7 @@ class GridElement extends Model({
     }
 
     toHTML() {
-        return templates.getGridItem(this.label, this.width, this.height, this.x, this.y, this.id, this.image);
+        return templates.getGridItem(this);
     };
 
     hasSetPosition() {

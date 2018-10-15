@@ -1,7 +1,6 @@
 import {fontUtil} from "./util/fontUtil";
 
 var templates = {};
-var lastId = 1;
 
 templates.getGridBase = function (gridId) {
     return `<ul id="${gridId}" class="grid">
@@ -12,27 +11,27 @@ templates.getGridBase = function (gridId) {
 };
 
 
-templates.getGridItem = function (label, width, height, posX, posY, id, image) {
-    width = width || 1;
-    height = height || 1;
-    posX = posX || 0;
-    posY = posY || 0;
-    id = id || lastId++;
-    label = label || "";
+templates.getGridItem = function (gridElem) {
+    var width = gridElem.width || 1;
+    var height = gridElem.height || 1;
+    var posX = gridElem.x || 0;
+    var posY = gridElem.y || 0;
+    var id = gridElem.id;
+    var label = gridElem.label || "";
     var imgData = '';
     var imgId = '';
     var txtContainerStyle = '';
     var imgContainerMargin = '1%';
-    if(image) {
-        imgData = image.data;
-        imgId = image.id;
+    if(gridElem.image) {
+        imgData = gridElem.image.data;
+        imgId = gridElem.image.id;
     } else {
-        txtContainerStyle = 'flex: 1 1 auto;';
+        txtContainerStyle += 'flex: 1 1 auto;';
         imgContainerMargin = '0'
     }
 
     var template = `
-<li class="item" data-w="${width}" data-h="${height}" data-x="${posX}" data-y="${posY}" data-id="${id}" data-label="${label}" data-img-id="${imgId}" data-img="${imgData}">
+<li class="item" data-w="${width}" data-h="${height}" data-x="${posX}" data-y="${posY}" data-id="${id}" data-label="${label}" data-img-id="${imgId}">
     <div class="grid-item-content" id="${id}" data-id="${id}">
         <div class="img-container" style="background-color: #777620; background: center no-repeat; background-size: contain; background-image: url('${imgData}'); margin: ${imgContainerMargin};"/>
         <div class="text-container break-word" style="${txtContainerStyle}"><span>${label}</span></div>
