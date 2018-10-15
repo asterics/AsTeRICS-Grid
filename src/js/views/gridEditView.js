@@ -46,7 +46,8 @@ function initVue() {
             showEditModal: false,
             showMultipleModal: false,
             showActionsModal: false,
-            editElementId: null
+            editElementId: null,
+            showGrid: false
         },
         components: {
             EditGridModal, AddMultipleModal, EditActionsModal
@@ -124,6 +125,7 @@ function initVue() {
                 });
                 initContextmenu();
                 I18nModule.init();
+                thiz.showGrid = true;
             });
         }
     })

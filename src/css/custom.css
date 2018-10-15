@@ -68,11 +68,22 @@ header {
     outline: thick solid red !important;
 }
 
-#grid-container {
-    overflow: hidden;
+#grid-mask {
+    background-color: white;
+    z-index: 99;
+}
+
+#grid-mask i {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    margin-left: -30px;
+    margin-top: -30px;
+    transform: translate(-50%, -50%);
 }
 
 .grid-item-content {
+    overflow: hidden;
     background: lightblue;
     display: flex;
     flex-flow: column;

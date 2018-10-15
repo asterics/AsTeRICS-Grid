@@ -18,7 +18,6 @@ var _inputEventHandler = null;
 var _headerHideTimeoutHandler = null;
 
 GridView.init = function (gridId) {
-    _inputEventHandler = new InputEventHandler('grid-container');
     dataService.getGrid(gridId).then(grid => {
         if (!grid) {
             log.warn('grid not found! gridId: ' + gridId);
@@ -73,7 +72,8 @@ function initVue() {
             scanner: null,
             hover: null,
             clicker: null,
-            showModal: false
+            showModal: false,
+            showGrid: false
         },
         components: {
             InputOptionsModal
@@ -193,12 +193,14 @@ function initVue() {
         mounted: function () {
             var thiz = this;
             initGrid().then(() => {
+                _inputEventHandler = new InputEventHandler('grid-container');
                 if(GridView.metadata.headerPinned) {
                     this.showHeaderFn(true);
                 } else {
                     this.hideHeaderFn(true);
                 }
                 thiz.initInputMethods();
+                thiz.showGrid = true;
             });
         }
     })

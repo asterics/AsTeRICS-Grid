@@ -34,6 +34,9 @@
     <div>
         <edit-actions-modal v-if="showActionsModal" v-bind:edit-element-id="editElementId" v-bind:grid-data="gridData" @close="showActionsModal = false" @reload="reload"/>
     </div>
+    <div id="grid-mask" v-if="!showGrid" class="grid-container">
+        <i class="fas fa-4x fa-spinner fa-spin"/>
+    </div>
     <main role="main" class="row content">
         <div id="grid-container" class="grid-container">
         </div>

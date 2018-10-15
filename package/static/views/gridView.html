@@ -24,6 +24,9 @@
             <span>Keine Elemente, klicke auf <a :href="'#grid/edit/' + gridData.id">Grid bearbeiten</a> um das Grid zu bearbeiten.</span>
         </div>
     </main>
+    <div id="grid-mask" v-if="!showGrid" class="grid-container">
+        <i class="fas fa-4x fa-spinner fa-spin"/>
+    </div>
     <main role="main" class="row content">
         <div id="grid-container" class="grid-container">
         </div>
