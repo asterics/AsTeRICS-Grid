@@ -10,7 +10,7 @@ class MetaData extends Model({
     inputConfig: InputConfig
 }) {
     constructor(properties, elementToCopy) {
-        properties = modelUtil.setDefaults(properties, elementToCopy, MetaData);
+        properties = modelUtil.setDefaults(properties, elementToCopy, MetaData) || {};
         super(properties);
         this.id = this.id || modelUtil.generateId('meta-data')
     }
