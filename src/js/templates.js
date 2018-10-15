@@ -22,7 +22,7 @@ templates.getGridItem = function (label, width, height, posX, posY, id, image) {
     var imgData = '';
     var imgId = '';
     var txtContainerStyle = '';
-    var imgContainerMargin = '3%';
+    var imgContainerMargin = '1%';
     if(image) {
         imgData = image.data;
         imgId = image.id;
