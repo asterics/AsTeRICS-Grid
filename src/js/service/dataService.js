@@ -1,5 +1,6 @@
 import PouchDB from 'PouchDB';
 import FileSaver from 'file-saver';
+import $ from 'jquery';
 
 import {L} from "../../lib/lquery.js";
 import {GridElement} from "../model/GridElement.js";
@@ -10,27 +11,10 @@ import {MetaData} from "../model/MetaData";
 import {modelUtil} from "../util/modelUtil";
 import {translateService} from "./translateService";
 
-var verbs = ['be', 'have', 'do', 'say', 'get', 'make', 'go', 'know', 'take', 'see', 'come', 'think', 'look', 'want', 'give', 'use', 'find', 'tell', 'ask', 'work', 'seem', 'feel', 'try', 'leave', 'call'];
 var dbName = 'asterics-ergo-grid';
 var db = null;
 var initPromise = null;
-
-function generateGridData() {
-    var grid = new GridData({
-        label: 'Default-Grid',
-        gridElements: []
-    });
-    for (var i = 0; i < 50; i++) {
-        var sizeX = L.getRandomInt(2, 2);
-        var sizeY = L.getRandomInt(1, 1);
-        grid.gridElements.push(new GridElement({
-            width: sizeX,
-            height: sizeY,
-            label: verbs[i % verbs.length]
-        }))
-    }
-    return grid;
-}
+var defaultGridSetPath = 'examples/example_grids.grd';
 
 function initPouchDB() {
     return new Promise(resolve => {
@@ -80,15 +64,26 @@ function init() {
             });
 
             getInternal(GridData, null, true).then(grids => {
-                if (grids) {
+                if (grids && grids.length > 0) {
                     log.debug('detected saved grid, no generation of new grid.');
                     resolve();
                     return;
+                } else {
+                    $.get(defaultGridSetPath, function (data) {
+                        log.debug('importing default grid set...');
+                        var gridsData = JSON.parse(data);
+                        var promises = [];
+                        gridsData.forEach(gridData => {
+                            gridData._id = null;
+                            gridData._rev = null;
+                            promises.push(saveInternal(GridData, gridData, false, true));
+                        });
+                        Promise.all(promises).then(() => {
+                            log.debug('imported default grid set!');
+                            resolve();
+                        })
+                    });
                 }
-                saveInternal(GridData, generateGridData(), false, true).then(() => {
-                    log.debug('generated and saved default grid...');
-                    resolve();
-                });
             });
         });
     }));
@@ -336,36 +331,43 @@ var dataService = {
             var reader = new FileReader();
             reader.onload = (function (theFile) {
                 return function (e) {
-                    var data = e.target.result;
-                    var gridData = JSON.parse(data);
-                    if(!(gridData instanceof Array)) {
-                        gridData = [gridData];
-                    }
-                    thiz.getGrids().then(grids => {
-                        var existingNames = grids.map(grid => grid.label);
-                        var existingIds = grids.map(grid => grid.id);
-                        var resolveFns = [];
-                        var failed = false;
-                        gridData.forEach(grid => {
-                            if (!failed) {
-                                if (existingIds.includes(grid.id)) {
-                                    alert(translateService.translate('ERROR_IMPORT_SAMEID', grid.label));
-                                    failed = true;
-                                    return;
-                                }
-                                grid.label = modelUtil.getNewName(grid.label, existingNames);
-                                grid._id = null;
-                                grid._rev = null;
-                                resolveFns.push(thiz.saveGrid(grid));
-                            }
-                        });
-                        Promise.all(resolveFns).then(() => {
-                            resolve();
-                        });
+                    var jsonString = e.target.result;
+                    dataService.importGridsFromJSON(jsonString).then(() => {
+                        resolve();
                     });
                 }
             })(file);
             reader.readAsText(file);
+        });
+    },
+    importGridsFromJSON(jsonString) {
+        return new Promise(resolve => {
+            var gridData = JSON.parse(jsonString);
+            if (!(gridData instanceof Array)) {
+                gridData = [gridData];
+            }
+            dataService.getGrids().then(grids => {
+                var existingNames = grids.map(grid => grid.label);
+                var existingIds = grids.map(grid => grid.id);
+                var resolveFns = [];
+                var failed = false;
+                gridData.forEach(grid => {
+                    if (!failed) {
+                        if (existingIds.includes(grid.id)) {
+                            alert(translateService.translate('ERROR_IMPORT_SAMEID', grid.label));
+                            failed = true;
+                            return;
+                        }
+                        grid.label = modelUtil.getNewName(grid.label, existingNames);
+                        grid._id = null;
+                        grid._rev = null;
+                        resolveFns.push(dataService.saveGrid(grid));
+                    }
+                });
+                Promise.all(resolveFns).then(() => {
+                    resolve();
+                });
+            });
         });
     },
     importDB: function (file) {
