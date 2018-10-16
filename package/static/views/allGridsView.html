@@ -14,7 +14,8 @@
                         <button @click="addGrid()"><i class="fas fa-plus"/> <span data-i18n="">New Grid // Neues Grid</span></button>
                     </div>
                     <div class="spaced inline" style="display: none">
-                        <input type="file" id="inputFile" size="200"  @change="importFromFile" accept=".grd"/>
+                        <input type="file" id="inputFile" @change="importFromFile" accept=".grd"/>
+                        <input type="file" id="inputFileBackup" @change="restoreBackupFromFile" accept=".grb"/>
                     </div>
                     <div class="spaced inline">
                         <button id="moreButton" title="More"><i class="fas fa-bars"></i> <span class="hide-mobile" data-i18n>More // Mehr</span></button>

@@ -4,6 +4,7 @@ import {Router} from "../router";
 import {modelUtil} from "../util/modelUtil";
 import Vue from 'vue';
 import {I18nModule} from "./../i18nModule.js";
+import {translateService} from "./../service/translateService";
 
 var AllGridsView = {};
 var vueApp = null;
@@ -47,22 +48,6 @@ function initVue(grids) {
                     this.reload();
                 });
             },
-            importFromFile: function (event) {
-                var importFile = event.target.files[0];
-                if(!importFile || !importFile.name) {
-                    return;
-                }
-
-                var fileExtension = importFile.name.substring(importFile.name.length-4);
-                if(fileExtension == '.grd') {
-                    dataService.importGridsFromFile(importFile).then(() => {
-                        this.reload();
-                        var $el = $(event.target); //reset file input
-                        $el.wrap('<form>').closest('form').get(0).reset();
-                        $el.unwrap();
-                    });
-                }
-            },
             finishEdit: function (id, label) {
                 dataService.updateGrid(id, {label: label});
                 this.editModeId = '';
@@ -96,6 +81,19 @@ function initVue(grids) {
                     dataService.downloadAllGrids();
                 }
             },
+            importFromFile: function (event) {
+                this.importFromFileInternal(event, '.grd', dataService.importGridsFromFile);
+            },
+            backupToFile() {
+                dataService.downloadDB();
+            },
+            restoreBackupFromFile: function (event) {
+                if(confirm(translateService.translate('CONFIRM_IMPORT_BACKUP', event.target.files[0].name))) {
+                    this.importFromFileInternal(event, '.grb', dataService.importDB);
+                } else {
+                    this.resetFileInput(event);
+                }
+            },
             reload: function () {
                 dataService.getGrids().then(grids => {
                     this.grids = JSON.parse(JSON.stringify(grids));
@@ -104,6 +102,25 @@ function initVue(grids) {
             reset: () => {
                 if(confirm('Do you really want to reset the database? All data will be deleted!'))
                 dataService.resetDB();
+            },
+            importFromFileInternal(event, extension, callFunction) {
+                var importFile = event.target.files[0];
+                if(!importFile || !importFile.name || !callFunction) {
+                    return;
+                }
+
+                var fileExtension = importFile.name.substring(importFile.name.length-4);
+                if(fileExtension == extension) {
+                    callFunction(importFile).then(() => {
+                        this.reload();
+                        this.resetFileInput(event);
+                    });
+                }
+            },
+            resetFileInput(event) {
+                var $el = $(event.target); //reset file input
+                $el.wrap('<form>').closest('form').get(0).reset();
+                $el.unwrap();
             }
         },
         computed: {
@@ -130,13 +147,28 @@ function initContextmenu() {
     var CONTEXT_NEW = "CONTEXT_NEW";
     var CONTEXT_EXPORT = "CONTEXT_EXPORT";
     var CONTEXT_IMPORT = "CONTEXT_IMPORT";
+    var CONTEXT_BACKUP = "CONTEXT_BACKUP";
+    var CONTEXT_BACKUP_RESTORE = "CONTEXT_BACKUP_RESTORE";
     var CONTEXT_RESET = "CONTEXT_RESET";
+
+    var itemsImportExport = {
+        CONTEXT_EXPORT: {name: "Export all grids to file // Alle Grids als Datei exportieren", icon: "fas fa-file-export"},
+        CONTEXT_IMPORT: {name: "Import grid(s) from file // Grid(s) aus Datei importieren", icon: "fas fa-file-import"},
+        SEP2: "---------",
+        CONTEXT_BACKUP: {name: "Backup complete configuration to file // Gesamte Konfiguration als Datei sichern", icon: "fas fa-download"},
+        CONTEXT_BACKUP_RESTORE: {name: "Restore backup from file // Sicherung von Datei wiederherstellen", icon: "fas fa-upload"},
+    };
 
     var itemsMoreMenu = {
         CONTEXT_NEW: {name: "New grid // Neues Grid", icon: "fas fa-plus"},
-        CONTEXT_IMPORT: {name: "Import grid(s) from file // Grid(s) aus Datei importieren", icon: "fas fa-file-upload"},
-        CONTEXT_EXPORT: {name: "Export all grids // Alle Grids exportieren", icon: "fas fa-hdd"},
-        CONTEXT_RESET: {name: "Reset database // Datenbank zurücksetzen", icon: "fas fa-minus-circle"},
+        SEP1: "---------",
+        CONTEXT_EXPORT: {name: "Export all grids to file // Alle Grids als Datei exportieren", icon: "fas fa-file-export"},
+        CONTEXT_IMPORT: {name: "Import grid(s) from file // Grid(s) aus Datei importieren", icon: "fas fa-file-import"},
+        SEP2: "---------",
+        CONTEXT_BACKUP: {name: "Backup complete configuration to file // Gesamte Konfiguration als Datei sichern", icon: "fas fa-download"},
+        CONTEXT_BACKUP_RESTORE: {name: "Restore backup from file // Sicherung von Datei wiederherstellen", icon: "fas fa-upload"},
+        //CONTEXT_SUB_IMPORT_EXPORT: {name: "Import / Export", icon: "fas fa-hdd", items: itemsImportExport},
+        //CONTEXT_RESET: {name: "Reset database // Datenbank zurücksetzen", icon: "fas fa-minus-circle"},
     };
 
     $.contextMenu({
@@ -160,6 +192,14 @@ function initContextmenu() {
             }
             case CONTEXT_EXPORT: {
                 vueApp.exportToFile();
+                break;
+            }
+            case CONTEXT_BACKUP: {
+                vueApp.backupToFile();
+                break;
+            }
+            case CONTEXT_BACKUP_RESTORE: {
+                document.getElementById('inputFileBackup').click();
                 break;
             }
             case CONTEXT_RESET: {
