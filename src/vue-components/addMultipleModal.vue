@@ -32,12 +32,14 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button class="u-pull-right" @click="save()" data-i18n="" :disabled="parsedElems.length == 0">
-                            Insert elements // Elemente einfügen
-                        </button>
-                        <button class="u-pull-right spaced" @click="$emit('close')" data-i18n>
-                            Cancel // Abbrechen
-                        </button>
+                        <div class="button-container">
+                            <button @click="$emit('close')">
+                                <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
+                            </button>
+                            <button  @click="save()">
+                                <i class="fas fa-check"/> <span data-i18n>Insert elements // Elemente einfügen</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

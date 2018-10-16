@@ -34,6 +34,19 @@
     overflow-x: hidden;
 }
 
+.modal-footer {
+    margin-top: 3em;
+}
+
+.modal-footer button {
+    width: 15em;
+    margin: 0.5em;
+}
+
+.modal-footer .button-container {
+    float: right;
+}
+
 .modal-header h3 {
     margin-top: 0;
     color: #42b983;
@@ -84,4 +97,16 @@
     float: right;
     padding: 1em;
     color: black;
+}
+
+/* Smaller than tablet */
+@media (max-width: 750px) {
+    .modal-footer button {
+        width: 100%;
+        margin: 0.5em;
+    }
+
+    .modal-footer .button-container {
+        float: none;
+    }
 }

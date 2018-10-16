@@ -78,12 +78,14 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button class="u-pull-right" @click="$emit('close')">
-                            OK
-                        </button>
-                        <button class="u-pull-right spaced" @click="cancel()" data-i18n>
-                            Cancel // Abbrechen
-                        </button>
+                        <div class="button-container">
+                            <button @click="cancel()">
+                                <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
+                            </button>
+                            <button  @click="$emit('close')">
+                                 <i class="fas fa-check"/> <span>OK</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
