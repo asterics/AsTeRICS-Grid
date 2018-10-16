@@ -1,4 +1,5 @@
 var fontUtil = {};
+var lastSize = '20px';
 
 /**
  * returns the optimal font size in px for a given grid element
@@ -14,9 +15,11 @@ fontUtil.getFontSizePx = function (elem) {
 
     var rectElem = elem[0].getBoundingClientRect();
     var areaElem = rectElem.height * rectElem.width / (imageId ? 2 : 1);
-    var fontSize = Math.floor(Math.sqrt(areaElem * 0.5 / Math.max(15, label.length)));
-
-    return Math.min(fontSize, rectElem.height / 2) + "px";
+    var fontSize1 = Math.floor(Math.sqrt(areaElem * 0.5 / Math.max(15, label.length)));
+    var longestWordLength = Math.max.apply(null, label.split(' ').map(elem => elem.length));
+    var fontSize2 = 1.4 * rectElem.width / longestWordLength;
+    lastSize = Math.min(fontSize1, fontSize2) + "px";
+    return lastSize;
 };
 
 /**
@@ -38,6 +41,13 @@ fontUtil.adaptFontSize = function (elems) {
  */
 fontUtil.adaptFontSizeForGridElements = function() {
     fontUtil.adaptFontSize($('#grid-container .item'));
+};
+
+/**
+ * returns the last calculated fontSize in px (e.g. "20px")
+ */
+fontUtil.getLastFontSize = function() {
+    return lastSize;
 };
 
 export {fontUtil};
