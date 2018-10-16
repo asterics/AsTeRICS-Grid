@@ -308,7 +308,7 @@ var dataService = {
 
         db.dump(stream).then(function () {
             var blob = new Blob([dumpedString], {type: "text/plain;charset=utf-8"});
-            FileSaver.saveAs(blob, "my-grids.grd");
+            FileSaver.saveAs(blob, "my-grids-backup.grb");
         }).catch(function (err) {
             log.error('error on dumping database: ', err);
         });
@@ -330,7 +330,7 @@ var dataService = {
         });
     },
     importGridsFromFile(file) {
-        var thiz = this;
+        var thiz = dataService;
         return new Promise((resolve, reject) => {
             var reader = new FileReader();
             reader.onload = (function (theFile) {
