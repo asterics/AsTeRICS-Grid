@@ -10,7 +10,7 @@
                     <button @click="back" title="Back"><i class="fas fa-angle-left"/> <span class="hide-mobile" data-i18n>Back // Zurück</span></button>
                 </div>
                 <div class="inline spaced third-space-mobile">
-                    <input type="text" placeholder="Search grid" v-model="searchText" style="width: 100%">
+                    <input type="text" :placeholder="'PLACEHOLDER_SEARCH_GRID' | translate" v-model="searchText" style="width: 100%">
                 </div>
                 <div class="inline spaced right-mobile">
                     <div class="inline hide-mobile">
@@ -34,7 +34,7 @@
                 <span class="four columns">Name</span>
                 <span class="four columns" data-i18n="">Actions // Aktionen</span><br/>
             </li>
-            <li v-for="grid in filteredGrids">
+            <li v-for="grid in filteredGrids" class="grid-table-elem">
                 <div class="row">
                     <div class="four columns">
                         <div v-if="editModeId !== grid.id">

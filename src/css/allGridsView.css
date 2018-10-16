@@ -40,4 +40,10 @@
         width: 30px;
         height: 30px;
     }
+
+    .grid-table-elem {
+        outline: 1px solid lightgray;
+        padding: 0.5em;
+        margin-right: 1em;
+    }
 }
