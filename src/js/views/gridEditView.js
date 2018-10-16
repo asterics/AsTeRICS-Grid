@@ -184,8 +184,8 @@ function initContextmenu() {
         'CONTEXT_NEW_MASS': itemsGlobal[CONTEXT_NEW_GROUP].items[CONTEXT_NEW_MASS],
         'CONTEXT_DELETE_ALL': {name: "Delete all elements // Alle Elemente löschen", icon: "fas fa-minus-circle"},
         SEP1: "---------",
-        'CONTEXT_LAYOUT_MOREROWS': {name: "Add row // Zeile hinzufügen", icon: "far fa-plus-square"},
-        'CONTEXT_LAYOUT_LESSROWS': {name: "Remove row // Zeile entfernen", icon: "far fa-minus-square"},
+        'CONTEXT_LAYOUT_MOREROWS': {name: "Add row to layout // Zeile in Layout hinzufügen", icon: "far fa-plus-square"},
+        'CONTEXT_LAYOUT_LESSROWS': {name: "Remove row from layout // Zeile in Layout entfernen", icon: "far fa-minus-square"},
         'CONTEXT_LAYOUT_COMPACT': {name: "Automatic layout // Automatisches Layout", icon: "fas fa-th"},
         'CONTEXT_LAYOUT_FILL': {name: "Fill gaps // Lücken füllen", icon: "fas fa-angle-double-left"}
     };
