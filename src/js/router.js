@@ -112,8 +112,10 @@ function toMainInternal() {
                 var ids = Object.keys(idsMap);
                 if(ids.includes(gridId)) {
                     GridView.init(gridId);
-                } else {
+                } else if(ids[0]) {
                     GridView.init(ids[0]);
+                } else {
+                    Router.toManageGrids();
                 }
             });
         });
