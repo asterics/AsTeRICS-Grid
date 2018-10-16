@@ -24,7 +24,8 @@ function initVue(grids) {
             grids: JSON.parse(JSON.stringify(grids)), //hack because otherwise vueJS databinding sometimes does not work
             searchText: '',
             editModeId: '',
-            originalLabel: ''
+            originalLabel: '',
+            showLoading: true,
         },
         methods: {
             deleteGrid: function (id, label) {
@@ -99,9 +100,11 @@ function initVue(grids) {
                     this.grids = JSON.parse(JSON.stringify(grids));
                 });
             },
-            reset: () => {
-                if(confirm(translateService.translate('CONFIRM_RESET_DB')))
-                dataService.resetDB();
+            reset() {
+                if(confirm(translateService.translate('CONFIRM_RESET_DB'))) {
+                    this.showLoading = true;
+                    dataService.resetDB();
+                }
             },
             importFromFileInternal(event, extension, callFunction) {
                 var importFile = event.target.files[0];
@@ -133,6 +136,7 @@ function initVue(grids) {
         mounted: function () {
             initContextmenu();
             I18nModule.init();
+            this.showLoading = false;
         }
     })
 }

@@ -1,4 +1,7 @@
-<div id="app" v-cloak class="all-grids-view">
+<div id="app" class="all-grids-view">
+    <div id="grid-mask" v-if="showLoading" class="grid-container">
+        <i class="fas fa-4x fa-spinner fa-spin"/>
+    </div>
     <header class="row header" role="banner">
         <div id="menuHeader" class="menuHeader">
             <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
