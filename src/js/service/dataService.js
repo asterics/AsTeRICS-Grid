@@ -8,6 +8,7 @@ import {GridImage} from "../model/GridImage";
 import {InputConfig} from "../model/InputConfig";
 import {MetaData} from "../model/MetaData";
 import {modelUtil} from "../util/modelUtil";
+import {translateService} from "./translateService";
 
 var verbs = ['be', 'have', 'do', 'say', 'get', 'make', 'go', 'know', 'take', 'see', 'come', 'think', 'look', 'want', 'give', 'use', 'find', 'tell', 'ask', 'work', 'seem', 'feel', 'try', 'leave', 'call'];
 var dbName = 'asterics-ergo-grid';
@@ -348,7 +349,7 @@ var dataService = {
                         gridData.forEach(grid => {
                             if (!failed) {
                                 if (existingIds.includes(grid.id)) {
-                                    alert('Grid "' + grid.label + '" cannot be imported because it has the same ID as an already existing grid! Maybe this file was already imported?!');
+                                    alert(translateService.translate('ERROR_IMPORT_SAMEID', grid.label));
                                     failed = true;
                                     return;
                                 }

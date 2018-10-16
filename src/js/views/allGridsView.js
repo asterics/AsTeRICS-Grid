@@ -29,7 +29,7 @@ function initVue(grids) {
         methods: {
             deleteGrid: function (id, label) {
                 log.debug('delete: ' + id)
-                if (!confirm(`Do you really want to delete the grid "${label}"?`)) {
+                if (!confirm(translateService.translate('CONFIRM_DELETE_GRID', label))) {
                     return;
                 }
                 dataService.deleteGrid(id).then(() => {
@@ -100,7 +100,7 @@ function initVue(grids) {
                 });
             },
             reset: () => {
-                if(confirm('Do you really want to reset the database? All data will be deleted!'))
+                if(confirm(translateService.translate('CONFIRM_RESET_DB')))
                 dataService.resetDB();
             },
             importFromFileInternal(event, extension, callFunction) {

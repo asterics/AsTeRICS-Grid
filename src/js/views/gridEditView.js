@@ -5,6 +5,7 @@ import {dataService} from "../service/dataService";
 import {Router} from "./../router.js";
 import {I18nModule} from "./../i18nModule.js";
 import {MetaData} from "./../model/MetaData";
+import {translateService} from "../service/translateService";
 
 import EditGridModal from '../../vue-components/editGridModal.vue'
 import AddMultipleModal from '../../vue-components/addMultipleModal.vue'
@@ -105,7 +106,7 @@ function initVue() {
                 this.showMultipleModal = true;
             },
             clearElements() {
-                if(confirm('Do you really want to delete all elements of the current grid?')) {
+                if(confirm(translateService.translate('CONFIRM_DELETE_ALL_ELEMS'))) {
                     this.gridData.gridElements = [];
                     GridEditView.grid.updateGridWithUndo(this.gridData);
                 }
