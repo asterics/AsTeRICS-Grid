@@ -108,7 +108,14 @@ function toMainInternal() {
     dataService.getMetadata().then(metadata => {
         var gridId = metadata ? metadata.lastOpenedGridId : null;
         loadView('gridView').then(() => {
-            GridView.init(gridId);
+            dataService.getGridsAttribute('id').then(idsMap => {
+                var ids = Object.keys(idsMap);
+                if(ids.includes(gridId)) {
+                    GridView.init(gridId);
+                } else {
+                    GridView.init(ids[0]);
+                }
+            });
         });
     });
 }
