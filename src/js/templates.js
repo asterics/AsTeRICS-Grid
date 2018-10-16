@@ -20,8 +20,9 @@ templates.getGridItem = function (gridElem) {
     var label = gridElem.label || "";
     var imgData = '';
     var imgId = '';
-    var txtContainerStyle = '';
+    var txtContainerStyle = 'font-size:' + fontUtil.getLastFontSize() + ';';
     var imgContainerMargin = '1%';
+    var imgContainerMaxHeight = label ? '80%' : '100%';
     if(gridElem.image) {
         imgData = gridElem.image.data;
         imgId = gridElem.image.id;
@@ -33,7 +34,7 @@ templates.getGridItem = function (gridElem) {
     var template = `
 <li class="item" data-w="${width}" data-h="${height}" data-x="${posX}" data-y="${posY}" data-id="${id}" data-label="${label}" data-img-id="${imgId}">
     <div class="grid-item-content" id="${id}" data-id="${id}">
-        <div class="img-container" style="background-color: #777620; background: center no-repeat; background-size: contain; background-image: url('${imgData}'); margin: ${imgContainerMargin};"/>
+        <div class="img-container" style="background-color: #777620; background: center no-repeat; background-size: contain; background-image: url('${imgData}'); margin: ${imgContainerMargin}; max-height: ${imgContainerMaxHeight};"/>
         <div class="text-container break-word" style="${txtContainerStyle}"><span>${label}</span></div>
     </div>
 </li>`;
