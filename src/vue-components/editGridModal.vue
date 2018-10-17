@@ -37,18 +37,18 @@
 
                     <div class="modal-footer">
                         <div class="button-container" v-if="gridElement">
-                            <button @click="$emit('close')">
+                            <button @click="$emit('close')" title="Keyboard: [Esc]">
                                 <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
                             </button>
-                            <button @click="save()" :disabled="!gridElement.label && !imgDataPreview">
+                            <button @click="save()" :disabled="!gridElement.label && !imgDataPreview" title="Keyboard: [Enter]">
                                 <i class="fas fa-check"/> <span>OK</span>
                             </button>
                             <div class="hide-mobile" v-if="editElementId">
-                                <button @click="editNext(true)" :disabled="!gridElement.label && !imgDataPreview"><i class="fas fa-angle-double-left"/> <span data-i18n>OK, edit previous // OK, voriges bearbeiten</span></button>
-                                <button @click="editNext()" :disabled="!gridElement.label && !imgDataPreview"><span data-i18n>OK, edit next // OK, nächstes bearbeiten</span> <i class="fas fa-angle-double-right"/></button>
+                                <button @click="editNext(true)" :disabled="!gridElement.label && !imgDataPreview" title="Keyboard: [Ctrl + Left]"><i class="fas fa-angle-double-left"/> <span data-i18n>OK, edit previous // OK, voriges bearbeiten</span></button>
+                                <button @click="editNext()" :disabled="!gridElement.label && !imgDataPreview" title="Keyboard: [Ctrl + Right]"><span data-i18n>OK, edit next // OK, nächstes bearbeiten</span> <i class="fas fa-angle-double-right"/></button>
                             </div>
                             <div class="hide-mobile" v-if="!editElementId">
-                                <button @click="addNext()" :disabled="!gridElement.label && !imgDataPreview" style="float: right;"><i class="fas fa-plus"/> <span data-i18n>OK, add another // OK, weiteres Element</span></button>
+                                <button @click="addNext()" :disabled="!gridElement.label && !imgDataPreview" title="Keyboard: [Ctrl + Right]" style="float: right;"><i class="fas fa-plus"/> <span data-i18n>OK, add another // OK, weiteres Element</span></button>
                             </div>
                         </div>
                     </div>
