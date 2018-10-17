@@ -2,13 +2,13 @@
     <div class="modal">
         <div class="modal-mask">
             <div class="modal-wrapper">
-                <div class="modal-container">
+                <div class="modal-container" @keyup.27="$emit('close')" @keyup.enter="save()" @keyup.ctrl.right="nextFromKeyboard()" @keyup.ctrl.left="editNext(true)">
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                     <div class="modal-header">
-                        <h1 v-if="editElementId" name="header" data-i18n>
+                        <h1 v-if="editElementId" name="header" class="inline" data-i18n>
                             Edit grid item // Grid-Element bearbeiten
                         </h1>
-                        <h1 v-if="!editElementId" name="header" data-i18n>
+                        <h1 v-if="!editElementId" name="header" class="inline" data-i18n>
                             New grid item // Neues Grid-Element
                         </h1>
                     </div>
@@ -16,7 +16,7 @@
                     <div class="modal-body container">
                         <div class="row">
                             <label class="two columns" for="inputLabel">Label</label>
-                            <input type="text" class="ten columns" id="inputLabel" v-if="gridElement" v-model="gridElement.label"/>
+                            <input type="text" class="ten columns" id="inputLabel" v-focus v-if="gridElement" v-model="gridElement.label"/>
                         </div>
                         <div class="row">
                             <label for="inputImg" class="two columns" data-i18n>Image // Bild</label>
@@ -36,13 +36,20 @@
                     </div>
 
                     <div class="modal-footer">
-                        <div class="button-container">
+                        <div class="button-container" v-if="gridElement">
                             <button @click="$emit('close')">
                                 <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
                             </button>
-                            <button  @click="save()">
+                            <button @click="save()" :disabled="!gridElement.label && !imgDataPreview">
                                 <i class="fas fa-check"/> <span>OK</span>
                             </button>
+                            <div class="hide-mobile" v-if="editElementId">
+                                <button @click="editNext(true)" :disabled="!gridElement.label && !imgDataPreview"><i class="fas fa-angle-double-left"/> <span data-i18n>OK, edit previous // OK, voriges bearbeiten</span></button>
+                                <button @click="editNext()" :disabled="!gridElement.label && !imgDataPreview"><span data-i18n>OK, edit next // OK, nächstes bearbeiten</span> <i class="fas fa-angle-double-right"/></button>
+                            </div>
+                            <div class="hide-mobile" v-if="!editElementId">
+                                <button @click="addNext()" :disabled="!gridElement.label && !imgDataPreview" style="float: right;"><i class="fas fa-plus"/> <span data-i18n>OK, add another // OK, weiteres Element</span></button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -61,7 +68,7 @@
     import {GridData} from "../js/model/GridData";
 
     export default {
-        props: ['editElementId', 'gridData'],
+        props: ['editElementIdParam', 'gridData'],
         data: function () {
             return {
                 gridElement: null,
@@ -71,7 +78,8 @@
                 imgDataSmall: null,
                 imgDataBig: null,
                 imgDataPreview: null,
-                elementW: null
+                elementW: null,
+                editElementId: null
             }
         },
         methods: {
@@ -89,62 +97,126 @@
                 this.imgDataPreview = this.imgDataSmall = this.imgDataBig = null;
             },
             save () {
-                var thiz = this;
-                if(thiz.imgDataBig) {
-                    var imgToSave = new GridImage({data: thiz.imgDataBig});
-                    var imgHash = imageUtil.hashCode(thiz.imgDataBig);
-                    if(thiz.metadata && thiz.metadata.imageHashCodes && thiz.metadata.imageHashCodes[imgHash]) {
-                        imgToSave.id = thiz.metadata.imageHashCodes[imgHash];
-                    } else {
-                        dataService.saveImage(imgToSave);
-                        thiz.metadata.imageHashCodes[imgHash] = imgToSave.id;
-                        dataService.saveMetadata(thiz.metadata);
-                    }
-                    thiz.gridElement.image = new GridImage({id: imgToSave.id, data: thiz.imgDataSmall});
-                } else if(!thiz.imgDataPreview) {
-                    thiz.gridElement.image = null;
-                }
-
-                if(thiz.gridElement && thiz.originalGridElementJSON != JSON.stringify(thiz.gridElement)) {
-                    dataService.updateOrAddGridElement(thiz.gridData.id, thiz.gridElement).then(() => {
-                        this.$emit('reload', thiz.gridElement);
+                if(!this.gridElement.label && !this.imgDataPreview) return;
+                this.saveInternal().then(savedSomething => {
+                    if(savedSomething) {
+                        this.$emit('reload');
                         this.$emit('close');
+                    } else {
+                        this.$emit('close');
+                    }
+                });
+            },
+            addNext() {
+                var thiz = this;
+                if(!thiz.gridElement.label && !thiz.imgDataPreview) return;
+
+                thiz.saveInternal().then(() => {
+                    thiz.$emit('reload');
+                    thiz.initInternal();
+                    $('#inputLabel').focus();
+                });
+            },
+            editNext(invertDirection) {
+                var thiz = this;
+                if(!thiz.editElementId || (!thiz.gridElement.label && !thiz.imgDataPreview)) return;
+
+                thiz.saveInternal().then(savedSomething => {
+                    if(savedSomething) {
+                        thiz.$emit('reload');
+                    }
+                    var ids = thiz.gridData.gridElements.map(el => el.id);
+                    var index = ids.indexOf(thiz.editElementId);
+                    if(index !== -1) {
+                        var increment = invertDirection ? -1 : 1;
+                        var newIndex = index + increment;
+                        newIndex = (newIndex > ids.length - 1) ? 0 : newIndex;
+                        newIndex = (newIndex < 0) ? ids.length - 1 : newIndex;
+                        thiz.editElementId = ids[newIndex]
+                    } else {
+                        thiz.editElementId = ids[0];
+                    }
+                    thiz.initInternal();
+                    $('#inputLabel').focus();
+                });
+            },
+            nextFromKeyboard() {
+                if(this.editElementId) {
+                    this.editNext();
+                } else {
+                    this.addNext();
+                }
+            },
+            saveInternal() {
+                var thiz = this;
+                return new Promise(resolve => {
+                    if(thiz.imgDataBig) {
+                        var imgToSave = new GridImage({data: thiz.imgDataBig});
+                        var imgHash = imageUtil.hashCode(thiz.imgDataBig);
+                        if(thiz.metadata && thiz.metadata.imageHashCodes && thiz.metadata.imageHashCodes[imgHash]) {
+                            imgToSave.id = thiz.metadata.imageHashCodes[imgHash];
+                        } else {
+                            dataService.saveImage(imgToSave);
+                            thiz.metadata.imageHashCodes[imgHash] = imgToSave.id;
+                            dataService.saveMetadata(thiz.metadata);
+                        }
+                        thiz.gridElement.image = new GridImage({id: imgToSave.id, data: thiz.imgDataSmall});
+                    } else if(!thiz.imgDataPreview) {
+                        thiz.gridElement.image = null;
+                    }
+
+                    if(thiz.gridElement && thiz.originalGridElementJSON != JSON.stringify(thiz.gridElement)) {
+                        dataService.updateOrAddGridElement(thiz.gridData.id, thiz.gridElement).then(() => {
+                            resolve(true);
+                        });
+                    } else {
+                        resolve(false);
+                    }
+                });
+            },
+            initInternal() {
+                var thiz = this;
+                thiz.resetInternal();
+                if(thiz.editElementId) {
+                    dataService.getGridElement(thiz.gridData.id, this.editElementId).then(gridElem => {
+                        log.debug('editing element: ' + gridElem.label);
+                        thiz.gridElement = JSON.parse(JSON.stringify(gridElem));
+                        if(gridElem.image) {
+                            imageUtil.convertBase64(gridElem.image.data).then(response => {
+                                thiz.imgDataPreview = response;
+                            });
+                        }
+                        thiz.elementW = $('#' + this.gridElement.id)[0].getBoundingClientRect().width;
+                        thiz.originalGridElementJSON = JSON.stringify(gridElem);
                     });
                 } else {
-                    this.$emit('close');
+                    dataService.getGrid(thiz.gridData.id).then(gridDataCurrent => {
+                        var newXYPos = gridDataCurrent.getNewXYPos();
+                        log.debug('creating element: x ' + newXYPos.x + ' / y ' + newXYPos.y);
+                        thiz.gridElement = JSON.parse(JSON.stringify(new GridElement({
+                            x: newXYPos.x,
+                            y: newXYPos.y
+                        })));
+                        var oneElemHeight = Math.round($('#grid-container')[0].getBoundingClientRect().height /gridDataCurrent.rowCount);
+                        thiz.elementW = 2 * oneElemHeight;
+                        thiz.originalGridElementJSON = JSON.stringify(thiz.gridElement);
+                    });
                 }
+
+                dataService.getMetadata().then(metadata => {
+                    thiz.metadata = metadata;
+                });
+            },
+            resetInternal() {
+                this.gridElement = this.metadata = this.originalGridElementJSON = this.imgDataFull = this.imgDataSmall = this.imgDataBig = this.imgDataPreview = this.elementW = null;
             }
         },
         mounted () {
-            var thiz = this;
+            this.editElementId = this.editElementIdParam;
+            this.initInternal();
+        },
+        updated() {
             I18nModule.init();
-            if(thiz.editElementId) {
-                dataService.getGridElement(thiz.gridData.id, this.editElementId).then(gridElem => {
-                    log.debug('editing element: ' + gridElem.label);
-                    thiz.gridElement = gridElem;
-                    if(gridElem.image) {
-                        imageUtil.convertBase64(gridElem.image.data).then(response => {
-                            thiz.imgDataPreview = response;
-                        });
-                    }
-                    thiz.elementW = $('#' + this.gridElement.id)[0].getBoundingClientRect().width;
-                    thiz.originalGridElementJSON = JSON.stringify(gridElem);
-                });
-            } else {
-                var newXYPos = new GridData(thiz.gridData).getNewXYPos();
-                log.debug('creating element: x ' + newXYPos.x + ' / y ' + newXYPos.y);
-                thiz.gridElement = new GridElement({
-                    x: newXYPos.x,
-                    y: newXYPos.y
-                });
-                var oneElemHeight = Math.round($('#grid-container')[0].getBoundingClientRect().height / thiz.gridData.rowCount);
-                thiz.elementW = 2 * oneElemHeight;
-                thiz.originalGridElementJSON = JSON.stringify(thiz.gridElement);
-            }
-
-            dataService.getMetadata().then(metadata => {
-                thiz.metadata = metadata;
-            });
         }
     }
 </script>

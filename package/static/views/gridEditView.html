@@ -26,7 +26,7 @@
         </div>
     </div>
     <div>
-        <edit-grid-modal v-if="showEditModal" v-bind:edit-element-id="editElementId" v-bind:grid-data="gridData" @close="showEditModal = false" @reload="reload"/>
+        <edit-grid-modal v-if="showEditModal" v-bind:edit-element-id-param="editElementId" v-bind:grid-data="gridData" @close="showEditModal = false" @reload="reload"/>
     </div>
     <div>
         <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" @close="showMultipleModal = false" @reload="reload"/>
