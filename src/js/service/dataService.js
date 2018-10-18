@@ -64,13 +64,13 @@ function init() {
             });
 
             getInternal(GridData, null, true).then(grids => {
-                if (grids && grids.length > 0) {
+                if (grids) {
                     log.debug('detected saved grid, no generation of new grid.');
                     resolve();
                     return;
                 } else {
                     $.get(defaultGridSetPath, function (data) {
-                        log.debug('importing default grid set...');
+                        log.info('importing default grid set...');
                         var gridsData = JSON.parse(data);
                         var promises = [];
                         gridsData.forEach(gridData => {
