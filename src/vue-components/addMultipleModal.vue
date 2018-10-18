@@ -2,7 +2,7 @@
     <div class="modal">
         <div class="modal-mask">
             <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="$emit('close')">
+                <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                     <div class="modal-header">
                         <h1 name="header" data-i18n>
@@ -33,10 +33,10 @@
 
                     <div class="modal-footer">
                         <div class="button-container">
-                            <button @click="$emit('close')">
+                            <button @click="$emit('close')" title="Keyboard: [Esc]">
                                 <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
                             </button>
-                            <button  @click="save()">
+                            <button @click="save()" title="Keyboard: [Ctrl + Enter]" :disabled="parsedElems.length == 0">
                                 <i class="fas fa-check"/> <span data-i18n>Insert elements // Elemente einfügen</span>
                             </button>
                         </div>
@@ -70,25 +70,23 @@
             },
             save () {
                 var thiz = this;
-                if(this.parsedElems.length > 0) {
-                    var newElems = [];
-                    var gridDataObject = new GridData(this.gridData);
-                    this.parsedElems.forEach(label => {
-                        var newElem = new GridElement({
-                            label: label,
-                            x: gridDataObject.getNewXYPos().x,
-                            y: gridDataObject.getNewXYPos().y,
-                        });
-                        gridDataObject.gridElements.push(newElem);
-                        newElems.push(newElem);
+                if(thiz.parsedElems.length == 0) return;
+
+                var newElems = [];
+                var gridDataObject = new GridData(this.gridData);
+                this.parsedElems.forEach(label => {
+                    var newElem = new GridElement({
+                        label: label,
+                        x: gridDataObject.getNewXYPos().x,
+                        y: gridDataObject.getNewXYPos().y,
                     });
-                    dataService.addGridElements(thiz.gridData.id, newElems).then(() => {
-                        this.$emit('reload');
-                        this.$emit('close');
-                    });
-                } else {
+                    gridDataObject.gridElements.push(newElem);
+                    newElems.push(newElem);
+                });
+                dataService.addGridElements(thiz.gridData.id, newElems).then(() => {
+                    this.$emit('reload');
                     this.$emit('close');
-                }
+                });
             }
         },
         mounted () {

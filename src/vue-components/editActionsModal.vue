@@ -2,7 +2,7 @@
     <div class="modal">
         <div class="modal-mask">
             <div class="modal-wrapper">
-                <div class="modal-container" v-if="gridElement">
+                <div class="modal-container" v-if="gridElement" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                     <div class="modal-header">
                         <h1 name="header">
@@ -13,7 +13,7 @@
                     <div class="modal-body container">
                         <div class="row">
                             <label class="three columns" data-i18n="">New Action // Neue Aktion</label>
-                            <select class="four columns" v-model="selectedNewAction" style="margin-bottom: 0.5em">
+                            <select v-focus class="four columns" v-model="selectedNewAction" style="margin-bottom: 0.5em">
                                 <option v-for="type in actionTypes" :value="type.getModelName()">{{type.getModelName() | translate}}</option>
                             </select>
                             <button class="four columns" @click="addAction()"><i class="fas fa-plus"/> <span data-i18n="">Add action // Aktion hinzufügen</span></button>
@@ -107,10 +107,10 @@
 
                     <div class="modal-footer">
                         <div class="button-container">
-                            <button @click="$emit('close')">
+                            <button @click="$emit('close')" title="Keyboard: [Esc]">
                                 <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
                             </button>
-                            <button  @click="save()">
+                            <button  @click="save()" title="Keyboard: [Ctrl + Enter]">
                                 <i class="fas fa-check"/> <span>OK</span>
                             </button>
                         </div>

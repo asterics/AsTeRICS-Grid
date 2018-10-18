@@ -2,7 +2,7 @@
     <div class="modal">
         <div class="modal-mask">
             <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="$emit('close')" @keyup.enter="save()" @keyup.ctrl.right="nextFromKeyboard()" @keyup.ctrl.left="editNext(true)">
+                <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()" @keyup.ctrl.right="nextFromKeyboard()" @keyup.ctrl.left="editNext(true)">
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                     <div class="modal-header">
                         <h1 v-if="editElementId" name="header" class="inline" data-i18n>
@@ -40,7 +40,7 @@
                             <button @click="$emit('close')" title="Keyboard: [Esc]">
                                 <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
                             </button>
-                            <button @click="save()" :disabled="!gridElement.label && !imgDataPreview" title="Keyboard: [Enter]">
+                            <button @click="save()" :disabled="!gridElement.label && !imgDataPreview" title="Keyboard: [Ctrl + Enter]">
                                 <i class="fas fa-check"/> <span>OK</span>
                             </button>
                             <div class="hide-mobile" v-if="editElementId">

@@ -2,7 +2,7 @@
     <div class="modal">
         <div class="modal-mask">
             <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="cancel()" @keyup.enter="$emit('close')">
+                <div class="modal-container" @keyup.27="cancel()" @keyup.ctrl.enter="$emit('close')">
                     <a class="inline close-button" href="javascript:void(0);" @click="cancel()"><i class="fas fa-times"/></a>
                     <div class="modal-header">
                         <h1 name="header" data-i18n>
