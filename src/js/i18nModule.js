@@ -1,5 +1,3 @@
-import domI18n from '../../node_modules/dom-i18n/dist/dom-i18n.min';
-
 var I18nModule = {};
 
 I18nModule.init = function () {
