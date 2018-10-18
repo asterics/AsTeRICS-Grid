@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# 7d810f4cf2ea73f30e2b
+# 3cba7174b11924e1cb30
 
 CACHE:
 build/asterics-grid.bundle.js
@@ -24,6 +24,7 @@ css/jquery-ui.css
 css/images/ui-icons_444444_256x240.png
 css/skeleton.css
 img/asterics_icon.png
+lib/dom-i18n.min.js
 lib/gridList.js
 lib/jquery.contextMenu.min.js
 lib/jquery.gridList.js
@@ -31,6 +32,7 @@ lib/jquery.min.js
 lib/jquery.ui.position.min.js
 lib/jquery.ui.touchpunch.min.js
 lib/jquery-ui.min.js
+lib/loglevel.min.js
 lib/memorystream.js
 lib/object-model.min.js
 lib/pouchdb.load.min.js
