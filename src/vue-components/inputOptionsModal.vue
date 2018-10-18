@@ -2,7 +2,7 @@
     <div class="modal">
         <div class="modal-mask">
             <div class="modal-wrapper">
-                <div class="modal-container">
+                <div class="modal-container" @keyup.27="cancel()" @keyup.enter="$emit('close')">
                     <a class="inline close-button" href="javascript:void(0);" @click="cancel()"><i class="fas fa-times"/></a>
                     <div class="modal-header">
                         <h1 name="header" data-i18n>
@@ -16,7 +16,7 @@
                             <div class="ten columns">
                                     <div class="row" >
                                         <div class="twelve columns">
-                                            <input type="checkbox" id="enableScanning" v-model="metadata.inputConfig.scanAutostart" @change="toggleScanning"/>
+                                            <input v-focus type="checkbox" id="enableScanning" v-model="metadata.inputConfig.scanAutostart" @change="toggleScanning"/>
                                             <label class="inline" for="enableScanning" data-i18n>Enable Scanning // Scanning aktivieren</label>
                                         </div>
                                     </div>
@@ -82,7 +82,7 @@
                             <button @click="cancel()">
                                 <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
                             </button>
-                            <button  @click="$emit('close')">
+                            <button @click="$emit('close')">
                                  <i class="fas fa-check"/> <span>OK</span>
                             </button>
                         </div>
@@ -146,7 +146,6 @@
                     this.scanner.stopScanning();
                 }
                 dataService.saveMetadata(this.metadata);
-                log.warn(this.metadata.inputConfig.scanAutostart)
             },
             setVerticalScanning: function (event) {
                 this.updateScanningOptions({
