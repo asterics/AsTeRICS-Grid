@@ -5,7 +5,8 @@ var VueDirectives = {
     init: () => {
         Vue.directive('focus', {
             inserted: function (el) {
-                el.select()
+                if(el.focus) el.focus();
+                if(el.select) el.select();
             }
         });
         Vue.filter('translate', function (key) {
