@@ -1,4 +1,5 @@
 import {fontUtil} from "./util/fontUtil";
+import {GridElement} from "./model/GridElement";
 
 var templates = {};
 
@@ -12,6 +13,17 @@ templates.getGridBase = function (gridId) {
 
 
 templates.getGridItem = function (gridElem) {
+    switch(gridElem.type) {
+        case GridElement.ELEMENT_TYPE_COLLECT: {
+            return getGridElementCollect(gridElem);
+        }
+        default: {
+            return getGridElementNormal(gridElem);
+        }
+    }
+};
+
+function getGridElementNormal(gridElem) {
     var width = gridElem.width || 1;
     var height = gridElem.height || 1;
     var posX = gridElem.x || 0;
@@ -32,13 +44,30 @@ templates.getGridItem = function (gridElem) {
     }
 
     var template = `
-<li class="item" data-w="${width}" data-h="${height}" data-x="${posX}" data-y="${posY}" data-id="${id}" data-label="${label}" data-img-id="${imgId}">
+<li class="item" data-w="${width}" data-h="${height}" data-x="${posX}" data-y="${posY}" data-id="${id}" data-label="${label}" data-img-id="${imgId}" data-type"="${gridElem.type}">
     <div class="grid-item-content" id="${id}" data-id="${id}">
-        <div class="img-container" style="background-color: #777620; background: center no-repeat; background-size: contain; background-image: url('${imgData}'); margin: ${imgContainerMargin}; max-height: ${imgContainerMaxHeight};"/>
+        <div class="img-container" style="background: center no-repeat; background-size: contain; background-image: url('${imgData}'); margin: ${imgContainerMargin}; max-height: ${imgContainerMaxHeight};"/>
         <div class="text-container break-word" style="${txtContainerStyle}"><span>${label}</span></div>
     </div>
 </li>`;
     return template;
-};
+}
+
+function getGridElementCollect(gridElem) {
+    var width = gridElem.width || 1;
+    var height = gridElem.height || 1;
+    var posX = gridElem.x || 0;
+    var posY = gridElem.y || 0;
+    var id = gridElem.id;
+    var label = gridElem.label || "";
+
+    var template = `
+<li class="item" data-w="${width}" data-h="${height}" data-x="${posX}" data-y="${posY}" data-id="${id}" data-label="${label}" data-type"="${gridElem.type}">
+    <div class="grid-item-content" id="${id}" data-id="${id}">
+        <textarea style="height: 100%;resize: none;margin: 20px;">TEST</textarea>
+    </div>
+</li>`;
+    return template;
+}
 
 export {templates};
