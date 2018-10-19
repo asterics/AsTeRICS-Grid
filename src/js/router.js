@@ -65,7 +65,7 @@ Router.toMain = function () {
 
 Router.toGrid = function (id) {
     if(id) {
-        setHash('#grid/' + id);
+        setHash('#grid/' + id + "?date=" + new Date().getTime());
     }
 };
 
