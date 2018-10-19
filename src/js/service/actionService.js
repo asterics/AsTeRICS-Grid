@@ -1,5 +1,6 @@
 import {dataService} from "./dataService";
 import {Router} from "./../router";
+import {GridElement} from "./../model/GridElement";
 
 var _allVoices = null;
 var _voicesLangs = [];
@@ -19,8 +20,17 @@ var actionService = {};
 
 actionService.doAction = function (gridId, gridElementId) {
     dataService.getGridElement(gridId, gridElementId).then(gridElement => {
-        log.info('do actions for: ' + gridElement.label);
-        doActions(gridElement);
+        log.info('do actions for: ' + gridElement.label + ', ' + gridElementId);
+        switch(gridElement.type) {
+            case GridElement.ELEMENT_TYPE_COLLECT: {
+                var text = $(`#${gridElementId} textarea`)[0].value;
+                speak(text);
+                break;
+            }
+            default: {
+                doActions(gridElement);
+            }
+        }
     });
 };
 
