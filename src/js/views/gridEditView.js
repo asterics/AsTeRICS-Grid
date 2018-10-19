@@ -183,9 +183,7 @@ function initContextmenu() {
         CONTEXT_DELETE: {name: "Delete // Löschen", icon: "far fa-trash-alt"},
         CONTEXT_MORE_GROUP: {
             name: "More // Mehr", icon: "fas fa-bars", items: itemsMoreMenuItem
-        },
-        SEP1: "---------",
-        CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP]
+        }
     };
 
     var itemsMoreMenuButton = {
