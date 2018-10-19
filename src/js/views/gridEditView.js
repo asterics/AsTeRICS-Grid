@@ -11,6 +11,8 @@ import EditGridModal from '../../vue-components/editGridModal.vue'
 import AddMultipleModal from '../../vue-components/addMultipleModal.vue'
 import EditActionsModal from '../../vue-components/editActionsModal.vue'
 import {actionService} from "../service/actionService";
+import {GridElement} from "../model/GridElement";
+import {GridData} from "../model/GridData";
 
 var GridEditView = {};
 var vueApp = null;
@@ -95,9 +97,25 @@ function initVue() {
                 this.editElementId = elementId;
                 this.showEditModal = true;
             },
-            newElement() {
-                this.editElementId = null;
-                this.showEditModal = true;
+            newElement(type) {
+                switch(type) {
+                    case GridElement.ELEMENT_TYPE_COLLECT: {
+                        var newPos = new GridData(this.gridData).getNewXYPos();
+                        var newElement = new GridElement({
+                            type: GridElement.ELEMENT_TYPE_COLLECT,
+                            x: newPos.x,
+                            y: newPos.y
+                        });
+                        dataService.updateOrAddGridElement(GridEditView.gridData.id, newElement).then(() => {
+                            this.reload();
+                        });
+                        break;
+                    }
+                    default: {
+                        this.editElementId = null;
+                        this.showEditModal = true;
+                    }
+                }
             },
             editActions(elementId) {
                 this.editElementId = elementId;
@@ -157,6 +175,8 @@ function initContextmenu() {
     var CONTEXT_NEW_GROUP = "CONTEXT_NEW_GROUP";
     var CONTEXT_NEW_SINGLE = "CONTEXT_NEW_SINGLE";
     var CONTEXT_NEW_MASS = "CONTEXT_NEW_MASS";
+    var CONTEXT_NEW_COLLECT = "CONTEXT_NEW_COLLECT";
+    var CONTEXT_NEW_PREDICT = "CONTEXT_NEW_PREDICT";
 
     var CONTEXT_LAYOUT_COMPACT = "CONTEXT_LAYOUT_COMPACT";
     var CONTEXT_LAYOUT_FILL = "CONTEXT_LAYOUT_FILL";
@@ -167,7 +187,9 @@ function initContextmenu() {
         CONTEXT_NEW_GROUP: {
             name: "New // Neu", icon: "fas fa-plus-circle", items: {
                 'CONTEXT_NEW_SINGLE': {name: "New Element // Neues Element", icon: "fas fa-plus"},
-                'CONTEXT_NEW_MASS': {name: "Many new elements // Mehrere neue Elemente", icon: "fas fa-clone"}
+                'CONTEXT_NEW_MASS': {name: "Many new elements // Mehrere neue Elemente", icon: "fas fa-clone"},
+                'CONTEXT_NEW_COLLECT': {name: "New collect element // Neues Sammel-Element", icon: "far fa-comment-dots"},
+                'CONTEXT_NEW_PREDICT': {name: "New prediction element // Neues Vorhersage-Element", icon: "fas fa-magic"}
             }
         }
     };
@@ -187,8 +209,7 @@ function initContextmenu() {
     };
 
     var itemsMoreMenuButton = {
-        'CONTEXT_NEW_SINGLE': itemsGlobal[CONTEXT_NEW_GROUP].items[CONTEXT_NEW_SINGLE],
-        'CONTEXT_NEW_MASS': itemsGlobal[CONTEXT_NEW_GROUP].items[CONTEXT_NEW_MASS],
+        CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP],
         'CONTEXT_DELETE_ALL': {name: "Delete all elements // Alle Elemente löschen", icon: "fas fa-minus-circle"},
         SEP1: "---------",
         'CONTEXT_LAYOUT_MOREROWS': {name: "Add row to layout // Zeile in Layout hinzufügen", icon: "far fa-plus-square"},
@@ -253,6 +274,10 @@ function initContextmenu() {
             }
             case CONTEXT_NEW_MASS: {
                 vueApp.newElements();
+                break;
+            }
+            case CONTEXT_NEW_COLLECT: {
+                vueApp.newElement(GridElement.ELEMENT_TYPE_COLLECT);
                 break;
             }
             case CONTEXT_DELETE_ALL: {
