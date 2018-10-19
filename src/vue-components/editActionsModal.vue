@@ -129,6 +129,7 @@
 <script>
     import {dataService} from './../js/service/dataService'
     import {actionService} from './../js/service/actionService'
+    import {speechService} from './../js/service/speechService'
     import {I18nModule} from './../js/i18nModule.js';
     import {imageUtil} from './../js/util/imageUtil';
     import {GridActionNavigate} from "../js/model/GridActionNavigate";
@@ -145,7 +146,7 @@
                 selectedNewAction: GridElement.getActionTypes()[0].getModelName(),
                 gridLabels: null,
                 actionTypes: GridElement.getActionTypes(),
-                voiceLangs: actionService.getVoicesLangs(),
+                voiceLangs: speechService.getVoicesLangs(),
                 editElementId: null
             }
         },
