@@ -10,6 +10,7 @@ import {translateService} from "../service/translateService";
 import EditGridModal from '../../vue-components/editGridModal.vue'
 import AddMultipleModal from '../../vue-components/addMultipleModal.vue'
 import EditActionsModal from '../../vue-components/editActionsModal.vue'
+import {actionService} from "../service/actionService";
 
 var GridEditView = {};
 var vueApp = null;
@@ -148,6 +149,7 @@ function initContextmenu() {
 
     var CONTEXT_EDIT = "CONTEXT_EDIT";
     var CONTEXT_DUPLICATE = "CONTEXT_DUPLICATE";
+    var CONTEXT_DO_ACTION = "CONTEXT_DO_ACTION";
     var CONTEXT_ACTIONS = "CONTEXT_ACTIONS";
     var CONTEXT_DELETE = "CONTEXT_DELETE";
     var CONTEXT_DELETE_ALL = "CONTEXT_DELETE_ALL";
@@ -170,16 +172,23 @@ function initContextmenu() {
         }
     };
 
+    var itemsMoreMenuItem = {
+        CONTEXT_DUPLICATE: {name: "Duplicate // Klonen", icon: "far fa-clone"},
+        CONTEXT_DO_ACTION: {name: "Do element action // Aktion des Elements ausführen", icon: "fas fa-bolt"},
+    };
+
     var itemsElem = {
         CONTEXT_EDIT: {name: "Edit // Bearbeiten", icon: "fas fa-edit"},
-        CONTEXT_DUPLICATE: {name: "Duplicate // Klonen", icon: "far fa-clone"},
         CONTEXT_ACTIONS: {name: "Actions // Aktionen", icon: "fas fa-bolt"},
         CONTEXT_DELETE: {name: "Delete // Löschen", icon: "far fa-trash-alt"},
+        CONTEXT_MORE_GROUP: {
+            name: "More // Mehr", icon: "fas fa-bars", items: itemsMoreMenuItem
+        },
         SEP1: "---------",
         CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP]
     };
 
-    var itemsMoreMenu = {
+    var itemsMoreMenuButton = {
         'CONTEXT_NEW_SINGLE': itemsGlobal[CONTEXT_NEW_GROUP].items[CONTEXT_NEW_SINGLE],
         'CONTEXT_NEW_MASS': itemsGlobal[CONTEXT_NEW_GROUP].items[CONTEXT_NEW_MASS],
         'CONTEXT_DELETE_ALL': {name: "Delete all elements // Alle Elemente löschen", icon: "fas fa-minus-circle"},
@@ -213,7 +222,7 @@ function initContextmenu() {
             handleContextMenu(key);
         },
         trigger: 'left',
-        items: itemsMoreMenu
+        items: itemsMoreMenuButton
     });
 
     function handleContextMenu(key, elementId) {
@@ -224,6 +233,10 @@ function initContextmenu() {
             }
             case CONTEXT_DUPLICATE: {
                 GridEditView.grid.duplicateElement(elementId);
+                break;
+            }
+            case CONTEXT_DO_ACTION: {
+                actionService.doAction(GridEditView.gridData.id, elementId);
                 break;
             }
             case CONTEXT_ACTIONS: {
