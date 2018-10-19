@@ -87,6 +87,10 @@ Router.back = function () {
     }
 };
 
+Router.isOnEditPage = function () {
+    return window.location.hash.indexOf('#grid/edit') !== -1;
+};
+
 function setHash(hash, reset) {
     lastHash = reset ? null : location.hash;
     location.hash = hash;
