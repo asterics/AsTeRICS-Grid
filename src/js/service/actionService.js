@@ -1,18 +1,19 @@
 import {dataService} from "./dataService";
 import {speechService} from "./speechService";
+import {collectElementService} from "./collectElementService";
 import {Router} from "./../router";
 import {GridElement} from "./../model/GridElement";
+import {constants} from "../util/constants";
 
 var actionService = {};
-actionService.ELEMENT_EVENT_ID = "ELEMENT_EVENT_ID";
 
 actionService.doAction = function (gridId, gridElementId) {
     dataService.getGridElement(gridId, gridElementId).then(gridElement => {
         log.info('do actions for: ' + gridElement.label + ', ' + gridElementId);
+        $(window).trigger(constants.ELEMENT_EVENT_ID, [gridElement]);
         switch(gridElement.type) {
             case GridElement.ELEMENT_TYPE_COLLECT: {
-                var text = $(`#${gridElementId} textarea`)[0].value;
-                speechService.speak(text);
+                collectElementService.doAction(gridElement.id);
                 break;
             }
             default: {
