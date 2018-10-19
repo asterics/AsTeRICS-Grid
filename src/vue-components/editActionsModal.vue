@@ -1,19 +1,20 @@
 <template>
     <div class="modal">
-        <div class="modal-mask">
+        <div class="modal-mask" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()" @keyup.ctrl.right="editNext()" @keyup.ctrl.left="editNext(true)">
             <div class="modal-wrapper">
-                <div class="modal-container" v-if="gridElement" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
+                <div class="modal-container" v-if="gridElement">
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                     <div class="modal-header">
                         <h1 name="header">
                             <span data-i18n>Edit actions // Aktionen bearbeiten</span> <span>("{{gridElement.label}}")</span>
+                            <img class="spaced" v-if="gridElement.image" id="imgPreview" :src="gridElement.image.data" style="max-height: 1.5em; margin-bottom: -0.3em;"/>
                         </h1>
                     </div>
 
                     <div class="modal-body container">
                         <div class="row">
                             <label class="three columns" data-i18n="">New Action // Neue Aktion</label>
-                            <select v-focus class="four columns" v-model="selectedNewAction" style="margin-bottom: 0.5em">
+                            <select id="selectActionType" v-focus="" class="four columns" v-model="selectedNewAction" style="margin-bottom: 0.5em">
                                 <option v-for="type in actionTypes" :value="type.getModelName()">{{type.getModelName() | translate}}</option>
                             </select>
                             <button class="four columns" @click="addAction()"><i class="fas fa-plus"/> <span data-i18n="">Add action // Aktion hinzufügen</span></button>
@@ -113,6 +114,10 @@
                             <button  @click="save()" title="Keyboard: [Ctrl + Enter]">
                                 <i class="fas fa-check"/> <span>OK</span>
                             </button>
+                            <div class="hide-mobile">
+                                <button @click="editNext(true)" :disabled="false" title="Keyboard: [Ctrl + Left]"><i class="fas fa-angle-double-left"/> <span data-i18n>OK, edit previous // OK, voriges bearbeiten</span></button>
+                                <button @click="editNext()" :disabled="false" title="Keyboard: [Ctrl + Right]"><span data-i18n>OK, edit next // OK, nächstes bearbeiten</span> <i class="fas fa-angle-double-right"/></button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -132,7 +137,7 @@
     import {GridData} from "../js/model/GridData";
 
     export default {
-        props: ['editElementId', 'gridData'],
+        props: ['editElementIdParam', 'gridData'],
         data: function () {
             return {
                 gridElement: null,
@@ -141,6 +146,7 @@
                 gridLabels: null,
                 actionTypes: GridElement.getActionTypes(),
                 voiceLangs: actionService.getVoicesLangs(),
+                editElementId: null
             }
         },
         methods: {
@@ -170,16 +176,28 @@
                     this.$emit('close');
                 });
             },
+            editNext(invertDirection) {
+                var thiz = this;
+                dataService.updateOrAddGridElement(this.gridData.id, this.gridElement).then(() => {
+                    thiz.editElementId = new GridData(thiz.gridData).getNextElementId(thiz.editElementId, invertDirection);
+                    thiz.initInternal();
+                    $('#selectActionType').focus();
+                });
+            },
+            initInternal() {
+                var thiz = this;
+                dataService.getGridElement(thiz.gridData.id, this.editElementId).then(gridElem => {
+                    log.debug('editing actions for element: ' + gridElem.label);
+                    thiz.gridElement = JSON.parse(JSON.stringify(gridElem));
+                });
+                dataService.getGridsAttribute('label').then(map => {
+                    thiz.gridLabels = map;
+                })
+            }
         },
         mounted () {
-            var thiz = this;
-            dataService.getGridElement(thiz.gridData.id, this.editElementId).then(gridElem => {
-                log.debug('editing actions for element: ' + gridElem.label);
-                thiz.gridElement = JSON.parse(JSON.stringify(gridElem));
-            });
-            dataService.getGridsAttribute('label').then(map => {
-                thiz.gridLabels = map;
-            })
+            this.editElementId = this.editElementIdParam;
+            this.initInternal();
         },
         updated() {
             I18nModule.init();
