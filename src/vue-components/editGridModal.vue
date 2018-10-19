@@ -125,17 +125,7 @@
                     if(savedSomething) {
                         thiz.$emit('reload');
                     }
-                    var ids = thiz.gridData.gridElements.map(el => el.id);
-                    var index = ids.indexOf(thiz.editElementId);
-                    if(index !== -1) {
-                        var increment = invertDirection ? -1 : 1;
-                        var newIndex = index + increment;
-                        newIndex = (newIndex > ids.length - 1) ? 0 : newIndex;
-                        newIndex = (newIndex < 0) ? ids.length - 1 : newIndex;
-                        thiz.editElementId = ids[newIndex]
-                    } else {
-                        thiz.editElementId = ids[0];
-                    }
+                    thiz.editElementId = new GridData(thiz.gridData).getNextElementId(thiz.editElementId, invertDirection);
                     thiz.initInternal();
                     $('#inputLabel').focus();
                 });

@@ -69,6 +69,45 @@ class GridData extends Model({
         return JSON.stringify(comp1) == JSON.stringify(comp2);
     }
 
+    /**
+     * returns the next/previous elementId this grid contains, based on a given elementId
+     * @param elementId the given elementId
+     * @param invertDirection if false, the next id is returned, if true the previous id
+     * @return the next / previous elementId this grid contains, the given elementId if the grid has no elements
+     */
+    getNextElementId(elementId, invertDirection) {
+        if(!this.gridElements || this.gridElements.length == 0) {
+            return elementId;
+        }
+        if(this.gridElements.length == 1) {
+            return this.this.gridElements[0].id;
+        }
+
+        var sortedElements = JSON.parse(JSON.stringify(this.gridElements)).sort((a, b) => {
+            if(a.y != b.y) return a.y - b.y;
+            return a.x - b.x;
+        });
+        var ids = sortedElements.map(el => el.id);
+        var index = ids.indexOf(elementId);
+        if(index == -1) {
+            return ids[0];
+        }
+        var increment = invertDirection ? -1 : 1;
+        var newIndex = index + increment;
+        newIndex = (newIndex > ids.length - 1) ? 0 : newIndex;
+        newIndex = (newIndex < 0) ? ids.length - 1 : newIndex;
+        return ids[newIndex]
+    }
+
+    /**
+     * returns the previous elementId this grid contains, based on a given elementId
+     * @param elementId the given elementId
+     * @return the previous elementId this grid contains, null if there are no gridElements
+     */
+    getPreviousElementId(elementId) {
+        return this.getNextElementId(elementId, true);
+    }
+
     static fromJSON(jsonData) {
         var result = [];
         var data = modelUtil.getAsObject(jsonData);
