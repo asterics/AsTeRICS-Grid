@@ -13,7 +13,8 @@ class GridElement extends Model({
     y: [Number],
     label: [String],
     image: [GridImage],
-    actions: [Object]
+    actions: [Object],
+    type: String
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridElement);
@@ -49,11 +50,16 @@ class GridElement extends Model({
     }
 }
 
+GridElement.ELEMENT_TYPE_NORMAL = "ELEMENT_TYPE_NORMAL";
+GridElement.ELEMENT_TYPE_COLLECT = "ELEMENT_TYPE_COLLECT";
+GridElement.ELEMENT_TYPE_PREDICT = "ELEMENT_TYPE_PREDICT";
+
 GridElement.defaults({
     id: "", //will be replaced by constructor
     width: 2,
     height: 1,
-    actions: [new GridActionSpeak()]
+    actions: [new GridActionSpeak()],
+    type: GridElement.ELEMENT_TYPE_NORMAL
 });
 
 export {GridElement};
