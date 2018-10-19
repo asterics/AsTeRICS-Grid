@@ -29,7 +29,7 @@ function UndoService() {
     thiz.updateGrid = function (newGridData) {
         return new Promise((resolve) => {
             dataService.getGrid(newGridData.id).then(savedGrid => {
-                if (!newGridData.isEqual(savedGrid)) {
+                if (!savedGrid.isEqual(newGridData)) {
                     _undoGridDataStack.push(JSON.parse(JSON.stringify(savedGrid)));
                     _redoGridDataStack = [];
                     dataService.saveGrid(newGridData).then(() => {
