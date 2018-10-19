@@ -60,11 +60,12 @@ function getGridElementCollect(gridElem) {
     var posY = gridElem.y || 0;
     var id = gridElem.id;
     var label = gridElem.label || "";
+    var style = 'height: 100%;resize: none;margin: 20px; font-size:' + fontUtil.getLastFontSize() + ';';
 
     var template = `
 <li class="item" data-w="${width}" data-h="${height}" data-x="${posX}" data-y="${posY}" data-id="${id}" data-label="${label}" data-type"="${gridElem.type}">
     <div class="grid-item-content" id="${id}" data-id="${id}">
-        <textarea style="height: 100%;resize: none;margin: 20px;">TEST</textarea>
+        <textarea style="${style}"></textarea>
     </div>
 </li>`;
     return template;
