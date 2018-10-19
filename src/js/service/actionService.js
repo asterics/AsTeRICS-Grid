@@ -54,7 +54,11 @@ function doAction(gridElement, action) {
             break;
         case 'GridActionNavigate':
             log.debug('action navigate');
-            Router.toGrid(action.toGridId);
+            if(Router.isOnEditPage()) {
+                Router.toEditGrid(action.toGridId);
+            } else {
+                Router.toGrid(action.toGridId);
+            }
             break;
     }
 }
