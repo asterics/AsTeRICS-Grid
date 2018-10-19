@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import {dataService} from "./service/dataService";
+import {collectElementService} from "./service/collectElementService";
 import {UndoService} from "./service/undoService";
 import {GridData} from "./model/GridData";
 import {GridElement} from "./model/GridElement";
@@ -57,6 +58,7 @@ function Grid(gridContainerId, gridItemClass, options) {
     }
 
     function initGrid(gridDataParam) {
+        collectElementService.initWithElements(_gridData.gridElements);
         $(gridContainerId).empty();
         $(gridContainerId).append(templates.getGridBase(gridDataParam.id));
         _gridElement = $('#' + gridDataParam.id);
