@@ -81,7 +81,7 @@ function initVue() {
         methods: {
             hideHeaderFn(alsoIfHidden) {
                 var thiz = this;
-                if(!alsoIfHidden && !thiz.showHeader) return;
+                if((!alsoIfHidden && !thiz.showHeader) || !GridView.grid) return;
 
                 thiz.showHeader = false;
                 GridView.grid.autosize(100);
@@ -93,7 +93,7 @@ function initVue() {
             },
             showHeaderFn(alsoIfShown, hideTimeout) {
                 var thiz = this;
-                if(!alsoIfShown && thiz.showHeader) return;
+                if((!alsoIfShown && thiz.showHeader) || !GridView.grid) return;
 
                 thiz.showHeader = true;
                 GridView.grid.autosize(100);
