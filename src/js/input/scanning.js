@@ -65,7 +65,9 @@ function Scanner(itemSelector, scanActiveClass, options) {
             groups.push(group);
             remainingElements = remainingElements.filter(el => !group.includes(el));
         }
-        groups = refineGroups(groups);
+        if(scanBinary) {
+            groups = refineGroups(groups);
+        }
         groups.forEach(group => group.sort(sortFnOneGroup));
         return groups;
     }
@@ -351,7 +353,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
             } else if (L.flattenArray(_currentActiveScanElements).length > 1) {
                 scan(spitToSubarrays(L.flattenArray(_currentActiveScanElements)), true);
             } else if (_selectionListener) {
-                _selectionListener(_currentActiveScanElements[0]);
+                _selectionListener(L.flattenArray(_currentActiveScanElements)[0]);
                 thiz.restartScanning();
             }
         }
