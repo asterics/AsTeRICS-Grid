@@ -65,7 +65,7 @@ function getGridElementCollect(gridElem) {
     var template = `
 <li class="item" data-w="${width}" data-h="${height}" data-x="${posX}" data-y="${posY}" data-id="${id}" data-label="${label}" data-type"="${gridElem.type}">
     <div class="grid-item-content" id="${id}" data-id="${id}">
-        <textarea style="${style}"></textarea>
+        <textarea disabled style="${style}"></textarea>
     </div>
 </li>`;
     return template;
