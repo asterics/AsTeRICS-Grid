@@ -41,11 +41,11 @@
 }
 .grid li .grid-item-content, .grid-item-content-placeholder {
   position: absolute;
-  outline: 1px solid #bbb;
   top: 0;
   bottom: 10px;
   left: 10px;
   right: 0;
+  border-radius: 0.5em;
 }
 .grid li.ui-draggable-dragging {
   -webkit-transition: none;
