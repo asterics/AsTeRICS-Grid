@@ -48,6 +48,7 @@ Router.init = function (injectIdParam) {
         before: function (done, params) {
             GridView.destroy();
             GridEditView.destroy();
+            AllGridsView.destroy();
             done();
         },
         after: function (params) {
@@ -61,6 +62,12 @@ Router.init = function (injectIdParam) {
 
 Router.toMain = function () {
     setHash('#main');
+};
+
+Router.toLastOpenedGrid = function () {
+    dataService.getMetadata().then(metadata => {
+       Router.toGrid(metadata.lastOpenedGridId);
+    });
 };
 
 Router.toGrid = function (id) {
