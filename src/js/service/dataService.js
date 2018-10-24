@@ -15,10 +15,29 @@ var dbName = 'asterics-ergo-grid';
 var db = null;
 var initPromise = null;
 var defaultGridSetPath = 'examples/example_grids.grd';
+var _updateListeners = [];
 
 function initPouchDB() {
     return new Promise(resolve => {
         db = new PouchDB(dbName);
+        var remoteDbAddress = 'http://' + window.location.hostname + ':5984/testdb';
+        var remoteDB = new PouchDB(remoteDbAddress);
+        log.info('trying to sync pouchdb with: ' + remoteDbAddress);
+        db.sync(remoteDB, {
+            live: true,
+            retry: true
+        }).on('change', function (info) {
+            log.info('cpouchdb change:' + info.direction);
+            if(info.direction == 'pull') {
+                _updateListeners.forEach(listener => {
+                    listener();
+                })
+            }
+            log.warn(info);
+        }).on('error', function (err) {
+            log.warn('couchdb error');
+        });
+
         log.debug('create index');
         db.createIndex({
             index: {fields: ['modelName', 'id']}
@@ -280,14 +299,28 @@ var dataService = {
                     var id = existingMetadata instanceof Array ? existingMetadata[0].id : existingMetadata.id;
                     newMetadata.id = id;
                 }
-                saveInternal(MetaData, newMetadata).then(() => {
+                if(!existingMetadata.isEqual(newMetadata)) {
+                    saveInternal(MetaData, newMetadata).then(() => {
+                        resolve();
+                    });
+                } else {
                     resolve();
-                });
+                }
             });
         });
     },
     getMetadata: function () {
-        return getInternal(MetaData);
+        return new Promise(resolve => {
+            getInternal(MetaData).then(result => {
+                if(!result) {
+                    resolve(new MetaData());
+                } else if(result instanceof Array) {
+                    resolve(result[0]);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
     },
     saveImage: function (imgData) {
         return saveInternal(GridImage, imgData);
@@ -394,6 +427,13 @@ var dataService = {
         resetPouchDB().then(() => {
             window.location.reload();
         });
+    }
+    ,
+    registerUpdateListener: function (listener) {
+        _updateListeners.push(listener);
+    },
+    clearUpdateListeners() {
+        _updateListeners = [];
     }
 };
 
