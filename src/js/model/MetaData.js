@@ -15,6 +15,16 @@ class MetaData extends Model({
         this.id = this.id || modelUtil.generateId('meta-data')
     }
 
+    isEqual(otherMetadata) {
+        var comp1 = JSON.parse(JSON.stringify(otherMetadata));
+        var comp2 = JSON.parse(JSON.stringify(this));
+        delete comp1._rev;
+        delete comp2._rev;
+        delete comp1._id;
+        delete comp2._id;
+        return JSON.stringify(comp1) == JSON.stringify(comp2);
+    }
+
     static getModelName() {
         return "MetaData";
     }
