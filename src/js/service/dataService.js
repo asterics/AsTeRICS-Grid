@@ -29,11 +29,13 @@ function initPouchDB() {
         }).on('change', function (info) {
             log.info('cpouchdb change:' + info.direction);
             if(info.direction == 'pull') {
+                log.info('pouchdb pulling updates...');
                 _updateListeners.forEach(listener => {
                     listener();
                 })
+            } else {
+                log.info('pouchdb pushing updates...');
             }
-            log.warn(info);
         }).on('error', function (err) {
             log.warn('couchdb error');
         });
