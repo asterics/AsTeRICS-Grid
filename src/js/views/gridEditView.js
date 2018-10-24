@@ -37,6 +37,7 @@ GridEditView.init = function (gridId) {
 GridEditView.destroy = function () {
     GridEditView.grid = null;
     $.contextMenu('destroy');
+    dataService.clearUpdateListeners();
 };
 
 function initVue() {
@@ -142,6 +143,9 @@ function initVue() {
                         thiz.gridData = JSON.parse(JSON.stringify(data));
                     });
 
+                });
+                dataService.registerUpdateListener(function() {
+                    thiz.reload();
                 });
                 initContextmenu();
                 I18nModule.init();

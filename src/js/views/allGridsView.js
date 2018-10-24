@@ -17,6 +17,10 @@ AllGridsView.init = function () {
     });
 };
 
+AllGridsView.destroy = function () {
+    dataService.clearUpdateListeners();
+};
+
 function initVue(grids) {
     vueApp = new Vue({
         el: '#app',
@@ -29,7 +33,7 @@ function initVue(grids) {
         },
         methods: {
             deleteGrid: function (id, label) {
-                log.debug('delete: ' + id)
+                log.debug('delete: ' + id);
                 if (!confirm(translateService.translate('CONFIRM_DELETE_GRID', label))) {
                     return;
                 }
@@ -134,9 +138,13 @@ function initVue(grids) {
             },
         },
         mounted: function () {
+            var thiz = this;
             initContextmenu();
             I18nModule.init();
-            this.showLoading = false;
+            thiz.showLoading = false;
+            dataService.registerUpdateListener(function () {
+                thiz.reload();
+            });
         }
     })
 }

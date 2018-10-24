@@ -40,6 +40,7 @@ GridView.destroy = function () {
     stopInputMethods();
     clearTimeout(_headerHideTimeoutHandler);
     GridView.grid = null;
+    dataService.clearUpdateListeners();
     if(_inputEventHandler) {
         _inputEventHandler.stopListening();
         _inputEventHandler = null;
@@ -199,6 +200,9 @@ function initVue() {
                 } else {
                     this.hideHeaderFn(true);
                 }
+                dataService.registerUpdateListener(() => {
+                    Router.toLastOpenedGrid();
+                });
                 thiz.initInputMethods();
                 thiz.showGrid = true;
             });
