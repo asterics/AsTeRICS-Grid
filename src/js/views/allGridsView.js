@@ -180,7 +180,7 @@ function initContextmenu() {
         CONTEXT_BACKUP: {name: "Backup complete configuration to file // Gesamte Konfiguration als Datei sichern", icon: "fas fa-download"},
         CONTEXT_BACKUP_RESTORE: {name: "Restore backup from file // Sicherung von Datei wiederherstellen", icon: "fas fa-upload"},
         //CONTEXT_SUB_IMPORT_EXPORT: {name: "Import / Export", icon: "fas fa-hdd", items: itemsImportExport},
-        //CONTEXT_RESET: {name: "Reset database // Datenbank zurücksetzen", icon: "fas fa-minus-circle"},
+        CONTEXT_RESET: {name: "Reset database // Datenbank zurücksetzen", icon: "fas fa-minus-circle"},
     };
 
     $.contextMenu({
