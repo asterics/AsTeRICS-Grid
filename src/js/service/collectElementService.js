@@ -1,6 +1,7 @@
 import {GridElement} from "../model/GridElement";
 import {speechService} from "./speechService";
 import {constants} from "./../util/constants";
+import {translateService} from "./translateService";
 
 var collectElementService = {};
 
@@ -19,7 +20,7 @@ collectElementService.initWithElements = function (elements) {
 collectElementService.doAction = function (collectElemId) {
     var collectElem = getCollectElem(collectElemId);
     var collectedText = getText(collectElemId);
-    speechService.speak(collectedText);
+    speechService.speak(collectedText, translateService.getLang());
 };
 
 collectElementService.reset = function () {
