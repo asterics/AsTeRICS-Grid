@@ -14,7 +14,7 @@ import {translateService} from "./translateService";
 var dbName = 'asterics-ergo-grid';
 var db = null;
 var initPromise = null;
-var defaultGridSetPath = 'examples/example_grids.grd';
+var defaultGridSetPath = 'examples/example_grids_de.grd';
 var _updateListeners = [];
 
 function initPouchDB() {
