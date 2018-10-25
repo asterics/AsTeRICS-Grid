@@ -47,7 +47,7 @@ function getGridElementNormal(gridElem) {
 <li class="item" data-w="${width}" data-h="${height}" data-x="${posX}" data-y="${posY}" data-id="${id}" data-label="${label}" data-img-id="${imgId}" data-type"="${gridElem.type}">
     <div class="grid-item-content" id="${id}" data-id="${id}">
         <div class="img-container" style="background: center no-repeat; background-size: contain; background-image: url('${imgData}'); margin: ${imgContainerMargin}; max-height: ${imgContainerMaxHeight};"/>
-        <div class="text-container break-word" style="${txtContainerStyle}"><span>${label}</span></div>
+        <div class="text-container" style="${txtContainerStyle}"><span>${label}</span></div>
     </div>
 </li>`;
     return template;
