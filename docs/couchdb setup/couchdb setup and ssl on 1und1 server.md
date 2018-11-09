@@ -1,5 +1,6 @@
 # Introduction
 CouchDb is used in combination with PouchDb in order to save user configuration and default grids offline (pouchDb) and online in a auto-sync storage (couchDb).
+
 see: http://couchdb.apache.org/
 see: https://pouchdb.com/
 
@@ -30,7 +31,7 @@ We are using the subdomain couchdb.asterics-foundation.org. For configuration of
 
 ## SSL Configuration
 We are using the SSL certificate provided by 1 und 1 Ionos. To see/download/manage it:
-1) 1) go to: https://login.ionos.de/ and login
+1) go to: https://login.ionos.de/ and login
 2) Choose "Domains and SSL" -> "SSL Certificates" on the right side
 3) Choose "Cloud" product in combo on the right side and open the certificate for "*.asterics-foundation.org"
 4) Here you can renew/download the certificate which consists of 3 files:
