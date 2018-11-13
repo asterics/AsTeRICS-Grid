@@ -6,7 +6,7 @@ class MetaData extends Model({
     modelName: String,
     lastOpenedGridId: [String],
     headerPinned: [Boolean],
-    imageHashCodes: [Object], //object keys: image hashcodes, object values: image ids
+    hashCodes: [Object], //object keys: model names of hashed objects, object values: another object with keys = hashcodes, values = object ids
     inputConfig: InputConfig
 }) {
     constructor(properties, elementToCopy) {
@@ -34,7 +34,7 @@ MetaData.defaults({
     id: "", //will be replaced by constructor
     headerPinned: true,
     modelName: MetaData.getModelName(),
-    imageHashCodes: {},
+    hashCodes: {},
     inputConfig: new InputConfig()
 });
 
