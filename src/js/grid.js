@@ -383,6 +383,9 @@ function Grid(gridContainerId, gridItemClass, options) {
                     elem.y = item.y;
                     elem.height = item.h;
                     elem.width = item.w;
+                    if(elem.image && item.$element.attr('data-img')) {
+                        elem.image.data = item.$element.attr('data-img');
+                    }
                     newElems.push(elem);
                 });
                 savedGrid.gridElements = newElems;
