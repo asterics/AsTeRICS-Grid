@@ -56,4 +56,19 @@ modelUtil.setDefaults = function (propertyObject, baseObject, modelClass) {
     return propertyObject;
 };
 
+/**
+ * returns a simple hash code for a given modelItem. The id and revision is removed before hashing.
+ * @param modelItem
+ */
+modelUtil.hashCode = function (modelItem) {
+    modelItem = modelItem || {};
+    var plainObject = JSON.parse(JSON.stringify(modelItem));
+    delete plainObject._rev;
+    delete plainObject._id;
+    delete plainObject.id;
+    var str = JSON.stringify(plainObject);
+    return str.split('').reduce((prevHash, currVal) =>
+        (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);;
+};
+
 export {modelUtil};
