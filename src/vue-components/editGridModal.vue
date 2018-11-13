@@ -142,25 +142,23 @@
                 return new Promise(resolve => {
                     if(thiz.imgDataBig) {
                         var imgToSave = new GridImage({data: thiz.imgDataBig});
-                        var imgHash = imageUtil.hashCode(thiz.imgDataBig);
-                        if(thiz.metadata && thiz.metadata.imageHashCodes && thiz.metadata.imageHashCodes[imgHash]) {
-                            imgToSave.id = thiz.metadata.imageHashCodes[imgHash];
-                        } else {
-                            dataService.saveImage(imgToSave);
-                            thiz.metadata.imageHashCodes[imgHash] = imgToSave.id;
-                            dataService.saveMetadata(thiz.metadata);
-                        }
-                        thiz.gridElement.image = new GridImage({id: imgToSave.id, data: thiz.imgDataSmall});
+                        dataService.saveImage(imgToSave).then(savedId => {
+                            thiz.gridElement.image = new GridImage({id: savedId, data: thiz.imgDataSmall});
+                            saveInternalInternal();
+                        });
                     } else if(!thiz.imgDataPreview) {
                         thiz.gridElement.image = null;
+                        saveInternalInternal();
                     }
 
-                    if(thiz.gridElement && thiz.originalGridElementJSON != JSON.stringify(thiz.gridElement)) {
-                        dataService.updateOrAddGridElement(thiz.gridData.id, thiz.gridElement).then(() => {
-                            resolve(true);
-                        });
-                    } else {
-                        resolve(false);
+                    function saveInternalInternal() {
+                        if(thiz.gridElement && thiz.originalGridElementJSON != JSON.stringify(thiz.gridElement)) {
+                            dataService.updateOrAddGridElement(thiz.gridData.id, thiz.gridElement).then(() => {
+                                resolve(true);
+                            });
+                        } else {
+                            resolve(false);
+                        }
                     }
                 });
             },

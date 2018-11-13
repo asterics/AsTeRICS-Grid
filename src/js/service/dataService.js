@@ -2,11 +2,8 @@ import PouchDB from 'PouchDB';
 import FileSaver from 'file-saver';
 import $ from 'jquery';
 
-import {L} from "../../lib/lquery.js";
-import {GridElement} from "../model/GridElement.js";
 import {GridData} from "../model/GridData.js";
 import {GridImage} from "../model/GridImage";
-import {InputConfig} from "../model/InputConfig";
 import {MetaData} from "../model/MetaData";
 import {modelUtil} from "../util/modelUtil";
 import {translateService} from "./translateService";
@@ -102,7 +99,7 @@ function init() {
                         Promise.all(promises).then(() => {
                             log.debug('imported default grid set!');
                             resolve();
-                        })
+                        });
                     });
                 }
             });
@@ -197,6 +194,51 @@ function saveInternal(objectType, data, onlyUpdate, dontWaitOnInit) {
                     log.warn('no existing ' + objectType.getModelName() + ' found to update, aborting.');
                     reject();
                 }
+            });
+        });
+    });
+}
+
+/**
+ * saves an element that can potentially be used in several places, and has high data volume and therefore
+ * should only be saved once in the database (e.g. images, ARE Models).
+ * To achieve this the data of the element is hashed and the hashes are saved in the MetaData.hashes object. If another
+ * element produces the same hash it isn't saved a second time to the database, but the id of the existing element is
+ * returned and can be used as a reference to the element.
+ *
+ * @param objectType the objectType to save, e.g. GridImage
+ * @param data the data to be saved
+ * @return {Promise} the promise resolves either to the id of the data that was newly saved or to the id of the
+ * existing object in the database with the same hash
+ */
+function saveHashedItemInternal(objectType, data) {
+    var promises = [];
+    return new Promise((resolve, reject) => {
+        dataService.getMetadata().then(metadata => {
+            if(!metadata || ! metadata.hashCodes) {
+                log.warn('error: hashCodes or metadata do not exist');
+                reject();
+                return;
+            }
+            var hashMap = null;
+            if(metadata.hashCodes[objectType.getModelName()]) {
+                hashMap = metadata.hashCodes[objectType.getModelName()];
+            } else {
+                hashMap = {};
+                metadata.hashCodes[objectType.getModelName()] = hashMap;
+            }
+            var hash = modelUtil.hashCode(data);
+            if(hashMap[hash]) {
+                log.debug('saveHashedItemInternal: hash found, not saving new element');
+                data.id = hashMap[hash];
+            } else {
+                log.debug('saveHashedItemInternal: hash not found, saving new element');
+                hashMap[hash] = data.id;
+                promises.push(saveInternal(objectType, data));
+                promises.push(saveInternal(MetaData, metadata));
+            }
+            Promise.all(promises).then(() => {
+                resolve(data.id);
             });
         });
     });
@@ -324,8 +366,13 @@ var dataService = {
             });
         });
     },
+    /**
+     * saves the given imageData, if it was not already saved
+     * @param imgData
+     * @return {Promise} the id of the newly saved image data or an id of an existing image data with the same hash
+     */
     saveImage: function (imgData) {
-        return saveInternal(GridImage, imgData);
+        return saveHashedItemInternal(GridImage, imgData);
     },
     getImage: function (imgId) {
         return getInternal(GridImage, imgId);
