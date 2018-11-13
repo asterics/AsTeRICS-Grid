@@ -93,6 +93,25 @@ areService.uploadModelBase64 = function (modelInBase64, areURI) {
     });
 };
 
+areService.downloadDeployedModelBase64 = function(areURI) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "GET",
+            url: getBaseUri(areURI) + "runtime/model",
+            datatype: "text/xml",
+            crossDomain: true,
+            success:
+                function (data, textStatus, jqXHR) {
+                    resolve(window.btoa(jqXHR.responseText), textStatus);
+                },
+            error:
+                function (jqXHR, textStatus, errorThrown) {
+                    reject(errorThrown, jqXHR.responseText);
+                }
+        });
+    });
+};
+
 areService.startModel = function (areURI) {
     return new Promise((resolve, reject) => {
         $.ajax({
