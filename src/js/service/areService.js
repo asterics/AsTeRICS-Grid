@@ -27,13 +27,13 @@ areService.sendDataToInputPort = function (componentId, portId, value, areURI) {
     });
 };
 
-areService.triggerEvent = function (componentId, eventPortId, areURI) {
-    if (!componentId || !eventPortId) return;
+areService.triggerEvent = function (componentId, eventChannelId, areURI) {
+    if (!componentId || !eventChannelId) return;
 
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "PUT",
-            url: areService.getRestURL(areURI) + "runtime/model/components/" + encodeParam(componentId) + "/events/" + encodeParam(eventPortId),
+            url: areService.getRestURL(areURI) + "runtime/model/components/" + encodeParam(componentId) + "/events/" + encodeParam(eventChannelId),
             datatype: "text",
             crossDomain: true,
             success:
@@ -48,18 +48,16 @@ areService.triggerEvent = function (componentId, eventPortId, areURI) {
     });
 };
 
-areService.getComponentIds = function (componentId, eventPortId, areURI) {
-    if (!componentId || !eventPortId) return;
-
+areService.getRuntimeComponentIds = function(areURI) {
     return new Promise((resolve, reject) => {
         $.ajax({
-            type: "PUT",
-            url: areService.getRestURL(areURI) + "runtime/model/components/" + encodeParam(componentId) + "/events/" + encodeParam(eventPortId),
-            datatype: "text",
+            type: "GET",
+            url: areService.getRestURL(areURI) + "runtime/model/components/ids",
+            datatype: "application/json",
             crossDomain: true,
             success:
                 function (data, textStatus, jqXHR) {
-                    resolve(jqXHR.responseText, textStatus);
+                    resolve(JSON.parse(jqXHR.responseText), textStatus);
                 },
             error:
                 function (jqXHR, textStatus, errorThrown) {
