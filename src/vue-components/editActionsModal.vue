@@ -123,9 +123,9 @@
                                                 </div>
                                                 <div class="nine columns">
                                                     <span v-show="loading" data-i18n="">Loading Model from ARE... // Lade Modell von ARE...</span>
-                                                    <span v-show="!loading && action.areModel && !action.areModel.modelDataBase64" data-i18n="">Could not load Model from ARE! // Konnte Modell nicht von ARE laden!</span>
-                                                    <span v-if="!loading && action.areModel && action.areModel.modelDataBase64">
-                                                        <a href="javascript:void(0);" @click="downloadModelFile(action.areModel)">{{action.areModel.areModelName}}</a>
+                                                    <span v-show="!loading && additionalGridFiles[action.id] && !additionalGridFiles[action.id].dataBase64" data-i18n="">Could not load Model from ARE! // Konnte Modell nicht von ARE laden!</span>
+                                                    <span v-if="!loading && additionalGridFiles[action.id] && additionalGridFiles[action.id].dataBase64">
+                                                        <a href="javascript:void(0);" @click="downloadModelFile(additionalGridFiles[action.id])">{{additionalGridFiles[action.id].fileName}}</a>
                                                     </span>
                                                     <button @click="reloadAREModel(action)" class="inline spaced"><i class="fas fa-sync-alt"/> <span class="hide-mobile" data-i18n="">Update from ARE // Update von ARE</span></button>
                                                 </div>
@@ -220,7 +220,7 @@
     import './../css/modal.css';
     import {GridElement} from "../js/model/GridElement";
     import {GridData} from "../js/model/GridData";
-    import {AREModel} from "../js/model/AREModel";
+    import {AdditionalGridFile} from "../js/model/AdditionalGridFile";
 
     export default {
         props: ['editElementIdParam', 'gridData'],
@@ -233,19 +233,30 @@
                 actionTypes: GridElement.getActionTypes(),
                 voiceLangs: speechService.getVoicesLangs(),
                 editElementId: null,
-                loading: true,
+                loading: false,
                 areConnected: null,
                 areComponentIds: [],
                 areComponentPorts: [],
-                areComponentEventChannels: []
+                areComponentEventChannels: [],
+                additionalGridFiles: {} //map: key = action.id, value = AdditionalGridFile (ARE Model)
             }
         },
         methods: {
             deleteAction (action) {
+                delete this.additionalGridFiles[action.id];
                 this.gridElement.actions = this.gridElement.actions.filter(a => a.id != action.id);
             },
             editAction (action) {
-                this.editActionId = action.id;
+                var thiz = this;
+                thiz.editActionId = action.id;
+                if(action.modelName === GridActionARE.getModelName()) {
+                    if(!thiz.additionalGridFiles[action.id]) {
+                        thiz.additionalGridFiles[action.id] = new GridData(thiz.gridData).getAdditionalFile(action.areModelGridFileName);
+                    }
+                    areService.uploadModelBase64(thiz.additionalGridFiles[action.id].dataBase64, action.areURL).then(() => {
+                        thiz.reloadComponentIds(action);
+                    });
+                }
             },
             endEditAction () {
                 this.editActionId = null;
@@ -259,6 +270,8 @@
                 if(newAction.modelName == GridActionNavigate.getModelName()) {
                     newAction.toGridId = Object.keys(this.gridLabels)[0];
                 } else if(newAction.modelName == GridActionARE.getModelName()) {
+                    var newAreModelFile = new AdditionalGridFile();
+                    thiz.additionalGridFiles[newAction.id] = newAreModelFile;
                     newAction.areURL = areService.getRestURL();
                     thiz.reloadAREModel(newAction);
                 }
@@ -271,14 +284,19 @@
                 thiz.loading = true;
                 areService.downloadDeployedModelBase64(action.areURL).then(base64Model => {
                     areService.getModelName(action.areURL).then(modelName => {
-                        action.areModel.modelDataBase64 = base64Model;
-                        action.areModel.areModelName = modelName;
+                        thiz.additionalGridFiles[action.id].dataBase64 = base64Model;
+                        thiz.additionalGridFiles[action.id].fileName = modelName;
+                        action.areModelGridFileName = modelName;
                         thiz.loading = false;
                     });
                 }).catch(() => {
-                    action.areModel.modelDataBase64 = null;
+                    thiz.additionalGridFiles[action.id].dataBase64 = null;
                     thiz.loading = false;
                 });
+                thiz.reloadComponentIds(action);
+            },
+            reloadComponentIds(action) {
+                var thiz = this;
                 areService.getRuntimeComponentIds(action.areURL).then(ids => {
                     thiz.areComponentPorts = [];
                     thiz.areComponentEventChannels = [];
@@ -302,32 +320,40 @@
                 thiz.areComponentEventChannels = [];
                 if(newComponentId) {
                     areService.getComponentEventChannelIds(newComponentId, action.areURL).then(channelIds => {
-                        log.warn(channelIds);
                         thiz.areComponentEventChannels = channelIds;
                     });
                     areService.getComponentInputPortIds(newComponentId, action.areURL).then(inputPortIds => {
-                        log.warn(inputPortIds);
                         thiz.areComponentPorts = inputPortIds;
                     });
                 }
             },
-            downloadModelFile(areModel) {
-                var blob = new Blob([window.atob(areModel.modelDataBase64)], {type: "text/plain;charset=utf-8"});
-                var name = areModel.areModelName.indexOf('.acs') != -1 ? areModel.areModelName : areModel.areModelName + '.acs';
+            downloadModelFile(additionalGridFile) {
+                var blob = new Blob([window.atob(additionalGridFile.dataBase64)], {type: "text/plain;charset=utf-8"});
+                var name = additionalGridFile.fileName.indexOf('.acs') != -1 ? additionalGridFile.fileName : additionalGridFile.fileName + '.acs';
                 FileSaver.saveAs(blob, name);
             },
             save () {
                 var thiz = this;
-                dataService.updateOrAddGridElement(this.gridData.id, this.gridElement).then(() => {
+                thiz.saveInternal().then(() => {
                     thiz.$emit('close');
                 });
             },
             editNext(invertDirection) {
                 var thiz = this;
-                dataService.updateOrAddGridElement(this.gridData.id, this.gridElement).then(() => {
+                thiz.saveInternal().then(() => {
                     thiz.editElementId = new GridData(thiz.gridData).getNextElementId(thiz.editElementId, invertDirection);
                     thiz.initInternal();
                     $('#selectActionType').focus();
+                });
+            },
+            saveInternal() {
+                var thiz = this;
+                return new Promise(resolve => {
+                    dataService.updateOrAddGridElement(thiz.gridData.id, thiz.gridElement).then(() => {
+                        dataService.saveAdditionalGridFiles(thiz.gridData.id, Object.values(thiz.additionalGridFiles)).then(() => {
+                            resolve();
+                        });
+                    });
                 });
             },
             initInternal() {
