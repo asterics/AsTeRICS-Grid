@@ -11,7 +11,7 @@ areService.sendDataToInputPort = function (componentId, portId, value, areURI) {
             beforeSend: function (request) {
                 request.setRequestHeader("Content-Type", "text/plain");
             },
-            url: getBaseUri(areURI) + "runtime/model/components/" + encodeParam(componentId) + "/ports/" + encodeParam(portId) + "/data",
+            url: areService.getRestURL(areURI) + "runtime/model/components/" + encodeParam(componentId) + "/ports/" + encodeParam(portId) + "/data",
             datatype: "text",
             crossDomain: true,
             data: value,
@@ -33,7 +33,7 @@ areService.triggerEvent = function (componentId, eventPortId, areURI) {
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "PUT",
-            url: getBaseUri(areURI) + "runtime/model/components/" + encodeParam(componentId) + "/events/" + encodeParam(eventPortId),
+            url: areService.getRestURL(areURI) + "runtime/model/components/" + encodeParam(componentId) + "/events/" + encodeParam(eventPortId),
             datatype: "text",
             crossDomain: true,
             success:
@@ -54,7 +54,7 @@ areService.getComponentIds = function (componentId, eventPortId, areURI) {
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "PUT",
-            url: getBaseUri(areURI) + "runtime/model/components/" + encodeParam(componentId) + "/events/" + encodeParam(eventPortId),
+            url: areService.getRestURL(areURI) + "runtime/model/components/" + encodeParam(componentId) + "/events/" + encodeParam(eventPortId),
             datatype: "text",
             crossDomain: true,
             success:
@@ -76,7 +76,7 @@ areService.uploadModelBase64 = function (modelInBase64, areURI) {
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "PUT",
-            url: getBaseUri(areURI) + "runtime/model",
+            url: areService.getRestURL(areURI) + "runtime/model",
             contentType: "text/xml",									//content-type of the request
             data: modelInXML,
             datatype: "text",
@@ -93,11 +93,11 @@ areService.uploadModelBase64 = function (modelInBase64, areURI) {
     });
 };
 
-areService.downloadDeployedModelBase64 = function(areURI) {
+areService.downloadDeployedModelBase64 = function (areURI) {
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "GET",
-            url: getBaseUri(areURI) + "runtime/model",
+            url: areService.getRestURL(areURI) + "runtime/model",
             datatype: "text/xml",
             crossDomain: true,
             success:
@@ -116,7 +116,7 @@ areService.startModel = function (areURI) {
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "PUT",
-            url: getBaseUri(areURI) + "runtime/model/state/start",
+            url: areService.getRestURL(areURI) + "runtime/model/state/start",
             datatype: "text",
             crossDomain: true,
             success:
@@ -135,12 +135,18 @@ areService.getModelName = function (areURI) {
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "GET",
-            url: getBaseUri(areURI) + "runtime/model/name",
+            url: areService.getRestURL(areURI) + "runtime/model/name",
             datatype: "text",
             crossDomain: true,
             success:
                 function (data, textStatus, jqXHR) {
-                    resolve(jqXHR.responseText, textStatus);
+                    var name = jqXHR.responseText;
+                    name = name.substring(name.lastIndexOf('\\') + 1);
+                    name = name.substring(name.lastIndexOf('/') + 1);
+                    if(name.indexOf('.acs') != -1) {
+                        name = name.substring(0, name.indexOf('.acs') + 4);
+                    }
+                    resolve(name, textStatus);
                 },
             error:
                 function (jqXHR, textStatus, errorThrown) {
@@ -154,7 +160,7 @@ areService.getRuntimeComponentIds = function (areURI) {
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "GET",
-            url: getBaseUri(areURI) + "runtime/model/components/ids",
+            url: areService.getRestURL(areURI) + "runtime/model/components/ids",
             datatype: "application/json",
             crossDomain: true,
             success:
@@ -169,13 +175,13 @@ areService.getRuntimeComponentIds = function (areURI) {
     });
 };
 
-areService.getComponentInputPortIds = function(componentId, areURI) {
+areService.getComponentInputPortIds = function (componentId, areURI) {
     if (!componentId) return;
 
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "GET",
-            url: getBaseUri(areURI) + "runtime/model/components/" + encodeParam(componentId) + "/ports/input/ids",
+            url: areService.getRestURL(areURI) + "runtime/model/components/" + encodeParam(componentId) + "/ports/input/ids",
             datatype: "application/json",
             crossDomain: true,
             success:
@@ -190,13 +196,13 @@ areService.getComponentInputPortIds = function(componentId, areURI) {
     });
 };
 
-areService.getComponentEventChannelIds = function(componentId, areURI) {
+areService.getComponentEventChannelIds = function (componentId, areURI) {
     if (!componentId) return;
 
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "GET",
-            url: getBaseUri(areURI) + "runtime/model/components/" + encodeParam(componentId) + "/channels/event/ids",
+            url: areService.getRestURL(areURI) + "runtime/model/components/" + encodeParam(componentId) + "/channels/event/ids",
             datatype: "application/json",
             crossDomain: true,
             success:
@@ -219,7 +225,7 @@ areService.getComponentEventChannelIds = function(componentId, areURI) {
  * @param userUri
  * @return {*}
  */
-function getBaseUri(userUri) {
+areService.getRestURL = function (userUri) {
     if (!userUri) {
         userUri = "localhost";
     }
@@ -234,7 +240,7 @@ function getBaseUri(userUri) {
     }
 
     return parser.href;
-}
+};
 
 //encodes PathParametes
 function encodeParam(text) {
