@@ -1,14 +1,15 @@
 import {modelUtil} from "../util/modelUtil";
 import {GridElement} from "./GridElement";
+import {AdditionalGridFile} from "./AdditionalGridFile";
 import Model from "objectmodel"
-import {InputConfig} from "./InputConfig";
 
 class GridData extends Model({
     id: String,
     modelName: String,
     label: [String],
     rowCount: Number,
-    gridElements: Model.Array(GridElement)
+    gridElements: Model.Array(GridElement),
+    additionalFiles: [Model.Array(AdditionalGridFile)]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridData);
@@ -108,6 +109,11 @@ class GridData extends Model({
         return this.getNextElementId(elementId, true);
     }
 
+    getAdditionalFile(fileName) {
+        var filteredFiles = this.additionalFiles.filter(f => f.fileName === fileName);
+        return filteredFiles.length > 0 ? filteredFiles[0] : null;
+    }
+
     static fromJSON(jsonData) {
         var result = [];
         var data = modelUtil.getAsObject(jsonData);
@@ -129,7 +135,8 @@ class GridData extends Model({
 GridData.defaults({
     id: "", //will be replaced by constructor
     modelName: GridData.getModelName(),
-    rowCount: 9
+    rowCount: 9,
+    additionalFiles: []
 });
 
 export {GridData};
