@@ -1,0 +1,31 @@
+import {modelUtil} from "../util/modelUtil";
+import {AREModel} from "./AREModel";
+
+class GridActionARE extends Model({
+    id: String,
+    modelName: String,
+    areURL: [String],
+    areModel: [AREModel],
+    componentId: [String],
+    dataPortId: [String],
+    dataPortSendData: [String],
+    eventChannelId: [String]
+}) {
+    constructor(properties, elementToCopy) {
+        properties = modelUtil.setDefaults(properties, elementToCopy, GridActionARE);
+        super(properties);
+        this.id = this.id || modelUtil.generateId('grid-action-navigate')
+    }
+
+    static getModelName() {
+        return "GridActionARE";
+    }
+}
+
+GridActionARE.defaults({
+    id: "", //will be replaced by constructor
+    modelName: GridActionARE.getModelName(),
+    areModel: new AREModel()
+});
+
+export {GridActionARE};
