@@ -98,7 +98,7 @@ module.exports = env => {
             contentBase: path.resolve(__dirname, baseDir),
             publicPath: buildDirParam,
             host: '0.0.0.0',
-            port: 9090,
+            port: 9095,
             open: false,
             watchContentBase: true
         };
