@@ -1,11 +1,10 @@
 import {modelUtil} from "../util/modelUtil";
-import {AREModel} from "./AREModel";
 
 class GridActionARE extends Model({
     id: String,
     modelName: String,
     areURL: [String],
-    areModel: [AREModel],
+    areModelGridFileName: [String], //name of AdditionalGridFile stored in parent GridData element
     componentId: [String],
     dataPortId: [String],
     dataPortSendData: [String],
@@ -24,8 +23,7 @@ class GridActionARE extends Model({
 
 GridActionARE.defaults({
     id: "", //will be replaced by constructor
-    modelName: GridActionARE.getModelName(),
-    areModel: new AREModel()
+    modelName: GridActionARE.getModelName()
 });
 
 export {GridActionARE};
