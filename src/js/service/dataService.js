@@ -20,7 +20,7 @@ function initPouchDB() {
         var remoteDbAddress = 'http://' + window.location.hostname + ':5984/testdb';
         var remoteDB = new PouchDB(remoteDbAddress);
         log.info('trying to sync pouchdb with: ' + remoteDbAddress);
-        db.sync(remoteDB, {
+        /*db.sync(remoteDB, {
             live: true,
             retry: true
         }).on('change', function (info) {
@@ -35,7 +35,7 @@ function initPouchDB() {
             }
         }).on('error', function (err) {
             log.warn('couchdb error');
-        });
+        });*/
 
         log.debug('create index');
         db.createIndex({
@@ -263,6 +263,33 @@ var dataService = {
                     resolve(retVal);
                 }
             });
+        });
+    },
+    /**
+     * adds additional grid files to a grid. If a filename that is added already exists, the existing file is replaced.
+     * @param gridId
+     * @param additionalGridFiles
+     * @return {Promise}
+     */
+    saveAdditionalGridFiles(gridId, additionalGridFiles) {
+        return new Promise(resolve => {
+           if(!additionalGridFiles) {
+               resolve();
+           }
+           dataService.getGrid(gridId).then(grid => {
+               additionalGridFiles.forEach(gridFile => {
+                   grid = JSON.parse(JSON.stringify(grid));
+                   var index = grid.additionalFiles.findIndex(f => f.fileName == gridFile.fileName);
+                   if(index !== -1) {
+                       grid.additionalFiles[index] = gridFile;
+                   } else {
+                       grid.additionalFiles.push(gridFile);
+                   }
+               });
+               dataService.saveGrid(grid).then(() => {
+                   resolve();
+               });
+           })
         });
     },
     getGridElement: function (gridId, gridElementId) {
