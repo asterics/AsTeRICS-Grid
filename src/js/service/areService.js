@@ -27,13 +27,13 @@ areService.sendDataToInputPort = function (componentId, portId, value, areURI) {
     });
 };
 
-areService.triggerEvent = function (componentId, eventChannelId, areURI) {
-    if (!componentId || !eventChannelId) return;
+areService.triggerEvent = function (componentId, eventPortId, areURI) {
+    if (!componentId || !eventPortId) return;
 
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "PUT",
-            url: areService.getRestURL(areURI) + "runtime/model/components/" + encodeParam(componentId) + "/events/" + encodeParam(eventChannelId),
+            url: areService.getRestURL(areURI) + "runtime/model/components/" + encodeParam(componentId) + "/events/" + encodeParam(eventPortId),
             datatype: "text",
             crossDomain: true,
             success:
@@ -227,7 +227,7 @@ areService.getComponentInputPortIds = function (componentId, areURI) {
     });
 };
 
-areService.getComponentEventChannelIds = function (componentId, areURI) {
+areService.getComponentEventPortIds = function (componentId, areURI) {
     return new Promise((resolve, reject) => {
         if (!componentId) {
             resolve([]);

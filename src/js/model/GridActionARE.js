@@ -8,7 +8,7 @@ class GridActionARE extends Model({
     componentId: [String],
     dataPortId: [String],
     dataPortSendData: [String],
-    eventChannelId: [String]
+    eventPortId: [String]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionARE);

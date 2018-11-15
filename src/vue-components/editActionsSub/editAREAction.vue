@@ -48,7 +48,7 @@
             <div class="two columns">
                 <label class="normal-text" for="inputComponentId" data-i18n="">Component // Komponente</label>
             </div>
-            <select class="five columns" id="inputComponentId" v-model="action.componentId" @change="reloadPortsAndChannels(action)">
+            <select class="five columns" id="inputComponentId" v-model="action.componentId" @change="reloadPorts(action)">
                 <option v-for="id in areComponentIds" :value="id">
                     {{id}}
                 </option>
@@ -74,17 +74,17 @@
                 <input id="inputDataPortData" type="text" v-model="action.dataPortSendData"/>
             </div>
         </div>
-        <div class="row" v-if="areModelSync && areComponentEventChannels.length != 0">
+        <div class="row" v-if="areModelSync && areComponentEventPorts.length != 0">
             <div class="two columns">
-                <label for="inputeventChannelId" class="normal-text" data-i18n="">
-                    <span>Trigger event <span class="show-mobile">on event channel</span></span>
-                    <span>Event triggern <span class="show-mobile">auf Event-Channel</span></span>
+                <label for="inputeventPortId" class="normal-text" data-i18n="">
+                    <span>Trigger event <span class="show-mobile">on event port</span></span>
+                    <span>Event triggern <span class="show-mobile">auf Event-Port</span></span>
                 </label>
             </div>
             <div class="five columns">
-                <label for="inputeventChannelId" class="normal-text hide-mobile">Event-Channel</label>
-                <select id="inputeventChannelId" class="full-width" v-model="action.eventChannelId">
-                    <option v-for="id in areComponentEventChannels" :value="id">
+                <label for="inputeventPortId" class="normal-text hide-mobile">Event-Port</label>
+                <select id="inputeventPortId" class="full-width" v-model="action.eventPortId">
+                    <option v-for="id in areComponentEventPorts" :value="id">
                         {{id}}
                     </option>
                 </select>
@@ -114,7 +114,7 @@
                 areConnected: null,
                 areComponentIds: [],
                 areComponentPorts: [],
-                areComponentEventChannels: [],
+                areComponentEventPorts: [],
                 areModelFile: null, //Object of Type AdditionalGridFile that represents the ARE Model for this action
                 areModelSync: false
             }
@@ -138,20 +138,20 @@
                         thiz.setGridFileFn(thiz.action, thiz.areModelFile);
                         thiz.loading = false;
                         thiz.areModelSync = true;
+                        thiz.reloadComponentIds(action);
+                        thiz.reloadPorts(action)
                     });
                 }).catch(() => {
                     thiz.areModelFile.dataBase64 = null;
                     thiz.setGridFileFn(thiz.action, null);
                     thiz.loading = false;
                 });
-                thiz.reloadComponentIds(action);
-                thiz.reloadPortsAndChannels(action)
             },
             uploadAREModel(action) {
                 var thiz = this;
                 areService.uploadModelBase64(thiz.areModelFile.dataBase64, action.areURL).then(() => {
                     thiz.reloadComponentIds(action);
-                    thiz.reloadPortsAndChannels(action);
+                    thiz.reloadPorts(action);
                     thiz.areModelSync = true;
                 });
             },
@@ -161,10 +161,10 @@
                     thiz.areComponentIds = ids;
                 });
             },
-            reloadPortsAndChannels(action) {
+            reloadPorts(action) {
                 var thiz = this;
-                areService.getPossibleEvents(action.componentId, this.areModelFile.dataBase64, action.areURL).then(channelIds => {
-                    thiz.areComponentEventChannels = channelIds;
+                areService.getPossibleEvents(action.componentId, this.areModelFile.dataBase64, action.areURL).then(portIds => {
+                    thiz.areComponentEventPorts = portIds;
                 });
                 areService.getComponentInputPortIds(action.componentId, action.areURL).then(inputPortIds => {
                     thiz.areComponentPorts = inputPortIds;

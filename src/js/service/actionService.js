@@ -78,8 +78,8 @@ function doAREAction(action, gridData) {
         if(action.dataPortId && action.dataPortSendData) {
             areService.sendDataToInputPort(action.componentId, action.dataPortId, action.dataPortSendData, action.areURL);
         }
-        if(action.eventChannelId) {
-            areService.triggerEvent(action.componentId, action.eventChannelId, action.areURL);
+        if(action.eventPortId) {
+            areService.triggerEvent(action.componentId, action.eventPortId, action.areURL);
         }
     });
 }
