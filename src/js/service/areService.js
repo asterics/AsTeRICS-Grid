@@ -108,12 +108,12 @@ areService.uploadAndStartModel = function (modelInBase64, areURI, modelName) {
         areService.getModelName(areURI).then(name => {
             if(name !== modelName) {
                 areService.uploadModelBase64(modelInBase64, areURI).then(() => {
-                    areService.startModel().then(() => {
+                    areService.startModel(areURI).then(() => {
                         resolve();
                     });
                 });
             } else {
-                areService.startModel().then(() => {
+                areService.startModel(areURI).then(() => {
                     resolve();
                 });
             }
@@ -260,9 +260,9 @@ areService.getComponentEventChannelIds = function (componentId, areURI) {
  */
 areService.getRestURL = function (userUri) {
     if (!userUri) {
-        userUri = "localhost";
+        userUri = "localhost:8081";
     }
-    if (userUri.indexOf('http') == -1) {
+    if (userUri.indexOf('http') === -1) {
         userUri = 'http://' + userUri;
     }
     var parser = document.createElement('a');
@@ -273,6 +273,40 @@ areService.getRestURL = function (userUri) {
     }
 
     return parser.href;
+};
+
+areService.getTypeId = function (componentId, modelBase64) {
+    let xml = window.atob(modelBase64);
+    return $(xml).find('components component[id="' + componentId + '"]').attr('type_id');
+};
+
+areService.getComponentDescriptorsAsXml = function(areURI) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "GET",
+            url: areService.getRestURL(areURI) + "storage/components/descriptors/xml",
+            datatype: "text/xml",
+            crossDomain: true,
+            success:
+                function (data, textStatus, jqXHR) {
+                    resolve(data, textStatus);
+                },
+            error:
+                function (jqXHR, textStatus, errorThrown) {
+                    reject(errorThrown, jqXHR.responseText);
+                }
+        });
+    });
+};
+
+areService.getPossibleEvents = function(componentId, modelBase64, areURI) {
+    return new Promise(resolve => {
+        areService.getComponentDescriptorsAsXml(areURI).then(descriptorsXml => {
+            let typeId = areService.getTypeId(componentId, modelBase64);
+            let events = $(descriptorsXml).find('componentType[id="' + typeId + '"] eventListenerPort').map(function() { return this.id; }).get();
+            resolve(events);
+        });
+    });
 };
 
 //encodes PathParametes
