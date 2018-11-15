@@ -1,3 +1,4 @@
+import {areService} from "./areService";
 import {dataService} from "./dataService";
 import {speechService} from "./speechService";
 import {collectElementService} from "./collectElementService";
@@ -17,23 +18,23 @@ actionService.doAction = function (gridId, gridElementId) {
                 break;
             }
             default: {
-                doActions(gridElement);
+                doActions(gridElement, gridId);
             }
         }
     });
 };
 
-actionService.testAction = function (gridElement, action) {
-    doAction(gridElement, action);
+actionService.testAction = function (gridElement, action, gridData) {
+    doAction(gridElement, action, null, gridData);
 };
 
-function doActions(gridElement) {
+function doActions(gridElement, gridId) {
     gridElement.actions.forEach(action => {
-        doAction(gridElement, action);
+        doAction(gridElement, action, gridId);
     });
 }
 
-function doAction(gridElement, action) {
+function doAction(gridElement, action, gridId, gridData) {
     switch (action.modelName) {
         case 'GridActionSpeak':
             log.debug('action speak');
@@ -55,7 +56,32 @@ function doAction(gridElement, action) {
                 Router.toGrid(action.toGridId);
             }
             break;
+        case 'GridActionARE':
+            log.debug('action are');
+            if(gridData) {
+                doAREAction(action, gridData)
+            } else {
+                dataService.getGrid(gridId).then(grid => {
+                    doAREAction(action, grid);
+                });
+            }
+            break;
     }
+}
+
+function doAREAction(action, gridData) {
+    if(!action.componentId) {
+        return;
+    }
+    let modelBase64 = gridData.getAdditionalFile(action.areModelGridFileName).dataBase64;
+    areService.uploadAndStartModel(modelBase64, action.areURL, action.areModelGridFileName).then(() => {
+        if(action.dataPortId && action.dataPortSendData) {
+            areService.sendDataToInputPort(action.componentId, action.dataPortId, action.dataPortSendData, action.areURL);
+        }
+        if(action.eventChannelId) {
+            areService.triggerEvent(action.componentId, action.eventChannelId, action.areURL);
+        }
+    });
 }
 
 export {actionService};
