@@ -68,15 +68,17 @@ areService.getRuntimeComponentIds = function(areURI) {
 };
 
 areService.uploadModelBase64 = function (modelInBase64, areURI) {
-    if (!modelInBase64) return;
 
-    var modelInXML = window.atob(modelInBase64);
     return new Promise((resolve, reject) => {
+        if (!modelInBase64) {
+            reject();
+            return;
+        }
         $.ajax({
             type: "PUT",
             url: areService.getRestURL(areURI) + "runtime/model",
             contentType: "text/xml",									//content-type of the request
-            data: modelInXML,
+            data: window.atob(modelInBase64),
             datatype: "text",
             crossDomain: true,
             success:
@@ -90,6 +92,35 @@ areService.uploadModelBase64 = function (modelInBase64, areURI) {
         });
     });
 };
+
+/**
+ * uploads and starts a model. if modelName is defined the given base64 model is only uploaded if the currently
+ * deployed model has a different name.
+ * In any case the model is started.
+ *
+ * @param modelInBase64
+ * @param areURI
+ * @param modelName
+ * @return {Promise}
+ */
+areService.uploadAndStartModel = function (modelInBase64, areURI, modelName) {
+    return new Promise((resolve, reject) => {
+        areService.getModelName(areURI).then(name => {
+            if(name !== modelName) {
+                areService.uploadModelBase64(modelInBase64, areURI).then(() => {
+                    areService.startModel().then(() => {
+                        resolve();
+                    });
+                });
+            } else {
+                areService.startModel().then(() => {
+                    resolve();
+                });
+            }
+        });
+    });
+};
+
 
 areService.downloadDeployedModelBase64 = function (areURI) {
     return new Promise((resolve, reject) => {
@@ -174,9 +205,11 @@ areService.getRuntimeComponentIds = function (areURI) {
 };
 
 areService.getComponentInputPortIds = function (componentId, areURI) {
-    if (!componentId) return;
-
     return new Promise((resolve, reject) => {
+        if (!componentId) {
+            resolve([]);
+            return;
+        }
         $.ajax({
             type: "GET",
             url: areService.getRestURL(areURI) + "runtime/model/components/" + encodeParam(componentId) + "/ports/input/ids",
@@ -195,9 +228,11 @@ areService.getComponentInputPortIds = function (componentId, areURI) {
 };
 
 areService.getComponentEventChannelIds = function (componentId, areURI) {
-    if (!componentId) return;
-
     return new Promise((resolve, reject) => {
+        if (!componentId) {
+            resolve([]);
+            return;
+        }
         $.ajax({
             type: "GET",
             url: areService.getRestURL(areURI) + "runtime/model/components/" + encodeParam(componentId) + "/channels/event/ids",
