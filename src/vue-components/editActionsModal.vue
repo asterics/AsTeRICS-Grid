@@ -105,11 +105,11 @@
                                                 <div class="two columns">
                                                     <label for="inputAREURI" class="normal-text">ARE URL</label>
                                                 </div>
-                                                <div class="nine columns">
-                                                    <div class="row">
+                                                <div class="ten columns">
+                                                    <div class="row nomargin">
                                                         <input id="inputAREURI" class="six columns" type="text" v-model="action.areURL"/>
                                                         <div class="six columns">
-                                                            <button @click="testAREUrl(action)"><i class="fas fa-bolt"/> <span data-i18n="">Test URL // URL testen</span></button>
+                                                            <button @click="testAREUrl(action)" style="width: 70%"><i class="fas fa-bolt"/> <span data-i18n="">Test URL // URL testen</span></button>
                                                             <span class="spaced" v-show="areConnected === undefined"><i class="fas fa-spinner fa-spin"/></span>
                                                             <span class="spaced" v-show="areConnected" style="color: green"><i class="fas fa-check"/></span>
                                                             <span class="spaced" v-show="areConnected == false" style="color: red"><i class="fas fa-times"/></span>
@@ -121,26 +121,34 @@
                                                 <div class="two columns">
                                                     <label class="normal-text">ARE Model</label>
                                                 </div>
-                                                <div class="nine columns">
-                                                    <span v-show="loading" data-i18n="">Loading Model from ARE... // Lade Modell von ARE...</span>
-                                                    <span v-show="!loading && additionalGridFiles[action.id] && !additionalGridFiles[action.id].dataBase64" data-i18n="">Could not load Model from ARE! // Konnte Modell nicht von ARE laden!</span>
-                                                    <span v-if="!loading && additionalGridFiles[action.id] && additionalGridFiles[action.id].dataBase64">
-                                                        <a href="javascript:void(0);" @click="downloadModelFile(additionalGridFiles[action.id])">{{additionalGridFiles[action.id].fileName}}</a>
-                                                    </span>
-                                                    <button @click="reloadAREModel(action)" class="inline spaced"><i class="fas fa-sync-alt"/> <span class="hide-mobile" data-i18n="">Update from ARE // Update von ARE</span></button>
+                                                <div class="ten columns">
+                                                    <div class="row nomargin">
+                                                        <div class="twelve columns">
+                                                            <span v-show="loading" data-i18n="">Loading Model from ARE... // Lade Modell von ARE...</span>
+                                                            <span v-show="!loading && areModelSync && additionalGridFiles[action.id] && !additionalGridFiles[action.id].dataBase64" data-i18n="">Could not load Model from ARE! // Konnte Modell nicht von ARE laden!</span>
+                                                            <span v-show="!loading && !areModelSync && additionalGridFiles[action.id] && !additionalGridFiles[action.id].dataBase64" data-i18n="">(no ARE model) // (kein ARE Modell)</span>
+                                                            <span v-if="!loading && additionalGridFiles[action.id] && additionalGridFiles[action.id].dataBase64">
+                                                                <a href="javascript:void(0);" @click="downloadModelFile(additionalGridFiles[action.id])">{{additionalGridFiles[action.id].fileName}}</a>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <button class="six columns" @click="reloadAREModel(action)"><i class="fas fa-download"/> <span data-i18n="">Download from ARE // Download von ARE</span></button>
+                                                        <button class="six columns" @click="uploadAREModel(action)"><i class="fas fa-upload"/> <span data-i18n="">Upload to ARE // Upload zu ARE</span></button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <div class="row" v-if="areModelSync">
                                                 <div class="two columns">
                                                     <label class="normal-text" for="inputComponentId" data-i18n="">Component // Komponente</label>
                                                 </div>
-                                                <select class="five columns" id="inputComponentId" v-model="action.componentId" @change="componentIdChanged(action.componentId, action)">
+                                                <select class="five columns" id="inputComponentId" v-model="action.componentId" @change="reloadPortsAndChannels(action)">
                                                     <option v-for="id in areComponentIds" :value="id">
                                                         {{id}}
                                                     </option>
                                                 </select>
                                             </div>
-                                            <div class="row" v-if="areComponentPorts.length != 0">
+                                            <div class="row" v-if="areModelSync && areComponentPorts.length != 0">
                                                 <div class="two columns">
                                                     <label for="inputDataPortId" class="normal-text" data-i18n="">
                                                         <span>Send data <span class="show-mobile">to port</span></span>
@@ -160,7 +168,7 @@
                                                     <input id="inputDataPortData" type="text" v-model="action.dataPortSendData"/>
                                                 </div>
                                             </div>
-                                            <div class="row" v-if="areComponentEventChannels.length != 0">
+                                            <div class="row" v-if="areModelSync && areComponentEventChannels.length != 0">
                                                 <div class="two columns">
                                                     <label for="inputeventChannelId" class="normal-text" data-i18n="">
                                                         <span>Trigger event <span class="show-mobile">on event channel</span></span>
@@ -238,7 +246,8 @@
                 areComponentIds: [],
                 areComponentPorts: [],
                 areComponentEventChannels: [],
-                additionalGridFiles: {} //map: key = action.id, value = AdditionalGridFile (ARE Model)
+                additionalGridFiles: {}, //map: key = action.id, value = AdditionalGridFile (ARE Model)
+                areModelSync: false
             }
         },
         methods: {
@@ -248,21 +257,20 @@
             },
             editAction (action) {
                 var thiz = this;
+                thiz.areModelSync = false;
                 thiz.editActionId = action.id;
                 if(action.modelName === GridActionARE.getModelName()) {
                     if(!thiz.additionalGridFiles[action.id]) {
                         thiz.additionalGridFiles[action.id] = new GridData(thiz.gridData).getAdditionalFile(action.areModelGridFileName);
                     }
-                    areService.uploadModelBase64(thiz.additionalGridFiles[action.id].dataBase64, action.areURL).then(() => {
-                        thiz.reloadComponentIds(action);
-                    });
                 }
             },
             endEditAction () {
                 this.editActionId = null;
             },
             testAction (action) {
-                actionService.testAction(this.gridElement, action);
+                let props = this.additionalGridFiles[action.id] ? {additionalFiles: [this.additionalGridFiles[action.id]]} : {};
+                actionService.testAction(this.gridElement, action, new GridData(props, this.gridData));
             },
             addAction () {
                 var thiz = this;
@@ -270,16 +278,16 @@
                 if(newAction.modelName == GridActionNavigate.getModelName()) {
                     newAction.toGridId = Object.keys(this.gridLabels)[0];
                 } else if(newAction.modelName == GridActionARE.getModelName()) {
+                    thiz.areModelSync = false;
                     var newAreModelFile = new AdditionalGridFile();
                     thiz.additionalGridFiles[newAction.id] = newAreModelFile;
                     newAction.areURL = areService.getRestURL();
-                    thiz.reloadAREModel(newAction);
                 }
 
                 thiz.gridElement.actions.push(newAction);
                 thiz.editActionId = newAction.id;
             },
-            reloadAREModel (action) {
+            reloadAREModel(action) {
                 var thiz = this;
                 thiz.loading = true;
                 areService.downloadDeployedModelBase64(action.areURL).then(base64Model => {
@@ -288,20 +296,36 @@
                         thiz.additionalGridFiles[action.id].fileName = modelName;
                         action.areModelGridFileName = modelName;
                         thiz.loading = false;
+                        thiz.areModelSync = true;
                     });
                 }).catch(() => {
                     thiz.additionalGridFiles[action.id].dataBase64 = null;
                     thiz.loading = false;
                 });
                 thiz.reloadComponentIds(action);
+                thiz.reloadPortsAndChannels(action)
+            },
+            uploadAREModel(action) {
+                var thiz = this;
+                areService.uploadModelBase64(thiz.additionalGridFiles[action.id].dataBase64, action.areURL).then(() => {
+                    thiz.reloadComponentIds(action);
+                    thiz.reloadPortsAndChannels(action);
+                    thiz.areModelSync = true;
+                });
             },
             reloadComponentIds(action) {
                 var thiz = this;
                 areService.getRuntimeComponentIds(action.areURL).then(ids => {
-                    thiz.areComponentPorts = [];
-                    thiz.areComponentEventChannels = [];
-                    action.componentId = null;
                     thiz.areComponentIds = ids;
+                });
+            },
+            reloadPortsAndChannels(action) {
+                var thiz = this;
+                areService.getComponentEventChannelIds(action.componentId, action.areURL).then(channelIds => {
+                    thiz.areComponentEventChannels = channelIds;
+                });
+                areService.getComponentInputPortIds(action.componentId, action.areURL).then(inputPortIds => {
+                    thiz.areComponentPorts = inputPortIds;
                 });
             },
             testAREUrl(action) {
@@ -313,19 +337,6 @@
                 }).catch(() => {
                     thiz.areConnected = false;
                 });
-            },
-            componentIdChanged(newComponentId, action) {
-                var thiz = this;
-                thiz.areComponentPorts = [];
-                thiz.areComponentEventChannels = [];
-                if(newComponentId) {
-                    areService.getComponentEventChannelIds(newComponentId, action.areURL).then(channelIds => {
-                        thiz.areComponentEventChannels = channelIds;
-                    });
-                    areService.getComponentInputPortIds(newComponentId, action.areURL).then(inputPortIds => {
-                        thiz.areComponentPorts = inputPortIds;
-                    });
-                }
             },
             downloadModelFile(additionalGridFile) {
                 var blob = new Blob([window.atob(additionalGridFile.dataBase64)], {type: "text/plain;charset=utf-8"});
@@ -380,6 +391,10 @@
 <style scoped>
     .row {
         margin-top: 1em;
+    }
+
+    .nomargin {
+        margin-top: 0;
     }
 
     input, .full-width {
