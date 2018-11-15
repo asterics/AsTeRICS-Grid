@@ -163,7 +163,7 @@
             },
             reloadPortsAndChannels(action) {
                 var thiz = this;
-                areService.getComponentEventChannelIds(action.componentId, action.areURL).then(channelIds => {
+                areService.getPossibleEvents(action.componentId, this.areModelFile.dataBase64, action.areURL).then(channelIds => {
                     thiz.areComponentEventChannels = channelIds;
                 });
                 areService.getComponentInputPortIds(action.componentId, action.areURL).then(inputPortIds => {
@@ -187,7 +187,7 @@
             },
         },
         mounted () {
-            this.action.actionURL = this.action.actionURL || areService.getRestURL();
+            this.action.areURL = this.action.areURL || areService.getRestURL();
             if(this.modelFile) { //model file parameter
                 this.areModelFile = this.modelFile;
             } else {
