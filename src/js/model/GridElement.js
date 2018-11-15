@@ -4,6 +4,7 @@ import {GridImage} from "./GridImage";
 import {GridActionSpeak} from "./GridActionSpeak";
 import {GridActionSpeakCustom} from "./GridActionSpeakCustom";
 import {GridActionNavigate} from "./GridActionNavigate";
+import {GridActionARE} from "./GridActionARE";
 
 class GridElement extends Model({
     id: String,
@@ -37,7 +38,7 @@ class GridElement extends Model({
     }
 
     static getActionTypes() {
-        return [GridActionSpeak, GridActionNavigate, GridActionSpeakCustom];
+        return [GridActionARE, GridActionSpeak, GridActionNavigate, GridActionSpeakCustom];
     }
 
     static getActionInstance(modelName) {
