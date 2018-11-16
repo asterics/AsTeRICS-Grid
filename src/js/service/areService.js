@@ -252,7 +252,7 @@ areService.getComponentEventPortIds = function (componentId, areURI) {
 
 /**
  * returns a valid ARE base REST URI with a given userUri entered by user
- * e.g. "localhost" -> "http://localhost:8081/rest/"
+ * e.g. "localhost" -> "http://127.0.0.1:8081/rest/"
  * "192.168.1.1:9090" --> "http://192.168.1.1:9090/rest/"
  *
  * @param userUri
