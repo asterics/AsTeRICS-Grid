@@ -260,8 +260,9 @@ areService.getComponentEventPortIds = function (componentId, areURI) {
  */
 areService.getRestURL = function (userUri) {
     if (!userUri) {
-        userUri = "localhost:8081";
+        userUri = "127.0.0.1:8081";
     }
+    userUri = userUri.replace('localhost', '127.0.0.1');
     if (userUri.indexOf('http') === -1) {
         userUri = 'http://' + userUri;
     }
