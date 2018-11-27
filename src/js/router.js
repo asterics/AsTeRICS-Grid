@@ -1,11 +1,14 @@
 import $ from 'jquery';
 import Navigo from 'navigo'
+import Vue from 'vue'
 
 import {I18nModule} from './i18nModule.js';
 import {GridView} from "./views/gridView.js";
 import {GridEditView} from "./views/gridEditView.js";
 import {AllGridsView} from "./views/allGridsView.js";
 import {dataService} from "./service/dataService.js";
+
+import LoginView from '../vue-components/loginView.vue'
 
 var Router = {};
 var navigoInstance = null;
@@ -38,6 +41,9 @@ Router.init = function (injectIdParam) {
                 loadView('gridEditView').then(() => {
                     GridEditView.init(params.gridId);
                 });
+            },
+            'login': function () {
+                loadVueView(LoginView);
             },
             '*': function () {
                 Router.toMain();
@@ -112,6 +118,23 @@ function loadView(viewName) {
             resolve();
         });
     })
+}
+
+function loadVueView(viewObject) {
+    log.info('loading view: ' + viewObject.__file);
+    var viewName = viewObject.__file;
+    var startIndex = viewName.lastIndexOf('/') !== -1 ? viewName.lastIndexOf('/') + 1 : 0;
+    viewName = viewName.substring(startIndex, viewName.lastIndexOf('.'));
+    var viewNameDash = viewName.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`); //camelCase to dash-case
+    var injectHtml = `<div id="app"><${viewNameDash}/></div>`;
+    var components = {};
+    components[viewName] = viewObject;
+    $(injectId).html(injectHtml);
+    var app = new Vue({
+        el: '#app',
+        data: {},
+        components: components
+    });
 }
 
 function toMainInternal() {
