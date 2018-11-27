@@ -2,10 +2,12 @@ var express = require('express');
 var http = require('http');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
+var cors = require('cors');
 var SuperLogin = require('@sensu/superlogin');
 
 var app = express();
 app.set('port', process.env.PORT || 3000);
+app.use(cors());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
