@@ -2,7 +2,7 @@ var express = require('express');
 var http = require('http');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
-var SuperLogin = require('superlogin');
+var SuperLogin = require('@sensu/superlogin');
 
 var app = express();
 app.set('port', process.env.PORT || 3000);
@@ -19,14 +19,28 @@ var config = {
     userDB: 'sl-users',
     couchAuthDB: '_users'
   },
+  local: {
+    sendConfirmEmail: true,
+    requireEmailConfirm: true,
+  },
   mailer: {
     fromEmail: 'noreply@asterics-foundation.org',
     options: {
-      service: 'Custom',
+		host: 'smtp.1und1.de',
+        port: 587,
+        secure: false,
         auth: {
-          user: 'noreply@asterics-foundation.org',
-          pass: '...'
+            user: 'noreply@asterics-foundation.org',
+            pass: '...'
         }
+    }
+  },
+  emails: {
+    confirmEmail: {
+      subject: 'Please confirm your email'
+    },
+    forgotPassword: {
+      subject: 'Your password reset link'
     }
   },
   userDBs: {
