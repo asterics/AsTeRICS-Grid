@@ -5,9 +5,12 @@
   "main": "index.js",
   "dependencies": {
     "@sensu/superlogin": "^1.2.1",
+    "cors": "^2.8.5",
     "file-loader": "^2.0.0",
     "file-saver": "^1.3.8",
+    "morgan": "^1.9.1",
     "navigo": "^7.1.2",
+    "superlogin-client": "^0.8.0",
     "vue": "^2.5.17"
   },
   "devDependencies": {
