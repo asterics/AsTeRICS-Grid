@@ -445,8 +445,15 @@ there.
     .show-mobile {
         display: none !important;
     }
+    .desktop-right{
+        float: right;
+    }
     .inline-desktop {
         display: inline-block;
+    }
+    .spaced-desktop {
+        margin-left: 1em;
+        margin-right: 1em;
     }
 }
 
