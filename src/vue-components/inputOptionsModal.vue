@@ -251,7 +251,9 @@
 
                 thiz.isRecordingARE = true;
                 areService.subscribeEvents(function (event) {
-                    thiz.metadata.inputConfig.areEvents.push(event);
+                    if(!thiz.metadata.inputConfig.areEvents.includes(event)) {
+                        thiz.metadata.inputConfig.areEvents.push(event);
+                    }
                     setTimeout(function () {
                         stopRecording(thiz);
                     }, 500);
