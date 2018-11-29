@@ -3,6 +3,7 @@ import Vue from 'vue'
 import {Grid} from "../grid.js";
 import {actionService} from "../service/actionService";
 import {dataService} from "../service/dataService";
+import {areService} from "../service/areService";
 import {Router} from "./../router.js";
 import {MetaData} from "../model/MetaData.js";
 import {InputEventHandler} from "../util/inputEventHandler";
@@ -25,6 +26,10 @@ GridView.init = function (gridId) {
             return;
         }
         GridView.gridData = grid;
+        if(grid.hasAREModel()) {
+            let areModel = grid.getAREModel();
+            areService.uploadAndStartModel(areModel.dataBase64, grid.getAREURL(), areModel.fileName);
+        }
 
         dataService.getMetadata().then(savedMetadata => {
             GridView.metadata = new MetaData(savedMetadata) || new MetaData();
