@@ -8,6 +8,10 @@ class InputConfig extends Model({
     scanTimeoutFirstElementFactor: Number, //factor for first element scanning time, e.g. scanTimeoutMs = 1000, scanTimeoutFirstElementFactor = 2 => scanning time for first element = 2000ms
     scanVertical: [Boolean],
     scanBinary: [Boolean],
+    scanKey: [Number],
+    scanKeyName: [String],
+    areEvents: Model.Array(String),
+    areURL: [String],
     hoverEnabled: [Boolean],
     hoverTimeoutMs: Number,
     mouseclickEnabled: [Boolean]
@@ -25,6 +29,10 @@ InputConfig.defaults({
     scanTimeoutMs: 1000,
     scanTimeoutFirstElementFactor: 1,
     scanBinary: true,
+    scanKey: 32, //space
+    scanKeyName: "Space", //space
+    areEvents: [],
+    areURL: "",
     hoverTimeoutMs: 1000
 });
 
