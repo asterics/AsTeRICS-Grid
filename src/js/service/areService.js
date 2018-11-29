@@ -1,6 +1,7 @@
 import $ from 'jquery';
 
 var areService = {};
+var _eventSource = null;
 
 areService.sendDataToInputPort = function (componentId, portId, value, areURI) {
     if (!componentId || !portId || !value) return;
@@ -308,6 +309,48 @@ areService.getPossibleEvents = function(componentId, modelBase64, areURI) {
             resolve(events);
         });
     });
+};
+
+areService.subscribeEvents = function(eventCallback, areURI) {
+    if ((typeof EventSource) === "undefined") {
+        log.warn("SSE not supported by browser");
+        return;
+    }
+    areService.unsubscribeEvents();
+
+    let areUrl = areService.getRestURL(areURI).replace('127.0.0.1', 'localhost'); //for whatever reason websockets seem to only work with localhost in Chrome
+    _eventSource = new EventSource(areUrl + 'runtime/model/channels/event/listener'); // Connecting to SSE service for event channel events
+
+    //adding listener for specific events
+    _eventSource.addEventListener("event", function(e) {
+        eventCallback(e.data, 200);
+    }, false);
+
+    // After SSE handshake constructed
+    _eventSource.onopen = function (e) {
+        log.info('SSE opened');
+    };
+
+    // Error handler
+    _eventSource.onerror = function (e) {
+        switch(e.target.readyState) {
+            case EventSource.CONNECTING:
+                log.info('SSE reconnecting');
+                break;
+            case EventSource.CLOSED:
+                log.info('SSE connection lost');
+                break;
+            default:
+                log.info('SSE Error occured"');
+        }
+    };
+};
+
+areService.unsubscribeEvents = function () {
+    if (_eventSource !== null) {
+        _eventSource.close();
+        _eventSource = null;
+    }
 };
 
 //encodes PathParametes
