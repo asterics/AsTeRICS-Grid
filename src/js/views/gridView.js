@@ -136,7 +136,8 @@ function initVue() {
                     scanInactiveClass: 'scanInactive',
                     minBinarySplitThreshold: 3,
                     scanTimeoutMs: inputConfig.scanTimeoutMs,
-                    scanTimeoutFirstElementFactor: inputConfig.scanTimeoutFirstElementFactor
+                    scanTimeoutFirstElementFactor: inputConfig.scanTimeoutFirstElementFactor,
+                    selectKeyCode: inputConfig.scanKey
                 });
                 this. hover = GridView.hover = new Hover('.grid-item-content', inputConfig.hoverTimeoutMs);
                 this.clicker = GridView.clicker = new Clicker('.grid-item-content');
