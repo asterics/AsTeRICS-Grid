@@ -43,6 +43,7 @@ GridView.init = function (gridId) {
 
 GridView.destroy = function () {
     stopInputMethods();
+    areService.unsubscribeEvents();
     clearTimeout(_headerHideTimeoutHandler);
     GridView.grid = null;
     dataService.clearUpdateListeners();
@@ -139,6 +140,18 @@ function initVue() {
                     scanTimeoutFirstElementFactor: inputConfig.scanTimeoutFirstElementFactor,
                     selectKeyCode: inputConfig.scanKey
                 });
+                if(inputConfig.areURL && inputConfig.areEvents.length > 0) {
+                    var lastSelect = 0;
+                    areService.subscribeEvents(function (eventString) {
+                        if(inputConfig.areEvents.includes(eventString)) {
+                            if(new Date().getTime() - lastSelect > 100) {
+                                log.info('select scanning per ARE event: ' + eventString);
+                                lastSelect = new Date().getTime();
+                                GridView.scanner.select();
+                            }
+                        }
+                    }, inputConfig.areURL);
+                }
                 this. hover = GridView.hover = new Hover('.grid-item-content', inputConfig.hoverTimeoutMs);
                 this.clicker = GridView.clicker = new Clicker('.grid-item-content');
 
