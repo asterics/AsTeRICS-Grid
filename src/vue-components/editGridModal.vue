@@ -146,8 +146,8 @@
                             thiz.gridElement.image = new GridImage({id: savedId, data: thiz.imgDataSmall});
                             saveInternalInternal();
                         });
-                    } else if(!thiz.imgDataPreview) {
-                        thiz.gridElement.image = null;
+                    } else {
+                        if(!thiz.imgDataPreview) thiz.gridElement.image = null;
                         saveInternalInternal();
                     }
 
