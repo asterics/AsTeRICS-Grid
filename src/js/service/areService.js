@@ -2,6 +2,8 @@ import $ from 'jquery';
 
 var areService = {};
 var _eventSource = null;
+var _sseReconnectTimeoutHandler = null;
+var _sseWasSuccess = false;
 
 areService.sendDataToInputPort = function (componentId, portId, value, areURI) {
     if (!componentId || !portId || !value) return;
@@ -316,7 +318,7 @@ areService.subscribeEvents = function(eventCallback, areURI) {
         log.warn("SSE not supported by browser");
         return;
     }
-    areService.unsubscribeEvents();
+    closeEventSource();
 
     let areUrl = areService.getRestURL(areURI).replace('127.0.0.1', 'localhost'); //for whatever reason websockets seem to only work with localhost in Chrome
     _eventSource = new EventSource(areUrl + 'runtime/model/channels/event/listener'); // Connecting to SSE service for event channel events
@@ -329,29 +331,36 @@ areService.subscribeEvents = function(eventCallback, areURI) {
     // After SSE handshake constructed
     _eventSource.onopen = function (e) {
         log.info('SSE opened');
+        _sseWasSuccess = true;
     };
 
     // Error handler
     _eventSource.onerror = function (e) {
-        switch(e.target.readyState) {
-            case EventSource.CONNECTING:
-                log.info('SSE reconnecting');
-                break;
-            case EventSource.CLOSED:
-                log.info('SSE connection lost');
-                break;
-            default:
-                log.info('SSE Error occured"');
+        closeEventSource();
+        if(_sseWasSuccess) {
+            log.info('SSE error occured, trying to reconnect in 10 seconds...');
+            _sseReconnectTimeoutHandler = setTimeout(function () {
+                _sseReconnectTimeoutHandler = null;
+                areService.subscribeEvents(eventCallback, areURI);
+            }, 3000);
         }
     };
 };
 
 areService.unsubscribeEvents = function () {
+    if(_sseReconnectTimeoutHandler) {
+        clearTimeout(_sseReconnectTimeoutHandler);
+    }
+    _sseWasSuccess = false;
+    closeEventSource();
+};
+
+function closeEventSource() {
     if (_eventSource !== null) {
         _eventSource.close();
         _eventSource = null;
     }
-};
+}
 
 //encodes PathParametes
 function encodeParam(text) {
