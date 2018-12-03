@@ -71,16 +71,22 @@
                                 </div>
                                 <div class="row" v-show="metadata.inputConfig.scanAutostart">
                                     <div class="seven columns">
-                                        <ul v-show="metadata.inputConfig.areEvents.length > 0">
+                                        <ul>
                                             <li v-for="areEvent in metadata.inputConfig.areEvents">
                                                 <button @click="removeAreEvent(areEvent)" class="spaced" style="padding: 0px 5px">X</button>
                                                 {{formatAreEvent(areEvent)}}
                                             </li>
+                                            <li v-show="metadata.inputConfig.areEvents.length == 0" data-i18n="">
+                                                (no recorded events) // (keine aufgenommenen Events)
+                                            </li>
+                                            <li v-show="areConnectionError" style="color: red">
+                                                <i class="fas fa-times" />  <span data-i18n="">Connecting to ARE failed! // Verbindung zu ARE fehlgeschlagen!</span>
+                                            </li>
                                         </ul>
-                                        <span v-show="metadata.inputConfig.areEvents.length == 0" data-i18n="">(no recorded events) // (keine aufgenommenen Events)</span>
                                     </div>
                                     <button class="five columns" @click="recordAreEvent">
-                                        <span v-show="!isRecordingARE" data-i18n="">Record ARE events // ARE events aufnehmen</span>
+                                        <span v-show="!isRecordingARE && areConnectionError != null" data-i18n="">Record ARE events // ARE events aufnehmen</span>
+                                        <span v-show="!isRecordingARE && areConnectionError == null">Check ARE...</span>
                                         <span v-show="isRecordingARE" data-i18n="">Recording... trigger ARE events! // Aufnahme... ARE-Events auslösen!</span>
                                     </button>
                                 </div>
@@ -148,7 +154,8 @@
                 metadata: null,
                 isRecordingKey: false,
                 isRecordingARE: false,
-                lastRecordTime: 0
+                lastRecordTime: 0,
+                areConnectionError: false
             }
         },
         methods: {
@@ -244,20 +251,27 @@
             },
             recordAreEvent() {
                 var thiz = this;
+                thiz.areConnectionError = null;
                 if(this.isRecordingARE) {
                     stopRecording(thiz);
                     return;
                 }
 
-                thiz.isRecordingARE = true;
-                areService.subscribeEvents(function (event) {
-                    if(!thiz.metadata.inputConfig.areEvents.includes(event)) {
-                        thiz.metadata.inputConfig.areEvents.push(event);
-                    }
-                    setTimeout(function () {
-                        stopRecording(thiz);
-                    }, 500);
-                }, thiz.metadata.inputConfig.areURL);
+                areService.getModelName(thiz.metadata.inputConfig.areURL).then(() => {
+                    thiz.areConnectionError = false;
+                    thiz.isRecordingARE = true;
+                    areService.subscribeEvents(function (event) {
+                        if(!thiz.metadata.inputConfig.areEvents.includes(event)) {
+                            thiz.metadata.inputConfig.areEvents.push(event);
+                        }
+                        setTimeout(function () {
+                            stopRecording(thiz);
+                        }, 500);
+                    }, thiz.metadata.inputConfig.areURL);
+                }, () => {
+                    thiz.areConnectionError = true;
+                });
+
                 function stopRecording(thiz) {
                     areService.unsubscribeEvents();
                     thiz.isRecordingARE = false;
