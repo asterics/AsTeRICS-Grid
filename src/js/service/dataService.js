@@ -17,9 +17,9 @@ var _updateListeners = [];
 function initPouchDB() {
     return new Promise(resolve => {
         db = new PouchDB(dbName);
-        var remoteDbAddress = 'http://' + window.location.hostname + ':5984/testdb';
-        var remoteDB = new PouchDB(remoteDbAddress);
-        log.info('trying to sync pouchdb with: ' + remoteDbAddress);
+        //var remoteDbAddress = 'http://' + window.location.hostname + ':5984/testdb';
+        //var remoteDB = new PouchDB(remoteDbAddress);
+        //log.info('trying to sync pouchdb with: ' + remoteDbAddress);
         /*db.sync(remoteDB, {
             live: true,
             retry: true
