@@ -151,6 +151,8 @@ function initVue() {
                             }
                         }
                     }, inputConfig.areURL);
+                } else {
+                    areService.unsubscribeEvents();
                 }
                 this. hover = GridView.hover = new Hover('.grid-item-content', inputConfig.hoverTimeoutMs);
                 this.clicker = GridView.clicker = new Clicker('.grid-item-content');
