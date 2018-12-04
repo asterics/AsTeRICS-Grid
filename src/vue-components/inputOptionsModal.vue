@@ -275,6 +275,7 @@
                 function stopRecording(thiz) {
                     areService.unsubscribeEvents();
                     thiz.isRecordingARE = false;
+                    thiz.areConnectionError = false;
                     dataService.saveMetadata(thiz.metadata);
                 }
             },
