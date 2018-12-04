@@ -330,7 +330,7 @@ areService.subscribeEvents = function(eventCallback, areURI) {
 
     // After SSE handshake constructed
     _eventSource.onopen = function (e) {
-        log.info('SSE opened');
+        log.info('SSE opened.');
         _sseWasSuccess = true;
     };
 
@@ -359,6 +359,7 @@ function closeEventSource() {
     if (_eventSource !== null) {
         _eventSource.close();
         _eventSource = null;
+        log.info('SSE closed.');
     }
 }
 
