@@ -13,6 +13,7 @@ var viewsFolder = 'views/';
 var filePostfix = '.html';
 var injectId = null;
 var lastHash = null;
+var routingEndabled = true;
 
 Router.init = function (injectIdParam) {
     injectId = injectIdParam;
@@ -21,6 +22,10 @@ Router.init = function (injectIdParam) {
         .on({
             'main': function () {
                 toMainInternal();
+            },
+            'updating': function () {
+                loadView('updatingView');
+                routingEndabled = false;
             },
             'grids/': function () {
                 loadView('allGridsView').then(() => {
@@ -42,8 +47,7 @@ Router.init = function (injectIdParam) {
             '*': function () {
                 Router.toMain();
             }
-        })
-        .resolve();
+        });
     navigoInstance.hooks({
         before: function (done, params) {
             GridView.destroy();
@@ -58,10 +62,15 @@ Router.init = function (injectIdParam) {
             //log.debug('leave');
         }
     });
+    navigoInstance.resolve();
 };
 
 Router.toMain = function () {
     setHash('#main');
+};
+
+Router.toUpdating = function () {
+    setHash('#updating');
 };
 
 Router.toLastOpenedGrid = function () {
@@ -105,7 +114,11 @@ function setHash(hash, reset) {
 
 function loadView(viewName) {
     log.info('loading view: ' + viewName);
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
+        if(!routingEndabled) {
+            reject();
+            return;
+        }
         $(injectId).load(viewsFolder + viewName + filePostfix, null, function () {
             I18nModule.init();
             log.debug('loaded view: ' + viewName);
