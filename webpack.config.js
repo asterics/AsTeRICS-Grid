@@ -9,7 +9,7 @@ module.exports = env => {
     var buildDirLegacy = '/build_legacy/';
     var entryScript = './src/js/mainScript.js';
     var outputFilename = 'asterics-grid.bundle.js';
-    var mode = env.production ? 'production' : 'development';
+    var mode = env && env.production ? 'production' : 'development';
 
     var scssRule = {
         test: /\.(s*)css$/,
