@@ -1,3 +1,5 @@
+import $ from 'jquery';
+import {localStorageService} from "./service/localStorageService.js";
 import {Router} from "./router.js";
 import {VueDirectives} from "./vue/directives";
 
@@ -5,6 +7,8 @@ import './../css/custom.css';
 import './../css/gridlist.css';
 import './../css/jquery.contextMenu.css';
 import './../css/allGridsView.css';
+
+var firstRun = localStorageService.isFirstPageVisit();
 
 function init() {
     log.setLevel(log.levels.INFO);
@@ -17,6 +21,7 @@ init();
 function reloadOnAppcacheUpdate() {
     function onUpdateReady() {
         log.info('appcache: updateready');
+        Router.toMain();
         window.location.reload();
     }
 
@@ -26,9 +31,15 @@ function reloadOnAppcacheUpdate() {
     });
     window.applicationCache.addEventListener('downloading', function () {
         log.debug('appcache: downloading');
+        if(!firstRun) {
+            Router.toUpdating();
+        }
     });
-    window.applicationCache.addEventListener('progress', function () {
+    window.applicationCache.addEventListener('progress', function (event) {
         log.debug('appcache: progress');
+        if(!firstRun) {
+            $('#updatePercent').html(Math.ceil(event.loaded * 100 / event.total));
+        }
     });
     window.applicationCache.addEventListener('error', function (event) {
         log.debug('appcache: error');
@@ -42,9 +53,6 @@ function reloadOnAppcacheUpdate() {
     });
     window.applicationCache.addEventListener('noupdate', function () {
         log.debug('appcache: noupdate');
-    });
-    window.applicationCache.addEventListener('updateready', function () {
-        log.debug('appcache: updateready');
     });
 
     if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
