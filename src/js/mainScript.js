@@ -19,6 +19,11 @@ function init() {
 init();
 
 function reloadOnAppcacheUpdate() {
+    if(!window.applicationCache) {
+        log.info('no application cache.');
+        return;
+    }
+
     function onUpdateReady() {
         log.info('appcache: updateready');
         Router.toMain();
