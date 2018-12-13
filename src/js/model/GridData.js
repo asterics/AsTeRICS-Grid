@@ -150,6 +150,15 @@ class GridData extends Model({
         return areAction ? areAction.areURL : null;
     }
 
+    clone() {
+        let newGrid = new GridData(this);
+        delete newGrid._id;
+        delete newGrid._rev;
+        newGrid.id = modelUtil.generateId('grid-data');
+        newGrid.label = this.label + ' (Copy)';
+        return newGrid;
+    }
+
     static fromJSON(jsonData) {
         var result = [];
         var data = modelUtil.getAsObject(jsonData);
