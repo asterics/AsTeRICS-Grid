@@ -6,7 +6,12 @@
             </div>
             <div class="ten columns">
                 <div class="row nomargin">
-                    <input id="inputAREURI" class="six columns" type="text" v-model="action.areURL"/>
+                    <input id="chkAutoUrl" type="checkbox" v-model="enableAreAutoUrl" @change="action.areURL = enableAreAutoUrl ? '' : areAutoUrl"/>
+                    <label for="chkAutoUrl" class="normal-text" data-i18n="">Automatically determine URL // URL automatisch bestimmen</label>
+                </div>
+                <div class="row">
+                    <input v-if="!enableAreAutoUrl" id="inputAREURI" class="six columns" type="text" v-model="action.areURL"/>
+                    <div v-if="enableAreAutoUrl" class="six columns">{{areAutoUrl}}</div>
                     <div class="six columns">
                         <button @click="testAREUrl(action)" style="width: 70%"><i class="fas fa-bolt"/> <span data-i18n="">Test URL // URL testen</span></button>
                         <span class="spaced" v-show="areConnected === undefined"><i class="fas fa-spinner fa-spin"/></span>
@@ -71,7 +76,7 @@
             </div>
             <div class="five columns">
                 <label for="inputDataPortData" class="normal-text" data-i18n="">Data // Daten</label>
-                <input id="inputDataPortData" type="text" v-model="action.dataPortSendData"/>
+                <input id="inputDataPortData" type="text" class="full-width" v-model="action.dataPortSendData"/>
             </div>
         </div>
         <div class="row" v-if="areModelSync && areComponentEventPorts.length != 0">
@@ -116,7 +121,9 @@
                 areComponentPorts: [],
                 areComponentEventPorts: [],
                 areModelFile: null, //Object of Type AdditionalGridFile that represents the ARE Model for this action
-                areModelSync: false
+                areModelSync: false,
+                enableAreAutoUrl: true,
+                areAutoUrl: areService.getRestURL()
             }
         },
         methods: {
@@ -187,7 +194,7 @@
             },
         },
         mounted () {
-            this.action.areURL = this.action.areURL || areService.getRestURL();
+            this.enableAreAutoUrl = !this.action.areURL;
             if(this.modelFile) { //model file parameter
                 this.areModelFile = this.modelFile;
             } else {
@@ -213,7 +220,7 @@
         margin-top: 0;
     }
 
-    input, .full-width {
+    .full-width {
         width: 100%;
     }
 
