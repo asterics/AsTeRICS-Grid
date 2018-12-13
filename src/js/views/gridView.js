@@ -138,7 +138,8 @@ function initVue() {
                     minBinarySplitThreshold: 3,
                     scanTimeoutMs: inputConfig.scanTimeoutMs,
                     scanTimeoutFirstElementFactor: inputConfig.scanTimeoutFirstElementFactor,
-                    selectKeyCode: inputConfig.scanKey
+                    selectKeyCode: inputConfig.scanKey,
+                    touchScanning: !inputConfig.mouseclickEnabled
                 });
                 if(inputConfig.areURL && inputConfig.areEvents.length > 0) {
                     var lastSelect = 0;
