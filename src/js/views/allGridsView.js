@@ -76,6 +76,14 @@ function initVue(grids) {
             edit(gridId) {
                 Router.toEditGrid(gridId);
             },
+            clone(gridId) {
+                var thiz = this;
+                dataService.getGrid(gridId).then(grid => {
+                    dataService.saveGrid(grid.clone()).then(() => {
+                        thiz.reload();
+                    });
+                })
+            },
             back() {
                 Router.back();
             },
