@@ -18,7 +18,7 @@ imageUtil.getBase64FromImg = function (img, maxWidth, quality) {
     canvas.height = img.height * factor;
     var ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    return canvas.toDataURL("image/jpeg", quality);
+    return canvas.toDataURL("image/png", quality);
 };
 
 /**
