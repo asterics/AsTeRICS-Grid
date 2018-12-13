@@ -263,9 +263,10 @@ areService.getComponentEventPortIds = function (componentId, areURI) {
  */
 areService.getRestURL = function (userUri) {
     if (!userUri) {
-        userUri = "127.0.0.1:8081";
+        userUri = window.location.hostname + ":8081";
     }
-    userUri = userUri.replace('localhost', '127.0.0.1');
+    userUri = userUri.replace('localhost', '[::1]');
+    userUri = userUri.replace('127.0.0.1', '[::1]');
     if (userUri.indexOf('http') === -1) {
         userUri = 'http://' + userUri;
     }
@@ -320,7 +321,7 @@ areService.subscribeEvents = function(eventCallback, areURI) {
     }
     closeEventSource();
 
-    let areUrl = areService.getRestURL(areURI).replace('127.0.0.1', 'localhost'); //for whatever reason websockets seem to only work with localhost in Chrome
+    let areUrl = areService.getRestURL(areURI);
     _eventSource = new EventSource(areUrl + 'runtime/model/channels/event/listener'); // Connecting to SSE service for event channel events
 
     //adding listener for specific events
