@@ -32,7 +32,6 @@
     "watch-appcache": "webpack --watch --config webpack.config.js --env.enableAppCache",
     "start": "webpack-dev-server",
     "start-appcache": "npm run build && webpack-dev-server --env.enableAppCache",
-    "start-prod": "webpack-dev-server --env.production",
     "pages": "git checkout gh-pages && git merge master && git push origin gh-pages && git checkout master",
     "pages-stash": "git stash && git checkout gh-pages && git merge master && git push origin gh-pages && git checkout master && git stash apply"
   },
