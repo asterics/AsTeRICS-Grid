@@ -33,7 +33,8 @@ InputConfig.defaults({
     scanKeyName: "Space", //space
     areEvents: [],
     areURL: "",
-    hoverTimeoutMs: 1000
+    hoverTimeoutMs: 1000,
+    mouseclickEnabled: true
 });
 
 export {InputConfig};
