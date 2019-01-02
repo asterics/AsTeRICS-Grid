@@ -76,6 +76,7 @@ module.exports = env => {
             'lib/pouchdb-find-7.0.0.min.js',
             'polyfill/core_js_shim.min.js',
             'polyfill/fetch.js',
+            'polyfill/url-search-params-polyfill.min.js',
             'views/allGridsView.html',
             'views/gridEditView.html',
             'views/gridView.html',
