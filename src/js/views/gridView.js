@@ -38,6 +38,9 @@ GridView.init = function (gridId) {
             if(urlParamService.isScanningDisabled()) {
                 GridView.metadata.inputConfig.scanAutostart = false;
             }
+            if(urlParamService.hideHeader()) {
+                GridView.metadata.headerPinned = false;
+            }
             dataService.saveMetadata(GridView.metadata);
             initVue();
         });

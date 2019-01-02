@@ -3,6 +3,7 @@ let urlParamService = {};
 let PARAM_DEMO_MODE = 'demo';
 let PARAM_SCANNING = 'scanning';
 let PARAM_RESET_DATABASE = 'reset';
+let PARAM_HEADER = 'header';
 
 urlParamService.isDemoMode = function () {
     return hasParam(PARAM_DEMO_MODE);
@@ -10,6 +11,10 @@ urlParamService.isDemoMode = function () {
 
 urlParamService.isScanningDisabled = function () {
     return urlParamService.isDemoMode() || isParamFalse(PARAM_SCANNING);
+};
+
+urlParamService.hideHeader = function () {
+    return urlParamService.isDemoMode() || isParamFalse(PARAM_HEADER);
 };
 
 urlParamService.shouldResetDatabase = function () {
