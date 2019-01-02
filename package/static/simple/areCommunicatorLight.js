@@ -1,5 +1,5 @@
 //The base URI that ARE runs at
-var _baseURI = window.location.origin + "/rest/";
+var _baseURI = window.location.origin + ":8081/rest/";
 
 //encodes PathParametes
 function encodeParam(text) {
