@@ -7,6 +7,7 @@ import {areService} from "../service/areService";
 import {Router} from "./../router.js";
 import {MetaData} from "../model/MetaData.js";
 import {InputEventHandler} from "../util/inputEventHandler";
+import {urlParamService} from "../service/urlParamService";
 
 import {Scanner} from "../input/scanning.js";
 import {Hover} from "../input/hovering.js";
@@ -33,10 +34,12 @@ GridView.init = function (gridId) {
 
         dataService.getMetadata().then(savedMetadata => {
             GridView.metadata = new MetaData(savedMetadata) || new MetaData();
+            GridView.metadata.lastOpenedGridId = GridView.gridData.id;
+            if(urlParamService.isScanningDisabled()) {
+                GridView.metadata.inputConfig.scanAutostart = false;
+            }
+            dataService.saveMetadata(GridView.metadata);
             initVue();
-            dataService.saveMetadata(new MetaData({
-                lastOpenedGridId: GridView.gridData.id
-            }, savedMetadata));
         });
     });
 };
