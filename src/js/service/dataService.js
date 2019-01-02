@@ -7,6 +7,7 @@ import {GridImage} from "../model/GridImage";
 import {MetaData} from "../model/MetaData";
 import {modelUtil} from "../util/modelUtil";
 import {translateService} from "./translateService";
+import {urlParamService} from "./urlParamService";
 
 var dbName = 'asterics-ergo-grid';
 var db = null;
@@ -75,8 +76,18 @@ function waitForInit(dontWait) {
 }
 
 function init() {
-    initPromise = new Promise((resolve => {
+    initPromise = new Promise(resolve => {
         initPouchDB().then(() => {
+            if(urlParamService.shouldResetDatabase()) {
+                resetPouchDB().then(() => {
+                    initInternal();
+                });
+            } else {
+                initInternal();
+            }
+        });
+
+        function initInternal() {
             db.info().then(function (info) {
                 log.debug(info);
             });
@@ -103,8 +114,8 @@ function init() {
                     });
                 }
             });
-        });
-    }));
+        }
+    });
 }
 
 init();
