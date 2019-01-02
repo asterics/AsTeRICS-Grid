@@ -1,4 +1,4 @@
-# AsTeRICS Ergo Grid
+# AsTeRICS Grid
 App for AsTeRICS Ergo for creating a flexible grid system that can be used for Augmentative and Alternative Communication (AAC), Environmental control or interaction with custom ARE models. The AsTeRICS Ergo Grid will also be runnable standalone, without any AsTeRICS backend.
 
 See https://asterics.github.io/AsTeRICS-Ergo-Grid/package/static/#main for a online demo of the Grid.
