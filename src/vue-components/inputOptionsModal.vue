@@ -140,7 +140,7 @@
 </template>
 
 <script>
-    import {dataService} from './../js/service/dataService'
+    import {dataService} from '../js/service/data/dataService'
     import {areService} from './../js/service/areService'
     import {Router} from './../js/router'
     import {I18nModule} from './../js/i18nModule.js';

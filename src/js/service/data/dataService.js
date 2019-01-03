@@ -2,12 +2,12 @@ import PouchDB from 'PouchDB';
 import FileSaver from 'file-saver';
 import $ from 'jquery';
 
-import {GridData} from "../model/GridData.js";
-import {GridImage} from "../model/GridImage";
-import {MetaData} from "../model/MetaData";
-import {modelUtil} from "../util/modelUtil";
-import {translateService} from "./translateService";
-import {urlParamService} from "./urlParamService";
+import {GridData} from "../../model/GridData.js";
+import {GridImage} from "../../model/GridImage";
+import {MetaData} from "../../model/MetaData";
+import {modelUtil} from "../../util/modelUtil";
+import {translateService} from "../translateService";
+import {urlParamService} from "../urlParamService";
 
 var dbName = 'asterics-ergo-grid';
 var db = null;

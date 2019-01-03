@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import {localStorageService} from "./service/localStorageService.js";
+import {localStorageService} from "./service/data/localStorageService.js";
 import {Router} from "./router.js";
 import {VueDirectives} from "./vue/directives";
 

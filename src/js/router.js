@@ -5,7 +5,7 @@ import {I18nModule} from './i18nModule.js';
 import {GridView} from "./views/gridView.js";
 import {GridEditView} from "./views/gridEditView.js";
 import {AllGridsView} from "./views/allGridsView.js";
-import {dataService} from "./service/dataService.js";
+import {dataService} from "./service/data/dataService.js";
 
 var Router = {};
 var navigoInstance = null;

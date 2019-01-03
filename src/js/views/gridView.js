@@ -2,7 +2,7 @@ import {L} from "../../lib/lquery.js";
 import Vue from 'vue'
 import {Grid} from "../grid.js";
 import {actionService} from "../service/actionService";
-import {dataService} from "../service/dataService";
+import {dataService} from "../service/data/dataService";
 import {areService} from "../service/areService";
 import {Router} from "./../router.js";
 import {MetaData} from "../model/MetaData.js";

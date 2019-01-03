@@ -1,4 +1,4 @@
-import {dataService} from "../service/dataService";
+import {dataService} from "../service/data/dataService";
 import {GridData} from "../model/GridData.js";
 import {Router} from "../router";
 import {modelUtil} from "../util/modelUtil";

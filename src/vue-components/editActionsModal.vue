@@ -130,7 +130,7 @@
 </template>
 
 <script>
-    import {dataService} from './../js/service/dataService'
+    import {dataService} from '../js/service/data/dataService'
     import {actionService} from './../js/service/actionService'
     import {speechService} from './../js/service/speechService'
     import {I18nModule} from './../js/i18nModule.js';
