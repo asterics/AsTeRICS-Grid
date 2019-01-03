@@ -1,5 +1,15 @@
 function parseJson(text) {
-    return eval('(' + text + ')');
+    //check if first and last element is correct, otherwise trim
+    text = text.split("");
+    if(text[text.length-1] != '}' && text[text.length-1] != ']') {
+        text.pop();
+    }
+    if(text[0] != '[' && text[0] != '{') {
+        text.shift();
+    }
+    text = text.join("");
+
+    return eval("(" + text + ")");
 }
 
 function createButton(caption, faIcon, onClickFunctionCall) {
