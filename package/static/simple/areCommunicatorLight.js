@@ -1,5 +1,5 @@
 //The base URI that ARE runs at
-var _baseURI = window.location.origin + ":8081/rest/";
+var _baseURI = "http://" + window.location.hostname + ":8081/rest/";
 
 //encodes PathParametes
 function encodeParam(text) {
@@ -14,7 +14,7 @@ function encodeParam(text) {
 function getData(filepath, successCallback, errorCallback) {
     if (!filepath) return;
 
-    var url = window.location.origin + "/" + filepath;
+    var url = "http://" + window.location.hostname + ":8081/" + filepath;
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState === 4) {
