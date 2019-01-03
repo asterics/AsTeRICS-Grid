@@ -24,8 +24,11 @@
         <div id="content" class="container-fluid">
             <div class="row">
                 <div class="col-md-4 col-sm-5 col-lg-3">
-                    <h1 id="heading">AsTeRICS Grid</h1>
+                    <h1 id="heading" style="font-size: 1.4em">AsTeRICS Grid</h1>
                 </div>
+            </div>
+            <div id="loading">
+                loading ...
             </div>
             <div id="controls">
                 <!-- buttons will be inserted here -->
@@ -42,16 +45,13 @@
 
 <!-- main script -->
 <script type="application/javascript">
-
     //get and check data
-    getData('examples/default.grd', gotDataCallback);
+    getData('webapps/simple/examples/default.grd', gotDataCallback);
 
     function gotDataCallback(data) {
-        data = parseJson(decodeURIComponent(data));
-        if (MODE_COMPATIBILITY) {
-            removeElement('footer');
-            document.getElementById("heading").style.fontSize = "1.4em";
-        }
+        data = parseJson(data);
+        data = data.grids;
+        removeElement('loading');
 
         //create headings and buttons
         for (var i = 0; i < data.length; i++) { //grids
