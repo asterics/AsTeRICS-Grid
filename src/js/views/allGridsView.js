@@ -92,6 +92,7 @@ function initVue(grids) {
                     dataService.downloadSingleGrid(gridId);
                 } else {
                     dataService.downloadAllGrids();
+                    dataService.downloadAllGridsSimple();
                 }
             },
             importFromFile: function (event) {

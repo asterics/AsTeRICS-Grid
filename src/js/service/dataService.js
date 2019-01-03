@@ -445,6 +445,23 @@ var dataService = {
             }
         });
     },
+    downloadAllGridsSimple() {
+        this.getGrids().then(grids => {
+            if(grids) {
+                grids = JSON.parse(JSON.stringify(grids));
+                grids.forEach(grid => {
+                    delete grid.additionalFiles;
+                    grid.gridElements.forEach(element => {
+                        delete element.image;
+                    });
+                });
+                log.info("simple version of exported grids without images and files included:");
+                log.info(JSON.stringify({grids: grids})); //has to be in object to be valid JSON
+                //var blob = new Blob([JSON.stringify(grids)], {type: "text/plain;charset=utf-8"});
+                //FileSaver.saveAs(blob, "my-gridset.grd");
+            }
+        });
+    },
     importGridsFromFile(file) {
         var thiz = dataService;
         return new Promise((resolve, reject) => {
