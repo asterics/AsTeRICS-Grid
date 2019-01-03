@@ -1,214 +1,401 @@
-import PouchDB from 'PouchDB';
 import FileSaver from 'file-saver';
-import $ from 'jquery';
 
 import {GridData} from "../../model/GridData.js";
 import {GridImage} from "../../model/GridImage";
 import {MetaData} from "../../model/MetaData";
 import {modelUtil} from "../../util/modelUtil";
 import {translateService} from "../translateService";
-import {urlParamService} from "../urlParamService";
+import {indexedDbService} from "./indexedDbService";
 
-var dbName = 'asterics-ergo-grid';
-var db = null;
-var initPromise = null;
-var defaultGridSetPath = 'examples/default.grd';
-var _updateListeners = [];
-
-function initPouchDB() {
-    return new Promise(resolve => {
-        db = new PouchDB(dbName);
-        //var remoteDbAddress = 'http://' + window.location.hostname + ':5984/testdb';
-        //var remoteDB = new PouchDB(remoteDbAddress);
-        //log.info('trying to sync pouchdb with: ' + remoteDbAddress);
-        /*db.sync(remoteDB, {
-            live: true,
-            retry: true
-        }).on('change', function (info) {
-            log.info('cpouchdb change:' + info.direction);
-            if(info.direction == 'pull') {
-                log.info('pouchdb pulling updates...');
-                _updateListeners.forEach(listener => {
-                    listener();
-                })
-            } else {
-                log.info('pouchdb pushing updates...');
-            }
-        }).on('error', function (err) {
-            log.warn('couchdb error');
-        });*/
-
-        log.debug('create index');
-        db.createIndex({
-            index: {fields: ['modelName', 'id']}
-        }).then(() => {
-            resolve();
-        });
-    })
-}
-
-function resetPouchDB() {
-    return new Promise(resolve => {
-        db.destroy().then(function () {
-            initPouchDB().then(() => resolve());
-        }).catch(function (err) {
-            log.error('error destroying database: ' + err);
-        })
-    });
-}
+let dataService = {};
 
 /**
- * returns a promise that is resolved if init is done.
+ * gets a grid by ID.
+ * @see{GridData}
  *
- * @param dontWait if provided, waiting is skipped and promise is resolved immediately
+ * @param id the ID of the grid
+ * @return {Promise} resolves to a grid object that was found
+ */
+dataService.getGrid = function (id) {
+    return new Promise(resolve => {
+        indexedDbService.getObject(GridData, id).then(grids => {
+            let retVal = grids && grids.length > 0 ? grids[0] : grids;
+            resolve(retVal);
+        });
+    });
+};
+
+/**
+ * Gets an array of all grids.
+ * @see{GridData}
+ *
+ * @return {Promise} resolves to an array of all stored grids.
+ */
+dataService.getGrids = function () {
+    return new Promise(resolve => {
+        indexedDbService.getObject(GridData).then(grids => {
+            if (!grids) {
+                resolve([]);
+            } else {
+                let retVal = grids instanceof Array ? grids : [grids];
+                resolve(retVal);
+            }
+        });
+    });
+};
+
+/**
+ * Saves a grid or updates it, if existing.
+ * @see{GridData}
+ *
+ * @param gridData the GridData to save/update
+ * @return {Promise} resolves after operation finished successful
+ */
+dataService.saveGrid = function (gridData) {
+    return indexedDbService.saveObject(GridData, gridData);
+};
+
+/**
+ * Updates a grid, if existing. If not existing, nothing is done.
+ * @see{GridData}
+ *
+ * @param gridId the ID of the grid to update
+ * @param newConfig updated grid data
+ * @return {Promise} resolves after operation finished successful
+ */
+dataService.updateGrid = function (gridId, newConfig) {
+    newConfig.id = gridId;
+    return indexedDbService.saveObject(GridData, newConfig, true);
+};
+
+/**
+ * Deletes a grid.
+ *
+ * @param gridId the ID of the grid to delete.
  * @return {Promise}
  */
-function waitForInit(dontWait) {
+dataService.deleteGrid = function (gridId) {
     return new Promise(resolve => {
-        if (dontWait) {
-            resolve();
-        } else {
-            initPromise.then(() => {
+        dataService.getGrid(gridId).then(grid => {
+            indexedDbService.removeObject(grid).then(() => {
                 resolve();
             });
-        }
-    });
-}
-
-function init() {
-    initPromise = new Promise(resolve => {
-        initPouchDB().then(() => {
-            if(urlParamService.shouldResetDatabase()) {
-                resetPouchDB().then(() => {
-                    initInternal();
-                });
-            } else {
-                initInternal();
-            }
         });
-
-        function initInternal() {
-            db.info().then(function (info) {
-                log.debug(info);
-            });
-
-            getInternal(GridData, null, true).then(grids => {
-                if (grids) {
-                    log.debug('detected saved grid, no generation of new grid.');
-                    resolve();
-                    return;
-                } else {
-                    $.get(defaultGridSetPath, function (data) {
-                        log.info('importing default grid set...');
-                        var gridsData = JSON.parse(data);
-                        var promises = [];
-                        gridsData.forEach(gridData => {
-                            gridData._id = null;
-                            gridData._rev = null;
-                            promises.push(saveInternal(GridData, gridData, false, true));
-                        });
-                        Promise.all(promises).then(() => {
-                            log.debug('imported default grid set!');
-                            resolve();
-                        });
-                    });
-                }
-            });
-        }
     });
-}
-
-init();
+};
 
 /**
- * queries for objects in database and resolves promise with result.
- * If no elements are found 'null' is resolved, if exactly one element was found, this element is resolved,
- * otherwise an array of the found elements is resolved.
+ * Adds additional grid files to a grid. If a filename that is added already exists, the
+ * existing file is replaced.
+ * @see{AdditionalGridFile}
  *
- * @param objectType the objectType to find, e.g. "GridData"
- * @param id the id of the object to find (optional)
- * @param dontWaitOnInit if true, there is no waiting for init (for calling it in init)
- * @return {Promise}
+ * @param gridId the ID of the grid to add the additional files
+ * @param additionalGridFiles array of objects of type @see{AdditionalGridFile}
+ * @return {Promise} resolves after operation finished successful
  */
-function getInternal(objectType, id, dontWaitOnInit) {
-    if (!objectType || !objectType.getModelName) {
-        log.error('did not specify needed parameter "objectType"!');
-    }
-
-    return new Promise((resolve, reject) => {
-        waitForInit(dontWaitOnInit).then(() => {
-            log.debug('getting ' + objectType.getModelName() + '(id: ' + id + ')...');
-            var query = {
-                selector: {
-                    modelName: objectType.getModelName()
+dataService.saveAdditionalGridFiles = function (gridId, additionalGridFiles) {
+    return new Promise(resolve => {
+        if (!additionalGridFiles) {
+            resolve();
+        }
+        dataService.getGrid(gridId).then(grid => {
+            additionalGridFiles.forEach(gridFile => {
+                grid = JSON.parse(JSON.stringify(grid));
+                let index = grid.additionalFiles.findIndex(f => f.fileName === gridFile.fileName);
+                if (index !== -1) {
+                    grid.additionalFiles[index] = gridFile;
+                } else {
+                    grid.additionalFiles.push(gridFile);
                 }
-            };
-            if (id) {
-                query.selector.id = id;
+            });
+            dataService.saveGrid(grid).then(() => {
+                resolve();
+            });
+        })
+    });
+};
+
+/**
+ * Gets a single element of a grid.
+ * @see{GridElement}
+ *
+ * @param gridId the ID of the grid, which contains the element
+ * @param gridElementId the ID of the element to get
+ * @return {Promise} resolves with the grid element as parameter.
+ */
+dataService.getGridElement = function (gridId, gridElementId) {
+    return new Promise(resolve => {
+        dataService.getGrid(gridId).then(grid => {
+            resolve(grid.gridElements.filter(elm => elm.id === gridElementId)[0]);
+        });
+    });
+};
+
+/**
+ * returns a map with keys == gridIds and values of the given attribute parameter
+ * e.g. attribute == "label" will return a map of <gridIds -> gridLabel>
+ * @see{GridData} for possible attributes
+ *
+ * @param attribute the attribute name as string
+ * @return {Promise} an object with a mapping of <gridId -> attribute>
+ */
+dataService.getGridsAttribute = function (attribute) {
+    return new Promise(resolve => {
+        dataService.getGrids().then(grids => {
+            let returnMap = {};
+            grids.forEach(grid => {
+                returnMap[grid.id] = grid[attribute];
+            });
+            resolve(returnMap);
+        })
+    });
+};
+
+/**
+ * Adds or updates a grid element.
+ * @see{GridElement}
+ *
+ * @param gridId the ID of the grid for which the element should be added/updated
+ * @param updatedGridElement the gridElement of type @see{GridElement.js}
+ * @return {Promise} resolves after operation finished successful
+ */
+dataService.updateOrAddGridElement = function (gridId, updatedGridElement) {
+    return new Promise(resolve => {
+        dataService.getGrid(gridId).then(grid => {
+            grid = JSON.parse(JSON.stringify(grid));
+            updatedGridElement = JSON.parse(JSON.stringify(updatedGridElement));
+            let index = grid.gridElements.map(el => el.id).indexOf(updatedGridElement.id);
+
+            if (index !== -1) {
+                grid.gridElements[index] = updatedGridElement;
+            } else {
+                grid.gridElements.push(updatedGridElement);
             }
-            db.find(query).then(function (res) {
-                var objects = [];
-                if (res.docs && res.docs.length > 0) {
-                    res.docs.forEach(doc => {
-                        objects.push(new objectType(doc));
-                    })
-                }
-                log.debug('found ' + objectType.getModelName() + ": " + objects.length + ' elements');
-                if (objects.length == 0) {
-                    resolve(null);
-                } else if (objects.length == 1) {
-                    resolve(objects[0]);
-                } else {
-                    resolve(objects);
-                }
-            }).catch(function (err) {
-                log.error(err);
-                reject();
+
+            dataService.updateGrid(gridId, grid).then(() => {
+                resolve();
             });
         });
     });
-}
+};
 
-function saveInternal(objectType, data, onlyUpdate, dontWaitOnInit) {
-    if (!data || !objectType || !objectType.getModelName) {
-        log.error('did not specify needed parameter "objectType"!');
-    }
+/**
+ * Adds an array of new grid elements to a grid.
+ * @see{GridElement}
+ *
+ * @param gridId the ID of the grid where the new elements should be added
+ * @param newGridElements array of new elements of type @see{GridElement}
+ * @return {Promise} resolves after operation finished successful
+ */
+dataService.addGridElements = function (gridId, newGridElements) {
+    return new Promise(resolve => {
+        dataService.getGrid(gridId).then(grid => {
+            grid = JSON.parse(JSON.stringify(grid));
+            grid.gridElements = grid.gridElements.concat(newGridElements);
+            dataService.updateGrid(gridId, grid).then(() => {
+                resolve();
+            });
+        });
+    });
+};
 
-    log.debug('saving ' + objectType.getModelName() + '...');
+/**
+ * Saves metadata to database. Metadata is always stored with the same ID, so only one metadata object can exist in
+ * the database.
+ * @see{MetaData}
+ *
+ * @param newMetadata new or updated metadata object
+ * @return {Promise} resolves after operation finished successful
+ */
+dataService.saveMetadata = function (newMetadata) {
+    return new Promise(resolve => {
+        dataService.getMetadata().then(existingMetadata => {
+            if (existingMetadata) {
+                //new metadata is stored with ID of existing metadata -> there should only be one metadata object
+                let id = existingMetadata instanceof Array ? existingMetadata[0].id : existingMetadata.id;
+                newMetadata.id = id;
+            }
+            if (!existingMetadata.isEqual(newMetadata)) {
+                indexedDbService.saveObject(MetaData, newMetadata).then(() => {
+                    resolve();
+                });
+            } else {
+                resolve();
+            }
+        });
+    });
+};
+
+/**
+ * Retrieves the metadata object.
+ * @see{MetaData}
+ *
+ * @return {Promise} resolving with the metadata object as parameter
+ */
+dataService.getMetadata = function () {
+    return new Promise(resolve => {
+        indexedDbService.getObject(MetaData).then(result => {
+            if (!result) {
+                resolve(new MetaData());
+            } else if (result instanceof Array) {
+                resolve(result[0]);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+};
+
+/**
+ * saves the given imageData, if it was not already saved
+ * @see{GridImage}
+ *
+ * @param imgData the data of type GridImage
+ * @return {Promise} the id of the newly saved image data or an id of an existing image data with the same hash
+ */
+dataService.saveImage = function (imgData) {
+    return saveHashedItemInternal(GridImage, imgData);
+};
+
+/**
+ * returns a GridImage by ID.
+ * @see{GridImage}
+ *
+ * @param imgId the ID of the grid image to return.
+ * @return {Promise} resolves to the grid image object
+ */
+dataService.getImage = function (imgId) {
+    return indexedDbService.getObject(GridImage, imgId);
+};
+
+/**
+ * Downloads to whole database to File. Opens a file download in Browser.
+ */
+dataService.downloadDB = function () {
+    indexedDbService.dumpDatabase().then(dumpedString => {
+        let blob = new Blob([dumpedString], {type: "text/plain;charset=utf-8"});
+        FileSaver.saveAs(blob, "my-grids-backup.grb");
+    });
+};
+
+/**
+ * Downloads to a single grid to File. Opens a file download in Browser.
+ * @param gridId the ID of the grid to download
+ */
+dataService.downloadSingleGrid = function (gridId) {
+    dataService.getGrid(gridId).then(gridData => {
+        if (gridData) {
+            let blob = new Blob([JSON.stringify(gridData)], {type: "text/plain;charset=utf-8"});
+            FileSaver.saveAs(blob, gridData.label + ".grd");
+        }
+    });
+};
+
+/**
+ * Downloads all grids to File. Opens a file download in Browser.
+ */
+dataService.downloadAllGrids = function () {
+    dataService.getGrids().then(grids => {
+        if (grids) {
+            let blob = new Blob([JSON.stringify(grids)], {type: "text/plain;charset=utf-8"});
+            FileSaver.saveAs(blob, "my-gridset.grd");
+        }
+    });
+};
+
+/**
+ * logs a simple version of all grids without base64 contents to console => used for legacy mode
+ */
+dataService.downloadAllGridsSimple = function () {
+    dataService.getGrids().then(grids => {
+        if (grids) {
+            grids = JSON.parse(JSON.stringify(grids));
+            grids.forEach(grid => {
+                delete grid.additionalFiles;
+                grid.gridElements.forEach(element => {
+                    delete element.image;
+                });
+            });
+            log.info("simple version of exported grids without images and files included:");
+            log.info(JSON.stringify({grids: grids})); //has to be in object to be valid JSON
+        }
+    });
+};
+
+/**
+ * imports grids from a file that was exported by downloadSingleGrid() or downloadAllGrids()
+ *
+ * @param file the file object from a file input that contains the data
+ * @return {Promise} resolves after operation finished successful
+ */
+dataService.importGridsFromFile = function (file) {
     return new Promise((resolve, reject) => {
-        waitForInit(dontWaitOnInit).then(() => {
-            getInternal(objectType, data.id, dontWaitOnInit).then(existingObject => {
-                if (existingObject) {
-                    log.debug(objectType.getModelName() + ' already existing, doing update. id: ' + existingObject.id);
-                    var newObject = new objectType(data, existingObject);
-                    var saveData = JSON.parse(JSON.stringify(newObject));
-                    saveData._id = existingObject._id;
-                    saveData._rev = existingObject._rev;
-                    db.put(saveData).then(() => {
-                        log.debug('updated ' + objectType.getModelName() + ', id: ' + existingObject.id);
-                        resolve();
-                    }).catch(function (err) {
-                        log.error(err);
-                        reject();
-                    });
-                } else if (!onlyUpdate) {
-                    var saveData = JSON.parse(JSON.stringify(data));
-                    saveData._id = saveData.id;
-                    db.put(saveData).then(() => {
-                        log.debug('saved ' + objectType.getModelName() + ', id: ' + saveData.id);
-                        resolve();
-                    }).catch(function (err) {
-                        log.error(err);
-                        reject();
-                    });
-                } else {
-                    log.warn('no existing ' + objectType.getModelName() + ' found to update, aborting.');
-                    reject();
+        let reader = new FileReader();
+        reader.onload = (function (theFile) {
+            return function (e) {
+                let jsonString = e.target.result;
+                dataService.importGridsFromJSON(jsonString).then(() => {
+                    resolve();
+                });
+            }
+        })(file);
+        reader.readAsText(file);
+    });
+};
+
+/**
+ * imports grids from a json string.
+ * @see{GridData}
+ *
+ * @param jsonString a valid json string containing serialized grid data.
+ * @return {Promise} resolves after operation finished successful
+ */
+dataService.importGridsFromJSON = function (jsonString) {
+    return new Promise(resolve => {
+        let gridData = JSON.parse(jsonString);
+        if (!(gridData instanceof Array)) {
+            gridData = [gridData];
+        }
+        dataService.getGrids().then(grids => {
+            let existingNames = grids.map(grid => grid.label);
+            let existingIds = grids.map(grid => grid.id);
+            let resolveFns = [];
+            let failed = false;
+            gridData.forEach(grid => {
+                if (!failed) {
+                    if (existingIds.includes(grid.id)) {
+                        alert(translateService.translate('ERROR_IMPORT_SAMEID', grid.label));
+                        failed = true;
+                        return;
+                    }
+                    grid.label = modelUtil.getNewName(grid.label, existingNames);
+                    grid._id = null;
+                    grid._rev = null;
+                    resolveFns.push(dataService.saveGrid(grid));
                 }
+            });
+            Promise.all(resolveFns).then(() => {
+                resolve();
             });
         });
     });
-}
+};
+
+/**
+ * Registers an update listener. All registered listeners are called if an update event from a remote database
+ * is received.
+ * @param listener a function that should be called on remote database updates
+ */
+dataService.registerUpdateListener = function (listener) {
+    indexedDbService.registerUpdateListener(listener);
+};
+
+/**
+ * clears all update listeners
+ */
+dataService.clearUpdateListeners = function () {
+    indexedDbService.clearUpdateListeners();
+};
 
 /**
  * saves an element that can potentially be used in several places, and has high data volume and therefore
@@ -223,30 +410,30 @@ function saveInternal(objectType, data, onlyUpdate, dontWaitOnInit) {
  * existing object in the database with the same hash
  */
 function saveHashedItemInternal(objectType, data) {
-    var promises = [];
+    let promises = [];
     return new Promise((resolve, reject) => {
         dataService.getMetadata().then(metadata => {
-            if(!metadata || ! metadata.hashCodes) {
+            if (!metadata || !metadata.hashCodes) {
                 log.warn('error: hashCodes or metadata do not exist');
                 reject();
                 return;
             }
-            var hashMap = null;
-            if(metadata.hashCodes[objectType.getModelName()]) {
+            let hashMap = null;
+            if (metadata.hashCodes[objectType.getModelName()]) {
                 hashMap = metadata.hashCodes[objectType.getModelName()];
             } else {
                 hashMap = {};
                 metadata.hashCodes[objectType.getModelName()] = hashMap;
             }
-            var hash = modelUtil.hashCode(data);
-            if(hashMap[hash]) {
+            let hash = modelUtil.hashCode(data);
+            if (hashMap[hash]) {
                 log.debug('saveHashedItemInternal: hash found, not saving new element');
                 data.id = hashMap[hash];
             } else {
                 log.debug('saveHashedItemInternal: hash not found, saving new element');
                 hashMap[hash] = data.id;
-                promises.push(saveInternal(objectType, data));
-                promises.push(saveInternal(MetaData, metadata));
+                promises.push(indexedDbService.saveObject(objectType, data));
+                promises.push(indexedDbService.saveObject(MetaData, metadata));
             }
             Promise.all(promises).then(() => {
                 resolve(data.id);
@@ -254,291 +441,5 @@ function saveHashedItemInternal(objectType, data) {
         });
     });
 }
-
-var dataService = {
-    getGrid: function (id) {
-        return new Promise(resolve => {
-            getInternal(GridData, id).then(grids => {
-                var retVal = grids && grids.length > 0 ? grids[0] : grids;
-                resolve(retVal);
-            });
-        });
-    },
-    getGrids: function (id) {
-        return new Promise(resolve => {
-            getInternal(GridData, id).then(grids => {
-                if(!grids) {
-                    resolve([]);
-                } else {
-                    var retVal = grids instanceof Array ? grids : [grids];
-                    resolve(retVal);
-                }
-            });
-        });
-    },
-    /**
-     * adds additional grid files to a grid. If a filename that is added already exists, the existing file is replaced.
-     * @param gridId
-     * @param additionalGridFiles
-     * @return {Promise}
-     */
-    saveAdditionalGridFiles(gridId, additionalGridFiles) {
-        return new Promise(resolve => {
-           if(!additionalGridFiles) {
-               resolve();
-           }
-           dataService.getGrid(gridId).then(grid => {
-               additionalGridFiles.forEach(gridFile => {
-                   grid = JSON.parse(JSON.stringify(grid));
-                   var index = grid.additionalFiles.findIndex(f => f.fileName == gridFile.fileName);
-                   if(index !== -1) {
-                       grid.additionalFiles[index] = gridFile;
-                   } else {
-                       grid.additionalFiles.push(gridFile);
-                   }
-               });
-               dataService.saveGrid(grid).then(() => {
-                   resolve();
-               });
-           })
-        });
-    },
-    getGridElement: function (gridId, gridElementId) {
-        return new Promise(resolve => {
-            this.getGrid(gridId).then(grid => {
-                resolve(grid.gridElements.filter(elm => elm.id == gridElementId)[0]);
-            });
-        });
-    },
-    /**
-     * returns a map with keys == gridIds and values of the given attribute parameter
-     * e.g. attribute == "label" will return a map of <gridIds -> gridLabel>
-     * @param attribute
-     * @return {Promise}
-     */
-    getGridsAttribute(attribute) {
-        return new Promise(resolve => {
-            this.getGrids().then(grids => {
-                var returnMap = {};
-                grids.forEach(grid => {
-                    returnMap[grid.id] = grid[attribute];
-                });
-                resolve(returnMap);
-            })
-        });
-    },
-    updateOrAddGridElement: function (gridId, updatedGridElement) {
-        return new Promise(resolve => {
-            this.getGrid(gridId).then(grid => {
-                grid = JSON.parse(JSON.stringify(grid));
-                updatedGridElement = JSON.parse(JSON.stringify(updatedGridElement));
-                var index = grid.gridElements.map(el => el.id).indexOf(updatedGridElement.id);
-
-                if(index != -1) {
-                    grid.gridElements[index] = updatedGridElement;
-                } else {
-                    grid.gridElements.push(updatedGridElement);
-                }
-
-                this.updateGrid(gridId, grid).then(() => {
-                    resolve();
-                });
-            });
-        });
-    },
-    addGridElements: function (gridId, newGridElements) {
-        return new Promise(resolve => {
-            this.getGrid(gridId).then(grid => {
-                grid = JSON.parse(JSON.stringify(grid));
-                grid.gridElements = grid.gridElements.concat(newGridElements);
-                this.updateGrid(gridId, grid).then(() => {
-                    resolve();
-                });
-            });
-        });
-    },
-    saveGrid: function (gridData) {
-        return saveInternal(GridData, gridData);
-    },
-    updateGrid: function (gridId, newConfig) {
-        newConfig.id = gridId;
-        return saveInternal(GridData, newConfig, true);
-    },
-    deleteGrid: function (gridId) {
-        return new Promise(resolve => {
-            this.getGrid(gridId).then(grid => {
-                db.remove(grid);
-                log.debug('deleted grid from db! id: ' + gridId);
-                resolve();
-            })
-        });
-    },
-    saveMetadata: function (newMetadata) {
-        return new Promise(resolve => {
-            this.getMetadata().then(existingMetadata => {
-                if (existingMetadata) {
-                    //new metadata is stored with ID of existing metadata -> there should only be one metadata object
-                    var id = existingMetadata instanceof Array ? existingMetadata[0].id : existingMetadata.id;
-                    newMetadata.id = id;
-                }
-                if(!existingMetadata.isEqual(newMetadata)) {
-                    saveInternal(MetaData, newMetadata).then(() => {
-                        resolve();
-                    });
-                } else {
-                    resolve();
-                }
-            });
-        });
-    },
-    getMetadata: function () {
-        return new Promise(resolve => {
-            getInternal(MetaData).then(result => {
-                if(!result) {
-                    resolve(new MetaData());
-                } else if(result instanceof Array) {
-                    resolve(result[0]);
-                } else {
-                    resolve(result);
-                }
-            });
-        });
-    },
-    /**
-     * saves the given imageData, if it was not already saved
-     * @param imgData
-     * @return {Promise} the id of the newly saved image data or an id of an existing image data with the same hash
-     */
-    saveImage: function (imgData) {
-        return saveHashedItemInternal(GridImage, imgData);
-    },
-    getImage: function (imgId) {
-        return getInternal(GridImage, imgId);
-    },
-    downloadDB: function () {
-        var dumpedString = '';
-        var stream = new MemoryStream();
-        stream.on('data', function (chunk) {
-            dumpedString += chunk.toString();
-        });
-
-        db.dump(stream).then(function () {
-            var blob = new Blob([dumpedString], {type: "text/plain;charset=utf-8"});
-            FileSaver.saveAs(blob, "my-grids-backup.grb");
-        }).catch(function (err) {
-            log.error('error on dumping database: ', err);
-        });
-    },
-    downloadSingleGrid(gridId) {
-        this.getGrid(gridId).then(gridData => {
-            if(gridData) {
-                var blob = new Blob([JSON.stringify(gridData)], {type: "text/plain;charset=utf-8"});
-                FileSaver.saveAs(blob, gridData.label + ".grd");
-            }
-        });
-    },
-    downloadAllGrids() {
-        this.getGrids().then(grids => {
-            if(grids) {
-                var blob = new Blob([JSON.stringify(grids)], {type: "text/plain;charset=utf-8"});
-                FileSaver.saveAs(blob, "my-gridset.grd");
-            }
-        });
-    },
-    downloadAllGridsSimple() {
-        this.getGrids().then(grids => {
-            if(grids) {
-                grids = JSON.parse(JSON.stringify(grids));
-                grids.forEach(grid => {
-                    delete grid.additionalFiles;
-                    grid.gridElements.forEach(element => {
-                        delete element.image;
-                    });
-                });
-                log.info("simple version of exported grids without images and files included:");
-                log.info(JSON.stringify({grids: grids})); //has to be in object to be valid JSON
-                //var blob = new Blob([JSON.stringify(grids)], {type: "text/plain;charset=utf-8"});
-                //FileSaver.saveAs(blob, "my-gridset.grd");
-            }
-        });
-    },
-    importGridsFromFile(file) {
-        var thiz = dataService;
-        return new Promise((resolve, reject) => {
-            var reader = new FileReader();
-            reader.onload = (function (theFile) {
-                return function (e) {
-                    var jsonString = e.target.result;
-                    dataService.importGridsFromJSON(jsonString).then(() => {
-                        resolve();
-                    });
-                }
-            })(file);
-            reader.readAsText(file);
-        });
-    },
-    importGridsFromJSON(jsonString) {
-        return new Promise(resolve => {
-            var gridData = JSON.parse(jsonString);
-            if (!(gridData instanceof Array)) {
-                gridData = [gridData];
-            }
-            dataService.getGrids().then(grids => {
-                var existingNames = grids.map(grid => grid.label);
-                var existingIds = grids.map(grid => grid.id);
-                var resolveFns = [];
-                var failed = false;
-                gridData.forEach(grid => {
-                    if (!failed) {
-                        if (existingIds.includes(grid.id)) {
-                            alert(translateService.translate('ERROR_IMPORT_SAMEID', grid.label));
-                            failed = true;
-                            return;
-                        }
-                        grid.label = modelUtil.getNewName(grid.label, existingNames);
-                        grid._id = null;
-                        grid._rev = null;
-                        resolveFns.push(dataService.saveGrid(grid));
-                    }
-                });
-                Promise.all(resolveFns).then(() => {
-                    resolve();
-                });
-            });
-        });
-    },
-    importDB: function (file) {
-        return new Promise(resolve => {
-            var reader = new FileReader();
-            reader.onload = (function (theFile) {
-                return function (e) {
-                    var data = e.target.result;
-                    resetPouchDB().then(() => {
-                        log.debug('resetted pouchdb! loading from string...');
-                        db.load(data).then(function () {
-                            log.debug('loaded db from string!');
-                            resolve();
-                        }).catch(function (err) {
-                            log.error('error loading db from string: ' + err);
-                        });
-                    });
-                };
-            })(file);
-            reader.readAsText(file);
-        });
-    },
-    resetDB: function () {
-        resetPouchDB().then(() => {
-            window.location.reload();
-        });
-    }
-    ,
-    registerUpdateListener: function (listener) {
-        _updateListeners.push(listener);
-    },
-    clearUpdateListeners() {
-        _updateListeners = [];
-    }
-};
 
 export {dataService};

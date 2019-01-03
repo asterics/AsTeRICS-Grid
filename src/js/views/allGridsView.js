@@ -5,6 +5,7 @@ import {modelUtil} from "../util/modelUtil";
 import Vue from 'vue';
 import {I18nModule} from "./../i18nModule.js";
 import {translateService} from "./../service/translateService";
+import {indexedDbService} from "../service/data/indexedDbService";
 
 var AllGridsView = {};
 var vueApp = null;
@@ -92,7 +93,7 @@ function initVue(grids) {
                     dataService.downloadSingleGrid(gridId);
                 } else {
                     dataService.downloadAllGrids();
-                    dataService.downloadAllGridsSimple();
+                    //dataService.downloadAllGridsSimple();
                 }
             },
             importFromFile: function (event) {
@@ -103,7 +104,7 @@ function initVue(grids) {
             },
             restoreBackupFromFile: function (event) {
                 if(confirm(translateService.translate('CONFIRM_IMPORT_BACKUP', event.target.files[0].name))) {
-                    this.importFromFileInternal(event, '.grb', dataService.importDB);
+                    this.importFromFileInternal(event, '.grb', indexedDbService.importDatabase);
                 } else {
                     this.resetFileInput(event);
                 }
@@ -116,7 +117,9 @@ function initVue(grids) {
             reset() {
                 if(confirm(translateService.translate('CONFIRM_RESET_DB'))) {
                     this.showLoading = true;
-                    dataService.resetDB();
+                    indexedDbService.resetDatabase().then(() => {
+                        window.location.reload();
+                    });
                 }
             },
             importFromFileInternal(event, extension, callFunction) {
