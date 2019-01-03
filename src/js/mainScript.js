@@ -55,6 +55,7 @@ function reloadOnAppcacheUpdate() {
     });
     window.applicationCache.addEventListener('cached', function () {
         log.debug('appcache: cached');
+        onUpdateReady();
     });
     window.applicationCache.addEventListener('noupdate', function () {
         log.debug('appcache: noupdate');
