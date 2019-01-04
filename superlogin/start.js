@@ -13,7 +13,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 var config = {
-  dbServer: {
+    testMode: {
+        // Use a stub transport so no email is actually sent
+        noEmail: true,
+        // Displays debug information in the oauth dialogs
+        oauthDebug: false,
+        // Logs out-going emails to the console
+        debugEmail: true
+    },
+    dbServer: {
     protocol: 'http://',
     host: 'localhost:5984',
     user: 'admin',
@@ -47,10 +55,10 @@ var config = {
   },
   userDBs: {
     defaultDBs: {
-      private: ['aeg-data']
+      private: ['asterics-grid-data']
     }
   }
-}
+};
 
 // Initialize SuperLogin
 var superlogin = new SuperLogin(config);
