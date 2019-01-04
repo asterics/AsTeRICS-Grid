@@ -11,7 +11,7 @@
             </div>
         </header>
         <main role="main" class="row content spaced">
-            <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Login // Einloggen</span></h2>
+            <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Register // Registrieren</span></h2>
             <form autocomplete="on">
                 <div class="row">
                     <label for="inputUser" class="two columns"><span class="desktop-right">E-Mail</span></label>
@@ -21,29 +21,42 @@
                     <label for="inputPassword" class="two columns"><span class="desktop-right" data-i18n="">Password // Passwort</span></label>
                     <input type="password" v-model="password" id="inputPassword" class="four columns"/>
                 </div>
+                <div class="row">
+                    <label for="inputConfirmPassword" class="two columns"><span class="desktop-right" data-i18n="">Confirm password // Passwort wiederholen</span></label>
+                    <input type="password" v-model="password2" id="inputConfirmPassword" class="four columns"/>
+                    <div class="three columns" v-show="!!password && password2 !== null && password !== password2">
+                        <i style="color: red;" class="fas fa-times"/> <span data-i18n="">Passwords do not match // Passwörter stimmen nicht überein</span>
+                    </div>
+                </div>
             </form>
+
             <div class="row">
-                <button @click="login" :disabled="!email || !password" class="four columns offset-by-two" data-i18n="">Login // Einloggen</button>
+                <div class="four columns offset-by-two">
+                    <span data-i18n="">
+                        <span>AsTeRICS Grid is free and we will not use your email address for any other purpose than identifying and activating your account.</span>
+                        <span>AsTeRICS Grid ist kostenlos und wir werden Ihre E-Mail Adresse nur zum Identifizieren und Aktivieren Ihres Accounts verwenden.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <button @click="login" :disabled="!email || !password || !password2 || password !== password2" class="four columns offset-by-two" data-i18n="">Register // Registrieren</button>
             </div>
             <div class="row">
                 <div class="four columns offset-by-two">
-                    <span data-i18n="">No account? // Kein Account?</span>
-                    <a href="#register" data-i18n="">Register now // Jetzt registrieren</a>
-                    <div>
-                        <span data-i18n="">AsTeRICS Grid is free and all you need is an email address. // AsTeRICS Grid ist kostenlos und Sie benötigen nur eine E-Mail Adresse.</span>
-                    </div>
+                    <span data-i18n="">Already have an account? // Sie haben bereits einen Account?</span>
+                    <a href="#login" data-i18n="">To Login // Zum Login</a>
                 </div>
             </div>
             <div class="row">
                 <div class="four columns offset-by-two">
                     <div v-show="loginSuccess === undefined">
-                        <span data-i18n="">Logging in // Einloggen</span> <i class="fas fa-spinner fa-spin"/>
+                        <span data-i18n="">Registering // Registriere</span> <i class="fas fa-spinner fa-spin"/>
                     </div>
                     <div v-show="loginSuccess == false">
-                        <span data-i18n="">Login failed // Login fehlgeschlagen</span> <i style="color: red" class="fas fa-times"/>
+                        <span data-i18n="">Registering failed // Registrierung fehlgeschlagen</span> <i style="color: red" class="fas fa-times"/>
                     </div>
                     <div v-show="loginSuccess == true">
-                        <span data-i18n="">Login successful // Login erfolgreich</span> <i style="color: green" class="fas fa-check"/>
+                        <span data-i18n="">Successfully registered // Registrierung erfolgreich</span> <i style="color: green" class="fas fa-check"/>
                     </div>
                 </div>
             </div>
@@ -61,6 +74,7 @@
             return {
                 email: null,
                 password: null,
+                password2: null,
                 loginSuccess: null
             }
         },
@@ -71,7 +85,7 @@
             login() {
                 var thiz = this;
                 thiz.loginSuccess = undefined;
-                loginService.login(this.email, this.password).then(loginSuccess => {
+                loginService.register(this.email, this.password).then(loginSuccess => {
                     thiz.loginSuccess = loginSuccess;
                     log.warn(loginSuccess)
                 });
