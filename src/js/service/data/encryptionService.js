@@ -1,7 +1,6 @@
 import {EncryptedObject} from "../../model/EncryptedObject";
 import {localStorageService} from "./localStorageService";
 
-let ENCRYPTION_KEY = "ENCRYPTION_KEY";
 let encryptionService = {};
 let _encryptionSalt = null;
 let _encryptionKey = null;
@@ -92,6 +91,22 @@ encryptionService.decryptString = function (encryptedString, encryptionKey) {
 };
 
 /**
+ * returns a cryptographic hash of a string
+ * @param string the string to hash
+ */
+encryptionService.getStringHash = function (string) {
+    return btoa(string); //TODO use real hash
+};
+
+/**
+ * hashes a password, uses the local _encryption salt to salt it before hashing
+ * @param plaintextPassword the plaintext password to hash
+ */
+encryptionService.getPasswordHash = function (plaintextPassword) {
+    return encryptionService.getStringHash('' + _encryptionSalt + plaintextPassword);
+};
+
+/**
  * sets the salt that is used for encryption purposes
  * @param salt
  */
@@ -105,7 +120,7 @@ encryptionService.setEncryptionSalt = function (salt) {
  * reloads the encryption key from localStorage
  */
 encryptionService.reloadEncryptionKey = function () {
-    _encryptionKey = localStorageService.get(ENCRYPTION_KEY);
+    _encryptionKey = localStorageService.getUserPassword();
     log.warn('encryption key is: ' + _encryptionKey);
 };
 
