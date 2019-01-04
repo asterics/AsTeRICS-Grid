@@ -3,6 +3,9 @@ import $ from 'jquery';
 
 import {GridData} from "../../model/GridData.js";
 import {urlParamService} from "../urlParamService";
+import {MetaData} from "../../model/MetaData";
+import {encryptionService} from "./encryptionService";
+import {EncryptedObject} from "../../model/EncryptedObject";
 
 let indexedDbService = {};
 
@@ -42,14 +45,16 @@ indexedDbService.saveObject = function (objectType, data, onlyUpdate) {
 /**
  * Deletes an object from database.
  *
- * @param object the object to delete.
+ * @param id ID of the object to delete.
  * @return {Promise} promise that resolves if operation finished
  */
-indexedDbService.removeObject = function (object) {
+indexedDbService.removeObject = function (id) {
     return new Promise(resolve => {
-        _db.remove(object);
-        log.debug('deleted object from db! id: ' + object.id);
-        resolve();
+        getObjectInternalEncrypted(null, id).then(object => {
+            _db.remove(object);
+            log.debug('deleted object from db! id: ' + object.id);
+            resolve();
+        });
     });
 };
 
@@ -149,27 +154,40 @@ function init() {
                 log.debug(info);
             });
 
-            getObjectInternal(GridData, null, true).then(grids => {
-                if (grids) {
-                    log.debug('detected saved grid, no generation of new grid.');
-                    resolve();
-                    return;
+            getObjectInternalEncrypted(MetaData, null, true).then(metadataObjects => {
+                let promises = [];
+                if(!metadataObjects) {
+                    let metadata = new MetaData();
+                    encryptionService.setEncryptionSalt(metadata.id);
+                    promises.push(saveObjectInternal(MetaData, metadata, false, true));
                 } else {
-                    $.get(_defaultGridSetPath, function (data) {
-                        log.info('importing default grid set...');
-                        let gridsData = JSON.parse(data);
-                        let promises = [];
-                        gridsData.forEach(gridData => {
-                            gridData._id = null;
-                            gridData._rev = null;
-                            promises.push(saveObjectInternal(GridData, gridData, false, true));
-                        });
-                        Promise.all(promises).then(() => {
-                            log.debug('imported default grid set!');
-                            resolve();
-                        });
-                    });
+                    let metadata = metadataObjects instanceof Array ? metadataObjects[0] : metadataObjects;
+                    encryptionService.setEncryptionSalt(metadata.id);
                 }
+                Promise.all(promises).then(() => {
+                    getObjectInternal(GridData, null, true).then(grids => {
+                        if (grids) {
+                            log.debug('detected saved grid, no generation of new grid.');
+                            resolve();
+                            return;
+                        } else {
+                            $.get(_defaultGridSetPath, function (data) {
+                                log.info('importing default grid set...');
+                                let gridsData = JSON.parse(data);
+                                let promises = [];
+                                gridsData.forEach(gridData => {
+                                    gridData._id = null;
+                                    gridData._rev = null;
+                                    promises.push(saveObjectInternal(GridData, gridData, false, true));
+                                });
+                                Promise.all(promises).then(() => {
+                                    log.debug('imported default grid set!');
+                                    resolve();
+                                });
+                            });
+                        }
+                    });
+                });
             });
         }
     });
@@ -226,7 +244,7 @@ function waitForInit(dontWait) {
 }
 
 /**
- * queries for objects in database and resolves promise with result.
+ * queries for decrypted objects in database and resolves promise with result.
  * If no elements are found 'null' is resolved, if exactly one element was found, this element is resolved,
  * otherwise an array of the found elements is resolved.
  *
@@ -236,29 +254,74 @@ function waitForInit(dontWait) {
  * @return {Promise}
  */
 function getObjectInternal(objectType, id, dontWaitOnInit) {
-    if (!objectType || !objectType.getModelName) {
-        log.error('did not specify needed parameter "objectType"!');
+    return new Promise((resolve, reject) => {
+        getObjectInternalEncrypted(objectType, id, dontWaitOnInit).then(result => {
+            let decryptedObject = encryptionService.decryptObjects(result, objectType);
+            resolve(decryptedObject);
+        }).catch(reason => {
+            reject(reason);
+        })
+    });
+}
+
+/**
+ * saves an object to database
+ *
+ * @param objectType the objectType to save, e.g. "GridData"
+ * @param data the data object to save
+ * @param onlyUpdate if true no new object is created but only an existing updated. If onlyUpdate==true and there is no
+ *        existing object with the same ID, nothing is done. If onlyUpdate==false a new object is created if no object
+ *        with the same ID exists.
+ * @param dontWaitOnInit if true, there is no waiting for init (for calling it in init)
+ * @return {Promise} promise that resolves if operation finished, rejects on a failure
+ */
+function saveObjectInternal(objectType, data, onlyUpdate, dontWaitOnInit) {
+    return new Promise((resolve, reject) => {
+        let encryptedData = encryptionService.encryptObject(data);
+        saveObjectInternalEncrypted(objectType, encryptedData, onlyUpdate, dontWaitOnInit).then(result => {
+            resolve(result);
+        }).catch(reason => {
+            reject(reason);
+        })
+    });
+}
+
+/**
+ * queries for encrypted objects in database and resolves promise with result.
+ * If no elements are found 'null' is resolved, if exactly one element was found, this element is resolved,
+ * otherwise an array of the found elements is resolved.
+ *
+ * @param objectType the objectType to find, e.g. "GridData"
+ * @param id the id of the object to find (optional)
+ * @param dontWaitOnInit if true, there is no waiting for init (for calling it in init)
+ * @return {Promise}
+ */
+function getObjectInternalEncrypted(objectType, id, dontWaitOnInit) {
+    let modelName = objectType ? objectType.getModelName() : undefined;
+    if (!modelName && !id) {
+        log.error('did not specify objectType or id!');
     }
 
     return new Promise((resolve, reject) => {
         waitForInit(dontWaitOnInit).then(() => {
-            log.debug('getting ' + objectType.getModelName() + '(id: ' + id + ')...');
+            log.debug('getting ' + modelName + '(id: ' + id + ')...');
             let query = {
-                selector: {
-                    modelName: objectType.getModelName()
-                }
+                selector: {}
             };
             if (id) {
                 query.selector.id = id;
+            }
+            if(modelName) {
+                query.selector.modelName = modelName;
             }
             _db.find(query).then(function (res) {
                 let objects = [];
                 if (res.docs && res.docs.length > 0) {
                     res.docs.forEach(doc => {
-                        objects.push(new objectType(doc));
+                        objects.push(doc);
                     })
                 }
-                log.debug('found ' + objectType.getModelName() + ": " + objects.length + ' elements');
+                log.debug('found ' + modelName + ": " + objects.length + ' elements');
                 if (objects.length === 0) {
                     resolve(null);
                 } else if (objects.length === 1) {
@@ -275,27 +338,28 @@ function getObjectInternal(objectType, id, dontWaitOnInit) {
 }
 
 /**
+ * saves an object to database that is already encrypted
  *
  * @param objectType the objectType to save, e.g. "GridData"
- * @param data the data object to save
+ * @param data the encrypted data object to save
  * @param onlyUpdate if true no new object is created but only an existing updated. If onlyUpdate==true and there is no
  *        existing object with the same ID, nothing is done. If onlyUpdate==false a new object is created if no object
  *        with the same ID exists.
  * @param dontWaitOnInit if true, there is no waiting for init (for calling it in init)
  * @return {Promise} promise that resolves if operation finished, rejects on a failure
  */
-function saveObjectInternal(objectType, data, onlyUpdate, dontWaitOnInit) {
-    if (!data || !objectType || !objectType.getModelName) {
-        log.error('did not specify needed parameter "objectType"!');
+function saveObjectInternalEncrypted(objectType, data, onlyUpdate, dontWaitOnInit) {
+    if (!data || !objectType || !objectType.getModelName || !data.encryptedDataBase64) {
+        log.error('did not specify needed parameter "objectType" or data is not encrypted!');
     }
 
     log.debug('saving ' + objectType.getModelName() + '...');
     return new Promise((resolve, reject) => {
         waitForInit(dontWaitOnInit).then(() => {
-            getObjectInternal(objectType, data.id, dontWaitOnInit).then(existingObject => {
+            getObjectInternalEncrypted(objectType, data.id, dontWaitOnInit).then(existingObject => {
                 if (existingObject) {
                     log.debug(objectType.getModelName() + ' already existing, doing update. id: ' + existingObject.id);
-                    let newObject = new objectType(data, existingObject);
+                    let newObject = new EncryptedObject(data, existingObject);
                     let saveData = JSON.parse(JSON.stringify(newObject));
                     saveData._id = existingObject._id;
                     saveData._rev = existingObject._rev;
