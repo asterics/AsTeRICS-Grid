@@ -4,7 +4,7 @@
     </div>
     <header class="row header" role="banner">
         <div id="menuHeader" class="menuHeader">
-            <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
+            <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Grid</h1></a>
             <div id="buttons" class="menuButtons inline-desktop">
                 <div class="inline spaced">
                     <button @click="back" title="Back"><i class="fas fa-angle-left"/> <span class="hide-mobile" data-i18n>Back // Zurück</span></button>
@@ -53,6 +53,7 @@
                         <div class="four columns show-mobile" style="margin: 0.5em 0 0 0.2em" data-i18n="">Actions // Aktionen</div>
                         <button @click="show(grid.id)"><i class="far fa-eye"/> <span class="hide-mobile" data-i18n="">Show // Öffnen</span></button>
                         <button @click="edit(grid.id)"><i class="far fa-edit"/> <span class="hide-mobile" data-i18n="">Edit // Bearbeiten</span></button>
+                        <button @click="clone(grid.id)"><i class="far fa-clone"/> <span class="hide-mobile" data-i18n="">Clone // Duplizieren</span></button>
                         <button @click="deleteGrid(grid.id, grid.label)"><i class="far fa-trash-alt"/> <span class="hide-mobile" data-i18n="">Delete // Löschen</span></button>
                         <button @click="exportToFile(grid.id)"><i class="fas fa-file-export"/> <span class="hide-mobile" data-i18n="">Export // Exportieren</span></button>
                     </div>

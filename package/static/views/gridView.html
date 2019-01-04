@@ -1,7 +1,7 @@
 <div id="app" class="box" v-cloak>
     <header v-show="showHeader" @mousemove="resetHeaderHideTimeout()" @touchstart="resetHeaderHideTimeout(5000)" class="row header" role="banner">
         <div id="menuHeader" class="menuHeader">
-            <a href="#main"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline hide-mobile">AsTeRICS Ergo Grid</h1></a>
+            <a href="#main"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline hide-mobile">AsTeRICS Grid</h1></a>
             <div class="inline spaced">
                 <label class="inline" for="inHeaderPinned"><i class="fas fa-thumbtack"/> <span class="hide-mobile" data-i18n>Header pinned // Header angepinnt</span></label>
                 <input id="inHeaderPinned" type="checkbox" @change="setHeaderPinned" v-model="metadata.headerPinned"/>
@@ -16,7 +16,7 @@
                 </div>
             </div>
         </div>
-        <input-options-modal v-if="showModal" v-bind:metadata="metadata" v-bind:scanner="scanner" v-bind:hover="hover" v-bind:clicker="clicker" v-bind:reinit="reinitInputMethods" @close="showModal = false"/>
+        <input-options-modal v-if="showModal" v-bind:metadata-property="metadata" v-bind:scanner="scanner" v-bind:hover="hover" v-bind:clicker="clicker" v-bind:reinit="reinitInputMethods" @close="showModal = false"/>
     </header>
     <main class="row content spaced" v-show="!gridData.gridElements || gridData.gridElements.length == 0" role="main">
         <div data-i18n="" style="margin-top: 2em">

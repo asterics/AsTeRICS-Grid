@@ -2,10 +2,12 @@ import {L} from "../../lib/lquery.js";
 import Vue from 'vue'
 import {Grid} from "../grid.js";
 import {actionService} from "../service/actionService";
-import {dataService} from "../service/dataService";
+import {dataService} from "../service/data/dataService";
+import {areService} from "../service/areService";
 import {Router} from "./../router.js";
 import {MetaData} from "../model/MetaData.js";
 import {InputEventHandler} from "../util/inputEventHandler";
+import {urlParamService} from "../service/urlParamService";
 
 import {Scanner} from "../input/scanning.js";
 import {Hover} from "../input/hovering.js";
@@ -25,19 +27,29 @@ GridView.init = function (gridId) {
             return;
         }
         GridView.gridData = grid;
+        if(grid.hasAREModel()) {
+            let areModel = grid.getAREModel();
+            areService.uploadAndStartModel(areModel.dataBase64, grid.getAREURL(), areModel.fileName);
+        }
 
         dataService.getMetadata().then(savedMetadata => {
             GridView.metadata = new MetaData(savedMetadata) || new MetaData();
+            GridView.metadata.lastOpenedGridId = GridView.gridData.id;
+            if(urlParamService.isScanningDisabled()) {
+                GridView.metadata.inputConfig.scanAutostart = false;
+            }
+            if(urlParamService.hideHeader()) {
+                GridView.metadata.headerPinned = false;
+            }
+            dataService.saveMetadata(GridView.metadata);
             initVue();
-            dataService.saveMetadata(new MetaData({
-                lastOpenedGridId: GridView.gridData.id
-            }, savedMetadata));
         });
     });
 };
 
 GridView.destroy = function () {
     stopInputMethods();
+    areService.unsubscribeEvents();
     clearTimeout(_headerHideTimeoutHandler);
     GridView.grid = null;
     dataService.clearUpdateListeners();
@@ -131,8 +143,24 @@ function initVue() {
                     scanInactiveClass: 'scanInactive',
                     minBinarySplitThreshold: 3,
                     scanTimeoutMs: inputConfig.scanTimeoutMs,
-                    scanTimeoutFirstElementFactor: inputConfig.scanTimeoutFirstElementFactor
+                    scanTimeoutFirstElementFactor: inputConfig.scanTimeoutFirstElementFactor,
+                    selectKeyCode: inputConfig.scanKey,
+                    touchScanning: !inputConfig.mouseclickEnabled
                 });
+                if(inputConfig.areURL && inputConfig.areEvents.length > 0) {
+                    var lastSelect = 0;
+                    areService.subscribeEvents(function (eventString) {
+                        if(inputConfig.areEvents.includes(eventString)) {
+                            if(new Date().getTime() - lastSelect > 100) {
+                                log.info('select scanning per ARE event: ' + eventString);
+                                lastSelect = new Date().getTime();
+                                GridView.scanner.select();
+                            }
+                        }
+                    }, inputConfig.areURL);
+                } else {
+                    areService.unsubscribeEvents();
+                }
                 this. hover = GridView.hover = new Hover('.grid-item-content', inputConfig.hoverTimeoutMs);
                 this.clicker = GridView.clicker = new Clicker('.grid-item-content');
 

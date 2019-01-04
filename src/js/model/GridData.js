@@ -2,6 +2,7 @@ import {modelUtil} from "../util/modelUtil";
 import {GridElement} from "./GridElement";
 import {AdditionalGridFile} from "./AdditionalGridFile";
 import Model from "objectmodel"
+import {GridActionARE} from "./GridActionARE";
 
 class GridData extends Model({
     id: String,
@@ -112,6 +113,50 @@ class GridData extends Model({
     getAdditionalFile(fileName) {
         var filteredFiles = this.additionalFiles.filter(f => f.fileName === fileName);
         return filteredFiles.length > 0 ? filteredFiles[0] : null;
+    }
+
+    /**
+     * returns any ARE model (=AdditionalGridFile) that is used in any areAction of this grid. If there is no
+     * areAction in any gridElement, null is returned.
+     * @return {*}
+     */
+    getAREModel() {
+        let areAction = this.getAREFirstAction();
+        if(areAction) {
+            let filteredFiles = this.additionalFiles.filter(f => f.fileName === areAction.areModelGridFileName);
+            return filteredFiles[0];
+        }
+        return null;
+    }
+
+    hasAREModel() {
+        return !!this.getAREModel();
+    }
+
+    /**
+     * returns the first GridActionARE that is found in any gridElement of this grid
+     * @return {*}
+     */
+    getAREFirstAction() {
+        let allActions = [];
+        this.gridElements.forEach(element => {
+            allActions = allActions.concat(element.actions);
+        });
+        return allActions.filter(a => a.modelName === GridActionARE.getModelName())[0];
+    }
+
+    getAREURL() {
+        let areAction = this.getAREFirstAction();
+        return areAction ? areAction.areURL : null;
+    }
+
+    clone() {
+        let newGrid = new GridData(this);
+        delete newGrid._id;
+        delete newGrid._rev;
+        newGrid.id = modelUtil.generateId('grid-data');
+        newGrid.label = this.label + ' (Copy)';
+        return newGrid;
     }
 
     static fromJSON(jsonData) {

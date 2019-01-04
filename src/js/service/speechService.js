@@ -6,12 +6,16 @@ var speechService = {};
 
 speechService.speak = function (text, lang) {
     lang = lang || 'en';
-    if (speechService.speechSupported()) {
+    if (speechService.speechSupported() && !speechService.isSpeaking()) {
         var msg = new SpeechSynthesisUtterance(text);
         msg.voice = getVoice(lang);
         //log.info('used voice: ' + msg.voice.name);
         window.speechSynthesis.speak(msg);
     }
+};
+
+speechService.isSpeaking = function () {
+    return window.speechSynthesis.speaking;
 };
 
 speechService.getVoicesLangs = function () {

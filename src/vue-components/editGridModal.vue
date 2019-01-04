@@ -59,7 +59,7 @@
 </template>
 
 <script>
-    import {dataService} from './../js/service/dataService'
+    import {dataService} from '../js/service/data/dataService'
     import {I18nModule} from './../js/i18nModule.js';
     import {imageUtil} from './../js/util/imageUtil';
     import {GridImage} from "../js/model/GridImage";
@@ -146,8 +146,8 @@
                             thiz.gridElement.image = new GridImage({id: savedId, data: thiz.imgDataSmall});
                             saveInternalInternal();
                         });
-                    } else if(!thiz.imgDataPreview) {
-                        thiz.gridElement.image = null;
+                    } else {
+                        if(!thiz.imgDataPreview) thiz.gridElement.image = null;
                         saveInternalInternal();
                     }
 

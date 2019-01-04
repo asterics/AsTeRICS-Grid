@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# 7a592262bfd76c124d2a
+# 4a74551e994ad676d614
 
 CACHE:
 build/asterics-grid.bundle.js
@@ -41,6 +41,7 @@ lib/pouchdb-7.0.0.min.js
 lib/pouchdb-find-7.0.0.min.js
 polyfill/core_js_shim.min.js
 polyfill/fetch.js
+polyfill/url-search-params-polyfill.min.js
 views/allGridsView.html
 views/gridEditView.html
 views/gridView.html

@@ -9,7 +9,7 @@ module.exports = env => {
     var buildDirLegacy = '/build_legacy/';
     var entryScript = './src/js/mainScript.js';
     var outputFilename = 'asterics-grid.bundle.js';
-    var mode = 'development';
+    var mode = env && env.production ? 'production' : 'development';
 
     var scssRule = {
         test: /\.(s*)css$/,
@@ -24,7 +24,7 @@ module.exports = env => {
     var resolve = {
         alias: {
             //objectmodel: "../../../node_modules/objectmodel/dist/object-model.js"
-            vue: 'vue/dist/vue.js'
+            vue: 'vue/dist/vue.common.js'
         }
     };
 
@@ -76,6 +76,7 @@ module.exports = env => {
             'lib/pouchdb-find-7.0.0.min.js',
             'polyfill/core_js_shim.min.js',
             'polyfill/fetch.js',
+            'polyfill/url-search-params-polyfill.min.js',
             'views/allGridsView.html',
             'views/gridEditView.html',
             'views/gridView.html',

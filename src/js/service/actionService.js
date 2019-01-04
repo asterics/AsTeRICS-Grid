@@ -1,5 +1,5 @@
 import {areService} from "./areService";
-import {dataService} from "./dataService";
+import {dataService} from "./data/dataService";
 import {speechService} from "./speechService";
 import {collectElementService} from "./collectElementService";
 import {Router} from "./../router";

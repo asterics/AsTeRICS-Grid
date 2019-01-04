@@ -42,6 +42,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
             scanTimeoutFirstElementFactor = options.scanTimeoutFirstElementFactor != undefined ? options.scanTimeoutFirstElementFactor : scanTimeoutFirstElementFactor;
         }
         if(touchScanning) thiz.enableTouchScanning();
+        thiz.clearSelectKeys();
         thiz.addSelectKeyCode(options.selectKeyCode);
         thiz.addSelectKey(options.selectKey);
         if (_keydownEventListeners.length == 0) {

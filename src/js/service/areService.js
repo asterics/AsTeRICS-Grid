@@ -1,6 +1,9 @@
 import $ from 'jquery';
 
 var areService = {};
+var _eventSource = null;
+var _sseReconnectTimeoutHandler = null;
+var _sseWasSuccess = false;
 
 areService.sendDataToInputPort = function (componentId, portId, value, areURI) {
     if (!componentId || !portId || !value) return;
@@ -260,9 +263,10 @@ areService.getComponentEventPortIds = function (componentId, areURI) {
  */
 areService.getRestURL = function (userUri) {
     if (!userUri) {
-        userUri = "127.0.0.1:8081";
+        userUri = window.location.hostname + ":8081";
     }
-    userUri = userUri.replace('localhost', '127.0.0.1');
+    userUri = userUri.replace('localhost', '[::1]');
+    userUri = userUri.replace('127.0.0.1', '[::1]');
     if (userUri.indexOf('http') === -1) {
         userUri = 'http://' + userUri;
     }
@@ -309,6 +313,56 @@ areService.getPossibleEvents = function(componentId, modelBase64, areURI) {
         });
     });
 };
+
+areService.subscribeEvents = function(eventCallback, areURI) {
+    if ((typeof EventSource) === "undefined") {
+        log.warn("SSE not supported by browser");
+        return;
+    }
+    closeEventSource();
+
+    let areUrl = areService.getRestURL(areURI);
+    _eventSource = new EventSource(areUrl + 'runtime/model/channels/event/listener'); // Connecting to SSE service for event channel events
+
+    //adding listener for specific events
+    _eventSource.addEventListener("event", function(e) {
+        eventCallback(e.data, 200);
+    }, false);
+
+    // After SSE handshake constructed
+    _eventSource.onopen = function (e) {
+        log.info('SSE opened.');
+        _sseWasSuccess = true;
+    };
+
+    // Error handler
+    _eventSource.onerror = function (e) {
+        closeEventSource();
+        if(_sseWasSuccess) {
+            log.info('SSE error occured, trying to reconnect in 10 seconds...');
+            _sseReconnectTimeoutHandler = setTimeout(function () {
+                _sseReconnectTimeoutHandler = null;
+                areService.subscribeEvents(eventCallback, areURI);
+            }, 3000);
+        }
+    };
+};
+
+areService.unsubscribeEvents = function () {
+    if(_sseReconnectTimeoutHandler) {
+        clearTimeout(_sseReconnectTimeoutHandler);
+    }
+    _sseWasSuccess = false;
+    closeEventSource();
+};
+
+function closeEventSource() {
+    if (_eventSource !== null) {
+        _eventSource.close();
+        _eventSource = null;
+        log.info('SSE closed.');
+    }
+}
 
 //encodes PathParametes
 function encodeParam(text) {
