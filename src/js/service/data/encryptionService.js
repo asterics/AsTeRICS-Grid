@@ -1,9 +1,12 @@
+import CryptoJS from 'crypto-js';
+
 import {EncryptedObject} from "../../model/EncryptedObject";
 import {localStorageService} from "./localStorageService";
 
 let encryptionService = {};
 let _encryptionSalt = null;
-let _encryptionKey = null;
+let _encryptionKey = 'test';
+let _cryptoTime = 0;
 
 /**
  * encrypts a given object
@@ -66,11 +69,13 @@ encryptionService.decryptObjects = function (encryptedObjects, objectType, encry
  */
 encryptionService.encryptString = function (string, encryptionKey) {
     encryptionKey = encryptionKey || _encryptionKey;
-    let encryptedString = string;
+    let encryptedString = null;
     if (encryptionKey) {
-        //TODO encrypt
+        encryptedString = CryptoJS.AES.encrypt(string, encryptionKey).toString();
+    } else {
+        encryptedString = btoa(encryptedString);
     }
-    return btoa(encryptedString);
+    return encryptedString;
 };
 
 /**
@@ -83,10 +88,15 @@ encryptionService.encryptString = function (string, encryptionKey) {
  */
 encryptionService.decryptString = function (encryptedString, encryptionKey) {
     encryptionKey = encryptionKey || _encryptionKey;
-    let decryptedString = atob(encryptedString);
+    let decryptedString = null;
+    let startTime = new Date().getTime();
     if (encryptionKey) {
-        //TODO decrypt
+        decryptedString = CryptoJS.AES.decrypt(encryptedString, encryptionKey).toString(CryptoJS.enc.Utf8);
+    } else {
+        decryptedString = atob(encryptedString);
     }
+    _cryptoTime += new Date().getTime() - startTime;
+    log.warn(_cryptoTime);
     return decryptedString;
 };
 
@@ -95,7 +105,7 @@ encryptionService.decryptString = function (encryptedString, encryptionKey) {
  * @param string the string to hash
  */
 encryptionService.getStringHash = function (string) {
-    return btoa(string); //TODO use real hash
+    return CryptoJS.enc.Hex.stringify(CryptoJS.SHA256(string));
 };
 
 /**
@@ -120,7 +130,7 @@ encryptionService.setEncryptionSalt = function (salt) {
  * reloads the encryption key from localStorage
  */
 encryptionService.reloadEncryptionKey = function () {
-    _encryptionKey = localStorageService.getUserPassword();
+    _encryptionKey = localStorageService.getUserPassword() || _encryptionKey;
     log.warn('encryption key is: ' + _encryptionKey);
 };
 
