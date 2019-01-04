@@ -1,20 +1,60 @@
 import superlogin from 'superlogin-client';
+import {localStorageService} from "./data/localStorageService";
+import {encryptionService} from "./data/encryptionService";
 
 var loginService = {};
 superlogin.configure(getConfig());
 var _loginInfo = null;
 
-loginService.login = function (user, password) {
+/**
+ * logs in into remote couchdb (superlogin)
+ * @param email
+ * @param plainPassword
+ * @return {Promise}
+ */
+loginService.login = function (email, plainPassword) {
     return new Promise(resolve => {
+        let password = encryptionService.getPasswordHash(plainPassword);
         superlogin.login({
-            username: user,
+            username: email,
             password: password
         }).then((info) => {
             log.info('login success!');
             _loginInfo = info;
+            //localStorageService.saveUserPassword(password);
+            //log.info("password hash saved: " + password);
             resolve(true);
         }, (reason) => {
             log.info('login failed!');
+            log.info(reason);
+            resolve(false);
+        });
+    });
+};
+
+/**
+ * registers with remote couchdb (superlogin)
+ * @param email
+ * @param plainPassword
+ * @return {Promise}
+ */
+loginService.register = function (email, plainPassword) {
+    return new Promise(resolve => {
+        let password = encryptionService.getPasswordHash(plainPassword);
+        console.log("password hash: " + password);
+        superlogin.register({
+            username: email.replace(/[^A-Za-z0-9]/gi, ""), //remove everything non-alphanumerical
+            email: email,
+            password: password,
+            confirmPassword: password
+        }).then((info) => {
+            log.info('register success!');
+            _loginInfo = info;
+            //localStorageService.saveUserPassword(password);
+            //log.info("password hash saved: " + password);
+            resolve(true);
+        }, (reason) => {
+            log.info('register failed!');
             log.info(reason);
             resolve(false);
         });
@@ -53,7 +93,5 @@ function getConfig() {
         timeout: 0
     };
 }
-
-
 
 export {loginService};
