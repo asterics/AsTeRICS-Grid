@@ -9,6 +9,7 @@ import {AllGridsView} from "./views/allGridsView.js";
 import {dataService} from "./service/data/dataService.js";
 
 import LoginView from '../vue-components/loginView.vue'
+import RegisterView from '../vue-components/registerView.vue'
 
 var Router = {};
 var navigoInstance = null;
@@ -49,6 +50,9 @@ Router.init = function (injectIdParam) {
             },
             'login': function () {
                 loadVueView(LoginView);
+            },
+            'register': function () {
+                loadVueView(RegisterView);
             },
             '*': function () {
                 Router.toMain();
