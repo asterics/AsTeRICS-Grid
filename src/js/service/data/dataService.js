@@ -75,13 +75,7 @@ dataService.updateGrid = function (gridId, newConfig) {
  * @return {Promise}
  */
 dataService.deleteGrid = function (gridId) {
-    return new Promise(resolve => {
-        dataService.getGrid(gridId).then(grid => {
-            indexedDbService.removeObject(grid).then(() => {
-                resolve();
-            });
-        });
-    });
+    return indexedDbService.removeObject(gridId);
 };
 
 /**
