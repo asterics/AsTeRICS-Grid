@@ -7,8 +7,11 @@ let _encryptionSalt = null;
 let _encryptionPassword = null;
 
 /**
+ * encrypts a given object
+ * @see{EncryptedObject}
  *
- * @param object
+ * @param object any model object to encrypt
+ * @return {*} encrypted object of type @see{EncryptedObject}
  */
 encryptionService.encryptObject = function (object) {
     if(!object) {
@@ -24,9 +27,12 @@ encryptionService.encryptObject = function (object) {
 };
 
 /**
+ * Decrypts one ore more given encrypted objects
+ * @see{EncryptedObject}
  *
- * @param encryptedObject
- * @param objectType
+ * @param encryptedObjects an array of encrypted objects or a single encrypted object
+ * @param objectType the type of the objects to decrypt
+ * @return {*} an array or single object (depending on input) of decrypted instances of objects of type "objectType"
  */
 encryptionService.decryptObjects = function (encryptedObjects, objectType) {
     if(!encryptedObjects) {
@@ -43,12 +49,19 @@ encryptionService.decryptObjects = function (encryptedObjects, objectType) {
     return decryptedObjects.length > 1 ? decryptedObjects : decryptedObjects[0];
 };
 
+/**
+ * sets the salt that is used for encryption purposes
+ * @param salt
+ */
 encryptionService.setEncryptionSalt = function (salt) {
     log.warn('encryption salt is: ' + salt);
     _encryptionSalt = salt;
     encryptionService.reloadEncryptionPassword();
 };
 
+/**
+ * reloads the encryption password from localStorage
+ */
 encryptionService.reloadEncryptionPassword = function () {
     _encryptionPassword = localStorageService.get(ENCRYPTION_PASSWORD_KEY);
     log.warn('encryption password is: ' + _encryptionPassword);
