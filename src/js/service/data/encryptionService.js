@@ -1,10 +1,10 @@
 import {EncryptedObject} from "../../model/EncryptedObject";
 import {localStorageService} from "./localStorageService";
 
-let ENCRYPTION_PASSWORD_KEY = "ENCRYPTION_PASSWORD_KEY";
+let ENCRYPTION_KEY = "ENCRYPTION_KEY";
 let encryptionService = {};
 let _encryptionSalt = null;
-let _encryptionPassword = null;
+let _encryptionKey = null;
 
 /**
  * encrypts a given object
@@ -13,7 +13,7 @@ let _encryptionPassword = null;
  * @param object any model object to encrypt
  * @return {*} encrypted object of type @see{EncryptedObject}
  */
-encryptionService.encryptObject = function (object) {
+encryptionService.encryptObject = function (object, encryptionKey) {
     if(!object) {
         return object;
     }
@@ -56,15 +56,15 @@ encryptionService.decryptObjects = function (encryptedObjects, objectType) {
 encryptionService.setEncryptionSalt = function (salt) {
     log.warn('encryption salt is: ' + salt);
     _encryptionSalt = salt;
-    encryptionService.reloadEncryptionPassword();
+    encryptionService.reloadEncryptionKey();
 };
 
 /**
- * reloads the encryption password from localStorage
+ * reloads the encryption key from localStorage
  */
-encryptionService.reloadEncryptionPassword = function () {
-    _encryptionPassword = localStorageService.get(ENCRYPTION_PASSWORD_KEY);
-    log.warn('encryption password is: ' + _encryptionPassword);
+encryptionService.reloadEncryptionKey = function () {
+    _encryptionKey = localStorageService.get(ENCRYPTION_KEY);
+    log.warn('encryption key is: ' + _encryptionKey);
 };
 
 export {encryptionService};
