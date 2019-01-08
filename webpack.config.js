@@ -31,7 +31,8 @@ module.exports = env => {
     var externals = {
         jquery: '$',
         objectmodel: 'Model',
-        PouchDB: 'PouchDB'
+        PouchDB: 'PouchDB',
+        sjcl: 'sjcl'
     };
 
     var plugins = [new VueLoaderPlugin()];
@@ -74,6 +75,7 @@ module.exports = env => {
             'lib/pouchdb.replication-stream.min.js',
             'lib/pouchdb-7.0.0.min.js',
             'lib/pouchdb-find-7.0.0.min.js',
+            'lib/sjcl.min.js',
             'polyfill/core_js_shim.min.js',
             'polyfill/fetch.js',
             'polyfill/url-search-params-polyfill.min.js',
