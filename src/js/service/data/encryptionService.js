@@ -1,4 +1,4 @@
-import CryptoJS from 'crypto-js';
+import sjcl from 'sjcl';
 
 import {EncryptedObject} from "../../model/EncryptedObject";
 import {localStorageService} from "./localStorageService";
@@ -71,9 +71,9 @@ encryptionService.encryptString = function (string, encryptionKey) {
     encryptionKey = encryptionKey || _encryptionKey;
     let encryptedString = null;
     if (encryptionKey) {
-        encryptedString = CryptoJS.AES.encrypt(string, encryptionKey).toString();
+        encryptedString =  sjcl.encrypt(encryptionKey, string);
     } else {
-        encryptedString = btoa(encryptedString);
+        encryptedString = btoa(string);
     }
     return encryptedString;
 };
@@ -91,12 +91,12 @@ encryptionService.decryptString = function (encryptedString, encryptionKey) {
     let decryptedString = null;
     let startTime = new Date().getTime();
     if (encryptionKey) {
-        decryptedString = CryptoJS.AES.decrypt(encryptedString, encryptionKey).toString(CryptoJS.enc.Utf8);
+        decryptedString = sjcl.decrypt(encryptionKey, encryptedString);
     } else {
         decryptedString = atob(encryptedString);
     }
     _cryptoTime += new Date().getTime() - startTime;
-    log.warn(_cryptoTime);
+    log.warn(_cryptoTime + ', this:' + (new Date().getTime() - startTime));
     return decryptedString;
 };
 
@@ -105,7 +105,7 @@ encryptionService.decryptString = function (encryptedString, encryptionKey) {
  * @param string the string to hash
  */
 encryptionService.getStringHash = function (string) {
-    return CryptoJS.enc.Hex.stringify(CryptoJS.SHA256(string));
+    return btoa(string); //TODO: use real hash function
 };
 
 /**
