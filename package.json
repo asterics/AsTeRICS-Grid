@@ -35,7 +35,7 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "webpack --config webpack.config.js --env.enableAppCache --env.production",
+    "build": "jest && webpack --config webpack.config.js --env.enableAppCache --env.production",
     "watch": "webpack --watch --config webpack.config.js",
     "watch-appcache": "webpack --watch --config webpack.config.js --env.enableAppCache",
     "start": "webpack-dev-server",
