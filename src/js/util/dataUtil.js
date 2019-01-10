@@ -7,7 +7,7 @@ let defaultRemovedPlaceholder = '_removed_';
  * Does not modifiy the original object.
  *
  * @param object the object to process
- * @param maxLength maximum length of the String properties, everything longer is replaced by 'removedPlaceholder'
+ * @param maxLength maximum length of the String properties, everything longer is replaced by 'removedPlaceholder' (optional, default: 500)
  * @param removedPlaceholder value that should be used as replacement for too long values (optional, defaults to '_removed_')
  * @return {*} copy of given object with String values that are longer than maxLength replaced by removedPlaceholder
  */
@@ -16,6 +16,7 @@ dataUtil.removeLongPropertyValues = function(object, maxLength, removedPlacehold
         return object;
     }
     removedPlaceholder = removedPlaceholder === undefined ? defaultRemovedPlaceholder: removedPlaceholder;
+    maxLength = maxLength || 500;
     let copy = JSON.parse(JSON.stringify(object));
     Object.keys(copy).forEach(key => {
         copy[key] = shortenObjectInternal(copy[key], maxLength, removedPlaceholder);
