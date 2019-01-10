@@ -12,7 +12,7 @@ var vueApp = null;
 
 AllGridsView.init = function () {
 
-    dataService.getGrids().then(grids => {
+    dataService.getGrids(true).then(grids => {
         log.debug(grids);
         initVue(grids);
     });
