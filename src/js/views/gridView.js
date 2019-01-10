@@ -23,7 +23,7 @@ GridView.init = function (gridId) {
     dataService.getGrid(gridId).then(grid => {
         if (!grid) {
             log.warn('grid not found! gridId: ' + gridId);
-            Router.toMain();
+            Router.toManageGrids();
             return;
         }
         GridView.gridData = grid;

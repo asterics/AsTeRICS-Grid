@@ -157,18 +157,20 @@ function loadVueView(viewObject) {
 function toMainInternal() {
     window.log.debug('main view');
     dataService.getMetadata().then(metadata => {
-        var gridId = metadata ? metadata.lastOpenedGridId : null;
+        let gridId = metadata ? metadata.lastOpenedGridId : null;
         loadView('gridView').then(() => {
-            dataService.getGridsAttribute('id').then(idsMap => {
-                var ids = Object.keys(idsMap);
-                if(ids.includes(gridId)) {
-                    GridView.init(gridId);
-                } else if(ids[0]) {
-                    GridView.init(ids[0]);
-                } else {
-                    Router.toManageGrids();
-                }
-            });
+            if(gridId) {
+                GridView.init(gridId);
+            } else {
+                dataService.getGridsAttribute('id').then(idsMap => {
+                    let ids = Object.keys(idsMap);
+                    if(ids[0]) {
+                        GridView.init(ids[0]);
+                    } else {
+                        Router.toManageGrids();
+                    }
+                });
+            }
         });
     });
 }
