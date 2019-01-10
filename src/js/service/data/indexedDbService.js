@@ -22,10 +22,11 @@ let _updateListeners = [];
  *
  * @param objectType the objectType to find, e.g. "GridData"
  * @param id the id of the object to find (optional)
+ * @param onlyShortVersion if true only the short version (with stripped binary data) is returned (optional)
  * @return {Promise}
  */
-indexedDbService.getObject = function (objectType, id) {
-    return getObjectInternal(objectType, id);
+indexedDbService.getObject = function (objectType, id, onlyShortVersion) {
+    return getObjectInternal(objectType, id, false, onlyShortVersion);
 };
 
 /**
@@ -165,7 +166,7 @@ function init() {
                     encryptionService.setEncryptionSalt(metadata.id);
                 }
                 Promise.all(promises).then(() => {
-                    getObjectInternal(GridData, null, true).then(grids => {
+                    getObjectInternalEncrypted(GridData, null, true).then(grids => {
                         if (grids) {
                             log.debug('detected saved grid, no generation of new grid.');
                             resolve();
@@ -251,12 +252,13 @@ function waitForInit(dontWait) {
  * @param objectType the objectType to find, e.g. "GridData"
  * @param id the id of the object to find (optional)
  * @param dontWaitOnInit if true, there is no waiting for init (for calling it in init)
+ * @param onlyShortVersion if true only the short version (with stripped binary data) is returned (optional)
  * @return {Promise}
  */
-function getObjectInternal(objectType, id, dontWaitOnInit) {
+function getObjectInternal(objectType, id, dontWaitOnInit, onlyShortVersion) {
     return new Promise((resolve, reject) => {
         getObjectInternalEncrypted(objectType, id, dontWaitOnInit).then(result => {
-            let decryptedObject = encryptionService.decryptObjects(result, objectType);
+            let decryptedObject = encryptionService.decryptObjects(result, objectType, null, onlyShortVersion);
             resolve(decryptedObject);
         }).catch(reason => {
             reject(reason);
@@ -277,6 +279,11 @@ function getObjectInternal(objectType, id, dontWaitOnInit) {
  */
 function saveObjectInternal(objectType, data, onlyUpdate, dontWaitOnInit) {
     return new Promise((resolve, reject) => {
+        if(data.isShortVersion) {
+            log.warn('short versions of objects should not be saved/updated! aborting.');
+            reject();
+            return;
+        }
         let encryptedData = encryptionService.encryptObject(data);
         saveObjectInternalEncrypted(objectType, encryptedData, onlyUpdate, dontWaitOnInit).then(result => {
             resolve(result);

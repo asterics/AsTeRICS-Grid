@@ -6,6 +6,7 @@ import {MetaData} from "../../model/MetaData";
 import {modelUtil} from "../../util/modelUtil";
 import {translateService} from "../translateService";
 import {indexedDbService} from "./indexedDbService";
+import {dataUtil} from "../../util/dataUtil";
 
 let dataService = {};
 
@@ -14,11 +15,12 @@ let dataService = {};
  * @see{GridData}
  *
  * @param id the ID of the grid
+ * @param onlyShortVersion if true only the short version (with stripped binary data) is returned (optional)
  * @return {Promise} resolves to a grid object that was found
  */
-dataService.getGrid = function (id) {
+dataService.getGrid = function (id, onlyShortVersion) {
     return new Promise(resolve => {
-        indexedDbService.getObject(GridData, id).then(grids => {
+        indexedDbService.getObject(GridData, id, onlyShortVersion).then(grids => {
             let retVal = grids && grids.length > 0 ? grids[0] : grids;
             resolve(retVal);
         });
@@ -29,11 +31,12 @@ dataService.getGrid = function (id) {
  * Gets an array of all grids.
  * @see{GridData}
  *
+ * @param onlyShortVersion if true only the short version (with stripped binary data) is returned (optional)
  * @return {Promise} resolves to an array of all stored grids.
  */
-dataService.getGrids = function () {
+dataService.getGrids = function (onlyShortVersion) {
     return new Promise(resolve => {
-        indexedDbService.getObject(GridData).then(grids => {
+        indexedDbService.getObject(GridData, null, onlyShortVersion).then(grids => {
             if (!grids) {
                 resolve([]);
             } else {
@@ -303,15 +306,8 @@ dataService.downloadAllGrids = function () {
 dataService.downloadAllGridsSimple = function () {
     dataService.getGrids().then(grids => {
         if (grids) {
-            grids = JSON.parse(JSON.stringify(grids));
-            grids.forEach(grid => {
-                delete grid.additionalFiles;
-                grid.gridElements.forEach(element => {
-                    delete element.image;
-                });
-            });
             log.info("simple version of exported grids without images and files included:");
-            log.info(JSON.stringify({grids: grids})); //has to be in object to be valid JSON
+            log.info(JSON.stringify({grids: dataUtil.removeLongPropertyValues(grids)})); //has to be in object to be valid JSON
         }
     });
 };
