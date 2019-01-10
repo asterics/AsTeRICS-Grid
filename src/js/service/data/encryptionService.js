@@ -2,6 +2,7 @@ import sjcl from 'sjcl';
 
 import {EncryptedObject} from "../../model/EncryptedObject";
 import {localStorageService} from "./localStorageService";
+import {dataUtil} from "../../util/dataUtil";
 
 let encryptionService = {};
 let _encryptionSalt = null;
@@ -28,7 +29,9 @@ encryptionService.encryptObject = function (object, encryptionKey) {
     });
     encryptedObject._id = object.id;
     let jsonString = JSON.stringify(object);
+    let shortJsonString = JSON.stringify(dataUtil.removeLongPropertyValues(object));
     encryptedObject.encryptedDataBase64 = encryptionService.encryptString(jsonString, encryptionKey);
+    encryptedObject.encryptedDataBase64Short = encryptionService.encryptString(shortJsonString, encryptionKey);
     return encryptedObject;
 };
 
@@ -40,9 +43,10 @@ encryptionService.encryptObject = function (object, encryptionKey) {
  * @param objectType the type of the objects to decrypt
  * @param encryptionKey the key that should be used for decryption (optional, local _encryptionKey variable is used
  *        if not set)
+ * @param onlyShortVersion if true only the short version (with stripped binary data) is decrypted and returned
  * @return {*} an array or single object (depending on input) of decrypted instances of objects of type "objectType"
  */
-encryptionService.decryptObjects = function (encryptedObjects, objectType, encryptionKey) {
+encryptionService.decryptObjects = function (encryptedObjects, objectType, encryptionKey, onlyShortVersion) {
     if (!encryptedObjects) {
         return encryptedObjects;
     }
@@ -50,12 +54,19 @@ encryptionService.decryptObjects = function (encryptedObjects, objectType, encry
     encryptedObjects = encryptedObjects instanceof Array ? encryptedObjects : [encryptedObjects];
     let decryptedObjects = [];
     encryptedObjects.forEach(encryptedObject => {
-        let decryptedString = encryptionService.decryptString(encryptedObject.encryptedDataBase64, encryptionKey);
-        let decryptedObject = JSON.parse(decryptedString);
+        let decryptedString =  null;
+        let decryptedObject = null;
+        if(onlyShortVersion) {
+            decryptedString = encryptionService.decryptString(encryptedObject.encryptedDataBase64Short, encryptionKey);
+            decryptedObject = JSON.parse(decryptedString);
+            decryptedObject.isShortVersion = true;
+        } else {
+            decryptedString = encryptionService.decryptString(encryptedObject.encryptedDataBase64, encryptionKey);
+            decryptedObject = JSON.parse(decryptedString);
+        }
         decryptedObject = objectType ? new objectType(decryptedObject) : decryptedObject;
         decryptedObjects.push(decryptedObject);
     });
-
     return decryptedObjects.length > 1 ? decryptedObjects : decryptedObjects[0];
 };
 
@@ -94,6 +105,11 @@ encryptionService.decryptString = function (encryptedString, encryptionKey) {
         decryptedString = sjcl.decrypt(encryptionKey, encryptedString);
     } else {
         decryptedString = atob(encryptedString);
+    }
+    if(_cryptoTime === 0) {
+        setTimeout(function () {
+            alert(_cryptoTime);
+        }, 5000);
     }
     _cryptoTime += new Date().getTime() - startTime;
     log.warn(_cryptoTime + ', this:' + (new Date().getTime() - startTime));
