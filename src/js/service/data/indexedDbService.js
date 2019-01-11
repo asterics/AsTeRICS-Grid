@@ -33,13 +33,14 @@ indexedDbService.getObject = function (objectType, id, onlyShortVersion) {
  * Saves an object to database.
  *
  * @param objectType the objectType to save, e.g. "GridData"
- * @param data the data object to save
+ * @param data the data object to save, must be valid object, not only single properties to update
  * @param onlyUpdate if true no new object is created but only an existing updated. If onlyUpdate==true and there is no
  *        existing object with the same ID, nothing is done. If onlyUpdate==false a new object is created if no object
  *        with the same ID exists.
  * @return {Promise} promise that resolves if operation finished, rejects on a failure
  */
 indexedDbService.saveObject = function (objectType, data, onlyUpdate) {
+    data = new objectType(data); //check if valid object
     return saveObjectInternal(objectType, data, onlyUpdate);
 };
 
