@@ -5,7 +5,7 @@ import {GridImage} from "../../model/GridImage";
 import {MetaData} from "../../model/MetaData";
 import {modelUtil} from "../../util/modelUtil";
 import {translateService} from "../translateService";
-import {indexedDbService} from "./indexedDbService";
+import {databaseService} from "./databaseService";
 import {dataUtil} from "../../util/dataUtil";
 
 let dataService = {};
@@ -20,7 +20,10 @@ let dataService = {};
  */
 dataService.getGrid = function (id, onlyShortVersion) {
     return new Promise(resolve => {
-        indexedDbService.getObject(GridData, id, onlyShortVersion).then(grids => {
+        if(!id) {
+            resolve(null);
+        }
+        databaseService.getObject(GridData, id, onlyShortVersion).then(grids => {
             let retVal = grids && grids.length > 0 ? grids[0] : grids;
             resolve(retVal);
         });
@@ -36,7 +39,7 @@ dataService.getGrid = function (id, onlyShortVersion) {
  */
 dataService.getGrids = function (onlyShortVersion) {
     return new Promise(resolve => {
-        indexedDbService.getObject(GridData, null, onlyShortVersion).then(grids => {
+        databaseService.getObject(GridData, null, onlyShortVersion).then(grids => {
             if (!grids) {
                 resolve([]);
             } else {
@@ -55,7 +58,7 @@ dataService.getGrids = function (onlyShortVersion) {
  * @return {Promise} resolves after operation finished successful
  */
 dataService.saveGrid = function (gridData) {
-    return indexedDbService.saveObject(GridData, gridData);
+    return databaseService.saveObject(GridData, gridData);
 };
 
 /**
@@ -68,7 +71,7 @@ dataService.saveGrid = function (gridData) {
  */
 dataService.updateGrid = function (gridId, newConfig) {
     newConfig.id = gridId;
-    return indexedDbService.saveObject(GridData, newConfig, true);
+    return databaseService.saveObject(GridData, newConfig, true);
 };
 
 /**
@@ -78,7 +81,7 @@ dataService.updateGrid = function (gridId, newConfig) {
  * @return {Promise}
  */
 dataService.deleteGrid = function (gridId) {
-    return indexedDbService.removeObject(gridId);
+    return databaseService.removeObject(gridId);
 };
 
 /**
@@ -138,7 +141,7 @@ dataService.getGridElement = function (gridId, gridElementId) {
  */
 dataService.getGridsAttribute = function (attribute) {
     return new Promise(resolve => {
-        dataService.getGrids().then(grids => {
+        dataService.getGrids(true).then(grids => {
             let returnMap = {};
             grids.forEach(grid => {
                 returnMap[grid.id] = grid[attribute];
@@ -213,7 +216,7 @@ dataService.saveMetadata = function (newMetadata) {
                 newMetadata.id = id;
             }
             if (!existingMetadata.isEqual(newMetadata)) {
-                indexedDbService.saveObject(MetaData, newMetadata).then(() => {
+                databaseService.saveObject(MetaData, newMetadata).then(() => {
                     resolve();
                 });
             } else {
@@ -231,7 +234,7 @@ dataService.saveMetadata = function (newMetadata) {
  */
 dataService.getMetadata = function () {
     return new Promise(resolve => {
-        indexedDbService.getObject(MetaData).then(result => {
+        databaseService.getObject(MetaData).then(result => {
             if (!result) {
                 resolve(new MetaData());
             } else if (result instanceof Array) {
@@ -262,14 +265,14 @@ dataService.saveImage = function (imgData) {
  * @return {Promise} resolves to the grid image object
  */
 dataService.getImage = function (imgId) {
-    return indexedDbService.getObject(GridImage, imgId);
+    return databaseService.getObject(GridImage, imgId);
 };
 
 /**
  * Downloads to whole database to File. Opens a file download in Browser.
  */
 dataService.downloadDB = function () {
-    indexedDbService.dumpDatabase().then(dumpedString => {
+    databaseService.dumpDatabase().then(dumpedString => {
         let blob = new Blob([dumpedString], {type: "text/plain;charset=utf-8"});
         FileSaver.saveAs(blob, "my-grids-backup.grb");
     });
@@ -377,14 +380,14 @@ dataService.importGridsFromJSON = function (jsonString) {
  * @param listener a function that should be called on remote database updates
  */
 dataService.registerUpdateListener = function (listener) {
-    indexedDbService.registerUpdateListener(listener);
+    databaseService.registerUpdateListener(listener);
 };
 
 /**
  * clears all update listeners
  */
 dataService.clearUpdateListeners = function () {
-    indexedDbService.clearUpdateListeners();
+    databaseService.clearUpdateListeners();
 };
 
 /**
@@ -422,8 +425,8 @@ function saveHashedItemInternal(objectType, data) {
             } else {
                 log.debug('saveHashedItemInternal: hash not found, saving new element');
                 hashMap[hash] = data.id;
-                promises.push(indexedDbService.saveObject(objectType, data));
-                promises.push(indexedDbService.saveObject(MetaData, metadata));
+                promises.push(databaseService.saveObject(objectType, data));
+                promises.push(databaseService.saveObject(MetaData, metadata));
             }
             Promise.all(promises).then(() => {
                 resolve(data.id);
