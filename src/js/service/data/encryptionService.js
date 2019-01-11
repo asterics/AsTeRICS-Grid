@@ -28,6 +28,7 @@ encryptionService.encryptObject = function (object, encryptionKey) {
         modelName: object.modelName
     });
     encryptedObject._id = object.id;
+    encryptedObject._rev = object._rev;
     let jsonString = JSON.stringify(object);
     let shortJsonString = JSON.stringify(dataUtil.removeLongPropertyValues(object));
     encryptedObject.encryptedDataBase64 = encryptionService.encryptString(jsonString, encryptionKey);
@@ -65,6 +66,8 @@ encryptionService.decryptObjects = function (encryptedObjects, objectType, encry
             decryptedObject = JSON.parse(decryptedString);
         }
         decryptedObject = objectType ? new objectType(decryptedObject) : decryptedObject;
+        decryptedObject._id = encryptedObject._id;
+        decryptedObject._rev = encryptedObject._rev;
         decryptedObjects.push(decryptedObject);
     });
     return decryptedObjects.length > 1 ? decryptedObjects : decryptedObjects[0];
