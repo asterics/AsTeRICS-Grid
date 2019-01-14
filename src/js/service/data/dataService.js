@@ -7,6 +7,7 @@ import {modelUtil} from "../../util/modelUtil";
 import {translateService} from "../translateService";
 import {databaseService} from "./databaseService";
 import {dataUtil} from "../../util/dataUtil";
+import {pouchDbService} from "./pouchDbService";
 
 let dataService = {};
 
@@ -272,7 +273,7 @@ dataService.getImage = function (imgId) {
  * Downloads to whole database to File. Opens a file download in Browser.
  */
 dataService.downloadDB = function () {
-    databaseService.dumpDatabase().then(dumpedString => {
+    pouchDbService.dumpDatabase().then(dumpedString => {
         let blob = new Blob([dumpedString], {type: "text/plain;charset=utf-8"});
         FileSaver.saveAs(blob, "my-grids-backup.grb");
     });
