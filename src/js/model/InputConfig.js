@@ -23,6 +23,10 @@ class InputConfig extends Model({
         super(properties);
         this.id = this.id || modelUtil.generateId('input-config')
     }
+
+    static getModelName() {
+        return "InputConfig";
+    }
 }
 
 InputConfig.defaults({

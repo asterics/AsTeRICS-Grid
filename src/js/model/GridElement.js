@@ -51,6 +51,10 @@ class GridElement extends Model({
             log.warn('action type not found: ' + modelName);
         }
     }
+
+    static getModelName() {
+        return "GridElement";
+    }
 }
 
 GridElement.ELEMENT_TYPE_NORMAL = "ELEMENT_TYPE_NORMAL";
