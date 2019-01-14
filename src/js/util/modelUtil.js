@@ -1,3 +1,5 @@
+import {constants} from "./constants";
+
 var modelUtil = {};
 var idCounter = 1;
 
@@ -69,6 +71,27 @@ modelUtil.hashCode = function (modelItem) {
     var str = JSON.stringify(plainObject);
     return str.split('').reduce((prevHash, currVal) =>
         (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);;
+};
+
+/**
+ * returns the current, latest model version as string (JSON)
+ * @return {string}
+ */
+modelUtil.getModelVersionString = function () {
+    return constants.MODEL_VERSION;
+};
+
+/**
+ * returns the major model version of a given model object
+ * @param object
+ * @return {*}
+ */
+modelUtil.getMajorModelVersion = function(object) {
+    if(!object || !object.modelVersion) {
+        return null;
+    }
+    let json = JSON.parse(object.modelVersion);
+    return json.major;
 };
 
 export {modelUtil};
