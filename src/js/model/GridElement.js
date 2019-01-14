@@ -8,6 +8,8 @@ import {GridActionARE} from "./GridActionARE";
 
 class GridElement extends Model({
     id: String,
+    modelName: String,
+    modelVersion: String,
     width: Number,
     height: Number,
     x: [Number],
@@ -57,6 +59,8 @@ GridElement.ELEMENT_TYPE_PREDICT = "ELEMENT_TYPE_PREDICT";
 
 GridElement.defaults({
     id: "", //will be replaced by constructor
+    modelName: GridElement.getModelName(),
+    modelVersion: modelUtil.getModelVersionString(),
     width: 2,
     height: 1,
     actions: [new GridActionSpeak()],

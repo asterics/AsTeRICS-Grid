@@ -3,6 +3,7 @@ import {modelUtil} from "../util/modelUtil";
 class GridActionSpeak extends Model({
     id: String,
     modelName: String,
+    modelVersion: String,
     speakLanguage: String
 }) {
     constructor(properties, elementToCopy) {
@@ -19,7 +20,8 @@ class GridActionSpeak extends Model({
 GridActionSpeak.defaults({
     id: "", //will be replaced by constructor
     modelName: GridActionSpeak.getModelName(),
-    speakLanguage: navigator.language.substring(0,2)
+    speakLanguage: navigator.language.substring(0,2),
+    modelVersion: modelUtil.getModelVersionString()
 });
 
 export {GridActionSpeak};

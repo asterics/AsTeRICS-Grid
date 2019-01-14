@@ -3,6 +3,8 @@ import Model from "objectmodel"
 
 class InputConfig extends Model({
     id: String,
+    modelName: String,
+    modelVersion: String,
     scanAutostart: [Boolean],
     scanTimeoutMs: Number,
     scanTimeoutFirstElementFactor: Number, //factor for first element scanning time, e.g. scanTimeoutMs = 1000, scanTimeoutFirstElementFactor = 2 => scanning time for first element = 2000ms
@@ -25,6 +27,8 @@ class InputConfig extends Model({
 
 InputConfig.defaults({
     id: "", //will be replaced by constructor
+    modelName: InputConfig.getModelName(),
+    modelVersion: modelUtil.getModelVersionString(),
     scanAutostart: true,
     scanTimeoutMs: 1000,
     scanTimeoutFirstElementFactor: 1,

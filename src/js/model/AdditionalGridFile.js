@@ -3,6 +3,7 @@ import {modelUtil} from "../util/modelUtil";
 class AdditionalGridFile extends Model({
     id: String,
     modelName: String,
+    modelVersion: String,
     fileName: [String],
     dataBase64: [String]
 }) {
@@ -20,6 +21,7 @@ class AdditionalGridFile extends Model({
 AdditionalGridFile.defaults({
     id: "", //will be replaced by constructor
     modelName: AdditionalGridFile.getModelName(),
+    modelVersion: modelUtil.getModelVersionString()
 });
 
 export {AdditionalGridFile};

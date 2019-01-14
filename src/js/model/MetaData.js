@@ -4,6 +4,7 @@ import {InputConfig} from "./InputConfig";
 class MetaData extends Model({
     id: String,
     modelName: String,
+    modelVersion: String,
     lastOpenedGridId: [String],
     headerPinned: [Boolean],
     hashCodes: [Object], //object keys: model names of hashed objects, object values: another object with keys = hashcodes, values = object ids
@@ -32,8 +33,9 @@ class MetaData extends Model({
 
 MetaData.defaults({
     id: "", //will be replaced by constructor
-    headerPinned: true,
     modelName: MetaData.getModelName(),
+    modelVersion: modelUtil.getModelVersionString(),
+    headerPinned: true,
     hashCodes: {},
     inputConfig: new InputConfig()
 });

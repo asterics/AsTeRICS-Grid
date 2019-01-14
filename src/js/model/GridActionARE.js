@@ -3,6 +3,7 @@ import {modelUtil} from "../util/modelUtil";
 class GridActionARE extends Model({
     id: String,
     modelName: String,
+    modelVersion: String,
     areURL: [String],
     areModelGridFileName: [String], //name of AdditionalGridFile stored in parent GridData element
     componentId: [String],
@@ -23,7 +24,8 @@ class GridActionARE extends Model({
 
 GridActionARE.defaults({
     id: "", //will be replaced by constructor
-    modelName: GridActionARE.getModelName()
+    modelName: GridActionARE.getModelName(),
+    modelVersion: modelUtil.getModelVersionString()
 });
 
 export {GridActionARE};

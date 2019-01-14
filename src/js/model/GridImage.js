@@ -3,6 +3,7 @@ import {modelUtil} from "../util/modelUtil";
 class GridImage extends Model({
     id: String,
     modelName: String,
+    modelVersion: String,
     data: [String]
 }) {
     constructor(properties, elementToCopy) {
@@ -18,7 +19,8 @@ class GridImage extends Model({
 
 GridImage.defaults({
     id: "", //will be replaced by constructor
-    modelName: GridImage.getModelName()
+    modelName: GridImage.getModelName(),
+    modelVersion: modelUtil.getModelVersionString(),
 });
 
 export {GridImage};

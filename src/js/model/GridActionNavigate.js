@@ -3,6 +3,7 @@ import {modelUtil} from "../util/modelUtil";
 class GridActionNavigate extends Model({
     id: String,
     modelName: String,
+    modelVersion: String,
     toGridId: [String]
 }) {
     constructor(properties, elementToCopy) {
@@ -18,7 +19,8 @@ class GridActionNavigate extends Model({
 
 GridActionNavigate.defaults({
     id: "", //will be replaced by constructor
-    modelName: GridActionNavigate.getModelName()
+    modelName: GridActionNavigate.getModelName(),
+    modelVersion: modelUtil.getModelVersionString()
 });
 
 export {GridActionNavigate};

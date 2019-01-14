@@ -7,6 +7,7 @@ import {GridActionARE} from "./GridActionARE";
 class GridData extends Model({
     id: String,
     modelName: String,
+    modelVersion: String,
     isShortVersion: Boolean, // if true this object represents a non-full short version excluding binary base64 data
     label: [String],
     rowCount: Number,
@@ -181,6 +182,7 @@ class GridData extends Model({
 GridData.defaults({
     id: "", //will be replaced by constructor
     modelName: GridData.getModelName(),
+    modelVersion: modelUtil.getModelVersionString(),
     isShortVersion: false,
     rowCount: 9,
     additionalFiles: []
