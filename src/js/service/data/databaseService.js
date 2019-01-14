@@ -8,6 +8,8 @@ import {pouchDbService} from "./pouchDbService";
 
 let databaseService = {};
 
+let _saveFilterFunctions = [encryptionService.encryptObject];
+let _loadFilterFunctions = [encryptionService.decryptObjects];
 let _initPromise = null;
 let _defaultGridSetPath = 'examples/default.grd';
 
@@ -25,8 +27,12 @@ databaseService.getObject = function (objectType, id, onlyShortVersion) {
     return new Promise((resolve, reject) => {
         _initPromise.then(() => {
             pouchDbService.query(objectType, id).then(result => {
-                let decryptedObject = encryptionService.decryptObjects(result, objectType, null, onlyShortVersion);
-                resolve(decryptedObject);
+                let options = {
+                    objectType: objectType,
+                    onlyShortVersion: onlyShortVersion
+                };
+                let filteredData = applyFilters(result, _loadFilterFunctions, options);
+                resolve(filteredData);
             }).catch(reason => {
                 reject(reason);
             })
@@ -103,8 +109,8 @@ databaseService.clearUpdateListeners = function () {
 
 function applyFiltersAndSave(objectType, data) {
     return new Promise((resolve, reject) => {
-        let encryptedData = encryptionService.encryptObject(data);
-        pouchDbService.save(objectType, encryptedData).then(() => {
+        let filteredData = applyFilters(data, _saveFilterFunctions);
+        pouchDbService.save(objectType, filteredData).then(() => {
             log.debug('saved ' + objectType.getModelName() + ', id: ' + data.id);
             resolve();
         }).catch(function (err) {
@@ -112,6 +118,23 @@ function applyFiltersAndSave(objectType, data) {
             reject();
         });
     });
+}
+
+/**
+ * applies a filters array to given data.
+ * @param data the data on which the filters should be applied
+ * @param filtersArray array of filter functions which consume data as parameter and return filtered data
+ * @param filterOptions options object that is passed to each filter function as second parameter
+ * @return {*} data after passing through all filters ()
+ */
+function applyFilters(data, filtersArray, filterOptions) {
+    if(!filtersArray || !filtersArray.length || filtersArray.length < 1) {
+        return data;
+    }
+    filtersArray.forEach(filter => {
+        data = filter(data, filterOptions);
+    });
+    return data;
 }
 
 function init() {
