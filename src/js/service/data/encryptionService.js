@@ -14,14 +14,16 @@ let _cryptoTime = 0;
  * @see{EncryptedObject}
  *
  * @param object any model object to encrypt
- * @param encryptionKey the key that should be used for encryption (optional, local _encryptionKey variable is used
+ * @param options map of options, can contain:
+ *        encryption key: the key that should be used for encryption (optional, local _encryptionKey variable is used
  *        if not set)
  * @return {*} encrypted object of type @see{EncryptedObject}
  */
-encryptionService.encryptObject = function (object, encryptionKey) {
+encryptionService.encryptObject = function (object, options) {
     if (!object) {
         return object;
     }
+    options = options || {};
 
     let encryptedObject = new EncryptedObject({
         id: object.id,
@@ -31,8 +33,8 @@ encryptionService.encryptObject = function (object, encryptionKey) {
     encryptedObject._rev = object._rev;
     let jsonString = JSON.stringify(object);
     let shortJsonString = JSON.stringify(dataUtil.removeLongPropertyValues(object));
-    encryptedObject.encryptedDataBase64 = encryptionService.encryptString(jsonString, encryptionKey);
-    encryptedObject.encryptedDataBase64Short = encryptionService.encryptString(shortJsonString, encryptionKey);
+    encryptedObject.encryptedDataBase64 = encryptionService.encryptString(jsonString, options.encryptionKey);
+    encryptedObject.encryptedDataBase64Short = encryptionService.encryptString(shortJsonString, options.encryptionKey);
     return encryptedObject;
 };
 
@@ -41,16 +43,20 @@ encryptionService.encryptObject = function (object, encryptionKey) {
  * @see{EncryptedObject}
  *
  * @param encryptedObjects an array of encrypted objects or a single encrypted object
- * @param objectType the type of the objects to decrypt
- * @param encryptionKey the key that should be used for decryption (optional, local _encryptionKey variable is used
+ * @param options map of options, can contain:
+ *        onlyShortVersion: if true only the short version (with stripped binary data) is decrypted and returned
+ *        objectType: the type of the objects to decrypt
+ *        encryption key: the key that should be used for encryption (optional, local _encryptionKey variable is used
  *        if not set)
- * @param onlyShortVersion if true only the short version (with stripped binary data) is decrypted and returned
  * @return {*} an array or single object (depending on input) of decrypted instances of objects of type "objectType"
  */
-encryptionService.decryptObjects = function (encryptedObjects, objectType, encryptionKey, onlyShortVersion) {
+encryptionService.decryptObjects = function (encryptedObjects, options) {
     if (!encryptedObjects) {
         return encryptedObjects;
     }
+    options = options || {};
+    let objectType = options.objectType;
+    let onlyShortVersion = options.onlyShortVersion;
 
     encryptedObjects = encryptedObjects instanceof Array ? encryptedObjects : [encryptedObjects];
     let decryptedObjects = [];
@@ -58,11 +64,11 @@ encryptionService.decryptObjects = function (encryptedObjects, objectType, encry
         let decryptedString =  null;
         let decryptedObject = null;
         if(onlyShortVersion) {
-            decryptedString = encryptionService.decryptString(encryptedObject.encryptedDataBase64Short, encryptionKey);
+            decryptedString = encryptionService.decryptString(encryptedObject.encryptedDataBase64Short, options.encryptionKey);
             decryptedObject = JSON.parse(decryptedString);
             decryptedObject.isShortVersion = true;
         } else {
-            decryptedString = encryptionService.decryptString(encryptedObject.encryptedDataBase64, encryptionKey);
+            decryptedString = encryptionService.decryptString(encryptedObject.encryptedDataBase64, options.encryptionKey);
             decryptedObject = JSON.parse(decryptedString);
         }
         decryptedObject = objectType ? new objectType(decryptedObject) : decryptedObject;
