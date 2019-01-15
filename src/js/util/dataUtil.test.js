@@ -122,3 +122,8 @@ test('dataUtil.removeLongPropertyValues - Test 13', () => {
     let expectedObject = {a: placeholder, b: '123', c: [1, 'a', placeholder, [placeholder, '1', 3], {a: 'abc', b: placeholder}]};
     expect(dataUtil.removeLongPropertyValues(object, maxLength, placeholder)).toEqual(expectedObject);
 });
+
+test('dataUtil.removeLongPropertyValues - Test 14', () => {
+    let object = null;
+    expect(dataUtil.removeLongPropertyValues(object)).toEqual(object);
+});
