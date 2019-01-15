@@ -2,6 +2,12 @@ import {constants} from "./constants";
 
 var modelUtil = {};
 var idCounter = 1;
+let _currentModelVersion = JSON.parse(constants.MODEL_VERSION);
+let _emptyVersionObject = {
+    major: null,
+    minor: null,
+    patch: null
+};
 
 modelUtil.generateId = function (prefix) {
     prefix = prefix || "id";
@@ -70,7 +76,7 @@ modelUtil.hashCode = function (modelItem) {
     delete plainObject.id;
     var str = JSON.stringify(plainObject);
     return str.split('').reduce((prevHash, currVal) =>
-        (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);;
+        (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
 };
 
 /**
@@ -82,16 +88,29 @@ modelUtil.getModelVersionString = function () {
 };
 
 /**
- * returns the major model version of a given model object
- * @param object
+ * returns the modelVersion information as object, containing propterties "major", "minor" and "patch" as Integer values
+ * @param modelVersionString the modelVersionString to parse
  * @return {*}
  */
-modelUtil.getMajorModelVersion = function(object) {
-    if(!object || !object.modelVersion) {
-        return null;
+modelUtil.getModelVersionObject = function(modelVersionString) {
+    if(!modelVersionString) {
+        return _emptyVersionObject;
     }
-    let json = JSON.parse(object.modelVersion);
-    return json.major;
+    let json = JSON.parse(modelVersionString);
+    if(json.major) {
+        json.major = parseInt(json.major);
+        json.minor = parseInt(json.minor);
+        json.patch = parseInt(json.patch);
+    }
+    return json.major ? json: _emptyVersionObject;
+};
+
+/**
+ * returns the latest/current model version
+ * @return {*}
+ */
+modelUtil.getLatestModelVersion = function() {
+    return _currentModelVersion;
 };
 
 export {modelUtil};
