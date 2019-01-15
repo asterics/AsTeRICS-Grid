@@ -5,11 +5,10 @@ import {urlParamService} from "../urlParamService";
 import {MetaData} from "../../model/MetaData";
 import {encryptionService} from "./encryptionService";
 import {pouchDbService} from "./pouchDbService";
+import {filterService} from "./filterService";
 
 let databaseService = {};
 
-let _saveFilterFunctions = [encryptionService.encryptObject];
-let _loadFilterFunctions = [encryptionService.decryptObjects];
 let _initPromise = null;
 let _defaultGridSetPath = 'examples/default.grd';
 
@@ -31,7 +30,7 @@ databaseService.getObject = function (objectType, id, onlyShortVersion) {
                     objectType: objectType,
                     onlyShortVersion: onlyShortVersion
                 };
-                let filteredData = applyFilters(result, _loadFilterFunctions, options);
+                let filteredData = filterService.convertDatabaseToLiveObjects(result, options);
                 resolve(filteredData);
             }).catch(reason => {
                 reject(reason);
@@ -109,8 +108,8 @@ databaseService.clearUpdateListeners = function () {
 
 function applyFiltersAndSave(objectType, data) {
     return new Promise((resolve, reject) => {
-        let filteredData = applyFilters(data, _saveFilterFunctions);
-        pouchDbService.save(objectType, filteredData).then(() => {
+        let convertedData = filterService.convertLiveToDatabaseObjects(data);
+        pouchDbService.save(objectType, convertedData).then(() => {
             log.debug('saved ' + objectType.getModelName() + ', id: ' + data.id);
             resolve();
         }).catch(function (err) {
@@ -118,23 +117,6 @@ function applyFiltersAndSave(objectType, data) {
             reject();
         });
     });
-}
-
-/**
- * applies a filters array to given data.
- * @param data the data on which the filters should be applied
- * @param filtersArray array of filter functions which consume data as parameter and return filtered data
- * @param filterOptions options object that is passed to each filter function as second parameter
- * @return {*} data after passing through all filters ()
- */
-function applyFilters(data, filtersArray, filterOptions) {
-    if(!filtersArray || !filtersArray.length || filtersArray.length < 1) {
-        return data;
-    }
-    filtersArray.forEach(filter => {
-        data = filter(data, filterOptions);
-    });
-    return data;
 }
 
 function init() {
