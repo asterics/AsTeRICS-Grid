@@ -6,6 +6,7 @@ import {MetaData} from "../../model/MetaData";
 import {encryptionService} from "./encryptionService";
 import {pouchDbService} from "./pouchDbService";
 import {filterService} from "./filterService";
+import {modelUtil} from "../../util/modelUtil";
 
 let databaseService = {};
 
@@ -25,7 +26,7 @@ let _defaultGridSetPath = 'examples/default.grd';
 databaseService.getObject = function (objectType, id, onlyShortVersion) {
     return new Promise((resolve, reject) => {
         _initPromise.then(() => {
-            pouchDbService.query(objectType, id).then(result => {
+            pouchDbService.query(objectType.getModelName(), id).then(result => {
                 let options = {
                     objectType: objectType,
                     onlyShortVersion: onlyShortVersion
@@ -68,11 +69,11 @@ databaseService.saveObject = function (objectType, data, onlyUpdate) {
             let saveData = JSON.parse(JSON.stringify(newObject));
             saveData._id = existingObject._id;
             saveData._rev = existingObject._rev;
-            return applyFiltersAndSave(objectType, saveData);
+            return applyFiltersAndSave(objectType.getModelName(), saveData);
         } else if (!onlyUpdate) {
             let saveData = JSON.parse(JSON.stringify(data));
             saveData._id = saveData.id;
-            return applyFiltersAndSave(objectType, saveData);
+            return applyFiltersAndSave(objectType.getModelName(), saveData);
         } else {
             log.warn('no existing ' + objectType.getModelName() + ' found to update, aborting.');
             return Promise.reject();
@@ -106,11 +107,11 @@ databaseService.clearUpdateListeners = function () {
     pouchDbService.clearUpdateListeners();
 };
 
-function applyFiltersAndSave(objectType, data) {
+function applyFiltersAndSave(modelName, data) {
     return new Promise((resolve, reject) => {
         let convertedData = filterService.convertLiveToDatabaseObjects(data);
-        pouchDbService.save(objectType, convertedData).then(() => {
-            log.debug('saved ' + objectType.getModelName() + ', id: ' + data.id);
+        pouchDbService.save(modelName, convertedData).then(() => {
+            log.debug('saved ' + modelName + ', id: ' + data.id);
             resolve();
         }).catch(function (err) {
             log.error(err);
@@ -120,51 +121,79 @@ function applyFiltersAndSave(objectType, data) {
 }
 
 function init() {
-    _initPromise = new Promise(resolve => {
+    _initPromise = Promise.resolve().then(() => { //reset DB if specified by URL
+        let promises = [];
         if (urlParamService.shouldResetDatabase()) {
-            pouchDbService.resetDatabase().then(() => {
-                initInternal();
-            });
+            promises.push(pouchDbService.resetDatabase());
+        }
+        return Promise.all(promises);
+    }).then(() => {
+        return pouchDbService.query(MetaData.getModelName());
+    }).then(metadataObjects => { //create metadata object if not exisiting, update datamodel version, if outdated
+        let promises = [];
+        if (!metadataObjects) {
+            let metadata = new MetaData();
+            encryptionService.setEncryptionSalt(metadata.id);
+            promises.push(applyFiltersAndSave(MetaData.getModelName(), metadata));
         } else {
-            initInternal();
+            let metadata = metadataObjects instanceof Array ? metadataObjects[0] : metadataObjects;
+            encryptionService.setEncryptionSalt(metadata.id);
+            if (!modelUtil.isLatestMajorModelVersion(metadata)) {
+                log.warn('updating data model version...');
+                promises.push(updateDataModelVersion(metadata));
+            }
         }
+        return Promise.all(promises);
+    }).then(() => {
+        return pouchDbService.query(GridData.getModelName());
+    }).then(grids => { //import default gridset, if no grids are existing
+        if (grids) {
+            log.debug('detected saved grid, no generation of new grid.');
+            return Promise.resolve();
+        } else {
+            return $.get(_defaultGridSetPath);
+        }
+    }).then(data => {
+        if(!data) {
+            return Promise.resolve();
+        }
+        log.info('importing default grid set...');
+        let promises = [];
+        let gridsData = JSON.parse(data);
+        gridsData.forEach(gridData => {
+            gridData._id = gridData.id;
+            gridData._rev = null;
+            promises.push(applyFiltersAndSave(GridData.getModelName(), gridData));
+        });
+        log.debug('imported default grid set!');
+        return Promise.all(promises);
+    });
+}
 
-        function initInternal() {
-            pouchDbService.query(MetaData).then(metadataObjects => {
-                let promises = [];
-                if(!metadataObjects) {
-                    let metadata = new MetaData();
-                    encryptionService.setEncryptionSalt(metadata.id);
-                    promises.push(applyFiltersAndSave(MetaData, metadata));
-                } else {
-                    let metadata = metadataObjects instanceof Array ? metadataObjects[0] : metadataObjects;
-                    encryptionService.setEncryptionSalt(metadata.id);
-                }
-                Promise.all(promises).then(() => {
-                    pouchDbService.query(GridData).then(grids => {
-                        if (grids) {
-                            log.debug('detected saved grid, no generation of new grid.');
-                            return resolve();
-                        } else {
-                            $.get(_defaultGridSetPath, function (data) {
-                                log.info('importing default grid set...');
-                                let gridsData = JSON.parse(data);
-                                let promises = [];
-                                gridsData.forEach(gridData => {
-                                    gridData._id = gridData.id;
-                                    gridData._rev = null;
-                                    promises.push(applyFiltersAndSave(GridData, gridData));
-                                });
-                                Promise.all(promises).then(() => {
-                                    log.debug('imported default grid set!');
-                                    resolve();
-                                });
-                            });
-                        }
-                    });
-                });
+function updateDataModelVersion(metadata) {
+    let allDocs = null;
+    return pouchDbService.all().then(result => {
+        allDocs = result;
+        if (!metadata.encryptedDataBase64) {
+            log.debug('deleting all documents because they are not encrypted...');
+            allDocs.forEach(doc => {
+                delete doc._rev;
             });
+            return pouchDbService.resetDatabase();
         }
+        return Promise.resolve();
+    }).then(() => {
+        log.debug('all deleted, got: ');
+        log.debug(allDocs);
+        let promises = [];
+        allDocs.forEach(doc => {
+            let promise = applyFiltersAndSave(doc.modelName, doc);
+            promises.push(promise);
+        });
+        return Promise.all(promises);
+    }).then(() => {
+        window.location.reload();
+        return Promise.reject();
     });
 }
 
