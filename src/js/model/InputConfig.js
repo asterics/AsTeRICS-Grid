@@ -1,5 +1,6 @@
 import {modelUtil} from "../util/modelUtil";
 import Model from "objectmodel"
+import {constants} from "../util/constants";
 
 class InputConfig extends Model({
     id: String,
@@ -32,7 +33,7 @@ class InputConfig extends Model({
 InputConfig.defaults({
     id: "", //will be replaced by constructor
     modelName: InputConfig.getModelName(),
-    modelVersion: modelUtil.getModelVersionString(),
+    modelVersion: constants.MODEL_VERSION,
     scanAutostart: true,
     scanTimeoutMs: 1000,
     scanTimeoutFirstElementFactor: 1,

@@ -1,4 +1,5 @@
 import {modelUtil} from "../util/modelUtil";
+import {constants} from "../util/constants";
 
 class GridImage extends Model({
     id: String,
@@ -20,7 +21,7 @@ class GridImage extends Model({
 GridImage.defaults({
     id: "", //will be replaced by constructor
     modelName: GridImage.getModelName(),
-    modelVersion: modelUtil.getModelVersionString(),
+    modelVersion: constants.MODEL_VERSION,
 });
 
 export {GridImage};

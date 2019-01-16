@@ -1,4 +1,5 @@
 import {modelUtil} from "../util/modelUtil";
+import {constants} from "../util/constants";
 
 class GridActionSpeakCustom extends Model({
     id: String,
@@ -22,7 +23,7 @@ GridActionSpeakCustom.defaults({
     id: "", //will be replaced by constructor
     modelName: GridActionSpeakCustom.getModelName(),
     speakLanguage: navigator.language.substring(0,2),
-    modelVersion: modelUtil.getModelVersionString()
+    modelVersion: constants.MODEL_VERSION
 });
 
 export {GridActionSpeakCustom};

@@ -3,6 +3,7 @@ import {GridElement} from "./GridElement";
 import {AdditionalGridFile} from "./AdditionalGridFile";
 import Model from "objectmodel"
 import {GridActionARE} from "./GridActionARE";
+import {constants} from "../util/constants";
 
 class GridData extends Model({
     id: String,
@@ -182,7 +183,7 @@ class GridData extends Model({
 GridData.defaults({
     id: "", //will be replaced by constructor
     modelName: GridData.getModelName(),
-    modelVersion: modelUtil.getModelVersionString(),
+    modelVersion: constants.MODEL_VERSION,
     isShortVersion: false,
     rowCount: 9,
     additionalFiles: []

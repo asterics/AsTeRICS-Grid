@@ -1,4 +1,5 @@
 import {modelUtil} from "../util/modelUtil";
+import {constants} from "../util/constants";
 
 class EncryptedObject extends Model({
     id: String, //ID of the encrypted object
@@ -19,7 +20,7 @@ class EncryptedObject extends Model({
 }
 
 EncryptedObject.defaults({
-    modelVersion: modelUtil.getModelVersionString()
+    modelVersion: constants.MODEL_VERSION
 });
 
 export {EncryptedObject};

@@ -1,5 +1,6 @@
 import {modelUtil} from "../util/modelUtil";
 import {InputConfig} from "./InputConfig";
+import {constants} from "../util/constants";
 
 class MetaData extends Model({
     id: String,
@@ -34,7 +35,7 @@ class MetaData extends Model({
 MetaData.defaults({
     id: "", //will be replaced by constructor
     modelName: MetaData.getModelName(),
-    modelVersion: modelUtil.getModelVersionString(),
+    modelVersion: constants.MODEL_VERSION,
     headerPinned: true,
     hashCodes: {},
     inputConfig: new InputConfig()

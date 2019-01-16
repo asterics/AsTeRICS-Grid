@@ -1,4 +1,5 @@
 import {modelUtil} from "../util/modelUtil";
+import {constants} from "../util/constants";
 
 class AdditionalGridFile extends Model({
     id: String,
@@ -21,7 +22,7 @@ class AdditionalGridFile extends Model({
 AdditionalGridFile.defaults({
     id: "", //will be replaced by constructor
     modelName: AdditionalGridFile.getModelName(),
-    modelVersion: modelUtil.getModelVersionString()
+    modelVersion: constants.MODEL_VERSION
 });
 
 export {AdditionalGridFile};

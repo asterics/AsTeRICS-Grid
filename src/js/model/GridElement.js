@@ -5,6 +5,7 @@ import {GridActionSpeak} from "./GridActionSpeak";
 import {GridActionSpeakCustom} from "./GridActionSpeakCustom";
 import {GridActionNavigate} from "./GridActionNavigate";
 import {GridActionARE} from "./GridActionARE";
+import {constants} from "../util/constants";
 
 class GridElement extends Model({
     id: String,
@@ -64,7 +65,7 @@ GridElement.ELEMENT_TYPE_PREDICT = "ELEMENT_TYPE_PREDICT";
 GridElement.defaults({
     id: "", //will be replaced by constructor
     modelName: GridElement.getModelName(),
-    modelVersion: modelUtil.getModelVersionString(),
+    modelVersion: constants.MODEL_VERSION,
     width: 2,
     height: 1,
     actions: [new GridActionSpeak()],

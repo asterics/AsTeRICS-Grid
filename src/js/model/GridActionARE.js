@@ -1,4 +1,5 @@
 import {modelUtil} from "../util/modelUtil";
+import {constants} from "../util/constants";
 
 class GridActionARE extends Model({
     id: String,
@@ -25,7 +26,7 @@ class GridActionARE extends Model({
 GridActionARE.defaults({
     id: "", //will be replaced by constructor
     modelName: GridActionARE.getModelName(),
-    modelVersion: modelUtil.getModelVersionString()
+    modelVersion: constants.MODEL_VERSION
 });
 
 export {GridActionARE};
