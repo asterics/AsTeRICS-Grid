@@ -6,7 +6,7 @@ import {dataUtil} from "../../util/dataUtil";
 
 let encryptionService = {};
 let _encryptionSalt = null;
-let _encryptionKey = 'test';
+let _encryptionKey = null;
 let _cryptoTime = 0;
 
 /**
