@@ -75,7 +75,7 @@ pouchDbService.all = function () {
 pouchDbService.save = function (modelName, data) {
     log.debug('saving ' + modelName + '...');
     return new Promise((resolve, reject) => {
-        if (!data || !data._id || modelName || !data.encryptedDataBase64) {
+        if (!data || !data._id || !modelName || !data.encryptedDataBase64) {
             log.error('did not specify needed parameter "modelName" or "_id" or data is not encrypted! aborting.');
             return reject();
         }
@@ -92,7 +92,7 @@ pouchDbService.save = function (modelName, data) {
 };
 
 /**
- * Deletes an object from database.
+ * Deletes an object from database by ID.
  *
  * @param id ID of the object to delete.
  * @return {Promise} promise that resolves if operation finished
@@ -142,6 +142,7 @@ pouchDbService.importDatabase = function (file) {
                     log.debug('resetted pouchdb! loading from string...');
                     _db.load(data).then(function () {
                         log.debug('loaded db from string!');
+                        window.location.reload();
                         resolve();
                     }).catch(function (err) {
                         log.error('error loading db from string: ' + err);
