@@ -91,7 +91,7 @@ encryptionService.encryptString = function (string, encryptionKey) {
     encryptionKey = encryptionKey || _encryptionKey;
     let encryptedString = null;
     if (encryptionKey) {
-        encryptedString =  sjcl.encrypt(encryptionKey, string);
+        encryptedString =  sjcl.encrypt(encryptionKey, string, {iter: 1000});
     } else {
         encryptedString = btoa(string);
     }
@@ -115,11 +115,12 @@ encryptionService.decryptString = function (encryptedString, encryptionKey) {
     } else {
         decryptedString = atob(encryptedString);
     }
-    if(_cryptoTime === 0) {
+    /*if(_cryptoTime === 0) {
         setTimeout(function () {
             alert(_cryptoTime);
+            _cryptoTime = 0;
         }, 5000);
-    }
+    }*/
     _cryptoTime += new Date().getTime() - startTime;
     log.warn(_cryptoTime + ', this:' + (new Date().getTime() - startTime));
     return decryptedString;
