@@ -122,7 +122,7 @@ encryptionService.decryptString = function (encryptedString, encryptionKey) {
         }, 5000);
     }*/
     _cryptoTime += new Date().getTime() - startTime;
-    log.warn(_cryptoTime + ', this:' + (new Date().getTime() - startTime));
+    log.debug(_cryptoTime + ', this:' + (new Date().getTime() - startTime));
     return decryptedString;
 };
 
@@ -147,7 +147,7 @@ encryptionService.getPasswordHash = function (plaintextPassword) {
  * @param salt
  */
 encryptionService.setEncryptionSalt = function (salt) {
-    log.warn('encryption salt is: ' + salt);
+    log.debug('encryption salt is: ' + salt);
     _encryptionSalt = salt;
     encryptionService.reloadEncryptionKey();
 };
@@ -157,7 +157,7 @@ encryptionService.setEncryptionSalt = function (salt) {
  */
 encryptionService.reloadEncryptionKey = function () {
     _encryptionKey = localStorageService.getUserPassword() || _encryptionKey;
-    log.warn('encryption key is: ' + _encryptionKey);
+    log.debug('encryption key is: ' + _encryptionKey);
 };
 
 export {encryptionService};
