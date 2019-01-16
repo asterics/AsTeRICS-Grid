@@ -106,6 +106,18 @@ modelUtil.getModelVersionObject = function(modelVersionString) {
 };
 
 /**
+ * returns true if the given object has the latest model version, false otherwise
+ * @param object the object to test
+ * @return {boolean}
+ */
+modelUtil.isLatestMajorModelVersion = function(object) {
+    if(!object && !object.modelVersion) {
+        return false;
+    }
+    return modelUtil.getModelVersionObject(object.modelVersion).major === _currentModelVersion.major;
+};
+
+/**
  * returns the latest/current model version
  * @return {*}
  */
