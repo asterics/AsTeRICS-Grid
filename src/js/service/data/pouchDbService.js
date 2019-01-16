@@ -11,14 +11,13 @@ let _updateListeners = [];
  * If no elements are found 'null' is resolved, if exactly one element was found, this element is resolved,
  * otherwise an array of the found elements is resolved.
  *
- * @param objectType the objectType to find, e.g. "GridData"
+ * @param modelName the modelName to find, e.g. "GridData"
  * @param id the id of the object to find (optional)
  * @return {Promise}
  */
-pouchDbService.query = function (objectType, id) {
-    let modelName = objectType ? objectType.getModelName() : undefined;
+pouchDbService.query = function (modelName, id) {
     if (!modelName && !id) {
-        log.error('did not specify objectType or id!');
+        log.error('did not specify modelName or id!');
     }
 
     return new Promise((resolve, reject) => {
@@ -34,20 +33,30 @@ pouchDbService.query = function (objectType, id) {
                 query.selector.modelName = modelName;
             }
             _db.find(query).then(function (res) {
-                let objects = [];
-                if (res.docs && res.docs.length > 0) {
-                    res.docs.forEach(doc => {
-                        objects.push(doc);
-                    })
-                }
-                log.debug('found ' + modelName + ": " + objects.length + ' elements');
-                if (objects.length === 0) {
-                    resolve(null);
-                } else if (objects.length === 1) {
-                    resolve(objects[0]);
-                } else {
-                    resolve(objects);
-                }
+                let objects = dbResToResolveObject(res);
+                let length = objects ? objects.length : 0;
+                log.debug('found ' + modelName + ": " + length + ' elements');
+                resolve(objects);
+            }).catch(function (err) {
+                log.error(err);
+                reject();
+            });
+        });
+    });
+};
+
+/**
+ * returns (resolves) all documents that are stored in pouchDb.
+ * @return {Promise}
+ */
+pouchDbService.all = function () {
+    return new Promise((resolve, reject) => {
+        initPouchDB().then(() => {
+            _db.allDocs({
+                include_docs: true,
+                attachments: false
+            }).then(function (res) {
+                resolve(dbResToResolveObject(res));
             }).catch(function (err) {
                 log.error(err);
                 reject();
@@ -59,20 +68,20 @@ pouchDbService.query = function (objectType, id) {
 /**
  * saves an object to database that is already encrypted
  *
- * @param objectType the objectType to save, e.g. "GridData"
+ * @param modelName the modelName to save, e.g. "GridData"
  * @param data the encrypted data object to save
  * @return {Promise} promise that resolves if operation finished, rejects on a failure
  */
-pouchDbService.save = function saveObjectInternalEncrypted(objectType, data) {
-    log.debug('saving ' + objectType.getModelName() + '...');
+pouchDbService.save = function (modelName, data) {
+    log.debug('saving ' + modelName + '...');
     return new Promise((resolve, reject) => {
-        if (!data || !data._id || !objectType || !objectType.getModelName || !data.encryptedDataBase64) {
-            log.error('did not specify needed parameter "objectType" or "_id" or data is not encrypted! aborting.');
+        if (!data || !data._id || modelName || !data.encryptedDataBase64) {
+            log.error('did not specify needed parameter "modelName" or "_id" or data is not encrypted! aborting.');
             return reject();
         }
         initPouchDB().then(() => {
             _db.put(data).then(() => {
-                log.debug('updated ' + objectType.getModelName() + ', id: ' + data._id);
+                log.debug('updated ' + modelName + ', id: ' + data._id);
                 resolve();
             }).catch(function (err) {
                 log.error(err);
@@ -214,6 +223,28 @@ function initPouchDB() {
             });
         }
     });
+}
+
+function dbResToResolveObject(res) {
+    let objects = [];
+    if(res.docs && res.docs.length > 0) {
+        res.docs.forEach(doc => {
+            objects.push(doc);
+        });
+    } else if(res.rows && res.rows.length > 0) {
+        res.rows.forEach(row => {
+            if(row.doc && row.doc.modelName) {
+                objects.push(row.doc);
+            }
+        });
+    }
+    if (objects.length === 0) {
+        return null;
+    } else if (objects.length === 1) {
+        return objects[0];
+    } else {
+        return objects;
+    }
 }
 
 export {pouchDbService};
