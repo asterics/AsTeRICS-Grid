@@ -1,4 +1,6 @@
-tagname="release-$(date +%Y-%m-%d-%H:%M/%z)"
+set -e
+
+tagname="release-$(date +%Y-%m-%d-%H.M/%z)"
 echo "building..."
 npm run build
 echo "commiting bundles and manifest..."
@@ -7,7 +9,7 @@ git add package/static/build_legacy
 git add package/static/manifest.appcache
 git commit -m "added bundles and appcache for release $tagname"
 echo "creating tag '$tagname'..."
-git tag -a $tagname
+git tag -a $tagname -m $tagname
 git push origin $tagname
 if git diff-index --quiet HEAD --; then
     # No changes
