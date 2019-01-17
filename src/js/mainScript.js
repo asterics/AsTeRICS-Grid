@@ -12,7 +12,7 @@ var firstRun = localStorageService.isFirstPageVisit();
 
 function init() {
     log.setLevel(log.levels.INFO);
-    log.info('AsTeRICS Grid, release version: ' + '#ASTERICS_GRID_VERSION#');
+    log.info('AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
     Router.init('#content');
     VueDirectives.init();
     reloadOnAppcacheUpdate();

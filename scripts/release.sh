@@ -2,7 +2,9 @@ set -e
 
 git checkout master
 tagname="release-$(date +%Y-%m-%d-%H.%M/%z)"
-sed -i -e 's/#ASTERICS_GRID_VERSION#/XYZ/g' src/js/mainScript.js
+tagnameSed="release-$(date +%Y-%m-%d-%H.%M\\/%z)"
+echo $tagnameSed
+sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" src/js/mainScript.js
 
 echo "building..."
 npm run build
@@ -10,9 +12,9 @@ echo "commiting bundles and manifest..."
 git add package/static/build
 git add package/static/build_legacy
 git add package/static/manifest.appcache
-git add src/js/mainScript.js
 git commit -m "added bundles and appcache for release $tagname"
 git push origin master
+git checkout src/js/mainScript.js
 echo "creating tag '$tagname'..."
 git tag -a $tagname -m $tagname
 git push origin $tagname
