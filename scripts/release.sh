@@ -9,6 +9,7 @@ git add package/static/build
 git add package/static/build_legacy
 git add package/static/manifest.appcache
 git commit -m "added bundles and appcache for release $tagname"
+git push origin master
 echo "creating tag '$tagname'..."
 git tag -a $tagname -m $tagname
 git push origin $tagname
