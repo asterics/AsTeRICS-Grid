@@ -1,9 +1,9 @@
 import {modelUtil} from "../util/modelUtil";
 import {GridElement} from "./GridElement";
 import {AdditionalGridFile} from "./AdditionalGridFile";
-import Model from "objectmodel"
 import {GridActionARE} from "./GridActionARE";
 import {constants} from "../util/constants";
+import {Model} from "../externals/objectmodel";
 
 class GridData extends Model({
     id: String,

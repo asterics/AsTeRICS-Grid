@@ -1,6 +1,7 @@
 import {modelUtil} from "../util/modelUtil";
 import {InputConfig} from "./InputConfig";
 import {constants} from "../util/constants";
+import {Model} from "../externals/objectmodel";
 
 class MetaData extends Model({
     id: String,

@@ -1,6 +1,6 @@
 import {modelUtil} from "../util/modelUtil";
-import Model from "objectmodel"
 import {constants} from "../util/constants";
+import {Model} from "../externals/objectmodel";
 
 class InputConfig extends Model({
     id: String,

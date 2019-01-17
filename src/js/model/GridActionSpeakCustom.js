@@ -1,5 +1,6 @@
 import {modelUtil} from "../util/modelUtil";
 import {constants} from "../util/constants";
+import {Model} from "../externals/objectmodel";
 
 class GridActionSpeakCustom extends Model({
     id: String,

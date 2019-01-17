@@ -6,6 +6,7 @@ import {GridActionSpeakCustom} from "./GridActionSpeakCustom";
 import {GridActionNavigate} from "./GridActionNavigate";
 import {GridActionARE} from "./GridActionARE";
 import {constants} from "../util/constants";
+import {Model} from "../externals/objectmodel";
 
 class GridElement extends Model({
     id: String,
