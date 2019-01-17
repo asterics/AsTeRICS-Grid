@@ -1,7 +1,7 @@
 set -e
 
 git checkout master
-tagname="release-$(date +%Y-%m-%d-%H.M/%z)"
+tagname="release-$(date +%Y-%m-%d-%H.%M/%z)"
 echo "building..."
 npm run build
 echo "commiting bundles and manifest..."
