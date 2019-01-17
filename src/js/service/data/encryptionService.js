@@ -1,8 +1,7 @@
-import sjcl from 'sjcl';
-
 import {EncryptedObject} from "../../model/EncryptedObject";
 import {localStorageService} from "./localStorageService";
 import {dataUtil} from "../../util/dataUtil";
+import {sjcl} from "../../externals/sjcl";
 
 let encryptionService = {};
 let _encryptionSalt = null;
