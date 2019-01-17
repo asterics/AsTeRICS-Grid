@@ -10,6 +10,7 @@ echo "commiting bundles and manifest..."
 git add package/static/build
 git add package/static/build_legacy
 git add package/static/manifest.appcache
+git add src/js/mainScript.js
 git commit -m "added bundles and appcache for release $tagname"
 git push origin master
 echo "creating tag '$tagname'..."
