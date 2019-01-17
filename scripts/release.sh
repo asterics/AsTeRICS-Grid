@@ -2,6 +2,8 @@ set -e
 
 git checkout master
 tagname="release-$(date +%Y-%m-%d-%H.%M/%z)"
+sed -i -e 's/#ASTERICS_GRID_VERSION#/XYZ/g' src/js/mainScript.js
+
 echo "building..."
 npm run build
 echo "commiting bundles and manifest..."
