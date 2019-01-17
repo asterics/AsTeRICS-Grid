@@ -30,9 +30,7 @@ module.exports = env => {
 
     var externals = {
         jquery: '$',
-        objectmodel: 'Model',
-        PouchDB: 'PouchDB',
-        sjcl: 'sjcl'
+        PouchDB: 'PouchDB'
     };
 
     var plugins = [new VueLoaderPlugin()];
