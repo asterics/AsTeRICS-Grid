@@ -32,6 +32,11 @@ test('filterService.convertLiveToDatabaseObjects - Test 2', () => {
     expect(filterService.convertLiveToDatabaseObjects(objects)).toEqual(expectedResult);
 });
 
+test('filterService.convertLiveToDatabaseObjects - Test 3', () => {
+    let objects = null;
+    expect(filterService.convertLiveToDatabaseObjects(objects)).toEqual(null);
+});
+
 test('filterService.convertDatabaseToLiveObjects - Test 1', () => {
     //objects have no modelVersion, so the should not be decrypted
     let object = {};
@@ -70,4 +75,9 @@ test('filterService.convertDatabaseToLiveObjects - Test 4', () => {
     };
     let expectedResult = [Object.assign({}, props, objects[0]), Object.assign({}, props, objects[1])];
     expect(filterService.convertDatabaseToLiveObjects(objects)).toEqual(expectedResult);
+});
+
+test('filterService.convertDatabaseToLiveObjects - Test 5', () => {
+    let objects = null;
+    expect(filterService.convertDatabaseToLiveObjects(objects)).toEqual(null);
 });

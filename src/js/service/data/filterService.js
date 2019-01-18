@@ -48,6 +48,9 @@ filterService.convertDatabaseToLiveObjects = function (objects, filterOptions) {
  * @return {*} a list of filtered/converted objects
  */
 function filterObjects(objects, filterOptions, getFilterFunctionsFunction) {
+    if(!objects) {
+        return objects;
+    }
     objects = objects instanceof Array ? objects : [objects];
     for (let i = 0; i < objects.length; i++) {
         let filterFunctions = getFilterFunctionsFunction(modelUtil.getModelVersionObject(objects[i].modelVersion));
