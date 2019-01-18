@@ -281,7 +281,7 @@
             },
             formatAreEvent(eventString) {
                 let eventObject = JSON.parse(eventString);
-                return eventObject.targetComponentId + " -> " + eventObject.channelId;
+                return eventObject.channelId + " -> " + eventObject.targetComponentId;
             },
             removeAreEvent(areEvent) {
                 this.metadata.inputConfig.areEvents = this.metadata.inputConfig.areEvents.filter(e => e !== areEvent);
@@ -293,7 +293,7 @@
             log.debug('opened modal: ' + thiz.gridId);
             thiz.originalMetadata = JSON.parse(JSON.stringify(thiz.metadataProperty));
             thiz.metadata = JSON.parse(JSON.stringify(thiz.metadataProperty));
-            thiz.metadata.inputConfig.areURL = areService.getRestURL();
+            thiz.metadata.inputConfig.areURL = thiz.metadata.inputConfig.areURL || areService.getRestURL();
             I18nModule.init();
         },
         updated () {
