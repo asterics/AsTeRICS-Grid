@@ -1,12 +1,18 @@
 var _allVoices = null;
 var _voicesLangs = [];
 var _voicesLangMap = {};
+let _lastSpeakTime = 0;
 
 var speechService = {};
 
 speechService.speak = function (text, lang) {
+    if(new Date().getTime() - _lastSpeakTime < 300) {
+        _lastSpeakTime = new Date().getTime();
+        return;
+    }
     lang = lang || 'en';
-    if (speechService.speechSupported() && !speechService.isSpeaking()) {
+    if (speechService.speechSupported()) {
+        _lastSpeakTime = new Date().getTime();
         var msg = new SpeechSynthesisUtterance(text);
         msg.voice = getVoice(lang);
         //log.info('used voice: ' + msg.voice.name);
