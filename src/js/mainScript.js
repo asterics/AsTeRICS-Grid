@@ -44,6 +44,7 @@ function reloadOnAppcacheUpdate() {
     window.applicationCache.addEventListener('progress', function (event) {
         log.debug('appcache: progress');
         if(!firstRun) {
+            $('#updatePercentWrapper').show();
             $('#updatePercent').html(Math.ceil(event.loaded * 100 / event.total));
         }
     });
