@@ -8,15 +8,15 @@ var _loginInfo = null;
 
 /**
  * logs in into remote couchdb (superlogin)
- * @param email
+ * @param user
  * @param plainPassword
  * @return {Promise}
  */
-loginService.login = function (email, plainPassword) {
+loginService.login = function (user, plainPassword) {
     return new Promise(resolve => {
         let password = encryptionService.getPasswordHash(plainPassword);
         superlogin.login({
-            username: email,
+            username: user,
             password: password
         }).then((info) => {
             log.info('login success!');
@@ -34,17 +34,17 @@ loginService.login = function (email, plainPassword) {
 
 /**
  * registers with remote couchdb (superlogin)
- * @param email
+ * @param user
  * @param plainPassword
  * @return {Promise}
  */
-loginService.register = function (email, plainPassword) {
-    return new Promise(resolve => {
+loginService.register = function (user, plainPassword) {
+    return new Promise((resolve, reject) => {
         let password = encryptionService.getPasswordHash(plainPassword);
         console.log("password hash: " + password);
         superlogin.register({
-            username: email.replace(/[^A-Za-z0-9]/gi, ""), //remove everything non-alphanumerical
-            email: email,
+            username: user,
+            email: new Date().getTime() + '.' + Math.random() + '@norealmail.org',
             password: password,
             confirmPassword: password
         }).then((info) => {
@@ -52,11 +52,11 @@ loginService.register = function (email, plainPassword) {
             _loginInfo = info;
             //localStorageService.saveUserPassword(password);
             //log.info("password hash saved: " + password);
-            resolve(true);
+            resolve();
         }, (reason) => {
             log.info('register failed!');
             log.info(reason);
-            resolve(false);
+            reject(reason);
         });
     });
 };
