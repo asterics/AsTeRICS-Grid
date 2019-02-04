@@ -126,11 +126,12 @@ encryptionService.decryptString = function (encryptedString, encryptionKey) {
 };
 
 /**
- * returns a cryptographic hash of a string
+ * returns a cryptographic hash of a string (SHA-256)
  * @param string the string to hash
  */
 encryptionService.getStringHash = function (string) {
-    return btoa(string); //TODO: use real hash function
+    let bitArray = sjcl.hash.sha256.hash(string);
+    return sjcl.codec.hex.fromBits(bitArray);
 };
 
 /**
