@@ -14,23 +14,23 @@
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Login // Einloggen</span></h2>
             <form autocomplete="on">
                 <div class="row">
-                    <label for="inputUser" class="two columns"><span class="desktop-right">E-Mail</span></label>
-                    <input type="email" name="email" v-model="email" id="inputUser" class="four columns"/>
+                    <label for="inputUser" class="two columns"><span class="desktop-right">Username</span></label>
+                    <input type="text" name="username" v-model="user" id="inputUser" class="four columns" autocomplete="username"/>
                 </div>
                 <div class="row">
                     <label for="inputPassword" class="two columns"><span class="desktop-right" data-i18n="">Password // Passwort</span></label>
-                    <input type="password" v-model="password" id="inputPassword" class="four columns"/>
+                    <input type="password" v-model="password" id="inputPassword" class="four columns" autocomplete="current-password"/>
                 </div>
             </form>
             <div class="row">
-                <button @click="login" :disabled="!email || !password" class="four columns offset-by-two" data-i18n="">Login // Einloggen</button>
+                <button @click="login" :disabled="!user || !password" class="four columns offset-by-two" data-i18n="">Login // Einloggen</button>
             </div>
             <div class="row">
                 <div class="four columns offset-by-two">
                     <span data-i18n="">No account? // Kein Account?</span>
                     <a href="#register" data-i18n="">Register now // Jetzt registrieren</a>
                     <div>
-                        <span data-i18n="">AsTeRICS Grid is free and all you need is an email address. // AsTeRICS Grid ist kostenlos und Sie benötigen nur eine E-Mail Adresse.</span>
+                        <span data-i18n="">AsTeRICS Grid is free and all you need is to register is a username and a password. // AsTeRICS Grid ist kostenlos und Sie benötigen nur einen Usernamen und ein Passwort.</span>
                     </div>
                 </div>
             </div>
@@ -59,7 +59,7 @@
         props: [],
         data() {
             return {
-                email: null,
+                user: null,
                 password: null,
                 loginSuccess: null
             }
@@ -71,7 +71,7 @@
             login() {
                 var thiz = this;
                 thiz.loginSuccess = undefined;
-                loginService.login(this.email, this.password).then(loginSuccess => {
+                loginService.login(this.user, this.password).then(loginSuccess => {
                     thiz.loginSuccess = loginSuccess;
                     log.warn(loginSuccess)
                 });
