@@ -30,8 +30,8 @@ var config = {
     couchAuthDB: '_users'
   },
   local: {
-    sendConfirmEmail: true,
-    requireEmailConfirm: true,
+    sendConfirmEmail: false,
+    requireEmailConfirm: false,
   },
   mailer: {
     fromEmail: 'noreply@asterics-foundation.org',
