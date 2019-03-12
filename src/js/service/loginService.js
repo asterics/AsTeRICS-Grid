@@ -10,9 +10,10 @@ var _loginInfo = null;
  * logs in into remote couchdb (superlogin)
  * @param user
  * @param plainPassword
+ * @param savePassword if true, the user and password is saved to local storage
  * @return {Promise}
  */
-loginService.login = function (user, plainPassword) {
+loginService.login = function (user, plainPassword, savePassword) {
     user = user.trim();
     return new Promise(resolve => {
         let password = encryptionService.getPasswordHash(plainPassword);
@@ -22,8 +23,9 @@ loginService.login = function (user, plainPassword) {
         }).then((info) => {
             log.info('login success!');
             _loginInfo = info;
-            //localStorageService.saveUserPassword(password);
-            //log.info("password hash saved: " + password);
+            if (savePassword) {
+                localStorageService.saveUserPassword(password);
+            }
             resolve(true);
         }, (reason) => {
             log.info('login failed!');
@@ -37,9 +39,10 @@ loginService.login = function (user, plainPassword) {
  * registers with remote couchdb (superlogin)
  * @param user
  * @param plainPassword
+ * @param savePassword if true, the user and password is saved to local storage
  * @return {Promise}
  */
-loginService.register = function (user, plainPassword) {
+loginService.register = function (user, plainPassword, savePassword) {
     user = user.trim();
     return new Promise((resolve, reject) => {
         let password = encryptionService.getPasswordHash(plainPassword);
@@ -52,8 +55,9 @@ loginService.register = function (user, plainPassword) {
         }).then((info) => {
             log.info('register success!');
             _loginInfo = info;
-            //localStorageService.saveUserPassword(password);
-            //log.info("password hash saved: " + password);
+            if (savePassword) {
+                localStorageService.saveUserPassword(password);
+            }
             resolve();
         }, (reason) => {
             log.info('register failed!');
