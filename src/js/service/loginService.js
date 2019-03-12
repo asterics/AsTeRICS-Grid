@@ -13,6 +13,7 @@ var _loginInfo = null;
  * @return {Promise}
  */
 loginService.login = function (user, plainPassword) {
+    user = user.trim();
     return new Promise(resolve => {
         let password = encryptionService.getPasswordHash(plainPassword);
         superlogin.login({
@@ -39,6 +40,7 @@ loginService.login = function (user, plainPassword) {
  * @return {Promise}
  */
 loginService.register = function (user, plainPassword) {
+    user = user.trim();
     return new Promise((resolve, reject) => {
         let password = encryptionService.getPasswordHash(plainPassword);
         console.log("password hash: " + password);
