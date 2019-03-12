@@ -15,7 +15,13 @@
             <form autocomplete="off">
                 <div class="row">
                     <label for="inputUser" class="two columns"><span class="desktop-right">Username</span></label>
-                    <input type="text" name="username" v-model="user" id="inputUser" class="four columns"/>
+                    <input type="text" name="username" v-model="user" id="inputUser" class="four columns" @change="validateUsername" v-debounce="300"/>
+                    <div class="three columns" v-show="user != null && usernameValid == false">
+                        <i style="color: red;" class="fas fa-times"/> <span data-i18n="">Invalid username // Ungültiger Username</span>
+                    </div>
+                    <div class="three columns" v-show="user != null && usernameValid == true">
+                        <i style="color: green;" class="fas fa-check"/> <span data-i18n="">Valid username // Username OK</span>
+                    </div>
                 </div>
                 <div class="row">
                     <label for="inputPassword" class="two columns"><span class="desktop-right" data-i18n="">Password // Passwort</span></label>
@@ -38,7 +44,7 @@
                     <i class="fas fa-2x fa-info-circle" style="color: blue"></i>
                     <span data-i18n="">
                         <span>Your password will be used in order to encrypt your private data, before being synchronized with the cloud. A stronger password means better encryption.</span>
-                        <span>Das Password wird verwendet um Ihre privaten Konfigurationsdaten zu verschlüsseln, bevor sie mit der Cloud synchronisiert werden. Ein stärkeres Passwort bedeutet bessere Verschlüsselung.</span>
+                        <span>Das Passwort wird verwendet um Ihre privaten Konfigurationsdaten zu verschlüsseln, bevor sie mit der Cloud synchronisiert werden. Ein stärkeres Passwort bedeutet bessere Verschlüsselung.</span>
                     </span>
                 </div>
             </div>
@@ -88,6 +94,7 @@
         data() {
             return {
                 user: null,
+                usernameValid: null,
                 password: null,
                 password2: null,
                 remember: true,
@@ -123,6 +130,12 @@
                             thiz.validationErrors = thiz.validationErrors.concat(reason.validationErrors[key]);
                         });
                     }
+                });
+            },
+            validateUsername() {
+                var thiz = this;
+                loginService.isValidUsername(thiz.user).then((valid) => {
+                    thiz.usernameValid = valid;
                 });
             }
         },
