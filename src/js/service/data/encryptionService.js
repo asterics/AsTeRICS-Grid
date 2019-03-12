@@ -1,6 +1,7 @@
 import {EncryptedObject} from "../../model/EncryptedObject";
 import {localStorageService} from "./localStorageService";
 import {dataUtil} from "../../util/dataUtil";
+import {loginService} from "../../service/loginService";
 import {sjcl} from "../../externals/sjcl";
 
 let encryptionService = {};
@@ -156,7 +157,7 @@ encryptionService.setEncryptionSalt = function (salt) {
  * reloads the encryption key from localStorage
  */
 encryptionService.reloadEncryptionKey = function () {
-    _encryptionKey = localStorageService.getUserPassword() || _encryptionKey;
+    _encryptionKey = localStorageService.getUserPassword(loginService.getLoggedInUser()) || _encryptionKey;
     log.debug('encryption key is: ' + _encryptionKey);
 };
 
