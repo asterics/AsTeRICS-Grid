@@ -17,7 +17,7 @@
                     <label for="inputUser" class="two columns"><span class="desktop-right">Username</span></label>
                     <input type="text" name="username" v-model="user" id="inputUser" class="four columns" @change="validateUsername" v-debounce="300"/>
                     <div class="three columns" v-show="user != null && usernameValid == false">
-                        <i style="color: red;" class="fas fa-times"/> <span data-i18n="">Invalid username // Ungültiger Username</span>
+                        <i style="color: red;" class="fas fa-times"/> <span data-i18n="">Invalid or already taken username // Ungültiger oder bereits vergebener Username</span>
                     </div>
                     <div class="three columns" v-show="user != null && usernameValid == true">
                         <i style="color: green;" class="fas fa-check"/> <span data-i18n="">Valid username // Username OK</span>
@@ -57,7 +57,7 @@
                 </div>
             </div>
             <div class="row">
-                <button @click="register" :disabled="!user || !password || !password2 || password !== password2" class="four columns offset-by-two" data-i18n="">Register // Registrieren</button>
+                <button @click="register" :disabled="!user || !password || !password2 || password !== password2 || !usernameValid" class="four columns offset-by-two" data-i18n="">Register // Registrieren</button>
             </div>
             <div class="row">
                 <div class="four columns offset-by-two">
