@@ -61,6 +61,26 @@ loginService.register = function (user, plainPassword) {
     });
 };
 
+/**
+ * checks if a given username is valid
+ * @param username
+ * @return {Promise}
+ */
+loginService.isValidUsername = function (username) {
+    return new Promise((resolve, reject) => {
+        if (!username) {
+            resolve(false);
+            return;
+        }
+        superlogin.validateUsername(username).then(() => {
+            resolve(true);
+        }, (reason) => {
+            log.warn(reason);
+            resolve(false);
+        });
+    });
+};
+
 function getConfig() {
     //see https://github.com/micky2be/superlogin-client
     return {
