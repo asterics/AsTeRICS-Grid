@@ -2,9 +2,14 @@ import superlogin from 'superlogin-client';
 import {localStorageService} from "./data/localStorageService";
 import {encryptionService} from "./data/encryptionService";
 
-var loginService = {};
+let loginService = {};
 superlogin.configure(getConfig());
-var _loginInfo = null;
+let _loginInfo = null;
+let _loggedInUser = null;
+
+loginService.getLoggedInUser = function() {
+    return _loggedInUser;
+};
 
 /**
  * logs in into remote couchdb (superlogin)
@@ -23,6 +28,7 @@ loginService.login = function (user, plainPassword, savePassword) {
         }).then((info) => {
             log.info('login success!');
             _loginInfo = info;
+            _loggedInUser = user;
             if (savePassword) {
                 localStorageService.saveUserPassword(password);
             }
@@ -55,6 +61,7 @@ loginService.register = function (user, plainPassword, savePassword) {
         }).then((info) => {
             log.info('register success!');
             _loginInfo = info;
+            _loggedInUser = user;
             if (savePassword) {
                 localStorageService.saveUserPassword(password);
             }
