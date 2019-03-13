@@ -1,13 +1,17 @@
 import PouchDB from 'PouchDB';
+import {localStorageService} from "./localStorageService";
 
+let DEFAULT_DB_NAME = 'localDB';
 let pouchDbService = {};
 
-let _dbName = 'asterics-ergo-grid';
+let _dbName = DEFAULT_DB_NAME;
 let _db = null;
+let _remoteDb = null;
 let _updateListeners = [];
+let _syncHandler = null;
 
 /**
- * queries for encrypted objects in database and resolves promise with result.
+ * queries for encrypted objects in the local database and resolves promise with result.
  * If no elements are found 'null' is resolved, if exactly one element was found, this element is resolved,
  * otherwise an array of the found elements is resolved.
  *
@@ -16,32 +20,34 @@ let _updateListeners = [];
  * @return {Promise}
  */
 pouchDbService.query = function (modelName, id) {
-    if (!modelName && !id) {
-        log.error('did not specify modelName or id!');
-    }
+    return queryInternal(modelName, id, _db)
+};
 
-    return new Promise((resolve, reject) => {
-        initPouchDB().then(() => {
-            log.debug('getting ' + modelName + '(id: ' + id + ')...');
-            let query = {
-                selector: {}
-            };
-            if (id) {
-                query.selector.id = id;
-            }
-            if(modelName) {
-                query.selector.modelName = modelName;
-            }
-            _db.find(query).then(function (res) {
-                let objects = dbResToResolveObject(res);
-                let length = objects ? objects.length : 0;
-                log.debug('found ' + modelName + ": " + length + ' elements');
-                resolve(objects);
-            }).catch(function (err) {
-                log.error(err);
-                reject();
-            });
-        });
+/**
+ * queries for encrypted objects in local and remote database and resolves promise with result.
+ * If no elements are found 'null' is resolved, otherwise an array of the found elements is resolved.
+ *
+ * @param modelName the modelName to find, e.g. "GridData"
+ * @param id the id of the object to find (optional)
+ * @return {Promise}
+ */
+pouchDbService.queryLocalAndRemote = function (modelName, id) {
+    let promises = [];
+    promises.push(queryInternal(modelName, id, _db));
+    if (_remoteDb) {
+        promises.push(queryInternal(modelName, id, _remoteDb));
+    }
+    return Promise.all(promises).then(results => {
+        let result = [];
+        if (results[0]) {
+            result = result.concat(results[0]);
+        }
+        if (results[1]) {
+            result = result.concat(results[1]);
+        }
+        log.debug('got local results: ' + results[0]);
+        log.debug('got remote results: ' + results[1]);
+        return Promise.resolve(result);
     });
 };
 
@@ -51,16 +57,14 @@ pouchDbService.query = function (modelName, id) {
  */
 pouchDbService.all = function () {
     return new Promise((resolve, reject) => {
-        initPouchDB().then(() => {
-            _db.allDocs({
-                include_docs: true,
-                attachments: false
-            }).then(function (res) {
-                resolve(dbResToResolveObject(res));
-            }).catch(function (err) {
-                log.error(err);
-                reject();
-            });
+        _db.allDocs({
+            include_docs: true,
+            attachments: false
+        }).then(function (res) {
+            resolve(dbResToResolveObject(res));
+        }).catch(function (err) {
+            log.error(err);
+            reject();
         });
     });
 };
@@ -79,14 +83,12 @@ pouchDbService.save = function (modelName, data) {
             log.error('did not specify needed parameter "modelName" or "_id" or data is not encrypted! aborting.');
             return reject();
         }
-        initPouchDB().then(() => {
-            _db.put(data).then(() => {
-                log.debug('updated ' + modelName + ', id: ' + data._id);
-                resolve();
-            }).catch(function (err) {
-                log.error(err);
-                reject();
-            });
+        _db.put(data).then(() => {
+            log.debug('updated ' + modelName + ', id: ' + data._id);
+            resolve();
+        }).catch(function (err) {
+            log.error(err);
+            reject();
         });
     });
 };
@@ -155,16 +157,17 @@ pouchDbService.importDatabase = function (file) {
 };
 
 /**
- * resets the whole database
+ * resets the whole database, if it is the default local database, otherwise the call is rejected
  * @return {Promise} resolves after reset is finished
  */
 pouchDbService.resetDatabase = function () {
+    if(_dbName !== DEFAULT_DB_NAME) {
+        return Promise.reject();
+    }
     return new Promise(resolve => {
-        initPouchDB().then(() => {
-            return _db.destroy();
-        }).then(function () {
+        _db.destroy().then(function () {
             _db = null;
-            initPouchDB().then(() => resolve());
+            pouchDbService.setUser(localStorageService.getLastActiveUser()).then(() => resolve());
         }).catch(function (err) {
             log.error('error destroying database: ' + err);
         })
@@ -187,54 +190,97 @@ pouchDbService.clearUpdateListeners = function () {
     _updateListeners = [];
 };
 
-function initPouchDB() {
-    return new Promise(resolve => {
-        if(_db) {
-            resolve();
-        } else {
-            _db = new PouchDB(_dbName);
-            _db.info().then(function (info) {
-                log.debug(info);
-            });
-            //let remoteDbAddress = 'http://' + window.location.hostname + ':5984/testdb';
-            //let remoteDB = new PouchDB(remoteDbAddress);
-            //log.info('trying to sync pouchdb with: ' + remoteDbAddress);
-            /*_db.sync(remoteDB, {
-                live: true,
-                retry: true
-            }).on('change', function (info) {
-                log.info('cpouchdb change:' + info.direction);
-                if(info.direction == 'pull') {
-                    log.info('pouchdb pulling updates...');
-                    _updateListeners.forEach(listener => {
-                        listener();
-                    })
-                } else {
-                    log.info('pouchdb pushing updates...');
-                }
-            }).on('error', function (err) {
-                log.warn('couchdb error');
-            });*/
+pouchDbService.setUser = function (username, remoteCouchDbAddress) {
+    if (_syncHandler) {
+        _syncHandler.cancel();
+    }
+    let promises = [];
+    if (_db) promises.push(_db.close());
+    if (_remoteDb) promises.push(_remoteDb.close());
 
-            log.debug('create index');
-            _db.createIndex({
-                index: {fields: ['modelName', 'id']}
-            }).then(() => {
-                resolve();
-            });
+    return Promise.all(promises).then(function () {
+        _db = null;
+        _remoteDb = null;
+        _dbName = username || DEFAULT_DB_NAME;
+        log.info('initializing database: ' + _dbName);
+        _updateListeners = [];
+        return initPouchDB(remoteCouchDbAddress);
+    });
+};
+
+function queryInternal(modelName, id, dbToQuery) {
+    if (!modelName && !id) {
+        log.error('did not specify modelName or id!');
+    }
+
+    return new Promise((resolve, reject) => {
+        log.debug('getting ' + modelName + '(id: ' + id + ')...');
+        let query = {
+            selector: {}
+        };
+        if (id) {
+            query.selector.id = id;
         }
+        if (modelName) {
+            query.selector.modelName = modelName;
+        }
+        dbToQuery.find(query).then(function (res) {
+            let objects = dbResToResolveObject(res);
+            let length = objects ? objects.length : 0;
+            log.debug('found ' + modelName + ": " + length + ' elements');
+            resolve(objects);
+        }).catch(function (err) {
+            log.error(err);
+            reject();
+        });
+    });
+}
+
+function initPouchDB(remoteCouchDbAddress) {
+    _db = new PouchDB(_dbName);
+    _db.info().then(function (info) {
+        log.debug(info);
+    });
+    if (remoteCouchDbAddress) {
+        log.info('sync database with: ' + remoteCouchDbAddress);
+        _remoteDb = new PouchDB(remoteCouchDbAddress);
+        log.info('trying to sync pouchdb with: ' + remoteCouchDbAddress);
+        _syncHandler = _db.sync(_remoteDb, {
+            live: true,
+            retry: true
+        }).on('change', function (info) {
+            log.info('couchdb change:' + info.direction);
+            log.info(info);
+            if (info.direction === 'pull') {
+                log.info('pouchdb pulling updates...');
+                _updateListeners.forEach(listener => {
+                    listener();
+                })
+            } else {
+                log.info('pouchdb pushing updates...');
+            }
+        }).on('error', function (err) {
+            log.warn('couchdb error');
+        }).on('complete', function (info) {
+            log.info('couchdb sync complete!');
+        });
+    }
+
+    log.debug('create index');
+    return _db.createIndex({
+        index: {fields: ['modelName', 'id']}
     });
 }
 
 function dbResToResolveObject(res) {
     let objects = [];
-    if(res.docs && res.docs.length > 0) {
+    if (res.docs && res.docs.length > 0) {
         res.docs.forEach(doc => {
             objects.push(doc);
         });
-    } else if(res.rows && res.rows.length > 0) {
+    } else if (res.rows && res.rows.length > 0) {
         res.rows.forEach(row => {
-            if(row.doc && row.doc.modelName) {
+            if (row.doc && row.doc.modelName) {
                 objects.push(row.doc);
             }
         });
