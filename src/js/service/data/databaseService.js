@@ -7,6 +7,7 @@ import {encryptionService} from "./encryptionService";
 import {pouchDbService} from "./pouchDbService";
 import {filterService} from "./filterService";
 import {modelUtil} from "../../util/modelUtil";
+import {loginService} from "../loginService";
 
 let databaseService = {};
 
@@ -107,20 +108,20 @@ databaseService.clearUpdateListeners = function () {
     pouchDbService.clearUpdateListeners();
 };
 
-function applyFiltersAndSave(modelName, data) {
-    return new Promise((resolve, reject) => {
-        let convertedData = filterService.convertLiveToDatabaseObjects(data);
-        pouchDbService.save(modelName, convertedData).then(() => {
-            log.debug('saved ' + modelName + ', id: ' + data.id);
-            resolve();
-        }).catch(function (err) {
-            log.error(err);
-            reject();
-        });
+/**
+ * updates the current user according to information provided by loginService.
+ * changes currently used database to the currently logged in user's database.
+ *
+ * @return {*}
+ */
+databaseService.updateUser = function () {
+    return pouchDbService.setUser(loginService.getLoggedInUsername(), loginService.getLoggedInUserDatabase()).then(() => {
+        return initInternal();
     });
-}
+};
 
-function init() {
+function initInternal() {
+    databaseService.clearUpdateListeners();
     _initPromise = Promise.resolve().then(() => { //reset DB if specified by URL
         let promises = [];
         if (urlParamService.shouldResetDatabase()) {
@@ -128,10 +129,10 @@ function init() {
         }
         return Promise.all(promises);
     }).then(() => {
-        return pouchDbService.query(MetaData.getModelName());
+        return pouchDbService.queryLocalAndRemote(MetaData.getModelName());
     }).then(metadataObjects => { //create metadata object if not exisiting, update datamodel version, if outdated
         let promises = [];
-        if (!metadataObjects) {
+        if (!metadataObjects || metadataObjects.length === 0) {
             let metadata = new MetaData();
             encryptionService.setEncryptionSalt(metadata.id);
             promises.push(applyFiltersAndSave(MetaData.getModelName(), metadata));
@@ -154,7 +155,7 @@ function init() {
             return $.get(_defaultGridSetPath);
         }
     }).then(data => {
-        if(!data) {
+        if (!data) {
             return Promise.resolve();
         }
         log.info('importing default grid set...');
@@ -167,6 +168,20 @@ function init() {
         });
         log.debug('imported default grid set!');
         return Promise.all(promises);
+    });
+    return _initPromise;
+};
+
+function applyFiltersAndSave(modelName, data) {
+    return new Promise((resolve, reject) => {
+        let convertedData = filterService.convertLiveToDatabaseObjects(data);
+        pouchDbService.save(modelName, convertedData).then(() => {
+            log.debug('saved ' + modelName + ', id: ' + data.id);
+            resolve();
+        }).catch(function (err) {
+            log.error(err);
+            reject();
+        });
     });
 }
 
@@ -196,8 +211,5 @@ function updateDataModelVersion(metadata) {
         return Promise.reject();
     });
 }
-
-//auto-init module
-init();
 
 export {databaseService};
