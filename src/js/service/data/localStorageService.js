@@ -2,8 +2,9 @@ var errorMsg = 'could not access local storage, maybe disabled by user? Error: '
 var storage = null;
 let FIRST_VISIT_KEY = 'FIRST_VISIT_KEY';
 let USER_PASSWORDS_KEY = "USER_PASSWORDS_KEY";
+let LAST_ACTIVEUSER_KEY = "LAST_ACTIVEUSER_KEY";
 
-if (typeof(Storage) !== "undefined") {
+if (typeof (Storage) !== "undefined") {
     try {
         var storage = window.localStorage;
     } catch (e) {
@@ -55,6 +56,9 @@ var localStorageService = {
      * @return {*}
      */
     getUserPassword(username) {
+        if (!username) {
+            return null;
+        }
         return getPasswordObject()[username];
     },
     /**
@@ -82,6 +86,18 @@ var localStorageService = {
     getSavedUsers() {
         let object = getPasswordObject();
         return Object.keys(object);
+    },
+    /**
+     * saves the last active user by username
+     */
+    setLastActiveUser(username) {
+        localStorageService.save(LAST_ACTIVEUSER_KEY, username);
+    },
+    /**
+     * retrieves the last active user
+     */
+    getLastActiveUser() {
+        return localStorageService.get(LAST_ACTIVEUSER_KEY);
     }
 };
 
