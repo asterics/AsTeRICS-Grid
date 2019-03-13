@@ -21,9 +21,31 @@
                     <label for="inputPassword" class="two columns"><span class="desktop-right" data-i18n="">Password // Passwort</span></label>
                     <input type="password" v-model="password" id="inputPassword" class="four columns" autocomplete="current-password"/>
                 </div>
+                <div class="row">
+                    <div class="four columns offset-by-two">
+                        <input type="checkbox" checked v-model="remember" id="inputRemember"/>
+                        <label for="inputRemember"><span data-i18n="">Remember this user // Diesen User speichern</span></label>
+                        <br/>
+                        <span data-i18n="">If checked, the registered user will be remembered and you don't have to provide your credentials every time you use AsTeRICS Grid. // Wenn gewählt, wird der registrierte User lokal gespeichert und die Login-Daten müssen nicht jedes Mal eingegeben werden.</span>
+                    </div>
+                </div>
             </form>
             <div class="row">
                 <button @click="login" :disabled="!user || !password" class="four columns offset-by-two" data-i18n="">Login // Einloggen</button>
+            </div>
+            <div class="row">
+                <div class="four columns offset-by-two">
+                    <div v-show="loginSuccess === undefined">
+                        <span data-i18n="">Logging in // Einloggen</span> <i class="fas fa-spinner fa-spin"/>
+                    </div>
+                    <div v-show="loginSuccess == false">
+                        <i style="color: red" class="fas fa-times"/>
+                        <span data-i18n="">Login failed, wrong username or password // Login fehlgeschlagen, falscher Benutzername oder Passwort </span>
+                    </div>
+                    <div v-show="loginSuccess == true">
+                        <span data-i18n="">Login successful // Login erfolgreich</span> <i style="color: green" class="fas fa-check"/>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="four columns offset-by-two">
@@ -34,19 +56,6 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="four columns offset-by-two">
-                    <div v-show="loginSuccess === undefined">
-                        <span data-i18n="">Logging in // Einloggen</span> <i class="fas fa-spinner fa-spin"/>
-                    </div>
-                    <div v-show="loginSuccess == false">
-                        <span data-i18n="">Login failed // Login fehlgeschlagen</span> <i style="color: red" class="fas fa-times"/>
-                    </div>
-                    <div v-show="loginSuccess == true">
-                        <span data-i18n="">Login successful // Login erfolgreich</span> <i style="color: green" class="fas fa-check"/>
-                    </div>
-                </div>
-            </div>
         </main>
     </div>
 </template>
@@ -54,6 +63,8 @@
 <script>
     import {I18nModule} from './../js/i18nModule.js';
     import {loginService} from './../js/service/loginService.js';
+    import {databaseService} from "../js/service/data/databaseService";
+    import {Router} from "../js/router";
 
     export default {
         props: [],
@@ -61,6 +72,7 @@
             return {
                 user: null,
                 password: null,
+                remember: false,
                 loginSuccess: null
             }
         },
@@ -71,9 +83,13 @@
             login() {
                 var thiz = this;
                 thiz.loginSuccess = undefined;
-                loginService.login(this.user, this.password).then(loginSuccess => {
+                loginService.loginPlainPassword(this.user, this.password, this.remember).then(loginSuccess => {
                     thiz.loginSuccess = loginSuccess;
-                    log.warn(loginSuccess)
+                    if (loginSuccess) {
+                        databaseService.updateUser().then(() => {
+                            Router.toMain();
+                        });
+                    }
                 });
             }
         },
