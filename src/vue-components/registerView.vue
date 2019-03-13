@@ -97,7 +97,7 @@
                 usernameValid: null,
                 password: null,
                 password2: null,
-                remember: true,
+                remember: false,
                 registerSuccess: null,
                 creationTime: new Date().getTime(),
                 spamTime: 10000,
@@ -117,10 +117,12 @@
                     return;
                 }
                 thiz.registerSuccess = undefined;
-                loginService.register(this.user, this.password).then(() => {
-                    log.info('successfully registered!')
+                loginService.register(this.user, this.password, this.remember).then(() => {
+                    log.info('successfully registered!');
                     thiz.registerSuccess = true;
-                    //TODO -> logged in
+                    databaseService.updateUser().then(() => {
+                        Router.toMain();
+                    });
                 }).catch(reason => {
                     thiz.registerSuccess = false;
                     log.warn(reason);
