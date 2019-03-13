@@ -4,6 +4,8 @@ import {dataUtil} from "../../util/dataUtil";
 import {loginService} from "../../service/loginService";
 import {sjcl} from "../../externals/sjcl";
 
+let STATIC_USER_PW_SALT = "STATIC_USER_PW_SALT";
+
 let encryptionService = {};
 let _encryptionSalt = null;
 let _encryptionKey = null;
@@ -136,11 +138,15 @@ encryptionService.getStringHash = function (string) {
 };
 
 /**
- * hashes a password, uses the local _encryption salt to salt it before hashing
+ * hashes a user password, uses the STATIC_USER_PW_SALT to salt it before hashing.
+ * salt of user password has to be static in order to be able to compute the same hash
+ * from a given user plaintext password on different devices, before any data was exchanged.
+ * the result of this function is used in order to login to remote couchdb.
+ *
  * @param plaintextPassword the plaintext password to hash
  */
-encryptionService.getPasswordHash = function (plaintextPassword) {
-    return encryptionService.getStringHash('' + _encryptionSalt + plaintextPassword);
+encryptionService.getUserPasswordHash = function (plaintextPassword) {
+    return encryptionService.getStringHash(STATIC_USER_PW_SALT + plaintextPassword);
 };
 
 /**
@@ -157,7 +163,8 @@ encryptionService.setEncryptionSalt = function (salt) {
  * reloads the encryption key from localStorage
  */
 encryptionService.reloadEncryptionKey = function () {
-    _encryptionKey = localStorageService.getUserPassword(loginService.getLoggedInUser()) || _encryptionKey;
+    let hashedUserPw = localStorageService.getUserPassword(loginService.getLoggedInUsername());
+    _encryptionKey = encryptionService.getStringHash('' + _encryptionSalt + hashedUserPw);
     log.debug('encryption key is: ' + _encryptionKey);
 };
 
