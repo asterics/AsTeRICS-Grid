@@ -7,20 +7,35 @@ import './../css/custom.css';
 import './../css/gridlist.css';
 import './../css/jquery.contextMenu.css';
 import './../css/allGridsView.css';
+import {loginService} from "./service/loginService";
+import {databaseService} from "./service/data/databaseService";
 
 var firstRun = localStorageService.isFirstPageVisit();
 
 function init() {
+    let promises = [];
     log.setLevel(log.levels.INFO);
     log.info('AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
     VueDirectives.init();
-    Router.init('#content');
     reloadOnAppcacheUpdate();
+    let lastUser = localStorageService.getLastActiveUser();
+    let userPassword = localStorageService.getUserPassword(lastUser);
+    log.info('using user: ' + lastUser);
+    log.info('using password (hashed): ' + userPassword);
+    if (lastUser && userPassword) {
+        promises.push(loginService.loginHashedPassword(lastUser, userPassword));
+    }
+    Promise.all(promises).then(() => {
+        return databaseService.updateUser();
+    }).then(() => {
+        Router.init('#content');
+    });
 }
+
 init();
 
 function reloadOnAppcacheUpdate() {
-    if(!window.applicationCache) {
+    if (!window.applicationCache) {
         log.info('no application cache.');
         return;
     }
@@ -37,13 +52,13 @@ function reloadOnAppcacheUpdate() {
     });
     window.applicationCache.addEventListener('downloading', function () {
         log.debug('appcache: downloading');
-        if(!firstRun) {
+        if (!firstRun) {
             Router.toUpdating();
         }
     });
     window.applicationCache.addEventListener('progress', function (event) {
         log.debug('appcache: progress');
-        if(!firstRun) {
+        if (!firstRun) {
             $('#updatePercentWrapper').show();
             $('#updatePercent').html(Math.ceil(event.loaded * 100 / event.total));
         }
