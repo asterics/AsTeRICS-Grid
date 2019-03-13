@@ -7,8 +7,24 @@ superlogin.configure(getConfig());
 let _loginInfo = null;
 let _loggedInUser = null;
 
-loginService.getLoggedInUser = function() {
+/**
+ * returns currently logged in user, null of not logged in
+ * @return {*}
+ */
+loginService.getLoggedInUsername = function () {
     return _loggedInUser;
+};
+
+/**
+ * returns remote database address of currently logged in user, null if not logged in
+ * @return {*}
+ */
+loginService.getLoggedInUserDatabase = function () {
+    if (!_loginInfo || !_loginInfo.userDBs) {
+        return null;
+    }
+    let keys = Object.keys(_loginInfo.userDBs);
+    return _loginInfo.userDBs[keys[0]];
 };
 
 /**
@@ -18,19 +34,31 @@ loginService.getLoggedInUser = function() {
  * @param savePassword if true, the user and password is saved to local storage
  * @return {Promise}
  */
-loginService.login = function (user, plainPassword, savePassword) {
+loginService.loginPlainPassword = function (user, plainPassword, savePassword) {
+    let hashedPassword = encryptionService.getUserPasswordHash(plainPassword);
+    return loginService.loginHashedPassword(user, hashedPassword, savePassword);
+};
+
+/**
+ * logs in into remote couchdb (superlogin)
+ * @param user
+ * @param hashedPassword
+ * @param savePassword if true, the user and password is saved to local storage
+ * @return {Promise}
+ */
+loginService.loginHashedPassword = function (user, hashedPassword, savePassword) {
     user = user.trim();
     return new Promise(resolve => {
-        let password = encryptionService.getPasswordHash(plainPassword);
         superlogin.login({
             username: user,
-            password: password
+            password: hashedPassword
         }).then((info) => {
             log.info('login success!');
             _loginInfo = info;
             _loggedInUser = user;
+            localStorageService.setLastActiveUser(user);
             if (savePassword) {
-                localStorageService.saveUserPassword(password);
+                localStorageService.saveUserPassword(user, hashedPassword);
             }
             resolve(true);
         }, (reason) => {
@@ -51,7 +79,7 @@ loginService.login = function (user, plainPassword, savePassword) {
 loginService.register = function (user, plainPassword, savePassword) {
     user = user.trim();
     return new Promise((resolve, reject) => {
-        let password = encryptionService.getPasswordHash(plainPassword);
+        let password = encryptionService.getUserPasswordHash(plainPassword);
         console.log("password hash: " + password);
         superlogin.register({
             username: user,
@@ -62,8 +90,9 @@ loginService.register = function (user, plainPassword, savePassword) {
             log.info('register success!');
             _loginInfo = info;
             _loggedInUser = user;
+            localStorageService.setLastActiveUser(user);
             if (savePassword) {
-                localStorageService.saveUserPassword(password);
+                localStorageService.saveUserPassword(user, password);
             }
             resolve();
         }, (reason) => {
