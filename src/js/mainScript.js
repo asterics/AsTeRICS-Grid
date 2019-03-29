@@ -18,17 +18,20 @@ function init() {
     log.info('AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
     VueDirectives.init();
     reloadOnAppcacheUpdate();
-    let lastUser = localStorageService.getLastActiveUser();
-    let userPassword = localStorageService.getUserPassword(lastUser);
-    log.info('using user: ' + lastUser);
-    log.info('using password (hashed): ' + userPassword);
-    if (lastUser && userPassword) {
-        promises.push(loginService.loginHashedPassword(lastUser, userPassword));
+    let lastActiveUser = localStorageService.getLastActiveUser();
+    let autologinUser = localStorageService.getAutologinUser();
+    let userPassword = localStorageService.getUserPassword(autologinUser);
+    log.info('using user: ' + autologinUser);
+    log.debug('using password (hashed): ' + userPassword);
+    if (autologinUser && userPassword) { //saved online user
+        promises.push(loginService.loginHashedPassword(autologinUser, userPassword, true));
+    }
+    if (autologinUser && !userPassword) { //saved local user
+        promises.push(databaseService.updateUser(autologinUser));
     }
     Promise.all(promises).then(() => {
-        return databaseService.updateUser();
-    }).then(() => {
-        Router.init('#content');
+        let initHash = autologinUser ? '#main' : lastActiveUser ? '#login' : '#welcome';
+        Router.init('#content', initHash);
     });
 }
 
