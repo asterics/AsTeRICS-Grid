@@ -7,7 +7,6 @@ import {encryptionService} from "./encryptionService";
 import {pouchDbService} from "./pouchDbService";
 import {filterService} from "./filterService";
 import {modelUtil} from "../../util/modelUtil";
-import {loginService} from "../loginService";
 
 let databaseService = {};
 
@@ -109,18 +108,28 @@ databaseService.clearUpdateListeners = function () {
 };
 
 /**
- * updates the current user according to information provided by loginService.
- * changes currently used database to the currently logged in user's database.
+ * updates the current user and the used database
+ * @param username the username of the logged in user
+ * @param hashedUserPassword hashed password of the user
+ * @param userDatabaseURL the database-URL of the logged in user
  *
  * @return {*}
  */
-databaseService.updateUser = function () {
-    return pouchDbService.setUser(loginService.getLoggedInUsername(), loginService.getLoggedInUserDatabase()).then(() => {
-        return initInternal();
+databaseService.updateUser = function (username, hashedUserPassword, userDatabaseURL) {
+    return pouchDbService.setUser(username, userDatabaseURL).then(() => {
+        return initInternal(hashedUserPassword);
     });
 };
 
-function initInternal() {
+//TODO documentation
+databaseService.deleteDatabase = function (user) {
+    if (!user) {
+        return;
+    }
+    return pouchDbService.deleteDatabase(user);
+};
+
+function initInternal(hashedUserPassword) {
     databaseService.clearUpdateListeners();
     _initPromise = Promise.resolve().then(() => { //reset DB if specified by URL
         let promises = [];
@@ -134,11 +143,11 @@ function initInternal() {
         let promises = [];
         if (!metadataObjects || metadataObjects.length === 0) {
             let metadata = new MetaData();
-            encryptionService.setEncryptionSalt(metadata.id);
+            encryptionService.setEncryptionProperties(hashedUserPassword, metadata.id);
             promises.push(applyFiltersAndSave(MetaData.getModelName(), metadata));
         } else {
             let metadata = metadataObjects instanceof Array ? metadataObjects[0] : metadataObjects;
-            encryptionService.setEncryptionSalt(metadata.id);
+            encryptionService.setEncryptionProperties(hashedUserPassword, metadata.id);
             if (!modelUtil.isLatestMajorModelVersion(metadata)) {
                 log.warn('updating data model version...');
                 promises.push(updateDataModelVersion(metadata));
