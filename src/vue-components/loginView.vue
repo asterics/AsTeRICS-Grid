@@ -2,28 +2,42 @@
     <div>
         <header class="row header" role="banner">
             <div id="menuHeader" class="menuHeader">
-                <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
-                <div id="buttons" class="menuButtons inline-desktop spaced-desktop">
-                    <div>
-                        <button @click="toMain()" title="Back"><i class="fas fa-angle-left"></i> <span data-i18n>Back // Zurück</span></button>
-                    </div>
-                </div>
+                <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Grid</h1></a>
             </div>
         </header>
-        <main role="main" class="row content spaced" @keyup.enter="login()">
+        <main role="main" class="row content spaced" @keyup.enter="loginPlain(user, password)">
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Login // Einloggen</span></h2>
             <div class="eleven columns offset-by-one">
                 <div v-show="savedUsers.length > 0">
                     <div class="row">
-                        <div class="seven columns saved-user">
-                            <div class="row" v-for="username in savedUsers" style="margin-bottom: 0">
-                                <strong class="four columns" style="margin-bottom: 0.5em"><i class="fas fa-user fa-2x" style="margin-right: 0.6em"></i>{{username}}</strong>
-                                <button class="four columns" @click="loginStored(username)">
-                                    <span>Login</span> <i class="fas fa-sign-in-alt"></i>
-                                </button>
-                                <button class="four columns" @click="removeStoredUser(username)">
-                                    <span data-i18n="">Unlink // Entfernen </span><i class="fas fa-unlink"></i>
-                                </button>
+                        <div class="seven columns">
+                            <div class="row saved-user" v-for="username in savedUsers" style="margin-bottom: 0">
+                                <div :class="username === loggedInUser ? 'loggedIn' : ''">
+                                    <div class="four columns" style="margin-bottom: 0.5em">
+                                    <span style="margin-right: 0.6em">
+                                        <span class="fa-stack" v-if="!savedOnlineUsers.includes(username)" :title="'LABEL_USER_LOCAL' | translate">
+                                            <i class="fas fa-user fa-2x" ></i>
+                                        </span>
+                                        <span class="fa-stack" v-if="savedOnlineUsers.includes(username)" :title="'LABEL_USER_CLOUD' | translate">
+                                            <i class="fas fa-user fa-stack-2x"></i>
+                                            <i class="fas fa-cloud fa-1x" style="position: absolute; top: 20px; left: 20px; color: dodgerblue"></i>
+                                        </span>
+                                    </span>
+                                        <strong >{{username}}</strong>
+                                        <em v-show="username === loggedInUser" data-i18n="">(active) // (aktiv)</em>
+                                    </div>
+                                    <button class="four columns" @click="loginStored(username)">
+                                        <span data-i18n="">Open // Öffnen</span> <i class="fas fa-sign-in-alt"></i>
+                                    </button>
+                                    <button class="four columns" @click="removeStoredUser(username)">
+                                    <span v-show="savedOnlineUsers.includes(username)">
+                                        <span data-i18n="">Logout // Ausloggen</span> <i class="fas fa-user-times"></i>
+                                    </span>
+                                        <span v-show="!savedOnlineUsers.includes(username)">
+                                        <span data-i18n="">Delete // Löschen</span> <i class="fas fa-trash"></i>
+                                    </span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -125,6 +139,8 @@
                 remember: false,
                 loginSuccess: null,
                 savedUsers: [],
+                savedOnlineUsers: [],
+                loggedInUser: null
             }
         },
         methods: {
@@ -140,9 +156,7 @@
                 loginService.loginPlainPassword(user, password, this.remember).then(loginSuccess => {
                     thiz.loginSuccess = loginSuccess;
                     if (loginSuccess) {
-                        databaseService.updateUser().then(() => {
-                            Router.toMain();
-                        });
+                        Router.toMain();
                     }
                 });
             },
@@ -151,26 +165,39 @@
                 if (!user) {
                     return;
                 }
-                let password = localStorageService.getUserPassword(user);
-                loginService.loginHashedPassword(user, password, false).then(loginSuccess => {
-                    if (loginSuccess) {
-                        databaseService.updateUser().then(() => {
+                if (this.savedOnlineUsers.includes(user)) {
+                    let password = localStorageService.getUserPassword(user);
+                    loginService.loginHashedPassword(user, password, true).then(loginSuccess => {
+                        if (loginSuccess) {
                             Router.toMain();
-                        });
-                    }
-                });
+                        }
+                    });
+                } else {
+                    localStorageService.setAutologinUser(user);
+                    databaseService.updateUser(user).then(() => {
+                        Router.toMain();
+                    });
+                }
             },
             removeStoredUser(user) {
                 //TODO: i18n message
-                //TODO: remove database
-                if(confirm('Do you really want to unlink this account? This will not delete the account itself, but all locally stored data of it.')) {
+                if (confirm('Do you really want to unlink this account? This will not delete the account itself, but all locally stored data of it.')) {
                     localStorageService.removeUserPassword(user);
-                    this.savedUsers = localStorageService.getSavedUsers();
+                    let autologinUser = localStorageService.getAutologinUser();
+                    if (autologinUser === user) {
+                        localStorageService.setAutologinUser('');
+                    }
+                    databaseService.deleteDatabase(user);
+                    this.savedUsers = localStorageService.getSavedUsers(this.loggedInUser);
+                    this.savedOnlineUsers = localStorageService.getSavedOnlineUsers();
                 }
             }
         },
         mounted() {
-            this.savedUsers = localStorageService.getSavedUsers();
+            this.loggedInUser = localStorageService.getAutologinUser();
+            this.savedUsers = localStorageService.getSavedUsers(this.loggedInUser);
+            this.savedOnlineUsers = localStorageService.getSavedOnlineUsers();
+            this.user = this.savedUsers && this.savedUsers.length > 0 ? null : localStorageService.getLastActiveUser();
             I18nModule.init();
         },
         updated() {
@@ -186,5 +213,11 @@
     .saved-user {
         outline: 1px solid lightgray;
         padding: 1.0em;
+    }
+    .loggedIn .fa-user {
+        color: black;
+    }
+    .fa-user {
+        color: gray;
     }
 </style>
