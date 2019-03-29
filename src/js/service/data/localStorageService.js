@@ -3,6 +3,7 @@ var storage = null;
 let FIRST_VISIT_KEY = 'FIRST_VISIT_KEY';
 let USER_PASSWORDS_KEY = "USER_PASSWORDS_KEY";
 let LAST_ACTIVEUSER_KEY = "LAST_ACTIVEUSER_KEY";
+let AUTOLOGIN_USER_KEY = "AUTOLOGIN_USER_KEY";
 
 if (typeof (Storage) !== "undefined") {
     try {
@@ -62,6 +63,24 @@ var localStorageService = {
         return getPasswordObject()[username];
     },
     /**
+     * saves a given local user without a password
+     * @param username the username of the local user to save
+     */
+    saveLocalUser(username) {
+        let object = getPasswordObject();
+        object[username] = '';
+        localStorageService.save(USER_PASSWORDS_KEY, JSON.stringify(object));
+    },
+    /**
+     * checks if the given username is a saved local user without password
+     * @param username the username to check
+     * @return true if the given username is a saved local user without password, false otherwise
+     */
+    isSavedLocalUser(username) {
+        let object = getPasswordObject();
+        return object[username] === '';
+    },
+    /**
      * saves a given user password
      * @param username the username as used for login
      * @param password the password to save (should be salted + hashed)
@@ -81,11 +100,35 @@ var localStorageService = {
         localStorageService.save(USER_PASSWORDS_KEY, JSON.stringify(object));
     },
     /**
-     * returns all users with saved passwords as a string list
+     * returns all saved users as a string list
+     * @param loggedInUser (optional) if specified the logged in user is returned at first element in the list, if it is
+     *                     included in the list of all saved users
      */
-    getSavedUsers() {
+    getSavedUsers(loggedInUser) {
+        let localUsers = localStorageService.getSavedLocalUsers();
+        let onlineUsers = localStorageService.getSavedOnlineUsers();
+        let allUsers = onlineUsers.concat(localUsers);
+        if (loggedInUser && allUsers.includes(loggedInUser)) {
+            allUsers = allUsers.filter(user => user !== loggedInUser);
+            allUsers.unshift(loggedInUser);
+        }
+        return allUsers;
+    },
+    /**
+     * returns all saved offline/local users as a string list
+     */
+    getSavedLocalUsers() {
         let object = getPasswordObject();
-        return Object.keys(object);
+        let allUsers = Object.keys(object) || [];
+        return allUsers.filter(username => object[username] === '').sort();
+    },
+    /**
+     * returns all saved online users as a string list
+     */
+    getSavedOnlineUsers() {
+        let object = getPasswordObject();
+        let allUsers = Object.keys(object) || [];
+        return allUsers.filter(username => object[username] !== '').sort();
     },
     /**
      * saves the last active user by username
@@ -98,6 +141,18 @@ var localStorageService = {
      */
     getLastActiveUser() {
         return localStorageService.get(LAST_ACTIVEUSER_KEY);
+    },
+    /**
+     * saves a user that should be auto-logged in at startup
+     */
+    setAutologinUser(username) {
+        localStorageService.save(AUTOLOGIN_USER_KEY, username);
+    },
+    /**
+     * retrieves the user that should be auto-logged in at startup
+     */
+    getAutologinUser() {
+        return localStorageService.get(AUTOLOGIN_USER_KEY);
     }
 };
 
