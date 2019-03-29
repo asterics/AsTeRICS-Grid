@@ -10,6 +10,7 @@ import {dataService} from "./service/data/dataService.js";
 
 import LoginView from '../vue-components/loginView.vue'
 import RegisterView from '../vue-components/registerView.vue'
+import WelcomeView from '../vue-components/welcomeView.vue'
 
 var Router = {};
 var navigoInstance = null;
@@ -19,7 +20,7 @@ var injectId = null;
 var lastHash = null;
 var routingEndabled = true;
 
-Router.init = function (injectIdParam) {
+Router.init = function (injectIdParam, initialHash) {
     injectId = injectIdParam;
     navigoInstance = new Navigo(null, true);
     navigoInstance
@@ -54,6 +55,9 @@ Router.init = function (injectIdParam) {
             'register': function () {
                 loadVueView(RegisterView);
             },
+            'welcome': function () {
+                loadVueView(WelcomeView);
+            },
             '*': function () {
                 Router.toMain();
             }
@@ -72,6 +76,9 @@ Router.init = function (injectIdParam) {
             //log.debug('leave');
         }
     });
+    if (initialHash) {
+        setHash(initialHash);
+    }
     navigoInstance.resolve();
 };
 
@@ -81,6 +88,14 @@ Router.toMain = function () {
 
 Router.toUpdating = function () {
     setHash('#updating');
+};
+
+Router.toRegister = function () {
+    setHash('#register');
+};
+
+Router.toLogin = function () {
+    setHash('#login');
 };
 
 Router.toLastOpenedGrid = function () {
