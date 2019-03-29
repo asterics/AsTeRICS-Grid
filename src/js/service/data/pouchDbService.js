@@ -1,10 +1,11 @@
 import PouchDB from 'PouchDB';
 import {localStorageService} from "./localStorageService";
+import {constants} from "../../util/constants";
 
-let DEFAULT_DB_NAME = 'localDB';
+
 let pouchDbService = {};
 
-let _dbName = DEFAULT_DB_NAME;
+let _dbName = null;
 let _db = null;
 let _remoteDb = null;
 let _updateListeners = [];
@@ -161,7 +162,7 @@ pouchDbService.importDatabase = function (file) {
  * @return {Promise} resolves after reset is finished
  */
 pouchDbService.resetDatabase = function () {
-    if(_dbName !== DEFAULT_DB_NAME) {
+    if(_dbName !== constants.LOCAL_NOLOGIN_USERNAME) {
         return Promise.reject();
     }
     return new Promise(resolve => {
@@ -171,6 +172,21 @@ pouchDbService.resetDatabase = function () {
         }).catch(function (err) {
             log.error('error destroying database: ' + err);
         })
+    });
+};
+
+//TODO documentation
+pouchDbService.deleteDatabase = function (username) {
+    if (!username || constants.LOCAL_NOLOGIN_USERNAME) {
+        return Promise.reject();
+    }
+    let promises = [];
+    if (_dbName === username) {
+        promises.push(closeOpenDatabases());
+    }
+    return Promise.all(promises).then(() => {
+        let db = new PouchDB(username);
+        return db.destroy();
     });
 };
 
@@ -190,23 +206,31 @@ pouchDbService.clearUpdateListeners = function () {
     _updateListeners = [];
 };
 
+//TODO documentation
 pouchDbService.setUser = function (username, remoteCouchDbAddress) {
+    if (!username) {
+        return Promise.reject();
+    }
+    return closeOpenDatabases().then(function () {
+        _dbName = username;
+        log.info('initializing database: ' + _dbName);
+        _updateListeners = [];
+        return initPouchDB(remoteCouchDbAddress);
+    });
+};
+
+function closeOpenDatabases() {
     if (_syncHandler) {
         _syncHandler.cancel();
     }
     let promises = [];
     if (_db) promises.push(_db.close());
     if (_remoteDb) promises.push(_remoteDb.close());
-
-    return Promise.all(promises).then(function () {
-        _db = null;
-        _remoteDb = null;
-        _dbName = username || DEFAULT_DB_NAME;
-        log.info('initializing database: ' + _dbName);
-        _updateListeners = [];
-        return initPouchDB(remoteCouchDbAddress);
-    });
-};
+    _db = null;
+    _remoteDb = null;
+    _dbName = null;
+    return Promise.all(promises);
+}
 
 function queryInternal(modelName, id, dbToQuery) {
     if (!modelName && !id) {
