@@ -1,7 +1,5 @@
 import {EncryptedObject} from "../../model/EncryptedObject";
-import {localStorageService} from "./localStorageService";
 import {dataUtil} from "../../util/dataUtil";
-import {loginService} from "../../service/loginService";
 import {sjcl} from "../../externals/sjcl";
 
 let STATIC_USER_PW_SALT = "STATIC_USER_PW_SALT";
@@ -150,21 +148,14 @@ encryptionService.getUserPasswordHash = function (plaintextPassword) {
 };
 
 /**
- * sets the salt that is used for encryption purposes
- * @param salt
+ * sets the encryption properties
+ * @param hashedPassword the hashed user password
+ * @param salt the salt to use -> ID of metadata object
  */
-encryptionService.setEncryptionSalt = function (salt) {
-    log.debug('encryption salt is: ' + salt);
+encryptionService.setEncryptionProperties = function (hashedPassword, salt) {
+    hashedPassword = hashedPassword || '';
     _encryptionSalt = salt;
-    encryptionService.reloadEncryptionKey();
-};
-
-/**
- * reloads the encryption key from localStorage
- */
-encryptionService.reloadEncryptionKey = function () {
-    let hashedUserPw = localStorageService.getUserPassword(loginService.getLoggedInUsername());
-    _encryptionKey = encryptionService.getStringHash('' + _encryptionSalt + hashedUserPw);
+    _encryptionKey = encryptionService.getStringHash('' + _encryptionSalt + hashedPassword);
     log.debug('encryption key is: ' + _encryptionKey);
 };
 
