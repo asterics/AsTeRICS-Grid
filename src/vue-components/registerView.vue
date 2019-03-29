@@ -2,12 +2,7 @@
     <div>
         <header class="row header" role="banner">
             <div id="menuHeader" class="menuHeader">
-                <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Ergo Grid</h1></a>
-                <div id="buttons" class="menuButtons inline-desktop spaced-desktop">
-                    <div>
-                        <button @click="toMain()" title="Back"><i class="fas fa-angle-left"></i> <span data-i18n>Back // Zurück</span></button>
-                    </div>
-                </div>
+                <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Grid</h1></a>
             </div>
         </header>
         <main role="main" class="row content spaced">
@@ -15,7 +10,7 @@
             <form autocomplete="off">
                 <div class="row">
                     <label for="inputUser" class="two columns"><span class="desktop-right">Username</span></label>
-                    <input type="text" name="username" v-model="user" id="inputUser" class="four columns" @change="validateUsername" v-debounce="300"/>
+                    <input type="text" name="username" v-model="user" id="inputUser" class="four columns" @change="validateUsername" v-debounce="300" v-focus=""/>
                     <div class="three columns" v-show="user != null && usernameValid == false">
                         <i style="color: red;" class="fas fa-times"/> <span data-i18n="">Invalid or already taken username // Ungültiger oder bereits vergebener Username</span>
                     </div>
@@ -88,6 +83,7 @@
 <script>
     import {I18nModule} from './../js/i18nModule.js';
     import {loginService} from './../js/service/loginService.js';
+    import {Router} from "../js/router";
 
     export default {
         props: [],
@@ -120,9 +116,7 @@
                 loginService.register(this.user, this.password, this.remember).then(() => {
                     log.info('successfully registered!');
                     thiz.registerSuccess = true;
-                    databaseService.updateUser().then(() => {
-                        Router.toMain();
-                    });
+                    Router.toMain();
                 }).catch(reason => {
                     thiz.registerSuccess = false;
                     log.warn(reason);
