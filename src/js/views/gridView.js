@@ -20,6 +20,9 @@ var _inputEventHandler = null;
 var _headerHideTimeoutHandler = null;
 
 GridView.init = function (gridId) {
+    dataService.registerUpdateListener(() => {
+        Router.toLastOpenedGrid();
+    });
     dataService.getGrid(gridId).then(grid => {
         if (!grid) {
             log.warn('grid not found! gridId: ' + gridId);
@@ -212,6 +215,9 @@ function initVue() {
             },
             toManageGrids() {
                 Router.toManageGrids();
+            },
+            toLogin() {
+                Router.toLogin();
             }
         },
         computed: {
@@ -228,9 +234,6 @@ function initVue() {
                 } else {
                     this.hideHeaderFn(true);
                 }
-                dataService.registerUpdateListener(() => {
-                    Router.toLastOpenedGrid();
-                });
                 thiz.initInputMethods();
                 thiz.showGrid = true;
             });
