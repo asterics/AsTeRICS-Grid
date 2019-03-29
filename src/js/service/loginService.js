@@ -1,6 +1,8 @@
 import superlogin from 'superlogin-client';
 import {localStorageService} from "./data/localStorageService";
 import {encryptionService} from "./data/encryptionService";
+import {constants} from "../util/constants";
+import {databaseService} from "./data/databaseService";
 
 let loginService = {};
 superlogin.configure(getConfig());
@@ -31,75 +33,87 @@ loginService.getLoggedInUserDatabase = function () {
  * logs in into remote couchdb (superlogin)
  * @param user
  * @param plainPassword
- * @param savePassword if true, the user and password is saved to local storage
+ * @param saveUser if true, the user and password is saved to local storage
  * @return {Promise}
  */
-loginService.loginPlainPassword = function (user, plainPassword, savePassword) {
+loginService.loginPlainPassword = function (user, plainPassword, saveUser) {
     let hashedPassword = encryptionService.getUserPasswordHash(plainPassword);
-    return loginService.loginHashedPassword(user, hashedPassword, savePassword);
+    return loginService.loginHashedPassword(user, hashedPassword, saveUser);
 };
 
 /**
  * logs in into remote couchdb (superlogin)
  * @param user
  * @param hashedPassword
- * @param savePassword if true, the user and password is saved to local storage
+ * @param saveUser if true, the user and password is saved to local storage
  * @return {Promise}
  */
-loginService.loginHashedPassword = function (user, hashedPassword, savePassword) {
+loginService.loginHashedPassword = function (user, hashedPassword, saveUser) {
     user = user.trim();
-    return new Promise(resolve => {
-        superlogin.login({
-            username: user,
-            password: hashedPassword
-        }).then((info) => {
-            log.info('login success!');
-            _loginInfo = info;
-            _loggedInUser = user;
-            localStorageService.setLastActiveUser(user);
-            if (savePassword) {
-                localStorageService.saveUserPassword(user, hashedPassword);
-            }
-            resolve(true);
-        }, (reason) => {
-            log.info('login failed!');
-            log.info(reason);
-            resolve(false);
-        });
+    return superlogin.login({
+        username: user,
+        password: hashedPassword
+    }).then((info) => {
+        log.info('login success!');
+        _loginInfo = info;
+        _loggedInUser = user;
+        localStorageService.setLastActiveUser(user);
+        localStorageService.setAutologinUser(saveUser ? user: '');
+        if (saveUser) {
+            localStorageService.saveUserPassword(user, hashedPassword);
+        }
+        return databaseService.updateUser(_loggedInUser, hashedPassword, loginService.getLoggedInUserDatabase());
+    }).then(() => {
+        return Promise.resolve(true);
+    }).catch(reason => {
+        log.info('login failed!');
+        log.info(reason);
+        return Promise.resolve(false);
     });
+};
+
+/**
+ * logs out, deletes all locally saved login data
+
+ * @return {Promise}
+ */
+loginService.logout = function () {
+    //TODO: use?!
+    if(_loggedInUser) {
+        return superlogin.logoutUser(user_id, session_id);
+    }
 };
 
 /**
  * registers with remote couchdb (superlogin)
  * @param user
  * @param plainPassword
- * @param savePassword if true, the user and password is saved to local storage
+ * @param saveUser if true, the user and password is saved to local storage
  * @return {Promise}
  */
-loginService.register = function (user, plainPassword, savePassword) {
+loginService.register = function (user, plainPassword, saveUser) {
     user = user.trim();
-    return new Promise((resolve, reject) => {
-        let password = encryptionService.getUserPasswordHash(plainPassword);
-        console.log("password hash: " + password);
-        superlogin.register({
-            username: user,
-            email: new Date().getTime() + '.' + Math.random() + '@norealmail.org',
-            password: password,
-            confirmPassword: password
-        }).then((info) => {
-            log.info('register success!');
-            _loginInfo = info;
-            _loggedInUser = user;
-            localStorageService.setLastActiveUser(user);
-            if (savePassword) {
-                localStorageService.saveUserPassword(user, password);
-            }
-            resolve();
-        }, (reason) => {
-            log.info('register failed!');
-            log.info(reason);
-            reject(reason);
-        });
+    let password = encryptionService.getUserPasswordHash(plainPassword);
+    console.log("password hash: " + password);
+    return superlogin.register({
+        username: user,
+        email: new Date().getTime() + '.' + Math.random() + '@norealmail.org',
+        password: password,
+        confirmPassword: password
+    }).then((info) => {
+        log.info('register success!');
+        _loginInfo = info;
+        _loggedInUser = user;
+        localStorageService.setLastActiveUser(user);
+        localStorageService.setAutologinUser(saveUser ? user: '');
+        if (saveUser) {
+            localStorageService.saveUserPassword(user, password);
+        }
+        return databaseService.updateUser(_loggedInUser, password, loginService.getLoggedInUserDatabase());
+    }).catch(reason => {
+        log.info('register failed!');
+        log.info(reason);
+        return Promise.reject(reason);
     });
 };
 
@@ -110,7 +124,10 @@ loginService.register = function (user, plainPassword, savePassword) {
  */
 loginService.isValidUsername = function (username) {
     return new Promise((resolve, reject) => {
-        if (!username) {
+        if (!username || username === constants.LOCAL_NOLOGIN_USERNAME) {
+            //TODO add regex
+            // couchdb: ^[a-z][a-z0-9_$()+/-]*$
+            // intended: ^[a-z][a-z0-9_+-]*$
             resolve(false);
             return;
         }
