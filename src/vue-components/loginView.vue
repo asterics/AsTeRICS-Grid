@@ -153,11 +153,11 @@
                     return;
                 }
                 thiz.loginSuccess = undefined;
-                loginService.loginPlainPassword(user, password, this.remember).then(loginSuccess => {
-                    thiz.loginSuccess = loginSuccess;
-                    if (loginSuccess) {
-                        Router.toMain();
-                    }
+                loginService.loginPlainPassword(user, password, this.remember).then(() => {
+                    thiz.loginSuccess = true;
+                    Router.toMain();
+                }).catch(() => {
+                    thiz.loginSuccess = false;
                 });
             },
             loginStored(user) {
@@ -167,10 +167,11 @@
                 }
                 if (this.savedOnlineUsers.includes(user)) {
                     let password = localStorageService.getUserPassword(user);
-                    loginService.loginHashedPassword(user, password, true).then(loginSuccess => {
-                        if (loginSuccess) {
-                            Router.toMain();
-                        }
+                    loginService.loginHashedPassword(user, password, true).then(() => {
+                        thiz.loginSuccess = true;
+                        Router.toMain();
+                    }).catch(() => {
+                        thiz.loginSuccess = false;
                     });
                 } else {
                     localStorageService.setAutologinUser(user);

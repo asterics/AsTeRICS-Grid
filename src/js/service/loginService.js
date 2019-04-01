@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import superlogin from 'superlogin-client';
 import {localStorageService} from "./data/localStorageService";
 import {encryptionService} from "./data/encryptionService";
@@ -8,6 +9,12 @@ let loginService = {};
 superlogin.configure(getConfig());
 let _loginInfo = null;
 let _loggedInUser = null;
+let _autoRetryHandler;
+let _autoRetryUser;
+
+let _lastParamUser = null;
+let _lastParamHashedPw = null;
+let _lastParamSaveUser = null;
 
 /**
  * returns currently logged in user, null of not logged in
@@ -26,7 +33,7 @@ loginService.getLoggedInUserDatabase = function () {
         return null;
     }
     let keys = Object.keys(_loginInfo.userDBs);
-    return _loginInfo.userDBs[keys[0]];
+    return _loginInfo.userDBs[keys[0]].replace('localhost:5984', location.hostname + ':5984');
 };
 
 /**
@@ -49,26 +56,36 @@ loginService.loginPlainPassword = function (user, plainPassword, saveUser) {
  * @return {Promise}
  */
 loginService.loginHashedPassword = function (user, hashedPassword, saveUser) {
+    _lastParamUser = user;
+    _lastParamHashedPw = hashedPassword;
+    _lastParamSaveUser = saveUser;
+    if(user !== _autoRetryUser) {
+        stopAutoRetryLogin();
+    }
+    _loginInfo = null;
+    _loggedInUser = null;
     user = user.trim();
     return superlogin.login({
         username: user,
         password: hashedPassword
     }).then((info) => {
         log.info('login success!');
+        stopAutoRetryLogin();
         _loginInfo = info;
+        return databaseService.updateUser(user, hashedPassword, loginService.getLoggedInUserDatabase());
+    }, (reason) => {
+        log.info('online login failed! only using offline local database...');
+        log.debug(reason);
+        autoRetryLogin(user, hashedPassword, saveUser);
+        return databaseService.updateUser(user, hashedPassword);
+    }).then(() => {
         _loggedInUser = user;
         localStorageService.setLastActiveUser(user);
         localStorageService.setAutologinUser(saveUser ? user: '');
         if (saveUser) {
             localStorageService.saveUserPassword(user, hashedPassword);
         }
-        return databaseService.updateUser(_loggedInUser, hashedPassword, loginService.getLoggedInUserDatabase());
-    }).then(() => {
         return Promise.resolve(true);
-    }).catch(reason => {
-        log.info('login failed!');
-        log.info(reason);
-        return Promise.resolve(false);
     });
 };
 
@@ -79,6 +96,7 @@ loginService.loginHashedPassword = function (user, hashedPassword, saveUser) {
  */
 loginService.logout = function () {
     //TODO: use?!
+    stopAutoRetryLogin();
     if(_loggedInUser) {
         return superlogin.logoutUser(user_id, session_id);
     }
@@ -92,6 +110,7 @@ loginService.logout = function () {
  * @return {Promise}
  */
 loginService.register = function (user, plainPassword, saveUser) {
+    stopAutoRetryLogin();
     user = user.trim();
     let password = encryptionService.getUserPasswordHash(plainPassword);
     console.log("password hash: " + password);
@@ -140,15 +159,40 @@ loginService.isValidUsername = function (username) {
     });
 };
 
+loginService.isLoggedInOnline = function () {
+    return _loginInfo !== null;
+};
+
+function autoRetryLogin(user, hashedPassword, saveUser) {
+    stopAutoRetryLogin();
+    _autoRetryUser = user;
+    _autoRetryHandler = window.setTimeout(function () {
+        log.info("auto-retry for online login...");
+        loginService.loginHashedPassword(user, hashedPassword, saveUser).then(() => {
+            if (loginService.isLoggedInOnline()) {
+                window.location.reload();
+            }
+        });
+    }, 10000);
+}
+
+function stopAutoRetryLogin() {
+    _autoRetryUser = null;
+    if (_autoRetryHandler) {
+        window.clearInterval(_autoRetryHandler);
+        _autoRetryHandler = null;
+    }
+}
+
 function getConfig() {
     //see https://github.com/micky2be/superlogin-client
     return {
         // An optional URL to API server, by default a current window location is used.
-        serverUrl: 'http://localhost:3000',
+        serverUrl: 'http://' + location.hostname + ':3000',
         // The base URL for the SuperLogin routes with leading and trailing slashes (defaults to '/auth')
         baseUrl: '/auth',
         // Specific endpoint for social authentication and social link popups (defaults to `${location.origin}${baseUrl}`)
-        socialUrl: 'http://localhost:3001/auth',
+        socialUrl: 'http://' + location.hostname + ':3001/auth',
         // A list of API endpoints to automatically add the Authorization header to
         // By default the host the browser is pointed to will be added automatically
         //endpoints: ['api.example.com'],
@@ -172,5 +216,16 @@ function getConfig() {
         timeout: 0
     };
 }
+
+function init() {
+    $(document).on(constants.EVENT_DB_CONNECTION_LOST, function(e){
+        log.info('connection lost! auto-retrying login after 10 seconds...');
+        if(_lastParamUser && _lastParamHashedPw) {
+            autoRetryLogin(_lastParamUser, _lastParamHashedPw, _lastParamSaveUser);
+        }
+    });
+}
+
+init();
 
 export {loginService};
