@@ -13,11 +13,13 @@ import EditActionsModal from '../../vue-components/editActionsModal.vue'
 import {actionService} from "../service/actionService";
 import {GridElement} from "../model/GridElement";
 import {GridData} from "../model/GridData";
+import {constants} from "../util/constants";
 
 var GridEditView = {};
 var vueApp = null;
 
 GridEditView.init = function (gridId) {
+    $(document).on(constants.EVENT_DB_PULL_UPDATED, reloadFn);
     dataService.getGrid(gridId).then(grid => {
         if (!grid) {
             log.warn('grid not found! gridId: ' + gridId);
@@ -37,8 +39,14 @@ GridEditView.init = function (gridId) {
 GridEditView.destroy = function () {
     GridEditView.grid = null;
     $.contextMenu('destroy');
-    dataService.clearUpdateListeners();
+    $(document).off(constants.EVENT_DB_PULL_UPDATED, reloadFn);
 };
+
+function reloadFn() {
+    if (vueApp) {
+        vueApp.reload();
+    }
+}
 
 function initVue() {
     vueApp = new Vue({
@@ -143,9 +151,6 @@ function initVue() {
                         thiz.gridData = JSON.parse(JSON.stringify(data));
                     });
 
-                });
-                dataService.registerUpdateListener(function() {
-                    thiz.reload();
                 });
                 initContextmenu();
                 I18nModule.init();

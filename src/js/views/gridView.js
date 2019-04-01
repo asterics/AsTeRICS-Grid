@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import {L} from "../../lib/lquery.js";
 import Vue from 'vue'
 import {Grid} from "../grid.js";
@@ -14,15 +15,14 @@ import {Hover} from "../input/hovering.js";
 import {Clicker} from "../input/clicking.js";
 
 import InputOptionsModal from '../../vue-components/inputOptionsModal.vue'
+import {constants} from "../util/constants";
 
 var GridView = {};
 var _inputEventHandler = null;
 var _headerHideTimeoutHandler = null;
 
 GridView.init = function (gridId) {
-    dataService.registerUpdateListener(() => {
-        Router.toLastOpenedGrid();
-    });
+    $(document).on(constants.EVENT_DB_PULL_UPDATED, reloadFn);
     dataService.getGrid(gridId).then(grid => {
         if (!grid) {
             log.warn('grid not found! gridId: ' + gridId);
@@ -51,16 +51,20 @@ GridView.init = function (gridId) {
 };
 
 GridView.destroy = function () {
+    $(document).off(constants.EVENT_DB_PULL_UPDATED, reloadFn);
     stopInputMethods();
     areService.unsubscribeEvents();
     clearTimeout(_headerHideTimeoutHandler);
     GridView.grid = null;
-    dataService.clearUpdateListeners();
     if(_inputEventHandler) {
         _inputEventHandler.stopListening();
         _inputEventHandler = null;
     }
 };
+
+function reloadFn() {
+    Router.toLastOpenedGrid();
+}
 
 function stopInputMethods() {
     if (GridView.scanner) GridView.scanner.stopScanning();

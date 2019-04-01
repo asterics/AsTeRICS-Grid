@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import {dataService} from "../service/data/dataService";
 import {GridData} from "../model/GridData.js";
 import {Router} from "../router";
@@ -6,12 +7,13 @@ import Vue from 'vue';
 import {I18nModule} from "./../i18nModule.js";
 import {translateService} from "./../service/translateService";
 import {pouchDbService} from "../service/data/pouchDbService";
+import {constants} from "../util/constants";
 
 var AllGridsView = {};
 var vueApp = null;
 
 AllGridsView.init = function () {
-
+    $(document).on(constants.EVENT_DB_PULL_UPDATED, reloadFn);
     dataService.getGrids(true).then(grids => {
         log.debug(grids);
         initVue(grids);
@@ -19,8 +21,14 @@ AllGridsView.init = function () {
 };
 
 AllGridsView.destroy = function () {
-    dataService.clearUpdateListeners();
+    $(document).off(constants.EVENT_DB_PULL_UPDATED, reloadFn);
 };
+
+function reloadFn() {
+    if (vueApp) {
+        vueApp.reload();
+    }
+}
 
 function initVue(grids) {
     vueApp = new Vue({
@@ -154,9 +162,6 @@ function initVue(grids) {
             initContextmenu();
             I18nModule.init();
             thiz.showLoading = false;
-            dataService.registerUpdateListener(function () {
-                thiz.reload();
-            });
         }
     })
 }
