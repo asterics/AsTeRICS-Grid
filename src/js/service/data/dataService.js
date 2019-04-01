@@ -376,22 +376,6 @@ dataService.importGridsFromJSON = function (jsonString) {
 };
 
 /**
- * Registers an update listener. All registered listeners are called if an update event from a remote database
- * is received.
- * @param listener a function that should be called on remote database updates
- */
-dataService.registerUpdateListener = function (listener) {
-    databaseService.registerUpdateListener(listener);
-};
-
-/**
- * clears all update listeners
- */
-dataService.clearUpdateListeners = function () {
-    databaseService.clearUpdateListeners();
-};
-
-/**
  * saves an element that can potentially be used in several places, and has high data volume and therefore
  * should only be saved once in the database (e.g. images, ARE Models).
  * To achieve this the data of the element is hashed and the hashes are saved in the MetaData.hashes object. If another

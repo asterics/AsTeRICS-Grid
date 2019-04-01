@@ -92,23 +92,9 @@ databaseService.removeObject = function (id) {
 };
 
 /**
- * Registers an update listener. All registered listeners are called if an update event from the remote couchDB
- * is received.
- * @param listener a function that should be called on remote database updates
- */
-databaseService.registerUpdateListener = function (listener) {
-    pouchDbService.registerUpdateListener(listener);
-};
-
-/**
- * clears all update listeners
- */
-databaseService.clearUpdateListeners = function () {
-    pouchDbService.clearUpdateListeners();
-};
-
-/**
  * updates the current user and the used database
+ * If the database of the given user is already opened, nothing is done.
+ *
  * @param username the username of the logged in user
  * @param hashedUserPassword hashed password of the user
  * @param userDatabaseURL the database-URL of the logged in user
@@ -116,6 +102,9 @@ databaseService.clearUpdateListeners = function () {
  * @return {*}
  */
 databaseService.updateUser = function (username, hashedUserPassword, userDatabaseURL) {
+    if(pouchDbService.getOpenedDatabaseName() === username) {
+        return Promise.resolve();
+    }
     return pouchDbService.setUser(username, userDatabaseURL).then(() => {
         return initInternal(hashedUserPassword);
     });
@@ -130,7 +119,6 @@ databaseService.deleteDatabase = function (user) {
 };
 
 function initInternal(hashedUserPassword) {
-    databaseService.clearUpdateListeners();
     _initPromise = Promise.resolve().then(() => { //reset DB if specified by URL
         let promises = [];
         if (urlParamService.shouldResetDatabase()) {
