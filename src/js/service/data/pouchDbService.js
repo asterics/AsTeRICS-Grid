@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import PouchDB from 'PouchDB';
 import {localStorageService} from "./localStorageService";
 import {constants} from "../../util/constants";
@@ -8,7 +9,6 @@ let pouchDbService = {};
 let _dbName = null;
 let _db = null;
 let _remoteDb = null;
-let _updateListeners = [];
 let _syncHandler = null;
 
 /**
@@ -190,22 +190,6 @@ pouchDbService.deleteDatabase = function (username) {
     });
 };
 
-/**
- * Registers an update listener. All registered listeners are called if an update event from the remote couchDB
- * is received.
- * @param listener a function that should be called on remote database updates
- */
-pouchDbService.registerUpdateListener = function (listener) {
-    _updateListeners.push(listener);
-};
-
-/**
- * clears all update listeners
- */
-pouchDbService.clearUpdateListeners = function () {
-    _updateListeners = [];
-};
-
 //TODO documentation
 pouchDbService.setUser = function (username, remoteCouchDbAddress) {
     if (!username) {
@@ -214,10 +198,15 @@ pouchDbService.setUser = function (username, remoteCouchDbAddress) {
     return closeOpenDatabases().then(function () {
         _dbName = username;
         log.info('initializing database: ' + _dbName);
-        _updateListeners = [];
         return initPouchDB(remoteCouchDbAddress);
     });
 };
+
+//TODO documentation
+pouchDbService.getOpenedDatabaseName = function () {
+    return _dbName;
+};
+
 
 function closeOpenDatabases() {
     if (_syncHandler) {
@@ -261,38 +250,58 @@ function queryInternal(modelName, id, dbToQuery) {
 }
 
 function initPouchDB(remoteCouchDbAddress) {
+    let promises = [];
     _db = new PouchDB(_dbName);
     _db.info().then(function (info) {
         log.debug(info);
     });
     if (remoteCouchDbAddress) {
-        log.info('sync database with: ' + remoteCouchDbAddress);
-        _remoteDb = new PouchDB(remoteCouchDbAddress);
-        log.info('trying to sync pouchdb with: ' + remoteCouchDbAddress);
-        _syncHandler = _db.sync(_remoteDb, {
-            live: true,
-            retry: true
-        }).on('change', function (info) {
-            log.info('couchdb change:' + info.direction);
-            log.info(info);
-            if (info.direction === 'pull') {
-                log.info('pouchdb pulling updates...');
-                _updateListeners.forEach(listener => {
-                    listener();
-                })
-            } else {
-                log.info('pouchdb pushing updates...');
-            }
-        }).on('error', function (err) {
-            log.warn('couchdb error');
-        }).on('complete', function (info) {
-            log.info('couchdb sync complete!');
-        });
+        promises.push(setupSync(remoteCouchDbAddress));
     }
 
     log.debug('create index');
-    return _db.createIndex({
+    promises.push(_db.createIndex({
         index: {fields: ['modelName', 'id']}
+    }));
+    return Promise.all(promises);
+}
+
+function setupSync(remoteCouchDbAddress) {
+    return new Promise(resolve => {
+        log.info('sync pouchdb with: ' + remoteCouchDbAddress);
+        _remoteDb = new PouchDB(remoteCouchDbAddress);
+
+        //first completeley update DB
+        _syncHandler = _db.sync(_remoteDb, {
+            live: false,
+            retry: false
+        }).on('error', function (err) {
+            log.info('couchdb error');
+        }).on('complete', function (info) {
+            log.info('couchdb sync complete! setting up live sync...');
+            setupLiveSync();
+            resolve();
+        });
+
+        //setup live sync
+        function setupLiveSync() {
+            _syncHandler = _db.sync(_remoteDb, {
+                live: true,
+                retry: false
+            }).on('change', function (info) {
+                log.info('couchdb change:' + info.direction);
+                log.warn(info);
+                if (info.direction === 'pull') {
+                    log.info('pouchdb pulling updates...');
+                    $(document).trigger(constants.EVENT_DB_PULL_UPDATED);
+                } else {
+                    log.info('pouchdb pushing updates...');
+                }
+            }).on('error', function (err) {
+                log.info('couchdb error');
+                $(document).trigger(constants.EVENT_DB_CONNECTION_LOST);
+            });
+        }
     });
 }
 
