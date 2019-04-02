@@ -119,6 +119,8 @@ databaseService.deleteDatabase = function (user) {
 };
 
 function initInternal(hashedUserPassword) {
+    let skipCheckGenerateDefaultGrid = !pouchDbService.isUsingLocalDb(); //no checking/generation of default grid for remote databases
+
     _initPromise = Promise.resolve().then(() => { //reset DB if specified by URL
         let promises = [];
         if (urlParamService.shouldResetDatabase()) {
@@ -126,7 +128,7 @@ function initInternal(hashedUserPassword) {
         }
         return Promise.all(promises);
     }).then(() => {
-        return pouchDbService.queryLocalAndRemote(MetaData.getModelName());
+        return pouchDbService.query(MetaData.getModelName());
     }).then(metadataObjects => { //create metadata object if not exisiting, update datamodel version, if outdated
         let promises = [];
         if (!metadataObjects || metadataObjects.length === 0) {
@@ -143,8 +145,14 @@ function initInternal(hashedUserPassword) {
         }
         return Promise.all(promises);
     }).then(() => {
+        if (skipCheckGenerateDefaultGrid) {
+            return Promise.resolve();
+        }
         return pouchDbService.query(GridData.getModelName());
     }).then(grids => { //import default gridset, if no grids are existing
+        if (skipCheckGenerateDefaultGrid) {
+            return Promise.resolve();
+        }
         if (grids) {
             log.debug('detected saved grid, no generation of new grid.');
             return Promise.resolve();
@@ -152,7 +160,7 @@ function initInternal(hashedUserPassword) {
             return $.get(_defaultGridSetPath);
         }
     }).then(data => {
-        if (!data) {
+        if (!data || skipCheckGenerateDefaultGrid) {
             return Promise.resolve();
         }
         log.info('importing default grid set...');
