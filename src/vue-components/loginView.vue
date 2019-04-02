@@ -175,7 +175,7 @@
                     });
                 } else {
                     localStorageService.setAutologinUser(user);
-                    databaseService.updateUser(user).then(() => {
+                    databaseService.initForUser(user).then(() => {
                         Router.toMain();
                     });
                 }

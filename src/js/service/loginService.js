@@ -72,12 +72,12 @@ loginService.loginHashedPassword = function (user, hashedPassword, saveUser) {
         log.info('login success!');
         stopAutoRetryLogin();
         _loginInfo = info;
-        return databaseService.updateUser(user, hashedPassword, loginService.getLoggedInUserDatabase());
+        return databaseService.initForUser(user, hashedPassword, loginService.getLoggedInUserDatabase());
     }, (reason) => {
         log.info('online login failed! only using offline local database...');
         log.debug(reason);
         autoRetryLogin(user, hashedPassword, saveUser);
-        return databaseService.updateUser(user, hashedPassword);
+        return databaseService.initForUser(user, hashedPassword);
     }).then(() => {
         _loggedInUser = user;
         localStorageService.setLastActiveUser(user);
@@ -128,7 +128,7 @@ loginService.register = function (user, plainPassword, saveUser) {
         if (saveUser) {
             localStorageService.saveUserPassword(user, password);
         }
-        return databaseService.updateUser(_loggedInUser, password, loginService.getLoggedInUserDatabase());
+        return databaseService.initForUser(_loggedInUser, password, loginService.getLoggedInUserDatabase());
     }).catch(reason => {
         log.info('register failed!');
         log.info(reason);
