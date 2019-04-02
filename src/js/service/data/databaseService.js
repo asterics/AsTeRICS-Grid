@@ -101,11 +101,11 @@ databaseService.removeObject = function (id) {
  *
  * @return {*}
  */
-databaseService.updateUser = function (username, hashedUserPassword, userDatabaseURL) {
+databaseService.initForUser = function (username, hashedUserPassword, userDatabaseURL) {
     if(pouchDbService.getOpenedDatabaseName() === username) {
         return Promise.resolve();
     }
-    return pouchDbService.setUser(username, userDatabaseURL).then(() => {
+    return pouchDbService.initDatabase(username, userDatabaseURL).then(() => {
         return initInternal(hashedUserPassword);
     });
 };
