@@ -62,7 +62,7 @@
             useDefaultUser() {
                 localStorageService.saveLocalUser(constants.LOCAL_NOLOGIN_USERNAME);
                 localStorageService.setAutologinUser(constants.LOCAL_NOLOGIN_USERNAME);
-                databaseService.updateUser(constants.LOCAL_NOLOGIN_USERNAME).then(() => {
+                databaseService.initForUser(constants.LOCAL_NOLOGIN_USERNAME).then(() => {
                     Router.toMain();
                 });
             }
