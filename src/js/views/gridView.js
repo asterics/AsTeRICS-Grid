@@ -16,6 +16,7 @@ import {Clicker} from "../input/clicking.js";
 
 import InputOptionsModal from '../../vue-components/inputOptionsModal.vue'
 import {constants} from "../util/constants";
+import {localStorageService} from "../service/data/localStorageService";
 
 var GridView = {};
 var _inputEventHandler = null;
@@ -103,7 +104,9 @@ function initVue() {
             hover: null,
             clicker: null,
             showModal: false,
-            showGrid: false
+            showGrid: false,
+            isSyncing: false,
+            isLocalUser: localStorageService.isLastActiveUserLocal()
         },
         components: {
             InputOptionsModal
@@ -240,7 +243,13 @@ function initVue() {
             },
         },
         mounted: function () {
-            var thiz = this;
+            let thiz = this;
+            if (!thiz.isLocalUser) {
+                $(document).on(constants.EVENT_DB_SYNC_STATE_CHANGE, (event, synced) => {
+                    thiz.isSyncing = synced;
+                });
+                thiz.isSyncing = dataService.isDatabaseSyncing();
+            }
             initGrid().then(() => {
                 _inputEventHandler = new InputEventHandler('grid-container');
                 if(GridView.metadata.headerPinned) {

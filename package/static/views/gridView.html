@@ -1,7 +1,16 @@
 <div id="app" class="box" v-cloak>
     <header v-show="showHeader" @mousemove="resetHeaderHideTimeout()" @touchstart="resetHeaderHideTimeout(5000)" class="row header" role="banner">
         <div id="menuHeader" class="menuHeader">
-            <a href="#main"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline hide-mobile">AsTeRICS Grid</h1></a>
+            <a href="#main">
+                <img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline hide-mobile">AsTeRICS Grid</h1>
+            </a>
+            <div class="inline spaced">
+                <span v-if="!isLocalUser" class="fa-stack fa-1x" style="margin-bottom: 1rem">
+                    <i class="fas fa-cloud fa-stack-2x" style="color: lightblue"></i>
+                    <i v-show="isSyncing" class="fas fa-sync-alt fa-stack-1x fa-spin" style="left: 3px; top: 1px"></i>
+                    <i v-show="!isSyncing" class="fas fa-check fa-stack-1x" style="left: 3px; top: 2px"></i>
+                </span>
+            </div>
             <div class="inline spaced">
                 <label class="inline" for="inHeaderPinned"><i class="fas fa-thumbtack"/> <span class="hide-mobile" data-i18n>Header pinned // Header angepinnt</span></label>
                 <input id="inHeaderPinned" type="checkbox" @change="setHeaderPinned" v-model="metadata.headerPinned"/>

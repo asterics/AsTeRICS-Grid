@@ -14,6 +14,7 @@ import {actionService} from "../service/actionService";
 import {GridElement} from "../model/GridElement";
 import {GridData} from "../model/GridData";
 import {constants} from "../util/constants";
+import {localStorageService} from "../service/data/localStorageService";
 
 var GridEditView = {};
 var vueApp = null;
@@ -60,7 +61,9 @@ function initVue() {
             showMultipleModal: false,
             showActionsModal: false,
             editElementId: null,
-            showGrid: false
+            showGrid: false,
+            isSyncing: false,
+            isLocalUser: localStorageService.isLastActiveUserLocal()
         },
         components: {
             EditGridModal, AddMultipleModal, EditActionsModal
@@ -141,7 +144,13 @@ function initVue() {
             },
         },
         mounted: function () {
-            var thiz = this;
+            let thiz = this;
+            if (!thiz.isLocalUser) {
+                $(document).on(constants.EVENT_DB_SYNC_STATE_CHANGE, (event, synced) => {
+                    thiz.isSyncing = synced;
+                });
+                thiz.isSyncing = dataService.isDatabaseSyncing();
+            }
             initGrid().then(() => {
                 GridEditView.grid.setLayoutChangedEndListener((newGridData) => {
                     thiz.canUndo = GridEditView.grid.canUndo();
