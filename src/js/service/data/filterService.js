@@ -17,9 +17,9 @@ V0 -> V1: Introduction of encryption and modelVersion property on all data model
  * @return object of list of objects that is/are ready for saving to database
  */
 filterService.convertLiveToDatabaseObjects = function (objects, filterOptions) {
-    log.debug('conversion to database - before filters:', objects);
+    log.trace('conversion to database - before filters:', objects);
     let filtered = filterObjects(objects, filterOptions, getFilterFunctionsToDatabase);
-    log.debug('conversion to database - after filters:', filtered);
+    log.trace('conversion to database - after filters:', filtered);
     return filtered;
 };
 
@@ -30,9 +30,9 @@ filterService.convertLiveToDatabaseObjects = function (objects, filterOptions) {
  * @return object of list of objects that is/are ready for using in the application
  */
 filterService.convertDatabaseToLiveObjects = function (objects, filterOptions) {
-    log.debug('conversion to live - before filters:', objects);
+    log.trace('conversion to live - before filters:', objects);
     let filtered = filterObjects(objects, filterOptions, getFilterFunctionsFromDatabase);
-    log.debug('conversion to live - after filters:', filtered);
+    log.trace('conversion to live - after filters:', filtered);
     return filtered;
 };
 

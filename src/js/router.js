@@ -138,7 +138,7 @@ function setHash(hash, reset) {
 }
 
 function loadView(viewName) {
-    log.info('loading view: ' + viewName);
+    log.debug('loading view: ' + viewName);
     return new Promise((resolve, reject) => {
         if(!routingEndabled) {
             reject();

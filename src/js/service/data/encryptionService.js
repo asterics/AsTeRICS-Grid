@@ -115,14 +115,11 @@ encryptionService.decryptString = function (encryptedString, encryptionKey) {
     } else {
         decryptedString = atob(encryptedString);
     }
-    /*if(_cryptoTime === 0) {
-        setTimeout(function () {
-            alert(_cryptoTime);
-            _cryptoTime = 0;
-        }, 5000);
-    }*/
-    _cryptoTime += new Date().getTime() - startTime;
-    log.debug(_cryptoTime + ', this:' + (new Date().getTime() - startTime));
+    if (log.getLevel() <= log.levels.TRACE) {
+        _cryptoTime += new Date().getTime() - startTime;
+        log.trace('total needed time for encryption:' + _cryptoTime + ', last operation:' + (new Date().getTime() - startTime));
+    }
+
     return decryptedString;
 };
 
@@ -156,7 +153,7 @@ encryptionService.setEncryptionProperties = function (hashedPassword, salt) {
     hashedPassword = hashedPassword || '';
     _encryptionSalt = salt;
     _encryptionKey = encryptionService.getStringHash('' + _encryptionSalt + hashedPassword);
-    log.debug('encryption key is: ' + _encryptionKey);
+    log.debug('new encryption key is: ' + _encryptionKey);
 };
 
 export {encryptionService};
