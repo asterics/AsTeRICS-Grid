@@ -20,6 +20,7 @@ import {constants} from "../util/constants";
 var GridView = {};
 var _inputEventHandler = null;
 var _headerHideTimeoutHandler = null;
+let _vueApp = null;
 
 GridView.init = function (gridId) {
     $(document).on(constants.EVENT_DB_PULL_UPDATED, reloadFn);
@@ -62,8 +63,17 @@ GridView.destroy = function () {
     }
 };
 
-function reloadFn() {
-    Router.toLastOpenedGrid();
+function reloadFn(event, updatedIds) {
+    log.debug('got update event, ids updated:' + updatedIds);
+    if(!GridView.gridData || !GridView.metadata) {
+        window.location.reload();
+    }
+    if(updatedIds.includes(GridView.gridData.id)) {
+        Router.toLastOpenedGrid(); //TODO only reload locally
+    }
+    if(updatedIds.includes(GridView.metadata.id)) {
+        Router.toLastOpenedGrid();
+    }
 }
 
 function stopInputMethods() {
@@ -82,7 +92,7 @@ function initGrid() {
 }
 
 function initVue() {
-    var app = new Vue({
+    _vueApp = new Vue({
         el: '#app',
         data: {
             gridData: JSON.parse(JSON.stringify(GridView.gridData)),
