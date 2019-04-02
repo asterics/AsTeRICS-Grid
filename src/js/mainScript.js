@@ -27,7 +27,7 @@ function init() {
         promises.push(loginService.loginHashedPassword(autologinUser, userPassword, true));
     }
     if (autologinUser && !userPassword) { //saved local user
-        promises.push(databaseService.updateUser(autologinUser));
+        promises.push(databaseService.initForUser(autologinUser));
     }
     Promise.all(promises).then(() => {
         let initHash = autologinUser ? '#main' : lastActiveUser ? '#login' : '#welcome';
