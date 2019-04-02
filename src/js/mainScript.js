@@ -21,7 +21,7 @@ function init() {
     let lastActiveUser = localStorageService.getLastActiveUser();
     let autologinUser = localStorageService.getAutologinUser();
     let userPassword = localStorageService.getUserPassword(autologinUser);
-    log.info('using user: ' + autologinUser);
+    log.info('autologin user: ' + autologinUser);
     log.debug('using password (hashed): ' + userPassword);
     if (autologinUser && userPassword) { //saved online user
         promises.push(loginService.loginHashedPassword(autologinUser, userPassword, true));
@@ -39,12 +39,12 @@ init();
 
 function reloadOnAppcacheUpdate() {
     if (!window.applicationCache) {
-        log.info('no application cache.');
+        log.debug('no application cache.');
         return;
     }
 
     function onUpdateReady() {
-        log.info('appcache: updateready');
+        log.debug('appcache: updateready');
         Router.toMain();
         window.location.reload();
     }
