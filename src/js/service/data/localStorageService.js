@@ -2,6 +2,7 @@ var errorMsg = 'could not access local storage, maybe disabled by user? Error: '
 var storage = null;
 let FIRST_VISIT_KEY = 'FIRST_VISIT_KEY';
 let USER_PASSWORDS_KEY = "USER_PASSWORDS_KEY";
+let SYNCED_DBS_LIST_KEY = "SYNCED_DBS_LIST_KEY";
 let LAST_ACTIVEUSER_KEY = "LAST_ACTIVEUSER_KEY";
 let AUTOLOGIN_USER_KEY = "AUTOLOGIN_USER_KEY";
 
@@ -154,6 +155,37 @@ var localStorageService = {
     getAutologinUser() {
         return localStorageService.get(AUTOLOGIN_USER_KEY);
     }
+    ,
+    /**
+     * saves a name of the database that should be marked as "completely synced"
+     * @param databaseName the name of the database to save
+     * @return {*}
+     */
+    markSyncedDatabase(databaseName) {
+        let list = getSyncedDbsList();
+        if (!list.includes(databaseName)) {
+            list.push(databaseName);
+        }
+        localStorageService.save(SYNCED_DBS_LIST_KEY, JSON.stringify(list));
+    },
+    /**
+     * returns true if the given database was set to "completely synced" before using method "markSyncedDatabase()"
+     * @param databaseName
+     * @return {*}
+     */
+    isDatabaseSynced(databaseName) {
+        return getSyncedDbsList().includes(databaseName);
+    },
+    /**
+     * unmarks the given database name to be not longer "completely synced"
+     * @param databaseName the name of the database to save
+     * @return {*}
+     */
+    unmarkSyncedDatabase(databaseName) {
+        let list = getSyncedDbsList();
+        list = list.filter(name => name !== databaseName);
+        localStorageService.save(SYNCED_DBS_LIST_KEY, JSON.stringify(list));
+    },
 };
 
 function getPasswordObject() {
@@ -163,6 +195,15 @@ function getPasswordObject() {
         return {};
     }
     return JSON.parse(passwordsObjectString);
+}
+
+function getSyncedDbsList() {
+    let syncedDbsString = localStorageService.get(SYNCED_DBS_LIST_KEY);
+    if (!syncedDbsString) {
+        localStorageService.save(SYNCED_DBS_LIST_KEY, JSON.stringify([]));
+        return [];
+    }
+    return JSON.parse(syncedDbsString);
 }
 
 export {localStorageService};
