@@ -3,7 +3,6 @@ import PouchDB from 'PouchDB';
 import {localStorageService} from "./localStorageService";
 import {constants} from "../../util/constants";
 
-
 let pouchDbService = {};
 
 let _dbName = null;
@@ -11,6 +10,28 @@ let _db = null;
 let _remoteDb = null;
 let _syncHandler = null;
 let _useLocalDb = true;
+let _inSync = false;
+
+/**
+ * sets the database to use to a user-database with the same name as the username
+ * if a local database named as the given username does not exist, a new local database is created
+ *
+ * @param databaseName the database name to use, e.g. use username
+ * @param remoteCouchDbAddress optional parameter, if defined an address of a remote couchdb endpoint where the
+ *        local database should be synced
+ * @return {*} a promise that is resolved at a time when pouchDbService can be used for retrieving/saving data to a
+ *             database named like the given username
+ */
+pouchDbService.initDatabase = function (databaseName, remoteCouchDbAddress) {
+    if (!databaseName) {
+        return Promise.reject();
+    }
+    return closeOpenDatabases().then(function () {
+        _dbName = databaseName;
+        log.debug('initializing database: ' + _dbName);
+        return initPouchDB(remoteCouchDbAddress);
+    });
+};
 
 /**
  * queries for encrypted objects in the local database and resolves promise with result.
@@ -22,7 +43,7 @@ let _useLocalDb = true;
  * @return {Promise}
  */
 pouchDbService.query = function (modelName, id) {
-    let dbToUse = _useLocalDb ? _db : _remoteDb;
+    let dbToUse = getDbToUse();
     return queryInternal(modelName, id, dbToUse);
 };
 
@@ -31,7 +52,7 @@ pouchDbService.query = function (modelName, id) {
  * @return {Promise}
  */
 pouchDbService.all = function () {
-    let dbToUse = _useLocalDb ? _db : _remoteDb;
+    let dbToUse = getDbToUse();
     return new Promise((resolve, reject) => {
         dbToUse.allDocs({
             include_docs: true,
@@ -54,7 +75,7 @@ pouchDbService.all = function () {
  */
 pouchDbService.save = function (modelName, data) {
     log.debug('saving ' + modelName + '...');
-    let dbToUse = _useLocalDb ? _db : _remoteDb;
+    let dbToUse = getDbToUse();
     return new Promise((resolve, reject) => {
         if (!data || !data._id || !modelName || !data.encryptedDataBase64) {
             log.error('did not specify needed parameter "modelName" or "_id" or data is not encrypted! aborting.');
@@ -77,7 +98,7 @@ pouchDbService.save = function (modelName, data) {
  * @return {Promise} promise that resolves if operation finished
  */
 pouchDbService.remove = function (id) {
-    let dbToUse = _useLocalDb ? _db : _remoteDb;
+    let dbToUse = getDbToUse();
     return queryInternal(null, id, dbToUse).then(object => {
         log.debug('deleted object from db! id: ' + object.id);
         return dbToUse.remove(object);
@@ -151,7 +172,7 @@ pouchDbService.resetDatabase = function () {
     return new Promise(resolve => {
         _db.destroy().then(function () {
             _db = null;
-            pouchDbService.setUser(localStorageService.getLastActiveUser()).then(() => resolve());
+            pouchDbService.initDatabase(localStorageService.getLastActiveUser()).then(() => resolve());
         }).catch(function (err) {
             log.error('error destroying database: ' + err);
         })
@@ -173,27 +194,6 @@ pouchDbService.deleteDatabase = function (username) {
     });
 };
 
-/**
- * sets the database to use to a user-database with the same name as the username
- * if a local database named as the given username does not exist, a new local database is created
- *
- * @param username the database name to use
- * @param remoteCouchDbAddress optional parameter, if defined an address of a remote couchdb endpoint where the
- *        local database should be synced
- * @return {*} a promise that is resolved at a time when pouchDbService can be used for retrieving/saving data to a
- *             database named like the given username
- */
-pouchDbService.setUser = function (username, remoteCouchDbAddress) {
-    if (!username) {
-        return Promise.reject();
-    }
-    return closeOpenDatabases().then(function () {
-        _dbName = username;
-        log.debug('initializing database: ' + _dbName);
-        return initPouchDB(remoteCouchDbAddress);
-    });
-};
-
 //TODO documentation
 pouchDbService.getOpenedDatabaseName = function () {
     return _dbName;
@@ -204,11 +204,17 @@ pouchDbService.isUsingLocalDb = function () {
     return _useLocalDb;
 };
 
+//TODO documentation
+pouchDbService.isSyncing = function () {
+    return _inSync;
+};
+
 function getDbToUse() {
     let dbToUse = _useLocalDb ? _db : _remoteDb;
     if(!dbToUse) {
-        throw 'using pouchDbService uninitialized is not possible. First initialize a database by using pouchDbService.setUser()'
+        throw 'Using pouchDbService uninitialized is not possible. First initialize a database by using pouchDbService.initDatabase().'
     }
+    return dbToUse;
 }
 
 function closeOpenDatabases() {
@@ -285,6 +291,10 @@ function setupSync(remoteCouchDbAddress) {
                 live: false,
                 retry: false,
                 batch_size: 1
+            }).on('active', function (info) {
+                handleActiveForEventTriggers();
+            }).on('paused', function () {
+                handlePausedForEventTriggers();
             }).on('error', function (err) {
                 log.info('couchdb error');
                 log.error(err);
@@ -307,24 +317,32 @@ function setupSync(remoteCouchDbAddress) {
             _syncHandler = _db.sync(_remoteDb, {
                 live: true,
                 retry: false
-            }).on('change', function (info) {
-                log.info('couchdb change:' + info.direction);
+            }).on('paused', function (info) {
+                log.debug('sync paused');
                 log.debug(info);
-                if (info.direction === 'pull') {
-                    let changedIds = [];
-                    if (info.change && info.change.docs && info.change.docs.length > 0) {
-                        changedIds = info.change.docs.map(doc => doc.id);
-                    }
-                    log.info('pouchdb pulling updates...');
-                    try {
-                        //in try-catch because if any event-handler throws an error this will
-                        //trigger the pouchDb error-handler which is not desired
+                handlePausedForEventTriggers();
+            }).on('active', function (info) {
+                log.debug('sync active');
+                log.debug(info);
+                handleActiveForEventTriggers();
+            }).on('change', function (info) {
+                //in try-catch because if any event-handler throws an error this will
+                //trigger the pouchDb error-handler which is not desired
+                try {
+                    log.debug(info);
+                    if (info.direction === 'pull') {
+                        let changedIds = [];
+                        if (info.change && info.change.docs && info.change.docs.length > 0) {
+                            changedIds = info.change.docs.map(doc => doc.id);
+                            changedIds = changedIds.filter(id => !!id);
+                        }
+                        log.info('pouchdb pulling updates...');
                         $(document).trigger(constants.EVENT_DB_PULL_UPDATED, [changedIds]);
-                    } catch (e) {
-                        log.error(e);
+                    } else {
+                        log.info('pouchdb pushing updates...');
                     }
-                } else {
-                    log.info('pouchdb pushing updates...');
+                } catch (e) {
+                    log.error(e);
                 }
             }).on('error', function (err) {
                 log.info('couchdb error');
@@ -333,6 +351,28 @@ function setupSync(remoteCouchDbAddress) {
             });
         }
     });
+}
+
+function handleActiveForEventTriggers() {
+    try {
+        if (!_inSync) {
+            _inSync = true;
+            $(document).trigger(constants.EVENT_DB_SYNC_STATE_CHANGE, _inSync);
+        }
+    } catch (e) {
+        log.error(e);
+    }
+}
+
+function handlePausedForEventTriggers() {
+    try {
+        if (_inSync) {
+            _inSync = false;
+            $(document).trigger(constants.EVENT_DB_SYNC_STATE_CHANGE, _inSync);
+        }
+    } catch (e) {
+        log.error(e);
+    }
 }
 
 function dbResToResolveObject(res) {
