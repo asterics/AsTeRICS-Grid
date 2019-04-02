@@ -375,6 +375,11 @@ dataService.importGridsFromJSON = function (jsonString) {
     });
 };
 
+//TODO documentation
+dataService.isDatabaseSyncing = function () {
+    return pouchDbService.isSyncing();
+};
+
 /**
  * saves an element that can potentially be used in several places, and has high data volume and therefore
  * should only be saved once in the database (e.g. images, ARE Models).
