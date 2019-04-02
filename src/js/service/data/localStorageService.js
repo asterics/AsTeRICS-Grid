@@ -82,6 +82,13 @@ var localStorageService = {
         return object[username] === '';
     },
     /**
+     * checks if the last active user is a local user (not synced with cloud)
+     */
+    isLastActiveUserLocal() {
+        let object = getPasswordObject();
+        return object[localStorageService.getLastActiveUser()] === '';
+    },
+    /**
      * saves a given user password
      * @param username the username as used for login
      * @param password the password to save (should be salted + hashed)
