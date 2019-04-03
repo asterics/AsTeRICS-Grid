@@ -3,7 +3,6 @@ import {localStorageService} from "./service/data/localStorageService.js";
 import {Router} from "./router.js";
 import {VueDirectives} from "./vue/directives";
 
-import './../css/custom.css';
 import './../css/gridlist.css';
 import './../css/jquery.contextMenu.css';
 import './../css/allGridsView.css';
@@ -31,7 +30,9 @@ function init() {
     }
     Promise.all(promises).then(() => {
         let initHash = autologinUser ? '#main' : lastActiveUser ? '#login' : '#welcome';
-        Router.init('#content', initHash);
+        if (!Router.isInitialized()) {
+            Router.init('#content', initHash);
+        }
     });
 }
 
@@ -45,8 +46,10 @@ function reloadOnAppcacheUpdate() {
 
     function onUpdateReady() {
         log.debug('appcache: updateready');
-        Router.toMain();
-        window.location.reload();
+        if (!firstRun) {
+            Router.toMain();
+            window.location.reload();
+        }
     }
 
     window.applicationCache.addEventListener('updateready', onUpdateReady);
@@ -56,7 +59,11 @@ function reloadOnAppcacheUpdate() {
     window.applicationCache.addEventListener('downloading', function () {
         log.debug('appcache: downloading');
         if (!firstRun) {
-            Router.toUpdating();
+            if (!Router.isInitialized()) {
+                Router.init('#content', '#updating');
+            } else {
+                Router.toUpdating();
+            }
         }
     });
     window.applicationCache.addEventListener('progress', function (event) {
