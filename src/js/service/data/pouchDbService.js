@@ -10,7 +10,9 @@ let _db = null;
 let _remoteDb = null;
 let _syncHandler = null;
 let _useLocalDb = true;
-let _inSync = false;
+let _syncState = null;
+let _resumeSyncTimeoutHandler = null;
+let _lastQueryTime = 1000;
 
 /**
  * inits the pouchdb to use to a user-database, e.g. with the same name as the username
@@ -44,7 +46,17 @@ pouchDbService.initDatabase = function (databaseName, remoteCouchDbAddress) {
  */
 pouchDbService.query = function (modelName, id) {
     let dbToUse = getDbToUse();
-    return queryInternal(modelName, id, dbToUse);
+    let queryStartTime = new Date().getTime();
+    if (!_useLocalDb) {
+        cancelSync();
+    }
+    let returnPromise = queryInternal(modelName, id, dbToUse);
+    returnPromise.finally(() => {
+        _lastQueryTime = new Date().getTime() - queryStartTime;
+        log.trace('last query time: ', _lastQueryTime);
+        resumeSync();
+    });
+    return returnPromise;
 };
 
 /**
@@ -53,6 +65,9 @@ pouchDbService.query = function (modelName, id) {
  */
 pouchDbService.all = function () {
     let dbToUse = getDbToUse();
+    if (!_useLocalDb) {
+        cancelSync();
+    }
     return new Promise((resolve, reject) => {
         dbToUse.allDocs({
             include_docs: true,
@@ -62,6 +77,8 @@ pouchDbService.all = function () {
         }).catch(function (err) {
             log.error(err);
             reject();
+        }).finally(() => {
+            resumeSync();
         });
     });
 };
@@ -76,6 +93,9 @@ pouchDbService.all = function () {
 pouchDbService.save = function (modelName, data) {
     log.debug('saving ' + modelName + '...');
     let dbToUse = getDbToUse();
+    if (!_useLocalDb) {
+        cancelSync();
+    }
     return new Promise((resolve, reject) => {
         if (!data || !data._id || !modelName || !data.encryptedDataBase64) {
             log.error('did not specify needed parameter "modelName" or "_id" or data is not encrypted! aborting.');
@@ -87,6 +107,8 @@ pouchDbService.save = function (modelName, data) {
         }).catch(function (err) {
             log.error(err);
             reject();
+        }).finally(() => {
+            resumeSync();
         });
     });
 };
@@ -99,10 +121,14 @@ pouchDbService.save = function (modelName, data) {
  */
 pouchDbService.remove = function (id) {
     let dbToUse = getDbToUse();
-    return queryInternal(null, id, dbToUse).then(object => {
+    let returnPromise = queryInternal(null, id, dbToUse).then(object => {
         log.debug('deleted object from db! id: ' + object.id);
         return dbToUse.remove(object);
     });
+    returnPromise.finally(() => {
+        resumeSync();
+    });
+    return returnPromise;
 };
 
 /**
@@ -205,13 +231,36 @@ pouchDbService.isUsingLocalDb = function () {
 };
 
 //TODO documentation
-pouchDbService.isSyncing = function () {
-    return _inSync;
+pouchDbService.getSyncState = function () {
+    return _syncState;
 };
+
+function cancelSync() {
+    if (_resumeSyncTimeoutHandler) {
+        clearTimeout(_resumeSyncTimeoutHandler);
+        _resumeSyncTimeoutHandler = null;
+    }
+    if (_syncHandler) {
+        log.debug('canceling sync ...');
+        setSyncState(constants.DB_SYNC_STATE_STOPPED);
+        _syncHandler.cancel();
+        _syncHandler = null;
+    }
+}
+
+function resumeSync() {
+    let timeout = _lastQueryTime + 1000;
+    _resumeSyncTimeoutHandler = setTimeout(() => {
+        if (!_syncHandler && _remoteDb) {
+            log.debug('resuming sync...');
+            setupSync();
+        }
+    }, timeout);
+}
 
 function getDbToUse() {
     let dbToUse = _useLocalDb ? _db : _remoteDb;
-    if(!dbToUse) {
+    if (!dbToUse) {
         throw 'Using pouchDbService uninitialized is not possible. First initialize a database by using pouchDbService.initDatabase().'
     }
     return dbToUse;
@@ -220,6 +269,7 @@ function getDbToUse() {
 function closeOpenDatabases() {
     if (_syncHandler) {
         _syncHandler.cancel();
+        setSyncState(constants.DB_SYNC_STATE_STOPPED);
     }
     let promises = [];
     if (_db) promises.push(_db.close());
@@ -265,7 +315,9 @@ function initPouchDB(remoteCouchDbAddress) {
         log.debug(info);
     });
     if (remoteCouchDbAddress) {
-        promises.push(setupSync(remoteCouchDbAddress));
+        log.debug('sync pouchdb with: ' + remoteCouchDbAddress);
+        _remoteDb = new PouchDB(remoteCouchDbAddress);
+        promises.push(setupSync());
     }
 
     log.debug('creating index for db: ' + _dbName);
@@ -275,35 +327,39 @@ function initPouchDB(remoteCouchDbAddress) {
     return Promise.all(promises);
 }
 
-function setupSync(remoteCouchDbAddress) {
+function setupSync() {
     return new Promise(resolve => {
-        log.debug('sync pouchdb with: ' + remoteCouchDbAddress);
-        _remoteDb = new PouchDB(remoteCouchDbAddress);
-
         //first completely update DB
         let starttime = new Date().getTime();
         let wasAlreadySynced = localStorageService.isDatabaseSynced(_dbName);
         if (!wasAlreadySynced) {
             //first-time full sync will maybe take longer, so use remote DB meanwhile
-            log.info("database wasn't synced before, so temporarily use remote db until sync is done...");
+            log.debug("database wasn't synced before, so temporarily use remote db until sync is done...");
             _useLocalDb = false;
             _syncHandler = _db.sync(_remoteDb, {
                 live: false,
                 retry: false,
                 batch_size: 1
             }).on('active', function (info) {
-                handleActiveForEventTriggers();
+                setSyncState(constants.DB_SYNC_STATE_SYNCINC);
             }).on('paused', function () {
-                handlePausedForEventTriggers();
+                setSyncState(constants.DB_SYNC_STATE_SYNCED);
             }).on('error', function (err) {
                 log.info('couchdb error');
                 log.error(err);
             }).on('complete', function (info) {
-                log.info('couchdb sync complete! setting up live sync and using local db now...');
-                log.debug('initial sync took: ' + (new Date().getTime() - starttime) + "ms");
-                localStorageService.markSyncedDatabase(_dbName);
-                _useLocalDb = true;
-                setupLiveSync();
+                log.debug('sync complete event');
+                log.debug(info);
+                let status = info && info.pull ? info.pull.status : (info && info.push ? info.push.status : null);
+                if (status === 'cancelled') {
+                    log.debug('sync cancelled!');
+                } else if (status === 'complete') {
+                    log.info('couchdb sync complete! setting up live sync and using local db now...');
+                    log.debug('initial sync took: ' + (new Date().getTime() - starttime) + "ms");
+                    localStorageService.markSyncedDatabase(_dbName);
+                    _useLocalDb = true;
+                    setupLiveSync();
+                }
             });
             resolve();
         } else {
@@ -320,11 +376,11 @@ function setupSync(remoteCouchDbAddress) {
             }).on('paused', function (info) {
                 log.debug('sync paused');
                 log.debug(info);
-                handlePausedForEventTriggers();
+                setSyncState(constants.DB_SYNC_STATE_SYNCED);
             }).on('active', function (info) {
                 log.debug('sync active');
                 log.debug(info);
-                handleActiveForEventTriggers();
+                setSyncState(constants.DB_SYNC_STATE_SYNCINC);
             }).on('change', function (info) {
                 //in try-catch because if any event-handler throws an error this will
                 //trigger the pouchDb error-handler which is not desired
@@ -353,22 +409,11 @@ function setupSync(remoteCouchDbAddress) {
     });
 }
 
-function handleActiveForEventTriggers() {
+function setSyncState(syncState) {
     try {
-        if (!_inSync) {
-            _inSync = true;
-            $(document).trigger(constants.EVENT_DB_SYNC_STATE_CHANGE, _inSync);
-        }
-    } catch (e) {
-        log.error(e);
-    }
-}
-
-function handlePausedForEventTriggers() {
-    try {
-        if (_inSync) {
-            _inSync = false;
-            $(document).trigger(constants.EVENT_DB_SYNC_STATE_CHANGE, _inSync);
+        if (_syncState !== syncState) {
+            _syncState = syncState;
+            $(document).trigger(constants.EVENT_DB_SYNC_STATE_CHANGE, syncState);
         }
     } catch (e) {
         log.error(e);
