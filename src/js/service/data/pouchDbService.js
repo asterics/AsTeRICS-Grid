@@ -13,7 +13,7 @@ let _useLocalDb = true;
 let _inSync = false;
 
 /**
- * sets the database to use to a user-database with the same name as the username
+ * inits the pouchdb to use to a user-database, e.g. with the same name as the username
  * if a local database named as the given username does not exist, a new local database is created
  *
  * @param databaseName the database name to use, e.g. use username
