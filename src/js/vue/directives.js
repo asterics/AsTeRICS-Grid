@@ -6,9 +6,11 @@ let timeoutID = null;
 var VueDirectives = {
     init: () => {
         Vue.directive('focus', {
-            inserted: function (el) {
-                if(el.focus) el.focus();
-                if(el.select) el.select();
+            inserted: function (el, binding) {
+                if(binding.value || binding.value === undefined) {
+                    if(el.focus) el.focus();
+                    if(el.select) el.select();
+                }
             },
             updated: function (el, binding) {
                 if(binding.value) {
