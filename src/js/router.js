@@ -19,8 +19,10 @@ var filePostfix = '.html';
 var injectId = null;
 var lastHash = null;
 var routingEndabled = true;
+let _initialized = false;
 
 Router.init = function (injectIdParam, initialHash) {
+    _initialized = true;
     injectId = injectIdParam;
     navigoInstance = new Navigo(null, true);
     navigoInstance
@@ -80,6 +82,14 @@ Router.init = function (injectIdParam, initialHash) {
         setHash(initialHash);
     }
     navigoInstance.resolve();
+};
+
+/**
+ * returns false if Router.init() wasn't called before, otherwise true
+ * @return {boolean}
+ */
+Router.isInitialized = function() {
+    return _initialized;
 };
 
 Router.toMain = function () {
@@ -153,7 +163,7 @@ function loadView(viewName) {
 }
 
 function loadVueView(viewObject) {
-    log.info('loading view: ' + viewObject.__file);
+    log.debug('loading view: ' + viewObject.__file);
     var viewName = viewObject.__file;
     var startIndex = viewName.lastIndexOf('/') !== -1 ? viewName.lastIndexOf('/') + 1 : 0;
     viewName = viewName.substring(startIndex, viewName.lastIndexOf('.'));
