@@ -62,8 +62,9 @@ function initVue() {
             showActionsModal: false,
             editElementId: null,
             showGrid: false,
-            isSyncing: false,
-            isLocalUser: localStorageService.isLastActiveUserLocal()
+            syncState: null,
+            isLocalUser: localStorageService.isLastActiveUserLocal(),
+            constants: constants
         },
         components: {
             EditGridModal, AddMultipleModal, EditActionsModal
@@ -146,10 +147,10 @@ function initVue() {
         mounted: function () {
             let thiz = this;
             if (!thiz.isLocalUser) {
-                $(document).on(constants.EVENT_DB_SYNC_STATE_CHANGE, (event, synced) => {
-                    thiz.isSyncing = synced;
+                $(document).on(constants.EVENT_DB_SYNC_STATE_CHANGE, (event, syncState) => {
+                    thiz.syncState = syncState;
                 });
-                thiz.isSyncing = dataService.getSyncState();
+                thiz.syncState = dataService.getSyncState();
             }
             initGrid().then(() => {
                 GridEditView.grid.setLayoutChangedEndListener((newGridData) => {

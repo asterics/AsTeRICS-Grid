@@ -5,8 +5,9 @@
             <div class="inline spaced hide-mobile">
                 <span v-if="!isLocalUser" class="fa-stack fa-1x" style="margin-bottom: 1rem">
                     <i class="fas fa-cloud fa-stack-2x" style="color: lightblue"></i>
-                    <i v-show="isSyncing" class="fas fa-sync-alt fa-stack-1x fa-spin" style="left: 3px; top: 1px"></i>
-                    <i v-show="!isSyncing" class="fas fa-check fa-stack-1x" style="left: 3px; top: 2px"></i>
+                    <i v-show="syncState === constants.DB_SYNC_STATE_SYNCINC" class="fas fa-sync-alt fa-stack-1x fa-spin" style="left: 3px; top: 1px"></i>
+                    <i v-show="syncState === constants.DB_SYNC_STATE_SYNCED" class="fas fa-check fa-stack-1x" style="left: 3px; top: 2px"></i>
+                    <i v-show="syncState === constants.DB_SYNC_STATE_STOPPED" class="fas fa-pause fa-stack-1x" style="left: 3px; top: 2px"></i>
                 </span>
             </div>
             <div class="inline spaced hide-mobile"><span data-i18n>Edit grid // Bearbeiten von Grid</span> "{{gridData.label}}"</div>
@@ -17,8 +18,9 @@
                 <div class="inline spaced left-mobile show-mobile">
                     <span v-if="!isLocalUser" class="fa-stack fa-1x" style="margin-bottom: -1rem">
                         <i class="fas fa-cloud fa-stack-2x" style="color: lightblue"></i>
-                        <i v-show="isSyncing" class="fas fa-sync-alt fa-stack-1x fa-spin" style="left: 3px; top: 1px"></i>
-                        <i v-show="!isSyncing" class="fas fa-check fa-stack-1x" style="left: 3px; top: 2px"></i>
+                        <i v-show="syncState === constants.DB_SYNC_STATE_SYNCINC" class="fas fa-sync-alt fa-stack-1x fa-spin" style="left: 3px; top: 1px"></i>
+                        <i v-show="syncState === constants.DB_SYNC_STATE_SYNCED" class="fas fa-check fa-stack-1x" style="left: 3px; top: 2px"></i>
+                        <i v-show="syncState === constants.DB_SYNC_STATE_STOPPED" class="fas fa-pause fa-stack-1x" style="left: 3px; top: 2px"></i>
                     </span>
                 </div>
                 <div class="right-mobile inline spaced">
