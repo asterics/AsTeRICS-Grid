@@ -56,8 +56,10 @@ module.exports = env => {
             'css/fontawesome/webfonts/fa-solid-900.woff2',
             'css/jquery-ui.css',
             'css/images/ui-icons_444444_256x240.png',
+            'css/custom.css',
             'css/skeleton.css',
             'img/asterics_icon.png',
+            'img/favicon.ico',
             'lib/dom-i18n.min.js',
             'lib/gridList.js',
             'lib/jquery.contextMenu.min.js',
@@ -80,6 +82,7 @@ module.exports = env => {
             'views/allGridsView.html',
             'views/gridEditView.html',
             'views/gridView.html',
+            'views/updatingView.html'
         ],
         settings: ['prefer-online'],
         output: '../manifest.appcache',
