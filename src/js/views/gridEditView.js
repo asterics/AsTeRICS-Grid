@@ -149,7 +149,7 @@ function initVue() {
                 $(document).on(constants.EVENT_DB_SYNC_STATE_CHANGE, (event, synced) => {
                     thiz.isSyncing = synced;
                 });
-                thiz.isSyncing = dataService.isDatabaseSyncing();
+                thiz.isSyncing = dataService.getSyncState();
             }
             initGrid().then(() => {
                 GridEditView.grid.setLayoutChangedEndListener((newGridData) => {
