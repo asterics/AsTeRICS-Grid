@@ -12,6 +12,7 @@ import LoginView from '../vue-components/loginView.vue'
 import RegisterView from '../vue-components/registerView.vue'
 import WelcomeView from '../vue-components/welcomeView.vue'
 import {databaseService} from "./service/data/databaseService";
+import {localStorageService} from "./service/data/localStorageService";
 
 var Router = {};
 var navigoInstance = null;
@@ -152,8 +153,9 @@ Router.isOnEditPage = function () {
 function getValidHash() {
     let hashToUse = location.hash;
     if (!databaseService.getCurrentUsedDatabase()) {
-        hashToUse = ['#login', '#register'].includes(hashToUse) ? hashToUse : null;
-        hashToUse = hashToUse || '#welcome';
+        let lastActiveUser = localStorageService.getLastActiveUser();
+        hashToUse = ['#login', '#register', '#updating'].includes(hashToUse) ? hashToUse : null;
+        hashToUse = hashToUse || (lastActiveUser ? '#login' : '#welcome');
     }
     return hashToUse;
 }
