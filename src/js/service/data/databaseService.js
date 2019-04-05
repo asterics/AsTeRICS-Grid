@@ -92,30 +92,63 @@ databaseService.removeObject = function (id) {
 };
 
 /**
- * updates the current user and the used database
+ * Inits/sets up for using of the database that belongs to the given username.
  * If the database of the given user is already opened, nothing is done.
  *
  * @param username the username of the logged in user
  * @param hashedUserPassword hashed password of the user
  * @param userDatabaseURL the database-URL of the logged in user
+ * @param doSync if true the given remote database is synchronized to local database, otherwise not (one-time login)
  *
  * @return {*}
  */
-databaseService.initForUser = function (username, hashedUserPassword, userDatabaseURL) {
+databaseService.initForUser = function (username, hashedUserPassword, userDatabaseURL, doSync) {
     if(pouchDbService.getOpenedDatabaseName() === username) {
         return Promise.resolve();
     }
-    return pouchDbService.initDatabase(username, userDatabaseURL).then(() => {
+    return pouchDbService.initDatabase(username, userDatabaseURL, doSync).then(() => {
         return initInternal(hashedUserPassword);
     });
 };
 
-//TODO documentation
+/**
+ * Inits/sets up for using of the database that belongs to the given username that was just created.
+ * If the database of the given user is already opened, nothing is done.
+ *
+ * @param username the username of the just registered user
+ * @param hashedUserPassword hashed password of the user
+ * @param userDatabaseURL the database-URL of the logged in user
+ * @param doSync if true the given remote database is synchronized to local database, otherwise not (one-time login)
+ *
+ * @return {*}
+ */
+databaseService.registerForUser = function (username, hashedUserPassword, userDatabaseURL, doSync) {
+    if(pouchDbService.getOpenedDatabaseName() === username) {
+        return Promise.resolve();
+    }
+    return pouchDbService.createDatabase(username, userDatabaseURL, doSync).then(() => {
+        return initInternal(hashedUserPassword);
+    });
+};
+
+/**
+ * deletes the local database belonging to the given username
+ * @param user the name of the user whose database should be deleted
+ * @return {*}
+ */
 databaseService.deleteDatabase = function (user) {
     if (!user) {
         return;
     }
     return pouchDbService.deleteDatabase(user);
+};
+
+/**
+ * returns the name of the currently opened database
+ * @return {*}
+ */
+databaseService.getCurrentUsedDatabase = function () {
+    return pouchDbService.getOpenedDatabaseName();
 };
 
 function initInternal(hashedUserPassword) {
