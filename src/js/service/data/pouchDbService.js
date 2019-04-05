@@ -13,6 +13,9 @@ let _useLocalDb = true;
 let _syncState = null;
 let _resumeSyncTimeoutHandler = null;
 let _lastQueryTime = 1000;
+let _onlyRemote = false;
+let _justCreated = false;
+let _databaseJustCreated = false;
 
 /**
  * inits the pouchdb to use to a user-database, e.g. with the same name as the username
@@ -21,18 +24,24 @@ let _lastQueryTime = 1000;
  * @param databaseName the database name to use, e.g. use username
  * @param remoteCouchDbAddress optional parameter, if defined an address of a remote couchdb endpoint where the
  *        local database should be synced
+ * @param onlyRemote if true only the remote database is used and no local database is created
  * @return {*} a promise that is resolved at a time when pouchDbService can be used for retrieving/saving data to a
  *             database named like the given username
  */
-pouchDbService.initDatabase = function (databaseName, remoteCouchDbAddress) {
-    if (!databaseName) {
-        return Promise.reject();
-    }
-    return closeOpenDatabases().then(function () {
-        _dbName = databaseName;
-        log.debug('initializing database: ' + _dbName);
-        return initPouchDB(remoteCouchDbAddress);
-    });
+pouchDbService.initDatabase = function (databaseName, remoteCouchDbAddress, onlyRemote) {
+    initPouchDbServiceInternal(databaseName, remoteCouchDbAddress, onlyRemote, false);
+};
+
+/**
+ * see pouchDbService.initDatabase(), only difference: calling this method indicates that the user
+ * just registered and therefore the databases are just being created and synchronization strategy can be different,
+ * see documentation of local method setupSync().
+ * @param databaseName
+ * @param remoteCouchDbAddress
+ * @param onlyRemote
+ */
+pouchDbService.createDatabase = function (databaseName, remoteCouchDbAddress, onlyRemote) {
+    initPouchDbServiceInternal(databaseName, remoteCouchDbAddress, onlyRemote, true);
 };
 
 /**
@@ -205,36 +214,55 @@ pouchDbService.resetDatabase = function () {
     });
 };
 
-//TODO documentation
-pouchDbService.deleteDatabase = function (username) {
-    if (!_useLocalDb || !username || constants.LOCAL_NOLOGIN_USERNAME) {
+/**
+ * deletes the specified local database
+ * @param databaseName the name of the database to delete
+ * @return {*}
+ */
+pouchDbService.deleteDatabase = function (databaseName) {
+    if (!_useLocalDb || !databaseName) {
+        log.warn("won't delete database since using remote db or databaseName not specified...");
         return Promise.reject();
     }
     let promises = [];
-    if (_dbName === username) {
+    if (_dbName === databaseName) {
         promises.push(closeOpenDatabases());
     }
     return Promise.all(promises).then(() => {
-        let db = new PouchDB(username);
+        let db = new PouchDB(databaseName);
         return db.destroy();
     });
 };
 
-//TODO documentation
+/**
+ * returns the database name of the currently opened (local) database
+ * @return {*}
+ */
 pouchDbService.getOpenedDatabaseName = function () {
     return _dbName;
 };
 
-//TODO documentation
+/**
+ * returns true if pouchDbService is currently using a local database, otherwise (only remote) false
+ * @return {boolean}
+ */
 pouchDbService.isUsingLocalDb = function () {
     return _useLocalDb;
 };
 
-//TODO documentation
+/**
+ * returns the current synchronization state of the databases, see constants.DB_SYNC_STATE_* or null if no
+ * synchronization is set up.
+ * @return {*}
+ */
 pouchDbService.getSyncState = function () {
     return _syncState;
 };
 
+/**
+ * cancels current synchronization activity
+ * is used to temporarily pause first-time synchronization and speed up request to remote DB
+ */
 function cancelSync() {
     if (_resumeSyncTimeoutHandler) {
         clearTimeout(_resumeSyncTimeoutHandler);
@@ -248,7 +276,16 @@ function cancelSync() {
     }
 }
 
+/**
+ * Resumes sync after a timeout. The timeout is specified by the duration of the last query() request to the remote
+ * database. Therefore for bulked requests to pouchDbService sync is paused for the time of all requests and only
+ * re-started in idle state.
+ * Sync is not resumed/started if global _onlyRemote parameter is set
+ */
 function resumeSync() {
+    if (_onlyRemote) {
+        return;
+    }
     let timeout = _lastQueryTime + 1000;
     _resumeSyncTimeoutHandler = setTimeout(() => {
         if (!_syncHandler && _remoteDb) {
@@ -259,7 +296,7 @@ function resumeSync() {
 }
 
 function getDbToUse() {
-    let dbToUse = _useLocalDb ? _db : _remoteDb;
+    let dbToUse = (_useLocalDb && !_onlyRemote) ? _db : _remoteDb;
     if (!dbToUse) {
         throw 'Using pouchDbService uninitialized is not possible. First initialize a database by using pouchDbService.initDatabase().'
     }
@@ -308,31 +345,92 @@ function queryInternal(modelName, id, dbToQuery) {
     });
 }
 
-function initPouchDB(remoteCouchDbAddress) {
-    let promises = [];
-    _db = new PouchDB(_dbName);
-    _db.info().then(function (info) {
-        log.debug(info);
-    });
-    if (remoteCouchDbAddress) {
-        log.debug('sync pouchdb with: ' + remoteCouchDbAddress);
-        _remoteDb = new PouchDB(remoteCouchDbAddress);
-        promises.push(setupSync());
+/**
+ * inits pouchDbService
+ *
+ * @param databaseName the database name to use
+ * @param remoteCouchDbAddress the remote database address to use (optional)
+ * @param onlyRemote if true only using the remote database, not opening/creating a local one (for one-time login)
+ * @param justCreated if true the user just registered, so databases are just being created and the local DB can be used
+ *        without waiting for inital synchronization with remote database
+ * @return {*}
+ */
+function initPouchDbServiceInternal(databaseName, remoteCouchDbAddress, onlyRemote, justCreated) {
+    if (!databaseName) {
+        return Promise.reject();
     }
+    return closeOpenDatabases().then(function () {
+        _dbName = databaseName;
+        _databaseJustCreated = justCreated;
+        _onlyRemote = onlyRemote;
+        _justCreated = justCreated;
+        log.debug('initializing database: ' + _dbName);
 
-    log.debug('creating index for db: ' + _dbName);
-    promises.push(_db.createIndex({
-        index: {fields: ['modelName', 'id']}
-    }));
-    return Promise.all(promises);
+        let promises = [];
+        if (!remoteCouchDbAddress || (remoteCouchDbAddress && !onlyRemote)) {
+            promises.push(openDbInternal(_dbName).then((dbHandler) => {
+               _db = dbHandler;
+               return Promise.resolve();
+            }));
+        }
+
+        if (remoteCouchDbAddress) {
+            promises.push(openDbInternal(remoteCouchDbAddress).then((dbHandler) => {
+                _remoteDb = dbHandler;
+                if (!onlyRemote) {
+                    return setupSync();
+                } else {
+                    return Promise.resolve();
+                }
+            }));
+        }
+
+        return Promise.all(promises);
+    });
 }
 
+/**
+ * opens a PouchDB instance by given name/address, creates needed index and resolves with opened database handler
+ * @param dbNameOrAddress
+ * @return {*}
+ */
+function openDbInternal(dbNameOrAddress) {
+    let dbHandler = new PouchDB(dbNameOrAddress);
+    return dbHandler.info().then(function (info) {
+        log.debug(dbNameOrAddress + ' info:');
+        log.debug(info);
+        log.debug('creating index for db: ' + _dbName);
+        return _db.createIndex({
+            index: {fields: ['modelName', 'id']}
+        });
+    }).then(() => {
+        return Promise.resolve(dbHandler);
+    });
+}
+
+/**
+ * sets up synchronization of local DB and remote DB
+ *
+ * The following scenarios are possible:
+ * 1) sync was never (fully) completed before -> initial full sync is started and as long it is not completed
+ * pouchDBService uses the remote DB for all database interactions. After completion of initial sync, pouchdBService
+ * switches to using the local DB and live-sync is set up.
+ * 2) sync was never fully completed before, but the user was just registered and the databases are just created ->
+ * directly use local DB and setup live-sync.
+ * 3) sync was already fully completed at some time -> directly use local DB and setup live sync
+ *
+ * @return {Promise<any>}
+ */
 function setupSync() {
+    if (!_remoteDb || !_db) {
+        log.error('trying to setupSync() but remoteDb or db is not specified! Aborting...');
+        return Promise.reject();
+    }
     return new Promise(resolve => {
         //first completely update DB
         let starttime = new Date().getTime();
         let wasAlreadySynced = localStorageService.isDatabaseSynced(_dbName);
-        if (!wasAlreadySynced) {
+        if (!wasAlreadySynced && !_justCreated) {
             //first-time full sync will maybe take longer, so use remote DB meanwhile
             log.debug("database wasn't synced before, so temporarily use remote db until sync is done...");
             _useLocalDb = false;
@@ -356,7 +454,6 @@ function setupSync() {
                 } else if (status === 'complete') {
                     log.info('couchdb sync complete! setting up live sync and using local db now...');
                     log.debug('initial sync took: ' + (new Date().getTime() - starttime) + "ms");
-                    localStorageService.markSyncedDatabase(_dbName);
                     _useLocalDb = true;
                     setupLiveSync();
                 }
@@ -370,6 +467,7 @@ function setupSync() {
 
         //setup live sync
         function setupLiveSync() {
+            localStorageService.markSyncedDatabase(_dbName);
             _syncHandler = _db.sync(_remoteDb, {
                 live: true,
                 retry: false
@@ -409,6 +507,10 @@ function setupSync() {
     });
 }
 
+/**
+ * sets internal synchronization state, emits corresponding EVENT_DB_SYNC_STATE_CHANGE event if state changed
+ * @param syncState the current sync state, see constants.DB_SYNC_STATE_*
+ */
 function setSyncState(syncState) {
     try {
         if (_syncState !== syncState) {
@@ -420,13 +522,18 @@ function setSyncState(syncState) {
     }
 }
 
+/**
+ * converts a native result object of pouchDB queries to a list of documents or single document used in the app
+ * @param res
+ * @return {*}
+ */
 function dbResToResolveObject(res) {
     let objects = [];
-    if (res.docs && res.docs.length > 0) {
+    if (res.docs && res.docs.length > 0) { //convert result of .query()
         res.docs.forEach(doc => {
             objects.push(doc);
         });
-    } else if (res.rows && res.rows.length > 0) {
+    } else if (res.rows && res.rows.length > 0) { //convert result of .allDocs()
         res.rows.forEach(row => {
             if (row.doc && row.doc.modelName) {
                 objects.push(row.doc);
