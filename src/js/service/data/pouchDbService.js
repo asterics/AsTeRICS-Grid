@@ -29,7 +29,7 @@ let _databaseJustCreated = false;
  *             database named like the given username
  */
 pouchDbService.initDatabase = function (databaseName, remoteCouchDbAddress, onlyRemote) {
-    initPouchDbServiceInternal(databaseName, remoteCouchDbAddress, onlyRemote, false);
+    return initPouchDbServiceInternal(databaseName, remoteCouchDbAddress, onlyRemote, false);
 };
 
 /**
@@ -41,7 +41,7 @@ pouchDbService.initDatabase = function (databaseName, remoteCouchDbAddress, only
  * @param onlyRemote
  */
 pouchDbService.createDatabase = function (databaseName, remoteCouchDbAddress, onlyRemote) {
-    initPouchDbServiceInternal(databaseName, remoteCouchDbAddress, onlyRemote, true);
+    return initPouchDbServiceInternal(databaseName, remoteCouchDbAddress, onlyRemote, true);
 };
 
 /**
@@ -367,18 +367,22 @@ function initPouchDbServiceInternal(databaseName, remoteCouchDbAddress, onlyRemo
         log.debug('initializing database: ' + _dbName);
 
         let promises = [];
+        let openLocalPromise = null;
         if (!remoteCouchDbAddress || (remoteCouchDbAddress && !onlyRemote)) {
-            promises.push(openDbInternal(_dbName).then((dbHandler) => {
-               _db = dbHandler;
-               return Promise.resolve();
-            }));
+            openLocalPromise = openDbInternal(_dbName).then((dbHandler) => {
+                _db = dbHandler;
+                return Promise.resolve();
+            });
+            promises.push(openLocalPromise);
         }
 
         if (remoteCouchDbAddress) {
-            promises.push(openDbInternal(remoteCouchDbAddress).then((dbHandler) => {
+            promises.push(openDbInternal(remoteCouchDbAddress, true).then((dbHandler) => {
                 _remoteDb = dbHandler;
                 if (!onlyRemote) {
-                    return setupSync();
+                    return openLocalPromise.then(() => { //make sure local DB opened before set up sync
+                        return setupSync();
+                    });
                 } else {
                     return Promise.resolve();
                 }
@@ -394,15 +398,19 @@ function initPouchDbServiceInternal(databaseName, remoteCouchDbAddress, onlyRemo
  * @param dbNameOrAddress
  * @return {*}
  */
-function openDbInternal(dbNameOrAddress) {
+function openDbInternal(dbNameOrAddress, isOnlineDb) {
     let dbHandler = new PouchDB(dbNameOrAddress);
     return dbHandler.info().then(function (info) {
         log.debug(dbNameOrAddress + ' info:');
         log.debug(info);
-        log.debug('creating index for db: ' + _dbName);
-        return _db.createIndex({
-            index: {fields: ['modelName', 'id']}
-        });
+        if (isOnlineDb) {
+            return Promise.resolve();
+        } else {
+            log.debug('creating index for db: ' + dbNameOrAddress);
+            return dbHandler.createIndex({
+                index: {fields: ['modelName', 'id']}
+            });
+        }
     }).then(() => {
         return Promise.resolve(dbHandler);
     });
@@ -502,6 +510,7 @@ function setupSync() {
                 log.info('couchdb error');
                 log.info(err);
                 $(document).trigger(constants.EVENT_DB_CONNECTION_LOST);
+                setSyncState(constants.DB_SYNC_STATE_FAIL);
             });
         }
     });
