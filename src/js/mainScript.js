@@ -29,7 +29,7 @@ function init() {
         promises.push(databaseService.initForUser(autologinUser));
     }
     Promise.all(promises).then(() => {
-        let initHash = autologinUser ? '#main' : lastActiveUser ? '#login' : '#welcome';
+        let initHash = location.hash || (autologinUser ? '#main' : lastActiveUser ? '#login' : '#welcome');
         if (!Router.isInitialized()) {
             Router.init('#content', initHash);
         }
