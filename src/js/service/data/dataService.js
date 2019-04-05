@@ -375,7 +375,10 @@ dataService.importGridsFromJSON = function (jsonString) {
     });
 };
 
-//TODO documentation
+/**
+ * @see pouchDbService.getSyncState()
+ * @return {*}
+ */
 dataService.getSyncState = function () {
     return pouchDbService.getSyncState();
 };
