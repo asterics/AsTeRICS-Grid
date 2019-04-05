@@ -75,11 +75,11 @@
                     <form autocomplete="on">
                         <div class="row">
                             <label for="inputUser2" class="one column"><span class="desktop-right">Username</span></label>
-                            <input type="text" name="username" v-model="user" id="inputUser2" class="four columns" autocomplete="username" v-focus="!user"/>
+                            <input type="text" name="username" v-model="user" id="inputUser2" class="four columns" autocomplete="username" v-focus=""/>
                         </div>
                         <div class="row">
                             <label for="inputPassword2" class="one column"><span class="desktop-right" data-i18n="">Password // Passwort</span></label>
-                            <input type="password" v-model="password" id="inputPassword2" class="four columns" autocomplete="current-password" v-focus="!!user"/>
+                            <input type="password" v-model="password" id="inputPassword2" class="four columns" autocomplete="current-password"/>
                         </div>
                         <div class="row">
                             <div class="four columns offset-by-one">
@@ -195,10 +195,18 @@
             }
         },
         mounted() {
-            this.loggedInUser = localStorageService.getAutologinUser();
             this.savedUsers = localStorageService.getSavedUsers(this.loggedInUser);
             this.savedOnlineUsers = localStorageService.getSavedOnlineUsers();
+            let currentlyLoggedInUser = loginService.getLoggedInUsername();
+            this.loggedInUser = localStorageService.getAutologinUser() || currentlyLoggedInUser;
+            if (currentlyLoggedInUser && !this.savedUsers.includes(currentlyLoggedInUser)) {
+                this.savedUsers.unshift(currentlyLoggedInUser);
+                this.savedOnlineUsers.unshift(currentlyLoggedInUser);
+            }
             this.user = this.savedUsers && this.savedUsers.length > 0 ? null : localStorageService.getLastActiveUser();
+            if (this.user) {
+                document.getElementById('inputPassword2').focus();
+            }
             I18nModule.init();
         },
         updated() {
