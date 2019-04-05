@@ -72,12 +72,17 @@ loginService.loginHashedPassword = function (user, hashedPassword, saveUser) {
         log.info('login success!');
         stopAutoRetryLogin();
         _loginInfo = info;
-        return databaseService.initForUser(user, hashedPassword, loginService.getLoggedInUserDatabase());
+        return databaseService.initForUser(user, hashedPassword, loginService.getLoggedInUserDatabase(), saveUser);
     }, (reason) => {
-        log.info('online login failed! only using offline local database...');
+        log.info('online login failed!');
         log.debug(reason);
-        autoRetryLogin(user, hashedPassword, saveUser);
-        return databaseService.initForUser(user, hashedPassword);
+        if (localStorageService.isDatabaseSynced(user)) {
+            log.info('using offline local database...');
+            autoRetryLogin(user, hashedPassword, saveUser);
+            return databaseService.initForUser(user, hashedPassword);
+        } else {
+            return Promise.reject(reason);
+        }
     }).then(() => {
         _loggedInUser = user;
         localStorageService.setLastActiveUser(user);
@@ -128,7 +133,7 @@ loginService.register = function (user, plainPassword, saveUser) {
         if (saveUser) {
             localStorageService.saveUserPassword(user, password);
         }
-        return databaseService.initForUser(_loggedInUser, password, loginService.getLoggedInUserDatabase());
+        return databaseService.registerForUser(_loggedInUser, password, loginService.getLoggedInUserDatabase(), saveUser);
     }).catch(reason => {
         log.info('register failed!');
         log.info(reason);
@@ -168,11 +173,7 @@ function autoRetryLogin(user, hashedPassword, saveUser) {
     _autoRetryUser = user;
     _autoRetryHandler = window.setTimeout(function () {
         log.info("auto-retry for online login...");
-        loginService.loginHashedPassword(user, hashedPassword, saveUser).then(() => {
-            if (loginService.isLoggedInOnline()) {
-                window.location.reload();
-            }
-        });
+        loginService.loginHashedPassword(user, hashedPassword, saveUser);
     }, 10000);
 }
 
