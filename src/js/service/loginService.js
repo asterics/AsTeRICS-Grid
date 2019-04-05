@@ -10,11 +10,14 @@ superlogin.configure(getConfig());
 let _loginInfo = null;
 let _loggedInUser = null;
 let _autoRetryHandler;
-let _autoRetryUser;
 
 let _lastParamUser = null;
 let _lastParamHashedPw = null;
 let _lastParamSaveUser = null;
+
+loginService.ERROR_CODE_UNAUTHORIZED = 'ERROR_CODE_UNAUTHORIZED';
+loginService.ERROR_CODE_LOCKED = 'ERROR_CODE_LOCKED';
+loginService.ERROR_CODE_NETWORK_ERROR = 'ERROR_CODE_NETWORK_ERROR';
 
 /**
  * returns currently logged in user, null of not logged in
@@ -56,41 +59,20 @@ loginService.loginPlainPassword = function (user, plainPassword, saveUser) {
  * @return {Promise}
  */
 loginService.loginHashedPassword = function (user, hashedPassword, saveUser) {
-    _lastParamUser = user;
-    _lastParamHashedPw = hashedPassword;
-    _lastParamSaveUser = saveUser;
-    if(user !== _autoRetryUser) {
-        stopAutoRetryLogin();
-    }
-    _loginInfo = null;
-    _loggedInUser = null;
-    user = user.trim();
-    return superlogin.login({
-        username: user,
-        password: hashedPassword
-    }).then((info) => {
-        log.info('login success!');
-        stopAutoRetryLogin();
-        _loginInfo = info;
-        return databaseService.initForUser(user, hashedPassword, loginService.getLoggedInUserDatabase(), saveUser);
+    return loginInternal(user, hashedPassword, saveUser).then(() => {
+        return databaseService.initForUser(user, hashedPassword, loginService.getLoggedInUserDatabase(), !saveUser);
     }, (reason) => {
         log.info('online login failed!');
         log.debug(reason);
-        if (localStorageService.isDatabaseSynced(user)) {
+        if (localStorageService.isDatabaseSynced(user) && !reasonToErrorCode(reason) === loginService.ERROR_CODE_NETWORK_ERROR) {
             log.info('using offline local database...');
             autoRetryLogin(user, hashedPassword, saveUser);
-            return databaseService.initForUser(user, hashedPassword);
+            return databaseService.initForUser(user, hashedPassword).then(() => {
+                return Promise.resolve(true);
+            });
         } else {
-            return Promise.reject(reason);
+            return Promise.reject(reasonToErrorCode(reason));
         }
-    }).then(() => {
-        _loggedInUser = user;
-        localStorageService.setLastActiveUser(user);
-        localStorageService.setAutologinUser(saveUser ? user: '');
-        if (saveUser) {
-            localStorageService.saveUserPassword(user, hashedPassword);
-        }
-        return Promise.resolve(true);
     });
 };
 
@@ -101,10 +83,13 @@ loginService.loginHashedPassword = function (user, hashedPassword, saveUser) {
  */
 loginService.logout = function () {
     //TODO: use?!
-    stopAutoRetryLogin();
-    if(_loggedInUser) {
-        return superlogin.logoutUser(user_id, session_id);
+    if (!_loggedInUser) {
+        return Promise.reject();
     }
+    log.warn('!here!!!!');
+    //stopAutoRetryLogin();
+    //return superlogin.logoutUser(_loggedInUser, session_id);
+
 };
 
 /**
@@ -125,15 +110,10 @@ loginService.register = function (user, plainPassword, saveUser) {
         password: password,
         confirmPassword: password
     }).then((info) => {
+        return loginInternal(user, password, saveUser)
+    }).then(() => {
         log.info('register success!');
-        _loginInfo = info;
-        _loggedInUser = user;
-        localStorageService.setLastActiveUser(user);
-        localStorageService.setAutologinUser(saveUser ? user: '');
-        if (saveUser) {
-            localStorageService.saveUserPassword(user, password);
-        }
-        return databaseService.registerForUser(_loggedInUser, password, loginService.getLoggedInUserDatabase(), saveUser);
+        return databaseService.registerForUser(_loggedInUser, password, loginService.getLoggedInUserDatabase(), !saveUser);
     }).catch(reason => {
         log.info('register failed!');
         log.info(reason);
@@ -158,7 +138,7 @@ loginService.isValidUsername = function (username) {
         superlogin.validateUsername(username).then(() => {
             resolve(true);
         }, (reason) => {
-            log.warn(reason);
+            log.debug(reason);
             resolve(false);
         });
     });
@@ -168,9 +148,41 @@ loginService.isLoggedInOnline = function () {
     return _loginInfo !== null;
 };
 
+function loginInternal(user, hashedPassword, saveUser) {
+    _lastParamUser = user;
+    _lastParamHashedPw = hashedPassword;
+    _lastParamSaveUser = saveUser;
+    user = user.trim();
+    return superlogin.login({
+        username: user,
+        password: hashedPassword
+    }).then((info) => {
+        log.info('login success!');
+        _loginInfo = info;
+        _loggedInUser = user;
+        localStorageService.setLastActiveUser(user);
+        localStorageService.setAutologinUser(saveUser ? user: '');
+        if (saveUser) {
+            localStorageService.saveUserPassword(user, hashedPassword);
+        }
+        return Promise.resolve();
+    });
+}
+
+function reasonToErrorCode(reason) {
+    if (reason && reason.error && reason.error.toLowerCase() === 'unauthorized' && reason.message && reason.message.includes('locked')) {
+        return loginService.ERROR_CODE_UNAUTHORIZED;
+    }
+    if (reason && reason.error && reason.error.toLowerCase() === 'unauthorized') {
+        return loginService.ERROR_CODE_UNAUTHORIZED;
+    }
+    if (reason && reason.message && reason.message.toLowerCase() === 'network error') {
+        return loginService.ERROR_CODE_NETWORK_ERROR;
+    }
+}
+
 function autoRetryLogin(user, hashedPassword, saveUser) {
     stopAutoRetryLogin();
-    _autoRetryUser = user;
     _autoRetryHandler = window.setTimeout(function () {
         log.info("auto-retry for online login...");
         loginService.loginHashedPassword(user, hashedPassword, saveUser);
@@ -178,7 +190,6 @@ function autoRetryLogin(user, hashedPassword, saveUser) {
 }
 
 function stopAutoRetryLogin() {
-    _autoRetryUser = null;
     if (_autoRetryHandler) {
         window.clearInterval(_autoRetryHandler);
         _autoRetryHandler = null;
