@@ -42,37 +42,40 @@
                         </div>
                     </div>
                     <div class="row">
-                        <form autocomplete="on" class="seven columns saved-user">
+                        <form autocomplete="on" class="seven columns saved-user" onsubmit="event.preventDefault()">
                             <div class="row">
                                 <strong data-i18n="">Login with other user // Login mit anderem User</strong>
                             </div>
                             <div class="row">
                                 <label for="inputUser" class="two columns"><span>Username</span></label>
                                 <input type="text" name="username" v-model="user" id="inputUser" class="four columns" autocomplete="username"/>
+                                <button v-show="savedUsers.includes(user)" class="four columns" @click="loginStored(user)">
+                                    <span data-i18n="">Open // Öffnen</span> <i class="fas fa-sign-in-alt"></i>
+                                </button>
                             </div>
-                            <div class="row">
+                            <div class="row" v-show="!savedUsers.includes(user)">
                                 <label for="inputPassword" class="two columns"><span data-i18n="">Password // Passwort</span></label>
                                 <input type="password" v-model="password" id="inputPassword" class="four columns" autocomplete="current-password"/>
                             </div>
-                            <div class="row">
+                            <div class="row" v-show="!savedUsers.includes(user)">
                                 <div class="four columns offset-by-two" style="margin-bottom: 1.0em">
                                     <input type="checkbox" checked v-model="remember" id="inputRemember"/>
-                                    <label for="inputRemember"><span data-i18n="">Remember this user // Diesen User speichern</span></label>
+                                    <label for="inputRemember"><span data-i18n="">Remember this user and make it available for offline use // Diesen User speichern und offline verfügbar machen</span></label>
                                 </div>
                                 <button @click="loginPlain(user, password)" :disabled="!user || !password" class="five columns offset-by-one">
                                     <span data-i18n="">Login // Einloggen</span>
                                     <span>
-                                    <i class="fas fa-spinner fa-spin" v-show="loginSuccess === undefined"/>
-                                    <i style="color: red" class="fas fa-times" v-show="loginSuccess == false"/>
-                                    <i style="color: green" class="fas fa-check" v-show="loginSuccess == true"/>
-                                </span>
+                                        <i class="fas fa-spinner fa-spin" v-show="loginSuccess === undefined"/>
+                                        <i style="color: red" class="fas fa-times" v-show="loginSuccess == false"/>
+                                        <i style="color: green" class="fas fa-check" v-show="loginSuccess == true"/>
+                                    </span>
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
                 <div v-show="savedUsers.length == 0">
-                    <form autocomplete="on">
+                    <form autocomplete="on" onsubmit="event.preventDefault()">
                         <div class="row">
                             <label for="inputUser2" class="one column"><span class="desktop-right">Username</span></label>
                             <input type="text" name="username" v-model="user" id="inputUser2" class="four columns" autocomplete="username" v-focus=""/>
@@ -84,9 +87,9 @@
                         <div class="row">
                             <div class="four columns offset-by-one">
                                 <input type="checkbox" checked v-model="remember" id="inputRemember2"/>
-                                <label for="inputRemember2"><span data-i18n="">Remember this user // Diesen User speichern</span></label>
+                                <label for="inputRemember2"><span data-i18n="">Remember this user and make it available for offline use // Diesen User speichern und offline verfügbar machen</span></label>
                                 <br/>
-                                <span data-i18n="">If checked, the registered user will be remembered and you don't have to provide your credentials every time you use AsTeRICS Grid. // Wenn gewählt, wird der registrierte User lokal gespeichert und die Login-Daten müssen nicht jedes Mal eingegeben werden.</span>
+                                <span class="fa fa-info-circle"/> <span data-i18n="">Do not check for a one-time login on a foreign device. // Für einmaliges Einloggen auf einem fremden Gerät sollte der User nicht gespeichert werden.</span>
                             </div>
                         </div>
                     </form>
@@ -98,11 +101,11 @@
                             <div v-show="loginSuccess === undefined">
                                 <span data-i18n="">Logging in // Einloggen</span> <i class="fas fa-spinner fa-spin"/>
                             </div>
-                            <div v-show="loginSuccess == false">
+                            <div v-show="loginSuccess === false">
                                 <i style="color: red" class="fas fa-times"/>
-                                <span data-i18n="">Login failed, wrong username or password // Login fehlgeschlagen, falscher Benutzername oder Passwort </span>
+                                <span data-i18n="">{{loginErrorCode | translate}}</span>
                             </div>
-                            <div v-show="loginSuccess == true">
+                            <div v-show="loginSuccess === true">
                                 <span data-i18n="">Login successful // Login erfolgreich</span> <i style="color: green" class="fas fa-check"/>
                             </div>
                         </div>
@@ -136,8 +139,9 @@
             return {
                 user: null,
                 password: null,
-                remember: false,
+                remember: true,
                 loginSuccess: null,
+                loginErrorCode: null,
                 savedUsers: [],
                 savedOnlineUsers: [],
                 loggedInUser: null
@@ -152,12 +156,17 @@
                 if (!user || !password) {
                     return;
                 }
+                if (this.savedUsers.includes(user)) {
+                    thiz.loginStored(user);
+                    return;
+                }
                 thiz.loginSuccess = undefined;
                 loginService.loginPlainPassword(user, password, this.remember).then(() => {
                     thiz.loginSuccess = true;
                     Router.toMain();
-                }).catch(() => {
+                }).catch((reason) => {
                     thiz.loginSuccess = false;
+                    thiz.loginErrorCode = reason;
                 });
             },
             loginStored(user) {
@@ -170,8 +179,9 @@
                     loginService.loginHashedPassword(user, password, true).then(() => {
                         thiz.loginSuccess = true;
                         Router.toMain();
-                    }).catch(() => {
+                    }).catch((reason) => {
                         thiz.loginSuccess = false;
+                        thiz.loginErrorCode = reason;
                     });
                 } else {
                     localStorageService.setAutologinUser(user);
@@ -183,22 +193,21 @@
             removeStoredUser(user) {
                 //TODO: i18n message
                 if (confirm('Do you really want to unlink this account? This will not delete the account itself, but all locally stored data of it.')) {
-                    localStorageService.removeUserPassword(user);
-                    let autologinUser = localStorageService.getAutologinUser();
-                    if (autologinUser === user) {
-                        localStorageService.setAutologinUser('');
+                    //localStorageService.removeUserPassword(user);
+                    if(loginService.getLoggedInUsername() === user) {
+                        loginService.logout();
                     }
-                    databaseService.deleteDatabase(user);
+                    //databaseService.deleteDatabase(user);
                     this.savedUsers = localStorageService.getSavedUsers(this.loggedInUser);
                     this.savedOnlineUsers = localStorageService.getSavedOnlineUsers();
                 }
             }
         },
         mounted() {
-            this.savedUsers = localStorageService.getSavedUsers(this.loggedInUser);
-            this.savedOnlineUsers = localStorageService.getSavedOnlineUsers();
             let currentlyLoggedInUser = loginService.getLoggedInUsername();
             this.loggedInUser = localStorageService.getAutologinUser() || currentlyLoggedInUser;
+            this.savedUsers = localStorageService.getSavedUsers(this.loggedInUser);
+            this.savedOnlineUsers = localStorageService.getSavedOnlineUsers();
             if (currentlyLoggedInUser && !this.savedUsers.includes(currentlyLoggedInUser)) {
                 this.savedUsers.unshift(currentlyLoggedInUser);
                 this.savedOnlineUsers.unshift(currentlyLoggedInUser);
@@ -228,5 +237,9 @@
     }
     .fa-user {
         color: gray;
+    }
+    .fa-info-circle {
+        color: blue;
+        margin-left: 3px;
     }
 </style>

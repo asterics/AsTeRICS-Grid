@@ -7,7 +7,7 @@
         </header>
         <main role="main" class="row content spaced">
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Register // Registrieren</span></h2>
-            <form autocomplete="off">
+            <form autocomplete="off" onsubmit="event.preventDefault()">
                 <div class="row">
                     <label for="inputUser" class="two columns"><span class="desktop-right">Username</span></label>
                     <input type="text" name="username" v-model="user" id="inputUser" class="four columns" @change="validateUsername" v-debounce="300" v-focus=""/>
@@ -46,9 +46,9 @@
             <div class="row">
                 <div class="four columns offset-by-two" v-show="!!password && password2 !== null && password === password2">
                     <input type="checkbox" checked v-model="remember" id="inputRemember"/>
-                    <label for="inputRemember"><span data-i18n="">Remember this user // Diesen User speichern</span></label>
+                    <label for="inputRemember"><span data-i18n="">Remember this user and make it available for offline use // Diesen User speichern und offline verfügbar machen</span></label>
                     <br/>
-                    <span data-i18n="">If checked, the registered user will be remembered and you don't have to provide your credentials every time you use AsTeRICS Grid. // Wenn gewählt, wird der registrierte User lokal gespeichert und die Login-Daten müssen nicht jedes Mal eingegeben werden.</span>
+                    <span class="fa fa-info-circle"/> <span data-i18n="">Do not check if you are using a foreign device. // Auf einem fremden Gerät sollte der User nicht gespeichert werden.</span>
                 </div>
             </div>
             <div class="row">
@@ -93,7 +93,7 @@
                 usernameValid: null,
                 password: null,
                 password2: null,
-                remember: false,
+                remember: true,
                 registerSuccess: null,
                 creationTime: new Date().getTime(),
                 spamTime: 10000,
@@ -147,5 +147,9 @@
 <style scoped>
     .row {
         margin-bottom: 1.0em;
+    }
+    .fa-info-circle {
+        color: blue;
+        margin-left: 3px;
     }
 </style>
