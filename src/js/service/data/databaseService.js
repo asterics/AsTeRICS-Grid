@@ -98,15 +98,15 @@ databaseService.removeObject = function (id) {
  * @param username the username of the logged in user
  * @param hashedUserPassword hashed password of the user
  * @param userDatabaseURL the database-URL of the logged in user
- * @param doSync if true the given remote database is synchronized to local database, otherwise not (one-time login)
+ * @param onlyRemote if true only the remote database is used, no local database is created (one-time login)
  *
  * @return {*}
  */
-databaseService.initForUser = function (username, hashedUserPassword, userDatabaseURL, doSync) {
+databaseService.initForUser = function (username, hashedUserPassword, userDatabaseURL, onlyRemote) {
     if(pouchDbService.getOpenedDatabaseName() === username) {
         return Promise.resolve();
     }
-    return pouchDbService.initDatabase(username, userDatabaseURL, doSync).then(() => {
+    return pouchDbService.initDatabase(username, userDatabaseURL, onlyRemote).then(() => {
         return initInternal(hashedUserPassword);
     });
 };
@@ -118,15 +118,15 @@ databaseService.initForUser = function (username, hashedUserPassword, userDataba
  * @param username the username of the just registered user
  * @param hashedUserPassword hashed password of the user
  * @param userDatabaseURL the database-URL of the logged in user
- * @param doSync if true the given remote database is synchronized to local database, otherwise not (one-time login)
+ * @param onlyRemote if true only the remote database is used, no local database is created (one-time login)
  *
  * @return {*}
  */
-databaseService.registerForUser = function (username, hashedUserPassword, userDatabaseURL, doSync) {
+databaseService.registerForUser = function (username, hashedUserPassword, userDatabaseURL, onlyRemote) {
     if(pouchDbService.getOpenedDatabaseName() === username) {
         return Promise.resolve();
     }
-    return pouchDbService.createDatabase(username, userDatabaseURL, doSync).then(() => {
+    return pouchDbService.createDatabase(username, userDatabaseURL, onlyRemote).then(() => {
         return initInternal(hashedUserPassword);
     });
 };
