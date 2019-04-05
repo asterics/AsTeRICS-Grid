@@ -99,13 +99,18 @@ var localStorageService = {
         localStorageService.save(USER_PASSWORDS_KEY, JSON.stringify(object));
     },
     /**
-     * removes a saved password of a given user from local storage
+     * removes a saved password of a given user from local storage, if autologin user is the given username,
+     * autologin user is cleared.
      * @param username the username as used for login
      */
     removeUserPassword(username) {
         let object = getPasswordObject();
         delete object[username];
         localStorageService.save(USER_PASSWORDS_KEY, JSON.stringify(object));
+        let autologinUser = localStorageService.getAutologinUser();
+        if (autologinUser === username) {
+            localStorageService.setAutologinUser('');
+        }
     },
     /**
      * returns all saved users as a string list
