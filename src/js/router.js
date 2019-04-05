@@ -11,6 +11,7 @@ import {dataService} from "./service/data/dataService.js";
 import LoginView from '../vue-components/loginView.vue'
 import RegisterView from '../vue-components/registerView.vue'
 import WelcomeView from '../vue-components/welcomeView.vue'
+import {databaseService} from "./service/data/databaseService";
 
 var Router = {};
 var navigoInstance = null;
@@ -69,7 +70,13 @@ Router.init = function (injectIdParam, initialHash) {
             GridView.destroy();
             GridEditView.destroy();
             AllGridsView.destroy();
-            done();
+            let validHash = getValidHash();
+            if(location.hash !== validHash) {
+                done(false);
+                setHash(validHash);
+            } else {
+                done();
+            }
         },
         after: function (params) {
             //log.debug('after');
@@ -141,6 +148,15 @@ Router.back = function () {
 Router.isOnEditPage = function () {
     return window.location.hash.indexOf('#grid/edit') !== -1;
 };
+
+function getValidHash() {
+    let hashToUse = location.hash;
+    if (!databaseService.getCurrentUsedDatabase()) {
+        hashToUse = ['#login', '#register'].includes(hashToUse) ? hashToUse : null;
+        hashToUse = hashToUse || '#welcome';
+    }
+    return hashToUse;
+}
 
 function setHash(hash, reset) {
     lastHash = reset ? null : location.hash;
