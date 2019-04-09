@@ -10,7 +10,7 @@ var actionService = {};
 
 actionService.doAction = function (gridId, gridElementId) {
     dataService.getGridElement(gridId, gridElementId).then(gridElement => {
-        log.info('do actions for: ' + gridElement.label + ', ' + gridElementId);
+        log.debug('do actions for: ' + gridElement.label + ', ' + gridElementId);
         $(window).trigger(constants.ELEMENT_EVENT_ID, [gridElement]);
         switch(gridElement.type) {
             case GridElement.ELEMENT_TYPE_COLLECT: {
