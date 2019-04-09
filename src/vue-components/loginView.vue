@@ -12,7 +12,7 @@
                     <div class="row">
                         <div class="seven columns">
                             <div class="row saved-user" v-for="username in savedUsers" style="margin-bottom: 0">
-                                <div :class="username === loggedInUser ? 'loggedIn' : ''">
+                                <div :class="username === activeUser ? 'loggedIn' : ''">
                                     <div class="four columns" style="margin-bottom: 0.5em">
                                     <span style="margin-right: 0.6em">
                                         <span class="fa-stack" v-if="!savedOnlineUsers.includes(username)" :title="'LABEL_USER_LOCAL' | translate">
@@ -24,7 +24,7 @@
                                         </span>
                                     </span>
                                         <strong >{{username}}</strong>
-                                        <em v-show="username === loggedInUser" data-i18n="">(active) // (aktiv)</em>
+                                        <em v-show="username === activeUser" data-i18n="">(active) // (aktiv)</em>
                                     </div>
                                     <button class="four columns" @click="loginStored(username)">
                                         <span data-i18n="">Open // Öffnen</span> <i class="fas fa-sign-in-alt"></i>
@@ -144,7 +144,7 @@
                 loginErrorCode: null,
                 savedUsers: [],
                 savedOnlineUsers: [],
-                loggedInUser: null
+                activeUser: null
             }
         },
         methods: {
@@ -153,11 +153,11 @@
             },
             loginPlain(user, password) {
                 let thiz = this;
-                if (!user || !password) {
-                    return;
-                }
                 if (this.savedUsers.includes(user)) {
                     thiz.loginStored(user);
+                    return;
+                }
+                if (!user || !password) {
                     return;
                 }
                 thiz.loginSuccess = undefined;
@@ -198,15 +198,15 @@
                         loginService.logout();
                     }
                     //databaseService.deleteDatabase(user);
-                    this.savedUsers = localStorageService.getSavedUsers(this.loggedInUser);
+                    this.savedUsers = localStorageService.getSavedUsers(this.activeUser);
                     this.savedOnlineUsers = localStorageService.getSavedOnlineUsers();
                 }
             }
         },
         mounted() {
             let currentlyLoggedInUser = loginService.getLoggedInUsername();
-            this.loggedInUser = localStorageService.getAutologinUser() || currentlyLoggedInUser;
-            this.savedUsers = localStorageService.getSavedUsers(this.loggedInUser);
+            this.activeUser = localStorageService.getAutologinUser() || currentlyLoggedInUser;
+            this.savedUsers = localStorageService.getSavedUsers(this.activeUser);
             this.savedOnlineUsers = localStorageService.getSavedOnlineUsers();
             if (currentlyLoggedInUser && !this.savedUsers.includes(currentlyLoggedInUser)) {
                 this.savedUsers.unshift(currentlyLoggedInUser);
