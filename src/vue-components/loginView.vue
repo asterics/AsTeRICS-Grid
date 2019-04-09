@@ -131,6 +131,7 @@
     import {loginService} from './../js/service/loginService.js';
     import {databaseService} from "../js/service/data/databaseService";
     import {localStorageService} from "../js/service/data/localStorageService";
+    import {translateService} from "../js/service/translateService";
     import {Router} from "../js/router";
 
     export default {
@@ -191,13 +192,13 @@
                 }
             },
             removeStoredUser(user) {
-                //TODO: i18n message
-                if (confirm('Do you really want to unlink this account? This will not delete the account itself, but all locally stored data of it.')) {
-                    //localStorageService.removeUserPassword(user);
+                if (confirm(translateService.translate('CONFIRM_REMOVE_USER', user))) {
+                    localStorageService.unmarkSyncedDatabase(user);
+                    localStorageService.removeUserPassword(user);
                     if(loginService.getLoggedInUsername() === user) {
                         loginService.logout();
                     }
-                    //databaseService.deleteDatabase(user);
+                    databaseService.deleteDatabase(user);
                     this.savedUsers = localStorageService.getSavedUsers(this.activeUser);
                     this.savedOnlineUsers = localStorageService.getSavedOnlineUsers();
                 }
