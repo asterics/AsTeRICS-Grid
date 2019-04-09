@@ -49,7 +49,7 @@
                             <div class="row">
                                 <label for="inputUser" class="two columns"><span>Username</span></label>
                                 <input type="text" name="username" v-model="user" id="inputUser" class="four columns" autocomplete="username"/>
-                                <button v-show="savedUsers.includes(user)" class="four columns" @click="loginStored(user)">
+                                <button type="button" v-if="savedUsers.includes(user)" class="four columns" @click="loginStored(user)">
                                     <span data-i18n="">Open // Öffnen</span> <i class="fas fa-sign-in-alt"></i>
                                 </button>
                             </div>
@@ -62,7 +62,7 @@
                                     <input type="checkbox" checked v-model="remember" id="inputRemember"/>
                                     <label for="inputRemember"><span data-i18n="">Remember this user and make it available for offline use // Diesen User speichern und offline verfügbar machen</span></label>
                                 </div>
-                                <button @click="loginPlain(user, password)" :disabled="!user || !password" class="five columns offset-by-one">
+                                <button type="button" @click="loginPlain(user, password)" :disabled="!user || !password" class="five columns offset-by-one">
                                     <span data-i18n="">Login // Einloggen</span>
                                     <span>
                                         <i class="fas fa-spinner fa-spin" v-show="loginSuccess === undefined"/>
@@ -171,10 +171,10 @@
             },
             loginStored(user) {
                 let thiz = this;
-                if (!user) {
+                if (!user || !thiz.savedUsers.includes(user)) {
                     return;
                 }
-                if (this.savedOnlineUsers.includes(user)) {
+                if (thiz.savedOnlineUsers.includes(user)) {
                     let password = localStorageService.getUserPassword(user);
                     loginService.loginHashedPassword(user, password, true).then(() => {
                         thiz.loginSuccess = true;
