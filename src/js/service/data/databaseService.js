@@ -93,7 +93,7 @@ databaseService.removeObject = function (id) {
 
 /**
  * Inits/sets up for using of the database that belongs to the given username.
- * If the database of the given user is already opened, nothing is done.
+ * If the database of the given user is already opened and synchronization state is as intended, nothing is done.
  *
  * @param username the username of the logged in user
  * @param hashedUserPassword hashed password of the user
@@ -103,7 +103,8 @@ databaseService.removeObject = function (id) {
  * @return {*}
  */
 databaseService.initForUser = function (username, hashedUserPassword, userDatabaseURL, onlyRemote) {
-    if(pouchDbService.getOpenedDatabaseName() === username) {
+    let shouldSync = userDatabaseURL && !onlyRemote;
+    if (pouchDbService.getOpenedDatabaseName() === username && shouldSync === pouchDbService.isSyncEnabled()) {
         return Promise.resolve();
     }
     return pouchDbService.initDatabase(username, userDatabaseURL, onlyRemote).then(() => {
@@ -113,7 +114,7 @@ databaseService.initForUser = function (username, hashedUserPassword, userDataba
 
 /**
  * Inits/sets up for using of the database that belongs to the given username that was just created.
- * If the database of the given user is already opened, nothing is done.
+ * If the database of the given user is already opened and synchronization state is as intended, nothing is done.
  *
  * @param username the username of the just registered user
  * @param hashedUserPassword hashed password of the user
@@ -123,7 +124,8 @@ databaseService.initForUser = function (username, hashedUserPassword, userDataba
  * @return {*}
  */
 databaseService.registerForUser = function (username, hashedUserPassword, userDatabaseURL, onlyRemote) {
-    if(pouchDbService.getOpenedDatabaseName() === username) {
+    let shouldSync = userDatabaseURL && !onlyRemote;
+    if (pouchDbService.getOpenedDatabaseName() === username && shouldSync === pouchDbService.isSyncEnabled()) {
         return Promise.resolve();
     }
     return pouchDbService.createDatabase(username, userDatabaseURL, onlyRemote).then(() => {
