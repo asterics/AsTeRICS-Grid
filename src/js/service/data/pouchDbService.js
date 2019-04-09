@@ -10,7 +10,7 @@ let _db = null;
 let _remoteDb = null;
 let _syncHandler = null;
 let _useLocalDb = true;
-let _syncState = null;
+let _syncState = constants.DB_SYNC_STATE_FAIL;
 let _resumeSyncTimeoutHandler = null;
 let _lastQueryTime = 1000;
 let _onlyRemote = false;
@@ -251,12 +251,20 @@ pouchDbService.isUsingLocalDb = function () {
 };
 
 /**
- * returns the current synchronization state of the databases, see constants.DB_SYNC_STATE_* or null if no
- * synchronization is set up.
+ * returns the current synchronization state of the databases, see constants.DB_SYNC_STATE_*. If no synchronization
+ * is set up constants.DB_SYNC_STATE_FAIL is returned.
  * @return {*}
  */
 pouchDbService.getSyncState = function () {
     return _syncState;
+};
+
+/**
+ * returns true if synchronizations is currently set up and enabled
+ * @return {*}
+ */
+pouchDbService.isSyncEnabled = function () {
+    return !!_syncHandler;
 };
 
 /**
@@ -306,7 +314,7 @@ function getDbToUse() {
 function closeOpenDatabases() {
     if (_syncHandler) {
         _syncHandler.cancel();
-        setSyncState(constants.DB_SYNC_STATE_STOPPED);
+        setSyncState(constants.DB_SYNC_STATE_FAIL);
     }
     let promises = [];
     if (_db) promises.push(_db.close());
@@ -509,8 +517,7 @@ function setupSync() {
             }).on('error', function (err) {
                 log.info('couchdb error');
                 log.info(err);
-                $(document).trigger(constants.EVENT_DB_CONNECTION_LOST);
-                setSyncState(constants.DB_SYNC_STATE_FAIL);
+                triggerConnectionLost();
             });
         }
     });
@@ -529,6 +536,12 @@ function setSyncState(syncState) {
     } catch (e) {
         log.error(e);
     }
+}
+
+function triggerConnectionLost() {
+    cancelSync();
+    $(document).trigger(constants.EVENT_DB_CONNECTION_LOST);
+    setSyncState(constants.DB_SYNC_STATE_FAIL);
 }
 
 /**
