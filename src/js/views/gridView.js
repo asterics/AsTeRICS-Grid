@@ -66,13 +66,12 @@ GridView.destroy = function () {
 
 function reloadFn(event, updatedIds) {
     log.debug('got update event, ids updated:' + updatedIds);
-    if(!GridView.gridData || !GridView.metadata) {
-        window.location.reload();
-    }
-    if(updatedIds.includes(GridView.gridData.id)) {
+    if (updatedIds.includes(GridView.gridData.id)) {
         Router.toLastOpenedGrid(); //TODO only reload locally
     }
-    if(updatedIds.includes(GridView.metadata.id)) {
+
+    //follow navigation, but not in only-only mode -> needs too much interaction with online database
+    if (updatedIds.includes(GridView.metadata.id) && !(_vueApp && _vueApp.syncState === constants.DB_SYNC_STATE_ONLINEONLY)) {
         Router.toLastOpenedGrid();
     }
 }
@@ -156,7 +155,10 @@ function initVue() {
                 dataService.saveMetadata(this.metadata);
             },
             initInputMethods() {
-                var inputConfig = this.metadata.inputConfig;
+                if (!GridView.grid) {
+                    return;
+                }
+                let inputConfig = this.metadata.inputConfig;
                 this.scanner = GridView.scanner = new Scanner('.grid-item-content', 'scanFocus', {
                     scanVertical: inputConfig.scanVertical,
                     subScanRepeat: 3,
@@ -253,7 +255,7 @@ function initVue() {
             }
             initGrid().then(() => {
                 _inputEventHandler = new InputEventHandler('grid-container');
-                if(GridView.metadata.headerPinned) {
+                if (GridView.metadata.headerPinned) {
                     this.showHeaderFn(true);
                 } else {
                     this.hideHeaderFn(true);
