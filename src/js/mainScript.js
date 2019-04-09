@@ -28,14 +28,13 @@ function init() {
     if (autologinUser && !userPassword) { //saved local user
         promises.push(databaseService.initForUser(autologinUser));
     }
-    Promise.all(promises).then(() => {
+    Promise.all(promises).finally(() => {
         let initHash = location.hash || (autologinUser ? '#main' : lastActiveUser ? '#login' : '#welcome');
         if (!Router.isInitialized()) {
             Router.init('#content', initHash);
         }
     });
 }
-
 init();
 
 function reloadOnAppcacheUpdate() {
