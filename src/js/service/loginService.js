@@ -85,18 +85,17 @@ loginService.loginHashedPassword = function (user, hashedPassword, saveUser) {
 };
 
 /**
- * logs out, deletes all locally saved login data
+ * logs out a logged in user from remote superlogin
 
  * @return {Promise}
  */
 loginService.logout = function () {
-    //TODO: use?!
     if (!_loggedInUser) {
         return Promise.reject();
     }
-    log.warn('!here!!!!');
-    //stopAutoRetryLogin();
-    //return superlogin.logoutUser(_loggedInUser, session_id);
+    stopAutoRetryLogin();
+    log.debug('logging out user: ' + _loggedInUser);
+    return superlogin.logout(_loggedInUser);
 
 };
 
