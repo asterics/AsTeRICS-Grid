@@ -40,11 +40,10 @@ loginService.getLoggedInUserDatabase = function () {
 };
 
 /**
- * logs in into remote couchdb (superlogin)
- * @param user
- * @param plainPassword
- * @param saveUser if true, the user and password is saved to local storage
- * @return {Promise}
+ * logs in into remote couchdb (superlogin) and initializes local user database
+ * @param plainPassword plain user password as typed in in password field
+ *
+ * @see loginService.loginHashedPassword() for other details.
  */
 loginService.loginPlainPassword = function (user, plainPassword, saveUser) {
     let hashedPassword = encryptionService.getUserPasswordHash(plainPassword);
@@ -52,23 +51,32 @@ loginService.loginPlainPassword = function (user, plainPassword, saveUser) {
 };
 
 /**
- * logs in into remote couchdb (superlogin)
+ * logs in into remote couchdb (superlogin) and initializes local user database
  * @param user
  * @param hashedPassword
  * @param saveUser if true, the user and password is saved to local storage
- * @return {Promise}
+ * @return {Promise} resolves with value
+ *              true ... if user successfully logged in online and local database successfully initialized.
+ *              false ... if online login failed, but database is locally synced and initialization of offline database was successful
+ *         Promise rejects with loginService.ERROR_CODE_* if online login failed and database is not locally synced.
  */
 loginService.loginHashedPassword = function (user, hashedPassword, saveUser) {
     return loginInternal(user, hashedPassword, saveUser).then(() => {
-        return databaseService.initForUser(user, hashedPassword, loginService.getLoggedInUserDatabase(), !saveUser);
+        return databaseService.initForUser(user, hashedPassword, loginService.getLoggedInUserDatabase(), !saveUser).then(() => {
+            return Promise.resolve(true);
+        });
     }, (reason) => {
         log.info('online login failed!');
         log.debug(reason);
-        if (localStorageService.isDatabaseSynced(user) && !reasonToErrorCode(reason) === loginService.ERROR_CODE_NETWORK_ERROR) {
+        if (localStorageService.isDatabaseSynced(user)) {
             log.info('using offline local database...');
-            autoRetryLogin(user, hashedPassword, saveUser);
+            localStorageService.setLastActiveUser(user);
+            localStorageService.setAutologinUser(saveUser ? user: '');
+            if (reasonToErrorCode(reason) !== loginService.ERROR_CODE_UNAUTHORIZED) {
+                autoRetryLogin(user, hashedPassword, saveUser);
+            }
             return databaseService.initForUser(user, hashedPassword).then(() => {
-                return Promise.resolve(true);
+                return Promise.resolve(false);
             });
         } else {
             return Promise.reject(reasonToErrorCode(reason));
@@ -93,17 +101,22 @@ loginService.logout = function () {
 };
 
 /**
- * registers with remote couchdb (superlogin)
- * @param user
- * @param plainPassword
- * @param saveUser if true, the user and password is saved to local storage
- * @return {Promise}
+ * registers with remote couchdb (superlogin), and logs in after successful registration.
+ * Does not initialize local database, so use databaseService.initForUser() after successful registration.
+ *
+ * @param user username as chosen by user
+ * @param plainPassword plain password as typed in by user
+ * @param saveUser if true, the user and password is saved to local storage and database is synchronized locally,
+ *        otherwise a registration with one-time login is performed, where only the online database is used
+ * @return {Promise} resolves if online registration, login and (optional) initialization of local database successful.
+ *          Promise rejects if registration, login or (optional) initialization of database failed.
+ *
  */
 loginService.register = function (user, plainPassword, saveUser) {
     stopAutoRetryLogin();
     user = user.trim();
     let password = encryptionService.getUserPasswordHash(plainPassword);
-    console.log("password hash: " + password);
+    log.debug("password hash: " + password);
     return superlogin.register({
         username: user,
         email: new Date().getTime() + '.' + Math.random() + '@norealmail.org',
@@ -112,10 +125,10 @@ loginService.register = function (user, plainPassword, saveUser) {
     }).then((info) => {
         return loginInternal(user, password, saveUser)
     }).then(() => {
-        log.info('register success!');
+        log.info('registration successful!');
         return databaseService.registerForUser(_loggedInUser, password, loginService.getLoggedInUserDatabase(), !saveUser);
     }).catch(reason => {
-        log.info('register failed!');
+        log.info('registration failed!');
         log.info(reason);
         return Promise.reject(reason);
     });
@@ -158,6 +171,7 @@ function loginInternal(user, hashedPassword, saveUser) {
         password: hashedPassword
     }).then((info) => {
         log.info('login success!');
+        stopAutoRetryLogin();
         _loginInfo = info;
         _loggedInUser = user;
         localStorageService.setLastActiveUser(user);
@@ -184,7 +198,7 @@ function reasonToErrorCode(reason) {
 function autoRetryLogin(user, hashedPassword, saveUser) {
     stopAutoRetryLogin();
     _autoRetryHandler = window.setTimeout(function () {
-        log.info("auto-retry for online login...");
+        log.info("auto-retry for online login with user: " + user);
         loginService.loginHashedPassword(user, hashedPassword, saveUser);
     }, 10000);
 }
