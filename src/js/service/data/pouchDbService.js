@@ -367,6 +367,9 @@ function initPouchDbServiceInternal(databaseName, remoteCouchDbAddress, onlyRemo
     if (!databaseName) {
         return Promise.reject();
     }
+    if (onlyRemote) {
+        setSyncState(constants.DB_SYNC_STATE_ONLINEONLY);
+    }
     return closeOpenDatabases().then(function () {
         _dbName = databaseName;
         _databaseJustCreated = justCreated;
@@ -392,6 +395,13 @@ function initPouchDbServiceInternal(databaseName, remoteCouchDbAddress, onlyRemo
                         return setupSync();
                     });
                 } else {
+                    _remoteDb.changes({
+                        since: 'now',
+                        live: true,
+                        include_docs: false
+                    }).on('change', function (info) {
+                        handleDbChange(info);
+                    });
                     return Promise.resolve();
                 }
             }));
@@ -496,24 +506,7 @@ function setupSync() {
                 log.debug(info);
                 setSyncState(constants.DB_SYNC_STATE_SYNCINC);
             }).on('change', function (info) {
-                //in try-catch because if any event-handler throws an error this will
-                //trigger the pouchDb error-handler which is not desired
-                try {
-                    log.debug(info);
-                    if (info.direction === 'pull') {
-                        let changedIds = [];
-                        if (info.change && info.change.docs && info.change.docs.length > 0) {
-                            changedIds = info.change.docs.map(doc => doc.id);
-                            changedIds = changedIds.filter(id => !!id);
-                        }
-                        log.info('pouchdb pulling updates...');
-                        $(document).trigger(constants.EVENT_DB_PULL_UPDATED, [changedIds]);
-                    } else {
-                        log.info('pouchdb pushing updates...');
-                    }
-                } catch (e) {
-                    log.error(e);
-                }
+                handleDbChange(info);
             }).on('error', function (err) {
                 log.info('couchdb error');
                 log.info(err);
@@ -542,6 +535,32 @@ function triggerConnectionLost() {
     cancelSync();
     $(document).trigger(constants.EVENT_DB_CONNECTION_LOST);
     setSyncState(constants.DB_SYNC_STATE_FAIL);
+}
+
+function handleDbChange(info) {
+    //in try-catch because if any event-handler throws an error this will
+    //trigger the pouchDb error-handler which is not desired
+    try {
+        log.debug(info);
+        let changedIds = [];
+        if (info.direction && info.direction === 'pull') {
+            if (info.change && info.change.docs && info.change.docs.length > 0) {
+                changedIds = info.change.docs.map(doc => doc.id);
+                changedIds = changedIds.filter(id => !!id);
+            }
+            log.info('pouchdb pulling updates...');
+        } else if (info.direction) {
+            log.info('pouchdb pushing updates...');
+        } else if (!info.direction && info.id) {
+            log.info('change from remote database...');
+            changedIds.push(info.id);
+        }
+        if (changedIds.length > 0) {
+            $(document).trigger(constants.EVENT_DB_PULL_UPDATED, [changedIds]);
+        }
+    } catch (e) {
+        log.error(e);
+    }
 }
 
 /**
