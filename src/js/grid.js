@@ -283,10 +283,11 @@ function Grid(gridContainerId, gridItemClass, options) {
     /**
      * reloads the grid with updated data from dataService.
      * useful for applying changes made e.g. in label oder image of an element
+     * @param gridData if specified the given gridData is used to reload, otherwise it is retrieved from dataService
      */
-    thiz.reinit = function () {
+    thiz.reinit = function (gridData) {
         notifyLayoutChangeStart();
-        init().then(() => {
+        init(gridData).then(() => {
             notifyLayoutChangeEnd();
         });
     };
