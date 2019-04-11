@@ -21,19 +21,18 @@ var vueApp = null;
 
 GridEditView.init = function (gridId) {
     $(document).on(constants.EVENT_DB_PULL_UPDATED, reloadFn);
-    dataService.getGrid(gridId).then(grid => {
-        if (!grid) {
+    dataService.getGrid(gridId).then(gridData => {
+        if (!gridData) {
             log.warn('grid not found! gridId: ' + gridId);
             Router.toMain();
             return;
         }
-        GridEditView.gridData = grid;
         dataService.getMetadata().then(savedMetadata => {
             dataService.saveMetadata(new MetaData({
-                lastOpenedGridId: GridEditView.gridData.id
+                lastOpenedGridId: gridData.id
             }, savedMetadata));
         });
-        initVue();
+        initVue(gridData);
     });
 };
 
@@ -43,17 +42,21 @@ GridEditView.destroy = function () {
     $(document).off(constants.EVENT_DB_PULL_UPDATED, reloadFn);
 };
 
-function reloadFn() {
-    if (vueApp) {
-        vueApp.reload();
+function reloadFn(event, updatedIds, updatedDocs) {
+    if (vueApp && updatedIds.includes(vueApp.gridData.id)) {
+        let gridData = new GridData(updatedDocs.filter(doc => doc.id === vueApp.gridData.id)[0]);
+        if (!gridData.isEqual(vueApp.gridData)) {
+            log.debug('reloading on remote update...');
+            vueApp.reload(gridData);
+        }
     }
 }
 
-function initVue() {
+function initVue(gridData) {
     vueApp = new Vue({
         el: '#app',
         data: {
-            gridData: JSON.parse(JSON.stringify(GridEditView.gridData)),
+            gridData: JSON.parse(JSON.stringify(gridData)),
             canUndo: false,
             canRedo: false,
             doingUndoRedo: false,
@@ -96,12 +99,11 @@ function initVue() {
                     GridEditView.grid.redo();
                 }, 10);
             },
-            reload () {
-                var thiz = this;
-                GridEditView.grid.reinit();
-                dataService.getGrid(thiz.gridData.id).then(data => {
-                    thiz.gridData = JSON.parse(JSON.stringify(data));
-                })
+            reload (gridData) {
+                GridEditView.grid.reinit(gridData);
+                if (gridData) {
+                    this.gridData = JSON.parse(JSON.stringify(gridData));
+                }
             },
             back() {
                 Router.back();
@@ -119,7 +121,7 @@ function initVue() {
                             x: newPos.x,
                             y: newPos.y
                         });
-                        dataService.updateOrAddGridElement(GridEditView.gridData.id, newElement).then(() => {
+                        dataService.updateOrAddGridElement(this.gridData.id, newElement).then(() => {
                             this.reload();
                         });
                         break;
@@ -152,15 +154,12 @@ function initVue() {
                 });
                 thiz.syncState = dataService.getSyncState();
             }
-            initGrid().then(() => {
+            initGrid(gridData).then(() => {
                 GridEditView.grid.setLayoutChangedEndListener((newGridData) => {
                     thiz.canUndo = GridEditView.grid.canUndo();
                     thiz.canRedo = GridEditView.grid.canRedo();
                     thiz.doingUndoRedo = false;
-                    dataService.getGrid(thiz.gridData.id).then(data => {
-                        thiz.gridData = JSON.parse(JSON.stringify(data));
-                    });
-
+                    thiz.gridData = JSON.parse(JSON.stringify(newGridData));
                 });
                 initContextmenu();
                 I18nModule.init();
@@ -170,11 +169,11 @@ function initVue() {
     })
 }
 
-function initGrid() {
+function initGrid(gridData) {
     GridEditView.grid = new Grid('#grid-container', '.grid-item-content', {
         enableResizing: true,
         dragAndDrop: true,
-        gridId: GridEditView.gridData.id
+        gridId: gridData.id
     });
     return GridEditView.grid.getInitPromise();
 }
@@ -274,7 +273,7 @@ function initContextmenu() {
                 break;
             }
             case CONTEXT_DO_ACTION: {
-                actionService.doAction(GridEditView.gridData.id, elementId);
+                actionService.doAction(vueApp.gridData.id, elementId);
                 break;
             }
             case CONTEXT_ACTIONS: {
@@ -283,7 +282,7 @@ function initContextmenu() {
             }
             case CONTEXT_DELETE: {
                 GridEditView.grid.removeElement(elementId).then(newGridData => {
-                    GridEditView.gridData = newGridData;
+                    vueApp.gridData = newGridData;
                 });
                 break;
             }
