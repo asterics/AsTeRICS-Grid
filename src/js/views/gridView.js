@@ -25,29 +25,28 @@ let _vueApp = null;
 
 GridView.init = function (gridId) {
     $(document).on(constants.EVENT_DB_PULL_UPDATED, reloadFn);
-    dataService.getGrid(gridId).then(grid => {
-        if (!grid) {
+    dataService.getGrid(gridId).then(gridData => {
+        if (!gridData) {
             log.warn('grid not found! gridId: ' + gridId);
             Router.toManageGrids();
             return;
         }
-        GridView.gridData = grid;
-        if(grid.hasAREModel()) {
-            let areModel = grid.getAREModel();
-            areService.uploadAndStartModel(areModel.dataBase64, grid.getAREURL(), areModel.fileName);
+        if (gridData.hasAREModel()) {
+            let areModel = gridData.getAREModel();
+            areService.uploadAndStartModel(areModel.dataBase64, gridData.getAREURL(), areModel.fileName);
         }
 
         dataService.getMetadata().then(savedMetadata => {
-            GridView.metadata = new MetaData(savedMetadata) || new MetaData();
-            GridView.metadata.lastOpenedGridId = GridView.gridData.id;
-            if(urlParamService.isScanningDisabled()) {
-                GridView.metadata.inputConfig.scanAutostart = false;
+            let metadata = new MetaData(savedMetadata) || new MetaData();
+            metadata.lastOpenedGridId = gridId;
+            if (urlParamService.isScanningDisabled()) {
+                metadata.inputConfig.scanAutostart = false;
             }
-            if(urlParamService.hideHeader()) {
-                GridView.metadata.headerPinned = false;
+            if (urlParamService.hideHeader()) {
+                metadata.headerPinned = false;
             }
-            dataService.saveMetadata(GridView.metadata);
-            initVue();
+            dataService.saveMetadata(metadata);
+            initVue(gridData, metadata);
         });
     });
 };
@@ -64,41 +63,43 @@ GridView.destroy = function () {
     }
 };
 
-function reloadFn(event, updatedIds) {
+function reloadFn(event, updatedIds, updatedDocs) {
     log.debug('got update event, ids updated:' + updatedIds);
-    if (updatedIds.includes(GridView.gridData.id)) {
-        Router.toLastOpenedGrid(); //TODO only reload locally
-    }
+    if (_vueApp) {
+        if (_vueApp.gridData && updatedIds.includes(_vueApp.gridData.id)) {
+            Router.toLastOpenedGrid(); //TODO only reload locally
+        }
 
-    //follow navigation, but not in only-only mode -> needs too much interaction with online database
-    if (updatedIds.includes(GridView.metadata.id) && !(_vueApp && _vueApp.syncState === constants.DB_SYNC_STATE_ONLINEONLY)) {
-        Router.toLastOpenedGrid();
+        //follow navigation, but not in only-only mode -> needs too much interaction with online database
+        if (_vueApp.metadata && updatedIds.includes(_vueApp.metadata.id) && !(_vueApp && _vueApp.syncState === constants.DB_SYNC_STATE_ONLINEONLY)) {
+            Router.toLastOpenedGrid();
+        }
     }
 }
 
 function stopInputMethods() {
-    if (GridView.scanner) GridView.scanner.stopScanning();
-    if (GridView.hover) GridView.hover.stopHovering();
-    if (GridView.clicker) GridView.clicker.stopClickcontrol();
+    if (_vueApp && _vueApp.scanner) _vueApp.scanner.stopScanning();
+    if (_vueApp && _vueApp.hover) _vueApp.hover.stopHovering();
+    if (_vueApp && _vueApp.clicker) _vueApp.clicker.stopClickcontrol();
 }
 
-function initGrid() {
+function initGrid(gridId) {
     GridView.grid = new Grid('#grid-container', '.grid-item-content', {
         enableResizing: false,
         dragAndDrop: false,
-        gridId: GridView.gridData.id
+        gridId: gridId
     });
     return GridView.grid.getInitPromise();
 }
 
-function initVue() {
+function initVue(gridData, metadata) {
     _vueApp = new Vue({
         el: '#app',
         data: {
-            gridData: JSON.parse(JSON.stringify(GridView.gridData)),
-            metadata: JSON.parse(JSON.stringify(GridView.metadata)),
-            isScanning: GridView.metadata.inputConfig.scanAutostart,
-            showHeader: GridView.metadata.headerPinned,
+            gridData: JSON.parse(JSON.stringify(gridData)),
+            metadata: JSON.parse(JSON.stringify(metadata)),
+            isScanning: metadata.inputConfig.scanAutostart,
+            showHeader: metadata.headerPinned,
             scanner: null,
             hover: null,
             clicker: null,
@@ -155,11 +156,12 @@ function initVue() {
                 dataService.saveMetadata(this.metadata);
             },
             initInputMethods() {
+                let thiz = this;
                 if (!GridView.grid) {
                     return;
                 }
-                let inputConfig = this.metadata.inputConfig;
-                this.scanner = GridView.scanner = new Scanner('.grid-item-content', 'scanFocus', {
+                let inputConfig = thiz.metadata.inputConfig;
+                thiz.scanner = new Scanner('.grid-item-content', 'scanFocus', {
                     scanVertical: inputConfig.scanVertical,
                     subScanRepeat: 3,
                     scanBinary: inputConfig.scanBinary,
@@ -177,57 +179,58 @@ function initVue() {
                             if(new Date().getTime() - lastSelect > 100) {
                                 log.info('select scanning per ARE event: ' + eventString);
                                 lastSelect = new Date().getTime();
-                                GridView.scanner.select();
+                                thiz.scanner.select();
                             }
                         }
                     }, inputConfig.areURL);
                 } else {
                     areService.unsubscribeEvents();
                 }
-                this. hover = GridView.hover = new Hover('.grid-item-content', inputConfig.hoverTimeoutMs);
-                this.clicker = GridView.clicker = new Clicker('.grid-item-content');
+                thiz.hover = new Hover('.grid-item-content', inputConfig.hoverTimeoutMs);
+                thiz.clicker = new Clicker('.grid-item-content');
 
                 GridView.grid.setLayoutChangedStartListener(function () {
-                    GridView.scanner.pauseScanning();
+                    thiz.scanner.pauseScanning();
                 });
                 GridView.grid.setLayoutChangedEndListener(function () {
-                    GridView.scanner.resumeScanning();
+                    thiz.scanner.resumeScanning();
                 });
 
                 window.addEventListener('resize', function () {
-                    GridView.scanner.layoutChanged();
+                    thiz.scanner.layoutChanged();
                 }, true);
 
-                GridView.scanner.setSelectionListener(function (item) {
+                thiz.scanner.setSelectionListener(function (item) {
                     L.removeAddClass(item, 'selected');
                     actionService.doAction(GridView.grid.getCurrentGridId(), item.id);
                 });
 
-                GridView.hover.setSelectionListener(function (item) {
+                thiz.hover.setSelectionListener(function (item) {
                     L.removeAddClass(item, 'selected');
-                    actionService.doAction(GridView.gridData.id, item.id);
+                    actionService.doAction(thiz.gridData.id, item.id);
                 });
 
-                GridView.clicker.setSelectionListener(function (item) {
+                thiz.clicker.setSelectionListener(function (item) {
                     L.removeAddClass(item, 'selected');
-                    actionService.doAction(GridView.gridData.id, item.id);
+                    actionService.doAction(thiz.gridData.id, item.id);
                 });
 
                 if (inputConfig.scanAutostart) {
-                    GridView.scanner.startScanning();
+                    thiz.scanner.startScanning();
                 }
                 if (inputConfig.hoverEnabled) {
-                    GridView.hover.startHovering();
+                    thiz.hover.startHovering();
                 }
                 if (inputConfig.mouseclickEnabled) {
-                    GridView.clicker.startClickcontrol();
+                    thiz.clicker.startClickcontrol();
                 }
             },
             reinitInputMethods() {
+                let thiz = this;
                 stopInputMethods();
                 dataService.getMetadata().then(newMetadata => {
-                    this.metadata = GridView.metadata = JSON.parse(JSON.stringify(newMetadata));
-                    this.initInputMethods();
+                    thiz.metadata = JSON.parse(JSON.stringify(newMetadata));
+                    thiz.initInputMethods();
                 });
             },
             toEditGrid() {
@@ -253,9 +256,9 @@ function initVue() {
                 });
                 thiz.syncState = dataService.getSyncState();
             }
-            initGrid().then(() => {
+            initGrid(gridData.id).then(() => {
                 _inputEventHandler = new InputEventHandler('grid-container');
-                if (GridView.metadata.headerPinned) {
+                if (metadata.headerPinned) {
                     this.showHeaderFn(true);
                 } else {
                     this.hideHeaderFn(true);
