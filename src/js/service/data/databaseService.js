@@ -18,7 +18,7 @@ let _defaultGridSetPath = 'examples/default.grd';
  * If no elements are found 'null' is resolved, if exactly one element was found, this element is resolved,
  * otherwise an array of the found elements is resolved.
  *
- * @param objectType the objectType to find, e.g. "GridData"
+ * @param objectType the objectType to find, e.g. GridData, given as real object, not as string
  * @param id the id of the object to find (optional)
  * @param onlyShortVersion if true only the short version (with stripped binary data) is returned (optional)
  * @return {Promise}
