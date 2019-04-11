@@ -334,17 +334,27 @@ function getDbToUse() {
 }
 
 function closeOpenDatabases() {
-    if (_syncHandler) {
-        _syncHandler.cancel();
-        setSyncState(constants.DB_SYNC_STATE_FAIL);
-    }
     let promises = [];
+    cancelSync();
     if (_db) promises.push(_db.close());
     if (_remoteDb) promises.push(_remoteDb.close());
+    resetLocalProperties();
+    return Promise.all(promises);
+}
+
+function resetLocalProperties() {
+    _dbName = null;
     _db = null;
     _remoteDb = null;
-    _dbName = null;
-    return Promise.all(promises);
+    _syncHandler = null;
+    _useLocalDb = true;
+    _syncState = constants.DB_SYNC_STATE_FAIL;
+    _resumeSyncTimeoutHandler = null;
+    _lastQueryTime = 1000;
+    _onlyRemote = false;
+    _justCreated = false;
+    _databaseJustCreated = false;
+    _cachedDocuments = {};
 }
 
 function queryInternal(modelName, id, dbToQuery) {
@@ -390,10 +400,10 @@ function initPouchDbServiceInternal(databaseName, remoteCouchDbAddress, onlyRemo
         return Promise.reject();
     }
     _cachedDocuments = {};
-    if (onlyRemote) {
-        setSyncState(constants.DB_SYNC_STATE_ONLINEONLY);
-    }
     return closeOpenDatabases().then(function () {
+        if (onlyRemote) {
+            setSyncState(constants.DB_SYNC_STATE_ONLINEONLY);
+        }
         _dbName = databaseName;
         _databaseJustCreated = justCreated;
         _onlyRemote = onlyRemote;
