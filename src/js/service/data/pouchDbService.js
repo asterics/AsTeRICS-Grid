@@ -2,6 +2,7 @@ import $ from 'jquery';
 import PouchDB from 'PouchDB';
 import {localStorageService} from "./localStorageService";
 import {constants} from "../../util/constants";
+import {filterService} from "./filterService";
 
 let pouchDbService = {};
 
@@ -398,7 +399,7 @@ function initPouchDbServiceInternal(databaseName, remoteCouchDbAddress, onlyRemo
                     _remoteDb.changes({
                         since: 'now',
                         live: true,
-                        include_docs: false
+                        include_docs: true
                     }).on('change', function (info) {
                         handleDbChange(info);
                     });
@@ -543,10 +544,12 @@ function handleDbChange(info) {
     try {
         log.debug(info);
         let changedIds = [];
+        let changedDocs = [];
         if (info.direction && info.direction === 'pull') {
             if (info.change && info.change.docs && info.change.docs.length > 0) {
-                changedIds = info.change.docs.map(doc => doc.id);
-                changedIds = changedIds.filter(id => !!id);
+                changedDocs = info.change.docs.filter(doc => !!doc.id);
+                changedDocs = changedDocs.map(rawDoc => filterService.convertDatabaseToLiveObjects(rawDoc));
+                changedIds = changedDocs.map(doc => doc.id);
             }
             log.info('pouchdb pulling updates...');
         } else if (info.direction) {
@@ -554,9 +557,12 @@ function handleDbChange(info) {
         } else if (!info.direction && info.id) {
             log.info('change from remote database...');
             changedIds.push(info.id);
+            if (info.doc) {
+                changedDocs.push(filterService.convertDatabaseToLiveObjects(info.doc));
+            }
         }
         if (changedIds.length > 0) {
-            $(document).trigger(constants.EVENT_DB_PULL_UPDATED, [changedIds]);
+            $(document).trigger(constants.EVENT_DB_PULL_UPDATED, [changedIds, changedDocs]);
         }
     } catch (e) {
         log.error(e);
