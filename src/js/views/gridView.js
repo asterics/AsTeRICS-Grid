@@ -17,6 +17,7 @@ import {Clicker} from "../input/clicking.js";
 import InputOptionsModal from '../../vue-components/inputOptionsModal.vue'
 import {constants} from "../util/constants";
 import {localStorageService} from "../service/data/localStorageService";
+import {GridData} from "../model/GridData";
 
 var GridView = {};
 var _inputEventHandler = null;
@@ -66,12 +67,12 @@ GridView.destroy = function () {
 function reloadFn(event, updatedIds, updatedDocs) {
     log.debug('got update event, ids updated:' + updatedIds);
     if (_vueApp) {
-        if (_vueApp.gridData && updatedIds.includes(_vueApp.gridData.id)) {
-            Router.toLastOpenedGrid(); //TODO only reload locally
+        let updatedGridDoc = updatedDocs.filter(doc => (_vueApp.gridData && doc.id === _vueApp.gridData.id))[0];
+        let updatedMetadataDoc = updatedDocs.filter(doc => (_vueApp.metadata && doc.id === _vueApp.metadata.id))[0];
+        if (updatedGridDoc) {
+            _vueApp.reload(new GridData(updatedGridDoc));
         }
-
-        //follow navigation, but not in only-only mode -> needs too much interaction with online database
-        if (_vueApp.metadata && updatedIds.includes(_vueApp.metadata.id) && !(_vueApp && _vueApp.syncState === constants.DB_SYNC_STATE_ONLINEONLY)) {
+        if (updatedMetadataDoc && updatedMetadataDoc.lastOpenedGridId !== _vueApp.gridData.id) {
             Router.toLastOpenedGrid();
         }
     }
@@ -232,6 +233,13 @@ function initVue(gridData, metadata) {
                     thiz.metadata = JSON.parse(JSON.stringify(newMetadata));
                     thiz.initInputMethods();
                 });
+            },
+            reload (gridData) {
+                GridView.grid.reinit(gridData);
+                if (gridData) {
+                    this.gridData = JSON.parse(JSON.stringify(gridData));
+                }
+                this.reinitInputMethods();
             },
             toEditGrid() {
                 Router.toEditGrid(this.gridData.id);
