@@ -244,12 +244,26 @@ pouchDbService.deleteDatabase = function (databaseName) {
     _cachedDocuments = {};
     let promises = [];
     if (pouchDbService.getOpenedDatabaseName() === databaseName) {
-        promises.push(getPouchDbAdapter().close());
+        promises.push(pouchDbService.closeCurrentDatabase());
     }
     return Promise.all(promises).then(() => {
         let db = new PouchDB(databaseName);
         return db.destroy();
     });
+};
+
+/**
+ * closes the currently opened database(s), afterwards new initialization of pouchDbService using initDatabase() or
+ * createDatabase() is necessary.
+ * @return {*}
+ */
+pouchDbService.closeCurrentDatabase = function () {
+    if (!_pouchDbAdapter) {
+        return Promise.resolve();
+    }
+    let promise = _pouchDbAdapter.close();
+    _pouchDbAdapter = null;
+    return promise;
 };
 
 /**

@@ -146,6 +146,15 @@ databaseService.deleteDatabase = function (user) {
 };
 
 /**
+ * closes the currently opened database(s), afterwards new initialization of pouchDbService using initForUser() or
+ * registerForUser() is necessary.
+ * @return {*}
+ */
+databaseService.closeCurrentDatabase = function () {
+    return pouchDbService.closeCurrentDatabase();
+};
+
+/**
  * returns the name of the currently opened database
  * @return {*}
  */

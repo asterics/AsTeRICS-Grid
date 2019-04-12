@@ -95,6 +95,7 @@ loginService.logout = function () {
     }
     stopAutoRetryLogin();
     log.debug('logging out user: ' + _loggedInUser);
+    databaseService.closeCurrentDatabase();
     return superlogin.logout(_loggedInUser);
 
 };
