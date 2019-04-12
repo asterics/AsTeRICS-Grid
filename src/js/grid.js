@@ -29,8 +29,10 @@ function Grid(gridContainerId, gridItemClass, options) {
     var _gridRows = null;
     var _initPromise = null;
     var _undoService = new UndoService();
+    let _isInitialized = false;
 
     function init(gridDataParam) {
+        _isInitialized = false;
         _initPromise = new Promise(resolve => {
             if (gridDataParam) {
                 initData(options, gridDataParam);
@@ -43,6 +45,9 @@ function Grid(gridContainerId, gridItemClass, options) {
                     setTimeout(() => resolve(), _animationTimeMs); // resolve with timeout in order to wait for init-animation, only resolve if grid is stable.
                 });
             }
+        });
+        _initPromise.then(() => {
+            _isInitialized = true;
         });
         return _initPromise;
     }
@@ -83,18 +88,22 @@ function Grid(gridContainerId, gridItemClass, options) {
                 dataService.updateGrid(_gridData.id, _gridData);
             });
         }
-        initResizing();
-        thiz.autosize();
+        initResizing().then(() => {
+            thiz.autosize();
+        });
     }
 
     function initResizing() {
-        if(enableResizing) {
-            $(gridItemClass).resizable(getResizeOptions());
+        let promises = [];
+        if (enableResizing) {
+            promises.push($(gridItemClass).resizable(getResizeOptions()));
         }
 
         window.addEventListener('resize', function () {
             thiz.autosize();
-        })
+        });
+
+        return Promise.all(promises);
     }
 
     function refreshResizeOptions() {
@@ -397,6 +406,10 @@ function Grid(gridContainerId, gridItemClass, options) {
 
     thiz.getInitPromise = function () {
         return _initPromise;
+    };
+
+    thiz.isInitialized = function() {
+        return _isInitialized;
     };
 
     init();
