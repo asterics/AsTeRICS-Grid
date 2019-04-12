@@ -22,6 +22,7 @@ var injectId = null;
 var lastHash = null;
 var routingEndabled = true;
 let _initialized = false;
+let _currentView = null;
 
 Router.init = function (injectIdParam, initialHash) {
     _initialized = true;
@@ -38,19 +39,19 @@ Router.init = function (injectIdParam, initialHash) {
             },
             'grids/': function () {
                 loadView('allGridsView').then(() => {
-                    AllGridsView.init();
+                    _currentView = new AllGridsView().init();
                 });
             },
             'grid/:gridId': function (params) {
                 log.debug('route grid with ID: ' + params.gridId);
                 loadView('gridView').then(() => {
-                    GridView.init(params.gridId);
+                    _currentView = new GridView().init(params.gridId);
                 });
             },
             'grid/edit/:gridId': function (params) {
                 log.debug('route edit grid with ID: ' + params.gridId);
                 loadView('gridEditView').then(() => {
-                    GridEditView.init(params.gridId);
+                    _currentView = new GridEditView().init(params.gridId);
                 });
             },
             'login': function () {
@@ -68,9 +69,10 @@ Router.init = function (injectIdParam, initialHash) {
         });
     navigoInstance.hooks({
         before: function (done, params) {
-            GridView.destroy();
-            GridEditView.destroy();
-            AllGridsView.destroy();
+            if (_currentView && _currentView.destroy) {
+                _currentView.destroy();
+                _currentView = null;
+            }
             let validHash = getValidHash();
             if(location.hash !== validHash) {
                 done(false);
@@ -198,17 +200,17 @@ function loadVueView(viewObject) {
 }
 
 function toMainInternal() {
-    window.log.debug('main view');
+    log.warn('main view');
     dataService.getMetadata().then(metadata => {
         let gridId = metadata ? metadata.lastOpenedGridId : null;
         loadView('gridView').then(() => {
             if(gridId) {
-                GridView.init(gridId);
+                _currentView = new GridView().init(gridId);
             } else {
                 dataService.getGridsAttribute('id').then(idsMap => {
                     let ids = Object.keys(idsMap);
                     if(ids[0]) {
-                        GridView.init(ids[0]);
+                        _currentView = new GridView().init(ids[0]);
                     } else {
                         Router.toManageGrids();
                     }
