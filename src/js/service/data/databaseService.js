@@ -210,7 +210,7 @@ function initInternal(hashedUserPassword) {
         return Promise.all(promises);
     });
     return _initPromise;
-};
+}
 
 function applyFiltersAndSave(modelName, data) {
     return new Promise((resolve, reject) => {
@@ -219,8 +219,7 @@ function applyFiltersAndSave(modelName, data) {
             log.debug('saved ' + modelName + ', id: ' + data.id);
             resolve();
         }).catch(function (err) {
-            log.error(err);
-            reject();
+            reject(err);
         });
     });
 }
