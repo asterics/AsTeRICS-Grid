@@ -20,6 +20,7 @@ let _cryptoTime = 0;
  * @return {*} encrypted object of type @see{EncryptedObject}
  */
 encryptionService.encryptObject = function (object, options) {
+    throwErrorIfUninitialized();
     if (!object) {
         return object;
     }
@@ -51,6 +52,7 @@ encryptionService.encryptObject = function (object, options) {
  * @return {*} an array or single object (depending on input) of decrypted instances of objects of type "objectType"
  */
 encryptionService.decryptObjects = function (encryptedObjects, options) {
+    throwErrorIfUninitialized();
     if (!encryptedObjects) {
         return encryptedObjects;
     }
@@ -88,6 +90,9 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
  * @return {string} the given string in encrypted form, encoded in base64
  */
 encryptionService.encryptString = function (string, encryptionKey) {
+    if (!encryptionKey) {
+        throwErrorIfUninitialized();
+    }
     encryptionKey = encryptionKey || _encryptionKey;
     let encryptedString = null;
     if (encryptionKey) {
@@ -107,6 +112,9 @@ encryptionService.encryptString = function (string, encryptionKey) {
  * @return {string} the decrypted string, not base64 encoded
  */
 encryptionService.decryptString = function (encryptedString, encryptionKey) {
+    if (!encryptionKey) {
+        throwErrorIfUninitialized();
+    }
     encryptionKey = encryptionKey || _encryptionKey;
     let decryptedString = null;
     let startTime = new Date().getTime();
@@ -155,5 +163,22 @@ encryptionService.setEncryptionProperties = function (hashedPassword, salt) {
     _encryptionKey = encryptionService.getStringHash('' + _encryptionSalt + hashedPassword);
     log.debug('new encryption key is: ' + _encryptionKey);
 };
+
+/**
+ * clears the encryption properties
+ */
+encryptionService.resetEncryptionProperties = function () {
+    log.debug('reset encryption properties...');
+    _encryptionSalt = null;
+    _encryptionKey = null;
+};
+
+function throwErrorIfUninitialized() {
+    if (!_encryptionKey || !_encryptionSalt) {
+        let msg = 'using encryptionService uninitialized is not possible, aborting...';
+        log.error(msg);
+        throw msg;
+    }
+}
 
 export {encryptionService};
