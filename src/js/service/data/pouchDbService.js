@@ -233,7 +233,7 @@ pouchDbService.resetDatabase = function () {
  * @return {*}
  */
 pouchDbService.deleteDatabase = function (databaseName) {
-    if ((_pouchDbAdapter && !pouchDbService.isUsingLocalDb()) || !databaseName) {
+    if ((pouchDbService.getOpenedDatabaseName() === databaseName && !pouchDbService.isUsingLocalDb()) || !databaseName) {
         log.warn("won't delete database since using remote db or databaseName not specified...");
         return Promise.reject();
     }
