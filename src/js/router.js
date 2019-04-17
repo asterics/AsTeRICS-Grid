@@ -200,7 +200,7 @@ function loadVueView(viewObject) {
 }
 
 function toMainInternal() {
-    log.warn('main view');
+    log.debug('main view');
     dataService.getMetadata().then(metadata => {
         let gridId = metadata ? metadata.lastOpenedGridId : null;
         loadView('gridView').then(() => {
