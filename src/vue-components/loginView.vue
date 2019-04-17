@@ -8,19 +8,23 @@
         <main role="main" class="row content spaced" @keyup.enter="loginPlain(user, password)">
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Login // Einloggen</span></h2>
             <div class="eleven columns offset-by-one">
-                <div v-show="savedUsers.length > 0">
+                <div v-show="allUsersList.length > 0">
                     <div class="row">
                         <div class="seven columns">
-                            <div class="row saved-user" v-for="username in savedUsers" style="margin-bottom: 0">
+                            <div class="row saved-user" v-for="username in allUsersList" style="margin-bottom: 0">
                                 <div :class="username === activeUser ? 'loggedIn' : ''">
                                     <div class="four columns" style="margin-bottom: 0.5em">
                                     <span style="margin-right: 0.6em">
-                                        <span class="fa-stack" v-if="!savedOnlineUsers.includes(username)" :title="'LABEL_USER_LOCAL' | translate">
+                                        <span class="fa-stack" v-if="savedLocalUsers.includes(username)" :title="'LABEL_USER_LOCAL' | translate">
                                             <i class="fas fa-user fa-2x" ></i>
                                         </span>
                                         <span class="fa-stack" v-if="savedOnlineUsers.includes(username)" :title="'LABEL_USER_CLOUD' | translate">
                                             <i class="fas fa-user fa-stack-2x"></i>
                                             <i class="fas fa-cloud fa-1x" style="position: absolute; top: 20px; left: 20px; color: dodgerblue"></i>
+                                        </span>
+                                        <span class="fa-stack" v-if="!savedOnlineUsers.includes(username) && !savedLocalUsers.includes(username)" :title="'LABEL_USER_ONLINE' | translate">
+                                            <i class="fas fa-user fa-stack-2x"></i>
+                                            <i class="fas fa-globe fa-1x" style="position: absolute; top: 20px; left: 20px; color: dodgerblue"></i>
                                         </span>
                                     </span>
                                         <strong >{{username}}</strong>
@@ -30,10 +34,10 @@
                                         <span data-i18n="">Open // Öffnen</span> <i class="fas fa-sign-in-alt"></i>
                                     </button>
                                     <button class="four columns" @click="removeStoredUser(username)">
-                                    <span v-show="savedOnlineUsers.includes(username)">
+                                    <span v-show="!savedLocalUsers.includes(username)">
                                         <span data-i18n="">Logout // Ausloggen</span> <i class="fas fa-user-times"></i>
                                     </span>
-                                        <span v-show="!savedOnlineUsers.includes(username)">
+                                        <span v-show="savedLocalUsers.includes(username)">
                                         <span data-i18n="">Delete // Löschen</span> <i class="fas fa-trash"></i>
                                     </span>
                                     </button>
@@ -74,7 +78,7 @@
                         </form>
                     </div>
                 </div>
-                <div v-show="savedUsers.length == 0">
+                <div v-show="allUsersList.length == 0">
                     <form autocomplete="on" onsubmit="event.preventDefault()">
                         <div class="row">
                             <label for="inputUser2" class="one column"><span class="desktop-right">Username</span></label>
@@ -113,8 +117,8 @@
                 </div>
                 <div class="row">
                     <div class="twelve columns">
-                        <span v-show="savedUsers.length == 0" data-i18n="">No account? // Kein Account?</span>
-                        <span v-show="savedUsers.length > 0" data-i18n="">Add new account? // Weiteren Account hinzufügen?</span>
+                        <span v-show="allUsersList.length === 0" data-i18n="">No account? // Kein Account?</span>
+                        <span v-show="allUsersList.length > 0" data-i18n="">Add new account? // Weiteren Account hinzufügen?</span>
                         <a href="#register" data-i18n="">Register now // Jetzt registrieren</a>
                         <div>
                             <span data-i18n="">AsTeRICS Grid is free and all you need is to register is a username and a password. // AsTeRICS Grid ist kostenlos und Sie benötigen nur einen Usernamen und ein Passwort.</span>
@@ -145,6 +149,8 @@
                 loginErrorCode: null,
                 savedUsers: [],
                 savedOnlineUsers: [],
+                savedLocalUsers: [],
+                allUsersList: [],
                 activeUser: null
             }
         },
@@ -192,28 +198,32 @@
                 }
             },
             removeStoredUser(user) {
-                if (confirm(translateService.translate('CONFIRM_REMOVE_USER', user))) {
+                if (!(this.savedOnlineUsers.includes(user) || this.savedLocalUsers.includes(user))) {
+                    loginService.logout();
+                } else if (confirm(translateService.translate('CONFIRM_REMOVE_USER', user))) {
                     localStorageService.unmarkSyncedDatabase(user);
                     localStorageService.removeUserPassword(user);
-                    if(loginService.getLoggedInUsername() === user) {
+                    if (loginService.getLoggedInUsername() === user) {
                         loginService.logout();
                     }
                     databaseService.deleteDatabase(user);
-                    this.savedUsers = localStorageService.getSavedUsers(this.activeUser);
-                    this.savedOnlineUsers = localStorageService.getSavedOnlineUsers();
                 }
+                this.allUsersList = localStorageService.getSavedUsers(this.activeUser);
+                this.savedUsers = localStorageService.getSavedUsers(this.activeUser);
+                this.savedOnlineUsers = localStorageService.getSavedOnlineUsers();
             }
         },
         mounted() {
             let currentlyLoggedInUser = loginService.getLoggedInUsername();
             this.activeUser = localStorageService.getAutologinUser() || currentlyLoggedInUser;
             this.savedUsers = localStorageService.getSavedUsers(this.activeUser);
+            this.allUsersList = localStorageService.getSavedUsers(this.activeUser);
             this.savedOnlineUsers = localStorageService.getSavedOnlineUsers();
-            if (currentlyLoggedInUser && !this.savedUsers.includes(currentlyLoggedInUser)) {
-                this.savedUsers.unshift(currentlyLoggedInUser);
-                this.savedOnlineUsers.unshift(currentlyLoggedInUser);
+            this.savedLocalUsers = localStorageService.getSavedLocalUsers();
+            if (currentlyLoggedInUser && !this.allUsersList.includes(currentlyLoggedInUser)) {
+                this.allUsersList.unshift(currentlyLoggedInUser);
             }
-            this.user = this.savedUsers && this.savedUsers.length > 0 ? null : localStorageService.getLastActiveUser();
+            this.user = this.allUsersList && this.allUsersList.length > 0 ? null : localStorageService.getLastActiveUser();
             if (this.user) {
                 document.getElementById('inputPassword2').focus();
             }
