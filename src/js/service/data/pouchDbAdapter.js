@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import PouchDB from 'PouchDB';
 import {localStorageService} from "./localStorageService";
+import {encryptionService} from "./encryptionService";
 import {constants} from "../../util/constants";
 
 /**
@@ -89,6 +90,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
     thiz.close = function () {
         let promises = [];
         _closed = true;
+        encryptionService.resetEncryptionProperties();
         thiz.cancelSync();
         if (_db) promises.push(_db.close());
         if (_remoteDb) promises.push(_remoteDb.close());

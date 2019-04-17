@@ -257,8 +257,8 @@ pouchDbService.closeCurrentDatabase = function () {
     if (!_pouchDbAdapter) {
         return Promise.resolve();
     }
+    cancelSyncInternal();
     let promise = _pouchDbAdapter.close();
-    encryptionService.resetEncryptionProperties();
     _pouchDbAdapter = null;
     return promise;
 };
