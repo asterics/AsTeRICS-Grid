@@ -25,9 +25,7 @@ let _resumeSyncTimeoutHandler = null;
  */
 pouchDbService.initDatabase = function (databaseName, remoteCouchDbAddress, onlyRemote) {
     _cachedDocuments = {};
-    if (_pouchDbAdapter) {
-        _pouchDbAdapter.close();
-    }
+    pouchDbService.closeCurrentDatabase();
     _pouchDbAdapter = new PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, false, changeHandler);
     return _pouchDbAdapter.init();
 };
@@ -42,9 +40,7 @@ pouchDbService.initDatabase = function (databaseName, remoteCouchDbAddress, only
  */
 pouchDbService.createDatabase = function (databaseName, remoteCouchDbAddress, onlyRemote) {
     _cachedDocuments = {};
-    if (_pouchDbAdapter) {
-        _pouchDbAdapter.close();
-    }
+    pouchDbService.closeCurrentDatabase();
     _pouchDbAdapter = new PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, true, changeHandler);
     return _pouchDbAdapter.init();
 };
@@ -237,7 +233,7 @@ pouchDbService.resetDatabase = function () {
  * @return {*}
  */
 pouchDbService.deleteDatabase = function (databaseName) {
-    if (!pouchDbService.isUsingLocalDb() || !databaseName) {
+    if ((_pouchDbAdapter && !pouchDbService.isUsingLocalDb()) || !databaseName) {
         log.warn("won't delete database since using remote db or databaseName not specified...");
         return Promise.reject();
     }
@@ -262,6 +258,7 @@ pouchDbService.closeCurrentDatabase = function () {
         return Promise.resolve();
     }
     let promise = _pouchDbAdapter.close();
+    encryptionService.resetEncryptionProperties();
     _pouchDbAdapter = null;
     return promise;
 };
