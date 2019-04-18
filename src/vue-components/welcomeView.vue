@@ -32,7 +32,7 @@
                 </div>
                 <div class="row">
                     <span data-i18n="">Already have an account? // Sie haben bereits einen Account?</span>
-                    <a href="#login" data-i18n="">Login // Zum Login</a>
+                    <a href="#login" data-i18n="">Login // Zum&nbsp;Login</a>
                 </div>
             </div>
         </main>
