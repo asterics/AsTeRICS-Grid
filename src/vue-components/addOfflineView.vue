@@ -1,0 +1,114 @@
+<template>
+    <div>
+        <header class="row header" role="banner">
+            <div id="menuHeader" class="menuHeader">
+                <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Grid</h1></a>
+            </div>
+        </header>
+        <main role="main" class="row content spaced">
+            <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Add&nbsp;offline&nbsp;user // Offline&#8209;User&nbsp;hinzufügen</span></h2>
+            <form autocomplete="off" onsubmit="event.preventDefault()">
+                <div class="row">
+                    <label for="inputUser" class="two columns"><span class="desktop-right">Username</span></label>
+                    <input type="text" name="username" v-model="user" id="inputUser" class="six columns" @change="validateUsername" v-debounce="300" v-focus=""/>
+                    <div class="three columns" v-show="user != '' && usernameValid == false">
+                        <i style="color: red;" class="fas fa-times"/> <span data-i18n="">Invalid or already taken username // Ungültiger oder bereits vergebener Username</span>
+                    </div>
+                    <div class="three columns" v-show="user != '' && usernameValid == true">
+                        <i style="color: green;" class="fas fa-check"/> <span data-i18n="">Valid username // Username OK</span>
+                    </div>
+                </div>
+            </form>
+            <div class="row">
+                <div class="six columns offset-by-two">
+                    <i class="fas fa-2x fa-info-circle" style="color: blue"></i>
+                    <span data-i18n="">
+                        <span>A local user is stored only on this device, in this browser. If you want to set up a user which is synchronized across several devices using the cloud, you can register an online user.</span>
+                        <span>Ein lokaler User ist nur auf diesem Gerät, in diesem Browser gespeichert. Wenn Sie einen User erstellen möchen, der auf verschiedenen Geräten synchronisiert wird, registrieren Sie einen Online-User.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <button @click="register" :disabled="!user || !usernameValid" class="six columns offset-by-two" data-i18n="">Add user // User hinzufügen</button>
+            </div>
+            <div class="row">
+                <div class="six columns offset-by-two">
+                    <span data-i18n="">Want to register an online user devices? // Möchten Sie einen Online-User registrieren?</span>
+                    <a href="#register" data-i18n="">Register // Zur&nbsp;Registrierung</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="six columns offset-by-two">
+                    <span data-i18n="">Already have an account? // Sie haben bereits einen Account?</span>
+                    <a href="#login" data-i18n="">Login // Zum&nbsp;Login</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="six columns offset-by-two">
+                    <div v-show="registerSuccess === undefined">
+                        <span data-i18n="">Registering // Registriere</span> <i class="fas fa-spinner fa-spin"/>
+                    </div>
+                    <div v-show="registerSuccess == false">
+                        <span data-i18n="">Registering failed // Registrierung fehlgeschlagen</span> <i style="color: red" class="fas fa-times"/>
+                        <ul>
+                            <li v-for="error in validationErrors">{{error}}</li>
+                        </ul>
+                    </div>
+                    <div v-show="registerSuccess == true">
+                        <span data-i18n="">Successfully registered // Registrierung erfolgreich</span> <i style="color: green" class="fas fa-check"/>
+                    </div>
+                </div>
+            </div>
+            <comparison-component></comparison-component>
+        </main>
+    </div>
+</template>
+
+<script>
+    import {I18nModule} from './../js/i18nModule.js';
+    import {constants} from "../js/util/constants";
+    import {Router} from "../js/router";
+    import ComparisonComponent from "./comparisonComponent.vue";
+
+    export default {
+        components: {ComparisonComponent},
+        props: [],
+        data() {
+            return {
+                user: null,
+                usernameValid: null,
+                registerSuccess: null,
+                validationErrors: [],
+                showInfo: false
+            }
+        },
+        methods: {
+            toMain() {
+                Router.toMain();
+            },
+            register() {
+                let thiz = this;
+                thiz.registerSuccess = undefined;
+            },
+            validateUsername() {
+                this.usernameValid = constants.USERNAME_REGEX.test(this.user);
+            }
+        },
+        mounted() {
+            I18nModule.init();
+        },
+        updated() {
+            I18nModule.init();
+        }
+    }
+</script>
+
+<style scoped>
+    .row {
+        margin-bottom: 1.0em;
+    }
+    .fa-info-circle {
+        color: blue;
+        margin-left: 3px;
+    }
+</style>
