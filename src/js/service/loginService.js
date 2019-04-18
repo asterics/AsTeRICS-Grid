@@ -141,10 +141,7 @@ loginService.register = function (user, plainPassword, saveUser) {
  */
 loginService.isValidUsername = function (username) {
     return new Promise((resolve, reject) => {
-        if (!username || username === constants.LOCAL_NOLOGIN_USERNAME) {
-            //TODO add regex
-            // couchdb: ^[a-z][a-z0-9_$()+/-]*$
-            // intended: ^[a-z][a-z0-9_+-]*$
+        if (!username || username.indexOf(constants.LOCAL_USERNAME_PREFIX) === 0 || !constants.USERNAME_REGEX.test(username)) {
             resolve(false);
             return;
         }
