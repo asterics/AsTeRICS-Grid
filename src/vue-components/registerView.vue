@@ -6,11 +6,11 @@
             </div>
         </header>
         <main role="main" class="row content spaced">
-            <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Register // Registrieren</span></h2>
+            <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Register online user // Online-User registrieren</span></h2>
             <form autocomplete="off" onsubmit="event.preventDefault()">
                 <div class="row">
                     <label for="inputUser" class="two columns"><span class="desktop-right">Username</span></label>
-                    <input type="text" name="username" v-model="user" id="inputUser" class="four columns" @change="validateUsername" v-debounce="300" v-focus=""/>
+                    <input type="text" name="username" v-model="user" id="inputUser" class="six columns" @change="validateUsername" v-debounce="300" v-focus=""/>
                     <div class="three columns" v-show="user != null && usernameValid == false">
                         <i style="color: red;" class="fas fa-times"/> <span data-i18n="">Invalid or already taken username // Ungültiger oder bereits vergebener Username</span>
                     </div>
@@ -20,11 +20,11 @@
                 </div>
                 <div class="row">
                     <label for="inputPassword" class="two columns"><span class="desktop-right" data-i18n="">Password // Passwort</span></label>
-                    <input type="password" v-model="password" id="inputPassword" class="four columns"/>
+                    <input type="password" v-model="password" id="inputPassword" class="six columns"/>
                 </div>
                 <div class="row">
                     <label for="inputConfirmPassword" class="two columns"><span class="desktop-right" data-i18n="">Confirm password // Passwort wiederholen</span></label>
-                    <input type="password" v-model="password2" id="inputConfirmPassword" class="four columns"/>
+                    <input type="password" v-model="password2" id="inputConfirmPassword" class="six columns"/>
                     <div class="three columns" v-show="!!password && password2 !== null && password !== password2">
                         <i style="color: red;" class="fas fa-times"/> <span data-i18n="">Passwords do not match // Passwörter stimmen nicht überein</span>
                     </div>
@@ -35,7 +35,7 @@
             </form>
 
             <div class="row">
-                <div class="four columns offset-by-two" v-show="!!password && password2 !== null && password === password2">
+                <div class="six columns offset-by-two" v-show="!!password && password2 !== null && password === password2">
                     <i class="fas fa-2x fa-info-circle" style="color: blue"></i>
                     <span data-i18n="">
                         <span>Your password will be used in order to encrypt your private data, before being synchronized with the cloud. A stronger password means better encryption.</span>
@@ -44,7 +44,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="four columns offset-by-two" v-show="!!password && password2 !== null && password === password2">
+                <div class="six columns offset-by-two" v-show="!!password && password2 !== null && password === password2">
                     <input type="checkbox" checked v-model="remember" id="inputRemember"/>
                     <label for="inputRemember"><span data-i18n="">Remember this user and make it available for offline use // Diesen User speichern und offline verfügbar machen</span></label>
                     <br/>
@@ -52,16 +52,22 @@
                 </div>
             </div>
             <div class="row">
-                <button @click="register" :disabled="!user || !password || !password2 || password !== password2 || !usernameValid" class="four columns offset-by-two" data-i18n="">Register // Registrieren</button>
+                <button @click="register" :disabled="!user || !password || !password2 || password !== password2 || !usernameValid" class="six columns offset-by-two" data-i18n="">Register // Registrieren</button>
             </div>
             <div class="row">
-                <div class="four columns offset-by-two">
+                <div class="six columns offset-by-two">
                     <span data-i18n="">Already have an account? // Sie haben bereits einen Account?</span>
-                    <a href="#login" data-i18n="">Login // Zum Login</a>
+                    <a href="#login" data-i18n="">Login // Zum&nbsp;Login</a>
                 </div>
             </div>
             <div class="row">
-                <div class="four columns offset-by-two">
+                <div class="six columns offset-by-two">
+                    <span data-i18n="">Want to create an offline-only user? // Möchten Sie einen Offline-User erstellen?</span>
+                    <a href="#add" data-i18n="">Add&nbsp;offline&nbsp;user // Offline&#8209;User&nbsp;hinzufügen</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="six columns offset-by-two">
                     <div v-show="registerSuccess === undefined">
                         <span data-i18n="">Registering // Registriere</span> <i class="fas fa-spinner fa-spin"/>
                     </div>
@@ -76,6 +82,7 @@
                     </div>
                 </div>
             </div>
+            <comparison-component></comparison-component>
         </main>
     </div>
 </template>
@@ -84,8 +91,10 @@
     import {I18nModule} from './../js/i18nModule.js';
     import {loginService} from './../js/service/loginService.js';
     import {Router} from "../js/router";
+    import ComparisonComponent from "./comparisonComponent.vue";
 
     export default {
+        components: {ComparisonComponent},
         props: [],
         data() {
             return {
