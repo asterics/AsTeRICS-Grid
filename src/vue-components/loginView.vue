@@ -10,7 +10,7 @@
             <div class="eleven columns offset-by-one">
                 <div v-show="allUsersList.length > 0">
                     <div class="row">
-                        <div class="seven columns">
+                        <div class="eleven columns">
                             <div class="row saved-user" v-for="username in allUsersList" style="margin-bottom: 0">
                                 <div :class="username === activeUser ? 'loggedIn' : ''">
                                     <div class="four columns" style="margin-bottom: 0.5em">
@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <form autocomplete="on" class="seven columns saved-user" onsubmit="event.preventDefault()">
+                        <form autocomplete="on" class="eleven columns saved-user" onsubmit="event.preventDefault()">
                             <div class="row">
                                 <strong data-i18n="">Login with other user // Login mit anderem User</strong>
                             </div>
@@ -119,10 +119,16 @@
                     <div class="twelve columns">
                         <span v-show="allUsersList.length === 0" data-i18n="">No account? // Kein Account?</span>
                         <span v-show="allUsersList.length > 0" data-i18n="">Add new account? // Weiteren Account hinzufügen?</span>
-                        <a href="#register" data-i18n="">Register now // Jetzt registrieren</a>
-                        <div>
+                        <a href="#register" data-i18n="">Register&nbsp;now // Jetzt&nbsp;registrieren</a>
+                        <div v-show="allUsersList.length === 0">
                             <span data-i18n="">AsTeRICS Grid is free and all you need is to register is a username and a password. // AsTeRICS Grid ist kostenlos und Sie benötigen nur einen Usernamen und ein Passwort.</span>
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="twelve columns">
+                        <span data-i18n="">Want to create an offline-only user? // Möchten Sie einen Offline-User erstellen?</span>
+                        <a href="#add" data-i18n="">Add&nbsp;offline&nbsp;user // Offline&#8209;User&nbsp;hinzufügen</a>
                     </div>
                 </div>
             </div>
