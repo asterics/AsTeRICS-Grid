@@ -10,17 +10,20 @@ import {dataService} from "./service/data/dataService.js";
 
 import LoginView from '../vue-components/loginView.vue'
 import RegisterView from '../vue-components/registerView.vue'
+import AddOfflineView from '../vue-components/addOfflineView.vue'
 import WelcomeView from '../vue-components/welcomeView.vue'
 import {databaseService} from "./service/data/databaseService";
 import {localStorageService} from "./service/data/localStorageService";
 
-var Router = {};
-var navigoInstance = null;
-var viewsFolder = 'views/';
-var filePostfix = '.html';
-var injectId = null;
-var lastHash = null;
-var routingEndabled = true;
+let NO_DB_VIEWS = ['#login', '#register', '#updating', '#welcome', '#add'];
+
+let Router = {};
+let navigoInstance = null;
+let viewsFolder = 'views/';
+let filePostfix = '.html';
+let injectId = null;
+let lastHash = null;
+let routingEndabled = true;
 let _initialized = false;
 let _currentView = null;
 
@@ -59,6 +62,9 @@ Router.init = function (injectIdParam, initialHash) {
             },
             'register': function () {
                 loadVueView(RegisterView);
+            },
+            'add': function () {
+                loadVueView(AddOfflineView);
             },
             'welcome': function () {
                 loadVueView(WelcomeView);
@@ -156,7 +162,7 @@ function getValidHash() {
     let hashToUse = location.hash;
     if (!databaseService.getCurrentUsedDatabase()) {
         let lastActiveUser = localStorageService.getLastActiveUser();
-        hashToUse = ['#login', '#register', '#updating'].includes(hashToUse) ? hashToUse : null;
+        hashToUse = NO_DB_VIEWS.includes(hashToUse) ? hashToUse : null;
         hashToUse = hashToUse || (lastActiveUser ? '#login' : '#welcome');
     }
     return hashToUse;
