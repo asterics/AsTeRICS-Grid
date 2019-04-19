@@ -5,7 +5,6 @@ import {VueDirectives} from "./vue/directives";
 
 import './../css/gridlist.css';
 import './../css/jquery.contextMenu.css';
-import './../css/allGridsView.css';
 import {loginService} from "./service/loginService";
 import {databaseService} from "./service/data/databaseService";
 
