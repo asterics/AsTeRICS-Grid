@@ -137,12 +137,12 @@
 </template>
 
 <script>
-    import {I18nModule} from './../js/i18nModule.js';
-    import {loginService} from './../js/service/loginService.js';
-    import {databaseService} from "../js/service/data/databaseService";
-    import {localStorageService} from "../js/service/data/localStorageService";
-    import {translateService} from "../js/service/translateService";
-    import {Router} from "../js/router";
+    import {I18nModule} from './../../js/i18nModule.js';
+    import {loginService} from './../../js/service/loginService.js';
+    import {databaseService} from "../../js/service/data/databaseService";
+    import {localStorageService} from "../../js/service/data/localStorageService";
+    import {translateService} from "../../js/service/translateService";
+    import {Router} from "../../js/router";
 
     export default {
         props: [],

@@ -33,7 +33,7 @@
 </template>
 
 <script>
-    import {I18nModule} from './../js/i18nModule.js';
+    import {I18nModule} from './../../js/i18nModule.js';
 
     export default {
         props: [],

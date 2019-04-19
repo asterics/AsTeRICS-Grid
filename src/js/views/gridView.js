@@ -14,7 +14,7 @@ import {Scanner} from "../input/scanning.js";
 import {Hover} from "../input/hovering.js";
 import {Clicker} from "../input/clicking.js";
 
-import InputOptionsModal from '../../vue-components/inputOptionsModal.vue'
+import InputOptionsModal from '../../vue-components/modals/inputOptionsModal.vue'
 import {constants} from "../util/constants";
 import {localStorageService} from "../service/data/localStorageService";
 import {GridData} from "../model/GridData";

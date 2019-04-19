@@ -48,11 +48,11 @@
 </template>
 
 <script>
-    import {dataService} from '../js/service/data/dataService'
-    import {I18nModule} from './../js/i18nModule.js';
-    import './../css/modal.css';
-    import {GridElement} from "../js/model/GridElement";
-    import {GridData} from "../js/model/GridData";
+    import {dataService} from '../../js/service/data/dataService'
+    import {I18nModule} from './../../js/i18nModule.js';
+    import './../../css/modal.css';
+    import {GridElement} from "../../js/model/GridElement";
+    import {GridData} from "../../js/model/GridData";
 
     export default {
         props: ['gridData'],

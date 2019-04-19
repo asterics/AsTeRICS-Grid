@@ -8,10 +8,10 @@ import {GridEditView} from "./views/gridEditView.js";
 import {AllGridsView} from "./views/allGridsView.js";
 import {dataService} from "./service/data/dataService.js";
 
-import LoginView from '../vue-components/loginView.vue'
-import RegisterView from '../vue-components/registerView.vue'
-import AddOfflineView from '../vue-components/addOfflineView.vue'
-import WelcomeView from '../vue-components/welcomeView.vue'
+import LoginView from '../vue-components/views/loginView.vue'
+import RegisterView from '../vue-components/views/registerView.vue'
+import AddOfflineView from '../vue-components/views/addOfflineView.vue'
+import WelcomeView from '../vue-components/views/welcomeView.vue'
 import {databaseService} from "./service/data/databaseService";
 import {localStorageService} from "./service/data/localStorageService";
 

@@ -7,9 +7,9 @@ import {I18nModule} from "./../i18nModule.js";
 import {MetaData} from "./../model/MetaData";
 import {translateService} from "../service/translateService";
 
-import EditGridModal from '../../vue-components/editGridModal.vue'
-import AddMultipleModal from '../../vue-components/addMultipleModal.vue'
-import EditActionsModal from '../../vue-components/editActionsModal.vue'
+import EditGridModal from '../../vue-components/modals/editGridModal.vue'
+import AddMultipleModal from '../../vue-components/modals/addMultipleModal.vue'
+import EditActionsModal from '../../vue-components/modals/editActionsModal.vue'
 import {actionService} from "../service/actionService";
 import {GridElement} from "../model/GridElement";
 import {GridData} from "../model/GridData";

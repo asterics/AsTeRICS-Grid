@@ -130,15 +130,15 @@
 </template>
 
 <script>
-    import {dataService} from '../js/service/data/dataService'
-    import {actionService} from './../js/service/actionService'
-    import {speechService} from './../js/service/speechService'
-    import {I18nModule} from './../js/i18nModule.js';
-    import {GridActionNavigate} from "../js/model/GridActionNavigate";
-    import './../css/modal.css';
-    import {GridElement} from "../js/model/GridElement";
-    import {GridData} from "../js/model/GridData";
-    import {AdditionalGridFile} from "../js/model/AdditionalGridFile";
+    import {dataService} from '../../js/service/data/dataService'
+    import {actionService} from './../../js/service/actionService'
+    import {speechService} from './../../js/service/speechService'
+    import {I18nModule} from './../../js/i18nModule.js';
+    import {GridActionNavigate} from "../../js/model/GridActionNavigate";
+    import './../../css/modal.css';
+    import {GridElement} from "../../js/model/GridElement";
+    import {GridData} from "../../js/model/GridData";
+    import {AdditionalGridFile} from "../../js/model/AdditionalGridFile";
     import EditAreAction from "./editActionsSub/editAREAction.vue";
 
     export default {

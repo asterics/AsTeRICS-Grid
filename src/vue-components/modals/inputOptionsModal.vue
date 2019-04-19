@@ -140,11 +140,11 @@
 </template>
 
 <script>
-    import {dataService} from '../js/service/data/dataService'
-    import {areService} from './../js/service/areService'
-    import {Router} from './../js/router'
-    import {I18nModule} from './../js/i18nModule.js';
-    import './../css/modal.css';
+    import {dataService} from '../../js/service/data/dataService'
+    import {areService} from './../../js/service/areService'
+    import {Router} from './../../js/router'
+    import {I18nModule} from './../../js/i18nModule.js';
+    import './../../css/modal.css';
 
     export default {
         props: ['metadataProperty', 'scanner', 'hover', 'clicker', 'reinit'],

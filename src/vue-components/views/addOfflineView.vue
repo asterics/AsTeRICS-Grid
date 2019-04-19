@@ -65,10 +65,10 @@
 </template>
 
 <script>
-    import {I18nModule} from './../js/i18nModule.js';
-    import {constants} from "../js/util/constants";
-    import {Router} from "../js/router";
-    import ComparisonComponent from "./comparisonComponent.vue";
+    import {I18nModule} from './../../js/i18nModule.js';
+    import {constants} from "../../js/util/constants";
+    import {Router} from "../../js/router";
+    import ComparisonComponent from "./../components/comparisonComponent.vue";
 
     export default {
         components: {ComparisonComponent},

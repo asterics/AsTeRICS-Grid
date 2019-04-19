@@ -40,11 +40,11 @@
 </template>
 
 <script>
-    import {I18nModule} from './../js/i18nModule.js';
-    import {databaseService} from "../js/service/data/databaseService";
-    import {Router} from "../js/router";
-    import {constants} from "../js/util/constants";
-    import {localStorageService} from "../js/service/data/localStorageService";
+    import {I18nModule} from './../../js/i18nModule.js';
+    import {databaseService} from "../../js/service/data/databaseService";
+    import {Router} from "../../js/router";
+    import {constants} from "../../js/util/constants";
+    import {localStorageService} from "../../js/service/data/localStorageService";
 
     export default {
         props: [],
