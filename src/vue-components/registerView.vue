@@ -9,7 +9,7 @@
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Register online user // Online-User registrieren</span></h2>
             <form autocomplete="off" onsubmit="event.preventDefault()">
                 <div class="row">
-                    <label for="inputUser" class="two columns"><span class="desktop-right">Username</span></label>
+                    <label for="inputUser" class="two columns"><span class="desktop-right inputlabel">Username</span></label>
                     <input type="text" name="username" v-model="user" id="inputUser" class="six columns" @change="validateUsername" v-debounce="300" v-focus=""/>
                     <div class="three columns" v-show="user != null && usernameValid == false">
                         <i style="color: red;" class="fas fa-times"/> <span data-i18n="">Invalid or already taken username // Ungültiger oder bereits vergebener Username</span>
@@ -19,11 +19,11 @@
                     </div>
                 </div>
                 <div class="row">
-                    <label for="inputPassword" class="two columns"><span class="desktop-right" data-i18n="">Password // Passwort</span></label>
+                    <label for="inputPassword" class="two columns inputlabel"><span class="desktop-right" data-i18n="">Password // Passwort</span></label>
                     <input type="password" v-model="password" id="inputPassword" class="six columns"/>
                 </div>
                 <div class="row">
-                    <label for="inputConfirmPassword" class="two columns"><span class="desktop-right" data-i18n="">Confirm password // Passwort wiederholen</span></label>
+                    <label for="inputConfirmPassword" class="two columns inputlabel"><span class="desktop-right" data-i18n="">Confirm password // Passwort wiederholen</span></label>
                     <input type="password" v-model="password2" id="inputConfirmPassword" class="six columns"/>
                     <div class="three columns" v-show="!!password && password2 !== null && password !== password2">
                         <i style="color: red;" class="fas fa-times"/> <span data-i18n="">Passwords do not match // Passwörter stimmen nicht überein</span>
@@ -160,5 +160,11 @@
     .fa-info-circle {
         color: blue;
         margin-left: 3px;
+    }
+
+    @media (min-width: 750px) {
+        .inputlabel {
+            text-align: right;
+        }
     }
 </style>
