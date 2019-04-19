@@ -10,11 +10,11 @@
             <form autocomplete="off" onsubmit="event.preventDefault()">
                 <div class="row">
                     <label for="inputUser" class="two columns"><span class="desktop-right">Username</span></label>
-                    <input type="text" name="username" v-model="user" id="inputUser" class="six columns" @change="validateUsername" v-debounce="300" v-focus=""/>
-                    <div class="three columns" v-show="user != '' && usernameValid == false">
-                        <i style="color: red;" class="fas fa-times"/> <span data-i18n="">Invalid or already taken username // Ungültiger oder bereits vergebener Username</span>
+                    <input type="text" name="username" v-model="user" id="inputUser" class="six columns" @input="validationError = undefined" @change="validateUsername" v-debounce="300" v-focus=""/>
+                    <div class="three columns" v-show="user != '' && validationError">
+                        <i style="color: red;" class="fas fa-times"/> <span data-i18n="">{{validationError | translate}}</span>
                     </div>
-                    <div class="three columns" v-show="user != '' && usernameValid == true">
+                    <div class="three columns" v-show="user && validationError !== undefined && !validationError">
                         <i style="color: green;" class="fas fa-check"/> <span data-i18n="">Valid username // Username OK</span>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="row">
-                <button @click="register" :disabled="!user || !usernameValid" class="six columns offset-by-two" data-i18n="">Add user // User hinzufügen</button>
+                <button @click="register" :disabled="!user || validationError === undefined || validationError" class="six columns offset-by-two" data-i18n="">Add user // User hinzufügen</button>
             </div>
             <div class="row">
                 <div class="six columns offset-by-two">
@@ -43,28 +43,14 @@
                     <a href="#login" data-i18n="">Login // Zum&nbsp;Login</a>
                 </div>
             </div>
-            <div class="row">
-                <div class="six columns offset-by-two">
-                    <div v-show="registerSuccess === undefined">
-                        <span data-i18n="">Registering // Registriere</span> <i class="fas fa-spinner fa-spin"/>
-                    </div>
-                    <div v-show="registerSuccess == false">
-                        <span data-i18n="">Registering failed // Registrierung fehlgeschlagen</span> <i style="color: red" class="fas fa-times"/>
-                        <ul>
-                            <li v-for="error in validationErrors">{{error}}</li>
-                        </ul>
-                    </div>
-                    <div v-show="registerSuccess == true">
-                        <span data-i18n="">Successfully registered // Registrierung erfolgreich</span> <i style="color: green" class="fas fa-check"/>
-                    </div>
-                </div>
-            </div>
             <comparison-component></comparison-component>
         </main>
     </div>
 </template>
 
 <script>
+    import {localStorageService} from "../../js/service/data/localStorageService";
+    import {loginService} from "../../js/service/loginService";
     import {I18nModule} from './../../js/i18nModule.js';
     import {constants} from "../../js/util/constants";
     import {Router} from "../../js/router";
@@ -76,10 +62,10 @@
         data() {
             return {
                 user: null,
-                usernameValid: null,
                 registerSuccess: null,
-                validationErrors: [],
-                showInfo: false
+                validationError: undefined,
+                showInfo: false,
+                savedUsers: localStorageService.getSavedUsers()
             }
         },
         methods: {
@@ -91,7 +77,14 @@
                 thiz.registerSuccess = undefined;
             },
             validateUsername() {
-                this.usernameValid = constants.USERNAME_REGEX.test(this.user);
+                this.validationError = undefined;
+                if (!constants.USERNAME_REGEX.test(this.user)) {
+                    this.validationError = constants.VALIDATION_ERROR_REGEX;
+                } else if (this.savedUsers.includes(this.user) || loginService.getLoggedInUsername() === this.user) {
+                    this.validationError = constants.VALIDATION_ERROR_EXISTING;
+                } else {
+                    this.validationError = null;
+                }
             }
         },
         mounted() {
