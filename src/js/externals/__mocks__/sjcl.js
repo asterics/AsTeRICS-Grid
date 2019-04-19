@@ -16,4 +16,16 @@ sjcl.decrypt = function(encryptionKey, encryptedString) {
     }
 };
 
+sjcl.hash = {};
+sjcl.hash.sha256 = {};
+sjcl.hash.sha256.hash = function(string) {
+    return string;
+};
+
+sjcl.codec = {};
+sjcl.codec.hex = {};
+sjcl.codec.hex.fromBits = function(string) {
+    return string;
+};
+
 export {sjcl};

@@ -6,23 +6,34 @@ jest.mock('../../externals/sjcl');
 jest.mock('../../model/EncryptedObject');
 jest.mock('./localStorageService');
 jest.mock('../../util/dataUtil');
+jest.mock('../../util/log');
 
 let ID = 'ID';
 let REV = 'REV';
 let MODEL_NAME = 'MODEL_NAME';
+let DEFAULT_PASSWORD = 'DEFAULT_PASSWORD';
+let DEFAULT_SALT = 'DEFAULT_SALT';
+let DEFAULT_ENC_KEY = DEFAULT_SALT + DEFAULT_PASSWORD;
 
-test('encryptionService.encryptObject - Test 1', () => {
-    //without password -> base64
+test('encryptionService.encryptObject - Test 0', () => {
     let object = {data: 'testdata'};
     let json = JSON.stringify(object);
+    expect(() => {
+        encryptionService.encryptObject(object);
+    }).toThrow(); // no encryptions properties set
+});
+
+test('encryptionService.encryptObject - Test 1', () => {
+    let object = {data: 'testdata'};
+    let json = JSON.stringify(object);
+    encryptionService.setEncryptionProperties(DEFAULT_PASSWORD, DEFAULT_SALT);
     let result = encryptionService.encryptObject(object);
     expect(result instanceof EncryptedObject).toBeTruthy();
-    expect(result.encryptedDataBase64).toEqual(btoa(json));
-    expect(result.encryptedDataBase64Short).toEqual(btoa(JSON.stringify(dataUtil.getDefaultRemovedPlaceholder())));
+    expect(result.encryptedDataBase64).toEqual(DEFAULT_ENC_KEY + json);
+    expect(result.encryptedDataBase64Short).toEqual(DEFAULT_ENC_KEY + JSON.stringify(dataUtil.getDefaultRemovedPlaceholder()));
 });
 
 test('encryptionService.encryptObject - Test 2', () => {
-    //without password -> base64
     let object = {
         data: 'testdata',
         modelName: MODEL_NAME,
@@ -34,9 +45,10 @@ test('encryptionService.encryptObject - Test 2', () => {
         id: ID,
         _id: ID,
         _rev: REV,
-        encryptedDataBase64: btoa(JSON.stringify(object)),
-        encryptedDataBase64Short: btoa(JSON.stringify(dataUtil.getDefaultRemovedPlaceholder()))
+        encryptedDataBase64: DEFAULT_ENC_KEY + JSON.stringify(object),
+        encryptedDataBase64Short: DEFAULT_ENC_KEY + JSON.stringify(dataUtil.getDefaultRemovedPlaceholder())
     };
+    encryptionService.setEncryptionProperties(DEFAULT_PASSWORD, DEFAULT_SALT);
     let result = encryptionService.encryptObject(object);
     expect(result instanceof EncryptedObject).toBeTruthy();
     expect(result).toEqual(expected);
@@ -47,10 +59,11 @@ test('encryptionService.encryptObject - Test 3', () => {
     let object = {data: 'testdata'};
     let json = JSON.stringify(object);
     let encryptionKey = 'mykey';
-    let result = encryptionService.encryptObject(object, {encryptionKey: encryptionKey});
+    encryptionService.setEncryptionProperties(encryptionKey, DEFAULT_SALT);
+    let result = encryptionService.encryptObject(object);
     expect(result instanceof EncryptedObject).toBeTruthy();
-    expect(result.encryptedDataBase64).toEqual(encryptionKey + json);
-    expect(result.encryptedDataBase64Short).toEqual(encryptionKey + JSON.stringify(dataUtil.getDefaultRemovedPlaceholder()));
+    expect(result.encryptedDataBase64).toEqual(DEFAULT_SALT + encryptionKey + json);
+    expect(result.encryptedDataBase64Short).toEqual(DEFAULT_SALT + encryptionKey + JSON.stringify(dataUtil.getDefaultRemovedPlaceholder()));
 });
 
 test('encryptionService.encryptObject - Test 4', () => {
@@ -67,10 +80,11 @@ test('encryptionService.encryptObject - Test 4', () => {
         id: ID,
         _id: ID,
         _rev: REV,
-        encryptedDataBase64: encryptionKey + JSON.stringify(object),
-        encryptedDataBase64Short: encryptionKey + JSON.stringify(dataUtil.getDefaultRemovedPlaceholder())
+        encryptedDataBase64: DEFAULT_SALT + encryptionKey + JSON.stringify(object),
+        encryptedDataBase64Short: DEFAULT_SALT + encryptionKey + JSON.stringify(dataUtil.getDefaultRemovedPlaceholder())
     };
-    let result = encryptionService.encryptObject(object, {encryptionKey: encryptionKey});
+    encryptionService.setEncryptionProperties(encryptionKey, DEFAULT_SALT);
+    let result = encryptionService.encryptObject(object);
     expect(result instanceof EncryptedObject).toBeTruthy();
     expect(result).toEqual(expected);
 });
