@@ -5,9 +5,9 @@ import Vue from 'vue'
 import {I18nModule} from './i18nModule.js';
 import {GridView} from "./views/gridView.js";
 import {GridEditView} from "./views/gridEditView.js";
-import {AllGridsView} from "./views/allGridsView.js";
 import {dataService} from "./service/data/dataService.js";
 
+import AllGridsView from '../vue-components/views/allGridsView.vue'
 import LoginView from '../vue-components/views/loginView.vue'
 import RegisterView from '../vue-components/views/registerView.vue'
 import AddOfflineView from '../vue-components/views/addOfflineView.vue'
@@ -41,9 +41,7 @@ Router.init = function (injectIdParam, initialHash) {
                 routingEndabled = false;
             },
             'grids/': function () {
-                loadView('allGridsView').then(() => {
-                    _currentView = new AllGridsView().init();
-                });
+                loadVueView(AllGridsView);
             },
             'grid/:gridId': function (params) {
                 log.debug('route grid with ID: ' + params.gridId);
