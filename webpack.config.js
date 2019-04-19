@@ -24,7 +24,7 @@ module.exports = env => {
     var resolve = {
         alias: {
             //objectmodel: "../../../node_modules/objectmodel/dist/object-model.js"
-            vue: 'vue/dist/vue.common.js'
+            vue: 'vue/dist/vue.esm.js'
         }
     };
 
@@ -90,11 +90,17 @@ module.exports = env => {
     });
 
     if (env && env.enableAppCache) {
-        console.log('appcache enabled!');
+        log('appcache enabled!');
         plugins.push(appcachePlugin);
     } else {
-        console.log('appcache disabled!');
+        log('appcache disabled!');
         plugins.push(new CleanWebpackPlugin([baseDir + '/*.appcache']));
+    }
+
+    function log(msg) {
+        if(!env || !env.nolog) {
+            console.log(msg);
+        }
     }
 
     function getDevServer(buildDirParam) {
