@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="row">
-                <button @click="register" :disabled="!user || validationError === undefined || validationError" class="six columns offset-by-two" data-i18n="">Add user // User hinzufügen</button>
+                <button @click="addUser" :disabled="!user || validationError === undefined || validationError" class="six columns offset-by-two" data-i18n="">Add user // User hinzufügen</button>
             </div>
             <div class="row">
                 <div class="six columns offset-by-two">
@@ -50,6 +50,7 @@
 
 <script>
     import {localStorageService} from "../../js/service/data/localStorageService";
+    import {databaseService} from "../../js/service/data/databaseService";
     import {loginService} from "../../js/service/loginService";
     import {I18nModule} from './../../js/i18nModule.js';
     import {constants} from "../../js/util/constants";
@@ -62,7 +63,6 @@
         data() {
             return {
                 user: null,
-                registerSuccess: null,
                 validationError: undefined,
                 showInfo: false,
                 savedUsers: localStorageService.getSavedUsers()
@@ -72,9 +72,16 @@
             toMain() {
                 Router.toMain();
             },
-            register() {
+            addUser() {
                 let thiz = this;
-                thiz.registerSuccess = undefined;
+                if (thiz.validationError != null) {
+                    return;
+                }
+                localStorageService.saveLocalUser(thiz.user);
+                localStorageService.setAutologinUser(thiz.user);
+                databaseService.registerForUser(thiz.user, thiz.user).then(() => {
+                    Router.toMain();
+                });
             },
             validateUsername() {
                 this.validationError = undefined;
