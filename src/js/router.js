@@ -26,6 +26,7 @@ let lastHash = null;
 let routingEndabled = true;
 let _initialized = false;
 let _currentView = null;
+let _currentVueApp = null;
 
 Router.init = function (injectIdParam, initialHash) {
     _initialized = true;
@@ -76,6 +77,9 @@ Router.init = function (injectIdParam, initialHash) {
             if (_currentView && _currentView.destroy) {
                 _currentView.destroy();
                 _currentView = null;
+            }
+            if (_currentVueApp) {
+                _currentVueApp.$destroy();
             }
             let validHash = getValidHash();
             if(location.hash !== validHash) {
@@ -196,7 +200,7 @@ function loadVueView(viewObject) {
     var components = {};
     components[viewName] = viewObject;
     $(injectId).html(injectHtml);
-    var app = new Vue({
+    _currentVueApp = new Vue({
         el: '#app',
         data: {},
         components: components
