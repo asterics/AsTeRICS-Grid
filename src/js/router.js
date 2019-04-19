@@ -4,10 +4,10 @@ import Vue from 'vue'
 
 import {I18nModule} from './i18nModule.js';
 import {GridView} from "./views/gridView.js";
-import {GridEditView} from "./views/gridEditView.js";
 import {dataService} from "./service/data/dataService.js";
 
 import AllGridsView from '../vue-components/views/allGridsView.vue'
+import GridEditView from '../vue-components/views/gridEditView.vue'
 import LoginView from '../vue-components/views/loginView.vue'
 import RegisterView from '../vue-components/views/registerView.vue'
 import AddOfflineView from '../vue-components/views/addOfflineView.vue'
@@ -52,8 +52,8 @@ Router.init = function (injectIdParam, initialHash) {
             },
             'grid/edit/:gridId': function (params) {
                 log.debug('route edit grid with ID: ' + params.gridId);
-                loadView('gridEditView').then(() => {
-                    _currentView = new GridEditView().init(params.gridId);
+                loadVueView(GridEditView, {
+                    gridId: params.gridId
                 });
             },
             'login': function () {
@@ -190,14 +190,21 @@ function loadView(viewName) {
     })
 }
 
-function loadVueView(viewObject) {
+function loadVueView(viewObject, properties) {
     log.debug('loading view: ' + viewObject.__file);
-    var viewName = viewObject.__file;
-    var startIndex = viewName.lastIndexOf('/') !== -1 ? viewName.lastIndexOf('/') + 1 : 0;
+    let viewName = viewObject.__file;
+    let startIndex = viewName.lastIndexOf('/') !== -1 ? viewName.lastIndexOf('/') + 1 : 0;
     viewName = viewName.substring(startIndex, viewName.lastIndexOf('.'));
-    var viewNameDash = viewName.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`); //camelCase to dash-case
-    var injectHtml = `<div id="app"><${viewNameDash}/></div>`;
-    var components = {};
+    let viewNameDash = toDashCase(viewName);
+    let propertyString = '';
+    if (properties) {
+        Object.keys(properties).forEach(key => {
+            propertyString += `${toDashCase(key)}="${properties[key]}" `
+        })
+    }
+    propertyString = propertyString.trim();
+    let injectHtml = `<div id="app" class="box"><${viewNameDash}${propertyString ? ' ' + propertyString : ''}></${viewNameDash}></div>`;
+    let components = {};
     components[viewName] = viewObject;
     $(injectId).html(injectHtml);
     _currentVueApp = new Vue({
@@ -205,6 +212,10 @@ function loadVueView(viewObject) {
         data: {},
         components: components
     });
+}
+
+function toDashCase(camelCase) {
+    return camelCase.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`); //camelCase to dash-case
 }
 
 function toMainInternal() {
