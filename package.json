@@ -29,13 +29,15 @@
     "style-loader": "^0.22.1",
     "vue-loader": "^15.4.0",
     "vue-template-compiler": "^2.5.17",
-    "webpack": "^4.17.0",
+    "webpack": "^4.30.0",
+    "webpack-bundle-analyzer": "^3.3.2",
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.2.1"
   },
   "scripts": {
     "test": "jest",
     "build": "jest && webpack --config webpack.config.js --env.enableAppCache --env.production",
+    "stats": "webpack --config webpack.config.js --env.enableAppCache --env.production --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json package/static/build_legacy",
     "watch": "webpack --watch --config webpack.config.js",
     "watch-appcache": "webpack --watch --config webpack.config.js --env.enableAppCache",
     "start": "webpack-dev-server",
