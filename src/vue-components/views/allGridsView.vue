@@ -1,6 +1,6 @@
 <template>
-    <div id="app" class="all-grids-view">
-        <div id="grid-mask" v-if="showLoading" class="grid-container">
+    <div class="all-grids-view">
+        <div id="grid-mask" v-if="showLoading || grids === null" class="grid-container">
             <i class="fas fa-4x fa-spinner fa-spin"/>
         </div>
         <header class="row header" role="banner">
