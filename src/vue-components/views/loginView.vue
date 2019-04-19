@@ -197,8 +197,9 @@
                         thiz.loginErrorCode = reason;
                     });
                 } else {
+                    loginService.logout();
                     localStorageService.setAutologinUser(user);
-                    databaseService.initForUser(user).then(() => {
+                    databaseService.initForUser(user, user).then(() => {
                         Router.toMain();
                     });
                 }
