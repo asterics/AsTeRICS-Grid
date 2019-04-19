@@ -1,6 +1,7 @@
 import {EncryptedObject} from "../../model/EncryptedObject";
 import {dataUtil} from "../../util/dataUtil";
 import {sjcl} from "../../externals/sjcl";
+import {log} from "../../util/log.js";
 
 let STATIC_USER_PW_SALT = "STATIC_USER_PW_SALT";
 
