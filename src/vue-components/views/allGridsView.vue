@@ -74,7 +74,6 @@
     import {GridData} from "../../js/model/GridData.js";
     import {Router} from "../../js/router";
     import {modelUtil} from "../../js/util/modelUtil";
-    import Vue from 'vue';
     import {I18nModule} from "./../../js/i18nModule.js";
     import {translateService} from "./../../js/service/translateService";
     import {pouchDbService} from "../../js/service/data/pouchDbService";
