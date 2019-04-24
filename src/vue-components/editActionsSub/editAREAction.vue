@@ -6,12 +6,7 @@
             </div>
             <div class="ten columns">
                 <div class="row nomargin">
-                    <input id="chkAutoUrl" type="checkbox" v-model="enableAreAutoUrl" @change="action.areURL = enableAreAutoUrl ? '' : areAutoUrl"/>
-                    <label for="chkAutoUrl" class="normal-text" data-i18n="">Automatically determine URL // URL automatisch bestimmen</label>
-                </div>
-                <div class="row">
-                    <input v-if="!enableAreAutoUrl" id="inputAREURI" class="six columns" type="text" v-model="action.areURL"/>
-                    <div v-if="enableAreAutoUrl" class="six columns">{{areAutoUrl}}</div>
+                    <input id="inputAREURI" class="six columns" type="text" v-model="action.areURL" @change="fixAreUrl()"/>
                     <div class="six columns">
                         <button @click="testAREUrl(action)" style="width: 70%"><i class="fas fa-bolt"/> <span data-i18n="">Test URL // URL testen</span></button>
                         <span class="spaced" v-show="areConnected === undefined"><i class="fas fa-spinner fa-spin"/></span>
@@ -121,9 +116,7 @@
                 areComponentPorts: [],
                 areComponentEventPorts: [],
                 areModelFile: null, //Object of Type AdditionalGridFile that represents the ARE Model for this action
-                areModelSync: false,
-                enableAreAutoUrl: true,
-                areAutoUrl: areService.getRestURL()
+                areModelSync: false
             }
         },
         methods: {
@@ -192,9 +185,12 @@
                 var name = additionalGridFile.fileName.indexOf('.acs') != -1 ? additionalGridFile.fileName : additionalGridFile.fileName + '.acs';
                 FileSaver.saveAs(blob, name);
             },
+            fixAreUrl() {
+                this.action.areURL = areService.getRestURL(this.action.areURL);
+            }
         },
         mounted () {
-            this.enableAreAutoUrl = !this.action.areURL;
+            this.action.areURL = this.action.areURL || areService.getRestURL();
             if(this.modelFile) { //model file parameter
                 this.areModelFile = this.modelFile;
             } else {
