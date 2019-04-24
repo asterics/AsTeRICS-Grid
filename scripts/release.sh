@@ -1,6 +1,6 @@
 set -e
 
-git checkout master
+branch=$(git symbolic-ref --short HEAD)
 tagname="release-$(date +%Y-%m-%d-%H.%M/%z)"
 tagnameSed="release-$(date +%Y-%m-%d-%H.%M\\/%z)"
 echo $tagnameSed
@@ -13,7 +13,7 @@ git add package/static/build
 git add package/static/build_legacy
 git add package/static/manifest.appcache
 git commit -m "added bundles and appcache for release $tagname"
-git push origin master
+git push origin HEAD
 git checkout src/js/mainScript.js
 echo "creating tag '$tagname'..."
 git tag -a $tagname -m $tagname
@@ -22,18 +22,18 @@ if git diff-index --quiet HEAD --; then
     # No changes
     echo "no local changes, apply release to gh-pages..."
     git checkout gh-pages
-    git merge master
+    git reset --hard $tagname
     git push origin gh-pages
-    git checkout master
+    git checkout $branch
 else
     # Changes
     echo "detected local changes, doing git stash..."
     git stash
     echo "apply release to gh-pages..."
     git checkout gh-pages
-    git merge master
+    git reset --hard $tagname
     git push origin gh-pages
-    git checkout master
+    git checkout $branch
     git stash pop
 fi
 echo "$tagname successfully released!"
