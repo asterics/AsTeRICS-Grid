@@ -23,7 +23,7 @@ if git diff-index --quiet HEAD --; then
     echo "no local changes, apply release to gh-pages..."
     git checkout gh-pages
     git reset --hard $tagname
-    git push origin gh-pages
+    git push origin gh-pages -f
     git checkout $branch
 else
     # Changes
@@ -32,7 +32,7 @@ else
     echo "apply release to gh-pages..."
     git checkout gh-pages
     git reset --hard $tagname
-    git push origin gh-pages
+    git push origin gh-pages -f
     git checkout $branch
     git stash pop
 fi
