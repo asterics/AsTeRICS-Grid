@@ -3,11 +3,11 @@ import Navigo from 'navigo'
 import Vue from 'vue'
 
 import {I18nModule} from './i18nModule.js';
-import {GridView} from "./views/gridView.js";
 import {dataService} from "./service/data/dataService.js";
 
 import AllGridsView from '../vue-components/views/allGridsView.vue'
 import GridEditView from '../vue-components/views/gridEditView.vue'
+import GridView from '../vue-components/views/gridView.vue'
 import LoginView from '../vue-components/views/loginView.vue'
 import RegisterView from '../vue-components/views/registerView.vue'
 import AddOfflineView from '../vue-components/views/addOfflineView.vue'
@@ -46,8 +46,8 @@ Router.init = function (injectIdParam, initialHash) {
             },
             'grid/:gridId': function (params) {
                 log.debug('route grid with ID: ' + params.gridId);
-                loadView('gridView').then(() => {
-                    _currentView = new GridView().init(params.gridId);
+                loadVueView(GridView, {
+                    gridId: params.gridId
                 });
             },
             'grid/edit/:gridId': function (params) {
@@ -222,19 +222,9 @@ function toMainInternal() {
     log.debug('main view');
     dataService.getMetadata().then(metadata => {
         let gridId = metadata ? metadata.lastOpenedGridId : null;
-        loadView('gridView').then(() => {
-            if(gridId) {
-                _currentView = new GridView().init(gridId);
-            } else {
-                dataService.getGridsAttribute('id').then(idsMap => {
-                    let ids = Object.keys(idsMap);
-                    if(ids[0]) {
-                        _currentView = new GridView().init(ids[0]);
-                    } else {
-                        Router.toManageGrids();
-                    }
-                });
-            }
+        log.warn(metadata);
+        loadVueView(GridView, {
+            gridId: gridId
         });
     });
 }

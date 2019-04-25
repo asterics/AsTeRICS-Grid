@@ -164,6 +164,8 @@ databaseService.getCurrentUsedDatabase = function () {
 
 function initInternal(hashedUserPassword) {
     let skipCheckGenerateDefaultGrid = !pouchDbService.isUsingLocalDb(); //no checking/generation of default grid for remote databases
+    let metadata = null;
+    let saveMetadata = false;
 
     _initPromise = Promise.resolve().then(() => { //reset DB if specified by URL
         let promises = [];
@@ -176,11 +178,11 @@ function initInternal(hashedUserPassword) {
     }).then(metadataObjects => { //create metadata object if not exisiting, update datamodel version, if outdated
         let promises = [];
         if (!metadataObjects || metadataObjects.length === 0) {
-            let metadata = new MetaData();
+            saveMetadata = true;
+            metadata = new MetaData();
             encryptionService.setEncryptionProperties(hashedUserPassword, metadata.id);
-            promises.push(applyFiltersAndSave(MetaData.getModelName(), metadata));
         } else {
-            let metadata = metadataObjects instanceof Array ? metadataObjects[0] : metadataObjects;
+            metadata = metadataObjects instanceof Array ? metadataObjects[0] : metadataObjects;
             encryptionService.setEncryptionProperties(hashedUserPassword, metadata.id);
             if (!modelUtil.isLatestMajorModelVersion(metadata)) {
                 log.warn('updating data model version...');
@@ -210,6 +212,9 @@ function initInternal(hashedUserPassword) {
         log.info('importing default grid set...');
         let promises = [];
         let gridsData = JSON.parse(data);
+        if (!metadata.lastOpenedGridId && gridsData[0] && gridsData[0].id) {
+            metadata.lastOpenedGridId = gridsData[0].id;
+        }
         gridsData.forEach(gridData => {
             gridData._id = gridData.id;
             gridData._rev = null;
@@ -217,6 +222,12 @@ function initInternal(hashedUserPassword) {
         });
         log.debug('imported default grid set!');
         return Promise.all(promises);
+    }).then(() => {
+        if (saveMetadata) {
+            return applyFiltersAndSave(MetaData.getModelName(), metadata);
+        } else {
+            return Promise.resolve();
+        }
     });
     return _initPromise;
 }
