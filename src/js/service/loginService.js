@@ -86,17 +86,15 @@ loginService.loginHashedPassword = function (user, hashedPassword, saveUser) {
 
 /**
  * logs out a logged in user from remote superlogin
-
- * @return {Promise}
  */
 loginService.logout = function () {
     if (!_loggedInUser) {
-        return Promise.reject();
+        return;
     }
     stopAutoRetryLogin();
     log.debug('logging out user: ' + _loggedInUser);
     databaseService.closeCurrentDatabase();
-    return superlogin.logout(_loggedInUser);
+    superlogin.logout(_loggedInUser);
 
 };
 
