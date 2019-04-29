@@ -28,6 +28,7 @@ tagname="release-beta-$(date +%Y-%m-%d-%H.%M/%z)"
 tagnameSed="release-beta-$(date +%Y-%m-%d-%H.%M\\/%z)"
 echo $tagnameSed
 sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" src/js/mainScript.js
+sed -i -e "s/#ASTERICS_GRID_ENV#/PROD/g" src/js/util/constants.js
 
 echo "building..."
 npm run build
@@ -38,6 +39,7 @@ git add app/manifest.appcache
 git commit -m "added bundles and appcache for beta-release $tagname"
 git push origin HEAD
 git checkout src/js/mainScript.js
+git checkout src/js/util/constants.js
 echo "creating tag '$tagname'..."
 git tag -a $tagname -m $tagname
 git push origin $tagname
