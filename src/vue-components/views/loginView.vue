@@ -34,12 +34,12 @@
                                         <span data-i18n="">Open // Öffnen</span> <i class="fas fa-sign-in-alt"></i>
                                     </button>
                                     <button class="four columns" @click="removeStoredUser(username)">
-                                    <span v-show="!savedLocalUsers.includes(username)">
-                                        <span data-i18n="">Logout // Ausloggen</span> <i class="fas fa-user-times"></i>
-                                    </span>
-                                        <span v-show="savedLocalUsers.includes(username)">
-                                        <span data-i18n="">Delete // Löschen</span> <i class="fas fa-trash"></i>
-                                    </span>
+                                        <span v-show="!savedLocalUsers.includes(username)">
+                                            <span data-i18n="">Logout // Ausloggen</span> <i class="fas fa-user-times"></i>
+                                        </span>
+                                            <span v-show="savedLocalUsers.includes(username)">
+                                            <span data-i18n="">Delete // Löschen</span> <i class="fas fa-trash"></i>
+                                        </span>
                                     </button>
                                 </div>
                             </div>
@@ -184,10 +184,13 @@
             },
             loginStored(user) {
                 let thiz = this;
-                if (!user || !thiz.savedUsers.includes(user)) {
+                if (!user || (!thiz.savedUsers.includes(user) && loginService.getLoggedInUsername() !== user)) {
                     return;
                 }
-                if (thiz.savedOnlineUsers.includes(user)) {
+
+                if (loginService.getLoggedInUsername() === user) {
+                    Router.toMain();
+                } else if (thiz.savedOnlineUsers.includes(user)) {
                     let password = localStorageService.getUserPassword(user);
                     loginService.loginHashedPassword(user, password, true).then(() => {
                         thiz.loginSuccess = true;
@@ -196,7 +199,7 @@
                         thiz.loginSuccess = false;
                         thiz.loginErrorCode = reason;
                     });
-                } else {
+                } else if (thiz.savedLocalUsers.includes(user)) {
                     loginService.logout();
                     localStorageService.setAutologinUser(user);
                     databaseService.initForUser(user, user).then(() => {
