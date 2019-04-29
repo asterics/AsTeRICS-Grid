@@ -38,6 +38,7 @@
     "test": "jest",
     "build": "jest && webpack --config webpack.config.js --env.enableAppCache --env.production",
     "stats": "webpack --config webpack.config.js --env.enableAppCache --env.production --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json package/static/build_legacy",
+    "stats-dev": "webpack --config webpack.config.js --env.enableAppCache --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json package/static/build_legacy",
     "watch": "webpack --watch --config webpack.config.js",
     "watch-appcache": "webpack --watch --config webpack.config.js --env.enableAppCache",
     "start": "webpack-dev-server",
