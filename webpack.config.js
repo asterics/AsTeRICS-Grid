@@ -4,7 +4,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = env => {
-    var baseDir = 'package/static';
+    var baseDir = 'app';
     var buildDir = '/build/';
     var buildDirLegacy = '/build_legacy/';
     var entryScript = './src/js/mainScript.js';
@@ -21,11 +21,10 @@ module.exports = env => {
         loader: 'vue-loader'
     };
 
-    let vueDist = env && env.production ? 'vue/dist/vue.runtime.esm.js' : 'vue/dist/vue.esm.js';
     var resolve = {
         alias: {
             //objectmodel: "../../../node_modules/objectmodel/dist/object-model.js"
-            vue: vueDist
+            vue: 'vue/dist/vue.esm.js'
         }
     };
 

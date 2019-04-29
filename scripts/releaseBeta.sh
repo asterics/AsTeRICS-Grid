@@ -32,9 +32,9 @@ sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" src/js/mainScript.js
 echo "building..."
 npm run build
 echo "commiting bundles and manifest..."
-git add package/static/build
-git add package/static/build_legacy
-git add package/static/manifest.appcache
+git add app/build
+git add app/build_legacy
+git add app/manifest.appcache
 git commit -m "added bundles and appcache for beta-release $tagname"
 git push origin HEAD
 git checkout src/js/mainScript.js
