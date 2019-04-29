@@ -7,7 +7,7 @@ set -e
 # as beta-release by performing the following steps:
 # 1) a new tag named after the current date/time is created an published
 # 2) the version of the new tag is pushed to the gh-pages branch in the
-#    folder/subpath "beta". The main release remains the same.
+#    folder/subpath "latest". The main release remains the same.
 # 3) the original branch is checked out
 # 4) if there are uncommitted changes on the current branch they are stashed
 #    before and popped after the release
@@ -15,9 +15,9 @@ set -e
 do_gh_pages_update () {
    echo "apply beta-release to gh-pages..."
    git checkout gh-pages
-   rm -rf beta
-   git clone --branch $tagname https://github.com/asterics/AsTeRICS-Grid.git beta
-   git add beta
+   rm -rf latest
+   git clone --branch $tagname https://github.com/asterics/AsTeRICS-Grid.git latest
+   git add latest
    git commit -m "added tag '$tagname' for beta version in folder beta."
    git push origin gh-pages -f
    git checkout $branch
