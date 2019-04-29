@@ -6,19 +6,19 @@ import {constants} from "../util/constants";
 import {databaseService} from "./data/databaseService";
 
 let loginService = {};
-superlogin.configure(getConfig());
 let _loginInfo = null;
 let _loggedInUser = null;
 let _autoRetryHandler;
-
 let _lastParamUser = null;
+
 let _lastParamHashedPw = null;
 let _lastParamSaveUser = null;
 let _serverUrl = constants.IS_ENVIRONMENT_PROD ? 'https://couchdb.asterics-foundation.org:3001' : 'http://' + location.hostname + ':3000';
-
 loginService.ERROR_CODE_UNAUTHORIZED = 'ERROR_CODE_UNAUTHORIZED';
+
 loginService.ERROR_CODE_LOCKED = 'ERROR_CODE_LOCKED';
 loginService.ERROR_CODE_NETWORK_ERROR = 'ERROR_CODE_NETWORK_ERROR';
+superlogin.configure(getConfig());
 
 /**
  * returns currently logged in user, null of not logged in
