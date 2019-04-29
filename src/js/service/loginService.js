@@ -14,6 +14,7 @@ let _autoRetryHandler;
 let _lastParamUser = null;
 let _lastParamHashedPw = null;
 let _lastParamSaveUser = null;
+let _serverUrl = constants.IS_ENVIRONMENT_PROD ? 'https://couchdb.asterics-foundation.org:3001' : 'http://' + location.hostname + ':3000';
 
 loginService.ERROR_CODE_UNAUTHORIZED = 'ERROR_CODE_UNAUTHORIZED';
 loginService.ERROR_CODE_LOCKED = 'ERROR_CODE_LOCKED';
@@ -210,11 +211,11 @@ function getConfig() {
     //see https://github.com/micky2be/superlogin-client
     return {
         // An optional URL to API server, by default a current window location is used.
-        serverUrl: 'http://' + location.hostname + ':3000',
+        serverUrl: _serverUrl,
         // The base URL for the SuperLogin routes with leading and trailing slashes (defaults to '/auth')
         baseUrl: '/auth',
         // Specific endpoint for social authentication and social link popups (defaults to `${location.origin}${baseUrl}`)
-        socialUrl: 'http://' + location.hostname + ':3001/auth',
+        //socialUrl: 'http://' + location.hostname + ':3001/auth',
         // A list of API endpoints to automatically add the Authorization header to
         // By default the host the browser is pointed to will be added automatically
         //endpoints: ['api.example.com'],
