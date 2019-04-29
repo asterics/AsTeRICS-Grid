@@ -24,9 +24,9 @@
 </div>
 
 <!-- polyfills that are needed in all browsers -->
+<script src="polyfill/core_js_shim.min.js"></script> <!-- added for Edge - does implement Promise, but not Promise.finally() -->
 
 <!-- polyfills that are needed only in old browsers that do not support ES6 modules -->
-<script nomodule src="polyfill/core_js_shim.min.js"></script>
 <script nomodule src="polyfill/fetch.js"></script>
 <script nomodule src="polyfill/url-search-params-polyfill.min.js"></script>
 
