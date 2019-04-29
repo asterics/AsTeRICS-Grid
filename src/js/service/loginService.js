@@ -95,7 +95,8 @@ loginService.logout = function () {
     log.debug('logging out user: ' + _loggedInUser);
     databaseService.closeCurrentDatabase();
     superlogin.logout(_loggedInUser);
-
+    _loggedInUser = null;
+    _loginInfo = null;
 };
 
 /**
