@@ -7,18 +7,22 @@ var logger = require('morgan');
 var cors = require('cors');
 var SuperLogin = require('@sensu/superlogin');
 var isProd = process.argv.length > 2 && process.argv[2] == 'prod';
+var path = require('path');
 
+var app = express();
+var accessLogStream = null
 var privateKey  = null;
 var certificate = null;
 var credentials = null;
 if (isProd) {
+    accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+    app.use(logger('combined', { stream: accessLogStream }));
+
     privateKey = fs.readFileSync('sslcert/server.key', 'utf8');
     certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
     credentials = {key: privateKey, cert: certificate};
 }
 
-
-var app = express();
 app.use(cors());
 app.use(logger('dev'));
 app.use(bodyParser.json());
