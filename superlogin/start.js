@@ -1,12 +1,24 @@
+var fs = require('fs');
 var express = require('express');
 var http = require('http');
+var https = require('https');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
 var cors = require('cors');
 var SuperLogin = require('@sensu/superlogin');
+var isProd = process.argv.length > 2 && process.argv[2] == 'prod';
+
+var privateKey  = null;
+var certificate = null;
+var credentials = null;
+if (isProd) {
+    privateKey = fs.readFileSync('sslcert/server.key', 'utf8');
+    certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
+    credentials = {key: privateKey, cert: certificate};
+}
+
 
 var app = express();
-app.set('port', process.env.PORT || 3000);
 app.use(cors());
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -65,4 +77,8 @@ var superlogin = new SuperLogin(config);
 
 // Mount SuperLogin's routes to our app
 app.use('/auth', superlogin.router);
-http.createServer(app).listen(app.get('port'));
+if (isProd) {
+    https.createServer(credentials, app).listen(3001);
+} else {
+    http.createServer(app).listen(3000);
+}
