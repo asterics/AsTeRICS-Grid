@@ -17,6 +17,7 @@ do_gh_pages_update () {
    git checkout gh-pages
    rm -rf latest
    git clone --branch $tagname https://github.com/asterics/AsTeRICS-Grid.git latest
+   rm -rf latest/.git/
    git add latest
    git commit -m "added tag '$tagname' for beta version in folder beta."
    git push origin gh-pages -f

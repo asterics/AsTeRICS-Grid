@@ -20,10 +20,11 @@ do_gh_pages_update () {
     echo "apply release to gh-pages..."
     git checkout gh-pages
     git reset --hard $tagname
-    rm -rf beta
-    git clone --branch $tagname https://github.com/asterics/AsTeRICS-Grid.git beta
-    git add beta
-    git commit -m "added tag '$tagname' for beta version in folder beta."
+    rm -rf latest
+    git clone --branch $tagname https://github.com/asterics/AsTeRICS-Grid.git latest
+    rm -rf latest/.git/
+    git add latest
+    git commit -m "added tag '$tagname' for beta version in folder latest."
     git push origin gh-pages -f
     git checkout $branch
 }
