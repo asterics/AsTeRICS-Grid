@@ -37,7 +37,7 @@ loginService.getLoggedInUserDatabase = function () {
         return null;
     }
     let keys = Object.keys(_loginInfo.userDBs);
-    return _loginInfo.userDBs[keys[0]].replace('localhost:5984', location.hostname + ':5984');
+    return _loginInfo.userDBs[keys[0]];
 };
 
 /**
