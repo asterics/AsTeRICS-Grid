@@ -1,0 +1,177 @@
+/* start of screen rules. */
+
+/* Generic pane rules */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#app {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+header {
+    padding-bottom: 1vh;
+    border-bottom: 2px solid lightgray;
+}
+
+#astericsIcon {
+    height: 40px;
+    margin-top: 0.5em;
+    margin-bottom: -0.7em;
+    margin-right: 0.5em;
+}
+
+[v-cloak] {
+    display: none;
+}
+
+.box {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.box .row.header {
+    flex: 0 1 auto;
+    /* The above is shorthand for:
+    flex-grow: 0,
+    flex-shrink: 1,
+    flex-basis: auto
+    */
+}
+
+.box .row.content {
+    flex: 1 1 auto;
+    position: relative;
+}
+
+/* end of screen rules. */
+
+#menuHeader, #allGridsContent {
+    margin-left: 1.0em;
+}
+
+.menuHeader h1, .menuButtons button, .menuHeader a, .menuHeader label {
+    font-size: 1.2em;
+}
+
+.menuButtons{
+    margin-top: 0.5em;
+}
+
+.scanFocus {
+    outline: thick solid red !important;
+}
+
+#grid-mask {
+    background-color: white;
+    z-index: 99;
+}
+
+#grid-mask i {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    margin-left: -30px;
+    margin-top: -30px;
+    transform: translate(-50%, -50%);
+}
+
+.grid-item-content {
+    overflow: hidden;
+    background: lightblue;
+    display: flex;
+    flex-flow: column;
+}
+
+.grid-item-content .img-container {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    margin: 1%;
+}
+
+.grid-item-content .text-container {
+    flex: 0 1 auto;
+}
+
+.grid, .grid-item-content .text-container span {
+    /* make non-selectable */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+.selected.grid-item-content {
+    -webkit-animation: background 5s cubic-bezier(1,0,0,1);
+    animation: background 5s cubic-bezier(1,0,0,1);
+}
+
+@-webkit-keyframes background {
+    0% { background-color: dodgerblue; }
+    100% { background-color: lightblue; }
+}
+
+@keyframes background {
+    0% { background-color: dodgerblue; }
+    100% { background-color: lightblue; }
+}
+
+.mouseentered.grid-item-content {
+    outline: thick solid green !important;
+}
+
+.scanInactive.grid-item-content {
+    background: lightgray !important;
+    color: darkgray !important;
+    opacity: 0.4;
+}
+
+.scanInactive .img-container {
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+    filter: grayscale(100%);
+    filter: grayscale(1); /* Microsoft Edge and Firefox 35+ */
+}
+
+.spaced {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.inline {
+    display: inline-block;
+}
+
+#menuExpandedInputOpts input[type=range] {
+    width: 5em;
+}
+
+#menuExpandedInputOpts input[type=number] {
+    width: 2.5em;
+}
+
+.break-word {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+
+    -ms-word-break: break-all;
+    /* This is the dangerous one in WebKit, as it breaks things wherever */
+    word-break: break-all;
+    /* Instead use this non-standard one: */
+    word-break: break-word;
+
+    /* Adds a hyphen where the word breaks, if supported (No Blink) */
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}

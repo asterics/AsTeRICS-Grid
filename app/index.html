@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="en" manifest="manifest.appcache">
+<head>
+    <title>AsTeRICS Grid</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="css/fontawesome/css/all.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+</head>
+<body>
+<div id="content" class="box">
+    <div id="app" class="box">
+        <div id="grid-mask" class="grid-container">
+            <i class="fas fa-4x fa-spinner fa-spin" style="top: 40%;"></i>
+            <div style="position: fixed; top: 50%; width: 100%; text-align: center; font-size: 2em;">
+                <span>loading...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- polyfills that are needed in all browsers -->
+<script src="polyfill/core_js_shim.min.js"></script> <!-- added for Edge - does implement Promise, but not Promise.finally() -->
+
+<!-- polyfills that are needed only in old browsers that do not support ES6 modules -->
+<script nomodule src="polyfill/fetch.js"></script>
+<script nomodule src="polyfill/url-search-params-polyfill.min.js"></script>
+
+<!-- libraries, not provided by npm -->
+<script src="lib/jquery.min.js"></script>
+<script src="lib/jquery-ui.min.js"></script>
+<script src="lib/jquery.ui.touchpunch.min.js"></script>
+<script type="text/javascript" src='lib/gridList.js'></script>
+<script type="text/javascript" src='lib/jquery.gridList.js'></script>
+<script type="text/javascript" src='lib/jquery.contextMenu.min.js'></script>
+<script type="text/javascript" src='lib/jquery.ui.position.min.js'></script>
+<script type="text/javascript" src='lib/object-model.min.js'></script>
+<script type="text/javascript" src='lib/pouchdb-7.0.0.min.js'></script>
+<script type="text/javascript" src='lib/pouchdb-find-7.0.0.min.js'></script>
+<script type="text/javascript" src='lib/pouchdb.replication-stream.min.js'></script>
+<script type="text/javascript" src='lib/pouchdb.load.min.js'></script>
+<script type="text/javascript" src='lib/memorystream.js'></script>
+<script type="text/javascript" src='lib/loglevel.min.js'></script>
+<script type="text/javascript" src='lib/dom-i18n.min.js'></script>
+<script type="text/javascript" src='lib/sjcl.min.js'></script>
+
+<script src="build_legacy/asterics-grid.bundle.js"></script>
+<!--script type="module" src="build/asterics-grid.bundle.js"></script-->
+</body>
+</html>
