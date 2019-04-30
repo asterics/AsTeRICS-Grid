@@ -2,3 +2,4 @@
 *.iml
 *.log
 node_modules/
+stats.json
