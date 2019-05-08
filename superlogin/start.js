@@ -10,9 +10,10 @@ var isProd = process.argv.length > 2 && process.argv[2] == 'prod';
 var path = require('path');
 
 var app = express();
-var accessLogStream = null
+var accessLogStream = null;
 var privateKey  = null;
 var certificate = null;
+var certificateIntermediate = null;
 var credentials = null;
 if (isProd) {
     accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
@@ -20,7 +21,8 @@ if (isProd) {
 
     privateKey = fs.readFileSync('/opt/couchdb/ssl/asterics-foundation.org_private_key.key', 'utf8');
     certificate = fs.readFileSync('/opt/couchdb/ssl/asterics-foundation.org_ssl_certificate.cer', 'utf8');
-    credentials = {key: privateKey, cert: certificate};
+    certificateIntermediate = fs.readFileSync('/opt/couchdb/ssl/asterics-foundation.org_ssl_certificate_INTERMEDIATE.cer', 'utf8');
+    credentials = {key: privateKey, cert: [certificate, certificateIntermediate]};
 }
 
 app.use(cors());
