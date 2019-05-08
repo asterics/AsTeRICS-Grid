@@ -1,5 +1,5 @@
 {
-  "name": "asterics-ergo-grid",
+  "name": "asterics-grid",
   "version": "0.1.0",
   "description": "Flexible Grid System for the AsTeRICS Framework",
   "main": "index.js",
@@ -50,12 +50,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/asterics/AsTeRICS-Ergo-Grid.git"
+    "url": "git+https://github.com/asterics/AsTeRICS-Grid.git"
   },
   "author": "Benjamin Klaus",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/asterics/AsTeRICS-Ergo-Grid/issues"
+    "url": "https://github.com/asterics/AsTeRICS-Grid/issues"
   },
-  "homepage": "https://github.com/asterics/AsTeRICS-Ergo-Grid#readme"
+  "homepage": "https://github.com/asterics/AsTeRICS-Grid#readme"
 }

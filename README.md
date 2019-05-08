@@ -1,9 +1,9 @@
 # AsTeRICS Grid
-App for AsTeRICS Ergo for creating a flexible grid system that can be used for Augmentative and Alternative Communication (AAC), Environmental control or interaction with custom ARE models. The AsTeRICS Grid will also be runnable standalone, without any AsTeRICS backend.
+App for creating a flexible grid system that can be used for Augmentative and Alternative Communication (AAC), Environmental control or interaction with custom ARE models. The AsTeRICS Grid will also be runnable standalone, without any AsTeRICS backend.
 
-See https://asterics.github.io/AsTeRICS-Grid/app/#main for a online demo of the Grid.
+See https://grid.asterics.eu/ for a online demo of the Grid, see https://grid.asterics.eu/latest/ for testing the latest (but maybe unstable) version.
 
-The AsTeRICS Grid will be part of the AsTeRICS Ergo collection, see  [AsTeRICS Ergo Master Plan](https://github.com/asterics/AsTeRICS-Ergo/wiki/Master-Plan-AsTeRICS-Ergo) and [AsTeRICS Ergo Architecture](https://github.com/asterics/AsTeRICS-Ergo/wiki/Architecture) for details.
+The AsTeRICS Grid evolved out of AsTeRICS Ergo, see  [AsTeRICS Ergo Master Plan](https://github.com/asterics/AsTeRICS-Ergo/wiki/Master-Plan-AsTeRICS-Ergo) and [AsTeRICS Ergo Architecture](https://github.com/asterics/AsTeRICS-Ergo/wiki/Architecture) and will eventually replace AsTeRICS Ergo.
 
 # Run project
 1. clone the project `git clone git@github.com:asterics/AsTeRICS-Grid.git`
