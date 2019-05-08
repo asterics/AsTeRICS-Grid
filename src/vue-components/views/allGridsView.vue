@@ -79,6 +79,8 @@
     import {pouchDbService} from "../../js/service/data/pouchDbService";
     import {constants} from "../../js/util/constants";
 
+    let SELECTOR_CONTEXTMENU = '#moreButton';
+
     let vueApp = null;
     let vueConfig = {
         data() {
@@ -168,10 +170,8 @@
                 }
             },
             reload: function () {
-                log.warn('reload!!!');
                 dataService.getGrids().then(grids => {
                     this.grids = JSON.parse(JSON.stringify(grids));
-                    log.warn(this.grids);
                 });
             },
             reset() {
@@ -232,6 +232,7 @@
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reload);
+            $.contextMenu('destroy');
         }
     };
 
@@ -290,7 +291,7 @@
         };
 
         $.contextMenu({
-            selector: '#moreButton',
+            selector: SELECTOR_CONTEXTMENU,
             callback: function (key, options) {
                 handleContextMenu(key);
             },
