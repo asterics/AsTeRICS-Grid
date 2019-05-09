@@ -2,13 +2,17 @@ import {EncryptedObject} from "../../model/EncryptedObject";
 import {dataUtil} from "../../util/dataUtil";
 import {sjcl} from "../../externals/sjcl";
 import {log} from "../../util/log.js";
+import {MapCache} from "../../util/MapCache";
 
 let STATIC_USER_PW_SALT = "STATIC_USER_PW_SALT";
 
 let encryptionService = {};
 let _encryptionSalt = null;
 let _encryptionKey = null;
+let _decryptionCache = new MapCache();
+
 let _cryptoTime = 0;
+let _operationStartTime = null;
 
 /**
  * encrypts a given object
@@ -54,9 +58,14 @@ encryptionService.encryptObject = function (object, options) {
  */
 encryptionService.decryptObjects = function (encryptedObjects, options) {
     throwErrorIfUninitialized();
+    let encryptedObjectsJSONString = JSON.stringify(encryptedObjects);
     if (!encryptedObjects) {
         return encryptedObjects;
     }
+    if (_decryptionCache.has(encryptedObjectsJSONString)) {
+        return _decryptionCache.get(encryptedObjectsJSONString);
+    }
+
     options = options || {};
     let objectType = options.objectType;
     let onlyShortVersion = options.onlyShortVersion;
@@ -79,7 +88,9 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
         decryptedObject._rev = encryptedObject._rev;
         decryptedObjects.push(decryptedObject);
     });
-    return decryptedObjects.length > 1 ? decryptedObjects : decryptedObjects[0];
+    let returnValue = decryptedObjects.length > 1 ? decryptedObjects : decryptedObjects[0];
+    _decryptionCache.set(encryptedObjectsJSONString, returnValue, objectType);
+    return returnValue;
 };
 
 /**
@@ -124,10 +135,6 @@ encryptionService.decryptString = function (encryptedString, encryptionKey) {
     } else {
         decryptedString = atob(encryptedString);
     }
-    if (log.getLevel() <= log.levels.TRACE) {
-        _cryptoTime += new Date().getTime() - startTime;
-        log.trace('total needed time for encryption:' + _cryptoTime + ', last operation:' + (new Date().getTime() - startTime));
-    }
 
     return decryptedString;
 };
@@ -162,6 +169,7 @@ encryptionService.setEncryptionProperties = function (hashedPassword, salt) {
     hashedPassword = hashedPassword || '';
     _encryptionSalt = salt;
     _encryptionKey = encryptionService.getStringHash('' + _encryptionSalt + hashedPassword);
+    _decryptionCache.clearAll();
     log.debug('new encryption key is: ' + _encryptionKey);
 };
 
@@ -180,6 +188,31 @@ function throwErrorIfUninitialized() {
         log.error(msg);
         throw msg;
     }
+}
+
+function startTime() {
+    _operationStartTime = new Date().getTime();
+}
+
+function finishTime() {
+    _cryptoTime += new Date().getTime() - _operationStartTime;
+    log.debug('total needed time for encryption:' + _cryptoTime + ', last operation:' + (new Date().getTime() - _operationStartTime));
+}
+
+function setupTimingInterceptor() {
+    Object.keys(encryptionService).forEach(fnName => {
+        let originalFn = encryptionService[fnName];
+        encryptionService[fnName] = function () {
+            startTime();
+            let returnValue = originalFn.apply(null, arguments);
+            finishTime();
+            return returnValue;
+        }
+    })
+}
+
+if (log.getLevel() <= log.levels.TRACE) {
+    setupTimingInterceptor();
 }
 
 export {encryptionService};
