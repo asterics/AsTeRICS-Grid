@@ -84,3 +84,14 @@ test('MapCache - Test 8', () => {
     expect(cache.get(KEY)).toEqual(VALUE_OBJECT);
     expect(cache.get(KEY) === VALUE_OBJECT).toBeFalsy();
 });
+
+test('MapCache - Test 9', () => {
+    let cache = new MapCache();
+    function Constructor() {
+    }
+    cache.set(KEY, VALUE, Constructor);
+    cache.set(KEY, VALUE);
+    expect(cache.has(KEY)).toBeTruthy();
+    expect(cache.get(KEY) instanceof Constructor).toBeFalsy();
+    expect(cache.get(KEY)).toBe(VALUE);
+});

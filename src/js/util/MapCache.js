@@ -29,6 +29,7 @@ function MapCache() {
             return;
         }
         _cache[key] = JSON.stringify(value);
+        delete _objectTypeMap[key];
         if (objectType) {
             _objectTypeMap[key] = objectType;
         }
