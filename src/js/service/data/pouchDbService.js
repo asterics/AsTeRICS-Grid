@@ -4,11 +4,12 @@ import {localStorageService} from "./localStorageService";
 import {constants} from "../../util/constants";
 import {filterService} from "./filterService";
 import {PouchDbAdapter} from "./pouchDbAdapter";
+import {MapCache} from "../../util/MapCache";
 
 let pouchDbService = {};
 
 let _pouchDbAdapter = null;
-let _cachedDocuments = {};
+let _documentCache = new MapCache();
 let _lastQueryTime = 1000;
 let _resumeSyncTimeoutHandler = null;
 
@@ -24,7 +25,7 @@ let _resumeSyncTimeoutHandler = null;
  *             database named like the given username
  */
 pouchDbService.initDatabase = function (databaseName, remoteCouchDbAddress, onlyRemote) {
-    _cachedDocuments = {};
+    _documentCache.clearAll();
     pouchDbService.closeCurrentDatabase();
     _pouchDbAdapter = new PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, false, changeHandler);
     return _pouchDbAdapter.init();
@@ -39,7 +40,7 @@ pouchDbService.initDatabase = function (databaseName, remoteCouchDbAddress, only
  * @param onlyRemote
  */
 pouchDbService.createDatabase = function (databaseName, remoteCouchDbAddress, onlyRemote) {
-    _cachedDocuments = {};
+    _documentCache.clearAll();
     pouchDbService.closeCurrentDatabase();
     _pouchDbAdapter = new PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, true, changeHandler);
     return _pouchDbAdapter.init();
@@ -55,16 +56,16 @@ pouchDbService.createDatabase = function (databaseName, remoteCouchDbAddress, on
  * @return {Promise}
  */
 pouchDbService.query = function (modelName, id) {
-    if (id && _cachedDocuments[id]) {
+    if (id && _documentCache.has(id)) {
         log.debug('using cache for retrieving id: ' + id);
-        return Promise.resolve(_cachedDocuments[id]);
+        return Promise.resolve(_documentCache.get(id));
     }
     let dbToUse = getDbToUse();
     let queryStartTime = new Date().getTime();
     let returnPromise = queryInternal(modelName, id, dbToUse);
     returnPromise.then(result => {
         if (id) {
-            _cachedDocuments[id] = result;
+            _documentCache.set(id, result);
         }
     });
     returnPromise.finally(() => {
@@ -108,19 +109,21 @@ pouchDbService.save = function (modelName, data) {
     let dbToUse = getDbToUse();
     cancelSyncInternal();
     if (data.id) {
-        _cachedDocuments[data.id] = data;
+        _documentCache.clear(data.id, data);
     }
     return new Promise((resolve, reject) => {
         if (!data || !data._id || !modelName || !data.encryptedDataBase64) {
             log.error('did not specify needed parameter "modelName" or "_id" or data is not encrypted! aborting.');
             return reject();
         }
-        dbToUse.put(data).then(() => {
+        dbToUse.put(data).then((response) => {
+            data._rev = response.rev;
+            _documentCache.set(data.id, data);
             log.debug('updated ' + modelName + ', id: ' + data._id);
             resolve();
         }).catch(function (err) {
             if (data.id) {
-                delete _cachedDocuments[data.id];
+                _documentCache.clear(data.id);
             }
             if(err.error === 'conflict') {
                 log.warn('conflict with remote version updating document with id: ' + data.id);
@@ -145,7 +148,7 @@ pouchDbService.save = function (modelName, data) {
 pouchDbService.remove = function (id) {
     let dbToUse = getDbToUse();
     return queryInternal(null, id, dbToUse).then(object => {
-        delete _cachedDocuments[id];
+        _documentCache.clear(id);
         log.debug('deleted object from db! id: ' + object.id);
         return dbToUse.remove(object);
     });
@@ -159,7 +162,7 @@ pouchDbService.dumpDatabase = function () {
     if (!pouchDbService.isUsingLocalDb()) {
         return Promise.reject();
     }
-    _cachedDocuments = {};
+    _documentCache.clearAll();
     return new Promise((resolve, reject) => {
         let dumpedString = '';
         let stream = new MemoryStream();
@@ -187,7 +190,7 @@ pouchDbService.importDatabase = function (file) {
     if (!pouchDbService.isUsingLocalDb()) {
         return Promise.reject();
     }
-    _cachedDocuments = {};
+    _documentCache.clearAll();
     return new Promise(resolve => {
         let reader = new FileReader();
         reader.onload = (function (theFile) {
@@ -217,7 +220,7 @@ pouchDbService.resetDatabase = function () {
     if (!pouchDbService.isUsingLocalDb() || pouchDbService.getOpenedDatabaseName() !== constants.LOCAL_NOLOGIN_USERNAME) {
         return Promise.reject();
     }
-    _cachedDocuments = {};
+    _documentCache.clearAll();
     return new Promise(resolve => {
         getDbToUse().destroy().then(function () {
             pouchDbService.initDatabase(localStorageService.getLastActiveUser()).then(() => resolve());
@@ -237,7 +240,7 @@ pouchDbService.deleteDatabase = function (databaseName) {
         log.warn("won't delete database since using remote db or databaseName not specified...");
         return Promise.reject();
     }
-    _cachedDocuments = {};
+    _documentCache.clearAll();
     let promises = [];
     if (pouchDbService.getOpenedDatabaseName() === databaseName) {
         promises.push(pouchDbService.closeCurrentDatabase());
@@ -396,7 +399,7 @@ function resumeSyncInternal() {
 
 function changeHandler(changedIds, changedDocsEncrypted) {
     changedDocsEncrypted.forEach(doc => {
-        _cachedDocuments[doc.id] = doc;
+        _documentCache.set(doc.id, doc);
     });
     let changedDocs = changedDocsEncrypted.map(rawDoc => filterService.convertDatabaseToLiveObjects(rawDoc));
     $(document).trigger(constants.EVENT_DB_PULL_UPDATED, [changedIds, changedDocs]);
