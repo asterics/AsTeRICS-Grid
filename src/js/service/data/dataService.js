@@ -25,8 +25,12 @@ dataService.getGrid = function (id, onlyShortVersion) {
             resolve(null);
         }
         databaseService.getObject(GridData, id, onlyShortVersion).then(grids => {
-            let retVal = grids && grids.length > 0 ? grids[0] : grids;
-            resolve(retVal);
+            if (!grids) {
+                resolve(null);
+                return;
+            }
+            let retVal = grids.length > 0 ? grids[0] : grids;
+            resolve(new GridData(retVal));
         });
     });
 };
@@ -43,10 +47,10 @@ dataService.getGrids = function (onlyShortVersion) {
         databaseService.getObject(GridData, null, onlyShortVersion).then(grids => {
             if (!grids) {
                 resolve([]);
-            } else {
-                let retVal = grids instanceof Array ? grids : [grids];
-                resolve(retVal);
+                return;
             }
+            let retVal = grids instanceof Array ? grids.map(grid => new GridData(grid)) : [new GridData(grids)];
+            resolve(retVal);
         });
     });
 };
@@ -239,9 +243,9 @@ dataService.getMetadata = function () {
             if (!result) {
                 resolve(new MetaData());
             } else if (result instanceof Array) {
-                resolve(result[0]);
+                resolve(new MetaData(result[0]));
             } else {
-                resolve(result);
+                resolve(new MetaData(result));
             }
         });
     });
