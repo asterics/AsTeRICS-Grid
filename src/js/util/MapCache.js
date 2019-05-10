@@ -16,6 +16,7 @@ function MapCache() {
      * @param objectType optional constructor function, if defined the MapCache.get() will return new constructor(value)
      */
     thiz.set = function (key, value, objectType) {
+        let firstValue = value instanceof Array && value.length > 1 ? value[0] : value;
         if (typeof key !== 'string') {
             log.warn('cache-key has to be a string, aborting.');
             return;
@@ -26,6 +27,10 @@ function MapCache() {
         }
         if (objectType && typeof objectType !== 'function') {
             log.warn('object type has to be a constructor function or empty, aborting.');
+            return;
+        }
+        if (firstValue && firstValue.isShortVersion) {
+            log.debug('not caching model instances only containing short version of data, aborting.');
             return;
         }
         _cache[key] = JSON.stringify(value);
