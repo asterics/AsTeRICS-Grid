@@ -12,7 +12,7 @@
                     <label for="inputUser" class="two columns"><span class="desktop-right inputlabel">Username</span></label>
                     <input type="text" name="username" v-model="user" id="inputUser" class="six columns" @change="validateUsername" v-debounce="300" v-focus=""/>
                     <div class="three columns" v-show="user != null && usernameValid == false">
-                        <i style="color: red;" class="fas fa-times"/> <span data-i18n="">Invalid or already taken username // Ungültiger oder bereits vergebener Username</span>
+                        <i style="color: red;" class="fas fa-times"/> <span>{{usernameValidationCode | translate}}</span>
                     </div>
                     <div class="three columns" v-show="user != null && usernameValid == true">
                         <i style="color: green;" class="fas fa-check"/> <span data-i18n="">Valid username // Username OK</span>
@@ -91,6 +91,7 @@
     import {I18nModule} from './../../js/i18nModule.js';
     import {loginService} from './../../js/service/loginService.js';
     import {Router} from "../../js/router";
+    import {constants} from "../../js/util/constants";
     import ComparisonComponent from "./../components/comparisonComponent.vue";
 
     export default {
@@ -100,6 +101,7 @@
             return {
                 user: null,
                 usernameValid: null,
+                usernameValidationCode: null,
                 password: null,
                 password2: null,
                 remember: true,
@@ -139,8 +141,9 @@
             },
             validateUsername() {
                 var thiz = this;
-                loginService.isValidUsername(thiz.user).then((valid) => {
-                    thiz.usernameValid = valid;
+                loginService.validateUsername(thiz.user).then((code) => {
+                    thiz.usernameValid = code === constants.VALIDATION_VALID;
+                    thiz.usernameValidationCode = code;
                 });
             }
         },
