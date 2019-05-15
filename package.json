@@ -46,7 +46,7 @@
     "start-superlogin-dev": "node superlogin/start.js",
     "start-superlogin-prod": "node superlogin/start.js prod",
     "release": "cp scripts/release.sh scripts/release.tmp.sh && sh scripts/release.tmp.sh && rm scripts/release.tmp.sh",
-    "release-beta": "cp scripts/releaseBeta.sh scripts/releaseBeta.tmp.sh && sh scripts/releaseBeta.tmp.sh && rm scripts/releaseBeta.tmp.sh"
+    "release-latest": "cp scripts/releaseBeta.sh scripts/releaseBeta.tmp.sh && sh scripts/releaseBeta.tmp.sh && rm scripts/releaseBeta.tmp.sh"
   },
   "repository": {
     "type": "git",
