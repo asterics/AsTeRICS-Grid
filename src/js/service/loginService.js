@@ -139,17 +139,17 @@ loginService.register = function (user, plainPassword, saveUser) {
  * @param username
  * @return {Promise}
  */
-loginService.isValidUsername = function (username) {
+loginService.validateUsername = function (username) {
     return new Promise((resolve, reject) => {
         if (!username || username.indexOf(constants.LOCAL_USERNAME_PREFIX) === 0 || !constants.USERNAME_REGEX.test(username)) {
-            resolve(false);
+            resolve(constants.VALIDATION_ERROR_REGEX);
             return;
         }
         superlogin.validateUsername(username).then(() => {
-            resolve(true);
+            resolve(constants.VALIDATION_VALID);
         }, (reason) => {
             log.debug(reason);
-            resolve(false);
+            resolve(constants.VALIDATION_ERROR_EXISTING);
         });
     });
 };
