@@ -1,4 +1,4 @@
-var I18nModule = {};
+let I18nModule = {};
 
 I18nModule.init = function () {
     window.domI18n({
@@ -6,6 +6,14 @@ I18nModule.init = function () {
         separator: ' // ',
         languages: ['en', 'de']
     });
+};
+
+I18nModule.getBrowserLang = function () {
+    return navigator.language.substring(0, 2);
+};
+
+I18nModule.isBrowserLangDE = function () {
+    return I18nModule.getBrowserLang() === 'de';
 };
 
 export {I18nModule};
