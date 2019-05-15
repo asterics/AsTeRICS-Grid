@@ -7,11 +7,13 @@ import './../css/gridlist.css';
 import './../css/jquery.contextMenu.css';
 import {loginService} from "./service/loginService";
 import {databaseService} from "./service/data/databaseService";
+//import {timingLogger} from "./service/timingLogger";
 
 var firstRun = localStorageService.isFirstPageVisit();
 
 function init() {
     let promises = [];
+    //timingLogger.initLogging();
     log.setLevel(log.levels.INFO);
     log.info('AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
     VueDirectives.init();
