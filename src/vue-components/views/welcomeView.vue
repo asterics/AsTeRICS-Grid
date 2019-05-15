@@ -9,26 +9,32 @@
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Welcome // Willkommen</span></h2>
             <div class="eight columns offset-by-one">
                 <div class="row">
-                    <h3>AsTeRICS Grid <strong>ohne Registrierung</strong> verwenden</h3>
+                    <h3 data-i18n="">
+                        <span>Use AsTeRICS Grid <strong>without registration</strong></span>
+                        <span>AsTeRICS Grid <strong>ohne Registrierung</strong> verwenden</span>
+                    </h3>
                     <ul class="fa-ul">
-                        <li><span class="fa-li"><i class="fas fa-check"></i></span>alle Grids werden offline gespeichert</li>
-                        <li><span class="fa-li"><i class="fas fa-check"></i></span>voller Funktionsumfang</li>
-                        <li><span class="fa-li"><i class="fas fa-check"></i></span>optimal für Nutzung auf einem einzelnen Gerät</li>
+                        <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">all grids are saved offline // alle Grids werden offline gespeichert</span></li>
+                        <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">all functions available // voller Funktionsumfang</span></li>
+                        <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">ideal for using on a single device // optimal für Nutzung auf einem einzelnen Gerät</span></li>
                     </ul>
-                    <button @click="useDefaultUser()">AsTeRICS Grid ohne Registrierung verwenden</button>
+                    <button @click="useDefaultUser()" data-i18n="">Use AsTeRICS Grid without registration // AsTeRICS Grid ohne Registrierung verwenden</button>
                     <div>
-                        <span class="fa fa-info-circle"></span><span class="break-word">eine spätere Registrierung ist jederzeit möglich.</span>
+                        <span class="fa fa-info-circle"></span><span class="break-word" data-i18n="">it's always possible to register later. // eine spätere Registrierung ist jederzeit möglich.</span>
                     </div>
                 </div>
                 <div class="row">
-                    <h3>AsTeRICS Grid mit <strong>Registrierung</strong> verwenden</h3>
+                    <h3 data-i18n="">
+                        <span>Use AsTeRICS Grid <strong>with registration</strong></span>
+                        <span>AsTeRICS Grid <strong>mit Registrierung</strong> verwenden</span>
+                    </h3>
                     <ul class="fa-ul">
-                        <li><span class="fa-li"><i class="fas fa-check"></i></span>alle Grids werden offline und online gespeichert</li>
-                        <li><span class="fa-li"><i class="fas fa-check"></i></span>automatische Synchronisierung zwischen verschiedenen Geräten (z.B. PC, Tablet, Smartphone)</li>
-                        <li><span class="fa-li"><i class="fas fa-check"></i></span>alle Daten werden verschlüsselt und es kann niemand außer Sie darauf zugreifen</li>
-                        <li><span class="fa-li"><i class="fas fa-check"></i></span>für die Registrierung wird nur ein Username und ein Passwort benötigt</li>
+                        <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">all grids are saved offline and online // alle Grids werden offline und online gespeichert</span></li>
+                        <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">automatic synchronization across multiple devices (e.g. PC, tablet, smartphone) // automatische Synchronisierung zwischen verschiedenen Geräten (z.B. PC, Tablet, Smartphone)</span></li>
+                        <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">all data is end-to-end encrypted and only you are able to access it // alle Daten werden verschlüsselt und es kann niemand außer Sie darauf zugreifen</span></li>
+                        <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">for registration only a username and a password is needed // für die Registrierung wird nur ein Username und ein Passwort benötigt</span></li>
                     </ul>
-                    <button @click="toRegister()">Zur Registrierung</button>
+                    <button @click="toRegister()" data-i18n="">Register now // Zur Registrierung</button>
                 </div>
                 <div class="row">
                     <span data-i18n="">Already have an account? // Sie haben bereits einen Account?</span>

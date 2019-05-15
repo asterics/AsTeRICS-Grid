@@ -12,19 +12,18 @@
                 <div>
                     <h3 data-i18n="">Offline user // Offline-User</h3>
                     <ul class="fa-ul">
-                        <!-- TODO: translate -->
-                        <li><span class="fa-li"><i class="fas fa-check"></i></span>alle Grids werden offline gespeichert</li>
-                        <li><span class="fa-li"><i class="fas fa-check"></i></span>voller Funktionsumfang</li>
-                        <li><span class="fa-li"><i class="fas fa-check"></i></span>optimal für Nutzung auf einem einzelnen Gerät</li>
+                        <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">all grids are saved offline // alle Grids werden offline gespeichert</span></li>
+                        <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">all functions available // voller Funktionsumfang</span></li>
+                        <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">ideal for using on a single device // optimal für Nutzung auf einem einzelnen Gerät</span></li>
                     </ul>
                 </div>
                 <div>
                     <h3 data-i18n="">Online user // Online-User</h3>
                     <ul class="fa-ul">
-                        <li><span class="fa-li"><i class="fas fa-check"></i></span>alle Grids werden offline und online gespeichert</li>
-                        <li><span class="fa-li"><i class="fas fa-check"></i></span>automatische Synchronisierung zwischen verschiedenen Geräten (z.B. PC, Tablet, Smartphone)</li>
-                        <li><span class="fa-li"><i class="fas fa-check"></i></span>alle Daten werden verschlüsselt und es kann niemand außer Sie darauf zugreifen</li>
-                        <li><span class="fa-li"><i class="fas fa-check"></i></span>für die Registrierung wird nur ein Username und ein Passwort benötigt</li>
+                        <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">all grids are saved offline and online // alle Grids werden offline und online gespeichert</span></li>
+                        <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">automatic synchronization across multiple devices (e.g. PC, tablet, smartphone) // automatische Synchronisierung zwischen verschiedenen Geräten (z.B. PC, Tablet, Smartphone)</span></li>
+                        <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">all data is end-to-end encrypted and only you are able to access it // alle Daten werden verschlüsselt und es kann niemand außer Sie darauf zugreifen</span></li>
+                        <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">for registration only a username and a password is needed // für die Registrierung wird nur ein Username und ein Passwort benötigt</span></li>
                     </ul>
                 </div>
             </div>
