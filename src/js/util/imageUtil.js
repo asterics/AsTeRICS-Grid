@@ -9,6 +9,7 @@ var imageUtil = {};
  */
 imageUtil.getBase64FromImg = function (img, maxWidth, quality) {
     maxWidth = maxWidth || 150;
+    let mimeType = img.src.substring(5, img.src.indexOf(';'));
     var canvas = document.createElement("canvas");
     var factor = 1;
     if (img.width > maxWidth) {
@@ -18,7 +19,7 @@ imageUtil.getBase64FromImg = function (img, maxWidth, quality) {
     canvas.height = img.height * factor;
     var ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    return canvas.toDataURL("image/png", quality);
+    return canvas.toDataURL(mimeType, quality);
 };
 
 /**
