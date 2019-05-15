@@ -7,11 +7,12 @@ import {encryptionService} from "./encryptionService";
 import {pouchDbService} from "./pouchDbService";
 import {filterService} from "./filterService";
 import {modelUtil} from "../../util/modelUtil";
+import {I18nModule} from "../../i18nModule";
 
 let databaseService = {};
 
 let _initPromise = null;
-let _defaultGridSetPath = 'examples/default.grd';
+let _defaultGridSetPath = I18nModule.isBrowserLangDE() ? 'examples/default_de.grd' : 'examples/default_en.grd';
 
 /**
  * queries for objects in database and resolves promise with result.
