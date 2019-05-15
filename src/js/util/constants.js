@@ -5,10 +5,11 @@ constants.MODEL_VERSION = '{"major": 1, "minor": 0, "patch": 0}';
 
 constants.LOCAL_USERNAME_PREFIX = 'local-user-';
 constants.LOCAL_NOLOGIN_USERNAME = constants.LOCAL_USERNAME_PREFIX + 'default-user';
-constants.USERNAME_REGEX = /^[a-z][a-z0-9_+-]*$/;
+constants.USERNAME_REGEX = /^[a-z][a-z0-9_-]{2,50}$/;
 
 constants.VALIDATION_ERROR_REGEX = 'VALIDATION_ERROR_REGEX';
 constants.VALIDATION_ERROR_EXISTING = 'VALIDATION_ERROR_EXISTING';
+constants.VALIDATION_VALID = 'VALIDATION_VALID';
 
 constants.EVENT_DB_CONNECTION_LOST = 'EVENT_DB_CONNECTION_LOST';
 constants.EVENT_DB_PULL_UPDATED = 'EVENT_DB_PULL_UPDATED';
