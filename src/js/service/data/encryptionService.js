@@ -62,9 +62,6 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
     if (!encryptedObjects) {
         return encryptedObjects;
     }
-    if (_decryptionCache.has(encryptedObjectsJSONString)) {
-        return _decryptionCache.get(encryptedObjectsJSONString);
-    }
 
     options = options || {};
     let objectType = options.objectType;
@@ -89,7 +86,6 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
         decryptedObjects.push(decryptedObject);
     });
     let returnValue = decryptedObjects.length > 1 ? decryptedObjects : decryptedObjects[0];
-    _decryptionCache.set(encryptedObjectsJSONString, returnValue, objectType);
     return returnValue;
 };
 
@@ -127,6 +123,11 @@ encryptionService.decryptString = function (encryptedString, encryptionKey) {
     if (!encryptionKey) {
         throwErrorIfUninitialized();
     }
+    if (_decryptionCache.has(encryptedString)) {
+        log.debug('using decryption cache...');
+        return _decryptionCache.get(encryptedString);
+    }
+
     encryptionKey = encryptionKey || _encryptionKey;
     let decryptedString = null;
     let startTime = new Date().getTime();
@@ -136,6 +137,7 @@ encryptionService.decryptString = function (encryptedString, encryptionKey) {
         decryptedString = atob(encryptedString);
     }
 
+    _decryptionCache.set(encryptedString, decryptedString);
     return decryptedString;
 };
 
@@ -188,31 +190,6 @@ function throwErrorIfUninitialized() {
         log.error(msg);
         throw msg;
     }
-}
-
-function startTime() {
-    _operationStartTime = new Date().getTime();
-}
-
-function finishTime() {
-    _cryptoTime += new Date().getTime() - _operationStartTime;
-    log.debug('total needed time for encryption:' + _cryptoTime + ', last operation:' + (new Date().getTime() - _operationStartTime));
-}
-
-function setupTimingInterceptor() {
-    Object.keys(encryptionService).forEach(fnName => {
-        let originalFn = encryptionService[fnName];
-        encryptionService[fnName] = function () {
-            startTime();
-            let returnValue = originalFn.apply(null, arguments);
-            finishTime();
-            return returnValue;
-        }
-    })
-}
-
-if (log.getLevel() <= log.levels.TRACE) {
-    setupTimingInterceptor();
 }
 
 export {encryptionService};
