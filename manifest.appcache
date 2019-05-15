@@ -1,0 +1,11 @@
+CACHE MANIFEST
+# e4271babe09523ba84cd
+
+CACHE:
+index.html
+
+NETWORK:
+*
+
+SETTINGS:
+prefer-online
