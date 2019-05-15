@@ -135,7 +135,7 @@ loginService.register = function (user, plainPassword, saveUser) {
 };
 
 /**
- * checks if a given username is valid
+ * checks if a given username is valid, returns constants.VALIDATION_*
  * @param username
  * @return {Promise}
  */
