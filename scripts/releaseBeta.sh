@@ -16,7 +16,7 @@ do_gh_pages_update () {
    echo "apply beta-release to gh-pages..."
    git checkout gh-pages
    rm -rf latest
-   git clone --branch $tagname https://github.com/asterics/AsTeRICS-Grid.git latest
+   git clone --depth=1 --branch $tagname https://github.com/asterics/AsTeRICS-Grid.git latest
    rm -rf latest/.git/
    git add latest
    git commit -m "added tag '$tagname' for beta version in folder beta."
