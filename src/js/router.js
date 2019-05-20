@@ -12,10 +12,11 @@ import LoginView from '../vue-components/views/loginView.vue'
 import RegisterView from '../vue-components/views/registerView.vue'
 import AddOfflineView from '../vue-components/views/addOfflineView.vue'
 import WelcomeView from '../vue-components/views/welcomeView.vue'
+import AboutView from '../vue-components/views/aboutView.vue'
 import {databaseService} from "./service/data/databaseService";
 import {localStorageService} from "./service/data/localStorageService";
 
-let NO_DB_VIEWS = ['#login', '#register', '#updating', '#welcome', '#add'];
+let NO_DB_VIEWS = ['#login', '#register', '#updating', '#welcome', '#add', '#about'];
 
 let Router = {};
 let navigoInstance = null;
@@ -67,6 +68,9 @@ Router.init = function (injectIdParam, initialHash) {
             },
             'welcome': function () {
                 loadVueView(WelcomeView);
+            },
+            'about': function () {
+                loadVueView(AboutView);
             },
             '*': function () {
                 Router.toMain();
