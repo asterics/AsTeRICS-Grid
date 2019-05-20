@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="content">
         <header class="row header" role="banner">
             <div id="menuHeader" class="menuHeader">
                 <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Grid</h1></a>
@@ -45,6 +45,7 @@
             </div>
             <comparison-component></comparison-component>
         </main>
+        <footer-component/>
     </div>
 </template>
 
@@ -56,9 +57,10 @@
     import {constants} from "../../js/util/constants";
     import {Router} from "../../js/router";
     import ComparisonComponent from "./../components/comparisonComponent.vue";
+    import FooterComponent from "./../components/footerComponent.vue";
 
     export default {
-        components: {ComparisonComponent},
+        components: {ComparisonComponent, FooterComponent},
         props: [],
         data() {
             return {
@@ -104,6 +106,11 @@
 </script>
 
 <style scoped>
+    .content {
+        display: flex;
+        flex-direction: column;
+        flex: 1 0 auto;
+    }
     .row {
         margin-bottom: 1.0em;
     }

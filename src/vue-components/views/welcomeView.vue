@@ -5,7 +5,7 @@
                 <a href="#welcome" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Grid</h1></a>
             </div>
         </header>
-        <main role="main" class="row content spaced" @keyup.enter="login()">
+        <main role="main" class="row content spaced">
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Welcome // Willkommen</span></h2>
             <div class="eight columns offset-by-one">
                 <div class="row">
