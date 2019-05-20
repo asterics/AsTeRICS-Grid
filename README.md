@@ -18,3 +18,6 @@ After `npm install` the following commands are possible:
 5. `npm run pages-stash` --> same as (4) but does a `git stash` before and `git stash apply` after all actions and therefore can be used if there are non-commited changes in the working directory.
 6. `npm run start-appcache` --> same as (1), includes appcache file for offline capabilities (maybe inconvenient for development).
 7. `npm run watch-appcache` --> same as (3), includes appcache file for offline capabilities (maybe inconvenient for development). For auto-reloading of changes with enabled offline capabilities start `npm run start-appcache` in one tab and `npm run watch-appcache` in another tab.
+
+# Appreciation
+Thanks to https://crossbrowsertesting.com/ for providing a free open source license.
