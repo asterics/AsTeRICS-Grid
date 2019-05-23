@@ -21,3 +21,4 @@ After `npm install` the following commands are possible:
 
 # Appreciation
 Thanks to https://crossbrowsertesting.com/ for providing a free open source license.
+<a href="https://crossbrowsertesting.com/"><img src="https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/app/img/CBT_OS-logo_2Color-H.png" width="400px"/></a>
