@@ -19,6 +19,6 @@ After `npm install` the following commands are possible:
 6. `npm run start-appcache` --> same as (1), includes appcache file for offline capabilities (maybe inconvenient for development).
 7. `npm run watch-appcache` --> same as (3), includes appcache file for offline capabilities (maybe inconvenient for development). For auto-reloading of changes with enabled offline capabilities start `npm run start-appcache` in one tab and `npm run watch-appcache` in another tab.
 
-# Appreciation
+# Acknowledgements
 Thanks to https://crossbrowsertesting.com/ for providing a free open source license.
 <a href="https://crossbrowsertesting.com/"><img src="https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/app/img/CBT_OS-logo_2Color-H.png" width="400px"/></a>
