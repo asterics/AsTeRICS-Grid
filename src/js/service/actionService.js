@@ -2,19 +2,24 @@ import {areService} from "./areService";
 import {dataService} from "./data/dataService";
 import {speechService} from "./speechService";
 import {collectElementService} from "./collectElementService";
+import {predictionService} from "./predictionService";
 import {Router} from "./../router";
 import {GridElement} from "./../model/GridElement";
 import {constants} from "../util/constants";
 
-var actionService = {};
+let actionService = {};
 
 actionService.doAction = function (gridId, gridElementId) {
     dataService.getGridElement(gridId, gridElementId).then(gridElement => {
         log.debug('do actions for: ' + gridElement.label + ', ' + gridElementId);
         $(window).trigger(constants.ELEMENT_EVENT_ID, [gridElement]);
-        switch(gridElement.type) {
+        switch (gridElement.type) {
             case GridElement.ELEMENT_TYPE_COLLECT: {
-                collectElementService.doAction(gridElement.id);
+                collectElementService.doAction(gridElement);
+                break;
+            }
+            case GridElement.ELEMENT_TYPE_PREDICTION: {
+                predictionService.doAction(gridElement.id);
                 break;
             }
             default: {
@@ -38,19 +43,19 @@ function doAction(gridElement, action, gridId, gridData) {
     switch (action.modelName) {
         case 'GridActionSpeak':
             log.debug('action speak');
-            if(gridElement.label) {
+            if (gridElement.label) {
                 speechService.speak(gridElement.label, action.speakLanguage);
             }
             break;
         case 'GridActionSpeakCustom':
             log.debug('action speak custom');
-            if(action.speakText) {
+            if (action.speakText) {
                 speechService.speak(action.speakText, action.speakLanguage);
             }
             break;
         case 'GridActionNavigate':
             log.debug('action navigate');
-            if(Router.isOnEditPage()) {
+            if (Router.isOnEditPage()) {
                 Router.toEditGrid(action.toGridId);
             } else {
                 Router.toGrid(action.toGridId);
@@ -58,7 +63,7 @@ function doAction(gridElement, action, gridId, gridData) {
             break;
         case 'GridActionARE':
             log.debug('action are');
-            if(gridData) {
+            if (gridData) {
                 doAREAction(action, gridData)
             } else {
                 dataService.getGrid(gridId).then(grid => {
@@ -66,19 +71,23 @@ function doAction(gridElement, action, gridId, gridData) {
                 });
             }
             break;
+        case 'GridActionPredict':
+            log.debug('action predict');
+            predictionService.predict(gridElement.label);
+            break;
     }
 }
 
 function doAREAction(action, gridData) {
-    if(!action.componentId) {
+    if (!action.componentId) {
         return;
     }
     let modelBase64 = gridData.getAdditionalFile(action.areModelGridFileName).dataBase64;
     areService.uploadAndStartModel(modelBase64, action.areURL, action.areModelGridFileName).then(() => {
-        if(action.dataPortId && action.dataPortSendData) {
+        if (action.dataPortId && action.dataPortSendData) {
             areService.sendDataToInputPort(action.componentId, action.dataPortId, action.dataPortSendData, action.areURL);
         }
-        if(action.eventPortId) {
+        if (action.eventPortId) {
             areService.triggerEvent(action.componentId, action.eventPortId, action.areURL);
         }
     });
