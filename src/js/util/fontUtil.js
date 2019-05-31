@@ -7,7 +7,7 @@ var lastSize = '20px';
  * @return {*}
  */
 fontUtil.getFontSizePx = function (elem) {
-    var label = elem.attr('data-label');
+    var label = elem.attr('data-label') || $(elem).find('.text-container span').text();
     var imageId = elem.attr('data-img-id');
     if (!label) {
         return "10px";
@@ -26,10 +26,10 @@ fontUtil.getFontSizePx = function (elem) {
  * adapts font size on one or several elements
  */
 fontUtil.adaptFontSize = function (elems) {
-    for(var i=0; i<elems.length; i++) {
+    for (var i = 0; i < elems.length; i++) {
         var elem = elems[i];
         var textContainerElem = $(elem).find('.text-container')[0];
-        if(textContainerElem) {
+        if (textContainerElem) {
             textContainerElem.style.fontSize = fontUtil.getFontSizePx($(elem));
         }
     }
@@ -39,14 +39,14 @@ fontUtil.adaptFontSize = function (elems) {
 /**
  * adapts font size for all grid elements
  */
-fontUtil.adaptFontSizeForGridElements = function() {
+fontUtil.adaptFontSizeForGridElements = function () {
     fontUtil.adaptFontSize($('#grid-container .item'));
 };
 
 /**
  * returns the last calculated fontSize in px (e.g. "20px")
  */
-fontUtil.getLastFontSize = function() {
+fontUtil.getLastFontSize = function () {
     return lastSize;
 };
 
