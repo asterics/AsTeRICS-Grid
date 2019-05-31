@@ -3,11 +3,10 @@ import {dataService} from "./service/data/dataService";
 import {collectElementService} from "./service/collectElementService";
 import {UndoService} from "./service/data/undoService";
 import {GridData} from "./model/GridData";
-import {GridElement} from "./model/GridElement";
 import {templates} from "./templates";
-import {GridImage} from "./model/GridImage";
 import {imageUtil} from "./util/imageUtil";
 import {fontUtil} from "./util/fontUtil";
+import {predictionService} from "./service/predictionService";
 
 function Grid(gridContainerId, gridItemClass, options) {
     var thiz = this;
@@ -64,6 +63,7 @@ function Grid(gridContainerId, gridItemClass, options) {
 
     function initGrid(gridDataParam) {
         collectElementService.initWithElements(_gridData.gridElements);
+        predictionService.initWithElements(_gridData.gridElements);
         $(gridContainerId).empty();
         $(gridContainerId).append(templates.getGridBase(gridDataParam.id));
         _gridElement = $('#' + gridDataParam.id);
