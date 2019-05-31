@@ -103,6 +103,27 @@
                                         <div v-if="action.modelName == 'GridActionARE'">
                                             <edit-are-action :action="action" :grid-data="gridData" :model-file="additionalGridFiles[action.id]" :set-grid-file-fn="setAdditionalGridFile" :end-edit-fn="endEditAction"/>
                                         </div>
+                                        <div v-if="action.modelName == 'GridActionPredict'">
+                                            <div class="row">
+                                                <div class="eight columns">
+                                                    <input id="chkSuggestOnChange" type="checkbox" v-model="action.suggestOnChange">
+                                                    <label for="chkSuggestOnChange" class="normal-text" data-i18n>Refresh suggestions on change // Vorschläge bei Änderung aktualisieren</label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="three columns">
+                                                    <label for="comboUseDict" class="normal-text" data-i18n>Dictionary to use // Zu verwendendes Wörterbuch</label>
+                                                </div>
+                                                <select class="eight columns" id="comboUseDict" type="text" v-model="action.dictionaryId">
+                                                    <option v-for="id in dictionaryKeys" :value="id">
+                                                        {{id}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="row">
+                                                <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </li>
@@ -133,6 +154,7 @@
     import {dataService} from '../../js/service/data/dataService'
     import {actionService} from './../../js/service/actionService'
     import {speechService} from './../../js/service/speechService'
+    import {predictionService} from "../../js/service/predictionService";
     import {I18nModule} from './../../js/i18nModule.js';
     import {GridActionNavigate} from "../../js/model/GridActionNavigate";
     import './../../css/modal.css';
@@ -151,6 +173,7 @@
                 gridLabels: null,
                 actionTypes: GridElement.getActionTypes(),
                 voiceLangs: speechService.getVoicesLangs(),
+                dictionaryKeys: predictionService.getDictionaryKeys(),
                 editElementId: null,
                 additionalGridFiles: {} //map: key = action.id, value = AdditionalGridFile (ARE Model)
             }
@@ -238,10 +261,6 @@
 <style scoped>
     .row {
         margin-top: 1em;
-    }
-
-    input {
-        width: 100%;
     }
 
     ul li {
