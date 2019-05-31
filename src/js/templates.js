@@ -13,9 +13,12 @@ templates.getGridBase = function (gridId) {
 
 
 templates.getGridItem = function (gridElem) {
-    switch(gridElem.type) {
+    switch (gridElem.type) {
         case GridElement.ELEMENT_TYPE_COLLECT: {
             return getGridElementCollect(gridElem);
+        }
+        case GridElement.ELEMENT_TYPE_PREDICTION: {
+            return getGridElementPredict(gridElem);
         }
         default: {
             return getGridElementNormal(gridElem);
@@ -24,18 +27,13 @@ templates.getGridItem = function (gridElem) {
 };
 
 function getGridElementNormal(gridElem) {
-    var width = gridElem.width || 1;
-    var height = gridElem.height || 1;
-    var posX = gridElem.x || 0;
-    var posY = gridElem.y || 0;
-    var id = gridElem.id;
-    var label = gridElem.label || "";
+    gridElem = fillDefaultValues(gridElem);
     var imgData = '';
     var imgId = '';
     var txtContainerStyle = 'font-size:' + fontUtil.getLastFontSize() + ';';
     var imgContainerMargin = '1%';
-    var imgContainerMaxHeight = label ? '80%' : '100%';
-    if(gridElem.image) {
+    var imgContainerMaxHeight = gridElem.label ? '80%' : '100%';
+    if (gridElem.image) {
         imgData = gridElem.image.data;
         imgId = gridElem.image.id;
     } else {
@@ -44,31 +42,50 @@ function getGridElementNormal(gridElem) {
     }
 
     var template = `
-<li class="item" data-w="${width}" data-h="${height}" data-x="${posX}" data-y="${posY}" data-id="${id}" data-label="${label}" data-img-id="${imgId}" data-type"="${gridElem.type}">
-    <div class="grid-item-content" id="${id}" data-id="${id}">
+<li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${gridElem.label}" data-img-id="${imgId}" data-type"="${gridElem.type}">
+    <div class="grid-item-content" id="${gridElem.id}" data-id="${gridElem.id}">
         <div class="img-container" style="background: center no-repeat; background-size: contain; background-image: url('${imgData}'); margin: ${imgContainerMargin}; max-height: ${imgContainerMaxHeight};"/>
-        <div class="text-container" style="${txtContainerStyle}"><span>${label}</span></div>
+        <div class="text-container" style="${txtContainerStyle}"><span>${gridElem.label}</span></div>
     </div>
 </li>`;
     return template;
 }
 
 function getGridElementCollect(gridElem) {
-    var width = gridElem.width || 1;
-    var height = gridElem.height || 1;
-    var posX = gridElem.x || 0;
-    var posY = gridElem.y || 0;
-    var id = gridElem.id;
-    var label = gridElem.label || "";
+    gridElem = fillDefaultValues(gridElem);
     var style = 'height: 100%;resize: none;margin: 20px; font-size:' + fontUtil.getLastFontSize() + ';';
 
     var template = `
-<li class="item" data-w="${width}" data-h="${height}" data-x="${posX}" data-y="${posY}" data-id="${id}" data-label="${label}" data-type"="${gridElem.type}">
-    <div class="grid-item-content" id="${id}" data-id="${id}">
+<li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${gridElem.label}" data-type"="${gridElem.type}">
+    <div class="grid-item-content" id="${gridElem.id}" data-id="${gridElem.id}">
         <textarea disabled style="${style}"></textarea>
     </div>
 </li>`;
     return template;
+}
+
+function getGridElementPredict(gridElem) {
+    gridElem = fillDefaultValues(gridElem);
+    let txtContainerStyle = 'display: table; height: 100%; text-align: center;';
+
+    let template = `
+<li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${gridElem.label}" data-type"="${gridElem.type}">
+    <div class="grid-item-content" id="${gridElem.id}" data-id="${gridElem.id}" style="background-color: rgb(255,228,178)">
+        <div class="text-container" style="${txtContainerStyle}"><span style="display: table-cell; vertical-align: middle;">${gridElem.label}</span></div>
+    </div>
+</li>`;
+    return template;
+}
+
+function fillDefaultValues(gridElem) {
+    gridElem = JSON.parse(JSON.stringify(gridElem));
+    gridElem.width = gridElem.width || 1;
+    gridElem.height = gridElem.height || 1;
+    gridElem.posX = gridElem.x || 0;
+    gridElem.posY = gridElem.y || 0;
+    gridElem.label = gridElem.label || "";
+
+    return gridElem;
 }
 
 export {templates};
