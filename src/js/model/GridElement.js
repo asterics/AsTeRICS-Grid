@@ -5,6 +5,7 @@ import {GridActionSpeak} from "./GridActionSpeak";
 import {GridActionSpeakCustom} from "./GridActionSpeakCustom";
 import {GridActionNavigate} from "./GridActionNavigate";
 import {GridActionARE} from "./GridActionARE";
+import {GridActionPredict} from "./GridActionPredict";
 import {constants} from "../util/constants";
 import {Model} from "../externals/objectmodel";
 
@@ -42,7 +43,7 @@ class GridElement extends Model({
     }
 
     static getActionTypes() {
-        return [GridActionARE, GridActionSpeak, GridActionNavigate, GridActionSpeakCustom];
+        return [GridActionARE, GridActionSpeak, GridActionNavigate, GridActionSpeakCustom, GridActionPredict];
     }
 
     static getActionInstance(modelName) {
@@ -61,7 +62,7 @@ class GridElement extends Model({
 
 GridElement.ELEMENT_TYPE_NORMAL = "ELEMENT_TYPE_NORMAL";
 GridElement.ELEMENT_TYPE_COLLECT = "ELEMENT_TYPE_COLLECT";
-GridElement.ELEMENT_TYPE_PREDICT = "ELEMENT_TYPE_PREDICT";
+GridElement.ELEMENT_TYPE_PREDICTION = "ELEMENT_TYPE_PREDICTION";
 
 GridElement.defaults({
     id: "", //will be replaced by constructor
