@@ -8,6 +8,7 @@ import {translateService} from "../translateService";
 import {databaseService} from "./databaseService";
 import {dataUtil} from "../../util/dataUtil";
 import {pouchDbService} from "./pouchDbService";
+import {Dictionary} from "../../model/Dictionary";
 
 let dataService = {};
 
@@ -271,6 +272,36 @@ dataService.saveImage = function (imgData) {
  */
 dataService.getImage = function (imgId) {
     return databaseService.getObject(GridImage, imgId);
+};
+
+/**
+ * Gets an array of all dictionaries.
+ * @see{GridData}
+ *
+ * @return {Promise} resolves to an array of all stored grids.
+ */
+dataService.getDictionaries = function () {
+    return new Promise(resolve => {
+        databaseService.getObject(Dictionary).then(dictionaries => {
+            if (!dictionaries) {
+                resolve([]);
+                return;
+            }
+            let retVal = dictionaries instanceof Array ? dictionaries.map(grid => new GridData(grid)) : [new Dictionary(dictionaries)];
+            resolve(retVal);
+        });
+    });
+};
+
+/**
+ * Saves a dictionary or updates it, if existing.
+ * @see{GridData}
+ *
+ * @param dictionaryData the Dictionary data to save/update
+ * @return {Promise} resolves after operation finished successful
+ */
+dataService.saveDictionary = function (dictionaryData) {
+    return databaseService.saveObject(Dictionary, dictionaryData);
 };
 
 /**
