@@ -30,7 +30,7 @@ class GridData extends Model({
      * @return {*}
      */
     getNewXYPos() {
-        if(!this.gridElements || this.gridElements.length == 0) {
+        if (!this.gridElements || this.gridElements.length == 0) {
             return {
                 x: 0,
                 y: 0
@@ -39,7 +39,7 @@ class GridData extends Model({
         var maxXPos = Math.max.apply(null, this.gridElements.map(el => el.x));
         var elemsMaxX = this.gridElements.filter(elem => elem.x == maxXPos);
         var maxYPos = Math.max.apply(null, elemsMaxX.map(el => el.y));
-        if(maxYPos == this.rowCount - 1) {
+        if (maxYPos == this.rowCount - 1) {
             var minWidth = Math.min.apply(null, elemsMaxX.map(elem => elem.width));
             var elemsMinWidth = elemsMaxX.filter(elem => elem.width == minWidth);
             return {
@@ -52,7 +52,7 @@ class GridData extends Model({
             var elemsFinalY = this.gridElements.filter(elem => elem.y == finalY);
 
             var finalX = elemsMaxX[elemsMaxX.length - 1].x;
-            if(elemsFinalY.length > 0) {
+            if (elemsFinalY.length > 0) {
                 var maxXPos = Math.max.apply(null, elemsFinalY.map(el => el.x));
                 var elemsMaxX = elemsFinalY.filter(el => el.x == maxXPos);
                 finalX = elemsMaxX[0].x + elemsMaxX[0].width;
@@ -81,21 +81,21 @@ class GridData extends Model({
      * @return the next / previous elementId this grid contains, the given elementId if the grid has no elements
      */
     getNextElementId(elementId, invertDirection) {
-        if(!this.gridElements || this.gridElements.length == 0) {
+        if (!this.gridElements || this.gridElements.length === 0) {
             return elementId;
         }
-        if(this.gridElements.length == 1) {
-            return this.this.gridElements[0].id;
+        if (this.gridElements.length === 1) {
+            return this.gridElements[0].id;
         }
 
         var sortedElements = JSON.parse(JSON.stringify(this.gridElements)).sort((a, b) => {
-            if(a.y != b.y) return a.y - b.y;
+            if (a.y !== b.y) return a.y - b.y;
             return a.x - b.x;
         });
         sortedElements = sortedElements.filter(el => el.type === GridElement.ELEMENT_TYPE_NORMAL);
         var ids = sortedElements.map(el => el.id);
         var index = ids.indexOf(elementId);
-        if(index == -1) {
+        if (index === -1) {
             return ids[0];
         }
         var increment = invertDirection ? -1 : 1;
@@ -126,7 +126,7 @@ class GridData extends Model({
      */
     getAREModel() {
         let areAction = this.getAREFirstAction();
-        if(areAction) {
+        if (areAction) {
             let filteredFiles = this.additionalFiles.filter(f => f.fileName === areAction.areModelGridFileName);
             return filteredFiles[0];
         }
