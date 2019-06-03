@@ -158,10 +158,11 @@
             },
             newElement(type) {
                 switch (type) {
+                    case GridElement.ELEMENT_TYPE_PREDICTION:
                     case GridElement.ELEMENT_TYPE_COLLECT: {
                         var newPos = new GridData(this.gridData).getNewXYPos();
                         var newElement = new GridElement({
-                            type: GridElement.ELEMENT_TYPE_COLLECT,
+                            type: type,
                             x: newPos.x,
                             y: newPos.y
                         });
@@ -264,8 +265,6 @@
     function initContextmenu() {
         //see https://swisnl.github.io/jQuery-contextMenu/demo.html
 
-        var contextMenuSelector = '.grid-item-content';
-
         var CONTEXT_EDIT = "CONTEXT_EDIT";
         var CONTEXT_DUPLICATE = "CONTEXT_DUPLICATE";
         var CONTEXT_DO_ACTION = "CONTEXT_DO_ACTION";
@@ -306,7 +305,7 @@
             CONTEXT_DO_ACTION: {name: "Do element action // Aktion des Elements ausführen", icon: "fas fa-bolt"},
         };
 
-        var itemsElem = {
+        var itemsElemNormal = {
             CONTEXT_EDIT: {name: "Edit // Bearbeiten", icon: "fas fa-edit"},
             CONTEXT_ACTIONS: {name: "Actions // Aktionen", icon: "fas fa-bolt"},
             CONTEXT_DELETE: {name: "Delete // Löschen", icon: "far fa-trash-alt"},
@@ -314,6 +313,9 @@
                 name: "More // Mehr", icon: "fas fa-bars", items: itemsMoreMenuItem
             }
         };
+
+        let itemsElemSpecial = JSON.parse(JSON.stringify(itemsElemNormal));
+        delete itemsElemSpecial[CONTEXT_EDIT];
 
         var itemsMoreMenuButton = {
             CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP],
@@ -332,12 +334,21 @@
         };
 
         $.contextMenu({
-            selector: contextMenuSelector,
+            selector: '.item[data-type="ELEMENT_TYPE_NORMAL"]',
             callback: function (key, options) {
-                var elementId = $(this).attr('id');
+                var elementId = $(this).attr('data-id');
                 handleContextMenu(key, elementId);
             },
-            items: itemsElem
+            items: itemsElemNormal
+        });
+
+        $.contextMenu({
+            selector: '.item[data-type!="ELEMENT_TYPE_NORMAL"]',
+            callback: function (key, options) {
+                var elementId = $(this).attr('data-id');
+                handleContextMenu(key, elementId);
+            },
+            items: itemsElemSpecial
         });
 
         $.contextMenu({
@@ -391,6 +402,10 @@
                 }
                 case CONTEXT_NEW_COLLECT: {
                     vueApp.newElement(GridElement.ELEMENT_TYPE_COLLECT);
+                    break;
+                }
+                case CONTEXT_NEW_PREDICT: {
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_PREDICTION);
                     break;
                 }
                 case CONTEXT_DELETE_ALL: {
