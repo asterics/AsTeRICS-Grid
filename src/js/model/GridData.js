@@ -75,7 +75,7 @@ class GridData extends Model({
     }
 
     /**
-     * returns the next/previous elementId this grid contains, based on a given elementId
+     * returns the next/previous elementId of element of type GridElement.ELEMENT_TYPE_NORMAL this grid contains, based on a given elementId
      * @param elementId the given elementId
      * @param invertDirection if false, the next id is returned, if true the previous id
      * @return the next / previous elementId this grid contains, the given elementId if the grid has no elements
@@ -92,6 +92,7 @@ class GridData extends Model({
             if(a.y != b.y) return a.y - b.y;
             return a.x - b.x;
         });
+        sortedElements = sortedElements.filter(el => el.type === GridElement.ELEMENT_TYPE_NORMAL);
         var ids = sortedElements.map(el => el.id);
         var index = ids.indexOf(elementId);
         if(index == -1) {
@@ -105,7 +106,7 @@ class GridData extends Model({
     }
 
     /**
-     * returns the previous elementId this grid contains, based on a given elementId
+     * returns the previous elementId of element of type GridElement.ELEMENT_TYPE_NORMAL this grid contains, based on a given elementId
      * @param elementId the given elementId
      * @return the previous elementId this grid contains, null if there are no gridElements
      */
