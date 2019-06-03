@@ -3,6 +3,7 @@ import {speechService} from "./speechService";
 import {constants} from "./../util/constants";
 import {translateService} from "./translateService";
 import {predictionService} from "./predictionService";
+import {fontUtil} from "../util/fontUtil";
 
 var collectElementService = {};
 
@@ -86,6 +87,7 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
             }
         });
     }
+    fontUtil.adaptFontSize($('.item[data-type="ELEMENT_TYPE_COLLECT"]'));
 });
 
 export {collectElementService};

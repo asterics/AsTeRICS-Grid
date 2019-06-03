@@ -15,7 +15,7 @@ predictionService.predict = function (input, dictionaryKeys) {
     for (let i = 0; i < registeredPredictElements.length; i++) {
         $(`#${registeredPredictElements[i].id} .text-container span`).text(suggestions[i] ? suggestions[i] : '');
     }
-    fontUtil.adaptFontSizeForGridElements();
+    fontUtil.adaptFontSize($('.item[data-type="ELEMENT_TYPE_PREDICTION"]'));
 };
 
 predictionService.initWithElements = function (elements) {
