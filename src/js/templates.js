@@ -42,7 +42,7 @@ function getGridElementNormal(gridElem) {
     }
 
     var template = `
-<li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${gridElem.label}" data-img-id="${imgId}" data-type"="${gridElem.type}">
+<li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${gridElem.label}" data-img-id="${imgId}" data-type="${gridElem.type}">
     <div class="grid-item-content" id="${gridElem.id}" data-id="${gridElem.id}">
         <div class="img-container" style="background: center no-repeat; background-size: contain; background-image: url('${imgData}'); margin: ${imgContainerMargin}; max-height: ${imgContainerMaxHeight};"/>
         <div class="text-container" style="${txtContainerStyle}"><span>${gridElem.label}</span></div>
@@ -56,7 +56,7 @@ function getGridElementCollect(gridElem) {
     var style = 'height: 100%;resize: none;margin: 20px; font-size:' + fontUtil.getLastFontSize() + ';';
 
     var template = `
-<li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${gridElem.label}" data-type"="${gridElem.type}">
+<li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${gridElem.label}" data-type="${gridElem.type}">
     <div class="grid-item-content" id="${gridElem.id}" data-id="${gridElem.id}">
         <textarea disabled style="${style}"></textarea>
     </div>
@@ -69,7 +69,7 @@ function getGridElementPredict(gridElem) {
     let txtContainerStyle = 'display: table; height: 100%; text-align: center;';
 
     let template = `
-<li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${gridElem.label}" data-type"="${gridElem.type}">
+<li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${gridElem.label}" data-type="${gridElem.type}">
     <div class="grid-item-content" id="${gridElem.id}" data-id="${gridElem.id}" style="background-color: rgb(255,228,178)">
         <div class="text-container" style="${txtContainerStyle}"><span style="display: table-cell; vertical-align: middle;">${gridElem.label}</span></div>
     </div>
