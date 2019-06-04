@@ -13,6 +13,7 @@ import RegisterView from '../vue-components/views/registerView.vue'
 import AddOfflineView from '../vue-components/views/addOfflineView.vue'
 import WelcomeView from '../vue-components/views/welcomeView.vue'
 import AboutView from '../vue-components/views/aboutView.vue'
+import DictionariesView from '../vue-components/views/dictionariesView.vue'
 import {databaseService} from "./service/data/databaseService";
 import {localStorageService} from "./service/data/localStorageService";
 
@@ -71,6 +72,9 @@ Router.init = function (injectIdParam, initialHash) {
             },
             'about': function () {
                 loadVueView(AboutView);
+            },
+            'dictionaries': function () {
+                loadVueView(DictionariesView);
             },
             '*': function () {
                 Router.toMain();
