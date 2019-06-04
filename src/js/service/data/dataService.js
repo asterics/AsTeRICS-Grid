@@ -21,18 +21,11 @@ let dataService = {};
  * @return {Promise} resolves to a grid object that was found
  */
 dataService.getGrid = function (id, onlyShortVersion) {
-    return new Promise(resolve => {
-        if(!id) {
-            resolve(null);
-        }
-        databaseService.getObject(GridData, id, onlyShortVersion).then(grids => {
-            if (!grids) {
-                resolve(null);
-                return;
-            }
-            let retVal = grids.length > 0 ? grids[0] : grids;
-            resolve(new GridData(retVal));
-        });
+    if (!id) {
+        return Promise.resolve(null);
+    }
+    return databaseService.getSingleObject(GridData, id, onlyShortVersion).then(result => {
+        return Promise.resolve(new GridData(result));
     });
 };
 
@@ -275,10 +268,26 @@ dataService.getImage = function (imgId) {
 };
 
 /**
+ * gets a dictionary by ID.
+ * @see{GridData}
+ *
+ * @param id the ID of the dictionary
+ * @return {Promise} resolves to a dictionary object that was found
+ */
+dataService.getDictionary = function (id) {
+    if (!id) {
+        return Promise.resolve(null);
+    }
+    return databaseService.getSingleObject(Dictionary, id).then(result => {
+        return Promise.resolve(new Dictionary(result));
+    });
+};
+
+/**
  * Gets an array of all dictionaries.
  * @see{GridData}
  *
- * @return {Promise} resolves to an array of all stored grids.
+ * @return {Promise} resolves to an array of all stored dictionaries.
  */
 dataService.getDictionaries = function () {
     return new Promise(resolve => {
@@ -287,7 +296,7 @@ dataService.getDictionaries = function () {
                 resolve([]);
                 return;
             }
-            let retVal = dictionaries instanceof Array ? dictionaries.map(grid => new GridData(grid)) : [new Dictionary(dictionaries)];
+            let retVal = dictionaries instanceof Array ? dictionaries.map(dict => new Dictionary(dict)) : [new Dictionary(dictionaries)];
             resolve(retVal);
         });
     });
@@ -302,6 +311,16 @@ dataService.getDictionaries = function () {
  */
 dataService.saveDictionary = function (dictionaryData) {
     return databaseService.saveObject(Dictionary, dictionaryData);
+};
+
+/**
+ * Deletes any kind of object directly saved in the database (e.g. GridData, Dictionary, ...)
+ *
+ * @param id the ID of the object to delete.
+ * @return {Promise}
+ */
+dataService.deleteObject = function (id) {
+    return databaseService.removeObject(id);
 };
 
 /**
