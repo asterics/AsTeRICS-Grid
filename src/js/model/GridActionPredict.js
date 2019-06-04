@@ -6,7 +6,7 @@ class GridActionPredict extends Model({
     id: String,
     modelName: String,
     modelVersion: String,
-    dictionaryId: [String],
+    dictionaryKey: [String],
     suggestOnChange: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
@@ -24,7 +24,7 @@ GridActionPredict.defaults({
     id: "", //will be replaced by constructor
     modelName: GridActionPredict.getModelName(),
     modelVersion: constants.MODEL_VERSION,
-    dictionaryId: null,
+    dictionaryKey: null,
     suggestOnChange: false
 });
 
