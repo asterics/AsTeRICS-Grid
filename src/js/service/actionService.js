@@ -73,7 +73,7 @@ function doAction(gridElement, action, gridId, gridData) {
             break;
         case 'GridActionPredict':
             log.debug('action predict');
-            predictionService.predict(gridElement.label);
+            predictionService.predict(gridElement.label, action.dictionaryKey);
             break;
     }
 }

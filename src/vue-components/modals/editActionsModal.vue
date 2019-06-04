@@ -114,7 +114,7 @@
                                                 <div class="three columns">
                                                     <label for="comboUseDict" class="normal-text" data-i18n>Dictionary to use // Zu verwendendes Wörterbuch</label>
                                                 </div>
-                                                <select class="eight columns" id="comboUseDict" type="text" v-model="action.dictionaryId">
+                                                <select class="eight columns" id="comboUseDict" type="text" v-model="action.dictionaryKey">
                                                     <option v-for="id in dictionaryKeys" :value="id">
                                                         {{id}}
                                                     </option>
