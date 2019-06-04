@@ -15,6 +15,15 @@ class Dictionary extends Model({
         this.id = this.id || modelUtil.generateId('dictionary');
     }
 
+    clone() {
+        let newDict = new Dictionary(this);
+        delete newDict._id;
+        delete newDict._rev;
+        newDict.id = modelUtil.generateId('dictionary');
+        newDict.dictionaryKey = this.dictionaryKey + ' (Copy)';
+        return newDict;
+    }
+
     static getModelName() {
         return "Dictionary";
     }
@@ -23,7 +32,8 @@ class Dictionary extends Model({
 Dictionary.defaults({
     id: "", //will be replaced by constructor
     modelName: Dictionary.getModelName(),
-    modelVersion: constants.MODEL_VERSION
+    modelVersion: constants.MODEL_VERSION,
+    data: JSON.stringify({})
 });
 
 export {Dictionary};
