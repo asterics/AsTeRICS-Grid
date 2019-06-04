@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import {localStorageService} from "./service/data/localStorageService.js";
 import {Router} from "./router.js";
-import {VueDirectives} from "./vue/directives";
+import {VuePlugins} from "./vue/plugins";
 
 import './../css/gridlist.css';
 import './../css/jquery.contextMenu.css';
@@ -16,7 +16,7 @@ function init() {
     //timingLogger.initLogging();
     log.setLevel(log.levels.INFO);
     log.info('AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
-    VueDirectives.init();
+    VuePlugins.init();
     reloadOnAppcacheUpdate();
     let lastActiveUser = localStorageService.getLastActiveUser();
     let autologinUser = localStorageService.getAutologinUser();
