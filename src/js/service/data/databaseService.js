@@ -42,6 +42,18 @@ databaseService.getObject = function (objectType, id, onlyShortVersion) {
 };
 
 /**
+ * same as databaseService.getObject(), but the result is returned as single object or null, if no object was found.
+ * @param objectType
+ * @param id
+ * @param onlyShortVersion
+ */
+databaseService.getSingleObject = function (objectType, id, onlyShortVersion) {
+    return databaseService.getObject(objectType, id, onlyShortVersion).then(result => {
+        return Promise.resolve(result instanceof Array ? result[0] : result);
+    });
+};
+
+/**
  * Saves an object to database.
  *
  * @param objectType the objectType to save, e.g. "GridData"
