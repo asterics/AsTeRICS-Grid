@@ -64,7 +64,7 @@ pouchDbService.query = function (modelName, id) {
     let queryStartTime = new Date().getTime();
     let returnPromise = queryInternal(modelName, id, dbToUse);
     returnPromise.then(result => {
-        if (id) {
+        if (id && result) {
             _documentCache.set(id, result);
         }
     });
