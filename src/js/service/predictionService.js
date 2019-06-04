@@ -9,9 +9,14 @@ let predictionary = null;
 let registeredPredictElements = [];
 let _dbDictObjects = [];
 
-predictionService.predict = function (input, dictionaryKeys) {
+predictionService.predict = function (input, dictionaryKey) {
     initIfUnititialized();
-    let suggestions = predictionary.predict(input);
+    if (!dictionaryKey) {
+        predictionary.useAllDictionaries();
+    } else {
+        predictionary.useDictionary(dictionaryKey);
+    }
+    let suggestions = predictionary.predict(input, {maxPredicitons: registeredPredictElements.length});
     for (let i = 0; i < registeredPredictElements.length; i++) {
         $(`#${registeredPredictElements[i].id} .text-container span`).text(suggestions[i] ? suggestions[i] : '');
     }
@@ -51,12 +56,6 @@ predictionService.init = function () {
     registeredPredictElements = [];
     predictionary = Predictionary.instance();
 
-    //TODO remove
-    let fruits = ['Apple', 'Apricot', 'Avocado', 'Banana', 'Bilberry', 'Blackberry', 'Blackcurrant', 'Blueberry', 'Boysenberry', 'Currant', 'Cherry', 'Cherimoya', 'Cloudberry', 'Coconut', 'Cranberry', 'Cucumber', 'Damson', 'Date', 'Dragonfruit', 'Durian', 'Elderberry', 'Feijoa', 'Fig', 'Goji', 'Gooseberry', 'GrapeRaisin', 'Grapefruit', 'Guava', 'Honeyberry', 'Huckleberry', 'Jabuticaba', 'Jackfruit', 'Jambul', 'Jujube', 'Kiwifruit', 'Kumquat', 'Lemon', 'Lime', 'Loquat', 'Longan', 'Lychee', 'Mango', 'Marionberry', 'Melon', 'Cantaloupe', 'Watermelon', 'Mulberry', 'Nectarine', 'Nance', 'Olive', 'Orange', 'Clementine', 'Mandarine', 'Tangerine', 'Papaya', 'Passionfruit', 'Peach', 'Pear', 'Persimmon', 'Physalis', 'Plantain', 'Pineapple', 'Pomegranate', 'Pomelo', 'Quince', 'Raspberry', 'Salmonberry', 'Rambutan', 'Redcurrant', 'Salak', 'Satsuma', 'Soursop', 'Strawberry', 'Tamarillo', 'Tamarind', 'Yuzu'];
-    let verbs = ['ask', 'be', 'become', 'begin', 'call', 'can', 'come', 'could', 'do', 'feel', 'find', 'get', 'give', 'go', 'have', 'hear', 'help', 'keep', 'know', 'leave', 'let', 'like', 'live', 'look', 'make', 'may', 'mean', 'might', 'move', 'need', 'play', 'put', 'run', 'say', 'see', 'seem', 'should', 'show', 'start', 'take', 'talk', 'tell', 'think', 'try', 'turn', 'use', 'want', 'will', 'work', 'would'];
-    predictionary.addWords(fruits);
-    predictionary.addWords(verbs);
-
     dataService.getDictionaries().then(dicts => {
         _dbDictObjects = dicts;
         dicts.forEach(dict => {
@@ -71,6 +70,11 @@ predictionService.init = function () {
         dataService.saveDictionary(dbDict);
     }
     */
+};
+
+predictionService.reset = function() {
+    predictionary = null;
+    _dbDictObjects = null;
 };
 
 predictionService.getDictionaryKeys = function () {
