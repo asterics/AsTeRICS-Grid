@@ -66,9 +66,9 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         registeredCollectElements.forEach(collectElem => {
             addText(collectElem.id, element.label);
             let text = getText(collectElem.id);
-            $(`#${collectElem.id} textarea`)[0].value = text;
+            $(`#${collectElem.id} span`).text(text);
             let predictAction = getActionOfType(collectElem, 'GridActionPredict');
-            if (predictAction.suggestOnChange) {
+            if (predictAction && predictAction.suggestOnChange) {
                 predictionService.predict(text);
             }
         });
@@ -79,9 +79,9 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
             if (word) {
                 let appliedText = predictionService.applyPrediction(collectedTexts[collectElem.id] || '', word);
                 collectedTexts[collectElem.id] = appliedText;
-                $(`#${collectElem.id} textarea`)[0].value = getText(collectElem.id);
+                $(`#${collectElem.id} span`).text(getText(collectElem.id));
                 let predictAction = getActionOfType(collectElem, 'GridActionPredict');
-                if (predictAction.suggestOnChange) {
+                if (predictAction && predictAction.suggestOnChange) {
                     predictionService.predict(appliedText);
                 }
             }
