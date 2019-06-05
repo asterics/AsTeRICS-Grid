@@ -18,7 +18,9 @@
                         <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">all functions available // voller Funktionsumfang</span></li>
                         <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">ideal for using on a single device // optimal für Nutzung auf einem einzelnen Gerät</span></li>
                     </ul>
-                    <button @click="useDefaultUser()" data-i18n="">Use AsTeRICS Grid without registration // AsTeRICS Grid ohne Registrierung verwenden</button>
+                    <button @click="useDefaultUser()">
+                        <span data-i18n="">Use AsTeRICS Grid without registration // AsTeRICS Grid ohne Registrierung verwenden</span>&nbsp;&nbsp;<i v-if="loading" class="fas fa-spinner fa-spin"></i>
+                    </button>
                     <div>
                         <span class="fa fa-info-circle"></span><span class="break-word" data-i18n="">it's always possible to register later. // eine spätere Registrierung ist jederzeit möglich.</span>
                     </div>
@@ -56,6 +58,7 @@
         props: [],
         data() {
             return {
+                loading: false
             }
         },
         methods: {
@@ -66,6 +69,7 @@
                 Router.toRegister();
             },
             useDefaultUser() {
+                this.loading = true;
                 localStorageService.saveLocalUser(constants.LOCAL_NOLOGIN_USERNAME);
                 localStorageService.setAutologinUser(constants.LOCAL_NOLOGIN_USERNAME);
                 databaseService.registerForUser(constants.LOCAL_NOLOGIN_USERNAME, constants.LOCAL_NOLOGIN_USERNAME).then(() => {
