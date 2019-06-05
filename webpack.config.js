@@ -142,7 +142,7 @@ module.exports = env => {
         externals: externals,
         module: {
             rules: [{
-                test: /\.js$/,
+                test: /\.m?js$/,
                 use: {
                     loader: 'babel-loader',
                     options: {
@@ -154,7 +154,8 @@ module.exports = env => {
                                     browsers: [
                                         '> 1%',
                                         'last 2 versions',
-                                        'Firefox ESR'
+                                        'Firefox ESR',
+                                        'ie >= 11'
                                     ],
                                 },
                             }],
