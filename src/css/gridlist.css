@@ -42,10 +42,12 @@
 .grid li .grid-item-content, .grid-item-content-placeholder {
   position: absolute;
   top: 0;
-  bottom: 10px;
-  left: 10px;
+  bottom: 0;
+  left: 0;
   right: 0;
   border-radius: 0.5em;
+  margin-left: 10px;
+  margin-bottom: 10px;
 }
 .grid li.ui-draggable-dragging {
   -webkit-transition: none;
