@@ -7,8 +7,9 @@ var lastSize = '20px';
  * @return {*}
  */
 fontUtil.getFontSizePx = function (elem, oneLine) {
-    var label = getLabel(elem);
-    var imageId = elem.attr('data-img-id');
+    let label = getLabel(elem);
+    let elementType = elem.attr('data-type');
+    let imageId = elem.attr('data-img-id');
     if (!label) {
         return "10px";
     }
@@ -19,8 +20,14 @@ fontUtil.getFontSizePx = function (elem, oneLine) {
     var longestWordLength = oneLine ? label.length : Math.max.apply(null, label.split(' ').map(elem => elem.length));
     var fontSize2 = 1.4 * rectElem.width / longestWordLength;
     fontSize2 = !oneLine ? fontSize2 : Math.min(fontSize2, 30);
-    lastSize = Math.min(fontSize1, fontSize2) + "px";
-    return lastSize;
+    lastSize = Math.min(fontSize1, fontSize2);
+    if (lastSize > rectElem.height / 3) {
+        lastSize = rectElem.height * 0.3;
+    }
+    if(label.length === 1 && elementType === 'ELEMENT_TYPE_NORMAL') {
+        lastSize *= 2;
+    }
+    return lastSize + "px";
 };
 
 /**
@@ -31,10 +38,6 @@ fontUtil.adaptFontSize = function (elems) {
         let oneLine = false;
         var elem = elems[i];
         var textContainerElem = $(elem).find('.text-container')[0];
-        if (!textContainerElem) {
-            textContainerElem = $(elem).find('textarea')[0];
-            oneLine = true;
-        }
         if (textContainerElem) {
             textContainerElem.style.fontSize = fontUtil.getFontSizePx($(elem), oneLine);
         }
@@ -62,9 +65,6 @@ function getLabel(elem) {
     }
     if ($(elem).find('.text-container span').text()) {
         return $(elem).find('.text-container span').text()
-    }
-    if ($(elem).find('textarea')[0]) {
-        return $(elem).find('textarea')[0].value;
     }
     return "";
 }
