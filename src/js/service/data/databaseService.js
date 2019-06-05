@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import LZString from 'lz-string';
 
 import {GridData} from "../../model/GridData.js";
 import {urlParamService} from "../urlParamService";
@@ -8,11 +9,14 @@ import {pouchDbService} from "./pouchDbService";
 import {filterService} from "./filterService";
 import {modelUtil} from "../../util/modelUtil";
 import {I18nModule} from "../../i18nModule";
+import {Dictionary} from "../../model/Dictionary";
 
 let databaseService = {};
 
 let _initPromise = null;
 let _defaultGridSetPath = I18nModule.isBrowserLangDE() ? 'examples/default_de.grd' : 'examples/default_en.grd';
+let _defaultDictPath = I18nModule.isBrowserLangDE() ? 'dictionaries/default_de.txt' : 'dictionaries/default_en.txt';
+let _defaultDictName = I18nModule.isBrowserLangDE() ? 'WoerterbuchDeutsch ' : 'EnglishDictionary';
 
 /**
  * queries for objects in database and resolves promise with result.
@@ -241,8 +245,37 @@ function initInternal(hashedUserPassword) {
         } else {
             return Promise.resolve();
         }
+    }).then(() => {
+        return importDefaultDictionary();
     });
     return _initPromise;
+}
+
+function importDefaultDictionary() {
+    return pouchDbService.query(Dictionary.getModelName()).then(result => {
+        if (result) {
+            return Promise.resolve();
+        }
+        return new Promise(resolve => {
+            console.log(_defaultDictPath);
+            $.get(_defaultDictPath).success(result => {
+                log.debug('success getting default dictionary.');
+                resolve(LZString.decompressFromBase64(result));
+            }).fail((e) => {
+                log.debug('error getting default dictionary.');
+                resolve();
+            });
+        });
+    }).then(importData => {
+        if (!importData) {
+            return Promise.resolve();
+        }
+        let dict = new Dictionary({
+            dictionaryKey: _defaultDictName,
+            data: importData
+        });
+        return applyFiltersAndSave(Dictionary.getModelName(), dict);
+    });
 }
 
 function applyFiltersAndSave(modelName, data) {
