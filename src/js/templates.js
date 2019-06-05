@@ -53,12 +53,15 @@ function getGridElementNormal(gridElem) {
 
 function getGridElementCollect(gridElem) {
     gridElem = fillDefaultValues(gridElem);
-    var style = 'height: 100%;resize: none;margin: 20px; font-size:' + fontUtil.getLastFontSize() + ';';
 
     var template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${gridElem.label}" data-type="${gridElem.type}">
     <div class="grid-item-content" id="${gridElem.id}" data-id="${gridElem.id}">
-        <textarea disabled style="${style}"></textarea>
+        <div class="text-container" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; padding: 1% 1% 1% 1%; text-align: left;">
+            <div style="vertical-align: middle; background-color: white; padding-left: 0.3em; width: 99%; height: 100%">
+                <span></span>
+            </div>
+        </div>
     </div>
 </li>`;
     return template;
@@ -66,7 +69,7 @@ function getGridElementCollect(gridElem) {
 
 function getGridElementPredict(gridElem) {
     gridElem = fillDefaultValues(gridElem);
-    let txtContainerStyle = 'display: table; height: 100%; text-align: center;';
+    let txtContainerStyle = 'display: table; height: 100%; text-align: center; width: 100%';
 
     let template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${gridElem.label}" data-type="${gridElem.type}">
