@@ -78,15 +78,19 @@
                                         <button class="small-button" @click="deleteWord(word, dict)" style="margin-right: 0.5em"><i class="far fa-trash-alt"/></button>{{word}}
                                     </li>
                                 </ul>
-                                <span v-if="totalWords > wordlist.length && !searchWord">
-                                {{totalWords - wordlist.length}}
-                                <span data-i18n="">more word(s) available. Type in search field to filter. // mehr Wörter verfügbar. Tippe in Suchfeld um zu filtern.</span>
-                            </span>
-                                <div v-if="searchWord && totalWords > 0 && wordlist.length === 0">
-                                    <span  data-i18n="">No words for this filter. Clear search field to show elements. // Keine Wörter für diese Suche. Lösche Suchfeld um Elemente anzuzeigen.</span>
+                                <span v-show="totalWords > wordlist.length && searchWord === ''">
+                                    {{totalWords - wordlist.length}}
+                                    <span data-i18n="">more word(s) available. Type in search field to filter. // mehr Wörter verfügbar. Tippe in Suchfeld um zu filtern.</span>
+                                </span>
+                                <span v-show="filterWords > wordlist.length && searchWord !== ''">
+                                    {{filterWords - wordlist.length}}
+                                    <span data-i18n="">more word(s) for this filter. Refine search to show more. // mehr Wörter für diese Suche. Verfeinere die Suche um mehr anzuzeigen.</span>
+                                </span>
+                                <div v-show="searchWord && totalWords > 0 && wordlist.length === 0">
+                                    <span data-i18n="">No words for this filter. Clear search field to show elements. // Keine Wörter für diese Suche. Lösche Suchfeld um Elemente anzuzeigen.</span>
                                     <button @click="inputSearchWord('')"><i class="fas fa-times"/> <span data-i18n="">Clear // Löschen</span></button>
                                 </div>
-                                <span v-if="totalWords === 0" data-i18n="">This dictionary contains no words. // Dieses Wörterbuch enthält keine Wörter.</span>
+                                <span v-show="totalWords === 0" data-i18n="">This dictionary contains no words. // Dieses Wörterbuch enthält keine Wörter.</span>
                             </div>
                         </div>
                         <div>
@@ -112,6 +116,7 @@
     import {translateService} from "./../../js/service/translateService";
     import {predictionService} from "../../js/service/predictionService";
     import {constants} from "../../js/util/constants";
+    import {util} from "../../js/util/util";
     import {Dictionary} from "../../js/model/Dictionary";
     import Predictionary from 'predictionary'
     import ImportDictionaryModal from '../modals/importDictionaryModal.vue'
@@ -126,10 +131,11 @@
                 originalLabel: '',
                 showLoading: true,
                 predictionary: null,
-                wordlist: null,
+                wordlist: [],
                 searchWord: "",
                 showImportModal: false,
-                totalWords: 0
+                totalWords: 0,
+                filterWords: 0
             };
         },
         components: {
@@ -189,15 +195,21 @@
                 this.editId = dict.id;
                 this.predictionary = Predictionary.instance();
                 this.predictionary.loadDictionary(dict.data);
-                this.wordlist = this.predictionary.predict(this.searchWord, {maxPredicitons: 10});
                 this.totalWords = this.predictionary.getWords().length;
+                this.inputSearchWord('');
             },
             editFinished() {
                 this.editId = null;
             },
             inputSearchWord(input) {
-                this.searchWord = input === undefined ? this.searchWord : input;
-                this.wordlist = this.predictionary.predict(this.searchWord, {maxPredicitons: 10});
+                let thiz = this;
+                let timeout = input === undefined ? 200 : 0;
+                util.debounce(function () {
+                    thiz.searchWord = input === undefined ? thiz.searchWord : input;
+                    let suggestions = thiz.predictionary.predict(thiz.searchWord, {maxPredicitons: 10000});
+                    thiz.filterWords = suggestions.length;
+                    thiz.wordlist = suggestions.slice(0, 9);
+                }, timeout, util.DEFAULT_KEY2);
             },
             clone(dictId) {
                 let thiz = this;
@@ -213,10 +225,12 @@
             deleteWord(word, dict) {
                 let thiz = this;
                 thiz.predictionary.delete(word);
-                dict.data = thiz.predictionary.dictionaryToJSON();
-                dataService.saveDictionary(dict).then(() => {
-                    thiz.reload(dict);
-                });
+                this.totalWords = this.predictionary.getWords().length;
+                util.debounce(function () {
+                    dict.data = thiz.predictionary.dictionaryToJSON();
+                    dataService.saveDictionary(dict);
+                }, 2000, util.DEFAULT_KEY);
+                thiz.inputSearchWord();
             },
             reload: function (dictData) {
                 let thiz = this;
