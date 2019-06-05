@@ -16,7 +16,7 @@
                             <span class="nine columns" data-i18n="">Insert Labels for new elements, separated by ";" or [Enter] // Geben Sie Label für neue Elemente getrennt durch ";" oder [Enter] ein</span>
                         </div>
                         <div class="row">
-                            <textarea v-focus class="twelve columns" id="inputText" v-model="inputText" @input="textChanged" style="resize: vertical;" placeholder="Element1;Element2;Element3;..."/>
+                            <textarea v-focus class="twelve columns" id="inputText" v-model="inputText" @input="textChanged" style="resize: vertical;min-height: 70px;" placeholder="Element1;Element2;Element3;..."/>
                         </div>
                         <div class="row">
                             <label class="three columns" data-i18n>Recognized Elements // Erkannte Elemente</label>

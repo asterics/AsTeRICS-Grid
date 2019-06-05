@@ -43,7 +43,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <textarea v-focus class="twelve columns" id="inputText" v-model="inputText" @input="textChanged" style="resize: vertical;" placeholder="Word1 Word2 Word3..."/>
+                            <textarea v-focus class="twelve columns" id="inputText" v-model="inputText" @input="textChanged" style="resize: vertical;min-height: 70px;" placeholder="Word1 Word2 Word3..."/>
                         </div>
                         <div class="row">
                             <label class="three columns" data-i18n>Recognized Words // Erkannte Wörter</label>
