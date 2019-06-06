@@ -130,7 +130,7 @@
                                                     <label for="selectCollectElmAction" class="five columns normal-text" data-i18n>Perform action on collect elements // Aktion für Sammelelemente ausführen</label>
                                                     <select id="selectCollectElmAction" class="six columns" v-model="action.action">
                                                         <option v-for="elmAction in collectActions" :value="elmAction">
-                                                            {{elmAction}}
+                                                            {{elmAction | translate}}
                                                         </option>
                                                     </select>
                                                 </div>
