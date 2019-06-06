@@ -6,6 +6,7 @@ import {predictionService} from "./predictionService";
 import {Router} from "./../router";
 import {GridElement} from "./../model/GridElement";
 import {constants} from "../util/constants";
+import {GridActionCollectElement} from "../model/GridActionCollectElement";
 
 let actionService = {};
 
@@ -74,6 +75,10 @@ function doAction(gridElement, action, gridId, gridData) {
         case 'GridActionPredict':
             log.debug('action predict');
             predictionService.predict(gridElement.label, action.dictionaryKey);
+            break;
+        case 'GridActionCollectElement':
+            log.debug('action collect element');
+            collectElementService.doCollectElementActions(action.action);
             break;
     }
 }
