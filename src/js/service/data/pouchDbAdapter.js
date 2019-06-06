@@ -174,7 +174,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
      * @return {*}
      */
     function openDbInternal(dbNameOrAddress, isOnlineDb) {
-        let dbHandler = new PouchDB(dbNameOrAddress);
+        let dbHandler = new PouchDB(dbNameOrAddress, {auto_compaction: true});
         return dbHandler.info().then(function (info) {
             log.debug(dbNameOrAddress + ' info:');
             log.debug(info);
