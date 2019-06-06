@@ -4,11 +4,12 @@ import {constants} from "./../util/constants";
 import {translateService} from "./translateService";
 import {predictionService} from "./predictionService";
 import {fontUtil} from "../util/fontUtil";
+import {GridActionCollectElement} from "../model/GridActionCollectElement";
 
 var collectElementService = {};
 
 var registeredCollectElements = [];
-var collectedTexts = {};
+var collectedText = '';
 
 collectElementService.initWithElements = function (elements) {
     collectElementService.reset();
@@ -20,8 +21,6 @@ collectElementService.initWithElements = function (elements) {
 };
 
 collectElementService.doAction = function (elem) {
-    let collectElem = getCollectElem(elem.id);
-    let collectedText = getText(elem.id);
     if (getActionOfType(elem, 'GridActionPredict')) {
         predictionService.predict(collectedText);
     }
@@ -30,8 +29,36 @@ collectElementService.doAction = function (elem) {
 
 collectElementService.reset = function () {
     registeredCollectElements = [];
-    collectedTexts = {};
+    collectedText = '';
 };
+
+collectElementService.doCollectElementActions = function (action) {
+    if (!action) {
+        return;
+    }
+    switch (action) {
+        case GridActionCollectElement.COLLECT_ACTION_CLEAR:
+            setText('');
+            break;
+        case GridActionCollectElement.COLLECT_ACTION_REMOVE_WORD:
+            let words = collectedText.trim().split(' ');
+            words.pop();
+            let text = words.join(' ');
+            setText(text === '' ? '' : text + ' ');
+            break;
+        case GridActionCollectElement.COLLECT_ACTION_REMOVE_CHAR:
+            setText(collectedText.substring(0, collectedText.length - 1));
+            break;
+    }
+    predictionService.predict(collectedText);
+};
+
+function setText(text) {
+    text = text === undefined ? collectedText : text;
+    collectedText = text;
+    predictionService.learnFromInput(collectedText);
+    $('.item[data-type="ELEMENT_TYPE_COLLECT"] span').text(collectedText);
+}
 
 function getActionOfType(elem, type) {
     if (!elem) {
@@ -44,48 +71,38 @@ function getActionOfType(elem, type) {
     return elem.actions[index];
 }
 
-function addText(elemId, text) {
-    collectedTexts[elemId] = collectedTexts[elemId] || '';
-    if (text.length > 1 && collectedTexts[elemId]) {
-        collectedTexts[elemId] += ' ' + text;
-    } else {
-        collectedTexts[elemId] += text;
-    }
-}
-
-function getText(elemId) {
-    return collectedTexts[elemId] || '';
-}
-
-function getCollectElem(elemId) {
-    return registeredCollectElements.filter(el => el.id == elemId)[0];
+function addText(text) {
+    setText(collectedText + text);
 }
 
 $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
+    if (registeredCollectElements.length === 0) {
+        return;
+    }
+    if(getActionOfType(element, GridActionCollectElement.getModelName())) {
+        return; // no adding of text if the element contains actions for collect elements, e.g. "clear"
+    }
     if (!element.type || element.type === GridElement.ELEMENT_TYPE_NORMAL) {
+        addText(element.label);
         registeredCollectElements.forEach(collectElem => {
-            addText(collectElem.id, element.label);
-            let text = getText(collectElem.id);
-            $(`#${collectElem.id} span`).text(text);
             let predictAction = getActionOfType(collectElem, 'GridActionPredict');
             if (predictAction && predictAction.suggestOnChange) {
-                predictionService.predict(text);
+                predictionService.predict(collectedText);
             }
         });
     }
-    if (!element.type || element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
-        registeredCollectElements.forEach(collectElem => {
-            let word = $(`#${element.id} .text-container span`).text();
-            if (word) {
-                let appliedText = predictionService.applyPrediction(collectedTexts[collectElem.id] || '', word);
-                collectedTexts[collectElem.id] = appliedText;
-                $(`#${collectElem.id} span`).text(getText(collectElem.id));
+    if (element.type && element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
+        let word = $(`#${element.id} .text-container span`).text();
+        if (word) {
+            let appliedText = predictionService.applyPrediction(collectedText || '', word);
+            setText(appliedText);
+            registeredCollectElements.forEach(collectElem => {
                 let predictAction = getActionOfType(collectElem, 'GridActionPredict');
                 if (predictAction && predictAction.suggestOnChange) {
-                    predictionService.predict(appliedText);
+                    predictionService.predict(collectedText);
                 }
-            }
-        });
+            });
+        }
     }
     fontUtil.adaptFontSize($('.item[data-type="ELEMENT_TYPE_COLLECT"]'));
 });
