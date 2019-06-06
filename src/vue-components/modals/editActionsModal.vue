@@ -114,11 +114,26 @@
                                                 <div class="three columns">
                                                     <label for="comboUseDict" class="normal-text" data-i18n>Dictionary to use // Zu verwendendes Wörterbuch</label>
                                                 </div>
-                                                <select class="eight columns" id="comboUseDict" type="text" v-model="action.dictionaryKey">
+                                                <select class="eight columns" id="comboUseDict" v-model="action.dictionaryKey">
                                                     <option v-for="id in dictionaryKeys" :value="id">
                                                         {{id}}
                                                     </option>
                                                 </select>
+                                            </div>
+                                            <div class="row">
+                                                <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
+                                            </div>
+                                        </div>
+                                        <div v-if="action.modelName == 'GridActionCollectElement'">
+                                            <div class="row">
+                                                <div class="twelve columns">
+                                                    <label for="selectCollectElmAction" class="five columns normal-text" data-i18n>Perform action on collect elements // Aktion für Sammelelemente ausführen</label>
+                                                    <select id="selectCollectElmAction" class="six columns" v-model="action.action">
+                                                        <option v-for="elmAction in collectActions" :value="elmAction">
+                                                            {{elmAction}}
+                                                        </option>
+                                                    </select>
+                                                </div>
                                             </div>
                                             <div class="row">
                                                 <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
@@ -160,8 +175,8 @@
     import './../../css/modal.css';
     import {GridElement} from "../../js/model/GridElement";
     import {GridData} from "../../js/model/GridData";
-    import {AdditionalGridFile} from "../../js/model/AdditionalGridFile";
     import EditAreAction from "./editActionsSub/editAREAction.vue";
+    import {GridActionCollectElement} from "../../js/model/GridActionCollectElement";
 
     export default {
         props: ['editElementIdParam', 'gridData'],
@@ -175,7 +190,8 @@
                 voiceLangs: speechService.getVoicesLangs(),
                 dictionaryKeys: predictionService.getDictionaryKeys(),
                 editElementId: null,
-                additionalGridFiles: {} //map: key = action.id, value = AdditionalGridFile (ARE Model)
+                additionalGridFiles: {}, //map: key = action.id, value = AdditionalGridFile (ARE Model)
+                collectActions: GridActionCollectElement.getActions()
             }
         },
         components: {
