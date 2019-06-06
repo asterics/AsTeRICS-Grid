@@ -257,7 +257,7 @@ function importDefaultDictionary() {
             return Promise.resolve();
         }
         return new Promise(resolve => {
-            console.log(_defaultDictPath);
+            log.info('importing dictionary: ' + _defaultDictPath);
             $.get(_defaultDictPath).success(result => {
                 log.debug('success getting default dictionary.');
                 resolve(LZString.decompressFromBase64(result));
