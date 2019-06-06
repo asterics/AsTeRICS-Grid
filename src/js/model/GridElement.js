@@ -6,6 +6,7 @@ import {GridActionSpeakCustom} from "./GridActionSpeakCustom";
 import {GridActionNavigate} from "./GridActionNavigate";
 import {GridActionARE} from "./GridActionARE";
 import {GridActionPredict} from "./GridActionPredict";
+import {GridActionCollectElement} from "./GridActionCollectElement";
 import {constants} from "../util/constants";
 import {Model} from "../externals/objectmodel";
 
@@ -43,7 +44,7 @@ class GridElement extends Model({
     }
 
     static getActionTypes() {
-        return [GridActionARE, GridActionSpeak, GridActionNavigate, GridActionSpeakCustom, GridActionPredict];
+        return [GridActionARE, GridActionSpeak, GridActionNavigate, GridActionSpeakCustom, GridActionPredict, GridActionCollectElement];
     }
 
     static getActionInstance(modelName) {
