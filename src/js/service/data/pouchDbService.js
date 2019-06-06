@@ -223,7 +223,7 @@ pouchDbService.resetDatabase = function () {
     _documentCache.clearAll();
     return new Promise(resolve => {
         getDbToUse().destroy().then(function () {
-            pouchDbService.initDatabase(localStorageService.getLastActiveUser()).then(() => resolve());
+            pouchDbService.initDatabase(localStorageService.getAutologinUser()).then(() => resolve());
         }).catch(function (err) {
             log.error('error destroying database: ' + err);
         })
