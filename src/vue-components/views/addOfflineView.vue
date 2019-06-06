@@ -29,7 +29,9 @@
                 </div>
             </div>
             <div class="row">
-                <button @click="addUser" :disabled="!user || validationError === undefined || validationError" class="six columns offset-by-two" data-i18n="">Add user // User hinzufügen</button>
+                <button @click="addUser" :disabled="!user || validationError === undefined || validationError" class="six columns offset-by-two">
+                    <span data-i18n="">Add user // User hinzufügen</span>&nbsp;&nbsp;<i v-if="loading" class="fas fa-spinner fa-spin"></i>
+                </button>
             </div>
             <div class="row">
                 <div class="six columns offset-by-two">
@@ -67,7 +69,8 @@
                 user: null,
                 validationError: undefined,
                 showInfo: false,
-                savedUsers: localStorageService.getSavedUsers()
+                savedUsers: localStorageService.getSavedUsers(),
+                loading: false
             }
         },
         methods: {
@@ -76,6 +79,7 @@
             },
             addUser() {
                 let thiz = this;
+                thiz.loading = true;
                 if (thiz.validationError != null) {
                     return;
                 }
