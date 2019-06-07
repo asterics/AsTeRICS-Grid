@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import {translateService} from "../service/translateService";
 //import Vuesax from 'vuesax'
+//import 'vuesax/dist/vuesax.css'
+import { vsButton, vsSelect, vsPopup } from 'vuesax'
+import 'vuesax/dist/vuesax.css'
 
 let VuePlugins = {};
 let timeoutID = null;
@@ -9,6 +12,7 @@ VuePlugins.init = function () {
     initDirectives();
     initFilters();
     //Vue.use(Vuesax);
+    Vue.use(vsButton);
 };
 
 function initDirectives() {
