@@ -26,4 +26,24 @@ util.debounce = function (fn, timeout, key) {
     }, timeout);
 };
 
+/**
+ * copies the given text to clipboard
+ * @param text
+ */
+util.copyToClipboard = function copyTextToClipboard(text) {
+    let textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        log.debug('Copying text command was ' + msg);
+    } catch (err) {
+        log.warn('Unable to copy to clipboard.');
+    }
+    document.body.removeChild(textArea);
+};
+
 export {util};
