@@ -6,6 +6,9 @@ let _lastSpeakTime = 0;
 var speechService = {};
 
 speechService.speak = function (text, lang) {
+    if (!text) {
+        return;
+    }
     if(new Date().getTime() - _lastSpeakTime < 300) {
         _lastSpeakTime = new Date().getTime();
         return;

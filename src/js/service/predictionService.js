@@ -12,6 +12,9 @@ let _unsavedChanges = false;
 let _usedKeys = [];
 
 predictionService.predict = function (input, dictionaryKey) {
+    if (input === undefined) {
+        return;
+    }
     initIfUnititialized();
     if (!dictionaryKey) {
         predictionary.useAllDictionaries();
