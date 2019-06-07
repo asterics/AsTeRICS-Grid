@@ -22,10 +22,8 @@ actionService.doAction = function (gridId, gridElementId) {
                 predictionService.doAction(gridElement.id);
                 break;
             }
-            default: {
-                doActions(gridElement, gridId);
-            }
         }
+        doActions(gridElement, gridId);
         $(window).trigger(constants.ELEMENT_EVENT_ID, [gridElement]);
     });
 };
@@ -44,9 +42,7 @@ function doAction(gridElement, action, gridId, gridData) {
     switch (action.modelName) {
         case 'GridActionSpeak':
             log.debug('action speak');
-            if (gridElement.label) {
-                speechService.speak(gridElement.label, action.speakLanguage);
-            }
+            speechService.speak(gridElement.label, action.speakLanguage);
             break;
         case 'GridActionSpeakCustom':
             log.debug('action speak custom');

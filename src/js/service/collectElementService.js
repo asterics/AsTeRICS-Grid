@@ -1,8 +1,9 @@
 import {GridElement} from "../model/GridElement";
 import {speechService} from "./speechService";
 import {constants} from "./../util/constants";
-import {translateService} from "./translateService";
+import {util} from "./../util/util";
 import {predictionService} from "./predictionService";
+import {translateService} from "./translateService";
 import {fontUtil} from "../util/fontUtil";
 import {GridActionCollectElement} from "../model/GridActionCollectElement";
 
@@ -48,6 +49,9 @@ collectElementService.doCollectElementActions = function (action) {
             break;
         case GridActionCollectElement.COLLECT_ACTION_REMOVE_CHAR:
             setText(collectedText.substring(0, collectedText.length - 1));
+            break;
+        case GridActionCollectElement.COLLECT_ACTION_COPY_CLIPBOARD:
+            util.copyToClipboard(collectedText);
             break;
     }
     predictionService.predict(collectedText);
