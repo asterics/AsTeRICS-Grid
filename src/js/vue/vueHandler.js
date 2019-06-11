@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import {translateService} from "../service/translateService";
+import {I18nModule} from "../i18nModule";
 
 let VueHandler = {};
 let timeoutID = null;
@@ -23,7 +24,7 @@ function initMainVue() {
                 component: null,
                 properties: null,
                 componentKey: 0,
-                menu: null
+                showSidebar: true
             }
         },
         methods: {
@@ -31,12 +32,13 @@ function initMainVue() {
                 this.component = component;
                 this.properties = properties;
                 this.componentKey++; //forces to update the view, even with same component (e.g. grid view, other page)
-            },
-            setMenu(menuObject) {
-                this.menu = menuObject;
             }
         },
         mounted() {
+            I18nModule.init();
+        },
+        updated() {
+            I18nModule.init();
         }
     });
 }
