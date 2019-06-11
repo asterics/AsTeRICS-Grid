@@ -14,8 +14,7 @@
     "navigo": "^7.1.2",
     "predictionary": "^1.4.3",
     "superlogin-client": "^0.8.0",
-    "vue": "^2.5.17",
-    "vuesax": "^3.8.74"
+    "vue": "^2.5.17"
   },
   "devDependencies": {
     "appcache-webpack-plugin": "^1.4.0",
