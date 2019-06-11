@@ -11,15 +11,56 @@
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/skeleton.css">
 </head>
-<body>
+<!--body>
 <div id="content" class="box">
     <div id="app" class="box">
+        <div id="header"></div>
         <component v-if="component" v-bind:is="component" v-bind="properties" :key="componentKey"></component>
+        <div id="sidebarLeft"></div>
+        <div id="sidebarRight"></div>
         <div id="grid-mask" class="grid-container" v-if="false">
             <i class="fas fa-4x fa-spinner fa-spin" style="top: 40%;"></i>
             <div style="position: fixed; top: 50%; width: 100%; text-align: center; font-size: 2em;">
                 <span>loading...</span>
             </div>
+        </div>
+    </div>
+</div-->
+
+<body>
+<div id="app" class="holy-grail">
+    <header>
+        <a href="javascript:void(0)" @click="showSidebar = !showSidebar"><i class="fas fa-2x fa-bars"></i></a>
+        <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline spaced" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Grid</h1></a>
+    </header>
+
+    <div class="holy-grail-body">
+
+        <section class="holy-grail-content">
+            <!-- Main page content -->
+            <component v-if="component" v-bind:is="component" v-bind="properties" :key="componentKey"></component>
+        </section>
+
+        <div class="holy-grail-sidebar-1 hg-sidebar" v-if="showSidebar">
+            <!-- sidebar 1 content -->
+            <h2>Navigation</h2>
+            <ul style="list-style-type: none">
+                <li><a href="#main"><i class="fas fa-2x fa-home"></i> <span data-i18n="">Main // Start</span></a></li>
+                <li><a href="#grids"><i class="fas fa-2x fa-list-ul"></i> <span data-i18n="">Manage grids // Grids verwalten</span></a></li>
+                <li><a href="#dictionaries"><i class="fas fa-2x fa-book"></i> <span data-i18n="">Manage Dictionaries // Wörterbücher verwalten</span></a></li>
+            </ul>
+
+            <h3 data-i18n="">Users // Benutzer</h3>
+            <ul style="list-style-type: none">
+                <li><a href="#login"><i class="fas fa-2x fa-users"></i> <span data-i18n="">Change User // Benutzer wechseln</span></a></li>
+                <li><a href="#register"><i class="fas fa-2x fa-user-plus"></i> <span data-i18n="">Register new user // Neuen User registrieren</span></a></li>
+                <li><a href="#add"><i class="fas fa-2x fa-user-plus"></i> <span data-i18n="">Add offline user // Offline-User hinzufügen</span></a></li>
+            </ul>
+
+            <br/>
+            <ul style="list-style-type: none">
+                <li><a href="#about"><i class="fas fa-2x fa-info-circle"></i> <span data-i18n="">About AsTeRICS Grid // Über AsTeRICS Grid</span></a></li>
+            </ul>
         </div>
     </div>
 </div>

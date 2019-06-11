@@ -1,0 +1,66 @@
+/* see https://flexbox.ninja/demos/holy-grail-layout/
+*/
+
+/**
+ * Make body at least 100% height
+ * You can also use a combination
+ * of height: 100% in <html> and
+ * min-height: 100% in <body>.
+ */
+.holy-grail {
+    min-height: 100vh;
+}
+
+/**
+ * Let's do a column distribution
+ * (mobile first)
+ * flex value is 1 1 auto to make
+ * body skrinkable and extensible
+ */
+.holy-grail,
+.holy-grail-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+}
+
+/**
+ * Content body item is made
+ * extensible too.
+ */
+.holy-grail-content {
+    flex: 1 1 auto;
+}
+
+/**
+ * Put the first sidebar before content.
+ * If you need sidebar to be before content
+ * only in big screen put those 3 next lines
+ * in @media block.
+ */
+.holy-grail-sidebar-1 {
+    order: -1;
+    margin-left: 0.5em;
+    border-right: 2px solid lightgray;
+}
+
+/**
+ * Let's introduce bigger screen
+ */
+
+@media (min-width: 0px) {
+    /**
+     * Body items are now side by side
+     */
+    .holy-grail-body {
+        flex-direction: row;
+    }
+
+    /**
+     * Sidebars have a basic 260 width
+     * and are not really flexible anymore
+     */
+    .hg-sidebar {
+        flex: 0 0 260px;
+    }
+}

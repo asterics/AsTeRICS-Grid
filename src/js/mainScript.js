@@ -5,6 +5,7 @@ import {VueHandler} from "./vue/vueHandler";
 
 import './../css/gridlist.css';
 import './../css/jquery.contextMenu.css';
+import './../css/holy-grail.css';
 import {loginService} from "./service/loginService";
 import {databaseService} from "./service/data/databaseService";
 //import {timingLogger} from "./service/timingLogger";
