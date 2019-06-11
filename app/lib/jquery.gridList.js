@@ -237,8 +237,8 @@
           var maxWidth = Math.max.apply(Math, this.items.map(function (item) {
                 return item.x + item.w
             }));
-            if(this._cellWidth * maxWidth > $(window).width()) {
-                this._cellWidth = ($(window).width()-20) / maxWidth;
+          if(this._cellWidth * maxWidth > $('#grid-container').width()) {
+                this._cellWidth = ($('#grid-container').width()-20) / maxWidth;
             }
         }
       } else {
