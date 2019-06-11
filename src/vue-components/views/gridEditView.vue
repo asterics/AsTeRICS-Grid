@@ -234,8 +234,7 @@
         },
         beforeDestroy() {
             if (gridInstance) {
-                gridInstance.setLayoutChangedEndListener(null);
-                gridInstance.setLayoutChangedStartListener(null);
+                gridInstance.destroy();
                 gridInstance = null;
             }
             $.contextMenu('destroy');
