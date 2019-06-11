@@ -1,19 +1,45 @@
 import Vue from 'vue'
 import {translateService} from "../service/translateService";
-//import Vuesax from 'vuesax'
-//import 'vuesax/dist/vuesax.css'
-import { vsButton, vsSelect, vsPopup } from 'vuesax'
-import 'vuesax/dist/vuesax.css'
 
-let VuePlugins = {};
+let VueHandler = {};
 let timeoutID = null;
+let mainVue = null;
 
-VuePlugins.init = function () {
+VueHandler.init = function () {
     initDirectives();
     initFilters();
-    //Vue.use(Vuesax);
-    Vue.use(vsButton);
+    initMainVue();
 };
+
+VueHandler.setViewComponent = function (component, properties) {
+    mainVue.setComponent(component, properties);
+};
+
+function initMainVue() {
+    mainVue = new Vue({
+        el: '#app',
+        data() {
+            return {
+                component: null,
+                properties: null,
+                componentKey: 0,
+                menu: null
+            }
+        },
+        methods: {
+            setComponent(component, properties) {
+                this.component = component;
+                this.properties = properties;
+                this.componentKey++; //forces to update the view, even with same component (e.g. grid view, other page)
+            },
+            setMenu(menuObject) {
+                this.menu = menuObject;
+            }
+        },
+        mounted() {
+        }
+    });
+}
 
 function initDirectives() {
     Vue.directive('focus', {
@@ -48,4 +74,4 @@ function initFilters() {
     })
 }
 
-export {VuePlugins}
+export {VueHandler}

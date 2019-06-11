@@ -14,7 +14,8 @@
 <body>
 <div id="content" class="box">
     <div id="app" class="box">
-        <div id="grid-mask" class="grid-container">
+        <component v-if="component" v-bind:is="component" v-bind="properties" :key="componentKey"></component>
+        <div id="grid-mask" class="grid-container" v-if="false">
             <i class="fas fa-4x fa-spinner fa-spin" style="top: 40%;"></i>
             <div style="position: fixed; top: 50%; width: 100%; text-align: center; font-size: 2em;">
                 <span>loading...</span>

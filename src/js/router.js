@@ -16,6 +16,7 @@ import AboutView from '../vue-components/views/aboutView.vue'
 import DictionariesView from '../vue-components/views/dictionariesView.vue'
 import {databaseService} from "./service/data/databaseService";
 import {localStorageService} from "./service/data/localStorageService";
+import {VueHandler} from "./vue/vueHandler";
 
 let NO_DB_VIEWS = ['#login', '#register', '#updating', '#welcome', '#add', '#about'];
 
@@ -186,7 +187,7 @@ function setHash(hash, reset) {
 function loadView(viewName) {
     log.debug('loading view: ' + viewName);
     return new Promise((resolve, reject) => {
-        if(!routingEndabled) {
+        if (!routingEndabled) {
             reject();
             return;
         }
@@ -199,27 +200,11 @@ function loadView(viewName) {
 }
 
 function loadVueView(viewObject, properties) {
-    log.debug('loading view: ' + viewObject.__file);
-    let viewName = viewObject.__file;
-    let startIndex = viewName.lastIndexOf('/') !== -1 ? viewName.lastIndexOf('/') + 1 : 0;
-    viewName = viewName.substring(startIndex, viewName.lastIndexOf('.'));
-    let viewNameDash = toDashCase(viewName);
-    let propertyString = '';
-    if (properties) {
-        Object.keys(properties).forEach(key => {
-            propertyString += `${toDashCase(key)}="${properties[key]}" `
-        })
+    if (!routingEndabled) {
+        return;
     }
-    propertyString = propertyString.trim();
-    let injectHtml = `<div id="app" class="box"><${viewNameDash}${propertyString ? ' ' + propertyString : ''}></${viewNameDash}></div>`;
-    let components = {};
-    components[viewName] = viewObject;
-    $(injectId).html(injectHtml);
-    _currentVueApp = new Vue({
-        el: '#app',
-        data: {},
-        components: components
-    });
+    log.debug('loading view: ' + viewObject.__file);
+    VueHandler.setViewComponent(viewObject, properties);
 }
 
 function toDashCase(camelCase) {
