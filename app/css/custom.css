@@ -3,18 +3,21 @@
 /* Generic pane rules */
 html,
 body {
-    height: 100%;
     margin: 0;
-    overflow: hidden;
     font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #app {
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: auto;
+}
+
+.grid-container {
+    overflow: hidden;
 }
 
 header {
+    padding-left: 1em;
     padding-bottom: 1vh;
     border-bottom: 2px solid lightgray;
 }
