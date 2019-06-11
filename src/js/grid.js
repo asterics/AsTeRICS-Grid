@@ -99,10 +99,7 @@ function Grid(gridContainerId, gridItemClass, options) {
             promises.push($(gridItemClass).resizable(getResizeOptions()));
         }
 
-        window.addEventListener('resize', function () {
-            thiz.autosize();
-        });
-
+        window.addEventListener('resize', thiz.autosize);
         return Promise.all(promises);
     }
 
@@ -410,6 +407,12 @@ function Grid(gridContainerId, gridItemClass, options) {
 
     thiz.isInitialized = function() {
         return _isInitialized;
+    };
+
+    thiz.destroy = function () {
+        window.removeEventListener('resize', thiz.autosize);
+        thiz.setLayoutChangedEndListener(null);
+        thiz.setLayoutChangedStartListener(null);
     };
 
     init();
