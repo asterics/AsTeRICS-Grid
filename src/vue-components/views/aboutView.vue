@@ -1,10 +1,5 @@
 <template>
     <div class="content">
-        <header class="row header" role="banner">
-            <div id="menuHeader" class="menuHeader">
-                <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Grid</h1></a>
-            </div>
-        </header>
         <main role="main" class="row content spaced">
             <h2 data-i18n="">About AsTeRICS Grid // Über das AsTeRICS Grid</h2>
             <div class="eight columns offset-by-one">
@@ -66,17 +61,14 @@
                 </div>
             </div>
         </main>
-        <footer-component/>
     </div>
 </template>
 
 <script>
     import {I18nModule} from './../../js/i18nModule.js';
     import {Router} from "../../js/router";
-    import FooterComponent from '../components/footerComponent.vue'
 
     export default {
-        components: {FooterComponent},
         props: [],
         data() {
             return {

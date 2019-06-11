@@ -1,10 +1,5 @@
 <template>
     <div class="content">
-        <header class="row header" role="banner">
-            <div id="menuHeader" class="menuHeader">
-                <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Grid</h1></a>
-            </div>
-        </header>
         <main role="main" class="row content spaced">
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Register online user // Online-User registrieren</span></h2>
             <form autocomplete="off" onsubmit="event.preventDefault()">
@@ -84,7 +79,6 @@
             </div>
             <comparison-component></comparison-component>
         </main>
-        <footer-component/>
     </div>
 </template>
 
@@ -94,10 +88,9 @@
     import {Router} from "../../js/router";
     import {constants} from "../../js/util/constants";
     import ComparisonComponent from "./../components/comparisonComponent.vue";
-    import FooterComponent from "./../components/footerComponent.vue";
 
     export default {
-        components: {ComparisonComponent, FooterComponent},
+        components: {ComparisonComponent},
         props: [],
         data() {
             return {
