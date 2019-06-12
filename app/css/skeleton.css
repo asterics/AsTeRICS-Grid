@@ -408,7 +408,7 @@ there.
 */
 
 /* Smaller than tablet */
-@media (max-width: 750px) {
+@media (max-width: 850px) {
     .hide-mobile {
         display: none !important;
     }
