@@ -21,7 +21,7 @@
 .holy-grail-body {
     display: flex;
     flex: 1 1 auto;
-    flex-direction: column;
+    flex-direction: row;
 }
 
 /**
@@ -40,29 +40,42 @@
  */
 .holy-grail-sidebar-1 {
     order: -1;
-    margin-left: 0.5em;
+    margin-left: 1em;
     border-right: 2px solid lightgray;
     max-height: 100vh;
-    overflow-x: auto;
+    overflow-x: hidden;
 }
 
 /**
- * Let's introduce bigger screen
+ * Sidebars have a basic 260 width
+ * and are not really flexible anymore
  */
+.hg-sidebar {
+    flex: 0 0 235px;
+}
 
-@media (min-width: 0px) {
-    /**
-     * Body items are now side by side
-     */
-    .holy-grail-body {
-        flex-direction: row;
+@media (max-width: 850px) {
+    .hg-sidebar {
+        flex: 0 0 50px;
+        margin-left: 0.7em;
     }
 
-    /**
-     * Sidebars have a basic 260 width
-     * and are not really flexible anymore
-     */
+    #astericsIcon {
+        margin-bottom: 1em;
+    }
+}
+
+@media (max-height: 500px) {
     .hg-sidebar {
-        flex: 0 0 260px;
+        flex: 0 0 12vh;
+        font-size: 3vh;
+    }
+
+    #astericsIcon {
+        height: 10vh;
+    }
+
+    nav {
+        padding-left: 0.4em;
     }
 }

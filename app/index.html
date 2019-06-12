@@ -37,26 +37,26 @@
         </main>
 
         <div class="holy-grail-sidebar-1 hg-sidebar" v-if="showSidebar">
-            <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Grid</h1></a>
+            <a href="#main"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline hide-mobile">AsTeRICS Grid</h1></a>
             <!-- sidebar 1 content -->
             <nav role="navigation">
-                <h2>Navigation</h2>
+                <h2 class="hide-mobile">Navigation</h2>
                 <ul style="list-style-type: none">
-                    <li><a href="#main"><i class="fas fa-2x fa-home"></i> <span data-i18n="">Main // Start</span></a></li>
-                    <li><a href="#grids"><i class="fas fa-2x fa-list-ul"></i> <span data-i18n="">Manage grids // Grids verwalten</span></a></li>
-                    <li><a href="#dictionaries"><i class="fas fa-2x fa-book"></i> <span data-i18n="">Manage Dictionaries // Wörterbücher verwalten</span></a></li>
+                    <li><a href="#main"><i class="fas fa-2x fa-home"></i> <span class="hide-mobile" data-i18n="">Main // Start</span></a></li>
+                    <li><a href="#grids"><i class="fas fa-2x fa-list-ul"></i> <span class="hide-mobile" data-i18n="">Manage grids // Grids verwalten</span></a></li>
+                    <li><a href="#dictionaries"><i class="fas fa-2x fa-book"></i> <span class="hide-mobile" data-i18n="">Manage Dictionaries // Wörterbücher verwalten</span></a></li>
                 </ul>
 
-                <h3 data-i18n="">Users // Benutzer</h3>
+                <h3 class="hide-mobile" data-i18n="">Users // Benutzer</h3>
                 <ul style="list-style-type: none">
-                    <li><a href="#login"><i class="fas fa-2x fa-users"></i> <span data-i18n="">Change User // Benutzer wechseln</span></a></li>
-                    <li><a href="#register"><i class="fas fa-2x fa-user-plus"></i> <span data-i18n="">Register new user // Neuen User registrieren</span></a></li>
-                    <li><a href="#add"><i class="fas fa-2x fa-user-plus"></i> <span data-i18n="">Add offline user // Offline-User hinzufügen</span></a></li>
+                    <li><a href="#login"><i class="fas fa-2x fa-users"></i> <span class="hide-mobile" data-i18n="">Change User // Benutzer wechseln</span></a></li>
+                    <li><a href="#register"><i class="fas fa-2x fa-user-plus"></i> <span class="hide-mobile" data-i18n="">Register new user // Neuen User registrieren</span></a></li>
+                    <li class="hide-mobile"><a href="#add"><i class="fas fa-2x fa-user-plus"></i> <span data-i18n="">Add offline user // Offline-User hinzufügen</span></a></li>
                 </ul>
 
                 <br/>
                 <ul style="list-style-type: none">
-                    <li><a href="#about"><i class="fas fa-2x fa-info-circle"></i> <span data-i18n="">About AsTeRICS Grid // Über AsTeRICS Grid</span></a></li>
+                    <li><a href="#about"><i class="fas fa-2x fa-info-circle"></i> <span class="hide-mobile" data-i18n="">About AsTeRICS Grid // Über AsTeRICS Grid</span></a></li>
                 </ul>
 
                 <a href="javascript:void(0)" @click="showSidebar = !showSidebar"><i class="fas fa-2x fa-bars"></i></a>
