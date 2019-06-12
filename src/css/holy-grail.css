@@ -40,7 +40,6 @@
  */
 .holy-grail-sidebar-1 {
     order: -1;
-    margin-left: 1em;
     border-right: 2px solid lightgray;
     max-height: 100vh;
     overflow-x: hidden;
@@ -51,31 +50,35 @@
  * and are not really flexible anymore
  */
 .hg-sidebar {
-    flex: 0 0 235px;
+    flex: 0 0 250px;
 }
 
 @media (max-width: 850px) {
     .hg-sidebar {
         flex: 0 0 50px;
-        margin-left: 0.7em;
     }
 
     #astericsIcon {
         margin-bottom: 1em;
+    }
+
+    nav li button {
+        padding-left: 0.5em;
     }
 }
 
 @media (max-height: 500px) {
     .hg-sidebar {
         flex: 0 0 12vh;
+    }
+
+    nav li button {
         font-size: 3vh;
+        line-height: 0;
+        padding-left: 0.7em;
     }
 
     #astericsIcon {
         height: 10vh;
-    }
-
-    nav {
-        padding-left: 0.4em;
     }
 }
