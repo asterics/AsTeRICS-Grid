@@ -1,11 +1,10 @@
 <template>
-    <div class="all-grids-view">
+    <div class="all-grids-view overflow-content">
         <div id="grid-mask" v-if="showLoading || grids === null" class="grid-container">
             <i class="fas fa-4x fa-spinner fa-spin"/>
         </div>
         <header class="row header" role="banner">
             <div id="menuHeader" class="menuHeader">
-                <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Grid</h1></a>
                 <div id="buttons" class="menuButtons inline-desktop">
                     <div class="inline spaced">
                         <button @click="back" title="Back"><i class="fas fa-angle-left"/> <span class="hide-mobile" data-i18n>Back // Zurück</span></button>
@@ -28,7 +27,7 @@
                 </div>
             </div>
         </header>
-        <main role="main" class="row content" id="allGridsContent">
+        <div class="row content" id="allGridsContent">
             <h2 data-i18n>Saved Grids // Gespeicherte Grids</h2>
             <ul id="gridList" v-show="filteredGrids.length > 0">
                 <li class="hide-mobile table-headers">
@@ -64,7 +63,7 @@
             <p v-if="filteredGrids.length == 0" data-i18n>
                 No Grids found! // Keine Ergebnisse gefunden!
             </p>
-        </main>
+        </div>
     </div>
 </template>
 

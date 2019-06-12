@@ -1,6 +1,6 @@
 <template>
-    <div class="content">
-        <main role="main" class="row content spaced">
+    <div class="content overflow-content">
+        <div class="row content spaced">
             <h2 data-i18n="">About AsTeRICS Grid // Über das AsTeRICS Grid</h2>
             <div class="eight columns offset-by-one">
                 <div class="row">
@@ -60,7 +60,7 @@
                     <a target="_blank" href="https://crossbrowsertesting.com/"><img src="img/CBT_OS-logo_2Color-H.png" width="300px"></a>
                 </div>
             </div>
-        </main>
+        </div>
     </div>
 </template>
 

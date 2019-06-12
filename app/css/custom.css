@@ -5,21 +5,27 @@ html,
 body {
     margin: 0;
     font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-#app {
-    overflow-y: auto;
-    overflow-x: auto;
+    overflow: hidden;
 }
 
 .grid-container {
     overflow: hidden;
 }
 
+.overflow-content {
+    overflow-y: auto;
+    max-height: calc(100vh - 62px); /* header: 40px content + 20px padding + 2px border */
+}
+
 header {
-    padding-left: 1em;
-    padding-bottom: 1vh;
+    margin: 0;
+    padding: 5px 10px 15px 10px;
     border-bottom: 2px solid lightgray;
+    height: 40px;
+}
+
+h1 {
+    font-size: 1.5em;
 }
 
 #astericsIcon {

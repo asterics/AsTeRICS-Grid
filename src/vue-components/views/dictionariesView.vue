@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="overflow-content">
         <div id="grid-mask" v-if="!dicts" class="grid-container">
             <i class="fas fa-4x fa-spinner fa-spin"/>
         </div>
@@ -23,7 +23,7 @@
                     </div>
                 </div>
             </header>
-            <main role="main" class="row content" id="allGridsContent">
+            <div class="row content" id="allGridsContent">
                 <h2 data-i18n>Saved Dictionaries // Gespeicherte Wörterbücher</h2>
                 <ul id="dictList" v-show="dicts && dicts.length > 0">
                     <li class="hide-mobile table-headers">
@@ -102,7 +102,7 @@
                 <p v-if="!dicts || dicts.length === 0" data-i18n>
                     No dictionaries found! // Keine Ergebnisse gefunden!
                 </p>
-            </main>
+            </div>
         </div>
     </div>
 </template>

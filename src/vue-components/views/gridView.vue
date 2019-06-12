@@ -1,19 +1,19 @@
 <template>
     <div id="app" class="box" v-cloak>
         <input-options-modal v-if="showModal" v-bind:metadata-property="metadata" v-bind:scanner="scanner" v-bind:hover="hover" v-bind:clicker="clicker" v-bind:reinit="reinitInputMethods" @close="showModal = false"/>
-        <main class="row content spaced" v-show="!gridData.gridElements || gridData.gridElements.length == 0" role="main">
+        <div class="row content spaced" v-show="!gridData.gridElements || gridData.gridElements.length == 0">
             <div data-i18n="" style="margin-top: 2em">
                 <span>No elements, click <a :href="'#grid/edit/' + gridData.id">Edit grid</a> to enter edit mode.</span>
                 <span>Keine Elemente, klicke auf <a :href="'#grid/edit/' + gridData.id">Grid bearbeiten</a> um das Grid zu bearbeiten.</span>
             </div>
-        </main>
+        </div>
         <div id="grid-mask" v-if="!showGrid" class="grid-container">
             <i class="fas fa-4x fa-spinner fa-spin"/>
         </div>
-        <main role="main" class="row content">
+        <div class="row content">
             <div id="grid-container" class="grid-container">
             </div>
-        </main>
+        </div>
     </div>
 </template>
 

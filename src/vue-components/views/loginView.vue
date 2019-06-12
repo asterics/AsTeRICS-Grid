@@ -1,6 +1,6 @@
 <template>
-    <div class="content">
-        <main role="main" class="row content spaced" @keyup.enter="loginPlain(user, password)">
+    <div class="content overflow-content">
+        <div class="row content spaced" @keyup.enter="loginPlain(user, password)">
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Login // Einloggen</span></h2>
             <div class="eleven columns offset-by-one">
                 <div v-show="allUsersList.length > 0">
@@ -127,7 +127,7 @@
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
     </div>
 </template>
 

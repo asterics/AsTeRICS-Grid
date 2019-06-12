@@ -1,6 +1,6 @@
 <template>
-    <div class="content">
-        <main role="main" class="row content spaced">
+    <div class="content overflow-content">
+        <div class="row content spaced">
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Add&nbsp;offline&nbsp;user // Offline&#8209;User&nbsp;hinzufügen</span></h2>
             <form autocomplete="off" onsubmit="event.preventDefault()">
                 <div class="row">
@@ -41,7 +41,7 @@
                 </div>
             </div>
             <comparison-component></comparison-component>
-        </main>
+        </div>
     </div>
 </template>
 

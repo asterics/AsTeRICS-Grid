@@ -59,7 +59,7 @@
         <div id="grid-mask" v-if="!showGrid" class="grid-container">
             <i class="fas fa-4x fa-spinner fa-spin"/>
         </div>
-        <main role="main" class="row content">
+        <div class="row content">
             <div id="grid-container" class="grid-container">
             </div>
             <div id="grid-layout-background-wrapper" class="grid-container" v-if="gridData.gridElements && gridData.gridElements.length > 0" style="margin: 10px;">
@@ -70,7 +70,7 @@
     background-image: linear-gradient(to bottom, grey 1px, transparent 1px);">
                 </div>
             </div>
-        </main>
+        </div>
     </div>
 </template>
 
