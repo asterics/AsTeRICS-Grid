@@ -42,6 +42,8 @@
     order: -1;
     margin-left: 0.5em;
     border-right: 2px solid lightgray;
+    max-height: 100vh;
+    overflow-x: auto;
 }
 
 /**
