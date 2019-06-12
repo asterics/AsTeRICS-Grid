@@ -179,6 +179,13 @@ function getValidHash() {
     return hashToUse;
 }
 
+function getHash() {
+    let hash = location.hash;
+    let index = hash.lastIndexOf('/');
+    index = index > -1 ? index : hash.length;
+    return hash.substring(0, index);
+}
+
 function setHash(hash, reset) {
     lastHash = reset ? null : location.hash;
     location.hash = hash;
@@ -203,6 +210,9 @@ function loadVueView(viewObject, properties) {
     if (!routingEndabled) {
         return;
     }
+    let hash = getHash();
+    $('nav button').removeClass('selected');
+    $(`nav a[href='${hash}'] button`).addClass('selected');
     log.debug('loading view: ' + viewObject.__file);
     VueHandler.setViewComponent(viewObject, properties);
 }
