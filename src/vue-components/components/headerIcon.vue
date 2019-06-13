@@ -30,6 +30,10 @@
             let thiz = this;
             $(document).on(constants.EVENT_SIDEBAR_CLOSE, () => {
                 thiz.show = true;
+                thiz.$emit(constants.EVENT_SIDEBAR_CLOSE);
+            });
+            $(document).on(constants.EVENT_SIDEBAR_OPEN, () => {
+                thiz.$emit(constants.EVENT_SIDEBAR_OPEN);
             });
         },
         beforeDestroy() {
