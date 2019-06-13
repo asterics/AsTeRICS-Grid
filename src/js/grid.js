@@ -311,15 +311,6 @@ function Grid(gridContainerId, gridItemClass, options) {
     };
 
     /**
-     * compacts the layout (no gaps, in a matrix with the given amount rows)
-     */
-    thiz.compactLayout = function () {
-        notifyLayoutChangeStart();
-        _gridElement.gridList('resize', _gridRows);
-        handleLayoutChange();
-    };
-
-    /**
      * reverts the last layout change, if there was one
      */
     thiz.undo = function () {
