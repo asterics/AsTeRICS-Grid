@@ -7,6 +7,7 @@ import {templates} from "./templates";
 import {imageUtil} from "./util/imageUtil";
 import {fontUtil} from "./util/fontUtil";
 import {predictionService} from "./service/predictionService";
+import {constants} from "./util/constants";
 
 function Grid(gridContainerId, gridItemClass, options) {
     var thiz = this;
@@ -99,7 +100,9 @@ function Grid(gridContainerId, gridItemClass, options) {
             promises.push($(gridItemClass).resizable(getResizeOptions()));
         }
 
-        window.addEventListener('resize', thiz.autosize);
+        $(document).on(constants.EVENT_GRID_RESIZE, () => {
+            thiz.autosize();
+        });
         return Promise.all(promises);
     }
 
@@ -410,7 +413,7 @@ function Grid(gridContainerId, gridItemClass, options) {
     };
 
     thiz.destroy = function () {
-        window.removeEventListener('resize', thiz.autosize);
+        $(document).off(constants.EVENT_GRID_RESIZE);
         thiz.setLayoutChangedEndListener(null);
         thiz.setLayoutChangedStartListener(null);
     };
