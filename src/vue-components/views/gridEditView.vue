@@ -1,44 +1,12 @@
 <template>
     <div v-cloak v-if="gridData" class="box">
         <header class="row header" role="banner">
-            <div id="menuHeader" class="menuHeader">
-                <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Grid</h1></a>
-                <div class="inline spaced hide-mobile">
-                <span v-if="!isLocalUser" class="fa-stack fa-1x" style="margin-bottom: 1rem" :title="syncState | translate">
-                    <i class="fas fa-cloud fa-stack-2x" style="color: lightblue"></i>
-                    <!-- TODO move sync state to own component -->
-                    <i v-show="syncState === constants.DB_SYNC_STATE_SYNCINC" class="fas fa-sync-alt fa-stack-1x fa-spin" style="left: 3px; top: 1px"></i>
-                    <i v-show="syncState === constants.DB_SYNC_STATE_SYNCED" class="fas fa-check fa-stack-1x" style="left: 3px; top: 2px"></i>
-                    <i v-show="syncState === constants.DB_SYNC_STATE_STOPPED" class="fas fa-pause fa-stack-1x" style="left: 3px; top: 2px"></i>
-                    <i v-show="syncState === constants.DB_SYNC_STATE_ONLINEONLY" class="fas fa-globe fa-stack-1x" style="left: 3px; top: 2px"></i>
-                    <i v-show="!syncState || syncState === constants.DB_SYNC_STATE_FAIL" class="fas fa-times fa-stack-1x" style="left: 3px; top: 2px"></i>
-                </span>
-                </div>
-                <div class="inline spaced hide-mobile"><span data-i18n>Edit grid // Bearbeiten von Grid</span> "{{gridData.label}}"</div>
-                <div id="buttons" class="menuButtons inline-desktop">
-                    <div class="inline left-mobile">
-                        <button @click="back" title="Back"><i class="fas fa-angle-left"></i> <span class="hide-mobile" data-i18n>Back // Zurück</span></button>
-                    </div>
-                    <div class="inline spaced left-mobile show-mobile">
-                    <span v-if="!isLocalUser" class="fa-stack fa-1x" style="margin-bottom: -1rem" :title="syncState | translate">
-                        <i class="fas fa-cloud fa-stack-2x" style="color: lightblue"></i>
-                        <i v-show="syncState === constants.DB_SYNC_STATE_SYNCINC" class="fas fa-sync-alt fa-stack-1x fa-spin" style="left: 3px; top: 1px"></i>
-                        <i v-show="syncState === constants.DB_SYNC_STATE_SYNCED" class="fas fa-check fa-stack-1x" style="left: 3px; top: 2px"></i>
-                        <i v-show="syncState === constants.DB_SYNC_STATE_STOPPED" class="fas fa-pause fa-stack-1x" style="left: 3px; top: 2px"></i>
-                        <i v-show="syncState === constants.DB_SYNC_STATE_ONLINEONLY" class="fas fa-globe fa-stack-1x" style="left: 3px; top: 2px"></i>
-                        <i v-show="!syncState || syncState === constants.DB_SYNC_STATE_FAIL" class="fas fa-times fa-stack-1x" style="left: 3px; top: 2px"></i>
-                    </span>
-                    </div>
-                    <div class="right-mobile inline spaced">
-                        <div class="inline spaced">
-                            <button @click="undo" title="Undo" :disabled="!canUndo || doingUndoRedo" style="padding: 0 10px;"><i class="fas fa-undo"></i> <span class="hide-mobile" data-i18n>Undo // Rückgängig</span></button>
-                            <button @click="redo" title="Redo" :disabled="!canRedo || doingUndoRedo" style="padding: 0 10px;"><i class="fas fa-redo"></i> <span class="hide-mobile" data-i18n>Redo // Wiederherstellen</span></button>
-                        </div>
-                        <div class="inline">
-                            <button id="moreButton" title="More" class="spaced"><i class="fas fa-bars"></i> <span class="hide-mobile" data-i18n>More // Mehr</span></button>
-                        </div>
-                    </div>
-                </div>
+            <header-icon></header-icon>
+            <button @click="back" title="Back" class="spaced left small"><i class="fas fa-angle-left"></i> <span class="hide-mobile" data-i18n>Back // Zurück</span></button>
+            <button id="moreButton" title="More" class="spaced"><i class="fas fa-bars"></i> <span class="hide-mobile" data-i18n>More // Mehr</span></button>
+            <div class="spaced btn-group">
+                <button @click="undo" title="Undo" :disabled="!canUndo || doingUndoRedo" class="small"><i class="fas fa-undo"></i> <span class="hide-mobile" data-i18n>Undo // Rückgängig</span></button>
+                <button @click="redo" title="Redo" :disabled="!canRedo || doingUndoRedo" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile" data-i18n>Redo // Wiederherstellen</span></button>
             </div>
         </header>
         <div class="row content spaced" v-if="!gridData.gridElements || gridData.gridElements.length == 0" role="main">
@@ -90,7 +58,7 @@
     import {GridElement} from "../../js/model/GridElement";
     import {GridData} from "../../js/model/GridData";
     import {constants} from "../../js/util/constants";
-    import {localStorageService} from "../../js/service/data/localStorageService";
+    import HeaderIcon from '../../vue-components/components/headerIcon.vue'
 
     let vueApp = null;
     let gridInstance = null;
@@ -108,13 +76,11 @@
                 showActionsModal: false,
                 editElementId: null,
                 showGrid: false,
-                syncState: null,
-                isLocalUser: localStorageService.isLastActiveUserLocal(),
                 constants: constants
             }
         },
         components: {
-            EditGridModal, AddMultipleModal, EditActionsModal
+            EditGridModal, AddMultipleModal, EditActionsModal, HeaderIcon
         },
         methods: {
             addRow: function (event) {
@@ -127,9 +93,6 @@
             },
             fillGaps: function () {
                 gridInstance.fillGaps();
-            },
-            compactLayout: function () {
-                gridInstance.compactLayout();
             },
             undo: function () {
                 this.doingUndoRedo = true;
@@ -209,13 +172,6 @@
                         lastOpenedGridId: thiz.gridData.id
                     }, savedMetadata));
                 });
-
-                if (!thiz.isLocalUser) {
-                    $(document).on(constants.EVENT_DB_SYNC_STATE_CHANGE, (event, syncState) => {
-                        thiz.syncState = syncState;
-                    });
-                    thiz.syncState = dataService.getSyncState();
-                }
                 return initGrid(thiz.gridData);
             }).then(() => {
                 gridInstance.setLayoutChangedEndListener((newGridData) => {
@@ -277,7 +233,6 @@
         var CONTEXT_NEW_COLLECT = "CONTEXT_NEW_COLLECT";
         var CONTEXT_NEW_PREDICT = "CONTEXT_NEW_PREDICT";
 
-        var CONTEXT_LAYOUT_COMPACT = "CONTEXT_LAYOUT_COMPACT";
         var CONTEXT_LAYOUT_FILL = "CONTEXT_LAYOUT_FILL";
         var CONTEXT_LAYOUT_MOREROWS = "CONTEXT_LAYOUT_MOREROWS";
         var CONTEXT_LAYOUT_LESSROWS = "CONTEXT_LAYOUT_LESSROWS";
@@ -328,7 +283,6 @@
                 name: "Remove row from layout // Zeile in Layout entfernen",
                 icon: "far fa-minus-square"
             },
-            'CONTEXT_LAYOUT_COMPACT': {name: "Automatic layout // Automatisches Layout", icon: "fas fa-th"},
             'CONTEXT_LAYOUT_FILL': {name: "Fill gaps // Lücken füllen", icon: "fas fa-angle-double-left"}
         };
 
@@ -409,10 +363,6 @@
                 }
                 case CONTEXT_DELETE_ALL: {
                     vueApp.clearElements();
-                    break;
-                }
-                case CONTEXT_LAYOUT_COMPACT: {
-                    vueApp.compactLayout();
                     break;
                 }
                 case CONTEXT_LAYOUT_FILL: {
