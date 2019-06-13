@@ -23,7 +23,7 @@
                     </div>
                 </div>
             </header>
-            <div class="row content" id="allGridsContent">
+            <div class="row content text-content">
                 <h2 data-i18n>Saved Dictionaries // Gespeicherte Wörterbücher</h2>
                 <ul id="dictList" v-show="dicts && dicts.length > 0">
                     <li class="hide-mobile table-headers">

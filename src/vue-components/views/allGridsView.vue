@@ -27,7 +27,7 @@
                 </div>
             </div>
         </header>
-        <div class="row content" id="allGridsContent">
+        <div class="row content text-content">
             <h2 data-i18n>Saved Grids // Gespeicherte Grids</h2>
             <ul id="gridList" v-show="filteredGrids.length > 0">
                 <li class="hide-mobile table-headers">
