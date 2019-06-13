@@ -4,27 +4,13 @@
             <i class="fas fa-4x fa-spinner fa-spin"/>
         </div>
         <header class="row header" role="banner">
-            <div id="menuHeader" class="menuHeader">
-                <div id="buttons" class="menuButtons inline-desktop">
-                    <div class="inline spaced">
-                        <button @click="back" title="Back"><i class="fas fa-angle-left"/> <span class="hide-mobile" data-i18n>Back // Zurück</span></button>
-                    </div>
-                    <div class="inline spaced third-space-mobile">
-                        <input type="text" :placeholder="'PLACEHOLDER_SEARCH_GRID' | translate" v-model="searchText" style="width: 100%">
-                    </div>
-                    <div class="inline spaced right-mobile">
-                        <div class="inline hide-mobile">
-                            <button @click="addGrid()"><i class="fas fa-plus"/> <span data-i18n="">New Grid // Neues Grid</span></button>
-                        </div>
-                        <div class="spaced inline" style="display: none">
-                            <input type="file" id="inputFile" @change="importFromFile" accept=".grd"/>
-                            <input type="file" id="inputFileBackup" @change="restoreBackupFromFile" accept=".grb"/>
-                        </div>
-                        <div class="spaced inline">
-                            <button id="moreButton" title="More"><i class="fas fa-bars"></i> <span class="hide-mobile" data-i18n>More // Mehr</span></button>
-                        </div>
-                    </div>
-                </div>
+            <header-icon></header-icon>
+            <button id="moreButton" title="More" class="small"><i class="fas fa-bars"></i> <span class="hide-mobile" data-i18n>More // Mehr</span></button>
+            <button @click="addGrid()" class="spaced hide-mobile small"><i class="fas fa-plus"/> <span data-i18n="">New Grid // Neues Grid</span></button>
+            <input type="text" :placeholder="'PLACEHOLDER_SEARCH_GRID' | translate" class="spaced" style="width: 30vw" v-model="searchText">
+            <div style="display: none">
+                <input type="file" id="inputFile" @change="importFromFile" accept=".grd"/>
+                <input type="file" id="inputFileBackup" @change="restoreBackupFromFile" accept=".grb"/>
             </div>
         </header>
         <div class="row content text-content">
@@ -36,7 +22,7 @@
                 </li>
                 <li v-for="grid in filteredGrids" class="grid-table-elem">
                     <div class="row">
-                        <div class="four columns">
+                        <div class="four columns" style="margin-bottom: 1.5vh">
                             <div v-if="editModeId !== grid.id">
                                 <a :href="'#grid/' + grid.id">{{ grid.label }}</a>
                                 <button class="small-button" @click="enableEdit(grid.id, grid.label)"><i class="far fa-edit"/></button>
@@ -49,7 +35,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="eight columns">
+                        <div class="eight columns" style="display: flex">
                             <div class="four columns show-mobile" style="margin: 0.5em 0 0 0.2em" data-i18n="">Actions // Aktionen</div>
                             <button @click="show(grid.id)"><i class="far fa-eye"/> <span class="hide-mobile" data-i18n="">Show // Öffnen</span></button>
                             <button @click="edit(grid.id)"><i class="far fa-edit"/> <span class="hide-mobile" data-i18n="">Edit // Bearbeiten</span></button>
@@ -77,11 +63,13 @@
     import {translateService} from "./../../js/service/translateService";
     import {pouchDbService} from "../../js/service/data/pouchDbService";
     import {constants} from "../../js/util/constants";
+    import HeaderIcon from '../../vue-components/components/headerIcon.vue'
 
     let SELECTOR_CONTEXTMENU = '#moreButton';
 
     let vueApp = null;
     let vueConfig = {
+        components: {HeaderIcon},
         data() {
             return {
                 grids: null,
@@ -143,9 +131,6 @@
                         thiz.reload();
                     });
                 })
-            },
-            back() {
-                Router.back();
             },
             exportToFile(gridId) {
                 if (gridId) {
@@ -337,8 +322,9 @@
     }
 
     .all-grids-view li button {
-        padding: 0 20px;
-        width: 18%;
+        width: 17%;
+        padding: 0 1vh;
+        margin: 0.5vh 0.5vw;
     }
 
     .all-grids-view a {
@@ -362,11 +348,6 @@
         .all-grids-view a {
             font-size: 1.3em;
             margin-top: 1.5em;
-        }
-
-        .all-grids-view input[type="text"] {
-            height: 1.3em;
-            font-size: 1.3em;
         }
 
         .all-grids-view li {

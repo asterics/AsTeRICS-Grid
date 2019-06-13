@@ -44,7 +44,7 @@ header button.small {
     padding: 0 1vw;
 }
 
-header .btn-group {
+header .btn-group, header input {
     height: 100%;
     float: right;
 }
