@@ -1,5 +1,10 @@
 <template>
-    <div id="app" class="box" v-cloak>
+    <div class="box" v-cloak>
+        <header class="row header" role="banner">
+            <header-icon></header-icon>
+            <button class="spaced" @click="showModal = true"><i class="fas fa-cog"/> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
+            <button @click="toEditGrid()"><i class="fas fa-pencil-alt"/> <span class="hide-mobile" data-i18n>Edit grid // Grid bearbeiten</span></button>
+        </header>
         <input-options-modal v-if="showModal" v-bind:metadata-property="metadata" v-bind:scanner="scanner" v-bind:hover="hover" v-bind:clicker="clicker" v-bind:reinit="reinitInputMethods" @close="showModal = false"/>
         <div class="row content spaced" v-show="!gridData.gridElements || gridData.gridElements.length == 0">
             <div data-i18n="" style="margin-top: 2em">
@@ -33,6 +38,7 @@
     import {Clicker} from "../../js/input/clicking.js";
 
     import InputOptionsModal from '../../vue-components/modals/inputOptionsModal.vue'
+    import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {constants} from "../../js/util/constants";
     import {GridData} from "../../js/model/GridData";
     import {I18nModule} from "../../js/i18nModule";
@@ -54,7 +60,7 @@
             }
         },
         components: {
-            InputOptionsModal
+            InputOptionsModal, HeaderIcon
         },
         methods: {
             initInputMethods() {
