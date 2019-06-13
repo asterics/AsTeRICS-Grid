@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import {I18nModule} from "../i18nModule";
 import {constants} from "../util/constants";
+import {util} from "../util/util";
 
 let MainVue = {};
 let app = null;
@@ -44,7 +45,9 @@ MainVue.init = function () {
                 $(document).trigger(constants.EVENT_GRID_RESIZE);
             });
             window.addEventListener('resize', () => {
-                $(document).trigger(constants.EVENT_GRID_RESIZE);
+                util.debounce(function () {
+                    $(document).trigger(constants.EVENT_GRID_RESIZE);
+                }, 300, constants.EVENT_GRID_RESIZE);
             });
         },
         updated() {
