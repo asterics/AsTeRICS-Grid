@@ -100,7 +100,7 @@
 }
 
 /* Smaller than tablet */
-@media (max-width: 750px) {
+@media (max-width: 850px) {
     .modal-footer button {
         width: 100%;
         margin: 0.5em;

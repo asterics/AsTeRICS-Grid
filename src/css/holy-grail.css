@@ -43,6 +43,7 @@
     border-right: 2px solid lightgray;
     max-height: 100vh;
     overflow-x: hidden;
+    padding-top: 10px;
 }
 
 /**
@@ -65,17 +66,22 @@
     nav li button {
         padding-left: 0.5em;
     }
+
+    .hg-sidebar button {
+        padding-left: 0;
+        padding-right: 0;
+        text-align: center;
+    }
 }
 
-@media (max-height: 500px) {
+@media (max-width: 850px) and (max-height: 500px) {
     .hg-sidebar {
         flex: 0 0 12vh;
     }
 
-    nav li button {
+    .hg-sidebar button {
         font-size: 3vh;
         line-height: 0;
-        padding-left: 0.7em;
     }
 
     #astericsIcon {

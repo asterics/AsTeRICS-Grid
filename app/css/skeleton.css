@@ -421,6 +421,9 @@ there.
     .third-space-mobile {
         width: 33%;
     }
+    header button i {
+        margin: 0 0.5em;
+    }
 }
 
 /* Smaller than tablet */
@@ -441,7 +444,7 @@ there.
 }
 
 /* Larger than tablet */
-@media (min-width: 750px) {
+@media (min-width: 850px) {
     .show-mobile {
         display: none !important;
     }

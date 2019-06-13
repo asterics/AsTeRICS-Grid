@@ -14,14 +14,29 @@ body {
 
 .overflow-content {
     overflow-y: auto;
-    max-height: 100vh;
+    height: 100vh;
 }
 
 header {
     margin: 0;
-    padding: 5px 10px 15px 10px;
+    padding: 10px;
     border-bottom: 2px solid lightgray;
     height: 40px;
+}
+
+header div {
+    display: inline-flex;
+}
+
+header button {
+    float: right;
+    height: 100%;
+    font-size: 1.2em;
+}
+
+header button i {
+    font-size: 1.2em;
+    margin-right: 0.5em;
 }
 
 h1 {
@@ -33,7 +48,7 @@ nav h2 {
     font-size: 1.2em;
 }
 
-nav li button {
+.hg-sidebar button {
     padding: 0.5em 1em;
     margin: 0;
     width: 100%;
@@ -76,16 +91,14 @@ nav li:hover button span {
     color: darkblue;
 }
 
-.hg-sidebar h2, .hg-sidebar h3 {
+.hg-sidebar h2 {
     margin-left: 0.5em;
 }
 
 #astericsIcon {
     height: 40px;
-    margin-top: 1em;
     margin-right: 0.5em;
-    margin-left: 0.5em;
-    margin-bottom: -0.7em;
+    margin-left: 1.1em;
 }
 
 [v-cloak] {
@@ -95,7 +108,7 @@ nav li:hover button span {
 .box {
     display: flex;
     flex-flow: column;
-    height: 100%;
+    height: 100vh;
 }
 
 .box .row.header {
@@ -112,22 +125,16 @@ nav li:hover button span {
     position: relative;
 }
 
-/* end of screen rules. */
-
-#menuHeader, #allGridsContent {
-    margin-left: 1.0em;
-}
-
-.menuHeader h1, .menuButtons button, .menuHeader a, .menuHeader label {
-    font-size: 1.2em;
-}
-
 .menuButtons{
     margin-top: 0.5em;
 }
 
 .scanFocus {
     outline: thick solid red !important;
+}
+
+.text-content {
+    margin-left: 1em;
 }
 
 #grid-mask {
@@ -236,4 +243,8 @@ nav li:hover button span {
     -moz-hyphens: auto;
     -webkit-hyphens: auto;
     hyphens: auto;
+}
+
+.left {
+    float: left;
 }
