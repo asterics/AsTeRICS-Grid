@@ -37,7 +37,16 @@
         </main>
 
         <div class="holy-grail-sidebar-1 hg-sidebar" v-if="showSidebar">
-            <a href="#main"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline hide-mobile">AsTeRICS Grid</h1></a>
+            <div style="margin-bottom: 1em">
+                <div class="show-mobile">
+                    <a href="javascript:void(0)" @click="closeSidebar()"><button tabindex="-1"><i class="fas fa-2x fa-bars inline"></i></button></a>
+                </div>
+                <div class="hide-mobile" style="display: inline-flex">
+                    <a href="javascript:void(0)" @click="closeSidebar()" style="margin: 0.3em 0.5em 0 1.2em"><i class="fas fa-2x fa-bars inline"></i></a>
+                    <a href="#main"><h1 class="inline hide-mobile"><img id="astericsIcon" src="img/asterics-grid-icon.png" alt="AsTeRICS Grid"/></h1></a>
+                </div>
+            </div>
+
             <!-- sidebar 1 content -->
             <nav role="navigation">
                 <h2 class="hide-mobile" style="margin-top: 1.5em;">Navigation</h2>
