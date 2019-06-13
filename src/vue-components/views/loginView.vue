@@ -1,5 +1,8 @@
 <template>
-    <div class="content overflow-content">
+    <div class="overflow-content">
+        <header class="row header" role="banner" v-show="showHeader">
+            <header-icon v-on:event-sidebar-open="showHeader = false" v-on:event-sidebar-close="showHeader = true"></header-icon>
+        </header>
         <div class="row content spaced" @keyup.enter="loginPlain(user, password)">
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Login // Einloggen</span></h2>
             <div class="eleven columns offset-by-one">
@@ -138,8 +141,11 @@
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {translateService} from "../../js/service/translateService";
     import {Router} from "../../js/router";
+    import {MainVue} from "../../js/vue/mainVue";
+    import HeaderIcon from '../../vue-components/components/headerIcon.vue'
 
     export default {
+        components: {HeaderIcon},
         props: [],
         data() {
             return {
@@ -152,7 +158,8 @@
                 savedOnlineUsers: [],
                 savedLocalUsers: [],
                 allUsersList: [],
-                activeUser: null
+                activeUser: null,
+                showHeader: !MainVue.isSidebarOpen()
             }
         },
         methods: {

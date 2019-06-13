@@ -1,9 +1,7 @@
 <template>
     <div class="overflow-content">
-        <header class="row header" role="banner">
-            <div id="menuHeader" class="menuHeader">
-                <a href="#welcome" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/><h1 class="inline">AsTeRICS Grid</h1></a>
-            </div>
+        <header class="row header" role="banner" v-show="showHeader">
+            <header-icon v-on:event-sidebar-open="showHeader = false" v-on:event-sidebar-close="showHeader = true"></header-icon>
         </header>
         <div class="row content spaced">
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Welcome // Willkommen</span></h2>
@@ -53,12 +51,16 @@
     import {Router} from "../../js/router";
     import {constants} from "../../js/util/constants";
     import {localStorageService} from "../../js/service/data/localStorageService";
+    import {MainVue} from "../../js/vue/mainVue";
+    import HeaderIcon from '../../vue-components/components/headerIcon.vue'
 
     export default {
+        components: {HeaderIcon},
         props: [],
         data() {
             return {
-                loading: false
+                loading: false,
+                showHeader: !MainVue.isSidebarOpen()
             }
         },
         methods: {

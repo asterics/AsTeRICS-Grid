@@ -1,5 +1,8 @@
 <template>
-    <div class="content overflow-content">
+    <div class="overflow-content">
+        <header class="row header" role="banner" v-show="showHeader">
+            <header-icon v-on:event-sidebar-open="showHeader = false" v-on:event-sidebar-close="showHeader = true"></header-icon>
+        </header>
         <div class="row content spaced">
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Register online user // Online-User registrieren</span></h2>
             <form autocomplete="off" onsubmit="event.preventDefault()">
@@ -88,9 +91,11 @@
     import {Router} from "../../js/router";
     import {constants} from "../../js/util/constants";
     import ComparisonComponent from "./../components/comparisonComponent.vue";
+    import {MainVue} from "../../js/vue/mainVue";
+    import HeaderIcon from '../../vue-components/components/headerIcon.vue'
 
     export default {
-        components: {ComparisonComponent},
+        components: {ComparisonComponent, HeaderIcon},
         props: [],
         data() {
             return {
@@ -103,7 +108,8 @@
                 registerSuccess: null,
                 creationTime: new Date().getTime(),
                 spamTime: 10000,
-                validationErrors: []
+                validationErrors: [],
+                showHeader: !MainVue.isSidebarOpen()
             }
         },
         methods: {
