@@ -40,6 +40,15 @@ header button i {
     margin-right: 0.5em;
 }
 
+header button.small {
+    padding: 0 1vw;
+}
+
+header .btn-group {
+    height: 100%;
+    float: right;
+}
+
 h1 {
     font-size: 1.5em;
     margin: 0;

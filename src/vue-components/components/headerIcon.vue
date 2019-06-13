@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="left">
         <div v-if="show">
-            <a href="javascript:void(0)" @click="openSidebar()" style="margin: 0.3em 1em 0 0.6em"><i class="fas fa-2x fa-bars inline"></i></a>
+            <a href="javascript:void(0)" @click="openSidebar()" style="margin: 0.2em 1em 0 0.5em"><i class="fas fa-2x fa-bars inline"></i></a>
             <a href="#main" class="hide-mobile"><h1 class="inline"><img id="astericsIcon" src="img/asterics-grid-icon.png" alt="AsTeRICS Grid"/></h1></a>
         </div>
         <a href="#main" class="show-mobile"><h1 class="inline"><img id="astericsIcon" src="img/asterics_icon.png" alt="AsTeRICS Grid" style="margin: 0"/></h1></a>

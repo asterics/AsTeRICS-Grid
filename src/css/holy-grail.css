@@ -43,7 +43,7 @@
     border-right: 2px solid lightgray;
     max-height: 100vh;
     overflow-x: hidden;
-    padding-top: 10px;
+    padding-top: 2vh;
 }
 
 /**
@@ -88,9 +88,10 @@
         height: 10vh;
     }
 
-    header button {
+    header button, header a {
         height: 10vh;
         max-height: 40px;
         font-size: 4vh;
+        line-height: 0;
     }
 }
