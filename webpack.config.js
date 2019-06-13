@@ -58,6 +58,7 @@ module.exports = env => {
             'css/images/ui-icons_444444_256x240.png',
             'css/custom.css',
             'css/skeleton.css',
+            'img/asterics-grid-icon.png',
             'img/asterics_icon.png',
             'img/favicon.ico',
             'lib/dom-i18n.min.js',
