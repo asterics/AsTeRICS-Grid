@@ -1,47 +1,13 @@
 import Vue from 'vue'
 import {translateService} from "../service/translateService";
-import {I18nModule} from "../i18nModule";
 
-let VueHandler = {};
+let VuePluginManager = {};
 let timeoutID = null;
-let mainVue = null;
 
-VueHandler.init = function () {
+VuePluginManager.init = function () {
     initDirectives();
     initFilters();
-    initMainVue();
 };
-
-VueHandler.setViewComponent = function (component, properties) {
-    mainVue.setComponent(component, properties);
-};
-
-function initMainVue() {
-    mainVue = new Vue({
-        el: '#app',
-        data() {
-            return {
-                component: null,
-                properties: null,
-                componentKey: 0,
-                showSidebar: true
-            }
-        },
-        methods: {
-            setComponent(component, properties) {
-                this.component = component;
-                this.properties = properties;
-                this.componentKey++; //forces to update the view, even with same component (e.g. grid view, other page)
-            }
-        },
-        mounted() {
-            I18nModule.init();
-        },
-        updated() {
-            I18nModule.init();
-        }
-    });
-}
 
 function initDirectives() {
     Vue.directive('focus', {
@@ -76,4 +42,4 @@ function initFilters() {
     })
 }
 
-export {VueHandler}
+export {VuePluginManager}

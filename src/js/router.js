@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import Navigo from 'navigo'
-import Vue from 'vue'
 
 import {I18nModule} from './i18nModule.js';
 import {dataService} from "./service/data/dataService.js";
@@ -16,7 +15,7 @@ import AboutView from '../vue-components/views/aboutView.vue'
 import DictionariesView from '../vue-components/views/dictionariesView.vue'
 import {databaseService} from "./service/data/databaseService";
 import {localStorageService} from "./service/data/localStorageService";
-import {VueHandler} from "./vue/vueHandler";
+import {MainVue} from "./vue/mainVue";
 
 let NO_DB_VIEWS = ['#login', '#register', '#updating', '#welcome', '#add', '#about'];
 
@@ -214,7 +213,7 @@ function loadVueView(viewObject, properties) {
     $('nav button').removeClass('selected');
     $(`nav a[href='${hash}'] button`).addClass('selected');
     log.debug('loading view: ' + viewObject.__file);
-    VueHandler.setViewComponent(viewObject, properties);
+    MainVue.setViewComponent(viewObject, properties);
 }
 
 function toDashCase(camelCase) {
