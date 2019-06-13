@@ -422,14 +422,14 @@ there.
         width: 33%;
     }
     header button i {
-        margin: 0 0.5em;
+        margin: 0 1vw;
     }
 }
 
 /* Smaller than tablet */
 @media (max-width: 450px) {
     button, input[type="button"] {
-        padding: 0 10px;
+        padding: 0 1vw;
     }
 }
 
