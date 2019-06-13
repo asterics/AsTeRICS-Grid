@@ -157,7 +157,7 @@ Router.toManageGrids = function () {
 };
 
 Router.back = function () {
-    if(lastHash) {
+    if (lastHash && lastHash !== location.hash) {
         setHash(lastHash, true);
     } else {
         this.toMain();
