@@ -5,23 +5,8 @@
         </div>
         <div class="all-dicts-view" v-if="dicts">
             <header class="row header" role="banner">
-                <div id="menuHeader" class="menuHeader">
-                    <a href="#main" class="hide-mobile"><img id="astericsIcon" class="inline" src="img/asterics_icon.png"/>
-                        <h1 class="inline">AsTeRICS Grid</h1></a>
-                    <div id="buttons" class="menuButtons inline-desktop">
-                        <div class="inline spaced">
-                            <button @click="back" title="Back"><i class="fas fa-angle-left"/> <span class="hide-mobile"
-                                                                                                    data-i18n>Back // Zurück</span>
-                            </button>
-                        </div>
-                        <div class="inline spaced right-mobile">
-                            <div class="inline">
-                                <button @click="addDictionary()"><i class="fas fa-plus"/> <span data-i18n="">New Dictionary // Neues Wörterbuch</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <header-icon></header-icon>
+                <button @click="addDictionary()"><i class="fas fa-plus"/> <span data-i18n="">New Dictionary // Neues Wörterbuch</span></button>
             </header>
             <div class="row content text-content">
                 <h2 data-i18n>Saved Dictionaries // Gespeicherte Wörterbücher</h2>
@@ -73,7 +58,7 @@
                             </div>
                             <div class="row">
                                 <span data-i18n="">Words: // Wörter:</span>
-                                <ul>
+                                <ul style="margin-left: 0">
                                     <li v-for="word in wordlist">
                                         <button class="small-button" @click="deleteWord(word, dict)" style="margin-right: 0.5em"><i class="far fa-trash-alt"/></button>{{word}}
                                     </li>
@@ -110,7 +95,6 @@
 <script>
     import $ from 'jquery';
     import {dataService} from "../../js/service/data/dataService";
-    import {Router} from "../../js/router";
     import {modelUtil} from "../../js/util/modelUtil";
     import {I18nModule} from "./../../js/i18nModule.js";
     import {translateService} from "./../../js/service/translateService";
@@ -120,6 +104,7 @@
     import {Dictionary} from "../../js/model/Dictionary";
     import Predictionary from 'predictionary'
     import ImportDictionaryModal from '../modals/importDictionaryModal.vue'
+    import HeaderIcon from '../../vue-components/components/headerIcon.vue'
 
     let vueApp = null;
     let vueConfig = {
@@ -139,7 +124,7 @@
             };
         },
         components: {
-            ImportDictionaryModal
+            ImportDictionaryModal, HeaderIcon
         },
         methods: {
             deleteDict: function (id, label) {
@@ -218,9 +203,6 @@
                         thiz.reload();
                     });
                 })
-            },
-            back() {
-                Router.back();
             },
             deleteWord(word, dict) {
                 let thiz = this;
@@ -317,10 +299,6 @@
         .all-dicts-view input[type="text"] {
             height: 1.3em;
             font-size: 1.3em;
-        }
-
-        .all-dicts-view li {
-            margin-top: 2em;
         }
 
         .all-dicts-view .small-button {
