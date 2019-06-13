@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# 2e55e5e28a171068259a
+# 8df908fb74c4dea23f75
 
 CACHE:
 build/asterics-grid.bundle.js
@@ -24,6 +24,7 @@ css/jquery-ui.css
 css/images/ui-icons_444444_256x240.png
 css/custom.css
 css/skeleton.css
+img/asterics-grid-icon.png
 img/asterics_icon.png
 img/favicon.ico
 lib/dom-i18n.min.js
