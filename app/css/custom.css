@@ -19,9 +19,10 @@ body {
 
 header {
     margin: 0;
-    padding: 10px;
+    padding: 2vh;
     border-bottom: 2px solid lightgray;
-    height: 40px;
+    max-height: 40px;
+    height: 10vh;
 }
 
 header div {

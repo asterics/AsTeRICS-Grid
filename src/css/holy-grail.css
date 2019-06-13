@@ -87,4 +87,10 @@
     #astericsIcon {
         height: 10vh;
     }
+
+    header button {
+        height: 10vh;
+        max-height: 40px;
+        font-size: 4vh;
+    }
 }
