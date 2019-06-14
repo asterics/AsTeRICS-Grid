@@ -24,20 +24,22 @@
             openSidebar() {
                 $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
                 this.show = false;
+            },
+            onOpenFn() {
+                this.show = false;
+                this.$emit(constants.EVENT_SIDEBAR_OPEN);
+            },
+            onCloseFn() {
+                this.show = true;
+                this.$emit(constants.EVENT_SIDEBAR_CLOSE);
             }
         },
         mounted() {
-            let thiz = this;
-            $(document).on(constants.EVENT_SIDEBAR_CLOSE, () => {
-                thiz.show = true;
-                thiz.$emit(constants.EVENT_SIDEBAR_CLOSE);
-            });
-            $(document).on(constants.EVENT_SIDEBAR_OPEN, () => {
-                thiz.$emit(constants.EVENT_SIDEBAR_OPEN);
-            });
+            $(document).on(constants.EVENT_SIDEBAR_CLOSE, this.onCloseFn);
+            $(document).on(constants.EVENT_SIDEBAR_OPEN, this.onOpenFn);
         },
         beforeDestroy() {
-            $(document).off(constants.EVENT_SIDEBAR_CLOSE);
+            $(document).off(constants.EVENT_SIDEBAR_CLOSE, document, this.onCloseFn);
         }
     }
 </script>
