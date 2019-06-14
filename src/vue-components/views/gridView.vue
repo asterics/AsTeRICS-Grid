@@ -1,9 +1,18 @@
 <template>
     <div class="box" v-cloak>
         <header class="row header" role="banner">
-            <header-icon></header-icon>
-            <button class="spaced" @click="showModal = true"><i class="fas fa-cog"/> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
-            <button @click="toEditGrid()"><i class="fas fa-pencil-alt"/> <span class="hide-mobile" data-i18n>Edit grid // Grid bearbeiten</span></button>
+            <header-icon v-show="!metadata.locked"></header-icon>
+            <button v-show="metadata.locked" @click="toggleLock()">
+                <i class="fas fa-unlock"></i>
+                <span class="hide-mobile" data-i18n>Unlock // Entsperren</span>
+                <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
+            </button>
+            <button v-show="!metadata.locked" @click="toggleLock()">
+                <i class="fas fa-lock"></i>
+                <span class="hide-mobile" data-i18n>Lock // Sperren</span>
+            </button>
+            <button v-show="!metadata.locked" @click="toEditGrid()" class="spaced"><i class="fas fa-pencil-alt"/> <span class="hide-mobile" data-i18n>Edit grid // Grid bearbeiten</span></button>
+            <button v-show="!metadata.locked" @click="showModal = true"><i class="fas fa-cog"></i> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
         </header>
         <input-options-modal v-if="showModal" v-bind:metadata-property="metadata" v-bind:scanner="scanner" v-bind:hover="hover" v-bind:clicker="clicker" v-bind:reinit="reinitInputMethods" @close="showModal = false"/>
         <div class="row content spaced" v-show="!gridData.gridElements || gridData.gridElements.length == 0">
@@ -42,9 +51,11 @@
     import {constants} from "../../js/util/constants";
     import {GridData} from "../../js/model/GridData";
     import {I18nModule} from "../../js/i18nModule";
+    import {util} from "../../js/util/util";
 
     let vueApp = null;
     let gridInstance = null;
+    let UNLOCK_COUNT = 8;
 
     let vueConfig = {
         props: ['gridId'],
@@ -57,12 +68,33 @@
                 clicker: null,
                 showModal: false,
                 showGrid: false,
+                unlockCount: UNLOCK_COUNT,
+                unlockCounter: UNLOCK_COUNT,
             }
         },
         components: {
             InputOptionsModal, HeaderIcon
         },
         methods: {
+            toggleLock() {
+                let thiz = this;
+                if (thiz.metadata.locked) {
+                    thiz.unlockCounter--;
+                    util.debounce(function () {
+                        thiz.unlockCounter = UNLOCK_COUNT;
+                    }, 1500);
+                    if(thiz.unlockCounter === 0) {
+                        thiz.metadata.locked = false;
+                        dataService.saveMetadata(thiz.metadata);
+                        $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
+                    }
+                } else {
+                    thiz.metadata.locked = true;
+                    dataService.saveMetadata(thiz.metadata);
+                    $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
+                    thiz.unlockCounter = UNLOCK_COUNT;
+                }
+            },
             initInputMethods() {
                 let thiz = this;
                 if (!gridInstance) {
