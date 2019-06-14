@@ -1,6 +1,7 @@
 let util = {};
 
 let _timeoutHandlers = {};
+let _throttleHistory = {}; //fn -> lastCallTime
 util.DEFAULT_KEY = 'DEFAULT_KEY';
 util.DEFAULT_KEY2 = 'DEFAULT_KEY2';
 
@@ -24,6 +25,26 @@ util.debounce = function (fn, timeout, key) {
     _timeoutHandlers[key] = setTimeout(function () {
         fn();
     }, timeout);
+};
+
+/**
+ * Throttles a high call rate on a given function.
+ *
+ * @param fn the function to call
+ * @param args the arguments to pass to the function to call
+ * @param minPauseMs minimum pause in milliseconds between two function calls of the same function. If last call
+ *        was more than minPausMs ago, the given function is called, otherwise the function call is discarded.
+ */
+util.throttle = function (fn, args, minPauseMs) {
+    if (!fn || !fn.apply) {
+        return;
+    }
+    minPauseMs = minPauseMs || 500;
+    let lastCall = _throttleHistory[fn];
+    if (!lastCall || new Date().getTime() - lastCall > minPauseMs) {
+        fn.apply(null, args);
+        _throttleHistory[fn] = new Date().getTime();
+    }
 };
 
 /**
