@@ -59,6 +59,7 @@
     import {GridData} from "../../js/model/GridData";
     import {constants} from "../../js/util/constants";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
+    import {inputEventHandler} from "../../js/util/inputEventHandler";
 
     let vueApp = null;
     let gridInstance = null;
@@ -158,6 +159,7 @@
             let thiz = this;
             vueApp = thiz;
             $(document).on(constants.EVENT_DB_PULL_UPDATED, reloadFn);
+            inputEventHandler.stopListening();
             dataService.getGrid(this.gridId).then(gridData => {
                 if (!gridData) {
                     log.warn('grid not found! gridId: ' + this.gridId);
@@ -189,6 +191,7 @@
             I18nModule.init();
         },
         beforeDestroy() {
+            inputEventHandler.startListening();
             if (gridInstance) {
                 gridInstance.destroy();
                 gridInstance = null;
