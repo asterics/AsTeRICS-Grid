@@ -45,13 +45,16 @@ MainVue.init = function () {
             let thiz = this;
             I18nModule.init();
             $(document).on(constants.EVENT_SIDEBAR_OPEN, () => {
+                if (thiz.showSidebar) {
+                    return;
+                }
                 if (!databaseService.getCurrentUsedDatabase()) {
                     $(document).trigger(constants.EVENT_SIDEBAR_OPENED);
                     thiz.showSidebar = true;
                     return;
                 }
                 dataService.getMetadata().then(metadata => {
-                    if (!metadata.locked) {
+                    if (!metadata.locked && !metadata.fullscreen) {
                         $(document).trigger(constants.EVENT_SIDEBAR_OPENED);
                         thiz.showSidebar = true;
                         $(document).trigger(constants.EVENT_GRID_RESIZE);
@@ -59,6 +62,9 @@ MainVue.init = function () {
                 });
             });
             $(document).on(constants.EVENT_SIDEBAR_CLOSE, () => {
+                if (!thiz.showSidebar) {
+                    return;
+                }
                 thiz.showSidebar = false;
                 $(document).trigger(constants.EVENT_GRID_RESIZE);
             });
@@ -69,9 +75,23 @@ MainVue.init = function () {
             });
             inputEventHandler
                 .onSwipedRight(thiz.openSidebar)
-                .onSwipedLeft(thiz.closeSidebar);
+                .onSwipedLeft(thiz.closeSidebar)
+                .onSwipedDown(openSidebarIfFullscreen)
+                .onSwipedRight(openSidebarIfFullscreen)
+                .onMouseUpperOrLeftBorder(openSidebarIfFullscreen);
             inputEventHandler.startListening();
             thiz.openSidebar();
+
+            function openSidebarIfFullscreen() {
+                dataService.getMetadata().then(metadata => {
+                    if (metadata.fullscreen) {
+                        metadata.fullscreen = false;
+                        dataService.saveMetadata(metadata).then(() => {
+                            thiz.openSidebar();
+                        });
+                    }
+                });
+            }
         },
         updated() {
             I18nModule.init();

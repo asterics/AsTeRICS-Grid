@@ -1,18 +1,19 @@
 <template>
     <div class="box" v-cloak>
-        <header class="row header" role="banner">
+        <header class="row header" role="banner" v-show="!metadata.fullscreen">
             <header-icon v-show="!metadata.locked"></header-icon>
-            <button v-show="metadata.locked" @click="toggleLock()">
+            <button v-show="metadata.locked" @click="toggleLock()" class="small">
                 <i class="fas fa-unlock"></i>
                 <span class="hide-mobile" data-i18n>Unlock // Entsperren</span>
                 <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
             </button>
-            <button v-show="!metadata.locked" @click="toggleLock()">
+            <button v-show="!metadata.locked" @click="toggleLock()" class="small">
                 <i class="fas fa-lock"></i>
                 <span class="hide-mobile" data-i18n>Lock // Sperren</span>
             </button>
-            <button v-show="!metadata.locked" @click="toEditGrid()" class="spaced"><i class="fas fa-pencil-alt"/> <span class="hide-mobile" data-i18n>Edit grid // Grid bearbeiten</span></button>
-            <button v-show="!metadata.locked" @click="showModal = true"><i class="fas fa-cog"></i> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
+            <button @click="applyFullscreen()" class="spaced small"><i class="fas fa-expand"/> <span class="hide-mobile" data-i18n>Fullscreen // Vollbild</span></button>
+            <button v-show="!metadata.locked" @click="toEditGrid()" class="spaced small"><i class="fas fa-pencil-alt"/> <span class="hide-mobile" data-i18n>Edit grid // Grid bearbeiten</span></button>
+            <button v-show="!metadata.locked" @click="showModal = true" class="small"><i class="fas fa-cog"></i> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
         </header>
         <input-options-modal v-if="showModal" v-bind:metadata-property="metadata" v-bind:scanner="scanner" v-bind:hover="hover" v-bind:clicker="clicker" v-bind:reinit="reinitInputMethods" @close="showModal = false"/>
         <div class="row content spaced" v-show="!gridData.gridElements || gridData.gridElements.length == 0">
@@ -69,7 +70,7 @@
                 showModal: false,
                 showGrid: false,
                 unlockCount: UNLOCK_COUNT,
-                unlockCounter: UNLOCK_COUNT,
+                unlockCounter: UNLOCK_COUNT
             }
         },
         components: {
@@ -96,6 +97,12 @@
                         $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
                     });
                 }
+            },
+            applyFullscreen() {
+                this.metadata.fullscreen = true;
+                dataService.saveMetadata(this.metadata);
+                $(document).trigger(constants.EVENT_GRID_RESIZE);
+                $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
             },
             initInputMethods() {
                 let thiz = this;
@@ -201,6 +208,10 @@
             let thiz = this;
             vueApp = thiz;
             $(document).on(constants.EVENT_DB_PULL_UPDATED, reloadFn);
+            $(document).on(constants.EVENT_SIDEBAR_OPEN, () => {
+                thiz.metadata.fullscreen = false;
+                $(document).trigger(constants.EVENT_GRID_RESIZE);
+            });
             dataService.getGrid(thiz.gridId).then(gridData => {
                 if (!gridData) {
                     throw 'grid not found! gridId: ' + this.gridId;

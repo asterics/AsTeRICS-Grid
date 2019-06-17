@@ -10,6 +10,7 @@ class MetaData extends Model({
     lastOpenedGridId: [String],
     headerPinned: [Boolean],
     locked: [Boolean],
+    fullscreen: [Boolean],
     hashCodes: [Object], //object keys: model names of hashed objects, object values: another object with keys = hashcodes, values = object ids
     inputConfig: InputConfig
 }) {
@@ -40,6 +41,7 @@ MetaData.defaults({
     modelVersion: constants.MODEL_VERSION,
     headerPinned: true,
     locked: false,
+    fullscreen: false,
     hashCodes: {},
     inputConfig: new InputConfig()
 });
