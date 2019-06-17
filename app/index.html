@@ -11,25 +11,15 @@
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/skeleton.css">
 </head>
-<!--body>
-<div id="content" class="box">
-    <div id="app" class="box">
-        <div id="header"></div>
-        <component v-if="component" v-bind:is="component" v-bind="properties" :key="componentKey"></component>
-        <div id="sidebarLeft"></div>
-        <div id="sidebarRight"></div>
-        <div id="grid-mask" class="grid-container" v-if="false">
-            <i class="fas fa-4x fa-spinner fa-spin" style="top: 40%;"></i>
-            <div style="position: fixed; top: 50%; width: 100%; text-align: center; font-size: 2em;">
-                <span>loading...</span>
-            </div>
-        </div>
-    </div>
-</div-->
-
 <body>
 <div id="app" class="holy-grail">
-    <div class="holy-grail-body">
+    <div id="grid-mask" class="grid-container" v-if="false">
+        <i class="fas fa-4x fa-spinner fa-spin" style="top: 40%;"></i>
+        <div style="position: fixed; top: 50%; width: 100%; text-align: center; font-size: 2em;">
+            <span>loading...</span>
+        </div>
+    </div>
+    <div class="holy-grail-body" v-cloak>
 
         <main role="main" class="holy-grail-content">
             <!-- Main page content -->
