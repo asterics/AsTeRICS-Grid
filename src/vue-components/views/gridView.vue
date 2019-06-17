@@ -1,6 +1,6 @@
 <template>
     <div class="box" v-cloak>
-        <header class="row header" role="banner" v-show="!metadata.fullscreen">
+        <header class="row header" role="banner" v-if="metadata && !metadata.fullscreen">
             <header-icon v-show="!metadata.locked"></header-icon>
             <button v-show="metadata.locked" @click="toggleLock()" class="small">
                 <i class="fas fa-unlock"></i>
@@ -16,16 +16,16 @@
             <button v-show="!metadata.locked" @click="showModal = true" class="small"><i class="fas fa-cog"></i> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
         </header>
         <input-options-modal v-if="showModal" v-bind:metadata-property="metadata" v-bind:scanner="scanner" v-bind:hover="hover" v-bind:clicker="clicker" v-bind:reinit="reinitInputMethods" @close="showModal = false"/>
-        <div class="row content spaced" v-show="!gridData.gridElements || gridData.gridElements.length == 0">
+        <div class="row content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0">
             <div data-i18n="" style="margin-top: 2em">
                 <span>No elements, click <a :href="'#grid/edit/' + gridData.id">Edit grid</a> to enter edit mode.</span>
                 <span>Keine Elemente, klicke auf <a :href="'#grid/edit/' + gridData.id">Grid bearbeiten</a> um das Grid zu bearbeiten.</span>
             </div>
         </div>
-        <div id="grid-mask" v-if="!showGrid" class="grid-container">
-            <i class="fas fa-4x fa-spinner fa-spin"/>
-        </div>
         <div class="row content">
+            <div id="grid-mask" v-if="!viewInitialized" class="grid-container">
+                <i class="fas fa-4x fa-spinner fa-spin"/>
+            </div>
             <div id="grid-container" class="grid-container">
             </div>
         </div>
@@ -63,12 +63,12 @@
         data() {
             return {
                 gridData: {},
-                metadata: {},
+                metadata: null,
                 scanner: null,
                 hover: null,
                 clicker: null,
                 showModal: false,
-                showGrid: false,
+                viewInitialized: false,
                 unlockCount: UNLOCK_COUNT,
                 unlockCounter: UNLOCK_COUNT
             }
@@ -239,8 +239,8 @@
             }).then(() => {
                 return initGrid(thiz.gridData.id);
             }).then(() => {
+                thiz.viewInitialized = true;
                 thiz.initInputMethods();
-                thiz.showGrid = true;
             }).catch((e) => {
                 log.warn(e);
                 Router.toManageGrids();
