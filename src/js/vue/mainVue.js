@@ -4,6 +4,7 @@ import {constants} from "../util/constants";
 import {util} from "../util/util";
 import {inputEventHandler} from "../util/inputEventHandler";
 import {dataService} from "../service/data/dataService";
+import {databaseService} from "../service/data/databaseService";
 
 let MainVue = {};
 let app = null;
@@ -34,32 +35,32 @@ MainVue.init = function () {
                 this.componentKey++; //forces to update the view, even with same component (e.g. grid view, other page)
             },
             closeSidebar() {
-                this.showSidebar = false;
-                $(document).trigger(constants.EVENT_GRID_RESIZE);
+                $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
             },
             openSidebar() {
-                let thiz = this;
-                try {
-                    //TODO: better .catch()?!
-                    dataService.getMetadata().then(metadata => {
-                        if (!metadata.locked) {
-                            thiz.showSidebar = true;
-                            $(document).trigger(constants.EVENT_GRID_RESIZE);
-                        }
-                    });
-                } catch (e) {
-                    thiz.showSidebar = true;
-                }
+                $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
             }
         },
         mounted() {
             let thiz = this;
             I18nModule.init();
             $(document).on(constants.EVENT_SIDEBAR_OPEN, () => {
-                thiz.openSidebar();
+                if (!databaseService.getCurrentUsedDatabase()) {
+                    $(document).trigger(constants.EVENT_SIDEBAR_OPENED);
+                    thiz.showSidebar = true;
+                    return;
+                }
+                dataService.getMetadata().then(metadata => {
+                    if (!metadata.locked) {
+                        $(document).trigger(constants.EVENT_SIDEBAR_OPENED);
+                        thiz.showSidebar = true;
+                        $(document).trigger(constants.EVENT_GRID_RESIZE);
+                    }
+                });
             });
             $(document).on(constants.EVENT_SIDEBAR_CLOSE, () => {
-                thiz.closeSidebar();
+                thiz.showSidebar = false;
+                $(document).trigger(constants.EVENT_GRID_RESIZE);
             });
             window.addEventListener('resize', () => {
                 util.debounce(function () {
@@ -70,7 +71,7 @@ MainVue.init = function () {
                 .onSwipedRight(thiz.openSidebar)
                 .onSwipedLeft(thiz.closeSidebar);
             inputEventHandler.startListening();
-            $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
+            thiz.openSidebar();
         },
         updated() {
             I18nModule.init();
