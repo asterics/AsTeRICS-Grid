@@ -1,8 +1,6 @@
 <template>
     <div class="overflow-content">
-        <header class="row header" role="banner" v-show="showHeader">
-            <header-icon v-on:event-sidebar-open="showHeader = false" v-on:event-sidebar-close="showHeader = true"></header-icon>
-        </header>
+        <header-icon full-header="true"></header-icon>
         <div class="row content spaced">
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Add&nbsp;offline&nbsp;user // Offline&#8209;User&nbsp;hinzufügen</span></h2>
             <form autocomplete="off" onsubmit="event.preventDefault()">
@@ -56,7 +54,6 @@
     import {constants} from "../../js/util/constants";
     import {Router} from "../../js/router";
     import ComparisonComponent from "./../components/comparisonComponent.vue";
-    import {MainVue} from "../../js/vue/mainVue";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
 
     export default {
@@ -68,8 +65,7 @@
                 validationError: undefined,
                 showInfo: false,
                 savedUsers: localStorageService.getSavedUsers(),
-                loading: false,
-                showHeader: !MainVue.isSidebarOpen()
+                loading: false
             }
         },
         methods: {

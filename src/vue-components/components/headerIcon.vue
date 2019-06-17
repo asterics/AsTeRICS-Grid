@@ -1,11 +1,13 @@
 <template>
-    <div class="left">
-        <div v-if="show">
-            <a href="javascript:void(0)" @click="openSidebar()" style="margin: 0.2em 1em 0 0.5em"><i class="fas fa-2x fa-bars inline"></i></a>
-            <a href="#main" class="hide-mobile"><h1 class="inline"><img id="astericsIcon" src="img/asterics-grid-icon.png" alt="AsTeRICS Grid"/></h1></a>
+    <component :is="tag" v-if="!fullHeader || show">
+        <div class="left">
+            <div v-if="show">
+                <a href="javascript:void(0)" @click="openSidebar()" style="margin: 0.2em 1em 0 0.5em"><i class="fas fa-2x fa-bars inline"></i></a>
+                <a href="#main" class="hide-mobile"><h1 class="inline"><img id="astericsIcon" src="img/asterics-grid-icon.png" alt="AsTeRICS Grid"/></h1></a>
+            </div>
+            <a href="#main" class="show-mobile"><h1 class="inline"><img id="astericsIcon" src="img/asterics_icon.png" alt="AsTeRICS Grid" style="margin: 0"/></h1></a>
         </div>
-        <a href="#main" class="show-mobile"><h1 class="inline"><img id="astericsIcon" src="img/asterics_icon.png" alt="AsTeRICS Grid" style="margin: 0"/></h1></a>
-    </div>
+    </component>
 </template>
 
 <script>
@@ -14,10 +16,11 @@
     import {MainVue} from "../../js/vue/mainVue";
 
     export default {
-        props: [],
+        props: ['fullHeader'], //if true this component is rendered as full header, otherwise as part of an already existing header
         data() {
             return {
-                show: !MainVue.isSidebarOpen()
+                show: !MainVue.isSidebarOpen(),
+                tag: 'div'
             }
         },
         methods: {
@@ -27,7 +30,7 @@
             },
             onOpenFn() {
                 this.show = false;
-                this.$emit(constants.EVENT_SIDEBAR_OPEN);
+                this.$emit(constants.EVENT_SIDEBAR_OPENED);
             },
             onCloseFn() {
                 this.show = true;
@@ -36,7 +39,10 @@
         },
         mounted() {
             $(document).on(constants.EVENT_SIDEBAR_CLOSE, this.onCloseFn);
-            $(document).on(constants.EVENT_SIDEBAR_OPEN, this.onOpenFn);
+            $(document).on(constants.EVENT_SIDEBAR_OPENED, this.onOpenFn);
+            if (this.fullHeader) {
+                this.tag = 'header';
+            }
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_SIDEBAR_CLOSE, document, this.onCloseFn);
