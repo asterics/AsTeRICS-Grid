@@ -15,7 +15,8 @@ constants.EVENT_DB_CONNECTION_LOST = 'EVENT_DB_CONNECTION_LOST';
 constants.EVENT_DB_PULL_UPDATED = 'EVENT_DB_PULL_UPDATED';
 constants.EVENT_DB_SYNC_STATE_CHANGE = 'EVENT_DB_SYNC_STATE_CHANGE';
 
-constants.EVENT_SIDEBAR_OPEN = 'event-sidebar-open';
+constants.EVENT_SIDEBAR_OPEN = 'event-sidebar-open'; //start open
+constants.EVENT_SIDEBAR_OPENED = 'event-sidebar-opened'; //after sidebar opened
 constants.EVENT_SIDEBAR_CLOSE = 'event-sidebar-close';
 
 constants.EVENT_GRID_RESIZE = 'EVENT_GRID_RESIZE';
