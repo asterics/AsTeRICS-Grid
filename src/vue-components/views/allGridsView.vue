@@ -1,8 +1,5 @@
 <template>
-    <div class="all-grids-view overflow-content">
-        <div id="grid-mask" v-if="showLoading || grids === null" class="grid-container">
-            <i class="fas fa-4x fa-spinner fa-spin"/>
-        </div>
+    <div class="all-grids-view overflow-content box">
         <header class="row header" role="banner">
             <header-icon></header-icon>
             <button id="moreButton" title="More" class="small"><i class="fas fa-bars"></i> <span class="hide-mobile" data-i18n>More // Mehr</span></button>
@@ -14,6 +11,9 @@
             </div>
         </header>
         <div class="row content text-content">
+            <div id="grid-mask" v-if="showLoading || grids === null" class="grid-container">
+                <i class="fas fa-4x fa-spinner fa-spin"/>
+            </div>
             <h2 data-i18n>Saved Grids // Gespeicherte Grids</h2>
             <ul id="gridList" v-show="filteredGrids.length > 0">
                 <li class="hide-mobile table-headers">

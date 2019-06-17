@@ -1,14 +1,14 @@
 <template>
-    <div class="overflow-content">
-        <div id="grid-mask" v-if="!dicts" class="grid-container">
-            <i class="fas fa-4x fa-spinner fa-spin"/>
-        </div>
-        <div class="all-dicts-view" v-if="dicts">
+    <div class="overflow-content box">
+        <div class="all-dicts-view">
             <header class="row header" role="banner">
                 <header-icon></header-icon>
                 <button @click="addDictionary()"><i class="fas fa-plus"/> <span data-i18n="">New Dictionary // Neues Wörterbuch</span></button>
             </header>
             <div class="row content text-content">
+                <div id="grid-mask" v-if="!dicts" class="grid-container">
+                    <i class="fas fa-4x fa-spinner fa-spin"/>
+                </div>
                 <h2 data-i18n>Saved Dictionaries // Gespeicherte Wörterbücher</h2>
                 <ul id="dictList" v-show="dicts && dicts.length > 0">
                     <li class="hide-mobile table-headers">

@@ -24,10 +24,10 @@
         <div>
             <edit-actions-modal v-if="showActionsModal" v-bind:edit-element-id-param="editElementId" v-bind:grid-data="gridData" @close="showActionsModal = false" @reload="reload"/>
         </div>
-        <div id="grid-mask" v-if="!showGrid" class="grid-container">
-            <i class="fas fa-4x fa-spinner fa-spin"/>
-        </div>
         <div class="row content">
+            <div id="grid-mask" v-if="!showGrid" class="grid-container">
+                <i class="fas fa-4x fa-spinner fa-spin"/>
+            </div>
             <div id="grid-container" class="grid-container">
             </div>
             <div id="grid-layout-background-wrapper" class="grid-container" v-if="gridData.gridElements && gridData.gridElements.length > 0" style="margin: 10px;">
