@@ -19,7 +19,6 @@ function init() {
     log.setLevel(log.levels.INFO);
     log.info('AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
     VuePluginManager.init();
-    MainVue.init();
     reloadOnAppcacheUpdate();
     let lastActiveUser = localStorageService.getLastActiveUser();
     let autologinUser = localStorageService.getAutologinUser();
@@ -33,6 +32,7 @@ function init() {
         promises.push(databaseService.initForUser(autologinUser, autologinUser));
     }
     Promise.all(promises).finally(() => {
+        MainVue.init();
         let initHash = location.hash || (autologinUser ? '#main' : lastActiveUser ? '#login' : '#welcome');
         if (!Router.isInitialized()) {
             Router.init('#injectView', initHash);
