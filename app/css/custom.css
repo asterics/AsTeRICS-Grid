@@ -35,6 +35,13 @@ header button {
     font-size: 1.2em;
 }
 
+@media (max-width: 1000px) and (min-width: 850px) {
+    header button {
+        font-size: 1.5vw;
+    }
+
+}
+
 header button i {
     font-size: 1.2em;
     margin-right: 0.5em;
