@@ -83,16 +83,18 @@
                     util.debounce(function () {
                         thiz.unlockCounter = UNLOCK_COUNT;
                     }, 1500);
-                    if(thiz.unlockCounter === 0) {
+                    if (thiz.unlockCounter === 0) {
                         thiz.metadata.locked = false;
-                        dataService.saveMetadata(thiz.metadata);
-                        $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
+                        dataService.saveMetadata(thiz.metadata).then(() => {
+                            $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
+                        });
                     }
                 } else {
                     thiz.metadata.locked = true;
-                    dataService.saveMetadata(thiz.metadata);
-                    $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
                     thiz.unlockCounter = UNLOCK_COUNT;
+                    dataService.saveMetadata(thiz.metadata).then(() => {
+                        $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
+                    });
                 }
             },
             initInputMethods() {
