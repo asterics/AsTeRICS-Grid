@@ -34,7 +34,7 @@ InputConfig.defaults({
     id: "", //will be replaced by constructor
     modelName: InputConfig.getModelName(),
     modelVersion: constants.MODEL_VERSION,
-    scanAutostart: true,
+    scanAutostart: false,
     scanTimeoutMs: 1000,
     scanTimeoutFirstElementFactor: 1,
     scanBinary: true,
