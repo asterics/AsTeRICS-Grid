@@ -30,11 +30,9 @@
             },
             onOpenFn() {
                 this.show = false;
-                this.$emit(constants.EVENT_SIDEBAR_OPENED);
             },
             onCloseFn() {
                 this.show = true;
-                this.$emit(constants.EVENT_SIDEBAR_CLOSE);
             }
         },
         mounted() {
