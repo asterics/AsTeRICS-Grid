@@ -25,7 +25,8 @@ MainVue.init = function () {
                 component: null,
                 properties: null,
                 componentKey: 0,
-                showSidebar: false
+                showSidebar: false,
+                currentUser: databaseService.getCurrentUsedDatabase()
             }
         },
         methods: {
@@ -68,6 +69,12 @@ MainVue.init = function () {
                 thiz.showSidebar = false;
                 $(document).trigger(constants.EVENT_GRID_RESIZE);
             });
+            $(document).on(constants.EVENT_DB_INITIALIZED, () => {
+                thiz.currentUser = databaseService.getCurrentUsedDatabase();
+            });
+            $(document).on(constants.EVENT_DB_CLOSED, () => {
+                thiz.currentUser = databaseService.getCurrentUsedDatabase();
+            });
             window.addEventListener('resize', () => {
                 util.debounce(function () {
                     $(document).trigger(constants.EVENT_GRID_RESIZE);
@@ -83,6 +90,9 @@ MainVue.init = function () {
             thiz.openSidebar();
 
             function openSidebarIfFullscreen() {
+                if (thiz.showSidebar || !databaseService.getCurrentUsedDatabase()) {
+                    return;
+                }
                 dataService.getMetadata().then(metadata => {
                     if (metadata.fullscreen) {
                         metadata.fullscreen = false;

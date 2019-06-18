@@ -20,14 +20,13 @@
         </div>
     </div>
     <div class="holy-grail-body" v-cloak>
-
         <main role="main" class="holy-grail-content">
             <!-- Main page content -->
             <component v-if="component" v-bind:is="component" v-bind="properties" :key="componentKey"></component>
         </main>
 
         <div class="holy-grail-sidebar-1 hg-sidebar" v-if="showSidebar">
-            <div style="margin-bottom: 1em">
+            <div style="flex: 0 0 auto;">
                 <div class="show-mobile">
                     <a href="javascript:void(0)" @click="closeSidebar()"><button tabindex="-1"><i class="fas fa-2x fa-bars inline"></i></button></a>
                 </div>
@@ -37,18 +36,23 @@
                 </div>
             </div>
 
-            <!-- sidebar 1 content -->
-            <nav role="navigation">
-                <h2 class="hide-mobile" style="margin-top: 1.5em;">Navigation</h2>
-                <ul>
-                    <li><a href="#main"><button tabindex="-1"><i class="fas fa-2x fa-home"></i><span class="hide-mobile" data-i18n="">Main // Start</span></button></a></li>
-                    <li><a href="#grids"><button tabindex="-1"><i class="fas fa-2x fa-list-ul"></i><span class="hide-mobile" data-i18n="">Manage grids // Grids verwalten</span></button></a></li>
-                    <li><a href="#dictionaries"><button tabindex="-1"><i class="fas fa-2x fa-book"></i><span class="hide-mobile" data-i18n="">Manage Dictionaries // Wörterbücher verwalten</span></button></a></li>
-                </ul>
+            <nav role="navigation" class="row content" style="flex: 1 1 auto">
+                <div v-if="currentUser">
+                    <h2 class="hide-mobile" style="margin-top: 1.5em;">Navigation</h2>
+                    <ul>
+                        <li><a href="#main"><button tabindex="-1"><i class="fas fa-2x fa-home"></i><span class="hide-mobile" data-i18n="">Main // Start</span></button></a></li>
+                        <li><a href="#grids"><button tabindex="-1"><i class="fas fa-2x fa-list-ul"></i><span class="hide-mobile" data-i18n="">Manage grids // Grids verwalten</span></button></a></li>
+                        <li><a href="#dictionaries"><button tabindex="-1"><i class="fas fa-2x fa-book"></i><span class="hide-mobile" data-i18n="">Manage Dictionaries // Wörterbücher verwalten</span></button></a></li>
+                    </ul>
+                </div>
 
                 <h2 class="hide-mobile" data-i18n="">Users // Benutzer</h2>
                 <ul>
-                    <li><a href="#login"><button tabindex="-1"><i class="fas fa-2x fa-users"></i><span class="hide-mobile" data-i18n="">Change User // Benutzer wechseln</span></button></a></li>
+                    <li><a href="#login">
+                        <button tabindex="-1">
+                            <i class="fas fa-2x fa-users"></i><span v-show="!currentUser" class="hide-mobile" data-i18n="">Login // Einloggen</span><span v-show="currentUser" class="hide-mobile" data-i18n="">Change User // Benutzer wechseln</span>
+                        </button></a>
+                    </li>
                     <li><a href="#register"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span class="hide-mobile" data-i18n="">Add online user // Online-User hinzufügen</span></button></a></li>
                     <li class="hide-mobile"><a href="#add"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span data-i18n="">Add offline user // Offline-User hinzufügen</span></button></a></li>
                 </ul>
@@ -58,6 +62,10 @@
                     <li><a href="#about"><button><i class="fas fa-2x fa-info-circle"></i><span class="hide-mobile" data-i18n="">About AsTeRICS Grid // Über AsTeRICS Grid</span></button></a></li>
                 </ul>
             </nav>
+            <div class="hide-mobile" style="flex: 0 0 auto; padding: 1.5em 0.5em 0.5em 0.7em;">
+                <span v-show="currentUser"><span data-i18n="">logged in as // eingeloggt als</span> <i>{{currentUser | translate}}</i></span>
+                <span v-show="!currentUser" data-i18n="">not logged in. // nicht eingeloggt.</span>
+            </div>
         </div>
     </div>
 </div>

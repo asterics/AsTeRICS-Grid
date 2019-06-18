@@ -41,9 +41,11 @@
 .holy-grail-sidebar-1 {
     order: -1;
     border-right: 2px solid lightgray;
-    max-height: 100vh;
+    max-height: 98vh;
     overflow-x: hidden;
     padding-top: 2vh;
+    display: flex;
+    flex-flow: column;
 }
 
 /**
