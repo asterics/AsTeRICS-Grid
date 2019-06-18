@@ -120,7 +120,7 @@ databaseService.removeObject = function (id) {
  * @return {*}
  */
 databaseService.initForUser = function (username, hashedUserPassword, userDatabaseURL, onlyRemote) {
-    let shouldSync = userDatabaseURL && !onlyRemote;
+    let shouldSync = userDatabaseURL && !onlyRemote || false;
     if (pouchDbService.getOpenedDatabaseName() === username && shouldSync === pouchDbService.isSyncEnabled()) {
         return Promise.resolve();
     }
