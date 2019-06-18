@@ -59,19 +59,19 @@ function touchMoveListener(event) {
         _touchMoveBeginPosY = event.touches[0].clientY;
         _touchMoveBeginPosX = event.touches[0].clientX;
     } else if (event.touches[0].clientY > _touchMoveBeginPosY + touchMoveLength) {
-        log.warn('down')
+        log.debug('swipe down.');
         _touchMoveBeginPosY = null;
         callHandlers(swipeDownHandlers);
     } else if (event.touches[0].clientY < _touchMoveBeginPosY - touchMoveLength) {
-        log.warn('up')
+        log.debug('swipe up.');
         _touchMoveBeginPosY = null;
         callHandlers(swipeUpHandlers);
     } else if (event.touches[0].clientX > _touchMoveBeginPosX + touchMoveLength) {
-        log.warn('right')
+        log.debug('swipe right.');
         _touchMoveBeginPosX = null;
         callHandlers(swipeRightHandles);
     } else if (event.touches[0].clientX < _touchMoveBeginPosX - touchMoveLength) {
-        log.warn('left')
+        log.debug('swipe left.');
         _touchMoveBeginPosX = null;
         callHandlers(swipeLeftHandles);
     }
