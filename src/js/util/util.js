@@ -2,6 +2,7 @@ let util = {};
 
 let _timeoutHandlers = {};
 let _throttleHistory = {}; //fn -> lastCallTime
+let lastClipboardData = '';
 util.DEFAULT_KEY = 'DEFAULT_KEY';
 util.DEFAULT_KEY2 = 'DEFAULT_KEY2';
 
@@ -60,11 +61,24 @@ util.copyToClipboard = function copyTextToClipboard(text) {
     try {
         var successful = document.execCommand('copy');
         var msg = successful ? 'successful' : 'unsuccessful';
+        lastClipboardData = text;
         log.debug('Copying text command was ' + msg);
     } catch (err) {
         log.warn('Unable to copy to clipboard.');
     }
     document.body.removeChild(textArea);
+};
+
+/**
+ * appends a given text to clipboard.
+ * Note: only works for subsequent calls on util.copyToClipboard() or util.appendToClipboard() since the real
+ * clipboard content cannot be retrieved and only the values of previous calls of these functions will be used
+ * to append the text.
+ *
+ * @param text the string to append to the clipboard
+ */
+util.appendToClipboard = function (text) {
+    util.copyToClipboard(lastClipboardData + text);
 };
 
 export {util};

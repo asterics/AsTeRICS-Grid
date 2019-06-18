@@ -53,6 +53,12 @@ collectElementService.doCollectElementActions = function (action) {
         case GridActionCollectElement.COLLECT_ACTION_COPY_CLIPBOARD:
             util.copyToClipboard(collectedText);
             break;
+        case GridActionCollectElement.COLLECT_ACTION_APPEND_CLIPBOARD:
+            util.appendToClipboard(collectedText);
+            break;
+        case GridActionCollectElement.COLLECT_ACTION_CLEAR_CLIPBOARD:
+            util.copyToClipboard('');
+            break;
     }
     predictionService.predict(collectedText);
 };
@@ -83,7 +89,7 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
     if (registeredCollectElements.length === 0) {
         return;
     }
-    if(getActionOfType(element, GridActionCollectElement.getModelName())) {
+    if (getActionOfType(element, GridActionCollectElement.getModelName())) {
         return; // no adding of text if the element contains actions for collect elements, e.g. "clear"
     }
     if (!element.type || element.type === GridElement.ELEMENT_TYPE_NORMAL) {
