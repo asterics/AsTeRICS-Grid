@@ -68,7 +68,11 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
             }));
         }
 
-        return Promise.all(promises);
+        let returnPromise = Promise.all(promises);
+        returnPromise.then(() => {
+            $(document).trigger(constants.EVENT_DB_INITIALIZED);
+        });
+        return returnPromise;
     };
 
     /**
@@ -96,7 +100,12 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
         if (_remoteDb) promises.push(_remoteDb.close());
         _db = null;
         _remoteDb = null;
-        return Promise.all(promises);
+
+        let returnPromise = Promise.all(promises);
+        returnPromise.then(() => {
+            $(document).trigger(constants.EVENT_DB_CLOSED);
+        });
+        return returnPromise;
     };
 
     /**

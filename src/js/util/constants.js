@@ -14,6 +14,8 @@ constants.VALIDATION_VALID = 'VALIDATION_VALID';
 constants.EVENT_DB_CONNECTION_LOST = 'EVENT_DB_CONNECTION_LOST';
 constants.EVENT_DB_PULL_UPDATED = 'EVENT_DB_PULL_UPDATED';
 constants.EVENT_DB_SYNC_STATE_CHANGE = 'EVENT_DB_SYNC_STATE_CHANGE';
+constants.EVENT_DB_INITIALIZED = 'EVENT_DB_INITIALIZED';
+constants.EVENT_DB_CLOSED = 'EVENT_DB_CLOSED';
 
 constants.EVENT_SIDEBAR_OPEN = 'event-sidebar-open'; //start open
 constants.EVENT_SIDEBAR_OPENED = 'event-sidebar-opened'; //after sidebar opened
