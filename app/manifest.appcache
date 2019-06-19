@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# 8df908fb74c4dea23f75
+# d499c9080c5d24f2ecac
 
 CACHE:
 build/asterics-grid.bundle.js
@@ -46,7 +46,6 @@ lib/sjcl.min.js
 polyfill/core_js_shim.min.js
 polyfill/fetch.js
 polyfill/url-search-params-polyfill.min.js
-views/updatingView.html
 
 NETWORK:
 *
