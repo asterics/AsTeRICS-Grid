@@ -3,8 +3,7 @@ var constants = {};
 constants.ELEMENT_EVENT_ID = "ELEMENT_EVENT_ID";
 constants.MODEL_VERSION = '{"major": 1, "minor": 0, "patch": 0}';
 
-constants.LOCAL_USERNAME_PREFIX = 'local-user-';
-constants.LOCAL_NOLOGIN_USERNAME = constants.LOCAL_USERNAME_PREFIX + 'default-user';
+constants.LOCAL_NOLOGIN_USERNAME = 'default-user';
 constants.USERNAME_REGEX = /^[a-z][a-z0-9_-]{2,50}$/;
 
 constants.VALIDATION_ERROR_REGEX = 'VALIDATION_ERROR_REGEX';
