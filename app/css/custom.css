@@ -265,3 +265,7 @@ nav li:hover button span {
 .left {
     float: left;
 }
+
+.right {
+    float: right;
+}
