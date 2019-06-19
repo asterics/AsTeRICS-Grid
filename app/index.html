@@ -70,7 +70,7 @@
             </nav>
             <div class="hide-mobile" style="flex: 0 0 auto; padding: 1.5em 0.5em 1em 0.7em;">
                 <span v-show="currentUser && !isLocalUser"><span data-i18n="">logged in as // eingeloggt als</span> <i>{{currentUser}}</i></span>
-                <span v-show="currentUser && isLocalUser"><span data-i18n="">using offline user: // aktiver Offline-User:</span> <i>{{currentUser | translate}}</i></span>
+                <span v-show="currentUser && isLocalUser"><span data-i18n="">using offline user: // aktiver Offline-User:</span> <i>{{currentUser}}</i></span>
                 <span v-show="!currentUser" data-i18n="">not logged in. // nicht eingeloggt.</span>
                 <span v-if="currentUser && !isLocalUser" class="fa-stack fa-1x right" :title="syncState | translate" style="margin: -0.3em 1em 0 0;">
                     <i class="fas fa-cloud fa-stack-2x" style="color: lightblue"></i>
