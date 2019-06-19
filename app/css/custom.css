@@ -154,12 +154,12 @@ nav li:hover button span {
     margin-left: 1em;
 }
 
-#grid-mask {
+.grid-mask {
     background-color: white;
     z-index: 99;
 }
 
-#grid-mask i {
+.grid-mask i {
     position: fixed;
     left: 50%;
     top: 50%;

@@ -23,7 +23,7 @@
             </div>
         </div>
         <div class="row content">
-            <div id="grid-mask" v-if="!viewInitialized" class="grid-container">
+            <div v-if="!viewInitialized" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
             </div>
             <div id="grid-container" class="grid-container">

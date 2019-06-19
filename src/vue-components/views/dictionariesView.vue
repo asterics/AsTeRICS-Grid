@@ -6,7 +6,7 @@
                 <button @click="addDictionary()"><i class="fas fa-plus"/> <span data-i18n="">New Dictionary // Neues Wörterbuch</span></button>
             </header>
             <div class="row content text-content">
-                <div id="grid-mask" v-if="!dicts" class="grid-container">
+                <div v-if="!dicts" class="grid-container grid-mask">
                     <i class="fas fa-4x fa-spinner fa-spin"/>
                 </div>
                 <h2 data-i18n>Saved Dictionaries // Gespeicherte Wörterbücher</h2>

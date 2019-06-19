@@ -11,7 +11,7 @@
             </div>
         </header>
         <div class="row content text-content">
-            <div id="grid-mask" v-if="showLoading || grids === null" class="grid-container">
+            <div v-if="showLoading || grids === null" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
             </div>
             <h2 data-i18n>Saved Grids // Gespeicherte Grids</h2>
