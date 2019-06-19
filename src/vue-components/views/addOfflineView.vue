@@ -80,6 +80,7 @@
                 }
                 localStorageService.saveLocalUser(thiz.user);
                 localStorageService.setAutologinUser(thiz.user);
+                loginService.stopAutoRetryLogin();
                 databaseService.registerForUser(thiz.user, thiz.user).then(() => {
                     Router.toMain();
                 });
