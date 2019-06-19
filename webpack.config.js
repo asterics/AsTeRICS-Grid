@@ -79,8 +79,7 @@ module.exports = env => {
             'lib/sjcl.min.js',
             'polyfill/core_js_shim.min.js',
             'polyfill/fetch.js',
-            'polyfill/url-search-params-polyfill.min.js',
-            'views/updatingView.html'
+            'polyfill/url-search-params-polyfill.min.js'
         ],
         settings: ['prefer-online'],
         output: '../manifest.appcache',
