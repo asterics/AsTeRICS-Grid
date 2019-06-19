@@ -141,8 +141,12 @@ loginService.register = function (user, plainPassword, saveUser) {
  */
 loginService.validateUsername = function (username) {
     return new Promise((resolve, reject) => {
-        if (!username || username.indexOf(constants.LOCAL_USERNAME_PREFIX) === 0 || !constants.USERNAME_REGEX.test(username)) {
+        if (!username || !constants.USERNAME_REGEX.test(username)) {
             resolve(constants.VALIDATION_ERROR_REGEX);
+            return;
+        }
+        if (localStorageService.isSavedLocalUser(username)) {
+            resolve(constants.VALIDATION_ERROR_EXISTING);
             return;
         }
         superlogin.validateUsername(username).then(() => {
