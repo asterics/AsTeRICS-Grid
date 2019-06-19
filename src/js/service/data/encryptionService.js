@@ -36,7 +36,9 @@ encryptionService.encryptObject = function (object, options) {
         modelName: object.modelName
     });
     encryptedObject._id = object.id;
-    encryptedObject._rev = object._rev;
+    if (object._rev) {
+        encryptedObject._rev = object._rev;
+    }
     let jsonString = JSON.stringify(object);
     let shortJsonString = JSON.stringify(dataUtil.removeLongPropertyValues(object));
     encryptedObject.encryptedDataBase64 = encryptionService.encryptString(jsonString, options.encryptionKey);
