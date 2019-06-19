@@ -5,6 +5,7 @@ import {util} from "../util/util";
 import {inputEventHandler} from "../util/inputEventHandler";
 import {dataService} from "../service/data/dataService";
 import {databaseService} from "../service/data/databaseService";
+import {localStorageService} from "../service/data/localStorageService";
 
 let MainVue = {};
 let app = null;
@@ -26,7 +27,10 @@ MainVue.init = function () {
                 properties: null,
                 componentKey: 0,
                 showSidebar: false,
-                currentUser: databaseService.getCurrentUsedDatabase()
+                currentUser: databaseService.getCurrentUsedDatabase(),
+                isLocalUser: localStorageService.isSavedLocalUser(databaseService.getCurrentUsedDatabase()),
+                syncState: dataService.getSyncState(),
+                constants: constants
             }
         },
         methods: {
@@ -50,31 +54,41 @@ MainVue.init = function () {
                     return;
                 }
                 if (!databaseService.getCurrentUsedDatabase()) {
-                    $(document).trigger(constants.EVENT_SIDEBAR_OPENED);
                     thiz.showSidebar = true;
+                    this.$nextTick(() => {
+                        $(document).trigger(constants.EVENT_SIDEBAR_OPENED);
+                        $(document).trigger(constants.EVENT_GRID_RESIZE);
+                    });
                     return;
                 }
                 dataService.getMetadata().then(metadata => {
                     if (!metadata.locked && !metadata.fullscreen) {
-                        $(document).trigger(constants.EVENT_SIDEBAR_OPENED);
                         thiz.showSidebar = true;
-                        $(document).trigger(constants.EVENT_GRID_RESIZE);
+                        this.$nextTick(() => {
+                            $(document).trigger(constants.EVENT_SIDEBAR_OPENED);
+                            $(document).trigger(constants.EVENT_GRID_RESIZE);
+                        });
                     }
                 });
             });
             $(document).on(constants.EVENT_SIDEBAR_CLOSE, () => {
-                if (!thiz.showSidebar) {
-                    return;
-                }
                 thiz.showSidebar = false;
-                $(document).trigger(constants.EVENT_GRID_RESIZE);
+                this.$nextTick(() => {
+                    $(document).trigger(constants.EVENT_GRID_RESIZE);
+                });
             });
             $(document).on(constants.EVENT_DB_INITIALIZED, () => {
                 thiz.currentUser = databaseService.getCurrentUsedDatabase();
+                thiz.isLocalUser = localStorageService.isSavedLocalUser(thiz.currentUser);
             });
             $(document).on(constants.EVENT_DB_CLOSED, () => {
                 thiz.currentUser = databaseService.getCurrentUsedDatabase();
+                thiz.isLocalUser = localStorageService.isSavedLocalUser(thiz.currentUser);
             });
+            $(document).on(constants.EVENT_DB_SYNC_STATE_CHANGE, (event, syncState) => {
+                thiz.syncState = syncState;
+            });
+            thiz.syncState = dataService.getSyncState();
             window.addEventListener('resize', () => {
                 util.debounce(function () {
                     $(document).trigger(constants.EVENT_GRID_RESIZE);
