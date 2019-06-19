@@ -22,7 +22,6 @@ let NO_DB_VIEWS = ['#login', '#register', '#updating', '#welcome', '#add', '#abo
 let Router = {};
 let navigoInstance = null;
 let viewsFolder = 'views/';
-let filePostfix = '.html';
 let injectId = null;
 let lastHash = null;
 let routingEndabled = true;
@@ -31,6 +30,9 @@ let _currentView = null;
 let _currentVueApp = null;
 
 Router.init = function (injectIdParam, initialHash) {
+    if (!routingEndabled) {
+        return;
+    }
     _initialized = true;
     injectId = injectIdParam;
     navigoInstance = new Navigo(null, true);
@@ -40,7 +42,9 @@ Router.init = function (injectIdParam, initialHash) {
                 toMainInternal();
             },
             'updating': function () {
-                loadView('updatingView');
+                log.debug('loading updating view.');
+                $('#updatingView').show();
+                I18nModule.init();
                 routingEndabled = false;
             },
             'grids/': function () {
@@ -190,21 +194,6 @@ function setHash(hash, reset) {
     location.hash = hash;
 }
 
-function loadView(viewName) {
-    log.debug('loading view: ' + viewName);
-    return new Promise((resolve, reject) => {
-        if (!routingEndabled) {
-            reject();
-            return;
-        }
-        $(injectId).load(viewsFolder + viewName + filePostfix, null, function () {
-            I18nModule.init();
-            log.debug('loaded view: ' + viewName);
-            resolve();
-        });
-    })
-}
-
 function loadVueView(viewObject, properties) {
     if (!routingEndabled) {
         return;
@@ -216,11 +205,10 @@ function loadVueView(viewObject, properties) {
     MainVue.setViewComponent(viewObject, properties);
 }
 
-function toDashCase(camelCase) {
-    return camelCase.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`); //camelCase to dash-case
-}
-
 function toMainInternal() {
+    if (!routingEndabled) {
+        return;
+    }
     log.debug('main view');
     dataService.getMetadata().then(metadata => {
         let gridId = metadata ? metadata.lastOpenedGridId : null;
