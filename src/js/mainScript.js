@@ -18,8 +18,8 @@ function init() {
     //timingLogger.initLogging();
     log.setLevel(log.levels.INFO);
     log.info('AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
-    VuePluginManager.init();
     reloadOnAppcacheUpdate();
+    VuePluginManager.init();
     let lastActiveUser = localStorageService.getLastActiveUser();
     let autologinUser = localStorageService.getAutologinUser();
     let userPassword = localStorageService.getUserPassword(autologinUser);
@@ -62,18 +62,18 @@ function reloadOnAppcacheUpdate() {
     window.applicationCache.addEventListener('downloading', function () {
         log.debug('appcache: downloading');
         if (!firstRun) {
-            if (!Router.isInitialized()) {
-                Router.init('#injectView', '#updating');
-            } else {
-                Router.toUpdating();
-            }
+            Router.init('#app', '#updating');
         }
     });
     window.applicationCache.addEventListener('progress', function (event) {
         log.debug('appcache: progress');
         if (!firstRun) {
-            $('#updatePercentWrapper').show();
-            $('#updatePercent').html(Math.ceil(event.loaded * 100 / event.total));
+            Router.init('#app', '#updating');
+            let percent = Math.ceil(event.loaded * 100 / event.total);
+            if (typeof percent === 'number') {
+                $('#updatePercentWrapper').show();
+                $('#updatePercent').html(Math.ceil(event.loaded * 100 / event.total));
+            }
         }
     });
     window.applicationCache.addEventListener('error', function (event) {
