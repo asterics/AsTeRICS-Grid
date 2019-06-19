@@ -23,7 +23,7 @@
                                             <i class="fas fa-globe fa-1x" style="position: absolute; top: 20px; left: 20px; color: dodgerblue"></i>
                                         </span>
                                     </span>
-                                        <strong >{{username}}</strong>
+                                        <strong >{{username | translate}}</strong>
                                         <em v-show="username === activeUser" data-i18n="">(active) // (aktiv)</em>
                                     </div>
                                     <button class="four columns" @click="loginStored(username)">
