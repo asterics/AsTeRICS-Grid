@@ -89,10 +89,10 @@ loginService.loginHashedPassword = function (user, hashedPassword, saveUser) {
  * logs out a logged in user from remote superlogin
  */
 loginService.logout = function () {
+    loginService.stopAutoRetryLogin();
     if (!_loggedInUser) {
         return;
     }
-    stopAutoRetryLogin();
     log.debug('logging out user: ' + _loggedInUser);
     databaseService.closeCurrentDatabase();
     superlogin.logout(_loggedInUser);
@@ -113,7 +113,7 @@ loginService.logout = function () {
  *
  */
 loginService.register = function (user, plainPassword, saveUser) {
-    stopAutoRetryLogin();
+    loginService.stopAutoRetryLogin();
     user = user.trim();
     let password = encryptionService.getUserPasswordHash(plainPassword);
     log.debug("password hash: " + password);
@@ -158,8 +158,14 @@ loginService.validateUsername = function (username) {
     });
 };
 
-loginService.isLoggedInOnline = function () {
-    return _loginInfo !== null;
+/**
+ * stops auto-retry of login, if currently running
+ */
+loginService.stopAutoRetryLogin = function () {
+    if (_autoRetryHandler) {
+        window.clearInterval(_autoRetryHandler);
+        _autoRetryHandler = null;
+    }
 };
 
 function loginInternal(user, hashedPassword, saveUser) {
@@ -172,7 +178,7 @@ function loginInternal(user, hashedPassword, saveUser) {
         password: hashedPassword
     }).then((info) => {
         log.info('login success!');
-        stopAutoRetryLogin();
+        loginService.stopAutoRetryLogin();
         _loginInfo = info;
         _loggedInUser = user;
         localStorageService.setLastActiveUser(user);
@@ -197,18 +203,11 @@ function reasonToErrorCode(reason) {
 }
 
 function autoRetryLogin(user, hashedPassword, saveUser) {
-    stopAutoRetryLogin();
+    loginService.stopAutoRetryLogin();
     _autoRetryHandler = window.setTimeout(function () {
         log.info("auto-retry for online login with user: " + user);
         loginService.loginHashedPassword(user, hashedPassword, saveUser);
     }, 10000);
-}
-
-function stopAutoRetryLogin() {
-    if (_autoRetryHandler) {
-        window.clearInterval(_autoRetryHandler);
-        _autoRetryHandler = null;
-    }
 }
 
 function getConfig() {
