@@ -2,12 +2,12 @@
     <div class="box" v-cloak>
         <header class="row header" role="banner" v-if="metadata && !metadata.fullscreen">
             <header-icon v-show="!metadata.locked"></header-icon>
-            <button v-show="metadata.locked" @click="toggleLock()" class="small">
+            <button v-show="metadata.locked" @click="unlock()" class="small">
                 <i class="fas fa-unlock"></i>
                 <span class="hide-mobile" data-i18n>Unlock // Entsperren</span>
                 <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
             </button>
-            <button v-show="!metadata.locked" @click="toggleLock()" class="small">
+            <button v-show="!metadata.locked" @click="lock()" class="small">
                 <i class="fas fa-lock"></i>
                 <span class="hide-mobile" data-i18n>Lock // Sperren</span>
             </button>
@@ -77,31 +77,32 @@
             InputOptionsModal, HeaderIcon
         },
         methods: {
-            toggleLock() {
+            lock() {
                 let thiz = this;
-                if (thiz.metadata.locked) {
-                    thiz.unlockCounter--;
-                    util.debounce(function () {
-                        thiz.unlockCounter = UNLOCK_COUNT;
-                    }, 1500);
-                    if (thiz.unlockCounter === 0) {
-                        thiz.metadata.locked = false;
-                        dataService.saveMetadata(thiz.metadata).then(() => {
-                            $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
-                        });
-                    }
-                } else {
-                    thiz.metadata.locked = true;
+                thiz.metadata.locked = true;
+                thiz.unlockCounter = UNLOCK_COUNT;
+                dataService.saveMetadata(thiz.metadata).then(() => {
+                    $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
+                });
+            },
+            unlock(force) {
+                let thiz = this;
+                thiz.unlockCounter--;
+                util.debounce(function () {
                     thiz.unlockCounter = UNLOCK_COUNT;
+                }, 1500);
+                if (thiz.unlockCounter === 0 || force) {
+                    thiz.metadata.locked = false;
                     dataService.saveMetadata(thiz.metadata).then(() => {
-                        $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
+                        $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
                     });
                 }
             },
-            applyFullscreen() {
+            applyFullscreen(dontSave) {
                 this.metadata.fullscreen = true;
-                dataService.saveMetadata(this.metadata);
-                $(document).trigger(constants.EVENT_GRID_RESIZE);
+                if (!dontSave) {
+                    dataService.saveMetadata(this.metadata);
+                }
                 $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
             },
             initInputMethods() {
@@ -234,6 +235,9 @@
                     metadata.headerPinned = false;
                 }
                 dataService.saveMetadata(metadata);
+                if (metadata.locked) {
+                    $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
+                }
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
                 return Promise.resolve();
             }).then(() => {
@@ -270,6 +274,22 @@
             }
             if (updatedMetadataDoc && updatedMetadataDoc.lastOpenedGridId !== vueApp.gridData.id) {
                 Router.toLastOpenedGrid();
+                return;
+            }
+            if (updatedMetadataDoc && updatedMetadataDoc.fullscreen !== vueApp.metadata.fullscreen) {
+                vueApp.metadata.fullscreen = updatedMetadataDoc.fullscreen;
+                if (updatedMetadataDoc.fullscreen) {
+                    vueApp.applyFullscreen(true);
+                } else {
+                    $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
+                }
+            }
+            if (updatedMetadataDoc && updatedMetadataDoc.locked !== vueApp.metadata.locked) {
+                if (updatedMetadataDoc.locked) {
+                    vueApp.lock();
+                } else {
+                    vueApp.unlock(true);
+                }
             }
         }
     }
