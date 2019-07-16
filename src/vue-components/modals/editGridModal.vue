@@ -1,7 +1,7 @@
 <template>
     <div class="modal">
         <div class="modal-mask">
-            <div class="modal-wrapper">
+            <div class="modal-wrapper" @dragenter="preventDefault" @dragover="preventDefault" @drop="imageDropped">
                 <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()" @keyup.ctrl.right="nextFromKeyboard()" @keyup.ctrl.left="editNext(true)">
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                     <div class="modal-header">
@@ -27,10 +27,14 @@
                             <button class="five columns" v-show="imgDataPreview" @click="clearImage"><i class="fas fa-times"/> <span data-i18n>Clear image // Bild löschen</span></button>
                         </div>
                         <div class="row">
-                            <div class="img-preview offset-by-two ten columns">
-                                <span v-show="!imgDataPreview"><i class="fas fa-image"/> <span data-i18n>no image chosen // kein Bild ausgewählt</span></span>
+                            <div class="img-preview offset-by-two four columns">
+                                <span class="show-mobile" v-show="!imgDataPreview"><i class="fas fa-image"/> <span data-i18n>no image chosen // kein Bild ausgewählt</span></span>
+                                <span class="hide-mobile" v-show="!imgDataPreview"><i class="fas fa-arrow-down"/> <span data-i18n>drop image here // Bild hierher ziehen</span></span>
                                 <img v-if="imgDataPreview" id="imgPreview" :src="imgDataPreview"/>
                                 <img v-show="false" id="fullImg" :src="imgDataFull" @load="imgLoaded"/>
+                            </div>
+                            <div class="img-preview five columns hide-mobile" v-show="imgDataPreview" style="margin-top: 50px;">
+                                <span><i class="fas fa-arrow-down"/> <span data-i18n>drop new image here // neues Bild hierher ziehen</span></span>
                             </div>
                         </div>
                     </div>
@@ -83,10 +87,15 @@
             }
         },
         methods: {
-            changedImg (event) {
-                imageUtil.getBase64FromInput(event.target).then(base64 => {
+            changedImg () {
+                imageUtil.getBase64FromInput($('#inputImg')[0]).then(base64 => {
                     this.imgDataFull = base64;
                 });
+            },
+            imageDropped(event) {
+                $('#inputImg')[0].files = event.dataTransfer.files;
+                event.preventDefault();
+                this.changedImg();
             },
             imgLoaded (event) {
                 this.imgDataPreview = imageUtil.getBase64FromImg(event.target);
@@ -197,6 +206,9 @@
             },
             resetInternal() {
                 this.gridElement = this.metadata = this.originalGridElementJSON = this.imgDataFull = this.imgDataSmall = this.imgDataBig = this.imgDataPreview = this.elementW = null;
+            },
+            preventDefault(event) {
+                event.preventDefault();
             }
         },
         mounted () {
