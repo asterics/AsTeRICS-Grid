@@ -55,7 +55,7 @@ If scanning is enabled there are several additional options for this input metho
 
 1. **Binary scanning**: defines if scanning groups are rows/columns or one half of existing elements:
     * **binary** (checked): groups are built by separating remaining elements in two halves each scanning step <div style="margin-left: 2em"><img src="img/scanning_binary.gif" alt="binary scanning" width="130"/></div>
-    * **horizontal** (unchecked): groups are built horizontal, moving top to bottom <div style="margin-left: 2em"><img src="img/scanning_non_binary.gif" alt="non-binary scanning" width="130" style="margin-left: 2em"/></div>
+    * **horizontal** (unchecked): groups are built row/column by row/column <div style="margin-left: 2em"><img src="img/scanning_non_binary.gif" alt="non-binary scanning" width="130" style="margin-left: 2em"/></div>
 
 
 
