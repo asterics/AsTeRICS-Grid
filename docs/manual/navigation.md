@@ -34,7 +34,28 @@ The elements have this functionality:
 1. **Grid**: demo grid consisting of 6 grid elements, navigating to other grids if selected
 
 ## Input Options
-Clicking on Button 
+Clicking on Button "Input Options" (9) opens a modal where input modalities can be configured:
+
+![input options](img/input_options_en.jpg)
+
+These are the possible options:
+
+1. **Enable Scanning**: enables the "scanning" method, which means that grid elements are consecutively highlighted and the user can select the desired element just by a single input channel, e.g. a single keyboard key or a tap anywhere on the touch-screen.
+1. **Enable Hovering**: enables the "hovering" input method, which means that grid elements selected by keeping the mouse cursor positioned on an element for a specific amount of time. On a touchscreen it means that elements are selected by tap-and-hold on them for some duration.
+1. **Hover Time**: the time in milliseconds to dwell on an element in order to select it (if hovering enabled)
+1. **Select with mouse click**: selects an element by just clicking on it (tap on touchscreen)
+
+### Scanning options
+If scanning is enabled there are several additional options for this input method:
+
+![input options](img/scanning_options_en.jpg)
+1. **Vertical scanning** defines the direction of scanning:
+    * **vertical** (checked): groups are built vertical, moving left to right <img src="img/scanning_horizontal.gif" alt="vertical scanning" width="200"/>
+    * **horizontal** (unchecked): groups are built horizontal, moving top to bottom ![input options](img/scanning_horizontal.gif)
+
+1. **Binary scanning**: if enabled the scanning direction is vertical (top to bottom), if not checked the scanning direction is horizontal (left to right)
+
+
 
 [&#x2190; Previous Chapter](terms.md) [Next Chapter &#x2192;](appearance_layout.md)
 
