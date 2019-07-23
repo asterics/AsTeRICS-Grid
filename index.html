@@ -6,7 +6,25 @@
 </head>
 <body>
   <script>
-	window.location.replace("./app/");
+      function init() {
+          setTimeout(function () {
+              redirect()
+          }, 3000);
+
+          function redirect() {
+              window.location.replace("./app/");
+          }
+
+          if (!window.applicationCache) {
+              return;
+          }
+
+          window.applicationCache.addEventListener('updateready', redirect);
+          if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
+              redirect();
+          }
+      }
+      init();
   </script>
 </body>
 </html>
