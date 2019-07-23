@@ -20,6 +20,8 @@
           }
 
           window.applicationCache.addEventListener('updateready', redirect);
+          window.applicationCache.addEventListener('cached', redirect);
+          window.applicationCache.addEventListener('noupdate', redirect);
           if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
               redirect();
           }
