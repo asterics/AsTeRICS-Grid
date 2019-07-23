@@ -50,8 +50,11 @@ If scanning is enabled there are several additional options for this input metho
 
 ![input options](img/scanning_options_en.jpg)
 1. **Vertical scanning** defines the direction of scanning:
-    * **vertical** (checked): groups are built vertical, moving left to right <img src="img/scanning_horizontal.gif" alt="vertical scanning" width="200"/>
-    * **horizontal** (unchecked): groups are built horizontal, moving top to bottom ![input options](img/scanning_horizontal.gif)
+    * **vertical** (checked): groups are built vertical, moving left to right 
+    <div><img src="img/scanning_vertical.gif" alt="vertical scanning" width="130"/></div>
+    
+    * **horizontal** (unchecked): groups are built horizontal, moving top to bottom
+    <div><img src="img/scanning_horizontal.gif" alt="horizontal scanning" width="130"/></div>
 
 1. **Binary scanning**: if enabled the scanning direction is vertical (top to bottom), if not checked the scanning direction is horizontal (left to right)
 
