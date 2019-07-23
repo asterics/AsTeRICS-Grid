@@ -8,7 +8,10 @@ This chapter explains the most important terms used in relation to the AsTeRICS 
 Web-based application for AAC solutions, runs in the browser (e.g. Firefox, Chrome, Edge, Internet Explorer, mobile Browsers).
 
 ## AsTeRICS Framework
-Java-based software suite that runs on a computer and makes it possible to trigger additional actions using the AsTeRICS Grid, e.g. controlling a TV (environmental control).
+Java-based software suite that runs on a computer and makes it possible to trigger additional actions using the AsTeRICS Grid, e.g. controlling a TV (environmental control). See [AsTeRICS Framework](https://www.asterics.eu/get-started/) on the web.
+
+## AsTeRICS model
+An AsTeRICS model is a configuration for the AsTeRICS Framework which realizes a certain use-case, e.g. environmental control, camera based head-tracking or eye-tracking. A model that runs in the AsTeRICS Framework can interact with the AsTeRICS Grid.
 
 ## Grid
 Term for a single page in the AsTeRICS Grid, consisting of several grid elements. The number of elements a grid contains is flexible.
