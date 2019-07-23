@@ -27,4 +27,11 @@ An action that is performed if a grid element is selected, e.g. navigate to anot
 In the context of AsTeRICS Grid "input" refers to the mean of selecting a grid element. This can be e.g. a normal mouse click, hovering or scanning.
 
 ## Dictionary
-TODO
+A dictionary is a set of words that is used to fill up prediction grid elements. By default a dictionary including the most frequent english/german words is used, but also custom dictionaries can be used.
+
+## User
+In AsTeRICS Grid a "user" refers to a username and a set of grids, which in sum realize a solution for an actual user. There are two types of users in AsTeRICS Grid:
+
+1. **Offline users**: are users whose grids are only stored locally on the used device.
+1. **Online users**: are users whose grids are stored locally on the device and online in the cloud. In contrast to offline users they also have a password that is used to encrypt all grids before saving them online.
+
