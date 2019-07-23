@@ -1,6 +1,11 @@
-# Navigation
+# User interface and navigation
 
-This chapter is about general appearance and navigation in AsTeRICS Grid,
+This chapter is about general appearance and navigation in AsTeRICS Grid:
+
+1. [Welcome view](navigation.md#welcome-view): intial view shown at first usage
+2. [Main view](navigation.md#main-view): starting view showing the recently used grid and navigation
+3. [Input options](navigation.md#input-options): options about how to select grid elements
+3. [Edit view](navigation.md#edit-view): view that allows modification of a grid
 
 [Back to Overview](index.md)
 
@@ -13,9 +18,10 @@ AsTeRICS Grid initially starts with a welcome view giving the choice between:
 See [Terms](terms.md#User) for more information about offline/online users.
 
 ## Main view
-Once taken a decision in the welcome view AsTeRICS Grid subsequently starts in the "main view" which looks like this (desktop view on the left, mobile view on the right):
+Once taken a decision in the welcome view AsTeRICS Grid subsequently starts in the "main view" which looks like Figure 1 (desktop view on the left, mobile view on the right):
 
 ![main view](img/main_en.jpg)
+*Fig. 1: Main view*
 
 The elements have this functionality:
 
@@ -29,12 +35,12 @@ The elements have this functionality:
 1. **About AsTeRICS Grid**: Show general information, links, contact address
 1. **Input Options**: Options about how to select grid elements (e.g. click, hover, scanning)
 1. **Edit grid**: edit the layout of the grid, add new elements, actions for grid elements
-1. **Fullscreen**: hide the sidebar and the bar on the top, only showing the current grid (13)
-1. **Lock**: lock the screen in order to prevent unintended input or changes beside using an navigating the grid (13)
+1. **Fullscreen**: hide the sidebar and the bar on the top, only showing the current grid (Fig. 1, number 13)
+1. **Lock**: lock the screen in order to prevent unintended input or changes beside using an navigating the grid (Fig. 1, number 13)
 1. **Grid**: demo grid consisting of 6 grid elements, navigating to other grids if selected
 
 ## Input Options
-Clicking on Button "Input Options" (9) opens a modal where input modalities can be configured:
+Clicking on Button "Input Options" (Fig. 1, number 9) opens a modal where input modalities can be configured:
 
 ![input options](img/input_options_en.jpg)
 
@@ -49,6 +55,7 @@ These are the possible options:
 If scanning is enabled there are several additional options for this input method:
 
 ![input options](img/scanning_options_en.jpg)
+
 1. **Vertical scanning** defines the direction of scanning:
     * **vertical** (checked): groups are built vertical, moving left to right <div style="margin-left: 2em"><img src="img/scanning_vertical.gif" alt="vertical scanning" width="130"/></div>
     * **horizontal** (unchecked): groups are built horizontal, moving top to bottom <div style="margin-left: 2em"><img src="img/scanning_horizontal.gif" alt="horizontal scanning" width="130" style="margin-left: 2em"/></div>
@@ -62,8 +69,40 @@ If scanning is enabled there are several additional options for this input metho
     * Start the AsTeRICS Framework (ARE) with the desired model (e.g. a model generating an event when moving the head)
     * Click on "Record ARE Events" in AsTeRICS Grid
     * Trigger the desired event in the running model (AsTeRICS Framework), e.g. move the head
-    * recored events are now listed in the AsTeRICS Grid input configuration, press OK there in order to apply the changes
+    * recored events are now listed in the AsTeRICS Grid input configuration, press OK in order to apply the changes
     * Scanning groups now can be selected by triggering the recorded event in the AsTeRICS Framework (e.g. moving the head)
+
+## Edit view
+Clicking on Button "Edit" (Fig. 1, number 9) opens the edit view where a grid can be adapted, see Figure 2:
+
+![edit view](img/edit_en.jpg)
+*Fig.2: Edit view*
+
+The following elements are available in the edit view:
+
+1. Open or close the navigation sidebar
+1. **Back**: navigate back to last view (either main view, or manage grids view)
+1. **Undo**: reverts the last action
+1. **Redo**: redoes the last action after reverting it
+1. **More**: opens a menu with additional actions, e.g adding new elements
+1. **Edit area**: Grid elements can be repositioned by dragging them (drap & drop). On the right bottom corner it's possible to resize a grid element.
+1. **Right click on a grid element**: opens a menu for editing the element (open it with long tap on a mobile device/touchscreen)
+
+### Adding elements and layout options
+The following menu opens on a click on "More" (Fig. 2, number 5):
+
+![edit view](img/edit_moremenu_en.jpg)
+
+These are the actions to select in the menu:
+
+1. **New &#x2192; New Element**: creates a normal new element, opening a dialog where label and image can be defined
+1. **New &#x2192; Many new elements**: creates multiple new normal elements at once, opening a dialog where multiple elements can be defined and inserted into the grid
+1. **New &#x2192; New collect element**: creates a new collect element, see [Terms](terms.md#grid-element)
+1. **New &#x2192; New prediction element**: creates a new prediction element, see [Terms](terms.md#grid-element)
+1. **Delete all elements**: removes all grid elements from the grid
+1. **Add row to layout**: adds a new row to the grid layout, e.g. creating a new third row for elements at the bottom in Figure 2 <div style="margin-left: 2em"><img src="img/add_row.gif" alt="add row" width="130" style="margin-left: 2em"/></div>
+1. **Remove row from layout**: removes the last row from the grid layout while keeping all grid elements. Applied to Figure 2 this would mean that afterwards there is only a single row where all six elements are placed. <div style="margin-left: 2em"><img src="img/remove_row.gif" alt="remove row" width="130" style="margin-left: 2em"/></div>
+1. **Fill gaps**: moves all grid elements as far left as possible, closing gaps. Applied to Figure 2 this would result in moving "Food" to the left, closing the gap between "Food" and "Clothing". <div style="margin-left: 2em"><img src="img/fill_gaps.gif" alt="fill gaps" width="130" style="margin-left: 2em"/></div>
 
 
 [&#x2190; Previous Chapter](terms.md) [Next Chapter &#x2192;](appearance_layout.md)
