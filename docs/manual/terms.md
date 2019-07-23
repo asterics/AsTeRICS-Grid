@@ -37,7 +37,7 @@ In AsTeRICS Grid a "user" refers to a username and a set of grids, which in sum 
 1. **Offline users**: are users whose grids are only stored locally on the used device.
 1. **Online users**: are users whose grids are stored locally on the device and online in the cloud. In contrast to offline users they also have a password that is used to encrypt all grids before saving them online.
 
-[Next Chapter &#x2192;](appearance_layout.md)
+[Next Chapter &#x2192;](navigation.md)
 
 [Back to Overview](index.md)
 
