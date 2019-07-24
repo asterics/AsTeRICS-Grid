@@ -364,17 +364,25 @@ dataService.downloadAllGridsSimple = function () {
  * imports grids from a file that was exported by downloadSingleGrid() or downloadAllGrids()
  *
  * @param file the file object from a file input that contains the data
+ * @param backupMode if true all grids are deleted before importing the file -> restoring a backup. if false
+ *        grids from file are imported in addition to existing grids.
  * @return {Promise} resolves after operation finished successful
  */
-dataService.importGridsFromFile = function (file) {
+dataService.importGridsFromFile = function (file, backupMode) {
     return new Promise((resolve, reject) => {
         let reader = new FileReader();
         reader.onload = (function (theFile) {
             return function (e) {
                 let jsonString = e.target.result;
-                dataService.importGridsFromJSON(jsonString).then(() => {
-                    resolve();
-                });
+                if (backupMode) {
+                    dataService.importBackupFromJSON(jsonString).then(() => {
+                        resolve();
+                    });
+                } else {
+                    dataService.importGridsFromJSON(jsonString).then(() => {
+                        resolve();
+                    });
+                }
             }
         })(file);
         reader.readAsText(file);
@@ -382,40 +390,46 @@ dataService.importGridsFromFile = function (file) {
 };
 
 /**
- * imports grids from a json string.
+ * imports grids from a json string in addition to existing grids
  * @see{GridData}
  *
  * @param jsonString a valid json string containing serialized grid data.
  * @return {Promise} resolves after operation finished successful
  */
 dataService.importGridsFromJSON = function (jsonString) {
-    return new Promise(resolve => {
-        let gridData = JSON.parse(jsonString);
-        if (!(gridData instanceof Array)) {
-            gridData = [gridData];
-        }
-        dataService.getGrids().then(grids => {
-            let existingNames = grids.map(grid => grid.label);
-            let existingIds = grids.map(grid => grid.id);
-            let resolveFns = [];
-            let failed = false;
-            gridData.forEach(grid => {
-                if (!failed) {
-                    if (existingIds.includes(grid.id)) {
-                        alert(translateService.translate('ERROR_IMPORT_SAMEID', grid.label));
-                        failed = true;
-                        return;
-                    }
-                    grid.label = modelUtil.getNewName(grid.label, existingNames);
-                    grid._id = null;
-                    grid._rev = null;
-                    resolveFns.push(dataService.saveGrid(grid));
-                }
-            });
-            Promise.all(resolveFns).then(() => {
-                resolve();
-            });
+    let gridData = JSON.parse(jsonString);
+    if (!(gridData instanceof Array)) {
+        gridData = [gridData];
+    }
+
+    return dataService.getGrids().then(grids => {
+        let existingNames = grids.map(grid => grid.label);
+        let resolveFns = [];
+        gridData = GridData.regenerateIDs(gridData);
+        gridData.forEach(grid => {
+            grid.label = modelUtil.getNewName(grid.label, existingNames);
+            resolveFns.push(dataService.saveGrid(grid));
         });
+        return Promise.all(resolveFns);
+    });
+};
+
+/**
+ * imports grids from a json string, deletes all existing grids before importing -> restoring backup
+ * @see{GridData}
+ *
+ * @param jsonString a valid json string containing serialized grid data.
+ * @return {Promise} resolves after operation finished successful
+ */
+dataService.importBackupFromJSON = function (jsonString) {
+    return dataService.getGrids().then(grids => {
+        let promises = [];
+        grids.forEach(grid => {
+            promises.push(dataService.deleteGrid(grid.id));
+        });
+        return Promise.all(promises);
+    }).then(() => {
+        return dataService.importGridsFromJSON(jsonString);
     });
 };
 
