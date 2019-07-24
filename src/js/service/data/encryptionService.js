@@ -60,7 +60,6 @@ encryptionService.encryptObject = function (object, options) {
  */
 encryptionService.decryptObjects = function (encryptedObjects, options) {
     throwErrorIfUninitialized();
-    let encryptedObjectsJSONString = JSON.stringify(encryptedObjects);
     if (!encryptedObjects) {
         return encryptedObjects;
     }
@@ -72,23 +71,29 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
     encryptedObjects = encryptedObjects instanceof Array ? encryptedObjects : [encryptedObjects];
     let decryptedObjects = [];
     encryptedObjects.forEach(encryptedObject => {
-        let decryptedString =  null;
-        let decryptedObject = null;
-        if(onlyShortVersion) {
-            decryptedString = encryptionService.decryptString(encryptedObject.encryptedDataBase64Short, options.encryptionKey);
-            decryptedObject = JSON.parse(decryptedString);
-            decryptedObject.isShortVersion = true;
-        } else {
-            decryptedString = encryptionService.decryptString(encryptedObject.encryptedDataBase64, options.encryptionKey);
-            decryptedObject = JSON.parse(decryptedString);
+        try {
+            let decryptedString = null;
+            let decryptedObject = null;
+            if (onlyShortVersion) {
+                decryptedString = encryptionService.decryptString(encryptedObject.encryptedDataBase64Short, options.encryptionKey);
+                decryptedObject = JSON.parse(decryptedString);
+                decryptedObject.isShortVersion = true;
+            } else {
+                decryptedString = encryptionService.decryptString(encryptedObject.encryptedDataBase64, options.encryptionKey);
+                decryptedObject = JSON.parse(decryptedString);
+            }
+            decryptedObject = objectType ? new objectType(decryptedObject) : decryptedObject;
+            decryptedObject._id = encryptedObject._id;
+            decryptedObject._rev = encryptedObject._rev;
+            decryptedObjects.push(decryptedObject);
+        } catch (e) {
+            log.error('error decrypting object: ' + encryptedObject.modelName + ', id: ' + encryptedObject.id);
+            log.error(e);
+            throw  e;
         }
-        decryptedObject = objectType ? new objectType(decryptedObject) : decryptedObject;
-        decryptedObject._id = encryptedObject._id;
-        decryptedObject._rev = encryptedObject._rev;
-        decryptedObjects.push(decryptedObject);
     });
-    let returnValue = decryptedObjects.length > 1 ? decryptedObjects : decryptedObjects[0];
-    return returnValue;
+
+    return decryptedObjects.length > 1 ? decryptedObjects : decryptedObjects[0];
 };
 
 /**
