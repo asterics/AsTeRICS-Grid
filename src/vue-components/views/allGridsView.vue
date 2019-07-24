@@ -7,6 +7,7 @@
             <input type="text" :placeholder="'PLACEHOLDER_SEARCH_GRID' | translate" class="spaced" style="width: 30vw" v-model="searchText">
             <div style="display: none">
                 <input type="file" id="inputFile" @change="importFromFile" accept=".grd"/>
+                <input type="file" id="inputFileBackup" @change="importBackupFromFile" accept=".grd"/>
             </div>
         </header>
         <div class="row content text-content">
@@ -140,7 +141,16 @@
                 }
             },
             importFromFile: function (event) {
-                this.importFromFileInternal(event, '.grd', dataService.importGridsFromFile);
+                this.importFromFileInternal(event, dataService.importGridsFromFile);
+            },
+            importBackupFromFile: function (event) {
+                if (!confirm('Caution: This will delete all existing grids and replace them with the grids from the backup. Continue?')) {
+                    this.resetFileInput(event);
+                    return;
+                }
+                this.importFromFileInternal(event, function (importFile) {
+                    return dataService.importGridsFromFile(importFile, true);
+                });
             },
             reload: function () {
                 dataService.getGrids().then(grids => {
@@ -155,17 +165,20 @@
                     });
                 }
             },
-            importFromFileInternal(event, extension, callFunction) {
-                var importFile = event.target.files[0];
+            importFromFileInternal(event, callFunction) {
+                let thiz = this;
+                let importFile = event.target.files[0];
                 if (!importFile || !importFile.name || !callFunction) {
                     return;
                 }
 
-                var fileExtension = importFile.name.substring(importFile.name.length - 4);
-                if (fileExtension == extension) {
+                let fileExtension = importFile.name.substring(importFile.name.length - 4);
+                if (fileExtension === '.grd') {
+                    thiz.showLoading = true;
                     callFunction(importFile).then(() => {
                         this.reload();
                         this.resetFileInput(event);
+                        thiz.showLoading = false;
                     });
                 }
             },
@@ -215,6 +228,7 @@
         var CONTEXT_NEW = "CONTEXT_NEW";
         var CONTEXT_EXPORT = "CONTEXT_EXPORT";
         var CONTEXT_IMPORT = "CONTEXT_IMPORT";
+        var CONTEXT_IMPORT_BACKUP = "CONTEXT_IMPORT_BACKUP";
         var CONTEXT_RESET = "CONTEXT_RESET";
 
         var itemsImportExport = {
@@ -224,6 +238,10 @@
             },
             CONTEXT_IMPORT: {
                 name: "Import grid(s) from file // Grid(s) aus Datei importieren",
+                icon: "fas fa-file-import"
+            },
+            CONTEXT_IMPORT_BACKUP: {
+                name: "Import backup from file // Backup aus Datei importieren",
                 icon: "fas fa-file-import"
             },
             SEP2: "---------"
@@ -238,6 +256,10 @@
             },
             CONTEXT_IMPORT: {
                 name: "Import grid(s) from file // Grid(s) aus Datei importieren",
+                icon: "fas fa-file-import"
+            },
+            CONTEXT_IMPORT_BACKUP: {
+                name: "Import backup from file // Backup aus Datei importieren",
                 icon: "fas fa-file-import"
             },
             SEP2: "---------",
@@ -262,6 +284,10 @@
                 }
                 case CONTEXT_IMPORT: {
                     document.getElementById('inputFile').click();
+                    break;
+                }
+                case CONTEXT_IMPORT_BACKUP: {
+                    document.getElementById('inputFileBackup').click();
                     break;
                 }
                 case CONTEXT_EXPORT: {
