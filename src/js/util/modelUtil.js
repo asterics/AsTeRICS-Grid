@@ -1,7 +1,7 @@
 import {constants} from "./constants";
 
 var modelUtil = {};
-var idCounter = 1;
+var idCounter = 100;
 let _currentModelVersion = JSON.parse(constants.MODEL_VERSION);
 let _emptyVersionObject = {
     major: null,
