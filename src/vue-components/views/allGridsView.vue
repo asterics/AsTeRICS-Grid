@@ -7,7 +7,6 @@
             <input type="text" :placeholder="'PLACEHOLDER_SEARCH_GRID' | translate" class="spaced" style="width: 30vw" v-model="searchText">
             <div style="display: none">
                 <input type="file" id="inputFile" @change="importFromFile" accept=".grd"/>
-                <input type="file" id="inputFileBackup" @change="restoreBackupFromFile" accept=".grb"/>
             </div>
         </header>
         <div class="row content text-content">
@@ -143,16 +142,6 @@
             importFromFile: function (event) {
                 this.importFromFileInternal(event, '.grd', dataService.importGridsFromFile);
             },
-            backupToFile() {
-                dataService.downloadDB();
-            },
-            restoreBackupFromFile: function (event) {
-                if (confirm(translateService.translate('CONFIRM_IMPORT_BACKUP', event.target.files[0].name))) {
-                    this.importFromFileInternal(event, '.grb', pouchDbService.importDatabase);
-                } else {
-                    this.resetFileInput(event);
-                }
-            },
             reload: function () {
                 dataService.getGrids().then(grids => {
                     this.grids = JSON.parse(JSON.stringify(grids));
@@ -226,8 +215,6 @@
         var CONTEXT_NEW = "CONTEXT_NEW";
         var CONTEXT_EXPORT = "CONTEXT_EXPORT";
         var CONTEXT_IMPORT = "CONTEXT_IMPORT";
-        var CONTEXT_BACKUP = "CONTEXT_BACKUP";
-        var CONTEXT_BACKUP_RESTORE = "CONTEXT_BACKUP_RESTORE";
         var CONTEXT_RESET = "CONTEXT_RESET";
 
         var itemsImportExport = {
@@ -239,15 +226,7 @@
                 name: "Import grid(s) from file // Grid(s) aus Datei importieren",
                 icon: "fas fa-file-import"
             },
-            SEP2: "---------",
-            CONTEXT_BACKUP: {
-                name: "Backup complete configuration to file // Gesamte Konfiguration als Datei sichern",
-                icon: "fas fa-download"
-            },
-            CONTEXT_BACKUP_RESTORE: {
-                name: "Restore backup from file // Sicherung von Datei wiederherstellen",
-                icon: "fas fa-upload"
-            },
+            SEP2: "---------"
         };
 
         var itemsMoreMenu = {
@@ -262,14 +241,6 @@
                 icon: "fas fa-file-import"
             },
             SEP2: "---------",
-            CONTEXT_BACKUP: {
-                name: "Backup complete configuration to file // Gesamte Konfiguration als Datei sichern",
-                icon: "fas fa-download"
-            },
-            CONTEXT_BACKUP_RESTORE: {
-                name: "Restore backup from file // Sicherung von Datei wiederherstellen",
-                icon: "fas fa-upload"
-            },
             //CONTEXT_SUB_IMPORT_EXPORT: {name: "Import / Export", icon: "fas fa-hdd", items: itemsImportExport},
             CONTEXT_RESET: {name: "Reset database // Datenbank zurücksetzen", icon: "fas fa-minus-circle"},
         };
@@ -295,14 +266,6 @@
                 }
                 case CONTEXT_EXPORT: {
                     vueApp.exportToFile();
-                    break;
-                }
-                case CONTEXT_BACKUP: {
-                    vueApp.backupToFile();
-                    break;
-                }
-                case CONTEXT_BACKUP_RESTORE: {
-                    document.getElementById('inputFileBackup').click();
                     break;
                 }
                 case CONTEXT_RESET: {

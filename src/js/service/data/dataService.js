@@ -324,16 +324,6 @@ dataService.deleteObject = function (id) {
 };
 
 /**
- * Downloads to whole database to File. Opens a file download in Browser.
- */
-dataService.downloadDB = function () {
-    pouchDbService.dumpDatabase().then(dumpedString => {
-        let blob = new Blob([dumpedString], {type: "text/plain;charset=utf-8"});
-        FileSaver.saveAs(blob, "my-grids-backup.grb");
-    });
-};
-
-/**
  * Downloads to a single grid to File. Opens a file download in Browser.
  * @param gridId the ID of the grid to download
  */

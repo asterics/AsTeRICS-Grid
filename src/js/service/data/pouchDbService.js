@@ -155,64 +155,6 @@ pouchDbService.remove = function (id) {
 };
 
 /**
- * dumps the whole database to a String
- * @return {Promise} promise that resolves to a String containing the dumped database
- */
-pouchDbService.dumpDatabase = function () {
-    if (!pouchDbService.isUsingLocalDb()) {
-        return Promise.reject();
-    }
-    _documentCache.clearAll();
-    return new Promise((resolve, reject) => {
-        let dumpedString = '';
-        let stream = new MemoryStream();
-        stream.on('data', function (chunk) {
-            dumpedString += chunk.toString();
-        });
-
-        getDbToUse().dump(stream).then(function () {
-            resolve(dumpedString);
-        }).catch(function (err) {
-            reject();
-            log.error('error on dumping database: ', err);
-        });
-    });
-};
-
-/**
- * imports the whole database from a file.
- * Warning: overrides the current data of the database!
- *
- * @param file a file object retrieved from a file input
- * @return {Promise} promise resolves after successful import
- */
-pouchDbService.importDatabase = function (file) {
-    if (!pouchDbService.isUsingLocalDb()) {
-        return Promise.reject();
-    }
-    _documentCache.clearAll();
-    return new Promise(resolve => {
-        let reader = new FileReader();
-        reader.onload = (function (theFile) {
-            return function (e) {
-                let data = e.target.result;
-                pouchDbService.resetDatabase().then(() => {
-                    log.debug('resetted pouchdb! loading from string...');
-                    getDbToUse().load(data).then(function () {
-                        log.debug('loaded db from string!');
-                        window.location.reload();
-                        resolve();
-                    }).catch(function (err) {
-                        log.error('error loading db from string: ' + err);
-                    });
-                });
-            };
-        })(file);
-        reader.readAsText(file);
-    });
-};
-
-/**
  * resets the whole database, if it is the default local database, otherwise the call is rejected
  * @return {Promise} resolves after reset is finished
  */
