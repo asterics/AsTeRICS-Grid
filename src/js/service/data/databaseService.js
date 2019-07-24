@@ -235,9 +235,8 @@ function initInternal(hashedUserPassword) {
         if (!metadata.lastOpenedGridId && gridsData[0] && gridsData[0].id) {
             metadata.lastOpenedGridId = gridsData[0].id;
         }
+        gridsData = GridData.regenerateIDs(gridsData);
         gridsData.forEach(gridData => {
-            gridData._id = gridData.id;
-            gridData._rev = null;
             promises.push(applyFiltersAndSave(GridData.getModelName(), gridData));
         });
         log.debug('imported default grid set!');
