@@ -205,6 +205,9 @@ function initInternal(hashedUserPassword) {
                 log.warn('updating data model version...');
                 promises.push(updateDataModelVersion(metadata));
             }
+            if (metadataObjects.length && metadataObjects.length > 1) {
+                promises.push(fixDuplicatedMetadata(hashedUserPassword, metadataObjects))
+            }
         }
         return Promise.all(promises);
     }).then(() => {
@@ -301,6 +304,7 @@ function updateDataModelVersion(metadata) {
             });
             return pouchDbService.resetDatabase();
         }
+        //TODO: decrypt if already encrypted?! -> to be tested before real datamodel major version update
         return Promise.resolve();
     }).then(() => {
         log.debug('all deleted, got: ');
@@ -315,6 +319,54 @@ function updateDataModelVersion(metadata) {
         window.location.reload();
         return Promise.reject();
     });
+}
+
+function fixDuplicatedMetadata(hashedUserPassword, metadataObjects) {
+    log.warn('fixing duplicated metadata...');
+    let metadataIds = null;
+    return pouchDbService.all().then(encryptedDocs => {
+        let decryptedDocs = [];
+        metadataIds = metadataObjects.map(e => e.id);
+        let promises = [];
+        encryptedDocs.forEach(doc => {
+            decryptedDocs.push(tryToDecrypt(doc, metadataIds));
+        });
+        let keepMetadataId = metadataIds.pop();
+        encryptionService.setEncryptionProperties(hashedUserPassword, keepMetadataId);
+        log.warn('keeiping metadata: ' + keepMetadataId);
+        log.warn('decrypted docs:');
+        log.warn(decryptedDocs);
+        log.warn('re-encrypting and saving them...');
+        decryptedDocs.forEach(doc => {
+            let promise = applyFiltersAndSave(doc.modelName, doc);
+            promises.push(promise);
+        });
+        return Promise.all(promises);
+    }).then(() => {
+        let promises = [];
+        log.warn('deleting superfluous metadata objects ...');
+        metadataIds.forEach(id => {
+            promises.push(pouchDbService.remove(id));
+        });
+        return Promise.all(promises);
+    }).then(() => {
+        log.warn('all done - reloading page...');
+        window.location.reload();
+        return Promise.reject();
+    });
+
+    function tryToDecrypt(object, metadataIds) {
+        let remainingIds = JSON.parse(JSON.stringify(metadataIds));
+        try {
+            return encryptionService.decryptObjects(object)
+        } catch (e) {
+            if (remainingIds.length === 0) {
+                throw "something really went wrong - unable to decrypt object: " + object.modelName + ', id: ' + object.id;
+            }
+            encryptionService.setEncryptionProperties(hashedUserPassword, remainingIds.pop());
+            return tryToDecrypt(object, remainingIds);
+        }
+    }
 }
 
 export {databaseService};
