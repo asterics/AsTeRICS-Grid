@@ -179,6 +179,32 @@ class GridData extends Model({
         return result.length == 1 ? result[0] : result;
     }
 
+    /**
+     * renews all IDs of the grids in the given list of grids while maintaining correct references in other grids (e.g.
+     * grid action navigate).
+     *
+     * @param gridDataList list of grids where IDs should be regenerated
+     * @return list of grids with regenerated IDs
+     */
+    static regenerateIDs(gridDataList) {
+        let replacedIds = {};
+        let returnList = [];
+        gridDataList.forEach(gridData => {
+            let newId = modelUtil.generateId('grid-data');
+            replacedIds[gridData.id] = newId;
+            gridData._id = gridData.id = newId;
+            gridData._rev = null;
+        });
+        gridDataList.forEach(gridData => {
+            let json = JSON.stringify(gridData);
+            Object.keys(replacedIds).forEach(oldId => {
+                json = json.replace(new RegExp(oldId, 'g'), replacedIds[oldId]);
+            });
+            returnList.push(JSON.parse(json));
+        });
+        return returnList;
+    }
+
     static getModelName() {
         return "GridData";
     }
