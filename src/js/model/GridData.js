@@ -17,8 +17,11 @@ class GridData extends Model({
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridData);
-        properties.id = properties.id || modelUtil.generateId('grid-data');
+        if (properties) {
+            properties.id = properties.id ? properties.id : modelUtil.generateId('grid-data');
+        }
         super(properties);
+        this.id = this.id || modelUtil.generateId('grid-data');
     }
 
     hasSetPositions() {
