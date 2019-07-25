@@ -80,6 +80,8 @@ The following elements are available in the manage grids view:
 1. **Delete**: deletes the grid
 1. **Export**:  saves and downloads the specific grid to a .grd file creating a backup of it (saves only this single grid, see "More" menu below to backup all grids)
 
+### Additional options
+
 Clicking on Button "More" (Fig. 3, number 4) opens menu with additional options:
 
 ![manage grids more menu](img/manage_grids_more_en.jpg)
@@ -96,7 +98,7 @@ These are the possible options:
 In the manage dictionaries view currently saved dictionaries that are used for filling prediction elements (see [Terms](01_terms.md#grid-element)) can be shown and adapted (Figure 4):
 
 ![manage dictionaries view](img/manage_dict_en.jpg)
-*Fig.4: Manage dictionaries view*
+*Fig. 4: Manage dictionaries view*
 
 The following elements are available in the manage dictionaries view:
 
@@ -110,10 +112,10 @@ The following elements are available in the manage dictionaries view:
 <!-- For more information about using dictionaries see TODO -->
 
 ## Change user view
-In the change user view it's possible to switch between users or login a new one (Figure 5):
+In the change user view it's possible to switch between users or login a existing one (Figure 5):
 
 ![change user view](img/login_en.jpg)
-*Fig.5: Change user view*
+*Fig. 5: Change user view*
 
 The following elements are available in the change users view:
 
@@ -124,33 +126,33 @@ The following elements are available in the change users view:
 1. **Open**: sets the user "active" and opens the main view, showing the user's grid(s). Sets all other users inactive, there is always only one active user.
 1. **Delete**: deletes the user and all of his grids and configuration. Use with caution, this action cannot be undone. This option is only available for offline users.
 1. **Logout**: deletes the user and all of his grids and configuration, but only on the current device. Data in the cloud and on other devices that are logged in with the same user will not be deleted. This option is only available for online users.
-1. **Login with other user**: put in username and password of an online user in order to add it to the current device. In order to create a new online or offline user, follow one of the links below.
+1. **Login with other user**: put in username and password of an existing online user in order to add it to the current device. In order to create a new online or offline user, follow one of the links below.
 1. **Remember checkbox**: if checked, the newly logged in online user will be saved to the device and listed in the list of users in the current user view. If unchecked the user will only be opened temporarily and no user data will be saved on the device (recommended for logging in on foreign devices).
 
 ## Add online user
 In view "add online user" it's possible to register a new online user (see [Terms](01_terms.md#user)), Figure 6:
 
 ![add online user view](img/register_online_en.jpg)
-*Fig.6: Add online user view - register*
+*Fig. 6: Add online user view - register*
 
 The following information is important for registering an online user:
 
 * The only data that is needed are a **username** and a **password**. The username is needed for uniquely identifying a user and the password for securing his account and encrypting the data.
-* If you want to **use AsTeRICS Grid completely anonymously** just use a username without relation to your person.
+* If you want to **use AsTeRICS Grid completely anonymously** just use a username without any relation to your person.
 * Since all data is **end-to-end encrypted** only the user itself can ever see his data and configuration, no server admin or anyone else.
-* End-to-end encryption is great for privacy, however it has the drawback that the **data is lost**, if you logout your online account on all devices and forget your password. In this case there is **no possibility of password recovery**, so **remember your password carefully**. It's also recommended to **do backups** of your grids (see [Manage grids view](02_navigation.md#manage-grids-view)).
+* End-to-end encryption is great for privacy, however it has the drawback that the **data is lost**, if you logout your online account on all devices and forget your password. In this case there is **no possibility of password recovery**, so **remember your password carefully**. It's also recommended to **do backups** of your grids (see [Manage grids view](02_navigation.md#additional-options)).
 * Usernames must start lowercase, valid characters are [a-z], [0-9] and ["-", "_"], valid length is 3-50 characters.
 
 ## Add offline user
 In view "add offline user" it's possible add a new offline user (see [Terms](01_terms.md#user)), Figure 7:
 
 ![add offline user view](img/add_offline_en.jpg)
-*Fig.7: Add offline user view*
+*Fig. 7: Add offline user view*
 
 The following information is important regarding offline users:
 
 * All **data of an offline user never leaves the device**, it's stored in a browser-internal database.
-* Regulary **create backups** of your grids by exporting them to file, see [Manage grids view](02_navigation.md#manage-grids-view)
+* Regulary **create backups** of your grids by exporting them to file, see [Manage grids view](02_navigation.md#additional-options)
 * Usernames must start lowercase, valid characters are [a-z], [0-9] and ["-", "_"], valid length is 3-50 characters.
 
 
