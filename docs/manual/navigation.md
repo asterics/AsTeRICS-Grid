@@ -8,7 +8,7 @@ This chapter is about general appearance, navigation and basic functionality of 
 1. [Edit view](navigation.md#edit-view): view that allows modification of a grid
 1. [Manage grids view](navigation.md#manage-grids-view): show all grids, create new ones, create a backup
 1. [Manage dictionaries view](navigation.md#manage-dictionaries-view): show, edit and create new dictionaries
-1. [Change user view](navigation.md#change-user-view): switch user oder login to a new one
+1. [Change user view](navigation.md#change-user-view): switch users or login an existing one
 1. [Add online users](navigation.md#add-online-user): register new online users
 1. [Add offline users](navigation.md#add-offline-user): add new offline users
 
@@ -32,17 +32,17 @@ The elements have this functionality:
 
 1. Open or close the left navigation sidebar
 1. **Main**: navigate to the main view (currently shown)
-1. **Manage grids**: show all grids of the current user, add new ones or backup them to a file
-1. **Manage Dictionaries**: show all saved dictionaries, edit them or add new ones
-1. **Change user**: switch between saved users or log in an existing online user
-1. **Add online user**: register a new online user (synchronized across devices)
-1. **Add offline user**: add a new offline user (only for this device)
+1. **[Manage grids](navigation.md#manage-grids-view)**: show all grids of the current user, add new ones or backup them to a file
+1. **[Manage dictionaries](navigation.md#manage-dictionaries-view)**: show all saved dictionaries, edit them or add new ones
+1. **[Change user](navigation.md#change-user-view)**: switch between saved users or log in an existing online user
+1. **[Add online user](navigation.md#add-online-user)**: register a new online user (synchronized across devices)
+1. **[Add offline users](navigation.md#add-offline-user)**: add a new offline user (only for this device)
 1. **About AsTeRICS Grid**: Show general information, links, contact address
-1. **Input Options**: Options about how to select grid elements (e.g. click, hover, scanning)
-1. **Edit grid**: edit the layout of the grid, add new elements, actions for grid elements
+1. **[Input options](navigation.md#input-options)**: Options about how to select grid elements (e.g. click, hover, scanning)
+1. **[Edit grid](navigation.md#edit-view)**: edit the layout of the grid, add new elements, actions for grid elements
 1. **Fullscreen**: hide the sidebar and the bar on the top, only showing the current grid (Fig. 1, number 13)
 1. **Lock**: lock the screen in order to prevent unintended input or changes beside using an navigating the grid (Fig. 1, number 13)
-1. **Grid**: demo grid consisting of 6 grid elements, navigating to other grids if selected
+1. **Grid**: demo grid consisting of 6 grid elements which are navigating to other grids if selected
 
 ## Input Options
 Clicking on Button "Input Options" (Fig. 1, number 9) opens a modal where input modalities can be configured:
