@@ -62,7 +62,7 @@ The following elements are available in the edit view:
 See page [Edit grid appearance and layout](03_appearance_layout.md) for more details about editing a grid.
 
 ## Manage grids view
-Clicking on Button "Edit" in the main view (Fig. 1, number 10) opens the edit view where a grid can be adapted, see Figure 2:
+The manage grids view provides an overview about the current grids of a user, see Figure 2:
 
 ![manage grids view](img/manage_grids_en.jpg)
 *Fig.3: Manage grids view*
