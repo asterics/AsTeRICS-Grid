@@ -40,7 +40,7 @@ The elements have this functionality:
 1. **[Input options](04_input_options.md)**: Options about how to select grid elements (e.g. click, hover, scanning)
 1. **[Edit grid](02_navigation.md#edit-view)**: edit the layout of the grid, add new elements, actions for grid elements
 1. **Fullscreen**: hide the sidebar and the bar on the top, only showing the current grid (Fig. 1, number 13)
-1. **Lock**: lock the screen in order to prevent unintended input or changes beside using an navigating the grid (Fig. 1, number 13)
+1. **Lock**: lock the screen in order to prevent unintended input or changes beside using and navigating the grid (Fig. 1, number 13)
 1. **Grid**: demo grid consisting of 6 grid elements which are navigating to other grids if selected
 
 ## Edit view
@@ -59,8 +59,10 @@ The following elements are available in the edit view:
 1. **Edit area**: Grid elements can be repositioned by dragging them (drap & drop). On the right bottom corner it's possible to resize a grid element.
 1. **Right click on a grid element**: opens a menu for editing the element (open it with long tap on a mobile device/touchscreen)
 
+See page [Edit grid appearance and layout](03_appearance_layout.md) for more details about editing a grid.
+
 ## Manage grids view
-Clicking on Button "Edit" (Fig. 1, number 9) opens the edit view where a grid can be adapted, see Figure 2:
+Clicking on Button "Edit" in the main view (Fig. 1, number 10) opens the edit view where a grid can be adapted, see Figure 2:
 
 ![manage grids view](img/manage_grids_en.jpg)
 *Fig.3: Manage grids view*
