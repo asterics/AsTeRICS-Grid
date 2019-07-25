@@ -13,6 +13,8 @@ These are the possible options:
 1. **Enable Hovering**: enables the "hovering" input method, which means that grid elements selected by keeping the mouse cursor positioned on an element for a specific amount of time. On a touchscreen it means that elements are selected by tap-and-hold on them for some duration.
 1. **Hover Time**: the time in milliseconds to dwell on an element in order to select it (if hovering enabled)
 1. **Select with mouse click**: selects an element by just clicking on it (tap on touchscreen)
+1. **Cancel**: discard changes and close the modal
+1. **OK**: save changes and close the modal
 
 ## Scanning options
 If scanning is enabled there are several additional options for this input method:
