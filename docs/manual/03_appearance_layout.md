@@ -47,7 +47,7 @@ These are the elements in the modal of Figure 3:
 1. **Choose file**: opens a file dialog to choose a different image
 1. **Clear image**: deletes the currently chosen image
 1. **Image preview**: shows a small preview of the currently chosen image
-1. **Drop area**: drag and drop image files in this area to select them. It's possible to drag and drop files from a file explorer or also other programs like e.g. METACOM MetaSearch*. <div style="margin-left: 2em"><img src="img/drag_metacom.gif" alt="fill gaps" width="260" style="margin-left: 2em"/></div>
+1. **Drop area**: drag and drop image files in this area to select them. It's possible to drag and drop files from a file explorer or also other programs like e.g. METACOM MetaSearch*. <div style="margin-left: 2em"><img src="img/drag_metacom.gif" alt="fill gaps" width="600" style="margin-left: 2em"/></div>
 
 
 [*METACOM and MetaSearch](https://www.metacom-symbole.de/)  &copy; Annette Kitzinger
