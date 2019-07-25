@@ -6,8 +6,8 @@ The manual is divided in the following parts:
 
 1. [Terms](01_terms.md)
 1. [Navigation and basic functionality](02_navigation.md)
-1. [Edit grid appearance and layout](03_appearance_layout.md)
-1. [Grid input options](04_input_options.md)
+1. [Grid appearance and layout](03_appearance_layout.md)
+1. [Input options](04_input_options.md)
 1. Grid actions
 1. Manage Grids
 1. Offline users

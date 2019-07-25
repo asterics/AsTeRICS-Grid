@@ -1,5 +1,7 @@
-## Input Options
-Clicking on Button "Input Options" (Fig. 1, number 9) opens a modal where input modalities can be configured:
+# Input Options
+This chapter is about how grid elements can be selected with different input modalities.
+
+Clicking on Button "Input Options" in [Main view](02_navigation.md#main-view) opens a configuration modal:
 
 ![input options](img/input_options_en.jpg)
 
@@ -10,7 +12,7 @@ These are the possible options:
 1. **Hover Time**: the time in milliseconds to dwell on an element in order to select it (if hovering enabled)
 1. **Select with mouse click**: selects an element by just clicking on it (tap on touchscreen)
 
-### Scanning options
+## Scanning options
 If scanning is enabled there are several additional options for this input method:
 
 ![input options](img/scanning_options_en.jpg)
@@ -30,3 +32,7 @@ If scanning is enabled there are several additional options for this input metho
     * Trigger the desired event in the running model (AsTeRICS Framework), e.g. move the head
     * recored events are now listed in the AsTeRICS Grid input configuration, press OK in order to apply the changes
     * Scanning groups now can be selected by triggering the recorded event in the AsTeRICS Framework (e.g. moving the head)
+    
+[&#x2190; Previous Chapter](03_appearance_layout.md) [Next Chapter &#x2192;](04_input_options.md)
+
+[Back to Overview](00_index.md)

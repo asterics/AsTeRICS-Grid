@@ -1,4 +1,4 @@
-# Appearance and Layout
+# Grid appearance and layout
 
 This chapter is about a grid's layout and appearance and how to edit it:
 
