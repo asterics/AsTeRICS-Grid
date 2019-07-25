@@ -1,4 +1,4 @@
-# User interface and navigation
+# Navigation and basic functionality
 
 This chapter is about general appearance, navigation and basic functionality of the different views in AsTeRICS Grid:
 

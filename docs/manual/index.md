@@ -5,7 +5,7 @@ This is the manual for AsTeRICS Grid, a web-based tool for augmented and alterna
 The manual is divided in the following parts:
 
 1. [Terms](terms.md)
-1. [User interface and navigation](navigation.md)
+1. [Navigation and basic functionality](navigation.md)
 1. [Edit grid appearance and layout](appearance_layout.md)
 1. Grid actions
 1. Grid input options
