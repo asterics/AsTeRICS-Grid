@@ -1,6 +1,10 @@
 # Appearance and Layout
 
-This chapter is about a grid's layout and appearance and how to edit it.
+This chapter is about a grid's layout and appearance and how to edit it:
+
+1. [Adding elements and change the layout](03_appearance_layout.md#adding-elements-and-layout-options)
+1. [Editing grid elements menu](03_appearance_layout.md#editing-grid-elements)
+1. [Edit modal](03_appearance_layout.md#edit-modal): changing label and image
 
 [Back to Overview](00_index.md)
 
@@ -48,11 +52,14 @@ These are the elements in the modal of Figure 3:
 1. **Clear image**: deletes the currently chosen image
 1. **Image preview**: shows a small preview of the currently chosen image
 1. **Drop area**: drag and drop image files in this area to select them. It's possible to drag and drop files from a file explorer or also other programs like e.g. METACOM MetaSearch*. <div style="margin-left: 2em"><img src="img/drag_metacom.gif" alt="fill gaps" width="600" style="margin-left: 2em"/></div>
-
+1. **Cancel**: discard all changes and close the modal
+1. **OK**: save all changes and close the modal
+1. **OK, edit previous**: save all changes, edit the previous grid element in the edit modal
+1. **OK, edit next**: save all changes, edit the next grid element in the edit modal
 
 [*METACOM and MetaSearch](https://www.metacom-symbole.de/)  &copy; Annette Kitzinger
 
-[&#x2190; Previous Chapter](02_navigation.md) [Next Chapter &#x2192;](03_appearance_layout.md)
+[&#x2190; Previous Chapter](02_navigation.md) [Next Chapter &#x2192;](04_input_options.md)
 
 [Back to Overview](00_index.md)
 
