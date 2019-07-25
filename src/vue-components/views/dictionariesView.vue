@@ -34,7 +34,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="eight columns">
+                            <div class="eight columns actionbuttons" style="display: flex;">
                                 <div class="four columns show-mobile" style="margin: 0.5em 0 0 0.2em" data-i18n="">Actions
                                     // Aktionen
                                 </div>
@@ -263,6 +263,12 @@
 
     .all-dicts-view a {
         font-size: 1.2em;
+    }
+
+    .actionbuttons button {
+        width: 25%;
+        padding: 0 1vh;
+        margin: 0.5vh 0.5vw;
     }
 
     .all-dicts-view .small-button {
