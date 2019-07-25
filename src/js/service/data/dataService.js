@@ -84,6 +84,21 @@ dataService.deleteGrid = function (gridId) {
 };
 
 /**
+ * Deletes all grids.
+ *
+ * @return {Promise}
+ */
+dataService.deleteAllGrids = function () {
+    return dataService.getGrids().then(grids => {
+        let promises = [];
+        grids.forEach(grid => {
+            promises.push(dataService.deleteGrid(grid.id));
+        });
+        return Promise.all(promises);
+    })
+};
+
+/**
  * Adds additional grid files to a grid. If a filename that is added already exists, the
  * existing file is replaced.
  * @see{AdditionalGridFile}
@@ -422,13 +437,7 @@ dataService.importGridsFromJSON = function (jsonString) {
  * @return {Promise} resolves after operation finished successful
  */
 dataService.importBackupFromJSON = function (jsonString) {
-    return dataService.getGrids().then(grids => {
-        let promises = [];
-        grids.forEach(grid => {
-            promises.push(dataService.deleteGrid(grid.id));
-        });
-        return Promise.all(promises);
-    }).then(() => {
+    return dataService.deleteAllGrids().then(() => {
         return dataService.importGridsFromJSON(jsonString);
     });
 };
