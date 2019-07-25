@@ -9,6 +9,8 @@ This chapter is about general appearance, navigation and basic functionality of 
 1. [Manage grids view](navigation.md#manage-grids-view): show all grids, create new ones, create a backup
 1. [Manage dictionaries view](navigation.md#manage-dictionaries-view): show, edit and create new dictionaries
 1. [Change user view](navigation.md#change-user-view): switch user oder login to a new one
+1. [Add online users](navigation.md#add-online-user): register new online users
+1. [Add offline users](navigation.md#add-offline-user): add new offline users
 
 [Back to Overview](index.md)
 
