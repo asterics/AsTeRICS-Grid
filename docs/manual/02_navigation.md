@@ -72,13 +72,13 @@ The following elements are available in the manage grids view:
 1. Open or close the navigation sidebar
 1. **Search bar**: filter the listed grids by entering a part of a grid name
 1. **New grid**: add a new, empty grid
-1. **More**: showing menu with additional actions, e.g. backup the grids to file
+1. **More**: shows menu with additional actions, e.g. backup the grids to file
 1. **Edit grid name**: edit the name of the grid
 1. **Show**: open this grid in main view
 1. **Edit**: open this grid in edit view
 1. **Clone**: duplicate this grid, creating a copy of it with a different name
 1. **Delete**: deletes the grid
-1. **Export**:  saves and downloads the specific grid to a .grd file creating a backup of it
+1. **Export**:  saves and downloads the specific grid to a .grd file creating a backup of it (saves only this single grid, see "More" menu below to backup all grids)
 
 Clicking on Button "More" (Fig. 3, number 4) opens menu with additional options:
 
