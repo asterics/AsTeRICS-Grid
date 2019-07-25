@@ -1,6 +1,8 @@
 # Input Options
 This chapter is about how grid elements can be selected with different input modalities.
 
+[Back to Overview](00_index.md)
+
 Clicking on Button "Input Options" in [Main view](02_navigation.md#main-view) opens a configuration modal:
 
 ![input options](img/input_options_en.jpg)
