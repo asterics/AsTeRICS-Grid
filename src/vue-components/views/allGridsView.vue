@@ -61,7 +61,6 @@
     import {modelUtil} from "../../js/util/modelUtil";
     import {I18nModule} from "./../../js/i18nModule.js";
     import {translateService} from "./../../js/service/translateService";
-    import {pouchDbService} from "../../js/service/data/pouchDbService";
     import {constants} from "../../js/util/constants";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
 
@@ -144,7 +143,8 @@
                 this.importFromFileInternal(event, dataService.importGridsFromFile);
             },
             importBackupFromFile: function (event) {
-                if (!confirm('Caution: This will delete all existing grids and replace them with the grids from the backup. Continue?')) {
+                let name = event.target && event.target.files[0] && event.target.files[0] ? event.target.files[0].name : '';
+                if (!confirm(translateService.translate('CONFIRM_IMPORT_BACKUP', name))) {
                     this.resetFileInput(event);
                     return;
                 }
@@ -160,7 +160,7 @@
             reset() {
                 if (confirm(translateService.translate('CONFIRM_RESET_DB'))) {
                     this.showLoading = true;
-                    pouchDbService.resetDatabase().then(() => {
+                    dataService.deleteAllGrids().then(() => {
                         window.location.reload();
                     });
                 }
@@ -264,7 +264,7 @@
             },
             SEP2: "---------",
             //CONTEXT_SUB_IMPORT_EXPORT: {name: "Import / Export", icon: "fas fa-hdd", items: itemsImportExport},
-            CONTEXT_RESET: {name: "Reset database // Datenbank zurücksetzen", icon: "fas fa-minus-circle"},
+            CONTEXT_RESET: {name: "Reset to default configuration // Auf Standardkonfiguration zurücksetzen", icon: "fas fa-minus-circle"},
         };
 
         $.contextMenu({
