@@ -96,7 +96,11 @@ The possible actions to chose are:
 1. **Clear clipboard**: empties the clipboard
 
 ### AsTeRICS Action
+An "AsTeRICS action" is performs an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework). This can be any action that is possible with the AsTeRICS Framework, e.g. controlling a TV or performing computer actions like opening a program.
 
+Clicking on "Edit" on a "AsTeRICS action" action (or creating a new one) shows the following configuration possibilities:
+
+![asterics action options](img/action_asterics_en.jpg)
   
 [&#x2190; Previous Chapter](03_appearance_layout.md) [Next Chapter &#x2192;](04_input_options.md)
 
