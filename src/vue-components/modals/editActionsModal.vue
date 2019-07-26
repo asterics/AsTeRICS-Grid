@@ -104,7 +104,7 @@
                                             <edit-are-action :action="action" :grid-data="gridData" :model-file="additionalGridFiles[action.id]" :set-grid-file-fn="setAdditionalGridFile" :end-edit-fn="endEditAction"/>
                                         </div>
                                         <div v-if="action.modelName == 'GridActionPredict'">
-                                            <div class="row">
+                                            <div class="row" v-show="gridElement.type === GridElementClass.ELEMENT_TYPE_COLLECT">
                                                 <div class="eight columns">
                                                     <input id="chkSuggestOnChange" type="checkbox" v-model="action.suggestOnChange">
                                                     <label for="chkSuggestOnChange" class="normal-text" data-i18n>Refresh suggestions on change // Vorschläge bei Änderung aktualisieren</label>
@@ -183,6 +183,7 @@
         data: function () {
             return {
                 gridElement: null,
+                GridElementClass: GridElement,
                 editActionId: null,
                 selectedNewAction: GridElement.getActionTypes()[0].getModelName(),
                 gridLabels: null,
