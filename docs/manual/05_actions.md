@@ -89,8 +89,8 @@ Clicking on "Edit" on a "collect element action" action (or creating a new one) 
 The possible actions to chose are:
 
 1. **Clear collect element** empties the collect element
-1. **Delete last word** deletes the last word of the collection elements: <div style="margin-left: 2em"><img src="img/collect_delete_c.gif" alt="Delete last character animation" width="350"/></div>
-1. **Delete last character**: <div style="margin-left: 2em"><img src="img/collect_delete.gif" alt="Delete last word animation" width="350"/></div>
+1. **Delete last word** deletes the last word of the collection elements: <div style="margin-left: 2em"><img src="img/collect_delete.gif" alt="Delete last word animation" width="350"/></div>
+1. **Delete last character**: <div style="margin-left: 2em"><img src="img/collect_delete_c.gif" alt="Delete last character animation" width="350"/></div>
 1. **Copy text to clipboard**: copies the current text of the collect element to clipboard in order to be available for paste in other programs
 1. **Append text to clipboard**: appends the current text of the collect element to clipboard making it possible to collect longer texts in the clipboard which can be used in another program afterwards
 1. **Clear clipboard**: empties the clipboard
