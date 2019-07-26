@@ -44,7 +44,7 @@ class GridElement extends Model({
     }
 
     static getActionTypes() {
-        return [GridActionARE, GridActionSpeak, GridActionNavigate, GridActionSpeakCustom, GridActionPredict, GridActionCollectElement];
+        return [GridActionSpeak, GridActionNavigate, GridActionSpeakCustom, GridActionPredict, GridActionCollectElement, GridActionARE];
     }
 
     static getActionInstance(modelName) {
