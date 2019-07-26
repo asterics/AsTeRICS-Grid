@@ -73,13 +73,28 @@ The action "fill prediction elements" fills all [prediction elements](01_terms.m
 
 Clicking on "Edit" on a "fill prediction elements" action (or creating a new one) shows the following configuration possibilities:
 
-![Speak custom text](img/action_fillprediction_en.jpg)
+![fill prediction elements action options](img/action_fillprediction_en.jpg)
 
-The meaning of the elements is:
-1. **Refresh suggestions on change** (only available on [collect elements](01_terms.md#grid-element)): if checked prediction elements are recalculated and refilled on every change of the collection element on base of the current value of the collection element: <div style="margin-left: 2em"><img src="img/fill_predictions2.gif" alt="fill predictions elements with collect element animation" width="500"/></div>
-1. **Dictionary to use**: select the dictionary you want to use (see [manage grids](02_navigation.md#manage-grids-view)). If nothing selected words from all available dictionaries will be suggested.
+The meaning of the options is:
+1. **Refresh suggestions on change** (only available on [collect elements](01_terms.md#grid-element)): if checked prediction elements are recalculated and refilled on every change of the collection element on base of the current value of the collection element: <div style="margin-left: 2em"><img src="img/fill_predictions2.gif" alt="fill predictions elements with collect element animation" width="350"/></div>
+1. **Dictionary to use**: select the dictionary you want to use (see [manage dictionaries](02_navigation.md#manage-dictionaries-view)). If nothing selected words from all available dictionaries will be suggested.
 
 ### Collect element action
+Collect element actions are various actions that are related to [collect elements](01_terms.md#grid-element). 
+
+Clicking on "Edit" on a "collect element action" action (or creating a new one) shows the following configuration possibilities:
+
+![Collect element action options](img/action_collectelement_en.jpg)
+
+The possible actions to chose are:
+
+1. **Clear collect element** empties the collect element
+1. **Delete last word** deletes the last word of the collection elements: <div style="margin-left: 2em"><img src="img/collect_delete_c.gif" alt="Delete last character animation" width="350"/></div>
+1. **Delete last character**: <div style="margin-left: 2em"><img src="img/collect_delete.gif" alt="Delete last word animation" width="350"/></div>
+1. **Copy text to clipboard**: copies the current text of the collect element to clipboard in order to be available for paste in other programs
+1. **Append text to clipboard**: appends the current text of the collect element to clipboard making it possible to collect longer texts in the clipboard which can be used in another program afterwards
+1. **Clear clipboard**: empties the clipboard
+
 ### AsTeRICS Action
 
   
