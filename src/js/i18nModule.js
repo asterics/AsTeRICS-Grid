@@ -16,7 +16,7 @@ I18nModule.init = function () {
 };
 
 I18nModule.getBrowserLang = function () {
-    return customLanguage || navigator.language.substring(0, 2);
+    return customLanguage || navigator.language.substring(0, 2).toLowerCase();
 };
 
 I18nModule.isBrowserLangDE = function () {

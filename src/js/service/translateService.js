@@ -1,10 +1,12 @@
+import {I18nModule} from "../i18nModule";
+
 var translateService = {};
 
 /**
  *
  */
 translateService.getLang = function () {
-    return navigator.language.substring(0,2).toLowerCase();
+    return I18nModule.getBrowserLang();
 };
 
 translateService.translate = function (key) {
