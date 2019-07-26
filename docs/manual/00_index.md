@@ -8,7 +8,7 @@ The manual is divided in the following parts:
 1. [Navigation and basic functionality](02_navigation.md)
 1. [Grid appearance and layout](03_appearance_layout.md)
 1. [Input options](04_input_options.md)
-1. Grid actions
+1. [Grid element actions](05_actions.md)
 1. Manage Grids
 1. Offline users
 1. Synchronized online users
