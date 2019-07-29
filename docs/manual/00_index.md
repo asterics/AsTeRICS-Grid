@@ -9,4 +9,5 @@ The manual is divided in the following parts:
 1. [Grid appearance and layout](03_appearance_layout.md)
 1. [Input options](04_input_options.md)
 1. [Grid element actions](05_actions.md)
-1. [Dictionaries](06_dictionaries.md)
+1. [Users](06_users.md)
+1. [Dictionaries](07_dictionaries.md)
