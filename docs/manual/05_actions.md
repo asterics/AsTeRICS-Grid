@@ -129,6 +129,6 @@ These are the possibilities while configuring an AsTeRICS Action:
 1. **OK**: apply changes and close edit mode of this AsTeRICS action 
 
   
-[&#x2190; Previous Chapter](03_appearance_layout.md) [Next Chapter &#x2192;](04_input_options.md)
+[&#x2190; Previous Chapter](04_input_options.md) [Next Chapter &#x2192;](06_users.md)
 
 [Back to Overview](00_index.md)

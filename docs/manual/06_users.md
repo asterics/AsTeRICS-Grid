@@ -64,7 +64,7 @@ This is why backups are important:
 1. **Offline users**: since all data is only stored in an browser-internal storage, any browser crash or failure of your device could cause data loss.
 2. **Online users**: Although online users are not susceptible to device or browser errors, data loss is still possible because of the encryption of the user data. If the user forgets his password or decryption fails because of any kind of programming error the data cannot be recovered. Backups as described in [manage grids view](02_navigation.md#additional-options) are saved to an unencrypted file and therefore can recover the user data in such a case.
 
-[&#x2190; Previous Chapter](01_terms.md) [Next Chapter &#x2192;](03_appearance_layout.md)
+[&#x2190; Previous Chapter](05_actions.md) [Next Chapter &#x2192;](07_dictionaries.md)
 
 [Back to Overview](00_index.md)
 

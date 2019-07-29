@@ -37,6 +37,6 @@ If scanning is enabled there are several additional options for this input metho
     * recored events are now listed in the AsTeRICS Grid input configuration, press OK in order to apply the changes
     * Scanning groups now can be selected by triggering the recorded event in the AsTeRICS Framework (e.g. moving the head)
     
-[&#x2190; Previous Chapter](03_appearance_layout.md) [Next Chapter &#x2192;](04_input_options.md)
+[&#x2190; Previous Chapter](03_appearance_layout.md) [Next Chapter &#x2192;](05_actions.md)
 
 [Back to Overview](00_index.md)
