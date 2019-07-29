@@ -1,8 +1,8 @@
-# AsTeRICS Grid Manual
+# AsTeRICS Grid user documentation
 
-This is the manual for AsTeRICS Grid, a web-based tool for augmented and alternative communication (AAC). Integration with the AsTeRICS Framework makes it possible to realize additional functionalities like environmental or computer control.
+This is the user documentation for AsTeRICS Grid, a web-based tool for augmented and alternative communication (AAC). Integration with the AsTeRICS Framework makes it possible to realize additional functionalities like environmental or computer control.
 
-The manual is divided in the following parts:
+The documentation is divided in the following parts:
 
 1. [Terms](01_terms.md)
 1. [Navigation and basic functionality](02_navigation.md)
