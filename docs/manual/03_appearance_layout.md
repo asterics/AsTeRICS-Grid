@@ -57,7 +57,7 @@ These are the elements in the modal of Figure 3:
 1. **OK, edit previous**: save all changes, edit the previous grid element in the edit modal
 1. **OK, edit next**: save all changes, edit the next grid element in the edit modal
 
-[*METACOM and MetaSearch](https://www.metacom-symbole.de/)  &copy; Annette Kitzinger
+<a href="https://www.metacom-symbole.de/" target="_blank">*METACOM and MetaSearch<a/> &copy; Annette Kitzinger
 
 [&#x2190; Previous Chapter](02_navigation.md) [Next Chapter &#x2192;](04_input_options.md)
 
