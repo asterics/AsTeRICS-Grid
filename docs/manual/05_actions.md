@@ -96,11 +96,38 @@ The possible actions to chose are:
 1. **Clear clipboard**: empties the clipboard
 
 ### AsTeRICS Action
-An "AsTeRICS action" is performs an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework). This can be any action that is possible with the AsTeRICS Framework, e.g. controlling a TV or performing computer actions like opening a program.
+An "AsTeRICS action" performs an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework). This can be any action that is possible with the AsTeRICS Framework, e.g. controlling a TV or performing computer actions like opening a program.
+
+Figure 2 shows how an AsTeRICS action that controls a TV is working in more detail:
+
+![asterics action detail concept](img/asterics-action-are.png)
+*Fig. 2: AsTeRICS action concept, example of controlling a TV*
+
+The following steps are shown in Figure 2:
+1. A user selects a grid element with an associated AsTeRICS action. An [AsTeRICS model](01_terms.md#asterics-model) which can perform the desired action (e.g. controlling a TV) is saved within the current grid.
+1. The AsTeRICS model is uploaded to a running instance of the AsTeRICS Framework (ARE) and afterwards started. The model contains so-called "plugins" which are elements capable of communicating with external hardware, e.g. attached to the computer or accessible via network. In the example the "IrTrans" plugin is capable of communicating with an IrTrans device, which is a replacement for infrared remotes.
+1. After uploading and starting the model on the AsTeRICS Framework, data is sent to a plugin contained in the model. In Fig. 2 some data is sent to the "action" port of the IrTrans plugin.
+1. Sending data to the plugin causes the AsTeRICS Framework to communicate with the external real "IrTrans" hardware. The action contains the needed information to perform the desired action, for instance sending a "Volume down" command to a TV.
+1. Finally the IrTrans device sends the infrared signal to the TV causing it to reduce the volume.
+
 
 Clicking on "Edit" on a "AsTeRICS action" action (or creating a new one) shows the following configuration possibilities:
 
 ![asterics action options](img/action_asterics_en.jpg)
+
+These are the possibilities while configuring an AsTeRICS Action:
+
+1. **ARE URL**: the URL of a running ARE (AsTeRICS Framework) to connect with. Standard URL is `http://127.0.0.1:8081/rest/` for a locally running ARE.
+1. **Test URL**: click in order to test the current URL. A tick (&#10003;) or times (&times;) symbol will indicate if the test was successful or has failed.
+1. **ARE Model**: if there is already a [model](01_terms.md#asterics-model) of this action defined, the name of it is shown here. A click on the link downloads the model.
+1. **Download from ARE**: downloads the currently running model from a running AsTeRICS Framework (ARE) instance and saves it to the grid. The current ARE model is replaced by this action.
+1. **Upload to ARE**: uploads the saved model to a running AsTeRICS Framework (ARE) for testing purpose or in order to adapt it.
+1. **Component**: selection of the component (plugin) of the selected model that should be used
+1. **Send data**: define data that should be sent to a specific port of the component
+1. **Trigger event**: selects an event that should be triggered on the selected component (optional, either "send data", "trigger event" or both can be used)
+1. **Test action**: performs the defined AsTeRICS action for testing, same as will be later performed if the grid element is selected
+1. **OK**: apply changes and close edit mode of this AsTeRICS action 
+
   
 [&#x2190; Previous Chapter](03_appearance_layout.md) [Next Chapter &#x2192;](04_input_options.md)
 
