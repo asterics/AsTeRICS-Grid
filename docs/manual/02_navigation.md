@@ -8,8 +8,6 @@ This chapter is about general appearance, navigation and basic functionality of 
 1. [Manage grids view](02_navigation.md#manage-grids-view): show all grids, create new ones, create a backup
 1. [Manage dictionaries view](02_navigation.md#manage-dictionaries-view): show, edit and create new dictionaries
 1. [Change user view](02_navigation.md#change-user-view): switch users or login an existing one
-1. [Add online users](02_navigation.md#add-online-user): register new online users
-1. [Add offline users](02_navigation.md#add-offline-user): add new offline users
 
 [Back to Overview](00_index.md)
 
@@ -34,8 +32,8 @@ The elements have this functionality:
 1. **[Manage grids](02_navigation.md#manage-grids-view)**: show all grids of the current user, add new ones or backup them to a file
 1. **[Manage dictionaries](02_navigation.md#manage-dictionaries-view)**: show all saved dictionaries, edit them or add new ones
 1. **[Change user](02_navigation.md#change-user-view)**: switch between saved users or log in an existing online user
-1. **[Add online user](02_navigation.md#add-online-user)**: register a new online user (synchronized across devices)
-1. **[Add offline users](02_navigation.md#add-offline-user)**: add a new offline user (only for this device)
+1. **Add online user**: register a new online user (synchronized across devices), see [Users](06_users.md)
+1. **Add offline users**: add a new offline user (only for this device)
 1. **About AsTeRICS Grid**: Show general information, links, contact address
 1. **[Input options](04_input_options.md)**: Options about how to select grid elements (e.g. click, hover, scanning)
 1. **[Edit grid](02_navigation.md#edit-view)**: edit the layout of the grid, add new elements, actions for grid elements
@@ -129,32 +127,7 @@ The following elements are available in the change users view:
 1. **Login with other user**: put in username and password of an existing online user in order to add it to the current device. In order to create a new online or offline user, follow one of the links below.
 1. **Remember checkbox**: if checked, the newly logged in online user will be saved to the device and listed in the list of users in the current user view. If unchecked the user will only be opened temporarily and no user data will be saved on the device (recommended for logging in on foreign devices).
 
-## Add online user
-In view "add online user" it's possible to register a new online user (see [Terms](01_terms.md#user)), Figure 6:
-
-![add online user view](img/register_online_en.jpg)
-*Fig. 6: Add online user view - register*
-
-The following information is important for registering an online user:
-
-* The only data that is needed are a **username** and a **password**. The username is needed for uniquely identifying a user and the password for securing his account and encrypting the data.
-* If you want to **use AsTeRICS Grid completely anonymously** just use a username without any relation to your person.
-* Since all data is **end-to-end encrypted** only the user itself can ever see his data and configuration, no server admin or anyone else.
-* End-to-end encryption is great for privacy, however it has the drawback that the **data is lost**, if you logout your online account on all devices and forget your password. In this case there is **no possibility of password recovery**, so **remember your password carefully**. It's also recommended to **do backups** of your grids (see [Manage grids view](02_navigation.md#additional-options)).
-* Usernames must start lowercase, valid characters are [a-z], [0-9] and ["-", "_"], valid length is 3-50 characters.
-
-## Add offline user
-In view "add offline user" it's possible add a new offline user (see [Terms](01_terms.md#user)), Figure 7:
-
-![add offline user view](img/add_offline_en.jpg)
-*Fig. 7: Add offline user view*
-
-The following information is important regarding offline users:
-
-* All **data of an offline user never leaves the device**, it's stored in a browser-internal database.
-* Regulary **create backups** of your grids by exporting them to file, see [Manage grids view](02_navigation.md#additional-options)
-* Usernames must start lowercase, valid characters are [a-z], [0-9] and ["-", "_"], valid length is 3-50 characters.
-
+For information about offline or online users and how to add them see [Users](06_users.md).
 
 [&#x2190; Previous Chapter](01_terms.md) [Next Chapter &#x2192;](03_appearance_layout.md)
 
