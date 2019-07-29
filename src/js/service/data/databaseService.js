@@ -232,10 +232,10 @@ function initInternal(hashedUserPassword) {
         log.info('importing default grid set...');
         let promises = [];
         let gridsData = JSON.parse(data);
+        gridsData = GridData.regenerateIDs(gridsData);
         if (!metadata.lastOpenedGridId && gridsData[0] && gridsData[0].id) {
             metadata.lastOpenedGridId = gridsData[0].id;
         }
-        gridsData = GridData.regenerateIDs(gridsData);
         gridsData.forEach(gridData => {
             promises.push(applyFiltersAndSave(GridData.getModelName(), gridData));
         });
