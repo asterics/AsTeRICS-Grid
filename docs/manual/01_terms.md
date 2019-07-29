@@ -26,19 +26,21 @@ There are 3 types of grid elements:
 1. **Prediction element**: an element that is dynamically filled up with word predictions based on previously selected normal elements.
 
 ## Action
-An action that is performed if a grid element is selected, e.g. navigate to another grid, speak some text or some external action like turning on a light.
+An action that is performed if a grid element is selected, e.g. navigate to another grid, speak some text or some external action like turning on a light. See [Grid element actions](05_actions.md).
 
 ## Input
-In the context of AsTeRICS Grid "input" refers to the mean of selecting a grid element. This can be e.g. a normal mouse click, hovering or scanning.
+In the context of AsTeRICS Grid "input" refers to the mean of selecting a grid element. This can be e.g. a normal mouse click, hovering or scanning. See [Input options](04_input_options.md).
 
 ## Dictionary
-A dictionary is a set of words that is used to fill up prediction grid elements. By default a dictionary including the most frequent english/german words is used, but also custom dictionaries can be used.
+A dictionary is a set of words that is used to fill up prediction grid elements. By default a dictionary including the most frequent english/german words is used, but also custom dictionaries can be used. See [Dictionaries](06_dictionaries.md).
 
 ## User
 In AsTeRICS Grid a "user" refers to a username and a set of grids, which in sum realize a solution for an actual user. There are two types of users in AsTeRICS Grid:
 
 1. **Offline users**: are users whose grids are only stored locally on the used device.
 1. **Online users**: are users whose grids are stored locally on the device and online in the cloud. In contrast to offline users they also have a password that is used to encrypt all grids before saving them online.
+
+For more information see [add online users](02_navigation.md#add-online-user).
 
 [Next Chapter &#x2192;](02_navigation.md)
 
