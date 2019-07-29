@@ -107,7 +107,7 @@ The following elements are available in the manage dictionaries view:
 1. **Clone**: create a copy of the dictionary
 1. **Delete**: removes the dictionary
 
-<!-- For more information about using dictionaries see TODO -->
+For more information about using dictionaries see [Dictionaries](07_dictionaries.md).
 
 ## Change user view
 In the change user view it's possible to switch between users or login a existing one (Figure 5):
