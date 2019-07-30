@@ -105,6 +105,7 @@
     import './../../../css/modal.css';
     import {GridData} from "../../../js/model/GridData";
     import {AdditionalGridFile} from "../../../js/model/AdditionalGridFile";
+    import {helpService} from "../../../js/service/helpService";
 
     export default {
         props: ['action', 'gridData', 'modelFile','setGridFileFn', 'endEditFn'],
@@ -200,9 +201,13 @@
             if(!this.areModelFile) {
                 this.areModelFile = new AdditionalGridFile();
             }
+            helpService.setHelpLocation('05_actions', '#asterics-action');
         },
         updated() {
             I18nModule.init();
+        },
+        beforeDestroy() {
+            helpService.revertToLastLocation();
         }
     }
 </script>

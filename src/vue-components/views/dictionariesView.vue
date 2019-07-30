@@ -105,6 +105,7 @@
     import Predictionary from 'predictionary'
     import ImportDictionaryModal from '../modals/importDictionaryModal.vue'
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
+    import {helpService} from "../../js/service/helpService";
 
     let vueApp = null;
     let vueConfig = {
@@ -173,8 +174,7 @@
             edit(dict) {
                 this.cancelEditName();
                 if (this.editId === dict.id) {
-                    this.editId = null;
-                    this.searchWord = "";
+                    this.editFinished();
                     return;
                 }
                 this.editId = dict.id;
@@ -182,9 +182,12 @@
                 this.predictionary.loadDictionary(dict.data);
                 this.totalWords = this.predictionary.getWords().length;
                 this.inputSearchWord('');
+                helpService.setHelpLocation('07_dictionaries', '#edit-dictionaries');
             },
             editFinished() {
                 this.editId = null;
+                this.searchWord = "";
+                helpService.setHelpLocation('02_navigation', '#manage-dictionaries-view');
             },
             inputSearchWord(input) {
                 let thiz = this;

@@ -70,6 +70,7 @@
     import './../../css/modal.css';
     import {GridElement} from "../../js/model/GridElement";
     import {GridData} from "../../js/model/GridData";
+    import {helpService} from "../../js/service/helpService";
 
     export default {
         props: ['editElementIdParam', 'gridData'],
@@ -214,9 +215,13 @@
         mounted () {
             this.editElementId = this.editElementIdParam;
             this.initInternal();
+            helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
         },
         updated() {
             I18nModule.init();
+        },
+        beforeDestroy() {
+            helpService.revertToLastLocation();
         }
     }
 </script>

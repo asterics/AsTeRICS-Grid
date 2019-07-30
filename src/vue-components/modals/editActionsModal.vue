@@ -177,6 +177,7 @@
     import {GridData} from "../../js/model/GridData";
     import EditAreAction from "./editActionsSub/editAREAction.vue";
     import {GridActionCollectElement} from "../../js/model/GridActionCollectElement";
+    import {helpService} from "../../js/service/helpService";
 
     export default {
         props: ['editElementIdParam', 'gridData'],
@@ -268,9 +269,13 @@
         mounted () {
             this.editElementId = this.editElementIdParam;
             this.initInternal();
+            helpService.setHelpLocation('05_actions', '#edit-actions-modal');
         },
         updated() {
             I18nModule.init();
+        },
+        beforeDestroy() {
+            helpService.setHelpLocation('02_navigation', '#edit-view');
         }
     }
 </script>

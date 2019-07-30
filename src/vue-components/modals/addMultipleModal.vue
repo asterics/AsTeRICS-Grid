@@ -53,6 +53,7 @@
     import './../../css/modal.css';
     import {GridElement} from "../../js/model/GridElement";
     import {GridData} from "../../js/model/GridData";
+    import {helpService} from "../../js/service/helpService";
 
     export default {
         props: ['gridData'],
@@ -89,9 +90,13 @@
                 });
             }
         },
-        mounted () {
+        mounted() {
             var thiz = this;
             I18nModule.init();
+            helpService.setHelpLocation('03_appearance_layout', '#adding-elements-and-layout-options');
+        },
+        beforeDestroy() {
+            helpService.revertToLastLocation();
         }
     }
 </script>

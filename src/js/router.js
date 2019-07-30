@@ -3,6 +3,7 @@ import Navigo from 'navigo'
 
 import {I18nModule} from './i18nModule.js';
 import {dataService} from "./service/data/dataService.js";
+import {helpService} from "./service/helpService";
 
 import AllGridsView from '../vue-components/views/allGridsView.vue'
 import GridEditView from '../vue-components/views/gridEditView.vue'
@@ -21,7 +22,6 @@ let NO_DB_VIEWS = ['#login', '#register', '#updating', '#welcome', '#add', '#abo
 
 let Router = {};
 let navigoInstance = null;
-let viewsFolder = 'views/';
 let injectId = null;
 let lastHash = null;
 let routingEndabled = true;
@@ -39,6 +39,7 @@ Router.init = function (injectIdParam, initialHash) {
     navigoInstance
         .on({
             'main': function () {
+                helpService.setHelpLocation('02_navigation', '#main-view');
                 toMainInternal();
             },
             'updating': function () {
@@ -48,39 +49,49 @@ Router.init = function (injectIdParam, initialHash) {
                 routingEndabled = false;
             },
             'grids/': function () {
+                helpService.setHelpLocation('02_navigation', '#manage-grids-view');
                 loadVueView(AllGridsView);
             },
             'grid/:gridId': function (params) {
                 log.debug('route grid with ID: ' + params.gridId);
+                helpService.setHelpLocation('02_navigation', '#main-view');
                 loadVueView(GridView, {
                     gridId: params.gridId
                 });
             },
             'grid/edit/:gridId': function (params) {
                 log.debug('route edit grid with ID: ' + params.gridId);
+                helpService.setHelpLocation('02_navigation', '#edit-view');
                 loadVueView(GridEditView, {
                     gridId: params.gridId
                 });
             },
             'login': function () {
+                helpService.setHelpLocation('02_navigation', '#change-user-view');
                 loadVueView(LoginView);
             },
             'register': function () {
+                helpService.setHelpLocation('06_users', '#online-users');
                 loadVueView(RegisterView);
             },
             'add': function () {
+                helpService.setHelpLocation('06_users', '#offline-users');
                 loadVueView(AddOfflineView);
             },
             'welcome': function () {
+                helpService.setHelpLocation('00_index', '#asterics-grid-user-documentation');
                 loadVueView(WelcomeView);
             },
             'about': function () {
+                helpService.setHelpLocation('00_index', '#asterics-grid-user-documentation');
                 loadVueView(AboutView);
             },
             'dictionaries': function () {
+                helpService.setHelpLocation('02_navigation', '#manage-dictionaries-view');
                 loadVueView(DictionariesView);
             },
             '*': function () {
+                helpService.setHelpLocation('02_navigation', '#main-view');
                 Router.toMain();
             }
         });

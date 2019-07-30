@@ -142,7 +142,7 @@
 <script>
     import {dataService} from '../../js/service/data/dataService'
     import {areService} from './../../js/service/areService'
-    import {Router} from './../../js/router'
+    import {helpService} from "../../js/service/helpService";
     import {I18nModule} from './../../js/i18nModule.js';
     import './../../css/modal.css';
 
@@ -295,9 +295,13 @@
             thiz.metadata = JSON.parse(JSON.stringify(thiz.metadataProperty));
             thiz.metadata.inputConfig.areURL = thiz.metadata.inputConfig.areURL || areService.getRestURL();
             I18nModule.init();
+            helpService.setHelpLocation('04_input_options', '#input-options');
         },
         updated () {
             I18nModule.init();
+        },
+        beforeDestroy() {
+            helpService.revertToLastLocation();
         }
     }
 </script>

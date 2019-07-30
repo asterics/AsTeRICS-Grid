@@ -80,6 +80,7 @@
     import {I18nModule} from './../../js/i18nModule.js';
     import './../../css/modal.css';
     import Predictionary from 'predictionary'
+    import {helpService} from "../../js/service/helpService";
 
     let predictionary = Predictionary.instance();
 
@@ -132,9 +133,13 @@
             I18nModule.init();
             this.originalPredictionary = Predictionary.instance();
             this.originalPredictionary.loadDictionary(this.dictData.data, this.dictData.dictionaryKey);
+            helpService.setHelpLocation('07_dictionaries', '#add-words');
         },
         updated() {
             I18nModule.init();
+        },
+        beforeDestroy() {
+            helpService.revertToLastLocation();
         }
     }
 </script>
