@@ -4,6 +4,7 @@
             <div class="modal-wrapper">
                 <div class="modal-container" v-if="gridElement">
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
+                    <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
                     <div class="modal-header">
                         <h1 name="header">
                             <span data-i18n>Edit actions // Aktionen bearbeiten</span> <span>("{{gridElement.label}}")</span>
@@ -40,7 +41,7 @@
                                 </div>
                                 <div v-if="editActionId == action.id">
                                     <div class>
-                                        <b>{{action.modelName | translate}}</b>
+                                        <b>{{action.modelName | translate}}</b> <a class="black" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
                                     </div>
                                     <div>
                                         <div v-if="action.modelName == 'GridActionSpeak'">
@@ -236,6 +237,9 @@
                 thiz.saveInternal().then(() => {
                     thiz.$emit('close');
                 });
+            },
+            openHelp() {
+                helpService.openHelp();
             },
             editNext(invertDirection) {
                 var thiz = this;

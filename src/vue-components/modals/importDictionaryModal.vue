@@ -4,6 +4,7 @@
             <div class="modal-wrapper">
                 <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
+                    <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
                     <div class="modal-header">
                         <h1 name="header" data-i18n>
                             Import words to dictionary // Wörter zu Wörterbuch hinzufügen
@@ -127,6 +128,9 @@
                 } catch (e) {
                     log.warn('error parsing words: ' + e);
                 }
+            },
+            openHelp() {
+                helpService.openHelp();
             }
         },
         mounted() {

@@ -4,6 +4,7 @@
             <div class="modal-wrapper">
                 <div class="modal-container" @keyup.27="cancel()" @keyup.ctrl.enter="reinit(); $emit('close')">
                     <a class="inline close-button" href="javascript:void(0);" @click="cancel()"><i class="fas fa-times"/></a>
+                    <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
                     <div class="modal-header">
                         <h1 name="header" data-i18n>
                             Input Options // Eingabeoptionen
@@ -286,6 +287,9 @@
             removeAreEvent(areEvent) {
                 this.metadata.inputConfig.areEvents = this.metadata.inputConfig.areEvents.filter(e => e !== areEvent);
                 dataService.saveMetadata(this.metadata);
+            },
+            openHelp() {
+                helpService.openHelp();
             }
         },
         mounted () {

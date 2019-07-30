@@ -4,6 +4,7 @@
             <div class="modal-wrapper" @dragenter="preventDefault" @dragover="preventDefault" @drop="imageDropped">
                 <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()" @keyup.ctrl.right="nextFromKeyboard()" @keyup.ctrl.left="editNext(true)">
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
+                    <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
                     <div class="modal-header">
                         <h1 v-if="editElementId" name="header" class="inline" data-i18n>
                             Edit grid item // Grid-Element bearbeiten
@@ -210,6 +211,9 @@
             },
             preventDefault(event) {
                 event.preventDefault();
+            },
+            openHelp() {
+                helpService.openHelp();
             }
         },
         mounted () {
