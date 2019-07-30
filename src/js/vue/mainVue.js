@@ -6,6 +6,7 @@ import {inputEventHandler} from "../util/inputEventHandler";
 import {dataService} from "../service/data/dataService";
 import {databaseService} from "../service/data/databaseService";
 import {localStorageService} from "../service/data/localStorageService";
+import {helpService} from "../service/helpService";
 
 let MainVue = {};
 let app = null;
@@ -44,6 +45,9 @@ MainVue.init = function () {
             },
             openSidebar() {
                 $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
+            },
+            openHelp() {
+                helpService.openHelp();
             }
         },
         mounted() {

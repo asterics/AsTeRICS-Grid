@@ -104,6 +104,12 @@ nav button.selected {
     outline: none;
 }
 
+nav #helpButton:focus {
+    border: none;
+    outline: none;
+    background-color: transparent;
+}
+
 nav li:hover button span {
     color: darkblue;
 }
