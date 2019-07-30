@@ -38,6 +38,14 @@
                     <span data-i18n="">Already have an account? // Sie haben bereits einen Account?</span>
                     <a href="#login" data-i18n="">Login // Zum&nbsp;Login</a>
                 </div>
+                <div class="row">
+                    <b data-i18n="">Hint: // Hinweis:</b>
+                    <span>
+                        <span data-i18n="">If you need help within AsTeRICS Grid, just click the help icon ( // Wenn Sie Hilfe bei der Verwendung von AsTeRICS Grid benötigen, klicken Sie einfach auf das Hilfe-Icon (</span>
+                        <a href="javascript:;" @click="openHelp"><i class="fas fa-question-circle"></i></a>
+                        <span data-i18n="">) or press [F1] on the keyboard in order to open the user documentation at the relevant part. // ) oder drücken Sie [F1] auf der Tastatur um die Benutzerdokumentation an der entsprechenden Stelle zu öffnen.</span>
+                    </span>
+                </div>
             </div>
         </div>
     </div>
@@ -50,6 +58,7 @@
     import {constants} from "../../js/util/constants";
     import {localStorageService} from "../../js/service/data/localStorageService";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
+    import {helpService} from "../../js/service/helpService";
 
     export default {
         components: {HeaderIcon},
@@ -73,6 +82,9 @@
                 databaseService.registerForUser(constants.LOCAL_NOLOGIN_USERNAME, constants.LOCAL_NOLOGIN_USERNAME).then(() => {
                     Router.toMain();
                 });
+            },
+            openHelp() {
+                helpService.openHelp();
             }
         },
         mounted() {
