@@ -9,8 +9,8 @@ This documentation is divided in the following parts:
 
 1. [Project structure](01_structure.md)
 1. [Used tools and libraries](02_tools.md)
-1. [Dynamic grid](01_terms.md)
-1. [Data model concept](01_terms.md)
+1. [Dynamic grid](03_grid.md)
+1. [Data model concept](04_datamodel.md)
 1. [Data storage concept](01_terms.md)
 1. [Superlogin and CouchDB](01_terms.md)
 1. [Routing](01_terms.md)
