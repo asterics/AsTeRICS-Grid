@@ -35,18 +35,18 @@
     "jest": "^24.5.0"
   },
   "scripts": {
-    "test": "jest",
-    "build": "jest && webpack --config webpack.config.js --env.enableAppCache --env.production",
-    "stats": "webpack --config webpack.config.js --env.enableAppCache --env.production --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json app/build_legacy",
-    "stats-dev": "webpack --config webpack.config.js --env.enableAppCache --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json app/build_legacy",
-    "watch": "webpack --watch --config webpack.config.js",
-    "watch-appcache": "webpack --watch --config webpack.config.js --env.enableAppCache",
     "start": "webpack-dev-server",
     "start-appcache": "npm run build && webpack-dev-server --env.enableAppCache",
     "start-superlogin-dev": "node superlogin/start.js",
     "start-superlogin-prod": "node superlogin/start.js prod",
+    "watch": "webpack --watch --config webpack.config.js",
+    "watch-appcache": "webpack --watch --config webpack.config.js --env.enableAppCache",
+    "build": "jest && webpack --config webpack.config.js --env.enableAppCache --env.production",
     "release": "cp scripts/release.sh scripts/release.tmp.sh && sh scripts/release.tmp.sh && rm scripts/release.tmp.sh",
-    "release-latest": "cp scripts/releaseBeta.sh scripts/releaseBeta.tmp.sh && sh scripts/releaseBeta.tmp.sh && rm scripts/releaseBeta.tmp.sh"
+    "release-latest": "cp scripts/releaseBeta.sh scripts/releaseBeta.tmp.sh && sh scripts/releaseBeta.tmp.sh && rm scripts/releaseBeta.tmp.sh",
+    "test": "jest",
+    "stats": "webpack --config webpack.config.js --env.enableAppCache --env.production --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json app/build_legacy",
+    "stats-dev": "webpack --config webpack.config.js --env.enableAppCache --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json app/build_legacy"
   },
   "repository": {
     "type": "git",
