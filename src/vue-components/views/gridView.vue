@@ -34,7 +34,7 @@
 
 <script>
     import $ from 'jquery';
-    import {L} from "../../lib/lquery.js";
+    import {L} from "../../js/util/lquery.js";
     import {Grid} from "../../js/grid.js";
     import {actionService} from "../../js/service/actionService";
     import {dataService} from "../../js/service/data/dataService";

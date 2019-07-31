@@ -1,4 +1,4 @@
-import { L } from "../../lib/lquery.js";
+import { L } from "../util/lquery.js";
 
 function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass) {
     var thiz = this;

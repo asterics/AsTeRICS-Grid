@@ -1,4 +1,4 @@
-import {L} from "../../lib/lquery.js";
+import {L} from "../util/lquery.js";
 
 function Scanner(itemSelector, scanActiveClass, options) {
     var thiz = this;
