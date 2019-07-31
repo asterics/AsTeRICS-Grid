@@ -65,7 +65,7 @@
 
 <script>
     import {dataService} from '../../js/service/data/dataService'
-    import {I18nModule} from './../../js/i18nModule.js';
+    import {i18nService} from "../../js/service/i18nService";
     import {imageUtil} from './../../js/util/imageUtil';
     import {GridImage} from "../../js/model/GridImage";
     import './../../css/modal.css';
@@ -222,7 +222,7 @@
             helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
         },
         updated() {
-            I18nModule.init();
+            i18nService.initDomI18n();
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

@@ -101,7 +101,7 @@
     import FileSaver from 'file-saver'
     import {actionService} from './../../../js/service/actionService'
     import {areService} from './../../../js/service/areService'
-    import {I18nModule} from './../../../js/i18nModule.js';
+    import {i18nService} from "../../../js/service/i18nService";
     import './../../../css/modal.css';
     import {GridData} from "../../../js/model/GridData";
     import {AdditionalGridFile} from "../../../js/model/AdditionalGridFile";
@@ -204,7 +204,7 @@
             helpService.setHelpLocation('05_actions', '#asterics-action');
         },
         updated() {
-            I18nModule.init();
+            i18nService.initDomI18n();
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

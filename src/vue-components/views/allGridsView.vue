@@ -59,7 +59,6 @@
     import {GridData} from "../../js/model/GridData.js";
     import {Router} from "../../js/router";
     import {modelUtil} from "../../js/util/modelUtil";
-    import {I18nModule} from "./../../js/i18nModule.js";
     import {i18nService} from "../../js/service/i18nService";
     import {constants} from "../../js/util/constants";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
@@ -210,11 +209,11 @@
             var thiz = this;
             vueApp = thiz;
             initContextmenu();
-            I18nModule.init();
+            i18nService.initDomI18n();
             thiz.showLoading = false;
         },
         updated() {
-            I18nModule.init();
+            i18nService.initDomI18n();
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reload);

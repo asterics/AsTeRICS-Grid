@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import {I18nModule} from "../i18nModule";
+import {i18nService} from "../service/i18nService";
 import {constants} from "../util/constants";
 import {util} from "../util/util";
 import {inputEventHandler} from "../util/inputEventHandler";
@@ -52,7 +52,7 @@ MainVue.init = function () {
         },
         mounted() {
             let thiz = this;
-            I18nModule.init();
+            i18nService.initDomI18n();
             $(document).on(constants.EVENT_SIDEBAR_OPEN, () => {
                 if (thiz.showSidebar) {
                     return;
@@ -122,7 +122,7 @@ MainVue.init = function () {
             }
         },
         updated() {
-            I18nModule.init();
+            i18nService.initDomI18n();
         }
     });
 };

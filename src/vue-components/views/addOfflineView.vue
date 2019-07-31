@@ -50,7 +50,7 @@
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {databaseService} from "../../js/service/data/databaseService";
     import {loginService} from "../../js/service/loginService";
-    import {I18nModule} from './../../js/i18nModule.js';
+    import {i18nService} from "../../js/service/i18nService";
     import {constants} from "../../js/util/constants";
     import {Router} from "../../js/router";
     import ComparisonComponent from "./../components/comparisonComponent.vue";
@@ -97,10 +97,10 @@
             }
         },
         mounted() {
-            I18nModule.init();
+            i18nService.initDomI18n();
         },
         updated() {
-            I18nModule.init();
+            i18nService.initDomI18n();
         }
     }
 </script>

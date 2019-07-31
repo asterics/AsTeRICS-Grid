@@ -32,7 +32,7 @@
 </template>
 
 <script>
-    import {I18nModule} from './../../js/i18nModule.js';
+    import {i18nService} from "../../js/service/i18nService";
 
     export default {
         props: [],
@@ -44,7 +44,7 @@
         methods: {
         },
         mounted() {
-            I18nModule.init();
+            i18nService.initDomI18n();
         }
     }
 </script>

@@ -25,7 +25,7 @@ collectElementService.doAction = function (elem) {
     if (getActionOfType(elem, 'GridActionPredict')) {
         predictionService.predict(collectedText);
     }
-    speechService.speak(collectedText, i18nService.getLang());
+    speechService.speak(collectedText, i18nService.getBrowserLang());
 };
 
 collectElementService.reset = function () {

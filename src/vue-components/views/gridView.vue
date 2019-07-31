@@ -51,7 +51,7 @@
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {constants} from "../../js/util/constants";
     import {GridData} from "../../js/model/GridData";
-    import {I18nModule} from "../../js/i18nModule";
+    import {i18nService} from "../../js/service/i18nService";
     import {util} from "../../js/util/util";
 
     let vueApp = null;
@@ -251,7 +251,7 @@
             });
         },
         updated() {
-            I18nModule.init();
+            i18nService.initDomI18n();
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, reloadFn);

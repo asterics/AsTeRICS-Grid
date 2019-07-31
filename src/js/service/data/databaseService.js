@@ -8,15 +8,15 @@ import {encryptionService} from "./encryptionService";
 import {pouchDbService} from "./pouchDbService";
 import {filterService} from "./filterService";
 import {modelUtil} from "../../util/modelUtil";
-import {I18nModule} from "../../i18nModule";
+import {i18nService} from "../i18nService";
 import {Dictionary} from "../../model/Dictionary";
 
 let databaseService = {};
 
 let _initPromise = null;
-let _defaultGridSetPath = I18nModule.isBrowserLangDE() ? 'examples/default_de.grd' : 'examples/default_en.grd';
-let _defaultDictPath = I18nModule.isBrowserLangDE() ? 'dictionaries/default_de.txt' : 'dictionaries/default_en.txt';
-let _defaultDictName = I18nModule.isBrowserLangDE() ? 'WoerterbuchDeutsch ' : 'EnglishDictionary';
+let _defaultGridSetPath = i18nService.isBrowserLangDE() ? 'examples/default_de.grd' : 'examples/default_en.grd';
+let _defaultDictPath = i18nService.isBrowserLangDE() ? 'dictionaries/default_de.txt' : 'dictionaries/default_en.txt';
+let _defaultDictName = i18nService.isBrowserLangDE() ? 'WoerterbuchDeutsch ' : 'EnglishDictionary';
 
 /**
  * queries for objects in database and resolves promise with result.

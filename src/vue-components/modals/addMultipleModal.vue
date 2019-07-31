@@ -49,7 +49,7 @@
 
 <script>
     import {dataService} from '../../js/service/data/dataService'
-    import {I18nModule} from './../../js/i18nModule.js';
+    import {i18nService} from "../../js/service/i18nService";
     import './../../css/modal.css';
     import {GridElement} from "../../js/model/GridElement";
     import {GridData} from "../../js/model/GridData";
@@ -92,7 +92,7 @@
         },
         mounted() {
             var thiz = this;
-            I18nModule.init();
+            i18nService.initDomI18n();
             helpService.setHelpLocation('03_appearance_layout', '#adding-elements-and-layout-options');
         },
         beforeDestroy() {

@@ -133,11 +133,10 @@
 </template>
 
 <script>
-    import {I18nModule} from './../../js/i18nModule.js';
+    import {i18nService} from "../../js/service/i18nService";
     import {loginService} from './../../js/service/loginService.js';
     import {databaseService} from "../../js/service/data/databaseService";
     import {localStorageService} from "../../js/service/data/localStorageService";
-    import {i18nService} from "../../js/service/i18nService";
     import {Router} from "../../js/router";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
 
@@ -235,10 +234,10 @@
             if (this.user) {
                 document.getElementById('inputPassword2').focus();
             }
-            I18nModule.init();
+            i18nService.initDomI18n();
         },
         updated() {
-            I18nModule.init();
+            i18nService.initDomI18n();
         }
     }
 </script>

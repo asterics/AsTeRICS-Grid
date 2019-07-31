@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import Navigo from 'navigo'
 
-import {I18nModule} from './i18nModule.js';
+import {i18nService} from "./service/i18nService";
 import {dataService} from "./service/data/dataService.js";
 import {helpService} from "./service/helpService";
 
@@ -45,7 +45,7 @@ Router.init = function (injectIdParam, initialHash) {
             'updating': function () {
                 log.debug('loading updating view.');
                 $('#updatingView').show();
-                I18nModule.init();
+                i18nService.initDomI18n();
                 routingEndabled = false;
             },
             'grids/': function () {

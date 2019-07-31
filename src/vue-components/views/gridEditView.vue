@@ -47,7 +47,6 @@
     import {Grid} from "../../js/grid.js";
     import {dataService} from "../../js/service/data/dataService";
     import {Router} from "./../../js/router.js";
-    import {I18nModule} from "./../../js/i18nModule.js";
     import {MetaData} from "./../../js/model/MetaData";
     import {i18nService} from "../../js/service/i18nService";
 
@@ -183,12 +182,12 @@
                     thiz.gridData = JSON.parse(JSON.stringify(newGridData));
                 });
                 initContextmenu();
-                I18nModule.init();
+                i18nService.initDomI18n();
                 thiz.showGrid = true;
             });
         },
         updated() {
-            I18nModule.init();
+            i18nService.initDomI18n();
         },
         beforeDestroy() {
             inputEventHandler.startListening();

@@ -78,7 +78,7 @@
 
 <script>
     import {dataService} from '../../js/service/data/dataService'
-    import {I18nModule} from './../../js/i18nModule.js';
+    import {i18nService} from "../../js/service/i18nService";
     import './../../css/modal.css';
     import Predictionary from 'predictionary'
     import {helpService} from "../../js/service/helpService";
@@ -134,13 +134,13 @@
             }
         },
         mounted() {
-            I18nModule.init();
+            i18nService.initDomI18n();
             this.originalPredictionary = Predictionary.instance();
             this.originalPredictionary.loadDictionary(this.dictData.data, this.dictData.dictionaryKey);
             helpService.setHelpLocation('07_dictionaries', '#add-words');
         },
         updated() {
-            I18nModule.init();
+            i18nService.initDomI18n();
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

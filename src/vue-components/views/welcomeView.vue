@@ -52,7 +52,7 @@
 </template>
 
 <script>
-    import {I18nModule} from './../../js/i18nModule.js';
+    import {i18nService} from "../../js/service/i18nService";
     import {databaseService} from "../../js/service/data/databaseService";
     import {Router} from "../../js/router";
     import {constants} from "../../js/util/constants";
@@ -88,7 +88,7 @@
             }
         },
         mounted() {
-            I18nModule.init();
+            i18nService.initDomI18n();
         }
     }
 </script>

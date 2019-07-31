@@ -171,7 +171,7 @@
     import {actionService} from './../../js/service/actionService'
     import {speechService} from './../../js/service/speechService'
     import {predictionService} from "../../js/service/predictionService";
-    import {I18nModule} from './../../js/i18nModule.js';
+    import {i18nService} from "../../js/service/i18nService";
     import {GridActionNavigate} from "../../js/model/GridActionNavigate";
     import './../../css/modal.css';
     import {GridElement} from "../../js/model/GridElement";
@@ -276,7 +276,7 @@
             helpService.setHelpLocation('05_actions', '#edit-actions-modal');
         },
         updated() {
-            I18nModule.init();
+            i18nService.initDomI18n();
         },
         beforeDestroy() {
             helpService.setHelpLocation('02_navigation', '#edit-view');

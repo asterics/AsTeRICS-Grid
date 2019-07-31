@@ -96,7 +96,6 @@
     import $ from 'jquery';
     import {dataService} from "../../js/service/data/dataService";
     import {modelUtil} from "../../js/util/modelUtil";
-    import {I18nModule} from "./../../js/i18nModule.js";
     import {i18nService} from "../../js/service/i18nService";
     import {predictionService} from "../../js/service/predictionService";
     import {constants} from "../../js/util/constants";
@@ -241,10 +240,10 @@
             let thiz = this;
             predictionService.reset();
             vueApp = thiz;
-            I18nModule.init();
+            i18nService.initDomI18n();
         },
         updated() {
-            I18nModule.init();
+            i18nService.initDomI18n();
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reload);

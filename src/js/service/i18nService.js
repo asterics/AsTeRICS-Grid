@@ -1,21 +1,41 @@
-import {I18nModule} from "../i18nModule";
+import {localStorageService} from "./data/localStorageService";
 
-var i18nService = {};
+let i18nService = {};
 
-/**
- *
- */
-i18nService.getLang = function () {
-    return I18nModule.getBrowserLang();
+let CUSTOM_LANGUAGE_KEY = 'CUSTOM_LANGUAGE_KEY';
+let customLanguage = localStorageService.get(CUSTOM_LANGUAGE_KEY);
+
+i18nService.initDomI18n = function () {
+    let i18n = window.domI18n({
+        selector: '[data-i18n]',
+        separator: ' // ',
+        languages: ['en', 'de']
+    });
+    if (customLanguage) {
+        i18n.changeLanguage(customLanguage)
+    }
+};
+
+i18nService.getBrowserLang = function () {
+    return customLanguage || navigator.language.substring(0, 2).toLowerCase();
+};
+
+i18nService.isBrowserLangDE = function () {
+    return i18nService.getBrowserLang() === 'de';
 };
 
 i18nService.translate = function (key) {
-    var lang = this.translations[this.getLang()] ? this.getLang() : 'en';
+    var lang = this.translations[this.getBrowserLang()] ? this.getBrowserLang() : 'en';
     var translated = this.translations[lang][key] ? this.translations[lang][key] : key;
     for(var i=1; i<arguments.length; i++) {
         translated = translated.replace('{?}', arguments[i]);
     }
     return translated;
+};
+
+window.setLanguage = function (lang) {
+    customLanguage = lang;
+    localStorageService.save(CUSTOM_LANGUAGE_KEY, customLanguage);
 };
 
 i18nService.translations = {};
