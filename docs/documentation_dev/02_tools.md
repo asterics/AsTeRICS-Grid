@@ -54,7 +54,7 @@ These are the Javascript libraries that are used:
 * **[jQuery](https://jquery.com/)**: library for document traversal and manipulation, needed for jQueryUI
 * **[jQueryUI](https://jqueryui.com/)**: library for user interface interactions, needed for jQuery contextMenu and GridList
 * **[jQuery contextMenu](https://swisnl.github.io/jQuery-contextMenu/)**: jQuery plugin for right-click context menus, used in AsTeRICS Grid e.g. for edit menu of a grid element
-* **[GridList](https://github.com/hootsuite/grid)**: jQueryUI based library for creation of a dynamic, draggable grid
+* **[GridList](https://github.com/klues/grid)**: jQueryUI based library for creation of a dynamic, draggable grid
 * **[loglevel](https://github.com/pimterry/loglevel)**: javascript logging library
 * **[ObjectModel](https://objectmodel.js.org/)**: library for dynamic type checking, see data models in [src/js/model/](https://github.com/asterics/AsTeRICS-Grid/tree/master/src/js/model)
 * **[PouchDB](https://pouchdb.com/)**: library for accessing [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) and synchronization with a remote [CouchDB](http://couchdb.apache.org/)
@@ -62,7 +62,7 @@ These are the Javascript libraries that are used:
 
 <!-- TODO: Tools and libraries related to data storage are covered in detail in:  -->
 
-[&#x2190; Previous Chapter](01_structure.md) [Next Chapter &#x2192;]()
+[&#x2190; Previous Chapter](01_structure.md) [Next Chapter &#x2192;](03_grid.md)
 
 [Back to Overview](00_index.md)
 
