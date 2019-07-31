@@ -62,7 +62,7 @@ Besides the custom sources in the `src/` folder the `app/` folder contains these
 * **manifest.appcache**: [AppCache](https://developer.mozilla.org/de/docs/Web/HTML/Using_the_application_cache) manifest file including all resources to cache for offline usage
 * **manifest.webmanifest**: [Web App Manifest](https://developer.mozilla.org/en-US/docs/Web/Manifest) file containing information about the app and making it usable as progressive web app, e.g. using and installing it in an app-like fashion on smartphones.
 
-[Next Chapter &#x2192;]()
+[Next Chapter &#x2192;](02_tools.md)
 
 [Back to Overview](00_index.md)
 
