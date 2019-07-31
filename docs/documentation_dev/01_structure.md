@@ -1,6 +1,9 @@
 # Structure
 
-This chapter is about the general structure of the AsTeRICS Grid project.
+This chapter is about the general structure of the AsTeRICS Grid project:
+
+1. [Project structure](01_structure.md#project-structure)
+1. [Sources structure](01_structure.md#sources-structure)
 
 [Back to Overview](00_index.md)
 
