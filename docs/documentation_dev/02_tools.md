@@ -1,8 +1,8 @@
 # Tools and libraries
 This chapter is about tools, libraries and technologies that are used in AsTeRICS Grid project:
 
-1. [Tools](01_structure.md#project-structure)
-1. [Javascript libaries](01_structure.md#sources-structure)
+1. [Tools](02_tools.md#tools)
+1. [Javascript libaries](02_tools.md#javascript-libraries)
 
 [Back to Overview](00_index.md)
 
