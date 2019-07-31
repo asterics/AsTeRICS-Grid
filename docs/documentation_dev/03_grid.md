@@ -1,13 +1,13 @@
 # Dynamic grid
 This chapter is about the technical background of the dynamic grid system which visualizes grids and grid elements in AsTeRICS Grid.
 
-1. [Overview](03_grid.md#overview)
+1. [General](03_grid.md#general)
 1. [GridList and grid.js](03_grid.md#gridlist-and-gridjs)
 1. [Repositioning and resizing of elements](03_grid.md#repositioning-and-resizing-of-elements)
 
 [Back to Overview](00_index.md)
 
-## Overview
+## General
 When opening AsTeRICS Grid in the main view the latest used grid is shown:
 
 ![default grid](img/grid_default_en.jpg)
