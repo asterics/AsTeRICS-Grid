@@ -60,7 +60,7 @@
     import {Router} from "../../js/router";
     import {modelUtil} from "../../js/util/modelUtil";
     import {I18nModule} from "./../../js/i18nModule.js";
-    import {translateService} from "./../../js/service/translateService";
+    import {i18nService} from "../../js/service/i18nService";
     import {constants} from "../../js/util/constants";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
 
@@ -81,7 +81,7 @@
         methods: {
             deleteGrid: function (id, label) {
                 log.debug('delete: ' + id);
-                if (!confirm(translateService.translate('CONFIRM_DELETE_GRID', label))) {
+                if (!confirm(i18nService.translate('CONFIRM_DELETE_GRID', label))) {
                     return;
                 }
                 dataService.deleteGrid(id).then(() => {
@@ -144,7 +144,7 @@
             },
             importBackupFromFile: function (event) {
                 let name = event.target && event.target.files[0] && event.target.files[0] ? event.target.files[0].name : '';
-                if (!confirm(translateService.translate('CONFIRM_IMPORT_BACKUP', name))) {
+                if (!confirm(i18nService.translate('CONFIRM_IMPORT_BACKUP', name))) {
                     this.resetFileInput(event);
                     return;
                 }
@@ -158,7 +158,7 @@
                 });
             },
             reset() {
-                if (confirm(translateService.translate('CONFIRM_RESET_DB'))) {
+                if (confirm(i18nService.translate('CONFIRM_RESET_DB'))) {
                     this.showLoading = true;
                     dataService.deleteAllGrids().then(() => {
                         window.location.reload();

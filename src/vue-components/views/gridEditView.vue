@@ -49,7 +49,7 @@
     import {Router} from "./../../js/router.js";
     import {I18nModule} from "./../../js/i18nModule.js";
     import {MetaData} from "./../../js/model/MetaData";
-    import {translateService} from "../../js/service/translateService";
+    import {i18nService} from "../../js/service/i18nService";
 
     import EditGridModal from '../modals/editGridModal.vue'
     import AddMultipleModal from '../modals/addMultipleModal.vue'
@@ -149,7 +149,7 @@
                 this.showMultipleModal = true;
             },
             clearElements() {
-                if (confirm(translateService.translate('CONFIRM_DELETE_ALL_ELEMS'))) {
+                if (confirm(i18nService.translate('CONFIRM_DELETE_ALL_ELEMS'))) {
                     this.gridData.gridElements = [];
                     gridInstance.updateGridWithUndo(this.gridData);
                 }

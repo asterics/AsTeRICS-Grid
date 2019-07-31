@@ -3,7 +3,7 @@ import {speechService} from "./speechService";
 import {constants} from "./../util/constants";
 import {util} from "./../util/util";
 import {predictionService} from "./predictionService";
-import {translateService} from "./translateService";
+import {i18nService} from "./i18nService";
 import {fontUtil} from "../util/fontUtil";
 import {GridActionCollectElement} from "../model/GridActionCollectElement";
 
@@ -25,7 +25,7 @@ collectElementService.doAction = function (elem) {
     if (getActionOfType(elem, 'GridActionPredict')) {
         predictionService.predict(collectedText);
     }
-    speechService.speak(collectedText, translateService.getLang());
+    speechService.speak(collectedText, i18nService.getLang());
 };
 
 collectElementService.reset = function () {

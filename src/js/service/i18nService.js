@@ -1,15 +1,15 @@
 import {I18nModule} from "../i18nModule";
 
-var translateService = {};
+var i18nService = {};
 
 /**
  *
  */
-translateService.getLang = function () {
+i18nService.getLang = function () {
     return I18nModule.getBrowserLang();
 };
 
-translateService.translate = function (key) {
+i18nService.translate = function (key) {
     var lang = this.translations[this.getLang()] ? this.getLang() : 'en';
     var translated = this.translations[lang][key] ? this.translations[lang][key] : key;
     for(var i=1; i<arguments.length; i++) {
@@ -18,8 +18,8 @@ translateService.translate = function (key) {
     return translated;
 };
 
-translateService.translations = {};
-translateService.translations['en'] = {
+i18nService.translations = {};
+i18nService.translations['en'] = {
     GridActionSpeak: 'Speak label',
     GridActionSpeakCustom: 'Speak custom text',
     GridActionNavigate: 'Navigate to other grid',
@@ -68,7 +68,7 @@ translateService.translations['en'] = {
     zh: 'Chinese'
 };
 
-translateService.translations['de'] = {
+i18nService.translations['de'] = {
     GridActionSpeak: 'Label aussprechen',
     GridActionSpeakCustom: 'Benutzerdefinierten Text aussprechen',
     GridActionNavigate: 'Zu anderem Grid navigieren',
@@ -117,4 +117,4 @@ translateService.translations['de'] = {
     zh: 'Chinesisch'
 };
 
-export {translateService};
+export {i18nService};

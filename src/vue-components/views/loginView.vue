@@ -137,7 +137,7 @@
     import {loginService} from './../../js/service/loginService.js';
     import {databaseService} from "../../js/service/data/databaseService";
     import {localStorageService} from "../../js/service/data/localStorageService";
-    import {translateService} from "../../js/service/translateService";
+    import {i18nService} from "../../js/service/i18nService";
     import {Router} from "../../js/router";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
 
@@ -208,7 +208,7 @@
             removeStoredUser(user) {
                 if (!(this.savedOnlineUsers.includes(user) || this.savedLocalUsers.includes(user))) {
                     loginService.logout();
-                } else if (confirm(translateService.translate('CONFIRM_REMOVE_USER', user))) {
+                } else if (confirm(i18nService.translate('CONFIRM_REMOVE_USER', user))) {
                     localStorageService.unmarkSyncedDatabase(user);
                     localStorageService.removeUserPassword(user);
                     if (loginService.getLoggedInUsername() === user) {

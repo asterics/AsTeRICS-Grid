@@ -97,7 +97,7 @@
     import {dataService} from "../../js/service/data/dataService";
     import {modelUtil} from "../../js/util/modelUtil";
     import {I18nModule} from "./../../js/i18nModule.js";
-    import {translateService} from "./../../js/service/translateService";
+    import {i18nService} from "../../js/service/i18nService";
     import {predictionService} from "../../js/service/predictionService";
     import {constants} from "../../js/util/constants";
     import {util} from "../../js/util/util";
@@ -130,7 +130,7 @@
         methods: {
             deleteDict: function (id, label) {
                 let thiz = this;
-                if (!confirm(translateService.translate('CONFIRM_DELETE_DICT', label))) {
+                if (!confirm(i18nService.translate('CONFIRM_DELETE_DICT', label))) {
                     return;
                 }
                 dataService.deleteObject(id).then(() => {

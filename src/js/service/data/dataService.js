@@ -4,7 +4,6 @@ import {GridData} from "../../model/GridData.js";
 import {GridImage} from "../../model/GridImage";
 import {MetaData} from "../../model/MetaData";
 import {modelUtil} from "../../util/modelUtil";
-import {translateService} from "../translateService";
 import {databaseService} from "./databaseService";
 import {dataUtil} from "../../util/dataUtil";
 import {pouchDbService} from "./pouchDbService";

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import {translateService} from "../service/translateService";
+import {i18nService} from "../service/i18nService";
 
 let VuePluginManager = {};
 let timeoutID = null;
@@ -38,7 +38,7 @@ function initDirectives() {
 
 function initFilters() {
     Vue.filter('translate', function (key) {
-        return translateService.translate(key);
+        return i18nService.translate(key);
     })
 }
 
