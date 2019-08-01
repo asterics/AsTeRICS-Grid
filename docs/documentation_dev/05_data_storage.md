@@ -54,7 +54,7 @@ For examining the locally saved data of AsTeRICS Grid do the following (e.g. in 
 1. go to `Application` (Chrome) or `Web-Storage` (Firefox)
 1. open `LocalStorage` or `IndexedDB` to inspect the data saved in these storages
 
-[&#x2190; Previous Chapter](04_datamodel.md) [Next Chapter &#x2192;]()
+[&#x2190; Previous Chapter](04_datamodel.md) [Next Chapter &#x2192;](06_i18n.md)
 
 [Back to Overview](00_index.md)
 
