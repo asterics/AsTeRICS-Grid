@@ -46,6 +46,8 @@ AsTeRICS Grid implements the idea of [one database per user](https://www.joshmor
 
 However this approach needs some layer for managing user accounts and the corresponding user databases. For AsTeRICS Grid the framework [superlogin](https://github.com/sen-su/superlogin) is used. It provides an API in order to register and login users and creates the corresponding CouchDB databases in the background. However the [original superlogin project](https://github.com/colinskow/superlogin) seems to be no longer maintained and therefore AsTeRICS Grid uses a more up-to-date [fork](https://github.com/sen-su/superlogin) of it.
 
+The file [superlogin/start.js](https://github.com/asterics/AsTeRICS-Grid/blob/master/superlogin/start.js) starts superlogin and includes it's configuration.
+
 ## Inspecting locally saved data
 For examining the locally saved data of AsTeRICS Grid do the following (e.g. in Firefox or Chrome browser):
 1. open developer tools (`Ctrl + Shift + I` or `right click -> Inspect`)
