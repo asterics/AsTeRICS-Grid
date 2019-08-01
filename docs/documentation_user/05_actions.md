@@ -100,7 +100,7 @@ An "AsTeRICS action" performs an action in a running [model](01_terms.md#asteric
 
 Figure 2 shows how an AsTeRICS action that controls a TV is working in more detail:
 
-![asterics action detail concept](img/asterics-action-are.png)
+![asterics action detail concept](img/asterics-action-are_en.png)
 *Fig. 2: AsTeRICS action concept, example of controlling a TV*
 
 The following steps are shown in Figure 2:
