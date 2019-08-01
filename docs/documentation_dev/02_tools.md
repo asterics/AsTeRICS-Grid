@@ -50,7 +50,7 @@ These are the Javascript libraries that are used:
 * **[navigo](https://www.npmjs.com/package/navigo)**: javascript routing library based on URL hash
 * **[predictionary](https://www.npmjs.com/package/predictionary)**: javascript word prediction library
 * **[vue](https://www.npmjs.com/package/vue)**: javascript single-page application framework
-* **[dom-i18n](https://github.com/ruyadorno/dom-i18n)**: 
+* **[dom-i18n](https://github.com/ruyadorno/dom-i18n)**: easy to use DOM-internationalization library
 * **[jQuery](https://jquery.com/)**: library for document traversal and manipulation, needed for jQueryUI
 * **[jQueryUI](https://jqueryui.com/)**: library for user interface interactions, needed for jQuery contextMenu and GridList
 * **[jQuery contextMenu](https://swisnl.github.io/jQuery-contextMenu/)**: jQuery plugin for right-click context menus, used in AsTeRICS Grid e.g. for edit menu of a grid element
