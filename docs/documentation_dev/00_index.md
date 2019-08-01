@@ -11,7 +11,7 @@ This documentation is divided in the following parts:
 1. [Used tools and libraries](02_tools.md)
 1. [Dynamic grid](03_grid.md)
 1. [Data model](04_datamodel.md)
-1. [Data storage concept](01_terms.md)
+1. [Data storage](05_data_storage.md)
 1. [Superlogin and CouchDB](01_terms.md)
 1. [Routing](01_terms.md)
 1. [Internationalization](01_terms.md)
