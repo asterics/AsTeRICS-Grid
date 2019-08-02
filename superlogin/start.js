@@ -16,8 +16,10 @@ var certificate = null;
 var credentials = null;
 if (isProd) {
     accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
-    app.use(logger('combined', { stream: accessLogStream }));
-
+    app.use(logger('combined', {
+        stream: accessLogStream,
+        skip: (req, res) => req.url.indexOf('/validate-username/') > -1
+    }));
     privateKey = fs.readFileSync('/opt/couchdb/ssl/asterics-foundation.org_private_key.key', 'utf8');
     certificate = fs.readFileSync('/opt/couchdb/ssl/asterics-foundation.org_ssl_certificate_combined.cer', 'utf8'); //combined certificate, normal and intermediate both in concatenated in one file
     credentials = {key: privateKey, cert: certificate};
