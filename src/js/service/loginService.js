@@ -168,6 +168,13 @@ loginService.stopAutoRetryLogin = function () {
     }
 };
 
+/**
+ * does a ping to couchdb server for counting users and their statistics
+ */
+loginService.ping = function () {
+    $.get(_serverUrl + '/ping');
+};
+
 function loginInternal(user, hashedPassword, saveUser) {
     _lastParamUser = user;
     _lastParamHashedPw = hashedPassword;
