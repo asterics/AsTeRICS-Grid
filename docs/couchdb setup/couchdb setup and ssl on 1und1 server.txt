@@ -44,3 +44,7 @@ We are using the SSL certificate provided by 1 und 1 Ionos. To see/download/mana
 
 Couchdb should now be accessible with SSL enabled under the link:
 https://couchdb.asterics-foundation.org:6984/_utils/#login
+
+Used method in order to setup start of superlogin and goaccess:
+crontab -e
+@reboot /bin/sh /home/superlogin/AsTeRICS-Grid/scripts/start.sh
