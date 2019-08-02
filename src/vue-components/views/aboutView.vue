@@ -24,7 +24,7 @@
                             <a target="_blank" href="https://github.com/asterics/AsTeRICS-Grid">AsTeRICS Grid auf github</a>
                         </span>
                     </div><br/>
-                    <img src="img/ma23-gefoerdertvon.jpg" width="80px">
+                    <img src="app/img/ma23-gefoerdertvon.jpg" width="80px">
                 </div>
                 <div class="row">
                     <h3>Feedback</h3>
@@ -58,7 +58,7 @@
                             Wir danken <a target="_blank" href="https://crossbrowsertesting.com/">crossbrowsertesting.com</a> für eine kostenlose OpenSource Lizenz.<br/>
                         </span>
                     </div>
-                    <a target="_blank" href="https://crossbrowsertesting.com/"><img src="img/CBT_OS-logo_2Color-H.png" width="300px"></a>
+                    <a target="_blank" href="https://crossbrowsertesting.com/"><img src="app/img/CBT_OS-logo_2Color-H.png" width="300px"></a>
                 </div>
             </div>
         </div>

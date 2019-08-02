@@ -14,8 +14,8 @@ import {Dictionary} from "../../model/Dictionary";
 let databaseService = {};
 
 let _initPromise = null;
-let _defaultGridSetPath = i18nService.isBrowserLangDE() ? 'examples/default_de.grd' : 'examples/default_en.grd';
-let _defaultDictPath = i18nService.isBrowserLangDE() ? 'dictionaries/default_de.txt' : 'dictionaries/default_en.txt';
+let _defaultGridSetPath = i18nService.isBrowserLangDE() ? 'app/examples/default_de.grd' : 'app/examples/default_en.grd';
+let _defaultDictPath = i18nService.isBrowserLangDE() ? 'app/dictionaries/default_de.txt' : 'app/dictionaries/default_en.txt';
 let _defaultDictName = i18nService.isBrowserLangDE() ? 'WoerterbuchDeutsch ' : 'EnglishDictionary';
 
 /**

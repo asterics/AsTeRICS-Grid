@@ -4,9 +4,9 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = env => {
-    var baseDir = 'app';
-    var buildDir = '/build/';
-    var buildDirLegacy = '/build_legacy/';
+    var baseDir = '';
+    var buildDir = 'app/build/';
+    var buildDirLegacy = 'app/build_legacy/';
     var entryScript = './src/js/mainScript.js';
     var outputFilename = 'asterics-grid.bundle.js';
     var mode = env && env.production ? 'production' : 'development';
@@ -36,47 +36,48 @@ module.exports = env => {
     var plugins = [new VueLoaderPlugin()];
     var appcachePlugin = new AppCachePlugin({
         cache: [
-            'build/asterics-grid.bundle.js',
-            'build_legacy/asterics-grid.bundle.js',
-            'css/fontawesome/css/all.css',
-            'css/fontawesome/webfonts/fa-brands-400.eot',
-            'css/fontawesome/webfonts/fa-brands-400.svg',
-            'css/fontawesome/webfonts/fa-brands-400.ttf',
-            'css/fontawesome/webfonts/fa-brands-400.woff',
-            'css/fontawesome/webfonts/fa-brands-400.woff2',
-            'css/fontawesome/webfonts/fa-regular-400.eot',
-            'css/fontawesome/webfonts/fa-regular-400.svg',
-            'css/fontawesome/webfonts/fa-regular-400.ttf',
-            'css/fontawesome/webfonts/fa-regular-400.woff',
-            'css/fontawesome/webfonts/fa-regular-400.woff2',
-            'css/fontawesome/webfonts/fa-solid-900.eot',
-            'css/fontawesome/webfonts/fa-solid-900.svg',
-            'css/fontawesome/webfonts/fa-solid-900.ttf',
-            'css/fontawesome/webfonts/fa-solid-900.woff',
-            'css/fontawesome/webfonts/fa-solid-900.woff2',
-            'css/jquery-ui.css',
-            'css/images/ui-icons_444444_256x240.png',
-            'css/custom.css',
-            'css/skeleton.css',
-            'img/asterics-grid-icon.png',
-            'img/asterics_icon.png',
-            'img/favicon.ico',
-            'lib/dom-i18n.min.js',
-            'lib/gridList.js',
-            'lib/jquery.contextMenu.min.js',
-            'lib/jquery.gridList.js',
-            'lib/jquery.min.js',
-            'lib/jquery.ui.position.min.js',
-            'lib/jquery.ui.touchpunch.min.js',
-            'lib/jquery-ui.min.js',
-            'lib/loglevel.min.js',
-            'lib/object-model.min.js',
-            'lib/pouchdb-7.0.0.min.js',
-            'lib/pouchdb-find-7.0.0.min.js',
-            'lib/sjcl.min.js',
-            'polyfill/core_js_shim.min.js',
-            'polyfill/fetch.js',
-            'polyfill/url-search-params-polyfill.min.js'
+            'app/index.html',
+            'app/build/asterics-grid.bundle.js',
+            'app/build_legacy/asterics-grid.bundle.js',
+            'app/css/fontawesome/css/all.css',
+            'app/css/fontawesome/webfonts/fa-brands-400.eot',
+            'app/css/fontawesome/webfonts/fa-brands-400.svg',
+            'app/css/fontawesome/webfonts/fa-brands-400.ttf',
+            'app/css/fontawesome/webfonts/fa-brands-400.woff',
+            'app/css/fontawesome/webfonts/fa-brands-400.woff2',
+            'app/css/fontawesome/webfonts/fa-regular-400.eot',
+            'app/css/fontawesome/webfonts/fa-regular-400.svg',
+            'app/css/fontawesome/webfonts/fa-regular-400.ttf',
+            'app/css/fontawesome/webfonts/fa-regular-400.woff',
+            'app/css/fontawesome/webfonts/fa-regular-400.woff2',
+            'app/css/fontawesome/webfonts/fa-solid-900.eot',
+            'app/css/fontawesome/webfonts/fa-solid-900.svg',
+            'app/css/fontawesome/webfonts/fa-solid-900.ttf',
+            'app/css/fontawesome/webfonts/fa-solid-900.woff',
+            'app/css/fontawesome/webfonts/fa-solid-900.woff2',
+            'app/css/jquery-ui.css',
+            'app/css/images/ui-icons_444444_256x240.png',
+            'app/css/custom.css',
+            'app/css/skeleton.css',
+            'app/img/asterics-grid-icon.png',
+            'app/img/asterics_icon.png',
+            'app/img/favicon.ico',
+            'app/lib/dom-i18n.min.js',
+            'app/lib/gridList.js',
+            'app/lib/jquery.contextMenu.min.js',
+            'app/lib/jquery.gridList.js',
+            'app/lib/jquery.min.js',
+            'app/lib/jquery.ui.position.min.js',
+            'app/lib/jquery.ui.touchpunch.min.js',
+            'app/lib/jquery-ui.min.js',
+            'app/lib/loglevel.min.js',
+            'app/lib/object-model.min.js',
+            'app/lib/pouchdb-7.0.0.min.js',
+            'app/lib/pouchdb-find-7.0.0.min.js',
+            'app/lib/sjcl.min.js',
+            'app/polyfill/core_js_shim.min.js',
+            'app/polyfill/fetch.js',
+            'app/polyfill/url-search-params-polyfill.min.js'
         ],
         settings: ['prefer-online'],
         output: '../manifest.appcache',
@@ -88,7 +89,7 @@ module.exports = env => {
         plugins.push(appcachePlugin);
     } else {
         log('appcache disabled!');
-        plugins.push(new CleanWebpackPlugin([baseDir + '/*.appcache']));
+        plugins.push(new CleanWebpackPlugin(['./app/manifest.appcache']));
     }
 
     function log(msg) {
@@ -97,10 +98,10 @@ module.exports = env => {
         }
     }
 
-    function getDevServer(buildDirParam) {
+    function getDevServer() {
         return {
-            contentBase: path.resolve(__dirname, baseDir),
-            publicPath: buildDirParam,
+            contentBase: path.resolve(__dirname),
+            publicPath:  '/' + buildDirLegacy,
             host: '0.0.0.0',
             port: 9095,
             open: false,
@@ -118,7 +119,7 @@ module.exports = env => {
             filename: outputFilename
         },
         resolve: resolve,
-        devServer: getDevServer(buildDir),
+        devServer: getDevServer(),
         externals: externals,
         module: {
             rules: [scssRule, vueRule]
@@ -135,7 +136,7 @@ module.exports = env => {
             filename: outputFilename
         },
         resolve: resolve,
-        devServer: getDevServer(buildDirLegacy),
+        devServer: getDevServer(),
         externals: externals,
         module: {
             rules: [{

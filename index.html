@@ -1,32 +1,116 @@
-<!DOCTYPE html>
-<html manifest="manifest.appcache">
+﻿<!DOCTYPE html>
+<html lang="en" manifest="app/manifest.appcache">
 <head>
-	<title>ARE Webservice Homepage</title>
-    <meta charset='utf-8'>
+    <title>AsTeRICS Grid</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="app/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="app/img/favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="app/manifest.webmanifest">
+
+    <link rel="stylesheet" href="app/css/fontawesome/css/all.css">
+    <link rel="stylesheet" href="app/css/custom.css">
+    <link rel="stylesheet" href="app/css/jquery-ui.css">
+    <link rel="stylesheet" href="app/css/skeleton.css">
 </head>
 <body>
-  <script>
-      function init() {
-          setTimeout(function () {
-              redirect()
-          }, 3000);
+<div id="app" class="holy-grail">
+    <div class="grid-container grid-mask" v-if="false">
+        <i class="fas fa-4x fa-spinner fa-spin" style="top: 40%;"></i>
+        <div style="position: fixed; top: 50%; width: 100%; text-align: center; font-size: 2em;">
+            <span>loading...</span>
+        </div>
+    </div>
+    <div id="updatingView" class="grid-container grid-mask" style="display: none;">
+        <i class="fas fa-4x fa-spinner fa-spin" style="top: 40%;"></i>
+        <div style="position: fixed; top: 50%; width: 100%; text-align: center; font-size: 2em;">
+            <span data-i18n="">Updating App ... // App wird aktualisiert ...</span> <span id="updatePercentWrapper" style="display: none">(<span id="updatePercent">0</span>%)</span>
+        </div>
+    </div>
+    <div class="holy-grail-body" v-cloak>
+        <main role="main" class="holy-grail-content">
+            <!-- Main page content -->
+            <component v-if="component" v-bind:is="component" v-bind="properties" :key="componentKey"></component>
+        </main>
 
-          function redirect() {
-              window.location.replace("./app/");
-          }
+        <div class="holy-grail-sidebar-1 hg-sidebar" v-if="showSidebar">
+            <div style="flex: 0 0 auto;">
+                <div class="show-mobile">
+                    <a href="javascript:void(0)" @click="closeSidebar()"><button tabindex="-1"><i class="fas fa-2x fa-bars inline"></i></button></a>
+                </div>
+                <div class="hide-mobile" style="display: inline-flex">
+                    <a href="javascript:void(0)" @click="closeSidebar()" style="margin: 0.2em 0.5em 0 1.2em"><i class="fas fa-2x fa-bars inline"></i></a>
+                    <a href="#main"><h1 class="inline hide-mobile"><img id="astericsIcon" src="app/img/asterics-grid-icon.png" alt="AsTeRICS Grid"/></h1></a>
+                </div>
+            </div>
 
-          if (!window.applicationCache) {
-              return;
-          }
+            <nav role="navigation" class="row content" style="flex: 1 1 auto">
+                <div v-if="currentUser">
+                    <h2 class="hide-mobile" style="margin-top: 1.5em;">Navigation</h2>
+                    <br class="show-mobile"/>
+                    <ul>
+                        <li><a href="#main"><button tabindex="-1"><i class="fas fa-2x fa-home"></i><span class="hide-mobile" data-i18n="">Main // Start</span></button></a></li>
+                        <li><a href="#grids"><button tabindex="-1"><i class="fas fa-2x fa-list-ul"></i><span class="hide-mobile" data-i18n="">Manage grids // Grids verwalten</span></button></a></li>
+                        <li><a href="#dictionaries"><button tabindex="-1"><i class="fas fa-2x fa-book"></i><span class="hide-mobile" data-i18n="">Manage Dictionaries // Wörterbücher verwalten</span></button></a></li>
+                    </ul>
+                </div>
 
-          window.applicationCache.addEventListener('updateready', redirect);
-          window.applicationCache.addEventListener('cached', redirect);
-          window.applicationCache.addEventListener('noupdate', redirect);
-          if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
-              redirect();
-          }
-      }
-      init();
-  </script>
+                <h2 class="hide-mobile" data-i18n="">Users // Benutzer</h2>
+                <ul>
+                    <li><a href="#login">
+                        <button tabindex="-1">
+                            <i class="fas fa-2x fa-users"></i><span v-show="!currentUser" class="hide-mobile" data-i18n="">Login // Einloggen</span><span v-show="currentUser" class="hide-mobile" data-i18n="">Change User // Benutzer wechseln</span>
+                        </button></a>
+                    </li>
+                    <li><a href="#register"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span class="hide-mobile" data-i18n="">Add online user // Online-User hinzufügen</span></button></a></li>
+                    <li class="hide-mobile"><a href="#add"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span data-i18n="">Add offline user // Offline-User hinzufügen</span></button></a></li>
+                </ul>
+
+                <br class="hide-mobile"/>
+                <ul style="margin-bottom: 0;">
+                    <li><a href="#about"><button><i class="fas fa-2x fa-info-circle"></i><span class="hide-mobile" data-i18n="">About AsTeRICS Grid // Über AsTeRICS Grid</span></button></a></li>
+                    <li><a href="javascript:;"><button @click="openHelp()" id="helpButton"><i class="fas fa-2x fa-question-circle"></i><span class="hide-mobile" data-i18n="">Help // Hilfe</span></button></a></li>
+                </ul>
+            </nav>
+            <div class="hide-mobile" style="flex: 0 0 auto; padding: 1.5em 0.5em 1em 0.7em;">
+                <span v-show="currentUser && !isLocalUser"><span data-i18n="">logged in as // eingeloggt als</span> <i>{{currentUser}}</i></span>
+                <span v-show="currentUser && isLocalUser"><span data-i18n="">using offline user: // aktiver Offline-User:</span> <i>{{currentUser}}</i></span>
+                <span v-show="!currentUser" data-i18n="">not logged in. // nicht eingeloggt.</span>
+                <span v-if="currentUser && !isLocalUser" class="fa-stack fa-1x right" :title="syncState | translate" style="margin: -0.3em 1em 0 0;">
+                    <i class="fas fa-cloud fa-stack-2x" style="color: lightblue"></i>
+                    <i v-show="syncState === constants.DB_SYNC_STATE_SYNCINC" class="fas fa-sync-alt fa-stack-1x fa-spin" style="left: 3px; top: 1px"></i>
+                    <i v-show="syncState === constants.DB_SYNC_STATE_SYNCED" class="fas fa-check fa-stack-1x" style="left: 3px; top: 2px"></i>
+                    <i v-show="syncState === constants.DB_SYNC_STATE_STOPPED" class="fas fa-pause fa-stack-1x" style="left: 3px; top: 2px"></i>
+                    <i v-show="syncState === constants.DB_SYNC_STATE_ONLINEONLY" class="fas fa-globe fa-stack-1x" style="left: 3px; top: 2px"></i>
+                    <i v-show="!syncState || syncState === constants.DB_SYNC_STATE_FAIL" class="fas fa-times fa-stack-1x" style="left: 3px; top: 2px"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- polyfills that are needed in all browsers -->
+<script src="app/polyfill/core_js_shim.min.js"></script> <!-- added for Edge - does implement Promise, but not Promise.finally() -->
+
+<!-- polyfills that are needed only in old browsers that do not support ES6 modules -->
+<script nomodule src="app/polyfill/fetch.js"></script>
+<script nomodule src="app/polyfill/url-search-params-polyfill.min.js"></script>
+
+<!-- libraries, not provided by npm -->
+<script src="app/lib/jquery.min.js"></script>
+<script src="app/lib/jquery-ui.min.js"></script>
+<script src="app/lib/jquery.ui.touchpunch.min.js"></script>
+<script type="text/javascript" src='app/lib/gridList.js'></script>
+<script type="text/javascript" src='app/lib/jquery.gridList.js'></script>
+<script type="text/javascript" src='app/lib/jquery.contextMenu.min.js'></script>
+<script type="text/javascript" src='app/lib/jquery.ui.position.min.js'></script>
+<script type="text/javascript" src='app/lib/object-model.min.js'></script>
+<script type="text/javascript" src='app/lib/pouchdb-7.0.0.min.js'></script>
+<script type="text/javascript" src='app/lib/pouchdb-find-7.0.0.min.js'></script>
+<script type="text/javascript" src='app/lib/loglevel.min.js'></script>
+<script type="text/javascript" src='app/lib/dom-i18n.min.js'></script>
+<script type="text/javascript" src='app/lib/sjcl.min.js'></script>
+
+<script src="app/build_legacy/asterics-grid.bundle.js"></script>
+<!--script type="module" src="app/build/asterics-grid.bundle.js"></script-->
 </body>
 </html>
