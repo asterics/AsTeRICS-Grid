@@ -1,1 +1,2 @@
 pkill goaccess
+pkill node
