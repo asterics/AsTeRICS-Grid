@@ -23,10 +23,11 @@ if (isProd) {
     privateKey = fs.readFileSync('/opt/couchdb/ssl/asterics-foundation.org_private_key.key', 'utf8');
     certificate = fs.readFileSync('/opt/couchdb/ssl/asterics-foundation.org_ssl_certificate_combined.cer', 'utf8'); //combined certificate, normal and intermediate both in concatenated in one file
     credentials = {key: privateKey, cert: certificate};
+} else {
+    app.use(logger('dev'));
 }
 
 app.use(cors());
-app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
