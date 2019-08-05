@@ -228,6 +228,8 @@
             }).then((savedMetadata) => {
                 let metadata = new MetaData(savedMetadata) || new MetaData();
                 metadata.lastOpenedGridId = this.gridId;
+                metadata.locked = metadata.locked === undefined ? urlParamService.isDemoMode() : metadata.locked;
+                metadata.fullscreen = metadata.fullscreen === undefined ? urlParamService.isDemoMode() : metadata.fullscreen;
                 if (urlParamService.isScanningDisabled()) {
                     metadata.inputConfig.scanAutostart = false;
                 }
