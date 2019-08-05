@@ -263,7 +263,7 @@ areService.getComponentEventPortIds = function (componentId, areURI) {
  */
 areService.getRestURL = function (userUri) {
     if (!userUri) {
-        userUri = "http://127.0.0.1:8081";
+        userUri = window.location.hostname.indexOf('grid.asterics.eu') > -1 ? "http://127.0.0.1:8081" : "http://" + window.location.hostname + ":8081";
     }
     if (userUri.indexOf('http') === -1) {
         userUri = 'http://' + userUri;
