@@ -15,6 +15,9 @@ let databaseService = {};
 
 let _initPromise = null;
 let _defaultGridSetPath = i18nService.isBrowserLangDE() ? 'app/examples/default_de.grd' : 'app/examples/default_en.grd';
+if (urlParamService.getDefaultGridsetName()) {
+    _defaultGridSetPath = 'app/examples/' + urlParamService.getDefaultGridsetName();
+}
 let _defaultDictPath = i18nService.isBrowserLangDE() ? 'app/dictionaries/default_de.txt' : 'app/dictionaries/default_en.txt';
 let _defaultDictName = i18nService.isBrowserLangDE() ? 'WoerterbuchDeutsch ' : 'EnglishDictionary';
 
