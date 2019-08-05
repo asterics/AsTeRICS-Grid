@@ -232,7 +232,7 @@ function initInternal(hashedUserPassword) {
         if (!data || skipCheckGenerateDefaultGrid) {
             return Promise.resolve();
         }
-        log.info('importing default grid set...');
+        log.info('importing default grid set ' + _defaultGridSetPath);
         let promises = [];
         let gridsData = JSON.parse(data);
         gridsData = GridData.regenerateIDs(gridsData);
