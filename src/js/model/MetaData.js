@@ -40,8 +40,8 @@ MetaData.defaults({
     modelName: MetaData.getModelName(),
     modelVersion: constants.MODEL_VERSION,
     headerPinned: true,
-    locked: false,
-    fullscreen: false,
+    locked: undefined,
+    fullscreen: undefined,
     hashCodes: {},
     inputConfig: new InputConfig()
 });
