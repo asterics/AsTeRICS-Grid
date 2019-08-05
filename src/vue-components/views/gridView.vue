@@ -205,10 +205,12 @@
                 return []
             },
         },
+        beforeCreate() {
+            $(document).on(constants.EVENT_DB_PULL_UPDATED, reloadFn);
+        },
         mounted: function () {
             let thiz = this;
             vueApp = thiz;
-            $(document).on(constants.EVENT_DB_PULL_UPDATED, reloadFn);
             $(document).on(constants.EVENT_SIDEBAR_OPEN, () => {
                 thiz.metadata.fullscreen = false;
                 $(document).trigger(constants.EVENT_GRID_RESIZE);
@@ -267,31 +269,35 @@
     };
 
     function reloadFn(event, updatedIds, updatedDocs) {
+        if(!vueApp || !gridInstance || !gridInstance.isInitialized()) {
+            setTimeout(() => {
+                reloadFn(event, updatedIds, updatedDocs);
+            }, 500);
+            return;
+        }
         log.debug('got update event, ids updated:' + updatedIds);
-        if (vueApp && gridInstance && gridInstance.isInitialized()) {
-            let updatedGridDoc = updatedDocs.filter(doc => (vueApp.gridData && doc.id === vueApp.gridData.id))[0];
-            let updatedMetadataDoc = updatedDocs.filter(doc => (vueApp.metadata && doc.id === vueApp.metadata.id))[0];
-            if (updatedGridDoc) {
-                vueApp.reload(new GridData(updatedGridDoc));
+        let updatedGridDoc = updatedDocs.filter(doc => (vueApp.gridData && doc.id === vueApp.gridData.id))[0];
+        let updatedMetadataDoc = updatedDocs.filter(doc => (vueApp.metadata && doc.id === vueApp.metadata.id))[0];
+        if (updatedGridDoc) {
+            vueApp.reload(new GridData(updatedGridDoc));
+        }
+        if (updatedMetadataDoc && updatedMetadataDoc.lastOpenedGridId !== vueApp.gridData.id) {
+            Router.toLastOpenedGrid();
+            return;
+        }
+        if (updatedMetadataDoc && updatedMetadataDoc.fullscreen !== vueApp.metadata.fullscreen) {
+            vueApp.metadata.fullscreen = updatedMetadataDoc.fullscreen;
+            if (updatedMetadataDoc.fullscreen) {
+                vueApp.applyFullscreen(true);
+            } else {
+                $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
             }
-            if (updatedMetadataDoc && updatedMetadataDoc.lastOpenedGridId !== vueApp.gridData.id) {
-                Router.toLastOpenedGrid();
-                return;
-            }
-            if (updatedMetadataDoc && updatedMetadataDoc.fullscreen !== vueApp.metadata.fullscreen) {
-                vueApp.metadata.fullscreen = updatedMetadataDoc.fullscreen;
-                if (updatedMetadataDoc.fullscreen) {
-                    vueApp.applyFullscreen(true);
-                } else {
-                    $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
-                }
-            }
-            if (updatedMetadataDoc && updatedMetadataDoc.locked !== vueApp.metadata.locked) {
-                if (updatedMetadataDoc.locked) {
-                    vueApp.lock();
-                } else {
-                    vueApp.unlock(true);
-                }
+        }
+        if (updatedMetadataDoc && updatedMetadataDoc.locked !== vueApp.metadata.locked) {
+            if (updatedMetadataDoc.locked) {
+                vueApp.lock();
+            } else {
+                vueApp.unlock(true);
             }
         }
     }
