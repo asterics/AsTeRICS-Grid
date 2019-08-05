@@ -9,6 +9,8 @@ import './../css/jquery.contextMenu.css';
 import './../css/holy-grail.css';
 import {loginService} from "./service/loginService";
 import {databaseService} from "./service/data/databaseService";
+import {urlParamService} from "./service/urlParamService";
+import {constants} from "./util/constants";
 //import {timingLogger} from "./service/timingLogger";
 
 var firstRun = localStorageService.isFirstPageVisit();
@@ -24,12 +26,21 @@ function init() {
     let lastActiveUser = localStorageService.getLastActiveUser();
     let autologinUser = localStorageService.getAutologinUser();
     let userPassword = localStorageService.getUserPassword(autologinUser);
+    let userSynced = localStorageService.isDatabaseSynced(autologinUser);
     log.info('autologin user: ' + autologinUser);
     log.debug('using password (hashed): ' + userPassword);
-    if (autologinUser && userPassword) { //saved online user
+    if (urlParamService.isDemoMode()) {
+        promises.push(databaseService.registerForUser(constants.LOCAL_NOLOGIN_USERNAME, constants.LOCAL_NOLOGIN_USERNAME));
+        localStorageService.saveLocalUser(constants.LOCAL_NOLOGIN_USERNAME);
+        localStorageService.setAutologinUser(constants.LOCAL_NOLOGIN_USERNAME);
+        autologinUser = constants.LOCAL_NOLOGIN_USERNAME;
+    } else if (autologinUser && userPassword && userSynced) { //synced saved online user
+        promises.push(databaseService.initForUser(autologinUser, userPassword)); //login may takes some time, so meanwhile use offline
+        loginService.loginHashedPassword(autologinUser, userPassword, true);
+        //TODO has to be tested!!!
+    } else if (autologinUser && userPassword) {
         promises.push(loginService.loginHashedPassword(autologinUser, userPassword, true));
-    }
-    if (autologinUser && !userPassword) { //saved local user
+    } else if (autologinUser && !userPassword) { //saved local user
         promises.push(databaseService.initForUser(autologinUser, autologinUser));
     }
     Promise.all(promises).finally(() => {
