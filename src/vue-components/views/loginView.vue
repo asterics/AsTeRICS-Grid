@@ -187,6 +187,13 @@
 
                 if (loginService.getLoggedInUsername() === user) {
                     Router.toMain();
+                } else if (thiz.savedOnlineUsers.includes(user) && localStorageService.isDatabaseSynced(user)) {
+                    let password = localStorageService.getUserPassword(user);
+                    databaseService.initForUser(user, password).then(() => {
+                        loginService.loginHashedPassword(user, password, true);
+                        thiz.loginSuccess = true;
+                        Router.toMain();
+                    });
                 } else if (thiz.savedOnlineUsers.includes(user)) {
                     let password = localStorageService.getUserPassword(user);
                     loginService.loginHashedPassword(user, password, true).then(() => {
