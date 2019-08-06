@@ -35,9 +35,11 @@ function init() {
         localStorageService.setAutologinUser(constants.LOCAL_NOLOGIN_USERNAME);
         autologinUser = constants.LOCAL_NOLOGIN_USERNAME;
     } else if (autologinUser && userPassword && userSynced) { //synced saved online user
-        promises.push(databaseService.initForUser(autologinUser, userPassword)); //login may takes some time, so meanwhile use offline
-        loginService.loginHashedPassword(autologinUser, userPassword, true);
-        //TODO has to be tested!!!
+        let promise = databaseService.initForUser(autologinUser, userPassword); //login may takes some time, so meanwhile use offline
+        promises.push(promise);
+        promise.then(() => {
+            loginService.loginHashedPassword(autologinUser, userPassword, true);
+        });
     } else if (autologinUser && userPassword) {
         promises.push(loginService.loginHashedPassword(autologinUser, userPassword, true));
     } else if (autologinUser && !userPassword) { //saved local user
