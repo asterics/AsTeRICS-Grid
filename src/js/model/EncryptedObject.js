@@ -7,7 +7,7 @@ class EncryptedObject extends Model({
     modelName: String, //modelName of the encrypted object
     modelVersion: String,
     encryptedDataBase64: [String], //stored object, serialized as JSON, encrypted and afterwards base64 encoded
-    encryptedDataBase64Short: [String] //same as encryptedDataBase64, but with removed long values (no binary base64 strings)
+    encryptedDataBase64Short: [String] //same as encryptedDataBase64, but with removed long values (no binary base64 strings), empty if encryptedDataBase64 === encryptedDataBase64Short for saving storage
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, EncryptedObject);

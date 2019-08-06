@@ -41,8 +41,9 @@ encryptionService.encryptObject = function (object, options) {
     }
     let jsonString = JSON.stringify(object);
     let shortJsonString = JSON.stringify(dataUtil.removeLongPropertyValues(object));
+    let shortVersionDifferent = jsonString !== shortJsonString;
     encryptedObject.encryptedDataBase64 = encryptionService.encryptString(jsonString, options.encryptionKey);
-    encryptedObject.encryptedDataBase64Short = encryptionService.encryptString(shortJsonString, options.encryptionKey);
+    encryptedObject.encryptedDataBase64Short = shortVersionDifferent ? encryptionService.encryptString(shortJsonString, options.encryptionKey) : null;
     return encryptedObject;
 };
 
@@ -75,7 +76,8 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
             let decryptedString = null;
             let decryptedObject = null;
             if (onlyShortVersion) {
-                decryptedString = encryptionService.decryptString(encryptedObject.encryptedDataBase64Short, options.encryptionKey);
+                let toDecrypt = encryptedObject.encryptedDataBase64Short || encryptedObject.encryptedDataBase64;
+                decryptedString = encryptionService.decryptString(toDecrypt, options.encryptionKey);
                 decryptedObject = JSON.parse(decryptedString);
                 decryptedObject.isShortVersion = true;
             } else {
