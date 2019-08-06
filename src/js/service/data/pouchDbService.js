@@ -15,7 +15,8 @@ let _resumeSyncTimeoutHandler = null;
 
 /**
  * inits the pouchdb to use to a user-database, e.g. with the same name as the username
- * if a local database named as the given username does not exist, a new local database is created
+ * if a local database named as the given username does not exist, a new local database is created.
+ * If the database to initialize is already open and a remoteCouchDbAddress is given, only synchronization is started.
  *
  * @param databaseName the database name to use, e.g. use username
  * @param remoteCouchDbAddress optional parameter, if defined an address of a remote couchdb endpoint where the
@@ -25,6 +26,9 @@ let _resumeSyncTimeoutHandler = null;
  *             database named like the given username
  */
 pouchDbService.initDatabase = function (databaseName, remoteCouchDbAddress, onlyRemote) {
+    if (_pouchDbAdapter && _pouchDbAdapter.getOpenedDatabaseName() === databaseName && remoteCouchDbAddress) {
+        return _pouchDbAdapter.startSync(remoteCouchDbAddress);
+    }
     _documentCache.clearAll();
     pouchDbService.closeCurrentDatabase();
     _pouchDbAdapter = new PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, false, changeHandler);
@@ -125,7 +129,7 @@ pouchDbService.save = function (modelName, data) {
             if (data.id) {
                 _documentCache.clear(data.id);
             }
-            if(err.error === 'conflict') {
+            if (err.error === 'conflict') {
                 log.warn('conflict with remote version updating document with id: ' + data.id);
                 resolve();
             } else {
