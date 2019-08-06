@@ -220,16 +220,21 @@
                 let thiz = this;
                 dataService.getDictionaries().then(dicts => {
                     this.dicts = JSON.parse(JSON.stringify(dicts));
-                    if (thiz.editId && dictData) {
+                    if (thiz.editId && dictData && dictData.data) {
                         thiz.editFinished();
                         thiz.edit(dictData);
                     }
                 });
+            },
+            updatedHandler(event, updatedIds, updatedDocs) {
+                if (updatedDocs[0].modelName === Dictionary.getModelName()) {
+                    this.reload(updatedDocs[0]);
+                }
             }
         },
         created() {
             let thiz = this;
-            $(document).on(constants.EVENT_DB_PULL_UPDATED, thiz.reload);
+            $(document).on(constants.EVENT_DB_PULL_UPDATED, thiz.updatedHandler);
             dataService.getDictionaries().then(dicts => {
                 log.debug(dicts);
                 thiz.dicts = JSON.parse(JSON.stringify(dicts)); //hack because otherwise vueJS databinding sometimes does not work;
@@ -246,7 +251,7 @@
             i18nService.initDomI18n();
         },
         beforeDestroy() {
-            $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reload);
+            $(document).off(constants.EVENT_DB_PULL_UPDATED, this.updatedHandler);
             $.contextMenu('destroy');
         }
     };
