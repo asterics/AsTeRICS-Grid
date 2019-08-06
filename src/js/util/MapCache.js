@@ -1,3 +1,5 @@
+import {log} from "./log";
+
 /**
  * simple cache, storing key-value pairs while ensuring that
  * 1) stored values cannot be changed from any other point of execution -> stored as JSON string
