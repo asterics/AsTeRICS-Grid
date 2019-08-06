@@ -34,6 +34,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
         if (!databaseName) {
             return Promise.reject();
         }
+        setSyncState(constants.DB_SYNC_STATE_FAIL);
         if (onlyRemote) {
             setSyncState(constants.DB_SYNC_STATE_ONLINEONLY);
         }
@@ -311,10 +312,8 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
             return;
         }
         try {
-            if (_syncState !== syncState) {
-                _syncState = syncState;
-                $(document).trigger(constants.EVENT_DB_SYNC_STATE_CHANGE, syncState);
-            }
+            _syncState = syncState;
+            $(document).trigger(constants.EVENT_DB_SYNC_STATE_CHANGE, syncState);
         } catch (e) {
             log.error(e);
         }
