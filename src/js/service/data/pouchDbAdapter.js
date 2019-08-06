@@ -23,6 +23,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
     let _useLocalDb = true;
     let _syncState = constants.DB_SYNC_STATE_FAIL;
     let _closed = false;
+    let _openLocalPromise = null;
 
     /**
      * inits the class, opens databases, sets up synchronization.
@@ -39,20 +40,19 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
         log.debug('initializing database: ' + databaseName);
 
         let promises = [];
-        let openLocalPromise = null;
         if (!remoteCouchDbAddress || (remoteCouchDbAddress && !onlyRemote)) {
-            openLocalPromise = openDbInternal(databaseName).then((dbHandler) => {
+            _openLocalPromise = openDbInternal(databaseName).then((dbHandler) => {
                 _db = dbHandler;
                 return Promise.resolve();
             });
-            promises.push(openLocalPromise);
+            promises.push(_openLocalPromise);
         }
 
         if (remoteCouchDbAddress) {
             promises.push(openDbInternal(remoteCouchDbAddress, true).then((dbHandler) => {
                 _remoteDb = dbHandler;
                 if (!onlyRemote) {
-                    return openLocalPromise.then(() => { //make sure local DB opened before set up sync
+                    return _openLocalPromise.then(() => { //make sure local DB opened before set up sync
                         return setupSync();
                     });
                 } else {
@@ -73,6 +73,25 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
             $(document).trigger(constants.EVENT_DB_INITIALIZED);
         });
         return returnPromise;
+    };
+
+    /**
+     * starts sync with remote couchDB database without closing the currently open local database
+     *
+     * @param remoteCouchDbAddress the remote couchDB address to sync with
+     * @return {*}
+     */
+    thiz.startSync = function (remoteCouchDbAddress) {
+        if (_remoteDb || !_openLocalPromise) {
+            log.warn('startSync() is not possible if remote database is already open, or local database not opened');
+            return;
+        }
+        return _openLocalPromise.then(() => {
+            return openDbInternal(remoteCouchDbAddress, true)
+        }).then((dbHandler) => {
+            _remoteDb = dbHandler;
+            return setupSync();
+        });
     };
 
     /**
