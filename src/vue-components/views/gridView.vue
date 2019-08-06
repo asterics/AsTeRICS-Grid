@@ -207,14 +207,11 @@
         },
         beforeCreate() {
             $(document).on(constants.EVENT_DB_PULL_UPDATED, reloadFn);
+            $(document).on(constants.EVENT_SIDEBAR_OPEN, onSidebarOpen);
         },
         mounted: function () {
             let thiz = this;
             vueApp = thiz;
-            $(document).on(constants.EVENT_SIDEBAR_OPEN, () => {
-                thiz.metadata.fullscreen = false;
-                $(document).trigger(constants.EVENT_GRID_RESIZE);
-            });
             dataService.getGrid(thiz.gridId).then(gridData => {
                 if (!gridData) {
                     throw 'grid not found! gridId: ' + this.gridId;
@@ -259,6 +256,7 @@
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, reloadFn);
+            $(document).off(constants.EVENT_SIDEBAR_OPEN, onSidebarOpen);
             stopInputMethods();
             areService.unsubscribeEvents();
             if (gridInstance) {
@@ -300,6 +298,14 @@
                 vueApp.unlock(true);
             }
         }
+    }
+
+    function onSidebarOpen() {
+        if (!vueApp && !vueApp.metadata) {
+            return;
+        }
+        vueApp.metadata.fullscreen = false;
+        $(document).trigger(constants.EVENT_GRID_RESIZE);
     }
 
     function stopInputMethods() {
