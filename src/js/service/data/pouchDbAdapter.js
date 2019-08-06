@@ -358,7 +358,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
                     changedDocsEncrypted.push(info.doc);
                 }
             }
-            if (!_closed) {
+            if (!_closed && (changedIds.length > 0 || changedDocsEncrypted.length > 0)) {
                 changeHandler(changedIds, changedDocsEncrypted);
             }
         } catch (e) {
