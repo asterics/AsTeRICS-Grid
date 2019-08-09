@@ -9,7 +9,9 @@ var imageUtil = {};
  */
 imageUtil.getBase64FromImg = function (img, maxWidth, quality) {
     maxWidth = maxWidth || 150;
-    let mimeType = img.src.substring(5, img.src.indexOf(';'));
+    let mimeType = img.src.indexOf('data:') === 0 ? img.src.substring(5, img.src.indexOf(';')) : null;
+    mimeType = mimeType || (img.src.indexOf('.png') > -1 ? 'image/png' : null);
+    mimeType = mimeType || 'image/jpeg';
     var canvas = document.createElement("canvas");
     var factor = 1;
     if (img.width > maxWidth) {
@@ -54,6 +56,17 @@ imageUtil.convertBase64 = function (originalBase64, maxWidth, quality) {
         };
         img.src = originalBase64;
     })
+};
+
+imageUtil.urlToBase64 = function (url) {
+    let img = new Image();
+    img.crossOrigin = "anonymous";
+    return new Promise(resolve => {
+        img.onload = function () {
+            resolve(imageUtil.getBase64FromImg(img));
+        };
+        img.src = url;
+    });
 };
 
 export {imageUtil};
