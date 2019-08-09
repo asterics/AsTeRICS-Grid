@@ -95,9 +95,16 @@
                 });
             },
             imageDropped(event) {
-                $('#inputImg')[0].files = event.dataTransfer.files;
                 event.preventDefault();
-                this.changedImg();
+                if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
+                    $('#inputImg')[0].files = event.dataTransfer.files;
+                    this.changedImg();
+                } else {
+                    let url = event.dataTransfer.getData('URL');
+                    imageUtil.urlToBase64(url).then(resultBase64 => {
+                        this.imgDataFull = resultBase64;
+                    });
+                }
             },
             imgLoaded (event) {
                 this.imgDataPreview = imageUtil.getBase64FromImg(event.target);
