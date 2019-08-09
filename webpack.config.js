@@ -21,6 +21,29 @@ module.exports = env => {
         loader: 'vue-loader'
     };
 
+    var babelRule = {
+        test: /\.m?js$/,
+        use: {
+            loader: 'babel-loader',
+            options: {
+                presets: [
+                    ['env', {
+                        modules: false,
+                        useBuiltIns: true,
+                        targets: {
+                            browsers: [
+                                '> 1%',
+                                'last 2 versions',
+                                'Firefox ESR',
+                                'ie >= 11'
+                            ],
+                        },
+                    }],
+                ],
+            },
+        },
+    };
+
     var resolve = {
         alias: {
             //objectmodel: "../../../node_modules/objectmodel/dist/object-model.js"
@@ -109,7 +132,7 @@ module.exports = env => {
         };
     }
 
-    var configNormal = {
+    /*var configNormal = {
         mode: mode,
         entry: entryScript,
         plugins: plugins,
@@ -124,7 +147,7 @@ module.exports = env => {
         module: {
             rules: [scssRule, vueRule]
         }
-    };
+    };*/
 
     var configLegacy = {
         mode: mode,
@@ -132,38 +155,15 @@ module.exports = env => {
         plugins: plugins,
         output: {
             path: path.resolve(__dirname, baseDir + buildDirLegacy),
-            publicPath: buildDirLegacy,
+            publicPath: "/" + buildDirLegacy,
             filename: outputFilename
         },
         resolve: resolve,
         devServer: getDevServer(),
         externals: externals,
         module: {
-            rules: [{
-                test: /\.m?js$/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: [
-                            ['env', {
-                                modules: false,
-                                useBuiltIns: true,
-                                targets: {
-                                    browsers: [
-                                        '> 1%',
-                                        'last 2 versions',
-                                        'Firefox ESR',
-                                        'ie >= 11'
-                                    ],
-                                },
-                            }],
-                        ],
-                    },
-                },
-            },
-                scssRule, vueRule
-            ],
+            rules: [babelRule, scssRule, vueRule],
         }
     };
-    return [configNormal, configLegacy];
+    return [/*configNormal,*/ configLegacy];
 };
