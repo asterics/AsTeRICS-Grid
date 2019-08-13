@@ -23,19 +23,21 @@
                         <div class="row">
                             <label for="inputImg" class="two columns" data-i18n>Image // Bild</label>
                             <button onclick="document.getElementById('inputImg').click();" class="five columns file-input">
-                                <input type="file" class="five columns" id="inputImg" size="200"  @change="changedImg" accept="image/*"/>
+                                <input type="file" class="five columns" id="inputImg" @change="changedImg" accept="image/*"/>
                                 <span><i class="fas fa-file-upload"/> <span data-i18n>Choose file // Datei auswählen</span></span>
                             </button>
-                            <button class="five columns" v-show="imgDataPreview" @click="clearImage"><i class="fas fa-times"/> <span data-i18n>Clear image // Bild löschen</span></button>
+                            <button class="five columns" v-show="tempImage.data" @click="clearImage"><i class="fas fa-times"/> <span data-i18n>Clear image // Bild löschen</span></button>
                         </div>
                         <div class="row">
                             <div class="img-preview offset-by-two four columns">
-                                <span class="show-mobile" v-show="!imgDataPreview"><i class="fas fa-image"/> <span data-i18n>no image chosen // kein Bild ausgewählt</span></span>
-                                <span class="hide-mobile" v-show="!imgDataPreview"><i class="fas fa-arrow-down"/> <span data-i18n>drop image here // Bild hierher ziehen</span></span>
-                                <img v-if="imgDataPreview" id="imgPreview" :src="imgDataPreview"/>
-                                <img v-show="false" id="fullImg" :src="imgDataFull" @load="imgLoaded"/>
+                                <span class="show-mobile" v-show="!tempImage.data"><i class="fas fa-image"/> <span data-i18n>no image chosen // kein Bild ausgewählt</span></span>
+                                <span class="hide-mobile" v-show="!tempImage.data"><i class="fas fa-arrow-down"/> <span data-i18n>drop image here // Bild hierher ziehen</span></span>
+                                <img v-if="tempImage.data" id="imgPreview" :src="tempImage.data"/>
+                                <div v-if="tempImage.data && tempImage.author">
+                                    by <a :href="tempImage.authorURL" target="_blank">{{tempImage.author}}</a>
+                                </div>
                             </div>
-                            <div class="img-preview five columns hide-mobile" v-show="imgDataPreview" style="margin-top: 50px;">
+                            <div class="img-preview five columns hide-mobile" v-show="tempImage.data" style="margin-top: 50px;">
                                 <span><i class="fas fa-arrow-down"/> <span data-i18n>drop new image here // neues Bild hierher ziehen</span></span>
                             </div>
                         </div>
@@ -53,7 +55,7 @@
                         <div class="row">
                             <div class="offset-by-two ten columns">
                                 <div v-for="imgElement in searchResults" class="inline">
-                                    <img v-if="imgElement.base64" :src="imgElement.base64" @click="setBase64(imgElement.base64)" :title="'by ' + imgElement.author" width="60" height="60" class="inline" role="button"/>
+                                    <img v-if="imgElement.base64" :src="imgElement.base64" @click="setImage(imgElement)" :title="'by ' + imgElement.author" width="60" height="60" class="inline" role="button"/>
                                     <span v-if="!imgElement.base64 && !imgElement.failed" style="position: relative">
                                         <img src="data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%3E%3C/svg%3E" :title="imgElement.image_url" width="60" height="60" class="inline"/>
                                         <i class="fas fa-spinner fa-spin" style="position: absolute; top: -25px; left: 25px;"></i>
@@ -77,15 +79,15 @@
                             <button @click="$emit('close')" title="Keyboard: [Esc]">
                                 <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
                             </button>
-                            <button @click="save()" :disabled="!gridElement.label && !imgDataPreview" title="Keyboard: [Ctrl + Enter]">
+                            <button @click="save()" :disabled="!gridElement.label && !tempImage.data" title="Keyboard: [Ctrl + Enter]">
                                 <i class="fas fa-check"/> <span>OK</span>
                             </button>
                             <div class="hide-mobile" v-if="editElementId">
-                                <button @click="editNext(true)" :disabled="!gridElement.label && !imgDataPreview" title="Keyboard: [Ctrl + Left]"><i class="fas fa-angle-double-left"/> <span data-i18n>OK, edit previous // OK, voriges bearbeiten</span></button>
-                                <button @click="editNext()" :disabled="!gridElement.label && !imgDataPreview" title="Keyboard: [Ctrl + Right]"><span data-i18n>OK, edit next // OK, nächstes bearbeiten</span> <i class="fas fa-angle-double-right"/></button>
+                                <button @click="editNext(true)" :disabled="!gridElement.label && !tempImage.data" title="Keyboard: [Ctrl + Left]"><i class="fas fa-angle-double-left"/> <span data-i18n>OK, edit previous // OK, voriges bearbeiten</span></button>
+                                <button @click="editNext()" :disabled="!gridElement.label && !tempImage.data" title="Keyboard: [Ctrl + Right]"><span data-i18n>OK, edit next // OK, nächstes bearbeiten</span> <i class="fas fa-angle-double-right"/></button>
                             </div>
                             <div class="hide-mobile" v-if="!editElementId">
-                                <button @click="addNext()" :disabled="!gridElement.label && !imgDataPreview" title="Keyboard: [Ctrl + Right]" style="float: right;"><i class="fas fa-plus"/> <span data-i18n>OK, add another // OK, weiteres Element</span></button>
+                                <button @click="addNext()" :disabled="!gridElement.label && !tempImage.data" title="Keyboard: [Ctrl + Right]" style="float: right;"><i class="fas fa-plus"/> <span data-i18n>OK, add another // OK, weiteres Element</span></button>
                             </div>
                         </div>
                     </div>
@@ -114,60 +116,49 @@
                 gridElement: null,
                 metadata: null,
                 originalGridElementJSON: null,
-                imgDataFull: null,
-                imgDataSmall: null,
-                imgDataBig: null,
-                imgDataPreview: null,
                 elementW: null,
                 editElementId: null,
                 searchText: null,
                 searchResults: null,
                 searchLoading: false,
-                hasNextChunk: true
+                hasNextChunk: true,
+                tempImage: {}
             }
         },
         methods: {
-            changedImg () {
+            changedImg() {
+                let thiz = this;
+                thiz.clearImage();
                 imageUtil.getBase64FromInput($('#inputImg')[0]).then(base64 => {
-                    this.imgDataFull = base64;
+                    thiz.tempImage.data = base64;
                 });
             },
             imageDropped(event) {
                 event.preventDefault();
+                this.clearImage();
                 if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
                     $('#inputImg')[0].files = event.dataTransfer.files;
                     this.changedImg();
                 } else {
                     let url = event.dataTransfer.getData('URL');
                     imageUtil.urlToBase64(url).then(resultBase64 => {
-                        this.imgDataFull = resultBase64;
+                        this.tempImage.data = resultBase64;
                     });
                 }
             },
-            imgLoaded (event) {
-                this.imgDataPreview = imageUtil.getBase64FromImg(event.target);
-                this.imgDataSmall = imageUtil.getBase64FromImg(event.target, this.elementW);
-                this.imgDataBig = imageUtil.getBase64FromImg(event.target, Math.max(this.elementW, 500));
-            },
-            setBase64(base64String) {
+            setImage(imageElement) {
                 let thiz = this;
-                imageUtil.convertBase64(base64String).then(data => {
-                    thiz.imgDataPreview = data;
-                });
-                this.imgDataSmall = imageUtil.convertBase64(base64String, this.elementW).then(data => {
-                    thiz.imgDataSmall = data;
-                });
-                this.imgDataBig = imageUtil.convertBase64(base64String, Math.max(this.elementW, 500)).then(data => {
-                    thiz.imgDataBig = data;
-                });
+                thiz.tempImage.data = imageElement.base64;
+                thiz.tempImage.author = imageElement.author;
+                thiz.tempImage.authorURL = imageElement.author_url;
             },
             clearImage() {
-                this.imgDataPreview = this.imgDataSmall = this.imgDataBig = null;
+                this.tempImage.data = this.tempImage.author = this.tempImage.authorURL = null;
             },
-            save () {
-                if(!this.gridElement.label && !this.imgDataPreview) return;
+            save() {
+                if (!this.gridElement.label && !this.tempImage.data) return;
                 this.saveInternal().then(savedSomething => {
-                    if(savedSomething) {
+                    if (savedSomething) {
                         this.$emit('reload');
                         this.$emit('close');
                     } else {
@@ -177,7 +168,7 @@
             },
             addNext() {
                 var thiz = this;
-                if(!thiz.gridElement.label && !thiz.imgDataPreview) return;
+                if (!thiz.gridElement.label && !thiz.tempImage.data) return;
 
                 thiz.saveInternal().then(() => {
                     thiz.$emit('reload');
@@ -187,10 +178,10 @@
             },
             editNext(invertDirection) {
                 var thiz = this;
-                if(!thiz.editElementId || (!thiz.gridElement.label && !thiz.imgDataPreview)) return;
+                if (!thiz.editElementId || (!thiz.gridElement.label && !thiz.tempImage.data)) return;
 
                 thiz.saveInternal().then(savedSomething => {
-                    if(savedSomething) {
+                    if (savedSomething) {
                         thiz.$emit('reload');
                     }
                     thiz.editElementId = new GridData(thiz.gridData).getNextElementId(thiz.editElementId, invertDirection);
@@ -199,7 +190,7 @@
                 });
             },
             nextFromKeyboard() {
-                if(this.editElementId) {
+                if (this.editElementId) {
                     this.editNext();
                 } else {
                     this.addNext();
@@ -208,19 +199,28 @@
             saveInternal() {
                 var thiz = this;
                 return new Promise(resolve => {
-                    if(thiz.imgDataBig) {
-                        var imgToSave = new GridImage({data: thiz.imgDataBig});
-                        dataService.saveImage(imgToSave).then(savedId => {
-                            thiz.gridElement.image = new GridImage({id: savedId, data: thiz.imgDataSmall});
+                    if (!thiz.gridElement.image) {
+                        thiz.gridElement.image = new GridImage();
+                    }
+                    if (thiz.tempImage.data && thiz.tempImage.data !== thiz.gridElement.image.data) {
+                        thiz.gridElement.image = thiz.tempImage;
+                        imageUtil.convertBase64(thiz.tempImage.data, Math.max(thiz.elementW, 500)).then(bigImageData => {
+                            let imgToSave = new GridImage({data: bigImageData});
+                            return dataService.saveImage(imgToSave);
+                        }).then(savedId => {
+                            thiz.gridElement.image.id = savedId;
+                            return imageUtil.convertBase64(thiz.tempImage.data, thiz.elementW)
+                        }).then(reducedData => {
+                            thiz.gridElement.image.data = reducedData;
                             saveInternalInternal();
                         });
                     } else {
-                        if(!thiz.imgDataPreview) thiz.gridElement.image = null;
+                        if (!thiz.tempImage.data) thiz.gridElement.image = null;
                         saveInternalInternal();
                     }
 
                     function saveInternalInternal() {
-                        if(thiz.gridElement && thiz.originalGridElementJSON != JSON.stringify(thiz.gridElement)) {
+                        if (thiz.gridElement && thiz.originalGridElementJSON !== JSON.stringify(thiz.gridElement)) {
                             dataService.updateOrAddGridElement(thiz.gridData.id, thiz.gridElement).then(() => {
                                 resolve(true);
                             });
@@ -233,14 +233,13 @@
             initInternal() {
                 var thiz = this;
                 thiz.resetInternal();
-                if(thiz.editElementId) {
+                thiz.tempImage = JSON.parse(JSON.stringify(new GridImage()));
+                if (thiz.editElementId) {
                     dataService.getGridElement(thiz.gridData.id, this.editElementId).then(gridElem => {
                         log.debug('editing element: ' + gridElem.label);
                         thiz.gridElement = JSON.parse(JSON.stringify(gridElem));
-                        if(gridElem.image) {
-                            imageUtil.convertBase64(gridElem.image.data).then(response => {
-                                thiz.imgDataPreview = response;
-                            });
+                        if (gridElem.image && gridElem.image.data) {
+                            thiz.tempImage = JSON.parse(JSON.stringify(new GridImage(gridElem.image)));
                         }
                         thiz.elementW = $('#' + this.gridElement.id)[0].getBoundingClientRect().width;
                         thiz.originalGridElementJSON = JSON.stringify(gridElem);
@@ -253,7 +252,7 @@
                             x: newXYPos.x,
                             y: newXYPos.y
                         })));
-                        var oneElemHeight = Math.round($('#grid-container')[0].getBoundingClientRect().height /gridDataCurrent.rowCount);
+                        var oneElemHeight = Math.round($('#grid-container')[0].getBoundingClientRect().height / gridDataCurrent.rowCount);
                         thiz.elementW = 2 * oneElemHeight;
                         thiz.originalGridElementJSON = JSON.stringify(thiz.gridElement);
                     });
@@ -264,7 +263,7 @@
                 });
             },
             resetInternal() {
-                this.gridElement = this.metadata = this.originalGridElementJSON = this.imgDataFull = this.imgDataSmall = this.imgDataBig = this.imgDataPreview = this.elementW = null;
+                this.gridElement = this.metadata = this.originalGridElementJSON = this.elementW = null;
             },
             preventDefault(event) {
                 event.preventDefault();
@@ -311,7 +310,7 @@
                 });
             }
         },
-        mounted () {
+        mounted() {
             this.editElementId = this.editElementIdParam;
             this.initInternal();
             helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
@@ -338,5 +337,11 @@
 
     .row {
         margin-top: 1em;
+    }
+
+    @media (max-width: 850px) {
+        #inputSearch {
+            width: 80%;
+        }
     }
 </style>
