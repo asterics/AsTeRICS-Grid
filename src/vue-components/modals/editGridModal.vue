@@ -41,8 +41,10 @@
                         </div>
                         <div class="row">
                             <label for="inputSearch" class="two columns" data-i18n>Image search // Bildsuche</label>
-                            <input id="inputSearch" class="four columns" type="text" v-model="searchText" @input="searchInput()" :placeholder="'SEARCH_IMAGE_PLACEHOLDER' | translate"/>
-                            <button @click="clearSearch" aria-label="Clear" class="one column"><i class="fas fa-times"></i></button>
+                            <div class="five columns">
+                                <input id="inputSearch" type="text" v-model="searchText" @input="searchInput()" :placeholder="'SEARCH_IMAGE_PLACEHOLDER' | translate"/>
+                                <button @click="clearSearch" aria-label="Clear"><i class="fas fa-times"></i></button>
+                            </div>
                             <span class="four columns" data-i18n="">
                                 <span>powered by <a href="https://www.opensymbols.org/" target="_blank">opensymbols.org</a></span>
                                 <span>Suche durch <a href="https://www.opensymbols.org/" target="_blank">opensymbols.org</a></span>
