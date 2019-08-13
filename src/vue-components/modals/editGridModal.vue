@@ -17,7 +17,8 @@
                     <div class="modal-body container">
                         <div class="row">
                             <label class="two columns" for="inputLabel">Label</label>
-                            <input type="text" class="ten columns" id="inputLabel" v-focus v-if="gridElement" v-model="gridElement.label"/>
+                            <input type="text" class="five columns" id="inputLabel" v-focus v-if="gridElement" v-model="gridElement.label"/>
+                            <button @click="search(gridElement.label)" class="five columns"><i class="fas fa-search"/> <span data-i18n="">Search for images // Suche nach Bildern</span></button>
                         </div>
                         <div class="row">
                             <label for="inputImg" class="two columns" data-i18n>Image // Bild</label>
@@ -36,6 +37,35 @@
                             </div>
                             <div class="img-preview five columns hide-mobile" v-show="imgDataPreview" style="margin-top: 50px;">
                                 <span><i class="fas fa-arrow-down"/> <span data-i18n>drop new image here // neues Bild hierher ziehen</span></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="inputSearch" class="two columns" data-i18n>Image search // Bildsuche</label>
+                            <input id="inputSearch" class="four columns" type="text" v-model="searchText" @input="searchInput()" :placeholder="'SEARCH_IMAGE_PLACEHOLDER' | translate"/>
+                            <button @click="clearSearch" aria-label="Clear" class="one column"><i class="fas fa-times"></i></button>
+                            <span class="four columns" data-i18n="">
+                                <span>powered by <a href="https://www.opensymbols.org/" target="_blank">opensymbols.org</a></span>
+                                <span>Suche durch <a href="https://www.opensymbols.org/" target="_blank">opensymbols.org</a></span>
+                            </span>
+                        </div>
+                        <div class="row">
+                            <div class="offset-by-two ten columns">
+                                <div v-for="imgElement in searchResults" class="inline">
+                                    <img v-if="imgElement.base64" :src="imgElement.base64" @click="setBase64(imgElement.base64)" :title="'by ' + imgElement.author" width="60" height="60" class="inline" role="button"/>
+                                    <span v-if="!imgElement.base64 && !imgElement.failed" style="position: relative">
+                                        <img src="data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%3E%3C/svg%3E" :title="imgElement.image_url" width="60" height="60" class="inline"/>
+                                        <i class="fas fa-spinner fa-spin" style="position: absolute; top: -25px; left: 25px;"></i>
+                                    </span>
+                                </div>
+                                <div class="inline">
+                                    <button v-show="searchResults && searchResults.length > 0 && hasNextChunk" @click="searchMore" style="height: 60px; margin: 0 0 0 0.5em;; padding: 0.7em; float: left">
+                                        <i class="fas fa-plus"></i>
+                                        <span data-i18n="">more // mehr</span>
+                                    </button>
+                                </div>
+                                <span v-show="searchLoading"><i class="fas fa-spinner fa-spin"></i> <span data-i18n="">searching... // suche...</span></span>
+                                <span v-show="!searchLoading && searchResults && searchResults.length === 0" data-i18n="">No search results. // Keine Resultate. Versuchen Sie es ev. nochmal mit einem englischen Suchbegriff.</span>
+
                             </div>
                         </div>
                     </div>
@@ -72,6 +102,8 @@
     import {GridElement} from "../../js/model/GridElement";
     import {GridData} from "../../js/model/GridData";
     import {helpService} from "../../js/service/helpService";
+    import {util} from "../../js/util/util";
+    import {openSymbolsService} from "../../js/service/openSymbolsService";
 
     export default {
         props: ['editElementIdParam', 'gridData'],
@@ -85,7 +117,11 @@
                 imgDataBig: null,
                 imgDataPreview: null,
                 elementW: null,
-                editElementId: null
+                editElementId: null,
+                searchText: null,
+                searchResults: null,
+                searchLoading: false,
+                hasNextChunk: true
             }
         },
         methods: {
@@ -110,6 +146,18 @@
                 this.imgDataPreview = imageUtil.getBase64FromImg(event.target);
                 this.imgDataSmall = imageUtil.getBase64FromImg(event.target, this.elementW);
                 this.imgDataBig = imageUtil.getBase64FromImg(event.target, Math.max(this.elementW, 500));
+            },
+            setBase64(base64String) {
+                let thiz = this;
+                imageUtil.convertBase64(base64String).then(data => {
+                    thiz.imgDataPreview = data;
+                });
+                this.imgDataSmall = imageUtil.convertBase64(base64String, this.elementW).then(data => {
+                    thiz.imgDataSmall = data;
+                });
+                this.imgDataBig = imageUtil.convertBase64(base64String, Math.max(this.elementW, 500)).then(data => {
+                    thiz.imgDataBig = data;
+                });
             },
             clearImage() {
                 this.imgDataPreview = this.imgDataSmall = this.imgDataBig = null;
@@ -221,6 +269,44 @@
             },
             openHelp() {
                 helpService.openHelp();
+            },
+            search(keyword) {
+                this.searchText = keyword;
+                this.searchInput(0);
+            },
+            searchInput(debounceTime) {
+                let thiz = this;
+                debounceTime = debounceTime === undefined ? 500 : debounceTime;
+                thiz.searchResults = [];
+                thiz.searchLoading = true;
+                util.debounce(function () {
+                    openSymbolsService.query(thiz.searchText).then(resultList => {
+                        thiz.processSearchResults(resultList);
+                    });
+                }, debounceTime);
+            },
+            searchMore() {
+                let thiz = this;
+                openSymbolsService.nextChunk().then(resultList => {
+                    thiz.processSearchResults(resultList);
+                });
+            },
+            clearSearch() {
+                this.searchLoading = false;
+                this.searchResults = null;
+                this.searchText = "";
+            },
+            processSearchResults(resultList) {
+                let thiz = this;
+                thiz.hasNextChunk = openSymbolsService.hasNextChunk();
+                thiz.searchResults = thiz.searchResults.concat(resultList);
+                thiz.searchLoading = false;
+                thiz.$forceUpdate();
+                resultList.forEach(result => {
+                    result.promise.then(() => {
+                        thiz.$forceUpdate();
+                    });
+                });
             }
         },
         mounted () {
@@ -241,6 +327,10 @@
     .img-preview > span {
         border: 1px solid lightgray;
         padding: 0.3em;
+        width: 150px;
+    }
+
+    #imgPreview {
         width: 150px;
     }
 
