@@ -6,7 +6,9 @@ class GridImage extends Model({
     id: String,
     modelName: String,
     modelVersion: String,
-    data: [String]
+    data: [String],
+    author: [String],
+    authorURL: [String]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridImage);
@@ -23,6 +25,9 @@ GridImage.defaults({
     id: "", //will be replaced by constructor
     modelName: GridImage.getModelName(),
     modelVersion: constants.MODEL_VERSION,
+    data: null,
+    author: null,
+    authorURL: null
 });
 
 export {GridImage};
