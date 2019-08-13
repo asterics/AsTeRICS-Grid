@@ -275,3 +275,23 @@ nav li:hover button span {
 .right {
     float: right;
 }
+
+
+#syncVisualization {
+    margin: -0.3em 1em 0 0;
+}
+
+@media (max-height: 540px) {
+    #syncVisualization {
+        display: none;
+    }
+    #syncVisualizationWrapper {
+        display: none;
+    }
+}
+
+@media (max-width: 850px) {
+    #syncVisualization {
+        margin: -0.3em 0.4em 0 0;
+    }
+}

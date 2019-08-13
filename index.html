@@ -71,11 +71,11 @@
                     <li><a href="javascript:;"><button @click="openHelp()" id="helpButton"><i class="fas fa-2x fa-question-circle"></i><span class="hide-mobile" data-i18n="">Help // Hilfe</span></button></a></li>
                 </ul>
             </nav>
-            <div class="hide-mobile" style="flex: 0 0 auto; padding: 1.5em 0.5em 1em 0.7em;">
-                <span v-show="currentUser && !isLocalUser"><span data-i18n="">logged in as // eingeloggt als</span> <i>{{currentUser}}</i></span>
-                <span v-show="currentUser && isLocalUser"><span data-i18n="">using offline user: // aktiver Offline-User:</span> <i>{{currentUser}}</i></span>
-                <span v-show="!currentUser" data-i18n="">not logged in. // nicht eingeloggt.</span>
-                <span v-if="currentUser && !isLocalUser" class="fa-stack fa-1x right" :title="syncState | translate" style="margin: -0.3em 1em 0 0;">
+            <div style="flex: 0 0 auto; padding: 1.5em 0.5em 1em 0.7em;" id="syncVisualizationWrapper">
+                <span v-show="currentUser && !isLocalUser" class="hide-mobile"><span data-i18n="">logged in as // eingeloggt als</span> <i>{{currentUser}}</i></span>
+                <span v-show="currentUser && isLocalUser" class="hide-mobile"><span data-i18n="">using offline user: // aktiver Offline-User:</span> <i>{{currentUser}}</i></span>
+                <span v-show="!currentUser" data-i18n="" class="hide-mobile">not logged in. // nicht eingeloggt.</span>
+                <span id="syncVisualization" v-if="currentUser && !isLocalUser" class="fa-stack fa-1x right" :title="syncState | translate">
                     <i class="fas fa-cloud fa-stack-2x" style="color: lightblue"></i>
                     <i v-show="syncState === constants.DB_SYNC_STATE_SYNCINC" class="fas fa-sync-alt fa-stack-1x fa-spin" style="left: 3px; top: 1px"></i>
                     <i v-show="syncState === constants.DB_SYNC_STATE_SYNCED" class="fas fa-check fa-stack-1x" style="left: 3px; top: 2px"></i>
