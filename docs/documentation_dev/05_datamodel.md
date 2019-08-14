@@ -1,11 +1,11 @@
 # Data model
 This chapter is about the data model used in AsTeRICS Grid.
 
-1. [Introduction](04_datamodel.md#introduction)
-1. [Data models saved to database](04_datamodel.md#data-models-saved-to-database)
-1. [Data models not saved to database](04_datamodel.md#data-models-not-saved-to-database)
-1. [Common data model properties](04_datamodel.md#common-data-model-properties)
-1. [Full and short objects](04_datamodel.md#full-and-short-objects)
+1. [Introduction](05_datamodel.md#introduction)
+1. [Data models saved to database](05_datamodel.md#data-models-saved-to-database)
+1. [Data models not saved to database](05_datamodel.md#data-models-not-saved-to-database)
+1. [Common data model properties](05_datamodel.md#common-data-model-properties)
+1. [Full and short objects](05_datamodel.md#full-and-short-objects)
 
 [Back to Overview](00_index.md)
 
@@ -48,7 +48,7 @@ EncryptedObject has the following two additional properties:
 
 The `GridData` data model contains a property `isShortVersion` which indicates that the current object includes only a short, stripped version of the data, if set to `true`. These short versions of GridData objects are used for the list of grids in the [manage grids view](../documentation_user/02_navigation.md#manage-grids-view) since there the only properties that are needed are `label` and `id`.
 
-[&#x2190; Previous Chapter](03_grid.md) [Next Chapter &#x2192;](05_data_storage.md)
+[&#x2190; Previous Chapter](03_grid.md) [Next Chapter &#x2192;](06_data_storage.md)
 
 [Back to Overview](00_index.md)
 

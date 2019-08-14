@@ -23,7 +23,7 @@ For undo and redo functionalities of the edit view [grid.js](https://github.com/
 Repositioning of elements is already supported by default by the [GridList library](https://github.com/klues/grid). For resizing of elements the [Resizable](https://jqueryui.com/resizable/) functionality of jQueryUI is used. The code for connecting jQueryUI Resizable with GridList can be found in the function `getResizeOptions()` in the `resize` handler about at [grid.js:151](https://github.com/asterics/AsTeRICS-Grid/blob/master/src/js/grid.js#L151).
 
 
-[&#x2190; Previous Chapter](02_tools.md) [Next Chapter &#x2192;](04_datamodel.md)
+[&#x2190; Previous Chapter](02_tools.md) [Next Chapter &#x2192;](05_datamodel.md)
 
 [Back to Overview](00_index.md)
 

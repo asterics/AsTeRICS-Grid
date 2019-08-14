@@ -1,11 +1,11 @@
 # Data storage
 This chapter is about the data storage concept used in AsTeRICS Grid, meaning where and how user configuration and application data is stored.
 
-1. [Introduction](05_data_storage.md#introduction)
-1. [Abstraction layers](05_data_storage.md#data-storage-abstraction-layers)
-1. [One database per user](05_data_storage.md#one-database-per-user)
-1. [Authentication layer](05_data_storage.md#authentication-layer)
-1. [Inspecting locally saved data](05_data_storage.md#inspecting-locally-saved-data)
+1. [Introduction](06_data_storage.md#introduction)
+1. [Abstraction layers](06_data_storage.md#data-storage-abstraction-layers)
+1. [One database per user](06_data_storage.md#one-database-per-user)
+1. [Authentication layer](06_data_storage.md#authentication-layer)
+1. [Inspecting locally saved data](06_data_storage.md#inspecting-locally-saved-data)
 
 [Back to Overview](00_index.md)
 
@@ -29,7 +29,7 @@ All Javascript modules regarding storage of data in AsTeRICS Grid can be found i
 
 These are the responsibilities and functions of the different modules:
 
-1. **dataService.js**: provides access to data objects on an application based abstraction level; implements methods that make it possible to get and save the objects described in chapter [Data model](04_datamodel.md), e.g. `GridData` objects.
+1. **dataService.js**: provides access to data objects on an application based abstraction level; implements methods that make it possible to get and save the objects described in chapter [Data model](05_datamodel.md), e.g. `GridData` objects.
 1. **databaseService.js**: implements [CRUD](https://de.wikipedia.org/wiki/CRUD) methods for generic data model objects, methods for switching databases (users) and initializes databases with default data. This layer also does encryption and decryption of data using `filterService.js`. This level of abstraction is still quite independent of [PouchDB](https://pouchdb.com/) or [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) and theoretically could also use a different backend.
 1. **pouchDbService.js**: performs queries and actions on a PouchDB instance actually accessing the IndexedDB or CouchDB databases. It also caches queries for performance optimizations and broadcasts events if updates from the remote database are recognized.
 1. **pouchDBAdapter.js**: manages which actual database should be used, a local PouchDB instance or a remote CouchDB. Also sets up synchronization between both. 
@@ -58,7 +58,7 @@ For examining the locally saved data of AsTeRICS Grid do the following (e.g. in 
 1. go to `Application` (Chrome) or `Web-Storage` (Firefox)
 1. open `LocalStorage` or `IndexedDB` to inspect the data saved in these storages
 
-[&#x2190; Previous Chapter](04_datamodel.md) [Next Chapter &#x2192;](06_i18n.md)
+[&#x2190; Previous Chapter](05_datamodel.md) [Next Chapter &#x2192;](07_i18n.md)
 
 [Back to Overview](00_index.md)
 
