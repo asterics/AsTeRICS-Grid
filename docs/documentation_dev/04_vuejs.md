@@ -1,9 +1,9 @@
 # Vue.js
 This chapter is about [Vue.js](https://vuejs.org/), the single-page application framework used for AsTeRICS Grid.
 
-1. [General](03_grid.md#general)
-1. [GridList and grid.js](03_grid.md#gridlist-and-gridjs)
-1. [Repositioning and resizing of elements](03_grid.md#repositioning-and-resizing-of-elements)
+1. [General](04_vuejs.md#general)
+1. [Component structure](04_vuejs.md#component-structure)
+1. [Used components](04_vuejs.md#used-components)
 
 [Back to Overview](00_index.md)
 
