@@ -44,9 +44,9 @@ All data models have these properties in common:
 EncryptedObject has the following two additional properties:
 
 1. **encryptedDataBase64**: contains the encrypted version of the serialized JSON object this EncryptedObject actually holds
-1. **encryptedDataBase64Short**: contains the same encrypted serialized JSON object, but all properties longer than 500 characters are removed. This "short" version of the object can be used if not all data is needed, e.g. no image data of grids, only short data items like the label.
+1. **encryptedDataBase64Short**: contains the same encrypted serialized JSON object, but all properties longer than 500 characters are removed. This "short" version of the object can be used if not all data is needed, e.g. no image data of grids, but only short data items like the label. The property `encryptedDataBase64Short` is empty (`null`), if it's the same as `encryptedDataBase64` (no long properties) in order to save memory space.
 
-The GridData data model contains a property `isShortVersion` which indicates that the current object includes only a short, stripped version of the data, if set to `true`. These short versions of GridData objects are used for the list of grids in the [manage grids view](../documentation_user/02_navigation.md#manage-grids-view) since there the only properties that are needed are `label` and `id`.
+The `GridData` data model contains a property `isShortVersion` which indicates that the current object includes only a short, stripped version of the data, if set to `true`. These short versions of GridData objects are used for the list of grids in the [manage grids view](../documentation_user/02_navigation.md#manage-grids-view) since there the only properties that are needed are `label` and `id`.
 
 [&#x2190; Previous Chapter](03_grid.md) [Next Chapter &#x2192;](05_data_storage.md)
 
