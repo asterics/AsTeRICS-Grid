@@ -48,7 +48,7 @@ EncryptedObject has the following two additional properties:
 
 The `GridData` data model contains a property `isShortVersion` which indicates that the current object includes only a short, stripped version of the data, if set to `true`. These short versions of GridData objects are used for the list of grids in the [manage grids view](../documentation_user/02_navigation.md#manage-grids-view) since there the only properties that are needed are `label` and `id`.
 
-[&#x2190; Previous Chapter](03_grid.md) [Next Chapter &#x2192;](06_data_storage.md)
+[&#x2190; Previous Chapter](04_vuejs.md) [Next Chapter &#x2192;](06_data_storage.md)
 
 [Back to Overview](00_index.md)
 
