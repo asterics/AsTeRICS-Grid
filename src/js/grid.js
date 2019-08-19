@@ -262,10 +262,7 @@ function Grid(gridContainerId, gridItemClass, options) {
         notifyLayoutChangeStart();
 
         //remove in UI
-        _gridListInstance.gridList.items = _gridListInstance.gridList.items.filter(item => item.$element.children()[0].id != idToRemove);
-        _gridListInstance.items = _gridListInstance.gridList.items;
-        _gridListInstance.$items = $(_gridListInstance.gridList.items.map(item => item.$element[0]));
-        $('#' + idToRemove).remove();
+        _gridElement.gridList('removeElement', idToRemove);
 
         return new Promise(resolve => {
             handleLayoutChange().then(() => {
