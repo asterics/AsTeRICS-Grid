@@ -24,6 +24,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
     let _syncState = constants.DB_SYNC_STATE_FAIL;
     let _closed = false;
     let _openLocalPromise = null;
+    let _revisionMap = {}; //Map ID -> latest seen revision number
 
     /**
      * inits the class, opens databases, sets up synchronization.
@@ -137,6 +138,14 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
     };
 
     /**
+     * returns true if the current database was already fully synced at any time
+     * @return {*}
+     */
+    thiz.wasCurrentDatabaseSynced = function() {
+        return localStorageService.isDatabaseSynced(databaseName);
+    };
+
+    /**
      * returns true if pouchDbAdapter is currently using a local database, otherwise false (using only remote DB)
      * @return {boolean}
      */
@@ -171,17 +180,6 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
             _syncHandler.cancel();
             _syncHandler = null;
         }
-    };
-
-    /**
-     * cancels current synchronization activity, but only if remote database is currently used.
-     * is used to temporarily pause first-time synchronization and speed up request to remote DB
-     */
-    thiz.cancelSyncIfUsingRemoteDb = function () {
-        if (thiz.isUsingLocalDb()) {
-            return;
-        }
-        thiz.cancelSync();
     };
 
     /**
@@ -241,8 +239,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
         return new Promise(resolve => {
             //first completely update DB
             let starttime = new Date().getTime();
-            let wasAlreadySynced = localStorageService.isDatabaseSynced(databaseName);
-            if (!wasAlreadySynced && !justCreated) {
+            if (!thiz.wasCurrentDatabaseSynced() && !justCreated) {
                 //first-time full sync will maybe take longer, so use remote DB meanwhile
                 log.debug("database wasn't synced before, so temporarily use remote db until sync is done...");
                 _useLocalDb = false;
@@ -343,14 +340,18 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
             log.debug(info);
             let changedIds = [];
             let changedDocsEncrypted = [];
+            updateRevisions(info.change);
             if (info.direction && info.direction === 'pull') {
                 if (info.change && info.change.docs && info.change.docs.length > 0) {
-                    changedDocsEncrypted = info.change.docs.filter(doc => !!doc.id);
+                    changedDocsEncrypted = info.change.docs.filter(doc => !!doc.id && !isOutdatedRevision(doc));
                     changedIds = changedDocsEncrypted.map(doc => doc.id);
                 }
-                log.info('pouchdb pulling updates...');
+                if (info.change.docs.length > 0 && changedIds.length === 0) {
+                    log.debug('ignoring pull because of outdated revision');
+                }
+                log.info('pouchdb pulled updates...');
             } else if (info.direction) {
-                log.info('pouchdb pushing updates...');
+                log.info('pouchdb pushed updates...');
             } else if (!info.direction && info.id) {
                 log.info('change from remote database...');
                 changedIds.push(info.id);
@@ -364,6 +365,29 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
         } catch (e) {
             log.error(e);
         }
+    }
+
+    function updateRevisions(changeObject) {
+        if (changeObject.docs && changeObject.docs.length > 0) {
+            changeObject.docs.forEach(doc => {
+                let nr = getRevNumber(doc._rev);
+                if (!_revisionMap[doc.id] || _revisionMap[doc.id] < nr) {
+                    _revisionMap[doc.id] = nr;
+                }
+            });
+        }
+    }
+
+    function getRevNumber(revString) {
+        try {
+            return Number.parseInt(revString.substring(0, revString.indexOf('-')));
+        } catch (e) {
+            return 0;
+        }
+    }
+
+    function isOutdatedRevision(doc) {
+        return _revisionMap[doc.id] && getRevNumber(doc._rev) < _revisionMap[doc.id];
     }
 }
 
