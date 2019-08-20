@@ -157,7 +157,6 @@
         mounted: function () {
             let thiz = this;
             vueApp = thiz;
-            $(document).on(constants.EVENT_DB_PULL_UPDATED, reloadFn);
             inputEventHandler.stopListening();
             dataService.getGrid(this.gridId).then(gridData => {
                 if (!gridData) {
@@ -196,7 +195,6 @@
                 gridInstance = null;
             }
             $.contextMenu('destroy');
-            $(document).off(constants.EVENT_DB_PULL_UPDATED, reloadFn);
         }
     };
 
@@ -382,6 +380,8 @@
             }
         }
     }
+
+    $(document).on(constants.EVENT_DB_PULL_UPDATED, reloadFn);
 
     export default vueConfig;
 </script>
