@@ -205,10 +205,6 @@
                 return []
             },
         },
-        beforeCreate() {
-            $(document).on(constants.EVENT_DB_PULL_UPDATED, reloadFn);
-            $(document).on(constants.EVENT_SIDEBAR_OPEN, onSidebarOpen);
-        },
         mounted: function () {
             let thiz = this;
             vueApp = thiz;
@@ -255,8 +251,6 @@
             i18nService.initDomI18n();
         },
         beforeDestroy() {
-            $(document).off(constants.EVENT_DB_PULL_UPDATED, reloadFn);
-            $(document).off(constants.EVENT_SIDEBAR_OPEN, onSidebarOpen);
             stopInputMethods();
             areService.unsubscribeEvents();
             if (gridInstance) {
@@ -301,7 +295,7 @@
     }
 
     function onSidebarOpen() {
-        if (!vueApp && !vueApp.metadata) {
+        if (!vueApp || !vueApp.metadata) {
             return;
         }
         vueApp.metadata.fullscreen = false;
@@ -322,6 +316,9 @@
         });
         return gridInstance.getInitPromise();
     }
+
+    $(document).on(constants.EVENT_DB_PULL_UPDATED, reloadFn);
+    $(document).on(constants.EVENT_SIDEBAR_OPEN, onSidebarOpen);
 
     export default vueConfig;
 </script>
