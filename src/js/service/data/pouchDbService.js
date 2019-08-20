@@ -327,7 +327,9 @@ function cancelSyncInternal() {
         clearTimeout(_resumeSyncTimeoutHandler);
         _resumeSyncTimeoutHandler = null;
     }
-    getPouchDbAdapter().cancelSyncIfUsingRemoteDb();
+    if (!getPouchDbAdapter().isUsingLocalDb() || getPouchDbAdapter().getSyncState() === constants.DB_SYNC_STATE_SYNCINC) {
+        getPouchDbAdapter().cancelSync();
+    }
 }
 
 /**
@@ -337,7 +339,7 @@ function cancelSyncInternal() {
  * Sync is not resumed/started if global onlyRemote parameter is set
  */
 function resumeSyncInternal() {
-    let timeout = _lastQueryTime + 1000;
+    let timeout = getPouchDbAdapter().wasCurrentDatabaseSynced() ? 0 : _lastQueryTime + 1000;
     _resumeSyncTimeoutHandler = setTimeout(() => {
         getPouchDbAdapter().resumeSync();
     }, timeout);
