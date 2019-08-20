@@ -56,7 +56,7 @@ fontUtil.adaptFontSizeForGridElements = function () {
  * returns the last calculated fontSize in px (e.g. "20px")
  */
 fontUtil.getLastFontSize = function () {
-    return lastSize;
+    return lastSize + 'px';
 };
 
 function getLabel(elem) {
