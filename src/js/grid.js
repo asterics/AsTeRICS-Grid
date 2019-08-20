@@ -107,8 +107,8 @@ function Grid(gridContainerId, gridItemClass, options) {
     }
 
     function refreshResizeOptions() {
-        if(enableResizing) {
-            $(gridItemClass).resizable('option', getResizeOptions());
+        if (enableResizing) {
+            $(gridItemClass).resizable(getResizeOptions());
         }
     }
 
@@ -274,16 +274,12 @@ function Grid(gridContainerId, gridItemClass, options) {
 
     thiz.duplicateElement = function (id) {
         notifyLayoutChangeStart();
-        var duplicatedElement = _gridData.gridElements.filter(el => el.id == id)[0].duplicate();
-        dataService.updateOrAddGridElement(_gridData.id, duplicatedElement).then(() => {
-            dataService.getGrid(_gridData.id).then(grid => {
-                init(grid).then(() => {
-                    _gridListInstance.resolveCollisions(duplicatedElement.id);
-                    handleLayoutChange();
-                });
-            });
+        let duplicatedElement = _gridData.gridElements.filter(el => el.id === id)[0].duplicate();
+        _gridData.gridElements.push(duplicatedElement);
+        init(_gridData).then(() => {
+            _gridListInstance.resolveCollisions(duplicatedElement.id);
+            handleLayoutChange();
         });
-        
     };
 
     /**
@@ -369,26 +365,21 @@ function Grid(gridContainerId, gridItemClass, options) {
 
     thiz.toGridData = function () {
         return new Promise(resolve => {
-            dataService.getGrid(_gridData.id).then(savedGrid => {
-                var newElems = [];
-                
-                //update layout specific data
-                savedGrid.rowCount = _gridRows;
-                _gridListInstance.items.forEach(function (item) {
-                    var currentId = item.$element.attr('data-id');
-                    var elem = savedGrid.gridElements.filter(el => el.id == currentId)[0];
-                    elem.x = item.x;
-                    elem.y = item.y;
-                    elem.height = item.h;
-                    elem.width = item.w;
-                    if(elem.image && item.$element.attr('data-img')) {
-                        elem.image.data = item.$element.attr('data-img');
-                    }
-                    newElems.push(elem);
-                });
-                savedGrid.gridElements = newElems;
-                resolve(savedGrid);
+            var newElems = [];
+
+            //update layout specific data
+            _gridData.rowCount = _gridRows;
+            _gridListInstance.items.forEach(function (item) {
+                var currentId = item.$element.attr('data-id');
+                var existingElem = _gridData.gridElements.filter(el => el.id === currentId)[0];
+                existingElem.x = item.x;
+                existingElem.y = item.y;
+                existingElem.height = item.h;
+                existingElem.width = item.w;
+                newElems.push(existingElem);
             });
+            _gridData.gridElements = newElems;
+            resolve(_gridData);
         });
     };
 
