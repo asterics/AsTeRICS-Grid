@@ -198,12 +198,57 @@
             },
             toLogin() {
                 Router.toLogin();
+            },
+            reloadFn(event, updatedIds, updatedDocs) {
+                let thiz = this;
+                if (!vueApp || !gridInstance || !gridInstance.isInitialized()) {
+                    setTimeout(() => {
+                        thiz.reloadFn(event, updatedIds, updatedDocs);
+                    }, 500);
+                    return;
+                }
+                log.debug('got update event, ids updated:' + updatedIds);
+                let updatedGridDoc = updatedDocs.filter(doc => (vueApp.gridData && doc.id === vueApp.gridData.id))[0];
+                let updatedMetadataDoc = updatedDocs.filter(doc => (vueApp.metadata && doc.id === vueApp.metadata.id))[0];
+                if (updatedGridDoc) {
+                    vueApp.reload(new GridData(updatedGridDoc));
+                }
+                if (updatedMetadataDoc && updatedMetadataDoc.lastOpenedGridId !== vueApp.gridData.id) {
+                    Router.toLastOpenedGrid();
+                    return;
+                }
+                if (updatedMetadataDoc && updatedMetadataDoc.fullscreen !== vueApp.metadata.fullscreen) {
+                    vueApp.metadata.fullscreen = updatedMetadataDoc.fullscreen;
+                    if (updatedMetadataDoc.fullscreen) {
+                        vueApp.applyFullscreen(true);
+                    } else {
+                        $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
+                    }
+                }
+                if (updatedMetadataDoc && updatedMetadataDoc.locked !== vueApp.metadata.locked) {
+                    if (updatedMetadataDoc.locked) {
+                        vueApp.lock();
+                    } else {
+                        vueApp.unlock(true);
+                    }
+                }
+            },
+            onSidebarOpen() {
+                if (!vueApp || !vueApp.metadata) {
+                    return;
+                }
+                vueApp.metadata.fullscreen = false;
+                $(document).trigger(constants.EVENT_GRID_RESIZE);
             }
         },
         computed: {
             filteredGrids: function () {
                 return []
             },
+        },
+        created() {
+            $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
+            $(document).on(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
         },
         mounted: function () {
             let thiz = this;
@@ -251,56 +296,17 @@
             i18nService.initDomI18n();
         },
         beforeDestroy() {
+            $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
+            $(document).off(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
             stopInputMethods();
             areService.unsubscribeEvents();
+            vueApp = null;
             if (gridInstance) {
                 gridInstance.destroy();
                 gridInstance = null;
             }
         }
     };
-
-    function reloadFn(event, updatedIds, updatedDocs) {
-        if(!vueApp || !gridInstance || !gridInstance.isInitialized()) {
-            setTimeout(() => {
-                reloadFn(event, updatedIds, updatedDocs);
-            }, 500);
-            return;
-        }
-        log.debug('got update event, ids updated:' + updatedIds);
-        let updatedGridDoc = updatedDocs.filter(doc => (vueApp.gridData && doc.id === vueApp.gridData.id))[0];
-        let updatedMetadataDoc = updatedDocs.filter(doc => (vueApp.metadata && doc.id === vueApp.metadata.id))[0];
-        if (updatedGridDoc) {
-            vueApp.reload(new GridData(updatedGridDoc));
-        }
-        if (updatedMetadataDoc && updatedMetadataDoc.lastOpenedGridId !== vueApp.gridData.id) {
-            Router.toLastOpenedGrid();
-            return;
-        }
-        if (updatedMetadataDoc && updatedMetadataDoc.fullscreen !== vueApp.metadata.fullscreen) {
-            vueApp.metadata.fullscreen = updatedMetadataDoc.fullscreen;
-            if (updatedMetadataDoc.fullscreen) {
-                vueApp.applyFullscreen(true);
-            } else {
-                $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
-            }
-        }
-        if (updatedMetadataDoc && updatedMetadataDoc.locked !== vueApp.metadata.locked) {
-            if (updatedMetadataDoc.locked) {
-                vueApp.lock();
-            } else {
-                vueApp.unlock(true);
-            }
-        }
-    }
-
-    function onSidebarOpen() {
-        if (!vueApp || !vueApp.metadata) {
-            return;
-        }
-        vueApp.metadata.fullscreen = false;
-        $(document).trigger(constants.EVENT_GRID_RESIZE);
-    }
 
     function stopInputMethods() {
         if (vueApp && vueApp.scanner) vueApp.scanner.stopScanning();
@@ -316,9 +322,6 @@
         });
         return gridInstance.getInitPromise();
     }
-
-    $(document).on(constants.EVENT_DB_PULL_UPDATED, reloadFn);
-    $(document).on(constants.EVENT_SIDEBAR_OPEN, onSidebarOpen);
 
     export default vueConfig;
 </script>

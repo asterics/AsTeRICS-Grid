@@ -153,6 +153,18 @@
                     gridInstance.updateGridWithUndo(this.gridData);
                 }
             },
+            reloadFn(event, updatedIds, updatedDocs) {
+                if (vueApp && updatedIds.includes(vueApp.gridData.id) && gridInstance && gridInstance.isInitialized()) {
+                    let gridData = new GridData(updatedDocs.filter(doc => doc.id === vueApp.gridData.id)[0]);
+                    if (!gridData.isEqual(vueApp.gridData)) {
+                        log.debug('reloading on remote update...');
+                        vueApp.reload(gridData);
+                    }
+                }
+            }
+        },
+        created() {
+            $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
         },
         mounted: function () {
             let thiz = this;
@@ -189,6 +201,8 @@
             i18nService.initDomI18n();
         },
         beforeDestroy() {
+            $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
+            vueApp = null;
             inputEventHandler.startListening();
             if (gridInstance) {
                 gridInstance.destroy();
@@ -197,16 +211,6 @@
             $.contextMenu('destroy');
         }
     };
-
-    function reloadFn(event, updatedIds, updatedDocs) {
-        if (vueApp && updatedIds.includes(vueApp.gridData.id) && gridInstance && gridInstance.isInitialized()) {
-            let gridData = new GridData(updatedDocs.filter(doc => doc.id === vueApp.gridData.id)[0]);
-            if (!gridData.isEqual(vueApp.gridData)) {
-                log.debug('reloading on remote update...');
-                vueApp.reload(gridData);
-            }
-        }
-    }
 
     function initGrid(gridData) {
         gridInstance = new Grid('#grid-container', '.grid-item-content', {
@@ -380,8 +384,6 @@
             }
         }
     }
-
-    $(document).on(constants.EVENT_DB_PULL_UPDATED, reloadFn);
 
     export default vueConfig;
 </script>
