@@ -261,15 +261,12 @@ function Grid(gridContainerId, gridItemClass, options) {
     thiz.removeElement = function (idToRemove) {
         notifyLayoutChangeStart();
 
-        //remove in UI
-        _gridElement.gridList('removeElement', idToRemove);
-
-        return new Promise(resolve => {
-            handleLayoutChange().then(() => {
-                resolve(_gridData);
-            });
+        _gridData.gridElements = _gridData.gridElements.filter(el => el.id !== idToRemove);
+        return init(_gridData).then(() => {
+            return handleLayoutChange();
+        }).then(() => {
+            return Promise.resolve(_gridData);
         });
-
     };
 
     thiz.duplicateElement = function (id) {
