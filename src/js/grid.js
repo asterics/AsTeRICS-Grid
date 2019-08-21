@@ -37,12 +37,12 @@ function Grid(gridContainerId, gridItemClass, options) {
             if (gridDataParam) {
                 initData(options, gridDataParam);
                 initGrid(_gridData);
-                setTimeout(() => resolve(), _animationTimeMs); // resolve with timeout in order to wait for init-animation, only resolve if grid is stable.
+                resolve();
             } else {
                 dataService.getGrid(options.gridId).then(gridData => {
                     initData(options, gridData);
                     initGrid(_gridData);
-                    setTimeout(() => resolve(), _animationTimeMs); // resolve with timeout in order to wait for init-animation, only resolve if grid is stable.
+                    resolve();
                 });
             }
         });
@@ -199,6 +199,7 @@ function Grid(gridContainerId, gridItemClass, options) {
      */
     thiz.autosize = function(timeout) {
         timeout = timeout || 0;
+        fontUtil.adaptFontSizeForGridElements();
         setTimeout(function() {
             _gridElement.gridList('autosize');
             setTimeout(function () {
