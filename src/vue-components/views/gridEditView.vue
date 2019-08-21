@@ -59,6 +59,7 @@
     import {constants} from "../../js/util/constants";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {inputEventHandler} from "../../js/util/inputEventHandler";
+    import {util} from "../../js/util/util";
 
     let vueApp = null;
     let gridInstance = null;
@@ -76,7 +77,8 @@
                 showActionsModal: false,
                 editElementId: null,
                 showGrid: false,
-                constants: constants
+                constants: constants,
+                markedElement: null
             }
         },
         components: {
@@ -118,6 +120,12 @@
             editElement(elementId) {
                 this.editElementId = elementId;
                 this.showEditModal = true;
+            },
+            removeElement(id) {
+                let thiz = this;
+                gridInstance.removeElement(id).then(newGridData => {
+                    thiz.gridData = newGridData;
+                });
             },
             newElement(type) {
                 switch (type) {
@@ -161,6 +169,17 @@
                         vueApp.reload(gridData);
                     }
                 }
+            },
+            elementClicked(id) {
+                util.throttle(() => {
+                    $('.grid-item-content').removeClass('marked');
+                    if (!this.markedElement || this.markedElement.id !== id) {
+                        this.markedElement = !id ? null : this.gridData.gridElements.filter(el => el.id === id)[0];
+                        $('#' + id).addClass('marked');
+                    } else {
+                        this.markedElement = null;
+                    }
+                }, null, 200);
             }
         },
         created() {
@@ -231,6 +250,11 @@
         var CONTEXT_DELETE = "CONTEXT_DELETE";
         var CONTEXT_DELETE_ALL = "CONTEXT_DELETE_ALL";
 
+        let CONTEXT_ACTION_EDIT = 'CONTEXT_ACTION_EDIT';
+        let CONTEXT_ACTION_DELETE = 'CONTEXT_ACTION_DELETE';
+        let CONTEXT_ACTION_DUPLICATE = 'CONTEXT_ACTION_DUPLICATE';
+        let CONTEXT_ACTION_EDIT_ACTIONS = 'CONTEXT_ACTION_EDIT_ACTIONS';
+
         var CONTEXT_NEW_GROUP = "CONTEXT_NEW_GROUP";
         var CONTEXT_NEW_SINGLE = "CONTEXT_NEW_SINGLE";
         var CONTEXT_NEW_MASS = "CONTEXT_NEW_MASS";
@@ -275,7 +299,13 @@
         let itemsElemSpecial = JSON.parse(JSON.stringify(itemsElemNormal));
         delete itemsElemSpecial[CONTEXT_EDIT];
 
+        let visibleFn = () => !!vueApp.markedElement;
         var itemsMoreMenuButton = {
+            CONTEXT_ACTION_EDIT: {name: "Edit // Bearbeiten", icon: "fas fa-edit", visible: () => (vueApp.markedElement && vueApp.markedElement.type === GridElement.ELEMENT_TYPE_NORMAL)},
+            CONTEXT_ACTION_EDIT_ACTIONS: {name: "Actions // Aktionen", icon: "fas fa-bolt", visible: visibleFn},
+            CONTEXT_ACTION_DELETE: {name: "Delete // Löschen", icon: "far fa-trash-alt", visible: visibleFn},
+            CONTEXT_ACTION_DUPLICATE: {name: "Duplicate // Klonen", icon: "far fa-clone", visible: visibleFn},
+            SEP0: "---------",
             CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP],
             'CONTEXT_DELETE_ALL': {name: "Delete all elements // Alle Elemente löschen", icon: "fas fa-minus-circle"},
             SEP1: "---------",
@@ -289,6 +319,18 @@
             },
             'CONTEXT_LAYOUT_FILL': {name: "Fill gaps // Lücken füllen", icon: "fas fa-angle-double-left"}
         };
+
+        $('.grid-container').on('click', function (event) {
+            if (vueApp) {
+                let id = null;
+                let element = event.target;
+                while (!id && element.parentNode) {
+                    id = $(element).attr('data-id');
+                    element = element.parentNode;
+                }
+                vueApp.elementClicked(id);
+            }
+        });
 
         $.contextMenu({
             selector: '.item[data-type="ELEMENT_TYPE_NORMAL"]',
@@ -344,9 +386,7 @@
                     break;
                 }
                 case CONTEXT_DELETE: {
-                    gridInstance.removeElement(elementId).then(newGridData => {
-                        vueApp.gridData = newGridData;
-                    });
+                    vueApp.removeElement(elementId);
                     break;
                 }
                 case CONTEXT_NEW_SINGLE: {
@@ -381,6 +421,22 @@
                     vueApp.removeRow();
                     break;
                 }
+                case CONTEXT_ACTION_EDIT:
+                    vueApp.editElement(vueApp.markedElement.id);
+                    vueApp.elementClicked(null);
+                    break;
+                case CONTEXT_ACTION_EDIT_ACTIONS:
+                    vueApp.editActions(vueApp.markedElement.id);
+                    vueApp.elementClicked(null);
+                    break;
+                case CONTEXT_ACTION_DELETE:
+                    vueApp.removeElement(vueApp.markedElement.id);
+                    vueApp.elementClicked(null);
+                    break;
+                case CONTEXT_ACTION_DUPLICATE:
+                    gridInstance.duplicateElement(vueApp.markedElement.id);
+                    vueApp.elementClicked(null);
+                    break;
             }
         }
     }
