@@ -2,7 +2,8 @@ import {encryptionService} from "./data/encryptionService";
 import {log} from "../util/log";
 
 let timingLogger = {};
-let servicesToLog = [encryptionService];
+let servicesToLog = [];
+let _customStart = null;
 
 let startTimes = {};
 let totalTimes = {};
@@ -23,6 +24,21 @@ timingLogger.initLogging = function () {
     })
 };
 
+/**
+ * logs the time since the last call of this function
+ * @param key a custom string for identifying the log message
+ */
+timingLogger.log = function (key) {
+    key = key ? key + ' - ' : '';
+    if (!_customStart) {
+        log.info('timing log started.');
+        _customStart = new Date().getTime();
+        return;
+    }
+    log.info(key + 'time since last log: ' + (new Date().getTime() - _customStart) + "ms");
+    _customStart = new Date().getTime();
+};
+
 function setupTimingInterceptor(module) {
     let moduleKey = Object.keys(module).reduce((acc, current) => acc + current);
     Object.keys(module).forEach(fnName => {
@@ -31,12 +47,17 @@ function setupTimingInterceptor(module) {
             module[fnName] = function () {
                 startTime(moduleKey, fnName);
                 let returnValue = originalFn.apply(null, arguments);
-                finishTime(moduleKey, fnName);
+                if (returnValue instanceof Promise) {
+                    returnValue.then(() => {
+                        finishTime(moduleKey, fnName);
+                    })
+                } else {
+                    finishTime(moduleKey, fnName);
+                }
                 return returnValue;
             }
         }
-
-    })
+    });
 }
 
 function startTime(key, fnName) {
