@@ -78,6 +78,19 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
     };
 
     /**
+     * calls pouchDb.put() on the current database to use, returns it's promise, updates saved revision map with result
+     * @param data
+     * @return {IDBRequest<IDBValidKey> | Promise<void>}
+     */
+    thiz.put = function(data) {
+        let promise = thiz.getDbToUse().put(data);
+        promise.then((result) => {
+            updateRevisions([result]);
+        });
+        return promise;
+    };
+
+    /**
      * starts sync with remote couchDB database without closing the currently open local database
      *
      * @param remoteCouchDbAddress the remote couchDB address to sync with
@@ -340,7 +353,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
             log.debug(info);
             let changedIds = [];
             let changedDocsEncrypted = [];
-            updateRevisions(info.change);
+            updateRevisions(info.change ? info.change.docs : null);
             if (info.direction && info.direction === 'pull') {
                 if (info.change && info.change.docs && info.change.docs.length > 0) {
                     changedDocsEncrypted = info.change.docs.filter(doc => !!doc.id && !isOutdatedRevision(doc));
@@ -348,8 +361,9 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
                 }
                 if (info.change.docs.length > 0 && changedIds.length === 0) {
                     log.debug('ignoring pull because of outdated revision');
+                } else {
+                    log.info('pouchdb pulled updates...');
                 }
-                log.info('pouchdb pulled updates...');
             } else if (info.direction) {
                 log.info('pouchdb pushed updates...');
             } else if (!info.direction && info.id) {
@@ -367,9 +381,9 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
         }
     }
 
-    function updateRevisions(changeObject) {
-        if (changeObject.docs && changeObject.docs.length > 0) {
-            changeObject.docs.forEach(doc => {
+    function updateRevisions(docs) {
+        if (docs && docs.length > 0) {
+            docs.forEach(doc => {
                 let nr = getRevNumber(doc._rev);
                 if (!_revisionMap[doc.id] || _revisionMap[doc.id] < nr) {
                     _revisionMap[doc.id] = nr;

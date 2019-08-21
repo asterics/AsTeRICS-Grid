@@ -110,7 +110,6 @@ pouchDbService.all = function () {
  */
 pouchDbService.save = function (modelName, data) {
     log.debug('saving ' + modelName + '...');
-    let dbToUse = getDbToUse();
     cancelSyncInternal();
     if (data.id) {
         _documentCache.clear(data.id, data);
@@ -120,7 +119,7 @@ pouchDbService.save = function (modelName, data) {
             log.error('did not specify needed parameter "modelName" or "_id" or data is not encrypted! aborting.');
             return reject();
         }
-        dbToUse.put(data).then((response) => {
+        _pouchDbAdapter.put(data).then((response) => {
             data._rev = response.rev;
             _documentCache.set(data.id, data);
             log.debug('updated ' + modelName + ', id: ' + data._id);
