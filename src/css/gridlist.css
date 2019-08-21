@@ -49,6 +49,10 @@
   margin-left: 10px;
   margin-bottom: 10px;
 }
+.grid-item-content.marked {
+  border: 5px solid green;
+}
+
 .grid li.ui-draggable-dragging {
   -webkit-transition: none;
   transition: none;
