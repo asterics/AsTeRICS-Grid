@@ -90,7 +90,7 @@ function Grid(gridContainerId, gridItemClass, options) {
             });
         }
         initResizing().then(() => {
-            thiz.autosize();
+            thiz.autosize(_animationTimeMs);
         });
     }
 
