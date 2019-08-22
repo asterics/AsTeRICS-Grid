@@ -178,6 +178,19 @@ input[type="button"],
     font-size: 15px;
     font-weight: 400;
     text-align: center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    border: 3px solid transparent;
+    outline: none;
+    border-radius: 2px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+
+    background-color: #f8f8f8;
+    color: black;
+
+    transition: background-color .3s;
     /*color: #555;
     height: 38px;
     border: 2px solid #bbb;
@@ -203,7 +216,17 @@ input[type="reset"]:focus,
 input[type="button"]:focus {
     /*color: #333;
     border: 2px solid #888;*/
-    outline: 2px solid lightblue; }
+    border: 3px solid lightblue;
+    background-color: #e2e2e2;
+}
+
+button:disabled,
+button[disabled],
+button[disabled]:hover{
+    background-color: #ffffff;
+    outline: none;
+    color: gray;
+}
 /*
 .button.button-primary,
 button.button-primary,
