@@ -90,7 +90,7 @@
                 thiz.unlockCounter--;
                 util.debounce(function () {
                     thiz.unlockCounter = UNLOCK_COUNT;
-                }, 1500);
+                }, 3000);
                 if (thiz.unlockCounter === 0 || force) {
                     thiz.metadata.locked = false;
                     dataService.saveMetadata(thiz.metadata).then(() => {
