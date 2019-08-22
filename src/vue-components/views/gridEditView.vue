@@ -254,6 +254,7 @@
         let CONTEXT_ACTION_DELETE = 'CONTEXT_ACTION_DELETE';
         let CONTEXT_ACTION_DUPLICATE = 'CONTEXT_ACTION_DUPLICATE';
         let CONTEXT_ACTION_EDIT_ACTIONS = 'CONTEXT_ACTION_EDIT_ACTIONS';
+        let CONTEXT_ACTION_DO_ACTION = 'CONTEXT_ACTION_DO_ACTION';
 
         var CONTEXT_NEW_GROUP = "CONTEXT_NEW_GROUP";
         var CONTEXT_NEW_SINGLE = "CONTEXT_NEW_SINGLE";
@@ -305,6 +306,7 @@
             CONTEXT_ACTION_EDIT_ACTIONS: {name: "Actions // Aktionen", icon: "fas fa-bolt", visible: visibleFn},
             CONTEXT_ACTION_DELETE: {name: "Delete // Löschen", icon: "far fa-trash-alt", visible: visibleFn},
             CONTEXT_ACTION_DUPLICATE: {name: "Duplicate // Klonen", icon: "far fa-clone", visible: visibleFn},
+            CONTEXT_ACTION_DO_ACTION: {name: "Do element action // Aktion des Elements ausführen", icon: "fas fa-bolt", visible: visibleFn},
             SEP0: "---------",
             CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP],
             'CONTEXT_DELETE_ALL': {name: "Delete all elements // Alle Elemente löschen", icon: "fas fa-minus-circle"},
@@ -435,6 +437,10 @@
                     break;
                 case CONTEXT_ACTION_DUPLICATE:
                     gridInstance.duplicateElement(vueApp.markedElement.id);
+                    vueApp.elementClicked(null);
+                    break;
+                case CONTEXT_ACTION_DO_ACTION:
+                    actionService.doAction(vueApp.gridData.id, vueApp.markedElement.id);
                     vueApp.elementClicked(null);
                     break;
             }
