@@ -71,9 +71,10 @@ nav h2 {
     width: 100%;
     height: 100%;
     text-align: left;
-    color: #2d7bb4;
-    border: none;
+    color: #266697;
+    border: 3px solid transparent;
     background-color: transparent;
+    box-shadow: none;
 }
 
 nav li button::-moz-focus-inner {
@@ -94,12 +95,13 @@ nav ul {
     list-style-type: none;
 }
 
-nav li:hover button {
-    background-color: lavender;
+nav li:hover button, nav li button:focus {
+    background-color: #DBF4FF; !important;
 }
 
 nav button.selected {
-    border: 2px solid lightblue;
+    background-color: #DBF4FF; !important;
+    border: 3px solid lightblue;
     text-decoration: underline;
     outline: none;
 }
