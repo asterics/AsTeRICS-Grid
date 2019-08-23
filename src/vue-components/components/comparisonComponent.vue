@@ -75,7 +75,10 @@
         border-left: none;
         border-right: none;
     }
+    .btn-accordion:hover, .btn-accordion:focus {
+        outline: 2px solid lightblue;
+    }
     .btn-accordion:hover span {
-        color: cornflowerblue;
+        color: #2d7bb4;
     }
 </style>
