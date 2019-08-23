@@ -78,7 +78,7 @@
                     <form autocomplete="on" onsubmit="event.preventDefault()">
                         <div class="row">
                             <label for="inputUser2" class="one column"><span class="desktop-right">Username</span></label>
-                            <input type="text" name="username" v-model="user" id="inputUser2" class="four columns" autocomplete="username" v-focus=""/>
+                            <input type="text" name="username" v-model="user" id="inputUser2" class="four columns" autocomplete="username"/>
                         </div>
                         <div class="row">
                             <label for="inputPassword2" class="one column"><span class="desktop-right" data-i18n="">Password // Passwort</span></label>
