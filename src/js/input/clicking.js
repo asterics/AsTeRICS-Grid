@@ -11,15 +11,24 @@ function Clicker(itemSelector) {
         }
     }
 
+    function onkeydown(event) {
+        let code = event.which || event.keyCode;
+        if (code === 13 || code === 32) {
+            onclick(event);
+        }
+    }
+
     thiz.startClickcontrol = function () {
         L.selectAsList(_itemSelector).forEach(function (item) {
             item.addEventListener('click', onclick);
+            item.addEventListener('keydown', onkeydown);
         });
     };
 
     thiz.stopClickcontrol = function () {
         L.selectAsList(_itemSelector).forEach(function (item) {
             item.removeEventListener('click', onclick);
+            item.removeEventListener('keydown', onkeydown);
         });
     };
 
