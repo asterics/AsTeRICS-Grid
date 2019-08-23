@@ -1,11 +1,11 @@
 <template>
     <component :is="tag" v-if="!fullHeader || show">
-        <div class="left">
+        <div class="left" aria-hidden="true">
             <div v-if="show">
-                <a href="javascript:void(0)" @click="openSidebar()" style="margin: 0.2em 1em 0 0.5em"><i class="fas fa-2x fa-bars inline"></i></a>
-                <a href="#main" class="hide-mobile"><h1 class="inline"><img id="astericsIcon" src="app/img/asterics-grid-icon.png" alt="AsTeRICS Grid"/></h1></a>
+                <a tabindex="20" href="javascript:void(0)" @click="openSidebar()" style="margin: 0.2em 1em 0 0.5em"><i class="fas fa-2x fa-bars inline"></i></a>
+                <a tabindex="21" href="#main" class="hide-mobile"><h1 class="inline"><img id="astericsIcon" src="app/img/asterics-grid-icon.png" alt="AsTeRICS Grid"/></h1></a>
             </div>
-            <a href="#main" class="show-mobile"><h1 class="inline"><img id="astericsIcon" src="app/img/asterics_icon.png" alt="AsTeRICS Grid" style="margin: 0"/></h1></a>
+            <a tabindex="22" href="#main" class="show-mobile"><h1 class="inline"><img id="astericsIcon" src="app/img/asterics_icon.png" alt="AsTeRICS Grid" style="margin: 0"/></h1></a>
         </div>
     </component>
 </template>

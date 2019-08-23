@@ -13,6 +13,9 @@
     <link rel="stylesheet" href="app/css/skeleton.css">
 </head>
 <body>
+<div style="display: none" aria-hidden="false">
+    Access key 1: Navigation, Access key 2: Main
+</div>
 <div id="app" class="holy-grail">
     <div class="grid-container grid-mask" v-if="false">
         <i class="fas fa-4x fa-spinner fa-spin" style="top: 40%;"></i>
@@ -27,48 +30,48 @@
         </div>
     </div>
     <div class="holy-grail-body" v-cloak>
-        <main role="main" class="holy-grail-content">
+        <main role="main" class="holy-grail-content" accesskey="2">
             <!-- Main page content -->
             <component v-if="component" v-bind:is="component" v-bind="properties" :key="componentKey"></component>
         </main>
 
-        <div class="holy-grail-sidebar-1 hg-sidebar" v-if="showSidebar">
+        <div class="holy-grail-sidebar-1 hg-sidebar" v-show="showSidebar">
             <div style="flex: 0 0 auto;">
                 <div class="show-mobile">
-                    <a href="javascript:void(0)" @click="closeSidebar()"><button tabindex="-1"><i class="fas fa-2x fa-bars inline"></i></button></a>
+                    <a tabindex="1" aria-hidden="true" href="javascript:void(0)" @click="closeSidebar()"><button tabindex="-1"><i class="fas fa-2x fa-bars inline"></i></button></a>
                 </div>
                 <div class="hide-mobile" style="display: inline-flex">
-                    <a href="javascript:void(0)" @click="closeSidebar()" style="margin: 0.2em 0.5em 0 1.2em"><i class="fas fa-2x fa-bars inline"></i></a>
-                    <a href="#main"><h1 class="inline hide-mobile"><img id="astericsIcon" src="app/img/asterics-grid-icon.png" alt="AsTeRICS Grid"/></h1></a>
+                    <a tabindex="1" aria-hidden="true" href="javascript:void(0)" @click="closeSidebar()" style="margin: 0.2em 0.5em 0 1.2em"><i class="fas fa-2x fa-bars inline"></i></a>
+                    <a tabindex="-1" aria-hidden="true" href="#main"><h1 class="inline hide-mobile"><img id="astericsIcon" src="app/img/asterics-grid-icon.png" alt="AsTeRICS Grid"/></h1></a>
                 </div>
             </div>
 
-            <nav role="navigation" class="row content" style="flex: 1 1 auto">
+            <nav role="navigation" class="row content" style="flex: 1 1 auto" accesskey="1">
                 <div v-if="currentUser">
                     <h2 class="hide-mobile" style="margin-top: 1.5em;">Navigation</h2>
                     <br class="show-mobile"/>
                     <ul>
-                        <li><a href="#main"><button tabindex="-1"><i class="fas fa-2x fa-home"></i><span class="hide-mobile" data-i18n="">Main // Start</span></button></a></li>
-                        <li><a href="#grids"><button tabindex="-1"><i class="fas fa-2x fa-list-ul"></i><span class="hide-mobile" data-i18n="">Manage grids // Grids verwalten</span></button></a></li>
-                        <li><a href="#dictionaries"><button tabindex="-1"><i class="fas fa-2x fa-book"></i><span class="hide-mobile" data-i18n="">Manage Dictionaries // Wörterbücher verwalten</span></button></a></li>
+                        <li><a tabindex="2" href="#main"><button tabindex="-1"><i class="fas fa-2x fa-home"></i><span class="hide-mobile" data-i18n="">Main // Start</span></button></a></li>
+                        <li><a tabindex="3" href="#grids"><button tabindex="-1"><i class="fas fa-2x fa-list-ul"></i><span class="hide-mobile" data-i18n="">Manage grids // Grids verwalten</span></button></a></li>
+                        <li><a tabindex="4" href="#dictionaries"><button tabindex="-1"><i class="fas fa-2x fa-book"></i><span class="hide-mobile" data-i18n="">Manage Dictionaries // Wörterbücher verwalten</span></button></a></li>
                     </ul>
                 </div>
 
                 <h2 class="hide-mobile" data-i18n="">Users // Benutzer</h2>
                 <ul>
-                    <li><a href="#login">
+                    <li><a tabindex="5" href="#login">
                         <button tabindex="-1">
                             <i class="fas fa-2x fa-users"></i><span v-show="!currentUser" class="hide-mobile" data-i18n="">Login // Einloggen</span><span v-show="currentUser" class="hide-mobile" data-i18n="">Change User // Benutzer wechseln</span>
                         </button></a>
                     </li>
-                    <li><a href="#register"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span class="hide-mobile" data-i18n="">Add online user // Online-User hinzufügen</span></button></a></li>
-                    <li class="hide-mobile"><a href="#add"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span data-i18n="">Add offline user // Offline-User hinzufügen</span></button></a></li>
+                    <li><a tabindex="6" href="#register"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span class="hide-mobile" data-i18n="">Add online user // Online-User hinzufügen</span></button></a></li>
+                    <li class="hide-mobile"><a tabindex="7" href="#add"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span data-i18n="">Add offline user // Offline-User hinzufügen</span></button></a></li>
                 </ul>
 
                 <br class="hide-mobile"/>
                 <ul style="margin-bottom: 0;">
-                    <li><a href="#about"><button tabindex="-1"><i class="fas fa-2x fa-info-circle"></i><span class="hide-mobile" data-i18n="">About AsTeRICS Grid // Über AsTeRICS Grid</span></button></a></li>
-                    <li><a href="javascript:;"><button @click="openHelp()" id="helpButton"><i class="fas fa-2x fa-question-circle"></i><span class="hide-mobile" data-i18n="">Help // Hilfe</span></button></a></li>
+                    <li><a tabindex="8" href="#about"><button tabindex="-1"><i class="fas fa-2x fa-info-circle"></i><span class="hide-mobile" data-i18n="">About AsTeRICS Grid // Über AsTeRICS Grid</span></button></a></li>
+                    <li><a tabindex="9" href="javascript:;" @click="openHelp()"><button tabindex="-1" id="helpButton"><i class="fas fa-2x fa-question-circle"></i><span class="hide-mobile" data-i18n="">Help // Hilfe</span></button></a></li>
                 </ul>
             </nav>
             <div style="flex: 0 0 auto; padding: 1.5em 0.5em 1em 0.7em;" id="syncVisualizationWrapper">

@@ -2,18 +2,18 @@
     <div class="box" v-cloak>
         <header class="row header" role="banner" v-if="metadata && !metadata.fullscreen">
             <header-icon v-show="!metadata.locked"></header-icon>
-            <button v-show="metadata.locked" @click="unlock()" class="small">
+            <button tabindex="34" v-show="metadata.locked" @click="unlock()" class="small">
                 <i class="fas fa-unlock"></i>
                 <span class="hide-mobile" data-i18n>Unlock // Entsperren</span>
                 <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
             </button>
-            <button v-show="!metadata.locked" @click="lock()" class="small">
+            <button tabindex="33" v-show="!metadata.locked" @click="lock()" class="small">
                 <i class="fas fa-lock"></i>
                 <span class="hide-mobile" data-i18n>Lock // Sperren</span>
             </button>
-            <button @click="applyFullscreen()" class="spaced small"><i class="fas fa-expand"/> <span class="hide-mobile" data-i18n>Fullscreen // Vollbild</span></button>
-            <button v-show="!metadata.locked" @click="toEditGrid()" class="spaced small"><i class="fas fa-pencil-alt"/> <span class="hide-mobile" data-i18n>Edit grid // Grid bearbeiten</span></button>
-            <button v-show="!metadata.locked" @click="showModal = true" class="small"><i class="fas fa-cog"></i> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
+            <button tabindex="32" @click="applyFullscreen()" class="spaced small"><i class="fas fa-expand"/> <span class="hide-mobile" data-i18n>Fullscreen // Vollbild</span></button>
+            <button tabindex="31" v-show="!metadata.locked" @click="toEditGrid()" class="spaced small"><i class="fas fa-pencil-alt"/> <span class="hide-mobile" data-i18n>Edit grid // Grid bearbeiten</span></button>
+            <button tabindex="30" v-show="!metadata.locked" @click="showModal = true" class="small"><i class="fas fa-cog"></i> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
         </header>
         <input-options-modal v-if="showModal" v-bind:metadata-property="metadata" v-bind:scanner="scanner" v-bind:hover="hover" v-bind:clicker="clicker" v-bind:reinit="reinitInputMethods" @close="showModal = false"/>
         <div class="row content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0">

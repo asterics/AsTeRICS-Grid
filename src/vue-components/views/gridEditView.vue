@@ -2,11 +2,11 @@
     <div v-cloak v-if="gridData" class="box">
         <header class="row header" role="banner">
             <header-icon class="left"></header-icon>
-            <button @click="back" title="Back" class="spaced left small"><i class="fas fa-angle-left"></i> <span class="hide-mobile" data-i18n>Back // Zurück</span></button>
-            <button id="moreButton" title="More" class="spaced"><i class="fas fa-bars"></i> <span class="hide-mobile" data-i18n>More // Mehr</span></button>
+            <button tabindex="30" @click="back" title="Back" class="spaced left small"><i class="fas fa-angle-left"></i> <span class="hide-mobile" data-i18n>Back // Zurück</span></button>
+            <button tabindex="33" id="moreButton" title="More" class="spaced"><i class="fas fa-bars"></i> <span class="hide-mobile" data-i18n>More // Mehr</span></button>
             <div class="spaced btn-group">
-                <button @click="undo" title="Undo" :disabled="!canUndo || doingUndoRedo" class="small"><i class="fas fa-undo"></i> <span class="hide-mobile" data-i18n>Undo // Rückgängig</span></button>
-                <button @click="redo" title="Redo" :disabled="!canRedo || doingUndoRedo" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile" data-i18n>Redo // Wiederherstellen</span></button>
+                <button tabindex="31" @click="undo" title="Undo" :disabled="!canUndo || doingUndoRedo" class="small"><i class="fas fa-undo"></i> <span class="hide-mobile" data-i18n>Undo // Rückgängig</span></button>
+                <button tabindex="32" @click="redo" title="Redo" :disabled="!canRedo || doingUndoRedo" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile" data-i18n>Redo // Wiederherstellen</span></button>
             </div>
         </header>
         <div class="row content spaced" v-if="!gridData.gridElements || gridData.gridElements.length == 0" role="main">
