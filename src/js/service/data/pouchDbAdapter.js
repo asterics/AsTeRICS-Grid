@@ -384,9 +384,11 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
     function updateRevisions(docs) {
         if (docs && docs.length > 0) {
             docs.forEach(doc => {
-                let nr = getRevNumber(doc._rev);
-                if (!_revisionMap[doc.id] || _revisionMap[doc.id] < nr) {
-                    _revisionMap[doc.id] = nr;
+                let id = doc._id || doc.id;
+                let rev = doc._rev || doc.rev;
+                let nr = getRevNumber(rev);
+                if (!_revisionMap[id] || _revisionMap[id] < nr) {
+                    _revisionMap[id] = nr;
                 }
             });
         }
