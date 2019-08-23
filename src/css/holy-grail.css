@@ -56,6 +56,10 @@
     flex: 0 0 250px;
 }
 
+nav li:focus {
+    outline: none;
+}
+
 @media (max-width: 850px) {
     .hg-sidebar {
         flex: 0 0 50px;

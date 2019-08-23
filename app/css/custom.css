@@ -17,6 +17,19 @@ body {
     height: 100vh;
 }
 
+button:focus {
+    border: 3px solid lightblue;
+    outline: 0;
+}
+
+.grid-item-content:focus {
+    outline: 3px solid #819fad;
+}
+
+*:focus {
+    outline: 3px solid lightblue;
+}
+
 header {
     margin: 0;
     padding: 2vh;
