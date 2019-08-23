@@ -85,7 +85,7 @@ nav li:focus {
         flex: 0 0 12vh;
     }
 
-    .hg-sidebar button {
+    .hg-sidebar button, #syncVisualization {
         font-size: 3vh;
         line-height: 0;
     }
@@ -94,8 +94,8 @@ nav li:focus {
         height: 10vh;
     }
 
-    header button, header a {
-        height: 10vh;
+    header button, header a, header input {
+        height: 10vh !important;
         max-height: 40px;
         font-size: 4vh;
         line-height: 0;

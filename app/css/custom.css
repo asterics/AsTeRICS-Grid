@@ -35,7 +35,6 @@ header {
     padding: 2vh;
     border-bottom: 2px solid lightgray;
     max-height: 40px;
-    height: 10vh;
 }
 
 header div {
@@ -79,7 +78,7 @@ nav h2 {
 }
 
 .hg-sidebar button {
-    padding: 0.5em 1em;
+    padding: 0.5vh 1vh;
     margin: 0;
     width: 100%;
     height: 100%;
@@ -296,7 +295,17 @@ nav li:hover button span {
     margin: -0.3em 1em 0 0;
 }
 
-@media (max-height: 540px) {
+#syncVisualization .fa-stack-1x {
+    left: 10%;
+    top: 30%;
+    line-height: 1;
+}
+
+#syncVisualizationWrapper {
+    padding: 1.5vh 0.5em 1.5vh 0.7em;
+}
+
+@media (max-height: 355px) {
     #syncVisualization {
         display: none;
     }
