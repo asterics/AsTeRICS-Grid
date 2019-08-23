@@ -57,7 +57,7 @@ Router.init = function (injectIdParam, initialHash) {
                 helpService.setHelpLocation('02_navigation', '#main-view');
                 loadVueView(GridView, {
                     gridId: params.gridId
-                });
+                }, '#main');
             },
             'grid/edit/:gridId': function (params) {
                 log.debug('route edit grid with ID: ' + params.gridId);
@@ -205,15 +205,18 @@ function setHash(hash, reset) {
     location.hash = hash;
 }
 
-function loadVueView(viewObject, properties) {
+function loadVueView(viewObject, properties, menuItemToHighlight) {
     if (!routingEndabled) {
         return;
     }
-    let hash = getHash();
-    $('nav button').removeClass('selected');
-    $(`nav a[href='${hash}'] button`).addClass('selected');
+    setMenuItemSelected(menuItemToHighlight || getHash());
     log.debug('loading view: ' + viewObject.__file);
     MainVue.setViewComponent(viewObject, properties);
+}
+
+function setMenuItemSelected(hash) {
+    $('nav button').removeClass('selected');
+    $(`nav a[href='${hash}'] button`).addClass('selected');
 }
 
 function toMainInternal() {
