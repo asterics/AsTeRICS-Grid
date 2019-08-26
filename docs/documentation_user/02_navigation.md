@@ -22,7 +22,7 @@ See [Terms](01_terms.md#User) for more information about offline/online users.
 ## Main view
 Once taken a decision in the welcome view AsTeRICS Grid subsequently starts in the "main view" which looks like Figure 1 (desktop view on the left, mobile view on the right):
 
-![main view](img/main_en.jpg)
+![main view](./img/main_en.jpg)
 *Fig. 1: Main view*
 
 The elements have this functionality:
@@ -44,7 +44,7 @@ The elements have this functionality:
 ## Edit view
 Clicking on Button "Edit" (Fig. 1, number 9) opens the edit view where a grid can be adapted, see Figure 2:
 
-![edit view](img/edit_en.jpg)
+![edit view](./img/edit_en.jpg)
 *Fig.2: Edit view*
 
 The following elements are available in the edit view:
@@ -62,7 +62,7 @@ See page [Edit grid appearance and layout](03_appearance_layout.md) for more det
 ## Manage grids view
 The manage grids view provides an overview about the current grids of a user, see Figure 2:
 
-![manage grids view](img/manage_grids_en.jpg)
+![manage grids view](./img/manage_grids_en.jpg)
 *Fig.3: Manage grids view*
 
 The following elements are available in the manage grids view:
@@ -82,7 +82,7 @@ The following elements are available in the manage grids view:
 
 Clicking on Button "More" (Fig. 3, number 4) opens menu with additional options:
 
-![manage grids more menu](img/manage_grids_more_en.jpg)
+![manage grids more menu](./img/manage_grids_more_en.jpg)
 
 These are the possible options:
 
@@ -95,7 +95,7 @@ These are the possible options:
 ## Manage dictionaries view
 In the manage dictionaries view currently saved dictionaries that are used for filling prediction elements (see [Terms](01_terms.md#grid-element)) can be shown and adapted (Figure 4):
 
-![manage dictionaries view](img/manage_dict_en.jpg)
+![manage dictionaries view](./img/manage_dict_en.jpg)
 *Fig. 4: Manage dictionaries view*
 
 The following elements are available in the manage dictionaries view:
@@ -112,7 +112,7 @@ For more information about using dictionaries see [Dictionaries](07_dictionaries
 ## Change user view
 In the change user view it's possible to switch between users or login a existing one (Figure 5):
 
-![change user view](img/login_en.jpg)
+![change user view](./img/login_en.jpg)
 *Fig. 5: Change user view*
 
 The following elements are available in the change users view:

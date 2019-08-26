@@ -10,7 +10,7 @@ The basic functionality of the manage dictionaries view was already described in
 
 In the manage dictionaries view clicking on "Edit" in the list of dictionaries allows to see the details of a dictionary and editing it:
 
-![edit a dictionary](img/dictionary_edit_en.jpg)
+![edit a dictionary](./img/dictionary_edit_en.jpg)
 *Figure 1: Edit a dictionary*
 
 Typing a word or a part of it in the search field filters the list of shown words. Clicking on the recycle bin symbol next to a word deletes it from the dictionary.
@@ -19,7 +19,7 @@ Typing a word or a part of it in the search field filters the list of shown word
 ## Add words
 Clicking on the "Import words" in Figure 1 button opens a modal:
 
-![import words to dictionary](img/dictionary_import_en.jpg)
+![import words to dictionary](./img/dictionary_import_en.jpg)
 *Figure 2: Import words modal*
 
 These are the elements of the "import words" modal:

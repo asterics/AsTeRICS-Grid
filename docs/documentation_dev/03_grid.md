@@ -10,7 +10,7 @@ This chapter is about the technical background of the dynamic grid system which 
 ## General
 When opening AsTeRICS Grid in the main view the latest used grid is shown:
 
-![default grid](img/grid_default_en.jpg)
+![default grid]\(./img/grid_default_en.jpg)
 
 From a technical perspective this grid is a unordered list (`<ul>`) where each list element (`<li>`) represents a grid element. HTML representations for these grid elements are generated in [templates.js](https://github.com/asterics/AsTeRICS-Grid/blob/master/src/js/templates.js). 
 

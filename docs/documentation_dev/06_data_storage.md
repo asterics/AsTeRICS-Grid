@@ -23,7 +23,7 @@ For accessing IndexedDB in a more comfortable manner and making synchronization 
 ## Data storage abstraction layers
 All Javascript modules regarding storage of data in AsTeRICS Grid can be found in the folder [src/js/service/data](https://github.com/asterics/AsTeRICS-Grid/tree/master/src/js/service/data). Figure 1 shows the relevant files and their relationships:
 
-![Concept of data storage layers](img/data_storage_layers_en.png)
+![Concept of data storage layers]\(./img/data_storage_layers_en.png)
 
 *Figure 1: Concept of data storage layers*
 

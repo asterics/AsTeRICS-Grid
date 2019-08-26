@@ -16,7 +16,7 @@ This chapter is about actions that can be performed if a grid element is selecte
 
 Choosing "Actions" in the [Edit grid element menu](03_appearance_layout.md#editing-grid-elements) opens a configuration modal (Fig. 1):
 
-![input options](img/edit_actions_en.jpg)
+![input options](./img/edit_actions_en.jpg)
 *Fig. 1: Edit actions modal*
 
 This modal configures the actions that will be performed if the grid element is selected. These are the elements in the action modal:
@@ -46,7 +46,7 @@ These are the types of actions that are selectable (Fig. 1, number 1):
 ### Speak label
 Clicking on "Edit" on a "speak label" action (or creating a new one) shows the following configuration possibilities:
 
-![action speak label](img/action_speak_label_en.jpg)
+![action speak label](./img/action_speak_label_en.jpg)
 
 By default the language of the browser/system is selected. Available languages can differ depending on the browser, from experience [Google Chrome](https://www.google.com/chrome/) offers most languages. Clicking on the "Test" button speaks the label in the selected language.
 
@@ -55,28 +55,28 @@ By default the language of the browser/system is selected. Available languages c
 ### Navigate to other grid
 Clicking on "Edit" on a "navigate to other grid" action (or creating a new one) shows the following configuration possibilities:
 
-![action navigate to other grid](img/action_navigate_en.jpg)
+![action navigate to other grid](./img/action_navigate_en.jpg)
 
 "Grid to navigate" selects the grid to switch to if this action is performed. The combobox contains a list of the names of all available grids of the current user.
 
 ### Speak custom text
 Clicking on "Edit" on a "speak custom text" action (or creating a new one) shows the following configuration possibilities:
 
-![Speak custom text](img/action_speak_custom_en.jpg)
+![Speak custom text](./img/action_speak_custom_en.jpg)
 
 For language selection the same conditions as for [speak label](05_actions.md#speak-label) actions apply. "Text to speak" is the custom text that should be spoken. The button "Test" tests the configuration and speaks the current text.
 
 ### Fill prediction elements
 The action "fill prediction elements" fills all [prediction elements](01_terms.md#grid-element) in the grid with word suggestions. Suggestions are calculated on the basis of the label of the current element, so an "fill prediction elements" action of an element with label "A" will fill the prediction elements with the most common words starting with character "A":
 
-![fill prediction elements animation](img/fill_predictions.gif)
+![fill prediction elements animation](./img/fill_predictions.gif)
 
 Clicking on "Edit" on a "fill prediction elements" action (or creating a new one) shows the following configuration possibilities:
 
-![fill prediction elements action options](img/action_fillprediction_en.jpg)
+![fill prediction elements action options](./img/action_fillprediction_en.jpg)
 
 The meaning of the options is:
-1. **Refresh suggestions on change** (only available on [collect elements](01_terms.md#grid-element)): if checked prediction elements are recalculated and refilled on every change of the collection element on base of the current value of the collection element: <div style="margin-left: 2em"><img src="img/fill_predictions2.gif" alt="fill predictions elements with collect element animation" width="350"/></div>
+1. **Refresh suggestions on change** (only available on [collect elements](01_terms.md#grid-element)): if checked prediction elements are recalculated and refilled on every change of the collection element on base of the current value of the collection element: <div style="margin-left: 2em"><img src="./img/fill_predictions2.gif" alt="fill predictions elements with collect element animation" width="350"/></div>
 1. **Dictionary to use**: select the dictionary you want to use (see [manage dictionaries](02_navigation.md#manage-dictionaries-view)). If nothing selected words from all available dictionaries will be suggested.
 
 ### Collect element action
@@ -84,13 +84,13 @@ Collect element actions are various actions that are related to [collect element
 
 Clicking on "Edit" on a "collect element action" action (or creating a new one) shows the following configuration possibilities:
 
-![Collect element action options](img/action_collectelement_en.jpg)
+![Collect element action options](./img/action_collectelement_en.jpg)
 
 The possible actions to chose are:
 
 1. **Clear collect element** empties the collect element
-1. **Delete last word** deletes the last word of the collection elements: <div style="margin-left: 2em"><img src="img/collect_delete.gif" alt="Delete last word animation" width="350"/></div>
-1. **Delete last character**: <div style="margin-left: 2em"><img src="img/collect_delete_c.gif" alt="Delete last character animation" width="350"/></div>
+1. **Delete last word** deletes the last word of the collection elements: <div style="margin-left: 2em"><img src="./img/collect_delete.gif" alt="Delete last word animation" width="350"/></div>
+1. **Delete last character**: <div style="margin-left: 2em"><img src="./img/collect_delete_c.gif" alt="Delete last character animation" width="350"/></div>
 1. **Copy text to clipboard**: copies the current text of the collect element to clipboard in order to be available for paste in other programs
 1. **Append text to clipboard**: appends the current text of the collect element to clipboard making it possible to collect longer texts in the clipboard which can be used in another program afterwards
 1. **Clear clipboard**: empties the clipboard
@@ -100,7 +100,7 @@ An "AsTeRICS action" performs an action in a running [model](01_terms.md#asteric
 
 Figure 2 shows how an AsTeRICS action that controls a TV is working in more detail:
 
-![asterics action detail concept](img/asterics-action-are_en.png)
+![asterics action detail concept](./img/asterics-action-are_en.png)
 *Fig. 2: AsTeRICS action concept, example of controlling a TV*
 
 The following steps are shown in Figure 2:
@@ -113,7 +113,7 @@ The following steps are shown in Figure 2:
 
 Clicking on "Edit" on a "AsTeRICS action" action (or creating a new one) shows the following configuration possibilities:
 
-![asterics action options](img/action_asterics_en.jpg)
+![asterics action options](./img/action_asterics_en.jpg)
 
 These are the possibilities while configuring an AsTeRICS Action:
 

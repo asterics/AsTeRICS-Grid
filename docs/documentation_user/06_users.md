@@ -21,7 +21,7 @@ Online users are users whose configuration is automatically synchronized with a 
 
 In view "add online user" it's possible to register a new online user, Figure 6:
 
-![add online user view](img/register_online_en.jpg)
+![add online user view](./img/register_online_en.jpg)
 *Fig. 6: Add online user view - register*
 
 The following information is important for registering an online user:
@@ -35,22 +35,22 @@ The following information is important for registering an online user:
 ### Synchronization states
 Online users can have the following synchronization states which are shown at the bottom of the navigation bar:
 
-![online user - synchronizing symbol](img/online_user_synchronizing.jpg) **Synchronizing**: configuration is currently synchronizing with the cloud
+![online user - synchronizing symbol](./img/online_user_synchronizing.jpg) **Synchronizing**: configuration is currently synchronizing with the cloud
 
-![online user - synchronized symbol](img/online_user_synchronized.jpg) **Synchronized**: configuration is up-to-date with the cloud storage
+![online user - synchronized symbol](./img/online_user_synchronized.jpg) **Synchronized**: configuration is up-to-date with the cloud storage
 
-![online user - synchronized symbol](img/online_user_failed.jpg) **Synchronization failed**: synchronization not possible, no internet connection
+![online user - synchronized symbol](./img/online_user_failed.jpg) **Synchronization failed**: synchronization not possible, no internet connection
 
-![online user - synchronized symbol](img/online_user_paused.jpg) **Synchronization paused**: synchronization paused for a short time and will be resumed shortly
+![online user - synchronized symbol](./img/online_user_paused.jpg) **Synchronization paused**: synchronization paused for a short time and will be resumed shortly
 
-![online user - synchronized symbol](img/online_user_onlineonly.jpg) **Online only**: user is logged in online-only, meaning that configuration is not saved on the current device. Changes still will be saved in the cloud and therefore also be synchronized to other devices where this user is logged in. Users will be logged in online-only if the "remember checkbox" is unchecked when logging in (see [change user view](02_navigation.md#change-user-view)).
+![online user - synchronized symbol](./img/online_user_onlineonly.jpg) **Online only**: user is logged in online-only, meaning that configuration is not saved on the current device. Changes still will be saved in the cloud and therefore also be synchronized to other devices where this user is logged in. Users will be logged in online-only if the "remember checkbox" is unchecked when logging in (see [change user view](02_navigation.md#change-user-view)).
 
 ## Offline users
 Offline users are users whose configuration is only saved offline in the storage of the currently used browser. This type of users are perfectly suited for use cases where AsTeRICS Grid is only used on a single device.
 
 In view "add offline user" it's possible add a new offline user (see [Terms](01_terms.md#user)), Figure 7:
 
-![add offline user view](img/add_offline_en.jpg)
+![add offline user view](./img/add_offline_en.jpg)
 *Fig. 7: Add offline user view*
 
 The following information is important regarding offline users:

@@ -25,7 +25,7 @@ The method [`MainVue.setViewComponent()`](https://github.com/asterics/AsTeRICS-G
 
 Figure 1 highlights the Vue.js components that are used for the main view:
 
-![](img/main.png)
+![]\(./img/main.png)
 *Fig. 1: Vue component structure of the main view, red part is replaced depending on the current navigation*
 
 ## Used components
