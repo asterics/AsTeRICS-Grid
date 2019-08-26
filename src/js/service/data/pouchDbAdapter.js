@@ -356,11 +356,11 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
             updateRevisions(info.change ? info.change.docs : null);
             if (info.direction && info.direction === 'pull') {
                 if (info.change && info.change.docs && info.change.docs.length > 0) {
-                    changedDocsEncrypted = info.change.docs.filter(doc => !!doc.id && !isOutdatedRevision(doc));
-                    changedIds = changedDocsEncrypted.map(doc => doc.id);
+                    changedDocsEncrypted = info.change.docs.filter(doc => !!getId(doc) && !isOutdatedRevision(doc));
+                    changedIds = changedDocsEncrypted.map(doc => getId(doc));
                 }
                 if (info.change.docs.length > 0 && changedIds.length === 0) {
-                    log.debug('ignoring pull because of outdated revision');
+                    log.info('ignoring pull because of outdated revision');
                 } else {
                     log.info('pouchdb pulled updates...');
                 }
@@ -384,9 +384,8 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
     function updateRevisions(docs) {
         if (docs && docs.length > 0) {
             docs.forEach(doc => {
-                let id = doc._id || doc.id;
-                let rev = doc._rev || doc.rev;
-                let nr = getRevNumber(rev);
+                let id = getId(doc);
+                let nr = getRevNumber(doc);
                 if (!_revisionMap[id] || _revisionMap[id] < nr) {
                     _revisionMap[id] = nr;
                 }
@@ -394,8 +393,9 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
         }
     }
 
-    function getRevNumber(revString) {
+    function getRevNumber(doc) {
         try {
+            let revString = getRev(doc);
             return Number.parseInt(revString.substring(0, revString.indexOf('-')));
         } catch (e) {
             return 0;
@@ -403,7 +403,15 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
     }
 
     function isOutdatedRevision(doc) {
-        return _revisionMap[doc.id] && getRevNumber(doc._rev) < _revisionMap[doc.id];
+        return _revisionMap[getId(doc)] && getRevNumber(doc) < _revisionMap[getId(doc)];
+    }
+
+    function getId(doc) {
+        return doc._id || doc.id;
+    }
+
+    function getRev(doc) {
+        return doc._rev || doc.rev;
     }
 }
 
