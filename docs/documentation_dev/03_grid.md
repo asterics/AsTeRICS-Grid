@@ -5,7 +5,7 @@ This chapter is about the technical background of the dynamic grid system which 
 1. [GridList and grid.js](03_grid.md#gridlist-and-gridjs)
 1. [Repositioning and resizing of elements](03_grid.md#repositioning-and-resizing-of-elements)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 ## General
 When opening AsTeRICS Grid in the main view the latest used grid is shown:
@@ -25,7 +25,7 @@ Repositioning of elements is already supported by default by the [GridList libra
 
 [&#x2190; Previous Chapter](02_tools.md) [Next Chapter &#x2192;](04_vuejs.md)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 
 

@@ -6,7 +6,7 @@ This chapter is about a grid's layout and appearance and how to edit it:
 1. [Editing grid elements menu](03_appearance_layout.md#editing-grid-elements)
 1. [Edit modal](03_appearance_layout.md#edit-modal): changing label and image
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 ## Adding elements and layout options
 In the [Edit view](02_navigation.md#edit-view) the following menu opens on a click on "More":
@@ -61,7 +61,7 @@ These are the elements in the modal of Figure 3:
 
 [&#x2190; Previous Chapter](02_navigation.md) [Next Chapter &#x2192;](04_input_options.md)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 
 

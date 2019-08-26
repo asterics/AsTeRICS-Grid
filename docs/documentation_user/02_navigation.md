@@ -9,7 +9,7 @@ This chapter is about general appearance, navigation and basic functionality of 
 1. [Manage dictionaries view](02_navigation.md#manage-dictionaries-view): show, edit and create new dictionaries
 1. [Change user view](02_navigation.md#change-user-view): switch users or login an existing one
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 ## Welcome view
 AsTeRICS Grid initially starts with a welcome view giving the choice between:
@@ -131,7 +131,7 @@ For information about offline or online users and how to add them see [Users](06
 
 [&#x2190; Previous Chapter](01_terms.md) [Next Chapter &#x2192;](03_appearance_layout.md)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 
 

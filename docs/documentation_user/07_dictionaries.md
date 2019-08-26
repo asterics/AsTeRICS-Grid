@@ -1,7 +1,7 @@
 # Dictionaries
 This chapter is about dictionaries and how to manage and use them within AsTeRICS Grid.
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 A dictionary is a collection of words and their relations that is saved within AsTeRICS Grid in order to fill [prediction elements](01_terms.md#grid-element). 
 
@@ -56,7 +56,7 @@ Each data record has the format `<rank> <frequency> <word>` and is separated by 
 
 [&#x2190; Previous Chapter](06_users.md)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 
 

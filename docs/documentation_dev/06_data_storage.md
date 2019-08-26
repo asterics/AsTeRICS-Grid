@@ -7,7 +7,7 @@ This chapter is about the data storage concept used in AsTeRICS Grid, meaning wh
 1. [Authentication layer](06_data_storage.md#authentication-layer)
 1. [Inspecting locally saved data](06_data_storage.md#inspecting-locally-saved-data)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 ## Introduction
 Since AsTeRICS Grid is designed to work offline, all configuration and user data have to be accessible without internet connection. There are the following possibilities for providing a data storage for an offline web-application:
@@ -60,7 +60,7 @@ For examining the locally saved data of AsTeRICS Grid do the following (e.g. in 
 
 [&#x2190; Previous Chapter](05_datamodel.md) [Next Chapter &#x2192;](07_i18n.md)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 
 

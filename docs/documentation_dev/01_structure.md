@@ -5,7 +5,7 @@ This chapter is about the general structure of the AsTeRICS Grid project:
 1. [Project structure](01_structure.md#project-structure)
 1. [Sources structure](01_structure.md#sources-structure)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 ## Project structure
 The AsTeRICS Grid project is hosted on [GitHub](https://github.com/asterics/AsTeRICS-Grid). These are the main folders and files in the project:
@@ -63,7 +63,7 @@ Besides the custom sources in the `src/` folder the `app/` folder contains these
 
 [Next Chapter &#x2192;](02_tools.md)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 
 

@@ -10,7 +10,7 @@ This chapter is about actions that can be performed if a grid element is selecte
     * [Collect element action](05_actions.md#collect-element-action)
     * [AsTeRICS Action](05_actions.md#asterics-action)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 ## Edit actions modal
 
@@ -131,4 +131,4 @@ These are the possibilities while configuring an AsTeRICS Action:
   
 [&#x2190; Previous Chapter](04_input_options.md) [Next Chapter &#x2192;](06_users.md)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)

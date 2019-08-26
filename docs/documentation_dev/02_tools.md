@@ -4,7 +4,7 @@ This chapter is about tools, libraries and technologies that are used in AsTeRIC
 1. [Tools](02_tools.md#tools)
 1. [Javascript libaries](02_tools.md#javascript-libraries)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 ## Tools
 This section is about tools that are used for development, dependency management and releasing.
@@ -64,7 +64,7 @@ These are the Javascript libraries that are used:
 
 [&#x2190; Previous Chapter](01_structure.md) [Next Chapter &#x2192;](03_grid.md)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 
 

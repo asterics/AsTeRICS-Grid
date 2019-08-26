@@ -5,7 +5,7 @@ This chapter is about [Vue.js](https://vuejs.org/), the single-page application 
 1. [Component structure](04_vuejs.md#component-structure)
 1. [Used components](04_vuejs.md#used-components)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 ## General
 In AsTeRICS Grid [Vue.js](https://vuejs.org/) is used in order to manage views and it's elements in components and to create all kinds of interactivity in the UI. In Vue.js components can be organized in single `.vue` files, containing the HTML, Javascript and CSS needed for this component. These are the files and folders that are important regarding the usage of Vue.js:
@@ -54,7 +54,7 @@ For general information about the structure and usage of Vue.js components, see 
 
 [&#x2190; Previous Chapter](03_grid.md) [Next Chapter &#x2192;](05_datamodel.md)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 
 

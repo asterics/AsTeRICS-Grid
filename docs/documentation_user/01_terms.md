@@ -2,7 +2,7 @@
 
 This chapter explains the most important terms used in relation to the AsTeRICS Grid.
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 ## AsTeRICS Grid
 Web-based application for AAC solutions, runs in the browser (e.g. Firefox, Chrome, Edge, Internet Explorer, mobile Browsers).
@@ -44,7 +44,7 @@ For more information see [Users](06_users.md).
 
 [Next Chapter &#x2192;](02_navigation.md)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 
 

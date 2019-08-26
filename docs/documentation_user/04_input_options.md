@@ -1,7 +1,7 @@
 # Input Options
 This chapter is about how grid elements can be selected with different input modalities.
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 Clicking on Button "Input Options" in [Main view](02_navigation.md#main-view) opens a configuration modal:
 
@@ -39,4 +39,4 @@ If scanning is enabled there are several additional options for this input metho
     
 [&#x2190; Previous Chapter](03_appearance_layout.md) [Next Chapter &#x2192;](05_actions.md)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)

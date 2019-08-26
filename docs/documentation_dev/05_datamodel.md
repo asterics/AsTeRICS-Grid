@@ -7,7 +7,7 @@ This chapter is about the data model used in AsTeRICS Grid.
 1. [Common data model properties](05_datamodel.md#common-data-model-properties)
 1. [Full and short objects](05_datamodel.md#full-and-short-objects)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 ## Introduction
 Since Javascript is not a typed language it's not possible by default to define a data model in order to perform checks on valid properties and their types. For this reason the library [ObjectModel](https://objectmodel.js.org/) is used which allows to define data models and perform dynamic checks on their validity. 
@@ -50,7 +50,7 @@ The `GridData` data model contains a property `isShortVersion` which indicates t
 
 [&#x2190; Previous Chapter](04_vuejs.md) [Next Chapter &#x2192;](06_data_storage.md)
 
-[Back to Overview](00_index.md)
+[Back to Overview](README.md)
 
 
 
