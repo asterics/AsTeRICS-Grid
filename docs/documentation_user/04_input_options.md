@@ -5,7 +5,7 @@ This chapter is about how grid elements can be selected with different input mod
 
 Clicking on Button "Input Options" in [Main view](02_navigation.md#main-view) opens a configuration modal:
 
-![input options](img/input_options_en.jpg)
+![input options](./img/input_options_en.jpg)
 
 These are the possible options:
 
@@ -19,14 +19,14 @@ These are the possible options:
 ## Scanning options
 If scanning is enabled there are several additional options for this input method:
 
-![input options](img/scanning_options_en.jpg)
+![input options](./img/scanning_options_en.jpg)
 
 1. **Vertical scanning** defines the direction of scanning:
-    * **vertical** (checked): groups are built vertical, moving left to right <div style="margin-left: 2em"><img src="img/scanning_vertical.gif" alt="vertical scanning" width="130"/></div>
-    * **horizontal** (unchecked): groups are built horizontal, moving top to bottom <div style="margin-left: 2em"><img src="img/scanning_horizontal.gif" alt="horizontal scanning" width="130" style="margin-left: 2em"/></div>
+    * **vertical** (checked): groups are built vertical, moving left to right <div style="margin-left: 2em"><img src="./img/scanning_vertical.gif" alt="vertical scanning" width="130"/></div>
+    * **horizontal** (unchecked): groups are built horizontal, moving top to bottom <div style="margin-left: 2em"><img src="./img/scanning_horizontal.gif" alt="horizontal scanning" width="130" style="margin-left: 2em"/></div>
 1. **Binary scanning** defines if scanning groups are rows/columns or one half of existing elements:
-    * **binary** (checked): groups are built by separating remaining elements in two halves each scanning step <div style="margin-left: 2em"><img src="img/scanning_binary.gif" alt="binary scanning" width="130"/></div>
-    * **horizontal** (unchecked): groups are built row/column by row/column <div style="margin-left: 2em"><img src="img/scanning_non_binary.gif" alt="non-binary scanning" width="130" style="margin-left: 2em"/></div>
+    * **binary** (checked): groups are built by separating remaining elements in two halves each scanning step <div style="margin-left: 2em"><img src="./img/scanning_binary.gif" alt="binary scanning" width="130"/></div>
+    * **horizontal** (unchecked): groups are built row/column by row/column <div style="margin-left: 2em"><img src="./img/scanning_non_binary.gif" alt="non-binary scanning" width="130" style="margin-left: 2em"/></div>
 1. **Scanning Time**: time to wait between two scanning steps (in milliseconds)
 1. **Time factor first element**: the time to keep the first scanning group (e.g. first row/column) highlighted is "Scanning Time" multiplied with this factor. Increasing the time for the first group often improves usability.
 1. **Scanning keyboard key**: defines which key of the keyboard is used to select the currently highlighted scanning group (default: Space). To change press "Record other key" and press the desired key afterwards.
