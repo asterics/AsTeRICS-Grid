@@ -6,7 +6,7 @@ See https://grid.asterics.eu/ for a online demo of the Grid, see https://grid.as
 The AsTeRICS Grid evolved out of AsTeRICS Ergo, see [AsTeRICS Ergo Master Plan](https://github.com/asterics/AsTeRICS-Ergo/wiki/Master-Plan-AsTeRICS-Ergo) and [AsTeRICS Ergo Architecture](https://github.com/asterics/AsTeRICS-Ergo/wiki/Architecture) and will eventually replace AsTeRICS Ergo.
 
 ## Documentation
-see [User documentation](docs/documentation_user/00_index.md)
+see [User documentation](docs/documentation_user/README.md)
 
 ## Run project
 1. clone the project `git clone git@github.com:asterics/AsTeRICS-Grid.git`
