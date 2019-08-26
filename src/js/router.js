@@ -79,11 +79,11 @@ Router.init = function (injectIdParam, initialHash) {
                 loadVueView(AddOfflineView);
             },
             'welcome': function () {
-                helpService.setHelpLocation('00_index', '#asterics-grid-user-documentation');
+                helpService.setHelpLocationIndex();
                 loadVueView(WelcomeView);
             },
             'about': function () {
-                helpService.setHelpLocation('00_index', '#asterics-grid-user-documentation');
+                helpService.setHelpLocationIndex();
                 loadVueView(AboutView);
             },
             'dictionaries': function () {
