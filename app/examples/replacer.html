@@ -1,0 +1,272 @@
+<html>
+<head>
+    <title>Translation replacer</title>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+</head>
+
+<body>
+
+<h1>Phrases to translate:</h1>
+<p id="phrasesOriginal">
+Help
+Clothing
+Food
+Moods
+Keyboard
+Environment
+
+Toilet
+Sick
+Uncomfortable
+Hot
+Cold
+Sleep
+Not understand
+Broken
+Back
+
+I need to go to the toilet
+I am feeling sick
+I feel uncomfortable
+It's too hot
+It's too cold
+I need to take some rest or sleep
+I did not understand
+Something is broken
+
+Pants
+Shirt
+Blouse
+Skirt
+Dress
+Shoes
+Too tight
+Too loose
+
+I would like to wear pants
+I would like to wear a T-shirt
+I would like to wear a blouse
+I would like to wear a skirt
+I would like to wear a dress
+I would like to put on shoes
+My clothing fits too tight
+My clothing fits too loose
+
+Hungry
+Thirsty
+Fruit
+Salty snack
+Sweet snack
+Water
+Soda
+Straw
+
+I would like something to eat
+I would like something to drink
+I would like some fruit
+I would like a salty snack
+I would like a sweet snack
+I would like some water
+I would like some soda
+I need a straw
+
+Happy
+Sad
+Angry
+Confused
+Afraid
+Enthusiastic
+Bored
+Worried
+
+I feel happy
+I feel sad
+I am angry
+I feel confused
+I feel afraid
+I feel enthusiastic
+I feel bored
+I feel worried
+
+Lights
+TV
+Radio
+Door
+Heater
+
+Lights on
+Lights off
+
+TV on
+TV off
+Volume up
+Volume down
+Sound off
+Next channel
+Previous channel
+
+Turn on/off
+Play
+Stop
+Change mode
+Next song
+Previous song
+Volume up
+Volume down
+
+Open door
+Close door
+
+Temperature up
+Temperature down
+</p>
+
+<h1>Translated from Google Translate</h1>
+<p id="phrasesTranslated">
+Usizo
+Izingubo
+Ukudla
+Moods
+Ikhibhodi
+Imvelo
+
+Ithoyilethi
+Ukugula
+Ungakhululekile
+Kuyashisa
+Kubanda
+Lala
+Angiqondi
+Ephukile
+Emuva
+
+Ngidinga ukuya endlini encane
+Ngiyagula
+Ngizizwa ngingakhululekile
+Kuyashisa kakhulu
+Kubanda kakhulu
+Ngidinga ukuphumula noma ukulala
+angiqondanga
+Okuthile kuphukile
+
+Ibhulukwe
+Shirt
+Blouse
+Isiketi
+Gqoka
+Izicathulo
+Qine kakhulu
+Kuthululeke kakhulu
+
+Ngingathanda ukugqoka amabhulukwe
+Ngingathanda ukugqoka ihembe
+Ngingathanda ukugqoka iblawuzi
+Ngingathanda ukugqoka isiketi
+Ngingathanda ukugqoka
+Ngingathanda ukufaka izicathulo
+Izingubo zami zilingana kakhulu
+Izingubo zami zilingana kakhulu
+
+Ukulamba
+Uneme
+Izithelo
+Usawoti isaladi
+Ukudla okumnandi
+Amanzi
+Isoda
+Udweshu
+
+Ngingathanda ukudla
+Ngingathanda okuthile okuphuzwayo
+Ngingathanda izithelo
+Ngingathanda ukudla okulula okunosawoti
+Ngingathanda ukudla okumnandi
+Ngingathanda amanzi
+Ngingathanda ushukela
+Ngidinga utshani
+
+Uyajabula
+Okudabukisayo
+Intukuthelo
+Udidekile
+Ethukile
+Ngomdlandla
+Bored
+Ukhathazekile
+
+Ngizizwa ngijabule
+Ngizwa lusizi
+Ngithukuthule
+Ngizizwe ngididekile
+Ngizwe nginovalo
+Ngizizwa nginomdlandla
+Ngizizwe nginesithukuthezi
+Ngizizwa ngikhathazekile
+
+Izibani
+I-TV
+Umsakazo
+Umnyango
+I-Wmv
+
+Izibani zivuliwe
+Izibani zivaliwe
+
+I-TV ivuliwe
+I-TV ivaliwe
+Ivolumu phezulu
+IVolumu phansi
+Umsindo uvaliwe
+Isiteshi esilandelayo
+Isiteshi esedlule
+
+Vula / vala
+Dlala
+Ima
+Shintsha imodi
+Ingoma elandelayo
+Ingoma edlule
+Ivolumu phezulu
+IVolumu phansi
+
+Kuvuleke umnyango
+Vala umnyango
+
+Ukushisa phezulu
+Ukushisa phansi
+</p>
+
+<script type="text/javascript">
+    let langOriginal = 'en';
+    let langTranslated = 'zu';
+
+    let phrasesOriginal = $('#phrasesOriginal').text().split('\n').map(p => p.trim()).filter(p => !!p);
+    let phrasesTranslated = $('#phrasesTranslated').text().split('\n').map(p => p.trim()).filter(p => !!p);
+
+    console.log(phrasesOriginal);
+    console.log(phrasesOriginal.length);
+    console.log(phrasesTranslated);
+    console.log(phrasesTranslated.length);
+
+    $.get('default_en.grd').then((result) => {
+        let jsonString = result;
+        jsonString = replaceGlobally(jsonString, langOriginal, langTranslated);
+
+        for (let i = 0; i < phrasesOriginal.length; i++) {
+            jsonString = replaceGlobally(jsonString, phrasesOriginal[i], phrasesTranslated[i]);
+        }
+
+        console.log('Translated result:');
+        console.log(jsonString);
+    });
+
+    function replaceGlobally(text, search, replace) {
+        return text.replace(new RegExp(`"${search}"`, 'g'), `"${replace}"`);
+    }
+</script>
+
+</body>
+</html>
