@@ -1,3 +1,5 @@
+import {i18nService} from "./i18nService";
+
 var _allVoices = null;
 var _voicesLangs = [];
 var _voicesLangMap = {};
@@ -13,7 +15,7 @@ speechService.speak = function (text, lang) {
         _lastSpeakTime = new Date().getTime();
         return;
     }
-    lang = lang || 'en';
+    lang = lang || i18nService.getBrowserLang();
     if (speechService.speechSupported()) {
         _lastSpeakTime = new Date().getTime();
         var msg = new SpeechSynthesisUtterance(text);
