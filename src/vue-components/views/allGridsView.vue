@@ -2,7 +2,7 @@
     <div class="all-grids-view overflow-content box">
         <header class="row header" role="banner">
             <header-icon></header-icon>
-            <button tabindex="32" id="moreButton" title="More" class="small"><i class="fas fa-bars"></i> <span class="hide-mobile" data-i18n>More // Mehr</span></button>
+            <button tabindex="32" id="moreButton" title="More" class="small"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile" data-i18n>More // Mehr</span></button>
             <button tabindex="31" @click="addGrid()" class="spaced hide-mobile small"><i class="fas fa-plus"/> <span data-i18n="">New Grid // Neues Grid</span></button>
             <input tabindex="30" type="text" :placeholder="'PLACEHOLDER_SEARCH_GRID' | translate" class="spaced" style="width: 30vw" v-model="searchText">
             <div style="display: none">
