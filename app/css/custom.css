@@ -45,6 +45,7 @@ header button {
     float: right;
     height: 100%;
     font-size: 1.2em;
+    min-width: 40px;
 }
 
 @media (max-width: 1000px) and (min-width: 850px) {
