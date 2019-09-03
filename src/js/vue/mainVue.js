@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue'
 import {i18nService} from "../service/i18nService";
 import {constants} from "../util/constants";
@@ -7,6 +8,7 @@ import {dataService} from "../service/data/dataService";
 import {databaseService} from "../service/data/databaseService";
 import {localStorageService} from "../service/data/localStorageService";
 import {helpService} from "../service/helpService";
+import {Router} from "../router";
 
 let MainVue = {};
 let app = null;
@@ -48,6 +50,11 @@ MainVue.init = function () {
             },
             openHelp() {
                 helpService.openHelp();
+            },
+            moreNavigation() {
+                $.contextMenu('destroy');
+                setupContextMenu();
+                $('#moreNavigation').contextMenu();
             }
         },
         mounted() {
@@ -126,5 +133,39 @@ MainVue.init = function () {
         }
     });
 };
+
+function setupContextMenu() {
+    let CONTEXT_ADD_ONLINE = 'CONTEXT_ADD_ONLINE';
+    let CONTEXT_ADD_OFFLINE = 'CONTEXT_ADD_OFFLINE';
+    let CONTEXT_ABOUT = 'CONTEXT_ABOUT';
+    let menuItems = {
+        CONTEXT_ADD_ONLINE: {name: "Add online user // Online-User hinzufügen", icon: "fas fa-user-plus"},
+        CONTEXT_ADD_OFFLINE: {name: "Add offline user // Offline-User hinzufügen", icon: "fas fa-user-plus"},
+        CONTEXT_ABOUT: {name: "About AsTeRICS Grid // Über AsTeRICS Grid", icon: "fas fa-info-circle"},
+    };
+    $.contextMenu({
+        selector: '#moreNavigation',
+        callback: function (key, options) {
+            handleContextMenu(key);
+        },
+        items: menuItems,
+        trigger: 'left'
+    });
+    i18nService.initDomI18n();
+
+    function handleContextMenu(key) {
+        switch (key) {
+            case CONTEXT_ADD_ONLINE:
+                Router.toRegister();
+                break;
+            case CONTEXT_ADD_OFFLINE:
+                Router.toAddOffline();
+                break;
+            case CONTEXT_ABOUT:
+                Router.toAbout();
+                break;
+        }
+    }
+}
 
 export {MainVue}
