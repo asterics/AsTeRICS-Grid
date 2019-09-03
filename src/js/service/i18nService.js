@@ -1,15 +1,20 @@
+import $ from 'jquery';
 import {localStorageService} from "./data/localStorageService";
 
 let i18nService = {};
 
 let CUSTOM_LANGUAGE_KEY = 'CUSTOM_LANGUAGE_KEY';
 let customLanguage = localStorageService.get(CUSTOM_LANGUAGE_KEY);
+let TRANSLATION_FILE_PATH = 'app/examples/translations/';
+let TRANSLATION_FILE_SUFFIX = '.txt';
+let TRANSLATION_FILE_ORIGINAL = getTranslationFilePath('original');
 
 i18nService.initDomI18n = function () {
     let i18n = window.domI18n({
         selector: '[data-i18n]',
         separator: ' // ',
-        languages: ['en', 'de']
+        languages: ['en', 'de'],
+        enableLog: false
     });
     if (customLanguage) {
         i18n.changeLanguage(customLanguage)
@@ -32,6 +37,77 @@ i18nService.translate = function (key) {
     }
     return translated;
 };
+
+/**
+ * Translates given grids using translation .txt files located in app/examples/translations.
+ * The language to translate to is defined by the current browser language.
+ *
+ * @param grids the grids to translate
+ * @return {Promise<unknown>} a promise resolving the translated grids or the original grids, if nothing was translated
+ */
+i18nService.translateGrids = function (grids) {
+    return new Promise(resolve => {
+        if (!grids || !grids.length || grids.length <= 0 || getCurrentLang(grids) === i18nService.getBrowserLang()) {
+            return resolve(grids);
+        }
+        let originals = null;
+        let translated = null;
+        let lang = i18nService.getBrowserLang();
+        let promiseOriginals = $.get(TRANSLATION_FILE_ORIGINAL);
+        let promiseTranslated = $.get(getTranslationFilePath(lang));
+        promiseOriginals.then(data => {
+            originals = data || '';
+        });
+        promiseTranslated.then(data => {
+            translated = data || '';
+        });
+        Promise.all([promiseOriginals, promiseTranslated]).then(() => {
+            let phrasesOriginal = originals.split('\n').map(p => p.trim()).filter(p => !!p);
+            let phrasesTranslated = translated.split('\n').map(p => p.trim()).filter(p => !!p);
+            if (phrasesOriginal.length !== phrasesTranslated.length) {
+                return resolve(grids);
+            }
+            grids.forEach(grid => {
+                if (grid.gridElements) {
+                    grid.gridElements.forEach(element => {
+                        let index = phrasesOriginal.indexOf(element.label);
+                        element.label = index > -1 ? phrasesTranslated[index] : element.label;
+                        if (element.actions) {
+                            element.actions.forEach(action => {
+                                if (action.speakLanguage) {
+                                    action.speakLanguage = lang;
+                                }
+                                if (action.speakText) {
+                                    let index = phrasesOriginal.indexOf(action.speakText);
+                                    action.speakText = index > -1 ? phrasesTranslated[index] : action.speakText;
+                                }
+                            })
+                        }
+                    });
+                }
+            });
+            log.info('translated gridset to: ' + lang);
+            resolve(grids);
+        }).catch(() => {
+            resolve(grids);
+        });
+    });
+};
+
+function getTranslationFilePath(filename) {
+    return TRANSLATION_FILE_PATH + filename + TRANSLATION_FILE_SUFFIX;
+}
+
+/**
+ * returns the (assumed) used language of a gridset by retrieving the first "speakLanguage" property
+ * @param grids
+ * @return the current language of the gridset (assumed) or null if not determined
+ */
+function getCurrentLang(grids) {
+    let jsonString = JSON.stringify(grids);
+    let matches = jsonString.match(/\"speakLanguage\":\"(.{2})\"/);
+    return matches ? matches[1] : null;
+}
 
 window.setLanguage = function (lang) {
     customLanguage = lang;
