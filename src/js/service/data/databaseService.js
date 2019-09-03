@@ -14,7 +14,7 @@ import {Dictionary} from "../../model/Dictionary";
 let databaseService = {};
 
 let _initPromise = null;
-let _defaultGridSetPath = i18nService.isBrowserLangDE() ? 'app/examples/default_de.grd' : 'app/examples/default_en.grd';
+let _defaultGridSetPath = 'app/examples/default.grd';
 if (urlParamService.getDefaultGridsetName()) {
     _defaultGridSetPath = 'app/examples/' + urlParamService.getDefaultGridsetName();
 }
@@ -229,12 +229,16 @@ function initInternal(hashedUserPassword) {
             return $.get(_defaultGridSetPath);
         }
     }).then(data => {
-        if (!data || skipCheckGenerateDefaultGrid) {
+        if (!data) {
+            return Promise.resolve();
+        }
+        return i18nService.translateGrids(JSON.parse(data));
+    }).then(gridsData => {
+        if (!gridsData || skipCheckGenerateDefaultGrid) {
             return Promise.resolve();
         }
         log.info('importing default grid set ' + _defaultGridSetPath);
         let promises = [];
-        let gridsData = JSON.parse(data);
         gridsData = GridData.regenerateIDs(gridsData);
         if (!metadata.lastOpenedGridId && gridsData[0] && gridsData[0].id) {
             metadata.lastOpenedGridId = gridsData[0].id;
