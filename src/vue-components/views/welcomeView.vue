@@ -116,7 +116,7 @@
         margin-right: 1em;
     }
     .fa-info-circle {
-        color: blue;
+        color: #266697;
         margin-right: 0.5em;
     }
     button {
