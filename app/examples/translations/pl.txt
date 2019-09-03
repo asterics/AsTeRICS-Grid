@@ -1,0 +1,111 @@
+Wsparcie
+Odzież
+jedzenie
+Nastroje
+Klawiatura
+Środowisko
+
+Toaleta
+Chory
+Niewygodny
+Gorąco
+Zimno
+Sen
+Nie rozumieć
+Złamany
+Z powrotem
+
+Muszę iść do toalety
+czuję się chory
+czuję się niekomfortowo
+Jest zbyt gorąco
+Jest za zimno
+Muszę odpocząć lub spać
+nie zrozumiałem
+Coś jest zepsute
+
+Spodnie
+Koszula
+Bluza
+Spódnica
+Sukienka
+Buty
+Za ciasno
+Zbyt luźny
+
+Chciałbym nosić spodnie
+Chciałbym nosić koszulkę
+Chciałbym nosić bluzkę
+Chciałbym nosić spódnicę
+Chciałbym nosić sukienkę
+Chciałbym założyć buty
+Moje ubrania są ciasno dopasowane
+Moje ubrania pasują zbyt luźno
+
+Głodny
+Spragniony
+Owoc
+Słona przekąska
+Słodka przekąska
+woda
+Soda
+Słoma
+
+chciałbym coś do jedzenia
+Chciałbym coś do picia
+Chciałbym trochę owoców
+Chciałbym słoną przekąskę
+Chciałbym słodką przekąskę
+Chciałbym trochę wody
+Chciałbym trochę sody
+Potrzebuję słomy
+
+Szczęśliwy
+Smutny
+Zły
+zmieszany
+Przestraszony
+Entuzjastyczny
+Znudzony
+Zmartwiony
+
+Czuje się szczęśliwy
+czuję się smutny
+jestem zły
+Czuje się zagubiony
+Boję się
+Czuję entuzjazm
+jestem znudzony
+martwię się
+
+Światła
+telewizja
+Radio
+Drzwi
+Podgrzewacz
+
+Włączone światła
+Zgaszone światła
+
+TV włączony
+Wyłącz telewizor
+Zwiększ głośność
+Ściszanie
+Wyłączyć dzwięk
+Następny kanał
+Poprzedni kanał
+
+Włącz / wyłącz
+Grać
+Zatrzymać
+Zmień tryb
+Następna piosenka
+Poprzednia piosenka
+Zwiększ głośność
+Ściszanie
+
+Otwarte drzwi
+Zamknij drzwi
+
+Wzrost temperatury
+Niższa temperatura

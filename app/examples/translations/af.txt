@@ -1,0 +1,111 @@
+help
+klere
+Kos
+buie
+sleutelbord
+omgewing
+
+Toilet
+siek
+ongemaklik
+warm
+koue
+slaap
+Nie verstaan ​​nie
+gebreek
+terug
+
+Ek moet toilet toe gaan
+Ek voel siek
+Ek voel ongemaklik
+Dit is te warm
+Dit is te koud
+Ek moet rus of slaap
+ek het nie verstaan ​​nie
+Iets is stukkend
+
+broek
+hemp
+Bloes
+romp
+Aantrek
+Skoene
+Te styf
+Te los
+
+Ek wil graag 'n broek dra
+Ek wil graag 'n T-hemp dra
+Ek wil graag 'n bloes dra
+Ek wil graag 'n romp dra
+Ek wil graag 'n rok dra
+Ek wil graag skoene aantrek
+My klere pas te styf
+My klere pas te los
+
+Honger
+dors
+vrugte
+Sout snack
+Soet happie
+water
+Gaskoeldrank
+strooi
+
+Ek wil graag iets eet
+Ek wil graag iets drink
+Ek wil graag vrugte hê
+Ek wil graag 'n soute snack hê
+Ek wil graag 'n soet happie hê
+Ek wil graag water hê
+Ek wil graag koeldrank hê
+Ek het 'n strooi nodig
+
+gelukkig
+hartseer
+kwaad
+Verward
+bang
+entoesiastiese
+Verveeld
+bekommerd
+
+Ek voel gelukkig
+Ek voel hartseer
+Ek is kwaad
+Ek voel verward
+Ek voel bang
+Ek voel entoesiasties
+ek voel verveeld
+Ek voel bekommerd
+
+ligte
+TV
+radio
+deur
+verwarmer
+
+Ligte aan
+Ligte af
+
+TV aan
+TV af
+Volume op
+Deel af
+Klink af
+Volgende kanaal
+Vorige kanaal
+
+Skakel aan / af
+speel
+stop
+Verander modus
+Volgende liedjie
+Vorige liedjie
+Volume op
+Deel af
+
+Oop deur
+Maak deur toe
+
+Temperatuur styg
+Temperatuur af

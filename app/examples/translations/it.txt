@@ -1,0 +1,111 @@
+Aiuto
+Capi di abbigliamento
+Cibo
+Stati d'animo
+Tastiera
+Ambiente
+
+Gabinetto
+malato
+Scomodo
+Caldo
+Freddo
+Dormire
+Non capire
+Rotto
+Indietro
+
+ho bisogno di andare in bagno
+Mi sento male
+mi sento a disagio
+È troppo caldo
+Fa troppo freddo
+Devo riposarmi o dormire
+non ho capito
+Qualcosa è rotto
+
+Pantaloni
+Camicia
+Camicetta
+Gonna
+Vestito
+Scarpe
+Troppo stretto
+Troppo largo
+
+Vorrei indossare i pantaloni
+Vorrei indossare una maglietta
+Vorrei indossare una camicetta
+Vorrei indossare una gonna
+Vorrei indossare un vestito
+Vorrei mettere le scarpe
+I miei vestiti sono troppo stretti
+I miei vestiti sono troppo larghi
+
+Affamato
+assetato
+Frutta
+Merenda salata
+Spuntino dolce
+acqua
+Soda
+Cannuccia
+
+Vorrei qualcosa da mangiare
+Vorrei qualcosa da bere
+Vorrei un po 'di frutta
+Vorrei uno spuntino salato
+Vorrei uno spuntino dolce
+Vorrei dell'acqua
+Vorrei un po 'di soda
+Ho bisogno di una cannuccia
+
+Contento
+Triste
+Arrabbiato
+Confuso
+impaurito
+Entusiasta
+Annoiato
+Preoccupato
+
+mi sento felice
+mi sento triste
+sono arrabbiato
+mi sento confuso
+Ho paura
+Mi sento entusiasta
+Mi sento annoiato
+Mi sento preoccupato
+
+Luci
+tv
+Radio
+Porta
+Riscaldatore
+
+Luci accese
+Luci spente
+
+TV accesa
+TV spenta
+Aumenta il volume
+Volume basso
+Audio Disattivato
+Canale successivo
+Canale precedente
+
+Accendi / spegni
+Giocare
+Fermare
+Cambia modalità
+Prossima canzone
+Canzone precedente
+Aumenta il volume
+Volume basso
+
+Porta aperta
+Chiudi la porta
+
+Temperatura in aumento
+Abbassa la temperatura

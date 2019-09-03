@@ -1,0 +1,111 @@
+Helpen
+Kleding
+Voedsel
+Moods
+Toetsenbord
+Milieu
+
+Toilet
+Ziek
+Ongemakkelijk
+heet
+Koude
+Slaap
+Begrijp niet
+Broken
+Terug
+
+ik moet naar het toilet
+ik voel me ziek
+ik voel me ongemakkelijk
+Het is te warm
+Het is te koud
+Ik moet wat rusten of slapen
+Ik begreep het niet
+iets is kapot
+
+Broek
+overhemd
+Blouse
+Rok
+Jurk
+Schoenen
+Te strak
+Te los
+
+Ik zou graag een broek willen dragen
+Ik wil graag een T-shirt dragen
+Ik zou graag een blouse willen dragen
+Ik zou graag een rok willen dragen
+Ik wil graag een jurk dragen
+Ik wil graag schoenen aantrekken
+Mijn kleding zit te strak
+Mijn kleding past te los
+
+Hongerig
+Dorstig
+Fruit
+Zoute snack
+Zoete snack
+Water
+Soda
+Rietje
+
+Ik zou iets willen eten
+Ik wil graag wat drinken
+Ik wil graag wat fruit
+Ik wil graag een hartige snack
+Ik wil graag een zoete snack
+ik zou graag wat water willen
+Ik wil graag wat frisdrank
+Ik heb een rietje nodig
+
+Gelukkig
+verdrietig
+Boos
+Verward
+Bang
+Enthousiast
+bored
+Bezorgd
+
+Ik voel me gelukkig
+ik voel me verdrietig
+ik ben boos
+ik ben verward
+ik ben bang
+Ik voel me enthousiast
+ik verveel me
+ik ben bezorgd
+
+Lichten
+TV
+Radio
+Deur
+verwarmer
+
+Lichten aan
+Lichten uit
+
+Tv aan
+TV uit
+Volume omhoog
+Volume verminderen
+Geluid uit
+Volgende kanaal
+Vorige kanaal
+
+Zet aan / uit
+Spelen
+Hou op
+Wijzig modus
+Volgende liedje
+Vorige nummer
+Volume omhoog
+Volume verminderen
+
+Geopende deur
+Doe de deur dicht
+
+Temperatuur op
+Temperatuur omlaag

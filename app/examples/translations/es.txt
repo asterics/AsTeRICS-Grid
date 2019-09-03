@@ -1,0 +1,111 @@
+Ayuda
+Ropa
+Comida
+Estados de ánimo
+Teclado
+Ambiente
+
+Baño
+Enfermos
+Incómodo
+Caliente
+Frío
+Dormir
+No entiendo
+Roto
+atrás
+
+necesito ir al baño
+Me estoy sintiendo mal
+me siento incomodo
+Es demasiado caliente
+Esta muy frío
+Necesito descansar o dormir
+No entendía
+algo está roto
+
+Pantalones
+Camisa
+Blusa
+Falda
+Vestir
+Zapatos
+Demasiado apretado
+Demasiado flojo
+
+Me gustaria usar pantalones
+Me gustaría llevar una camiseta
+Me gustaria usar una blusa
+Me gustaria usar una falda
+Me gustaria usar un vestido
+Me gustaría ponerme los zapatos
+Mi ropa me queda muy apretada
+Mi ropa me queda muy floja
+
+Hambriento
+Sediento
+Fruta
+Merienda salada
+Merienda dulce
+Agua
+soda
+Paja
+
+Quisiera algo de comer
+Me gustaría beber algo
+Me gustaria algo de fruta
+Me gustaría un bocadillo salado
+Me gustaría un bocadillo dulce
+Desearía un poco de agua
+Me gustaría un refresco
+Necesito una pajita
+
+Feliz
+Triste
+Enojado
+Confuso
+Temeroso
+Entusiasta
+aburrido
+Preocupado
+
+me siento feliz
+me siento triste
+Estoy enojado
+me siento confundido
+tengo miedo
+Me siento entusiasta
+me siento aburrido
+Me siento preocupado
+
+Luces
+televisión
+Radio
+Puerta
+Calentador
+
+Luces encendidas
+Luces apagadas
+
+TV encendida
+TV apagada
+Sube el volumen
+Bajar volumen
+Sonido apagado
+Canal siguiente
+Canal anterior
+
+Encender / apagar
+Jugar
+Detener
+Modo de cambio
+Siguiente cancion
+Cancion anterior
+Sube el volumen
+Bajar volumen
+
+Puerta abierta
+Puerta cerrada
+
+Temperatura hasta
+Temperatura baja

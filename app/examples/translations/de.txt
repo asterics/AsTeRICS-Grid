@@ -1,0 +1,111 @@
+Hilfe
+Kleidung
+Essen
+Gefühle
+Tastatur
+Umgebung
+
+Toilette
+Krank
+Unwohl
+Heiß
+Kalt
+Schlafen
+Nicht verstanden
+kaputt
+Zurück
+
+Ich muss auf die Toilette
+ich fühle mich krank
+ich fühle mich unwohl
+Es ist zu heiß
+Es ist zu kalt
+Ich muss mich ausruhen oder schlafen
+Ich habe nicht verstanden
+etwas ist kaputt
+
+Hose
+Hemd
+Bluse
+Rock
+Kleid
+Schuhe
+Zu eng
+Zu weit
+
+Ich würde gerne eine Hose tragen
+Ich möchte ein T-Shirt tragen
+Ich würde gerne eine Bluse tragen
+Ich möchte einen Rock tragen
+Ich möchte ein Kleid tragen
+Ich möchte schuhe anziehen
+Meine Kleidung ist zu eng
+Meine Kleidung ist zu weit
+
+Hungrig
+Durstig
+Obst
+Salziger Snack
+Süßer Snack
+Wasser
+Limonade
+Strohhalm
+
+Ich möchte etwas essen
+ich möchte etwas zu trinken
+Ich hätte gerne etwas Obst
+Ich hätte gerne einen salzigen Snack
+Ich hätte gerne einen süßen Snack
+Ich möchte etwas Wasser
+Ich hätte gerne eine Limonade
+Ich brauche einen Strohhalm
+
+Fröhlich
+Traurig
+Wütend
+Verwirrt
+Angst
+Begeistert
+Gelangweilt
+Besorgt
+
+Ich bin fröhlich
+ich bin traurig
+ich bin wütend
+ich bin verwirrt
+Ich habe Angst
+Ich bin begeistert
+Ich bin gelangweilt
+Ich bin besorgt
+
+Licht
+Fernseher
+Radio
+Tür
+Heizung
+
+Licht an
+Licht aus
+
+Fernseher an
+Fernseher aus
+Lauter
+Leiser
+Ton aus
+Nächster Kanal
+Vorheriger Kanal
+
+An / Ausschalten
+Play
+Pause
+Modus wechseln
+Nächstes Lied
+Vorheriges Lied
+Lauter
+Leiser
+
+Tür öffnen
+Tür schließen
+
+Temperatur höher
+Temperatur niedriger

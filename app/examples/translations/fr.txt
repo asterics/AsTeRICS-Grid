@@ -1,0 +1,111 @@
+Aidez-moi
+Vêtements
+Aliments
+Humeurs
+Clavier
+Environnement
+
+Toilette
+Malade
+Inconfortable
+Chaud
+Du froid
+Sommeil
+Ne pas comprendre
+Cassé
+Retour
+
+J'ai besoin d'aller aux toilettes
+Je me sens malade
+Je me sens mal à l'aise
+Il fait trop chaud
+Il fait trop froid
+J'ai besoin de me reposer ou de dormir
+Je n'ai pas compris
+Quelque chose est cassé
+
+Un pantalon
+Chemise
+Chemisier
+Jupe
+Robe
+Des chaussures
+Trop serré
+Trop lâche
+
+Je voudrais porter des pantalons
+Je voudrais porter un t-shirt
+Je voudrais porter un chemisier
+Je voudrais porter une jupe
+Je voudrais porter une robe
+Je voudrais mettre des chaussures
+Mes vêtements sont trop serrés
+Mes vêtements sont trop amples
+
+Faim
+Assoiffé
+Fruit
+Collation salée
+Collation sucrée
+L'eau
+Un soda
+Paille
+
+Je voudrais quelque chose à manger
+Je voudrais boire quelque chose
+Je voudrais des fruits
+Je voudrais un snack salé
+Je voudrais un casse-croûte
+je voudrais de l'eau
+Je voudrais un soda
+J'ai besoin d'une paille
+
+Heureux
+Triste
+Fâché
+Confus
+Peur
+Enthousiaste
+Ennuyé
+Préoccupé
+
+je suis heureux
+je me sens triste
+Je suis faché
+je suis confus
+Je suis effrayé
+Je me sens enthousiaste
+je m'ennuie
+je me sens inquiet
+
+Lumières
+la télé
+Radio
+Porte
+Chauffe-eau
+
+Lumières allumées
+Lumières éteintes
+
+TV sur
+TV éteinte
+Monter le son
+Baisser le volume
+Sonner
+Canal suivant
+Canal précédent
+
+Allume / éteint
+Jouer
+Arrêtez
+Changer de mode
+Prochaine chanson
+Chanson précédente
+Monter le son
+Baisser le volume
+
+Porte ouverte
+Ferme la porte
+
+Température jusqu'à
+Température baissée
