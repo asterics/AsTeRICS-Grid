@@ -353,6 +353,9 @@ there.
     header button i {
         margin: 0 1vw;
     }
+    nav ul {
+        margin-bottom: 1.7rem;
+    }
 }
 
 /* Smaller than tablet */
