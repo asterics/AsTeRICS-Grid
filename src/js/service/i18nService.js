@@ -8,17 +8,19 @@ let customLanguage = localStorageService.get(CUSTOM_LANGUAGE_KEY);
 let TRANSLATION_FILE_PATH = 'app/examples/translations/';
 let TRANSLATION_FILE_SUFFIX = '.txt';
 let TRANSLATION_FILE_ORIGINAL = getTranslationFilePath('original');
+let i18nInstance = null;
 
 i18nService.initDomI18n = function () {
-    let i18n = window.domI18n({
-        selector: '[data-i18n]',
-        separator: ' // ',
-        languages: ['en', 'de'],
-        enableLog: false
-    });
-    if (customLanguage) {
-        i18n.changeLanguage(customLanguage)
+    if (!i18nInstance) {
+        i18nInstance = window.domI18n({
+            selector: '[data-i18n]',
+            separator: ' // ',
+            languages: ['en', 'de'],
+            enableLog: false
+        });
     }
+    i18nInstance.changeLanguage(i18nService.getBrowserLang());
+
 };
 
 i18nService.getBrowserLang = function () {
@@ -94,6 +96,25 @@ i18nService.translateGrids = function (grids) {
     });
 };
 
+/**
+ * sets the language code to use (ISO 639-1)
+ * @param lang two-letter language code to use
+ */
+i18nService.setLanguage = function (lang) {
+    customLanguage = lang;
+    if (i18nInstance) {
+        i18nInstance.changeLanguage(lang);
+    }
+    localStorageService.save(CUSTOM_LANGUAGE_KEY, customLanguage);
+};
+
+/**
+ * retrieves the language code previously set with setLanguage().
+ */
+i18nService.getCustomLanguage = function () {
+    return customLanguage;
+};
+
 function getTranslationFilePath(filename) {
     return TRANSLATION_FILE_PATH + filename + TRANSLATION_FILE_SUFFIX;
 }
@@ -108,11 +129,6 @@ function getCurrentLang(grids) {
     let matches = jsonString.match(/\"speakLanguage\":\"(.{2})\"/);
     return matches ? matches[1] : null;
 }
-
-window.setLanguage = function (lang) {
-    customLanguage = lang;
-    localStorageService.save(CUSTOM_LANGUAGE_KEY, customLanguage);
-};
 
 i18nService.translations = {};
 i18nService.translations['en'] = {
