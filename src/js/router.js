@@ -14,6 +14,7 @@ import AddOfflineView from '../vue-components/views/addOfflineView.vue'
 import WelcomeView from '../vue-components/views/welcomeView.vue'
 import AboutView from '../vue-components/views/aboutView.vue'
 import DictionariesView from '../vue-components/views/dictionariesView.vue'
+import SettingsView from '../vue-components/views/settingsView.vue'
 import {databaseService} from "./service/data/databaseService";
 import {localStorageService} from "./service/data/localStorageService";
 import {MainVue} from "./vue/mainVue";
@@ -90,6 +91,10 @@ Router.init = function (injectIdParam, initialHash) {
                 helpService.setHelpLocation('02_navigation', '#manage-dictionaries-view');
                 loadVueView(DictionariesView);
             },
+            'settings': function () {
+                //TODO add correct help location
+                loadVueView(SettingsView);
+            },
             '*': function () {
                 helpService.setHelpLocation('02_navigation', '#main-view');
                 Router.toMain();
@@ -143,6 +148,14 @@ Router.toUpdating = function () {
 
 Router.toRegister = function () {
     setHash('#register');
+};
+
+Router.toAddOffline = function () {
+    setHash('#add');
+};
+
+Router.toAbout = function () {
+    setHash('#about');
 };
 
 Router.toLogin = function () {
