@@ -56,7 +56,7 @@ function getGridElementCollect(gridElem) {
 
     var template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${gridElem.label}" data-type="${gridElem.type}">
-    <div class="grid-item-content" id="${gridElem.id}" data-id="${gridElem.id}">
+    <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}">
         <div class="text-container" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; padding: 1% 1% 1% 1%; text-align: left;">
             <div style="vertical-align: middle; background-color: white; padding-left: 0.3em; width: 99%; height: 100%">
                 <span></span>
@@ -73,7 +73,7 @@ function getGridElementPredict(gridElem) {
 
     let template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${gridElem.label}" data-type="${gridElem.type}">
-    <div class="grid-item-content" id="${gridElem.id}" data-id="${gridElem.id}" style="background-color: rgb(255,228,178)">
+    <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}" style="background-color: rgb(255,228,178)">
         <div class="text-container" style="${txtContainerStyle}"><span style="display: table-cell; vertical-align: middle;">${gridElem.label}</span></div>
     </div>
 </li>`;
