@@ -14,16 +14,19 @@ let swipeUpHandlers = [];
 let swipeDownHandlers = [];
 let swipeLeftHandles = [];
 let swipeRightHandles = [];
+let escapeHandlers = [];
 let _touchElement = document;
 
 inputEventHandler.startListening = function () {
     document.addEventListener('mousemove', mouseMoveListener);
+    document.addEventListener('keydown', keyboardListener);
     _touchElement.addEventListener('touchmove', touchMoveListener);
     _touchElement.addEventListener('touchend', touchEndListener);
 };
 
 inputEventHandler.stopListening = function () {
     document.removeEventListener('mousemove', mouseMoveListener);
+    document.removeEventListener('keydown', keyboardListener);
     _touchElement.removeEventListener('touchmove', touchMoveListener);
     _touchElement.removeEventListener('touchend', touchEndListener);
 };
@@ -46,6 +49,10 @@ inputEventHandler.onSwipedRight = function (fn) {
 
 inputEventHandler.onSwipedLeft = function (fn) {
     return registerHandler(fn, swipeLeftHandles);
+};
+
+inputEventHandler.onEscape = function (fn) {
+    return registerHandler(fn, escapeHandlers);
 };
 
 function mouseMoveListener(event) {
@@ -74,6 +81,13 @@ function touchMoveListener(event) {
         log.debug('swipe left.');
         _touchMoveBeginPosX = null;
         callHandlers(swipeLeftHandles);
+    }
+}
+
+function keyboardListener(event) {
+    let key = event.which || event.keyCode;
+    if (key === 27) { //ESC
+        callHandlers(escapeHandlers);
     }
 }
 
