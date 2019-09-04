@@ -10,9 +10,9 @@
                         <span data-i18n="">two-figure language code // zweistelliges Sprachkürzel</span>
                         <a href="https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes" target="_blank" data-i18n="">(ISO 639-1 list) // (ISO 639-1 Liste)</a>
                     </label>
-                    <input id="inLanguageCode" class="four columns" v-model="langCode" type="text" maxlength="2" placeholder="empty = automatic"/>
+                    <input id="inLanguageCode" class="four columns" v-model="langCode" type="text" maxlength="2" placeholder="empty = automatic" @input="saveSuccess = null"/>
                     <button id="saveLangCode" class="two columns" @click="saveLangCode('saveLangCode')">
-                        <span data-i18n="">Save // Speichern</span> <i v-if="saveSuccess === 'saveLangCode'" class="fas fa-check"></i>
+                        <span v-show="saveSuccess !== 'saveLangCode'" data-i18n="">Save // Speichern</span><span v-show="saveSuccess === 'saveLangCode'" data-i18n="">Saved // Gespeichert</span> <i v-show="saveSuccess === 'saveLangCode'" class="fas fa-check"></i>
                     </button>
                 </div>
                 <div class="row" style="margin-bottom: 0.5em">
@@ -57,14 +57,7 @@
             saveLangCode(id) {
                 i18nService.setLanguage(this.langCode);
                 i18nService.initDomI18n();
-                this.setSaveSuccess(id);
-            },
-            setSaveSuccess(id) {
-                let thiz = this;
-                thiz.saveSuccess = id;
-                setTimeout(() => {
-                    thiz.saveSuccess = null;
-                }, 5000);
+                this.saveSuccess = id;
             }
         },
         mounted() {
