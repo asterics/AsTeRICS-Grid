@@ -110,7 +110,8 @@ MainVue.init = function () {
                 .onSwipedLeft(thiz.closeSidebar)
                 .onSwipedDown(openSidebarIfFullscreen)
                 .onSwipedRight(openSidebarIfFullscreen)
-                .onMouseUpperOrLeftBorder(openSidebarIfFullscreen);
+                .onMouseUpperOrLeftBorder(openSidebarIfFullscreen)
+                .onEscape(openSidebarIfFullscreen);
             inputEventHandler.startListening();
             thiz.openSidebar();
 
