@@ -56,6 +56,7 @@ dataService.getGrids = function (onlyShortVersion) {
  * @return {Promise} resolves after operation finished successful
  */
 dataService.saveGrid = function (gridData) {
+    gridData.gridElements = GridData.sortGridElements(gridData.gridElements);
     return databaseService.saveObject(GridData, gridData);
 };
 
@@ -69,6 +70,7 @@ dataService.saveGrid = function (gridData) {
  */
 dataService.updateGrid = function (gridId, newConfig) {
     newConfig.id = gridId;
+    newConfig.gridElements = GridData.sortGridElements(newConfig.gridElements);
     return databaseService.saveObject(GridData, newConfig, true);
 };
 

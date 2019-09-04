@@ -205,6 +205,21 @@ class GridData extends Model({
         return returnList;
     }
 
+    /**
+     * sorts a given set of grid elements
+     * @param elements
+     * @return {*}
+     */
+    static sortGridElements(elements) {
+        if (!elements) {
+            return elements;
+        }
+        return elements.sort((a, b) => {
+            if (a.y !== b.y) return a.y - b.y;
+            return a.x - b.x;
+        });
+    }
+
     static getModelName() {
         return "GridData";
     }

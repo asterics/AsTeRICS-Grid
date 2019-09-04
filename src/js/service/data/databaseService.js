@@ -244,6 +244,7 @@ function initInternal(hashedUserPassword) {
             metadata.lastOpenedGridId = gridsData[0].id;
         }
         gridsData.forEach(gridData => {
+            gridData.gridElements = GridData.sortGridElements(gridData.gridElements);
             promises.push(applyFiltersAndSave(GridData.getModelName(), gridData));
         });
         log.debug('imported default grid set!');
