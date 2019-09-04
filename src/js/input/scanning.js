@@ -363,7 +363,8 @@ function Scanner(itemSelector, scanActiveClass, options) {
     thiz.addSelectKeyCode = function (keyCode) {
         if (keyCode) {
             var fn = function (event) {
-                if (event.keyCode == keyCode && _isScanning) {
+                let currentKey = event.which || event.keyCode;
+                if (currentKey === keyCode && _isScanning) {
                     event.preventDefault();
                     thiz.select();
                 }
