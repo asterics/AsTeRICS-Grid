@@ -24,6 +24,16 @@ do_gh_pages_update () {
    git checkout $branch
 }
 
+doStash=true
+if git diff-index --quiet HEAD --; then
+    doStash=false
+fi
+if $doStash; then
+    # Changes
+    echo "detected local changes, doing git stash..."
+    git stash
+fi
+
 branch=$(git symbolic-ref --short HEAD)
 tagname="release-beta-$(date +%Y-%m-%d-%H.%M/%z)"
 tagnameSed="release-beta-$(date +%Y-%m-%d-%H.%M\\/%z)"
@@ -44,15 +54,9 @@ git checkout src/js/util/constants.js
 echo "creating tag '$tagname'..."
 git tag -a $tagname -m $tagname
 git push origin $tagname
-if git diff-index --quiet HEAD --; then
-    # No changes
-    echo "no local changes, no stash..."
-    do_gh_pages_update
-else
-    # Changes
-    echo "detected local changes, doing git stash..."
-    git stash
-    do_gh_pages_update
+do_gh_pages_update
+if $doStash; then
+    echo "pop stashed changes..."
     git stash pop
 fi
 echo "beta-release $tagname successfully released!"
