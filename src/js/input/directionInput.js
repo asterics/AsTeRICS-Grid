@@ -9,7 +9,7 @@ import $ from 'jquery';
  * @param options
  * @constructor
  */
-function ButtonInput(paramItemSelector, paramScanActiveClass, options) {
+function DirectionInput(paramItemSelector, paramScanActiveClass, options) {
     let thiz = this;
 
     //options
@@ -198,4 +198,4 @@ function ButtonInput(paramItemSelector, paramScanActiveClass, options) {
     init();
 }
 
-export {ButtonInput};
+export {DirectionInput};
