@@ -3,7 +3,7 @@ import Vue from 'vue'
 import {i18nService} from "../service/i18nService";
 import {constants} from "../util/constants";
 import {util} from "../util/util";
-import {inputEventHandler} from "../util/inputEventHandler";
+import {inputEventHandler} from "../input/inputEventHandler";
 import {dataService} from "../service/data/dataService";
 import {databaseService} from "../service/data/databaseService";
 import {localStorageService} from "../service/data/localStorageService";
@@ -105,14 +105,14 @@ MainVue.init = function () {
                     $(document).trigger(constants.EVENT_GRID_RESIZE);
                 }, 300, constants.EVENT_GRID_RESIZE);
             });
-            inputEventHandler
+            inputEventHandler.global
                 .onSwipedRight(thiz.openSidebar)
                 .onSwipedLeft(thiz.closeSidebar)
                 .onSwipedDown(openSidebarIfFullscreen)
                 .onSwipedRight(openSidebarIfFullscreen)
                 .onMouseUpperOrLeftBorder(openSidebarIfFullscreen)
                 .onEscape(openSidebarIfFullscreen);
-            inputEventHandler.startListening();
+            inputEventHandler.global.startListening();
             thiz.openSidebar();
 
             function openSidebarIfFullscreen() {
