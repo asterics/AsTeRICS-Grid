@@ -21,8 +21,13 @@ inputEventHandler.instance = function () {
     let swipeRightHandles = [];
     let keyHandlers = {}; //keycode => [{handler, lastKeydown, lastAction, counter, inputEventKey}]
     let _touchElement = document;
+    let _listening = false;
 
     thiz.startListening = function () {
+        if (_listening) {
+            return;
+        }
+        _listening = true;
         document.addEventListener('mousemove', mouseMoveListener);
         document.addEventListener('keydown', keyboardListener);
         document.addEventListener('keyup', keyUpListener);
@@ -31,6 +36,7 @@ inputEventHandler.instance = function () {
     };
 
     thiz.stopListening = function () {
+        _listening = false;
         document.removeEventListener('mousemove', mouseMoveListener);
         document.removeEventListener('keydown', keyboardListener);
         document.removeEventListener('keyup', keyUpListener);
