@@ -1,10 +1,12 @@
 import {util} from "../util/util";
+import {InputEventKey} from "../model/InputEventKey";
+import {InputEventARE} from "../model/InputEventARE";
 
 let inputEventHandler = {};
 
 inputEventHandler.instance = function () {
     let thiz = this;
-    
+
     // options
     let touchMoveLength = 100;
     let mouseBorderThreshold = 5;
@@ -17,7 +19,7 @@ inputEventHandler.instance = function () {
     let swipeDownHandlers = [];
     let swipeLeftHandles = [];
     let swipeRightHandles = [];
-    let escapeHandlers = [];
+    let keyHandlers = {}; //keycode => handlers array
     let _touchElement = document;
 
     thiz.startListening = function () {
@@ -55,8 +57,28 @@ inputEventHandler.instance = function () {
     };
 
     thiz.onEscape = function (fn) {
-        return registerHandler(fn, escapeHandlers);
+        return registerKey(27, fn); //ESC
     };
+
+    thiz.onInputEvent = function (inputEvent, fn) {
+        switch (inputEvent.modelName) {
+            case InputEventKey.getModelName():
+                return registerKey(inputEvent.keyCode, fn);
+            case InputEventARE.getModelName():
+                //TODO
+                break;
+        }
+    };
+
+    function registerKey(keyCode, fn) {
+        if (!keyCode || !fn) {
+            return;
+        }
+        let key = keyCode + "";
+        let array = keyHandlers[key] ? keyHandlers[key] : [];
+        keyHandlers[key] = array;
+        return registerHandler(fn, array);
+    }
 
     function mouseMoveListener(event) {
         if (event.clientY < mouseBorderThreshold || event.clientX < mouseBorderThreshold) {
@@ -88,9 +110,10 @@ inputEventHandler.instance = function () {
     }
 
     function keyboardListener(event) {
-        let key = event.which || event.keyCode;
-        if (key === 27) { //ESC
-            callHandlers(escapeHandlers);
+        let keyCode = event.which || event.keyCode;
+        let key = keyCode + "";
+        if (keyHandlers[key]) {
+            callHandlers(keyHandlers[key]);
         }
     }
 
