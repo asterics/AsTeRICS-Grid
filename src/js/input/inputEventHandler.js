@@ -19,12 +19,13 @@ inputEventHandler.instance = function () {
     let swipeDownHandlers = [];
     let swipeLeftHandles = [];
     let swipeRightHandles = [];
-    let keyHandlers = {}; //keycode => handlers array
+    let keyHandlers = {}; //keycode => [{handler, lastKeydown, lastAction, counter, inputEventKey}]
     let _touchElement = document;
 
     thiz.startListening = function () {
         document.addEventListener('mousemove', mouseMoveListener);
         document.addEventListener('keydown', keyboardListener);
+        document.addEventListener('keyup', keyUpListener);
         _touchElement.addEventListener('touchmove', touchMoveListener);
         _touchElement.addEventListener('touchend', touchEndListener);
     };
@@ -32,6 +33,7 @@ inputEventHandler.instance = function () {
     thiz.stopListening = function () {
         document.removeEventListener('mousemove', mouseMoveListener);
         document.removeEventListener('keydown', keyboardListener);
+        document.removeEventListener('keyup', keyUpListener);
         _touchElement.removeEventListener('touchmove', touchMoveListener);
         _touchElement.removeEventListener('touchend', touchEndListener);
     };
@@ -57,27 +59,38 @@ inputEventHandler.instance = function () {
     };
 
     thiz.onEscape = function (fn) {
-        return registerKey(27, fn); //ESC
+        return registerKey(new InputEventKey({keyCode: 27}), fn); //ESC
     };
 
     thiz.onInputEvent = function (inputEvent, fn) {
         switch (inputEvent.modelName) {
             case InputEventKey.getModelName():
-                return registerKey(inputEvent.keyCode, fn);
+                return registerKey(inputEvent, fn);
             case InputEventARE.getModelName():
                 //TODO
                 break;
         }
     };
 
-    function registerKey(keyCode, fn) {
-        if (!keyCode || !fn) {
+    function registerKey(inputEventKeyInstance, fn) {
+        if (!inputEventKeyInstance || !inputEventKeyInstance.keyCode || !fn) {
             return;
         }
-        let key = keyCode + "";
+        let key = inputEventKeyInstance.keyCode + "";
         let array = keyHandlers[key] ? keyHandlers[key] : [];
         keyHandlers[key] = array;
-        return registerHandler(fn, array);
+        array.push(getKeyHandlerEntry(fn, inputEventKeyInstance));
+    }
+
+    function getKeyHandlerEntry(handlerFn, inputEventKeyInstance) {
+        return {
+            handler: handlerFn,
+            inputEvent: inputEventKeyInstance,
+            lastKeydown: null,
+            lastAction: null,
+            counter: 0,
+            timeoutHandler: null
+        }
     }
 
     function mouseMoveListener(event) {
@@ -110,11 +123,81 @@ inputEventHandler.instance = function () {
     }
 
     function keyboardListener(event) {
+        if (event.repeat) {
+            return;
+        }
         let keyCode = event.which || event.keyCode;
         let key = keyCode + "";
         if (keyHandlers[key]) {
-            callHandlers(keyHandlers[key]);
+            let entries = keyHandlers[key];
+            entries.forEach(entry => {
+                let ie = entry.inputEvent;
+                if (!ie.repeat && !ie.holdDuration && timeoutPassed(entry.lastAction, ie.timeout)) {
+                    let existsConflicting = entries.filter(e => e !== entry && e.inputEvent.holdDuration).length > 0;
+                    if (existsConflicting) {
+                        entry.doOnKeyup = () => {
+                            doEntry(entry);
+                        }
+                    } else {
+                        doEntry(entry);
+                    }
+                } else if (ie.repeat) {
+                    if (timeoutPassed(entry.lastKeydown, ie.timeout)) {
+                        entry.counter = 0;
+                    }
+                    entry.counter++;
+                    if (entry.counter === ie.repeat) {
+                        let existsConflicting = entries.filter(e => e !== entry && e.inputEvent.repeat > ie.repeat).length > 0;
+                        let timeout = existsConflicting ? (ie.timeout || 500) : 0;
+                        entry.counter = 0;
+                        entry.timeoutHandler = setTimeout(() => {
+                            entries.filter(e => e !== entry && e.inputEvent.repeat).forEach(e => clearTimeout(e.timeoutHandler));
+                            doEntry(entry);
+                        }, timeout);
+                    }
+                } else if (ie.holdDuration) {
+                    entry.timeoutHandler = setTimeout(() => {
+                        entries.filter(e => e.doOnKeyup).forEach(e => {
+                            e.doOnKeyup = null
+                        });
+                        doEntry(entry);
+                    }, ie.holdDuration);
+                }
+                entry.lastKeydown = new Date().getTime();
+            });
         }
+
+        function doEntry(entry) {
+            entry.lastAction = new Date().getTime();
+            entry.handler();
+        }
+    }
+
+    function keyUpListener(event) {
+        if (event.repeat) {
+            return;
+        }
+        let keyCode = event.which || event.keyCode;
+        let key = keyCode + "";
+        if (keyHandlers[key]) {
+            let entries = keyHandlers[key];
+            entries.forEach(entry => {
+                if (!entry.inputEvent.repeat && entry.inputEvent.holdDuration && entry.timeoutHandler) {
+                    clearTimeout(entry.timeoutHandler);
+                }
+                if (entry.doOnKeyup) {
+                    entry.doOnKeyup();
+                    entry.doOnKeyup = null;
+                }
+            })
+        }
+    }
+
+    function timeoutPassed(lastTimeMs, timeoutMs) {
+        if (!lastTimeMs || !timeoutMs) {
+            return true;
+        }
+        return new Date().getTime() - lastTimeMs > timeoutMs;
     }
 
     function touchEndListener() {
