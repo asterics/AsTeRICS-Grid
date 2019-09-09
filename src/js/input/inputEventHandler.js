@@ -129,6 +129,7 @@ inputEventHandler.instance = function () {
         let keyCode = event.which || event.keyCode;
         let key = keyCode + "";
         if (keyHandlers[key]) {
+            event.preventDefault();
             let entries = keyHandlers[key];
             entries.forEach(entry => {
                 let ie = entry.inputEvent;
