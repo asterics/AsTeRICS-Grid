@@ -16,6 +16,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
     var scanBinary = false;
     var touchScanning = true;
     var scanTimeoutFirstElementFactor = 1.0;
+    var autoScan = true;
 
     //internal
     var _selectionListener = null;
@@ -26,6 +27,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
     var _scanningPaused = false;
     var _touchListener = null;
     let _inputEventHandler = null;
+    let _nextScanFn = null;
 
     function init() {
         parseOptions(options);
@@ -42,6 +44,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
             scanBinary = options.scanBinary != undefined ? options.scanBinary : scanBinary;
             touchScanning = options.touchScanning != undefined ? options.touchScanning : touchScanning;
             scanTimeoutFirstElementFactor = options.scanTimeoutFirstElementFactor != undefined ? options.scanTimeoutFirstElementFactor : scanTimeoutFirstElementFactor;
+            autoScan = options.autoScan !== undefined ? options.autoScan : true;
         }
         if(touchScanning) thiz.enableTouchScanning();
         _inputEventHandler = inputEventHandler.instance();
@@ -52,6 +55,10 @@ function Scanner(itemSelector, scanActiveClass, options) {
             inputEventHandler.onInputEvent(options.inputEventSelect, thiz.select);
         } else {
             inputEventHandler.onInputEvent(new InputEventKey({keyCode: 32}), thiz.select); //space as default key
+        }
+
+        if (options.inputEventNext) {
+            inputEventHandler.onInputEvent(options.inputEventNext, thiz.next);
         }
     }
 
@@ -227,10 +234,15 @@ function Scanner(itemSelector, scanActiveClass, options) {
             L.addClass(elems[index], scanActiveClass);
             L.removeClass(elems, scanInactiveClass);
             _currentActiveScanElements = elems[index];
-            var timeout = index == 0 && firstElementDelay && elems.length > 2 ? scanTimeoutMs * scanTimeoutFirstElementFactor : scanTimeoutMs;
-            _scanTimeoutHandler = setTimeout(function () {
+            _nextScanFn = () => {
                 scan(elems, true, index + 1, count + 1);
-            }, timeout);
+            };
+            if (autoScan) {
+                let timeout = index === 0 && firstElementDelay && elems.length > 2 ? scanTimeoutMs * scanTimeoutFirstElementFactor : scanTimeoutMs;
+                _scanTimeoutHandler = setTimeout(function () {
+                    _nextScanFn();
+                }, timeout);
+            }
         }
     }
 
@@ -365,6 +377,12 @@ function Scanner(itemSelector, scanActiveClass, options) {
                 _selectionListener(L.flattenArray(_currentActiveScanElements)[0]);
                 thiz.restartScanning();
             }
+        }
+    };
+
+    thiz.next = function () {
+        if (_nextScanFn) {
+            _nextScanFn();
         }
     };
 
