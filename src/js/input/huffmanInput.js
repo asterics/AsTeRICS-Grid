@@ -84,20 +84,20 @@ function HuffmanInput(paramItemSelector, paramScanActiveClass, options) {
     }
 
     function parseOptions(options) {
-        if (options) {
-            if ($.isFunction(options.selectionListener)) {
-                _selectionListener = options.selectionListener;
-            }
-            wrapAround = options.wrapAround !== undefined ? options.wrapAround : false;
-
-            options.inputEvents = options.inputEvents || [];
-            options.inputEvents.forEach((el, index) => {
-                _alphabet += (index+1);
-                _inputEventHandler.onInputEvent(el, () => {
-                    thiz.input(index+1);
-                });
-            });
+        if (!options || !options.inputEvents || !options.inputEvents.length || options.inputEvents.length < 2) {
+            log.warn('huffman input: invalid options');
+            return;
         }
+        if ($.isFunction(options.selectionListener)) {
+            _selectionListener = options.selectionListener;
+        }
+        wrapAround = options.wrapAround !== undefined ? options.wrapAround : false;
+        options.inputEvents.forEach((el, index) => {
+            _alphabet += (index + 1);
+            _inputEventHandler.onInputEvent(el, () => {
+                thiz.input(index + 1);
+            });
+        });
     }
 
     function setActiveElement(element) {
