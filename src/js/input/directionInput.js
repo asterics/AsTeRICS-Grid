@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import {inputEventHandler} from "./inputEventHandler";
 
 /**
  * implements an input method for buttons/switches where the selected element can be changed in each direction
@@ -15,11 +16,6 @@ function DirectionInput(paramItemSelector, paramScanActiveClass, options) {
     //options
     let itemSelector = paramItemSelector;
     let scanActiveClass = paramScanActiveClass;
-    let keyCodeLeft = 37; //Arrow left
-    let keyCodeRight = 39; //Arrow right
-    let keyCodeUp = 38; //Arrow up
-    let keyCodeDown = 40; //Arrow down
-    let keyCodeSelect = 32; //Space
     let wrapAround = true;
 
     //internal
@@ -27,21 +23,15 @@ function DirectionInput(paramItemSelector, paramScanActiveClass, options) {
     let _elements = null;
     let _currentElement = null;
     let _elementPosInfo = {};
+    let _inputEventHandler = inputEventHandler.instance();
 
     thiz.start = function () {
-        _elements = $(itemSelector);
-        if (_elements.length === 0) {
-            return;
-        }
-        setTimeout(() => {
-            calcPositions();
-        }, 200);
         setActiveElement(_elements[0]);
-        document.addEventListener('keydown', keyHandler);
+        _inputEventHandler.startListening();
     };
 
     thiz.stop = function () {
-        document.removeEventListener('keydown', keyHandler);
+        _inputEventHandler.stopListening();
     };
 
     thiz.left = function () {
@@ -64,11 +54,17 @@ function DirectionInput(paramItemSelector, paramScanActiveClass, options) {
         if (_selectionListener) {
             _selectionListener(_currentElement);
         }
-        thiz.stop();
-        thiz.start();
+        setActiveElement(_elements[0]);
     };
 
     function init() {
+        _elements = $(itemSelector);
+        if (_elements.length === 0) {
+            return;
+        }
+        setTimeout(() => {
+            calcPositions();
+        }, 200);
         parseOptions(options);
     }
 
@@ -85,6 +81,12 @@ function DirectionInput(paramItemSelector, paramScanActiveClass, options) {
                 _selectionListener = options.selectionListener;
             }
             wrapAround = options.wrapAround !== undefined ? options.wrapAround : false;
+
+            inputEventHandler.onInputEvent(options.inputEventLeft, thiz.left);
+            inputEventHandler.onInputEvent(options.inputEventRight, thiz.right);
+            inputEventHandler.onInputEvent(options.inputEventUp, thiz.up);
+            inputEventHandler.onInputEvent(options.inputEventDown, thiz.down);
+            inputEventHandler.onInputEvent(options.inputEventSelect, thiz.select);
         }
     }
 
@@ -92,32 +94,6 @@ function DirectionInput(paramItemSelector, paramScanActiveClass, options) {
         _currentElement = element || _currentElement;
         _elements.removeClass(scanActiveClass);
         $(_currentElement).addClass(scanActiveClass);
-    }
-
-    function keyHandler(event) {
-        let keycode = event.which || event.keyCode;
-        switch (keycode) {
-            case keyCodeLeft:
-                event.preventDefault();
-                thiz.left();
-                break;
-            case keyCodeRight:
-                event.preventDefault();
-                thiz.right();
-                break;
-            case keyCodeUp:
-                event.preventDefault();
-                thiz.up();
-                break;
-            case keyCodeDown:
-                event.preventDefault();
-                thiz.down();
-                break;
-            case keyCodeSelect:
-                event.preventDefault();
-                thiz.select();
-                break;
-        }
     }
 
     function calcPositions() {
