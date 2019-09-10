@@ -49,9 +49,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
         if(touchScanning) thiz.enableTouchScanning();
         _inputEventHandler = inputEventHandler.instance();
 
-        if (options.selectKeyCode) {
-            inputEventHandler.onInputEvent(new InputEventKey({keyCode: options.selectKeyCode}), thiz.select);
-        } else if(options.inputEventSelect) {
+        if (options.inputEventSelect) {
             inputEventHandler.onInputEvent(options.inputEventSelect, thiz.select);
         } else {
             inputEventHandler.onInputEvent(new InputEventKey({keyCode: 32}), thiz.select); //space as default key
