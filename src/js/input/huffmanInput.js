@@ -1,9 +1,10 @@
 import Huffman from 'n-ary-huffman'
 import $ from 'jquery';
+import {inputEventHandler} from "./inputEventHandler";
 
 /**
- * implements an input method for buttons/switches where the selected element can be changed in each direction
- * (left, right, up, down) and selected using buttons (keyboard input)
+ * implements an input method where elements are matched to an unique code sequence. typing this code using an input
+ * method directly selects the element. The codes are generated using an n-ary huffman encoding algorithm.
  *
  * @param paramItemSelector selector for retrieving the selectable elements
  * @param paramScanActiveClass class to add to currently selected element (focus)
@@ -16,11 +17,6 @@ function HuffmanInput(paramItemSelector, paramScanActiveClass, options) {
     //options
     let itemSelector = paramItemSelector;
     let scanActiveClass = paramScanActiveClass;
-    let keyCodeLeft = 37; //Arrow left
-    let keyCodeRight = 39; //Arrow right
-    let keyCodeUp = 38; //Arrow up
-    let keyCodeDown = 40; //Arrow down
-    let keyCodeSelect = 32; //Space
     let wrapAround = true;
 
     //internal
@@ -29,35 +25,15 @@ function HuffmanInput(paramItemSelector, paramScanActiveClass, options) {
     let _currentElement = null;
     let _treeItems = null;
     let _currentInput = '';
+    let _inputEventHandler = inputEventHandler.instance();
+    let _alphabet = '';
 
     thiz.start = function () {
-        _elements = $(itemSelector);
-        if (_elements.length === 0) {
-            return;
-        }
-        let ids = _elements.toArray().map(e => e.id);
-        let alphabet = "1234";
-        _treeItems = ids.map(function (name, index) {
-            return {
-                name: name,
-                weight: 10000 - index,
-                codeWord: null
-            }
-        });
-
-        let tree = Huffman.createTree(_treeItems, alphabet.length);
-        tree.assignCodeWords(alphabet, function(item, codeWord) {
-            item.codeWord = codeWord;
-            item.element = document.getElementById(item.name);
-            $(item.element).find('.text-container').append(`<div style="font-size:10px; display:block;">${item.codeWord}</div>`);
-        });
-
-        console.log(_treeItems);
-        document.addEventListener('keydown', keyHandler);
+        _inputEventHandler.startListening();
     };
 
     thiz.stop = function () {
-        document.removeEventListener('keydown', keyHandler);
+       inputEventHandler.stopListening();
     };
 
     thiz.input = function (id) {
@@ -66,18 +42,15 @@ function HuffmanInput(paramItemSelector, paramScanActiveClass, options) {
             return;
         }
         _currentInput += id;
-        log.warn('currentInput: ' + _currentInput);
         let selectedElement = _treeItems.filter(el => el.codeWord === _currentInput);
         let possibleElements = _treeItems.filter(el => el.codeWord.indexOf(_currentInput) === 0);
         if (selectedElement[0]) {
-            log.warn('selected: ' + selectedElement[0]);
             setActiveElement(selectedElement[0].element);
             if (_selectionListener) {
                 _selectionListener(selectedElement[0].element);
             }
         }
         if(selectedElement[0] || possibleElements.length === 0) {
-            log.warn('reset!');
             _currentInput = '';
         }
     };
@@ -88,6 +61,26 @@ function HuffmanInput(paramItemSelector, paramScanActiveClass, options) {
 
     function init() {
         parseOptions(options);
+
+        _elements = $(itemSelector);
+        if (_elements.length === 0) {
+            return;
+        }
+        let ids = _elements.toArray().map(e => e.id);
+        _treeItems = ids.map(function (name, index) {
+            return {
+                name: name,
+                weight: 10000 - index,
+                codeWord: null
+            }
+        });
+
+        let tree = Huffman.createTree(_treeItems, _alphabet.length);
+        tree.assignCodeWords(_alphabet, function(item, codeWord) {
+            item.codeWord = codeWord;
+            item.element = document.getElementById(item.name);
+            $(item.element).find('.text-container').append(`<div  style="font-size:10px; display:block;">${item.codeWord}</div>`);
+        });
     }
 
     function parseOptions(options) {
@@ -96,6 +89,14 @@ function HuffmanInput(paramItemSelector, paramScanActiveClass, options) {
                 _selectionListener = options.selectionListener;
             }
             wrapAround = options.wrapAround !== undefined ? options.wrapAround : false;
+
+            options.inputEvents = options.inputEvents || [];
+            options.inputEvents.forEach((el, index) => {
+                _alphabet += (index+1);
+                _inputEventHandler.onInputEvent(el, () => {
+                    thiz.input(index+1);
+                });
+            });
         }
     }
 
@@ -103,28 +104,6 @@ function HuffmanInput(paramItemSelector, paramScanActiveClass, options) {
         _currentElement = element || _currentElement;
         _elements.removeClass(scanActiveClass);
         $(_currentElement).addClass(scanActiveClass);
-    }
-
-    function keyHandler(event) {
-        let keycode = event.which || event.keyCode;
-        switch (keycode) {
-            case keyCodeLeft:
-                event.preventDefault();
-                thiz.input('1');
-                break;
-            case keyCodeRight:
-                event.preventDefault();
-                thiz.input('3');
-                break;
-            case keyCodeUp:
-                thiz.input('4');
-                event.preventDefault();
-                break;
-            case keyCodeDown:
-                event.preventDefault();
-                thiz.input('2');
-                break;
-        }
     }
     init();
 }
