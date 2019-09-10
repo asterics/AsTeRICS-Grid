@@ -69,6 +69,9 @@ inputEventHandler.instance = function () {
     };
 
     thiz.onInputEvent = function (inputEvent, fn) {
+        if (!inputEvent || !fn) {
+            return;
+        }
         switch (inputEvent.modelName) {
             case InputEventKey.getModelName():
                 return registerKey(inputEvent, fn);
