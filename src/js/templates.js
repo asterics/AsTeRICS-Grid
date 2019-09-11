@@ -59,7 +59,7 @@ function getGridElementCollect(gridElem) {
     <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}">
         <div class="text-container" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; padding: 1% 1% 1% 1%; text-align: left;">
             <div style="vertical-align: middle; background-color: white; padding-left: 0.3em; width: 99%; height: 100%">
-                <span></span>
+                <span class="collect-text"></span>
             </div>
         </div>
     </div>

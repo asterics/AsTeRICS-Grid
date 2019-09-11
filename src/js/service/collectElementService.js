@@ -67,7 +67,7 @@ function setText(text) {
     text = text === undefined ? collectedText : text;
     collectedText = text;
     predictionService.learnFromInput(collectedText);
-    $('.item[data-type="ELEMENT_TYPE_COLLECT"] span').text(collectedText);
+    $('.item[data-type="ELEMENT_TYPE_COLLECT"] .collect-text').text(collectedText);
 }
 
 function getActionOfType(elem, type) {
