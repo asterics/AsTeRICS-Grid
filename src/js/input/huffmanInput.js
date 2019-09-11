@@ -30,8 +30,8 @@ function HuffmanInput(paramItemSelector, paramScanActiveClass, options) {
     let _currentInput = '';
     let _inputEventHandler = null;
     let _alphabet = '';
-    let _defaultColors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00',
-        '#00ffff', '#ff00ff', '#ff8000', '#aa00ff', '#016619'];
+    let _defaultColors = ['#D55E00', '#F0E442', '#009E73', '#0072B2',
+        '#CC79A7', '#E69F00', '#56B4E9', '#000000', '#016619'];
     let _started = false;
 
     thiz.start = function () {
