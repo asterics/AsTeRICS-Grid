@@ -5,7 +5,11 @@ import {InputEventARE} from "../model/InputEventARE";
 let inputEventHandler = {};
 
 inputEventHandler.instance = function () {
-    let thiz = this;
+    return new Constructor();
+};
+
+function Constructor () {
+    let thiz = {};
 
     // options
     let touchMoveLength = 100;
