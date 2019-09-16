@@ -48,7 +48,6 @@
     h3 {
         margin: 0;
         padding-bottom: 0.5em;
-        padding-top: 1em;
     }
     li {
         margin-bottom: 0;

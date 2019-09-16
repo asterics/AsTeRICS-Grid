@@ -5,7 +5,7 @@
             <i class="fas fa-chevron-up" v-show="open"></i>
             <span>{{label | translate}}</span>
         </button>
-        <div v-show="open" style="background-color: whitesmoke;">
+        <div v-show="open" class="accordion-content">
             <slot></slot>
         </div>
     </div>
@@ -47,5 +47,10 @@
     }
     .btn-accordion:hover span {
         color: #2d7bb4;
+    }
+
+    .accordion-content {
+        background-color: whitesmoke;
+        padding: 1em;
     }
 </style>
