@@ -103,6 +103,20 @@
     color: black;
 }
 
+.blue {
+    color: #2d7bb4;
+}
+
+.modal h2 {
+    font-size: 1.3em;
+    margin: 0;
+    padding: 0;
+}
+
+.modal .row {
+    margin-top: 1em;
+}
+
 /* Smaller than tablet */
 @media (max-width: 850px) {
     .modal-footer button {
