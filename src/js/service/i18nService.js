@@ -9,13 +9,15 @@ let TRANSLATION_FILE_PATH = 'app/examples/translations/';
 let TRANSLATION_FILE_SUFFIX = '.txt';
 let TRANSLATION_FILE_ORIGINAL = getTranslationFilePath('original');
 let i18nInstance = null;
+let languages = ['en', 'de'];
+let separator = ' // ';
 
 i18nService.initDomI18n = function () {
     if (!i18nInstance) {
         i18nInstance = window.domI18n({
             selector: '[data-i18n]',
-            separator: ' // ',
-            languages: ['en', 'de'],
+            separator: separator,
+            languages: languages,
             enableLog: false
         });
     }
@@ -32,6 +34,12 @@ i18nService.isBrowserLangDE = function () {
 };
 
 i18nService.translate = function (key) {
+    if (key.indexOf(separator) > -1) {
+        let translations = key.split(separator);
+        let index = languages.indexOf(i18nService.getBrowserLang());
+        index = index > 0 ? index : 0;
+        return translations[index];
+    }
     var lang = this.translations[this.getBrowserLang()] ? this.getBrowserLang() : 'en';
     var translated = this.translations[lang][key] ? this.translations[lang][key] : key;
     for(var i=1; i<arguments.length; i++) {
@@ -167,6 +175,15 @@ i18nService.translations['en'] = {
     SEARCH_IMAGE_PLACEHOLDER: 'input search term',
     HEADER_COMPARE_ONLINE_OFFLINE: 'Information about online/offline users',
     ADVANCED_SETTINGS: "Advanced Settings",
+    TEST_CONFIGURATION: "Test configuration",
+    SELECT: 'Select element',
+    NEXT: 'Next scanning group',
+    UP: 'Go up',
+    DOWN: 'Go down',
+    LEFT: 'Go left',
+    RIGHT: 'Go right',
+    InputEventKey: 'Keypress',
+    InputEventARE: 'AsTeRICS ARE event',
     de: 'German',
     en: 'English',
     es: 'Spanish',
@@ -219,6 +236,15 @@ i18nService.translations['de'] = {
     SEARCH_IMAGE_PLACEHOLDER: 'Suchbegriff eingeben',
     HEADER_COMPARE_ONLINE_OFFLINE: 'Informationen über Online-/Offline-User',
     ADVANCED_SETTINGS: "Erweiterte Einstellungen",
+    TEST_CONFIGURATION: "Konfiguration testen",
+    SELECT: 'Element auswählen',
+    NEXT: 'Nächste Gruppe',
+    UP: 'Nach oben',
+    DOWN: 'Nach unten',
+    LEFT: 'Nach links',
+    RIGHT: 'Nach rechts',
+    InputEventKey: 'Tastendruck',
+    InputEventARE: 'AsTeRICS ARE Event',
     de: 'Deutsch',
     en: 'Englisch',
     es: 'Spanisch',
