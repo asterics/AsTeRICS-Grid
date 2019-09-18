@@ -385,6 +385,7 @@ function Scanner(itemSelector, scanActiveClass, options) {
 
     thiz.next = function () {
         if (_nextScanFn) {
+            clearTimeout(_scanTimeoutHandler);
             _nextScanFn();
         }
     };
