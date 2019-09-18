@@ -1,9 +1,9 @@
 <template>
     <div>
         <button @click="() => {open = !open}" class="btn-accordion" style="margin-bottom: 0">
-            <i class="fas fa-chevron-down" v-show="!open"></i>
-            <i class="fas fa-chevron-up" v-show="open"></i>
-            <component :is="componentType" style="margin-left: 1em; display: inline-block" data-i18n="">{{label | translate}}</component>
+            <i class="fas fa-chevron-down arrow" v-show="!open"></i>
+            <i class="fas fa-chevron-up arrow" v-show="open"></i>
+            <component :is="componentType" style="margin-left: 2em; display: inline-block" data-i18n="">{{label | translate}}</component>
         </button>
         <div v-show="open" class="accordion-content" :style="'background-color:' + backgroundColor">
             <slot></slot>
@@ -46,12 +46,19 @@
         border-left: none;
         border-right: none;
         width: 100%;
+        padding-left: 1.0em;
+        position: relative;
     }
     .btn-accordion:hover, .btn-accordion:focus {
         outline: 2px solid lightblue;
     }
     .btn-accordion:hover span {
         color: #2d7bb4;
+    }
+
+    .arrow {
+        position: absolute;
+        top: 25%;
     }
 
     .accordion-content {
