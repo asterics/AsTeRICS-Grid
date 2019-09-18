@@ -157,23 +157,7 @@
                 }
 
                 if (inputConfig.scanEnabled || inputConfig.scanAutostart) { //TODO remove true
-                    thiz.scanner = new Scanner('.grid-item-content', 'scanFocus', {
-                        autoScan: inputConfig.scanAuto,
-                        scanVertical: inputConfig.scanVertical,
-                        subScanRepeat: 3,
-                        scanBinary: inputConfig.scanBinary,
-                        scanInactiveClass: 'scanInactive',
-                        minBinarySplitThreshold: 3,
-                        scanTimeoutMs: inputConfig.scanTimeoutMs,
-                        scanTimeoutFirstElementFactor: inputConfig.scanTimeoutFirstElementFactor,
-                        touchScanning: !inputConfig.mouseclickEnabled,
-                        autoScan: inputConfig.scanAuto || false, //TODO: remove second part
-                        inputEventSelect: inputConfig.scanInputs.filter(e => e.label === InputConfig.SELECT)[0], //TODO: remove second part
-                        inputEventNext: inputConfig.scanInputs.filter(e => e.label === InputConfig.NEXT)[0] //TODO: remove second part
-                        //inputEventSelect: new InputEventKey({keyCode: 65, holdDuration: 500}), //TODO: remove second part
-                        //inputEventNext: new InputEventKey({keyCode: 65}) //TODO: remove second part
-                    });
-
+                    thiz.scanner = Scanner.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', 'scanInactive');
                     thiz.scanner.setSelectionListener(function (item) {
                         L.removeAddClass(item, 'selected');
                         actionService.doAction(gridInstance.getCurrentGridId(), item.id);

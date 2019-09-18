@@ -1,8 +1,27 @@
 import {L} from "../util/lquery.js";
 import {inputEventHandler} from "./inputEventHandler";
 import {InputEventKey} from "../model/InputEventKey";
+import {InputConfig} from "../model/InputConfig";
 
-function Scanner(itemSelector, scanActiveClass, options) {
+let Scanner = {};
+
+Scanner.getInstanceFromConfig = function (inputConfig, itemSelector, scanActiveClass, scanInactiveClass) {
+    return new ScannerConstructor(itemSelector, scanActiveClass, {
+        autoScan: inputConfig.scanAuto,
+        scanVertical: inputConfig.scanVertical,
+        subScanRepeat: 3,
+        scanBinary: inputConfig.scanBinary,
+        scanInactiveClass: scanInactiveClass,
+        minBinarySplitThreshold: 3,
+        scanTimeoutMs: inputConfig.scanTimeoutMs,
+        scanTimeoutFirstElementFactor: inputConfig.scanTimeoutFirstElementFactor,
+        touchScanning: !inputConfig.mouseclickEnabled,
+        inputEventSelect: inputConfig.scanInputs.filter(e => e.label === InputConfig.SELECT)[0],
+        inputEventNext: inputConfig.scanInputs.filter(e => e.label === InputConfig.NEXT)[0]
+    });
+};
+
+function ScannerConstructor(itemSelector, scanActiveClass, options) {
     var thiz = this;
 
     //options
@@ -376,8 +395,10 @@ function Scanner(itemSelector, scanActiveClass, options) {
                 scan(spitToSubarrays(_currentActiveScanElements), true);
             } else if (L.flattenArray(_currentActiveScanElements).length > 1) {
                 scan(spitToSubarrays(L.flattenArray(_currentActiveScanElements)), true);
-            } else if (_selectionListener) {
-                _selectionListener(L.flattenArray(_currentActiveScanElements)[0]);
+            } else {
+                if (_selectionListener) {
+                    _selectionListener(L.flattenArray(_currentActiveScanElements)[0]);
+                }
                 thiz.restartScanning();
             }
         }
