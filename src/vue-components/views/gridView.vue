@@ -13,9 +13,10 @@
             </button>
             <button tabindex="32" @click="applyFullscreen()" class="spaced small"><i class="fas fa-expand"/> <span class="hide-mobile" data-i18n>Fullscreen // Vollbild</span></button>
             <button tabindex="31" v-show="!metadata.locked" @click="toEditGrid()" class="spaced small"><i class="fas fa-pencil-alt"/> <span class="hide-mobile" data-i18n>Edit grid // Grid bearbeiten</span></button>
-            <button tabindex="30" v-show="!metadata.locked" @click="showModal = true" class="small"><i class="fas fa-cog"></i> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
+            <button tabindex="30" v-show="!metadata.locked" @click="showModal = modalTypes.MODAL_SCANNING" class="small"><i class="fas fa-cog"></i> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
         </header>
-        <input-options-modal v-if="showModal" v-bind:metadata-property="metadata" v-bind:scanner="scanner" v-bind:hover="hover" v-bind:clicker="clicker" v-bind:reinit="reinitInputMethods" @close="showModal = false"/>
+
+        <scanning-modal v-if="showModal === modalTypes.MODAL_SCANNING" @close="showModal = null; reinitInputMethods();"/>
         <div class="row content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0">
             <div data-i18n="" style="margin-top: 2em">
                 <span>No elements, click <a :href="'#grid/edit/' + gridData.id">Edit grid</a> to enter edit mode.</span>
@@ -47,16 +48,26 @@
     import {Hover} from "../../js/input/hovering.js";
     import {Clicker} from "../../js/input/clicking.js";
 
-    import InputOptionsModal from '../../vue-components/modals/inputOptionsModal.vue'
+    import ScanningModal from '../../vue-components/modals/input/scanningModal.vue'
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {constants} from "../../js/util/constants";
     import {GridData} from "../../js/model/GridData";
     import {i18nService} from "../../js/service/i18nService";
     import {util} from "../../js/util/util";
+    import {HuffmanInput} from "../../js/input/huffmanInput";
+    import {DirectionInput} from "../../js/input/directionInput";
+    import {InputEventKey} from "../../js/model/InputEventKey";
+    import {InputConfig} from "../../js/model/InputConfig";
 
     let vueApp = null;
     let gridInstance = null;
     let UNLOCK_COUNT = 8;
+    let modalTypes = {
+        MODAL_SCANNING: 'MODAL_SCANNING',
+        MODAL_MOUSE: 'MODAL_MOUSE',
+        MODAL_DIRECTION: 'MODAL_DIRECTION',
+        MODAL_HUFFMAN: 'MODAL_HUFFMAN',
+    };
 
     let vueConfig = {
         props: ['gridId'],
@@ -67,14 +78,17 @@
                 scanner: null,
                 hover: null,
                 clicker: null,
-                showModal: false,
+                directionInput: null,
+                huffmanInput: null,
+                showModal: null,
+                modalTypes: modalTypes,
                 viewInitialized: false,
                 unlockCount: UNLOCK_COUNT,
                 unlockCounter: UNLOCK_COUNT
             }
         },
         components: {
-            InputOptionsModal, HeaderIcon
+            ScanningModal, HeaderIcon
         },
         methods: {
             lock() {
@@ -110,68 +124,100 @@
                 if (!gridInstance) {
                     return;
                 }
+
                 let inputConfig = thiz.metadata.inputConfig;
-                thiz.scanner = new Scanner('.grid-item-content', 'scanFocus', {
-                    scanVertical: inputConfig.scanVertical,
-                    subScanRepeat: 3,
-                    scanBinary: inputConfig.scanBinary,
-                    scanInactiveClass: 'scanInactive',
-                    minBinarySplitThreshold: 3,
-                    scanTimeoutMs: inputConfig.scanTimeoutMs,
-                    scanTimeoutFirstElementFactor: inputConfig.scanTimeoutFirstElementFactor,
-                    selectKeyCode: inputConfig.scanKey,
-                    touchScanning: !inputConfig.mouseclickEnabled
-                });
-                if (inputConfig.areURL && inputConfig.areEvents.length > 0) {
-                    let lastSelect = 0;
-                    areService.subscribeEvents(function (eventString) {
-                        if (inputConfig.areEvents.includes(eventString)) {
-                            if (new Date().getTime() - lastSelect > 100) {
-                                log.info('select scanning per ARE event: ' + eventString);
-                                lastSelect = new Date().getTime();
-                                thiz.scanner.select();
-                            }
+                window.addEventListener('resize', thiz.resizeListener, true);
+                $(document).on(constants.EVENT_GRID_RESIZE, thiz.resizeListener);
+                if (inputConfig.dirEnabled) { //TODO remove true
+                    thiz.directionInput = new DirectionInput('.grid-item-content', 'scanFocus', {
+                        inputEventLeft: inputConfig.dirInputs[InputConfig.LEFT] || new InputEventKey({keyCode: 37}), //TODO: remove second part
+                        inputEventRight: inputConfig.dirInputs[InputConfig.RIGHT] || new InputEventKey({keyCode: 39}), //TODO: remove second part
+                        inputEventUp: inputConfig.dirInputs[InputConfig.UP] || new InputEventKey({keyCode: 38}), //TODO: remove second part
+                        inputEventDown: inputConfig.dirInputs[InputConfig.DOWN] || new InputEventKey({keyCode: 40}), //TODO: remove second part
+                        inputEventSelect: inputConfig.dirInputs[InputConfig.SELECT] || new InputEventKey({keyCode: 32}), //TODO: remove second part
+                        wrapAround: true,
+                        selectionListener: function (item) {
+                            actionService.doAction(gridInstance.getCurrentGridId(), item.id);
                         }
-                    }, inputConfig.areURL);
-                } else {
-                    areService.unsubscribeEvents();
+                    });
+                    thiz.directionInput.start();
                 }
-                thiz.hover = new Hover('.grid-item-content', inputConfig.hoverTimeoutMs);
-                thiz.clicker = new Clicker('.grid-item-content');
 
-                gridInstance.setLayoutChangedStartListener(function () {
-                    thiz.scanner.pauseScanning();
-                });
-                gridInstance.setLayoutChangedEndListener(function () {
-                    thiz.scanner.resumeScanning();
-                });
+                if (inputConfig.huffEnabled || true) { //TODO remove true
+                    this.huffmanInput = new HuffmanInput('.grid-item-content', 'scanFocus', {
+                        printCodes: true,
+                        printColors: true,
+                        colors: inputConfig.huffColors,
+                        inputEvents: [new InputEventKey({keyCode: 49}), new InputEventKey({keyCode: 50}), new InputEventKey({keyCode: 51}), new InputEventKey({keyCode: 52}), new InputEventKey({keyCode: 53}), new InputEventKey({keyCode: 54})], // TODO use inputConfig.huffInputs
+                        selectionListener: function (item) {
+                            actionService.doAction(gridInstance.getCurrentGridId(), item.id);
+                        }
+                    });
+                    this.huffmanInput.start();
+                }
 
-                window.addEventListener('resize', function () {
-                    thiz.scanner.layoutChanged();
-                }, true);
+                if (inputConfig.scanEnabled || inputConfig.scanAutostart) { //TODO remove true
+                    thiz.scanner = new Scanner('.grid-item-content', 'scanFocus', {
+                        scanVertical: inputConfig.scanVertical,
+                        subScanRepeat: 3,
+                        scanBinary: inputConfig.scanBinary,
+                        scanInactiveClass: 'scanInactive',
+                        minBinarySplitThreshold: 3,
+                        scanTimeoutMs: inputConfig.scanTimeoutMs,
+                        scanTimeoutFirstElementFactor: inputConfig.scanTimeoutFirstElementFactor,
+                        touchScanning: !inputConfig.mouseclickEnabled,
+                        autoScan: inputConfig.scanAuto || false, //TODO: remove second part
+                        inputEventSelect: inputConfig.scanInputs.filter(e => e.label === InputConfig.SELECT)[0], //TODO: remove second part
+                        inputEventNext: inputConfig.scanInputs.filter(e => e.label === InputConfig.NEXT)[0] //TODO: remove second part
+                        //inputEventSelect: new InputEventKey({keyCode: 65, holdDuration: 500}), //TODO: remove second part
+                        //inputEventNext: new InputEventKey({keyCode: 65}) //TODO: remove second part
+                    });
 
-                thiz.scanner.setSelectionListener(function (item) {
-                    L.removeAddClass(item, 'selected');
-                    actionService.doAction(gridInstance.getCurrentGridId(), item.id);
-                });
+                    thiz.scanner.setSelectionListener(function (item) {
+                        L.removeAddClass(item, 'selected');
+                        actionService.doAction(gridInstance.getCurrentGridId(), item.id);
+                    });
 
-                thiz.hover.setSelectionListener(function (item) {
-                    L.removeAddClass(item, 'selected');
-                    actionService.doAction(thiz.gridData.id, item.id);
-                });
+                    gridInstance.setLayoutChangedStartListener(function () {
+                        thiz.scanner.pauseScanning();
+                    });
+                    gridInstance.setLayoutChangedEndListener(function () {
+                        thiz.scanner.resumeScanning();
+                    });
 
-                thiz.clicker.setSelectionListener(function (item) {
-                    L.removeAddClass(item, 'selected');
-                    actionService.doAction(thiz.gridData.id, item.id);
-                });
-
-                if (inputConfig.scanAutostart) {
                     thiz.scanner.startScanning();
+
+                    if (inputConfig.areURL && inputConfig.areEvents.length > 0) {
+                        let lastSelect = 0;
+                        areService.subscribeEvents(function (eventString) { //TODO remove
+                            if (inputConfig.areEvents.includes(eventString)) {
+                                if (new Date().getTime() - lastSelect > 100) {
+                                    log.info('select scanning per ARE event: ' + eventString);
+                                    lastSelect = new Date().getTime();
+                                    thiz.scanner.select();
+                                }
+                            }
+                        }, inputConfig.areURL);
+                    } else {
+                        areService.unsubscribeEvents();
+                    }
                 }
+
                 if (inputConfig.hoverEnabled) {
+                    thiz.hover = new Hover('.grid-item-content', inputConfig.hoverTimeoutMs);
+                    thiz.hover.setSelectionListener(function (item) {
+                        L.removeAddClass(item, 'selected');
+                        actionService.doAction(thiz.gridData.id, item.id);
+                    });
                     thiz.hover.startHovering();
                 }
+
                 if (inputConfig.mouseclickEnabled) {
+                    thiz.clicker = new Clicker('.grid-item-content');
+                    thiz.clicker.setSelectionListener(function (item) {
+                        L.removeAddClass(item, 'selected');
+                        actionService.doAction(thiz.gridData.id, item.id);
+                    });
                     thiz.clicker.startClickcontrol();
                 }
             },
@@ -239,6 +285,14 @@
                 }
                 vueApp.metadata.fullscreen = false;
                 $(document).trigger(constants.EVENT_GRID_RESIZE);
+            },
+            resizeListener() {
+                let thiz = this;
+                util.debounce(function () {
+                    if (thiz.huffmanInput) {
+                        thiz.huffmanInput.reinit();
+                    }
+                }, 500);
             }
         },
         computed: {
@@ -309,9 +363,13 @@
     };
 
     function stopInputMethods() {
-        if (vueApp && vueApp.scanner) vueApp.scanner.stopScanning();
-        if (vueApp && vueApp.hover) vueApp.hover.stopHovering();
-        if (vueApp && vueApp.clicker) vueApp.clicker.stopClickcontrol();
+        if (vueApp) window.removeEventListener('resize', vueApp.resizeListener, true);
+        if (vueApp) $(document).off(constants.EVENT_GRID_RESIZE, vueApp.resizeListener);
+        if (vueApp && vueApp.scanner) vueApp.scanner.destroy();
+        if (vueApp && vueApp.hover) vueApp.hover.destroy();
+        if (vueApp && vueApp.clicker) vueApp.clicker.destroy();
+        if (vueApp && vueApp.directionInput) vueApp.directionInput.destroy();
+        if (vueApp && vueApp.huffmanInput) vueApp.huffmanInput.destroy();
     }
 
     function initGrid(gridId) {
