@@ -6,7 +6,8 @@ class InputEventKey extends Model({
     id: String,
     modelName: String,
     modelVersion: String,
-    keyCode: Number,
+    label: [String],
+    keyCode: [Number],
     keyName: [String],
     repeat: [Number],
     timeout: [Number],
@@ -18,6 +19,10 @@ class InputEventKey extends Model({
         this.id = this.id || modelUtil.generateId('input-event-key')
     }
 
+    isValid() {
+        return this.modelName && this.label && this.keyCode;
+    }
+
     static getModelName() {
         return "InputEventKey";
     }
@@ -26,7 +31,10 @@ class InputEventKey extends Model({
 InputEventKey.defaults({
     id: "", //will be replaced by constructor
     modelName: InputEventKey.getModelName(),
-    modelVersion: constants.MODEL_VERSION
+    modelVersion: constants.MODEL_VERSION,
+    repeat: 1,
+    timeout: 0,
+    holdDuration: 0
 });
 
 export {InputEventKey};

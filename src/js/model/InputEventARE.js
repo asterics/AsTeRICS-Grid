@@ -6,13 +6,18 @@ class InputEventARE extends Model({
     id: String,
     modelName: String,
     modelVersion: String,
-    eventName: String,
+    label: [String],
+    eventName: [String],
     areURL: [String]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, InputEventARE);
         super(properties);
         this.id = this.id || modelUtil.generateId('input-event-are')
+    }
+
+    isValid() {
+        return this.modelName && this.label && this.eventName;
     }
 
     static getModelName() {
