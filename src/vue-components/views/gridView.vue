@@ -158,6 +158,7 @@
 
                 if (inputConfig.scanEnabled || inputConfig.scanAutostart) { //TODO remove true
                     thiz.scanner = new Scanner('.grid-item-content', 'scanFocus', {
+                        autoScan: inputConfig.scanAuto,
                         scanVertical: inputConfig.scanVertical,
                         subScanRepeat: 3,
                         scanBinary: inputConfig.scanBinary,
