@@ -3,9 +3,9 @@
         <button @click="() => {open = !open}" class="btn-accordion" style="margin-bottom: 0">
             <i class="fas fa-chevron-down" v-show="!open"></i>
             <i class="fas fa-chevron-up" v-show="open"></i>
-            <span>{{label | translate}}</span>
+            <component :is="componentType" style="margin-left: 1em; display: inline-block" data-i18n="">{{label | translate}}</component>
         </button>
-        <div v-show="open" class="accordion-content">
+        <div v-show="open" class="accordion-content" :style="'background-color:' + backgroundColor">
             <slot></slot>
         </div>
     </div>
@@ -15,11 +15,13 @@
     import {i18nService} from "../../js/service/i18nService";
 
     export default {
-        props: ["accLabel"],
+        props: ["accLabel", "accOpen", 'accLabelType', 'accBackgroundColor'],
         data() {
             return {
-                open: false,
-                label: ''
+                open: this.accOpen === "true",
+                componentType: this.accLabelType || 'span',
+                label: '',
+                backgroundColor: this.accBackgroundColor || 'whitesmoke'
             }
         },
         methods: {
@@ -27,6 +29,9 @@
         mounted() {
             i18nService.initDomI18n();
             this.label = this.accLabel;
+        },
+        updated() {
+            i18nService.initDomI18n();
         }
     }
 </script>
@@ -50,7 +55,7 @@
     }
 
     .accordion-content {
-        background-color: whitesmoke;
         padding: 1em;
+        outline: 1px solid lightgray;
     }
 </style>
