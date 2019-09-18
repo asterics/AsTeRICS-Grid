@@ -58,7 +58,8 @@
                                             <input type="number" v-model.number="inputConfig.scanTimeoutFirstElementFactor" min="1" max="5" step="0.5" />
                                         </div>
                                     </accordion>
-                                    <accordion acc-label="TEST_CONFIGURATION" acc-label-type="h2" acc-background-color="white">
+                                    <accordion acc-label="TEST_CONFIGURATION" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
+                                        <test-area></test-area>
                                     </accordion>
 
                                     <div class="warn" v-show="error">
@@ -91,12 +92,14 @@
     import {i18nService} from "../../../js/service/i18nService";
     import Accordion from "../../components/accordion.vue"
     import InputEventList from "../../components/inputEventList.vue"
+    import TestArea from "./testArea.vue"
     import './../../../css/modal.css';
     import {InputConfig} from "../../../js/model/InputConfig";
+    import {Scanner} from "../../../js/input/scanning";
 
     export default {
         props: [],
-        components: {Accordion, InputEventList},
+        components: {Accordion, InputEventList, TestArea},
         data: function () {
             return {
                 inputConfig: null,
@@ -107,7 +110,19 @@
                 areConnectionError: false,
                 InputConfig: InputConfig,
                 error: '',
-                errorInputs: []
+                errorInputs: [],
+                scanner: null,
+                testOpen: false
+            }
+        },
+        watch: {
+            inputConfig: {
+                handler: function(newConfig) {
+                    if (this.testOpen) {
+                        this.initTest(newConfig);
+                    }
+                },
+                deep: true
             }
         },
         methods: {
@@ -149,6 +164,18 @@
                 if (this.error) {
                     this.validateInputs();
                 }
+            },
+            initTest() {
+                setTimeout(() => {
+                    this.stopTest();
+                    this.scanner = Scanner.getInstanceFromConfig(this.inputConfig, '.area-element-inner', 'active', 'inactive');
+                    this.scanner.startScanning();
+                }, 100);
+            },
+            stopTest() {
+                if (this.scanner) {
+                    this.scanner.destroy();
+                }
             }
         },
         mounted () {
@@ -165,6 +192,7 @@
         },
         beforeDestroy() {
             helpService.revertToLastLocation();
+            this.stopTest();
         }
     }
 </script>
