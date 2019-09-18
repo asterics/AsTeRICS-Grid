@@ -45,6 +45,11 @@ function HuffmanInput(paramItemSelector, paramScanActiveClass, options) {
         _inputEventHandler.stopListening();
     };
 
+    thiz.destroy = function () {
+        thiz.stop();
+        _inputEventHandler.destroy();
+    };
+
     thiz.reinit = function() {
         if (!_started) {
             return;

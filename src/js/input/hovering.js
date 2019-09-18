@@ -41,7 +41,7 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass) {
         });
     };
 
-    thiz.stopHovering = function () {
+    thiz.destroy = function () {
         L.selectAsList(_itemSelector).forEach(function (item) {
             item.removeEventListener('mouseenter', mouseEnter);
             item.removeEventListener('mouseleave', mouseLeave);

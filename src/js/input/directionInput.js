@@ -30,8 +30,8 @@ function DirectionInput(paramItemSelector, paramScanActiveClass, options) {
         _inputEventHandler.startListening();
     };
 
-    thiz.stop = function () {
-        _inputEventHandler.stopListening();
+    thiz.destroy = function () {
+        _inputEventHandler.destroy();
     };
 
     thiz.left = function () {

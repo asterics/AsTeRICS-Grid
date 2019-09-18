@@ -50,13 +50,13 @@ function Scanner(itemSelector, scanActiveClass, options) {
         _inputEventHandler = inputEventHandler.instance();
 
         if (options.inputEventSelect) {
-            inputEventHandler.onInputEvent(options.inputEventSelect, thiz.select);
+            _inputEventHandler.onInputEvent(options.inputEventSelect, thiz.select);
         } else {
-            inputEventHandler.onInputEvent(new InputEventKey({keyCode: 32}), thiz.select); //space as default key
+            _inputEventHandler.onInputEvent(new InputEventKey({keyCode: 32}), thiz.select); //space as default key
         }
 
         if (options.inputEventNext) {
-            inputEventHandler.onInputEvent(options.inputEventNext, thiz.next);
+            _inputEventHandler.onInputEvent(options.inputEventNext, thiz.next);
         }
     }
 
@@ -283,6 +283,11 @@ function Scanner(itemSelector, scanActiveClass, options) {
         L.removeClass(itemSelector, scanActiveClass);
         L.removeClass(itemSelector, scanInactiveClass);
         _inputEventHandler.stopListening();
+    };
+
+    thiz.destroy = function() {
+        thiz.stopScanning();
+        _inputEventHandler.destroy();
     };
 
     /**

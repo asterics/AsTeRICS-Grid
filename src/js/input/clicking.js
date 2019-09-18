@@ -25,7 +25,7 @@ function Clicker(itemSelector) {
         });
     };
 
-    thiz.stopClickcontrol = function () {
+    thiz.destroy = function () {
         L.selectAsList(_itemSelector).forEach(function (item) {
             item.removeEventListener('click', onclick);
             item.removeEventListener('keydown', onkeydown);
