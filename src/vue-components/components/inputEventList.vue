@@ -3,8 +3,11 @@
         <ul>
             <li v-for="(input, index) in inputs">
                 <div class="row nomargin">
-                    <span class="three columns input-label">{{input.label  | translate}}</span>
-                    <select @change="typeChange(index, $event.target.value)" class="five columns">
+                    <label class="three columns input-label" :for="input.label + index">
+                        <span>{{input.label  | translate}}</span>
+                        <span v-show="input.label === InputConfig.GENERAL_INPUT">{{index + 1}}</span>
+                    </label>
+                    <select :id="input.label + index" @change="typeChange(index, $event.target.value)" class="five columns">
                         <option value=""><span data-i18n="">not defined // nicht definiert</span></option>
                         <option v-for="inputEvent in inputEventTypes" :value="inputEvent.getModelName()" :selected="inputEvent.getModelName() === input.modelName">
                             {{inputEvent.getModelName() | translate}}
@@ -55,7 +58,6 @@
                         ARE
                     </div>
                 </div>
-
             </li>
         </ul>
     </div>
@@ -77,7 +79,9 @@
             inputLabels: Array,
             canAdd: Boolean,
             maxElements: Number,
-            errorInputs: Array
+            errorInputs: Array,
+            minInputs: Number,
+            maxInputs: Number
         },
         watch: {
             value: {
@@ -93,6 +97,7 @@
                 inputEventTypes: InputConfig.getInputEventTypes(),
                 InputEventKey: InputEventKey,
                 InputEventARE: InputEventARE,
+                InputConfig: InputConfig,
                 keyRecording: {},
                 areRecording: {},
                 lastEmitValue: null
@@ -101,13 +106,20 @@
         methods: {
             typeChange(elementIndex, type) {
                 let currentElement = this.inputs[elementIndex];
+                let emptyElements = this.inputs.filter(e => !e.modelName);
                 if (!type) {
                     currentElement.modelName = "";
+                    if (this.minInputs && this.inputs.length > this.minInputs && emptyElements.length >= 1) {
+                        this.inputs.splice(elementIndex, 1);
+                    }
                     this.modelChanged();
                     return;
                 }
                 let newElement = InputConfig.getInputEventInstance(type, {label: currentElement.label});
                 Vue.set(this.inputs, elementIndex, JSON.parse(JSON.stringify(newElement)));
+                if (this.maxInputs && this.inputs.length < this.maxInputs && emptyElements.length <= 1) {
+                    this.addInput();
+                }
                 this.modelChanged();
             },
             recordKey(input) {
@@ -139,8 +151,17 @@
                     this.lastEmitValue = emitValue;
                 }
             },
+            addInput(count) {
+                count = count || 1;
+                for (let i = 0; i < count; i++) {
+                    let newInput = JSON.parse(JSON.stringify(new InputEventKey({label: InputConfig.GENERAL_INPUT})));
+                    newInput.modelName = null;
+                    this.inputs.push(newInput);
+                }
+            },
             initWithValue(value) {
-                let originalValue = JSON.parse(JSON.stringify(value));
+                let originalValue = JSON.parse(JSON.stringify(value)) || [];
+                this.lastEmitValue = JSON.parse(JSON.stringify(originalValue));
                 if (this.inputLabels) {
                     let existingLabels = originalValue.map(input => input.label);
                     let missingLabels = this.inputLabels.filter(label => existingLabels.indexOf(label) === -1);
@@ -151,10 +172,9 @@
                     });
                     originalValue.sort((a, b) => this.inputLabels.indexOf(a.label) - this.inputLabels.indexOf(b.label));
                 }
-                if (originalValue instanceof Array) {
-                    this.inputs = JSON.parse(JSON.stringify(originalValue));
-                } else {
-                    log.warn('parameter "value" must be an array of inputEvents.')
+                this.inputs = JSON.parse(JSON.stringify(originalValue));
+                if (this.minInputs && this.inputs.length < this.minInputs) {
+                    this.addInput(this.minInputs - this.inputs.length);
                 }
             }
         },
