@@ -162,11 +162,13 @@
             initTest() {
                 setTimeout(() => {
                     this.stopTest();
-                    this.scanner = Scanner.getInstanceFromConfig(this.inputConfig, '.area-element-inner', 'active', 'inactive');
-                    this.scanner.setSelectionListener(element => {
-                        this.selectedTestElement = element;
-                    });
-                    this.scanner.startScanning();
+                    if (this.inputConfig.scanEnabled) {
+                        this.scanner = Scanner.getInstanceFromConfig(this.inputConfig, '.area-element-inner', 'active', 'inactive');
+                        this.scanner.setSelectionListener(element => {
+                            this.selectedTestElement = element;
+                        });
+                        this.scanner.startScanning();
+                    }
                 }, 100);
             },
             stopTest() {
