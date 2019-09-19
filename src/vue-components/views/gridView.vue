@@ -13,7 +13,7 @@
             </button>
             <button tabindex="32" @click="applyFullscreen()" class="spaced small"><i class="fas fa-expand"/> <span class="hide-mobile" data-i18n>Fullscreen // Vollbild</span></button>
             <button tabindex="31" v-show="!metadata.locked" @click="toEditGrid()" class="spaced small"><i class="fas fa-pencil-alt"/> <span class="hide-mobile" data-i18n>Edit grid // Grid bearbeiten</span></button>
-            <button tabindex="30" v-show="!metadata.locked" @click="showModal = modalTypes.MODAL_SCANNING" class="small"><i class="fas fa-cog"></i> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
+            <button tabindex="30" v-show="!metadata.locked" @click="openModal(modalTypes.MODAL_SCANNING)" class="small"><i class="fas fa-cog"></i> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
         </header>
 
         <scanning-modal v-if="showModal === modalTypes.MODAL_SCANNING" @close="showModal = null; reinitInputMethods();"/>
@@ -91,6 +91,10 @@
             ScanningModal, HeaderIcon
         },
         methods: {
+            openModal(modalType) {
+                this.showModal = modalType;
+                stopInputMethods();
+            },
             lock() {
                 let thiz = this;
                 thiz.metadata.locked = true;
