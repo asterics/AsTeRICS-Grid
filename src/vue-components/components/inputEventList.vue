@@ -79,6 +79,14 @@
             maxElements: Number,
             errorInputs: Array
         },
+        watch: {
+            value: {
+                handler: function (newValue) {
+                    this.initWithValue(newValue);
+                },
+                deep: true
+            }
+        },
         data() {
             return {
                 inputs: [],
@@ -125,26 +133,30 @@
                     return instance.isValid();
                 });
                 this.$emit('input', JSON.parse(JSON.stringify(passInputs)));
+            },
+            initWithValue(value) {
+                let originalValue = JSON.parse(JSON.stringify(value));
+                if (this.inputLabels) {
+                    let existingLabels = originalValue.map(input => input.label);
+                    let missingLabels = this.inputLabels.filter(label => existingLabels.indexOf(label) === -1);
+                    missingLabels.forEach(label => {
+                        let inputEvent = new InputEventARE({label: label});
+                        inputEvent.modelName = "";
+                        originalValue.push(inputEvent);
+                    });
+                    originalValue.sort((a, b) => this.inputLabels.indexOf(a.label) - this.inputLabels.indexOf(b.label));
+                }
+                if (originalValue instanceof Array) {
+                    this.inputs = JSON.parse(JSON.stringify(originalValue));
+                } else {
+                    log.warn('parameter "value" must be an array of inputEvents.')
+                }
             }
         },
         mounted() {
             let thiz = this;
             i18nService.initDomI18n();
-            let originalValue = JSON.parse(JSON.stringify(this.value));
-            if (this.inputLabels) {
-                let existingLabels = originalValue.map(input => input.label);
-                let missingLabels = this.inputLabels.filter(label => existingLabels.indexOf(label) === -1);
-                missingLabels.forEach(label => {
-                    let inputEvent = new InputEventARE({label: label});
-                    inputEvent.modelName = "";
-                    originalValue.push(inputEvent);
-                });
-            }
-            if (originalValue instanceof Array) {
-                this.inputs = JSON.parse(JSON.stringify(originalValue));
-            } else {
-                log.warn('parameter "value" must be an array of inputEvents.')
-            }
+            this.initWithValue(this.value);
         },
         updated() {
             i18nService.initDomI18n();
