@@ -16,6 +16,9 @@
             <button tabindex="30" v-show="!metadata.locked" @click="openModal(modalTypes.MODAL_SCANNING)" class="small"><i class="fas fa-cog"></i> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
         </header>
 
+        <huffman-input-modal v-if="showModal === modalTypes.MODAL_HUFFMAN" @close="showModal = null; reinitInputMethods();"/>
+        <direction-input-modal v-if="showModal === modalTypes.MODAL_DIRECTION" @close="showModal = null; reinitInputMethods();"/>
+        <mouse-modal v-if="showModal === modalTypes.MODAL_MOUSE" @close="showModal = null; reinitInputMethods();"/>
         <scanning-modal v-if="showModal === modalTypes.MODAL_SCANNING" @close="showModal = null; reinitInputMethods();"/>
         <div class="row content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0">
             <div data-i18n="" style="margin-top: 2em">
@@ -48,7 +51,6 @@
     import {Hover} from "../../js/input/hovering.js";
     import {Clicker} from "../../js/input/clicking.js";
 
-    import ScanningModal from '../../vue-components/modals/input/scanningModal.vue'
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {constants} from "../../js/util/constants";
     import {GridData} from "../../js/model/GridData";
@@ -56,8 +58,10 @@
     import {util} from "../../js/util/util";
     import {HuffmanInput} from "../../js/input/huffmanInput";
     import {DirectionInput} from "../../js/input/directionInput";
-    import {InputEventKey} from "../../js/model/InputEventKey";
-    import {InputConfig} from "../../js/model/InputConfig";
+    import ScanningModal from '../../vue-components/modals/input/scanningModal.vue'
+    import MouseModal from "../modals/input/mouseModal.vue";
+    import DirectionInputModal from "../modals/input/directionInputModal.vue";
+    import HuffmanInputModal from "../modals/input/huffmanInputModal.vue";
 
     let vueApp = null;
     let gridInstance = null;
@@ -88,6 +92,9 @@
             }
         },
         components: {
+            HuffmanInputModal,
+            DirectionInputModal,
+            MouseModal,
             ScanningModal, HeaderIcon
         },
         methods: {
@@ -133,29 +140,15 @@
                 window.addEventListener('resize', thiz.resizeListener, true);
                 $(document).on(constants.EVENT_GRID_RESIZE, thiz.resizeListener);
                 if (inputConfig.dirEnabled) { //TODO remove true
-                    thiz.directionInput = new DirectionInput('.grid-item-content', 'scanFocus', {
-                        inputEventLeft: inputConfig.dirInputs[InputConfig.LEFT] || new InputEventKey({keyCode: 37}), //TODO: remove second part
-                        inputEventRight: inputConfig.dirInputs[InputConfig.RIGHT] || new InputEventKey({keyCode: 39}), //TODO: remove second part
-                        inputEventUp: inputConfig.dirInputs[InputConfig.UP] || new InputEventKey({keyCode: 38}), //TODO: remove second part
-                        inputEventDown: inputConfig.dirInputs[InputConfig.DOWN] || new InputEventKey({keyCode: 40}), //TODO: remove second part
-                        inputEventSelect: inputConfig.dirInputs[InputConfig.SELECT] || new InputEventKey({keyCode: 32}), //TODO: remove second part
-                        wrapAround: true,
-                        selectionListener: function (item) {
-                            actionService.doAction(gridInstance.getCurrentGridId(), item.id);
-                        }
+                    thiz.directionInput = DirectionInput.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', (item) => {
+                        actionService.doAction(gridInstance.getCurrentGridId(), item.id);
                     });
                     thiz.directionInput.start();
                 }
 
-                if (inputConfig.huffEnabled || true) { //TODO remove true
-                    this.huffmanInput = new HuffmanInput('.grid-item-content', 'scanFocus', {
-                        printCodes: true,
-                        printColors: true,
-                        colors: inputConfig.huffColors,
-                        inputEvents: [new InputEventKey({keyCode: 49}), new InputEventKey({keyCode: 50}), new InputEventKey({keyCode: 51}), new InputEventKey({keyCode: 52}), new InputEventKey({keyCode: 53}), new InputEventKey({keyCode: 54})], // TODO use inputConfig.huffInputs
-                        selectionListener: function (item) {
-                            actionService.doAction(gridInstance.getCurrentGridId(), item.id);
-                        }
+                if (inputConfig.huffEnabled) {
+                    this.huffmanInput = HuffmanInput.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', 'scanInactive', (item) => {
+                        actionService.doAction(gridInstance.getCurrentGridId(), item.id);
                     });
                     this.huffmanInput.start();
                 }
