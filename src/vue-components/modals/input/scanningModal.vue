@@ -101,10 +101,6 @@
             return {
                 inputConfig: null,
                 metadata: null,
-                isRecordingKey: false,
-                isRecordingARE: false,
-                lastRecordTime: 0,
-                areConnectionError: false,
                 InputConfig: InputConfig,
                 error: '',
                 errorInputs: [],

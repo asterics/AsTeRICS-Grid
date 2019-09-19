@@ -57,7 +57,6 @@
     import TestArea from "./testArea.vue"
     import './../../../css/modal.css';
     import {InputConfig} from "../../../js/model/InputConfig";
-    import {Scanner} from "../../../js/input/scanning";
     import {Hover} from "../../../js/input/hovering";
     import {Clicker} from "../../../js/input/clicking";
     import {inputEventHandler} from "../../../js/input/inputEventHandler";
@@ -69,13 +68,7 @@
             return {
                 inputConfig: null,
                 metadata: null,
-                isRecordingKey: false,
-                isRecordingARE: false,
-                lastRecordTime: 0,
-                areConnectionError: false,
                 InputConfig: InputConfig,
-                error: '',
-                errorInputs: [],
                 clicker: null,
                 hover: null,
                 testOpen: false,
