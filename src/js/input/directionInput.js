@@ -12,6 +12,7 @@ DirectionInput.getInstanceFromConfig = function (inputConfig, itemSelector, scan
         inputEventDown: inputConfig.dirInputs.filter(e => e.label === InputConfig.DOWN)[0],
         inputEventSelect: inputConfig.dirInputs.filter(e => e.label === InputConfig.SELECT)[0],
         wrapAround: inputConfig.dirWrapAround,
+        resetToStart: inputConfig.dirResetToStart,
         selectionListener: selectionListener
     });
 };
@@ -32,6 +33,7 @@ function DirectionInputConstructor(paramItemSelector, paramScanActiveClass, opti
     let itemSelector = paramItemSelector;
     let scanActiveClass = paramScanActiveClass;
     let wrapAround = true;
+    let resetToStart = false;
 
     //internal
     let _selectionListener = null;
@@ -46,6 +48,7 @@ function DirectionInputConstructor(paramItemSelector, paramScanActiveClass, opti
     };
 
     thiz.destroy = function () {
+        _elements.removeClass(scanActiveClass);
         _inputEventHandler.destroy();
     };
 
@@ -69,7 +72,9 @@ function DirectionInputConstructor(paramItemSelector, paramScanActiveClass, opti
         if (_selectionListener) {
             _selectionListener(_currentElement);
         }
-        setActiveElement(_elements[0]);
+        if (resetToStart) {
+            setActiveElement(_elements[0]);
+        }
     };
 
     function init() {
@@ -96,6 +101,7 @@ function DirectionInputConstructor(paramItemSelector, paramScanActiveClass, opti
                 _selectionListener = options.selectionListener;
             }
             wrapAround = options.wrapAround !== undefined ? options.wrapAround : false;
+            resetToStart = options.resetToStart !== undefined ? options.resetToStart : false;
 
             _inputEventHandler.onInputEvent(options.inputEventLeft, thiz.left);
             _inputEventHandler.onInputEvent(options.inputEventRight, thiz.right);
