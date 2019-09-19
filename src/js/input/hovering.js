@@ -48,6 +48,9 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass) {
             item.removeEventListener('touchstart', mouseEnter);
             item.removeEventListener('touchend', mouseLeave);
         });
+        Object.keys(_hoverMap).forEach(key => {
+            clearTimeout(_hoverMap[key]);
+        });
     };
 
     thiz.setHoverTimeout = function (timeoutMs) {
