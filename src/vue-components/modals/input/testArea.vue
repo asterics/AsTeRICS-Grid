@@ -78,6 +78,7 @@
         height: 90%;
         margin: 5%;
         background-color: lightblue;
+        z-index: 100;
     }
 
     .active {
@@ -92,6 +93,10 @@
     .selected {
         -webkit-animation: background 5s cubic-bezier(1,0,0,1);
         animation: background 5s cubic-bezier(1,0,0,1);
+    }
+
+    .mouseentered {
+        outline: 3px solid green !important;
     }
 
     @-webkit-keyframes background {
