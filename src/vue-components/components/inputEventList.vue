@@ -94,7 +94,8 @@
                 InputEventKey: InputEventKey,
                 InputEventARE: InputEventARE,
                 keyRecording: {},
-                areRecording: {}
+                areRecording: {},
+                lastEmitValue: null
             }
         },
         methods: {
@@ -132,7 +133,11 @@
                     let instance = InputConfig.getInputEventInstance(input.modelName, input);
                     return instance.isValid();
                 });
-                this.$emit('input', JSON.parse(JSON.stringify(passInputs)));
+                let emitValue = JSON.parse(JSON.stringify(passInputs));
+                if (JSON.stringify(emitValue) !== JSON.stringify(this.lastEmitValue)) {
+                    this.$emit('input', emitValue);
+                    this.lastEmitValue = emitValue;
+                }
             },
             initWithValue(value) {
                 let originalValue = JSON.parse(JSON.stringify(value));
