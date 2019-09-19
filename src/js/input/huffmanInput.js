@@ -2,6 +2,18 @@ import Huffman from 'n-ary-huffman'
 import $ from 'jquery';
 import {inputEventHandler} from "./inputEventHandler";
 
+let HuffmanInput = {};
+
+HuffmanInput.getInstanceFromConfig = function (inputConfig, itemSelector, scanActiveClass, scanInactiveClass, selectionListener) {
+    return new HuffmanInputConstructor(itemSelector, scanActiveClass, {
+        printCodes: inputConfig.huffShowNumbers,
+        printColors: inputConfig.huffShowColors,
+        colors: inputConfig.huffColors,
+        inputEvents: inputConfig.huffInputs,
+        selectionListener: selectionListener
+    });
+};
+
 /**
  * implements an input method where elements are matched to an unique code sequence. typing this code using an input
  * method directly selects the element. The codes are generated using an n-ary huffman encoding algorithm.
@@ -11,7 +23,7 @@ import {inputEventHandler} from "./inputEventHandler";
  * @param options
  * @constructor
  */
-function HuffmanInput(paramItemSelector, paramScanActiveClass, options) {
+function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, options) {
     let thiz = this;
 
     //options
