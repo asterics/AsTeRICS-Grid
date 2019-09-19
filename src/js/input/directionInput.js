@@ -1,5 +1,20 @@
 import $ from 'jquery';
 import {inputEventHandler} from "./inputEventHandler";
+import {InputConfig} from "../model/InputConfig";
+
+let DirectionInput = {};
+
+DirectionInput.getInstanceFromConfig = function (inputConfig, itemSelector, scanActiveClass, selectionListener) {
+    return new DirectionInputConstructor(itemSelector, scanActiveClass, {
+        inputEventLeft: inputConfig.dirInputs.filter(e => e.label === InputConfig.LEFT)[0],
+        inputEventRight: inputConfig.dirInputs.filter(e => e.label === InputConfig.RIGHT)[0],
+        inputEventUp: inputConfig.dirInputs.filter(e => e.label === InputConfig.UP)[0],
+        inputEventDown: inputConfig.dirInputs.filter(e => e.label === InputConfig.DOWN)[0],
+        inputEventSelect: inputConfig.dirInputs.filter(e => e.label === InputConfig.SELECT)[0],
+        wrapAround: inputConfig.dirWrapAround,
+        selectionListener: selectionListener
+    });
+};
 
 /**
  * implements an input method for buttons/switches where the selected element can be changed in each direction
@@ -10,7 +25,7 @@ import {inputEventHandler} from "./inputEventHandler";
  * @param options
  * @constructor
  */
-function DirectionInput(paramItemSelector, paramScanActiveClass, options) {
+function DirectionInputConstructor(paramItemSelector, paramScanActiveClass, options) {
     let thiz = this;
 
     //options
@@ -82,11 +97,11 @@ function DirectionInput(paramItemSelector, paramScanActiveClass, options) {
             }
             wrapAround = options.wrapAround !== undefined ? options.wrapAround : false;
 
-            inputEventHandler.onInputEvent(options.inputEventLeft, thiz.left);
-            inputEventHandler.onInputEvent(options.inputEventRight, thiz.right);
-            inputEventHandler.onInputEvent(options.inputEventUp, thiz.up);
-            inputEventHandler.onInputEvent(options.inputEventDown, thiz.down);
-            inputEventHandler.onInputEvent(options.inputEventSelect, thiz.select);
+            _inputEventHandler.onInputEvent(options.inputEventLeft, thiz.left);
+            _inputEventHandler.onInputEvent(options.inputEventRight, thiz.right);
+            _inputEventHandler.onInputEvent(options.inputEventUp, thiz.up);
+            _inputEventHandler.onInputEvent(options.inputEventDown, thiz.down);
+            _inputEventHandler.onInputEvent(options.inputEventSelect, thiz.select);
         }
     }
 
