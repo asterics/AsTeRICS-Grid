@@ -4,7 +4,7 @@
             <div class="area-row" v-for="i in rows">
                 <div class="area-column" v-for="j in columns">
                     <div class="area-element" :style="`top: ${(i-1)*height}%; left: ${(j-1)*width}%; width: ${width}%; height: ${height}%;`">
-                        <div class="area-element-inner"></div>
+                        <div class="area-element-inner" :id="i + ' ' + j"></div>
                     </div>
                 </div>
             </div>
