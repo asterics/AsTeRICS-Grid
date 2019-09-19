@@ -25,6 +25,7 @@ class InputConfig extends Model({
     mouseclickEnabled: [Boolean],
     dirEnabled: [Boolean],
     dirInputs: [Model.Array(Object)], //object with keys InputConfig.UP/DOWN/LEFT/RIGHT/SELECT
+    dirWrapAround: [Boolean],
     huffEnabled: [Boolean],
     huffElementCount: [Number],
     huffInputs: [Model.Array(Object)], // ordered array of InputEvent objects
@@ -75,8 +76,17 @@ InputConfig.defaults({
     areURL: "",
     hoverTimeoutMs: 1000,
     mouseclickEnabled: true,
-    scanInputs: [new InputEventKey({label: InputConfig.SELECT, keyCode: 32, keyName: "Space", holdDuration: 400}), new InputEventKey({label: InputConfig.NEXT, keyCode: 32, keyName: "Space"})],
-    dirInputs: [],
+    scanInputs: [
+        new InputEventKey({label: InputConfig.SELECT, keyCode: 32, keyName: "Space", holdDuration: 400}),
+        new InputEventKey({label: InputConfig.NEXT, keyCode: 32, keyName: "Space"})
+    ],
+    dirInputs: [
+        new InputEventKey({label: InputConfig.SELECT, keyCode: 32, keyName: "Space"}),
+        new InputEventKey({label: InputConfig.LEFT, keyCode: 37, keyName: "ArrowLeft"}),
+        new InputEventKey({label: InputConfig.RIGHT, keyCode: 39, keyName: "ArrowRight"}),
+        new InputEventKey({label: InputConfig.UP, keyCode: 38, keyName: "ArrowUp"}),
+        new InputEventKey({label: InputConfig.DOWN, keyCode: 40, keyName: "ArrowDown"}),
+    ],
     huffInputs: []
 });
 
