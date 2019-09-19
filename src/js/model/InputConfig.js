@@ -30,7 +30,9 @@ class InputConfig extends Model({
     huffEnabled: [Boolean],
     huffElementCount: [Number],
     huffInputs: [Model.Array(Object)], // ordered array of InputEvent objects
-    huffColors: [Model.Array(String)]
+    huffColors: [Model.Array(String)],
+    huffShowColors: [Boolean],
+    huffShowNumbers: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, InputConfig);
@@ -61,6 +63,7 @@ InputConfig.LEFT = "LEFT";
 InputConfig.RIGHT = "RIGHT";
 InputConfig.SELECT = "SELECT";
 InputConfig.NEXT = "NEXT";
+InputConfig.GENERAL_INPUT = "GENERAL_INPUT";
 InputConfig.getNumConst = (num) => "NUM" + num;
 InputConfig.DEFAULT_SCAN_INPUTS = [
     new InputEventKey({label: InputConfig.SELECT, keyCode: 32, keyName: "Space", holdDuration: 400}),
@@ -72,6 +75,12 @@ InputConfig.DEFAULT_DIR_INPUTS = [
     new InputEventKey({label: InputConfig.RIGHT, keyCode: 39, keyName: "ArrowRight"}),
     new InputEventKey({label: InputConfig.UP, keyCode: 38, keyName: "ArrowUp"}),
     new InputEventKey({label: InputConfig.DOWN, keyCode: 40, keyName: "ArrowDown"}),
+];
+InputConfig.DEFAULT_HUFF_INPUTS = [
+    new InputEventKey({label: InputConfig.GENERAL_INPUT, keyCode: 49, keyName: "Digit1"}),
+    new InputEventKey({label: InputConfig.GENERAL_INPUT, keyCode: 50, keyName: "Digit2"}),
+    new InputEventKey({label: InputConfig.GENERAL_INPUT, keyCode: 51, keyName: "Digit3"}),
+    new InputEventKey({label: InputConfig.GENERAL_INPUT, keyCode: 52, keyName: "Digit4"})
 ];
 
 InputConfig.defaults({
@@ -90,7 +99,10 @@ InputConfig.defaults({
     mouseclickEnabled: true,
     scanInputs: InputConfig.DEFAULT_SCAN_INPUTS,
     dirInputs: InputConfig.DEFAULT_DIR_INPUTS,
-    huffInputs: []
+    huffInputs: InputConfig.DEFAULT_HUFF_INPUTS,
+    huffShowColors: true,
+    huffShowNumbers: true,
+    huffElementCount: 0
 });
 
 export {InputConfig};
