@@ -25,6 +25,9 @@
                         <div v-show="inputConfig.scanEnabled">
                             <accordion acc-label="Input // Eingabe" acc-open="true" acc-label-type="h2" acc-background-color="white" class="row">
                                 <input-event-list v-model="inputConfig.scanInputs" :input-labels="[InputConfig.SELECT, InputConfig.NEXT]" :error-inputs="errorInputs" @input="inputChanged"></input-event-list>
+                                <div class="row">
+                                    <button class="twelve columns" data-i18n="" @click="resetInput">Reset to default input configuration // Auf Standard Eingabe-Konfiguration zurücksetzen</button>
+                                </div>
                             </accordion>
                             <accordion acc-label="ADVANCED_SETTINGS" acc-label-type="h2" acc-background-color="white">
                                 <div class="row" style="margin-top: 0">
@@ -158,6 +161,10 @@
                 if (this.error) {
                     this.validateInputs();
                 }
+            },
+            resetInput() {
+                this.$set(this.inputConfig, 'scanInputs', JSON.parse(JSON.stringify(InputConfig.DEFAULT_SCAN_INPUTS)));
+                this.inputChanged();
             },
             initTest() {
                 setTimeout(() => {
