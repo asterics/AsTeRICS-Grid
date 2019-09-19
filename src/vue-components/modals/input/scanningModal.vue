@@ -59,7 +59,7 @@
                                         </div>
                                     </accordion>
                                     <accordion acc-label="TEST_CONFIGURATION" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
-                                        <test-area></test-area>
+                                        <test-area :selected-element="selectedTestElement"></test-area>
                                     </accordion>
 
                                     <div class="warn" v-show="error">
@@ -112,7 +112,8 @@
                 error: '',
                 errorInputs: [],
                 scanner: null,
-                testOpen: false
+                testOpen: false,
+                selectedTestElement: null
             }
         },
         watch: {
@@ -169,6 +170,9 @@
                 setTimeout(() => {
                     this.stopTest();
                     this.scanner = Scanner.getInstanceFromConfig(this.inputConfig, '.area-element-inner', 'active', 'inactive');
+                    this.scanner.setSelectionListener(element => {
+                        this.selectedTestElement = element;
+                    });
                     this.scanner.startScanning();
                 }, 100);
             },

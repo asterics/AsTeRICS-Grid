@@ -13,8 +13,21 @@
 </template>
 
 <script>
+    import $ from 'jquery';
+
     export default {
-        props: [],
+        props: {
+            selectedElement: HTMLElement
+        },
+        watch: {
+            selectedElement: {
+                handler: function (newObject) {
+                    $('.area-element-inner').removeClass('selected');
+                    $(newObject).addClass('selected');
+                },
+                deep: true
+            }
+        },
         data() {
             return {
                 rows: 10,
@@ -72,6 +85,22 @@
     }
 
     .inactive {
-        background-color: whitesmoke;
+        background-color: whitesmoke !important;
+        animation: none !important;
+    }
+
+    .selected {
+        -webkit-animation: background 5s cubic-bezier(1,0,0,1);
+        animation: background 5s cubic-bezier(1,0,0,1);
+    }
+
+    @-webkit-keyframes background {
+        0% { background-color: dodgerblue; }
+        100% { background-color: lightblue; }
+    }
+
+    @keyframes background {
+        0% { background-color: dodgerblue; }
+        100% { background-color: lightblue; }
     }
 </style>
