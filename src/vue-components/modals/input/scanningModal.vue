@@ -92,6 +92,7 @@
     import './../../../css/modal.css';
     import {InputConfig} from "../../../js/model/InputConfig";
     import {Scanner} from "../../../js/input/scanning";
+    import {inputEventHandler} from "../../../js/input/inputEventHandler";
 
     export default {
         props: [],
@@ -180,7 +181,7 @@
         },
         mounted () {
             let thiz = this;
-            log.debug('opened modal: ' + thiz.gridId);
+            inputEventHandler.pauseAll();
             dataService.getMetadata().then(metadata => {
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
                 thiz.inputConfig = JSON.parse(JSON.stringify(metadata.inputConfig));
@@ -193,6 +194,7 @@
         beforeDestroy() {
             helpService.revertToLastLocation();
             this.stopTest();
+            inputEventHandler.resumeAll();
         }
     }
 </script>

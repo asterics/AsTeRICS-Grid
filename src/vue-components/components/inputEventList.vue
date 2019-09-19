@@ -129,7 +129,6 @@
         },
         mounted() {
             let thiz = this;
-            inputEventHandler.pauseAll();
             i18nService.initDomI18n();
             let originalValue = JSON.parse(JSON.stringify(this.value));
             if (this.inputLabels) {
@@ -149,9 +148,6 @@
         },
         updated() {
             i18nService.initDomI18n();
-        },
-        beforeDestroy() {
-            inputEventHandler.resumeAll();
         }
     }
 </script>
