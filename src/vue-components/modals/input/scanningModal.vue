@@ -16,56 +16,52 @@
                             <span data-i18n="">Scanning input method: 1-2 input channels // Eingabemethode Scanning: 1-2 Eingabekanäle</span>
                             <a aria-label="Help" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
                         </div>
-                        <div class="row">
+                        <div class="row" >
                             <div class="twelve columns">
-                                <div class="row" >
+                                <input v-focus type="checkbox" id="enableScanning" v-model="inputConfig.scanEnabled"/>
+                                <label class="inline" for="enableScanning" data-i18n>Enable Scanning // Scanning aktivieren</label>
+                            </div>
+                        </div>
+                        <div v-show="inputConfig.scanEnabled">
+                            <accordion acc-label="Input // Eingabe" acc-open="true" acc-label-type="h2" acc-background-color="white" class="row">
+                                <input-event-list v-model="inputConfig.scanInputs" :input-labels="[InputConfig.SELECT, InputConfig.NEXT]" :error-inputs="errorInputs" @input="inputChanged"></input-event-list>
+                            </accordion>
+                            <accordion acc-label="ADVANCED_SETTINGS" acc-label-type="h2" acc-background-color="white">
+                                <div class="row" style="margin-top: 0">
                                     <div class="twelve columns">
-                                        <input v-focus type="checkbox" id="enableScanning" v-model="inputConfig.scanEnabled"/>
-                                        <label class="inline" for="enableScanning" data-i18n>Enable Scanning // Scanning aktivieren</label>
+                                        <input type="checkbox" id="chkVerticalScanning" v-model="inputConfig.scanVertical"/>
+                                        <label for="chkVerticalScanning" data-i18n>Vertical scanning // Scanning vertikal</label>
                                     </div>
                                 </div>
-                                <div v-show="inputConfig.scanEnabled">
-                                    <accordion acc-label="Input // Eingabe" acc-open="true" acc-label-type="h2" acc-background-color="white" class="row">
-                                        <input-event-list v-model="inputConfig.scanInputs" :input-labels="[InputConfig.SELECT, InputConfig.NEXT]" :error-inputs="errorInputs" @input="inputChanged"></input-event-list>
-                                    </accordion>
-                                    <accordion acc-label="ADVANCED_SETTINGS" acc-label-type="h2" acc-background-color="white">
-                                        <div class="row" style="margin-top: 0">
-                                            <div class="twelve columns">
-                                                <input type="checkbox" id="chkVerticalScanning" v-model="inputConfig.scanVertical"/>
-                                                <label for="chkVerticalScanning" data-i18n>Vertical scanning // Scanning vertikal</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="twelve columns">
-                                                <input type="checkbox" id="chkBinaryScanning" v-model="inputConfig.scanBinary"/>
-                                                <label for="chkBinaryScanning" data-i18n>Binary scanning // Scanning binär</label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="twelve columns">
-                                                <input type="checkbox" id="chkAutoScanning" v-model="inputConfig.scanAuto"/>
-                                                <label for="chkAutoScanning" data-i18n>Automatic (timed) scanning // Automatisches (zeitgesteuertes) Scanning</label>
-                                            </div>
-                                        </div>
-                                        <div class="row" v-show="inputConfig.scanAuto">
-                                            <label class="four columns" for="inScanTime" data-i18n>Scanning Time (ms) // Scanning Zeit (ms)</label>
-                                            <input type="range" id="inScanTime" v-model.number="inputConfig.scanTimeoutMs" min="100" max="3000" step="100"/>
-                                            <input type="number" v-model.number="inputConfig.scanTimeoutMs" min="100" max="3000" step="100"/>
-                                        </div>
-                                        <div class="row" v-show="inputConfig.scanAuto">
-                                            <label class="four columns" for="inFirstElement" data-i18n>Time factor first element // Zeit-Faktor erstes Element</label>
-                                            <input type="range" id="inFirstElement" v-model.number="inputConfig.scanTimeoutFirstElementFactor" min="1" max="5" step="0.1"/>
-                                            <input type="number" v-model.number="inputConfig.scanTimeoutFirstElementFactor" min="1" max="5" step="0.5" />
-                                        </div>
-                                    </accordion>
-                                    <accordion acc-label="TEST_CONFIGURATION" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
-                                        <test-area :selected-element="selectedTestElement"></test-area>
-                                    </accordion>
+                                <div class="row">
+                                    <div class="twelve columns">
+                                        <input type="checkbox" id="chkBinaryScanning" v-model="inputConfig.scanBinary"/>
+                                        <label for="chkBinaryScanning" data-i18n>Binary scanning // Scanning binär</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="twelve columns">
+                                        <input type="checkbox" id="chkAutoScanning" v-model="inputConfig.scanAuto"/>
+                                        <label for="chkAutoScanning" data-i18n>Automatic (timed) scanning // Automatisches (zeitgesteuertes) Scanning</label>
+                                    </div>
+                                </div>
+                                <div class="row" v-show="inputConfig.scanAuto">
+                                    <label class="four columns" for="inScanTime" data-i18n>Scanning Time (ms) // Scanning Zeit (ms)</label>
+                                    <input type="range" id="inScanTime" v-model.number="inputConfig.scanTimeoutMs" min="100" max="3000" step="100"/>
+                                    <input type="number" v-model.number="inputConfig.scanTimeoutMs" min="100" max="3000" step="100"/>
+                                </div>
+                                <div class="row" v-show="inputConfig.scanAuto">
+                                    <label class="four columns" for="inFirstElement" data-i18n>Time factor first element // Zeit-Faktor erstes Element</label>
+                                    <input type="range" id="inFirstElement" v-model.number="inputConfig.scanTimeoutFirstElementFactor" min="1" max="5" step="0.1"/>
+                                    <input type="number" v-model.number="inputConfig.scanTimeoutFirstElementFactor" min="1" max="5" step="0.5" />
+                                </div>
+                            </accordion>
+                            <accordion acc-label="TEST_CONFIGURATION" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
+                                <test-area :selected-element="selectedTestElement"></test-area>
+                            </accordion>
 
-                                    <div class="warn" v-show="error">
-                                        <i class="fas fa-exclamation-triangle"></i> {{error}}
-                                    </div>
-                                </div>
+                            <div class="warn" v-show="error">
+                                <i class="fas fa-exclamation-triangle"></i> {{error}}
                             </div>
                         </div>
                     </div>
