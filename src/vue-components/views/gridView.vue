@@ -13,7 +13,7 @@
             </button>
             <button tabindex="32" @click="applyFullscreen()" class="spaced small"><i class="fas fa-expand"/> <span class="hide-mobile" data-i18n>Fullscreen // Vollbild</span></button>
             <button tabindex="31" v-show="!metadata.locked" @click="toEditGrid()" class="spaced small"><i class="fas fa-pencil-alt"/> <span class="hide-mobile" data-i18n>Edit grid // Grid bearbeiten</span></button>
-            <button tabindex="30" v-show="!metadata.locked" @click="openModal(modalTypes.MODAL_SCANNING)" class="small"><i class="fas fa-cog"></i> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
+            <button tabindex="30" id="inputConfigButton" v-show="!metadata.locked" class="small"><i class="fas fa-cog"></i> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
         </header>
 
         <huffman-input-modal v-if="showModal === modalTypes.MODAL_HUFFMAN" @close="showModal = null; reinitInputMethods();"/>
@@ -321,6 +321,7 @@
             }).then(() => {
                 return initGrid(thiz.gridData.id);
             }).then(() => {
+                initContextmenu();
                 thiz.viewInitialized = true;
                 thiz.initInputMethods();
             }).catch((e) => {
@@ -335,6 +336,7 @@
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
             $(document).off(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
             stopInputMethods();
+            $.contextMenu('destroy');
             areService.unsubscribeEvents();
             vueApp = null;
             if (gridInstance) {
@@ -361,6 +363,62 @@
             gridId: gridId
         });
         return gridInstance.getInitPromise();
+    }
+
+    function initContextmenu() {
+        let CONTEXT_MOUSE = "CONTEXT_MOUSE";
+        let CONTEXT_SCANNING = "CONTEXT_SCANNING";
+        let CONTEXT_DIRECTION = "CONTEXT_DIRECTION";
+        let CONTEXT_HUFFMAN = "CONTEXT_HUFFMAN";
+
+        let contextItems = {
+            CONTEXT_MOUSE: {
+                name: "Mouse input // Mauseingabe",
+                icon: "fas fa-mouse-pointer"
+            },
+            CONTEXT_SCANNING: {
+                name: "Scanning",
+                icon: "fas fa-sort-amount-down"
+            },
+            CONTEXT_DIRECTION: {
+                name: "Direction input // Richtungs-Eingabe",
+                icon: "fas fa-arrows-alt"
+            },
+            CONTEXT_HUFFMAN: {
+                name: "Huffman input // Huffman-Eingabe",
+                icon: "fas fa-list-ol"
+            }
+        };
+
+        $.contextMenu({
+            selector: '#inputConfigButton',
+            callback: function (key, options) {
+                handleContextMenu(key);
+            },
+            trigger: 'left',
+            items: contextItems
+        });
+
+        function handleContextMenu(key, elementId) {
+            switch (key) {
+                case CONTEXT_MOUSE: {
+                    vueApp.openModal(modalTypes.MODAL_MOUSE);
+                    break;
+                }
+                case CONTEXT_SCANNING: {
+                    vueApp.openModal(modalTypes.MODAL_SCANNING);
+                    break;
+                }
+                case CONTEXT_DIRECTION: {
+                    vueApp.openModal(modalTypes.MODAL_DIRECTION);
+                    break;
+                }
+                case CONTEXT_HUFFMAN: {
+                    vueApp.openModal(modalTypes.MODAL_HUFFMAN);
+                    break;
+                }
+            }
+        }
     }
 
     export default vueConfig;
