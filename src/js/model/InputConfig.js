@@ -1,23 +1,34 @@
 import {modelUtil} from "../util/modelUtil";
 import {constants} from "../util/constants";
 import {Model} from "../externals/objectmodel";
+import {InputEventKey} from "./InputEventKey";
+import {InputEventARE} from "./InputEventARE";
 
 class InputConfig extends Model({
     id: String,
     modelName: String,
     modelVersion: String,
-    scanAutostart: [Boolean],
-    scanTimeoutMs: Number,
-    scanTimeoutFirstElementFactor: Number, //factor for first element scanning time, e.g. scanTimeoutMs = 1000, scanTimeoutFirstElementFactor = 2 => scanning time for first element = 2000ms
+    scanEnabled: [Boolean],
+    scanAutostart: [Boolean], //TODO delete
+    scanAuto: [Boolean],
+    scanTimeoutMs: [Number],
+    scanTimeoutFirstElementFactor: [Number], //factor for first element scanning time, e.g. scanTimeoutMs = 1000, scanTimeoutFirstElementFactor = 2 => scanning time for first element = 2000ms
     scanVertical: [Boolean],
     scanBinary: [Boolean],
-    scanKey: [Number],
-    scanKeyName: [String],
+    scanKey: [Number], //TODO: delete
+    scanKeyName: [String], //TODO: delete
+    scanInputs: [Model.Array(Object)], //object with keys InputConfig.NEXT/SELECT
     areEvents: Model.Array(String),
-    areURL: [String],
+    areURL: [String], //TODO: delete
     hoverEnabled: [Boolean],
     hoverTimeoutMs: Number,
-    mouseclickEnabled: [Boolean]
+    mouseclickEnabled: [Boolean],
+    dirEnabled: [Boolean],
+    dirInputs: [Model.Array(Object)], //object with keys InputConfig.UP/DOWN/LEFT/RIGHT/SELECT
+    huffEnabled: [Boolean],
+    huffElementCount: [Number],
+    huffInputs: [Model.Array(Object)], // ordered array of InputEvent objects
+    huffColors: [Model.Array(String)]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, InputConfig);
@@ -28,13 +39,33 @@ class InputConfig extends Model({
     static getModelName() {
         return "InputConfig";
     }
+
+    static getInputEventTypes() {
+        return [InputEventKey, InputEventARE];
+    }
+
+    static getInputEventInstance(modelName, options) {
+        let constructor = this.getInputEventTypes().filter(type => type.getModelName() === modelName)[0];
+        if (constructor) {
+            return new constructor(options);
+        } else {
+            log.warn('input event type not found: ' + modelName);
+        }
+    }
 }
+InputConfig.UP = "UP";
+InputConfig.DOWN = "DOWN";
+InputConfig.LEFT = "LEFT";
+InputConfig.RIGHT = "RIGHT";
+InputConfig.SELECT = "SELECT";
+InputConfig.NEXT = "NEXT";
+InputConfig.getNumConst = (num) => "NUM" + num;
 
 InputConfig.defaults({
     id: "", //will be replaced by constructor
     modelName: InputConfig.getModelName(),
     modelVersion: constants.MODEL_VERSION,
-    scanAutostart: false,
+    scanAuto: false,
     scanTimeoutMs: 1000,
     scanTimeoutFirstElementFactor: 1,
     scanBinary: true,
@@ -43,7 +74,10 @@ InputConfig.defaults({
     areEvents: [],
     areURL: "",
     hoverTimeoutMs: 1000,
-    mouseclickEnabled: true
+    mouseclickEnabled: true,
+    scanInputs: [new InputEventKey({label: InputConfig.SELECT, keyCode: 32, keyName: "Space", holdDuration: 400}), new InputEventKey({label: InputConfig.NEXT, keyCode: 32, keyName: "Space"})],
+    dirInputs: [],
+    huffInputs: []
 });
 
 export {InputConfig};
