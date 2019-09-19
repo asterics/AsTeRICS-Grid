@@ -10,6 +10,7 @@ HuffmanInput.getInstanceFromConfig = function (inputConfig, itemSelector, scanAc
         printColors: inputConfig.huffShowColors,
         colors: inputConfig.huffColors,
         inputEvents: inputConfig.huffInputs,
+        elementCount: inputConfig.huffElementCount,
         selectionListener: selectionListener
     });
 };
@@ -32,6 +33,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, option
     let wrapAround = true;
     let printCodes = false;
     let printColors = true;
+    let elementCount = 0;
     let colors = [];
 
     //internal
@@ -103,6 +105,12 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, option
             return;
         }
         let ids = _elements.toArray().map(e => e.id);
+        if (ids.length < elementCount) { // fill up to number defined by elementCount
+            let missing = elementCount - ids.length;
+            for (let i = 0; i < missing; i++) {
+                ids.push(null);
+            }
+        }
         _treeItems = ids.map(function (name, index) {
             return {
                 name: name,
@@ -117,6 +125,9 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, option
             longestCodeLength = codeWord.length > longestCodeLength ? codeWord.length : longestCodeLength;
         });
         tree.assignCodeWords(_alphabet, function (item, codeWord) {
+            if (!item.name) {
+                return;
+            }
             item.codeWord = codeWord;
             item.element = document.getElementById(item.name);
             if (printColors || printCodes) {
@@ -134,6 +145,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, option
                 $(item.element).append(`<div class="huffman-code-visualization" style="font-size:${fontSize}; display:block; position: absolute; bottom: 0; width: ${elementWidth}">${spans}</div>`);
             }
         });
+        _treeItems = _treeItems.filter(item => item.name);
     }
 
     function parseOptions(options) {
@@ -148,6 +160,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, option
         printCodes = options.printCodes !== undefined ? options.printCodes : false;
         printColors = options.printColors !== undefined ? options.printColors : true;
         colors = options.colors || colors;
+        elementCount = options.elementCount || 0;
         options.inputEvents.forEach((el, index) => {
             _alphabet += (index + 1);
             _inputEventHandler.onInputEvent(el, () => {
