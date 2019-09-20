@@ -386,7 +386,7 @@
             },
             CONTEXT_HUFFMAN: {
                 name: "Huffman input // Huffman-Eingabe",
-                icon: "fas fa-list-ol"
+                icon: "fas fa-ellipsis-h"
             }
         };
 
