@@ -5,13 +5,14 @@ import {inputEventHandler} from "./inputEventHandler";
 let HuffmanInput = {};
 
 HuffmanInput.getInstanceFromConfig = function (inputConfig, itemSelector, scanActiveClass, scanInactiveClass, selectionListener) {
-    return new HuffmanInputConstructor(itemSelector, scanActiveClass, {
+    return new HuffmanInputConstructor(itemSelector, scanActiveClass, scanInactiveClass, {
         printCodes: inputConfig.huffShowNumbers,
         printColors: inputConfig.huffShowColors,
         colors: inputConfig.huffColors,
         inputEvents: inputConfig.huffInputs,
         elementCount: inputConfig.huffElementCount,
         timeout: inputConfig.huffTimeout,
+        markInactive: inputConfig.huffMarkInactive,
         selectionListener: selectionListener
     });
 };
@@ -25,17 +26,19 @@ HuffmanInput.getInstanceFromConfig = function (inputConfig, itemSelector, scanAc
  * @param options
  * @constructor
  */
-function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, options) {
+function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramScanInactiveClass, options) {
     let thiz = this;
 
     //options
     let itemSelector = paramItemSelector;
     let scanActiveClass = paramScanActiveClass;
+    let scanIncativeClass = paramScanInactiveClass;
     let wrapAround = true;
     let printCodes = false;
     let printColors = true;
     let elementCount = 0;
     let timeout = 1000;
+    let markInactive = true;
     let colors = [];
 
     //internal
@@ -78,24 +81,30 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, option
 
     thiz.input = function (id) {
         id = id + '';
+        clearTimeout(_timeoutHandler);
         if (id.length !== 1) {
             return;
         }
         _currentInput += id;
-        let selectedElement = _treeItems.filter(el => el.codeWord === _currentInput);
-        let possibleElements = _treeItems.filter(el => el.codeWord.indexOf(_currentInput) === 0);
+        let selectedElement = _treeItems.filter(el => el.codeWord === _currentInput).map(el => el.element);
+        let possibleElements = _treeItems.filter(el => el.codeWord.indexOf(_currentInput) === 0).map(el => el.element);
+        _elements.removeClass(scanActiveClass);
         if (selectedElement[0]) {
-            setActiveElement(selectedElement[0].element);
+            setActiveElement(selectedElement[0]);
+            setPossibleElements(_elements.toArray());
             if (_selectionListener) {
-                _selectionListener(selectedElement[0].element);
+                _selectionListener(selectedElement[0]);
             }
+        } else if (markInactive) {
+            setPossibleElements(possibleElements);
         }
         if (selectedElement[0] || possibleElements.length === 0) {
+            setPossibleElements(_elements.toArray());
             _currentInput = '';
         }
-        clearTimeout(_timeoutHandler);
         if (timeout > 0) {
             _timeoutHandler = setTimeout(() => {
+                setPossibleElements(_elements.toArray());
                 _currentInput = '';
             }, timeout);
         }
@@ -168,6 +177,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, option
         wrapAround = options.wrapAround !== undefined ? options.wrapAround : false;
         printCodes = options.printCodes !== undefined ? options.printCodes : false;
         printColors = options.printColors !== undefined ? options.printColors : true;
+        markInactive = options.markInactive !== undefined ? options.markInactive : true;
         colors = options.colors || colors;
         elementCount = options.elementCount || 0;
         timeout = options.timeout || 1000;
@@ -183,6 +193,13 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, option
         _currentElement = element || _currentElement;
         _elements.removeClass(scanActiveClass);
         $(_currentElement).addClass(scanActiveClass);
+    }
+
+    function setPossibleElements(elements) {
+        _elements.removeClass(scanIncativeClass);
+        let possibleIds = elements.map(e => e.id);
+        let impossibleElements = _elements.toArray().filter(e => possibleIds.indexOf(e.id) === -1);
+        $(impossibleElements).addClass(scanIncativeClass);
     }
 
     function getHighContrastTextColor(hexBackground) {

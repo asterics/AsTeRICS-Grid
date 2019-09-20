@@ -41,6 +41,12 @@
                                     </div>
                                 </div>
                                 <div class="row">
+                                    <div class="twelve columns">
+                                        <input type="checkbox" id="chkMarkInactive" v-model="inputConfig.huffMarkInactive"/>
+                                        <label for="chkMarkInactive" data-i18n>Mark inactive elements // Markiere inaktive Elemente</label>
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <label class="four columns" for="inTimeout" data-i18n="">Timeout in ms (0 means disabled) // Timeout in ms (0 ist deaktiviert)</label>
                                     <input type="range" id="inTimeout" v-model.number="inputConfig.huffTimeout" min="0" max="10000" step="100"/>
                                     <input type="number" v-model.number="inputConfig.huffTimeout" min="0" max="10000" step="200" />

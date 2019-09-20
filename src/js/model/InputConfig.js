@@ -33,7 +33,8 @@ class InputConfig extends Model({
     huffColors: [Model.Array(String)],
     huffShowColors: [Boolean],
     huffShowNumbers: [Boolean],
-    huffTimeout: [Number]
+    huffTimeout: [Number],
+    huffMarkInactive: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, InputConfig);
@@ -104,7 +105,8 @@ InputConfig.defaults({
     huffShowColors: true,
     huffShowNumbers: true,
     huffElementCount: 0,
-    huffTimeout: 2000
+    huffTimeout: 4000,
+    huffMarkInactive: true
 });
 
 export {InputConfig};
