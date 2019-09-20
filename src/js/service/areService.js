@@ -324,7 +324,7 @@ areService.subscribeEvents = function(eventCallback, areURI) {
 
         // After SSE handshake constructed
         _eventSourceMap[areUrl].onopen = function (e) {
-            log.info('SSE opened.');
+            log.debug('SSE opened.');
             _sseWasSuccess = true;
         };
 
@@ -365,7 +365,7 @@ function closeEventSource(areUrl) {
     if (_eventSourceMap[areUrl] !== null) {
         _eventSourceMap[areUrl].close();
         _eventSourceMap[areUrl] = null;
-        log.info('SSE closed.');
+        log.debug('SSE closed.');
     }
 }
 
