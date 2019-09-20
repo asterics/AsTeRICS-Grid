@@ -1,6 +1,7 @@
 import {util} from "../util/util";
 import {InputEventKey} from "../model/InputEventKey";
 import {InputEventARE} from "../model/InputEventARE";
+import {areService} from "../service/areService";
 
 let inputEventHandler = {};
 let allInstances = [];
@@ -47,6 +48,7 @@ function Constructor() {
     let anyKeyHandlers = [];
     let _touchElement = document;
     let _listening = false;
+    let _areInputEvents = {}; //ID -> inputEvent, fn
     let _id = (idCounter++);
 
     thiz.startListening = function () {
@@ -54,6 +56,7 @@ function Constructor() {
             return;
         }
         _listening = true;
+        subscribeAREEvents();
         document.addEventListener('mousemove', mouseMoveListener);
         document.addEventListener('keydown', keyboardListener);
         document.addEventListener('keyup', keyUpListener);
@@ -63,6 +66,7 @@ function Constructor() {
 
     thiz.stopListening = function () {
         _listening = false;
+        unsubscribeAREEvents();
         document.removeEventListener('mousemove', mouseMoveListener);
         document.removeEventListener('keydown', keyboardListener);
         document.removeEventListener('keyup', keyUpListener);
@@ -119,10 +123,38 @@ function Constructor() {
             case InputEventKey.getModelName():
                 return registerKey(inputEvent, fn);
             case InputEventARE.getModelName():
-                //TODO
+                _areInputEvents[inputEvent.id] = {
+                    inputEvent: inputEvent,
+                    fn: fn
+                };
+                if (_listening) {
+                    subscribeAREEvent(inputEvent, fn);
+                }
                 break;
         }
     };
+
+    function subscribeAREEvent(inputEvent, fn) {
+        areService.subscribeEvents((eventString) => {
+            if (inputEvent.eventNames.indexOf(eventString) > -1) {
+                util.throttle(fn);
+            }
+        }, inputEvent.areURL);
+    }
+
+    function subscribeAREEvents() {
+        Object.keys(_areInputEvents).forEach(key => {
+            let entry = _areInputEvents[key];
+            subscribeAREEvent(entry.inputEvent, entry.fn);
+        });
+    }
+
+    function unsubscribeAREEvents() {
+        Object.keys(_areInputEvents).forEach(key => {
+            let entry = _areInputEvents[key];
+            areService.unsubscribeEvents(entry.areURL);
+        });
+    }
 
     function registerKey(inputEventKeyInstance, fn) {
         if (!inputEventKeyInstance || !inputEventKeyInstance.keyCode || !fn) {
