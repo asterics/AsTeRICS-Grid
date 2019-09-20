@@ -207,11 +207,8 @@ function Constructor() {
     }
 
     function keyboardListener(event) {
-        if (event.repeat) {
-            return;
-        }
         let keyCode = event.which || event.keyCode;
-        if (anyKeyHandlers.length > 0) {
+        if (anyKeyHandlers.length > 0 && !event.repeat) {
             anyKeyHandlers.forEach(fn => {
                 fn(keyCode, event.code, event);
             });
@@ -219,6 +216,9 @@ function Constructor() {
         let key = keyCode + "";
         if (keyHandlers[key]) {
             event.preventDefault();
+            if (event.repeat) {
+                return;
+            }
             let entries = keyHandlers[key];
             entries = entries.sort((a,b) => (a.counter - b.counter) || (a.inputEvent.repeat - b.inputEvent.repeat));
             entries.forEach(entry => {
