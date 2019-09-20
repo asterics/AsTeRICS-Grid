@@ -234,10 +234,15 @@ nav li:hover button span {
     outline: thick solid green !important;
 }
 
-.scanInactive.grid-item-content {
+.scanInactive.grid-item-content, .scanInactive.grid-item-content span {
     background: lightgray !important;
     color: darkgray !important;
     opacity: 0.4;
+}
+
+.inactive span {
+    background-color: whitesmoke !important;
+    color: darkgray !important;
 }
 
 .scanInactive .img-container {
