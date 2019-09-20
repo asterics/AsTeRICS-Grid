@@ -108,8 +108,6 @@ function getModelConversionFunctions(objectModelVersion) {
             filterFns.push(function (object, filterOptions) { //fn from V1 to V2
                 if (object.modelName === MetaData.getModelName()) {
                     log.info('converting model version from V1 to V2: ' + object.modelName);
-                    log.warn('before:');
-                    log.warn(object);
                     let inputConfig = object.inputConfig;
                     if (inputConfig.scanKey) {
                         inputConfig.scanInputs = [];
@@ -126,8 +124,6 @@ function getModelConversionFunctions(objectModelVersion) {
                         delete inputConfig.areEvents;
                         delete inputConfig.areURL;
                     }
-                    log.warn('after:');
-                    log.warn(object);
                 }
                 return object;
             });
