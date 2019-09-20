@@ -7,7 +7,7 @@ class InputEventARE extends Model({
     modelName: String,
     modelVersion: String,
     label: [String],
-    eventName: [String],
+    eventNames: [Model.Array(String)],
     areURL: [String]
 }) {
     constructor(properties, elementToCopy) {
@@ -17,7 +17,7 @@ class InputEventARE extends Model({
     }
 
     isValid() {
-        return this.modelName && this.label && this.eventName;
+        return this.modelName && this.label && this.eventNames.length > 0;
     }
 
     static getModelName() {
@@ -28,7 +28,8 @@ class InputEventARE extends Model({
 InputEventARE.defaults({
     id: "", //will be replaced by constructor
     modelName: InputEventARE.getModelName(),
-    modelVersion: constants.MODEL_VERSION
+    modelVersion: constants.MODEL_VERSION,
+    eventNames: [],
 });
 
 export {InputEventARE};
