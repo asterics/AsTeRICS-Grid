@@ -17,10 +17,10 @@
                 </div>
                 <div v-if="input.modelName === InputEventKey.getModelName()">
                     <div class="row">
-                        <button @click="recordKey(input)" class="five columns offset-by-three">
+                        <button @click="recordKey(input, index)" class="five columns offset-by-three">
                             <i class="fas fa-keyboard"></i>
-                            <span v-show="!keyRecording[input.label]" data-i18n="">Record key // Taste aufnehmen</span>
-                            <span v-show="keyRecording[input.label]" data-i18n="">press key ... // Taste drücken ...</span>
+                            <span v-show="!keyRecording[input.label+index]" data-i18n="">Record key // Taste aufnehmen</span>
+                            <span v-show="keyRecording[input.label+index]" data-i18n="">press key ... // Taste drücken ...</span>
                         </button>
                         <span class="four columns">
                             <b data-i18n="">Current key: // Aktuelle Taste:</b>
@@ -122,9 +122,9 @@
                 }
                 this.modelChanged();
             },
-            recordKey(input) {
+            recordKey(input, index) {
                 let thiz = this;
-                Vue.set(thiz.keyRecording, input.label, true);
+                Vue.set(thiz.keyRecording, input.label + index, true);
 
                 let eventHandler = inputEventHandler.instance();
                 eventHandler.onAnyKey((keyCode, keyName, event) => {
@@ -132,7 +132,7 @@
                     eventHandler.destroy();
                     input.keyCode = keyCode;
                     input.keyName = keyName;
-                    Vue.set(thiz.keyRecording, input.label, false);
+                    Vue.set(thiz.keyRecording, input.label + index, false);
                     thiz.modelChanged();
                 });
                 eventHandler.startListening();
@@ -173,6 +173,10 @@
                     originalValue.sort((a, b) => this.inputLabels.indexOf(a.label) - this.inputLabels.indexOf(b.label));
                 }
                 this.inputs = JSON.parse(JSON.stringify(originalValue));
+                let emptyElements = this.inputs.filter(e => !e.modelName);
+                if (this.maxInputs && this.inputs.length < this.maxInputs && emptyElements.length <= 1) {
+                    this.addInput();
+                }
                 if (this.minInputs && this.inputs.length < this.minInputs) {
                     this.addInput(this.minInputs - this.inputs.length);
                 }
