@@ -44,6 +44,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="twelve columns">
+                                        <input type="checkbox" id="chkTouchScanning" v-model="touchScanning" @change="changeTouchScanning"/>
+                                        <label for="chkTouchScanning" data-i18n>Scanning-selection by mouse click or tap // Scanning-Auswahl durch Mausklick oder tippen</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="twelve columns">
                                         <input type="checkbox" id="chkAutoScanning" v-model="inputConfig.scanAuto"/>
                                         <label for="chkAutoScanning" data-i18n>Automatic (timed) scanning // Automatisches (zeitgesteuertes) Scanning</label>
                                     </div>
@@ -103,6 +109,7 @@
         data: function () {
             return {
                 inputConfig: null,
+                touchScanning: null,
                 metadata: null,
                 InputConfig: InputConfig,
                 error: '',
@@ -166,6 +173,9 @@
                 this.$set(this.inputConfig, 'scanInputs', JSON.parse(JSON.stringify(InputConfig.DEFAULT_SCAN_INPUTS)));
                 this.inputChanged();
             },
+            changeTouchScanning() {
+                this.inputConfig.mouseclickEnabled = !this.touchScanning;
+            },
             initTest() {
                 setTimeout(() => {
                     this.stopTest();
@@ -190,6 +200,7 @@
             dataService.getMetadata().then(metadata => {
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
                 thiz.inputConfig = JSON.parse(JSON.stringify(metadata.inputConfig));
+                thiz.touchScanning = !thiz.inputConfig.mouseclickEnabled;
             });
             helpService.setHelpLocation('04_input_options', '#input-options');
         },
