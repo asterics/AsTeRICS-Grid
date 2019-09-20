@@ -123,6 +123,8 @@ function getModelConversionFunctions(objectModelVersion) {
                         delete inputConfig.scanKey;
                         delete inputConfig.scanKeyName;
                         delete inputConfig.scanAutostart;
+                        delete inputConfig.areEvents;
+                        delete inputConfig.areURL;
                     }
                     log.warn('after:');
                     log.warn(object);
