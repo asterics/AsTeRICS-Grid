@@ -45,6 +45,7 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
     var _layoutChangeTimeoutHandler = null;
     var _scanningPaused = false;
     var _touchListener = null;
+    var _touchElement = null;
     let _inputEventHandler = null;
     let _nextScanFn = null;
 
@@ -306,6 +307,7 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
 
     thiz.destroy = function() {
         thiz.stopScanning();
+        thiz.disableTouchScanning();
         _inputEventHandler.destroy();
     };
 
@@ -416,13 +418,14 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
             _touchListener = function () {
                 thiz.select();
             };
-            L('#grid-container').addEventListener("click", _touchListener);
+            _touchElement = L('.area')[0] ? L('.area')[0] : L('#grid-container');
+            _touchElement.addEventListener("click", _touchListener);
         }
     };
 
     thiz.disableTouchScanning = function () {
         if(_touchListener) {
-            L('#grid-container').removeEventListener("click", _touchListener);
+            _touchElement.removeEventListener("click", _touchListener);
             _touchListener = null;
         }
     };
