@@ -1,6 +1,9 @@
 import {modelUtil} from "../../util/modelUtil";
 import {encryptionService} from "./encryptionService";
 import {log} from "../../util/log";
+import {InputConfig} from "../../model/InputConfig";
+import {InputEventKey} from "../../model/InputEventKey";
+import {MetaData} from "../../model/MetaData";
 
 let filterService = {};
 
@@ -100,20 +103,40 @@ function getModelConversionFunctions(objectModelVersion) {
     //after adding a breaking modelVersion Change just uncomment the following switch statement and
     //insert a conversion function from major version 1 to major version 2
     //for more conversions switch fallthrough is intended - all needed conversion functions are added
-    /*
     switch (objectModelVersion.major) {
         case 1:
             filterFns.push(function (object, filterOptions) { //fn from V1 to V2
-                //implement
+                if (object.modelName === MetaData.getModelName()) {
+                    log.info('converting model version from V1 to V2: ' + object.modelName);
+                    log.warn('before:');
+                    log.warn(object);
+                    let inputConfig = object.inputConfig;
+                    if (inputConfig.scanKey) {
+                        inputConfig.scanInputs = [];
+                        inputConfig.scanInputs.push(new InputEventKey({
+                            label: InputConfig.SELECT,
+                            keyCode: inputConfig.scanKey,
+                            keyName: inputConfig.scanKeyName
+                        }));
+                        inputConfig.scanEnabled = inputConfig.scanAutostart;
+                        inputConfig.scanAuto = inputConfig.scanAutostart;
+                        delete inputConfig.scanKey;
+                        delete inputConfig.scanKeyName;
+                        delete inputConfig.scanAutostart;
+                    }
+                    log.warn('after:');
+                    log.warn(object);
+                }
+                return object;
             });
         //no break intended!
-        case 2:
+/*        case 2:
             filterFns.push(function (object, filterOptions) { //fn from V2 to V3
 
+                return object
             });
-
+ */
     }
-    */
     filterFns.push(function (object, filterOptions) { //update to current modelVersion after all conversions
         object.modelVersion = modelUtil.getModelVersionString();
         return object;
