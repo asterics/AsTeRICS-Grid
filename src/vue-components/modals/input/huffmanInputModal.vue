@@ -41,8 +41,14 @@
                                     </div>
                                 </div>
                                 <div class="row">
+                                    <label class="four columns" for="inTimeout" data-i18n="">Timeout in ms (0 means disabled) // Timeout in ms (0 ist deaktiviert)</label>
+                                    <input type="range" id="inTimeout" v-model.number="inputConfig.huffTimeout" min="0" max="10000" step="100"/>
+                                    <input type="number" v-model.number="inputConfig.huffTimeout" min="0" max="10000" step="200" />
+                                </div>
+                                <div class="row">
                                     <label for="inElementCount" class="four columns" data-i18n>Number of elements (0 means automatic) // Anzahl der Elemente (0 ist automatisch)</label>
-                                    <input type="number" class="three columns" min="0" max="300" id="inElementCount" v-model.number="inputConfig.huffElementCount"/>
+                                    <input type="range" min="0" max="300" id="inElementCount" v-model.number="inputConfig.huffElementCount"/>
+                                    <input type="number" min="0" max="300" id="inElementCount2" v-model.number="inputConfig.huffElementCount"/>
                                 </div>
                             </accordion>
                             <accordion acc-label="TEST_CONFIGURATION" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">

@@ -32,7 +32,8 @@ class InputConfig extends Model({
     huffInputs: [Model.Array(Object)], // ordered array of InputEvent objects
     huffColors: [Model.Array(String)],
     huffShowColors: [Boolean],
-    huffShowNumbers: [Boolean]
+    huffShowNumbers: [Boolean],
+    huffTimeout: [Number]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, InputConfig);
@@ -102,7 +103,8 @@ InputConfig.defaults({
     huffInputs: InputConfig.DEFAULT_HUFF_INPUTS,
     huffShowColors: true,
     huffShowNumbers: true,
-    huffElementCount: 0
+    huffElementCount: 0,
+    huffTimeout: 2000
 });
 
 export {InputConfig};

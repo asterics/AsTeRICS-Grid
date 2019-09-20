@@ -11,6 +11,7 @@ HuffmanInput.getInstanceFromConfig = function (inputConfig, itemSelector, scanAc
         colors: inputConfig.huffColors,
         inputEvents: inputConfig.huffInputs,
         elementCount: inputConfig.huffElementCount,
+        timeout: inputConfig.huffTimeout,
         selectionListener: selectionListener
     });
 };
@@ -34,6 +35,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, option
     let printCodes = false;
     let printColors = true;
     let elementCount = 0;
+    let timeout = 1000;
     let colors = [];
 
     //internal
@@ -47,6 +49,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, option
     let _defaultColors = ['#D55E00', '#F0E442', '#009E73', '#0072B2',
         '#CC79A7', '#E69F00', '#56B4E9', '#000000', '#016619'];
     let _started = false;
+    let _timeoutHandler = null;
 
     thiz.start = function () {
         _started = true;
@@ -89,6 +92,12 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, option
         }
         if (selectedElement[0] || possibleElements.length === 0) {
             _currentInput = '';
+        }
+        clearTimeout(_timeoutHandler);
+        if (timeout > 0) {
+            _timeoutHandler = setTimeout(() => {
+                _currentInput = '';
+            }, timeout);
         }
     };
 
@@ -161,6 +170,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, option
         printColors = options.printColors !== undefined ? options.printColors : true;
         colors = options.colors || colors;
         elementCount = options.elementCount || 0;
+        timeout = options.timeout || 1000;
         options.inputEvents.forEach((el, index) => {
             _alphabet += (index + 1);
             _inputEventHandler.onInputEvent(el, () => {
