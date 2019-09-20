@@ -137,7 +137,7 @@ function Constructor() {
     function subscribeAREEvent(inputEvent, fn) {
         areService.subscribeEvents((eventString) => {
             if (inputEvent.eventNames.indexOf(eventString) > -1) {
-                util.throttle(fn);
+                fn();
             }
         }, inputEvent.areURL);
     }
