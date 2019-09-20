@@ -204,10 +204,6 @@ function initInternal(hashedUserPassword) {
         } else {
             metadata = metadataObjects instanceof Array ? metadataObjects[0] : metadataObjects;
             encryptionService.setEncryptionProperties(hashedUserPassword, metadata.id);
-            if (!modelUtil.isLatestMajorModelVersion(metadata)) {
-                log.warn('updating data model version...');
-                promises.push(updateDataModelVersion(metadata));
-            }
             if (metadataObjects.length && metadataObjects.length > 1) {
                 promises.push(fixDuplicatedMetadata(hashedUserPassword, metadataObjects))
             }
@@ -297,34 +293,6 @@ function applyFiltersAndSave(modelName, data) {
         }).catch(function (err) {
             reject(err);
         });
-    });
-}
-
-function updateDataModelVersion(metadata) {
-    let allDocs = null;
-    return pouchDbService.all().then(result => {
-        allDocs = result;
-        if (!metadata.encryptedDataBase64) {
-            log.debug('deleting all documents because they are not encrypted...');
-            allDocs.forEach(doc => {
-                delete doc._rev;
-            });
-            return pouchDbService.resetDatabase();
-        }
-        //TODO: decrypt if already encrypted?! -> to be tested before real datamodel major version update
-        return Promise.resolve();
-    }).then(() => {
-        log.debug('all deleted, got: ');
-        log.debug(allDocs);
-        let promises = [];
-        allDocs.forEach(doc => {
-            let promise = applyFiltersAndSave(doc.modelName, doc);
-            promises.push(promise);
-        });
-        return Promise.all(promises);
-    }).then(() => {
-        window.location.reload();
-        return Promise.reject();
     });
 }
 
