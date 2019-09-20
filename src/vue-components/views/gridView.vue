@@ -139,7 +139,7 @@
                 let inputConfig = thiz.metadata.inputConfig;
                 window.addEventListener('resize', thiz.resizeListener, true);
                 $(document).on(constants.EVENT_GRID_RESIZE, thiz.resizeListener);
-                if (inputConfig.dirEnabled) { //TODO remove true
+                if (inputConfig.dirEnabled) {
                     thiz.directionInput = DirectionInput.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', (item) => {
                         actionService.doAction(gridInstance.getCurrentGridId(), item.id);
                     });
@@ -153,7 +153,7 @@
                     this.huffmanInput.start();
                 }
 
-                if (inputConfig.scanEnabled || inputConfig.scanAutostart) { //TODO remove true
+                if (inputConfig.scanEnabled) {
                     thiz.scanner = Scanner.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', 'scanInactive');
                     thiz.scanner.setSelectionListener(function (item) {
                         L.removeAddClass(item, 'selected');
@@ -168,21 +168,6 @@
                     });
 
                     thiz.scanner.startScanning();
-
-                    if (inputConfig.areURL && inputConfig.areEvents.length > 0) {
-                        let lastSelect = 0;
-                        areService.subscribeEvents(function (eventString) { //TODO remove
-                            if (inputConfig.areEvents.includes(eventString)) {
-                                if (new Date().getTime() - lastSelect > 100) {
-                                    log.info('select scanning per ARE event: ' + eventString);
-                                    lastSelect = new Date().getTime();
-                                    thiz.scanner.select();
-                                }
-                            }
-                        }, inputConfig.areURL);
-                    } else {
-                        areService.unsubscribeEvents();
-                    }
                 }
 
                 if (inputConfig.hoverEnabled) {
@@ -307,7 +292,7 @@
                 metadata.locked = metadata.locked === undefined ? urlParamService.isDemoMode() : metadata.locked;
                 metadata.fullscreen = metadata.fullscreen === undefined ? urlParamService.isDemoMode() : metadata.fullscreen;
                 if (urlParamService.isScanningDisabled()) {
-                    metadata.inputConfig.scanAutostart = false;
+                    metadata.inputConfig.scanEnabled = false;
                 }
                 if (urlParamService.hideHeader()) {
                     metadata.headerPinned = false;
@@ -337,7 +322,6 @@
             $(document).off(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
             stopInputMethods();
             $.contextMenu('destroy');
-            areService.unsubscribeEvents();
             vueApp = null;
             if (gridInstance) {
                 gridInstance.destroy();
