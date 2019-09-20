@@ -9,22 +9,17 @@ class InputConfig extends Model({
     modelName: String,
     modelVersion: String,
     scanEnabled: [Boolean],
-    scanAutostart: [Boolean], //TODO delete
     scanAuto: [Boolean],
     scanTimeoutMs: [Number],
     scanTimeoutFirstElementFactor: [Number], //factor for first element scanning time, e.g. scanTimeoutMs = 1000, scanTimeoutFirstElementFactor = 2 => scanning time for first element = 2000ms
     scanVertical: [Boolean],
     scanBinary: [Boolean],
-    scanKey: [Number], //TODO: delete
-    scanKeyName: [String], //TODO: delete
-    scanInputs: [Model.Array(Object)], //object with keys InputConfig.NEXT/SELECT
-    areEvents: Model.Array(String),
-    areURL: [String], //TODO: delete
+    scanInputs: [Model.Array(Object)], //array with input events with labels InputConfig.NEXT/SELECT
     hoverEnabled: [Boolean],
     hoverTimeoutMs: Number,
     mouseclickEnabled: [Boolean],
     dirEnabled: [Boolean],
-    dirInputs: [Model.Array(Object)], //object with keys InputConfig.UP/DOWN/LEFT/RIGHT/SELECT
+    dirInputs: [Model.Array(Object)], //array with input events with labels InputConfig.UP/DOWN/LEFT/RIGHT/SELECT
     dirWrapAround: [Boolean],
     dirResetToStart: [Boolean],
     huffEnabled: [Boolean],
@@ -93,10 +88,6 @@ InputConfig.defaults({
     scanTimeoutMs: 1000,
     scanTimeoutFirstElementFactor: 1,
     scanBinary: true,
-    scanKey: 32, //space
-    scanKeyName: "Space", //space
-    areEvents: [],
-    areURL: "",
     hoverTimeoutMs: 1000,
     mouseclickEnabled: true,
     scanInputs: InputConfig.DEFAULT_SCAN_INPUTS,
