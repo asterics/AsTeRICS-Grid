@@ -19,8 +19,8 @@
                     <div class="row">
                         <button @click="recordKey(input, index)" class="five columns offset-by-three">
                             <i class="fas fa-keyboard"></i>
-                            <span v-show="!keyRecording[input.label+index]" data-i18n="">Record key // Taste aufnehmen</span>
-                            <span v-show="keyRecording[input.label+index]" data-i18n="">press key ... // Taste drücken ...</span>
+                            <span v-show="!keyRecording[input.label+index]" data-i18n="">{{'Record key // Taste aufnehmen' | translate}}</span>
+                            <span v-show="keyRecording[input.label+index]" data-i18n="">{{'press key ... // Taste drücken ...' | translate}}</span>
                         </button>
                         <span class="four columns">
                             <b data-i18n="">Current key: // Aktuelle Taste:</b>
@@ -54,8 +54,17 @@
                     </div>
                 </div>
                 <div v-if="input.modelName === InputEventARE.getModelName()">
-                    <div class="row" >
-                        ARE
+                    <div class="row">
+                        <button @click="recordAREEvent(input, index)" class="five columns offset-by-three">
+                            <i class="fas fa-bolt"></i>
+                            <span v-show="!keyRecording[input.label+index]">{{'Record ARE event // ARE Event aufnehmen' | translate}}</span>
+                            <span v-show="keyRecording[input.label+index]">{{'waiting for event ... // warte auf Event ...' | translate}}</span>
+                        </button>
+                    </div>
+                    <div class="row">
+                        <span v-for="eventName in input.eventNames" class="nine columns offset-by-three">
+                            <b>Event:</b> {{formatAreEvent(eventName)}} <button @click="removeAREEvent(input, eventName)" :title="'Delete // Löschen' | translate" style="margin-left: 1em; padding: 0 0.5em"><i class="fas fa-trash"></i></button>
+                        </span>
                     </div>
                 </div>
             </li>
@@ -71,6 +80,7 @@
     import {InputEventARE} from "../../js/model/InputEventARE";
     import {inputEventHandler} from "../../js/input/inputEventHandler";
     import Accordion from "./accordion.vue";
+    import {areService} from "../../js/service/areService";
 
     export default {
         components: {Accordion},
@@ -100,7 +110,9 @@
                 InputConfig: InputConfig,
                 keyRecording: {},
                 areRecording: {},
-                lastEmitValue: null
+                lastEmitValue: null,
+                localEventHandler: inputEventHandler.instance(),
+                lastInitTime: null
             }
         },
         methods: {
@@ -124,18 +136,56 @@
             },
             recordKey(input, index) {
                 let thiz = this;
-                Vue.set(thiz.keyRecording, input.label + index, true);
+                let recordingID = input.label + index;
+                if (thiz.keyRecording[recordingID]) {
+                    Vue.set(thiz.keyRecording, recordingID, false);
+                    thiz.localEventHandler.destroy();
+                    return;
+                }
 
-                let eventHandler = inputEventHandler.instance();
-                eventHandler.onAnyKey((keyCode, keyName, event) => {
+                Vue.set(thiz.keyRecording, recordingID, true);
+                thiz.localEventHandler.destroy();
+                thiz.localEventHandler = inputEventHandler.instance();
+                thiz.localEventHandler.onAnyKey((keyCode, keyName, event) => {
                     event.preventDefault();
-                    eventHandler.destroy();
+                    thiz.localEventHandler.destroy();
                     input.keyCode = keyCode;
                     input.keyName = keyName;
-                    Vue.set(thiz.keyRecording, input.label + index, false);
+                    Vue.set(thiz.keyRecording, recordingID, false);
                     thiz.modelChanged();
                 });
-                eventHandler.startListening();
+                thiz.localEventHandler.startListening();
+            },
+            recordAREEvent(input, index) {
+                let thiz = this;
+                let recordingID = input.label + index;
+                if (thiz.keyRecording[recordingID]) {
+                    Vue.set(thiz.keyRecording, recordingID, false);
+                    areService.unsubscribeEvents();
+                    return;
+                }
+
+                Vue.set(thiz.keyRecording, recordingID, true);
+                areService.unsubscribeEvents();
+                let timeoutHandler = null;
+                areService.subscribeEvents((data) => {
+                    if (!timeoutHandler) {
+                        timeoutHandler = setTimeout(() => {
+                            Vue.set(thiz.keyRecording, recordingID, false);
+                            areService.unsubscribeEvents();
+                            thiz.modelChanged();
+                        }, 1000);
+                    }
+                    input.eventNames.push(data);
+                });
+            },
+            removeAREEvent(input, eventName) {
+                input.eventNames = input.eventNames.filter(e => e !== eventName);
+                this.modelChanged();
+            },
+            formatAreEvent(eventString) {
+                let eventObject = JSON.parse(eventString);
+                return eventObject.channelId + " -> " + eventObject.targetComponentId;
             },
             modelChanged() {
                 let passInputs = this.inputs.filter(input => {
@@ -147,6 +197,7 @@
                 });
                 let emitValue = JSON.parse(JSON.stringify(passInputs));
                 if (JSON.stringify(emitValue) !== JSON.stringify(this.lastEmitValue)) {
+                    this.lastInitTime = new Date().getTime();
                     this.$emit('input', emitValue);
                     this.lastEmitValue = emitValue;
                 }
@@ -160,6 +211,11 @@
                 }
             },
             initWithValue(value) {
+                if (this.lastInitTime && new Date().getTime() - this.lastInitTime < 500) {
+                    //TODO this is not the most beautiful way to prevent self-caused model reload
+                    return;
+                }
+                this.lastInitTime = new Date().getTime();
                 let originalValue = JSON.parse(JSON.stringify(value)) || [];
                 this.lastEmitValue = JSON.parse(JSON.stringify(originalValue));
                 if (this.inputLabels) {
