@@ -11,6 +11,7 @@ import {loginService} from "./service/loginService";
 import {databaseService} from "./service/data/databaseService";
 import {urlParamService} from "./service/urlParamService";
 import {constants} from "./util/constants";
+import {modelUtil} from "./util/modelUtil";
 //import {timingLogger} from "./service/timingLogger";
 
 var firstRun = localStorageService.isFirstPageVisit();
@@ -25,6 +26,10 @@ function init() {
     VuePluginManager.init();
     let lastActiveUser = localStorageService.getLastActiveUser();
     let autologinUser = localStorageService.getAutologinUser();
+    if (localStorageService.getUserMajorModelVersion(autologinUser) > modelUtil.getLatestModelVersion().major) {
+        log.info(`data model version of user "${autologinUser}" is newer than version of running AsTeRICS Grid -> prevent autologin.`);
+        autologinUser = null;
+    }
     let userPassword = localStorageService.getUserPassword(autologinUser);
     let userSynced = localStorageService.isDatabaseSynced(autologinUser);
     log.info('autologin user: ' + autologinUser);
