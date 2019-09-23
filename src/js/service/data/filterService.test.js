@@ -1,9 +1,6 @@
 import {filterService} from "./filterService";
 import {modelUtil} from "../../util/modelUtil";
-import {encryptionService} from "./encryptionService";
-import {GridData} from "../../model/GridData";
 import {InputConfig} from "../../model/InputConfig";
-import {InputEventKey} from "../../model/InputEventKey";
 import {MetaData} from "../../model/MetaData";
 
 jest.mock('../../externals/objectmodel');
@@ -71,7 +68,7 @@ test('filterService.convertDatabaseToLiveObjects - Test 2', () => {
 
 test('filterService.convertDatabaseToLiveObjects - Test 3', () => {
     //object has modelVersion, so it should be decrypted
-    let object = { modelVersion: modelVersionString};
+    let object = {modelVersion: modelVersionString};
     let exptectedResult = {
         decrypted: true,
         modelVersion: modelVersionString
@@ -81,7 +78,10 @@ test('filterService.convertDatabaseToLiveObjects - Test 3', () => {
 
 test('filterService.convertDatabaseToLiveObjects - Test 4', () => {
     //objects have modelVersion, so they should be decrypted
-    let objects = [{anything: true, modelVersion: modelVersionString}, {anything2: true, modelVersion: modelVersionString}];
+    let objects = [{anything: true, modelVersion: modelVersionString}, {
+        anything2: true,
+        modelVersion: modelVersionString
+    }];
     let props = {
         decrypted: true,
         modelVersion: modelVersionString
