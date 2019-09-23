@@ -2,6 +2,7 @@ var errorMsg = 'could not access local storage, maybe disabled by user? Error: '
 var storage = null;
 let FIRST_VISIT_KEY = 'FIRST_VISIT_KEY';
 let USER_PASSWORDS_KEY = "USER_PASSWORDS_KEY";
+let USER_MODELVERSION_KEY = "USER_MODELVERSION_KEY";
 let SYNCED_DBS_LIST_KEY = "SYNCED_DBS_LIST_KEY";
 let LAST_ACTIVEUSER_KEY = "LAST_ACTIVEUSER_KEY";
 let AUTOLOGIN_USER_KEY = "AUTOLOGIN_USER_KEY";
@@ -61,14 +62,14 @@ var localStorageService = {
         if (!username) {
             return null;
         }
-        return getPasswordObject()[username];
+        return getSaveObject(USER_PASSWORDS_KEY)[username];
     },
     /**
      * saves a given local user without a password
      * @param username the username of the local user to save
      */
     saveLocalUser(username) {
-        let object = getPasswordObject();
+        let object = getSaveObject(USER_PASSWORDS_KEY);
         object[username] = '';
         localStorageService.save(USER_PASSWORDS_KEY, JSON.stringify(object));
     },
@@ -78,14 +79,14 @@ var localStorageService = {
      * @return true if the given username is a saved local user without password, false otherwise
      */
     isSavedLocalUser(username) {
-        let object = getPasswordObject();
+        let object = getSaveObject(USER_PASSWORDS_KEY);
         return object[username] === '';
     },
     /**
      * checks if the last active user is a local user (not synced with cloud)
      */
     isLastActiveUserLocal() {
-        let object = getPasswordObject();
+        let object = getSaveObject(USER_PASSWORDS_KEY);
         return object[localStorageService.getLastActiveUser()] === '';
     },
     /**
@@ -94,7 +95,7 @@ var localStorageService = {
      * @param password the password to save (should be salted + hashed)
      */
     saveUserPassword(username, password) {
-        let object = getPasswordObject();
+        let object = getSaveObject(USER_PASSWORDS_KEY);
         object[username] = password;
         localStorageService.save(USER_PASSWORDS_KEY, JSON.stringify(object));
     },
@@ -104,7 +105,7 @@ var localStorageService = {
      * @param username the username as used for login
      */
     removeUserPassword(username) {
-        let object = getPasswordObject();
+        let object = getSaveObject(USER_PASSWORDS_KEY);
         delete object[username];
         localStorageService.save(USER_PASSWORDS_KEY, JSON.stringify(object));
         let autologinUser = localStorageService.getAutologinUser();
@@ -131,7 +132,7 @@ var localStorageService = {
      * returns all saved offline/local users as a string list
      */
     getSavedLocalUsers() {
-        let object = getPasswordObject();
+        let object = getSaveObject(USER_PASSWORDS_KEY);
         let allUsers = Object.keys(object) || [];
         return allUsers.filter(username => object[username] === '').sort();
     },
@@ -139,7 +140,7 @@ var localStorageService = {
      * returns all saved online users as a string list
      */
     getSavedOnlineUsers() {
-        let object = getPasswordObject();
+        let object = getSaveObject(USER_PASSWORDS_KEY);
         let allUsers = Object.keys(object) || [];
         return allUsers.filter(username => object[username] !== '').sort();
     },
@@ -198,12 +199,39 @@ var localStorageService = {
         list = list.filter(name => name !== databaseName);
         localStorageService.save(SYNCED_DBS_LIST_KEY, JSON.stringify(list));
     },
+    /**
+     * get the current data model major version of the given user
+     * @param user
+     * @return {number}
+     */
+    getUserMajorModelVersion(user) {
+        let object = getSaveObject(USER_MODELVERSION_KEY);
+        let modelVersionString = object[user];
+        let majorNumber = !modelVersionString ? 1 : parseInt(JSON.parse(object[user]).major);
+        return majorNumber;
+    },
+    /**
+     * set the current data model version of a user. The version is only set, if the given data model
+     * major version is greater than the existing data model minor version.
+     *
+     * @param user the user to set the data model version
+     * @param modelVersionString the version string to set (JSON string including major, minor, patch properties)
+     */
+    setUserModelVersion(user, modelVersionString) {
+        let savedVersion = localStorageService.getUserMajorModelVersion(user);
+        let newVersion = JSON.parse(modelVersionString).major;
+        if (savedVersion < newVersion) {
+            let object = getSaveObject(USER_MODELVERSION_KEY);
+            object[user] = modelVersionString;
+            localStorageService.save(USER_MODELVERSION_KEY, JSON.stringify(object));
+        }
+    }
 };
 
-function getPasswordObject() {
-    let passwordsObjectString = localStorageService.get(USER_PASSWORDS_KEY);
+function getSaveObject(key) {
+    let passwordsObjectString = localStorageService.get(key);
     if (!passwordsObjectString) {
-        localStorageService.save(USER_PASSWORDS_KEY, JSON.stringify({}));
+        localStorageService.save(key, JSON.stringify({}));
         return {};
     }
     return JSON.parse(passwordsObjectString);
