@@ -26,8 +26,7 @@ modelUtil.getModelVersionString = jest.fn(() => modelVersionString);
 test('filterService.convertLiveToDatabaseObjects - Test 1', () => {
     let object = {};
     let exptectedResult = {
-        encrypted: true,
-        modelVersion: modelVersionString
+        encrypted: true
     };
     expect(filterService.convertLiveToDatabaseObjects(object)).toEqual(exptectedResult);
 });
@@ -35,8 +34,7 @@ test('filterService.convertLiveToDatabaseObjects - Test 1', () => {
 test('filterService.convertLiveToDatabaseObjects - Test 2', () => {
     let objects = [{anything: true}, {anything2: true}];
     let props = {
-        encrypted: true,
-        modelVersion: modelVersionString
+        encrypted: true
     };
     let expectedResult = [Object.assign({}, props, objects[0]), Object.assign({}, props, objects[1])];
     expect(filterService.convertLiveToDatabaseObjects(objects)).toEqual(expectedResult);
@@ -50,18 +48,14 @@ test('filterService.convertLiveToDatabaseObjects - Test 3', () => {
 test('filterService.convertDatabaseToLiveObjects - Test 1', () => {
     //objects have no modelVersion, so the should not be decrypted
     let object = {};
-    let exptectedResult = {
-        modelVersion: modelVersionString
-    };
+    let exptectedResult = {};
     expect(filterService.convertDatabaseToLiveObjects(object)).toEqual(exptectedResult);
 });
 
 test('filterService.convertDatabaseToLiveObjects - Test 2', () => {
     //objects have no modelVersion, so the should not be decrypted
     let objects = [{anything: true}, {anything2: true}];
-    let props = {
-        modelVersion: modelVersionString
-    };
+    let props = {};
     let expectedResult = [Object.assign({}, props, objects[0]), Object.assign({}, props, objects[1])];
     expect(filterService.convertDatabaseToLiveObjects(objects)).toEqual(expectedResult);
 });
