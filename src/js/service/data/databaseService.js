@@ -7,13 +7,14 @@ import {MetaData} from "../../model/MetaData";
 import {encryptionService} from "./encryptionService";
 import {pouchDbService} from "./pouchDbService";
 import {filterService} from "./filterService";
-import {modelUtil} from "../../util/modelUtil";
 import {i18nService} from "../i18nService";
 import {Dictionary} from "../../model/Dictionary";
+import {localStorageService} from "./localStorageService";
 
 let databaseService = {};
 
 let _initPromise = null;
+let _lastDataModelVersion = null;
 let _defaultGridSetPath = 'app/examples/default.grd';
 if (urlParamService.getDefaultGridsetName()) {
     _defaultGridSetPath = 'app/examples/' + urlParamService.getDefaultGridsetName();
@@ -40,6 +41,11 @@ databaseService.getObject = function (objectType, id, onlyShortVersion) {
                     onlyShortVersion: onlyShortVersion
                 };
                 let filteredData = filterService.convertDatabaseToLiveObjects(result, options);
+                let modelVersion = filteredData.modelVersion || filteredData[0].modelVersion;
+                if (_lastDataModelVersion !== modelVersion) {
+                    _lastDataModelVersion = modelVersion;
+                    localStorageService.setUserModelVersion(pouchDbService.getOpenedDatabaseName(), modelVersion);
+                }
                 resolve(filteredData);
             }).catch(reason => {
                 reject(reason);
