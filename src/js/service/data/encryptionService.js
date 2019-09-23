@@ -54,10 +54,9 @@ encryptionService.encryptObject = function (object, options) {
  * @param encryptedObjects an array of encrypted objects or a single encrypted object
  * @param options map of options, can contain:
  *        onlyShortVersion: if true only the short version (with stripped binary data) is decrypted and returned
- *        objectType: the type of the objects to decrypt
  *        encryption key: the key that should be used for encryption (optional, local _encryptionKey variable is used
  *        if not set)
- * @return {*} an array or single object (depending on input) of decrypted instances of objects of type "objectType"
+ * @return {*} an array or single object (depending on input) of decrypted instances of objects
  */
 encryptionService.decryptObjects = function (encryptedObjects, options) {
     throwErrorIfUninitialized();
@@ -66,7 +65,6 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
     }
 
     options = options || {};
-    let objectType = options.objectType;
     let onlyShortVersion = options.onlyShortVersion;
 
     encryptedObjects = encryptedObjects instanceof Array ? encryptedObjects : [encryptedObjects];
@@ -84,7 +82,6 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
                 decryptedString = encryptionService.decryptString(encryptedObject.encryptedDataBase64, options.encryptionKey);
                 decryptedObject = JSON.parse(decryptedString);
             }
-            decryptedObject = objectType ? new objectType(decryptedObject) : decryptedObject;
             decryptedObject._id = encryptedObject._id;
             decryptedObject._rev = encryptedObject._rev;
             decryptedObjects.push(decryptedObject);
