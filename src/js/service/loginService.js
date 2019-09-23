@@ -4,6 +4,7 @@ import {localStorageService} from "./data/localStorageService";
 import {encryptionService} from "./data/encryptionService";
 import {constants} from "../util/constants";
 import {databaseService} from "./data/databaseService";
+import {Router} from "../router";
 
 let loginService = {};
 let _loginInfo = null;
@@ -256,6 +257,11 @@ function init() {
         if(_lastParamUser && _lastParamHashedPw) {
             autoRetryLogin(_lastParamUser, _lastParamHashedPw, _lastParamSaveUser);
         }
+    });
+
+    $(document).on(constants.EVENT_DB_DATAMODEL_UPDATE, function () {
+        loginService.logout();
+        Router.toLogin();
     });
 }
 
