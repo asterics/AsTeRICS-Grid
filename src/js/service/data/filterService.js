@@ -95,7 +95,7 @@ function getFilterFunctionsFromDatabase(objectModelVersion) {
  * @return {Array} list of functions to be applied to bring the object to the current modelVersion
  */
 function getModelConversionFunctions(objectModelVersion) {
-    if(objectModelVersion.major === modelUtil.getLatestModelVersion().major) {
+    if (objectModelVersion.major === modelUtil.getLatestModelVersion().major) {
         return [];
     }
 
@@ -109,6 +109,9 @@ function getModelConversionFunctions(objectModelVersion) {
                 if (object.modelName === MetaData.getModelName()) {
                     log.info('converting model version from V1 to V2: ' + object.modelName);
                     let inputConfig = object.inputConfig;
+                    inputConfig.dirInputs = InputConfig.DEFAULT_DIR_INPUTS;
+                    inputConfig.huffInputs = InputConfig.DEFAULT_HUFF_INPUTS;
+                    inputConfig.scanInputs = InputConfig.DEFAULT_SCAN_INPUTS;
                     if (inputConfig.scanKey) {
                         inputConfig.scanInputs = [];
                         inputConfig.scanInputs.push(new InputEventKey({
@@ -125,20 +128,17 @@ function getModelConversionFunctions(objectModelVersion) {
                         delete inputConfig.areURL;
                     }
                 }
+                object.modelVersion = modelUtil.getModelVersionString();
                 return object;
             });
         //no break intended!
 /*        case 2:
             filterFns.push(function (object, filterOptions) { //fn from V2 to V3
-
+                object.modelVersion = modelUtil.getModelVersionString();
                 return object
             });
  */
     }
-    filterFns.push(function (object, filterOptions) { //update to current modelVersion after all conversions
-        object.modelVersion = modelUtil.getModelVersionString();
-        return object;
-    });
     return filterFns;
 }
 
