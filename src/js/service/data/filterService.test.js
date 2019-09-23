@@ -1,16 +1,29 @@
 import {filterService} from "./filterService";
 import {modelUtil} from "../../util/modelUtil";
 import {encryptionService} from "./encryptionService";
+import {GridData} from "../../model/GridData";
+import {InputConfig} from "../../model/InputConfig";
+import {InputEventKey} from "../../model/InputEventKey";
+import {MetaData} from "../../model/MetaData";
+
+jest.mock('../../externals/objectmodel');
+jest.mock('../../externals/jquery');
+jest.mock('./encryptionService');
+jest.mock('../../util/log');
 
 let modelVersion = {
     major: 1,
     minor: 0,
     patch: 0
 };
+let modelVersionV2 = {
+    major: 2,
+    minor: 0,
+    patch: 0
+};
 let modelVersionString = JSON.stringify(modelVersion);
+let modelVersionStringV2 = JSON.stringify(modelVersionV2);
 
-jest.mock('./encryptionService');
-jest.mock('../../util/log');
 modelUtil.getModelVersionString = jest.fn(() => modelVersionString);
 
 test('filterService.convertLiveToDatabaseObjects - Test 1', () => {
@@ -80,4 +93,47 @@ test('filterService.convertDatabaseToLiveObjects - Test 4', () => {
 test('filterService.convertDatabaseToLiveObjects - Test 5', () => {
     let objects = null;
     expect(filterService.convertDatabaseToLiveObjects(objects)).toEqual(null);
+});
+
+
+test('filterService.convertDatabaseToLiveObjects - any major v1 to v2', () => {
+    let objects = [{modelName: 'anything', modelVersion: modelVersionString}];
+    let spy = jest.spyOn(modelUtil, 'getModelVersionString').mockImplementation(() => modelVersionStringV2);
+    let props = {
+        decrypted: true,
+        modelVersion: modelVersionStringV2
+    };
+    let expectedResult = Object.assign({}, objects[0], props);
+    expect(filterService.convertDatabaseToLiveObjects(objects)).toEqual(expectedResult);
+    spy.mockRestore();
+});
+
+test('filterService.convertDatabaseToLiveObjects - metadata major v1 to v2', () => {
+    let metadata = new MetaData();
+    metadata.modelVersion = modelVersionString;
+    metadata.modelName = MetaData.getModelName();
+    metadata.inputConfig = {
+        scanAutostart: true,
+        scanKey: 100,
+        scanKeyName: 'anyKey',
+        areEvents: ["1", "2", "3"],
+        areURL: 'www.test.at'
+    };
+    let objects = [JSON.parse(JSON.stringify(metadata))];
+
+    let spy = jest.spyOn(modelUtil, 'getModelVersionString').mockImplementation(() => modelVersionStringV2);
+    let result = filterService.convertDatabaseToLiveObjects(objects);
+    let resultInputConfig = result.inputConfig;
+    let scanConfigSelect = resultInputConfig.scanInputs.filter(e => e.label === InputConfig.SELECT)[0];
+    expect(result.modelVersion).toEqual(modelVersionStringV2);
+    expect(resultInputConfig.scanAutostart).toEqual(undefined);
+    expect(resultInputConfig.scanKey).toEqual(undefined);
+    expect(resultInputConfig.scanKeyName).toEqual(undefined);
+    expect(resultInputConfig.areEvents).toEqual(undefined);
+    expect(resultInputConfig.areURL).toEqual(undefined);
+    expect(resultInputConfig.scanAuto).toEqual(metadata.inputConfig.scanAutostart);
+    expect(resultInputConfig.scanEnabled).toEqual(metadata.inputConfig.scanAutostart);
+    expect(scanConfigSelect.keyCode).toEqual(metadata.inputConfig.scanKey);
+    expect(scanConfigSelect.keyName).toEqual(metadata.inputConfig.scanKeyName);
+    spy.mockRestore();
 });
