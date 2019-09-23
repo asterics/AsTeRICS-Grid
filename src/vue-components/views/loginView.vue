@@ -26,10 +26,10 @@
                                         <strong >{{username}}</strong>
                                         <em v-show="username === activeUser" data-i18n="">(active) // (aktiv)</em>
                                     </div>
-                                    <button class="four columns" @click="loginStored(username)">
+                                    <button class="four columns" @click="loginStored(username)" v-show="hasValidMajorModelVersion(username)">
                                         <span data-i18n="">Open // Öffnen</span> <i class="fas fa-sign-in-alt"></i>
                                     </button>
-                                    <button class="four columns" @click="removeStoredUser(username)">
+                                    <button class="four columns" @click="removeStoredUser(username)" v-show="hasValidMajorModelVersion(username)">
                                         <span v-show="!savedLocalUsers.includes(username)">
                                             <span data-i18n="">Logout // Ausloggen</span> <i class="fas fa-user-times"></i>
                                         </span>
@@ -37,6 +37,15 @@
                                             <span data-i18n="">Delete // Löschen</span> <i class="fas fa-trash"></i>
                                         </span>
                                     </button>
+                                    <div class="eight columns" v-show="!hasValidMajorModelVersion(username)">
+                                        <div>
+                                            <i class="fas fa-exclamation-triangle"></i> <span data-i18n="">Incompatible data model version! // Inkompatible Version des Datenmodells!</span>
+                                        </div>
+                                        <div data-i18n="">
+                                            <span>Change to <a href="https://grid.asterics.eu/latest/#login">grid.asterics.eu/latest</a> to open this user.</span>
+                                            <span>Wechseln sie zu <a href="https://grid.asterics.eu/latest/#login">grid.asterics.eu/latest</a> um diesen User zu verwenden.</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -49,7 +58,7 @@
                             <div class="row">
                                 <label for="inputUser" class="two columns"><span>Username</span></label>
                                 <input type="text" name="username" v-model="user" id="inputUser" class="four columns" autocomplete="username"/>
-                                <button type="button" v-if="savedUsers.includes(user)" class="four columns" @click="loginStored(user)">
+                                <button type="button" v-if="savedUsers.includes(user) && hasValidMajorModelVersion(user)" class="four columns" @click="loginStored(user)">
                                     <span data-i18n="">Open // Öffnen</span> <i class="fas fa-sign-in-alt"></i>
                                 </button>
                             </div>
@@ -139,6 +148,7 @@
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {Router} from "../../js/router";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
+    import {modelUtil} from "../../js/util/modelUtil";
 
     export default {
         components: {HeaderIcon},
@@ -225,6 +235,9 @@
                 this.allUsersList = localStorageService.getSavedUsers(this.activeUser);
                 this.savedUsers = localStorageService.getSavedUsers(this.activeUser);
                 this.savedOnlineUsers = localStorageService.getSavedOnlineUsers();
+            },
+            hasValidMajorModelVersion(user) {
+                return localStorageService.getUserMajorModelVersion(user) <= modelUtil.getLatestModelVersion().major;
             }
         },
         mounted() {
