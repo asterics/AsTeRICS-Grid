@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import {$} from '../externals/jquery';
 import {localStorageService} from "./data/localStorageService";
 
 let i18nService = {};
