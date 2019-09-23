@@ -261,6 +261,7 @@ function init() {
 
     $(document).on(constants.EVENT_DB_DATAMODEL_UPDATE, function () {
         loginService.logout();
+        localStorageService.setAutologinUser('');
         Router.toLogin();
     });
 }
