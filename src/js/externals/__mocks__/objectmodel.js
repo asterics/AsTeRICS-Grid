@@ -1,5 +1,6 @@
 class Test {
-    constructor() {
+    constructor(props) {
+        Object.assign(this, props);
     }
 
     static defaults() {
