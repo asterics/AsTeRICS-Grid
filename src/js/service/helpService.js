@@ -1,8 +1,10 @@
 let helpService = {};
-let HELP_BASE_PATH = 'https://github.com/asterics/AsTeRICS-Grid/blob/master/docs/documentation_user/';
-let HELP_FILE_POSTFIX = '.md';
+//let HELP_BASE_PATH = 'https://github.com/asterics/AsTeRICS-Grid/blob/master/docs/documentation_user/';
+let HELP_BASE_PATH = 'https://www.asterics.eu/manuals/asterics-grid/';
+//let HELP_FILE_POSTFIX = '.md';
+let HELP_FILE_POSTFIX = '.html';
 
-let _initHelpFile = 'README';
+let _initHelpFile = '';
 let _initHash = '#asterics-grid-user-documentation';
 let _helpFile = _initHelpFile;
 let _helpHash = _initHash;
@@ -40,7 +42,8 @@ helpService.revertToLastLocation = function () {
  * opens help in a new tab
  */
 helpService.openHelp = function () {
-    window.open(HELP_BASE_PATH + _helpFile + HELP_FILE_POSTFIX + _helpHash, '_blank');
+    let postfix = _helpFile ? _helpFile + HELP_FILE_POSTFIX + _helpHash : _helpHash;
+    window.open(HELP_BASE_PATH + postfix, '_blank');
 };
 
 function init() {
