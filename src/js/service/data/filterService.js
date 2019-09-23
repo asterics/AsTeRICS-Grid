@@ -114,10 +114,6 @@ function getModelConversionFunctions(objectModelVersion) {
 
     }
     */
-    filterFns.push(function (object, filterOptions) { //update to current modelVersion after all conversions
-        object.modelVersion = modelUtil.getModelVersionString();
-        return object;
-    });
     return filterFns;
 }
 
