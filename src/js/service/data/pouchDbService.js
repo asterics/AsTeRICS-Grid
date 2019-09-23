@@ -349,7 +349,16 @@ function changeHandler(changedIds, changedDocsEncrypted) {
         _documentCache.set(doc.id, doc);
     });
     let changedDocs = changedDocsEncrypted.map(rawDoc => filterService.convertDatabaseToLiveObjects(rawDoc));
-    $(document).trigger(constants.EVENT_DB_PULL_UPDATED, [changedIds, changedDocs]);
+    let user = pouchDbService.getOpenedDatabaseName();
+    let currentUserDataModelVersion = localStorageService.getUserMajorModelVersion(user);
+    changedDocs.forEach(doc => {
+        localStorageService.setUserModelVersion(user, doc.modelVersion);
+    });
+    if (currentUserDataModelVersion === localStorageService.getUserMajorModelVersion(user)) {
+        $(document).trigger(constants.EVENT_DB_PULL_UPDATED, [changedIds, changedDocs]);
+    } else {
+        $(document).trigger(constants.EVENT_DB_DATAMODEL_UPDATE, [changedIds, changedDocs]);
+    }
 }
 
 export {pouchDbService};
