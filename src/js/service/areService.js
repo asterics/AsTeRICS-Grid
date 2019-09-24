@@ -312,7 +312,7 @@ areService.getPossibleEvents = function(componentId, modelBase64, areURI) {
     });
 };
 
-areService.subscribeEvents = function(eventCallback, areURI) {
+areService.subscribeEvents = function(areURI, eventCallback, errorCallback) {
     if ((typeof EventSource) === "undefined") {
         log.warn("SSE not supported by browser");
         return;
@@ -331,11 +331,15 @@ areService.subscribeEvents = function(eventCallback, areURI) {
         // Error handler
         _eventSourceMap[areUrl].onerror = function (e) {
             closeEventSource(areUrl);
+            if (errorCallback) {
+                errorCallback(e);
+            }
+
             if (_sseWasSuccess) {
                 log.info('SSE error occured, trying to reconnect in 10 seconds...');
                 _sseReconnectTimeoutHandler = setTimeout(function () {
                     _sseReconnectTimeoutHandler = null;
-                    areService.subscribeEvents(eventCallback, areURI);
+                    areService.subscribeEvents(areURI, eventCallback, errorCallback);
                 }, 3000);
             }
         };

@@ -135,11 +135,11 @@ function Constructor() {
     };
 
     function subscribeAREEvent(inputEvent, fn) {
-        areService.subscribeEvents((eventString) => {
+        areService.subscribeEvents(inputEvent.areURL,(eventString) => {
             if (inputEvent.eventNames.indexOf(eventString) > -1) {
                 fn();
             }
-        }, inputEvent.areURL);
+        });
     }
 
     function subscribeAREEvents() {
