@@ -60,6 +60,14 @@
                             <span v-show="!keyRecording[input.label+index]">{{'Record ARE event // ARE Event aufnehmen' | translate}}</span>
                             <span v-show="keyRecording[input.label+index]">{{'waiting for event ... // warte auf Event ...' | translate}}</span>
                         </button>
+                        <label class="four columns" for="inputAreUrl">ARE URL</label>
+                        <input class="four columns" id="inputAreUrl" type="text" v-model="input.areURL" :placeholder="'empty = automatic // leer = automatisch' | translate" @change="changedAreURL(input)" @input="areError[input.label+index] = false"/>
+                    </div>
+                    <div class="row">
+                        <span class="nine columns offset-by-three" v-show="areError[input.label+index]">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {{'Error connecting to ARE! // Verbindung zu ARE konnte nicht hergestellt werden!' | translate}} {{'(' + areService.getRestURL(input.areURL) + ')'}}
+                        </span>
                     </div>
                     <div class="row">
                         <span v-for="eventName in input.eventNames" class="nine columns offset-by-three">
@@ -110,9 +118,11 @@
                 InputConfig: InputConfig,
                 keyRecording: {},
                 areRecording: {},
+                areError: {},
                 lastEmitValue: null,
                 localEventHandler: inputEventHandler.instance(),
-                lastInitTime: null
+                lastInitTime: null,
+                areService: areService
             }
         },
         methods: {
@@ -159,16 +169,16 @@
             recordAREEvent(input, index) {
                 let thiz = this;
                 let recordingID = input.label + index;
+                thiz.areError[recordingID] = false;
                 if (thiz.keyRecording[recordingID]) {
-                    Vue.set(thiz.keyRecording, recordingID, false);
-                    areService.unsubscribeEvents();
+                    endRecord();
                     return;
                 }
 
                 Vue.set(thiz.keyRecording, recordingID, true);
                 areService.unsubscribeEvents();
                 let timeoutHandler = null;
-                areService.subscribeEvents((data) => {
+                areService.subscribeEvents(input.areURL, (data) => {
                     if (!timeoutHandler) {
                         timeoutHandler = setTimeout(() => {
                             Vue.set(thiz.keyRecording, recordingID, false);
@@ -177,7 +187,15 @@
                         }, 1000);
                     }
                     input.eventNames.push(data);
+                }, () => {
+                    thiz.areError[recordingID] = true;
+                    endRecord();
                 });
+
+                function endRecord() {
+                    Vue.set(thiz.keyRecording, recordingID, false);
+                    areService.unsubscribeEvents();
+                }
             },
             removeAREEvent(input, eventName) {
                 input.eventNames = input.eventNames.filter(e => e !== eventName);
@@ -186,6 +204,12 @@
             formatAreEvent(eventString) {
                 let eventObject = JSON.parse(eventString);
                 return eventObject.channelId + " -> " + eventObject.targetComponentId;
+            },
+            changedAreURL(input) {
+                if (!input.areURL) {
+                    return;
+                }
+                input.areURL = areService.getRestURL(input.areURL);
             },
             modelChanged() {
                 let passInputs = this.inputs.filter(input => {
