@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import {inputEventHandler} from "./inputEventHandler";
 import {InputConfig} from "../model/InputConfig";
+import {timingLogger} from "../service/timingLogger";
 
 let DirectionInput = {};
 
@@ -118,52 +119,71 @@ function DirectionInputConstructor(paramItemSelector, paramScanActiveClass, opti
     }
 
     function calcPositions() {
+        timingLogger.log();
         _elements.toArray().forEach(element => {
             let otherElements = _elements.toArray().filter(e => e.id !== element.id);
             let pos = element.getBoundingClientRect();
-            let minDistanceX = Infinity;
-            let maxDistanceX = -1;
-            let minDistanceY = Infinity;
-            let maxDistanceY = -1;
             let distancesX = otherElements.map(e => {
-                let diff = pos.left - e.getBoundingClientRect().left;
-                let absDiff = Math.abs(diff);
-                minDistanceX = minDistanceX > absDiff ? absDiff : minDistanceX;
-                maxDistanceX = maxDistanceX < absDiff ? absDiff : maxDistanceX;
+                let diff1 = pos.left - e.getBoundingClientRect().right;
+                let diff2 = pos.right - e.getBoundingClientRect().left;
+                let diff3 = pos.right - e.getBoundingClientRect().right;
+                let diff4 = pos.left - e.getBoundingClientRect().left;
+                let absDiff = Math.min(Math.abs(diff1), Math.abs(diff2), Math.abs(diff3), Math.abs(diff4));
                 return {
                     element: e,
-                    diff: diff,
+                    diff1: diff1,
+                    diff2: diff2,
+                    diff3: diff3,
+                    diff4: diff4,
                     absDiff: absDiff
                 };
             });
             let distancesY = otherElements.map(e => {
-                let diff = pos.top - e.getBoundingClientRect().top;
-                let absDiff = Math.abs(diff);
-                minDistanceY = minDistanceY > absDiff ? absDiff : minDistanceY;
-                maxDistanceY = maxDistanceY < absDiff ? absDiff : maxDistanceY;
+                let diff1 = pos.top - e.getBoundingClientRect().bottom;
+                let diff2 = pos.bottom - e.getBoundingClientRect().top;
+                let diff3 = pos.top - e.getBoundingClientRect().top;
+                let diff4 = pos.bottom - e.getBoundingClientRect().bottom;
+                let absDiff = Math.min(Math.abs(diff1), Math.abs(diff2), Math.abs(diff3), Math.abs(diff4));
                 return {
                     element: e,
-                    diff: pos.top - e.getBoundingClientRect().top,
+                    diff1: diff1,
+                    diff2: diff2,
+                    diff3: diff3,
+                    diff4: diff4,
                     absDiff: absDiff
                 };
             });
 
             let sortFn = (a, b) => a.absDiff - b.absDiff;
-            let upper = distancesY.filter(e => e.diff > 0).sort(sortFn).map(el => el.element);
-            let lower = distancesY.filter(e => e.diff < 0).sort(sortFn).map(el => el.element);
-            let leftSide = distancesX.filter(e => e.diff > 0).sort(sortFn).map(el => el.element);
-            let rightSide = distancesX.filter(e => e.diff < 0).sort(sortFn).map(el => el.element);
+            let allPos = (e) => e.diff1 > 0 && e.diff2 > 0 && e.diff3 > 0 && e.diff4 > 0;
+            let allNeg = (e) => e.diff1 < 0 && e.diff2 < 0 && e.diff3 < 0 && e.diff4 < 0;
+            let upper = distancesY.filter(allPos).sort(sortFn);
+            let lower = distancesY.filter(allNeg).sort(sortFn);
+            let leftSide = distancesX.filter(allPos).sort(sortFn);
+            let rightSide = distancesX.filter(allNeg).sort(sortFn);
 
-            let minXElements = distancesX.filter(e => e.absDiff === minDistanceX).sort(sortFn).map(el => el.element);
-            let minYElements = distancesY.filter(e => e.absDiff === minDistanceY).sort(sortFn).map(el => el.element);
-            let maxXElements = distancesX.sort((a, b) => b.absDiff - a.absDiff).map(el => el.element);
-            let maxYElements = distancesY.sort((a, b) => b.absDiff - a.absDiff).map(el => el.element);
+            let maxXElements = distancesX.sort((a, b) => b.absDiff - a.absDiff);
+            let maxYElements = distancesY.sort((a, b) => b.absDiff - a.absDiff);
 
             function getElement(dir1, firstChoiceDir2, secondChoiceDir2) {
-                if (intersect(dir1, firstChoiceDir2).length > 0) {
-                    return intersect(dir1, firstChoiceDir2)[0];
-                } else if (wrapAround && intersect(dir1, secondChoiceDir2).length > 0) {
-                    return intersect(dir1, secondChoiceDir2)[0];
+                let dir1Elements = dir1.map(el => el.element);
+                let firstChoiceDir2Elements = firstChoiceDir2.map(el => el.element);
+                let secondChoiceDir2Elements = secondChoiceDir2.map(el => el.element);
+                let intersect1 = intersect(dir1Elements, firstChoiceDir2Elements);
+                if (intersect1.length > 0) {
+                    let ranks = {};
+                    dir1.concat(firstChoiceDir2).filter(el => intersect1.indexOf(el.element) > -1).forEach(el => {
+                        ranks[el.element.id] = ranks[el.element.id] || 0;
+                        ranks[el.element.id] += el.absDiff;
+                    });
+                    let min = Math.min(...Object.keys(ranks).map(key => ranks[key]));
+                    let minIds = Object.keys(ranks).map(key => ranks[key] === min ? key : null).filter(el => !!el);
+                    let minElements = intersect1.filter(element => minIds.indexOf(element.id) > -1);
+                    return minElements[0];
+                } else if (wrapAround) {
+                    let min = Math.min(...dir1.map(el => el.absDiff));
+                    let minElements = dir1.filter(el => el.absDiff === min).map(el => el.element);
+                    return intersect(minElements, secondChoiceDir2Elements)[0];
                 }
                 return null;
             }
@@ -178,10 +198,10 @@ function DirectionInputConstructor(paramItemSelector, paramScanActiveClass, opti
                 return result;
             }
 
-            let left = getElement(minYElements, leftSide, maxXElements);
-            let right = getElement(minYElements, rightSide, maxXElements);
-            let up = getElement(minXElements, upper, maxYElements);
-            let down = getElement(minXElements, lower, maxYElements);
+            let left = getElement(distancesY, leftSide, maxXElements);
+            let right = getElement(distancesY, rightSide, maxXElements);
+            let up = getElement(distancesX, upper, maxYElements);
+            let down = getElement(distancesX, lower, maxYElements);
 
             _elementPosInfo[element.id] = {
                 element: element,
@@ -191,6 +211,7 @@ function DirectionInputConstructor(paramItemSelector, paramScanActiveClass, opti
                 down: down
             }
         });
+        timingLogger.log();
     }
     init();
 }
