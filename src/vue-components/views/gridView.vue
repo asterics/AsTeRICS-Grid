@@ -291,12 +291,9 @@
                 metadata.lastOpenedGridId = this.gridId;
                 metadata.locked = metadata.locked === undefined ? urlParamService.isDemoMode() : metadata.locked;
                 metadata.fullscreen = metadata.fullscreen === undefined ? urlParamService.isDemoMode() : metadata.fullscreen;
-                if (urlParamService.isScanningDisabled()) {
-                    metadata.inputConfig.scanEnabled = false;
-                }
-                if (urlParamService.hideHeader()) {
-                    metadata.headerPinned = false;
-                }
+                metadata.inputConfig.scanEnabled = urlParamService.isScanningEnabled() ? true : metadata.inputConfig.scanEnabled;
+                metadata.inputConfig.dirEnabled = urlParamService.isDirectionEnabled() ? true : metadata.inputConfig.dirEnabled;
+                metadata.inputConfig.huffEnabled = urlParamService.isHuffmanEnabled() ? true : metadata.inputConfig.huffEnabled;
                 dataService.saveMetadata(metadata);
                 if (metadata.locked) {
                     $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);

@@ -2,20 +2,25 @@ let urlParamService = {};
 
 let PARAM_DEMO_MODE = 'demo';
 let PARAM_SCANNING = 'scanning';
+let PARAM_HUFFMAN = 'huffman';
+let PARAM_DIR_INPUT = 'direction';
 let PARAM_RESET_DATABASE = 'reset';
-let PARAM_HEADER = 'header';
 let PARAM_DEFAULT_GRIDSET = 'default';
 
 urlParamService.isDemoMode = function () {
     return hasParam(PARAM_DEMO_MODE);
 };
 
-urlParamService.isScanningDisabled = function () {
-    return urlParamService.isDemoMode() || isParamFalse(PARAM_SCANNING);
+urlParamService.isScanningEnabled = function () {
+    return hasParam(PARAM_SCANNING) && !isParamFalse(PARAM_SCANNING);
 };
 
-urlParamService.hideHeader = function () {
-    return urlParamService.isDemoMode() || isParamFalse(PARAM_HEADER);
+urlParamService.isDirectionEnabled = function () {
+    return hasParam(PARAM_DIR_INPUT) && !isParamFalse(PARAM_DIR_INPUT);
+};
+
+urlParamService.isHuffmanEnabled = function () {
+    return hasParam(PARAM_HUFFMAN) && !isParamFalse(PARAM_HUFFMAN);
 };
 
 urlParamService.shouldResetDatabase = function () {
