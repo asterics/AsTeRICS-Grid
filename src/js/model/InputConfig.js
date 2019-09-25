@@ -92,6 +92,7 @@ InputConfig.defaults({
     mouseclickEnabled: true,
     scanInputs: InputConfig.DEFAULT_SCAN_INPUTS,
     dirInputs: InputConfig.DEFAULT_DIR_INPUTS,
+    dirWrapAround: true,
     huffInputs: InputConfig.DEFAULT_HUFF_INPUTS,
     huffShowColors: true,
     huffShowNumbers: true,
