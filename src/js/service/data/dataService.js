@@ -24,7 +24,7 @@ dataService.getGrid = function (id, onlyShortVersion) {
         return Promise.resolve(null);
     }
     return databaseService.getSingleObject(GridData, id, onlyShortVersion).then(result => {
-        return Promise.resolve(new GridData(result));
+        return Promise.resolve(result ? new GridData(result) : null);
     });
 };
 
