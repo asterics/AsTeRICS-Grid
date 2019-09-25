@@ -41,8 +41,8 @@ databaseService.getObject = function (objectType, id, onlyShortVersion) {
                     onlyShortVersion: onlyShortVersion
                 };
                 let filteredData = filterService.convertDatabaseToLiveObjects(result, options);
-                let modelVersion = filteredData.modelVersion || filteredData[0].modelVersion;
-                if (_lastDataModelVersion !== modelVersion) {
+                let modelVersion = filteredData ? (filteredData.modelVersion || filteredData[0].modelVersion) : null;
+                if (modelVersion && _lastDataModelVersion !== modelVersion) {
                     _lastDataModelVersion = modelVersion;
                     localStorageService.setUserModelVersion(pouchDbService.getOpenedDatabaseName(), modelVersion);
                 }
