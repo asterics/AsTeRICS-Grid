@@ -9,11 +9,11 @@ In AsTeRICS Grid a user in general holds a set of grids which realize a specific
 Despite being a web-application that runs in an internet browser, AsTeRICS Grid is designed to be usable also without internet connection.
 
 **Internet connection is required for:**
-1. First usage of AsTeRICS Grid. Initially opening <a href="https://grid.asterics.eu/" target="_blank">https://grid.asterics.eu/<a/> automatically downloads the whole application to browser cache and therefore AsTeRICS Grid is usable offline afterwards.
+1. First usage of AsTeRICS Grid. Initially opening <a href="https://grid.asterics.eu/" target="_blank">https://grid.asterics.eu/</a> automatically downloads the whole application to browser cache and therefore AsTeRICS Grid is usable offline afterwards.
 1. Synchronizing configuration of online users
 
 **Without internet access it is possible to:**
-1. Use AsTeRICS Grid by just re-opening <a href="https://grid.asterics.eu/" target="_blank">https://grid.asterics.eu/<a/> in the browser (only initial access needs internet access).
+1. Use AsTeRICS Grid by just re-opening <a href="https://grid.asterics.eu/" target="_blank">https://grid.asterics.eu/</a> in the browser (only initial access needs internet access).
 1. switch between all saved users, which can be both offline and online users
 
 ## Online users
