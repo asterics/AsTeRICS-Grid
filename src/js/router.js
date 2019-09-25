@@ -60,6 +60,22 @@ Router.init = function (injectIdParam, initialHash) {
                     gridId: params.gridId
                 }, '#main');
             },
+            'grid/name/:gridName': function (params) {
+                log.debug('route grid with Name: ' + params.gridName);
+                helpService.setHelpLocation('02_navigation', '#main-view');
+                dataService.getGrids(true).then((result) => {
+                    let gridsWithName = result.filter(grid => grid.label === params.gridName);
+                    let id = gridsWithName[0] ? gridsWithName[0].id : null;
+                    if (id) {
+                        loadVueView(GridView, {
+                            gridId: id
+                        }, '#main');
+                    } else {
+                        log.warn(`no grid with name ${params.gridName} found!`);
+                        toMainInternal();
+                    }
+                });
+            },
             'grid/edit/:gridId': function (params) {
                 log.debug('route edit grid with ID: ' + params.gridId);
                 helpService.setHelpLocation('02_navigation', '#edit-view');
