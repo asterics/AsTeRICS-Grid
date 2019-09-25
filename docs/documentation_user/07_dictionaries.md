@@ -29,14 +29,14 @@ These are the elements of the "import words" modal:
 1. **Recognized words**: live-updated list of recognized words based on the input options and words typed into the textfield 
 1. **Cancel**: discard changes and close the modal 
 1. **Insert words**: import the recognized words to the dictionary and close the modal 
-1. **Element separator**: separator between words to recognize, can be either a single character or <a href="https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/RegExp" target="_blank">Javascript RegExp syntax<a/>. Default value is the Javascript RegExp `[\n; ]` meaning that line breaks, semicolons and spaces can be used to divide words.
+1. **Element separator**: separator between words to recognize, can be either a single character or <a href="https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/RegExp" target="_blank">Javascript RegExp syntax</a>. Default value is the Javascript RegExp `[\n; ]` meaning that line breaks, semicolons and spaces can be used to divide words.
 1. **In-element separator** (optional): single character or Javascript RegExp expression that re-splits elements that are recognized by "element separator". This is needed if the imported data consists of words and and a rank specifying the position of the word based on it's frequency.
 1. **Word index**: if "in-element separator" is set this property specifies the position of the word 
 1. **Rank index**: if "in-element separator" is set this property specifies the position of the rank 
 
 ### Example: import a big word list
 
-This example shows how to import a big list of words, for instance a list of the <a href="http://corpus.leeds.ac.uk/frqc/internet-en-forms.num" target="_blank">most frequent 25000 words<a/> from from <a href="http://corpus.leeds.ac.uk/" target="_blank">Corpus leeds<a/>. 
+This example shows how to import a big list of words, for instance a list of the <a href="http://corpus.leeds.ac.uk/frqc/internet-en-forms.num" target="_blank">most frequent 25000 words</a> from from <a href="http://corpus.leeds.ac.uk/" target="_blank">Corpus leeds</a>. 
 
 The format of the list looks like this:
 ```
