@@ -214,7 +214,6 @@ function Constructor() {
     }
 
     function touchMoveListener(event) {
-        log.warn('here!')
         callHandlers(touchMoveHandlers, [event], true);
         if (!_touchMoveBeginPosY || !_touchMoveBeginPosX) {
             _touchMoveBeginPosY = event.touches[0].clientY;
