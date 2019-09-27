@@ -27,7 +27,6 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass) {
     }
 
     function touchMove(event) {
-        event.preventDefault();
         let element = getTouchElement(event);
         onElement(element);
         _lastElement = element;
@@ -70,8 +69,12 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass) {
         }
         let x = event.touches ? event.touches[0].pageX : event.pageX;
         let y = event.touches ? event.touches[0].pageY : event.pageY;
-        let baseElement = document.elementFromPoint(x, y);
-        return getParentElement(baseElement);
+        let baseElements = document.elementsFromPoint(x, y);
+        let element = null;
+        baseElements.forEach(baseElement => {
+            element = element || getParentElement(baseElement);
+        });
+        return element;
     }
 
     function getParentElement(element) {
