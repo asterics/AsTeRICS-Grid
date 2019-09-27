@@ -146,7 +146,7 @@ loginService.validateUsername = function (username) {
             resolve(constants.VALIDATION_ERROR_REGEX);
             return;
         }
-        if (localStorageService.isSavedLocalUser(username)) {
+        if (localStorageService.isSavedLocalUser(username) || username === constants.LOCAL_DEMO_USERNAME) {
             resolve(constants.VALIDATION_ERROR_EXISTING);
             return;
         }
