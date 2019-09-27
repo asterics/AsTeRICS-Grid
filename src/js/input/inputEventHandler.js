@@ -44,8 +44,11 @@ function Constructor() {
     let swipeDownHandlers = [];
     let swipeLeftHandles = [];
     let swipeRightHandles = [];
-    let keyHandlers = {}; //keycode => [{handler, lastKeydown, lastAction, counter, inputEventKey}]
+    let touchMoveHandlers = [];
+    let touchStartHandlers = [];
+    let touchEndHandlers = [];
     let anyKeyHandlers = [];
+    let keyHandlers = {}; //keycode => [{handler, lastKeydown, lastAction, counter, inputEventKey}]
     let _touchElement = document;
     let _listening = false;
     let _areInputEvents = {}; //ID -> inputEvent, fn
@@ -61,6 +64,7 @@ function Constructor() {
         document.addEventListener('keydown', keyboardListener);
         document.addEventListener('keyup', keyUpListener);
         _touchElement.addEventListener('touchmove', touchMoveListener);
+        _touchElement.addEventListener('touchstart', touchStartListener);
         _touchElement.addEventListener('touchend', touchEndListener);
     };
 
@@ -71,6 +75,7 @@ function Constructor() {
         document.removeEventListener('keydown', keyboardListener);
         document.removeEventListener('keyup', keyUpListener);
         _touchElement.removeEventListener('touchmove', touchMoveListener);
+        _touchElement.removeEventListener('touchstart', touchStartListener);
         _touchElement.removeEventListener('touchend', touchEndListener);
     };
 
@@ -113,6 +118,31 @@ function Constructor() {
 
     thiz.onAnyKey = function (fn) {
         return registerHandler(fn, anyKeyHandlers);
+    };
+
+    thiz.onTouchMove = function (fn) {
+        return registerHandler(fn, touchMoveHandlers);
+    };
+
+    thiz.onTouchStart = function (fn) {
+        return registerHandler(fn, touchStartHandlers);
+    };
+
+    thiz.onTouchEnd = function (fn) {
+        return registerHandler(fn, touchEndHandlers);
+    };
+
+    thiz.off = function(fn) {
+        let filterFn = (f) => f !== fn;
+        mouseBorderHandlers = mouseBorderHandlers.filter(filterFn);
+        swipeUpHandlers = swipeUpHandlers.filter(filterFn);
+        swipeDownHandlers = swipeDownHandlers.filter(filterFn);
+        swipeLeftHandles = swipeLeftHandles.filter(filterFn);
+        swipeRightHandles = swipeRightHandles.filter(filterFn);
+        touchMoveHandlers = touchMoveHandlers.filter(filterFn);
+        touchStartHandlers = touchStartHandlers.filter(filterFn);
+        touchEndHandlers = touchEndHandlers.filter(filterFn);
+        anyKeyHandlers = anyKeyHandlers.filter(filterFn);
     };
 
     thiz.onInputEvent = function (inputEvent, fn) {
@@ -184,6 +214,8 @@ function Constructor() {
     }
 
     function touchMoveListener(event) {
+        log.warn('here!')
+        callHandlers(touchMoveHandlers, [event], true);
         if (!_touchMoveBeginPosY || !_touchMoveBeginPosX) {
             _touchMoveBeginPosY = event.touches[0].clientY;
             _touchMoveBeginPosX = event.touches[0].clientX;
@@ -204,6 +236,16 @@ function Constructor() {
             _touchMoveBeginPosX = null;
             callHandlers(swipeLeftHandles);
         }
+    }
+
+    function touchEndListener(event) {
+        callHandlers(touchEndHandlers, [event], true);
+        _touchMoveBeginPosX = null;
+        _touchMoveBeginPosY = null;
+    }
+
+    function touchStartListener(event) {
+        callHandlers(touchStartHandlers, [event], true);
     }
 
     function keyboardListener(event) {
@@ -310,11 +352,6 @@ function Constructor() {
         return new Date().getTime() - lastTimeMs > timeoutMs;
     }
 
-    function touchEndListener() {
-        _touchMoveBeginPosX = null;
-        _touchMoveBeginPosY = null;
-    }
-
     function registerHandler(fn, array) {
         if (fn) {
             array.push(fn);
@@ -322,9 +359,19 @@ function Constructor() {
         return thiz;
     }
 
-    function callHandlers(array) {
+    function callHandlers(array, argsArray, dontThrottle) {
         array.forEach(handler => {
-            util.throttle(handler);
+            if (!handler.apply) {
+                log.warn('handler seems to be not a function!')
+                return;
+            }
+            if (dontThrottle) {
+                handler.apply(null, argsArray);
+            } else {
+                util.throttle(() => {
+                    handler.apply(null, argsArray);
+                });
+            }
         });
     }
 
