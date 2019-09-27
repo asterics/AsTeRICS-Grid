@@ -126,6 +126,9 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
      * @return {Promise<any[]>}
      */
     thiz.close = function () {
+        if (_closed) {
+            return Promise.resolve();
+        }
         let promises = [];
         _closed = true;
         encryptionService.resetEncryptionProperties();
@@ -140,6 +143,12 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
             $(document).trigger(constants.EVENT_DB_CLOSED);
         });
         return returnPromise;
+    };
+
+    thiz.destroyDb = function(dbName) {
+        return thiz.close().then(() => {
+            return new PouchDB(dbName).destroy();
+        });
     };
 
     /**
