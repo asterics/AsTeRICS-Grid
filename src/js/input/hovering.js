@@ -1,6 +1,7 @@
 import { L } from "../util/lquery.js";
+import {inputEventHandler} from "./inputEventHandler";
 
-function Hover(itemSelector, hoverTimeoutMs, containerSelector, hoverActiveClass) {
+function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass) {
     var thiz = this;
     var _itemSelector = itemSelector;
     var _hoverTimeoutMs = hoverTimeoutMs || 1000;
@@ -26,6 +27,7 @@ function Hover(itemSelector, hoverTimeoutMs, containerSelector, hoverActiveClass
     }
 
     function touchMove(event) {
+        event.preventDefault();
         let element = getTouchElement(event);
         onElement(element);
         _lastElement = element;
@@ -84,28 +86,20 @@ function Hover(itemSelector, hoverTimeoutMs, containerSelector, hoverActiveClass
         _elements.forEach(function (item) {
             item.addEventListener('mouseenter', mouseEnter);
             item.addEventListener('mouseleave', mouseLeave);
-            item.addEventListener('touchstart', mouseEnter);
-            item.addEventListener('touchend', touchLeave);
+            inputEventHandler.global.onTouchStart(mouseEnter);
+            inputEventHandler.global.onTouchEnd(touchLeave);
+            inputEventHandler.global.onTouchMove(touchMove);
         });
-        if (containerSelector) {
-            L.selectAsList(containerSelector).forEach(function (item) {
-                item.addEventListener('touchmove', touchMove)
-            });
-        }
     };
 
     thiz.destroy = function () {
         L.selectAsList(_itemSelector).forEach(function (item) {
             item.removeEventListener('mouseenter', mouseEnter);
             item.removeEventListener('mouseleave', mouseLeave);
-            item.removeEventListener('touchstart', mouseEnter);
-            item.removeEventListener('touchend', touchLeave);
+            inputEventHandler.global.off(mouseEnter);
+            inputEventHandler.global.off(touchLeave);
+            inputEventHandler.global.off(touchMove);
         });
-        if (containerSelector) {
-            L.selectAsList(containerSelector).forEach(function (item) {
-                item.removeEventListener('touchmove', touchMove)
-            });
-        }
         Object.keys(_hoverMap).forEach(key => {
             clearTimeout(_hoverMap[key]);
         });
