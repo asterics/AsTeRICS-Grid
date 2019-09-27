@@ -161,14 +161,15 @@ pouchDbService.remove = function (id) {
  * resets the whole database, if it is the default local database, otherwise the call is rejected
  * @return {Promise} resolves after reset is finished
  */
-pouchDbService.resetDatabase = function () {
-    if (!pouchDbService.isUsingLocalDb() || pouchDbService.getOpenedDatabaseName() !== constants.LOCAL_NOLOGIN_USERNAME) {
-        return Promise.reject();
+pouchDbService.resetDatabase = function (databaseName) {
+    if (!pouchDbService.isUsingLocalDb() || pouchDbService.getOpenedDatabaseName() !== constants.LOCAL_DEMO_USERNAME) {
+        return Promise.reject('do not destroy!');
     }
     _documentCache.clearAll();
     return new Promise(resolve => {
-        getDbToUse().destroy().then(function () {
-            pouchDbService.initDatabase(localStorageService.getAutologinUser()).then(() => resolve());
+        _pouchDbAdapter.destroyDb(databaseName).then(function () {
+            _pouchDbAdapter = null;
+            pouchDbService.initDatabase(databaseName).then(() => resolve());
         }).catch(function (err) {
             log.error('error destroying database: ' + err);
         })

@@ -134,7 +134,7 @@ databaseService.initForUser = function (username, hashedUserPassword, userDataba
         return Promise.resolve();
     }
     return pouchDbService.initDatabase(username, userDatabaseURL, onlyRemote).then(() => {
-        return initInternal(hashedUserPassword);
+        return initInternal(hashedUserPassword, username);
     });
 };
 
@@ -155,7 +155,7 @@ databaseService.registerForUser = function (username, hashedUserPassword, userDa
         return Promise.resolve();
     }
     return pouchDbService.createDatabase(username, userDatabaseURL, onlyRemote).then(() => {
-        return initInternal(hashedUserPassword);
+        return initInternal(hashedUserPassword, username);
     });
 };
 
@@ -188,7 +188,7 @@ databaseService.getCurrentUsedDatabase = function () {
     return pouchDbService.getOpenedDatabaseName();
 };
 
-function initInternal(hashedUserPassword) {
+function initInternal(hashedUserPassword, username) {
     let skipCheckGenerateDefaultGrid = !pouchDbService.isUsingLocalDb(); //no checking/generation of default grid for remote databases
     let metadata = null;
     let saveMetadata = false;
@@ -196,7 +196,7 @@ function initInternal(hashedUserPassword) {
     _initPromise = Promise.resolve().then(() => { //reset DB if specified by URL
         let promises = [];
         if (urlParamService.shouldResetDatabase()) {
-            promises.push(pouchDbService.resetDatabase());
+            promises.push(pouchDbService.resetDatabase(username));
         }
         return Promise.all(promises);
     }).then(() => {
