@@ -106,11 +106,7 @@ MainVue.init = function () {
                 }, 300, constants.EVENT_GRID_RESIZE);
             });
             inputEventHandler.global
-                .onSwipedRight(thiz.openSidebar)
-                .onSwipedLeft(thiz.closeSidebar)
                 .onSwipedDown(openSidebarIfFullscreen)
-                .onSwipedRight(openSidebarIfFullscreen)
-                .onMouseUpperOrLeftBorder(openSidebarIfFullscreen)
                 .onEscape(openSidebarIfFullscreen);
             inputEventHandler.global.startListening();
             thiz.openSidebar();
