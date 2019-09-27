@@ -289,8 +289,8 @@
             }).then((savedMetadata) => {
                 let metadata = new MetaData(savedMetadata) || new MetaData();
                 metadata.lastOpenedGridId = this.gridId;
-                metadata.locked = metadata.locked === undefined ? urlParamService.isDemoMode() : metadata.locked;
-                metadata.fullscreen = metadata.fullscreen === undefined ? urlParamService.isDemoMode() : metadata.fullscreen;
+                metadata.locked = metadata.locked === undefined ? urlParamService.isDemoMode() && dataService.getCurrentUser() === constants.LOCAL_DEMO_USERNAME : metadata.locked;
+                metadata.fullscreen = metadata.fullscreen === undefined ? urlParamService.isDemoMode() && dataService.getCurrentUser() === constants.LOCAL_DEMO_USERNAME : metadata.fullscreen;
                 metadata.inputConfig.scanEnabled = urlParamService.isScanningEnabled() ? true : metadata.inputConfig.scanEnabled;
                 metadata.inputConfig.dirEnabled = urlParamService.isDirectionEnabled() ? true : metadata.inputConfig.dirEnabled;
                 metadata.inputConfig.huffEnabled = urlParamService.isHuffmanEnabled() ? true : metadata.inputConfig.huffEnabled;
