@@ -36,10 +36,9 @@ function init() {
     log.info('autologin user: ' + autologinUser);
     log.debug('using password (hashed): ' + userPassword);
     if (urlParamService.isDemoMode()) {
-        promises.push(databaseService.registerForUser(constants.LOCAL_NOLOGIN_USERNAME, constants.LOCAL_NOLOGIN_USERNAME));
-        localStorageService.saveLocalUser(constants.LOCAL_NOLOGIN_USERNAME);
-        localStorageService.setAutologinUser(constants.LOCAL_NOLOGIN_USERNAME);
-        autologinUser = constants.LOCAL_NOLOGIN_USERNAME;
+        promises.push(databaseService.registerForUser(constants.LOCAL_DEMO_USERNAME, constants.LOCAL_DEMO_USERNAME));
+        localStorageService.saveLocalUser(constants.LOCAL_DEMO_USERNAME);
+        localStorageService.setAutologinUser('');
     } else if (autologinUser && userPassword && userSynced) { //synced saved online user
         let promise = databaseService.initForUser(autologinUser, userPassword); //login may takes some time, so meanwhile use offline
         promises.push(promise);
@@ -53,7 +52,9 @@ function init() {
     }
     Promise.all(promises).finally(() => {
         MainVue.init();
-        let initHash = location.hash || (autologinUser ? '#main' : lastActiveUser ? '#login' : '#welcome');
+        let toMain = autologinUser || urlParamService.isDemoMode();
+        localStorageService.setLastActiveUser(autologinUser || lastActiveUser || '');
+        let initHash = location.hash || (toMain ? '#main' : lastActiveUser ? '#login' : '#welcome');
         if (!Router.isInitialized()) {
             Router.init('#injectView', initHash);
         }
