@@ -7,8 +7,13 @@ let PARAM_DIR_INPUT = 'direction';
 let PARAM_RESET_DATABASE = 'reset';
 let PARAM_DEFAULT_GRIDSET = 'default';
 
+let _demoMode = false;
+let _alreadyResetted = false;
+
 urlParamService.isDemoMode = function () {
-    return hasParam(PARAM_DEMO_MODE);
+    _demoMode = _demoMode || hasParam(PARAM_DEMO_MODE);
+    removeParam(PARAM_DEMO_MODE);
+    return _demoMode;
 };
 
 urlParamService.isScanningEnabled = function () {
@@ -24,7 +29,9 @@ urlParamService.isHuffmanEnabled = function () {
 };
 
 urlParamService.shouldResetDatabase = function () {
-    return urlParamService.isDemoMode() || isParamTrue(PARAM_RESET_DATABASE);
+    let shouldReset = !_alreadyResetted && (urlParamService.isDemoMode() || isParamTrue(PARAM_RESET_DATABASE));
+    _alreadyResetted = true;
+    return shouldReset;
 };
 
 urlParamService.getDefaultGridsetName = function () {
@@ -48,6 +55,19 @@ function isParamTrue(name) {
 
 function isParamFalse(name) {
     return getParam(name) === 'false';
+}
+
+function removeParam(paramName) {
+    if (!hasParam(paramName)) {
+        return;
+    }
+    let searchParams = new URLSearchParams(window.location.search);
+    searchParams.delete(paramName);
+    if (history.replaceState) {
+        let searchString = searchParams.toString().length > 0 ? '?' + searchParams.toString() : '';
+        let newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname +  searchString + window.location.hash;
+        history.replaceState(null, '', newUrl);
+    }
 }
 
 export {urlParamService};
