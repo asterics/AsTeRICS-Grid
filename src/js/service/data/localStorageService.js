@@ -1,3 +1,5 @@
+import {constants} from "../../util/constants";
+
 var errorMsg = 'could not access local storage, maybe disabled by user? Error: ';
 var storage = null;
 let FIRST_VISIT_KEY = 'FIRST_VISIT_KEY';
@@ -134,7 +136,15 @@ var localStorageService = {
     getSavedLocalUsers() {
         let object = getSaveObject(USER_PASSWORDS_KEY);
         let allUsers = Object.keys(object) || [];
-        return allUsers.filter(username => object[username] === '').sort();
+        return allUsers.filter(username => object[username] === '').sort((a, b) => {
+            if (a === constants.LOCAL_DEMO_USERNAME) {
+                return 1;
+            }
+            if (b === constants.LOCAL_DEMO_USERNAME) {
+                return -1;
+            }
+            return a.localeCompare(b);
+        });
     },
     /**
      * returns all saved online users as a string list
@@ -160,6 +170,9 @@ var localStorageService = {
      * saves a user that should be auto-logged in at startup
      */
     setAutologinUser(username) {
+        if (username === constants.LOCAL_DEMO_USERNAME) {
+            return;
+        }
         localStorageService.save(AUTOLOGIN_USER_KEY, username);
     },
     /**
