@@ -452,6 +452,14 @@ dataService.getSyncState = function () {
 };
 
 /**
+ * returns the current active username (= database name)
+ * @return {*}
+ */
+dataService.getCurrentUser = function () {
+    return databaseService.getCurrentUsedDatabase();
+};
+
+/**
  * saves an element that can potentially be used in several places, and has high data volume and therefore
  * should only be saved once in the database (e.g. images, ARE Models).
  * To achieve this the data of the element is hashed and the hashes are saved in the MetaData.hashes object. If another
