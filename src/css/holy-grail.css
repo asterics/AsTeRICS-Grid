@@ -54,6 +54,7 @@
  */
 .hg-sidebar {
     flex: 0 0 250px;
+    z-index: 3;
 }
 
 nav li:focus {

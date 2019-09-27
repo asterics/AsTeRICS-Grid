@@ -31,6 +31,7 @@ button:focus {
 }
 
 header {
+    z-index: 3;
     margin: 0;
     padding: 2vh;
     border-bottom: 2px solid lightgray;
