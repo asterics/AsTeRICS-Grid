@@ -146,7 +146,8 @@ function setupContextMenu() {
             handleContextMenu(key);
         },
         items: menuItems,
-        trigger: 'left'
+        trigger: 'left',
+        zIndex: 10
     });
     i18nService.initDomI18n();
 

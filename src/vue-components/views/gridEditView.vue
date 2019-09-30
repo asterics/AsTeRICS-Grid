@@ -340,7 +340,8 @@
                 var elementId = $(this).attr('data-id');
                 handleContextMenu(key, elementId);
             },
-            items: itemsElemNormal
+            items: itemsElemNormal,
+            zIndex: 10
         });
 
         $.contextMenu({
@@ -349,7 +350,8 @@
                 var elementId = $(this).attr('data-id');
                 handleContextMenu(key, elementId);
             },
-            items: itemsElemSpecial
+            items: itemsElemSpecial,
+            zIndex: 10
         });
 
         $.contextMenu({
@@ -357,7 +359,8 @@
             callback: function (key, options) {
                 handleContextMenu(key);
             },
-            items: itemsGlobal
+            items: itemsGlobal,
+            zIndex: 10
         });
 
         $.contextMenu({
@@ -366,7 +369,8 @@
                 handleContextMenu(key);
             },
             trigger: 'left',
-            items: itemsMoreMenuButton
+            items: itemsMoreMenuButton,
+            zIndex: 10
         });
 
         function handleContextMenu(key, elementId) {

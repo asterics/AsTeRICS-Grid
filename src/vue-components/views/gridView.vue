@@ -377,7 +377,8 @@
                 handleContextMenu(key);
             },
             trigger: 'left',
-            items: contextItems
+            items: contextItems,
+            zIndex: 10
         });
 
         function handleContextMenu(key, elementId) {
