@@ -29,22 +29,34 @@ util.debounce = function (fn, timeout, key) {
 };
 
 /**
+ * clears any existing timeout created by "debounce()" before by given key
+ * @param key
+ */
+util.clearDebounce = function (key) {
+    if (_timeoutHandlers[key]) {
+        clearTimeout(_timeoutHandlers[key]);
+    }
+};
+
+/**
  * Throttles a high call rate on a given function.
  *
  * @param fn the function to call
  * @param args the arguments to pass to the function to call
  * @param minPauseMs minimum pause in milliseconds between two function calls of the same function. If last call
  *        was more than minPausMs ago, the given function is called, otherwise the function call is discarded.
+ * @param key unique key to identify the given function (optional)
  */
-util.throttle = function (fn, args, minPauseMs) {
+util.throttle = function (fn, args, minPauseMs, key) {
     if (!fn || !fn.apply) {
         return;
     }
     minPauseMs = minPauseMs || 500;
-    let lastCall = _throttleHistory[fn];
+    let historyKey = key || fn;
+    let lastCall = _throttleHistory[historyKey];
     if (!lastCall || new Date().getTime() - lastCall > minPauseMs) {
         fn.apply(null, args);
-        _throttleHistory[fn] = new Date().getTime();
+        _throttleHistory[historyKey] = new Date().getTime();
     }
 };
 
@@ -79,6 +91,29 @@ util.copyToClipboard = function copyTextToClipboard(text) {
  */
 util.appendToClipboard = function (text) {
     util.copyToClipboard(lastClipboardData + text);
+};
+
+/**
+ * gets an element by given x/y coordinates in the current window
+ *
+ * @param possibleElements list of possible elements to return
+ * @param x x-coordinate in the current window to get the element
+ * @param y y-coordinate in the current window to get the element
+ */
+util.getElement = function (possibleElements, x, y) {
+    let baseElements = document.elementsFromPoint(x, y);
+    let element = null;
+    baseElements.forEach(baseElement => {
+        element = element || getParentElement(baseElement, possibleElements);
+    });
+    return element;
+
+    function getParentElement(element, possibleElementsParam) {
+        for (let i = 0; element && possibleElementsParam.indexOf(element) === -1 && i < 100; i++) {
+            element = element.parentElement;
+        }
+        return element;
+    }
 };
 
 export {util};
