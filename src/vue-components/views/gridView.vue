@@ -177,6 +177,8 @@
                         actionService.doAction(thiz.gridData.id, item.id);
                     });
                     thiz.hover.startHovering();
+                } else {
+                    $('#touchElement').hide();
                 }
 
                 if (inputConfig.mouseclickEnabled) {
