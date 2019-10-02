@@ -1,16 +1,19 @@
 import { L } from "../util/lquery.js";
+import $ from 'jquery';
 import {inputEventHandler} from "./inputEventHandler";
+import {util} from "../util/util";
 
 function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass) {
     var thiz = this;
     var _itemSelector = itemSelector;
     var _hoverTimeoutMs = hoverTimeoutMs || 1000;
     var _selectionListener = null;
-    var _isHovering = false;
     var _hoverMap = {};
     let _elements = [];
     let _lastElement = null;
     let _lastTouchEvent = null;
+    let _touchElementHidden = false;
+    let _inputEventHandler = null;
 
     function mouseEnter(event, targetParam) {
         var target = targetParam || this;
@@ -21,21 +24,46 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass) {
     }
 
     function mouseLeave(event, targetParam) {
+        if (!_touchElementHidden) {
+            return;
+        }
         var target = targetParam || this;
         event.preventDefault();
         offElement(target);
     }
 
-    function touchMove(event) {
+    function mouseMove(event) {
+        if (!_touchElementHidden) {
+            _touchElementHidden = true;
+            $('#touchElement').hide();
+        }
+        util.debounce(() => {
+            _touchElementHidden = false;
+            $('#touchElement').show();
+        }, _hoverTimeoutMs + 10, 'hovering-mouseMove');
+    }
+
+    function mouseUp() {
+        offElement(_lastElement);
+    }
+
+    function touchStart(event) {
         let element = getTouchElement(event);
         onElement(element);
         _lastElement = element;
-        _lastTouchEvent = event;
     }
 
-    function touchLeave(event) {
-        let element = getTouchElement(event);
-        offElement(element);
+    function touchEnd(event) {
+        offElement(_lastElement);
+    }
+
+    function touchMove(event) {
+        util.throttle(() => {
+            let element = getTouchElement(event);
+            onElement(element);
+            _lastElement = element;
+            _lastTouchEvent = event;
+        }, [], 50, 'hovering-touchmove');
     }
 
     function onElement(element) {
@@ -64,45 +92,43 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass) {
     }
 
     function getTouchElement(event) {
-        if (event.touches.length === 0) {
+        if (event.touches && event.touches.length === 0) {
             event = _lastTouchEvent;
         }
-        let x = event.touches ? event.touches[0].pageX : event.pageX;
-        let y = event.touches ? event.touches[0].pageY : event.pageY;
-        let baseElements = document.elementsFromPoint(x, y);
-        let element = null;
-        baseElements.forEach(baseElement => {
-            element = element || getParentElement(baseElement);
-        });
-        return element;
-    }
-
-    function getParentElement(element) {
-        for (let i = 0; element && _elements.indexOf(element) === -1 && i < 100; i++) {
-            element = element.parentElement;
+        if (!event) {
+            log.warn('no event');
+            return;
         }
-        return element;
+        let x = event.touches ? event.touches[0].pageX : event.pageX || event.clientX;
+        let y = event.touches ? event.touches[0].pageY : event.pageY || event.clientY;
+        return util.getElement(_elements, x, y);
     }
 
     thiz.startHovering = function () {
+        $('#touchElement').show();
         _elements = L.selectAsList(_itemSelector);
         _elements.forEach(function (item) {
             item.addEventListener('mouseenter', mouseEnter);
             item.addEventListener('mouseleave', mouseLeave);
-            inputEventHandler.global.onTouchStart(mouseEnter);
-            inputEventHandler.global.onTouchEnd(touchLeave);
-            inputEventHandler.global.onTouchMove(touchMove);
+            item.addEventListener('mouseup', mouseUp);
         });
+        _inputEventHandler = inputEventHandler.instance();
+        _inputEventHandler.onTouchStart(touchStart);
+        _inputEventHandler.onTouchEnd(touchEnd);
+        _inputEventHandler.onTouchMove(touchMove);
+        _inputEventHandler.startListening();
+        document.addEventListener("mousemove", mouseMove);
     };
 
     thiz.destroy = function () {
-        L.selectAsList(_itemSelector).forEach(function (item) {
+        util.clearDebounce('hovering-mouseMove');
+        _elements.forEach(function (item) {
             item.removeEventListener('mouseenter', mouseEnter);
             item.removeEventListener('mouseleave', mouseLeave);
-            inputEventHandler.global.off(mouseEnter);
-            inputEventHandler.global.off(touchLeave);
-            inputEventHandler.global.off(touchMove);
+            item.removeEventListener('mouseup', mouseUp);
         });
+        _inputEventHandler.destroy();
+        document.removeEventListener("mousemove", mouseMove);
         Object.keys(_hoverMap).forEach(key => {
             clearTimeout(_hoverMap[key]);
         });
