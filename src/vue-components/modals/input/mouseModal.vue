@@ -6,14 +6,14 @@
                     <a class="inline close-button" href="javascript:void(0);" @click="cancel()"><i class="fas fa-times"/></a>
                     <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
                     <div class="modal-header">
-                        <h1 name="header" data-i18n="">Mouse input // Mauseingabe</h1>
+                        <h1 name="header" data-i18n="">Mouse/Touch input // Maus-/Toucheingabe</h1>
                     </div>
 
                     <div class="modal-body" v-if="inputConfig">
                         <div class="row" >
                             <div class="twelve columns">
                                 <input v-focus type="checkbox" id="enableClick" v-model="inputConfig.mouseclickEnabled"/>
-                                <label class="inline" for="enableClick" data-i18n>Select with mouse click // Auswahl mit Mausklick</label>
+                                <label class="inline" for="enableClick" data-i18n>Select with mouse click (or tap) // Auswahl mit Mausklick (oder Antippen)</label>
                             </div>
                         </div>
                         <div class="row" >

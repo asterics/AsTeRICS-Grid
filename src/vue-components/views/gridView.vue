@@ -356,7 +356,7 @@
 
         let contextItems = {
             CONTEXT_MOUSE: {
-                name: "Mouse input // Mauseingabe",
+                name: "Mouse/Touch input // Maus-/Toucheingabe ",
                 icon: "fas fa-mouse-pointer"
             },
             CONTEXT_SCANNING: {
