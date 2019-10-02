@@ -49,7 +49,7 @@ function Constructor() {
     let touchEndHandlers = [];
     let anyKeyHandlers = [];
     let keyHandlers = {}; //keycode => [{handler, lastKeydown, lastAction, counter, inputEventKey}]
-    let _touchElement = document;
+    let _touchElement = document.body;
     let _listening = false;
     let _areInputEvents = {}; //ID -> inputEvent, fn
     let _id = (idCounter++);
