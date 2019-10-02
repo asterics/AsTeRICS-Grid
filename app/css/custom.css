@@ -8,6 +8,10 @@ body {
     overflow: hidden;
 }
 
+* {
+    touch-action: manipulation;
+}
+
 .grid-container {
     overflow: hidden;
 }
