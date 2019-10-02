@@ -63,7 +63,7 @@ function Constructor() {
         document.addEventListener('mousemove', mouseMoveListener);
         document.addEventListener('keydown', keyboardListener);
         document.addEventListener('keyup', keyUpListener);
-        _touchElement.addEventListener('touchmove', touchMoveListener);
+        _touchElement.addEventListener('touchmove', touchMoveListener, {passive: false} );
         _touchElement.addEventListener('touchstart', touchStartListener);
         _touchElement.addEventListener('touchend', touchEndListener);
     };

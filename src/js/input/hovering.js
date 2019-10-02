@@ -58,6 +58,7 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass) {
     }
 
     function touchMove(event) {
+        event.preventDefault();
         util.throttle(() => {
             let element = getTouchElement(event);
             onElement(element);
