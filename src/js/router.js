@@ -238,11 +238,10 @@ function loadVueView(viewObject, properties, menuItemToHighlight) {
     if (!routingEndabled) {
         return;
     }
-    /*if (viewObject === GridView) {
-        $('#touchElement').show();
-    } else {
+    if (viewObject !== GridView) {
         $('#touchElement').hide();
-    }*/
+    }
+
     setMenuItemSelected(menuItemToHighlight || getHash());
     log.debug('loading view: ' + viewObject.__file);
     MainVue.setViewComponent(viewObject, properties);
