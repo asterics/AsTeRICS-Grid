@@ -1,6 +1,8 @@
 import {i18nService} from "./i18nService";
+import {stateService} from "./stateService";
+import {constants} from "../util/constants";
 
-var _allVoices = null;
+var _allVoices = [];
 var _voicesLangs = [];
 var _voicesLangMap = {};
 let _lastSpeakTime = 0;
@@ -11,7 +13,7 @@ speechService.speak = function (text, lang) {
     if (!text) {
         return;
     }
-    if(new Date().getTime() - _lastSpeakTime < 300) {
+    if (new Date().getTime() - _lastSpeakTime < 300) {
         _lastSpeakTime = new Date().getTime();
         return;
     }
@@ -22,6 +24,9 @@ speechService.speak = function (text, lang) {
         msg.voice = getVoice(lang);
         //log.info('used voice: ' + msg.voice.name);
         window.speechSynthesis.speak(msg);
+        if (speechService.isSpeaking()) {
+            stateService.setState(constants.STATE_ACTIVATED_TTS, true);
+        }
     }
 };
 
@@ -34,7 +39,9 @@ speechService.getVoicesLangs = function () {
 };
 
 speechService.speechSupported = function () {
-    return (typeof SpeechSynthesisUtterance !== 'undefined');
+    let voices = window.speechSynthesis.getVoices(); //first call in chrome returns [] sometimes
+    voices = window.speechSynthesis.getVoices();
+    return (typeof SpeechSynthesisUtterance !== 'undefined') && voices.length > 0;
 };
 
 function getVoice(lang) {
