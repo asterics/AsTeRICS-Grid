@@ -103,7 +103,7 @@
                     let thiz = this;
                     this.stopTest();
                     if (thiz.inputConfig.hoverEnabled) {
-                        thiz.hover = new Hover('.area-element-inner', thiz.inputConfig.hoverTimeoutMs);
+                        thiz.hover = new Hover('.area-element-inner', thiz.inputConfig.hoverTimeoutMs, '', true);
                         thiz.hover.setSelectionListener(function (item) {
                             thiz.selectedTestElement = item;
                         });
