@@ -2,12 +2,19 @@ import { L } from "../util/lquery.js";
 import $ from 'jquery';
 import {inputEventHandler} from "./inputEventHandler";
 import {util} from "../util/util";
+import {speechService} from "../service/speechService";
+import {i18nService} from "../service/i18nService";
+import {MainVue} from "../vue/mainVue";
+import {stateService} from "../service/stateService";
+import {constants} from "../util/constants";
 
-function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass) {
+function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass, demoMode) {
     var thiz = this;
     var _itemSelector = itemSelector;
     var _hoverTimeoutMs = hoverTimeoutMs || 1000;
+    let _demoMode = demoMode;
     var _selectionListener = null;
+
     var _hoverMap = {};
     let _elements = [];
     let _lastElement = null;
@@ -34,12 +41,10 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass) {
 
     function mouseMove(event) {
         if (!_touchElementHidden) {
-            _touchElementHidden = true;
-            $('#touchElement').hide();
+            setTouchElementVisibility(false);
         }
         util.debounce(() => {
-            _touchElementHidden = false;
-            $('#touchElement').show();
+            setTouchElementVisibility(true);
         }, _hoverTimeoutMs + 10, 'hovering-mouseMove');
     }
 
@@ -48,7 +53,7 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass) {
     }
 
     function touchStart(event) {
-        let element = getTouchElement(event);
+        let element = getTouchEventElement(event);
         onElement(element);
         _lastElement = element;
     }
@@ -58,13 +63,25 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass) {
     }
 
     function touchMove(event) {
-        event.preventDefault();
+        if (!_demoMode) {
+            event.preventDefault();
+        }
         util.throttle(() => {
-            let element = getTouchElement(event);
+            let element = getTouchEventElement(event);
             onElement(element);
             _lastElement = element;
             _lastTouchEvent = event;
         }, [], 50, 'hovering-touchmove');
+    }
+
+    function clickHandler(event) {
+        speechService.speak(i18nService.translate('speech output activated // Sprachausgabe aktiviert'));
+        MainVue.clearTooltip();
+        stateService.setState(constants.STATE_ACTIVATED_TTS, true);
+        setTouchElementVisibility(true);
+        _elements.forEach(function (item) {
+            item.removeEventListener('click', clickHandler);
+        });
     }
 
     function onElement(element) {
@@ -92,7 +109,7 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass) {
         _lastElement = null;
     }
 
-    function getTouchElement(event) {
+    function getTouchEventElement(event) {
         if (event.touches && event.touches.length === 0) {
             event = _lastTouchEvent;
         }
@@ -105,9 +122,33 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass) {
         return util.getElement(_elements, x, y);
     }
 
+    function setTouchElementVisibility(visible) {
+        _touchElementHidden = !visible;
+        if (!_demoMode) {
+            if (visible) {
+                $('#touchElement').show();
+            } else {
+                $('#touchElement').hide();
+            }
+        }
+    }
+
     thiz.startHovering = function () {
-        $('#touchElement').show();
         _elements = L.selectAsList(_itemSelector);
+        let alreadyActivatedTTS = stateService.getState(constants.STATE_ACTIVATED_TTS);
+        if (speechService.speechSupported() && !alreadyActivatedTTS && !_demoMode) {
+            MainVue.setTooltip(i18nService.translate('Tap/click on any element to activate speech output // Klicken/tippen Sie auf ein beliebiges Element um Sprachausgabe zu aktivieren'));
+            stateService.onStateChanged(constants.STATE_ACTIVATED_TTS, (acivatedTTS) => {
+                if (acivatedTTS) {
+                    MainVue.clearTooltip();
+                }
+            });
+            _elements.forEach(function (item) {
+                item.addEventListener('click', clickHandler);
+            });
+        } else {
+            setTouchElementVisibility(true);
+        }
         _elements.forEach(function (item) {
             item.addEventListener('mouseenter', mouseEnter);
             item.addEventListener('mouseleave', mouseLeave);
@@ -127,12 +168,14 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass) {
             item.removeEventListener('mouseenter', mouseEnter);
             item.removeEventListener('mouseleave', mouseLeave);
             item.removeEventListener('mouseup', mouseUp);
+            item.removeEventListener('click', clickHandler);
         });
         _inputEventHandler.destroy();
         document.removeEventListener("mousemove", mouseMove);
         Object.keys(_hoverMap).forEach(key => {
             clearTimeout(_hoverMap[key]);
         });
+        stateService.clearListeners(constants.STATE_ACTIVATED_TTS);
     };
 
     thiz.setHoverTimeout = function (timeoutMs) {
