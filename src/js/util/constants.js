@@ -34,4 +34,6 @@ constants.ENVIRONMENT = '#ASTERICS_GRID_ENV#';
 constants.IS_ENVIRONMENT_DEV = constants.ENVIRONMENT === ('#ASTERICS_' + 'GRID_ENV#');
 constants.IS_ENVIRONMENT_PROD = !constants.IS_ENVIRONMENT_DEV;
 
+constants.STATE_ACTIVATED_TTS = 'STATE_ACTIVATED_TTS';
+
 export {constants};
