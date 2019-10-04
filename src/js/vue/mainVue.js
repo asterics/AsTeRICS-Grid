@@ -21,6 +21,14 @@ MainVue.isSidebarOpen = function () {
     return app.showSidebar;
 };
 
+MainVue.setTooltip = function (html) {
+    app.tooltipHTML = html;
+};
+
+MainVue.clearTooltip = function () {
+    app.tooltipHTML = null;
+};
+
 MainVue.init = function () {
     app = new Vue({
         el: '#app',
@@ -33,7 +41,8 @@ MainVue.init = function () {
                 currentUser: databaseService.getCurrentUsedDatabase(),
                 isLocalUser: localStorageService.isSavedLocalUser(databaseService.getCurrentUsedDatabase()),
                 syncState: dataService.getSyncState(),
-                constants: constants
+                constants: constants,
+                tooltipHTML: null
             }
         },
         methods: {
