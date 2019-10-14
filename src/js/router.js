@@ -212,6 +212,10 @@ Router.isOnEditPage = function () {
     return window.location.hash.indexOf('#grid/edit') !== -1;
 };
 
+Router.getCurrentView = function () {
+    return _currentView;
+};
+
 function getValidHash() {
     let hashToUse = location.hash;
     if (!databaseService.getCurrentUsedDatabase()) {
@@ -238,6 +242,7 @@ function loadVueView(viewObject, properties, menuItemToHighlight) {
     if (!routingEndabled) {
         return;
     }
+    _currentView = viewObject;
     if (viewObject !== GridView) {
         $('#touchElement').hide();
     }

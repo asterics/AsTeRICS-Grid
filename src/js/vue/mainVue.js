@@ -12,8 +12,12 @@ import {Router} from "../router";
 
 let MainVue = {};
 let app = null;
+let _tooltipView = null;
 
 MainVue.setViewComponent = function (component, properties) {
+    if (_tooltipView !== Router.getCurrentView()) {
+        MainVue.clearTooltip();
+    }
     app.setComponent(component, properties);
 };
 
@@ -22,6 +26,7 @@ MainVue.isSidebarOpen = function () {
 };
 
 MainVue.setTooltip = function (html) {
+    _tooltipView = Router.getCurrentView();
     app.tooltipHTML = html;
 };
 
