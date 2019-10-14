@@ -141,6 +141,7 @@
                 $(document).on(constants.EVENT_GRID_RESIZE, thiz.resizeListener);
                 if (inputConfig.dirEnabled) {
                     thiz.directionInput = DirectionInput.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', (item) => {
+                        L.removeAddClass(item, 'selected');
                         actionService.doAction(gridInstance.getCurrentGridId(), item.id);
                     });
                     thiz.directionInput.start();
@@ -148,6 +149,7 @@
 
                 if (inputConfig.huffEnabled) {
                     this.huffmanInput = HuffmanInput.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', 'scanInactive', (item) => {
+                        L.removeAddClass(item, 'selected');
                         actionService.doAction(gridInstance.getCurrentGridId(), item.id);
                     });
                     this.huffmanInput.start();
