@@ -39,8 +39,8 @@ speechService.getVoicesLangs = function () {
 };
 
 speechService.speechSupported = function () {
-    let voices = window.speechSynthesis.getVoices(); //first call in chrome returns [] sometimes
-    voices = window.speechSynthesis.getVoices();
+    let voices = _allVoices.length > 0 ? _allVoices : window.speechSynthesis.getVoices(); //first call in chrome returns [] sometimes
+    voices = voices.length > 0 ? voices : window.speechSynthesis.getVoices();
     return (typeof SpeechSynthesisUtterance !== 'undefined') && voices.length > 0;
 };
 
@@ -59,7 +59,7 @@ function getVoice(lang) {
 }
 
 function init() {
-    if (speechService.speechSupported()) {
+    if (window.speechSynthesis && window.speechSynthesis.getVoices) {
         _allVoices = window.speechSynthesis.getVoices();
         setTimeout(function () {
             _allVoices = window.speechSynthesis.getVoices(); //first call in chrome returns [] sometimes
@@ -67,7 +67,7 @@ function init() {
             _voicesLangs = _voicesLangs.filter(function(item, pos, self) {
                 return self.indexOf(item) == pos;
             })
-        }, 1000);
+        }, 100);
     }
 }
 init();
