@@ -155,7 +155,11 @@ Router.isInitialized = function() {
 };
 
 Router.toMain = function () {
-    setHash('#main');
+    if (getHash().indexOf('#main') === 0) {
+        setHash('#main' + "?date=" + new Date().getTime());
+    } else {
+        setHash('#main');
+    }
 };
 
 Router.toUpdating = function () {
