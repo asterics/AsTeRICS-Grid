@@ -12,6 +12,7 @@ import {databaseService} from "./service/data/databaseService";
 import {urlParamService} from "./service/urlParamService";
 import {constants} from "./util/constants";
 import {modelUtil} from "./util/modelUtil";
+import {keyboardShortcuts} from "./service/keyboardShortcuts";
 //import {timingLogger} from "./service/timingLogger";
 
 var firstRun = localStorageService.isFirstPageVisit();
@@ -24,6 +25,7 @@ function init() {
     reloadOnAppcacheUpdate();
     loginService.ping();
     VuePluginManager.init();
+    keyboardShortcuts.init();
     let lastActiveUser = localStorageService.getLastActiveUser();
     let autologinUser = localStorageService.getAutologinUser();
     if (localStorageService.getUserMajorModelVersion(autologinUser) > modelUtil.getLatestModelVersion().major) {
