@@ -11,6 +11,7 @@ let _loginInfo = null;
 let _loggedInUser = null;
 let _autoRetryHandler;
 let _lastParamUser = null;
+let _loginInProgress = false;
 
 let _lastParamHashedPw = null;
 let _lastParamSaveUser = null;
@@ -174,6 +175,50 @@ loginService.stopAutoRetryLogin = function () {
  */
 loginService.ping = function () {
     $.get(_serverUrl + '/ping');
+};
+
+loginService.loginStoredUser = function (user) {
+    if (_loginInProgress) {
+        log.warn('login currently in progress - aborting...');
+        return Promise.reject();
+    }
+    _loginInProgress = true;
+    let savedOnlineUsers = localStorageService.getSavedOnlineUsers();
+    let savedLocalUsers = localStorageService.getSavedLocalUsers();
+    loginService.logout();
+
+    let promise = new Promise((resolve, reject) => {
+        if (loginService.getLoggedInUsername() === user) {
+            Router.toMain();
+            resolve();
+        } else if (savedOnlineUsers.includes(user) && localStorageService.isDatabaseSynced(user)) {
+            let password = localStorageService.getUserPassword(user);
+            databaseService.initForUser(user, password).then(() => {
+                loginService.loginHashedPassword(user, password, true);
+                resolve();
+                Router.toMain();
+            });
+        } else if (savedOnlineUsers.includes(user)) {
+            let password = localStorageService.getUserPassword(user);
+            loginService.loginHashedPassword(user, password, true).then(() => {
+                resolve();
+                Router.toMain();
+            }).catch((reason) => {
+                reject(reason);
+            });
+        } else if (savedLocalUsers.includes(user)) {
+            loginService.logout();
+            localStorageService.setAutologinUser(user);
+            databaseService.initForUser(user, user).then(() => {
+                resolve();
+                Router.toMain();
+            });
+        }
+    });
+    promise.finally(() => {
+        _loginInProgress = false;
+    });
+    return promise;
 };
 
 function loginInternal(user, hashedPassword, saveUser) {

@@ -194,32 +194,13 @@
                 if (!user || (!thiz.savedUsers.includes(user) && loginService.getLoggedInUsername() !== user)) {
                     return;
                 }
-
-                if (loginService.getLoggedInUsername() === user) {
-                    Router.toMain();
-                } else if (thiz.savedOnlineUsers.includes(user) && localStorageService.isDatabaseSynced(user)) {
-                    let password = localStorageService.getUserPassword(user);
-                    databaseService.initForUser(user, password).then(() => {
-                        loginService.loginHashedPassword(user, password, true);
-                        thiz.loginSuccess = true;
-                        Router.toMain();
-                    });
-                } else if (thiz.savedOnlineUsers.includes(user)) {
-                    let password = localStorageService.getUserPassword(user);
-                    loginService.loginHashedPassword(user, password, true).then(() => {
-                        thiz.loginSuccess = true;
-                        Router.toMain();
-                    }).catch((reason) => {
-                        thiz.loginSuccess = false;
-                        thiz.loginErrorCode = reason;
-                    });
-                } else if (thiz.savedLocalUsers.includes(user)) {
-                    loginService.logout();
-                    localStorageService.setAutologinUser(user);
-                    databaseService.initForUser(user, user).then(() => {
-                        Router.toMain();
-                    });
-                }
+                loginService.loginStoredUser(user).then(() => {
+                    thiz.loginSuccess = true;
+                    thiz.loginErrorCode = '';
+                }).catch(reason => {
+                    thiz.loginSuccess = false;
+                    thiz.loginErrorCode = reason;
+                });
             },
             removeStoredUser(user) {
                 if (!(this.savedOnlineUsers.includes(user) || this.savedLocalUsers.includes(user))) {
