@@ -97,6 +97,7 @@
 
     .mouseentered {
         outline: 3px solid green !important;
+        background-color: lightgreen !important;
     }
 
     @-webkit-keyframes background {

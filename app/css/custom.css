@@ -237,6 +237,7 @@ nav li:hover button span {
 
 .mouseentered.grid-item-content {
     outline: thick solid green !important;
+    background: lightgreen;
 }
 
 .scanInactive.grid-item-content, .scanInactive.grid-item-content span {
