@@ -173,7 +173,7 @@
                 }
 
                 if (inputConfig.hoverEnabled) {
-                    thiz.hover = new Hover('.grid-item-content', inputConfig.hoverTimeoutMs);
+                    thiz.hover = new Hover('.grid-item-content', inputConfig.hoverTimeoutMs, '', false, inputConfig.hoverHideCursor);
                     thiz.hover.setSelectionListener(function (item) {
                         L.removeAddClass(item, 'selected');
                         actionService.doAction(thiz.gridData.id, item.id);

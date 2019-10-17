@@ -23,6 +23,12 @@
                             </div>
                         </div>
                         <div class="row" v-show="inputConfig.hoverEnabled">
+                            <div class="twelve columns">
+                                <input v-focus type="checkbox" id="hoverHideCursor" v-model="inputConfig.hoverHideCursor"/>
+                                <label class="inline" for="hoverHideCursor" data-i18n>Hide Cursor // Cursor verstecken</label>
+                            </div>
+                        </div>
+                        <div class="row" v-show="inputConfig.hoverEnabled">
                             <label class="four columns" for="inHoverTime" data-i18n>Hover Time (ms) // Hovering Zeit (ms)</label>
                             <input type="range" id="inHoverTime" v-model.number="inputConfig.hoverTimeoutMs" min="100" max="3000" step="100"/>
                             <input type="number" v-model.number="inputConfig.hoverTimeoutMs" min="100" max="3000" step="100"/>
@@ -103,7 +109,7 @@
                     let thiz = this;
                     this.stopTest();
                     if (thiz.inputConfig.hoverEnabled) {
-                        thiz.hover = new Hover('.area-element-inner', thiz.inputConfig.hoverTimeoutMs, '', true);
+                        thiz.hover = new Hover('.area-element-inner', thiz.inputConfig.hoverTimeoutMs, '', true, thiz.inputConfig.hoverHideCursor);
                         thiz.hover.setSelectionListener(function (item) {
                             thiz.selectedTestElement = item;
                         });

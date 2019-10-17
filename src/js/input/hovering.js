@@ -8,7 +8,7 @@ import {MainVue} from "../vue/mainVue";
 import {stateService} from "../service/stateService";
 import {constants} from "../util/constants";
 
-function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass, demoMode) {
+function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass, demoMode, hideCursor) {
     var thiz = this;
     var _itemSelector = itemSelector;
     var _hoverTimeoutMs = hoverTimeoutMs || 1000;
@@ -134,6 +134,10 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass, demoMode) {
     }
 
     thiz.startHovering = function () {
+        if (hideCursor) {
+            $(_itemSelector).css('cursor', 'none');
+            $('#touchElement').css('cursor', 'none');
+        }
         _elements = L.selectAsList(_itemSelector);
         let alreadyActivatedTTS = stateService.getState(constants.STATE_ACTIVATED_TTS);
         if (speechService.speechSupported() && !alreadyActivatedTTS && !_demoMode) {
@@ -163,6 +167,10 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass, demoMode) {
     };
 
     thiz.destroy = function () {
+        if (hideCursor) {
+            $(_itemSelector).css('cursor', 'default');
+            $('#touchElement').css('cursor', 'default');
+        }
         util.clearDebounce('hovering-mouseMove');
         _elements.forEach(function (item) {
             item.removeEventListener('mouseenter', mouseEnter);
