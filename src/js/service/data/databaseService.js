@@ -41,8 +41,7 @@ databaseService.getObject = function (objectType, id, onlyShortVersion) {
                     onlyShortVersion: onlyShortVersion
                 };
                 let filteredData = filterService.convertDatabaseToLiveObjects(result, options);
-                let modelVersion = filteredData ? filteredData.modelVersion : null;
-                modelVersion = modelVersion || (filteredData[0] ? filteredData[0].modelVersion : null);
+                let modelVersion = getModelVersion(filteredData);
                 if (modelVersion && _lastDataModelVersion !== modelVersion) {
                     _lastDataModelVersion = modelVersion;
                     localStorageService.setUserModelVersion(pouchDbService.getOpenedDatabaseName(), modelVersion);
@@ -301,6 +300,19 @@ function applyFiltersAndSave(modelName, data) {
             reject(err);
         });
     });
+}
+
+function getModelVersion(dataOrArray) {
+    if (!dataOrArray) {
+        return null;
+    }
+    if (dataOrArray.modelVersion) {
+        return dataOrArray.modelVersion;
+    }
+    if (dataOrArray[0] && dataOrArray[0].modelVersion) {
+        return dataOrArray[0].modelVersion;
+    }
+    return null;
 }
 
 function fixDuplicatedMetadata(hashedUserPassword, metadataObjects) {
