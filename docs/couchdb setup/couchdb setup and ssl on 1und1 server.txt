@@ -41,6 +41,8 @@ We are using the SSL certificate provided by 1 und 1 Ionos. To see/download/mana
 5) These 3 files are copied into /opt/couchdb/ssl/ folder on the cloud server
 6) The couchdb configuration files "default.ini" and "local.ini" have to be adapted to use the correct ports and certificates -> see "default.ini" and "local.ini" in this folder next to this text file.
 7) to reload the certificate stop and start couchdb on the server using the commands "sudo service couchdb stop" and "sudo service couchdb start" afterwards.
+8) run "sh /home/superlogin/AsTeRICS-Grid/scripts/start.sh" to restart superlogin
+9) do "sudo reboot" in order to also re-init apache tomcat (https://couchdb.asterics-foundation.org/report.html)
 
 Couchdb should now be accessible with SSL enabled under the link:
 https://couchdb.asterics-foundation.org:6984/_utils/#login
