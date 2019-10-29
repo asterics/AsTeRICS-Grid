@@ -1,11 +1,11 @@
 import {i18nService} from "./i18nService";
 import {stateService} from "./stateService";
 import {constants} from "../util/constants";
+import {dataService} from "./data/dataService";
 
 var _allVoices = [];
 var _voicesLangs = [];
 var _voicesLangMap = {};
-let _lastSpeakTime = 0;
 
 var speechService = {};
 
@@ -13,13 +13,9 @@ speechService.speak = function (text, lang) {
     if (!text) {
         return;
     }
-    if (new Date().getTime() - _lastSpeakTime < 300) {
-        _lastSpeakTime = new Date().getTime();
-        return;
-    }
-    lang = lang || i18nService.getBrowserLang();
     if (speechService.speechSupported()) {
-        _lastSpeakTime = new Date().getTime();
+        lang = lang || i18nService.getBrowserLang();
+        window.speechSynthesis.cancel();
         var msg = new SpeechSynthesisUtterance(text);
         msg.voice = getVoice(lang);
         //log.info('used voice: ' + msg.voice.name);
@@ -28,6 +24,15 @@ speechService.speak = function (text, lang) {
             stateService.setState(constants.STATE_ACTIVATED_TTS, true);
         }
     }
+};
+
+speechService.speakLabel = function (gridId, gridElementId) {
+    if (!gridId || !gridElementId) {
+        return;
+    }
+    dataService.getGridElement(gridId, gridElementId).then(gridElement => {
+        speechService.speak(gridElement.label);
+    });
 };
 
 speechService.isSpeaking = function () {
@@ -39,9 +44,12 @@ speechService.getVoicesLangs = function () {
 };
 
 speechService.speechSupported = function () {
+    if (typeof SpeechSynthesisUtterance === 'undefined' || !window.speechSynthesis) {
+        return false;
+    }
     let voices = _allVoices.length > 0 ? _allVoices : window.speechSynthesis.getVoices(); //first call in chrome returns [] sometimes
     voices = voices.length > 0 ? voices : window.speechSynthesis.getVoices();
-    return (typeof SpeechSynthesisUtterance !== 'undefined') && voices.length > 0;
+    return voices.length > 0;
 };
 
 function getVoice(lang) {
