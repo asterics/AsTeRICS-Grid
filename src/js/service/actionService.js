@@ -11,6 +11,9 @@ import {GridActionCollectElement} from "../model/GridActionCollectElement";
 let actionService = {};
 
 actionService.doAction = function (gridId, gridElementId) {
+    if (!gridId || !gridElementId) {
+        return;
+    }
     dataService.getGridElement(gridId, gridElementId).then(gridElement => {
         log.debug('do actions for: ' + gridElement.label + ', ' + gridElementId);
         switch (gridElement.type) {
