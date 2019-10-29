@@ -20,6 +20,8 @@
         <direction-input-modal v-if="showModal === modalTypes.MODAL_DIRECTION" @close="showModal = null; reinitInputMethods();"/>
         <mouse-modal v-if="showModal === modalTypes.MODAL_MOUSE" @close="showModal = null; reinitInputMethods();"/>
         <scanning-modal v-if="showModal === modalTypes.MODAL_SCANNING" @close="showModal = null; reinitInputMethods();"/>
+        <sequential-input-modal v-if="showModal === modalTypes.MODAL_SEQUENTIAL" @close="showModal = null; reinitInputMethods();"/>
+
         <div class="row content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0">
             <div data-i18n="" style="margin-top: 2em">
                 <span>No elements, click <a :href="'#grid/edit/' + gridId">Edit grid</a> to enter edit mode.</span>
@@ -50,18 +52,21 @@
     import {Scanner} from "../../js/input/scanning.js";
     import {Hover} from "../../js/input/hovering.js";
     import {Clicker} from "../../js/input/clicking.js";
+    import {HuffmanInput} from "../../js/input/huffmanInput";
+    import {DirectionInput} from "../../js/input/directionInput";
+    import {SequentialInput} from "../../js/input/sequentialInput";
 
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {constants} from "../../js/util/constants";
     import {GridData} from "../../js/model/GridData";
     import {i18nService} from "../../js/service/i18nService";
     import {util} from "../../js/util/util";
-    import {HuffmanInput} from "../../js/input/huffmanInput";
-    import {DirectionInput} from "../../js/input/directionInput";
     import ScanningModal from '../../vue-components/modals/input/scanningModal.vue'
     import MouseModal from "../modals/input/mouseModal.vue";
     import DirectionInputModal from "../modals/input/directionInputModal.vue";
     import HuffmanInputModal from "../modals/input/huffmanInputModal.vue";
+    import SequentialInputModal from "../modals/input/sequentialInputModal.vue";
+    import {speechService} from "../../js/service/speechService";
 
     let vueApp = null;
     let gridInstance = null;
@@ -71,6 +76,7 @@
         MODAL_MOUSE: 'MODAL_MOUSE',
         MODAL_DIRECTION: 'MODAL_DIRECTION',
         MODAL_HUFFMAN: 'MODAL_HUFFMAN',
+        MODAL_SEQUENTIAL: 'MODAL_SEQUENTIAL',
     };
 
     let vueConfig = {
@@ -83,6 +89,7 @@
                 hover: null,
                 clicker: null,
                 directionInput: null,
+                seqInput: null,
                 huffmanInput: null,
                 showModal: null,
                 modalTypes: modalTypes,
@@ -92,6 +99,7 @@
             }
         },
         components: {
+            SequentialInputModal,
             HuffmanInputModal,
             DirectionInputModal,
             MouseModal,
@@ -139,28 +147,37 @@
                 let inputConfig = thiz.metadata.inputConfig;
                 window.addEventListener('resize', thiz.resizeListener, true);
                 $(document).on(constants.EVENT_GRID_RESIZE, thiz.resizeListener);
-                if (inputConfig.dirEnabled) {
-                    thiz.directionInput = DirectionInput.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', (item) => {
-                        L.removeAddClass(item, 'selected');
-                        actionService.doAction(gridInstance.getCurrentGridId(), item.id);
+                let selectionListener = (item) => {
+                    L.removeAddClass(item, 'selected');
+                    actionService.doAction(thiz.gridData.id, item.id);
+                };
+                let activeListener = (item) => {
+                    if (inputConfig.globalReadActive) {
+                        speechService.speakLabel(thiz.gridData.id, item.id);
+                    }
+                };
+
+                if (inputConfig.seqEnabled) {
+                    thiz.seqInput = SequentialInput.getInstanceFromConfig(inputConfig, '.grid-item-content', {
+                        selectionListener: selectionListener,
+                        activeListener: activeListener
                     });
+                    thiz.seqInput.start();
+                }
+
+                if (inputConfig.dirEnabled) {
+                    thiz.directionInput = DirectionInput.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', selectionListener);
                     thiz.directionInput.start();
                 }
 
                 if (inputConfig.huffEnabled) {
-                    this.huffmanInput = HuffmanInput.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', 'scanInactive', (item) => {
-                        L.removeAddClass(item, 'selected');
-                        actionService.doAction(gridInstance.getCurrentGridId(), item.id);
-                    });
+                    this.huffmanInput = HuffmanInput.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', 'scanInactive', selectionListener);
                     this.huffmanInput.start();
                 }
 
                 if (inputConfig.scanEnabled) {
                     thiz.scanner = Scanner.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', 'scanInactive');
-                    thiz.scanner.setSelectionListener(function (item) {
-                        L.removeAddClass(item, 'selected');
-                        actionService.doAction(gridInstance.getCurrentGridId(), item.id);
-                    });
+                    thiz.scanner.setSelectionListener(selectionListener);
 
                     gridInstance.setLayoutChangedStartListener(function () {
                         thiz.scanner.pauseScanning();
@@ -173,11 +190,10 @@
                 }
 
                 if (inputConfig.hoverEnabled) {
-                    thiz.hover = new Hover('.grid-item-content', inputConfig.hoverTimeoutMs, '', false, inputConfig.hoverHideCursor);
-                    thiz.hover.setSelectionListener(function (item) {
-                        L.removeAddClass(item, 'selected');
-                        actionService.doAction(thiz.gridData.id, item.id);
+                    thiz.hover = Hover.getInstanceFromConfig(inputConfig, '.grid-item-content', {
+                        activeListener: activeListener
                     });
+                    thiz.hover.setSelectionListener(selectionListener);
                     thiz.hover.startHovering();
                 } else {
                     $('#touchElement').hide();
@@ -185,10 +201,7 @@
 
                 if (inputConfig.mouseclickEnabled) {
                     thiz.clicker = new Clicker('.grid-item-content');
-                    thiz.clicker.setSelectionListener(function (item) {
-                        L.removeAddClass(item, 'selected');
-                        actionService.doAction(thiz.gridData.id, item.id);
-                    });
+                    thiz.clicker.setSelectionListener(selectionListener);
                     thiz.clicker.startClickcontrol();
                 }
             },
@@ -339,6 +352,7 @@
         if (vueApp && vueApp.clicker) vueApp.clicker.destroy();
         if (vueApp && vueApp.directionInput) vueApp.directionInput.destroy();
         if (vueApp && vueApp.huffmanInput) vueApp.huffmanInput.destroy();
+        if (vueApp && vueApp.seqInput) vueApp.seqInput.destroy();
     }
 
     function initGrid(gridId) {
@@ -355,6 +369,7 @@
         let CONTEXT_SCANNING = "CONTEXT_SCANNING";
         let CONTEXT_DIRECTION = "CONTEXT_DIRECTION";
         let CONTEXT_HUFFMAN = "CONTEXT_HUFFMAN";
+        let CONTEXT_SEQUENTIAL = "CONTEXT_SEQUENTIAL";
 
         let contextItems = {
             CONTEXT_MOUSE: {
@@ -372,6 +387,10 @@
             CONTEXT_HUFFMAN: {
                 name: "Huffman input // Huffman-Eingabe",
                 icon: "fas fa-ellipsis-h"
+            },
+            CONTEXT_SEQUENTIAL: {
+                name: "Sequential input // Sequentielle Eingabe",
+                icon: "fas fa-arrow-right"
             }
         };
 
@@ -401,6 +420,10 @@
                 }
                 case CONTEXT_HUFFMAN: {
                     vueApp.openModal(modalTypes.MODAL_HUFFMAN);
+                    break;
+                }
+                case CONTEXT_SEQUENTIAL: {
+                    vueApp.openModal(modalTypes.MODAL_SEQUENTIAL);
                     break;
                 }
             }

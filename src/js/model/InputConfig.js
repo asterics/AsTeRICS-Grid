@@ -8,6 +8,7 @@ class InputConfig extends Model({
     id: String,
     modelName: String,
     modelVersion: String,
+    globalReadActive: [Boolean], //read out loud active element(s)?
     scanEnabled: [Boolean],
     scanAuto: [Boolean],
     scanTimeoutMs: [Number],
@@ -23,6 +24,8 @@ class InputConfig extends Model({
     dirInputs: [Model.Array(Object)], //array with input events with labels InputConfig.UP/DOWN/LEFT/RIGHT/SELECT
     dirWrapAround: [Boolean],
     dirResetToStart: [Boolean],
+    seqEnabled: [Boolean],
+    seqInputs: [Model.Array(Object)],
     huffEnabled: [Boolean],
     huffElementCount: [Number],
     huffInputs: [Model.Array(Object)], // ordered array of InputEvent objects
@@ -61,11 +64,17 @@ InputConfig.LEFT = "LEFT";
 InputConfig.RIGHT = "RIGHT";
 InputConfig.SELECT = "SELECT";
 InputConfig.NEXT = "NEXT";
+InputConfig.NEXT_ELEMENT = "NEXT_ELEMENT";
 InputConfig.GENERAL_INPUT = "GENERAL_INPUT";
 InputConfig.getNumConst = (num) => "NUM" + num;
+
 InputConfig.DEFAULT_SCAN_INPUTS = [
     new InputEventKey({label: InputConfig.SELECT, keyCode: 32, keyName: "Space", holdDuration: 400}),
     new InputEventKey({label: InputConfig.NEXT, keyCode: 32, keyName: "Space"})
+];
+InputConfig.DEFAULT_SEQ_INPUTS = [
+    new InputEventKey({label: InputConfig.SELECT, keyCode: 32, keyName: "Space", holdDuration: 400}),
+    new InputEventKey({label: InputConfig.NEXT_ELEMENT, keyCode: 32, keyName: "Space"})
 ];
 InputConfig.DEFAULT_DIR_INPUTS = [
     new InputEventKey({label: InputConfig.SELECT, keyCode: 32, keyName: "Space"}),
@@ -93,6 +102,7 @@ InputConfig.defaults({
     mouseclickEnabled: true,
     scanInputs: InputConfig.DEFAULT_SCAN_INPUTS,
     dirInputs: InputConfig.DEFAULT_DIR_INPUTS,
+    seqInputs: InputConfig.DEFAULT_SEQ_INPUTS,
     dirWrapAround: true,
     huffInputs: InputConfig.DEFAULT_HUFF_INPUTS,
     huffShowColors: true,
