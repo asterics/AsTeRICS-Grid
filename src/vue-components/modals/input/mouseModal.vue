@@ -30,8 +30,8 @@
                         </div>
                         <div class="row" v-show="inputConfig.hoverEnabled">
                             <label class="four columns" for="inHoverTime" data-i18n>Hover Time (ms) // Hovering Zeit (ms)</label>
-                            <input type="range" id="inHoverTime" v-model.number="inputConfig.hoverTimeoutMs" min="100" max="3000" step="100"/>
-                            <input type="number" v-model.number="inputConfig.hoverTimeoutMs" min="100" max="3000" step="100"/>
+                            <input type="range" id="inHoverTime" v-model.number="inputConfig.hoverTimeoutMs" min="0" max="5000" step="100"/>
+                            <input type="number" v-model.number="inputConfig.hoverTimeoutMs" min="0" max="5000" step="100"/>
                         </div>
                         <accordion class="row" acc-label="TEST_CONFIGURATION" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
                             <test-area :selected-element="selectedTestElement"></test-area>
@@ -109,7 +109,9 @@
                     let thiz = this;
                     this.stopTest();
                     if (thiz.inputConfig.hoverEnabled) {
-                        thiz.hover = new Hover('.area-element-inner', thiz.inputConfig.hoverTimeoutMs, '', true, thiz.inputConfig.hoverHideCursor);
+                        thiz.hover = Hover.getInstanceFromConfig(thiz.inputConfig, '.area-element-inner', {
+                            demoMode: true
+                        });
                         thiz.hover.setSelectionListener(function (item) {
                             thiz.selectedTestElement = item;
                         });

@@ -7,13 +7,29 @@ import {i18nService} from "../service/i18nService";
 import {MainVue} from "../vue/mainVue";
 import {stateService} from "../service/stateService";
 import {constants} from "../util/constants";
+import {InputConfig} from "../model/InputConfig";
 
-function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass, demoMode, hideCursor) {
+let Hover = {};
+Hover.getInstanceFromConfig = function (inputConfig, itemSelector, options) {
+    options = options || {};
+    return new HoverConstructor(itemSelector, {
+        selectionListener: options.selectionListener,
+        activeListener: options.activeListener,
+        inputEventSelect: inputConfig.seqInputs.filter(e => e.label === InputConfig.SELECT)[0],
+        inputEventNext: inputConfig.seqInputs.filter(e => e.label === InputConfig.NEXT)[0],
+        timeoutMs: inputConfig.hoverTimeoutMs,
+        demoMode: options.demoMode,
+        hideCursor: inputConfig.hoverHideCursor
+    });
+};
+
+function HoverConstructor(itemSelector, options) {
     var thiz = this;
     var _itemSelector = itemSelector;
-    var _hoverTimeoutMs = hoverTimeoutMs || 1000;
-    let _demoMode = demoMode;
-    var _selectionListener = null;
+    var _hoverTimeoutMs = options.timeoutMs !== undefined ? options.timeoutMs : 1000;
+    let _demoMode = options.demoMode;
+    let _selectionListener = options.selectionListener;
+    let _activeListener = options.activeListener;
 
     var _hoverMap = {};
     let _elements = [];
@@ -45,7 +61,7 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass, demoMode, hideCur
         }
         util.debounce(() => {
             setTouchElementVisibility(true);
-        }, _hoverTimeoutMs + 10, 'hovering-mouseMove');
+        }, _hoverTimeoutMs + 300, 'hovering-mouseMove');
     }
 
     function mouseUp() {
@@ -92,11 +108,16 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass, demoMode, hideCur
             return;
         }
         L.addClass(element, 'mouseentered');
-        _hoverMap[element] = setTimeout(function () {
-            if (_selectionListener) {
-                _selectionListener(element);
-            }
-        }, _hoverTimeoutMs);
+        if (_activeListener && element !== _lastElement) {
+            _activeListener(element);
+        }
+        if (_hoverTimeoutMs !== 0) {
+            _hoverMap[element] = setTimeout(function () {
+                if (_selectionListener) {
+                    _selectionListener(element);
+                }
+            }, _hoverTimeoutMs);
+        }
     }
 
     function offElement(element) {
@@ -134,7 +155,7 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass, demoMode, hideCur
     }
 
     thiz.startHovering = function () {
-        if (hideCursor) {
+        if (options.hideCursor) {
             $(_itemSelector).css('cursor', 'none');
             $('#touchElement').css('cursor', 'none');
         }
@@ -167,7 +188,7 @@ function Hover(itemSelector, hoverTimeoutMs, hoverActiveClass, demoMode, hideCur
     };
 
     thiz.destroy = function () {
-        if (hideCursor) {
+        if (options.hideCursor) {
             $(_itemSelector).css('cursor', 'default');
             $('#touchElement').css('cursor', 'default');
         }
