@@ -191,7 +191,8 @@
 
                 if (inputConfig.hoverEnabled) {
                     thiz.hover = Hover.getInstanceFromConfig(inputConfig, '.grid-item-content', {
-                        activeListener: activeListener
+                        activeListener: activeListener,
+                        containerClass: '.grid-container li'
                     });
                     thiz.hover.setSelectionListener(selectionListener);
                     thiz.hover.startHovering();

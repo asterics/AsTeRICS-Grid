@@ -23,15 +23,19 @@
                             </div>
                         </div>
                         <div class="row" v-show="inputConfig.hoverEnabled">
+                            <label class="four columns" for="inHoverTime" data-i18n>Hover Time (ms) // Hovering Zeit (ms)</label>
+                            <input type="range" id="inHoverTime" v-model.number="inputConfig.hoverTimeoutMs" min="0" max="5000" step="100"/>
+                            <input type="number" v-model.number="inputConfig.hoverTimeoutMs" min="0" max="5000" step="100"/>
+                        </div>
+                        <div class="row" v-show="inputConfig.hoverEnabled">
                             <div class="twelve columns">
                                 <input v-focus type="checkbox" id="hoverHideCursor" v-model="inputConfig.hoverHideCursor"/>
                                 <label class="inline" for="hoverHideCursor" data-i18n>Hide Cursor // Cursor verstecken</label>
                             </div>
-                        </div>
-                        <div class="row" v-show="inputConfig.hoverEnabled">
-                            <label class="four columns" for="inHoverTime" data-i18n>Hover Time (ms) // Hovering Zeit (ms)</label>
-                            <input type="range" id="inHoverTime" v-model.number="inputConfig.hoverTimeoutMs" min="0" max="5000" step="100"/>
-                            <input type="number" v-model.number="inputConfig.hoverTimeoutMs" min="0" max="5000" step="100"/>
+                            <div class="twelve columns">
+                                <input type="checkbox" id="chkReadActive" v-model="inputConfig.globalReadActive"/>
+                                <label for="chkReadActive" data-i18n>Read out active element // Aktives Element vorlesen</label>
+                            </div>
                         </div>
                         <accordion class="row" acc-label="TEST_CONFIGURATION" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
                             <test-area :selected-element="selectedTestElement"></test-area>
@@ -110,7 +114,8 @@
                     this.stopTest();
                     if (thiz.inputConfig.hoverEnabled) {
                         thiz.hover = Hover.getInstanceFromConfig(thiz.inputConfig, '.area-element-inner', {
-                            demoMode: true
+                            demoMode: true,
+                            containerClass: '.area .area-row'
                         });
                         thiz.hover.setSelectionListener(function (item) {
                             thiz.selectedTestElement = item;

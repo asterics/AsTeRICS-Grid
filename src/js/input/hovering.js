@@ -15,6 +15,7 @@ Hover.getInstanceFromConfig = function (inputConfig, itemSelector, options) {
     return new HoverConstructor(itemSelector, {
         selectionListener: options.selectionListener,
         activeListener: options.activeListener,
+        containerClass: options.containerClass,
         inputEventSelect: inputConfig.seqInputs.filter(e => e.label === InputConfig.SELECT)[0],
         inputEventNext: inputConfig.seqInputs.filter(e => e.label === InputConfig.NEXT)[0],
         timeoutMs: inputConfig.hoverTimeoutMs,
@@ -158,6 +159,9 @@ function HoverConstructor(itemSelector, options) {
         if (options.hideCursor) {
             $(_itemSelector).css('cursor', 'none');
             $('#touchElement').css('cursor', 'none');
+            if (options.containerClass) {
+                $(options.containerClass).css('cursor', 'none');
+            }
         }
         _elements = L.selectAsList(_itemSelector);
         let alreadyActivatedTTS = stateService.getState(constants.STATE_ACTIVATED_TTS);
@@ -191,6 +195,9 @@ function HoverConstructor(itemSelector, options) {
         if (options.hideCursor) {
             $(_itemSelector).css('cursor', 'default');
             $('#touchElement').css('cursor', 'default');
+            if (options.containerClass) {
+                $(options.containerClass).css('cursor', 'default');
+            }
         }
         util.clearDebounce('hovering-mouseMove');
         _elements.forEach(function (item) {
