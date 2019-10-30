@@ -34,6 +34,7 @@ We are using the SSL certificate provided by 1 und 1 Ionos. To see/download/mana
 1) go to: https://login.ionos.de/ and login
 2) Choose "Domains and SSL" -> "SSL Certificates" on the right side
 3) Choose "Cloud" product in combo on the right side and open the certificate for "*.asterics-foundation.org"
+3.1) IMPORTANT: The products "Cloud" and "1 & 1 Basic" have different SSL certificates and both can only be used once (for couchdb or for asterics-foundation.org)!
 4) Here you can renew/download the certificate which consists of 3 files:
 4.1) asterics-foundation.org_private_key.key
 4.2) asterics-foundation.org_ssl_certificate.cer
