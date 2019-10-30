@@ -91,13 +91,13 @@
     }
 
     .selected {
-        -webkit-animation: background 5s cubic-bezier(1,0,0,1);
-        animation: background 5s cubic-bezier(1,0,0,1);
+        -webkit-animation: background 5s cubic-bezier(1,0,0,1) !important;
+        animation: background 5s cubic-bezier(1,0,0,1) !important;
     }
 
     .mouseentered {
         outline: 3px solid green !important;
-        background-color: lightgreen !important;
+        background-color: lightgreen;
     }
 
     @-webkit-keyframes background {
