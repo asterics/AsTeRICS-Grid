@@ -9,6 +9,7 @@ import {Router} from "../router";
 let loginService = {};
 let _loginInfo = null;
 let _loggedInUser = null;
+let _tryUser = null;
 let _autoRetryHandler;
 let _lastParamUser = null;
 let _loginInProgress = false;
@@ -49,6 +50,7 @@ loginService.getLoggedInUserDatabase = function () {
  * @see loginService.loginHashedPassword() for other details.
  */
 loginService.loginPlainPassword = function (user, plainPassword, saveUser) {
+    _tryUser = user;
     let hashedPassword = encryptionService.getUserPasswordHash(plainPassword);
     return loginService.loginHashedPassword(user, hashedPassword, saveUser);
 };
@@ -64,27 +66,58 @@ loginService.loginPlainPassword = function (user, plainPassword, saveUser) {
  *         Promise rejects with loginService.ERROR_CODE_* if online login failed and database is not locally synced.
  */
 loginService.loginHashedPassword = function (user, hashedPassword, saveUser) {
-    return loginInternal(user, hashedPassword, saveUser).then(() => {
-        return databaseService.initForUser(user, hashedPassword, loginService.getLoggedInUserDatabase(), !saveUser).then(() => {
-            return Promise.resolve(true);
-        });
-    }, (reason) => {
-        log.info('online login failed!');
-        log.debug(reason);
-        if (localStorageService.isDatabaseSynced(user)) {
-            log.info('using offline local database...');
-            localStorageService.setLastActiveUser(user);
-            localStorageService.setAutologinUser(saveUser ? user: '');
-            if (reasonToErrorCode(reason) !== loginService.ERROR_CODE_UNAUTHORIZED) {
-                autoRetryLogin(user, hashedPassword, saveUser);
-            }
-            return databaseService.initForUser(user, hashedPassword).then(() => {
-                return Promise.resolve(false);
+    _tryUser = user;
+    return loginHashedPasswordInternal(user, hashedPassword, saveUser);
+};
+
+/**
+ * logs in a user that is stored in HTML5 local storage
+ * @param user the username to log in
+ * @return {Promise<never>|Promise<unknown>}
+ */
+loginService.loginStoredUser = function (user) {
+    if (_loginInProgress) {
+        log.warn('login currently in progress - aborting...');
+        return Promise.reject();
+    }
+    _tryUser = user;
+    _loginInProgress = true;
+    let savedOnlineUsers = localStorageService.getSavedOnlineUsers();
+    let savedLocalUsers = localStorageService.getSavedLocalUsers();
+    loginService.logout();
+
+    let promise = new Promise((resolve, reject) => {
+        if (loginService.getLoggedInUsername() === user) {
+            Router.toMain();
+            resolve();
+        } else if (savedOnlineUsers.includes(user) && localStorageService.isDatabaseSynced(user)) {
+            let password = localStorageService.getUserPassword(user);
+            databaseService.initForUser(user, password).then(() => {
+                loginService.loginHashedPassword(user, password, true);
+                resolve();
+                Router.toMain();
             });
-        } else {
-            return Promise.reject(reasonToErrorCode(reason));
+        } else if (savedOnlineUsers.includes(user)) {
+            log.info("waiting for successful login because user wasn't completely synced before...");
+            let password = localStorageService.getUserPassword(user);
+            loginService.loginHashedPassword(user, password, true).then(() => {
+                resolve();
+                Router.toMain();
+            }).catch((reason) => {
+                reject(reason);
+            });
+        } else if (savedLocalUsers.includes(user)) {
+            localStorageService.setAutologinUser(user);
+            databaseService.initForUser(user, user).then(() => {
+                resolve();
+                Router.toMain();
+            });
         }
     });
+    promise.finally(() => {
+        _loginInProgress = false;
+    });
+    return promise;
 };
 
 /**
@@ -115,6 +148,7 @@ loginService.logout = function () {
  *
  */
 loginService.register = function (user, plainPassword, saveUser) {
+    _tryUser = user;
     loginService.stopAutoRetryLogin();
     user = user.trim();
     let password = encryptionService.getUserPasswordHash(plainPassword);
@@ -177,52 +211,10 @@ loginService.ping = function () {
     $.get(_serverUrl + '/ping');
 };
 
-loginService.loginStoredUser = function (user) {
-    if (_loginInProgress) {
-        log.warn('login currently in progress - aborting...');
-        return Promise.reject();
-    }
-    _loginInProgress = true;
-    let savedOnlineUsers = localStorageService.getSavedOnlineUsers();
-    let savedLocalUsers = localStorageService.getSavedLocalUsers();
-    loginService.logout();
-
-    let promise = new Promise((resolve, reject) => {
-        if (loginService.getLoggedInUsername() === user) {
-            Router.toMain();
-            resolve();
-        } else if (savedOnlineUsers.includes(user) && localStorageService.isDatabaseSynced(user)) {
-            let password = localStorageService.getUserPassword(user);
-            databaseService.initForUser(user, password).then(() => {
-                loginService.loginHashedPassword(user, password, true);
-                resolve();
-                Router.toMain();
-            });
-        } else if (savedOnlineUsers.includes(user)) {
-            log.info("waiting for successful login because user wasn't completely synced before...");
-            let password = localStorageService.getUserPassword(user);
-            loginService.loginHashedPassword(user, password, true).then(() => {
-                resolve();
-                Router.toMain();
-            }).catch((reason) => {
-                reject(reason);
-            });
-        } else if (savedLocalUsers.includes(user)) {
-            loginService.logout();
-            localStorageService.setAutologinUser(user);
-            databaseService.initForUser(user, user).then(() => {
-                resolve();
-                Router.toMain();
-            });
-        }
-    });
-    promise.finally(() => {
-        _loginInProgress = false;
-    });
-    return promise;
-};
-
 function loginInternal(user, hashedPassword, saveUser) {
+    if (_tryUser !== user) {
+        return Promise.reject(); //call from autologin that is outdated
+    }
     _lastParamUser = user;
     _lastParamHashedPw = hashedPassword;
     _lastParamSaveUser = saveUser;
@@ -244,6 +236,33 @@ function loginInternal(user, hashedPassword, saveUser) {
     });
 }
 
+function loginHashedPasswordInternal (user, hashedPassword, saveUser) {
+    return loginInternal(user, hashedPassword, saveUser).then(() => {
+        return databaseService.initForUser(user, hashedPassword, loginService.getLoggedInUserDatabase(), !saveUser).then(() => {
+            return Promise.resolve(true);
+        });
+    }, (reason) => {
+        if (_tryUser !== user) {
+            return Promise.reject(); //call from autologin that is outdated
+        }
+        log.info('online login failed!');
+        log.debug(reason);
+        if (localStorageService.isDatabaseSynced(user)) {
+            log.info('using offline local database...');
+            localStorageService.setLastActiveUser(user);
+            localStorageService.setAutologinUser(saveUser ? user : '');
+            if (reasonToErrorCode(reason) !== loginService.ERROR_CODE_UNAUTHORIZED) {
+                autoRetryLogin(user, hashedPassword, saveUser);
+            }
+            return databaseService.initForUser(user, hashedPassword).then(() => {
+                return Promise.resolve(false);
+            });
+        } else {
+            return Promise.reject(reasonToErrorCode(reason));
+        }
+    });
+}
+
 function reasonToErrorCode(reason) {
     if (reason && reason.error && reason.error.toLowerCase() === 'unauthorized' && reason.message && reason.message.includes('locked')) {
         return loginService.ERROR_CODE_UNAUTHORIZED;
@@ -260,7 +279,7 @@ function autoRetryLogin(user, hashedPassword, saveUser) {
     loginService.stopAutoRetryLogin();
     _autoRetryHandler = window.setTimeout(function () {
         log.info("auto-retry for online login with user: " + user);
-        loginService.loginHashedPassword(user, hashedPassword, saveUser);
+        loginHashedPasswordInternal(user, hashedPassword, saveUser);
     }, 10000);
 }
 
