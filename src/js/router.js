@@ -223,9 +223,9 @@ Router.getCurrentView = function () {
 function getValidHash() {
     let hashToUse = location.hash;
     if (!databaseService.getCurrentUsedDatabase()) {
-        let lastActiveUser = localStorageService.getLastActiveUser();
+        let toLogin = localStorageService.getLastActiveUser() || localStorageService.getSavedUsers().length > 0;
         hashToUse = NO_DB_VIEWS.includes(hashToUse) ? hashToUse : null;
-        hashToUse = hashToUse || (lastActiveUser ? '#login' : '#welcome');
+        hashToUse = hashToUse || (toLogin ? '#login' : '#welcome');
     }
     return hashToUse;
 }
@@ -265,7 +265,6 @@ function toMainInternal() {
     if (!routingEndabled) {
         return;
     }
-    log.debug('main view');
     dataService.getMetadata().then(metadata => {
         let gridId = metadata ? metadata.lastOpenedGridId : null;
         loadVueView(GridView, {

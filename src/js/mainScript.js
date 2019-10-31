@@ -55,8 +55,9 @@ function init() {
     Promise.all(promises).finally(() => {
         MainVue.init();
         let toMain = autologinUser || urlParamService.isDemoMode();
+        let toLogin = lastActiveUser || localStorageService.getSavedUsers().length > 0;
         localStorageService.setLastActiveUser(autologinUser || lastActiveUser || '');
-        let initHash = location.hash || (toMain ? '#main' : lastActiveUser ? '#login' : '#welcome');
+        let initHash = location.hash || (toMain ? '#main' : toLogin ? '#login' : '#welcome');
         if (!Router.isInitialized()) {
             Router.init('#injectView', initHash);
         }
