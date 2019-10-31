@@ -267,8 +267,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
                 _useLocalDb = false;
                 _syncHandler = _db.sync(_remoteDb, {
                     live: false,
-                    retry: false,
-                    batch_size: 1
+                    retry: false
                 }).on('active', function (info) {
                     setSyncState(constants.DB_SYNC_STATE_SYNCINC);
                 }).on('paused', function () {
