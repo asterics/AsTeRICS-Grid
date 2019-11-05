@@ -27,7 +27,11 @@
                                         <em v-show="username === activeUser" data-i18n="">(active) // (aktiv)</em>
                                     </div>
                                     <button class="four columns" @click="loginStored(username)" v-show="hasValidMajorModelVersion(username)">
-                                        <span data-i18n="">Open // Öffnen</span> <i class="fas fa-sign-in-alt"></i>
+                                        <span data-i18n="">Open // Öffnen</span>
+                                        <i class="fas fa-sign-in-alt" v-show="loginTryUser !== username"></i>
+                                        <i class="fas fa-spinner fa-spin" v-show="loginSuccess == undefined && loginTryUser === username"></i>
+                                        <i style="color: red" class="fas fa-times" v-show="loginSuccess == false && loginTryUser === username"/>
+                                        <i style="color: green" class="fas fa-check" v-show="loginSuccess == true && loginTryUser === username"/>
                                     </button>
                                     <button class="four columns" @click="removeStoredUser(username)" v-show="hasValidMajorModelVersion(username)">
                                         <span v-show="!savedLocalUsers.includes(username)">
@@ -74,9 +78,9 @@
                                 <button type="button" @click="loginPlain(user, password)" :disabled="!user || !password" class="five columns offset-by-one">
                                     <span data-i18n="">Login // Einloggen</span>
                                     <span>
-                                        <i class="fas fa-spinner fa-spin" v-show="loginSuccess === undefined"/>
-                                        <i style="color: red" class="fas fa-times" v-show="loginSuccess == false"/>
-                                        <i style="color: green" class="fas fa-check" v-show="loginSuccess == true"/>
+                                        <i class="fas fa-spinner fa-spin" v-show="loginSuccess === undefined && loginTryUser === user"/>
+                                        <i style="color: red" class="fas fa-times" v-show="loginSuccess == false && loginTryUser === user"/>
+                                        <i style="color: green" class="fas fa-check" v-show="loginSuccess == true && loginTryUser === user"/>
                                     </span>
                                 </button>
                             </div>
@@ -158,6 +162,7 @@
                 user: null,
                 password: null,
                 remember: true,
+                loginTryUser: null,
                 loginSuccess: null,
                 loginErrorCode: null,
                 savedUsers: [],
@@ -180,7 +185,9 @@
                 if (!user || !password) {
                     return;
                 }
+                thiz.loginTryUser = user;
                 thiz.loginSuccess = undefined;
+                thiz.loginErrorCode = '';
                 loginService.loginPlainPassword(user, password, this.remember).then(() => {
                     thiz.loginSuccess = true;
                     Router.toMain();
@@ -194,9 +201,11 @@
                 if (!user || (!thiz.savedUsers.includes(user) && loginService.getLoggedInUsername() !== user)) {
                     return;
                 }
+                thiz.loginSuccess = undefined;
+                thiz.loginTryUser = user;
+                thiz.loginErrorCode = '';
                 loginService.loginStoredUser(user).then(() => {
                     thiz.loginSuccess = true;
-                    thiz.loginErrorCode = '';
                 }).catch(reason => {
                     thiz.loginSuccess = false;
                     thiz.loginErrorCode = reason;
