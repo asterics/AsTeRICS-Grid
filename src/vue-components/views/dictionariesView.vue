@@ -243,7 +243,6 @@
         },
         mounted: function () {
             let thiz = this;
-            predictionService.reset();
             vueApp = thiz;
             i18nService.initDomI18n();
         },
@@ -251,6 +250,7 @@
             i18nService.initDomI18n();
         },
         beforeDestroy() {
+            predictionService.init();
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.updatedHandler);
             $.contextMenu('destroy');
         }

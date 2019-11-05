@@ -1,8 +1,10 @@
+import $ from 'jquery';
 import Predictionary from 'predictionary'
 import {GridElement} from "../model/GridElement";
 import {Dictionary} from "../model/Dictionary";
 import {fontUtil} from "../util/fontUtil";
 import {dataService} from "./data/dataService";
+import {constants} from "../util/constants";
 
 let predictionService = {};
 let predictionary = null;
@@ -10,12 +12,13 @@ let registeredPredictElements = [];
 let _dbDictObjects = [];
 let _unsavedChanges = false;
 let _usedKeys = [];
+let _autosaveInterval = 10 * 60 * 1000; // 10 Minutes
+let _intervalHandler = null;
 
 predictionService.predict = function (input, dictionaryKey) {
     if (input === undefined) {
         return;
     }
-    initIfUnititialized();
     if (!dictionaryKey) {
         predictionary.useAllDictionaries();
         _usedKeys = predictionary.getDictionaryKeys();
@@ -36,12 +39,10 @@ predictionService.learnFromInput = function (input) {
     if (!input || !input.trim()) {
         return;
     }
-    initIfUnititialized();
     _unsavedChanges = predictionary.learnFromInput(input) || _unsavedChanges;
 };
 
 predictionService.initWithElements = function (elements) {
-    initIfUnititialized();
     registeredPredictElements = [];
     elements.forEach(element => {
         if (element && element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
@@ -57,13 +58,11 @@ predictionService.initWithElements = function (elements) {
 };
 
 predictionService.applyPrediction = function (input, prediction) {
-    initIfUnititialized();
     _unsavedChanges = true;
     return predictionary.applyPrediction(input, prediction);
 };
 
 predictionService.doAction = function (elementId) {
-    initIfUnititialized();
     let element = registeredPredictElements.filter(element => element.id === elementId)[0];
     if (element) {
         let word = $(`#${element.id} .text-container span`).text();
@@ -72,28 +71,24 @@ predictionService.doAction = function (elementId) {
     }
 };
 
-predictionService.reset = function () {
-    predictionary = null;
-    _dbDictObjects = null;
-};
-
 predictionService.getDictionaryKeys = function () {
     return predictionary.getDictionaryKeys();
 };
 
-function initIfUnititialized() {
-    if (!predictionary) {
-        registeredPredictElements = [];
-        predictionary = Predictionary.instance();
+predictionService.init = function (elements) {
+    clearInterval(_intervalHandler);
+    registeredPredictElements = elements || [];
+    _unsavedChanges = false;
+    predictionary = Predictionary.instance();
 
-        dataService.getDictionaries().then(dicts => {
-            _dbDictObjects = dicts;
-            dicts.forEach(dict => {
-                predictionary.loadDictionary(dict.data, dict.dictionaryKey);
-            });
+    dataService.getDictionaries().then(dicts => {
+        _dbDictObjects = dicts;
+        dicts.forEach(dict => {
+            predictionary.loadDictionary(dict.data, dict.dictionaryKey);
         });
-    }
-}
+        _intervalHandler = setInterval(saveDictionaries, _autosaveInterval);
+    });
+};
 
 function saveDictionaries() {
     if (!_unsavedChanges) {
@@ -106,5 +101,12 @@ function saveDictionaries() {
         dataService.saveDictionary(dbDict);
     });
 }
+
+$(document).on(constants.EVENT_DB_PULL_UPDATED, (event, updatedIds, updatedDocs) => {
+    let modelNames = updatedDocs.map(doc => doc.modelName);
+    if (modelNames.indexOf(Dictionary.getModelName()) > -1) {
+        predictionService.init(registeredPredictElements);
+    }
+});
 
 export {predictionService};
