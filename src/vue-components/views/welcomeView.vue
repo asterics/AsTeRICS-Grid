@@ -59,6 +59,7 @@
     import {localStorageService} from "../../js/service/data/localStorageService";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {helpService} from "../../js/service/helpService";
+    import {loginService} from "../../js/service/loginService";
 
     export default {
         components: {HeaderIcon},
@@ -77,9 +78,7 @@
             },
             useDefaultUser() {
                 this.loading = true;
-                localStorageService.saveLocalUser(constants.LOCAL_NOLOGIN_USERNAME);
-                localStorageService.setAutologinUser(constants.LOCAL_NOLOGIN_USERNAME);
-                databaseService.registerForUser(constants.LOCAL_NOLOGIN_USERNAME, constants.LOCAL_NOLOGIN_USERNAME).then(() => {
+                loginService.registerOffline(constants.LOCAL_NOLOGIN_USERNAME, constants.LOCAL_NOLOGIN_USERNAME).then(() => {
                     Router.toMain();
                 });
             },

@@ -78,10 +78,7 @@
                 if (thiz.validationError != null) {
                     return;
                 }
-                localStorageService.saveLocalUser(thiz.user);
-                localStorageService.setAutologinUser(thiz.user);
-                loginService.stopAutoRetryLogin();
-                databaseService.registerForUser(thiz.user, thiz.user).then(() => {
+                loginService.registerOffline(thiz.user, thiz.user).then(() => {
                     Router.toMain();
                 });
             },

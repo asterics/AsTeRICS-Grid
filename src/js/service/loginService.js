@@ -5,6 +5,7 @@ import {encryptionService} from "./data/encryptionService";
 import {constants} from "../util/constants";
 import {databaseService} from "./data/databaseService";
 import {Router} from "../router";
+import {urlParamService} from "./urlParamService";
 
 let loginService = {};
 let _loginInfo = null;
@@ -176,6 +177,19 @@ loginService.register = function (user, plainPassword, saveUser) {
         log.info(reason);
         return Promise.reject(reason);
     });
+};
+
+/**
+ * locally registers/creates a new username by user/password
+ * @param username
+ * @param hashedUserPassword
+ * @return {*}
+ */
+loginService.registerOffline = function(username, hashedUserPassword) {
+    loginService.logout();
+    localStorageService.saveLocalUser(username);
+    localStorageService.setAutologinUser(username);
+    return databaseService.registerForUser(username, hashedUserPassword)
 };
 
 /**

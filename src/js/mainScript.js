@@ -35,8 +35,7 @@ function init() {
     }
     log.info('autologin user: ' + autologinUser);
     if (urlParamService.isDemoMode()) {
-        promises.push(databaseService.registerForUser(constants.LOCAL_DEMO_USERNAME, constants.LOCAL_DEMO_USERNAME));
-        localStorageService.saveLocalUser(constants.LOCAL_DEMO_USERNAME);
+        promises.push(loginService.registerOffline(constants.LOCAL_DEMO_USERNAME, constants.LOCAL_DEMO_USERNAME));
         localStorageService.setAutologinUser('');
     } else {
         promises.push(loginService.loginStoredUser(autologinUser, true));
