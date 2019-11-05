@@ -33,24 +33,13 @@ function init() {
         autologinUser = null;
         localStorageService.setAutologinUser('');
     }
-    let userPassword = localStorageService.getUserPassword(autologinUser);
-    let userSynced = localStorageService.isDatabaseSynced(autologinUser);
     log.info('autologin user: ' + autologinUser);
-    log.debug('using password (hashed): ' + userPassword);
     if (urlParamService.isDemoMode()) {
         promises.push(databaseService.registerForUser(constants.LOCAL_DEMO_USERNAME, constants.LOCAL_DEMO_USERNAME));
         localStorageService.saveLocalUser(constants.LOCAL_DEMO_USERNAME);
         localStorageService.setAutologinUser('');
-    } else if (autologinUser && userPassword && userSynced) { //synced saved online user
-        let promise = databaseService.initForUser(autologinUser, userPassword); //login may takes some time, so meanwhile use offline
-        promises.push(promise);
-        promise.then(() => {
-            loginService.loginHashedPassword(autologinUser, userPassword, true);
-        });
-    } else if (autologinUser && userPassword) {
-        promises.push(loginService.loginHashedPassword(autologinUser, userPassword, true));
-    } else if (autologinUser && !userPassword) { //saved local user
-        promises.push(databaseService.initForUser(autologinUser, autologinUser));
+    } else {
+        promises.push(loginService.loginStoredUser(autologinUser, true));
     }
     Promise.all(promises).finally(() => {
         MainVue.init();
