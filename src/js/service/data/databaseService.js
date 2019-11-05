@@ -10,6 +10,7 @@ import {filterService} from "./filterService";
 import {i18nService} from "../i18nService";
 import {Dictionary} from "../../model/Dictionary";
 import {localStorageService} from "./localStorageService";
+import {predictionService} from "../predictionService";
 
 let databaseService = {};
 
@@ -130,11 +131,16 @@ databaseService.removeObject = function (id) {
  */
 databaseService.initForUser = function (username, hashedUserPassword, userDatabaseURL, onlyRemote) {
     let shouldSync = userDatabaseURL && !onlyRemote || false;
-    if (pouchDbService.getOpenedDatabaseName() === username && shouldSync === pouchDbService.isSyncEnabled()) {
+    let userAlreadyOpened = pouchDbService.getOpenedDatabaseName() === username;
+    if (userAlreadyOpened && shouldSync === pouchDbService.isSyncEnabled()) {
         return Promise.resolve();
     }
     return pouchDbService.initDatabase(username, userDatabaseURL, onlyRemote).then(() => {
-        return initInternal(hashedUserPassword, username);
+        if (userAlreadyOpened) {
+            return Promise.resolve();
+        } else {
+            return initInternal(hashedUserPassword, username);
+        }
     });
 };
 
@@ -259,6 +265,10 @@ function initInternal(hashedUserPassword, username) {
         }
     }).then(() => {
         return importDefaultDictionary();
+    });
+    _initPromise.then(() => {
+        _lastDataModelVersion = null;
+        predictionService.init();
     });
     return _initPromise;
 }
