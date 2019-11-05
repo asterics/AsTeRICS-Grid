@@ -73,9 +73,13 @@ loginService.loginHashedPassword = function (user, hashedPassword, saveUser) {
 /**
  * logs in a user that is stored in HTML5 local storage
  * @param user the username to log in
- * @return {Promise<never>|Promise<unknown>}
+ * @param dontRoute skip routing to main after successful login
+ * @return {Promise<never>|Promise<unknown>|Promise<void>}
  */
-loginService.loginStoredUser = function (user) {
+loginService.loginStoredUser = function (user, dontRoute) {
+    if (!user) {
+        return Promise.resolve();
+    }
     if (_loginInProgress) {
         log.warn('login currently in progress - aborting...');
         return Promise.reject();
@@ -84,25 +88,25 @@ loginService.loginStoredUser = function (user) {
     _loginInProgress = true;
     let savedOnlineUsers = localStorageService.getSavedOnlineUsers();
     let savedLocalUsers = localStorageService.getSavedLocalUsers();
-    loginService.logout();
 
     let promise = new Promise((resolve, reject) => {
         if (loginService.getLoggedInUsername() === user) {
-            Router.toMain();
-            resolve();
-        } else if (savedOnlineUsers.includes(user) && localStorageService.isDatabaseSynced(user)) {
+            return resolve();
+        } else {
+            loginService.logout();
+        }
+
+        if (savedOnlineUsers.includes(user) && localStorageService.isDatabaseSynced(user)) {
             let password = localStorageService.getUserPassword(user);
             databaseService.initForUser(user, password).then(() => {
                 loginService.loginHashedPassword(user, password, true);
                 resolve();
-                Router.toMain();
             });
         } else if (savedOnlineUsers.includes(user)) {
             log.info("waiting for successful login because user wasn't completely synced before...");
             let password = localStorageService.getUserPassword(user);
             loginService.loginHashedPassword(user, password, true).then(() => {
                 resolve();
-                Router.toMain();
             }).catch((reason) => {
                 reject(reason);
             });
@@ -110,8 +114,12 @@ loginService.loginStoredUser = function (user) {
             localStorageService.setAutologinUser(user);
             databaseService.initForUser(user, user).then(() => {
                 resolve();
-                Router.toMain();
             });
+        }
+    });
+    promise.then(() => {
+        if (!dontRoute) {
+            Router.toMain();
         }
     });
     promise.finally(() => {
