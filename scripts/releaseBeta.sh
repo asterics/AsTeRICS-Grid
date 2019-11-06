@@ -51,6 +51,7 @@ git add app/manifest.appcache
 git commit -m "added bundles and appcache for beta-release $tagname"
 git push origin HEAD
 git checkout src/js/mainScript.js
+git checkout src/vue-components/views/aboutView.vue
 git checkout src/js/util/constants.js
 echo "creating tag '$tagname'..."
 git tag -a $tagname -m $tagname
