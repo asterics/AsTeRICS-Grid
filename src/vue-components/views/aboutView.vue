@@ -60,6 +60,16 @@
                     </div>
                     <a target="_blank" href="https://crossbrowsertesting.com/"><img src="app/img/CBT_OS-logo_2Color-H.png" width="300px"></a>
                 </div>
+                <div class="row" style="margin-top: 3em">
+                    <div data-i18n="">
+                        <span>
+                            You are using version <a target="_blank" href="https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#">#ASTERICS_GRID_VERSION#</a> of AsTeRICS Grid.
+                        </span>
+                        <span>
+                            Sie verwenden AsTeRICS Grid Version <a target="_blank" href="https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#">#ASTERICS_GRID_VERSION#</a>.
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
