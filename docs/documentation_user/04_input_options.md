@@ -53,9 +53,9 @@ Here are some examples for the properties *Timeout*, *Repetitions* and *Hold dur
 AsTeRICS ARE input events are triggered by external events of a running [model](01_terms.md#asterics-model) within the [AsTeRICS Framework](01_terms.md#asterics-framework).
 
 ![input event asterics are options](./img/input_channel_are_en.jpg)
-*Fig. 1: Configuration of an AsTeRICS ARE input event*
+*Fig. 2: Configuration of an AsTeRICS ARE input event*
 
-Figure 1 shows the configuration of an AsTeRICS ARE input event:
+Figure 2 shows the configuration of an AsTeRICS ARE input event:
 1. **Dropdown**: allows to choose between *Keypress* or *AsTeRICS ARE* event 
 1. **Record ARE event**: start recording of AsTeRICS ARE events. Subsequently trigger the desired event in ARE in order to be recorded.
 1. **ARE URL**: the URL of the running AsTeRICS instance. If AsTeRICS ARE is running on the same computer this field can be empty.
@@ -73,26 +73,57 @@ Follow these steps in order to set up an AsTeRICS Grid input method while using 
 1. Save and close the input options in AsTeRICS Grid by clicking "OK"
 1. Redo the same action in AsTeRICS ARE as before - it should trigger the configured input action in AsTeRICS Grid
 
-## Scanning options
-If scanning is enabled there are several additional options for this input method:
+## Input options modals
+Each input option dialog opened by "[Main view](02_navigation.md#main-view) - Input options" has about the same structure, see Figure 3:
 
-![input options](./img/scanning_options_en.jpg)
+![general structure of an input option dialog](./img/input_options_general_en.jpg)
+*Fig. 3: General structure of an input option dialog*
 
-1. **Vertical scanning** defines the direction of scanning:
+These are the basic elements of and input option dialog:
+1. **Enable checkbox**: Generally enable or disable this input method. The subsequent sections are only visible if the input method is enabled.
+1. **Input section**: configure input actions like described in section [Input events](04_input_options.md#input-events)
+1. **Advanced settings**: configure advanced settings for this input method
+1. **Test configuration**: opens a 10x10 test grid where the current input configuration can be tested 
+1. **Cancel**: close the dialog discarding changes 
+1. **OK**: close the dialog saving and applying changes 
+
+## Mouse/Touch input
+Mouse/Touch input has the following options:
+* **Select with mouse click (or tap)**: if checked elements can be selected by a simple mouse click or tap on a touchscreen 
+* **Enable hovering**: enables hovering where elements are selected by moving the mouse on the element (=hovering) and waiting for some time. Hovering also works on touchscreens where the finger is held on an element for some time.
+* **Hover time**: time in milliseconds to wait until a hovered element is selected. The value `0` means that the hovered element is never selected.
+* **Hide cursor**: if checked the cursor is hidden and not visible while hovering above elements. This can be useful e.g. for eye-tracking where the cursor may be distracting. 
+* **Read out active element**: if checked the label of the hovered element is directly read out if the active element has changed
+
+## Scanning
+The input method scanning is suited to be used with 1-2 input events. It works as follows:
+1. Available elements are divided into groups
+1. One group is highlighted
+1. Group containing the desired element is selected
+1. Remaining elements are again divided into groups
+1. Steps 3 and 4 are repeated until the single desired element is selected
+
+### Input events
+These are the possible input events for scanning:
+* **Select element**: selects the current group or element
+* **Next scanning group**: moves focus to the next group or element. This input event is optional and can be omitted if timed scanning is activated (see advanced options).
+
+### Advanced options
+* **Vertical scanning**: determines the orientation element groups are build:
     * **vertical** (checked): groups are built vertical, moving left to right <div style="margin-left: 2em"><img src="./img/scanning_vertical.gif" alt="vertical scanning" width="130"/></div>
     * **horizontal** (unchecked): groups are built horizontal, moving top to bottom <div style="margin-left: 2em"><img src="./img/scanning_horizontal.gif" alt="horizontal scanning" width="130" style="margin-left: 2em"/></div>
-1. **Binary scanning** defines if scanning groups are rows/columns or one half of existing elements:
+* **Binary scanning**: defines if scanning groups are rows/columns or one half of existing elements:
     * **binary** (checked): groups are built by separating remaining elements in two halves each scanning step <div style="margin-left: 2em"><img src="./img/scanning_binary.gif" alt="binary scanning" width="130"/></div>
     * **horizontal** (unchecked): groups are built row/column by row/column <div style="margin-left: 2em"><img src="./img/scanning_non_binary.gif" alt="non-binary scanning" width="130" style="margin-left: 2em"/></div>
-1. **Scanning Time**: time to wait between two scanning steps (in milliseconds)
-1. **Time factor first element**: the time to keep the first scanning group (e.g. first row/column) highlighted is "Scanning Time" multiplied with this factor. Increasing the time for the first group often improves usability.
-1. **Scanning keyboard key**: defines which key of the keyboard is used to select the currently highlighted scanning group (default: Space). To change press "Record other key" and press the desired key afterwards.
-1. **Scanning ARE events**: makes it possible to select the current scanning group by any event from the [AsTeRICS Framework](01_terms.md#asterics-framework). Set it up this way:
-    * Start the AsTeRICS Framework (ARE) with the desired model (e.g. a model generating an event when moving the head)
-    * Click on "Record ARE Events" in AsTeRICS Grid
-    * Trigger the desired event in the running model (AsTeRICS Framework), e.g. move the head
-    * recored events are now listed in the AsTeRICS Grid input configuration, press OK in order to apply the changes
-    * Scanning groups now can be selected by triggering the recorded event in the AsTeRICS Framework (e.g. moving the head)
+* **Scanning selection by mouse click or tap**: if checked the current scanning group can also be selected by a mouse click or tap anywhere on the screen
+* **Automatic (timed) scanning**: if checked the active scanning group is automatically changed after a specific time, making it possible to use scanning just with a single input event
+* **Scanning time**: time to wait before highlighting the next scanning group (in milliseconds)
+* **Time factor first element**: the time to keep the first scanning group (e.g. first row/column) highlighted is "Scanning Time" multiplied with this factor. Increasing the time for the first group often improves usability.
+
+## Direction input
+## Huffman input
+## Sequential input
+
     
 [&#x2190; Previous Chapter](03_appearance_layout.md) [Next Chapter &#x2192;](05_actions.md)
 
