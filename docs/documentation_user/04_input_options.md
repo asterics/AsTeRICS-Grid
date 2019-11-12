@@ -106,23 +106,72 @@ The input method scanning is suited to be used with 1-2 input events. It works a
 ### Input events
 These are the possible input events for scanning:
 * **Select element**: selects the current group or element
-* **Next scanning group**: moves focus to the next group or element. This input event is optional and can be omitted if timed scanning is activated (see advanced options).
+* **Next scanning group**: moves focus to the next group or element. This input event is optional and can be omitted if timed scanning is activated (see Advanced settings).
 
-### Advanced options
+### Advanced settings
 * **Vertical scanning**: determines the orientation element groups are build:
     * **vertical** (checked): groups are built vertical, moving left to right <div style="margin-left: 2em"><img src="./img/scanning_vertical.gif" alt="vertical scanning" width="130"/></div>
     * **horizontal** (unchecked): groups are built horizontal, moving top to bottom <div style="margin-left: 2em"><img src="./img/scanning_horizontal.gif" alt="horizontal scanning" width="130" style="margin-left: 2em"/></div>
 * **Binary scanning**: defines if scanning groups are rows/columns or one half of existing elements:
     * **binary** (checked): groups are built by separating remaining elements in two halves each scanning step <div style="margin-left: 2em"><img src="./img/scanning_binary.gif" alt="binary scanning" width="130"/></div>
-    * **horizontal** (unchecked): groups are built row/column by row/column <div style="margin-left: 2em"><img src="./img/scanning_non_binary.gif" alt="non-binary scanning" width="130" style="margin-left: 2em"/></div>
+    * **non-binary** (unchecked): groups are built row/column by row/column <div style="margin-left: 2em"><img src="./img/scanning_non_binary.gif" alt="non-binary scanning" width="130" style="margin-left: 2em"/></div>
 * **Scanning selection by mouse click or tap**: if checked the current scanning group can also be selected by a mouse click or tap anywhere on the screen
 * **Automatic (timed) scanning**: if checked the active scanning group is automatically changed after a specific time, making it possible to use scanning just with a single input event
 * **Scanning time**: time to wait before highlighting the next scanning group (in milliseconds)
 * **Time factor first element**: the time to keep the first scanning group (e.g. first row/column) highlighted is "Scanning Time" multiplied with this factor. Increasing the time for the first group often improves usability.
 
 ## Direction input
+The input method *direction input* is suited to be used with 2-5 input events. It gives the possibility to simply navigate through elements in up to 4 directions.
+
+### Input events
+These are the possible input events for direction input:
+* **Select element**: selects the currently highlighted element
+* **Go right**: navigate to the right
+* **Go left**: navigate to the left
+* **Go down**: navigate down
+* **Go up**: navigate up
+
+### Advanced settings
+These are the Advanced settings for *direction input*:
+* **Wrap around**: if checked navigation continues at the opposite border, so e.g. moving left on the most left element sets the focus to the most right element
+* **Go to start position after select**: if checked the focused element is set to the first element after an element was selected respective 
+
 ## Huffman input
+The input method *huffman input* is suited to be used with 2-9 input events. It assigns a unique code of input event sequences to each element. Triggering the respective input event sequence directly selects an element.
+
+This is an example for 2 input events and 4 elements:
+* **Element A** has code `11`
+* **Element B** has code `12`
+* **Element C** has code `21`
+* **Element D** has code `22`
+
+Triggering input event `1` and then input event `2` would directly select *Element B*.
+
+Huffman input uses the theory of [n-ary huffman codes](https://en.wikipedia.org/wiki/Huffman_coding#n-ary_Huffman_coding).
+
+### Input events
+These are the possible input events for huffman input:
+* **Input [1-9]**: defines the input events of numbers `1-9` that are used to enter the codes for selecting the elements. At least two input events have to be defined. 
+
+### Advanced settings
+These are the Advanced settings for *huffman input*:
+* **Show numbers**: if checked the assigned codes are shown at the bottom of each element
+* **Show colors**:  if checked a color code is shown at the bottom of each element
+* **Mark inactive elements**: if checked all impossible elements are grayed out, so that e.g. starting input of the code with `1` grays out all elements with codes that aren't starting with `1`.
+* **Timeout**: time of inactivity (in milliseconds) for resetting the current, incomplete input. So if the first digit of the code `1` was typed accidentally the user has to wait this time in order to be able to restart with another code. Simultaneously this is the time the user has to input the next digit of the code. If set to `0` the timeout is disabled.
+* **Number of elements**: by default (if this property is set to `0`) the codes are automatically generated based on the number of elements in the current grid. This means that in one grid the n-th element could have a different code than in an other grid. To prevent this the `number of elements` property can be set to the maximum number of elements that are existing in any grid. Therefore in every grid the n-th element will have the same code.
+
 ## Sequential input
+The sequential input method can be used with 2 input events. It just sequentially focuses all elements and afterwards restarts at the first element.
+
+### Input events
+These are the possible input events for sequential input:
+* **Next element**: moves the focus to the next element. If focus is currently on the last element, the first element will be focused.
+* **Select element**: selects the element that is currently focused
+
+### Advanced settings
+These are the Advanced settings for *sequential input*:
+* **Read out active element**: if checked the label of the currently focused element is read out on each change of focus
 
     
 [&#x2190; Previous Chapter](03_appearance_layout.md) [Next Chapter &#x2192;](05_actions.md)
