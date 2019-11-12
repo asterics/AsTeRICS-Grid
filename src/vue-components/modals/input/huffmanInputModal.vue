@@ -11,7 +11,7 @@
 
                     <div class="modal-body" v-if="inputConfig">
                         <div class="row">
-                            <span data-i18n="">Huffman input method: 2 or more input channels // Huffman-Eingabe: 2 oder mehr Eingabekanäle</span>
+                            <span data-i18n="">Huffman input method: 2 or more input events // Huffman-Eingabe: 2 oder mehr Eingabekanäle</span>
                             <a aria-label="Help" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
                         </div>
                         <div class="row" >
@@ -186,7 +186,7 @@
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
                 thiz.inputConfig = JSON.parse(JSON.stringify(metadata.inputConfig));
             });
-            helpService.setHelpLocation('04_input_options', '#input-options');
+            helpService.setHelpLocation('04_input_options', '#huffman-input');
         },
         updated() {
             i18nService.initDomI18n();

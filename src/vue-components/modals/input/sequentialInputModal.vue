@@ -11,7 +11,7 @@
 
                     <div class="modal-body" v-if="inputConfig">
                         <div class="row">
-                            <span data-i18n="">Sequential input method: 2 input channels // Sequentielle Eingabe: 2 Eingabekanäle</span>
+                            <span data-i18n="">Sequential input method: 2 input events // Sequentielle Eingabe: 2 Eingabekanäle</span>
                             <a aria-label="Help" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
                         </div>
                         <div class="row" >
@@ -168,7 +168,7 @@
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
                 thiz.inputConfig = JSON.parse(JSON.stringify(metadata.inputConfig));
             });
-            helpService.setHelpLocation('04_input_options', '#input-options');
+            helpService.setHelpLocation('04_input_options', '#sequential-input');
         },
         updated() {
             i18nService.initDomI18n();

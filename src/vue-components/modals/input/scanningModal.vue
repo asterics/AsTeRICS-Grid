@@ -13,7 +13,7 @@
 
                     <div class="modal-body" v-if="inputConfig">
                         <div class="row">
-                            <span data-i18n="">Scanning input method: 1-2 input channels // Eingabemethode Scanning: 1-2 Eingabekanäle</span>
+                            <span data-i18n="">Scanning input method: 1-2 input events // Eingabemethode Scanning: 1-2 Eingabekanäle</span>
                             <a aria-label="Help" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
                         </div>
                         <div class="row" >
@@ -202,7 +202,7 @@
                 thiz.inputConfig = JSON.parse(JSON.stringify(metadata.inputConfig));
                 thiz.touchScanning = !thiz.inputConfig.mouseclickEnabled;
             });
-            helpService.setHelpLocation('04_input_options', '#input-options');
+            helpService.setHelpLocation('04_input_options', '#scanning');
         },
         updated() {
             i18nService.initDomI18n();

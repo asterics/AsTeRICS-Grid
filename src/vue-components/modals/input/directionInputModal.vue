@@ -11,7 +11,7 @@
 
                     <div class="modal-body" v-if="inputConfig">
                         <div class="row">
-                            <span data-i18n="">Direction input method: 2-5 input channels // Richtungs-Eingabe: 2-5 Eingabekanäle</span>
+                            <span data-i18n="">Direction input method: 2-5 input events // Richtungs-Eingabe: 2-5 Eingabekanäle</span>
                             <a aria-label="Help" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
                         </div>
                         <div class="row" >
@@ -172,7 +172,7 @@
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
                 thiz.inputConfig = JSON.parse(JSON.stringify(metadata.inputConfig));
             });
-            helpService.setHelpLocation('04_input_options', '#input-options');
+            helpService.setHelpLocation('04_input_options', '#direction-input');
         },
         updated() {
             i18nService.initDomI18n();
