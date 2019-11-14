@@ -43,11 +43,11 @@
                     </div>
 
                     <div class="modal-footer">
-                        <div class="button-container">
-                            <button @click="cancel()">
+                        <div class="button-container row">
+                            <button @click="cancel()" class="four columns offset-by-four">
                                 <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
                             </button>
-                            <button @click="save()">
+                            <button @click="save()" class="four columns">
                                  <i class="fas fa-check"/> <span>OK</span>
                             </button>
                         </div>

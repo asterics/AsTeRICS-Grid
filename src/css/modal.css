@@ -23,7 +23,7 @@
     max-width: 800px;
     max-height: 70vh;
     margin: 0px auto;
-    padding: 2em 4em 2em 4em;
+    padding: 2em 4em;
     background-color: #fff;
     border-radius: 2px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
@@ -34,17 +34,14 @@
     overflow-x: hidden;
 }
 
+@media (max-width: 850px) {
+    .modal-container {
+        padding: 2em;
+    }
+}
+
 .modal-footer {
     margin-top: 3em;
-}
-
-.modal-footer button {
-    width: 15em;
-    margin: 0.5em;
-}
-
-.modal-footer .button-container {
-    float: right;
 }
 
 .modal-header h3 {
@@ -53,7 +50,7 @@
 }
 
 .modal-body {
-    margin: 20px 0;
+    margin-top: 2.5em;
 }
 
 .modal-body img {
@@ -120,16 +117,4 @@
 .modal .warn {
     font-weight: bold;
     color: #c96a00;
-}
-
-/* Smaller than tablet */
-@media (max-width: 850px) {
-    .modal-footer button {
-        width: 100%;
-        margin: 0.5em;
-    }
-
-    .modal-footer .button-container {
-        float: none;
-    }
 }

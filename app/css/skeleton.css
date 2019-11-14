@@ -13,8 +13,7 @@
     position: relative;
     width: 100%;
     margin: 0 auto;
-    padding-top: 1em !important;
-    padding: 0 20px;
+    padding-top: 2em !important;
     box-sizing: border-box; }
 .column,
 .columns {
@@ -24,15 +23,10 @@
 
 /* For devices larger than 400px */
 @media (min-width: 400px) {
-    .container {
-        width: 90%;
-        padding: 0; }
 }
 
 /* For devices larger than 550px */
 @media (min-width: 850px) {
-    .container {
-        width: 90%; }
     .column,
     .columns {
         margin-left: 4%; }
