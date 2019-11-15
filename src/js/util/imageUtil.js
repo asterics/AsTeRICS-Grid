@@ -73,7 +73,7 @@ imageUtil.convertBase64 = function (originalBase64, maxWidth, quality) {
 
 imageUtil.urlToBase64 = function (url) {
     return new Promise((resolve, reject) => {
-        if (url.indexOf('.svg') > -1) {
+        if (url.lastIndexOf('.svg') === url.length - 4) {
             $.get(url, null, function (svgDocument) {
                 //needed because Firefox doesn't correctly handle SVG with size = 0, see https://bugzilla.mozilla.org/show_bug.cgi?id=700533
                 try {
