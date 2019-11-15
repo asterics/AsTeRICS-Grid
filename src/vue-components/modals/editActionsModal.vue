@@ -154,7 +154,7 @@
                                             <div class="row" v-show="action.action === 'WEBRADIO_ACTION_START'">
                                                 <div class="twelve columns">
                                                     <label for="selectRadio" class="five columns normal-text" data-i18n>Webadio to play // Abzuspielendes Webradio</label>
-                                                    <select id="selectRadio" class="six columns" v-model="action.radioId">
+                                                    <select id="selectRadio" class="six columns" v-model="action.radioId" @change="selectedRadioChanged(action.radioId)">
                                                         <option value="" selected data-i18n="">automatic (last played) // automatisch (zuletzt gespielt)</option>
                                                         <option v-for="webradio in gridData.webRadios" :value="webradio.radioId">
                                                             {{webradio.radioName}}
@@ -255,6 +255,8 @@
     import {GridActionWebradio} from "../../js/model/GridActionWebradio";
     import {webradioService} from "../../js/service/webradioService";
     import Accordion from "../components/accordion.vue";
+    import {imageUtil} from "../../js/util/imageUtil";
+    import {GridImage} from "../../js/model/GridImage";
 
     export default {
         props: ['editElementIdParam', 'gridIdParam'],
@@ -294,6 +296,16 @@
                 let index = this.gridData.webRadios.indexOf(radio);
                 if (index > 0) {
                     this.gridData.webRadios.splice(index - 1, 0, this.gridData.webRadios.splice(index, 1)[0]);
+                }
+            },
+            selectedRadioChanged(radioId) {
+                let faviconUrl = this.gridData.webRadios.filter(el => el.radioId === radioId)[0].faviconUrl;
+                if (faviconUrl) {
+                    imageUtil.urlToBase64(faviconUrl).then(base64 => {
+                        if (base64) {
+                            this.gridElement.image = new GridImage({data: base64});
+                        }
+                    });
                 }
             },
             deleteAction (action) {
