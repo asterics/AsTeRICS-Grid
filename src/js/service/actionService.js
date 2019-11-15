@@ -7,6 +7,7 @@ import {Router} from "./../router";
 import {GridElement} from "./../model/GridElement";
 import {constants} from "../util/constants";
 import {GridActionCollectElement} from "../model/GridActionCollectElement";
+import {webradioService} from "./webradioService";
 
 let actionService = {};
 
@@ -78,6 +79,9 @@ function doAction(gridElement, action, gridId, gridData) {
         case 'GridActionCollectElement':
             log.debug('action collect element');
             collectElementService.doCollectElementActions(action.action);
+            break;
+        case 'GridActionWebradio':
+            webradioService.doAction(gridId, action);
             break;
     }
 }
