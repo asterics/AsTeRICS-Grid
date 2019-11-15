@@ -12,7 +12,7 @@
                         </h1>
                     </div>
 
-                    <div class="modal-body container">
+                    <div class="modal-body" v-if="gridElement">
                         <div class="row">
                             <label class="three columns" data-i18n="">New Action // Neue Aktion</label>
                             <select id="selectActionType" v-focus="" class="four columns" v-model="selectedNewAction" style="margin-bottom: 0.5em">
@@ -21,7 +21,7 @@
                             <button class="four columns" @click="addAction()"><i class="fas fa-plus"/> <span data-i18n="">Add action // Aktion hinzufügen</span></button>
                         </div>
                         <div class="row">
-                            <label for="actionList" class="twelve columns" data-i18n="" style="margin-top: 1em; font-size: 1.2em">Current actions // Aktuelle Aktionen</label>
+                            <h2 for="actionList" class="twelve columns" data-i18n="" style="margin-top: 1em; font-size: 1.2em">Current actions // Aktuelle Aktionen</h2>
                         </div>
                         <ul id="actionList">
                             <span v-show="gridElement.actions.length == 0" class="row" data-i18n="">
@@ -140,6 +140,77 @@
                                                 <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
                                             </div>
                                         </div>
+                                        <div v-if="action.modelName == 'GridActionWebradio'">
+                                            <div class="row">
+                                                <div class="twelve columns">
+                                                    <label for="selectRadioElmAction" class="five columns normal-text" data-i18n>Web radio action // Web-Radio Aktion</label>
+                                                    <select id="selectRadioElmAction" class="six columns" v-model="action.action">
+                                                        <option v-for="elmAction in webradioActions" :value="elmAction">
+                                                            {{elmAction | translate}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="twelve columns">
+                                                    <label for="selectRadio" class="five columns normal-text" data-i18n>Webadio to play // Abzuspielendes Webradio</label>
+                                                    <select id="selectRadio" class="six columns" v-model="action.radioId">
+                                                        <option value="" selected data-i18n="">automatic (last played) // automatisch (zuletzt gespielt)</option>
+                                                        <option v-for="webradio in gridData.webRadios" :value="webradio.radioId">
+                                                            {{webradio.radioName}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <accordion acc-label="Manage webradio list // Webradioliste verwalten" acc-open="true" class="twelve columns">
+                                                    <h3 data-i18n="">Selected radio stations // Ausgewählte Radiosender</h3>
+                                                    <div class="row">
+                                                        <ul class="webradioList">
+                                                            <li v-for="webradio in gridData.webRadios">
+                                                                <div class="webRadioListItem">
+                                                                    <img :src="webradio.faviconUrl"/>
+                                                                    <div class="webRadioLabel">{{webradio.radioName}}</div>
+                                                                    <div class="webRadioButtons">
+                                                                        <button class="right" @click="webradioService.stop(webradio.radioId); gridData.webRadios = gridData.webRadios.filter(radio => radio.radioId !== webradio.radioId)"><span class="hide-mobile">Remove </span><i class="fas fa-trash"></i></button>
+                                                                        <button v-if="webradioPlaying !== webradio" class="right" @click="webradioPlaying = webradio; webradioService.play(webradio)"><span class="hide-mobile">Play </span><i class="fas fa-play"></i></button>
+                                                                        <button v-if="webradioPlaying === webradio" class="right" @click="webradioPlaying = null; webradioService.stop()"><span class="hide-mobile">Stop </span><i class="fas fa-pause"></i></button>
+                                                                        <button class="right" @click="moveWebradioUp(webradio)"><span class="hide-mobile">Up </span><i class="fas fa-arrow-up"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <li v-if="gridData.webRadios.length === 0" data-i18n="" style="outline: none">No selected radio stations, use search bar below to add radio stations. // Keine ausgewählten Radiosender, verwenden Sie die Suche unten um Radiosender hinzuzufügen.</li>
+                                                        </ul>
+                                                    </div>
+
+                                                    <h3 data-i18n="">Webradio search // Webradio Suche</h3>
+                                                    <div class="row">
+                                                        <label for="searchwebradios" class="five columns normal-text" data-i18n>Search term // Suchbegriff</label>
+                                                        <input id="searchwebradios" class="six columns" type="text" v-model="webradioSearch" v-debounce="500" @change="searchWebradios"/>
+                                                    </div>
+                                                    <div class="row">
+                                                        <ul class="webradioList">
+                                                            <li v-for="webradio in webradioSearchResults">
+                                                                <div class="webRadioListItem">
+                                                                    <img :src="webradio.faviconUrl"/>
+                                                                    <div class="webRadioLabel">{{webradio.radioName}}</div>
+                                                                    <div class="webRadioButtons">
+                                                                        <button class="right" @click="gridData.webRadios.push(webradio)" :disabled="gridData.webRadios.indexOf(webradio) > -1"><span class="hide-mobile">Select </span><i class="fas fa-plus"></i></button>
+                                                                        <button v-if="webradioPlaying !== webradio" class="right" @click="webradioPlaying = webradio; webradioService.play(webradio)"><span class="hide-mobile">Play </span><i class="fas fa-play"></i></button>
+                                                                        <button v-if="webradioPlaying === webradio" class="right" @click="webradioPlaying = null; webradioService.stop()"><span class="hide-mobile">Stop </span><i class="fas fa-pause"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </accordion>
+                                            </div>
+
+                                            <div class="row">
+                                                <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </li>
@@ -148,15 +219,17 @@
 
                     <div class="modal-footer">
                         <div class="button-container">
-                            <button @click="$emit('close')" title="Keyboard: [Esc]">
-                                <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
-                            </button>
-                            <button  @click="save()" title="Keyboard: [Ctrl + Enter]">
-                                <i class="fas fa-check"/> <span>OK</span>
-                            </button>
-                            <div class="hide-mobile">
-                                <button @click="editNext(true)" :disabled="false" title="Keyboard: [Ctrl + Left]"><i class="fas fa-angle-double-left"/> <span data-i18n>OK, edit previous // OK, voriges bearbeiten</span></button>
-                                <button @click="editNext()" :disabled="false" title="Keyboard: [Ctrl + Right]"><span data-i18n>OK, edit next // OK, nächstes bearbeiten</span> <i class="fas fa-angle-double-right"/></button>
+                            <div class="row">
+                                <button @click="$emit('close')" title="Keyboard: [Esc]" class="four columns offset-by-four">
+                                    <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
+                                </button>
+                                <button  @click="save()" title="Keyboard: [Ctrl + Enter]" class="four columns">
+                                    <i class="fas fa-check"/> <span>OK</span>
+                                </button>
+                            </div>
+                            <div class="hide-mobile row">
+                                <button @click="editNext(true)" :disabled="false" title="Keyboard: [Ctrl + Left]" class="four columns offset-by-four"><i class="fas fa-angle-double-left"/> <span data-i18n>OK, edit previous // OK, voriges bearbeiten</span></button>
+                                <button @click="editNext()" :disabled="false" title="Keyboard: [Ctrl + Right]" class="four columns"><span data-i18n>OK, edit next // OK, nächstes bearbeiten</span> <i class="fas fa-angle-double-right"/></button>
                             </div>
                         </div>
                     </div>
@@ -179,11 +252,15 @@
     import EditAreAction from "./editActionsSub/editAREAction.vue";
     import {GridActionCollectElement} from "../../js/model/GridActionCollectElement";
     import {helpService} from "../../js/service/helpService";
+    import {GridActionWebradio} from "../../js/model/GridActionWebradio";
+    import {webradioService} from "../../js/service/webradioService";
+    import Accordion from "../components/accordion.vue";
 
     export default {
-        props: ['editElementIdParam', 'gridData'],
+        props: ['editElementIdParam', 'gridIdParam'],
         data: function () {
             return {
+                gridData: null,
                 gridElement: null,
                 GridElementClass: GridElement,
                 editActionId: null,
@@ -194,13 +271,31 @@
                 dictionaryKeys: predictionService.getDictionaryKeys(),
                 editElementId: null,
                 additionalGridFiles: {}, //map: key = action.id, value = AdditionalGridFile (ARE Model)
-                collectActions: GridActionCollectElement.getActions()
+                collectActions: GridActionCollectElement.getActions(),
+                webradioActions: GridActionWebradio.getActions(),
+                webradioSearchResults: [],
+                webradioSearch: null,
+                webradioService: webradioService,
+                webradioPlaying: null
             }
         },
         components: {
+            Accordion,
             EditAreAction
         },
         methods: {
+            searchWebradios() {
+                let thiz = this;
+                webradioService.search(thiz.webradioSearch).then(result => {
+                    thiz.webradioSearchResults = result;
+                });
+            },
+            moveWebradioUp(radio) {
+                let index = this.gridData.webRadios.indexOf(radio);
+                if (index > 0) {
+                    this.gridData.webRadios.splice(index - 1, 0, this.gridData.webRadios.splice(index, 1)[0]);
+                }
+            },
             deleteAction (action) {
                 this.setAdditionalGridFile(action, null);
                 this.gridElement.actions = this.gridElement.actions.filter(a => a.id != action.id);
@@ -250,24 +345,23 @@
                 });
             },
             saveInternal() {
-                var thiz = this;
-                return new Promise(resolve => {
-                    dataService.updateOrAddGridElement(thiz.gridData.id, thiz.gridElement).then(() => {
-                        dataService.saveAdditionalGridFiles(thiz.gridData.id, Object.values(thiz.additionalGridFiles)).then(() => {
-                            resolve();
-                        });
+                let thiz = this;
+                return dataService.saveGrid(thiz.gridData).then(() => {
+                    return dataService.saveAdditionalGridFiles(thiz.gridData.id, Object.values(thiz.additionalGridFiles)).then(() => {
+                        thiz.$emit('reload');
+                        return Promise.resolve();
                     });
                 });
             },
             initInternal() {
-                var thiz = this;
-                dataService.getGridElement(thiz.gridData.id, this.editElementId).then(gridElem => {
-                    log.debug('editing actions for element: ' + gridElem.label);
-                    thiz.gridElement = JSON.parse(JSON.stringify(gridElem));
+                let thiz = this;
+                dataService.getGrid(thiz.gridIdParam).then(data => {
+                    thiz.gridData = JSON.parse(JSON.stringify(data));
+                    thiz.gridElement = thiz.gridData.gridElements.filter(el => el.id === thiz.editElementId)[0];
                 });
                 dataService.getGridsAttribute('label').then(map => {
                     thiz.gridLabels = map;
-                })
+                });
             }
         },
         mounted () {
@@ -306,5 +400,43 @@
     .actionbtns button {
         width: 30%;
         padding: 0;
+    }
+
+    .webradioList button {
+        line-height: unset;
+        margin-bottom: 0;
+        padding: 0 10px;
+    }
+
+    .webradioList, .webradioList li, .webradioList li div {
+        padding: 0;
+        margin: 0;
+    }
+
+    #webradioList li:hover {
+        background-color: #c4f0fe;
+    }
+
+    .webRadioListItem {
+        display: flex;
+    }
+
+    .webRadioListItem img {
+        flex-grow: 0;
+        flex-shrink: 0;
+        vertical-align: middle;
+        height: 28px;
+        width: 28px;
+    }
+
+    .webRadioLabel {
+        flex-grow: 1;
+        flex-shrink: 1;
+        margin: 0 5px !important;
+    }
+
+    .webRadioButtons {
+        flex-grow: 0;
+        flex-shrink: 0;
     }
 </style>
