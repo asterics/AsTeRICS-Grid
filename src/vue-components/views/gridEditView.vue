@@ -2,7 +2,10 @@
     <div v-cloak v-if="gridData" class="box">
         <header class="row header" role="banner">
             <header-icon class="left"></header-icon>
-            <button tabindex="30" @click="back" title="Back" class="spaced left small"><i class="fas fa-angle-left"></i> <span class="hide-mobile" data-i18n>Back // Zurück</span></button>
+            <button tabindex="30" @click="back" title="Back" class="spaced small left">
+                <i class="fas fa-eye"></i>
+                <span class="hide-mobile" data-i18n>Editing off // Bearbeiten aus</span>
+            </button>
             <button tabindex="33" id="moreButton" title="More" class="spaced"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile" data-i18n>More // Mehr</span></button>
             <div class="spaced btn-group">
                 <button tabindex="31" @click="undo" title="Undo" :disabled="!canUndo || doingUndoRedo" class="small"><i class="fas fa-undo"></i> <span class="hide-mobile" data-i18n>Undo // Rückgängig</span></button>
@@ -22,7 +25,7 @@
             <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" @close="showMultipleModal = false" @reload="reload"/>
         </div>
         <div>
-            <edit-actions-modal v-if="showActionsModal" v-bind:edit-element-id-param="editElementId" v-bind:grid-data="gridData" @close="showActionsModal = false" @reload="reload"/>
+            <edit-actions-modal v-if="showActionsModal" v-bind:edit-element-id-param="editElementId" v-bind:grid-id-param="gridData.id" @close="showActionsModal = false" @reload="reload"/>
         </div>
         <div class="row content">
             <div v-if="!showGrid" class="grid-container grid-mask">

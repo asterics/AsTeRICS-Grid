@@ -1,7 +1,11 @@
 <template>
     <div class="box" v-cloak>
         <header class="row header" role="banner" v-if="metadata && !metadata.fullscreen">
-            <header-icon v-show="!metadata.locked"></header-icon>
+            <header-icon class="left" v-show="!metadata.locked"></header-icon>
+            <div class="btn-group left">
+                <button tabindex="30" v-show="!metadata.locked" @click="toEditGrid()" class="spaced small"><i class="fas fa-pencil-alt"/> <span class="hide-mobile" data-i18n>Editing on // Bearbeiten ein</span></button>
+                <button tabindex="31" id="inputConfigButton" v-show="!metadata.locked" class="small"><i class="fas fa-cog"></i> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
+            </div>
             <button tabindex="34" v-show="metadata.locked" @click="unlock()" class="small">
                 <i class="fas fa-unlock"></i>
                 <span class="hide-mobile" data-i18n>Unlock // Entsperren</span>
@@ -12,8 +16,7 @@
                 <span class="hide-mobile" data-i18n>Lock // Sperren</span>
             </button>
             <button tabindex="32" @click="applyFullscreen()" class="spaced small"><i class="fas fa-expand"/> <span class="hide-mobile" data-i18n>Fullscreen // Vollbild</span></button>
-            <button tabindex="31" v-show="!metadata.locked" @click="toEditGrid()" class="spaced small"><i class="fas fa-pencil-alt"/> <span class="hide-mobile" data-i18n>Edit grid // Grid bearbeiten</span></button>
-            <button tabindex="30" id="inputConfigButton" v-show="!metadata.locked" class="small"><i class="fas fa-cog"></i> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
+
         </header>
 
         <huffman-input-modal v-if="showModal === modalTypes.MODAL_HUFFMAN" @close="showModal = null; reinitInputMethods();"/>
