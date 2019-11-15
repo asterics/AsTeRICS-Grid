@@ -36,7 +36,8 @@ GridActionWebradio.defaults({
     id: "", //will be replaced by constructor
     modelName: GridActionWebradio.getModelName(),
     modelVersion: constants.MODEL_VERSION,
-    radioId: ""
+    radioId: "",
+    action: GridActionWebradio.WEBRADIO_ACTION_START
 });
 
 export {GridActionWebradio};
