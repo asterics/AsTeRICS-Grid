@@ -53,9 +53,9 @@ header button {
     min-width: 40px;
 }
 
-@media (max-width: 1000px) and (min-width: 850px) {
+@media (max-width: 1150px) and (min-width: 850px) {
     header button {
-        font-size: 1.5vw;
+        font-size: 1.2vw;
     }
 
 }
@@ -295,7 +295,7 @@ nav li:hover button span {
 }
 
 .left {
-    float: left;
+    float: left !important;
 }
 
 .right {
