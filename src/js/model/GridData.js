@@ -4,6 +4,7 @@ import {AdditionalGridFile} from "./AdditionalGridFile";
 import {GridActionARE} from "./GridActionARE";
 import {constants} from "../util/constants";
 import {Model} from "../externals/objectmodel";
+import {Webradio} from "./Webradio";
 
 class GridData extends Model({
     id: String,
@@ -13,7 +14,8 @@ class GridData extends Model({
     label: [String],
     rowCount: Number,
     gridElements: Model.Array(GridElement),
-    additionalFiles: [Model.Array(AdditionalGridFile)]
+    additionalFiles: [Model.Array(AdditionalGridFile)],
+    webRadios: [Model.Array(Webradio)]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridData);
@@ -231,7 +233,8 @@ GridData.defaults({
     modelVersion: constants.MODEL_VERSION,
     isShortVersion: false,
     rowCount: 9,
-    additionalFiles: []
+    additionalFiles: [],
+    webRadios: []
 });
 
 export {GridData};

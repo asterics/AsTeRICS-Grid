@@ -9,6 +9,7 @@ import {GridActionPredict} from "./GridActionPredict";
 import {GridActionCollectElement} from "./GridActionCollectElement";
 import {constants} from "../util/constants";
 import {Model} from "../externals/objectmodel";
+import {GridActionWebradio} from "./GridActionWebradio";
 
 class GridElement extends Model({
     id: String,
@@ -44,7 +45,7 @@ class GridElement extends Model({
     }
 
     static getActionTypes() {
-        return [GridActionSpeak, GridActionNavigate, GridActionSpeakCustom, GridActionPredict, GridActionCollectElement, GridActionARE];
+        return [GridActionSpeak, GridActionNavigate, GridActionSpeakCustom, GridActionPredict, GridActionCollectElement, GridActionARE, GridActionWebradio];
     }
 
     static getActionInstance(modelName) {
