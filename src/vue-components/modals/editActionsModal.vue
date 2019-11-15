@@ -151,7 +151,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <div class="row" v-show="action.action === 'WEBRADIO_ACTION_START'">
                                                 <div class="twelve columns">
                                                     <label for="selectRadio" class="five columns normal-text" data-i18n>Webadio to play // Abzuspielendes Webradio</label>
                                                     <select id="selectRadio" class="six columns" v-model="action.radioId">
@@ -164,7 +164,7 @@
                                             </div>
 
                                             <div class="row">
-                                                <accordion acc-label="Manage webradio list // Webradioliste verwalten" acc-open="true" class="twelve columns">
+                                                <accordion acc-label="Manage webradio list // Webradioliste verwalten" :acc-open="gridData.webRadios.length === 0 ? 'true' : 'false'" class="twelve columns">
                                                     <h3 data-i18n="">Selected radio stations // Ausgewählte Radiosender</h3>
                                                     <div class="row">
                                                         <ul class="webradioList">
