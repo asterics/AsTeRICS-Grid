@@ -33,7 +33,7 @@ actionService.doAction = function (gridId, gridElementId) {
 };
 
 actionService.testAction = function (gridElement, action, gridData) {
-    doAction(gridElement, action, null, gridData);
+    doAction(gridElement, action, gridData.id, gridData);
 };
 
 function doActions(gridElement, gridId) {
