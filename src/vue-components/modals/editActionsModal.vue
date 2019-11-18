@@ -173,10 +173,10 @@
                                                                     <img :src="webradio.faviconUrl"/>
                                                                     <div class="webRadioLabel">{{webradio.radioName}}</div>
                                                                     <div class="webRadioButtons">
-                                                                        <button class="right" @click="webradioService.stop(webradio.radioId); gridData.webRadios = gridData.webRadios.filter(radio => radio.radioId !== webradio.radioId)"><span class="hide-mobile">Remove </span><i class="fas fa-trash"></i></button>
+                                                                        <button class="right" @click="webradioService.stop(webradio.radioId); gridData.webRadios = gridData.webRadios.filter(radio => radio.radioId !== webradio.radioId)"><span class="hide-mobile" data-i18n="">Remove // Löschen</span> <i class="fas fa-trash"></i></button>
                                                                         <button v-if="webradioPlaying !== webradio" class="right" @click="webradioPlaying = webradio; webradioService.play(webradio)"><span class="hide-mobile">Play </span><i class="fas fa-play"></i></button>
-                                                                        <button v-if="webradioPlaying === webradio" class="right" @click="webradioPlaying = null; webradioService.stop()"><span class="hide-mobile">Stop </span><i class="fas fa-pause"></i></button>
-                                                                        <button class="right" @click="moveWebradioUp(webradio)"><span class="hide-mobile">Up </span><i class="fas fa-arrow-up"></i></button>
+                                                                        <button v-if="webradioPlaying === webradio" class="right" @click="webradioPlaying = null; webradioService.stop()"><span class="hide-mobile">Stop</span> <i class="fas fa-pause"></i></button>
+                                                                        <button class="right" @click="moveWebradioUp(webradio)"><span class="hide-mobile" data-i18n="">Up // Nach oben</span> <i class="fas fa-arrow-up"></i></button>
                                                                     </div>
                                                                 </div>
                                                             </li>
@@ -196,7 +196,7 @@
                                                                     <img :src="webradio.faviconUrl"/>
                                                                     <div class="webRadioLabel">{{webradio.radioName}}</div>
                                                                     <div class="webRadioButtons">
-                                                                        <button class="right" @click="gridData.webRadios.push(webradio)" :disabled="gridData.webRadios.indexOf(webradio) > -1"><span class="hide-mobile">Select </span><i class="fas fa-plus"></i></button>
+                                                                        <button class="right" @click="gridData.webRadios.push(webradio)" :disabled="gridData.webRadios.map(el => el.radioId).indexOf(webradio.radioId) > -1"><span class="hide-mobile" data-i18n="">Select // Wählen</span> <i class="fas fa-plus"></i></button>
                                                                         <button v-if="webradioPlaying !== webradio" class="right" @click="webradioPlaying = webradio; webradioService.play(webradio)"><span class="hide-mobile">Play </span><i class="fas fa-play"></i></button>
                                                                         <button v-if="webradioPlaying === webradio" class="right" @click="webradioPlaying = null; webradioService.stop()"><span class="hide-mobile">Stop </span><i class="fas fa-pause"></i></button>
                                                                     </div>
@@ -425,7 +425,7 @@
         margin: 0;
     }
 
-    #webradioList li:hover {
+    .webradioList li:hover {
         background-color: #c4f0fe;
     }
 

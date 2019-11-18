@@ -42,7 +42,7 @@ i18nService.translate = function (key) {
     }
     var lang = this.translations[this.getBrowserLang()] ? this.getBrowserLang() : 'en';
     var translated = this.translations[lang][key] ? this.translations[lang][key] : key;
-    for(var i=1; i<arguments.length; i++) {
+    for (var i = 1; i < arguments.length; i++) {
         translated = translated.replace('{?}', arguments[i]);
     }
     return translated;
@@ -146,12 +146,19 @@ i18nService.translations['en'] = {
     GridActionARE: 'AsTeRICS action',
     GridActionPredict: 'Fill prediction elements',
     GridActionCollectElement: 'Collect element action',
+    GridActionWebradio: 'Web radio action',
     COLLECT_ACTION_CLEAR: 'Clear collect element',
     COLLECT_ACTION_REMOVE_WORD: 'Delete last word',
     COLLECT_ACTION_REMOVE_CHAR: 'Delete last character',
     COLLECT_ACTION_COPY_CLIPBOARD: 'Copy text to clipboard',
     COLLECT_ACTION_APPEND_CLIPBOARD: 'Append text to clipboard',
     COLLECT_ACTION_CLEAR_CLIPBOARD: 'Clear clipboard',
+    WEBRADIO_ACTION_START: 'Turn radio on',
+    WEBRADIO_ACTION_STOP: 'Turn radio off',
+    WEBRADIO_ACTION_NEXT: 'Next radio channel',
+    WEBRADIO_ACTION_PREV: 'Previous radio channel',
+    WEBRADIO_ACTION_VOLUP: 'Radio volume up',
+    WEBRADIO_ACTION_VOLDOWN: 'Radio volume down',
     CONFIRM_IMPORT_BACKUP: 'Caution: This will delete all existing grids and replace them with the grids from the backup "{?}". Continue?',
     CONFIRM_DELETE_GRID: 'Do you really want to delete the grid "{?}"?',
     CONFIRM_DELETE_DICT: 'Do you really want to delete the dictionary "{?}"?',
@@ -209,12 +216,19 @@ i18nService.translations['de'] = {
     GridActionARE: 'AsTeRICS Aktion',
     GridActionPredict: 'Vorhersage-Elemente füllen',
     GridActionCollectElement: 'Sammelelement Aktion',
+    GridActionWebradio: 'Web-Radio Aktion',
     COLLECT_ACTION_CLEAR: 'Sammelelement leeren',
     COLLECT_ACTION_REMOVE_WORD: 'Letztes Word löschen',
     COLLECT_ACTION_REMOVE_CHAR: 'Letzten Buchstaben löschen',
     COLLECT_ACTION_COPY_CLIPBOARD: 'Text in die Zwischenablage kopieren',
     COLLECT_ACTION_APPEND_CLIPBOARD: 'Text zu Zwischenablage hinzufügen',
     COLLECT_ACTION_CLEAR_CLIPBOARD: 'Zwischenablage leeren',
+    WEBRADIO_ACTION_START: 'Radio einschalten',
+    WEBRADIO_ACTION_STOP: 'Radio ausschalten',
+    WEBRADIO_ACTION_NEXT: 'Nächster Radiosender',
+    WEBRADIO_ACTION_PREV: 'Voriger Radiosender',
+    WEBRADIO_ACTION_VOLUP: 'Radio-Lautstärke erhöhen',
+    WEBRADIO_ACTION_VOLDOWN: 'Radio-Lautstärke vermindern',
     CONFIRM_IMPORT_BACKUP: 'Achtung: Diese Aktion wird alle existierenden Grids löschen und sie mit den Grids des Backups "{?}" ersetzen. Fortfahren?',
     CONFIRM_DELETE_GRID: 'Möchten Sie das Grid "{?}" wirklich löschen?',
     CONFIRM_DELETE_DICT: 'Möchten Sie das Wörterbuch "{?}" wirklich löschen?',
