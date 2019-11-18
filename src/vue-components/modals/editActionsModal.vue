@@ -187,7 +187,7 @@
                                                     <h3 data-i18n="">Webradio search // Webradio Suche</h3>
                                                     <div class="row">
                                                         <label for="searchwebradios" class="five columns normal-text" data-i18n>Search term // Suchbegriff</label>
-                                                        <input id="searchwebradios" class="six columns" type="text" v-model="webradioSearch" v-debounce="500" @change="searchWebradios"/>
+                                                        <input id="searchwebradios" class="six columns" type="text" v-model="webradioSearch" @input="searchWebradios"/>
                                                     </div>
                                                     <div class="row">
                                                         <ul class="webradioList">
@@ -202,7 +202,12 @@
                                                                     </div>
                                                                 </div>
                                                             </li>
+                                                            <li v-if="webradioSearchResults.length === 0 && webradioSearch && !webradioSearching" data-i18n="" style="outline: none">No radio stations found, try an other search term. // Keine Radiosender gefunden, versuchen Sie einen anderen Suchbegriff.</li>
                                                         </ul>
+                                                        <div style="display: flex; margin-top: 0.5em" v-show="webradioSearchResults.length > 0">
+                                                            <button @click="prevSearchResults" :disabled="webradioStartIndex === 0" style="flex-grow: 1;"><i class="fas fa-arrow-left"></i> <span class="hide-mobile" data-i18n="">Previous page // Vorige Seite</span></button>
+                                                            <button @click="nextSearchResults" :disabled="!hasMoreWebradios" style="flex-grow: 1;"><span class="hide-mobile" data-i18n="">Next page // Nächste Seite</span> <i class="fas fa-arrow-right"></i></button>
+                                                        </div>
                                                     </div>
                                                 </accordion>
                                             </div>
@@ -257,6 +262,9 @@
     import Accordion from "../components/accordion.vue";
     import {imageUtil} from "../../js/util/imageUtil";
     import {GridImage} from "../../js/model/GridImage";
+    import {util} from "../../js/util/util";
+
+    let WEBRADIO_LIMIT = 10;
 
     export default {
         props: ['editElementIdParam', 'gridIdParam'],
@@ -278,7 +286,10 @@
                 webradioSearchResults: [],
                 webradioSearch: null,
                 webradioService: webradioService,
-                webradioPlaying: null
+                webradioPlaying: null,
+                webradioStartIndex: 0,
+                webradioSearching: false,
+                hasMoreWebradios: false
             }
         },
         components: {
@@ -288,9 +299,29 @@
         methods: {
             searchWebradios() {
                 let thiz = this;
-                webradioService.search(thiz.webradioSearch).then(result => {
-                    thiz.webradioSearchResults = result;
-                });
+                thiz.webradioStartIndex = 0;
+                thiz.searchWebradiosInternal();
+            },
+            nextSearchResults() {
+                let thiz = this;
+                thiz.webradioStartIndex += WEBRADIO_LIMIT;
+                thiz.searchWebradiosInternal();
+            },
+            prevSearchResults() {
+                let thiz = this;
+                thiz.webradioStartIndex -= WEBRADIO_LIMIT;
+                thiz.searchWebradiosInternal();
+            },
+            searchWebradiosInternal() {
+                let thiz = this;
+                thiz.webradioSearching = true;
+                util.debounce(() => {
+                    webradioService.search(thiz.webradioSearch, WEBRADIO_LIMIT, thiz.webradioStartIndex).then(result => {
+                        thiz.hasMoreWebradios = webradioService.hasMoreSearchResults();
+                        thiz.webradioSearchResults = result;
+                        thiz.webradioSearching = false;
+                    });
+                }, 500);
             },
             moveWebradioUp(radio) {
                 let index = this.gridData.webRadios.indexOf(radio);
