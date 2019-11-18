@@ -33,18 +33,21 @@ i18nService.isBrowserLangDE = function () {
     return i18nService.getBrowserLang() === 'de';
 };
 
-i18nService.translate = function (key) {
+i18nService.translate = function (key, ...args) {
     if (key && key.indexOf(separator) > -1) {
         let translations = key.split(separator);
         let index = languages.indexOf(i18nService.getBrowserLang());
         index = index > 0 ? index : 0;
+        args.forEach(arg => {
+            translations[index] = translations[index].replace('{?}', arg);
+        });
         return translations[index];
     }
-    var lang = this.translations[this.getBrowserLang()] ? this.getBrowserLang() : 'en';
-    var translated = this.translations[lang][key] ? this.translations[lang][key] : key;
-    for (var i = 1; i < arguments.length; i++) {
-        translated = translated.replace('{?}', arguments[i]);
-    }
+    let lang = this.translations[this.getBrowserLang()] ? this.getBrowserLang() : 'en';
+    let translated = this.translations[lang][key] ? this.translations[lang][key] : key;
+    args.forEach(arg => {
+        translated = translated.replace('{?}', arg);
+    });
     return translated;
 };
 
