@@ -29,7 +29,7 @@
                         </span>
                     </div>
                     <div class="row">
-                        <accordion acc-label="more" class="nine columns offset-by-three">
+                        <accordion acc-label="more // mehr" class="nine columns offset-by-three">
                             <div class="row">
                                 <label class="one-third column" :for="'inTimeout' + index">Timeout (ms)</label>
                                 <input class="two-thirds column" :id="'inTimeout' + index" type="number" min="0" max="5000" step="100" v-model.number="input.timeout" @input="modelChanged"/>
