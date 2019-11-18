@@ -12,10 +12,20 @@ import {Router} from "../router";
 
 let MainVue = {};
 let app = null;
-let _tooltipView = null;
+let _defaultTooltipsOptions = {
+    closeOnNavigate: true,
+    timeout: 0,
+    revertOnClose: false,
+    actionLink: '',
+    actionLinkFn: null
+};
+let _tooltipOptions = _defaultTooltipsOptions;
+let _tooltipTimeoutHandler = null;
+let _lastTooltipHTML = null;
+let _lastTooltipOptions = null;
 
 MainVue.setViewComponent = function (component, properties) {
-    if (_tooltipView !== Router.getCurrentView()) {
+    if (_tooltipOptions.closeOnNavigate) {
         MainVue.clearTooltip();
     }
     app.setComponent(component, properties);
@@ -25,13 +35,29 @@ MainVue.isSidebarOpen = function () {
     return app.showSidebar;
 };
 
-MainVue.setTooltip = function (html) {
-    _tooltipView = Router.getCurrentView();
+MainVue.setTooltip = function (html, options) {
+    _lastTooltipHTML = app.tooltipHTML;
+    _lastTooltipOptions = _tooltipOptions;
+    _tooltipOptions = Object.assign(JSON.parse(JSON.stringify(_defaultTooltipsOptions)), options);
+    clearTimeout(_tooltipTimeoutHandler);
+    if (_tooltipOptions.timeout > 0) {
+        _tooltipTimeoutHandler = setTimeout(() => {
+            MainVue.clearTooltip();
+        }, _tooltipOptions.timeout);
+    }
     app.tooltipHTML = html;
+    app.actionLink = _tooltipOptions.actionLink;
 };
 
 MainVue.clearTooltip = function () {
-    app.tooltipHTML = null;
+    if (_tooltipOptions.revertOnClose && app.tooltipHTML) {
+        MainVue.setTooltip(_lastTooltipHTML, _lastTooltipOptions);
+    } else {
+        app.tooltipHTML = null;
+        app.actionLink = null;
+    }
+    _lastTooltipOptions = {};
+    _lastTooltipHTML = null;
 };
 
 MainVue.init = function () {
@@ -47,7 +73,8 @@ MainVue.init = function () {
                 isLocalUser: localStorageService.isSavedLocalUser(databaseService.getCurrentUsedDatabase()),
                 syncState: dataService.getSyncState(),
                 constants: constants,
-                tooltipHTML: null
+                tooltipHTML: null,
+                actionLink: null
             }
         },
         methods: {
@@ -58,6 +85,11 @@ MainVue.init = function () {
             },
             closeSidebar() {
                 $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
+            },
+            onActionLink () {
+                if (_tooltipOptions.actionLinkFn) {
+                    _tooltipOptions.actionLinkFn();
+                }
             },
             openSidebar() {
                 $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
