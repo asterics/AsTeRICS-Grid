@@ -2,6 +2,8 @@ import {$} from '../externals/jquery';
 import {GridActionWebradio} from "../model/GridActionWebradio";
 import {dataService} from "./data/dataService";
 import {localStorageService} from "./data/localStorageService";
+import {MainVue} from "../vue/mainVue";
+import {i18nService} from "./i18nService";
 
 let WEBRADIO_LAST_PLAYED_ID_KEY = 'WEBRADIO_LAST_PLAYED_ID_KEY';
 let WEBRADIO_LAST_VOLUME_KEY = 'WEBRADIO_LAST_VOLUME_KEY';
@@ -71,12 +73,16 @@ webradioService.play = function (webradio) {
         return;
     }
     if (!player.paused) {
-        player.pause();
+        webradioService.stop();
     }
     lastPlayedId = webradio.radioId || lastPlayedId;
     localStorageService.save(WEBRADIO_LAST_PLAYED_ID_KEY, lastPlayedId);
     fillUrl(webradio).then(radioWithUrl => {
-        log.info('play: ' + radioWithUrl.radioName);
+        MainVue.setTooltip(i18nService.translate('playing: {?} // Wiedergabe: {?}', radioWithUrl.radioName), {
+            closeOnNavigate: false,
+            actionLink: i18nService.translate('Stop // Stopp'),
+            actionLinkFn: webradioService.stop
+        });
         player.src = radioWithUrl.radioUrl;
         player.volume = volume;
         player.play();
@@ -86,6 +92,7 @@ webradioService.play = function (webradio) {
 webradioService.stop = function (radioId) {
     if (!radioId || radioId === lastPlayedId) {
         player.pause();
+        MainVue.clearTooltip();
     }
 };
 
