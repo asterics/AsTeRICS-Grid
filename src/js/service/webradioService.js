@@ -7,7 +7,7 @@ let WEBRADIO_LAST_PLAYED_ID_KEY = 'WEBRADIO_LAST_PLAYED_ID_KEY';
 let WEBRADIO_LAST_VOLUME_KEY = 'WEBRADIO_LAST_VOLUME_KEY';
 let API_URL = 'http://www.radio-browser.info/webservice/json/';
 let API_ACTION_SEARCH = 'stations/search';
-let API_ACTION_GETURL = 'url/';
+let API_ACTION_GETURL = 'url';
 let VOLUME_STEP = 0.15;
 let searchParameters = ['name', 'country', 'state', 'language', 'tag', 'tagList', 'order'];
 let standardSearchParameter = 'name';
@@ -69,6 +69,9 @@ webradioService.doAction = function (gridId, action) {
 webradioService.play = function (webradio) {
     if (!webradio || (!player.paused && lastPlayedId === webradio.radioId)) {
         return;
+    }
+    if (!player.paused) {
+        player.pause();
     }
     lastPlayedId = webradio.radioId || lastPlayedId;
     localStorageService.save(WEBRADIO_LAST_PLAYED_ID_KEY, lastPlayedId);
@@ -176,7 +179,20 @@ function fillUrl(webradio, gridId) {
             url: API_URL + API_ACTION_GETURL + '/' + webradio.radioId,
             dataType: 'json'
         }).then(data => {
+            process(data, webradio);
+        }, (error) => {
+            //  fix for issue: https://github.com/segler-alex/radiobrowser-api-rust/issues/13
+            let nameOriginal = error.responseText.substring(error.responseText.indexOf('"name":') + 8, error.responseText.indexOf('"url":') - 2);
+            let name = nameOriginal.replace(new RegExp('"', 'g'), "'");
+            let string = error.responseText.replace(nameOriginal, name);
+            process(JSON.parse(string), webradio);
+        });
+
+        function process(data, webradio) {
             webradio.radioUrl = data[0].url;
+            if (webradio.radioUrl.lastIndexOf('/') === webradio.radioUrl.length - 1) {
+                webradio.radioUrl = webradio.radioUrl + ';';
+            }
             if (gridId) {
                 dataService.getGrid(gridId).then(grid => {
                     let radios = grid.webRadios || [];
@@ -188,7 +204,7 @@ function fillUrl(webradio, gridId) {
                 });
             }
             resolve(webradio);
-        });
+        }
     });
 }
 
