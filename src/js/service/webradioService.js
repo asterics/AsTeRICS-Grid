@@ -18,6 +18,7 @@ let webradioService = {};
 let player = document.getElementById('audioPlayer');
 let lastPlayedId = localStorageService.get(WEBRADIO_LAST_PLAYED_ID_KEY);
 let volume = parseFloat(localStorageService.get(WEBRADIO_LAST_VOLUME_KEY) || 1.0);
+let hasMoreSearchResults = false;
 
 webradioService.doAction = function (gridId, action) {
     dataService.getGrid(gridId).then(grid => {
@@ -123,11 +124,13 @@ webradioService.volumeDown = function () {
  *
  * @param searchString normally searches for radio stations by name, if some special tag with a colon is included,
  * search can be done for other properties. E.g. "tag:jazz country:austria" searches for jazz radio stations in Austria.
+ * @param limit the maximum of elements to be returned
+ * @param offset the offset of returned elements (for paging)
  * @return {Promise<unknown>|Promise<Array>}
  *         promise resolves to a list of Webradios (see Webradio data model) where radioUrl is NOT set (has to be
  *         retrieved by separate API call)
  */
-webradioService.search = function (searchString) {
+webradioService.search = function (searchString, limit, offset) {
     if (!searchString) {
         return Promise.resolve([]);
     }
@@ -153,7 +156,12 @@ webradioService.search = function (searchString) {
     if (Object.keys(params).length === 0) {
         params[standardSearchParameter] = searchString;
     }
-    params['limit'] = 20;
+    let limitToUse = limit || 20;
+    limitToUse++;
+    params['limit'] = limitToUse;
+    if (offset) {
+        params['offset'] = offset;
+    }
 
     return new Promise((resolve) => {
         $.ajax({
@@ -163,7 +171,9 @@ webradioService.search = function (searchString) {
             dataType: 'json',
             contentType: 'application/x-www-form-urlencoded'
         }).then(data => {
+            hasMoreSearchResults = data.length === limitToUse;
             let workingRadios = data.filter(radio => radio.lastcheckok !== '0');
+            workingRadios = workingRadios.slice(0, limitToUse - 1);
             resolve(workingRadios.map(el => {
                 return {
                     radioId: el.id,
@@ -174,6 +184,14 @@ webradioService.search = function (searchString) {
             }));
         });
     });
+};
+
+/**
+ * returns true if the last call to webradioService.search() could have retrieved more elements if called with a higher
+ * limit
+ */
+webradioService.hasMoreSearchResults = function () {
+    return hasMoreSearchResults;
 };
 
 function fillUrl(webradio, gridId) {
