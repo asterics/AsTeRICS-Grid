@@ -128,7 +128,37 @@ These are the possibilities while configuring an AsTeRICS Action:
 1. **Test action**: performs the defined AsTeRICS action for testing, same as will be later performed if the grid element is selected
 1. **OK**: apply changes and close edit mode of this AsTeRICS action 
 
-  
+### Web radio action
+AsTeRICS Grid is capable of searching and playing web radio stations. The station search capabilities are powered by the API of <a href="https://www.radio-browser.info/gui/#!/" target="_blank">radio-browser.info</a>.
+
+Clicking on "Edit" on a "Web radio action" (or creating a new one) shows the following configuration possibilities:
+
+![Web radio action options](./img/action_webradio_en.jpg)
+
+These are the elements in this configuration dialog:
+
+1. **Web radio action**: chooses the type of web radio action to perform which can be one of the following:
+    * *Turn radio on*: turns on the radio with the channel selected at *Webradio to play*
+    * *Turn radio on/off*: toggles the radio on/off state with the channel selected at *Webradio to play*
+    * *Turn radio off*: turns the radio off
+    * *Next radio channel*: moves to next radio channel in the list of selected radio stations, see (4)
+    * *Previous radio channel*: moves to previous radio channel in the list of selected radio stations, see (4)
+    * *Radio volume up*: increases the radio volume
+    * *Radio volume down*: decreases the radio volume
+1. **Webradio to play**: chooses which radio to play (only visible for *Turn radio on* and *Turn radio on/off*), possible channels to select are defined in selected radio stations list, see (4)
+1. **Manage webradio list**: accordion which folds/unfolds the section where radio stations can be searched and selected
+1. **Selected radio stations list**: list of selected radio stations which are available within the current grid
+1. **Up**: moves the station up in the list (reordering)
+1. **Play**: plays the radio channel
+1. **Remove**: removes the radio channel from the list of selected radio stations
+1. **Search term input**: search bar for searching new radio stations. By default search is done for radio station name, but the following additional properties are possible (see [API documentation](http://www.radio-browser.info/webservice#Advanced_station_search)): *name (default), country, state, language, tag, tagList, order*. To use this additional properties they have to be added with semicolon to the search term.
+    * *Examples*: The search term for looking for austrian radio stations with name `Hitradio` would be: `name:Hitradio country:austria`. If the search term is just `Hitradio` search will be done for radio stations with this name.
+1. **Webradio search result list**: result list for the current search term
+1. **Play**: plays the radio station
+1. **Select**: adds the radio station to the list of selected radio stations, see (4)
+1. **Previous page**: navigates to the previous page of search results (if available)
+1. **Next page**: navigates to the next page of search results (if available)
+
 [&#x2190; Previous Chapter](04_input_options.md) [Next Chapter &#x2192;](06_users.md)
 
 [Back to Overview](README.md)
