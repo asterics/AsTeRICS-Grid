@@ -11,7 +11,7 @@
                         <a href="https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes" target="_blank" data-i18n="">(ISO 639-1 list) // (ISO 639-1 Liste)</a>
                     </label>
                     <input id="inLanguageCode" class="four columns" v-model="langCode" type="text" maxlength="2" placeholder="empty = automatic" @input="saveSuccess = null"/>
-                    <button id="saveLangCode" class="two columns" @click="saveLangCode('saveLangCode')">
+                    <button id="saveLangCode" class="three columns" @click="saveLangCode('saveLangCode')">
                         <span v-show="saveSuccess !== 'saveLangCode'" data-i18n="">Save // Speichern</span><span v-show="saveSuccess === 'saveLangCode'" data-i18n="">Saved // Gespeichert</span> <i v-show="saveSuccess === 'saveLangCode'" class="fas fa-check"></i>
                     </button>
                 </div>
@@ -33,6 +33,28 @@
                     <a href="https://github.com/asterics/AsTeRICS-Grid/tree/master/app/examples/translations" target="_blank" data-i18n="">folder on github. // Ordner auf github</a>
                 </div>
             </div>
+            <div class="ten columns">
+                <h3 data-i18n="">Voice // Stimme</h3>
+                <div class="row">
+                    <label class="four columns" for="inVoice">
+                        <span data-i18n="">Preferred voice // Bevorzugte Stimme</span>
+                    </label>
+                    <select id="inVoice" class="four columns" v-model="selectedVoiceName" @change="saveSuccess = null">
+                        <option value="" data-i18n="">automatic // automatisch</option>
+                        <option v-for="voice in voices" :value="voice.name">{{voice.name}}</option>
+                    </select>
+                    <button id="saveVoice" class="three columns" @click="saveVoice('saveVoice')">
+                        <span v-show="saveSuccess !== 'saveVoice'" data-i18n="">Save // Speichern</span><span v-show="saveSuccess === 'saveVoice'" data-i18n="">Saved // Gespeichert</span> <i v-show="saveSuccess === 'saveVoice'" class="fas fa-check"></i>
+                    </button>
+                </div>
+                <div class="row">
+                    <label class="four columns" for="inVoice">
+                        <span data-i18n="">Test text // Test-Text</span>
+                    </label>
+                    <input class="four columns" type="text" v-model="testText">
+                    <button id="testVoice" class="three columns" @click="testSpeak" data-i18n="">Test // Testen</button>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -41,6 +63,7 @@
     import {i18nService} from "../../js/service/i18nService";
     import {dataService} from "../../js/service/data/dataService";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
+    import {speechService} from "../../js/service/speechService";
 
     export default {
         components: {HeaderIcon},
@@ -50,7 +73,11 @@
                 metadata: null,
                 show: false,
                 langCode: '',
-                saveSuccess: null
+                saveSuccess: null,
+                speechService: speechService,
+                voices: speechService.getVoices(),
+                selectedVoiceName: speechService.getPreferredVoiceName(),
+                testText: i18nService.translate('This is an english sentence. // Das ist ein deutscher Satz.')
             }
         },
         methods: {
@@ -58,6 +85,14 @@
                 i18nService.setLanguage(this.langCode);
                 i18nService.initDomI18n();
                 this.saveSuccess = id;
+            },
+            saveVoice(id) {
+                speechService.setPreferredVoiceName(this.selectedVoiceName);
+                this.saveSuccess = id;
+            },
+            testSpeak() {
+                let voice = this.voices.filter(voice => voice.name === this.selectedVoiceName)[0];
+                speechService.speak(this.testText, null , voice);
             }
         },
         mounted() {
