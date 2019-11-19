@@ -95,14 +95,12 @@ Ton aus
 Nächster Kanal
 Vorheriger Kanal
 
-An / Ausschalten
-Play
-Pause
-Modus wechseln
-Nächstes Lied
-Vorheriges Lied
-Lauter
+Radio ein
+Radio aus
+Voriger Kanal
+Nächster Kanal
 Leiser
+Lauter
 
 Tür öffnen
 Tür schließen

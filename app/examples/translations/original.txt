@@ -95,14 +95,12 @@ Sound off
 Next channel
 Previous channel
 
-Turn on/off
-Play
-Stop
-Change mode
-Next song
-Previous song
-Volume up
+Radio On
+Radio off
+Previous channel
+Next channel
 Volume down
+Volume up
 
 Open door
 Close door
