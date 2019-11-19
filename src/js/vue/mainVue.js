@@ -36,8 +36,10 @@ MainVue.isSidebarOpen = function () {
 };
 
 MainVue.setTooltip = function (html, options) {
-    _lastTooltipHTML = app.tooltipHTML;
-    _lastTooltipOptions = _tooltipOptions;
+    if (!_tooltipOptions.revertOnClose) {
+        _lastTooltipHTML = app.tooltipHTML;
+        _lastTooltipOptions = _tooltipOptions;
+    }
     _tooltipOptions = Object.assign(JSON.parse(JSON.stringify(_defaultTooltipsOptions)), options);
     clearTimeout(_tooltipTimeoutHandler);
     if (_tooltipOptions.timeout > 0) {
@@ -86,7 +88,7 @@ MainVue.init = function () {
             closeSidebar() {
                 $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
             },
-            onActionLink () {
+            onActionLink() {
                 if (_tooltipOptions.actionLinkFn) {
                     _tooltipOptions.actionLinkFn();
                 }

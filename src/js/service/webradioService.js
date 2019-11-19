@@ -114,6 +114,7 @@ webradioService.volumeUp = function () {
     volume = volume + VOLUME_STEP <= 1.0 ? volume + VOLUME_STEP : 1;
     volume = Math.round(volume * 100) / 100;
     localStorageService.save(WEBRADIO_LAST_VOLUME_KEY, volume);
+    setVolumeTooltip();
     player.volume = volume;
 };
 
@@ -121,6 +122,7 @@ webradioService.volumeDown = function () {
     volume = volume - VOLUME_STEP >= 0 ? volume - VOLUME_STEP : 0;
     volume = Math.round(volume * 100) / 100;
     localStorageService.save(WEBRADIO_LAST_VOLUME_KEY, volume);
+    setVolumeTooltip();
     player.volume = volume;
 };
 
@@ -200,6 +202,13 @@ webradioService.search = function (searchString, limit, offset) {
 webradioService.hasMoreSearchResults = function () {
     return hasMoreSearchResults;
 };
+
+function setVolumeTooltip() {
+    MainVue.setTooltip(i18nService.translate('Volume: {?} / 100 // Lautstärke: {?} / 100', Math.round(volume*100)), {
+        revertOnClose: true,
+        timeout: 5000
+    });
+}
 
 function fillUrl(webradio, gridId) {
     return new Promise((resolve, reject) => {
