@@ -124,12 +124,12 @@
         border-radius: 10px;
         font-size: 1.3em;
     }
-    @media (max-width: 750px) {
+    @media (max-width: 850px) {
         button {
             width: 100%;
         }
     }
-    @media (min-width: 750px) {
+    @media (min-width: 850px) {
         button {
             width: 30em;
         }

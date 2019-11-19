@@ -167,7 +167,7 @@
         margin-left: 3px;
     }
 
-    @media (min-width: 750px) {
+    @media (min-width: 850px) {
         .inputlabel {
             text-align: right;
         }

@@ -303,7 +303,7 @@
     }
 
     /* Smaller than tablet */
-    @media (max-width: 750px) {
+    @media (max-width: 850px) {
         .all-dicts-view a {
             font-size: 1.3em;
             margin-top: 1.5em;
