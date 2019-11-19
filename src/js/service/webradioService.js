@@ -79,14 +79,19 @@ webradioService.play = function (webradio) {
     lastPlayedId = webradio.radioId || lastPlayedId;
     localStorageService.save(WEBRADIO_LAST_PLAYED_ID_KEY, lastPlayedId);
     fillUrl(webradio).then(radioWithUrl => {
+        player.src = radioWithUrl.radioUrl;
+        player.volume = volume;
+        let promise = player.play();
         MainVue.setTooltip(i18nService.translate('playing: {?} // Wiedergabe: {?}', radioWithUrl.radioName), {
             closeOnNavigate: false,
             actionLink: i18nService.translate('Stop // Stopp'),
             actionLinkFn: webradioService.stop
         });
-        player.src = radioWithUrl.radioUrl;
-        player.volume = volume;
-        player.play();
+        if (promise && promise.then) { //IE does not return promise on play
+            promise.catch(() => {
+                MainVue.setTooltip(i18nService.translate('Error playing: {?}, no internet?! // Fehler bei Wiedergabe: {?}, kein Internet?!', webradio.radioName));
+            });
+        }
     });
 };
 
@@ -163,7 +168,7 @@ webradioService.search = function (searchString, limit, offset) {
         params['offset'] = offset;
     }
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         $.ajax({
             type: "POST",
             url: API_URL + API_ACTION_SEARCH,
@@ -182,6 +187,8 @@ webradioService.search = function (searchString, limit, offset) {
                     faviconUrl: el.favicon
                 };
             }));
+        }, error => {
+            reject(error);
         });
     });
 };
@@ -195,7 +202,7 @@ webradioService.hasMoreSearchResults = function () {
 };
 
 function fillUrl(webradio, gridId) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         if (webradio.radioUrl) {
             return resolve(webradio);
         }
@@ -205,12 +212,17 @@ function fillUrl(webradio, gridId) {
             dataType: 'json'
         }).then(data => {
             process(data, webradio);
-        }, (error) => {
+        }, (error, status) => {
             //  fix for issue: https://github.com/segler-alex/radiobrowser-api-rust/issues/13
-            let nameOriginal = error.responseText.substring(error.responseText.indexOf('"name":') + 8, error.responseText.indexOf('"url":') - 2);
-            let name = nameOriginal.replace(new RegExp('"', 'g'), "'");
-            let string = error.responseText.replace(nameOriginal, name);
-            process(JSON.parse(string), webradio);
+            if (status === "parsererror") {
+                let nameOriginal = error.responseText.substring(error.responseText.indexOf('"name":') + 8, error.responseText.indexOf('"url":') - 2);
+                let name = nameOriginal.replace(new RegExp('"', 'g'), "'");
+                let string = error.responseText.replace(nameOriginal, name);
+                process(JSON.parse(string), webradio);
+            } else {
+                MainVue.setTooltip(i18nService.translate('Error playing: {?}, no internet?! // Fehler bei Wiedergabe: {?}, kein Internet?!', webradio.radioName));
+                reject(error);
+            }
         });
 
         function process(data, webradio) {
