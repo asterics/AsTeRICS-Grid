@@ -162,56 +162,11 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row">
                                                 <accordion acc-label="Manage webradio list // Webradioliste verwalten" :acc-open="gridData.webRadios.length === 0 ? 'true' : 'false'" class="twelve columns">
-                                                    <h3 data-i18n="">Selected radio stations // Ausgewählte Radiosender</h3>
-                                                    <div class="row">
-                                                        <ul class="webradioList">
-                                                            <li v-for="webradio in gridData.webRadios">
-                                                                <div class="webRadioListItem">
-                                                                    <img :src="webradio.faviconUrl"/>
-                                                                    <div class="webRadioLabel">{{webradio.radioName}}</div>
-                                                                    <div class="webRadioButtons">
-                                                                        <button class="right" @click="webradioService.stop(webradio.radioId); gridData.webRadios = gridData.webRadios.filter(radio => radio.radioId !== webradio.radioId)"><span class="hide-mobile" data-i18n="">Remove // Löschen</span> <i class="fas fa-trash"></i></button>
-                                                                        <button v-if="webradioPlaying !== webradio" class="right" @click="webradioPlaying = webradio; webradioService.play(webradio)"><span class="hide-mobile">Play </span><i class="fas fa-play"></i></button>
-                                                                        <button v-if="webradioPlaying === webradio" class="right" @click="webradioPlaying = null; webradioService.stop()"><span class="hide-mobile">Stop</span> <i class="fas fa-pause"></i></button>
-                                                                        <button class="right" @click="moveWebradioUp(webradio)"><span class="hide-mobile" data-i18n="">Up // Nach oben</span> <i class="fas fa-arrow-up"></i></button>
-                                                                    </div>
-                                                                </div>
-                                                            </li>
-                                                            <li v-if="gridData.webRadios.length === 0" data-i18n="" style="outline: none">No selected radio stations, use search bar below to add radio stations. // Keine ausgewählten Radiosender, verwenden Sie die Suche unten um Radiosender hinzuzufügen.</li>
-                                                        </ul>
-                                                    </div>
-
-                                                    <h3 data-i18n="">Webradio search // Webradio Suche</h3>
-                                                    <div class="row">
-                                                        <label for="searchwebradios" class="five columns normal-text" data-i18n>Search term // Suchbegriff</label>
-                                                        <input id="searchwebradios" class="six columns" type="text" v-model="webradioSearch" @input="searchWebradios"/>
-                                                    </div>
-                                                    <div class="row">
-                                                        <ul class="webradioList">
-                                                            <li v-for="webradio in webradioSearchResults">
-                                                                <div class="webRadioListItem">
-                                                                    <img :src="webradio.faviconUrl"/>
-                                                                    <div class="webRadioLabel">{{webradio.radioName}}</div>
-                                                                    <div class="webRadioButtons">
-                                                                        <button class="right" @click="gridData.webRadios.push(webradio)" :disabled="gridData.webRadios.map(el => el.radioId).indexOf(webradio.radioId) > -1"><span class="hide-mobile" data-i18n="">Select // Wählen</span> <i class="fas fa-plus"></i></button>
-                                                                        <button v-if="webradioPlaying !== webradio" class="right" @click="webradioPlaying = webradio; webradioService.play(webradio)"><span class="hide-mobile">Play </span><i class="fas fa-play"></i></button>
-                                                                        <button v-if="webradioPlaying === webradio" class="right" @click="webradioPlaying = null; webradioService.stop()"><span class="hide-mobile">Stop </span><i class="fas fa-pause"></i></button>
-                                                                    </div>
-                                                                </div>
-                                                            </li>
-                                                            <li v-if="webradioSearchResults.length === 0 && webradioSearch && !webradioSearching" data-i18n="" style="outline: none">No radio stations found, try an other search term. // Keine Radiosender gefunden, versuchen Sie einen anderen Suchbegriff.</li>
-                                                        </ul>
-                                                        <div style="display: flex; margin-top: 0.5em" v-show="webradioSearchResults.length > 0">
-                                                            <button @click="prevSearchResults" :disabled="webradioStartIndex === 0" style="flex-grow: 1;"><i class="fas fa-arrow-left"></i> <span class="hide-mobile" data-i18n="">Previous page // Vorige Seite</span></button>
-                                                            <button @click="nextSearchResults" :disabled="!hasMoreWebradios" style="flex-grow: 1;"><span class="hide-mobile" data-i18n="">Next page // Nächste Seite</span> <i class="fas fa-arrow-right"></i></button>
-                                                        </div>
-                                                    </div>
+                                                    <radio-list-selector v-model="gridData.webRadios"></radio-list-selector>
                                                 </accordion>
                                             </div>
-
                                             <div class="row">
                                                 <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
                                             </div>
@@ -258,13 +213,10 @@
     import {GridActionCollectElement} from "../../js/model/GridActionCollectElement";
     import {helpService} from "../../js/service/helpService";
     import {GridActionWebradio} from "../../js/model/GridActionWebradio";
-    import {webradioService} from "../../js/service/webradioService";
     import Accordion from "../components/accordion.vue";
     import {imageUtil} from "../../js/util/imageUtil";
     import {GridImage} from "../../js/model/GridImage";
-    import {util} from "../../js/util/util";
-
-    let WEBRADIO_LIMIT = 10;
+    import RadioListSelector from "../components/radioListSelector.vue";
 
     export default {
         props: ['editElementIdParam', 'gridIdParam'],
@@ -282,53 +234,15 @@
                 editElementId: null,
                 additionalGridFiles: {}, //map: key = action.id, value = AdditionalGridFile (ARE Model)
                 collectActions: GridActionCollectElement.getActions(),
-                webradioActions: GridActionWebradio.getActions(),
-                webradioSearchResults: [],
-                webradioSearch: null,
-                webradioService: webradioService,
-                webradioPlaying: null,
-                webradioStartIndex: 0,
-                webradioSearching: false,
-                hasMoreWebradios: false
+                webradioActions: GridActionWebradio.getActions()
             }
         },
         components: {
+            RadioListSelector,
             Accordion,
             EditAreAction
         },
         methods: {
-            searchWebradios() {
-                let thiz = this;
-                thiz.webradioStartIndex = 0;
-                thiz.searchWebradiosInternal();
-            },
-            nextSearchResults() {
-                let thiz = this;
-                thiz.webradioStartIndex += WEBRADIO_LIMIT;
-                thiz.searchWebradiosInternal();
-            },
-            prevSearchResults() {
-                let thiz = this;
-                thiz.webradioStartIndex -= WEBRADIO_LIMIT;
-                thiz.searchWebradiosInternal();
-            },
-            searchWebradiosInternal() {
-                let thiz = this;
-                thiz.webradioSearching = true;
-                util.debounce(() => {
-                    webradioService.search(thiz.webradioSearch, WEBRADIO_LIMIT, thiz.webradioStartIndex).then(result => {
-                        thiz.hasMoreWebradios = webradioService.hasMoreSearchResults();
-                        thiz.webradioSearchResults = result;
-                        thiz.webradioSearching = false;
-                    });
-                }, 500);
-            },
-            moveWebradioUp(radio) {
-                let index = this.gridData.webRadios.indexOf(radio);
-                if (index > 0) {
-                    this.gridData.webRadios.splice(index - 1, 0, this.gridData.webRadios.splice(index, 1)[0]);
-                }
-            },
             selectedRadioChanged(radioId) {
                 let faviconUrl = this.gridData.webRadios.filter(el => el.radioId === radioId)[0].faviconUrl;
                 if (faviconUrl) {
@@ -443,43 +357,5 @@
     .actionbtns button {
         width: 30%;
         padding: 0;
-    }
-
-    .webradioList button {
-        line-height: unset;
-        margin-bottom: 0;
-        padding: 0 10px;
-    }
-
-    .webradioList, .webradioList li, .webradioList li div {
-        padding: 0;
-        margin: 0;
-    }
-
-    .webradioList li:hover {
-        background-color: #c4f0fe;
-    }
-
-    .webRadioListItem {
-        display: flex;
-    }
-
-    .webRadioListItem img {
-        flex-grow: 0;
-        flex-shrink: 0;
-        vertical-align: middle;
-        height: 28px;
-        width: 28px;
-    }
-
-    .webRadioLabel {
-        flex-grow: 1;
-        flex-shrink: 1;
-        margin: 0 5px !important;
-    }
-
-    .webRadioButtons {
-        flex-grow: 0;
-        flex-shrink: 0;
     }
 </style>
