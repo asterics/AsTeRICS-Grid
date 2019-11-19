@@ -21,7 +21,10 @@
 
         <h3 data-i18n="">Webradio search // Webradio Suche</h3>
         <div class="row">
-            <label for="searchwebradios" class="five columns normal-text" data-i18n>Search term // Suchbegriff</label>
+            <div class="five columns">
+                <label for="searchwebradios" class="normal-text" data-i18n>Search term // Suchbegriff</label>
+                <i class="fas fa-info-circle hide-mobile" :title="'by default searches for radio station name, advanced search possible like e.g. tag:jazz, language:english or country:austria // sucht standardmäßig nach Radiosender-Name, erweiterte Suche z.B. möglich mit tag:jazz, language:english oder country:austria' | translate"></i>
+            </div>
             <input id="searchwebradios" class="six columns" type="text" v-model="webradioSearch" @input="searchWebradios"/>
         </div>
         <div class="row">
@@ -51,6 +54,7 @@
 <script>
     import {webradioService} from "../../js/service/webradioService";
     import {util} from "../../js/util/util";
+    import {i18nService} from "../../js/service/i18nService";
 
     let WEBRADIO_LIMIT = 10;
 
@@ -121,8 +125,10 @@
         mounted() {
             let thiz = this;
             thiz.selectedRadioList = JSON.parse(JSON.stringify(thiz.value));
+            i18nService.initDomI18n();
         },
         updated() {
+            i18nService.initDomI18n();
         }
     }
 </script>
