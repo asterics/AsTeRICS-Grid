@@ -9,6 +9,7 @@ This chapter is about actions that can be performed if a grid element is selecte
     * [Fill prediction elements](05_actions.md#fill-prediction-elements)
     * [Collect element action](05_actions.md#collect-element-action)
     * [AsTeRICS Action](05_actions.md#asterics-action)
+    * [Web radio action](05_actions.md#web-radio-action)
 
 [Back to Overview](README.md)
 
