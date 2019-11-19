@@ -19,7 +19,13 @@
             <div v-if="selectedRadioList.length === 0" data-i18n="">No selected radio stations, use search bar below to add radio stations. // Keine ausgewählten Radiosender, verwenden Sie die Suche unten um Radiosender hinzuzufügen.</div>
         </div>
 
-        <h3 data-i18n="">Webradio search // Webradio Suche</h3>
+        <div class="row">
+            <h3 class="four columns" data-i18n="">Webradio search // Webradio Suche</h3>
+            <span id="poweredby" class="six columns" data-i18n="">
+                <span>powered by <a href="https://www.radio-browser.info/gui/#!/" target="_blank">radio-browser.info</a></span>
+                <span>Suche durch <a href="https://www.radio-browser.info/gui/#!/" target="_blank">radio-browser.info</a></span>
+            </span>
+        </div>
         <div class="row">
             <div class="five columns">
                 <label for="searchwebradios" class="normal-text" data-i18n>Search term // Suchbegriff</label>
@@ -180,5 +186,11 @@
     .webRadioButtons {
         flex-grow: 0;
         flex-shrink: 0;
+    }
+
+    @media (min-width: 850px) {
+        #poweredby {
+            margin-top: 1em;
+        }
     }
 </style>
