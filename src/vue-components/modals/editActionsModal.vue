@@ -151,7 +151,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="row" v-show="action.action === 'WEBRADIO_ACTION_START'">
+                                            <div class="row" v-show="action.action === 'WEBRADIO_ACTION_START' || action.action === 'WEBRADIO_ACTION_TOGGLE'">
                                                 <div class="twelve columns">
                                                     <label for="selectRadio" class="five columns normal-text" data-i18n>Webadio to play // Abzuspielendes Webradio</label>
                                                     <select id="selectRadio" class="six columns" v-model="action.radioId" @change="selectedRadioChanged(action.radioId)">

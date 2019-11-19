@@ -36,6 +36,11 @@ webradioService.doAction = function (gridId, action) {
                     webradioService.play(webradioWithUrl);
                 });
                 break;
+            case GridActionWebradio.WEBRADIO_ACTION_TOGGLE:
+                fillUrl(webradio, gridId).then((webradioWithUrl) => {
+                    webradioService.toggle(webradioWithUrl);
+                });
+                break;
             case GridActionWebradio.WEBRADIO_ACTION_STOP:
                 webradioService.stop();
                 break;
@@ -79,6 +84,7 @@ webradioService.play = function (webradio) {
     lastPlayedId = webradio.radioId || lastPlayedId;
     localStorageService.save(WEBRADIO_LAST_PLAYED_ID_KEY, lastPlayedId);
     fillUrl(webradio).then(radioWithUrl => {
+        log.debug('playing: ' + radioWithUrl.radioUrl);
         player.src = radioWithUrl.radioUrl;
         player.volume = volume;
         let promise = player.play();
@@ -238,6 +244,13 @@ function fillUrl(webradio, gridId) {
             webradio.radioUrl = data[0].url;
             if (webradio.radioUrl.lastIndexOf('/') === webradio.radioUrl.length - 1) {
                 webradio.radioUrl = webradio.radioUrl + ';';
+            }
+            let lastcolon = webradio.radioUrl.lastIndexOf(':');
+            if (lastcolon > -1) {
+                let port = webradio.radioUrl.substring(lastcolon + 1);
+                if (parseInt(port) + '' === port) { //url ends with a port, e.g. :8000
+                    webradio.radioUrl = webradio.radioUrl + '/;';
+                }
             }
             if (gridId) {
                 dataService.getGrid(gridId).then(grid => {

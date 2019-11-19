@@ -20,12 +20,13 @@ class GridActionWebradio extends Model({
     }
 
     static getActions() {
-        return [GridActionWebradio.WEBRADIO_ACTION_START, GridActionWebradio.WEBRADIO_ACTION_STOP,
+        return [GridActionWebradio.WEBRADIO_ACTION_START, GridActionWebradio.WEBRADIO_ACTION_TOGGLE, GridActionWebradio.WEBRADIO_ACTION_STOP,
             GridActionWebradio.WEBRADIO_ACTION_NEXT, GridActionWebradio.WEBRADIO_ACTION_PREV, GridActionWebradio.WEBRADIO_ACTION_VOLUP, GridActionWebradio.WEBRADIO_ACTION_VOLDOWN];
     }
 }
 
 GridActionWebradio.WEBRADIO_ACTION_START = 'WEBRADIO_ACTION_START';
+GridActionWebradio.WEBRADIO_ACTION_TOGGLE = 'WEBRADIO_ACTION_TOGGLE';
 GridActionWebradio.WEBRADIO_ACTION_STOP = 'WEBRADIO_ACTION_STOP';
 GridActionWebradio.WEBRADIO_ACTION_NEXT = 'WEBRADIO_ACTION_NEXT';
 GridActionWebradio.WEBRADIO_ACTION_PREV = 'WEBRADIO_ACTION_PREV';
