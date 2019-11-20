@@ -59,6 +59,7 @@ module.exports = env => {
     var plugins = [new VueLoaderPlugin()];
     var appcachePlugin = new AppCachePlugin({
         cache: [
+            '../index.html',
             'index.html',
             'build/asterics-grid.bundle.js',
             'build_legacy/asterics-grid.bundle.js',
