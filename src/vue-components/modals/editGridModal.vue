@@ -44,7 +44,7 @@
                         <div class="row">
                             <label for="inputSearch" class="two columns" data-i18n>Image search // Bildsuche</label>
                             <div class="five columns">
-                                <input id="inputSearch" type="text" v-model="searchText" @input="searchInput()" :placeholder="'SEARCH_IMAGE_PLACEHOLDER' | translate"/>
+                                <input id="inputSearch" type="text" v-model="searchText" @input="searchInput(500, $event)" :placeholder="'SEARCH_IMAGE_PLACEHOLDER' | translate"/>
                                 <button @click="clearSearch" aria-label="Clear"><i class="fas fa-times"></i></button>
                             </div>
                             <span class="four columns" data-i18n="">
@@ -279,8 +279,9 @@
                 this.searchText = keyword;
                 this.searchInput(0);
             },
-            searchInput(debounceTime) {
+            searchInput(debounceTime, event) {
                 let thiz = this;
+                thiz.searchText = event.target.value;
                 debounceTime = debounceTime === undefined ? 500 : debounceTime;
                 thiz.searchResults = [];
                 thiz.searchLoading = true;

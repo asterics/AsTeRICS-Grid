@@ -31,7 +31,7 @@
                 <label for="searchwebradios" class="normal-text" data-i18n>Search term // Suchbegriff</label>
                 <i class="fas fa-info-circle hide-mobile" :title="'by default searches for radio station name, advanced search possible like e.g. tag:jazz, language:english or country:austria // sucht standardmäßig nach Radiosender-Name, erweiterte Suche z.B. möglich mit tag:jazz, language:english oder country:austria' | translate"></i>
             </div>
-            <input id="searchwebradios" class="six columns" type="text" v-model="webradioSearch" @input="searchWebradios"/>
+            <input id="searchwebradios" class="six columns" type="text" v-model="webradioSearch" @input="searchWebradios($event)"/>
         </div>
         <div class="row">
             <ul class="webradioList">
@@ -85,8 +85,9 @@
             modelChanged() {
                 this.$emit('input', JSON.parse(JSON.stringify(this.selectedRadioList)));
             },
-            searchWebradios() {
+            searchWebradios(event) {
                 let thiz = this;
+                this.webradioSearch = event.target.value;
                 thiz.webradioStartIndex = 0;
                 thiz.searchWebradiosInternal();
             },
