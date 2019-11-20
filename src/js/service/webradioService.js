@@ -7,7 +7,7 @@ import {i18nService} from "./i18nService";
 
 let WEBRADIO_LAST_PLAYED_ID_KEY = 'WEBRADIO_LAST_PLAYED_ID_KEY';
 let WEBRADIO_LAST_VOLUME_KEY = 'WEBRADIO_LAST_VOLUME_KEY';
-let API_URL = 'http://www.radio-browser.info/webservice/json/';
+let API_URL = 'https://www.radio-browser.info/webservice/json/';
 let API_ACTION_SEARCH = 'stations/search';
 let API_ACTION_GETURL = 'url';
 let VOLUME_STEP = 0.15;
