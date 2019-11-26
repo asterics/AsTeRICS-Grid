@@ -95,14 +95,12 @@ Wyłączyć dzwięk
 Następny kanał
 Poprzedni kanał
 
-Włącz / wyłącz
-Grać
-Zatrzymać
-Zmień tryb
-Następna piosenka
-Poprzednia piosenka
-Zwiększ głośność
-Ściszanie
+Radio On
+Radio off
+Previous channel
+Next channel
+Volume down
+Volume up
 
 Otwarte drzwi
 Zamknij drzwi

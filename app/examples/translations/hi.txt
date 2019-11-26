@@ -95,14 +95,12 @@
 अगला चैनल
 पिछला चैनल
 
-चालू / बंद करो
-प्ले
-रुकें
-मोड बदलें
-अगला गीत
-पिछला गीत
-ध्वनि तेज
-आवाज निचे
+Radio On
+Radio off
+Previous channel
+Next channel
+Volume down
+Volume up
 
 खुला दरवाजा
 बंद दरवाजा

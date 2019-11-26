@@ -95,14 +95,12 @@ Desligar o som
 Próximo canal
 Canal anterior
 
-Ligar / desligar
-Ligar
-Parar
-Mudar o modo
-Próxima música
-Música anterior
-Aumentar o volume
-Baixar o volume
+Radio On
+Radio off
+Previous channel
+Next channel
+Volume down
+Volume up
 
 Abrir a porta
 Fechar a porta

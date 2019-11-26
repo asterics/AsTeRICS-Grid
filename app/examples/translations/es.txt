@@ -95,14 +95,12 @@ Sonido apagado
 Canal siguiente
 Canal anterior
 
-Encender / apagar
-Jugar
-Detener
-Modo de cambio
-Siguiente cancion
-Cancion anterior
-Sube el volumen
-Bajar volumen
+Radio On
+Radio off
+Previous channel
+Next channel
+Volume down
+Volume up
 
 Puerta abierta
 Puerta cerrada

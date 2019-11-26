@@ -95,14 +95,12 @@ Isandi sicinyiwe
 Ijelo elilandelayo
 Ijelo elidlulileyo
 
-Khanyisa / ucime
-Dlala
-Yeka
-Imowudi yokutshintsha
-Ingoma elandelayo
-Ingoma edlulileyo
-Umthamo phezulu
-Ivolumu ezantsi
+Radio On
+Radio off
+Previous channel
+Next channel
+Volume down
+Volume up
 
 Umnyango ovulekileyo
 Umnyango ovaliweyo

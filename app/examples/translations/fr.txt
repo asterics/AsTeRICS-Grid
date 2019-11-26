@@ -95,14 +95,12 @@ Sonner
 Canal suivant
 Canal précédent
 
-Allume / éteint
-Jouer
-Arrêtez
-Changer de mode
-Prochaine chanson
-Chanson précédente
-Monter le son
-Baisser le volume
+Radio On
+Radio off
+Previous channel
+Next channel
+Volume down
+Volume up
 
 Porte ouverte
 Ferme la porte

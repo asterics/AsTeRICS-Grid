@@ -95,14 +95,12 @@ Umsindo uvaliwe
 Isiteshi esilandelayo
 Isiteshi esedlule
 
-Vula / vala
-Dlala
-Ima
-Shintsha imodi
-Ingoma elandelayo
-Ingoma edlule
-Ivolumu phezulu
-IVolumu phansi
+Radio On
+Radio off
+Previous channel
+Next channel
+Volume down
+Volume up
 
 Kuvuleke umnyango
 Vala umnyango

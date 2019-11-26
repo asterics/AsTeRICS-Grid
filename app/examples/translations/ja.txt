@@ -95,14 +95,12 @@ Tシャツを着たい
 次のチャンネル
 前のチャンネル
 
-オン/オフ
-遊びます
-やめる
-変更モード
-次の歌
-前の歌
-ボリュームアップ
-ボリュームダウン
+Radio On
+Radio off
+Previous channel
+Next channel
+Volume down
+Volume up
 
 開いたドア
 ドアを閉める

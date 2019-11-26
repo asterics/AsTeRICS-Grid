@@ -95,14 +95,12 @@ Klink af
 Volgende kanaal
 Vorige kanaal
 
-Skakel aan / af
-speel
-stop
-Verander modus
-Volgende liedjie
-Vorige liedjie
-Volume op
-Deel af
+Radio On
+Radio off
+Previous channel
+Next channel
+Volume down
+Volume up
 
 Oop deur
 Maak deur toe

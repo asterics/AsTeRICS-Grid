@@ -95,14 +95,12 @@ Utloahala
 Seteishene se latelang
 Seteishene se fetileng
 
-Bulela / tima
-Bapala
-Ema
-Fetoha mode
-Pina e latelang
-Pina e fetileng
-Bophahamo ba modumo
-Buka tlase
+Radio On
+Radio off
+Previous channel
+Next channel
+Volume down
+Volume up
 
 Lemati le bulehileng
 Monyako o koetsoeng

@@ -95,14 +95,12 @@ Audio Disattivato
 Canale successivo
 Canale precedente
 
-Accendi / spegni
-Giocare
-Fermare
-Cambia modalità
-Prossima canzone
-Canzone precedente
-Aumenta il volume
-Volume basso
+Radio On
+Radio off
+Previous channel
+Next channel
+Volume down
+Volume up
 
 Porta aperta
 Chiudi la porta

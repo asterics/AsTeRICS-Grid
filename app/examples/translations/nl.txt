@@ -95,14 +95,12 @@ Geluid uit
 Volgende kanaal
 Vorige kanaal
 
-Zet aan / uit
-Spelen
-Hou op
-Wijzig modus
-Volgende liedje
-Vorige nummer
-Volume omhoog
-Volume verminderen
+Radio On
+Radio off
+Previous channel
+Next channel
+Volume down
+Volume up
 
 Geopende deur
 Doe de deur dicht

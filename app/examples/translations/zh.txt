@@ -95,14 +95,12 @@
 下一个频道
 以前的频道
 
-打开/关闭
-玩
-停止
-改变模式
-下一首歌
-上一首歌
-提高音量
-音量减小
+Radio On
+Radio off
+Previous channel
+Next channel
+Volume down
+Volume up
 
 开门
 关门
