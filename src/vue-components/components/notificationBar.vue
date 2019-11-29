@@ -161,6 +161,7 @@
         color: whitesmoke;
         width: 40vw;
         padding: 10px 40px 10px 10px;
+        cursor: grab;
     }
 
     #notificationBarImg {
