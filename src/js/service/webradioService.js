@@ -88,14 +88,18 @@ webradioService.play = function (webradio) {
         player.src = radioWithUrl.radioUrl;
         player.volume = volume;
         let promise = player.play();
-        MainVue.setTooltip(i18nService.translate('playing: {?} // Wiedergabe: {?}', radioWithUrl.radioName), {
+        let tooltipText = i18nService.translate('playing: {?} // Wiedergabe: {?}', radioWithUrl.radioName);
+        MainVue.setTooltip(tooltipText, {
             closeOnNavigate: false,
             actionLink: i18nService.translate('Stop // Stopp'),
-            actionLinkFn: webradioService.stop
+            actionLinkFn: webradioService.stop,
+            imageUrl: radioWithUrl.faviconUrl
         });
         if (promise && promise.then) { //IE does not return promise on play
             promise.catch(() => {
-                MainVue.setTooltip(i18nService.translate('Error playing: {?}, no internet?! // Fehler bei Wiedergabe: {?}, kein Internet?!', webradio.radioName));
+                if (lastPlayedId === webradio.radioId) {
+                    MainVue.setTooltip(i18nService.translate('Error playing: {?}, no internet?! // Fehler bei Wiedergabe: {?}, kein Internet?!', webradio.radioName));
+                }
             });
         }
     });
@@ -210,7 +214,7 @@ webradioService.hasMoreSearchResults = function () {
 };
 
 function setVolumeTooltip() {
-    MainVue.setTooltip(i18nService.translate('Volume: {?} / 100 // Lautstärke: {?} / 100', Math.round(volume*100)), {
+    MainVue.setTooltip(i18nService.translate('Volume: {?} / 100 // Lautstärke: {?} / 100', Math.round(volume * 100)), {
         revertOnClose: true,
         timeout: 5000
     });
