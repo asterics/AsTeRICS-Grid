@@ -9,23 +9,14 @@ import {databaseService} from "../service/data/databaseService";
 import {localStorageService} from "../service/data/localStorageService";
 import {helpService} from "../service/helpService";
 import {Router} from "../router";
+import NotificationBar from "../../vue-components/components/notificationBar.vue"
 
 let MainVue = {};
 let app = null;
-let _defaultTooltipsOptions = {
-    closeOnNavigate: true,
-    timeout: 0,
-    revertOnClose: false,
-    actionLink: '',
-    actionLinkFn: null
-};
-let _tooltipOptions = _defaultTooltipsOptions;
-let _tooltipTimeoutHandler = null;
-let _lastTooltipHTML = null;
-let _lastTooltipOptions = null;
+
 
 MainVue.setViewComponent = function (component, properties) {
-    if (_tooltipOptions.closeOnNavigate) {
+    if (app && app.$refs.notificationBar.tooltipOptions.closeOnNavigate) {
         MainVue.clearTooltip();
     }
     app.setComponent(component, properties);
@@ -36,35 +27,23 @@ MainVue.isSidebarOpen = function () {
 };
 
 MainVue.setTooltip = function (html, options) {
-    if (!_tooltipOptions.revertOnClose) {
-        _lastTooltipHTML = app.tooltipHTML;
-        _lastTooltipOptions = _tooltipOptions;
+    if (!app) {
+        return;
     }
-    _tooltipOptions = Object.assign(JSON.parse(JSON.stringify(_defaultTooltipsOptions)), options);
-    clearTimeout(_tooltipTimeoutHandler);
-    if (_tooltipOptions.timeout > 0) {
-        _tooltipTimeoutHandler = setTimeout(() => {
-            MainVue.clearTooltip();
-        }, _tooltipOptions.timeout);
-    }
-    app.tooltipHTML = html;
-    app.actionLink = _tooltipOptions.actionLink;
+    app.$refs.notificationBar.setTooltip(html, options);
 };
 
 MainVue.clearTooltip = function () {
-    if (_tooltipOptions.revertOnClose && app.tooltipHTML) {
-        MainVue.setTooltip(_lastTooltipHTML, _lastTooltipOptions);
-    } else {
-        app.tooltipHTML = null;
-        app.actionLink = null;
+    if (!app) {
+        return;
     }
-    _lastTooltipOptions = {};
-    _lastTooltipHTML = null;
+    app.$refs.notificationBar.clearTooltip();
 };
 
 MainVue.init = function () {
     app = new Vue({
         el: '#app',
+        components: {NotificationBar},
         data() {
             return {
                 component: null,
@@ -87,11 +66,6 @@ MainVue.init = function () {
             },
             closeSidebar() {
                 $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
-            },
-            onActionLink() {
-                if (_tooltipOptions.actionLinkFn) {
-                    _tooltipOptions.actionLinkFn();
-                }
             },
             openSidebar() {
                 $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
