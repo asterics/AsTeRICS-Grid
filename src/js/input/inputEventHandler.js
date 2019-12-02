@@ -263,6 +263,7 @@ function Constructor() {
             let entries = keyHandlers[key];
             entries = entries.sort((a,b) => (a.counter - b.counter) || (a.inputEvent.repeat - b.inputEvent.repeat));
             entries.forEach(entry => {
+                entry.inputEvent.timeout = entry.inputEvent.repeat > 1 ? (entry.inputEvent.timeout || 500) : entry.inputEvent.timeout;
                 if (timeoutPassed(entry.lastKeydown, entry.inputEvent.timeout)) {
                     entry.counter = 0;
                 }
@@ -273,7 +274,7 @@ function Constructor() {
                     let existsConflictingHold = entries.filter(e => e !== entry && e.inputEvent.holdDuration).length > 0;
                     let conflictingRepeat = entries.filter(e => e !== entry && e.inputEvent.repeat > 1);
                     let existsConflictingRepeat = conflictingRepeat.length > 0;
-                    let maxConflictingCounter = Math.max(conflictingRepeat.map(e => e.counter));
+                    let maxConflictingCounter = Math.max.apply(null, conflictingRepeat.map(e => e.counter));
                     if (existsConflictingHold) {
                         entry.doOnKeyup = () => {
                             doEntry(entry);
@@ -290,8 +291,9 @@ function Constructor() {
                     entry.counter++;
                     if (entry.counter === ie.repeat) {
                         let existsConflicting = entries.filter(e => e !== entry && e.inputEvent.repeat > ie.repeat).length > 0;
-                        let timeout = existsConflicting ? (ie.timeout || 500) : 0;
+                        let timeout = existsConflicting ? ie.timeout : 0;
                         entry.counter = 0;
+                        resetTimeouts(entries);
                         entry.timeoutHandler = setTimeout(() => {
                             doEntry(entry);
                         }, timeout);
@@ -331,6 +333,10 @@ function Constructor() {
             });
 
         }
+    }
+
+    function resetTimeouts(entries) {
+        entries.forEach(e => clearTimeout(e.timeoutHandler));
     }
 
     function resetEntry(entry) {
