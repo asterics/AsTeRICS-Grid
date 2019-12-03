@@ -29,6 +29,8 @@ do_gh_pages_update () {
     git checkout $branch
 }
 
+git reset HEAD app/manifest.appcache
+git checkout app/manifest.appcache
 doStash=true
 if git diff-index --quiet HEAD --; then
     doStash=false
