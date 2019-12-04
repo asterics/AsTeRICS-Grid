@@ -90,6 +90,8 @@ InputConfig.DEFAULT_HUFF_INPUTS = [
     new InputEventKey({label: InputConfig.GENERAL_INPUT, keyCode: 51, keyName: "Digit3"}),
     new InputEventKey({label: InputConfig.GENERAL_INPUT, keyCode: 52, keyName: "Digit4"})
 ];
+InputConfig.DEFAULT_HUFF_COLORS = ['#D55E00', '#F0E442', '#009E73', '#0072B2',
+    '#CC79A7', '#E69F00', '#56B4E9', '#000000', '#016619'];
 
 InputConfig.defaults({
     id: "", //will be replaced by constructor
@@ -106,6 +108,7 @@ InputConfig.defaults({
     seqInputs: InputConfig.DEFAULT_SEQ_INPUTS,
     dirWrapAround: true,
     huffInputs: InputConfig.DEFAULT_HUFF_INPUTS,
+    huffColors: InputConfig.DEFAULT_HUFF_COLORS,
     huffShowColors: true,
     huffShowNumbers: true,
     huffElementCount: 0,

@@ -62,6 +62,15 @@
                                     <input type="range" min="0" max="300" id="inElementCount" v-model.number="inputConfig.huffElementCount"/>
                                     <input type="number" min="0" max="300" id="inElementCount2" v-model.number="inputConfig.huffElementCount"/>
                                 </div>
+                                <div class="row">
+                                    <div class="four columns">
+                                        <div v-for="i in inputConfig.huffInputs.length">
+                                            <label :for="'colorInput' + i" style="margin-right: 1em"><span data-i18n="">Color // Farbe</span> {{i}}</label>
+                                            <input :id="'colorInput' + i" type="color" v-model="inputConfig.huffColors[i-1]"/>
+                                        </div>
+                                    </div>
+                                    <button @click="inputConfig.huffColors = JSON.parse(JSON.stringify(InputConfig.DEFAULT_HUFF_COLORS))" class="four columns" style="margin-top: 1em" data-i18n="">Reset colors // Farben zurücksetzen</button>
+                                </div>
                             </accordion>
                             <accordion acc-label="TEST_CONFIGURATION" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
                                 <test-area :selected-element="selectedTestElement"></test-area>

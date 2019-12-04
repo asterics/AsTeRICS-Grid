@@ -50,8 +50,6 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
     let _currentInput = '';
     let _inputEventHandler = null;
     let _alphabet = '';
-    let _defaultColors = ['#D55E00', '#F0E442', '#009E73', '#0072B2',
-        '#CC79A7', '#E69F00', '#56B4E9', '#000000', '#016619'];
     let _started = false;
     let _timeoutHandler = null;
 
@@ -226,7 +224,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
 
     function getColor(digitString) {
         let index = parseInt(digitString) - 1;
-        return  colors[index] || _defaultColors[index];
+        return colors[index];
     }
 
     function getHighContrastTextColor(hexBackground) {
