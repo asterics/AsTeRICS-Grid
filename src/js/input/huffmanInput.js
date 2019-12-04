@@ -8,6 +8,7 @@ HuffmanInput.getInstanceFromConfig = function (inputConfig, itemSelector, scanAc
     return new HuffmanInputConstructor(itemSelector, scanActiveClass, scanInactiveClass, {
         printCodes: inputConfig.huffShowNumbers,
         printColors: inputConfig.huffShowColors,
+        colorWholeElement: inputConfig.huffColorWholeElement,
         colors: inputConfig.huffColors,
         inputEvents: inputConfig.huffInputs,
         elementCount: inputConfig.huffElementCount,
@@ -33,9 +34,9 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
     let itemSelector = paramItemSelector;
     let scanActiveClass = paramScanActiveClass;
     let scanIncativeClass = paramScanInactiveClass;
-    let wrapAround = true;
     let printCodes = false;
     let printColors = true;
+    let colorWholeElement = false;
     let elementCount = 0;
     let timeout = 1000;
     let markInactive = true;
@@ -56,12 +57,19 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
 
     thiz.start = function () {
         _started = true;
+        if (colorWholeElement) {
+            $(_elements).addClass('noanimation');
+        }
         _inputEventHandler.startListening();
     };
 
     thiz.stop = function () {
         _started = false;
         $(_elements).find('.huffman-code-visualization').remove();
+        if (colorWholeElement) {
+            $(_elements).removeClass('noanimation');
+            $(_elements).css('background', '');
+        }
         _inputEventHandler.stopListening();
     };
 
@@ -86,6 +94,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
             return;
         }
         _currentInput += id;
+        colorElements();
         let selectedElement = _treeItems.filter(el => el.codeWord === _currentInput).map(el => el.element);
         let possibleElements = _treeItems.filter(el => el.codeWord.indexOf(_currentInput) === 0).map(el => el.element);
         _elements.removeClass(scanActiveClass);
@@ -101,11 +110,13 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
         if (selectedElement[0] || possibleElements.length === 0) {
             setPossibleElements(_elements.toArray());
             _currentInput = '';
+            colorElements();
         }
         if (timeout > 0) {
             _timeoutHandler = setTimeout(() => {
                 setPossibleElements(_elements.toArray());
                 _currentInput = '';
+                colorElements();
             }, timeout);
         }
     };
@@ -151,8 +162,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
             if (printColors || printCodes) {
                 let spans = '';
                 item.codeWord.split('').forEach(c => {
-                    let index = parseInt(c) - 1;
-                    let color = printColors ? colors[index] || _defaultColors[index] : '';
+                    let color = printColors ? getColor(c) : '';
                     let textColor = getHighContrastTextColor(color);
                     let width = ((100 - 5 * longestCodeLength) / longestCodeLength) + '%';
                     let char = printCodes ? c : '&nbsp;';
@@ -164,6 +174,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
             }
         });
         _treeItems = _treeItems.filter(item => item.name);
+        colorElements();
     }
 
     function parseOptions(options) {
@@ -174,9 +185,9 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
         if ($.isFunction(options.selectionListener)) {
             _selectionListener = options.selectionListener;
         }
-        wrapAround = options.wrapAround !== undefined ? options.wrapAround : false;
         printCodes = options.printCodes !== undefined ? options.printCodes : false;
         printColors = options.printColors !== undefined ? options.printColors : true;
+        colorWholeElement = options.colorWholeElement !== undefined ? options.colorWholeElement : false;
         markInactive = options.markInactive !== undefined ? options.markInactive : true;
         colors = options.colors || colors;
         elementCount = options.elementCount || 0;
@@ -187,6 +198,17 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
                 thiz.input(index + 1);
             });
         });
+    }
+
+    function colorElements() {
+        if (colorWholeElement) {
+            _treeItems.forEach(item => {
+                if (item.codeWord.indexOf(_currentInput) === 0) {
+                    let nextDigit = item.codeWord.substring(_currentInput.length)[0];
+                    item.element.style.background = getColor(nextDigit);
+                }
+            })
+        }
     }
 
     function setActiveElement(element) {
@@ -200,6 +222,11 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
         let possibleIds = elements.map(e => e.id);
         let impossibleElements = _elements.toArray().filter(e => possibleIds.indexOf(e.id) === -1);
         $(impossibleElements).addClass(scanIncativeClass);
+    }
+
+    function getColor(digitString) {
+        let index = parseInt(digitString) - 1;
+        return  colors[index] || _defaultColors[index];
     }
 
     function getHighContrastTextColor(hexBackground) {

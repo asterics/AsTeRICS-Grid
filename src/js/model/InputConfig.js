@@ -32,6 +32,7 @@ class InputConfig extends Model({
     huffColors: [Model.Array(String)],
     huffShowColors: [Boolean],
     huffShowNumbers: [Boolean],
+    huffColorWholeElement: [Boolean],
     huffTimeout: [Number],
     huffMarkInactive: [Boolean]
 }) {

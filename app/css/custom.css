@@ -225,6 +225,11 @@ nav li:hover button span {
     animation: background 5s cubic-bezier(1,0,0,1);
 }
 
+.noanimation {
+    -webkit-animation: none !important;
+    animation: none !important;
+}
+
 @-webkit-keyframes background {
     0% { background-color: dodgerblue; }
     100% { background-color: lightblue; }

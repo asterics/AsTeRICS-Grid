@@ -42,6 +42,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="twelve columns">
+                                        <input type="checkbox" id="chkColorWholeElement" v-model="inputConfig.huffColorWholeElement"/>
+                                        <label for="chkColorWholeElement" data-i18n>Color whole element // Färbe ganzes Element</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="twelve columns">
                                         <input type="checkbox" id="chkMarkInactive" v-model="inputConfig.huffMarkInactive"/>
                                         <label for="chkMarkInactive" data-i18n>Mark inactive elements // Markiere inaktive Elemente</label>
                                     </div>
