@@ -157,9 +157,11 @@ These are the possible input events for huffman input:
 These are the Advanced settings for *huffman input*:
 * **Show numbers**: if checked the assigned codes are shown at the bottom of each element
 * **Show colors**:  if checked a color code is shown at the bottom of each element
+* **Color whole element**: if checked the all grid elements are fully colored in the color of the next input event to trigger in order to select the element of interest
 * **Mark inactive elements**: if checked all impossible elements are grayed out, so that e.g. starting input of the code with `1` grays out all elements with codes that aren't starting with `1`.
 * **Timeout**: time of inactivity (in milliseconds) for resetting the current, incomplete input. So if the first digit of the code `1` was typed accidentally the user has to wait this time in order to be able to restart with another code. Simultaneously this is the time the user has to input the next digit of the code. If set to `0` the timeout is disabled.
 * **Number of elements**: by default (if this property is set to `0`) the codes are automatically generated based on the number of elements in the current grid. This means that in one grid the n-th element could have a different code than in an other grid. To prevent this the `number of elements` property can be set to the maximum number of elements that are existing in any grid. Therefore in every grid the n-th element will have the same code.
+* **Color[1-n]**: select the colors of the input events. If e.g. three inputs 1-3 are connected to a green, red, and blue button, the colors can be adapted here in order to match the button colors.
 
 ## Sequential input
 The sequential input method can be used with 2 [input events](04_input_options.md#introduction-to-input-events). It just sequentially focuses all elements and afterwards restarts at the first element.
