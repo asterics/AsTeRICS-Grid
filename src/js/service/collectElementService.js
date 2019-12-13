@@ -6,6 +6,7 @@ import {predictionService} from "./predictionService";
 import {i18nService} from "./i18nService";
 import {fontUtil} from "../util/fontUtil";
 import {GridActionCollectElement} from "../model/GridActionCollectElement";
+import {GridActionNavigate} from "../model/GridActionNavigate";
 
 var collectElementService = {};
 
@@ -13,12 +14,21 @@ var registeredCollectElements = [];
 var collectedText = '';
 
 collectElementService.initWithElements = function (elements) {
-    collectElementService.reset();
+    registeredCollectElements = [];
     elements.forEach(element => {
-        if (element && element.type == GridElement.ELEMENT_TYPE_COLLECT) {
+        if (element && element.type === GridElement.ELEMENT_TYPE_COLLECT) {
             registeredCollectElements.push(JSON.parse(JSON.stringify(element)));
         }
     });
+    if (registeredCollectElements.length > 0) {
+        let intervalHandler = setInterval(() => {
+            if ($('.item[data-type="ELEMENT_TYPE_COLLECT"]').length > 0) {
+                setText();
+                predictionService.predict(collectedText);
+                clearInterval(intervalHandler);
+            }
+        }, 100);
+    }
 };
 
 collectElementService.doAction = function (elem) {
@@ -26,11 +36,6 @@ collectElementService.doAction = function (elem) {
         predictionService.predict(collectedText);
     }
     speechService.speak(collectedText, i18nService.getBrowserLang());
-};
-
-collectElementService.reset = function () {
-    registeredCollectElements = [];
-    collectedText = '';
 };
 
 collectElementService.doCollectElementActions = function (action) {
@@ -68,6 +73,7 @@ function setText(text) {
     collectedText = text;
     predictionService.learnFromInput(collectedText);
     $('.item[data-type="ELEMENT_TYPE_COLLECT"] .collect-text').text(collectedText);
+    fontUtil.adaptFontSize($('.item[data-type="ELEMENT_TYPE_COLLECT"]'));
 }
 
 function getActionOfType(elem, type) {
@@ -92,8 +98,12 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
     if (getActionOfType(element, GridActionCollectElement.getModelName())) {
         return; // no adding of text if the element contains actions for collect elements, e.g. "clear"
     }
+    if (getActionOfType(element, GridActionNavigate.getModelName())) {
+        return; // no adding of text if the element contains an navigate action
+    }
     if (!element.type || element.type === GridElement.ELEMENT_TYPE_NORMAL) {
-        addText(element.label);
+        let textToAdd = element.label.length === 1 ? element.label.toLowerCase() : element.label;
+        addText(textToAdd);
         registeredCollectElements.forEach(collectElem => {
             let predictAction = getActionOfType(collectElem, 'GridActionPredict');
             if (predictAction && predictAction.suggestOnChange) {
@@ -114,7 +124,6 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
             });
         }
     }
-    fontUtil.adaptFontSize($('.item[data-type="ELEMENT_TYPE_COLLECT"]'));
 });
 
 export {collectElementService};
