@@ -120,7 +120,7 @@
         $("#notificationBar").resizable({
             containment: "#app",
             start: function (event, ui) {
-                imgElement.style.height = 'auto';
+                imgElement.style.height = '90%';
                 localStorageService.save(NOTIFICATION_BAR_STYLE_IMAGE_KEY, imgElement.getAttribute("style"));
                 element.style.bottom = "";
                 element.style.right = "";
