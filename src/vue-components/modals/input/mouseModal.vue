@@ -36,6 +36,10 @@
                                 <input type="checkbox" id="chkReadActive" v-model="inputConfig.globalReadActive"/>
                                 <label for="chkReadActive" data-i18n>Read out active element // Aktives Element vorlesen</label>
                             </div>
+                            <div class="twelve columns">
+                                <input type="checkbox" id="chkDisableHoverpane" v-model="inputConfig.hoverDisableHoverpane"/>
+                                <label for="chkDisableHoverpane" data-i18n>Disable hover pane // Hover-Fläche deaktivieren</label>
+                            </div>
                         </div>
                         <accordion class="row" acc-label="TEST_CONFIGURATION" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
                             <test-area :selected-element="selectedTestElement"></test-area>

@@ -19,6 +19,7 @@ class InputConfig extends Model({
     hoverEnabled: [Boolean],
     hoverTimeoutMs: Number,
     hoverHideCursor: [Boolean],
+    hoverDisableHoverpane: [Boolean],
     mouseclickEnabled: [Boolean],
     dirEnabled: [Boolean],
     dirInputs: [Model.Array(Object)], //array with input events with labels InputConfig.UP/DOWN/LEFT/RIGHT/SELECT

@@ -19,7 +19,7 @@ Hover.getInstanceFromConfig = function (inputConfig, itemSelector, options) {
         inputEventSelect: inputConfig.seqInputs.filter(e => e.label === InputConfig.SELECT)[0],
         inputEventNext: inputConfig.seqInputs.filter(e => e.label === InputConfig.NEXT)[0],
         timeoutMs: inputConfig.hoverTimeoutMs,
-        demoMode: options.demoMode,
+        demoMode: options.demoMode || inputConfig.hoverDisableHoverpane,
         hideCursor: inputConfig.hoverHideCursor
     });
 };

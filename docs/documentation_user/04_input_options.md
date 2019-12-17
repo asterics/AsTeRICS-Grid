@@ -94,6 +94,7 @@ Mouse/Touch input has the following options:
 * **Hover time**: time in milliseconds to wait until a hovered element is selected. The value `0` means that the hovered element is never selected.
 * **Hide cursor**: if checked the cursor is hidden and not visible while hovering above elements. This can be useful e.g. for eye-tracking where the cursor may be distracting. 
 * **Read out active element**: if checked the label of the hovered element is directly read out if the active element has changed
+* **Disable hover pane**: normally for hovering a global invisible hover pane is inserted. This makes it technically possible to continue hovering after navigation to an other grid without lifting the finger (on a touchscreen). However this hover pane can cause problems in combination with a software controlled mouse cursor, because click actions may not reach the actual elements.
 
 ## Scanning
 The input method scanning is suited to be used with 1-2 input events. It works as follows:
