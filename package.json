@@ -36,7 +36,7 @@
     "jest": "^24.5.0"
   },
   "resolutions": {
-    "@sensu/superlogin/**/pouchdb": "7.1.1"
+    "@sensu/superlogin/**/leveldown": "5.4.1"
   },
   "scripts": {
     "start": "webpack-dev-server",
