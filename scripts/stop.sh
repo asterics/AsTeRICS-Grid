@@ -1,2 +1,2 @@
 pkill goaccess
-pkill node
+pkill -f 'node superlogin/start.js prod'
