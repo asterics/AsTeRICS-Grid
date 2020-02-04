@@ -33,6 +33,7 @@ util.debounce = function (fn, timeout, key) {
  * @param key
  */
 util.clearDebounce = function (key) {
+    key = key || util.DEFAULT_KEY;
     if (_timeoutHandlers[key]) {
         clearTimeout(_timeoutHandlers[key]);
     }
