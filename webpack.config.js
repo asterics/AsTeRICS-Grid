@@ -27,9 +27,9 @@ module.exports = env => {
             loader: 'babel-loader',
             options: {
                 presets: [
-                    ['env', {
+                    ['@babel/env', {
                         modules: false,
-                        useBuiltIns: true,
+                        useBuiltIns: false,
                         targets: {
                             browsers: [
                                 '> 1%',
