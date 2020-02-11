@@ -1,0 +1,5 @@
+contab -u superlogin -e
+
+@reboot /usr/bin/node /home/superlogin/accessibility-info-tree/rest/restApi.mjs prod &
+@reboot /bin/sh /home/superlogin/AsTeRICS-Grid/scripts/start.sh
+0 0 * * * /bin/sh /home/superlogin/AsTeRICS-Grid/scripts/start.sh
