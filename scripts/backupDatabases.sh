@@ -15,10 +15,11 @@ if [ ! -d $1 ]; then
     exit 1
 fi
 
-mkdir $BASEDIR/tempbackup
-scp -rp -i $BASEDIR/.ssh/backup-reader backup-reader@1ce28d.online-server.cloud:/opt/couchdb/data/. $BASEDIR/tempbackup/
+mkdir $BASEDIR/backup
+scp -rp -i $BASEDIR/.ssh/backup-reader backup-reader@1ce28d.online-server.cloud:/opt/couchdb/data/. $BASEDIR/backup/data/
+scp -rp -i $BASEDIR/.ssh/backup-reader backup-reader@1ce28d.online-server.cloud:/opt/couchdb/etc/. $BASEDIR/backup/etc/
 filename=$(date +"%Y_%m_%d")_backup_couchdb_asterics_grid.tgz
 echo "packing backup..."
-tar -czf $1$filename $BASEDIR/tempbackup/.
-rm -rf $BASEDIR/tempbackup
+tar -czf $1$filename $BASEDIR/backup/.
+rm -rf $BASEDIR/backup
 echo "Success: Backup created and saved to $1$filename"
