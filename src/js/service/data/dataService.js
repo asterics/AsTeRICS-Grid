@@ -8,6 +8,8 @@ import {databaseService} from "./databaseService";
 import {dataUtil} from "../../util/dataUtil";
 import {pouchDbService} from "./pouchDbService";
 import {Dictionary} from "../../model/Dictionary";
+import {obfConverter} from "../../util/obfConverter";
+import {fileUtil} from "../../util/fileUtil";
 
 let dataService = {};
 
@@ -385,20 +387,36 @@ dataService.downloadAllGridsSimple = function () {
  * @return {Promise} resolves after operation finished successful
  */
 dataService.importGridsFromFile = function (file, backupMode) {
+    let fileExtension = file.name.substring(file.name.length - 4);
     return new Promise((resolve, reject) => {
         let reader = new FileReader();
         reader.onload = (function (theFile) {
             return function (e) {
                 let jsonString = e.target.result;
+                let promises = [];
                 if (backupMode) {
-                    dataService.importBackupFromJSON(jsonString).then(() => {
-                        resolve();
-                    });
-                } else {
-                    dataService.importGridsFromJSON(jsonString).then(() => {
-                        resolve();
-                    });
+                    promises.push(dataService.deleteAllGrids());
                 }
+                Promise.all(promises).then(() => {
+                    let importObjects = null;
+                    let promises = [];
+                    if (fileExtension === '.grd') {
+                        importObjects = JSON.parse(jsonString);
+                    } else if (fileExtension === '.obf') {
+                        importObjects = obfConverter.OBFToGridData(JSON.parse(jsonString));
+                    } else if (fileExtension === '.obz') {
+                        let promise = fileUtil.readZip(file, true).then(obzFileMap => {
+                            importObjects = obfConverter.OBZToGridSet(obzFileMap);
+                            return Promise.resolve();
+                        });
+                        promises.push(promise);
+                    }
+                    Promise.all(promises).then(() => {
+                        dataService.importGrids(importObjects).then(() => {
+                            resolve();
+                        });
+                    });
+                });
             }
         })(file);
         reader.readAsText(file);
@@ -409,37 +427,26 @@ dataService.importGridsFromFile = function (file, backupMode) {
  * imports grids from a json string in addition to existing grids
  * @see{GridData}
  *
- * @param jsonString a valid json string containing serialized grid data.
+ * @param gridOrGrids a single GridData element or list of GridData elements
  * @return {Promise} resolves after operation finished successful
  */
-dataService.importGridsFromJSON = function (jsonString) {
-    let gridData = JSON.parse(jsonString);
-    if (!(gridData instanceof Array)) {
-        gridData = [gridData];
+dataService.importGrids = function (gridOrGrids) {
+    if (!gridOrGrids || gridOrGrids.length === 0) {
+        return Promise.resolve();
+    }
+    if (!(gridOrGrids instanceof Array)) {
+        gridOrGrids = [gridOrGrids];
     }
 
     return dataService.getGrids().then(grids => {
         let existingNames = grids.map(grid => grid.label);
         let resolveFns = [];
-        gridData = GridData.regenerateIDs(gridData);
-        gridData.forEach(grid => {
+        gridOrGrids = GridData.regenerateIDs(gridOrGrids);
+        gridOrGrids.forEach(grid => {
             grid.label = modelUtil.getNewName(grid.label, existingNames);
             resolveFns.push(dataService.saveGrid(grid));
         });
         return Promise.all(resolveFns);
-    });
-};
-
-/**
- * imports grids from a json string, deletes all existing grids before importing -> restoring backup
- * @see{GridData}
- *
- * @param jsonString a valid json string containing serialized grid data.
- * @return {Promise} resolves after operation finished successful
- */
-dataService.importBackupFromJSON = function (jsonString) {
-    return dataService.deleteAllGrids().then(() => {
-        return dataService.importGridsFromJSON(jsonString);
     });
 };
 
