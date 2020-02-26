@@ -14,9 +14,9 @@ fileUtil.readZip = function (file, parseJSON) {
                 let promises = [];
                 Object.keys(zip.files).forEach(filename => {
                     let file = zip.files[filename];
-                    promises.push(file.async('text').then(content => {
+                    promises.push(file.async('base64').then(content => {
                         try {
-                            returnMap[filename] = parseJSON ? JSON.parse(content) : content;
+                            returnMap[filename] = parseJSON ? JSON.parse(atob(content)) : content;
                         } catch (e) {
                             returnMap[filename] = content;
                         }
