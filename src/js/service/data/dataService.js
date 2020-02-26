@@ -92,7 +92,7 @@ dataService.deleteGrid = function (gridId) {
  * @return {Promise}
  */
 dataService.deleteAllGrids = function () {
-    return dataService.getGrids().then(grids => {
+    return dataService.getGrids(true).then(grids => {
         let promises = [];
         grids.forEach(grid => {
             promises.push(dataService.deleteGrid(grid.id));
@@ -403,10 +403,14 @@ dataService.importGridsFromFile = function (file, backupMode) {
                     if (fileExtension === '.grd') {
                         importObjects = JSON.parse(jsonString);
                     } else if (fileExtension === '.obf') {
-                        importObjects = obfConverter.OBFToGridData(JSON.parse(jsonString));
+                        promises.push(obfConverter.OBFToGridData(JSON.parse(jsonString)).then(object => {
+                            importObjects = object;
+                        }));
                     } else if (fileExtension === '.obz') {
                         let promise = fileUtil.readZip(file, true).then(obzFileMap => {
-                            importObjects = obfConverter.OBZToGridSet(obzFileMap);
+                            return obfConverter.OBZToGridSet(obzFileMap);
+                        }).then(list => {
+                            importObjects = list;
                             return Promise.resolve();
                         });
                         promises.push(promise);
