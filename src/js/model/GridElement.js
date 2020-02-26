@@ -25,8 +25,18 @@ class GridElement extends Model({
     type: String
 }) {
     constructor(properties, elementToCopy) {
-        properties = modelUtil.setDefaults(properties, elementToCopy, GridElement);
-        super(properties);
+        let defaults = {
+            id: "", //will be replaced by constructor
+            modelName: GridElement.getModelName(),
+            modelVersion: constants.MODEL_VERSION,
+            width: 2,
+            height: 1,
+            actions: [new GridActionSpeak()],
+            type: GridElement.ELEMENT_TYPE_NORMAL
+
+        };
+        properties = modelUtil.setDefaults(properties, elementToCopy, GridElement) || {};
+        super(Object.assign(defaults, properties));
         this.id = this.id || modelUtil.generateId('grid-element')
     }
 
@@ -65,15 +75,5 @@ class GridElement extends Model({
 GridElement.ELEMENT_TYPE_NORMAL = "ELEMENT_TYPE_NORMAL";
 GridElement.ELEMENT_TYPE_COLLECT = "ELEMENT_TYPE_COLLECT";
 GridElement.ELEMENT_TYPE_PREDICTION = "ELEMENT_TYPE_PREDICTION";
-
-GridElement.defaults({
-    id: "", //will be replaced by constructor
-    modelName: GridElement.getModelName(),
-    modelVersion: constants.MODEL_VERSION,
-    width: 2,
-    height: 1,
-    actions: [new GridActionSpeak()],
-    type: GridElement.ELEMENT_TYPE_NORMAL
-});
 
 export {GridElement};
