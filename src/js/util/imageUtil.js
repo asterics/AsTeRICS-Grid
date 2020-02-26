@@ -84,6 +84,8 @@ imageUtil.urlToBase64 = function (url) {
                 } catch (e) {
                     resolve(null);
                 }
+            }).fail(function () {
+                resolve(null);
             });
         } else {
             let img = new Image();
@@ -94,6 +96,9 @@ imageUtil.urlToBase64 = function (url) {
                 } catch (e) {
                     resolve(null);
                 }
+            };
+            img.onerror = function() {
+                resolve(null);
             };
             img.src = url;
         }
