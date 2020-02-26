@@ -16,8 +16,8 @@ if [ ! -d $1 ]; then
 fi
 
 mkdir $BASEDIR/backup
-scp -rp -i $BASEDIR/.ssh/backup-reader backup-reader@1ce28d.online-server.cloud:/opt/couchdb/data/. $BASEDIR/backup/data/
-scp -rp -i $BASEDIR/.ssh/backup-reader backup-reader@1ce28d.online-server.cloud:/opt/couchdb/etc/. $BASEDIR/backup/etc/
+scp -rp -i $BASEDIR/.ssh/backup-reader backup-reader@1ce28d.online-server.cloud:/opt/couchdb/data $BASEDIR/backup/data/
+scp -rp -i $BASEDIR/.ssh/backup-reader backup-reader@1ce28d.online-server.cloud:/opt/couchdb/etc $BASEDIR/backup/etc/
 filename=$(date +"%Y_%m_%d")_backup_couchdb_asterics_grid.tgz
 echo "packing backup..."
 tar -czf $1$filename $BASEDIR/backup/.
