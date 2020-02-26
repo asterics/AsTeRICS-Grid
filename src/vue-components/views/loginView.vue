@@ -214,7 +214,11 @@
             removeStoredUser(user) {
                 if (!(this.savedOnlineUsers.includes(user) || this.savedLocalUsers.includes(user))) {
                     loginService.logout();
-                } else if (confirm(i18nService.translate('CONFIRM_REMOVE_USER', user))) {
+                } else {
+                    let messageKey = this.savedOnlineUsers.includes(user) ? 'CONFIRM_REMOVE_USER' : 'CONFIRM_REMOVE_USER_LOCAL';
+                    if (!confirm(i18nService.translate(messageKey, user))) {
+                        return;
+                    }
                     localStorageService.unmarkSyncedDatabase(user);
                     localStorageService.removeUserPassword(user);
                     if (loginService.getLoggedInUsername() === user) {
@@ -225,6 +229,7 @@
                 this.allUsersList = localStorageService.getSavedUsers(this.activeUser);
                 this.savedUsers = localStorageService.getSavedUsers(this.activeUser);
                 this.savedOnlineUsers = localStorageService.getSavedOnlineUsers();
+                this.savedLocalUsers = localStorageService.getSavedLocalUsers();
             },
             hasValidMajorModelVersion(user) {
                 return localStorageService.getUserMajorModelVersion(user) <= modelUtil.getLatestModelVersion().major;
