@@ -157,7 +157,8 @@ module.exports = env => {
         output: {
             path: path.resolve(__dirname, baseDir + buildDirLegacy),
             publicPath: "/" + buildDirLegacy,
-            filename: outputFilename
+            filename: outputFilename,
+            chunkFilename: '[name].bundle.js',
         },
         resolve: resolve,
         devServer: getDevServer(),
