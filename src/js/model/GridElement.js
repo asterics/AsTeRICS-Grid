@@ -20,6 +20,7 @@ class GridElement extends Model({
     x: [Number],
     y: [Number],
     label: [String],
+    backgroundColor: [String],
     image: [GridImage],
     actions: [Object],
     type: String
