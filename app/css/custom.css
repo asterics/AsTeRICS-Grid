@@ -197,6 +197,7 @@ nav li:hover button span {
 .grid-item-content {
     overflow: hidden;
     background: lightblue;
+    border: 1px solid lightblue;
     display: flex;
     flex-flow: column;
 }
