@@ -31,11 +31,11 @@ timingLogger.initLogging = function () {
 timingLogger.log = function (key) {
     key = key ? key + ' - ' : '';
     if (!_customStart) {
-        log.info('timing log started.');
+        log.warn('timing log started.');
         _customStart = new Date().getTime();
         return;
     }
-    log.info(key + 'time since last log: ' + (new Date().getTime() - _customStart) + "ms");
+    log.warn(key + 'time since last log: ' + (new Date().getTime() - _customStart) + "ms");
     _customStart = new Date().getTime();
 };
 
