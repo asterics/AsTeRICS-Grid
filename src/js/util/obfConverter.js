@@ -6,6 +6,7 @@ import {GridImage} from "../model/GridImage";
 import {GridActionSpeakCustom} from "../model/GridActionSpeakCustom";
 import {GridActionNavigate} from "../model/GridActionNavigate";
 import {GridActionSpeak} from "../model/GridActionSpeak";
+import {imageUtil} from "./imageUtil";
 
 let obfConverter = {};
 
@@ -21,12 +22,13 @@ obfConverter.gridSetToOBZ = function (gridset) {
  * converts an OBF JSON object to a gridData object
  * @param obfObject the OBF object to convert
  * @param obfObjects related OBF objects (e.g. other OBF objects that are linked to this obfObject)
- * @return {GridData} the converted GridData object. The returned object has an additional property "obfId" containing
+ * @return {Promise<GridData>} the converted GridData object. The returned object has an additional property "obfId" containing
  *                    the original ID of the obfObject and possible GridActionNavigate with property "toGridId" also
  *                    contain the the obfId. Therefore in this case an additional step is needed to replace these obfIds
  *                    with the actual IDs of the GridData objects.
  */
 obfConverter.OBFToGridData = function (obfObject, obfObjects) {
+    let promises = [];
     let gridData = new GridData({
         obfId: obfObject.id,
         label: obfObject.name,
@@ -35,54 +37,68 @@ obfConverter.OBFToGridData = function (obfObject, obfObjects) {
         gridElements: []
     });
     obfObject.buttons.forEach(button => {
-        let xy = orderToXY(button.id, obfObject);
-        let gridElement = new GridElement({
-            width: 1,
-            height: 1,
-            label: button.label,
-            image: getGridImage(button.image_id, obfObject),
-            x: xy.x,
-            y: xy.y
-        });
-        gridElement = addActions(gridElement, button, obfObject, obfObjects);
-        gridData.gridElements.push(gridElement);
+        if (!button.hidden) {
+            let xy = orderToXY(button.id, obfObject);
+            let gridElement = new GridElement({
+                width: 1,
+                height: 1,
+                label: button.label,
+                x: xy.x,
+                y: xy.y,
+                backgroundColor: button.background_color
+            });
+            gridElement = addActions(gridElement, button, obfObject, obfObjects);
+            promises.push(getGridImage(button.image_id, obfObject, obfObjects).then(gridImage => {
+                gridElement.image = gridImage;
+                return Promise.resolve();
+            }));
+            gridData.gridElements.push(gridElement);
+        }
     });
-    return gridData;
+    return Promise.all(promises).then(() => {
+        return Promise.resolve(gridData);
+    });
 };
 
 /**
  * converts the contents of an .obz file to a list of GridData objects
  * @param obzFileMap a map containing all files from the .obz archive in form {filepath => content}
- * @return {[]}
+ * @return {Promise<[]>}
  */
 obfConverter.OBZToGridSet = function (obzFileMap) {
+    let promises = [];
     let grids = [];
     Object.keys(obzFileMap).forEach(filename => {
         if (filename.indexOf('.obf') !== -1) {
-            grids.push(obfConverter.OBFToGridData(obzFileMap[filename], obzFileMap));
+            promises.push(obfConverter.OBFToGridData(obzFileMap[filename], obzFileMap).then(grid => {
+                grids.push(grid);
+                return Promise.resolve();
+            }));
         }
     });
 
     //correct grid IDs in GridActionNavigate actions
-    grids.forEach(grid => {
-        grid.gridElements.forEach(gridElement => {
-            gridElement.actions.forEach(action => {
-                if (action.modelName === GridActionNavigate.getModelName()) {
-                    let obfId = action.toGridId;
-                    let gridId = grids.reduce((total, current) => {
-                        return total || (current.obfId === obfId ? current.id : null);
-                    }, null);
-                    if (gridId) {
-                        action.toGridId = gridId;
-                    } else {
-                        //gridElement.actions = gridElement.actions.filter(a => a.modelName !== GridActionNavigate.getModelName());
+    return Promise.all(promises).then(() => {
+        grids.forEach(grid => {
+            grid.gridElements.forEach(gridElement => {
+                gridElement.actions.forEach(action => {
+                    if (action.modelName === GridActionNavigate.getModelName()) {
+                        let obfId = action.toGridId;
+                        let gridId = grids.reduce((total, current) => {
+                            return total || (current.obfId === obfId ? current.id : null);
+                        }, null);
+                        if (gridId) {
+                            action.toGridId = gridId;
+                        } else {
+                            //gridElement.actions = gridElement.actions.filter(a => a.modelName !== GridActionNavigate.getModelName());
+                        }
                     }
-                }
-            })
+                })
+            });
+            //delete grid.obfId;
         });
-        //delete grid.obfId;
+        return Promise.resolve(grids);
     });
-    return grids;
 };
 
 /**
@@ -119,6 +135,9 @@ function addActions(gridElement, obfButton, obfObject, obfObjects) {
  * @return {*}
  */
 function obfPathToId(path, obfObjects) {
+    if (!obfObjects) {
+        return null;
+    }
     let manifest = obfObjects['manifest.json'];
     let boardsMap = manifest.paths.boards;
     let resultId = null;
@@ -157,15 +176,37 @@ function orderToXY(buttonId, obfObject) {
  * converts the image of an obfObject to a GridImage object
  * @param imageId the ID of the image to convert
  * @param obfObject the obfObject containing the image
+ * @param map of all files contained in .obz archive in form (filepath => data)
  * @return {GridImage|null}
  */
-function getGridImage(imageId, obfObject) {
+function getGridImage(imageId, obfObject, obfObjects) {
     let obfImage = obfObject.images.filter(i => i.id === imageId)[0];
+    let data = null;
+    let promises = [];
     if (!obfImage) {
-        return null;
+        return Promise.resolve(null);
     }
-    return new GridImage({
-        data: obfImage.data
+    if (obfImage.data) {
+        data = obfImage.data;
+    } else if (obfImage.path) {
+        let contentType = obfImage.content_type || "image/png";
+        let preString = `data:${contentType};base64,`;
+        data = preString + obfObjects[obfImage.path];
+    } else if (obfImage.url) {
+        promises.push(imageUtil.urlToBase64(obfImage.url).then(base64 => {
+            data = base64;
+            return Promise.resolve();
+        }));
+    }
+    return Promise.all(promises).then(() => {
+        if (!data) {
+            log.info('failed to import image: ' + imageId);
+            return Promise.resolve(null);
+        } else {
+            return Promise.resolve(new GridImage({
+                data: data
+            }));
+        }
     });
 }
 
