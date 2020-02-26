@@ -6,8 +6,8 @@
             <button tabindex="31" @click="addGrid()" class="spaced hide-mobile small"><i class="fas fa-plus"/> <span data-i18n="">New Grid // Neues Grid</span></button>
             <input tabindex="30" type="text" :placeholder="'PLACEHOLDER_SEARCH_GRID' | translate" class="spaced" style="width: 30vw" v-model="searchText">
             <div style="display: none">
-                <input type="file" id="inputFile" @change="importFromFile" accept=".grd"/>
-                <input type="file" id="inputFileBackup" @change="importBackupFromFile" accept=".grd"/>
+                <input type="file" id="inputFile" @change="importFromFile" accept=".grd, .obf, .obz"/>
+                <input type="file" id="inputFileBackup" @change="importBackupFromFile" accept=".grd, .obz"/>
             </div>
         </header>
         <div class="row content text-content">
@@ -139,7 +139,7 @@
                 }
             },
             importFromFile: function (event) {
-                this.importFromFileInternal(event, dataService.importGridsFromFile);
+                this.importFromFileInternal(event, false);
             },
             importBackupFromFile: function (event) {
                 let name = event.target && event.target.files[0] && event.target.files[0] ? event.target.files[0].name : '';
@@ -147,9 +147,7 @@
                     this.resetFileInput(event);
                     return;
                 }
-                this.importFromFileInternal(event, function (importFile) {
-                    return dataService.importGridsFromFile(importFile, true);
-                });
+                this.importFromFileInternal(event, true);
             },
             reload: function () {
                 dataService.getGrids().then(grids => {
@@ -164,22 +162,19 @@
                     });
                 }
             },
-            importFromFileInternal(event, callFunction) {
+            importFromFileInternal(event, reset) {
                 let thiz = this;
                 let importFile = event.target.files[0];
-                if (!importFile || !importFile.name || !callFunction) {
+                if (!importFile || !importFile.name) {
                     return;
                 }
 
-                let fileExtension = importFile.name.substring(importFile.name.length - 4);
-                if (fileExtension === '.grd') {
-                    thiz.showLoading = true;
-                    callFunction(importFile).then(() => {
-                        this.reload();
-                        this.resetFileInput(event);
-                        thiz.showLoading = false;
-                    });
-                }
+                thiz.showLoading = true;
+                dataService.importGridsFromFile(importFile, reset).then(() => {
+                    this.reload();
+                    this.resetFileInput(event);
+                    thiz.showLoading = false;
+                });
             },
             resetFileInput(event) {
                 var $el = $(event.target); //reset file input
