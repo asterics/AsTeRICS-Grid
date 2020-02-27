@@ -91,6 +91,19 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
     };
 
     /**
+     * calls pouchDb.bulkDocs() on the current database to use, returns it's promise, updates saved revision map with result
+     * @param dataList
+     * @return {IDBRequest<IDBValidKey> | Promise<void>}
+     */
+    thiz.bulkDocs = function(dataList) {
+        let promise = thiz.getDbToUse().bulkDocs(dataList);
+        promise.then((result) => {
+            updateRevisions([result]);
+        });
+        return promise;
+    };
+
+    /**
      * starts sync with remote couchDB database without closing the currently open local database
      *
      * @param remoteCouchDbAddress the remote couchDB address to sync with
