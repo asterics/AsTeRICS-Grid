@@ -63,7 +63,7 @@ Router.init = function (injectIdParam, initialHash) {
             'grid/name/:gridName': function (params) {
                 log.debug('route grid with Name: ' + params.gridName);
                 helpService.setHelpLocation('02_navigation', '#main-view');
-                dataService.getGrids(true).then((result) => {
+                dataService.getGrids().then((result) => {
                     let gridsWithName = result.filter(grid => grid.label === params.gridName);
                     let id = gridsWithName[0] ? gridsWithName[0].id : null;
                     if (id) {
