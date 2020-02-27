@@ -83,14 +83,19 @@ pouchDbService.query = function (modelName, id) {
  * returns (resolves) all documents that are stored in pouchDb.
  * @return {Promise}
  */
-pouchDbService.all = function () {
+pouchDbService.all = function (idPrefix) {
     let dbToUse = getDbToUse();
     cancelSyncInternal();
     return new Promise((resolve, reject) => {
-        dbToUse.allDocs({
+        let options = {
             include_docs: true,
             attachments: false
-        }).then(function (res) {
+        };
+        if (idPrefix) {
+            options.startkey = idPrefix;
+            options.endkey = idPrefix + '\uffff';
+        }
+        dbToUse.allDocs(options).then(function (res) {
             resolve(dbResToResolveObject(res));
         }).catch(function (err) {
             log.error(err);
@@ -140,6 +145,22 @@ pouchDbService.save = function (modelName, data) {
             resumeSyncInternal();
         });
     });
+};
+
+pouchDbService.bulkDocs = function (dataList) {
+    if (!dataList || !(dataList instanceof Array) || dataList.length === 0) {
+        log.warn('bulkSave: no valid dataList');
+        return Promise.reject();
+    }
+    cancelSyncInternal();
+    dataList.forEach(doc => {
+        _documentCache.clear(doc.id);
+    });
+    let promise = _pouchDbAdapter.bulkDocs(dataList);
+    promise.finally(() => {
+        resumeSyncInternal();
+    });
+    return promise;
 };
 
 /**
