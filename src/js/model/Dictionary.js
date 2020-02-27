@@ -12,7 +12,7 @@ class Dictionary extends Model({
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, Dictionary);
         super(properties);
-        this.id = this.id || modelUtil.generateId('dictionary');
+        this.id = this.id || modelUtil.generateId(Dictionary.getIdPrefix());
     }
 
     clone() {
@@ -26,6 +26,10 @@ class Dictionary extends Model({
 
     static getModelName() {
         return "Dictionary";
+    }
+
+    static getIdPrefix() {
+        return 'dictionary';
     }
 }
 

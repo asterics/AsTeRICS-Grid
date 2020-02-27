@@ -16,7 +16,7 @@ class MetaData extends Model({
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, MetaData) || {};
         super(properties);
-        this.id = this.id || modelUtil.generateId('meta-data')
+        this.id = this.id || modelUtil.generateId(MetaData.getIdPrefix())
     }
 
     isEqual(otherMetadata) {
@@ -31,6 +31,10 @@ class MetaData extends Model({
 
     static getModelName() {
         return "MetaData";
+    }
+
+    static getIdPrefix() {
+        return 'meta-data';
     }
 }
 

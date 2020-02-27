@@ -21,7 +21,7 @@ class GridData extends Model({
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridData);
         if (properties) {
-            properties.id = properties.id ? properties.id : modelUtil.generateId('grid-data');
+            properties.id = properties.id ? properties.id : modelUtil.generateId(GridData.getIdPrefix());
         }
         super(properties);
         this.id = this.id || modelUtil.generateId('grid-data');
@@ -225,6 +225,10 @@ class GridData extends Model({
 
     static getModelName() {
         return "GridData";
+    }
+
+    static getIdPrefix() {
+        return 'grid-data';
     }
 }
 
