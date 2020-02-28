@@ -9,6 +9,7 @@ let STATIC_USER_PW_SALT = "STATIC_USER_PW_SALT";
 let encryptionService = {};
 let _encryptionSalt = null;
 let _encryptionKey = null;
+let _isLocalUser = false;
 let _decryptionCache = new MapCache();
 
 let _cryptoTime = 0;
@@ -109,7 +110,7 @@ encryptionService.encryptString = function (string, encryptionKey) {
     }
     encryptionKey = encryptionKey || _encryptionKey;
     let encryptedString = null;
-    if (encryptionKey) {
+    if (encryptionKey && !_isLocalUser) {
         encryptedString =  sjcl.encrypt(encryptionKey, string, {iter: 1000});
     } else {
         encryptedString = btoa(string);
@@ -137,10 +138,15 @@ encryptionService.decryptString = function (encryptedString, encryptionKey) {
     encryptionKey = encryptionKey || _encryptionKey;
     let decryptedString = null;
     let startTime = new Date().getTime();
-    if (encryptionKey) {
+    if (encryptionKey && !_isLocalUser) {
         decryptedString = sjcl.decrypt(encryptionKey, encryptedString);
     } else {
-        decryptedString = atob(encryptedString);
+        try {
+            decryptedString = atob(encryptedString);
+            JSON.parse(decryptedString);
+        } catch (e) {
+            decryptedString = sjcl.decrypt(encryptionKey, encryptedString);
+        }
     }
 
     _decryptionCache.set(encryptedString, decryptedString);
@@ -173,10 +179,11 @@ encryptionService.getUserPasswordHash = function (plaintextPassword) {
  * @param hashedPassword the hashed user password
  * @param salt the salt to use -> ID of metadata object
  */
-encryptionService.setEncryptionProperties = function (hashedPassword, salt) {
+encryptionService.setEncryptionProperties = function (hashedPassword, salt, isLocalUser) {
     hashedPassword = hashedPassword || '';
     _encryptionSalt = salt;
     _encryptionKey = encryptionService.getStringHash('' + _encryptionSalt + hashedPassword);
+    _isLocalUser = isLocalUser;
     _decryptionCache.clearAll();
     log.debug('new encryption key is: ' + _encryptionKey);
 };
@@ -188,6 +195,7 @@ encryptionService.resetEncryptionProperties = function () {
     log.debug('reset encryption properties...');
     _encryptionSalt = null;
     _encryptionKey = null;
+    _isLocalUser = false;
 };
 
 function throwErrorIfUninitialized() {
