@@ -240,15 +240,6 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
         return dbHandler.info().then(function (info) {
             log.debug(dbNameOrAddress + ' info:');
             log.debug(info);
-            if (isOnlineDb) {
-                return Promise.resolve();
-            } else {
-                log.debug('creating index for db: ' + dbNameOrAddress);
-                return dbHandler.createIndex({
-                    index: {fields: ['modelName', 'id']}
-                });
-            }
-        }).then(() => {
             return Promise.resolve(dbHandler);
         });
     }
