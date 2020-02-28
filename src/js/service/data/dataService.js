@@ -10,6 +10,7 @@ import {pouchDbService} from "./pouchDbService";
 import {Dictionary} from "../../model/Dictionary";
 import {obfConverter} from "../../util/obfConverter";
 import {fileUtil} from "../../util/fileUtil";
+import {timingLogger} from "../timingLogger";
 
 let dataService = {};
 
@@ -34,12 +35,14 @@ dataService.getGrid = function (id, onlyShortVersion) {
  * Gets an array of all grids.
  * @see{GridData}
  *
- * @param onlyShortVersion if true only the short version (with stripped binary data) is returned (optional)
+ * @param fullVersion if true only the full version (with binary data) is returned (optional)
  * @return {Promise} resolves to an array of all stored grids.
  */
-dataService.getGrids = function (onlyShortVersion) {
+dataService.getGrids = function (fullVersion) {
     return new Promise(resolve => {
-        databaseService.getObject(GridData, null, onlyShortVersion).then(grids => {
+        timingLogger.log('start get grids');
+        databaseService.getObject(GridData, null, !fullVersion).then(grids => {
+            timingLogger.log('got grids');
             if (!grids) {
                 resolve([]);
                 return;
@@ -60,6 +63,17 @@ dataService.getGrids = function (onlyShortVersion) {
 dataService.saveGrid = function (gridData) {
     gridData.gridElements = GridData.sortGridElements(gridData.gridElements);
     return databaseService.saveObject(GridData, gridData);
+};
+
+/**
+ * saves a list of grids, using bulkSave. Faster performance but no check for existing grids
+ * @param gridDataList the list of grids to save
+ */
+dataService.saveGrids = function (gridDataList) {
+    gridDataList.forEach(gridData => {
+        gridData.gridElements = GridData.sortGridElements(gridData.gridElements);
+    });
+    return databaseService.bulkSave(gridDataList);
 };
 
 /**
@@ -92,12 +106,13 @@ dataService.deleteGrid = function (gridId) {
  * @return {Promise}
  */
 dataService.deleteAllGrids = function () {
-    return dataService.getGrids(true).then(grids => {
-        let promises = [];
-        grids.forEach(grid => {
-            promises.push(dataService.deleteGrid(grid.id));
+    timingLogger.log('delete start');
+    return dataService.getGrids().then(grids => {
+        let promise = databaseService.bulkDelete(grids);
+        promise.then(() => {
+            timingLogger.log('delete end');
         });
-        return Promise.all(promises);
+        return promise;
     })
 };
 
@@ -158,7 +173,7 @@ dataService.getGridElement = function (gridId, gridElementId) {
  */
 dataService.getGridsAttribute = function (attribute) {
     return new Promise(resolve => {
-        dataService.getGrids(true).then(grids => {
+        dataService.getGrids().then(grids => {
             let returnMap = {};
             grids.forEach(grid => {
                 returnMap[grid.id] = grid[attribute];
@@ -358,7 +373,7 @@ dataService.downloadSingleGrid = function (gridId) {
  * Downloads all grids to File. Opens a file download in Browser.
  */
 dataService.downloadAllGrids = function () {
-    dataService.getGrids().then(grids => {
+    dataService.getGrids(true).then(grids => {
         if (grids) {
             let blob = new Blob([JSON.stringify(grids)], {type: "text/plain;charset=utf-8"});
             FileSaver.saveAs(blob, "my-gridset.grd");
@@ -370,7 +385,7 @@ dataService.downloadAllGrids = function () {
  * logs a simple version of all grids without base64 contents to console => used for legacy mode
  */
 dataService.downloadAllGridsSimple = function () {
-    dataService.getGrids().then(grids => {
+    dataService.getGrids(true).then(grids => {
         if (grids) {
             log.info("simple version of exported grids without images and files included:");
             log.info(JSON.stringify({grids: dataUtil.removeLongPropertyValues(grids)})); //has to be in object to be valid JSON
@@ -446,11 +461,15 @@ dataService.importGrids = function (gridOrGrids) {
         let existingNames = grids.map(grid => grid.label);
         let resolveFns = [];
         gridOrGrids = GridData.regenerateIDs(gridOrGrids);
+        timingLogger.log('start bulk save');
         gridOrGrids.forEach(grid => {
             grid.label = modelUtil.getNewName(grid.label, existingNames);
-            resolveFns.push(dataService.saveGrid(grid));
         });
-        return Promise.all(resolveFns);
+        let promise = dataService.saveGrids(gridOrGrids);
+        promise.then(() => {
+            timingLogger.log('end bulk save');
+        });
+        return promise;
     });
 };
 
