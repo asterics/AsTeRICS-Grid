@@ -97,7 +97,6 @@ module.exports = env => {
             'lib/loglevel.min.js',
             'lib/object-model.min.js',
             'lib/pouchdb-7.0.0.min.js',
-            'lib/pouchdb-find-7.0.0.min.js',
             'lib/sjcl.min.js',
             'polyfill/core_js_shim.min.js',
             'polyfill/fetch.js',
