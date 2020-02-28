@@ -51,35 +51,6 @@ pouchDbService.createDatabase = function (databaseName, remoteCouchDbAddress, on
 };
 
 /**
- * queries for encrypted objects in the local database and resolves promise with result.
- * If no elements are found 'null' is resolved, if exactly one element was found, this element is resolved,
- * otherwise an array of the found elements is resolved.
- *
- * @param modelName the modelName to find, e.g. "GridData"
- * @param id the id of the object to find (optional)
- * @return {Promise}
- */
-pouchDbService.query = function (modelName, id) {
-    if (id && _documentCache.has(id)) {
-        log.debug('using cache for retrieving id: ' + id);
-        return Promise.resolve(_documentCache.get(id));
-    }
-    let dbToUse = getDbToUse();
-    let queryStartTime = new Date().getTime();
-    let returnPromise = queryInternal(modelName, id, dbToUse);
-    returnPromise.then(result => {
-        if (id && result) {
-            _documentCache.set(id, result);
-        }
-    });
-    returnPromise.finally(() => {
-        _lastQueryTime = new Date().getTime() - queryStartTime;
-        log.trace('last query time: ', _lastQueryTime);
-    });
-    return returnPromise;
-};
-
-/**
  * returns all docs that are stored in pouchDb, can be limited by parameters
  * @param idPrefix (optional) only return docs where IDs have the given prefix
  * @param id (optional) only return doc with this ID
@@ -183,7 +154,7 @@ pouchDbService.bulkDocs = function (dataList) {
  */
 pouchDbService.remove = function (id) {
     let dbToUse = getDbToUse();
-    return queryInternal(null, id, dbToUse).then(object => {
+    return pouchDbService.all(null, id).then(object => {
         _documentCache.clear(id);
         log.debug('deleted object from db! id: ' + object.id);
         return dbToUse.remove(object);
@@ -291,41 +262,6 @@ function getPouchDbAdapter() {
     return _pouchDbAdapter;
 }
 
-function queryInternal(modelName, id, dbToQuery) {
-    if (!modelName && !id) {
-        log.error('did not specify modelName or id!');
-        return Promise.reject();
-    }
-
-    cancelSyncInternal();
-    let returnPromise = new Promise((resolve, reject) => {
-        log.debug('getting ' + modelName + '(id: ' + id + ')...');
-        let query = {
-            selector: {},
-            limit: 100000
-        };
-        if (id) {
-            query.selector.id = id;
-        }
-        if (modelName) {
-            query.selector.modelName = modelName;
-        }
-        dbToQuery.find(query).then(function (res) {
-            let objects = dbResToResolveObject(res);
-            let length = objects && objects.length ? objects.length : objects ? 1 : 0;
-            log.debug('found ' + modelName + ": " + length + ' elements');
-            resolve(objects);
-        }).catch(function (err) {
-            log.error(err);
-            reject();
-        });
-    });
-    returnPromise.finally(() => {
-        resumeSyncInternal();
-    });
-    return returnPromise;
-}
-
 /**
  * converts a native result object of pouchDB queries to a list of documents or single document used in the app
  * @param res
@@ -381,8 +317,14 @@ function resumeSyncInternal() {
 
 function changeHandler(changedIds, changedDocsEncrypted) {
     changedDocsEncrypted.forEach(doc => {
-        _documentCache.set(doc.id, doc);
+        if (doc._deleted) {
+            _documentCache.clear(doc._id);
+        } else {
+            _documentCache.set(doc.id, doc);
+        }
     });
+    changedDocsEncrypted = changedDocsEncrypted.filter(doc => !doc._deleted);
+    changedIds = changedDocsEncrypted.map(doc => doc.id);
     let changedDocs = changedDocsEncrypted.map(rawDoc => filterService.convertDatabaseToLiveObjects(rawDoc));
     let user = pouchDbService.getOpenedDatabaseName();
     let currentUserDataModelVersion = localStorageService.getUserMajorModelVersion(user);
