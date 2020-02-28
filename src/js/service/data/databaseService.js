@@ -36,7 +36,11 @@ let _defaultDictName = i18nService.isBrowserLangDE() ? 'WoerterbuchDeutsch ' : '
 databaseService.getObject = function (objectType, id, onlyShortVersion) {
     return new Promise((resolve, reject) => {
         _initPromise.then(() => {
-            pouchDbService.query(objectType.getModelName(), id).then(result => {
+            if (!objectType.getIdPrefix) {
+                log.warn('missing method getIdPrefix() in allObjects()');
+                return reject();
+            }
+            pouchDbService.all(objectType.getIdPrefix(), id).then(result => {
                 let options = {
                     objectType: objectType,
                     onlyShortVersion: onlyShortVersion
@@ -109,6 +113,32 @@ databaseService.saveObject = function (objectType, data, onlyUpdate) {
 };
 
 /**
+ * saves a list of objects/documents in one action
+ * @param objectList
+ * @return {Promise<never>}
+ */
+databaseService.bulkSave = function (objectList) {
+    let encryptedList = filterService.convertLiveToDatabaseObjects(objectList);
+    encryptedList.forEach(object => {
+        object._id = object.id;
+    });
+    return pouchDbService.bulkDocs(JSON.parse(JSON.stringify(objectList)));
+};
+
+/**
+ * deletes a list of objects/documents in one action
+ * @param objectList
+ * @return {Promise<never>}
+ */
+databaseService.bulkDelete = function (objectList) {
+    objectList.forEach(object => {
+        object._deleted = true;
+        object._id = object.id;
+    });
+    return pouchDbService.bulkDocs(JSON.parse(JSON.stringify(objectList)));
+};
+
+/**
  * removes an object from database.
  *
  * @param id ID of the object to delete.
@@ -132,6 +162,7 @@ databaseService.removeObject = function (id) {
 databaseService.initForUser = function (username, hashedUserPassword, userDatabaseURL, onlyRemote) {
     let shouldSync = userDatabaseURL && !onlyRemote || false;
     let userAlreadyOpened = pouchDbService.getOpenedDatabaseName() === username;
+    let isLocalUser = localStorageService.getSavedLocalUsers().indexOf(username) !== -1;
     if (userAlreadyOpened && shouldSync === pouchDbService.isSyncEnabled()) {
         return Promise.resolve();
     }
@@ -139,7 +170,7 @@ databaseService.initForUser = function (username, hashedUserPassword, userDataba
         if (userAlreadyOpened) {
             return Promise.resolve();
         } else {
-            return initInternal(hashedUserPassword, username);
+            return initInternal(hashedUserPassword, username, isLocalUser);
         }
     });
 };
@@ -157,11 +188,12 @@ databaseService.initForUser = function (username, hashedUserPassword, userDataba
  */
 databaseService.registerForUser = function (username, hashedUserPassword, userDatabaseURL, onlyRemote) {
     let shouldSync = userDatabaseURL && !onlyRemote;
+    let isLocalUser = localStorageService.getSavedLocalUsers().indexOf(username) !== -1;
     if (pouchDbService.getOpenedDatabaseName() === username && shouldSync === pouchDbService.isSyncEnabled()) {
         return Promise.resolve();
     }
     return pouchDbService.createDatabase(username, userDatabaseURL, onlyRemote).then(() => {
-        return initInternal(hashedUserPassword, username);
+        return initInternal(hashedUserPassword, username, isLocalUser);
     });
 };
 
@@ -194,7 +226,7 @@ databaseService.getCurrentUsedDatabase = function () {
     return pouchDbService.getOpenedDatabaseName();
 };
 
-function initInternal(hashedUserPassword, username) {
+function initInternal(hashedUserPassword, username, isLocalUser) {
     let skipCheckGenerateDefaultGrid = !pouchDbService.isUsingLocalDb(); //no checking/generation of default grid for remote databases
     let metadata = null;
     let saveMetadata = false;
@@ -206,16 +238,16 @@ function initInternal(hashedUserPassword, username) {
         }
         return Promise.all(promises);
     }).then(() => {
-        return pouchDbService.query(MetaData.getModelName());
+        return pouchDbService.all(MetaData.getIdPrefix());
     }).then(metadataObjects => { //create metadata object if not exisiting, update datamodel version, if outdated
         let promises = [];
         if (!metadataObjects || metadataObjects.length === 0) {
             saveMetadata = true;
             metadata = new MetaData();
-            encryptionService.setEncryptionProperties(hashedUserPassword, metadata.id);
+            encryptionService.setEncryptionProperties(hashedUserPassword, metadata.id, isLocalUser);
         } else {
             metadata = metadataObjects instanceof Array ? metadataObjects[0] : metadataObjects;
-            encryptionService.setEncryptionProperties(hashedUserPassword, metadata.id);
+            encryptionService.setEncryptionProperties(hashedUserPassword, metadata.id, isLocalUser);
             if (metadataObjects.length && metadataObjects.length > 1) {
                 promises.push(fixDuplicatedMetadata(hashedUserPassword, metadataObjects))
             }
@@ -225,7 +257,7 @@ function initInternal(hashedUserPassword, username) {
         if (skipCheckGenerateDefaultGrid) {
             return Promise.resolve();
         }
-        return pouchDbService.query(GridData.getModelName());
+        return pouchDbService.all(GridData.getIdPrefix());
     }).then(grids => { //import default gridset, if no grids are existing
         if (skipCheckGenerateDefaultGrid) {
             return Promise.resolve();
