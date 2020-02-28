@@ -86,6 +86,10 @@ pouchDbService.query = function (modelName, id) {
  * @return {Promise<unknown>}
  */
 pouchDbService.all = function (idPrefix, id) {
+    if (id && _documentCache.has(id)) {
+        log.debug('using cache for retrieving id: ' + id);
+        return Promise.resolve(_documentCache.get(id));
+    }
     let dbToUse = getDbToUse();
     cancelSyncInternal();
     return new Promise((resolve, reject) => {
@@ -100,7 +104,11 @@ pouchDbService.all = function (idPrefix, id) {
             options.endkey = idPrefix + '\uffff';
         }
         dbToUse.allDocs(options).then(function (res) {
-            resolve(dbResToResolveObject(res));
+            let result = dbResToResolveObject(res);
+            if (id && result) {
+                _documentCache.set(id, result);
+            }
+            resolve(result);
         }).catch(function (err) {
             log.error(err);
             reject();
