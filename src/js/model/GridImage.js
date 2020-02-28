@@ -13,11 +13,15 @@ class GridImage extends Model({
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridImage);
         super(properties);
-        this.id = this.id || modelUtil.generateId('grid-image')
+        this.id = this.id || modelUtil.generateId(GridImage.getIdPrefix())
     }
 
     static getModelName() {
         return "GridImage";
+    }
+
+    static getIdPrefix() {
+        return 'grid-image';
     }
 }
 
