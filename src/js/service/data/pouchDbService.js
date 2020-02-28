@@ -80,10 +80,12 @@ pouchDbService.query = function (modelName, id) {
 };
 
 /**
- * returns (resolves) all documents that are stored in pouchDb.
- * @return {Promise}
+ * returns all docs that are stored in pouchDb, can be limited by parameters
+ * @param idPrefix (optional) only return docs where IDs have the given prefix
+ * @param id (optional) only return doc with this ID
+ * @return {Promise<unknown>}
  */
-pouchDbService.all = function (idPrefix) {
+pouchDbService.all = function (idPrefix, id) {
     let dbToUse = getDbToUse();
     cancelSyncInternal();
     return new Promise((resolve, reject) => {
@@ -91,7 +93,9 @@ pouchDbService.all = function (idPrefix) {
             include_docs: true,
             attachments: false
         };
-        if (idPrefix) {
+        if (id) {
+            options.key = id;
+        } else if (idPrefix) {
             options.startkey = idPrefix;
             options.endkey = idPrefix + '\uffff';
         }
