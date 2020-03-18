@@ -150,8 +150,9 @@
                 this.importFromFileInternal(event, true);
             },
             reload: function () {
-                dataService.getGrids().then(grids => {
+                return dataService.getGrids().then(grids => {
                     this.grids = JSON.parse(JSON.stringify(grids));
+                    return Promise.resolve();
                 });
             },
             reset() {
@@ -171,9 +172,10 @@
 
                 thiz.showLoading = true;
                 dataService.importGridsFromFile(importFile, reset).then(() => {
-                    this.reload();
                     this.resetFileInput(event);
-                    thiz.showLoading = false;
+                    this.reload().then(() => {
+                        thiz.showLoading = false;
+                    });
                 });
             },
             resetFileInput(event) {
@@ -195,7 +197,7 @@
         created() {
             let thiz = this;
             $(document).on(constants.EVENT_DB_PULL_UPDATED, thiz.reload);
-            dataService.getGrids(true).then(grids => {
+            dataService.getGrids().then(grids => {
                 log.debug(grids);
                 thiz.grids = JSON.parse(JSON.stringify(grids)); //hack because otherwise vueJS databinding sometimes does not work;
             });
