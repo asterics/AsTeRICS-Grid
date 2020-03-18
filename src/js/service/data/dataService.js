@@ -459,7 +459,6 @@ dataService.importGrids = function (gridOrGrids) {
 
     return dataService.getGrids().then(grids => {
         let existingNames = grids.map(grid => grid.label);
-        let resolveFns = [];
         gridOrGrids = GridData.regenerateIDs(gridOrGrids);
         timingLogger.log('start bulk save');
         gridOrGrids.forEach(grid => {
