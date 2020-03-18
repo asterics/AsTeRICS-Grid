@@ -113,7 +113,7 @@ encryptionService.encryptString = function (string, encryptionKey) {
     if (encryptionKey && !_isLocalUser) {
         encryptedString =  sjcl.encrypt(encryptionKey, string, {iter: 1000});
     } else {
-        encryptedString = btoa(string);
+        encryptedString = string;
     }
     return encryptedString;
 };
@@ -142,7 +142,7 @@ encryptionService.decryptString = function (encryptedString, encryptionKey) {
         decryptedString = sjcl.decrypt(encryptionKey, encryptedString);
     } else {
         try {
-            decryptedString = atob(encryptedString);
+            decryptedString = encryptedString;
             JSON.parse(decryptedString);
         } catch (e) {
             decryptedString = sjcl.decrypt(encryptionKey, encryptedString);
