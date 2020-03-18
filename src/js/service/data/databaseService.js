@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import LZString from 'lz-string';
 
 import {GridData} from "../../model/GridData.js";
 import {urlParamService} from "../urlParamService";
@@ -306,7 +305,7 @@ function initInternal(hashedUserPassword, username, isLocalUser) {
 }
 
 function importDefaultDictionary() {
-    return pouchDbService.query(Dictionary.getModelName()).then(result => {
+    return pouchDbService.all(Dictionary.getIdPrefix()).then(result => {
         if (result) {
             return Promise.resolve();
         }
@@ -314,7 +313,7 @@ function importDefaultDictionary() {
             log.info('importing dictionary: ' + _defaultDictPath);
             $.get(_defaultDictPath).success(result => {
                 log.debug('success getting default dictionary.');
-                resolve(LZString.decompressFromBase64(result));
+                resolve(result);
             }).fail((e) => {
                 log.debug('error getting default dictionary.');
                 resolve();
