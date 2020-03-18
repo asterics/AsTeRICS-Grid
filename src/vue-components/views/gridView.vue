@@ -329,7 +329,9 @@
                 thiz.initInputMethods();
             }).catch((e) => {
                 log.warn(e);
-                Router.toManageGrids();
+                dataService.getGrids().then(grids => {
+                    Router.toGrid(grids[0].id);
+                });
             });
         },
         updated() {
