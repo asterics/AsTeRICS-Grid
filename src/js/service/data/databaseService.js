@@ -263,6 +263,7 @@ function initInternal(hashedUserPassword, username, isLocalUser) {
         }
         if (grids) {
             log.debug('detected saved grid, no generation of new grid.');
+            skipCheckGenerateDefaultGrid = true;
             return Promise.resolve();
         } else {
             return $.get(_defaultGridSetPath);
@@ -277,17 +278,12 @@ function initInternal(hashedUserPassword, username, isLocalUser) {
             return Promise.resolve();
         }
         log.info('importing default grid set ' + _defaultGridSetPath);
-        let promises = [];
         gridsData = GridData.regenerateIDs(gridsData);
-        if (!metadata.lastOpenedGridId && gridsData[0] && gridsData[0].id) {
-            metadata.lastOpenedGridId = gridsData[0].id;
-        }
         gridsData.forEach(gridData => {
             gridData.gridElements = GridData.sortGridElements(gridData.gridElements);
-            promises.push(applyFiltersAndSave(GridData.getModelName(), gridData));
         });
         log.debug('imported default grid set!');
-        return Promise.all(promises);
+        return databaseService.bulkSave(gridsData);
     }).then(() => {
         if (saveMetadata) {
             return applyFiltersAndSave(MetaData.getModelName(), metadata);
