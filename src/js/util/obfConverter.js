@@ -189,9 +189,12 @@ function getGridImage(imageId, obfObject, obfObjects) {
     if (obfImage.data) {
         data = obfImage.data;
     } else if (obfImage.path) {
+        let postfix = obfImage.path.substring(obfImage.path.lastIndexOf('.'));
         let contentType = obfImage.content_type || "image/png";
+        contentType = postfix === '.svg' ? 'image/svg+xml' : contentType;
         let preString = `data:${contentType};base64,`;
-        data = preString + obfObjects[obfImage.path];
+        let fileContent = obfObjects[obfImage.path];
+        data = preString + fileContent;
     } else if (obfImage.url) {
         promises.push(imageUtil.urlToBase64(obfImage.url).then(base64 => {
             data = base64;
