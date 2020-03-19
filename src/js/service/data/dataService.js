@@ -10,6 +10,8 @@ import {pouchDbService} from "./pouchDbService";
 import {Dictionary} from "../../model/Dictionary";
 import {obfConverter} from "../../util/obfConverter";
 import {fileUtil} from "../../util/fileUtil";
+import {progressService} from "../progressService";
+import {i18nService} from "../i18nService";
 
 let dataService = {};
 
@@ -402,11 +404,13 @@ dataService.importGridsFromFile = function (file, backupMode) {
                 let jsonString = e.target.result;
                 let promises = [];
                 if (backupMode) {
+                    progressService.setProgress(i18nService.translate('Deleting grids // Grids werden gelöscht'));
                     promises.push(dataService.deleteAllGrids());
                 }
                 Promise.all(promises).then(() => {
                     let importObjects = null;
                     let promises = [];
+                    progressService.setProgress(i18nService.translate('Reading grids from file // Grids werden aus Datei gelesen'));
                     if (fileExtension === '.grd') {
                         importObjects = JSON.parse(jsonString);
                     } else if (fileExtension === '.obf') {
@@ -423,6 +427,7 @@ dataService.importGridsFromFile = function (file, backupMode) {
                         promises.push(promise);
                     }
                     Promise.all(promises).then(() => {
+                        progressService.setProgress(i18nService.translate('Encrypting and saving grids to database // Grids werden verschlüsselt und in Datenbank gespeichert'));
                         dataService.importGrids(importObjects).then(() => {
                             resolve();
                         });
