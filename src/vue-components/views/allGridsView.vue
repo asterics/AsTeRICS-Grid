@@ -197,17 +197,16 @@
         created() {
             let thiz = this;
             $(document).on(constants.EVENT_DB_PULL_UPDATED, thiz.reload);
-            dataService.getGrids().then(grids => {
-                log.debug(grids);
-                thiz.grids = JSON.parse(JSON.stringify(grids)); //hack because otherwise vueJS databinding sometimes does not work;
-            });
         },
         mounted: function () {
-            var thiz = this;
+            let thiz = this;
             vueApp = thiz;
-            initContextmenu();
-            i18nService.initDomI18n();
-            thiz.showLoading = false;
+            dataService.getGrids().then(grids => {
+                thiz.grids = JSON.parse(JSON.stringify(grids)); //hack because otherwise vueJS databinding sometimes does not work;
+                initContextmenu();
+                i18nService.initDomI18n();
+                thiz.showLoading = false;
+            });
         },
         updated() {
             i18nService.initDomI18n();
