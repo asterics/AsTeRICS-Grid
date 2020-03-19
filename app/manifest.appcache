@@ -1,14 +1,13 @@
 CACHE MANIFEST
-# 069065983788303db096
-
-/app/build_legacy/JSZip.bundle.js
-/app/build_legacy/vendors~JSZip.bundle.js
+# 175df65032568760efb5
 
 CACHE:
 ../index.html
 index.html
 build/asterics-grid.bundle.js
 build_legacy/asterics-grid.bundle.js
+build_legacy/JSZip.bundle.js
+build_legacy/vendors~JSZip.bundle.js
 css/fontawesome/css/all.css
 css/fontawesome/webfonts/fa-brands-400.eot
 css/fontawesome/webfonts/fa-brands-400.svg
