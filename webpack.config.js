@@ -63,6 +63,8 @@ module.exports = env => {
             'index.html',
             'build/asterics-grid.bundle.js',
             'build_legacy/asterics-grid.bundle.js',
+            'build_legacy/JSZip.bundle.js',
+            'build_legacy/vendors~JSZip.bundle.js',
             'css/fontawesome/css/all.css',
             'css/fontawesome/webfonts/fa-brands-400.eot',
             'css/fontawesome/webfonts/fa-brands-400.svg',
@@ -104,7 +106,7 @@ module.exports = env => {
         ],
         settings: ['prefer-online'],
         output: '../manifest.appcache',
-        exclude: ['asterics-grid.bundle.js'] /*hack to prevent first line of cache manifest before CACHE. These two files are already included above.*/
+        exclude: ['asterics-grid.bundle.js', 'JSZip.bundle.js', 'vendors~JSZip.bundle.js'] /*hack to prevent first line of cache manifest before CACHE. These two files are already included above.*/
     });
 
     if (env && env.enableAppCache) {
