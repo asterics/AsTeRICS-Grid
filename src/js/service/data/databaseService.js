@@ -10,6 +10,7 @@ import {i18nService} from "../i18nService";
 import {Dictionary} from "../../model/Dictionary";
 import {localStorageService} from "./localStorageService";
 import {predictionService} from "../predictionService";
+import {util} from "../../util/util";
 
 let databaseService = {};
 
@@ -99,11 +100,11 @@ databaseService.saveObject = function (objectType, data, onlyUpdate) {
             let saveData = JSON.parse(JSON.stringify(newObject));
             saveData._id = existingObject._id;
             saveData._rev = existingObject._rev;
-            return applyFiltersAndSave(objectType.getModelName(), saveData);
+            return applyFiltersAndSave(objectType.getIdPrefix(), saveData);
         } else if (!onlyUpdate) {
             let saveData = JSON.parse(JSON.stringify(data));
             saveData._id = saveData.id;
-            return applyFiltersAndSave(objectType.getModelName(), saveData);
+            return applyFiltersAndSave(objectType.getIdPrefix(), saveData);
         } else {
             log.warn('no existing ' + objectType.getModelName() + ' found to update, aborting.');
             return Promise.reject();
@@ -114,14 +115,35 @@ databaseService.saveObject = function (objectType, data, onlyUpdate) {
 /**
  * saves a list of objects/documents in one action
  * @param objectList
- * @return {Promise<never>}
+ * @return {Promise<unknown[]>}
  */
 databaseService.bulkSave = function (objectList) {
+    let elementCount = objectList.reduce((total, grid) => {
+        return total + grid.gridElements.length;
+    }, 0);
+    let maxCountSaveAtOnce = 1000; //found out by tests, above pouchdb errors occured
+    let elemsPerGrid = Math.floor(elementCount / objectList.length);
     let encryptedList = filterService.convertLiveToDatabaseObjects(objectList);
+    let chunks = [];
     encryptedList.forEach(object => {
         object._id = object.id;
     });
-    return pouchDbService.bulkDocs(JSON.parse(JSON.stringify(objectList)));
+    if (elementCount > maxCountSaveAtOnce) {
+        let gridsPerChunk = Math.floor(maxCountSaveAtOnce / elemsPerGrid);
+        chunks = util.splitInChunks(objectList, gridsPerChunk);
+    } else {
+        chunks = [objectList];
+    }
+    function saveChunksSequentially(chunks) {
+        return pouchDbService.bulkDocs(JSON.parse(JSON.stringify(chunks.shift()))).then(() => {
+            if (chunks.length > 0) {
+                return saveChunksSequentially(chunks);
+            } else {
+                return Promise.resolve();
+            }
+        })
+    }
+    return saveChunksSequentially(chunks);
 };
 
 /**
@@ -286,7 +308,7 @@ function initInternal(hashedUserPassword, username, isLocalUser) {
         return databaseService.bulkSave(gridsData);
     }).then(() => {
         if (saveMetadata) {
-            return applyFiltersAndSave(MetaData.getModelName(), metadata);
+            return applyFiltersAndSave(MetaData.getIdPrefix(), metadata);
         } else {
             return Promise.resolve();
         }
@@ -323,15 +345,15 @@ function importDefaultDictionary() {
             dictionaryKey: _defaultDictName,
             data: importData
         });
-        return applyFiltersAndSave(Dictionary.getModelName(), dict);
+        return applyFiltersAndSave(Dictionary.getIdPrefix(), dict);
     });
 }
 
-function applyFiltersAndSave(modelName, data) {
+function applyFiltersAndSave(idPrefix, data) {
     return new Promise((resolve, reject) => {
         let convertedData = filterService.convertLiveToDatabaseObjects(data);
-        pouchDbService.save(modelName, convertedData).then(() => {
-            log.debug('saved ' + modelName + ', id: ' + data.id);
+        pouchDbService.save(idPrefix, convertedData).then(() => {
+            log.debug('saved ' + idPrefix + ', id: ' + data.id);
             resolve();
         }).catch(function (err) {
             reject(err);
