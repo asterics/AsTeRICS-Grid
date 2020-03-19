@@ -10,7 +10,6 @@ import {pouchDbService} from "./pouchDbService";
 import {Dictionary} from "../../model/Dictionary";
 import {obfConverter} from "../../util/obfConverter";
 import {fileUtil} from "../../util/fileUtil";
-import {timingLogger} from "../timingLogger";
 
 let dataService = {};
 
@@ -40,14 +39,12 @@ dataService.getGrid = function (id, onlyShortVersion) {
  */
 dataService.getGrids = function (fullVersion) {
     return new Promise(resolve => {
-        timingLogger.log('start get grids');
         databaseService.getObject(GridData, null, !fullVersion).then(grids => {
-            timingLogger.log('got grids');
             if (!grids) {
                 resolve([]);
                 return;
             }
-            let retVal = grids instanceof Array ? grids.map(grid => new GridData(grid)) : [new GridData(grids)];
+            let retVal = grids instanceof Array ? grids : [grids];
             resolve(retVal);
         });
     });
@@ -106,13 +103,8 @@ dataService.deleteGrid = function (gridId) {
  * @return {Promise}
  */
 dataService.deleteAllGrids = function () {
-    timingLogger.log('delete start');
     return dataService.getGrids().then(grids => {
-        let promise = databaseService.bulkDelete(grids);
-        promise.then(() => {
-            timingLogger.log('delete end');
-        });
-        return promise;
+        return  databaseService.bulkDelete(grids);
     })
 };
 
@@ -460,15 +452,10 @@ dataService.importGrids = function (gridOrGrids) {
     return dataService.getGrids().then(grids => {
         let existingNames = grids.map(grid => grid.label);
         gridOrGrids = GridData.regenerateIDs(gridOrGrids);
-        timingLogger.log('start bulk save');
         gridOrGrids.forEach(grid => {
             grid.label = modelUtil.getNewName(grid.label, existingNames);
         });
-        let promise = dataService.saveGrids(gridOrGrids);
-        promise.then(() => {
-            timingLogger.log('end bulk save');
-        });
-        return promise;
+        return dataService.saveGrids(gridOrGrids);
     });
 };
 
