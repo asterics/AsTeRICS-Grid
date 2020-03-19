@@ -11,8 +11,11 @@
             </div>
         </header>
         <div class="row content text-content">
-            <div v-if="showLoading || grids === null" class="grid-container grid-mask">
-                <i class="fas fa-4x fa-spinner fa-spin"/>
+            <div v-show="showLoading || grids === null" class="grid-container grid-mask">
+                <i class="fas fa-4x fa-spinner fa-spin" style="position: relative; margin-top: 30vh; top: 0"/>
+                <div style="width: 100%; text-align: center; font-size: 2em; margin-top: 1em;">
+                    <span v-if="progressText">{{progressText}} ...</span>
+                </div>
             </div>
             <h2 data-i18n>Saved Grids // Gespeicherte Grids</h2>
             <ul id="gridList" v-show="filteredGrids.length > 0">
@@ -62,6 +65,7 @@
     import {i18nService} from "../../js/service/i18nService";
     import {constants} from "../../js/util/constants";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
+    import {progressService} from "../../js/service/progressService";
 
     let SELECTOR_CONTEXTMENU = '#moreButton';
 
@@ -75,6 +79,7 @@
                 editModeId: '',
                 originalLabel: '',
                 showLoading: true,
+                progressText: ''
             };
         },
         methods: {
@@ -197,6 +202,9 @@
         created() {
             let thiz = this;
             $(document).on(constants.EVENT_DB_PULL_UPDATED, thiz.reload);
+            progressService.register(text => {
+                thiz.progressText = text;
+            });
         },
         mounted: function () {
             let thiz = this;
@@ -214,6 +222,7 @@
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reload);
             $.contextMenu('destroy');
+            progressService.clearHandlers();
         }
     };
 
