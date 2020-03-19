@@ -32,11 +32,10 @@ class GridElement extends Model({
             modelVersion: constants.MODEL_VERSION,
             width: 2,
             height: 1,
-            actions: [new GridActionSpeak()],
             type: GridElement.ELEMENT_TYPE_NORMAL
-
         };
         properties = modelUtil.setDefaults(properties, elementToCopy, GridElement) || {};
+        properties.actions = properties.actions || [new GridActionSpeak()];
         super(Object.assign(defaults, properties));
         this.id = this.id || modelUtil.generateId('grid-element')
     }
