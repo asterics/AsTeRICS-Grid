@@ -65,6 +65,21 @@ function MapCache() {
     };
 
     /**
+     * same as .get() but returns data as promise with 1ms timeout. reason: gives Vue.js time to update UI and show e.g.
+     * loading spinner, otherwise everything in promise chain is instant if returning data from cache
+     * @param key
+     * @return {Promise<unknown>}
+     */
+    thiz.getAsPromise = function (key) {
+        let value = thiz.get(key);
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve(value);
+            }, 1)
+        });
+    };
+
+    /**
      * returns true if the given key is stored in the cache
      * @param key
      * @return {boolean}
@@ -72,7 +87,7 @@ function MapCache() {
     thiz.has = function (key) {
         if (typeof key !== 'string') {
             log.warn('cache-key has to be a string, aborting.');
-            return;
+            return false;
         }
         return !!_cache[key];
     };
