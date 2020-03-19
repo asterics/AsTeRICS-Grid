@@ -1,5 +1,8 @@
 CACHE MANIFEST
-# 84e64d2e511531b86e96
+# 069065983788303db096
+
+/app/build_legacy/JSZip.bundle.js
+/app/build_legacy/vendors~JSZip.bundle.js
 
 CACHE:
 ../index.html
@@ -40,7 +43,6 @@ lib/jquery-ui.min.js
 lib/loglevel.min.js
 lib/object-model.min.js
 lib/pouchdb-7.0.0.min.js
-lib/pouchdb-find-7.0.0.min.js
 lib/sjcl.min.js
 polyfill/core_js_shim.min.js
 polyfill/fetch.js
