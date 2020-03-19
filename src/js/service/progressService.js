@@ -1,5 +1,3 @@
-import {timingLogger} from "./timingLogger";
-
 let progressService = {};
 
 let _progressPercentage = null;
@@ -12,7 +10,6 @@ let _updateHandlers = [];
  * @param progressText
  */
 progressService.setProgress = function (progressText, progressPercentage) {
-    timingLogger.log('now')
     _progressPercentage = Math.round(progressPercentage * 100);
     _progressText = progressText;
     _updateHandlers.forEach(handler => {
