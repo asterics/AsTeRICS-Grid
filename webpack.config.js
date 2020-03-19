@@ -157,7 +157,7 @@ module.exports = env => {
         plugins: plugins,
         output: {
             path: path.resolve(__dirname, baseDir + buildDirLegacy),
-            publicPath: "/" + buildDirLegacy,
+            publicPath: "./" + buildDirLegacy,
             filename: outputFilename,
             chunkFilename: '[name].bundle.js',
         },
