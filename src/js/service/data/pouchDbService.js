@@ -5,6 +5,7 @@ import {constants} from "../../util/constants";
 import {filterService} from "./filterService";
 import {PouchDbAdapter} from "./pouchDbAdapter";
 import {MapCache} from "../../util/MapCache";
+import {MetaData} from "../../model/MetaData";
 
 let pouchDbService = {};
 
@@ -59,7 +60,10 @@ pouchDbService.createDatabase = function (databaseName, remoteCouchDbAddress, on
 pouchDbService.all = function (idPrefix, id) {
     if (id && _documentCache.has(id)) {
         log.debug('using cache for retrieving id: ' + id);
-        return Promise.resolve(_documentCache.get(id));
+        return _documentCache.getAsPromise(id);
+    } else if (!id && idPrefix && _documentCache.has(idPrefix)) {
+        log.debug('using cache for retrieving bulk with id-prefix: ' + idPrefix);
+        return _documentCache.getAsPromise(idPrefix);
     }
     let dbToUse = getDbToUse();
     cancelSyncInternal();
@@ -78,6 +82,8 @@ pouchDbService.all = function (idPrefix, id) {
             let result = dbResToResolveObject(res);
             if (id && result) {
                 _documentCache.set(id, result);
+            } else if (!id && idPrefix && result) {
+                _documentCache.set(idPrefix, result);
             }
             resolve(result);
         }).catch(function (err) {
@@ -92,25 +98,26 @@ pouchDbService.all = function (idPrefix, id) {
 /**
  * saves an object to database that is already encrypted
  *
- * @param modelName the modelName to save, e.g. "GridData"
+ * @param idPrefix the idPrefix to save, e.g. 'grid-data'
  * @param data the encrypted data object to save
  * @return {Promise} promise that resolves if operation finished, rejects on a failure
  */
-pouchDbService.save = function (modelName, data) {
-    log.debug('saving ' + modelName + '...');
+pouchDbService.save = function (idPrefix, data) {
+    log.debug('saving ' + idPrefix + '...');
     cancelSyncInternal();
     if (data.id) {
         _documentCache.clear(data.id, data);
+        _documentCache.clear(idPrefix);
     }
     return new Promise((resolve, reject) => {
-        if (!data || !data._id || !modelName || !data.encryptedDataBase64) {
-            log.error('did not specify needed parameter "modelName" or "_id" or data is not encrypted! aborting.');
+        if (!data || !data._id || !idPrefix || !data.encryptedDataBase64) {
+            log.error('did not specify needed parameter "idPrefix" or "_id" or data is not encrypted! aborting.');
             return reject();
         }
         _pouchDbAdapter.put(data).then((response) => {
             data._rev = response.rev;
             _documentCache.set(data.id, data);
-            log.debug('updated ' + modelName + ', id: ' + data._id);
+            log.debug('updated ' + idPrefix + ', id: ' + data._id);
             resolve();
         }).catch(function (err) {
             if (data.id) {
@@ -136,9 +143,7 @@ pouchDbService.bulkDocs = function (dataList) {
         return Promise.reject();
     }
     cancelSyncInternal();
-    dataList.forEach(doc => {
-        _documentCache.clear(doc.id);
-    });
+    _documentCache.clearAll();
     let promise = _pouchDbAdapter.bulkDocs(dataList);
     promise.finally(() => {
         resumeSyncInternal();
@@ -155,7 +160,7 @@ pouchDbService.bulkDocs = function (dataList) {
 pouchDbService.remove = function (id) {
     let dbToUse = getDbToUse();
     return pouchDbService.all(null, id).then(object => {
-        _documentCache.clear(id);
+        _documentCache.clearAll();
         log.debug('deleted object from db! id: ' + object.id);
         return dbToUse.remove(object);
     });
@@ -318,9 +323,10 @@ function resumeSyncInternal() {
 function changeHandler(changedIds, changedDocsEncrypted) {
     changedDocsEncrypted.forEach(doc => {
         if (doc._deleted) {
-            _documentCache.clear(doc._id);
+            _documentCache.clearAll();
         } else {
             _documentCache.set(doc.id, doc);
+            _documentCache.clear(MetaData.getIdPrefix());
         }
     });
     changedDocsEncrypted = changedDocsEncrypted.filter(doc => !doc._deleted);
