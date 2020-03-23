@@ -8,6 +8,7 @@ class MetaData extends Model({
     modelName: String,
     modelVersion: String,
     lastOpenedGridId: [String],
+    globalGridId: [String],
     locked: [Boolean],
     fullscreen: [Boolean],
     hashCodes: [Object], //object keys: model names of hashed objects, object values: another object with keys = hashcodes, values = object ids
