@@ -124,6 +124,7 @@ databaseService.bulkSave = function (objectList) {
     let maxCountSaveAtOnce = 1000; //found out by tests, above pouchdb errors occured
     let elemsPerGrid = Math.floor(elementCount / objectList.length);
     let encryptedList = filterService.convertLiveToDatabaseObjects(objectList);
+    encryptedList = encryptedList instanceof Array ? encryptedList : [encryptedList];
     let chunks = [];
     encryptedList.forEach(object => {
         object._id = object.id;
