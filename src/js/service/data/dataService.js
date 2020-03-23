@@ -33,6 +33,22 @@ dataService.getGrid = function (id, onlyShortVersion) {
 };
 
 /**
+ * returns the global grid, if set, otherwise null
+ * @return {Promise<unknown>}
+ */
+dataService.getGlobalGrid = function () {
+    return dataService.getMetadata().then(metadata => {
+        log.warn(metadata.globalGridId);
+        if (!metadata.globalGridId) {
+            return Promise.resolve(null);
+        }
+        return dataService.getGrid(metadata.globalGridId).then(globalGrid => {
+            return Promise.resolve(globalGrid);
+        });
+    })
+};
+
+/**
  * Gets an array of all grids.
  * @see{GridData}
  *
@@ -152,7 +168,14 @@ dataService.saveAdditionalGridFiles = function (gridId, additionalGridFiles) {
 dataService.getGridElement = function (gridId, gridElementId) {
     return new Promise(resolve => {
         dataService.getGrid(gridId).then(grid => {
-            resolve(grid.gridElements.filter(elm => elm.id === gridElementId)[0]);
+            let element = grid.gridElements.filter(elm => elm.id === gridElementId)[0];
+            if (element) {
+                resolve(element);
+            } else {
+                dataService.getGlobalGrid().then(globalGrid => {
+                    resolve(globalGrid.gridElements.filter(elm => elm.id === gridElementId)[0]);
+                })
+            }
         });
     });
 };
@@ -397,6 +420,7 @@ dataService.downloadAllGridsSimple = function () {
  */
 dataService.importGridsFromFile = function (file, backupMode) {
     let fileExtension = file.name.substring(file.name.length - 4);
+    let generateGlobalGrid = false;
     return new Promise((resolve, reject) => {
         let reader = new FileReader();
         reader.onload = (function (theFile) {
@@ -416,19 +440,23 @@ dataService.importGridsFromFile = function (file, backupMode) {
                     } else if (fileExtension === '.obf') {
                         promises.push(obfConverter.OBFToGridData(JSON.parse(jsonString)).then(object => {
                             importObjects = object;
+                            return Promise.resolve();
                         }));
                     } else if (fileExtension === '.obz') {
                         let promise = fileUtil.readZip(file, true).then(obzFileMap => {
                             return obfConverter.OBZToGridSet(obzFileMap);
                         }).then(list => {
                             importObjects = list;
+                            if (backupMode) {
+                                generateGlobalGrid = true;
+                            }
                             return Promise.resolve();
                         });
                         promises.push(promise);
                     }
                     Promise.all(promises).then(() => {
                         progressService.setProgress(i18nService.translate('Encrypting and saving grids to database // Grids werden verschlüsselt und in Datenbank gespeichert'));
-                        dataService.importGrids(importObjects).then(() => {
+                        dataService.importGrids(importObjects, generateGlobalGrid).then(() => {
                             resolve();
                         });
                     });
@@ -444,9 +472,10 @@ dataService.importGridsFromFile = function (file, backupMode) {
  * @see{GridData}
  *
  * @param gridOrGrids a single GridData element or list of GridData elements
+ * @param generateGlobalGrid if true a global grid is generated
  * @return {Promise} resolves after operation finished successful
  */
-dataService.importGrids = function (gridOrGrids) {
+dataService.importGrids = function (gridOrGrids, generateGlobalGrid) {
     if (!gridOrGrids || gridOrGrids.length === 0) {
         return Promise.resolve();
     }
@@ -456,11 +485,21 @@ dataService.importGrids = function (gridOrGrids) {
 
     return dataService.getGrids().then(grids => {
         let existingNames = grids.map(grid => grid.label);
+        let globalGrid = null;
         gridOrGrids = GridData.regenerateIDs(gridOrGrids);
         gridOrGrids.forEach(grid => {
             grid.label = modelUtil.getNewName(grid.label, existingNames);
         });
-        return dataService.saveGrids(gridOrGrids);
+        if (generateGlobalGrid) {
+            globalGrid = GridData.generateGlobalGrid();
+            gridOrGrids.unshift(globalGrid);
+        }
+        return dataService.saveGrids(gridOrGrids).then(() => {
+            if (generateGlobalGrid) {
+                return saveGlobalGridId(globalGrid.id);
+            }
+            return Promise.resolve();
+        });
     });
 };
 
@@ -523,6 +562,13 @@ function saveHashedItemInternal(objectType, data) {
             });
         });
     });
+}
+
+function saveGlobalGridId(globalGridId) {
+    return dataService.getMetadata().then(metadata => {
+        metadata.globalGridId = globalGridId;
+        return dataService.saveMetadata(metadata);
+    })
 }
 
 export {dataService};
