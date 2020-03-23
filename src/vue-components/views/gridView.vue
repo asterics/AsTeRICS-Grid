@@ -304,6 +304,7 @@
                     areService.uploadAndStartModel(areModel.dataBase64, gridData.getAREURL(), areModel.fileName);
                 }
                 thiz.gridData = JSON.parse(JSON.stringify(gridData));
+                Router.addToGridHistory(thiz.gridData.id);
                 return Promise.resolve();
             }).then(() => {
                 return dataService.getMetadata();
