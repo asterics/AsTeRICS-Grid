@@ -12,14 +12,24 @@ var collectElementService = {};
 
 var registeredCollectElements = [];
 var collectedText = '';
+let keyboardLikeFactor = 0;
 
 collectElementService.initWithElements = function (elements) {
     registeredCollectElements = [];
+    let oneCharacterElements = 0;
+    let normalElements = 0;
     elements.forEach(element => {
+        if (element && element.type === GridElement.ELEMENT_TYPE_NORMAL) {
+            normalElements++;
+            if (element.label && element.label.length === 1) {
+                oneCharacterElements++;
+            }
+        }
         if (element && element.type === GridElement.ELEMENT_TYPE_COLLECT) {
             registeredCollectElements.push(JSON.parse(JSON.stringify(element)));
         }
     });
+    keyboardLikeFactor = oneCharacterElements / normalElements;
     if (registeredCollectElements.length > 0) {
         let intervalHandler = setInterval(() => {
             if ($('.item[data-type="ELEMENT_TYPE_COLLECT"]').length > 0) {
@@ -105,7 +115,7 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         if (!element.label) {
             return;
         }
-        let textToAdd = element.label.length === 1 ? element.label.toLowerCase() : element.label + ' ';
+        let textToAdd = element.label.length === 1 && keyboardLikeFactor > 0.5 ? element.label.toLowerCase() : element.label + ' ';
         addText(textToAdd);
         registeredCollectElements.forEach(collectElem => {
             let predictAction = getActionOfType(collectElem, 'GridActionPredict');
