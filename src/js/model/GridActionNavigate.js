@@ -6,7 +6,8 @@ class GridActionNavigate extends Model({
     id: String,
     modelName: String,
     modelVersion: String,
-    toGridId: [String]
+    toGridId: [String],
+    toLastGrid: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionNavigate);
