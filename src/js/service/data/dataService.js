@@ -38,7 +38,6 @@ dataService.getGrid = function (id, onlyShortVersion) {
  */
 dataService.getGlobalGrid = function () {
     return dataService.getMetadata().then(metadata => {
-        log.warn(metadata.globalGridId);
         if (!metadata.globalGridId) {
             return Promise.resolve(null);
         }
@@ -482,7 +481,6 @@ dataService.importGrids = function (gridOrGrids, generateGlobalGrid) {
     if (!(gridOrGrids instanceof Array)) {
         gridOrGrids = [gridOrGrids];
     }
-
     return dataService.getGrids().then(grids => {
         let existingNames = grids.map(grid => grid.label);
         let globalGrid = null;
@@ -491,7 +489,8 @@ dataService.importGrids = function (gridOrGrids, generateGlobalGrid) {
             grid.label = modelUtil.getNewName(grid.label, existingNames);
         });
         if (generateGlobalGrid) {
-            globalGrid = GridData.generateGlobalGrid();
+            let homeGridId = gridOrGrids[0].id;
+            globalGrid = GridData.generateGlobalGrid(homeGridId);
             gridOrGrids.unshift(globalGrid);
         }
         return dataService.saveGrids(gridOrGrids).then(() => {
