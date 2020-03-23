@@ -56,7 +56,9 @@ function doAction(gridElement, action, gridId, gridData) {
             break;
         case 'GridActionNavigate':
             log.debug('action navigate');
-            if (Router.isOnEditPage()) {
+            if (action.toLastGrid) {
+                Router.toLastGrid();
+            } else if (Router.isOnEditPage()) {
                 Router.toEditGrid(action.toGridId);
             } else {
                 Router.toGrid(action.toGridId);
