@@ -36,13 +36,15 @@ function Grid(gridContainerId, gridItemClass, options) {
         _initPromise = new Promise(resolve => {
             if (gridDataParam) {
                 initData(options, gridDataParam);
-                initGrid(_gridData);
-                resolve();
+                initGrid(_gridData).then(() => {
+                    resolve();
+                });
             } else {
                 dataService.getGrid(options.gridId).then(gridData => {
                     initData(options, gridData);
-                    initGrid(_gridData);
-                    resolve();
+                    initGrid(_gridData).then(() => {
+                        resolve();
+                    });
                 });
             }
         });
@@ -63,34 +65,62 @@ function Grid(gridContainerId, gridItemClass, options) {
     }
 
     function initGrid(gridDataParam) {
-        collectElementService.initWithElements(_gridData.gridElements);
-        predictionService.initWithElements(_gridData.gridElements);
-        $(gridContainerId).empty();
-        $(gridContainerId).append(templates.getGridBase(gridDataParam.id));
-        _gridElement = $('#' + gridDataParam.id);
-        gridDataParam.gridElements.forEach(function (gridElement) {
-            _gridElement.append(gridElement.toHTML());
-        });
-
-        _gridElement.gridList({
-            lanes: _gridRows,
-            widthHeightRatio: 1,
-            heightToFontSizeRatio: 0.25,
-            dragAndDrop: dragAndDrop
-        }, {
-            start: notifyLayoutChangeStart,
-            stop: handleLayoutChange
-        });
-        _gridListInstance = _gridElement.data('_gridList');
-        if (!gridDataParam.hasSetPositions()) {
-            _gridElement.gridList('resize', _gridRows);
-            thiz.toGridData().then(gridData => {
-                _gridData = gridData;
-                dataService.updateGrid(_gridData.id, _gridData);
-            });
+        let promises = [];
+        if (!options.dragAndDrop) { //only add global grid if not in edit mode
+            promises.push(dataService.getGlobalGrid().then(globalGrid => {
+                if (globalGrid) {
+                    let autowidth = true;
+                    let offset = GridData.getOffset(globalGrid);
+                    let factorGrid = autowidth ? globalGrid.getWidth() - offset.x : 1;
+                    let factorGlobal = autowidth ? _gridData.getWidth() : 1;
+                    globalGrid.gridElements.forEach(gridElement => {
+                        gridElement.width *= factorGlobal;
+                        gridElement.x *= factorGlobal;
+                    });
+                    _gridData.gridElements.forEach(gridElement => {
+                        gridElement.width *= factorGrid;
+                        gridElement.x *= factorGrid;
+                        gridElement.x += offset.x * factorGlobal;
+                        gridElement.y += offset.y;
+                    });
+                    _gridData.rowCount += offset.y;
+                    _gridRows = _gridData.rowCount;
+                    _gridData.gridElements = _gridData.gridElements.concat(globalGrid.gridElements);
+                }
+                return Promise.resolve();
+            }));
         }
-        initResizing().then(() => {
-            thiz.autosize(_animationTimeMs);
+        return Promise.all(promises).then(() => {
+            collectElementService.initWithElements(_gridData.gridElements);
+            predictionService.initWithElements(_gridData.gridElements);
+            $(gridContainerId).empty();
+            $(gridContainerId).append(templates.getGridBase(gridDataParam.id));
+            _gridElement = $('#' + gridDataParam.id);
+            gridDataParam.gridElements.forEach(function (gridElement) {
+                _gridElement.append(gridElement.toHTML());
+            });
+
+            _gridElement.gridList({
+                lanes: _gridRows,
+                widthHeightRatio: 1,
+                heightToFontSizeRatio: 0.25,
+                dragAndDrop: dragAndDrop
+            }, {
+                start: notifyLayoutChangeStart,
+                stop: handleLayoutChange
+            });
+            _gridListInstance = _gridElement.data('_gridList');
+            if (!gridDataParam.hasSetPositions()) {
+                _gridElement.gridList('resize', _gridRows);
+                thiz.toGridData().then(gridData => {
+                    _gridData = gridData;
+                    dataService.updateGrid(_gridData.id, _gridData);
+                });
+            }
+            initResizing().then(() => {
+                thiz.autosize(_animationTimeMs);
+            });
+            return Promise.resolve();
         });
     }
 
