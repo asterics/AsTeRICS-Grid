@@ -88,10 +88,14 @@
                                         </div>
                                         <div v-if="action.modelName == 'GridActionNavigate'">
                                             <div class="row">
+                                                <input id="navigateBackChkbox" type="checkbox" v-model="action.toLastGrid"/>
+                                                <label for="navigateBackChkbox" class="normal-text" data-i18n>Navigate to last opened grid // Zum zuletzt geöffneten Grid navigieren</label>
+                                            </div>
+                                            <div class="row">
                                                 <div class="three columns">
-                                                    <label for="selectGrid" class="normal-text" data-i18n>Grid to navigate // Navigieren zu Grid</label>
+                                                    <label for="selectGrid" class="normal-text" data-i18n>Navigate to grid // Navigieren zu Grid</label>
                                                 </div>
-                                                <select class="eight columns" id="selectGrid" type="text" v-model="action.toGridId">
+                                                <select class="eight columns" id="selectGrid" type="text" v-model="action.toGridId" :disabled="action.toLastGrid">
                                                     <option v-for="(label, id) in gridLabels" :value="id">
                                                         {{label}}
                                                     </option>
