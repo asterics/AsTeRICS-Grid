@@ -29,6 +29,7 @@ let routingEndabled = true;
 let _initialized = false;
 let _currentView = null;
 let _currentVueApp = null;
+let _gridHistory = [];
 
 Router.init = function (injectIdParam, initialHash) {
     if (!routingEndabled) {
@@ -218,6 +219,26 @@ Router.isOnEditPage = function () {
 
 Router.getCurrentView = function () {
     return _currentView;
+};
+
+Router.addToGridHistory = function (gridId) {
+    if (_gridHistory.length > 0 && _gridHistory[_gridHistory.length - 1] === gridId) {
+        return;
+    }
+    if (_gridHistory.indexOf(gridId) !== -1) {
+        _gridHistory = [gridId];
+        return;
+    }
+    _gridHistory.push(gridId);
+};
+
+Router.toLastGrid = function () {
+    if (_gridHistory.length === 1) {
+        return;
+    }
+    _gridHistory.pop(); // remove current grid
+    let toId = _gridHistory.pop();
+    Router.toGrid(toId);
 };
 
 function getValidHash() {
