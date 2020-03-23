@@ -85,7 +85,7 @@ function Grid(gridContainerId, gridItemClass, options) {
                     });
                     _gridData.rowCount += offset.y;
                     _gridRows = _gridData.rowCount;
-                    _gridData.gridElements = _gridData.gridElements.concat(globalGrid.gridElements);
+                    _gridData.gridElements = globalGrid.gridElements.concat(_gridData.gridElements);
                 }
                 return Promise.resolve();
             }));
