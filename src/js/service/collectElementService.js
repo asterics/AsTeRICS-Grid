@@ -102,7 +102,10 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         return; // no adding of text if the element contains an navigate action
     }
     if (!element.type || element.type === GridElement.ELEMENT_TYPE_NORMAL) {
-        let textToAdd = element.label.length === 1 ? element.label.toLowerCase() : element.label;
+        if (!element.label) {
+            return;
+        }
+        let textToAdd = element.label.length === 1 ? element.label.toLowerCase() : element.label + ' ';
         addText(textToAdd);
         registeredCollectElements.forEach(collectElem => {
             let predictAction = getActionOfType(collectElem, 'GridActionPredict');
