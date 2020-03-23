@@ -72,6 +72,7 @@
         data() {
             return {
                 gridData: null,
+                metadata: null,
                 canUndo: false,
                 canRedo: false,
                 doingUndoRedo: false,
@@ -118,7 +119,7 @@
                 }
             },
             back() {
-                Router.back();
+                Router.toMain();
             },
             editElement(elementId) {
                 this.editElementId = elementId;
@@ -201,11 +202,15 @@
                 thiz.gridData = JSON.parse(JSON.stringify(gridData));
                 return Promise.resolve();
             }).then(() => {
-                dataService.getMetadata().then(savedMetadata => {
-                    dataService.saveMetadata(new MetaData({
-                        lastOpenedGridId: thiz.gridData.id
-                    }, savedMetadata));
+                return dataService.getMetadata().then(savedMetadata => {
+                    thiz.metadata = JSON.parse(JSON.stringify(savedMetadata));
+                    if (thiz.metadata.globalGridId === thiz.gridData.id) {
+                        return Promise.resolve();
+                    }
+                    thiz.metadata.lastOpenedGridId = thiz.gridData.id;
+                    return dataService.saveMetadata(thiz.metadata);
                 });
+            }).then(() => {
                 return initGrid(thiz.gridData);
             }).then(() => {
                 gridInstance.setLayoutChangedEndListener((newGridData) => {
@@ -268,6 +273,8 @@
         var CONTEXT_LAYOUT_FILL = "CONTEXT_LAYOUT_FILL";
         var CONTEXT_LAYOUT_MOREROWS = "CONTEXT_LAYOUT_MOREROWS";
         var CONTEXT_LAYOUT_LESSROWS = "CONTEXT_LAYOUT_LESSROWS";
+        var CONTEXT_EDIT_GLOBAL_GRID = "CONTEXT_EDIT_GLOBAL_GRID";
+        var CONTEXT_END_EDIT_GLOBAL_GRID = "CONTEXT_END_EDIT_GLOBAL_GRID";
 
         var itemsGlobal = {
             CONTEXT_NEW_GROUP: {
@@ -322,7 +329,9 @@
                 name: "Remove row from layout // Zeile in Layout entfernen",
                 icon: "far fa-minus-square"
             },
-            'CONTEXT_LAYOUT_FILL': {name: "Fill gaps // Lücken füllen", icon: "fas fa-angle-double-left"}
+            'CONTEXT_LAYOUT_FILL': {name: "Fill gaps // Lücken füllen", icon: "fas fa-angle-double-left"},
+            'CONTEXT_EDIT_GLOBAL_GRID': {name: "Edit global grid // Globales Grid bearbeiten", icon: "fas fa-globe", visible: !!vueApp.metadata.globalGridId},
+            'CONTEXT_END_EDIT_GLOBAL_GRID': {name: "End edit global grid // Bearbeitung globales Grid beenden", icon: "fas fa-globe", visible: vueApp.metadata.globalGridId === vueApp.gridData.id},
         };
 
         $('.grid-container').on('click', function (event) {
@@ -449,6 +458,12 @@
                 case CONTEXT_ACTION_DO_ACTION:
                     actionService.doAction(vueApp.gridData.id, vueApp.markedElement.id);
                     vueApp.elementClicked(null);
+                    break;
+                case CONTEXT_EDIT_GLOBAL_GRID:
+                    Router.toEditGrid(vueApp.metadata.globalGridId);
+                    break;
+                case CONTEXT_END_EDIT_GLOBAL_GRID:
+                    Router.toEditGrid(vueApp.metadata.lastOpenedGridId);
                     break;
             }
         }
