@@ -17,7 +17,18 @@
                     <span v-if="progressText">{{progressText}} ...</span>
                 </div>
             </div>
-            <h2 data-i18n>Saved Grids // Gespeicherte Grids</h2>
+            <h2 data-i18n>Global grid // Globales Grid</h2>
+            <p data-i18n="">A global grid is shown within each other grid and can contain elements like e.g. "back" or "home". // Ein globales Grid wird innerhalb jedes anderen Grids angezeigt und kann beispielsweise Elemente wie "Zurück" oder "Zum Start" beinhalten.</p>
+            <div class="row">
+                <label class="four columns" for="globalGridActions" data-i18n="">Actions for global grid // Aktionen für globales Grid</label>
+                <div id="globalGridActions" class="eight columns" v-if="metadata">
+                    <button v-show="!metadata.globalGridActive || !hasGlobalGrid" @click="setGlobalGridActive(true)"><i class="fas fa-globe"/> <span data-i18n="">Activate global Grid // Globales Grid aktivieren</span></button>
+                    <button v-show="metadata.globalGridActive && hasGlobalGrid" @click="setGlobalGridActive(false)"><i class="fas fa-globe"/> <span data-i18n="">Deactivate global Grid // Globales Grid deaktivieren</span></button>
+                    <button :disabled="!metadata.globalGridActive" @click="edit(metadata.globalGridId)"><i class="fas fa-edit"/> <span data-i18n="">Edit global Grid // Globales Grid bearbeiten</span></button>
+                    <button :disabled="!metadata.globalGridActive" @click="resetGlobalGrid()"><i class="fas fa-undo"/> <span data-i18n="">Reset global grid to default // Globales Grid zurücksetzen</span></button>
+                </div>
+            </div>
+            <h2 data-i18n>Other Grids // Andere Grids</h2>
             <ul id="gridList" v-show="filteredGrids.length > 0">
                 <li class="hide-mobile table-headers">
                     <span class="four columns">Name</span>
@@ -75,6 +86,7 @@
         data() {
             return {
                 grids: null,
+                metadata: null,
                 searchText: '',
                 editModeId: '',
                 originalLabel: '',
@@ -115,7 +127,7 @@
             },
             cancelEdit: function (id) {
                 this.editModeId = '';
-                this.grids.filter(grd => grd.id == id)[0].label = this.originalLabel;
+                this.grids.filter(grd => grd.id === id)[0].label = this.originalLabel;
                 this.originalLabel = '';
             },
             isLabelDuplicate: function (label) {
@@ -155,8 +167,13 @@
                 this.importFromFileInternal(event, true);
             },
             reload: function () {
-                return dataService.getGrids().then(grids => {
-                    this.grids = JSON.parse(JSON.stringify(grids));
+                let thiz = this;
+                return dataService.getMetadata().then(metadata => {
+                    thiz.metadata = JSON.parse(JSON.stringify(metadata));
+                    return dataService.getGrids();
+                }).then(grids => {
+                    thiz.grids = JSON.parse(JSON.stringify(grids)); //hack because otherwise vueJS databinding sometimes does not work;
+                    thiz.showLoading = false;
                     return Promise.resolve();
                 });
             },
@@ -168,6 +185,32 @@
                     });
                 }
             },
+            setGlobalGridActive(active) {
+                if (!this.hasGlobalGrid) {
+                    return this.resetGlobalGrid(true);
+                }
+                this.metadata.globalGridActive = active;
+                dataService.saveMetadata(this.metadata);
+            },
+            resetGlobalGrid(noConfirm) {
+                if (!noConfirm) {
+                    if (!confirm(i18nService.translate('Do you really want to reset the global grid to default? // Möchten Sie das globale Grid wirklich zurücksetzen?'))) {
+                        return;
+                    }
+                }
+                dataService.getGlobalGrid(true).then(existingGlobal => {
+                    return existingGlobal ? dataService.deleteGrid(existingGlobal.id) : Promise.resolve();
+                }).then(() => {
+                    let globalGrid = GridData.generateGlobalGrid(this.grids[0].id);
+                    this.metadata.globalGridId = globalGrid.id;
+                    this.metadata.globalGridActive = true;
+                    return dataService.saveGrid(globalGrid);
+                }).then(() => {
+                    return dataService.saveMetadata(this.metadata);
+                }).then(() => {
+                    this.reload();
+                });
+            },
             importFromFileInternal(event, reset) {
                 let thiz = this;
                 let importFile = event.target.files[0];
@@ -178,9 +221,7 @@
                 thiz.showLoading = true;
                 dataService.importGridsFromFile(importFile, reset).then(() => {
                     this.resetFileInput(event);
-                    this.reload().then(() => {
-                        thiz.showLoading = false;
-                    });
+                    this.reload();
                 });
             },
             resetFileInput(event) {
@@ -190,11 +231,20 @@
             }
         },
         computed: {
+            hasGlobalGrid: function() {
+                if (!this.grids || !this.metadata) {
+                    return false
+                }
+                return this.metadata.globalGridId && !!this.grids.filter(g => g.id === this.metadata.globalGridId)[0];
+            },
             filteredGrids: function () {
                 if (!this.grids) {
                     return [];
                 }
                 return this.grids.filter(grid => {
+                    if (grid.id === this.metadata.globalGridId) {
+                        return false;
+                    }
                     return grid.label ? grid.label.toLowerCase().includes(this.searchText.toLowerCase()) : false;
                 })
             },
@@ -209,11 +259,9 @@
         mounted: function () {
             let thiz = this;
             vueApp = thiz;
-            dataService.getGrids().then(grids => {
-                thiz.grids = JSON.parse(JSON.stringify(grids)); //hack because otherwise vueJS databinding sometimes does not work;
+            thiz.reload().then(() => {
                 initContextmenu();
                 i18nService.initDomI18n();
-                thiz.showLoading = false;
             });
         },
         updated() {
@@ -321,6 +369,16 @@
         margin: 0.5vh 0.5vw;
     }
 
+    #globalGridActions button {
+        width: 30%;
+        padding: 0 1vh;
+        margin: 0.5vh 0.5vw;
+    }
+
+    #globalGridActions {
+        display: flex;
+    }
+
     .all-grids-view a {
         font-size: 1.2em;
     }
@@ -357,6 +415,18 @@
             outline: 1px solid lightgray;
             padding: 0.5em;
             margin-right: 1em;
+        }
+
+        #globalGridActions button {
+            display: block;
+            width: 100%;
+            padding: 0 1vh;
+            margin: 0.5vh 0.5vw;
+        }
+
+        #globalGridActions {
+            display: block;
+            padding-right: 1.5em;
         }
     }
 </style>
