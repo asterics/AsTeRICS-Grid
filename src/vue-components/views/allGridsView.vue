@@ -151,7 +151,7 @@
                 if (gridId) {
                     dataService.downloadSingleGrid(gridId);
                 } else {
-                    dataService.downloadAllGrids();
+                    dataService.downloadBackup();
                     //dataService.downloadAllGridsSimple();
                 }
             },
@@ -303,7 +303,7 @@
             CONTEXT_NEW: {name: "New grid // Neues Grid", icon: "fas fa-plus"},
             SEP1: "---------",
             CONTEXT_EXPORT: {
-                name: "Export all grids to file // Alle Grids als Datei exportieren",
+                name: "Export backup to file // Backup als Datei exportieren",
                 icon: "fas fa-file-export"
             },
             CONTEXT_IMPORT: {
