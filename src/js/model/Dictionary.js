@@ -7,7 +7,8 @@ class Dictionary extends Model({
     modelName: String,
     modelVersion: String,
     dictionaryKey: String,
-    data: [String] //JSON data
+    data: [String], //JSON data
+    isDefault: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, Dictionary);
