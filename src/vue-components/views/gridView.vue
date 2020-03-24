@@ -330,7 +330,7 @@
                 thiz.initInputMethods();
             }).catch((e) => {
                 log.warn(e);
-                dataService.getGrids().then(grids => {
+                dataService.getGrids(false, true).then(grids => {
                     Router.toGrid(grids[0].id);
                 });
             });
