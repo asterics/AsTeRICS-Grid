@@ -34,11 +34,12 @@ dataService.getGrid = function (id, onlyShortVersion) {
 
 /**
  * returns the global grid, if set, otherwise null
+ * @param alsoReturnIfDeactivated if true the global grid is also returned if metadata.globalGridActive is not set
  * @return {Promise<unknown>}
  */
-dataService.getGlobalGrid = function () {
+dataService.getGlobalGrid = function (alsoReturnIfDeactivated) {
     return dataService.getMetadata().then(metadata => {
-        if (!metadata.globalGridId) {
+        if (!metadata.globalGridId || (!alsoReturnIfDeactivated && !metadata.globalGridActive)) {
             return Promise.resolve(null);
         }
         return dataService.getGrid(metadata.globalGridId).then(globalGrid => {
@@ -121,8 +122,10 @@ dataService.deleteGrid = function (gridId) {
  */
 dataService.deleteAllGrids = function () {
     return dataService.getGrids().then(grids => {
-        return  databaseService.bulkDelete(grids);
-    })
+        return databaseService.bulkDelete(grids);
+    }).then(() => {
+        return saveGlobalGridId('');
+    });
 };
 
 /**
@@ -566,6 +569,7 @@ function saveHashedItemInternal(objectType, data) {
 function saveGlobalGridId(globalGridId) {
     return dataService.getMetadata().then(metadata => {
         metadata.globalGridId = globalGridId;
+        metadata.globalGridActive = !!globalGridId;
         return dataService.saveMetadata(metadata);
     })
 }
