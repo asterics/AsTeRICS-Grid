@@ -12,6 +12,7 @@ import {obfConverter} from "../../util/obfConverter";
 import {fileUtil} from "../../util/fileUtil";
 import {progressService} from "../progressService";
 import {i18nService} from "../i18nService";
+import {predictionService} from "../predictionService";
 
 let dataService = {};
 
@@ -53,9 +54,10 @@ dataService.getGlobalGrid = function (alsoReturnIfDeactivated) {
  * @see{GridData}
  *
  * @param fullVersion if true only the full version (with binary data) is returned (optional)
+ * @param withoutGlobal if true the returned gridlist does not contain the global grid
  * @return {Promise} resolves to an array of all stored grids.
  */
-dataService.getGrids = function (fullVersion) {
+dataService.getGrids = function (fullVersion, withoutGlobal) {
     return new Promise(resolve => {
         databaseService.getObject(GridData, null, !fullVersion).then(grids => {
             if (!grids) {
@@ -63,7 +65,13 @@ dataService.getGrids = function (fullVersion) {
                 return;
             }
             let retVal = grids instanceof Array ? grids : [grids];
-            resolve(retVal);
+            if (withoutGlobal) {
+                dataService.getMetadata().then(metadata => {
+                    resolve(retVal.filter(grid => grid.id !== metadata.globalGridId));
+                })
+            } else {
+                resolve(retVal);
+            }
         });
     });
 };
@@ -362,6 +370,7 @@ dataService.getDictionaries = function () {
  * @return {Promise} resolves after operation finished successful
  */
 dataService.saveDictionary = function (dictionaryData) {
+    dictionaryData.isDefault = false;
     return databaseService.saveObject(Dictionary, dictionaryData);
 };
 
@@ -389,14 +398,31 @@ dataService.downloadSingleGrid = function (gridId) {
 };
 
 /**
- * Downloads all grids to File. Opens a file download in Browser.
+ * Downloads all grids, dictionaries and metadata to File. Opens a file download in Browser.
  */
-dataService.downloadAllGrids = function () {
-    dataService.getGrids(true).then(grids => {
-        if (grids) {
-            let blob = new Blob([JSON.stringify(grids)], {type: "text/plain;charset=utf-8"});
-            FileSaver.saveAs(blob, "my-gridset.grd");
+dataService.downloadBackup = function () {
+    let exportData = {};
+    let promises = [];
+    promises.push(dataService.getMetadata().then(metadata => {
+        exportData.metadata = metadata;
+        return Promise.resolve();
+    }));
+    promises.push(dataService.getDictionaries().then(dictionaries => {
+        let allDefault = dictionaries.reduce((total, current) => {
+            return total && current.isDefault;
+        }, true);
+        if (!allDefault) {
+            exportData.dictionaries = dictionaries;
         }
+        return Promise.resolve();
+    }));
+    promises.push(dataService.getGrids(true).then(grids => {
+        exportData.grids = grids;
+        return Promise.resolve();
+    }));
+    Promise.all(promises).then(() => {
+        let blob = new Blob([JSON.stringify(exportData)], {type: "text/plain;charset=utf-8"});
+        FileSaver.saveAs(blob, "my-backup.grd");
     });
 };
 
@@ -458,7 +484,7 @@ dataService.importGridsFromFile = function (file, backupMode) {
                     }
                     Promise.all(promises).then(() => {
                         progressService.setProgress(i18nService.translate('Encrypting and saving grids to database // Grids werden verschlüsselt und in Datenbank gespeichert'));
-                        dataService.importGrids(importObjects, generateGlobalGrid).then(() => {
+                        dataService.importData(importObjects, generateGlobalGrid, backupMode).then(() => {
                             resolve();
                         });
                     });
@@ -470,38 +496,89 @@ dataService.importGridsFromFile = function (file, backupMode) {
 };
 
 /**
- * imports grids from a json string in addition to existing grids
+ * imports data from given JSON object
  * @see{GridData}
  *
- * @param gridOrGrids a single GridData element or list of GridData elements
+ * @param data a single GridData element, list of GridData elements or object containing grids, dictionaries, metadata
  * @param generateGlobalGrid if true a global grid is generated
+ * @param backupMode if true, dictionaries and metadata will be imported, otherwise not
  * @return {Promise} resolves after operation finished successful
  */
-dataService.importGrids = function (gridOrGrids, generateGlobalGrid) {
-    if (!gridOrGrids || gridOrGrids.length === 0) {
+dataService.importData = function (data, generateGlobalGrid, backupMode) {
+    if (!data || data.length === 0) {
         return Promise.resolve();
     }
-    if (!(gridOrGrids instanceof Array)) {
-        gridOrGrids = [gridOrGrids];
-    }
-    return dataService.getGrids().then(grids => {
-        let existingNames = grids.map(grid => grid.label);
-        let globalGrid = null;
-        gridOrGrids = GridData.regenerateIDs(gridOrGrids);
-        gridOrGrids.forEach(grid => {
-            grid.label = modelUtil.getNewName(grid.label, existingNames);
-        });
-        if (generateGlobalGrid) {
-            let homeGridId = gridOrGrids[0].id;
-            globalGrid = GridData.generateGlobalGrid(homeGridId);
-            gridOrGrids.unshift(globalGrid);
+    let importDictionaries = null;
+    let importMetadata = null;
+    let importGrids = null;
+    let promises = [];
+    let metadataPromise = Promise.resolve();
+    let originalGlobalGridId = null;
+    if (!(data instanceof Array)) {
+        importDictionaries = backupMode ? data.dictionaries : null;
+        importMetadata = backupMode ? data.metadata : null;
+        importGrids = data.grids;
+        if (!importDictionaries && !importMetadata && !importGrids && data.id) {
+            importGrids = [data];
         }
-        return dataService.saveGrids(gridOrGrids).then(() => {
-            if (generateGlobalGrid) {
-                return saveGlobalGridId(globalGrid.id);
-            }
-            return Promise.resolve();
-        });
+    } else {
+        importGrids = data;
+    }
+    if (importMetadata) {
+        //import metadata first because it maybe will also be saved in importGrids
+        originalGlobalGridId = importMetadata.globalGridId;
+        metadataPromise = dataService.saveMetadata(importMetadata);
+    }
+    metadataPromise.then(() => {
+        if (importGrids) {
+            promises.push(dataService.getGrids().then(grids => {
+                let existingNames = grids.map(grid => grid.label);
+                let globalGrid = null;
+                let originalGlobalGrid = originalGlobalGridId ? importGrids.filter(g => g.id === originalGlobalGridId)[0] : null;
+                if (originalGlobalGrid) {
+                    originalGlobalGrid.isGlobal = true;
+                }
+                importGrids = GridData.regenerateIDs(importGrids);
+                if (originalGlobalGrid) {
+                    let newGlobalGrid = importGrids.filter(g => g.isGlobal)[0];
+                    newGlobalGrid.id = originalGlobalGridId;
+                    delete newGlobalGrid.isGlobal;
+                }
+                importGrids.forEach(grid => {
+                    grid.label = modelUtil.getNewName(grid.label, existingNames);
+                });
+                if (generateGlobalGrid) {
+                    let homeGridId = importGrids[0].id;
+                    globalGrid = GridData.generateGlobalGrid(homeGridId);
+                    importGrids.unshift(globalGrid);
+                }
+                return dataService.saveGrids(importGrids).then(() => {
+                    if (generateGlobalGrid) {
+                        return saveGlobalGridId(globalGrid.id);
+                    }
+                    return Promise.resolve();
+                });
+            }));
+        }
+        if (importDictionaries) {
+            promises.push(dataService.getDictionaries().then(dictionaries => {
+                return databaseService.bulkDelete(dictionaries);
+            }).then(() => {
+                importDictionaries = importDictionaries.map(dict => {
+                    delete dict.id;
+                    delete dict._id;
+                    delete dict._rev;
+                    return new Dictionary(dict);
+                });
+                return databaseService.bulkSave(importDictionaries).then(() => {
+                    predictionService.init();
+                    return Promise.resolve();
+                });
+            }));
+        }
+    });
+    return metadataPromise.then(() => {
+        return Promise.all(promises);
     });
 };
 
