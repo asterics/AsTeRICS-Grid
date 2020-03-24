@@ -295,7 +295,8 @@ class GridData extends Model({
         });
         let globalGrid = new GridData({
             label: 'Global Grid',
-            gridElements: [elementHome, elementBack, elementCollect, elementBackspace, elementClear]
+            gridElements: [elementHome, elementBack, elementCollect, elementBackspace, elementClear],
+            rowCount: 3
         });
         return globalGrid;
     }
