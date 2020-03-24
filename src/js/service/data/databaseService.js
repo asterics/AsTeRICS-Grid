@@ -119,7 +119,8 @@ databaseService.saveObject = function (objectType, data, onlyUpdate) {
  */
 databaseService.bulkSave = function (objectList) {
     let elementCount = objectList.reduce((total, grid) => {
-        return total + grid.gridElements.length;
+        let gridElementCount = grid.gridElements ? grid.gridElements.length : 0;
+        return total + gridElementCount;
     }, 0);
     let maxCountSaveAtOnce = 1000; //found out by tests, above pouchdb errors occured
     let elemsPerGrid = Math.floor(elementCount / objectList.length);
@@ -136,7 +137,8 @@ databaseService.bulkSave = function (objectList) {
         chunks = [objectList];
     }
     function saveChunksSequentially(chunks) {
-        return pouchDbService.bulkDocs(JSON.parse(JSON.stringify(chunks.shift()))).then(() => {
+        let chunk = JSON.parse(JSON.stringify(chunks.shift()));
+        return pouchDbService.bulkDocs(chunk).then(() => {
             if (chunks.length > 0) {
                 return saveChunksSequentially(chunks);
             } else {
@@ -344,7 +346,8 @@ function importDefaultDictionary() {
         }
         let dict = new Dictionary({
             dictionaryKey: _defaultDictName,
-            data: importData
+            data: importData,
+            isDefault: true
         });
         return applyFiltersAndSave(Dictionary.getIdPrefix(), dict);
     });
