@@ -340,7 +340,9 @@
                 thiz.viewInitialized = true;
                 thiz.initInputMethods();
             }).catch((e) => {
-                log.warn(e);
+                if (e) {
+                    log.warn(e);
+                }
             });
         },
         updated() {
