@@ -143,7 +143,10 @@ encryptionService.decryptString = function (encryptedString, encryptionKey) {
     } else {
         try {
             decryptedString = encryptedString;
-            JSON.parse(decryptedString);
+            let parsed = JSON.parse(decryptedString);
+            if (parsed.iv && parsed.cipher && parsed.ct) {
+                decryptedString = sjcl.decrypt(encryptionKey, encryptedString);
+            }
         } catch (e) {
             decryptedString = sjcl.decrypt(encryptionKey, encryptedString);
         }
