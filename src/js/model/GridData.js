@@ -9,6 +9,7 @@ import {i18nService} from "../service/i18nService";
 import {GridImage} from "./GridImage";
 import {GridActionNavigate} from "./GridActionNavigate";
 import {GridActionCollectElement} from "./GridActionCollectElement";
+import {GridActionSpeak} from "./GridActionSpeak";
 
 class GridData extends Model({
     id: String,
@@ -237,17 +238,18 @@ class GridData extends Model({
 
     /**
      * generates a global grid with elements "home", "back", input field, "backspace" and "clear"
-     * @param width the with to generate
+     * @param homeGridId id of the grid where the "home" buttons should navigate to
+     * @param locale the locale of the grid to generate, e.g. "de" or "en"
      * @return {GridData}
      */
-    static generateGlobalGrid(homeGridId, width) {
-        width = width || 0;
+    static generateGlobalGrid(homeGridId, locale) {
+        let width = 0;
         let elementHome = new GridElement({
             width: 1,
             height: 1,
             x: 0,
             y: 0,
-            label: i18nService.translate('Home // Start'),
+            label: i18nService.translate('Home // Start', locale),
             image: new GridImage({
                 data: 'data:image/svg+xml;base64,' + 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj48cGF0aCBkPSJNMjgwLjM3IDE0OC4yNkw5NiAzMDAuMTFWNDY0YTE2IDE2IDAgMCAwIDE2IDE2bDExMi4wNi0uMjlhMTYgMTYgMCAwIDAgMTUuOTItMTZWMzY4YTE2IDE2IDAgMCAxIDE2LTE2aDY0YTE2IDE2IDAgMCAxIDE2IDE2djk1LjY0YTE2IDE2IDAgMCAwIDE2IDE2LjA1TDQ2NCA0ODBhMTYgMTYgMCAwIDAgMTYtMTZWMzAwTDI5NS42NyAxNDguMjZhMTIuMTkgMTIuMTkgMCAwIDAtMTUuMyAwek01NzEuNiAyNTEuNDdMNDg4IDE4Mi41NlY0NC4wNWExMiAxMiAwIDAgMC0xMi0xMmgtNTZhMTIgMTIgMCAwIDAtMTIgMTJ2NzIuNjFMMzE4LjQ3IDQzYTQ4IDQ4IDAgMCAwLTYxIDBMNC4zNCAyNTEuNDdhMTIgMTIgMCAwIDAtMS42IDE2LjlsMjUuNSAzMUExMiAxMiAwIDAgMCA0NS4xNSAzMDFsMjM1LjIyLTE5My43NGExMi4xOSAxMi4xOSAwIDAgMSAxNS4zIDBMNTMwLjkgMzAxYTEyIDEyIDAgMCAwIDE2LjktMS42bDI1LjUtMzFhMTIgMTIgMCAwIDAtMS43LTE2LjkzeiIvPjwvc3ZnPg'
             }),
@@ -258,21 +260,26 @@ class GridData extends Model({
             height: 1,
             x: 1,
             y: 0,
-            label: i18nService.translate('Back // Zurück'),
+            label: i18nService.translate('Back // Zurück', locale),
             image: new GridImage({
                 data: 'data:image/svg+xml;base64,' + 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBkPSJNMjU2IDUwNEMxMTkgNTA0IDggMzkzIDggMjU2UzExOSA4IDI1NiA4czI0OCAxMTEgMjQ4IDI0OC0xMTEgMjQ4LTI0OCAyNDh6bTExNi0yOTJIMjU2di03MC45YzAtMTAuNy0xMy0xNi4xLTIwLjUtOC41TDEyMS4yIDI0Ny41Yy00LjcgNC43LTQuNyAxMi4yIDAgMTYuOWwxMTQuMyAxMTQuOWM3LjYgNy42IDIwLjUgMi4yIDIwLjUtOC41VjMwMGgxMTZjNi42IDAgMTItNS40IDEyLTEydi02NGMwLTYuNi01LjQtMTItMTItMTJ6Ii8+PC9zdmc+'
             }),
             actions: [new GridActionNavigate({toLastGrid: true})]
         });
+        let speakAction = new GridActionSpeak();
+        if (locale) {
+            speakAction.speakLanguage = locale;
+        }
         let elementCollect = new GridElement({
             width: Math.max(4, width - 4),
             height: 1,
             x: 2,
             y: 0,
-            type: GridElement.ELEMENT_TYPE_COLLECT
+            type: GridElement.ELEMENT_TYPE_COLLECT,
+            actions: [speakAction]
         });
         let elementBackspace = new GridElement({
-            label: i18nService.translate('Delete Word // Wort löschen'),
+            label: i18nService.translate('Delete Word // Wort löschen', locale),
             width: 1,
             height: 1,
             x: 2 + elementCollect.width,
@@ -280,10 +287,10 @@ class GridData extends Model({
             image: new GridImage({ //fa backspace
                 data: 'data:image/svg+xml;base64,' + 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48cGF0aCBkPSJNNTc2IDY0SDIwNS4yNkE2My45NyA2My45NyAwIDAgMCAxNjAgODIuNzVMOS4zNyAyMzMuMzdjLTEyLjUgMTIuNS0xMi41IDMyLjc2IDAgNDUuMjVMMTYwIDQyOS4yNWMxMiAxMiAyOC4yOCAxOC43NSA0NS4yNSAxOC43NUg1NzZjMzUuMzUgMCA2NC0yOC42NSA2NC02NFYxMjhjMC0zNS4zNS0yOC42NS02NC02NC02NHptLTg0LjY5IDI1NC4wNmM2LjI1IDYuMjUgNi4yNSAxNi4zOCAwIDIyLjYzbC0yMi42MiAyMi42MmMtNi4yNSA2LjI1LTE2LjM4IDYuMjUtMjIuNjMgMEwzODQgMzAxLjI1bC02Mi4wNiA2Mi4wNmMtNi4yNSA2LjI1LTE2LjM4IDYuMjUtMjIuNjMgMGwtMjIuNjItMjIuNjJjLTYuMjUtNi4yNS02LjI1LTE2LjM4IDAtMjIuNjNMMzM4Ljc1IDI1NmwtNjIuMDYtNjIuMDZjLTYuMjUtNi4yNS02LjI1LTE2LjM4IDAtMjIuNjNsMjIuNjItMjIuNjJjNi4yNS02LjI1IDE2LjM4LTYuMjUgMjIuNjMgMEwzODQgMjEwLjc1bDYyLjA2LTYyLjA2YzYuMjUtNi4yNSAxNi4zOC02LjI1IDIyLjYzIDBsMjIuNjIgMjIuNjJjNi4yNSA2LjI1IDYuMjUgMTYuMzggMCAyMi42M0w0MjkuMjUgMjU2bDYyLjA2IDYyLjA2eiIvPjwvc3ZnPg'
             }),
-            actions: [ new GridActionCollectElement({action: GridActionCollectElement.COLLECT_ACTION_REMOVE_WORD})]
+            actions: [new GridActionCollectElement({action: GridActionCollectElement.COLLECT_ACTION_REMOVE_WORD})]
         });
         let elementClear = new GridElement({
-            label: i18nService.translate('Clear // Leeren'),
+            label: i18nService.translate('Clear // Leeren', locale),
             width: 1,
             height: 1,
             x: 3 + elementCollect.width,
