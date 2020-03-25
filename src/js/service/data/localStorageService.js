@@ -8,6 +8,8 @@ let USER_MODELVERSION_KEY = "USER_MODELVERSION_KEY";
 let SYNCED_DBS_LIST_KEY = "SYNCED_DBS_LIST_KEY";
 let LAST_ACTIVEUSER_KEY = "LAST_ACTIVEUSER_KEY";
 let AUTOLOGIN_USER_KEY = "AUTOLOGIN_USER_KEY";
+let SYNC_NAVIGATION_KEY = "AG_SYNC_NAVIGATION_KEY";
+let LOCAL_METADATA_KEY = "AG_LOCAL_METADATA_KEY";
 
 if (typeof (Storage) !== "undefined") {
     try {
@@ -238,6 +240,20 @@ var localStorageService = {
             object[user] = modelVersionString;
             localStorageService.save(USER_MODELVERSION_KEY, JSON.stringify(object));
         }
+    },
+    shouldSyncNavigation() {
+        let json = localStorageService.get(SYNC_NAVIGATION_KEY);
+        return json ? JSON.parse(json) : false;
+    },
+    setShouldSyncNavigation(value) {
+        localStorageService.save(SYNC_NAVIGATION_KEY, value);
+    },
+    saveLocalMetadata(metadata) {
+        return localStorageService.save(LOCAL_METADATA_KEY, JSON.stringify(metadata));
+    },
+    getLocalMetadata() {
+        let json = localStorageService.get(LOCAL_METADATA_KEY);
+        return json ? JSON.parse(json) : json;
     }
 };
 
