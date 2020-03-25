@@ -16,7 +16,7 @@ let _autosaveInterval = 10 * 60 * 1000; // 10 Minutes
 let _intervalHandler = null;
 
 predictionService.predict = function (input, dictionaryKey) {
-    if (input === undefined) {
+    if (input === undefined || registeredPredictElements.length === 0) {
         return;
     }
     if (!dictionaryKey) {
@@ -36,7 +36,7 @@ predictionService.predict = function (input, dictionaryKey) {
 };
 
 predictionService.learnFromInput = function (input) {
-    if (!input || !input.trim()) {
+    if (!input || !input.trim() || registeredPredictElements.length === 0) {
         return;
     }
     _unsavedChanges = predictionary.learnFromInput(input) || _unsavedChanges;
@@ -58,6 +58,9 @@ predictionService.initWithElements = function (elements) {
 };
 
 predictionService.applyPrediction = function (input, prediction) {
+    if (registeredPredictElements.length === 0) {
+        return;
+    }
     _unsavedChanges = true;
     return predictionary.applyPrediction(input, prediction);
 };
