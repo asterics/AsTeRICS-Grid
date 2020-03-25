@@ -565,9 +565,10 @@ dataService.importData = function (data, generateGlobalGrid, backupMode) {
                 importGrids.forEach(grid => {
                     grid.label = modelUtil.getNewName(grid.label, existingNames);
                 });
+                let locale = importGrids[0] ? importGrids[0].locale : null;
                 if (generateGlobalGrid) {
                     let homeGridId = importGrids[0].id;
-                    globalGrid = GridData.generateGlobalGrid(homeGridId);
+                    globalGrid = GridData.generateGlobalGrid(homeGridId, locale);
                     importGrids.unshift(globalGrid);
                 }
                 return dataService.saveGrids(importGrids).then(() => {
