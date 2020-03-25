@@ -2,18 +2,18 @@
     <div class="overflow-content">
         <header-icon full-header="true"></header-icon>
         <div class="row content spaced" v-if="show">
-            <h2 data-i18n="">General settings // Allgemeine Einstellungen</h2>
+            <div class="row">
+                <h2 data-i18n="" class="six columns">General settings // Allgemeine Einstellungen</h2>
+                <div v-if="saveSuccess" style="padding-top: 1.7em;"><i class="fas fa-check" style="color: green"></i> <span data-i18n="">All changes saved! // Alle Änderungen gespeichert!</span></div>
+            </div>
             <div class="ten columns">
                 <h3 data-i18n="">Language // Sprache</h3>
                 <div class="row">
-                    <label class="four columns" for="inLanguageCode">
+                    <label class="five columns" for="inLanguageCode">
                         <span data-i18n="">two-figure language code // zweistelliges Sprachkürzel</span>
                         <a href="https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes" target="_blank" data-i18n="">(ISO 639-1 list) // (ISO 639-1 Liste)</a>
                     </label>
-                    <input id="inLanguageCode" class="four columns" v-model="langCode" type="text" maxlength="2" placeholder="empty = automatic" @input="saveSuccess = null"/>
-                    <button id="saveLangCode" class="three columns" @click="saveLangCode('saveLangCode')">
-                        <span v-show="saveSuccess !== 'saveLangCode'" data-i18n="">Save // Speichern</span><span v-show="saveSuccess === 'saveLangCode'" data-i18n="">Saved // Gespeichert</span> <i v-show="saveSuccess === 'saveLangCode'" class="fas fa-check"></i>
-                    </button>
+                    <input id="inLanguageCode" class="six columns" v-model="langCode" type="text" maxlength="2" placeholder="empty = automatic" @input="saveLangCode()"/>
                 </div>
                 <div class="row" style="margin-bottom: 0.5em">
                     <span class="fa fa-info-circle"></span>
@@ -36,23 +36,27 @@
             <div class="ten columns">
                 <h3 data-i18n="">Voice // Stimme</h3>
                 <div class="row">
-                    <label class="four columns" for="inVoice">
+                    <label class="three columns" for="inVoice">
                         <span data-i18n="">Preferred voice // Bevorzugte Stimme</span>
                     </label>
-                    <select id="inVoice" class="four columns" v-model="selectedVoiceName" @change="saveSuccess = null">
+                    <select id="inVoice" class="five columns" v-model="selectedVoiceName" @change="saveVoice('saveVoice')">
                         <option value="" data-i18n="">automatic // automatisch</option>
                         <option v-for="voice in voices" :value="voice.name">{{voice.name}}</option>
                     </select>
-                    <button id="saveVoice" class="three columns" @click="saveVoice('saveVoice')">
-                        <span v-show="saveSuccess !== 'saveVoice'" data-i18n="">Save // Speichern</span><span v-show="saveSuccess === 'saveVoice'" data-i18n="">Saved // Gespeichert</span> <i v-show="saveSuccess === 'saveVoice'" class="fas fa-check"></i>
-                    </button>
                 </div>
                 <div class="row">
-                    <label class="four columns" for="inVoice">
+                    <label class="three columns" for="inVoice">
                         <span data-i18n="">Test text // Test-Text</span>
                     </label>
-                    <input class="four columns" type="text" v-model="testText">
+                    <input class="five columns" type="text" v-model="testText">
                     <button id="testVoice" class="three columns" @click="testSpeak" data-i18n="">Test // Testen</button>
+                </div>
+            </div>
+            <div class="ten columns">
+                <h3 data-i18n="">Miscellaneous // Diverses</h3>
+                <div class="row">
+                    <input id="chkSyncNavigation" type="checkbox" v-model="syncNavigation" @change="saveSyncNavigation()"/>
+                    <label for="chkSyncNavigation" data-i18n="">Synchronize navigation and locked/fullscreen state for online users // Navigation und Sperr- bzw. Vollbildstatus für online User synchronisieren</label>
                 </div>
             </div>
         </div>
@@ -64,6 +68,8 @@
     import {dataService} from "../../js/service/data/dataService";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {speechService} from "../../js/service/speechService";
+    import {util} from "../../js/util/util";
+    import {localStorageService} from "../../js/service/data/localStorageService";
 
     export default {
         components: {HeaderIcon},
@@ -75,20 +81,34 @@
                 langCode: '',
                 saveSuccess: null,
                 speechService: speechService,
+                syncNavigation: localStorageService.shouldSyncNavigation(),
                 voices: speechService.getVoices(),
                 selectedVoiceName: speechService.getPreferredVoiceName(),
                 testText: i18nService.translate('This is an english sentence. // Das ist ein deutscher Satz.')
             }
         },
         methods: {
-            saveLangCode(id) {
-                i18nService.setLanguage(this.langCode);
-                i18nService.initDomI18n();
-                this.saveSuccess = id;
+            saveLangCode() {
+                this.saveSuccess = undefined;
+                util.debounce(() => {
+                    i18nService.setLanguage(this.langCode);
+                    i18nService.initDomI18n();
+                    this.saveSuccess = true;
+                }, 300, 'SAVE_LANG');
             },
-            saveVoice(id) {
-                speechService.setPreferredVoiceName(this.selectedVoiceName);
-                this.saveSuccess = id;
+            saveVoice() {
+                this.saveSuccess = undefined;
+                util.debounce(() => {
+                    speechService.setPreferredVoiceName(this.selectedVoiceName);
+                    this.saveSuccess = true;
+                }, 300, 'SAVE_VOICE');
+            },
+            saveSyncNavigation() {
+                this.saveSuccess = undefined;
+                util.debounce(() => {
+                    localStorageService.setShouldSyncNavigation(this.syncNavigation);
+                    this.saveSuccess = true;
+                }, 300, 'SAVE_NAV');
             },
             testSpeak() {
                 let voice = this.voices.filter(voice => voice.name === this.selectedVoiceName)[0];
