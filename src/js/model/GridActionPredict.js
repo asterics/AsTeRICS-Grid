@@ -6,7 +6,7 @@ class GridActionPredict extends Model({
     id: String,
     modelName: String,
     modelVersion: String,
-    dictionaryKey: [String],
+    dictionaryKey: [String, undefined, null],
     suggestOnChange: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
