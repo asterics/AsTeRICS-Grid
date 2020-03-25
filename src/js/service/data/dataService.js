@@ -13,6 +13,7 @@ import {fileUtil} from "../../util/fileUtil";
 import {progressService} from "../progressService";
 import {i18nService} from "../i18nService";
 import {predictionService} from "../predictionService";
+import {localStorageService} from "./localStorageService";
 
 let dataService = {};
 
@@ -267,12 +268,19 @@ dataService.addGridElements = function (gridId, newGridElements) {
  * @return {Promise} resolves after operation finished successful
  */
 dataService.saveMetadata = function (newMetadata) {
+    newMetadata = JSON.parse(JSON.stringify(newMetadata));
     return new Promise(resolve => {
         dataService.getMetadata().then(existingMetadata => {
             if (existingMetadata) {
                 //new metadata is stored with ID of existing metadata -> there should only be one metadata object
                 let id = existingMetadata instanceof Array ? existingMetadata[0].id : existingMetadata.id;
                 newMetadata.id = id;
+                if (!localStorageService.shouldSyncNavigation()) {
+                    localStorageService.saveLocalMetadata(newMetadata);
+                    newMetadata.locked = existingMetadata.locked;
+                    newMetadata.fullscreen = existingMetadata.fullscreen;
+                    newMetadata.lastOpenedGridId = existingMetadata.lastOpenedGridId;
+                }
             }
             if (!existingMetadata.isEqual(newMetadata)) {
                 databaseService.saveObject(MetaData, newMetadata).then(() => {
@@ -294,13 +302,23 @@ dataService.saveMetadata = function (newMetadata) {
 dataService.getMetadata = function () {
     return new Promise(resolve => {
         databaseService.getObject(MetaData).then(result => {
+            let returnValue = null;
             if (!result) {
-                resolve(new MetaData());
+                returnValue = new MetaData();
             } else if (result instanceof Array) {
-                resolve(new MetaData(result[0]));
+                returnValue = result[0];
             } else {
-                resolve(new MetaData(result));
+                returnValue = result;
             }
+            if (!localStorageService.shouldSyncNavigation()) {
+                let localMetadata = localStorageService.getLocalMetadata();
+                if (localMetadata) {
+                    returnValue.locked = localMetadata.locked;
+                    returnValue.fullscreen = localMetadata.fullscreen;
+                    returnValue.lastOpenedGridId = localMetadata.lastOpenedGridId;
+                }
+            }
+            resolve(new MetaData(returnValue));
         });
     });
 };
