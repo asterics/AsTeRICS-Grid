@@ -161,6 +161,11 @@
                     thiz.localEventHandler.destroy();
                     input.keyCode = keyCode;
                     input.keyName = keyName;
+                    Object.assign(input, {
+                        repeat: 1,
+                        timeout: 0,
+                        holdDuration: 0
+                    });
                     Vue.set(thiz.keyRecording, recordingID, false);
                     thiz.modelChanged();
                 });
