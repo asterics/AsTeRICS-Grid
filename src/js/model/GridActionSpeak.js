@@ -7,7 +7,7 @@ class GridActionSpeak extends Model({
     id: String,
     modelName: String,
     modelVersion: String,
-    speakLanguage: String
+    speakLanguage: [String, null, undefined]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionSpeak);

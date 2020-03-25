@@ -48,6 +48,10 @@ obfConverter.OBFToGridData = function (obfObject, obfObjects) {
                 backgroundColor: button.background_color
             });
             gridElement = addActions(gridElement, button, obfObject, obfObjects);
+            let speakActions = gridElement.actions.filter(a => a.modelName === GridActionSpeak.getModelName());
+            speakActions.forEach(action => {
+                action.speakLanguage = obfObject.locale
+            });
             promises.push(getGridImage(button.image_id, obfObject, obfObjects).then(gridImage => {
                 gridElement.image = gridImage;
                 return Promise.resolve();
@@ -90,12 +94,14 @@ obfConverter.OBZToGridSet = function (obzFileMap) {
                         if (gridId) {
                             action.toGridId = gridId;
                         } else {
-                            //gridElement.actions = gridElement.actions.filter(a => a.modelName !== GridActionNavigate.getModelName());
+                            gridElement.actions = gridElement.actions.filter(a => a.id !== action.id);
                         }
                     }
                 })
             });
-            //delete grid.obfId;
+        });
+        grids.forEach(grid => {
+            delete grid.obfId;
         });
         return Promise.resolve(grids);
     });
@@ -114,7 +120,8 @@ function addActions(gridElement, obfButton, obfObject, obfObjects) {
     if (obfButton.vocalization) {
         gridElement.actions = gridElement.actions.filter(action => action.modelName !== GridActionSpeak.getModelName());
         gridElement.actions.push(new GridActionSpeakCustom({
-            speakText: obfButton.vocalization
+            speakText: obfButton.vocalization,
+            speakLanguage: obfObject.locale
         }));
     }
     if (obfButton.load_board && obfButton.load_board.path) {
