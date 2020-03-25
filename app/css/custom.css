@@ -323,6 +323,10 @@ nav li:hover button span {
     padding: 1.5vh 0.5em 1.5vh 0.7em;
 }
 
+.boldFont {
+    font-weight: bold;
+}
+
 @media (max-height: 355px) {
     #syncVisualization {
         display: none;

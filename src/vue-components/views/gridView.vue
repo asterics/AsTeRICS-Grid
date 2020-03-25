@@ -218,6 +218,7 @@
                 stopInputMethods();
                 dataService.getMetadata().then(newMetadata => {
                     thiz.metadata = JSON.parse(JSON.stringify(newMetadata));
+                    initContextmenu(); //in order to update visualization of active input methods in context menu
                     thiz.initInputMethods();
                 });
             },
@@ -382,32 +383,49 @@
     }
 
     function initContextmenu() {
+        $.contextMenu('destroy');
         let CONTEXT_MOUSE = "CONTEXT_MOUSE";
         let CONTEXT_SCANNING = "CONTEXT_SCANNING";
         let CONTEXT_DIRECTION = "CONTEXT_DIRECTION";
         let CONTEXT_HUFFMAN = "CONTEXT_HUFFMAN";
         let CONTEXT_SEQUENTIAL = "CONTEXT_SEQUENTIAL";
 
+        function getActiveText(isActive, german) {
+            let text = german ? ' (aktiv)' : ' (active)'
+            return isActive ? text : ''
+        }
+
+        function getName(english, german, isActive) {
+            return `${english}${getActiveText(isActive)} // ${german}${getActiveText(isActive, true)}`;
+        }
+
+        let inputConfig = vueApp.metadata.inputConfig;
+        let mouseTouchEnabled = inputConfig.mouseclickEnabled || inputConfig.hoverEnabled;
         let contextItems = {
             CONTEXT_MOUSE: {
-                name: "Mouse/Touch input // Maus-/Toucheingabe ",
-                icon: "fas fa-mouse-pointer"
+                name: getName('Mouse/Touch input', 'Maus-/Toucheingabe', mouseTouchEnabled),
+                icon: "fas fa-mouse-pointer",
+                className: mouseTouchEnabled ? 'boldFont' : ''
             },
             CONTEXT_SCANNING: {
-                name: "Scanning",
-                icon: "fas fa-sort-amount-down"
+                name: getName('Scanning', 'Scanning', inputConfig.scanEnabled),
+                icon: "fas fa-sort-amount-down",
+                className: inputConfig.scanEnabled ? 'boldFont' : ''
             },
             CONTEXT_DIRECTION: {
-                name: "Direction input // Richtungs-Eingabe",
-                icon: "fas fa-arrows-alt"
+                name: getName('Direction input', 'Richtungs-Eingabe', inputConfig.dirEnabled),
+                icon: "fas fa-arrows-alt",
+                className: inputConfig.dirEnabled ? 'boldFont' : ''
             },
             CONTEXT_HUFFMAN: {
-                name: "Huffman input // Huffman-Eingabe",
-                icon: "fas fa-ellipsis-h"
+                name: getName('Huffman input', 'Huffman-Eingabe', inputConfig.huffEnabled),
+                icon: "fas fa-ellipsis-h",
+                className: inputConfig.huffEnabled ? 'boldFont' : ''
             },
             CONTEXT_SEQUENTIAL: {
-                name: "Sequential input // Sequentielle Eingabe",
-                icon: "fas fa-arrow-right"
+                name: getName('Sequential input', 'Sequentielle Eingabe', inputConfig.seqEnabled),
+                icon: "fas fa-arrow-right",
+                className: inputConfig.seqEnabled ? 'boldFont' : ''
             }
         };
 
