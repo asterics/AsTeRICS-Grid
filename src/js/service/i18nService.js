@@ -36,7 +36,8 @@ i18nService.isBrowserLangDE = function () {
 i18nService.translate = function (key, ...args) {
     if (key && key.indexOf(separator) > -1) {
         let translations = key.split(separator);
-        let index = languages.indexOf(i18nService.getBrowserLang());
+        let locale = args[0] === 'en' ||  args[0] === 'de' ? args[0] : i18nService.getBrowserLang();
+        let index = languages.indexOf(locale);
         index = index > 0 ? index : 0;
         args.forEach(arg => {
             translations[index] = translations[index].replace('{?}', arg);
