@@ -70,6 +70,7 @@
     import HuffmanInputModal from "../modals/input/huffmanInputModal.vue";
     import SequentialInputModal from "../modals/input/sequentialInputModal.vue";
     import {speechService} from "../../js/service/speechService";
+    import {localStorageService} from "../../js/service/data/localStorageService";
 
     let vueApp = null;
     let gridInstance = null;
@@ -136,10 +137,13 @@
             },
             applyFullscreen(dontSave) {
                 this.metadata.fullscreen = true;
+                let promise = Promise.resolve();
                 if (!dontSave) {
-                    dataService.saveMetadata(this.metadata);
+                    promise = dataService.saveMetadata(this.metadata);
                 }
-                $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
+                promise.then(() => {
+                    $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
+                });
             },
             initInputMethods() {
                 let thiz = this;
@@ -247,12 +251,14 @@
                 if (updatedGridDoc) {
                     vueApp.reload(new GridData(updatedGridDoc));
                 }
+                if (!localStorageService.shouldSyncNavigation()) {
+                    return;
+                }
                 if (updatedMetadataDoc && updatedMetadataDoc.lastOpenedGridId !== vueApp.gridData.id) {
                     Router.toLastOpenedGrid();
                     return;
                 }
                 if (updatedMetadataDoc && updatedMetadataDoc.fullscreen !== vueApp.metadata.fullscreen) {
-                    vueApp.metadata.fullscreen = updatedMetadataDoc.fullscreen;
                     if (updatedMetadataDoc.fullscreen) {
                         vueApp.applyFullscreen(true);
                     } else {
@@ -297,7 +303,11 @@
             vueApp = thiz;
             dataService.getGrid(thiz.gridId).then(gridData => {
                 if (!gridData) {
-                    throw 'grid not found! gridId: ' + this.gridId;
+                    log.warn('grid not found! gridId: ' + this.gridId);
+                    return dataService.getGrids(false, true).then(grids => {
+                        Router.toGrid(grids[0].id);
+                        return Promise.reject();
+                    });
                 }
                 if (gridData.hasAREModel()) {
                     let areModel = gridData.getAREModel();
@@ -309,18 +319,19 @@
             }).then(() => {
                 return dataService.getMetadata();
             }).then((savedMetadata) => {
-                let metadata = new MetaData(savedMetadata) || new MetaData();
+                let metadata = JSON.parse(JSON.stringify(savedMetadata || new MetaData()));
                 metadata.lastOpenedGridId = this.gridId;
                 metadata.locked = metadata.locked === undefined ? urlParamService.isDemoMode() && dataService.getCurrentUser() === constants.LOCAL_DEMO_USERNAME : metadata.locked;
                 metadata.fullscreen = metadata.fullscreen === undefined ? urlParamService.isDemoMode() && dataService.getCurrentUser() === constants.LOCAL_DEMO_USERNAME : metadata.fullscreen;
                 metadata.inputConfig.scanEnabled = urlParamService.isScanningEnabled() ? true : metadata.inputConfig.scanEnabled;
                 metadata.inputConfig.dirEnabled = urlParamService.isDirectionEnabled() ? true : metadata.inputConfig.dirEnabled;
                 metadata.inputConfig.huffEnabled = urlParamService.isHuffmanEnabled() ? true : metadata.inputConfig.huffEnabled;
-                dataService.saveMetadata(metadata);
-                if (metadata.locked) {
-                    $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
-                }
-                thiz.metadata = JSON.parse(JSON.stringify(metadata));
+                dataService.saveMetadata(metadata).then(() => {
+                    if (metadata.locked) {
+                        $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
+                    }
+                });
+                thiz.metadata = metadata;
                 return Promise.resolve();
             }).then(() => {
                 return initGrid(thiz.gridData.id);
@@ -330,9 +341,6 @@
                 thiz.initInputMethods();
             }).catch((e) => {
                 log.warn(e);
-                dataService.getGrids(false, true).then(grids => {
-                    Router.toGrid(grids[0].id);
-                });
             });
         },
         updated() {
