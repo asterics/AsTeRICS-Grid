@@ -87,10 +87,12 @@ Clicking on Button "More" (Fig. 3, number 4) opens menu with additional options:
 These are the possible options:
 
 1. **New grid**: creates a new and empty grid, same as Fig. 3, number 3
-1. **Export all grids to file**: creates and downloads a file (.grd) containing a backup of all current grids
-1. **Import grid(s) from file**: imports one or more grids from a .grd file in addition to currently existing grids
-1. **Import backup from file**: imports one or more grids from a .grd file as a backup, deleting all current grids and only keeping the grids from the imported .grd file
+1. **Export backup to file**: creates and downloads a `.grd` file containing a backup of all current grids, dictionaries and input configuration
+1. **Import grid(s) from file**: imports one or more grids from a `.grd`, `.obf` or `.obz` file in addition to currently existing grids. Does not import dictionaries or input configuration.
+1. **Clear and import from file**: deletes all current grids and imports one or more grids from a `.grd`, `.obf` or `.obz` file. Also imports and replaces dictionaries and overwrites current input configuration if this information is present in the imported `.grd` file.
 1. **Reset to default configuration**: deletes all current grids and replaces them with the default demo configuration
+
+**Info about Open Board Format (OBF)**: OBF is an open format for exchanging grids across different AAC tools and is specified on the [official website](https://www.openboardformat.org/). AsTeRICS Grid supports importing OBF files (`.obf` and `.obz`) using the options *Import grid(s) from file* or *Clear and import from file*.
 
 ## Manage dictionaries view
 In the manage dictionaries view currently saved dictionaries that are used for filling prediction elements (see [Terms](01_terms.md#grid-element)) can be shown and adapted (Figure 4):
