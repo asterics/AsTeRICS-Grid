@@ -1,6 +1,9 @@
+import {i18nService} from "./i18nService";
+
 let helpService = {};
 //let HELP_BASE_PATH = 'https://github.com/asterics/AsTeRICS-Grid/blob/master/docs/documentation_user/';
 let HELP_BASE_PATH = 'https://www.asterics.eu/manuals/asterics-grid/';
+let GOOGLE_TRANSLATE_BASE_PATH = 'https://translate.google.com/translate?sl=en&tl=de&u=';
 //let HELP_FILE_POSTFIX = '.md';
 let HELP_FILE_POSTFIX = '.html';
 
@@ -43,7 +46,11 @@ helpService.revertToLastLocation = function () {
  */
 helpService.openHelp = function () {
     let postfix = _helpFile ? _helpFile + HELP_FILE_POSTFIX + _helpHash : _helpHash;
-    window.open(HELP_BASE_PATH + postfix, '_blank');
+    let link = HELP_BASE_PATH + postfix;
+    if (i18nService.isBrowserLangDE()) {
+        link = GOOGLE_TRANSLATE_BASE_PATH + encodeURI(link);
+    }
+    window.open(link, '_blank');
 };
 
 function init() {
