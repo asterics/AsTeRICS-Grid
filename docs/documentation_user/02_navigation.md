@@ -71,7 +71,9 @@ The following elements are available in the manage grids view:
 1. **Search bar**: filter the listed grids by entering a part of a grid name
 1. **New grid**: add a new, empty grid
 1. **More**: shows menu with additional actions, e.g. backup the grids to file
-1. **Edit grid name**: edit the name of the grid
+1. **Activate global Grid**: activates or deactivates the [global grid](02_navigation.md#global-grid)
+1. **Edit global Grid**: opens the edit view for the global grid
+1. **Reset global Grid to default**: resets the global grid to default, a row with the following grid elements: "Start", "Back", text entry field, "Delete Word", "Clear" .
 1. **Show**: open this grid in main view
 1. **Edit**: open this grid in edit view
 1. **Clone**: duplicate this grid, creating a copy of it with a different name
@@ -93,6 +95,13 @@ These are the possible options:
 1. **Reset to default configuration**: deletes all current grids and replaces them with the default demo configuration
 
 **Info about Open Board Format (OBF)**: OBF is an open format for exchanging grids across different AAC tools and is specified on the [official website](https://www.openboardformat.org/). AsTeRICS Grid supports importing OBF files (`.obf` and `.obz`) using the options *Import grid(s) from file* or *Clear and import from file*.
+
+### Global grid
+A global grid is a grid that is visible on every grid page. It may contain general elements that make sense within every grid like e.g. a "Home" grid element that navigates to the start page. A global grid could also contain some kind of core vocabulary that should be visible any time. The following image shows a global grid in action in addition to the "CommuniKate 20" board set from [openboardformat.org](https://www.openboardformat.org/examples):
+
+![manage grids view](./img/global-grid-communikate20.png)
+
+All lightblue elements on top and on the left are elements contained within the global grid. They are visible on every grid page. The global grid can be activated/deactivated and edited in the "Manage Grids" view (see Fig. 3).
 
 ## Manage dictionaries view
 In the manage dictionaries view currently saved dictionaries that are used for filling prediction elements (see [Terms](01_terms.md#grid-element)) can be shown and adapted (Figure 4):
