@@ -293,7 +293,7 @@
                 icon: "fas fa-file-import"
             },
             CONTEXT_IMPORT_BACKUP: {
-                name: "Import backup from file // Backup aus Datei importieren",
+                name: "Clear all and import from file // Alles löschen und aus Datei importieren",
                 icon: "fas fa-file-import"
             },
             SEP2: "---------"
@@ -311,7 +311,7 @@
                 icon: "fas fa-file-import"
             },
             CONTEXT_IMPORT_BACKUP: {
-                name: "Import backup from file // Backup aus Datei importieren",
+                name: "Clear all and import from file // Alles löschen und aus Datei importieren",
                 icon: "fas fa-file-import"
             },
             SEP2: "---------",
