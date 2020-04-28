@@ -136,6 +136,7 @@
                 }
             },
             applyFullscreen(dontSave) {
+                util.openFullscreen();
                 this.metadata.fullscreen = true;
                 let promise = Promise.resolve();
                 if (!dontSave) {

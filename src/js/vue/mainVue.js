@@ -129,7 +129,8 @@ MainVue.init = function () {
             });
             inputEventHandler.global
                 .onSwipedDown(openSidebarIfFullscreen)
-                .onEscape(openSidebarIfFullscreen);
+                .onEscape(openSidebarIfFullscreen)
+                .onExitFullscreen(openSidebarIfFullscreen);
             inputEventHandler.global.startListening();
             thiz.openSidebar();
 
@@ -137,6 +138,7 @@ MainVue.init = function () {
                 if (thiz.showSidebar || !databaseService.getCurrentUsedDatabase()) {
                     return;
                 }
+                util.closeFullscreen();
                 dataService.getMetadata().then(metadata => {
                     if (metadata.fullscreen) {
                         metadata.fullscreen = false;
