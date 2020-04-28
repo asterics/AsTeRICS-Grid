@@ -131,7 +131,8 @@ util.splitInChunks = function (array, chunkSize) {
 };
 
 util.openFullscreen = function () {
-    let elem = document.body;
+    let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    let elem = isSafari ? document.documentElement : document.body;
     let openFn = elem.requestFullscreen || elem.mozRequestFullScreen || elem.webkitRequestFullscreen || elem.msRequestFullscreen;
     if (openFn) {
         openFn.call(elem);
