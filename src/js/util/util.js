@@ -130,4 +130,24 @@ util.splitInChunks = function (array, chunkSize) {
     return R;
 };
 
+util.openFullscreen = function () {
+    let elem = document.body;
+    let openFn = elem.requestFullscreen || elem.mozRequestFullScreen || elem.webkitRequestFullscreen || elem.msRequestFullscreen;
+    if (openFn) {
+        openFn.call(elem);
+    }
+};
+
+util.closeFullscreen = function () {
+    if (!document.fullscreenElement) {
+        return;
+    }
+    let closeFn = document.exitFullscreen || document.mozCancelFullScreen || document.webkitExitFullscreen || document.msExitFullscreen;
+    if (closeFn) {
+        closeFn.call(document);
+    }
+};
+
+
+
 export {util};
