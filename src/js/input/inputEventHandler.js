@@ -48,6 +48,7 @@ function Constructor() {
     let touchStartHandlers = [];
     let touchEndHandlers = [];
     let anyKeyHandlers = [];
+    let exitFullscreenHandlers = [];
     let keyHandlers = {}; //keycode => [{handler, lastKeydown, lastAction, counter, inputEventKey}]
     let _touchElement = document.body;
     let _listening = false;
@@ -63,6 +64,7 @@ function Constructor() {
         document.addEventListener('mousemove', mouseMoveListener);
         document.addEventListener('keydown', keyboardListener);
         document.addEventListener('keyup', keyUpListener);
+        document.addEventListener('fullscreenchange', fullscreenChangeListener);
         _touchElement.addEventListener('touchmove', touchMoveListener, {passive: false} );
         _touchElement.addEventListener('touchstart', touchStartListener);
         _touchElement.addEventListener('touchend', touchEndListener);
@@ -74,6 +76,7 @@ function Constructor() {
         document.removeEventListener('mousemove', mouseMoveListener);
         document.removeEventListener('keydown', keyboardListener);
         document.removeEventListener('keyup', keyUpListener);
+        document.removeEventListener('fullscreenchange', fullscreenChangeListener);
         _touchElement.removeEventListener('touchmove', touchMoveListener);
         _touchElement.removeEventListener('touchstart', touchStartListener);
         _touchElement.removeEventListener('touchend', touchEndListener);
@@ -130,6 +133,10 @@ function Constructor() {
 
     thiz.onTouchEnd = function (fn) {
         return registerHandler(fn, touchEndHandlers);
+    };
+
+    thiz.onExitFullscreen = function(fn) {
+        return registerHandler(fn, exitFullscreenHandlers);
     };
 
     thiz.off = function(fn) {
@@ -194,6 +201,7 @@ function Constructor() {
         let array = keyHandlers[key] ? keyHandlers[key] : [];
         keyHandlers[key] = array;
         array.push(getKeyHandlerEntry(fn, inputEventKeyInstance));
+        return thiz;
     }
 
     function getKeyHandlerEntry(handlerFn, inputEventKeyInstance) {
@@ -332,6 +340,12 @@ function Constructor() {
                 }
             });
 
+        }
+    }
+
+    function fullscreenChangeListener() {
+        if (!document.fullscreenElement) {
+            callHandlers(exitFullscreenHandlers);
         }
     }
 
