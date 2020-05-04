@@ -307,6 +307,11 @@
             },
             saveInternal() {
                 let thiz = this;
+                thiz.gridData.gridElements.forEach((e, index) => {
+                    if (e.id === thiz.gridElement.id) {
+                        thiz.gridData.gridElements[index] = thiz.gridElement;
+                    }
+                });
                 return dataService.saveGrid(thiz.gridData).then(() => {
                     return dataService.saveAdditionalGridFiles(thiz.gridData.id, Object.values(thiz.additionalGridFiles)).then(() => {
                         thiz.$emit('reload');
