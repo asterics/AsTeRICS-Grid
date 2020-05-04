@@ -12,19 +12,27 @@
                             <a target="_blank" href="https://embsys.technikum-wien.at/projects/torades/index.php">More information about project ToRaDes</a>
                             <br/><br/>
 
+                            Current development of AsTeRICS Grid is done in the project "Knowledge Hub for Accessible Technologies" (WBT), funded by the city of Vienna (project number 26-02).<br/>
+                            <a target="_blank" href="https://embsys.technikum-wien.at/projects/khat/index.php">More information about project WBT</a>
+                            <br/><br/>
+
                             AsTeRICS Grid is free and open source and hosted on github.com.<br/>
                             <a target="_blank" href="https://github.com/asterics/AsTeRICS-Grid">AsTeRICS Grid on github</a>
                         </span>
                         <span>
-                            Die erste Version von AsTeRICS Grid wurde an der FH Technikum Wien im Projekt ToRaDes entwickelt, gefördert von der Stadt Wien (Projektnummer 18-04).<br/>
+                            Die erste Version von AsTeRICS Grid wurde an der FH Technikum Wien im Projekt ToRaDes entwickelt, das von von der Stadt Wien gefördert wurde (Projektnummer 18-04).<br/>
                             <a target="_blank" href="https://embsys.technikum-wien.at/projects/torades/index.php">Mehr Informationen zum Projekt ToRaDes</a>
+                            <br/><br/>
+
+                            Die Weiterentwicklung von AsTeRICS Grid erfolgt derzeit im Projekt "Wissensdrehscheibe für Barrierefreie Technologien" (WBT), gefördert von der Stadt Wien (Projektnummer 26-02).<br/>
+                            <a target="_blank" href="https://embsys.technikum-wien.at/projects/khat/index.php">Mehr Informationen zum Projekt WBT</a>
                             <br/><br/>
 
                             AsTeRICS Grid ist kostenlos und OpenSource und als Projekt auf github.com verfügbar.<br/>
                             <a target="_blank" href="https://github.com/asterics/AsTeRICS-Grid">AsTeRICS Grid auf github</a>
                         </span>
                     </div><br/>
-                    <img src="app/img/ma23-gefoerdertvon.jpg" width="80px">
+                    <img src="app/img/ma23-gefoerdertvon.jpg" width="80px" alt="Logo MA23 Stadt Wien">
                 </div>
                 <div class="row">
                     <h3>Feedback</h3>
