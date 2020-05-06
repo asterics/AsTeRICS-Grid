@@ -17,7 +17,7 @@ var collectedText = '';
 let keyboardLikeFactor = 0;
 let dictionaryKey = null;
 
-collectElementService.initWithElements = function (elements) {
+collectElementService.initWithElements = function (elements, dontAutoPredict) {
     registeredCollectElements = [];
     let oneCharacterElements = 0;
     let normalElements = 0;
@@ -42,9 +42,11 @@ collectElementService.initWithElements = function (elements) {
     if (registeredCollectElements.length > 0) {
         let intervalHandler = setInterval(() => {
             if ($('.item[data-type="ELEMENT_TYPE_COLLECT"]').length > 0) {
-                setText();
-                predictionService.predict(collectedText, dictionaryKey);
                 clearInterval(intervalHandler);
+                setText();
+                if (!dontAutoPredict) {
+                    predictionService.predict(collectedText, dictionaryKey);
+                }
             }
         }, 100);
     }
