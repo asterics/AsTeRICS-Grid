@@ -120,6 +120,7 @@
                                                     <label for="comboUseDict" class="normal-text" data-i18n>Dictionary to use // Zu verwendendes Wörterbuch</label>
                                                 </div>
                                                 <select class="eight columns" id="comboUseDict" v-model="action.dictionaryKey">
+                                                    <option :value="undefined" data-i18n="">all dictionaries // alle Wörterbücher</option>
                                                     <option v-for="id in dictionaryKeys" :value="id">
                                                         {{id}}
                                                     </option>
