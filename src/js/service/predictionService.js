@@ -35,11 +35,11 @@ predictionService.predict = function (input, dictionaryKey) {
     fontUtil.adaptFontSize($('.item[data-type="ELEMENT_TYPE_PREDICTION"]'));
 };
 
-predictionService.learnFromInput = function (input) {
+predictionService.learnFromInput = function (input, dictionaryKey) {
     if (!input || !input.trim() || registeredPredictElements.length === 0) {
         return;
     }
-    _unsavedChanges = predictionary.learnFromInput(input) || _unsavedChanges;
+    _unsavedChanges = predictionary.learnFromInput(input, dictionaryKey) || _unsavedChanges;
 };
 
 predictionService.initWithElements = function (elements) {
@@ -57,12 +57,12 @@ predictionService.initWithElements = function (elements) {
     saveDictionaries();
 };
 
-predictionService.applyPrediction = function (input, prediction) {
+predictionService.applyPrediction = function (input, prediction, dictionaryKey) {
     if (registeredPredictElements.length === 0) {
         return;
     }
     _unsavedChanges = true;
-    return predictionary.applyPrediction(input, prediction);
+    return predictionary.applyPrediction(input, prediction, {addToDictionary: dictionaryKey});
 };
 
 predictionService.doAction = function (elementId) {
