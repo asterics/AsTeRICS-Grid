@@ -8,17 +8,20 @@ import {fontUtil} from "../util/fontUtil";
 import {GridActionCollectElement} from "../model/GridActionCollectElement";
 import {GridActionNavigate} from "../model/GridActionNavigate";
 import {GridActionSpeak} from "../model/GridActionSpeak";
+import {GridActionPredict} from "../model/GridActionPredict";
 
 var collectElementService = {};
 
 var registeredCollectElements = [];
 var collectedText = '';
 let keyboardLikeFactor = 0;
+let dictionaryKey = null;
 
 collectElementService.initWithElements = function (elements) {
     registeredCollectElements = [];
     let oneCharacterElements = 0;
     let normalElements = 0;
+    dictionaryKey = null;
     elements.forEach(element => {
         if (element && element.type === GridElement.ELEMENT_TYPE_NORMAL) {
             normalElements++;
@@ -27,7 +30,12 @@ collectElementService.initWithElements = function (elements) {
             }
         }
         if (element && element.type === GridElement.ELEMENT_TYPE_COLLECT) {
-            registeredCollectElements.push(JSON.parse(JSON.stringify(element)));
+            let copy = JSON.parse(JSON.stringify(element));
+            dictionaryKey = dictionaryKey || copy.actions.reduce((total, action) => {
+                let dictKey = GridActionPredict.getModelName() ? action.dictionaryKey : null;
+                return total || dictKey;
+            }, null);
+            registeredCollectElements.push(copy);
         }
     });
     keyboardLikeFactor = oneCharacterElements / normalElements;
@@ -35,7 +43,7 @@ collectElementService.initWithElements = function (elements) {
         let intervalHandler = setInterval(() => {
             if ($('.item[data-type="ELEMENT_TYPE_COLLECT"]').length > 0) {
                 setText();
-                predictionService.predict(collectedText);
+                predictionService.predict(collectedText, dictionaryKey);
                 clearInterval(intervalHandler);
             }
         }, 100);
@@ -44,7 +52,7 @@ collectElementService.initWithElements = function (elements) {
 
 collectElementService.doAction = function (elem) {
     if (getActionOfType(elem, 'GridActionPredict')) {
-        predictionService.predict(collectedText);
+        predictionService.predict(collectedText, dictionaryKey);
     }
     let speakAction = elem.actions.filter(a => a.modelName === GridActionSpeak.getModelName())[0];
     let language = speakAction && speakAction.speakLanguage ? speakAction.speakLanguage : i18nService.getBrowserLang();
@@ -78,13 +86,13 @@ collectElementService.doCollectElementActions = function (action) {
             util.copyToClipboard('');
             break;
     }
-    predictionService.predict(collectedText);
+    predictionService.predict(collectedText, dictionaryKey);
 };
 
 function setText(text) {
     text = text === undefined ? collectedText : text;
     collectedText = text;
-    predictionService.learnFromInput(collectedText);
+    predictionService.learnFromInput(collectedText, dictionaryKey);
     $('.item[data-type="ELEMENT_TYPE_COLLECT"] .collect-text').text(collectedText);
     fontUtil.adaptFontSize($('.item[data-type="ELEMENT_TYPE_COLLECT"]'));
 }
@@ -123,19 +131,19 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         registeredCollectElements.forEach(collectElem => {
             let predictAction = getActionOfType(collectElem, 'GridActionPredict');
             if (predictAction && predictAction.suggestOnChange) {
-                predictionService.predict(collectedText);
+                predictionService.predict(collectedText, dictionaryKey);
             }
         });
     }
     if (element.type && element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
         let word = $(`#${element.id} .text-container span`).text();
         if (word) {
-            let appliedText = predictionService.applyPrediction(collectedText || '', word);
+            let appliedText = predictionService.applyPrediction(collectedText || '', word, dictionaryKey);
             setText(appliedText);
             registeredCollectElements.forEach(collectElem => {
                 let predictAction = getActionOfType(collectElem, 'GridActionPredict');
                 if (predictAction && predictAction.suggestOnChange) {
-                    predictionService.predict(collectedText);
+                    predictionService.predict(collectedText, dictionaryKey);
                 }
             });
         }
