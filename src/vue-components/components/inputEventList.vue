@@ -70,8 +70,8 @@
                         </span>
                     </div>
                     <div class="row">
-                        <span v-for="eventName in input.eventNames" class="nine columns offset-by-three">
-                            <b>Event:</b> {{formatAreEvent(eventName)}} <button @click="removeAREEvent(input, eventName)" :title="'Delete // Löschen' | translate" style="margin-left: 1em; padding: 0 0.5em"><i class="fas fa-trash"></i></button>
+                        <span v-for="(eventName, index) in input.eventNames" class="nine columns offset-by-three">
+                            <b>Event:</b> {{formatAreEvent(eventName)}} <button @click="removeAREEvent(input, index)" :title="'Delete // Löschen' | translate" style="margin-left: 1em; padding: 0 0.5em"><i class="fas fa-trash"></i></button>
                         </span>
                     </div>
                 </div>
@@ -202,8 +202,8 @@
                     areService.unsubscribeEvents();
                 }
             },
-            removeAREEvent(input, eventName) {
-                input.eventNames = input.eventNames.filter(e => e !== eventName);
+            removeAREEvent(input, index) {
+                input.eventNames.splice(index, 1);
                 this.modelChanged();
             },
             formatAreEvent(eventString) {
