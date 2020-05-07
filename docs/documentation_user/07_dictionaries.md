@@ -1,4 +1,6 @@
 # Dictionaries
+**Video on YouTube:** [Manage dictionaries](https://www.youtube.com/watch?v=DS9om8MDEDY&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=19&t=0s) (German, but auto-translated subtitles available)
+
 This chapter is about dictionaries and how to manage and use them within AsTeRICS Grid.
 
 [Back to Overview](README.md)

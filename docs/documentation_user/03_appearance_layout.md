@@ -1,4 +1,5 @@
 # Grid appearance and layout
+**Videos on YouTube:** [Layout options](https://www.youtube.com/watch?v=Iw605fb85bs&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=12&t=0s), [Collect elements](https://www.youtube.com/watch?v=X6YrWJW2ZoM&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=21&t=0s), [Prediction elements](https://www.youtube.com/watch?v=t0FWZcM9TMg&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=22&t=0s) (German, but auto-translated subtitles available)
 
 This chapter is about a grid's layout and appearance and how to edit it:
 
@@ -40,6 +41,8 @@ These are the options to select:
 1. **More &#x2192; Do element action**: performs the actions that are assigned to this grid element, e.g. speaking the label or navigating to another grid
 
 ## Edit modal
+**Video on YouTube:** [Add and edit elements](https://www.youtube.com/watch?v=KWwWgCgidXM&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=13&t=0s) (German, but auto-translated subtitles available)
+
 Clicking on "Edit" in the grid element menu (Fig. 2) opens this modal, Figure 3:
 
 ![edit grid element](./img/edit_grid_element_en.jpg)

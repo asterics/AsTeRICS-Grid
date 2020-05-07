@@ -12,6 +12,8 @@ This chapter is about general appearance, navigation and basic functionality of 
 [Back to Overview](README.md)
 
 ## Welcome view
+**Video on YouTube:** [First Start](https://www.youtube.com/watch?v=5ffLB4a9APc&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=2&t=0s) (German, but auto-translated subtitles available)
+
 AsTeRICS Grid initially starts with a welcome view giving the choice between:
 
 1. **Use AsTeRICS Grid without registration:** choose this option in order to create a local default user and directly start using AsTeRICS Grid.
@@ -20,6 +22,8 @@ AsTeRICS Grid initially starts with a welcome view giving the choice between:
 See [Terms](01_terms.md#User) for more information about offline/online users.
 
 ## Main view
+**Videos on YouTube:** [Demo configuration](https://www.youtube.com/watch?v=OU4sI2UcNUo&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=3&t=0s), [Fullscreen and lock mode](https://www.youtube.com/watch?v=CK8Lv2bVr-g&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=4&t=0s) (German, but auto-translated subtitles available)
+
 Once taken a decision in the welcome view AsTeRICS Grid subsequently starts in the "main view" which looks like Figure 1 (desktop view on the left, mobile view on the right):
 
 ![main view](./img/main_en.jpg)
@@ -42,6 +46,8 @@ The elements have this functionality:
 1. **Grid**: demo grid consisting of 6 grid elements which are navigating to other grids if selected
 
 ## Edit view
+**Video on YouTube:** [Add and edit elements](https://www.youtube.com/watch?v=KWwWgCgidXM&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=13&t=0s) (German, but auto-translated subtitles available)
+
 Clicking on Button "Edit" (Fig. 1, number 9) opens the edit view where a grid can be adapted, see Figure 2:
 
 ![edit view](./img/edit_en.jpg)
@@ -60,6 +66,8 @@ The following elements are available in the edit view:
 See page [Edit grid appearance and layout](03_appearance_layout.md) for more details about editing a grid.
 
 ## Manage grids view
+**Video on YouTube:** [Manage grids](https://www.youtube.com/watch?v=HQTgvv1Dnn0&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=15&t=0s) (German, but auto-translated subtitles available)
+
 The manage grids view provides an overview about the current grids of a user, see Figure 2:
 
 ![manage grids view](./img/manage_grids_en.jpg)
@@ -96,7 +104,11 @@ These are the possible options:
 
 **Info about Open Board Format (OBF)**: OBF is an open format for exchanging grids across different AAC tools and is specified on the [official website](https://www.openboardformat.org/). AsTeRICS Grid supports importing OBF files (`.obf` and `.obz`) using the options *Import grid(s) from file* or *Clear and import from file*.
 
+**Video on YouTube:** [Complex grids and OBF](https://www.youtube.com/watch?v=Tpez_-4ILRA&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=26&t=0s) (German, but auto-translated subtitles available)
+
 ### Global grid
+**Video on YouTube:** [Global Grid](https://www.youtube.com/watch?v=bbmMODbqbhk&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=25&t=0s) (German, but auto-translated subtitles available)
+
 A global grid is a grid that is visible on every grid page. It may contain general elements that make sense within every grid like e.g. a "Home" grid element that navigates to the start page. A global grid could also contain some kind of core vocabulary that should be visible any time. The following image shows a global grid in action in addition to the "CommuniKate 20" board set from [openboardformat.org](https://www.openboardformat.org/examples):
 
 ![manage grids view](./img/global-grid-communikate20.png)
@@ -104,6 +116,8 @@ A global grid is a grid that is visible on every grid page. It may contain gener
 All lightblue elements on top and on the left are elements contained within the global grid. They are visible on every grid page. The global grid can be activated/deactivated and edited in the "Manage Grids" view (see Fig. 3).
 
 ## Manage dictionaries view
+**Video on YouTube:** [Manage dictionaries](https://www.youtube.com/watch?v=DS9om8MDEDY&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=19&t=0s) (German, but auto-translated subtitles available)
+
 In the manage dictionaries view currently saved dictionaries that are used for filling prediction elements (see [Terms](01_terms.md#grid-element)) can be shown and adapted (Figure 4):
 
 ![manage dictionaries view](./img/manage_dict_en.jpg)
@@ -121,6 +135,8 @@ The following elements are available in the manage dictionaries view:
 For more information about using dictionaries see [Dictionaries](07_dictionaries.md).
 
 ## Change user view
+**Video on YouTube:** [Offline and online users](https://www.youtube.com/watch?v=CoRUQJJnYaY&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=16&t=0s) (German, but auto-translated subtitles available)
+
 In the change user view it's possible to switch between users or login a existing one (Figure 5):
 
 ![change user view](./img/login_en.jpg)

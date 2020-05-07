@@ -1,4 +1,6 @@
 # Grid element actions
+**Video on YouTube:** [Edit actions](https://www.youtube.com/watch?v=GAhtjs8bts0&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=14&t=0s) (German, but auto-translated subtitles available)
+
 This chapter is about actions that can be performed if a grid element is selected and how to configure them:
 
 1. [Edit actions modal](05_actions.md#edit-actions-modal)
@@ -68,6 +70,8 @@ Clicking on "Edit" on a "speak custom text" action (or creating a new one) shows
 For language selection the same conditions as for [speak label](05_actions.md#speak-label) actions apply. "Text to speak" is the custom text that should be spoken. The button "Test" tests the configuration and speaks the current text.
 
 ### Fill prediction elements
+**Video on YouTube:** [Prediction elements](https://www.youtube.com/watch?v=t0FWZcM9TMg&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=22&t=0s) (German, but auto-translated subtitles available)
+
 The action "fill prediction elements" fills all [prediction elements](01_terms.md#grid-element) in the grid with word suggestions. Suggestions are calculated on the basis of the label of the current element, so an "fill prediction elements" action of an element with label "A" will fill the prediction elements with the most common words starting with character "A":
 
 ![fill prediction elements animation](./img/fill_predictions.gif)
@@ -81,6 +85,8 @@ The meaning of the options is:
 1. **Dictionary to use**: select the dictionary you want to use (see [manage dictionaries](02_navigation.md#manage-dictionaries-view)). If nothing selected words from all available dictionaries will be suggested.
 
 ### Collect element action
+**Video on YouTube:** [Collect elements](https://www.youtube.com/watch?v=X6YrWJW2ZoM&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=21&t=0s) (German, but auto-translated subtitles available)
+
 Collect element actions are various actions that are related to [collect elements](01_terms.md#grid-element). 
 
 Clicking on "Edit" on a "collect element action" action (or creating a new one) shows the following configuration possibilities:
@@ -97,6 +103,8 @@ The possible actions to chose are:
 1. **Clear clipboard**: empties the clipboard
 
 ### AsTeRICS Action
+**Video on YouTube:** [AsTeRICS actions](https://www.youtube.com/watch?v=geLtm07HRKc&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=24&t=0s) (German, but auto-translated subtitles available)
+
 An "AsTeRICS action" performs an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework). This can be any action that is possible with the AsTeRICS Framework, e.g. controlling a TV or performing computer actions like opening a program.
 
 Figure 2 shows how an AsTeRICS action that controls a TV is working in more detail:
@@ -130,6 +138,8 @@ These are the possibilities while configuring an AsTeRICS Action:
 1. **OK**: apply changes and close edit mode of this AsTeRICS action 
 
 ### Web radio action
+**Video on YouTube:** [Web radio](https://www.youtube.com/watch?v=dKZwan9dZV4&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=23&t=0s) (German, but auto-translated subtitles available)
+
 AsTeRICS Grid is capable of searching and playing web radio stations. The station search capabilities are powered by the API of <a href="https://www.radio-browser.info/gui/#!/" target="_blank">radio-browser.info</a>.
 
 Clicking on "Edit" on a "Web radio action" (or creating a new one) shows the following configuration possibilities:

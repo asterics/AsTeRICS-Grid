@@ -1,4 +1,6 @@
 # Users
+**Video on YouTube:** [Offline and online users](https://www.youtube.com/watch?v=CoRUQJJnYaY&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=16&t=0s) (German, but auto-translated subtitles available)
+
 This chapter is about offline and online users, their differences and how to add or register them.
 
 [Back to Overview](README.md)
