@@ -61,15 +61,21 @@
                                         <i class="fas fa-spinner fa-spin" style="position: absolute; top: -25px; left: 25px;"></i>
                                     </span>
                                 </div>
-                                <div class="inline">
-                                    <button v-show="searchResults && searchResults.length > 0 && hasNextChunk" @click="searchMore" style="height: 60px; margin: 0 0 0 0.5em;; padding: 0.7em; float: left">
+                                <div class="inline" v-show="searchResults && searchResults.length > 0 && hasNextChunk">
+                                    <button @click="searchMore" style="height: 60px; margin: 0 0 0 0.5em;; padding: 0.7em; float: left">
                                         <i class="fas fa-plus"></i>
                                         <span data-i18n="">more // mehr</span>
                                     </button>
                                 </div>
                                 <span v-show="searchLoading"><i class="fas fa-spinner fa-spin"></i> <span data-i18n="">searching... // suche...</span></span>
-                                <span v-show="!searchLoading && searchResults && searchResults.length === 0" data-i18n="">No search results. // Keine Resultate. Versuchen Sie es ev. nochmal mit einem englischen Suchbegriff.</span>
-
+                                <span v-show="!searchLoading && searchResults && searchResults.length === 0" data-i18n="">
+                                    <span><b>No search results.</b></span>
+                                    <span><b>Keine Resultate.</b> Versuchen Sie es ev. nochmal mit einem <b>englischen Suchbegriff</b>.</span>
+                                </span><br/>
+                                <span v-show="!searchLoading && searchResults && searchResults.length === 0" data-i18n="">
+                                    <span></span>
+                                    <span>Für eine Symbolsuche auf Deutsch können Sie <a target="_blank" href="https://www.pictoselector.eu/de/home/download/">Picto-Selector</a> verwenden. Symbole aus diesem Programm können mit Drag & Drop direkt in AsTeRICS Grid eingefügt werden.</span>
+                                </span>
                             </div>
                         </div>
                     </div>
