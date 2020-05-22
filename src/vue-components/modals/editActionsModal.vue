@@ -1,8 +1,8 @@
 <template>
     <div class="modal">
-        <div class="modal-mask" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()" @keyup.ctrl.right="editNext()" @keyup.ctrl.left="editNext(true)">
+        <div class="modal-mask">
             <div class="modal-wrapper">
-                <div class="modal-container" v-if="gridElement">
+                <div class="modal-container" v-if="gridElement" @keydown.esc="$emit('close')" @keydown.ctrl.enter="save()" @keydown.ctrl.right="editNext()" @keydown.ctrl.left="editNext(true)" @keydown.ctrl.y="save(true)">
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                     <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
                     <div class="modal-header">
@@ -196,6 +196,9 @@
                                 <button @click="editNext(true)" :disabled="false" title="Keyboard: [Ctrl + Left]" class="four columns offset-by-four"><i class="fas fa-angle-double-left"/> <span data-i18n>OK, edit previous // OK, voriges bearbeiten</span></button>
                                 <button @click="editNext()" :disabled="false" title="Keyboard: [Ctrl + Right]" class="four columns"><span data-i18n>OK, edit next // OK, nächstes bearbeiten</span> <i class="fas fa-angle-double-right"/></button>
                             </div>
+                            <div class="hide-mobile row">
+                                <button @click="save(true)" :disabled="false" title="Keyboard: [Ctrl + Y]" class="four columns offset-by-eight"><span data-i18n>OK, to "edit element" // OK, zu "Element bearbeiten"</span> <i class="fas fa-pencil-alt"/></button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -289,10 +292,13 @@
                     delete this.additionalGridFiles[action.id];
                 }
             },
-            save () {
+            save (toEdit) {
                 var thiz = this;
                 thiz.saveInternal().then(() => {
                     thiz.$emit('close');
+                    if (toEdit) {
+                        thiz.$emit('edit');
+                    }
                 });
             },
             openHelp() {

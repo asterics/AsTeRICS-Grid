@@ -2,7 +2,7 @@
     <div class="modal">
         <div class="modal-mask">
             <div class="modal-wrapper" @dragenter="preventDefault" @dragover="preventDefault" @drop="imageDropped">
-                <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()" @keyup.ctrl.right="nextFromKeyboard()" @keyup.ctrl.left="editNext(true)">
+                <div class="modal-container" @keydown.esc="$emit('close')" @keydown.ctrl.enter="save()" @keydown.ctrl.right="nextFromKeyboard()" @keydown.ctrl.left="editNext(true)" @keydown.ctrl.y="save(true)">
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                     <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
                     <div class="modal-header">
@@ -99,6 +99,9 @@
                                     <button @click="addNext()" :disabled="!gridElement.label && !tempImage.data" title="Keyboard: [Ctrl + Right]" class="four columns offset-by-eight"><i class="fas fa-plus"/> <span data-i18n>OK, add another // OK, weiteres Element</span></button>
                                 </div>
                             </div>
+                            <div class="hide-mobile row">
+                                <button @click="save(true)" :disabled="!gridElement.label && !tempImage.data" title="Keyboard: [Ctrl + Y]" class="four columns offset-by-eight"><span data-i18n>OK, edit actions // OK, Aktionen bearbeiten</span> <i class="fas fa-bolt"/></button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -165,7 +168,7 @@
             clearImage() {
                 this.tempImage.data = this.tempImage.author = this.tempImage.authorURL = null;
             },
-            save() {
+            save(toActions) {
                 if (!this.gridElement.label && !this.tempImage.data) return;
                 this.saveInternal().then(savedSomething => {
                     if (savedSomething) {
@@ -173,6 +176,9 @@
                         this.$emit('close');
                     } else {
                         this.$emit('close');
+                    }
+                    if (toActions) {
+                        this.$emit('actions');
                     }
                 });
             },
