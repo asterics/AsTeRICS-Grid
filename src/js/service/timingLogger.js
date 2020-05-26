@@ -20,7 +20,7 @@ let maxEntry = {
  */
 timingLogger.initLogging = function () {
     servicesToLog.forEach(service => {
-        setupTimingInterceptor(service);
+        timingLogger.setupTimingInterceptor(service);
     })
 };
 
@@ -39,7 +39,15 @@ timingLogger.log = function (key) {
     _customStart = new Date().getTime();
 };
 
-function setupTimingInterceptor(module) {
+timingLogger.start = function (key) {
+    startTime(key);
+};
+
+timingLogger.finish = function (key) {
+    finishTime(key);
+};
+
+timingLogger.setupTimingInterceptor = function(module) {
     let moduleKey = Object.keys(module).reduce((acc, current) => acc + current);
     Object.keys(module).forEach(fnName => {
         let originalFn = module[fnName];
@@ -58,7 +66,7 @@ function setupTimingInterceptor(module) {
             }
         }
     });
-}
+};
 
 function startTime(key, fnName) {
     startTimes[key + fnName] = new Date().getTime();
@@ -74,9 +82,9 @@ function finishTime(key, fnName) {
     if (totalTimes[key + fnName] > maxEntry.time) {
         maxEntry.time = totalTimes[key + fnName];
         if (maxEntry.name !== fnName) {
-            log.warn('new maximum time consuming method: ' + maxEntry.name);
+            log.warn('new maximum time consuming method: ' + maxEntry.name + ' (' + maxEntry.time + 'ms)');
         }
-        maxEntry.name = fnName;
+        maxEntry.name = fnName || key;
     }
     log.info('total needed time for ' + fnName + ': ' + totalTimes[key + fnName] + ', last operation:' + operationTime);
 }
