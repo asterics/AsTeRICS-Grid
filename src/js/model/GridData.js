@@ -19,6 +19,7 @@ class GridData extends Model({
     label: [String],
     locale: [String],
     rowCount: Number,
+    minColumnCount: [Number],
     gridElements: Model.Array(GridElement),
     additionalFiles: [Model.Array(AdditionalGridFile)],
     webRadios: [Model.Array(Webradio)]
@@ -365,6 +366,7 @@ GridData.defaults({
     modelVersion: constants.MODEL_VERSION,
     isShortVersion: false,
     rowCount: 9,
+    minColumnCount: 1,
     additionalFiles: [],
     webRadios: []
 });
