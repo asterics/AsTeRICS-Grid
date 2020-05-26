@@ -27,6 +27,7 @@ function Grid(gridContainerId, gridItemClass, options) {
     var _animationTimeMs = 200; //see gridlist.css
     var _gridData = null;
     var _gridRows = null;
+    var _minGridColumns = null;
     var _initPromise = null;
     var _undoService = new UndoService();
     let _isInitialized = false;
@@ -62,6 +63,7 @@ function Grid(gridContainerId, gridItemClass, options) {
         }
         _gridData = gridData;
         _gridRows = _gridData.rowCount;
+        _minGridColumns = _gridData.minColumnCount;
     }
 
     function initGrid(gridDataParam) {
@@ -102,6 +104,7 @@ function Grid(gridContainerId, gridItemClass, options) {
 
             _gridElement.gridList({
                 lanes: _gridRows,
+                minColumns: _minGridColumns,
                 widthHeightRatio: 1,
                 heightToFontSizeRatio: 0.25,
                 dragAndDrop: dragAndDrop
@@ -255,28 +258,14 @@ function Grid(gridContainerId, gridItemClass, options) {
         $(gridItemClass).resizable("disable");
     };
 
-    thiz.addRow = function () {
+    thiz.setDimensions = function (rows, minColumns) {
         notifyLayoutChangeStart();
-        _gridRows++;
-        _gridElement.gridList('resize', _gridRows);
-        handleLayoutChange();
-    };
-
-    thiz.removeRow = function () {
-        notifyLayoutChangeStart();
-        if (_gridRows > 1) {
-            _gridRows--;
-            _gridElement.gridList('resize', _gridRows);
-        }
-        handleLayoutChange();
-    };
-
-    thiz.setNumberOfRows = function (nr) {
-        notifyLayoutChangeStart();
-        nr = Number.parseInt(nr);
-        if (nr && nr > 0) {
-            _gridRows = nr;
-            _gridElement.gridList('resize', _gridRows);
+        rows = Number.parseInt(rows);
+        minColumns = Number.parseInt(minColumns);
+        if (rows && rows > 0) {
+            _gridRows = rows;
+            _minGridColumns = minColumns;
+            _gridElement.gridList('resize', _gridRows, minColumns);
         }
         handleLayoutChange();
     };
@@ -397,6 +386,7 @@ function Grid(gridContainerId, gridItemClass, options) {
 
             //update layout specific data
             _gridData.rowCount = _gridRows;
+            _gridData.minColumnCount = _minGridColumns;
             _gridListInstance.items.forEach(function (item) {
                 var currentId = item.$element.attr('data-id');
                 var existingElem = _gridData.gridElements.filter(el => el.id === currentId)[0];
