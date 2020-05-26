@@ -326,8 +326,12 @@ function Grid(gridContainerId, gridItemClass, options) {
     thiz.undo = function () {
         if (_undoService.canUndo()) {
             var newData = _undoService.doUndo();
+            var hadElements = _gridData.gridElements.length > 0;
             _gridData = new GridData(newData);
             init(_gridData).then(() => {
+                if (!hadElements) {
+                    thiz.autosize(1000);
+                }
                 notifyLayoutChangeEnd();
             });
         }
