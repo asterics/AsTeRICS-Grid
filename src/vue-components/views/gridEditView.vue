@@ -27,6 +27,9 @@
         <div>
             <edit-actions-modal v-if="showActionsModal" v-bind:edit-element-id-param="editElementId" v-bind:grid-id-param="gridData.id" @close="showActionsModal = false" @reload="reload" @edit="showEditModal = true"/>
         </div>
+        <div>
+            <grid-dimension-modal v-if="showDimensionsModal" v-bind:grid-data-param="gridData" @close="showDimensionsModal = false" @save="setDimensions"/>
+        </div>
         <div class="row content">
             <div v-if="!showGrid" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
@@ -63,6 +66,7 @@
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {inputEventHandler} from "../../js/input/inputEventHandler";
     import {util} from "../../js/util/util";
+    import GridDimensionModal from "../modals/gridDimensionModal.vue";
 
     let vueApp = null;
     let gridInstance = null;
@@ -79,6 +83,7 @@
                 showEditModal: false,
                 showMultipleModal: false,
                 showActionsModal: false,
+                showDimensionsModal: false,
                 editElementId: null,
                 showGrid: false,
                 constants: constants,
@@ -86,16 +91,11 @@
             }
         },
         components: {
-            EditGridModal, AddMultipleModal, EditActionsModal, HeaderIcon
+            GridDimensionModal, EditGridModal, AddMultipleModal, EditActionsModal, HeaderIcon
         },
         methods: {
-            addRow: function (event) {
-                gridInstance.setNumberOfRows(this.gridData.rowCount + 1);
-            },
-            removeRow: function (event) {
-                if (this.gridData.rowCount > 1) {
-                    gridInstance.setNumberOfRows(this.gridData.rowCount - 1);
-                }
+            setDimensions: function (rows, cols) {
+                gridInstance.setDimensions(rows, cols);
             },
             fillGaps: function () {
                 gridInstance.fillGaps();
@@ -271,8 +271,7 @@
         var CONTEXT_NEW_PREDICT = "CONTEXT_NEW_PREDICT";
 
         var CONTEXT_LAYOUT_FILL = "CONTEXT_LAYOUT_FILL";
-        var CONTEXT_LAYOUT_MOREROWS = "CONTEXT_LAYOUT_MOREROWS";
-        var CONTEXT_LAYOUT_LESSROWS = "CONTEXT_LAYOUT_LESSROWS";
+        var CONTEXT_GRID_DIMENSIONS = "CONTEXT_GRID_DIMENSIONS";
         var CONTEXT_EDIT_GLOBAL_GRID = "CONTEXT_EDIT_GLOBAL_GRID";
         var CONTEXT_END_EDIT_GLOBAL_GRID = "CONTEXT_END_EDIT_GLOBAL_GRID";
 
@@ -321,13 +320,9 @@
             CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP],
             'CONTEXT_DELETE_ALL': {name: "Delete all elements // Alle Elemente löschen", icon: "fas fa-minus-circle"},
             SEP1: "---------",
-            'CONTEXT_LAYOUT_MOREROWS': {
-                name: "Add row to layout // Zeile in Layout hinzufügen",
-                icon: "far fa-plus-square"
-            },
-            'CONTEXT_LAYOUT_LESSROWS': {
-                name: "Remove row from layout // Zeile in Layout entfernen",
-                icon: "far fa-minus-square"
+            'CONTEXT_GRID_DIMENSIONS': {
+                name: "Change grid dimensions // Grid-Größe anpassen",
+                icon: "fas fa-expand-arrows-alt"
             },
             'CONTEXT_LAYOUT_FILL': {name: "Fill gaps // Lücken füllen", icon: "fas fa-angle-double-left"},
             'CONTEXT_EDIT_GLOBAL_GRID': {name: "Edit global grid // Globales Grid bearbeiten", icon: "fas fa-globe", visible: !!vueApp.metadata.globalGridId && vueApp.metadata.globalGridActive},
@@ -431,12 +426,8 @@
                     vueApp.fillGaps();
                     break;
                 }
-                case CONTEXT_LAYOUT_MOREROWS: {
-                    vueApp.addRow();
-                    break;
-                }
-                case CONTEXT_LAYOUT_LESSROWS: {
-                    vueApp.removeRow();
+                case CONTEXT_GRID_DIMENSIONS: {
+                    vueApp.showDimensionsModal = true;
                     break;
                 }
                 case CONTEXT_ACTION_EDIT:
