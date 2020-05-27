@@ -18,7 +18,11 @@
                         <div class="row">
                             <label class="two columns" for="inputLabel">Label</label>
                             <input type="text" class="five columns" id="inputLabel" v-focus v-if="gridElement" v-model="gridElement.label"/>
-                            <button @click="search(gridElement.label)" class="five columns"><i class="fas fa-search"/> <span data-i18n="">Search for images // Suche nach Bildern</span></button>
+                            <button @click="search(gridElement.label)" class="two columns" :label="i18nService.translate('Search for images // Suche nach Bildern')"><i class="fas fa-search"/></button>
+                            <div class="three columns">
+                                <input type="checkbox" id="inputHidden" v-focus v-if="gridElement" v-model="gridElement.hidden"/>
+                                <label for="inputHidden" data-i18n="">Hide element // Verstecke Element</label>
+                            </div>
                         </div>
                         <div class="row">
                             <label for="inputImg" class="two columns" data-i18n>Image // Bild</label>
@@ -135,7 +139,8 @@
                 searchResults: null,
                 searchLoading: false,
                 hasNextChunk: true,
-                tempImage: {}
+                tempImage: {},
+                i18nService: i18nService
             }
         },
         methods: {
@@ -291,7 +296,7 @@
             },
             searchInput(debounceTime, event) {
                 let thiz = this;
-                thiz.searchText = event.target.value;
+                thiz.searchText = event ? event.target.value : thiz.searchText;
                 debounceTime = debounceTime === undefined ? 500 : debounceTime;
                 thiz.searchResults = [];
                 thiz.searchLoading = true;
