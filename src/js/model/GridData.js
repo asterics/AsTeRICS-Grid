@@ -38,11 +38,36 @@ class GridData extends Model({
     }
 
     getWidth() {
+        if (this.gridElements.length === 0) {
+            return 0;
+        }
         return Math.max.apply(null, this.gridElements.map(el => el.x + el.width));
     }
 
     getHeight() {
+        if (this.gridElements.length === 0) {
+            return 0;
+        }
         return Math.max.apply(null, this.gridElements.map(el => el.y + el.height));
+    }
+
+    getWidthWithBounds() {
+        return Math.max(this.getWidth(), this.minColumnCount);
+    }
+
+    getHeightWithBounds() {
+        return Math.max(this.getHeight(), this.rowCount);
+    }
+
+    isFull() {
+        if (this.gridElements.length === 0) {
+            return false;
+        }
+        let area = this.getWidthWithBounds() * this.getHeightWithBounds();
+        let occupied = this.gridElements.reduce((total, current) => {
+            return total + current.width * current.height;
+        }, 0);
+        return area === occupied;
     }
 
     /**
