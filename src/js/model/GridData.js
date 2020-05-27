@@ -377,6 +377,27 @@ class GridData extends Model({
         }
     }
 
+    static getFillElements(gridData) {
+        let tempGridData = new GridData({}, gridData);
+        let xyMap = {};
+        for (let x = 0; x < tempGridData.getWidthWithBounds(); x++) {
+            for (let y = 0; y < tempGridData.getHeightWithBounds(); y++) {
+                xyMap[x + ' ' + y] = {
+                    x: x,
+                    y: y
+                }
+            }
+        }
+        tempGridData.gridElements.forEach(gridElement => {
+            for (let x = gridElement.x; x < gridElement.width + gridElement.x; x++) {
+                for (let y = gridElement.y; y < gridElement.height + gridElement.y; y++) {
+                    delete xyMap[x + ' ' + y];
+                }
+            }
+        });
+        return Object.keys(xyMap).map(key => new GridElement({x: xyMap[key].x, y: xyMap[key].y}));
+    }
+
     static getModelName() {
         return "GridData";
     }
