@@ -30,7 +30,7 @@
             </div>
             <div id="grid-container" class="grid-container">
             </div>
-            <div id="grid-layout-background-wrapper" class="grid-container" style="margin: 10px;">
+            <div id="grid-layout-background-wrapper" class="grid-container" style="margin: 10px; display: none">
                 <div id="grid-layout-background-vertical" class="grid-container" style="margin-left: 204px; background-size: 209px 209px;
     background-image: linear-gradient(to right, grey 1px, transparent 1px)">
                 </div>

@@ -245,8 +245,9 @@ function Grid(gridContainerId, gridItemClass, options) {
                     $('#grid-layout-background-vertical').css('background-size',  `${sizeX}px ${sizeX}px`);
                     $('#grid-layout-background-horizontal').css('margin-top', `${sizeY-5}px`);
                     $('#grid-layout-background-horizontal').css('background-size',  `${sizeY}px ${sizeY}px`);
+                    $('#grid-layout-background-wrapper').show();
                 }
-            }, _animationTimeMs);
+            }, 0);
             refreshResizeOptions();
         }, timeout);
     };
