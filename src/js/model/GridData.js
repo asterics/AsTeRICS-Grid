@@ -5,11 +5,7 @@ import {GridActionARE} from "./GridActionARE";
 import {constants} from "../util/constants";
 import {Model} from "../externals/objectmodel";
 import {Webradio} from "./Webradio";
-import {i18nService} from "../service/i18nService";
-import {GridImage} from "./GridImage";
-import {GridActionNavigate} from "./GridActionNavigate";
-import {GridActionCollectElement} from "./GridActionCollectElement";
-import {GridActionSpeak} from "./GridActionSpeak";
+import {gridUtil} from "../util/gridUtil";
 
 class GridData extends Model({
     id: String,
@@ -76,37 +72,20 @@ class GridData extends Model({
      * @return {*}
      */
     getNewXYPos() {
-        if (!this.gridElements || this.gridElements.length === 0) {
-            return {
-                x: 0,
-                y: 0
-            }
+        let freeCoordinates = gridUtil.getFreeCoordinates(this);
+        if (freeCoordinates.length > 0) {
+            return freeCoordinates[0];
         }
-        let yPosCountMap = {};
-        this.gridElements.forEach(element => {
-            yPosCountMap[element.y] = yPosCountMap[element.y] ? yPosCountMap[element.y] + 1 : 1;
-        });
-        let minValue = Number.MAX_SAFE_INTEGER;
-        let yMinElements = 0;
-        Object.keys(yPosCountMap).forEach(key => {
-            let value = yPosCountMap[key];
-            if (value < minValue) {
-                minValue = value;
-                yMinElements = parseInt(key);
+        let maxX = this.gridElements.reduce((total, elem) => {
+            let totalX = elem.x + elem.width;
+            if (elem.y === 0 && totalX > total) {
+                total = totalX;
             }
-        });
-        let elemsMinElemRow = this.gridElements.filter(elem => elem.y === yMinElements);
-        let occupiedX = elemsMinElemRow.reduce((total, elem) => {
-            for (let i = elem.x; i < elem.x + elem.width; i++) total.push(i);
             return total;
-        }, []);
-        for (let x = 0; x < 1000; x++) {
-            if (occupiedX.indexOf(x) === -1) {
-                return {
-                    x: x,
-                    y: yMinElements
-                }
-            }
+        }, 0);
+        return {
+            x: maxX,
+            y: 0
         }
     }
 
