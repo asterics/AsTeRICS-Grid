@@ -41,6 +41,10 @@ fontUtil.adaptFontSize = function (elems) {
         if (textContainerElem) {
             textContainerElem.style.fontSize = fontUtil.getFontSizePx($(elem), oneLine);
         }
+        let hintElems = $(elem).find('.element-hint');
+        let fontPx = Math.min($(elem).width() / 10, 30);
+        fontPx = fontPx < 5 ? 0 : fontPx;
+        hintElems.css("fontSize", fontPx + "px");
     }
 
 };
