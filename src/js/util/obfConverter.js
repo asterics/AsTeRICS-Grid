@@ -34,6 +34,7 @@ obfConverter.OBFToGridData = function (obfObject, obfObjects) {
         label: obfObject.name,
         locale: obfObject.locale,
         rowCount: obfObject.grid.rows,
+        minColumnCount: obfObject.grid.columns,
         gridElements: []
     });
     obfObject.buttons.forEach(button => {
