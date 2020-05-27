@@ -77,6 +77,7 @@
     import {constants} from "../../js/util/constants";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {progressService} from "../../js/service/progressService";
+    import {gridUtil} from "../../js/util/gridUtil";
 
     let SELECTOR_CONTEXTMENU = '#moreButton';
 
@@ -201,7 +202,7 @@
                 dataService.getGlobalGrid(true).then(existingGlobal => {
                     return existingGlobal ? dataService.deleteGrid(existingGlobal.id) : Promise.resolve();
                 }).then(() => {
-                    let globalGrid = GridData.generateGlobalGrid(this.grids[0].id);
+                    let globalGrid = gridUtil.generateGlobalGrid(this.grids[0].id);
                     this.metadata.globalGridId = globalGrid.id;
                     this.metadata.globalGridActive = true;
                     return dataService.saveGrid(globalGrid);

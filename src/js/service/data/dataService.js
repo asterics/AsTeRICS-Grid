@@ -14,6 +14,7 @@ import {progressService} from "../progressService";
 import {i18nService} from "../i18nService";
 import {predictionService} from "../predictionService";
 import {localStorageService} from "./localStorageService";
+import {gridUtil} from "../../util/gridUtil";
 
 let dataService = {};
 
@@ -85,7 +86,7 @@ dataService.getGrids = function (fullVersion, withoutGlobal) {
  * @return {Promise} resolves after operation finished successful
  */
 dataService.saveGrid = function (gridData) {
-    gridData.gridElements = GridData.sortGridElements(gridData.gridElements);
+    gridData.gridElements = gridUtil.sortGridElements(gridData.gridElements);
     return databaseService.saveObject(GridData, gridData);
 };
 
@@ -95,7 +96,7 @@ dataService.saveGrid = function (gridData) {
  */
 dataService.saveGrids = function (gridDataList) {
     gridDataList.forEach(gridData => {
-        gridData.gridElements = GridData.sortGridElements(gridData.gridElements);
+        gridData.gridElements = gridUtil.sortGridElements(gridData.gridElements);
     });
     return databaseService.bulkSave(gridDataList);
 };
@@ -110,7 +111,7 @@ dataService.saveGrids = function (gridDataList) {
  */
 dataService.updateGrid = function (gridId, newConfig) {
     newConfig.id = gridId;
-    newConfig.gridElements = GridData.sortGridElements(newConfig.gridElements);
+    newConfig.gridElements = gridUtil.sortGridElements(newConfig.gridElements);
     return databaseService.saveObject(GridData, newConfig, true);
 };
 
@@ -556,7 +557,7 @@ dataService.importData = function (data, generateGlobalGrid, backupMode) {
                 if (originalGlobalGrid) {
                     originalGlobalGrid.isGlobal = true;
                 }
-                importGrids = GridData.regenerateIDs(importGrids);
+                importGrids = gridUtil.regenerateIDs(importGrids);
                 if (originalGlobalGrid) {
                     let newGlobalGrid = importGrids.filter(g => g.isGlobal)[0];
                     newGlobalGrid.id = originalGlobalGridId;
@@ -568,7 +569,7 @@ dataService.importData = function (data, generateGlobalGrid, backupMode) {
                 let locale = importGrids[0] ? importGrids[0].locale : null;
                 if (generateGlobalGrid) {
                     let homeGridId = importGrids[0].id;
-                    globalGrid = GridData.generateGlobalGrid(homeGridId, locale);
+                    globalGrid = gridUtil.generateGlobalGrid(homeGridId, locale);
                     importGrids.unshift(globalGrid);
                 }
                 return dataService.saveGrids(importGrids).then(() => {

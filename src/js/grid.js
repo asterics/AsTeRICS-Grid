@@ -8,6 +8,7 @@ import {imageUtil} from "./util/imageUtil";
 import {fontUtil} from "./util/fontUtil";
 import {predictionService} from "./service/predictionService";
 import {constants} from "./util/constants";
+import {gridUtil} from "./util/gridUtil";
 
 function Grid(gridContainerId, gridItemClass, options) {
     var thiz = this;
@@ -72,7 +73,7 @@ function Grid(gridContainerId, gridItemClass, options) {
             promises.push(dataService.getGlobalGrid().then(globalGrid => {
                 if (globalGrid) {
                     let autowidth = true;
-                    let offset = GridData.getOffset(globalGrid);
+                    let offset = gridUtil.getOffset(globalGrid);
                     let factorGrid = autowidth ? globalGrid.getWidth() - offset.x : 1;
                     let factorGlobal = autowidth ? _gridData.getWidth() : 1;
                     globalGrid.gridElements.forEach(gridElement => {

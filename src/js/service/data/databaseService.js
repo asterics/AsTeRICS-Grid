@@ -11,6 +11,7 @@ import {Dictionary} from "../../model/Dictionary";
 import {localStorageService} from "./localStorageService";
 import {predictionService} from "../predictionService";
 import {util} from "../../util/util";
+import {gridUtil} from "../../util/gridUtil";
 
 let databaseService = {};
 
@@ -303,9 +304,9 @@ function initInternal(hashedUserPassword, username, isLocalUser) {
             return Promise.resolve();
         }
         log.info('importing default grid set ' + _defaultGridSetPath);
-        gridsData = GridData.regenerateIDs(gridsData);
+        gridsData = gridUtil.regenerateIDs(gridsData);
         gridsData.forEach(gridData => {
-            gridData.gridElements = GridData.sortGridElements(gridData.gridElements);
+            gridData.gridElements = gridUtil.sortGridElements(gridData.gridElements);
         });
         log.debug('imported default grid set!');
         return databaseService.bulkSave(gridsData);

@@ -60,6 +60,7 @@
     import {inputEventHandler} from "../../js/input/inputEventHandler";
     import {util} from "../../js/util/util";
     import GridDimensionModal from "../modals/gridDimensionModal.vue";
+    import {gridUtil} from "../../js/util/gridUtil";
 
     let vueApp = null;
     let gridInstance = null;
@@ -159,7 +160,7 @@
                 }
             },
             fillElements() {
-                let elements = GridData.getFillElements(this.gridData);
+                let elements = gridUtil.getFillElements(this.gridData);
                 this.gridData.gridElements = this.gridData.gridElements.concat(elements);
                 gridInstance.updateGridWithUndo(this.gridData);
             },
