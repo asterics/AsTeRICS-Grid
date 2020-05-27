@@ -30,7 +30,7 @@ class GridData extends Model({
             properties.id = properties.id ? properties.id : modelUtil.generateId(GridData.getIdPrefix());
         }
         super(properties);
-        this.minColumnCount = this.minColumnCount || this.getWidth();
+        this.minColumnCount = properties.minColumnCount || this.getWidth();
         this.id = this.id || modelUtil.generateId('grid-data');
     }
 
@@ -381,7 +381,7 @@ class GridData extends Model({
         let tempGridData = new GridData({}, gridData);
         let xyMap = {};
         for (let x = 0; x < tempGridData.getWidthWithBounds(); x++) {
-            for (let y = 0; y < tempGridData.getHeightWithBounds(); y++) {
+            for (let y = 0; y < tempGridData.rowCount; y++) {
                 xyMap[x + ' ' + y] = {
                     x: x,
                     y: y
