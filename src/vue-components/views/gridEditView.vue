@@ -12,12 +12,6 @@
                 <button tabindex="32" @click="redo" title="Redo" :disabled="!canRedo || doingUndoRedo" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile" data-i18n>Redo // Wiederherstellen</span></button>
             </div>
         </header>
-        <div class="row content spaced" v-if="!gridData.gridElements || gridData.gridElements.length == 0" role="main">
-            <div style="margin-top: 2em">
-                <span data-i18n>No elements. // Keine Elemente.</span> <a href="javascript:void(0);" @click="newElements()" data-i18n="">Create new elements // Neue Elemente anlegen</a>
-                <div data-i18n="">Elements also can be created using a right mouse click. // Elemente können auch über einen rechten Mausklick hinzugefügt werden.</div>
-            </div>
-        </div>
         <div>
             <edit-grid-modal v-if="showEditModal" v-bind:edit-element-id-param="editElementId" v-bind:grid-data="gridData" @close="showEditModal = false" @reload="reload" @actions="showActionsModal = true"/>
         </div>
@@ -36,7 +30,7 @@
             </div>
             <div id="grid-container" class="grid-container">
             </div>
-            <div id="grid-layout-background-wrapper" class="grid-container" v-if="gridData.gridElements && gridData.gridElements.length > 0" style="margin: 10px;">
+            <div id="grid-layout-background-wrapper" class="grid-container" style="margin: 10px;">
                 <div id="grid-layout-background-vertical" class="grid-container" style="margin-left: 204px; background-size: 209px 209px;
     background-image: linear-gradient(to right, grey 1px, transparent 1px)">
                 </div>
@@ -53,7 +47,6 @@
     import {Grid} from "../../js/grid.js";
     import {dataService} from "../../js/service/data/dataService";
     import {Router} from "./../../js/router.js";
-    import {MetaData} from "./../../js/model/MetaData";
     import {i18nService} from "../../js/service/i18nService";
 
     import EditGridModal from '../modals/editGridModal.vue'
@@ -165,6 +158,11 @@
                     gridInstance.updateGridWithUndo(this.gridData);
                 }
             },
+            fillElements() {
+                let elements = GridData.getFillElements(this.gridData);
+                this.gridData.gridElements = this.gridData.gridElements.concat(elements);
+                gridInstance.updateGridWithUndo(this.gridData);
+            },
             reloadFn(event, updatedIds, updatedDocs) {
                 if (vueApp && updatedIds.includes(vueApp.gridData.id) && gridInstance && gridInstance.isInitialized()) {
                     let gridData = new GridData(updatedDocs.filter(doc => doc.id === vueApp.gridData.id)[0]);
@@ -256,6 +254,7 @@
         var CONTEXT_DO_ACTION = "CONTEXT_DO_ACTION";
         var CONTEXT_ACTIONS = "CONTEXT_ACTIONS";
         var CONTEXT_DELETE = "CONTEXT_DELETE";
+        var CONTEXT_FILL_EMPTY = "CONTEXT_FILL_EMPTY";
         var CONTEXT_DELETE_ALL = "CONTEXT_DELETE_ALL";
 
         let CONTEXT_ACTION_EDIT = 'CONTEXT_ACTION_EDIT';
@@ -310,6 +309,7 @@
         delete itemsElemSpecial[CONTEXT_EDIT];
 
         let visibleFn = () => !!vueApp.markedElement;
+        let visibleFnFill = () => !new GridData({}, vueApp.gridData).isFull();
         var itemsMoreMenuButton = {
             CONTEXT_ACTION_EDIT: {name: "Edit // Bearbeiten", icon: "fas fa-edit", visible: () => (vueApp.markedElement && vueApp.markedElement.type === GridElement.ELEMENT_TYPE_NORMAL)},
             CONTEXT_ACTION_EDIT_ACTIONS: {name: "Actions // Aktionen", icon: "fas fa-bolt", visible: visibleFn},
@@ -318,6 +318,7 @@
             CONTEXT_ACTION_DO_ACTION: {name: "Do element action // Aktion des Elements ausführen", icon: "fas fa-bolt", visible: visibleFn},
             SEP0: "---------",
             CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP],
+            'CONTEXT_FILL_EMPTY': {name: "Fill with empty elements // Mit leeren Elementen füllen", icon: "fas fa-fill", visible: visibleFnFill},
             'CONTEXT_DELETE_ALL': {name: "Delete all elements // Alle Elemente löschen", icon: "fas fa-minus-circle"},
             SEP1: "---------",
             'CONTEXT_GRID_DIMENSIONS': {
@@ -420,6 +421,10 @@
                 }
                 case CONTEXT_DELETE_ALL: {
                     vueApp.clearElements();
+                    break;
+                }
+                case CONTEXT_FILL_EMPTY: {
+                    vueApp.fillElements();
                     break;
                 }
                 case CONTEXT_LAYOUT_FILL: {
