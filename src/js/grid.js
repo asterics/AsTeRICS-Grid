@@ -75,7 +75,7 @@ function Grid(gridContainerId, gridItemClass, options) {
                     let autowidth = true;
                     let offset = gridUtil.getOffset(globalGrid);
                     let factorGrid = autowidth ? globalGrid.getWidth() - offset.x : 1;
-                    let factorGlobal = autowidth ? _gridData.getWidth() : 1;
+                    let factorGlobal = autowidth ? _gridData.getWidthWithBounds() : 1;
                     globalGrid.gridElements.forEach(gridElement => {
                         gridElement.width *= factorGlobal;
                         gridElement.x *= factorGlobal;
