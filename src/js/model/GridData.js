@@ -15,7 +15,7 @@ class GridData extends Model({
     isShortVersion: Boolean, // if true this object represents a non-full short version excluding binary base64 data
     label: [String],
     locale: [String],
-    rowCount: Number,
+    rowCount: [Number],
     minColumnCount: [Number],
     gridElements: Model.Array(GridElement),
     additionalFiles: [Model.Array(AdditionalGridFile)],
