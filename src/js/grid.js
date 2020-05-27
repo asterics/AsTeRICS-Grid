@@ -237,7 +237,7 @@ function Grid(gridContainerId, gridItemClass, options) {
             _gridElement.gridList('autosize');
             setTimeout(function () {
                 fontUtil.adaptFontSizeForGridElements();
-                if($('#grid-layout-background-vertical')[0] && _gridListInstance.items.length > 0) {
+                if($('#grid-layout-background-vertical')[0]) {
                     var sizeX = _gridListInstance._cellWidth;
                     var sizeY = _gridListInstance._cellHeight;
                     $('#grid-layout-background-vertical').css('margin-left', `${sizeX-5}px`);
