@@ -30,6 +30,7 @@ class GridData extends Model({
             properties.id = properties.id ? properties.id : modelUtil.generateId(GridData.getIdPrefix());
         }
         super(properties);
+        this.minColumnCount = this.minColumnCount || this.getWidth();
         this.id = this.id || modelUtil.generateId('grid-data');
     }
 
@@ -391,7 +392,7 @@ GridData.defaults({
     modelVersion: constants.MODEL_VERSION,
     isShortVersion: false,
     rowCount: 9,
-    minColumnCount: 1,
+    minColumnCount: 3,
     additionalFiles: [],
     webRadios: []
 });
