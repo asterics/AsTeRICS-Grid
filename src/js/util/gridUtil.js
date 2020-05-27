@@ -163,7 +163,7 @@ gridUtil.getOffset = function (globalGrid) {
     }
 };
 
-gridUtil.getFillElements = function (gridData) {
+gridUtil.getFreeCoordinates = function(gridData) {
     let tempGridData = new GridData({}, gridData);
     let xyMap = {};
     for (let x = 0; x < tempGridData.getWidthWithBounds(); x++) {
@@ -181,7 +181,17 @@ gridUtil.getFillElements = function (gridData) {
             }
         }
     });
-    return Object.keys(xyMap).map(key => new GridElement({x: xyMap[key].x, y: xyMap[key].y}));
+    return Object.keys(xyMap).map(key => {
+        return {
+            x: xyMap[key].x,
+            y: xyMap[key].y
+        }
+    });
+};
+
+gridUtil.getFillElements = function (gridData) {
+    let freeCoordinates = gridUtil.getFreeCoordinates(gridData);
+    return freeCoordinates.map(xy => new GridElement({x: xy.x, y: xy.y}));
 };
 
 export {gridUtil};
