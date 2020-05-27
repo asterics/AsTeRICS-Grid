@@ -50,37 +50,37 @@ class GridData extends Model({
      * @return {*}
      */
     getNewXYPos() {
-        if (!this.gridElements || this.gridElements.length == 0) {
+        if (!this.gridElements || this.gridElements.length === 0) {
             return {
                 x: 0,
                 y: 0
             }
         }
-        var maxXPos = Math.max.apply(null, this.gridElements.map(el => el.x));
-        var elemsMaxX = this.gridElements.filter(elem => elem.x == maxXPos);
-        var maxYPos = Math.max.apply(null, elemsMaxX.map(el => el.y));
-        if (maxYPos == this.rowCount - 1) {
-            var minWidth = Math.min.apply(null, elemsMaxX.map(elem => elem.width));
-            var elemsMinWidth = elemsMaxX.filter(elem => elem.width == minWidth);
-            return {
-                x: (elemsMinWidth[0].width - 1) + maxXPos + 1,
-                y: elemsMinWidth[0].y
-            };
-        } else {
-            var elemsMaxYPos = elemsMaxX.filter(el => el.y == maxYPos);
-            var finalY = maxYPos + elemsMaxYPos[0].height;
-            var elemsFinalY = this.gridElements.filter(elem => elem.y == finalY);
-
-            var finalX = elemsMaxX[elemsMaxX.length - 1].x;
-            if (elemsFinalY.length > 0) {
-                var maxXPos = Math.max.apply(null, elemsFinalY.map(el => el.x));
-                var elemsMaxX = elemsFinalY.filter(el => el.x == maxXPos);
-                finalX = elemsMaxX[0].x + elemsMaxX[0].width;
+        let yPosCountMap = {};
+        this.gridElements.forEach(element => {
+            yPosCountMap[element.y] = yPosCountMap[element.y] ? yPosCountMap[element.y] + 1 : 1;
+        });
+        let minValue = Number.MAX_SAFE_INTEGER;
+        let yMinElements = 0;
+        Object.keys(yPosCountMap).forEach(key => {
+            let value = yPosCountMap[key];
+            if (value < minValue) {
+                minValue = value;
+                yMinElements = parseInt(key);
             }
-            return {
-                x: finalX,
-                y: finalY
-            };
+        });
+        let elemsMinElemRow = this.gridElements.filter(elem => elem.y === yMinElements);
+        let occupiedX = elemsMinElemRow.reduce((total, elem) => {
+            for (let i = elem.x; i < elem.x + elem.width; i++) total.push(i);
+            return total;
+        }, []);
+        for (let x = 0; x < 1000; x++) {
+            if (occupiedX.indexOf(x) === -1) {
+                return {
+                    x: x,
+                    y: yMinElements
+                }
+            }
         }
     }
 
