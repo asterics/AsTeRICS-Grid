@@ -21,6 +21,7 @@ class GridElement extends Model({
     y: [Number],
     label: [String],
     backgroundColor: [String],
+    hidden: [Boolean],
     image: [GridImage],
     actions: [Object],
     type: String
