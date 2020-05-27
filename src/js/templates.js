@@ -1,5 +1,6 @@
 import {fontUtil} from "./util/fontUtil";
 import {GridElement} from "./model/GridElement";
+import {GridActionNavigate} from "./model/GridActionNavigate";
 
 var templates = {};
 
@@ -47,6 +48,7 @@ function getGridElementNormal(gridElem) {
     <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}" style="${gridItemContentStyle}">
         <div class="img-container" style="background: center no-repeat; background-size: contain; background-image: url('${imgData}'); margin: ${imgContainerMargin}; max-height: ${imgContainerMaxHeight};"/>
         <div class="text-container" style="${txtContainerStyle}"><span>${gridElem.label}</span></div>
+        ${getHintsElement(gridElem)}
     </div>
 </li>`;
     return template;
@@ -90,6 +92,12 @@ function fillDefaultValues(gridElem) {
     gridElem.label = gridElem.label || "";
 
     return gridElem;
+}
+
+function getHintsElement(gridElem) {
+    let hiddenHint = gridElem.hidden ? '<i class="fas fa-eye-slash element-hint"></i>' : '';
+    let navHint = gridElem.actions.filter(a => a.modelName === GridActionNavigate.getModelName()).length > 0 ? '<i class="fas fa-external-link-alt element-hint"></i>' : '';
+    return `<span style="position: absolute;">${navHint + ' ' + hiddenHint}</span>`;
 }
 
 export {templates};
