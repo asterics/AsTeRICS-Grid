@@ -86,21 +86,21 @@
                                 <button @click="$emit('close')" title="Keyboard: [Esc]" class="four columns offset-by-four">
                                     <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
                                 </button>
-                                <button @click="save()" :disabled="!gridElement.label && !tempImage.data" title="Keyboard: [Ctrl + Enter]" class="four columns">
+                                <button @click="save()" title="Keyboard: [Ctrl + Enter]" class="four columns">
                                     <i class="fas fa-check"/> <span>OK</span>
                                 </button>
                             </div>
                             <div class="hide-mobile row">
                                 <div v-if="editElementId">
-                                    <button @click="editNext(true)" :disabled="!gridElement.label && !tempImage.data" title="Keyboard: [Ctrl + Left]" class="four columns offset-by-four"><i class="fas fa-angle-double-left"/> <span data-i18n>OK, edit previous // OK, voriges bearbeiten</span></button>
-                                    <button @click="editNext()" :disabled="!gridElement.label && !tempImage.data" title="Keyboard: [Ctrl + Right]" class="four columns"><span data-i18n>OK, edit next // OK, nächstes bearbeiten</span> <i class="fas fa-angle-double-right"/></button>
+                                    <button @click="editNext(true)" title="Keyboard: [Ctrl + Left]" class="four columns offset-by-four"><i class="fas fa-angle-double-left"/> <span data-i18n>OK, edit previous // OK, voriges bearbeiten</span></button>
+                                    <button @click="editNext()" title="Keyboard: [Ctrl + Right]" class="four columns"><span data-i18n>OK, edit next // OK, nächstes bearbeiten</span> <i class="fas fa-angle-double-right"/></button>
                                 </div>
                                 <div v-if="!editElementId">
-                                    <button @click="addNext()" :disabled="!gridElement.label && !tempImage.data" title="Keyboard: [Ctrl + Right]" class="four columns offset-by-eight"><i class="fas fa-plus"/> <span data-i18n>OK, add another // OK, weiteres Element</span></button>
+                                    <button @click="addNext()" title="Keyboard: [Ctrl + Right]" class="four columns offset-by-eight"><i class="fas fa-plus"/> <span data-i18n>OK, add another // OK, weiteres Element</span></button>
                                 </div>
                             </div>
                             <div class="hide-mobile row">
-                                <button @click="save(true)" :disabled="!gridElement.label && !tempImage.data" title="Keyboard: [Ctrl + Y]" class="four columns offset-by-eight"><span data-i18n>OK, edit actions // OK, Aktionen bearbeiten</span> <i class="fas fa-bolt"/></button>
+                                <button @click="save(true)" title="Keyboard: [Ctrl + Y]" class="four columns offset-by-eight"><span data-i18n>OK, edit actions // OK, Aktionen bearbeiten</span> <i class="fas fa-bolt"/></button>
                             </div>
                         </div>
                     </div>
@@ -169,10 +169,9 @@
                 this.tempImage.data = this.tempImage.author = this.tempImage.authorURL = null;
             },
             save(toActions) {
-                if (!this.gridElement.label && !this.tempImage.data) return;
                 this.saveInternal().then(savedSomething => {
                     if (savedSomething) {
-                        this.$emit('reload');
+                        this.$emit('reload', null, this.gridElement.id);
                         this.$emit('close');
                     } else {
                         this.$emit('close');
@@ -184,7 +183,6 @@
             },
             addNext() {
                 var thiz = this;
-                if (!thiz.gridElement.label && !thiz.tempImage.data) return;
 
                 thiz.saveInternal().then(() => {
                     thiz.$emit('reload');
@@ -194,7 +192,7 @@
             },
             editNext(invertDirection) {
                 var thiz = this;
-                if (!thiz.editElementId || (!thiz.gridElement.label && !thiz.tempImage.data)) return;
+                if (!thiz.editElementId) return;
 
                 thiz.saveInternal().then(savedSomething => {
                     if (savedSomething) {

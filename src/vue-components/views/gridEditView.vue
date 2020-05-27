@@ -106,11 +106,12 @@
                     gridInstance.redo();
                 }, 10);
             },
-            reload(gridData) {
+            reload(gridData, markID) {
                 gridInstance.reinit(gridData);
                 if (gridData) {
                     this.gridData = JSON.parse(JSON.stringify(gridData));
                 }
+                this.markElement(markID);
             },
             back() {
                 Router.toMain();
@@ -173,16 +174,21 @@
                     }
                 }
             },
-            elementClicked(id) {
-                util.throttle(() => {
-                    $('.grid-item-content').removeClass('marked');
-                    if (!this.markedElement || this.markedElement.id !== id) {
-                        this.markedElement = !id ? null : this.gridData.gridElements.filter(el => el.id === id)[0];
-                        $('#' + id).addClass('marked');
-                    } else {
-                        this.markedElement = null;
-                    }
-                }, null, 200);
+            markElement(id) {
+                $('.grid-item-content').removeClass('marked');
+                if (!id) {
+                    return;
+                }
+                setTimeout(() => {
+                    util.throttle(() => {
+                        if (!this.markedElement || this.markedElement.id !== id) {
+                            this.markedElement = !id ? null : this.gridData.gridElements.filter(el => el.id === id)[0];
+                            $('#' + id).addClass('marked');
+                        } else {
+                            this.markedElement = null;
+                        }
+                    }, null, 200);
+                }, 10);
             }
         },
         created() {
@@ -339,7 +345,7 @@
                     id = $(element).attr('data-id');
                     element = element.parentNode;
                 }
-                vueApp.elementClicked(id);
+                vueApp.markElement(id);
             }
         });
 
@@ -438,23 +444,23 @@
                 }
                 case CONTEXT_ACTION_EDIT:
                     vueApp.editElement(vueApp.markedElement.id);
-                    vueApp.elementClicked(null);
+                    vueApp.markElement(null);
                     break;
                 case CONTEXT_ACTION_EDIT_ACTIONS:
                     vueApp.editActions(vueApp.markedElement.id);
-                    vueApp.elementClicked(null);
+                    vueApp.markElement(null);
                     break;
                 case CONTEXT_ACTION_DELETE:
                     vueApp.removeElement(vueApp.markedElement.id);
-                    vueApp.elementClicked(null);
+                    vueApp.markElement(null);
                     break;
                 case CONTEXT_ACTION_DUPLICATE:
                     gridInstance.duplicateElement(vueApp.markedElement.id);
-                    vueApp.elementClicked(null);
+                    vueApp.markElement(null);
                     break;
                 case CONTEXT_ACTION_DO_ACTION:
                     actionService.doAction(vueApp.gridData.id, vueApp.markedElement.id);
-                    vueApp.elementClicked(null);
+                    vueApp.markElement(null);
                     break;
                 case CONTEXT_EDIT_GLOBAL_GRID:
                     Router.toEditGrid(vueApp.metadata.globalGridId);
