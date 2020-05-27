@@ -70,6 +70,7 @@ function Grid(gridContainerId, gridItemClass, options) {
     function initGrid(gridDataParam) {
         let promises = [];
         if (!options.dragAndDrop) { //only add global grid if not in edit mode
+            gridDataParam.gridElements = gridDataParam.gridElements.filter(elem => !elem.hidden);
             promises.push(dataService.getGlobalGrid().then(globalGrid => {
                 if (globalGrid) {
                     let autowidth = true;
@@ -237,7 +238,6 @@ function Grid(gridContainerId, gridItemClass, options) {
         setTimeout(function() {
             _gridElement.gridList('autosize');
             setTimeout(function () {
-                fontUtil.adaptFontSizeForGridElements();
                 if($('#grid-layout-background-vertical')[0]) {
                     var sizeX = _gridListInstance._cellWidth;
                     var sizeY = _gridListInstance._cellHeight;
@@ -248,6 +248,9 @@ function Grid(gridContainerId, gridItemClass, options) {
                     $('#grid-layout-background-wrapper').show();
                 }
             }, 0);
+            setTimeout(function () {
+                fontUtil.adaptFontSizeForGridElements();
+            }, _animationTimeMs);
             refreshResizeOptions();
         }, timeout);
     };
