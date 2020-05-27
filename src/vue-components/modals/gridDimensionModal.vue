@@ -13,11 +13,11 @@
                     <div class="modal-body container">
                         <div class="row">
                             <label for="gridRows" data-i18n="" class="six columns">Number of rows // Anzahl der Zeilen</label>
-                            <input id="gridRows" type="number" class="three columns" v-model="gridData.rowCount" min="1" max="100"/>
+                            <input id="gridRows" type="number" class="three columns" v-model.number="gridData.rowCount" min="1" max="100"/>
                         </div>
                         <div class="row">
                             <label for="gridCols" data-i18n="" class="six columns">Minimum number of columns // Minimale Anzahl der Spalten</label>
-                            <input id="gridCols" type="number" class="three columns" v-model="gridData.minColumnCount" min="1" max="100"/>
+                            <input id="gridCols" type="number" class="three columns" v-model.number="gridData.minColumnCount" min="1" max="100"/>
                         </div>
                     </div>
 
@@ -40,6 +40,7 @@
 <script>
     import {i18nService} from "../../js/service/i18nService";
     import './../../css/modal.css';
+    import {localStorageService} from "../../js/service/data/localStorageService";
 
     export default {
         props: ['gridDataParam'],
@@ -50,6 +51,10 @@
         },
         methods: {
             save() {
+                localStorageService.saveLastGridDimensions({
+                    rowCount: this.gridData.rowCount,
+                    minColumnCount: this.gridData.minColumnCount
+                });
                 this.$emit('save', this.gridData.rowCount, this.gridData.minColumnCount);
                 this.$emit('close');
             }

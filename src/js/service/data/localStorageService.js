@@ -10,6 +10,7 @@ let LAST_ACTIVEUSER_KEY = "LAST_ACTIVEUSER_KEY";
 let AUTOLOGIN_USER_KEY = "AUTOLOGIN_USER_KEY";
 let SYNC_NAVIGATION_KEY = "AG_SYNC_NAVIGATION_KEY";
 let LOCAL_METADATA_KEY = "AG_LOCAL_METADATA_KEY";
+let GRID_DIMENSIONS_KEY = "AG_GRID_DIMENSIONS_KEY";
 
 if (typeof (Storage) !== "undefined") {
     try {
@@ -254,6 +255,13 @@ var localStorageService = {
     getLocalMetadata() {
         let json = localStorageService.get(LOCAL_METADATA_KEY);
         return json ? JSON.parse(json) : json;
+    },
+    saveLastGridDimensions(dimensions) {
+        return localStorageService.save(GRID_DIMENSIONS_KEY, JSON.stringify(dimensions));
+    },
+    getLastGridDimensions() {
+        let json = localStorageService.get(GRID_DIMENSIONS_KEY);
+        return json ? JSON.parse(json) : {};
     }
 };
 

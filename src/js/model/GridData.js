@@ -6,6 +6,7 @@ import {constants} from "../util/constants";
 import {Model} from "../externals/objectmodel";
 import {Webradio} from "./Webradio";
 import {gridUtil} from "../util/gridUtil";
+import {localStorageService} from "../service/data/localStorageService";
 
 class GridData extends Model({
     id: String,
@@ -26,7 +27,8 @@ class GridData extends Model({
             properties.id = properties.id ? properties.id : modelUtil.generateId(GridData.getIdPrefix());
         }
         super(properties);
-        this.minColumnCount = properties.minColumnCount || this.getWidth();
+        this.minColumnCount = properties.minColumnCount || this.getWidth() || localStorageService.getLastGridDimensions().minColumnCount || 4;
+        this.rowCount = properties.rowCount || this.getHeight() || localStorageService.getLastGridDimensions().rowCount || 3;
         this.id = this.id || modelUtil.generateId('grid-data');
     }
 
@@ -202,8 +204,6 @@ GridData.defaults({
     modelName: GridData.getModelName(),
     modelVersion: constants.MODEL_VERSION,
     isShortVersion: false,
-    rowCount: 9,
-    minColumnCount: 3,
     additionalFiles: [],
     webRadios: []
 });
