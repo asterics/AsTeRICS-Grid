@@ -105,4 +105,15 @@ imageUtil.urlToBase64 = function (url) {
     });
 };
 
+imageUtil.getScreenshot = function (selector) {
+    return import(/* webpackChunkName: "html2canvas" */ 'html2canvas').then(html2canvas => {
+        return html2canvas.default(document.querySelector(selector), {
+            scale: 0.2,
+            logging: false
+        }).then(canvas => {
+            return Promise.resolve(canvas.toDataURL());
+        });
+    });
+};
+
 export {imageUtil};
