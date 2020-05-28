@@ -13,10 +13,10 @@
             </div>
         </header>
         <div>
-            <edit-grid-modal v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showEditModal = false" @reload="reload" @actions="showActionsModal = true"/>
+            <edit-grid-modal v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showEditModal = false" @mark="markElement" @actions="showActionsModal = true"/>
         </div>
         <div>
-            <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :grid-instance="getGridInstance()" @close="showMultipleModal = false" @reload="reload"/>
+            <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :grid-instance="getGridInstance()" @close="showMultipleModal = false"/>
         </div>
         <div>
             <edit-actions-modal v-if="showActionsModal" v-bind:edit-element-id-param="editElementId" v-bind:grid-id-param="gridData.id" @close="showActionsModal = false" @reload="reload" @edit="showEditModal = true"/>
@@ -106,12 +106,11 @@
                     gridInstance.redo();
                 }, 10);
             },
-            reload(gridData, markID) {
+            reload(gridData) {
                 gridInstance.reinit(gridData);
                 if (gridData) {
                     this.gridData = JSON.parse(JSON.stringify(gridData));
                 }
-                this.markElement(markID);
             },
             back() {
                 Router.toMain();

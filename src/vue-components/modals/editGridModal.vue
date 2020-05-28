@@ -176,8 +176,11 @@
                 this.tempImage.data = this.tempImage.author = this.tempImage.authorURL = null;
             },
             save(toActions) {
-                this.saveInternal().then(() => {
+                this.saveInternal().then((savedSomething) => {
                     this.$emit('close');
+                    if (savedSomething && !this.editElementId) {
+                        this.$emit('mark', this.gridElement.id);
+                    }
                     if (toActions) {
                         this.$emit('actions');
                     }
