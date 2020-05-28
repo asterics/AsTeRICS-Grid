@@ -136,9 +136,8 @@
                             x: newPos.x,
                             y: newPos.y
                         });
-                        dataService.updateOrAddGridElement(this.gridData.id, newElement).then(() => {
-                            this.reload();
-                        });
+                        this.gridData.gridElements.push(newElement);
+                        gridInstance.updateGridWithUndo(this.gridData);
                         break;
                     }
                     default: {
