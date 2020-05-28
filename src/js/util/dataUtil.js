@@ -1,6 +1,7 @@
 let dataUtil = {};
 
 let defaultRemovedPlaceholder = '_removed_';
+let noTrimProperties = ['thumbnail'];
 
 /**
  * Recursively iterates over all properties of a given object and removes all String values longer than a given threshold.
@@ -19,7 +20,9 @@ dataUtil.removeLongPropertyValues = function(object, maxLength, removedPlacehold
     maxLength = maxLength || 500;
     let copy = JSON.parse(JSON.stringify(object));
     Object.keys(copy).forEach(key => {
-        copy[key] = shortenObjectInternal(copy[key], maxLength, removedPlaceholder);
+        if (noTrimProperties.indexOf(key) === -1) {
+            copy[key] = shortenObjectInternal(copy[key], maxLength, removedPlaceholder);
+        }
     });
     return copy;
 };
@@ -47,7 +50,9 @@ function shortenObjectInternal(object, maxLength, removedPlaceholder) {
         }
     } else {
         Object.keys(object).forEach(nextKey => {
-            object[nextKey] = shortenObjectInternal(object[nextKey], maxLength, removedPlaceholder);
+            if (noTrimProperties.indexOf(nextKey) === -1) {
+                object[nextKey] = shortenObjectInternal(object[nextKey], maxLength, removedPlaceholder);
+            }
         });
     }
     return object;
