@@ -7,6 +7,7 @@ import {Model} from "../externals/objectmodel";
 import {Webradio} from "./Webradio";
 import {gridUtil} from "../util/gridUtil";
 import {localStorageService} from "../service/data/localStorageService";
+import {encryptionService} from "../service/data/encryptionService";
 
 class GridData extends Model({
     id: String,
@@ -19,7 +20,8 @@ class GridData extends Model({
     minColumnCount: [Number],
     gridElements: Model.Array(GridElement),
     additionalFiles: [Model.Array(AdditionalGridFile)],
-    webRadios: [Model.Array(Webradio)]
+    webRadios: [Model.Array(Webradio)],
+    thumbnail: [Object] // map with 2 properties: [data, hash], where "data" is base64 Screenshot data and "hash" is the hash of the grid when the screenshot was made
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridData);
@@ -34,6 +36,17 @@ class GridData extends Model({
 
     hasSetPositions() {
         return this.gridElements.every(elm => elm.hasSetPosition());
+    }
+
+    getHash() {
+        let string = "";
+        this.gridElements.forEach(e => {
+            string += e.label + e.x + e.y;
+            if (e.image) {
+                string += e.image.data.substring(e.image.data.length - 30);
+            }
+        });
+        return encryptionService.getStringHash(string);
     }
 
     getWidth() {
