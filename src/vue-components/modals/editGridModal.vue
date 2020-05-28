@@ -125,11 +125,13 @@
     import {helpService} from "../../js/service/helpService";
     import {util} from "../../js/util/util";
     import {openSymbolsService} from "../../js/service/openSymbolsService";
+    import {gridUtil} from "../../js/util/gridUtil";
 
     export default {
-        props: ['editElementIdParam', 'gridData'],
+        props: ['editElementIdParam', 'gridDataId', 'gridInstance'],
         data: function () {
             return {
+                gridData: null,
                 gridElement: null,
                 metadata: null,
                 originalGridElementJSON: null,
@@ -174,13 +176,8 @@
                 this.tempImage.data = this.tempImage.author = this.tempImage.authorURL = null;
             },
             save(toActions) {
-                this.saveInternal().then(savedSomething => {
-                    if (savedSomething) {
-                        this.$emit('reload', null, this.gridElement.id);
-                        this.$emit('close');
-                    } else {
-                        this.$emit('close');
-                    }
+                this.saveInternal().then(() => {
+                    this.$emit('close');
                     if (toActions) {
                         this.$emit('actions');
                     }
@@ -188,9 +185,7 @@
             },
             addNext() {
                 var thiz = this;
-
                 thiz.saveInternal().then(() => {
-                    thiz.$emit('reload');
                     thiz.initInternal();
                     $('#inputLabel').focus();
                 });
@@ -199,10 +194,7 @@
                 var thiz = this;
                 if (!thiz.editElementId) return;
 
-                thiz.saveInternal().then(savedSomething => {
-                    if (savedSomething) {
-                        thiz.$emit('reload');
-                    }
+                thiz.saveInternal().then(() => {
                     thiz.editElementId = new GridData(thiz.gridData).getNextElementId(thiz.editElementId, invertDirection);
                     thiz.initInternal();
                     $('#inputLabel').focus();
@@ -240,8 +232,9 @@
 
                     function saveInternalInternal() {
                         if (thiz.gridElement && thiz.originalGridElementJSON !== JSON.stringify(thiz.gridElement)) {
-                            dataService.updateOrAddGridElement(thiz.gridData.id, thiz.gridElement).then(() => {
-                                resolve(true);
+                            let grid = gridUtil.updateOrAddGridElement(thiz.gridData, thiz.gridElement);
+                            thiz.gridInstance.updateGridWithUndo(grid).then(updated => {
+                                resolve(updated);
                             });
                         } else {
                             resolve(false);
@@ -253,29 +246,28 @@
                 var thiz = this;
                 thiz.resetInternal();
                 thiz.tempImage = JSON.parse(JSON.stringify(new GridImage()));
-                if (thiz.editElementId) {
-                    dataService.getGridElement(thiz.gridData.id, this.editElementId).then(gridElem => {
-                        log.debug('editing element: ' + gridElem.label);
+                dataService.getGrid(thiz.gridDataId).then(gridData => {
+                    thiz.gridData = JSON.parse(JSON.stringify(gridData));
+                    if (thiz.editElementId) {
+                        let gridElem = thiz.gridData.gridElements.filter(e => e.id === thiz.editElementId)[0];
                         thiz.gridElement = JSON.parse(JSON.stringify(gridElem));
                         if (gridElem.image && gridElem.image.data) {
                             thiz.tempImage = JSON.parse(JSON.stringify(new GridImage(gridElem.image)));
                         }
                         thiz.elementW = $('#' + this.gridElement.id)[0].getBoundingClientRect().width;
                         thiz.originalGridElementJSON = JSON.stringify(gridElem);
-                    });
-                } else {
-                    dataService.getGrid(thiz.gridData.id).then(gridDataCurrent => {
-                        var newXYPos = gridDataCurrent.getNewXYPos();
+                    } else {
+                        var newXYPos = gridData.getNewXYPos();
                         log.debug('creating element: x ' + newXYPos.x + ' / y ' + newXYPos.y);
                         thiz.gridElement = JSON.parse(JSON.stringify(new GridElement({
                             x: newXYPos.x,
                             y: newXYPos.y
                         })));
-                        var oneElemHeight = Math.round($('#grid-container')[0].getBoundingClientRect().height / gridDataCurrent.rowCount);
+                        var oneElemHeight = Math.round($('#grid-container')[0].getBoundingClientRect().height / gridData.rowCount);
                         thiz.elementW = 2 * oneElemHeight;
                         thiz.originalGridElementJSON = JSON.stringify(thiz.gridElement);
-                    });
-                }
+                    }
+                });
 
                 dataService.getMetadata().then(metadata => {
                     thiz.metadata = metadata;
