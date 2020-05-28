@@ -213,34 +213,6 @@ dataService.getGridsAttribute = function (attribute) {
 };
 
 /**
- * Adds or updates a grid element.
- * @see{GridElement}
- *
- * @param gridId the ID of the grid for which the element should be added/updated
- * @param updatedGridElement the gridElement of type @see{GridElement.js}
- * @return {Promise} resolves after operation finished successful
- */
-dataService.updateOrAddGridElement = function (gridId, updatedGridElement) {
-    return new Promise(resolve => {
-        dataService.getGrid(gridId).then(grid => {
-            grid = JSON.parse(JSON.stringify(grid));
-            updatedGridElement = JSON.parse(JSON.stringify(updatedGridElement));
-            let index = grid.gridElements.map(el => el.id).indexOf(updatedGridElement.id);
-
-            if (index !== -1) {
-                grid.gridElements[index] = updatedGridElement;
-            } else {
-                grid.gridElements.push(updatedGridElement);
-            }
-
-            dataService.updateGrid(gridId, grid).then(() => {
-                resolve();
-            });
-        });
-    });
-};
-
-/**
  * Adds an array of new grid elements to a grid.
  * @see{GridElement}
  *

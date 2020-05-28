@@ -194,4 +194,17 @@ gridUtil.getFillElements = function (gridData) {
     return freeCoordinates.map(xy => new GridElement({x: xy.x, y: xy.y}));
 };
 
+gridUtil.updateOrAddGridElement = function(gridData, updatedGridElement) {
+    updatedGridElement = JSON.parse(JSON.stringify(updatedGridElement));
+    gridData = JSON.parse(JSON.stringify(gridData));
+    let index = gridData.gridElements.map(el => el.id).indexOf(updatedGridElement.id);
+
+    if (index !== -1) {
+        gridData.gridElements[index] = updatedGridElement;
+    } else {
+        gridData.gridElements.push(updatedGridElement);
+    }
+    return gridData;
+};
+
 export {gridUtil};
