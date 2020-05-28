@@ -71,6 +71,7 @@
     import SequentialInputModal from "../modals/input/sequentialInputModal.vue";
     import {speechService} from "../../js/service/speechService";
     import {localStorageService} from "../../js/service/data/localStorageService";
+    import {imageUtil} from "../../js/util/imageUtil";
 
     let vueApp = null;
     let gridInstance = null;
@@ -340,6 +341,17 @@
             }).then(() => {
                 initContextmenu();
                 thiz.viewInitialized = true;
+                let hash = new GridData(thiz.gridData).getHash();
+                if (!thiz.gridData.thumbnail || thiz.gridData.thumbnail.hash !== hash) {
+                    imageUtil.getScreenshot("#grid-container").then(screenshot => {
+                        let thumbnail = {
+                            data: screenshot,
+                            hash: hash
+                        };
+                        thiz.gridData.thumbnail = thumbnail;
+                        dataService.saveGrid(thiz.gridData);
+                    });
+                }
                 thiz.initInputMethods();
             }).catch((e) => {
                 if (e) {
