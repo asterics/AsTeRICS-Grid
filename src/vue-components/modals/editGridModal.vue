@@ -21,7 +21,7 @@
                             <button @click="search(gridElement.label)" class="two columns" :label="i18nService.translate('Search for images // Suche nach Bildern')"><i class="fas fa-search"/></button>
                             <div class="three columns">
                                 <input type="checkbox" id="inputHidden" v-focus v-if="gridElement" v-model="gridElement.hidden"/>
-                                <label for="inputHidden" data-i18n="">Hide element // Verstecke Element</label>
+                                <label for="inputHidden" data-i18n="">Hide element // Element ausblenden</label>
                             </div>
                         </div>
                         <div class="row">
