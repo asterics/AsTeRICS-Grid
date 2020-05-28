@@ -207,4 +207,46 @@ gridUtil.updateOrAddGridElement = function(gridData, updatedGridElement) {
     return gridData;
 };
 
+gridUtil.getGraphList = function (grids, removeGridId) {
+    grids = grids.filter(g => g.id !== removeGridId);
+    let gridGraphList = [];
+    let gridGraphMap = {};
+    grids.forEach(grid => {
+        let parents = grids.filter(g => hasElemNavigatingTo(g.gridElements, grid.id));
+        let children = grids.filter(g => getNavigationIds(grid).indexOf(g.id) !== -1);
+        let graphListElem = {
+            grid: grid,
+            parents: parents,
+            children: children,
+            navCount: parents.length + children.length
+        };
+        gridGraphList.push(graphListElem);
+        gridGraphMap[grid.id] = graphListElem;
+    });
+    gridGraphList.sort((a, b) => {
+        return b.navCount - a.navCount;
+    });
+    gridGraphList.forEach(elem => {
+        elem.parents = elem.parents.map(parent => gridGraphMap[parent.id]);
+        elem.children = elem.children.map(child => gridGraphMap[child.id]);
+        elem.allRelatives = elem.parents.filter(p => elem.children.indexOf(p) === -1).concat(elem.children);
+    });
+    return gridGraphList;
+};
+
+function getElemsNavigatingTo(elems, id) {
+    return elems.filter(elem => elem.actions.filter(action => action.modelName === GridActionNavigate.getModelName() && action.toGridId === id).length > 0);
+}
+
+function hasElemNavigatingTo(elems, id) {
+    return getElemsNavigatingTo(elems, id).length > 0;
+}
+
+function getNavigationIds(grid) {
+    let allNavActions = grid.gridElements.reduce((total, elem) => {
+        return total.concat(elem.actions.filter(a => a.modelName === GridActionNavigate.getModelName()));
+    }, []);
+    return allNavActions.map(a => a.toGridId);
+}
+
 export {gridUtil};
