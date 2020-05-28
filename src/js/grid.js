@@ -355,13 +355,18 @@ function Grid(gridContainerId, gridItemClass, options) {
      * reverts the last undo, if there was one
      */
     thiz.updateGridWithUndo = function (gridData) {
-        _undoService.updateGrid(gridData).then(updated => {
-            if (updated) {
-                notifyLayoutChangeStart();
-                init().then(() => {
-                    notifyLayoutChangeEnd();
-                });
-            }
+        return new Promise(resolve => {
+            _undoService.updateGrid(gridData).then(updated => {
+                if (updated) {
+                    notifyLayoutChangeStart();
+                    init().then(() => {
+                        resolve(true);
+                        notifyLayoutChangeEnd();
+                    });
+                } else {
+                    resolve(false);
+                }
+            });
         });
     };
 
