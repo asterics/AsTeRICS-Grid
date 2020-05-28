@@ -16,7 +16,7 @@
             <edit-grid-modal v-if="showEditModal" v-bind:edit-element-id-param="editElementId" v-bind:grid-data="gridData" @close="showEditModal = false" @reload="reload" @actions="showActionsModal = true"/>
         </div>
         <div>
-            <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" @close="showMultipleModal = false" @reload="reload"/>
+            <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :grid-instance="getGridInstance()" @close="showMultipleModal = false" @reload="reload"/>
         </div>
         <div>
             <edit-actions-modal v-if="showActionsModal" v-bind:edit-element-id-param="editElementId" v-bind:grid-id-param="gridData.id" @close="showActionsModal = false" @reload="reload" @edit="showEditModal = true"/>
@@ -189,6 +189,9 @@
                         }
                     }, null, 200);
                 }, 10);
+            },
+            getGridInstance() {
+                return gridInstance;
             }
         },
         created() {

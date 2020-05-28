@@ -56,7 +56,7 @@
     import {helpService} from "../../js/service/helpService";
 
     export default {
-        props: ['gridData'],
+        props: ['gridData', 'gridInstance'],
         data: function () {
             return {
                 inputText: "",
@@ -71,9 +71,8 @@
             },
             save () {
                 var thiz = this;
-                if(thiz.parsedElems.length == 0) return;
+                if(thiz.parsedElems.length === 0) return;
 
-                var newElems = [];
                 var gridDataObject = new GridData(this.gridData);
                 this.parsedElems.forEach(label => {
                     var newElem = new GridElement({
@@ -82,12 +81,9 @@
                         y: gridDataObject.getNewXYPos().y,
                     });
                     gridDataObject.gridElements.push(newElem);
-                    newElems.push(newElem);
                 });
-                dataService.addGridElements(thiz.gridData.id, newElems).then(() => {
-                    this.$emit('reload');
-                    this.$emit('close');
-                });
+                this.gridInstance.updateGridWithUndo(gridDataObject);
+                this.$emit('close');
             }
         },
         mounted() {
