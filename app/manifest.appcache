@@ -1,11 +1,12 @@
 CACHE MANIFEST
-# a9293925d3e2d643f2c7
+# 04b312d29f61fdabac48
 
 CACHE:
 ../index.html
 index.html
 build/asterics-grid.bundle.js
 build_legacy/asterics-grid.bundle.js
+build_legacy/vendors~html2canvas.bundle.js
 build_legacy/JSZip.bundle.js
 build_legacy/vendors~JSZip.bundle.js
 css/fontawesome/css/all.css
