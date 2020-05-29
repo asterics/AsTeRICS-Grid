@@ -116,4 +116,8 @@ imageUtil.getScreenshot = function (selector) {
     });
 };
 
+imageUtil.getEmptyImage = function () {
+    return "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
+};
+
 export {imageUtil};
