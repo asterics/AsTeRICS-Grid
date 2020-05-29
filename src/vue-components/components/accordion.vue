@@ -1,11 +1,11 @@
 <template>
     <div>
         <button @click="toggleOpen" class="btn-accordion" style="margin-bottom: 0">
-            <i class="fas fa-chevron-down arrow" v-show="!open"></i>
-            <i class="fas fa-chevron-up arrow" v-show="open"></i>
+            <i class="fas fa-chevron-down arrow" v-show="!isOpen"></i>
+            <i class="fas fa-chevron-up arrow" v-show="isOpen"></i>
             <component :is="componentType" style="margin-left: 2em; display: inline-block" data-i18n="">{{accLabel | translate}}</component>
         </button>
-        <div v-show="open" class="accordion-content" :style="'background-color:' + backgroundColor">
+        <div v-show="isOpen" class="accordion-content" :style="'background-color:' + backgroundColor">
             <slot></slot>
         </div>
     </div>
@@ -18,15 +18,18 @@
         props: ["accLabel", "accOpen", 'accLabelType', 'accBackgroundColor'],
         data() {
             return {
-                open: this.accOpen === "true",
+                isOpen: this.accOpen === "true" || this.accOpen === true,
                 componentType: this.accLabelType || 'span',
                 backgroundColor: this.accBackgroundColor || 'whitesmoke'
             }
         },
         methods: {
             toggleOpen() {
-                this.open = !this.open;
-                this.open ? this.$emit('open') : this.$emit('close');
+                this.isOpen = !this.isOpen;
+                this.isOpen ? this.$emit('open') : this.$emit('close');
+            },
+            open() {
+                this.isOpen = true;
             }
         },
         mounted() {
