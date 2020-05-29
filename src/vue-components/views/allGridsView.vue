@@ -44,36 +44,46 @@
                 <div v-if="graphList && selectedGraphElement" class="row">
                     <h3 data-i18n="">Connected grids // Verknüpfte Grids</h3>
                     <ul>
-                        <li>
-                            <a v-for="relative in selectedGraphElement.allRelatives" href="javascript:;" @click="setSelectedGraphElement(relative)" style="text-decoration: none;">
-                                <div style="display: inline-block; margin-right: 2em">
-                                    <div>{{relative.grid.label}}</div>
-                                    <img :src="relative.grid.thumbnail ? relative.grid.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; max-width: 100%; border: 1px solid lightgray"/>
-                                </div>
+                        <li v-for="relative in selectedGraphElement.allRelatives" style="display: inline-block; margin-right: 2em">
+                            <a href="javascript:;" @click="setSelectedGraphElement(relative)" style="text-decoration: none;">
+                                <div>{{relative.grid.label}}</div>
+                                <img :src="relative.grid.thumbnail ? relative.grid.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; max-width: 100%; border: 1px solid lightgray"/>
                             </a>
                         </li>
+                        <li v-show="selectedGraphElement.allRelatives.length === 0"><span data-i18n="">(no connected grids) // (keine verknüpften Grids)</span></li>
                     </ul>
-                    <span v-if="selectedGraphElement.allRelatives.length === 0" data-i18n="">(no connected grids) // (keine verknüpften Grids)</span>
                 </div>
             </accordion>
 
             <accordion acc-label="Not reachable grids // Nicht erreichbare Grids" acc-label-type="h1" acc-background-color="white">
                 <div v-if="graphList && selectedGraphElement" class="row">
                     <ul>
-                        <li>
-                            <a v-for="elem in graphList.filter(e => e.parents.length === 0)" href="javascript:;" @click="setSelectedGraphElement(elem)" style="text-decoration: none;">
-                                <div style="display: inline-block; margin-right: 2em">
-                                    <div>{{elem.grid.label}}</div>
-                                    <img :src="elem.grid.thumbnail ? elem.grid.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; max-width: 100%; border: 1px solid lightgray"/>
-                                </div>
+                        <li v-for="elem in graphList.filter(e => e.parents.length === 0)" style="display: inline-block; margin-right: 2em">
+                            <a href="javascript:;" @click="setSelectedGraphElement(elem)" style="text-decoration: none;">
+                                <div>{{elem.grid.label}}</div>
+                                <img :src="elem.grid.thumbnail ? elem.grid.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; max-width: 100%; border: 1px solid lightgray"/>
                             </a>
                         </li>
+                        <li v-show="graphList.filter(e => e.parents.length === 0).length === 0"><span data-i18n="">(no not reachable grids) // (keine nicht erreichbaren Grids)</span></li>
+                    </ul>
+                </div>
+            </accordion>
+
+            <accordion acc-label="All grids // Alle Grids" acc-label-type="h1" acc-background-color="white">
+                <div v-if="graphList && selectedGraphElement" class="row">
+                    <ul>
+                        <li v-for="elem in graphList" style="display: inline-block; margin-right: 2em">
+                            <a href="javascript:;" @click="setSelectedGraphElement(elem)" style="text-decoration: none;">
+                                <div>{{elem.grid.label}}</div>
+                                <img :src="elem.grid.thumbnail ? elem.grid.thumbnail.data : imageUtil.getEmptyImage()" style="height: 80px; max-width: 100%; border: 1px solid lightgray"/>
+                            </a>
+                        </li>
+                        <li v-show="graphList.length === 0"><span data-i18n="">(no grids) // (keine Grids)</span></li>
                     </ul>
                 </div>
             </accordion>
 
             <accordion acc-label="Global grid // Globales Grid" acc-label-type="h1" acc-background-color="white">
-                <h2 data-i18n>Global grid // Globales Grid</h2>
                 <p data-i18n="">A global grid is shown within each other grid and can contain elements like e.g. "back" or "home". // Ein globales Grid wird innerhalb jedes anderen Grids angezeigt und kann beispielsweise Elemente wie "Zurück" oder "Zum Start" beinhalten.</p>
                 <div class="row">
                     <label class="four columns" for="globalGridActions" data-i18n="">Actions for global grid // Aktionen für globales Grid</label>
