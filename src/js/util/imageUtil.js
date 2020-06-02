@@ -1,3 +1,5 @@
+import {constants} from "./constants";
+
 var imageUtil = {};
 
 /**
@@ -109,7 +111,10 @@ imageUtil.getScreenshot = function (selector) {
     return import(/* webpackChunkName: "html2canvas" */ 'html2canvas').then(html2canvas => {
         return html2canvas.default(document.querySelector(selector), {
             scale: 0.2,
-            logging: false
+            logging: false,
+            ignoreElements: (node) => {
+                return constants.IS_FIREFOX && node.style['background-image'].indexOf('image/svg') !== -1;
+            }
         }).then(canvas => {
             return Promise.resolve(canvas.toDataURL());
         });
