@@ -33,6 +33,7 @@ constants.DB_SYNC_STATE_ONLINEONLY = 'DB_SYNC_STATE_ONLINEONLY';
 constants.ENVIRONMENT = '#ASTERICS_GRID_ENV#';
 constants.IS_ENVIRONMENT_DEV = constants.ENVIRONMENT === ('#ASTERICS_' + 'GRID_ENV#');
 constants.IS_ENVIRONMENT_PROD = !constants.IS_ENVIRONMENT_DEV;
+constants.IS_FIREFOX = navigator.userAgent.indexOf("Firefox") !== -1;
 
 constants.STATE_ACTIVATED_TTS = 'STATE_ACTIVATED_TTS';
 
