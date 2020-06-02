@@ -32,7 +32,7 @@
                                 <option v-for="elem in gridFrom.gridElements" :value="elem">{{elem.label || i18nService.translate('(empty element) // (leeres Element)')}}</option>
                             </select>
                         </div>
-                        <div class="row" v-show="!selectedElement">
+                        <div class="row" v-show="!selectedElement || !selectedElement.label">
                             <label class="three columns" for="elementLabel" data-i18n="">Label of new element // Label des neuen Elements</label>
                             <input type="text" id="elementLabel" class="four columns" v-model="newElementLabel" maxlength="35"/>
                         </div>
@@ -102,6 +102,7 @@
                     });
                     this.gridFrom.gridElements.push(element);
                 }
+                element.label = element.label || this.newElementLabel;
                 element.actions = element.actions.filter(a => a.modelName !== GridActionNavigate.getModelName());
                 element.actions.push(new GridActionNavigate({
                     toGridId: this.gridTo.id
