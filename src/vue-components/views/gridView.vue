@@ -90,6 +90,7 @@
             return {
                 gridData: {},
                 metadata: null,
+                updatedMetadataDoc: null,
                 scanner: null,
                 hover: null,
                 clicker: null,
@@ -250,26 +251,30 @@
                 }
                 log.debug('got update event, ids updated:' + updatedIds);
                 let updatedGridDoc = updatedDocs.filter(doc => (vueApp.gridData && doc.id === vueApp.gridData.id))[0];
-                let updatedMetadataDoc = updatedDocs.filter(doc => (vueApp.metadata && doc.id === vueApp.metadata.id))[0];
+                this.updatedMetadataDoc = updatedDocs.filter(doc => (vueApp.metadata && doc.id === vueApp.metadata.id))[0] || this.updatedMetadataDoc;
                 if (updatedGridDoc) {
                     vueApp.reload(new GridData(updatedGridDoc));
                 }
                 if (!localStorageService.shouldSyncNavigation()) {
                     return;
                 }
-                if (updatedMetadataDoc && updatedMetadataDoc.lastOpenedGridId !== vueApp.gridData.id) {
-                    Router.toLastOpenedGrid();
+                if (this.updatedMetadataDoc && this.updatedMetadataDoc.lastOpenedGridId !== vueApp.gridData.id) {
+                    dataService.getGrid(this.updatedMetadataDoc.lastOpenedGridId).then(toGrid => {
+                        if (!toGrid.hasOutdatedThumbnail()) {
+                            Router.toLastOpenedGrid();
+                        }
+                    });
                     return;
                 }
-                if (updatedMetadataDoc && updatedMetadataDoc.fullscreen !== vueApp.metadata.fullscreen) {
-                    if (updatedMetadataDoc.fullscreen) {
+                if (this.updatedMetadataDoc && this.updatedMetadataDoc.fullscreen !== vueApp.metadata.fullscreen) {
+                    if (this.updatedMetadataDoc.fullscreen) {
                         vueApp.applyFullscreen(true);
                     } else {
                         $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
                     }
                 }
-                if (updatedMetadataDoc && updatedMetadataDoc.locked !== vueApp.metadata.locked) {
-                    if (updatedMetadataDoc.locked) {
+                if (this.updatedMetadataDoc && this.updatedMetadataDoc.locked !== vueApp.metadata.locked) {
+                    if (this.updatedMetadataDoc.locked) {
                         vueApp.lock();
                     } else {
                         vueApp.unlock(true);
@@ -341,12 +346,12 @@
             }).then(() => {
                 initContextmenu();
                 thiz.viewInitialized = true;
-                let hash = new GridData(thiz.gridData).getHash();
-                if (!thiz.gridData.thumbnail || thiz.gridData.thumbnail.hash !== hash) {
+                let gridDataObject = new GridData(thiz.gridData);
+                if (gridDataObject.hasOutdatedThumbnail()) {
                     imageUtil.getScreenshot("#grid-container").then(screenshot => {
                         let thumbnail = {
                             data: screenshot,
-                            hash: hash
+                            hash: gridDataObject.getHash()
                         };
                         thiz.gridData.thumbnail = thumbnail;
                         dataService.saveGrid(thiz.gridData);
