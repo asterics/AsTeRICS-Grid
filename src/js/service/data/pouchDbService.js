@@ -6,6 +6,7 @@ import {filterService} from "./filterService";
 import {PouchDbAdapter} from "./pouchDbAdapter";
 import {MapCache} from "../../util/MapCache";
 import {MetaData} from "../../model/MetaData";
+import {GridData} from "../../model/GridData";
 
 let pouchDbService = {};
 
@@ -327,6 +328,7 @@ function changeHandler(changedIds, changedDocsEncrypted) {
         } else {
             _documentCache.set(doc.id, doc);
             _documentCache.clear(MetaData.getIdPrefix());
+            _documentCache.clear(GridData.getIdPrefix());
         }
     });
     changedDocsEncrypted = changedDocsEncrypted.filter(doc => !doc._deleted);
