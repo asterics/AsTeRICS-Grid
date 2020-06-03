@@ -17,40 +17,43 @@
                 </div>
             </div>
 
-            <h1>{{headerDetails}}</h1>
-            <div class="row" v-if="selectedGraphElement">
-                <div class="five columns">
-                    <img :src="selectedGraphElement.grid.thumbnail ? selectedGraphElement.grid.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; max-width: 100%; border: 1px solid lightgray"/>
+            <div v-if="selectedGraphElement">
+                <h1>{{headerDetails}}</h1>
+                <div class="row">
+                    <div class="five columns">
+                        <img :src="selectedGraphElement.grid.thumbnail ? selectedGraphElement.grid.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; max-width: 100%; border: 1px solid lightgray"/>
+                    </div>
+                    <div class="five columns" style="margin-bottom: 1.5em">
+                        <label for="gridName" data-i18n="" style="display: block">Name of grid // Grid-Name</label>
+                        <input id="gridName" type="text" v-model="newLabel" maxlength="25" style="width: 77%"/>
+                        <button @click="saveGridLabel" :disabled="isLabelDuplicate(newLabel)" :title="i18nService.translate('Save name // Name speichern')" style="width: 17%; padding: 0 1%"><i class="fas fa-check"/></button>
+                    </div>
                 </div>
-                <div class="five columns" style="margin-bottom: 1.5em">
-                    <label for="gridName" data-i18n="" style="display: block">Name of grid // Grid-Name</label>
-                    <input id="gridName" type="text" v-model="newLabel" maxlength="25" style="width: 77%"/>
-                    <button @click="saveGridLabel" :disabled="isLabelDuplicate(newLabel)" :title="i18nService.translate('Save name // Name speichern')" style="width: 17%; padding: 0 1%"><i class="fas fa-check"/></button>
+                <div class="row" style="margin-bottom: 0.5em">
+                    <label for="actionGroup" data-i18n="">Actions // Aktionen</label>
                 </div>
-            </div>
-            <div class="row" style="margin-bottom: 0.5em">
-                <label for="actionGroup" data-i18n="">Actions // Aktionen</label>
-            </div>
-            <div id="actionGroup" class="action-buttons">
-                <div style="display: flex">
-                    <button @click="show(selectedGraphElement.grid.id)"><i class="far fa-eye"/> <span class="hide-mobile" data-i18n="">Show // Öffnen</span></button>
-                    <button @click="edit(selectedGraphElement.grid.id)"><i class="far fa-edit"/> <span class="hide-mobile" data-i18n="">Edit // Bearbeiten</span></button>
-                    <button @click="clone(selectedGraphElement.grid.id)"><i class="far fa-clone"/> <span class="hide-mobile" data-i18n="">Clone // Duplizieren</span></button>
-                    <button @click="deleteGrid(selectedGraphElement.grid.id)"><i class="far fa-trash-alt"/> <span class="hide-mobile" data-i18n="">Delete // Löschen</span></button>
-                    <button @click="exportToFile(selectedGraphElement.grid.id)"><i class="fas fa-file-export"/> <span class="hide-mobile" data-i18n="">Export // Exportieren</span></button>
+                <div id="actionGroup" class="action-buttons">
+                    <div style="display: flex">
+                        <button @click="show(selectedGraphElement.grid.id)"><i class="far fa-eye"/> <span class="hide-mobile" data-i18n="">Show // Öffnen</span></button>
+                        <button @click="edit(selectedGraphElement.grid.id)"><i class="far fa-edit"/> <span class="hide-mobile" data-i18n="">Edit // Bearbeiten</span></button>
+                        <button @click="clone(selectedGraphElement.grid.id)"><i class="far fa-clone"/> <span class="hide-mobile" data-i18n="">Clone // Duplizieren</span></button>
+                        <button @click="deleteGrid(selectedGraphElement.grid.id)"><i class="far fa-trash-alt"/> <span class="hide-mobile" data-i18n="">Delete // Löschen</span></button>
+                        <button @click="exportToFile(selectedGraphElement.grid.id)"><i class="fas fa-file-export"/> <span class="hide-mobile" data-i18n="">Export // Exportieren</span></button>
+                    </div>
                 </div>
             </div>
 
             <h1 data-i18n="">Grid list // Grid-Liste</h1>
-            <div class="row" style="margin-bottom: 1.5em">
+            <div class="row" v-show="graphList.length > 0" style="margin-bottom: 1.5em">
                 <label for="selectMode" class="three columns" data-i18n="">Grids to show // Anzuzeigende Grids</label>
                 <select id="selectMode" class="four columns" v-model="selectValue" @change="reinitContextMenu">
-                    <option :value="selectValues.CONNECTED_GRIDS">{{connectedGridsOptionLabel}}</option>
+                    <option :value="selectValues.CONNECTED_GRIDS" v-if="selectedGraphElement">{{connectedGridsOptionLabel}}</option>
                     <option :value="selectValues.NOT_REACHABLE_GRIDS" data-i18n="" >Not reachable grids // Nicht erreichbare Grids</option>
                     <option :value="selectValues.ALL_GRIDS" data-i18n="">All grids // Alle Grids</option>
                 </select>
+                <span class="three columns">{{graphElemsToShow.length}} <span data-i18n="">elements // Elemente</span></span>
             </div>
-            <div v-if="graphList && selectedGraphElement" class="row">
+            <div class="row">
                 <ul>
                     <li v-for="elem in graphElemsToShow" style="display: inline-block; margin-right: 2em; margin-bottom: 1.5em; position: relative">
                         <a href="javascript:;" @click="setSelectedGraphElement(elem)" style="text-decoration: none;">
@@ -65,15 +68,17 @@
                 </ul>
             </div>
 
-            <h1 data-i18n="">Global grid // Globales Grid</h1>
-            <p data-i18n="">A global grid is shown within each other grid and can contain elements like e.g. "back" or "home". // Ein globales Grid wird innerhalb jedes anderen Grids angezeigt und kann beispielsweise Elemente wie "Zurück" oder "Zum Start" beinhalten.</p>
-            <div class="row">
-                <label class="four columns" for="globalGridActions" data-i18n="">Actions for global grid // Aktionen für globales Grid</label>
-                <div id="globalGridActions" class="eight columns" v-if="metadata">
-                    <button v-show="!metadata.globalGridActive || !hasGlobalGrid" @click="setGlobalGridActive(true)"><i class="fas fa-globe"/> <span data-i18n="">Activate global Grid // Globales Grid aktivieren</span></button>
-                    <button v-show="metadata.globalGridActive && hasGlobalGrid" @click="setGlobalGridActive(false)"><i class="fas fa-globe"/> <span data-i18n="">Deactivate global Grid // Globales Grid deaktivieren</span></button>
-                    <button :disabled="!metadata.globalGridActive" @click="edit(metadata.globalGridId)"><i class="fas fa-edit"/> <span data-i18n="">Edit global Grid // Globales Grid bearbeiten</span></button>
-                    <button :disabled="!metadata.globalGridActive" @click="resetGlobalGrid()"><i class="fas fa-undo"/> <span data-i18n="">Reset global grid to default // Globales Grid zurücksetzen</span></button>
+            <div v-if="graphList.length > 0">
+                <h1 data-i18n="">Global grid // Globales Grid</h1>
+                <p data-i18n="">A global grid is shown within each other grid and can contain elements like e.g. "back" or "home". // Ein globales Grid wird innerhalb jedes anderen Grids angezeigt und kann beispielsweise Elemente wie "Zurück" oder "Zum Start" beinhalten.</p>
+                <div class="row">
+                    <label class="four columns" for="globalGridActions" data-i18n="">Actions for global grid // Aktionen für globales Grid</label>
+                    <div id="globalGridActions" class="eight columns" v-if="metadata">
+                        <button v-show="!metadata.globalGridActive || !hasGlobalGrid" @click="setGlobalGridActive(true)"><i class="fas fa-globe"/> <span data-i18n="">Activate global Grid // Globales Grid aktivieren</span></button>
+                        <button v-show="metadata.globalGridActive && hasGlobalGrid" @click="setGlobalGridActive(false)"><i class="fas fa-globe"/> <span data-i18n="">Deactivate global Grid // Globales Grid deaktivieren</span></button>
+                        <button :disabled="!metadata.globalGridActive" @click="edit(metadata.globalGridId)"><i class="fas fa-edit"/> <span data-i18n="">Edit global Grid // Globales Grid bearbeiten</span></button>
+                        <button :disabled="!metadata.globalGridActive" @click="resetGlobalGrid()"><i class="fas fa-undo"/> <span data-i18n="">Reset global grid to default // Globales Grid zurücksetzen</span></button>
+                    </div>
                 </div>
             </div>
 
@@ -107,7 +112,7 @@
             return {
                 metadata: null,
                 grids: null,
-                graphList: null,
+                graphList: [],
                 selectedGraphElement: null,
                 newLabel: '',
                 showLoading: true,
@@ -128,13 +133,16 @@
             };
         },
         methods: {
-            setSelectedGraphElement(element) {
+            setSelectedGraphElement(element, dontScroll) {
+                if (!element) return;
                 this.selectedGraphElement = element;
                 this.newLabel = this.selectedGraphElement.grid.label;
-                $(".all-grids-view").animate({ scrollTop: 0 }, 200);
                 this.reinitContextMenu();
                 this.metadata.lastOpenedGridId = element.grid.id;
                 dataService.saveMetadata(this.metadata);
+                if (!dontScroll) {
+                    $(".all-grids-view").animate({scrollTop: 0}, 200);
+                }
             },
             reinitContextMenu() {
                 initGridOptions();
@@ -158,7 +166,8 @@
                     gridElements: []
                 });
                 dataService.saveGrid(gridData).then(() => {
-                    this.reload(gridData.id);
+                    return this.reload(gridData.id);
+                }).then(() => {
                     $('#gridName').focus();
                 });
             },
@@ -211,11 +220,12 @@
                     thiz.metadata = JSON.parse(JSON.stringify(metadata));
                     return dataService.getGrids();
                 }).then(grids => {
+                    thiz.selectedGraphElement = null;
                     thiz.grids = JSON.parse(JSON.stringify(grids)); //hack because otherwise vueJS databinding sometimes does not work;
                     thiz.showLoading = false;
                     thiz.graphList = gridUtil.getGraphList(thiz.grids, thiz.metadata.globalGridId);
                     let gridToOpen = openGridId || thiz.metadata.lastOpenedGridId;
-                    thiz.setSelectedGraphElement(thiz.graphList.filter(graphItem => graphItem.grid.id === gridToOpen)[0] || thiz.graphList[0]);
+                    thiz.setSelectedGraphElement(thiz.graphList.filter(graphItem => graphItem.grid.id === gridToOpen)[0] || thiz.graphList[0], true);
                     return Promise.resolve();
                 });
             },
@@ -223,7 +233,17 @@
                 if (confirm(i18nService.translate('CONFIRM_RESET_DB'))) {
                     this.showLoading = true;
                     dataService.deleteAllGrids().then(() => {
-                        window.location.reload();
+                        return dataService.importDefaultGridset();
+                    }).then(() => {
+                        this.reload();
+                    });
+                }
+            },
+            deleteAll() {
+                if (confirm(i18nService.translate('Do you really want to delete all grids? This operation cannot be undone! // Möchten Sie wirklich alle Grids löschen? Diese Aktion kann nicht rückgängig gemacht werden!'))) {
+                    this.showLoading = true;
+                    dataService.deleteAllGrids().then(() => {
+                        this.reload();
                     });
                 }
             },
@@ -332,9 +352,10 @@
         $.contextMenu('destroy');
 
         let connectVisibleFn = () => vueApp.selectValue !== vueApp.selectValues.CONNECTED_GRIDS;
+        let label = vueApp.selectedGraphElement ? vueApp.selectedGraphElement.grid.label : '';
         let optionsMenuItems = {
             CONTEXT_CONNECT: {
-                name: i18nService.translate('Connect to grid "{?}" // Verknüpfen mit Grid "{?}"', vueApp.selectedGraphElement.grid.label),
+                name: i18nService.translate('Connect to grid "{?}" // Verknüpfen mit Grid "{?}"', label),
                 icon: "fas fa-external-link-alt",
                 visible: connectVisibleFn
             },
@@ -404,6 +425,7 @@
         var CONTEXT_IMPORT = "CONTEXT_IMPORT";
         var CONTEXT_IMPORT_BACKUP = "CONTEXT_IMPORT_BACKUP";
         var CONTEXT_RESET = "CONTEXT_RESET";
+        var CONTEXT_DELETE_ALL = "CONTEXT_DELETE_ALL";
 
         var itemsImportExport = {
             CONTEXT_EXPORT: {
@@ -438,6 +460,7 @@
             },
             SEP2: "---------",
             //CONTEXT_SUB_IMPORT_EXPORT: {name: "Import / Export", icon: "fas fa-hdd", items: itemsImportExport},
+            CONTEXT_DELETE_ALL: {name: "Delete all grids // Alle Grids löschen", icon: "fas fa-trash-alt", disabled: () => vueApp.grids.length === 0},
             CONTEXT_RESET: {name: "Reset to default configuration // Auf Standardkonfiguration zurücksetzen", icon: "fas fa-minus-circle"},
         };
 
@@ -467,6 +490,10 @@
                 }
                 case CONTEXT_EXPORT: {
                     vueApp.exportToFile();
+                    break;
+                }
+                case CONTEXT_DELETE_ALL: {
+                    vueApp.deleteAll();
                     break;
                 }
                 case CONTEXT_RESET: {
