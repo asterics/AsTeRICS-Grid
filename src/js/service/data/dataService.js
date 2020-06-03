@@ -132,10 +132,20 @@ dataService.deleteGrid = function (gridId) {
  */
 dataService.deleteAllGrids = function () {
     return dataService.getGrids().then(grids => {
+        if (!grids || grids.length === 0) {
+            return Promise.resolve();
+        }
         return databaseService.bulkDelete(grids);
     }).then(() => {
         return saveGlobalGridId('');
     });
+};
+
+/**
+ * imports default gridset
+ */
+dataService.importDefaultGridset = function() {
+    return databaseService.importDefaultGrids();
 };
 
 /**
