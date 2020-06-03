@@ -195,7 +195,7 @@ databaseService.initForUser = function (username, hashedUserPassword, userDataba
         if (userAlreadyOpened) {
             return Promise.resolve();
         } else {
-            return initInternal(hashedUserPassword, username, isLocalUser);
+            return initInternal(hashedUserPassword, username, isLocalUser, true);
         }
     });
 };
@@ -251,8 +251,30 @@ databaseService.getCurrentUsedDatabase = function () {
     return pouchDbService.getOpenedDatabaseName();
 };
 
-function initInternal(hashedUserPassword, username, isLocalUser) {
-    let skipCheckGenerateDefaultGrid = !pouchDbService.isUsingLocalDb(); //no checking/generation of default grid for remote databases
+databaseService.importDefaultGrids = function () {
+    return Promise.resolve().then(() => {
+        return $.get(_defaultGridSetPath);
+    }).then(data => {
+        if (!data) {
+            return Promise.resolve();
+        }
+        return i18nService.translateGrids(JSON.parse(data));
+    }).then(gridsData => {
+        if (!gridsData) {
+            return Promise.resolve();
+        }
+        log.info('importing default grid set ' + _defaultGridSetPath);
+        gridsData = gridUtil.regenerateIDs(gridsData);
+        gridsData.forEach(gridData => {
+            gridData.gridElements = gridUtil.sortGridElements(gridData.gridElements);
+        });
+        log.debug('imported default grid set!');
+        return databaseService.bulkSave(gridsData);
+    });
+};
+
+function initInternal(hashedUserPassword, username, isLocalUser, skipGenerateDefault) {
+    let skipCheckGenerateDefaultGrid = !pouchDbService.isUsingLocalDb() || skipGenerateDefault; //no checking/generation of default grid for remote databases
     let metadata = null;
     let saveMetadata = false;
 
@@ -292,24 +314,8 @@ function initInternal(hashedUserPassword, username, isLocalUser) {
             skipCheckGenerateDefaultGrid = true;
             return Promise.resolve();
         } else {
-            return $.get(_defaultGridSetPath);
+            return databaseService.importDefaultGrids();
         }
-    }).then(data => {
-        if (!data) {
-            return Promise.resolve();
-        }
-        return i18nService.translateGrids(JSON.parse(data));
-    }).then(gridsData => {
-        if (!gridsData || skipCheckGenerateDefaultGrid) {
-            return Promise.resolve();
-        }
-        log.info('importing default grid set ' + _defaultGridSetPath);
-        gridsData = gridUtil.regenerateIDs(gridsData);
-        gridsData.forEach(gridData => {
-            gridData.gridElements = gridUtil.sortGridElements(gridData.gridElements);
-        });
-        log.debug('imported default grid set!');
-        return databaseService.bulkSave(gridsData);
     }).then(() => {
         if (saveMetadata) {
             return applyFiltersAndSave(MetaData.getIdPrefix(), metadata);
