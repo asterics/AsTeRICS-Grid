@@ -74,20 +74,39 @@ function Grid(gridContainerId, gridItemClass, options) {
             promises.push(dataService.getGlobalGrid().then(globalGrid => {
                 if (globalGrid) {
                     let autowidth = true;
+                    let heightPercentage = 0.13;
+                    let heightFactorNormal = 1;
+                    let heightFactorGlobal = 1;
+                    if (globalGrid.getHeight() === 1) {
+                        heightFactorGlobal = (heightPercentage * _gridData.rowCount) / (1 - heightPercentage);
+                        heightFactorNormal = 1 / (_gridData.rowCount * heightPercentage) - (1 / _gridData.rowCount);
+                        if (heightFactorGlobal >= 1) {
+                            heightFactorNormal = 1;
+                            heightFactorGlobal = Math.round(heightFactorGlobal);
+                        } else {
+                            heightFactorGlobal = 1;
+                            heightFactorNormal = Math.round(heightFactorNormal);
+                        }
+                    }
                     let offset = gridUtil.getOffset(globalGrid);
                     let factorGrid = autowidth ? globalGrid.getWidth() - offset.x : 1;
                     let factorGlobal = autowidth ? _gridData.getWidthWithBounds() : 1;
                     globalGrid.gridElements.forEach(gridElement => {
                         gridElement.width *= factorGlobal;
                         gridElement.x *= factorGlobal;
+                        if (gridElement.y === 0) {
+                            gridElement.height *= heightFactorGlobal;
+                        }
                     });
                     _gridData.gridElements.forEach(gridElement => {
                         gridElement.width *= factorGrid;
                         gridElement.x *= factorGrid;
                         gridElement.x += offset.x * factorGlobal;
-                        gridElement.y += offset.y;
+                        gridElement.y += offset.y * heightFactorGlobal + (gridElement.y * (heightFactorNormal - 1));
+                        gridElement.height *= heightFactorNormal;
                     });
-                    _gridData.rowCount += offset.y;
+                    _gridData.rowCount *= heightFactorNormal;
+                    _gridData.rowCount += offset.y * heightFactorGlobal;
                     _gridRows = _gridData.rowCount;
                     _gridData.gridElements = globalGrid.gridElements.concat(_gridData.gridElements);
                 }
