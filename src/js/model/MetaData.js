@@ -10,6 +10,7 @@ class MetaData extends Model({
     lastOpenedGridId: [String],
     globalGridId: [String],
     globalGridActive: [Boolean],
+    globalGridHeightPercentage: [Number],
     locked: [Boolean],
     fullscreen: [Boolean],
     hashCodes: [Object], //object keys: model names of hashed objects, object values: another object with keys = hashcodes, values = object ids
@@ -48,7 +49,8 @@ MetaData.defaults({
     fullscreen: undefined,
     hashCodes: {},
     inputConfig: new InputConfig(),
-    globalGridActive: false
+    globalGridActive: false,
+    globalGridHeightPercentage: 15
 });
 
 export {MetaData};

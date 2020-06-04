@@ -22,7 +22,7 @@
             <edit-actions-modal v-if="showActionsModal" v-bind:edit-element-id-param="editElementId" v-bind:grid-id-param="gridData.id" @close="showActionsModal = false" @reload="reload" @edit="showEditModal = true"/>
         </div>
         <div>
-            <grid-dimension-modal v-if="showDimensionsModal" v-bind:grid-data-param="gridData" @close="showDimensionsModal = false" @save="setDimensions"/>
+            <grid-dimension-modal v-if="showDimensionsModal" v-bind:grid-data-param="gridData" :is-global-grid="metadata.globalGridId === gridData.id" @close="showDimensionsModal = false" @save="setDimensions"/>
         </div>
         <div class="row content">
             <div v-if="!showGrid" class="grid-container grid-mask">

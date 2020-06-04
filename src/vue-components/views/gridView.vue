@@ -395,7 +395,8 @@
         gridInstance = new Grid('#grid-container', '.grid-item-content', {
             enableResizing: false,
             dragAndDrop: false,
-            gridId: gridId
+            gridId: gridId,
+            globalGridHeightPercentage: vueApp.metadata.globalGridHeightPercentage
         });
         return gridInstance.getInitPromise();
     }

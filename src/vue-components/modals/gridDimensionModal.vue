@@ -12,12 +12,16 @@
 
                     <div class="modal-body container">
                         <div class="row">
-                            <label for="gridRows" data-i18n="" class="six columns">Number of rows // Anzahl der Zeilen</label>
+                            <label for="gridRows" data-i18n="" class="seven columns">Number of rows // Anzahl der Zeilen</label>
                             <input id="gridRows" type="number" class="three columns" v-model.number="gridData.rowCount" min="1" max="100"/>
                         </div>
                         <div class="row">
-                            <label for="gridCols" data-i18n="" class="six columns">Minimum number of columns // Minimale Anzahl der Spalten</label>
+                            <label for="gridCols" data-i18n="" class="seven columns">Minimum number of columns // Minimale Anzahl der Spalten</label>
                             <input id="gridCols" type="number" class="three columns" v-model.number="gridData.minColumnCount" min="1" max="100"/>
+                        </div>
+                        <div class="row" v-if="isGlobalGrid && metadata && gridHeight === 1">
+                            <label for="metadataHeight" data-i18n="" class="seven columns">Height of first global grid row [%] // Höhe der ersten Zeile des globalen Grids [%]</label>
+                            <input id="metadataHeight" type="number" class="three columns" v-model.number="metadata.globalGridHeightPercentage" min="5" max="50"/>
                         </div>
                     </div>
 
@@ -41,12 +45,16 @@
     import {i18nService} from "../../js/service/i18nService";
     import './../../css/modal.css';
     import {localStorageService} from "../../js/service/data/localStorageService";
+    import {dataService} from "../../js/service/data/dataService";
+    import {GridData} from "../../js/model/GridData";
 
     export default {
-        props: ['gridDataParam'],
+        props: ['gridDataParam', 'isGlobalGrid'],
         data: function () {
             return {
-                gridData: JSON.parse(JSON.stringify(this.gridDataParam))
+                gridData: JSON.parse(JSON.stringify(this.gridDataParam)),
+                gridHeight: new GridData(this.gridDataParam).getHeight(),
+                metadata: null
             }
         },
         methods: {
@@ -55,11 +63,23 @@
                     rowCount: this.gridData.rowCount,
                     minColumnCount: this.gridData.minColumnCount
                 });
-                this.$emit('save', this.gridData.rowCount, this.gridData.minColumnCount);
-                this.$emit('close');
+                let promises = [];
+                if (this.metadata) {
+                    promises.push(dataService.saveMetadata(this.metadata));
+                }
+                Promise.all(promises).then(() => {
+                    this.$emit('save', this.gridData.rowCount, this.gridData.minColumnCount);
+                    this.$emit('close');
+                });
             }
         },
         mounted() {
+            if (this.isGlobalGrid) {
+                dataService.getMetadata().then(metadata => {
+                    this.metadata = JSON.parse(JSON.stringify(metadata));
+                    setTimeout(() => i18nService.initDomI18n(), 10);
+                });
+            }
             i18nService.initDomI18n();
         }
     }
