@@ -334,7 +334,7 @@
                 icon: "fas fa-expand-arrows-alt"
             },
             'CONTEXT_LAYOUT_FILL': {name: "Fill gaps // Lücken füllen", icon: "fas fa-angle-double-left"},
-            'CONTEXT_EDIT_GLOBAL_GRID': {name: "Edit global grid // Globales Grid bearbeiten", icon: "fas fa-globe", visible: !!vueApp.metadata.globalGridId && vueApp.metadata.globalGridActive},
+            'CONTEXT_EDIT_GLOBAL_GRID': {name: "Edit global grid // Globales Grid bearbeiten", icon: "fas fa-globe", visible: !!vueApp.metadata.globalGridId && vueApp.metadata.globalGridActive && vueApp.metadata.globalGridId !== vueApp.gridData.id},
             'CONTEXT_END_EDIT_GLOBAL_GRID': {name: "End edit global grid // Bearbeitung globales Grid beenden", icon: "fas fa-globe", visible: vueApp.metadata.globalGridId === vueApp.gridData.id},
         };
 
