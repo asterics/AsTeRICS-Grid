@@ -229,7 +229,7 @@ gridUtil.getGraphList = function (grids, removeGridId) {
     gridGraphList.forEach(elem => {
         elem.parents = elem.parents.map(parent => gridGraphMap[parent.id]);
         elem.children = elem.children.map(child => gridGraphMap[child.id]);
-        elem.allRelatives = elem.parents.filter(p => elem.children.indexOf(p) === -1).concat(elem.children);
+        elem.allRelatives = elem.children.concat(elem.parents.filter(p => elem.children.indexOf(p) === -1));
     });
     return gridGraphList;
 };
