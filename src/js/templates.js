@@ -96,8 +96,8 @@ function fillDefaultValues(gridElem) {
 
 function getHintsElement(gridElem) {
     let hiddenHint = gridElem.hidden ? '<i class="fas fa-eye-slash element-hint"></i>' : '';
-    let navHint = gridElem.actions.filter(a => a.modelName === GridActionNavigate.getModelName()).length > 0 ? '<i class="fas fa-external-link-alt element-hint"></i>' : '';
-    return `<span style="position: absolute;">${navHint + ' ' + hiddenHint}</span>`;
+    let navHint = gridElem.actions.filter(a => a.modelName === GridActionNavigate.getModelName()).length > 0 ? '<i class="fas fa-sticky-note fa-rotate-180 fa-flip-vertical element-hint"></i>' : '';
+    return `<span style="position: absolute; right: 0; color: #5a717a">${hiddenHint + ' ' + navHint}</span>`;
 }
 
 export {templates};
