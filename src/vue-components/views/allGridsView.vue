@@ -229,6 +229,10 @@
                     return Promise.resolve();
                 });
             },
+            onPullUpdate() {
+                let id = this.selectedGraphElement ? this.selectedGraphElement.grid.id : null;
+                this.reload(id);
+            },
             reset() {
                 if (confirm(i18nService.translate('CONFIRM_RESET_DB'))) {
                     this.showLoading = true;
@@ -321,10 +325,7 @@
         },
         created() {
             let thiz = this;
-            $(document).on(constants.EVENT_DB_PULL_UPDATED, () => {
-                let id = thiz.selectedGraphElement ? thiz.selectedGraphElement.grid.id : null;
-                thiz.reload(id);
-            });
+            $(document).on(constants.EVENT_DB_PULL_UPDATED, thiz.onPullUpdate);
             progressService.register(text => {
                 thiz.progressText = text;
             });
@@ -342,7 +343,7 @@
             i18nService.initDomI18n();
         },
         beforeDestroy() {
-            $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reload);
+            $(document).off(constants.EVENT_DB_PULL_UPDATED, this.onPullUpdate);
             $.contextMenu('destroy');
             progressService.clearHandlers();
         }
