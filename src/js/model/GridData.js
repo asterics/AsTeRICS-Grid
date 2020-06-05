@@ -88,13 +88,10 @@ class GridData extends Model({
 
     /**
      * returns object with x and y keys containing an x/y position where to insert a new element
+     * @param forBigElement if true an positions is returned that fits for big elements
      * @return {*}
      */
-    getNewXYPos() {
-        let freeCoordinates = gridUtil.getFreeCoordinates(this);
-        if (freeCoordinates.length > 0) {
-            return freeCoordinates[0];
-        }
+    getNewXYPos(forBigElement) {
         let maxX = this.gridElements.reduce((total, elem) => {
             let totalX = elem.x + elem.width;
             if (elem.y === 0 && totalX > total) {
@@ -102,6 +99,17 @@ class GridData extends Model({
             }
             return total;
         }, 0);
+        if (forBigElement) {
+            return {
+                x: maxX,
+                y: 0
+            }
+        }
+
+        let freeCoordinates = gridUtil.getFreeCoordinates(this);
+        if (freeCoordinates.length > 0) {
+            return freeCoordinates[0];
+        }
         return {
             x: maxX,
             y: 0
