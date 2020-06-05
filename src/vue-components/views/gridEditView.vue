@@ -24,6 +24,9 @@
         <div>
             <grid-dimension-modal v-if="showDimensionsModal" v-bind:grid-data-param="gridData" :is-global-grid="metadata.globalGridId === gridData.id" @close="showDimensionsModal = false" @save="setDimensions"/>
         </div>
+        <div>
+            <element-move-modal v-if="showMoveModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showMoveModal = false" @reload="reload"/>
+        </div>
         <div class="row content">
             <div v-if="!showGrid" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
@@ -61,6 +64,7 @@
     import {util} from "../../js/util/util";
     import GridDimensionModal from "../modals/gridDimensionModal.vue";
     import {gridUtil} from "../../js/util/gridUtil";
+    import ElementMoveModal from "../modals/elementMoveModal.vue";
 
     let vueApp = null;
     let gridInstance = null;
@@ -78,6 +82,7 @@
                 showMultipleModal: false,
                 showActionsModal: false,
                 showDimensionsModal: false,
+                showMoveModal: false,
                 editElementId: null,
                 showGrid: false,
                 constants: constants,
@@ -85,6 +90,7 @@
             }
         },
         components: {
+            ElementMoveModal,
             GridDimensionModal, EditGridModal, AddMultipleModal, EditActionsModal, HeaderIcon
         },
         methods: {
@@ -270,6 +276,7 @@
         let CONTEXT_ACTION_DUPLICATE = 'CONTEXT_ACTION_DUPLICATE';
         let CONTEXT_ACTION_EDIT_ACTIONS = 'CONTEXT_ACTION_EDIT_ACTIONS';
         let CONTEXT_ACTION_DO_ACTION = 'CONTEXT_ACTION_DO_ACTION';
+        let CONTEXT_MOVE_TO = 'CONTEXT_MOVE_TO';
 
         var CONTEXT_NEW_GROUP = "CONTEXT_NEW_GROUP";
         var CONTEXT_NEW_SINGLE = "CONTEXT_NEW_SINGLE";
@@ -302,6 +309,7 @@
         var itemsMoreMenuItem = {
             CONTEXT_DUPLICATE: {name: "Duplicate // Klonen", icon: "far fa-clone"},
             CONTEXT_DO_ACTION: {name: "Do element action // Aktion des Elements ausführen", icon: "fas fa-bolt"},
+            CONTEXT_MOVE_TO: {name: "Move element to other grid // Element zu anderem Grid verschieben", icon: "fas fa-file-export"},
         };
 
         var itemsElemNormal = {
@@ -324,6 +332,7 @@
             CONTEXT_ACTION_DELETE: {name: "Delete // Löschen", icon: "far fa-trash-alt", visible: visibleFn},
             CONTEXT_ACTION_DUPLICATE: {name: "Duplicate // Klonen", icon: "far fa-clone", visible: visibleFn},
             CONTEXT_ACTION_DO_ACTION: {name: "Do element action // Aktion des Elements ausführen", icon: "fas fa-bolt", visible: visibleFn},
+            CONTEXT_MOVE_TO: {name: "Move element to other grid // Element zu anderem Grid verschieben", icon: "fas fa-file-export", visible: visibleFn},
             SEP0: "---------",
             CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP],
             'CONTEXT_FILL_EMPTY': {name: "Fill with empty elements // Mit leeren Elementen füllen", icon: "fas fa-fill", visible: visibleFnFill},
@@ -462,6 +471,11 @@
                 case CONTEXT_ACTION_DO_ACTION:
                     actionService.doAction(vueApp.gridData.id, vueApp.markedElement.id);
                     vueApp.markElement(null);
+                    break;
+                case CONTEXT_MOVE_TO:
+                    vueApp.editElementId = elementId || vueApp.markedElement.id;
+                    vueApp.markElement(null);
+                    vueApp.showMoveModal = true;
                     break;
                 case CONTEXT_EDIT_GLOBAL_GRID:
                     Router.toEditGrid(vueApp.metadata.globalGridId);
