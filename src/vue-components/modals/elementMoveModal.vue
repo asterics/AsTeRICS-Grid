@@ -23,8 +23,8 @@
                                 <img :src="selectedGrid.thumbnail ? selectedGrid.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; border: 1px solid lightgray"/>
                             </div>
                             <div class="four columns">
-                                <button @click="prev" style="width: 49%">Zurück</button>
-                                <button @click="next" style="width: 49%">Weiter</button>
+                                <button @click="prev" style="width: 49%"><i class="fas fa-arrow-left"></i> <span data-i18n="">Back // Zurück</span></button>
+                                <button @click="next" style="width: 49%"><span data-i18n="">Next // Weiter</span> <i class="fas fa-arrow-right"></i></button>
                             </div>
                         </div>
                         <div class="row">
