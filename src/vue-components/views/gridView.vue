@@ -25,7 +25,7 @@
         <scanning-modal v-if="showModal === modalTypes.MODAL_SCANNING" @close="showModal = null; reinitInputMethods();"/>
         <sequential-input-modal v-if="showModal === modalTypes.MODAL_SEQUENTIAL" @close="showModal = null; reinitInputMethods();"/>
 
-        <div class="row content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0">
+        <div class="row content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0 && (!globalGridData || globalGridData.length === 0)">
             <div data-i18n="" style="margin-top: 2em">
                 <span>No elements, click <a :href="'#grid/edit/' + gridId">Edit grid</a> to enter edit mode.</span>
                 <span>Keine Elemente, klicke auf <a :href="'#grid/edit/' + gridId">Grid bearbeiten</a> um das Grid zu bearbeiten.</span>
@@ -89,6 +89,7 @@
         data() {
             return {
                 gridData: {},
+                globalGridData: null,
                 metadata: null,
                 updatedMetadataDoc: null,
                 scanner: null,
@@ -309,7 +310,10 @@
         mounted: function () {
             let thiz = this;
             vueApp = thiz;
-            dataService.getGrid(thiz.gridId).then(gridData => {
+            dataService.getGlobalGrid().then(globalGrid => {
+                thiz.globalGridData = globalGrid;
+                return dataService.getGrid(thiz.gridId);
+            }).then(gridData => {
                 if (!gridData) {
                     log.warn('grid not found! gridId: ' + this.gridId);
                     return dataService.getGrids(false, true).then(grids => {
