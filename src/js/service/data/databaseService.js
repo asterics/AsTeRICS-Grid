@@ -251,7 +251,7 @@ databaseService.getCurrentUsedDatabase = function () {
     return pouchDbService.getOpenedDatabaseName();
 };
 
-databaseService.importDefaultGrids = function () {
+databaseService.importDefaultGrids = function (metadata) {
     return Promise.resolve().then(() => {
         return $.get(_defaultGridSetPath);
     }).then(data => {
@@ -264,12 +264,26 @@ databaseService.importDefaultGrids = function () {
             return Promise.resolve();
         }
         log.info('importing default grid set ' + _defaultGridSetPath);
+        gridsData = gridsData.grids ? gridsData.grids : gridsData;
         gridsData = gridUtil.regenerateIDs(gridsData);
+        if (metadata) {
+            //TODO improve this
+            let globalGridID = gridsData.filter(g => g.label === "Global Grid")[0].id;
+            let lastOpenedGridID = gridsData.filter(g => g.label === "Hauptseite")[0].id;
+            if (globalGridID && lastOpenedGridID) {
+                metadata.lastOpenedGridId = lastOpenedGridID;
+                metadata.globalGridActive = true;
+                metadata.globalGridId = globalGridID;
+                metadata.globalGridHeightPercentage = 13;
+            }
+        }
         gridsData.forEach(gridData => {
             gridData.gridElements = gridUtil.sortGridElements(gridData.gridElements);
         });
         log.debug('imported default grid set!');
-        return databaseService.bulkSave(gridsData);
+        return databaseService.bulkSave(gridsData).then(() => {
+            return Promise.resolve(metadata);
+        });
     });
 };
 
@@ -314,9 +328,9 @@ function initInternal(hashedUserPassword, username, isLocalUser, skipGenerateDef
             skipCheckGenerateDefaultGrid = true;
             return Promise.resolve();
         } else {
-            return databaseService.importDefaultGrids();
+            return databaseService.importDefaultGrids(metadata);
         }
-    }).then(() => {
+    }).then((metadata) => {
         if (saveMetadata) {
             return applyFiltersAndSave(MetaData.getIdPrefix(), metadata);
         } else {
