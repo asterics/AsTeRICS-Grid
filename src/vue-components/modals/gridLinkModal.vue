@@ -111,7 +111,7 @@
             }
         },
         mounted() {
-            this.newElementLabel = i18nService.translate('To grid "{?}" // Zu Grid "{?}"', this.gridTo.label);
+            this.newElementLabel = this.gridTo.label;
             dataService.getGrid(this.gridFromProp.id).then(gridFrom => {
                 this.gridFrom = JSON.parse(JSON.stringify(gridFrom));
                 i18nService.initDomI18n();
