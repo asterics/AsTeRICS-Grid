@@ -1,6 +1,5 @@
 import $ from 'jquery';
 
-import {GridData} from "../../model/GridData.js";
 import {urlParamService} from "../urlParamService";
 import {MetaData} from "../../model/MetaData";
 import {encryptionService} from "./encryptionService";
@@ -11,16 +10,11 @@ import {Dictionary} from "../../model/Dictionary";
 import {localStorageService} from "./localStorageService";
 import {predictionService} from "../predictionService";
 import {util} from "../../util/util";
-import {gridUtil} from "../../util/gridUtil";
 
 let databaseService = {};
 
 let _initPromise = null;
 let _lastDataModelVersion = null;
-let _defaultGridSetPath = 'app/examples/default.grd';
-if (urlParamService.getDefaultGridsetName()) {
-    _defaultGridSetPath = 'app/examples/' + urlParamService.getDefaultGridsetName();
-}
 let _defaultDictPath = i18nService.isBrowserLangDE() ? 'app/dictionaries/default_de.txt' : 'app/dictionaries/default_en.txt';
 let _defaultDictName = i18nService.isBrowserLangDE() ? 'WoerterbuchDeutsch ' : 'EnglishDictionary';
 
@@ -195,7 +189,7 @@ databaseService.initForUser = function (username, hashedUserPassword, userDataba
         if (userAlreadyOpened) {
             return Promise.resolve();
         } else {
-            return initInternal(hashedUserPassword, username, isLocalUser, true);
+            return initInternal(hashedUserPassword, username, isLocalUser);
         }
     });
 };
@@ -251,46 +245,8 @@ databaseService.getCurrentUsedDatabase = function () {
     return pouchDbService.getOpenedDatabaseName();
 };
 
-databaseService.importDefaultGrids = function (metadata) {
-    return Promise.resolve().then(() => {
-        return $.get(_defaultGridSetPath);
-    }).then(data => {
-        if (!data) {
-            return Promise.resolve();
-        }
-        return i18nService.translateGrids(JSON.parse(data));
-    }).then(gridsData => {
-        if (!gridsData) {
-            return Promise.resolve();
-        }
-        log.info('importing default grid set ' + _defaultGridSetPath);
-        gridsData = gridsData.grids ? gridsData.grids : gridsData;
-        gridsData = gridUtil.regenerateIDs(gridsData);
-        if (metadata) {
-            //TODO improve this
-            let globalGridID = gridsData.filter(g => g.label === "Global Grid")[0].id;
-            let lastOpenedGridID = gridsData.filter(g => g.label === "Hauptseite")[0].id;
-            if (globalGridID && lastOpenedGridID) {
-                metadata.lastOpenedGridId = lastOpenedGridID;
-                metadata.globalGridActive = true;
-                metadata.globalGridId = globalGridID;
-                metadata.globalGridHeightPercentage = 13;
-            }
-        }
-        gridsData.forEach(gridData => {
-            gridData.gridElements = gridUtil.sortGridElements(gridData.gridElements);
-        });
-        log.debug('imported default grid set!');
-        return databaseService.bulkSave(gridsData).then(() => {
-            return Promise.resolve(metadata);
-        });
-    });
-};
-
-function initInternal(hashedUserPassword, username, isLocalUser, skipGenerateDefault) {
-    let skipCheckGenerateDefaultGrid = !pouchDbService.isUsingLocalDb() || skipGenerateDefault; //no checking/generation of default grid for remote databases
+function initInternal(hashedUserPassword, username, isLocalUser) {
     let metadata = null;
-    let saveMetadata = false;
 
     _initPromise = Promise.resolve().then(() => { //reset DB if specified by URL
         let promises = [];
@@ -303,9 +259,9 @@ function initInternal(hashedUserPassword, username, isLocalUser, skipGenerateDef
     }).then(metadataObjects => { //create metadata object if not exisiting, update datamodel version, if outdated
         let promises = [];
         if (!metadataObjects || metadataObjects.length === 0) {
-            saveMetadata = true;
             metadata = new MetaData();
             encryptionService.setEncryptionProperties(hashedUserPassword, metadata.id, isLocalUser);
+            promises.push(applyFiltersAndSave(MetaData.getIdPrefix(), metadata));
         } else {
             metadata = metadataObjects instanceof Array ? metadataObjects[0] : metadataObjects;
             encryptionService.setEncryptionProperties(hashedUserPassword, metadata.id, isLocalUser);
@@ -314,28 +270,6 @@ function initInternal(hashedUserPassword, username, isLocalUser, skipGenerateDef
             }
         }
         return Promise.all(promises);
-    }).then(() => {
-        if (skipCheckGenerateDefaultGrid) {
-            return Promise.resolve();
-        }
-        return pouchDbService.all(GridData.getIdPrefix());
-    }).then(grids => { //import default gridset, if no grids are existing
-        if (skipCheckGenerateDefaultGrid) {
-            return Promise.resolve();
-        }
-        if (grids) {
-            log.debug('detected saved grid, no generation of new grid.');
-            skipCheckGenerateDefaultGrid = true;
-            return Promise.resolve();
-        } else {
-            return databaseService.importDefaultGrids(metadata);
-        }
-    }).then((metadata) => {
-        if (saveMetadata) {
-            return applyFiltersAndSave(MetaData.getIdPrefix(), metadata);
-        } else {
-            return Promise.resolve();
-        }
     }).then(() => {
         return importDefaultDictionary();
     });

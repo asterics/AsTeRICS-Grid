@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import FileSaver from 'file-saver';
 
 import {GridData} from "../../model/GridData.js";
@@ -15,8 +16,14 @@ import {i18nService} from "../i18nService";
 import {predictionService} from "../predictionService";
 import {localStorageService} from "./localStorageService";
 import {gridUtil} from "../../util/gridUtil";
+import {urlParamService} from "../urlParamService";
 
 let dataService = {};
+
+let _defaultGridSetPath = 'app/examples/default.grd';
+if (urlParamService.getDefaultGridsetName()) {
+    _defaultGridSetPath = 'app/examples/' + urlParamService.getDefaultGridsetName();
+}
 
 /**
  * gets a grid by ID.
@@ -145,7 +152,20 @@ dataService.deleteAllGrids = function () {
  * imports default gridset
  */
 dataService.importDefaultGridset = function() {
-    return databaseService.importDefaultGrids();
+    return Promise.resolve().then(() => {
+        return $.get(_defaultGridSetPath);
+    }).then(data => {
+        if (!data) {
+            return Promise.resolve();
+        }
+        return i18nService.translateGrids(JSON.parse(data));
+    }).then(gridsData => {
+        if (!gridsData) {
+            return Promise.resolve();
+        }
+        log.info('importing default grid set ' + _defaultGridSetPath);
+        return dataService.importData(gridsData, false, true);
+    });
 };
 
 /**
@@ -248,9 +268,10 @@ dataService.addGridElements = function (gridId, newGridElements) {
  * @see{MetaData}
  *
  * @param newMetadata new or updated metadata object
+ * @param forceDbSave if set to true, metadata is saved to database, even if localStorageService.shouldSyncNavigation() is not set
  * @return {Promise} resolves after operation finished successful
  */
-dataService.saveMetadata = function (newMetadata) {
+dataService.saveMetadata = function (newMetadata, forceDbSave) {
     newMetadata = JSON.parse(JSON.stringify(newMetadata));
     return new Promise(resolve => {
         dataService.getMetadata().then(existingMetadata => {
@@ -258,8 +279,8 @@ dataService.saveMetadata = function (newMetadata) {
                 //new metadata is stored with ID of existing metadata -> there should only be one metadata object
                 let id = existingMetadata instanceof Array ? existingMetadata[0].id : existingMetadata.id;
                 newMetadata.id = id;
-                if (!localStorageService.shouldSyncNavigation()) {
-                    localStorageService.saveLocalMetadata(newMetadata);
+                localStorageService.saveLocalMetadata(newMetadata);
+                if (!localStorageService.shouldSyncNavigation() && !forceDbSave) {
                     newMetadata.locked = existingMetadata.locked;
                     newMetadata.fullscreen = existingMetadata.fullscreen;
                     newMetadata.lastOpenedGridId = existingMetadata.lastOpenedGridId;
@@ -513,8 +534,8 @@ dataService.importData = function (data, generateGlobalGrid, backupMode) {
     let importMetadata = null;
     let importGrids = null;
     let promises = [];
-    let metadataPromise = Promise.resolve();
-    let originalGlobalGridId = null;
+    let metadataPromise = null;
+
     if (!(data instanceof Array)) {
         importDictionaries = backupMode ? data.dictionaries : null;
         importMetadata = backupMode ? data.metadata : null;
@@ -525,25 +546,22 @@ dataService.importData = function (data, generateGlobalGrid, backupMode) {
     } else {
         importGrids = data;
     }
+
     if (importMetadata) {
-        //import metadata first because it maybe will also be saved in importGrids
-        originalGlobalGridId = importMetadata.globalGridId;
-        metadataPromise = dataService.saveMetadata(importMetadata);
+        metadataPromise = Promise.resolve(importMetadata);
+    } else {
+        metadataPromise = dataService.getMetadata();
     }
-    metadataPromise.then(() => {
+    metadataPromise.then((metadata) => {
         if (importGrids) {
             promises.push(dataService.getGrids().then(grids => {
                 let existingNames = grids.map(grid => grid.label);
                 let globalGrid = null;
-                let originalGlobalGrid = originalGlobalGridId ? importGrids.filter(g => g.id === originalGlobalGridId)[0] : null;
-                if (originalGlobalGrid) {
-                    originalGlobalGrid.isGlobal = true;
-                }
-                importGrids = gridUtil.regenerateIDs(importGrids);
-                if (originalGlobalGrid) {
-                    let newGlobalGrid = importGrids.filter(g => g.isGlobal)[0];
-                    newGlobalGrid.id = originalGlobalGridId;
-                    delete newGlobalGrid.isGlobal;
+                let regenerateIdsReturn = gridUtil.regenerateIDs(importGrids);
+                importGrids = regenerateIdsReturn.grids;
+                if (importMetadata) {
+                    metadata.lastOpenedGridId = regenerateIdsReturn.idMapping[metadata.lastOpenedGridId];
+                    metadata.globalGridId = regenerateIdsReturn.idMapping[metadata.globalGridId];
                 }
                 importGrids.forEach(grid => {
                     grid.label = modelUtil.getNewName(grid.label, existingNames);
@@ -553,12 +571,11 @@ dataService.importData = function (data, generateGlobalGrid, backupMode) {
                     let homeGridId = importGrids[0].id;
                     globalGrid = gridUtil.generateGlobalGrid(homeGridId, locale);
                     importGrids.unshift(globalGrid);
+                    metadata.globalGridId = globalGrid.id;
+                    metadata.globalGridActive = !!metadata.globalGridId;
                 }
                 return dataService.saveGrids(importGrids).then(() => {
-                    if (generateGlobalGrid) {
-                        return saveGlobalGridId(globalGrid.id);
-                    }
-                    return Promise.resolve();
+                    return dataService.saveMetadata(metadata, true);
                 });
             }));
         }

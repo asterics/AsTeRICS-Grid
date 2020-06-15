@@ -5,7 +5,7 @@ import {encryptionService} from "./data/encryptionService";
 import {constants} from "../util/constants";
 import {databaseService} from "./data/databaseService";
 import {Router} from "../router";
-import {urlParamService} from "./urlParamService";
+import {dataService} from "./data/dataService";
 
 let loginService = {};
 let _loginInfo = null;
@@ -89,7 +89,6 @@ loginService.loginStoredUser = function (user, dontRoute) {
     _loginInProgress = true;
     let savedOnlineUsers = localStorageService.getSavedOnlineUsers();
     let savedLocalUsers = localStorageService.getSavedLocalUsers();
-
     let promise = new Promise((resolve, reject) => {
         if (loginService.getLoggedInUsername() === user) {
             return resolve();
@@ -172,6 +171,8 @@ loginService.register = function (user, plainPassword, saveUser) {
     }).then(() => {
         log.info('registration successful!');
         return databaseService.registerForUser(_loggedInUser, password, loginService.getLoggedInUserDatabase(), !saveUser);
+    }).then(() => {
+        return dataService.importDefaultGridset();
     }).catch(reason => {
         log.info('registration failed!');
         log.info(reason);
@@ -189,7 +190,9 @@ loginService.registerOffline = function(username, hashedUserPassword) {
     loginService.logout();
     localStorageService.saveLocalUser(username);
     localStorageService.setAutologinUser(username);
-    return databaseService.registerForUser(username, hashedUserPassword)
+    return databaseService.registerForUser(username, hashedUserPassword).then(() => {
+        return dataService.importDefaultGridset();
+    });
 };
 
 /**
