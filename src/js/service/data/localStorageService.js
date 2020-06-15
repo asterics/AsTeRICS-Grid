@@ -250,11 +250,15 @@ var localStorageService = {
         localStorageService.save(SYNC_NAVIGATION_KEY, value);
     },
     saveLocalMetadata(metadata) {
-        return localStorageService.save(LOCAL_METADATA_KEY, JSON.stringify(metadata));
+        let user = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
+        let object = getSaveObject(LOCAL_METADATA_KEY);
+        object[user] = metadata;
+        return localStorageService.save(LOCAL_METADATA_KEY, JSON.stringify(object));
     },
     getLocalMetadata() {
-        let json = localStorageService.get(LOCAL_METADATA_KEY);
-        return json ? JSON.parse(json) : json;
+        let user = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
+        let object = getSaveObject(LOCAL_METADATA_KEY);
+        return object[user];
     },
     saveLastGridDimensions(dimensions) {
         return localStorageService.save(GRID_DIMENSIONS_KEY, JSON.stringify(dimensions));
@@ -266,12 +270,13 @@ var localStorageService = {
 };
 
 function getSaveObject(key) {
-    let passwordsObjectString = localStorageService.get(key);
-    if (!passwordsObjectString) {
+    let objectString = localStorageService.get(key);
+    let isObject = (JSON.parse(objectString) instanceof Object);
+    if (!objectString || !isObject) {
         localStorageService.save(key, JSON.stringify({}));
         return {};
     }
-    return JSON.parse(passwordsObjectString);
+    return JSON.parse(objectString);
 }
 
 function getSyncedDbsList() {
