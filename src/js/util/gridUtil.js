@@ -32,7 +32,10 @@ gridUtil.regenerateIDs = function (gridDataList) {
         });
         returnList.push(JSON.parse(json));
     });
-    return returnList;
+    return {
+        grids: returnList,
+        idMapping: replacedIds
+    };
 };
 
 /**
