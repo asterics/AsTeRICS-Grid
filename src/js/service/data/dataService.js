@@ -20,7 +20,7 @@ import {urlParamService} from "../urlParamService";
 
 let dataService = {};
 
-let _defaultGridSetPath = 'app/examples/default.grd';
+let _defaultGridSetPath = 'app/examples/default.grd.json';
 if (urlParamService.getDefaultGridsetName()) {
     _defaultGridSetPath = 'app/examples/' + urlParamService.getDefaultGridsetName();
 }
@@ -159,7 +159,10 @@ dataService.importDefaultGridset = function() {
             return Promise.resolve();
         }
         log.info('importing default grid set ' + _defaultGridSetPath);
-        return dataService.importData(JSON.parse(gridsData), false, true, true);
+        try {
+            gridsData = JSON.parse(gridsData);
+        } catch (e) {}
+        return dataService.importData(gridsData, false, true, true);
     });
 };
 
