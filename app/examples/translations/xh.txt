@@ -1,109 +1,339 @@
-Nceda
-Iimpahla
-Ukutya
-Moods
-Ikhibhodi
-Indawo esingqongileyo
-
-Kwindlu yangasese
-Ukugula
-Ungakhululekanga
-Kushushu
-Kubanda
-Ukulala
-Sikuqonda
-Ephukile
-Buyela
-
-Ndidinga ukuya kwindlu yangasese
-Ndiyagula
-Ndiziva ndingakhululekanga
-Kushushu kakhulu
-Kubanda kakhulu
-Ndidinga ukuphumla okanye ukulala
-khandiqonde
-Into eyaphukileyo
-
-Ibhulukhwe
-Shirt
-Ibhlawuzi
-Isiketi
-Nxiba
-Izihlangu
-Ndixinekile
-Kukhulu kakhulu
-
-Ndingathanda ukunxiba ibhulukhwe
-Ndingathanda ukunxiba isikipa
-Ndingathanda ukunxiba ibhlawuzi
-Ndingathanda ukunxiba isiketi
-Ndingathanda ukunxiba
-Ndingathanda ukufaka izihlangu
-Impahla yam inxibelele kakhulu
-Impahla yam iyakhululeka kakhulu
-
-Ukulamba
-Unxaniwe
-Isiqhamo
-Isaliti yokutya okunetyiwa
-Isidlo esimnandi
-Amanzi
-Isoda
-Utyani
-
-Ndingathanda ukutya
-Ndingathanda into eselwayo
-Ndingathanda isiqhamo
-Ndingathanda ukutya okunetyuwa
-Ndingathanda into emnandi
-Ndingathanda amanzi
-Ndingathanda isoda
-Ndidinga isitya
-
-Uyolo
-Ukukhazeka
-Ndinomsindo
-Udidekile
-Ndiyoyika
-Unomdla
-Ndinesithukuthezi
-Ixhala
-
-Ndiziva ndonwabile
-Ndiva lusizi
-ndinomsindo
-Ndiziva ndididekile
-Ndiziva ndisoyika
-Ndiziva ndinomdla
-Ndiziva ndinesithukuthezi
-Ndiziva ndikhathazekile
-
-Izibane
-Umabonwakude
-Kunomathotholo
-Umnyango
-Intanethi
-
-Izibane
-Izibane zicinyiwe
-
-Umabonwakude uvuliwe
-Umabonwakude uvaliwe
-Umthamo phezulu
-Ivolumu ezantsi
-Isandi sicinyiwe
-Ijelo elilandelayo
-Ijelo elidlulileyo
-
-Radio On
-Radio off
-Previous channel
-Next channel
-Volume down
-Volume up
-
-Umnyango ovulekileyo
-Umnyango ovaliweyo
-
-Ubushushu buye phezulu
-Ubushushu phantsi
+{"Global Grid":"Igridi yomhlaba",
+"Zahlen":"amanani",
+"Hauptseite":"Iphepha eliphambili",
+"Hilfe":"Nceda",
+"Essen":"yitya",
+"Gefühle":"Iimvakalelo",
+"Kleidung":"isinxibo",
+"Umgebung":"Ezingqongileyo",
+"HuffmanKeyboard":"Ikhibhodi ye-Huffman",
+"ThreeKeyKeyboard":"ZoneKeyKeyboard",
+"Kernwörter":"Amagama aphambili",
+"Fragen":"buza",
+"Kommentare":"Izimvo",
+"Small Talk":"Ukuthetha kancinci",
+"Interaktion":"ukusebenzisana",
+"Therapie":"Unyango",
+"Tiere":"Izilwanyana",
+"Körper":"umzimba",
+"Morgenroutine":"Inkqubo yokusa",
+"Farben":"Imibala",
+"Wochenplan":"Ishedyuli yeveki",
+"Über mich":"Ngam",
+"Familie und Freunde":"usapho kunye nabahlobo",
+"Hauptseite2":"Ikhaya2",
+"Ich":"Mna",
+"Meine Familie":"Usapho lwam",
+"Pflege":"ukugcinwa",
+"StandardKeyboard":"Ikhibhodi emiselweyo",
+"StandardKeyboard2":"I-standardKeyboard2",
+"Einfache Kommunikation":"Unxibelelwano olulula",
+"ScanKeyboardStart":"IschoolKeyboardStart",
+"ScanKeyboard1":"ScanKeyboard1",
+"ScanKeyboard2":"SkenaKeyboard2",
+"ScanKeyboard3":"SkenaKeyboard3",
+"ScanKeyboard4":"ScanKeyboard4",
+"ScanKeyboard5":"ScanKeyboard5",
+"HoverKeyboard":"HoverKeyboard",
+"Leeres Grid":"Igridi engenanto",
+"Eigenschaften":"iipropathi",
+"Leeres Grid 2":"Igridi engenanto 2",
+"Start":"qala",
+"Zurück":"Buyela",
+"wichtige Wörter":"amagama abalulekileyo",
+"Tastatur":"ikhibhodi",
+"Mehr":"Kaninzi",
+"Toilette":"Kwindlu yangasese",
+"krank":"kugula",
+"unwohl":"engakhululekanga",
+"Ich weiß nicht was los ist.":"Andazi ukuba yintoni.",
+"Ich brauche Hilfe.":"Ndidinga uncedo.",
+"schlafen":"lala",
+"Es ist kaputt.":"Yaphukile.",
+"Mir ist heiß.":"Ndishushu.",
+"Es fehlt etwas.":"Kukho into engekhoyo.",
+"Etwas anderes machen.":"Yenza enye into.",
+"kaputt":"ephukile",
+"Ich verstehe das nicht.":"Andiqondi ukuba.",
+"Es ist zu laut.":"Utsho phezulu kakhulu.",
+"Mir ist kalt.":"Ndiyagodola.",
+"Kannst du das wiederholen?":"Ungayiphinda?",
+"Hungrig":"Ukulamba",
+"Durstig":"Unxaniwe",
+"Obst":"iziqhamo",
+"Salziger Snack":"Isaliti yokutya okunetyiwa",
+"Süßer Snack":"Isidlo esimnandi",
+"Wasser":"amanzi",
+"Limonade":"Ilemonade",
+"Strohhalm":"ukusela ingca",
+"das schmeckt gut":"Imnandi",
+"das schmeckt mir nicht":"oku akwemi kakuhle",
+"fröhlich":"Uyolo",
+"traurig":"Ukukhazeka",
+"wütend":"unomsindo",
+"aufgeregt":"nemincili",
+"verwirrt":"didekile",
+"ängstlich":"ndoyike",
+"begeistert":"nemincili",
+"gelangweilt":"ndinesithukuthezi",
+"eifersüchtig":"ndinomona",
+"geliebt":"othandwayo",
+"besorgt":"ochaphazelekayo",
+"Hose":"ibhulukhwe",
+"Hemd":"ihempe",
+"Bluse":"ibhlawuzi",
+"Rock":"Isiketi",
+"Kleid":"isinxibo",
+"Schuhe":"Izihlangu",
+"Zu eng":"Ndixinekile",
+"Zu weit":"Iye kude kakhulu",
+"zu lang":"inde kakhulu",
+"zu kurz":"imfutshane kakhulu",
+"zu warm":"kushushu kakhulu",
+"zu kalt":"kubanda kakhulu",
+"Radio ein/aus":"Irediyo ivaliwe / ivaliwe",
+"Vorheriger Radiosender":"Isikhululo sikanomathotholo sangaphambili",
+"Nächster Radiosender":"Isikhululo sikanomathotholo esilandelayo",
+"Hitradio Ö3":"Ukubetha irediyo Ö3",
+"Radio FM4":"Umsakazo we-FM4",
+"TV ein/aus":"Umabonwakude uvuliwe / uvaliwe",
+"Vorheriger TV-Sender":"Umsasazi we-TV wangaphambili",
+"Nächster TV-Sender":"Isikhululo seTV esilandelayo",
+"TV-Lautstärke lauter":"Umthamo weTV uyakhawuleza",
+"TV-Lautstärke leiser":"Umthamo weTV uzolile",
+"Licht ein":"khanyise",
+"Licht aus":"khanyise",
+"Tür auf":"Vula ucango",
+"Tür zu":"Indlu evaliwe",
+"Heizung wärmer":"Ishushu eshushu",
+"Heizung kühler":"Ukupholisa okupholileyo",
+"ich":"Mna",
+"nochmal":"kwakhona",
+"was":"Intoni",
+"möchten":"Ndingathanda",
+"wollen":"funa",
+"du":"wena",
+"nicht":"Akunjalo",
+"wann":"nini",
+"kommen":"yiza",
+"haben":"ukufumana",
+"er":"yena",
+"mehr":"Kaninzi",
+"wo":"Phi",
+"auch":"kananjalo",
+"sein":"yiba",
+"wir":"thina",
+"fertig":"igqitywe tu",
+"wer":"i-WHO",
+"machen":"yenza",
+"schauen":"jonga",
+"Was?":"Intoni?",
+"Wer?":"I-WHO?",
+"Wann?":"Nini?",
+"Wo?":"Phi?",
+"Wie?":"Njani?",
+"Warum?":"Ngoba?",
+"Wie viele?":"Zingaphi?",
+"Wohin?":"Phi?",
+"Wie spät ist es?":"Kuxeshaphi?",
+"Wie heißt du?":"Ungubani igama lakho?",
+"Kannst du mir helfen?":"Ungandinceda?",
+"Das ist cool":"Ipholile",
+"Das ist OK":"Kulungile",
+"Das schmeckt mir":"Ndiyayithanda lo nto",
+"Ich habe Angst":"Ndiyoyika",
+"Das mag ich nicht":"andiyithandi",
+"Das ist lustig":"Oku kuyahlekisa",
+"Das ist böse":"Kubi oko",
+"Das ist ärgerlich":"Iyacaphukisa",
+"Hallo":"Mholo",
+"Wann kommst du wieder?":"Ubuya nini?",
+"Ich habe schlechte Laune":"Ndineemvakalelo ezimbi",
+"Wie geht es dir?":"Unjani?",
+"Mir geht es gut":"ndiyaphila",
+"Wo wohnst du?":"Uhlalaphi?",
+"Tschüss":"molo",
+"Treffen wir uns wieder?":"Ngaba siyaphinda sihlangane?",
+"spiel was mit mir":"Dlala nam",
+"lies mir was vor":"ndifundele into",
+"sing mir was vor":"ndicule into",
+"bitte hilf mir":"Nceda undincede",
+"erzähl mir einen Witz":"Ndixelele isiqhulo",
+"umarme mich":"ndihage",
+"kitzel mich":"Ndithethise",
+"dreh mich bitte um":"ndicela undijike",
+"verstecke dich":"zifihle",
+"geh mit den Fingern":"hamba ngeminwe yakho",
+"klatsche mit den Händen":"Qhwaba izandla zakho",
+"bitte kratze mich":"ndicela undikrwhe",
+"Ergotherapie":"Unyango emsebenzini",
+"Physiotherapie":"ulungiso lwenyama",
+"Logopädie":"Unyango lokuthetha",
+"Sprachheilunterricht":"Izifundo zokuphilisa intetho",
+"Massage":"ukwenza umthambo",
+"Rollator":"I-Rollator",
+"Rollstuhl":"isitulo esinamavili",
+"Arzt":"ugqirha",
+"stehen":"yima",
+"liegen":"Ubuxoki",
+"sitzen":"ukuhlala",
+"Hund":"inja",
+"Katze":"ikati",
+"Fische":"intlanzi",
+"Schwan":"swan",
+"Vogel":"intaka",
+"Eisbär":"Icebear",
+"Tiger":"ihlosi",
+"Fuchs":"Impungushe",
+"Kopf":"intloko",
+"Nase":"impumlo",
+"Mund":"umlomo",
+"Zahn":"izinyo",
+"Auge":"iliso",
+"Hals":"intamo",
+"Bauch":"isisu",
+"Arm":"ihlwempu",
+"Hand":"isandla",
+"Ohr":"indlebe",
+"Rücken":"hambisa",
+"Brille":"iglasi",
+"mich friert es":"iyandikhulula",
+"ich habe Fieber":"Ndinomkhuhlane",
+"Bein":"umlenze",
+"ich bin krank":"Ndiyaguka",
+"Ich habe Schmerzen":"Ndinentlungu",
+"mich juckt es":"Ndiyalungisa",
+"mir ist schlecht":"ndiziva ndigula",
+"Fuß":"unyawo",
+"aufstehen":"Phakama",
+"Bett machen":"yenza ibhedi",
+"duschen":"ukuhlamba",
+"anziehen":"tsala",
+"Zähne putzen":"Vasa amazinyo",
+"kämmen":"ikamu",
+"Kaffee trinken":"phuza ikofu",
+"frühstücken":"yibanesidlo sakusasa",
+"Fahrtendienst":"Inkonzo yabahambi ngeenyawo",
+"rot":"bomvu",
+"blau":"luhlaza",
+"hellblau":"Isibane esiluhlaza",
+"grün":"luhlaza",
+"hellgrün":"ilitha elululhlaza",
+"lila":"mfusa",
+"gelb":"lubhelu",
+"orange":"orenji",
+"rosa":"lipinki",
+"braun":"ntsundu",
+"weiß":"mhlophe",
+"schwarz":"mnyama",
+"bunt":"ngombala",
+"gestreift":"imivimbo",
+"mit Punkten":"ngamanqaku",
+"mit Aufdruck":"ngokutyibilika",
+"mit Blumenmuster":"ngephethini yeentyatyambo",
+"welche Farbe?":"Nguwuphi umbala?",
+"Montag":"uMvulo",
+"Dienstag":"uLwesibini",
+"Mittwoch":"uLwesithathu",
+"Donnerstag":"uLwesine",
+"Freitag":"uLwesihlanu",
+"Samstag":"uMgqibelo",
+"Sonntag":"iCawe",
+"vormittag":"ntseni",
+"mittag":"Emini",
+"nachmittag":"njakalanga",
+"abend":"UEva",
+"Das bin ich":"Ndim lo",
+"meine Familie":"usapho lwam",
+"meine Freunde":"abahlobo bam",
+"meine Kollegen":"Oogxa bam",
+"Davor habe ich Angst":"Ndiyoyika lonto",
+"meine Wohngruppe":"Iqela lam eliphilayo",
+"meine Haustiere":"Izilwanyana zasekhaya",
+"meine Arbeit":"Umsebenzi wam",
+"meine Freizeit":"ixesha lam elikhululekileyo",
+"meine Lieblingskleidung":"amalaphu endiwathandayo",
+"mag ich":"Ndiyathanda",
+"mag ich nicht":"andiyithandi",
+"meine Wünsche":"Iminqweno yam",
+"esse und trinke ich gerne":"Ndiyathanda ukutya nokusela",
+"Mama":"mama",
+"Papa":"utata",
+"Kind":"umntwana",
+"Opa":"Utat'omkhulu",
+"Nachbar":"Ummelwane",
+"Freundin":"intombi",
+"Oma":"ugogo",
+"Freund":"umhlobo",
+"Partner":"iqabane",
+"Huffman Tastatur":"Ikhibhodi ye-Huffman",
+"3-Tasten Tastatur":"Iqhosha le-3-iqhosha",
+"Scanning Tastatur":"Iskena ikhibhodi",
+"Hover Tastatur":"I-hover ikhibhodi",
+"Ja/Nein Kommunikation":"Ewe / Akukho nxibelelwano",
+"ich heiße":"Igama lam ngu",
+"ich wohne":"ndihlala",
+"ich bin .. Jahre alt ":"Ndimdala_mdala",
+"meine Lieblingsfarbe":"umbala owuthandayo",
+"mein Papa":"utata wam",
+"meine Mama":"umamam",
+"meine Tante":"u-Anti wam",
+"waschen":"ukuhlamba",
+"baden":"ukuhlamba",
+"Nägel schneiden":"Sika izipikili",
+"Haare waschen":"hlamba iinwele",
+"Verband wechseln":"tshintsha i-bandage",
+"Haare schneiden":"nqunqa iinwele",
+"?123":"? 123",
+"ABC":"IABC",
+"Ja":"Ewe",
+"Nein":"Hayi",
+"Weiß nicht":"andazi",
+"E, N, I, R, T":"E, N, mna, R, T",
+"S, A ,H, D, U":"S, A, H, D, U",
+"C, L, G, M, O":"C, L, G, M, O",
+"B, F, W, Z, K, V, P":"B, F, W, Z, K, V, P",
+"Ü, Ä, Ö, J, X, Q, Y":"Ü, Ä, Ö, J, X, Q, Y",
+"leise":"cwaka",
+"laut":"khwaza",
+"kalt":"kubanda",
+"heiß":"kushushu",
+"voll":"igcwele",
+"leer":"ndingenanto",
+"nass":"ndimanzi",
+"trocken":"yomile",
+"sauber":"icocekile",
+"schmutzig":"umdaka",
+"groß":"enkulu",
+"klein":"encinci",
+"schnell":"khawuleza",
+"langsam":"kancinci",
+"ganz":"zonke",
+"Ich muss auf die Toilette":"Ndidinga ukuya kwindlu yangasese",
+"ich fühle mich krank":"ndiziva ndigula",
+"ich fühle mich unwohl":"Andiziva ndiphilile",
+"Ich muss mich ausruhen oder schlafen":"Ndidinga ukuphumla okanye ukulala",
+"etwas ist kaputt":"into eyaphukileyo",
+"Ich möchte etwas essen":"Ndifuna ukutya into",
+"ich möchte etwas zu trinken":"ndifuna into eselwayo",
+"Ich hätte gerne etwas Obst":"Ndingathanda isiqhamo",
+"Ich hätte gerne einen salzigen Snack":"Ndingathanda ukutya okunetyuwa",
+"Ich hätte gerne einen süßen Snack":"Ndingathanda into emnandi",
+"Ich möchte etwas Wasser":"Ndifuna amanzi",
+"Ich hätte gerne eine Limonade":"Ndingathanda ilamuni",
+"Ich brauche einen Strohhalm":"Ndidinga isitya",
+"Ich bin fröhlich":"Ndonwabile",
+"ich bin traurig":"Ndindandathekile",
+"ich bin wütend":"ndinomsindo",
+"ich bin verwirrt":"Ndibhidekile",
+"Ich bin begeistert":"Ndiyavuya",
+"Ich bin gelangweilt":"Ndidikiwe",
+"Ich bin besorgt":"Ndinexhala",
+"Ich würde gerne eine Hose tragen":"Ndingathanda ukunxiba ibhulukhwe",
+"Ich möchte ein T-Shirt tragen":"Ndifuna ukunxiba isikipa",
+"Ich würde gerne eine Bluse tragen":"Ndingathanda ukunxiba ibhlawuzi",
+"Ich möchte einen Rock tragen":"Ndifuna ukunxiba isiketi",
+"Ich möchte ein Kleid tragen":"Ndifuna ukunxiba ilokhwe",
+"Ich möchte schuhe anziehen":"Ndifuna ukunxiba izihlangu",
+"Meine Kleidung ist zu eng":"Iingubo zam ziqinile",
+"Meine Kleidung ist zu weit":"Iingubo zam zibanzi kakhulu"}

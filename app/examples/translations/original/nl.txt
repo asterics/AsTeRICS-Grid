@@ -1,0 +1,339 @@
+Wereldwijd raster
+nummers
+Hoofdpagina
+Helpen
+eten
+Gevoelens
+jurk
+Omgeving
+Huffman-toetsenbord
+ThreeKeyKeyboard
+Sleutelwoorden
+vragen
+Opmerkingen
+Koetjes en kalfjes
+interactie
+therapie
+Dieren
+lichaam
+Ochtend routine
+Kleuren
+Wekelijkse planning
+Over mij
+familie en vrienden
+Huis 2
+ik
+Mijn familie
+onderhoud
+Standaard toetsenbord
+StandardKeyboard2
+Gemakkelijke communicatie
+ScanKeyboardStart
+Scankeyboard 1
+Scankeyboard 2
+Scankeyboard 3
+Scankeyboard 4
+Scankeyboard 5
+HoverKeyboard
+Leeg raster
+eigendommen
+Leeg rooster 2
+beginnen
+Terug
+belangrijke woorden
+toetsenbord
+Meer
+Toilet
+ziek
+ongemakkelijk
+Ik weet niet wat er aan de hand is.
+Ik heb hulp nodig.
+slaap
+Het is kapot.
+Ik ben heet.
+Er mist iets.
+Doe iets anders.
+gebroken
+Ik begrijp dat niet.
+Het is te hard.
+Ik heb het koud.
+Kun je dat herhalen?
+Hongerig
+Dorstig
+fruit
+Zoute snack
+Zoete snack
+water
+limonade
+rietje
+dat smaakt goed
+dit smaakt niet goed
+Gelukkig
+Verdrietig
+boos
+opgewonden
+verward
+bang
+opgewonden
+verveeld
+jaloers
+geliefd
+bezorgd
+broek
+overhemd
+blouse
+rok
+jurk
+Schoenen
+Te strak
+Te ver
+te lang
+te kort
+te warm
+te koud
+Radio aan / uit
+Vorig radiostation
+Volgende radiostation
+Ga naar radio Ö3
+FM4-radio
+TV aan / uit
+Vorige tv-omroep
+Volgende tv-zender
+TV-volume luider
+TV-volume zachter
+licht aan
+Lichten uit
+open de deur
+doe de deur dicht
+Verwarming warmer
+Verwarming koeler
+ik
+opnieuw
+Wat
+zou willen
+willen
+u
+Niet
+wanneer
+komen
+hebben
+hij
+meer
+Waar
+ook
+worden
+wij
+afgewerkt
+WHO
+Doen
+kijk maar
+Wat?
+WHO?
+Wanneer?
+Waar?
+Hoe?
+Waarom?
+Hoeveel?
+Waar?
+Hoe laat is het?
+Wat is jouw naam?
+Kun je me helpen?
+Dat is cool
+Dat is geen probleem
+dat vind ik leuk
+Ik ben bang
+ik hou er niet van
+Dit is grappig
+Dat is slecht
+Het is irritant
+Hoi
+Wanneer kom je terug?
+Ik heb een slecht humeur
+Hoe gaat het met je?
+het gaat prima met mij
+Waar woon je?
+doei
+Komen we elkaar weer tegen?
+speel met mij
+lees me iets
+zing iets voor me
+Help me alstublieft
+vertel me een grap
+Knuffel me
+Kietel me
+draai me alsjeblieft om
+Verberg jezelf
+ga met je vingers
+klap in je handen
+krab me alsjeblieft
+Ergotherapie
+fysiotherapie
+Logopedie
+Speech healing lessen
+massage
+Rollator
+rolstoel
+dokter
+staan
+liggen
+zitten
+hond
+kat
+vis
+zwaan
+vogel
+Ijsbeer
+tijger
+Vos
+hoofd
+neus-
+mond
+tand
+oog
+nek
+buik
+arm
+hand-
+oor
+Actie
+bril
+het bevriest me
+ik heb koorts
+been
+ik ben ziek
+ik heb pijn
+Ik heb jeuk
+ik voel me ziek
+voet
+sta op
+bed opmaken
+douchen
+aantrekken
+Tanden poetsen
+kam
+koffie drinken
+ontbijten
+Reizigers service
+rood
+blauw
+Lichtblauw
+groen
+licht groen
+Purper
+geel
+oranje
+roze
+bruin
+Wit
+zwart
+kleurrijk
+gestreept
+met punten
+met opdruk
+met bloemmotief
+welke kleur?
+maandag
+dinsdag
+woensdag
+donderdag
+vrijdag
+zaterdag
+zondag
+ochtend-
+middag
+middag
+Vooravond
+Dit ben ik
+mijn familie
+mijn vrienden
+mijn collega's
+Daar ben ik bang voor
+mijn levende groep
+mijn huisdieren
+mijn werk
+mijn vrije tijd
+mijn favoriete kleding
+ik hou van
+ik hou er niet van
+mijn wensen
+Ik hou van eten en drinken
+mama
+vader
+kind
+Opa
+Buurman
+vriendin
+oma
+vriend
+partner
+Huffman-toetsenbord
+Toetsenbord met 3 toetsen
+Toetsenbord scannen
+Hover toetsenbord
+Ja / nee communicatie
+mijn naam is
+ik leef
+Ik ben jaren oud
+mijn favoriete kleur
+mijn vader
+mijn moeder
+mijn tante
+Wassen
+Baden
+Nagels knippen
+haren wassen
+verband veranderen
+haar knippen
+? 123
+abc
+Ja
+Nee
+ik weet het niet
+E, N, I, R, T
+S, A, H, D, U
+C, L, G, M, O
+B, F, W, Z, K, V, P
+Ü, Ä, Ö, J, X, Q, Y
+rustig
+luid
+verkoudheid
+heet
+vol
+leeg
+nat
+droog
+schoon
+vuil
+groot
+klein
+snel
+langzaam
+allemaal
+ik moet naar het toilet
+ik voel me ziek
+ik voel me niet lekker
+Ik moet rusten of slapen
+iets is kapot
+ik wil iets eten
+ik wil iets te drinken
+Ik wil wat fruit
+Ik wil graag een zoute snack
+Ik wil graag een zoete snack
+ik wil een beetje water
+Ik wil een limonade
+Ik heb een rietje nodig
+ik ben gelukkig
+Ik ben verdrietig
+ik ben boos
+ik ben verward
+ik ben opgewonden
+ik verveel me
+ik ben bezorgd
+Ik zou graag een broek willen dragen
+Ik wil een t-shirt dragen
+Ik zou graag een blouse willen dragen
+Ik wil een rok dragen
+Ik wil een jurk dragen
+Ik wil schoenen aantrekken
+Mijn kleren zitten te strak
+Mijn kleren zijn te wijd

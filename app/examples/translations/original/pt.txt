@@ -1,0 +1,339 @@
+Grade global
+números
+Página principal
+Socorro
+comer
+Sentimentos
+vestir
+Arredores
+Teclado Huffman
+ThreeKeyKeyboard
+Palavras-chave
+perguntar
+Comentários
+Conversa fiada
+interação
+terapia
+Animais
+corpo
+Rotina matinal
+Cores
+Horário semanal
+Sobre mim
+família e amigos
+Home2
+Eu
+Minha família
+manutenção
+Teclado padrão
+StandardKeyboard2
+Comunicação fácil
+ScanKeyboardStart
+ScanKeyboard1
+ScanKeyboard2
+ScanKeyboard3
+ScanKeyboard4
+ScanKeyboard5
+HoverKeyboard
+Grade vazia
+propriedades
+Grade vazia 2
+início
+De volta
+palavras importantes
+teclado
+Mais
+Banheiro
+eu vou
+desconfortável
+Eu não sei o que se passa.
+Eu preciso de ajuda.
+dormir
+Está quebrado.
+Eu sou gata.
+Algo está faltando.
+Faça outra coisa.
+partido
+Eu não compreendo isso.
+Está muito alto.
+Estou com frio.
+Você pode repetir isso?
+com fome
+Com sede
+fruta
+Lanche salgado
+Lanche doce
+água
+limonada
+canudo
+que sabe bem
+isso não tem um gosto bom
+Feliz
+Triste
+Bravo
+animado
+confuso
+assustado
+animado
+entediado
+com ciumes
+Amado
+preocupado
+calças
+camisa
+blusa
+saia
+vestir
+sapatos
+Muito apertado
+Muito longe
+demasiado longo
+curto demais
+muito quente
+Muito frio
+Rádio ligado / desligado
+Estação de rádio anterior
+Próxima estação de rádio
+Hit radio Ö3
+Rádio FM4
+TV ligada / desligada
+Emissora de TV anterior
+Próxima estação de TV
+Volume da TV mais alto
+Volume da TV mais silencioso
+luzes ligadas
+luz apagada
+abra a porta
+feche a porta
+Aquecedor de aquecimento
+Arrefecedor de aquecimento
+Eu
+novamente
+o que
+gostaria
+quer
+você
+Não
+quando
+venha
+Ter
+ele
+Mais
+Onde
+Além disso
+estar
+nós
+acabado
+quem
+Faz
+ver
+O que?
+Quem?
+Quando?
+Onde?
+Quão?
+Por quê?
+Quantos?
+Onde?
+Que horas são?
+Qual é o seu nome?
+Pode me ajudar?
+Isso é legal
+Isso está ok
+eu gosto disso
+Estou com medo
+Eu não gosto disso
+Isso é engraçado
+Isso é mau
+É irritante
+Oi
+Quando você vai voltar?
+Tenho mau humor
+Como você está?
+eu estou bem
+Onde você mora?
+tchau
+Nos encontramos novamente?
+jogue comigo
+leia algo para mim
+me cante algo
+por favor me ajude
+conte-me uma piada
+me abrace
+me faça cócegas
+por favor me vire
+esconda-se
+vá com os dedos
+bata palmas
+por favor me arranhe
+Terapia ocupacional
+fisioterapia
+Terapia de fala
+Lições de cura da fala
+massagem
+Rollator
+cadeira de rodas
+médico
+ficar de pé
+mentira
+sentar
+cão
+gato
+peixe
+cisne
+pássaro
+Urso polar
+tigre
+Raposa
+cabeça
+nariz
+boca
+dente
+olho
+pescoço
+barriga
+pobre
+mão
+orelha
+mover
+óculos
+isso me congela
+estou com febre
+perna
+Eu estou doente
+eu tenho dor
+Estou com coceira
+Estou enjoado
+pé
+Levante-se
+arrumar a cama
+tomar banho
+atrai
+Escovar os dentes
+pente
+beber café
+tomar café da manhã
+Serviço ao viajante
+vermelho
+azul
+Azul claro
+verde
+luz verde
+roxa
+amarelo
+laranja
+Rosa
+Castanho
+Branco
+Preto
+colorido
+listrado
+com pontos
+com impressão
+com padrão floral
+que cor?
+Segunda-feira
+terça
+Quarta-feira
+Quinta-feira
+Sexta-feira
+sábado
+domingo
+manhã
+meio dia
+tarde
+véspera
+Este sou eu
+Minha família
+meus amigos
+meus colegas
+Eu tenho medo disso
+meu grupo vivo
+meus bichos de estimação
+meu trabalho
+meu tempo livre
+minhas roupas favoritas
+Eu gosto
+Eu não gosto disso
+meus desejos
+Eu gosto de comer e beber
+mamãe
+pai
+criança
+Vovô
+Vizinho
+namorada
+avó
+amigo
+parceiro
+Teclado Huffman
+Teclado de 3 teclas
+Teclado de digitalização
+Teclado suspenso
+Comunicação Sim / Não
+Meu nome é
+Eu vivo
+Eu tenho anos de idade
+minha cor favorita
+meu pai
+minha mãe
+minha tia
+para lavar
+tomar banho
+Cortar unhas
+lavar os cabelos
+mudar bandagem
+cortar o cabelo
+123
+abc
+sim
+Não
+eu não sei
+E, N, I, R, T
+S, A, H, D, U
+C, L, G, M, O
+B, F, W, Z, K, V, P
+Ü, Ä, Ö, J, X, Q, Y
+quieto
+alto
+frio
+quente
+cheio
+esvaziar
+molhado
+seco
+limpar \ limpo
+sujo
+ampla
+pequeno
+velozes
+lentamente
+todos
+Eu preciso ir ao banheiro
+Estou enjoado
+Não me sinto bem
+Eu preciso descansar ou dormir
+Algo está quebrado
+Eu quero comer alguma coisa
+Eu quero algo para beber
+Eu gostaria de alguma fruta
+Eu gostaria de um lanche salgado
+Eu gostaria de um lanche doce
+Eu quero água
+Eu gostaria de uma limonada
+Eu preciso de um canudo
+Eu estou feliz
+estou triste
+estou com raiva
+estou confuso
+Estou animado
+estou entediado
+Estou ansioso
+Eu gostaria de usar calças
+Eu quero vestir uma camiseta
+Eu gostaria de usar uma blusa
+Eu quero usar saia
+Eu quero usar um vestido
+Eu quero calçar sapatos
+Minhas roupas estão muito apertadas
+Minhas roupas são muito largas

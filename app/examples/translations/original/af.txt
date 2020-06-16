@@ -1,0 +1,339 @@
+Wêreldnet
+nommers
+Hoofblad
+hulp
+eet
+Gevoelens
+aantrek
+omgewing
+Huffman-sleutelbord
+ThreeKeyKeyboard
+Sleutelwoorde
+vra
+kommentaar
+Klein praatjie
+interaksie
+terapie
+diere
+liggaam
+Oggendroetine
+Kleure
+Weeklikse skedule
+Oor my
+familie en vriende
+Home2
+Ek
+My familie
+onderhoud
+Standaard sleutelbord
+StandardKeyboard2
+Maklike kommunikasie
+ScanKeyboardStart
+ScanKeyboard1
+ScanKeyboard2
+ScanKeyboard3
+ScanKeyboard4
+ScanKeyboard5
+HoverKeyboard
+Leë rooster
+eienskappe
+Leë rooster 2
+begin
+terug
+belangrike woorde
+sleutelbord
+meer
+Toilet
+siek
+ongemaklik
+Ek weet nie wat gaan aan nie.
+Ek het hulp nodig.
+slaap
+Dis gebreek.
+Ek is warm.
+Iets ontbreek.
+Doen iets anders.
+gebreek
+Ek verstaan ​​dit nie.
+Dit is te hard.
+Ek kry koud.
+Kan jy dit herhaal?
+Honger
+dors
+vrugte
+Sout snack
+Soet snack
+water
+lemonade
+strooitjie
+dit smaak goed
+dit smaak nie goed nie
+gelukkig
+hartseer
+kwaad
+opgewonde
+verward
+bang
+opgewonde
+verveeld
+jaloers
+lief
+betrokke
+broek
+hemp
+bloes
+romp
+aantrek
+Skoene
+Te styf
+Te vêr
+te lank
+te kort
+te warm
+té koud
+Radio aan / af
+Vorige radiostasie
+Volgende radiostasie
+Raak radio Ö3
+FM4 radio
+TV aan / af
+Vorige TV-uitsaaier
+Volgende TV-stasie
+TV-volume harder
+TV-volume stiller
+ligte aan
+Lig af
+maak die deur oop
+maak die deur toe
+Verhitting warmer
+Verhitting koeler
+Ek
+weer
+Wat
+sal daarvan hou
+wil
+jy
+nie
+wanneer
+kom
+om te hê
+hy
+meer
+waar
+ook
+wees
+ons
+klaar
+wie
+doen
+Watch
+Wat?
+Wie?
+Wanneer?
+Waar?
+Hoe?
+Hoekom?
+Hoeveel?
+Waar?
+Hoe laat is dit?
+Wat is jou naam?
+Kan jy my help?
+Dis koel
+Dit is OK
+ek hou daarvan
+Ek is bang
+ek hou nie daarvan nie
+Hierdie is snaaks
+Dit is sleg
+Dit is irriterend
+Hi
+Wanneer kom jy terug?
+Ek het 'n slegte bui
+Hoe gaan dit?
+dit gaan goed met my
+Waar woon jy?
+bye
+Ontmoet ons weer?
+speel met my
+lees vir my iets
+sing my iets
+help my asseblief
+vertel my 'n grap
+gee my 'n drukkie
+kielie my
+draai my asseblief om
+steek jouself weg
+gaan met jou vingers
+klap jou hande
+krap my asseblief
+Arbeidsterapie
+fisiese terapie
+Spraakterapie
+Spraakgenesingslesse
+Masseer
+rollator
+rolstoel
+dokter
+staan
+leuen
+om te sit
+hond
+kat
+vis
+Swan
+voël
+Icebear
+tier
+jakkals
+kop
+neus
+mond
+tand
+oog
+nek
+maag
+swak
+hand
+oor
+skuif
+bril
+dit vries my
+ek het koors
+been
+Ek is siek
+Ek het pyn
+Ek jeuk
+ek voel siek
+voet
+staan ​​op
+bed maak
+stort
+trek
+Borsel tande
+kam
+drink koffie
+eet ontbyt
+Reisdiens
+rooi
+blou
+Ligblou
+groen
+ligte groen
+pers
+geel
+oranje
+pienk
+bruin
+wit
+swart
+kleurvolle
+gestreepte
+met punte
+met afdruk
+met blompatroon
+Wat is die kleur?
+Maandag
+Dinsdag
+Woensdag
+Donderdag
+Vrydag
+Saterdag
+Sondag
+oggend
+middag
+middag
+Eva
+Hierdie is Ek
+my familie
+my vriende
+my kollegas
+Ek is bang daarvoor
+my lewende groep
+my troeteldiere
+my werk
+my vrye tyd
+my gunsteling doeke
+ek hou van
+ek hou nie daarvan nie
+my wense
+Ek hou daarvan om te eet en te drink
+mummie
+pa
+kind
+Oupa
+buurman
+vriendin
+ouma
+vriend
+vennoot
+Huffman-sleutelbord
+3-sleutelbord
+Skandeer sleutelbord
+Hou die sleutelbord in
+Ja / Nee kommunikasie
+my naam is
+ek leef
+Ek is jare oud
+my gunsteling kleur
+my pa
+my ma
+my tannie
+om te was
+om te bad
+Sny spykers
+was hare
+verander verband
+gesnyde hare
+? 123
+ABC
+Ja
+Geen
+Ek weet nie
+E, N, I, R, T
+S, A, H, D, U
+C, L, G, M, O
+B, F, W, Z, K, V, P
+Ü, Ä, Ö, J, X, Q, Y
+stil
+hard
+koue
+warm
+volle
+leegmaak
+nat
+droë
+skoon
+vuil
+groot
+klein
+vinnig
+stadig
+almal
+Ek moet toilet toe gaan
+ek voel siek
+Ek voel nie goed nie
+Ek moet rus of slaap
+iets is stukkend
+Ek wil iets eet
+ek wil iets drink
+Ek wil graag vrugte hê
+Ek wil graag 'n soute snack hê
+Ek wil graag 'n soet happie hê
+Ek wil water hê
+Ek wil graag 'n limonade hê
+Ek het 'n strooi nodig
+Ek is gelukkig
+ek is hartseer
+Ek is kwaad
+Ek is deurmekaar
+ek is opgewonde
+ek is verveeld
+Ek is angstig
+Ek wil graag 'n broek dra
+Ek wil 'n t-hemp dra
+Ek wil graag 'n bloes dra
+Ek wil 'n romp dra
+Ek wil 'n rok dra
+Ek wil skoene aantrek
+My klere is te styf
+My klere is te breed

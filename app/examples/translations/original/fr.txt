@@ -1,0 +1,339 @@
+Grille mondiale
+Nombres
+Page d'accueil
+Aidez-moi
+manger
+Sentiments
+robe
+Alentours
+Clavier Huffman
+ThreeKeyKeyboard
+Mots clés
+demander
+commentaires
+Banalités
+interaction
+thérapie
+Animaux
+corps
+Routine matinale
+Couleurs
+Horaire hebdomadaire
+À propos de moi
+famille et amis
+Accueil2
+je
+Ma famille
+entretien
+Clavier standard
+StandardKeyboard2
+Communication facile
+ScanKeyboardStart
+ScanKeyboard1
+ScanKeyboard2
+ScanKeyboard3
+ScanKeyboard4
+ScanKeyboard5
+HoverKeyboard
+Grille vide
+Propriétés
+Grille vide 2
+commencer
+Retour
+mots importants
+clavier
+Plus
+Toilette
+mauvais
+inconfortable
+Je ne sais pas ce qui se passe.
+J'ai besoin d'aide.
+dormir
+C'est cassé.
+J'ai chaud.
+Quelque chose manque.
+Faites autre chose.
+cassé
+Je ne comprends pas ça.
+C'est trop fort.
+J'ai froid.
+Peux-tu répéter cela?
+Faim
+Assoiffé
+fruit
+Collation salée
+Collation sucrée
+l'eau
+limonade
+Paille
+qui a bon goût
+cela n'a pas bon goût
+Heureux
+Triste
+en colère
+excité
+confus
+effrayé
+excité
+ennuyé
+jaloux
+aimé
+concerné
+pantalon
+chemise
+chemisier
+jupe
+robe
+Chaussures
+Trop serré
+Trop loin
+trop long
+trop court
+trop chaud
+trop froid
+Radio marche / arrêt
+Station de radio précédente
+Station de radio suivante
+Hit radio Ö3
+Radio FM4
+Allumer / éteindre le téléviseur
+Diffuseur TV précédent
+Prochaine station de télévision
+Volume TV plus fort
+Volume TV plus silencieux
+lumière allumée
+lumière éteinte
+ouvre la porte
+ferme la porte
+Chauffage plus chaud
+Refroidisseur de chauffage
+je
+encore
+Quoi
+voudrais
+vouloir
+vous
+ne pas
+quand
+viens
+avoir
+il
+plus
+Où
+aussi
+être
+nous
+fini
+qui
+faire
+regarder
+Quelle?
+Qui?
+Quand?
+Où?
+Comment?
+Pourquoi?
+Combien?
+Où?
+Quelle heure est-il?
+Quel est votre nom?
+Pouvez-vous m'aider?
+C'est super
+C'est bon
+J'aime ça
+J'ai peur
+Je n'aime pas ça
+C'est drôle
+C'est mauvais
+C'est ennuyant
+salut
+Quand revenez-vous?
+J'ai de mauvaise humeur
+Comment ça va?
+je vais bien
+Où habitez-vous?
+au revoir
+On se revoit?
+joue avec moi
+lis moi quelque chose
+chante moi quelque chose
+Aidez-moi, s'il vous plaît
+Raconte moi une blague
+Donne moi un câlin
+me chatouiller
+veuillez me retourner
+cache toi
+allez avec vos doigts
+applaudir
+s'il vous plaît me gratter
+Ergothérapie
+thérapie physique
+Orthophonie
+Cours de guérison de la parole
+massage
+Rollator
+fauteuil roulant
+médecin
+supporter
+mensonge
+s'asseoir
+chien
+chat
+poisson
+cygne
+oiseau
+Ours polaire
+tigre
+Renard
+tête
+nez
+bouche
+dent
+œil
+cou
+ventre
+pauvres
+main
+oreille
+bouge toi
+des lunettes
+ça me gèle
+j'ai de la fièvre
+jambe
+Je suis malade
+j'ai mal
+Je démange
+Je me sens malade
+pied
+se lever
+faire son lit
+se doucher
+attirer
+Brosser les dents
+peigne
+boire du café
+prendre le petit déjeuner
+Service voyageur
+rouge
+bleu
+Bleu clair
+vert
+vert clair
+violet
+Jaune
+Orange
+rose
+marron
+blanc
+noir
+coloré
+rayé
+avec des points
+avec empreinte
+avec motif floral
+quelle couleur?
+Lundi
+Mardi
+Mercredi
+Jeudi
+Vendredi
+samedi
+dimanche
+Matin
+le midi
+après midi
+Veille
+C'est moi
+ma famille
+mes amis
+mes collègues
+J'ai peur de ça
+mon groupe vivant
+mes animaux de compagnie
+mon travail
+mon temps libre
+mes tissus préférés
+J'aime
+Je n'aime pas ça
+mes vœux
+J'aime manger et boire
+Momie
+père
+enfant
+Papy
+Voisine
+petite amie
+mamie
+ami
+partenaire
+Clavier Huffman
+Clavier à 3 touches
+Clavier de numérisation
+Clavier de survol
+Oui / Non communication
+mon nom est
+je vis
+J'ai .. ans
+ma couleur préférée
+mon père
+ma mère
+ma tante
+laver
+se baigner
+Ongles coupés
+se laver les cheveux
+changer de bandage
+couper les cheveux
+? 123
+abc
+Oui
+Non
+je ne sais pas
+E, N, I, R, T
+S, A, H, D, U
+C, L, G, M, O
+B, F, W, Z, K, V, P
+Ü, Ä, Ö, J, X, Q, Y
+silencieux
+bruyant
+du froid
+chaud
+plein
+vide
+humide
+sec
+nettoyer
+sale
+grand
+petit
+vite
+lentement
+tout
+J'ai besoin d'aller aux toilettes
+Je me sens malade
+Je ne me sens pas bien
+J'ai besoin de me reposer ou de dormir
+Quelque chose est cassé
+je veux manger quelque chose
+je veux quelque chose à boire
+Je voudrais des fruits
+Je voudrais une collation salée
+Je voudrais une collation sucrée
+Je veux de l'eau
+Je voudrais une limonade
+J'ai besoin d'une paille
+je suis heureux
+je suis triste
+Je suis faché
+Je suis confus
+Je suis surexcité
+je m'ennuie
+Je suis anxieux
+Je voudrais porter un pantalon
+Je veux porter un t-shirt
+Je voudrais porter un chemisier
+Je veux porter une jupe
+Je veux porter une robe
+Je veux mettre des chaussures
+Mes vêtements sont trop serrés
+Mes vêtements sont trop larges

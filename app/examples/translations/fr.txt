@@ -1,109 +1,339 @@
-Aidez-moi
-Vêtements
-Aliments
-Humeurs
-Clavier
-Environnement
-
-Toilette
-Malade
-Inconfortable
-Chaud
-Du froid
-Sommeil
-Ne pas comprendre
-Cassé
-Retour
-
-J'ai besoin d'aller aux toilettes
-Je me sens malade
-Je me sens mal à l'aise
-Il fait trop chaud
-Il fait trop froid
-J'ai besoin de me reposer ou de dormir
-Je n'ai pas compris
-Quelque chose est cassé
-
-Un pantalon
-Chemise
-Chemisier
-Jupe
-Robe
-Des chaussures
-Trop serré
-Trop lâche
-
-Je voudrais porter des pantalons
-Je voudrais porter un t-shirt
-Je voudrais porter un chemisier
-Je voudrais porter une jupe
-Je voudrais porter une robe
-Je voudrais mettre des chaussures
-Mes vêtements sont trop serrés
-Mes vêtements sont trop amples
-
-Faim
-Assoiffé
-Fruit
-Collation salée
-Collation sucrée
-L'eau
-Un soda
-Paille
-
-Je voudrais quelque chose à manger
-Je voudrais boire quelque chose
-Je voudrais des fruits
-Je voudrais un snack salé
-Je voudrais un casse-croûte
-je voudrais de l'eau
-Je voudrais un soda
-J'ai besoin d'une paille
-
-Heureux
-Triste
-Fâché
-Confus
-Peur
-Enthousiaste
-Ennuyé
-Préoccupé
-
-je suis heureux
-je me sens triste
-Je suis faché
-je suis confus
-Je suis effrayé
-Je me sens enthousiaste
-je m'ennuie
-je me sens inquiet
-
-Lumières
-la télé
-Radio
-Porte
-Chauffe-eau
-
-Lumières allumées
-Lumières éteintes
-
-TV sur
-TV éteinte
-Monter le son
-Baisser le volume
-Sonner
-Canal suivant
-Canal précédent
-
-Radio On
-Radio off
-Previous channel
-Next channel
-Volume down
-Volume up
-
-Porte ouverte
-Ferme la porte
-
-Température jusqu'à
-Température baissée
+{"Global Grid":"Grille mondiale",
+"Zahlen":"Nombres",
+"Hauptseite":"Page d'accueil",
+"Hilfe":"Aidez-moi",
+"Essen":"manger",
+"Gefühle":"Sentiments",
+"Kleidung":"robe",
+"Umgebung":"Alentours",
+"HuffmanKeyboard":"Clavier Huffman",
+"ThreeKeyKeyboard":"ThreeKeyKeyboard",
+"Kernwörter":"Mots clés",
+"Fragen":"demander",
+"Kommentare":"commentaires",
+"Small Talk":"Banalités",
+"Interaktion":"interaction",
+"Therapie":"thérapie",
+"Tiere":"Animaux",
+"Körper":"corps",
+"Morgenroutine":"Routine matinale",
+"Farben":"Couleurs",
+"Wochenplan":"Horaire hebdomadaire",
+"Über mich":"À propos de moi",
+"Familie und Freunde":"famille et amis",
+"Hauptseite2":"Accueil2",
+"Ich":"je",
+"Meine Familie":"Ma famille",
+"Pflege":"entretien",
+"StandardKeyboard":"Clavier standard",
+"StandardKeyboard2":"StandardKeyboard2",
+"Einfache Kommunikation":"Communication facile",
+"ScanKeyboardStart":"ScanKeyboardStart",
+"ScanKeyboard1":"ScanKeyboard1",
+"ScanKeyboard2":"ScanKeyboard2",
+"ScanKeyboard3":"ScanKeyboard3",
+"ScanKeyboard4":"ScanKeyboard4",
+"ScanKeyboard5":"ScanKeyboard5",
+"HoverKeyboard":"HoverKeyboard",
+"Leeres Grid":"Grille vide",
+"Eigenschaften":"Propriétés",
+"Leeres Grid 2":"Grille vide 2",
+"Start":"commencer",
+"Zurück":"Retour",
+"wichtige Wörter":"mots importants",
+"Tastatur":"clavier",
+"Mehr":"Plus",
+"Toilette":"Toilette",
+"krank":"mauvais",
+"unwohl":"inconfortable",
+"Ich weiß nicht was los ist.":"Je ne sais pas ce qui se passe.",
+"Ich brauche Hilfe.":"J'ai besoin d'aide.",
+"schlafen":"dormir",
+"Es ist kaputt.":"C'est cassé.",
+"Mir ist heiß.":"J'ai chaud.",
+"Es fehlt etwas.":"Quelque chose manque.",
+"Etwas anderes machen.":"Faites autre chose.",
+"kaputt":"cassé",
+"Ich verstehe das nicht.":"Je ne comprends pas ça.",
+"Es ist zu laut.":"C'est trop fort.",
+"Mir ist kalt.":"J'ai froid.",
+"Kannst du das wiederholen?":"Peux-tu répéter cela?",
+"Hungrig":"Faim",
+"Durstig":"Assoiffé",
+"Obst":"fruit",
+"Salziger Snack":"Collation salée",
+"Süßer Snack":"Collation sucrée",
+"Wasser":"l'eau",
+"Limonade":"limonade",
+"Strohhalm":"Paille",
+"das schmeckt gut":"qui a bon goût",
+"das schmeckt mir nicht":"cela n'a pas bon goût",
+"fröhlich":"Heureux",
+"traurig":"Triste",
+"wütend":"en colère",
+"aufgeregt":"excité",
+"verwirrt":"confus",
+"ängstlich":"effrayé",
+"begeistert":"excité",
+"gelangweilt":"ennuyé",
+"eifersüchtig":"jaloux",
+"geliebt":"aimé",
+"besorgt":"concerné",
+"Hose":"pantalon",
+"Hemd":"chemise",
+"Bluse":"chemisier",
+"Rock":"jupe",
+"Kleid":"robe",
+"Schuhe":"Chaussures",
+"Zu eng":"Trop serré",
+"Zu weit":"Trop loin",
+"zu lang":"trop long",
+"zu kurz":"trop court",
+"zu warm":"trop chaud",
+"zu kalt":"trop froid",
+"Radio ein/aus":"Radio marche / arrêt",
+"Vorheriger Radiosender":"Station de radio précédente",
+"Nächster Radiosender":"Station de radio suivante",
+"Hitradio Ö3":"Hit radio Ö3",
+"Radio FM4":"Radio FM4",
+"TV ein/aus":"Allumer / éteindre le téléviseur",
+"Vorheriger TV-Sender":"Diffuseur TV précédent",
+"Nächster TV-Sender":"Prochaine station de télévision",
+"TV-Lautstärke lauter":"Volume TV plus fort",
+"TV-Lautstärke leiser":"Volume TV plus silencieux",
+"Licht ein":"lumière allumée",
+"Licht aus":"lumière éteinte",
+"Tür auf":"ouvre la porte",
+"Tür zu":"ferme la porte",
+"Heizung wärmer":"Chauffage plus chaud",
+"Heizung kühler":"Refroidisseur de chauffage",
+"ich":"je",
+"nochmal":"encore",
+"was":"Quoi",
+"möchten":"voudrais",
+"wollen":"vouloir",
+"du":"vous",
+"nicht":"ne pas",
+"wann":"quand",
+"kommen":"viens",
+"haben":"avoir",
+"er":"il",
+"mehr":"plus",
+"wo":"Où",
+"auch":"aussi",
+"sein":"être",
+"wir":"nous",
+"fertig":"fini",
+"wer":"qui",
+"machen":"faire",
+"schauen":"regarder",
+"Was?":"Quelle?",
+"Wer?":"Qui?",
+"Wann?":"Quand?",
+"Wo?":"Où?",
+"Wie?":"Comment?",
+"Warum?":"Pourquoi?",
+"Wie viele?":"Combien?",
+"Wohin?":"Où?",
+"Wie spät ist es?":"Quelle heure est-il?",
+"Wie heißt du?":"Quel est votre nom?",
+"Kannst du mir helfen?":"Pouvez-vous m'aider?",
+"Das ist cool":"C'est super",
+"Das ist OK":"C'est bon",
+"Das schmeckt mir":"J'aime ça",
+"Ich habe Angst":"J'ai peur",
+"Das mag ich nicht":"Je n'aime pas ça",
+"Das ist lustig":"C'est drôle",
+"Das ist böse":"C'est mauvais",
+"Das ist ärgerlich":"C'est ennuyant",
+"Hallo":"salut",
+"Wann kommst du wieder?":"Quand revenez-vous?",
+"Ich habe schlechte Laune":"J'ai de mauvaise humeur",
+"Wie geht es dir?":"Comment ça va?",
+"Mir geht es gut":"je vais bien",
+"Wo wohnst du?":"Où habitez-vous?",
+"Tschüss":"au revoir",
+"Treffen wir uns wieder?":"On se revoit?",
+"spiel was mit mir":"joue avec moi",
+"lies mir was vor":"lis moi quelque chose",
+"sing mir was vor":"chante moi quelque chose",
+"bitte hilf mir":"Aidez-moi, s'il vous plaît",
+"erzähl mir einen Witz":"Raconte moi une blague",
+"umarme mich":"Donne moi un câlin",
+"kitzel mich":"me chatouiller",
+"dreh mich bitte um":"veuillez me retourner",
+"verstecke dich":"cache toi",
+"geh mit den Fingern":"allez avec vos doigts",
+"klatsche mit den Händen":"applaudir",
+"bitte kratze mich":"s'il vous plaît me gratter",
+"Ergotherapie":"Ergothérapie",
+"Physiotherapie":"thérapie physique",
+"Logopädie":"Orthophonie",
+"Sprachheilunterricht":"Cours de guérison de la parole",
+"Massage":"massage",
+"Rollator":"Rollator",
+"Rollstuhl":"fauteuil roulant",
+"Arzt":"médecin",
+"stehen":"supporter",
+"liegen":"mensonge",
+"sitzen":"s'asseoir",
+"Hund":"chien",
+"Katze":"chat",
+"Fische":"poisson",
+"Schwan":"cygne",
+"Vogel":"oiseau",
+"Eisbär":"Ours polaire",
+"Tiger":"tigre",
+"Fuchs":"Renard",
+"Kopf":"tête",
+"Nase":"nez",
+"Mund":"bouche",
+"Zahn":"dent",
+"Auge":"œil",
+"Hals":"cou",
+"Bauch":"ventre",
+"Arm":"pauvres",
+"Hand":"main",
+"Ohr":"oreille",
+"Rücken":"bouge toi",
+"Brille":"des lunettes",
+"mich friert es":"ça me gèle",
+"ich habe Fieber":"j'ai de la fièvre",
+"Bein":"jambe",
+"ich bin krank":"Je suis malade",
+"Ich habe Schmerzen":"j'ai mal",
+"mich juckt es":"Je démange",
+"mir ist schlecht":"Je me sens malade",
+"Fuß":"pied",
+"aufstehen":"se lever",
+"Bett machen":"faire son lit",
+"duschen":"se doucher",
+"anziehen":"attirer",
+"Zähne putzen":"Brosser les dents",
+"kämmen":"peigne",
+"Kaffee trinken":"boire du café",
+"frühstücken":"prendre le petit déjeuner",
+"Fahrtendienst":"Service voyageur",
+"rot":"rouge",
+"blau":"bleu",
+"hellblau":"Bleu clair",
+"grün":"vert",
+"hellgrün":"vert clair",
+"lila":"violet",
+"gelb":"Jaune",
+"orange":"Orange",
+"rosa":"rose",
+"braun":"marron",
+"weiß":"blanc",
+"schwarz":"noir",
+"bunt":"coloré",
+"gestreift":"rayé",
+"mit Punkten":"avec des points",
+"mit Aufdruck":"avec empreinte",
+"mit Blumenmuster":"avec motif floral",
+"welche Farbe?":"quelle couleur?",
+"Montag":"Lundi",
+"Dienstag":"Mardi",
+"Mittwoch":"Mercredi",
+"Donnerstag":"Jeudi",
+"Freitag":"Vendredi",
+"Samstag":"samedi",
+"Sonntag":"dimanche",
+"vormittag":"Matin",
+"mittag":"le midi",
+"nachmittag":"après midi",
+"abend":"Veille",
+"Das bin ich":"C'est moi",
+"meine Familie":"ma famille",
+"meine Freunde":"mes amis",
+"meine Kollegen":"mes collègues",
+"Davor habe ich Angst":"J'ai peur de ça",
+"meine Wohngruppe":"mon groupe vivant",
+"meine Haustiere":"mes animaux de compagnie",
+"meine Arbeit":"mon travail",
+"meine Freizeit":"mon temps libre",
+"meine Lieblingskleidung":"mes tissus préférés",
+"mag ich":"J'aime",
+"mag ich nicht":"Je n'aime pas ça",
+"meine Wünsche":"mes vœux",
+"esse und trinke ich gerne":"J'aime manger et boire",
+"Mama":"Momie",
+"Papa":"père",
+"Kind":"enfant",
+"Opa":"Papy",
+"Nachbar":"Voisine",
+"Freundin":"petite amie",
+"Oma":"mamie",
+"Freund":"ami",
+"Partner":"partenaire",
+"Huffman Tastatur":"Clavier Huffman",
+"3-Tasten Tastatur":"Clavier à 3 touches",
+"Scanning Tastatur":"Clavier de numérisation",
+"Hover Tastatur":"Clavier de survol",
+"Ja/Nein Kommunikation":"Oui / Non communication",
+"ich heiße":"mon nom est",
+"ich wohne":"je vis",
+"ich bin .. Jahre alt ":"J'ai .. ans",
+"meine Lieblingsfarbe":"ma couleur préférée",
+"mein Papa":"mon père",
+"meine Mama":"ma mère",
+"meine Tante":"ma tante",
+"waschen":"laver",
+"baden":"se baigner",
+"Nägel schneiden":"Ongles coupés",
+"Haare waschen":"se laver les cheveux",
+"Verband wechseln":"changer de bandage",
+"Haare schneiden":"couper les cheveux",
+"?123":"? 123",
+"ABC":"abc",
+"Ja":"Oui",
+"Nein":"Non",
+"Weiß nicht":"je ne sais pas",
+"E, N, I, R, T":"E, N, I, R, T",
+"S, A ,H, D, U":"S, A, H, D, U",
+"C, L, G, M, O":"C, L, G, M, O",
+"B, F, W, Z, K, V, P":"B, F, W, Z, K, V, P",
+"Ü, Ä, Ö, J, X, Q, Y":"Ü, Ä, Ö, J, X, Q, Y",
+"leise":"silencieux",
+"laut":"bruyant",
+"kalt":"du froid",
+"heiß":"chaud",
+"voll":"plein",
+"leer":"vide",
+"nass":"humide",
+"trocken":"sec",
+"sauber":"nettoyer",
+"schmutzig":"sale",
+"groß":"grand",
+"klein":"petit",
+"schnell":"vite",
+"langsam":"lentement",
+"ganz":"tout",
+"Ich muss auf die Toilette":"J'ai besoin d'aller aux toilettes",
+"ich fühle mich krank":"Je me sens malade",
+"ich fühle mich unwohl":"Je ne me sens pas bien",
+"Ich muss mich ausruhen oder schlafen":"J'ai besoin de me reposer ou de dormir",
+"etwas ist kaputt":"Quelque chose est cassé",
+"Ich möchte etwas essen":"je veux manger quelque chose",
+"ich möchte etwas zu trinken":"je veux quelque chose à boire",
+"Ich hätte gerne etwas Obst":"Je voudrais des fruits",
+"Ich hätte gerne einen salzigen Snack":"Je voudrais une collation salée",
+"Ich hätte gerne einen süßen Snack":"Je voudrais une collation sucrée",
+"Ich möchte etwas Wasser":"Je veux de l'eau",
+"Ich hätte gerne eine Limonade":"Je voudrais une limonade",
+"Ich brauche einen Strohhalm":"J'ai besoin d'une paille",
+"Ich bin fröhlich":"je suis heureux",
+"ich bin traurig":"je suis triste",
+"ich bin wütend":"Je suis faché",
+"ich bin verwirrt":"Je suis confus",
+"Ich bin begeistert":"Je suis surexcité",
+"Ich bin gelangweilt":"je m'ennuie",
+"Ich bin besorgt":"Je suis anxieux",
+"Ich würde gerne eine Hose tragen":"Je voudrais porter un pantalon",
+"Ich möchte ein T-Shirt tragen":"Je veux porter un t-shirt",
+"Ich würde gerne eine Bluse tragen":"Je voudrais porter un chemisier",
+"Ich möchte einen Rock tragen":"Je veux porter une jupe",
+"Ich möchte ein Kleid tragen":"Je veux porter une robe",
+"Ich möchte schuhe anziehen":"Je veux mettre des chaussures",
+"Meine Kleidung ist zu eng":"Mes vêtements sont trop serrés",
+"Meine Kleidung ist zu weit":"Mes vêtements sont trop larges"}

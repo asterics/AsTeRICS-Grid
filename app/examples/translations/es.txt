@@ -1,109 +1,339 @@
-Ayuda
-Ropa
-Comida
-Estados de ánimo
-Teclado
-Ambiente
-
-Baño
-Enfermos
-Incómodo
-Caliente
-Frío
-Dormir
-No entiendo
-Roto
-atrás
-
-necesito ir al baño
-Me estoy sintiendo mal
-me siento incomodo
-Es demasiado caliente
-Esta muy frío
-Necesito descansar o dormir
-No entendía
-algo está roto
-
-Pantalones
-Camisa
-Blusa
-Falda
-Vestir
-Zapatos
-Demasiado apretado
-Demasiado flojo
-
-Me gustaria usar pantalones
-Me gustaría llevar una camiseta
-Me gustaria usar una blusa
-Me gustaria usar una falda
-Me gustaria usar un vestido
-Me gustaría ponerme los zapatos
-Mi ropa me queda muy apretada
-Mi ropa me queda muy floja
-
-Hambriento
-Sediento
-Fruta
-Merienda salada
-Merienda dulce
-Agua
-soda
-Paja
-
-Quisiera algo de comer
-Me gustaría beber algo
-Me gustaria algo de fruta
-Me gustaría un bocadillo salado
-Me gustaría un bocadillo dulce
-Desearía un poco de agua
-Me gustaría un refresco
-Necesito una pajita
-
-Feliz
-Triste
-Enojado
-Confuso
-Temeroso
-Entusiasta
-aburrido
-Preocupado
-
-me siento feliz
-me siento triste
-Estoy enojado
-me siento confundido
-tengo miedo
-Me siento entusiasta
-me siento aburrido
-Me siento preocupado
-
-Luces
-televisión
-Radio
-Puerta
-Calentador
-
-Luces encendidas
-Luces apagadas
-
-TV encendida
-TV apagada
-Sube el volumen
-Bajar volumen
-Sonido apagado
-Canal siguiente
-Canal anterior
-
-Radio On
-Radio off
-Previous channel
-Next channel
-Volume down
-Volume up
-
-Puerta abierta
-Puerta cerrada
-
-Temperatura hasta
-Temperatura baja
+{"Global Grid":"Grilla global",
+"Zahlen":"números",
+"Hauptseite":"Pagina principal",
+"Hilfe":"Ayuda",
+"Essen":"comer",
+"Gefühle":"Sentimientos",
+"Kleidung":"vestir",
+"Umgebung":"Alrededores",
+"HuffmanKeyboard":"Teclado Huffman",
+"ThreeKeyKeyboard":"ThreeKeyKeyboard",
+"Kernwörter":"Palabras clave",
+"Fragen":"pedir",
+"Kommentare":"Comentarios",
+"Small Talk":"Charla",
+"Interaktion":"Interacción",
+"Therapie":"terapia",
+"Tiere":"Animales",
+"Körper":"cuerpo",
+"Morgenroutine":"Rutina de la mañana",
+"Farben":"Colores",
+"Wochenplan":"Programación semanal",
+"Über mich":"Sobre mí",
+"Familie und Freunde":"familiares y amigos",
+"Hauptseite2":"Casa 2",
+"Ich":"yo",
+"Meine Familie":"Mi familia",
+"Pflege":"mantenimiento",
+"StandardKeyboard":"Teclado estándar",
+"StandardKeyboard2":"StandardKeyboard2",
+"Einfache Kommunikation":"Comunicación fácil",
+"ScanKeyboardStart":"ScanKeyboardStart",
+"ScanKeyboard1":"ScanKeyboard1",
+"ScanKeyboard2":"ScanKeyboard2",
+"ScanKeyboard3":"ScanKeyboard3",
+"ScanKeyboard4":"ScanKeyboard4",
+"ScanKeyboard5":"ScanKeyboard5",
+"HoverKeyboard":"HoverKeyboard",
+"Leeres Grid":"Rejilla vacía",
+"Eigenschaften":"propiedades",
+"Leeres Grid 2":"Rejilla vacía 2",
+"Start":"empezar",
+"Zurück":"atrás",
+"wichtige Wörter":"Palabras importantes",
+"Tastatur":"teclado",
+"Mehr":"Más",
+"Toilette":"Baño",
+"krank":"enfermo",
+"unwohl":"incómodo",
+"Ich weiß nicht was los ist.":"No sé que pasa.",
+"Ich brauche Hilfe.":"Necesito ayuda.",
+"schlafen":"dormir",
+"Es ist kaputt.":"Esta roto.",
+"Mir ist heiß.":"Estoy caliente",
+"Es fehlt etwas.":"Algo falta.",
+"Etwas anderes machen.":"Hacer algo más.",
+"kaputt":"roto",
+"Ich verstehe das nicht.":"No entiendo eso.",
+"Es ist zu laut.":"Esta muy ruidoso.",
+"Mir ist kalt.":"Tengo frío.",
+"Kannst du das wiederholen?":"¿Puede repetir eso?",
+"Hungrig":"Hambriento",
+"Durstig":"Sediento",
+"Obst":"Fruta",
+"Salziger Snack":"Merienda salada",
+"Süßer Snack":"Merienda dulce",
+"Wasser":"agua",
+"Limonade":"limonada",
+"Strohhalm":"pajita",
+"das schmeckt gut":"eso sabe bien",
+"das schmeckt mir nicht":"esto no sabe bien",
+"fröhlich":"Contento",
+"traurig":"Triste",
+"wütend":"enojado",
+"aufgeregt":"emocionado",
+"verwirrt":"confuso",
+"ängstlich":"asustado",
+"begeistert":"emocionado",
+"gelangweilt":"aburrido",
+"eifersüchtig":"celoso",
+"geliebt":"amado",
+"besorgt":"preocupado",
+"Hose":"pantalones",
+"Hemd":"camisa",
+"Bluse":"blusa",
+"Rock":"falda",
+"Kleid":"vestir",
+"Schuhe":"Zapatos",
+"Zu eng":"Demasiado apretado",
+"Zu weit":"Muy lejos",
+"zu lang":"demasiado largo",
+"zu kurz":"demasiado corto",
+"zu warm":"muy caluroso",
+"zu kalt":"muy frío",
+"Radio ein/aus":"Radio encendido / apagado",
+"Vorheriger Radiosender":"Estación de radio anterior",
+"Nächster Radiosender":"Próxima estación de radio",
+"Hitradio Ö3":"Hit radio Ö3",
+"Radio FM4":"Radio FM4",
+"TV ein/aus":"TV encendida / apagada",
+"Vorheriger TV-Sender":"Locutor de TV anterior",
+"Nächster TV-Sender":"Próxima estación de TV",
+"TV-Lautstärke lauter":"Volumen de TV más alto",
+"TV-Lautstärke leiser":"Volumen de TV más bajo",
+"Licht ein":"luces encendidas",
+"Licht aus":"luz apagada",
+"Tür auf":"abre la puerta",
+"Tür zu":"Cierre la puerta",
+"Heizung wärmer":"Calentador",
+"Heizung kühler":"Enfriador de calefacción",
+"ich":"yo",
+"nochmal":"de nuevo",
+"was":"Qué",
+"möchten":"gustaría",
+"wollen":"querer",
+"du":"tú",
+"nicht":"No",
+"wann":"cuando",
+"kommen":"ven",
+"haben":"tener",
+"er":"él",
+"mehr":"más",
+"wo":"Dónde",
+"auch":"además",
+"sein":"ser",
+"wir":"nosotros",
+"fertig":"terminado",
+"wer":"OMS",
+"machen":"hacer",
+"schauen":"reloj",
+"Was?":"¿Qué?",
+"Wer?":"¿OMS?",
+"Wann?":"¿Cuando?",
+"Wo?":"¿Dónde?",
+"Wie?":"¿Cómo?",
+"Warum?":"¿Por qué?",
+"Wie viele?":"¿Cuántos?",
+"Wohin?":"¿Dónde?",
+"Wie spät ist es?":"¿Que hora es?",
+"Wie heißt du?":"¿Cuál es su nombre?",
+"Kannst du mir helfen?":"¿Me puedes ayudar?",
+"Das ist cool":"Eso es genial",
+"Das ist OK":"Está bien",
+"Das schmeckt mir":"me gusta eso",
+"Ich habe Angst":"Me temo que",
+"Das mag ich nicht":"no me gusta",
+"Das ist lustig":"Esto es divertido",
+"Das ist böse":"Eso es malo",
+"Das ist ärgerlich":"Esto es molesto",
+"Hallo":"Hola",
+"Wann kommst du wieder?":"¿Cuando vas a volver?",
+"Ich habe schlechte Laune":"estoy de mal humor",
+"Wie geht es dir?":"¿Cómo estás?",
+"Mir geht es gut":"Estoy bien",
+"Wo wohnst du?":"¿Dónde vives?",
+"Tschüss":"adiós",
+"Treffen wir uns wieder?":"¿Nos volvemos a ver?",
+"spiel was mit mir":"juega conmigo",
+"lies mir was vor":"leeme algo",
+"sing mir was vor":"cantame algo",
+"bitte hilf mir":"por favor, ayúdame",
+"erzähl mir einen Witz":"Cuéntame un chiste",
+"umarme mich":"Abrázame",
+"kitzel mich":"Hazme cosquillas",
+"dreh mich bitte um":"por favor dame la vuelta",
+"verstecke dich":"escóndete",
+"geh mit den Fingern":"ve con tus dedos",
+"klatsche mit den Händen":"aplaude",
+"bitte kratze mich":"por favor rascame",
+"Ergotherapie":"Terapia ocupacional",
+"Physiotherapie":"terapia física",
+"Logopädie":"Terapia del lenguaje",
+"Sprachheilunterricht":"Lecciones de curación del habla",
+"Massage":"masaje",
+"Rollator":"Rollator",
+"Rollstuhl":"silla de ruedas",
+"Arzt":"médico",
+"stehen":"estar",
+"liegen":"mentira",
+"sitzen":"sentarse",
+"Hund":"perro",
+"Katze":"gato",
+"Fische":"pez",
+"Schwan":"cisne",
+"Vogel":"pájaro",
+"Eisbär":"Oso de hielo",
+"Tiger":"Tigre",
+"Fuchs":"zorro",
+"Kopf":"cabeza",
+"Nase":"nariz",
+"Mund":"boca",
+"Zahn":"diente",
+"Auge":"ojo",
+"Hals":"cuello",
+"Bauch":"barriga",
+"Arm":"pobre",
+"Hand":"mano",
+"Ohr":"oído",
+"Rücken":"moverse",
+"Brille":"vasos",
+"mich friert es":"me congela",
+"ich habe Fieber":"tengo fiebre",
+"Bein":"pierna",
+"ich bin krank":"Estoy enfermado",
+"Ich habe Schmerzen":"tengo dolor",
+"mich juckt es":"Me pica",
+"mir ist schlecht":"me siento enfermo",
+"Fuß":"pie",
+"aufstehen":"Levántate",
+"Bett machen":"hacer la cama",
+"duschen":"ducharse",
+"anziehen":"atraer",
+"Zähne putzen":"Cepillar los dientes",
+"kämmen":"peine",
+"Kaffee trinken":"beber café",
+"frühstücken":"desayunar",
+"Fahrtendienst":"Servicio al viajero",
+"rot":"rojo",
+"blau":"azul",
+"hellblau":"Azul claro",
+"grün":"verde",
+"hellgrün":"verde claro",
+"lila":"púrpura",
+"gelb":"amarillo",
+"orange":"naranja",
+"rosa":"rosado",
+"braun":"marrón",
+"weiß":"Blanco",
+"schwarz":"negro",
+"bunt":"vistoso",
+"gestreift":"a rayas",
+"mit Punkten":"con puntos",
+"mit Aufdruck":"con impronta",
+"mit Blumenmuster":"con estampado floral",
+"welche Farbe?":"¿qué color?",
+"Montag":"lunes",
+"Dienstag":"martes",
+"Mittwoch":"miércoles",
+"Donnerstag":"jueves",
+"Freitag":"viernes",
+"Samstag":"sábado",
+"Sonntag":"domingo",
+"vormittag":"Mañana",
+"mittag":"mediodía",
+"nachmittag":"tarde",
+"abend":"Víspera",
+"Das bin ich":"Este soy yo",
+"meine Familie":"mi familia",
+"meine Freunde":"mis amigos",
+"meine Kollegen":"mis colegas",
+"Davor habe ich Angst":"Tengo miedo de eso",
+"meine Wohngruppe":"mi grupo viviente",
+"meine Haustiere":"Mis mascotas",
+"meine Arbeit":"mi trabajo",
+"meine Freizeit":"mi tiempo libre",
+"meine Lieblingskleidung":"mis paños favoritos",
+"mag ich":"me gusta",
+"mag ich nicht":"no me gusta",
+"meine Wünsche":"mis deseos",
+"esse und trinke ich gerne":"Me gusta comer y beber",
+"Mama":"momia",
+"Papa":"padre",
+"Kind":"niño",
+"Opa":"Abuelo",
+"Nachbar":"Vecino",
+"Freundin":"Novia",
+"Oma":"abuelita",
+"Freund":"amigo",
+"Partner":"compañero",
+"Huffman Tastatur":"Teclado Huffman",
+"3-Tasten Tastatur":"Teclado de 3 teclas",
+"Scanning Tastatur":"Teclado de escaneo",
+"Hover Tastatur":"Desplazar teclado",
+"Ja/Nein Kommunikation":"Sí / no comunicación",
+"ich heiße":"Me llamo",
+"ich wohne":"yo vivo",
+"ich bin .. Jahre alt ":"Tengo ___ años de edad",
+"meine Lieblingsfarbe":"mi color favorito",
+"mein Papa":"mi padre",
+"meine Mama":"mi madre",
+"meine Tante":"mi tia",
+"waschen":"lavar",
+"baden":"bañarse",
+"Nägel schneiden":"Uñas cortadas",
+"Haare waschen":"Lavar pelo",
+"Verband wechseln":"cambiar vendaje",
+"Haare schneiden":"Corte de pelo",
+"?123":"? 123",
+"ABC":"A B C",
+"Ja":"si",
+"Nein":"No",
+"Weiß nicht":"Yo no sé",
+"E, N, I, R, T":"E, N, I, R, T",
+"S, A ,H, D, U":"S, A, H, D, U",
+"C, L, G, M, O":"C, L, G, M, O",
+"B, F, W, Z, K, V, P":"B, F, W, Z, K, V, P",
+"Ü, Ä, Ö, J, X, Q, Y":"Ü, Ä, Ö, J, X, Q, Y",
+"leise":"tranquilo",
+"laut":"ruidoso",
+"kalt":"frío",
+"heiß":"caliente",
+"voll":"completo",
+"leer":"vacío",
+"nass":"mojado",
+"trocken":"seco",
+"sauber":"limpiar",
+"schmutzig":"sucio",
+"groß":"grande",
+"klein":"pequeña",
+"schnell":"rápido",
+"langsam":"despacio",
+"ganz":"todas",
+"Ich muss auf die Toilette":"necesito ir al baño",
+"ich fühle mich krank":"me siento enfermo",
+"ich fühle mich unwohl":"no me siento bien",
+"Ich muss mich ausruhen oder schlafen":"Necesito descansar o dormir",
+"etwas ist kaputt":"algo está roto",
+"Ich möchte etwas essen":"Quiero comer algo",
+"ich möchte etwas zu trinken":"quiero algo de beber",
+"Ich hätte gerne etwas Obst":"Me gustaria algo de fruta",
+"Ich hätte gerne einen salzigen Snack":"Me gustaría un bocadillo salado",
+"Ich hätte gerne einen süßen Snack":"Me gustaría un bocadillo dulce",
+"Ich möchte etwas Wasser":"Quiero un poco de agua",
+"Ich hätte gerne eine Limonade":"Me gustaria una limonada",
+"Ich brauche einen Strohhalm":"Necesito una pajita",
+"Ich bin fröhlich":"estoy feliz",
+"ich bin traurig":"Estoy triste",
+"ich bin wütend":"Estoy enojado",
+"ich bin verwirrt":"estoy confundido",
+"Ich bin begeistert":"estoy emocionado",
+"Ich bin gelangweilt":"Estoy aburrido",
+"Ich bin besorgt":"Estoy ansioso",
+"Ich würde gerne eine Hose tragen":"Me gustaria usar pantalones",
+"Ich möchte ein T-Shirt tragen":"Quiero llevar una camiseta",
+"Ich würde gerne eine Bluse tragen":"Me gustaria usar una blusa",
+"Ich möchte einen Rock tragen":"Quiero usar una falda",
+"Ich möchte ein Kleid tragen":"Quiero usar un vestido",
+"Ich möchte schuhe anziehen":"Quiero ponerme zapatos",
+"Meine Kleidung ist zu eng":"Mi ropa es muy apretada",
+"Meine Kleidung ist zu weit":"Mi ropa es demasiado ancha"}

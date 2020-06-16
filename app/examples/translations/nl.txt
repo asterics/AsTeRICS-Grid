@@ -1,109 +1,339 @@
-Helpen
-Kleding
-Voedsel
-Moods
-Toetsenbord
-Milieu
-
-Toilet
-Ziek
-Ongemakkelijk
-heet
-Koude
-Slaap
-Begrijp niet
-Broken
-Terug
-
-ik moet naar het toilet
-ik voel me ziek
-ik voel me ongemakkelijk
-Het is te warm
-Het is te koud
-Ik moet wat rusten of slapen
-Ik begreep het niet
-iets is kapot
-
-Broek
-overhemd
-Blouse
-Rok
-Jurk
-Schoenen
-Te strak
-Te los
-
-Ik zou graag een broek willen dragen
-Ik wil graag een T-shirt dragen
-Ik zou graag een blouse willen dragen
-Ik zou graag een rok willen dragen
-Ik wil graag een jurk dragen
-Ik wil graag schoenen aantrekken
-Mijn kleding zit te strak
-Mijn kleding past te los
-
-Hongerig
-Dorstig
-Fruit
-Zoute snack
-Zoete snack
-Water
-Soda
-Rietje
-
-Ik zou iets willen eten
-Ik wil graag wat drinken
-Ik wil graag wat fruit
-Ik wil graag een hartige snack
-Ik wil graag een zoete snack
-ik zou graag wat water willen
-Ik wil graag wat frisdrank
-Ik heb een rietje nodig
-
-Gelukkig
-verdrietig
-Boos
-Verward
-Bang
-Enthousiast
-bored
-Bezorgd
-
-Ik voel me gelukkig
-ik voel me verdrietig
-ik ben boos
-ik ben verward
-ik ben bang
-Ik voel me enthousiast
-ik verveel me
-ik ben bezorgd
-
-Lichten
-TV
-Radio
-Deur
-verwarmer
-
-Lichten aan
-Lichten uit
-
-Tv aan
-TV uit
-Volume omhoog
-Volume verminderen
-Geluid uit
-Volgende kanaal
-Vorige kanaal
-
-Radio On
-Radio off
-Previous channel
-Next channel
-Volume down
-Volume up
-
-Geopende deur
-Doe de deur dicht
-
-Temperatuur op
-Temperatuur omlaag
+{"Global Grid":"Wereldwijd raster",
+"Zahlen":"nummers",
+"Hauptseite":"Hoofdpagina",
+"Hilfe":"Helpen",
+"Essen":"eten",
+"Gefühle":"Gevoelens",
+"Kleidung":"jurk",
+"Umgebung":"Omgeving",
+"HuffmanKeyboard":"Huffman-toetsenbord",
+"ThreeKeyKeyboard":"ThreeKeyKeyboard",
+"Kernwörter":"Sleutelwoorden",
+"Fragen":"vragen",
+"Kommentare":"Opmerkingen",
+"Small Talk":"Koetjes en kalfjes",
+"Interaktion":"interactie",
+"Therapie":"therapie",
+"Tiere":"Dieren",
+"Körper":"lichaam",
+"Morgenroutine":"Ochtend routine",
+"Farben":"Kleuren",
+"Wochenplan":"Wekelijkse planning",
+"Über mich":"Over mij",
+"Familie und Freunde":"familie en vrienden",
+"Hauptseite2":"Huis 2",
+"Ich":"ik",
+"Meine Familie":"Mijn familie",
+"Pflege":"onderhoud",
+"StandardKeyboard":"Standaard toetsenbord",
+"StandardKeyboard2":"StandardKeyboard2",
+"Einfache Kommunikation":"Gemakkelijke communicatie",
+"ScanKeyboardStart":"ScanKeyboardStart",
+"ScanKeyboard1":"Scankeyboard 1",
+"ScanKeyboard2":"Scankeyboard 2",
+"ScanKeyboard3":"Scankeyboard 3",
+"ScanKeyboard4":"Scankeyboard 4",
+"ScanKeyboard5":"Scankeyboard 5",
+"HoverKeyboard":"HoverKeyboard",
+"Leeres Grid":"Leeg raster",
+"Eigenschaften":"eigendommen",
+"Leeres Grid 2":"Leeg rooster 2",
+"Start":"beginnen",
+"Zurück":"Terug",
+"wichtige Wörter":"belangrijke woorden",
+"Tastatur":"toetsenbord",
+"Mehr":"Meer",
+"Toilette":"Toilet",
+"krank":"ziek",
+"unwohl":"ongemakkelijk",
+"Ich weiß nicht was los ist.":"Ik weet niet wat er aan de hand is.",
+"Ich brauche Hilfe.":"Ik heb hulp nodig.",
+"schlafen":"slaap",
+"Es ist kaputt.":"Het is kapot.",
+"Mir ist heiß.":"Ik ben heet.",
+"Es fehlt etwas.":"Er mist iets.",
+"Etwas anderes machen.":"Doe iets anders.",
+"kaputt":"gebroken",
+"Ich verstehe das nicht.":"Ik begrijp dat niet.",
+"Es ist zu laut.":"Het is te hard.",
+"Mir ist kalt.":"Ik heb het koud.",
+"Kannst du das wiederholen?":"Kun je dat herhalen?",
+"Hungrig":"Hongerig",
+"Durstig":"Dorstig",
+"Obst":"fruit",
+"Salziger Snack":"Zoute snack",
+"Süßer Snack":"Zoete snack",
+"Wasser":"water",
+"Limonade":"limonade",
+"Strohhalm":"rietje",
+"das schmeckt gut":"dat smaakt goed",
+"das schmeckt mir nicht":"dit smaakt niet goed",
+"fröhlich":"Gelukkig",
+"traurig":"Verdrietig",
+"wütend":"boos",
+"aufgeregt":"opgewonden",
+"verwirrt":"verward",
+"ängstlich":"bang",
+"begeistert":"opgewonden",
+"gelangweilt":"verveeld",
+"eifersüchtig":"jaloers",
+"geliebt":"geliefd",
+"besorgt":"bezorgd",
+"Hose":"broek",
+"Hemd":"overhemd",
+"Bluse":"blouse",
+"Rock":"rok",
+"Kleid":"jurk",
+"Schuhe":"Schoenen",
+"Zu eng":"Te strak",
+"Zu weit":"Te ver",
+"zu lang":"te lang",
+"zu kurz":"te kort",
+"zu warm":"te warm",
+"zu kalt":"te koud",
+"Radio ein/aus":"Radio aan / uit",
+"Vorheriger Radiosender":"Vorig radiostation",
+"Nächster Radiosender":"Volgende radiostation",
+"Hitradio Ö3":"Ga naar radio Ö3",
+"Radio FM4":"FM4-radio",
+"TV ein/aus":"TV aan / uit",
+"Vorheriger TV-Sender":"Vorige tv-omroep",
+"Nächster TV-Sender":"Volgende tv-zender",
+"TV-Lautstärke lauter":"TV-volume luider",
+"TV-Lautstärke leiser":"TV-volume zachter",
+"Licht ein":"licht aan",
+"Licht aus":"Lichten uit",
+"Tür auf":"open de deur",
+"Tür zu":"doe de deur dicht",
+"Heizung wärmer":"Verwarming warmer",
+"Heizung kühler":"Verwarming koeler",
+"ich":"ik",
+"nochmal":"opnieuw",
+"was":"Wat",
+"möchten":"zou willen",
+"wollen":"willen",
+"du":"u",
+"nicht":"Niet",
+"wann":"wanneer",
+"kommen":"komen",
+"haben":"hebben",
+"er":"hij",
+"mehr":"meer",
+"wo":"Waar",
+"auch":"ook",
+"sein":"worden",
+"wir":"wij",
+"fertig":"afgewerkt",
+"wer":"WHO",
+"machen":"Doen",
+"schauen":"kijk maar",
+"Was?":"Wat?",
+"Wer?":"WHO?",
+"Wann?":"Wanneer?",
+"Wo?":"Waar?",
+"Wie?":"Hoe?",
+"Warum?":"Waarom?",
+"Wie viele?":"Hoeveel?",
+"Wohin?":"Waar?",
+"Wie spät ist es?":"Hoe laat is het?",
+"Wie heißt du?":"Wat is jouw naam?",
+"Kannst du mir helfen?":"Kun je me helpen?",
+"Das ist cool":"Dat is cool",
+"Das ist OK":"Dat is geen probleem",
+"Das schmeckt mir":"dat vind ik leuk",
+"Ich habe Angst":"Ik ben bang",
+"Das mag ich nicht":"ik hou er niet van",
+"Das ist lustig":"Dit is grappig",
+"Das ist böse":"Dat is slecht",
+"Das ist ärgerlich":"Het is irritant",
+"Hallo":"Hoi",
+"Wann kommst du wieder?":"Wanneer kom je terug?",
+"Ich habe schlechte Laune":"Ik heb een slecht humeur",
+"Wie geht es dir?":"Hoe gaat het met je?",
+"Mir geht es gut":"het gaat prima met mij",
+"Wo wohnst du?":"Waar woon je?",
+"Tschüss":"doei",
+"Treffen wir uns wieder?":"Komen we elkaar weer tegen?",
+"spiel was mit mir":"speel met mij",
+"lies mir was vor":"lees me iets",
+"sing mir was vor":"zing iets voor me",
+"bitte hilf mir":"Help me alstublieft",
+"erzähl mir einen Witz":"vertel me een grap",
+"umarme mich":"Knuffel me",
+"kitzel mich":"Kietel me",
+"dreh mich bitte um":"draai me alsjeblieft om",
+"verstecke dich":"Verberg jezelf",
+"geh mit den Fingern":"ga met je vingers",
+"klatsche mit den Händen":"klap in je handen",
+"bitte kratze mich":"krab me alsjeblieft",
+"Ergotherapie":"Ergotherapie",
+"Physiotherapie":"fysiotherapie",
+"Logopädie":"Logopedie",
+"Sprachheilunterricht":"Speech healing lessen",
+"Massage":"massage",
+"Rollator":"Rollator",
+"Rollstuhl":"rolstoel",
+"Arzt":"dokter",
+"stehen":"staan",
+"liegen":"liggen",
+"sitzen":"zitten",
+"Hund":"hond",
+"Katze":"kat",
+"Fische":"vis",
+"Schwan":"zwaan",
+"Vogel":"vogel",
+"Eisbär":"Ijsbeer",
+"Tiger":"tijger",
+"Fuchs":"Vos",
+"Kopf":"hoofd",
+"Nase":"neus-",
+"Mund":"mond",
+"Zahn":"tand",
+"Auge":"oog",
+"Hals":"nek",
+"Bauch":"buik",
+"Arm":"arm",
+"Hand":"hand-",
+"Ohr":"oor",
+"Rücken":"Actie",
+"Brille":"bril",
+"mich friert es":"het bevriest me",
+"ich habe Fieber":"ik heb koorts",
+"Bein":"been",
+"ich bin krank":"ik ben ziek",
+"Ich habe Schmerzen":"ik heb pijn",
+"mich juckt es":"Ik heb jeuk",
+"mir ist schlecht":"ik voel me ziek",
+"Fuß":"voet",
+"aufstehen":"sta op",
+"Bett machen":"bed opmaken",
+"duschen":"douchen",
+"anziehen":"aantrekken",
+"Zähne putzen":"Tanden poetsen",
+"kämmen":"kam",
+"Kaffee trinken":"koffie drinken",
+"frühstücken":"ontbijten",
+"Fahrtendienst":"Reizigers service",
+"rot":"rood",
+"blau":"blauw",
+"hellblau":"Lichtblauw",
+"grün":"groen",
+"hellgrün":"licht groen",
+"lila":"Purper",
+"gelb":"geel",
+"orange":"oranje",
+"rosa":"roze",
+"braun":"bruin",
+"weiß":"Wit",
+"schwarz":"zwart",
+"bunt":"kleurrijk",
+"gestreift":"gestreept",
+"mit Punkten":"met punten",
+"mit Aufdruck":"met opdruk",
+"mit Blumenmuster":"met bloemmotief",
+"welche Farbe?":"welke kleur?",
+"Montag":"maandag",
+"Dienstag":"dinsdag",
+"Mittwoch":"woensdag",
+"Donnerstag":"donderdag",
+"Freitag":"vrijdag",
+"Samstag":"zaterdag",
+"Sonntag":"zondag",
+"vormittag":"ochtend-",
+"mittag":"middag",
+"nachmittag":"middag",
+"abend":"Vooravond",
+"Das bin ich":"Dit ben ik",
+"meine Familie":"mijn familie",
+"meine Freunde":"mijn vrienden",
+"meine Kollegen":"mijn collega's",
+"Davor habe ich Angst":"Daar ben ik bang voor",
+"meine Wohngruppe":"mijn levende groep",
+"meine Haustiere":"mijn huisdieren",
+"meine Arbeit":"mijn werk",
+"meine Freizeit":"mijn vrije tijd",
+"meine Lieblingskleidung":"mijn favoriete kleding",
+"mag ich":"ik hou van",
+"mag ich nicht":"ik hou er niet van",
+"meine Wünsche":"mijn wensen",
+"esse und trinke ich gerne":"Ik hou van eten en drinken",
+"Mama":"mama",
+"Papa":"vader",
+"Kind":"kind",
+"Opa":"Opa",
+"Nachbar":"Buurman",
+"Freundin":"vriendin",
+"Oma":"oma",
+"Freund":"vriend",
+"Partner":"partner",
+"Huffman Tastatur":"Huffman-toetsenbord",
+"3-Tasten Tastatur":"Toetsenbord met 3 toetsen",
+"Scanning Tastatur":"Toetsenbord scannen",
+"Hover Tastatur":"Hover toetsenbord",
+"Ja/Nein Kommunikation":"Ja / nee communicatie",
+"ich heiße":"mijn naam is",
+"ich wohne":"ik leef",
+"ich bin .. Jahre alt ":"Ik ben jaren oud",
+"meine Lieblingsfarbe":"mijn favoriete kleur",
+"mein Papa":"mijn vader",
+"meine Mama":"mijn moeder",
+"meine Tante":"mijn tante",
+"waschen":"Wassen",
+"baden":"Baden",
+"Nägel schneiden":"Nagels knippen",
+"Haare waschen":"haren wassen",
+"Verband wechseln":"verband veranderen",
+"Haare schneiden":"haar knippen",
+"?123":"? 123",
+"ABC":"abc",
+"Ja":"Ja",
+"Nein":"Nee",
+"Weiß nicht":"ik weet het niet",
+"E, N, I, R, T":"E, N, I, R, T",
+"S, A ,H, D, U":"S, A, H, D, U",
+"C, L, G, M, O":"C, L, G, M, O",
+"B, F, W, Z, K, V, P":"B, F, W, Z, K, V, P",
+"Ü, Ä, Ö, J, X, Q, Y":"Ü, Ä, Ö, J, X, Q, Y",
+"leise":"rustig",
+"laut":"luid",
+"kalt":"verkoudheid",
+"heiß":"heet",
+"voll":"vol",
+"leer":"leeg",
+"nass":"nat",
+"trocken":"droog",
+"sauber":"schoon",
+"schmutzig":"vuil",
+"groß":"groot",
+"klein":"klein",
+"schnell":"snel",
+"langsam":"langzaam",
+"ganz":"allemaal",
+"Ich muss auf die Toilette":"ik moet naar het toilet",
+"ich fühle mich krank":"ik voel me ziek",
+"ich fühle mich unwohl":"ik voel me niet lekker",
+"Ich muss mich ausruhen oder schlafen":"Ik moet rusten of slapen",
+"etwas ist kaputt":"iets is kapot",
+"Ich möchte etwas essen":"ik wil iets eten",
+"ich möchte etwas zu trinken":"ik wil iets te drinken",
+"Ich hätte gerne etwas Obst":"Ik wil wat fruit",
+"Ich hätte gerne einen salzigen Snack":"Ik wil graag een zoute snack",
+"Ich hätte gerne einen süßen Snack":"Ik wil graag een zoete snack",
+"Ich möchte etwas Wasser":"ik wil een beetje water",
+"Ich hätte gerne eine Limonade":"Ik wil een limonade",
+"Ich brauche einen Strohhalm":"Ik heb een rietje nodig",
+"Ich bin fröhlich":"ik ben gelukkig",
+"ich bin traurig":"Ik ben verdrietig",
+"ich bin wütend":"ik ben boos",
+"ich bin verwirrt":"ik ben verward",
+"Ich bin begeistert":"ik ben opgewonden",
+"Ich bin gelangweilt":"ik verveel me",
+"Ich bin besorgt":"ik ben bezorgd",
+"Ich würde gerne eine Hose tragen":"Ik zou graag een broek willen dragen",
+"Ich möchte ein T-Shirt tragen":"Ik wil een t-shirt dragen",
+"Ich würde gerne eine Bluse tragen":"Ik zou graag een blouse willen dragen",
+"Ich möchte einen Rock tragen":"Ik wil een rok dragen",
+"Ich möchte ein Kleid tragen":"Ik wil een jurk dragen",
+"Ich möchte schuhe anziehen":"Ik wil schoenen aantrekken",
+"Meine Kleidung ist zu eng":"Mijn kleren zitten te strak",
+"Meine Kleidung ist zu weit":"Mijn kleren zijn te wijd"}

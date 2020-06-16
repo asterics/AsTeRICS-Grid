@@ -1,0 +1,339 @@
+Griglia globale
+numeri
+Pagina principale
+Aiuto
+mangiare
+sentimenti
+vestito
+Dintorni
+Tastiera Huffman
+ThreeKeyKeyboard
+Parole chiave
+Chiedi
+Commenti
+Chiacchiere
+interazione
+terapia
+Animali
+corpo
+Routine mattutina
+Colori
+Programma settimanale
+A proposito di me
+famiglia e amici
+Home2
+io
+La mia famiglia
+Manutenzione
+Tastiera standard
+StandardKeyboard2
+Comunicazione facile
+ScanKeyboardStart
+ScanKeyboard1
+ScanKeyboard2
+ScanKeyboard3
+ScanKeyboard4
+ScanKeyboard5
+HoverKeyboard
+Griglia vuota
+proprietà
+Griglia vuota 2
+inizio
+Indietro
+parole importanti
+tastiera
+Di Più
+Gabinetto
+malato
+scomodo
+Non so che succede.
+Ho bisogno di aiuto.
+dormire
+È rotto.
+Ho caldo.
+Manca qualcosa.
+Fai qualcos'altro.
+rotto
+Non lo capisco.
+È troppo forte.
+Ho freddo.
+Puoi ripeterlo?
+Affamato
+assetato
+frutta
+Merenda salata
+Spuntino dolce
+acqua
+limonata
+cannuccia
+è buono
+questo non ha un buon sapore
+Contento
+Triste
+arrabbiato
+eccitato
+confuso
+impaurito
+eccitato
+annoiato
+geloso
+amato
+ha riguardato
+i pantaloni
+camicia
+camicetta
+gonna
+vestito
+Scarpe
+Troppo stretto
+Troppo lontano
+troppo lungo
+troppo corto
+troppo caldo
+troppo fredda
+Accensione / spegnimento della radio
+Stazione radio precedente
+Prossima stazione radio
+Hit radio Ö3
+Radio FM4
+TV acceso / spento
+Emittente televisiva precedente
+Prossima stazione TV
+Volume della TV più alto
+Volume della TV più basso
+Accendi
+luci spente
+apri la porta
+chiudi la porta
+Riscaldamento più caldo
+Radiatore di riscaldamento
+io
+ancora
+Che cosa
+piacerebbe
+volere
+voi
+Non
+quando
+venire
+avere
+lui
+Di Più
+Dove
+anche
+essere
+noi
+finito
+Oms
+fare
+orologio
+Che cosa?
+Oms?
+Quando?
+Dove?
+Come?
+Perché?
+Quanti?
+Dove?
+Che ore sono?
+Come ti chiami?
+Mi potete aiutare?
+Questo è figo
+Va bene
+mi piace
+Ho paura
+non mi piace
+Questo è divertente
+Non va bene
+È noioso
+Ciao
+Quando torni?
+Ho cattivo umore
+Come stai?
+sto bene
+Dove vivi?
+addio
+Ci incontriamo di nuovo?
+gioca con me
+leggimi qualcosa
+cantami qualcosa
+mi aiuti per favore
+Raccontami una barzelletta
+Abbracciami
+solleticami
+per favore girami
+nasconditi
+vai con le dita
+batti le mani
+per favore, mi gratta
+Terapia occupazionale
+Fisioterapia
+Logoterapia
+Lezioni di guarigione del linguaggio
+massaggio
+rollator
+sedia a rotelle
+medico
+In piedi
+menzogna
+sedere
+cane
+gatto
+pesce
+cigno
+uccello
+Icebear
+tigre
+Volpe
+testa
+naso
+bocca
+dente
+occhio
+collo
+pancia
+povero
+mano
+orecchio
+mossa
+bicchieri
+mi congela
+ho la febbre
+gamba
+Sono malato
+ho dolore
+Ho prurito
+Mi sento male
+piede
+alzarsi
+Fare il letto
+fare la doccia
+attirare
+Lavare i denti
+pettine
+bere caffè
+fare colazione
+Servizio viaggiatori
+rosso
+blu
+Azzurro
+verde
+verde chiaro
+viola
+giallo
+arancia
+rosa
+Marrone
+bianca
+nero
+colorato
+a strisce
+con punti
+con impronta
+con motivo floreale
+che colore?
+Lunedi
+martedì
+mercoledì
+giovedi
+Venerdì
+Sabato
+Domenica
+mattina
+mezzogiorno
+pomeriggio
+vigilia
+Questo sono io
+la mia famiglia
+miei amici
+i miei colleghi
+Ne ho paura
+il mio gruppo vivente
+i miei animali
+il mio lavoro
+il mio tempo libero
+i miei panni preferiti
+mi piace
+non mi piace
+i miei desideri
+Mi piace mangiare e bere
+mummia
+padre
+bambino
+Nonno
+Vicino di casa
+fidanzata
+nonna
+amico
+compagno
+Tastiera Huffman
+Tastiera a 3 tasti
+Scansione della tastiera
+Tastiera al passaggio del mouse
+Sì / No comunicazione
+mi chiamo
+vivo
+Ho___years old
+il mio colore preferito
+mio padre
+mia mamma
+mia zia
+lavare
+fare il bagno
+Tagliare le unghie
+lavare i capelli
+cambia la benda
+taglio di capelli
+? 123
+ABC
+sì
+No
+non lo so
+E, N, I, R, T
+S, A, H, D, U
+C, L, G, M, O
+B, F, W, Z, K, V, P
+Ü, Ä, Ö, J, X, Q, Y
+silenzioso
+forte
+freddo
+caldo
+pieno
+vuoto
+bagnato
+asciutto
+pulito
+sporco
+grande
+piccolo
+veloce
+lentamente
+tutti
+ho bisogno di andare in bagno
+Mi sento male
+non mi sento bene
+Ho bisogno di riposare o dormire
+qualcosa è rotto
+voglio mangiare qualcosa
+voglio qualcosa da bere
+Vorrei un po 'di frutta
+Vorrei uno spuntino salato
+Vorrei uno spuntino dolce
+voglio dell'acqua
+Vorrei una limonata
+Ho bisogno di una cannuccia
+sono felice
+sono triste
+sono arrabbiato
+Non ho capito bene
+Sono emozionato
+Sono annoiato
+sono ansioso
+Vorrei indossare i pantaloni
+Voglio indossare una maglietta
+Vorrei indossare una camicetta
+Voglio indossare una gonna
+Voglio indossare un vestito
+Voglio mettermi le scarpe
+I miei vestiti sono troppo stretti
+I miei vestiti sono troppo larghi

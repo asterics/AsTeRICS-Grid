@@ -1,0 +1,339 @@
+Grilla global
+números
+Pagina principal
+Ayuda
+comer
+Sentimientos
+vestir
+Alrededores
+Teclado Huffman
+ThreeKeyKeyboard
+Palabras clave
+pedir
+Comentarios
+Charla
+Interacción
+terapia
+Animales
+cuerpo
+Rutina de la mañana
+Colores
+Programación semanal
+Sobre mí
+familiares y amigos
+Casa 2
+yo
+Mi familia
+mantenimiento
+Teclado estándar
+StandardKeyboard2
+Comunicación fácil
+ScanKeyboardStart
+ScanKeyboard1
+ScanKeyboard2
+ScanKeyboard3
+ScanKeyboard4
+ScanKeyboard5
+HoverKeyboard
+Rejilla vacía
+propiedades
+Rejilla vacía 2
+empezar
+atrás
+Palabras importantes
+teclado
+Más
+Baño
+enfermo
+incómodo
+No sé que pasa.
+Necesito ayuda.
+dormir
+Esta roto.
+Estoy caliente
+Algo falta.
+Hacer algo más.
+roto
+No entiendo eso.
+Esta muy ruidoso.
+Tengo frío.
+¿Puede repetir eso?
+Hambriento
+Sediento
+Fruta
+Merienda salada
+Merienda dulce
+agua
+limonada
+pajita
+eso sabe bien
+esto no sabe bien
+Contento
+Triste
+enojado
+emocionado
+confuso
+asustado
+emocionado
+aburrido
+celoso
+amado
+preocupado
+pantalones
+camisa
+blusa
+falda
+vestir
+Zapatos
+Demasiado apretado
+Muy lejos
+demasiado largo
+demasiado corto
+muy caluroso
+muy frío
+Radio encendido / apagado
+Estación de radio anterior
+Próxima estación de radio
+Hit radio Ö3
+Radio FM4
+TV encendida / apagada
+Locutor de TV anterior
+Próxima estación de TV
+Volumen de TV más alto
+Volumen de TV más bajo
+luces encendidas
+luz apagada
+abre la puerta
+Cierre la puerta
+Calentador
+Enfriador de calefacción
+yo
+de nuevo
+Qué
+gustaría
+querer
+tú
+No
+cuando
+ven
+tener
+él
+más
+Dónde
+además
+ser
+nosotros
+terminado
+OMS
+hacer
+reloj
+¿Qué?
+¿OMS?
+¿Cuando?
+¿Dónde?
+¿Cómo?
+¿Por qué?
+¿Cuántos?
+¿Dónde?
+¿Que hora es?
+¿Cuál es su nombre?
+¿Me puedes ayudar?
+Eso es genial
+Está bien
+me gusta eso
+Me temo que
+no me gusta
+Esto es divertido
+Eso es malo
+Esto es molesto
+Hola
+¿Cuando vas a volver?
+estoy de mal humor
+¿Cómo estás?
+Estoy bien
+¿Dónde vives?
+adiós
+¿Nos volvemos a ver?
+juega conmigo
+leeme algo
+cantame algo
+por favor, ayúdame
+Cuéntame un chiste
+Abrázame
+Hazme cosquillas
+por favor dame la vuelta
+escóndete
+ve con tus dedos
+aplaude
+por favor rascame
+Terapia ocupacional
+terapia física
+Terapia del lenguaje
+Lecciones de curación del habla
+masaje
+Rollator
+silla de ruedas
+médico
+estar
+mentira
+sentarse
+perro
+gato
+pez
+cisne
+pájaro
+Oso de hielo
+Tigre
+zorro
+cabeza
+nariz
+boca
+diente
+ojo
+cuello
+barriga
+pobre
+mano
+oído
+moverse
+vasos
+me congela
+tengo fiebre
+pierna
+Estoy enfermado
+tengo dolor
+Me pica
+me siento enfermo
+pie
+Levántate
+hacer la cama
+ducharse
+atraer
+Cepillar los dientes
+peine
+beber café
+desayunar
+Servicio al viajero
+rojo
+azul
+Azul claro
+verde
+verde claro
+púrpura
+amarillo
+naranja
+rosado
+marrón
+Blanco
+negro
+vistoso
+a rayas
+con puntos
+con impronta
+con estampado floral
+¿qué color?
+lunes
+martes
+miércoles
+jueves
+viernes
+sábado
+domingo
+Mañana
+mediodía
+tarde
+Víspera
+Este soy yo
+mi familia
+mis amigos
+mis colegas
+Tengo miedo de eso
+mi grupo viviente
+Mis mascotas
+mi trabajo
+mi tiempo libre
+mis paños favoritos
+me gusta
+no me gusta
+mis deseos
+Me gusta comer y beber
+momia
+padre
+niño
+Abuelo
+Vecino
+Novia
+abuelita
+amigo
+compañero
+Teclado Huffman
+Teclado de 3 teclas
+Teclado de escaneo
+Desplazar teclado
+Sí / no comunicación
+Me llamo
+yo vivo
+Tengo ___ años de edad
+mi color favorito
+mi padre
+mi madre
+mi tia
+lavar
+bañarse
+Uñas cortadas
+Lavar pelo
+cambiar vendaje
+Corte de pelo
+? 123
+A B C
+si
+No
+Yo no sé
+E, N, I, R, T
+S, A, H, D, U
+C, L, G, M, O
+B, F, W, Z, K, V, P
+Ü, Ä, Ö, J, X, Q, Y
+tranquilo
+ruidoso
+frío
+caliente
+completo
+vacío
+mojado
+seco
+limpiar
+sucio
+grande
+pequeña
+rápido
+despacio
+todas
+necesito ir al baño
+me siento enfermo
+no me siento bien
+Necesito descansar o dormir
+algo está roto
+Quiero comer algo
+quiero algo de beber
+Me gustaria algo de fruta
+Me gustaría un bocadillo salado
+Me gustaría un bocadillo dulce
+Quiero un poco de agua
+Me gustaria una limonada
+Necesito una pajita
+estoy feliz
+Estoy triste
+Estoy enojado
+estoy confundido
+estoy emocionado
+Estoy aburrido
+Estoy ansioso
+Me gustaria usar pantalones
+Quiero llevar una camiseta
+Me gustaria usar una blusa
+Quiero usar una falda
+Quiero usar un vestido
+Quiero ponerme zapatos
+Mi ropa es muy apretada
+Mi ropa es demasiado ancha

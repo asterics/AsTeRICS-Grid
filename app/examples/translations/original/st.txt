@@ -1,0 +1,339 @@
+Global grid
+lipalo
+Leqephe la sehlooho
+Thusa
+ja
+Maikutlo
+moaparo
+Ho potoloha
+Keyboard ea Huffman
+ThreeKeyKeyboard
+Mantsoe a bohlokoa
+botsa
+Maikutlo
+Puo e nyane
+tšebelisano
+kalafo
+Liphoofolo
+mmele
+Mokhoa oa hoseng
+Mebala
+Lenaneo la beke le beke
+Ka 'na
+ba lelapa le metsoalle
+Lehae2
+I
+Lelapa la ka
+tokiso
+Khibhodi e tloaelehileng
+TheKitboard2
+Puisano e bonolo
+ScanKeyboardStart
+ScanKeyboard1
+ScanKeyboard2
+ScanKeyboard3
+ScanKeyboard4
+ScanKeyboard5
+HoverKeyboard
+Grid e se nang letho
+thepa
+Grid e se nang letho ea bobeli
+qala
+Morao
+mantsoe a bohlokoa
+keyboard
+Hape
+Ntloana
+kula
+sa phutholoha
+Ha ke tsebe hore na ho etsahala'ng.
+Ke hloka thuso.
+robala
+E robehile.
+Ke chesa.
+Ho na le ho haellang.
+Etsa ho hong.
+robehile
+Ha ke utloisise seo.
+E phahameng haholo.
+Ke hatsetse.
+O ka pheta seo?
+Tlala
+Nyoriloe
+litholoana
+Litlolo tse letsoai
+Monko o monate
+metsi
+Lemonade
+ho nwa joang
+tse monate
+hona ha ho latsoe botle
+Ho lehlohonolo
+Ke masoabi
+bohale
+nyakallo
+ferekane
+tshaba
+nyakallo
+sithabetse
+lefufa
+ratoang
+amehile
+borikhoe
+hempe
+blouse
+moleka
+moaparo
+Lieta
+E thata haholo
+Ho fihla hole
+telele haholo
+khutšoane haholo
+futhumetse haholo
+ho bata haholo
+Radio ka / tima
+Seteishene sa seea-le-moea se fetileng
+Seteishini se latelang sa seea-le-moea
+Hit radio Ö3
+FM4 radio
+TV ka / tima
+Seboholi sa TV se fetileng
+Seteishini se latelang sa TV
+Boholo ba molumo oa TV
+Boemo ba TV bo khutsisa
+lebella
+khantša
+bula lemati
+koala monyako
+Mocheso o futhumatsang
+Ho futhumatsa
+I
+hape
+Eng
+nka thabela
+batla
+uena
+Che
+neng
+tloo
+ho ba le
+he
+Hape
+Moo
+hape
+eba
+rona
+qetile
+WHO
+etsa
+shebella
+Eng?
+WHO?
+Neng?
+Hokae?
+Joang?
+Hobaneng?
+Ba bakae?
+Hokae?
+Ke nako mang?
+Lebitso la hau ke mang?
+A na u ka nthusa?
+Ke hantle
+Ho lokile
+ke rata seo
+kea tšaba
+ha ke e rate
+Sena sea qabola
+Seo se mpe
+Hoa khopisa
+Lumela:
+U khutla neng?
+Ke na le moea o mobe
+U phela joang?
+kea phela
+U lula kae?
+sala
+A na re kopana hape?
+bapala le nna
+mpalle ho hong
+mpina ho hong
+ke kopa thuse
+mpolelle joke
+nkake
+ntsohele
+ke kopa o mphete
+ipate
+tsamaea le menoana ea hau
+opa liatla
+ka kopo nkopa
+Pheko ea mosebetsing
+kalafo ya mmele
+Pheko ea puo
+Lithuto tsa pholiso ea puo
+ho silila
+Rollator
+setulo sa likooa
+ngaka
+ema
+leshano
+ho lula
+ntja
+katse
+lihlapi
+swan
+nonyana
+Icebear
+nkoe
+Fox
+hlooho
+nko
+molomo
+leino
+leihlo
+molala
+mpa
+mofutsana
+letsoho
+tsebe
+tsamaisa
+likhalase
+hoa nkokolla
+Ke na le feberu
+leoto
+kea kula
+Ke na le bohloko
+Ke a hlohlona
+kea kula
+leoto
+Tsoha
+etsa bethe
+ho hlapa
+hohela
+Meno a brush
+chisi
+noang kofi
+ja lijo tsa hoseng
+Tshebeletso ya motsamaisi
+bofubedu
+putsoa
+Boreleli bo bobebe
+botala
+botala bo bobebe
+pherese
+mosehla
+namunu
+pinki
+sootho
+Bosoeu
+ntsho
+mmala
+metsero
+ka lintlha
+ka sebopeho
+ka lipalesa
+'mala ofe?
+Mantaha
+Labobeli
+Laboraro
+Labone
+Labohlano
+Moqebelo
+Sontaha
+hoseng
+mots'ehare
+thapama
+Eva
+Ke 'na enoa
+lelapa la ka
+metsoalle ea ka
+basebetsi mmoho le nna
+Ke tšaba seo
+sehlopha sa ka se phelang
+liphoofolo tsa lapeng
+mosebetsi oa ka
+nako ea ka ea mahala
+masela ao ke a ratang ka ho fetesisa
+Kea rata
+ha ke e rate
+litakatso tsa ka
+Ke rata ho ja le ho noa
+mummy
+ntate
+ngoana
+Ntate-moholo
+Moahelani
+kharebe
+nkhono
+motswalle
+molekane
+Keyboard ea Huffman
+3 keyboard ea senotlolo
+Ho Scan keyboard
+Khoele ea hover
+Ee / Ha ho puisano
+lebitso la ka ke
+Ke a phela
+Ke 'na_ke oa khale
+'mala oa ka o ratehang
+Ntate oa ka
+mme wa ka
+rakhali oa ka
+ho hlapa
+ho hlapa
+Cheka lipekere
+hlatsoa moriri
+fetola bandage
+kuta moriri
+? 123
+ABC
+Ho joalo
+Che
+ha ke tsebe
+E, N, I, R, T
+S, A, H, D, U
+C, L, G, M, O
+B, F, W, Z, K, V, P
+Ü, Ä, Ö, J, X, Q, Y
+khutsa
+lerata
+bata
+hoa chesa
+e tletse
+ha e na letho
+metsi
+e omme
+hloekile
+litšila
+kholo
+nyane
+ka lebelo
+butle
+kaofela
+Ke hloka ho ea ntloaneng
+kea kula
+Ha ke ikutloe hantle
+Ke hloka ho phomola kapa ho robala
+ho na le ntho e robehileng
+Ke batla ho ja ho hong
+Ke batla ho nooang
+Ke kopa tholoana
+Ke kopa seneke
+Ke kopa seneke
+Ke batla metsi
+Ke kopa Lemonade
+Ke hloka joang
+ke thabile
+ke hloname
+Ke koatile
+ke ferekane
+ke nyakalletse
+ke Jooa ke bolutu
+Ke ngongorehile
+Ke kopa ho roala borikhoe
+Ke batla ho roala t-hempe
+Ke kopa ho roala blouse
+Ke batla ho roala mose
+Ke batla ho apara
+Ke batla ho roala lieta
+Liaparo tsa ka li tiile haholo
+Liaparo tsa ka li sephara haholo
