@@ -1,4 +1,5 @@
 import {constants} from "../../util/constants";
+import {MetaData} from "../../model/MetaData";
 
 var errorMsg = 'could not access local storage, maybe disabled by user? Error: ';
 var storage = null;
@@ -272,6 +273,13 @@ var localStorageService = {
 function getSaveObject(key) {
     let objectString = localStorageService.get(key);
     let isObject = (JSON.parse(objectString) instanceof Object);
+    if (key === LOCAL_METADATA_KEY && JSON.parse(objectString).modelName === MetaData.getModelName()) {
+        let user = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
+        let value = {};
+        value[user] = JSON.parse(objectString);
+        localStorageService.save(key, JSON.stringify(value));
+        return value;
+    }
     if (!objectString || !isObject) {
         localStorageService.save(key, JSON.stringify({}));
         return {};
