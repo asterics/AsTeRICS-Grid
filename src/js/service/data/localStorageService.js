@@ -272,11 +272,12 @@ var localStorageService = {
 
 function getSaveObject(key) {
     let objectString = localStorageService.get(key);
-    let isObject = (JSON.parse(objectString) instanceof Object);
-    if (key === LOCAL_METADATA_KEY && JSON.parse(objectString).modelName === MetaData.getModelName()) {
+    let object = JSON.parse(objectString);
+    let isObject = (object instanceof Object);
+    if (key === LOCAL_METADATA_KEY && object && object.modelName === MetaData.getModelName()) {
         let user = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
         let value = {};
-        value[user] = JSON.parse(objectString);
+        value[user] = object;
         localStorageService.save(key, JSON.stringify(value));
         return value;
     }
@@ -284,7 +285,7 @@ function getSaveObject(key) {
         localStorageService.save(key, JSON.stringify({}));
         return {};
     }
-    return JSON.parse(objectString);
+    return object;
 }
 
 function getSyncedDbsList() {
