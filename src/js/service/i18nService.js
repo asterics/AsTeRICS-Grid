@@ -57,43 +57,29 @@ i18nService.translate = function (key, ...args) {
  * The language to translate to is defined by the current browser language.
  *
  * @param grids the grids to translate
+ * @param translateLang (optional) the language code to translate the grids to (e.g. "en"). If not specified, current browser language is used
  * @return {Promise<unknown>} a promise resolving the translated grids or the original grids, if nothing was translated
  */
-i18nService.translateGrids = function (grids) {
+i18nService.translateGrids = function (grids, translateLang) {
     return new Promise(resolve => {
         if (!grids || !grids.length || grids.length <= 0 || getCurrentLang(grids) === i18nService.getBrowserLang()) {
             return resolve(grids);
         }
-        let originals = null;
-        let translated = null;
-        let lang = i18nService.getBrowserLang();
-        let promiseOriginals = $.get(TRANSLATION_FILE_ORIGINAL);
-        let promiseTranslated = $.get(getTranslationFilePath(lang));
-        promiseOriginals.then(data => {
-            originals = data || '';
-        });
-        promiseTranslated.then(data => {
-            translated = data || '';
-        });
-        Promise.all([promiseOriginals, promiseTranslated]).then(() => {
-            let phrasesOriginal = originals.split('\n').map(p => p.trim()).filter(p => !!p);
-            let phrasesTranslated = translated.split('\n').map(p => p.trim()).filter(p => !!p);
-            if (phrasesOriginal.length !== phrasesTranslated.length) {
-                return resolve(grids);
-            }
+        let lang = translateLang || i18nService.getBrowserLang();
+        $.get(getTranslationFilePath(lang)).then((data) => {
+            let translations = JSON.parse(data);
             grids.forEach(grid => {
+                grid.label = translations[grid.label] || grid.label;
                 if (grid.gridElements) {
                     grid.gridElements.forEach(element => {
-                        let index = phrasesOriginal.indexOf(element.label);
-                        element.label = index > -1 ? phrasesTranslated[index] : element.label;
+                        element.label = translations[element.label] || element.label;
                         if (element.actions) {
                             element.actions.forEach(action => {
+                                if (action.speakText) {
+                                    action.speakText = translations[action.speakText] || action.speakText;
+                                }
                                 if (action.speakLanguage) {
                                     action.speakLanguage = lang;
-                                }
-                                if (action.speakText) {
-                                    let index = phrasesOriginal.indexOf(action.speakText);
-                                    action.speakText = index > -1 ? phrasesTranslated[index] : action.speakText;
                                 }
                             })
                         }
@@ -102,8 +88,14 @@ i18nService.translateGrids = function (grids) {
             });
             log.info('translated gridset to: ' + lang);
             resolve(grids);
-        }).catch(() => {
-            resolve(grids);
+        }).fail(() => {
+            log.info('failed to translate gridset to: ' + lang);
+            if (translateLang === 'en') {
+                resolve(grids);
+            }
+            i18nService.translateGrids(grids, 'en').then(translated => {
+                resolve(translated);
+            });
         });
     });
 };
