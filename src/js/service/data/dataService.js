@@ -674,4 +674,33 @@ function saveGlobalGridId(globalGridId) {
     })
 }
 
+/*window.getAllTranslatableTexts = function () {
+    let texts = [];
+    dataService.getGrids().then(grids => {
+        grids.forEach(grid => {
+            if (grid.label && texts.indexOf(grid.label) === -1) {
+                texts.push(grid.label);
+            }
+        });
+        grids.forEach(grid => {
+            grid.gridElements.forEach(element => {
+                if (element.label && element.label.length > 1 && texts.indexOf(element.label) === -1) {
+                    texts.push(element.label);
+                }
+            });
+        });
+        grids.forEach(grid => {
+            grid.gridElements.forEach(element => {
+                element.actions.forEach(action => {
+                    if (action.speakText && texts.indexOf(action.speakText) === -1) {
+                        texts.push(action.speakText);
+                    }
+                })
+            });
+        });
+        console.log(texts.reduce((total, current) => total + current + '\n', ''));
+        return Promise.resolve(texts);
+    });
+};*/
+
 export {dataService};
