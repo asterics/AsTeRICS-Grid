@@ -154,17 +154,12 @@ dataService.deleteAllGrids = function () {
 dataService.importDefaultGridset = function() {
     return Promise.resolve().then(() => {
         return $.get(_defaultGridSetPath);
-    }).then(data => {
-        if (!data) {
-            return Promise.resolve();
-        }
-        return i18nService.translateGrids(JSON.parse(data));
     }).then(gridsData => {
         if (!gridsData) {
             return Promise.resolve();
         }
         log.info('importing default grid set ' + _defaultGridSetPath);
-        return dataService.importData(gridsData, false, true);
+        return dataService.importData(JSON.parse(gridsData), false, true, true);
     });
 };
 
@@ -524,9 +519,10 @@ dataService.importGridsFromFile = function (file, backupMode) {
  * @param data a single GridData element, list of GridData elements or object containing grids, dictionaries, metadata
  * @param generateGlobalGrid if true a global grid is generated
  * @param backupMode if true, dictionaries and metadata will be imported, otherwise not
+ * @param translate if true, the imported grids are tried to translate using the files in folder "translations"
  * @return {Promise} resolves after operation finished successful
  */
-dataService.importData = function (data, generateGlobalGrid, backupMode) {
+dataService.importData = function (data, generateGlobalGrid, backupMode, translate) {
     if (!data || data.length === 0) {
         return Promise.resolve();
     }
@@ -535,6 +531,7 @@ dataService.importData = function (data, generateGlobalGrid, backupMode) {
     let importGrids = null;
     let promises = [];
     let metadataPromise = null;
+    let translatePromise = null;
 
     if (!(data instanceof Array)) {
         importDictionaries = backupMode ? data.dictionaries : null;
@@ -547,12 +544,21 @@ dataService.importData = function (data, generateGlobalGrid, backupMode) {
         importGrids = data;
     }
 
+    if (translate) {
+        translatePromise = i18nService.translateGrids(importGrids).then(translated => {
+            importGrids = translated;
+            return Promise.resolve();
+        });
+    } else {
+        translatePromise = Promise.resolve();
+    }
     if (importMetadata) {
         metadataPromise = Promise.resolve(importMetadata);
     } else {
         metadataPromise = dataService.getMetadata();
     }
-    metadataPromise.then((metadata) => {
+    return Promise.all([metadataPromise, translatePromise]).then((values) => {
+        let metadata = values[0];
         if (importGrids) {
             promises.push(dataService.getGrids().then(grids => {
                 let existingNames = grids.map(grid => grid.label);
@@ -595,8 +601,6 @@ dataService.importData = function (data, generateGlobalGrid, backupMode) {
                 });
             }));
         }
-    });
-    return metadataPromise.then(() => {
         return Promise.all(promises);
     });
 };
