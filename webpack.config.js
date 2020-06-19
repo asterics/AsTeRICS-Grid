@@ -1,6 +1,4 @@
 var path = require('path');
-const AppCachePlugin = require('appcache-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = env => {
@@ -57,66 +55,6 @@ module.exports = env => {
     };
 
     var plugins = [new VueLoaderPlugin()];
-    var appcachePlugin = new AppCachePlugin({
-        cache: [
-            '../index.html',
-            'index.html',
-            'build/asterics-grid.bundle.js',
-            'build_legacy/asterics-grid.bundle.js',
-            'build_legacy/vendors~html2canvas.bundle.js',
-            'build_legacy/JSZip.bundle.js',
-            'build_legacy/vendors~JSZip.bundle.js',
-            'css/fontawesome/css/all.css',
-            'css/fontawesome/webfonts/fa-brands-400.eot',
-            'css/fontawesome/webfonts/fa-brands-400.svg',
-            'css/fontawesome/webfonts/fa-brands-400.ttf',
-            'css/fontawesome/webfonts/fa-brands-400.woff',
-            'css/fontawesome/webfonts/fa-brands-400.woff2',
-            'css/fontawesome/webfonts/fa-regular-400.eot',
-            'css/fontawesome/webfonts/fa-regular-400.svg',
-            'css/fontawesome/webfonts/fa-regular-400.ttf',
-            'css/fontawesome/webfonts/fa-regular-400.woff',
-            'css/fontawesome/webfonts/fa-regular-400.woff2',
-            'css/fontawesome/webfonts/fa-solid-900.eot',
-            'css/fontawesome/webfonts/fa-solid-900.svg',
-            'css/fontawesome/webfonts/fa-solid-900.ttf',
-            'css/fontawesome/webfonts/fa-solid-900.woff',
-            'css/fontawesome/webfonts/fa-solid-900.woff2',
-            'css/jquery-ui.css',
-            'css/images/ui-icons_444444_256x240.png',
-            'css/custom.css',
-            'css/skeleton.css',
-            'img/asterics-grid-icon.png',
-            'img/asterics_icon.png',
-            'img/favicon.ico',
-            'lib/dom-i18n.min.js',
-            'lib/gridList.js',
-            'lib/jquery.contextMenu.min.js',
-            'lib/jquery.gridList.js',
-            'lib/jquery.min.js',
-            'lib/jquery.ui.position.min.js',
-            'lib/jquery.ui.touchpunch.min.js',
-            'lib/jquery-ui.min.js',
-            'lib/loglevel.min.js',
-            'lib/object-model.min.js',
-            'lib/pouchdb-7.0.0.min.js',
-            'lib/sjcl.min.js',
-            'polyfill/core_js_shim.min.js',
-            'polyfill/fetch.js',
-            'polyfill/url-search-params-polyfill.min.js'
-        ],
-        settings: ['prefer-online'],
-        output: '../manifest.appcache',
-        exclude: ['asterics-grid.bundle.js', 'JSZip.bundle.js', 'vendors~JSZip.bundle.js', 'vendors~html2canvas.bundle.js'] /*hack to prevent first line of cache manifest before CACHE. These two files are already included above.*/
-    });
-
-    if (env && env.enableAppCache) {
-        log('appcache enabled!');
-        plugins.push(appcachePlugin);
-    } else {
-        log('appcache disabled!');
-        plugins.push(new CleanWebpackPlugin(['./app/manifest.appcache']));
-    }
 
     function log(msg) {
         if(!env || !env.nolog) {
