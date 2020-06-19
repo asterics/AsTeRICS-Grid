@@ -14,7 +14,6 @@ import {modelUtil} from "./util/modelUtil";
 import {keyboardShortcuts} from "./service/keyboardShortcuts";
 //import {timingLogger} from "./service/timingLogger";
 
-var firstRun = localStorageService.isFirstPageVisit();
 let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
 
 function init() {

@@ -3,7 +3,6 @@ import {MetaData} from "../../model/MetaData";
 
 var errorMsg = 'could not access local storage, maybe disabled by user? Error: ';
 var storage = null;
-let FIRST_VISIT_KEY = 'FIRST_VISIT_KEY';
 let USER_PASSWORDS_KEY = "USER_PASSWORDS_KEY";
 let USER_MODELVERSION_KEY = "USER_MODELVERSION_KEY";
 let SYNCED_DBS_LIST_KEY = "SYNCED_DBS_LIST_KEY";
@@ -48,16 +47,6 @@ var localStorageService = {
                 log.error(errorMsg + e)
             }
         }
-    },
-    /**
-     * returns true if the page was never visited before and this method was never called before.
-     * returns false afterwards.
-     * @return {boolean}
-     */
-    isFirstPageVisit() {
-        let value = localStorageService.get(FIRST_VISIT_KEY);
-        localStorageService.save(FIRST_VISIT_KEY, true);
-        return !value;
     },
     /**
      * returns a previously saved user password
