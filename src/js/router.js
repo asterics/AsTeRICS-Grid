@@ -19,7 +19,7 @@ import {databaseService} from "./service/data/databaseService";
 import {localStorageService} from "./service/data/localStorageService";
 import {MainVue} from "./vue/mainVue";
 
-let NO_DB_VIEWS = ['#login', '#register', '#updating', '#welcome', '#add', '#about'];
+let NO_DB_VIEWS = ['#login', '#register', '#welcome', '#add', '#about'];
 
 let Router = {};
 let navigoInstance = null;
@@ -43,12 +43,6 @@ Router.init = function (injectIdParam, initialHash) {
             'main': function () {
                 helpService.setHelpLocation('02_navigation', '#main-view');
                 toMainInternal();
-            },
-            'updating': function () {
-                log.debug('loading updating view.');
-                $('#updatingView').show();
-                i18nService.initDomI18n();
-                routingEndabled = false;
             },
             'grids/': function () {
                 helpService.setHelpLocation('02_navigation', '#manage-grids-view');
@@ -161,10 +155,6 @@ Router.toMain = function () {
     } else {
         setHash('#main');
     }
-};
-
-Router.toUpdating = function () {
-    setHash('#updating');
 };
 
 Router.toRegister = function () {
