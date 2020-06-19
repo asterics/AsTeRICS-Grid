@@ -33,6 +33,11 @@ MainVue.setTooltip = function (html, options) {
     app.$refs.notificationBar.setTooltip(html, options);
 };
 
+MainVue.setTooltipI18n = function(translateText, options) {
+    let translated = i18nService.translate(translateText);
+    MainVue.setTooltip(translated, options);
+};
+
 MainVue.clearTooltip = function () {
     if (!app) {
         return;
