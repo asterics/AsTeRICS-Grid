@@ -8,7 +8,6 @@ import './../css/gridlist.css';
 import './../css/jquery.contextMenu.css';
 import './../css/holy-grail.css';
 import {loginService} from "./service/loginService";
-import {databaseService} from "./service/data/databaseService";
 import {urlParamService} from "./service/urlParamService";
 import {constants} from "./util/constants";
 import {modelUtil} from "./util/modelUtil";
@@ -16,13 +15,14 @@ import {keyboardShortcuts} from "./service/keyboardShortcuts";
 //import {timingLogger} from "./service/timingLogger";
 
 var firstRun = localStorageService.isFirstPageVisit();
+let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
 
 function init() {
     let promises = [];
     //timingLogger.initLogging();
     log.setLevel(log.levels.INFO);
     log.info('AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
-    reloadOnAppcacheUpdate();
+    initServiceWorker();
     loginService.ping();
     VuePluginManager.init();
     keyboardShortcuts.init();
@@ -53,57 +53,41 @@ function init() {
 }
 init();
 
-function reloadOnAppcacheUpdate() {
-    if (!window.applicationCache) {
-        log.debug('no application cache.');
-        return;
-    }
-
-    function onUpdateReady() {
-        log.debug('appcache: updateready');
-        if (!firstRun) {
-            Router.toMain();
-            window.location.reload();
+function initServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        if (window.loaded) {
+            installServiceWorker();
+        } else {
+            // Use the window load event to keep the page load performant
+            window.addEventListener('load', () => {
+                installServiceWorker();
+            });
         }
     }
 
-    window.applicationCache.addEventListener('updateready', onUpdateReady);
-    window.applicationCache.addEventListener('checking', function () {
-        log.debug('appcache: checking');
-    });
-    window.applicationCache.addEventListener('downloading', function () {
-        log.debug('appcache: downloading');
-        if (!firstRun) {
-            Router.init('#app', '#updating');
-        }
-    });
-    window.applicationCache.addEventListener('progress', function (event) {
-        log.debug('appcache: progress');
-        if (!firstRun) {
-            Router.init('#app', '#updating');
-            let percent = Math.ceil(event.loaded * 100 / event.total);
-            if (typeof percent === 'number') {
-                $('#updatePercentWrapper').show();
-                $('#updatePercent').html(Math.ceil(event.loaded * 100 / event.total));
-            }
-        }
-    });
-    window.applicationCache.addEventListener('error', function (event) {
-        log.debug('appcache: error');
-        log.debug(event);
-    });
-    window.applicationCache.addEventListener('obsolete', function () {
-        log.debug('appcache: obsolete');
-    });
-    window.applicationCache.addEventListener('cached', function () {
-        log.debug('appcache: cached');
-        onUpdateReady();
-    });
-    window.applicationCache.addEventListener('noupdate', function () {
-        log.debug('appcache: noupdate');
-    });
-
-    if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
-        onUpdateReady();
+    function installServiceWorker() {
+        navigator.serviceWorker.register('./serviceWorker.js').then(reg => {
+            let isUpdate = false;
+            setInterval(() => {
+                log.info('Check for serviceworker update...');
+                reg.update();
+            }, SERVICE_WORKER_UPDATE_CHECK_INTERVAL);
+            reg.addEventListener('updatefound', function () {
+                if (navigator.serviceWorker.controller) {
+                    isUpdate = true;
+                }
+            });
+            navigator.serviceWorker.addEventListener("message", (evt) => {
+                if (isUpdate && evt.data && evt.data.activated) {
+                    MainVue.setTooltipI18n("New version available! The next time you re-open AsTeRICS Grid you'll automatically use the updated version. // Neue Version verfügbar! Beim nächsten Start von AsTeRICS Grid verwenden Sie automatisch die neue Version.", {
+                        closeOnNavigate: false,
+                        actionLink: 'Update now // Jetzt aktualisieren',
+                        actionLinkFn: () => {
+                            window.location.reload();
+                        },
+                    })
+                }
+            });
+        });
     }
 }
