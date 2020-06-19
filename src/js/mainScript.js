@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import {localStorageService} from "./service/data/localStorageService.js";
 import {Router} from "./router.js";
 import {VuePluginManager} from "./vue/vuePluginManager";
@@ -53,6 +52,10 @@ function init() {
 init();
 
 function initServiceWorker() {
+    if (!constants.IS_ENVIRONMENT_PROD) {
+        log.warn('Not installing Service Worker because on development environment.')
+        return;
+    }
     if ('serviceWorker' in navigator) {
         if (window.loaded) {
             installServiceWorker();
