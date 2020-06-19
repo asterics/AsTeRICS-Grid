@@ -21,9 +21,7 @@
     "@babel/core": "^7.8.4",
     "@babel/plugin-transform-modules-commonjs": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
-    "appcache-webpack-plugin": "^1.4.0",
     "babel-loader": "^8.0.6",
-    "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^1.0.0",
     "jest": "^24.5.0",
     "node-sass": "^4.12.0",
@@ -41,17 +39,16 @@
   },
   "scripts": {
     "start": "webpack-dev-server",
-    "start-appcache": "npm run build && webpack-dev-server --env.enableAppCache",
+    "start-no-live": "webpack-dev-server --liveReload false",
     "start-superlogin-dev": "node superlogin/start.js",
     "start-superlogin-prod": "node superlogin/start.js prod",
     "watch": "webpack --watch --config webpack.config.js",
-    "watch-appcache": "webpack --watch --config webpack.config.js --env.enableAppCache",
-    "build": "jest && webpack --config webpack.config.js --env.enableAppCache --env.production",
+    "build": "jest && webpack --config webpack.config.js --env.production",
     "release": "cp scripts/release.sh scripts/release.tmp.sh && sh scripts/release.tmp.sh && rm scripts/release.tmp.sh",
     "release-latest": "cp scripts/releaseBeta.sh scripts/releaseBeta.tmp.sh && sh scripts/releaseBeta.tmp.sh && rm scripts/releaseBeta.tmp.sh",
     "test": "jest",
-    "stats": "webpack --config webpack.config.js --env.enableAppCache --env.production --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json app/build_legacy",
-    "stats-dev": "webpack --config webpack.config.js --env.enableAppCache --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json app/build_legacy"
+    "stats": "webpack --config webpack.config.js --env.production --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json app/build_legacy",
+    "stats-dev": "webpack --config webpack.config.js --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json app/build_legacy"
   },
   "repository": {
     "type": "git",
