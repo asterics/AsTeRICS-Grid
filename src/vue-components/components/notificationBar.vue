@@ -3,7 +3,7 @@
         <img id="notificationBarImg" v-show="tooltipImageUrl" :src="tooltipImageUrl" alt="" class="inline">
         <div v-html="tooltipHTML" class="inline"></div>
         <div v-if="actionLink" class="inline">
-            <a href="javascript:;" @click="onActionLink" style="color: #44a8f1">{{actionLink}}</a>
+            <a href="javascript:;" @click="onActionLink" style="color: #44a8f1">{{actionLink | translate}}</a>
         </div>
         <button @click="tooltipHTML = ''" style="position: absolute; top: 0; right: 10px; padding: 0 10px">X</button>
     </div>
