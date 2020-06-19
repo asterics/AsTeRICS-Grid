@@ -47,6 +47,7 @@ tagnameSed="release-$(date +%Y-%m-%d-%H.%M\\/%z)"
 echo $tagnameSed
 sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" src/js/mainScript.js
 sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" src/vue-components/views/aboutView.vue
+sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" serviceWorker.js
 sed -i -e "s/#ASTERICS_GRID_ENV#/PROD/g" src/js/util/constants.js
 
 echo "building..."
@@ -59,6 +60,7 @@ git commit -m "added bundles and appcache for release $tagname"
 git push origin HEAD
 git checkout src/js/mainScript.js
 git checkout src/vue-components/views/aboutView.vue
+git checkout serviceWorker.js
 git checkout src/js/util/constants.js
 echo "creating tag '$tagname'..."
 git tag -a $tagname -m $tagname
