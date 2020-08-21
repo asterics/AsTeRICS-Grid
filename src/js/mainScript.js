@@ -13,7 +13,7 @@ import {modelUtil} from "./util/modelUtil";
 import {keyboardShortcuts} from "./service/keyboardShortcuts";
 //import {timingLogger} from "./service/timingLogger";
 
-let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 60000;//1000 * 60 * 15; // 15 Minutes
+let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
 
 function init() {
     let promises = [];
