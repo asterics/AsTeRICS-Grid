@@ -56,11 +56,11 @@ echo "commiting bundles and manifest..."
 git add app/build
 git add app/build_legacy
 git add app/manifest.appcache
+git add serviceWorker.js
 git commit -m "added bundles and appcache for release $tagname"
 git push origin HEAD
 git checkout src/js/mainScript.js
 git checkout src/vue-components/views/aboutView.vue
-git checkout serviceWorker.js
 git checkout src/js/util/constants.js
 echo "creating tag '$tagname'..."
 git tag -a $tagname -m $tagname
