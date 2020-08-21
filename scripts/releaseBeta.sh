@@ -60,6 +60,9 @@ git checkout src/js/util/constants.js
 echo "creating tag '$tagname'..."
 git tag -a $tagname -m $tagname
 git push origin $tagname
+sed -i -e "s/$tagnameSed/#ASTERICS_GRID_VERSION#/g" serviceWorker.js
+git add serviceWorker.js
+git commit -m "reverted release version to placeholder"
 do_gh_pages_update
 if $doStash; then
     echo "pop stashed changes..."
