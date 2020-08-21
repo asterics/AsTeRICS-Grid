@@ -5,7 +5,7 @@ const namesMustInclude = ['default.grd.json', '/examples/translations/'];
 const namesMustSkip = ['convertOriginalToTranslateObjects.js', '/examples/translations/original', 'app/simple'];
 let startDir = "../app/";
 let cutFromStartPath = "..";
-let printPaths = ['/', 'index.html'];
+let printPaths = ['/', 'latest/', 'index.html'];
 
 
 function traverseDir(dir) {
