@@ -5,7 +5,7 @@ const namesMustInclude = ['default.grd.json', '/examples/translations/'];
 const namesMustSkip = ['convertOriginalToTranslateObjects.js', '/examples/translations/original', 'app/simple'];
 let startDir = "../app/";
 let cutFromStartPath = "..";
-let printPaths = ['/', '/index.html'];
+let printPaths = ['/', 'index.html'];
 
 
 function traverseDir(dir) {
@@ -23,10 +23,10 @@ function traverseDir(dir) {
             if (mustSkip || (!mustInclude && shouldSkip)) {
                 return;
             }
-
             if (logPath.indexOf('/examples/') !== -1 && logPath.indexOf('/examples/translations/') === -1 && logPath.indexOf('default.grd.json') === -1) {
                 return;
             }
+            logPath = logPath.substring(1); // remove first slash
             printPaths.push(logPath);
         }
     });
