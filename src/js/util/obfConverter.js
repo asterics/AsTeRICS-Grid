@@ -7,6 +7,7 @@ import {GridActionSpeakCustom} from "../model/GridActionSpeakCustom";
 import {GridActionNavigate} from "../model/GridActionNavigate";
 import {GridActionSpeak} from "../model/GridActionSpeak";
 import {imageUtil} from "./imageUtil";
+import {i18nService} from "../service/i18nService";
 
 let obfConverter = {};
 
@@ -29,10 +30,11 @@ obfConverter.gridSetToOBZ = function (gridset) {
  */
 obfConverter.OBFToGridData = function (obfObject, obfObjects) {
     let promises = [];
+    let locale = obfObject.locale && obfObject.locale.length === 2 ? obfObject.locale.toLowerCase() : i18nService.getBrowserLang();
     let gridData = new GridData({
         obfId: obfObject.id,
-        label: obfObject.name,
-        locale: obfObject.locale,
+        label: i18nService.getTranslationObject(obfObject.name, locale),
+        locale: locale,
         rowCount: obfObject.grid.rows,
         minColumnCount: obfObject.grid.columns,
         gridElements: []
@@ -43,7 +45,7 @@ obfConverter.OBFToGridData = function (obfObject, obfObjects) {
             let gridElement = new GridElement({
                 width: 1,
                 height: 1,
-                label: button.label,
+                label: i18nService.getTranslationObject(button.label, locale),
                 x: xy.x,
                 y: xy.y,
                 backgroundColor: button.background_color
