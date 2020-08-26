@@ -1,13 +1,9 @@
-import {$} from '../externals/jquery';
 import {localStorageService} from "./data/localStorageService";
 
 let i18nService = {};
 
 let CUSTOM_LANGUAGE_KEY = 'CUSTOM_LANGUAGE_KEY';
 let customLanguage = localStorageService.get(CUSTOM_LANGUAGE_KEY);
-let TRANSLATION_FILE_PATH = 'app/examples/translations/';
-let TRANSLATION_FILE_SUFFIX = '.txt';
-let TRANSLATION_FILE_ORIGINAL = getTranslationFilePath('original');
 let i18nInstance = null;
 let languages = ['en', 'de'];
 let separator = ' // ';
@@ -53,51 +49,32 @@ i18nService.translate = function (key, ...args) {
 };
 
 /**
- * Translates given grids using translation .txt files located in app/examples/translations.
- * The language to translate to is defined by the current browser language.
- *
- * @param grids the grids to translate
- * @param translateLang (optional) the language code to translate the grids to (e.g. "en"). If not specified, current browser language is used
- * @return {Promise<unknown>} a promise resolving the translated grids or the original grids, if nothing was translated
+ * get plain translation string from an translation object
+ * @param i18nObject translation object, e.g. {en: 'english text', de: 'deutscher Text'}
+ * @param fallbackLang language to use if current browser language not available, default: 'en'
+ * @return {string|*|string} the translated string in current browser language, e.g. 'english text'
  */
-i18nService.translateGrids = function (grids, translateLang) {
-    return new Promise(resolve => {
-        if (!grids || !grids.length || grids.length <= 0 || getCurrentLang(grids) === i18nService.getBrowserLang()) {
-            return resolve(grids);
-        }
-        let lang = translateLang || i18nService.getBrowserLang();
-        $.get(getTranslationFilePath(lang)).then((data) => {
-            let translations = JSON.parse(data);
-            grids.forEach(grid => {
-                grid.label = translations[grid.label] || grid.label;
-                if (grid.gridElements) {
-                    grid.gridElements.forEach(element => {
-                        element.label = translations[element.label] || element.label;
-                        if (element.actions) {
-                            element.actions.forEach(action => {
-                                if (action.speakText) {
-                                    action.speakText = translations[action.speakText] || action.speakText;
-                                }
-                                if (action.speakLanguage) {
-                                    action.speakLanguage = lang;
-                                }
-                            })
-                        }
-                    });
-                }
-            });
-            log.info('translated gridset to: ' + lang);
-            resolve(grids);
-        }).fail(() => {
-            log.info('failed to translate gridset to: ' + lang);
-            if (translateLang === 'en') {
-                resolve(grids);
-            }
-            i18nService.translateGrids(grids, 'en').then(translated => {
-                resolve(translated);
-            });
-        });
-    });
+i18nService.getTranslation = function (i18nObject, fallbackLang) {
+    fallbackLang = fallbackLang || 'en';
+    if (typeof i18nObject === 'string') {
+        return i18nObject;
+    }
+    let currentLang = i18nService.getBrowserLang();
+    return (i18nObject[currentLang] ? i18nObject[currentLang] : i18nObject[fallbackLang]) || "";
+};
+
+/**
+ * turns a given label to a translation object
+ * @param label plain string label
+ * @param locale locale of the string (2 chars, ISO 639-1)
+ * @return translation object, e.g. {en: 'given label'}
+ */
+i18nService.getTranslationObject = function(label, locale) {
+    locale = locale || i18nService.getBrowserLang();
+    label = i18nService.translate(label, locale);
+    let object = {};
+    object[locale] = label;
+    return object;
 };
 
 /**
@@ -118,21 +95,6 @@ i18nService.setLanguage = function (lang) {
 i18nService.getCustomLanguage = function () {
     return customLanguage;
 };
-
-function getTranslationFilePath(filename) {
-    return TRANSLATION_FILE_PATH + filename + TRANSLATION_FILE_SUFFIX;
-}
-
-/**
- * returns the (assumed) used language of a gridset by retrieving the first "speakLanguage" property
- * @param grids
- * @return the current language of the gridset (assumed) or null if not determined
- */
-function getCurrentLang(grids) {
-    let jsonString = JSON.stringify(grids);
-    let matches = jsonString.match(/\"speakLanguage\":\"(.{2})\"/);
-    return matches ? matches[1] : null;
-}
 
 i18nService.translations = {};
 i18nService.translations['en'] = {
