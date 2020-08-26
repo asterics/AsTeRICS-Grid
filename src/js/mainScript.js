@@ -19,7 +19,6 @@ function init() {
     let promises = [];
     //timingLogger.initLogging();
     log.setLevel(log.levels.INFO);
-    log.warn('new version!');
     log.info('AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
     initServiceWorker();
     loginService.ping();
