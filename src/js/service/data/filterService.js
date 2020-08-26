@@ -4,6 +4,9 @@ import {log} from "../../util/log";
 import {InputConfig} from "../../model/InputConfig";
 import {InputEventKey} from "../../model/InputEventKey";
 import {MetaData} from "../../model/MetaData";
+import {GridData} from "../../model/GridData";
+import {i18nService} from "../i18nService";
+import {GridActionSpeakCustom} from "../../model/GridActionSpeakCustom";
 
 let filterService = {};
 
@@ -40,6 +43,15 @@ filterService.convertDatabaseToLiveObjects = function (objects, filterOptions) {
 };
 
 /**
+ * update data model of given objects
+ * @param objects objects with current or outdated data model, can be array or single object
+ * @return {*} array or single object (depending on param objects) with updated/current data model
+ */
+filterService.updateDataModel = function (objects) {
+    return filterObjects(objects, null, getModelConversionFunctions);
+};
+
+/**
  * filters (converts) given objects.
  *
  * @param objects the objects to filter, can be a singe object or an array
@@ -51,17 +63,18 @@ filterService.convertDatabaseToLiveObjects = function (objects, filterOptions) {
  * @return {*} a list of filtered/converted objects
  */
 function filterObjects(objects, filterOptions, getFilterFunctionsFunction) {
-    if(!objects) {
+    if (!objects) {
         return objects;
     }
-    objects = objects instanceof Array ? objects : [objects];
+    let passedArray = objects instanceof Array;
+    objects = passedArray ? objects : [objects];
     for (let i = 0; i < objects.length; i++) {
         let filterFunctions = getFilterFunctionsFunction(modelUtil.getModelVersionObject(objects[i].modelVersion));
         filterFunctions.forEach(filterFn => {
             objects[i] = filterFn(objects[i], filterOptions);
         });
     }
-    return objects.length > 1 ? objects : objects[0];
+    return passedArray ? objects : objects[0];
 }
 
 /**
@@ -132,8 +145,40 @@ function getModelConversionFunctions(objectModelVersion) {
                 return object;
             });
         //no break intended!
-/*        case 2:
-            filterFns.push(function (object, filterOptions) { //fn from V2 to V3
+        case 2:
+            filterFns.push(function (gridData, filterOptions) { //fn from V2 to V3
+                if (gridData.modelName === GridData.getModelName()) {
+                    log.debug('converting model version from V2 to V3: ' + gridData.modelName);
+                    gridData.locale = gridData.locale || i18nService.getBrowserLang();
+                    if (typeof gridData.label === 'string') {
+                        let label = gridData.label;
+                        gridData.label = {};
+                        gridData.label[gridData.locale] = label;
+                    } else {
+                        gridData.label = {};
+                    }
+                    gridData.gridElements.forEach(element => {
+                        if (typeof element.label === 'string') {
+                            let label = element.label;
+                            element.label = {};
+                            element.label[gridData.locale] = label;
+                        } else {
+                            element.label = {};
+                        }
+                        element.actions.forEach(action => {
+                            if (action.modelName === GridActionSpeakCustom.getModelName()) {
+                                let text = action.speakText;
+                                action.speakText = {};
+                                action.speakText[gridData.locale] = text;
+                            }
+                        })
+                    });
+                }
+                gridData.modelVersion = modelUtil.getModelVersionString();
+                return gridData;
+            });
+/*        case 3:
+            filterFns.push(function (object, filterOptions) { //fn from V3 to V4
                 object.modelVersion = modelUtil.getModelVersionString();
                 return object
             });
