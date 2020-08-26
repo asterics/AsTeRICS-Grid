@@ -25,7 +25,8 @@ collectElementService.initWithElements = function (elements, dontAutoPredict) {
     elements.forEach(element => {
         if (element && element.type === GridElement.ELEMENT_TYPE_NORMAL) {
             normalElements++;
-            if (element.label && element.label.length === 1) {
+            let label = i18nService.getTranslation(element.label);
+            if (label && label.length === 1) {
                 oneCharacterElements++;
             }
         }
@@ -125,10 +126,11 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         return; // no adding of text if the element contains an navigate action
     }
     if (!element.type || element.type === GridElement.ELEMENT_TYPE_NORMAL) {
-        if (!element.label) {
+        if (!i18nService.getTranslation(element.label)) {
             return;
         }
-        let textToAdd = element.label.length === 1 && keyboardLikeFactor > 0.5 ? element.label.toLowerCase() : element.label + ' ';
+        let label = i18nService.getTranslation(element.label);
+        let textToAdd = label.length === 1 && keyboardLikeFactor > 0.5 ? label.toLowerCase() : label + ' ';
         addText(textToAdd);
         registeredCollectElements.forEach(collectElem => {
             let predictAction = getActionOfType(collectElem, 'GridActionPredict');

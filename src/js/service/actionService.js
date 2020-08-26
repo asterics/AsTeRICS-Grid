@@ -8,6 +8,7 @@ import {GridElement} from "./../model/GridElement";
 import {constants} from "../util/constants";
 import {GridActionCollectElement} from "../model/GridActionCollectElement";
 import {webradioService} from "./webradioService";
+import {i18nService} from "./i18nService";
 
 let actionService = {};
 
@@ -16,7 +17,7 @@ actionService.doAction = function (gridId, gridElementId) {
         return;
     }
     dataService.getGridElement(gridId, gridElementId).then(gridElement => {
-        log.debug('do actions for: ' + gridElement.label + ', ' + gridElementId);
+        log.debug('do actions for: ' + i18nService.getTranslation(gridElement.label) + ', ' + gridElementId);
         switch (gridElement.type) {
             case GridElement.ELEMENT_TYPE_COLLECT: {
                 collectElementService.doAction(gridElement);
@@ -46,12 +47,12 @@ function doAction(gridElement, action, gridId, gridData) {
     switch (action.modelName) {
         case 'GridActionSpeak':
             log.debug('action speak');
-            speechService.speak(gridElement.label, action.speakLanguage);
+            speechService.speak(i18nService.getTranslation(gridElement.label), action.speakLanguage);
             break;
         case 'GridActionSpeakCustom':
             log.debug('action speak custom');
             if (action.speakText) {
-                speechService.speak(action.speakText, action.speakLanguage);
+                speechService.speak(i18nService.getTranslation(action.speakText), action.speakLanguage);
             }
             break;
         case 'GridActionNavigate':
@@ -76,7 +77,7 @@ function doAction(gridElement, action, gridId, gridData) {
             break;
         case 'GridActionPredict':
             log.debug('action predict');
-            predictionService.predict(gridElement.label, action.dictionaryKey);
+            predictionService.predict(i18nService.getTranslation(gridElement.label), action.dictionaryKey);
             break;
         case 'GridActionCollectElement':
             log.debug('action collect element');
