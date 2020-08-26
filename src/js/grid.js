@@ -120,7 +120,7 @@ function Grid(gridContainerId, gridItemClass, options) {
             $(gridContainerId).append(templates.getGridBase(gridDataParam.id));
             _gridElement = $('#' + gridDataParam.id);
             gridDataParam.gridElements.forEach(function (gridElement) {
-                _gridElement.append(gridElement.toHTML());
+                _gridElement.append(gridElement.toHTML(_gridData.locale));
             });
 
             _gridElement.gridList({
