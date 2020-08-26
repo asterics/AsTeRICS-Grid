@@ -17,6 +17,7 @@ import {predictionService} from "../predictionService";
 import {localStorageService} from "./localStorageService";
 import {gridUtil} from "../../util/gridUtil";
 import {urlParamService} from "../urlParamService";
+import {filterService} from "./filterService";
 
 let dataService = {};
 
@@ -162,7 +163,7 @@ dataService.importDefaultGridset = function() {
         try {
             gridsData = JSON.parse(gridsData);
         } catch (e) {}
-        return dataService.importData(gridsData, false, true, true);
+        return dataService.importData(gridsData, false, true);
     });
 };
 
@@ -412,7 +413,7 @@ dataService.downloadSingleGrid = function (gridId) {
     dataService.getGrid(gridId).then(gridData => {
         if (gridData) {
             let blob = new Blob([JSON.stringify(gridData)], {type: "text/plain;charset=utf-8"});
-            FileSaver.saveAs(blob, gridData.label + ".grd");
+            FileSaver.saveAs(blob, i18nService.getTranslation(gridData.label) + ".grd");
         }
     });
 };
@@ -525,7 +526,7 @@ dataService.importGridsFromFile = function (file, backupMode) {
  * @param translate if true, the imported grids are tried to translate using the files in folder "translations"
  * @return {Promise} resolves after operation finished successful
  */
-dataService.importData = function (data, generateGlobalGrid, backupMode, translate) {
+dataService.importData = function (data, generateGlobalGrid, backupMode) {
     if (!data || data.length === 0) {
         return Promise.resolve();
     }
@@ -534,37 +535,28 @@ dataService.importData = function (data, generateGlobalGrid, backupMode, transla
     let importGrids = null;
     let promises = [];
     let metadataPromise = null;
-    let translatePromise = null;
 
     if (!(data instanceof Array)) {
-        importDictionaries = backupMode ? data.dictionaries : null;
-        importMetadata = backupMode ? data.metadata : null;
-        importGrids = data.grids;
+        importDictionaries = backupMode ? filterService.updateDataModel(data.dictionaries) : null;
+        importMetadata = backupMode ? filterService.updateDataModel(data.metadata) : null;
+        importGrids = filterService.updateDataModel(data.grids);
         if (!importDictionaries && !importMetadata && !importGrids && data.id) {
-            importGrids = [data];
+            importGrids = [filterService.updateDataModel(data)];
         }
     } else {
-        importGrids = data;
+        importGrids = filterService.updateDataModel(data);
     }
 
-    if (translate) {
-        translatePromise = i18nService.translateGrids(importGrids).then(translated => {
-            importGrids = translated;
-            return Promise.resolve();
-        });
-    } else {
-        translatePromise = Promise.resolve();
-    }
     if (importMetadata) {
         metadataPromise = Promise.resolve(importMetadata);
     } else {
         metadataPromise = dataService.getMetadata();
     }
-    return Promise.all([metadataPromise, translatePromise]).then((values) => {
+    return metadataPromise.then((values) => {
         let metadata = values[0];
         if (importGrids) {
             promises.push(dataService.getGrids().then(grids => {
-                let existingNames = grids.map(grid => grid.label);
+                let existingNames = grids.map(grid => i18nService.getTranslation(grid.label));
                 let globalGrid = null;
                 let regenerateIdsReturn = gridUtil.regenerateIDs(importGrids);
                 importGrids = regenerateIdsReturn.grids;
@@ -573,7 +565,8 @@ dataService.importData = function (data, generateGlobalGrid, backupMode, transla
                     metadata.globalGridId = regenerateIdsReturn.idMapping[metadata.globalGridId];
                 }
                 importGrids.forEach(grid => {
-                    grid.label = modelUtil.getNewName(grid.label, existingNames);
+                    let label = i18nService.getTranslation(grid.label);
+                    grid.label = i18nService.getTranslationObject(modelUtil.getNewName(label, existingNames), grid.locale);
                 });
                 let locale = importGrids[0] ? importGrids[0].locale : null;
                 if (generateGlobalGrid) {
@@ -676,34 +669,5 @@ function saveGlobalGridId(globalGridId) {
         return dataService.saveMetadata(metadata);
     })
 }
-
-/*window.getAllTranslatableTexts = function () {
-    let texts = [];
-    dataService.getGrids().then(grids => {
-        grids.forEach(grid => {
-            if (grid.label && texts.indexOf(grid.label) === -1) {
-                texts.push(grid.label);
-            }
-        });
-        grids.forEach(grid => {
-            grid.gridElements.forEach(element => {
-                if (element.label && element.label.length > 1 && texts.indexOf(element.label) === -1) {
-                    texts.push(element.label);
-                }
-            });
-        });
-        grids.forEach(grid => {
-            grid.gridElements.forEach(element => {
-                element.actions.forEach(action => {
-                    if (action.speakText && texts.indexOf(action.speakText) === -1) {
-                        texts.push(action.speakText);
-                    }
-                })
-            });
-        });
-        console.log(texts.reduce((total, current) => total + current + '\n', ''));
-        return Promise.resolve(texts);
-    });
-};*/
 
 export {dataService};
