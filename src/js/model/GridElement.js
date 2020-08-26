@@ -47,8 +47,8 @@ class GridElement extends Model({
         return newElem;
     }
 
-    toHTML() {
-        return templates.getGridItem(this);
+    toHTML(locale) {
+        return templates.getGridItem(this, locale);
     };
 
     hasSetPosition() {

@@ -8,13 +8,14 @@ import {Webradio} from "./Webradio";
 import {gridUtil} from "../util/gridUtil";
 import {localStorageService} from "../service/data/localStorageService";
 import {encryptionService} from "../service/data/encryptionService";
+import {i18nService} from "../service/i18nService";
 
 class GridData extends Model({
     id: String,
     modelName: String,
     modelVersion: String,
     isShortVersion: Boolean, // if true this object represents a non-full short version excluding binary base64 data
-    label: [String],
+    label: [Object, String], //map locale -> translation, e.g. "de" => LabelDE
     locale: [String],
     rowCount: [Number],
     minColumnCount: [Number],
@@ -41,7 +42,7 @@ class GridData extends Model({
     getHash() {
         let string = "";
         this.gridElements.forEach(e => {
-            string += e.label + e.x + e.y;
+            string += JSON.stringify(e.label) + e.x + e.y;
             if (e.image) {
                 string += e.image.data.substring(e.image.data.length - 30);
             }
@@ -211,7 +212,9 @@ class GridData extends Model({
         delete newGrid._id;
         delete newGrid._rev;
         newGrid.id = modelUtil.generateId('grid-data');
-        newGrid.label = this.label + ' (Copy)';
+        Object.keys(this.label).forEach(key => {
+            newGrid.label[key] = this.label[key] + ' (Copy)';
+        });
         return newGrid;
     }
 
@@ -230,7 +233,9 @@ GridData.defaults({
     modelVersion: constants.MODEL_VERSION,
     isShortVersion: false,
     additionalFiles: [],
-    webRadios: []
+    webRadios: [],
+    label: {},
+    locale: i18nService.getBrowserLang()
 });
 
 export {GridData};

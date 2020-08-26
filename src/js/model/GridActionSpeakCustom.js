@@ -8,7 +8,7 @@ class GridActionSpeakCustom extends Model({
     modelName: String,
     modelVersion: String,
     speakLanguage: [String, null, undefined],
-    speakText: [String]
+    speakText: [Object, String], //map locale -> translation, e.g. "de" => LabelDE
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionSpeakCustom);
