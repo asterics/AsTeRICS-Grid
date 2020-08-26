@@ -25,8 +25,8 @@
                     </div>
                     <div class="five columns" style="margin-bottom: 1.5em">
                         <label for="gridName" data-i18n="" style="display: block">Name of grid // Grid-Name</label>
-                        <input id="gridName" type="text" v-model="newLabel" maxlength="25" style="width: 77%"/>
-                        <button @click="saveGridLabel" :disabled="isLabelDuplicate(newLabel)" :title="i18nService.translate('Save name // Name speichern')" style="width: 17%; padding: 0 1%"><i class="fas fa-check"/></button>
+                        <input id="gridName" type="text" v-model="newLabel[currentLanguage]" maxlength="25" style="width: 77%"/>
+                        <button @click="saveGridLabel" :disabled="isLabelDuplicate(newLabel[currentLanguage])" :title="i18nService.translate('Save name // Name speichern')" style="width: 17%; padding: 0 1%"><i class="fas fa-check"/></button>
                     </div>
                 </div>
                 <div class="row" style="margin-bottom: 0.5em">
@@ -58,7 +58,7 @@
                     <li v-for="elem in graphElemsToShow" style="display: inline-block; margin-right: 2em; margin-bottom: 1.5em; position: relative">
                         <a href="javascript:;" @click="setSelectedGraphElement(elem)" style="text-decoration: none;">
                             <div style="width: 100%; border: 1px solid lightgray">
-                                <div>{{elem.grid.label}}</div>
+                                <div>{{elem.grid.label | extractTranslation}}</div>
                                 <img :src="elem.grid.thumbnail ? elem.grid.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; max-width: 100%;"/>
                             </div>
                         </a>
@@ -114,7 +114,7 @@
                 grids: null,
                 graphList: [],
                 selectedGraphElement: null,
-                newLabel: '',
+                newLabel: {},
                 showLoading: true,
                 progressText: '',
                 selectValues: {
@@ -129,6 +129,7 @@
                     gridTo: null
                 },
                 i18nService: i18nService,
+                currentLanguage: i18nService.getBrowserLang(),
                 imageUtil: imageUtil
             };
         },
@@ -136,7 +137,7 @@
             setSelectedGraphElement(element, dontScroll) {
                 if (!element) return;
                 this.selectedGraphElement = element;
-                this.newLabel = this.selectedGraphElement.grid.label;
+                this.newLabel = JSON.parse(JSON.stringify(this.selectedGraphElement.grid.label));
                 this.reinitContextMenu();
                 this.metadata.lastOpenedGridId = element.grid.id;
                 dataService.saveMetadata(this.metadata);
@@ -150,7 +151,7 @@
             },
             deleteGrid: function (id) {
                 log.debug('delete: ' + id);
-                let label = this.grids.filter(g => g.id === id)[0].label;
+                let label = i18nService.getTranslation(this.grids.filter(g => g.id === id)[0].label);
                 if (!confirm(i18nService.translate('CONFIRM_DELETE_GRID', label))) {
                     return;
                 }
@@ -159,10 +160,9 @@
                 });
             },
             addGrid: function () {
-                log.debug('add grid!');
-                var existingNames = this.grids.map(grid => grid.label);
+                var existingNames = this.grids.map(grid => i18nService.getTranslation(grid.label));
                 var gridData = new GridData({
-                    label: modelUtil.getNewName('newGrid', existingNames),
+                    label: i18nService.getTranslationObject(modelUtil.getNewName('newGrid', existingNames)),
                     gridElements: []
                 });
                 dataService.saveGrid(gridData).then(() => {
@@ -172,10 +172,10 @@
                 });
             },
             isLabelDuplicate: function (label) {
-                return !label || this.grids.map(g => g.label).filter(l => l === label).length > 0;
+                return !label || this.grids.map(g => i18nService.getTranslation(g.label)).filter(l => l === label).length > 0;
             },
             saveGridLabel() {
-                this.selectedGraphElement.grid.label = this.newLabel;
+                this.selectedGraphElement.grid.label = JSON.parse(JSON.stringify(this.newLabel));
                 dataService.updateGrid(this.selectedGraphElement.grid.id, {
                     label: this.newLabel
                 });
@@ -298,10 +298,10 @@
         },
         computed: {
             headerDetails: function() {
-                return this.selectedGraphElement ? i18nService.translate('Details for grid {?} // Details für Grid {?}', `"${this.selectedGraphElement.grid.label}"`) :'';
+                return this.selectedGraphElement ? i18nService.translate('Details for grid {?} // Details für Grid {?}', `"${i18nService.getTranslation(this.selectedGraphElement.grid.label)}"`) :'';
             },
             connectedGridsOptionLabel: function() {
-                return this.selectedGraphElement ? i18nService.translate('Grids connected with "{?}" // Grid verknüpft mit "{?}"', this.selectedGraphElement.grid.label) : '';
+                return this.selectedGraphElement ? i18nService.translate('Grids connected with "{?}" // Grid verknüpft mit "{?}"', i18nService.getTranslation(this.selectedGraphElement.grid.label)) : '';
             },
             hasGlobalGrid: function() {
                 if (!this.grids || !this.metadata) {
@@ -353,7 +353,7 @@
         $.contextMenu('destroy');
 
         let connectVisibleFn = () => vueApp.selectValue !== vueApp.selectValues.CONNECTED_GRIDS;
-        let label = vueApp.selectedGraphElement ? vueApp.selectedGraphElement.grid.label : '';
+        let label = vueApp.selectedGraphElement ? i18nService.getTranslation(vueApp.selectedGraphElement.grid.label) : '';
         let optionsMenuItems = {
             CONTEXT_CONNECT: {
                 name: i18nService.translate('Connect to grid "{?}" // Verknüpfen mit Grid "{?}"', label),
