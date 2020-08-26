@@ -12,9 +12,9 @@
 
                     <div class="modal-body container" v-if="otherGrids && gridElement && selectedGrid">
                         <div class="row">
-                            <label class="four columns" for="moveGrid">{{i18nService.translate('Move element "{?}" to grid // Verschiebe Element "{?}" in Grid', this.gridElement.label)}}</label>
+                            <label class="four columns" for="moveGrid">{{i18nService.translate('Move element "{?}" to grid // Verschiebe Element "{?}" nach Grid', i18nService.getTranslation(this.gridElement.label))}}</label>
                             <select class="four columns" id="moveGrid" v-model="selectedGrid" style="margin-bottom: 1em">
-                                <option v-for="grid in otherGrids" :value="grid">{{grid.label}}</option>
+                                <option v-for="grid in otherGrids" :value="grid">{{grid.label | extractTranslation}}</option>
                             </select>
 
                         </div>

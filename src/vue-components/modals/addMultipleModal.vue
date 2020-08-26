@@ -76,7 +76,7 @@
                 var gridDataObject = new GridData(this.gridData);
                 this.parsedElems.forEach(label => {
                     var newElem = new GridElement({
-                        label: label,
+                        label: i18nService.getTranslationObject(label),
                         x: gridDataObject.getNewXYPos().x,
                         y: gridDataObject.getNewXYPos().y,
                     });

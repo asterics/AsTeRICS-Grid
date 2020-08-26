@@ -7,7 +7,7 @@
                     <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
                     <div class="modal-header">
                         <h1 name="header">
-                            <span data-i18n>Edit actions // Aktionen bearbeiten</span> <span>("{{gridElement.label}}")</span>
+                            <span data-i18n>Edit actions // Aktionen bearbeiten</span> <span>("{{gridElement.label | extractTranslation}}")</span>
                             <img class="spaced" v-if="gridElement.image" id="imgPreview" :src="gridElement.image.data" style="max-height: 1.5em; margin-bottom: -0.3em;"/>
                         </h1>
                     </div>

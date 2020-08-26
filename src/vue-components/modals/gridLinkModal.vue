@@ -14,14 +14,14 @@
                         <div class="row">
                             <div class="four columns">
                                 <div>
-                                    <div>{{gridFrom.label}}</div>
+                                    <div>{{gridFrom.label | extractTranslation}}</div>
                                     <img :src="gridFrom.thumbnail ? gridFrom.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; border: 1px solid lightgray"/>
                                 </div>
                             </div>
                             <i class="fas fa-2x fa-arrow-right hide-mobile two columns" style="margin-top: 2em"/>
                             <i class="fas fa-2x fa-arrow-down show-mobile two columns" style="margin: 0.5em 20%"/>
                             <div class="four columns">
-                                <div>{{gridTo.label}}</div>
+                                <div>{{gridTo.label | extractTranslation}}</div>
                                 <img :src="gridTo.thumbnail ? gridTo.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; border: 1px solid lightgray"/>
                             </div>
                         </div>
@@ -29,12 +29,12 @@
                             <label class="three columns" for="elementName" data-i18n="">Connect with element // Verknüpfung über Element</label>
                             <select id="elementName" class="four columns" v-model="selectedElement">
                                 <option :value="null" data-i18n="">create new Element // neues Element erstellen</option>
-                                <option v-for="elem in gridFrom.gridElements" :value="elem">{{elem.label || i18nService.translate('(empty element) // (leeres Element)')}}</option>
+                                <option v-for="elem in gridFrom.gridElements" :value="elem">{{i18nService.getTranslation(elem.label) || i18nService.translate('(empty element) // (leeres Element)')}}</option>
                             </select>
                         </div>
-                        <div class="row" v-show="!selectedElement || !selectedElement.label">
+                        <div class="row" v-show="!selectedElement || !i18nService.getTranslation(selectedElement.label)">
                             <label class="three columns" for="elementLabel" data-i18n="">Label of new element // Label des neuen Elements</label>
-                            <input type="text" id="elementLabel" class="four columns" v-model="newElementLabel" maxlength="35"/>
+                            <input type="text" id="elementLabel" class="four columns" v-model="newElementLabel[i18nService.getBrowserLang()]" maxlength="35"/>
                         </div>
                         <div class="row" v-show="selectedElement && selectedElement.actions.filter(e => e.modelName === GridActionNavigate.getModelName()).length > 0">
                             <i class="fas fa-exclamation-triangle"></i>
@@ -111,7 +111,7 @@
             }
         },
         mounted() {
-            this.newElementLabel = this.gridTo.label;
+            this.newElementLabel = JSON.parse(JSON.stringify(this.gridTo.label));
             dataService.getGrid(this.gridFromProp.id).then(gridFrom => {
                 this.gridFrom = JSON.parse(JSON.stringify(gridFrom));
                 i18nService.initDomI18n();
