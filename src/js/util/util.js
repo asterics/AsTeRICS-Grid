@@ -95,6 +95,22 @@ util.appendToClipboard = function (text) {
 };
 
 /**
+ * reads the clipboard content using navigator API
+ * returns null if failed or permission was not granted.
+ * @return Promise
+ */
+util.getClipboardContent = function () {
+    return navigator.clipboard.readText()
+        .then(text => {
+            return Promise.resolve(text);
+        })
+        .catch(err => {
+            log.warn('failed to read clipboard.');
+            return Promise.resolve(null);
+        });
+};
+
+/**
  * gets an element by given x/y coordinates in the current window
  *
  * @param possibleElements list of possible elements to return
