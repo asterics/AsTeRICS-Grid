@@ -66,7 +66,7 @@ gridUtil.generateGlobalGrid = function (homeGridId, locale) {
         height: 1,
         x: 0,
         y: 0,
-        label: i18nService.translate('Home // Start', locale),
+        label: i18nService.getTranslationObject('Home // Start', locale),
         image: new GridImage({
             data: 'data:image/svg+xml;base64,' + 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj48cGF0aCBkPSJNMjgwLjM3IDE0OC4yNkw5NiAzMDAuMTFWNDY0YTE2IDE2IDAgMCAwIDE2IDE2bDExMi4wNi0uMjlhMTYgMTYgMCAwIDAgMTUuOTItMTZWMzY4YTE2IDE2IDAgMCAxIDE2LTE2aDY0YTE2IDE2IDAgMCAxIDE2IDE2djk1LjY0YTE2IDE2IDAgMCAwIDE2IDE2LjA1TDQ2NCA0ODBhMTYgMTYgMCAwIDAgMTYtMTZWMzAwTDI5NS42NyAxNDguMjZhMTIuMTkgMTIuMTkgMCAwIDAtMTUuMyAwek01NzEuNiAyNTEuNDdMNDg4IDE4Mi41NlY0NC4wNWExMiAxMiAwIDAgMC0xMi0xMmgtNTZhMTIgMTIgMCAwIDAtMTIgMTJ2NzIuNjFMMzE4LjQ3IDQzYTQ4IDQ4IDAgMCAwLTYxIDBMNC4zNCAyNTEuNDdhMTIgMTIgMCAwIDAtMS42IDE2LjlsMjUuNSAzMUExMiAxMiAwIDAgMCA0NS4xNSAzMDFsMjM1LjIyLTE5My43NGExMi4xOSAxMi4xOSAwIDAgMSAxNS4zIDBMNTMwLjkgMzAxYTEyIDEyIDAgMCAwIDE2LjktMS42bDI1LjUtMzFhMTIgMTIgMCAwIDAtMS43LTE2LjkzeiIvPjwvc3ZnPg'
         }),
@@ -77,7 +77,7 @@ gridUtil.generateGlobalGrid = function (homeGridId, locale) {
         height: 1,
         x: 1,
         y: 0,
-        label: i18nService.translate('Back // Zurück', locale),
+        label: i18nService.getTranslationObject('Back // Zurück', locale),
         image: new GridImage({
             data: 'data:image/svg+xml;base64,' + 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBkPSJNMjU2IDUwNEMxMTkgNTA0IDggMzkzIDggMjU2UzExOSA4IDI1NiA4czI0OCAxMTEgMjQ4IDI0OC0xMTEgMjQ4LTI0OCAyNDh6bTExNi0yOTJIMjU2di03MC45YzAtMTAuNy0xMy0xNi4xLTIwLjUtOC41TDEyMS4yIDI0Ny41Yy00LjcgNC43LTQuNyAxMi4yIDAgMTYuOWwxMTQuMyAxMTQuOWM3LjYgNy42IDIwLjUgMi4yIDIwLjUtOC41VjMwMGgxMTZjNi42IDAgMTItNS40IDEyLTEydi02NGMwLTYuNi01LjQtMTItMTItMTJ6Ii8+PC9zdmc+'
         }),
@@ -96,7 +96,7 @@ gridUtil.generateGlobalGrid = function (homeGridId, locale) {
         actions: [speakAction]
     });
     let elementBackspace = new GridElement({
-        label: i18nService.translate('Delete Word // Wort löschen', locale),
+        label: i18nService.getTranslationObject('Delete Word // Wort löschen', locale),
         width: 1,
         height: 1,
         x: 2 + elementCollect.width,
@@ -107,7 +107,7 @@ gridUtil.generateGlobalGrid = function (homeGridId, locale) {
         actions: [new GridActionCollectElement({action: GridActionCollectElement.COLLECT_ACTION_REMOVE_WORD})]
     });
     let elementClear = new GridElement({
-        label: i18nService.translate('Clear // Leeren', locale),
+        label: i18nService.getTranslationObject('Clear // Leeren', locale),
         width: 1,
         height: 1,
         x: 3 + elementCollect.width,
@@ -118,7 +118,7 @@ gridUtil.generateGlobalGrid = function (homeGridId, locale) {
         actions: [new GridActionCollectElement({action: GridActionCollectElement.COLLECT_ACTION_CLEAR})]
     });
     return new GridData({
-        label: 'Global Grid',
+        label: i18nService.getTranslationObject('Global Grid', locale),
         gridElements: [elementHome, elementBack, elementCollect, elementBackspace, elementClear],
         rowCount: 3
     });
