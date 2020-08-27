@@ -47,12 +47,14 @@ function doAction(gridElement, action, gridId, gridData) {
     switch (action.modelName) {
         case 'GridActionSpeak':
             log.debug('action speak');
-            speechService.speak(i18nService.getTranslation(gridElement.label), action.speakLanguage);
+            let translation = i18nService.getTranslation(gridElement.label, null, true);
+            speechService.speak(translation.text, action.speakLanguage || translation.lang);
             break;
         case 'GridActionSpeakCustom':
             log.debug('action speak custom');
             if (action.speakText) {
-                speechService.speak(i18nService.getTranslation(action.speakText), action.speakLanguage);
+                let translation = i18nService.getTranslation(action.speakText, null, true);
+                speechService.speak(translation.text, action.speakLanguage || translation.lang);
             }
             break;
         case 'GridActionNavigate':
