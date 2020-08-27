@@ -32,11 +32,11 @@
                     </div>
 
                     <div class="modal-footer">
-                        <div class="button-container">
-                            <button @click="$emit('close')" title="Keyboard: [Esc]">
+                        <div class="button-container row">
+                            <button class="four columns offset-by-four" @click="$emit('close')" title="Keyboard: [Esc]">
                                 <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
                             </button>
-                            <button @click="save()" title="Keyboard: [Ctrl + Enter]" :disabled="parsedElems.length == 0">
+                            <button class="four columns" @click="save()" title="Keyboard: [Ctrl + Enter]" :disabled="parsedElems.length == 0">
                                 <i class="fas fa-check"/> <span data-i18n>Insert elements // Elemente einfügen</span>
                             </button>
                         </div>
