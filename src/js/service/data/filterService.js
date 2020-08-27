@@ -7,6 +7,7 @@ import {MetaData} from "../../model/MetaData";
 import {GridData} from "../../model/GridData";
 import {i18nService} from "../i18nService";
 import {GridActionSpeakCustom} from "../../model/GridActionSpeakCustom";
+import {GridActionSpeak} from "../../model/GridActionSpeak";
 
 let filterService = {};
 
@@ -170,6 +171,9 @@ function getModelConversionFunctions(objectModelVersion) {
                                 let text = action.speakText;
                                 action.speakText = {};
                                 action.speakText[gridData.locale] = text;
+                                action.speakLanguage = undefined;
+                            } else if (action.modelName === GridActionSpeak.getModelName()) {
+                                action.speakLanguage = undefined;
                             }
                         })
                     });
