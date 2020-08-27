@@ -24,7 +24,6 @@ class GridActionSpeakCustom extends Model({
 GridActionSpeakCustom.defaults({
     id: "", //will be replaced by constructor
     modelName: GridActionSpeakCustom.getModelName(),
-    speakLanguage: i18nService.getBrowserLang(),
     modelVersion: constants.MODEL_VERSION
 });
 
