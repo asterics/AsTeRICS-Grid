@@ -165,7 +165,7 @@ function HoverConstructor(itemSelector, options) {
         }
         _elements = L.selectAsList(_itemSelector);
         let alreadyActivatedTTS = stateService.getState(constants.STATE_ACTIVATED_TTS);
-        if (speechService.speechSupported() && !alreadyActivatedTTS && !_demoMode) {
+        if (speechService.nativeSpeechSupported() && !alreadyActivatedTTS && !_demoMode) {
             MainVue.setTooltip(i18nService.translate('Tap/click on any element to activate speech output // Klicken/tippen Sie auf ein beliebiges Element um Sprachausgabe zu aktivieren'));
             stateService.onStateChanged(constants.STATE_ACTIVATED_TTS, (acivatedTTS) => {
                 if (acivatedTTS) {
