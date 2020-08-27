@@ -552,8 +552,7 @@ dataService.importData = function (data, generateGlobalGrid, backupMode) {
     } else {
         metadataPromise = dataService.getMetadata();
     }
-    return metadataPromise.then((values) => {
-        let metadata = values[0];
+    return metadataPromise.then(metadata => {
         if (importGrids) {
             promises.push(dataService.getGrids().then(grids => {
                 let existingNames = grids.map(grid => i18nService.getTranslation(grid.label));
