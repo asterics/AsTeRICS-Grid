@@ -52,15 +52,29 @@ i18nService.translate = function (key, ...args) {
  * get plain translation string from an translation object
  * @param i18nObject translation object, e.g. {en: 'english text', de: 'deutscher Text'}
  * @param fallbackLang language to use if current browser language not available, default: 'en'
+ * @param includeLang if true return format is {lang: <languageCode>, text: <translatedText>}
  * @return {string|*|string} the translated string in current browser language, e.g. 'english text'
  */
-i18nService.getTranslation = function (i18nObject, fallbackLang) {
+i18nService.getTranslation = function (i18nObject, fallbackLang, includeLang) {
+    if (!i18nObject) {
+        return '';
+    }
     fallbackLang = fallbackLang || 'en';
     if (typeof i18nObject === 'string') {
         return i18nObject;
     }
     let currentLang = i18nService.getBrowserLang();
-    return (i18nObject[currentLang] ? i18nObject[currentLang] : i18nObject[fallbackLang]) || "";
+    if (i18nObject[currentLang]) {
+        return !includeLang ? i18nObject[currentLang] : {lang: currentLang, text: i18nObject[currentLang]};
+    }
+    if (i18nObject[fallbackLang]) {
+        return !includeLang ? i18nObject[fallbackLang] : {lang: fallbackLang, text: i18nObject[fallbackLang]};
+    }
+    let keys = Object.keys(i18nObject);
+    if (i18nObject[keys[0]]) {
+        return !includeLang ? i18nObject[keys[0]] : {lang: keys[0], text: i18nObject[keys[0]]};
+    }
+    return !includeLang ? '' : {lang: undefined, text: ''};
 };
 
 /**
