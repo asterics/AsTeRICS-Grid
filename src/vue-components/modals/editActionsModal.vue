@@ -51,6 +51,7 @@
                                                 </div>
                                                 <div class="nine columns">
                                                     <select id="selectLang" v-model="action.speakLanguage" style="width: 55%">
+                                                        <option data-i18n="" :value="undefined">automatic (current language) // automatisch (aktuelle Sprache)</option>
                                                         <option v-for="lang in voiceLangs" :value="lang">
                                                             {{lang | translate}}
                                                         </option>
@@ -68,6 +69,7 @@
                                                     <label for="selectLang2" class="normal-text" data-i18n>Language // Sprache</label>
                                                 </div>
                                                 <select class="eight columns" id="selectLang2" v-model="action.speakLanguage">
+                                                    <option data-i18n="" :value="undefined">automatic (current language) // automatisch (aktuelle Sprache)</option>
                                                     <option v-for="lang in voiceLangs" :value="lang">
                                                         {{lang | translate}}
                                                     </option>
@@ -78,7 +80,7 @@
                                                     <label for="inCustomText" class="normal-text" data-i18n>Text to speak // Auszusprechender Text</label>
                                                 </div>
                                                 <div class="nine columns">
-                                                    <input id="inCustomText" type="text" v-model="action.speakText" style="width: 70%"/>
+                                                    <input id="inCustomText" type="text" v-model="action.speakText[currentLang]" style="width: 70%"/>
                                                     <button @click="testAction(action)"><i class="fas fa-bolt"/> <span class="hide-mobile" data-i18n="">Test // Testen</span></button>
                                                 </div>
                                             </div>
@@ -242,7 +244,8 @@
                 editElementId: null,
                 additionalGridFiles: {}, //map: key = action.id, value = AdditionalGridFile (ARE Model)
                 collectActions: GridActionCollectElement.getActions(),
-                webradioActions: GridActionWebradio.getActions()
+                webradioActions: GridActionWebradio.getActions(),
+                currentLang: i18nService.getBrowserLang()
             }
         },
         components: {
