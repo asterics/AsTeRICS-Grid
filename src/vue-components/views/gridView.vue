@@ -227,11 +227,15 @@
                 });
             },
             reload(gridData) {
-                gridInstance.reinit(gridData);
-                if (gridData) {
-                    this.gridData = JSON.parse(JSON.stringify(gridData));
-                }
-                this.reinitInputMethods();
+                gridInstance.reinit(gridData).then(() => {
+                    if (gridData) {
+                        this.gridData = JSON.parse(JSON.stringify(gridData));
+                    }
+                    this.reinitInputMethods();
+                });
+            },
+            reloadOnLangChange() {
+                this.reload();
             },
             toEditGrid() {
                 Router.toEditGrid(this.gridData.id);
@@ -305,6 +309,7 @@
         },
         created() {
             $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
+            $(document).on(constants.EVENT_LANGUAGE_CHANGE, this.reloadOnLangChange);
             $(document).on(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
         },
         mounted: function () {
@@ -373,6 +378,7 @@
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
+            $(document).off(constants.EVENT_LANGUAGE_CHANGE, this.reloadOnLangChange);
             $(document).off(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
             stopInputMethods();
             $.contextMenu('destroy');
