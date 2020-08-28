@@ -65,7 +65,7 @@ module.exports = env => {
     function getDevServer() {
         return {
             contentBase: path.resolve(__dirname),
-            publicPath:  '/' + buildDirLegacy,
+            publicPath:  '/' + buildDir,
             host: '0.0.0.0',
             port: 9095,
             open: false,
@@ -73,14 +73,15 @@ module.exports = env => {
         };
     }
 
-    /*var configNormal = {
+    var configNormal = {
         mode: mode,
         entry: entryScript,
         plugins: plugins,
         output: {
             path: path.resolve(__dirname, baseDir + buildDir),
-            publicPath: buildDir,
-            filename: outputFilename
+            publicPath: "./" + buildDir,
+            filename: outputFilename,
+            chunkFilename: '[name].bundle.js',
         },
         resolve: resolve,
         devServer: getDevServer(),
@@ -88,7 +89,7 @@ module.exports = env => {
         module: {
             rules: [scssRule, vueRule]
         }
-    };*/
+    };
 
     var configLegacy = {
         mode: mode,
@@ -107,5 +108,5 @@ module.exports = env => {
             rules: [babelRule, scssRule, vueRule],
         }
     };
-    return [/*configNormal,*/ configLegacy];
+    return [configNormal, configLegacy];
 };
