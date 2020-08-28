@@ -1,7 +1,7 @@
 {
   "name": "AsTeRICS Grid",
   "short_name": "Grid",
-  "start_url": ".",
+  "start_url": "../",
   "display": "standalone",
   "background_color" : "#fff" ,
   "description": "Simple to use, offline web communication grid (AAC), integrated with AsTeRICS",
