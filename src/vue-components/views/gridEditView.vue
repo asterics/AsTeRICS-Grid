@@ -27,6 +27,9 @@
         <div>
             <element-move-modal v-if="showMoveModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showMoveModal = false" @reload="reload"/>
         </div>
+        <div>
+            <grid-translate-modal v-if="showTranslateModal" :grid-data-id="gridData.id" @close="showTranslateModal = false" @reload="reload"/>
+        </div>
         <div class="row content">
             <div v-if="!showGrid" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
@@ -65,6 +68,7 @@
     import GridDimensionModal from "../modals/gridDimensionModal.vue";
     import {gridUtil} from "../../js/util/gridUtil";
     import ElementMoveModal from "../modals/elementMoveModal.vue";
+    import GridTranslateModal from "../modals/gridTranslateModal.vue";
 
     let vueApp = null;
     let gridInstance = null;
@@ -83,6 +87,7 @@
                 showActionsModal: false,
                 showDimensionsModal: false,
                 showMoveModal: false,
+                showTranslateModal: false,
                 editElementId: null,
                 showGrid: false,
                 constants: constants,
@@ -90,6 +95,7 @@
             }
         },
         components: {
+            GridTranslateModal,
             ElementMoveModal,
             GridDimensionModal, EditGridModal, AddMultipleModal, EditActionsModal, HeaderIcon
         },
@@ -286,6 +292,7 @@
 
         var CONTEXT_LAYOUT_FILL = "CONTEXT_LAYOUT_FILL";
         var CONTEXT_GRID_DIMENSIONS = "CONTEXT_GRID_DIMENSIONS";
+        var CONTEXT_GRID_TRANSLATION = "CONTEXT_GRID_TRANSLATION";
         var CONTEXT_EDIT_GLOBAL_GRID = "CONTEXT_EDIT_GLOBAL_GRID";
         var CONTEXT_END_EDIT_GLOBAL_GRID = "CONTEXT_END_EDIT_GLOBAL_GRID";
 
@@ -341,6 +348,10 @@
             'CONTEXT_GRID_DIMENSIONS': {
                 name: "Change grid dimensions // Grid-Größe anpassen",
                 icon: "fas fa-expand-arrows-alt"
+            },
+            'CONTEXT_GRID_TRANSLATION': {
+                name: "Translate grid // Grid übersetzen",
+                icon: "fas fa-language"
             },
             'CONTEXT_LAYOUT_FILL': {name: "Fill gaps // Lücken füllen", icon: "fas fa-angle-double-left"},
             'CONTEXT_EDIT_GLOBAL_GRID': {name: "Edit global grid // Globales Grid bearbeiten", icon: "fas fa-globe", visible: !!vueApp.metadata.globalGridId && vueApp.metadata.globalGridActive && vueApp.metadata.globalGridId !== vueApp.gridData.id},
@@ -450,6 +461,10 @@
                 }
                 case CONTEXT_GRID_DIMENSIONS: {
                     vueApp.showDimensionsModal = true;
+                    break;
+                }
+                case CONTEXT_GRID_TRANSLATION: {
+                    vueApp.showTranslateModal = true;
                     break;
                 }
                 case CONTEXT_ACTION_EDIT:
