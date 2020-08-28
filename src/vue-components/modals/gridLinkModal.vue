@@ -10,7 +10,7 @@
                         </h1>
                     </div>
 
-                    <div class="modal-body container" v-if="gridFrom">
+                    <div class="modal-body" v-if="gridFrom">
                         <div class="row">
                             <div class="four columns">
                                 <div>
@@ -124,10 +124,6 @@
 </script>
 
 <style scoped>
-    .modal-body {
-        margin-top: 0;
-    }
-
     .row {
         margin-top: 1em;
     }

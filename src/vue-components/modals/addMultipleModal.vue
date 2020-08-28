@@ -10,7 +10,7 @@
                         </h1>
                     </div>
 
-                    <div class="modal-body container">
+                    <div class="modal-body">
                         <div class="row">
                             <label class="three columns" for="inputText" data-i18n="">Input // Eingabe</label>
                             <span class="nine columns" data-i18n="">Insert Labels for new elements, separated by ";" or [Enter] // Geben Sie Label für neue Elemente getrennt durch ";" oder [Enter] ein</span>

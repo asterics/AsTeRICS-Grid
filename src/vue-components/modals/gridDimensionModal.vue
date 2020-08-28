@@ -10,7 +10,7 @@
                         </h1>
                     </div>
 
-                    <div class="modal-body container">
+                    <div class="modal-body">
                         <div class="row">
                             <label for="gridRows" data-i18n="" class="seven columns">Number of rows // Anzahl der Zeilen</label>
                             <input id="gridRows" type="number" class="three columns" v-model.number="gridData.rowCount" min="1" max="100"/>
