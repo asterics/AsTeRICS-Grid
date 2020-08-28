@@ -178,6 +178,26 @@
                                                 <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
                                             </div>
                                         </div>
+                                        <div v-if="action.modelName === 'GridActionChangeLang'">
+                                            <div class="row">
+                                                <div class="twelve columns">
+                                                    <label for="changeLang" class="five columns normal-text" data-i18n>Change application language to // Sprache der Anwendung ändern zu</label>
+                                                    <select id="changeLang" class="six columns" v-model="action.language">
+                                                        <option data-i18n="" :value="undefined">System language // Systemsprache</option>
+                                                        <option v-for="lang in (selectFromAllLanguages ? allLanguages : gridLanguages)" :value="lang.code">
+                                                            {{lang | extractTranslation}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <input id="selectFromAllLangs" type="checkbox" v-model="selectFromAllLanguages"/>
+                                                <label for="selectFromAllLangs" data-i18n="">Show all Languages for selection // Zeige alle Sprachen zur Auswahl</label>
+                                            </div>
+                                            <div class="row">
+                                                <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </li>
@@ -245,7 +265,10 @@
                 additionalGridFiles: {}, //map: key = action.id, value = AdditionalGridFile (ARE Model)
                 collectActions: GridActionCollectElement.getActions(),
                 webradioActions: GridActionWebradio.getActions(),
-                currentLang: i18nService.getBrowserLang()
+                currentLang: i18nService.getBrowserLang(),
+                allLanguages: i18nService.getAllLanguages(),
+                gridLanguages: null,
+                selectFromAllLanguages: false
             }
         },
         components: {
@@ -333,6 +356,8 @@
                 let thiz = this;
                 dataService.getGrid(thiz.gridIdParam).then(data => {
                     thiz.gridData = JSON.parse(JSON.stringify(data));
+                    let langKeys = Object.keys(thiz.gridData.label);
+                    thiz.gridLanguages = thiz.allLanguages.filter(lang => langKeys.indexOf(lang.code) !== -1);
                     thiz.gridElement = thiz.gridData.gridElements.filter(el => el.id === thiz.editElementId)[0];
                 });
                 dataService.getGridsAttribute('label').then(map => {
