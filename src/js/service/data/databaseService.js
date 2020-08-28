@@ -113,6 +113,13 @@ databaseService.saveObject = function (objectType, data, onlyUpdate) {
  * @return {Promise<unknown[]>}
  */
 databaseService.bulkSave = function (objectList) {
+    if (!objectList || objectList.length === 0) {
+        return Promise.resolve();
+    }
+    if (objectList[0].isShortVersion) {
+        log.warn('not saving short version!');
+        return Promise.resolve();
+    }
     let elementCount = objectList.reduce((total, grid) => {
         let gridElementCount = grid.gridElements ? grid.gridElements.length : 0;
         return total + gridElementCount;
