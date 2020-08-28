@@ -16,7 +16,7 @@ class GridActionARE extends Model({
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionARE);
         super(properties);
-        this.id = this.id || modelUtil.generateId('grid-action-navigate')
+        this.id = this.id || modelUtil.generateId('grid-action-are')
     }
 
     static getModelName() {
