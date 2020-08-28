@@ -88,6 +88,10 @@ function doAction(gridElement, action, gridId, gridData) {
         case 'GridActionWebradio':
             webradioService.doAction(gridId, action);
             break;
+        case 'GridActionChangeLang':
+            i18nService.setLanguage(action.language);
+            i18nService.initDomI18n();
+            break;
     }
 }
 
