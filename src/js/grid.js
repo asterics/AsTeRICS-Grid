@@ -333,6 +333,7 @@ function Grid(gridContainerId, gridItemClass, options) {
         init(gridData).then(() => {
             notifyLayoutChangeEnd();
         });
+        return _initPromise;
     };
 
     /**
