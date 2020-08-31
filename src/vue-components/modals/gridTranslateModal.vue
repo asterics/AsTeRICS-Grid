@@ -64,26 +64,28 @@
                                     </div>
                                 </div>
                             </div>
-                            <ul id="translationList" v-for="data in (gridData ? [gridData] : allGrids)">
-                                <li>
-                                    <div class="row">
-                                        <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="data.label[currentLocale]" @change="changedGrid(data)"/>
-                                        <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="data.label[chosenLocale]" @change="changedGrid(data)"/>
-                                    </div>
-                                </li>
-                                <li v-for="el in data.gridElements">
-                                    <div class="row" v-if="el.label[currentLocale] || el.label[chosenLocale]">
-                                        <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="el.label[currentLocale]" @change="changedGrid(data)"/>
-                                        <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="el.label[chosenLocale]" @change="changedGrid(data)"/>
-                                    </div>
-                                </li>
-                                <li v-for="el in data.gridElements">
-                                    <div class="row" v-for="action in el.actions" v-if="action.modelName === GridActionSpeakCustom.getModelName() && (action.speakText[currentLocale] || action.speakText[chosenLocale])">
-                                        <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="action.speakText[currentLocale]" @change="changedGrid(data)"/>
-                                        <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="action.speakText[chosenLocale]" @change="changedGrid(data)"/>
-                                    </div>
-                                </li>
-                            </ul>
+                            <div id="translationList">
+                                <ul v-for="data in (gridData ? [gridData] : allGrids)">
+                                    <li>
+                                        <div class="row">
+                                            <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="data.label[currentLocale]" @change="changedGrid(data)"/>
+                                            <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="data.label[chosenLocale]" @change="changedGrid(data)"/>
+                                        </div>
+                                    </li>
+                                    <li v-for="el in data.gridElements" v-if="showGridElements(data.label[currentLocale])">
+                                        <div class="row" v-if="el.label[currentLocale] || el.label[chosenLocale]">
+                                            <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="el.label[currentLocale]" @change="changedGrid(data)"/>
+                                            <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="el.label[chosenLocale]" @change="changedGrid(data)"/>
+                                        </div>
+                                    </li>
+                                    <li v-for="el in data.gridElements" v-if="showGridElements(data.label[currentLocale])">
+                                        <div class="row" v-for="action in el.actions" v-if="action.modelName === GridActionSpeakCustom.getModelName() && (action.speakText[currentLocale] || action.speakText[chosenLocale])">
+                                            <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="action.speakText[currentLocale]" @change="changedGrid(data)"/>
+                                            <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="action.speakText[chosenLocale]" @change="changedGrid(data)"/>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
@@ -112,6 +114,7 @@
     import {dataService} from "../../js/service/data/dataService";
     import {localStorageService} from "../../js/service/data/localStorageService";
 
+    window.hideKeyboardTranslations = false;
     export default {
         props: ['gridDataId'],
         data: function () {
@@ -123,8 +126,7 @@
                 GridActionSpeakCustom: GridActionSpeakCustom,
                 allLanguages: i18nService.getAllLanguages(),
                 usedLocales: localStorageService.getUsedLocales(),
-                changedGrids: [],
-                allTexts: []
+                changedGrids: []
             }
         },
         computed: {
@@ -138,8 +140,9 @@
         methods: {
             save() {
                 let thiz = this;
-                localStorageService.addUsedLocales(Object.keys(thiz.gridData.label));
-                dataService.saveGrids(thiz.changedGrids).then(() => {
+                let data = thiz.gridData || thiz.allGrids[0];
+                localStorageService.addUsedLocales(Object.keys(data.label));
+                dataService.saveGrids(JSON.parse(JSON.stringify(thiz.changedGrids))).then(() => {
                     thiz.$emit('reload');
                     thiz.$emit('close');
                 });
@@ -147,8 +150,8 @@
             changedGrid(gridChanged) {
                 if (!gridChanged) {
                     this.changedGrids = this.allGrids;
-                } else if (this.changedGrids.indexOf(this.gridData) === -1) {
-                    this.changedGrids.push(this.gridData);
+                } else if (this.changedGrids.indexOf(gridChanged) === -1) {
+                    this.changedGrids.push(gridChanged);
                 }
             },
             getLocaleTranslation(locale) {
@@ -174,6 +177,13 @@
                         }
                     })
                 })
+            },
+            showGridElements(label) {
+                if (!window.hideKeyboardTranslations) {
+                    return true;
+                }
+                label = label.toLowerCase();
+                return !label.includes('keyboard') && !label.includes('tastatur') && !label.includes('zahlen') && !label.includes('numbers');
             }
         },
         mounted() {
