@@ -8,29 +8,28 @@
             </div>
             <div class="ten columns">
                 <h3 data-i18n="">Language // Sprache</h3>
-                <div class="row">
-                    <label class="five columns" for="inLanguageCode">
-                        <span data-i18n="">two-figure language code // zweistelliges Sprachkürzel</span>
-                        <a href="https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes" target="_blank" data-i18n="">(ISO 639-1 list) // (ISO 639-1 Liste)</a>
-                    </label>
-                    <input id="inLanguageCode" class="six columns" v-model="langCode" type="text" maxlength="2" placeholder="empty = automatic" @input="saveLangCode()"/>
-                </div>
-                <div class="row" style="margin-bottom: 0.5em">
-                    <span class="fa fa-info-circle"></span>
-                    <span class="break-word" data-i18n="">
-                        <span>For user interface only English ("en") and German ("de") are available. For all other languages English will be used.</span>
-                        <span>Das User-Interface ist nur in Englisch ("en") and Deutsch ("de") verfügbar. Bei anderen Sprachen wird automatisch Englisch verwendet.</span>
-                    </span>
+                <div class="row" v-if="gridLanguages">
+                    <label class="three columns" for="inLanguage" data-i18n="">Select language // Sprache wählen</label>
+                    <select class="five columns" id="inLanguage" v-model="langCode" @input="saveLangCode()">
+                        <option :value="null" data-i18n="">automatic // automatisch</option>
+                        <option v-for="lang in allLanguages.filter(lang => gridLanguages.indexOf(lang.code) !== -1)" :value="lang.code">{{lang | extractTranslation}} ({{lang.code}})</option>
+                    </select>
                 </div>
                 <div class="row">
                     <span class="fa fa-info-circle"></span>
                     <span class="break-word">
                         <span data-i18n="">
-                            <span>In order to get the standard set of grids in the selected language go to <i>"Manage grids -> More -> Reset to default configuration"</i>. Supported language codes can found and added in the respective </span>
-                            <span>Um die Standard-Gridsammlung in der entsprechenden Sprache zu erhalten, wählen Sie <i>"Grids verwalten -> Mehr -> Auf Standardkonfiguration zurücksetzen"</i>. Verfügbare Sprachkürzel können hier gefunden und erweitert werden: </span>
+                            <span>Grids can be translated to every language. To add or edit a translation use "Edit grid -> More -> Translate Grid".</span>
+                            <span>Grids können in alle Sprachen übersetzt werden. Um eine Übersetzung zu bearbeiten oder hinzuzufügen, verwenden Sie "Grid bearbeiten -> Mehr -> Grid übersetzen".</span>
                         </span>
                     </span>
-                    <a href="https://github.com/asterics/AsTeRICS-Grid/tree/master/app/examples/translations" target="_blank" data-i18n="">folder on github. // Ordner auf github</a>
+                </div>
+                <div class="row" style="margin-bottom: 0.5em">
+                    <span class="fa fa-info-circle"></span>
+                    <span class="break-word" data-i18n="">
+                        <span>For user interface only English (en) and German (de) are available. For all other languages English will be used.</span>
+                        <span>Das User-Interface ist nur in Englisch (en) and Deutsch (de) verfügbar. Für andere Sprachen wird Englisch verwendet.</span>
+                    </span>
                 </div>
             </div>
             <div class="ten columns">
@@ -79,6 +78,9 @@
                 metadata: null,
                 show: false,
                 langCode: '',
+                gridLanguages: null,
+                allLanguages: i18nService.getAllLanguages(),
+                currentLang: i18nService.getBrowserLang(),
                 saveSuccess: null,
                 speechService: speechService,
                 syncNavigation: localStorageService.shouldSyncNavigation(),
@@ -122,6 +124,9 @@
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
                 thiz.show = true;
             });
+            dataService.getGrids().then(grids => {
+                thiz.gridLanguages = Object.keys(grids[0].label);
+            })
             thiz.langCode = i18nService.getCustomLanguage();
         },
         updated() {
