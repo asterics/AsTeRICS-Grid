@@ -17,7 +17,6 @@ let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
 
 function init() {
     let promises = [];
-    log.warn('newVersion!')
     //timingLogger.initLogging();
     log.setLevel(log.levels.INFO);
     log.info('AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
