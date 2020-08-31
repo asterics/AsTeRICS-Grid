@@ -83,6 +83,10 @@
                                     </div>
                                 </li>
                             </ul>
+                            <div class="row" style="margin-top: 2em">
+                                <button @click="copyAll" data-i18n="">Copy texts of all grids // Texte von allen Grids kopieren</button>
+                                <button @click="pasteAll" :disabled="allTexts.length === 0" data-i18n="">Paste texts to all grids // Texte in alle Grids einfügen</button>
+                            </div>
                         </div>
                     </div>
 
@@ -115,14 +119,15 @@
         props: ['gridDataId'],
         data: function () {
             return {
-                gridData: null,
-                allGrids: null,
+                gridData: undefined,
+                allGrids: undefined,
                 currentLocale: i18nService.getBrowserLang(),
                 chosenLocale: i18nService.isBrowserLangEN() ? 'de' : 'en',
                 GridActionSpeakCustom: GridActionSpeakCustom,
                 allLanguages: i18nService.getAllLanguages(),
                 usedLocales: localStorageService.getUsedLocales(),
-                changedGrids: []
+                changedGrids: [],
+                allTexts: []
             }
         },
         computed: {
@@ -170,6 +175,52 @@
                         }
                     })
                 })
+            },
+            copyAll() {
+                this.allTexts = [];
+                this.doForAllTranslationObjects((i18nObject) => {
+                    if (i18nObject[this.currentLocale]) {
+                        this.allTexts.push(i18nObject[this.currentLocale]);
+                    }
+                });
+                let text = this.allTexts.reduce((total, current) => {
+                    return total + current + '\n';
+                }, '');
+                console.log(text.trim());
+                util.copyToClipboard(text.trim());
+            },
+            pasteAll() {
+                util.getClipboardContent().then(clipboard => {
+                    let translations = clipboard.trim().split('\n');
+                    if (translations.length !== this.allTexts.length) {
+                        log.warn("translations don't have same length as copied texts - aborting.");
+                        return;
+                    }
+                    let map = {};
+                    this.allTexts.forEach((text, index) => {
+                        map[text] = translations[index];
+                    });
+                    this.doForAllTranslationObjects(i18nObject => {
+                        if (map[i18nObject[this.currentLocale]]) {
+                            i18nObject[this.chosenLocale] = map[i18nObject[this.currentLocale]];
+                        }
+                    });
+                    this.changedGrids = this.allGrids;
+                    this.$forceUpdate();
+                });
+            },
+            doForAllTranslationObjects(fn) {
+                this.allGrids.forEach(grid => {
+                    fn(grid.label);
+                    grid.gridElements.forEach(element => {
+                        fn(element.label);
+                        element.actions.forEach(action => {
+                            if (action.speakText) {
+                                fn(action.speakText);
+                            }
+                        })
+                    });
+                });
             }
         },
         mounted() {
