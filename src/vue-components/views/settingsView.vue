@@ -11,7 +11,7 @@
                 <div class="row" v-if="gridLanguages">
                     <label class="three columns" for="inLanguage" data-i18n="">Select language // Sprache wählen</label>
                     <select class="five columns" id="inLanguage" v-model="langCode" @input="saveLangCode()">
-                        <option :value="null" data-i18n="">automatic // automatisch</option>
+                        <option value="" data-i18n="">automatic // automatisch</option>
                         <option v-for="lang in allLanguages.filter(lang => gridLanguages.indexOf(lang.code) !== -1)" :value="lang.code">{{lang | extractTranslation}} ({{lang.code}})</option>
                     </select>
                 </div>
@@ -38,7 +38,7 @@
                     <label class="three columns" for="inVoice">
                         <span data-i18n="">Preferred voice // Bevorzugte Stimme</span>
                     </label>
-                    <select id="inVoice" class="five columns" v-model="selectedVoiceName" @change="saveVoice('saveVoice')">
+                    <select id="inVoice" class="five columns" v-model="selectedVoiceName" @change="saveVoice()">
                         <option value="" data-i18n="">automatic // automatisch</option>
                         <option v-for="voice in voices" :value="voice.name">{{voice.name}}</option>
                     </select>
@@ -113,8 +113,7 @@
                 }, 300, 'SAVE_NAV');
             },
             testSpeak() {
-                let voice = this.voices.filter(voice => voice.name === this.selectedVoiceName)[0];
-                speechService.speak(this.testText, null , voice);
+                speechService.speak(this.testText, null , this.selectedVoiceName);
             }
         },
         mounted() {
@@ -124,7 +123,7 @@
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
                 thiz.show = true;
             });
-            dataService.getGrids().then(grids => {
+            dataService.getGrids(false, true).then(grids => {
                 thiz.gridLanguages = Object.keys(grids[0].label);
             })
             thiz.langCode = i18nService.getCustomLanguage();
