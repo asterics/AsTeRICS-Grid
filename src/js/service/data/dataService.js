@@ -565,7 +565,7 @@ dataService.importData = function (data, generateGlobalGrid, backupMode) {
                 }
                 importGrids.forEach(grid => {
                     let label = i18nService.getTranslation(grid.label);
-                    grid.label = i18nService.getTranslationObject(modelUtil.getNewName(label, existingNames), grid.locale);
+                    grid.label[i18nService.getBrowserLang()] = modelUtil.getNewName(label, existingNames);
                 });
                 let locale = importGrids[0] ? importGrids[0].locale : null;
                 if (generateGlobalGrid) {
