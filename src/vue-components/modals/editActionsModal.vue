@@ -52,8 +52,8 @@
                                                 <div class="nine columns">
                                                     <select id="selectLang" v-model="action.speakLanguage" style="width: 55%">
                                                         <option data-i18n="" :value="undefined">automatic (current language) // automatisch (aktuelle Sprache)</option>
-                                                        <option v-for="lang in voiceLangs" :value="lang">
-                                                            {{lang | translate}}
+                                                        <option v-for="lang in voiceLangs" :value="lang.code">
+                                                            {{lang | extractTranslation}}
                                                         </option>
                                                     </select>
                                                     <button @click="testAction(action)" class="inline spaced"><i class="fas fa-bolt"/> <span class="hide-mobile" data-i18n="">Test // Testen</span></button>
@@ -70,8 +70,8 @@
                                                 </div>
                                                 <select class="eight columns" id="selectLang2" v-model="action.speakLanguage">
                                                     <option data-i18n="" :value="undefined">automatic (current language) // automatisch (aktuelle Sprache)</option>
-                                                    <option v-for="lang in voiceLangs" :value="lang">
-                                                        {{lang | translate}}
+                                                    <option v-for="lang in voiceLangs" :value="lang.code">
+                                                        {{lang | extractTranslation}}
                                                     </option>
                                                 </select>
                                             </div>
