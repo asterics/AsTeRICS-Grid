@@ -99,7 +99,7 @@
                                                 </div>
                                                 <select class="eight columns" id="selectGrid" type="text" v-model="action.toGridId" :disabled="action.toLastGrid">
                                                     <option v-for="(label, id) in gridLabels" :value="id">
-                                                        {{label}}
+                                                        {{label | extractTranslation}}
                                                     </option>
                                                 </select>
                                             </div>
