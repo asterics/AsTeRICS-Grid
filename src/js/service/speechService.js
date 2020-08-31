@@ -4,16 +4,17 @@ import {constants} from "../util/constants";
 import {dataService} from "./data/dataService";
 import {localStorageService} from "./data/localStorageService";
 
+let speechService = {};
+
 let SPEECH_PREFFERED_VOICE_NAME_KEY = 'SPEECH_PREFFERED_VOICE_NAME_KEY';
+speechService.VOICE_TYPE_NATIVE = 'VOICE_TYPE_NATIVE';
+speechService.VOICE_TYPE_RESPONSIVEVOICE = 'VOICE_TYPE_RESPONSIVEVOICE';
 
-var _allVoices = [];
-var _voicesLangs = [];
-var _voicesLangMap = {};
+var _allVoicesNative = [];
 let _preferredVoiceName = localStorageService.get(SPEECH_PREFFERED_VOICE_NAME_KEY) || '';
-
+let allVoices = [];
 let responsiveVoiceVoices = JSON.parse('[{"name":"UK English Female","lang":"en-GB"},{"name":"UK English Male","lang":"en-GB"},{"name":"US English Female","lang":"en-US"},{"name":"US English Male","lang":"en-US"},{"name":"Arabic Male","lang":"ar-SA"},{"name":"Arabic Female","lang":"ar-SA"},{"name":"Armenian Male","lang":"hy-AM"},{"name":"Australian Female","lang":"en-AU"},{"name":"Australian Male","lang":"en-AU"},{"name":"Bangla Bangladesh Female","lang":"bn-BD"},{"name":"Bangla Bangladesh Male","lang":"bn-BD"},{"name":"Bangla India Female","lang":"bn-IN"},{"name":"Bangla India Male","lang":"bn-IN"},{"name":"Brazilian Portuguese Female","lang":"pt-BR"},{"name":"Chinese Female","lang":"zh-CN"},{"name":"Chinese Male","lang":"zh-CN"},{"name":"Chinese (Hong Kong) Female","lang":"zh-HK"},{"name":"Chinese (Hong Kong) Male","lang":"zh-HK"},{"name":"Chinese Taiwan Female","lang":"zh-TW"},{"name":"Chinese Taiwan Male","lang":"zh-TW"},{"name":"Czech Female","lang":"cs-CZ"},{"name":"Danish Female","lang":"da-DK"},{"name":"Deutsch Female","lang":"de-DE"},{"name":"Deutsch Male","lang":"de-DE"},{"name":"Dutch Female","lang":"nl-NL"},{"name":"Dutch Male","lang":"nl-NL"},{"name":"Estonian Male","lang":"et-EE"},{"name":"Filipino Female","lang":"fil-PH"},{"name":"Finnish Female","lang":"fi-FI"},{"name":"French Female","lang":"fr-FR"},{"name":"French Male","lang":"fr-FR"},{"name":"French Canadian Female","lang":"fr-CA"},{"name":"French Canadian Male","lang":"fr-CA"},{"name":"Greek Female","lang":"el-GR"},{"name":"Hindi Female","lang":"hi-IN"},{"name":"Hindi Male","lang":"hi-IN"},{"name":"Hungarian Female","lang":"hu-HU"},{"name":"Indonesian Female","lang":"id-ID"},{"name":"Indonesian Male","lang":"id-ID"},{"name":"Italian Female","lang":"it-IT"},{"name":"Italian Male","lang":"it-IT"},{"name":"Japanese Female","lang":"ja-JP"},{"name":"Japanese Male","lang":"ja-JP"},{"name":"Korean Female","lang":"ko-KR"},{"name":"Korean Male","lang":"ko-KR"},{"name":"Latin Male","lang":"la"},{"name":"Nepali","lang":"ne-NP"},{"name":"Norwegian Female","lang":"nb-NO"},{"name":"Norwegian Male","lang":"nb-NO"},{"name":"Polish Female","lang":"pl-PL"},{"name":"Polish Male","lang":"pl-PL"},{"name":"Portuguese Female","lang":"pt-BR"},{"name":"Portuguese Male","lang":"pt-BR"},{"name":"Romanian Female","lang":"ro-RO"},{"name":"Russian Female","lang":"ru-RU"},{"name":"Sinhala","lang":"si-LK"},{"name":"Slovak Female","lang":"sk-SK"},{"name":"Spanish Female","lang":"es-ES"},{"name":"Spanish Latin American Female","lang":"es-MX"},{"name":"Spanish Latin American Male","lang":"es-MX"},{"name":"Swedish Female","lang":"sv-SE"},{"name":"Swedish Male","lang":"sv-SE"},{"name":"Tamil Female","lang":"hi-IN"},{"name":"Tamil Male","lang":"hi-IN"},{"name":"Thai Female","lang":"th-TH"},{"name":"Thai Male","lang":"th-TH"},{"name":"Turkish Female","lang":"tr-TR"},{"name":"Turkish Male","lang":"tr-TR"},{"name":"Ukrainian Female","lang":"uk-UA"},{"name":"Vietnamese Female","lang":"vi-VN"},{"name":"Vietnamese Male","lang":"vi-VN"},{"name":"Afrikaans Male","lang":"af-ZA"},{"name":"Albanian Male","lang":"sq-AL"},{"name":"Bosnian Male","lang":"bs"},{"name":"Catalan Male","lang":"ca-ES"},{"name":"Croatian Male","lang":"hr-HR"},{"name":"Esperanto Male","lang":"eo"},{"name":"Icelandic Male","lang":"is-IS"},{"name":"Latvian Male","lang":"lv-LV"},{"name":"Macedonian Male","lang":"mk-MK"},{"name":"Moldavian Female","lang":"md"},{"name":"Montenegrin Male","lang":"me"},{"name":"Serbian Male","lang":"sr-RS"},{"name":"Serbo-Croatian Male","lang":"hr-HR"},{"name":"Swahili Male","lang":"sw-KE"},{"name":"Welsh Male","lang":"cy"},{"name":"Fallback UK Female","lang":"en-GB"}]');
 
-var speechService = {};
 
 speechService.speak = function (text, lang, preferredVoiceProp) {
     if (!text) {
@@ -21,17 +22,16 @@ speechService.speak = function (text, lang, preferredVoiceProp) {
     }
     speechService.stopSpeaking();
     lang = lang || i18nService.getBrowserLang();
-    let voice = preferredVoiceProp || speechService.getPreferredVoice() || getVoice(lang);
-    if (speechService.nativeSpeechSupported() && voice) {
+    let voices = getVoicesByName(preferredVoiceProp) || getVoicesByName(_preferredVoiceName) || getVoicesByLang(lang);
+    let nativeVoices = voices.filter(voice => voice.type === speechService.VOICE_TYPE_NATIVE);
+    let responsiveVoices = voices.filter(voice => voice.type === speechService.VOICE_TYPE_RESPONSIVEVOICE);
+    if (speechService.nativeSpeechSupported() && nativeVoices.length > 0) {
         var msg = new SpeechSynthesisUtterance(text);
-        msg.voice = voice;
+        msg.voice = nativeVoices[0].ref;
         log.debug('used voice: ' + msg.voice.name);
         window.speechSynthesis.speak(msg);
-    } else {
-        let voicelist = responsiveVoiceVoices.filter(v => v.lang.substring(0,2).toLowerCase() === lang);
-        if (voicelist.length > 0) {
-            responsiveVoice.speak(text, voicelist[0].name);
-        }
+    } else if(responsiveVoices.length > 0) {
+        responsiveVoice.speak(text, responsiveVoices[0].name);
     }
     testIsSpeaking();
     setTimeout(() => { // Firefox takes a while until isSpeaking is true
@@ -64,12 +64,21 @@ speechService.isSpeaking = function () {
     return window.speechSynthesis.speaking || responsiveVoice.isPlaying();
 };
 
+/**
+ * returns array of languages where a TTS voice exists
+ * @return {*} array of languages where one element has properties [en, de, code].
+ */
 speechService.getVoicesLangs = function () {
-    return _voicesLangs;
+    let voiceLangCodes = allVoices.map(voice => voice.lang.substring(0, 2));
+    return i18nService.getAllLanguages().filter(lang => voiceLangCodes.indexOf(lang.code) !== -1);
 };
 
+/**
+ * returns array of all voices where one element has properties [name, lang, type, ref]
+ * @return {[]}
+ */
 speechService.getVoices = function () {
-    return _allVoices;
+    return allVoices;
 };
 
 speechService.setPreferredVoiceName = function(voiceName) {
@@ -81,47 +90,68 @@ speechService.getPreferredVoiceName = function() {
     return _preferredVoiceName;
 };
 
-speechService.getPreferredVoice = function() {
-    if (!_preferredVoiceName) {
-        return null;
-    }
-    return _allVoices.filter(voice => voice.name === _preferredVoiceName)[0];
-};
-
 speechService.nativeSpeechSupported = function () {
     if (typeof SpeechSynthesisUtterance === 'undefined' || !window.speechSynthesis) {
         return false;
     }
-    let voices = _allVoices.length > 0 ? _allVoices : window.speechSynthesis.getVoices(); //first call in chrome returns [] sometimes
+    let voices = _allVoicesNative.length > 0 ? _allVoicesNative : window.speechSynthesis.getVoices(); //first call in chrome returns [] sometimes
     voices = voices.length > 0 ? voices : window.speechSynthesis.getVoices();
     return voices.length > 0;
 };
 
-function getVoice(lang) {
-    if (_voicesLangMap[lang]) {
-        return _voicesLangMap[lang];
-    }
+function getVoicesByLang(lang) {
+    return allVoices.filter(voice => voice.lang.substring(0,2) === lang);
+}
 
-    for (var i = 0; i < _allVoices.length; i++) {
-        if (_allVoices[i].lang.includes(lang)) {
-            _voicesLangMap[lang] = _allVoices[i];
-            return _allVoices[i];
-        }
+/**
+ * returns a list of voices by name
+ * @param voiceName the voice name to search
+ * @return {*[]|null} a list of voices with this name, or null if not found
+ */
+function getVoicesByName(voiceName) {
+    let voices = allVoices.filter(voice => voice.name === voiceName);
+    return voices.length > 0 ? voices : null;
+}
+
+function addVoice(voiceName, voiceLang, voiceType, voiceReference) {
+    if (allVoices.map(voice => voice.name).indexOf(voiceName) !== -1) {
+        return;
     }
-    return null;
+    allVoices.push({
+        name: voiceName,
+        lang: voiceLang,
+        type: voiceType,
+        ref: voiceReference
+    });
+}
+
+function sortVoices() {
+    allVoices.sort((l1, l2) => {
+        if (l1.type === speechService.VOICE_TYPE_NATIVE && l1.type !== l2.type) {
+            return -1;
+        }
+        if (l2.type === speechService.VOICE_TYPE_NATIVE && l1.type !== l2.type) {
+            return 1;
+        }
+        return l1.name.localeCompare(l2.name);
+    });
 }
 
 function init() {
     if (window.speechSynthesis && window.speechSynthesis.getVoices) {
-        _allVoices = window.speechSynthesis.getVoices();
+        _allVoicesNative = window.speechSynthesis.getVoices();
         setTimeout(function () {
-            _allVoices = window.speechSynthesis.getVoices(); //first call in chrome returns [] sometimes
-            _voicesLangs = _allVoices.map(voice => voice.lang.substring(0,2).toLowerCase());
-            _voicesLangs = _voicesLangs.filter(function(item, pos, self) {
-                return self.indexOf(item) == pos;
+            _allVoicesNative = window.speechSynthesis.getVoices(); //first call in chrome returns [] sometimes
+            _allVoicesNative.forEach(voice => {
+                addVoice(voice.name, voice.lang, speechService.VOICE_TYPE_NATIVE, voice);
             })
+            sortVoices();
         }, 100);
     }
+    responsiveVoiceVoices.forEach(voice => {
+        addVoice(voice.name, voice.lang, speechService.VOICE_TYPE_RESPONSIVEVOICE);
+    })
+    sortVoices();
 }
 init();
 
