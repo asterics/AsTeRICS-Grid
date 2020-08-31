@@ -10,11 +10,12 @@
                         </h1>
                     </div>
 
-                    <div class="modal-body" v-if="gridData">
+                    <div class="modal-body" v-if="gridData !== undefined">
                         <div>
                             <div class="row">
                                 <label class="four columns" for="gridSelect" data-i18n="">Grid to translate // Zu übersetzendes Grid</label>
                                 <select class="four columns" id="gridSelect" v-model="gridData">
+                                    <option :value="null" data-i18n="">show all Grids // alle Grids anzeigen</option>
                                     <option v-for="grid in allGrids" :value="grid">{{grid.label | extractTranslation}}</option>
                                 </select>
                             </div>
@@ -63,30 +64,26 @@
                                     </div>
                                 </div>
                             </div>
-                            <ul id="translationList">
+                            <ul id="translationList" v-for="data in (gridData ? [gridData] : allGrids)">
                                 <li>
                                     <div class="row">
-                                        <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="gridData.label[currentLocale]" @change="changedGrid()"/>
-                                        <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="gridData.label[chosenLocale]" @change="changedGrid()"/>
+                                        <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="data.label[currentLocale]" @change="changedGrid(data)"/>
+                                        <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="data.label[chosenLocale]" @change="changedGrid(data)"/>
                                     </div>
                                 </li>
-                                <li v-for="el in gridData.gridElements">
+                                <li v-for="el in data.gridElements">
                                     <div class="row" v-if="el.label[currentLocale] || el.label[chosenLocale]">
-                                        <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="el.label[currentLocale]" @change="changedGrid()"/>
-                                        <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="el.label[chosenLocale]" @change="changedGrid()"/>
+                                        <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="el.label[currentLocale]" @change="changedGrid(data)"/>
+                                        <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="el.label[chosenLocale]" @change="changedGrid(data)"/>
                                     </div>
                                 </li>
-                                <li v-for="el in gridData.gridElements">
+                                <li v-for="el in data.gridElements">
                                     <div class="row" v-for="action in el.actions" v-if="action.modelName === GridActionSpeakCustom.getModelName() && (action.speakText[currentLocale] || action.speakText[chosenLocale])">
-                                        <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="action.speakText[currentLocale]" @change="changedGrid()"/>
-                                        <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="action.speakText[chosenLocale]" @change="changedGrid()"/>
+                                        <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="action.speakText[currentLocale]" @change="changedGrid(data)"/>
+                                        <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="action.speakText[chosenLocale]" @change="changedGrid(data)"/>
                                     </div>
                                 </li>
                             </ul>
-                            <div class="row" style="margin-top: 2em">
-                                <button @click="copyAll" data-i18n="">Copy texts of all grids // Texte von allen Grids kopieren</button>
-                                <button @click="pasteAll" :disabled="allTexts.length === 0" data-i18n="">Paste texts to all grids // Texte in alle Grids einfügen</button>
-                            </div>
                         </div>
                     </div>
 
@@ -147,8 +144,10 @@
                     thiz.$emit('close');
                 });
             },
-            changedGrid() {
-                if (this.changedGrids.indexOf(this.gridData) === -1) {
+            changedGrid(gridChanged) {
+                if (!gridChanged) {
+                    this.changedGrids = this.allGrids;
+                } else if (this.changedGrids.indexOf(this.gridData) === -1) {
                     this.changedGrids.push(this.gridData);
                 }
             },
@@ -165,7 +164,7 @@
                     if (!result) {
                         return;
                     }
-                    this.changedGrid();
+                    this.changedGrid(this.gridData);
                     let clipBoardTexts = result.trim().split('\n');
                     let elements = $(`#translationList input[lang='${locale}']`).toArray();
                     elements.forEach((el, index) => {
@@ -175,52 +174,6 @@
                         }
                     })
                 })
-            },
-            copyAll() {
-                this.allTexts = [];
-                this.doForAllTranslationObjects((i18nObject) => {
-                    if (i18nObject[this.currentLocale]) {
-                        this.allTexts.push(i18nObject[this.currentLocale]);
-                    }
-                });
-                let text = this.allTexts.reduce((total, current) => {
-                    return total + current + '\n';
-                }, '');
-                console.log(text.trim());
-                util.copyToClipboard(text.trim());
-            },
-            pasteAll() {
-                util.getClipboardContent().then(clipboard => {
-                    let translations = clipboard.trim().split('\n');
-                    if (translations.length !== this.allTexts.length) {
-                        log.warn("translations don't have same length as copied texts - aborting.");
-                        return;
-                    }
-                    let map = {};
-                    this.allTexts.forEach((text, index) => {
-                        map[text] = translations[index];
-                    });
-                    this.doForAllTranslationObjects(i18nObject => {
-                        if (map[i18nObject[this.currentLocale]]) {
-                            i18nObject[this.chosenLocale] = map[i18nObject[this.currentLocale]];
-                        }
-                    });
-                    this.changedGrids = this.allGrids;
-                    this.$forceUpdate();
-                });
-            },
-            doForAllTranslationObjects(fn) {
-                this.allGrids.forEach(grid => {
-                    fn(grid.label);
-                    grid.gridElements.forEach(element => {
-                        fn(element.label);
-                        element.actions.forEach(action => {
-                            if (action.speakText) {
-                                fn(action.speakText);
-                            }
-                        })
-                    });
-                });
             }
         },
         mounted() {
