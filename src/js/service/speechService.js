@@ -29,7 +29,9 @@ speechService.speak = function (text, lang, preferredVoiceProp) {
         window.speechSynthesis.speak(msg);
     } else {
         let voicelist = responsiveVoiceVoices.filter(v => v.lang.substring(0,2).toLowerCase() === lang);
-        responsiveVoice.speak(text, voicelist[0].name);
+        if (voicelist.length > 0) {
+            responsiveVoice.speak(text, voicelist[0].name);
+        }
     }
     testIsSpeaking();
     setTimeout(() => { // Firefox takes a while until isSpeaking is true
