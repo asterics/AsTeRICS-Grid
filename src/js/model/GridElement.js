@@ -32,6 +32,7 @@ class GridElement extends Model({
             id: "", //will be replaced by constructor
             modelName: GridElement.getModelName(),
             modelVersion: constants.MODEL_VERSION,
+            label: {},
             width: 1,
             height: 1,
             type: GridElement.ELEMENT_TYPE_NORMAL
