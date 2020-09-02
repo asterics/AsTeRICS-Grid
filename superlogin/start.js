@@ -22,9 +22,10 @@ if (isProd) {
         skip: (req, res) => req.url.indexOf('/validate-username/') > -1
     }));
     privateKey = fs.readFileSync('/etc/letsencrypt/live/couchdb.asterics-foundation.org/privkey.pem', 'utf8');
-    certificate = fs.readFileSync('/etc/letsencrypt/live/couchdb.asterics-foundation.org/cert.pem', 'utf8');
+    certificate = fs.readFileSync('/etc/letsencrypt/live/couchdb.asterics-foundation.org/fullchain.pem', 'utf8');
     ca = fs.readFileSync('/etc/letsencrypt/live/couchdb.asterics-foundation.org/chain.pem', 'utf8');
     credentials = {key: privateKey, cert: certificate, ca: ca};
+    //https.globalAgent.options.cert = fs.readFileSync('/etc/letsencrypt/live/couchdb.asterics-foundation.org/fullchain.pem', 'utf8');
 } else {
     app.use(logger('dev'));
 }
