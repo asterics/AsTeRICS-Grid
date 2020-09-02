@@ -13,7 +13,6 @@ var app = express();
 var accessLogStream = null;
 var privateKey  = null;
 var certificate = null;
-var ca = null;
 var credentials = null;
 if (isProd) {
     accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
@@ -23,9 +22,7 @@ if (isProd) {
     }));
     privateKey = fs.readFileSync('/etc/letsencrypt/live/couchdb.asterics-foundation.org/privkey.pem', 'utf8');
     certificate = fs.readFileSync('/etc/letsencrypt/live/couchdb.asterics-foundation.org/fullchain.pem', 'utf8');
-    ca = fs.readFileSync('/etc/letsencrypt/live/couchdb.asterics-foundation.org/chain.pem', 'utf8');
-    credentials = {key: privateKey, cert: certificate, ca: ca};
-    //https.globalAgent.options.cert = fs.readFileSync('/etc/letsencrypt/live/couchdb.asterics-foundation.org/fullchain.pem', 'utf8');
+    credentials = {key: privateKey, cert: certificate};
 } else {
     app.use(logger('dev'));
 }
