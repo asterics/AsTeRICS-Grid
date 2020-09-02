@@ -13,6 +13,7 @@ var app = express();
 var accessLogStream = null;
 var privateKey  = null;
 var certificate = null;
+var ca = null;
 var credentials = null;
 if (isProd) {
     accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
@@ -21,8 +22,9 @@ if (isProd) {
         skip: (req, res) => req.url.indexOf('/validate-username/') > -1
     }));
     privateKey = fs.readFileSync('/etc/letsencrypt/live/couchdb.asterics-foundation.org/privkey.pem', 'utf8');
-    certificate = fs.readFileSync('/etc/letsencrypt/live/couchdb.asterics-foundation.org/fullchain.pem', 'utf8'); //combined certificate, normal and intermediate both in concatenated in one file
-    credentials = {key: privateKey, cert: certificate};
+    certificate = fs.readFileSync('/etc/letsencrypt/live/couchdb.asterics-foundation.org/cert.pem', 'utf8');
+    ca = fs.readFileSync('/etc/letsencrypt/live/couchdb.asterics-foundation.org/chain.pem', 'utf8');
+    credentials = {key: privateKey, cert: certificate, ca: ca};
 } else {
     app.use(logger('dev'));
 }
