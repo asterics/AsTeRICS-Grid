@@ -22,8 +22,9 @@ After `npm install` the following commands are possible:
 6. `npm run start-appcache` --> same as (1), includes appcache file for offline capabilities (maybe inconvenient for development).
 7. `npm run watch-appcache` --> same as (3), includes appcache file for offline capabilities (maybe inconvenient for development). For auto-reloading of changes with enabled offline capabilities start `npm run start-appcache` in one tab and `npm run watch-appcache` in another tab.
 
-## Acknowledgements
+## Acknowledgements and Attribution
 * Thanks to https://crossbrowsertesting.com/ for providing a free open source license.
 <a href="https://crossbrowsertesting.com/"><img src="https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/app/img/CBT_OS-logo_2Color-H.png" width="400px"/></a>
 * Thanks to Alex Segler for the great Webradio API [radio-browser.info](http://www.radio-browser.info/) which makes it possible to search and play webradios within AsTeRICS Grid
 * Thanks to the makers of the API from [opensymbols.org](https://www.opensymbols.org/) which makes it possible to search for open AAC symbols within AsTeRICS Grid
+* Thanks to ResponsiveVoice for providing an free non-commercial version, <a href="https://responsivevoice.org">ResponsiveVoice-NonCommercial</a> licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img title="ResponsiveVoice Text To Speech" src="https://responsivevoice.org/wp-content/uploads/2014/08/95x15.png" alt="95x15" width="95" height="15" /></a>
