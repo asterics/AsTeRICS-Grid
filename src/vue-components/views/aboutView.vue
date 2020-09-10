@@ -67,6 +67,15 @@
                         </span>
                     </div>
                     <a target="_blank" href="https://crossbrowsertesting.com/"><img src="app/img/CBT_OS-logo_2Color-H.png" width="300px"></a>
+                    <div data-i18n="">
+                        <span>
+                            We thank <a target="_blank" href="https://responsivevoice.org">ResponsiveVoice.org</a> for free non-commercial usage.<br/>
+                        </span>
+                        <span>
+                            Wir danken <a target="_blank" href="https://responsivevoice.org">ResponsiveVoice.org</a> für die kostenlose nicht-kommerzielle Verwendung.<br/>
+                        </span>
+                    </div>
+                    <div><a href="https://responsivevoice.org">ResponsiveVoice-NonCommercial</a> licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img title="ResponsiveVoice Text To Speech" src="https://responsivevoice.org/wp-content/uploads/2014/08/95x15.png" alt="95x15" width="95" height="15" /></a></div>
                 </div>
                 <div class="row" style="margin-top: 3em">
                     <div data-i18n="">
