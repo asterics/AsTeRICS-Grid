@@ -5,7 +5,7 @@ import {constants} from "../util/constants";
 let i18nService = {};
 
 let CUSTOM_LANGUAGE_KEY = 'CUSTOM_LANGUAGE_KEY';
-let customLanguage = localStorageService.get(CUSTOM_LANGUAGE_KEY);
+let customLanguage = localStorageService.get(CUSTOM_LANGUAGE_KEY) || '';
 let i18nInstance = null;
 let languages = ['en', 'de'];
 let separator = ' // ';
