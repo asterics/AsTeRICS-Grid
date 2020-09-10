@@ -70,7 +70,7 @@
 
                 <br class="hide-mobile"/>
                 <ul style="margin-bottom: 0;">
-                    <li><a tabindex="8" href="#settings"><button tabindex="-1"><i class="fas fa-2x fa-cog"></i><span class="hide-mobile" data-i18n="">General settings // Allgemeine Einstellungen</span></button></a></li>
+                    <li v-show="currentUser"><a tabindex="8" href="#settings"><button tabindex="-1"><i class="fas fa-2x fa-cog"></i><span class="hide-mobile" data-i18n="">General settings // Allgemeine Einstellungen</span></button></a></li>
                     <li class="hide-mobile"><a tabindex="9" href="#about"><button tabindex="-1"><i class="fas fa-2x fa-info-circle"></i><span class="hide-mobile" data-i18n="">About AsTeRICS Grid // Über AsTeRICS Grid</span></button></a></li>
                     <li><a tabindex="10" href="javascript:;" @click="openHelp()"><button tabindex="-1" id="helpButton"><i class="fas fa-2x fa-question-circle"></i><span class="hide-mobile" data-i18n="">Help // Hilfe</span></button></a></li>
                     <li class="show-mobile"><a tabindex="11" href="javascript:;" @click="moreNavigation()" id="moreNavigation"><button tabindex="-1"><i class="fas fa-2x fa-ellipsis-v"></i></button></a></li>
