@@ -8,11 +8,11 @@
             </div>
             <div class="ten columns">
                 <h3 data-i18n="">Language // Sprache</h3>
-                <div class="row" v-if="gridLanguages">
+                <div class="row">
                     <label class="three columns" for="inLanguage" data-i18n="">Select language // Sprache wählen</label>
                     <select class="five columns" id="inLanguage" v-model="langCode" @input="saveLangCode()">
                         <option value="" data-i18n="">automatic // automatisch</option>
-                        <option v-for="lang in allLanguages.filter(lang => gridLanguages.indexOf(lang.code) !== -1)" :value="lang.code">{{lang | extractTranslation}} ({{lang.code}})</option>
+                        <option v-for="lang in allLanguages.filter(lang => ['de', 'en'].indexOf(lang.code) !== -1 || gridLanguages.indexOf(lang.code) !== -1)" :value="lang.code">{{lang | extractTranslation}} ({{lang.code}})</option>
                     </select>
                 </div>
                 <div class="row">
@@ -78,7 +78,7 @@
                 metadata: null,
                 show: false,
                 langCode: '',
-                gridLanguages: null,
+                gridLanguages: [],
                 allLanguages: i18nService.getAllLanguages(),
                 currentLang: i18nService.getBrowserLang(),
                 saveSuccess: null,
@@ -124,7 +124,7 @@
                 thiz.show = true;
             });
             dataService.getGrids(false, true).then(grids => {
-                thiz.gridLanguages = Object.keys(grids[0].label);
+                thiz.gridLanguages = grids[0] ? Object.keys(grids[0].label) : [];
             })
             thiz.langCode = i18nService.getCustomLanguage();
         },
