@@ -24,7 +24,8 @@ class GridActionSpeakCustom extends Model({
 GridActionSpeakCustom.defaults({
     id: "", //will be replaced by constructor
     modelName: GridActionSpeakCustom.getModelName(),
-    modelVersion: constants.MODEL_VERSION
+    modelVersion: constants.MODEL_VERSION,
+    speakText: {}
 });
 
 export {GridActionSpeakCustom};
