@@ -322,7 +322,11 @@
                 if (!gridData) {
                     log.warn('grid not found! gridId: ' + this.gridId);
                     return dataService.getGrids(false, true).then(grids => {
-                        Router.toGrid(grids[0].id);
+                        if (grids[0]) {
+                            Router.toGrid(grids[0].id);
+                        } else {
+                            Router.toManageGrids();
+                        }
                         return Promise.reject();
                     });
                 }
