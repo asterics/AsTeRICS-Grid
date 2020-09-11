@@ -13,7 +13,7 @@
             </div>
         </header>
         <div>
-            <edit-grid-modal v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showEditModal = false" @mark="markElement" @actions="showActionsModal = true"/>
+            <edit-grid-modal v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
         </div>
         <div>
             <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :grid-instance="getGridInstance()" @close="showMultipleModal = false"/>

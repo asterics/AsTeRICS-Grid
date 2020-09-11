@@ -183,7 +183,7 @@
                         this.$emit('mark', this.gridElement.id);
                     }
                     if (toActions) {
-                        this.$emit('actions');
+                        this.$emit('actions', this.gridElement.id);
                     }
                 });
             },
