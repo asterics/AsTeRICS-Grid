@@ -7,7 +7,7 @@ import {i18nService} from "./i18nService";
 
 let WEBRADIO_LAST_PLAYED_ID_KEY = 'WEBRADIO_LAST_PLAYED_ID_KEY';
 let WEBRADIO_LAST_VOLUME_KEY = 'WEBRADIO_LAST_VOLUME_KEY';
-let API_URL = 'https://www.radio-browser.info/webservice/json/';
+let API_URL = 'https://de1.api.radio-browser.info/json/';
 let API_ACTION_SEARCH = 'stations/search';
 let API_ACTION_GETURL = 'url';
 let VOLUME_STEP = 0.15;
@@ -193,7 +193,7 @@ webradioService.search = function (searchString, limit, offset) {
             workingRadios = workingRadios.slice(0, limitToUse - 1);
             resolve(workingRadios.map(el => {
                 return {
-                    radioId: el.id,
+                    radioId: el.stationuuid,
                     radioUUID: el.stationuuid,
                     radioName: el.name,
                     faviconUrl: el.favicon
@@ -245,7 +245,7 @@ function fillUrl(webradio, gridId) {
         });
 
         function process(data, webradio) {
-            webradio.radioUrl = data[0].url;
+            webradio.radioUrl = data.url;
             if (webradio.radioUrl.lastIndexOf('/') === webradio.radioUrl.length - 1) {
                 webradio.radioUrl = webradio.radioUrl + ';';
             }
