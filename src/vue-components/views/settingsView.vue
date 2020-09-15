@@ -57,6 +57,11 @@
                     <input id="chkSyncNavigation" type="checkbox" v-model="syncNavigation" @change="saveSyncNavigation()"/>
                     <label for="chkSyncNavigation" data-i18n="">Synchronize navigation and locked/fullscreen state for online users // Navigation und Sperr- bzw. Vollbildstatus für online User synchronisieren</label>
                 </div>
+                <div class="row">
+                    <label class="three columns" for="unlockPass" data-i18n="">Passcode for unlocking user interface (only numbers) // PIN um Oberfläche zu entsperren (nur Ziffern)</label>
+                    <input class="five columns" id="unlockPass" type="number" v-model="unlockPasscode" @input="unlockPasscode = unlockPasscode.substring(0, 6); savePasscode()" :placeholder="i18nService.translate('(no passcode) // (kein PIN)')"/>
+                    <button class="three columns" @click="unlockPasscode = null; savePasscode()" data-i18n="">Reset // Löschen</button>
+                </div>
             </div>
         </div>
     </div>
@@ -84,9 +89,11 @@
                 saveSuccess: null,
                 speechService: speechService,
                 syncNavigation: localStorageService.shouldSyncNavigation(),
+                unlockPasscode: localStorageService.getUnlockPasscode(),
                 voices: speechService.getVoices(),
                 selectedVoiceName: speechService.getPreferredVoiceName(),
-                testText: i18nService.translate('This is an english sentence. // Das ist ein deutscher Satz.')
+                testText: i18nService.translate('This is an english sentence. // Das ist ein deutscher Satz.'),
+                i18nService: i18nService
             }
         },
         methods: {
@@ -111,6 +118,13 @@
                     localStorageService.setShouldSyncNavigation(this.syncNavigation);
                     this.saveSuccess = true;
                 }, 300, 'SAVE_NAV');
+            },
+            savePasscode() {
+                this.saveSuccess = undefined;
+                util.debounce(() => {
+                    localStorageService.setUnlockPasscode(this.unlockPasscode);
+                    this.saveSuccess = true;
+                }, 500, 'SAVE_UNLOCK');
             },
             testSpeak() {
                 speechService.speak(this.testText, null , this.selectedVoiceName);
