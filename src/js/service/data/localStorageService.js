@@ -9,6 +9,7 @@ let SYNCED_DBS_LIST_KEY = "SYNCED_DBS_LIST_KEY";
 let LAST_ACTIVEUSER_KEY = "LAST_ACTIVEUSER_KEY";
 let AUTOLOGIN_USER_KEY = "AUTOLOGIN_USER_KEY";
 let SYNC_NAVIGATION_KEY = "AG_SYNC_NAVIGATION_KEY";
+let UNLOCK_PASSCODE_KEY = "AG_UNLOCK_PASSCODE_KEY";
 let LOCAL_METADATA_KEY = "AG_LOCAL_METADATA_KEY";
 let GRID_DIMENSIONS_KEY = "AG_GRID_DIMENSIONS_KEY";
 let USED_LOCALES_KEY = "AG_USED_LOCALES_KEY";
@@ -239,6 +240,13 @@ var localStorageService = {
     },
     setShouldSyncNavigation(value) {
         localStorageService.save(SYNC_NAVIGATION_KEY, value);
+    },
+    getUnlockPasscode() {
+        let json = localStorageService.get(UNLOCK_PASSCODE_KEY);
+        return json ? JSON.parse(json) : null;
+    },
+    setUnlockPasscode(value) {
+        localStorageService.save(UNLOCK_PASSCODE_KEY, JSON.stringify(value));
     },
     saveLocalMetadata(metadata) {
         let user = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
