@@ -24,6 +24,7 @@
         <mouse-modal v-if="showModal === modalTypes.MODAL_MOUSE" @close="showModal = null; reinitInputMethods();"/>
         <scanning-modal v-if="showModal === modalTypes.MODAL_SCANNING" @close="showModal = null; reinitInputMethods();"/>
         <sequential-input-modal v-if="showModal === modalTypes.MODAL_SEQUENTIAL" @close="showModal = null; reinitInputMethods();"/>
+        <unlock-modal v-if="showModal === modalTypes.MODAL_UNLOCK" @unlock="unlock(true)" @close="showModal = null;"/>
 
         <div class="row content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0 && (!globalGridData || globalGridData.length === 0)">
             <div data-i18n="" style="margin-top: 2em">
@@ -72,6 +73,7 @@
     import {speechService} from "../../js/service/speechService";
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {imageUtil} from "../../js/util/imageUtil";
+    import UnlockModal from "../modals/unlockModal.vue";
 
     let vueApp = null;
     let gridInstance = null;
@@ -82,6 +84,7 @@
         MODAL_DIRECTION: 'MODAL_DIRECTION',
         MODAL_HUFFMAN: 'MODAL_HUFFMAN',
         MODAL_SEQUENTIAL: 'MODAL_SEQUENTIAL',
+        MODAL_UNLOCK: 'MODAL_UNLOCK'
     };
 
     let vueConfig = {
@@ -106,6 +109,7 @@
             }
         },
         components: {
+            UnlockModal,
             SequentialInputModal,
             HuffmanInputModal,
             DirectionInputModal,
@@ -127,6 +131,10 @@
             },
             unlock(force) {
                 let thiz = this;
+                if (!force && localStorageService.getUnlockPasscode()) {
+                    thiz.showModal = modalTypes.MODAL_UNLOCK;
+                    return;
+                }
                 thiz.unlockCounter--;
                 util.debounce(function () {
                     thiz.unlockCounter = UNLOCK_COUNT;
