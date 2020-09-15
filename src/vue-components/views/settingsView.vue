@@ -7,7 +7,7 @@
                 <div v-if="saveSuccess" style="padding-top: 1.7em;"><i class="fas fa-check" style="color: green"></i> <span data-i18n="">All changes saved! // Alle Änderungen gespeichert!</span></div>
             </div>
             <div class="ten columns">
-                <h3 data-i18n="">Language // Sprache</h3>
+                <h3 data-i18n="">Application Language // Anwendungs-Sprache</h3>
                 <div class="row">
                     <label class="three columns" for="inLanguage" data-i18n="">Select language // Sprache wählen</label>
                     <select class="five columns" id="inLanguage" v-model="langCode" @input="saveLangCode()">
