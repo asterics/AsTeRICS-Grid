@@ -94,7 +94,7 @@
 </div>
 
 <!-- polyfills that are needed in all browsers -->
-<script src="app/polyfill/core_js_shim.min.js"></script> <!-- added for IE and Edge - does implement Promise, but not Promise.finally() -->
+<script src="app/polyfill/core.min.js"></script> <!-- added for IE and Edge - does implement Promise, but not Promise.finally() -->
 
 <!-- polyfills that are needed only in old browsers that do not support ES6 modules -->
 <script nomodule src="app/polyfill/fetch.js"></script>
@@ -113,6 +113,18 @@
 <script type="text/javascript" src='app/lib/loglevel.min.js'></script>
 <script type="text/javascript" src='app/lib/dom-i18n.min.js'></script>
 <script type="text/javascript" src='app/lib/sjcl.min.js'></script>
+<script type="text/javascript">
+    window.originalLog = console.log;
+    console.log = function () {
+        if (['ResponsiveVoice r1.6.5', 'isHidden: false', 'Prerender: false', 'Configuring'].indexOf(arguments[0]) !== -1) {
+            return;
+        } else if (arguments[0] === 'RV: Voice support ready') {
+            console.log = window.originalLog;
+        } else {
+            window.originalLog.apply(null, arguments);
+        }
+    }
+</script>
 <script type="text/javascript" src='app/lib/responsive-voice.js'></script>
 
 <script nomodule src="app/build_legacy/asterics-grid.bundle.js"></script>
