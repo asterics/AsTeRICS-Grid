@@ -9,7 +9,8 @@ SequentialInput.getInstanceFromConfig = function (inputConfig, itemSelector, opt
         selectionListener: options.selectionListener,
         activeListener: options.activeListener,
         inputEventSelect: inputConfig.seqInputs.filter(e => e.label === InputConfig.SELECT)[0],
-        inputEventNext: inputConfig.seqInputs.filter(e => e.label === InputConfig.NEXT_ELEMENT)[0]
+        inputEventNext: inputConfig.seqInputs.filter(e => e.label === InputConfig.NEXT_ELEMENT)[0],
+        inputEventPrev: inputConfig.seqInputs.filter(e => e.label === InputConfig.PREVIOUS_ELEMENT)[0]
     });
 };
 
@@ -52,6 +53,14 @@ function SequentialInputConstructor(paramItemSelector, options) {
         setActiveElement(_elements[_activeId]);
     };
 
+    thiz.prev = function () {
+        _activeId--;
+        if (_activeId < 0) {
+            _activeId = _elements.length - 1;
+        }
+        setActiveElement(_elements[_activeId]);
+    };
+
     thiz.select = function () {
         if (_selectionListener) {
             _selectionListener(_elements[_activeId]);
@@ -82,6 +91,10 @@ function SequentialInputConstructor(paramItemSelector, options) {
 
         _inputEventHandler.onInputEvent(options.inputEventNext, () => {
             thiz.next();
+        });
+
+        _inputEventHandler.onInputEvent(options.inputEventPrev, () => {
+            thiz.prev();
         });
     }
 

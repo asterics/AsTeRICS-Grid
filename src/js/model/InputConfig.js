@@ -67,6 +67,7 @@ InputConfig.RIGHT = "RIGHT";
 InputConfig.SELECT = "SELECT";
 InputConfig.NEXT = "NEXT";
 InputConfig.NEXT_ELEMENT = "NEXT_ELEMENT";
+InputConfig.PREVIOUS_ELEMENT = "PREVIOUS_ELEMENT";
 InputConfig.GENERAL_INPUT = "GENERAL_INPUT";
 InputConfig.getNumConst = (num) => "NUM" + num;
 
@@ -75,8 +76,9 @@ InputConfig.DEFAULT_SCAN_INPUTS = [
     new InputEventKey({label: InputConfig.NEXT, keyCode: 32, keyName: "Space"})
 ];
 InputConfig.DEFAULT_SEQ_INPUTS = [
-    new InputEventKey({label: InputConfig.SELECT, keyCode: 32, keyName: "Space", holdDuration: 400}),
-    new InputEventKey({label: InputConfig.NEXT_ELEMENT, keyCode: 32, keyName: "Space"})
+    new InputEventKey({label: InputConfig.SELECT, keyCode: 32, keyName: "Space"}),
+    new InputEventKey({label: InputConfig.NEXT_ELEMENT, keyCode: 39, keyName: "ArrowRight"}),
+    new InputEventKey({label: InputConfig.PREVIOUS_ELEMENT, keyCode: 37, keyName: "ArrowLeft"})
 ];
 InputConfig.DEFAULT_DIR_INPUTS = [
     new InputEventKey({label: InputConfig.SELECT, keyCode: 32, keyName: "Space"}),
