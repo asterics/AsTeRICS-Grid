@@ -33,10 +33,11 @@ let responsiveVoiceVoices = JSON.parse('[{"name":"UK English Female","lang":"en-
  */
 speechService.speak = function (textOrOject, lang, preferredVoiceProp) {
     let text = null;
-    if (!textOrOject) {
+    let isString = typeof textOrOject === 'string';
+    if (!textOrOject || (!isString && Object.keys(textOrOject).length === 0)) {
         return;
     }
-    if (typeof textOrOject === 'string') {
+    if (isString) {
         text = textOrOject;
     } else {
         lang = getVoiceLang(_preferredVoiceName) || lang;
