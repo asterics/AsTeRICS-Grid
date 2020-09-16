@@ -179,7 +179,7 @@
                 })
             },
             showGridElements(label) {
-                if (!window.hideKeyboardTranslations) {
+                if (!window.hideKeyboardTranslations || this.gridData !== null) {
                     return true;
                 }
                 label = label.toLowerCase();
