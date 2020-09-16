@@ -114,7 +114,7 @@
     import {dataService} from "../../js/service/data/dataService";
     import {localStorageService} from "../../js/service/data/localStorageService";
 
-    window.hideKeyboardTranslations = false;
+    window.hideKeyboardTranslations = true;
     export default {
         props: ['gridDataId'],
         data: function () {
