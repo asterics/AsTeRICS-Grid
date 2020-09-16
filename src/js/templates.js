@@ -47,7 +47,7 @@ function getGridElementNormal(gridElem, fallbackLocale) {
 
     var template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${label}" data-img-id="${imgId}" data-type="${gridElem.type}">
-    <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}" style="${gridItemContentStyle}">
+    <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}" data-empty="${!label && !imgData}" style="${gridItemContentStyle}">
         <div class="img-container" style="background: center no-repeat; background-size: contain; background-image: url('${imgData}'); margin: ${imgContainerMargin}; max-height: ${imgContainerMaxHeight};"/>
         <div class="text-container" style="${txtContainerStyle}"><span>${label}</span></div>
         ${getHintsElement(gridElem)}
