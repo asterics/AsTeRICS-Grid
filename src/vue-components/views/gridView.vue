@@ -177,7 +177,7 @@
                 };
 
                 if (inputConfig.seqEnabled) {
-                    thiz.seqInput = SequentialInput.getInstanceFromConfig(inputConfig, '.grid-item-content', {
+                    thiz.seqInput = SequentialInput.getInstanceFromConfig(inputConfig, '.grid-item-content:not([data-empty="true"])', {
                         selectionListener: selectionListener,
                         activeListener: activeListener
                     });
@@ -185,7 +185,7 @@
                 }
 
                 if (inputConfig.dirEnabled) {
-                    thiz.directionInput = DirectionInput.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', selectionListener);
+                    thiz.directionInput = DirectionInput.getInstanceFromConfig(inputConfig, '.grid-item-content:not([data-empty="true"])', 'scanFocus', selectionListener);
                     thiz.directionInput.start();
                 }
 
@@ -195,7 +195,7 @@
                 }
 
                 if (inputConfig.scanEnabled) {
-                    thiz.scanner = Scanner.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', 'scanInactive');
+                    thiz.scanner = Scanner.getInstanceFromConfig(inputConfig, '.grid-item-content:not([data-empty="true"])', 'scanFocus', 'scanInactive');
                     thiz.scanner.setSelectionListener(selectionListener);
 
                     gridInstance.setLayoutChangedStartListener(function () {
