@@ -10,9 +10,9 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
+   width="79.043686mm"
+   height="26.16371mm"
+   viewBox="0 0 79.043686 26.16371"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
@@ -26,9 +26,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.979899"
-     inkscape:cx="296.56011"
-     inkscape:cy="695.98968"
+     inkscape:zoom="2.8"
+     inkscape:cx="98.93536"
+     inkscape:cy="-4.8792862"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -36,43 +36,49 @@
      inkscape:guide-bbox="true"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="-8"
+     inkscape:window-x="1912"
      inkscape:window-y="-8"
-     inkscape:window-maximized="1">
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
     <inkscape:grid
        type="xygrid"
        id="grid4515"
        units="mm"
        spacingx="1"
        spacingy="1"
-       empspacing="10" />
+       empspacing="10"
+       originx="-41.999998"
+       originy="-191.87673" />
     <sodipodi:guide
-       position="126,210"
+       position="83.999999,18.123273"
        orientation="0,1"
        id="guide4733"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="117,218"
+       position="74.999999,26.123273"
        orientation="0,1"
        id="guide4735"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="75.999998,192.00001"
+       position="33.999998,0.12328304"
        orientation="0,1"
        id="guide4737"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="66.999998,208.00001"
+       position="24.999998,16.123283"
        orientation="0,1"
        id="guide4739"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="121,213"
+       position="78.999999,21.123273"
        orientation="1,0"
        id="guide4795"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="69.999998,214.00001"
+       position="27.999998,22.123283"
        orientation="1,0"
        id="guide4797"
        inkscape:locked="false" />
@@ -85,23 +91,15 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
-     id="layer1">
-    <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.19187891;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       width="92.790604"
-       height="38.708061"
-       x="36.454166"
-       y="72.693207"
-       id="rect824"
-       inkscape:export-xdpi="200.09999"
-       inkscape:export-ydpi="200.09999" />
+     id="layer1"
+     transform="translate(-42,-78.959563)">
     <image
        y="79"
        x="42"
