@@ -9,6 +9,7 @@ import {constants} from "../util/constants";
 import {GridActionCollectElement} from "../model/GridActionCollectElement";
 import {webradioService} from "./webradioService";
 import {i18nService} from "./i18nService";
+import {youtubeService} from "./youtubeService";
 
 let actionService = {};
 
@@ -85,6 +86,9 @@ function doAction(gridElement, action, gridId, gridData) {
             break;
         case 'GridActionWebradio':
             webradioService.doAction(gridId, action);
+            break;
+        case 'GridActionYoutube':
+            youtubeService.doAction(action);
             break;
         case 'GridActionChangeLang':
             i18nService.setLanguage(action.language);
