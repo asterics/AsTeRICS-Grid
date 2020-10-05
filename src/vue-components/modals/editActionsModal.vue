@@ -178,6 +178,51 @@
                                                 <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
                                             </div>
                                         </div>
+                                        <div v-if="action.modelName === 'GridActionYoutube'">
+                                            <div class="row">
+                                                <div class="twelve columns">
+                                                    <label for="ytActions" class="five columns normal-text" data-i18n>YouTube video action // YouTube-Video Aktion</label>
+                                                    <select id="ytActions" class="six columns" v-model="action.action">
+                                                        <option v-for="elmAction in GridActionYoutube.actions" :value="elmAction">
+                                                            {{elmAction | translate}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row" v-show="[GridActionYoutube.actions.YT_PLAY, GridActionYoutube.actions.YT_TOGGLE, GridActionYoutube.actions.YT_RESTART].indexOf(action.action) !== -1">
+                                                <div class="twelve columns">
+                                                    <label for="ytPlayType" class="five columns normal-text" data-i18n>Play type // Wiedergabe Typ</label>
+                                                    <select id="ytPlayType" class="six columns" v-model="action.playType">
+                                                        <option v-for="playType in GridActionYoutube.playTypes" :value="playType">{{playType}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row" v-show="action.playType">
+                                                <div class="twelve columns">
+                                                    <div v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_VIDEO">
+                                                        <label for="videoLink" class="five columns normal-text" data-i18n>Video link // Video Link</label>
+                                                        <input id="videoLink" type="text" class="six columns" v-model="action.videoLink"/>
+                                                    </div>
+                                                    <div v-show="action.playType !== GridActionYoutube.playTypes.YT_PLAY_VIDEO">
+                                                        <label for="ytList" class="five columns normal-text">
+                                                            <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_SEARCH" data-i18n="">YouTube search query // YouTube Suchanfrage</span>
+                                                            <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_PLAYLIST" data-i18n="">YouTube playlist link // YouTube Playlist Link</span>
+                                                            <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_USER" data-i18n="">YouTube channel link // YouTube Channel-Link</span>
+                                                        </label>
+                                                        <input id="ytList" type="text" class="six columns" v-model="action.list"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" v-show="[GridActionYoutube.actions.YT_STEP_FORWARD, GridActionYoutube.actions.YT_STEP_BACKWARD].indexOf(action.action) !== -1">
+                                                <div class="twelve columns">
+                                                    <label for="stepSeconds" class="five columns normal-text" data-i18n>{{action.action | translate}} (in seconds)</label>
+                                                    <input id="stepSeconds" type="number" class="six columns" v-model="action.stepSeconds" min="0"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
+                                            </div>
+                                        </div>
                                         <div v-if="action.modelName === 'GridActionChangeLang'">
                                             <div class="row">
                                                 <div class="twelve columns">
@@ -247,6 +292,7 @@
     import {imageUtil} from "../../js/util/imageUtil";
     import {GridImage} from "../../js/model/GridImage";
     import RadioListSelector from "../components/radioListSelector.vue";
+    import {GridActionYoutube} from "../../js/model/GridActionYoutube";
 
     export default {
         props: ['editElementIdParam', 'gridIdParam'],
@@ -268,7 +314,8 @@
                 currentLang: i18nService.getBrowserLang(),
                 allLanguages: i18nService.getAllLanguages(),
                 gridLanguages: null,
-                selectFromAllLanguages: false
+                selectFromAllLanguages: false,
+                GridActionYoutube: GridActionYoutube
             }
         },
         components: {
