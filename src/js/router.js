@@ -18,6 +18,7 @@ import SettingsView from '../vue-components/views/settingsView.vue'
 import {databaseService} from "./service/data/databaseService";
 import {localStorageService} from "./service/data/localStorageService";
 import {MainVue} from "./vue/mainVue";
+import {youtubeService} from "./service/youtubeService";
 
 let NO_DB_VIEWS = ['#login', '#register', '#welcome', '#add', '#about'];
 
@@ -127,6 +128,7 @@ Router.init = function (injectIdParam, initialHash) {
             } else {
                 done();
             }
+            youtubeService.destroy();
         },
         after: function (params) {
             //log.debug('after');
