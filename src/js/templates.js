@@ -22,6 +22,9 @@ templates.getGridItem = function (gridElem, locale) {
         case GridElement.ELEMENT_TYPE_PREDICTION: {
             return getGridElementPredict(gridElem);
         }
+        case GridElement.ELEMENT_TYPE_YT_PLAYER: {
+            return getGridElementYTPlayer(gridElem);
+        }
         default: {
             return getGridElementNormal(gridElem, locale);
         }
@@ -82,6 +85,23 @@ function getGridElementPredict(gridElem) {
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${label}" data-type="${gridElem.type}">
     <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}" style="background-color: rgb(255,228,178)">
         <div class="text-container" style="${txtContainerStyle}"><span style="display: table-cell; vertical-align: middle;">${label}</span></div>
+    </div>
+</li>`;
+    return template;
+}
+
+function getGridElementYTPlayer(gridElem) {
+    gridElem = fillDefaultValues(gridElem);
+    let label = i18nService.getTranslation(gridElem.label);
+
+    var template = `
+<li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${label}" data-type="${gridElem.type}">
+    <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}">
+        <div class="yt-container" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
+            <div id="player" style="outline: 1px solid; outline-offset: -5px; height: 100%; background-color: black; display: flex; align-items: center; justify-content: center;">
+                <i class="fab fa-youtube fa-5x" style="color: whitesmoke"></i>
+            </div>
+        </div>
     </div>
 </li>`;
     return template;

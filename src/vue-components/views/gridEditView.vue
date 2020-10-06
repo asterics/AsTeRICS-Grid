@@ -69,6 +69,7 @@
     import {gridUtil} from "../../js/util/gridUtil";
     import ElementMoveModal from "../modals/elementMoveModal.vue";
     import GridTranslateModal from "../modals/gridTranslateModal.vue";
+    import {GridActionYoutube} from "../../js/model/GridActionYoutube";
 
     let vueApp = null;
     let gridInstance = null;
@@ -140,13 +141,20 @@
             newElement(type) {
                 switch (type) {
                     case GridElement.ELEMENT_TYPE_PREDICTION:
-                    case GridElement.ELEMENT_TYPE_COLLECT: {
+                    case GridElement.ELEMENT_TYPE_COLLECT:
+                    case GridElement.ELEMENT_TYPE_YT_PLAYER: {
                         var newPos = new GridData(this.gridData).getNewXYPos();
                         var newElement = new GridElement({
                             type: type,
                             x: newPos.x,
                             y: newPos.y
                         });
+                        if (type === GridElement.ELEMENT_TYPE_YT_PLAYER) {
+                            let playPause = new GridActionYoutube({
+                                action: GridActionYoutube.actions.YT_TOGGLE
+                            });
+                            newElement.actions = [playPause];
+                        }
                         this.gridData.gridElements.push(newElement);
                         gridInstance.updateGridWithUndo(this.gridData);
                         break;
@@ -289,6 +297,7 @@
         var CONTEXT_NEW_MASS = "CONTEXT_NEW_MASS";
         var CONTEXT_NEW_COLLECT = "CONTEXT_NEW_COLLECT";
         var CONTEXT_NEW_PREDICT = "CONTEXT_NEW_PREDICT";
+        var CONTEXT_NEW_YT_PLAYER = "CONTEXT_NEW_YT_PLAYER";
 
         var CONTEXT_LAYOUT_FILL = "CONTEXT_LAYOUT_FILL";
         var CONTEXT_GRID_DIMENSIONS = "CONTEXT_GRID_DIMENSIONS";
@@ -308,6 +317,10 @@
                     'CONTEXT_NEW_PREDICT': {
                         name: "New prediction element // Neues Vorhersage-Element",
                         icon: "fas fa-magic"
+                    },
+                    'CONTEXT_NEW_YT_PLAYER': {
+                        name: "New YouTube Player // Neuer YouTube Player",
+                        icon: "fab fa-youtube"
                     }
                 }
             }
@@ -445,6 +458,10 @@
                 }
                 case CONTEXT_NEW_PREDICT: {
                     vueApp.newElement(GridElement.ELEMENT_TYPE_PREDICTION);
+                    break;
+                }
+                case CONTEXT_NEW_YT_PLAYER: {
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_YT_PLAYER);
                     break;
                 }
                 case CONTEXT_DELETE_ALL: {
