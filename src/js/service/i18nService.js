@@ -192,7 +192,10 @@ i18nService.translations['en'] = {
     RIGHT: 'Go right',
     GENERAL_INPUT: 'Input',
     InputEventKey: 'Keypress',
-    InputEventARE: 'AsTeRICS ARE event'
+    InputEventARE: 'AsTeRICS ARE event',
+    ELEMENT_TYPE_COLLECT: 'Collect element',
+    ELEMENT_TYPE_PREDICTION: 'Prediction element',
+    ELEMENT_TYPE_YT_PLAYER: 'YouTube player',
 };
 
 i18nService.translations['de'] = {
@@ -251,7 +254,10 @@ i18nService.translations['de'] = {
     RIGHT: 'Nach rechts',
     GENERAL_INPUT: 'Eingabe',
     InputEventKey: 'Tastendruck',
-    InputEventARE: 'AsTeRICS ARE Event'
+    InputEventARE: 'AsTeRICS ARE Event',
+    ELEMENT_TYPE_COLLECT: 'Sammel-Element',
+    ELEMENT_TYPE_PREDICTION: 'Vorhersage-Element',
+    ELEMENT_TYPE_YT_PLAYER: 'YouTube Player',
 };
 
 export {i18nService};
