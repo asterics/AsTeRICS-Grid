@@ -197,20 +197,15 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="row" v-show="action.playType">
+                                            <div class="row" v-show="action.playType && action.action">
                                                 <div class="twelve columns">
-                                                    <div v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_VIDEO">
-                                                        <label for="videoLink" class="five columns normal-text" data-i18n>Video link // Video Link</label>
-                                                        <input id="videoLink" type="text" class="six columns" v-model="action.videoLink"/>
-                                                    </div>
-                                                    <div v-show="action.playType !== GridActionYoutube.playTypes.YT_PLAY_VIDEO">
-                                                        <label for="ytList" class="five columns normal-text">
-                                                            <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_SEARCH" data-i18n="">YouTube search query // YouTube Suchanfrage</span>
-                                                            <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_PLAYLIST" data-i18n="">YouTube playlist link // YouTube Playlist Link</span>
-                                                            <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_USER" data-i18n="">YouTube channel link // YouTube Channel-Link</span>
-                                                        </label>
-                                                        <input id="ytList" type="text" class="six columns" v-model="action.list"/>
-                                                    </div>
+                                                    <label for="ytList" class="five columns normal-text">
+                                                        <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_VIDEO" data-i18n="">Video link // Video Link</span>
+                                                        <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_SEARCH" data-i18n="">YouTube search query // YouTube Suchanfrage</span>
+                                                        <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_PLAYLIST" data-i18n="">YouTube playlist link // YouTube Playlist Link</span>
+                                                        <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_CHANNEL" data-i18n="">YouTube channel link // YouTube Channel-Link</span>
+                                                    </label>
+                                                    <input id="ytList" type="text" class="six columns" v-model="action.data"/>
                                                 </div>
                                             </div>
                                             <div class="row" v-show="[GridActionYoutube.actions.YT_STEP_FORWARD, GridActionYoutube.actions.YT_STEP_BACKWARD].indexOf(action.action) !== -1">
