@@ -13,8 +13,10 @@ let PLAYER_STATES = {
     UNSTARTED: -1
 };
 let initYtState = {
-    lastVideoId: null,
-    lastTimes: {} // ID -> Player Time
+    lastPlayType: null,
+    lastData: null,
+    lastTimes: {}, // Video ID -> Player Time
+    lastPlaylistIndexes: {}, // Playlist ID -> last played video index
 };
 
 let initialized = false;
@@ -55,13 +57,12 @@ youtubeService.doAction = function (action) {
     }
 };
 
-youtubeService.play = function (action) {
+youtubeService.play = function (action, videoTime) {
     let promise = Promise.resolve();
     if (!initialized) {
         promise = init();
     }
     promise.then(() => {
-        saveState();
         if (!player) {
             player = new YT.Player(playerID, {
                 height: $(".yt-container")[0].getBoundingClientRect().height,
@@ -85,10 +86,15 @@ youtubeService.play = function (action) {
         }
 
         function processAction() {
-            let videoId = null;
+            if (!action.data) {
+                action.playType = ytState.lastPlayType;
+                action.data = ytState.lastData;
+            }
+            ytState.lastPlayType = action.playType;
+            ytState.lastData = action.data;
             switch (action.playType) {
                 case GridActionYoutube.playTypes.YT_PLAY_VIDEO:
-                    videoId = youtubeService.getVideoId(action.data) || ytState.lastVideoId;
+                    let videoId = youtubeService.getVideoId(action.data);
                     if (!videoId) {
                         return;
                     }
@@ -97,14 +103,14 @@ youtubeService.play = function (action) {
                         return;
                     }
                     let lastTime = ytState.lastTimes[videoId];
-                    saveCurrentVideo(videoId);
-                    player.loadVideoById(videoId, lastTime);
+                    player.loadVideoById(videoId, videoTime !== undefined ? videoTime : lastTime);
                     break;
                 case GridActionYoutube.playTypes.YT_PLAY_SEARCH:
                     waitForBuffering = true;
                     player.loadPlaylist({
                         list: action.data,
-                        listType: 'search'
+                        listType: 'search',
+                        index: ytState.lastPlaylistIndexes[action.data]
                     });
                     break;
                 case GridActionYoutube.playTypes.YT_PLAY_PLAYLIST:
@@ -112,27 +118,30 @@ youtubeService.play = function (action) {
                     waitForBuffering = true;
                     player.loadPlaylist({
                         list: playlistId,
-                        listType: 'playlist'
+                        listType: 'playlist',
+                        index: ytState.lastPlaylistIndexes[action.data]
                     });
                     break;
                 case GridActionYoutube.playTypes.YT_PLAY_CHANNEL:
                     let channel = youtubeService.getChannelId(action.data);
                     let channelPlaylist = youtubeService.getChannelPlaylist(channel);
                     waitForBuffering = true;
+                    log.warn(ytState.lastPlaylistIndexes[action.data]);
                     player.loadPlaylist({
                         list: channelPlaylist,
-                        listType: 'playlist'
+                        listType: 'playlist',
+                        index: ytState.lastPlaylistIndexes[action.data]
                     });
                     break;
             }
+            saveState();
         }
 
         function onBuffering() {
-            saveCurrentVideo();
             player.setLoop(true);
-            let lastTime = ytState.lastTimes[ytState.lastVideoId];
-            if (lastTime) {
-                player.seekTo(lastTime);
+            let lastTime = ytState.lastTimes[youtubeService.getCurrentVideoId()];
+            if (videoTime || lastTime) {
+                player.seekTo(videoTime !== undefined ? videoTime : lastTime);
             }
         }
     });
@@ -170,7 +179,7 @@ youtubeService.restart = function (action) {
     if (youtubeService.isPaused()) {
         player.playVideo();
     } else if (!youtubeService.isPlaying()) {
-        youtubeService.play(action);
+        youtubeService.play(action, 0);
     }
 }
 
@@ -199,6 +208,13 @@ youtubeService.isPlaying = function () {
 
 youtubeService.isPaused = function () {
     return player && player.getPlayerState() === PLAYER_STATES.PAUSED;
+}
+
+youtubeService.getCurrentVideoId = function () {
+    if (player) {
+        return youtubeService.getVideoId(player.getVideoUrl());
+    }
+    return "";
 }
 
 youtubeService.getVideoId = function (videoLink) {
@@ -270,18 +286,19 @@ function getURLParam(urlString, paramName) {
 
 function saveState() {
     if (player) {
-        ytState.lastTimes[ytState.lastVideoId] = player.getCurrentTime();
-        saveCurrentVideo();
+        let videoId = youtubeService.getCurrentVideoId();
+        let currentIndex = player.getPlaylistIndex();
+        if (videoId) {
+            ytState.lastTimes[videoId] = player.getCurrentTime();
+        }
+        if (currentIndex >= 0 && ytState.lastPlayType !== GridActionYoutube.playTypes.YT_PLAY_VIDEO) {
+            ytState.lastPlaylistIndexes[ytState.lastData] = currentIndex;
+        }
     }
     if (JSON.stringify(ytState).length > 1024 * 1024) { // bigger than 1 MB -> reset
         ytState = initYtState;
     }
     localStorageService.saveYTState(ytState);
-}
-
-function saveCurrentVideo(currentVideoId) {
-    let currentVideo = youtubeService.getVideoId(player.getVideoUrl());
-    ytState.lastVideoId = currentVideoId || currentVideo || ytState.lastVideoId;
 }
 
 function init() {
