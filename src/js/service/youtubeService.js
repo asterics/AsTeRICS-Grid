@@ -11,29 +11,31 @@ let PLAYER_STATES = {
     PAUSED: 2,
     PLAYING: 1,
     UNSTARTED: -1
-}
-
-let initialized = false;
-let player = null;
-let playerID = 'player';
-let ytState = localStorageService.getYTState() || {
+};
+let initYtState = {
     lastVideoId: null,
     lastTimes: {} // ID -> Player Time
 };
 
+let initialized = false;
+let player = null;
+let playerID = 'player';
+let ytState = localStorageService.getYTState() || initYtState;
+let waitForBuffering = false;
+
 youtubeService.doAction = function (action) {
     switch (action.action) {
         case GridActionYoutube.actions.YT_PLAY:
-            youtubeService.play(action.videoLink);
+            youtubeService.play(action);
             break;
         case GridActionYoutube.actions.YT_PAUSE:
             youtubeService.pause();
             break;
         case GridActionYoutube.actions.YT_TOGGLE:
-            youtubeService.toggle(action.videoLink);
+            youtubeService.toggle(action);
             break;
         case GridActionYoutube.actions.YT_RESTART:
-            youtubeService.restart(action.videoLink);
+            youtubeService.restart(action);
             break;
         case GridActionYoutube.actions.YT_STOP:
             youtubeService.stop();
@@ -44,41 +46,94 @@ youtubeService.doAction = function (action) {
         case GridActionYoutube.actions.YT_STEP_BACKWARD:
             youtubeService.seekToRelative(-action.stepSeconds);
             break;
+        case GridActionYoutube.actions.YT_NEXT_VIDEO:
+            youtubeService.nextVideo();
+            break;
+        case GridActionYoutube.actions.YT_PREV_VIDEO:
+            youtubeService.previousVideo();
+            break;
     }
 };
 
-youtubeService.play = function (videoLink) {
+youtubeService.play = function (action) {
     let promise = Promise.resolve();
     if (!initialized) {
         promise = init();
     }
     promise.then(() => {
-        let videoId = youtubeService.getVideoId(videoLink) || ytState.lastVideoId;
-        if (!videoId) {
-            return;
+        saveState();
+        if (!player) {
+            player = new YT.Player(playerID, {
+                height: $(".yt-container")[0].getBoundingClientRect().height,
+                width: $(".yt-container")[0].getBoundingClientRect().width,
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': (event) => {
+                        if (waitForBuffering && event.data === PLAYER_STATES.BUFFERING) {
+                            waitForBuffering = false;
+                            onBuffering();
+                        }
+                    }
+                }
+            });
+        } else {
+            processAction();
         }
-        if (ytState.lastVideoId === videoId && player) {
-            player.playVideo();
-            return;
-        }
-        ytState.lastVideoId = videoId;
-        localStorageService.saveYTState(ytState);
-        player = new YT.Player(playerID, {
-            height: $(".yt-container")[0].getBoundingClientRect().height,
-            width: $(".yt-container")[0].getBoundingClientRect().width,
-            videoId: videoId,
-            events: {
-                'onReady': onPlayerReady,
-                'onStateChange': () => {}
-            }
-        });
 
         function onPlayerReady(event) {
-            let lastTime = ytState.lastTimes[videoId];
+            processAction();
+        }
+
+        function processAction() {
+            let videoId = null;
+            switch (action.playType) {
+                case GridActionYoutube.playTypes.YT_PLAY_VIDEO:
+                    videoId = youtubeService.getVideoId(action.data) || ytState.lastVideoId;
+                    if (!videoId) {
+                        return;
+                    }
+                    if (videoId === youtubeService.getVideoId(player.getVideoUrl())) {
+                        player.playVideo();
+                        return;
+                    }
+                    let lastTime = ytState.lastTimes[videoId];
+                    saveCurrentVideo(videoId);
+                    player.loadVideoById(videoId, lastTime);
+                    break;
+                case GridActionYoutube.playTypes.YT_PLAY_SEARCH:
+                    waitForBuffering = true;
+                    player.loadPlaylist({
+                        list: action.data,
+                        listType: 'search'
+                    });
+                    break;
+                case GridActionYoutube.playTypes.YT_PLAY_PLAYLIST:
+                    let playlistId = youtubeService.getPlaylistId(action.data);
+                    waitForBuffering = true;
+                    player.loadPlaylist({
+                        list: playlistId,
+                        listType: 'playlist'
+                    });
+                    break;
+                case GridActionYoutube.playTypes.YT_PLAY_CHANNEL:
+                    let channel = youtubeService.getChannelId(action.data);
+                    let channelPlaylist = youtubeService.getChannelPlaylist(channel);
+                    waitForBuffering = true;
+                    player.loadPlaylist({
+                        list: channelPlaylist,
+                        listType: 'playlist'
+                    });
+                    break;
+            }
+        }
+
+        function onBuffering() {
+            saveCurrentVideo();
+            player.setLoop(true);
+            let lastTime = ytState.lastTimes[ytState.lastVideoId];
             if (lastTime) {
                 player.seekTo(lastTime);
             }
-            player.playVideo();
         }
     });
 }
@@ -86,7 +141,7 @@ youtubeService.play = function (videoLink) {
 youtubeService.pause = function () {
     if (player) {
         player.pauseVideo();
-        saveTiming();
+        saveState();
     }
 }
 
@@ -97,26 +152,44 @@ youtubeService.stop = function () {
     }
 }
 
-youtubeService.toggle = function (videoLink) {
-    if (!youtubeService.isPlaying()) {
-        youtubeService.play(videoLink);
+youtubeService.toggle = function (action) {
+    if (youtubeService.isPaused()) {
+        player.playVideo();
+    } else if (!youtubeService.isPlaying()) {
+        youtubeService.play(action);
     } else {
         youtubeService.pause();
     }
 }
 
-youtubeService.restart = function (videoLink) {
+youtubeService.restart = function (action) {
     if (player) {
         player.seekTo(0);
     }
-    saveTiming();
-    youtubeService.play(videoLink);
+    saveState();
+    if (youtubeService.isPaused()) {
+        player.playVideo();
+    } else if (!youtubeService.isPlaying()) {
+        youtubeService.play(action);
+    }
+}
+
+youtubeService.nextVideo = function () {
+    if (player) {
+        player.nextVideo();
+    }
+}
+
+youtubeService.previousVideo = function () {
+    if (player) {
+        player.previousVideo();
+    }
 }
 
 youtubeService.seekToRelative = function (offset) {
     if (player) {
         player.seekTo(player.getCurrentTime() + offset);
-        saveTiming();
+        saveState();
     }
 }
 
@@ -124,17 +197,15 @@ youtubeService.isPlaying = function () {
     return player && player.getPlayerState() === PLAYER_STATES.PLAYING;
 }
 
+youtubeService.isPaused = function () {
+    return player && player.getPlayerState() === PLAYER_STATES.PAUSED;
+}
 
 youtubeService.getVideoId = function (videoLink) {
     if (!videoLink) {
         return null;
     }
-    let url = null;
-    try {
-        url = new URL(videoLink);
-    } catch (e) {
-    }
-    let vParam = url ? url.searchParams.get("v") : null;
+    let vParam = getURLParam(videoLink, 'v');
     let shortUrlPrefix = 'youtu.be/';
     if (vParam) {
         return vParam;
@@ -146,19 +217,71 @@ youtubeService.getVideoId = function (videoLink) {
     return videoLink;
 }
 
+youtubeService.getPlaylistId = function (videoLink) {
+    if (!videoLink) {
+        return null;
+    }
+    let listParam = getURLParam(videoLink, 'list');
+    return listParam ? listParam : videoLink;
+}
+
+youtubeService.getChannelId = function (link) {
+    if (!link) {
+        return null;
+    }
+    let channelPrefixes = ['channel/'];
+    for (let i = 0; i < channelPrefixes.length; i++) {
+        if (link.indexOf(channelPrefixes[i]) !== -1) {
+            let start = link.indexOf(channelPrefixes[i]) + channelPrefixes[i].length;
+            let channel = link.substring(start);
+            channel = channel.indexOf('/') === -1 ? channel : channel.substring(0, channel.indexOf('/'));
+            if (channel) {
+                return channel;
+            }
+        }
+    }
+    return link;
+}
+
+youtubeService.getChannelPlaylist = function (channelId) {
+    if (channelId.indexOf('UC') === 0) {
+        channelId = channelId.replace('UC', 'UU');
+    }
+    return channelId;
+};
+
 youtubeService.destroy = function () {
     if (player) {
-        saveTiming();
+        saveState();
         player.destroy();
     }
     player = null;
 }
 
-function saveTiming() {
+function getURLParam(urlString, paramName) {
+    let url = null;
+    try {
+        url = new URL(urlString);
+    } catch (e) {
+    }
+    return url ? url.searchParams.get(paramName) : null;
+
+}
+
+function saveState() {
     if (player) {
         ytState.lastTimes[ytState.lastVideoId] = player.getCurrentTime();
+        saveCurrentVideo();
+    }
+    if (JSON.stringify(ytState).length > 1024 * 1024) { // bigger than 1 MB -> reset
+        ytState = initYtState;
     }
     localStorageService.saveYTState(ytState);
+}
+
+function saveCurrentVideo(currentVideoId) {
+    let currentVideo = youtubeService.getVideoId(player.getVideoUrl());
+    ytState.lastVideoId = currentVideoId || currentVideo || ytState.lastVideoId;
 }
 
 function init() {
@@ -176,7 +299,7 @@ function init() {
     });
 
     window.addEventListener('beforeunload', (event) => {
-        saveTiming();
+        saveState();
     });
 
     return new Promise(resolve => {
