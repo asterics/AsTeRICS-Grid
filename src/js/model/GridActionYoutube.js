@@ -8,8 +8,7 @@ class GridActionYoutube extends Model({
     modelVersion: String,
     action: [String],
     playType: [String],
-    videoLink: [String],
-    list: [String], // playlist link / search query / channel link -> depending on "playType"
+    data: [String], // video link / playlist link / search query / channel link -> depending on "playType"
     stepSeconds: [Number]
 }) {
     constructor(properties, elementToCopy) {
@@ -47,7 +46,7 @@ GridActionYoutube.playTypes = {
     YT_PLAY_VIDEO: 'YT_PLAY_VIDEO',
     YT_PLAY_PLAYLIST: 'YT_PLAY_PLAYLIST',
     YT_PLAY_SEARCH: 'YT_PLAY_SEARCH',
-    YT_PLAY_USER: 'YT_PLAY_USER',
+    YT_PLAY_CHANNEL: 'YT_PLAY_CHANNEL',
 }
 
 GridActionYoutube.defaults({
