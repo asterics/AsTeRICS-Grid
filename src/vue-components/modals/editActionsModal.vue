@@ -197,11 +197,11 @@
                                                 <div class="twelve columns">
                                                     <label for="ytPlayType" class="five columns normal-text" data-i18n>Play type // Wiedergabe Typ</label>
                                                     <select id="ytPlayType" class="six columns" v-model="action.playType">
-                                                        <option v-for="playType in GridActionYoutube.playTypes" :value="playType">{{playType}}</option>
+                                                        <option v-for="playType in GridActionYoutube.playTypes" :value="playType">{{playType | translate}}</option>
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="row" v-show="action.playType && action.action">
+                                            <div class="row" v-show="action.playType && [GridActionYoutube.actions.YT_PLAY, GridActionYoutube.actions.YT_TOGGLE, GridActionYoutube.actions.YT_RESTART].indexOf(action.action) !== -1">
                                                 <div class="twelve columns">
                                                     <label for="ytList" class="five columns normal-text">
                                                         <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_VIDEO" data-i18n="">Video link // Video Link</span>
@@ -214,7 +214,7 @@
                                             </div>
                                             <div class="row" v-show="[GridActionYoutube.actions.YT_STEP_FORWARD, GridActionYoutube.actions.YT_STEP_BACKWARD].indexOf(action.action) !== -1">
                                                 <div class="twelve columns">
-                                                    <label for="stepSeconds" class="five columns normal-text" data-i18n>{{action.action | translate}} (in seconds)</label>
+                                                    <label for="stepSeconds" class="five columns normal-text" data-i18n>{{action.action | translate}} <span data-i18n="">(seconds) // (Sekunden)</span></label>
                                                     <input id="stepSeconds" type="number" class="six columns" v-model="action.stepSeconds" min="0"/>
                                                 </div>
                                             </div>

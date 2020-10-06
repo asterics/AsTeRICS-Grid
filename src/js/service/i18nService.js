@@ -144,6 +144,7 @@ i18nService.translations['en'] = {
     GridActionPredict: 'Fill prediction elements',
     GridActionCollectElement: 'Collect element action',
     GridActionWebradio: 'Web radio action',
+    GridActionYoutube: 'YouTube action',
     GridActionChangeLang: 'Change app language',
     COLLECT_ACTION_CLEAR: 'Clear collect element',
     COLLECT_ACTION_REMOVE_WORD: 'Delete last word',
@@ -196,6 +197,19 @@ i18nService.translations['en'] = {
     ELEMENT_TYPE_COLLECT: 'Collect element',
     ELEMENT_TYPE_PREDICTION: 'Prediction element',
     ELEMENT_TYPE_YT_PLAYER: 'YouTube player',
+    YT_PLAY: 'Play video',
+    YT_PAUSE: 'Pause video',
+    YT_TOGGLE: 'Play/pause video',
+    YT_RESTART: 'Restart video',
+    YT_STOP: 'Stop Video',
+    YT_STEP_FORWARD: 'Step forward within video',
+    YT_STEP_BACKWARD: 'Step backward within video',
+    YT_NEXT_VIDEO: 'Next video',
+    YT_PREV_VIDEO: 'Previous video',
+    YT_PLAY_VIDEO: 'Play single video',
+    YT_PLAY_PLAYLIST: 'Play playlist',
+    YT_PLAY_SEARCH: 'Play videos from search query',
+    YT_PLAY_CHANNEL: 'Play videos from channel'
 };
 
 i18nService.translations['de'] = {
@@ -206,6 +220,7 @@ i18nService.translations['de'] = {
     GridActionPredict: 'Vorhersage-Elemente füllen',
     GridActionCollectElement: 'Sammelelement Aktion',
     GridActionWebradio: 'Web-Radio Aktion',
+    GridActionYoutube: 'YouTube Aktion',
     GridActionChangeLang: 'Anwendungssprache ändern',
     COLLECT_ACTION_CLEAR: 'Sammelelement leeren',
     COLLECT_ACTION_REMOVE_WORD: 'Letztes Word löschen',
@@ -258,6 +273,19 @@ i18nService.translations['de'] = {
     ELEMENT_TYPE_COLLECT: 'Sammel-Element',
     ELEMENT_TYPE_PREDICTION: 'Vorhersage-Element',
     ELEMENT_TYPE_YT_PLAYER: 'YouTube Player',
+    YT_PLAY: 'Video abspielen',
+    YT_PAUSE: 'Video pausieren',
+    YT_TOGGLE: 'Video abspielen/pausieren',
+    YT_RESTART: 'Video neu starten',
+    YT_STOP: 'Video stoppen',
+    YT_STEP_FORWARD: 'Im Video weiterspringen',
+    YT_STEP_BACKWARD: 'Im Video zurückspringen',
+    YT_NEXT_VIDEO: 'Nächstes Video',
+    YT_PREV_VIDEO: 'Vorheriges Video',
+    YT_PLAY_VIDEO: 'Einzelnes Video abspielen',
+    YT_PLAY_PLAYLIST: 'Playlist abspielen',
+    YT_PLAY_SEARCH: 'Videos aus Suchanfrage abspielen',
+    YT_PLAY_CHANNEL: 'Videos aus Kanal abspielen'
 };
 
 export {i18nService};
