@@ -210,7 +210,11 @@ i18nService.translations['en'] = {
     YT_PLAY_VIDEO: 'Play single video',
     YT_PLAY_PLAYLIST: 'Play playlist',
     YT_PLAY_SEARCH: 'Play videos from search query',
-    YT_PLAY_CHANNEL: 'Play videos from channel'
+    YT_PLAY_CHANNEL: 'Play videos from channel',
+    YT_ENTER_FULLSCREEN: 'Show video in fullscreen',
+    YT_VOLUME_UP: 'Video volume up',
+    YT_VOLUME_DOWN: 'Video volume down',
+    YT_VOLUME_MUTE: 'Mute/unmute video'
 };
 
 i18nService.translations['de'] = {
@@ -287,7 +291,11 @@ i18nService.translations['de'] = {
     YT_PLAY_VIDEO: 'Einzelnes Video abspielen',
     YT_PLAY_PLAYLIST: 'Playlist abspielen',
     YT_PLAY_SEARCH: 'Videos aus Suchanfrage abspielen',
-    YT_PLAY_CHANNEL: 'Videos aus Kanal abspielen'
+    YT_PLAY_CHANNEL: 'Videos aus Kanal abspielen',
+    YT_ENTER_FULLSCREEN: 'Zeige Video in Vollbild',
+    YT_VOLUME_UP: 'Videolautstärke erhöhen',
+    YT_VOLUME_DOWN: 'Videolautstärke vermindern',
+    YT_VOLUME_MUTE: 'Video stummschalten / Ton einschalten'
 };
 
 export {i18nService};

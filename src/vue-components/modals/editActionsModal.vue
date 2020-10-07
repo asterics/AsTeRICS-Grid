@@ -218,6 +218,12 @@
                                                     <input id="stepSeconds" type="number" class="six columns" v-model="action.stepSeconds" min="0"/>
                                                 </div>
                                             </div>
+                                            <div class="row" v-show="[GridActionYoutube.actions.YT_VOLUME_UP, GridActionYoutube.actions.YT_VOLUME_DOWN].indexOf(action.action) !== -1">
+                                                <div class="twelve columns">
+                                                    <label for="stepVolume" class="five columns normal-text" data-i18n>{{action.action | translate}} <span data-i18n="">(precent) // (Prozent)</span></label>
+                                                    <input id="stepVolume" type="number" class="six columns" v-model="action.stepVolume" min="0" max="100"/>
+                                                </div>
+                                            </div>
                                             <div class="row">
                                                 <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
                                             </div>

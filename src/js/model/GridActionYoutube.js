@@ -9,7 +9,8 @@ class GridActionYoutube extends Model({
     action: [String],
     playType: [String],
     data: [String], // video link / playlist link / search query / channel link -> depending on "playType"
-    stepSeconds: [Number]
+    stepSeconds: [Number],
+    stepVolume: [Number]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionYoutube);
@@ -40,7 +41,10 @@ GridActionYoutube.actions = {
     YT_STEP_BACKWARD: 'YT_STEP_BACKWARD',
     YT_NEXT_VIDEO: 'YT_NEXT_VIDEO',
     YT_PREV_VIDEO: 'YT_PREV_VIDEO',
-    YT_ENTER_FULLSCREEN: 'YT_ENTER_FULLSCREEN'
+    YT_ENTER_FULLSCREEN: 'YT_ENTER_FULLSCREEN',
+    YT_VOLUME_UP: 'YT_VOLUME_UP',
+    YT_VOLUME_DOWN: 'YT_VOLUME_DOWN',
+    YT_VOLUME_MUTE: 'YT_VOLUME_MUTE',
 }
 
 GridActionYoutube.playTypes = {
@@ -55,6 +59,7 @@ GridActionYoutube.defaults({
     modelName: GridActionYoutube.getModelName(),
     modelVersion: constants.MODEL_VERSION,
     stepSeconds: 10,
+    stepVolume: 20,
     playType: GridActionYoutube.playTypes.YT_PLAY_VIDEO
 });
 

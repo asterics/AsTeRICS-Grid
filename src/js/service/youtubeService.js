@@ -3,6 +3,8 @@ import {GridActionYoutube} from "../model/GridActionYoutube";
 import {constants} from "../util/constants";
 import {localStorageService} from "./data/localStorageService";
 import {inputEventHandler} from "../input/inputEventHandler";
+import {MainVue} from "../vue/mainVue";
+import {i18nService} from "./i18nService";
 
 let youtubeService = {};
 
@@ -19,6 +21,8 @@ let initYtState = {
     lastData: null,
     lastTimes: {}, // Video ID -> Player Time
     lastPlaylistIndexes: {}, // Playlist ID -> last played video index
+    muted: false,
+    volume: 100
 };
 
 let initialized = false;
@@ -61,6 +65,15 @@ youtubeService.doAction = function (action) {
         case GridActionYoutube.actions.YT_ENTER_FULLSCREEN:
             youtubeService.enterFullscreen();
             break;
+        case GridActionYoutube.actions.YT_VOLUME_UP:
+            youtubeService.volumeUp(action.stepVolume);
+            break;
+        case GridActionYoutube.actions.YT_VOLUME_DOWN:
+            youtubeService.volumeDown(action.stepVolume);
+            break;
+        case GridActionYoutube.actions.YT_VOLUME_MUTE:
+            youtubeService.volumeToggleMute();
+            break;
     }
 };
 
@@ -90,6 +103,10 @@ youtubeService.play = function (action, videoTime) {
 
         function onPlayerReady(event) {
             iframe = $('#' + playerID)[0];
+            youtubeService.setVolume(ytState.volume, true);
+            if (ytState.muted) {
+                player.mute();
+            }
             processAction();
         }
 
@@ -226,6 +243,41 @@ youtubeService.exitFullscreen = function () {
         exitFullscreen.bind(document)();
     }
     inputEventHandler.global.off(youtubeService.exitFullscreen);
+}
+
+youtubeService.volumeUp = function (diffPercentage) {
+    youtubeService.setVolume(Math.min(player.getVolume() + diffPercentage, 100));
+}
+
+youtubeService.volumeDown = function (diffPercentage) {
+    youtubeService.setVolume(Math.max(player.getVolume() - diffPercentage, 0));
+}
+
+youtubeService.setVolume = function (volume, initSet) {
+    if (player) {
+        player.setVolume(volume);
+        if (!initSet) {
+            if (player.isMuted) {
+                player.unMute();
+                ytState.muted = false;
+            }
+            MainVue.setTooltip(i18nService.translate('Volume: {?} / 100 // Lautstärke: {?} / 100', volume), {
+                revertOnClose: true,
+                timeout: 5000
+            });
+            ytState.volume = volume;
+            saveState();
+        }
+    }
+}
+
+youtubeService.volumeToggleMute = function () {
+    if (player) {
+        let isMuted = player.isMuted();
+        isMuted ? player.unMute() : player.mute();
+        ytState.muted = !isMuted;
+        saveState();
+    }
 }
 
 youtubeService.setActionAfterNavigate = function (action) {
