@@ -9,6 +9,8 @@ import {GridActionCollectElement} from "../model/GridActionCollectElement";
 import {GridActionNavigate} from "../model/GridActionNavigate";
 import {GridActionSpeak} from "../model/GridActionSpeak";
 import {GridActionPredict} from "../model/GridActionPredict";
+import {youtubeService} from "./youtubeService";
+import {GridActionYoutube} from "../model/GridActionYoutube";
 
 var collectElementService = {};
 
@@ -87,6 +89,13 @@ collectElementService.doCollectElementActions = function (action) {
             break;
         case GridActionCollectElement.COLLECT_ACTION_CLEAR_CLIPBOARD:
             util.copyToClipboard('');
+            break;
+        case GridActionCollectElement.COLLECT_ACTION_TO_YOUTUBE:
+            youtubeService.setActionAfterNavigate(new GridActionYoutube({
+                action: GridActionYoutube.actions.YT_PLAY,
+                playType: GridActionYoutube.playTypes.YT_PLAY_SEARCH,
+                data: collectedText
+            }));
             break;
     }
     predictionService.predict(collectedText, dictionaryKey);
