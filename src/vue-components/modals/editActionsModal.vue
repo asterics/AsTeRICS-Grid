@@ -139,7 +139,7 @@
                                         <div v-if="action.modelName == 'GridActionCollectElement'">
                                             <div class="row">
                                                 <div class="twelve columns">
-                                                    <label for="selectCollectElmAction" class="five columns normal-text" data-i18n>Perform action on collect elements // Aktion für Sammelelemente ausführen</label>
+                                                    <label for="selectCollectElmAction" class="five columns normal-text" data-i18n>Perform action on collect element // Aktion für Sammelelement ausführen</label>
                                                     <select id="selectCollectElmAction" class="six columns" v-model="action.action">
                                                         <option v-for="elmAction in collectActions" :value="elmAction">
                                                             {{elmAction | translate}}
