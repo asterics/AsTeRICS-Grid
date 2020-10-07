@@ -28,7 +28,7 @@ let initYtState = {
 let initialized = false;
 let player = null;
 let playerID = 'player';
-let ytState = localStorageService.getYTState() || initYtState;
+let ytState = localStorageService.getYTState() || JSON.parse(JSON.stringify(initYtState));
 let waitForBuffering = false;
 let navigateAction = null;
 let iframe = null;
@@ -399,7 +399,7 @@ function init() {
     });
 
     $(document).on(constants.EVENT_USER_CHANGED, () => {
-        ytState = localStorageService.getYTState() || initYtState;
+        ytState = localStorageService.getYTState() || JSON.parse(JSON.stringify(initYtState));;
     });
 
     window.addEventListener('beforeunload', (event) => {
