@@ -17,8 +17,8 @@ let PLAYER_STATES = {
     UNSTARTED: -1
 };
 let initYtState = {
-    lastPlayType: null,
-    lastData: null,
+    lastPlayType: GridActionYoutube.playTypes.YT_PLAY_PLAYLIST,
+    lastData: 'https://www.youtube.com/watch?v=5ffLB4a9APc&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz',
     lastTimes: {}, // Video ID -> Player Time
     lastPlaylistIndexes: {}, // Playlist ID -> last played video index
     muted: false,
@@ -378,7 +378,8 @@ function saveState() {
         }
     }
     if (JSON.stringify(ytState).length > 1024 * 1024) { // bigger than 1 MB -> reset
-        ytState = initYtState;
+        ytState.lastPlaylistIndexes = {};
+        ytState.lastTimes = {};
     }
     localStorageService.saveYTState(ytState);
 }
