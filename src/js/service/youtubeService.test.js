@@ -1,6 +1,8 @@
+import $ from 'jquery';
 import {youtubeService} from "./youtubeService";
 
 jest.mock('../externals/objectmodel');
+jest.mock('../externals/jquery');
 
 test('youtubeService.getVideoId - Test 0', () => {
     expect(youtubeService.getVideoId(undefined)).toEqual(null);

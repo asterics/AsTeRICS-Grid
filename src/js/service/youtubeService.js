@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import {GridActionYoutube} from "../model/GridActionYoutube";
 import {constants} from "../util/constants";
 import {localStorageService} from "./data/localStorageService";
@@ -24,6 +25,7 @@ let player = null;
 let playerID = 'player';
 let ytState = localStorageService.getYTState() || initYtState;
 let waitForBuffering = false;
+let navigateAction = null;
 
 youtubeService.doAction = function (action) {
     switch (action.action) {
@@ -202,6 +204,10 @@ youtubeService.seekToRelative = function (offset) {
     }
 }
 
+youtubeService.setActionAfterNavigate = function (action) {
+    navigateAction = action;
+}
+
 youtubeService.isPlaying = function () {
     return player && player.getPlayerState() === PLAYER_STATES.PLAYING;
 }
@@ -334,5 +340,12 @@ function init() {
         }
     });
 }
+
+$(document).on(constants.EVENT_GRID_LOADED, () => {
+    if (navigateAction) {
+        youtubeService.doAction(navigateAction);
+        navigateAction = null;
+    }
+});
 
 export {youtubeService};
