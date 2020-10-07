@@ -1,0 +1,3 @@
+let MainVue = {};
+
+export {MainVue};

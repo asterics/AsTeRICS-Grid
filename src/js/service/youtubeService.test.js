@@ -3,6 +3,7 @@ import {youtubeService} from "./youtubeService";
 
 jest.mock('../externals/objectmodel');
 jest.mock('../externals/jquery');
+jest.mock('../vue/mainVue.js');
 
 test('youtubeService.getVideoId - Test 0', () => {
     expect(youtubeService.getVideoId(undefined)).toEqual(null);
