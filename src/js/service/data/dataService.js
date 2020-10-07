@@ -421,6 +421,7 @@ dataService.downloadSingleGrid = function (gridId) {
 /**
  * Downloads all grids, dictionaries and metadata to File. Opens a file download in Browser.
  */
+window.backupSkipDict = false;
 dataService.downloadBackup = function () {
     let exportData = {};
     let promises = [];
@@ -442,6 +443,9 @@ dataService.downloadBackup = function () {
         return Promise.resolve();
     }));
     Promise.all(promises).then(() => {
+        if (backupSkipDict) {
+            delete exportData.dictionaries;
+        }
         let blob = new Blob([JSON.stringify(exportData)], {type: "text/plain;charset=utf-8"});
         FileSaver.saveAs(blob, "my-backup.grd");
     });
