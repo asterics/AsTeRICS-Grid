@@ -367,6 +367,7 @@
             }).then(() => {
                 initContextmenu();
                 thiz.viewInitialized = true;
+                $(document).trigger(constants.EVENT_GRID_LOADED);
                 let gridDataObject = new GridData(thiz.gridData);
                 if (gridDataObject.hasOutdatedThumbnail()) {
                     imageUtil.getScreenshot("#grid-container").then(screenshot => {
