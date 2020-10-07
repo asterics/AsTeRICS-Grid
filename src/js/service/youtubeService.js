@@ -398,6 +398,10 @@ function init() {
         }
     });
 
+    $(document).on(constants.EVENT_USER_CHANGED, () => {
+        ytState = localStorageService.getYTState() || initYtState;
+    });
+
     window.addEventListener('beforeunload', (event) => {
         saveState();
     });

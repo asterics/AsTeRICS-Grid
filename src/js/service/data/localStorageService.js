@@ -277,12 +277,17 @@ var localStorageService = {
         let json = localStorageService.get(USED_LOCALES_KEY);
         return json ? JSON.parse(json) : [];
     },
-    getYTState() {
+    getYTState(full) {
         let json = localStorageService.get(YT_STATE_KEY);
-        return json ? JSON.parse(json) : null;
+        if (full) {
+            return json ? JSON.parse(json) : null;
+        }
+        return json ? JSON.parse(json)[localStorageService.getAutologinUser()] : null;
     },
     saveYTState(state) {
-        return localStorageService.save(YT_STATE_KEY, JSON.stringify(state));
+        let currentFullState = localStorageService.getYTState(true) || {};
+        currentFullState[localStorageService.getAutologinUser()] = state;
+        return localStorageService.save(YT_STATE_KEY, JSON.stringify(currentFullState));
     }
 };
 
