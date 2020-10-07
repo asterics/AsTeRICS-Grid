@@ -2,6 +2,7 @@ import $ from 'jquery';
 import {GridActionYoutube} from "../model/GridActionYoutube";
 import {constants} from "../util/constants";
 import {localStorageService} from "./data/localStorageService";
+import {inputEventHandler} from "../input/inputEventHandler";
 
 let youtubeService = {};
 
@@ -26,6 +27,7 @@ let playerID = 'player';
 let ytState = localStorageService.getYTState() || initYtState;
 let waitForBuffering = false;
 let navigateAction = null;
+let iframe = null;
 
 youtubeService.doAction = function (action) {
     switch (action.action) {
@@ -56,6 +58,9 @@ youtubeService.doAction = function (action) {
         case GridActionYoutube.actions.YT_PREV_VIDEO:
             youtubeService.previousVideo();
             break;
+        case GridActionYoutube.actions.YT_ENTER_FULLSCREEN:
+            youtubeService.enterFullscreen();
+            break;
     }
 };
 
@@ -84,6 +89,7 @@ youtubeService.play = function (action, videoTime) {
         }
 
         function onPlayerReady(event) {
+            iframe = $('#' + playerID)[0];
             processAction();
         }
 
@@ -202,6 +208,24 @@ youtubeService.seekToRelative = function (offset) {
         player.seekTo(player.getCurrentTime() + offset);
         saveState();
     }
+}
+
+youtubeService.enterFullscreen = function () {
+    if (player && iframe) {
+        let requestFullScreen = iframe.requestFullScreen || iframe.mozRequestFullScreen || iframe.webkitRequestFullScreen || iframe.msRequestFullscreen;
+        if (requestFullScreen) {
+            requestFullScreen.bind(iframe)();
+            inputEventHandler.global.onAnyKey(youtubeService.exitFullscreen);
+        }
+    }
+}
+
+youtubeService.exitFullscreen = function () {
+    let exitFullscreen = document.exitFullscreen || document.mozCancelFullScreen || document.webkitExitFullscreen || document.msExitFullscreen;
+    if (exitFullscreen) {
+        exitFullscreen.bind(document)();
+    }
+    inputEventHandler.global.off(youtubeService.exitFullscreen);
 }
 
 youtubeService.setActionAfterNavigate = function (action) {
