@@ -98,7 +98,9 @@ webradioService.play = function (webradio) {
         if (promise && promise.then) { //IE does not return promise on play
             promise.catch(() => {
                 if (lastPlayedId === webradio.radioId) {
-                    MainVue.setTooltip(i18nService.translate('Error playing: {?}, no internet?! // Fehler bei Wiedergabe: {?}, kein Internet?!', webradio.radioName));
+                    MainVue.setTooltip(i18nService.translate('Error playing: {?}, no internet?! // Fehler bei Wiedergabe: {?}, kein Internet?!', webradio.radioName), {
+                        msgType: 'warn'
+                    });
                 }
             });
         }

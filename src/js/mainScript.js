@@ -87,6 +87,7 @@ function initServiceWorker() {
                         actionLinkFn: () => {
                             window.location.reload();
                         },
+                        msgType: 'info'
                     })
                 }
             });

@@ -1,9 +1,10 @@
 <template>
-    <div id="notificationBar" v-cloak v-show="tooltipHTML">
-        <img id="notificationBarImg" v-show="tooltipImageUrl" :src="tooltipImageUrl" alt="" class="inline">
-        <div v-html="tooltipHTML" class="inline"></div>
-        <div v-if="actionLink" class="inline">
-            <a href="javascript:;" @click="onActionLink" style="color: #44a8f1">{{actionLink | translate}}</a>
+    <div id="notificationBar" v-cloak v-show="tooltipHTML" style="display: flex">
+        <img id="notificationBarImg" v-show="tooltipImageUrl" :src="tooltipImageUrl" alt="">
+        <i v-if="tooltipOptions.faIcon" :class="tooltipOptions.faIcon"></i>
+        <div style="padding-left: 0.5em">
+            <span v-html="tooltipHTML"></span>
+            <a href="javascript:;" @click="onActionLink" style="display:block; color: #44a8f1">{{actionLink | translate}}</a>
         </div>
         <button @click="tooltipHTML = ''" style="position: absolute; top: 0; right: 10px; padding: 0 10px">X</button>
     </div>
@@ -21,7 +22,9 @@
         revertOnClose: false,
         actionLink: '',
         actionLinkFn: null,
-        imageUrl: null
+        imageUrl: null,
+        faIcon: null,
+        msgType: null
     };
 
     export default {
@@ -50,6 +53,14 @@
                     thiz.tooltipTimeoutHandler = setTimeout(() => {
                         thiz.clearTooltip();
                     }, thiz.tooltipOptions.timeout);
+                }
+                switch (thiz.tooltipOptions.msgType) {
+                    case 'warn':
+                        thiz.tooltipOptions.faIcon = 'fas fa-exclamation-triangle fa-2x';
+                        break;
+                    case 'info':
+                        thiz.tooltipOptions.faIcon = 'fas fa-info-circle fa-2x';
+                        break;
                 }
                 this.tooltipHTML = html;
                 this.tooltipImageUrl = thiz.tooltipOptions.imageUrl;
@@ -160,8 +171,15 @@
         border-radius: 10px;
         color: whitesmoke;
         width: 40vw;
-        padding: 10px 40px 10px 10px;
+        padding: 10px 50px 10px 10px;
         cursor: grab;
+    }
+
+    @media (max-width: 850px) {
+        #notificationBar {
+            width: 50vw;
+            padding: 10px 35px 10px 10px;
+        }
     }
 
     #notificationBarImg {
