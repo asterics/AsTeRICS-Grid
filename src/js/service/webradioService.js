@@ -10,6 +10,7 @@ let WEBRADIO_LAST_VOLUME_KEY = 'WEBRADIO_LAST_VOLUME_KEY';
 let API_URL = 'https://de1.api.radio-browser.info/json/';
 let API_ACTION_SEARCH = 'stations/search';
 let API_ACTION_GETURL = 'url';
+let API_ACTION_STATIONS_UUID = 'stations/byuuid';
 let VOLUME_STEP = 0.15;
 let searchParameters = ['name', 'country', 'state', 'language', 'tag', 'tagList', 'order'];
 let standardSearchParameter = 'name';
@@ -98,9 +99,7 @@ webradioService.play = function (webradio) {
         if (promise && promise.then) { //IE does not return promise on play
             promise.catch(() => {
                 if (lastPlayedId === webradio.radioId) {
-                    MainVue.setTooltip(i18nService.translate('Error playing: {?}, no internet?! // Fehler bei Wiedergabe: {?}, kein Internet?!', webradio.radioName), {
-                        msgType: 'warn'
-                    });
+                    showErrorMsg();
                 }
             });
         }
@@ -215,6 +214,12 @@ webradioService.hasMoreSearchResults = function () {
     return hasMoreSearchResults;
 };
 
+function showErrorMsg() {
+    MainVue.setTooltip(i18nService.translate('Error playing: {?}, no internet?! // Fehler bei Wiedergabe: {?}, kein Internet?!', webradio.radioName), {
+        msgType: 'warn'
+    });
+}
+
 function setVolumeTooltip() {
     MainVue.setTooltip(i18nService.translate('Volume: {?} / 100 // Lautstärke: {?} / 100', Math.round(volume * 100)), {
         revertOnClose: true,
@@ -231,23 +236,15 @@ function fillUrl(webradio, gridId) {
             type: "GET",
             url: API_URL + API_ACTION_GETURL + '/' + webradio.radioId,
             dataType: 'json'
-        }).then(data => {
-            process(data, webradio);
-        }, (error, status) => {
-            //  fix for issue: https://github.com/segler-alex/radiobrowser-api-rust/issues/13
-            if (status === "parsererror") {
-                let nameOriginal = error.responseText.substring(error.responseText.indexOf('"name":') + 8, error.responseText.indexOf('"url":') - 2);
-                let name = nameOriginal.replace(new RegExp('"', 'g'), "'");
-                let string = error.responseText.replace(nameOriginal, name);
-                process(JSON.parse(string), webradio);
-            } else {
-                MainVue.setTooltip(i18nService.translate('Error playing: {?}, no internet?! // Fehler bei Wiedergabe: {?}, kein Internet?!', webradio.radioName));
-                reject(error);
-            }
         });
 
-        function process(data, webradio) {
-            webradio.radioUrl = data.url;
+        $.ajax({
+            type: "GET",
+            url: API_URL + API_ACTION_STATIONS_UUID + '/' + webradio.radioId,
+            dataType: 'json'
+        }).then(list => {
+            let data = list[0];
+            webradio.radioUrl = data.url_resolved || data.url;
             if (webradio.radioUrl.lastIndexOf('/') === webradio.radioUrl.length - 1) {
                 webradio.radioUrl = webradio.radioUrl + ';';
             }
@@ -269,7 +266,7 @@ function fillUrl(webradio, gridId) {
                 });
             }
             resolve(webradio);
-        }
+        });
     });
 }
 
