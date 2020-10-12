@@ -37,7 +37,8 @@
                 lastTooltipOptions: null,
                 lastTooltipHTML: null,
                 tooltipTimeoutHandler: null,
-                tooltipOptions: _defaultTooltipsOptions
+                tooltipOptions: _defaultTooltipsOptions,
+                currentToolTipID: null
             }
         },
         methods: {
@@ -65,8 +66,13 @@
                 this.tooltipHTML = html;
                 this.tooltipImageUrl = thiz.tooltipOptions.imageUrl;
                 this.actionLink = thiz.tooltipOptions.actionLink;
+                this.currentToolTipID = new Date().getTime();
+                return this.currentToolTipID;
             },
-            clearTooltip: function () {
+            clearTooltip: function (id) {
+                if (id && id !== this.currentToolTipID) {
+                    return;
+                }
                 let thiz = this;
                 if (thiz.tooltipOptions.revertOnClose && this.tooltipHTML) {
                     thiz.setTooltip(thiz.lastTooltipHTML, thiz.lastTooltipOptions);

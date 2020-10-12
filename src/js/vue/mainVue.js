@@ -30,7 +30,7 @@ MainVue.setTooltip = function (html, options) {
     if (!app) {
         return;
     }
-    app.$refs.notificationBar.setTooltip(html, options);
+    return app.$refs.notificationBar.setTooltip(html, options);
 };
 
 MainVue.setTooltipI18n = function(translateText, options) {
