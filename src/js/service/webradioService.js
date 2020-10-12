@@ -17,9 +17,11 @@ let standardSearchParameter = 'name';
 
 let webradioService = {};
 let player = document.getElementById('audioPlayer');
+let videoPlayer = document.getElementById('videoPlayer');
 let lastPlayedId = localStorageService.get(WEBRADIO_LAST_PLAYED_ID_KEY);
 let volume = parseFloat(localStorageService.get(WEBRADIO_LAST_VOLUME_KEY) || 1.0);
 let hasMoreSearchResults = false;
+let playingVideo = false;
 
 webradioService.doAction = function (gridId, action) {
     dataService.getGrid(gridId).then(grid => {
@@ -79,16 +81,34 @@ webradioService.play = function (webradio) {
     if (!webradio || (!player.paused && lastPlayedId === webradio.radioId)) {
         return;
     }
-    if (!player.paused) {
+    if (!player.paused || !videoPlayer.paused) {
         webradioService.stop();
     }
     lastPlayedId = webradio.radioId || lastPlayedId;
     localStorageService.save(WEBRADIO_LAST_PLAYED_ID_KEY, lastPlayedId);
     fillUrl(webradio).then(radioWithUrl => {
         log.debug('playing: ' + radioWithUrl.radioUrl);
-        player.src = radioWithUrl.radioUrl;
-        player.volume = volume;
-        let promise = player.play();
+        let promise = Promise.resolve();
+        if (webradio.radioUrl.indexOf('.m3u8') !== -1) {
+            playingVideo = true;
+            videoPlayer.src = radioWithUrl.radioUrl;
+            import(/* webpackChunkName: "hls.js" */ 'hls.js').then(Hls => {
+                Hls = Hls.default;
+                if (Hls.isSupported()) {
+                    let hls = new Hls();
+                    hls.loadSource(radioWithUrl.radioUrl);
+                    hls.attachMedia(videoPlayer);
+                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                        videoPlayer.play();
+                    });
+                }
+            });
+        } else {
+            playingVideo = false;
+            player.src = radioWithUrl.radioUrl;
+            player.volume = volume;
+            promise = player.play();
+        }
         let tooltipText = i18nService.translate('playing: {?} // Wiedergabe: {?}', radioWithUrl.radioName);
         MainVue.setTooltip(tooltipText, {
             closeOnNavigate: false,
@@ -109,12 +129,13 @@ webradioService.play = function (webradio) {
 webradioService.stop = function (radioId) {
     if (!radioId || radioId === lastPlayedId) {
         player.pause();
+        videoPlayer.pause();
         MainVue.clearTooltip();
     }
 };
 
 webradioService.toggle = function (webradio) {
-    if (player.paused) {
+    if (!playingVideo && player.paused || playingVideo && videoPlayer.paused) {
         webradioService.play(webradio);
     } else {
         webradioService.stop();
@@ -127,6 +148,7 @@ webradioService.volumeUp = function () {
     localStorageService.save(WEBRADIO_LAST_VOLUME_KEY, volume);
     setVolumeTooltip();
     player.volume = volume;
+    videoPlayer.volume = volume;
 };
 
 webradioService.volumeDown = function () {
@@ -135,6 +157,7 @@ webradioService.volumeDown = function () {
     localStorageService.save(WEBRADIO_LAST_VOLUME_KEY, volume);
     setVolumeTooltip();
     player.volume = volume;
+    videoPlayer.volume = volume;
 };
 
 /**
