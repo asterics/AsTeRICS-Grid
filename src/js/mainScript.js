@@ -71,7 +71,7 @@ function initServiceWorker() {
         navigator.serviceWorker.register('./serviceWorker.js').then(reg => {
             let isUpdate = false;
             setInterval(() => {
-                log.info('Check for serviceworker update...');
+                log.debug('Check for serviceworker update...');
                 reg.update();
             }, SERVICE_WORKER_UPDATE_CHECK_INTERVAL);
             reg.addEventListener('updatefound', function () {
