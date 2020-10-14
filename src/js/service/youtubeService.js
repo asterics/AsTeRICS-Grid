@@ -32,6 +32,7 @@ let ytState = localStorageService.getYTState() || JSON.parse(JSON.stringify(init
 let waitForBuffering = false;
 let navigateAction = null;
 let iframe = null;
+let tooltipID = null;
 
 youtubeService.doAction = function (action) {
     switch (action.action) {
@@ -79,6 +80,7 @@ youtubeService.doAction = function (action) {
 
 youtubeService.play = function (action, videoTime) {
     let promise = Promise.resolve();
+    MainVue.clearTooltip(tooltipID);
     if (!initialized) {
         promise = init();
     }
@@ -94,6 +96,10 @@ youtubeService.play = function (action, videoTime) {
                             waitForBuffering = false;
                             onBuffering();
                         }
+                    },
+                    'onError' : () => {
+                        log.warn('error on playing YouTube video');
+                        errorMessage();
                     }
                 }
             });
@@ -384,6 +390,13 @@ function saveState() {
     localStorageService.saveYTState(ytState);
 }
 
+function errorMessage() {
+    tooltipID = MainVue.setTooltip(i18nService.translate('Error on playing YouTube video. Please check internet connection. // Fehler bei der Wiedergabe des YouTube Videos. Bitte Internet-Verbindung überprüfen.'), {
+        timeout: 30000,
+        msgType: 'warn'
+    });
+}
+
 function init() {
     if (initialized) {
         return Promise.resolve();
@@ -409,9 +422,11 @@ function init() {
     return new Promise(resolve => {
         //see https://developers.google.com/youtube/iframe_api_reference#Getting_Started
         let tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        let firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        tag.onerror = function (e) {
+            log.warn('error on loading YouTube API script');
+            errorMessage();
+        }
 
         // 3. This function creates an <iframe> (and YouTube player)
         //    after the API code downloads.
@@ -419,6 +434,10 @@ function init() {
             initialized = true;
             resolve();
         }
+
+        tag.src = "https://www.youtube.com/iframe_api";
+        let firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     });
 }
 
