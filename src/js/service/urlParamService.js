@@ -1,41 +1,43 @@
 let urlParamService = {};
 
-let PARAM_DEMO_MODE = 'demo';
-let PARAM_SCANNING = 'scanning';
-let PARAM_HUFFMAN = 'huffman';
-let PARAM_DIR_INPUT = 'direction';
-let PARAM_RESET_DATABASE = 'reset';
-let PARAM_DEFAULT_GRIDSET = 'default';
+urlParamService.params = {
+    PARAM_DEMO_MODE: 'demo',
+    PARAM_SCANNING: 'scanning',
+    PARAM_HUFFMAN: 'huffman',
+    PARAM_DIR_INPUT: 'direction',
+    PARAM_RESET_DATABASE: 'reset',
+    PARAM_DEFAULT_GRIDSET: 'default'
+}
 
 let _demoMode = false;
 let _alreadyResetted = false;
 
 urlParamService.isDemoMode = function () {
-    _demoMode = _demoMode || hasParam(PARAM_DEMO_MODE);
-    removeParam(PARAM_DEMO_MODE);
+    _demoMode = _demoMode || hasParam(urlParamService.params.PARAM_DEMO_MODE);
+    removeParam(urlParamService.params.PARAM_DEMO_MODE);
     return _demoMode;
 };
 
 urlParamService.isScanningEnabled = function () {
-    return hasParam(PARAM_SCANNING) && !isParamFalse(PARAM_SCANNING);
+    return hasParam(urlParamService.params.PARAM_SCANNING) && !isParamFalse(urlParamService.params.PARAM_SCANNING);
 };
 
 urlParamService.isDirectionEnabled = function () {
-    return hasParam(PARAM_DIR_INPUT) && !isParamFalse(PARAM_DIR_INPUT);
+    return hasParam(urlParamService.params.PARAM_DIR_INPUT) && !isParamFalse(urlParamService.params.PARAM_DIR_INPUT);
 };
 
 urlParamService.isHuffmanEnabled = function () {
-    return hasParam(PARAM_HUFFMAN) && !isParamFalse(PARAM_HUFFMAN);
+    return hasParam(urlParamService.params.PARAM_HUFFMAN) && !isParamFalse(urlParamService.params.PARAM_HUFFMAN);
 };
 
 urlParamService.shouldResetDatabase = function () {
-    let shouldReset = !_alreadyResetted && (urlParamService.isDemoMode() || isParamTrue(PARAM_RESET_DATABASE));
+    let shouldReset = !_alreadyResetted && (urlParamService.isDemoMode() || isParamTrue(urlParamService.params.PARAM_RESET_DATABASE));
     _alreadyResetted = true;
     return shouldReset;
 };
 
 urlParamService.getDefaultGridsetName = function () {
-    return getParam(PARAM_DEFAULT_GRIDSET);
+    return getParam(urlParamService.params.PARAM_DEFAULT_GRIDSET);
 };
 
 
