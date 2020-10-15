@@ -117,6 +117,21 @@ class GridData extends Model({
         }
     }
 
+    /**
+     * returns a new GridElement with given options. Position (x/y) is automatically calculated to fit in the current grid.
+     * @param options options for the new GridElement
+     * @return {GridElement}
+     */
+    getNewGridElement(options) {
+        options = options || {};
+        let xy = this.getNewXYPos();
+        options = Object.assign(options, {
+            x: xy.x,
+            y: xy.y
+        })
+        return new GridElement(options);
+    }
+
     isEqual(otherGridData) {
         var comp1 = JSON.parse(JSON.stringify(otherGridData));
         var comp2 = JSON.parse(JSON.stringify(this));
