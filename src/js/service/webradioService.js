@@ -28,6 +28,7 @@ webradioService.doAction = function (gridId, action) {
         let radios = grid.webRadios || [];
         let radioId = action.radioId || lastPlayedId;
         let webradio = radios.filter(radio => radioId === radio.radioId)[0] || radios[0];
+        let index = 0;
         if (!webradio) {
             log.info('no radio station to play found.');
             return;
@@ -48,7 +49,7 @@ webradioService.doAction = function (gridId, action) {
                 webradioService.stop();
                 break;
             case GridActionWebradio.WEBRADIO_ACTION_NEXT:
-                let index = radios.map(e => e.radioId).indexOf(webradio.radioId);
+                index = radios.map(e => e.radioId).indexOf(webradio.radioId);
                 if (index < 0 || radios.length < 2) {
                     return;
                 }
@@ -119,7 +120,7 @@ webradioService.play = function (webradio) {
         if (promise && promise.then) { //IE does not return promise on play
             promise.catch(() => {
                 if (lastPlayedId === webradio.radioId) {
-                    showErrorMsg();
+                    showErrorMsg(webradio);
                 }
             });
         }
@@ -237,7 +238,7 @@ webradioService.hasMoreSearchResults = function () {
     return hasMoreSearchResults;
 };
 
-function showErrorMsg() {
+function showErrorMsg(webradio) {
     MainVue.setTooltip(i18nService.translate('Error playing: {?}, no internet?! // Fehler bei Wiedergabe: {?}, kein Internet?!', webradio.radioName), {
         msgType: 'warn'
     });
