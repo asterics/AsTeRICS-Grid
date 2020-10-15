@@ -1,6 +1,9 @@
 <template>
     <div>
-        <h3 data-i18n="">Selected radio stations // Ausgewählte Radiosender</h3>
+        <div class="row">
+            <h3 class="six columns" data-i18n="">Selected radio stations // Ausgewählte Radiosender</h3>
+            <button class="six columns" @click="addAllRadioElements">Grid-Elemente für Radios erstellen</button>
+        </div>
         <div class="row">
             <ul class="webradioList">
                 <li v-for="webradio in selectedRadioList">
@@ -61,15 +64,29 @@
     import {webradioService} from "../../js/service/webradioService";
     import {util} from "../../js/util/util";
     import {i18nService} from "../../js/service/i18nService";
+    import {GridData} from "../../js/model/GridData";
+    import {GridActionWebradio} from "../../js/model/GridActionWebradio";
+    import {GridImage} from "../../js/model/GridImage";
+    import {imageUtil} from "../../js/util/imageUtil";
 
     let WEBRADIO_LIMIT = 10;
 
     export default {
         props: {
-            value: Array
+            value: Object
+        },
+        watch: {
+            value: {
+                handler: function(newValue) {
+                    this.gridData = JSON.parse(JSON.stringify(newValue));
+                    this.selectedRadioList = this.gridData.webRadios;
+                },
+                deep: true
+            }
         },
         data() {
             return {
+                gridData: null,
                 selectedRadioList: [],
                 webradioSearchResults: [],
                 webradioSearch: null,
@@ -83,7 +100,38 @@
         },
         methods: {
             modelChanged() {
-                this.$emit('input', JSON.parse(JSON.stringify(this.selectedRadioList)));
+                this.gridData.webRadios = this.selectedRadioList;
+                this.$emit('input', JSON.parse(JSON.stringify(this.gridData)));
+            },
+            addAllRadioElements() {
+                if (!confirm(i18nService.translate('This action adds {?} new elements to the grid. Continue? // Diese Aktion fügt {?} neue Elemente zum Grid hinzu. Fortfahren?', this.gridData.webRadios.length))) {
+                    return;
+                }
+                let thiz = this;
+                let promises = [];
+                let promiseChain = Promise.resolve();
+                thiz.gridData.webRadios.forEach((radio, index) => {
+                    const makeNextPromise = (currentRadio) => () => {
+                        let promise = imageUtil.urlToBase64(currentRadio.faviconUrl).then(base64 => {
+                            let image = base64 ? new GridImage({data: base64}) : undefined;
+                            let newElement = new GridData(thiz.gridData).getNewGridElement({
+                                label: i18nService.getTranslationObject(currentRadio.radioName),
+                                actions: [new GridActionWebradio({
+                                    radioId: currentRadio.radioId,
+                                    action: GridActionWebradio.WEBRADIO_ACTION_START
+                                })],
+                                image: image
+                            });
+                            thiz.gridData.gridElements.push(newElement);
+                            return Promise.resolve();
+                        });
+                        return promise;
+                    }
+                    promiseChain = promiseChain.then(makeNextPromise(radio));
+                });
+                promiseChain.then(() => {
+                    this.modelChanged();
+                });
             },
             searchWebradios(event) {
                 let thiz = this;
@@ -131,7 +179,8 @@
         },
         mounted() {
             let thiz = this;
-            thiz.selectedRadioList = JSON.parse(JSON.stringify(thiz.value));
+            thiz.gridData = JSON.parse(JSON.stringify(thiz.value));
+            thiz.selectedRadioList = thiz.gridData.webRadios;
             i18nService.initDomI18n();
         },
         updated() {

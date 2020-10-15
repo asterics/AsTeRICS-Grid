@@ -175,7 +175,7 @@
                                             </div>
                                             <div class="row">
                                                 <accordion acc-label="Manage webradio list // Webradioliste verwalten" :acc-open="gridData.webRadios.length === 0 ? 'true' : 'false'" class="twelve columns">
-                                                    <radio-list-selector v-model="gridData.webRadios"></radio-list-selector>
+                                                    <radio-list-selector v-model="gridData"></radio-list-selector>
                                                 </accordion>
                                             </div>
                                             <div class="row">
