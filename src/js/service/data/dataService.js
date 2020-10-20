@@ -449,6 +449,7 @@ dataService.downloadBackup = function () {
             exportData.metadata.inputConfig = new InputConfig();
             exportData.metadata.locked = undefined;
             exportData.metadata.fullscreen = undefined;
+            exportData.metadata.hashCodes = {};
         }
         let blob = new Blob([JSON.stringify(exportData)], {type: "text/plain;charset=utf-8"});
         FileSaver.saveAs(blob, "my-backup.grd");
