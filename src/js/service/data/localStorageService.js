@@ -14,6 +14,7 @@ let LOCAL_METADATA_KEY = "AG_LOCAL_METADATA_KEY";
 let GRID_DIMENSIONS_KEY = "AG_GRID_DIMENSIONS_KEY";
 let USED_LOCALES_KEY = "AG_USED_LOCALES_KEY";
 let YT_STATE_KEY = "AG_YT_STATE_KEY";
+let CURRENT_VERSION_KEY = "AG_CURRENT_VERSION_KEY";
 
 if (typeof (Storage) !== "undefined") {
     try {
@@ -288,6 +289,12 @@ var localStorageService = {
         let currentFullState = localStorageService.getYTState(true) || {};
         currentFullState[localStorageService.getAutologinUser()] = state;
         return localStorageService.save(YT_STATE_KEY, JSON.stringify(currentFullState));
+    },
+    getCurrentAppVersion() {
+        return localStorageService.get(CURRENT_VERSION_KEY);
+    },
+    setCurrentAppVersion(versionString) {
+        localStorageService.save(CURRENT_VERSION_KEY, versionString);
     }
 };
 
