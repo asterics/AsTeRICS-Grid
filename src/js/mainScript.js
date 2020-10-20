@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import {localStorageService} from "./service/data/localStorageService.js";
 import {Router} from "./router.js";
 import {VuePluginManager} from "./vue/vuePluginManager";
@@ -11,6 +12,7 @@ import {urlParamService} from "./service/urlParamService";
 import {constants} from "./util/constants";
 import {modelUtil} from "./util/modelUtil";
 import {keyboardShortcuts} from "./service/keyboardShortcuts";
+import {i18nService} from "./service/i18nService";
 //import {timingLogger} from "./service/timingLogger";
 
 let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
@@ -19,7 +21,8 @@ function init() {
     let promises = [];
     //timingLogger.initLogging();
     log.setLevel(log.levels.INFO);
-    log.info('AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
+    log.info('AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/' + constants.CURRENT_VERSION);
+    checkAppVersion();
     initServiceWorker();
     loginService.ping();
     VuePluginManager.init();
@@ -93,4 +96,23 @@ function initServiceWorker() {
             });
         });
     }
+}
+
+function checkAppVersion() {
+    let version = localStorageService.getCurrentAppVersion();
+    if (version && version !== constants.CURRENT_VERSION) {
+        let showMsg = () => {
+            let text = i18nService.translate("You're now using new Version '{?}'. // Sie verwenden nun die neue Version '{?}'.", constants.CURRENT_VERSION)
+            MainVue.setTooltip(text, {
+                closeOnNavigate: true,
+                timeout: 30000,
+                actionLink: 'More information // Mehr Informationen',
+                actionLinkUrl: 'https://github.com/asterics/AsTeRICS-Grid/releases/tag/' + constants.CURRENT_VERSION,
+                msgType: 'info'
+            });
+            $(document).off(constants.EVENT_GRID_LOADED, showMsg);
+        }
+        $(document).on(constants.EVENT_GRID_LOADED, showMsg);
+    }
+    localStorageService.setCurrentAppVersion(constants.CURRENT_VERSION);
 }
