@@ -10,7 +10,10 @@ class GridActionYoutube extends Model({
     playType: [String],
     data: [String], // video link / playlist link / search query / channel link -> depending on "playType"
     stepSeconds: [Number],
-    stepVolume: [Number]
+    stepVolume: [Number],
+    showCC: [Boolean],
+    playMuted: [Boolean],
+    performAfterNav: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionYoutube);

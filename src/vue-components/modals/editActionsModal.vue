@@ -201,15 +201,29 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="row" v-show="action.playType && [GridActionYoutube.actions.YT_PLAY, GridActionYoutube.actions.YT_TOGGLE, GridActionYoutube.actions.YT_RESTART].indexOf(action.action) !== -1">
-                                                <div class="twelve columns">
-                                                    <label for="ytList" class="five columns normal-text">
-                                                        <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_VIDEO" data-i18n="">Video link // Video Link</span>
-                                                        <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_SEARCH" data-i18n="">YouTube search query // YouTube Suchanfrage</span>
-                                                        <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_PLAYLIST" data-i18n="">YouTube playlist link // YouTube Playlist Link</span>
-                                                        <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_CHANNEL" data-i18n="">YouTube channel link // YouTube Channel-Link</span>
-                                                    </label>
-                                                    <input id="ytList" type="text" class="six columns" v-model="action.data"/>
+                                            <div v-show="action.playType && [GridActionYoutube.actions.YT_PLAY, GridActionYoutube.actions.YT_TOGGLE, GridActionYoutube.actions.YT_RESTART].indexOf(action.action) !== -1">
+                                                <div class="row" >
+                                                    <div class="twelve columns">
+                                                        <label for="ytList" class="five columns normal-text">
+                                                            <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_VIDEO" data-i18n="">Video link // Video Link</span>
+                                                            <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_SEARCH" data-i18n="">YouTube search query // YouTube Suchanfrage</span>
+                                                            <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_PLAYLIST" data-i18n="">YouTube playlist link // YouTube Playlist Link</span>
+                                                            <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_CHANNEL" data-i18n="">YouTube channel link // YouTube Channel-Link</span>
+                                                        </label>
+                                                        <input id="ytList" type="text" class="six columns" v-model="action.data"/>
+                                                    </div>
+                                                </div>
+                                                <div class="row" >
+                                                    <input id="showCC" type="checkbox" v-model="action.showCC"/>
+                                                    <label for="showCC" class="normal-text" data-i18n="">Show video subtitles (if available) // Zeige Video-Untertitel (wenn verfügbar)</label>
+                                                </div>
+                                                <div class="row" >
+                                                    <input id="playMuted" type="checkbox" v-model="action.playMuted"/>
+                                                    <label for="playMuted" class="normal-text" data-i18n="">Start video muted // Video stummgeschaltet starten</label>
+                                                </div>
+                                                <div class="row" >
+                                                    <input id="afterNav" type="checkbox" v-model="action.performAfterNav"/>
+                                                    <label for="afterNav" class="normal-text" data-i18n="">Perform action after navigation // Aktion erst nach Navigation ausführen</label>
                                                 </div>
                                             </div>
                                             <div class="row" v-show="[GridActionYoutube.actions.YT_STEP_FORWARD, GridActionYoutube.actions.YT_STEP_BACKWARD].indexOf(action.action) !== -1">

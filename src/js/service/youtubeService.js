@@ -35,6 +35,10 @@ let iframe = null;
 let tooltipID = null;
 
 youtubeService.doAction = function (action) {
+    if (action.performAfterNav) {
+        youtubeService.setActionAfterNavigate(action);
+        return;
+    }
     switch (action.action) {
         case GridActionYoutube.actions.YT_PLAY:
             youtubeService.play(action);
@@ -85,10 +89,23 @@ youtubeService.play = function (action, videoTime) {
         promise = init();
     }
     promise.then(() => {
+        if (!action.data) {
+            action.playType = ytState.lastPlayType;
+            action.data = ytState.lastData;
+        }
+        ytState.lastPlayType = action.playType;
+        ytState.lastData = action.data;
         if (!player) {
             player = new YT.Player(playerID, {
                 height: $(".yt-container")[0].getBoundingClientRect().height,
                 width: $(".yt-container")[0].getBoundingClientRect().width,
+                playerVars: {
+                    'mute': action.playMuted ? 1 : 0,
+                    'cc_load_policy': action.showCC ? 1 : 0,
+                    'cc_lang_pref': i18nService.getBrowserLang(),
+                    'rel': 0,
+                    'iv_load_policy': 3
+                },
                 events: {
                     'onReady': onPlayerReady,
                     'onStateChange': (event) => {
@@ -117,12 +134,6 @@ youtubeService.play = function (action, videoTime) {
         }
 
         function processAction() {
-            if (!action.data) {
-                action.playType = ytState.lastPlayType;
-                action.data = ytState.lastData;
-            }
-            ytState.lastPlayType = action.playType;
-            ytState.lastData = action.data;
             switch (action.playType) {
                 case GridActionYoutube.playTypes.YT_PLAY_VIDEO:
                     let videoId = youtubeService.getVideoId(action.data);
@@ -287,6 +298,7 @@ youtubeService.volumeToggleMute = function () {
 }
 
 youtubeService.setActionAfterNavigate = function (action) {
+    action.performAfterNav = false;
     navigateAction = action;
 }
 
