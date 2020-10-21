@@ -3,7 +3,7 @@ if (typeof rvAgentPlayer !== 'undefined') {
 }
 
 var rvAgentPlayer = { version : 1 };
-var rvApiKey = 'D4F5praM';
+var rvApiKey = 'zGuJFLIV';
 var rvApiEndpoint = 'https://texttospeech.responsivevoice.org/v1/text:synthesize';
 
 if (typeof responsiveVoice === 'undefined') {
@@ -174,10 +174,10 @@ if (typeof responsiveVoice === 'undefined') {
     responsiveVoice.debug = true;
 }
 
-if( document.location.search && /rvWebsiteVerify=D4F5praM/gi.test(document.location.search) ){
+if( document.location.search && /rvWebsiteVerify=zGuJFLIV/gi.test(document.location.search) ){
     function rvNotificationPopup(){
 
-        var css = '#rv_D4F5praM_notification,#rv_D4F5praM_notification *{font-family:"Open Sans",Helvetica,Arial,sans-serif,Tahoma!important}#rv_D4F5praM_notification{transition-duration:.3s;opacity:1;transform:scale(1);background:#fff;border:1px solid rgba(0,0,0,.125);border-radius:.3rem;position:fixed;z-index:2147483646;top:20px;left:20px;width:400px;padding:25px;-webkit-box-shadow:0 2px 4px 0 rgba(0,0,0,.3);-moz-box-shadow:0 2px 4px 0 rgba(0,0,0,.3);box-shadow:0 2px 4px 0 rgba(0,0,0,.3)}#rv_D4F5praM_notification .rv_notification_logo{background:url(https://app.responsivevoice.org/favicon-96x96.png) no-repeat;background-size:50px 50px;float:left;margin:0 20px 0 0;width:50px;height:50px}#rv_D4F5praM_notification_play{background:url(https://app.responsivevoice.org/images/play.png) no-repeat;background-size:25px 25px;float:left;margin:0 5px 0 0;width:25px;height:25px;cursor:pointer}#rv_D4F5praM_notification .rv_notification_body{float:left;color:#343a40;font-size:13px;width:78%;min-height:50px;vertical-align:middle}#rv_D4F5praM_notification .rv_notification_title{color:#1d643b;font-size:16px;font-weight:700;margin:1px 0 4px 0;display:inline-block}#rv_D4F5praM_notification_close{position:absolute;top:15px;right:15px;font-size:22px;color:#343a40;cursor:pointer;line-height:11px}.rv_notification_clear{clear:both}',
+        var css = '#rv_zGuJFLIV_notification,#rv_zGuJFLIV_notification *{font-family:"Open Sans",Helvetica,Arial,sans-serif,Tahoma!important}#rv_zGuJFLIV_notification{transition-duration:.3s;opacity:1;transform:scale(1);background:#fff;border:1px solid rgba(0,0,0,.125);border-radius:.3rem;position:fixed;z-index:2147483646;top:20px;left:20px;width:400px;padding:25px;-webkit-box-shadow:0 2px 4px 0 rgba(0,0,0,.3);-moz-box-shadow:0 2px 4px 0 rgba(0,0,0,.3);box-shadow:0 2px 4px 0 rgba(0,0,0,.3)}#rv_zGuJFLIV_notification .rv_notification_logo{background:url(https://app.responsivevoice.org/favicon-96x96.png) no-repeat;background-size:50px 50px;float:left;margin:0 20px 0 0;width:50px;height:50px}#rv_zGuJFLIV_notification_play{background:url(https://app.responsivevoice.org/images/play.png) no-repeat;background-size:25px 25px;float:left;margin:0 5px 0 0;width:25px;height:25px;cursor:pointer}#rv_zGuJFLIV_notification .rv_notification_body{float:left;color:#343a40;font-size:13px;width:78%;min-height:50px;vertical-align:middle}#rv_zGuJFLIV_notification .rv_notification_title{color:#1d643b;font-size:16px;font-weight:700;margin:1px 0 4px 0;display:inline-block}#rv_zGuJFLIV_notification_close{position:absolute;top:15px;right:15px;font-size:22px;color:#343a40;cursor:pointer;line-height:11px}.rv_notification_clear{clear:both}',
             head = document.head || document.getElementsByTagName('head')[0],
             style = document.createElement('style');
         head.appendChild(style);
@@ -192,19 +192,19 @@ if( document.location.search && /rvWebsiteVerify=D4F5praM/gi.test(document.locat
 
 
         var rvNotification = document.createElement('div');
-        rvNotification.innerHTML = '<div id=rv_D4F5praM_notification><div id=rv_D4F5praM_notification_close>Ã—</div><div class=rv_notification_logo></div><div class=rv_notification_body><div id=rv_D4F5praM_notification_play></div><span class=rv_notification_title>ResponsiveVoice URL verified</span><br><span class=rv_notification_text>Your <i style="display: none;">ResponsivVoice</i> code snippet is correctly installed, you may now close this window.</span></div><div class=rv_notification_clear></div></div>';
+        rvNotification.innerHTML = '<div id=rv_zGuJFLIV_notification><div id=rv_zGuJFLIV_notification_close>Ã—</div><div class=rv_notification_logo></div><div class=rv_notification_body><div id=rv_zGuJFLIV_notification_play></div><span class=rv_notification_title>ResponsiveVoice URL verified</span><br><span class=rv_notification_text>Your <i style="display: none;">ResponsivVoice</i> code snippet is correctly installed, you may now close this window.</span></div><div class=rv_notification_clear></div></div>';
         document.body.appendChild(rvNotification);
 
 
         function speakVerification(){
-            responsiveVoice.speak( document.getElementById('rv_D4F5praM_notification').getElementsByClassName('rv_notification_text')[0].textContent );
+            responsiveVoice.speak( document.getElementById('rv_zGuJFLIV_notification').getElementsByClassName('rv_notification_text')[0].textContent );
         }
 
-        document.getElementById("rv_D4F5praM_notification_play").addEventListener( "click" , function(e) {
+        document.getElementById("rv_zGuJFLIV_notification_play").addEventListener( "click" , function(e) {
             speakVerification();
         });
 
-        document.getElementById("rv_D4F5praM_notification_close").addEventListener( "click" , function(e) {
+        document.getElementById("rv_zGuJFLIV_notification_close").addEventListener( "click" , function(e) {
             style.remove();
             rvNotification.remove();
         });
@@ -214,7 +214,7 @@ if( document.location.search && /rvWebsiteVerify=D4F5praM/gi.test(document.locat
 
     document.addEventListener('DOMContentLoaded', function(){
         var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "https://code.responsivevoice.org/verify/D4F5praM", true);
+        xhttp.open("POST", "https://code.responsivevoice.org/verify/zGuJFLIV", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("rv=" + (typeof responsiveVoice !== 'undefined') );
         xhttp.onreadystatechange = function() {
