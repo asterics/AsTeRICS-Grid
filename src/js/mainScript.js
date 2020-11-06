@@ -13,6 +13,7 @@ import {constants} from "./util/constants";
 import {modelUtil} from "./util/modelUtil";
 import {keyboardShortcuts} from "./service/keyboardShortcuts";
 import {i18nService} from "./service/i18nService";
+import {printService} from "./service/printService";
 //import {timingLogger} from "./service/timingLogger";
 
 let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
@@ -24,6 +25,7 @@ function init() {
     log.info('AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/' + constants.CURRENT_VERSION);
     checkAppVersion();
     initServiceWorker();
+    printService.initPrintHandlers();
     loginService.ping();
     VuePluginManager.init();
     keyboardShortcuts.init();

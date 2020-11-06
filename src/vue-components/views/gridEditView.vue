@@ -70,6 +70,7 @@
     import ElementMoveModal from "../modals/elementMoveModal.vue";
     import GridTranslateModal from "../modals/gridTranslateModal.vue";
     import {GridActionYoutube} from "../../js/model/GridActionYoutube";
+    import {printService} from "../../js/service/printService";
 
     let vueApp = null;
     let gridInstance = null;
@@ -260,6 +261,7 @@
             if (gridInstance) {
                 gridInstance.destroy();
                 gridInstance = null;
+                printService.setGridInstance(null);
             }
             $.contextMenu('destroy');
         }
@@ -271,6 +273,7 @@
             dragAndDrop: true,
             gridId: gridData.id
         });
+        printService.setGridInstance(gridInstance);
         return gridInstance.getInitPromise();
     }
 

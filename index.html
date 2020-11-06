@@ -36,7 +36,7 @@
             <component v-if="component" v-bind:is="component" v-bind="properties" :key="componentKey"></component>
         </main>
 
-        <div class="holy-grail-sidebar-1 hg-sidebar" v-show="showSidebar">
+        <div class="holy-grail-sidebar-1 hg-sidebar no-print" v-show="showSidebar">
             <div style="flex: 0 0 auto;">
                 <div class="show-mobile">
                     <a tabindex="1" aria-hidden="true" href="javascript:void(0)" @click="closeSidebar()"><button tabindex="-1"><i class="fas fa-2x fa-bars inline"></i></button></a>

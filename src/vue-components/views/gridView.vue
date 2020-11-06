@@ -74,6 +74,7 @@
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {imageUtil} from "../../js/util/imageUtil";
     import UnlockModal from "../modals/unlockModal.vue";
+    import {printService} from "../../js/service/printService";
 
     let vueApp = null;
     let gridInstance = null;
@@ -399,6 +400,7 @@
             if (gridInstance) {
                 gridInstance.destroy();
                 gridInstance = null;
+                printService.setGridInstance(null);
             }
         }
     };
@@ -421,6 +423,7 @@
             gridId: gridId,
             globalGridHeightPercentage: vueApp.metadata.globalGridHeightPercentage
         });
+        printService.setGridInstance(gridInstance);
         return gridInstance.getInitPromise();
     }
 

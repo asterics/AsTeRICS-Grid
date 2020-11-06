@@ -342,3 +342,13 @@ nav li:hover button span {
         margin: -0.3em 0.4em 0 0;
     }
 }
+
+@media print {
+    .no-print, .no-print *, header {
+        display: none !important;
+    }
+    * {
+        -webkit-print-color-adjust: exact !important; /*Chrome, Safari */
+        color-adjust: exact !important;  /*Firefox*/
+    }
+}
