@@ -16,6 +16,42 @@ class GridImage extends Model({
         this.id = this.id || modelUtil.generateId(GridImage.getIdPrefix())
     }
 
+    getImageType() {
+        if (!this.data) {
+            return null;
+        }
+        let type = this.data.substring('data:image/'.length, this.data.indexOf(';base64'));
+        switch (type) {
+            case 'png':
+                return GridImage.IMAGE_TYPES.PNG;
+            case 'jpeg':
+                return GridImage.IMAGE_TYPES.JPEG;
+            case 'svg':
+            case 'svg+xml':
+                return GridImage.IMAGE_TYPES.SVG;
+            default:
+                log.warn('not recognized image type: ' + type);
+                return null;
+        }
+    }
+
+    getDimensions() {
+        if (!this.data) {
+            return Promise.resolve({});
+        }
+        return new Promise(resolve => {
+            let img = new Image();
+            img.src = this.data;
+            img.onload = function () {
+                resolve({
+                    width: img.naturalWidth,
+                    height: img.naturalHeight,
+                    ratio: img.naturalWidth / img.naturalHeight
+                });
+            };
+        });
+    }
+
     static getModelName() {
         return "GridImage";
     }
@@ -23,6 +59,12 @@ class GridImage extends Model({
     static getIdPrefix() {
         return 'grid-image';
     }
+}
+
+GridImage.IMAGE_TYPES = {
+    PNG: "PNG",
+    JPEG: "JPEG",
+    SVG: "SVG"
 }
 
 GridImage.defaults({
