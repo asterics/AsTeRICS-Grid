@@ -73,6 +73,31 @@ imageUtil.convertBase64 = function (originalBase64, maxWidth, quality) {
     })
 };
 
+/**
+ * converts a base64 encoded data url SVG image to a PNG image
+ * @param originalBase64 data url of svg image
+ * @param width target width in pixel of PNG image
+ * @return {Promise<unknown>} resolves to png data url of the image
+ */
+imageUtil.base64SvgToBase64Png = async function (originalBase64, width) {
+    return new Promise(resolve => {
+        let img = document.createElement('img');
+        img.onload = function () {
+            let canvas = document.createElement("canvas");
+            canvas.width = width;
+            let ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            try {
+                let data = canvas.toDataURL('image/png');
+                resolve(data);
+            } catch (e) {
+                resolve(null);
+            }
+        };
+        img.src = originalBase64;
+    });
+}
+
 imageUtil.urlToBase64 = function (url) {
     return new Promise((resolve, reject) => {
         if (url.lastIndexOf('.svg') === url.length - 4) {
