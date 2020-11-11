@@ -2,6 +2,7 @@ import jsPDF from 'jspdf';
 import {GridData} from "../model/GridData";
 import {GridImage} from "../model/GridImage";
 import {i18nService} from "./i18nService";
+import {imageUtil} from "../util/imageUtil";
 
 let printService = {};
 let gridInstance = null;
@@ -34,16 +35,17 @@ printService.setGridInstance = function (instance) {
     gridInstance = instance;
 }
 
-printService.gridsToPdf = async function (gridsData) {
+printService.gridsToPdf = async function (gridsData, progressFn) {
     const doc = new jsPDF("landscape");
-
     for (let i = 0; i < gridsData.length; i++) {
         await addGridToPdf(doc, gridsData[i]);
+        if (progressFn) {
+            progressFn(Math.round(100 * (i + 1) / gridsData.length));
+        }
         if (i < gridsData.length - 1) {
             doc.addPage();
         }
     }
-
     window.open(doc.output('bloburl'))
     //doc.save('new.pdf');
 }
@@ -120,9 +122,8 @@ function getOptimalFontsize(doc, text, baseSize, maxWidth, maxHeight, multipleLi
 }
 
 function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, ypos) {
-    return element.image.getDimensions().then(dim => {
+    return element.image.getDimensions().then(async dim => {
         let type = element.image.getImageType();
-        log.warn(type);
         let imgHeightPercentage = i18nService.getTranslation(element.label) ? pdfOptions.imgHeightPercentage : 1;
         let maxWidth = (elementWidth - 2 * pdfOptions.imgMargin);
         let maxHeight = (elementHeight - 2 * pdfOptions.imgMargin) * imgHeightPercentage;
@@ -137,15 +138,20 @@ function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, ypos) {
             xOffset = (maxWidth - width) / 2;
         }
 
+        let x = xpos + pdfOptions.imgMargin + xOffset;
+        let y = ypos + pdfOptions.imgMargin + yOffset;
         if (type === GridImage.IMAGE_TYPES.PNG) {
             addImg("PNG");
-        }
-        if (type === GridImage.IMAGE_TYPES.JPEG) {
+        } else if (type === GridImage.IMAGE_TYPES.JPEG) {
             addImg("JPEG");
+        } else if (type === GridImage.IMAGE_TYPES.SVG) {
+            let pixelWidth = width / 0.084666667; //convert width in mm to pixel at 300dpi
+            let pngBase64 = await imageUtil.base64SvgToBase64Png(element.image.data, pixelWidth);
+            doc.addImage(pngBase64, type, x, y, width, height);
         }
 
         function addImg(type) {
-            doc.addImage(element.image.data, type, xpos + pdfOptions.imgMargin + xOffset, ypos + pdfOptions.imgMargin + yOffset, width, height);
+            doc.addImage(element.image.data, type, x, y, width, height);
         }
 
         return Promise.resolve();
