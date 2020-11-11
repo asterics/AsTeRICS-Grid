@@ -131,10 +131,14 @@ function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, ypos) {
         let width = maxWidth, height = maxHeight;
         let xOffset = 0, yOffset = 0;
         if (dim.ratio >= elementRatio) { // img has wider ratio than space in element
-            height = width / dim.ratio;
+            if (!isNaN(dim.ratio)) {
+                height = width / dim.ratio;
+            }
             yOffset = (maxHeight - height) / 2;
         } else { //img has narrower ratio than space in element
-            width = height * dim.ratio;
+            if (!isNaN(dim.ratio)) {
+                width = height * dim.ratio;
+            }
             xOffset = (maxWidth - width) / 2;
         }
 
