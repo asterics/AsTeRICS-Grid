@@ -444,6 +444,7 @@
         var CONTEXT_EXPORT = "CONTEXT_EXPORT";
         var CONTEXT_IMPORT = "CONTEXT_IMPORT";
         var CONTEXT_IMPORT_BACKUP = "CONTEXT_IMPORT_BACKUP";
+        var CONTEXT_EXPORT_PDF_MODAL = "CONTEXT_EXPORT_PDF_MODAL";
         var CONTEXT_RESET = "CONTEXT_RESET";
         var CONTEXT_DELETE_ALL = "CONTEXT_DELETE_ALL";
 
@@ -479,6 +480,11 @@
                 icon: "fas fa-file-import"
             },
             SEP2: "---------",
+            CONTEXT_EXPORT_PDF_MODAL: {
+                name: "Save grids to PDF // Grids als PDF speichern",
+                icon: "far fa-file-pdf"
+            },
+            SEP3: "---------",
             //CONTEXT_SUB_IMPORT_EXPORT: {name: "Import / Export", icon: "fas fa-hdd", items: itemsImportExport},
             CONTEXT_DELETE_ALL: {name: "Delete all grids // Alle Grids löschen", icon: "fas fa-trash-alt", disabled: () => vueApp.grids.length === 0},
             CONTEXT_RESET: {name: "Reset to default configuration // Auf Standardkonfiguration zurücksetzen", icon: "fas fa-minus-circle"},
@@ -506,6 +512,10 @@
                 }
                 case CONTEXT_IMPORT_BACKUP: {
                     document.getElementById('inputFileBackup').click();
+                    break;
+                }
+                case CONTEXT_EXPORT_PDF_MODAL: {
+                    vueApp.pdfModal.show = true;
                     break;
                 }
                 case CONTEXT_EXPORT: {
