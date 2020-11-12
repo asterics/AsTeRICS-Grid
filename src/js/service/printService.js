@@ -122,6 +122,9 @@ function getOptimalFontsize(doc, text, baseSize, maxWidth, maxHeight, multipleLi
 }
 
 function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, ypos) {
+    if (element.image.data.indexOf('data:') !== 0) {
+        return Promise.resolve();
+    }
     return element.image.getDimensions().then(async dim => {
         let type = element.image.getImageType();
         let imgHeightPercentage = i18nService.getTranslation(element.label) ? pdfOptions.imgHeightPercentage : 1;
