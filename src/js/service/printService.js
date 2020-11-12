@@ -35,12 +35,13 @@ printService.setGridInstance = function (instance) {
     gridInstance = instance;
 }
 
-printService.gridsToPdf = async function (gridsData, progressFn) {
+printService.gridsToPdf = async function (gridsData, options) {
+    options = options || {};
     const doc = new jsPDF("landscape");
     for (let i = 0; i < gridsData.length; i++) {
-        await addGridToPdf(doc, gridsData[i]);
-        if (progressFn) {
-            progressFn(Math.round(100 * (i + 1) / gridsData.length));
+        await addGridToPdf(doc, gridsData[i], options);
+        if (options.progressFn) {
+            options.progressFn(Math.round(100 * (i + 1) / gridsData.length));
         }
         if (i < gridsData.length - 1) {
             doc.addPage();
@@ -50,7 +51,7 @@ printService.gridsToPdf = async function (gridsData, progressFn) {
     //doc.save('new.pdf');
 }
 
-function addGridToPdf(doc, gridData) {
+function addGridToPdf(doc, gridData, options) {
     let promises = [];
     let DOC_WIDTH = 297
     let DOC_HEIGHT = 210;
@@ -64,7 +65,11 @@ function addGridToPdf(doc, gridData) {
         let xStartPos = pdfOptions.docPadding + (elementTotalWidth * element.x) + pdfOptions.elementMargin;
         let yStartPos = pdfOptions.docPadding + (elementTotalHeight * element.y) + pdfOptions.elementMargin;
         doc.setDrawColor(0);
-        doc.setFillColor(255, 255, 255);
+        if (!options.backgroundColor) {
+            doc.setFillColor(255, 255, 255);
+        } else {
+            doc.setFillColor(options.backgroundColor.r, options.backgroundColor.g, options.backgroundColor.b);
+        }
         doc.roundedRect(xStartPos, yStartPos, currentWidth, currentHeight, 3, 3, "FD");
         if (i18nService.getTranslation(element.label)) {
             addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos);
