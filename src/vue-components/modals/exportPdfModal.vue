@@ -104,7 +104,7 @@
         mounted() {
             i18nService.initDomI18n();
             dataService.getGlobalGrid().then(globalGrid => {
-                this.globalGridId = globalGrid.id;
+                this.globalGridId = globalGrid ? globalGrid.id : null;
                 this.graphList = gridUtil.getGraphList(this.gridsData, this.globalGridId);
             });
         }
