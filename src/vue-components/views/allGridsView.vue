@@ -39,6 +39,7 @@
                         <button @click="clone(selectedGraphElement.grid.id)"><i class="far fa-clone"/> <span class="hide-mobile" data-i18n="">Clone // Duplizieren</span></button>
                         <button @click="deleteGrid(selectedGraphElement.grid.id)"><i class="far fa-trash-alt"/> <span class="hide-mobile" data-i18n="">Delete // Löschen</span></button>
                         <button @click="exportToFile(selectedGraphElement.grid.id)"><i class="fas fa-file-export"/> <span class="hide-mobile" data-i18n="">Export // Exportieren</span></button>
+                        <button @click="exportToPdf(selectedGraphElement.grid.id)"><i class="far fa-file-pdf"/> <span class="hide-mobile" data-i18n="">Open as PDF // Als PDF öffnen</span></button>
                     </div>
                 </div>
             </div>
@@ -84,6 +85,7 @@
 
             <div class="row" style="margin-bottom: 10em"></div>
             <grid-link-modal v-if="linkModal.show" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @close="linkModal.show = false" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
+            <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" @close="pdfModal.show = false"></export-pdf-modal>
         </div>
     </div>
 </template>
@@ -102,12 +104,14 @@
     import Accordion from "../components/accordion.vue";
     import {imageUtil} from "../../js/util/imageUtil";
     import GridLinkModal from "../modals/gridLinkModal.vue";
+    import ExportPdfModal from "../modals/exportPdfModal.vue";
+    import {printService} from "../../js/service/printService";
 
     let SELECTOR_CONTEXTMENU = '#moreButton';
 
     let vueApp = null;
     let vueConfig = {
-        components: {GridLinkModal, Accordion, HeaderIcon},
+        components: {ExportPdfModal, GridLinkModal, Accordion, HeaderIcon},
         data() {
             return {
                 metadata: null,
@@ -127,6 +131,9 @@
                     show: false,
                     gridFrom: null,
                     gridTo: null
+                },
+                pdfModal: {
+                    show: false
                 },
                 i18nService: i18nService,
                 currentLanguage: i18nService.getBrowserLang(),
@@ -202,6 +209,11 @@
                     dataService.downloadBackup();
                     //dataService.downloadAllGridsSimple();
                 }
+            },
+            exportToPdf(gridId) {
+                dataService.getGrid(gridId).then(grid => {
+                    printService.gridsToPdf([grid]);
+                })
             },
             importFromFile: function (event) {
                 this.importFromFileInternal(event, false);
@@ -379,6 +391,10 @@
             CONTEXT_EXPORT: {
                 name: "Export // Exportieren",
                 icon: "fas fa-file-export"
+            },
+            CONTEXT_EXPORT_PDF: {
+                name: "Open as PDF // Als PDF öffnen",
+                icon: "far fa-file-pdf"
             }
         };
 
@@ -413,6 +429,9 @@
                     break;
                 case "CONTEXT_EXPORT":
                     vueApp.exportToFile(gridId);
+                    break;
+                case "CONTEXT_EXPORT_PDF":
+                    vueApp.exportToPdf(gridId);
                     break;
             }
         }
@@ -533,7 +552,7 @@
     }
 
     .action-buttons button {
-        width: 17.5%;
+        width: 13.5%;
         margin-right: 0.5em;
         padding: 0 20px;
     }
