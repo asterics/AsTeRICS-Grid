@@ -91,11 +91,12 @@ imageUtil.base64SvgToBase64Png = function (originalBase64, width, secondTry) {
                     resolve(result);
                 });
             }
+            document.body.appendChild(img);
             let canvas = document.createElement("canvas");
-            let ratio = (img.naturalWidth / img.naturalHeight) || 1;
+            let ratio = (img.clientWidth / img.clientHeight) || 1;
+            document.body.removeChild(img);
             canvas.width = width;
             canvas.height = width / ratio;
-            document.body.appendChild(img);
             let ctx = canvas.getContext("2d");
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             try {
