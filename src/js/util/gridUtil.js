@@ -210,6 +210,13 @@ gridUtil.updateOrAddGridElement = function(gridData, updatedGridElement) {
     return gridData;
 };
 
+/**
+ * returns a graph of elements representing the hierarchy of the given grids.
+ * @param grids a list of GridData
+ * @param removeGridId (optional) ID of grid to remove (e.g. global grid ID)
+ * @return {[]} array of objects of type GridNode: {grid: GridData, parents: [GridNode], children: [GridNode]} ordered by
+ *         number of links to other nodes (more linked nodes first)
+ */
 gridUtil.getGraphList = function (grids, removeGridId) {
     grids = grids.filter(g => g.id !== removeGridId);
     let gridGraphList = [];
@@ -236,6 +243,29 @@ gridUtil.getGraphList = function (grids, removeGridId) {
     });
     return gridGraphList;
 };
+
+/**
+ * returns a list of all children of a given grid (recursive)
+ * @param gridGraphList a graph list returned by gridUtil.getGraphList()
+ * @param gridId the ID of the grid to get the children of
+ * @param children used internally for recursion, not needed
+ * @return {*|*[]}
+ */
+gridUtil.getAllChildrenRecursive = function (gridGraphList, gridId, children) {
+    let graphElem = gridGraphList.filter(elem => elem.grid.id === gridId)[0];
+    children = children || [];
+    let newAdded = [];
+    graphElem.children.forEach(child => {
+        if (children.indexOf(child.grid) === -1) {
+            children.push(child.grid);
+            newAdded.push(child.grid.id);
+        }
+    });
+    newAdded.forEach(id => {
+        children = gridUtil.getAllChildrenRecursive(gridGraphList, id, children);
+    });
+    return children;
+}
 
 function getElemsNavigatingTo(elems, id) {
     return elems.filter(elem => elem.actions.filter(action => action.modelName === GridActionNavigate.getModelName() && action.toGridId === id).length > 0);
