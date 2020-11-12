@@ -154,6 +154,11 @@ imageUtil.getEmptyImage = function () {
     return "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
 };
 
+/**
+ * gets the dimensions of an image based on a given data URL
+ * @param dataUrl
+ * @return {Promise<{width: number, height: number, ratio: number}>|Promise<{}>}
+ */
 imageUtil.getImageDimensionsFromDataUrl = function (dataUrl) {
     if (!dataUrl) {
         return Promise.resolve({});
@@ -167,6 +172,11 @@ imageUtil.getImageDimensionsFromDataUrl = function (dataUrl) {
     });
 }
 
+/**
+ * gets the dimensions of an image based on a given Image object
+ * @param img
+ * @return {{}|{width: number, height: number, ratio: number}}
+ */
 imageUtil.getImageDimensionsFromImg = function (img) {
     if (!img) {
         return {}
