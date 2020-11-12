@@ -252,6 +252,11 @@ gridUtil.getGraphList = function (grids, removeGridId) {
  * @return {*|*[]}
  */
 gridUtil.getAllChildrenRecursive = function (gridGraphList, gridId, children) {
+    let allChildren = getAllChildrenRecursive(gridGraphList, gridId, children);
+    return allChildren.filter(child => child.id !== gridId);
+}
+
+function getAllChildrenRecursive (gridGraphList, gridId, children) {
     let graphElem = gridGraphList.filter(elem => elem.grid.id === gridId)[0];
     children = children || [];
     let newAdded = [];
@@ -262,7 +267,7 @@ gridUtil.getAllChildrenRecursive = function (gridGraphList, gridId, children) {
         }
     });
     newAdded.forEach(id => {
-        children = gridUtil.getAllChildrenRecursive(gridGraphList, id, children);
+        children = getAllChildrenRecursive(gridGraphList, id, children);
     });
     return children;
 }
