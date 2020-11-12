@@ -91,10 +91,9 @@ imageUtil.base64SvgToBase64Png = function (originalBase64, width, secondTry) {
                     resolve(result);
                 });
             }
-            document.body.appendChild(img);
+            let dim = imageUtil.getImageDimensionsFromImg(img);
+            let ratio = dim.ratio || 1;
             let canvas = document.createElement("canvas");
-            let ratio = (img.clientWidth / img.clientHeight) || 1;
-            document.body.removeChild(img);
             canvas.width = width;
             canvas.height = width / ratio;
             let ctx = canvas.getContext("2d");
@@ -154,6 +153,38 @@ imageUtil.getScreenshot = function (selector) {
 imageUtil.getEmptyImage = function () {
     return "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
 };
+
+imageUtil.getImageDimensionsFromDataUrl = function (dataUrl) {
+    if (!dataUrl) {
+        return Promise.resolve({});
+    }
+    return new Promise(resolve => {
+        let img = new Image();
+        img.onload = function () {
+            resolve(imageUtil.getImageDimensionsFromImg(img));
+        };
+        img.src = dataUrl;
+    });
+}
+
+imageUtil.getImageDimensionsFromImg = function (img) {
+    if (!img) {
+        return {}
+    }
+    let width = img.naturalWidth;
+    let height = img.naturalHeight;
+    if (width === 0 || height === 0) {
+        document.body.appendChild(img);
+        width = img.clientWidth;
+        height = img.clientHeight;
+        document.body.removeChild(img);
+    }
+    return {
+        width: width,
+        height: height,
+        ratio: width / height
+    };
+}
 
 //needed because Firefox doesn't correctly handle SVG with size = 0, see https://bugzilla.mozilla.org/show_bug.cgi?id=700533
 function fixSvgDocumentFF(svgDocument) {

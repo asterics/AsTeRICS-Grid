@@ -1,6 +1,7 @@
 import {modelUtil} from "../util/modelUtil";
 import {constants} from "../util/constants";
 import {Model} from "../externals/objectmodel";
+import {imageUtil} from "../util/imageUtil";
 
 class GridImage extends Model({
     id: String,
@@ -36,20 +37,7 @@ class GridImage extends Model({
     }
 
     getDimensions() {
-        if (!this.data) {
-            return Promise.resolve({});
-        }
-        return new Promise(resolve => {
-            let img = new Image();
-            img.src = this.data;
-            img.onload = function () {
-                resolve({
-                    width: img.naturalWidth,
-                    height: img.naturalHeight,
-                    ratio: img.naturalWidth / img.naturalHeight
-                });
-            };
-        });
+        return imageUtil.getImageDimensionsFromDataUrl(this.data);
     }
 
     static getModelName() {
