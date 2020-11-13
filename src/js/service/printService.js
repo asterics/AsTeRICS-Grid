@@ -37,7 +37,10 @@ printService.setGridInstance = function (instance) {
 
 printService.gridsToPdf = async function (gridsData, options) {
     options = options || {};
-    const doc = new jsPDF("landscape");
+    const doc = new jsPDF({
+        orientation: "landscape",
+        compress: true
+    });
     for (let i = 0; i < gridsData.length; i++) {
         await addGridToPdf(doc, gridsData[i], options);
         if (options.progressFn) {
@@ -47,8 +50,8 @@ printService.gridsToPdf = async function (gridsData, options) {
             doc.addPage();
         }
     }
-    window.open(doc.output('bloburl'))
-    //doc.save('new.pdf');
+    //window.open(doc.output('bloburl'))
+    doc.save('grid-export.pdf');
 }
 
 function addGridToPdf(doc, gridData, options) {
