@@ -73,7 +73,12 @@
         },
         methods: {
             save() {
-                let exportGrids = !this.selectedGrid ? this.graphList.map(elem => elem.grid) : [this.selectedGrid].concat(this.allChildren);
+                let exportGrids = null;
+                if (!this.selectedGrid) {
+                    exportGrids = this.graphList.map(elem => elem.grid);
+                } else {
+                    exportGrids = this.options.exportConnected ? [this.selectedGrid].concat(this.allChildren) : [this.selectedGrid];
+                }
                 let exportIds = exportGrids.map(grid => grid.id);
                 Promise.resolve().then(async () => {
                     if (exportGrids.length > this.gridsData.length / 2) {
