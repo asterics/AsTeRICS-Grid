@@ -35,6 +35,18 @@ printService.setGridInstance = function (instance) {
     gridInstance = instance;
 }
 
+/**
+ * Converts given grids to pdf and downloads the pdf file
+ *
+ * @param gridsData array of GridData to convert to pdf
+ * @param options (optional) object containing options
+ * @param options.showLinks if true, links on elements are created which are referring to another grid/page
+ * @param options.backgroundColor object with r/g/b properties defining a background color for grid elements. Default: white.
+ * @param options.progressFn a function that is called in order to report progress of the task.
+ *                           Parameters passed: <percentage:Number, text:String, abortFn:Function>.
+ *                           "abortFn" can be called in order to abort the task.
+ * @return {Promise<void>}
+ */
 printService.gridsToPdf = async function (gridsData, options) {
     options = options || {};
     options.idPageMap = {};
@@ -45,17 +57,24 @@ printService.gridsToPdf = async function (gridsData, options) {
         orientation: "landscape",
         compress: true
     });
-    for (let i = 0; i < gridsData.length; i++) {
-        await addGridToPdf(doc, gridsData[i], options);
+    for (let i = 0; i < gridsData.length && !options.abort; i++) {
         if (options.progressFn) {
-            options.progressFn(Math.round(100 * (i + 1) / gridsData.length));
+            options.progressFn(Math.round(100 * (i) / gridsData.length), i18nService.translate('Creating page {?} of {?} // Erstelle Seite {?} von {?}', i+1, gridsData.length), () => {
+                options.abort = true;
+            });
         }
+        await addGridToPdf(doc, gridsData[i], options);
         if (i < gridsData.length - 1) {
             doc.addPage();
         }
     }
-    //window.open(doc.output('bloburl'))
-    doc.save('grid-export.pdf');
+    if (!options.abort) {
+        if (options.progressFn) {
+            options.progressFn(100);
+        }
+        //window.open(doc.output('bloburl'))
+        doc.save('grid-export.pdf');
+    }
 }
 
 function addGridToPdf(doc, gridData, options) {
