@@ -58,6 +58,15 @@ class GridElement extends Model({
         return this.x != null && this.x != undefined && this.y != null && this.y != undefined;
     }
 
+    /**
+     * returns ID of Grid this element navigates to
+     * @return {[String | StringConstructor]|string|default.methods.gridTo.id|null}
+     */
+    getNavigateGridId() {
+        let navAction = this.actions.filter(action => action.modelName === GridActionNavigate.getModelName())[0];
+        return navAction ? navAction.toGridId : null;
+    }
+
     static getActionTypes() {
         return [GridActionSpeak, GridActionNavigate, GridActionSpeakCustom, GridActionPredict, GridActionCollectElement, GridActionARE, GridActionWebradio, GridActionYoutube, GridActionChangeLang];
     }
