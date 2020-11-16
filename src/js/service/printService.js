@@ -1,4 +1,3 @@
-import jsPDF from 'jspdf';
 import {GridData} from "../model/GridData";
 import {GridImage} from "../model/GridImage";
 import {i18nService} from "./i18nService";
@@ -50,33 +49,35 @@ printService.setGridInstance = function (instance) {
  * @return {Promise<void>}
  */
 printService.gridsToPdf = async function (gridsData, options) {
-    options = options || {};
-    options.idPageMap = {};
-    gridsData.forEach((grid, index) => {
-        options.idPageMap[grid.id] = index + 1;
+    import(/* webpackChunkName: "jspdf" */ 'jsPDF').then(async jsPDF => {
+        options = options || {};
+        options.idPageMap = {};
+        gridsData.forEach((grid, index) => {
+            options.idPageMap[grid.id] = index + 1;
+        });
+        const doc = new jsPDF.jsPDF({
+            orientation: "landscape",
+            compress: true
+        });
+        for (let i = 0; i < gridsData.length && !options.abort; i++) {
+            if (options.progressFn) {
+                options.progressFn(Math.round(100 * (i) / gridsData.length), i18nService.translate('Creating page {?} of {?} // Erstelle Seite {?} von {?}', i+1, gridsData.length), () => {
+                    options.abort = true;
+                });
+            }
+            await addGridToPdf(doc, gridsData[i], options);
+            if (i < gridsData.length - 1) {
+                doc.addPage();
+            }
+        }
+        if (!options.abort) {
+            if (options.progressFn) {
+                options.progressFn(100);
+            }
+            window.open(doc.output('bloburl'))
+            //doc.save('grid-export.pdf');
+        }
     });
-    const doc = new jsPDF({
-        orientation: "landscape",
-        compress: true
-    });
-    for (let i = 0; i < gridsData.length && !options.abort; i++) {
-        if (options.progressFn) {
-            options.progressFn(Math.round(100 * (i) / gridsData.length), i18nService.translate('Creating page {?} of {?} // Erstelle Seite {?} von {?}', i+1, gridsData.length), () => {
-                options.abort = true;
-            });
-        }
-        await addGridToPdf(doc, gridsData[i], options);
-        if (i < gridsData.length - 1) {
-            doc.addPage();
-        }
-    }
-    if (!options.abort) {
-        if (options.progressFn) {
-            options.progressFn(100);
-        }
-        window.open(doc.output('bloburl'))
-        //doc.save('grid-export.pdf');
-    }
 }
 
 function addGridToPdf(doc, gridData, options) {
