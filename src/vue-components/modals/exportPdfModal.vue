@@ -104,7 +104,7 @@
                         showLinks: this.options.showLinks,
                         progressFn: (progress, text, abortFn) => {
                             MainVue.showProgressBar(progress, {
-                                header: i18nService.translate('Creating PDF file ... // Erstelle PDF Datei ...'),
+                                header: i18nService.translate('Creating PDF file // Erstelle PDF Datei'),
                                 text: text,
                                 cancelFn: abortFn,
                                 closable: true
