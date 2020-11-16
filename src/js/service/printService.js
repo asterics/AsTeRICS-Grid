@@ -37,6 +37,10 @@ printService.setGridInstance = function (instance) {
 
 printService.gridsToPdf = async function (gridsData, options) {
     options = options || {};
+    options.idPageMap = {};
+    gridsData.forEach((grid, index) => {
+        options.idPageMap[grid.id] = index + 1;
+    });
     const doc = new jsPDF({
         orientation: "landscape",
         compress: true
@@ -80,6 +84,26 @@ function addGridToPdf(doc, gridData, options) {
         if (element.image && element.image.data) {
             promises.push(addImageToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos));
         }
+        if (options.showLinks && options.idPageMap[element.getNavigateGridId()]) {
+            let targetPage = options.idPageMap[element.getNavigateGridId()];
+            let iconWidth = Math.max(currentWidth / 10, 7);
+            let offsetX = currentWidth - iconWidth - 1;
+            let offsetY = 1;
+            doc.setDrawColor(255);
+            doc.setFillColor(90, 113, 122);
+            doc.roundedRect(xStartPos + offsetX, yStartPos + offsetY, iconWidth, iconWidth, 1, 1, "FD");
+            doc.link(xStartPos + offsetX, yStartPos + offsetY, iconWidth, iconWidth, {pageNumber: targetPage});
+            if (targetPage) {
+                let fontSizePt = (iconWidth * 0.6 / 0.352778)
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(fontSizePt);
+                doc.text(targetPage + "", xStartPos + offsetX + iconWidth / 2, yStartPos + offsetY + iconWidth / 2, {
+                    baseline: 'middle',
+                    align: 'center',
+                    maxWidth: iconWidth
+                });
+            }
+        }
     });
     return Promise.all(promises);
 }
@@ -91,6 +115,7 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
     let fontSizePt = (fontSizeMM / 0.352778) * 0.8;
     let maxWidth = currentWidth - 2 * pdfOptions.textPadding;
     let optimalFontSize = getOptimalFontsize(doc, label, fontSizePt, maxWidth, currentHeight - 2 * pdfOptions.textPadding, !hasImg);
+    doc.setTextColor(0, 0, 0);
     doc.setFontSize(optimalFontSize);
     let dim = doc.getTextDimensions(label);
     let lines = Math.ceil(dim.w / maxWidth)
