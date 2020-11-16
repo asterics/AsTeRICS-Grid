@@ -29,6 +29,10 @@
                             </label>
                         </div>
                         <div class="row">
+                            <input id="showLinks" type="checkbox" v-model="options.showLinks"/>
+                            <label for="showLinks" data-i18n="">Insert links between pages // Verknüpfungen zwischen Seiten anzeigen</label>
+                        </div>
+                        <div class="row">
                             <input id="printBackground" type="checkbox" v-model="options.printBackground"/>
                             <label for="printBackground" data-i18n="">Print background color // Hintergrundfarbe drucken</label>
                         </div>
@@ -67,7 +71,8 @@
                 allChildren: null,
                 options: {
                     exportConnected: true,
-                    printBackground: false
+                    printBackground: false,
+                    showLinks: true
                 }
             }
         },
@@ -94,7 +99,8 @@
                 }).then((grids) => {
                     grids = exportIds.map(id => grids.filter(grid => grid.id === id)[0]);
                     printService.gridsToPdf(grids, {
-                        backgroundColor: this.options.printBackground ? {r: 173, g:216, b: 230} : null
+                        backgroundColor: this.options.printBackground ? {r: 173, g:216, b: 230} : null,
+                        showLinks: this.options.showLinks
                     });
                     this.$emit('close');
                 });
