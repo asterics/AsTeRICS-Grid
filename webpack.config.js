@@ -108,5 +108,5 @@ module.exports = env => {
             rules: [babelRule, scssRule, vueRule],
         }
     };
-    return [configNormal, configLegacy];
+    return [configNormal/*, configLegacy*/];
 };
