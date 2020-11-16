@@ -60,6 +60,7 @@
     import {dataService} from "../../js/service/data/dataService";
     import {gridUtil} from "../../js/util/gridUtil";
     import {printService} from "../../js/service/printService";
+    import {MainVue} from "../../js/vue/mainVue";
 
     export default {
         props: ['gridsData'],
@@ -100,7 +101,15 @@
                     grids = exportIds.map(id => grids.filter(grid => grid.id === id)[0]);
                     printService.gridsToPdf(grids, {
                         backgroundColor: this.options.printBackground ? {r: 173, g:216, b: 230} : null,
-                        showLinks: this.options.showLinks
+                        showLinks: this.options.showLinks,
+                        progressFn: (progress, text, abortFn) => {
+                            MainVue.showProgressBar(progress, {
+                                header: i18nService.translate('Creating PDF file ... // Erstelle PDF Datei ...'),
+                                text: text,
+                                cancelFn: abortFn,
+                                closable: true
+                            })
+                        }
                     });
                     this.$emit('close');
                 });
