@@ -8,6 +8,7 @@ let printService = {};
 let gridInstance = null;
 let pdfOptions = {
     docPadding: 5,
+    footerHeight: 8,
     textPadding: 3,
     elementMargin: 1,
     imgMargin: 1,
@@ -45,6 +46,7 @@ printService.setGridInstance = function (instance) {
  * @param options.progressFn a function that is called in order to report progress of the task.
  *                           Parameters passed: <percentage:Number, text:String, abortFn:Function>.
  *                           "abortFn" can be called in order to abort the task.
+ * @param options.showFooter if false, footer is not printed, default: true
  * @return {Promise<void>}
  */
 printService.gridsToPdf = async function (gridsData, options) {
@@ -72,8 +74,8 @@ printService.gridsToPdf = async function (gridsData, options) {
         if (options.progressFn) {
             options.progressFn(100);
         }
-        //window.open(doc.output('bloburl'))
-        doc.save('grid-export.pdf');
+        window.open(doc.output('bloburl'))
+        //doc.save('grid-export.pdf');
     }
 }
 
@@ -83,8 +85,31 @@ function addGridToPdf(doc, gridData, options) {
     let DOC_HEIGHT = 210;
 
     gridData = new GridData(gridData);
+    let footerHeight = options.showFooter !== false ? pdfOptions.footerHeight : 0;
     let elementTotalWidth = (DOC_WIDTH - 2 * pdfOptions.docPadding) / gridData.getWidth();
-    let elementTotalHeight = (DOC_HEIGHT - 2 * pdfOptions.docPadding) / gridData.getHeight();
+    let elementTotalHeight = (DOC_HEIGHT - 2 * pdfOptions.docPadding - footerHeight) / gridData.getHeight();
+    if (footerHeight > 0) {
+        let fontSizePt = (footerHeight * 0.4 / 0.352778);
+        doc.setTextColor(0);
+        doc.setFontSize(fontSizePt);
+        let textL = i18nService.translate("Printed by AsTeRICS Grid, https://grid.asterics.eu // Gedruckt mit AsTeRICS Grid, https://grid.asterics.eu")
+        let textC = i18nService.getTranslation(gridData.label);
+        let currentPage = options.idPageMap[gridData.id] || 1;
+        let totalPages = Object.keys(options.idPageMap).length || 1
+        let textR = currentPage + " / " + totalPages;
+        doc.text(textL, pdfOptions.docPadding + pdfOptions.elementMargin, DOC_HEIGHT - pdfOptions.docPadding, {
+            baseline: 'bottom',
+            align: 'left'
+        });
+        doc.text(textC, DOC_WIDTH / 2, DOC_HEIGHT - pdfOptions.docPadding, {
+            baseline: 'bottom',
+            align: 'center'
+        });
+        doc.text(textR, DOC_WIDTH - pdfOptions.docPadding - pdfOptions.elementMargin, DOC_HEIGHT - pdfOptions.docPadding, {
+            baseline: 'bottom',
+            align: 'right'
+        });
+    }
     gridData.gridElements.forEach(element => {
         let currentWidth = elementTotalWidth * element.width - (2 * pdfOptions.elementMargin);
         let currentHeight = elementTotalHeight * element.height - (2 * pdfOptions.elementMargin);
