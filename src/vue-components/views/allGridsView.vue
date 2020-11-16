@@ -12,9 +12,6 @@
         <div class="row content text-content">
             <div v-show="showLoading || grids === null" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin" style="position: relative; margin-top: 30vh; top: 0"/>
-                <div style="width: 100%; text-align: center; font-size: 2em; margin-top: 1em;">
-                    <span v-if="progressText">{{progressText}} ...</span>
-                </div>
             </div>
 
             <div v-if="selectedGraphElement">
@@ -99,13 +96,13 @@
     import {i18nService} from "../../js/service/i18nService";
     import {constants} from "../../js/util/constants";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
-    import {progressService} from "../../js/service/progressService";
     import {gridUtil} from "../../js/util/gridUtil";
     import Accordion from "../components/accordion.vue";
     import {imageUtil} from "../../js/util/imageUtil";
     import GridLinkModal from "../modals/gridLinkModal.vue";
     import ExportPdfModal from "../modals/exportPdfModal.vue";
     import {printService} from "../../js/service/printService";
+    import {MainVue} from "../../js/vue/mainVue";
 
     let SELECTOR_CONTEXTMENU = '#moreButton';
 
@@ -120,7 +117,6 @@
                 selectedGraphElement: null,
                 newLabel: {},
                 showLoading: true,
-                progressText: '',
                 selectValues: {
                     CONNECTED_GRIDS: 'CONNECTED_GRIDS',
                     NOT_REACHABLE_GRIDS: 'NOT_REACHABLE_GRIDS',
@@ -248,9 +244,17 @@
             reset() {
                 if (confirm(i18nService.translate('CONFIRM_RESET_DB'))) {
                     this.showLoading = true;
+                    MainVue.showProgressBar(0, {
+                        header: i18nService.translate('Reset to default gridset // Zurücksetzen auf Standard-Gridset'),
+                        text: i18nService.translate('Deleting grids // Grids werden gelöscht')
+                    });
                     dataService.deleteAllGrids().then(() => {
+                        MainVue.showProgressBar(50, {
+                            text: i18nService.translate('Importing grids // Grids werden importiert')
+                        });
                         return dataService.importDefaultGridset();
                     }).then(() => {
+                        MainVue.showProgressBar(100);
                         this.reload();
                     });
                 }
@@ -295,9 +299,16 @@
                 if (!importFile || !importFile.name) {
                     return;
                 }
-
                 thiz.showLoading = true;
-                dataService.importGridsFromFile(importFile, reset).then(() => {
+                MainVue.showProgressBar(0, {
+                    header: i18nService.translate('Importing grids // Grids werden importiert'),
+                    text: i18nService.translate('Reading file // Datei wird gelesen')
+                })
+                dataService.importGridsFromFile(importFile, reset, (progress, text) => {
+                    MainVue.showProgressBar(progress, {
+                        text: text
+                    });
+                }).then(() => {
                     this.resetFileInput(event);
                     this.reload();
                 });
@@ -338,9 +349,6 @@
         created() {
             let thiz = this;
             $(document).on(constants.EVENT_DB_PULL_UPDATED, thiz.onPullUpdate);
-            progressService.register(text => {
-                thiz.progressText = text;
-            });
         },
         mounted: function () {
             let thiz = this;
@@ -357,7 +365,6 @@
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.onPullUpdate);
             $.contextMenu('destroy');
-            progressService.clearHandlers();
         }
     };
 
