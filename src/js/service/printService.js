@@ -126,29 +126,29 @@ function addGridToPdf(doc, gridData, options) {
         if (i18nService.getTranslation(element.label)) {
             addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos);
         }
-        if (element.image && element.image.data) {
-            promises.push(addImageToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos));
-        }
-        if (options.showLinks && options.idPageMap[element.getNavigateGridId()]) {
-            let targetPage = options.idPageMap[element.getNavigateGridId()];
-            let iconWidth = Math.max(currentWidth / 10, 7);
-            let offsetX = currentWidth - iconWidth - 1;
-            let offsetY = 1;
-            doc.setDrawColor(255);
-            doc.setFillColor(90, 113, 122);
-            doc.roundedRect(xStartPos + offsetX, yStartPos + offsetY, iconWidth, iconWidth, 1, 1, "FD");
-            doc.link(xStartPos + offsetX, yStartPos + offsetY, iconWidth, iconWidth, {pageNumber: targetPage});
-            if (targetPage) {
-                let fontSizePt = (iconWidth * 0.6 / 0.352778)
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(fontSizePt);
-                doc.text(targetPage + "", xStartPos + offsetX + iconWidth / 2, yStartPos + offsetY + iconWidth / 2, {
-                    baseline: 'middle',
-                    align: 'center',
-                    maxWidth: iconWidth
-                });
+        promises.push(addImageToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos).then(() => {
+            if (options.showLinks && options.idPageMap[element.getNavigateGridId()]) {
+                let targetPage = options.idPageMap[element.getNavigateGridId()];
+                let iconWidth = Math.max(currentWidth / 10, 7);
+                let offsetX = currentWidth - iconWidth - 1;
+                let offsetY = 1;
+                doc.setDrawColor(255);
+                doc.setFillColor(90, 113, 122);
+                doc.roundedRect(xStartPos + offsetX, yStartPos + offsetY, iconWidth, iconWidth, 1, 1, "FD");
+                doc.link(xStartPos + offsetX, yStartPos + offsetY, iconWidth, iconWidth, {pageNumber: targetPage});
+                if (targetPage) {
+                    let fontSizePt = (iconWidth * 0.6 / 0.352778)
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(fontSizePt);
+                    doc.text(targetPage + "", xStartPos + offsetX + iconWidth / 2, yStartPos + offsetY + iconWidth / 2, {
+                        baseline: 'middle',
+                        align: 'center',
+                        maxWidth: iconWidth
+                    });
+                }
             }
-        }
+            return Promise.resolve();
+        }));
     });
     return Promise.all(promises);
 }
@@ -200,7 +200,7 @@ function getOptimalFontsize(doc, text, baseSize, maxWidth, maxHeight, multipleLi
 }
 
 function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, ypos) {
-    if (element.image.data.indexOf('data:') !== 0) {
+    if (!element || !element.image || !element.image.data || element.image.data.indexOf('data:') !== 0) {
         return Promise.resolve();
     }
     return element.image.getDimensions().then(async dim => {
