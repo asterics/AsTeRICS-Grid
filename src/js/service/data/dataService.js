@@ -11,7 +11,6 @@ import {pouchDbService} from "./pouchDbService";
 import {Dictionary} from "../../model/Dictionary";
 import {obfConverter} from "../../util/obfConverter";
 import {fileUtil} from "../../util/fileUtil";
-import {progressService} from "../progressService";
 import {i18nService} from "../i18nService";
 import {predictionService} from "../predictionService";
 import {localStorageService} from "./localStorageService";
@@ -474,11 +473,13 @@ dataService.downloadAllGridsSimple = function () {
  * @param file the file object from a file input that contains the data
  * @param backupMode if true all grids are deleted before importing the file -> restoring a backup. if false
  *        grids from file are imported in addition to existing grids.
+ * @param progressFn a function where current progress is reported. passed parameters: <percentage:Number, text:String>
  * @return {Promise} resolves after operation finished successful
  */
-dataService.importGridsFromFile = function (file, backupMode) {
+dataService.importGridsFromFile = function (file, backupMode, progressFn) {
     let fileExtension = file.name.substring(file.name.length - 4);
     let generateGlobalGrid = false;
+    progressFn = progressFn || function (){};
     return new Promise((resolve, reject) => {
         let reader = new FileReader();
         reader.onload = (function (theFile) {
@@ -486,13 +487,13 @@ dataService.importGridsFromFile = function (file, backupMode) {
                 let jsonString = e.target.result;
                 let promises = [];
                 if (backupMode) {
-                    progressService.setProgress(i18nService.translate('Deleting grids // Grids werden gelöscht'));
+                    progressFn(10, i18nService.translate('Deleting grids // Grids werden gelöscht'));
                     promises.push(dataService.deleteAllGrids());
                 }
                 Promise.all(promises).then(() => {
                     let importObjects = null;
                     let promises = [];
-                    progressService.setProgress(i18nService.translate('Reading grids from file // Grids werden aus Datei gelesen'));
+                    progressFn(40, i18nService.translate('Extracting grids from file //  Grids werden aus Datei extrahiert'));
                     if (fileExtension === '.grd') {
                         importObjects = JSON.parse(jsonString);
                     } else if (fileExtension === '.obf') {
@@ -513,8 +514,9 @@ dataService.importGridsFromFile = function (file, backupMode) {
                         promises.push(promise);
                     }
                     Promise.all(promises).then(() => {
-                        progressService.setProgress(i18nService.translate('Encrypting and saving grids to database // Grids werden verschlüsselt und in Datenbank gespeichert'));
+                        progressFn(80, i18nService.translate('Encrypting and saving grids to database // Grids werden verschlüsselt und in Datenbank gespeichert'));
                         dataService.importData(importObjects, generateGlobalGrid, backupMode).then(() => {
+                            progressFn(100);
                             resolve();
                         });
                     });
