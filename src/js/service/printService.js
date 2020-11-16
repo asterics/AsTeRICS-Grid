@@ -74,8 +74,8 @@ printService.gridsToPdf = async function (gridsData, options) {
             if (options.progressFn) {
                 options.progressFn(100);
             }
-            window.open(doc.output('bloburl'))
-            //doc.save('grid-export.pdf');
+            //window.open(doc.output('bloburl'))
+            doc.save('grid-export.pdf');
         }
     });
 }
