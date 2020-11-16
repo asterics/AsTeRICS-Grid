@@ -39,7 +39,7 @@
                         <button @click="clone(selectedGraphElement.grid.id)"><i class="far fa-clone"/> <span class="hide-mobile" data-i18n="">Clone // Duplizieren</span></button>
                         <button @click="deleteGrid(selectedGraphElement.grid.id)"><i class="far fa-trash-alt"/> <span class="hide-mobile" data-i18n="">Delete // Löschen</span></button>
                         <button @click="exportToFile(selectedGraphElement.grid.id)"><i class="fas fa-file-export"/> <span class="hide-mobile" data-i18n="">Export // Exportieren</span></button>
-                        <button @click="exportToPdf(selectedGraphElement.grid.id)"><i class="far fa-file-pdf"/> <span class="hide-mobile" data-i18n="">Open as PDF // Als PDF öffnen</span></button>
+                        <button @click="exportToPdf(selectedGraphElement.grid.id)"><i class="far fa-file-pdf"/> <span class="hide-mobile" data-i18n="">Save as PDF // Als PDF speichern</span></button>
                     </div>
                 </div>
             </div>
@@ -393,7 +393,7 @@
                 icon: "fas fa-file-export"
             },
             CONTEXT_EXPORT_PDF: {
-                name: "Open as PDF // Als PDF öffnen",
+                name: "Save as PDF // Als PDF speichern",
                 icon: "far fa-file-pdf"
             }
         };
