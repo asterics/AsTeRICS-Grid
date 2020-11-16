@@ -9,7 +9,7 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="biggerFont">{{options.text}}</div>
+                        <div class="biggerFont">{{options.text}} ...</div>
                         <div id="progressWrapper" style="border: 1px solid; border-radius: 3px; width: 100%; height: 50px; margin: 0.5em 0">
                             <div id="progressBar" :style="`width: ${progressPercentage}%; height: 100%; background-color: green`"></div>
                         </div>
@@ -35,7 +35,7 @@
 
     let defaultOptions = {
         header: '',
-        closable: true,
+        closable: false,
         cancelFn: null,
         text: ''
     }
@@ -51,9 +51,14 @@
         methods: {
             setProgress(percentage, options) {
                 this.progressPercentage = Math.min(percentage, 100);
-                this.options = Object.assign(JSON.parse(JSON.stringify(defaultOptions)), options);
+                Object.keys(this.options).forEach(key => {
+                    if (options && options[key] !== undefined) {
+                        this.options[key] = options[key];
+                    }
+                });
                 if (this.progressPercentage === 100) {
                     setTimeout(() => {
+                        this.options = JSON.parse(JSON.stringify(defaultOptions));
                         this.$emit('close');
                     }, 200)
                 }
@@ -64,6 +69,7 @@
                     if (this.options.cancelFn) {
                         this.options.cancelFn();
                     }
+                    this.options = JSON.parse(JSON.stringify(defaultOptions));
                 }
             }
         },
