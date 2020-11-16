@@ -10,6 +10,7 @@ import {localStorageService} from "../service/data/localStorageService";
 import {helpService} from "../service/helpService";
 import {Router} from "../router";
 import NotificationBar from "../../vue-components/components/notificationBar.vue"
+import ProgressBarModal from "../../vue-components/modals/progressBarModal.vue"
 
 let MainVue = {};
 let app = null;
@@ -45,10 +46,26 @@ MainVue.clearTooltip = function () {
     app.$refs.notificationBar.clearTooltip();
 };
 
+/**
+ * Shows a progressbar with the given percentage/text. If a percentage of 100 is passed, the progressbar closes itself.
+ * @param percentage
+ * @param options.header
+ * @param options.text
+ * @param options.cancelFn (optional) a function that is called if the user closes the progressbar modal
+ * @param options.closable if true, the user can close the modal
+ */
+MainVue.showProgressBar = function (percentage, options) {
+    if (!app) {
+        return;
+    }
+    app.showProgressBar = true;
+    app.$refs.progressBar.setProgress(percentage, options);
+}
+
 MainVue.init = function () {
     app = new Vue({
         el: '#app',
-        components: {NotificationBar},
+        components: {NotificationBar, ProgressBarModal},
         data() {
             return {
                 component: null,
@@ -58,6 +75,7 @@ MainVue.init = function () {
                 currentUser: databaseService.getCurrentUsedDatabase(),
                 isLocalUser: localStorageService.isSavedLocalUser(databaseService.getCurrentUsedDatabase()),
                 syncState: dataService.getSyncState(),
+                showProgressBar: false,
                 constants: constants,
                 tooltipHTML: null,
                 actionLink: null
