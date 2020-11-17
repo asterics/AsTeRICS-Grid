@@ -2,6 +2,7 @@ import {GridData} from "../model/GridData";
 import {GridImage} from "../model/GridImage";
 import {i18nService} from "./i18nService";
 import {imageUtil} from "../util/imageUtil";
+import {GridElement} from "../model/GridElement";
 
 let printService = {};
 let gridInstance = null;
@@ -52,8 +53,20 @@ printService.gridsToPdf = async function (gridsData, options) {
     import(/* webpackChunkName: "jspdf" */ 'jsPDF').then(async jsPDF => {
         options = options || {};
         options.idPageMap = {};
+        options.idParentsMap = {};
         gridsData.forEach((grid, index) => {
             options.idPageMap[grid.id] = index + 1;
+        });
+        gridsData.forEach((grid) => {
+            options.idParentsMap[grid.id] = options.idParentsMap[grid.id] || [];
+            grid.gridElements.forEach(element => {
+                element = new GridElement(element);
+                let nav = element.getNavigateGridId();
+                if (nav) {
+                    options.idParentsMap[nav] = options.idParentsMap[nav] || [];
+                    options.idParentsMap[nav].push(options.idPageMap[grid.id]);
+                }
+            })
         });
         const doc = new jsPDF.jsPDF({
             orientation: "landscape",
@@ -95,6 +108,13 @@ function addGridToPdf(doc, gridData, options) {
         doc.setFontSize(fontSizePt);
         let textL = i18nService.translate("Printed by AsTeRICS Grid, https://grid.asterics.eu // Gedruckt mit AsTeRICS Grid, https://grid.asterics.eu")
         let textC = i18nService.getTranslation(gridData.label);
+        let firstParentPage = options.idParentsMap[gridData.id][0];
+        if (options.showLinks && firstParentPage) {
+            let prefix = JSON.stringify(options.idParentsMap[gridData.id].slice(0, 5));
+            textC = prefix + " => " + textC;
+            let textWidth = doc.getTextWidth(textC);
+            doc.link(DOC_WIDTH / 2 - textWidth / 2, DOC_HEIGHT - pdfOptions.docPadding - footerHeight * 0.4, textWidth, footerHeight * 0.4, {pageNumber: firstParentPage});
+        }
         let currentPage = options.idPageMap[gridData.id] || 1;
         let totalPages = Object.keys(options.idPageMap).length || 1
         let textR = currentPage + " / " + totalPages;
