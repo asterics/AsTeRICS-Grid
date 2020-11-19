@@ -72,12 +72,14 @@ printService.gridsToPdf = async function (gridsData, options) {
             orientation: "landscape",
             compress: true
         });
+        options.pages = gridsData.length;
         for (let i = 0; i < gridsData.length && !options.abort; i++) {
             if (options.progressFn) {
                 options.progressFn(Math.round(100 * (i) / gridsData.length), i18nService.translate('Creating page {?} of {?} // Erstelle Seite {?} von {?}', i+1, gridsData.length), () => {
                     options.abort = true;
                 });
             }
+            options.page = i + 1;
             await addGridToPdf(doc, gridsData[i], options);
             if (i < gridsData.length - 1) {
                 doc.addPage();
@@ -99,10 +101,12 @@ function addGridToPdf(doc, gridData, options) {
     let DOC_HEIGHT = 210;
 
     gridData = new GridData(gridData);
+    let registerHeight = options.showRegister && options.pages > 1 ? 10 : 0;
     let footerHeight = options.showFooter !== false ? pdfOptions.footerHeight : 0;
     let elementTotalWidth = (DOC_WIDTH - 2 * pdfOptions.docPadding) / gridData.getWidth();
-    let elementTotalHeight = (DOC_HEIGHT - 2 * pdfOptions.docPadding - footerHeight) / gridData.getHeight();
+    let elementTotalHeight = (DOC_HEIGHT - 2 * pdfOptions.docPadding - footerHeight - registerHeight) / gridData.getHeight();
     if (footerHeight > 0) {
+        let yBaseFooter = DOC_HEIGHT - pdfOptions.docPadding - registerHeight;
         let fontSizePt = (footerHeight * 0.4 / 0.352778);
         doc.setTextColor(0);
         doc.setFontSize(fontSizePt);
@@ -113,23 +117,49 @@ function addGridToPdf(doc, gridData, options) {
             let prefix = JSON.stringify(options.idParentsMap[gridData.id].slice(0, 5));
             textC = prefix + " => " + textC;
             let textWidth = doc.getTextWidth(textC);
-            doc.link(DOC_WIDTH / 2 - textWidth / 2, DOC_HEIGHT - pdfOptions.docPadding - footerHeight * 0.4, textWidth, footerHeight * 0.4, {pageNumber: firstParentPage});
+            doc.link(DOC_WIDTH / 2 - textWidth / 2, yBaseFooter - footerHeight * 0.4, textWidth, footerHeight * 0.4, {pageNumber: firstParentPage});
         }
         let currentPage = options.idPageMap[gridData.id] || 1;
         let totalPages = Object.keys(options.idPageMap).length || 1
         let textR = currentPage + " / " + totalPages;
-        doc.text(textL, pdfOptions.docPadding + pdfOptions.elementMargin, DOC_HEIGHT - pdfOptions.docPadding, {
+        doc.text(textL, pdfOptions.docPadding + pdfOptions.elementMargin, yBaseFooter, {
             baseline: 'bottom',
             align: 'left'
         });
-        doc.text(textC, DOC_WIDTH / 2, DOC_HEIGHT - pdfOptions.docPadding, {
+        doc.text(textC, DOC_WIDTH / 2, yBaseFooter, {
             baseline: 'bottom',
             align: 'center'
         });
-        doc.text(textR, DOC_WIDTH - pdfOptions.docPadding - pdfOptions.elementMargin, DOC_HEIGHT - pdfOptions.docPadding, {
+        doc.text(textR, DOC_WIDTH - pdfOptions.docPadding - pdfOptions.elementMargin, yBaseFooter, {
             baseline: 'bottom',
             align: 'right'
         });
+    }
+    if (registerHeight > 0) {
+        let maxRegisters = 30;
+        let skipNumber = 0;
+        let registerCount = options.pages;
+        if (options.pages > maxRegisters) {
+            registerCount = maxRegisters;
+            skipNumber = Math.floor(options.pages / maxRegisters);
+            let maxPage = ((registerCount - 1) * skipNumber) + 1;
+            skipNumber = options.pages >= maxPage + skipNumber ? skipNumber + 1 : skipNumber;
+        }
+        doc.setFillColor(255, 255, 255);
+        doc.setDrawColor(0);
+        doc.roundedRect(0, DOC_HEIGHT - registerHeight, DOC_WIDTH, registerHeight, 0, 0);
+        doc.setFontSize(13);
+        let registerElementWidth = DOC_WIDTH / registerCount;
+        for (let i = 0; i < registerCount; i++) {
+            doc.roundedRect(i * registerElementWidth, DOC_HEIGHT - registerHeight, registerElementWidth, registerHeight, 0, 0);
+            let maxPage = skipNumber > 0 ? (i * skipNumber) + 1 : (i + 1);
+            if (maxPage <= options.page) {
+                doc.text(maxPage + '', i * registerElementWidth + registerElementWidth / 2, DOC_HEIGHT - registerHeight / 2, {
+                    baseline: 'middle',
+                    align: 'center'
+                });
+            }
+        }
     }
     gridData.gridElements.forEach(element => {
         let currentWidth = elementTotalWidth * element.width - (2 * pdfOptions.elementMargin);
@@ -155,7 +185,7 @@ function addGridToPdf(doc, gridData, options) {
                 doc.setDrawColor(255);
                 doc.setFillColor(90, 113, 122);
                 doc.roundedRect(xStartPos + offsetX, yStartPos + offsetY, iconWidth, iconWidth, 1, 1, "FD");
-                doc.link(xStartPos + offsetX, yStartPos + offsetY, iconWidth, iconWidth, {pageNumber: targetPage});
+                doc.link(xStartPos, yStartPos, currentWidth, currentHeight, {pageNumber: targetPage});
                 if (targetPage) {
                     let fontSizePt = (iconWidth * 0.6 / 0.352778)
                     doc.setTextColor(255, 255, 255);

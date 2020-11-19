@@ -36,6 +36,10 @@
                             <input id="printBackground" type="checkbox" v-model="options.printBackground"/>
                             <label for="printBackground" data-i18n="">Print background color // Hintergrundfarbe drucken</label>
                         </div>
+                        <div class="row">
+                            <input id="showRegister" type="checkbox" v-model="options.showRegister"/>
+                            <label for="showRegister" data-i18n="">Print index at side edge // Griffregister am Seitenrand drucken</label>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -73,7 +77,8 @@
                 options: {
                     exportConnected: true,
                     printBackground: false,
-                    showLinks: true
+                    showLinks: true,
+                    showRegister: false
                 }
             }
         },
@@ -102,6 +107,7 @@
                     printService.gridsToPdf(grids, {
                         backgroundColor: this.options.printBackground ? {r: 173, g:216, b: 230} : null,
                         showLinks: this.options.showLinks,
+                        showRegister: this.options.showRegister,
                         progressFn: (progress, text, abortFn) => {
                             MainVue.showProgressBar(progress, {
                                 header: i18nService.translate('Creating PDF file // Erstelle PDF Datei'),
