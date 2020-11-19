@@ -3,6 +3,7 @@ import {GridImage} from "../model/GridImage";
 import {i18nService} from "./i18nService";
 import {imageUtil} from "../util/imageUtil";
 import {GridElement} from "../model/GridElement";
+import {util} from "../util/util";
 
 let printService = {};
 let gridInstance = null;
@@ -167,10 +168,12 @@ function addGridToPdf(doc, gridData, options) {
         let xStartPos = pdfOptions.docPadding + (elementTotalWidth * element.x) + pdfOptions.elementMargin;
         let yStartPos = pdfOptions.docPadding + (elementTotalHeight * element.y) + pdfOptions.elementMargin;
         doc.setDrawColor(0);
-        if (!options.backgroundColor) {
+        if (!options.printBackground) {
             doc.setFillColor(255, 255, 255);
         } else {
-            doc.setFillColor(options.backgroundColor.r, options.backgroundColor.g, options.backgroundColor.b);
+            let colorRGB = util.getRGB(element.backgroundColor);
+            colorRGB = colorRGB ? colorRGB : [173, 216, 230];
+            doc.setFillColor(colorRGB[0], colorRGB[1], colorRGB[2]);
         }
         doc.roundedRect(xStartPos, yStartPos, currentWidth, currentHeight, 3, 3, "FD");
         if (i18nService.getTranslation(element.label)) {

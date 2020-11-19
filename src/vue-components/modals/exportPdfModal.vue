@@ -105,7 +105,7 @@
                 }).then((grids) => {
                     grids = exportIds.map(id => grids.filter(grid => grid.id === id)[0]);
                     printService.gridsToPdf(grids, {
-                        backgroundColor: this.options.printBackground ? {r: 173, g:216, b: 230} : null,
+                        printBackground: this.options.printBackground,
                         showLinks: this.options.showLinks,
                         showRegister: this.options.showRegister,
                         progressFn: (progress, text, abortFn) => {
