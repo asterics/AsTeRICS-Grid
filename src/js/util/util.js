@@ -165,6 +165,48 @@ util.closeFullscreen = function () {
     }
 };
 
+/**
+ * converts HEX or CSS RGB string to RGB array
+ * @param hexOrCssRGB
+ * @return {null|*[]}
+ */
+util.getRGB = function (hexOrCssRGB) {
+    if (hexOrCssRGB && hexOrCssRGB[0] === '#') {
+        return util.hexToRGB(hexOrCssRGB);
+    } else if (hexOrCssRGB && hexOrCssRGB.indexOf('rgb') === 0) {
+        return util.cssRGBToRGB(hexOrCssRGB);
+    }
+    return null;
+}
+
+/**
+ * converts HEX String to array[3] with RGB colors
+ * @param hex
+ * @return {null|*[]}
+ */
+util.hexToRGB = function (hex) {
+    if (!hex) {
+        return null;
+    }
+    let array = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
+        , (m, r, g, b) => '#' + r + r + g + g + b + b)
+        .substring(1).match(/.{2}/g)
+        .map(x => parseInt(x, 16));
+    return array[0] && array[1] && array[2] ? array : null;
+}
+
+/**
+ * converts css RGB String (e.g. 'rgb(123, 123, 123)') to RGB array, e.g. [123, 123, 123]
+ * @param cssRGB
+ * @return {null|*[]}
+ */
+util.cssRGBToRGB = function (cssRGB) {
+    if (!cssRGB) {
+        return null;
+    }
+    let array = cssRGB.match(/[0-9.]+/gi).map(string => parseInt(string));
+    return array[0] && array[1] && array[2] ? array : null;
+}
 
 
 export {util};
