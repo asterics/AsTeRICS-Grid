@@ -138,13 +138,11 @@ function addGridToPdf(doc, gridData, options) {
     }
     if (registerHeight > 0) {
         let maxRegisters = 30;
-        let skipNumber = 0;
+        let stepSize = 1;
         let registerCount = options.pages;
         if (options.pages > maxRegisters) {
-            registerCount = maxRegisters;
-            skipNumber = Math.floor(options.pages / maxRegisters);
-            let maxPage = ((registerCount - 1) * skipNumber) + 1;
-            skipNumber = options.pages >= maxPage + skipNumber ? skipNumber + 1 : skipNumber;
+            stepSize = Math.ceil(options.pages / maxRegisters);
+            registerCount = Math.ceil(options.pages / stepSize);
         }
         doc.setFillColor(255, 255, 255);
         doc.setDrawColor(0);
@@ -153,7 +151,7 @@ function addGridToPdf(doc, gridData, options) {
         let registerElementWidth = DOC_WIDTH / registerCount;
         for (let i = 0; i < registerCount; i++) {
             doc.roundedRect(i * registerElementWidth, DOC_HEIGHT - registerHeight, registerElementWidth, registerHeight, 0, 0);
-            let maxPage = skipNumber > 0 ? (i * skipNumber) + 1 : (i + 1);
+            let maxPage = (i * stepSize) + 1;
             if (maxPage <= options.page) {
                 doc.text(maxPage + '', i * registerElementWidth + registerElementWidth / 2, DOC_HEIGHT - registerHeight / 2, {
                     baseline: 'middle',
