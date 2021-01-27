@@ -20,8 +20,8 @@ if (isProd) {
         stream: accessLogStream,
         skip: (req, res) => req.url.indexOf('/validate-username/') > -1
     }));
-    privateKey = fs.readFileSync('/etc/letsencrypt/live/couchdb.asterics-foundation.org/privkey.pem', 'utf8');
-    certificate = fs.readFileSync('/etc/letsencrypt/live/couchdb.asterics-foundation.org/fullchain.pem', 'utf8');
+    privateKey = fs.readFileSync('/opt/couchdb/letsencrypt/live/couchdb.asterics-foundation.org/privkey.pem', 'utf8');
+    certificate = fs.readFileSync('/opt/couchdb/letsencrypt/live/couchdb.asterics-foundation.org/fullchain.pem', 'utf8');
     credentials = {key: privateKey, cert: certificate};
 } else {
     app.use(logger('dev'));
