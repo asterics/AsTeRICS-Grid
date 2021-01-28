@@ -86,7 +86,7 @@ speechService.stopSpeaking = function () {
 };
 
 speechService.isSpeaking = function () {
-    return window.speechSynthesis.speaking || responsiveVoice.isPlaying();
+    return (speechService.nativeSpeechSupported() && window.speechSynthesis.speaking) || responsiveVoice.isPlaying();
 };
 
 /**
@@ -116,7 +116,7 @@ speechService.getPreferredVoiceName = function() {
 };
 
 speechService.nativeSpeechSupported = function () {
-    if (typeof SpeechSynthesisUtterance === 'undefined' || !window.speechSynthesis) {
+    if (typeof SpeechSynthesisUtterance === 'undefined' || !window.speechSynthesis || !window.speechSynthesis.getVoices) {
         return false;
     }
     let voices = _allVoicesNative.length > 0 ? _allVoicesNative : window.speechSynthesis.getVoices(); //first call in chrome returns [] sometimes
@@ -168,7 +168,7 @@ function sortVoices() {
 }
 
 function init() {
-    if (window.speechSynthesis && window.speechSynthesis.getVoices) {
+    if (speechService.nativeSpeechSupported()) {
         _allVoicesNative = window.speechSynthesis.getVoices();
         setTimeout(function () {
             _allVoicesNative = window.speechSynthesis.getVoices(); //first call in chrome returns [] sometimes
