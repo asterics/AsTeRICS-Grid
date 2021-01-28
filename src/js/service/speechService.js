@@ -115,13 +115,12 @@ speechService.getPreferredVoiceName = function() {
     return _preferredVoiceName;
 };
 
+/**
+ * checks if native speech is supported.
+ * @return {boolean} true, if speech synthesis is supported by the browser
+ */
 speechService.nativeSpeechSupported = function () {
-    if (typeof SpeechSynthesisUtterance === 'undefined' || !window.speechSynthesis || !window.speechSynthesis.getVoices) {
-        return false;
-    }
-    let voices = _allVoicesNative.length > 0 ? _allVoicesNative : window.speechSynthesis.getVoices(); //first call in chrome returns [] sometimes
-    voices = voices.length > 0 ? voices : window.speechSynthesis.getVoices();
-    return voices.length > 0;
+    return !!(typeof SpeechSynthesisUtterance !== 'undefined' && window.speechSynthesis && window.speechSynthesis.getVoices);
 };
 
 function getVoicesByLang(lang) {
