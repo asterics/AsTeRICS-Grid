@@ -116,20 +116,23 @@
 <script type="text/javascript" src='app/lib/dom-i18n.min.js'></script>
 <script type="text/javascript" src='app/lib/sjcl.min.js'></script>
 <script type="text/javascript">
-    window.originalLog = console.log;
-    console.log = function () {
-        if (['ResponsiveVoice r1.6.5', 'isHidden: false', 'Prerender: false', 'Configuring'].indexOf(arguments[0]) !== -1) {
-            return;
-        } else if (arguments[0] === 'RV: Voice support ready') {
-            console.log = window.originalLog;
-        } else {
-            window.originalLog.apply(null, arguments);
+    if (Function.bind) {
+        //remove RV log messages without altering RV source (forbidden by license)
+        window.originalLog = console.log.bind(console);
+        console.log = function () {
+            if (['ResponsiveVoice r1.6.5', 'isHidden: false', 'Prerender: false', 'Configuring'].indexOf(arguments[0]) !== -1) {
+                return;
+            } else if (arguments[0] === 'RV: Voice support ready') {
+                console.log = window.originalLog;
+            } else {
+                window.originalLog.apply(null, arguments);
+            }
         }
     }
 </script>
 <script type="text/javascript" src='app/lib/responsive-voice.js'></script>
 
-<!--script nomodule src="app/build_legacy/asterics-grid.bundle.js"></script-->
+<script nomodule src="app/build_legacy/asterics-grid.bundle.js"></script>
 <script type="module" src="app/build/asterics-grid.bundle.js"></script>
 </body>
 </html>
