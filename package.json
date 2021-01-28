@@ -42,7 +42,8 @@
     "@sensu/superlogin/**/leveldown": "5.4.1"
   },
   "scripts": {
-    "start": "webpack-dev-server",
+    "start": "webpack-dev-server --env.normalserver",
+    "start-legacy": "webpack-dev-server --env.legacyserver",
     "start-no-live": "webpack-dev-server --liveReload false",
     "start-superlogin-dev": "node superlogin/start.js",
     "start-superlogin-prod": "node superlogin/start.js prod",
