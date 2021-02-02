@@ -19,6 +19,7 @@ let PLAYER_STATES = {
 let initYtState = {
     lastPlayType: GridActionYoutube.playTypes.YT_PLAY_PLAYLIST,
     lastData: 'https://www.youtube.com/watch?v=5ffLB4a9APc&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz',
+    lastVideoId: null,
     lastTimes: {}, // Video ID -> Player Time
     lastPlaylistIndexes: {}, // Playlist ID -> last played video index
     dataApiCalls: {},
@@ -143,17 +144,20 @@ youtubeService.play = function (action, videoTimeParam) {
                     if (!videoId) {
                         return;
                     }
-                    if (videoId === youtubeService.getVideoId(player.getVideoUrl())) {
+                    if (videoId === youtubeService.getCurrentVideoId()) {
                         player.playVideo();
                         return;
                     }
+                    ytState.lastVideoId = videoId;
                     player.loadVideoById(videoId, getVideoTime(videoTimeParam, videoId));
                     break;
                 case GridActionYoutube.playTypes.YT_PLAY_SEARCH:
                     waitForBuffering = true;
+                    //see API doc: https://developers.google.com/youtube/v3/docs/search/list
                     callGapiCached("gapi.client.youtube.search.list", {
-                        "maxResults": 100,
-                        "q": action.data
+                        maxResults: 100,
+                        q: action.data,
+                        type: 'video'
                     }).then(response => {
                         let videoIds = response.result.items.map(item => item.id.videoId).filter(id => !!id);
                         player.loadPlaylist(videoIds, ytState.lastPlaylistIndexes[action.data]);
@@ -178,12 +182,35 @@ youtubeService.play = function (action, videoTimeParam) {
                         index: ytState.lastPlaylistIndexes[action.data]
                     });
                     break;
+                case GridActionYoutube.playTypes.YT_PLAY_RELATED:
+                    /*let currentID = youtubeService.getCurrentVideoId() || ytState.lastVideoId;
+                    action.data = ytState.lastData = currentID; // for correctly saving playlist index
+                    log.warn(currentID);
+                    if (!currentID) {
+                        return;
+                    }
+                    log.warn('related:' + currentID);
+                    waitForBuffering = true;
+                    //see API doc: https://developers.google.com/youtube/v3/docs/search/list
+                    callGapiCached("gapi.client.youtube.search.list", {
+                        maxResults: 100,
+                        type: 'video',
+                        relatedToVideoId: currentID
+                    }).then(response => {
+                        log.warn('related response:');
+                        log.warn(response);
+                        let videoIds = response.result.items.map(item => item.id.videoId).filter(id => !!id);
+                        log.warn(videoIds);
+                        player.loadPlaylist(videoIds, ytState.lastPlaylistIndexes[action.data]);
+                    });*/
+                    break;
             }
             saveState();
         }
 
         function onBuffering() {
             player.setLoop(true);
+            ytState.lastVideoId = youtubeService.getCurrentVideoId();
             let seekTime = getVideoTime(videoTimeParam, youtubeService.getCurrentVideoId());
             if (seekTime) {
                 player.seekTo(seekTime, true);
@@ -315,7 +342,10 @@ youtubeService.isPaused = function () {
 
 youtubeService.getCurrentVideoId = function () {
     if (player) {
-        return youtubeService.getVideoId(player.getVideoUrl());
+        let url = player.getVideoUrl();
+        if (url.indexOf('v=') !== -1) {
+            return youtubeService.getVideoId(player.getVideoUrl());
+        }
     }
     return "";
 }
