@@ -21,10 +21,13 @@ let initYtState = {
     lastData: 'https://www.youtube.com/watch?v=5ffLB4a9APc&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz',
     lastTimes: {}, // Video ID -> Player Time
     lastPlaylistIndexes: {}, // Playlist ID -> last played video index
+    dataApiCalls: {},
     muted: false,
     volume: 100
 };
 
+let DATA_API_KEY = 'AIzaSyAxAR3uV77YVYlvZlwqC8bjDiPA0Gc7smo';
+let DATA_API_CACHE_TIMEOUT_MS = 15 * 60 * 1000; //15 minutes
 let initialized = false;
 let player = null;
 let playerID = 'player';
@@ -82,7 +85,7 @@ youtubeService.doAction = function (action) {
     }
 };
 
-youtubeService.play = function (action, videoTime) {
+youtubeService.play = function (action, videoTimeParam) {
     let promise = Promise.resolve();
     MainVue.clearTooltip(tooltipID);
     if (!initialized) {
@@ -109,7 +112,7 @@ youtubeService.play = function (action, videoTime) {
                 events: {
                     'onReady': onPlayerReady,
                     'onStateChange': (event) => {
-                        if (waitForBuffering && event.data === PLAYER_STATES.BUFFERING) {
+                        if (waitForBuffering && event.data === PLAYER_STATES.PLAYING || event.data === PLAYER_STATES.PAUSED) {
                             waitForBuffering = false;
                             onBuffering();
                         }
@@ -144,15 +147,16 @@ youtubeService.play = function (action, videoTime) {
                         player.playVideo();
                         return;
                     }
-                    let lastTime = ytState.lastTimes[videoId];
-                    player.loadVideoById(videoId, videoTime !== undefined ? videoTime : lastTime);
+                    player.loadVideoById(videoId, getVideoTime(videoTimeParam, videoId));
                     break;
                 case GridActionYoutube.playTypes.YT_PLAY_SEARCH:
                     waitForBuffering = true;
-                    player.loadPlaylist({
-                        list: action.data,
-                        listType: 'search',
-                        index: ytState.lastPlaylistIndexes[action.data]
+                    callGapiCached("gapi.client.youtube.search.list", {
+                        "maxResults": 100,
+                        "q": action.data
+                    }).then(response => {
+                        let videoIds = response.result.items.map(item => item.id.videoId).filter(id => !!id);
+                        player.loadPlaylist(videoIds, ytState.lastPlaylistIndexes[action.data]);
                     });
                     break;
                 case GridActionYoutube.playTypes.YT_PLAY_PLAYLIST:
@@ -168,7 +172,6 @@ youtubeService.play = function (action, videoTime) {
                     let channel = youtubeService.getChannelId(action.data);
                     let channelPlaylist = youtubeService.getChannelPlaylist(channel);
                     waitForBuffering = true;
-                    log.warn(ytState.lastPlaylistIndexes[action.data]);
                     player.loadPlaylist({
                         list: channelPlaylist,
                         listType: 'playlist',
@@ -181,9 +184,9 @@ youtubeService.play = function (action, videoTime) {
 
         function onBuffering() {
             player.setLoop(true);
-            let lastTime = ytState.lastTimes[youtubeService.getCurrentVideoId()];
-            if (videoTime || lastTime) {
-                player.seekTo(videoTime !== undefined ? videoTime : lastTime);
+            let seekTime = getVideoTime(videoTimeParam, youtubeService.getCurrentVideoId());
+            if (seekTime) {
+                player.seekTo(seekTime, true);
             }
         }
     });
@@ -374,6 +377,53 @@ youtubeService.destroy = function () {
     player = null;
 }
 
+/**
+ * Calls a function of Google API (gapi) or returns a cached value of the result value.
+ *
+ * @param fnNameString the function name to call as a string, e.g. "gapi.client.youtube.search.list"
+ * @param parameters the parameters to pass to this function
+ * @param timeout timeout in milliseconds, default: DATA_API_CACHE_TIMEOUT_MS. If this time has elapsed since the last
+ *        call to the real API, a new API call is done and the result is returned, The cached version is updated.
+ */
+function callGapiCached(fnNameString, parameters, timeout) {
+    return new Promise(resolve => {
+        timeout = timeout || DATA_API_CACHE_TIMEOUT_MS;
+        let parts = fnNameString.split('.');
+        let fn = window;
+        parts.forEach(part => {
+            if (fn) {
+                fn = fn[part];
+            }
+        });
+        if (fn) {
+            ytState.dataApiCalls = ytState.dataApiCalls || {};
+            let key = fnNameString + JSON.stringify(parameters);
+            let cached = ytState.dataApiCalls[key];
+            if (cached && new Date().getTime() - cached.time < timeout) {
+                //return cache
+                return resolve(JSON.parse(cached.response));
+            } else {
+                //call real API
+                fn(parameters).then(response => {
+                    ytState.dataApiCalls[key] = {
+                        time: new Date().getTime(),
+                        response: JSON.stringify(response)
+                    }
+                    saveState();
+                    return resolve(response);
+                }, error => {
+                    log.error("Execute Google API call error", error);
+                    return resolve(null);
+                });
+            }
+        }
+    });
+}
+
+function getVideoTime(timeParam, videoId) {
+    return timeParam !== undefined ? timeParam : ytState.lastTimes[videoId];
+}
+
 function getURLParam(urlString, paramName) {
     let url = null;
     try {
@@ -398,6 +448,7 @@ function saveState() {
     if (JSON.stringify(ytState).length > 1024 * 1024) { // bigger than 1 MB -> reset
         ytState.lastPlaylistIndexes = {};
         ytState.lastTimes = {};
+        ytState.dataApiCalls = {};
     }
     localStorageService.saveYTState(ytState);
 }
@@ -424,33 +475,52 @@ function init() {
     });
 
     $(document).on(constants.EVENT_USER_CHANGED, () => {
-        ytState = localStorageService.getYTState() || JSON.parse(JSON.stringify(initYtState));;
+        ytState = localStorageService.getYTState() || JSON.parse(JSON.stringify(initYtState));
     });
 
     window.addEventListener('beforeunload', (event) => {
         saveState();
     });
 
-    return new Promise(resolve => {
-        //see https://developers.google.com/youtube/iframe_api_reference#Getting_Started
-        let tag = document.createElement('script');
+    //see https://developers.google.com/youtube/iframe_api_reference#Getting_Started
+    let tagIframeAPI = document.createElement('script');
+    let tagDataAPI = document.createElement('script');
+    document.body.appendChild(tagIframeAPI);
+    document.body.appendChild(tagDataAPI);
 
-        tag.onerror = function (e) {
-            log.warn('error on loading YouTube API script');
-            errorMessage();
-        }
+    tagIframeAPI.onerror = function (e) {
+        log.warn('error on loading YouTube Iframe API script');
+        errorMessage();
+    }
 
-        // 3. This function creates an <iframe> (and YouTube player)
-        //    after the API code downloads.
+    tagDataAPI.onerror = function (e) {
+        log.warn('error on loading YouTube data API script');
+    }
+
+    let promiseIframe = new Promise(resolve => {
         window.onYouTubeIframeAPIReady = function () {
             initialized = true;
             resolve();
         }
-
-        tag.src = "https://www.youtube.com/iframe_api";
-        let firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     });
+
+    let promiseData = new Promise(resolve => {
+        tagDataAPI.addEventListener('load', function () {
+            resolve();
+        });
+    }).then(() => {
+        return new Promise(resolve => {gapi.load("client", resolve)});
+    }).then(() => {
+        gapi.client.setApiKey(DATA_API_KEY);
+        return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest");
+    }).catch(err => {
+        log.error("Error loading GAPI client for API", err);
+        return Promise.resolve();
+    });
+
+    tagIframeAPI.src = "https://www.youtube.com/iframe_api";
+    tagDataAPI.src = "https://apis.google.com/js/api.js";
+    return Promise.all([promiseData, promiseIframe]);
 }
 
 $(document).on(constants.EVENT_GRID_LOADED, () => {
