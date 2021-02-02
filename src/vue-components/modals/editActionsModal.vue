@@ -197,12 +197,12 @@
                                                 <div class="twelve columns">
                                                     <label for="ytPlayType" class="five columns normal-text" data-i18n>Play type // Wiedergabe Typ</label>
                                                     <select id="ytPlayType" class="six columns" v-model="action.playType">
-                                                        <option v-for="playType in GridActionYoutube.playTypes" :value="playType">{{playType | translate}}</option>
+                                                        <option v-for="playType in Object.keys(GridActionYoutube.playTypes).filter(t => t !== GridActionYoutube.playTypes.YT_PLAY_RELATED)" :value="playType">{{playType | translate}}</option>
                                                     </select>
                                                 </div>
                                             </div>
                                             <div v-show="action.playType && [GridActionYoutube.actions.YT_PLAY, GridActionYoutube.actions.YT_TOGGLE, GridActionYoutube.actions.YT_RESTART].indexOf(action.action) !== -1">
-                                                <div class="row" >
+                                                <div class="row" v-show="action.playType !== GridActionYoutube.playTypes.YT_PLAY_RELATED">
                                                     <div class="twelve columns">
                                                         <label for="ytList" class="five columns normal-text">
                                                             <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_VIDEO" data-i18n="">Video link // Video Link</span>
@@ -213,15 +213,15 @@
                                                         <input id="ytList" type="text" class="six columns" v-model="action.data"/>
                                                     </div>
                                                 </div>
-                                                <div class="row" >
+                                                <div class="row">
                                                     <input id="showCC" type="checkbox" v-model="action.showCC"/>
                                                     <label for="showCC" class="normal-text" data-i18n="">Show video subtitles (if available) // Zeige Video-Untertitel (wenn verfügbar)</label>
                                                 </div>
-                                                <div class="row" >
+                                                <div class="row">
                                                     <input id="playMuted" type="checkbox" v-model="action.playMuted"/>
                                                     <label for="playMuted" class="normal-text" data-i18n="">Start video muted // Video stummgeschaltet starten</label>
                                                 </div>
-                                                <div class="row" >
+                                                <div class="row">
                                                     <input id="afterNav" type="checkbox" v-model="action.performAfterNav"/>
                                                     <label for="afterNav" class="normal-text" data-i18n="">Perform action after navigation // Aktion erst nach Navigation ausführen</label>
                                                 </div>

@@ -55,6 +55,7 @@ GridActionYoutube.playTypes = {
     YT_PLAY_PLAYLIST: 'YT_PLAY_PLAYLIST',
     YT_PLAY_SEARCH: 'YT_PLAY_SEARCH',
     YT_PLAY_CHANNEL: 'YT_PLAY_CHANNEL',
+    YT_PLAY_RELATED: 'YT_PLAY_RELATED',
 }
 
 GridActionYoutube.defaults({
