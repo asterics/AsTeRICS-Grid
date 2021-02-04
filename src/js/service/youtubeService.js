@@ -27,7 +27,7 @@ let initYtState = {
     volume: 100
 };
 
-let DATA_API_KEY = 'AIzaSyAxAR3uV77YVYlvZlwqC8bjDiPA0Gc7smo';
+let DATA_API_KEY = 'AIzaSyCDOUROr3UWS8K-WJNlAG21yBTOsveWQn8';
 let DATA_API_CACHE_TIMEOUT_MS = 15 * 60 * 1000; //15 minutes
 let initialized = false;
 let player = null;
@@ -157,7 +157,8 @@ youtubeService.play = function (action, videoTimeParam) {
                     callGapiCached("gapi.client.youtube.search.list", {
                         maxResults: 100,
                         q: action.data,
-                        type: 'video'
+                        type: 'video',
+                        videoEmbeddable: true
                     }).then(response => {
                         let videoIds = response.result.items.map(item => item.id.videoId).filter(id => !!id);
                         player.loadPlaylist(videoIds, ytState.lastPlaylistIndexes[action.data]);
