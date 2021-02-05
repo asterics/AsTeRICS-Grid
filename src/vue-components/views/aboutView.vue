@@ -57,6 +57,37 @@
                     </div>
                 </div>
                 <div class="row">
+                    <h3 data-i18n="">Terms of Service and Privacy Policy // Nutzungsbedingungen und Datenschutzerklärung</h3>
+                    <div data-i18n="">
+                        <div>
+                            <p>
+                                AsTeRICS Grid is free and open source software. It's licensed under the <a href="https://github.com/asterics/AsTeRICS-Grid/blob/master/LICENSE" target="_blank">AGPLv3</a>,
+                                which in ensures it will stay open source forever.
+                            </p>
+                            <p>
+                                If you want to use the integrated YouTube player, you have to agree to the
+                                <a href="https://www.youtube.com/t/terms" target="_blank">YouTube Terms of Service</a> and the
+                                <a href="https://policies.google.com/privacy" target="_blank">Google Privacy Policy</a>.
+                                All entered search queries for YouTube videos are sent to the <a href="https://developers.google.com/youtube/v3" target="_blank">YouTube Data API</a>
+                                in order to retrieve and play video results.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                AsTeRICS Grid ist kostenlos und OpenSource. Es unterliegt den Lizenzbedingungen der <a href="https://github.com/asterics/AsTeRICS-Grid/blob/master/LICENSE" target="_blank">AGPLv3</a>,
+                                welche sicherstellen, dass es für immer OpenSource bleibt.
+                            </p>
+                            <p>
+                                Wenn Sie den eigebauten YouTube-Player verwenden möchten, müssen Sie den
+                                <a href="https://www.youtube.com/t/terms" target="_blank">YouTube Nutzungsbedingungen</a> und der
+                                <a href="https://policies.google.com/privacy" target="_blank">Google Datenschutzerklärung</a> zustimmen.
+                                Alle eingegebenen Suchanfragen für YouTube-Videos werden an die <a href="https://developers.google.com/youtube/v3" target="_blank">YouTube Data API</a>
+                                gesendet um Suchergebnisse zu erhalten und passende Videos abspielen zu können.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <h3 data-i18n="">Acknowledgements // Dank</h3>
                     <div data-i18n="">
                         <span>
