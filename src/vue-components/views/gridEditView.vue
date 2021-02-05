@@ -323,7 +323,7 @@
                     },
                     'CONTEXT_NEW_YT_PLAYER': {
                         name: "New YouTube Player // Neuer YouTube Player",
-                        icon: "fas fa-play-circle"
+                        icon: "fab fa-youtube"
                     }
                 }
             }

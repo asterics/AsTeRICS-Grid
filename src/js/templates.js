@@ -99,7 +99,7 @@ function getGridElementYTPlayer(gridElem) {
     <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}">
         <div class="yt-container" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
             <div id="player" style="outline: 1px solid; outline-offset: -5px; height: 100%; background-color: black; display: flex; align-items: center; justify-content: center;">
-                <i class="fas fa-play-circle fa-5x" style="color: whitesmoke"></i>
+                <i class="fab fa-youtube fa-5x" style="color: whitesmoke"></i>
             </div>
         </div>
     </div>
