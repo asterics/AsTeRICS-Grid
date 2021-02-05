@@ -42,7 +42,7 @@ speechService.speak = function (textOrOject, lang, preferredVoiceProp) {
     } else {
         lang = getVoiceLang(_preferredVoiceName) || lang;
         let translation = textOrOject[lang] || i18nService.getTranslation(textOrOject, null, true);
-        text = translation.text ? translation.text : translation;
+        text = translation.text !== undefined ? translation.text : translation;
         lang = lang || translation.lang;
     }
     speechService.stopSpeaking();
