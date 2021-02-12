@@ -216,6 +216,7 @@ youtubeService.play = function (action, videoTimeParam) {
             if (seekTime) {
                 player.seekTo(seekTime, true);
             }
+            saveState();
         }
     });
 }
@@ -344,7 +345,7 @@ youtubeService.isPaused = function () {
 youtubeService.getCurrentVideoId = function () {
     if (player) {
         let url = player.getVideoUrl();
-        if (url.indexOf('v=') !== -1) {
+        if (url && url.indexOf('v=') !== -1) {
             return youtubeService.getVideoId(player.getVideoUrl());
         }
     }
