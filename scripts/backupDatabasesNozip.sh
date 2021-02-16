@@ -16,7 +16,7 @@ fi
 foldername=$(date +"%Y_%m_%d")_backup_couchdb_asterics_grid
 mkdir -p $1/$foldername
 echo "Copying data from CouchDB..."
-rsync -av backup-reader@1ce28d.online-server.cloud:/opt/couchdb/data $1/$foldername
-rsync -av backup-reader@1ce28d.online-server.cloud:/opt/couchdb/etc $1/$foldername
+rsync -rv backup-reader@1ce28d.online-server.cloud:/opt/couchdb/data $1/$foldername
+rsync -rv backup-reader@1ce28d.online-server.cloud:/opt/couchdb/etc $1/$foldername
 
 echo "Success: Backup created and saved to $1/$foldername"
