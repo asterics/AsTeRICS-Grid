@@ -19,6 +19,6 @@ echo "Copying data from CouchDB..."
 rsync -LKIr backup-reader@1ce28d.online-server.cloud:/opt/couchdb/data $1/$foldername
 rsync -LKIr backup-reader@1ce28d.online-server.cloud:/opt/couchdb/etc $1/$foldername
 
-echo "Copied data. Size: ${du -sh $1/foldername}"
+echo "Copied data. Size: "$(du -sh $1/$foldername)
 
 echo "Success: Backup created and saved to $1/$foldername"
