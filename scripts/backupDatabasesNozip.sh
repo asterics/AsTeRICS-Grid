@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-BASEDIR=$(dirname "$0")
 
 if [ $# != 1 ]; then
     echo "Usage: sh $0 backupDestination"
@@ -15,8 +14,9 @@ if [ ! -d $1 ]; then
 fi
 
 foldername=$(date +"%Y_%m_%d")_backup_couchdb_asterics_grid
-mkdir $1/$foldername
-scp -rp -i $BASEDIR/.ssh/backup-reader backup-reader@1ce28d.online-server.cloud:/opt/couchdb/data $1/$foldername
-scp -rp -i $BASEDIR/.ssh/backup-reader backup-reader@1ce28d.online-server.cloud:/opt/couchdb/etc $1/$foldername
+mkdir -p $1/$foldername
+echo "Copying data from CouchDB..."
+rsync -av backup-reader@1ce28d.online-server.cloud:/opt/couchdb/data $1/$foldername
+rsync -av backup-reader@1ce28d.online-server.cloud:/opt/couchdb/etc $1/$foldername
 
 echo "Success: Backup created and saved to $1/$foldername"
