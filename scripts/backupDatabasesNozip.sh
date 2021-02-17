@@ -20,4 +20,5 @@ rsync -LKIr backup-reader@1ce28d.online-server.cloud:/opt/couchdb/data $1/$folde
 rsync -LKIr backup-reader@1ce28d.online-server.cloud:/opt/couchdb/etc $1/$foldername
 
 echo "Copied data. Size: "$(du -sh $1/$foldername)
+echo "Total size of backups: "$(du -sh $1)
 echo "Backup successfully created!"
