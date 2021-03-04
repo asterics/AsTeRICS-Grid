@@ -35,10 +35,13 @@ see [User documentation](docs/documentation_user/README.md) or [AsTeRICS Grid Pl
 ## Npm scripts
 After `yarn install` the following commands are available:
 1. `npm run start` --> starts a webserver serving the AsTeRICS grid on `http://localhost:9095`, does hot reloading if js-sources change.
+1. `npm run start-legacy` --> same as `start` but js sources are transformed to ES5 using babel.
+1. `npm run start-no-live` --> same as `start` but hot reloading is disabled.
 2. `npm run build` --> builds the js-files in folder `src` to `app/build` and `app/build_legacy` folders.
 3. `npm run start-superlogin-dev` --> runs [superlogin](https://github.com/colinskow/superlogin) locally and makes it possible to create "online users" within the locally running application. A local [CouchDb](https://couchdb.apache.org/) instance is necessary in order to work.
 4. `npm run release` -> releases the current version with a new tag and push it to `gh-pages` branch in order to be served at https://grid.asterics.eu/
 5. `npm run release-latest` -> same as `npm run release` but with destination https://grid.asterics.eu/latest/
+5. `npm run test` -> runs tests of the project using [Jest](https://jestjs.io/).
 
 ## History
 The AsTeRICS Grid evolved out of [AsTeRICS Ergo](https://github.com/asterics/AsTeRICS-Ergo), see [AsTeRICS Ergo Master Plan](https://github.com/asterics/AsTeRICS-Ergo/wiki/Master-Plan-AsTeRICS-Ergo) and [AsTeRICS Ergo Architecture](https://github.com/asterics/AsTeRICS-Ergo/wiki/Architecture) and will eventually replace AsTeRICS Ergo.
