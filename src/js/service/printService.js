@@ -51,7 +51,7 @@ printService.setGridInstance = function (instance) {
  * @return {Promise<void>}
  */
 printService.gridsToPdf = async function (gridsData, options) {
-    import(/* webpackChunkName: "jspdf" */ 'jsPDF').then(async jsPDF => {
+    import(/* webpackChunkName: "jspdf" */ 'jspdf').then(async jsPDF => {
         options = options || {};
         options.idPageMap = {};
         options.idParentsMap = {};
