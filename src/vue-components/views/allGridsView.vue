@@ -45,9 +45,9 @@
             <div class="row" v-show="graphList.length > 0" style="margin-bottom: 1.5em">
                 <label for="selectMode" class="three columns" data-i18n="">Grids to show // Anzuzeigende Grids</label>
                 <select id="selectMode" class="four columns" v-model="selectValue" @change="reinitContextMenu">
+                    <option :value="selectValues.ALL_GRIDS" data-i18n="">All grids // Alle Grids</option>
                     <option :value="selectValues.CONNECTED_GRIDS" v-if="selectedGraphElement">{{connectedGridsOptionLabel}}</option>
                     <option :value="selectValues.NOT_REACHABLE_GRIDS" data-i18n="" >Not reachable grids // Nicht erreichbare Grids</option>
-                    <option :value="selectValues.ALL_GRIDS" data-i18n="">All grids // Alle Grids</option>
                 </select>
                 <span class="three columns">{{graphElemsToShow.length}} <span data-i18n="">elements // Elemente</span></span>
             </div>
@@ -353,7 +353,7 @@
         mounted: function () {
             let thiz = this;
             vueApp = thiz;
-            thiz.selectValue = this.selectValues.CONNECTED_GRIDS;
+            thiz.selectValue = this.selectValues.ALL_GRIDS;
             thiz.reload().then(() => {
                 this.reinitContextMenu();
                 i18nService.initDomI18n();
