@@ -3,7 +3,7 @@
         <header-icon full-header="true"></header-icon>
         <div class="row content spaced">
             <h2 data-i18n="">About AsTeRICS Grid // Über das AsTeRICS Grid</h2>
-            <div class="eight columns offset-by-one">
+            <div class="eight columns">
                 <div class="row">
                     <h3 data-i18n="">General information // Allgemeine Informationen</h3>
                     <div data-i18n="">
@@ -71,6 +71,12 @@
                                 All entered search queries for YouTube videos are sent to the <a href="https://developers.google.com/youtube/v3" target="_blank">YouTube Data API</a>
                                 in order to retrieve and play video results.
                             </p>
+                            <p>
+                                The only potentially personal data value that is processed by AsTeRICS Grid is the username
+                                of online users. All other data is either stored locally or end-to-end encrypted and therefore
+                                only readable by users. Further information can be found in the
+                                <a href="app/privacy_en.html">Privacy Policy</a>.
+                            </p>
                         </div>
                         <div>
                             <p>
@@ -84,8 +90,15 @@
                                 Alle eingegebenen Suchanfragen für YouTube-Videos werden an die <a href="https://developers.google.com/youtube/v3" target="_blank">YouTube Data API</a>
                                 gesendet um Suchergebnisse zu erhalten und passende Videos abspielen zu können.
                             </p>
+                            <p>
+                                Der einzige von AsTeRICS Grid vearbeitete unter Umständen personenbezogene Datenwert, ist der
+                                Benutzername von Online-Usern. Alle anderen Daten werden entweder offline gespeichert oder
+                                Ende-zu-Ende verschlüsselt und sind somit nur für die NutzerInnen von AsTeRICS Grid lesbar.
+                                Details dazu finden Sie in der <a href="app/privacy_de.html">Datenschutzerklärung</a>.
+                            </p>
                         </div>
                     </div>
+
                 </div>
                 <div class="row">
                     <h3 data-i18n="">Acknowledgements // Dank</h3>
