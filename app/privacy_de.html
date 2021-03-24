@@ -36,34 +36,36 @@
 </div>
 <h2>Verarbeitung von Daten</h2>
 <div>
-    AsTeRICS Grid ist eine Webapplikation für Unterstützte Kommunikation (UK). Die Oberfläche kann an die Bedürfnisse
-    von
-    NutzerInnen individuell angepasst werden. Es gibt 2 Arten AsTeRICS Grid zu nutzen, wobei jeweils die Daten
-    verschieden gespeichert werden.
+    AsTeRICS Grid ist eine Webapplikation für Unterstützte Kommunikation (UK). Die Oberfläche kann individuell an die
+    Bedürfnisse von NutzerInnen angepasst werden. Es können eigene Bilder und Texte in benutzerdefinierten Raster
+    hinterlegt werden. Weiters gibt es die Möglichkeit von mitlernenden Wörterbüchern zur Texteingabe, welche
+    häufig verwendete Wörter und Sätze speichern. Diese Daten werden nachfolgend zusammenfassend "personalisierte Daten"
+    bzw. "personenbezogene Daten" genannt. Es gibt 2 Arten AsTeRICS Grid zu nutzen, wobei die Daten jeweils verschieden gespeichert werden.
     <h3>Offline-User</h3>
     <div>
-        Bei einem Offline-User werden alle personalisierten Daten werden nur auf dem Gerät der NutzerInnen
-        gespeichert und sind für andere Personen nicht einsehbar oder verarbeitbar.
+        Bei einem Offline-User werden alle personalisierten Daten nur auf dem Gerät der NutzerInnen
+        gespeichert und nicht ins Internet übertragen. Die Daten werden in einer internen Datenbank des Browsers (IndexedDB)
+        gespeichert, auf die nur der aktuelle Nutzer des Geräts Zugriff hat.
     </div>
     <h3>Online-User</h3>
     <div>
         <p>Bei einem Online-User werden alle personalisierten Daten in einer Datenbank der
             AsTeRICS Foundation gespeichert und können somit auch von anderen Geräten der NutzerInnen abgerufen und
-            synchronisiert werden. Allerdings werden alle personalisierten Daten Ende-zu-Ende verschlüsselt. Das
-            heißt, dass nur der Nutzer selbst sie unverschlüsselt sehen kann. Die AsTeRICS Foundation hat keine
-            Möglichkeit zum Zugriff oder zur Weiterverarbeitung von personenbezogenen Daten, welche in der
-            Nutzerkonfiguration gespeichert werden. Der Schlüssel zum Verschlüsseln der Daten ist das vom Nutzer
-            selbst gewählte Passwort. Zum Verschlüsseln wird der <a
+            synchronisiert werden. Alle personalisierten Daten werden Ende-zu-Ende verschlüsselt. Das
+            heißt, dass nur der Nutzer selbst sie unverschlüsselt sehen kann, wennn er sich mit seinen Zugangsdaten
+            anmeldet. Die AsTeRICS Foundation hat keine Möglichkeit zum Zugriff oder zur Weiterverarbeitung der
+            personenbezogenen Daten, welche in der Nutzerkonfiguration verschlüsselt gespeichert werden. Der Schlüssel zum
+            Verschlüsseln der Daten ist das vom Nutzer selbst gewählte Passwort. Zum Verschlüsseln wird der <a
                     href="https://de.wikipedia.org/wiki/Advanced_Encryption_Standard">Algorithmus AES</a>
             verwendet und die <a href="https://github.com/bitwiseshiftleft/sjcl">Softwarebibliothek sjcl</a>.
         </p>
-        <p>Folgende Daten können in der Datenbank der AsTeRICS Foundation eingesehen werden:</p>
+        <p>Folgende Daten können in der Datenbank der AsTeRICS Foundation ohne Schlüssel zum Entschlüsseln eingesehen werden:</p>
         <ul>
             <li>
                 <strong>Benutzername</strong>: der frei wählbare Benutzername wird unverschlüsselt in der Datenbank
-                der AsTeRICS Foundation gespeichert. Der Benutzername wird nur zur Identifizierung des Nutzerkontos
+                der AsTeRICS Foundation gespeichert. Der Benutzername wird nur zur Identifikation des Nutzerkontos
                 verwendet. Der Benutzername ist der einzige Datensatz, welcher unter Umständen einer Person
-                zugeordnet werden kann.
+                zugeordnet werden kann. Er kann aber vom Nutzer so gewählt werden, dass er völlig anonym ist.
             </li>
             <li>
                 <strong>Anzahl der Grids</strong>: obwohl alle Inhalte verschlüsselt sind, kann in der Datenbank
@@ -73,12 +75,12 @@
     </div>
     <h3>Zugriffsanalyse</h3>
     <div>
-        Wir verwenden für AsTeRICS Grid die Besucheranalyse von <a
+        Wir verwenden für AsTeRICS Grid die Besucheranalyse-Software von <a
             href="https://github.com/matomo-org/matomo">Matomo</a>.
         Alle dadurch erfassten Daten sind auf unseren eigenen Servern gespeichert, werden nicht weitergegeben und
         lassen keine Rückschlüsse auf einzelne Personen zu. Folgende Daten werden gespeichert:
         <ul>
-            <li>Anonymisierte IP-Adressen der Benutzer (die letzten 2 Bytes werden gelöscht)</li>
+            <li>Anonymisierte IP-Adressen der Benutzer (die letzten 2 Bytes werden gelöscht, z.B. 81.217.xxx.xxx)</li>
             <li>Anzahl und Dauer des Zugriffes</li>
             <li>Betriebssystem, Browser-Version und Bildschirmauflösung, die für den Zugriff verwendet wurde</li>
         </ul>
@@ -98,7 +100,7 @@
 </div>
 <h2>Rechtsgrundlage</h2>
 <div>
-    Die Rechtsgrundlage für die Verwendung des Benutzernames (einziger von AsTeRICS Grid verarbeiteter
+    Die Rechtsgrundlage für die Verwendung des Benutzernames (einziger von AsTeRICS Grid verarbeiteter unter Umständen
     personenbezogener Datenwert) ist Einwilligung, da bei der Registrierung für einen Online-User ein
     entsprechendes Häkchen zu setzen ist.
 </div>
