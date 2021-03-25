@@ -28,7 +28,7 @@
 </head>
 <body>
 <h1>AsTeRICS Grid Privacy Policy</h1>
-<div style="margin-bottom: 1em"><a href="../#about"> Back to the app </a></div>
+<div style="margin-bottom: 1em"><a id="backLink1" href="../#about"> Back to the app </a></div>
 <div>
     In this declaration we inform you about the most important aspects of data processing in AsTeRICS Grid.
     If you have any questions or concerns, please contact the AsTeRICS Foundation: <a
@@ -123,6 +123,13 @@
     <a href="https://www.data-protection-authority.gv.at/">Austrian data protection authority</a>.
 </div>
 
-<div style="margin-bottom: 15em; margin-top: 2em"><a href="../#about"> Back to the app </a></div>
+<div style="margin-bottom: 15em; margin-top: 2em"><a id="backLink2" href="../#about"> Back to the app </a></div>
+
+<script>
+    let url = new URL(window.location.href);
+    let backHash = url.searchParams.get("back") || "about";
+    document.getElementById('backLink1').href = '../#' + backHash;
+    document.getElementById('backLink2').href = '../#' + backHash;
+</script>
 </body>
 </html>

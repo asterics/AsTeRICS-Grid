@@ -28,7 +28,7 @@
 </head>
 <body>
 <h1>AsTeRICS Grid Datenschutzerklärung</h1>
-<div style="margin-bottom: 1em"><a href="../#about">Zurück zur App</a></div>
+<div style="margin-bottom: 1em"><a id="backLink1"  href="../#about">Zurück zur App</a></div>
 <div>
     In dieser Erklärung informieren wir Sie über die wichtigsten Aspekte der Datenverarbeitung in AsTeRICS Grid.
     Bei Fragen oder Bedenken wenden Sie sich bitte an die AsTeRICS Foundation: <a
@@ -122,6 +122,14 @@
     der Daten haben, können Sie die <a href="https://www.dsb.gv.at/">Österreichische Datenschutzbehörde</a> kontaktieren.
 </div>
 
-<div style="margin-bottom: 15em; margin-top: 2em"><a href="../#about">Zurück zur App</a></div>
+<div style="margin-bottom: 15em; margin-top: 2em"><a id="backLink2" href="../#about">Zurück zur App</a></div>
+
+<script>
+    let url = new URL(window.location.href);
+    let backHash = url.searchParams.get("back") || "about";
+    document.getElementById('backLink1').href = '../#' + backHash;
+    document.getElementById('backLink2').href = '../#' + backHash;
+</script>
+
 </body>
 </html>

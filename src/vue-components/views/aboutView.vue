@@ -75,7 +75,7 @@
                                 The only potentially personal data value that is processed by AsTeRICS Grid is the username
                                 of online users. All other data is either stored locally or end-to-end encrypted and therefore
                                 only readable by users. Further information can be found in the
-                                <a href="app/privacy_en.html">Privacy Policy</a>.
+                                <a href="app/privacy_en.html?back=about">Privacy Policy</a>.
                             </p>
                         </div>
                         <div>
@@ -94,7 +94,7 @@
                                 Der einzige von AsTeRICS Grid vearbeitete unter Umständen personenbezogene Datenwert, ist der
                                 Benutzername von Online-Usern. Alle anderen Daten werden entweder offline gespeichert oder
                                 Ende-zu-Ende verschlüsselt und sind somit nur für die NutzerInnen von AsTeRICS Grid lesbar.
-                                Details dazu finden Sie in der <a href="app/privacy_de.html">Datenschutzerklärung</a>.
+                                Details dazu finden Sie in der <a href="app/privacy_de.html?back=about">Datenschutzerklärung</a>.
                             </p>
                         </div>
                     </div>
