@@ -3,7 +3,7 @@
         <header-icon full-header="true"></header-icon>
         <div class="row content spaced">
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Register online user // Online-User registrieren</span></h2>
-            <form autocomplete="off" onsubmit="event.preventDefault()">
+            <form autocomplete="off" onsubmit="event.preventDefault()" style="margin-bottom: 0.5em">
                 <div class="row">
                     <label for="inputUser" class="two columns"><span class="desktop-right inputlabel">Username</span></label>
                     <input type="text" name="username" v-model="user" id="inputUser" class="six columns" @change="validateUsername" v-debounce="300" v-focus=""/>
@@ -30,7 +30,7 @@
                 </div>
             </form>
 
-            <div class="row">
+            <div class="row more-space">
                 <div class="six columns offset-by-two" v-show="!!password && password2 !== null && password === password2">
                     <i class="fas fa-2x fa-info-circle" style="color: blue"></i>
                     <span data-i18n="">
@@ -39,7 +39,7 @@
                     </span>
                 </div>
             </div>
-            <div class="row">
+            <div class="row more-space">
                 <div class="six columns offset-by-two" v-show="!!password && password2 !== null && password === password2">
                     <input type="checkbox" checked v-model="remember" id="inputRemember"/>
                     <label for="inputRemember"><span data-i18n="">Remember this user and make it available for offline use // Diesen User speichern und offline verfügbar machen</span></label>
@@ -47,8 +47,30 @@
                     <span class="fa fa-info-circle"/> <span data-i18n="">Do not check if you are using a foreign device. // Auf einem fremden Gerät sollte der User nicht gespeichert werden.</span>
                 </div>
             </div>
+            <div class="row more-space">
+                <div class="six columns offset-by-two" v-show="!!password && password2 !== null && password === password2">
+                    <input type="checkbox" id="checkPrivacy" v-model="privacyConsent"/>
+                    <label for="checkPrivacy" data-i18n="">
+                        <span>I accept the <a href="app/privacy_en.html?back=register">privacy policy</a></span>
+                        <span>Ich akzeptiere die <a href="app/privacy_de.html?back=register">Datenschutzbestimmungen</a></span>
+                    </label>
+                    <br/>
+                    <span class="fa fa-info-circle"/>
+                    <span data-i18n="">
+                        <span>
+                            The only potentially personal data that is saved unencrypted is your username. All other data
+                            will be end-to-end encrypted cannot be accessed by anyone else.
+                        </span>
+                        <span>
+                            Der einzige potentiell personenbezogene Datenwert, welcher unverschlüsselt gespeichert wird,
+                            ist der Username. Alle anderen Daten werden Ende-zu-Ende verschlüsselt und können von niemand
+                            anderem eingesehen werden.
+                        </span>
+                    </span>
+                </div>
+            </div>
             <div class="row">
-                <button @click="register" :disabled="!user || !password || !password2 || password !== password2 || !usernameValid" class="six columns offset-by-two" data-i18n="">Register // Registrieren</button>
+                <button @click="register" :disabled="!user || !password || !password2 || password !== password2 || !usernameValid || !privacyConsent" class="six columns offset-by-two" data-i18n="">Register // Registrieren</button>
             </div>
             <div class="row">
                 <div class="six columns offset-by-two">
@@ -102,6 +124,7 @@
                 password: null,
                 password2: null,
                 remember: true,
+                privacyConsent: false,
                 registerSuccess: null,
                 creationTime: new Date().getTime(),
                 spamTime: 10000,
@@ -162,6 +185,11 @@
     .row {
         margin-bottom: 1.0em;
     }
+
+    .more-space {
+        margin-bottom: 1.5em !important;
+    }
+
     .fa-info-circle {
         color: blue;
         margin-left: 3px;
