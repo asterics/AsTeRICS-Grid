@@ -309,6 +309,9 @@
                         thiz.huffmanInput.reinit();
                     }
                 }, 500);
+            },
+            contextMenuListener(event) {
+                event.preventDefault();
             }
         },
         computed: {
@@ -320,6 +323,7 @@
             $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
             $(document).on(constants.EVENT_LANGUAGE_CHANGE, this.reloadOnLangChange);
             $(document).on(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
+            document.addEventListener('contextmenu', this.contextMenuListener);
         },
         mounted: function () {
             let thiz = this;
@@ -394,6 +398,7 @@
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
             $(document).off(constants.EVENT_LANGUAGE_CHANGE, this.reloadOnLangChange);
             $(document).off(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
+            document.removeEventListener('contextmenu', this.contextMenuListener);
             stopInputMethods();
             $.contextMenu('destroy');
             vueApp = null;
