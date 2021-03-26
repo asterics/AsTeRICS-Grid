@@ -36,7 +36,8 @@
     "webpack": "^4.30.0",
     "webpack-bundle-analyzer": "^3.3.2",
     "webpack-cli": "^3.3.0",
-    "webpack-dev-server": "^3.2.1"
+    "webpack-dev-server": "^3.2.1",
+    "nano": "^9.0.3"
   },
   "resolutions": {
     "@sensu/superlogin/**/leveldown": "5.4.1"
