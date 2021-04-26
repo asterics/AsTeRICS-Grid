@@ -59,12 +59,16 @@
                     <span data-i18n="">
                         <span>
                             The only potentially personal data that is saved unencrypted is your username. All other data
-                            will be end-to-end encrypted cannot be accessed by anyone else.
+                            will be end-to-end encrypted cannot be accessed by anyone else. The consent can be revoked at
+                            any time by sending an email to <a href="mailto:office@asterics-foundation.org">office@asterics-foundation.org</a>.
+                            Revocation does not affect the legality of data processing that has taken place before.
                         </span>
                         <span>
                             Der einzige potentiell personenbezogene Datenwert, welcher unverschlüsselt gespeichert wird,
                             ist der Username. Alle anderen Daten werden Ende-zu-Ende verschlüsselt und können von niemand
-                            anderem eingesehen werden.
+                            anderem eingesehen werden. Die Einwilligung kann jederzeit durch eine Mail an
+                            <a href="mailto:office@asterics-foundation.org">office@asterics-foundation.org</a> widerrufen werden.
+                            Durch den Widerruf wird die Rechtmäßigkeit der bis dahin erfolgten Verarbeitung nicht berührt.
                         </span>
                     </span>
                 </div>
