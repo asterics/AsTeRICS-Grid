@@ -23,7 +23,7 @@ self.addEventListener('activate', event => {
     self.clients.matchAll().then(clients => {
         clients.forEach(client => client.postMessage({activated: true}));
     });
-    console.log('Service Worker active! Version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
+    console.log('Service Worker active! Version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/release-2021-04-26-15.00/+0200');
 });
 
 workbox.routing.registerRoute(({url, request, event}) => {
