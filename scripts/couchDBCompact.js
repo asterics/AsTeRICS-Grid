@@ -5,6 +5,7 @@ if (!process.argv[2] || !process.argv[2].trim()) {
     console.log("Examples:");
     console.log("node couchDbCompact.js http://admin:admin@localhost:5984 ... for just analyzing current disk usage");
     console.log("node couchDbCompact.js http://admin:admin@localhost:5984 compact ... for compacting all databases");
+    return;
 }
 
 let dbUrl = process.argv[2] || 'http://admin:admin@localhost:5984';
