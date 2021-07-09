@@ -11,7 +11,10 @@ if (!process.argv[2] || !process.argv[2].trim()) {
 let dbUrl = process.argv[2] || 'http://admin:admin@localhost:5984';
 let doCompact = process.argv[3] && process.argv[3].trim() === 'compact';
 console.log('using url: ' + dbUrl);
-const nano = require('nano')(dbUrl.trim());
+const nano = require('nano')({
+    uri: dbUrl.trim(),
+    requestDefaults : { "timeout" : "100000" } // 100 seconds
+});
 const slUsers = nano.db.use('sl-users');
 
 async function getInfos(dbNames, doLog) {
