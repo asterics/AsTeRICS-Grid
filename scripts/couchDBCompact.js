@@ -1,3 +1,12 @@
+if (!process.argv[2].trim()) {
+    console.log('USAGE:');
+    console.log("node couchDbCompact.js <COUCHDB_URL> ['compact']");
+    console.log("----");
+    console.log("Examples:");
+    console.log("node couchDbCompact.js http://admin:admin@localhost:5984 ... for just analyzing current disk usage");
+    console.log("node couchDbCompact.js http://admin:admin@localhost:5984 compact ... for compacting all databases");
+}
+
 let dbUrl = process.argv[2] || 'http://admin:admin@localhost:5984';
 let doCompact = process.argv[3].trim() === 'compact';
 console.log('using url: ' + dbUrl);
