@@ -1,4 +1,4 @@
-if (!process.argv[2].trim()) {
+if (!process.argv[2] || !process.argv[2].trim()) {
     console.log('USAGE:');
     console.log("node couchDbCompact.js <COUCHDB_URL> ['compact']");
     console.log("----");
