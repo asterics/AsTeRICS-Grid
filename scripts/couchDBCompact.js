@@ -17,7 +17,7 @@ const slUsers = nano.db.use('sl-users');
 async function getInfos(dbNames, doLog) {
     let sumMB = 0;
     let infos = [];
-    for (const dbName of dblist) {
+    for (const dbName of dbNames) {
         let info = await nano.db.get(dbName);
         info.fragmentation = info.disk_size / info.data_size;
         sumMB += info.disk_size / (1024 * 1024);
