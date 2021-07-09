@@ -1,39 +1,51 @@
 let dbUrl = process.argv[2] || 'http://admin:admin@localhost:5984';
+let doCompact = process.argv[3].trim() === 'compact';
 console.log('using url: ' + dbUrl);
 const nano = require('nano')(dbUrl.trim());
 const slUsers = nano.db.use('sl-users');
 
-async function main() {
-    const dblist = await nano.db.list().catch(err => console.log(err));
-    console.log(JSON.stringify(dblist));
+async function getInfos(dbNames, doLog) {
+    let sumMB = 0;
     let infos = [];
-    //await nano.db.compact('asterics-grid-data$test');
-    //console.log('compacted test!');
-    let sumBefore = 0;
-    for(const db of dblist) {
-	let info = await nano.db.get(db);
-	info.fragmentation = info.disk_size / info.data_size;
-        sumBefore += info.disk_size;
+    for (const dbName of dblist) {
+        let info = await nano.db.get(dbName);
+        info.fragmentation = info.disk_size / info.data_size;
+        sumMB += info.disk_size / (1024 * 1024);
         infos.push(info);
     }
-    infos.sort((a, b) => a.disk_size - b.disk_size);
-    infos.forEach(info => {
-        console.log(info.db_name);
-	console.log(info.disk_size / (1024 * 1024));
-	console.log(info.data_size / (1024 * 1024));
-	console.log(info.fragmentation);
-	console.log("----");
-    });
-    console.log('SUM BEFORE COMPACT: ' + (sumBefore / (1024*1024)) + 'MB');
-    console.log('SUM AFTER COMPACT: ' + (sumÁfter / (1024*1024)) + 'MB'); 
-    return;
-    dblist.forEach(async db => {
-        console.log(db);
-	info = await nano.db.get(db);
-	console.log(info);
-    });
+    if (doLog) {
+        infos.sort((a, b) => a.disk_size - b.disk_size);
+        infos.forEach(info => {
+            console.log(info.db_name);
+            console.log(info.disk_size / (1024 * 1024));
+            console.log(info.data_size / (1024 * 1024));
+            console.log(info.fragmentation);
+            console.log("----");
+        });
+    }
+    return sumMB;
+}
 
-    const result = await slUsers.list({include_docs: true});
+async function main() {
+    const dblist = await nano.db.list().catch(err => console.log(err));
+    console.log('calculating current disk size ...');
+    let sumBefore = getInfos(dblist, !doCompact);
+    console.log(`DISK SIZE: ${sumBefore}MB`);
+    if (doCompact) {
+        console.log('starting compacting databases...');
+        for (const dbName of dblist) {
+            console.log(`compacting "${dbName}" ...`);
+            //await nano.db.compact(dbName);
+        }
+        let sumAfter = getInfos(dblist, true);
+        console.log(`DISK SIZE BEFORE: ${sumBefore}MB`);
+        console.log(`DISK SIZE AFTER COMPACT: ${sumAfter}MB`);
+        console.log(`DISK SIZE REDUCED BY: ${sumBefore - sumAfter}MB`);
+    }
+
+    // unused code analyzing last usage by database slUsers
+    // ----------------------------------------------------
+    /*const result = await slUsers.list({include_docs: true});
     let doclist = result.rows.map(doc => {
         doc.expiresList = [];
         if (doc.doc && doc.doc.session) {
@@ -47,14 +59,14 @@ async function main() {
         doc.wasntUsedSinceDays = doc.wasntUsedSince / (1000 * 60 * 60 * 24);
         doc.neverUsed = !doc.expiresList[0];
     });
-    doclist.sort((a,b) =>  {
-        if(a.neverUsed && b.neverUsed) {
+    doclist.sort((a, b) => {
+        if (a.neverUsed && b.neverUsed) {
             return 0;
         }
-        if(a.neverUsed) {
+        if (a.neverUsed) {
             return -1;
         }
-        if(b.neverUsed) {
+        if (b.neverUsed) {
             return 1;
         }
         return b.wasntUsedSince - a.wasntUsedSince;
@@ -63,10 +75,10 @@ async function main() {
         console.log(doc.id);
         console.log(doc.neverUsed);
         console.log(doc.wasntUsedSinceDays);
-	console.log(doc.key);
-	console.log(doc.value.length);
+        console.log(doc.key);
+        console.log(doc.value.length);
         console.log("-----");
-    });
+    });*/
 }
 
 main();
