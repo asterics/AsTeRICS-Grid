@@ -45,7 +45,7 @@ async function main() {
         console.log('starting compacting databases...');
         for (const dbName of dblist) {
             console.log(`compacting "${dbName}" ...`);
-            //await nano.db.compact(dbName);
+            await nano.db.compact(dbName);
         }
         let sumAfter = await getInfos(dblist, true);
         console.log(`DISK SIZE BEFORE: ${sumBefore}MB`);
