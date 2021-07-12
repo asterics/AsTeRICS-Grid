@@ -13,7 +13,7 @@ let doCompact = process.argv[3] && process.argv[3].trim() === 'compact';
 console.log('using url: ' + dbUrl);
 const nano = require('nano')({
     "url": dbUrl.trim(),
-    "requestDefaults" : { "timeout" : 250000 } // 250 seconds
+    "requestDefaults": {"timeout": 250000} // 250 seconds
 });
 //const nano = require('nano')(dbUrl.trim());
 const slUsers = nano.db.use('sl-users');
@@ -49,16 +49,18 @@ async function main() {
         console.log('starting compacting databases...');
         let failed = [];
         for (const dbName of dblist) {
-            console.log(`compacting "${dbName}" ...`);
-            try {
-                await nano.db.compact(dbName).catch(err => {
-		    console.log(err);
-		    failed.push(dbName);
-                });
-	    } catch(e) {
-		console.log(e);
-		failed.push(dbName);
-	    }
+            if (dbName !== 'sl-users') {
+                console.log(`compacting "${dbName}" ...`);
+                try {
+                    await nano.db.compact(dbName).catch(err => {
+                        console.log(err);
+                        failed.push(dbName);
+                    });
+                } catch (e) {
+                    console.log(e);
+                    failed.push(dbName);
+                }
+            }
         }
         let sumAfter = await getInfos(dblist, true);
         console.log(`DISK SIZE BEFORE: ${sumBefore}MB`);
