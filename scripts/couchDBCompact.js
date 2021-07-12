@@ -12,8 +12,8 @@ let dbUrl = process.argv[2] || 'http://admin:admin@localhost:5984';
 let doCompact = process.argv[3] && process.argv[3].trim() === 'compact';
 console.log('using url: ' + dbUrl);
 const nano = require('nano')({
-    "uri": dbUrl.trim(),
-    "requestDefaults" : { "timeout" : "100000" } // 100 seconds
+    "url": dbUrl.trim(),
+    "requestDefaults" : { "timeout" : 250000 } // 250 seconds
 });
 //const nano = require('nano')(dbUrl.trim());
 const slUsers = nano.db.use('sl-users');
@@ -47,14 +47,24 @@ async function main() {
     console.log(`DISK SIZE: ${sumBefore}MB`);
     if (doCompact) {
         console.log('starting compacting databases...');
+        let failed = [];
         for (const dbName of dblist) {
             console.log(`compacting "${dbName}" ...`);
-            await nano.db.compact(dbName).catch(err => console.log(err));
+            try {
+                await nano.db.compact(dbName).catch(err => {
+		    console.log(err);
+		    failed.push(dbName);
+                });
+	    } catch(e) {
+		console.log(e);
+		failed.push(dbName);
+	    }
         }
         let sumAfter = await getInfos(dblist, true);
         console.log(`DISK SIZE BEFORE: ${sumBefore}MB`);
         console.log(`DISK SIZE AFTER COMPACT: ${sumAfter}MB`);
         console.log(`DISK SIZE REDUCED BY: ${sumBefore - sumAfter}MB`);
+        console.log(`Databases failed to compact: ${JSON.stringify(failed)}`);
     }
 
     // unused code analyzing last usage by database slUsers
