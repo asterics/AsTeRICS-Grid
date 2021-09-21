@@ -43,7 +43,7 @@ async function getInfos(dbNames, doLog) {
 async function main() {
     const dblist = await nano.db.list().catch(err => console.log(err));
     console.log('calculating current disk size ...');
-    let sumBefore = await getInfos(dblist, !doCompact);
+    let sumBefore = doCompact ? 0 : await getInfos(dblist, !doCompact); //only calculate before if no compact to avoid running out of system ressources/connections in compact ("no db shards could be opened")
     console.log(`DISK SIZE: ${sumBefore}MB`);
     if (doCompact) {
         console.log('starting compacting databases...');
@@ -56,6 +56,7 @@ async function main() {
                         console.log(err);
                         failed.push(dbName);
                     });
+		    await new Promise(resolve => setTimeout(() => resolve(), 5000));
                 } catch (e) {
                     console.log(e);
                     failed.push(dbName);
