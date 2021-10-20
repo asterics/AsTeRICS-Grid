@@ -13,13 +13,14 @@
             </div>
         </header>
         <div>
-            <edit-grid-modal v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
+            <edit-element-normal v-if="showModal === GridElement.ELEMENT_TYPE_NORMAL" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showModal = null" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
+            <edit-element-youtube v-if="showModal === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-data="gridData" :edit-element-id="editElementId" @close="showModal = null" @reload="reload"/>
         </div>
         <div>
             <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :grid-instance="getGridInstance()" @close="showMultipleModal = false"/>
         </div>
         <div>
-            <edit-actions-modal v-if="showActionsModal" v-bind:edit-element-id-param="editElementId" v-bind:grid-id-param="gridData.id" @close="showActionsModal = false" @reload="reload" @edit="showEditModal = true"/>
+            <edit-actions-modal v-if="showActionsModal" v-bind:edit-element-id-param="editElementId" v-bind:grid-id-param="gridData.id" @close="showActionsModal = false" @reload="reload" @edit="showModal = GridElement.ELEMENT_TYPE_NORMAL"/>
         </div>
         <div>
             <grid-dimension-modal v-if="showDimensionsModal" v-bind:grid-data-param="gridData" :is-global-grid="metadata.globalGridId === gridData.id" @close="showDimensionsModal = false" @save="setDimensions"/>
@@ -55,7 +56,7 @@
     import {Router} from "./../../js/router.js";
     import {i18nService} from "../../js/service/i18nService";
 
-    import EditGridModal from '../modals/editGridModal.vue'
+    import EditElementNormal from '../modals/editElementNormal.vue'
     import AddMultipleModal from '../modals/addMultipleModal.vue'
     import EditActionsModal from '../modals/editActionsModal.vue'
     import {actionService} from "../../js/service/actionService";
@@ -71,6 +72,7 @@
     import GridTranslateModal from "../modals/gridTranslateModal.vue";
     import {GridActionYoutube} from "../../js/model/GridActionYoutube";
     import {printService} from "../../js/service/printService";
+    import EditElementYoutube from "../modals/editElementYoutube.vue";
 
     let vueApp = null;
     let gridInstance = null;
@@ -84,22 +86,24 @@
                 canUndo: false,
                 canRedo: false,
                 doingUndoRedo: false,
-                showEditModal: false,
                 showMultipleModal: false,
                 showActionsModal: false,
                 showDimensionsModal: false,
                 showMoveModal: false,
                 showTranslateModal: false,
+                showModal: '',
                 editElementId: null,
                 showGrid: false,
                 constants: constants,
-                markedElement: null
+                markedElement: null,
+                GridElement: GridElement
             }
         },
         components: {
+            EditElementYoutube,
             GridTranslateModal,
             ElementMoveModal,
-            GridDimensionModal, EditGridModal, AddMultipleModal, EditActionsModal, HeaderIcon
+            GridDimensionModal, EditElementNormal, AddMultipleModal, EditActionsModal, HeaderIcon
         },
         methods: {
             setDimensions: function (rows, cols) {
@@ -131,7 +135,10 @@
             },
             editElement(elementId) {
                 this.editElementId = elementId;
-                this.showEditModal = true;
+                let editElement = this.gridData.gridElements.filter(e => e.id === elementId)[0];
+                if (editElement) {
+                    this.showModal = editElement.type;
+                }
             },
             removeElement(id) {
                 let thiz = this;
@@ -162,7 +169,7 @@
                     }
                     default: {
                         this.editElementId = null;
-                        this.showEditModal = true;
+                        this.showModal = GridElement.ELEMENT_TYPE_NORMAL;
                     }
                 }
             },
@@ -387,7 +394,7 @@
         });
 
         $.contextMenu({
-            selector: '.item[data-type="ELEMENT_TYPE_NORMAL"]',
+            selector: '.item[data-type="ELEMENT_TYPE_NORMAL"],.item[data-type="ELEMENT_TYPE_YT_PLAYER"]',
             callback: function (key, options) {
                 var elementId = $(this).attr('data-id');
                 handleContextMenu(key, elementId);
@@ -397,7 +404,7 @@
         });
 
         $.contextMenu({
-            selector: '.item[data-type!="ELEMENT_TYPE_NORMAL"]',
+            selector: '.item[data-type!="ELEMENT_TYPE_NORMAL"][data-type!="ELEMENT_TYPE_YT_PLAYER"]',
             callback: function (key, options) {
                 var elementId = $(this).attr('data-id');
                 handleContextMenu(key, elementId);

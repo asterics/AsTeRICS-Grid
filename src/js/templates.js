@@ -92,11 +92,13 @@ function getGridElementPredict(gridElem) {
 
 function getGridElementYTPlayer(gridElem) {
     gridElem = fillDefaultValues(gridElem);
+    let stopClicking = gridElem.additionalProps[GridElement.PROP_YT_PREVENT_CLICK];
     let label = i18nService.getTranslation(gridElem.label);
 
     var template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${label}" data-type="${gridElem.type}">
     <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}">
+        ${stopClicking ? '<div id="youtubeClickPreventer" onclick="event.stopPropagation()" style="z-index: 100; position: absolute; top: 0; bottom: 0; left: 0; right: 0; height: 100%; width: 100%"></div>' : ''}
         <div class="yt-container" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
             <div id="player" style="outline: 1px solid; outline-offset: -5px; height: 100%; background-color: black; display: flex; align-items: center; justify-content: center;">
                 <i class="fab fa-youtube fa-5x" style="color: whitesmoke"></i>

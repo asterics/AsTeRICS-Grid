@@ -26,7 +26,8 @@ class GridElement extends Model({
     hidden: [Boolean],
     image: [GridImage],
     actions: [Object],
-    type: String
+    type: String,
+    additionalProps: [Object]
 }) {
     constructor(properties, elementToCopy) {
         let defaults = {
@@ -36,7 +37,8 @@ class GridElement extends Model({
             label: {},
             width: 1,
             height: 1,
-            type: GridElement.ELEMENT_TYPE_NORMAL
+            type: GridElement.ELEMENT_TYPE_NORMAL,
+            additionalProps: {}
         };
         properties = modelUtil.setDefaults(properties, elementToCopy, GridElement) || {};
         properties.actions = properties.actions || [new GridActionSpeak()];
@@ -89,5 +91,7 @@ GridElement.ELEMENT_TYPE_NORMAL = "ELEMENT_TYPE_NORMAL";
 GridElement.ELEMENT_TYPE_COLLECT = "ELEMENT_TYPE_COLLECT";
 GridElement.ELEMENT_TYPE_PREDICTION = "ELEMENT_TYPE_PREDICTION";
 GridElement.ELEMENT_TYPE_YT_PLAYER = "ELEMENT_TYPE_YT_PLAYER";
+
+GridElement.PROP_YT_PREVENT_CLICK = "PROP_YT_PREVENT_CLICK";
 
 export {GridElement};
