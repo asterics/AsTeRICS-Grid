@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from '../externals/jquery.js';
 
 var areService = {};
 var _eventSourceMap = {};

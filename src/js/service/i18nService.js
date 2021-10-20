@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from '../externals/jquery.js';
 import {localStorageService} from "./data/localStorageService";
 import {constants} from "../util/constants";
 

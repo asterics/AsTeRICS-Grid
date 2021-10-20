@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from '../externals/jquery.js';
 import {GridActionYoutube} from "../model/GridActionYoutube";
 import {constants} from "../util/constants";
 import {localStorageService} from "./data/localStorageService";

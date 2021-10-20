@@ -1,4 +1,4 @@
-import {$} from '../externals/jquery';
+import $ from '../externals/jquery';
 import {GridActionWebradio} from "../model/GridActionWebradio";
 import {dataService} from "./data/dataService";
 import {localStorageService} from "./data/localStorageService";

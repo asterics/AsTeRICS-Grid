@@ -1,2 +1,2 @@
 import $ from 'jquery';
-export {$};
+export default $;

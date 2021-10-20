@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import {youtubeService} from "./youtubeService";
 
 jest.mock('../externals/objectmodel');
