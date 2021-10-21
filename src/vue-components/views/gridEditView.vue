@@ -357,7 +357,7 @@
         let visibleFn = () => !!vueApp.markedElement;
         let visibleFnFill = () => !new GridData({}, vueApp.gridData).isFull();
         var itemsMoreMenuButton = {
-            CONTEXT_ACTION_EDIT: {name: "Edit // Bearbeiten", icon: "fas fa-edit", visible: () => (vueApp.markedElement && vueApp.markedElement.type === GridElement.ELEMENT_TYPE_NORMAL)},
+            CONTEXT_ACTION_EDIT: {name: "Edit // Bearbeiten", icon: "fas fa-edit", visible: () => (vueApp.markedElement && [GridElement.ELEMENT_TYPE_NORMAL, GridElement.ELEMENT_TYPE_YT_PLAYER].indexOf(vueApp.markedElement.type) !== -1)},
             CONTEXT_ACTION_EDIT_ACTIONS: {name: "Actions // Aktionen", icon: "fas fa-bolt", visible: visibleFn},
             CONTEXT_ACTION_DELETE: {name: "Delete // Löschen", icon: "far fa-trash-alt", visible: visibleFn},
             CONTEXT_ACTION_DUPLICATE: {name: "Duplicate // Klonen", icon: "far fa-clone", visible: visibleFn},
