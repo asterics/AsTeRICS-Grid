@@ -64,6 +64,7 @@
             <div class="four columns">
                 <label for="inputDataPortId" class="normal-text hide-mobile">Port</label>
                 <select id="inputDataPortId" class="full-width" v-model="action.dataPortId">
+                    <option value="" data-i18n="">(empty) // (kein)</option>
                     <option v-for="id in areComponentPorts" :value="id">
                         {{id}}
                     </option>
@@ -84,6 +85,7 @@
             <div class="eight columns">
                 <label for="inputeventPortId" class="normal-text hide-mobile">Event-Port</label>
                 <select id="inputeventPortId" class="full-width" v-model="action.eventPortId">
+                    <option value="" data-i18n="">(empty) // (kein)</option>
                     <option v-for="id in areComponentEventPorts" :value="id">
                         {{id}}
                     </option>

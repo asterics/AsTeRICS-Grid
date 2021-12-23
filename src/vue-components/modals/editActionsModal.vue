@@ -356,8 +356,8 @@
                 this.editActionId = null;
             },
             testAction (action) {
-                let props = this.additionalGridFiles[action.id] ? {additionalFiles: [this.additionalGridFiles[action.id]]} : {};
-                actionService.testAction(this.gridElement, action, new GridData(props, this.gridData));
+                this.gridData.additionalFiles = Object.values(this.additionalGridFiles);
+                actionService.testAction(this.gridElement, action, new GridData(this.gridData));
             },
             addAction () {
                 let thiz = this;
@@ -369,7 +369,7 @@
                 thiz.editActionId = newAction.id;
             },
             setAdditionalGridFile(action, file) {
-                if(file) {
+                if (file) {
                     this.additionalGridFiles[action.id] = file;
                 } else {
                     delete this.additionalGridFiles[action.id];
