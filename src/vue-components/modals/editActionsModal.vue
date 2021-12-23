@@ -33,230 +33,206 @@
                                 <span>Keine Aktionen definiert, klicken Sie auf "<i class="fas fa-plus"/> <span class="hide-mobile">Aktion hinzufügen</span>" um eine Aktion zu definieren.</span>
                             </span>
                             <li v-for="action in gridElement.actions" class="row">
-                                <div v-show="editActionId != action.id">
-                                    <div class="four columns">
-                                        {{action.modelName | translate}}
+                                <div class="row" style="margin-top: 0">
+                                    <div class="four columns" style="margin-bottom: 1em">
+                                        <span v-show="editActionId !== action.id">{{action.modelName | translate}}</span>
+                                        <span v-show="editActionId === action.id">
+                                            <b>{{action.modelName | translate}}</b> <a class="black" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
+                                        </span>
                                     </div>
                                     <div class="eight columns actionbtns">
-                                        <button @click="editAction(action)"><i class="far fa-edit"/> <span class="hide-mobile" data-i18n="">Edit // Bearbeiten</span></button>
+                                        <button @click="editAction(action)"><i class="far fa-edit"/>
+                                            <span class="hide-mobile" v-show="editActionId !== action.id" data-i18n="">Edit // Bearbeiten</span>
+                                            <span class="hide-mobile" v-show="editActionId === action.id" data-i18n="">End edit // Bearbeiten schließen</span>
+                                        </button>
                                         <button @click="deleteAction(action)"><i class="far fa-trash-alt"/> <span class="hide-mobile" data-i18n="">Delete // Löschen</span></button>
-                                        <button v-if="action.modelName != 'GridActionNavigate'" @click="testAction(action)"><i class="fas fa-bolt"/> <span class="hide-mobile" data-i18n="">Test // Testen</span></button>
+                                        <button v-if="GridElementClass.canActionClassBeTested(action.modelName)" @click="testAction(action)"><i class="fas fa-bolt"/> <span class="hide-mobile" data-i18n="">Test // Testen</span></button>
                                     </div>
                                 </div>
-                                <div v-if="editActionId == action.id">
-                                    <div class>
-                                        <b>{{action.modelName | translate}}</b> <a class="black" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
-                                    </div>
-                                    <div>
-                                        <div v-if="action.modelName == 'GridActionSpeak'">
-                                            <div class="row">
-                                                <div class="three columns">
-                                                    <label for="selectLang" class="normal-text" data-i18n>Language // Sprache</label>
-                                                </div>
-                                                <div class="nine columns">
-                                                    <select id="selectLang" v-model="action.speakLanguage" style="width: 55%">
-                                                        <option data-i18n="" :value="undefined">automatic (current language) // automatisch (aktuelle Sprache)</option>
-                                                        <option v-for="lang in voiceLangs" :value="lang.code">
-                                                            {{lang | extractTranslation}}
-                                                        </option>
-                                                    </select>
-                                                    <button @click="testAction(action)" class="inline spaced"><i class="fas fa-bolt"/> <span class="hide-mobile" data-i18n="">Test // Testen</span></button>
-                                                </div>
+                                <div v-if="editActionId === action.id" style="margin-top: 1.5em; margin-bottom: 1em">
+                                    <div v-if="action.modelName == 'GridActionSpeak'">
+                                        <div class="row">
+                                            <div class="four columns">
+                                                <label for="selectLang" class="normal-text" data-i18n>Language // Sprache</label>
                                             </div>
-                                            <div class="row">
-                                                <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
+                                            <select class="eight columns" id="selectLang" v-model="action.speakLanguage">
+                                                <option data-i18n="" :value="undefined">automatic (current language) // automatisch (aktuelle Sprache)</option>
+                                                <option v-for="lang in voiceLangs" :value="lang.code">
+                                                    {{lang | extractTranslation}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div v-if="action.modelName == 'GridActionSpeakCustom'">
+                                        <div class="row">
+                                            <div class="four columns">
+                                                <label for="selectLang2" class="normal-text" data-i18n>Language // Sprache</label>
+                                            </div>
+                                            <select class="eight columns" id="selectLang2" v-model="action.speakLanguage">
+                                                <option data-i18n="" :value="undefined">automatic (current language) // automatisch (aktuelle Sprache)</option>
+                                                <option v-for="lang in voiceLangs" :value="lang.code">
+                                                    {{lang | extractTranslation}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="row">
+                                            <div class="four columns">
+                                                <label for="inCustomText" class="normal-text" data-i18n>Text to speak // Auszusprechender Text</label>
+                                            </div>
+                                            <input class="eight columns" id="inCustomText" type="text" v-model="action.speakText[currentLang]"/>
+                                        </div>
+                                    </div>
+                                    <div v-if="action.modelName == 'GridActionNavigate'">
+                                        <div class="row">
+                                            <input id="navigateBackChkbox" type="checkbox" v-model="action.toLastGrid"/>
+                                            <label for="navigateBackChkbox" class="normal-text" data-i18n>Navigate to last opened grid // Zum zuletzt geöffneten Grid navigieren</label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="four columns">
+                                                <label for="selectGrid" class="normal-text" data-i18n>Navigate to grid // Navigieren zu Grid</label>
+                                            </div>
+                                            <select class="eight columns" id="selectGrid" type="text" v-model="action.toGridId" :disabled="action.toLastGrid">
+                                                <option v-for="(label, id) in gridLabels" :value="id">
+                                                    {{label | extractTranslation}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div v-if="action.modelName == 'GridActionARE'">
+                                        <edit-are-action :action="action" :grid-data="gridData" :model-file="additionalGridFiles[action.id]" :set-grid-file-fn="setAdditionalGridFile"/>
+                                    </div>
+                                    <div v-if="action.modelName == 'GridActionPredict'">
+                                        <div class="row" v-show="gridElement.type === GridElementClass.ELEMENT_TYPE_COLLECT">
+                                            <div class="eight columns">
+                                                <input id="chkSuggestOnChange" type="checkbox" v-model="action.suggestOnChange">
+                                                <label for="chkSuggestOnChange" class="normal-text" data-i18n>Refresh suggestions on change // Vorschläge bei Änderung aktualisieren</label>
                                             </div>
                                         </div>
-                                        <div v-if="action.modelName == 'GridActionSpeakCustom'">
-                                            <div class="row">
-                                                <div class="three columns">
-                                                    <label for="selectLang2" class="normal-text" data-i18n>Language // Sprache</label>
+                                        <div class="row">
+                                            <div class="four columns">
+                                                <label for="comboUseDict" class="normal-text" data-i18n>Dictionary to use // Zu verwendendes Wörterbuch</label>
+                                            </div>
+                                            <select class="eight columns" id="comboUseDict" v-model="action.dictionaryKey">
+                                                <option :value="undefined" data-i18n="">all dictionaries // alle Wörterbücher</option>
+                                                <option v-for="id in dictionaryKeys" :value="id">
+                                                    {{id}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div v-if="action.modelName == 'GridActionCollectElement'">
+                                        <div class="row">
+                                            <div class="twelve columns">
+                                                <label for="selectCollectElmAction" class="four columns normal-text" data-i18n>Perform action on collect element // Aktion für Sammelelement ausführen</label>
+                                                <select id="selectCollectElmAction" class="eight columns" v-model="action.action">
+                                                    <option v-for="elmAction in collectActions" :value="elmAction">
+                                                        {{elmAction | translate}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-if="action.modelName == 'GridActionWebradio'">
+                                        <div class="row">
+                                            <div class="twelve columns">
+                                                <label for="selectRadioElmAction" class="four columns normal-text" data-i18n>Web radio action // Web-Radio Aktion</label>
+                                                <select id="selectRadioElmAction" class="eight columns" v-model="action.action">
+                                                    <option v-for="elmAction in webradioActions" :value="elmAction">
+                                                        {{elmAction | translate}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row" v-show="action.action === 'WEBRADIO_ACTION_START' || action.action === 'WEBRADIO_ACTION_TOGGLE'">
+                                            <div class="twelve columns">
+                                                <label for="selectRadio" class="four columns normal-text" data-i18n>Webadio to play // Abzuspielendes Webradio</label>
+                                                <select id="selectRadio" class="eight columns" v-model="action.radioId" @change="selectedRadioChanged(action.radioId)">
+                                                    <option value="" selected data-i18n="">automatic (last played) // automatisch (zuletzt gespielt)</option>
+                                                    <option v-for="webradio in gridData.webRadios" :value="webradio.radioId">
+                                                        {{webradio.radioName}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <accordion acc-label="Manage webradio list // Webradioliste verwalten" :acc-open="gridData.webRadios.length === 0 ? 'true' : 'false'" class="twelve columns">
+                                                <radio-list-selector v-model="gridData"></radio-list-selector>
+                                            </accordion>
+                                        </div>
+                                    </div>
+                                    <div v-if="action.modelName === 'GridActionYoutube'">
+                                        <div class="row">
+                                            <div class="twelve columns">
+                                                <label for="ytActions" class="four columns normal-text" data-i18n>YouTube video action // YouTube-Video Aktion</label>
+                                                <select id="ytActions" class="eight columns" v-model="action.action">
+                                                    <option v-for="elmAction in GridActionYoutube.actions" :value="elmAction">
+                                                        {{elmAction | translate}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row" v-show="[GridActionYoutube.actions.YT_PLAY, GridActionYoutube.actions.YT_TOGGLE, GridActionYoutube.actions.YT_RESTART].indexOf(action.action) !== -1">
+                                            <div class="twelve columns">
+                                                <label for="ytPlayType" class="four columns normal-text" data-i18n>Play type // Wiedergabe Typ</label>
+                                                <select id="ytPlayType" class="eight columns" v-model="action.playType">
+                                                    <option v-for="playType in Object.keys(GridActionYoutube.playTypes).filter(t => t !== GridActionYoutube.playTypes.YT_PLAY_RELATED)" :value="playType">{{playType | translate}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div v-show="action.playType && [GridActionYoutube.actions.YT_PLAY, GridActionYoutube.actions.YT_TOGGLE, GridActionYoutube.actions.YT_RESTART].indexOf(action.action) !== -1">
+                                            <div class="row" v-show="action.playType !== GridActionYoutube.playTypes.YT_PLAY_RELATED">
+                                                <div class="twelve columns">
+                                                    <label for="ytList" class="four columns normal-text">
+                                                        <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_VIDEO" data-i18n="">Video link // Video Link</span>
+                                                        <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_SEARCH" data-i18n="">YouTube search query // YouTube Suchanfrage</span>
+                                                        <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_PLAYLIST" data-i18n="">YouTube playlist link // YouTube Playlist Link</span>
+                                                        <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_CHANNEL" data-i18n="">YouTube channel link // YouTube Channel-Link</span>
+                                                    </label>
+                                                    <input id="ytList" type="text" class="eight columns" v-model="action.data"/>
                                                 </div>
-                                                <select class="eight columns" id="selectLang2" v-model="action.speakLanguage">
-                                                    <option data-i18n="" :value="undefined">automatic (current language) // automatisch (aktuelle Sprache)</option>
-                                                    <option v-for="lang in voiceLangs" :value="lang.code">
+                                            </div>
+                                            <div class="row">
+                                                <input id="showCC" type="checkbox" v-model="action.showCC"/>
+                                                <label for="showCC" class="normal-text" data-i18n="">Show video subtitles (if available) // Zeige Video-Untertitel (wenn verfügbar)</label>
+                                            </div>
+                                            <div class="row">
+                                                <input id="playMuted" type="checkbox" v-model="action.playMuted"/>
+                                                <label for="playMuted" class="normal-text" data-i18n="">Start video muted // Video stummgeschaltet starten</label>
+                                            </div>
+                                            <div class="row">
+                                                <input id="afterNav" type="checkbox" v-model="action.performAfterNav"/>
+                                                <label for="afterNav" class="normal-text" data-i18n="">Perform action after navigation // Aktion erst nach Navigation ausführen</label>
+                                            </div>
+                                        </div>
+                                        <div class="row" v-show="[GridActionYoutube.actions.YT_STEP_FORWARD, GridActionYoutube.actions.YT_STEP_BACKWARD].indexOf(action.action) !== -1">
+                                            <div class="twelve columns">
+                                                <label for="stepSeconds" class="four columns normal-text" data-i18n>{{action.action | translate}} <span data-i18n="">(seconds) // (Sekunden)</span></label>
+                                                <input id="stepSeconds" type="number" class="eight columns" v-model="action.stepSeconds" min="0"/>
+                                            </div>
+                                        </div>
+                                        <div class="row" v-show="[GridActionYoutube.actions.YT_VOLUME_UP, GridActionYoutube.actions.YT_VOLUME_DOWN].indexOf(action.action) !== -1">
+                                            <div class="twelve columns">
+                                                <label for="stepVolume" class="four columns normal-text" data-i18n>{{action.action | translate}} <span data-i18n="">(precent) // (Prozent)</span></label>
+                                                <input id="stepVolume" type="number" class="eight columns" v-model="action.stepVolume" min="0" max="100"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-if="action.modelName === 'GridActionChangeLang'">
+                                        <div class="row">
+                                            <div class="twelve columns">
+                                                <label for="changeLang" class="four columns normal-text" data-i18n>Change application language to // Sprache der Anwendung ändern zu</label>
+                                                <select id="changeLang" class="eight columns" v-model="action.language">
+                                                    <option data-i18n="" :value="undefined">System language // Systemsprache</option>
+                                                    <option v-for="lang in (selectFromAllLanguages ? allLanguages : gridLanguages)" :value="lang.code">
                                                         {{lang | extractTranslation}}
                                                     </option>
                                                 </select>
                                             </div>
-                                            <div class="row">
-                                                <div class="three columns">
-                                                    <label for="inCustomText" class="normal-text" data-i18n>Text to speak // Auszusprechender Text</label>
-                                                </div>
-                                                <div class="nine columns">
-                                                    <input id="inCustomText" type="text" v-model="action.speakText[currentLang]" style="width: 70%"/>
-                                                    <button @click="testAction(action)"><i class="fas fa-bolt"/> <span class="hide-mobile" data-i18n="">Test // Testen</span></button>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
-                                            </div>
                                         </div>
-                                        <div v-if="action.modelName == 'GridActionNavigate'">
-                                            <div class="row">
-                                                <input id="navigateBackChkbox" type="checkbox" v-model="action.toLastGrid"/>
-                                                <label for="navigateBackChkbox" class="normal-text" data-i18n>Navigate to last opened grid // Zum zuletzt geöffneten Grid navigieren</label>
-                                            </div>
-                                            <div class="row">
-                                                <div class="three columns">
-                                                    <label for="selectGrid" class="normal-text" data-i18n>Navigate to grid // Navigieren zu Grid</label>
-                                                </div>
-                                                <select class="eight columns" id="selectGrid" type="text" v-model="action.toGridId" :disabled="action.toLastGrid">
-                                                    <option v-for="(label, id) in gridLabels" :value="id">
-                                                        {{label | extractTranslation}}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div class="row">
-                                                <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
-                                            </div>
-                                        </div>
-                                        <div v-if="action.modelName == 'GridActionARE'">
-                                            <edit-are-action :action="action" :grid-data="gridData" :model-file="additionalGridFiles[action.id]" :set-grid-file-fn="setAdditionalGridFile" :end-edit-fn="endEditAction"/>
-                                        </div>
-                                        <div v-if="action.modelName == 'GridActionPredict'">
-                                            <div class="row" v-show="gridElement.type === GridElementClass.ELEMENT_TYPE_COLLECT">
-                                                <div class="eight columns">
-                                                    <input id="chkSuggestOnChange" type="checkbox" v-model="action.suggestOnChange">
-                                                    <label for="chkSuggestOnChange" class="normal-text" data-i18n>Refresh suggestions on change // Vorschläge bei Änderung aktualisieren</label>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="three columns">
-                                                    <label for="comboUseDict" class="normal-text" data-i18n>Dictionary to use // Zu verwendendes Wörterbuch</label>
-                                                </div>
-                                                <select class="eight columns" id="comboUseDict" v-model="action.dictionaryKey">
-                                                    <option :value="undefined" data-i18n="">all dictionaries // alle Wörterbücher</option>
-                                                    <option v-for="id in dictionaryKeys" :value="id">
-                                                        {{id}}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div class="row">
-                                                <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
-                                            </div>
-                                        </div>
-                                        <div v-if="action.modelName == 'GridActionCollectElement'">
-                                            <div class="row">
-                                                <div class="twelve columns">
-                                                    <label for="selectCollectElmAction" class="five columns normal-text" data-i18n>Perform action on collect element // Aktion für Sammelelement ausführen</label>
-                                                    <select id="selectCollectElmAction" class="six columns" v-model="action.action">
-                                                        <option v-for="elmAction in collectActions" :value="elmAction">
-                                                            {{elmAction | translate}}
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
-                                            </div>
-                                        </div>
-                                        <div v-if="action.modelName == 'GridActionWebradio'">
-                                            <div class="row">
-                                                <div class="twelve columns">
-                                                    <label for="selectRadioElmAction" class="five columns normal-text" data-i18n>Web radio action // Web-Radio Aktion</label>
-                                                    <select id="selectRadioElmAction" class="six columns" v-model="action.action">
-                                                        <option v-for="elmAction in webradioActions" :value="elmAction">
-                                                            {{elmAction | translate}}
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="row" v-show="action.action === 'WEBRADIO_ACTION_START' || action.action === 'WEBRADIO_ACTION_TOGGLE'">
-                                                <div class="twelve columns">
-                                                    <label for="selectRadio" class="five columns normal-text" data-i18n>Webadio to play // Abzuspielendes Webradio</label>
-                                                    <select id="selectRadio" class="six columns" v-model="action.radioId" @change="selectedRadioChanged(action.radioId)">
-                                                        <option value="" selected data-i18n="">automatic (last played) // automatisch (zuletzt gespielt)</option>
-                                                        <option v-for="webradio in gridData.webRadios" :value="webradio.radioId">
-                                                            {{webradio.radioName}}
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <accordion acc-label="Manage webradio list // Webradioliste verwalten" :acc-open="gridData.webRadios.length === 0 ? 'true' : 'false'" class="twelve columns">
-                                                    <radio-list-selector v-model="gridData"></radio-list-selector>
-                                                </accordion>
-                                            </div>
-                                            <div class="row">
-                                                <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
-                                            </div>
-                                        </div>
-                                        <div v-if="action.modelName === 'GridActionYoutube'">
-                                            <div class="row">
-                                                <div class="twelve columns">
-                                                    <label for="ytActions" class="five columns normal-text" data-i18n>YouTube video action // YouTube-Video Aktion</label>
-                                                    <select id="ytActions" class="six columns" v-model="action.action">
-                                                        <option v-for="elmAction in GridActionYoutube.actions" :value="elmAction">
-                                                            {{elmAction | translate}}
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="row" v-show="[GridActionYoutube.actions.YT_PLAY, GridActionYoutube.actions.YT_TOGGLE, GridActionYoutube.actions.YT_RESTART].indexOf(action.action) !== -1">
-                                                <div class="twelve columns">
-                                                    <label for="ytPlayType" class="five columns normal-text" data-i18n>Play type // Wiedergabe Typ</label>
-                                                    <select id="ytPlayType" class="six columns" v-model="action.playType">
-                                                        <option v-for="playType in Object.keys(GridActionYoutube.playTypes).filter(t => t !== GridActionYoutube.playTypes.YT_PLAY_RELATED)" :value="playType">{{playType | translate}}</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div v-show="action.playType && [GridActionYoutube.actions.YT_PLAY, GridActionYoutube.actions.YT_TOGGLE, GridActionYoutube.actions.YT_RESTART].indexOf(action.action) !== -1">
-                                                <div class="row" v-show="action.playType !== GridActionYoutube.playTypes.YT_PLAY_RELATED">
-                                                    <div class="twelve columns">
-                                                        <label for="ytList" class="five columns normal-text">
-                                                            <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_VIDEO" data-i18n="">Video link // Video Link</span>
-                                                            <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_SEARCH" data-i18n="">YouTube search query // YouTube Suchanfrage</span>
-                                                            <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_PLAYLIST" data-i18n="">YouTube playlist link // YouTube Playlist Link</span>
-                                                            <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_CHANNEL" data-i18n="">YouTube channel link // YouTube Channel-Link</span>
-                                                        </label>
-                                                        <input id="ytList" type="text" class="six columns" v-model="action.data"/>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <input id="showCC" type="checkbox" v-model="action.showCC"/>
-                                                    <label for="showCC" class="normal-text" data-i18n="">Show video subtitles (if available) // Zeige Video-Untertitel (wenn verfügbar)</label>
-                                                </div>
-                                                <div class="row">
-                                                    <input id="playMuted" type="checkbox" v-model="action.playMuted"/>
-                                                    <label for="playMuted" class="normal-text" data-i18n="">Start video muted // Video stummgeschaltet starten</label>
-                                                </div>
-                                                <div class="row">
-                                                    <input id="afterNav" type="checkbox" v-model="action.performAfterNav"/>
-                                                    <label for="afterNav" class="normal-text" data-i18n="">Perform action after navigation // Aktion erst nach Navigation ausführen</label>
-                                                </div>
-                                            </div>
-                                            <div class="row" v-show="[GridActionYoutube.actions.YT_STEP_FORWARD, GridActionYoutube.actions.YT_STEP_BACKWARD].indexOf(action.action) !== -1">
-                                                <div class="twelve columns">
-                                                    <label for="stepSeconds" class="five columns normal-text" data-i18n>{{action.action | translate}} <span data-i18n="">(seconds) // (Sekunden)</span></label>
-                                                    <input id="stepSeconds" type="number" class="six columns" v-model="action.stepSeconds" min="0"/>
-                                                </div>
-                                            </div>
-                                            <div class="row" v-show="[GridActionYoutube.actions.YT_VOLUME_UP, GridActionYoutube.actions.YT_VOLUME_DOWN].indexOf(action.action) !== -1">
-                                                <div class="twelve columns">
-                                                    <label for="stepVolume" class="five columns normal-text" data-i18n>{{action.action | translate}} <span data-i18n="">(precent) // (Prozent)</span></label>
-                                                    <input id="stepVolume" type="number" class="six columns" v-model="action.stepVolume" min="0" max="100"/>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
-                                            </div>
-                                        </div>
-                                        <div v-if="action.modelName === 'GridActionChangeLang'">
-                                            <div class="row">
-                                                <div class="twelve columns">
-                                                    <label for="changeLang" class="five columns normal-text" data-i18n>Change application language to // Sprache der Anwendung ändern zu</label>
-                                                    <select id="changeLang" class="six columns" v-model="action.language">
-                                                        <option data-i18n="" :value="undefined">System language // Systemsprache</option>
-                                                        <option v-for="lang in (selectFromAllLanguages ? allLanguages : gridLanguages)" :value="lang.code">
-                                                            {{lang | extractTranslation}}
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="row">
+                                        <div class="row">
+                                            <div class="offset-by-four eight columns">
                                                 <input id="selectFromAllLangs" type="checkbox" v-model="selectFromAllLanguages"/>
-                                                <label for="selectFromAllLangs" data-i18n="">Show all Languages for selection // Zeige alle Sprachen zur Auswahl</label>
+                                                <label for="selectFromAllLangs" class="normal-text" data-i18n="">Show all Languages for selection // Zeige alle Sprachen zur Auswahl</label>
                                             </div>
                                         </div>
                                     </div>
@@ -286,7 +262,7 @@
                                     <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
                                 </button>
                                 <button  @click="save()" title="Keyboard: [Ctrl + Enter]" class="four columns">
-                                    <i class="fas fa-check"/> <span>OK</span>
+                                    <i class="fas fa-save"/> <span data-i18n="">Save // Speichern</span>
                                 </button>
                             </div>
                             <div class="hide-mobile row">
@@ -370,8 +346,11 @@
                 this.gridElement.actions = this.gridElement.actions.filter(a => a.id != action.id);
             },
             editAction (action) {
-                var thiz = this;
-                thiz.editActionId = action.id;
+                if (this.editActionId !== action.id) {
+                    this.editActionId = action.id;
+                } else {
+                    this.editActionId = null;
+                }
             },
             endEditAction () {
                 this.editActionId = null;
@@ -477,7 +456,7 @@
     }
 
     .actionbtns button {
-        width: 30%;
+        width: 32%;
         padding: 0;
     }
 </style>
