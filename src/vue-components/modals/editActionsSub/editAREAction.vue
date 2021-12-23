@@ -1,10 +1,10 @@
 <template>
     <div>
         <div class="row">
-            <div class="two columns">
+            <div class="four columns">
                 <label for="inputAREURI" class="normal-text">ARE URL</label>
             </div>
-            <div class="ten columns">
+            <div class="eight columns">
                 <div class="row nomargin">
                     <input id="inputAREURI" class="six columns" type="text" v-model="action.areURL" @change="fixAreUrl()"/>
                     <div class="six columns">
@@ -17,10 +17,10 @@
             </div>
         </div>
         <div class="row">
-            <div class="two columns">
+            <div class="four columns">
                 <label class="normal-text">ARE Model</label>
             </div>
-            <div class="ten columns">
+            <div class="eight columns">
                 <div class="row nomargin">
                     <div class="twelve columns">
                         <span v-show="loading" data-i18n="">Loading Model from ARE... // Lade Modell von ARE...</span>
@@ -38,30 +38,30 @@
             </div>
         </div>
         <div class="row" v-if="!areModelSync">
-            <div class="ten columns offset-by-two">
+            <div class="eight columns offset-by-four">
                 <i class="fas fa-info-circle" />
                 <span v-show="areModelFile && areModelFile.dataBase64" data-i18n="">Upload the saved model or download current ARE model in order to define the action. // Laden Sie das gespeicherte Modell hoch oder das aktuelle ARE Modell herunter um die Aktion zu definieren.</span>
                 <span v-show="areModelFile && !areModelFile.dataBase64" data-i18n="">Download the current ARE model in order to define the action. // Laden Sie das aktuelle ARE Modell herunter um die Aktion zu definieren.</span>
             </div>
         </div>
         <div class="row" v-if="areModelSync">
-            <div class="two columns">
+            <div class="four columns">
                 <label class="normal-text" for="inputComponentId" data-i18n="">Component // Komponente</label>
             </div>
-            <select class="five columns" id="inputComponentId" v-model="action.componentId" @change="reloadPorts(action)">
+            <select class="eight columns" id="inputComponentId" v-model="action.componentId" @change="reloadPorts(action)">
                 <option v-for="id in areComponentIds" :value="id">
                     {{id}}
                 </option>
             </select>
         </div>
         <div class="row" v-if="areModelSync && areComponentPorts.length != 0">
-            <div class="two columns">
+            <div class="four columns">
                 <label for="inputDataPortId" class="normal-text" data-i18n="">
                     <span>Send data <span class="show-mobile">to port</span></span>
                     <span>Sende Daten <span class="show-mobile">zu Port</span></span>
                 </label>
             </div>
-            <div class="five columns">
+            <div class="four columns">
                 <label for="inputDataPortId" class="normal-text hide-mobile">Port</label>
                 <select id="inputDataPortId" class="full-width" v-model="action.dataPortId">
                     <option v-for="id in areComponentPorts" :value="id">
@@ -69,19 +69,19 @@
                     </option>
                 </select>
             </div>
-            <div class="five columns">
+            <div class="four columns">
                 <label for="inputDataPortData" class="normal-text" data-i18n="">Data // Daten</label>
                 <input id="inputDataPortData" type="text" class="full-width" v-model="action.dataPortSendData"/>
             </div>
         </div>
         <div class="row" v-if="areModelSync && areComponentEventPorts.length != 0">
-            <div class="two columns">
+            <div class="four columns">
                 <label for="inputeventPortId" class="normal-text" data-i18n="">
                     <span>Trigger event <span class="show-mobile">on event port</span></span>
                     <span>Event triggern <span class="show-mobile">auf Event-Port</span></span>
                 </label>
             </div>
-            <div class="five columns">
+            <div class="eight columns">
                 <label for="inputeventPortId" class="normal-text hide-mobile">Event-Port</label>
                 <select id="inputeventPortId" class="full-width" v-model="action.eventPortId">
                     <option v-for="id in areComponentEventPorts" :value="id">
@@ -90,16 +90,11 @@
                 </select>
             </div>
         </div>
-        <div class="row">
-            <button class="six columns" @click="testAction(action)"><i class="fas fa-bolt"/> <span data-i18n="">Test action // Aktion Testen</span></button>
-            <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
-        </div>
     </div>
 </template>
 
 <script>
     import FileSaver from 'file-saver'
-    import {actionService} from './../../../js/service/actionService'
     import {areService} from './../../../js/service/areService'
     import {i18nService} from "../../../js/service/i18nService";
     import './../../../css/modal.css';
@@ -108,7 +103,7 @@
     import {helpService} from "../../../js/service/helpService";
 
     export default {
-        props: ['action', 'gridData', 'modelFile','setGridFileFn', 'endEditFn'],
+        props: ['action', 'gridData', 'modelFile','setGridFileFn'],
         data: function () {
             return {
                 loading: false,
@@ -121,13 +116,6 @@
             }
         },
         methods: {
-            endEditAction () {
-                this.endEditFn();
-            },
-            testAction (action) {
-                let props = this.areModelFile.dataBase64 ? {additionalFiles: [this.areModelFile]} : {};
-                actionService.testAction(null, action, new GridData(props, this.gridData));
-            },
             reloadAREModel(action) {
                 var thiz = this;
                 thiz.loading = true;
