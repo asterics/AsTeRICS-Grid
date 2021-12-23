@@ -94,6 +94,14 @@ function doAction(gridElement, action, gridId, gridData) {
             i18nService.setLanguage(action.language);
             i18nService.initDomI18n();
             break;
+        case 'GridActionOpenWebpage':
+            let tab = window.open(action.openURL, '_blank');
+            if (action.timeoutSeconds > 0) {
+                setTimeout(() => {
+                    tab.close();
+                }, action.timeoutSeconds * 1000);
+            }
+            break;
     }
 }
 

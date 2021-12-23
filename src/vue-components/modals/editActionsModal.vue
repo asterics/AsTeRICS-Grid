@@ -258,8 +258,19 @@
                                                 <input id="selectFromAllLangs" type="checkbox" v-model="selectFromAllLanguages"/>
                                                 <label for="selectFromAllLangs" data-i18n="">Show all Languages for selection // Zeige alle Sprachen zur Auswahl</label>
                                             </div>
-                                            <div class="row">
-                                                <button class="six columns" @click="endEditAction()"><i class="fas fa-check"/> <span>OK</span></button>
+                                        </div>
+                                    </div>
+                                    <div v-if="action.modelName === 'GridActionOpenWebpage'">
+                                        <div class="row">
+                                            <div class="twelve columns">
+                                                <label for="openUrl" class="four columns normal-text" data-i18n>Webpage URL // Webseiten-URL</label>
+                                                <input id="openUrl" type="text" class="eight columns" v-model="action.openURL"/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="twelve columns">
+                                                <label for="webpageCloseTimeout" class="four columns normal-text" data-i18n>Automatically close timeout in seconds (0 = never), currently only works in Firefox // Timeout zum automatischen Schließen in Sekunden (0 = nie), funktioniert derzeit nur in Firefox</label>
+                                                <input id="webpageCloseTimeout" type="number" min="0" class="eight columns" v-model="action.timeoutSeconds"/>
                                             </div>
                                         </div>
                                     </div>
