@@ -2,7 +2,7 @@
     <div>
         <div class="row">
             <h3 class="six columns" data-i18n="">Selected radio stations // Ausgewählte Radiosender</h3>
-            <button class="six columns" @click="addAllRadioElements">Grid-Elemente für Radios erstellen</button>
+            <button class="six columns" :disabled="selectedRadioList.length === 0" @click="addAllRadioElements" data-i18n="">Create grid elements for webradios // Grid-Elemente für Radios erstellen</button>
         </div>
         <div class="row">
             <ul class="webradioList">
@@ -24,17 +24,17 @@
 
         <div class="row">
             <h3 class="four columns" data-i18n="">Webradio search // Webradio Suche</h3>
-            <span id="poweredby" class="six columns" data-i18n="">
+            <span id="poweredby" class="eight columns" data-i18n="">
                 <span>powered by <a href="https://www.radio-browser.info/gui/#!/" target="_blank">radio-browser.info</a></span>
                 <span>Suche durch <a href="https://www.radio-browser.info/gui/#!/" target="_blank">radio-browser.info</a></span>
             </span>
         </div>
         <div class="row">
-            <div class="five columns">
+            <div class="four columns">
                 <label for="searchwebradios" class="normal-text" data-i18n>Search term // Suchbegriff</label>
                 <i class="fas fa-info-circle hide-mobile" :title="'by default searches for radio station name, advanced search possible like e.g. tag:jazz, language:english or country:austria // sucht standardmäßig nach Radiosender-Name, erweiterte Suche z.B. möglich mit tag:jazz, language:english oder country:austria' | translate"></i>
             </div>
-            <input id="searchwebradios" class="six columns" type="text" v-model="webradioSearch" @input="searchWebradios($event)"/>
+            <input id="searchwebradios" class="eight columns" type="text" v-model="webradioSearch" @input="searchWebradios($event)"/>
         </div>
         <div class="row">
             <ul class="webradioList">
