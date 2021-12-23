@@ -74,12 +74,25 @@ class GridElement extends Model({
     }
 
     static getActionInstance(modelName) {
-        var constructor = this.getActionTypes().filter(type => type.getModelName() == modelName)[0];
+        let constructor = this.getActionClass(modelName);
         if(constructor) {
             return new constructor();
         } else {
             log.warn('action type not found: ' + modelName);
         }
+    }
+
+    static getActionClass(modelName) {
+        let constructor = this.getActionTypes().filter(type => type.getModelName() === modelName)[0];
+        if (constructor) {
+            return constructor;
+        } else {
+            log.warn('action type not found: ' + modelName);
+        }
+    }
+
+    static canActionClassBeTested(modelName) {
+        return this.getActionClass(modelName) ? this.getActionClass(modelName).canBeTested !== false : true;
     }
 
     static getModelName() {

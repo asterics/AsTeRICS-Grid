@@ -34,6 +34,8 @@ class GridActionYoutube extends Model({
     }
 }
 
+GridActionYoutube.canBeTested = false;
+
 GridActionYoutube.actions = {
     YT_PLAY: 'YT_PLAY',
     YT_PAUSE: 'YT_PAUSE',

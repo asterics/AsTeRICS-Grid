@@ -20,6 +20,8 @@ class GridActionNavigate extends Model({
     }
 }
 
+GridActionNavigate.canBeTested = false;
+
 GridActionNavigate.defaults({
     id: "", //will be replaced by constructor
     modelName: GridActionNavigate.getModelName(),

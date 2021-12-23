@@ -25,6 +25,8 @@ class GridActionCollectElement extends Model({
     }
 }
 
+GridActionCollectElement.canBeTested = false;
+
 GridActionCollectElement.COLLECT_ACTION_CLEAR = 'COLLECT_ACTION_CLEAR';
 GridActionCollectElement.COLLECT_ACTION_REMOVE_WORD = 'COLLECT_ACTION_REMOVE_WORD';
 GridActionCollectElement.COLLECT_ACTION_REMOVE_CHAR = 'COLLECT_ACTION_REMOVE_CHAR';

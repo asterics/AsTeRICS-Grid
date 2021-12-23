@@ -20,6 +20,8 @@ class GridActionPredict extends Model({
     }
 }
 
+GridActionPredict.canBeTested = false;
+
 GridActionPredict.defaults({
     id: "", //will be replaced by constructor
     modelName: GridActionPredict.getModelName(),
