@@ -138,8 +138,14 @@
                 thiz.show = true;
             });
             dataService.getGrids(false, true).then(grids => {
-                thiz.gridLanguages = grids[0] ? Object.keys(grids[0].label) : [];
-            })
+                let languages = grids.reduce((total, grid) => {
+                    total = total.concat(Object.keys(grid.label));
+                    return total.concat(grid.gridElements.reduce((t2, gridElem) => {
+                        return t2.concat(Object.keys(gridElem.label));
+                    }, []));
+                }, []);
+                thiz.gridLanguages = [...new Set(languages)];
+            });
             thiz.langCode = i18nService.getCustomLanguage();
         },
         updated() {
