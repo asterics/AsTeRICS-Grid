@@ -16,8 +16,8 @@ let databaseService = {};
 
 let _initPromise = null;
 let _lastDataModelVersion = null;
-let _defaultDictPath = i18nService.isBrowserLangDE() ? 'app/dictionaries/default_de.txt' : 'app/dictionaries/default_en.txt';
-let _defaultDictName = i18nService.isBrowserLangDE() ? 'WoerterbuchDeutsch ' : 'EnglishDictionary';
+let _defaultDictPath = i18nService.isBrowserLangDE() ? 'app/dictionaries/default_de.json' : i18nService.isBrowserLangEN() ? 'app/dictionaries/default_en.json' : null;
+let _defaultDictName = i18nService.isBrowserLangDE() ? 'AsTeRICS Grid Deutsch standard' : 'AsTeRICS Grid English default';
 
 /**
  * queries for objects in database and resolves promise with result.
@@ -294,8 +294,12 @@ function importDefaultDictionary() {
             return Promise.resolve();
         }
         return new Promise(resolve => {
+            if (!_defaultDictPath) {
+                log.info("not importing default dictionary, since language is not 'de' or 'en'");
+                return resolve();
+            }
             log.info('importing dictionary: ' + _defaultDictPath);
-            $.get(_defaultDictPath).success(result => {
+            $.get(_defaultDictPath, null, null, 'text').success(result => {
                 log.debug('success getting default dictionary.');
                 resolve(result);
             }).fail((e) => {
