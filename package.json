@@ -28,7 +28,7 @@
     "babel-loader": "^8.0.6",
     "css-loader": "^1.0.0",
     "jest": "^24.5.0",
-    "node-sass": "^7.0.1",
+    "node-sass": "^7.0.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.22.1",
     "vue-loader": "^15.4.0",
