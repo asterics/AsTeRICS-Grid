@@ -1,21 +1,6 @@
 <template>
     <div>
-        <div class="row">
-            <div class="four columns">
-                <label for="inputAREURI" class="normal-text">ARE URL</label>
-            </div>
-            <div class="eight columns">
-                <div class="row nomargin">
-                    <input id="inputAREURI" class="six columns" type="text" v-model="action.areURL" @change="fixAreUrl()"/>
-                    <div class="six columns">
-                        <button @click="testAREUrl(action)" style="width: 70%"><i class="fas fa-bolt"/> <span data-i18n="">Test URL // URL testen</span></button>
-                        <span class="spaced" v-show="areConnected === undefined"><i class="fas fa-spinner fa-spin"/></span>
-                        <span class="spaced" v-show="areConnected" style="color: green"><i class="fas fa-check"/></span>
-                        <span class="spaced" v-show="areConnected == false" style="color: red"><i class="fas fa-times"/></span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <test-are-connection v-model="action.areURL"/>
         <div class="row">
             <div class="four columns">
                 <label class="normal-text">ARE Model</label>
@@ -103,19 +88,22 @@
     import {GridData} from "../../../js/model/GridData";
     import {AdditionalGridFile} from "../../../js/model/AdditionalGridFile";
     import {helpService} from "../../../js/service/helpService";
+    import TestAreConnection from "./testAreConnection.vue";
 
     export default {
         props: ['action', 'gridData', 'modelFile','setGridFileFn'],
         data: function () {
             return {
                 loading: false,
-                areConnected: null,
                 areComponentIds: [],
                 areComponentPorts: [],
                 areComponentEventPorts: [],
                 areModelFile: null, //Object of Type AdditionalGridFile that represents the ARE Model for this action
                 areModelSync: false
             }
+        },
+        components: {
+            TestAreConnection
         },
         methods: {
             reloadAREModel(action) {
@@ -161,23 +149,10 @@
                     thiz.areComponentPorts = inputPortIds;
                 });
             },
-            testAREUrl(action) {
-                var thiz = this;
-                action.areURL = areService.getRestURL(action.areURL);
-                thiz.areConnected = undefined;
-                areService.getModelName(action.areURL).then(() => {
-                    thiz.areConnected = true;
-                }).catch(() => {
-                    thiz.areConnected = false;
-                });
-            },
             downloadModelFile(additionalGridFile) {
                 var blob = new Blob([window.atob(additionalGridFile.dataBase64)], {type: "text/plain;charset=utf-8"});
                 var name = additionalGridFile.fileName.indexOf('.acs') != -1 ? additionalGridFile.fileName : additionalGridFile.fileName + '.acs';
                 FileSaver.saveAs(blob, name);
-            },
-            fixAreUrl() {
-                this.action.areURL = areService.getRestURL(this.action.areURL);
             }
         },
         mounted () {
