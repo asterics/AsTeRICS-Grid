@@ -16,7 +16,7 @@
     "morgan": "^1.9.1",
     "n-ary-huffman": "^4.0.0",
     "navigo": "^7.1.2",
-    "predictionary": "^1.4.3",
+    "predictionary": "^1.6.0",
     "superlogin-client": "^0.8.0",
     "vue": "^2.5.17"
   },
@@ -28,7 +28,7 @@
     "babel-loader": "^8.0.6",
     "css-loader": "^1.0.0",
     "jest": "^24.5.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.1",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.22.1",
     "vue-loader": "^15.4.0",
