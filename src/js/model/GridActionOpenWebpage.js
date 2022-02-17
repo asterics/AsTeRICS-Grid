@@ -12,7 +12,7 @@ class GridActionOpenWebpage extends Model({
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionOpenWebpage);
         super(properties);
-        this.id = this.id || modelUtil.generateId('grid-action-speak-custom')
+        this.id = this.id || modelUtil.generateId(GridActionOpenWebpage.getModelName())
     }
 
     static getModelName() {
