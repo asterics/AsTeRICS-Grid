@@ -53,6 +53,12 @@ i18nService.getAllLanguages = function () {
     return allLanguages;
 };
 
+i18nService.translateLangCode = function (code) {
+    let object = allLanguages.filter(l => l.code === code)[0];
+    let lang = i18nService.isBrowserLangDE() ? 'de' : 'en';
+    return object ? object[lang] : code;
+}
+
 i18nService.translate = function (key, ...args) {
     if (key && key.indexOf(separator) > -1) {
         let translations = key.split(separator);
