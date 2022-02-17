@@ -70,6 +70,9 @@ function getLabel(elem) {
     if ($(elem).find('.text-container span').text()) {
         return $(elem).find('.text-container span').text()
     }
+    if ($(elem).find('.text-container div').text()) {
+        return $(elem).find('.text-container div').text()
+    }
     return "";
 }
 

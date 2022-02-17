@@ -66,9 +66,8 @@ function getGridElementCollect(gridElem) {
     var template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${label}" data-type="${gridElem.type}">
     <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}">
-        <div class="text-container" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; padding: 1% 1% 1% 1%; text-align: left;">
-            <div style="vertical-align: middle; background-color: white; padding-left: 0.3em; width: 99%; height: 100%">
-                <span class="collect-text"></span>
+        <div class="text-container" style="position: absolute; display:flex; inset: 5px;">
+            <div class="collect-text" dir="auto" style="flex: auto; padding: 5px; background-color: white; text-align: justify;">
             </div>
         </div>
     </div>
