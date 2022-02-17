@@ -86,6 +86,9 @@
                                     </li>
                                 </ul>
                             </div>
+                            <div>
+                                {{getElementCount()}} <span data-i18n="">elements // Elemente</span>
+                            </div>
                         </div>
                     </div>
 
@@ -184,6 +187,10 @@
                 }
                 label = label.toLowerCase();
                 return !label.includes('keyboard') && !label.includes('tastatur') && !label.includes('zahlen') && !label.includes('numbers');
+            },
+            getElementCount() {
+                let array = this.gridData ? [this.gridData] : this.allGrids;
+                return array.reduce((total, data) => total + data.gridElements.length, 0);
             }
         },
         mounted() {
