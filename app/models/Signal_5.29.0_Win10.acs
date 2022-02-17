@@ -1,0 +1,445 @@
+<?xml version="1.0"?>
+<model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" modelName="C:\data\src\AsTeRICS-Grid\app\models\Signal.acs_2022_1_24_17_9" version="20130320">
+  <modelDescription>
+    <shortDescription>Send Signal Message // Nachricht auf Signal schicken</shortDescription>
+    <requirements />
+    <description />
+  </modelDescription>
+  <components>
+    <component id="RemoteWindow.Signal" type_id="asterics.RemoteWindow">
+      <description>provides basic  Window manipulation for another active window</description>
+      <ports>
+        <inputPort portTypeID="name">
+          <properties />
+        </inputPort>
+        <inputPort portTypeID="XPos">
+          <properties />
+        </inputPort>
+        <inputPort portTypeID="YPos">
+          <properties />
+        </inputPort>
+      </ports>
+      <properties>
+        <property name="windowName" value="Signal" />
+        <property name="mode" value="0" />
+        <property name="xPos" value="0" />
+        <property name="yPos" value="0" />
+        <property name="autoSetPosition" value="false" />
+      </properties>
+      <layout>
+        <posX>462</posX>
+        <posY>117</posY>
+      </layout>
+    </component>
+    <component id="Keyboard.1" type_id="asterics.Keyboard">
+      <description>Local Keyboard actuator</description>
+      <ports>
+        <inputPort portTypeID="keyCodes">
+          <properties />
+        </inputPort>
+      </ports>
+      <properties>
+        <property name="keyCodeString" value="" />
+        <property name="inputMethod" value="1" />
+        <property name="waitTime" value="600" />
+      </properties>
+      <layout>
+        <posX>772</posX>
+        <posY>333</posY>
+      </layout>
+    </component>
+    <component id="InputField2.in1String" type_id="asterics.StringFormatter">
+      <description>Text to send // Zu sendender Text</description>
+      <ports>
+        <inputPort portTypeID="in1String">
+          <properties />
+        </inputPort>
+        <inputPort portTypeID="in2String">
+          <properties />
+        </inputPort>
+        <inputPort portTypeID="in3Double">
+          <properties />
+        </inputPort>
+        <inputPort portTypeID="in4Integer">
+          <properties />
+        </inputPort>
+        <inputPort portTypeID="setFormatStr">
+          <properties />
+        </inputPort>
+        <outputPort portTypeID="formattedStr">
+          <properties />
+        </outputPort>
+      </ports>
+      <properties>
+        <property name="formatString" value="%1$s{ENTER}" />
+        <property name="defaultIn1String" value="" />
+        <property name="defaultIn2String" value="" />
+        <property name="defaultIn3Double" value="0" />
+        <property name="defaultIn4Integer" value="0" />
+        <property name="sendOnlyByEvent" value="True" />
+        <property name="port1ToDefaultAfterSend" value="false" />
+        <property name="port2ToDefaultAfterSend" value="false" />
+        <property name="port3ToDefaultAfterSend" value="false" />
+        <property name="port4ToDefaultAfterSend" value="false" />
+      </properties>
+      <layout>
+        <posX>608</posX>
+        <posY>528</posY>
+      </layout>
+    </component>
+    <component id="RemoteWindow.Grid" type_id="asterics.RemoteWindow">
+      <description>provides basic  Window manipulation for another active window</description>
+      <ports>
+        <inputPort portTypeID="name">
+          <properties />
+        </inputPort>
+        <inputPort portTypeID="XPos">
+          <properties />
+        </inputPort>
+        <inputPort portTypeID="YPos">
+          <properties />
+        </inputPort>
+      </ports>
+      <properties>
+        <property name="windowName" value="AsTeRICS Grid" />
+        <property name="mode" value="1" />
+        <property name="xPos" value="0" />
+        <property name="yPos" value="0" />
+        <property name="autoSetPosition" value="false" />
+      </properties>
+      <layout>
+        <posX>465</posX>
+        <posY>737</posY>
+      </layout>
+    </component>
+    <component id="Keyboard.1.1" type_id="asterics.Keyboard">
+      <description>Local Keyboard actuator</description>
+      <ports>
+        <inputPort portTypeID="keyCodes">
+          <properties />
+        </inputPort>
+      </ports>
+      <properties>
+        <property name="keyCodeString" value="" />
+        <property name="inputMethod" value="1" />
+        <property name="waitTime" value="500" />
+      </properties>
+      <layout>
+        <posX>771</posX>
+        <posY>541</posY>
+      </layout>
+    </component>
+    <component id="TextSender.Dummy1" type_id="asterics.TextSender">
+      <description>Send text when gets event</description>
+      <ports>
+        <inputPort portTypeID="setText">
+          <properties />
+        </inputPort>
+        <outputPort portTypeID="output">
+          <properties />
+        </outputPort>
+      </ports>
+      <properties>
+        <property name="text" value="notiz" />
+      </properties>
+      <layout>
+        <posX>463</posX>
+        <posY>314</posY>
+      </layout>
+    </component>
+    <component id="InputField1.in1String" type_id="asterics.StringFormatter">
+      <description>Contact Name // Name des Kontakts</description>
+      <ports>
+        <inputPort portTypeID="in1String">
+          <properties />
+        </inputPort>
+        <inputPort portTypeID="in2String">
+          <properties />
+        </inputPort>
+        <inputPort portTypeID="in3Double">
+          <properties />
+        </inputPort>
+        <inputPort portTypeID="in4Integer">
+          <properties />
+        </inputPort>
+        <inputPort portTypeID="setFormatStr">
+          <properties />
+        </inputPort>
+        <outputPort portTypeID="formattedStr">
+          <properties />
+        </outputPort>
+      </ports>
+      <properties>
+        <property name="formatString" value="{CTRL}f%1$s{WAIT}{TAB}{ENTER}{CTRL}f{ESCAPE}{CTRL}{SHIFT}t" />
+        <property name="defaultIn1String" value="notiz" />
+        <property name="defaultIn2String" value="" />
+        <property name="defaultIn3Double" value="0" />
+        <property name="defaultIn4Integer" value="0" />
+        <property name="sendOnlyByEvent" value="True" />
+        <property name="port1ToDefaultAfterSend" value="false" />
+        <property name="port2ToDefaultAfterSend" value="false" />
+        <property name="port3ToDefaultAfterSend" value="false" />
+        <property name="port4ToDefaultAfterSend" value="false" />
+      </properties>
+      <layout>
+        <posX>608</posX>
+        <posY>325</posY>
+      </layout>
+    </component>
+    <component id="StartEvent.Send" type_id="asterics.EventCascade">
+      <description />
+      <ports />
+      <properties>
+        <property name="activeTriggers" value="4" />
+        <property name="loops" value="1" />
+        <property name="autoStart" value="True" />
+        <property name="delayBeforeTrigger1" value="0" />
+        <property name="delayBeforeTrigger2" value="300" />
+        <property name="delayBeforeTrigger3" value="1000" />
+        <property name="delayBeforeTrigger4" value="1500" />
+        <property name="delayBeforeTrigger5" value="500" />
+        <property name="delayBeforeTrigger6" value="500" />
+        <property name="delayBeforeTrigger7" value="500" />
+        <property name="delayBeforeTrigger8" value="500" />
+        <property name="delayBeforeTrigger9" value="500" />
+        <property name="delayBeforeTrigger10" value="500" />
+        <property name="delayBeforeTrigger11" value="500" />
+        <property name="delayBeforeTrigger12" value="500" />
+        <property name="delayBeforeTrigger13" value="500" />
+        <property name="delayBeforeTrigger14" value="500" />
+        <property name="delayBeforeTrigger15" value="500" />
+      </properties>
+      <layout>
+        <posX>275</posX>
+        <posY>22</posY>
+      </layout>
+    </component>
+    <component id="TextSender.Dummy2" type_id="asterics.TextSender">
+      <description>Send text when gets event</description>
+      <ports>
+        <inputPort portTypeID="setText">
+          <properties />
+        </inputPort>
+        <outputPort portTypeID="output">
+          <properties />
+        </outputPort>
+      </ports>
+      <properties>
+        <property name="text" value="" />
+      </properties>
+      <layout>
+        <posX>459</posX>
+        <posY>519</posY>
+      </layout>
+    </component>
+    <component id="EventTrigger1.input" type_id="asterics.EventDelay">
+      <description>Send Message // Nachricht abschicken</description>
+      <ports />
+      <properties>
+        <property name="delay" value="0" />
+      </properties>
+      <layout>
+        <posX>142</posX>
+        <posY>22</posY>
+      </layout>
+    </component>
+    <component id="InputField3.number.period" type_id="asterics.Timer">
+      <description>Return to AsTeRICS Grid after [ms] // Zurück zu AsTeRICS Grid wechseln nach [ms]</description>
+      <ports>
+        <inputPort portTypeID="period">
+          <properties />
+        </inputPort>
+        <outputPort portTypeID="time">
+          <properties />
+        </outputPort>
+      </ports>
+      <properties>
+        <property name="mode" value="0" />
+        <property name="repeatCounter" value="1" />
+        <property name="timePeriod" value="2000" />
+        <property name="resolution" value="50" />
+        <property name="waitPeriod" value="0" />
+        <property name="autostart" value="false" />
+      </properties>
+      <layout>
+        <posX>320</posX>
+        <posY>728</posY>
+      </layout>
+    </component>
+    <component id="TextSender.Dummy3" type_id="asterics.TextSender">
+      <description>Send text when gets event</description>
+      <ports>
+        <inputPort portTypeID="setText">
+          <properties />
+        </inputPort>
+        <outputPort portTypeID="output">
+          <properties />
+        </outputPort>
+      </ports>
+      <properties>
+        <property name="text" value="" />
+      </properties>
+      <layout>
+        <posX>173</posX>
+        <posY>720</posY>
+      </layout>
+    </component>
+  </components>
+  <channels>
+    <channel id="binding.0">
+      <source>
+        <component id="InputField1.in1String" />
+        <port id="formattedStr" />
+      </source>
+      <target>
+        <component id="Keyboard.1" />
+        <port id="keyCodes" />
+      </target>
+    </channel>
+    <channel id="binding.1">
+      <source>
+        <component id="TextSender.Dummy1" />
+        <port id="output" />
+      </source>
+      <target>
+        <component id="InputField1.in1String" />
+        <port id="in1String" />
+      </target>
+    </channel>
+    <channel id="binding.2">
+      <source>
+        <component id="TextSender.Dummy2" />
+        <port id="output" />
+      </source>
+      <target>
+        <component id="InputField2.in1String" />
+        <port id="in1String" />
+      </target>
+    </channel>
+    <channel id="binding.3">
+      <source>
+        <component id="InputField2.in1String" />
+        <port id="formattedStr" />
+      </source>
+      <target>
+        <component id="Keyboard.1.1" />
+        <port id="keyCodes" />
+      </target>
+    </channel>
+    <channel id="binding.4">
+      <source>
+        <component id="TextSender.Dummy3" />
+        <port id="output" />
+      </source>
+      <target>
+        <component id="InputField3.number.period" />
+        <port id="period" />
+      </target>
+    </channel>
+  </channels>
+  <eventChannels>
+    <eventChannel id="trigger1_bringToFront">
+      <description />
+      <sources>
+        <source>
+          <component id="StartEvent.Send" />
+          <eventPort id="trigger1" />
+        </source>
+      </sources>
+      <targets>
+        <target>
+          <component id="RemoteWindow.Signal" />
+          <eventPort id="bringToFront" />
+        </target>
+      </targets>
+    </eventChannel>
+    <eventChannel id="trigger2_sendFormattedStr">
+      <description />
+      <sources>
+        <source>
+          <component id="StartEvent.Send" />
+          <eventPort id="trigger2" />
+        </source>
+      </sources>
+      <targets>
+        <target>
+          <component id="InputField1.in1String" />
+          <eventPort id="sendFormattedStr" />
+        </target>
+      </targets>
+    </eventChannel>
+    <eventChannel id="trigger3_sendFormattedStr">
+      <description />
+      <sources>
+        <source>
+          <component id="StartEvent.Send" />
+          <eventPort id="trigger3" />
+        </source>
+      </sources>
+      <targets>
+        <target>
+          <component id="InputField2.in1String" />
+          <eventPort id="sendFormattedStr" />
+        </target>
+      </targets>
+    </eventChannel>
+    <eventChannel id="output_startCascade">
+      <description />
+      <sources>
+        <source>
+          <component id="EventTrigger1.input" />
+          <eventPort id="output" />
+        </source>
+      </sources>
+      <targets>
+        <target>
+          <component id="StartEvent.Send" />
+          <eventPort id="startCascade" />
+        </target>
+      </targets>
+    </eventChannel>
+    <eventChannel id="trigger1_start">
+      <description />
+      <sources>
+        <source>
+          <component id="StartEvent.Send" />
+          <eventPort id="trigger1" />
+        </source>
+      </sources>
+      <targets>
+        <target>
+          <component id="InputField3.number.period" />
+          <eventPort id="start" />
+        </target>
+      </targets>
+    </eventChannel>
+    <eventChannel id="periodFinished_bringToFront">
+      <description />
+      <sources>
+        <source>
+          <component id="InputField3.number.period" />
+          <eventPort id="periodFinished" />
+        </source>
+      </sources>
+      <targets>
+        <target>
+          <component id="RemoteWindow.Grid" />
+          <eventPort id="bringToFront" />
+        </target>
+      </targets>
+    </eventChannel>
+  </eventChannels>
+  <modelGUI>
+    <Decoration>true</Decoration>
+    <Fullscreen>false</Fullscreen>
+    <AlwaysOnTop>false</AlwaysOnTop>
+    <ToSystemTray>true</ToSystemTray>
+    <ShopControlPanel>true</ShopControlPanel>
+    <AREGUIWindow>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>9000</width>
+      <height>5000</height>
+    </AREGUIWindow>
+  </modelGUI>
+</model>
