@@ -2,71 +2,57 @@
     <div class="modal">
         <div class="modal-mask">
             <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
+                <div class="modal-container" @keyup.27="$emit('close')">
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
-                    <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
                     <div class="modal-header">
                         <h1 name="header" data-i18n>
-                            Import words to dictionary // Wörter zu Wörterbuch hinzufügen
+                            Import dictionary // Wörterbuch importieren
                         </h1>
                     </div>
 
-                    <div class="modal-body container">
-                        <div class="row">
-                            <label class="three columns" for="inputText" data-i18n="">Input // Eingabe</label>
-                            <span class="nine columns" data-i18n="">Insert Words, separated by space. ";" or [Enter] // Geben Sie Wörter ein, getrennt durch Leertaste, ";" oder [Enter]</span>
+                    <div class="modal-body">
+                        <div class="row" style="margin-bottom: 3em">
+                            <input type="radio" id="radiopredef" name="importType" :value="c.SELECT_ONLINE" v-model="importType">
+                            <label for="radiopredef" data-i18n="">Import from online dictionaries // Import von Online-Wörterbüchern</label><br/>
+                            <input type="radio" id="radiofile" name="importType" :value="c.SELECT_FILE" v-model="importType">
+                            <label for="radiofile" data-i18n="">Import from file // Import von Datei</label>
                         </div>
-                        <div class="row">
-                            <button @click="() => {showAdvanced = !showAdvanced}" class="nine columns offset-by-three btn-accordion" style="margin-bottom: 0">
-                                <i class="fas fa-chevron-down" v-show="!showAdvanced"></i>
-                                <i class="fas fa-chevron-up" v-show="showAdvanced"></i>
-                                <span data-i18n="">Advanced options // Erweiterte Einstellungen</span>
-                            </button>
-                        </div>
-                        <div class="row" v-if="showAdvanced">
-                            <div class="nine columns offset-by-three" style="background-color: whitesmoke;">
-                                <div class="row">
-                                    <label for="inputElementSeparator" class="five columns" data-i18n="">Element separator // Trennzeichen Element</label>
-                                    <input id="inputElementSeparator" type="text" v-model="elementSeparator" @input="textChanged"/>
-                                </div>
-                                <div class="row">
-                                    <label for="inputRankSeparator" class="five columns" data-i18n="">In-element separator // Trennzeichen innerhalb Element</label>
-                                    <input id="inputRankSeparator" type="text" v-model="rankSeparator" @input="textChanged"/>
-                                </div>
-                                <div class="row">
-                                    <label for="inputElIndex" class="five columns" data-i18n="">Word index (0-based) // Index Wort (0-basiert)</label>
-                                    <input id="inputElIndex" type="number" v-model="wordPosition" @input="textChanged"/>
-                                </div>
-                                <div class="row">
-                                    <label for="inputRankIndex" class="five columns" data-i18n="">Rank index (0-based) // Index Rank (0-basiert)</label>
-                                    <input id="inputRankIndex" type="number" v-model="rankPosition" @input="textChanged"/>
+                        <div v-show="importType === c.SELECT_ONLINE">
+                            <div class="row">
+                                <label class="three columns" for="selectDict" data-i18n="">Select dictionary // Wörterbuch auswählen</label>
+                                <select id="selectDict" class="nine columns" type="file" v-model="selectedOption">
+                                    <option disabled selected hidden :value="null" data-i18n="">(Please select) // (Bitte auswählen)</option>
+                                    <option v-for="option in options" :value="option">{{option.name | translate}}</option>
+                                </select>
+                            </div>
+                            <div class="row" v-show="selectedOption && selectedOption.type === c.OPTION_TYPE_GITHUB_FREQUENCYWORDS">
+                                <div class="nine columns offset-by-three">
+                                <span data-i18n="">
+                                    <span>Thanks to Hermit Dave for supplying data for this dictionary on </span>
+                                    <span>Danke an Hermit Dave für das Anbieten der Daten für dieses Wörterbuch auf </span>
+                                </span>
+                                    <a href="https://github.com/hermitdave/FrequencyWords" target="_blank">Github.com</a>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <textarea v-focus class="twelve columns" id="inputText" v-model="inputText" @input="textChanged" style="resize: vertical;min-height: 70px;" placeholder="Word1 Word2 Word3..."/>
+                        <div v-show="importType === c.SELECT_FILE">
+                            <div class="row">
+                                <label class="three columns" for="fileInput" data-i18n="">Select file // Datei auswählen</label>
+                                <input id="fileInput" class="nine columns" type="file" accept=".json" @change="onFileSelect"/>
+                            </div>
                         </div>
-                        <div class="row">
-                            <label class="three columns" data-i18n>Recognized Words // Erkannte Wörter</label>
-                            <div v-show="parsedElems.length > 0" class="nine columns">
-                                <span>{{elementCount}}</span>
-                                <span data-i18n>Word(s) // Wörter</span>
-                                <span class="break-word">{{JSON.stringify(parsedElems)}}</span>
-                                <span v-if="parsedElems.length < elementCount">...</span>
-                            </div>
-                            <div v-show="parsedElems.length === 0" class="nine columns">
-                                <span data-i18n>No words // Keine Wörter</span>
-                            </div>
+                        <div v-show="!!error" class="row" style="color: darkred; margin-top: 2.5em">
+                            <i class="fas fa-exclamation-triangle"/> <span>{{error | translate}}</span>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <div class="button-container">
-                            <button @click="$emit('close')" title="Keyboard: [Esc]">
+                        <div class="button-container row">
+                            <button class="six columns" @click="$emit('close')" title="Keyboard: [Esc]">
                                 <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
                             </button>
-                            <button @click="save()" title="Keyboard: [Ctrl + Enter]" :disabled="parsedElems.length == 0">
-                                <i class="fas fa-check"/> <span data-i18n>Insert words // Wörter einfügen</span>
+                            <button class="six columns" @click="save()" title="Keyboard: [Ctrl + Enter]" :disabled="importType === c.SELECT_ONLINE && !selectedOption || importType === c.SELECT_FILE && !selectedFile">
+                                <i class="fas fa-check"/> <span data-i18n>Import Dictionary // Wörterbuch einfügen</span> <i class="fas fa-spinner fa-spin" v-show="loading"/>
                             </button>
                         </div>
                     </div>
@@ -78,91 +64,161 @@
 
 <script>
     import {dataService} from '../../js/service/data/dataService'
+    import Predictionary from 'predictionary';
     import {i18nService} from "../../js/service/i18nService";
     import './../../css/modal.css';
-    import Predictionary from 'predictionary'
-    import {helpService} from "../../js/service/helpService";
+    import {Dictionary} from "../../js/model/Dictionary.js";
+    import {modelUtil} from "../../js/util/modelUtil.js";
 
-    let predictionary = Predictionary.instance();
+    let c = {};
+    c.OPTION_TYPE_PREDEFINED = 'OPTION_TYPE_PREDEFINED'
+    c.OPTION_TYPE_GITHUB_FREQUENCYWORDS = 'OPTION_TYPE_GITHUB_FREQUENCYWORDS';
+    c.SELECT_FILE = 'SELECT_FILE';
+    c.SELECT_ONLINE = 'SELECT_ONLINE';
+
+    let githubFrequencyWordsURL = 'https://api.github.com/repos/klues/FrequencyWords/contents';
+    let githubFrequencyWordsURLRaw = 'https://raw.githubusercontent.com/klues/FrequencyWords/master';
 
     export default {
-        props: ['dictData'],
+        props: ['dicts'],
         data: function () {
             return {
-                inputText: "",
-                parsedElems: [],
-                elementCount: 0,
-                elementSeparator: '[\\n; ]',
-                rankSeparator: null,
-                wordPosition: null,
-                rankPosition: null,
-                showAdvanced: false,
-                originalPredictionary: null
+                importType: c.SELECT_ONLINE,
+                options: [{
+                    name: 'AsTeRICS Grid German default // AsTeRICS Grid Deutsch standard',
+                    downloadUrl: 'https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/app/dictionaries/default_de.json',
+                    type: c.OPTION_TYPE_PREDEFINED
+                }, {
+                    name: 'AsTeRICS Grid English default // AsTeRICS Grid Englisch standard',
+                    downloadUrl: 'https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/app/dictionaries/default_en.json',
+                    type: c.OPTION_TYPE_PREDEFINED
+                }],
+                selectedOption: null,
+                selectedFile: null,
+                c: c,
+                error: null,
+                loading: false
             }
         },
         methods: {
-            textChanged() {
-                predictionary = Predictionary.instance();
-                this.parseInternal(predictionary);
-                this.parsedElems = predictionary.predict('', {maxPredicitons: 20});
-                this.elementCount = predictionary.getWords().length;
-            },
             save() {
-                var thiz = this;
-                thiz.parseInternal(this.originalPredictionary);
-                thiz.dictData.data = this.originalPredictionary.dictionaryToJSON(this.dictData.dictionaryKey);
-                dataService.saveDictionary(thiz.dictData).then(() => {
-                    thiz.$emit('reload', thiz.dictData);
-                    thiz.$emit('close');
-                });
-            },
-            parseInternal(predictionaryInstance) {
-                try {
-                    predictionaryInstance.parseWords(this.inputText, {
-                        elementSeparator: new RegExp(this.elementSeparator),
-                        rankSeparator: new RegExp(this.rankSeparator),
-                        wordPosition: this.wordPosition,
-                        rankPosition: this.rankPosition,
-                        addToDictionary: this.dictData.dictionaryKey
+                let thiz = this;
+                this.error = '';
+                this.loading = true;
+                let existingNames = this.dicts.map(dict => dict.dictionaryKey);
+                if (this.importType === c.SELECT_ONLINE) {
+                    let predictionary = Predictionary.instance();
+                    let dictData;
+                    this.requestDict(this.selectedOption.downloadUrl, this.selectedOption.downloadUrl2).then(data => {
+                        if (this.selectedOption.type === c.OPTION_TYPE_GITHUB_FREQUENCYWORDS) {
+                            predictionary.parseWords(data, {
+                                elementSeparator: '\n',
+                                rankIsIndex: true
+                            });
+                            dictData = predictionary.dictionaryToJSON();
+                        } else if (this.selectedOption.type === c.OPTION_TYPE_PREDEFINED) {
+                            dictData = data;
+                        }
+                        saveDictAndClose(dictData);
+                    }).catch(e => {
+                        this.error = e;
+                        this.loading = false;
                     });
-                } catch (e) {
-                    log.warn('error parsing words: ' + e);
+                } else if (this.importType === c.SELECT_FILE) {
+                    let reader = new FileReader();
+                    reader.onload = function(event) {
+                        try {
+                            let json = JSON.parse(event.target.result);
+                            let key = Object.keys(json)[0];
+                            if (json[key].f === undefined || json[key].t === undefined) {
+                                throw new Error();
+                            } else {
+                                saveDictAndClose(event.target.result);
+                            }
+                        } catch (e) {
+                            thiz.error = 'The selected file does not contain dictionary data. // Die gewählte Datei enthält kein Wörterbuch.';
+                            thiz.loading = false;
+                        }
+                    };
+                    reader.readAsText(this.selectedFile);
+                }
+
+                function saveDictAndClose(dictData) {
+                    let name = thiz.importType === c.SELECT_ONLINE ? thiz.selectedOption.name : thiz.selectedFile.name.replace('dictionary-', '').replace('.json', '');
+                    let dict = new Dictionary({
+                        dictionaryKey: modelUtil.getNewName(i18nService.translate(name), existingNames),
+                        data: dictData
+                    });
+                    return dataService.saveDictionary(dict).then(() => {
+                        thiz.$emit('reload', dict);
+                        thiz.$emit('close');
+                    });
                 }
             },
-            openHelp() {
-                helpService.openHelp();
+            onFileSelect(event) {
+                this.selectedFile = event.target.files[0];
+                this.error = '';
+            },
+            requestDict(url, secondTryUrl) {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: url,
+                        dataType: 'text',
+                        accepts: {
+                            text: 'application/vnd.github.v3.raw'
+                        }
+                    }).then((result) => {
+                        return resolve(result);
+                    }).fail(() => {
+                        if (!secondTryUrl) {
+                            return reject("Could not download dictionary, please check internet connection. // Herunterladen des Wörterbuches fehlgeschlagen, bitte überprüfen Sie die Internetverbindung.");
+                        }
+                        log.warn("first try to download dict failed. second try...");
+                        this.requestDict(secondTryUrl).then(resolve).catch(reject);
+                    });
+                });
             }
         },
         mounted() {
             i18nService.initDomI18n();
-            this.originalPredictionary = Predictionary.instance();
-            this.originalPredictionary.loadDictionary(this.dictData.data, this.dictData.dictionaryKey);
-            helpService.setHelpLocation('07_dictionaries', '#add-words');
-        },
-        updated() {
-            i18nService.initDomI18n();
-        },
-        beforeDestroy() {
-            helpService.revertToLastLocation();
+            let additionalOptions = JSON.parse('[{"langCode":"af","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/af/af_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/af/af_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"ar","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ar/ar_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ar/ar_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"bg","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/bg/bg_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/bg/bg_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"bn","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/bn/bn_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/bn/bn_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"br","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/br/br_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/br/br_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"bs","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/bs/bs_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/bs/bs_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"ca","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ca/ca_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ca/ca_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"cs","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/cs/cs_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/cs/cs_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"da","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/da/da_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/da/da_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"de","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/de/de_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/de/de_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"el","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/el/el_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/el/el_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"en","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/en/en_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/en/en_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"eo","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/eo/eo_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/eo/eo_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"es","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/es/es_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/es/es_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"et","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/et/et_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/et/et_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"eu","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/eu/eu_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/eu/eu_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"fa","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/fa/fa_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/fa/fa_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"fi","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/fi/fi_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/fi/fi_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"fr","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/fr/fr_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/fr/fr_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"gl","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/gl/gl_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/gl/gl_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"he","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/he/he_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/he/he_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"hi","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/hi/hi_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/hi/hi_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"hr","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/hr/hr_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/hr/hr_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"hu","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/hu/hu_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/hu/hu_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"hy","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/hy/hy_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/hy/hy_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"id","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/id/id_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/id/id_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"is","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/is/is_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/is/is_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"it","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/it/it_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/it/it_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"ja","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ja/ja_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ja/ja_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"ka","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ka/ka_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ka/ka_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"kk","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/kk/kk_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/kk/kk_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"ko","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ko/ko_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ko/ko_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"lt","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/lt/lt_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/lt/lt_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"lv","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/lv/lv_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/lv/lv_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"mk","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/mk/mk_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/mk/mk_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"ml","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ml/ml_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ml/ml_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"ms","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ms/ms_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ms/ms_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"nl","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/nl/nl_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/nl/nl_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"no","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/no/no_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/no/no_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"pl","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/pl/pl_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/pl/pl_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"pt","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/pt/pt_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/pt/pt_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"pt_br","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/pt_br/pt_br_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/pt_br/pt_br_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"ro","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ro/ro_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ro/ro_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"ru","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ru/ru_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ru/ru_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"si","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/si/si_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/si/si_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"sk","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/sk/sk_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/sk/sk_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"sl","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/sl/sl_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/sl/sl_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"sq","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/sq/sq_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/sq/sq_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"sr","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/sr/sr_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/sr/sr_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"sv","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/sv/sv_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/sv/sv_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"ta","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ta/ta_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/ta/ta_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"te","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/te/te_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/te/te_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"th","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/th/th_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/th/th_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"tl","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/tl/tl_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/tl/tl_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"tr","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/tr/tr_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/tr/tr_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"uk","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/uk/uk_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/uk/uk_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"vi","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/vi/vi_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/vi/vi_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"zh","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/zh/zh_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/zh/zh_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"},{"langCode":"zh_tw","downloadUrl":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/zh_tw/zh_tw_50k.txt","downloadUrl2":"https://raw.githubusercontent.com/klues/FrequencyWords/master/content/2016/zh_tw/zh_tw_full.txt","type":"OPTION_TYPE_GITHUB_FREQUENCYWORDS"}]');
+            additionalOptions = additionalOptions.map(o => {
+                let lang = i18nService.translateLangCode(o.langCode);
+                o.name = `${lang} (hermitdave@github.com)`;
+                return o;
+            })
+            additionalOptions.sort((a, b) => {
+                return a.name.localeCompare(b.name);
+            });
+            this.options = this.options.concat(additionalOptions);
+            //printOptionsJSON('/content/2016');
         }
     }
+
+    function printOptionsJSON(basePath) {
+        $.get(githubFrequencyWordsURL + basePath).then(result => {
+            result = result.filter(e => e.type === "dir");
+            let options = result.map(e => {
+                return {
+                    langCode: e.name,
+                    downloadUrl: `${githubFrequencyWordsURLRaw}/${e.path}/${e.name}_50k.txt`,
+                    downloadUrl2: `${githubFrequencyWordsURLRaw}/${e.path}/${e.name}_full.txt`,
+                    type: c.OPTION_TYPE_GITHUB_FREQUENCYWORDS
+                }
+            });
+            console.log(`Options for ${basePath}:`);
+            console.log(JSON.stringify(options));
+        });
+    }
 </script>
+
 
 <style scoped>
     .row {
         margin-top: 1em;
     }
 
-    .btn-accordion {
-        background-color: white;
-        border-style: solid;
-        border-color: gray;
-        border-width: 1px;
-        text-align: left;
-        border-left: none;
-        border-right: none;
-    }
-    .btn-accordion:hover span {
-        color: cornflowerblue;
+    h2 {
+        margin-top: 2em;
     }
 </style>

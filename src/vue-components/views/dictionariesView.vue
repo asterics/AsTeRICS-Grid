@@ -3,7 +3,8 @@
         <div class="all-dicts-view">
             <header class="row header" role="banner">
                 <header-icon></header-icon>
-                <button @click="addDictionary()"><i class="fas fa-plus"/> <span data-i18n="">New Dictionary // Neues Wörterbuch</span></button>
+                <button tabindex="32" @click="addDictionary()" class="small spaced"><i class="fas fa-plus"/> <span class="hide-mobile" data-i18n="">New empty Dictionary // Neues leeres Wörterbuch</span></button>
+                <button tabindex="31" @click="showImportModal = true" class="small spaced"><i class="fas fa-file-import"/> <span class="hide-mobile" data-i18n="">Import Dictionary // Wörterbuch importieren</span></button>
             </header>
             <div class="row content text-content">
                 <div v-if="!dicts" class="grid-container grid-mask">
@@ -34,7 +35,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="eight columns actionbuttons" style="display: flex;">
+                            <div class="eight columns actionbuttons" style="display: flex; padding-right: 1em">
                                 <div class="four columns show-mobile" style="margin: 0.5em 0 0 0.2em" data-i18n="">Actions
                                     // Aktionen
                                 </div>
@@ -45,13 +46,15 @@
                                 </button>
                                 <button @click="deleteDict(dict.id, dict.dictionaryKey)"><i class="far fa-trash-alt"/> <span
                                         class="hide-mobile" data-i18n="">Delete // Löschen</span></button>
+                                <button @click="downloadDict(dict.id, dict.dictionaryKey)"><i class="fas fa-download"/> <span
+                                    class="hide-mobile" data-i18n="">Save // Speichern</span></button>
                             </div>
                         </div>
                         <div class="edit-container" v-if="editId === dict.id">
                             <div class="row">
                                 <input type="text" class="four columns" placeholder="Search word" v-model="searchWord"
                                        @input="inputSearchWord()"/>
-                                <button @click="showImportModal = true" class="four columns">
+                                <button @click="showWordsModal = true; modalDict = dict" class="four columns">
                                     <i class="fas fa-file-import"/>
                                     <span data-i18n="">Import words // Wörter importieren</span>
                                 </button>
@@ -78,22 +81,23 @@
                                 <span v-show="totalWords === 0" data-i18n="">This dictionary contains no words. // Dieses Wörterbuch enthält keine Wörter.</span>
                             </div>
                         </div>
-                        <div>
-                            <import-dictionary-modal v-if="showImportModal" v-bind:dict-data="dict"
-                                                     @close="showImportModal = false" @reload="reload"/>
-                        </div>
                     </li>
                 </ul>
                 <p v-if="!dicts || dicts.length === 0" data-i18n>
                     No dictionaries found! // Keine Ergebnisse gefunden!
                 </p>
             </div>
+            <import-words-modal v-if="showWordsModal" v-bind:dict-data="modalDict"
+                                @close="showWordsModal = false" @reload="reload"/>
+            <import-dictionary-modal v-if="showImportModal" :dicts="dicts"
+                                     @close="showImportModal = false" @reload="reload"/>
         </div>
     </div>
 </template>
 
 <script>
     import $ from 'jquery';
+    import FileSaver from 'file-saver';
     import {dataService} from "../../js/service/data/dataService";
     import {modelUtil} from "../../js/util/modelUtil";
     import {i18nService} from "../../js/service/i18nService";
@@ -102,6 +106,7 @@
     import {util} from "../../js/util/util";
     import {Dictionary} from "../../js/model/Dictionary";
     import Predictionary from 'predictionary'
+    import ImportWordsModal from '../modals/importWordsModal.vue'
     import ImportDictionaryModal from '../modals/importDictionaryModal.vue'
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {helpService} from "../../js/service/helpService";
@@ -111,6 +116,7 @@
         data() {
             return {
                 dicts: null,
+                modalDict: null,
                 editModeId: '',
                 editId: null,
                 originalLabel: '',
@@ -118,13 +124,14 @@
                 predictionary: null,
                 wordlist: [],
                 searchWord: "",
+                showWordsModal: false,
                 showImportModal: false,
                 totalWords: 0,
                 filterWords: 0
             };
         },
         components: {
-            ImportDictionaryModal, HeaderIcon
+            ImportDictionaryModal, ImportWordsModal, HeaderIcon
         },
         methods: {
             deleteDict: function (id, label) {
@@ -135,6 +142,10 @@
                 dataService.deleteObject(id).then(() => {
                     thiz.reload();
                 });
+            },
+            downloadDict: function (id, label) {
+                let blob = new Blob([this.dicts.filter(d => d.id === id)[0].data], {type: "application/json;charset=utf-8"});
+                FileSaver.saveAs(blob, `dictionary-${label}.json`);
             },
             addDictionary: function () {
                 log.debug('add dictionary!');
@@ -241,7 +252,7 @@
                 thiz.showLoading = false;
             });
         },
-        mounted: function () {
+        mounted() {
             let thiz = this;
             vueApp = thiz;
             i18nService.initDomI18n();
@@ -252,7 +263,6 @@
         beforeDestroy() {
             predictionService.init();
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.updatedHandler);
-            $.contextMenu('destroy');
         }
     };
 
