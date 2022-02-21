@@ -125,20 +125,20 @@ function addText(text) {
 }
 
 $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
+    let label = i18nService.getTranslation(element.label);
     if (registeredCollectElements.length === 0) {
         return;
     }
     if (getActionOfType(element, GridActionCollectElement.getModelName())) {
         return; // no adding of text if the element contains actions for collect elements, e.g. "clear"
     }
-    if (getActionOfType(element, GridActionNavigate.getModelName())) {
-        return; // no adding of text if the element contains an navigate action
+    if (getActionOfType(element, GridActionNavigate.getModelName()) && label.length !== 1) {
+        return; // no adding of text if the element contains an navigate action and it's no single keyboard character
     }
     if (!element.type || element.type === GridElement.ELEMENT_TYPE_NORMAL) {
-        if (!i18nService.getTranslation(element.label)) {
+        if (!label) {
             return;
         }
-        let label = i18nService.getTranslation(element.label);
         let textToAdd = label.length === 1 && keyboardLikeFactor > 0.5 ? label.toLowerCase() : label + ' ';
         addText(textToAdd);
         registeredCollectElements.forEach(collectElem => {
