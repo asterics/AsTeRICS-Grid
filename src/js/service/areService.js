@@ -365,6 +365,24 @@ areService.unsubscribeEvents = function (areUrl) {
     }
 };
 
+/*areService.xmlComponentToObject = function (xmlComponent) {
+    let object = {};
+    object.id = xmlComponent.id;
+    let d = xmlComponent.getElementsByTagName('description')[0];
+    object.description = d ? d.innerHTML : '';
+    let ports = xmlComponent.getElementsByTagName('ports')[0];
+    return object;
+}
+
+areService.parseFromXML = function (xml) {
+    let parser = new DOMParser();
+    let xmlDoc = parser.parseFromString(xml, 'text/xml');
+    let components = Array.from(xmlDoc.getElementsByTagName('component'));
+    let objects = components.map(this.xmlComponentToObject);
+    log.warn(objects);
+    return null;
+}*/
+
 function closeEventSource(areUrl) {
     if (_eventSourceMap[areUrl] !== null) {
         _eventSourceMap[areUrl].close();
