@@ -29,8 +29,11 @@
                         </div>
                         <ul id="actionList">
                             <span v-show="gridElement.actions.length == 0" class="row">
-                                <span>No actions defined, click on '<i class="fas fa-plus"/> <span class="hide-mobile">Add action</span>' to add one.</span>
-                                <span>Keine Aktionen definiert, klicken Sie auf "<i class="fas fa-plus"/> <span class="hide-mobile">Aktion hinzufügen</span>" um eine Aktion zu definieren.</span>
+                                <i18n path="noActionsDefinedClickOnAdd" tag="span">
+                                    <template v-slot:addAction>
+                                        <i class="fas fa-plus"/> <span class="hide-mobile">{{ $t('addAction') }}</span>
+                                    </template>
+                                </i18n>
                             </span>
                             <li v-for="action in gridElement.actions" class="row">
                                 <div class="row" style="margin-top: 0">

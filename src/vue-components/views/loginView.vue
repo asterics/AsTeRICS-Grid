@@ -46,8 +46,11 @@
                                             <i class="fas fa-exclamation-triangle"></i> <span>{{ $t('incompatibleDataModelVersion') }}</span>
                                         </div>
                                         <div>
-                                            <span>Change to <a href="https://grid.asterics.eu/latest/#login">grid.asterics.eu/latest</a> to open this user.</span>
-                                            <span>Wechseln sie zu <a href="https://grid.asterics.eu/latest/#login">grid.asterics.eu/latest</a> um diesen User zu verwenden.</span>
+                                            <i18n path="changeToLatestToOpen" tag="span">
+                                                <template v-slot:latestLink>
+                                                    <a href="https://grid.asterics.eu/latest/#login">grid.asterics.eu/latest</a>
+                                                </template>
+                                            </i18n>
                                         </div>
                                     </div>
                                 </div>

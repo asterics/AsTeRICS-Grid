@@ -25,8 +25,11 @@
         <div class="row">
             <h3 class="four columns">{{ $t('webradioSearch') }}</h3>
             <span id="poweredby" class="eight columns">
-                <span>powered by <a href="https://www.radio-browser.info/gui/#!/" target="_blank">radio-browser.info</a></span>
-                <span>Suche durch <a href="https://www.radio-browser.info/gui/#!/" target="_blank">radio-browser.info</a></span>
+                <i18n path="radioSearchPoweredBy" tag="span">
+                    <template v-slot:radioLink>
+                        <a href="https://www.radio-browser.info/gui/#!/" target="_blank">radio-browser.info</a>
+                    </template>
+                </i18n>
             </span>
         </div>
         <div class="row">

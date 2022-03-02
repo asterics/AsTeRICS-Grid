@@ -6,8 +6,11 @@
             <div class="eight columns offset-by-one">
                 <div class="row">
                     <h3>
-                        <span>Use AsTeRICS Grid <strong>without registration</strong></span>
-                        <span>AsTeRICS Grid <strong>ohne Registrierung</strong> verwenden</span>
+                        <i18n path="useAstericsGridWithoutRegistrationBold" tag="span">
+                            <template v-slot:withoutReg>
+                                <strong>{{ $t('withoutRegistration') }}</strong>
+                            </template>
+                        </i18n>
                     </h3>
                     <ul class="fa-ul">
                         <li><span class="fa-li"><i class="fas fa-check"></i></span><span>{{ $t('allGridsAreSavedOffline') }}</span></li>
@@ -23,8 +26,11 @@
                 </div>
                 <div class="row">
                     <h3>
-                        <span>Use AsTeRICS Grid <strong>with registration</strong></span>
-                        <span>AsTeRICS Grid <strong>mit Registrierung</strong> verwenden</span>
+                        <i18n path="useAstericsGridWithRegistration" tag="span">
+                            <template v-slot:withReg>
+                                <strong>{{ $t('withRegistration') }}</strong>
+                            </template>
+                        </i18n>
                     </h3>
                     <ul class="fa-ul">
                         <li><span class="fa-li"><i class="fas fa-check"></i></span><span>{{ $t('allGridsAreSavedOfflineAndOnline') }}</span></li>
@@ -40,11 +46,11 @@
                 </div>
                 <div class="row">
                     <b>{{ $t('hint') }}</b>
-                    <span>
-                        <span>If you need help within AsTeRICS Grid, just click the help icon ( // Wenn Sie Hilfe bei der Verwendung von AsTeRICS Grid benötigen, klicken Sie einfach auf das Hilfe-Icon (</span>
-                        <a href="javascript:;" @click="openHelp"><i class="fas fa-question-circle"></i></a>
-                        <span>) or press [F1] on the keyboard in order to open the user documentation at the relevant part. // ) oder drücken Sie [F1] auf der Tastatur um die Benutzerdokumentation an der entsprechenden Stelle zu öffnen.</span>
-                    </span>
+                    <i18n path="ifYouNeedHelpWithinAstericsGrid" tag="span">
+                        <template v-slot:openHelpIcon>
+                            <a href="javascript:;" @click="openHelp"><i class="fas fa-question-circle"></i></a>
+                        </template>
+                    </i18n>
                 </div>
             </div>
         </div>

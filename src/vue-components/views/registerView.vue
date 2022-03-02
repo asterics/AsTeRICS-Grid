@@ -50,25 +50,20 @@
                 <div class="six columns offset-by-two" v-show="!!password && password2 !== null && password === password2">
                     <input type="checkbox" id="checkPrivacy" v-model="privacyConsent"/>
                     <label for="checkPrivacy">
-                        <span>I accept the <a href="app/privacy_en.html?back=register">privacy policy</a></span>
-                        <span>Ich akzeptiere die <a href="app/privacy_de.html?back=register">Datenschutzbestimmungen</a></span>
+                        <i18n path="iAcceptPrivacyPolicy" tag="span">
+                            <template v-slot:link>
+                                <a href="app/privacy_en.html?back=register">{{ $t('privacyPolicy') }}</a>
+                            </template>
+                        </i18n>
                     </label>
                     <br/>
                     <span class="fa fa-info-circle"/>
                     <span>
-                        <span>
-                            The only potentially personal data that is saved unencrypted is your username. All other data
-                            will be end-to-end encrypted cannot be accessed by anyone else. The consent can be revoked at
-                            any time by sending an email to <a href="mailto:office@asterics-foundation.org">office@asterics-foundation.org</a>.
-                            Revocation does not affect the legality of data processing that has taken place before.
-                        </span>
-                        <span>
-                            Der einzige potentiell personenbezogene Datenwert, welcher unverschlüsselt gespeichert wird,
-                            ist der Username. Alle anderen Daten werden Ende-zu-Ende verschlüsselt und können von niemand
-                            anderem eingesehen werden. Die Einwilligung kann jederzeit durch eine Mail an
-                            <a href="mailto:office@asterics-foundation.org">office@asterics-foundation.org</a> widerrufen werden.
-                            Durch den Widerruf wird die Rechtmäßigkeit der bis dahin erfolgten Verarbeitung nicht berührt.
-                        </span>
+                        <i18n path="theOnlyPersonalDataSavedIs" tag="span">
+                            <template v-slot:link>
+                                <a href="mailto:office@asterics-foundation.org">office@asterics-foundation.org</a>
+                            </template>
+                        </i18n>
                     </span>
                 </div>
             </div>

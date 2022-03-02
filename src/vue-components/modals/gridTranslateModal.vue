@@ -33,12 +33,24 @@
                                     <div class="row">
                                         <button class="six columns" @click="copy(currentLocale)" :title="$t('copyColumn')">
                                             <i class="far fa-copy"></i>
-                                            <span class="show-mobile">{{currentLangTranslated}} kopieren</span>
+                                            <span class="show-mobile">
+                                                <i18n path="copySomething" tag="span">
+                                                    <template v-slot:toCopy>
+                                                        {{currentLangTranslated}}
+                                                    </template>
+                                                </i18n>
+                                            </span>
                                             <span class="hide-mobile">{{ $t('copyColumn') }}</span>
                                         </button>
                                         <button class="six columns" @click="paste(currentLocale)" :title="$t('pasteColumn')">
                                             <i class="far fa-clipboard"></i>
-                                            <span class="show-mobile">{{currentLangTranslated}} einfügen</span>
+                                            <span class="show-mobile">
+                                                <i18n path="pasteSomething" tag="span">
+                                                    <template v-slot:toPaste>
+                                                        {{currentLangTranslated}}
+                                                    </template>
+                                                </i18n>
+                                            </span>
                                             <span class="hide-mobile">{{ $t('pasteColumn') }}</span>
                                         </button>
                                     </div>
@@ -53,12 +65,24 @@
                                     <div class="row">
                                         <button class="six columns" @click="copy(chosenLocale)" :title="$t('copyColumn')">
                                             <i class="far fa-copy"></i>
-                                            <span class="show-mobile">{{chosenLangTranslated}} kopieren</span>
+                                            <span class="show-mobile">
+                                                <i18n path="copySomething" tag="span">
+                                                    <template v-slot:toCopy>
+                                                        {{chosenLangTranslated}}
+                                                    </template>
+                                                </i18n>
+                                            </span>
                                             <span class="hide-mobile">{{ $t('copyColumn') }}</span>
                                         </button>
                                         <button class="six columns" @click="paste(chosenLocale)" :title="$t('pasteColumn')">
                                             <i class="far fa-clipboard"></i>
-                                            <span class="show-mobile">{{chosenLangTranslated}} einfügen</span>
+                                            <span class="show-mobile">
+                                                <i18n path="pasteSomething" tag="span">
+                                                    <template v-slot:toPaste>
+                                                        {{chosenLangTranslated}}
+                                                    </template>
+                                                </i18n>
+                                            </span>
                                             <span class="hide-mobile">{{ $t('pasteColumn') }}</span>
                                         </button>
                                     </div>

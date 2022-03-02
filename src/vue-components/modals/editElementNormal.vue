@@ -52,14 +52,17 @@
                                 <button @click="clearSearch" :aria-label="$t('clear')"><i class="fas fa-times"></i></button>
                             </div>
                             <span class="four columns">
-                                <span>powered by <a href="https://www.opensymbols.org/" target="_blank">opensymbols.org</a></span>
-                                <span>Suche durch <a href="https://www.opensymbols.org/" target="_blank">opensymbols.org</a></span>
+                                <i18n path="searchPoweredBy" tag="span">
+                                    <template v-slot:opensymbolsLink>
+                                        <a href="https://www.opensymbols.org/" target="_blank">opensymbols.org</a>
+                                    </template>
+                                </i18n>
                             </span>
                         </div>
                         <div class="row">
                             <div class="offset-by-two ten columns">
                                 <div v-for="imgElement in searchResults" class="inline">
-                                    <img v-if="imgElement.base64" :src="imgElement.base64" @click="setImage(imgElement)" :title="'by ' + imgElement.author" width="60" height="60" class="inline" role="button"/>
+                                    <img v-if="imgElement.base64" :src="imgElement.base64" @click="setImage(imgElement)" :title="$t('byAuthor', imgElement.author)" width="60" height="60" class="inline" role="button"/>
                                     <span v-if="!imgElement.base64 && !imgElement.failed" style="position: relative">
                                         <img src="data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%3E%3C/svg%3E" :title="imgElement.image_url" width="60" height="60" class="inline"/>
                                         <i class="fas fa-spinner fa-spin" style="position: absolute; top: -25px; left: 25px;"></i>
@@ -73,12 +76,7 @@
                                 </div>
                                 <span v-show="searchLoading"><i class="fas fa-spinner fa-spin"></i> <span>{{ $t('searching') }}</span></span>
                                 <span v-show="!searchLoading && searchResults && searchResults.length === 0">
-                                    <span><b>No search results.</b></span>
-                                    <span><b>Keine Resultate.</b> Versuchen Sie es ev. nochmal mit einem <b>englischen Suchbegriff</b>.</span>
-                                </span><br/>
-                                <span v-show="!searchLoading && searchResults && searchResults.length === 0">
-                                    <span></span>
-                                    <span>Für eine Symbolsuche auf Deutsch können Sie <a target="_blank" href="https://www.pictoselector.eu/de/home/download/">Picto-Selector</a> verwenden. Symbole aus diesem Programm können mit Drag & Drop direkt in AsTeRICS Grid eingefügt werden.</span>
+                                    <span><b>{{ $t('noSearchResults') }}</b></span>
                                 </span>
                             </div>
                         </div>

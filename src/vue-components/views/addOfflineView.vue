@@ -19,8 +19,7 @@
                 <div class="six columns offset-by-two">
                     <i class="fas fa-2x fa-info-circle" style="color: blue"></i>
                     <span>
-                        <span>A local user is stored only on this device, in this browser. If you want to set up a user which is synchronized across several devices using the cloud, you can register an online user.</span>
-                        <span>Ein lokaler User ist nur auf diesem Gerät, in diesem Browser gespeichert. Wenn Sie einen User erstellen möchen, der auf verschiedenen Geräten synchronisiert wird, registrieren Sie einen Online-User.</span>
+                        {{ $t('aLocalUserIsStoredOnlyOnThisDevice') }}
                     </span>
                 </div>
             </div>

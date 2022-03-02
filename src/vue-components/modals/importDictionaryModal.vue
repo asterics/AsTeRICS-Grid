@@ -27,10 +27,7 @@
                             </div>
                             <div class="row" v-show="selectedOption && selectedOption.type === c.OPTION_TYPE_GITHUB_FREQUENCYWORDS">
                                 <div class="nine columns offset-by-three">
-                                <span>
-                                    <span>Thanks to Hermit Dave for supplying data for this dictionary on </span>
-                                    <span>Danke an Hermit Dave für das Anbieten der Daten für dieses Wörterbuch auf </span>
-                                </span>
+                                    <span>{{ $t('thanksToHermitDaveForSupplyingDataForThis') }} </span>
                                     <a href="https://github.com/hermitdave/FrequencyWords" target="_blank">Github.com</a>
                                 </div>
                             </div>

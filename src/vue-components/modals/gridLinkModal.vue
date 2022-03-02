@@ -39,8 +39,7 @@
                         <div class="row" v-show="selectedElement && selectedElement.actions.filter(e => e.modelName === GridActionNavigate.getModelName()).length > 0">
                             <i class="fas fa-exclamation-triangle"></i>
                             <span>
-                                <span><b>Hint: </b> This element already navigates to another grid. This navigation will be overwritten.</span>
-                                <span><b>Hinweis: </b> Dieses Element navigiert bereits zu einem anderen Grid. Diese Navigation wird überschrieben.</span>
+                                <b>{{ $t('hint') }} </b> {{ $t('thisElementAlreadyNavigatesToAnotherGrid') }}
                             </span>
                         </div>
                     </div>

@@ -40,14 +40,8 @@
             </select>
         </div>
         <div class="row" v-if="areModelSync && areComponentPorts.length != 0">
-            <div class="four columns">
-                <label for="inputDataPortId" class="normal-text">
-                    <span>Send data <span class="show-mobile">to port</span></span>
-                    <span>Sende Daten <span class="show-mobile">zu Port</span></span>
-                </label>
-            </div>
-            <div class="four columns">
-                <label for="inputDataPortId" class="normal-text hide-mobile">{{ $t('port') }}</label>
+            <div class="four columns offset-by-four">
+                <label for="inputDataPortId" class="normal-text">{{ $t('sendDataToPort') }}</label>
                 <select id="inputDataPortId" class="full-width" v-model="action.dataPortId">
                     <option value="">{{ $t('empty') }}</option>
                     <option v-for="id in areComponentPorts" :value="id">
@@ -56,19 +50,13 @@
                 </select>
             </div>
             <div class="four columns">
-                <label for="inputDataPortData" class="normal-text">{{ $t('data') }}</label>
+                <label for="inputDataPortData" class="normal-text">{{ $t('dataToSend') }}</label>
                 <input id="inputDataPortData" type="text" class="full-width" v-model="action.dataPortSendData"/>
             </div>
         </div>
         <div class="row" v-if="areModelSync && areComponentEventPorts.length != 0">
-            <div class="four columns">
-                <label for="inputeventPortId" class="normal-text">
-                    <span>Trigger event <span class="show-mobile">on event port</span></span>
-                    <span>Event triggern <span class="show-mobile">auf Event-Port</span></span>
-                </label>
-            </div>
-            <div class="eight columns">
-                <label for="inputeventPortId" class="normal-text hide-mobile">Event-Port</label>
+            <div class="eight columns offset-by-four">
+                <label for="inputeventPortId" class="normal-text">Event-Port</label>
                 <select id="inputeventPortId" class="full-width" v-model="action.eventPortId">
                     <option value="">{{ $t('empty') }}</option>
                     <option v-for="id in areComponentEventPorts" :value="id">

@@ -15,20 +15,12 @@
                         <option v-for="lang in allLanguages.filter(lang => ['de', 'en'].indexOf(lang.code) !== -1 || gridLanguages.indexOf(lang.code) !== -1)" :value="lang.code">{{lang | extractTranslation}} ({{lang.code}})</option>
                     </select>
                 </div>
-                <div class="row">
-                    <span class="fa fa-info-circle"></span>
-                    <span class="break-word">
-                        <span>
-                            <span>Grids can be translated to every language. To add or edit a translation use "Edit grid -> More -> Translate Grid".</span>
-                            <span>Grids können in alle Sprachen übersetzt werden. Um eine Übersetzung zu bearbeiten oder hinzuzufügen, verwenden Sie "Grid bearbeiten -> Mehr -> Grid übersetzen".</span>
-                        </span>
-                    </span>
-                </div>
                 <div class="row" style="margin-bottom: 0.5em">
                     <span class="fa fa-info-circle"></span>
                     <span class="break-word">
-                        <span>For user interface only English (en) and German (de) are available. For all other languages English will be used.</span>
-                        <span>Das User-Interface ist nur in Englisch (en) and Deutsch (de) verfügbar. Für andere Sprachen wird Englisch verwendet.</span>
+                        <span>
+                            {{ $t('gridsCanBeTranslatedToEveryLanguage') }}
+                        </span>
                     </span>
                 </div>
             </div>
