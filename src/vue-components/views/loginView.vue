@@ -2,7 +2,7 @@
     <div class="overflow-content">
         <header-icon full-header="true"></header-icon>
         <div class="row content spaced" @keyup.enter="loginPlain(user, password)">
-            <h2><span class="show-mobile">AsTeRICS Grid - </span><span data-i18n="">Login // Einloggen</span></h2>
+            <h2><span class="show-mobile">AsTeRICS Grid - </span><span>{{ $t('login') }}</span></h2>
             <div class="eleven columns offset-by-one">
                 <div v-show="allUsersList.length > 0">
                     <div class="row">
@@ -24,10 +24,10 @@
                                         </span>
                                     </span>
                                         <strong >{{username}}</strong>
-                                        <em v-show="username === activeUser" data-i18n="">(active) // (aktiv)</em>
+                                        <em v-show="username === activeUser">{{ $t('activeBracket') }}</em>
                                     </div>
                                     <button class="four columns" @click="loginStored(username)" v-show="hasValidMajorModelVersion(username)">
-                                        <span data-i18n="">Open // Öffnen</span>
+                                        <span>{{ $t('open') }}</span>
                                         <i class="fas fa-sign-in-alt" v-show="loginTryUser !== username"></i>
                                         <i class="fas fa-spinner fa-spin" v-show="loginSuccess == undefined && loginTryUser === username"></i>
                                         <i style="color: red" class="fas fa-times" v-show="loginSuccess == false && loginTryUser === username"/>
@@ -35,17 +35,17 @@
                                     </button>
                                     <button class="four columns" @click="removeStoredUser(username)" v-show="hasValidMajorModelVersion(username)">
                                         <span v-show="!savedLocalUsers.includes(username)">
-                                            <span data-i18n="">Logout // Ausloggen</span> <i class="fas fa-user-times"></i>
+                                            <span>{{ $t('logout') }}</span> <i class="fas fa-user-times"></i>
                                         </span>
                                             <span v-show="savedLocalUsers.includes(username)">
-                                            <span data-i18n="">Delete // Löschen</span> <i class="fas fa-trash"></i>
+                                            <span>{{ $t('delete') }}</span> <i class="fas fa-trash"></i>
                                         </span>
                                     </button>
                                     <div class="eight columns" v-show="!hasValidMajorModelVersion(username)">
                                         <div>
-                                            <i class="fas fa-exclamation-triangle"></i> <span data-i18n="">Incompatible data model version! // Inkompatible Version des Datenmodells!</span>
+                                            <i class="fas fa-exclamation-triangle"></i> <span>{{ $t('incompatibleDataModelVersion') }}</span>
                                         </div>
-                                        <div data-i18n="">
+                                        <div>
                                             <span>Change to <a href="https://grid.asterics.eu/latest/#login">grid.asterics.eu/latest</a> to open this user.</span>
                                             <span>Wechseln sie zu <a href="https://grid.asterics.eu/latest/#login">grid.asterics.eu/latest</a> um diesen User zu verwenden.</span>
                                         </div>
@@ -57,26 +57,26 @@
                     <div class="row">
                         <form autocomplete="on" class="eleven columns saved-user" onsubmit="event.preventDefault()">
                             <div class="row">
-                                <strong data-i18n="">Login with other user // Login mit anderem User</strong>
+                                <strong>{{ $t('loginWithOtherUser') }}</strong>
                             </div>
                             <div class="row">
-                                <label for="inputUser" class="two columns"><span>Username</span></label>
+                                <label for="inputUser" class="two columns"><span>{{ $t('username') }}</span></label>
                                 <input type="text" name="username" v-model="user" id="inputUser" class="four columns" autocomplete="username"/>
                                 <button type="button" v-if="savedUsers.includes(user) && hasValidMajorModelVersion(user)" class="four columns" @click="loginStored(user)">
-                                    <span data-i18n="">Open // Öffnen</span> <i class="fas fa-sign-in-alt"></i>
+                                    <span>{{ $t('open') }}</span> <i class="fas fa-sign-in-alt"></i>
                                 </button>
                             </div>
                             <div class="row" v-show="!savedUsers.includes(user)">
-                                <label for="inputPassword" class="two columns"><span data-i18n="">Password // Passwort</span></label>
+                                <label for="inputPassword" class="two columns"><span>{{ $t('password') }}</span></label>
                                 <input type="password" v-model="password" id="inputPassword" class="four columns" autocomplete="current-password"/>
                             </div>
                             <div class="row" v-show="!savedUsers.includes(user)">
                                 <div class="four columns offset-by-two" style="margin-bottom: 1.0em">
                                     <input type="checkbox" checked v-model="remember" id="inputRemember"/>
-                                    <label for="inputRemember"><span data-i18n="">Remember this user and make it available for offline use // Diesen User speichern und offline verfügbar machen</span></label>
+                                    <label for="inputRemember"><span>{{ $t('rememberThisUserAndMakeItAvailableForOfflineUse') }}</span></label>
                                 </div>
                                 <button type="button" @click="loginPlain(user, password)" :disabled="!user || !password" class="five columns offset-by-one">
-                                    <span data-i18n="">Login // Einloggen</span>
+                                    <span>{{ $t('login') }}</span>
                                     <span>
                                         <i class="fas fa-spinner fa-spin" v-show="loginSuccess === undefined && loginTryUser === user"/>
                                         <i style="color: red" class="fas fa-times" v-show="loginSuccess == false && loginTryUser === user"/>
@@ -90,54 +90,54 @@
                 <div v-show="allUsersList.length == 0">
                     <form autocomplete="on" onsubmit="event.preventDefault()">
                         <div class="row">
-                            <label for="inputUser2" class="one column"><span class="desktop-right">Username</span></label>
+                            <label for="inputUser2" class="one column"><span class="desktop-right">{{ $t('username') }}</span></label>
                             <input type="text" name="username" v-model="user" id="inputUser2" class="four columns" autocomplete="username"/>
                         </div>
                         <div class="row">
-                            <label for="inputPassword2" class="one column"><span class="desktop-right" data-i18n="">Password // Passwort</span></label>
+                            <label for="inputPassword2" class="one column"><span class="desktop-right">{{ $t('password') }}</span></label>
                             <input type="password" v-model="password" id="inputPassword2" class="four columns" autocomplete="current-password"/>
                         </div>
                         <div class="row">
                             <div class="four columns offset-by-one">
                                 <input type="checkbox" checked v-model="remember" id="inputRemember2"/>
-                                <label for="inputRemember2"><span data-i18n="">Remember this user and make it available for offline use // Diesen User speichern und offline verfügbar machen</span></label>
+                                <label for="inputRemember2"><span>{{ $t('rememberThisUserAndMakeItAvailableForOfflineUse') }}</span></label>
                                 <br/>
-                                <span class="fa fa-info-circle"/> <span data-i18n="">Do not check for a one-time login on a foreign device. // Für einmaliges Einloggen auf einem fremden Gerät sollte der User nicht gespeichert werden.</span>
+                                <span class="fa fa-info-circle"/> <span>{{ $t('doNotCheckForAOnetimeLoginOnForeign') }}</span>
                             </div>
                         </div>
                     </form>
                     <div class="row">
-                        <button @click="loginPlain(user, password)" :disabled="!user || !password" class="four columns offset-by-one" data-i18n="">Login // Einloggen</button>
+                        <button @click="loginPlain(user, password)" :disabled="!user || !password" class="four columns offset-by-one">{{ $t('login') }}</button>
                     </div>
                     <div class="row">
                         <div class="four columns offset-by-one">
                             <div v-show="loginSuccess === undefined">
-                                <span data-i18n="">Logging in // Einloggen</span> <i class="fas fa-spinner fa-spin"/>
+                                <span>{{ $t('loggingIn') }}</span> <i class="fas fa-spinner fa-spin"/>
                             </div>
                             <div v-show="loginSuccess === false">
                                 <i style="color: red" class="fas fa-times"/>
-                                <span data-i18n="">{{loginErrorCode | translate}}</span>
+                                <span>{{loginErrorCode | translate}}</span>
                             </div>
                             <div v-show="loginSuccess === true">
-                                <span data-i18n="">Login successful // Login erfolgreich</span> <i style="color: green" class="fas fa-check"/>
+                                <span>{{ $t('loginSuccessful') }}</span> <i style="color: green" class="fas fa-check"/>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="twelve columns">
-                        <span v-show="allUsersList.length === 0" data-i18n="">No account? // Kein Account?</span>
-                        <span v-show="allUsersList.length > 0" data-i18n="">Add new account? // Weiteren Account hinzufügen?</span>
-                        <a href="#register" data-i18n="">Register&nbsp;now // Jetzt&nbsp;registrieren</a>
+                        <span v-show="allUsersList.length === 0">{{ $t('noAccount') }}</span>
+                        <span v-show="allUsersList.length > 0">{{ $t('addNewAccount') }}</span>
+                        <a href="#register">{{ $t('registernow') }}</a>
                         <div v-show="allUsersList.length === 0">
-                            <span data-i18n="">AsTeRICS Grid is free and all you need is to register is a username and a password. // AsTeRICS Grid ist kostenlos und Sie benötigen nur einen Usernamen und ein Passwort.</span>
+                            <span>{{ $t('astericsGridIsFreeAndAllYouNeedToRegister') }}</span>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="twelve columns">
-                        <span data-i18n="">Want to create an offline-only user? // Möchten Sie einen Offline-User erstellen?</span>
-                        <a href="#add" data-i18n="">Add&nbsp;offline&nbsp;user // Offline&#8209;User&nbsp;hinzufügen</a>
+                        <span>{{ $t('wantToCreateAnOfflineonlyUser') }}</span>
+                        <a href="#add">{{ $t('addofflineuser') }}</a>
                     </div>
                 </div>
             </div>
@@ -216,7 +216,7 @@
                     loginService.logout();
                 } else {
                     let messageKey = this.savedOnlineUsers.includes(user) ? 'CONFIRM_REMOVE_USER' : 'CONFIRM_REMOVE_USER_LOCAL';
-                    if (!confirm(i18nService.translate(messageKey, user))) {
+                    if (!confirm(i18nService.t(messageKey, user))) {
                         return;
                     }
                     localStorageService.unmarkSyncedDatabase(user);
@@ -249,10 +249,6 @@
             if (this.user) {
                 document.getElementById('inputPassword2').focus();
             }
-            i18nService.initDomI18n();
-        },
-        updated() {
-            i18nService.initDomI18n();
         }
     }
 </script>

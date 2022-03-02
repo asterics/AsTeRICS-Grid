@@ -16,7 +16,7 @@
 </head>
 <body onload="window.loaded = true;">
 <div style="display: none" aria-hidden="false">
-    Access key 1: Navigation, Access key 2: Main
+    {{ $t('accessKey1NavigationAccessKey2Main') }}
 </div>
 <div id="app" class="holy-grail">
     <div id="touchElement" class="grid-container" style="z-index: 2; display: none">
@@ -50,38 +50,38 @@
 
             <nav role="navigation" class="row content" style="flex: 1 1 auto" accesskey="1">
                 <div v-if="currentUser">
-                    <h2 class="hide-mobile" style="margin-top: 1.5em;">Navigation</h2>
+                    <h2 class="hide-mobile" style="margin-top: 1.5em;">{{ $t('navigation') }}</h2>
                     <br class="show-mobile"/>
                     <ul>
-                        <li><a tabindex="2" href="#main"><button tabindex="-1"><i class="fas fa-2x fa-home"></i><span class="hide-mobile" data-i18n="">Main // Start</span></button></a></li>
-                        <li><a tabindex="3" href="#grids"><button tabindex="-1"><i class="fas fa-2x fa-list-ul"></i><span class="hide-mobile" data-i18n="">Manage grids // Grids verwalten</span></button></a></li>
-                        <li><a tabindex="4" href="#dictionaries"><button tabindex="-1"><i class="fas fa-2x fa-book"></i><span class="hide-mobile" data-i18n="">Manage Dictionaries // Wörterbücher verwalten</span></button></a></li>
+                        <li><a tabindex="2" href="#main"><button tabindex="-1"><i class="fas fa-2x fa-home"></i><span class="hide-mobile">{{ $t('mainView') }}</span></button></a></li>
+                        <li><a tabindex="3" href="#grids"><button tabindex="-1"><i class="fas fa-2x fa-list-ul"></i><span class="hide-mobile">{{ $t('manageGrids') }}</span></button></a></li>
+                        <li><a tabindex="4" href="#dictionaries"><button tabindex="-1"><i class="fas fa-2x fa-book"></i><span class="hide-mobile">{{ $t('manageDictionaries') }}</span></button></a></li>
                     </ul>
                 </div>
 
-                <h2 class="hide-mobile" data-i18n="">Users // Benutzer</h2>
+                <h2 class="hide-mobile">{{ $t('users') }}</h2>
                 <ul>
                     <li><a tabindex="5" href="#login">
                         <button tabindex="-1">
-                            <i class="fas fa-2x fa-users"></i><span v-show="!currentUser" class="hide-mobile" data-i18n="">Login // Einloggen</span><span v-show="currentUser" class="hide-mobile" data-i18n="">Change User // Benutzer wechseln</span>
+                            <i class="fas fa-2x fa-users"></i><span v-show="!currentUser" class="hide-mobile">{{ $t('login') }}</span><span v-show="currentUser" class="hide-mobile">{{ $t('changeUser') }}</span>
                         </button></a>
                     </li>
-                    <li class="hide-mobile"><a tabindex="6" href="#register"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span class="hide-mobile" data-i18n="">Add online user // Online-User hinzufügen</span></button></a></li>
-                    <li class="hide-mobile"><a tabindex="7" href="#add"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span data-i18n="">Add offline user // Offline-User hinzufügen</span></button></a></li>
+                    <li class="hide-mobile"><a tabindex="6" href="#register"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span class="hide-mobile">{{ $t('addOnlineUser') }}</span></button></a></li>
+                    <li class="hide-mobile"><a tabindex="7" href="#add"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span>{{ $t('addOfflineUser') }}</span></button></a></li>
                 </ul>
 
                 <br class="hide-mobile"/>
                 <ul style="margin-bottom: 0;">
-                    <li v-show="currentUser"><a tabindex="8" href="#settings"><button tabindex="-1"><i class="fas fa-2x fa-cog"></i><span class="hide-mobile" data-i18n="">General settings // Allgemeine Einstellungen</span></button></a></li>
-                    <li class="hide-mobile"><a tabindex="9" href="#about"><button tabindex="-1"><i class="fas fa-2x fa-info-circle"></i><span class="hide-mobile" data-i18n="">About AsTeRICS Grid // Über AsTeRICS Grid</span></button></a></li>
-                    <li><a tabindex="10" href="javascript:;" @click="openHelp()"><button tabindex="-1" id="helpButton"><i class="fas fa-2x fa-question-circle"></i><span class="hide-mobile" data-i18n="">Help // Hilfe</span></button></a></li>
+                    <li v-show="currentUser"><a tabindex="8" href="#settings"><button tabindex="-1"><i class="fas fa-2x fa-cog"></i><span class="hide-mobile">{{ $t('generalSettings') }}</span></button></a></li>
+                    <li class="hide-mobile"><a tabindex="9" href="#about"><button tabindex="-1"><i class="fas fa-2x fa-info-circle"></i><span class="hide-mobile">{{ $t('aboutAstericsGrid') }}</span></button></a></li>
+                    <li><a tabindex="10" href="javascript:;" @click="openHelp()"><button tabindex="-1" id="helpButton"><i class="fas fa-2x fa-question-circle"></i><span class="hide-mobile">{{ $t('help') }}</span></button></a></li>
                     <li class="show-mobile"><a tabindex="11" href="javascript:;" @click="moreNavigation()" id="moreNavigation"><button tabindex="-1"><i class="fas fa-2x fa-ellipsis-v"></i></button></a></li>
                 </ul>
             </nav>
             <div style="flex: 0 0 auto;" id="syncVisualizationWrapper">
-                <span v-show="currentUser && !isLocalUser" class="hide-mobile"><span data-i18n="">logged in as // eingeloggt als</span> <i>{{currentUser}}</i></span>
-                <span v-show="currentUser && isLocalUser" class="hide-mobile"><span data-i18n="">using offline user: // aktiver Offline-User:</span> <i>{{currentUser}}</i></span>
-                <span v-show="!currentUser" data-i18n="" class="hide-mobile">not logged in. // nicht eingeloggt.</span>
+                <span v-show="currentUser && !isLocalUser" class="hide-mobile"><span>{{ $t('loggedInAs') }}</span> <i>{{currentUser}}</i></span>
+                <span v-show="currentUser && isLocalUser" class="hide-mobile"><span>{{ $t('usingOfflineUser') }}</span> <i>{{currentUser}}</i></span>
+                <span v-show="!currentUser" class="hide-mobile">{{ $t('notLoggedIn') }}</span>
                 <span id="syncVisualization" v-if="currentUser && !isLocalUser" class="fa-stack fa-1x right" :title="syncState | translate">
                     <i class="fas fa-cloud fa-stack-2x" style="color: lightblue"></i>
                     <i v-show="syncState === constants.DB_SYNC_STATE_SYNCINC" class="fas fa-sync-alt fa-stack-1x fa-spin"></i>
@@ -113,7 +113,6 @@
 <script type="text/javascript" src='app/lib/object-model.min.js'></script>
 <script type="text/javascript" src='app/lib/pouchdb-7.0.0.min.js'></script>
 <script type="text/javascript" src='app/lib/loglevel.min.js'></script>
-<script type="text/javascript" src='app/lib/dom-i18n.min.js'></script>
 <script type="text/javascript" src='app/lib/sjcl.min.js'></script>
 <script type="text/javascript">
     if (Function.bind) {

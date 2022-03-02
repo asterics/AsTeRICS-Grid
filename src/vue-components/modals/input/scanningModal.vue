@@ -7,60 +7,60 @@
                     <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
                     <div class="modal-header">
                         <h1 name="header">
-                            Scanning
+                            {{ $t('scanning') }}
                         </h1>
                     </div>
 
                     <div class="modal-body" v-if="inputConfig">
                         <div class="row">
-                            <span data-i18n="">Scanning input method: 1-2 input events // Eingabemethode Scanning: 1-2 Eingabekanäle</span>
-                            <a aria-label="Help" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
+                            <span>{{ $t('scanningInputMethod12InputEvents') }}</span>
+                            <a :aria-label="$t('help')" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
                         </div>
                         <div class="row" >
                             <div class="twelve columns">
                                 <input v-focus type="checkbox" id="enableScanning" v-model="inputConfig.scanEnabled"/>
-                                <label class="inline" for="enableScanning" data-i18n>Enable Scanning // Scanning aktivieren</label>
+                                <label class="inline" for="enableScanning">{{ $t('enableScanning') }}</label>
                             </div>
                         </div>
                         <div v-show="inputConfig.scanEnabled">
-                            <accordion acc-label="Input // Eingabe" acc-open="true" acc-label-type="h2" acc-background-color="white" class="row">
+                            <accordion :acc-label="$t('input')" acc-open="true" acc-label-type="h2" acc-background-color="white" class="row">
                                 <input-event-list v-model="inputConfig.scanInputs" :input-labels="[InputConfig.SELECT, InputConfig.NEXT]" :error-inputs="errorInputs" @input="inputChanged"></input-event-list>
                                 <div class="row">
-                                    <button class="twelve columns" data-i18n="" @click="resetInput">Reset to default input configuration // Auf Standard Eingabe-Konfiguration zurücksetzen</button>
+                                    <button class="twelve columns" @click="resetInput">{{ $t('resetToDefaultInputConfiguration') }}</button>
                                 </div>
                             </accordion>
                             <accordion acc-label="ADVANCED_SETTINGS" acc-label-type="h2" acc-background-color="white">
                                 <div class="row" style="margin-top: 0">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkVerticalScanning" v-model="inputConfig.scanVertical"/>
-                                        <label for="chkVerticalScanning" data-i18n>Vertical scanning // Scanning vertikal</label>
+                                        <label for="chkVerticalScanning">{{ $t('verticalScanning') }}</label>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkBinaryScanning" v-model="inputConfig.scanBinary"/>
-                                        <label for="chkBinaryScanning" data-i18n>Binary scanning // Scanning binär</label>
+                                        <label for="chkBinaryScanning">{{ $t('binaryScanning') }}</label>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkTouchScanning" v-model="touchScanning" @change="changeTouchScanning"/>
-                                        <label for="chkTouchScanning" data-i18n>Scanning-selection by mouse click or tap // Scanning-Auswahl durch Mausklick oder tippen</label>
+                                        <label for="chkTouchScanning">{{ $t('scanningselectionByMouseClickOrTap') }}</label>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkAutoScanning" v-model="inputConfig.scanAuto"/>
-                                        <label for="chkAutoScanning" data-i18n>Automatic (timed) scanning // Automatisches (zeitgesteuertes) Scanning</label>
+                                        <label for="chkAutoScanning">{{ $t('automaticTimedScanning') }}</label>
                                     </div>
                                 </div>
                                 <div class="row" v-show="inputConfig.scanAuto">
-                                    <label class="four columns" for="inScanTime" data-i18n>Scanning Time (ms) // Scanning Zeit (ms)</label>
+                                    <label class="four columns" for="inScanTime">{{ $t('scanningTimeMs') }}</label>
                                     <input type="range" id="inScanTime" v-model.number="inputConfig.scanTimeoutMs" min="100" max="3000" step="100"/>
                                     <input type="number" v-model.number="inputConfig.scanTimeoutMs" min="100" max="3000" step="100"/>
                                 </div>
                                 <div class="row" v-show="inputConfig.scanAuto">
-                                    <label class="four columns" for="inFirstElement" data-i18n>Time factor first element // Zeit-Faktor erstes Element</label>
+                                    <label class="four columns" for="inFirstElement">{{ $t('timeFactorFirstElement') }}</label>
                                     <input type="range" id="inFirstElement" v-model.number="inputConfig.scanTimeoutFirstElementFactor" min="1" max="5" step="0.1"/>
                                     <input type="number" v-model.number="inputConfig.scanTimeoutFirstElementFactor" min="1" max="5" step="0.5" />
                                 </div>
@@ -78,10 +78,10 @@
                     <div class="modal-footer">
                         <div class="button-container row">
                             <button @click="cancel()" class="four columns offset-by-four">
-                                <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
+                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
                             <button @click="save()" class="four columns">
-                                <i class="fas fa-check"/> <span>OK</span>
+                                <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
                             </button>
                         </div>
                     </div>
@@ -159,7 +159,7 @@
                 }
 
                 if (this.errorInputs.length > 0) {
-                    this.error = i18nService.translate('Please specify input modalities // Bitte Eingabemodalitäten definieren');
+                    this.error = i18nService.t('pleaseSpecifyInputModalities');
                     return false;
                 }
                 return true;
@@ -203,9 +203,6 @@
                 thiz.touchScanning = !thiz.inputConfig.mouseclickEnabled;
             });
             helpService.setHelpLocation('04_input_options', '#scanning');
-        },
-        updated() {
-            i18nService.initDomI18n();
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

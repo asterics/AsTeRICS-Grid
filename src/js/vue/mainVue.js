@@ -1,5 +1,6 @@
 import $ from 'jquery';
-import Vue from 'vue'
+import Vue from 'vue';
+import VueI18n from 'vue-i18n';
 import {i18nService} from "../service/i18nService";
 import {constants} from "../util/constants";
 import {util} from "../util/util";
@@ -34,9 +35,8 @@ MainVue.setTooltip = function (html, options) {
     return app.$refs.notificationBar.setTooltip(html, options);
 };
 
-MainVue.setTooltipI18n = function(translateText, options) {
-    let translated = i18nService.translate(translateText);
-    MainVue.setTooltip(translated, options);
+MainVue.setTooltipI18n = function(text, options) {
+    MainVue.setTooltip(text, options);
 };
 
 MainVue.clearTooltip = function () {
@@ -63,7 +63,9 @@ MainVue.showProgressBar = function (percentage, options) {
 }
 
 MainVue.init = function () {
+    Vue.use(VueI18n);
     app = new Vue({
+        i18n: i18nService.getVueI18n(),
         el: '#app',
         components: {NotificationBar, ProgressBarModal},
         data() {
@@ -104,7 +106,6 @@ MainVue.init = function () {
         },
         mounted() {
             let thiz = this;
-            i18nService.initDomI18n();
             $(document).on(constants.EVENT_SIDEBAR_OPEN, () => {
                 if (thiz.showSidebar) {
                     return;
@@ -171,9 +172,6 @@ MainVue.init = function () {
                     }
                 });
             }
-        },
-        updated() {
-            i18nService.initDomI18n();
         }
     });
 };
@@ -183,9 +181,9 @@ function setupContextMenu() {
     let CONTEXT_ADD_OFFLINE = 'CONTEXT_ADD_OFFLINE';
     let CONTEXT_ABOUT = 'CONTEXT_ABOUT';
     let menuItems = {
-        CONTEXT_ADD_ONLINE: {name: "Add online user // Online-User hinzufügen", icon: "fas fa-user-plus"},
-        CONTEXT_ADD_OFFLINE: {name: "Add offline user // Offline-User hinzufügen", icon: "fas fa-user-plus"},
-        CONTEXT_ABOUT: {name: "About AsTeRICS Grid // Über AsTeRICS Grid", icon: "fas fa-info-circle"},
+        CONTEXT_ADD_ONLINE: {name: i18nService.t('addOnlineUser'), icon: "fas fa-user-plus"},
+        CONTEXT_ADD_OFFLINE: {name: i18nService.t('addOfflineUser'), icon: "fas fa-user-plus"},
+        CONTEXT_ABOUT: {name: i18nService.t('aboutAstericsGrid'), icon: "fas fa-info-circle"},
     };
     $.contextMenu({
         selector: '#moreNavigation',
@@ -196,7 +194,6 @@ function setupContextMenu() {
         trigger: 'left',
         zIndex: 10
     });
-    i18nService.initDomI18n();
 
     function handleContextMenu(key) {
         switch (key) {

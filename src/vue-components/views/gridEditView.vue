@@ -2,14 +2,14 @@
     <div v-cloak v-if="gridData" class="box">
         <header class="row header" role="banner">
             <header-icon class="left"></header-icon>
-            <button tabindex="30" @click="back" title="Back" class="spaced small left">
+            <button tabindex="30" @click="back" :title="$t('back')" class="spaced small left">
                 <i class="fas fa-eye"></i>
-                <span class="hide-mobile" data-i18n>Editing off // Bearbeiten aus</span>
+                <span class="hide-mobile">{{ $t('editingOff') }}</span>
             </button>
-            <button tabindex="33" id="moreButton" title="More" class="spaced"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile" data-i18n>More // Mehr</span></button>
+            <button tabindex="33" id="moreButton" :title="$t('more')" class="spaced"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile">{{ $t('more') }}</span></button>
             <div class="spaced btn-group">
-                <button tabindex="31" @click="undo" title="Undo" :disabled="!canUndo || doingUndoRedo" class="small"><i class="fas fa-undo"></i> <span class="hide-mobile" data-i18n>Undo // Rückgängig</span></button>
-                <button tabindex="32" @click="redo" title="Redo" :disabled="!canRedo || doingUndoRedo" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile" data-i18n>Redo // Wiederherstellen</span></button>
+                <button tabindex="31" @click="undo" :title="$t('undo')" :disabled="!canUndo || doingUndoRedo" class="small"><i class="fas fa-undo"></i> <span class="hide-mobile">{{ $t('undo') }}</span></button>
+                <button tabindex="32" @click="redo" :title="$t('redo')" :disabled="!canRedo || doingUndoRedo" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span></button>
             </div>
         </header>
         <div>
@@ -181,7 +181,7 @@
                 this.showMultipleModal = true;
             },
             clearElements() {
-                if (confirm(i18nService.translate('CONFIRM_DELETE_ALL_ELEMS'))) {
+                if (confirm(i18nService.t('CONFIRM_DELETE_ALL_ELEMS'))) {
                     this.gridData.gridElements = [];
                     gridInstance.updateGridWithUndo(this.gridData);
                 }
@@ -254,12 +254,8 @@
                     thiz.gridData = JSON.parse(JSON.stringify(newGridData));
                 });
                 initContextmenu();
-                i18nService.initDomI18n();
                 thiz.showGrid = true;
             });
-        },
-        updated() {
-            i18nService.initDomI18n();
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
@@ -317,19 +313,19 @@
 
         var itemsGlobal = {
             CONTEXT_NEW_GROUP: {
-                name: "New // Neu", icon: "fas fa-plus-circle", items: {
-                    'CONTEXT_NEW_SINGLE': {name: "New Element // Neues Element", icon: "fas fa-plus"},
-                    'CONTEXT_NEW_MASS': {name: "Many new elements // Mehrere neue Elemente", icon: "fas fa-clone"},
+                name: i18nService.t('new'), icon: "fas fa-plus-circle", items: {
+                    'CONTEXT_NEW_SINGLE': {name: i18nService.t('newElement'), icon: "fas fa-plus"},
+                    'CONTEXT_NEW_MASS': {name: i18nService.t('manyNewElements'), icon: "fas fa-clone"},
                     'CONTEXT_NEW_COLLECT': {
-                        name: "New collect element // Neues Sammel-Element",
+                        name: i18nService.t('newCollectElement'),
                         icon: "far fa-comment-dots"
                     },
                     'CONTEXT_NEW_PREDICT': {
-                        name: "New prediction element // Neues Vorhersage-Element",
+                        name: i18nService.t('newPredictionElement'),
                         icon: "fas fa-magic"
                     },
                     'CONTEXT_NEW_YT_PLAYER': {
-                        name: "New YouTube Player // Neuer YouTube Player",
+                        name: i18nService.t('newYouTubePlayer'),
                         icon: "fab fa-youtube"
                     }
                 }
@@ -337,17 +333,17 @@
         };
 
         var itemsMoreMenuItem = {
-            CONTEXT_DUPLICATE: {name: "Duplicate // Klonen", icon: "far fa-clone"},
-            CONTEXT_DO_ACTION: {name: "Do element action // Aktion des Elements ausführen", icon: "fas fa-bolt"},
-            CONTEXT_MOVE_TO: {name: "Move element to other grid // Element zu anderem Grid verschieben", icon: "fas fa-file-export"},
+            CONTEXT_DUPLICATE: {name: i18nService.t('clone'), icon: "far fa-clone"},
+            CONTEXT_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt"},
+            CONTEXT_MOVE_TO: {name: i18nService.t('moveElementToOtherGrid'), icon: "fas fa-file-export"},
         };
 
         var itemsElemNormal = {
-            CONTEXT_EDIT: {name: "Edit // Bearbeiten", icon: "fas fa-edit"},
-            CONTEXT_ACTIONS: {name: "Actions // Aktionen", icon: "fas fa-bolt"},
-            CONTEXT_DELETE: {name: "Delete // Löschen", icon: "far fa-trash-alt"},
+            CONTEXT_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit"},
+            CONTEXT_ACTIONS: {name: i18nService.t('actions'), icon: "fas fa-bolt"},
+            CONTEXT_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt"},
             CONTEXT_MORE_GROUP: {
-                name: "More // Mehr", icon: "fas fa-bars", items: itemsMoreMenuItem
+                name: i18nService.t('more'), icon: "fas fa-bars", items: itemsMoreMenuItem
             }
         };
 
@@ -357,28 +353,28 @@
         let visibleFn = () => !!vueApp.markedElement;
         let visibleFnFill = () => !new GridData({}, vueApp.gridData).isFull();
         var itemsMoreMenuButton = {
-            CONTEXT_ACTION_EDIT: {name: "Edit // Bearbeiten", icon: "fas fa-edit", visible: () => (vueApp.markedElement && [GridElement.ELEMENT_TYPE_NORMAL, GridElement.ELEMENT_TYPE_YT_PLAYER].indexOf(vueApp.markedElement.type) !== -1)},
-            CONTEXT_ACTION_EDIT_ACTIONS: {name: "Actions // Aktionen", icon: "fas fa-bolt", visible: visibleFn},
-            CONTEXT_ACTION_DELETE: {name: "Delete // Löschen", icon: "far fa-trash-alt", visible: visibleFn},
-            CONTEXT_ACTION_DUPLICATE: {name: "Duplicate // Klonen", icon: "far fa-clone", visible: visibleFn},
-            CONTEXT_ACTION_DO_ACTION: {name: "Do element action // Aktion des Elements ausführen", icon: "fas fa-bolt", visible: visibleFn},
-            CONTEXT_MOVE_TO: {name: "Move element to other grid // Element zu anderem Grid verschieben", icon: "fas fa-file-export", visible: visibleFn},
+            CONTEXT_ACTION_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit", visible: () => (vueApp.markedElement && [GridElement.ELEMENT_TYPE_NORMAL, GridElement.ELEMENT_TYPE_YT_PLAYER].indexOf(vueApp.markedElement.type) !== -1)},
+            CONTEXT_ACTION_EDIT_ACTIONS: {name: i18nService.t('actions'), icon: "fas fa-bolt", visible: visibleFn},
+            CONTEXT_ACTION_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt", visible: visibleFn},
+            CONTEXT_ACTION_DUPLICATE: {name: i18nService.t('clone'), icon: "far fa-clone", visible: visibleFn},
+            CONTEXT_ACTION_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt", visible: visibleFn},
+            CONTEXT_MOVE_TO: {name: i18nService.t('moveElementToOtherGrid'), icon: "fas fa-file-export", visible: visibleFn},
             SEP0: "---------",
             CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP],
-            'CONTEXT_FILL_EMPTY': {name: "Fill with empty elements // Mit leeren Elementen füllen", icon: "fas fa-fill", visible: visibleFnFill},
-            'CONTEXT_DELETE_ALL': {name: "Delete all elements // Alle Elemente löschen", icon: "fas fa-minus-circle"},
+            'CONTEXT_FILL_EMPTY': {name: i18nService.t('fillWithEmptyElements'), icon: "fas fa-fill", visible: visibleFnFill},
+            'CONTEXT_DELETE_ALL': {name: i18nService.t('deleteAllElements'), icon: "fas fa-minus-circle"},
             SEP1: "---------",
             'CONTEXT_GRID_DIMENSIONS': {
-                name: "Change grid dimensions // Grid-Größe anpassen",
+                name: i18nService.t('changeGridDimensions'),
                 icon: "fas fa-expand-arrows-alt"
             },
             'CONTEXT_GRID_TRANSLATION': {
-                name: "Translate grid // Grid übersetzen",
+                name: i18nService.t('translateGrid'),
                 icon: "fas fa-language"
             },
-            'CONTEXT_LAYOUT_FILL': {name: "Fill gaps // Lücken füllen", icon: "fas fa-angle-double-left"},
-            'CONTEXT_EDIT_GLOBAL_GRID': {name: "Edit global grid // Globales Grid bearbeiten", icon: "fas fa-globe", visible: !!vueApp.metadata.globalGridId && vueApp.metadata.globalGridActive && vueApp.metadata.globalGridId !== vueApp.gridData.id},
-            'CONTEXT_END_EDIT_GLOBAL_GRID': {name: "End edit global grid // Bearbeitung globales Grid beenden", icon: "fas fa-globe", visible: vueApp.metadata.globalGridId === vueApp.gridData.id},
+            'CONTEXT_LAYOUT_FILL': {name: i18nService.t('fillGaps'), icon: "fas fa-angle-double-left"},
+            'CONTEXT_EDIT_GLOBAL_GRID': {name: i18nService.t('editGlobalGrid'), icon: "fas fa-globe", visible: !!vueApp.metadata.globalGridId && vueApp.metadata.globalGridActive && vueApp.metadata.globalGridId !== vueApp.gridData.id},
+            'CONTEXT_END_EDIT_GLOBAL_GRID': {name: i18nService.t('endEditGlobalGrid'), icon: "fas fa-globe", visible: vueApp.metadata.globalGridId === vueApp.gridData.id},
         };
 
         $('.grid-container').on('click', function (event) {

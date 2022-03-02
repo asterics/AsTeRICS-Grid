@@ -2,11 +2,11 @@
     <div class="overflow-content">
         <header-icon full-header="true"></header-icon>
         <div class="row content spaced">
-            <h2 data-i18n="">About AsTeRICS Grid // Über das AsTeRICS Grid</h2>
+            <h2>About AsTeRICS Grid // Über das AsTeRICS Grid</h2>
             <div class="eight columns">
                 <div class="row">
-                    <h3 data-i18n="">General information // Allgemeine Informationen</h3>
-                    <div data-i18n="">
+                    <h3>General information // Allgemeine Informationen</h3>
+                    <div>
                         <span>
                             The initial development of AsTeRICS Grid was done at the UAS Technikum Wien within the project ToRaDes, funded by the city of Vienna (project number 18-04).<br/>
                             <a target="_blank" href="https://embsys.technikum-wien.at/projects/torades/index.php">More information about project ToRaDes</a>
@@ -36,7 +36,7 @@
                 </div>
                 <div class="row">
                     <h3>Feedback</h3>
-                    <div data-i18n="">
+                    <div>
                         <span>
                             If you encounter an error, have suggestions for improvement or any general feedback please don't hesitate to contact us on:<br/>
                             <a href="mailto:office@asterics-foundation.org">office@asterics-foundation.org</a>
@@ -57,8 +57,8 @@
                     </div>
                 </div>
                 <div class="row">
-                    <h3 data-i18n="">Terms of Service and Privacy Policy // Nutzungsbedingungen und Datenschutzerklärung</h3>
-                    <div data-i18n="">
+                    <h3>Terms of Service and Privacy Policy // Nutzungsbedingungen und Datenschutzerklärung</h3>
+                    <div>
                         <div>
                             <p>
                                 AsTeRICS Grid is free and open source software. It's licensed under the <a href="https://github.com/asterics/AsTeRICS-Grid/blob/master/LICENSE" target="_blank">AGPLv3</a>,
@@ -101,8 +101,8 @@
 
                 </div>
                 <div class="row">
-                    <h3 data-i18n="">Acknowledgements // Dank</h3>
-                    <div data-i18n="">
+                    <h3>Acknowledgements // Dank</h3>
+                    <div>
                         <span>
                             We thank <a target="_blank" href="https://crossbrowsertesting.com/">crossbrowsertesting.com</a> for providing us a free open source license.<br/>
                         </span>
@@ -111,7 +111,7 @@
                         </span>
                     </div>
                     <a target="_blank" href="https://crossbrowsertesting.com/"><img src="app/img/CBT_OS-logo_2Color-H.png" width="300px"></a>
-                    <div data-i18n="">
+                    <div>
                         <span>
                             We thank <a target="_blank" href="https://responsivevoice.org">ResponsiveVoice.org</a> for free non-commercial usage.<br/>
                         </span>
@@ -122,7 +122,7 @@
                     <div><a href="https://responsivevoice.org">ResponsiveVoice-NonCommercial</a> licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img title="ResponsiveVoice Text To Speech" src="https://responsivevoice.org/wp-content/uploads/2014/08/95x15.png" alt="95x15" width="95" height="15" /></a></div>
                 </div>
                 <div class="row" style="margin-top: 3em">
-                    <div data-i18n="">
+                    <div>
                         <span>
                             You are using version <a target="_blank" href="https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#">#ASTERICS_GRID_VERSION#</a> of AsTeRICS Grid.
                         </span>
@@ -157,7 +157,6 @@
             }
         },
         mounted() {
-            i18nService.initDomI18n();
         }
     }
 </script>

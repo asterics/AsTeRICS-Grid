@@ -5,39 +5,39 @@
                 <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                     <div class="modal-header">
-                        <h1 name="header" data-i18n>
-                            Add multiple grid items // Mehrere Grid-Elemente hinzufügen
+                        <h1 name="header">
+                            {{ $t('addMultipleGridItems') }}
                         </h1>
                     </div>
 
                     <div class="modal-body">
                         <div class="row">
-                            <label class="three columns" for="inputText" data-i18n="">Input // Eingabe</label>
-                            <span class="nine columns" data-i18n="">Insert Labels for new elements, separated by ";" or [Enter] // Geben Sie Label für neue Elemente getrennt durch ";" oder [Enter] ein</span>
+                            <label class="three columns" for="inputText">{{ $t('input') }}</label>
+                            <span class="nine columns">{{ $t('insertLabelsForNewElements') }}</span>
                         </div>
                         <div class="row">
                             <textarea v-focus class="twelve columns" id="inputText" v-model="inputText" @input="textChanged" style="resize: vertical;min-height: 70px;" placeholder="Element1;Element2;Element3;..."/>
                         </div>
                         <div class="row">
-                            <label class="three columns" data-i18n>Recognized Elements // Erkannte Elemente</label>
+                            <label class="three columns"></label>
                             <div v-show="parsedElems.length > 0" class="nine columns">
                                 <span>{{parsedElems.length}}</span>
-                                <span data-i18n>Element(s) // Element(e)</span>
+                                <span>{{ $t('elementsBracket') }}</span>
                                 <span class="break-word">{{JSON.stringify(parsedElems)}}</span>
                             </div>
                             <div v-show="parsedElems.length == 0" class="nine columns">
-                                <span data-i18n>No elements // Keine Elemente</span>
+                                <span>{{ $t('noElements') }}</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="modal-footer">
                         <div class="button-container row">
-                            <button class="four columns offset-by-four" @click="$emit('close')" title="Keyboard: [Esc]">
-                                <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
+                            <button class="four columns offset-by-four" @click="$emit('close')" :title="$t('keyboardEsc')">
+                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
-                            <button class="four columns" @click="save()" title="Keyboard: [Ctrl + Enter]" :disabled="parsedElems.length == 0">
-                                <i class="fas fa-check"/> <span data-i18n>Insert elements // Elemente einfügen</span>
+                            <button class="four columns" @click="save()" :title="$t('keyboardCtrlEnter')" :disabled="parsedElems.length == 0">
+                                <i class="fas fa-check"/> <span>{{ $t('insertElements') }}</span>
                             </button>
                         </div>
                     </div>
@@ -87,8 +87,6 @@
             }
         },
         mounted() {
-            var thiz = this;
-            i18nService.initDomI18n();
             helpService.setHelpLocation('03_appearance_layout', '#adding-elements-and-layout-options');
         },
         beforeDestroy() {

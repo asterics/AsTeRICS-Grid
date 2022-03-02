@@ -5,8 +5,8 @@
                 <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                     <div class="modal-header">
-                        <h1 name="header" data-i18n>
-                            Link grids // Grids verknüpfen
+                        <h1 name="header">
+                            {{ $t('linkGrids') }}
                         </h1>
                     </div>
 
@@ -26,19 +26,19 @@
                             </div>
                         </div>
                         <div class="row">
-                            <label class="three columns" for="elementName" data-i18n="">Connect with element // Verknüpfung über Element</label>
+                            <label class="three columns" for="elementName">{{ $t('connectWithElement') }}</label>
                             <select id="elementName" class="four columns" v-model="selectedElement">
-                                <option :value="null" data-i18n="">create new Element // neues Element erstellen</option>
-                                <option v-for="elem in gridFrom.gridElements" :value="elem">{{i18nService.getTranslation(elem.label) || i18nService.translate('(empty element) // (leeres Element)')}}</option>
+                                <option :value="null">{{ $t('createNewElement') }}</option>
+                                <option v-for="elem in gridFrom.gridElements" :value="elem">{{i18nService.getTranslation(elem.label) || i18nService.t('emptyElement')}}</option>
                             </select>
                         </div>
                         <div class="row" v-show="!selectedElement || !i18nService.getTranslation(selectedElement.label)">
-                            <label class="three columns" for="elementLabel" data-i18n="">Label of new element // Label des neuen Elements</label>
+                            <label class="three columns" for="elementLabel">{{ $t('labelOfNewElement') }}</label>
                             <input type="text" id="elementLabel" class="four columns" v-model="newElementLabel[i18nService.getBrowserLang()]" maxlength="35"/>
                         </div>
                         <div class="row" v-show="selectedElement && selectedElement.actions.filter(e => e.modelName === GridActionNavigate.getModelName()).length > 0">
                             <i class="fas fa-exclamation-triangle"></i>
-                            <span data-i18n="">
+                            <span>
                                 <span><b>Hint: </b> This element already navigates to another grid. This navigation will be overwritten.</span>
                                 <span><b>Hinweis: </b> Dieses Element navigiert bereits zu einem anderen Grid. Diese Navigation wird überschrieben.</span>
                             </span>
@@ -47,11 +47,11 @@
 
                     <div class="modal-footer">
                         <div class="button-container row">
-                            <button class="six columns" @click="$emit('close')" title="Keyboard: [Esc]">
-                                <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
+                            <button class="six columns" @click="$emit('close')" :title="$t('keyboardEsc')">
+                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
-                            <button class="six columns" @click="save()" title="Keyboard: [Ctrl + Enter]">
-                                <i class="fas fa-check"/> <span>OK</span>
+                            <button class="six columns" @click="save()" :title="$t('keyboardCtrlEnter')">
+                                <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
                             </button>
                         </div>
                     </div>
@@ -114,11 +114,7 @@
             this.newElementLabel = JSON.parse(JSON.stringify(this.gridTo.label));
             dataService.getGrid(this.gridFromProp.id).then(gridFrom => {
                 this.gridFrom = JSON.parse(JSON.stringify(gridFrom));
-                i18nService.initDomI18n();
             });
-        },
-        updated() {
-            i18nService.initDomI18n();
         }
     }
 </script>

@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="row">
-            <h3 class="six columns" data-i18n="">Selected radio stations // Ausgewählte Radiosender</h3>
-            <button class="six columns" :disabled="selectedRadioList.length === 0" @click="addAllRadioElements" data-i18n="">Create grid elements for webradios // Grid-Elemente für Radios erstellen</button>
+            <h3 class="six columns">{{ $t('selectedRadioStations') }}</h3>
+            <button class="six columns" :disabled="selectedRadioList.length === 0" @click="addAllRadioElements">{{ $t('createGridElementsForWebradios') }}</button>
         </div>
         <div class="row">
             <ul class="webradioList">
@@ -11,28 +11,28 @@
                         <img :src="webradio.faviconUrl"/>
                         <div class="webRadioLabel">{{webradio.radioName}}</div>
                         <div class="webRadioButtons">
-                            <button class="right" @click="removeRadio(webradio)"><span class="hide-mobile" data-i18n="">Remove // Löschen</span> <i class="fas fa-trash"></i></button>
-                            <button v-if="webradioPlaying !== webradio" class="right" @click="webradioPlaying = webradio; webradioService.play(webradio)"><span class="hide-mobile">Play </span><i class="fas fa-play"></i></button>
-                            <button v-if="webradioPlaying === webradio" class="right" @click="webradioPlaying = null; webradioService.stop()"><span class="hide-mobile">Stop</span> <i class="fas fa-pause"></i></button>
-                            <button class="right" @click="moveWebradioUp(webradio)"><span class="hide-mobile" data-i18n="">Up // Nach oben</span> <i class="fas fa-arrow-up"></i></button>
+                            <button class="right" @click="removeRadio(webradio)"><span class="hide-mobile">{{ $t('remove') }}</span> <i class="fas fa-trash"></i></button>
+                            <button v-if="webradioPlaying !== webradio" class="right" @click="webradioPlaying = webradio; webradioService.play(webradio)"><span class="hide-mobile">{{ $t('play') }} </span><i class="fas fa-play"></i></button>
+                            <button v-if="webradioPlaying === webradio" class="right" @click="webradioPlaying = null; webradioService.stop()"><span class="hide-mobile">{{ $t('stop') }}</span> <i class="fas fa-pause"></i></button>
+                            <button class="right" @click="moveWebradioUp(webradio)"><span class="hide-mobile">{{ $t('up') }}</span> <i class="fas fa-arrow-up"></i></button>
                         </div>
                     </div>
                 </li>
             </ul>
-            <div v-if="selectedRadioList.length === 0" data-i18n="">No selected radio stations, use search bar below to add radio stations. // Keine ausgewählten Radiosender, verwenden Sie die Suche unten um Radiosender hinzuzufügen.</div>
+            <div v-if="selectedRadioList.length === 0">{{ $t('noSelectedRadioStationsUseSearchBar') }}</div>
         </div>
 
         <div class="row">
-            <h3 class="four columns" data-i18n="">Webradio search // Webradio Suche</h3>
-            <span id="poweredby" class="eight columns" data-i18n="">
+            <h3 class="four columns">{{ $t('webradioSearch') }}</h3>
+            <span id="poweredby" class="eight columns">
                 <span>powered by <a href="https://www.radio-browser.info/gui/#!/" target="_blank">radio-browser.info</a></span>
                 <span>Suche durch <a href="https://www.radio-browser.info/gui/#!/" target="_blank">radio-browser.info</a></span>
             </span>
         </div>
         <div class="row">
             <div class="four columns">
-                <label for="searchwebradios" class="normal-text" data-i18n>Search term // Suchbegriff</label>
-                <i class="fas fa-info-circle hide-mobile" :title="'by default searches for radio station name, advanced search possible like e.g. tag:jazz, language:english or country:austria // sucht standardmäßig nach Radiosender-Name, erweiterte Suche z.B. möglich mit tag:jazz, language:english oder country:austria' | translate"></i>
+                <label for="searchwebradios" class="normal-text">{{ $t('searchTerm') }}</label>
+                <i class="fas fa-info-circle hide-mobile" :title="$t('byDefaultSearchesForRadioStationNameAdvanced')"></i>
             </div>
             <input id="searchwebradios" class="eight columns" type="text" v-model="webradioSearch" @input="searchWebradios($event)"/>
         </div>
@@ -43,18 +43,18 @@
                         <img :src="webradio.faviconUrl"/>
                         <div class="webRadioLabel">{{webradio.radioName}}</div>
                         <div class="webRadioButtons">
-                            <button class="right" @click="selectedRadioList.push(webradio); modelChanged();" :disabled="selectedRadioList.map(el => el.radioId).indexOf(webradio.radioId) > -1"><span class="hide-mobile" data-i18n="">Select // Wählen</span> <i class="fas fa-plus"></i></button>
-                            <button v-if="webradioPlaying !== webradio" class="right" @click="webradioPlaying = webradio; webradioService.play(webradio)"><span class="hide-mobile">Play </span><i class="fas fa-play"></i></button>
-                            <button v-if="webradioPlaying === webradio" class="right" @click="webradioPlaying = null; webradioService.stop()"><span class="hide-mobile">Stop </span><i class="fas fa-pause"></i></button>
+                            <button class="right" @click="selectedRadioList.push(webradio); modelChanged();" :disabled="selectedRadioList.map(el => el.radioId).indexOf(webradio.radioId) > -1"><span class="hide-mobile">{{ $t('select') }}</span> <i class="fas fa-plus"></i></button>
+                            <button v-if="webradioPlaying !== webradio" class="right" @click="webradioPlaying = webradio; webradioService.play(webradio)"><span class="hide-mobile">{{ $t('play') }} </span><i class="fas fa-play"></i></button>
+                            <button v-if="webradioPlaying === webradio" class="right" @click="webradioPlaying = null; webradioService.stop()"><span class="hide-mobile">{{ $t('stop') }} </span><i class="fas fa-pause"></i></button>
                         </div>
                     </div>
                 </li>
             </ul>
-            <div v-show="webradioSearchResults.length === 0 && webradioSearch && !webradioSearching && !webradioSearchError" data-i18n="">No radio stations found, try an other search term. // Keine Radiosender gefunden, versuchen Sie einen anderen Suchbegriff.</div>
-            <div v-show="webradioSearchError"><span data-i18n="">Searching failed, no connection to internet. // Suche fehlgeschlagen, keine Verbindung zum Internet.</span> <a href="javascript:;" @click="searchWebradios" data-i18n="">Retry // Erneut versuchen</a></div>
+            <div v-show="webradioSearchResults.length === 0 && webradioSearch && !webradioSearching && !webradioSearchError">{{ $t('noRadioStationsFoundTryAnOtherSearchTerm') }}</div>
+            <div v-show="webradioSearchError"><span>{{ $t('searchingFailedNoConnectionToInternet') }}</span> <a href="javascript:;" @click="searchWebradios">{{ $t('retry') }}</a></div>
             <div style="display: flex; margin-top: 0.5em" v-show="webradioSearchResults.length > 0">
-                <button @click="prevSearchResults" :disabled="webradioStartIndex === 0" style="flex-grow: 1;"><i class="fas fa-arrow-left"></i> <span class="hide-mobile" data-i18n="">Previous page // Vorige Seite</span></button>
-                <button @click="nextSearchResults" :disabled="!hasMoreWebradios" style="flex-grow: 1;"><span class="hide-mobile" data-i18n="">Next page // Nächste Seite</span> <i class="fas fa-arrow-right"></i></button>
+                <button @click="prevSearchResults" :disabled="webradioStartIndex === 0" style="flex-grow: 1;"><i class="fas fa-arrow-left"></i> <span class="hide-mobile">{{ $t('previousPage') }}</span></button>
+                <button @click="nextSearchResults" :disabled="!hasMoreWebradios" style="flex-grow: 1;"><span class="hide-mobile">{{ $t('nextPage') }}</span> <i class="fas fa-arrow-right"></i></button>
             </div>
         </div>
     </div>
@@ -104,7 +104,7 @@
                 this.$emit('input', JSON.parse(JSON.stringify(this.gridData)));
             },
             addAllRadioElements() {
-                if (!confirm(i18nService.translate('This action adds {?} new elements to the grid. Continue? // Diese Aktion fügt {?} neue Elemente zum Grid hinzu. Fortfahren?', this.gridData.webRadios.length))) {
+                if (!confirm(i18nService.t('thisActionAddsXNewElements', this.gridData.webRadios.length))) {
                     return;
                 }
                 let thiz = this;
@@ -181,10 +181,6 @@
             let thiz = this;
             thiz.gridData = JSON.parse(JSON.stringify(thiz.value));
             thiz.selectedRadioList = thiz.gridData.webRadios;
-            i18nService.initDomI18n();
-        },
-        updated() {
-            i18nService.initDomI18n();
         }
     }
 </script>

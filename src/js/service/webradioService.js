@@ -110,10 +110,10 @@ webradioService.play = function (webradio) {
             player.volume = volume;
             promise = player.play();
         }
-        let tooltipText = i18nService.translate('playing: {?} // Wiedergabe: {?}', radioWithUrl.radioName);
+        let tooltipText = i18nService.t('playingWebradio', radioWithUrl.radioName);
         MainVue.setTooltip(tooltipText, {
             closeOnNavigate: false,
-            actionLink: i18nService.translate('Stop // Stopp'),
+            actionLink: i18nService.t('stop'),
             actionLinkFn: webradioService.stop,
             imageUrl: radioWithUrl.faviconUrl
         });
@@ -239,13 +239,13 @@ webradioService.hasMoreSearchResults = function () {
 };
 
 function showErrorMsg(webradio) {
-    MainVue.setTooltip(i18nService.translate('Error playing: {?}, no internet?! // Fehler bei Wiedergabe: {?}, kein Internet?!', webradio.radioName), {
+    MainVue.setTooltip(i18nService.t('errorPlayingWebradio', webradio.radioName), {
         msgType: 'warn'
     });
 }
 
 function setVolumeTooltip() {
-    MainVue.setTooltip(i18nService.translate('Volume: {?} / 100 // Lautstärke: {?} / 100', Math.round(volume * 100)), {
+    MainVue.setTooltip(i18nService.t('webradioVolume', Math.round(volume * 100)), {
         revertOnClose: true,
         timeout: 5000
     });

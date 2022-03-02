@@ -5,7 +5,7 @@
                 <div class="modal-container" @keyup.27="close()">
                     <a v-if="options.closable" class="inline close-button" href="javascript:void(0);" @click="close()"><i class="fas fa-times"/></a>
                     <div class="modal-header">
-                        <h1 name="header" data-i18n>{{options.header}}</h1>
+                        <h1 name="header">{{options.header}}</h1>
                     </div>
 
                     <div class="modal-body">
@@ -18,8 +18,8 @@
 
                     <div class="modal-footer">
                         <div v-if="options.closable" class="button-container row">
-                            <button class="four columns offset-by-eight" @click="close()" title="Keyboard: [Esc]">
-                                <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
+                            <button class="four columns offset-by-eight" @click="close()" :title="$t('keyboardEsc')">
+                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
                         </div>
                     </div>
@@ -74,7 +74,6 @@
             }
         },
         mounted() {
-            i18nService.initDomI18n();
         }
     }
 </script>

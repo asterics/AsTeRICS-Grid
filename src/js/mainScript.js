@@ -86,9 +86,9 @@ function initServiceWorker() {
             });
             navigator.serviceWorker.addEventListener("message", (evt) => {
                 if (isUpdate && evt.data && evt.data.activated) {
-                    MainVue.setTooltipI18n("New version available! The next time you re-open AsTeRICS Grid you'll automatically use the updated version. // Neue Version verfügbar! Beim nächsten Start von AsTeRICS Grid verwenden Sie automatisch die neue Version.", {
+                    MainVue.setTooltipI18n(i18nService.t('newVersionAvailableTheNextTimeYoullUseUpdated'), {
                         closeOnNavigate: false,
-                        actionLink: 'Update now // Jetzt aktualisieren',
+                        actionLink: i18nService.t('updateNow'),
                         actionLinkFn: () => {
                             window.location.reload();
                         },
@@ -104,11 +104,11 @@ function checkAppVersion() {
     let version = localStorageService.getCurrentAppVersion();
     if (version && version !== constants.CURRENT_VERSION) {
         let showMsg = () => {
-            let text = i18nService.translate("You're now using new Version '{?}'. // Sie verwenden nun die neue Version '{?}'.", constants.CURRENT_VERSION)
+            let text = i18nService.t('youreNowUsingVersion', constants.CURRENT_VERSION)
             MainVue.setTooltip(text, {
                 closeOnNavigate: true,
                 timeout: 30000,
-                actionLink: 'More information // Mehr Informationen',
+                actionLink: i18nService.t('moreInformation'),
                 actionLinkUrl: 'https://github.com/asterics/AsTeRICS-Grid/releases/tag/' + constants.CURRENT_VERSION,
                 msgType: 'info'
             });

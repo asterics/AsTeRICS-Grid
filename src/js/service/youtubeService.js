@@ -310,7 +310,7 @@ youtubeService.setVolume = function (volume, initSet) {
                 player.unMute();
                 ytState.muted = false;
             }
-            MainVue.setTooltip(i18nService.translate('Volume: {?} / 100 // Lautstärke: {?} / 100', volume), {
+            MainVue.setTooltip(i18nService.t('webradioVolume', volume), {
                 revertOnClose: true,
                 timeout: 5000
             });
@@ -486,7 +486,7 @@ function saveState() {
 }
 
 function errorMessage() {
-    tooltipID = MainVue.setTooltip(i18nService.translate('Error on playing YouTube video. Please check internet connection. // Fehler bei der Wiedergabe des YouTube Videos. Bitte Internet-Verbindung überprüfen.'), {
+    tooltipID = MainVue.setTooltip(i18nService.t('errorPlayingYoutube'), {
         timeout: 30000,
         msgType: 'warn'
     });
