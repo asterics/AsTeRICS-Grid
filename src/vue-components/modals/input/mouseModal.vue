@@ -41,7 +41,7 @@
                                 <label for="chkDisableHoverpane">{{ $t('disableHoverPane') }}</label>
                             </div>
                         </div>
-                        <accordion class="row" acc-label="TEST_CONFIGURATION" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
+                        <accordion class="row" :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
                             <test-area :selected-element="selectedTestElement"></test-area>
                         </accordion>
                     </div>

@@ -27,7 +27,7 @@
                                     <button class="twelve columns" @click="resetInput">{{ $t('resetToDefaultInputConfiguration') }}</button>
                                 </div>
                             </accordion>
-                            <accordion acc-label="ADVANCED_SETTINGS" acc-label-type="h2" acc-background-color="white">
+                            <accordion :acc-label="$t('ADVANCED_SETTINGS')" acc-label-type="h2" acc-background-color="white">
                                 <div class="row" style="margin-top: 0">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkNumbers" v-model="inputConfig.huffShowNumbers"/>
@@ -72,7 +72,7 @@
                                     <button @click="inputConfig.huffColors = JSON.parse(JSON.stringify(InputConfig.DEFAULT_HUFF_COLORS))" class="four columns" style="margin-top: 1em">{{ $t('resetColors') }}</button>
                                 </div>
                             </accordion>
-                            <accordion acc-label="TEST_CONFIGURATION" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
+                            <accordion :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
                                 <test-area :selected-element="selectedTestElement"></test-area>
                             </accordion>
 
