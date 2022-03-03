@@ -19,7 +19,7 @@
                             <textarea v-focus class="twelve columns" id="inputText" v-model="inputText" @input="textChanged" style="resize: vertical;min-height: 70px;" placeholder="Element1;Element2;Element3;..."/>
                         </div>
                         <div class="row">
-                            <label class="three columns"></label>
+                            <label class="three columns">{{ $t('recognizedElements') }}</label>
                             <div v-show="parsedElems.length > 0" class="nine columns">
                                 <span>{{parsedElems.length}}</span>
                                 <span>{{ $t('elementsBracket') }}</span>

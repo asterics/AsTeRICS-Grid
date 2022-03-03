@@ -54,6 +54,9 @@
                             <template v-slot:privacyPolicy>
                                 <a href="app/privacy_en.html?back=about">{{ $t('privacyPolicy') }}</a>
                             </template>
+                            <template v-slot:privacyPolicyDe>
+                                <a href="app/privacy_de.html?back=about">{{ $t('privacyPolicy') }}</a>
+                            </template>
                         </i18n>
                     </div>
 

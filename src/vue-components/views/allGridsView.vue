@@ -324,7 +324,7 @@
                 return this.selectedGraphElement ? i18nService.t('detailsForGridX', `"${i18nService.getTranslation(this.selectedGraphElement.grid.label)}"`) :'';
             },
             connectedGridsOptionLabel: function() {
-                return this.selectedGraphElement ? i18nService.t('gridsConnectedWithX', i18nService.getTranslation(this.selectedGraphElement.grid.label)) : '';
+                return this.selectedGraphElement ? i18nService.t('connectXWithThisGrid', i18nService.getTranslation(this.selectedGraphElement.grid.label)) : '';
             },
             hasGlobalGrid: function() {
                 if (!this.grids || !this.metadata) {
@@ -371,7 +371,7 @@
         let label = vueApp.selectedGraphElement ? i18nService.getTranslation(vueApp.selectedGraphElement.grid.label) : '';
         let optionsMenuItems = {
             CONTEXT_CONNECT: {
-                name: i18nService.t('gridsConnectedWithX', label),
+                name: i18nService.t('connectXWithThisGrid', label),
                 icon: "fas fa-external-link-alt",
                 visible: connectVisibleFn
             },

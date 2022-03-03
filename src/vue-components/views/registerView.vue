@@ -54,6 +54,9 @@
                             <template v-slot:link>
                                 <a href="app/privacy_en.html?back=register">{{ $t('privacyPolicy') }}</a>
                             </template>
+                            <template v-slot:linkDe>
+                                <a href="app/privacy_de.html?back=register">{{ $t('privacyPolicy') }}</a>
+                            </template>
                         </i18n>
                     </label>
                     <br/>
