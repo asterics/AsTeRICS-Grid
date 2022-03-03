@@ -150,7 +150,7 @@ function getModelConversionFunctions(objectModelVersion) {
             filterFns.push(function (gridData, filterOptions) { //fn from V2 to V3
                 if (gridData.modelName === GridData.getModelName()) {
                     log.debug('converting model version from V2 to V3: ' + gridData.modelName);
-                    gridData.locale = gridData.locale || i18nService.getBrowserLang();
+                    gridData.locale = gridData.locale || i18nService.getCurrentLang();
                     if (typeof gridData.label === 'string') {
                         let label = gridData.label;
                         gridData.label = {};

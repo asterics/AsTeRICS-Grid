@@ -132,7 +132,7 @@
                     show: false
                 },
                 i18nService: i18nService,
-                currentLanguage: i18nService.getBrowserLang(),
+                currentLanguage: i18nService.getCurrentLang(),
                 imageUtil: imageUtil
             };
         },

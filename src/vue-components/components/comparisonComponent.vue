@@ -1,6 +1,6 @@
 <template>
     <div>
-        <accordion acc-label="HEADER_COMPARE_ONLINE_OFFLINE" class="six columns offset-by-two">
+        <accordion :acc-label="$t('HEADER_COMPARE_ONLINE_OFFLINE')" class="six columns offset-by-two">
             <div>
                 <h3>{{ $t('offlineUser') }}</h3>
                 <ul class="fa-ul">

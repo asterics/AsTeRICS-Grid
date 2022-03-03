@@ -250,7 +250,7 @@ GridData.defaults({
     additionalFiles: [],
     webRadios: [],
     label: {},
-    locale: i18nService.getBrowserLang()
+    locale: i18nService.getCurrentLang()
 });
 
 export {GridData};

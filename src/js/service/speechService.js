@@ -46,7 +46,7 @@ speechService.speak = function (textOrOject, lang, preferredVoiceProp) {
         lang = lang || translation.lang;
     }
     speechService.stopSpeaking();
-    lang = lang || i18nService.getBrowserLang();
+    lang = lang || i18nService.getCurrentLang();
     let voices = getVoicesByName(preferredVoiceProp) || getVoicesByName(_preferredVoiceName) || getVoicesByLang(lang);
     let nativeVoices = voices.filter(voice => voice.type === speechService.VOICE_TYPE_NATIVE);
     let responsiveVoices = voices.filter(voice => voice.type === speechService.VOICE_TYPE_RESPONSIVEVOICE);

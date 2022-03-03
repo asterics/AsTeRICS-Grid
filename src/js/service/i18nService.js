@@ -1,14 +1,11 @@
 import $ from '../externals/jquery.js';
 import VueI18n from 'vue-i18n';
-import de from '../../lang/i18n.de.js';
-import en from '../../lang/i18n.en.js';
+import de from '../../lang/i18n.de.json';
+import en from '../../lang/i18n.en.json';
 import {localStorageService} from "./data/localStorageService";
 import {constants} from "../util/constants";
 
 let i18nService = {};
-i18nService.translations = {};
-i18nService.translations['en'] = en;
-i18nService.translations['de'] = de;
 
 let CUSTOM_LANGUAGE_KEY = 'CUSTOM_LANGUAGE_KEY';
 let customLanguage = localStorageService.get(CUSTOM_LANGUAGE_KEY) || '';
@@ -23,7 +20,7 @@ i18nService.getVueI18n = function () {
         return vueI18n;
     }
     vueI18n = new VueI18n({
-        locale: i18nService.getBrowserLang(), // set locale
+        locale: i18nService.getCurrentLang(), // set locale
         messages: {de, en}
     });
     /*log.warn(en);
@@ -53,19 +50,23 @@ i18nService.getVueI18n = function () {
 }
 
 i18nService.t = function (key, ...args) {
-    return vueI18n.t(key, i18nService.getBrowserLang(), args);
+    return vueI18n.t(key, i18nService.getCurrentLang(), args);
 }
 
 i18nService.getBrowserLang = function () {
-    return customLanguage || navigator.language.substring(0, 2).toLowerCase();
+    return navigator.language.substring(0, 2).toLowerCase();
 };
 
-i18nService.isBrowserLangDE = function () {
-    return i18nService.getBrowserLang() === 'de';
+i18nService.getCurrentLang = function () {
+    return customLanguage || i18nService.getBrowserLang();
 };
 
-i18nService.isBrowserLangEN = function () {
-    return i18nService.getBrowserLang() === 'en';
+i18nService.isCurrentLangDE = function () {
+    return i18nService.getCurrentLang() === 'de';
+};
+
+i18nService.isCurrentLangEN = function () {
+    return i18nService.getCurrentLang() === 'en';
 };
 
 /**
@@ -73,7 +74,7 @@ i18nService.isBrowserLangEN = function () {
  * @return {any} array in format [{de: "Deutsch", en: "German", code: "de"}, ...]
  */
 i18nService.getAllLanguages = function () {
-    let currentLang = i18nService.getBrowserLang() === 'de' ? 'de' : 'en';
+    let currentLang = i18nService.getCurrentLang() === 'de' ? 'de' : 'en';
     if (currentLang === currentLanguageOrdering) {
         return allLanguages;
     }
@@ -84,7 +85,7 @@ i18nService.getAllLanguages = function () {
 
 i18nService.translateLangCode = function (code) {
     let object = allLanguages.filter(l => l.code === code)[0];
-    let lang = i18nService.isBrowserLangDE() ? 'de' : 'en';
+    let lang = i18nService.isCurrentLangDE() ? 'de' : 'en';
     return object ? object[lang] : code;
 }
 
@@ -103,7 +104,7 @@ i18nService.getTranslation = function (i18nObject, fallbackLang, includeLang) {
     if (typeof i18nObject === 'string') {
         return i18nObject;
     }
-    let currentLang = i18nService.getBrowserLang();
+    let currentLang = i18nService.getCurrentLang();
     if (i18nObject[currentLang]) {
         return !includeLang ? i18nObject[currentLang] : {lang: currentLang, text: i18nObject[currentLang]};
     }
@@ -124,7 +125,7 @@ i18nService.getTranslation = function (i18nObject, fallbackLang, includeLang) {
  * @return translation object, e.g. {en: 'given label'}
  */
 i18nService.getTranslationObject = function(label, locale) {
-    locale = locale || i18nService.getBrowserLang();
+    locale = locale || i18nService.getCurrentLang();
     let object = {};
     object[locale] = label;
     return object;
@@ -135,6 +136,7 @@ i18nService.getTranslationObject = function(label, locale) {
  * @param lang two-letter language code to use
  */
 i18nService.setLanguage = function (lang) {
+    lang = lang || i18nService.getBrowserLang();
     customLanguage = lang;
     vueI18n.locale = lang;
     localStorageService.save(CUSTOM_LANGUAGE_KEY, customLanguage);

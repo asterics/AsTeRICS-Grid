@@ -141,7 +141,7 @@
                 hasNextChunk: true,
                 tempImage: {},
                 i18nService: i18nService,
-                currentLang: i18nService.getBrowserLang()
+                currentLang: i18nService.getCurrentLang()
             }
         },
         methods: {

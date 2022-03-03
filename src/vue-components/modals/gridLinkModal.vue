@@ -34,7 +34,7 @@
                         </div>
                         <div class="row" v-show="!selectedElement || !i18nService.getTranslation(selectedElement.label)">
                             <label class="three columns" for="elementLabel">{{ $t('labelOfNewElement') }}</label>
-                            <input type="text" id="elementLabel" class="four columns" v-model="newElementLabel[i18nService.getBrowserLang()]" maxlength="35"/>
+                            <input type="text" id="elementLabel" class="four columns" v-model="newElementLabel[i18nService.getCurrentLang()]" maxlength="35"/>
                         </div>
                         <div class="row" v-show="selectedElement && selectedElement.actions.filter(e => e.modelName === GridActionNavigate.getModelName()).length > 0">
                             <i class="fas fa-exclamation-triangle"></i>

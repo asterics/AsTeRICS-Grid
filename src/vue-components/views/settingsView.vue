@@ -77,7 +77,7 @@
                 langCode: '',
                 gridLanguages: [],
                 allLanguages: i18nService.getAllLanguages(),
-                currentLang: i18nService.getBrowserLang(),
+                currentLang: i18nService.getCurrentLang(),
                 saveSuccess: null,
                 speechService: speechService,
                 syncNavigation: localStorageService.shouldSyncNavigation(),

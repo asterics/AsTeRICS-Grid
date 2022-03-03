@@ -320,7 +320,7 @@
                 additionalGridFiles: {}, //map: key = action.id, value = AdditionalGridFile (ARE Model)
                 collectActions: GridActionCollectElement.getActions(),
                 webradioActions: GridActionWebradio.getActions(),
-                currentLang: i18nService.getBrowserLang(),
+                currentLang: i18nService.getCurrentLang(),
                 allLanguages: i18nService.getAllLanguages(),
                 gridLanguages: null,
                 selectFromAllLanguages: false,
