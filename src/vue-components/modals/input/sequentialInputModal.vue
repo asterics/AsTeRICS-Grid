@@ -6,32 +6,32 @@
                     <a class="inline close-button" href="javascript:void(0);" @click="cancel()"><i class="fas fa-times"/></a>
                     <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
                     <div class="modal-header">
-                        <h1 name="header" data-i18n="">Sequential Input // Sequentielle Eingabe</h1>
+                        <h1 name="header">{{ $t('sequentialInput') }}</h1>
                     </div>
 
                     <div class="modal-body" v-if="inputConfig">
                         <div class="row">
-                            <span data-i18n="">Sequential input method: 2 input events // Sequentielle Eingabe: 2 Eingabekanäle</span>
-                            <a aria-label="Help" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
+                            <span>{{ $t('sequentialInputMethod2InputEvents') }}</span>
+                            <a :aria-label="$t('help')" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
                         </div>
                         <div class="row" >
                             <div class="twelve columns">
                                 <input v-focus type="checkbox" id="enableSeqinput" v-model="inputConfig.seqEnabled"/>
-                                <label class="inline" for="enableSeqinput" data-i18n>Enable sequential input // Sequentielle Eingabe aktivieren</label>
+                                <label class="inline" for="enableSeqinput">{{ $t('enableSequentialInput') }}</label>
                             </div>
                         </div>
                         <div v-show="inputConfig.seqEnabled">
-                            <accordion acc-label="Input // Eingabe" acc-open="true" acc-label-type="h2" acc-background-color="white" class="row">
+                            <accordion :acc-label="$t('input')" acc-open="true" acc-label-type="h2" acc-background-color="white" class="row">
                                 <input-event-list v-model="inputConfig.seqInputs" :input-labels="[InputConfig.NEXT_ELEMENT, InputConfig.PREVIOUS_ELEMENT, InputConfig.SELECT]" :error-inputs="errorInputs" @input="inputChanged"></input-event-list>
                                 <div class="row">
-                                    <button class="twelve columns" data-i18n="" @click="resetInput">Reset to default input configuration // Auf Standard Eingabe-Konfiguration zurücksetzen</button>
+                                    <button class="twelve columns" @click="resetInput">{{ $t('resetToDefaultInputConfiguration') }}</button>
                                 </div>
                             </accordion>
                             <accordion acc-label="ADVANCED_SETTINGS" acc-label-type="h2" acc-background-color="white">
                                 <div class="row" style="margin-top: 0">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkReadActive" v-model="inputConfig.globalReadActive"/>
-                                        <label for="chkReadActive" data-i18n>Read out active element // Aktives Element vorlesen</label>
+                                        <label for="chkReadActive">{{ $t('readOutActiveElement') }}</label>
                                     </div>
                                 </div>
                             </accordion>
@@ -48,10 +48,10 @@
                     <div class="modal-footer">
                         <div class="button-container row">
                             <button @click="cancel()" class="four columns offset-by-four">
-                                <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
+                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
                             <button @click="save()" class="four columns">
-                                <i class="fas fa-check"/> <span>OK</span>
+                                <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
                             </button>
                         </div>
                     </div>
@@ -127,7 +127,7 @@
                     this.errorInputs.push(InputConfig.SELECT);
                 }
                 if (this.errorInputs.length > 0) {
-                    this.error = i18nService.translate('Please specify input modalities // Bitte Eingabemodalitäten definieren');
+                    this.error = i18nService.t('pleaseSpecifyInputModalities');
                     return false;
                 }
                 return true;
@@ -169,9 +169,6 @@
                 thiz.inputConfig = JSON.parse(JSON.stringify(metadata.inputConfig));
             });
             helpService.setHelpLocation('04_input_options', '#sequential-input');
-        },
-        updated() {
-            i18nService.initDomI18n();
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

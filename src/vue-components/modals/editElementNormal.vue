@@ -6,60 +6,63 @@
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                     <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
                     <div class="modal-header">
-                        <h1 v-if="editElementId" name="header" class="inline" data-i18n>
-                            Edit grid item // Grid-Element bearbeiten
+                        <h1 v-if="editElementId" name="header" class="inline">
+                            {{ $t('editGridItem') }}
                         </h1>
-                        <h1 v-if="!editElementId" name="header" class="inline" data-i18n>
-                            New grid item // Neues Grid-Element
+                        <h1 v-if="!editElementId" name="header" class="inline">
+                            {{ $t('newGridItem') }}
                         </h1>
                     </div>
 
                     <div class="modal-body">
                         <div class="row">
-                            <label class="two columns" for="inputLabel">Label</label>
+                            <label class="two columns" for="inputLabel">{{ $t('label') }}</label>
                             <input type="text" class="five columns" id="inputLabel" v-focus v-if="gridElement" v-model="gridElement.label[currentLang]"/>
-                            <button @click="search(gridElement.label[currentLang])" class="two columns" :label="i18nService.translate('Search for images // Suche nach Bildern')"><i class="fas fa-search"/></button>
+                            <button @click="search(gridElement.label[currentLang])" class="two columns" :label="$t('searchForImages')"><i class="fas fa-search"/></button>
                             <div class="three columns">
                                 <input type="checkbox" id="inputHidden" v-focus v-if="gridElement" v-model="gridElement.hidden"/>
-                                <label for="inputHidden" data-i18n="">Hide element // Element ausblenden</label>
+                                <label for="inputHidden">{{ $t('hideElement') }}</label>
                             </div>
                         </div>
                         <div class="row">
-                            <label for="inputImg" class="two columns" data-i18n>Image // Bild</label>
+                            <label for="inputImg" class="two columns">{{ $t('image') }}</label>
                             <button onclick="document.getElementById('inputImg').click();" class="five columns file-input">
                                 <input type="file" class="five columns" id="inputImg" @change="changedImg" accept="image/*"/>
-                                <span><i class="fas fa-file-upload"/> <span data-i18n>Choose file // Datei auswählen</span></span>
+                                <span><i class="fas fa-file-upload"/> <span>{{ $t('chooseFile') }}</span></span>
                             </button>
-                            <button class="five columns" v-show="tempImage.data" @click="clearImage"><i class="fas fa-times"/> <span data-i18n>Clear image // Bild löschen</span></button>
+                            <button class="five columns" v-show="tempImage.data" @click="clearImage"><i class="fas fa-times"/> <span>{{ $t('clearImage') }}</span></button>
                         </div>
                         <div class="row">
                             <div class="img-preview offset-by-two four columns">
-                                <span class="show-mobile" v-show="!tempImage.data"><i class="fas fa-image"/> <span data-i18n>no image chosen // kein Bild ausgewählt</span></span>
-                                <span class="hide-mobile" v-show="!tempImage.data"><i class="fas fa-arrow-down"/> <span data-i18n>drop image here // Bild hierher ziehen</span></span>
+                                <span class="show-mobile" v-show="!tempImage.data"><i class="fas fa-image"/> <span>{{ $t('noImageChosen') }}</span></span>
+                                <span class="hide-mobile" v-show="!tempImage.data"><i class="fas fa-arrow-down"/> <span>{{ $t('dropImageHere') }}</span></span>
                                 <img v-if="tempImage.data" id="imgPreview" :src="tempImage.data"/>
                                 <div v-if="tempImage.data && tempImage.author">
-                                    by <a :href="tempImage.authorURL" target="_blank">{{tempImage.author}}</a>
+                                    {{ $t('by') }} <a :href="tempImage.authorURL" target="_blank">{{tempImage.author}}</a>
                                 </div>
                             </div>
                             <div class="img-preview five columns hide-mobile" v-show="tempImage.data" style="margin-top: 50px;">
-                                <span><i class="fas fa-arrow-down"/> <span data-i18n>drop new image here // neues Bild hierher ziehen</span></span>
+                                <span><i class="fas fa-arrow-down"/> <span>{{ $t('dropNewImageHere') }}</span></span>
                             </div>
                         </div>
                         <div class="row">
-                            <label for="inputSearch" class="two columns" data-i18n>Image search // Bildsuche</label>
+                            <label for="inputSearch" class="two columns">{{ $t('imageSearch') }}</label>
                             <div class="five columns">
                                 <input id="inputSearch" type="text" v-model="searchText" @input="searchInput(500, $event)" :placeholder="'SEARCH_IMAGE_PLACEHOLDER' | translate"/>
-                                <button @click="clearSearch" aria-label="Clear"><i class="fas fa-times"></i></button>
+                                <button @click="clearSearch" :aria-label="$t('clear')"><i class="fas fa-times"></i></button>
                             </div>
-                            <span class="four columns" data-i18n="">
-                                <span>powered by <a href="https://www.opensymbols.org/" target="_blank">opensymbols.org</a></span>
-                                <span>Suche durch <a href="https://www.opensymbols.org/" target="_blank">opensymbols.org</a></span>
+                            <span class="four columns">
+                                <i18n path="searchPoweredBy" tag="span">
+                                    <template v-slot:opensymbolsLink>
+                                        <a href="https://www.opensymbols.org/" target="_blank">opensymbols.org</a>
+                                    </template>
+                                </i18n>
                             </span>
                         </div>
                         <div class="row">
                             <div class="offset-by-two ten columns">
                                 <div v-for="imgElement in searchResults" class="inline">
-                                    <img v-if="imgElement.base64" :src="imgElement.base64" @click="setImage(imgElement)" :title="'by ' + imgElement.author" width="60" height="60" class="inline" role="button"/>
+                                    <img v-if="imgElement.base64" :src="imgElement.base64" @click="setImage(imgElement)" :title="$t('byAuthor', imgElement.author)" width="60" height="60" class="inline" role="button"/>
                                     <span v-if="!imgElement.base64 && !imgElement.failed" style="position: relative">
                                         <img src="data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%3E%3C/svg%3E" :title="imgElement.image_url" width="60" height="60" class="inline"/>
                                         <i class="fas fa-spinner fa-spin" style="position: absolute; top: -25px; left: 25px;"></i>
@@ -68,17 +71,12 @@
                                 <div class="inline" v-show="searchResults && searchResults.length > 0 && hasNextChunk">
                                     <button @click="searchMore" style="height: 60px; margin: 0 0 0 0.5em;; padding: 0.7em; float: left">
                                         <i class="fas fa-plus"></i>
-                                        <span data-i18n="">more // mehr</span>
+                                        <span>{{ $t('more') }}</span>
                                     </button>
                                 </div>
-                                <span v-show="searchLoading"><i class="fas fa-spinner fa-spin"></i> <span data-i18n="">searching... // suche...</span></span>
-                                <span v-show="!searchLoading && searchResults && searchResults.length === 0" data-i18n="">
-                                    <span><b>No search results.</b></span>
-                                    <span><b>Keine Resultate.</b> Versuchen Sie es ev. nochmal mit einem <b>englischen Suchbegriff</b>.</span>
-                                </span><br/>
-                                <span v-show="!searchLoading && searchResults && searchResults.length === 0" data-i18n="">
-                                    <span></span>
-                                    <span>Für eine Symbolsuche auf Deutsch können Sie <a target="_blank" href="https://www.pictoselector.eu/de/home/download/">Picto-Selector</a> verwenden. Symbole aus diesem Programm können mit Drag & Drop direkt in AsTeRICS Grid eingefügt werden.</span>
+                                <span v-show="searchLoading"><i class="fas fa-spinner fa-spin"></i> <span>{{ $t('searching') }}</span></span>
+                                <span v-show="!searchLoading && searchResults && searchResults.length === 0">
+                                    <span><b>{{ $t('noSearchResults') }}</b></span>
                                 </span>
                             </div>
                         </div>
@@ -87,24 +85,24 @@
                     <div class="modal-footer">
                         <div class="button-container" v-if="gridElement">
                             <div class="row">
-                                <button @click="$emit('close')" title="Keyboard: [Esc]" class="four columns offset-by-four">
-                                    <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
+                                <button @click="$emit('close')" :title="$t('keyboardEsc')" class="four columns offset-by-four">
+                                    <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                                 </button>
-                                <button @click="save()" title="Keyboard: [Ctrl + Enter]" class="four columns">
-                                    <i class="fas fa-check"/> <span>OK</span>
+                                <button @click="save()" :title="$t('keyboardCtrlEnter')" class="four columns">
+                                    <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
                                 </button>
                             </div>
                             <div class="hide-mobile row">
                                 <div v-if="editElementId">
-                                    <button @click="editNext(true)" title="Keyboard: [Ctrl + Left]" class="four columns offset-by-four"><i class="fas fa-angle-double-left"/> <span data-i18n>OK, edit previous // OK, voriges bearbeiten</span></button>
-                                    <button @click="editNext()" title="Keyboard: [Ctrl + Right]" class="four columns"><span data-i18n>OK, edit next // OK, nächstes bearbeiten</span> <i class="fas fa-angle-double-right"/></button>
+                                    <button @click="editNext(true)" :title="$t('keyboardCtrlLeft')" class="four columns offset-by-four"><i class="fas fa-angle-double-left"/> <span>{{ $t('okEditPrevious') }}</span></button>
+                                    <button @click="editNext()" :title="$t('keyboardCtrlRight')" class="four columns"><span>{{ $t('okEditNext') }}</span> <i class="fas fa-angle-double-right"/></button>
                                 </div>
                                 <div v-if="!editElementId">
-                                    <button @click="addNext()" title="Keyboard: [Ctrl + Right]" class="four columns offset-by-eight"><i class="fas fa-plus"/> <span data-i18n>OK, add another // OK, weiteres Element</span></button>
+                                    <button @click="addNext()" :title="$t('keyboardCtrlRight')" class="four columns offset-by-eight"><i class="fas fa-plus"/> <span>{{ $t('okAddAnother') }}</span></button>
                                 </div>
                             </div>
                             <div class="hide-mobile row">
-                                <button @click="save(true)" title="Keyboard: [Ctrl + Y]" class="four columns offset-by-eight"><span data-i18n>OK, edit actions // OK, Aktionen bearbeiten</span> <i class="fas fa-bolt"/></button>
+                                <button @click="save(true)" :title="$t('keyboardCtrlY')" class="four columns offset-by-eight"><span>{{ $t('okEditActions') }}</span> <i class="fas fa-bolt"/></button>
                             </div>
                         </div>
                     </div>
@@ -143,7 +141,7 @@
                 hasNextChunk: true,
                 tempImage: {},
                 i18nService: i18nService,
-                currentLang: i18nService.getBrowserLang()
+                currentLang: i18nService.getCurrentLang()
             }
         },
         methods: {
@@ -330,9 +328,6 @@
             this.editElementId = this.editElementIdParam;
             this.initInternal();
             helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
-        },
-        updated() {
-            i18nService.initDomI18n();
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

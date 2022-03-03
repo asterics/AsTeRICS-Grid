@@ -1,13 +1,13 @@
 <template>
     <div class="row">
         <div class="four columns">
-            <label for="inputAREURI" class="normal-text">ARE URL</label>
+            <label for="inputAREURI" class="normal-text">{{ $t('areUrl') }}</label>
         </div>
         <div class="eight columns">
             <div class="row nomargin">
                 <input id="inputAREURI" class="six columns" type="text" v-model="areURL" @change="fixAreUrl()"/>
                 <div class="six columns">
-                    <button @click="testAREUrl()" style="width: 70%"><i class="fas fa-bolt"/> <span data-i18n="">Test URL // URL testen</span></button>
+                    <button @click="testAREUrl()" style="width: 70%"><i class="fas fa-bolt"/> <span>{{ $t('testUrl') }}</span></button>
                     <span class="spaced" v-show="areConnected === undefined"><i class="fas fa-spinner fa-spin"/></span>
                     <span class="spaced" v-show="areConnected" style="color: green"><i class="fas fa-check"/></span>
                     <span class="spaced" v-show="areConnected === false" style="color: red"><i class="fas fa-times"/></span>
@@ -53,7 +53,6 @@
             this.areURL = this.areURLProp || areService.getRestURL();
             log.warn(this.areURL);
             this.updateValue();
-            i18nService.initDomI18n();
         }
     }
 </script>

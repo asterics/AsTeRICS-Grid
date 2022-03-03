@@ -92,7 +92,6 @@ function doAction(gridElement, action, gridId, gridData) {
             break;
         case 'GridActionChangeLang':
             i18nService.setLanguage(action.language);
-            i18nService.initDomI18n();
             break;
         case 'GridActionOpenWebpage':
             let tab = window.open(action.openURL, '_blank');

@@ -76,7 +76,7 @@ printService.gridsToPdf = async function (gridsData, options) {
         options.pages = gridsData.length;
         for (let i = 0; i < gridsData.length && !options.abort; i++) {
             if (options.progressFn) {
-                options.progressFn(Math.round(100 * (i) / gridsData.length), i18nService.translate('Creating page {?} of {?} // Erstelle Seite {?} von {?}', i+1, gridsData.length), () => {
+                options.progressFn(Math.round(100 * (i) / gridsData.length), i18nService.t('creatingPageXOfY', i+1, gridsData.length), () => {
                     options.abort = true;
                 });
             }
@@ -111,7 +111,7 @@ function addGridToPdf(doc, gridData, options) {
         let fontSizePt = (footerHeight * 0.4 / 0.352778);
         doc.setTextColor(0);
         doc.setFontSize(fontSizePt);
-        let textL = i18nService.translate("Printed by AsTeRICS Grid, https://grid.asterics.eu // Gedruckt mit AsTeRICS Grid, https://grid.asterics.eu")
+        let textL = i18nService.t("printedByAstericsGrid");
         let textC = i18nService.getTranslation(gridData.label);
         let firstParentPage = options.idParentsMap[gridData.id][0];
         if (options.showLinks && firstParentPage) {

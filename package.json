@@ -18,7 +18,8 @@
     "navigo": "^7.1.2",
     "predictionary": "^1.6.0",
     "superlogin-client": "^0.8.0",
-    "vue": "^2.5.17"
+    "vue": "^2.5.17",
+    "vue-i18n": "8"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -28,6 +29,7 @@
     "babel-loader": "^8.0.6",
     "css-loader": "^1.0.0",
     "jest": "^24.5.0",
+    "nano": "^9.0.3",
     "node-sass": "^7.0.1",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.22.1",
@@ -36,8 +38,7 @@
     "webpack": "^4.30.0",
     "webpack-bundle-analyzer": "^3.3.2",
     "webpack-cli": "^3.3.0",
-    "webpack-dev-server": "^3.2.1",
-    "nano": "^9.0.3"
+    "webpack-dev-server": "^3.2.1"
   },
   "resolutions": {
     "@sensu/superlogin/**/leveldown": "5.4.1"

@@ -92,7 +92,7 @@ function HoverConstructor(itemSelector, options) {
     }
 
     function clickHandler(event) {
-        speechService.speak(i18nService.translate('speech output activated // Sprachausgabe aktiviert'));
+        speechService.speak(i18nService.t('speechOutputActivated'));
         MainVue.clearTooltip();
         stateService.setState(constants.STATE_ACTIVATED_TTS, true);
         setTouchElementVisibility(true);
@@ -166,7 +166,7 @@ function HoverConstructor(itemSelector, options) {
         _elements = L.selectAsList(_itemSelector);
         let alreadyActivatedTTS = stateService.getState(constants.STATE_ACTIVATED_TTS);
         if (speechService.nativeSpeechSupported() && !alreadyActivatedTTS && !_demoMode) {
-            MainVue.setTooltip(i18nService.translate('Tap/click on any element to activate speech output // Klicken/tippen Sie auf ein beliebiges Element um Sprachausgabe zu aktivieren'));
+            MainVue.setTooltip(i18nService.t('tapOnAnyElementToActivateSpeech'));
             stateService.onStateChanged(constants.STATE_ACTIVATED_TTS, (acivatedTTS) => {
                 if (acivatedTTS) {
                     MainVue.clearTooltip();

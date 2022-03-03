@@ -5,15 +5,15 @@
                 <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                     <div class="modal-header">
-                        <h1 name="header" data-i18n>
-                            Unlock application // Anwendung entsperren
+                        <h1 name="header">
+                            {{ $t('unlockApplication') }}
                         </h1>
                     </div>
 
                     <div class="modal-body">
                         <div class="number-row" style="text-align: center; margin-bottom: 1em;">
-                            <span data-i18n="">Input passcode // PIN eingeben</span>
-                            <span class="hide-mobile" data-i18n="">(use buttons or keyboard) // (verwenden Sie Buttons oder Tastatur)</span><br/>
+                            <span>{{ $t('inputPasscode') }}</span>
+                            <span class="hide-mobile">{{ $t('useButtonsOrKeyboard') }}</span><br/>
                             <span aria-hidden="true" style="font-size: 3em">
                                 <span v-for="n in inputPasscode.length">&#9679;</span>
                                 <span v-for="n in (Math.max(0, passcode.length - inputPasscode.length))">_</span>
@@ -92,7 +92,6 @@
                 }
             });
             this.keyHandler.startListening();
-            i18nService.initDomI18n();
             this.resetTimeout();
         },
         beforeDestroy() {

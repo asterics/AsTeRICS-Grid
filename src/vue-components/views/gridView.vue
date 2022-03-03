@@ -3,19 +3,19 @@
         <header class="row header" role="banner" v-if="metadata && !metadata.fullscreen">
             <header-icon class="left" v-show="!metadata.locked"></header-icon>
             <div class="btn-group left">
-                <button tabindex="30" v-show="!metadata.locked" @click="toEditGrid()" class="spaced small"><i class="fas fa-pencil-alt"/> <span class="hide-mobile" data-i18n>Editing on // Bearbeiten ein</span></button>
-                <button tabindex="31" id="inputConfigButton" v-show="!metadata.locked" class="small"><i class="fas fa-cog"></i> <span class="hide-mobile" data-i18n>Input options // Eingabeoptionen</span></button>
+                <button tabindex="30" v-show="!metadata.locked" @click="toEditGrid()" class="spaced small"><i class="fas fa-pencil-alt"/> <span class="hide-mobile">{{ $t('editingOn') }}</span></button>
+                <button tabindex="31" id="inputConfigButton" v-show="!metadata.locked" class="small"><i class="fas fa-cog"></i> <span class="hide-mobile">{{ $t('inputOptions') }}</span></button>
             </div>
             <button tabindex="34" v-show="metadata.locked" @click="unlock()" class="small">
                 <i class="fas fa-unlock"></i>
-                <span class="hide-mobile" data-i18n>Unlock // Entsperren</span>
+                <span class="hide-mobile">{{ $t('unlock') }}</span>
                 <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
             </button>
             <button tabindex="33" v-show="!metadata.locked" @click="lock()" class="small">
                 <i class="fas fa-lock"></i>
-                <span class="hide-mobile" data-i18n>Lock // Sperren</span>
+                <span class="hide-mobile">{{ $t('lock') }}</span>
             </button>
-            <button tabindex="32" @click="applyFullscreen()" class="spaced small"><i class="fas fa-expand"/> <span class="hide-mobile" data-i18n>Fullscreen // Vollbild</span></button>
+            <button tabindex="32" @click="applyFullscreen()" class="spaced small"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
 
         </header>
 
@@ -27,9 +27,12 @@
         <unlock-modal v-if="showModal === modalTypes.MODAL_UNLOCK" @unlock="unlock(true)" @close="showModal = null;"/>
 
         <div class="row content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0 && (!globalGridData || globalGridData.length === 0)">
-            <div data-i18n="" style="margin-top: 2em">
-                <span>No elements, click <a :href="'#grid/edit/' + gridId">Edit grid</a> to enter edit mode.</span>
-                <span>Keine Elemente, klicke auf <a :href="'#grid/edit/' + gridId">Grid bearbeiten</a> um das Grid zu bearbeiten.</span>
+            <div style="margin-top: 2em">
+                <i18n path="noElementsClickToEnterEdit" tag="span">
+                    <template v-slot:link>
+                        <a :href="'#grid/edit/' + gridId">Edit grid</a>
+                    </template>
+                </i18n>
             </div>
         </div>
         <div class="row content">
@@ -391,9 +394,6 @@
                 }
             });
         },
-        updated() {
-            i18nService.initDomI18n();
-        },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
             $(document).off(constants.EVENT_LANGUAGE_CHANGE, this.reloadOnLangChange);
@@ -440,40 +440,37 @@
         let CONTEXT_HUFFMAN = "CONTEXT_HUFFMAN";
         let CONTEXT_SEQUENTIAL = "CONTEXT_SEQUENTIAL";
 
-        function getActiveText(isActive, german) {
-            let text = german ? ' (aktiv)' : ' (active)'
-            return isActive ? text : ''
-        }
-
-        function getName(english, german, isActive) {
-            return `${english}${getActiveText(isActive)} // ${german}${getActiveText(isActive, true)}`;
+        function getName(i18nKey, isActive) {
+            let translated = i18nService.t(i18nKey);
+            let activeText = isActive ? i18nService.t('activeBracket') : '';
+            return `${translated}${activeText}`;
         }
 
         let inputConfig = vueApp.metadata.inputConfig;
         let mouseTouchEnabled = inputConfig.mouseclickEnabled || inputConfig.hoverEnabled;
         let contextItems = {
             CONTEXT_MOUSE: {
-                name: getName('Mouse/Touch input', 'Maus-/Toucheingabe', mouseTouchEnabled),
+                name: getName('mousetouchInput', mouseTouchEnabled),
                 icon: "fas fa-mouse-pointer",
                 className: mouseTouchEnabled ? 'boldFont' : ''
             },
             CONTEXT_SCANNING: {
-                name: getName('Scanning', 'Scanning', inputConfig.scanEnabled),
+                name: getName('scanning', inputConfig.scanEnabled),
                 icon: "fas fa-sort-amount-down",
                 className: inputConfig.scanEnabled ? 'boldFont' : ''
             },
             CONTEXT_DIRECTION: {
-                name: getName('Direction input', 'Richtungs-Eingabe', inputConfig.dirEnabled),
+                name: getName('directionInput', inputConfig.dirEnabled),
                 icon: "fas fa-arrows-alt",
                 className: inputConfig.dirEnabled ? 'boldFont' : ''
             },
             CONTEXT_HUFFMAN: {
-                name: getName('Huffman input', 'Huffman-Eingabe', inputConfig.huffEnabled),
+                name: getName('huffmanInput', inputConfig.huffEnabled),
                 icon: "fas fa-ellipsis-h",
                 className: inputConfig.huffEnabled ? 'boldFont' : ''
             },
             CONTEXT_SEQUENTIAL: {
-                name: getName('Sequential input', 'Sequentielle Eingabe', inputConfig.seqEnabled),
+                name: getName('sequentialInput', inputConfig.seqEnabled),
                 icon: "fas fa-arrow-right",
                 className: inputConfig.seqEnabled ? 'boldFont' : ''
             }

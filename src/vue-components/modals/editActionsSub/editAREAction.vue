@@ -3,35 +3,35 @@
         <test-are-connection v-model="action.areURL"/>
         <div class="row">
             <div class="four columns">
-                <label class="normal-text">ARE Model</label>
+                <label class="normal-text">{{ $t('areModel') }}</label>
             </div>
             <div class="eight columns">
                 <div class="row nomargin">
                     <div class="twelve columns">
-                        <span v-show="loading" data-i18n="">Loading Model from ARE... // Lade Modell von ARE...</span>
-                        <span v-show="!loading && areModelSync && areModelFile && !areModelFile.dataBase64" data-i18n="">Could not load Model from ARE! // Konnte Modell nicht von ARE laden!</span>
-                        <span v-show="!loading && !areModelSync && areModelFile && !areModelFile.dataBase64" data-i18n="">(no ARE model) // (kein ARE Modell)</span>
+                        <span v-show="loading">{{ $t('loadingModelFromAre') }}</span>
+                        <span v-show="!loading && areModelSync && areModelFile && !areModelFile.dataBase64">{{ $t('couldNotLoadModelFromAre') }}</span>
+                        <span v-show="!loading && !areModelSync && areModelFile && !areModelFile.dataBase64">{{ $t('noAreModel') }}</span>
                         <span v-if="!loading && areModelFile && areModelFile.dataBase64">
                             <a href="javascript:void(0);" @click="downloadModelFile(areModelFile)">{{areModelFile.fileName}}</a>
                         </span>
                     </div>
                 </div>
                 <div class="row">
-                    <button class="six columns" @click="reloadAREModel(action)"><i class="fas fa-download"/> <span data-i18n="">Download from ARE // Download von ARE</span></button>
-                    <button v-if="areModelFile && areModelFile.dataBase64" class="six columns" @click="uploadAREModel(action)"><i class="fas fa-upload"/> <span data-i18n="">Upload to ARE // Upload zu ARE</span></button>
+                    <button class="six columns" @click="reloadAREModel(action)"><i class="fas fa-download"/> <span>{{ $t('downloadFromAre') }}</span></button>
+                    <button v-if="areModelFile && areModelFile.dataBase64" class="six columns" @click="uploadAREModel(action)"><i class="fas fa-upload"/> <span>{{ $t('uploadToAre') }}</span></button>
                 </div>
             </div>
         </div>
         <div class="row" v-if="!areModelSync">
             <div class="eight columns offset-by-four">
                 <i class="fas fa-info-circle" />
-                <span v-show="areModelFile && areModelFile.dataBase64" data-i18n="">Upload the saved model or download current ARE model in order to define the action. // Laden Sie das gespeicherte Modell hoch oder das aktuelle ARE Modell herunter um die Aktion zu definieren.</span>
-                <span v-show="areModelFile && !areModelFile.dataBase64" data-i18n="">Download the current ARE model in order to define the action. // Laden Sie das aktuelle ARE Modell herunter um die Aktion zu definieren.</span>
+                <span v-show="areModelFile && areModelFile.dataBase64">{{ $t('uploadTheSavedModelOrDownloadCurrent') }}</span>
+                <span v-show="areModelFile && !areModelFile.dataBase64">{{ $t('downloadTheCurrentAreModelInOrderToDefine') }}</span>
             </div>
         </div>
         <div class="row" v-if="areModelSync">
             <div class="four columns">
-                <label class="normal-text" for="inputComponentId" data-i18n="">Component // Komponente</label>
+                <label class="normal-text" for="inputComponentId">{{ $t('component') }}</label>
             </div>
             <select class="eight columns" id="inputComponentId" v-model="action.componentId" @change="reloadPorts(action)">
                 <option v-for="id in areComponentIds" :value="id">
@@ -40,37 +40,25 @@
             </select>
         </div>
         <div class="row" v-if="areModelSync && areComponentPorts.length != 0">
-            <div class="four columns">
-                <label for="inputDataPortId" class="normal-text" data-i18n="">
-                    <span>Send data <span class="show-mobile">to port</span></span>
-                    <span>Sende Daten <span class="show-mobile">zu Port</span></span>
-                </label>
-            </div>
-            <div class="four columns">
-                <label for="inputDataPortId" class="normal-text hide-mobile">Port</label>
+            <div class="four columns offset-by-four">
+                <label for="inputDataPortId" class="normal-text">{{ $t('sendDataToPort') }}</label>
                 <select id="inputDataPortId" class="full-width" v-model="action.dataPortId">
-                    <option value="" data-i18n="">(empty) // (kein)</option>
+                    <option value="">{{ $t('empty') }}</option>
                     <option v-for="id in areComponentPorts" :value="id">
                         {{id}}
                     </option>
                 </select>
             </div>
             <div class="four columns">
-                <label for="inputDataPortData" class="normal-text" data-i18n="">Data // Daten</label>
+                <label for="inputDataPortData" class="normal-text">{{ $t('dataToSend') }}</label>
                 <input id="inputDataPortData" type="text" class="full-width" v-model="action.dataPortSendData"/>
             </div>
         </div>
         <div class="row" v-if="areModelSync && areComponentEventPorts.length != 0">
-            <div class="four columns">
-                <label for="inputeventPortId" class="normal-text" data-i18n="">
-                    <span>Trigger event <span class="show-mobile">on event port</span></span>
-                    <span>Event triggern <span class="show-mobile">auf Event-Port</span></span>
-                </label>
-            </div>
-            <div class="eight columns">
-                <label for="inputeventPortId" class="normal-text hide-mobile">Event-Port</label>
+            <div class="eight columns offset-by-four">
+                <label for="inputeventPortId" class="normal-text">Event-Port</label>
                 <select id="inputeventPortId" class="full-width" v-model="action.eventPortId">
-                    <option value="" data-i18n="">(empty) // (kein)</option>
+                    <option value="">{{ $t('empty') }}</option>
                     <option v-for="id in areComponentEventPorts" :value="id">
                         {{id}}
                     </option>
@@ -167,9 +155,6 @@
                 this.areModelFile = new AdditionalGridFile();
             }
             helpService.setHelpLocation('05_actions', '#asterics-action');
-        },
-        updated() {
-            i18nService.initDomI18n();
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

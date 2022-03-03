@@ -3,18 +3,18 @@
         <div class="all-dicts-view">
             <header class="row header" role="banner">
                 <header-icon></header-icon>
-                <button tabindex="32" @click="addDictionary()" class="small spaced"><i class="fas fa-plus"/> <span class="hide-mobile" data-i18n="">New empty Dictionary // Neues leeres Wörterbuch</span></button>
-                <button tabindex="31" @click="showImportModal = true" class="small spaced"><i class="fas fa-file-import"/> <span class="hide-mobile" data-i18n="">Import Dictionary // Wörterbuch importieren</span></button>
+                <button tabindex="32" @click="addDictionary()" class="small spaced"><i class="fas fa-plus"/> <span class="hide-mobile">{{ $t('newEmptyDictionary') }}</span></button>
+                <button tabindex="31" @click="showImportModal = true" class="small spaced"><i class="fas fa-file-import"/> <span class="hide-mobile">{{ $t('importDictionary') }}</span></button>
             </header>
             <div class="row content text-content">
                 <div v-if="!dicts" class="grid-container grid-mask">
                     <i class="fas fa-4x fa-spinner fa-spin"/>
                 </div>
-                <h2 data-i18n>Saved Dictionaries // Gespeicherte Wörterbücher</h2>
+                <h2>{{ $t('savedDictionaries') }}</h2>
                 <ul id="dictList" v-show="dicts && dicts.length > 0">
                     <li class="hide-mobile table-headers">
-                        <span class="four columns">Dictionary Name</span>
-                        <span class="four columns" data-i18n="">Actions // Aktionen</span><br/>
+                        <span class="four columns">{{ $t('dictionaryName') }}</span>
+                        <span class="four columns">{{ $t('actions') }}</span><br/>
                     </li>
                     <li v-for="dict in dicts" class="dict-table-elem">
                         <div class="row">
@@ -36,31 +36,30 @@
                                 </div>
                             </div>
                             <div class="eight columns actionbuttons" style="display: flex; padding-right: 1em">
-                                <div class="four columns show-mobile" style="margin: 0.5em 0 0 0.2em" data-i18n="">Actions
-                                    // Aktionen
+                                <div class="four columns show-mobile" style="margin: 0.5em 0 0 0.2em">{{ $t('actions') }}
                                 </div>
-                                <button @click="edit(dict)"><i class="far fa-edit"/> <span class="hide-mobile" data-i18n="">Edit // Bearbeiten</span>
+                                <button @click="edit(dict)"><i class="far fa-edit"/> <span class="hide-mobile">{{ $t('edit') }}</span>
                                 </button>
                                 <button @click="clone(dict.id)"><i class="far fa-clone"/> <span class="hide-mobile"
-                                                                                                data-i18n="">Clone // Duplizieren</span>
+                                                                                               >{{ $t('clone') }}</span>
                                 </button>
                                 <button @click="deleteDict(dict.id, dict.dictionaryKey)"><i class="far fa-trash-alt"/> <span
-                                        class="hide-mobile" data-i18n="">Delete // Löschen</span></button>
+                                        class="hide-mobile">{{ $t('delete') }}</span></button>
                                 <button @click="downloadDict(dict.id, dict.dictionaryKey)"><i class="fas fa-download"/> <span
-                                    class="hide-mobile" data-i18n="">Save // Speichern</span></button>
+                                    class="hide-mobile">{{ $t('save') }}</span></button>
                             </div>
                         </div>
                         <div class="edit-container" v-if="editId === dict.id">
                             <div class="row">
-                                <input type="text" class="four columns" placeholder="Search word" v-model="searchWord"
+                                <input type="text" class="four columns" :placeholder="$t('searchWord')" v-model="searchWord"
                                        @input="inputSearchWord()"/>
                                 <button @click="showWordsModal = true; modalDict = dict" class="four columns">
                                     <i class="fas fa-file-import"/>
-                                    <span data-i18n="">Import words // Wörter importieren</span>
+                                    <span>{{ $t('importWords') }}</span>
                                 </button>
                             </div>
                             <div class="row">
-                                <span data-i18n="">Words: // Wörter:</span>
+                                <span>{{ $t('words') }}</span>
                                 <ul style="margin-left: 0">
                                     <li v-for="word in wordlist">
                                         <button class="small-button" @click="deleteWord(word, dict)" style="margin-right: 0.5em"><i class="far fa-trash-alt"/></button>{{word}}
@@ -68,23 +67,23 @@
                                 </ul>
                                 <span v-show="totalWords > wordlist.length && searchWord === ''">
                                     {{totalWords - wordlist.length}}
-                                    <span data-i18n="">more word(s) available. Type in search field to filter. // mehr Wörter verfügbar. Tippe in Suchfeld um zu filtern.</span>
+                                    <span>{{ $t('moreWordsAvailableTypeInSearchFieldToFilter') }}</span>
                                 </span>
                                 <span v-show="filterWords > wordlist.length && searchWord !== ''">
                                     {{filterWords - wordlist.length}}
-                                    <span data-i18n="">more word(s) for this filter. Refine search to show more. // mehr Wörter für diese Suche. Verfeinere die Suche um mehr anzuzeigen.</span>
+                                    <span>{{ $t('moreWordsForThisFilterRefineSearchToShowMore') }}</span>
                                 </span>
                                 <div v-show="searchWord && totalWords > 0 && wordlist.length === 0">
-                                    <span data-i18n="">No words for this filter. Clear search field to show elements. // Keine Wörter für diese Suche. Lösche Suchfeld um Elemente anzuzeigen.</span>
-                                    <button @click="inputSearchWord('')"><i class="fas fa-times"/> <span data-i18n="">Clear // Löschen</span></button>
+                                    <span>{{ $t('noWordsForThisFilterClearSearchField') }}</span>
+                                    <button @click="inputSearchWord('')"><i class="fas fa-times"/> <span>{{ $t('clear') }}</span></button>
                                 </div>
-                                <span v-show="totalWords === 0" data-i18n="">This dictionary contains no words. // Dieses Wörterbuch enthält keine Wörter.</span>
+                                <span v-show="totalWords === 0">{{ $t('thisDictionaryContainsNoWords') }}</span>
                             </div>
                         </div>
                     </li>
                 </ul>
-                <p v-if="!dicts || dicts.length === 0" data-i18n>
-                    No dictionaries found! // Keine Ergebnisse gefunden!
+                <p v-if="!dicts || dicts.length === 0">
+                    {{ $t('noDictionariesFound') }}
                 </p>
             </div>
             <import-words-modal v-if="showWordsModal" v-bind:dict-data="modalDict"
@@ -136,7 +135,7 @@
         methods: {
             deleteDict: function (id, label) {
                 let thiz = this;
-                if (!confirm(i18nService.translate('CONFIRM_DELETE_DICT', label))) {
+                if (!confirm(i18nService.t('CONFIRM_DELETE_DICT', label))) {
                     return;
                 }
                 dataService.deleteObject(id).then(() => {
@@ -255,10 +254,6 @@
         mounted() {
             let thiz = this;
             vueApp = thiz;
-            i18nService.initDomI18n();
-        },
-        updated() {
-            i18nService.initDomI18n();
         },
         beforeDestroy() {
             predictionService.init();

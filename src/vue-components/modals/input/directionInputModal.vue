@@ -6,38 +6,38 @@
                     <a class="inline close-button" href="javascript:void(0);" @click="cancel()"><i class="fas fa-times"/></a>
                     <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
                     <div class="modal-header">
-                        <h1 name="header" data-i18n="">Direction Input // Richtungs-Eingabe</h1>
+                        <h1 name="header">{{ $t('directionInput') }}</h1>
                     </div>
 
                     <div class="modal-body" v-if="inputConfig">
                         <div class="row">
-                            <span data-i18n="">Direction input method: 2-5 input events // Richtungs-Eingabe: 2-5 Eingabekanäle</span>
-                            <a aria-label="Help" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
+                            <span>{{ $t('directionInputMethod25InputEvents') }}</span>
+                            <a :aria-label="$t('help')" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
                         </div>
                         <div class="row" >
                             <div class="twelve columns">
                                 <input v-focus type="checkbox" id="enableDirinput" v-model="inputConfig.dirEnabled"/>
-                                <label class="inline" for="enableDirinput" data-i18n>Enable direction input // Richtungs-Eingabe aktivieren</label>
+                                <label class="inline" for="enableDirinput">{{ $t('enableDirectionInput') }}</label>
                             </div>
                         </div>
                         <div v-show="inputConfig.dirEnabled">
-                            <accordion acc-label="Input // Eingabe" acc-open="true" acc-label-type="h2" acc-background-color="white" class="row">
+                            <accordion :acc-label="$t('input')" acc-open="true" acc-label-type="h2" acc-background-color="white" class="row">
                                 <input-event-list v-model="inputConfig.dirInputs" :input-labels="[InputConfig.SELECT, InputConfig.RIGHT, InputConfig.DOWN, InputConfig.LEFT, InputConfig.UP]" :error-inputs="errorInputs" @input="inputChanged"></input-event-list>
                                 <div class="row">
-                                    <button class="twelve columns" data-i18n="" @click="resetInput">Reset to default input configuration // Auf Standard Eingabe-Konfiguration zurücksetzen</button>
+                                    <button class="twelve columns" @click="resetInput">{{ $t('resetToDefaultInputConfiguration') }}</button>
                                 </div>
                             </accordion>
                             <accordion acc-label="ADVANCED_SETTINGS" acc-label-type="h2" acc-background-color="white">
                                 <div class="row" style="margin-top: 0">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkWrapAround" v-model="inputConfig.dirWrapAround"/>
-                                        <label for="chkWrapAround" data-i18n>Wrap around (jump to first element after last element) // Enden verbinden (springe zu erstem Element nach letztem Element)</label>
+                                        <label for="chkWrapAround">{{ $t('wrapAroundJumpToFirstElementAfterLastElem') }}</label>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkReset" v-model="inputConfig.dirResetToStart"/>
-                                        <label for="chkReset" data-i18n>Go to start position after select // Zu Startposition nach Auswahl</label>
+                                        <label for="chkReset">{{ $t('goToStartPositionAfterSelect') }}</label>
                                     </div>
                                 </div>
                             </accordion>
@@ -54,10 +54,10 @@
                     <div class="modal-footer">
                         <div class="button-container row">
                             <button @click="cancel()" class="four columns offset-by-four">
-                                <i class="fas fa-times"/> <span data-i18n>Cancel // Abbrechen</span>
+                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
                             <button @click="save()" class="four columns">
-                                <i class="fas fa-check"/> <span>OK</span>
+                                <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
                             </button>
                         </div>
                     </div>
@@ -133,7 +133,7 @@
                     this.errorInputs.push(InputConfig.RIGHT);
                 }
                 if (this.errorInputs.length > 0) {
-                    this.error = i18nService.translate('Please specify input modalities // Bitte Eingabemodalitäten definieren');
+                    this.error = i18nService.t('pleaseSpecifyInputModalities');
                     return false;
                 }
                 return true;
@@ -173,9 +173,6 @@
                 thiz.inputConfig = JSON.parse(JSON.stringify(metadata.inputConfig));
             });
             helpService.setHelpLocation('04_input_options', '#direction-input');
-        },
-        updated() {
-            i18nService.initDomI18n();
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

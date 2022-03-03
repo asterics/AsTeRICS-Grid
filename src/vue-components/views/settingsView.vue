@@ -3,64 +3,56 @@
         <header-icon full-header="true"></header-icon>
         <div class="row content spaced" v-if="show">
             <div class="row">
-                <h2 data-i18n="" class="six columns">General settings // Allgemeine Einstellungen</h2>
-                <div v-if="saveSuccess" style="padding-top: 1.7em;"><i class="fas fa-check" style="color: green"></i> <span data-i18n="">All changes saved! // Alle Änderungen gespeichert!</span></div>
+                <h2 class="six columns">{{ $t('generalSettings') }}</h2>
+                <div v-if="saveSuccess" style="padding-top: 1.7em;"><i class="fas fa-check" style="color: green"></i> <span>{{ $t('allChangesSaved') }}</span></div>
             </div>
             <div class="ten columns">
-                <h3 data-i18n="">Application Language // Anwendungs-Sprache</h3>
+                <h3>{{ $t('applicationLanguage') }}</h3>
                 <div class="row">
-                    <label class="three columns" for="inLanguage" data-i18n="">Select language // Sprache wählen</label>
+                    <label class="three columns" for="inLanguage">{{ $t('selectLanguage') }}</label>
                     <select class="five columns" id="inLanguage" v-model="langCode" @input="saveLangCode()">
-                        <option value="" data-i18n="">automatic // automatisch</option>
+                        <option value="">{{ $t('automatic') }}</option>
                         <option v-for="lang in allLanguages.filter(lang => ['de', 'en'].indexOf(lang.code) !== -1 || gridLanguages.indexOf(lang.code) !== -1)" :value="lang.code">{{lang | extractTranslation}} ({{lang.code}})</option>
                     </select>
                 </div>
-                <div class="row">
-                    <span class="fa fa-info-circle"></span>
-                    <span class="break-word">
-                        <span data-i18n="">
-                            <span>Grids can be translated to every language. To add or edit a translation use "Edit grid -> More -> Translate Grid".</span>
-                            <span>Grids können in alle Sprachen übersetzt werden. Um eine Übersetzung zu bearbeiten oder hinzuzufügen, verwenden Sie "Grid bearbeiten -> Mehr -> Grid übersetzen".</span>
-                        </span>
-                    </span>
-                </div>
                 <div class="row" style="margin-bottom: 0.5em">
                     <span class="fa fa-info-circle"></span>
-                    <span class="break-word" data-i18n="">
-                        <span>For user interface only English (en) and German (de) are available. For all other languages English will be used.</span>
-                        <span>Das User-Interface ist nur in Englisch (en) and Deutsch (de) verfügbar. Für andere Sprachen wird Englisch verwendet.</span>
+                    <span class="break-word">
+                        <span>
+                            {{ $t('gridsCanBeTranslatedToEveryLanguage') }}
+                        </span>
                     </span>
                 </div>
             </div>
             <div class="ten columns">
-                <h3 data-i18n="">Voice // Stimme</h3>
+                <h3>{{ $t('voice') }}</h3>
                 <div class="row">
                     <label class="three columns" for="inVoice">
-                        <span data-i18n="">Preferred voice // Bevorzugte Stimme</span>
+                        <span>{{ $t('preferredVoice') }}</span>
                     </label>
                     <select id="inVoice" class="five columns" v-model="selectedVoiceName" @change="saveVoice()">
-                        <option value="" data-i18n="">automatic // automatisch</option>
+                        <option value="">{{ $t('automatic') }}</option>
                         <option v-for="voice in voices" :value="voice.name">{{voice.name}}</option>
                     </select>
                 </div>
                 <div class="row">
                     <label class="three columns" for="inVoice">
-                        <span data-i18n="">Test text // Test-Text</span>
+                        <span>{{ $t('testText') }}</span>
                     </label>
                     <input class="five columns" type="text" v-model="testText">
-                    <button id="testVoice" class="three columns" @click="testSpeak" data-i18n="">Test // Testen</button>
+                    <button id="testVoice" class="three columns" @click="testSpeak">{{ $t('test') }}</button>
                 </div>
             </div>
             <div class="ten columns">
-                <h3 data-i18n="">Miscellaneous // Diverses</h3>
+                <h3>{{ $t('miscellaneous') }}</h3>
                 <div class="row">
                     <input id="chkSyncNavigation" type="checkbox" v-model="syncNavigation" @change="saveSyncNavigation()"/>
-                    <label for="chkSyncNavigation" data-i18n="">Synchronize navigation and locked/fullscreen state for online users // Navigation und Sperr- bzw. Vollbildstatus für online User synchronisieren</label>
+                    <label for="chkSyncNavigation">{{ $t('synchronizeNavigationAndLockedState') }}</label>
                 </div>
                 <div class="row">
-                    <label class="three columns" for="unlockPass" data-i18n="">Passcode for unlocking user interface (only numbers) // PIN um Oberfläche zu entsperren (nur Ziffern)</label>
-                    <input class="five columns" id="unlockPass" type="number" v-model="unlockPasscode" @input="unlockPasscode = unlockPasscode.substring(0, 6); savePasscode()" :placeholder="i18nService.translate('(no passcode) // (kein PIN)')"/>
-                    <button class="three columns" @click="unlockPasscode = null; savePasscode()" data-i18n="">Reset // Löschen</button>
+                    <label class="three columns" for="unlockPass">{{ $t('passcodeForUnlockingUserInterface') }}</label>
+                    <input class="five columns" id="unlockPass" type="number" v-model="unlockPasscode" @input="unlockPasscode = unlockPasscode.substring(0, 6); savePasscode()" :placeholder="$t('noPasscodeBracket')"/>
+                    <button class="three columns" @click="unlockPasscode = null; savePasscode()">{{ $t('reset') }}</button>
                 </div>
             </div>
         </div>
@@ -85,14 +77,14 @@
                 langCode: '',
                 gridLanguages: [],
                 allLanguages: i18nService.getAllLanguages(),
-                currentLang: i18nService.getBrowserLang(),
+                currentLang: i18nService.getCurrentLang(),
                 saveSuccess: null,
                 speechService: speechService,
                 syncNavigation: localStorageService.shouldSyncNavigation(),
                 unlockPasscode: localStorageService.getUnlockPasscode(),
                 voices: speechService.getVoices(),
                 selectedVoiceName: speechService.getPreferredVoiceName(),
-                testText: i18nService.translate('This is an english sentence. // Das ist ein deutscher Satz.'),
+                testText: i18nService.t('thisIsAnEnglishSentence'),
                 i18nService: i18nService
             }
         },
@@ -101,7 +93,6 @@
                 this.saveSuccess = undefined;
                 util.debounce(() => {
                     i18nService.setLanguage(this.langCode);
-                    i18nService.initDomI18n();
                     this.saveSuccess = true;
                 }, 300, 'SAVE_LANG');
             },
@@ -132,7 +123,6 @@
         },
         mounted() {
             let thiz = this;
-            i18nService.initDomI18n();
             dataService.getMetadata().then(metadata => {
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
                 thiz.show = true;
@@ -147,9 +137,6 @@
                 thiz.gridLanguages = [...new Set(languages)];
             });
             thiz.langCode = i18nService.getCustomLanguage();
-        },
-        updated() {
-            i18nService.initDomI18n();
         }
     }
 </script>

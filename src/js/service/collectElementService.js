@@ -60,7 +60,7 @@ collectElementService.doAction = function (elem) {
         predictionService.predict(collectedText, dictionaryKey);
     }
     let speakAction = elem.actions.filter(a => a.modelName === GridActionSpeak.getModelName())[0];
-    let language = speakAction && speakAction.speakLanguage ? speakAction.speakLanguage : i18nService.getBrowserLang();
+    let language = speakAction && speakAction.speakLanguage ? speakAction.speakLanguage : i18nService.getCurrentLang();
     speechService.speak(collectedText, language);
 };
 

@@ -38,7 +38,7 @@ function initDirectives() {
 
 function initFilters() {
     Vue.filter('translate', function (key) {
-        return i18nService.translate(key);
+        return i18nService.t(key);
     });
     Vue.filter('extractTranslation', function (object) {
         return i18nService.getTranslation(object);

@@ -8,7 +8,7 @@
                         <span v-show="input.label === InputConfig.GENERAL_INPUT">{{index + 1}}</span>
                     </label>
                     <select :id="input.label + index" @change="typeChange(index, $event.target.value)" class="five columns">
-                        <option value=""><span data-i18n="">not defined // nicht definiert</span></option>
+                        <option value=""><span>{{ $t('notDefined') }}</span></option>
                         <option v-for="inputEvent in inputEventTypes" :value="inputEvent.getModelName()" :selected="inputEvent.getModelName() === input.modelName">
                             {{inputEvent.getModelName() | translate}}
                         </option>
@@ -19,35 +19,35 @@
                     <div class="row">
                         <button @click="recordKey(input, index)" class="five columns offset-by-three">
                             <i class="fas fa-keyboard"></i>
-                            <span v-show="!keyRecording[input.label+index]" data-i18n="">{{'Record key // Taste aufnehmen' | translate}}</span>
-                            <span v-show="keyRecording[input.label+index]" data-i18n="">{{'press key ... // Taste drücken ...' | translate}}</span>
+                            <span v-show="!keyRecording[input.label+index]">{{ $t('recordKey') }}</span>
+                            <span v-show="keyRecording[input.label+index]">{{ $t('pressKey') }}</span>
                         </button>
                         <span class="four columns">
-                            <b data-i18n="">Current key: // Aktuelle Taste:</b>
-                            <span v-show="!input.keyCode" data-i18n="">(no key) // (keine Taste)</span>
+                            <b>{{ $t('currentKey') }}</b>
+                            <span v-show="!input.keyCode">{{ $t('noKey') }}</span>
                             <span v-show="input.keyCode">{{input.keyName + ' (' + input.keyCode + ')'}}</span>
                         </span>
                     </div>
                     <div class="row">
-                        <accordion acc-label="more // mehr" class="nine columns offset-by-three">
+                        <accordion :acc-label="$t('more')" class="nine columns offset-by-three">
                             <div class="row">
-                                <label class="one-third column" :for="'inTimeout' + index">Timeout (ms)</label>
+                                <label class="one-third column" :for="'inTimeout' + index">{{ $t('timeoutMs') }}</label>
                                 <input class="two-thirds column" :id="'inTimeout' + index" type="number" min="0" max="5000" step="100" v-model.number="input.timeout" @input="modelChanged"/>
                             </div>
                             <div class="row">
-                                <label class="one-third column" :for="'inRepeat' + index" data-i18n="">Repetitions // Wiederholungen</label>
+                                <label class="one-third column" :for="'inRepeat' + index">{{ $t('repetitions') }}</label>
                                 <input v-show="input.holdDuration === 0" class="two-thirds column" :id="'inRepeat' + index" type="number" min="1" max="9" v-model.number="input.repeat" @input="modelChanged"/>
                                 <span v-show="input.holdDuration > 0" class="two-thirds column">
-                                    <span data-i18n="">disabled if hold duration is set. // deaktiviert bei gesetzter Haltedauer.</span>
-                                    <a href="javascript:;" @click="input.holdDuration = 0; modelChanged();" data-i18n="">Enable // Aktivieren</a>
+                                    <span>{{ $t('disabledIfHoldDurationIsSet') }}</span>
+                                    <a href="javascript:;" @click="input.holdDuration = 0; modelChanged();">{{ $t('enable') }}</a>
                                 </span>
                             </div>
                             <div class="row">
-                                <label class="one-third column" :for="'inRepeat' + index" data-i18n="">Hold duration (ms) // Haltedauer (ms)</label>
+                                <label class="one-third column" :for="'inRepeat' + index">{{ $t('holdDurationMs') }}</label>
                                 <input v-show="input.repeat === 1" class="two-thirds column" :id="'inRepeat' + index" type="number" min="0" max="5000" step="100" v-model.number="input.holdDuration" :disabled="input.repeat > 1" @input="modelChanged"/>
                                 <span v-show="input.repeat > 1" class="two-thirds column">
-                                    <span data-i18n="">disabled if repetitions are set. // deaktiviert bei gesetzten Wiederholungen.</span>
-                                    <a href="javascript:;" @click="input.repeat = 1; modelChanged();" data-i18n="">Enable // Aktivieren</a>
+                                    <span>{{ $t('disabledIfRepetitionsAreSet') }}</span>
+                                    <a href="javascript:;" @click="input.repeat = 1; modelChanged();">{{ $t('enable') }}</a>
                                 </span>
                             </div>
                         </accordion>
@@ -57,21 +57,21 @@
                     <div class="row">
                         <button @click="recordAREEvent(input, index)" class="five columns offset-by-three">
                             <i class="fas fa-bolt"></i>
-                            <span v-show="!keyRecording[input.label+index]">{{'Record ARE event // ARE Event aufnehmen' | translate}}</span>
-                            <span v-show="keyRecording[input.label+index]">{{'waiting for event ... // warte auf Event ...' | translate}}</span>
+                            <span v-show="!keyRecording[input.label+index]">{{ $t('recordAreEvent') }}</span>
+                            <span v-show="keyRecording[input.label+index]">{{ $t('waitingForEvent') }}</span>
                         </button>
-                        <label class="four columns" for="inputAreUrl">ARE URL</label>
-                        <input class="four columns" id="inputAreUrl" type="text" v-model="input.areURL" :placeholder="'empty = automatic // leer = automatisch' | translate" @change="changedAreURL(input)" @input="areError[input.label+index] = false"/>
+                        <label class="four columns" for="inputAreUrl">{{ $t('areUrl') }}</label>
+                        <input class="four columns" id="inputAreUrl" type="text" v-model="input.areURL" :placeholder="$t('emptyIsAutomatic')" @change="changedAreURL(input)" @input="areError[input.label+index] = false"/>
                     </div>
                     <div class="row">
                         <span class="nine columns offset-by-three" v-show="areError[input.label+index]">
                             <i class="fas fa-exclamation-triangle"></i>
-                            {{'Error connecting to ARE! // Verbindung zu ARE konnte nicht hergestellt werden!' | translate}} {{'(' + areService.getRestURL(input.areURL) + ')'}}
+                            {{ $t('errorConnectingToARE') }} {{'(' + areService.getRestURL(input.areURL) + ')'}}
                         </span>
                     </div>
                     <div class="row">
                         <span v-for="(eventName, index) in input.eventNames" class="nine columns offset-by-three">
-                            <b>Event:</b> {{formatAreEvent(eventName)}} <button @click="removeAREEvent(input, index)" :title="'Delete // Löschen' | translate" style="margin-left: 1em; padding: 0 0.5em"><i class="fas fa-trash"></i></button>
+                            <b>{{ $t('event') }}</b> {{formatAreEvent(eventName)}} <button @click="removeAREEvent(input, index)" :title="$t('delete')" style="margin-left: 1em; padding: 0 0.5em"><i class="fas fa-trash"></i></button>
                         </span>
                     </div>
                 </div>
@@ -268,12 +268,7 @@
             }
         },
         mounted() {
-            let thiz = this;
-            i18nService.initDomI18n();
             this.initWithValue(this.value);
-        },
-        updated() {
-            i18nService.initDomI18n();
         }
     }
 </script>

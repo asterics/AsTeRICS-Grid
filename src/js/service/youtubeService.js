@@ -106,7 +106,7 @@ youtubeService.play = function (action, videoTimeParam) {
                 playerVars: {
                     'mute': action.playMuted ? 1 : 0,
                     'cc_load_policy': action.showCC ? 1 : 0,
-                    'cc_lang_pref': i18nService.getBrowserLang(),
+                    'cc_lang_pref': i18nService.getCurrentLang(),
                     'rel': 0,
                     'iv_load_policy': 3
                 },
@@ -310,7 +310,7 @@ youtubeService.setVolume = function (volume, initSet) {
                 player.unMute();
                 ytState.muted = false;
             }
-            MainVue.setTooltip(i18nService.translate('Volume: {?} / 100 // Lautstärke: {?} / 100', volume), {
+            MainVue.setTooltip(i18nService.t('webradioVolume', volume), {
                 revertOnClose: true,
                 timeout: 5000
             });
@@ -486,7 +486,7 @@ function saveState() {
 }
 
 function errorMessage() {
-    tooltipID = MainVue.setTooltip(i18nService.translate('Error on playing YouTube video. Please check internet connection. // Fehler bei der Wiedergabe des YouTube Videos. Bitte Internet-Verbindung überprüfen.'), {
+    tooltipID = MainVue.setTooltip(i18nService.t('errorPlayingYoutube'), {
         timeout: 30000,
         msgType: 'warn'
     });

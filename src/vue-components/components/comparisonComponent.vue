@@ -1,21 +1,21 @@
 <template>
     <div>
-        <accordion acc-label="HEADER_COMPARE_ONLINE_OFFLINE" class="six columns offset-by-two">
+        <accordion :acc-label="$t('HEADER_COMPARE_ONLINE_OFFLINE')" class="six columns offset-by-two">
             <div>
-                <h3 data-i18n="">Offline user // Offline-User</h3>
+                <h3>{{ $t('offlineUser') }}</h3>
                 <ul class="fa-ul">
-                    <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">all grids are saved offline // alle Grids werden offline gespeichert</span></li>
-                    <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">all functions available // voller Funktionsumfang</span></li>
-                    <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">ideal for using on a single device // optimal für Nutzung auf einem einzelnen Gerät</span></li>
+                    <li><span class="fa-li"><i class="fas fa-check"></i></span><span>{{ $t('allGridsAreSavedOffline') }}</span></li>
+                    <li><span class="fa-li"><i class="fas fa-check"></i></span><span>{{ $t('allFunctionsAvailable') }}</span></li>
+                    <li><span class="fa-li"><i class="fas fa-check"></i></span><span>{{ $t('idealForUsingOnASingleDevice') }}</span></li>
                 </ul>
             </div>
             <div>
-                <h3 data-i18n="">Online user // Online-User</h3>
+                <h3>{{ $t('onlineUser') }}</h3>
                 <ul class="fa-ul">
-                    <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">all grids are saved offline and online // alle Grids werden offline und online gespeichert</span></li>
-                    <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">automatic synchronization across multiple devices (e.g. PC, tablet, smartphone) // automatische Synchronisierung zwischen verschiedenen Geräten (z.B. PC, Tablet, Smartphone)</span></li>
-                    <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">all data is end-to-end encrypted and only you are able to access it // alle Daten werden verschlüsselt und es kann niemand außer Sie darauf zugreifen</span></li>
-                    <li><span class="fa-li"><i class="fas fa-check"></i></span><span data-i18n="">for registration only a username and a password is needed // für die Registrierung wird nur ein Username und ein Passwort benötigt</span></li>
+                    <li><span class="fa-li"><i class="fas fa-check"></i></span><span>{{ $t('allGridsAreSavedOfflineAndOnline') }}</span></li>
+                    <li><span class="fa-li"><i class="fas fa-check"></i></span><span>{{ $t('automaticSynchronizationAcrossMultipleDevices') }}</span></li>
+                    <li><span class="fa-li"><i class="fas fa-check"></i></span><span>{{ $t('allDataIsEndtoendEncryptedAndOnlyYouAreAble') }}</span></li>
+                    <li><span class="fa-li"><i class="fas fa-check"></i></span><span>{{ $t('forRegistrationOnlyAUsernameAndAPasswordIsNeeded') }}</span></li>
                 </ul>
             </div>
         </accordion>
@@ -39,7 +39,6 @@
         methods: {
         },
         mounted() {
-            i18nService.initDomI18n();
         }
     }
 </script>
