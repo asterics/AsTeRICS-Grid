@@ -62,7 +62,7 @@
                         <div class="row">
                             <div class="offset-by-two ten columns">
                                 <div v-for="imgElement in searchResults" class="inline">
-                                    <img v-if="imgElement.base64" :src="imgElement.base64" @click="setImage(imgElement)" :title="$t('byAuthor', imgElement.author)" width="60" height="60" class="inline" role="button"/>
+                                    <img v-if="imgElement.base64" :src="imgElement.base64" @click="setImage(imgElement)" :title="$t('byAuthor', [imgElement.author])" width="60" height="60" class="inline" role="button"/>
                                     <span v-if="!imgElement.base64 && !imgElement.failed" style="position: relative">
                                         <img src="data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%3E%3C/svg%3E" :title="imgElement.image_url" width="60" height="60" class="inline"/>
                                         <i class="fas fa-spinner fa-spin" style="position: absolute; top: -25px; left: 25px;"></i>
