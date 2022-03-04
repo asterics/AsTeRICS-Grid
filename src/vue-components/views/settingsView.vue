@@ -15,12 +15,20 @@
                         <option v-for="lang in allLanguages.filter(lang => ['de', 'en'].indexOf(lang.code) !== -1 || gridLanguages.indexOf(lang.code) !== -1)" :value="lang.code">{{lang | extractTranslation}} ({{lang.code}})</option>
                     </select>
                 </div>
+                <div class="row">
+                    <span class="fa fa-info-circle"></span>
+                    <span class="break-word">
+                        {{ $t('gridsCanBeTranslatedToEveryLanguage') }}
+                    </span>
+                </div>
                 <div class="row" style="margin-bottom: 0.5em">
                     <span class="fa fa-info-circle"></span>
                     <span class="break-word">
-                        <span>
-                            {{ $t('gridsCanBeTranslatedToEveryLanguage') }}
-                        </span>
+                        <i18n path="ifTheTranslationForYourLanguageIsNotAvailable" tag="span">
+                            <template v-slot:crowdin>
+                                <a href="https://crowdin.com/project/asterics-grid" target="_blank">crowdin.com</a>
+                            </template>
+                        </i18n>
                     </span>
                 </div>
             </div>

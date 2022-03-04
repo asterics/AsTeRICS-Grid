@@ -683,5 +683,6 @@
     "ii": "Yi",
     "yo": "Yoruba",
     "za": "Zhuang"
-  }
+  },
+  "ifTheTranslationForYourLanguageIsNotAvailable": "Wenn Ihre Sprache nicht verfügbar oder fehlerhaft ist, helfen Sie bitte auf {crowdin} die Übersetzungen zu verbessern."
 }

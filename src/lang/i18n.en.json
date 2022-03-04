@@ -683,5 +683,6 @@
     "ii": "Sichuan Yi",
     "yo": "Yoruba",
     "za": "Zhuang"
-  }
+  },
+  "ifTheTranslationForYourLanguageIsNotAvailable": "If the translation for your language is not available or has errors, please contribute on the translation platform {crowdin}."
 }
