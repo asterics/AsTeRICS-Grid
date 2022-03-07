@@ -442,7 +442,7 @@
 
         function getName(i18nKey, isActive) {
             let translated = i18nService.t(i18nKey);
-            let activeText = isActive ? i18nService.t('activeBracket') : '';
+            let activeText = isActive ? ' ' + i18nService.t('activeBracket') : '';
             return `${translated}${activeText}`;
         }
 
