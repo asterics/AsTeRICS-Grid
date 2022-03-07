@@ -44,7 +44,8 @@ function init() {
         promises.push(loginService.loginStoredUser(autologinUser, true));
     }
     Promise.all(promises).finally(() => {
-        MainVue.init();
+        return MainVue.init();
+    }).then(() => {
         let toMain = autologinUser || urlParamService.isDemoMode();
         let toLogin = lastActiveUser || localStorageService.getSavedUsers().length > 0;
         localStorageService.setLastActiveUser(autologinUser || lastActiveUser || '');

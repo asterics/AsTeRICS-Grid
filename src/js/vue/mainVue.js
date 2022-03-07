@@ -64,115 +64,118 @@ MainVue.showProgressBar = function (percentage, options) {
 
 MainVue.init = function () {
     Vue.use(VueI18n);
-    app = new Vue({
-        i18n: i18nService.getVueI18n(),
-        el: '#app',
-        components: {NotificationBar, ProgressBarModal},
-        data() {
-            return {
-                component: null,
-                properties: null,
-                componentKey: 0,
-                showSidebar: false,
-                currentUser: databaseService.getCurrentUsedDatabase(),
-                isLocalUser: localStorageService.isSavedLocalUser(databaseService.getCurrentUsedDatabase()),
-                syncState: dataService.getSyncState(),
-                showProgressBar: false,
-                constants: constants,
-                tooltipHTML: null,
-                actionLink: null
-            }
-        },
-        methods: {
-            setComponent(component, properties) {
-                this.component = component;
-                this.properties = properties;
-                this.componentKey++; //forces to update the view, even with same component (e.g. grid view, other page)
-            },
-            closeSidebar() {
-                $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
-            },
-            openSidebar() {
-                $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
-            },
-            openHelp() {
-                helpService.openHelp();
-            },
-            moreNavigation() {
-                $.contextMenu('destroy');
-                setupContextMenu();
-                $('#moreNavigation').contextMenu();
-            }
-        },
-        mounted() {
-            let thiz = this;
-            $(document).on(constants.EVENT_SIDEBAR_OPEN, () => {
-                if (thiz.showSidebar) {
-                    return;
+    return i18nService.getVueI18n().then(i18n => {
+        app = new Vue({
+            i18n: i18n,
+            el: '#app',
+            components: {NotificationBar, ProgressBarModal},
+            data() {
+                return {
+                    component: null,
+                    properties: null,
+                    componentKey: 0,
+                    showSidebar: false,
+                    currentUser: databaseService.getCurrentUsedDatabase(),
+                    isLocalUser: localStorageService.isSavedLocalUser(databaseService.getCurrentUsedDatabase()),
+                    syncState: dataService.getSyncState(),
+                    showProgressBar: false,
+                    constants: constants,
+                    tooltipHTML: null,
+                    actionLink: null
                 }
-                if (!databaseService.getCurrentUsedDatabase()) {
-                    thiz.showSidebar = true;
-                    this.$nextTick(() => {
-                        $(document).trigger(constants.EVENT_SIDEBAR_OPENED);
-                        $(document).trigger(constants.EVENT_GRID_RESIZE);
-                    });
-                    return;
+            },
+            methods: {
+                setComponent(component, properties) {
+                    this.component = component;
+                    this.properties = properties;
+                    this.componentKey++; //forces to update the view, even with same component (e.g. grid view, other page)
+                },
+                closeSidebar() {
+                    $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
+                },
+                openSidebar() {
+                    $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
+                },
+                openHelp() {
+                    helpService.openHelp();
+                },
+                moreNavigation() {
+                    $.contextMenu('destroy');
+                    setupContextMenu();
+                    $('#moreNavigation').contextMenu();
                 }
-                dataService.getMetadata().then(metadata => {
-                    if (!metadata.locked && !metadata.fullscreen) {
+            },
+            mounted() {
+                let thiz = this;
+                $(document).on(constants.EVENT_SIDEBAR_OPEN, () => {
+                    if (thiz.showSidebar) {
+                        return;
+                    }
+                    if (!databaseService.getCurrentUsedDatabase()) {
                         thiz.showSidebar = true;
                         this.$nextTick(() => {
                             $(document).trigger(constants.EVENT_SIDEBAR_OPENED);
                             $(document).trigger(constants.EVENT_GRID_RESIZE);
                         });
+                        return;
                     }
+                    dataService.getMetadata().then(metadata => {
+                        if (!metadata.locked && !metadata.fullscreen) {
+                            thiz.showSidebar = true;
+                            this.$nextTick(() => {
+                                $(document).trigger(constants.EVENT_SIDEBAR_OPENED);
+                                $(document).trigger(constants.EVENT_GRID_RESIZE);
+                            });
+                        }
+                    });
                 });
-            });
-            $(document).on(constants.EVENT_SIDEBAR_CLOSE, () => {
-                thiz.showSidebar = false;
-                this.$nextTick(() => {
-                    $(document).trigger(constants.EVENT_GRID_RESIZE);
+                $(document).on(constants.EVENT_SIDEBAR_CLOSE, () => {
+                    thiz.showSidebar = false;
+                    this.$nextTick(() => {
+                        $(document).trigger(constants.EVENT_GRID_RESIZE);
+                    });
                 });
-            });
-            $(document).on(constants.EVENT_DB_INITIALIZED, () => {
-                thiz.currentUser = databaseService.getCurrentUsedDatabase();
-                thiz.isLocalUser = localStorageService.isSavedLocalUser(thiz.currentUser);
-            });
-            $(document).on(constants.EVENT_DB_CLOSED, () => {
-                thiz.currentUser = databaseService.getCurrentUsedDatabase();
-                thiz.isLocalUser = localStorageService.isSavedLocalUser(thiz.currentUser);
-            });
-            $(document).on(constants.EVENT_DB_SYNC_STATE_CHANGE, (event, syncState) => {
-                thiz.syncState = syncState;
-            });
-            thiz.syncState = dataService.getSyncState();
-            window.addEventListener('resize', () => {
-                util.debounce(function () {
-                    $(document).trigger(constants.EVENT_GRID_RESIZE);
-                }, 300, constants.EVENT_GRID_RESIZE);
-            });
-            inputEventHandler.global
-                .onSwipedDown(openSidebarIfFullscreen)
-                .onEscape(openSidebarIfFullscreen)
-                .onExitFullscreen(openSidebarIfFullscreen);
-            inputEventHandler.global.startListening();
-            thiz.openSidebar();
+                $(document).on(constants.EVENT_DB_INITIALIZED, () => {
+                    thiz.currentUser = databaseService.getCurrentUsedDatabase();
+                    thiz.isLocalUser = localStorageService.isSavedLocalUser(thiz.currentUser);
+                });
+                $(document).on(constants.EVENT_DB_CLOSED, () => {
+                    thiz.currentUser = databaseService.getCurrentUsedDatabase();
+                    thiz.isLocalUser = localStorageService.isSavedLocalUser(thiz.currentUser);
+                });
+                $(document).on(constants.EVENT_DB_SYNC_STATE_CHANGE, (event, syncState) => {
+                    thiz.syncState = syncState;
+                });
+                thiz.syncState = dataService.getSyncState();
+                window.addEventListener('resize', () => {
+                    util.debounce(function () {
+                        $(document).trigger(constants.EVENT_GRID_RESIZE);
+                    }, 300, constants.EVENT_GRID_RESIZE);
+                });
+                inputEventHandler.global
+                    .onSwipedDown(openSidebarIfFullscreen)
+                    .onEscape(openSidebarIfFullscreen)
+                    .onExitFullscreen(openSidebarIfFullscreen);
+                inputEventHandler.global.startListening();
+                thiz.openSidebar();
 
-            function openSidebarIfFullscreen() {
-                if (thiz.showSidebar || !databaseService.getCurrentUsedDatabase()) {
-                    return;
-                }
-                util.closeFullscreen();
-                dataService.getMetadata().then(metadata => {
-                    if (metadata.fullscreen) {
-                        metadata.fullscreen = false;
-                        dataService.saveMetadata(metadata).then(() => {
-                            thiz.openSidebar();
-                        });
+                function openSidebarIfFullscreen() {
+                    if (thiz.showSidebar || !databaseService.getCurrentUsedDatabase()) {
+                        return;
                     }
-                });
+                    util.closeFullscreen();
+                    dataService.getMetadata().then(metadata => {
+                        if (metadata.fullscreen) {
+                            metadata.fullscreen = false;
+                            dataService.saveMetadata(metadata).then(() => {
+                                thiz.openSidebar();
+                            });
+                        }
+                    });
+                }
             }
-        }
+        });
+        return Promise.resolve();
     });
 };
 

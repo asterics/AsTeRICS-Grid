@@ -1,8 +1,5 @@
 import $ from '../externals/jquery.js';
 import VueI18n from 'vue-i18n';
-import de from '../../lang/i18n.de.json';
-import en from '../../lang/i18n.en.json';
-import es from '../../lang/i18n.es.json';
 import {localStorageService} from "./data/localStorageService";
 import {constants} from "../util/constants";
 
@@ -11,7 +8,7 @@ let i18nService = {};
 let CUSTOM_LANGUAGE_KEY = 'CUSTOM_LANGUAGE_KEY';
 let customLanguage = localStorageService.get(CUSTOM_LANGUAGE_KEY) || '';
 let vueI18n = null;
-let loadedLanguages = ['en', 'de', 'es'];
+let loadedLanguages = [];
 
 //all languages in german and english + ISO-639-1 code, extracted from https://de.wikipedia.org/wiki/Liste_der_ISO-639-1-Codes, sorted by german translation
 let allLangCodes = ["ab", "aa", "af", "ak", "sq", "am", "ar", "an", "hy", "az", "as", "av", "ae", "ay", "bm", "ba", "eu", "bn", "bh", "my", "bi", "nb", "bs", "br", "bg", "ch", "ny", "zh", "cr", "da", "de", "dv", "dz", "en", "eo", "et", "ee", "fo", "fj", "fi", "fr", "ff", "gl", "ka", "el", "kl", "gn", "gu", "ht", "ha", "he", "hi", "ho", "io", "ig", "id", "ia", "ie", "iu", "ik", "ga", "xh", "zu", "is", "it", "ja", "jv", "yi", "kn", "kr", "kk", "ks", "ca", "km", "kg", "ki", "lu", "rw", "cu", "ky", "rn", "kv", "ko", "kw", "co", "hr", "ku", "lo", "la", "lv", "li", "ln", "lt", "lg", "lb", "mg", "ms", "ml", "mt", "gv", "mi", "mr", "mh", "mk", "mn", "na", "nv", "ng", "ne", "nl", "nd", "se", "no", "nn", "oj", "oc", "or", "om", "kj", "os", "hz", "pi", "pa", "ps", "fa", "pl", "pt", "qu", "rm", "ro", "ru", "sm", "sg", "sa", "sc", "gd", "sv", "sr", "st", "tn", "sn", "sd", "si", "ss", "sk", "sl", "so", "es", "nr", "su", "sw", "tg", "tl", "ty", "ta", "tt", "te", "th", "bo", "ti", "to", "cs", "ce", "cv", "ve", "tr", "tk", "tw", "ug", "uk", "hu", "ur", "uz", "vi", "vo", "cy", "wa", "be", "fy", "wo", "ts", "ii", "yo", "za"];
@@ -23,10 +20,11 @@ i18nService.getVueI18n = function () {
     }
     vueI18n = new VueI18n({
         locale: i18nService.getCurrentLang(), // set locale
-        messages: {de, en, es}
+        messages: {}
     });
-    i18nService.setLanguage(i18nService.getCurrentLang());
-    return vueI18n;
+    return i18nService.setLanguage(i18nService.getCurrentLang()).then(() => {
+        return Promise.resolve(vueI18n);
+    });
 }
 
 i18nService.t = function (key, ...args) {
@@ -105,30 +103,33 @@ i18nService.getTranslationObject = function(label, locale) {
  */
 i18nService.setLanguage = function (lang) {
     lang = lang || i18nService.getBrowserLang();
-    if (loadedLanguages.includes(lang)) {
-        setNewLang(lang);
-    } else {
-        import(`../../lang/i18n.${lang}.json`).then(
-            messages => {
-                loadedLanguages.push(lang)
-                vueI18n.setLocaleMessage(lang, messages.default)
-            }
-        ).finally(() => {
+    return new Promise(resolve => {
+        if (loadedLanguages.includes(lang)) {
             setNewLang(lang);
-        })
-    }
-    function setNewLang(lang) {
-        customLanguage = lang;
-        vueI18n.locale = lang;
-        $(document).trigger(constants.EVENT_LANGUAGE_CHANGE);
-        localStorageService.save(CUSTOM_LANGUAGE_KEY, customLanguage);
-        allLanguages.forEach(elem => {
-            if (!elem[lang]) {
-                elem[lang] = i18nService.t(`lang.${elem.code}`);
-            }
-        });
-        allLanguages.sort((a, b) => (a[lang].toLowerCase() > b[lang].toLowerCase()) ? 1 : -1);
-    }
+            resolve();
+        } else {
+            $.get('app/lang/i18n.' + lang + '.json').then(messages => {
+                log.warn(messages);
+                loadedLanguages.push(lang)
+                vueI18n.setLocaleMessage(lang, messages)
+            }).always(() => {
+                setNewLang(lang);
+                resolve();
+            })
+        }
+        function setNewLang(lang) {
+            customLanguage = lang;
+            vueI18n.locale = lang;
+            $(document).trigger(constants.EVENT_LANGUAGE_CHANGE);
+            localStorageService.save(CUSTOM_LANGUAGE_KEY, customLanguage);
+            allLanguages.forEach(elem => {
+                if (!elem[lang]) {
+                    elem[lang] = i18nService.t(`lang.${elem.code}`);
+                }
+            });
+            allLanguages.sort((a, b) => (a[lang].toLowerCase() > b[lang].toLowerCase()) ? 1 : -1);
+        }
+    });
 };
 
 /**
