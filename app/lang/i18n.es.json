@@ -1,6 +1,6 @@
 {
-  "GridActionSpeak": "Locutar texto",
-  "GridActionSpeakCustom": "Locutar texto personalizado",
+  "GridActionSpeak": "Pronunciar texto",
+  "GridActionSpeakCustom": "Pronunciar texto personalizado",
   "GridActionNavigate": "Navegar a otro tablero",
   "GridActionARE": "Acción de AsTeRICS",
   "GridActionPredict": "Rellenar elementos de predicción",
@@ -269,7 +269,7 @@
   "saveAsPdf": "Guardar como PDF",
   "gridList": "Lista de tableros",
   "gridsToShow": "Tableros a mostrar",
-  "notReachableGrids": "Tableros no accesibles",
+  "notReachableGrids": "Tableros no enlazados",
   "globalGrid": "Tablero global",
   "aGlobalGridIsShownWithinEachOtherGridAndCan": "Un tablero global se muestra dentro de otro tablero y puede contener elementos como, por ejemplo, \"atrás\" o \"inicio\".",
   "actionsForGlobalGrid": "Acciones del tablero global",
