@@ -6,7 +6,6 @@ import {constants} from "../util/constants";
 let i18nService = {};
 
 let CUSTOM_LANGUAGE_KEY = 'CUSTOM_LANGUAGE_KEY';
-let customLanguage = localStorageService.get(CUSTOM_LANGUAGE_KEY) || '';
 let vueI18n = null;
 let loadedLanguages = [];
 
@@ -22,7 +21,7 @@ i18nService.getVueI18n = function () {
         locale: i18nService.getCurrentLang(), // set locale
         messages: {}
     });
-    return i18nService.setLanguage(i18nService.getCurrentLang()).then(() => {
+    return i18nService.setLanguage(i18nService.getCurrentLang(), true).then(() => {
         return Promise.resolve(vueI18n);
     });
 }
@@ -36,7 +35,7 @@ i18nService.getBrowserLang = function () {
 };
 
 i18nService.getCurrentLang = function () {
-    return customLanguage || i18nService.getBrowserLang();
+    return i18nService.getCustomLanguage() || i18nService.getBrowserLang();
 };
 
 i18nService.isCurrentLangDE = function () {
@@ -99,29 +98,29 @@ i18nService.getTranslationObject = function(label, locale) {
 
 /**
  * sets the language code to use (ISO 639-1)
- * @param lang two-letter language code to use
+ * @param useLang two-letter language code to use
  */
-i18nService.setLanguage = function (lang) {
-    lang = lang || i18nService.getBrowserLang();
+i18nService.setLanguage = function (lang, dontSave) {
+    if (!dontSave) {
+        localStorageService.save(CUSTOM_LANGUAGE_KEY, lang);
+    }
+    let useLang = lang || i18nService.getBrowserLang();
     return new Promise(resolve => {
-        if (loadedLanguages.includes(lang)) {
-            setNewLang(lang);
+        if (loadedLanguages.includes(useLang)) {
+            setNewLang(useLang);
             resolve();
         } else {
-            $.get('app/lang/i18n.' + lang + '.json').then(messages => {
-                log.warn(messages);
-                loadedLanguages.push(lang)
-                vueI18n.setLocaleMessage(lang, messages)
+            $.get('app/lang/i18n.' + useLang + '.json').then(messages => {
+                loadedLanguages.push(useLang)
+                vueI18n.setLocaleMessage(useLang, messages)
             }).always(() => {
-                setNewLang(lang);
+                setNewLang(useLang);
                 resolve();
             })
         }
         function setNewLang(lang) {
-            customLanguage = lang;
             vueI18n.locale = lang;
             $(document).trigger(constants.EVENT_LANGUAGE_CHANGE);
-            localStorageService.save(CUSTOM_LANGUAGE_KEY, customLanguage);
             allLanguages.forEach(elem => {
                 if (!elem[lang]) {
                     elem[lang] = i18nService.t(`lang.${elem.code}`);
@@ -136,7 +135,7 @@ i18nService.setLanguage = function (lang) {
  * retrieves the language code previously set with setLanguage().
  */
 i18nService.getCustomLanguage = function () {
-    return customLanguage;
+    return localStorageService.get(CUSTOM_LANGUAGE_KEY) || '';
 };
 
 export {i18nService};
