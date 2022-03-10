@@ -60,7 +60,6 @@
         mounted() {
             this.editElement = JSON.parse(JSON.stringify(this.gridData.gridElements.filter(e => e.id === this.editElementId)[0]));
             this.editElement.additionalProps[GridElement.PROP_YT_PREVENT_CLICK] = this.editElement.additionalProps[GridElement.PROP_YT_PREVENT_CLICK] || false;
-            log.info(JSON.stringify(this.editElement.additionalProps[GridElement.PROP_YT_PREVENT_CLICK]));
         }
     }
 </script>
