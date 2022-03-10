@@ -10,7 +10,7 @@
   "GridActionChangeLang": "Cambiar el idioma de la aplicación",
   "GridActionOpenWebpage": "Abrir página web en otra pestaña",
   "COLLECT_ACTION_CLEAR": "Borrar frase acumulada",
-  "COLLECT_ACTION_REMOVE_WORD": "Borrar la última palabra",
+  "COLLECT_ACTION_REMOVE_WORD": "Delete last word/image",
   "COLLECT_ACTION_REMOVE_CHAR": "Borrar el último carácter",
   "COLLECT_ACTION_COPY_CLIPBOARD": "Copiar texto al portapapeles",
   "COLLECT_ACTION_APPEND_CLIPBOARD": "Añadir texto al portapapeles",
@@ -439,7 +439,8 @@
   "new": "Nuevo",
   "newElement": "Nueva celda",
   "manyNewElements": "Crear múltiples celdas",
-  "newCollectElement": "Añadir frase acumulada",
+  "newCollectElementText": "New text collect element",
+  "newCollectElementImage": "New image collect element",
   "newPredictionElement": "Nuevo elemento de predicción",
   "newYouTubePlayer": "Nuevo reproductor de YouTube",
   "doElementAction": "Ejecutar la acción de la celda",
@@ -684,5 +685,8 @@
     "yo": "Yoruba",
     "za": "Zhuang"
   },
-  "ifTheTranslationForYourLanguageIsNotAvailable": "Si la traducción para su idioma no está disponible o tiene errores, puede colaborar en la traducción en la plataforma {crowdin}."
+  "ifTheTranslationForYourLanguageIsNotAvailable": "Si la traducción para su idioma no está disponible o tiene errores, puede colaborar en la traducción en la plataforma {crowdin}.",
+  "editCollectImage": "Edit image collect element",
+  "showLabelsOfCollectedImages": "Show labels of collected images",
+  "heightOfCollectedImages": "Height of collected images [%]"
 }
