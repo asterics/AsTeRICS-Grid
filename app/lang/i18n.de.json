@@ -10,7 +10,7 @@
   "GridActionChangeLang": "Anwendungssprache ändern",
   "GridActionOpenWebpage": "Website in neuem Tab öffnen",
   "COLLECT_ACTION_CLEAR": "Sammelelement leeren",
-  "COLLECT_ACTION_REMOVE_WORD": "Letztes Word löschen",
+  "COLLECT_ACTION_REMOVE_WORD": "Letztes Wort/Bild löschen",
   "COLLECT_ACTION_REMOVE_CHAR": "Letzten Buchstaben löschen",
   "COLLECT_ACTION_COPY_CLIPBOARD": "Text in die Zwischenablage kopieren",
   "COLLECT_ACTION_APPEND_CLIPBOARD": "Text zu Zwischenablage hinzufügen",
@@ -439,7 +439,8 @@
   "new": "Neu",
   "newElement": "Neues Element",
   "manyNewElements": "Mehrere neue Elemente",
-  "newCollectElement": "Neues Sammel-Element",
+  "newCollectElementText": "Neues Text-Sammelelement",
+  "newCollectElementImage": "Neues Bild-Sammelelement",
   "newPredictionElement": "Neues Vorhersage-Element",
   "newYouTubePlayer": "Neuer YouTube Player",
   "doElementAction": "Aktion des Elements ausführen",
@@ -684,5 +685,8 @@
     "yo": "Yoruba",
     "za": "Zhuang"
   },
-  "ifTheTranslationForYourLanguageIsNotAvailable": "Wenn Ihre Sprache nicht verfügbar oder fehlerhaft ist, helfen Sie bitte auf {crowdin} die Übersetzungen zu verbessern."
+  "ifTheTranslationForYourLanguageIsNotAvailable": "Wenn Ihre Sprache nicht verfügbar oder fehlerhaft ist, helfen Sie bitte auf {crowdin} die Übersetzungen zu verbessern.",
+  "editCollectImage": "Bild-Sammelelement bearbeiten",
+  "showLabelsOfCollectedImages": "Zeige Text von gesammelten Bildern",
+  "heightOfCollectedImages": "Höhe von gesammelten Bildern [%]"
 }

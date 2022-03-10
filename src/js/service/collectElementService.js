@@ -11,11 +11,14 @@ import {GridActionSpeak} from "../model/GridActionSpeak";
 import {GridActionPredict} from "../model/GridActionPredict";
 import {youtubeService} from "./youtubeService";
 import {GridActionYoutube} from "../model/GridActionYoutube";
+import {imageUtil} from "../util/imageUtil.js";
 
-var collectElementService = {};
+let collectElementService = {};
 
-var registeredCollectElements = [];
-var collectedText = '';
+let registeredCollectElements = [];
+let collectedText = '';
+let collectedImages = [];
+let collectedImageLabels = [];
 let keyboardLikeFactor = 0;
 let dictionaryKey = null;
 
@@ -32,7 +35,7 @@ collectElementService.initWithElements = function (elements, dontAutoPredict) {
                 oneCharacterElements++;
             }
         }
-        if (element && element.type === GridElement.ELEMENT_TYPE_COLLECT) {
+        if (element && [GridElement.ELEMENT_TYPE_COLLECT, GridElement.ELEMENT_TYPE_COLLECT_IMAGE].includes(element.type)) {
             let copy = JSON.parse(JSON.stringify(element));
             dictionaryKey = dictionaryKey || copy.actions.reduce((total, action) => {
                 let dictKey = GridActionPredict.getModelName() ? action.dictionaryKey : null;
@@ -44,9 +47,9 @@ collectElementService.initWithElements = function (elements, dontAutoPredict) {
     keyboardLikeFactor = oneCharacterElements / normalElements;
     if (registeredCollectElements.length > 0) {
         let intervalHandler = setInterval(() => {
-            if ($('.item[data-type="ELEMENT_TYPE_COLLECT"]').length > 0) {
+            if ($('.item[data-type="ELEMENT_TYPE_COLLECT"], .item[data-type="ELEMENT_TYPE_COLLECT_IMAGE"]').length > 0) {
                 clearInterval(intervalHandler);
-                setText();
+                updateCollectElements();
                 if (!dontAutoPredict) {
                     predictionService.predict(collectedText, dictionaryKey);
                 }
@@ -71,12 +74,14 @@ collectElementService.doCollectElementActions = function (action) {
     switch (action) {
         case GridActionCollectElement.COLLECT_ACTION_CLEAR:
             setText('');
+            clearImages();
             break;
         case GridActionCollectElement.COLLECT_ACTION_REMOVE_WORD:
             let words = collectedText.trim().split(' ');
             words.pop();
             let text = words.join(' ');
             setText(text === '' ? '' : text + ' ');
+            removeImage();
             break;
         case GridActionCollectElement.COLLECT_ACTION_REMOVE_CHAR:
             setText(collectedText.substring(0, collectedText.length - 1));
@@ -104,9 +109,19 @@ collectElementService.doCollectElementActions = function (action) {
 function setText(text) {
     text = text === undefined ? collectedText : text;
     collectedText = text;
-    predictionService.learnFromInput(collectedText, dictionaryKey);
-    $('.item[data-type="ELEMENT_TYPE_COLLECT"] .collect-text').text(collectedText);
-    fontUtil.adaptFontSize($('.item[data-type="ELEMENT_TYPE_COLLECT"]'));
+    updateCollectElements(GridElement.ELEMENT_TYPE_COLLECT);
+}
+
+function removeImage() {
+    collectedImages.pop();
+    collectedImageLabels.pop();;
+    updateCollectElements(GridElement.ELEMENT_TYPE_COLLECT_IMAGE);
+}
+
+function clearImages() {
+    collectedImages = [];
+    collectedImageLabels = [];
+    updateCollectElements(GridElement.ELEMENT_TYPE_COLLECT_IMAGE);
 }
 
 function getActionOfType(elem, type) {
@@ -120,47 +135,99 @@ function getActionOfType(elem, type) {
     return elem.actions[index];
 }
 
-function addText(text) {
-    setText(collectedText + text);
+async function updateCollectElements(type) {
+    for (let collectElement of registeredCollectElements) {
+        if (!type || collectElement.type === type) {
+            if (collectElement.type === GridElement.ELEMENT_TYPE_COLLECT) {
+                predictionService.learnFromInput(collectedText, dictionaryKey);
+                $(`#${collectElement.id} .collect-text`).text(collectedText);
+                fontUtil.adaptFontSize($(`#${collectElement.id}`));
+            } else if (collectElement.type === GridElement.ELEMENT_TYPE_COLLECT_IMAGE) {
+                let html = '';
+                let height = $(`#${collectElement.id} .collect-images`).height();
+                let width = $(`#${collectElement.id} .collect-images`).width();
+                let imgMargin = width < 400 ? 1 : width < 700 ? 2 : 5;
+                let showLabel = collectElement.showLabels;
+                let textPercentage = 0.85; // precentage of text height compared to text-line height
+                let imagePercentage = collectElement.imageHeightPercentage / 100; // percentage of total height used for image
+                let imageCount = collectedImages.length;
+                let imgContainerHeight = showLabel ? height * imagePercentage : height;
+                let imageRatios = [];
+                for (const img of collectedImages) {
+                    let dim = await imageUtil.getImageDimensionsFromDataUrl(img);
+                    imageRatios.push(dim.ratio);
+                }
+                let maxImgRatio = Math.max(...imageRatios);
+                let maxImages = Math.floor(width / (imgContainerHeight * maxImgRatio));
+                let numLines = 1;
+                while (maxImages < imageCount) {
+                    numLines++;
+                    maxImages = Math.floor(width / (imgContainerHeight * maxImgRatio / numLines)) * numLines;
+                }
+                imgContainerHeight = imgContainerHeight / numLines;
+                let imgHeight = imgContainerHeight - imgMargin * 2;
+                let lineHeight = (height / numLines - (imgContainerHeight));
+                let textHeight = lineHeight * textPercentage;
+                for (const [index, image] of collectedImages.entries()) {
+                    let label = collectedImageLabels[index];
+                    let imgWidth = imgHeight * imageRatios[index];
+                    html += `<div style="display: flex; flex:0; justify-content: center; flex-direction: column; margin: ${imgMargin}px; title=${label}">
+                                <div style="display:flex; justify-content: center">
+                                    <img src="${image}" height="${imgHeight}"/>
+                                </div>
+                                <div style="text-align: center; font-size: ${textHeight}px; line-height: ${lineHeight}px; height: ${lineHeight}px; width: ${imgWidth}px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; ${!showLabel ? 'display: none' : ''}">
+                                    ${label}
+                                </div>
+                             </div>`
+                }
+                $(`#${collectElement.id} .collect-images`).html(html);
+            }
+        }
+    }
 }
 
 $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
     let label = i18nService.getTranslation(element.label);
-    if (registeredCollectElements.length === 0) {
-        return;
-    }
+    let image = element.image ? element.image.data : null;
+
     if (getActionOfType(element, GridActionCollectElement.getModelName())) {
         return; // no adding of text if the element contains actions for collect elements, e.g. "clear"
     }
     if (getActionOfType(element, GridActionNavigate.getModelName()) && label.length !== 1) {
         return; // no adding of text if the element contains an navigate action and it's no single keyboard character
     }
-    if (!element.type || element.type === GridElement.ELEMENT_TYPE_NORMAL) {
-        if (!label) {
-            return;
-        }
-        let textToAdd = label.length === 1 && keyboardLikeFactor > 0.5 ? label.toLowerCase() : label + ' ';
-        addText(textToAdd);
-        registeredCollectElements.forEach(collectElem => {
-            let predictAction = getActionOfType(collectElem, 'GridActionPredict');
-            if (predictAction && predictAction.suggestOnChange) {
-                predictionService.predict(collectedText, dictionaryKey);
-            }
-        });
+    if (image) {
+        collectedImages.push(image);
+        collectedImageLabels.push(label);
+        updateCollectElements(GridElement.ELEMENT_TYPE_COLLECT_IMAGE);
     }
-    if (element.type && element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
+
+    if (label && element.type === GridElement.ELEMENT_TYPE_NORMAL) {
+        let textToAdd = label.length === 1 && keyboardLikeFactor > 0.4 ? label.toLowerCase() : label + ' ';
+        setText(collectedText + textToAdd);
+        triggerPredict();
+    }
+    if (element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
         let word = $(`#${element.id} .text-container span`).text();
         if (word) {
             let appliedText = predictionService.applyPrediction(collectedText || '', word, dictionaryKey);
             setText(appliedText);
-            registeredCollectElements.forEach(collectElem => {
-                let predictAction = getActionOfType(collectElem, 'GridActionPredict');
-                if (predictAction && predictAction.suggestOnChange) {
-                    predictionService.predict(collectedText, dictionaryKey);
-                }
-            });
+            triggerPredict();
         }
     }
+});
+
+function triggerPredict() {
+    registeredCollectElements.forEach(collectElement => {
+        let predictAction = getActionOfType(collectElement, 'GridActionPredict');
+        if (predictAction && predictAction.suggestOnChange) {
+            predictionService.predict(collectedText, dictionaryKey);
+        }
+    });
+}
+
+$(window).on(constants.EVENT_GRID_RESIZE, function () {
+    setTimeout(updateCollectElements, 500);
 });
 
 export {collectElementService};
