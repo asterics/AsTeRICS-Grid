@@ -3,6 +3,7 @@ import {stateService} from "./stateService";
 import {constants} from "../util/constants";
 import {dataService} from "./data/dataService";
 import {localStorageService} from "./data/localStorageService";
+import {util} from "../util/util.js";
 
 let speechService = {};
 
@@ -72,7 +73,11 @@ speechService.speak = function (textOrOject, lang, preferredVoiceProp, dontStop)
     }
 };
 
-speechService.speakArray = function (array, progressFn, index, dontStop) {
+speechService.speakArray = async function (array, progressFn, index, dontStop) {
+    if (!dontStop && speechService.isSpeaking()) {
+        speechService.stopSpeaking();
+        await util.sleep(100);
+    }
     index = index || 0;
     progressFn = progressFn || (() => {});
     array = JSON.parse(JSON.stringify(array));

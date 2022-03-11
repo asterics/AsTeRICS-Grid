@@ -12,12 +12,18 @@
 
                     <div class="modal-body">
                         <div class="row">
-                            <input v-if="editElement" id="showLabel" type="checkbox" v-model="editElement.showLabels"/>
-                            <label for="showLabel">{{ $t('showLabelsOfCollectedImages') }}</label>
+                            <label for="selectMode" class="four columns">{{ $t('collectMode') }}</label>
+                            <select v-if="editElement" class="four columns" id="selectMode" type="checkbox" v-model="editElement.mode">
+                                <option v-for="mode in GridElementCollect.MODES" :value="mode">{{ $t(mode) }}</option>
+                            </select>
                         </div>
                         <div class="row">
-                            <label for="imageHeight">{{ $t('heightOfCollectedImages') }}</label>
-                            <input v-if="editElement" id="imageHeight" type="number" min="50" max="100" :disabled="!editElement.showLabels" v-model="editElement.imageHeightPercentage"/>
+                            <label for="imageHeight" class="four columns">{{ $t('heightOfCollectedImages') }}</label>
+                            <input v-if="editElement" class="four columns" id="imageHeight" type="number" min="50" max="100" :disabled="!editElement.showLabels" v-model="editElement.imageHeightPercentage"/>
+                        </div>
+                        <div class="row">
+                            <input v-if="editElement" id="showLabel" type="checkbox" v-model="editElement.showLabels"/>
+                            <label for="showLabel">{{ $t('showLabelsOfCollectedImages') }}</label>
                         </div>
                     </div>
 
@@ -41,12 +47,14 @@
     import './../../css/modal.css';
     import {dataService} from "../../js/service/data/dataService.js";
     import {gridUtil} from "../../js/util/gridUtil.js";
+    import {GridElementCollect} from "../../js/model/GridElementCollect.js";
 
     export default {
         props: ['gridData', 'editElementId'],
         data: function () {
             return {
-                editElement: null
+                editElement: null,
+                GridElementCollect: GridElementCollect
             }
         },
         methods: {

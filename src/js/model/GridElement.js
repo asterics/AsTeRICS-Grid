@@ -13,7 +13,6 @@ import {GridActionWebradio} from "./GridActionWebradio";
 import {GridActionChangeLang} from "./GridActionChangeLang";
 import {GridActionYoutube} from "./GridActionYoutube";
 import {GridActionOpenWebpage} from "./GridActionOpenWebpage.js";
-import {GridElementImageCollect} from "./GridElementCollect.js";
 
 class GridElement extends Model({
     id: String,
@@ -100,20 +99,10 @@ class GridElement extends Model({
     static getModelName() {
         return "GridElement";
     }
-
-    static getConstructor(type) {
-        switch (type) {
-            case GridElement.ELEMENT_TYPE_COLLECT_IMAGE:
-                return GridElementImageCollect;
-            default:
-                return GridElement;
-        }
-    }
 }
 
 GridElement.ELEMENT_TYPE_NORMAL = "ELEMENT_TYPE_NORMAL";
 GridElement.ELEMENT_TYPE_COLLECT = "ELEMENT_TYPE_COLLECT";
-GridElement.ELEMENT_TYPE_COLLECT_IMAGE = "ELEMENT_TYPE_COLLECT_IMAGE";
 GridElement.ELEMENT_TYPE_PREDICTION = "ELEMENT_TYPE_PREDICTION";
 GridElement.ELEMENT_TYPE_YT_PLAYER = "ELEMENT_TYPE_YT_PLAYER";
 

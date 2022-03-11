@@ -15,7 +15,7 @@
         <div>
             <edit-element-normal v-if="showModal === GridElement.ELEMENT_TYPE_NORMAL" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showModal = null" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
             <edit-element-youtube v-if="showModal === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-data="gridData" :edit-element-id="editElementId" @close="showModal = null" @reload="reload"/>
-            <edit-element-collect-image v-if="showModal === GridElement.ELEMENT_TYPE_COLLECT_IMAGE" :grid-data="gridData" :edit-element-id="editElementId" @close="showModal = null" @reload="reload"/>
+            <edit-element-collect v-if="showModal === GridElement.ELEMENT_TYPE_COLLECT" :grid-data="gridData" :edit-element-id="editElementId" @close="showModal = null" @reload="reload"/>
         </div>
         <div>
             <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :grid-instance="getGridInstance()" @close="showMultipleModal = false"/>
@@ -74,7 +74,9 @@
     import {GridActionYoutube} from "../../js/model/GridActionYoutube";
     import {printService} from "../../js/service/printService";
     import EditElementYoutube from "../modals/editElementYoutube.vue";
-    import EditElementCollectImage from "../modals/editElementCollectImage.vue";
+    import EditElementCollect from "../modals/editElementCollect.vue";
+    import {GridElementCollect} from "../../js/model/GridElementCollect.js";
+    import {GridActionCollectElement} from "../../js/model/GridActionCollectElement.js";
 
     let vueApp = null;
     let gridInstance = null;
@@ -102,7 +104,7 @@
             }
         },
         components: {
-            EditElementCollectImage,
+            EditElementCollect,
             EditElementYoutube,
             GridTranslateModal,
             ElementMoveModal,
@@ -155,7 +157,8 @@
                     this.showModal = GridElement.ELEMENT_TYPE_NORMAL;
                 } else {
                     let newPos = new GridData(this.gridData).getNewXYPos();
-                    let newElement = new (GridElement.getConstructor(type))({
+                    let constructor = type === GridElement.ELEMENT_TYPE_COLLECT ? GridElementCollect : GridElement;
+                    let newElement = new constructor({
                         type: type,
                         x: newPos.x,
                         y: newPos.y
@@ -165,6 +168,12 @@
                             action: GridActionYoutube.actions.YT_TOGGLE
                         });
                         newElement.actions = [playPause];
+                    }
+                    if (type === GridElement.ELEMENT_TYPE_COLLECT) {
+                        let playText = new GridActionCollectElement({
+                            action: GridActionCollectElement.COLLECT_ACTION_SPEAK
+                        });
+                        newElement.actions = [playText];
                     }
                     this.gridData.gridElements.push(newElement);
                     gridInstance.updateGridWithUndo(this.gridData);
@@ -315,12 +324,8 @@
                     'CONTEXT_NEW_SINGLE': {name: i18nService.t('newElement'), icon: "fas fa-plus"},
                     'CONTEXT_NEW_MASS': {name: i18nService.t('manyNewElements'), icon: "fas fa-clone"},
                     'CONTEXT_NEW_COLLECT': {
-                        name: i18nService.t('newCollectElementText'),
-                        icon: "far fa-comment-dots"
-                    },
-                    'CONTEXT_NEW_COLLECT_IMAGE': {
-                        name: i18nService.t('newCollectElementImage'),
-                        icon: "fas fa-images"
+                        name: i18nService.t('newCollectElement'),
+                        icon: "fas fa-ellipsis-h"
                     },
                     'CONTEXT_NEW_PREDICT': {
                         name: i18nService.t('newPredictionElement'),
@@ -392,7 +397,7 @@
         });
 
         $.contextMenu({
-            selector: '.item[data-type="ELEMENT_TYPE_NORMAL"],.item[data-type="ELEMENT_TYPE_YT_PLAYER"],.item[data-type="ELEMENT_TYPE_COLLECT_IMAGE"]',
+            selector: '.item[data-type="ELEMENT_TYPE_NORMAL"],.item[data-type="ELEMENT_TYPE_YT_PLAYER"],.item[data-type="ELEMENT_TYPE_COLLECT"]',
             callback: function (key, options) {
                 var elementId = $(this).attr('data-id');
                 handleContextMenu(key, elementId);
@@ -402,7 +407,7 @@
         });
 
         $.contextMenu({
-            selector: '.item[data-type!="ELEMENT_TYPE_NORMAL"][data-type!="ELEMENT_TYPE_YT_PLAYER"][data-type!="ELEMENT_TYPE_COLLECT_IMAGE"]',
+            selector: '.item[data-type!="ELEMENT_TYPE_NORMAL"][data-type!="ELEMENT_TYPE_YT_PLAYER"][data-type!="ELEMENT_TYPE_COLLECT"]',
             callback: function (key, options) {
                 var elementId = $(this).attr('data-id');
                 handleContextMenu(key, elementId);
@@ -462,10 +467,6 @@
                 }
                 case CONTEXT_NEW_COLLECT: {
                     vueApp.newElement(GridElement.ELEMENT_TYPE_COLLECT);
-                    break;
-                }
-                case CONTEXT_NEW_COLLECT_IMAGE: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_COLLECT_IMAGE);
                     break;
                 }
                 case CONTEXT_NEW_PREDICT: {
