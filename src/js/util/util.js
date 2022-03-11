@@ -208,5 +208,9 @@ util.cssRGBToRGB = function (cssRGB) {
     return array[0] && array[1] && array[2] ? array : null;
 }
 
+util.sleep = function (ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 
 export {util};
