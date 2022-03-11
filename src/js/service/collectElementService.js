@@ -72,6 +72,21 @@ collectElementService.doCollectElementActions = function (action) {
         return;
     }
     switch (action) {
+        case GridActionCollectElement.COLLECT_ACTION_SPEAK:
+            speechService.speakArray(collectedImageLabels, (word, index) => {
+                markedImageIndex = index;
+                updateCollectElements(GridElement.ELEMENT_TYPE_COLLECT_IMAGE);
+            });
+            break;
+        case GridActionCollectElement.COLLECT_ACTION_SPEAK_CLEAR:
+            speechService.speakArray(collectedImageLabels, (word, index) => {
+                markedImageIndex = index;
+                updateCollectElements(GridElement.ELEMENT_TYPE_COLLECT_IMAGE);
+                if (!word) {
+                    clearImages();
+                }
+            });
+            break;
         case GridActionCollectElement.COLLECT_ACTION_CLEAR:
             setText('');
             clearImages();
@@ -171,7 +186,8 @@ async function updateCollectElements(type) {
                 for (const [index, image] of collectedImages.entries()) {
                     let label = collectedImageLabels[index];
                     let imgWidth = imgHeight * imageRatios[index];
-                    html += `<div style="display: flex; flex:0; justify-content: center; flex-direction: column; margin: ${imgMargin}px; title=${label}">
+                    let marked = markedImageIndex === index;
+                    html += `<div style="display: flex; flex:0; justify-content: center; flex-direction: column; margin: ${imgMargin}px; title=${label}; ${marked ? 'background-color: lightgreen;' : ''}">
                                 <div style="display:flex; justify-content: center">
                                     <img src="${image}" height="${imgHeight}"/>
                                 </div>

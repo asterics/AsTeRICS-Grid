@@ -69,6 +69,24 @@ speechService.speak = function (textOrOject, lang, preferredVoiceProp) {
     }
 };
 
+speechService.speakArray = function (array, progressFn, index) {
+    index = index || 0;
+    progressFn = progressFn || (() => {});
+    if (!array || array.length === 0) {
+        speechService.doAfterFinishedSpeaking(() => {
+            progressFn(null, -1);
+        });
+        return;
+    }
+    array = JSON.parse(JSON.stringify(array));
+    let word = array.shift();
+    progressFn(word, index);
+    speechService.speak(word);
+    speechService.doAfterFinishedSpeaking(() => {
+        speechService.speakArray(array, progressFn, index + 1);
+    });
+}
+
 speechService.speakLabel = function (gridId, gridElementId) {
     if (!gridId || !gridElementId) {
         return;
@@ -88,6 +106,16 @@ speechService.stopSpeaking = function () {
 speechService.isSpeaking = function () {
     return (speechService.nativeSpeechSupported() && window.speechSynthesis.speaking) || responsiveVoice.isPlaying();
 };
+
+speechService.doAfterFinishedSpeaking = function (fn) {
+    fn = fn || (() => {});
+    let intervalHandler = setInterval(() => {
+        if (!speechService.isSpeaking()) {
+            clearInterval(intervalHandler);
+            fn();
+        }
+    }, 50);
+}
 
 /**
  * returns array of languages where a TTS voice exists
