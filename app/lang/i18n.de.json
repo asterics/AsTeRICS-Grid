@@ -9,6 +9,8 @@
   "GridActionYoutube": "YouTube Aktion",
   "GridActionChangeLang": "Anwendungssprache ändern",
   "GridActionOpenWebpage": "Website in neuem Tab öffnen",
+  "COLLECT_ACTION_SPEAK": "Speak collect element content",
+  "COLLECT_ACTION_SPEAK_CLEAR": "Speak collect element content and clear afterwards",
   "COLLECT_ACTION_CLEAR": "Sammelelement leeren",
   "COLLECT_ACTION_REMOVE_WORD": "Delete last word/image",
   "COLLECT_ACTION_REMOVE_CHAR": "Letzten Buchstaben löschen",
@@ -439,8 +441,7 @@
   "new": "Neu",
   "newElement": "Neues Element",
   "manyNewElements": "Mehrere neue Elemente",
-  "newCollectElementText": "New text collect element",
-  "newCollectElementImage": "New image collect element",
+  "newCollectElement": "New collect element",
   "newPredictionElement": "Neues Vorhersage-Element",
   "newYouTubePlayer": "Neuer YouTube Player",
   "doElementAction": "Aktion des Elements ausführen",
@@ -688,5 +689,9 @@
   "ifTheTranslationForYourLanguageIsNotAvailable": "Wenn Ihre Sprache nicht verfügbar oder fehlerhaft ist, helfen Sie bitte auf {crowdin} die Übersetzungen zu verbessern.",
   "editCollectImage": "Edit image collect element",
   "showLabelsOfCollectedImages": "Show labels of collected images",
-  "heightOfCollectedImages": "Height of collected images [%]"
+  "heightOfCollectedImages": "Height of collected images [%]",
+  "collectMode": "Collect Mode",
+  "MODE_AUTO": "Automatic",
+  "MODE_ONLY_SYMBOLS": "Collect only symbols",
+  "MODE_ONLY_TEXT": "Collect only text"
 }
