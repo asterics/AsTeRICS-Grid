@@ -19,6 +19,7 @@ let registeredCollectElements = [];
 let collectedText = '';
 let collectedImages = [];
 let collectedImageLabels = [];
+let markedImageIndex = null;
 let keyboardLikeFactor = 0;
 let dictionaryKey = null;
 
