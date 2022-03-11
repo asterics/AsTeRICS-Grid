@@ -65,13 +65,13 @@ fontUtil.getLastFontSize = function () {
 
 function getLabel(elem) {
     if (elem.attr('data-label')) {
-        return elem.attr('data-label');
+        return elem.attr('data-label').trim();
     }
-    if ($(elem).find('.text-container span').text()) {
-        return $(elem).find('.text-container span').text()
+    if ($(elem).find('.text-container span').text().trim()) {
+        return $(elem).find('.text-container span').text().trim();
     }
-    if ($(elem).find('.text-container div').text()) {
-        return $(elem).find('.text-container div').text()
+    if ($(elem).find('.collect-container').text().trim()) {
+        return $(elem).find('.collect-container').text().trim();
     }
     return "";
 }
