@@ -196,6 +196,7 @@ function getModelConversionFunctions(objectModelVersion) {
                         let gridElement = gridData.gridElements[i];
                         if (gridElement.type === GridElement.ELEMENT_TYPE_COLLECT) {
                             let collectElem = new GridElementCollect();
+                            gridElement.imageHeightPercentage = gridElement.imageHeightPercentage ? parseInt(gridElement.imageHeightPercentage) : 85;
                             Object.assign(collectElem, gridElement);
                             collectElem.actions = [new GridActionCollectElement({
                                 action: GridActionCollectElement.COLLECT_ACTION_SPEAK

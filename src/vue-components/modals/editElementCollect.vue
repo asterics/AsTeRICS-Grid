@@ -19,7 +19,7 @@
                         </div>
                         <div class="row">
                             <label for="imageHeight" class="four columns">{{ $t('heightOfCollectedImages') }}</label>
-                            <input v-if="editElement" class="four columns" id="imageHeight" type="number" min="50" max="100" :disabled="!editElement.showLabels" v-model="editElement.imageHeightPercentage"/>
+                            <input v-if="editElement" class="four columns" id="imageHeight" type="number" min="50" max="100" :disabled="!editElement.showLabels" v-model.number="editElement.imageHeightPercentage"/>
                         </div>
                         <div class="row">
                             <input v-if="editElement" id="showLabel" type="checkbox" v-model="editElement.showLabels"/>
