@@ -692,7 +692,7 @@
   "heightOfCollectedImages": "Height of collected images [%]",
   "collectMode": "Collect Mode",
   "MODE_AUTO": "Automatic",
-  "MODE_ONLY_SYMBOLS": "Collect only symbols",
-  "MODE_ONLY_TEXT": "Collect only text",
+  "MODE_COLLECT_SEPARATED": "Always collect separate elements",
+  "MODE_COLLECT_TEXT": "Collect cohesive text",
   "useHorizontalScrollbarIfElementsDontFit": "Use horizontal scrollbar if elements don''t fit (otherwise multiple lines)"
 }
