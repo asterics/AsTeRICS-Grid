@@ -8,6 +8,10 @@ import {GridData} from "../../model/GridData";
 import {i18nService} from "../i18nService";
 import {GridActionSpeakCustom} from "../../model/GridActionSpeakCustom";
 import {GridActionSpeak} from "../../model/GridActionSpeak";
+import {GridElement} from "../../model/GridElement.js";
+import {GridElementCollect} from "../../model/GridElementCollect.js";
+import {GridActionCollectElement} from "../../model/GridActionCollectElement.js";
+import {GridActionPredict} from "../../model/GridActionPredict.js";
 
 let filterService = {};
 
@@ -120,6 +124,7 @@ function getModelConversionFunctions(objectModelVersion) {
     switch (objectModelVersion.major) {
         case 1:
             filterFns.push(function (object, filterOptions) { //fn from V1 to V2
+                // new structure of input configuration
                 if (object.modelName === MetaData.getModelName()) {
                     log.info('converting model version from V1 to V2: ' + object.modelName);
                     let inputConfig = object.inputConfig;
@@ -148,6 +153,7 @@ function getModelConversionFunctions(objectModelVersion) {
         //no break intended!
         case 2:
             filterFns.push(function (gridData, filterOptions) { //fn from V2 to V3
+                // added translatable labels of all elements
                 if (gridData.modelName === GridData.getModelName()) {
                     log.debug('converting model version from V2 to V3: ' + gridData.modelName);
                     gridData.locale = gridData.locale || i18nService.getCurrentLang();
@@ -181,8 +187,30 @@ function getModelConversionFunctions(objectModelVersion) {
                 gridData.modelVersion = modelUtil.getModelVersionString();
                 return gridData;
             });
-/*        case 3:
-            filterFns.push(function (object, filterOptions) { //fn from V3 to V4
+        case 3:
+            filterFns.push(function (gridData, filterOptions) { //fn from V3 to V4
+                // new collect elements with image collecting capabilities and options
+                if (gridData.modelName === GridData.getModelName()) {
+                    log.debug('converting model version from V3 to V4: ' + (gridData.label ? gridData.label.de : ''));
+                    for (let i = 0; i < gridData.gridElements.length; i++) {
+                        let gridElement = gridData.gridElements[i];
+                        if (gridElement.type === GridElement.ELEMENT_TYPE_COLLECT) {
+                            let collectElem = new GridElementCollect();
+                            Object.assign(collectElem, gridElement);
+                            collectElem.actions = [new GridActionCollectElement({
+                                action: GridActionCollectElement.COLLECT_ACTION_SPEAK
+                            }), new GridActionPredict({
+                                suggestOnChange: true
+                            })];
+                            gridData.gridElements[i] = collectElem;
+                        }
+                    }
+                }
+                gridData.modelVersion = modelUtil.getModelVersionString();
+                return gridData;
+            });
+/*        case 4:
+            filterFns.push(function (object, filterOptions) { //fn from V4 to V5
                 object.modelVersion = modelUtil.getModelVersionString();
                 return object
             });

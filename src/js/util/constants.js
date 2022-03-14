@@ -1,7 +1,7 @@
 var constants = {};
 
 constants.ELEMENT_EVENT_ID = "ELEMENT_EVENT_ID";
-constants.MODEL_VERSION = '{"major": 3, "minor": 0, "patch": 0}';
+constants.MODEL_VERSION = '{"major": 4, "minor": 0, "patch": 0}';
 
 constants.LOCAL_NOLOGIN_USERNAME = 'default-user';
 constants.LOCAL_DEMO_USERNAME = 'local-demo-user';
