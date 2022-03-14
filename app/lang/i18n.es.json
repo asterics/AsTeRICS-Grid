@@ -692,7 +692,7 @@
   "heightOfCollectedImages": "Altura de las imágenes acumuladas [%]",
   "collectMode": "Modo de acumulación",
   "MODE_AUTO": "Automático",
-  "MODE_ONLY_SYMBOLS": "Acumular sólo imágenes",
-  "MODE_ONLY_TEXT": "Acumular sólo texto",
+  "MODE_COLLECT_SEPARATED": "Always collect separate elements",
+  "MODE_COLLECT_TEXT": "Collect cohesive text",
   "useHorizontalScrollbarIfElementsDontFit": "Usar la barra de desplazamiento horizontal si los elementos no caben (en caso contrario los elementos se dispondrán en varias líneas)"
 }
