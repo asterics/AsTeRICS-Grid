@@ -156,7 +156,7 @@ function getActionOfType(elem, type) {
     return elem.actions[index];
 }
 
-async function updateCollectElements() {
+async function updateCollectElements(isSecondTry) {
     for (let collectElement of registeredCollectElements) {
         let imageMode = isImageMode(collectElement.mode);
         if (!imageMode) {
@@ -164,16 +164,17 @@ async function updateCollectElements() {
             let html = `<span style="padding: 5px; display: flex; align-items: center; flex: 1; text-align: left;">
                             ${collectedText}
                         </span>`;
-            $(`#${collectElement.id} .collect-container`).html(html);
+            $(`#${collectElement.id} .collect-outer-container`).html(html = `<div class="collect-container" dir="auto" style="flex: 1; background-color: white; text-align: justify;">${html}</div>`);
             fontUtil.adaptFontSize($(`#${collectElement.id}`));
         } else {
             let html = '';
-            let height = $(`#${collectElement.id} .collect-container`).height();
-            let width = $(`#${collectElement.id} .collect-container`).width();
+            let height = $(`#${collectElement.id} .collect-container`).prop("clientHeight") || $(`#${collectElement.id} .collect-outer-container`).prop("clientHeight"); // consider scrollbar height
+            let width = $(`#${collectElement.id} .collect-outer-container`).width();
             let imgMargin = width < 400 ? 1 : width < 700 ? 2 : 5;
             let showLabel = collectElement.showLabels;
             let textPercentage = 0.85; // precentage of text height compared to text-line height
             let imagePercentage = collectElement.imageHeightPercentage / 100; // percentage of total height used for image
+            let useSingleLine = collectElement.singleLine;
             let imageCount = collectedImages.length;
             let imgContainerHeight = showLabel ? height * imagePercentage : height;
             let imageRatios = [];
@@ -184,7 +185,7 @@ async function updateCollectElements() {
             let maxImgRatio = Math.max(...imageRatios);
             let maxImages = Math.floor(width / (imgContainerHeight * maxImgRatio));
             let numLines = 1;
-            while (maxImages < imageCount) {
+            while (maxImages < imageCount && !useSingleLine) {
                 numLines++;
                 maxImages = Math.floor(width / (imgContainerHeight * maxImgRatio / numLines)) * numLines;
             }
@@ -192,11 +193,13 @@ async function updateCollectElements() {
             let imgHeight = imgContainerHeight - imgMargin * 2;
             let lineHeight = (height / numLines - (imgContainerHeight));
             let textHeight = lineHeight * textPercentage;
+            let totalWidth = 0;
             for (const [index, image] of collectedImages.entries()) {
                 let label = collectedImageLabels[index];
                 let imgWidth = imgHeight * imageRatios[index];
+                totalWidth += imgWidth + 2 * imgMargin;
                 let marked = markedImageIndex === index;
-                html += `<div style="display: flex; flex:0; justify-content: center; flex-direction: column; padding: ${imgMargin}px; title=${label}; ${marked ? 'background-color: lightgreen;' : ''}">
+                html += `<div id="collect${index}" style="display: flex; flex:0; justify-content: center; flex-direction: column; padding: ${imgMargin}px; title=${label}; ${marked ? 'background-color: lightgreen;' : ''}">
                                 <div style="display:flex; justify-content: center">
                                     <img src="${image}" height="${imgHeight}"/>
                                 </div>
@@ -205,7 +208,16 @@ async function updateCollectElements() {
                                 </div>
                              </div>`
             }
-            $(`#${collectElement.id} .collect-container`).html(html);
+            let additionalCSS = useSingleLine ? 'overflow-x: auto; overflow-y: hidden;' : 'flex-wrap: wrap;';
+            html = `<div class="collect-container" dir="auto" style="flex: 1; display: flex; flex-direction: row; background-color: white; text-align: justify; ${additionalCSS}">${html}</div>`;
+            $(`#${collectElement.id} .collect-outer-container`).html(html);
+            if (useSingleLine) {
+                let scroll = markedImageIndex !== null ? maxImgRatio * imgHeight * markedImageIndex : maxImgRatio * imgHeight * collectedImages.length;
+                $(`#${collectElement.id} .collect-container`).scrollLeft(scroll);
+                if (totalWidth > width && !isSecondTry) {
+                    updateCollectElements(true); // do second time to adapt to reduced height because of scrollbar
+                }
+            }
         }
     }
 }

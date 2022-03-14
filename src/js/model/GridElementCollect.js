@@ -3,11 +3,13 @@ import {GridElement} from "./GridElement.js";
 class GridElementCollect extends GridElement.extend({
     showLabels: [Boolean],
     imageHeightPercentage: [Number],
-    mode: [String]
+    mode: [String],
+    singleLine: [Boolean]
 }) {
     constructor(props) {
         props = props || {};
         props.showLabels = true;
+        props.singleLine = true;
         props.imageHeightPercentage = 85;
         props.mode = GridElementCollect.MODE_AUTO;
         props.type = GridElement.ELEMENT_TYPE_COLLECT;

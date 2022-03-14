@@ -83,7 +83,7 @@ speechService.speakArray = async function (array, progressFn, index, dontStop) {
     array = JSON.parse(JSON.stringify(array));
     if (!array || array.length === 0) {
         speechService.doAfterFinishedSpeaking(() => {
-            progressFn(null, -1);
+            progressFn(null, null);
         });
         return;
     }

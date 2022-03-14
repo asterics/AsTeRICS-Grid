@@ -6,7 +6,7 @@
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                     <div class="modal-header">
                         <h1 name="header">
-                            {{ $t('editCollectImage') }}
+                            {{ $t('editCollect') }}
                         </h1>
                     </div>
 
@@ -24,6 +24,10 @@
                         <div class="row">
                             <input v-if="editElement" id="showLabel" type="checkbox" v-model="editElement.showLabels"/>
                             <label for="showLabel">{{ $t('showLabelsOfCollectedImages') }}</label>
+                        </div>
+                        <div class="row">
+                            <input v-if="editElement" id="useSingleLine" type="checkbox" v-model="editElement.singleLine"/>
+                            <label for="useSingleLine">{{ $t('useHorizontalScrollbarIfElementsDontFit') }}</label>
                         </div>
                     </div>
 
