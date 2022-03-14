@@ -18,8 +18,8 @@ class GridElementCollect extends GridElement.extend({
 }
 
 GridElementCollect.MODE_AUTO = 'MODE_AUTO';
-GridElementCollect.MODE_ONLY_SYMBOLS = 'MODE_ONLY_SYMBOLS';
-GridElementCollect.MODE_ONLY_TEXT = 'MODE_ONLY_TEXT';
-GridElementCollect.MODES = [GridElementCollect.MODE_AUTO, GridElementCollect.MODE_ONLY_SYMBOLS, GridElementCollect.MODE_ONLY_TEXT];
+GridElementCollect.MODE_COLLECT_SEPARATED = 'MODE_COLLECT_SEPARATED';
+GridElementCollect.MODE_COLLECT_TEXT = 'MODE_COLLECT_TEXT';
+GridElementCollect.MODES = [GridElementCollect.MODE_AUTO, GridElementCollect.MODE_COLLECT_SEPARATED, GridElementCollect.MODE_COLLECT_TEXT];
 
 export {GridElementCollect};

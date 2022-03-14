@@ -692,7 +692,7 @@
   "heightOfCollectedImages": "Höhe von gesammelten Bildern [%]",
   "collectMode": "Sammel-Modus",
   "MODE_AUTO": "Automatisch",
-  "MODE_ONLY_SYMBOLS": "Sammle nur Bilder",
-  "MODE_ONLY_TEXT": "Sammle nur Text",
+  "MODE_COLLECT_SEPARATED": "Sammle immer Einzelelemente",
+  "MODE_COLLECT_TEXT": "Sammle zusammenhängenden Text",
   "useHorizontalScrollbarIfElementsDontFit": "Verwende horizontalen Scrollbalken bei zu vielen Elementen (sonst mehrere Zeilen)"
 }

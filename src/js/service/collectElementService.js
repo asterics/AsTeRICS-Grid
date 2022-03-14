@@ -23,6 +23,7 @@ let markedImageIndex = null;
 let keyboardLikeFactor = 0;
 let dictionaryKey = null;
 let autoCollectImage = true;
+let collectMode = GridElementCollect.MODE_AUTO;
 
 collectElementService.initWithElements = function (elements, dontAutoPredict) {
     registeredCollectElements = [];
@@ -43,6 +44,7 @@ collectElementService.initWithElements = function (elements, dontAutoPredict) {
                 let dictKey = GridActionPredict.getModelName() ? action.dictionaryKey : null;
                 return total || dictKey;
             }, null);
+            collectMode = copy.mode || collectMode;
             registeredCollectElements.push(copy);
         }
     });
@@ -66,7 +68,7 @@ collectElementService.doCollectElementActions = async function (action) {
     }
     switch (action) {
         case GridActionCollectElement.COLLECT_ACTION_SPEAK:
-            if (autoCollectImage) {
+            if (autoCollectImage || collectMode === GridElementCollect.MODE_COLLECT_SEPARATED) {
                 speechService.speakArray(collectedImageLabels, (word, index) => {
                     markedImageIndex = index;
                     updateCollectElements();
@@ -76,7 +78,7 @@ collectElementService.doCollectElementActions = async function (action) {
             }
             break;
         case GridActionCollectElement.COLLECT_ACTION_SPEAK_CLEAR:
-            if (autoCollectImage) {
+            if (autoCollectImage || collectMode === GridElementCollect.MODE_COLLECT_SEPARATED) {
                 speechService.speakArray(collectedImageLabels, (word, index) => {
                     markedImageIndex = index;
                     updateCollectElements();
@@ -182,7 +184,7 @@ async function updateCollectElements(isSecondTry) {
                 let dim = await imageUtil.getImageDimensionsFromDataUrl(img);
                 imageRatios.push(dim.ratio);
             }
-            let maxImgRatio = Math.max(...imageRatios);
+            let maxImgRatio = Math.max(...imageRatios) || 1;
             let maxImages = Math.floor(width / (imgContainerHeight * maxImgRatio));
             let numLines = 1;
             while (maxImages < imageCount && !useSingleLine) {
@@ -196,15 +198,23 @@ async function updateCollectElements(isSecondTry) {
             let totalWidth = 0;
             for (const [index, image] of collectedImages.entries()) {
                 let label = collectedImageLabels[index];
-                let imgWidth = imgHeight * imageRatios[index];
+                let imgWidth = imgHeight * imageRatios[index] || imgHeight;
                 totalWidth += imgWidth + 2 * imgMargin;
                 let marked = markedImageIndex === index;
+                let imgHTML = null;
+                if (image) {
+                    imgHTML = `<img src="${image}" height="${imgHeight}"/>`;
+                } else {
+                    let fontSize = Math.min(imgHeight * 0.7, imgHeight / Math.pow(label.length, 0.8));
+                    fontSize = Math.max(fontSize, 14);
+                    imgHTML = `<div style="font-size: ${fontSize}px; width: ${imgHeight}px; height: ${imgHeight}px; display: flex; justify-content: center; align-items: center; text-align: center;"><span>${label}</span></div>`;
+                }
                 html += `<div id="collect${index}" style="display: flex; flex:0; justify-content: center; flex-direction: column; padding: ${imgMargin}px; title=${label}; ${marked ? 'background-color: lightgreen;' : ''}">
                                 <div style="display:flex; justify-content: center">
-                                    <img src="${image}" height="${imgHeight}"/>
+                                        ${imgHTML}
                                 </div>
                                 <div style="text-align: center; font-size: ${textHeight}px; line-height: ${lineHeight}px; height: ${lineHeight}px; width: ${imgWidth}px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; ${!showLabel ? 'display: none' : ''}">
-                                    ${label}
+                                    ${image ? label : ''}
                                 </div>
                              </div>`
             }
@@ -212,7 +222,7 @@ async function updateCollectElements(isSecondTry) {
             html = `<div class="collect-container" dir="auto" style="flex: 1; display: flex; flex-direction: row; background-color: white; text-align: justify; ${additionalCSS}">${html}</div>`;
             $(`#${collectElement.id} .collect-outer-container`).html(html);
             if (useSingleLine) {
-                let scroll = markedImageIndex !== null ? maxImgRatio * imgHeight * markedImageIndex : maxImgRatio * imgHeight * collectedImages.length;
+                let scroll = markedImageIndex !== null ? maxImgRatio * imgHeight * markedImageIndex : maxImgRatio * imgHeight * imageCount;
                 $(`#${collectElement.id} .collect-container`).scrollLeft(scroll);
                 if (totalWidth > width && !isSecondTry) {
                     updateCollectElements(true); // do second time to adapt to reduced height because of scrollbar
@@ -225,10 +235,10 @@ async function updateCollectElements(isSecondTry) {
 function isImageMode(elementMode) {
     let imageMode = autoCollectImage;
     switch (elementMode) {
-        case GridElementCollect.MODE_ONLY_SYMBOLS:
+        case GridElementCollect.MODE_COLLECT_SEPARATED:
             imageMode = true;
             break;
-        case GridElementCollect.MODE_ONLY_TEXT:
+        case GridElementCollect.MODE_COLLECT_TEXT:
             imageMode = false;
             break;
     }
@@ -250,11 +260,12 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         return; // no adding of text if the element contains an navigate action and it's no single keyboard character
     }
 
-    autoCollectImage = !!image;
-    if (image) {
+    if (label) {
         collectedImages.push(image);
         collectedImageLabels.push(label);
-    } else if (label && element.type === GridElement.ELEMENT_TYPE_NORMAL) {
+    }
+    autoCollectImage = collectedImages.some(e => !!e);
+    if (label && element.type === GridElement.ELEMENT_TYPE_NORMAL) {
         let textToAdd = label.length === 1 && keyboardLikeFactor > 0.4 ? label.toLowerCase() : label + ' ';
         collectedText += textToAdd;
         triggerPredict();

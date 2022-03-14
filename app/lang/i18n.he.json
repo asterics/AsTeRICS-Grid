@@ -692,6 +692,6 @@
   "heightOfCollectedImages": "Height of collected images [%]",
   "collectMode": "Collect Mode",
   "MODE_AUTO": "Automatic",
-  "MODE_ONLY_SYMBOLS": "Collect only symbols",
-  "MODE_ONLY_TEXT": "Collect only text"
+  "MODE_COLLECT_SEPARATED": "Collect only symbols",
+  "MODE_COLLECT_TEXT": "Collect only text"
 }

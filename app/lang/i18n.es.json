@@ -692,6 +692,6 @@
   "heightOfCollectedImages": "Altura de las imágenes acumuladas [%]",
   "collectMode": "Modo de acumulación",
   "MODE_AUTO": "Automático",
-  "MODE_ONLY_SYMBOLS": "Acumular sólo imágenes",
-  "MODE_ONLY_TEXT": "Acumular sólo texto"
+  "MODE_COLLECT_SEPARATED": "Acumular sólo imágenes",
+  "MODE_COLLECT_TEXT": "Acumular sólo texto"
 }
