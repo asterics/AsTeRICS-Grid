@@ -3,11 +3,14 @@ import {modelUtil} from "../../util/modelUtil";
 import {InputConfig} from "../../model/InputConfig";
 import {MetaData} from "../../model/MetaData";
 import {GridData} from "../../model/GridData";
+import {GridElement} from "../../model/GridElement.js";
+import {GridElementCollect} from "../../model/GridElementCollect.js";
 import {i18nService} from "../i18nService";
 
 jest.mock('../../externals/objectmodel');
 jest.mock('../../externals/jquery');
 jest.mock('./encryptionService');
+jest.mock('../../model/GridElement');
 jest.mock('../../util/log');
 jest.mock('../i18nService');
 
