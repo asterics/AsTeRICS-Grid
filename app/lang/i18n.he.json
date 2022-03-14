@@ -9,8 +9,10 @@
   "GridActionYoutube": "YouTube action",
   "GridActionChangeLang": "Change app language",
   "GridActionOpenWebpage": "Open webpage in new tab",
+  "COLLECT_ACTION_SPEAK": "Speak collect element content",
+  "COLLECT_ACTION_SPEAK_CLEAR": "Speak collect element content and clear afterwards",
   "COLLECT_ACTION_CLEAR": "Clear collect element",
-  "COLLECT_ACTION_REMOVE_WORD": "Delete last word",
+  "COLLECT_ACTION_REMOVE_WORD": "Delete last word/image",
   "COLLECT_ACTION_REMOVE_CHAR": "Delete last character",
   "COLLECT_ACTION_COPY_CLIPBOARD": "Copy text to clipboard",
   "COLLECT_ACTION_APPEND_CLIPBOARD": "Append text to clipboard",
@@ -113,9 +115,9 @@
   "webpageUrl": "Webpage URL",
   "automaticallyCloseTimeoutInSeconds": "Automatically close timeout in seconds (0 = never), currently only works in Firefox",
   "keyboardEsc": "Keyboard: [Esc]",
-  "cancel": "Cancel",
+  "cancel": "לבטל",
   "keyboardCtrlEnter": "Keyboard: [Ctrl + Enter]",
-  "save": "Save",
+  "save": "לשמור",
   "keyboardCtrlLeft": "Keyboard: [Ctrl + Left]",
   "okEditPrevious": "OK, edit previous",
   "keyboardCtrlRight": "Keyboard: [Ctrl + Right]",
@@ -684,5 +686,12 @@
     "yo": "Yoruba",
     "za": "Zhuang"
   },
-  "ifTheTranslationForYourLanguageIsNotAvailable": "If the translation for your language is not available or has errors, please contribute on the translation platform {crowdin}."
+  "ifTheTranslationForYourLanguageIsNotAvailable": "If the translation for your language is not available or has errors, please contribute on the translation platform {crowdin}.",
+  "editCollectImage": "Edit image collect element",
+  "showLabelsOfCollectedImages": "Show labels of collected images",
+  "heightOfCollectedImages": "Height of collected images [%]",
+  "collectMode": "Collect Mode",
+  "MODE_AUTO": "Automatic",
+  "MODE_ONLY_SYMBOLS": "Collect only symbols",
+  "MODE_ONLY_TEXT": "Collect only text"
 }
