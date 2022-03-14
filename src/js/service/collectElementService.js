@@ -12,6 +12,8 @@ import {youtubeService} from "./youtubeService";
 import {GridActionYoutube} from "../model/GridActionYoutube";
 import {imageUtil} from "../util/imageUtil.js";
 import {GridElementCollect} from "../model/GridElementCollect.js";
+import {GridActionSpeak} from "../model/GridActionSpeak.js";
+import {GridActionSpeakCustom} from "../model/GridActionSpeakCustom.js";
 
 let collectElementService = {};
 
@@ -158,6 +160,10 @@ function getActionOfType(elem, type) {
     return elem.actions[index];
 }
 
+function getActionTypes(elem) {
+    return elem.actions.map(action => action.modelName);
+}
+
 async function updateCollectElements(isSecondTry) {
     for (let collectElement of registeredCollectElements) {
         let imageMode = isImageMode(collectElement.mode);
@@ -253,8 +259,10 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         return;
     }
 
-    if (getActionOfType(element, GridActionCollectElement.getModelName())) {
-        return; // no adding of text if the element contains actions for collect elements, e.g. "clear"
+    let notIgonoreActions = [GridActionSpeak.getModelName(), GridActionSpeakCustom.getModelName(), GridActionNavigate.getModelName()];
+    let ignoreActions = GridElement.getActionTypeModelNames().filter(e => !notIgonoreActions.includes(e));
+    if (getActionTypes(element).some(type => ignoreActions.includes(type))) {
+        return; // dont collect elements containing "ignoreActions"
     }
     if (getActionOfType(element, GridActionNavigate.getModelName()) && label.length !== 1) {
         return; // no adding of text if the element contains an navigate action and it's no single keyboard character

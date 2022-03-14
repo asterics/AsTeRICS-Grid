@@ -74,6 +74,10 @@ class GridElement extends Model({
         return [GridActionSpeak, GridActionNavigate, GridActionSpeakCustom, GridActionPredict, GridActionCollectElement, GridActionARE, GridActionWebradio, GridActionYoutube, GridActionChangeLang, GridActionOpenWebpage];
     }
 
+    static getActionTypeModelNames() {
+        return this.getActionTypes().map(action => action.getModelName());
+    }
+
     static getActionInstance(modelName) {
         let constructor = this.getActionClass(modelName);
         if(constructor) {
