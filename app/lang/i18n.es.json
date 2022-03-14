@@ -687,11 +687,12 @@
     "za": "Zhuang"
   },
   "ifTheTranslationForYourLanguageIsNotAvailable": "Si la traducción para su idioma no está disponible o tiene errores, puede colaborar en la traducción en la plataforma {crowdin}.",
-  "editCollectImage": "Configurar frase acumulada",
+  "editCollect": "Configurar frase acumulada",
   "showLabelsOfCollectedImages": "Mostrar texto de las imágenes acumuladas",
   "heightOfCollectedImages": "Altura de las imágenes acumuladas [%]",
   "collectMode": "Modo de acumulación",
   "MODE_AUTO": "Automático",
   "MODE_ONLY_SYMBOLS": "Acumular sólo imágenes",
-  "MODE_ONLY_TEXT": "Acumular sólo texto"
+  "MODE_ONLY_TEXT": "Acumular sólo texto",
+  "useHorizontalScrollbarIfElementsDontFit": "Usar la barra de desplazamiento horizontal si los elementos no caben (en caso contrario los elementos se dispondrán en varias líneas)"
 }
