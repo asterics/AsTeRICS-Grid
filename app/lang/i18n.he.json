@@ -465,7 +465,7 @@
   "astericsGridOnGithub": "AsTeRICS Grid on github",
   "logoMa23CityVienna": "Logo MA23 City of Vienna",
   "feedback": "Feedback",
-  "ifYouEncounterAnErrorHaveSuggestions": "If you encounter an error, have suggestions for improvement or any general feedback please don''t hesitate to contact us on:",
+  "ifYouEncounterAnErrorHaveSuggestions": "If you encounter an error, have suggestions for improvement or any general feedback please don't hesitate to contact us on:",
   "ifYouAreAGithubUserYouAreAlsoWelcomeToFileIssue": "If you are a github user, you are also welcome to file an issue directly on github:",
   "astericsGridIssuesOnGithub": "AsTeRICS Grid issues on github",
   "termsOfServiceAndPrivacyPolicy": "Terms of Service and Privacy Policy",
@@ -694,5 +694,5 @@
   "MODE_AUTO": "Automatic",
   "MODE_COLLECT_SEPARATED": "Always collect separate elements",
   "MODE_COLLECT_TEXT": "Collect cohesive text",
-  "useHorizontalScrollbarIfElementsDontFit": "Use horizontal scrollbar if elements don''t fit (otherwise multiple lines)"
+  "useHorizontalScrollbarIfElementsDontFit": "Use horizontal scrollbar if elements don't fit (otherwise multiple lines)"
 }
