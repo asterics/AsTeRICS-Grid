@@ -6,14 +6,24 @@
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                     <div class="modal-header">
                         <h1 name="header">
-                            {{ $t('editYoutubePlayer') }}
+                            {{ $t('editCollectImage') }}
                         </h1>
                     </div>
 
                     <div class="modal-body">
                         <div class="row">
-                            <input v-if="editElement" id="preventClick" type="checkbox" v-model="editElement.additionalProps[GridElement.PROP_YT_PREVENT_CLICK]"/>
-                            <label for="preventClick">{{ $t('preventMouseClickOnYoutubePlayer') }}</label>
+                            <label for="selectMode" class="four columns">{{ $t('collectMode') }}</label>
+                            <select v-if="editElement" class="four columns" id="selectMode" type="checkbox" v-model="editElement.mode">
+                                <option v-for="mode in GridElementCollect.MODES" :value="mode">{{ $t(mode) }}</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <label for="imageHeight" class="four columns">{{ $t('heightOfCollectedImages') }}</label>
+                            <input v-if="editElement" class="four columns" id="imageHeight" type="number" min="50" max="100" :disabled="!editElement.showLabels" v-model="editElement.imageHeightPercentage"/>
+                        </div>
+                        <div class="row">
+                            <input v-if="editElement" id="showLabel" type="checkbox" v-model="editElement.showLabels"/>
+                            <label for="showLabel">{{ $t('showLabelsOfCollectedImages') }}</label>
                         </div>
                     </div>
 
@@ -34,18 +44,17 @@
 </template>
 
 <script>
-    import {i18nService} from "../../js/service/i18nService";
-    import {GridElement} from "../../js/model/GridElement.js";
     import './../../css/modal.css';
     import {dataService} from "../../js/service/data/dataService.js";
     import {gridUtil} from "../../js/util/gridUtil.js";
+    import {GridElementCollect} from "../../js/model/GridElementCollect.js";
 
     export default {
         props: ['gridData', 'editElementId'],
         data: function () {
             return {
                 editElement: null,
-                GridElement: GridElement
+                GridElementCollect: GridElementCollect
             }
         },
         methods: {
@@ -59,7 +68,6 @@
         },
         mounted() {
             this.editElement = JSON.parse(JSON.stringify(this.gridData.gridElements.filter(e => e.id === this.editElementId)[0]));
-            this.editElement.additionalProps[GridElement.PROP_YT_PREVENT_CLICK] = this.editElement.additionalProps[GridElement.PROP_YT_PREVENT_CLICK] || false;
         }
     }
 </script>

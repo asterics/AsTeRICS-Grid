@@ -61,13 +61,12 @@ function getGridElementNormal(gridElem, fallbackLocale) {
 
 function getGridElementCollect(gridElem) {
     gridElem = fillDefaultValues(gridElem);
-    let label = i18nService.getTranslation(gridElem.label);
 
     var template = `
-<li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${label}" data-type="${gridElem.type}">
+<li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-type="${gridElem.type}">
     <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}">
-        <div class="text-container" style="position: absolute; display:flex; inset: 5px;">
-            <div class="collect-text" dir="auto" style="flex: auto; padding: 5px; background-color: white; text-align: justify;">
+        <div class="collect-outer-container text-container" style="position: absolute; display:flex; inset: 5px;">
+            <div class="collect-container" dir="auto" style="flex: 1; flex-wrap: wrap; display: flex; flex-direction: row; background-color: white; text-align: justify;">
             </div>
         </div>
     </div>

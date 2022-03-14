@@ -20,10 +20,6 @@ actionService.doAction = function (gridId, gridElementId) {
     dataService.getGridElement(gridId, gridElementId).then(gridElement => {
         log.debug('do actions for: ' + i18nService.getTranslation(gridElement.label) + ', ' + gridElementId);
         switch (gridElement.type) {
-            case GridElement.ELEMENT_TYPE_COLLECT: {
-                collectElementService.doAction(gridElement);
-                break;
-            }
             case GridElement.ELEMENT_TYPE_PREDICTION: {
                 predictionService.doAction(gridElement.id);
                 break;
