@@ -212,5 +212,9 @@ util.sleep = function (ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+util.isString = function (value) {
+    return typeof value === 'string' || value instanceof String;
+}
+
 
 export {util};
