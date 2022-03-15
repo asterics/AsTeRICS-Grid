@@ -82,9 +82,7 @@ speechService.speakArray = async function (array, progressFn, index, dontStop) {
     progressFn = progressFn || (() => {});
     array = JSON.parse(JSON.stringify(array));
     if (!array || array.length === 0) {
-        speechService.doAfterFinishedSpeaking(() => {
-            progressFn(null, null);
-        });
+        progressFn(null, null);
         return;
     }
     let word = array.shift();
@@ -117,8 +115,14 @@ speechService.isSpeaking = function () {
     return (speechService.nativeSpeechSupported() && window.speechSynthesis.speaking) || responsiveVoice.isPlaying();
 };
 
-speechService.doAfterFinishedSpeaking = function (fn) {
+speechService.doAfterFinishedSpeaking = async function (fn) {
     fn = fn || (() => {});
+    let maxWait = 10000;
+    let wait = 0;
+    while (!speechService.isSpeaking() && wait < maxWait) { // wait until speak starting (responsive voice)
+        wait += 100;
+        await util.sleep(100);
+    }
     let intervalHandler = setInterval(() => {
         if (!speechService.isSpeaking()) {
             clearInterval(intervalHandler);
