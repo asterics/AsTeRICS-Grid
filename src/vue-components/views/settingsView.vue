@@ -10,7 +10,7 @@
                 <h3>{{ $t('applicationLanguage') }}</h3>
                 <div class="row">
                     <label class="three columns" for="inLanguage">{{ $t('selectLanguage') }}</label>
-                    <select class="five columns" id="inLanguage" v-model="langCode" @input="saveLangCode()">
+                    <select class="five columns" id="inLanguage" v-model="langCode" @change="saveLangCode()">
                         <option value="">{{ $t('automatic') }}</option>
                         <option v-for="lang in allLanguages.filter(lang => ['de', 'en'].indexOf(lang.code) !== -1 || gridLanguages.indexOf(lang.code) !== -1)" :value="lang.code">{{lang | extractTranslation}} ({{lang.code}})</option>
                     </select>
