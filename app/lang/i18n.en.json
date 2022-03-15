@@ -694,5 +694,6 @@
   "MODE_AUTO": "Automatic",
   "MODE_COLLECT_SEPARATED": "Always collect separate elements",
   "MODE_COLLECT_TEXT": "Collect cohesive text",
-  "useHorizontalScrollbarIfElementsDontFit": "Use horizontal scrollbar if elements don't fit (otherwise multiple lines)"
+  "useHorizontalScrollbarIfElementsDontFit": "Use horizontal scrollbar if elements don't fit (otherwise multiple lines)",
+  "speak": "Speak"
 }
