@@ -69,7 +69,7 @@ i18nService.getTranslation = function (i18nObject, fallbackLang, includeLang) {
     }
     fallbackLang = fallbackLang || 'en';
     if (typeof i18nObject === 'string') {
-        return i18nObject;
+        return i18nService.t(i18nObject);
     }
     let currentLang = i18nService.getCurrentLang();
     if (i18nObject[currentLang]) {
