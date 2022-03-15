@@ -696,5 +696,5 @@
   "MODE_COLLECT_TEXT": "Acumular solo texto",
   "useHorizontalScrollbarIfElementsDontFit": "Usar la barra de desplazamiento horizontal si los elementos no caben (en caso contrario los elementos se dispondrán en varias líneas)",
   "speak": "Hablar",
-  "selectHomeGridForCreatingGlobalGrid": "Select Home Grid for creating global Grid"
+  "selectHomeGridForCreatingGlobalGrid": "Seleccione el tablero inicial para enlazar en el tablero global"
 }
