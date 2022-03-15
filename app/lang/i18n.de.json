@@ -694,5 +694,7 @@
   "MODE_AUTO": "Automatisch",
   "MODE_COLLECT_SEPARATED": "Sammle immer Einzelelemente",
   "MODE_COLLECT_TEXT": "Sammle zusammenhängenden Text",
-  "useHorizontalScrollbarIfElementsDontFit": "Verwende horizontalen Scrollbalken bei zu vielen Elementen (sonst mehrere Zeilen)"
+  "useHorizontalScrollbarIfElementsDontFit": "Verwende horizontalen Scrollbalken bei zu vielen Elementen (sonst mehrere Zeilen)",
+  "speak": "Speak",
+  "selectHomeGridForCreatingGlobalGrid": "Select Home Grid for creating global Grid"
 }
