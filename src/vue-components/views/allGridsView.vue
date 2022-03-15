@@ -109,6 +109,7 @@
     import ExportPdfModal from "../modals/exportPdfModal.vue";
     import {printService} from "../../js/service/printService";
     import {MainVue} from "../../js/vue/mainVue";
+    import {MetaData} from "../../js/model/MetaData.js";
 
     let SELECTOR_CONTEXTMENU = '#moreButton';
 
@@ -294,6 +295,7 @@
                     let globalGrid = gridUtil.generateGlobalGrid(this.homeGrid.id);
                     this.metadata.globalGridId = globalGrid.id;
                     this.metadata.globalGridActive = true;
+                    this.metadata.globalGridHeightPercentage = new MetaData().globalGridHeightPercentage;
                     return dataService.saveGrid(globalGrid);
                 }).then(() => {
                     return dataService.saveMetadata(this.metadata);
