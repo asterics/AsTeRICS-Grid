@@ -8,6 +8,7 @@ let i18nService = {};
 let CUSTOM_LANGUAGE_KEY = 'CUSTOM_LANGUAGE_KEY';
 let vueI18n = null;
 let loadedLanguages = [];
+let fallbackLang = 'en';
 
 //all languages in german and english + ISO-639-1 code, extracted from https://de.wikipedia.org/wiki/Liste_der_ISO-639-1-Codes, sorted by german translation
 let allLangCodes = ["ab", "aa", "af", "ak", "sq", "am", "ar", "an", "hy", "az", "as", "av", "ae", "ay", "bm", "ba", "eu", "bn", "bh", "my", "bi", "nb", "bs", "br", "bg", "ch", "ny", "zh", "cr", "da", "de", "dv", "dz", "en", "eo", "et", "ee", "fo", "fj", "fi", "fr", "ff", "gl", "ka", "el", "kl", "gn", "gu", "ht", "ha", "he", "hi", "ho", "io", "ig", "id", "ia", "ie", "iu", "ik", "ga", "xh", "zu", "is", "it", "ja", "jv", "yi", "kn", "kr", "kk", "ks", "ca", "km", "kg", "ki", "lu", "rw", "cu", "ky", "rn", "kv", "ko", "kw", "co", "hr", "ku", "lo", "la", "lv", "li", "ln", "lt", "lg", "lb", "mg", "ms", "ml", "mt", "gv", "mi", "mr", "mh", "mk", "mn", "na", "nv", "ng", "ne", "nl", "nd", "se", "no", "nn", "oj", "oc", "or", "om", "kj", "os", "hz", "pi", "pa", "ps", "fa", "pl", "pt", "qu", "rm", "ro", "ru", "sm", "sg", "sa", "sc", "gd", "sv", "sr", "st", "tn", "sn", "sd", "si", "ss", "sk", "sl", "so", "es", "nr", "su", "sw", "tg", "tl", "ty", "ta", "tt", "te", "th", "bo", "ti", "to", "cs", "ce", "cv", "ve", "tr", "tk", "tw", "ug", "uk", "hu", "ur", "uz", "vi", "vo", "cy", "wa", "be", "fy", "wo", "ts", "ii", "yo", "za"];
@@ -19,6 +20,7 @@ i18nService.getVueI18n = function () {
     }
     vueI18n = new VueI18n({
         locale: i18nService.getCurrentLang(), // set locale
+        fallbackLocale: fallbackLang,
         messages: {}
     });
     return i18nService.setLanguage(i18nService.getCurrentLang(), true).then(() => {
@@ -98,38 +100,45 @@ i18nService.getTranslationObject = function(label, locale) {
 
 /**
  * sets the language code to use (ISO 639-1)
- * @param useLang two-letter language code to use
+ * @param lang two-letter language code to use
+ * @param dontSave if true, passed lang is not saved to local storage
  */
 i18nService.setLanguage = function (lang, dontSave) {
     if (!dontSave) {
         localStorageService.save(CUSTOM_LANGUAGE_KEY, lang);
     }
     let useLang = lang || i18nService.getBrowserLang();
+    return loadLanguage(useLang).then(() => {
+        vueI18n.locale = useLang;
+        $(document).trigger(constants.EVENT_LANGUAGE_CHANGE);
+        allLanguages.forEach(elem => {
+            if (!elem[useLang]) {
+                elem[useLang] = i18nService.t(`lang.${elem.code}`);
+            }
+        });
+        allLanguages.sort((a, b) => (a[useLang].toLowerCase() > b[useLang].toLowerCase()) ? 1 : -1);
+        return Promise.resolve();
+    });
+};
+
+function loadLanguage(useLang) {
     return new Promise(resolve => {
         if (loadedLanguages.includes(useLang)) {
-            setNewLang(useLang);
             resolve();
         } else {
             $.get('app/lang/i18n.' + useLang + '.json').then(messages => {
                 loadedLanguages.push(useLang)
-                vueI18n.setLocaleMessage(useLang, messages)
-            }).always(() => {
-                setNewLang(useLang);
+                vueI18n.setLocaleMessage(useLang, messages);
+            }).fail(() => {
+                log.warn('error!!');
+                loadLanguage(fallbackLang).finally(resolve);
+            }).then(() => {
+                log.warn('resolve');
                 resolve();
             })
         }
-        function setNewLang(lang) {
-            vueI18n.locale = lang;
-            $(document).trigger(constants.EVENT_LANGUAGE_CHANGE);
-            allLanguages.forEach(elem => {
-                if (!elem[lang]) {
-                    elem[lang] = i18nService.t(`lang.${elem.code}`);
-                }
-            });
-            allLanguages.sort((a, b) => (a[lang].toLowerCase() > b[lang].toLowerCase()) ? 1 : -1);
-        }
     });
-};
+}
 
 /**
  * retrieves the language code previously set with setLanguage().
