@@ -695,6 +695,6 @@
   "MODE_COLLECT_SEPARATED": "Acumular todos los elementos conjuntamente",
   "MODE_COLLECT_TEXT": "Acumular solo texto",
   "useHorizontalScrollbarIfElementsDontFit": "Usar la barra de desplazamiento horizontal si los elementos no caben (en caso contrario los elementos se dispondrán en varias líneas)",
-  "speak": "Speak",
+  "speak": "Hablar",
   "selectHomeGridForCreatingGlobalGrid": "Select Home Grid for creating global Grid"
 }
