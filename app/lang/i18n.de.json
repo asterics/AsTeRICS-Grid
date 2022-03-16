@@ -697,5 +697,6 @@
   "MODE_COLLECT_TEXT": "Sammle zusammenhängenden Text",
   "useHorizontalScrollbarIfElementsDontFit": "Verwende horizontalen Scrollbalken bei zu vielen Elementen (sonst mehrere Zeilen)",
   "speak": "Sprechen",
-  "selectHomeGridForCreatingGlobalGrid": "Wähle Start-Grid zum Erstellen des globalen Grids"
+  "selectHomeGridForCreatingGlobalGrid": "Wähle Start-Grid zum Erstellen des globalen Grids",
+  "addThisElementToCollectionElementsDespiteNav": "Add this element to collection elements despite navigating"
 }
