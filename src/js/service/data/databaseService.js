@@ -16,8 +16,22 @@ let databaseService = {};
 
 let _initPromise = null;
 let _lastDataModelVersion = null;
-let _defaultDictPath = i18nService.isCurrentLangDE() ? 'app/dictionaries/default_de.json' : i18nService.isCurrentLangEN() ? 'app/dictionaries/default_en.json' : null;
-let _defaultDictName = i18nService.isCurrentLangDE() ? 'AsTeRICS Grid Deutsch standard' : 'AsTeRICS Grid English default';
+let _defaultDictPath = null;
+let _defaultDictName = null;
+switch (i18nService.getCurrentLang()) {
+    case 'de':
+        _defaultDictPath = 'app/dictionaries/default_de.json';
+        _defaultDictName = 'AsTeRICS Grid Deutsch standard';
+        break;
+    case 'en':
+        _defaultDictPath = 'app/dictionaries/default_en.json';
+        _defaultDictName = 'AsTeRICS Grid English default';
+        break;
+    case 'es':
+        _defaultDictPath = 'app/dictionaries/default_es.json';
+        _defaultDictName = 'Español (hermitdave@github.com) ';
+        break;
+}
 
 /**
  * queries for objects in database and resolves promise with result.
