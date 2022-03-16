@@ -91,6 +91,10 @@
                                             <label for="navigateBackChkbox" class="normal-text">{{ $t('navigateToLastOpenedGrid') }}</label>
                                         </div>
                                         <div class="row">
+                                            <input id="addToCollectChk" type="checkbox" v-model="action.addToCollectElem"/>
+                                            <label for="addToCollectChk" class="normal-text">{{ $t('addThisElementToCollectionElementsDespiteNav') }}</label>
+                                        </div>
+                                        <div class="row">
                                             <div class="four columns">
                                                 <label for="selectGrid" class="normal-text">{{ $t('navigateToGrid') }}</label>
                                             </div>
