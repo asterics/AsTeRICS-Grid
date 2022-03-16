@@ -99,8 +99,8 @@
                                                 <label for="selectGrid" class="normal-text">{{ $t('navigateToGrid') }}</label>
                                             </div>
                                             <select class="eight columns" id="selectGrid" type="text" v-model="action.toGridId" :disabled="action.toLastGrid">
-                                                <option v-for="(label, id) in gridLabels" :value="id">
-                                                    {{label | extractTranslation}}
+                                                <option v-for="grid in grids" :value="grid.id">
+                                                    {{grid.label | extractTranslation}}
                                                 </option>
                                             </select>
                                         </div>
@@ -316,7 +316,7 @@
                 GridElementClass: GridElement,
                 editActionId: null,
                 selectedNewAction: GridElement.getActionTypes()[0].getModelName(),
-                gridLabels: null,
+                grids: null,
                 actionTypes: GridElement.getActionTypes(),
                 voiceLangs: speechService.getVoicesLangs(),
                 dictionaryKeys: predictionService.getDictionaryKeys(),
@@ -369,8 +369,8 @@
             addAction () {
                 let thiz = this;
                 let newAction = JSON.parse(JSON.stringify(GridElement.getActionInstance(this.selectedNewAction)));
-                if(newAction.modelName === GridActionNavigate.getModelName()) {
-                    newAction.toGridId = Object.keys(this.gridLabels)[0];
+                if (newAction.modelName === GridActionNavigate.getModelName()) {
+                    newAction.toGridId = this.grids[0].id;
                 }
                 thiz.gridElement.actions.push(newAction);
                 thiz.editActionId = newAction.id;
@@ -424,8 +424,9 @@
                     thiz.gridLanguages = thiz.allLanguages.filter(lang => langKeys.indexOf(lang.code) !== -1);
                     thiz.gridElement = thiz.gridData.gridElements.filter(el => el.id === thiz.editElementId)[0];
                 });
-                dataService.getGridsAttribute('label').then(map => {
-                    thiz.gridLabels = map;
+                dataService.getGrids().then(grids => {
+                    thiz.grids = grids;
+                    thiz.grids = thiz.grids.sort((a, b) => i18nService.getTranslation(a.label).localeCompare(i18nService.getTranslation(b.label)));
                 });
             }
         },

@@ -222,26 +222,6 @@ dataService.getGridElement = function (gridId, gridElementId) {
 };
 
 /**
- * returns a map with keys == gridIds and values of the given attribute parameter
- * e.g. attribute == "label" will return a map of <gridIds -> gridLabel>
- * @see{GridData} for possible attributes
- *
- * @param attribute the attribute name as string
- * @return {Promise} an object with a mapping of <gridId -> attribute>
- */
-dataService.getGridsAttribute = function (attribute) {
-    return new Promise(resolve => {
-        dataService.getGrids().then(grids => {
-            let returnMap = {};
-            grids.forEach(grid => {
-                returnMap[grid.id] = grid[attribute];
-            });
-            resolve(returnMap);
-        })
-    });
-};
-
-/**
  * Adds an array of new grid elements to a grid.
  * @see{GridElement}
  *
