@@ -291,12 +291,10 @@ function initInternal(hashedUserPassword, username, isLocalUser) {
             }
         }
         return Promise.all(promises);
-    }).then(() => {
-        return importDefaultDictionary();
     });
     _initPromise.then(() => {
+        importDefaultDictionary();
         _lastDataModelVersion = null;
-        predictionService.init();
         $(document).trigger(constants.EVENT_USER_CHANGED);
     });
     return _initPromise;
@@ -331,6 +329,9 @@ function importDefaultDictionary() {
             isDefault: true
         });
         return applyFiltersAndSave(Dictionary.getIdPrefix(), dict);
+    }).then(() => {
+        predictionService.init();
+        return Promise.resolve();
     });
 }
 
