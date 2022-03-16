@@ -271,6 +271,7 @@
   "saveAsPdf": "Als PDF speichern",
   "gridList": "Grid-Liste",
   "gridsToShow": "Anzuzeigende Grids",
+  "gridsConnectedWithX": "Grids connected with \"{0}\"",
   "notReachableGrids": "Nicht erreichbare Grids",
   "globalGrid": "Globales Grid",
   "aGlobalGridIsShownWithinEachOtherGridAndCan": "Ein globales Grid wird innerhalb jedes anderen Grids angezeigt und kann beispielsweise Elemente wie \"Zurück\" oder \"Zum Start\" beinhalten.",
