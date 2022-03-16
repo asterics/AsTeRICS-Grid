@@ -698,5 +698,8 @@
   "useHorizontalScrollbarIfElementsDontFit": "Verwende horizontalen Scrollbalken bei zu vielen Elementen (sonst mehrere Zeilen)",
   "speak": "Sprechen",
   "selectHomeGridForCreatingGlobalGrid": "Wähle Start-Grid zum Erstellen des globalen Grids",
-  "addThisElementToCollectionElementsDespiteNav": "Add this element to collection elements despite navigating"
+  "addThisElementToCollectionElementsDespiteNav": "Add this element to collection elements despite navigating",
+  "sortGridsBy": "Sort grids by",
+  "labelAlphabetically": "Label (alphabetically)",
+  "numberOfConnections": "Number of connections"
 }
