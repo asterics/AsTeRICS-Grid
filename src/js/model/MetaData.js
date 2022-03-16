@@ -50,7 +50,7 @@ MetaData.defaults({
     hashCodes: {},
     inputConfig: new InputConfig(),
     globalGridActive: false,
-    globalGridHeightPercentage: 15
+    globalGridHeightPercentage: 20
 });
 
 export {MetaData};

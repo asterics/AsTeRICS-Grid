@@ -252,6 +252,7 @@
                     thiz.gridData = JSON.parse(JSON.stringify(gridData));
                     if (thiz.editElementId) {
                         let gridElem = thiz.gridData.gridElements.filter(e => e.id === thiz.editElementId)[0];
+                        gridElem.label = util.isString(gridElem.label) ? {} : gridElem.label;
                         thiz.gridElement = JSON.parse(JSON.stringify(gridElem));
                         if (gridElem.image && gridElem.image.data) {
                             thiz.tempImage = JSON.parse(JSON.stringify(new GridImage(gridElem.image)));

@@ -69,6 +69,12 @@
             <div v-if="graphList.length > 0">
                 <h1>{{ $t('globalGrid') }}</h1>
                 <p>{{ $t('aGlobalGridIsShownWithinEachOtherGridAndCan') }}</p>
+                <div class="row" style="margin-bottom: 1em">
+                    <label class="four columns" for="selectHomeGrid">{{ $t('selectHomeGridForCreatingGlobalGrid') }}</label>
+                    <select class="seven columns" id="selectHomeGrid" v-model="homeGrid">
+                        <option v-for="elem in graphList" :value="elem.grid">{{elem.grid.label | extractTranslation}}</option>
+                    </select>
+                </div>
                 <div class="row">
                     <label class="four columns" for="globalGridActions">{{ $t('actionsForGlobalGrid') }}</label>
                     <div id="globalGridActions" class="eight columns" v-if="metadata">
@@ -103,6 +109,7 @@
     import ExportPdfModal from "../modals/exportPdfModal.vue";
     import {printService} from "../../js/service/printService";
     import {MainVue} from "../../js/vue/mainVue";
+    import {MetaData} from "../../js/model/MetaData.js";
 
     let SELECTOR_CONTEXTMENU = '#moreButton';
 
@@ -133,7 +140,8 @@
                 },
                 i18nService: i18nService,
                 currentLanguage: i18nService.getCurrentLang(),
-                imageUtil: imageUtil
+                imageUtil: imageUtil,
+                homeGrid: null
             };
         },
         methods: {
@@ -232,6 +240,7 @@
                     thiz.grids = JSON.parse(JSON.stringify(grids)); //hack because otherwise vueJS databinding sometimes does not work;
                     thiz.showLoading = false;
                     thiz.graphList = gridUtil.getGraphList(thiz.grids, thiz.metadata.globalGridId);
+                    thiz.homeGrid = thiz.graphList[0].grid;
                     let gridToOpen = openGridId || thiz.metadata.lastOpenedGridId;
                     thiz.setSelectedGraphElement(thiz.graphList.filter(graphItem => graphItem.grid.id === gridToOpen)[0] || thiz.graphList[0], true);
                     return Promise.resolve();
@@ -283,9 +292,10 @@
                 dataService.getGlobalGrid(true).then(existingGlobal => {
                     return existingGlobal ? dataService.deleteGrid(existingGlobal.id) : Promise.resolve();
                 }).then(() => {
-                    let globalGrid = gridUtil.generateGlobalGrid(this.grids[0].id);
+                    let globalGrid = gridUtil.generateGlobalGrid(this.homeGrid.id);
                     this.metadata.globalGridId = globalGrid.id;
                     this.metadata.globalGridActive = true;
+                    this.metadata.globalGridHeightPercentage = new MetaData().globalGridHeightPercentage;
                     return dataService.saveGrid(globalGrid);
                 }).then(() => {
                     return dataService.saveMetadata(this.metadata);
