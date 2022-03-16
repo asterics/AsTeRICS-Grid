@@ -334,7 +334,7 @@
                 return this.selectedGraphElement ? i18nService.t('detailsForGridX', `"${i18nService.getTranslation(this.selectedGraphElement.grid.label)}"`) :'';
             },
             connectedGridsOptionLabel: function() {
-                return this.selectedGraphElement ? i18nService.t('connectXWithThisGrid', i18nService.getTranslation(this.selectedGraphElement.grid.label)) : '';
+                return this.selectedGraphElement ? i18nService.t('gridsConnectedWithX', i18nService.getTranslation(this.selectedGraphElement.grid.label)) : '';
             },
             hasGlobalGrid: function() {
                 if (!this.grids || !this.metadata) {
