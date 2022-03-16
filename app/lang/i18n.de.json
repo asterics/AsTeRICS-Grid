@@ -271,6 +271,7 @@
   "saveAsPdf": "Als PDF speichern",
   "gridList": "Grid-Liste",
   "gridsToShow": "Anzuzeigende Grids",
+  "gridsConnectedWithX": "Mit \"{0}\" verbundene Grids",
   "notReachableGrids": "Nicht erreichbare Grids",
   "globalGrid": "Globales Grid",
   "aGlobalGridIsShownWithinEachOtherGridAndCan": "Ein globales Grid wird innerhalb jedes anderen Grids angezeigt und kann beispielsweise Elemente wie \"Zurück\" oder \"Zum Start\" beinhalten.",
@@ -696,5 +697,9 @@
   "MODE_COLLECT_TEXT": "Sammle zusammenhängenden Text",
   "useHorizontalScrollbarIfElementsDontFit": "Verwende horizontalen Scrollbalken bei zu vielen Elementen (sonst mehrere Zeilen)",
   "speak": "Sprechen",
-  "selectHomeGridForCreatingGlobalGrid": "Wähle Start-Grid zum Erstellen des globalen Grids"
+  "selectHomeGridForCreatingGlobalGrid": "Wähle Start-Grid zum Erstellen des globalen Grids",
+  "addThisElementToCollectionElementsDespiteNav": "Füge dieses Element zu Sammelelementen hinzu (trotz Navigation)",
+  "sortGridsBy": "Ordne Grids nach",
+  "labelAlphabetically": "Text (alphabetisch)",
+  "numberOfConnections": "Anzahl an Verbindungen"
 }

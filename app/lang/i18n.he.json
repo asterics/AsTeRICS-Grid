@@ -271,6 +271,7 @@
   "saveAsPdf": "Save as PDF",
   "gridList": "Grid list",
   "gridsToShow": "Grids to show",
+  "gridsConnectedWithX": "Grids connected with \"{0}\"",
   "notReachableGrids": "Not reachable grids",
   "globalGrid": "Global grid",
   "aGlobalGridIsShownWithinEachOtherGridAndCan": "A global grid is shown within each other grid and can contain elements like e.g. \"back\" or \"home\".",
@@ -696,5 +697,9 @@
   "MODE_COLLECT_TEXT": "Collect cohesive text",
   "useHorizontalScrollbarIfElementsDontFit": "Use horizontal scrollbar if elements don't fit (otherwise multiple lines)",
   "speak": "Speak",
-  "selectHomeGridForCreatingGlobalGrid": "Select Home Grid for creating global Grid"
+  "selectHomeGridForCreatingGlobalGrid": "Select Home Grid for creating global Grid",
+  "addThisElementToCollectionElementsDespiteNav": "Add this element to collection elements despite navigating",
+  "sortGridsBy": "Sort grids by",
+  "labelAlphabetically": "Label (alphabetically)",
+  "numberOfConnections": "Number of connections"
 }
