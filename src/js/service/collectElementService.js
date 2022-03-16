@@ -85,31 +85,47 @@ collectElementService.doCollectElementActions = async function (action) {
                     markedImageIndex = index;
                     updateCollectElements();
                     if (!word) {
-                        clearImages();
+                        clearAll();
                     }
                 });
             } else {
                 speechService.speak(collectedText);
                 speechService.doAfterFinishedSpeaking(() => {
-                    setText('');
+                    clearAll();
                 });
             }
             break;
         case GridActionCollectElement.COLLECT_ACTION_CLEAR:
-            setText('');
-            clearImages();
+            clearAll();
             speechService.stopSpeaking();
             break;
         case GridActionCollectElement.COLLECT_ACTION_REMOVE_WORD:
-            let words = collectedText.trim().split(' ');
-            words.pop();
-            let text = words.join(' ');
-            setText(text === '' ? '' : text + ' ');
-            removeImage();
+            collectedImages.pop();
+            let removedLabel = collectedImageLabels.pop();
+            collectedText = collectedText.substring(0, collectedText.toLowerCase().lastIndexOf(removedLabel.toLowerCase()));
+            if (autoCollectImage && collectedImages.length === 0) {
+                collectedText = '';
+            }
+            updateCollectElements();
             speechService.stopSpeaking();
             break;
         case GridActionCollectElement.COLLECT_ACTION_REMOVE_CHAR:
-            setText(collectedText.substring(0, collectedText.length - 1));
+            collectedText = collectedText.substring(0, collectedText.length - 1);
+            let lastImage = collectedImages[collectedImages.length - 1];
+            if (!lastImage && collectedImages.length > 0) {
+                collectedImageLabels[collectedImageLabels.length - 1] = collectedImageLabels[collectedImageLabels.length - 1].slice(0, -1);
+                if (!collectedImageLabels[collectedImageLabels.length - 1]) {
+                    collectedImageLabels.pop();
+                    collectedImages.pop();
+                }
+            } else {
+                let removedLabel = collectedImageLabels.pop();
+                collectedImages.pop();
+                if (removedLabel) {
+                    collectedText = collectedText.substring(0, collectedText.toLowerCase().lastIndexOf(removedLabel.toLowerCase()));
+                }
+            }
+            updateCollectElements();
             break;
         case GridActionCollectElement.COLLECT_ACTION_COPY_CLIPBOARD:
             util.copyToClipboard(collectedText);
@@ -131,21 +147,10 @@ collectElementService.doCollectElementActions = async function (action) {
     predictionService.predict(collectedText, dictionaryKey);
 };
 
-function setText(text) {
-    text = text === undefined ? collectedText : text;
-    collectedText = text;
-    updateCollectElements();
-}
-
-function removeImage() {
-    collectedImages.pop();
-    collectedImageLabels.pop();
-    updateCollectElements();
-}
-
-function clearImages() {
+function clearAll() {
     collectedImages = [];
     collectedImageLabels = [];
+    collectedText = '';
     updateCollectElements();
 }
 
@@ -165,6 +170,7 @@ function getActionTypes(elem) {
 }
 
 async function updateCollectElements(isSecondTry) {
+    autoCollectImage = collectedImages.some(e => !!e);
     for (let collectElement of registeredCollectElements) {
         let imageMode = isImageMode(collectElement.mode);
         if (!imageMode) {
@@ -268,11 +274,17 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         return; // no adding of text if the element contains an navigate action and it's no single keyboard character
     }
 
+    let lastImage = collectedImages.length > 0 ? collectedImages[collectedImages.length - 1] : null;
     if (label) {
-        collectedImages.push(image);
-        collectedImageLabels.push(label);
+        if (label.length === 1 && collectedImageLabels.length > 0 && !image && !lastImage && !collectedText.endsWith(' ')) {
+            let lastElem = collectedImageLabels.pop();
+            lastElem += label;
+            collectedImageLabels.push(lastElem.trim());
+        } else {
+            collectedImageLabels.push(label);
+            collectedImages.push(image);
+        }
     }
-    autoCollectImage = collectedImages.some(e => !!e);
     if (label && element.type === GridElement.ELEMENT_TYPE_NORMAL) {
         let textToAdd = label.length === 1 && keyboardLikeFactor > 0.4 ? label.toLowerCase() : label + ' ';
         collectedText += textToAdd;
@@ -282,6 +294,14 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         if (word) {
             let appliedText = predictionService.applyPrediction(collectedText || '', word, dictionaryKey);
             collectedText = appliedText;
+            let lastImageLabel = collectedImageLabels.length > 0 ? collectedImageLabels[collectedImageLabels.length - 1] : null;
+            if (lastImageLabel && word.toLowerCase().startsWith(lastImageLabel.toLowerCase())) {
+                collectedImageLabels.pop();
+                collectedImageLabels.push(word);
+            } else {
+                collectedImageLabels.push(word);
+                collectedImages.push(null);
+            }
             triggerPredict();
         }
     }
