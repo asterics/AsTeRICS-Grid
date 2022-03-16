@@ -698,5 +698,8 @@
   "useHorizontalScrollbarIfElementsDontFit": "Usar la barra de desplazamiento horizontal si los elementos no caben (en caso contrario los elementos se dispondrán en varias líneas)",
   "speak": "Hablar",
   "selectHomeGridForCreatingGlobalGrid": "Seleccione el tablero inicial para enlazar en el tablero global",
-  "addThisElementToCollectionElementsDespiteNav": "Add this element to collection elements despite navigating"
+  "addThisElementToCollectionElementsDespiteNav": "Add this element to collection elements despite navigating",
+  "sortGridsBy": "Sort grids by",
+  "labelAlphabetically": "Label (alphabetically)",
+  "numberOfConnections": "Number of connections"
 }
