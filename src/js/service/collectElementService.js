@@ -102,7 +102,9 @@ collectElementService.doCollectElementActions = async function (action) {
         case GridActionCollectElement.COLLECT_ACTION_REMOVE_WORD:
             collectedImages.pop();
             let removedLabel = collectedImageLabels.pop();
-            collectedText = collectedText.substring(0, collectedText.toLowerCase().lastIndexOf(removedLabel.toLowerCase()));
+            if (removedLabel) {
+                collectedText = collectedText.substring(0, collectedText.toLowerCase().lastIndexOf(removedLabel.toLowerCase()));
+            }
             if (autoCollectImage && collectedImages.length === 0) {
                 collectedText = '';
             }
