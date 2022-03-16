@@ -1,5 +1,6 @@
 import {GridElement} from "./GridElement.js";
 import {GridActionCollectElement} from "./GridActionCollectElement.js";
+import {GridActionPredict} from "./GridActionPredict.js";
 
 class GridElementCollect extends GridElement.extend({
     showLabels: [Boolean],
@@ -14,7 +15,7 @@ class GridElementCollect extends GridElement.extend({
         props.imageHeightPercentage = 85;
         props.mode = GridElementCollect.MODE_AUTO;
         props.type = GridElement.ELEMENT_TYPE_COLLECT;
-        props.actions = props.actions || [new GridActionCollectElement({action: GridActionCollectElement.COLLECT_ACTION_SPEAK})]
+        props.actions = props.actions || [new GridActionCollectElement({action: GridActionCollectElement.COLLECT_ACTION_SPEAK}), new GridActionPredict({suggestOnChange: true})];
         super(props);
     }
 }
