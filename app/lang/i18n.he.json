@@ -698,5 +698,8 @@
   "useHorizontalScrollbarIfElementsDontFit": "Use horizontal scrollbar if elements don't fit (otherwise multiple lines)",
   "speak": "Speak",
   "selectHomeGridForCreatingGlobalGrid": "Select Home Grid for creating global Grid",
-  "addThisElementToCollectionElementsDespiteNav": "Add this element to collection elements despite navigating"
+  "addThisElementToCollectionElementsDespiteNav": "Add this element to collection elements despite navigating",
+  "sortGridsBy": "Sort grids by",
+  "labelAlphabetically": "Label (alphabetically)",
+  "numberOfConnections": "Number of connections"
 }
