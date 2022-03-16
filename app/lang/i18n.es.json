@@ -271,7 +271,7 @@
   "saveAsPdf": "Guardar como PDF",
   "gridList": "Lista de tableros",
   "gridsToShow": "Tableros a mostrar",
-  "gridsConnectedWithX": "Grids connected with \"{0}\"",
+  "gridsConnectedWithX": "Tableros enlazados con \"{0}\"",
   "notReachableGrids": "Tableros no enlazados",
   "globalGrid": "Tablero global",
   "aGlobalGridIsShownWithinEachOtherGridAndCan": "Un tablero global se muestra dentro de otro tablero y puede contener celdas como, por ejemplo, \"atrás\" o \"inicio\".",
@@ -698,8 +698,8 @@
   "useHorizontalScrollbarIfElementsDontFit": "Usar la barra de desplazamiento horizontal si los elementos no caben (en caso contrario los elementos se dispondrán en varias líneas)",
   "speak": "Hablar",
   "selectHomeGridForCreatingGlobalGrid": "Seleccione el tablero inicial para enlazar en el tablero global",
-  "addThisElementToCollectionElementsDespiteNav": "Add this element to collection elements despite navigating",
-  "sortGridsBy": "Sort grids by",
-  "labelAlphabetically": "Label (alphabetically)",
-  "numberOfConnections": "Number of connections"
+  "addThisElementToCollectionElementsDespiteNav": "Añadir esta celda a la frase acumulada",
+  "sortGridsBy": "Ordenar tableros por",
+  "labelAlphabetically": "Nombre (alfabéticamente)",
+  "numberOfConnections": "Número de enlaces"
 }
