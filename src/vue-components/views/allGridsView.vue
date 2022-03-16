@@ -42,12 +42,19 @@
             </div>
 
             <h1>{{ $t('gridList') }}</h1>
-            <div class="row" v-show="graphList.length > 0" style="margin-bottom: 1.5em">
+            <div class="row" v-show="graphList.length > 0" style="margin-bottom: 1em">
                 <label for="selectMode" class="three columns">{{ $t('gridsToShow') }}</label>
                 <select id="selectMode" class="four columns" v-model="selectValue" @change="reinitContextMenu">
-                    <option :value="selectValues.ALL_GRIDS">{{ $t('allGrids') }}</option>
-                    <option :value="selectValues.CONNECTED_GRIDS" v-if="selectedGraphElement">{{connectedGridsOptionLabel}}</option>
-                    <option :value="selectValues.NOT_REACHABLE_GRIDS" >{{ $t('notReachableGrids') }}</option>
+                    <option :value="SELECT_VALUES.ALL_GRIDS">{{ $t('allGrids') }}</option>
+                    <option :value="SELECT_VALUES.CONNECTED_GRIDS" v-if="selectedGraphElement">{{connectedGridsOptionLabel}}</option>
+                    <option :value="SELECT_VALUES.NOT_REACHABLE_GRIDS" >{{ $t('notReachableGrids') }}</option>
+                </select>
+            </div>
+            <div class="row" v-show="graphList.length > 0" style="margin-bottom: 1.5em">
+                <label for="selectOrder" class="three columns">{{ $t('sortGridsBy') }}</label>
+                <select id="selectOrder" class="four columns" v-model="orderValue" @change="orderChanged">
+                    <option :value="ORDER_VALUES.ALPHABET">{{ $t('labelAlphabetically') }}</option>
+                    <option :value="ORDER_VALUES.CONNECTION_COUNT" v-if="selectedGraphElement">{{ $t('numberOfConnections') }}</option>
                 </select>
                 <span class="three columns">{{graphElemsToShow.length}} <span>{{ $t('elements') }}</span></span>
             </div>
@@ -110,9 +117,19 @@
     import {printService} from "../../js/service/printService";
     import {MainVue} from "../../js/vue/mainVue";
     import {MetaData} from "../../js/model/MetaData.js";
+    import {localStorageService} from "../../js/service/data/localStorageService.js";
 
+    let ORDER_MODE_KEY = "AG_ALLGRIDS_ORDER_MODE_KEY";
     let SELECTOR_CONTEXTMENU = '#moreButton';
-
+    let SELECT_VALUES = {
+        CONNECTED_GRIDS: 'CONNECTED_GRIDS',
+        NOT_REACHABLE_GRIDS: 'NOT_REACHABLE_GRIDS',
+        ALL_GRIDS: 'ALL_GRIDS'
+    };
+    let ORDER_VALUES = {
+        ALPHABET: 'ALPHABET',
+        CONNECTION_COUNT: 'CONNECTION_COUNT'
+    };
     let vueApp = null;
     let vueConfig = {
         components: {ExportPdfModal, GridLinkModal, Accordion, HeaderIcon},
@@ -124,12 +141,10 @@
                 selectedGraphElement: null,
                 newLabel: {},
                 showLoading: true,
-                selectValues: {
-                    CONNECTED_GRIDS: 'CONNECTED_GRIDS',
-                    NOT_REACHABLE_GRIDS: 'NOT_REACHABLE_GRIDS',
-                    ALL_GRIDS: 'ALL_GRIDS'
-                },
+                SELECT_VALUES: SELECT_VALUES,
+                ORDER_VALUES: ORDER_VALUES,
                 selectValue: null,
+                orderValue: localStorageService.get(ORDER_MODE_KEY) || ORDER_VALUES.CONNECTION_COUNT,
                 linkModal: {
                     show: false,
                     gridFrom: null,
@@ -159,6 +174,10 @@
             reinitContextMenu() {
                 initGridOptions();
                 initContextmenu();
+            },
+            orderChanged() {
+                localStorageService.save(ORDER_MODE_KEY, this.orderValue);
+                this.reinitContextMenu();
             },
             deleteGrid: function (id) {
                 log.debug('delete: ' + id);
@@ -346,14 +365,27 @@
                 if (!this.graphList || !this.selectedGraphElement) {
                     return [];
                 }
+                let elems = [];
                 switch (this.selectValue) {
-                    case this.selectValues.CONNECTED_GRIDS:
-                        return this.selectedGraphElement.allRelatives;
-                    case this.selectValues.NOT_REACHABLE_GRIDS:
-                        return this.graphList.filter(e => e.parents.length === 0);
-                    case this.selectValues.ALL_GRIDS:
-                        return this.graphList;
+                    case this.SELECT_VALUES.CONNECTED_GRIDS:
+                        elems = this.selectedGraphElement.allRelatives;
+                        break;
+                    case this.SELECT_VALUES.NOT_REACHABLE_GRIDS:
+                        elems = this.graphList.filter(e => e.parents.length === 0);
+                        break;
+                    case this.SELECT_VALUES.ALL_GRIDS:
+                        elems = this.graphList;
+                        break;
                 }
+                switch (this.orderValue) {
+                    case this.ORDER_VALUES.ALPHABET:
+                        elems = elems.sort((a, b) => i18nService.getTranslation(a.grid.label).localeCompare(i18nService.getTranslation(b.grid.label)));
+                        break;
+                    case this.ORDER_VALUES.CONNECTION_COUNT:
+                        elems = elems = elems.sort((a, b) => b.allRelatives.length - a.allRelatives.length);
+                        break;
+                }
+                return elems;
             }
         },
         created() {
@@ -363,7 +395,7 @@
         mounted: function () {
             let thiz = this;
             vueApp = thiz;
-            thiz.selectValue = this.selectValues.ALL_GRIDS;
+            thiz.selectValue = this.SELECT_VALUES.ALL_GRIDS;
             thiz.reload().then(() => {
                 this.reinitContextMenu();
             });
@@ -377,7 +409,7 @@
     function initGridOptions() {
         $.contextMenu('destroy');
 
-        let connectVisibleFn = () => vueApp.selectValue !== vueApp.selectValues.CONNECTED_GRIDS;
+        let connectVisibleFn = () => vueApp.selectValue !== vueApp.SELECT_VALUES.CONNECTED_GRIDS;
         let label = vueApp.selectedGraphElement ? i18nService.getTranslation(vueApp.selectedGraphElement.grid.label) : '';
         let optionsMenuItems = {
             CONTEXT_CONNECT: {
