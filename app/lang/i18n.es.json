@@ -271,6 +271,7 @@
   "saveAsPdf": "Guardar como PDF",
   "gridList": "Lista de tableros",
   "gridsToShow": "Tableros a mostrar",
+  "gridsConnectedWithX": "Grids connected with \"{0}\"",
   "notReachableGrids": "Tableros no enlazados",
   "globalGrid": "Tablero global",
   "aGlobalGridIsShownWithinEachOtherGridAndCan": "Un tablero global se muestra dentro de otro tablero y puede contener celdas como, por ejemplo, \"atrás\" o \"inicio\".",
