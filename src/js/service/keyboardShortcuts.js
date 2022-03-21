@@ -4,6 +4,7 @@ import {dataService} from "./data/dataService";
 import {loginService} from "./loginService";
 import {Router} from "../router.js";
 import {actionService} from "./actionService.js";
+import {GridActionNavigate} from "../model/GridActionNavigate.js";
 
 let keyboardShortcuts = {};
 
@@ -27,7 +28,11 @@ keyboardShortcuts.init = function () {
         if (event.ctrlKey && keycode === 36) { //Ctrl + Pos1
             dataService.getGlobalGrid().then(globalGrid => {
                 if (globalGrid) {
-                    actionService.doAction(globalGrid.id, globalGrid.gridElements[0].id);
+                    for (const elem of globalGrid.gridElements) {
+                        if (elem.actions[0].modelName === GridActionNavigate.getModelName() && !elem.actions[0].toLastGrid) {
+                            Router.toGrid(elem.actions[0].toGridId);
+                        }
+                    }
                 }
             })
         }

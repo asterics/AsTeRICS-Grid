@@ -56,7 +56,7 @@ Each data record has the format `<rank> <frequency> <word>` and is separated by 
 1. **Rank index**: `0` - since the rank is the first element within a data record (zero-based index)
 
 
-[&#x2190; Previous Chapter](06_users.md)
+[&#x2190; Previous Chapter](06_users.md) [Next Chapter &#x2192;](07_dictionaries.md)
 
 [Back to Overview](README.md)
 
