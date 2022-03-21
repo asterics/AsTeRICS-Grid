@@ -221,13 +221,14 @@ async function updateCollectElements(isSecondTry) {
                 let imgHTML = null;
                 if (image) {
                     imgHTML = `<img src="${image}" height="${imgHeight}"/>`;
+                    totalWidth += elemWidth + 2 * imgMargin;
                 } else {
                     let fontSizeFactor = collectElement.textElemSizeFactor || 1.5;
                     let fontSize = textHeight * fontSizeFactor;
                     elemWidth = fontUtil.getTextWidth(label, outerContainerJqueryElem[0], `${fontSize}px`) + 2 * imgMargin;
-                    imgHTML = `<div style="padding: ${2 * imgMargin}px; font-size: ${fontSize}px; width: ${elemWidth}px; height: ${imgHeight}px; display: flex; justify-content: center; align-items: center; text-align: center;"><span>${label}</span></div>`;
+                    totalWidth += elemWidth + 4 * imgMargin;
+                    imgHTML = `<div style="padding: ${imgMargin}px; font-size: ${fontSize}px; width: ${elemWidth}px; height: ${imgHeight}px; display: flex; justify-content: center; align-items: center; text-align: center;"><span>${label}</span></div>`;
                 }
-                totalWidth += elemWidth + 2 * imgMargin;
                 html += `<div id="collect${index}" style="display: flex; flex:0; justify-content: center; flex-direction: column; padding: ${imgMargin}px; title=${label}; ${marked ? 'background-color: lightgreen;' : ''}">
                                 <div style="display:flex; justify-content: center">
                                         ${imgHTML}
