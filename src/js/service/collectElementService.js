@@ -307,7 +307,7 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
             let appliedText = predictionService.applyPrediction(collectedText || '', word, dictionaryKey);
             collectedText = appliedText;
             let lastImageLabel = collectedImageLabels.length > 0 ? collectedImageLabels[collectedImageLabels.length - 1] : null;
-            if (lastImageLabel && word.toLowerCase().startsWith(lastImageLabel.toLowerCase())) {
+            if (lastImageLabel && word.toLowerCase().startsWith(lastImageLabel.toLowerCase()) && word.toLowerCase() !== lastImageLabel.toLowerCase()) {
                 collectedImageLabels.pop();
                 collectedImageLabels.push(word);
             } else {
