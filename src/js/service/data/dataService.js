@@ -401,7 +401,12 @@ dataService.downloadSingleGrid = function (gridId) {
 /**
  * Downloads all grids, dictionaries and metadata to File. Opens a file download in Browser.
  */
-window.backupPrepareForDefault = false;
+let backupPrepareForDefault = false;
+window.prepareForDefaultBackup = function () {
+    window.updateAllThumbnails(2000);
+    backupPrepareForDefault = true
+}
+
 dataService.downloadBackup = function () {
     let exportData = {};
     let promises = [];
