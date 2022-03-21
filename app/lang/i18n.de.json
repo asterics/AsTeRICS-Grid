@@ -701,5 +701,7 @@
   "addThisElementToCollectionElementsDespiteNav": "Füge dieses Element zu Sammelelementen hinzu (trotz Navigation)",
   "sortGridsBy": "Ordne Grids nach",
   "labelAlphabetically": "Text (alphabetisch)",
-  "numberOfConnections": "Anzahl an Verbindungen"
+  "numberOfConnections": "Anzahl an Verbindungen",
+  "factorForFontSizeOfOnlytextElements": "Factor for font size of only-text elements in separated mode",
+  "convertUppercaseKeyboardLettersToLowercase": "Convert uppercase keyboard letters to lowercase"
 }
