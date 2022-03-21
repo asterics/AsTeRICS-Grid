@@ -63,6 +63,38 @@ fontUtil.getLastFontSize = function () {
     return lastSize + 'px';
 };
 
+/**
+ * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
+ *
+ * @param {String} text The text to be rendered.
+ * @param {DOMElement} containerElem the element containing the text, default document.body
+ * @param {String} targetSize the optional targetSize of the text, e.g. "16px"
+ *
+ * @see https://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
+ */
+fontUtil.getTextWidth = function (text, containerElem, targetSize) {
+    containerElem = document.body || containerElem;
+    let font = getCanvasFontSize(containerElem, targetSize);
+    // re-use canvas object for better performance
+    const canvas = fontUtil.getTextWidth.canvas || (fontUtil.getTextWidth.canvas = document.createElement("canvas"));
+    const context = canvas.getContext("2d");
+    context.font = font;
+    const metrics = context.measureText(text);
+    return metrics.width;
+}
+
+function getCssStyle(element, prop) {
+    return window.getComputedStyle(element, null).getPropertyValue(prop);
+}
+
+function getCanvasFontSize(el = document.body, fontSize) {
+    const fontWeight = getCssStyle(el, 'font-weight') || 'normal';
+    fontSize = fontSize || getCssStyle(el, 'font-size') || '16px';
+    const fontFamily = getCssStyle(el, 'font-family') || 'Times New Roman';
+
+    return `${fontWeight} ${fontSize} ${fontFamily}`;
+}
+
 function getLabel(elem) {
     if (elem.attr('data-label')) {
         return elem.attr('data-label').trim();
