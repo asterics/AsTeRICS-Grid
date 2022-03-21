@@ -2,6 +2,8 @@ import {inputEventHandler} from "../input/inputEventHandler";
 import {localStorageService} from "./data/localStorageService";
 import {dataService} from "./data/dataService";
 import {loginService} from "./loginService";
+import {Router} from "../router.js";
+import {actionService} from "./actionService.js";
 
 let keyboardShortcuts = {};
 
@@ -18,6 +20,16 @@ keyboardShortcuts.init = function () {
             let newUser = users[index];
             log.info('changing user via keyboard shortcut to: ' + newUser);
             loginService.loginStoredUser(newUser);
+        }
+        if (event.ctrlKey && keycode === 8) { //Ctrl + Backspace
+            Router.toLastGrid();
+        }
+        if (event.ctrlKey && keycode === 36) { //Ctrl + Pos1
+            dataService.getGlobalGrid().then(globalGrid => {
+                if (globalGrid) {
+                    actionService.doAction(globalGrid.id, globalGrid.gridElements[0].id);
+                }
+            })
         }
     });
 };
