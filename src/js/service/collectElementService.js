@@ -26,6 +26,7 @@ let keyboardLikeFactor = 0;
 let dictionaryKey = null;
 let autoCollectImage = true;
 let collectMode = GridElementCollect.MODE_AUTO;
+let convertToLowercase = true;
 
 collectElementService.initWithElements = function (elements, dontAutoPredict) {
     registeredCollectElements = [];
@@ -47,6 +48,7 @@ collectElementService.initWithElements = function (elements, dontAutoPredict) {
                 return total || dictKey;
             }, null);
             collectMode = copy.mode || collectMode;
+            convertToLowercase = copy.convertToLowercase !== false;
             registeredCollectElements.push(copy);
         }
     });
@@ -175,18 +177,20 @@ async function updateCollectElements(isSecondTry) {
     autoCollectImage = collectedImages.some(e => !!e);
     for (let collectElement of registeredCollectElements) {
         let imageMode = isImageMode(collectElement.mode);
+        let outerContainerJqueryElem = $(`#${collectElement.id} .collect-outer-container`);
         if (!imageMode) {
             predictionService.learnFromInput(collectedText, dictionaryKey);
             let html = `<span style="padding: 5px; display: flex; align-items: center; flex: 1; text-align: left;">
                             ${collectedText}
                         </span>`;
-            $(`#${collectElement.id} .collect-outer-container`).html(html = `<div class="collect-container" dir="auto" style="flex: 1; background-color: white; text-align: justify;">${html}</div>`);
+            outerContainerJqueryElem.html(html = `<div class="collect-container" dir="auto" style="flex: 1; background-color: white; text-align: justify;">${html}</div>`);
             fontUtil.adaptFontSize($(`#${collectElement.id}`));
         } else {
             let html = '';
-            let height = $(`#${collectElement.id} .collect-container`).prop("clientHeight") || $(`#${collectElement.id} .collect-outer-container`).prop("clientHeight"); // consider scrollbar height
-            let width = $(`#${collectElement.id} .collect-outer-container`).width();
-            let imgMargin = width < 400 ? 1 : width < 700 ? 2 : 5;
+            let height = $(`#${collectElement.id} .collect-container`).prop("clientHeight") || outerContainerJqueryElem.prop("clientHeight"); // consider scrollbar height
+
+            let width = outerContainerJqueryElem.width();
+            let imgMargin = width < 400 ? 2 : width < 700 ? 3 : 5;
             let showLabel = collectElement.showLabels;
             let textPercentage = 0.85; // precentage of text height compared to text-line height
             let imagePercentage = collectElement.imageHeightPercentage / 100; // percentage of total height used for image
@@ -212,29 +216,30 @@ async function updateCollectElements(isSecondTry) {
             let totalWidth = 0;
             for (const [index, image] of collectedImages.entries()) {
                 let label = collectedImageLabels[index];
-                let imgWidth = imgHeight * imageRatios[index] || imgHeight;
-                totalWidth += imgWidth + 2 * imgMargin;
+                let elemWidth = imgHeight * imageRatios[index] || imgHeight;
                 let marked = markedImageIndex === index;
                 let imgHTML = null;
                 if (image) {
                     imgHTML = `<img src="${image}" height="${imgHeight}"/>`;
                 } else {
-                    let fontSize = Math.min(imgHeight * 0.7, imgHeight / Math.pow(label.length, 0.8));
-                    fontSize = Math.max(fontSize, 14);
-                    imgHTML = `<div style="font-size: ${fontSize}px; width: ${imgHeight}px; height: ${imgHeight}px; display: flex; justify-content: center; align-items: center; text-align: center;"><span>${label}</span></div>`;
+                    let fontSizeFactor = collectElement.textElemSizeFactor || 1.5;
+                    let fontSize = textHeight * fontSizeFactor;
+                    elemWidth = fontUtil.getTextWidth(label, outerContainerJqueryElem[0], `${fontSize}px`) + 2 * imgMargin;
+                    imgHTML = `<div style="padding: ${2 * imgMargin}px; font-size: ${fontSize}px; width: ${elemWidth}px; height: ${imgHeight}px; display: flex; justify-content: center; align-items: center; text-align: center;"><span>${label}</span></div>`;
                 }
+                totalWidth += elemWidth + 2 * imgMargin;
                 html += `<div id="collect${index}" style="display: flex; flex:0; justify-content: center; flex-direction: column; padding: ${imgMargin}px; title=${label}; ${marked ? 'background-color: lightgreen;' : ''}">
                                 <div style="display:flex; justify-content: center">
                                         ${imgHTML}
                                 </div>
-                                <div style="text-align: center; font-size: ${textHeight}px; line-height: ${lineHeight}px; height: ${lineHeight}px; width: ${imgWidth}px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; ${!showLabel ? 'display: none' : ''}">
+                                <div style="text-align: center; font-size: ${textHeight}px; line-height: ${lineHeight}px; height: ${lineHeight}px; width: ${elemWidth}px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; ${!showLabel ? 'display: none' : ''}">
                                     ${image ? label : ''}
                                 </div>
                              </div>`
             }
             let additionalCSS = useSingleLine ? 'overflow-x: auto; overflow-y: hidden;' : 'flex-wrap: wrap;';
             html = `<div class="collect-container" dir="auto" style="flex: 1; display: flex; flex-direction: row; background-color: white; text-align: justify; ${additionalCSS}">${html}</div>`;
-            $(`#${collectElement.id} .collect-outer-container`).html(html);
+            outerContainerJqueryElem.html(html);
             if (useSingleLine) {
                 let scroll = markedImageIndex !== null ? maxImgRatio * imgHeight * markedImageIndex : maxImgRatio * imgHeight * imageCount;
                 $(`#${collectElement.id} .collect-container`).scrollLeft(scroll);
@@ -278,6 +283,9 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
     }
 
     let lastImage = collectedImages.length > 0 ? collectedImages[collectedImages.length - 1] : null;
+    if (label && convertToLowercase) {
+        label = label.toLowerCase();
+    }
     if (label) {
         if (label.length === 1 && collectedImageLabels.length > 0 && !image && !lastImage && !collectedText.endsWith(' ')) {
             let lastElem = collectedImageLabels.pop();
@@ -289,7 +297,7 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         }
     }
     if (label && element.type === GridElement.ELEMENT_TYPE_NORMAL) {
-        let textToAdd = label.length === 1 && keyboardLikeFactor > 0.4 ? label.toLowerCase() : label + ' ';
+        let textToAdd = label.length === 1 && keyboardLikeFactor > 0.4 ? label : label + ' ';
         collectedText += textToAdd;
         triggerPredict();
     } else if (element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
