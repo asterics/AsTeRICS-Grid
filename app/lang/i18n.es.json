@@ -701,5 +701,7 @@
   "addThisElementToCollectionElementsDespiteNav": "Añadir esta celda a la frase acumulada",
   "sortGridsBy": "Ordenar tableros por",
   "labelAlphabetically": "Nombre (alfabéticamente)",
-  "numberOfConnections": "Número de enlaces"
+  "numberOfConnections": "Número de enlaces",
+  "factorForFontSizeOfOnlytextElements": "Factor for font size of only-text elements in separated mode",
+  "convertUppercaseKeyboardLettersToLowercase": "Convert uppercase keyboard letters to lowercase"
 }
