@@ -702,6 +702,6 @@
   "sortGridsBy": "Ordenar tableros por",
   "labelAlphabetically": "Nombre (alfabéticamente)",
   "numberOfConnections": "Número de enlaces",
-  "factorForFontSizeOfOnlytextElements": "Factor for font size of only-text elements in separated mode",
-  "convertUppercaseKeyboardLettersToLowercase": "Convert uppercase keyboard letters to lowercase"
+  "factorForFontSizeOfOnlytextElements": "Ajuste del tamaño de la letra de los textos (recomendado entre 1-2)",
+  "convertUppercaseKeyboardLettersToLowercase": "Convertir letras del teclado en mayúsculas a minúsculas"
 }
