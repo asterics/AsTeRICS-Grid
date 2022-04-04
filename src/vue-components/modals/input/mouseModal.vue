@@ -10,24 +10,24 @@
                     </div>
 
                     <div class="modal-body" v-if="inputConfig">
-                        <div class="row" >
+                        <div class="srow" >
                             <div class="twelve columns">
                                 <input v-focus type="checkbox" id="enableClick" v-model="inputConfig.mouseclickEnabled"/>
                                 <label class="inline" for="enableClick">{{ $t('selectWithMouseClickOrTap') }}</label>
                             </div>
                         </div>
-                        <div class="row" >
+                        <div class="srow" >
                             <div class="twelve columns">
                                 <input v-focus type="checkbox" id="enableHover" v-model="inputConfig.hoverEnabled"/>
                                 <label class="inline" for="enableHover">{{ $t('enableHovering') }}</label>
                             </div>
                         </div>
-                        <div class="row" v-show="inputConfig.hoverEnabled">
+                        <div class="srow" v-show="inputConfig.hoverEnabled">
                             <label class="four columns" for="inHoverTime">{{ $t('hoverTimeMs') }}</label>
                             <input type="range" id="inHoverTime" v-model.number="inputConfig.hoverTimeoutMs" min="0" max="5000" step="100"/>
                             <input type="number" v-model.number="inputConfig.hoverTimeoutMs" min="0" max="5000" step="100"/>
                         </div>
-                        <div class="row" v-show="inputConfig.hoverEnabled">
+                        <div class="srow" v-show="inputConfig.hoverEnabled">
                             <div class="twelve columns">
                                 <input v-focus type="checkbox" id="hoverHideCursor" v-model="inputConfig.hoverHideCursor"/>
                                 <label class="inline" for="hoverHideCursor">{{ $t('hideCursor') }}</label>
@@ -41,13 +41,13 @@
                                 <label for="chkDisableHoverpane">{{ $t('disableHoverPane') }}</label>
                             </div>
                         </div>
-                        <accordion class="row" :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
+                        <accordion class="srow" :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
                             <test-area :selected-element="selectedTestElement"></test-area>
                         </accordion>
                     </div>
 
                     <div class="modal-footer">
-                        <div class="button-container row">
+                        <div class="button-container srow">
                             <button @click="cancel()" class="four columns offset-by-four">
                                 <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>

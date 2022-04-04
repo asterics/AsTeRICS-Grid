@@ -11,22 +11,22 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="row">
+                        <div class="srow">
                             <label for="gridRows" class="seven columns">{{ $t('numberOfRows') }}</label>
                             <input id="gridRows" type="number" class="three columns" v-model.number="gridData.rowCount" min="1" max="100"/>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <label for="gridCols" class="seven columns">{{ $t('minimumNumberOfColumns') }}</label>
                             <input id="gridCols" type="number" class="three columns" v-model.number="gridData.minColumnCount" min="1" max="100"/>
                         </div>
-                        <div class="row" v-if="isGlobalGrid && metadata && gridHeight === 1">
+                        <div class="srow" v-if="isGlobalGrid && metadata && gridHeight === 1">
                             <label for="metadataHeight" class="seven columns">{{ $t('heightOfFirstGlobalGridRow') }}</label>
                             <input id="metadataHeight" type="number" class="three columns" v-model.number="metadata.globalGridHeightPercentage" min="5" max="50"/>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <div class="button-container row">
+                        <div class="button-container srow">
                             <button @click="$emit('close')" :title="$t('keyboardEsc')" class="six columns">
                                 <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
@@ -84,7 +84,7 @@
 </script>
 
 <style scoped>
-    .row {
+    .srow {
         margin-top: 1em;
     }
 </style>

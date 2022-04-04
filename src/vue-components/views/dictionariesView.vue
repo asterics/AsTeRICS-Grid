@@ -1,12 +1,12 @@
 <template>
     <div class="overflow-content box">
         <div class="all-dicts-view">
-            <header class="row header" role="banner">
+            <header class="srow header" role="banner">
                 <header-icon></header-icon>
                 <button tabindex="32" @click="addDictionary()" class="small spaced"><i class="fas fa-plus"/> <span class="hide-mobile">{{ $t('newEmptyDictionary') }}</span></button>
                 <button tabindex="31" @click="showImportModal = true" class="small spaced"><i class="fas fa-file-import"/> <span class="hide-mobile">{{ $t('importDictionary') }}</span></button>
             </header>
-            <div class="row content text-content">
+            <div class="srow content text-content">
                 <div v-if="!dicts" class="grid-container grid-mask">
                     <i class="fas fa-4x fa-spinner fa-spin"/>
                 </div>
@@ -17,7 +17,7 @@
                         <span class="four columns">{{ $t('actions') }}</span><br/>
                     </li>
                     <li v-for="dict in dicts" class="dict-table-elem">
-                        <div class="row">
+                        <div class="srow">
                             <div class="four columns">
                                 <div v-if="editModeId !== dict.id">
                                     {{ dict.dictionaryKey }}
@@ -50,7 +50,7 @@
                             </div>
                         </div>
                         <div class="edit-container" v-if="editId === dict.id">
-                            <div class="row">
+                            <div class="srow">
                                 <input type="text" class="four columns" :placeholder="$t('searchWord')" v-model="searchWord"
                                        @input="inputSearchWord()"/>
                                 <button @click="showWordsModal = true; modalDict = dict" class="four columns">
@@ -58,7 +58,7 @@
                                     <span>{{ $t('importWords') }}</span>
                                 </button>
                             </div>
-                            <div class="row">
+                            <div class="srow">
                                 <span>{{ $t('words') }}</span>
                                 <ul style="margin-left: 0">
                                     <li v-for="word in wordlist">

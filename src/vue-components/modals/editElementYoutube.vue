@@ -11,14 +11,14 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="row">
+                        <div class="srow">
                             <input v-if="editElement" id="preventClick" type="checkbox" v-model="editElement.additionalProps[GridElement.PROP_YT_PREVENT_CLICK]"/>
                             <label for="preventClick">{{ $t('preventMouseClickOnYoutubePlayer') }}</label>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <div class="button-container row">
+                        <div class="button-container srow">
                             <button @click="$emit('close')" :title="$t('keyboardEsc')" class="four columns offset-by-four">
                                 <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
@@ -65,7 +65,7 @@
 </script>
 
 <style scoped>
-    .row {
+    .srow {
         margin-top: 1em;
     }
 </style>

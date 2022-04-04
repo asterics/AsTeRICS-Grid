@@ -11,14 +11,14 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="row">
+                        <div class="srow">
                             <label class="three columns" for="inputText">{{ $t('input') }}</label>
                             <span class="nine columns">{{ $t('insertLabelsForNewElements') }}</span>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <textarea v-focus class="twelve columns" id="inputText" v-model="inputText" @input="textChanged" style="resize: vertical;min-height: 70px;" placeholder="Element1;Element2;Element3;..."/>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <label class="three columns">{{ $t('recognizedElements') }}</label>
                             <div v-show="parsedElems.length > 0" class="nine columns">
                                 <span>{{parsedElems.length}}</span>
@@ -32,7 +32,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <div class="button-container row">
+                        <div class="button-container srow">
                             <button class="four columns offset-by-four" @click="$emit('close')" :title="$t('keyboardEsc')">
                                 <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
@@ -96,7 +96,7 @@
 </script>
 
 <style scoped>
-    .row {
+    .srow {
         margin-top: 1em;
     }
 </style>

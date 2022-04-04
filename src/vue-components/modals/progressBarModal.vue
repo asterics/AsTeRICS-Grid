@@ -17,7 +17,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <div v-if="options.closable" class="button-container row">
+                        <div v-if="options.closable" class="button-container srow">
                             <button class="four columns offset-by-eight" @click="close()" :title="$t('keyboardEsc')">
                                 <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>

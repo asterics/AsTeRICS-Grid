@@ -1,10 +1,10 @@
 <template>
     <div class="overflow-content">
         <header-icon full-header="true"></header-icon>
-        <div class="row content spaced">
+        <div class="srow content spaced">
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span>{{ $t('registerOnlineUser') }}</span></h2>
             <form autocomplete="off" onsubmit="event.preventDefault()" style="margin-bottom: 0.5em">
-                <div class="row">
+                <div class="srow">
                     <label for="inputUser" class="two columns"><span class="desktop-right inputlabel">{{ $t('username') }}</span></label>
                     <input type="text" name="username" v-model="user" id="inputUser" class="six columns" @change="validateUsername" v-debounce="300" v-focus=""/>
                     <div class="three columns" v-show="user != null && usernameValid == false">
@@ -14,11 +14,11 @@
                         <i style="color: green;" class="fas fa-check"/> <span>{{ $t('validUsername') }}</span>
                     </div>
                 </div>
-                <div class="row">
+                <div class="srow">
                     <label for="inputPassword" class="two columns inputlabel"><span class="desktop-right">{{ $t('password') }}</span></label>
                     <input type="password" v-model="password" id="inputPassword" class="six columns"/>
                 </div>
-                <div class="row">
+                <div class="srow">
                     <label for="inputConfirmPassword" class="two columns inputlabel"><span class="desktop-right">{{ $t('confirmPassword') }}</span></label>
                     <input type="password" v-model="password2" id="inputConfirmPassword" class="six columns"/>
                     <div class="three columns" v-show="!!password && password2 !== null && password !== password2">
@@ -30,7 +30,7 @@
                 </div>
             </form>
 
-            <div class="row more-space">
+            <div class="srow more-space">
                 <div class="six columns offset-by-two" v-show="!!password && password2 !== null && password === password2">
                     <i class="fas fa-2x fa-info-circle" style="color: blue"></i>
                     <span>
@@ -38,7 +38,7 @@
                     </span>
                 </div>
             </div>
-            <div class="row more-space">
+            <div class="srow more-space">
                 <div class="six columns offset-by-two" v-show="!!password && password2 !== null && password === password2">
                     <input type="checkbox" checked v-model="remember" id="inputRemember"/>
                     <label for="inputRemember"><span>{{ $t('rememberThisUserAndMakeItAvailableForOffline') }}</span></label>
@@ -46,7 +46,7 @@
                     <span class="fa fa-info-circle"/> <span>{{ $t('doNotCheckIfYouAreUsingAForeignDevice') }}</span>
                 </div>
             </div>
-            <div class="row more-space">
+            <div class="srow more-space">
                 <div class="six columns offset-by-two" v-show="!!password && password2 !== null && password === password2">
                     <input type="checkbox" id="checkPrivacy" v-model="privacyConsent"/>
                     <label for="checkPrivacy">
@@ -70,22 +70,22 @@
                     </span>
                 </div>
             </div>
-            <div class="row">
+            <div class="srow">
                 <button @click="register" :disabled="!user || !password || !password2 || password !== password2 || !usernameValid || !privacyConsent" class="six columns offset-by-two">{{ $t('register') }}</button>
             </div>
-            <div class="row">
+            <div class="srow">
                 <div class="six columns offset-by-two">
                     <span>{{ $t('alreadyHaveAnAccount') }}</span>
                     <a href="#login">{{ $t('toLogin') }}</a>
                 </div>
             </div>
-            <div class="row">
+            <div class="srow">
                 <div class="six columns offset-by-two">
                     <span>{{ $t('wantToCreateAnOfflineonlyUser') }}</span>
                     <a href="#add">{{ $t('addofflineuser') }}</a>
                 </div>
             </div>
-            <div class="row">
+            <div class="srow">
                 <div class="six columns offset-by-two">
                     <div v-show="registerSuccess === undefined">
                         <span>{{ $t('registering') }}</span> <i class="fas fa-spinner fa-spin"/>
@@ -179,7 +179,7 @@
         flex-direction: column;
         flex: 1 0 auto;
     }
-    .row {
+    .srow {
         margin-bottom: 1.0em;
     }
 

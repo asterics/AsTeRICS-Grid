@@ -1,10 +1,10 @@
 <template>
-    <div class="row">
+    <div class="srow">
         <div class="four columns">
             <label for="inputAREURI" class="normal-text">{{ $t('areUrl') }}</label>
         </div>
         <div class="eight columns">
-            <div class="row nomargin">
+            <div class="srow nomargin">
                 <input id="inputAREURI" class="six columns" type="text" v-model="areURL" @change="fixAreUrl()"/>
                 <div class="six columns">
                     <button @click="testAREUrl()" style="width: 70%"><i class="fas fa-bolt"/> <span>{{ $t('testUrl') }}</span></button>

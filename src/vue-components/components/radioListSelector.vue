@@ -1,10 +1,10 @@
 <template>
     <div>
-        <div class="row">
+        <div class="srow">
             <h3 class="six columns">{{ $t('selectedRadioStations') }}</h3>
             <button class="six columns" :disabled="selectedRadioList.length === 0" @click="addAllRadioElements">{{ $t('createGridElementsForWebradios') }}</button>
         </div>
-        <div class="row">
+        <div class="srow">
             <ul class="webradioList">
                 <li v-for="webradio in selectedRadioList">
                     <div class="webRadioListItem">
@@ -22,7 +22,7 @@
             <div v-if="selectedRadioList.length === 0">{{ $t('noSelectedRadioStationsUseSearchBar') }}</div>
         </div>
 
-        <div class="row">
+        <div class="srow">
             <h3 class="four columns">{{ $t('webradioSearch') }}</h3>
             <span id="poweredby" class="eight columns">
                 <i18n path="radioSearchPoweredBy" tag="span">
@@ -32,14 +32,14 @@
                 </i18n>
             </span>
         </div>
-        <div class="row">
+        <div class="srow">
             <div class="four columns">
                 <label for="searchwebradios" class="normal-text">{{ $t('searchTerm') }}</label>
                 <i class="fas fa-info-circle hide-mobile" :title="$t('byDefaultSearchesForRadioStationNameAdvanced')"></i>
             </div>
             <input id="searchwebradios" class="eight columns" type="text" v-model="webradioSearch" @input="searchWebradios($event)"/>
         </div>
-        <div class="row">
+        <div class="srow">
             <ul class="webradioList">
                 <li v-for="webradio in webradioSearchResults">
                     <div class="webRadioListItem">
@@ -189,7 +189,7 @@
 </script>
 
 <style scoped>
-    .row {
+    .srow {
         margin-top: 1em;
     }
 

@@ -17,26 +17,26 @@
                     </div>
 
                     <div class="modal-body" v-if="gridElement">
-                        <div class="row">
+                        <div class="srow">
                             <label class="three columns">{{ $t('newAction') }}</label>
                             <select id="selectActionType" v-focus="" class="four columns" v-model="selectedNewAction" style="margin-bottom: 0.5em">
                                 <option v-for="type in actionTypes" :value="type.getModelName()">{{type.getModelName() | translate}}</option>
                             </select>
                             <button class="four columns" @click="addAction()"><i class="fas fa-plus"/> <span>{{ $t('addAction') }}</span></button>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <h2 for="actionList" class="twelve columns" style="margin-top: 1em; font-size: 1.2em">{{ $t('currentActions') }}</h2>
                         </div>
                         <ul id="actionList">
-                            <span v-show="gridElement.actions.length == 0" class="row">
+                            <span v-show="gridElement.actions.length == 0" class="srow">
                                 <i18n path="noActionsDefinedClickOnAdd" tag="span">
                                     <template v-slot:addAction>
                                         <i class="fas fa-plus"/> <span class="hide-mobile">{{ $t('addAction') }}</span>
                                     </template>
                                 </i18n>
                             </span>
-                            <li v-for="action in gridElement.actions" class="row">
-                                <div class="row" style="margin-top: 0">
+                            <li v-for="action in gridElement.actions" class="srow">
+                                <div class="srow" style="margin-top: 0">
                                     <div class="four columns" style="margin-bottom: 1em">
                                         <span v-show="editActionId !== action.id">{{action.modelName | translate}}</span>
                                         <span v-show="editActionId === action.id">
@@ -54,7 +54,7 @@
                                 </div>
                                 <div v-if="editActionId === action.id" style="margin-top: 1.5em; margin-bottom: 1em">
                                     <div v-if="action.modelName == 'GridActionSpeak'">
-                                        <div class="row">
+                                        <div class="srow">
                                             <div class="four columns">
                                                 <label for="selectLang" class="normal-text">{{ $t('language') }}</label>
                                             </div>
@@ -67,7 +67,7 @@
                                         </div>
                                     </div>
                                     <div v-if="action.modelName == 'GridActionSpeakCustom'">
-                                        <div class="row">
+                                        <div class="srow">
                                             <div class="four columns">
                                                 <label for="selectLang2" class="normal-text">{{ $t('language') }}</label>
                                             </div>
@@ -78,7 +78,7 @@
                                                 </option>
                                             </select>
                                         </div>
-                                        <div class="row">
+                                        <div class="srow">
                                             <div class="four columns">
                                                 <label for="inCustomText" class="normal-text">{{ $t('textToSpeak') }}</label>
                                             </div>
@@ -86,15 +86,15 @@
                                         </div>
                                     </div>
                                     <div v-if="action.modelName == 'GridActionNavigate'">
-                                        <div class="row">
+                                        <div class="srow">
                                             <input id="navigateBackChkbox" type="checkbox" v-model="action.toLastGrid"/>
                                             <label for="navigateBackChkbox" class="normal-text">{{ $t('navigateToLastOpenedGrid') }}</label>
                                         </div>
-                                        <div class="row">
+                                        <div class="srow">
                                             <input id="addToCollectChk" type="checkbox" v-model="action.addToCollectElem"/>
                                             <label for="addToCollectChk" class="normal-text">{{ $t('addThisElementToCollectionElementsDespiteNav') }}</label>
                                         </div>
-                                        <div class="row">
+                                        <div class="srow">
                                             <div class="four columns">
                                                 <label for="selectGrid" class="normal-text">{{ $t('navigateToGrid') }}</label>
                                             </div>
@@ -109,13 +109,13 @@
                                         <edit-are-action :action="action" :grid-data="gridData" :model-file="additionalGridFiles[action.id]" :set-grid-file-fn="setAdditionalGridFile"/>
                                     </div>
                                     <div v-if="action.modelName == 'GridActionPredict'">
-                                        <div class="row" v-show="gridElement.type === GridElementClass.ELEMENT_TYPE_COLLECT">
+                                        <div class="srow" v-show="gridElement.type === GridElementClass.ELEMENT_TYPE_COLLECT">
                                             <div class="eight columns">
                                                 <input id="chkSuggestOnChange" type="checkbox" v-model="action.suggestOnChange">
                                                 <label for="chkSuggestOnChange" class="normal-text">{{ $t('refreshSuggestionsOnChange') }}</label>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        <div class="srow">
                                             <div class="four columns">
                                                 <label for="comboUseDict" class="normal-text">{{ $t('dictionaryToUse') }}</label>
                                             </div>
@@ -128,7 +128,7 @@
                                         </div>
                                     </div>
                                     <div v-if="action.modelName == 'GridActionCollectElement'">
-                                        <div class="row">
+                                        <div class="srow">
                                             <div class="twelve columns">
                                                 <label for="selectCollectElmAction" class="four columns normal-text">{{ $t('performActionOnCollectElement') }}</label>
                                                 <select id="selectCollectElmAction" class="eight columns" v-model="action.action">
@@ -140,7 +140,7 @@
                                         </div>
                                     </div>
                                     <div v-if="action.modelName == 'GridActionWebradio'">
-                                        <div class="row">
+                                        <div class="srow">
                                             <div class="twelve columns">
                                                 <label for="selectRadioElmAction" class="four columns normal-text">{{ $t('webRadioAction') }}</label>
                                                 <select id="selectRadioElmAction" class="eight columns" v-model="action.action">
@@ -150,7 +150,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="row" v-show="action.action === 'WEBRADIO_ACTION_START' || action.action === 'WEBRADIO_ACTION_TOGGLE'">
+                                        <div class="srow" v-show="action.action === 'WEBRADIO_ACTION_START' || action.action === 'WEBRADIO_ACTION_TOGGLE'">
                                             <div class="twelve columns">
                                                 <label for="selectRadio" class="four columns normal-text">{{ $t('webadioToPlay') }}</label>
                                                 <select id="selectRadio" class="eight columns" v-model="action.radioId" @change="selectedRadioChanged(action.radioId)">
@@ -161,14 +161,14 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        <div class="srow">
                                             <accordion :acc-label="$t('manageWebradioList')" :acc-open="gridData.webRadios.length === 0 ? 'true' : 'false'" class="twelve columns">
                                                 <radio-list-selector v-model="gridData"></radio-list-selector>
                                             </accordion>
                                         </div>
                                     </div>
                                     <div v-if="action.modelName === 'GridActionYoutube'">
-                                        <div class="row">
+                                        <div class="srow">
                                             <div class="twelve columns">
                                                 <label for="ytActions" class="four columns normal-text">{{ $t('youtubeVideoAction') }}</label>
                                                 <select id="ytActions" class="eight columns" v-model="action.action">
@@ -178,7 +178,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="row" v-show="[GridActionYoutube.actions.YT_PLAY, GridActionYoutube.actions.YT_TOGGLE, GridActionYoutube.actions.YT_RESTART].indexOf(action.action) !== -1">
+                                        <div class="srow" v-show="[GridActionYoutube.actions.YT_PLAY, GridActionYoutube.actions.YT_TOGGLE, GridActionYoutube.actions.YT_RESTART].indexOf(action.action) !== -1">
                                             <div class="twelve columns">
                                                 <label for="ytPlayType" class="four columns normal-text">{{ $t('playType') }}</label>
                                                 <select id="ytPlayType" class="eight columns" v-model="action.playType">
@@ -187,7 +187,7 @@
                                             </div>
                                         </div>
                                         <div v-show="action.playType && [GridActionYoutube.actions.YT_PLAY, GridActionYoutube.actions.YT_TOGGLE, GridActionYoutube.actions.YT_RESTART].indexOf(action.action) !== -1">
-                                            <div class="row" v-show="action.playType !== GridActionYoutube.playTypes.YT_PLAY_RELATED">
+                                            <div class="srow" v-show="action.playType !== GridActionYoutube.playTypes.YT_PLAY_RELATED">
                                                 <div class="twelve columns">
                                                     <label for="ytList" class="four columns normal-text">
                                                         <span v-show="action.playType === GridActionYoutube.playTypes.YT_PLAY_VIDEO">{{ $t('videoLink') }}</span>
@@ -198,26 +198,26 @@
                                                     <input id="ytList" type="text" class="eight columns" v-model="action.data"/>
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <div class="srow">
                                                 <input id="showCC" type="checkbox" v-model="action.showCC"/>
                                                 <label for="showCC" class="normal-text">{{ $t('showVideoSubtitlesIfAvailable') }}</label>
                                             </div>
-                                            <div class="row">
+                                            <div class="srow">
                                                 <input id="playMuted" type="checkbox" v-model="action.playMuted"/>
                                                 <label for="playMuted" class="normal-text">{{ $t('startVideoMuted') }}</label>
                                             </div>
-                                            <div class="row">
+                                            <div class="srow">
                                                 <input id="afterNav" type="checkbox" v-model="action.performAfterNav"/>
                                                 <label for="afterNav" class="normal-text">{{ $t('performActionAfterNavigation') }}</label>
                                             </div>
                                         </div>
-                                        <div class="row" v-show="[GridActionYoutube.actions.YT_STEP_FORWARD, GridActionYoutube.actions.YT_STEP_BACKWARD].indexOf(action.action) !== -1">
+                                        <div class="srow" v-show="[GridActionYoutube.actions.YT_STEP_FORWARD, GridActionYoutube.actions.YT_STEP_BACKWARD].indexOf(action.action) !== -1">
                                             <div class="twelve columns">
                                                 <label for="stepSeconds" class="four columns normal-text">{{ $t(action.action) }} {{ $t('secondsBracket') }}</label>
                                                 <input id="stepSeconds" type="number" class="eight columns" v-model="action.stepSeconds" min="0"/>
                                             </div>
                                         </div>
-                                        <div class="row" v-show="[GridActionYoutube.actions.YT_VOLUME_UP, GridActionYoutube.actions.YT_VOLUME_DOWN].indexOf(action.action) !== -1">
+                                        <div class="srow" v-show="[GridActionYoutube.actions.YT_VOLUME_UP, GridActionYoutube.actions.YT_VOLUME_DOWN].indexOf(action.action) !== -1">
                                             <div class="twelve columns">
                                                 <label for="stepVolume" class="four columns normal-text">{{ $t(action.action) }} {{ $t('percentBracket') }}</label>
                                                 <input id="stepVolume" type="number" class="eight columns" v-model="action.stepVolume" min="0" max="100"/>
@@ -225,7 +225,7 @@
                                         </div>
                                     </div>
                                     <div v-if="action.modelName === 'GridActionChangeLang'">
-                                        <div class="row">
+                                        <div class="srow">
                                             <div class="twelve columns">
                                                 <label for="changeLang" class="four columns normal-text">{{ $t('changeApplicationLanguageTo') }}</label>
                                                 <select id="changeLang" class="eight columns" v-model="action.language">
@@ -236,7 +236,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        <div class="srow">
                                             <div class="offset-by-four eight columns">
                                                 <input id="selectFromAllLangs" type="checkbox" v-model="selectFromAllLanguages"/>
                                                 <label for="selectFromAllLangs" class="normal-text">{{ $t('showAllLanguagesForSelection') }}</label>
@@ -244,13 +244,13 @@
                                         </div>
                                     </div>
                                     <div v-if="action.modelName === 'GridActionOpenWebpage'">
-                                        <div class="row">
+                                        <div class="srow">
                                             <div class="twelve columns">
                                                 <label for="openUrl" class="four columns normal-text">{{ $t('webpageUrl') }}</label>
                                                 <input id="openUrl" type="text" class="eight columns" v-model="action.openURL"/>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        <div class="srow">
                                             <div class="twelve columns">
                                                 <label for="webpageCloseTimeout" class="four columns normal-text">{{ $t('automaticallyCloseTimeoutInSeconds') }}</label>
                                                 <input id="webpageCloseTimeout" type="number" min="0" class="eight columns" v-model="action.timeoutSeconds"/>
@@ -264,7 +264,7 @@
 
                     <div class="modal-footer">
                         <div class="button-container">
-                            <div class="row">
+                            <div class="srow">
                                 <button @click="$emit('close')" :title="$t('keyboardEsc')" class="four columns offset-by-four">
                                     <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                                 </button>
@@ -272,11 +272,11 @@
                                     <i class="fas fa-save"/> <span>{{ $t('save') }}</span>
                                 </button>
                             </div>
-                            <div class="hide-mobile row">
+                            <div class="hide-mobile srow">
                                 <button @click="editNext(true)" :disabled="false" :title="$t('keyboardCtrlLeft')" class="four columns offset-by-four"><i class="fas fa-angle-double-left"/> <span>{{ $t('okEditPrevious') }}</span></button>
                                 <button @click="editNext()" :disabled="false" :title="$t('keyboardCtrlRight')" class="four columns"><span>{{ $t('okEditNext') }}</span> <i class="fas fa-angle-double-right"/></button>
                             </div>
-                            <div class="hide-mobile row">
+                            <div class="hide-mobile srow">
                                 <button @click="save(true)" :disabled="false" :title="$t('keyboardCtrlY')" class="four columns offset-by-eight"><span>{{ $t('okToEditElement') }}</span> <i class="fas fa-pencil-alt"/></button>
                             </div>
                         </div>
@@ -442,7 +442,7 @@
 </script>
 
 <style scoped>
-    .row {
+    .srow {
         margin-top: 1em;
     }
 

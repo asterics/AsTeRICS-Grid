@@ -314,7 +314,7 @@ hr {
 
 /* Self Clearing Goodness */
 .container:after,
-.row:after,
+.srow:after,
 .u-cf {
     content: "";
     display: table;

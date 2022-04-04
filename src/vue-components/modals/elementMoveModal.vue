@@ -11,14 +11,14 @@
                     </div>
 
                     <div class="modal-body container" v-if="otherGrids && gridElement && selectedGrid">
-                        <div class="row">
+                        <div class="srow">
                             <label class="four columns" for="moveGrid">{{i18nService.t('moveElementToGrid', i18nService.getTranslation(this.gridElement.label))}}</label>
                             <select class="four columns" id="moveGrid" v-model="selectedGrid" style="margin-bottom: 1em">
                                 <option v-for="grid in otherGrids" :value="grid">{{grid.label | extractTranslation}}</option>
                             </select>
 
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <div class="four columns">
                                 <img :src="selectedGrid.thumbnail ? selectedGrid.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; border: 1px solid lightgray"/>
                             </div>
@@ -27,14 +27,14 @@
                                 <button @click="next" style="width: 49%"><span>{{ $t('next') }}</span> <i class="fas fa-arrow-right"></i></button>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <input id="moveAll" type="checkbox" v-model="moveAllElements"/>
                             <label for="moveAll">{{ $t('moveAllElementsToThisGrid') }}</label>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <div class="button-container row">
+                        <div class="button-container srow">
                             <button class="six columns" @click="$emit('close')" :title="$t('keyboardEsc')">
                                 <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
@@ -132,7 +132,7 @@
         margin-top: 0;
     }
 
-    .row {
+    .srow {
         margin-top: 1em;
     }
 </style>

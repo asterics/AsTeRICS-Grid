@@ -12,54 +12,54 @@
                     </div>
 
                     <div class="modal-body" v-if="inputConfig">
-                        <div class="row">
+                        <div class="srow">
                             <span>{{ $t('scanningInputMethod12InputEvents') }}</span>
                             <a :aria-label="$t('help')" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
                         </div>
-                        <div class="row" >
+                        <div class="srow" >
                             <div class="twelve columns">
                                 <input v-focus type="checkbox" id="enableScanning" v-model="inputConfig.scanEnabled"/>
                                 <label class="inline" for="enableScanning">{{ $t('enableScanning') }}</label>
                             </div>
                         </div>
                         <div v-show="inputConfig.scanEnabled">
-                            <accordion :acc-label="$t('input')" acc-open="true" acc-label-type="h2" acc-background-color="white" class="row">
+                            <accordion :acc-label="$t('input')" acc-open="true" acc-label-type="h2" acc-background-color="white" class="srow">
                                 <input-event-list v-model="inputConfig.scanInputs" :input-labels="[InputConfig.SELECT, InputConfig.NEXT]" :error-inputs="errorInputs" @input="inputChanged"></input-event-list>
-                                <div class="row">
+                                <div class="srow">
                                     <button class="twelve columns" @click="resetInput">{{ $t('resetToDefaultInputConfiguration') }}</button>
                                 </div>
                             </accordion>
                             <accordion :acc-label="$t('ADVANCED_SETTINGS')" acc-label-type="h2" acc-background-color="white">
-                                <div class="row" style="margin-top: 0">
+                                <div class="srow" style="margin-top: 0">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkVerticalScanning" v-model="inputConfig.scanVertical"/>
                                         <label for="chkVerticalScanning">{{ $t('verticalScanning') }}</label>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="srow">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkBinaryScanning" v-model="inputConfig.scanBinary"/>
                                         <label for="chkBinaryScanning">{{ $t('binaryScanning') }}</label>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="srow">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkTouchScanning" v-model="touchScanning" @change="changeTouchScanning"/>
                                         <label for="chkTouchScanning">{{ $t('scanningselectionByMouseClickOrTap') }}</label>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="srow">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkAutoScanning" v-model="inputConfig.scanAuto"/>
                                         <label for="chkAutoScanning">{{ $t('automaticTimedScanning') }}</label>
                                     </div>
                                 </div>
-                                <div class="row" v-show="inputConfig.scanAuto">
+                                <div class="srow" v-show="inputConfig.scanAuto">
                                     <label class="four columns" for="inScanTime">{{ $t('scanningTimeMs') }}</label>
                                     <input type="range" id="inScanTime" v-model.number="inputConfig.scanTimeoutMs" min="100" max="3000" step="100"/>
                                     <input type="number" v-model.number="inputConfig.scanTimeoutMs" min="100" max="3000" step="100"/>
                                 </div>
-                                <div class="row" v-show="inputConfig.scanAuto">
+                                <div class="srow" v-show="inputConfig.scanAuto">
                                     <label class="four columns" for="inFirstElement">{{ $t('timeFactorFirstElement') }}</label>
                                     <input type="range" id="inFirstElement" v-model.number="inputConfig.scanTimeoutFirstElementFactor" min="1" max="5" step="0.1"/>
                                     <input type="number" v-model.number="inputConfig.scanTimeoutFirstElementFactor" min="1" max="5" step="0.5" />

@@ -1,13 +1,13 @@
 <template>
     <div class="overflow-content">
         <header-icon full-header="true"></header-icon>
-        <div class="row content spaced" @keyup.enter="loginPlain(user, password)">
+        <div class="srow content spaced" @keyup.enter="loginPlain(user, password)">
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span>{{ $t('login') }}</span></h2>
             <div class="eleven columns offset-by-one">
                 <div v-show="allUsersList.length > 0">
-                    <div class="row">
+                    <div class="srow">
                         <div class="eleven columns">
-                            <div class="row saved-user" v-for="username in allUsersList" style="margin-bottom: 0">
+                            <div class="srow saved-user" v-for="username in allUsersList" style="margin-bottom: 0">
                                 <div :class="username === activeUser ? 'loggedIn' : ''">
                                     <div class="four columns" style="margin-bottom: 0.5em">
                                     <span style="margin-right: 0.6em">
@@ -57,23 +57,23 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="srow">
                         <form autocomplete="on" class="eleven columns saved-user" onsubmit="event.preventDefault()">
-                            <div class="row">
+                            <div class="srow">
                                 <strong>{{ $t('loginWithOtherUser') }}</strong>
                             </div>
-                            <div class="row">
+                            <div class="srow">
                                 <label for="inputUser" class="two columns"><span>{{ $t('username') }}</span></label>
                                 <input type="text" name="username" v-model="user" id="inputUser" class="four columns" autocomplete="username"/>
                                 <button type="button" v-if="savedUsers.includes(user) && hasValidMajorModelVersion(user)" class="four columns" @click="loginStored(user)">
                                     <span>{{ $t('open') }}</span> <i class="fas fa-sign-in-alt"></i>
                                 </button>
                             </div>
-                            <div class="row" v-show="!savedUsers.includes(user)">
+                            <div class="srow" v-show="!savedUsers.includes(user)">
                                 <label for="inputPassword" class="two columns"><span>{{ $t('password') }}</span></label>
                                 <input type="password" v-model="password" id="inputPassword" class="four columns" autocomplete="current-password"/>
                             </div>
-                            <div class="row" v-show="!savedUsers.includes(user)">
+                            <div class="srow" v-show="!savedUsers.includes(user)">
                                 <div class="four columns offset-by-two" style="margin-bottom: 1.0em">
                                     <input type="checkbox" checked v-model="remember" id="inputRemember"/>
                                     <label for="inputRemember"><span>{{ $t('rememberThisUserAndMakeItAvailableForOfflineUse') }}</span></label>
@@ -92,15 +92,15 @@
                 </div>
                 <div v-show="allUsersList.length == 0">
                     <form autocomplete="on" onsubmit="event.preventDefault()">
-                        <div class="row">
+                        <div class="srow">
                             <label for="inputUser2" class="one column"><span class="desktop-right">{{ $t('username') }}</span></label>
                             <input type="text" name="username" v-model="user" id="inputUser2" class="four columns" autocomplete="username"/>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <label for="inputPassword2" class="one column"><span class="desktop-right">{{ $t('password') }}</span></label>
                             <input type="password" v-model="password" id="inputPassword2" class="four columns" autocomplete="current-password"/>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <div class="four columns offset-by-one">
                                 <input type="checkbox" checked v-model="remember" id="inputRemember2"/>
                                 <label for="inputRemember2"><span>{{ $t('rememberThisUserAndMakeItAvailableForOfflineUse') }}</span></label>
@@ -109,10 +109,10 @@
                             </div>
                         </div>
                     </form>
-                    <div class="row">
+                    <div class="srow">
                         <button @click="loginPlain(user, password)" :disabled="!user || !password" class="four columns offset-by-one">{{ $t('login') }}</button>
                     </div>
-                    <div class="row">
+                    <div class="srow">
                         <div class="four columns offset-by-one">
                             <div v-show="loginSuccess === undefined">
                                 <span>{{ $t('loggingIn') }}</span> <i class="fas fa-spinner fa-spin"/>
@@ -127,7 +127,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="srow">
                     <div class="twelve columns">
                         <span v-show="allUsersList.length === 0">{{ $t('noAccount') }}</span>
                         <span v-show="allUsersList.length > 0">{{ $t('addNewAccount') }}</span>
@@ -137,7 +137,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="srow">
                     <div class="twelve columns">
                         <span>{{ $t('wantToCreateAnOfflineonlyUser') }}</span>
                         <a href="#add">{{ $t('addofflineuser') }}</a>
@@ -262,7 +262,7 @@
         flex-direction: column;
         flex: 1 0 auto;
     }
-    .row {
+    .srow {
         margin-bottom: 1.0em;
     }
     .saved-user {

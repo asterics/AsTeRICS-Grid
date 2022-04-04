@@ -12,41 +12,41 @@
                     </div>
 
                     <div class="modal-body container">
-                        <div class="row">
+                        <div class="srow">
                             <label class="three columns" for="inputText">{{ $t('input') }}</label>
                             <span class="nine columns">{{ $t('insertWordsSeparatedBySpaceEnter') }}</span>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <button @click="() => {showAdvanced = !showAdvanced}" class="nine columns offset-by-three btn-accordion" style="margin-bottom: 0">
                                 <i class="fas fa-chevron-down" v-show="!showAdvanced"></i>
                                 <i class="fas fa-chevron-up" v-show="showAdvanced"></i>
                                 <span>{{ $t('advancedOptions') }}</span>
                             </button>
                         </div>
-                        <div class="row" v-if="showAdvanced">
+                        <div class="srow" v-if="showAdvanced">
                             <div class="nine columns offset-by-three" style="background-color: whitesmoke;">
-                                <div class="row">
+                                <div class="srow">
                                     <label for="inputElementSeparator" class="five columns">{{ $t('elementSeparator') }}</label>
                                     <input id="inputElementSeparator" type="text" v-model="elementSeparator" @input="textChanged"/>
                                 </div>
-                                <div class="row">
+                                <div class="srow">
                                     <label for="inputRankSeparator" class="five columns">{{ $t('inelementSeparator') }}</label>
                                     <input id="inputRankSeparator" type="text" v-model="rankSeparator" @input="textChanged"/>
                                 </div>
-                                <div class="row">
+                                <div class="srow">
                                     <label for="inputElIndex" class="five columns">{{ $t('wordIndex0based') }}</label>
                                     <input id="inputElIndex" type="number" v-model="wordPosition" @input="textChanged"/>
                                 </div>
-                                <div class="row">
+                                <div class="srow">
                                     <label for="inputRankIndex" class="five columns">{{ $t('rankIndex0based') }}</label>
                                     <input id="inputRankIndex" type="number" v-model="rankPosition" @input="textChanged"/>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <textarea v-focus class="twelve columns" id="inputText" v-model="inputText" @input="textChanged" style="resize: vertical;min-height: 70px;" :placeholder="$t('word1Word2Word3')"/>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <label class="three columns">{{ $t('recognizedWords') }}</label>
                             <div v-show="parsedElems.length > 0" class="nine columns">
                                 <span>{{elementCount}}</span>
@@ -145,7 +145,7 @@
 </script>
 
 <style scoped>
-    .row {
+    .srow {
         margin-top: 1em;
     }
 

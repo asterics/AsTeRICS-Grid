@@ -1,6 +1,6 @@
 <template>
     <div class="all-grids-view overflow-content box">
-        <header class="row header" role="banner">
+        <header class="srow header" role="banner">
             <header-icon></header-icon>
             <button tabindex="32" id="moreButton" :title="$t('more')" class="small"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile">{{ $t('more') }}</span></button>
             <button tabindex="31" @click="addGrid()" class="spaced hide-mobile small"><i class="fas fa-plus"/> <span>{{ $t('newGrid') }}</span></button>
@@ -9,14 +9,14 @@
                 <input type="file" id="inputFileBackup" @change="importBackupFromFile" accept=".grd, .obz"/>
             </div>
         </header>
-        <div class="row content text-content">
+        <div class="srow content text-content">
             <div v-show="showLoading || grids === null" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin" style="position: relative; margin-top: 30vh; top: 0"/>
             </div>
 
             <div v-if="selectedGraphElement">
                 <h1>{{headerDetails}}</h1>
-                <div class="row">
+                <div class="srow">
                     <div class="five columns">
                         <img :src="selectedGraphElement.grid.thumbnail ? selectedGraphElement.grid.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; max-width: 100%; border: 1px solid lightgray"/>
                     </div>
@@ -26,7 +26,7 @@
                         <button @click="saveGridLabel" :disabled="isLabelDuplicate(newLabel[currentLanguage])" :title="$t('saveName')" style="width: 17%; padding: 0 1%"><i class="fas fa-check"/></button>
                     </div>
                 </div>
-                <div class="row" style="margin-bottom: 0.5em">
+                <div class="srow" style="margin-bottom: 0.5em">
                     <label for="actionGroup">{{ $t('actions') }}</label>
                 </div>
                 <div id="actionGroup" class="action-buttons">
@@ -42,7 +42,7 @@
             </div>
 
             <h1>{{ $t('gridList') }}</h1>
-            <div class="row" v-show="graphList.length > 0" style="margin-bottom: 1em">
+            <div class="srow" v-show="graphList.length > 0" style="margin-bottom: 1em">
                 <label for="selectMode" class="three columns">{{ $t('gridsToShow') }}</label>
                 <select id="selectMode" class="four columns" v-model="selectValue" @change="reinitContextMenu">
                     <option :value="SELECT_VALUES.ALL_GRIDS">{{ $t('allGrids') }}</option>
@@ -50,7 +50,7 @@
                     <option :value="SELECT_VALUES.NOT_REACHABLE_GRIDS" >{{ $t('notReachableGrids') }}</option>
                 </select>
             </div>
-            <div class="row" v-show="graphList.length > 0" style="margin-bottom: 1.5em">
+            <div class="srow" v-show="graphList.length > 0" style="margin-bottom: 1.5em">
                 <label for="selectOrder" class="three columns">{{ $t('sortGridsBy') }}</label>
                 <select id="selectOrder" class="four columns" v-model="orderValue" @change="orderChanged">
                     <option :value="ORDER_VALUES.ALPHABET">{{ $t('labelAlphabetically') }}</option>
@@ -58,7 +58,7 @@
                 </select>
                 <span class="three columns">{{graphElemsToShow.length}} <span>{{ $t('elements') }}</span></span>
             </div>
-            <div class="row">
+            <div class="srow">
                 <ul>
                     <li v-for="elem in graphElemsToShow" style="display: inline-block; margin-right: 2em; margin-bottom: 1.5em; position: relative">
                         <a href="javascript:;" @click="setSelectedGraphElement(elem)" style="text-decoration: none;">
@@ -76,13 +76,13 @@
             <div v-if="graphList.length > 0">
                 <h1>{{ $t('globalGrid') }}</h1>
                 <p>{{ $t('aGlobalGridIsShownWithinEachOtherGridAndCan') }}</p>
-                <div class="row" style="margin-bottom: 1em">
+                <div class="srow" style="margin-bottom: 1em">
                     <label class="four columns" for="selectHomeGrid">{{ $t('selectHomeGridForCreatingGlobalGrid') }}</label>
                     <select class="seven columns" id="selectHomeGrid" v-model="homeGrid">
                         <option v-for="elem in graphList" :value="elem.grid">{{elem.grid.label | extractTranslation}}</option>
                     </select>
                 </div>
-                <div class="row">
+                <div class="srow">
                     <label class="four columns" for="globalGridActions">{{ $t('actionsForGlobalGrid') }}</label>
                     <div id="globalGridActions" class="eight columns" v-if="metadata">
                         <button v-show="!metadata.globalGridActive || !hasGlobalGrid" @click="setGlobalGridActive(true)"><i class="fas fa-globe"/> <span>{{ $t('activateGlobalGrid') }}</span></button>
@@ -93,7 +93,7 @@
                 </div>
             </div>
 
-            <div class="row" style="margin-bottom: 10em"></div>
+            <div class="srow" style="margin-bottom: 10em"></div>
             <grid-link-modal v-if="linkModal.show" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @close="linkModal.show = false" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
             <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" @close="pdfModal.show = false"></export-pdf-modal>
         </div>

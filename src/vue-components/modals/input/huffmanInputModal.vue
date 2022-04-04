@@ -10,59 +10,59 @@
                     </div>
 
                     <div class="modal-body" v-if="inputConfig">
-                        <div class="row">
+                        <div class="srow">
                             <span>{{ $t('huffmanInputMethod2OrMoreInputEvents') }}</span>
                             <a :aria-label="$t('help')" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
                         </div>
-                        <div class="row" >
+                        <div class="srow" >
                             <div class="twelve columns">
                                 <input v-focus type="checkbox" id="enableHuffinput" v-model="inputConfig.huffEnabled"/>
                                 <label class="inline" for="enableHuffinput">{{ $t('enableHuffmanInput') }}</label>
                             </div>
                         </div>
                         <div v-show="inputConfig.huffEnabled">
-                            <accordion :acc-label="$t('input')" acc-open="true" acc-label-type="h2" acc-background-color="white" class="row">
+                            <accordion :acc-label="$t('input')" acc-open="true" acc-label-type="h2" acc-background-color="white" class="srow">
                                 <input-event-list v-model="inputConfig.huffInputs" :min-inputs="2" :max-inputs="9" :error-inputs="errorInputs" @input="inputChanged"></input-event-list>
-                                <div class="row">
+                                <div class="srow">
                                     <button class="twelve columns" @click="resetInput">{{ $t('resetToDefaultInputConfiguration') }}</button>
                                 </div>
                             </accordion>
                             <accordion :acc-label="$t('ADVANCED_SETTINGS')" acc-label-type="h2" acc-background-color="white">
-                                <div class="row" style="margin-top: 0">
+                                <div class="srow" style="margin-top: 0">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkNumbers" v-model="inputConfig.huffShowNumbers"/>
                                         <label for="chkNumbers">{{ $t('showNumbers') }}</label>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="srow">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkColors" v-model="inputConfig.huffShowColors"/>
                                         <label for="chkColors">{{ $t('showColors') }}</label>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="srow">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkColorWholeElement" v-model="inputConfig.huffColorWholeElement"/>
                                         <label for="chkColorWholeElement">{{ $t('colorWholeElement') }}</label>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="srow">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkMarkInactive" v-model="inputConfig.huffMarkInactive"/>
                                         <label for="chkMarkInactive">{{ $t('markInactiveElements') }}</label>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="srow">
                                     <label class="four columns" for="inTimeout">{{ $t('timeoutInMs0MeansDisabled') }}</label>
                                     <input type="range" id="inTimeout" v-model.number="inputConfig.huffTimeout" min="0" max="10000" step="100"/>
                                     <input type="number" v-model.number="inputConfig.huffTimeout" min="0" max="10000" step="200" />
                                 </div>
-                                <div class="row">
+                                <div class="srow">
                                     <label for="inElementCount" class="four columns">{{ $t('numberOfElements0MeansAutomatic') }}</label>
                                     <input type="range" min="0" max="300" id="inElementCount" v-model.number="inputConfig.huffElementCount"/>
                                     <input type="number" min="0" max="300" id="inElementCount2" v-model.number="inputConfig.huffElementCount"/>
                                 </div>
-                                <div class="row">
+                                <div class="srow">
                                     <div class="four columns">
                                         <div v-for="i in inputConfig.huffInputs.length">
                                             <label :for="'colorInput' + i" style="margin-right: 1em"><span>{{ $t('color') }}</span> {{i}}</label>
@@ -83,7 +83,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <div class="button-container row">
+                        <div class="button-container srow">
                             <button @click="cancel()" class="four columns offset-by-four">
                                 <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>

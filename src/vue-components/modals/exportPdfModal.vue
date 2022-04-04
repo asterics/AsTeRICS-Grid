@@ -11,7 +11,7 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="row">
+                        <div class="srow">
                             <label class="two columns" for="selectGrid">{{ $t('selectGrid') }}</label>
                             <select class="four columns" id="selectGrid" v-model="selectedGrid" @change="selectedGridChanged">
                                 <option :value="null">{{ $t('allGrids') }}</option>
@@ -21,29 +21,29 @@
                                 <img v-if="selectedGrid && selectedGrid.thumbnail" :src="selectedGrid.thumbnail.data">
                             </div>
                         </div>
-                        <div class="row" v-show="selectedGrid && allChildren && allChildren.length > 0">
+                        <div class="srow" v-show="selectedGrid && allChildren && allChildren.length > 0">
                             <input id="exportConnected" type="checkbox" v-model="options.exportConnected"/>
                             <label for="exportConnected" >
                                 <span>{{ $t('exportAllChildGrids') }}</span>
                                 <span>({{allChildren ? allChildren.length : 0}} <span>{{ $t('grids') }}</span>)</span>
                             </label>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <input id="showLinks" type="checkbox" v-model="options.showLinks"/>
                             <label for="showLinks">{{ $t('insertLinksBetweenPages') }}</label>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <input id="printBackground" type="checkbox" v-model="options.printBackground"/>
                             <label for="printBackground">{{ $t('printBackgroundColor') }}</label>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <input id="showRegister" type="checkbox" v-model="options.showRegister"/>
                             <label for="showRegister">{{ $t('printIndexAtSideEdge') }}</label>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <div class="button-container row">
+                        <div class="button-container srow">
                             <button class="six columns" @click="$emit('close')" :title="$t('keyboardEsc')">
                                 <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
@@ -137,7 +137,7 @@
 </script>
 
 <style scoped>
-    .row {
+    .srow {
         margin-top: 1em;
     }
 </style>

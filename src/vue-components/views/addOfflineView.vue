@@ -1,10 +1,10 @@
 <template>
     <div class="overflow-content">
         <header-icon full-header="true"></header-icon>
-        <div class="row content spaced">
+        <div class="srow content spaced">
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span>{{ $t('addofflineuser') }}</span></h2>
             <form autocomplete="off" onsubmit="event.preventDefault()">
-                <div class="row">
+                <div class="srow">
                     <label for="inputUser" class="two columns"><span class="desktop-right">{{ $t('username') }}</span></label>
                     <input type="text" name="username" v-model="user" id="inputUser" class="six columns" @input="validationError = undefined" @change="validateUsername" v-debounce="300" v-focus=""/>
                     <div class="three columns" v-show="user != '' && validationError">
@@ -15,7 +15,7 @@
                     </div>
                 </div>
             </form>
-            <div class="row">
+            <div class="srow">
                 <div class="six columns offset-by-two">
                     <i class="fas fa-2x fa-info-circle" style="color: blue"></i>
                     <span>
@@ -23,18 +23,18 @@
                     </span>
                 </div>
             </div>
-            <div class="row">
+            <div class="srow">
                 <button @click="addUser" :disabled="!user || validationError === undefined || validationError" class="six columns offset-by-two">
                     <span>{{ $t('addUser') }}</span>&nbsp;&nbsp;<i v-if="loading" class="fas fa-spinner fa-spin"></i>
                 </button>
             </div>
-            <div class="row">
+            <div class="srow">
                 <div class="six columns offset-by-two">
                     <span>{{ $t('wantToRegisterAnOnlineUser') }}</span>
                     <a href="#register">{{ $t('toRegister') }}</a>
                 </div>
             </div>
-            <div class="row">
+            <div class="srow">
                 <div class="six columns offset-by-two">
                     <span>{{ $t('alreadyHaveAnAccount') }}</span>
                     <a href="#login">{{ $t('toLogin') }}</a>
@@ -103,7 +103,7 @@
         flex-direction: column;
         flex: 1 0 auto;
     }
-    .row {
+    .srow {
         margin-bottom: 1.0em;
     }
     .fa-info-circle {

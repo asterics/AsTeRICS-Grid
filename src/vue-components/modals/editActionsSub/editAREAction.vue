@@ -1,12 +1,12 @@
 <template>
     <div>
         <test-are-connection v-model="action.areURL"/>
-        <div class="row">
+        <div class="srow">
             <div class="four columns">
                 <label class="normal-text">{{ $t('areModel') }}</label>
             </div>
             <div class="eight columns">
-                <div class="row nomargin">
+                <div class="srow nomargin">
                     <div class="twelve columns">
                         <span v-show="loading">{{ $t('loadingModelFromAre') }}</span>
                         <span v-show="!loading && areModelSync && areModelFile && !areModelFile.dataBase64">{{ $t('couldNotLoadModelFromAre') }}</span>
@@ -16,20 +16,20 @@
                         </span>
                     </div>
                 </div>
-                <div class="row">
+                <div class="srow">
                     <button class="six columns" @click="reloadAREModel(action)"><i class="fas fa-download"/> <span>{{ $t('downloadFromAre') }}</span></button>
                     <button v-if="areModelFile && areModelFile.dataBase64" class="six columns" @click="uploadAREModel(action)"><i class="fas fa-upload"/> <span>{{ $t('uploadToAre') }}</span></button>
                 </div>
             </div>
         </div>
-        <div class="row" v-if="!areModelSync">
+        <div class="srow" v-if="!areModelSync">
             <div class="eight columns offset-by-four">
                 <i class="fas fa-info-circle" />
                 <span v-show="areModelFile && areModelFile.dataBase64">{{ $t('uploadTheSavedModelOrDownloadCurrent') }}</span>
                 <span v-show="areModelFile && !areModelFile.dataBase64">{{ $t('downloadTheCurrentAreModelInOrderToDefine') }}</span>
             </div>
         </div>
-        <div class="row" v-if="areModelSync">
+        <div class="srow" v-if="areModelSync">
             <div class="four columns">
                 <label class="normal-text" for="inputComponentId">{{ $t('component') }}</label>
             </div>
@@ -39,7 +39,7 @@
                 </option>
             </select>
         </div>
-        <div class="row" v-if="areModelSync && areComponentPorts.length != 0">
+        <div class="srow" v-if="areModelSync && areComponentPorts.length != 0">
             <div class="four columns offset-by-four">
                 <label for="inputDataPortId" class="normal-text">{{ $t('sendDataToPort') }}</label>
                 <select id="inputDataPortId" class="full-width" v-model="action.dataPortId">
@@ -54,7 +54,7 @@
                 <input id="inputDataPortData" type="text" class="full-width" v-model="action.dataPortSendData"/>
             </div>
         </div>
-        <div class="row" v-if="areModelSync && areComponentEventPorts.length != 0">
+        <div class="srow" v-if="areModelSync && areComponentEventPorts.length != 0">
             <div class="eight columns offset-by-four">
                 <label for="inputeventPortId" class="normal-text">Event-Port</label>
                 <select id="inputeventPortId" class="full-width" v-model="action.eventPortId">
@@ -163,7 +163,7 @@
 </script>
 
 <style scoped>
-    .row {
+    .srow {
         margin-top: 1em;
     }
 

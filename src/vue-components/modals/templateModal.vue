@@ -11,7 +11,7 @@
                     </div>
 
                     <div class="modal-body container">
-                        <div class="row">
+                        <div class="srow">
                             <label for="gridRows">{{ $t('numberOfRows') }}</label>
                             <input id="gridRows" type="number"/>
                         </div>
@@ -56,7 +56,7 @@
 </script>
 
 <style scoped>
-    .row {
+    .srow {
         margin-top: 1em;
     }
 </style>

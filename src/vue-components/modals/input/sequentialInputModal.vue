@@ -10,25 +10,25 @@
                     </div>
 
                     <div class="modal-body" v-if="inputConfig">
-                        <div class="row">
+                        <div class="srow">
                             <span>{{ $t('sequentialInputMethod2InputEvents') }}</span>
                             <a :aria-label="$t('help')" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
                         </div>
-                        <div class="row" >
+                        <div class="srow" >
                             <div class="twelve columns">
                                 <input v-focus type="checkbox" id="enableSeqinput" v-model="inputConfig.seqEnabled"/>
                                 <label class="inline" for="enableSeqinput">{{ $t('enableSequentialInput') }}</label>
                             </div>
                         </div>
                         <div v-show="inputConfig.seqEnabled">
-                            <accordion :acc-label="$t('input')" acc-open="true" acc-label-type="h2" acc-background-color="white" class="row">
+                            <accordion :acc-label="$t('input')" acc-open="true" acc-label-type="h2" acc-background-color="white" class="srow">
                                 <input-event-list v-model="inputConfig.seqInputs" :input-labels="[InputConfig.NEXT_ELEMENT, InputConfig.PREVIOUS_ELEMENT, InputConfig.SELECT]" :error-inputs="errorInputs" @input="inputChanged"></input-event-list>
-                                <div class="row">
+                                <div class="srow">
                                     <button class="twelve columns" @click="resetInput">{{ $t('resetToDefaultInputConfiguration') }}</button>
                                 </div>
                             </accordion>
                             <accordion :acc-label="$t('ADVANCED_SETTINGS')" acc-label-type="h2" acc-background-color="white">
-                                <div class="row" style="margin-top: 0">
+                                <div class="srow" style="margin-top: 0">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkReadActive" v-model="inputConfig.globalReadActive"/>
                                         <label for="chkReadActive">{{ $t('readOutActiveElement') }}</label>

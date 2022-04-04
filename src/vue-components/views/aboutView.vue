@@ -1,10 +1,10 @@
 <template>
     <div class="overflow-content">
         <header-icon full-header="true"></header-icon>
-        <div class="row content spaced">
+        <div class="srow content spaced">
             <h2>{{ $t('aboutAstericsGrid') }}</h2>
             <div class="eight columns">
-                <div class="row">
+                <div class="srow">
                     <h3>{{ $t('generalInformation') }}</h3>
                     <div>
                         {{ $t('theInitialDevelopmentOfAstericsGridWasDoneAt') }}<br/>
@@ -19,7 +19,7 @@
                     </div><br/>
                     <img src="app/img/ma23-gefoerdertvon.jpg" width="80px" :alt="$t('logoMa23CityVienna')">
                 </div>
-                <div class="row">
+                <div class="srow">
                     <h3>{{ $t('feedback') }}</h3>
                     <div>
                         {{ $t('ifYouEncounterAnErrorHaveSuggestions') }}<br/>
@@ -31,7 +31,7 @@
                         <br/>
                     </div>
                 </div>
-                <div class="row">
+                <div class="srow">
                     <h3>{{ $t('termsOfServiceAndPrivacyPolicy') }}</h3>
                     <div>
                         <i18n path="astericsGridLicenseInfo" tag="p">
@@ -61,7 +61,7 @@
                     </div>
 
                 </div>
-                <div class="row">
+                <div class="srow">
                     <h3>{{ $t('acknowledgements') }}</h3>
                     <i18n path="thankCrossbrowsertesting" tag="div">
                         <template v-slot:crossbrowserTestingUrl>
@@ -76,7 +76,7 @@
                     </i18n>
                     <div><a href="https://responsivevoice.org">ResponsiveVoice-NonCommercial</a> {{ $t('licensedUnder') }} <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img title="ResponsiveVoice Text To Speech" src="https://responsivevoice.org/wp-content/uploads/2014/08/95x15.png" alt="95x15" width="95" height="15" /></a></div>
                 </div>
-                <div class="row" style="margin-top: 3em">
+                <div class="srow" style="margin-top: 3em">
                     <i18n path="youreUsingAstericsGridVersion" tag="div">
                         <template v-slot:gridVersion>
                             <a target="_blank" href="https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#">#ASTERICS_GRID_VERSION#</a>
@@ -125,7 +125,7 @@
     h3 {
         margin-bottom: 0.5em;
     }
-    .row {
+    .srow {
         margin-bottom: 1.5em;
     }
 </style>

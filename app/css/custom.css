@@ -155,7 +155,7 @@ nav li:hover button span {
     height: 100vh;
 }
 
-.box .row.header {
+.box .srow.header {
     flex: 0 1 auto;
     /* The above is shorthand for:
     flex-grow: 0,
@@ -164,7 +164,7 @@ nav li:hover button span {
     */
 }
 
-.box .row.content {
+.box .srow.content {
     flex: 1 1 auto;
     position: relative;
 }

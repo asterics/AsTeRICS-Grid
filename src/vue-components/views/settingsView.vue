@@ -1,27 +1,27 @@
 <template>
     <div class="overflow-content">
         <header-icon full-header="true"></header-icon>
-        <div class="row content spaced" v-if="show">
-            <div class="row">
+        <div class="srow content spaced" v-if="show">
+            <div class="srow">
                 <h2 class="six columns">{{ $t('generalSettings') }}</h2>
                 <div v-if="saveSuccess" style="padding-top: 1.7em;"><i class="fas fa-check" style="color: green"></i> <span>{{ $t('allChangesSaved') }}</span></div>
             </div>
             <div class="ten columns">
                 <h3>{{ $t('applicationLanguage') }}</h3>
-                <div class="row">
+                <div class="srow">
                     <label class="three columns" for="inLanguage">{{ $t('selectLanguage') }}</label>
                     <select class="five columns" id="inLanguage" v-model="langCode" @change="saveLangCode()">
                         <option value="">{{ $t('automatic') }}</option>
                         <option v-for="lang in allLanguages.filter(lang => ['de', 'en'].indexOf(lang.code) !== -1 || gridLanguages.indexOf(lang.code) !== -1)" :value="lang.code">{{lang | extractTranslation}} ({{lang.code}})</option>
                     </select>
                 </div>
-                <div class="row">
+                <div class="srow">
                     <span class="fa fa-info-circle"></span>
                     <span class="break-word">
                         {{ $t('gridsCanBeTranslatedToEveryLanguage') }}
                     </span>
                 </div>
-                <div class="row" style="margin-bottom: 0.5em">
+                <div class="srow" style="margin-bottom: 0.5em">
                     <span class="fa fa-info-circle"></span>
                     <span class="break-word">
                         <i18n path="ifTheTranslationForYourLanguageIsNotAvailable" tag="span">
@@ -34,7 +34,7 @@
             </div>
             <div class="ten columns">
                 <h3>{{ $t('voice') }}</h3>
-                <div class="row">
+                <div class="srow">
                     <label class="three columns" for="inVoice">
                         <span>{{ $t('preferredVoice') }}</span>
                     </label>
@@ -43,7 +43,7 @@
                         <option v-for="voice in voices" :value="voice.name">{{voice.name}}</option>
                     </select>
                 </div>
-                <div class="row">
+                <div class="srow">
                     <label class="three columns" for="inVoice">
                         <span>{{ $t('testText') }}</span>
                     </label>
@@ -53,11 +53,11 @@
             </div>
             <div class="ten columns">
                 <h3>{{ $t('miscellaneous') }}</h3>
-                <div class="row">
+                <div class="srow">
                     <input id="chkSyncNavigation" type="checkbox" v-model="syncNavigation" @change="saveSyncNavigation()"/>
                     <label for="chkSyncNavigation">{{ $t('synchronizeNavigationAndLockedState') }}</label>
                 </div>
-                <div class="row">
+                <div class="srow">
                     <label class="three columns" for="unlockPass">{{ $t('passcodeForUnlockingUserInterface') }}</label>
                     <input class="five columns" id="unlockPass" type="number" v-model="unlockPasscode" @input="unlockPasscode = unlockPasscode.substring(0, 6); savePasscode()" :placeholder="$t('noPasscodeBracket')"/>
                     <button class="three columns" @click="unlockPasscode = null; savePasscode()">{{ $t('reset') }}</button>
@@ -168,7 +168,7 @@
     h3 {
         margin-bottom: 0.5em;
     }
-    .row {
+    .srow {
         margin-bottom: 1.5em;
     }
 </style>

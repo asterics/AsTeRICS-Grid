@@ -1,10 +1,10 @@
 <template>
     <div class="overflow-content">
         <header-icon full-header="true"></header-icon>
-        <div class="row content spaced">
+        <div class="srow content spaced">
             <h2><span class="show-mobile">AsTeRICS Grid - </span><span>{{ $t('welcome') }}</span></h2>
             <div class="eight columns offset-by-one">
-                <div class="row">
+                <div class="srow">
                     <h3>
                         <i18n path="useAstericsGridWithoutRegistrationBold" tag="span">
                             <template v-slot:withoutReg>
@@ -24,7 +24,7 @@
                         <span class="fa fa-info-circle"></span><span class="break-word">{{ $t('itsAlwaysPossibleToRegisterLater') }}</span>
                     </div>
                 </div>
-                <div class="row">
+                <div class="srow">
                     <h3>
                         <i18n path="useAstericsGridWithRegistration" tag="span">
                             <template v-slot:withReg>
@@ -40,11 +40,11 @@
                     </ul>
                     <button @click="toRegister()">{{ $t('registerNow') }}</button>
                 </div>
-                <div class="row">
+                <div class="srow">
                     <span>{{ $t('alreadyHaveAnAccount') }}</span>
                     <a href="#login">{{ $t('toLogin') }}</a>
                 </div>
-                <div class="row">
+                <div class="srow">
                     <b>{{ $t('hint') }}</b>
                     <i18n path="ifYouNeedHelpWithinAstericsGrid" tag="span">
                         <template v-slot:openHelpIcon>
@@ -104,7 +104,7 @@
     h3 {
         margin-bottom: 0.5em;
     }
-    .row {
+    .srow {
         margin-bottom: 1.5em;
     }
     li {

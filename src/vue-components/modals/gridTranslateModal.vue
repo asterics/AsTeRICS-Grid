@@ -12,25 +12,25 @@
 
                     <div class="modal-body" v-if="gridData !== undefined">
                         <div>
-                            <div class="row">
+                            <div class="srow">
                                 <label class="four columns" for="gridSelect">{{ $t('gridToTranslate') }}</label>
                                 <select class="four columns" id="gridSelect" v-model="gridData">
                                     <option :value="null">{{ $t('showAllGrids') }}</option>
                                     <option v-for="grid in allGrids" :value="grid">{{grid.label | extractTranslation}}</option>
                                 </select>
                             </div>
-                            <div class="row" v-if="usedLocales.length > 0">
+                            <div class="srow" v-if="usedLocales.length > 0">
                                 <label class="four columns">{{ $t('selectAlreadyUsedLanguages') }}</label>
                                 <span class="six columns">
                                     <button v-if="locale !== currentLocale" @click="chosenLocale = locale" v-for="locale in usedLocales" style="margin-right: 0.5em">{{getLocaleTranslation(locale)}}</button>
                                 </span>
                             </div>
-                            <div class="row" style="margin-top: 2em">
+                            <div class="srow" style="margin-top: 2em">
                                 <div class="six columns">
-                                    <div class="row" style="height: 2em;">
+                                    <div class="srow" style="height: 2em;">
                                         <strong>{{ $t('textsIn') }}</strong> <strong>{{currentLangTranslated}} ({{currentLocale}})</strong>
                                     </div>
-                                    <div class="row">
+                                    <div class="srow">
                                         <button class="six columns" @click="copy(currentLocale)" :title="$t('copyColumn')">
                                             <i class="far fa-copy"></i>
                                             <span class="show-mobile">
@@ -56,13 +56,13 @@
                                     </div>
                                 </div>
                                 <div class="six columns">
-                                    <div class="row" style="height: 2em;">
+                                    <div class="srow" style="height: 2em;">
                                         <strong>{{ $t('textsIn') }}</strong>
                                         &nbsp;<select v-model="chosenLocale">
                                             <option v-for="lang in allLanguages.filter(lang => lang.code !== currentLocale)" :value="lang.code">{{lang | extractTranslation}} ({{lang.code}})</option>
                                         </select>
                                     </div>
-                                    <div class="row">
+                                    <div class="srow">
                                         <button class="six columns" @click="copy(chosenLocale)" :title="$t('copyColumn')">
                                             <i class="far fa-copy"></i>
                                             <span class="show-mobile">
@@ -91,19 +91,19 @@
                             <div id="translationList">
                                 <ul v-for="data in (gridData ? [gridData] : allGrids)">
                                     <li>
-                                        <div class="row">
+                                        <div class="srow">
                                             <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="data.label[currentLocale]" @change="changedGrid(data)"/>
                                             <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="data.label[chosenLocale]" @change="changedGrid(data)"/>
                                         </div>
                                     </li>
                                     <li v-for="el in data.gridElements" v-if="showGridElements(data.label[currentLocale])">
-                                        <div class="row" v-if="el.label[currentLocale] || el.label[chosenLocale]">
+                                        <div class="srow" v-if="el.label[currentLocale] || el.label[chosenLocale]">
                                             <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="el.label[currentLocale]" @change="changedGrid(data)"/>
                                             <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="el.label[chosenLocale]" @change="changedGrid(data)"/>
                                         </div>
                                     </li>
                                     <li v-for="el in data.gridElements" v-if="showGridElements(data.label[currentLocale])">
-                                        <div class="row" v-for="action in el.actions" v-if="action.modelName === GridActionSpeakCustom.getModelName() && (action.speakText[currentLocale] || action.speakText[chosenLocale])">
+                                        <div class="srow" v-for="action in el.actions" v-if="action.modelName === GridActionSpeakCustom.getModelName() && (action.speakText[currentLocale] || action.speakText[chosenLocale])">
                                             <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="action.speakText[currentLocale]" @change="changedGrid(data)"/>
                                             <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="action.speakText[chosenLocale]" @change="changedGrid(data)"/>
                                         </div>
@@ -117,7 +117,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <div class="button-container row">
+                        <div class="button-container srow">
                             <button class="three columns offset-by-six" @click="$emit('close')" :title="$t('keyboardEsc')">
                                 <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
@@ -228,7 +228,7 @@
 </script>
 
 <style scoped>
-    .row {
+    .srow {
         margin-top: 1em;
     }
 

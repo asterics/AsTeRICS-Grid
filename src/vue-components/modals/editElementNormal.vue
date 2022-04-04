@@ -15,7 +15,7 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="row">
+                        <div class="srow">
                             <label class="two columns" for="inputLabel">{{ $t('label') }}</label>
                             <input type="text" class="five columns" id="inputLabel" v-focus v-if="gridElement" v-model="gridElement.label[currentLang]"/>
                             <button @click="search(gridElement.label[currentLang])" class="two columns" :label="$t('searchForImages')"><i class="fas fa-search"/></button>
@@ -24,7 +24,7 @@
                                 <label for="inputHidden">{{ $t('hideElement') }}</label>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <label for="inputImg" class="two columns">{{ $t('image') }}</label>
                             <button onclick="document.getElementById('inputImg').click();" class="five columns file-input">
                                 <input type="file" class="five columns" id="inputImg" @change="changedImg" accept="image/*"/>
@@ -32,7 +32,7 @@
                             </button>
                             <button class="five columns" v-show="tempImage.data" @click="clearImage"><i class="fas fa-times"/> <span>{{ $t('clearImage') }}</span></button>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <div class="img-preview offset-by-two four columns">
                                 <span class="show-mobile" v-show="!tempImage.data"><i class="fas fa-image"/> <span>{{ $t('noImageChosen') }}</span></span>
                                 <span class="hide-mobile" v-show="!tempImage.data"><i class="fas fa-arrow-down"/> <span>{{ $t('dropImageHere') }}</span></span>
@@ -45,7 +45,7 @@
                                 <span><i class="fas fa-arrow-down"/> <span>{{ $t('dropNewImageHere') }}</span></span>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <label for="inputSearch" class="two columns">{{ $t('imageSearch') }}</label>
                             <div class="five columns">
                                 <input id="inputSearch" type="text" v-model="searchText" @input="searchInput(500, $event)" :placeholder="'SEARCH_IMAGE_PLACEHOLDER' | translate"/>
@@ -59,7 +59,7 @@
                                 </i18n>
                             </span>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <div class="offset-by-two ten columns">
                                 <div v-for="imgElement in searchResults" class="inline">
                                     <img v-if="imgElement.base64" :src="imgElement.base64" @click="setImage(imgElement)" :title="$t('byAuthor', [imgElement.author])" width="60" height="60" class="inline" role="button"/>
@@ -84,7 +84,7 @@
 
                     <div class="modal-footer">
                         <div class="button-container" v-if="gridElement">
-                            <div class="row">
+                            <div class="srow">
                                 <button @click="$emit('close')" :title="$t('keyboardEsc')" class="four columns offset-by-four">
                                     <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                                 </button>
@@ -92,7 +92,7 @@
                                     <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
                                 </button>
                             </div>
-                            <div class="hide-mobile row">
+                            <div class="hide-mobile srow">
                                 <div v-if="editElementId">
                                     <button @click="editNext(true)" :title="$t('keyboardCtrlLeft')" class="four columns offset-by-four"><i class="fas fa-angle-double-left"/> <span>{{ $t('okEditPrevious') }}</span></button>
                                     <button @click="editNext()" :title="$t('keyboardCtrlRight')" class="four columns"><span>{{ $t('okEditNext') }}</span> <i class="fas fa-angle-double-right"/></button>
@@ -101,7 +101,7 @@
                                     <button @click="addNext()" :title="$t('keyboardCtrlRight')" class="four columns offset-by-eight"><i class="fas fa-plus"/> <span>{{ $t('okAddAnother') }}</span></button>
                                 </div>
                             </div>
-                            <div class="hide-mobile row">
+                            <div class="hide-mobile srow">
                                 <button @click="save(true)" :title="$t('keyboardCtrlY')" class="four columns offset-by-eight"><span>{{ $t('okEditActions') }}</span> <i class="fas fa-bolt"/></button>
                             </div>
                         </div>
@@ -347,7 +347,7 @@
         width: 150px;
     }
 
-    .row {
+    .srow {
         margin-top: 1em;
     }
 

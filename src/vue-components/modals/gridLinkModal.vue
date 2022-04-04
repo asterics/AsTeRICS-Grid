@@ -11,7 +11,7 @@
                     </div>
 
                     <div class="modal-body" v-if="gridFrom">
-                        <div class="row">
+                        <div class="srow">
                             <div class="four columns">
                                 <div>
                                     <div>{{gridFrom.label | extractTranslation}}</div>
@@ -25,18 +25,18 @@
                                 <img :src="gridTo.thumbnail ? gridTo.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; border: 1px solid lightgray"/>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <label class="three columns" for="elementName">{{ $t('connectWithElement') }}</label>
                             <select id="elementName" class="four columns" v-model="selectedElement">
                                 <option :value="null">{{ $t('createNewElement') }}</option>
                                 <option v-for="elem in gridFrom.gridElements" :value="elem">{{i18nService.getTranslation(elem.label) || i18nService.t('emptyElement')}}</option>
                             </select>
                         </div>
-                        <div class="row" v-show="!selectedElement || !i18nService.getTranslation(selectedElement.label)">
+                        <div class="srow" v-show="!selectedElement || !i18nService.getTranslation(selectedElement.label)">
                             <label class="three columns" for="elementLabel">{{ $t('labelOfNewElement') }}</label>
                             <input type="text" id="elementLabel" class="four columns" v-model="newElementLabel[i18nService.getCurrentLang()]" maxlength="35"/>
                         </div>
-                        <div class="row" v-show="selectedElement && selectedElement.actions.filter(e => e.modelName === GridActionNavigate.getModelName()).length > 0">
+                        <div class="srow" v-show="selectedElement && selectedElement.actions.filter(e => e.modelName === GridActionNavigate.getModelName()).length > 0">
                             <i class="fas fa-exclamation-triangle"></i>
                             <span>
                                 <b>{{ $t('hint') }} </b> {{ $t('thisElementAlreadyNavigatesToAnotherGrid') }}
@@ -45,7 +45,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <div class="button-container row">
+                        <div class="button-container srow">
                             <button class="six columns" @click="$emit('close')" :title="$t('keyboardEsc')">
                                 <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
@@ -119,7 +119,7 @@
 </script>
 
 <style scoped>
-    .row {
+    .srow {
         margin-top: 1em;
     }
 </style>

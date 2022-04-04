@@ -11,21 +11,21 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="row" style="margin-bottom: 3em">
+                        <div class="srow" style="margin-bottom: 3em">
                             <input type="radio" id="radiopredef" name="importType" :value="c.SELECT_ONLINE" v-model="importType">
                             <label for="radiopredef">{{ $t('importFromOnlineDictionaries') }}</label><br/>
                             <input type="radio" id="radiofile" name="importType" :value="c.SELECT_FILE" v-model="importType">
                             <label for="radiofile">{{ $t('importFromFile') }}</label>
                         </div>
                         <div v-show="importType === c.SELECT_ONLINE">
-                            <div class="row">
+                            <div class="srow">
                                 <label class="three columns" for="selectDict">{{ $t('selectDictionary') }}</label>
                                 <select id="selectDict" class="nine columns" type="file" v-model="selectedOption">
                                     <option disabled selected hidden :value="null">{{ $t('pleaseSelect') }}</option>
                                     <option v-for="option in options" :value="option">{{option.name | translate}}</option>
                                 </select>
                             </div>
-                            <div class="row" v-show="selectedOption && selectedOption.type === c.OPTION_TYPE_GITHUB_FREQUENCYWORDS">
+                            <div class="srow" v-show="selectedOption && selectedOption.type === c.OPTION_TYPE_GITHUB_FREQUENCYWORDS">
                                 <div class="nine columns offset-by-three">
                                     <span>{{ $t('thanksToHermitDaveForSupplyingDataForThis') }} </span>
                                     <a href="https://github.com/hermitdave/FrequencyWords" target="_blank">Github.com</a>
@@ -33,18 +33,18 @@
                             </div>
                         </div>
                         <div v-show="importType === c.SELECT_FILE">
-                            <div class="row">
+                            <div class="srow">
                                 <label class="three columns" for="fileInput">{{ $t('selectFile') }}</label>
                                 <input id="fileInput" class="nine columns" type="file" accept=".json" @change="onFileSelect"/>
                             </div>
                         </div>
-                        <div v-show="!!error" class="row" style="color: darkred; margin-top: 2.5em">
+                        <div v-show="!!error" class="srow" style="color: darkred; margin-top: 2.5em">
                             <i class="fas fa-exclamation-triangle"/> <span>{{error | translate}}</span>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <div class="button-container row">
+                        <div class="button-container srow">
                             <button class="six columns" @click="$emit('close')" :title="$t('keyboardEsc')">
                                 <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
@@ -210,7 +210,7 @@
 
 
 <style scoped>
-    .row {
+    .srow {
         margin-top: 1em;
     }
 

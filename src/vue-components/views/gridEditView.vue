@@ -1,6 +1,6 @@
 <template>
     <div v-cloak v-if="gridData" class="box">
-        <header class="row header" role="banner">
+        <header class="srow header" role="banner">
             <header-icon class="left"></header-icon>
             <button tabindex="30" @click="back" :title="$t('back')" class="spaced small left">
                 <i class="fas fa-eye"></i>
@@ -32,7 +32,7 @@
         <div>
             <grid-translate-modal v-if="showTranslateModal" :grid-data-id="gridData.id" @close="showTranslateModal = false" @reload="reload"/>
         </div>
-        <div class="row content">
+        <div class="srow content">
             <div v-if="!showGrid" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
             </div>

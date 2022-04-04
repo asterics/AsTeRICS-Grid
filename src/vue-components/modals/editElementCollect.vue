@@ -11,36 +11,36 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="row">
+                        <div class="srow">
                             <label for="selectMode" class="five columns">{{ $t('collectMode') }}</label>
                             <select v-if="editElement" class="four columns" id="selectMode" type="checkbox" v-model="editElement.mode">
                                 <option v-for="mode in GridElementCollect.MODES" :value="mode">{{ $t(mode) }}</option>
                             </select>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <label for="imageHeight" class="five columns">{{ $t('heightOfCollectedImages') }}</label>
                             <input v-if="editElement" class="four columns" id="imageHeight" type="number" min="50" max="100" :disabled="!editElement.showLabels || !autoOrSeparatedMode" v-model.number="editElement.imageHeightPercentage"/>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <label for="singleTextElemFactor" class="five columns">{{ $t('factorForFontSizeOfOnlytextElements') }}</label>
                             <input v-if="editElement" class="four columns" id="singleTextElemFactor" type="number" min="0" max="5" step="0.1" :disabled="!autoOrSeparatedMode" v-model.number="editElement.textElemSizeFactor"/>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <input v-if="editElement" id="showLabel" type="checkbox" v-model="editElement.showLabels" :disabled="!autoOrSeparatedMode"/>
                             <label for="showLabel">{{ $t('showLabelsOfCollectedImages') }}</label>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <input v-if="editElement" id="useSingleLine" type="checkbox" v-model="editElement.singleLine" :disabled="!autoOrSeparatedMode"/>
                             <label for="useSingleLine">{{ $t('useHorizontalScrollbarIfElementsDontFit') }}</label>
                         </div>
-                        <div class="row">
+                        <div class="srow">
                             <input v-if="editElement" id="convertToLowercase" type="checkbox" v-model="editElement.convertToLowercase"/>
                             <label for="convertToLowercase">{{ $t('convertUppercaseKeyboardLettersToLowercase') }}</label>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <div class="button-container row">
+                        <div class="button-container srow">
                             <button @click="$emit('close')" :title="$t('keyboardEsc')" class="four columns offset-by-four">
                                 <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
@@ -90,7 +90,7 @@
 </script>
 
 <style scoped>
-    .row {
+    .srow {
         margin-top: 1em;
     }
 </style>
