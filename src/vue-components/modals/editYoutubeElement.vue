@@ -34,7 +34,6 @@
 </template>
 
 <script>
-    import {i18nService} from "../../js/service/i18nService";
     import {GridElement} from "../../js/model/GridElement.js";
     import './../../css/modal.css';
     import {dataService} from "../../js/service/data/dataService.js";
