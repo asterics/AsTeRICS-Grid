@@ -38,6 +38,7 @@ class GridElement extends Model({
             label: {},
             width: 1,
             height: 1,
+            image: new GridImage(),
             type: GridElement.ELEMENT_TYPE_NORMAL,
             additionalProps: {}
         };
