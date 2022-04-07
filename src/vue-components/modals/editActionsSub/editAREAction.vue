@@ -71,7 +71,6 @@
 <script>
     import FileSaver from 'file-saver'
     import {areService} from './../../../js/service/areService'
-    import {i18nService} from "../../../js/service/i18nService";
     import './../../../css/modal.css';
     import {GridData} from "../../../js/model/GridData";
     import {AdditionalGridFile} from "../../../js/model/AdditionalGridFile";
@@ -79,7 +78,7 @@
     import TestAreConnection from "./testAreConnection.vue";
 
     export default {
-        props: ['action', 'gridData', 'modelFile','setGridFileFn'],
+        props: ['action', 'gridData'],
         data: function () {
             return {
                 loading: false,
@@ -102,7 +101,7 @@
                         thiz.areModelFile.dataBase64 = base64Model;
                         thiz.areModelFile.fileName = modelName;
                         action.areModelGridFileName = modelName;
-                        thiz.setGridFileFn(thiz.action, thiz.areModelFile);
+                        thiz.updateGridModelFile();
                         thiz.loading = false;
                         thiz.areModelSync = true;
                         thiz.reloadComponentIds(action);
@@ -110,9 +109,22 @@
                     });
                 }).catch(() => {
                     thiz.areModelFile.dataBase64 = null;
-                    thiz.setGridFileFn(thiz.action, null);
+                    thiz.updateGridModelFile();
                     thiz.loading = false;
                 });
+            },
+            updateGridModelFile() {
+                let setFile = false;
+                this.gridData.additionalFiles = this.gridData.additionalFiles || [];
+                for (let i = 0; i < this.gridData.additionalFiles.length; i++) {
+                    if (this.action.areModelGridFileName && this.action.areModelGridFileName === this.gridData.additionalFiles[i].fileName) {
+                        this.gridData.additionalFiles[i] = this.areModelFile;
+                        setFile = true;
+                    }
+                }
+                if (!setFile) {
+                    this.gridData.additionalFiles.push(this.areModelFile);
+                }
             },
             uploadAREModel(action) {
                 var thiz = this;
@@ -145,13 +157,8 @@
         },
         mounted () {
             this.action.areURL = this.action.areURL || areService.getRestURL();
-            if(this.modelFile) { //model file parameter
-                this.areModelFile = this.modelFile;
-            } else {
-                this.areModelFile = new GridData(this.gridData).getAdditionalFile(this.action.areModelGridFileName);
-                this.setGridFileFn(this.action, this.areModelFile);
-            }
-            if(!this.areModelFile) {
+            this.areModelFile = new GridData(this.gridData).getAdditionalFile(this.action.areModelGridFileName);
+            if (!this.areModelFile) {
                 this.areModelFile = new AdditionalGridFile();
             }
             helpService.setHelpLocation('05_actions', '#asterics-action');
