@@ -703,5 +703,8 @@
   "labelAlphabetically": "Text (alphabetisch)",
   "numberOfConnections": "Anzahl an Verbindungen",
   "factorForFontSizeOfOnlytextElements": "Faktor für Schriftgröße von Textelementen in Einzelelement-Modus",
-  "convertUppercaseKeyboardLettersToLowercase": "Konvertiere Großbuchstaben von Tastatur in Kleinbuchstaben"
+  "convertUppercaseKeyboardLettersToLowercase": "Konvertiere Großbuchstaben von Tastatur in Kleinbuchstaben",
+  "TAB_GENERAL": "General",
+  "TAB_IMAGE": "Image",
+  "TAB_ACTIONS": "Actions"
 }
