@@ -168,37 +168,6 @@ dataService.importDefaultGridset = function() {
 };
 
 /**
- * Adds additional grid files to a grid. If a filename that is added already exists, the
- * existing file is replaced.
- * @see{AdditionalGridFile}
- *
- * @param gridId the ID of the grid to add the additional files
- * @param additionalGridFiles array of objects of type @see{AdditionalGridFile}
- * @return {Promise} resolves after operation finished successful
- */
-dataService.saveAdditionalGridFiles = function (gridId, additionalGridFiles) {
-    return new Promise(resolve => {
-        if (!additionalGridFiles) {
-            resolve();
-        }
-        dataService.getGrid(gridId).then(grid => {
-            additionalGridFiles.forEach(gridFile => {
-                grid = JSON.parse(JSON.stringify(grid));
-                let index = grid.additionalFiles.findIndex(f => f.fileName === gridFile.fileName);
-                if (index !== -1) {
-                    grid.additionalFiles[index] = gridFile;
-                } else {
-                    grid.additionalFiles.push(gridFile);
-                }
-            });
-            dataService.saveGrid(grid).then(() => {
-                resolve();
-            });
-        })
-    });
-};
-
-/**
  * Gets a single element of a grid.
  * @see{GridElement}
  *
@@ -304,28 +273,6 @@ dataService.getMetadata = function () {
             resolve(new MetaData(returnValue));
         });
     });
-};
-
-/**
- * saves the given imageData, if it was not already saved
- * @see{GridImage}
- *
- * @param imgData the data of type GridImage
- * @return {Promise} the id of the newly saved image data or an id of an existing image data with the same hash
- */
-dataService.saveImage = function (imgData) {
-    return saveHashedItemInternal(GridImage, imgData);
-};
-
-/**
- * returns a GridImage by ID.
- * @see{GridImage}
- *
- * @param imgId the ID of the grid image to return.
- * @return {Promise} resolves to the grid image object
- */
-dataService.getImage = function (imgId) {
-    return databaseService.getObject(GridImage, imgId);
 };
 
 /**
@@ -611,51 +558,6 @@ dataService.getSyncState = function () {
 dataService.getCurrentUser = function () {
     return databaseService.getCurrentUsedDatabase();
 };
-
-/**
- * saves an element that can potentially be used in several places, and has high data volume and therefore
- * should only be saved once in the database (e.g. images, ARE Models).
- * To achieve this the data of the element is hashed and the hashes are saved in the MetaData.hashes object. If another
- * element produces the same hash it isn't saved a second time to the database, but the id of the existing element is
- * returned and can be used as a reference to the element.
- *
- * @param objectType the objectType to save, e.g. GridImage
- * @param data the data to be saved
- * @return {Promise} the promise resolves either to the id of the data that was newly saved or to the id of the
- * existing object in the database with the same hash
- */
-function saveHashedItemInternal(objectType, data) {
-    let promises = [];
-    return new Promise((resolve, reject) => {
-        dataService.getMetadata().then(metadata => {
-            if (!metadata || !metadata.hashCodes) {
-                log.warn('error: hashCodes or metadata do not exist');
-                reject();
-                return;
-            }
-            let hashMap = null;
-            if (metadata.hashCodes[objectType.getModelName()]) {
-                hashMap = metadata.hashCodes[objectType.getModelName()];
-            } else {
-                hashMap = {};
-                metadata.hashCodes[objectType.getModelName()] = hashMap;
-            }
-            let hash = modelUtil.hashCode(data);
-            if (hashMap[hash]) {
-                log.debug('saveHashedItemInternal: hash found, not saving new element');
-                data.id = hashMap[hash];
-            } else {
-                log.debug('saveHashedItemInternal: hash not found, saving new element');
-                hashMap[hash] = data.id;
-                promises.push(databaseService.saveObject(objectType, data));
-                promises.push(databaseService.saveObject(MetaData, metadata));
-            }
-            Promise.all(promises).then(() => {
-                resolve(data.id);
-            });
-        });
-    });
-}
 
 function saveGlobalGridId(globalGridId) {
     return dataService.getMetadata().then(metadata => {
