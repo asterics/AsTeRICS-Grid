@@ -703,5 +703,8 @@
   "labelAlphabetically": "Label (alphabetically)",
   "numberOfConnections": "Number of connections",
   "factorForFontSizeOfOnlytextElements": "Factor for font size of only-text elements in separated mode",
-  "convertUppercaseKeyboardLettersToLowercase": "Convert uppercase keyboard letters to lowercase"
+  "convertUppercaseKeyboardLettersToLowercase": "Convert uppercase keyboard letters to lowercase",
+  "TAB_GENERAL": "General",
+  "TAB_IMAGE": "Image",
+  "TAB_ACTIONS": "Actions"
 }
