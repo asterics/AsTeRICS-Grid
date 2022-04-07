@@ -706,5 +706,19 @@
   "convertUppercaseKeyboardLettersToLowercase": "Convert uppercase keyboard letters to lowercase",
   "TAB_GENERAL": "General",
   "TAB_IMAGE": "Image",
-  "TAB_ACTIONS": "Actions"
+  "TAB_ACTIONS": "Actions",
+  "colorCategory": "Color category",
+  "colors": "Colors",
+  "defaultGridBackgroundColor": "Default grid background color",
+  "defaultGridElementColor": "Default element background",
+  "CC_PRONOUN": "Pronoun",
+  "CC_NOUN": "Noun",
+  "CC_VERB": "Verb",
+  "CC_ADJECTIVE": "Adjective",
+  "CC_PREPOSITION": "Preposition",
+  "CC_JUNCTION": "Junction",
+  "CC_QUESTION": "Question",
+  "CC_ADVERB": "Adverb",
+  "CC_IMPORTANT": "Important",
+  "CC_DETERMINER": "Determiner"
 }
