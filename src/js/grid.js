@@ -176,31 +176,7 @@ function Grid(gridContainerId, gridItemClass, options) {
             disabled: !enableResizing,
             start: notifyLayoutChangeStart,
             stop(event, ui) {
-                var el = ui.element.parent();
-                var idOfChangedElement = ui.element.attr('id');
-                var resizePromise = new Promise(resolve => {
-                    var imageId = el.attr('data-img-id');
-                    if (imageId) {
-                        dataService.getImage(imageId).then(gridImage => {
-                            if(gridImage) {
-                                var elementW = $('#' + idOfChangedElement)[0].getBoundingClientRect().width;
-                                imageUtil.convertBase64(gridImage.data, elementW).then(convertedBase64 => {
-                                    el.attr('data-img', convertedBase64);
-                                    el.children().children()[0].style.backgroundImage = 'url("' + convertedBase64 + '")';
-                                    resolve();
-                                });
-                            } else {
-                                resolve();
-                            }
-                        });
-                    } else {
-                        resolve();
-                    }
-                });
-
-                resizePromise.then(() => {
-                    handleLayoutChange();
-                });
+                handleLayoutChange();
             },
             resize: function (event, ui) {
                 var el = ui.element.parent();

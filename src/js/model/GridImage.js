@@ -1,12 +1,8 @@
 import {modelUtil} from "../util/modelUtil";
-import {constants} from "../util/constants";
 import {Model} from "../externals/objectmodel";
 import {imageUtil} from "../util/imageUtil";
 
 class GridImage extends Model({
-    id: String,
-    modelName: String,
-    modelVersion: String,
     data: [String],
     author: [String],
     authorURL: [String]
@@ -14,7 +10,6 @@ class GridImage extends Model({
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridImage);
         super(properties);
-        this.id = this.id || modelUtil.generateId(GridImage.getIdPrefix())
     }
 
     getImageType() {
@@ -56,9 +51,6 @@ GridImage.IMAGE_TYPES = {
 }
 
 GridImage.defaults({
-    id: "", //will be replaced by constructor
-    modelName: GridImage.getModelName(),
-    modelVersion: constants.MODEL_VERSION,
     data: null,
     author: null,
     authorURL: null
