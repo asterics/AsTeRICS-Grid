@@ -43,7 +43,7 @@ class GridData extends Model({
         let string = "";
         this.gridElements.forEach(e => {
             string += JSON.stringify(e.label) + e.x + e.y;
-            if (e.image) {
+            if (e.image && e.image.data) {
                 string += e.image.data.substring(e.image.data.length - 30);
             }
         });
