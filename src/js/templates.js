@@ -40,7 +40,7 @@ function getGridElementNormal(gridElem, fallbackLocale) {
     let label = i18nService.getTranslation(gridElem.label, fallbackLocale);
     var imgContainerMaxHeight = label ? '80%' : '100%';
     let gridItemContentStyle = gridElem.backgroundColor ? `background: ${gridElem.backgroundColor};` : '';
-    if (gridElem.image) {
+    if (gridElem.image && gridElem.image.data) {
         imgData = gridElem.image.data;
         imgId = gridElem.image.id;
     } else {
