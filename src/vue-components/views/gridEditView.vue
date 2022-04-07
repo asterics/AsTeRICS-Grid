@@ -13,15 +13,12 @@
             </div>
         </header>
         <div>
-            <edit-element-normal v-if="showModal === GridElement.ELEMENT_TYPE_NORMAL" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showModal = null" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
-            <edit-element-youtube v-if="showModal === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-data="gridData" :edit-element-id="editElementId" @close="showModal = null" @reload="reload"/>
-            <edit-element-collect v-if="showModal === GridElement.ELEMENT_TYPE_COLLECT" :grid-data="gridData" :edit-element-id="editElementId" @close="showModal = null" @reload="reload"/>
+            <edit-element v-if="showModal === GridElement.ELEMENT_TYPE_NORMAL" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showModal = null" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
+            <edit-youtube-element v-if="showModal === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-data="gridData" :edit-element-id="editElementId" @close="showModal = null" @reload="reload"/>
+            <edit-collect-element v-if="showModal === GridElement.ELEMENT_TYPE_COLLECT" :grid-data="gridData" :edit-element-id="editElementId" @close="showModal = null" @reload="reload"/>
         </div>
         <div>
             <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :grid-instance="getGridInstance()" @close="showMultipleModal = false"/>
-        </div>
-        <div>
-            <edit-actions-modal v-if="showActionsModal" v-bind:edit-element-id-param="editElementId" v-bind:grid-id-param="gridData.id" @close="showActionsModal = false" @reload="reload" @edit="showModal = GridElement.ELEMENT_TYPE_NORMAL"/>
         </div>
         <div>
             <grid-dimension-modal v-if="showDimensionsModal" v-bind:grid-data-param="gridData" :is-global-grid="metadata.globalGridId === gridData.id" @close="showDimensionsModal = false" @save="setDimensions"/>
@@ -57,9 +54,8 @@
     import {Router} from "./../../js/router.js";
     import {i18nService} from "../../js/service/i18nService";
 
-    import EditElementNormal from '../modals/editElementNormal.vue'
+    import EditElement from '../modals/editElement.vue'
     import AddMultipleModal from '../modals/addMultipleModal.vue'
-    import EditActionsModal from '../modals/editActionsModal.vue'
     import {actionService} from "../../js/service/actionService";
     import {GridElement} from "../../js/model/GridElement";
     import {GridData} from "../../js/model/GridData";
@@ -73,8 +69,8 @@
     import GridTranslateModal from "../modals/gridTranslateModal.vue";
     import {GridActionYoutube} from "../../js/model/GridActionYoutube";
     import {printService} from "../../js/service/printService";
-    import EditElementYoutube from "../modals/editElementYoutube.vue";
-    import EditElementCollect from "../modals/editElementCollect.vue";
+    import EditCollectElement from "../modals/editCollectElement.vue";
+    import EditYoutubeElement from "../modals/editYoutubeElement.vue";
     import {GridElementCollect} from "../../js/model/GridElementCollect.js";
     import {GridActionCollectElement} from "../../js/model/GridActionCollectElement.js";
 
@@ -91,7 +87,6 @@
                 canRedo: false,
                 doingUndoRedo: false,
                 showMultipleModal: false,
-                showActionsModal: false,
                 showDimensionsModal: false,
                 showMoveModal: false,
                 showTranslateModal: false,
@@ -104,11 +99,10 @@
             }
         },
         components: {
-            EditElementCollect,
-            EditElementYoutube,
+            EditCollectElement, EditYoutubeElement,
             GridTranslateModal,
             ElementMoveModal,
-            GridDimensionModal, EditElementNormal, AddMultipleModal, EditActionsModal, HeaderIcon
+            GridDimensionModal, EditElement, AddMultipleModal, HeaderIcon
         },
         methods: {
             setDimensions: function (rows, cols) {
@@ -178,10 +172,6 @@
                     this.gridData.gridElements.push(newElement);
                     gridInstance.updateGridWithUndo(this.gridData);
                 }
-            },
-            editActions(elementId) {
-                this.editElementId = elementId;
-                this.showActionsModal = true;
             },
             newElements() {
                 this.showMultipleModal = true;
@@ -292,7 +282,6 @@
         var CONTEXT_EDIT = "CONTEXT_EDIT";
         var CONTEXT_DUPLICATE = "CONTEXT_DUPLICATE";
         var CONTEXT_DO_ACTION = "CONTEXT_DO_ACTION";
-        var CONTEXT_ACTIONS = "CONTEXT_ACTIONS";
         var CONTEXT_DELETE = "CONTEXT_DELETE";
         var CONTEXT_FILL_EMPTY = "CONTEXT_FILL_EMPTY";
         var CONTEXT_DELETE_ALL = "CONTEXT_DELETE_ALL";
@@ -300,7 +289,6 @@
         let CONTEXT_ACTION_EDIT = 'CONTEXT_ACTION_EDIT';
         let CONTEXT_ACTION_DELETE = 'CONTEXT_ACTION_DELETE';
         let CONTEXT_ACTION_DUPLICATE = 'CONTEXT_ACTION_DUPLICATE';
-        let CONTEXT_ACTION_EDIT_ACTIONS = 'CONTEXT_ACTION_EDIT_ACTIONS';
         let CONTEXT_ACTION_DO_ACTION = 'CONTEXT_ACTION_DO_ACTION';
         let CONTEXT_MOVE_TO = 'CONTEXT_MOVE_TO';
 
@@ -308,7 +296,6 @@
         var CONTEXT_NEW_SINGLE = "CONTEXT_NEW_SINGLE";
         var CONTEXT_NEW_MASS = "CONTEXT_NEW_MASS";
         var CONTEXT_NEW_COLLECT = "CONTEXT_NEW_COLLECT";
-        var CONTEXT_NEW_COLLECT_IMAGE = "CONTEXT_NEW_COLLECT_IMAGE";
         var CONTEXT_NEW_PREDICT = "CONTEXT_NEW_PREDICT";
         var CONTEXT_NEW_YT_PLAYER = "CONTEXT_NEW_YT_PLAYER";
 
@@ -347,7 +334,6 @@
 
         var itemsElemNormal = {
             CONTEXT_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit"},
-            CONTEXT_ACTIONS: {name: i18nService.t('actions'), icon: "fas fa-bolt"},
             CONTEXT_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt"},
             CONTEXT_MORE_GROUP: {
                 name: i18nService.t('more'), icon: "fas fa-bars", items: itemsMoreMenuItem
@@ -361,7 +347,6 @@
         let visibleFnFill = () => !new GridData({}, vueApp.gridData).isFull();
         var itemsMoreMenuButton = {
             CONTEXT_ACTION_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit", visible: () => (vueApp.markedElement && [GridElement.ELEMENT_TYPE_NORMAL, GridElement.ELEMENT_TYPE_YT_PLAYER].indexOf(vueApp.markedElement.type) !== -1)},
-            CONTEXT_ACTION_EDIT_ACTIONS: {name: i18nService.t('actions'), icon: "fas fa-bolt", visible: visibleFn},
             CONTEXT_ACTION_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt", visible: visibleFn},
             CONTEXT_ACTION_DUPLICATE: {name: i18nService.t('clone'), icon: "far fa-clone", visible: visibleFn},
             CONTEXT_ACTION_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt", visible: visibleFn},
@@ -449,10 +434,6 @@
                     actionService.doAction(vueApp.gridData.id, elementId);
                     break;
                 }
-                case CONTEXT_ACTIONS: {
-                    vueApp.editActions(elementId);
-                    break;
-                }
                 case CONTEXT_DELETE: {
                     vueApp.removeElement(elementId);
                     break;
@@ -499,10 +480,6 @@
                 }
                 case CONTEXT_ACTION_EDIT:
                     vueApp.editElement(vueApp.markedElement.id);
-                    vueApp.markElement(null);
-                    break;
-                case CONTEXT_ACTION_EDIT_ACTIONS:
-                    vueApp.editActions(vueApp.markedElement.id);
                     vueApp.markElement(null);
                     break;
                 case CONTEXT_ACTION_DELETE:

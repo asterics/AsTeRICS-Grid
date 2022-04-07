@@ -19,6 +19,11 @@
     vertical-align: middle;
 }
 
+.modal-container-flex {
+    display: flex;
+    flex-direction: column;
+}
+
 .modal-container {
     max-width: 920px;
     max-height: 75vh;
@@ -29,7 +34,6 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
     transition: all .3s ease;
     font-family: Helvetica, Arial, sans-serif;
-
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -40,35 +44,42 @@
     }
 }
 
+.modal-footer-flex {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
 .modal-footer {
     margin-top: 3em;
 }
 
 .modal-header h3 {
-    margin-top: 0;
-    color: #42b983;
+margin-top: 0;
+color: #42b983;
 }
 
 .modal-body {
-    margin-top: 2.5em;
+margin-top: 2.5em;
 }
 
 .modal-body img {
-    border: 1px solid lightgray;
+border: 1px solid lightgray;
 }
 
 .modal-body label {
-    font-weight: bold;
+font-weight: bold;
 }
 
 /*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
+* The following styles are auto-applied to elements with
+* transition="modal" when their visibility is toggled
+* by Vue.js.
+*
+* You can easily play with the modal transition by editing
+* these styles.
+*/
 
 .modal-enter {
     opacity: 0;
