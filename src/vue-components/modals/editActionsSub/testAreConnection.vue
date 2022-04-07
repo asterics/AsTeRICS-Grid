@@ -51,7 +51,6 @@
         },
         mounted () {
             this.areURL = this.areURLProp || areService.getRestURL();
-            log.warn(this.areURL);
             this.updateValue();
         }
     }
