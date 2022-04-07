@@ -6,61 +6,86 @@
                 <h2 class="six columns">{{ $t('generalSettings') }}</h2>
                 <div v-if="saveSuccess" style="padding-top: 1.7em;"><i class="fas fa-check" style="color: green"></i> <span>{{ $t('allChangesSaved') }}</span></div>
             </div>
-            <div class="ten columns">
-                <h3>{{ $t('applicationLanguage') }}</h3>
-                <div class="srow">
-                    <label class="three columns" for="inLanguage">{{ $t('selectLanguage') }}</label>
-                    <select class="five columns" id="inLanguage" v-model="langCode" @change="saveLangCode()">
-                        <option value="">{{ $t('automatic') }}</option>
-                        <option v-for="lang in allLanguages.filter(lang => ['de', 'en'].indexOf(lang.code) !== -1 || gridLanguages.indexOf(lang.code) !== -1)" :value="lang.code">{{lang | extractTranslation}} ({{lang.code}})</option>
-                    </select>
-                </div>
-                <div class="srow">
-                    <span class="fa fa-info-circle"></span>
-                    <span class="break-word">
+            <div class="srow">
+                <div class="ten columns">
+                    <h3 class="mt-0">{{ $t('applicationLanguage') }}</h3>
+                    <div class="srow">
+                        <label class="three columns" for="inLanguage">{{ $t('selectLanguage') }}</label>
+                        <select class="five columns" id="inLanguage" v-model="langCode" @change="saveLangCode()">
+                            <option value="">{{ $t('automatic') }}</option>
+                            <option v-for="lang in allLanguages.filter(lang => ['de', 'en'].indexOf(lang.code) !== -1 || gridLanguages.indexOf(lang.code) !== -1)" :value="lang.code">{{lang | extractTranslation}} ({{lang.code}})</option>
+                        </select>
+                    </div>
+                    <div class="srow">
+                        <span class="fa fa-info-circle"></span>
+                        <span class="break-word">
                         {{ $t('gridsCanBeTranslatedToEveryLanguage') }}
                     </span>
-                </div>
-                <div class="srow" style="margin-bottom: 0.5em">
-                    <span class="fa fa-info-circle"></span>
-                    <span class="break-word">
+                    </div>
+                    <div class="srow" style="margin-bottom: 0.5em">
+                        <span class="fa fa-info-circle"></span>
+                        <span class="break-word">
                         <i18n path="ifTheTranslationForYourLanguageIsNotAvailable" tag="span">
                             <template v-slot:crowdin>
                                 <a href="https://crowdin.com/project/asterics-grid" target="_blank">crowdin.com</a>
                             </template>
                         </i18n>
                     </span>
+                    </div>
                 </div>
             </div>
-            <div class="ten columns">
-                <h3>{{ $t('voice') }}</h3>
-                <div class="srow">
-                    <label class="three columns" for="inVoice">
-                        <span>{{ $t('preferredVoice') }}</span>
-                    </label>
-                    <select id="inVoice" class="five columns" v-model="selectedVoiceName" @change="saveVoice()">
-                        <option value="">{{ $t('automatic') }}</option>
-                        <option v-for="voice in voices" :value="voice.name">{{voice.name}}</option>
-                    </select>
-                </div>
-                <div class="srow">
-                    <label class="three columns" for="inVoice">
-                        <span>{{ $t('testText') }}</span>
-                    </label>
-                    <input class="five columns" type="text" v-model="testText">
-                    <button id="testVoice" class="three columns" @click="testSpeak">{{ $t('test') }}</button>
+            <div class="srow">
+                <div class="ten columns">
+                    <h3>{{ $t('voice') }}</h3>
+                    <div class="srow">
+                        <label class="three columns" for="inVoice">
+                            <span>{{ $t('preferredVoice') }}</span>
+                        </label>
+                        <select id="inVoice" class="five columns" v-model="selectedVoiceName" @change="saveVoice()">
+                            <option value="">{{ $t('automatic') }}</option>
+                            <option v-for="voice in voices" :value="voice.name">{{voice.name}}</option>
+                        </select>
+                    </div>
+                    <div class="srow">
+                        <label class="three columns" for="testText">
+                            <span>{{ $t('testText') }}</span>
+                        </label>
+                        <input id="testText" class="five columns" type="text" v-model="testText">
+                        <button id="testVoice" class="three columns" @click="testSpeak">{{ $t('test') }}</button>
+                    </div>
                 </div>
             </div>
-            <div class="ten columns">
-                <h3>{{ $t('miscellaneous') }}</h3>
-                <div class="srow">
-                    <input id="chkSyncNavigation" type="checkbox" v-model="syncNavigation" @change="saveSyncNavigation()"/>
-                    <label for="chkSyncNavigation">{{ $t('synchronizeNavigationAndLockedState') }}</label>
+            <div class="srow">
+                <div class="ten columns">
+                    <h3>{{ $t('miscellaneous') }}</h3>
+                    <div class="srow">
+                        <input id="chkSyncNavigation" type="checkbox" v-model="syncNavigation" @change="saveSyncNavigation()"/>
+                        <label for="chkSyncNavigation">{{ $t('synchronizeNavigationAndLockedState') }}</label>
+                    </div>
+                    <div class="srow">
+                        <label class="three columns" for="unlockPass">{{ $t('passcodeForUnlockingUserInterface') }}</label>
+                        <input class="five columns" id="unlockPass" type="number" v-model="unlockPasscode" @input="unlockPasscode = unlockPasscode.substring(0, 6); savePasscode()" :placeholder="$t('noPasscodeBracket')"/>
+                        <button class="three columns" @click="unlockPasscode = null; savePasscode()">{{ $t('reset') }}</button>
+                    </div>
                 </div>
-                <div class="srow">
-                    <label class="three columns" for="unlockPass">{{ $t('passcodeForUnlockingUserInterface') }}</label>
-                    <input class="five columns" id="unlockPass" type="number" v-model="unlockPasscode" @input="unlockPasscode = unlockPasscode.substring(0, 6); savePasscode()" :placeholder="$t('noPasscodeBracket')"/>
-                    <button class="three columns" @click="unlockPasscode = null; savePasscode()">{{ $t('reset') }}</button>
+            </div>
+            <div class="srow">
+                <div class="ten columns">
+                    <h3>{{ $t('colors') }}</h3>
+                    <div class="srow">
+                        <label class="three columns" for="elemColor">
+                            <span>{{ $t('defaultGridElementColor') }}</span>
+                        </label>
+                        <input id="elemColor" v-model="elemColor" class="five columns" type="color" @change="event => localStorageService.save(localStorageService.COLOR_DEFAULT_ELEM_BACKGROUND, event.target.value)">
+                        <button class="three columns" @click="elemColor = '#add8e6'; localStorageService.save(localStorageService.COLOR_DEFAULT_ELEM_BACKGROUND, elemColor)">{{ $t('reset') }}</button>
+                    </div>
+                    <div class="srow">
+                        <label class="three columns" for="appColor">
+                            <span>{{ $t('defaultGridBackgroundColor') }}</span>
+                        </label>
+                        <input id="appColor" v-model="gridBackgroundColor" class="five columns" type="color" @change="event => localStorageService.save(localStorageService.COLOR_DEFAULT_GRID_BACKGROUND, event.target.value)">
+                        <button class="three columns" @click="gridBackgroundColor = '#ffffff'; localStorageService.save(localStorageService.COLOR_DEFAULT_GRID_BACKGROUND, gridBackgroundColor)">{{ $t('reset') }}</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -93,7 +118,10 @@
                 voices: speechService.getVoices(),
                 selectedVoiceName: speechService.getPreferredVoiceName(),
                 testText: i18nService.t('thisIsAnEnglishSentence'),
-                i18nService: i18nService
+                i18nService: i18nService,
+                localStorageService: localStorageService,
+                elemColor: localStorageService.get(localStorageService.COLOR_DEFAULT_ELEM_BACKGROUND) || '#add8e6', //default: "lightblue"
+                gridBackgroundColor: localStorageService.get(localStorageService.COLOR_DEFAULT_GRID_BACKGROUND) || '#ffffff'
             }
         },
         methods: {

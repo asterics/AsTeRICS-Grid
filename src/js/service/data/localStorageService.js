@@ -325,4 +325,7 @@ function getSyncedDbsList() {
     return JSON.parse(syncedDbsString);
 }
 
+localStorageService.COLOR_DEFAULT_ELEM_BACKGROUND = 'AG_COLOR_DEFAULT_ELEM_BACKGROUND';
+localStorageService.COLOR_DEFAULT_GRID_BACKGROUND = 'AG_COLOR_DEFAULT_GRID_BACKGROUND';
+
 export {localStorageService};

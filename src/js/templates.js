@@ -2,6 +2,8 @@ import {fontUtil} from "./util/fontUtil";
 import {GridElement} from "./model/GridElement";
 import {GridActionNavigate} from "./model/GridActionNavigate";
 import {i18nService} from "./service/i18nService";
+import {constants} from "./util/constants.js";
+import {localStorageService} from "./service/data/localStorageService.js";
 
 var templates = {};
 
@@ -39,7 +41,6 @@ function getGridElementNormal(gridElem, fallbackLocale) {
     var imgContainerMargin = '1%';
     let label = i18nService.getTranslation(gridElem.label, fallbackLocale);
     var imgContainerMaxHeight = label ? '80%' : '100%';
-    let gridItemContentStyle = gridElem.backgroundColor ? `background: ${gridElem.backgroundColor};` : '';
     if (gridElem.image && gridElem.image.data) {
         imgData = gridElem.image.data;
         imgId = gridElem.image.id;
@@ -47,12 +48,14 @@ function getGridElementNormal(gridElem, fallbackLocale) {
         txtContainerStyle += 'flex: 1 1 auto;';
         imgContainerMargin = '0'
     }
+    let backgroundColor = getBackgroundColor(gridElem);
+    let fontColor = fontUtil.getHighContrastTextColor(backgroundColor);
 
     var template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${label}" data-img-id="${imgId}" data-type="${gridElem.type}">
-    <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}" data-empty="${!label && !imgData}" style="${gridItemContentStyle}">
+    <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}" data-empty="${!label && !imgData}" style="${`background-color: ${backgroundColor}`}">
         <div class="img-container" style="background: center no-repeat; background-size: contain; background-image: url('${imgData}'); margin: ${imgContainerMargin}; max-height: ${imgContainerMaxHeight};"/>
-        <div class="text-container" style="${txtContainerStyle}"><span>${label}</span></div>
+        <div class="text-container" style="${txtContainerStyle + `color: ${fontColor}`}"><span>${label}</span></div>
         ${getHintsElement(gridElem)}
     </div>
 </li>`;
@@ -61,11 +64,14 @@ function getGridElementNormal(gridElem, fallbackLocale) {
 
 function getGridElementCollect(gridElem) {
     gridElem = fillDefaultValues(gridElem);
+    let backgroundColor = getBackgroundColor(gridElem);
+    let txtBackgroundColor = localStorageService.get(localStorageService.COLOR_DEFAULT_GRID_BACKGROUND) || '#ffffff';
+    let fontColor = fontUtil.getHighContrastTextColor(txtBackgroundColor);
 
     var template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-type="${gridElem.type}">
-    <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}">
-        <div class="collect-outer-container text-container" style="position: absolute; display:flex; inset: 5px;">
+    <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}" style="${`background-color: ${backgroundColor}`}">
+        <div class="collect-outer-container text-container" style="${`position: absolute; display:flex; inset: 5px; color: ${fontColor};`}">
         </div>
     </div>
 </li>`;
@@ -120,6 +126,18 @@ function getHintsElement(gridElem) {
     let hiddenHint = gridElem.hidden ? '<i class="fas fa-eye-slash element-hint"></i>' : '';
     let navHint = gridElem.actions.filter(a => a.modelName === GridActionNavigate.getModelName()).length > 0 ? '<i class="fas fa-sticky-note fa-rotate-180 fa-flip-vertical element-hint"></i>' : '';
     return `<span style="position: absolute; right: 0; color: #5a717a">${hiddenHint + ' ' + navHint}</span>`;
+}
+
+
+
+function getBackgroundColor(gridElem) {
+    gridElem = gridElem || {};
+    let backgroundColor = gridElem.backgroundColor;
+    if (!backgroundColor && gridElem.colorCategory) {
+        let index = constants.COLOR_SCHEME_CATEGORIES.indexOf(gridElem.colorCategory);
+        backgroundColor = constants.COLOR_SCHEME_PASTEL[index];
+    }
+    return  backgroundColor || localStorageService.get(localStorageService.COLOR_DEFAULT_ELEM_BACKGROUND) || '#add8e6'; //default: "lightblue"
 }
 
 export {templates};

@@ -39,7 +39,7 @@
             <div v-if="!viewInitialized" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
             </div>
-            <div id="grid-container" class="grid-container">
+            <div id="grid-container" class="grid-container" :style="`background-color: ${backgroundColor}`">
             </div>
         </div>
     </div>
@@ -109,7 +109,8 @@
                 modalTypes: modalTypes,
                 viewInitialized: false,
                 unlockCount: UNLOCK_COUNT,
-                unlockCounter: UNLOCK_COUNT
+                unlockCounter: UNLOCK_COUNT,
+                backgroundColor: localStorageService.get(localStorageService.COLOR_DEFAULT_GRID_BACKGROUND) || 'white'
             }
         },
         components: {

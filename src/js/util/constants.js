@@ -41,4 +41,39 @@ constants.IS_FIREFOX = navigator.userAgent.indexOf("Firefox") !== -1;
 
 constants.STATE_ACTIVATED_TTS = 'STATE_ACTIVATED_TTS';
 
+constants.COLOR_SCHEME_CATEGORIES = ['CC_PRONOUN', 'CC_NOUN', 'CC_VERB', 'CC_ADJECTIVE', 'CC_PREPOSITION', 'CC_JUNCTION', 'CC_QUESTION', 'CC_ADVERB', 'CC_IMPORTANT', 'CC_DETERMINER'];
+constants.COLOR_SCHEME_PASTEL = [
+    '#fdfd96',
+    '#ffda89',
+    '#77dd77',
+    '#84b6f4',
+    '#fdcae1',
+    '#ffffff',
+    '#bc98f3',
+    '#d8af97',
+    '#ff9688',
+    '#bdbfbf'];
+
+constants.COLOR_SCHEME_DARK = [
+    '#ffff00',
+    '#ffad00',
+    '#00ff00',
+    '#0071ff',
+    '#ff0075',
+    '#ffffff',
+    '#9a5ff6',
+    '#9a4915',
+    '#ff1d00',
+    '#8c8c8c'];
+
+constants.DEFAULT_COLOR_SCHEMES = [
+    {
+        name: 'CS_NAME_PASTEL',
+        colors: constants.COLOR_SCHEME_PASTEL
+    }, {
+        name: 'CS_NAME_DARK',
+        colors: constants.COLOR_SCHEME_DARK
+    },
+];
+
 export {constants};
