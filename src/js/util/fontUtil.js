@@ -83,16 +83,18 @@ fontUtil.getTextWidth = function (text, containerElem, targetSize) {
     return metrics.width;
 }
 
-fontUtil.getHighContrastTextColor = function (hexBackground) {
+fontUtil.getHighContrastColor = function (hexBackground, lightColor, darkColor) {
     if (!hexBackground) {
         return '';
     }
+    lightColor = lightColor || '#ffffff';
+    darkColor = darkColor || '#000000';
     let rgb = hexToRgb(hexBackground);
     let val = rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114;
     if (val > 149) {
-        return '#000000';
+        return darkColor;
     } else {
-        return '#ffffff'
+        return lightColor;
     }
 };
 
