@@ -720,5 +720,8 @@
   "CC_QUESTION": "Question",
   "CC_ADVERB": "Adverb",
   "CC_IMPORTANT": "Important",
-  "CC_DETERMINER": "Determiner"
+  "CC_DETERMINER": "Determiner",
+  "colorSchemeForCategories": "Color Scheme for Categories",
+  "CS_NAME_PASTEL": "Pastel color scheme",
+  "CS_NAME_DARK": "Dark color scheme"
 }

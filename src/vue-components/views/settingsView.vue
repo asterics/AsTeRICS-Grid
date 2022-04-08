@@ -86,6 +86,19 @@
                         <input id="appColor" v-model="gridBackgroundColor" class="five columns" type="color" @change="event => localStorageService.save(localStorageService.COLOR_DEFAULT_GRID_BACKGROUND, event.target.value)">
                         <button class="three columns" @click="gridBackgroundColor = '#ffffff'; localStorageService.save(localStorageService.COLOR_DEFAULT_GRID_BACKGROUND, gridBackgroundColor)">{{ $t('reset') }}</button>
                     </div>
+                    <div class="srow">
+                        <label class="three columns" for="colorScheme">
+                            <span>{{ $t('colorSchemeForCategories') }}</span>
+                        </label>
+                        <select id="colorScheme" class="five columns" v-model="colorScheme" @change="event => localStorageService.save(localStorageService.COLOR_SCHEME, event.target.value)">
+                            <option v-for="scheme in constants.DEFAULT_COLOR_SCHEMES" :value="scheme.name">{{scheme.name | translate}}</option>
+                        </select>
+                    </div>
+                    <div class="srow">
+                        <div class="five columns offset-by-three d-flex" style="height: 1.5em">
+                            <div class="flex-grow-1" v-for="color in constants.DEFAULT_COLOR_SCHEMES.filter(s => s.name === colorScheme)[0].colors" :style="`background-color: ${color};`"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -99,6 +112,7 @@
     import {speechService} from "../../js/service/speechService";
     import {util} from "../../js/util/util";
     import {localStorageService} from "../../js/service/data/localStorageService";
+    import {constants} from "../../js/util/constants.js";
 
     export default {
         components: {HeaderIcon},
@@ -121,7 +135,9 @@
                 i18nService: i18nService,
                 localStorageService: localStorageService,
                 elemColor: localStorageService.get(localStorageService.COLOR_DEFAULT_ELEM_BACKGROUND) || '#add8e6', //default: "lightblue"
-                gridBackgroundColor: localStorageService.get(localStorageService.COLOR_DEFAULT_GRID_BACKGROUND) || '#ffffff'
+                gridBackgroundColor: localStorageService.get(localStorageService.COLOR_DEFAULT_GRID_BACKGROUND) || '#ffffff',
+                colorScheme: localStorageService.get(localStorageService.COLOR_SCHEME) || constants.DEFAULT_COLOR_SCHEMES[0].name,
+                constants: constants
             }
         },
         methods: {

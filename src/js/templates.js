@@ -133,9 +133,11 @@ function getHintsElement(gridElem) {
 function getBackgroundColor(gridElem) {
     gridElem = gridElem || {};
     let backgroundColor = gridElem.backgroundColor;
+    let colorSchemeName = localStorageService.get(localStorageService.COLOR_SCHEME);
+    let colorScheme = constants.DEFAULT_COLOR_SCHEMES.filter(s => s.name === colorSchemeName)[0];
     if (!backgroundColor && gridElem.colorCategory) {
         let index = constants.COLOR_SCHEME_CATEGORIES.indexOf(gridElem.colorCategory);
-        backgroundColor = constants.COLOR_SCHEME_PASTEL[index];
+        backgroundColor = colorScheme.colors[index];
     }
     return  backgroundColor || localStorageService.get(localStorageService.COLOR_DEFAULT_ELEM_BACKGROUND) || '#add8e6'; //default: "lightblue"
 }
