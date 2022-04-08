@@ -710,7 +710,7 @@
   "colorCategory": "Color category",
   "colors": "Colors",
   "defaultGridBackgroundColor": "Default grid background color",
-  "defaultGridElementColor": "Default element background",
+  "defaultGridElementColor": "Default element background color",
   "CC_PRONOUN": "Pronoun",
   "CC_NOUN": "Noun",
   "CC_VERB": "Verb",
@@ -723,5 +723,6 @@
   "CC_DETERMINER": "Determiner",
   "colorSchemeForCategories": "Color Scheme for Categories",
   "CS_NAME_PASTEL": "Pastel color scheme",
-  "CS_NAME_DARK": "Dark color scheme"
+  "CS_NAME_DARK": "Dark color scheme",
+  "activateColorCategoriesOfGridElements": "Activate color categories of grid elements"
 }

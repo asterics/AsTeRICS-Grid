@@ -135,7 +135,7 @@ function getBackgroundColor(gridElem) {
     let backgroundColor = gridElem.backgroundColor;
     let colorSchemeName = localStorageService.get(localStorageService.COLOR_SCHEME);
     let colorScheme = constants.DEFAULT_COLOR_SCHEMES.filter(s => s.name === colorSchemeName)[0];
-    if (!backgroundColor && gridElem.colorCategory) {
+    if (!backgroundColor && gridElem.colorCategory && localStorageService.get(localStorageService.COLOR_SCHEME_ACTIVATED) !== 'false') {
         let index = constants.COLOR_SCHEME_CATEGORIES.indexOf(gridElem.colorCategory);
         backgroundColor = colorScheme.colors[index];
     }

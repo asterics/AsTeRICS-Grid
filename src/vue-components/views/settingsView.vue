@@ -99,6 +99,12 @@
                             <div class="flex-grow-1" v-for="color in constants.DEFAULT_COLOR_SCHEMES.filter(s => s.name === colorScheme)[0].colors" :style="`background-color: ${color};`"></div>
                         </div>
                     </div>
+                    <div class="srow">
+                        <input id="colorSchemeActive" type="checkbox" v-model="colorSchemeActive" @change="event => localStorageService.save(localStorageService.COLOR_SCHEME_ACTIVATED, colorSchemeActive)"/>
+                        <label for="colorSchemeActive">
+                            <span>{{ $t('activateColorCategoriesOfGridElements') }}</span>
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -137,6 +143,7 @@
                 elemColor: localStorageService.get(localStorageService.COLOR_DEFAULT_ELEM_BACKGROUND) || '#add8e6', //default: "lightblue"
                 gridBackgroundColor: localStorageService.get(localStorageService.COLOR_DEFAULT_GRID_BACKGROUND) || '#ffffff',
                 colorScheme: localStorageService.get(localStorageService.COLOR_SCHEME) || constants.DEFAULT_COLOR_SCHEMES[0].name,
+                colorSchemeActive: localStorageService.get(localStorageService.COLOR_SCHEME_ACTIVATED) !== 'false',
                 constants: constants
             }
         },
