@@ -196,6 +196,11 @@
 
                 if (inputConfig.huffEnabled) {
                     this.huffmanInput = HuffmanInput.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', 'scanInactive', selectionListener);
+                    this.huffmanInput.onDestroy(() => {
+                        if (gridInstance) {
+                            gridInstance.reinit(new GridData(JSON.parse(JSON.stringify(thiz.gridData))));
+                        }
+                    });
                     this.huffmanInput.start();
                 }
 
@@ -329,6 +334,20 @@
             $(document).on(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
             document.addEventListener('contextmenu', this.contextMenuListener);
         },
+        beforeDestroy() {
+            $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
+            $(document).off(constants.EVENT_LANGUAGE_CHANGE, this.reloadOnLangChange);
+            $(document).off(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
+            document.removeEventListener('contextmenu', this.contextMenuListener);
+            stopInputMethods();
+            $.contextMenu('destroy');
+            vueApp = null;
+            if (gridInstance) {
+                gridInstance.destroy();
+                gridInstance = null;
+                printService.setGridInstance(null);
+            }
+        },
         mounted: function () {
             let thiz = this;
             vueApp = thiz;
@@ -394,20 +413,6 @@
                     log.warn(e);
                 }
             });
-        },
-        beforeDestroy() {
-            $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
-            $(document).off(constants.EVENT_LANGUAGE_CHANGE, this.reloadOnLangChange);
-            $(document).off(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
-            document.removeEventListener('contextmenu', this.contextMenuListener);
-            stopInputMethods();
-            $.contextMenu('destroy');
-            vueApp = null;
-            if (gridInstance) {
-                gridInstance.destroy();
-                gridInstance = null;
-                printService.setGridInstance(null);
-            }
         }
     };
 

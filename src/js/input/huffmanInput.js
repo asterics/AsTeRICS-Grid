@@ -4,6 +4,7 @@ import {inputEventHandler} from "./inputEventHandler";
 import {fontUtil} from "../util/fontUtil.js";
 
 let HuffmanInput = {};
+let _destroyCallback = null;
 
 HuffmanInput.getInstanceFromConfig = function (inputConfig, itemSelector, scanActiveClass, scanInactiveClass, selectionListener) {
     return new HuffmanInputConstructor(itemSelector, scanActiveClass, scanInactiveClass, {
@@ -72,8 +73,16 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
         _inputEventHandler.stopListening();
     };
 
+    thiz.onDestroy = function (fn) {
+        _destroyCallback = fn;
+    }
+
     thiz.destroy = function () {
         thiz.stop();
+        if (_destroyCallback) {
+            _destroyCallback();
+            _destroyCallback = null;
+        }
         _inputEventHandler.destroy();
     };
 
