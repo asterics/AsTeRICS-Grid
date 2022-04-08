@@ -1,6 +1,7 @@
 import Huffman from 'n-ary-huffman'
 import $ from 'jquery';
 import {inputEventHandler} from "./inputEventHandler";
+import {fontUtil} from "../util/fontUtil.js";
 
 let HuffmanInput = {};
 
@@ -161,7 +162,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
                 let spans = '';
                 item.codeWord.split('').forEach(c => {
                     let color = printColors ? getColor(c) : '';
-                    let textColor = getHighContrastTextColor(color);
+                    let textColor = fontUtil.getHighContrastColor(color);
                     let width = ((100 - 5 * longestCodeLength) / longestCodeLength) + '%';
                     let char = printCodes ? c : '&nbsp;';
                     spans += `<span style="background-color: ${color}; color: ${textColor}; width: ${width}; display: inline-block; margin: 0 1%; border-radius: 5px; border: 1px solid whitesmoke;">${char}</span>`;
@@ -227,27 +228,6 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
         return colors[index];
     }
 
-    function getHighContrastTextColor(hexBackground) {
-        if (!hexBackground) {
-            return '';
-        }
-        let rgb = hexToRgb(hexBackground);
-        let val = rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114;
-        if (val > 149) {
-            return '#000000';
-        } else {
-            return '#ffffff'
-        }
-    }
-
-    function hexToRgb(hex) {
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-        } : null;
-    }
     init();
 }
 
