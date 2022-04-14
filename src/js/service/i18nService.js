@@ -109,6 +109,7 @@ i18nService.setLanguage = function (lang, dontSave) {
         localStorageService.save(CUSTOM_LANGUAGE_KEY, lang);
     }
     let useLang = lang || i18nService.getBrowserLang();
+    $('html').prop('lang', useLang);
     return loadLanguage(useLang).then(() => {
         vueI18n.locale = useLang;
         $(document).trigger(constants.EVENT_LANGUAGE_CHANGE);
