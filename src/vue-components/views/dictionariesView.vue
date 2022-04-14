@@ -1,96 +1,99 @@
 <template>
-    <div class="overflow-content box">
-        <div class="all-dicts-view">
-            <header class="srow header" role="banner">
-                <header-icon></header-icon>
-                <button tabindex="32" @click="addDictionary()" class="small spaced"><i class="fas fa-plus"/> <span class="hide-mobile">{{ $t('newEmptyDictionary') }}</span></button>
-                <button tabindex="31" @click="showImportModal = true" class="small spaced"><i class="fas fa-file-import"/> <span class="hide-mobile">{{ $t('importDictionary') }}</span></button>
-            </header>
-            <div class="srow content text-content">
-                <div v-if="!dicts" class="grid-container grid-mask">
-                    <i class="fas fa-4x fa-spinner fa-spin"/>
-                </div>
-                <h2>{{ $t('savedDictionaries') }}</h2>
-                <ul id="dictList" v-show="dicts && dicts.length > 0">
-                    <li class="hide-mobile table-headers">
-                        <span class="four columns">{{ $t('dictionaryName') }}</span>
-                        <span class="four columns">{{ $t('actions') }}</span><br/>
-                    </li>
-                    <li v-for="dict in dicts" class="dict-table-elem">
-                        <div class="srow">
-                            <div class="four columns">
-                                <div v-if="editModeId !== dict.id">
-                                    {{ dict.dictionaryKey }}
-                                    <button class="small-button" @click="enableEditName(dict)"><i class="far fa-edit"/>
-                                    </button>
-                                </div>
-                                <div v-if="editModeId === dict.id">
-                                    <input type="text" v-focus="" v-model="dict.dictionaryKey"/>
-                                    <div class="inline">
-                                        <button class="small-button" v-if="originalLabel" @click="cancelEditName()"><i
-                                                class="fas fa-times"/></button>
-                                        <button class="small-button" @click="finishEditName(dict)"
-                                                :disabled="isLabelDuplicate(dict.dictionaryKey)"><i class="fas fa-check"/>
+    <div>
+        <div class="overflow-content box" :aria-hidden="showWordsModal || showImportModal">
+            <div class="all-dicts-view">
+                <header class="srow header" role="toolbar">
+                    <header-icon></header-icon>
+                    <button tabindex="32" @click="addDictionary()" :aria-label="$t('newEmptyDictionary')" class="small spaced"><i class="fas fa-plus"/> <span class="hide-mobile">{{ $t('newEmptyDictionary') }}</span></button>
+                    <button tabindex="31" @click="showImportModal = true" :aria-label="$t('importDictionary')" class="small spaced"><i class="fas fa-file-import"/> <span class="hide-mobile">{{ $t('importDictionary') }}</span></button>
+                </header>
+                <div class="srow content text-content">
+                    <div v-if="!dicts" class="grid-container grid-mask">
+                        <i class="fas fa-4x fa-spinner fa-spin"/>
+                    </div>
+                    <h2>{{ $t('savedDictionaries') }}</h2>
+                    <ul id="dictList" v-show="dicts && dicts.length > 0">
+                        <li class="hide-mobile table-headers">
+                            <span class="four columns">{{ $t('dictionaryName') }}</span>
+                            <span class="four columns">{{ $t('actions') }}</span><br/>
+                        </li>
+                        <li v-for="dict in dicts" class="dict-table-elem">
+                            <div class="srow">
+                                <div class="four columns">
+                                    <div v-if="editModeId !== dict.id">
+                                        {{ dict.dictionaryKey }}
+                                        <button class="small-button" :title="$t('editName')" @click="enableEditName(dict)"><i class="far fa-edit"/>
                                         </button>
                                     </div>
+                                    <div v-if="editModeId === dict.id">
+                                        <input type="text" v-focus="" v-model="dict.dictionaryKey"/>
+                                        <div class="inline">
+                                            <button class="small-button" :title="$t('cancelEditName')" v-if="originalLabel" @click="cancelEditName()"><i
+                                                class="fas fa-times"/></button>
+                                            <button class="small-button" :title="$t('saveName')" @click="finishEditName(dict)"
+                                                    :disabled="isLabelDuplicate(dict.dictionaryKey)"><i class="fas fa-check"/>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="eight columns actionbuttons" style="display: flex; padding-right: 1em">
-                                <div class="four columns show-mobile" style="margin: 0.5em 0 0 0.2em">{{ $t('actions') }}
-                                </div>
-                                <button @click="edit(dict)"><i class="far fa-edit"/> <span class="hide-mobile">{{ $t('edit') }}</span>
-                                </button>
-                                <button @click="clone(dict.id)"><i class="far fa-clone"/> <span class="hide-mobile"
-                                                                                               >{{ $t('clone') }}</span>
-                                </button>
-                                <button @click="deleteDict(dict.id, dict.dictionaryKey)"><i class="far fa-trash-alt"/> <span
+                                <div class="eight columns actionbuttons" style="display: flex; padding-right: 1em">
+                                    <div class="four columns show-mobile" style="margin: 0.5em 0 0 0.2em">{{ $t('actions') }}
+                                    </div>
+                                    <button @click="edit(dict)" :aria-label="$t('edit')"><i class="far fa-edit"/> <span class="hide-mobile">{{ $t('edit') }}</span>
+                                    </button>
+                                    <button @click="clone(dict.id)" :aria-label="$t('clone')"><i class="far fa-clone"/> <span class="hide-mobile"
+                                    >{{ $t('clone') }}</span>
+                                    </button>
+                                    <button @click="deleteDict(dict.id, dict.dictionaryKey)" :aria-label="$t('delete')"><i class="far fa-trash-alt"/> <span
                                         class="hide-mobile">{{ $t('delete') }}</span></button>
-                                <button @click="downloadDict(dict.id, dict.dictionaryKey)"><i class="fas fa-download"/> <span
-                                    class="hide-mobile">{{ $t('save') }}</span></button>
+                                    <button @click="downloadDict(dict.id, dict.dictionaryKey)" :aria-label="$t('save')"><i class="fas fa-download"/> <span
+                                        class="hide-mobile">{{ $t('save') }}</span></button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="edit-container" v-if="editId === dict.id">
-                            <div class="srow">
-                                <input type="text" class="four columns" :placeholder="$t('searchWord')" v-model="searchWord"
-                                       @input="inputSearchWord()"/>
-                                <button @click="showWordsModal = true; modalDict = dict" class="four columns">
-                                    <i class="fas fa-file-import"/>
-                                    <span>{{ $t('importWords') }}</span>
-                                </button>
-                            </div>
-                            <div class="srow">
-                                <span>{{ $t('words') }}</span>
-                                <ul style="margin-left: 0">
-                                    <li v-for="word in wordlist">
-                                        <button class="small-button" @click="deleteWord(word, dict)" style="margin-right: 0.5em"><i class="far fa-trash-alt"/></button>{{word}}
-                                    </li>
-                                </ul>
-                                <span v-show="totalWords > wordlist.length && searchWord === ''">
+                            <div class="edit-container" v-if="editId === dict.id">
+                                <div class="srow">
+                                    <input type="text" class="four columns" :placeholder="$t('searchWord')" v-model="searchWord"
+                                           @input="inputSearchWord()"/>
+                                    <button @click="showWordsModal = true; modalDict = dict" class="four columns">
+                                        <i class="fas fa-file-import"/>
+                                        <span>{{ $t('importWords') }}</span>
+                                    </button>
+                                </div>
+                                <div class="srow">
+                                    <span>{{ $t('words') }}</span>
+                                    <ul style="margin-left: 0">
+                                        <li v-for="word in wordlist">
+                                            <button class="small-button" :title="$t('deleteWordParam', [word])" @click="deleteWord(word, dict)" style="margin-right: 0.5em"><i class="far fa-trash-alt"/></button>
+                                            <span>{{word}}</span>
+                                        </li>
+                                    </ul>
+                                    <span v-show="totalWords > wordlist.length && searchWord === ''">
                                     {{totalWords - wordlist.length}}
                                     <span>{{ $t('moreWordsAvailableTypeInSearchFieldToFilter') }}</span>
                                 </span>
-                                <span v-show="filterWords > wordlist.length && searchWord !== ''">
+                                    <span v-show="filterWords > wordlist.length && searchWord !== ''">
                                     {{filterWords - wordlist.length}}
                                     <span>{{ $t('moreWordsForThisFilterRefineSearchToShowMore') }}</span>
                                 </span>
-                                <div v-show="searchWord && totalWords > 0 && wordlist.length === 0">
-                                    <span>{{ $t('noWordsForThisFilterClearSearchField') }}</span>
-                                    <button @click="inputSearchWord('')"><i class="fas fa-times"/> <span>{{ $t('clear') }}</span></button>
+                                    <div v-show="searchWord && totalWords > 0 && wordlist.length === 0">
+                                        <span>{{ $t('noWordsForThisFilterClearSearchField') }}</span>
+                                        <button @click="inputSearchWord('')"><i class="fas fa-times"/> <span>{{ $t('clear') }}</span></button>
+                                    </div>
+                                    <span v-show="totalWords === 0">{{ $t('thisDictionaryContainsNoWords') }}</span>
                                 </div>
-                                <span v-show="totalWords === 0">{{ $t('thisDictionaryContainsNoWords') }}</span>
                             </div>
-                        </div>
-                    </li>
-                </ul>
-                <p v-if="!dicts || dicts.length === 0">
-                    {{ $t('noDictionariesFound') }}
-                </p>
+                        </li>
+                    </ul>
+                    <p v-if="!dicts || dicts.length === 0">
+                        {{ $t('noDictionariesFound') }}
+                    </p>
+                </div>
             </div>
-            <import-words-modal v-if="showWordsModal" v-bind:dict-data="modalDict"
-                                @close="showWordsModal = false" @reload="reload"/>
-            <import-dictionary-modal v-if="showImportModal" :dicts="dicts"
-                                     @close="showImportModal = false" @reload="reload"/>
         </div>
+        <import-words-modal v-if="showWordsModal" v-bind:dict-data="modalDict"
+                            @close="showWordsModal = false" @reload="reload"/>
+        <import-dictionary-modal v-if="showImportModal" :dicts="dicts"
+                                 @close="showImportModal = false" @reload="reload"/>
     </div>
 </template>
 

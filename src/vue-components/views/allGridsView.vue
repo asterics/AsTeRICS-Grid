@@ -1,8 +1,8 @@
 <template>
     <div class="all-grids-view overflow-content box">
-        <header class="srow header" role="banner">
+        <header class="srow header" role="toolbar">
             <header-icon></header-icon>
-            <button tabindex="32" id="moreButton" :title="$t('more')" class="small"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile">{{ $t('more') }}</span></button>
+            <button tabindex="32" id="moreButton" :aria-label="$t('more')" class="small"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile">{{ $t('more') }}</span></button>
             <button tabindex="31" @click="addGrid()" class="spaced hide-mobile small"><i class="fas fa-plus"/> <span>{{ $t('newGrid') }}</span></button>
             <div style="display: none">
                 <input type="file" id="inputFile" @change="importFromFile" accept=".grd, .obf, .obz"/>
@@ -31,12 +31,12 @@
                 </div>
                 <div id="actionGroup" class="action-buttons">
                     <div style="display: flex">
-                        <button @click="show(selectedGraphElement.grid.id)"><i class="far fa-eye"/> <span class="hide-mobile">{{ $t('show') }}</span></button>
-                        <button @click="edit(selectedGraphElement.grid.id)"><i class="far fa-edit"/> <span class="hide-mobile">{{ $t('edit') }}</span></button>
-                        <button @click="clone(selectedGraphElement.grid.id)"><i class="far fa-clone"/> <span class="hide-mobile">{{ $t('clone') }}</span></button>
-                        <button @click="deleteGrid(selectedGraphElement.grid.id)"><i class="far fa-trash-alt"/> <span class="hide-mobile">{{ $t('delete') }}</span></button>
-                        <button @click="exportToFile(selectedGraphElement.grid.id)"><i class="fas fa-file-export"/> <span class="hide-mobile">{{ $t('export') }}</span></button>
-                        <button @click="exportToPdf(selectedGraphElement.grid.id)"><i class="far fa-file-pdf"/> <span class="hide-mobile">{{ $t('saveAsPdf') }}</span></button>
+                        <button @click="show(selectedGraphElement.grid.id)" :aria-label="$t('show')"><i class="far fa-eye"/> <span class="hide-mobile">{{ $t('show') }}</span></button>
+                        <button @click="edit(selectedGraphElement.grid.id)" :aria-label="$t('edit')"><i class="far fa-edit"/> <span class="hide-mobile">{{ $t('edit') }}</span></button>
+                        <button @click="clone(selectedGraphElement.grid.id)" :aria-label="$t('clone')"><i class="far fa-clone"/> <span class="hide-mobile">{{ $t('clone') }}</span></button>
+                        <button @click="deleteGrid(selectedGraphElement.grid.id)" :aria-label="$t('delete')"><i class="far fa-trash-alt"/> <span class="hide-mobile">{{ $t('delete') }}</span></button>
+                        <button @click="exportToFile(selectedGraphElement.grid.id)" :aria-label="$t('export')"><i class="fas fa-file-export"/> <span class="hide-mobile">{{ $t('export') }}</span></button>
+                        <button @click="exportToPdf(selectedGraphElement.grid.id)" :aria-label="$t('saveAsPdf')"><i class="far fa-file-pdf"/> <span class="hide-mobile">{{ $t('saveAsPdf') }}</span></button>
                     </div>
                 </div>
             </div>
