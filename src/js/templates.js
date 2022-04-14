@@ -4,6 +4,12 @@ import {GridActionNavigate} from "./model/GridActionNavigate";
 import {i18nService} from "./service/i18nService";
 import {constants} from "./util/constants.js";
 import {localStorageService} from "./service/data/localStorageService.js";
+import {GridActionSpeak} from "./model/GridActionSpeak.js";
+import {GridActionYoutube} from "./model/GridActionYoutube.js";
+import {GridActionCollectElement} from "./model/GridActionCollectElement.js";
+import {GridActionChangeLang} from "./model/GridActionChangeLang.js";
+import {GridActionPredict} from "./model/GridActionPredict.js";
+import {GridActionWebradio} from "./model/GridActionWebradio.js";
 
 var templates = {};
 
@@ -50,10 +56,11 @@ function getGridElementNormal(gridElem, fallbackLocale) {
     }
     let backgroundColor = getBackgroundColor(gridElem);
     let fontColor = fontUtil.getHighContrastColor(backgroundColor);
+    let ariaLabel = label ? label : getAriaLabel(gridElem);
 
     var template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${label}" data-img-id="${imgId}" data-type="${gridElem.type}">
-    <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}" data-empty="${!label && !imgData}" style="${`background-color: ${backgroundColor}; border: 1px solid ${getBorderColor()}`}">
+    <div class="grid-item-content" tabindex="40" aria-label="${ariaLabel}" id="${gridElem.id}" data-id="${gridElem.id}" data-empty="${!label && !imgData}" style="${`background-color: ${backgroundColor}; border: 1px solid ${getBorderColor()}`}">
         <div class="img-container" style="background: center no-repeat; background-size: contain; background-image: url('${imgData}'); margin: ${imgContainerMargin}; max-height: ${imgContainerMaxHeight};"/>
         <div class="text-container" style="${txtContainerStyle + `color: ${fontColor}`}"><span>${label}</span></div>
         ${getHintsElement(gridElem)}
@@ -70,7 +77,7 @@ function getGridElementCollect(gridElem) {
 
     var template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-type="${gridElem.type}">
-    <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}" style="${`background-color: ${backgroundColor}; border: 1px solid ${getBorderColor()}`}">
+    <div class="grid-item-content" tabindex="40" aria-label="${i18nService.t('ELEMENT_TYPE_COLLECT')}" id="${gridElem.id}" data-id="${gridElem.id}" style="${`background-color: ${backgroundColor}; border: 1px solid ${getBorderColor()}`}">
         <div class="collect-outer-container text-container" style="${`position: absolute; display:flex; inset: 5px; color: ${fontColor};`}">
         </div>
     </div>
@@ -99,7 +106,7 @@ function getGridElementYTPlayer(gridElem) {
 
     var template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${label}" data-type="${gridElem.type}">
-    <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}" style="${`border: 1px solid ${getBorderColor()}`}">
+    <div class="grid-item-content" tabindex="40" aria-label="${i18nService.t('ELEMENT_TYPE_YT_PLAYER')}" id="${gridElem.id}" data-id="${gridElem.id}" style="${`border: 1px solid ${getBorderColor()}`}">
         ${stopClicking ? '<div id="youtubeClickPreventer" onclick="event.stopPropagation()" style="z-index: 100; position: absolute; top: 0; bottom: 0; left: 0; right: 0; height: 100%; width: 100%"></div>' : ''}
         <div class="yt-container" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
             <div id="player" style="outline: 1px solid; outline-offset: -5px; height: 100%; background-color: black; display: flex; align-items: center; justify-content: center;">
@@ -144,6 +151,47 @@ function getBackgroundColor(gridElem) {
 
 function getBorderColor() {
     return fontUtil.getHighContrastColor(localStorageService.get(localStorageService.COLOR_DEFAULT_GRID_BACKGROUND), 'whitesmoke', 'gray');
+}
+
+function getAriaLabel(gridElem) {
+    let actions = gridElem.actions.filter(a => a.modelName !== GridActionSpeak.getModelName() && a.modelName !== GridActionPredict.getModelName());
+    let ariaLabel = actions.reduce((total, action) => {
+        switch (action.modelName) {
+            case GridActionChangeLang.getModelName():
+                total += i18nService.t(GridActionChangeLang.getModelName());
+                total += " " + i18nService.t(`lang.${action.language}`);
+                total += ", ";
+                break;
+            case GridActionCollectElement.getModelName():
+                total += i18nService.t(action.action);
+                total += ", ";
+                break;
+            case GridActionNavigate.getModelName():
+                if (action.toLastGrid) {
+                    total += i18nService.t('navigateToLastOpenedGrid');
+                } else {
+                    total += i18nService.t('navigateToGrid');
+                }
+                total += ", ";
+                break;
+            case GridActionWebradio.getModelName():
+                total += i18nService.t(GridActionWebradio.getModelName());
+                total += " " + i18nService.t(action.action);
+                total += ", ";
+                break;
+            case GridActionYoutube.getModelName():
+                total += i18nService.t(GridActionYoutube.getModelName());
+                total += " " + i18nService.t(action.action);
+                total += ", ";
+                break;
+            default:
+                total += i18nService.t(action.modelName);
+                total += ", ";
+                break;
+        }
+        return total;
+    }, '');
+    return ariaLabel;
 }
 
 export {templates};
