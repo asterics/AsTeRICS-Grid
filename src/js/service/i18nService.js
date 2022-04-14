@@ -79,10 +79,10 @@ i18nService.getTranslation = function (i18nObject, fallbackLang, includeLang) {
     if (i18nObject[fallbackLang]) {
         return !includeLang ? i18nObject[fallbackLang] : {lang: fallbackLang, text: i18nObject[fallbackLang]};
     }
-    let keys = Object.keys(i18nObject);
+    /*let keys = Object.keys(i18nObject);
     if (i18nObject[keys[0]]) {
         return !includeLang ? i18nObject[keys[0]] : {lang: keys[0], text: i18nObject[keys[0]]};
-    }
+    }*/
     return !includeLang ? '' : {lang: undefined, text: ''};
 };
 
