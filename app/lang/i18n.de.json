@@ -429,6 +429,8 @@
   "theSelectedFileDoesNotContainDict": "Die gewählte Datei enthält kein Wörterbuch.",
   "couldNotDownloadDictCheckInternet": "Herunterladen des Wörterbuches fehlgeschlagen, bitte überprüfen Sie die Internetverbindung.",
   "saveName": "Name speichern",
+  "editName": "edit name",
+  "cancelEditName": "cancel edit name",
   "resetToDefaultGridset": "Zurücksetzen auf Standard-Gridset",
   "doYouReallyWantDeleteAllGrids": "Möchten Sie wirklich alle Grids löschen? Diese Aktion kann nicht rückgängig gemacht werden!",
   "doYouReallyWantResetGlobalGrid": "Möchten Sie das globale Grid wirklich zurücksetzen?",
@@ -457,6 +459,7 @@
   "thisIsAnEnglishSentence": "Das ist ein deutscher Satz.",
   "homeStart": "Start",
   "deleteWord": "Wort löschen",
+  "deleteWordParam": "delete word {0}",
   "generalInformation": "Allgemeine Informationen",
   "theInitialDevelopmentOfAstericsGridWasDoneAt": "Die erste Version von AsTeRICS Grid wurde an der FH Technikum Wien im Projekt ToRaDes entwickelt, das von von der Stadt Wien gefördert wurde (Projektnummer 18-04).",
   "moreInfoAbouTorades": "Mehr Informationen zum Projekt ToRaDes",
@@ -724,5 +727,7 @@
   "colorSchemeForCategories": "Color Scheme for Categories",
   "CS_NAME_PASTEL": "Pastel color scheme",
   "CS_NAME_DARK": "Dark color scheme",
-  "activateColorCategoriesOfGridElements": "Activate color categories of grid elements"
+  "activateColorCategoriesOfGridElements": "Activate color categories of grid elements",
+  "closeSidebar": "close sidebar",
+  "openSidebar": "open sidebar"
 }
