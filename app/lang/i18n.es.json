@@ -429,8 +429,8 @@
   "theSelectedFileDoesNotContainDict": "El archivo seleccionado no contiene datos de diccionario.",
   "couldNotDownloadDictCheckInternet": "No se pudo descargar el diccionario, por favor compruebe la conexión a Internet.",
   "saveName": "Guardar nombre",
-  "editName": "edit name",
-  "cancelEditName": "cancel edit name",
+  "editName": "editar nombre",
+  "cancelEditName": "cancelar la edición del nombre",
   "resetToDefaultGridset": "Restablecer tableros por defecto",
   "doYouReallyWantDeleteAllGrids": "¿Realmente desea eliminar todos los tableros? ¡Esta operación no se puede deshacer!",
   "doYouReallyWantResetGlobalGrid": "¿Realmente desea restablecer el tablero global por defecto?",
@@ -459,7 +459,7 @@
   "thisIsAnEnglishSentence": "Es una frase en inglés.",
   "homeStart": "Inicio",
   "deleteWord": "Borrar Palabra",
-  "deleteWordParam": "delete word {0}",
+  "deleteWordParam": "borrar palabra {0}",
   "generalInformation": "Información general",
   "theInitialDevelopmentOfAstericsGridWasDoneAt": "El desarrollo inicial de la red AsTeRICS se realizó en la UAS Technikum Wien dentro del proyecto ToRaDes, financiado por la ciudad de Viena (proyecto número 18-04).",
   "moreInfoAbouTorades": "Más información sobre el proyecto ToRaDes",
@@ -728,6 +728,6 @@
   "CS_NAME_PASTEL": "Esquema de color pastel",
   "CS_NAME_DARK": "Esquema de color oscuro,",
   "activateColorCategoriesOfGridElements": "Activar el uso de códigos de color para categorías",
-  "closeSidebar": "close sidebar",
-  "openSidebar": "open sidebar"
+  "closeSidebar": "ocultar menú lateral",
+  "openSidebar": "mostrar menú lateral"
 }
