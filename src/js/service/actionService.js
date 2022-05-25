@@ -97,6 +97,53 @@ function doAction(gridElement, action, gridId, gridData) {
                 }, action.timeoutSeconds * 1000);
             }
             break;
+        
+        case 'GridActionTurnOnShelly':
+            if (action.turn === "On") {
+                console.log("Turn On")
+                $.get(action.httpHttps + "://" + action.shellyIP + "/relay/0?turn=on");     
+            }   
+            if (action.turn === "Off") {
+                console.log("Turn Off")
+                $.get(action.httpHttps + "://" + action.shellyIP + "/relay/0?turn=off");      
+            }
+             if (action.turn === "Toggle") {
+                console.log("Toggle")
+                $.get(action.httpHttps + "://" + action.shellyIP + "/relay/0?turn=toggle");      
+            }
+            break;
+        
+        case 'GridActionKeyValueRequest':
+
+            if (action.format === "Parameters")
+            {
+                if (action.method === "POST") {
+                    console.log("do POST request")
+                    $.post(action.urlRequest + "?" + action.keyParameter + "=" + action.valueParameter).then(data => {
+                    console.log(data);
+                    });      
+                }   
+                if (action.method === "GET") {
+                  console.log("do GET request")
+                  $.get(action.urlRequest + "?" + action.keyParameter + "=" + action.valueParameter).then(data => {                
+                    console.log(data);
+                    });      
+                }
+            }
+            
+            if (action.format === "Body")
+            {
+                $.ajax({
+                url: action.urlRequest,
+                type: action.method,
+                data: action.bodyData,
+                contentType:"text/plain",
+                dataType:"text/plain"
+                }).then(data => { console.log(data);
+                });           
+            }
+            break;    
+   
     }
 }
 

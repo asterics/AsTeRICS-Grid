@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>AsTeRICS Grid</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,124 +16,165 @@
     <link rel="stylesheet" href="app/css/skeleton.css">
     <link rel="stylesheet" href="app/css/bootstrap-grid.css">
 </head>
+
 <body onload="window.loaded = true;">
-<div style="display: none" aria-hidden="false">
-    {{ $t('accessKey1NavigationAccessKey2Main') }}
-</div>
-<div id="app" class="holy-grail">
-    <h1 class="sr-only">AsTeRICS Grid</h1>
-    <div id="touchElement" class="grid-container" style="z-index: 2; display: none">
+    <div style="display: none" aria-hidden="false">
+        {{ $t('accessKey1NavigationAccessKey2Main') }}
     </div>
-    <audio style="display: none" id="audioPlayer" src="" preload="none"></audio>
-    <video style="display: none" id="videoPlayer" src="" preload="none"></video>
-    <notification-bar ref="notificationBar"></notification-bar>
-    <progress-bar-modal v-show="showProgressBar" ref="progressBar" @close="showProgressBar = false"></progress-bar-modal>
-    <div class="grid-container grid-mask" v-if="false">
-        <i class="fas fa-4x fa-spinner fa-spin" style="top: 40%;"></i>
-        <div style="position: fixed; top: 50%; width: 100%; text-align: center; font-size: 2em;">
-            <span>loading...</span>
+    <div id="app" class="holy-grail">
+        <h1 class="sr-only">AsTeRICS Grid</h1>
+        <div id="touchElement" class="grid-container" style="z-index: 2; display: none">
         </div>
-    </div>
-    <div class="holy-grail-body" v-cloak>
-        <div class="holy-grail-sidebar-1 hg-sidebar no-print" v-show="showSidebar">
-            <div style="flex: 0 0 auto;">
-                <div class="show-mobile">
-                    <a tabindex="1" href="javascript:void(0)" :aria-label="$t('closeSidebar')" @click="closeSidebar()"><button tabindex="-1"><i class="fas fa-2x fa-bars inline"></i></button></a>
-                </div>
-                <div class="hide-mobile" style="display: inline-flex">
-                    <a tabindex="1" href="javascript:void(0)" :aria-label="$t('closeSidebar')" @click="closeSidebar()" style="margin: 0.2em 0.5em 0 1.2em"><i class="fas fa-2x fa-bars inline"></i></a>
-                    <a tabindex="-1" aria-hidden="true" href="#main"><h1 class="inline hide-mobile"><img id="astericsIcon" src="app/img/asterics-grid-icon-raw.svg" height="40" width="121" alt="AsTeRICS Grid"/></h1></a>
-                </div>
+        <audio style="display: none" id="audioPlayer" src="" preload="none"></audio>
+        <video style="display: none" id="videoPlayer" src="" preload="none"></video>
+        <notification-bar ref="notificationBar"></notification-bar>
+        <progress-bar-modal v-show="showProgressBar" ref="progressBar" @close="showProgressBar = false">
+        </progress-bar-modal>
+        <div class="grid-container grid-mask" v-if="false">
+            <i class="fas fa-4x fa-spinner fa-spin" style="top: 40%;"></i>
+            <div style="position: fixed; top: 50%; width: 100%; text-align: center; font-size: 2em;">
+                <span>loading...</span>
             </div>
+        </div>
+        <div class="holy-grail-body" v-cloak>
+            <div class="holy-grail-sidebar-1 hg-sidebar no-print" v-show="showSidebar">
+                <div style="flex: 0 0 auto;">
+                    <div class="show-mobile">
+                        <a tabindex="1" href="javascript:void(0)" :aria-label="$t('closeSidebar')"
+                            @click="closeSidebar()"><button tabindex="-1"><i
+                                    class="fas fa-2x fa-bars inline"></i></button></a>
+                    </div>
+                    <div class="hide-mobile" style="display: inline-flex">
+                        <a tabindex="1" href="javascript:void(0)" :aria-label="$t('closeSidebar')"
+                            @click="closeSidebar()" style="margin: 0.2em 0.5em 0 1.2em"><i
+                                class="fas fa-2x fa-bars inline"></i></a>
+                        <a tabindex="-1" aria-hidden="true" href="#main">
+                            <h1 class="inline hide-mobile"><img id="astericsIcon"
+                                    src="app/img/asterics-grid-icon-raw.svg" height="40" width="121"
+                                    alt="AsTeRICS Grid" /></h1>
+                        </a>
+                    </div>
+                </div>
 
-            <nav role="navigation" class="srow content" style="flex: 1 1 auto" accesskey="1">
-                <div v-if="currentUser">
-                    <h2 class="hide-mobile" style="margin-top: 1.5em;">{{ $t('navigation') }}</h2>
-                    <br class="show-mobile" aria-hidden="true"/>
+                <nav role="navigation" class="srow content" style="flex: 1 1 auto" accesskey="1">
+                    <div v-if="currentUser">
+                        <h2 class="hide-mobile" style="margin-top: 1.5em;">{{ $t('navigation') }}</h2>
+                        <br class="show-mobile" aria-hidden="true" />
+                        <ul>
+                            <li><a tabindex="2" href="#main" :aria-label="$t('mainView')"><button tabindex="-1"><i
+                                            class="fas fa-2x fa-home"></i><span class="hide-mobile">{{ $t('mainView')
+                                            }}</span></button></a></li>
+                            <li><a tabindex="3" href="#grids" :aria-label="$t('manageGrids')"><button tabindex="-1"><i
+                                            class="fas fa-2x fa-list-ul"></i><span class="hide-mobile">{{
+                                            $t('manageGrids') }}</span></button></a></li>
+                            <li><a tabindex="4" href="#dictionaries" :aria-label="$t('manageDictionaries')"><button
+                                        tabindex="-1"><i class="fas fa-2x fa-book"></i><span class="hide-mobile">{{
+                                            $t('manageDictionaries') }}</span></button></a></li>
+                        </ul>
+                    </div>
+
+                    <h2 class="hide-mobile">{{ $t('users') }}</h2>
                     <ul>
-                        <li><a tabindex="2" href="#main" :aria-label="$t('mainView')"><button tabindex="-1"><i class="fas fa-2x fa-home"></i><span class="hide-mobile">{{ $t('mainView') }}</span></button></a></li>
-                        <li><a tabindex="3" href="#grids" :aria-label="$t('manageGrids')"><button tabindex="-1"><i class="fas fa-2x fa-list-ul"></i><span class="hide-mobile">{{ $t('manageGrids') }}</span></button></a></li>
-                        <li><a tabindex="4" href="#dictionaries" :aria-label="$t('manageDictionaries')"><button tabindex="-1"><i class="fas fa-2x fa-book"></i><span class="hide-mobile">{{ $t('manageDictionaries') }}</span></button></a></li>
+                        <li><a tabindex="5" href="#login" :aria-label="$t('changeUser')">
+                                <button tabindex="-1">
+                                    <i class="fas fa-2x fa-users"></i><span v-show="!currentUser" class="hide-mobile">{{
+                                        $t('login') }}</span><span v-show="currentUser" class="hide-mobile">{{
+                                        $t('changeUser') }}</span>
+                                </button></a>
+                        </li>
+                        <li class="hide-mobile"><a tabindex="6" href="#register"
+                                :aria-label="$t('addOnlineUser')"><button tabindex="-1"><i
+                                        class="fas fa-2x fa-user-plus"></i><span class="hide-mobile">{{
+                                        $t('addOnlineUser') }}</span></button></a></li>
+                        <li class="hide-mobile"><a tabindex="7" href="#add" :aria-label="$t('addOfflineUser')"><button
+                                    tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span>{{ $t('addOfflineUser')
+                                        }}</span></button></a></li>
                     </ul>
+
+                    <br class="hide-mobile" aria-hidden="true" />
+                    <ul style="margin-bottom: 0;">
+                        <li v-show="currentUser"><a tabindex="8" href="#settings"
+                                :aria-label="$t('generalSettings')"><button tabindex="-1"><i
+                                        class="fas fa-2x fa-cog"></i><span class="hide-mobile">{{ $t('generalSettings')
+                                        }}</span></button></a></li>
+                        <li class="hide-mobile"><a tabindex="9" href="#about"
+                                :aria-label="$t('aboutAstericsGrid')"><button tabindex="-1"><i
+                                        class="fas fa-2x fa-info-circle"></i><span class="hide-mobile">{{
+                                        $t('aboutAstericsGrid') }}</span></button></a></li>
+                        <li><a tabindex="10" href="javascript:;" @click="openHelp()" :aria-label="$t('help')"><button
+                                    tabindex="-1" id="helpButton"><i class="fas fa-2x fa-question-circle"></i><span
+                                        class="hide-mobile">{{ $t('help') }}</span></button></a></li>
+                        <li class="show-mobile"><a tabindex="11" href="javascript:;" :aria-label="$t('more')"
+                                @click="moreNavigation()" id="moreNavigation"><button tabindex="-1"><i
+                                        class="fas fa-2x fa-ellipsis-v"></i></button></a></li>
+                    </ul>
+                </nav>
+                <div style="flex: 0 0 auto;" id="syncVisualizationWrapper">
+                    <span v-show="currentUser && !isLocalUser" class="hide-mobile"><span>{{ $t('loggedInAs') }}</span>
+                        <i>{{currentUser}}</i></span>
+                    <span v-show="currentUser && isLocalUser" class="hide-mobile"><span>{{ $t('usingOfflineUser')
+                            }}</span> <i>{{currentUser}}</i></span>
+                    <span v-show="!currentUser" class="hide-mobile">{{ $t('notLoggedIn') }}</span>
+                    <span id="syncVisualization" v-if="currentUser && !isLocalUser" class="fa-stack fa-1x right"
+                        :title="syncState | translate">
+                        <i class="fas fa-cloud fa-stack-2x" style="color: lightblue"></i>
+                        <i v-show="syncState === constants.DB_SYNC_STATE_SYNCINC"
+                            class="fas fa-sync-alt fa-stack-1x fa-spin"></i>
+                        <i v-show="syncState === constants.DB_SYNC_STATE_SYNCED" class="fas fa-check fa-stack-1x"></i>
+                        <i v-show="syncState === constants.DB_SYNC_STATE_STOPPED" class="fas fa-pause fa-stack-1x"></i>
+                        <i v-show="syncState === constants.DB_SYNC_STATE_ONLINEONLY"
+                            class="fas fa-globe fa-stack-1x"></i>
+                        <i v-show="!syncState || syncState === constants.DB_SYNC_STATE_FAIL"
+                            class="fas fa-times fa-stack-1x"></i>
+                    </span>
                 </div>
-
-                <h2 class="hide-mobile">{{ $t('users') }}</h2>
-                <ul>
-                    <li><a tabindex="5" href="#login" :aria-label="$t('changeUser')">
-                        <button tabindex="-1">
-                            <i class="fas fa-2x fa-users"></i><span v-show="!currentUser" class="hide-mobile">{{ $t('login') }}</span><span v-show="currentUser" class="hide-mobile">{{ $t('changeUser') }}</span>
-                        </button></a>
-                    </li>
-                    <li class="hide-mobile"><a tabindex="6" href="#register" :aria-label="$t('addOnlineUser')"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span class="hide-mobile">{{ $t('addOnlineUser') }}</span></button></a></li>
-                    <li class="hide-mobile"><a tabindex="7" href="#add" :aria-label="$t('addOfflineUser')"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span>{{ $t('addOfflineUser') }}</span></button></a></li>
-                </ul>
-
-                <br class="hide-mobile" aria-hidden="true"/>
-                <ul style="margin-bottom: 0;">
-                    <li v-show="currentUser"><a tabindex="8" href="#settings" :aria-label="$t('generalSettings')"><button tabindex="-1"><i class="fas fa-2x fa-cog"></i><span class="hide-mobile">{{ $t('generalSettings') }}</span></button></a></li>
-                    <li class="hide-mobile"><a tabindex="9" href="#about" :aria-label="$t('aboutAstericsGrid')"><button tabindex="-1"><i class="fas fa-2x fa-info-circle"></i><span class="hide-mobile">{{ $t('aboutAstericsGrid') }}</span></button></a></li>
-                    <li><a tabindex="10" href="javascript:;" @click="openHelp()" :aria-label="$t('help')"><button tabindex="-1" id="helpButton"><i class="fas fa-2x fa-question-circle"></i><span class="hide-mobile">{{ $t('help') }}</span></button></a></li>
-                    <li class="show-mobile"><a tabindex="11" href="javascript:;" :aria-label="$t('more')" @click="moreNavigation()" id="moreNavigation"><button tabindex="-1"><i class="fas fa-2x fa-ellipsis-v"></i></button></a></li>
-                </ul>
-            </nav>
-            <div style="flex: 0 0 auto;" id="syncVisualizationWrapper">
-                <span v-show="currentUser && !isLocalUser" class="hide-mobile"><span>{{ $t('loggedInAs') }}</span> <i>{{currentUser}}</i></span>
-                <span v-show="currentUser && isLocalUser" class="hide-mobile"><span>{{ $t('usingOfflineUser') }}</span> <i>{{currentUser}}</i></span>
-                <span v-show="!currentUser" class="hide-mobile">{{ $t('notLoggedIn') }}</span>
-                <span id="syncVisualization" v-if="currentUser && !isLocalUser" class="fa-stack fa-1x right" :title="syncState | translate">
-                    <i class="fas fa-cloud fa-stack-2x" style="color: lightblue"></i>
-                    <i v-show="syncState === constants.DB_SYNC_STATE_SYNCINC" class="fas fa-sync-alt fa-stack-1x fa-spin"></i>
-                    <i v-show="syncState === constants.DB_SYNC_STATE_SYNCED" class="fas fa-check fa-stack-1x"></i>
-                    <i v-show="syncState === constants.DB_SYNC_STATE_STOPPED" class="fas fa-pause fa-stack-1x"></i>
-                    <i v-show="syncState === constants.DB_SYNC_STATE_ONLINEONLY" class="fas fa-globe fa-stack-1x"></i>
-                    <i v-show="!syncState || syncState === constants.DB_SYNC_STATE_FAIL" class="fas fa-times fa-stack-1x"></i>
-                </span>
             </div>
+            <main role="main" class="holy-grail-content" accesskey="2">
+                <!-- Main page content -->
+                <component v-if="component" v-bind:is="component" v-bind="properties" :key="componentKey"></component>
+            </main>
         </div>
-        <main role="main" class="holy-grail-content" accesskey="2">
-            <!-- Main page content -->
-            <component v-if="component" v-bind:is="component" v-bind="properties" :key="componentKey"></component>
-        </main>
     </div>
-</div>
 
-<!-- polyfills that are needed in all browsers -->
-<script src="app/polyfill/core.min.js"></script> <!-- added for IE and Edge - does implement Promise, but not Promise.finally() -->
+    <!-- polyfills that are needed in all browsers -->
+    <script src="app/polyfill/core.min.js"></script>
+    <!-- added for IE and Edge - does implement Promise, but not Promise.finally() -->
 
-<!-- polyfills that are needed only in old browsers that do not support ES6 modules -->
-<script nomodule src="app/polyfill/fetch.js"></script>
-<script nomodule src="app/polyfill/url-search-params-polyfill.min.js"></script>
+    <!-- polyfills that are needed only in old browsers that do not support ES6 modules -->
+    <script nomodule src="app/polyfill/fetch.js"></script>
+    <script nomodule src="app/polyfill/url-search-params-polyfill.min.js"></script>
 
-<!-- libraries, not provided by npm -->
-<script src="app/lib/jquery.min.js"></script>
-<script src="app/lib/jquery-ui.min.js"></script>
-<script src="app/lib/jquery.ui.touchpunch.min.js"></script>
-<script type="text/javascript" src='app/lib/gridList.js'></script>
-<script type="text/javascript" src='app/lib/jquery.gridList.js'></script>
-<script type="text/javascript" src='app/lib/jquery.contextMenu.min.js'></script>
-<script type="text/javascript" src='app/lib/jquery.ui.position.min.js'></script>
-<script type="text/javascript" src='app/lib/object-model.min.js'></script>
-<script type="text/javascript" src='app/lib/pouchdb-7.0.0.min.js'></script>
-<script type="text/javascript" src='app/lib/loglevel.min.js'></script>
-<script type="text/javascript" src='app/lib/sjcl.min.js'></script>
-<script type="text/javascript">
-    if (Function.bind) {
-        //remove RV log messages without altering RV source (forbidden by license)
-        window.originalLog = console.log.bind(console);
-        console.log = function () {
-            if (['ResponsiveVoice r1.6.5', 'isHidden: false', 'Prerender: false', 'Configuring'].indexOf(arguments[0]) !== -1) {
-                return;
-            } else if (arguments[0] === 'RV: Voice support ready') {
-                console.log = window.originalLog;
-            } else {
-                window.originalLog.apply(null, arguments);
+    <!-- libraries, not provided by npm -->
+    <script src="app/lib/jquery.min.js"></script>
+    <script src="app/lib/jquery-ui.min.js"></script>
+    <script src="app/lib/jquery.ui.touchpunch.min.js"></script>
+    <script type="text/javascript" src='app/lib/gridList.js'></script>
+    <script type="text/javascript" src='app/lib/jquery.gridList.js'></script>
+    <script type="text/javascript" src='app/lib/jquery.contextMenu.min.js'></script>
+    <script type="text/javascript" src='app/lib/jquery.ui.position.min.js'></script>
+    <script type="text/javascript" src='app/lib/object-model.min.js'></script>
+    <script type="text/javascript" src='app/lib/pouchdb-7.0.0.min.js'></script>
+    <script type="text/javascript" src='app/lib/loglevel.min.js'></script>
+    <script type="text/javascript" src='app/lib/sjcl.min.js'></script>
+    <script type="text/javascript">
+        if (Function.bind) {
+            //remove RV log messages without altering RV source (forbidden by license)
+            window.originalLog = console.log.bind(console);
+            console.log = function () {
+                if (['ResponsiveVoice r1.6.5', 'isHidden: false', 'Prerender: false', 'Configuring'].indexOf(arguments[0]) !== -1) {
+                    return;
+                } else if (arguments[0] === 'RV: Voice support ready') {
+                    console.log = window.originalLog;
+                } else {
+                    window.originalLog.apply(null, arguments);
+                }
             }
         }
-    }
-</script>
-<script type="text/javascript" src='app/lib/responsive-voice.js'></script>
+    </script>
+    <script type="text/javascript" src='app/lib/responsive-voice.js'></script>
 
-<script nomodule src="app/build_legacy/asterics-grid.bundle.js"></script>
-<script type="module" src="app/build/asterics-grid.bundle.js"></script>
+    <script nomodule src="app/build_legacy/asterics-grid.bundle.js"></script>
+    <script type="module" src="app/build/asterics-grid.bundle.js"></script>
 </body>
+
 </html>
