@@ -19,7 +19,8 @@
     "predictionary": "^1.6.0",
     "superlogin-client": "^0.8.0",
     "vue": "^2.5.17",
-    "vue-i18n": "8"
+    "vue-i18n": "8",
+    "vue-simple-search-dropdown": "^1.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",

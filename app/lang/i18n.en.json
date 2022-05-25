@@ -1,4 +1,29 @@
 {
+ 
+  "inputIpAddress": "Input IP-Adress",
+  "keyParameter": "Key",
+  "valueParameter": "Value",
+  "getMethod": "GET",
+  "postMethod": "POST",
+  "method": "Method: ",
+ "urlRequest": "URL Request",
+  "turnOn": "On",
+  "turnOff": "Off",
+  "turnToggle": "Toggle",
+  "turn": "State",
+   "http": "http",
+   "https": "https",   
+   "http/https": "HTTP/HTTPS",
+   "format": "Format",
+   "body": "Body",
+   "params": "Parameters",
+   "bodyData": "Data",
+
+
+  "GridActionKeyValueRequest": "HTTP Key-Value Request",
+   "GridActionTurnOnShelly": "Shelly turn on/off/toggle",
+
+
   "GridActionSpeak": "Speak label",
   "GridActionSpeakCustom": "Speak custom text",
   "GridActionNavigate": "Navigate to other grid",
