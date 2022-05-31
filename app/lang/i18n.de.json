@@ -723,11 +723,11 @@
   "CC_QUESTION": "Frage",
   "CC_ADVERB": "Adverb",
   "CC_IMPORTANT": "Wichtig",
-  "CC_DETERMINER": "Determiner",
-  "colorSchemeForCategories": "Color Scheme for Categories",
-  "CS_NAME_PASTEL": "Pastel color scheme",
-  "CS_NAME_DARK": "Dark color scheme",
-  "activateColorCategoriesOfGridElements": "Activate color categories of grid elements",
-  "closeSidebar": "close sidebar",
-  "openSidebar": "open sidebar"
+  "CC_DETERMINER": "Determinativ",
+  "colorSchemeForCategories": "Farbschema für Kategorien",
+  "CS_NAME_PASTEL": "Pastell-Farbschema",
+  "CS_NAME_DARK": "Dunkles Farbschema",
+  "activateColorCategoriesOfGridElements": "Aktiviere Farbkategorien von Grid-Elementen",
+  "closeSidebar": "Seitenleiste schließen",
+  "openSidebar": "Seitenleiste öffnen"
 }
