@@ -177,9 +177,12 @@ function getActionTypes(elem) {
 
 async function updateCollectElements(isSecondTry) {
     autoCollectImage = collectedImages.some(e => !!e);
-    let metadata = await dataService.getMetadata();
-    let txtBackgroundColor = metadata.colorConfig.gridBackgroundColor || '#ffffff';
+    let metadata = null;
+    if (registeredCollectElements.length > 0) {
+        metadata = await dataService.getMetadata();
+    }
     for (let collectElement of registeredCollectElements) {
+        let txtBackgroundColor = metadata.colorConfig.gridBackgroundColor || '#ffffff';
         let imageMode = isImageMode(collectElement.mode);
         let outerContainerJqueryElem = $(`#${collectElement.id} .collect-outer-container`);
         if (!imageMode) {
