@@ -41,39 +41,58 @@ constants.IS_FIREFOX = navigator.userAgent.indexOf("Firefox") !== -1;
 
 constants.STATE_ACTIVATED_TTS = 'STATE_ACTIVATED_TTS';
 
-constants.COLOR_SCHEME_CATEGORIES = ['CC_PRONOUN', 'CC_NOUN', 'CC_VERB', 'CC_ADJECTIVE', 'CC_PREPOSITION', 'CC_JUNCTION', 'CC_QUESTION', 'CC_ADVERB', 'CC_IMPORTANT', 'CC_DETERMINER'];
-constants.COLOR_SCHEME_PASTEL = [
-    '#fdfd96',
-    '#ffda89',
-    '#77dd77',
-    '#84b6f4',
-    '#fdcae1',
-    '#ffffff',
-    '#bc98f3',
-    '#d8af97',
-    '#ff9688',
-    '#bdbfbf'];
-
-constants.COLOR_SCHEME_DARK = [
-    '#ffff00',
-    '#ffad00',
-    '#00ff00',
-    '#0071ff',
-    '#ff0075',
-    '#ffffff',
-    '#9a5ff6',
-    '#9a4915',
-    '#ff1d00',
-    '#8c8c8c'];
-
+constants.DEFAULT_ELEMENT_BACKGROUND_COLOR = '#ffffff';
+constants.DEFAULT_GRID_BACKGROUND_COLOR = '#e8e8e8';
 constants.DEFAULT_COLOR_SCHEMES = [
     {
-        name: 'CS_NAME_PASTEL',
-        colors: constants.COLOR_SCHEME_PASTEL
+        name: 'CS_MODIFIED_FITZGERALD_KEY_LIGHT',
+        categories: ['CC_PRONOUN_PERSON_NAME', 'CC_NOUN', 'CC_VERB', 'CC_DESCRIPTOR', 'CC_SOCIAL_EXPRESSIONS', 'CC_MISC', 'CC_PLACE', 'CC_CATEGORY', 'CC_IMPORTANT', 'CC_OTHERS'],
+        colors: [
+            '#ffff6b',
+            '#ffb56b',
+            '#b5ff6b',
+            '#6bb5ff',
+            '#ff6bff',
+            '#ffffff',
+            '#ce6bff',
+            '#bd754e',
+            '#ff704d',
+            '#a3a3a3']
     }, {
-        name: 'CS_NAME_DARK',
-        colors: constants.COLOR_SCHEME_DARK
+        name: 'CS_MODIFIED_FITZGERALD_KEY_DARK',
+        categories: ['CC_PRONOUN_PERSON_NAME', 'CC_NOUN', 'CC_VERB', 'CC_DESCRIPTOR', 'CC_SOCIAL_EXPRESSIONS', 'CC_MISC', 'CC_PLACE', 'CC_CATEGORY', 'CC_IMPORTANT', 'CC_OTHERS'],
+        colors: [
+            '#c4c400',
+            '#bd6000',
+            '#007900',
+            '#1e1e85',
+            '#A50163',
+            '#c9c9c9',
+            '#56078f',
+            '#593707',
+            '#b20101',
+            '#575757']
     },
+    {
+        name: 'CS_GOOSENS_LIGHT',
+        categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
+        colors: [
+            '#ff6bff',
+            '#6bb5ff',
+            '#b5ff6b',
+            '#ffff6b',
+            '#ffb56b']
+    },
+    {
+        name: 'CS_GOOSENS_DARK',
+        categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
+        colors: [
+            '#A50163',
+            '#1e1e85',
+            '#007900',
+            '#c4c400',
+            '#bd6000']
+    }
 ];
 
 export {constants};
