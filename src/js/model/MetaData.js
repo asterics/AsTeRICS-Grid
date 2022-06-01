@@ -35,6 +35,11 @@ class MetaData extends Model({
         return JSON.stringify(comp1) == JSON.stringify(comp2);
     }
 
+    static getActiveColorScheme(metadata) {
+        metadata = metadata || new MetaData();
+        return constants.DEFAULT_COLOR_SCHEMES.filter(scheme => scheme.name === metadata.colorConfig.activeColorScheme)[0] || constants.DEFAULT_COLOR_SCHEMES[0];
+    }
+
     static getModelName() {
         return "MetaData";
     }
