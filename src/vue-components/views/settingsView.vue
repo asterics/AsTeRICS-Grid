@@ -2,13 +2,17 @@
     <div class="overflow-content">
         <header-icon full-header="true"></header-icon>
         <div class="srow content spaced" v-if="show">
-            <div class="srow">
+            <div class="srow" style="margin-bottom: 0">
                 <h2 class="six columns">{{ $t('generalSettings') }}</h2>
                 <div v-if="saveSuccess" style="padding-top: 1.7em;"><i class="fas fa-check" style="color: green"></i> <span>{{ $t('allChangesSaved') }}</span></div>
             </div>
             <div class="srow">
+                <span class="fa fa-info-circle"></span>
+                <span class="break-word">{{ $t('generalSettingsAreAppliedToAllUsersOnThisDevice') }}</span>
+            </div>
+            <div class="srow">
                 <div class="ten columns">
-                    <h3 class="mt-0">{{ $t('applicationLanguage') }}</h3>
+                    <h3 class="mt-2">{{ $t('applicationLanguage') }}</h3>
                     <div class="srow">
                         <label class="three columns" for="inLanguage">{{ $t('selectLanguage') }}</label>
                         <select class="five columns" id="inLanguage" v-model="langCode" @change="saveLangCode()">
@@ -69,38 +73,45 @@
                     </div>
                 </div>
             </div>
+            <div class="srow" style="margin-bottom: 0">
+                <h2 class="six columns">{{ $t('userSettings') }}</h2>
+            </div>
+            <div class="srow">
+                <span class="fa fa-info-circle"></span>
+                <span class="break-word">{{ $t('userSettingsAreLinkedToTheCurrentUser') }}</span>
+            </div>
             <div class="srow">
                 <div class="ten columns">
-                    <h3>{{ $t('colors') }}</h3>
+                    <h3 class="mt-2">{{ $t('colors') }}</h3>
                     <div class="srow">
                         <label class="three columns" for="elemColor">
                             <span>{{ $t('defaultGridElementColor') }}</span>
                         </label>
-                        <input id="elemColor" v-model="elemColor" class="five columns" type="color" @change="event => localStorageService.save(localStorageService.COLOR_DEFAULT_ELEM_BACKGROUND, event.target.value)">
-                        <button class="three columns" @click="elemColor = '#add8e6'; localStorageService.save(localStorageService.COLOR_DEFAULT_ELEM_BACKGROUND, elemColor)">{{ $t('reset') }}</button>
+                        <input id="elemColor" v-model="metadata.colorConfig.elementBackgroundColor" class="five columns" type="color" @change="saveMetadata()">
+                        <button class="three columns" @click="metadata.colorConfig.elementBackgroundColor = constants.DEFAULT_ELEMENT_BACKGROUND_COLOR; saveMetadata()">{{ $t('reset') }}</button>
                     </div>
                     <div class="srow">
                         <label class="three columns" for="appColor">
                             <span>{{ $t('defaultGridBackgroundColor') }}</span>
                         </label>
-                        <input id="appColor" v-model="gridBackgroundColor" class="five columns" type="color" @change="event => localStorageService.save(localStorageService.COLOR_DEFAULT_GRID_BACKGROUND, event.target.value)">
-                        <button class="three columns" @click="gridBackgroundColor = '#ffffff'; localStorageService.save(localStorageService.COLOR_DEFAULT_GRID_BACKGROUND, gridBackgroundColor)">{{ $t('reset') }}</button>
+                        <input id="appColor" v-model="metadata.colorConfig.gridBackgroundColor" class="five columns" type="color" @change="saveMetadata()">
+                        <button class="three columns" @click="metadata.colorConfig.gridBackgroundColor = constants.DEFAULT_GRID_BACKGROUND_COLOR; saveMetadata()">{{ $t('reset') }}</button>
                     </div>
                     <div class="srow">
                         <label class="three columns" for="colorScheme">
                             <span>{{ $t('colorSchemeForCategories') }}</span>
                         </label>
-                        <select id="colorScheme" class="five columns" v-model="colorScheme" @change="event => localStorageService.save(localStorageService.COLOR_SCHEME, event.target.value)">
+                        <select id="colorScheme" class="five columns" v-model="metadata.colorConfig.activeColorScheme" @change="saveMetadata()">
                             <option v-for="scheme in constants.DEFAULT_COLOR_SCHEMES" :value="scheme.name">{{scheme.name | translate}}</option>
                         </select>
                     </div>
                     <div class="srow">
                         <div class="five columns offset-by-three d-flex" style="height: 1.5em">
-                            <div class="flex-grow-1" v-for="color in constants.DEFAULT_COLOR_SCHEMES.filter(s => s.name === colorScheme)[0].colors" :style="`background-color: ${color};`"></div>
+                            <div class="flex-grow-1" v-for="(color, index) in MetaData.getActiveColorScheme(metadata).colors" :title="$t(MetaData.getActiveColorScheme(metadata).categories[index])" :style="`background-color: ${color};`"></div>
                         </div>
                     </div>
                     <div class="srow">
-                        <input id="colorSchemeActive" type="checkbox" v-model="colorSchemeActive" @change="event => localStorageService.save(localStorageService.COLOR_SCHEME_ACTIVATED, colorSchemeActive)"/>
+                        <input id="colorSchemeActive" type="checkbox" v-model="metadata.colorConfig.colorSchemesActivated" @change="saveMetadata()"/>
                         <label for="colorSchemeActive">
                             <span>{{ $t('activateColorCategoriesOfGridElements') }}</span>
                         </label>
@@ -119,6 +130,7 @@
     import {util} from "../../js/util/util";
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {constants} from "../../js/util/constants.js";
+    import {MetaData} from "../../js/model/MetaData.js";
 
     export default {
         components: {HeaderIcon},
@@ -140,11 +152,8 @@
                 testText: i18nService.t('thisIsAnEnglishSentence'),
                 i18nService: i18nService,
                 localStorageService: localStorageService,
-                elemColor: localStorageService.get(localStorageService.COLOR_DEFAULT_ELEM_BACKGROUND) || '#add8e6', //default: "lightblue"
-                gridBackgroundColor: localStorageService.get(localStorageService.COLOR_DEFAULT_GRID_BACKGROUND) || '#ffffff',
-                colorScheme: localStorageService.get(localStorageService.COLOR_SCHEME) || constants.DEFAULT_COLOR_SCHEMES[0].name,
-                colorSchemeActive: localStorageService.get(localStorageService.COLOR_SCHEME_ACTIVATED) !== 'false',
-                constants: constants
+                constants: constants,
+                MetaData: MetaData
             }
         },
         methods: {
@@ -175,6 +184,15 @@
                     localStorageService.setUnlockPasscode(this.unlockPasscode);
                     this.saveSuccess = true;
                 }, 500, 'SAVE_UNLOCK');
+            },
+            saveMetadata() {
+                let thiz = this;
+                this.saveSuccess = undefined;
+                util.throttle(() => {
+                    dataService.saveMetadata(thiz.metadata).then(() => {
+                        this.saveSuccess = true;
+                    });
+                }, null, 500, 'SAVE_METADATA');
             },
             testSpeak() {
                 speechService.speak(this.testText, null , this.selectedVoiceName);

@@ -22,24 +22,24 @@ templates.getGridBase = function (gridId) {
 };
 
 
-templates.getGridItem = function (gridElem, locale) {
+templates.getGridItem = function (gridElem, locale, metadata) {
     switch (gridElem.type) {
         case GridElement.ELEMENT_TYPE_COLLECT: {
-            return getGridElementCollect(gridElem);
+            return getGridElementCollect(gridElem, metadata);
         }
         case GridElement.ELEMENT_TYPE_PREDICTION: {
-            return getGridElementPredict(gridElem);
+            return getGridElementPredict(gridElem, metadata);
         }
         case GridElement.ELEMENT_TYPE_YT_PLAYER: {
-            return getGridElementYTPlayer(gridElem);
+            return getGridElementYTPlayer(gridElem, metadata);
         }
         default: {
-            return getGridElementNormal(gridElem, locale);
+            return getGridElementNormal(gridElem, locale, metadata);
         }
     }
 };
 
-function getGridElementNormal(gridElem, fallbackLocale) {
+function getGridElementNormal(gridElem, fallbackLocale, metadata) {
     gridElem = fillDefaultValues(gridElem);
     var imgData = '';
     var imgId = '';
@@ -54,13 +54,13 @@ function getGridElementNormal(gridElem, fallbackLocale) {
         txtContainerStyle += 'flex: 1 1 auto;';
         imgContainerMargin = '0'
     }
-    let backgroundColor = getBackgroundColor(gridElem);
+    let backgroundColor = getBackgroundColor(gridElem, metadata);
     let fontColor = fontUtil.getHighContrastColor(backgroundColor);
     let ariaLabel = label ? label : getAriaLabel(gridElem);
 
     var template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${label}" data-img-id="${imgId}" data-type="${gridElem.type}">
-    <div class="grid-item-content" tabindex="40" aria-label="${ariaLabel}" id="${gridElem.id}" data-id="${gridElem.id}" data-empty="${!label && !imgData}" style="${`background-color: ${backgroundColor}; border: 1px solid ${getBorderColor()}`}">
+    <div class="grid-item-content" tabindex="40" aria-label="${ariaLabel}" id="${gridElem.id}" data-id="${gridElem.id}" data-empty="${!label && !imgData}" style="${`background-color: ${backgroundColor}; border: 1px solid ${getBorderColor(metadata)}`}">
         <div class="img-container" style="background: center no-repeat; background-size: contain; background-image: url('${imgData}'); margin: ${imgContainerMargin}; max-height: ${imgContainerMaxHeight};"/>
         <div class="text-container" style="${txtContainerStyle + `color: ${fontColor}`}"><span>${label}</span></div>
         ${getHintsElement(gridElem)}
@@ -69,15 +69,15 @@ function getGridElementNormal(gridElem, fallbackLocale) {
     return template;
 }
 
-function getGridElementCollect(gridElem) {
+function getGridElementCollect(gridElem, metadata) {
     gridElem = fillDefaultValues(gridElem);
-    let backgroundColor = getBackgroundColor(gridElem);
-    let txtBackgroundColor = localStorageService.get(localStorageService.COLOR_DEFAULT_GRID_BACKGROUND) || '#ffffff';
+    let backgroundColor = getBackgroundColor(gridElem, metadata);
+    let txtBackgroundColor = metadata.colorConfig.gridBackgroundColor || '#ffffff';
     let fontColor = fontUtil.getHighContrastColor(txtBackgroundColor);
 
     var template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-type="${gridElem.type}">
-    <div class="grid-item-content" tabindex="40" aria-label="${i18nService.t('ELEMENT_TYPE_COLLECT')}" id="${gridElem.id}" data-id="${gridElem.id}" style="${`background-color: ${backgroundColor}; border: 1px solid ${getBorderColor()}`}">
+    <div class="grid-item-content" tabindex="40" aria-label="${i18nService.t('ELEMENT_TYPE_COLLECT')}" id="${gridElem.id}" data-id="${gridElem.id}" style="${`background-color: ${backgroundColor}; border: 1px solid ${getBorderColor(metadata)}`}">
         <div class="collect-outer-container text-container" style="${`position: absolute; display:flex; inset: 5px; color: ${fontColor};`}">
         </div>
     </div>
@@ -85,28 +85,28 @@ function getGridElementCollect(gridElem) {
     return template;
 }
 
-function getGridElementPredict(gridElem) {
+function getGridElementPredict(gridElem, metadata) {
     gridElem = fillDefaultValues(gridElem);
     let txtContainerStyle = 'display: table; height: 100%; text-align: center; width: 100%';
     let label = i18nService.getTranslation(gridElem.label);
 
     let template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${label}" data-type="${gridElem.type}">
-    <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}" style="${`background-color: rgb(255,228,178); border: 1px solid ${getBorderColor()}`}">
+    <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}" style="${`background-color: rgb(255,228,178); border: 1px solid ${getBorderColor(metadata)}`}">
         <div class="text-container" style="${txtContainerStyle}"><span style="display: table-cell; vertical-align: middle;">${label}</span></div>
     </div>
 </li>`;
     return template;
 }
 
-function getGridElementYTPlayer(gridElem) {
+function getGridElementYTPlayer(gridElem, metadata) {
     gridElem = fillDefaultValues(gridElem);
     let stopClicking = gridElem.additionalProps[GridElement.PROP_YT_PREVENT_CLICK];
     let label = i18nService.getTranslation(gridElem.label);
 
     var template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${label}" data-type="${gridElem.type}">
-    <div class="grid-item-content" tabindex="40" aria-label="${i18nService.t('ELEMENT_TYPE_YT_PLAYER')}" id="${gridElem.id}" data-id="${gridElem.id}" style="${`border: 1px solid ${getBorderColor()}`}">
+    <div class="grid-item-content" tabindex="40" aria-label="${i18nService.t('ELEMENT_TYPE_YT_PLAYER')}" id="${gridElem.id}" data-id="${gridElem.id}" style="${`border: 1px solid ${getBorderColor(metadata)}`}">
         ${stopClicking ? '<div id="youtubeClickPreventer" onclick="event.stopPropagation()" style="z-index: 100; position: absolute; top: 0; bottom: 0; left: 0; right: 0; height: 100%; width: 100%"></div>' : ''}
         <div class="yt-container" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
             <div id="player" style="outline: 1px solid; outline-offset: -5px; height: 100%; background-color: black; display: flex; align-items: center; justify-content: center;">
@@ -137,20 +137,21 @@ function getHintsElement(gridElem) {
 
 
 
-function getBackgroundColor(gridElem) {
+function getBackgroundColor(gridElem, metadata) {
     gridElem = gridElem || {};
     let backgroundColor = gridElem.backgroundColor;
-    let colorSchemeName = localStorageService.get(localStorageService.COLOR_SCHEME);
-    let colorScheme = constants.DEFAULT_COLOR_SCHEMES.filter(s => s.name === colorSchemeName)[0];
-    if (!backgroundColor && gridElem.colorCategory && localStorageService.get(localStorageService.COLOR_SCHEME_ACTIVATED) !== 'false') {
-        let index = constants.COLOR_SCHEME_CATEGORIES.indexOf(gridElem.colorCategory);
+    let colorSchemeName = metadata.colorConfig.activeColorScheme;
+    let colorScheme = constants.DEFAULT_COLOR_SCHEMES.filter(s => s.name === colorSchemeName)[0] || constants.DEFAULT_COLOR_SCHEMES[0];
+    if (!backgroundColor && gridElem.colorCategory && metadata.colorConfig.colorSchemesActivated) {
+        let index = colorScheme.categories.indexOf(gridElem.colorCategory);
         backgroundColor = colorScheme.colors[index];
     }
-    return  backgroundColor || localStorageService.get(localStorageService.COLOR_DEFAULT_ELEM_BACKGROUND) || '#add8e6'; //default: "lightblue"
+    return backgroundColor || metadata.colorConfig.elementBackgroundColor || constants.DEFAULT_ELEMENT_BACKGROUND_COLOR;
 }
 
-function getBorderColor() {
-    return fontUtil.getHighContrastColor(localStorageService.get(localStorageService.COLOR_DEFAULT_GRID_BACKGROUND), 'whitesmoke', 'gray');
+function getBorderColor(metadata) {
+    let backgroundColor = metadata && metadata.colorConfig ? metadata.colorConfig.gridBackgroundColor : '#ffffff';
+    return fontUtil.getHighContrastColor(backgroundColor, 'whitesmoke', 'gray');
 }
 
 function getAriaLabel(gridElem) {

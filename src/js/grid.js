@@ -67,7 +67,7 @@ function Grid(gridContainerId, gridItemClass, options) {
         _minGridColumns = _gridData.minColumnCount;
     }
 
-    function initGrid(gridDataParam) {
+    async function initGrid(gridDataParam) {
         let promises = [];
         if (!options.dragAndDrop) { //only add global grid if not in edit mode
             gridDataParam.gridElements = gridDataParam.gridElements.filter(elem => !elem.hidden);
@@ -113,38 +113,40 @@ function Grid(gridContainerId, gridItemClass, options) {
                 return Promise.resolve();
             }));
         }
-        return Promise.all(promises).then(() => {
-            collectElementService.initWithElements(_gridData.gridElements, dragAndDrop);
-            predictionService.initWithElements(_gridData.gridElements);
-            $(gridContainerId).empty();
-            $(gridContainerId).append(templates.getGridBase(gridDataParam.id));
-            _gridElement = $('#' + gridDataParam.id);
-            gridDataParam.gridElements.forEach(function (gridElement) {
-                _gridElement.append(gridElement.toHTML());
-            });
 
-            _gridElement.gridList({
-                lanes: _gridRows,
-                minColumns: _minGridColumns,
-                widthHeightRatio: 1,
-                heightToFontSizeRatio: 0.25,
-                dragAndDrop: dragAndDrop
-            }, {
-                start: notifyLayoutChangeStart,
-                stop: handleLayoutChange
+        await Promise.all(promises);
+        collectElementService.initWithElements(_gridData.gridElements, dragAndDrop);
+        predictionService.initWithElements(_gridData.gridElements);
+        $(gridContainerId).empty();
+        $(gridContainerId).append(templates.getGridBase(gridDataParam.id));
+        _gridElement = $('#' + gridDataParam.id);
+
+        let metadata = await dataService.getMetadata();
+        for (let gridElement of gridDataParam.gridElements) {
+            let html = gridElement.toHTML(metadata);
+            _gridElement.append(html);
+        }
+
+        _gridElement.gridList({
+            lanes: _gridRows,
+            minColumns: _minGridColumns,
+            widthHeightRatio: 1,
+            heightToFontSizeRatio: 0.25,
+            dragAndDrop: dragAndDrop
+        }, {
+            start: notifyLayoutChangeStart,
+            stop: handleLayoutChange
+        });
+        _gridListInstance = _gridElement.data('_gridList');
+        if (!gridDataParam.hasSetPositions()) {
+            _gridElement.gridList('resize', _gridRows);
+            thiz.toGridData().then(gridData => {
+                _gridData = gridData;
+                dataService.updateGrid(_gridData.id, _gridData);
             });
-            _gridListInstance = _gridElement.data('_gridList');
-            if (!gridDataParam.hasSetPositions()) {
-                _gridElement.gridList('resize', _gridRows);
-                thiz.toGridData().then(gridData => {
-                    _gridData = gridData;
-                    dataService.updateGrid(_gridData.id, _gridData);
-                });
-            }
-            initResizing().then(() => {
-                thiz.autosize(_animationTimeMs);
-            });
-            return Promise.resolve();
+        }
+        initResizing().then(() => {
+            thiz.autosize(_animationTimeMs);
         });
     }
 

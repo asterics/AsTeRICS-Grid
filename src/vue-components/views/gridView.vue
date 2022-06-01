@@ -110,7 +110,7 @@
                 viewInitialized: false,
                 unlockCount: UNLOCK_COUNT,
                 unlockCounter: UNLOCK_COUNT,
-                backgroundColor: localStorageService.get(localStorageService.COLOR_DEFAULT_GRID_BACKGROUND) || 'white'
+                backgroundColor: 'white'
             }
         },
         components: {
@@ -278,6 +278,9 @@
                 if (updatedGridDoc) {
                     vueApp.reload(new GridData(updatedGridDoc));
                 }
+                if (JSON.stringify(this.metadata.colorConfig) !== JSON.stringify(this.updatedMetadataDoc.colorConfig)) {
+                    vueApp.reload();
+                }
                 if (!localStorageService.shouldSyncNavigation()) {
                     return;
                 }
@@ -377,6 +380,7 @@
                 return dataService.getMetadata();
             }).then((savedMetadata) => {
                 let metadata = JSON.parse(JSON.stringify(savedMetadata || new MetaData()));
+                this.backgroundColor = metadata.colorConfig.gridBackgroundColor;
                 metadata.lastOpenedGridId = this.gridId;
                 metadata.locked = metadata.locked === undefined ? urlParamService.isDemoMode() && dataService.getCurrentUser() === constants.LOCAL_DEMO_USERNAME : metadata.locked;
                 metadata.fullscreen = metadata.fullscreen === undefined ? urlParamService.isDemoMode() && dataService.getCurrentUser() === constants.LOCAL_DEMO_USERNAME : metadata.fullscreen;

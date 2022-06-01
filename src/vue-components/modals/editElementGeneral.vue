@@ -13,8 +13,8 @@
             <label class="col-sm-2" for="colorCategory">{{ $t('colorCategory') }}</label>
             <div class="col-sm-7">
                 <select class="col-12" id="colorCategory" v-model="gridElement.colorCategory">
-                    <option :value="null">none</option>
-                    <option v-for="category in constants.COLOR_SCHEME_CATEGORIES" :value="category">{{ category | translate }}</option>
+                    <option :value="undefined">{{ $t('noneSelected') }}</option>
+                    <option v-for="category in colorCategories" :value="category">{{ category | translate }}</option>
                 </select>
             </div>
         </div>
@@ -32,12 +32,15 @@
     import './../../css/modal.css';
     import {helpService} from "../../js/service/helpService";
     import {constants} from "../../js/util/constants.js";
+    import {dataService} from "../../js/service/data/dataService.js";
+    import {MetaData} from "../../js/model/MetaData.js";
 
     export default {
         props: ['gridElement'],
         data: function () {
             return {
                 currentLang: i18nService.getCurrentLang(),
+                colorCategories: [],
                 constants: constants
             }
         },
@@ -45,6 +48,12 @@
         },
         mounted() {
             helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
+            dataService.getMetadata().then(metadata => {
+                this.colorCategories = MetaData.getActiveColorScheme(metadata).categories;
+                if (!this.colorCategories.includes(this.gridElement.colorCategory)) {
+                    this.gridElement.colorCategory = undefined;
+                }
+            })
         },
         beforeDestroy() {
             helpService.revertToLastLocation();
