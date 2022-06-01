@@ -1,3 +1,4 @@
+import {Model} from "../externals/objectmodel";
 import {constants} from "../util/constants";
 
 class ColorConfig extends Model({
