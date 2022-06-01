@@ -41,6 +41,9 @@ if $doStash; then
     git stash
 fi
 
+echo "testing..."
+npm run test
+
 branch=$(git symbolic-ref --short HEAD)
 tagname="release-$(date +%Y-%m-%d-%H.%M/%z)"
 tagnameSed="release-$(date +%Y-%m-%d-%H.%M\\/%z)"
