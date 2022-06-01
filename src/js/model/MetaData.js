@@ -2,6 +2,7 @@ import {modelUtil} from "../util/modelUtil";
 import {InputConfig} from "./InputConfig";
 import {constants} from "../util/constants";
 import {Model} from "../externals/objectmodel";
+import {ColorConfig} from "./ColorConfig.js";
 
 class MetaData extends Model({
     id: String,
@@ -14,12 +15,14 @@ class MetaData extends Model({
     locked: [Boolean],
     fullscreen: [Boolean],
     hashCodes: [Object], //object keys: model names of hashed objects, object values: another object with keys = hashcodes, values = object ids
-    inputConfig: InputConfig
+    inputConfig: InputConfig,
+    colorConfig: [ColorConfig]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, MetaData) || {};
         super(properties);
-        this.id = this.id || modelUtil.generateId(MetaData.getIdPrefix())
+        this.id = this.id || modelUtil.generateId(MetaData.getIdPrefix());
+        this.colorConfig = properties.colorConfig || new ColorConfig();
     }
 
     isEqual(otherMetadata) {
