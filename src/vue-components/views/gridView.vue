@@ -279,6 +279,7 @@
                     vueApp.reload(new GridData(updatedGridDoc));
                 }
                 if (JSON.stringify(this.metadata.colorConfig) !== JSON.stringify(this.updatedMetadataDoc.colorConfig)) {
+                    this.backgroundColor = this.updatedMetadataDoc.colorConfig.gridBackgroundColor;
                     vueApp.reload();
                 }
                 if (!localStorageService.shouldSyncNavigation()) {
