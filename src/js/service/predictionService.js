@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from '../externals/jquery.js';
 import Predictionary from 'predictionary'
 import {GridElement} from "../model/GridElement";
 import {Dictionary} from "../model/Dictionary";

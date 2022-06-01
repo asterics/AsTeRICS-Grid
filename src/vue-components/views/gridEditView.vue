@@ -48,7 +48,7 @@
 </template>
 
 <script>
-    import $ from 'jquery';
+    import $ from '../../js/externals/jquery.js';
     import {Grid} from "../../js/grid.js";
     import {dataService} from "../../js/service/data/dataService";
     import {Router} from "./../../js/router.js";

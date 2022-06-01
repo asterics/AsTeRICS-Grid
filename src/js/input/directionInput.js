@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from '../externals/jquery.js';
 import {inputEventHandler} from "./inputEventHandler";
 import {InputConfig} from "../model/InputConfig";
 

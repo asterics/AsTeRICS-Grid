@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from '../../externals/jquery.js';
 import FileSaver from 'file-saver';
 
 import {GridData} from "../../model/GridData.js";

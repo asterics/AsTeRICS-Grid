@@ -12,7 +12,7 @@
 </template>
 
 <script>
-    import $ from 'jquery';
+    import $ from '../../js/externals/jquery.js';
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {util} from "../../js/util/util";
 

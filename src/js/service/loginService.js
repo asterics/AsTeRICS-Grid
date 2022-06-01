@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from '../externals/jquery.js';
 import superlogin from 'superlogin-client';
 import {localStorageService} from "./data/localStorageService";
 import {encryptionService} from "./data/encryptionService";

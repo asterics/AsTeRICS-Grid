@@ -1,5 +1,5 @@
 import { L } from "../util/lquery.js";
-import $ from 'jquery';
+import $ from '../externals/jquery.js';
 import {inputEventHandler} from "./inputEventHandler";
 import {util} from "../util/util";
 import {speechService} from "../service/speechService";

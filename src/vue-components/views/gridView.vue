@@ -46,7 +46,7 @@
 </template>
 
 <script>
-    import $ from 'jquery';
+    import $ from '../../js/externals/jquery.js';
     import {L} from "../../js/util/lquery.js";
     import {Grid} from "../../js/grid.js";
     import {actionService} from "../../js/service/actionService";

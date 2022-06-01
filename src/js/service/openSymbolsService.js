@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from '../externals/jquery.js';
 import {imageUtil} from "../util/imageUtil";
 
 let QUERY_URL = 'https://www.opensymbols.org/api/v1/symbols/search?q=';

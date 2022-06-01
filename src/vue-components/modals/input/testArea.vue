@@ -13,7 +13,7 @@
 </template>
 
 <script>
-    import $ from 'jquery';
+    import $ from '../../../js/externals/jquery.js';
 
     export default {
         props: {

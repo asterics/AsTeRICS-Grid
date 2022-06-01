@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from './externals/jquery.js';
 import {dataService} from "./service/data/dataService";
 import {collectElementService} from "./service/collectElementService";
 import {UndoService} from "./service/data/undoService";

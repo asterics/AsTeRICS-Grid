@@ -1,3 +1,4 @@
+import $ from '../externals/jquery.js'
 import {GridElement} from "../model/GridElement";
 import {speechService} from "./speechService";
 import {constants} from "./../util/constants";

@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from '../../externals/jquery.js';
 
 import {urlParamService} from "../urlParamService";
 import {MetaData} from "../../model/MetaData";

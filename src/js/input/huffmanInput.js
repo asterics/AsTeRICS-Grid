@@ -1,5 +1,5 @@
 import Huffman from 'n-ary-huffman'
-import $ from 'jquery';
+import $ from '../externals/jquery.js';
 import {inputEventHandler} from "./inputEventHandler";
 import {fontUtil} from "../util/fontUtil.js";
 

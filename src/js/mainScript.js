@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from './externals/jquery.js';
 import {localStorageService} from "./service/data/localStorageService.js";
 import {Router} from "./router.js";
 import {VuePluginManager} from "./vue/vuePluginManager";

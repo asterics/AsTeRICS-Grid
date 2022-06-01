@@ -11,7 +11,7 @@
 </template>
 
 <script>
-    import $ from 'jquery';
+    import $ from '../../js/externals/jquery.js';
     import {constants} from "../../js/util/constants";
     import {MainVue} from "../../js/vue/mainVue";
 

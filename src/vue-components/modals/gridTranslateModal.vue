@@ -133,7 +133,7 @@
 </template>
 
 <script>
-    import $ from 'jquery';
+    import $ from '../../js/externals/jquery.js';
     import {i18nService} from "../../js/service/i18nService";
     import './../../css/modal.css';
     import {GridActionSpeakCustom} from "../../js/model/GridActionSpeakCustom";

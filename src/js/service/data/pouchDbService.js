@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from '../../externals/jquery.js';
 import PouchDB from 'PouchDB';
 import {localStorageService} from "./localStorageService";
 import {constants} from "../../util/constants";

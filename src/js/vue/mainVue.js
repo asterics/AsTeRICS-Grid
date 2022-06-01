@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from '../externals/jquery.js';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import {i18nService} from "../service/i18nService";

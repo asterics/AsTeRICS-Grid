@@ -98,7 +98,7 @@
 </template>
 
 <script>
-    import $ from 'jquery';
+    import $ from '../../js/externals/jquery.js';
     import FileSaver from 'file-saver';
     import {dataService} from "../../js/service/data/dataService";
     import {modelUtil} from "../../js/util/modelUtil";

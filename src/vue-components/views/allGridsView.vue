@@ -101,7 +101,7 @@
 </template>
 
 <script>
-    import $ from 'jquery';
+    import $ from '../../js/externals/jquery.js';
     import {dataService} from "../../js/service/data/dataService";
     import {GridData} from "../../js/model/GridData.js";
     import {Router} from "../../js/router";

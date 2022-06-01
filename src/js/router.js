@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from './externals/jquery.js';
 import Navigo from 'navigo'
 
 import {i18nService} from "./service/i18nService";
