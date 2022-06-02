@@ -50,7 +50,7 @@
   margin-bottom: 10px;
 }
 .grid-item-content.marked {
-  border: 5px solid green;
+  outline: 5px solid green !important;
 }
 
 .grid li.ui-draggable-dragging {
