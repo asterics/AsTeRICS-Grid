@@ -40,6 +40,18 @@ class MetaData extends Model({
         return constants.DEFAULT_COLOR_SCHEMES.filter(scheme => scheme.name === metadata.colorConfig.activeColorScheme)[0] || constants.DEFAULT_COLOR_SCHEMES[0];
     }
 
+    static getElementColor(gridElement, metadata) {
+        if (!metadata || !metadata.colorConfig) {
+            return constants.DEFAULT_ELEMENT_BACKGROUND_COLOR;
+        }
+        let colorScheme = MetaData.getActiveColorScheme(metadata);
+        let index = colorScheme.categories.indexOf(gridElement.colorCategory);
+        if (!metadata.colorConfig.colorSchemesActivated || !gridElement.colorCategory || index === -1) {
+            return gridElement.backgroundColor || metadata.colorConfig.elementBackgroundColor;
+        }
+        return colorScheme.colors[index];
+    }
+
     static getModelName() {
         return "MetaData";
     }

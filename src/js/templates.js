@@ -10,6 +10,7 @@ import {GridActionCollectElement} from "./model/GridActionCollectElement.js";
 import {GridActionChangeLang} from "./model/GridActionChangeLang.js";
 import {GridActionPredict} from "./model/GridActionPredict.js";
 import {GridActionWebradio} from "./model/GridActionWebradio.js";
+import {MetaData} from "./model/MetaData.js";
 
 var templates = {};
 
@@ -54,7 +55,7 @@ function getGridElementNormal(gridElem, fallbackLocale, metadata) {
         txtContainerStyle += 'flex: 1 1 auto;';
         imgContainerMargin = '0'
     }
-    let backgroundColor = getBackgroundColor(gridElem, metadata);
+    let backgroundColor = MetaData.getElementColor(gridElem, metadata);
     let fontColor = fontUtil.getHighContrastColor(backgroundColor);
     let ariaLabel = label ? label : getAriaLabel(gridElem);
 
@@ -71,7 +72,7 @@ function getGridElementNormal(gridElem, fallbackLocale, metadata) {
 
 function getGridElementCollect(gridElem, metadata) {
     gridElem = fillDefaultValues(gridElem);
-    let backgroundColor = getBackgroundColor(gridElem, metadata);
+    let backgroundColor = MetaData.getElementColor(gridElem, metadata);
     let txtBackgroundColor = metadata.colorConfig.gridBackgroundColor || '#ffffff';
     let fontColor = fontUtil.getHighContrastColor(txtBackgroundColor);
 
@@ -133,20 +134,6 @@ function getHintsElement(gridElem) {
     let hiddenHint = gridElem.hidden ? '<i class="fas fa-eye-slash element-hint"></i>' : '';
     let navHint = gridElem.actions.filter(a => a.modelName === GridActionNavigate.getModelName()).length > 0 ? '<i class="fas fa-sticky-note fa-rotate-180 fa-flip-vertical element-hint"></i>' : '';
     return `<span style="position: absolute; right: 0; color: #5a717a">${hiddenHint + ' ' + navHint}</span>`;
-}
-
-
-
-function getBackgroundColor(gridElem, metadata) {
-    gridElem = gridElem || {};
-    let backgroundColor = gridElem.backgroundColor;
-    let colorSchemeName = metadata.colorConfig.activeColorScheme;
-    let colorScheme = constants.DEFAULT_COLOR_SCHEMES.filter(s => s.name === colorSchemeName)[0] || constants.DEFAULT_COLOR_SCHEMES[0];
-    if (!backgroundColor && gridElem.colorCategory && metadata.colorConfig.colorSchemesActivated) {
-        let index = colorScheme.categories.indexOf(gridElem.colorCategory);
-        backgroundColor = colorScheme.colors[index];
-    }
-    return backgroundColor || metadata.colorConfig.elementBackgroundColor || constants.DEFAULT_ELEMENT_BACKGROUND_COLOR;
 }
 
 function getBorderColor(metadata) {
