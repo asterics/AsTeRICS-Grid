@@ -19,8 +19,17 @@
             </div>
         </div>
         <div class="srow">
+            <div class="six columns">
+                <label for="backgroundColor">{{ $t('customBackgroundColor') }}</label>
+                <input type="color" id="backgroundColor" v-if="gridElement" v-model="gridElement.backgroundColor"/>
+            </div>
+            <div class="five columns">
+                <a href="javascript:;" v-if="gridElement.colorCategory" @click="gridElement.colorCategory = undefined">{{ $t('disableColorCategoryToEnableCustomColor') }}</a>
+            </div>
+        </div>
+        <div class="srow">
             <div class="three columns">
-                <input type="checkbox" id="inputHidden" v-focus v-if="gridElement" v-model="gridElement.hidden"/>
+                <input type="checkbox" id="inputHidden" v-if="gridElement" v-model="gridElement.hidden"/>
                 <label for="inputHidden">{{ $t('hideElement') }}</label>
             </div>
         </div>
