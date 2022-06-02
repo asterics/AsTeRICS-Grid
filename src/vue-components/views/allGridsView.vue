@@ -95,7 +95,7 @@
 
             <div class="srow" style="margin-bottom: 10em"></div>
             <grid-link-modal v-if="linkModal.show" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @close="linkModal.show = false" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
-            <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" @close="pdfModal.show = false"></export-pdf-modal>
+            <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.show = false; pdfModal.printGridId = null;"></export-pdf-modal>
         </div>
     </div>
 </template>
@@ -151,7 +151,8 @@
                     gridTo: null
                 },
                 pdfModal: {
-                    show: false
+                    show: false,
+                    printGridId: null
                 },
                 i18nService: i18nService,
                 currentLanguage: i18nService.getCurrentLang(),
@@ -234,9 +235,8 @@
                 }
             },
             exportToPdf(gridId) {
-                dataService.getGrid(gridId).then(grid => {
-                    printService.gridsToPdf([grid]);
-                })
+                this.pdfModal.printGridId = gridId;
+                this.pdfModal.show = true;
             },
             importFromFile: function (event) {
                 this.importFromFileInternal(event, false);
