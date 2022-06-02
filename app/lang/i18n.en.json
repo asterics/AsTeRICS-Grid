@@ -738,5 +738,7 @@
   "userSettings": "User settings",
   "noneSelected": "(none)",
   "generalSettingsAreAppliedToAllUsersOnThisDevice": "General settings are applied to all users on this device.",
-  "userSettingsAreLinkedToTheCurrentUser": "User settings are linked to the current user and are synchronized to other devices (only for online users)."
+  "userSettingsAreLinkedToTheCurrentUser": "User settings are linked to the current user and are synchronized to other devices (only for online users).",
+  "disableColorCategoryToEnableCustomColor": "Disable color category to enable custom color",
+  "customBackgroundColor": "Custom background color"
 }
