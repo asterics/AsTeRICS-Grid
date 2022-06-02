@@ -33,7 +33,7 @@
             <div v-if="!showGrid" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
             </div>
-            <div id="grid-container" class="grid-container">
+            <div id="grid-container" class="grid-container" :style="`background-color: ${backgroundColor}`">
             </div>
             <div id="grid-layout-background-wrapper" class="grid-container" style="margin: 10px; display: none">
                 <div id="grid-layout-background-vertical" class="grid-container" style="margin-left: 204px; background-size: 209px 209px;
@@ -95,7 +95,8 @@
                 showGrid: false,
                 constants: constants,
                 markedElement: null,
-                GridElement: GridElement
+                GridElement: GridElement,
+                backgroundColor: 'white'
             }
         },
         components: {
@@ -234,6 +235,7 @@
             }).then(() => {
                 return dataService.getMetadata().then(savedMetadata => {
                     thiz.metadata = JSON.parse(JSON.stringify(savedMetadata));
+                    thiz.backgroundColor = thiz.metadata.colorConfig.gridBackgroundColor;
                     if (thiz.metadata.globalGridId === thiz.gridData.id) {
                         return Promise.resolve();
                     }
