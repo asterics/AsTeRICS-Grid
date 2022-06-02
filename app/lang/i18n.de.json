@@ -729,14 +729,16 @@
   "CC_QUESTION_NEGATION_PRONOUN": "Question, negation, pronoun, etc.",
   "colorSchemeForCategories": "Farbschema für Kategorien",
   "CS_MODIFIED_FITZGERALD_KEY_LIGHT": "Modified Fitzgerald key (light)",
-  "CS_MODIFIED_FITZGERALD_KEY_DARK": "Modified Fitzgerald key (dark)",
+  "CS_MODIFIED_FITZGERALD_KEY_MEDIUM": "Modified Fitzgerald key (medium)",
   "CS_GOOSENS_LIGHT": "Goosens (light)",
-  "CS_GOOSENS_DARK": "Goosens (dark)",
+  "CS_GOOSENS_MEDIUM": "Goosens (medium)",
   "activateColorCategoriesOfGridElements": "Aktiviere Farbkategorien von Grid-Elementen",
   "closeSidebar": "Seitenleiste schließen",
   "openSidebar": "Seitenleiste öffnen",
   "userSettings": "User settings",
   "noneSelected": "(none)",
   "generalSettingsAreAppliedToAllUsersOnThisDevice": "General settings are applied to all users on this device.",
-  "userSettingsAreLinkedToTheCurrentUser": "User settings are linked to the current user and are synchronized to other devices (only for online users)."
+  "userSettingsAreLinkedToTheCurrentUser": "User settings are linked to the current user and are synchronized to other devices (only for online users).",
+  "disableColorCategoryToEnableCustomColor": "Disable color category to enable custom color",
+  "customBackgroundColor": "Custom background color"
 }
