@@ -195,6 +195,11 @@
                         log.debug('reloading on remote update...');
                         vueApp.reload(gridData);
                     }
+                } else if (updatedIds.includes(vueApp.metadata.id) && gridInstance && gridInstance.isInitialized()) {
+                    let metadata = updatedDocs.filter(doc => doc.id === vueApp.metadata.id)[0];
+                    if (metadata && JSON.stringify(metadata.colorConfig) !== JSON.stringify(vueApp.metadata.colorConfig)) {
+                        vueApp.reload();
+                    }
                 }
             },
             markElement(id) {
