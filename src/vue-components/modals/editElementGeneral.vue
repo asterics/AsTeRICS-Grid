@@ -18,12 +18,12 @@
                 </select>
             </div>
         </div>
-        <div class="srow">
-            <div class="six columns">
+        <div class="srow mt-5">
+            <div class="four columns">
                 <label for="backgroundColor">{{ $t('customBackgroundColor') }}</label>
                 <input type="color" id="backgroundColor" v-if="gridElement" v-model="gridElement.backgroundColor"/>
             </div>
-            <div class="five columns">
+            <div class="six columns">
                 <a href="javascript:;" v-if="gridElement.colorCategory" @click="gridElement.colorCategory = undefined">{{ $t('disableColorCategoryToEnableCustomColor') }}</a>
             </div>
         </div>
