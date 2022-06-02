@@ -728,10 +728,10 @@
   "CC_PREPOSITION": "Preposición",
   "CC_QUESTION_NEGATION_PRONOUN": "Preguntas, negaciones, pronombres, etc.",
   "colorSchemeForCategories": "Esquema de color para categorías",
-  "CS_MODIFIED_FITZGERALD_KEY_LIGHT": "Clave Fitzgerald modificada (pastel claro)",
-  "CS_MODIFIED_FITZGERALD_KEY_MEDIUM": "Modified Fitzgerald key (medium)",
-  "CS_GOOSENS_LIGHT": "Goosens (color claro)",
-  "CS_GOOSENS_MEDIUM": "Goosens (medium)",
+  "CS_MODIFIED_FITZGERALD_KEY_LIGHT": "Clave Fitzgerald modificada (tonos claros)",
+  "CS_MODIFIED_FITZGERALD_KEY_MEDIUM": "Clave Fitzgerald modificada (tonos medios)",
+  "CS_GOOSENS_LIGHT": "Goosens (tonos claros)",
+  "CS_GOOSENS_MEDIUM": "Goosens (tonos medios)",
   "activateColorCategoriesOfGridElements": "Activar el uso de códigos de color para categorías",
   "closeSidebar": "ocultar menú lateral",
   "openSidebar": "mostrar menú lateral",
@@ -739,6 +739,6 @@
   "noneSelected": "(ninguna)",
   "generalSettingsAreAppliedToAllUsersOnThisDevice": "La configuración general se aplica a todos los usuarios de este dispositivo.",
   "userSettingsAreLinkedToTheCurrentUser": "La configuración de usuario está vinculada al usuario actual y se sincroniza con otros dispositivos (solo para usuarios online).",
-  "disableColorCategoryToEnableCustomColor": "Disable color category to enable custom color",
-  "customBackgroundColor": "Custom background color"
+  "disableColorCategoryToEnableCustomColor": "Desactivar colores por categorías y activar color personalizado",
+  "customBackgroundColor": "Color de fondo personalizado"
 }
