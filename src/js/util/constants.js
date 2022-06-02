@@ -48,6 +48,20 @@ constants.DEFAULT_COLOR_SCHEMES = [
         name: 'CS_MODIFIED_FITZGERALD_KEY_LIGHT',
         categories: ['CC_PRONOUN_PERSON_NAME', 'CC_NOUN', 'CC_VERB', 'CC_DESCRIPTOR', 'CC_SOCIAL_EXPRESSIONS', 'CC_MISC', 'CC_PLACE', 'CC_CATEGORY', 'CC_IMPORTANT', 'CC_OTHERS'],
         colors: [
+            '#fdfd96',
+            '#ffda89',
+            '#77dd77',
+            '#84b6f4',
+            '#fdcae1',
+            '#ffffff',
+            '#bc98f3',
+            '#d8af97',
+            '#ff9688',
+            '#bdbfbf']
+    }, {
+        name: 'CS_MODIFIED_FITZGERALD_KEY_MEDIUM',
+        categories: ['CC_PRONOUN_PERSON_NAME', 'CC_NOUN', 'CC_VERB', 'CC_DESCRIPTOR', 'CC_SOCIAL_EXPRESSIONS', 'CC_MISC', 'CC_PLACE', 'CC_CATEGORY', 'CC_IMPORTANT', 'CC_OTHERS'],
+        colors: [
             '#ffff6b',
             '#ffb56b',
             '#b5ff6b',
@@ -58,23 +72,19 @@ constants.DEFAULT_COLOR_SCHEMES = [
             '#bd754e',
             '#ff704d',
             '#a3a3a3']
-    }, {
-        name: 'CS_MODIFIED_FITZGERALD_KEY_DARK',
-        categories: ['CC_PRONOUN_PERSON_NAME', 'CC_NOUN', 'CC_VERB', 'CC_DESCRIPTOR', 'CC_SOCIAL_EXPRESSIONS', 'CC_MISC', 'CC_PLACE', 'CC_CATEGORY', 'CC_IMPORTANT', 'CC_OTHERS'],
-        colors: [
-            '#c4c400',
-            '#bd6000',
-            '#007900',
-            '#1e1e85',
-            '#A50163',
-            '#c9c9c9',
-            '#56078f',
-            '#593707',
-            '#b20101',
-            '#575757']
     },
     {
         name: 'CS_GOOSENS_LIGHT',
+        categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
+        colors: [
+            '#fdcae1',
+            '#84b6f4',
+            '#77dd77',
+            '#fdfd96',
+            '#ffda89']
+    },
+    {
+        name: 'CS_GOOSENS_MEDIUM',
         categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
         colors: [
             '#ff6bff',
@@ -82,16 +92,6 @@ constants.DEFAULT_COLOR_SCHEMES = [
             '#b5ff6b',
             '#ffff6b',
             '#ffb56b']
-    },
-    {
-        name: 'CS_GOOSENS_DARK',
-        categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
-        colors: [
-            '#A50163',
-            '#1e1e85',
-            '#007900',
-            '#c4c400',
-            '#bd6000']
     }
 ];
 
