@@ -4,6 +4,8 @@ import {i18nService} from "./i18nService";
 import {imageUtil} from "../util/imageUtil";
 import {GridElement} from "../model/GridElement";
 import {util} from "../util/util";
+import {dataService} from "./data/dataService.js";
+import {MetaData} from "../model/MetaData.js";
 
 let printService = {};
 let gridInstance = null;
@@ -74,6 +76,7 @@ printService.gridsToPdf = async function (gridsData, options) {
             compress: true
         });
         options.pages = gridsData.length;
+        let metadata = await dataService.getMetadata();
         for (let i = 0; i < gridsData.length && !options.abort; i++) {
             if (options.progressFn) {
                 options.progressFn(Math.round(100 * (i) / gridsData.length), i18nService.t('creatingPageXOfY', i+1, gridsData.length), () => {
@@ -81,7 +84,7 @@ printService.gridsToPdf = async function (gridsData, options) {
                 });
             }
             options.page = i + 1;
-            await addGridToPdf(doc, gridsData[i], options);
+            await addGridToPdf(doc, gridsData[i], options, metadata);
             if (i < gridsData.length - 1) {
                 doc.addPage();
             }
@@ -96,7 +99,7 @@ printService.gridsToPdf = async function (gridsData, options) {
     });
 }
 
-function addGridToPdf(doc, gridData, options) {
+function addGridToPdf(doc, gridData, options, metadata) {
     let promises = [];
     let DOC_WIDTH = 297
     let DOC_HEIGHT = 210;
@@ -169,8 +172,7 @@ function addGridToPdf(doc, gridData, options) {
         if (!options.printBackground) {
             doc.setFillColor(255, 255, 255);
         } else {
-            let colorRGB = util.getRGB(element.backgroundColor);
-            colorRGB = colorRGB ? colorRGB : [173, 216, 230];
+            let colorRGB = util.getRGB(MetaData.getElementColor(element, metadata));
             doc.setFillColor(colorRGB[0], colorRGB[1], colorRGB[2]);
         }
         doc.roundedRect(xStartPos, yStartPos, currentWidth, currentHeight, 3, 3, "FD");
