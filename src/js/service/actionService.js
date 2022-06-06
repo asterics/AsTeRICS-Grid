@@ -101,19 +101,19 @@ function doAction(gridElement, action, gridId, gridData) {
         case 'GridActionTurnOnShelly':
             if (action.turn === "On") {
                 console.log("Turn On")
-                $.get(action.httpHttps + "://" + action.shellyIP + "/relay/0?turn=on");     
+                $.get(action.protocol + "://" + action.shellyIP + "/relay/0?turn=on");     
             }   
             if (action.turn === "Off") {
                 console.log("Turn Off")
-                $.get(action.httpHttps + "://" + action.shellyIP + "/relay/0?turn=off");      
+                $.get(action.protocol + "://" + action.shellyIP + "/relay/0?turn=off");      
             }
              if (action.turn === "Toggle") {
                 console.log("Toggle")
-                $.get(action.httpHttps + "://" + action.shellyIP + "/relay/0?turn=toggle");      
+                $.get(action.protocol + "://" + action.shellyIP + "/relay/0?turn=toggle");      
             }
             break;
         
-        case 'GridActionKeyValueRequest':
+        case 'GridActionHttpRequest':
 
             if (action.format === "Parameters")
             {
@@ -133,6 +133,7 @@ function doAction(gridElement, action, gridId, gridData) {
             
             if (action.format === "Body")
             {
+                if(action.mimeTypes === "text/plain")
                 $.ajax({
                 url: action.urlRequest,
                 type: action.method,
@@ -140,7 +141,17 @@ function doAction(gridElement, action, gridId, gridData) {
                 contentType:"text/plain",
                 dataType:"text/plain"
                 }).then(data => { console.log(data);
-                });           
+                });
+                
+                if(action.mimeTypes === "application/octet-stream")
+                $.ajax({
+                url: action.urlRequest,
+                type: action.method,
+                data: action.bodyData,
+                contentType:"application/octet-stream",
+                dataType:"application/octet-stream"
+                }).then(data => { console.log(data);
+                });  
             }
             break;    
    

@@ -8,7 +8,8 @@ class GridActionTurnOnShelly extends Model({
     modelVersion: String,
 
     shellyIP: [String],
-    turn: [String]
+    turn: [String],
+    protocol: [String]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionTurnOnShelly);

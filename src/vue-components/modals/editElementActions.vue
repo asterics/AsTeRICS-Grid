@@ -313,14 +313,12 @@
                         </div>
                         <div class="srow">
                             <div class="twelve columns">
-                                <label for="httpHttps" class="four columns normal-text">{{ $t('httpHttps')
-                                }}</label>
-                                <select id="httpHttps" class="eight columns" v-model="action.httpHttps">
-                                    <option>{{ $t('http') }}</option>
-                                    <option>{{ $t('https') }}</option>
-                                </select>
+                                <label for="protocol" class="four columns normal-text">{{ $t('protocol') }}</label>
+                                <input id="protocol" type="text" class="eight columns" placeholder="http"
+                                    v-model="action.protocol" />
                             </div>
                         </div>
+
                         <div class="srow">
                             <div class="twelve columns">
                                 <label for="shellyIP" class="four columns normal-text">{{ $t('inputIpAddress')
@@ -330,8 +328,7 @@
                         </div>
                     </div>
 
-
-                    <div v-if="action.modelName === 'GridActionKeyValueRequest'">
+                    <div v-if="action.modelName === 'GridActionHttpRequest'">
                         <div class="srow">
                             <div class="twelve columns">
                                 <label for="method" class="four columns normal-text">{{ $t('method') }}</label>
@@ -365,6 +362,19 @@
                             <div v-if="action.format === 'Body'">
                                 <div class="srow">
                                     <div class="twelve columns">
+                                        <label for="mimeTypes" class="four columns normal-text">{{ $t('mimeTypes')
+                                        }}</label>
+                                        <!--.<input id="method" type="text" class="eight columns" v-model="action.method"/>..-->
+
+                                        <select id="mimeTypes" class="eight columns" v-model="action.mimeTypes">
+                                            <option>{{ $t('textPlain') }}</option>
+                                            <option>{{ $t('applicationOctetStream') }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="srow">
+                                    <div class="twelve columns">
                                         <label for="bodyData" class="four columns normal-text">{{ $t('bodyData')
                                         }}</label>
                                         <input id="bodyData" type="text" class="eight columns"
@@ -373,20 +383,46 @@
                                 </div>
                             </div>
                         </div>
+
                         <div v-if="action.format === 'Parameters'">
+
+                            <!---- attempt for dynamic rows, but unsuccessful 
+              
+                            <div v-for="(parameter, index) in parameters" :key="index">
+                                <div class="srow">
+                                    <div class="twelve columns">
+                                        <label for="parameter.keyParameter" class="four columns normal-text">{{
+                                                $t('keyParameter')
+                                        }}</label>
+                                        <input id="parameter.keyParameter" type="text" class="eight columns"
+                                            v-model="action.parameter.keyParameter" />
+                                    </div>
+                                </div>
+
+                                <div class="srow">
+                                    <div class="twelve columns">
+                                        <label for="parameter.valueParameter" class="four columns normal-text">{{
+                                                $t('valueParameter')
+                                        }}</label>
+                                        <input id="parameter.valueParameter" type="text" class="eight columns"
+                                            v-model="action.parameter.valueParameter" />
+                                    </div>
+                                </div>
+
+                            </div>
+      --->
+
+                            <!---   Only one Row      --->
                             <div class="srow">
                                 <div class="twelve columns">
-
-
-                                    <label for=" keyParameter" class="four columns normal-text">{{
+                                    <label for="keyParameter" class="four columns normal-text">{{
                                             $t('keyParameter')
                                     }}</label>
                                     <input id="keyParameter" type="text" class="eight columns"
                                         v-model="action.keyParameter" />
-
-
                                 </div>
                             </div>
+
                             <div class="srow">
                                 <div class="twelve columns">
                                     <label for="valueParameter" class="four columns normal-text">{{

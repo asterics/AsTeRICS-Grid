@@ -1,5 +1,5 @@
 {
-  "inputIpAddress": "IP-Adresse eingeben",
+  "inputIpAddress": "IP-Adress",
   "keyParameter": "Key",
   "valueParameter": "Value",
   "getMethod": "GET",
@@ -12,15 +12,17 @@
   "turnToggle": "Toggle",
   "http": "http",
    "https": "https",
-   "http/https": "HTTP/HTTPS",
+   "protocol": "Protocol (http or https)",
    "format": "Format",
    "body": "Body",
    "params": "Parameters",
    "bodyData": "Data",
+   "mimeTypes": "MIME Types",
+   "textPlain": "text/plain",
+   "applicationOctetStream": "application/octet-stream",
 
-
-  "GridActionKeyValueRequest": "HTTP Key-Value Abfrage",
-   "GridActionTurnOnShelly": "Shelly ein-/aus-/umschalten",
+  "GridActionHttpRequest": "HTTP Abfrage",
+  "GridActionTurnOnShelly": "Shelly ein-/aus-/umschalten",
 
 
   "GridActionSpeak": "Label aussprechen",
