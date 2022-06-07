@@ -9,9 +9,9 @@ var imageUtil = {};
  * @param quality quality of the image (0.0 - 1.0)
  * @return {string}
  */
-imageUtil.getBase64FromImg = function (img, maxWidth, quality) {
+imageUtil.getBase64FromImg = function (img, maxWidth, quality, mimeType) {
     maxWidth = maxWidth || 150;
-    let mimeType = img.src.indexOf('data:') === 0 ? img.src.substring(5, img.src.indexOf(';')) : null;
+    mimeType = mimeType || img.src.indexOf('data:') === 0 ? img.src.substring(5, img.src.indexOf(';')) : null;
     mimeType = mimeType || (img.src.indexOf('.png') > -1 ? 'image/png' : null);
     mimeType = mimeType || (img.src.indexOf('.svg') > -1 ? 'image/svg+xml' : null);
     mimeType = mimeType || 'image/jpeg';
@@ -109,7 +109,8 @@ imageUtil.base64SvgToBase64Png = function (originalBase64, width, secondTry) {
     });
 }
 
-imageUtil.urlToBase64 = function (url) {
+imageUtil.urlToBase64 = function (url, maxWidth, mimeType) {
+    maxWidth = maxWidth || 500;
     return new Promise((resolve, reject) => {
         if (url.lastIndexOf('.svg') === url.length - 4) {
             $.get(url, null, function (svgDocument) {
@@ -123,7 +124,7 @@ imageUtil.urlToBase64 = function (url) {
             img.crossOrigin = "anonymous";
             img.onload = function () {
                 try {
-                    resolve(imageUtil.getBase64FromImg(img, 1000));
+                    resolve(imageUtil.getBase64FromImg(img, maxWidth, undefined, mimeType));
                 } catch (e) {
                     resolve(null);
                 }
