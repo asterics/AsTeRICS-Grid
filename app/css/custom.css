@@ -223,8 +223,8 @@ nav li:hover button span {
 }
 
 .selected.grid-item-content {
-    -webkit-animation: background 5s cubic-bezier(1,0,0,1);
-    animation: background 5s cubic-bezier(1,0,0,1);
+    -webkit-animation: background 0.5s cubic-bezier(1,0,0,1);
+    animation: background 0.5s cubic-bezier(1,0,0,1);
 }
 
 .noanimation {
@@ -233,13 +233,11 @@ nav li:hover button span {
 }
 
 @-webkit-keyframes background {
-    0% { background-color: dodgerblue; }
-    100% { background-color: lightblue; }
+    0% { filter: brightness(50%); }
 }
 
 @keyframes background {
-    0% { background-color: dodgerblue; }
-    100% { background-color: lightblue; }
+    0% { filter: brightness(50%); }
 }
 
 .mouseentered.grid-item-content {
