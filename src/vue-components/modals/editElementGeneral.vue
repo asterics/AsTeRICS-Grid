@@ -19,12 +19,13 @@
             </div>
         </div>
         <div class="srow mt-5">
-            <div class="four columns">
+            <div class="six columns">
                 <label for="backgroundColor">{{ $t('customBackgroundColor') }}</label>
-                <input type="color" id="backgroundColor" v-if="gridElement" v-model="gridElement.backgroundColor"/>
+                <input type="color" id="backgroundColor" v-if="gridElement" v-model="backgroundColor" @change="changeColor()"/>
+                <button class="inline" @click="gridElement.backgroundColor = null; backgroundColor = metadata.colorConfig.elementBackgroundColor;">{{ $t('clear') }}</button>
             </div>
             <div class="six columns">
-                <a href="javascript:;" v-if="gridElement.colorCategory" @click="gridElement.colorCategory = undefined">{{ $t('disableColorCategoryToEnableCustomColor') }}</a>
+                <a href="javascript:;" v-if="gridElement.colorCategory && gridElement.backgroundColor" @click="gridElement.colorCategory = undefined">{{ $t('disableColorCategoryToEnableCustomColor') }}</a>
             </div>
         </div>
         <div class="srow">
@@ -48,16 +49,23 @@
         props: ['gridElement'],
         data: function () {
             return {
+                metadata: null,
                 currentLang: i18nService.getCurrentLang(),
                 colorCategories: [],
+                backgroundColor: null,
                 constants: constants
             }
         },
         methods: {
+            changeColor() {
+                this.gridElement.backgroundColor = this.backgroundColor;
+            }
         },
         mounted() {
             helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
             dataService.getMetadata().then(metadata => {
+                this.metadata = metadata;
+                this.backgroundColor = this.gridElement.backgroundColor || metadata.colorConfig.elementBackgroundColor;
                 this.colorCategories = MetaData.getActiveColorScheme(metadata).categories;
                 if (!this.colorCategories.includes(this.gridElement.colorCategory)) {
                     this.gridElement.colorCategory = undefined;
