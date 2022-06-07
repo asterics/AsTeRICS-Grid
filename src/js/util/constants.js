@@ -50,7 +50,7 @@ constants.DEFAULT_COLOR_SCHEMES = [
         colors: [
             '#fdfd96',
             '#ffda89',
-            '#77dd77',
+            '#c7f3c7',
             '#84b6f4',
             '#fdcae1',
             '#ffffff',
@@ -79,7 +79,7 @@ constants.DEFAULT_COLOR_SCHEMES = [
         colors: [
             '#fdcae1',
             '#84b6f4',
-            '#77dd77',
+            '#c7f3c7',
             '#fdfd96',
             '#ffda89']
     },
