@@ -174,7 +174,7 @@ nav li:hover button span {
 }
 
 .scanFocus {
-    outline: thick solid red !important;
+    outline: 10px solid red !important;
 }
 
 .text-content {
