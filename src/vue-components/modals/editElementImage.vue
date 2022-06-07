@@ -27,13 +27,12 @@
                 <input id="inputSearch" type="text" v-model="searchText" @input="searchInput(500, $event)" :placeholder="'SEARCH_IMAGE_PLACEHOLDER' | translate"/>
                 <button @click="clearSearch" :aria-label="$t('clear')"><i class="fas fa-times"></i></button>
             </div>
-            <span class="four columns">
-                                <i18n path="searchPoweredBy" tag="span">
-                                    <template v-slot:opensymbolsLink>
-                                        <a href="https://www.opensymbols.org/" target="_blank">opensymbols.org</a>
-                                    </template>
-                                </i18n>
-                            </span>
+            <div class="four columns">
+                <label for="searchProvider">Search provider</label>
+                <select id="searchProvider" v-model="searchProvider" @change="searchInput(0)">
+                    <option v-for="provider in searchProviders" :value="provider">{{provider.name}}</option>
+                </select>
+            </div>
         </div>
         <div class="srow">
             <div class="offset-by-two ten columns">
@@ -64,13 +63,29 @@
     import './../../css/modal.css';
     import {helpService} from "../../js/service/helpService";
     import {util} from "../../js/util/util";
-    import {openSymbolsService} from "../../js/service/openSymbolsService";
+    import {openSymbolsService} from "../../js/service/pictograms/openSymbolsService.js";
+    import {arasaacService} from "../../js/service/pictograms/arasaacService.js";
+
+    const SEARCH_PROVIDERS = [
+        {
+            name: "ARASAAC",
+            url: "https://arasaac.org/",
+            service: arasaacService
+        },
+        {
+            name: "OPENSYMBOLS",
+            url: "https://www.opensymbols.org/",
+            service: openSymbolsService
+        }
+    ];
 
     export default {
         props: ['gridElement', 'gridData', 'imageSearch'],
         data: function () {
             return {
                 searchText: null,
+                searchProviders: SEARCH_PROVIDERS,
+                searchProvider: SEARCH_PROVIDERS[0],
                 searchResults: null,
                 searchLoading: false,
                 hasNextChunk: true
@@ -139,14 +154,14 @@
                 thiz.searchResults = [];
                 thiz.searchLoading = true;
                 util.debounce(function () {
-                    openSymbolsService.query(thiz.searchText).then(resultList => {
+                    thiz.searchProvider.service.query(thiz.searchText).then(resultList => {
                         thiz.processSearchResults(resultList);
                     });
                 }, debounceTime);
             },
             searchMore() {
                 let thiz = this;
-                openSymbolsService.nextChunk().then(resultList => {
+                thiz.searchProvider.service.nextChunk().then(resultList => {
                     thiz.processSearchResults(resultList);
                 });
             },
@@ -157,7 +172,7 @@
             },
             processSearchResults(resultList) {
                 let thiz = this;
-                thiz.hasNextChunk = openSymbolsService.hasNextChunk();
+                thiz.hasNextChunk = thiz.searchProvider.service.hasNextChunk();
                 thiz.searchResults = thiz.searchResults.concat(resultList);
                 thiz.searchLoading = false;
                 thiz.$forceUpdate();
@@ -172,7 +187,6 @@
             helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
             let maxElementX = Math.max(...this.gridData.gridElements.map(e => e.x + 1));
             this.elementW = Math.round($('#grid-container')[0].getBoundingClientRect().width / maxElementX);
-            log.warn(this.imageSearch);
             if (this.imageSearch) {
                 this.search(this.imageSearch);
             }
