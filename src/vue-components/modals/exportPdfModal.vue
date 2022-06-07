@@ -131,12 +131,13 @@
             dataService.getGlobalGrid().then(globalGrid => {
                 this.globalGridId = globalGrid ? globalGrid.id : null;
                 this.graphList = gridUtil.getGraphList(this.gridsData, this.globalGridId);
+                if (this.printGridId) {
+                    this.selectedGrid = this.gridsData.filter(grid => grid.id === this.printGridId)[0];
+                    this.options.exportConnected = false;
+                    this.options.showLinks = false;
+                    this.selectedGridChanged();
+                }
             });
-            if (this.printGridId) {
-                this.selectedGrid = this.gridsData.filter(grid => grid.id === this.printGridId)[0];
-                this.options.exportConnected = false;
-                this.options.showLinks = false;
-            }
         }
     }
 </script>
