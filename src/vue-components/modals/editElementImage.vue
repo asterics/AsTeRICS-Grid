@@ -2,7 +2,7 @@
     <div @dragenter="preventDefault" @dragover="preventDefault" @drop="imageDropped">
         <div class="srow">
             <label for="inputImg" class="two columns">{{ $t('image') }}</label>
-            <button onclick="document.getElementById('inputImg').click();" class="five columns file-input">
+            <button onclick="document.getElementById('inputImg').click();" class="three columns file-input">
                 <input type="file" class="five columns" id="inputImg" @change="changedImg" accept="image/*"/>
                 <span><i class="fas fa-file-upload"/> <span>{{ $t('chooseFile') }}</span></span>
             </button>
@@ -14,14 +14,14 @@
         </div>
         <div class="srow">
             <div class="img-preview offset-by-two four columns">
-                <span class="show-mobile" v-show="!gridElement.image.data"><i class="fas fa-image"/> <span>{{ $t('noImageChosen') }}</span></span>
-                <span class="hide-mobile" v-show="!gridElement.image.data"><i class="fas fa-arrow-down"/> <span>{{ $t('dropImageHere') }}</span></span>
-                <img v-if="gridElement.image.data" id="imgPreview" :src="gridElement.image.data"/>
-                <div v-if="gridElement.image.data && gridElement.image.author">
+                <span class="show-mobile" v-show="!hasImage"><i class="fas fa-image"/> <span>{{ $t('noImageChosen') }}</span></span>
+                <span class="hide-mobile" v-show="!hasImage"><i class="fas fa-arrow-down"/> <span>{{ $t('dropImageHere') }}</span></span>
+                <img v-if="hasImage" id="imgPreview" :src="gridElement.image.data || gridElement.image.url"/>
+                <div v-if="gridElement.image.author">
                     {{ $t('by') }} <a :href="gridElement.image.authorURL" target="_blank">{{gridElement.image.author}}</a>
                 </div>
             </div>
-            <div class="img-preview five columns hide-mobile" v-show="gridElement.image.data" style="margin-top: 50px;">
+            <div class="img-preview five columns hide-mobile" v-show="hasImage" style="margin-top: 50px;">
                 <span><i class="fas fa-arrow-down"/> <span>{{ $t('dropNewImageHere') }}</span></span>
             </div>
         </div>
@@ -67,11 +67,7 @@
         <div class="srow">
             <div class="offset-by-two ten columns">
                 <div v-for="imgElement in searchResults" class="inline">
-                    <img v-if="imgElement.base64" :src="imgElement.base64" @click="setImage(imgElement)" :title="$t('byAuthor', [imgElement.author])" width="60" height="60" class="inline img-result" role="button"/>
-                    <span v-if="!imgElement.base64 && !imgElement.failed" style="position: relative">
-                                        <img src="data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%3E%3C/svg%3E" :title="imgElement.image_url" width="60" height="60" class="inline"/>
-                                        <i class="fas fa-spinner fa-spin" style="position: absolute; top: -25px; left: 25px;"></i>
-                                    </span>
+                    <img v-if="imgElement.url" :src="imgElement.url" @click="gridElement.image = imgElement;" :title="$t('byAuthor', [imgElement.author])" width="60" height="60" class="inline img-result" role="button"/>
                 </div>
                 <div class="inline" v-show="searchResults && searchResults.length > 0 && hasNextChunk">
                     <button @click="searchMore" style="height: 60px; margin: 0 0 0 0.5em;; padding: 0.7em; float: left">
@@ -97,10 +93,17 @@
     import Accordion from "../components/accordion.vue";
     import {openSymbolsService} from "../../js/service/pictograms/openSymbolsService.js";
     import {arasaacService} from "../../js/service/pictograms/arasaacService.js";
+    import {GridImage} from "../../js/model/GridImage.js";
+    import {i18nService} from "../../js/service/i18nService.js";
 
     export default {
         props: ['gridElement', 'gridData', 'imageSearch'],
         components: {Accordion},
+        computed: {
+            hasImage: function () {
+                return this.gridElement && this.gridElement.image && (this.gridElement.image.data || this.gridElement.image.url);
+            }
+        },
         data: function () {
             return {
                 searchText: null,
@@ -109,7 +112,8 @@
                 searchResults: null,
                 searchLoading: false,
                 hasNextChunk: true,
-                constants: constants
+                constants: constants,
+                i18nService: i18nService
             }
         },
         methods: {
@@ -134,12 +138,6 @@
                     });
                 }
             },
-            setImage(imageElement) {
-                let thiz = this;
-                thiz.setBase64(imageElement.base64);
-                thiz.gridElement.image.author = imageElement.author;
-                thiz.gridElement.image.authorURL = imageElement.author_url;
-            },
             setBase64(base64) {
                 if (!base64) {
                     return;
@@ -161,7 +159,7 @@
                 }
             },
             clearImage() {
-                this.gridElement.image.data = this.gridElement.image.author = this.gridElement.image.authorURL = null;
+                this.gridElement.image = JSON.parse(JSON.stringify(new GridImage()));
             },
             preventDefault(event) {
                 event.preventDefault();
@@ -204,12 +202,6 @@
                 thiz.hasNextChunk = thiz.searchProvider.service.hasNextChunk();
                 thiz.searchResults = thiz.searchResults.concat(resultList);
                 thiz.searchLoading = false;
-                thiz.$forceUpdate();
-                resultList.forEach(result => {
-                    result.promise.then(() => {
-                        thiz.$forceUpdate();
-                    });
-                });
             }
         },
         mounted() {

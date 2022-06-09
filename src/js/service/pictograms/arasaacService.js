@@ -11,9 +11,13 @@ let _lastSearchTerm = null;
 let _lastRawResultList = null;
 let _hasNextChunk = false;
 let _lastOptions = null;
+let arasaacAuthor = "Sergio Palao / ARASAAC";
+let arasaacLicenseURL = "https://arasaac.org/terms-of-use";
+
+arasaacService.SEARCH_PROVIDER_NAME = 'ARASAAC';
 
 let searchProviderInfo = {
-    name: "ARASAAC",
+    name: arasaacService.SEARCH_PROVIDER_NAME,
     url: "https://arasaac.org/",
     options: [
         {
@@ -143,15 +147,21 @@ function queryInternal(search, chunkNr, chunkSize) {
             });
             for (let i = startIndex; i <= endIndex; i++) {
                 if (resultList[i]) {
-                    let element = JSON.parse(JSON.stringify(resultList[i]));
-                    element.promise = imageUtil.urlToBase64(`https://api.arasaac.org/api/pictograms/${element._id}?download=false${paramSuffix}`, 500, 'image/png');
+                    let element = {};
+                    let apiElement = JSON.parse(JSON.stringify(resultList[i]));
+                    element.url = `https://api.arasaac.org/api/pictograms/${apiElement._id}?download=false${paramSuffix}`;
+                    element.author = arasaacAuthor;
+                    element.authorURL = arasaacLicenseURL;
+                    element.searchProviderName = arasaacService.SEARCH_PROVIDER_NAME;
+                    element.searchProviderOptions = JSON.parse(JSON.stringify(_lastOptions));
+                    /*element.promise = imageUtil.urlToBase64(element.url, 500, 'image/png');
                     element.promise.then((base64) => {
                         if (base64) {
-                            element.base64 = base64;
+                            element.data = base64;
                         } else {
                             element.failed = true;
                         }
-                    });
+                    });*/
                     queriedElements.push(element);
                 }
             }

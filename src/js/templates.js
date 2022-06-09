@@ -48,8 +48,8 @@ function getGridElementNormal(gridElem, fallbackLocale, metadata) {
     var imgContainerMargin = '1%';
     let label = i18nService.getTranslation(gridElem.label, fallbackLocale);
     var imgContainerMaxHeight = label ? '80%' : '100%';
-    if (gridElem.image && gridElem.image.data) {
-        imgData = gridElem.image.data;
+    if (gridElem.image && (gridElem.image.data || gridElem.image.url)) {
+        imgData = gridElem.image.data || gridElem.image.url;
         imgId = gridElem.image.id;
     } else {
         txtContainerStyle += 'flex: 1 1 auto;';
