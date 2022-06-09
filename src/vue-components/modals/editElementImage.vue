@@ -6,7 +6,11 @@
                 <input type="file" class="five columns" id="inputImg" @change="changedImg" accept="image/*"/>
                 <span><i class="fas fa-file-upload"/> <span>{{ $t('chooseFile') }}</span></span>
             </button>
-            <button class="five columns" v-show="gridElement.image.data" @click="clearImage"><i class="fas fa-times"/> <span>{{ $t('clearImage') }}</span></button>
+            <button class="three columns" @click="searchText = gridElement.label[i18nService.getCurrentLang()]; searchInput(0);">
+                <i class="fas fa-search"></i>
+                <span>{{ $t('searchByLabel') }}</span>
+            </button>
+            <button class="three columns" v-show="hasImage" @click="clearImage"><i class="fas fa-times"/> <span>{{ $t('clearImage') }}</span></button>
         </div>
         <div class="srow">
             <div class="img-preview offset-by-two four columns">
