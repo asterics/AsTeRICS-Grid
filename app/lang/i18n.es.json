@@ -771,5 +771,6 @@
   "right": "derecha",
   "chooseColor": "Elegir color",
   "searchProvider": "Motor de búsqueda",
-  "moreInfo": "más información"
+  "moreInfo": "más información",
+  "searchByLabel": "Search by label"
 }
