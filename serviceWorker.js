@@ -27,5 +27,5 @@ self.addEventListener('activate', event => {
 });
 
 workbox.routing.registerRoute(({url, request, event}) => {
-    return (url.pathname.indexOf('app/') !== -1 || url.pathname.indexOf('index') !== -1 || url.pathname === '/' || url.pathname === '/latest/'); //do not cache serviceWorker.js
+    return url.href.indexOf('serviceWorker.js') === -1; //do not cache serviceWorker.js
 }, new workbox.strategies.CacheFirst());
