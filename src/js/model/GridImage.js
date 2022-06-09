@@ -4,8 +4,11 @@ import {imageUtil} from "../util/imageUtil";
 
 class GridImage extends Model({
     data: [String],
+    url: [String],
     author: [String],
-    authorURL: [String]
+    authorURL: [String],
+    searchProviderName: [String],
+    searchProviderOptions: [Array]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridImage);
