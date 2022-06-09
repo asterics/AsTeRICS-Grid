@@ -3,7 +3,7 @@
         <button @click="toggleOpen" class="btn-accordion" style="margin-bottom: 0">
             <i class="fas fa-chevron-down arrow" v-show="!isOpen"></i>
             <i class="fas fa-chevron-up arrow" v-show="isOpen"></i>
-            <component :is="componentType" style="margin-left: 2em; display: inline-block">{{accLabel}}</component>
+            <component :is="componentType" :style="`display: inline-block; margin: 0 0 0 2em;${accLabelStyle}`">{{accLabel}}</component>
         </button>
         <div v-show="isOpen" class="accordion-content" :style="'background-color:' + backgroundColor">
             <slot></slot>
@@ -12,10 +12,8 @@
 </template>
 
 <script>
-    import {i18nService} from "../../js/service/i18nService";
-
     export default {
-        props: ["accLabel", "accOpen", 'accLabelType', 'accBackgroundColor'],
+        props: ["accLabel", "accOpen", 'accLabelType', 'accBackgroundColor', 'accLabelStyle'],
         data() {
             return {
                 isOpen: this.accOpen === "true" || this.accOpen === true,
