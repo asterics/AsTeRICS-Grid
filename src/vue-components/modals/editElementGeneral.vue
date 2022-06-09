@@ -21,7 +21,7 @@
         <div class="srow mt-5">
             <div class="six columns">
                 <label for="backgroundColor">{{ $t('customBackgroundColor') }}</label>
-                <input type="color" id="backgroundColor" v-if="gridElement" v-model="backgroundColor" @change="changeColor()"/>
+                <input class="mx-2" type="color" id="backgroundColor" v-if="gridElement" v-model="backgroundColor" @change="changeColor()"/>
                 <button class="inline" @click="gridElement.backgroundColor = null; backgroundColor = metadata.colorConfig.elementBackgroundColor;">{{ $t('clear') }}</button>
             </div>
             <div class="six columns">
