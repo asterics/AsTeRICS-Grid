@@ -13,6 +13,18 @@ let _lastSearchTerm = null;
 let _lastRawResultList = null;
 let _hasNextChunk = false;
 
+let searchProviderInfo = {
+    name: "OPENSYMBOLS",
+    url: "https://www.opensymbols.org/",
+    service: openSymbolsService
+};
+
+openSymbolsService.getSearchProviderInfo = function () {
+    let newInfo = JSON.parse(JSON.stringify(searchProviderInfo));
+    newInfo.service = openSymbolsService;
+    return newInfo;
+}
+
 /**
  * searches for images
  *
