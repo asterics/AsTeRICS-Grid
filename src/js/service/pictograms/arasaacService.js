@@ -43,9 +43,10 @@ let searchProviderInfo = {
         },
         {
             name: "skin",
-            type: constants.OPTION_TYPES.SELECT,
+            type: constants.OPTION_TYPES.SELECT_COLORS,
             value: undefined,
-            options: ["white", "black", "assian", "mulatto", "aztec"]
+            options: ["white", "black", "assian", "mulatto", "aztec"],
+            colors: ["#F5E5DF", "#A75C16", "#F5EDAD", "#E3AB72", "#CF9D7C"]
         },
         {
             name: "hair",

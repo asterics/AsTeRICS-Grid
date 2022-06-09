@@ -99,6 +99,7 @@ constants.OPTION_TYPES = {
     BOOLEAN: "BOOLEAN",
     COLOR: "COLOR",
     SELECT: "SELECT",
+    SELECT_COLORS: "SELECT_COLORS",
 }
 
 export {constants};

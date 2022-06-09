@@ -61,6 +61,17 @@
                             <option v-for="value in option.options" :value="value">{{ $t(value) }}</option>
                         </select>
                     </div>
+                    <div class="srow" v-if="option.type === constants.OPTION_TYPES.SELECT_COLORS">
+                        <label class="three columns" :for="searchProvider.name + option.name">{{$t(searchProvider.name + option.name)}}</label>
+                        <div class="nine columns colorSelector">
+                            <div class="inline">
+                                <button :aria-label="$t('noneSelected')" @click="option.value = undefined; searchInput(0);" :aria-selected="option.value === undefined">{{$t('noneSelected')}}</button>
+                            </div>
+                            <div v-for="(color, index) in option.colors" class="inline">
+                                <button :aria-label="option.options[index]" @click="option.value = option.options[index]; searchInput(0);" :aria-selected="option.options[index] === option.value" :style="`background-color: ${color};`"></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </accordion>
         </div>
@@ -236,6 +247,18 @@
 
     .srow {
         margin-top: 1em;
+    }
+
+    .colorSelector button[aria-selected="true"] {
+        outline: 5px solid black;
+    }
+
+    .colorSelector button {
+        margin-right: 0.5em;
+        padding: 0;
+        line-height: 1em;
+        height: 1.5em;
+        width: 5em;
     }
 
     @media (max-width: 850px) {
