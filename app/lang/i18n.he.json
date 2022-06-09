@@ -771,5 +771,6 @@
   "right": "right",
   "chooseColor": "Choose color",
   "searchProvider": "Search provider",
-  "moreInfo": "more info"
+  "moreInfo": "more info",
+  "searchByLabel": "Search by label"
 }
