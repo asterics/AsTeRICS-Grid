@@ -27,17 +27,43 @@
                 <input id="inputSearch" type="text" v-model="searchText" @input="searchInput(500, $event)" :placeholder="'SEARCH_IMAGE_PLACEHOLDER' | translate"/>
                 <button @click="clearSearch" :aria-label="$t('clear')"><i class="fas fa-times"></i></button>
             </div>
-            <div class="four columns">
-                <label for="searchProvider">Search provider</label>
+            <div class="four columns" v-if="searchProvider">
+                <label for="searchProvider">{{ $t('searchProvider') }}</label>
                 <select id="searchProvider" v-model="searchProvider" @change="searchInput(0)">
                     <option v-for="provider in searchProviders" :value="provider">{{provider.name}}</option>
                 </select>
+                <a :href="searchProvider.url" target="_blank">{{ $t('moreInfo') }}</a>
             </div>
+        </div>
+        <div class="srow" v-if="searchProvider && searchProvider.options">
+            <accordion class="offset-by-two ten columns" :acc-label="$t('settingsForImageSearch')" acc-label-type="span" acc-background-color="white">
+                <div v-for="option in searchProvider.options">
+                    <div class="srow" v-if="option.type === constants.OPTION_TYPES.BOOLEAN">
+                        <input :id="searchProvider.name + option.name" type="checkbox" v-model="option.value" @input="searchInput(0)"/>
+                        <label :for="searchProvider.name + option.name">{{$t(searchProvider.name + option.name)}}</label>
+                    </div>
+                    <div class="srow" v-if="option.type === constants.OPTION_TYPES.COLOR">
+                        <label class="three columns" :for="searchProvider.name + option.name">{{$t(searchProvider.name + option.name)}}</label>
+                        <span class="two columns" v-if="!option.value">(transparent)</span>
+                        <input ref="colorInput" :class="option.value ? 'two columns' : ''" :style="!option.value ? 'height: 1px; width: 1px; opacity: 0' : ''" :id="searchProvider.name + option.name" type="color" v-model="option.value" @input="searchInput(0)"/>
+                        <input v-if="option.value" aria-hidden="true" disabled="true" :style="'height: 1px; width: 1px; opacity: 0'"/> <!-- just for styling reasons in order to keep position of other elements-->
+                        <button class="mx-2" @click="$refs.colorInput[0].click()">{{ $t('chooseColor') }}</button>
+                        <button class="mx-2" :disabled="!option.value" @click="option.value = undefined; searchInput(0);">{{$t('clear')}}</button>
+                    </div>
+                    <div class="srow" v-if="option.type === constants.OPTION_TYPES.SELECT">
+                        <label class="three columns" :for="searchProvider.name + option.name">{{$t(searchProvider.name + option.name)}}</label>
+                        <select class="three columns" :id="searchProvider.name + option.name" v-model="option.value" @input="searchInput(0)">
+                            <option :value="undefined">{{ $t('noneSelected') }}</option>
+                            <option v-for="value in option.options" :value="value">{{ $t(value) }}</option>
+                        </select>
+                    </div>
+                </div>
+            </accordion>
         </div>
         <div class="srow">
             <div class="offset-by-two ten columns">
                 <div v-for="imgElement in searchResults" class="inline">
-                    <img v-if="imgElement.base64" :src="imgElement.base64" @click="setImage(imgElement)" :title="$t('byAuthor', [imgElement.author])" width="60" height="60" class="inline" role="button"/>
+                    <img v-if="imgElement.base64" :src="imgElement.base64" @click="setImage(imgElement)" :title="$t('byAuthor', [imgElement.author])" width="60" height="60" class="inline img-result" role="button"/>
                     <span v-if="!imgElement.base64 && !imgElement.failed" style="position: relative">
                                         <img src="data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%3E%3C/svg%3E" :title="imgElement.image_url" width="60" height="60" class="inline"/>
                                         <i class="fas fa-spinner fa-spin" style="position: absolute; top: -25px; left: 25px;"></i>
@@ -63,32 +89,23 @@
     import './../../css/modal.css';
     import {helpService} from "../../js/service/helpService";
     import {util} from "../../js/util/util";
+    import {constants} from "../../js/util/constants.js";
+    import Accordion from "../components/accordion.vue";
     import {openSymbolsService} from "../../js/service/pictograms/openSymbolsService.js";
     import {arasaacService} from "../../js/service/pictograms/arasaacService.js";
 
-    const SEARCH_PROVIDERS = [
-        {
-            name: "ARASAAC",
-            url: "https://arasaac.org/",
-            service: arasaacService
-        },
-        {
-            name: "OPENSYMBOLS",
-            url: "https://www.opensymbols.org/",
-            service: openSymbolsService
-        }
-    ];
-
     export default {
         props: ['gridElement', 'gridData', 'imageSearch'],
+        components: {Accordion},
         data: function () {
             return {
                 searchText: null,
-                searchProviders: SEARCH_PROVIDERS,
-                searchProvider: SEARCH_PROVIDERS[0],
+                searchProviders: [arasaacService.getSearchProviderInfo(), openSymbolsService.getSearchProviderInfo()],
+                searchProvider: null,
                 searchResults: null,
                 searchLoading: false,
-                hasNextChunk: true
+                hasNextChunk: true,
+                constants: constants
             }
         },
         methods: {
@@ -126,8 +143,13 @@
                 let thiz = this;
                 if (base64.length > 50 * 1024) {
                     imageUtil.convertBase64(base64, 2 * thiz.elementW).then(newData => {
-                        log.info(`converted image from ${Math.round(base64.length / 1024)}kB to ${Math.round(newData.length / 1024)}kB`);
-                        thiz.gridElement.image.data = newData;
+                        if (newData.length < base64.length) {
+                            log.info(`converted image from ${Math.round(base64.length / 1024)}kB to ${Math.round(newData.length / 1024)}kB`);
+                            thiz.gridElement.image.data = newData;
+                        } else {
+                            log.info(`converting resulted in bigger image (${Math.round(newData.length / 1024)}kB), using old image with ${Math.round(base64.length / 1024)}kB`);
+                            thiz.gridElement.image.data = base64;
+                        }
                     })
                 } else {
                     log.debug(`image size is ${Math.round(base64.length / 1024)}kB`);
@@ -150,11 +172,14 @@
             searchInput(debounceTime, event) {
                 let thiz = this;
                 thiz.searchText = event ? event.target.value : thiz.searchText;
+                if (!thiz.searchText) {
+                    return;
+                }
                 debounceTime = debounceTime === undefined ? 500 : debounceTime;
                 thiz.searchResults = [];
                 thiz.searchLoading = true;
                 util.debounce(function () {
-                    thiz.searchProvider.service.query(thiz.searchText).then(resultList => {
+                    thiz.searchProvider.service.query(thiz.searchText, thiz.searchProvider.options).then(resultList => {
                         thiz.processSearchResults(resultList);
                     });
                 }, debounceTime);
@@ -184,6 +209,7 @@
             }
         },
         mounted() {
+            this.searchProvider = this.searchProviders[0];
             helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
             let maxElementX = Math.max(...this.gridData.gridElements.map(e => e.x + 1));
             this.elementW = Math.round($('#grid-container')[0].getBoundingClientRect().width / maxElementX);
@@ -206,6 +232,10 @@
 
     #imgPreview {
         width: 150px;
+    }
+
+    .img-result:hover {
+        outline: 2px solid black;
     }
 
     .srow {
