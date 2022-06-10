@@ -758,7 +758,7 @@
   "gray": "gris",
   "darkGray": "gris oscuro",
   "red": "pelirrojo",
-  "black": "black",
+  "black": "negro",
   "classroom": "clase",
   "health": "salud",
   "library": "biblioteca",
@@ -768,5 +768,5 @@
   "chooseColor": "Elegir color",
   "searchProvider": "Motor de búsqueda",
   "moreInfo": "más información",
-  "searchByLabel": "Search by label"
+  "searchByLabel": "Buscar por etiqueta"
 }
