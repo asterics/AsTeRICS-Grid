@@ -68,7 +68,7 @@
                                 <button :aria-label="$t('noneSelected')" @click="option.value = undefined; searchInput(0);" :aria-selected="option.value === undefined">{{$t('noneSelected')}}</button>
                             </div>
                             <div v-for="(color, index) in option.colors" class="inline">
-                                <button :aria-label="option.options[index]" @click="option.value = option.options[index]; searchInput(0);" :aria-selected="option.options[index] === option.value" :style="`background-color: ${color};`"></button>
+                                <button :aria-label="option.options[index]" :title="option.colors[index]" @click="option.value = option.options[index]; searchInput(0);" :aria-selected="option.options[index] === option.value" :style="`background-color: ${color};`"></button>
                             </div>
                         </div>
                     </div>

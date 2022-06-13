@@ -46,13 +46,14 @@ let searchProviderInfo = {
             type: constants.OPTION_TYPES.SELECT_COLORS,
             value: undefined,
             options: ["white", "black", "assian", "mulatto", "aztec"],
-            colors: ["#F5E5DF", "#A75C16", "#F5EDAD", "#E3AB72", "#CF9D7C"]
+            colors: ["#F5E5DE", "#A65C17", "#F4ECAD", "#E3AB72", "#CF9D7C"]
         },
         {
             name: "hair",
-            type: constants.OPTION_TYPES.SELECT,
+            type: constants.OPTION_TYPES.SELECT_COLORS,
             value: undefined,
-            options: ["blonde", "brown", "darkBrown", "gray", "darkGray", "red", "black"]
+            options: ["blonde", "brown", "darkBrown", "gray", "darkGray", "red", "black"],
+            colors: ["#FDD700", "#A65E26", "#6A2703", "#EFEFEF", "#AAABAB", "#ED4120", "#020100"]
         },
         {
             name: "identifier",
