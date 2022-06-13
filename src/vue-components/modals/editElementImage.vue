@@ -16,7 +16,7 @@
             <div class="img-preview offset-by-two four columns">
                 <span class="show-mobile" v-show="!hasImage"><i class="fas fa-image"/> <span>{{ $t('noImageChosen') }}</span></span>
                 <span class="hide-mobile" v-show="!hasImage"><i class="fas fa-arrow-down"/> <span>{{ $t('dropImageHere') }}</span></span>
-                <img v-if="hasImage" id="imgPreview" :src="gridElement.image.data || gridElement.image.url"/>
+                <img v-if="hasImage" id="imgPreview" :src="gridElement.image.data || gridElement.image.url" crossorigin="anonymous"/>
                 <div v-if="gridElement.image.author">
                     {{ $t('by') }} <a :href="gridElement.image.authorURL" target="_blank">{{gridElement.image.author}}</a>
                 </div>
