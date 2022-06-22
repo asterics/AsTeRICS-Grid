@@ -274,7 +274,7 @@ function isImageMode(elementMode) {
 
 $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
     let label = i18nService.getTranslation(element.label);
-    let image = element.image ? element.image.data : null;
+    let image = element.image ? (element.image.data || element.image.url) : null;
 
     if (element.type === GridElement.ELEMENT_TYPE_COLLECT) {
         return;
