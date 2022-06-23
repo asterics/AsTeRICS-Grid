@@ -348,10 +348,10 @@ dataService.downloadSingleGrid = function (gridId) {
 /**
  * Downloads all grids, dictionaries and metadata to File. Opens a file download in Browser.
  */
-let backupPrepareForDefault = false;
+window.backupPrepareForDefault = false;
 window.prepareForDefaultBackup = function () {
     window.updateAllThumbnails(2000);
-    backupPrepareForDefault = true
+    window.backupPrepareForDefault = true
 }
 
 dataService.downloadBackup = function () {
@@ -375,7 +375,7 @@ dataService.downloadBackup = function () {
         return Promise.resolve();
     }));
     Promise.all(promises).then(() => {
-        if (backupPrepareForDefault) {
+        if (window.backupPrepareForDefault) {
             delete exportData.dictionaries;
             exportData.metadata.inputConfig = new InputConfig();
             exportData.metadata.locked = undefined;
