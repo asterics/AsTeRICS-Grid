@@ -403,14 +403,16 @@
                 $(document).trigger(constants.EVENT_GRID_LOADED);
                 let gridDataObject = new GridData(thiz.gridData);
                 if (gridDataObject.hasOutdatedThumbnail()) {
-                    imageUtil.getScreenshot("#grid-container").then(screenshot => {
-                        let thumbnail = {
-                            data: screenshot,
-                            hash: gridDataObject.getHash()
-                        };
-                        thiz.gridData.thumbnail = thumbnail;
-                        dataService.saveGrid(thiz.gridData);
-                    });
+                    imageUtil.allImagesLoaded().then(() => {
+                        imageUtil.getScreenshot("#grid-container").then(screenshot => {
+                            let thumbnail = {
+                                data: screenshot,
+                                hash: gridDataObject.getHash()
+                            };
+                            thiz.gridData.thumbnail = thumbnail;
+                            dataService.saveGrid(thiz.gridData);
+                        });
+                    })
                 }
                 thiz.initInputMethods();
             }).catch((e) => {
