@@ -207,7 +207,7 @@ nav li:hover button span {
     flex: 1;
     display: flex;
     overflow: hidden;
-    margin: 1%;
+    justify-content: center;
 }
 
 .grid-item-content .text-container {

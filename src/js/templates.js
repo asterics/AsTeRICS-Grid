@@ -62,8 +62,8 @@ function getGridElementNormal(gridElem, fallbackLocale, metadata) {
     var template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${label}" data-img-id="${imgId}" data-type="${gridElem.type}">
     <div class="grid-item-content" tabindex="40" aria-label="${ariaLabel}" id="${gridElem.id}" data-id="${gridElem.id}" data-empty="${!label && !imgData}" style="${`background-color: ${backgroundColor}; border: 1px solid ${getBorderColor(metadata)}`}">
-        <div class="img-container" style="margin: auto; max-height: ${imgContainerMaxHeight};">
-            <img src="${imgData}" style="max-width: 98%; max-height: 98%; object-fit: contain; height: auto; width: auto; margin: 1%;" crossorigin="anonymous"/>
+        <div class="img-container" style="width: 100%; max-height: ${imgContainerMaxHeight};">
+            <img src="${imgData}" style="max-width: 98%; max-height: 98%; object-fit: contain; margin: 1%;" crossorigin="anonymous"/>
         </div>
         <div class="text-container" style="${txtContainerStyle + `color: ${fontColor}`}"><span>${label}</span></div>
         ${getHintsElement(gridElem)}
