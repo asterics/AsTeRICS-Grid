@@ -24,7 +24,7 @@
                                 <a href="https://arasaac.org/" target="_blank">{{ $t('aragoneseCenterOfAAC') }}</a>
                             </template>
                         </i18n>
-                        <a href="https://arasaac.org/" aria-hidden="true" target="_blank"><img src="app/img/arasaac.png" width="250px" :alt="$t('logoMa23CityVienna')"></a>
+                        <a href="https://arasaac.org/" aria-hidden="true" target="_blank"><img src="app/img/arasaac.png" width="250px"></a>
                     </div>
                 </div>
                 <div class="srow">
