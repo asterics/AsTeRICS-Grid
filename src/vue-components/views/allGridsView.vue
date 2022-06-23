@@ -354,6 +354,7 @@
                 if (!confirm(i18nService.t('updateGridThumbnailsConfirm'))) {
                     return;
                 }
+                let totalSize = 0;
                 dataService.getGrids(false, true).then(async grids => {
                     let index = 0;
                     MainVue.showProgressBar(0, {
@@ -373,7 +374,7 @@
                             text: "generatingThumbnails"
                         });
                     }
-                    log.info('saved all thumbnails!');
+                    log.info(`saved all thumbnails with total size of ${totalSize / 1024}kB`);
                     Router.toManageGrids();
                     setTimeout(() => {
                         MainVue.setTooltip(i18nService.t("updatedAllThumbnails"), {timeout: 20000, msgType: "success"});
@@ -384,7 +385,8 @@
                     let grid = await dataService.getGrid(gridId);
                     await imageUtil.allImagesLoaded();
                     let screenshot = await imageUtil.getScreenshot("#grid-container");
-                    log.info('save screenshot for: ' + i18nService.getTranslation(grid.label));
+                    log.info(`save screenshot for: ${i18nService.getTranslation(grid.label)}, size: ${screenshot.length / 1024}kB`);
+                    totalSize += screenshot.length;
                     let thumbnail = {
                         data: screenshot,
                         hash: grid.getHash()
