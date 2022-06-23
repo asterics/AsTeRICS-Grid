@@ -5,11 +5,11 @@
                 <div class="modal-container" @keyup.27="close()">
                     <a v-if="options.closable" class="inline close-button" href="javascript:void(0);" @click="close()"><i class="fas fa-times"/></a>
                     <div class="modal-header">
-                        <h1 name="header">{{$t(options.header)}}</h1>
+                        <h1 name="header">{{options.header}}</h1>
                     </div>
 
                     <div class="modal-body">
-                        <div class="biggerFont">{{$t(options.text)}} ...</div>
+                        <div class="biggerFont">{{options.text}} ...</div>
                         <div id="progressWrapper" style="border: 1px solid; border-radius: 3px; width: 100%; height: 50px; margin: 0.5em 0">
                             <div id="progressBar" :style="`width: ${progressPercentage}%; height: 100%; background-color: green`"></div>
                         </div>
