@@ -16,21 +16,37 @@ class GridImage extends Model({
     }
 
     getImageType() {
-        if (!this.data) {
+        if (!this.data && !this.url) {
             return null;
         }
-        let type = this.data.substring('data:image/'.length, this.data.indexOf(';base64'));
-        switch (type) {
-            case 'png':
+        if (this.data) {
+            let type = this.data.substring('data:image/'.length, this.data.indexOf(';base64'));
+            switch (type) {
+                case 'png':
+                    return GridImage.IMAGE_TYPES.PNG;
+                case 'jpeg':
+                    return GridImage.IMAGE_TYPES.JPEG;
+                case 'svg':
+                case 'svg+xml':
+                    return GridImage.IMAGE_TYPES.SVG;
+                default:
+                    log.warn('not recognized image type: ' + type);
+                    return null;
+            }
+        }
+        if (this.url) {
+            if (this.url.includes('api.arasaac.org')) {
                 return GridImage.IMAGE_TYPES.PNG;
-            case 'jpeg':
+            }
+            if (this.url.toLowerCase().includes('.jpeg') || this.url.toLowerCase().includes('.jpg')) {
                 return GridImage.IMAGE_TYPES.JPEG;
-            case 'svg':
-            case 'svg+xml':
+            }
+            if (this.url.toLowerCase().includes('.png')) {
+                return GridImage.IMAGE_TYPES.PNG;
+            }
+            if (this.url.toLowerCase().includes('.svg')) {
                 return GridImage.IMAGE_TYPES.SVG;
-            default:
-                log.warn('not recognized image type: ' + type);
-                return null;
+            }
         }
     }
 
