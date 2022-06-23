@@ -87,7 +87,8 @@
                     </button>
                 </div>
                 <span v-show="searchLoading"><i class="fas fa-spinner fa-spin"></i> <span>{{ $t('searching') }}</span></span>
-                <span v-show="!searchLoading && searchResults && searchResults.length === 0">
+                <span v-show="searchError"><i class="fas fa-times"></i> <span>Search failed, maybe not connected to internet?!</span></span>
+                <span v-show="!searchError && !searchLoading && searchResults && searchResults.length === 0">
                                     <span><b>{{ $t('noSearchResults') }}</b></span>
                                 </span>
             </div>
@@ -122,6 +123,7 @@
                 searchProvider: null,
                 searchResults: null,
                 searchLoading: false,
+                searchError: false,
                 hasNextChunk: true,
                 constants: constants,
                 i18nService: i18nService
@@ -184,6 +186,7 @@
             },
             searchInput(debounceTime, event) {
                 let thiz = this;
+                thiz.searchError = false;
                 thiz.searchText = event ? event.target.value : thiz.searchText;
                 if (!thiz.searchText) {
                     return;
@@ -194,6 +197,9 @@
                 util.debounce(function () {
                     thiz.searchProvider.service.query(thiz.searchText, thiz.searchProvider.options).then(resultList => {
                         thiz.processSearchResults(resultList);
+                    }).catch(() => {
+                        thiz.searchError = true;
+                        thiz.searchLoading = false;
                     });
                 }, debounceTime);
             },

@@ -118,7 +118,7 @@ function queryInternal(search, chunkNr, chunkSize) {
     chunkSize = chunkSize || _lastChunkSize;
     chunkNr = chunkNr || 1;
     let queriedElements = [];
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         if (!search) {
             return resolve([]);
         }
@@ -128,7 +128,7 @@ function queryInternal(search, chunkNr, chunkSize) {
                 _lastRawResultList = resultList;
                 processResultList(resultList);
             }, 'json').fail(() => {
-                processResultList([]);
+                reject('no internet');
             });
         } else {
             processResultList(_lastRawResultList);

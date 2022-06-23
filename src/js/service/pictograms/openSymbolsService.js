@@ -69,7 +69,7 @@ function queryInternal(search, chunkNr, chunkSize) {
     chunkSize = chunkSize || _lastChunkSize;
     chunkNr = chunkNr || 1;
     let queriedElements = [];
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         if (!search) {
             return resolve([]);
         }
@@ -77,7 +77,9 @@ function queryInternal(search, chunkNr, chunkSize) {
             $.get(QUERY_URL + search, null, function (resultList) {
                 _lastRawResultList = resultList;
                 processResultList(resultList);
-            });
+            }).fail(() => {
+                reject('no internet');
+            });;
         } else {
             processResultList(_lastRawResultList);
         }
