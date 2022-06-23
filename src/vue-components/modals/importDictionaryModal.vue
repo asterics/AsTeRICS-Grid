@@ -144,7 +144,8 @@
                     let name = thiz.importType === c.SELECT_ONLINE ? thiz.selectedOption.name : thiz.selectedFile.name.replace('dictionary-', '').replace('.json', '');
                     let dict = new Dictionary({
                         dictionaryKey: modelUtil.getNewName(name, existingNames),
-                        data: dictData
+                        data: dictData,
+                        isDefault: true
                     });
                     return dataService.saveDictionary(dict).then(() => {
                         thiz.$emit('reload', dict);
