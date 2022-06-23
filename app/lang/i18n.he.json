@@ -761,5 +761,14 @@
   "chooseColor": "Choose color",
   "searchProvider": "Search provider",
   "moreInfo": "more info",
-  "searchByLabel": "Search by label"
+  "searchByLabel": "Search by label",
+  "updateAllGridThumbnails": "Update all grid thumbnails",
+  "updateGridThumbnailsConfirm": "In order to update the thumbnails all grids will be opened shortly. Continue?",
+  "updateGridThumbnails": "Update grid thumbnails",
+  "generatingThumbnails": "Generating thumbnails",
+  "updatedAllThumbnails": "Updated all grid thumbnails!",
+  "close": "close",
+  "ma23CityOfVienna": "MA23 City of Vienna",
+  "aragoneseCenterOfAAC": "Aragonese Center of Augmentative and Alternative Communication (ARASAAC)",
+  "arasaacCollaboration": "Since 2022 AsTeRICS Grid is collaborating with the {arasaacLink}. Their practice-oriented feedback makes it possible for AsTeRICS Grid to evolve into a full-fledged AAC application - thanks!"
 }
