@@ -7,7 +7,7 @@
             <a v-if="tooltipOptions.actionLinkFn" href="javascript:;" @click="onActionLink" style="display:block; color: #44a8f1">{{actionLink | translate}}</a>
             <a v-if="tooltipOptions.actionLinkUrl" :href="tooltipOptions.actionLinkUrl" target="_blank" style="display:block; color: #44a8f1">{{actionLink | translate}}</a>
         </div>
-        <button @click="tooltipHTML = ''" style="position: absolute; top: 0; right: 10px; padding: 0 10px">X</button>
+        <button @click="tooltipHTML = ''" style="position: absolute; top: 0; right: 10px; padding: 0 10px" :label="$t('close')">X</button>
     </div>
 </template>
 
@@ -62,6 +62,9 @@
                         break;
                     case 'info':
                         thiz.tooltipOptions.faIcon = 'fas fa-info-circle fa-2x';
+                        break;
+                    case 'success':
+                        thiz.tooltipOptions.faIcon = 'fas fa-check-circle fa-2x';
                         break;
                 }
                 this.tooltipHTML = html;
