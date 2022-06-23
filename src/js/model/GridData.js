@@ -43,8 +43,9 @@ class GridData extends Model({
         let string = "";
         this.gridElements.forEach(e => {
             string += JSON.stringify(e.label) + e.x + e.y;
-            if (e.image && e.image.data) {
-                string += e.image.data.substring(e.image.data.length - 30);
+            if (e.image && (e.image.data || e.image.url)) {
+                let temp = e.image.data || e.image.url;
+                string += temp.substring(temp.length > 30 ? temp.length - 30 : 0);
             }
         });
         return encryptionService.getStringHash(string);
