@@ -198,6 +198,26 @@ imageUtil.getImageDimensionsFromImg = function (img) {
     };
 }
 
+imageUtil.allImagesLoaded = function () {
+    // https://stackoverflow.com/a/60949881/9219743
+    return Promise.all(Array.from(document.images).map(img => {
+        if (img.complete)
+            return Promise.resolve(img.naturalHeight !== 0);
+        return new Promise(resolve => {
+            img.addEventListener('load', () => resolve(true));
+            img.addEventListener('error', (error) => resolve(false));
+        });
+    })).then(results => {
+        if (results.every(res => res)) {
+            // all images loaded successfully
+            return Promise.resolve(true);
+        } else {
+            // some images failed to load, all finished loading
+            return Promise.resolve(false);
+        }
+    });
+};
+
 //needed because Firefox doesn't correctly handle SVG with size = 0, see https://bugzilla.mozilla.org/show_bug.cgi?id=700533
 function fixSvgDocumentFF(svgDocument) {
     try {
