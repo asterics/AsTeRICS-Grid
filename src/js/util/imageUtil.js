@@ -142,6 +142,7 @@ imageUtil.getScreenshot = function (selector) {
         return html2canvas.default(document.querySelector(selector), {
             scale: 0.2,
             logging: false,
+            useCORS: true,
             ignoreElements: (node) => {
                 return constants.IS_FIREFOX && node.style['background-image'].indexOf('image/svg') !== -1;
             }
