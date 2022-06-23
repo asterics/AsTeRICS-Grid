@@ -147,7 +147,7 @@ imageUtil.getScreenshot = function (selector) {
                 return constants.IS_FIREFOX && node.style['background-image'].indexOf('image/svg') !== -1;
             }
         }).then(canvas => {
-            return Promise.resolve(canvas.toDataURL());
+            return Promise.resolve(canvas.toDataURL('image/webp', 0.6));
         });
     });
 };
