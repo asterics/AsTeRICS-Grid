@@ -208,7 +208,7 @@ function addGridToPdf(doc, gridData, options, metadata) {
 
 function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos) {
     let label = i18nService.getTranslation(element.label);
-    let hasImg = element.image && element.image.data;
+    let hasImg = element.image && (element.image.data || element.image.url);
     let fontSizeMM = hasImg ? currentHeight * (1 - pdfOptions.imgHeightPercentage) : currentHeight / 2;
     let fontSizePt = (fontSizeMM / 0.352778) * 0.8;
     let maxWidth = currentWidth - 2 * pdfOptions.textPadding;
@@ -253,7 +253,8 @@ function getOptimalFontsize(doc, text, baseSize, maxWidth, maxHeight, multipleLi
 }
 
 function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, ypos) {
-    if (!element || !element.image || !element.image.data || element.image.data.indexOf('data:') !== 0) {
+    let hasImage = element && element.image && (element.image.data || element.image.url);
+    if (!hasImage) {
         return Promise.resolve();
     }
     return element.image.getDimensions().then(async dim => {
@@ -278,20 +279,19 @@ function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, ypos) {
 
         let x = xpos + pdfOptions.imgMargin + xOffset;
         let y = ypos + pdfOptions.imgMargin + yOffset;
+        let imageData = element.image.data;
+        if (!imageData) {
+            imageData = await imageUtil.urlToBase64(element.image.url, 500, type);
+        }
         if (type === GridImage.IMAGE_TYPES.PNG) {
-            addImg("PNG");
+            doc.addImage(imageData, "PNG", x, y, width, height);
         } else if (type === GridImage.IMAGE_TYPES.JPEG) {
-            addImg("JPEG");
+            doc.addImage(imageData, "JPEG", x, y, width, height);
         } else if (type === GridImage.IMAGE_TYPES.SVG) {
             let pixelWidth = width / 0.084666667; //convert width in mm to pixel at 300dpi
-            let pngBase64 = await imageUtil.base64SvgToBase64Png(element.image.data, pixelWidth);
+            let pngBase64 = await imageUtil.base64SvgToBase64Png(imageData, pixelWidth);
             doc.addImage(pngBase64, type, x, y, width, height);
         }
-
-        function addImg(type) {
-            doc.addImage(element.image.data, type, x, y, width, height);
-        }
-
         return Promise.resolve();
     })
 }
