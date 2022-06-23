@@ -1,23 +1,31 @@
 <template>
     <div class="overflow-content">
         <header-icon full-header="true"></header-icon>
-        <div class="srow content spaced">
-            <h2>{{ $t('aboutAstericsGrid') }}</h2>
-            <div class="eight columns">
+        <div class="srow content spaced" style="max-width: 900px">
+            <h2 class="twelve columns">{{ $t('aboutAstericsGrid') }}</h2>
+            <div>
                 <div class="srow">
                     <h3>{{ $t('generalInformation') }}</h3>
                     <div>
+                        {{ $t('astericsGridIsFreeAndOpenSource') }}<br/>
+                        <a target="_blank" href="https://github.com/asterics/AsTeRICS-Grid">{{ $t('astericsGridOnGithub') }}</a><br/><br/>
+
                         {{ $t('theInitialDevelopmentOfAstericsGridWasDoneAt') }}<br/>
                         <a target="_blank" href="https://embsys.technikum-wien.at/projects/torades/index.php">{{ $t('moreInfoAbouTorades') }}</a><br/><br/>
 
                         {{ $t('currentDeleopmentAstericsGridIsDoneWBT') }}<br/>
                         <a target="_blank" href="https://embsys.technikum-wien.at/projects/khat/index.php">{{ $t('moreInfoAboutWBT') }}</a>
                         <br/><br/>
+                        <a href="https://www.wien.gv.at/kontakte/ma23/" target="_blank" :title="$t('ma23CityOfVienna')"><img src="app/img/ma23-gefoerdertvon.jpg" width="80px" :alt="$t('logoMa23CityVienna')"></a>
+                        <br/>
 
-                        {{ $t('astericsGridIsFreeAndOpenSource') }}<br/>
-                        <a target="_blank" href="https://github.com/asterics/AsTeRICS-Grid">{{ $t('astericsGridOnGithub') }}</a>
-                    </div><br/>
-                    <img src="app/img/ma23-gefoerdertvon.jpg" width="80px" :alt="$t('logoMa23CityVienna')">
+                        <i18n path="arasaacCollaboration" tag="p">
+                            <template v-slot:arasaacLink>
+                                <a href="https://arasaac.org/" target="_blank">{{ $t('aragoneseCenterOfAAC') }}</a>
+                            </template>
+                        </i18n>
+                        <a href="https://arasaac.org/" aria-hidden="true" target="_blank"><img src="app/img/arasaac.png" width="250px" :alt="$t('logoMa23CityVienna')"></a>
+                    </div>
                 </div>
                 <div class="srow">
                     <h3>{{ $t('feedback') }}</h3>
