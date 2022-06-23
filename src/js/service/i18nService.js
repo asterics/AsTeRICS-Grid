@@ -123,17 +123,29 @@ i18nService.setLanguage = function (lang, dontSave) {
     });
 };
 
-function loadLanguage(useLang) {
+function loadLanguage(useLang, secondTry) {
     return new Promise(resolve => {
         if (loadedLanguages.includes(useLang)) {
             resolve();
         } else {
-            $.get('app/lang/i18n.' + useLang + '.json').then(messages => {
+            let url = 'app/lang/i18n.' + useLang + '.json';
+            $.get(url).then(messages => {
                 loadedLanguages.push(useLang)
                 vueI18n.setLocaleMessage(useLang, messages);
             }).fail(() => {
-                loadLanguage(fallbackLang).finally(resolve);
+                if (!secondTry) {
+                    loadLanguage(fallbackLang, true).finally(resolve);
+                } else {
+                    resolve();
+                }
             }).then(() => {
+                navigator.serviceWorker.addEventListener("message", (evt) => {
+                    if (evt.data && evt.data.activated) {
+                        navigator.serviceWorker.controller.postMessage({
+                            urlToAdd: url
+                        });
+                    }
+                });
                 resolve();
             })
         }
