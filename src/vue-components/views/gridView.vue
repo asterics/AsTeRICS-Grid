@@ -92,7 +92,7 @@
     };
 
     let vueConfig = {
-        props: ['gridId'],
+        props: ['gridId', 'skipThumbnailCheck'],
         data() {
             return {
                 gridData: {},
@@ -402,7 +402,7 @@
                 thiz.viewInitialized = true;
                 $(document).trigger(constants.EVENT_GRID_LOADED);
                 let gridDataObject = new GridData(thiz.gridData);
-                if (gridDataObject.hasOutdatedThumbnail()) {
+                if (gridDataObject.hasOutdatedThumbnail() && !thiz.skipThumbnailCheck) {
                     imageUtil.allImagesLoaded().then(() => {
                         imageUtil.getScreenshot("#grid-container").then(screenshot => {
                             let thumbnail = {

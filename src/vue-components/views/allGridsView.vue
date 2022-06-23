@@ -355,23 +355,40 @@
                     return;
                 }
                 let totalSize = 0;
+                let cancelled = false;
                 dataService.getGrids(false, true).then(async grids => {
                     let index = 0;
                     MainVue.showProgressBar(0, {
-                        header: "updateGridThumbnails",
-                        text: "generatingThumbnails"
+                        header: i18nService.t("updateGridThumbnails"),
+                        text: i18nService.t("generatingThumbnails"),
+                        closable: true,
+                        cancelFn: () => {
+                            cancelled = true;
+                        }
                     });
                     for (const gridShort of grids) {
-                        Router.toGrid(gridShort.id);
+                        if (cancelled) {
+                            Router.toManageGrids();
+                            return;
+                        }
+                        Router.toGrid(gridShort.id, {skipThumbnailCheck: true});
                         await new Promise(resolve => {
                             $(document).on(constants.EVENT_GRID_LOADED, resolve);
                         });
                         await util.sleep(100);
                         await updateScreenshot(gridShort.id);
+                        if (cancelled) {
+                            Router.toManageGrids();
+                            return;
+                        }
                         index++;
                         MainVue.showProgressBar(Math.round(index / grids.length * 100), {
-                            header: "updateGridThumbnails",
-                            text: "generatingThumbnails"
+                            header: i18nService.t("updateGridThumbnails"),
+                            text: i18nService.t("generatingThumbnails"),
+                            closable: true,
+                            cancelFn: () => {
+                                cancelled = true;
+                            }
                         });
                     }
                     log.info(`saved all thumbnails with total size of ${totalSize / 1024}kB`);

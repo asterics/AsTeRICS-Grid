@@ -49,12 +49,13 @@ Router.init = function (injectIdParam, initialHash) {
                 helpService.setHelpLocation('02_navigation', '#manage-grids-view');
                 loadVueView(AllGridsView);
             },
-            'grid/:gridId': function (params) {
+            'grid/:gridId': function (params, query) {
                 log.debug('route grid with ID: ' + params.gridId);
+                let queryParams = new URLSearchParams(query);
+                let passParams = Object.fromEntries(queryParams);
+                passParams.gridId = params.gridId;
                 helpService.setHelpLocation('02_navigation', '#main-view');
-                loadVueView(GridView, {
-                    gridId: params.gridId
-                }, '#main');
+                loadVueView(GridView, passParams, '#main');
             },
             'grid/name/:gridName': function (params) {
                 log.debug('route grid with Name: ' + params.gridName);
@@ -181,9 +182,16 @@ Router.toLastOpenedGrid = function () {
     });
 };
 
-Router.toGrid = function (id) {
-    if(id) {
-        setHash('#grid/' + id + "?date=" + new Date().getTime());
+Router.toGrid = function (id, props) {
+    if (id) {
+        let params = new URLSearchParams();
+        params.set("date", new Date().getTime());
+        if (props) {
+            Object.keys(props).forEach(key => {
+                params.set(key, props[key]);
+            })
+        }
+        setHash(`#grid/${id}?${params.toString()}`);
     }
 };
 
