@@ -509,6 +509,13 @@ dataService.importData = function (data, generateGlobalGrid, backupMode) {
                 importGrids.forEach(grid => {
                     let label = i18nService.getTranslation(grid.label);
                     grid.label[i18nService.getCurrentLang()] = modelUtil.getNewName(label, existingNames);
+                    grid.gridElements.forEach(element => {
+                        if (element.image && element.image.url && navigator.serviceWorker && navigator.serviceWorker.controller) {
+                            navigator.serviceWorker.controller.postMessage({
+                                imageUrlToAdd: element.image.url
+                            });
+                        }
+                    });
                 });
                 let locale = importGrids[0] ? importGrids[0].locale : null;
                 if (generateGlobalGrid) {
