@@ -252,48 +252,51 @@ function getOptimalFontsize(doc, text, baseSize, maxWidth, maxHeight, multipleLi
     return Math.floor(Math.min(size, baseSize));
 }
 
-function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, ypos) {
+async function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, ypos) {
     let hasImage = element && element.image && (element.image.data || element.image.url);
     if (!hasImage) {
         return Promise.resolve();
     }
-    return element.image.getDimensions().then(async dim => {
-        let type = element.image.getImageType();
-        let imgHeightPercentage = i18nService.getTranslation(element.label) ? pdfOptions.imgHeightPercentage : 1;
-        let maxWidth = (elementWidth - 2 * pdfOptions.imgMargin);
-        let maxHeight = (elementHeight - 2 * pdfOptions.imgMargin) * imgHeightPercentage;
-        let elementRatio = maxWidth / maxHeight;
-        let width = maxWidth, height = maxHeight;
-        let xOffset = 0, yOffset = 0;
-        if (dim.ratio >= elementRatio) { // img has wider ratio than space in element
-            if (!isNaN(dim.ratio)) {
-                height = width / dim.ratio;
-            }
-            yOffset = (maxHeight - height) / 2;
-        } else { //img has narrower ratio than space in element
-            if (!isNaN(dim.ratio)) {
-                width = height * dim.ratio;
-            }
-            xOffset = (maxWidth - width) / 2;
+    let type = element.image.getImageType();
+    let imageData = element.image.data;
+    let dim = null;
+    if (!imageData) {
+        let dataWithDim = await imageUtil.urlToBase64WithDimensions(element.image.url, 500, type);
+        imageData = dataWithDim.data;
+        dim = dataWithDim.dim;
+    }
+    if (!dim) {
+        dim = await imageUtil.getImageDimensionsFromDataUrl(imageData);
+    }
+    let imgHeightPercentage = i18nService.getTranslation(element.label) ? pdfOptions.imgHeightPercentage : 1;
+    let maxWidth = (elementWidth - 2 * pdfOptions.imgMargin);
+    let maxHeight = (elementHeight - 2 * pdfOptions.imgMargin) * imgHeightPercentage;
+    let elementRatio = maxWidth / maxHeight;
+    let width = maxWidth, height = maxHeight;
+    let xOffset = 0, yOffset = 0;
+    if (dim.ratio >= elementRatio) { // img has wider ratio than space in element
+        if (!isNaN(dim.ratio)) {
+            height = width / dim.ratio;
         }
+        yOffset = (maxHeight - height) / 2;
+    } else { //img has narrower ratio than space in element
+        if (!isNaN(dim.ratio)) {
+            width = height * dim.ratio;
+        }
+        xOffset = (maxWidth - width) / 2;
+    }
 
-        let x = xpos + pdfOptions.imgMargin + xOffset;
-        let y = ypos + pdfOptions.imgMargin + yOffset;
-        let imageData = element.image.data;
-        if (!imageData) {
-            imageData = await imageUtil.urlToBase64(element.image.url, 500, type);
-        }
-        if (type === GridImage.IMAGE_TYPES.PNG) {
-            doc.addImage(imageData, "PNG", x, y, width, height);
-        } else if (type === GridImage.IMAGE_TYPES.JPEG) {
-            doc.addImage(imageData, "JPEG", x, y, width, height);
-        } else if (type === GridImage.IMAGE_TYPES.SVG) {
-            let pixelWidth = width / 0.084666667; //convert width in mm to pixel at 300dpi
-            let pngBase64 = await imageUtil.base64SvgToBase64Png(imageData, pixelWidth);
-            doc.addImage(pngBase64, type, x, y, width, height);
-        }
-        return Promise.resolve();
-    })
+    let x = xpos + pdfOptions.imgMargin + xOffset;
+    let y = ypos + pdfOptions.imgMargin + yOffset;
+    if (type === GridImage.IMAGE_TYPES.PNG) {
+        doc.addImage(imageData, "PNG", x, y, width, height);
+    } else if (type === GridImage.IMAGE_TYPES.JPEG) {
+        doc.addImage(imageData, "JPEG", x, y, width, height);
+    } else if (type === GridImage.IMAGE_TYPES.SVG) {
+        let pixelWidth = width / 0.084666667; //convert width in mm to pixel at 300dpi
+        let pngBase64 = await imageUtil.base64SvgToBase64Png(imageData, pixelWidth);
+        doc.addImage(pngBase64, type, x, y, width, height);
+    }
 }
 
 export {printService};

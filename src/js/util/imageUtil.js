@@ -7,7 +7,7 @@ var imageUtil = {};
  * @param img the image element to convert
  * @param maxWidth maximum width of the image
  * @param quality quality of the image (0.0 - 1.0)
- * @return {string}
+ * @return {Object} object containing "data" base64 data of image, "dim" containing width, height and ratio
  */
 imageUtil.getBase64FromImg = function (img, maxWidth, quality, mimeType) {
     maxWidth = maxWidth || 150;
@@ -27,7 +27,14 @@ imageUtil.getBase64FromImg = function (img, maxWidth, quality, mimeType) {
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     try {
         let data = canvas.toDataURL(mimeType, quality);
-        return data;
+        return {
+            data: data,
+            dim: {
+                width: canvas.width,
+                height: canvas.height,
+                ratio: canvas.width / canvas.height
+            }
+        };
     } catch (e) {
         throw "image converting failed!"
     }
@@ -64,7 +71,7 @@ imageUtil.convertBase64 = function (originalBase64, maxWidth, quality) {
         var img = document.createElement('img');
         img.onload = function () {
             try {
-                resolve(imageUtil.getBase64FromImg(img, maxWidth, quality));
+                resolve(imageUtil.getBase64FromImg(img, maxWidth, quality).data);
             } catch (e) {
                 resolve(null);
             }
@@ -109,7 +116,14 @@ imageUtil.base64SvgToBase64Png = function (originalBase64, width, secondTry) {
     });
 }
 
-imageUtil.urlToBase64 = function (url, maxWidth, mimeType) {
+/**
+ * converts a given url to a base64 data and also returns image dimensions
+ * @param url url of the image
+ * @param maxWidth
+ * @param mimeType
+ * @return {Promise<Object>} object containing keys "data" (base64) and "dim" with keys width, height and ratio
+ */
+imageUtil.urlToBase64WithDimensions = function (url, maxWidth, mimeType) {
     maxWidth = maxWidth || 500;
     return new Promise((resolve, reject) => {
         if (url.lastIndexOf('.svg') === url.length - 4) {
@@ -135,6 +149,12 @@ imageUtil.urlToBase64 = function (url, maxWidth, mimeType) {
             img.src = url;
         }
     });
+};
+
+imageUtil.urlToBase64 = function (url, maxWidth, mimeType) {
+    return imageUtil.urlToBase64WithDimensions(url, maxWidth, mimeType).then(dataWithDim => {
+        return Promise.resolve(dataWithDim.data);
+    })
 };
 
 imageUtil.getScreenshot = function (selector) {
