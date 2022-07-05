@@ -1,6 +1,6 @@
 {
-  "GridActionSpeak": "Speak label",
-  "GridActionSpeakCustom": "Speak custom text",
+  "GridActionSpeak": "Falar etiqueta",
+  "GridActionSpeakCustom": "Falar texto personalizado",
   "GridActionNavigate": "Navigate to other grid",
   "GridActionARE": "AsTeRICS action",
   "GridActionPredict": "Fill prediction elements",
