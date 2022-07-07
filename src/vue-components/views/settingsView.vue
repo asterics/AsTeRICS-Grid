@@ -118,6 +118,19 @@
                     </div>
                 </div>
             </div>
+            <div class="srow">
+                <div class="ten columns">
+                    <h3 class="mt-2">{{ $t('elementLabels') }}</h3>
+                    <div class="srow">
+                        <label class="three columns" for="convertText">{{ $t('convertElementLabels') }}</label>
+                        <select id="convertText" v-model="metadata.textConfig.convertMode" class="five columns" @change="saveMetadata()">
+                            <option :value="null">{{ $t('dontConvertLabels') }}</option>
+                            <option :value="TextConfig.CONVERT_MODE_UPPERCASE">{{ $t('convertToUppercasse') }}</option>
+                            <option :value="TextConfig.CONVERT_MODE_LOWERCASE">{{ $t('convertToLowercase') }}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -131,6 +144,7 @@
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {constants} from "../../js/util/constants.js";
     import {MetaData} from "../../js/model/MetaData.js";
+    import {TextConfig} from "../../js/model/TextConfig.js";
 
     export default {
         components: {HeaderIcon},
@@ -153,7 +167,8 @@
                 i18nService: i18nService,
                 localStorageService: localStorageService,
                 constants: constants,
-                MetaData: MetaData
+                MetaData: MetaData,
+                TextConfig: TextConfig
             }
         },
         methods: {

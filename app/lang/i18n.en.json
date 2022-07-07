@@ -772,5 +772,10 @@
   "aragoneseCenterOfAAC": "Aragonese Center of Augmentative and Alternative Communication (ARASAAC)",
   "arasaacCollaboration": "Since 2022 AsTeRICS Grid is collaborating with the {arasaacLink}. Their practice-oriented feedback makes it possible for AsTeRICS Grid to evolve into a full-fledged AAC application - thanks!",
   "copyrightARASAACPDF": "Pictograms by Sergio Palao, ARASAAC, https://arasaac.org, CC (BY-NC-SA)",
-  "searchFailedMaybeNotConnectedToInternet": "Search failed, maybe not connected to internet?!"
+  "searchFailedMaybeNotConnectedToInternet": "Search failed, maybe not connected to internet?!",
+  "convertElementLabels": "Convert element labels",
+  "dontConvertLabels": "Don't convert labels",
+  "convertToUppercasse": "Convert to uppercasse",
+  "convertToLowercase": "Convert to lowercase",
+  "elementLabels": "Element labels"
 }

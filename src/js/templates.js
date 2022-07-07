@@ -11,6 +11,7 @@ import {GridActionChangeLang} from "./model/GridActionChangeLang.js";
 import {GridActionPredict} from "./model/GridActionPredict.js";
 import {GridActionWebradio} from "./model/GridActionWebradio.js";
 import {MetaData} from "./model/MetaData.js";
+import {TextConfig} from "./model/TextConfig.js";
 
 var templates = {};
 
@@ -47,6 +48,14 @@ function getGridElementNormal(gridElem, fallbackLocale, metadata) {
     var txtContainerStyle = 'font-size:' + fontUtil.getLastFontSize() + ';';
     var imgContainerMargin = '1%';
     let label = i18nService.getTranslation(gridElem.label, fallbackLocale);
+    switch (metadata.textConfig.convertMode) {
+        case TextConfig.CONVERT_MODE_UPPERCASE:
+            label = label.toUpperCase();
+            break;
+        case TextConfig.CONVERT_MODE_LOWERCASE:
+            label = label.toLowerCase();
+            break;
+    }
     var imgContainerMaxHeight = label ? '80%' : '100%';
     if (gridElem.image && (gridElem.image.data || gridElem.image.url)) {
         imgData = gridElem.image.data || gridElem.image.url;
