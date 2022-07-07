@@ -11,7 +11,7 @@ let _lastSearchTerm = null;
 let _lastRawResultList = null;
 let _hasNextChunk = false;
 let _lastOptions = null;
-let arasaacAuthor = "Sergio Palao / ARASAAC";
+let arasaacAuthor = "ARASAAC - CC (BY-NC-SA)";
 let arasaacLicenseURL = "https://arasaac.org/terms-of-use";
 
 arasaacService.SEARCH_PROVIDER_NAME = 'ARASAAC';
