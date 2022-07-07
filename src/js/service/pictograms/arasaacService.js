@@ -31,11 +31,6 @@ let searchProviderInfo = {
             value: true
         },
         {
-            name: "backgroundColor",
-            type: constants.OPTION_TYPES.COLOR,
-            value: undefined
-        },
-        {
             name: "action",
             type: constants.OPTION_TYPES.SELECT,
             value: undefined,
