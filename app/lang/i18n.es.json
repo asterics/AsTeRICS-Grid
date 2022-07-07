@@ -772,10 +772,10 @@
   "aragoneseCenterOfAAC": "Centro Aragonés para la Comunicación Aumentativa y Alternativa (ARASAAC)",
   "arasaacCollaboration": "Desde el año 2022, AsTeRICS Grid colabora con el {arasaacLink}. Su asesoramiento, basado en su amplia experiencia con los Sistemas Aumentativos y Alternativos de Comunicación (SAAC), hace posible que AsTeRICS Grid sea un comunicador cada día más potente y completo - ¡Gracias!",
   "copyrightARASAACPDF": "Pictogramas: Sergio Palao - Origen: ARASAAC https://arasaac.org - Licencia: CC (BY-NC-SA)",
-  "searchFailedMaybeNotConnectedToInternet": "Search failed, maybe not connected to internet?!",
-  "convertElementLabels": "Convert element labels",
-  "dontConvertLabels": "Don't convert labels",
-  "convertToUppercasse": "Convert to uppercasse",
-  "convertToLowercase": "Convert to lowercase",
-  "elementLabels": "Element labels"
+  "searchFailedMaybeNotConnectedToInternet": "No hay resultados para la búsqueda. Pruebe a buscar con otros términos! ¿Está conectado a internet?.",
+  "convertElementLabels": "Transformar texto de las celdas",
+  "dontConvertLabels": "No transformar el texto",
+  "convertToUppercasse": "Transformar a mayúsculas",
+  "convertToLowercase": "Transformar a minúsculas",
+  "elementLabels": "Texto de las celdas"
 }
