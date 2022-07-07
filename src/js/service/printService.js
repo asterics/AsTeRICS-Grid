@@ -6,6 +6,7 @@ import {GridElement} from "../model/GridElement";
 import {util} from "../util/util";
 import {dataService} from "./data/dataService.js";
 import {MetaData} from "../model/MetaData.js";
+import {arasaacService} from "./pictograms/arasaacService.js";
 
 let printService = {};
 let gridInstance = null;
@@ -49,7 +50,6 @@ printService.setGridInstance = function (instance) {
  * @param options.progressFn a function that is called in order to report progress of the task.
  *                           Parameters passed: <percentage:Number, text:String, abortFn:Function>.
  *                           "abortFn" can be called in order to abort the task.
- * @param options.showFooter if false, footer is not printed, default: true
  * @return {Promise<void>}
  */
 printService.gridsToPdf = async function (gridsData, options) {
@@ -105,16 +105,18 @@ function addGridToPdf(doc, gridData, options, metadata) {
     let DOC_HEIGHT = 210;
 
     gridData = new GridData(gridData);
+    let hasARASAACImages = gridData.gridElements.reduce((total, element) => total || element.image && element.image.searchProviderName === arasaacService.SEARCH_PROVIDER_NAME, false);
     let registerHeight = options.showRegister && options.pages > 1 ? 10 : 0;
-    let footerHeight = options.showFooter !== false ? pdfOptions.footerHeight : 0;
+    let footerHeight = hasARASAACImages ? 2 * pdfOptions.footerHeight : pdfOptions.footerHeight;
     let elementTotalWidth = (DOC_WIDTH - 2 * pdfOptions.docPadding) / gridData.getWidth();
     let elementTotalHeight = (DOC_HEIGHT - 2 * pdfOptions.docPadding - footerHeight - registerHeight) / gridData.getHeight();
     if (footerHeight > 0) {
         let yBaseFooter = DOC_HEIGHT - pdfOptions.docPadding - registerHeight;
-        let fontSizePt = (footerHeight * 0.4 / 0.352778);
+        let fontSizePt = (pdfOptions.footerHeight * 0.4 / 0.352778);
         doc.setTextColor(0);
         doc.setFontSize(fontSizePt);
         let textL = i18nService.t("printedByAstericsGrid");
+        let textL2 = i18nService.t("copyrightARASAACPDF");
         let textC = i18nService.getTranslation(gridData.label);
         let firstParentPage = options.idParentsMap[gridData.id][0];
         if (options.showLinks && firstParentPage) {
@@ -126,15 +128,22 @@ function addGridToPdf(doc, gridData, options, metadata) {
         let currentPage = options.idPageMap[gridData.id] || 1;
         let totalPages = Object.keys(options.idPageMap).length || 1
         let textR = currentPage + " / " + totalPages;
-        doc.text(textL, pdfOptions.docPadding + pdfOptions.elementMargin, yBaseFooter, {
+        let yLine1 = hasARASAACImages ? yBaseFooter - pdfOptions.footerHeight : yBaseFooter;
+        doc.text(textL, pdfOptions.docPadding + pdfOptions.elementMargin, yLine1, {
             baseline: 'bottom',
             align: 'left'
         });
-        doc.text(textC, DOC_WIDTH / 2, yBaseFooter, {
+        if (hasARASAACImages) {
+            doc.text(textL2, pdfOptions.docPadding + pdfOptions.elementMargin, yBaseFooter, {
+                baseline: 'bottom',
+                align: 'left'
+            });
+        }
+        doc.text(textC, DOC_WIDTH / 2, yLine1, {
             baseline: 'bottom',
             align: 'center'
         });
-        doc.text(textR, DOC_WIDTH - pdfOptions.docPadding - pdfOptions.elementMargin, yBaseFooter, {
+        doc.text(textR, DOC_WIDTH - pdfOptions.docPadding - pdfOptions.elementMargin, yLine1, {
             baseline: 'bottom',
             align: 'right'
         });
