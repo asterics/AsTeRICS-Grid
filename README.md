@@ -47,7 +47,9 @@ After `yarn install` the following commands are available:
 The AsTeRICS Grid evolved out of [AsTeRICS Ergo](https://github.com/asterics/AsTeRICS-Ergo), see [AsTeRICS Ergo Master Plan](https://github.com/asterics/AsTeRICS-Ergo/wiki/Master-Plan-AsTeRICS-Ergo) and [AsTeRICS Ergo Architecture](https://github.com/asterics/AsTeRICS-Ergo/wiki/Architecture) and will eventually replace AsTeRICS Ergo.
 
 ## Acknowledgements and Attribution
-* Thanks to https://crossbrowsertesting.com/ for providing a free open source license.
+* Thanks to [ARASAAC](https://arasaac.org/) for collaborating and providing their pictogram API
+* Thanks to [crowdin.com](https://crowdin.com/project/asterics-grid) for providing a free open source license
+* Thanks to [crossbrowsertesting.com](https://crossbrowsertesting.com/) for providing a free open source license.
 <a href="https://crossbrowsertesting.com/"><img src="https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/app/img/CBT_OS-logo_2Color-H.png" width="400px"/></a>
 * Thanks to Alex Segler for the great Webradio API [radio-browser.info](http://www.radio-browser.info/) which makes it possible to search and play webradios within AsTeRICS Grid
 * Thanks to the makers of the API from [opensymbols.org](https://www.opensymbols.org/) which makes it possible to search for open AAC symbols within AsTeRICS Grid
