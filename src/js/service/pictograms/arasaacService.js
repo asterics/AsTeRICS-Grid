@@ -109,6 +109,21 @@ arasaacService.hasNextChunk = function () {
     return _hasNextChunk;
 };
 
+arasaacService.getUpdatedUrl = function (oldUrl, newOptions) {
+    let id = oldUrl.substring(oldUrl.lastIndexOf('/') + 1, oldUrl.indexOf('?'));
+    return getUrl(id, newOptions);
+}
+
+function getUrl(apiId, options) {
+    let paramSuffix = '';
+    options.forEach(option => {
+        if (option.value !== undefined) {
+            paramSuffix += `&${option.name}=${encodeURIComponent(option.value)}`
+        }
+    });
+    return `https://api.arasaac.org/api/pictograms/${apiId}?download=false${paramSuffix}`;
+}
+
 function queryInternal(search, chunkNr, chunkSize) {
     chunkSize = chunkSize || _lastChunkSize;
     chunkNr = chunkNr || 1;
@@ -136,17 +151,11 @@ function queryInternal(search, chunkNr, chunkSize) {
             let startIndex = (chunkNr * chunkSize) - chunkSize;
             let endIndex = startIndex + chunkSize - 1;
             _hasNextChunk = resultList.length > (endIndex + 1);
-            let paramSuffix = '';
-            _lastOptions.forEach(option => {
-                if (option.value !== undefined) {
-                    paramSuffix += `&${option.name}=${encodeURIComponent(option.value)}`
-                }
-            });
             for (let i = startIndex; i <= endIndex; i++) {
                 if (resultList[i]) {
                     let element = {};
                     let apiElement = JSON.parse(JSON.stringify(resultList[i]));
-                    element.url = `https://api.arasaac.org/api/pictograms/${apiElement._id}?download=false${paramSuffix}`;
+                    element.url = getUrl(apiElement._id, _lastOptions);
                     element.author = arasaacAuthor;
                     element.authorURL = arasaacLicenseURL;
                     element.searchProviderName = arasaacService.SEARCH_PROVIDER_NAME;

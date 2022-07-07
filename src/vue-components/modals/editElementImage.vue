@@ -33,7 +33,7 @@
             </div>
             <div class="four columns" v-if="searchProvider">
                 <label for="searchProvider">{{ $t('searchProvider') }}</label>
-                <select id="searchProvider" v-model="searchProvider" @change="searchInput(0)">
+                <select id="searchProvider" v-model="searchProvider" @change="searchInput(0);">
                     <option v-for="provider in searchProviders" :value="provider">{{provider.name}}</option>
                 </select>
                 <a :href="searchProvider.url" target="_blank">{{ $t('moreInfo') }}</a>
@@ -65,10 +65,10 @@
                         <label class="three columns" :for="searchProvider.name + option.name">{{$t(searchProvider.name + option.name)}}</label>
                         <div class="nine columns colorSelector">
                             <div class="inline">
-                                <button :aria-label="$t('noneSelected')" @click="option.value = undefined; searchInput(0);" :aria-selected="option.value === undefined">{{$t('noneSelected')}}</button>
+                                <button :aria-label="$t('noneSelected')" @click="option.value = undefined; afterColorChange(); searchInput(0);" :aria-selected="option.value === undefined">{{$t('noneSelected')}}</button>
                             </div>
                             <div v-for="(color, index) in option.colors" class="inline">
-                                <button :aria-label="option.options[index]" :title="option.colors[index]" @click="option.value = option.options[index]; searchInput(0);" :aria-selected="option.options[index] === option.value" :style="`background-color: ${color};`"></button>
+                                <button :aria-label="option.options[index]" :title="option.colors[index]" @click="option.value = option.options[index]; afterColorChange(); searchInput(0);" :aria-selected="option.options[index] === option.value" :style="`background-color: ${color};`"></button>
                             </div>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
                     </button>
                 </div>
                 <span v-show="searchLoading"><i class="fas fa-spinner fa-spin"></i> <span>{{ $t('searching') }}</span></span>
-                <span v-show="searchError"><i class="fas fa-times"></i> <span>Search failed, maybe not connected to internet?!</span></span>
+                <span v-show="searchError"><i class="fas fa-times"></i> <span>{{ $t('searchFailedMaybeNotConnectedToInternet') }}</span></span>
                 <span v-show="!searchError && !searchLoading && searchResults && searchResults.length === 0">
                                     <span><b>{{ $t('noSearchResults') }}</b></span>
                                 </span>
@@ -127,6 +127,23 @@
                 hasNextChunk: true,
                 constants: constants,
                 i18nService: i18nService
+            }
+        },
+        watch: {
+            searchProvider: {
+                handler(newValue, oldValue) {
+                    let hasOptions = newValue && newValue.options;
+                    if (hasOptions) {
+                        if (this.gridElement.image && this.gridElement.image.url && this.gridElement.image.searchProviderName === arasaacService.SEARCH_PROVIDER_NAME) {
+                            let newUrl = arasaacService.getUpdatedUrl(this.gridElement.image.url, newValue.options);
+                            if(newUrl !== this.gridElement.image.url) {
+                                this.gridElement.image.url = newUrl;
+                                this.gridElement.image.searchProviderOptions = newValue.options;
+                            }
+                        }
+                    }
+                },
+                deep: true
             }
         },
         methods: {
@@ -184,6 +201,10 @@
                 this.searchText = keyword;
                 this.searchInput(0);
             },
+            afterColorChange() {
+                this.$forceUpdate(); // get color change in search option working, if no searchText
+                this.$set(this.searchProvider, 'options', JSON.parse(JSON.stringify(this.searchProvider.options))); // trigger watch for color change, don't know why it's needed
+            },
             searchInput(debounceTime, event) {
                 let thiz = this;
                 thiz.searchError = false;
@@ -222,7 +243,11 @@
             }
         },
         mounted() {
-            this.searchProvider = this.searchProviders[0];
+            let hasImage = !!this.gridElement.image;
+            let currentSearchProviderName = hasImage ? this.gridElement.image.searchProviderName : null;
+            let currentSearchOptions = hasImage ? this.gridElement.image.searchProviderOptions : null;
+            this.searchProvider = this.searchProviders.filter(provider => provider.name === currentSearchProviderName)[0] || this.searchProviders[0];
+            this.$set(this.searchProvider, 'options', currentSearchOptions || this.searchProvider.options);
             helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
             let maxElementX = Math.max(...this.gridData.gridElements.map(e => e.x + 1));
             this.elementW = Math.round($('#grid-container')[0].getBoundingClientRect().width / maxElementX);
@@ -256,7 +281,7 @@
     }
 
     .colorSelector button[aria-selected="true"] {
-        outline: 5px solid black;
+        outline: 5px dashed darkblue;
     }
 
     .colorSelector button {
@@ -264,7 +289,7 @@
         padding: 0;
         line-height: 1em;
         height: 1.5em;
-        width: 5em;
+        width: 3.5em;
     }
 
     @media (max-width: 850px) {
