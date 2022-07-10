@@ -138,7 +138,7 @@
   "directionInputMethod25InputEvents": "Direction input method: 2-5 input events",
   "help": "עזרה",
   "enableDirectionInput": "Enable direction input",
-  "resetToDefaultInputConfiguration": "Reset to default input configuration",
+  "resetToDefaultInputConfiguration": "אפס לברירת מחדל של תצורת הפלט",
   "wrapAroundJumpToFirstElementAfterLastElem": "Wrap around (jump to first element after last element)",
   "goToStartPositionAfterSelect": "לך לעמדת פתיחה לאחר בחירה",
   "ok": "אישור",
