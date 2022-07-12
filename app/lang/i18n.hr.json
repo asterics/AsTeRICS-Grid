@@ -1,8 +1,8 @@
 {
-  "GridActionSpeak": "Speak label",
-  "GridActionSpeakCustom": "Speak custom text",
-  "GridActionNavigate": "Navigate to other grid",
-  "GridActionARE": "AsTeRICS action",
+  "GridActionSpeak": "Izgovoriti tekst ćelije",
+  "GridActionSpeakCustom": "Izgovori prilagođeni tekst",
+  "GridActionNavigate": "Prijeđi na drugu ploču",
+  "GridActionARE": "AsTeRICS radnja",
   "GridActionPredict": "Fill prediction elements",
   "GridActionCollectElement": "Collect element action",
   "GridActionWebradio": "Web radio action",
