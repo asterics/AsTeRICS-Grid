@@ -388,7 +388,7 @@
   "moveElementToGrid": "Mover celda \"{0}\" al tablero",
   "emptyElement": "(celda vacía)",
   "pleaseSelect": "(Por favor, seleccione)",
-  "noGrids": "(ho hay tableros)",
+  "noGrids": "(no hay tableros)",
   "activeBracket": "(activo)",
   "welcome": "Bienvenida",
   "speechOutputActivated": "salida de voz activada",
