@@ -46,6 +46,11 @@ After `yarn install` the following commands are available:
 ## History
 The AsTeRICS Grid evolved out of [AsTeRICS Ergo](https://github.com/asterics/AsTeRICS-Ergo), see [AsTeRICS Ergo Master Plan](https://github.com/asterics/AsTeRICS-Ergo/wiki/Master-Plan-AsTeRICS-Ergo) and [AsTeRICS Ergo Architecture](https://github.com/asterics/AsTeRICS-Ergo/wiki/Architecture) and will eventually replace AsTeRICS Ergo.
 
+## Support us
+If you want to support the development of AsTeRICS Grid or contribute to the costs for running the server/database for syncronization you're very welcome to donate to the AsTeRICS Foundation:
+<div><a title="Support AsTeRICS Foundation on betterplace.org!" target="_blank" href="https://www.betterplace.at/development-of-open-source-assistive-technologies/donate"><img style="border:0px" alt="" src="https://betterplace-assets.betterplace.org/static-images/projects/donation-button-en.png" width="160" height="100"></a>
+</div>
+
 ## Acknowledgements and Attribution
 * Thanks to [ARASAAC](https://arasaac.org/) for collaborating and providing their pictogram API
 * Thanks to [crowdin.com](https://crowdin.com/project/asterics-grid) for providing a free open source license
