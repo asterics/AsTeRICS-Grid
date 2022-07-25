@@ -156,11 +156,11 @@ function getModelConversionFunctions(objectModelVersion) {
                 // added translatable labels of all elements
                 if (gridData.modelName === GridData.getModelName()) {
                     log.debug('converting model version from V2 to V3: ' + gridData.modelName);
-                    gridData.locale = gridData.locale || i18nService.getCurrentLang();
+                    let locale = gridData.locale || i18nService.getContentLang();
                     if (typeof gridData.label === 'string') {
                         let label = gridData.label;
                         gridData.label = {};
-                        gridData.label[gridData.locale] = label;
+                        gridData.label[locale] = label;
                     } else {
                         gridData.label = {};
                     }
@@ -168,7 +168,7 @@ function getModelConversionFunctions(objectModelVersion) {
                         if (typeof element.label === 'string') {
                             let label = element.label;
                             element.label = {};
-                            element.label[gridData.locale] = label;
+                            element.label[locale] = label;
                         } else {
                             element.label = {};
                         }
@@ -176,7 +176,7 @@ function getModelConversionFunctions(objectModelVersion) {
                             if (action.modelName === GridActionSpeakCustom.getModelName()) {
                                 let text = action.speakText;
                                 action.speakText = {};
-                                action.speakText[gridData.locale] = text;
+                                action.speakText[locale] = text;
                                 action.speakLanguage = undefined;
                             } else if (action.modelName === GridActionSpeak.getModelName()) {
                                 action.speakLanguage = undefined;

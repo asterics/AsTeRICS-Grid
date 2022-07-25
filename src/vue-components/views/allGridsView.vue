@@ -158,7 +158,7 @@
                     printGridId: null
                 },
                 i18nService: i18nService,
-                currentLanguage: i18nService.getCurrentLang(),
+                currentLanguage: i18nService.getContentLang(),
                 imageUtil: imageUtil,
                 homeGrid: null
             };

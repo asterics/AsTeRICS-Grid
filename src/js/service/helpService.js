@@ -47,7 +47,7 @@ helpService.revertToLastLocation = function () {
 helpService.openHelp = function () {
     let postfix = _helpFile ? _helpFile + HELP_FILE_POSTFIX + _helpHash : _helpHash;
     let link = HELP_BASE_PATH + postfix;
-    if (i18nService.isCurrentLangDE()) {
+    if (i18nService.isCurrentAppLangDE()) {
         link = GOOGLE_TRANSLATE_BASE_PATH + encodeURI(link);
     }
     window.open(link, '_blank');

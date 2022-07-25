@@ -2,7 +2,6 @@ import $ from '../../externals/jquery.js';
 import FileSaver from 'file-saver';
 
 import {GridData} from "../../model/GridData.js";
-import {GridImage} from "../../model/GridImage";
 import {MetaData} from "../../model/MetaData";
 import {modelUtil} from "../../util/modelUtil";
 import {databaseService} from "./databaseService";
@@ -508,7 +507,7 @@ dataService.importData = function (data, generateGlobalGrid, backupMode) {
                 }
                 importGrids.forEach(grid => {
                     let label = i18nService.getTranslation(grid.label);
-                    grid.label[i18nService.getCurrentLang()] = modelUtil.getNewName(label, existingNames);
+                    grid.label[i18nService.getContentLang()] = modelUtil.getNewName(label, existingNames);
                     grid.gridElements.forEach(element => {
                         if (element.image && element.image.url && navigator.serviceWorker && navigator.serviceWorker.controller) {
                             navigator.serviceWorker.controller.postMessage({
@@ -517,7 +516,7 @@ dataService.importData = function (data, generateGlobalGrid, backupMode) {
                         }
                     });
                 });
-                let locale = importGrids[0] ? importGrids[0].locale : null;
+                let locale = importGrids[0] ? (importGrids[0].locale || i18nService.getContentLang()) : null;
                 if (generateGlobalGrid) {
                     let homeGridId = importGrids[0].id;
                     globalGrid = gridUtil.generateGlobalGrid(homeGridId, locale);

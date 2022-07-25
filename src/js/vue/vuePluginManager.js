@@ -43,6 +43,9 @@ function initFilters() {
     Vue.filter('extractTranslation', function (object) {
         return i18nService.getTranslation(object);
     })
+    Vue.filter('extractTranslationAppLang', function (object) {
+        return i18nService.getTranslationAppLang(object);
+    })
 }
 
 export {VuePluginManager}

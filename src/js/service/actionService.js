@@ -87,7 +87,7 @@ function doAction(gridElement, action, gridId, gridData) {
             youtubeService.doAction(action);
             break;
         case 'GridActionChangeLang':
-            i18nService.setLanguage(action.language);
+            i18nService.setContentLanguage(action.language);
             break;
         case 'GridActionOpenWebpage':
             let tab = window.open(action.openURL, '_blank');

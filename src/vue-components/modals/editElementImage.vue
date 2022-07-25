@@ -6,7 +6,7 @@
                 <input type="file" class="five columns" id="inputImg" @change="changedImg" accept="image/*"/>
                 <span><i class="fas fa-file-upload"/> <span>{{ $t('chooseFile') }}</span></span>
             </button>
-            <button class="three columns" @click="searchText = gridElement.label[i18nService.getCurrentLang()]; searchInput(0);">
+            <button class="three columns" @click="searchText = gridElement.label[i18nService.getContentLang()]; searchInput(0);">
                 <i class="fas fa-search"></i>
                 <span>{{ $t('searchByLabel') }}</span>
             </button>

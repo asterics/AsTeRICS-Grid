@@ -30,11 +30,10 @@ obfConverter.gridSetToOBZ = function (gridset) {
  */
 obfConverter.OBFToGridData = function (obfObject, obfObjects) {
     let promises = [];
-    let locale = obfObject.locale && obfObject.locale.length === 2 ? obfObject.locale.toLowerCase() : i18nService.getCurrentLang();
+    let locale = obfObject.locale && obfObject.locale.length === 2 ? obfObject.locale.toLowerCase() : i18nService.getContentLang();
     let gridData = new GridData({
         obfId: obfObject.id,
         label: i18nService.getTranslationObject(obfObject.name, locale),
-        locale: locale,
         rowCount: obfObject.grid.rows,
         minColumnCount: obfObject.grid.columns,
         gridElements: []

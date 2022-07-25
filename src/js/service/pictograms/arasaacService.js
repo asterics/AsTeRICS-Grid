@@ -133,7 +133,7 @@ function queryInternal(search, chunkNr, chunkSize) {
             return resolve([]);
         }
         if (_lastSearchTerm !== search) {
-            let url = `https://api.arasaac.org/api/pictograms/${i18nService.getCurrentLang()}/search/${search}`;
+            let url = `https://api.arasaac.org/api/pictograms/${i18nService.getContentLang()}/search/${search}`;
             $.get(url, null, function (resultList) {
                 _lastRawResultList = resultList;
                 processResultList(resultList);
