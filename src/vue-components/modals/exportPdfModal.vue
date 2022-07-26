@@ -130,7 +130,7 @@
         mounted() {
             dataService.getGlobalGrid().then(globalGrid => {
                 this.globalGridId = globalGrid ? globalGrid.id : null;
-                this.graphList = gridUtil.getGraphList(this.gridsData, this.globalGridId);
+                this.graphList = gridUtil.getGraphList(this.gridsData, this.globalGridId, true);
                 if (this.printGridId) {
                     this.selectedGrid = this.gridsData.filter(grid => grid.id === this.printGridId)[0];
                     this.options.exportConnected = false;
