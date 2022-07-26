@@ -40,6 +40,10 @@ i18nService.getContentLang = function () {
     return currentContentLang || i18nService.getAppLang();
 };
 
+i18nService.getContentLangReadable = function () {
+    return i18nService.getLangReadable(i18nService.getContentLang());
+}
+
 i18nService.getAppLang = function () {
     return i18nService.getCustomAppLang() || i18nService.getBrowserLang();
 };
@@ -92,6 +96,15 @@ i18nService.setContentLanguage = async function (lang, dontSave) {
 i18nService.getAllLanguages = function () {
     return allLanguages;
 };
+
+i18nService.getLangReadable = function (lang) {
+    for (let langObject of allLanguages) {
+        if (lang === langObject.code) {
+            return langObject[i18nService.getAppLang()];
+        }
+    }
+    return '';
+}
 
 /**
  * get app translation for the given key in the current app language
