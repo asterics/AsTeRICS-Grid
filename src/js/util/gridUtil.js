@@ -9,6 +9,7 @@ import {GridElementCollect} from "../model/GridElementCollect.js";
 
 let gridUtil = {};
 
+let NAVIGATION_ID_TO_LAST = 'NAVIGATION_ID_TO_LAST';
 /**
  * renews all IDs of the grids in the given list of grids while maintaining correct references in other grids (e.g.
  * grid action navigate).
@@ -224,6 +225,9 @@ gridUtil.getGraphList = function (grids, removeGridId, orderByName) {
     grids.forEach(grid => {
         let parents = grids.filter(g => hasElemNavigatingTo(g.gridElements, grid.id));
         let children = grids.filter(g => getNavigationIds(grid).indexOf(g.id) !== -1);
+        if (parents.length === 1 && getNavigationIds(grid).indexOf(NAVIGATION_ID_TO_LAST) !== -1) {
+            children.push(parents[0]);
+        }
         let graphListElem = {
             grid: grid,
             parents: parents,
