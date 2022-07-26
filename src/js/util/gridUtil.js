@@ -213,10 +213,11 @@ gridUtil.updateOrAddGridElement = function(gridData, updatedGridElement) {
  * returns a graph of elements representing the hierarchy of the given grids.
  * @param grids a list of GridData
  * @param removeGridId (optional) ID of grid to remove (e.g. global grid ID)
+ * @param orderByName if true returned list is ordered by grid name
  * @return {[]} array of objects of type GridNode: {grid: GridData, parents: [GridNode], children: [GridNode]} ordered by
  *         number of links to other nodes (more linked nodes first)
  */
-gridUtil.getGraphList = function (grids, removeGridId) {
+gridUtil.getGraphList = function (grids, removeGridId, orderByName) {
     grids = grids.filter(g => g.id !== removeGridId);
     let gridGraphList = [];
     let gridGraphMap = {};
@@ -232,9 +233,16 @@ gridUtil.getGraphList = function (grids, removeGridId) {
         gridGraphList.push(graphListElem);
         gridGraphMap[grid.id] = graphListElem;
     });
-    gridGraphList.sort((a, b) => {
-        return b.navCount - a.navCount;
-    });
+    if (orderByName) {
+        gridGraphList.sort((a, b) => {
+            return i18nService.getTranslation(a.grid.label).localeCompare(i18nService.getTranslation(b.grid.label));
+        });
+    } else {
+        gridGraphList.sort((a, b) => {
+            return b.navCount - a.navCount;
+        });
+    }
+
     gridGraphList.forEach(elem => {
         elem.parents = elem.parents.map(parent => gridGraphMap[parent.id]);
         elem.children = elem.children.map(child => gridGraphMap[child.id]);
@@ -283,7 +291,7 @@ function getNavigationIds(grid) {
     let allNavActions = grid.gridElements.reduce((total, elem) => {
         return total.concat(elem.actions.filter(a => a.modelName === GridActionNavigate.getModelName()));
     }, []);
-    return allNavActions.map(a => a.toGridId);
+    return allNavActions.map(a => a.toLastGrid ? NAVIGATION_ID_TO_LAST : a.toGridId);
 }
 
 export {gridUtil};
