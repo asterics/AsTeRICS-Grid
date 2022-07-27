@@ -50,7 +50,7 @@
         data: function () {
             return {
                 metadata: null,
-                currentLang: i18nService.getCurrentLang(),
+                currentLang: i18nService.getContentLang(),
                 colorCategories: [],
                 backgroundColor: null,
                 constants: constants

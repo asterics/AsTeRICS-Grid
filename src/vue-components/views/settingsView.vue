@@ -15,16 +15,10 @@
                     <h3 class="mt-2">{{ $t('applicationLanguage') }}</h3>
                     <div class="srow">
                         <label class="three columns" for="inLanguage">{{ $t('selectLanguage') }}</label>
-                        <select class="five columns" id="inLanguage" v-model="langCode" @change="saveLangCode()">
+                        <select class="five columns" id="inLanguage" v-model="appLang" @change="saveAppLang()">
                             <option value="">{{ $t('automatic') }}</option>
-                            <option v-for="lang in allLanguages.filter(lang => ['de', 'en'].indexOf(lang.code) !== -1 || gridLanguages.indexOf(lang.code) !== -1)" :value="lang.code">{{lang | extractTranslation}} ({{lang.code}})</option>
+                            <option v-for="lang in allLanguages.filter(langObject => appLanguages.includes(langObject.code))" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
                         </select>
-                    </div>
-                    <div class="srow">
-                        <span class="fa fa-info-circle"></span>
-                        <span class="break-word">
-                        {{ $t('gridsCanBeTranslatedToEveryLanguage') }}
-                    </span>
                     </div>
                     <div class="srow" style="margin-bottom: 0.5em">
                         <span class="fa fa-info-circle"></span>
@@ -35,27 +29,6 @@
                             </template>
                         </i18n>
                     </span>
-                    </div>
-                </div>
-            </div>
-            <div class="srow">
-                <div class="ten columns">
-                    <h3>{{ $t('voice') }}</h3>
-                    <div class="srow">
-                        <label class="three columns" for="inVoice">
-                            <span>{{ $t('preferredVoice') }}</span>
-                        </label>
-                        <select id="inVoice" class="five columns" v-model="selectedVoiceName" @change="saveVoice()">
-                            <option value="">{{ $t('automatic') }}</option>
-                            <option v-for="voice in voices" :value="voice.name">{{voice.name}}</option>
-                        </select>
-                    </div>
-                    <div class="srow">
-                        <label class="three columns" for="testText">
-                            <span>{{ $t('testText') }}</span>
-                        </label>
-                        <input id="testText" class="five columns" type="text" v-model="testText">
-                        <button id="testVoice" class="three columns" @click="testSpeak">{{ $t('test') }}</button>
                     </div>
                 </div>
             </div>
@@ -79,6 +52,45 @@
             <div class="srow">
                 <span class="fa fa-info-circle"></span>
                 <span class="break-word">{{ $t('userSettingsAreLinkedToTheCurrentUser') }}</span>
+            </div>
+            <div class="srow">
+                <div class="ten columns">
+                    <h3 class="mt-2">{{ $t('gridContentLanguage') }}</h3>
+                    <div class="srow">
+                        <label class="three columns" for="contentLang">{{ $t('selectLanguage') }}</label>
+                        <select class="five columns" id="contentLang" v-model="metadata.localeConfig.contentLang" @change="saveMetadata()">
+                            <option value="">{{ $t('automatic') }}</option>
+                            <option v-for="lang in allLanguages.filter(langObject => gridLanguages.includes(langObject.code))" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
+                        </select>
+                    </div>
+                    <div class="srow">
+                        <span class="fa fa-info-circle"></span>
+                        <span class="break-word">
+                        {{ $t('gridsCanBeTranslatedToEveryLanguage') }}
+                    </span>
+                    </div>
+                </div>
+            </div>
+            <div class="srow">
+                <div class="ten columns">
+                    <h3 class="mt-2">{{ $t('voice') }}</h3>
+                    <div class="srow">
+                        <label class="three columns" for="inVoice">
+                            <span>{{ $t('preferredVoice') }}</span>
+                        </label>
+                        <select id="inVoice" class="five columns" v-model="metadata.localeConfig.preferredVoice" @change="saveVoice()">
+                            <option :value="undefined">{{ $t('automatic') }}</option>
+                            <option v-for="voice in voices" :value="voice.name">{{voice.name}}</option>
+                        </select>
+                    </div>
+                    <div class="srow">
+                        <label class="three columns" for="testText">
+                            <span>{{ $t('testText') }}</span>
+                        </label>
+                        <input id="testText" class="five columns" type="text" v-model="testText">
+                        <button id="testVoice" class="three columns" @click="testSpeak">{{ $t('test') }}</button>
+                    </div>
+                </div>
             </div>
             <div class="srow">
                 <div class="ten columns">
@@ -153,10 +165,11 @@
             return {
                 metadata: null,
                 show: false,
-                langCode: '',
+                appLang: '',
                 gridLanguages: [],
+                appLanguages: i18nService.getAppLanguages(),
                 allLanguages: i18nService.getAllLanguages(),
-                currentLang: i18nService.getCurrentLang(),
+                currentLang: i18nService.getAppLang(),
                 saveSuccess: null,
                 speechService: speechService,
                 syncNavigation: localStorageService.shouldSyncNavigation(),
@@ -172,19 +185,13 @@
             }
         },
         methods: {
-            saveLangCode() {
+            saveAppLang() {
                 this.saveSuccess = undefined;
-                util.debounce(() => {
-                    i18nService.setLanguage(this.langCode);
+                util.debounce(async () => {
+                    await i18nService.setAppLanguage(this.appLang);
+                    this.allLanguages = i18nService.getAllLanguages();
                     this.saveSuccess = true;
                 }, 300, 'SAVE_LANG');
-            },
-            saveVoice() {
-                this.saveSuccess = undefined;
-                util.debounce(() => {
-                    speechService.setPreferredVoiceName(this.selectedVoiceName);
-                    this.saveSuccess = true;
-                }, 300, 'SAVE_VOICE');
             },
             saveSyncNavigation() {
                 this.saveSuccess = undefined;
@@ -200,10 +207,21 @@
                     this.saveSuccess = true;
                 }, 500, 'SAVE_UNLOCK');
             },
+            saveVoice() {
+                this.setVoiceTestText();
+                this.saveMetadata();
+            },
+            setVoiceTestText() {
+                let voice = this.voices.filter(voice => voice.name === this.metadata.localeConfig.preferredVoice)[0];
+                let voiceLang = voice ? voice.lang : '';
+                this.testText = i18nService.tl('thisIsAnEnglishSentence', [], voiceLang.substring(0, 2))
+            },
             saveMetadata() {
                 let thiz = this;
                 this.saveSuccess = undefined;
                 util.throttle(() => {
+                    i18nService.setContentLanguage(thiz.metadata.localeConfig.contentLang, true);
+                    speechService.setPreferredVoiceName(thiz.metadata.localeConfig.preferredVoice);
                     dataService.saveMetadata(thiz.metadata).then(() => {
                         this.saveSuccess = true;
                     });
@@ -217,6 +235,8 @@
             let thiz = this;
             dataService.getMetadata().then(metadata => {
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
+                thiz.metadata.localeConfig.contentLang = thiz.metadata.localeConfig.contentLang !== undefined ? thiz.metadata.localeConfig.contentLang : i18nService.getAppLang();
+                thiz.setVoiceTestText();
                 thiz.show = true;
             });
             dataService.getGrids(false, true).then(grids => {
@@ -228,7 +248,7 @@
                 }, []);
                 thiz.gridLanguages = [...new Set(languages)];
             });
-            thiz.langCode = i18nService.getCustomLanguage();
+            thiz.appLang = i18nService.getCustomAppLang();
         }
     }
 </script>

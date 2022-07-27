@@ -5,7 +5,6 @@ import {MetaData} from "../../model/MetaData";
 import {encryptionService} from "./encryptionService";
 import {pouchDbService} from "./pouchDbService";
 import {filterService} from "./filterService";
-import {i18nService} from "../i18nService";
 import {Dictionary} from "../../model/Dictionary";
 import {localStorageService} from "./localStorageService";
 import {predictionService} from "../predictionService";
@@ -18,20 +17,6 @@ let _initPromise = null;
 let _lastDataModelVersion = null;
 let _defaultDictPath = null;
 let _defaultDictName = null;
-switch (i18nService.getCurrentLang()) {
-    case 'de':
-        _defaultDictPath = 'app/dictionaries/default_de.json';
-        _defaultDictName = 'AsTeRICS Grid Deutsch standard';
-        break;
-    case 'en':
-        _defaultDictPath = 'app/dictionaries/default_en.json';
-        _defaultDictName = 'AsTeRICS Grid English default';
-        break;
-    case 'es':
-        _defaultDictPath = 'app/dictionaries/default_es.json';
-        _defaultDictName = 'Español (hermitdave@github.com) ';
-        break;
-}
 
 /**
  * queries for objects in database and resolves promise with result.
@@ -171,6 +156,9 @@ databaseService.bulkSave = function (objectList) {
  * @return {Promise<never>}
  */
 databaseService.bulkDelete = function (objectList) {
+    if (!objectList || objectList.length === 0) {
+        return Promise.resolve();
+    }
     objectList.forEach(object => {
         object._deleted = true;
         object._id = object.id;

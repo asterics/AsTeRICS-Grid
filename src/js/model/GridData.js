@@ -8,7 +8,6 @@ import {Webradio} from "./Webradio";
 import {gridUtil} from "../util/gridUtil";
 import {localStorageService} from "../service/data/localStorageService";
 import {encryptionService} from "../service/data/encryptionService";
-import {i18nService} from "../service/i18nService";
 
 class GridData extends Model({
     id: String,
@@ -16,7 +15,6 @@ class GridData extends Model({
     modelVersion: String,
     isShortVersion: Boolean, // if true this object represents a non-full short version excluding binary base64 data
     label: [Object, String], //map locale -> translation, e.g. "de" => LabelDE
-    locale: [String],
     rowCount: [Number],
     minColumnCount: [Number],
     gridElements: Model.Array(GridElement),
@@ -250,8 +248,7 @@ GridData.defaults({
     isShortVersion: false,
     additionalFiles: [],
     webRadios: [],
-    label: {},
-    locale: i18nService.getCurrentLang()
+    label: {}
 });
 
 export {GridData};

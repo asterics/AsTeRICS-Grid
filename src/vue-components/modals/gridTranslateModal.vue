@@ -148,8 +148,8 @@
             return {
                 gridData: undefined,
                 allGrids: undefined,
-                currentLocale: i18nService.getCurrentLang(),
-                chosenLocale: i18nService.isCurrentLangEN() ? 'de' : 'en',
+                currentLocale: i18nService.getContentLang(),
+                chosenLocale: i18nService.isCurrentAppLangEN() ? 'de' : 'en',
                 GridActionSpeakCustom: GridActionSpeakCustom,
                 allLanguages: i18nService.getAllLanguages(),
                 usedLocales: localStorageService.getUsedLocales(),

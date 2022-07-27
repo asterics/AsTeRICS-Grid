@@ -5,8 +5,7 @@
             <button tabindex="32" id="moreButton" :aria-label="$t('more')" class="small"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile">{{ $t('more') }}</span></button>
             <button tabindex="31" @click="addGrid()" class="spaced hide-mobile small"><i class="fas fa-plus"/> <span>{{ $t('newGrid') }}</span></button>
             <div style="display: none">
-                <input type="file" id="inputFile" @change="importFromFile" accept=".grd, .obf, .obz"/>
-                <input type="file" id="inputFileBackup" @change="importBackupFromFile" accept=".grd, .obz"/>
+                <input type="file" id="inputFileBackup" @change="importBackupFromFile" accept=".grd, .obf, .obz"/>
             </div>
         </header>
         <div class="srow content text-content">
@@ -35,7 +34,7 @@
                         <button @click="edit(selectedGraphElement.grid.id)" :aria-label="$t('edit')"><i class="far fa-edit"/> <span class="hide-mobile">{{ $t('edit') }}</span></button>
                         <button @click="clone(selectedGraphElement.grid.id)" :aria-label="$t('clone')"><i class="far fa-clone"/> <span class="hide-mobile">{{ $t('clone') }}</span></button>
                         <button @click="deleteGrid(selectedGraphElement.grid.id)" :aria-label="$t('delete')"><i class="far fa-trash-alt"/> <span class="hide-mobile">{{ $t('delete') }}</span></button>
-                        <button @click="exportToFile(selectedGraphElement.grid.id)" :aria-label="$t('export')"><i class="fas fa-file-export"/> <span class="hide-mobile">{{ $t('export') }}</span></button>
+                        <button @click="exportCustom(selectedGraphElement.grid.id)" :aria-label="$t('export')"><i class="fas fa-file-export"/> <span class="hide-mobile">{{ $t('export') }}</span></button>
                         <button @click="exportToPdf(selectedGraphElement.grid.id)" :aria-label="$t('saveAsPdf')"><i class="far fa-file-pdf"/> <span class="hide-mobile">{{ $t('saveAsPdf') }}</span></button>
                     </div>
                 </div>
@@ -72,7 +71,7 @@
                     <li v-show="graphElemsToShow.length === 0"><span>{{ $t('noGrids') }}</span></li>
                 </ul>
             </div>
-            <div class="srow">
+            <div class="srow" v-if="grids && grids.length > 0">
                 <button @click="updateAllThumbnails"><span class="fas fa-images"></span> {{ $t('updateAllGridThumbnails') }}</button>
             </div>
 
@@ -99,6 +98,8 @@
             <div class="srow" style="margin-bottom: 10em"></div>
             <grid-link-modal v-if="linkModal.show" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @close="linkModal.show = false" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
             <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.show = false; pdfModal.printGridId = null;"></export-pdf-modal>
+            <export-modal v-if="backupModal.show" :grids-data="grids" :export-options="backupModal.exportOptions" @close="backupModal.show = false"></export-modal>
+            <import-modal v-if="importModal.show" @close="importModal.show = false" :reload-fn="reload"></import-modal>
         </div>
     </div>
 </template>
@@ -121,6 +122,8 @@
     import {MetaData} from "../../js/model/MetaData.js";
     import {localStorageService} from "../../js/service/data/localStorageService.js";
     import {util} from "../../js/util/util.js";
+    import ExportModal from "../modals/exportModal.vue";
+    import ImportModal from "../modals/importModal.vue";
 
     let ORDER_MODE_KEY = "AG_ALLGRIDS_ORDER_MODE_KEY";
     let SELECTOR_CONTEXTMENU = '#moreButton';
@@ -133,9 +136,10 @@
         ALPHABET: 'ALPHABET',
         CONNECTION_COUNT: 'CONNECTION_COUNT'
     };
+
     let vueApp = null;
     let vueConfig = {
-        components: {ExportPdfModal, GridLinkModal, Accordion, HeaderIcon},
+        components: {ImportModal, ExportModal, ExportPdfModal, GridLinkModal, Accordion, HeaderIcon},
         data() {
             return {
                 metadata: null,
@@ -157,8 +161,15 @@
                     show: false,
                     printGridId: null
                 },
+                backupModal: {
+                    show: false,
+                    exportOptions: {}
+                },
+                importModal: {
+                    show: false
+                },
                 i18nService: i18nService,
-                currentLanguage: i18nService.getCurrentLang(),
+                currentLanguage: i18nService.getContentLang(),
                 imageUtil: imageUtil,
                 homeGrid: null
             };
@@ -229,28 +240,47 @@
                     });
                 })
             },
-            exportToFile(gridId) {
+            exportBackup() {
+                let ids = this.grids.map(grid => grid.id);
+                dataService.downloadToFile(ids, {
+                    exportGlobalGrid: true,
+                    exportOnlyCurrentLang: false,
+                    exportDictionaries: true,
+                    exportUserSettings: true
+                });
+            },
+            exportCustom(gridId) {
                 if (gridId) {
-                    dataService.downloadSingleGrid(gridId);
+                    this.backupModal.exportOptions.gridId = gridId;
+                    this.backupModal.exportOptions.exportDictionaries = false;
+                    this.backupModal.exportOptions.exportUserSettings = false;
+                    this.backupModal.exportOptions.exportGlobalGrid = false;
                 } else {
-                    dataService.downloadBackup();
-                    //dataService.downloadAllGridsSimple();
+                    this.backupModal.exportOptions = {}
                 }
+                this.backupModal.show = true;
             },
             exportToPdf(gridId) {
                 this.pdfModal.printGridId = gridId;
                 this.pdfModal.show = true;
             },
-            importFromFile: function (event) {
-                this.importFromFileInternal(event, false);
-            },
-            importBackupFromFile: function (event) {
-                let name = event.target && event.target.files[0] && event.target.files[0] ? event.target.files[0].name : '';
+            importBackupFromFile: async function (event) {
+                let importFile = event && event.target && event.target.files[0] ? event.target.files[0] : null;
+                let name = importFile ? importFile.name : '';
+                if (!name) {
+                    return;
+                }
                 if (!confirm(i18nService.t('CONFIRM_IMPORT_BACKUP', name))) {
                     this.resetFileInput(event);
                     return;
                 }
-                this.importFromFileInternal(event, true);
+                await dataService.importBackup(importFile, (progress, text) => {
+                    MainVue.showProgressBar(progress, {
+                        text: text
+                    });
+                });
+                this.resetFileInput(event);
+                this.reload();
             },
             reload: function (openGridId) {
                 let thiz = this;
@@ -262,7 +292,7 @@
                     thiz.grids = JSON.parse(JSON.stringify(grids)); //hack because otherwise vueJS databinding sometimes does not work;
                     thiz.showLoading = false;
                     thiz.graphList = gridUtil.getGraphList(thiz.grids, thiz.metadata.globalGridId);
-                    thiz.homeGrid = thiz.graphList[0].grid;
+                    thiz.homeGrid = thiz.graphList[0] ? thiz.graphList[0].grid : null;
                     let gridToOpen = openGridId || thiz.metadata.lastOpenedGridId;
                     thiz.setSelectedGraphElement(thiz.graphList.filter(graphItem => graphItem.grid.id === gridToOpen)[0] || thiz.graphList[0], true);
                     return Promise.resolve();
@@ -281,7 +311,7 @@
                     });
                     dataService.deleteAllGrids().then(() => {
                         MainVue.showProgressBar(50, {
-                            text: i18nService.t('importingGrids')
+                            text: i18nService.t('importingData')
                         });
                         return dataService.importDefaultGridset();
                     }).then(() => {
@@ -322,26 +352,6 @@
                 }).then(() => {
                     return dataService.saveMetadata(this.metadata);
                 }).then(() => {
-                    this.reload();
-                });
-            },
-            importFromFileInternal(event, reset) {
-                let thiz = this;
-                let importFile = event.target.files[0];
-                if (!importFile || !importFile.name) {
-                    return;
-                }
-                thiz.showLoading = true;
-                MainVue.showProgressBar(0, {
-                    header: i18nService.t('importingGrids'),
-                    text: i18nService.t('readingFile')
-                })
-                dataService.importGridsFromFile(importFile, reset, (progress, text) => {
-                    MainVue.showProgressBar(progress, {
-                        text: text
-                    });
-                }).then(() => {
-                    this.resetFileInput(event);
                     this.reload();
                 });
             },
@@ -540,7 +550,7 @@
                     vueApp.deleteGrid(gridId);
                     break;
                 case "CONTEXT_EXPORT":
-                    vueApp.exportToFile(gridId);
+                    vueApp.exportCustom(gridId);
                     break;
                 case "CONTEXT_EXPORT_PDF":
                     vueApp.exportToPdf(gridId);
@@ -554,50 +564,38 @@
 
         var CONTEXT_NEW = "CONTEXT_NEW";
         var CONTEXT_EXPORT = "CONTEXT_EXPORT";
+        var CONTEXT_EXPORT_CUSTOM = "CONTEXT_EXPORT_CUSTOM";
         var CONTEXT_IMPORT = "CONTEXT_IMPORT";
         var CONTEXT_IMPORT_BACKUP = "CONTEXT_IMPORT_BACKUP";
         var CONTEXT_EXPORT_PDF_MODAL = "CONTEXT_EXPORT_PDF_MODAL";
         var CONTEXT_RESET = "CONTEXT_RESET";
         var CONTEXT_DELETE_ALL = "CONTEXT_DELETE_ALL";
 
-        var itemsImportExport = {
-            CONTEXT_EXPORT: {
-                name: i18nService.t('exportBackupToFile'),
-                icon: "fas fa-file-export"
-            },
-            CONTEXT_IMPORT: {
-                name: i18nService.t('importGridsFromFile'),
-                icon: "fas fa-file-import"
-            },
-            CONTEXT_IMPORT_BACKUP: {
-                name: i18nService.t('clearAllAndImportFromFile'),
-                icon: "fas fa-file-import"
-            },
-            SEP2: "---------"
-        };
-
         var itemsMoreMenu = {
             CONTEXT_NEW: {name: i18nService.t('newGrid'), icon: "fas fa-plus"},
             SEP1: "---------",
             CONTEXT_EXPORT: {
                 name: i18nService.t('exportBackupToFile'),
+                icon: "fas fa-download"
+            },
+            CONTEXT_EXPORT_CUSTOM: {
+                name: i18nService.t('saveCustomDataToFile'),
                 icon: "fas fa-file-export"
             },
-            CONTEXT_IMPORT: {
-                name: i18nService.t('importGridsFromFile'),
-                icon: "fas fa-file-import"
-            },
-            CONTEXT_IMPORT_BACKUP: {
-                name: i18nService.t('clearAllAndImportFromFile'),
-                icon: "fas fa-file-import"
-            },
-            SEP2: "---------",
             CONTEXT_EXPORT_PDF_MODAL: {
                 name: i18nService.t('saveGridsToPdfGrids'),
                 icon: "far fa-file-pdf"
             },
+            SEP2: "---------",
+            CONTEXT_IMPORT_BACKUP: {
+                name: i18nService.t('restoreBackupFromFile'),
+                icon: "fas fa-upload"
+            },
+            CONTEXT_IMPORT: {
+                name: i18nService.t('importCustomDataFromFile'),
+                icon: "fas fa-file-import"
+            },
             SEP3: "---------",
-            //CONTEXT_SUB_IMPORT_EXPORT: {name: "Import / Export", icon: "fas fa-hdd", items: itemsImportExport},
             CONTEXT_DELETE_ALL: {name: i18nService.t('deleteAllGrids'), icon: "fas fa-trash-alt", disabled: () => vueApp.grids.length === 0},
             CONTEXT_RESET: {name: i18nService.t('resetToDefaultConfig'), icon: "fas fa-minus-circle"},
         };
@@ -619,7 +617,7 @@
                     break;
                 }
                 case CONTEXT_IMPORT: {
-                    document.getElementById('inputFile').click();
+                    vueApp.importModal.show = true;
                     break;
                 }
                 case CONTEXT_IMPORT_BACKUP: {
@@ -631,7 +629,11 @@
                     break;
                 }
                 case CONTEXT_EXPORT: {
-                    vueApp.exportToFile();
+                    vueApp.exportBackup();
+                    break;
+                }
+                case CONTEXT_EXPORT_CUSTOM: {
+                    vueApp.exportCustom();
                     break;
                 }
                 case CONTEXT_DELETE_ALL: {

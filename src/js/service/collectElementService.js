@@ -340,4 +340,6 @@ $(window).on(constants.EVENT_GRID_RESIZE, function () {
     setTimeout(updateCollectElements, 500);
 });
 
+$(document).on(constants.EVENT_USER_CHANGED, clearAll);
+
 export {collectElementService};

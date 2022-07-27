@@ -279,7 +279,7 @@
                 dictionaryKeys: predictionService.getDictionaryKeys(),
                 collectActions: GridActionCollectElement.getActions(),
                 webradioActions: GridActionWebradio.getActions(),
-                currentLang: i18nService.getCurrentLang(),
+                currentLang: i18nService.getContentLang(),
                 allLanguages: i18nService.getAllLanguages(),
                 gridLanguages: null,
                 selectFromAllLanguages: false,

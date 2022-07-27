@@ -30,4 +30,39 @@ fileUtil.readZip = function (file, parseJSON) {
     });
 };
 
+fileUtil.readFileContent = function (file) {
+    if (!file) {
+        return Promise.resolve();
+    }
+    return new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+            resolve(evt.target.result);
+        };
+        reader.onerror = (evt) => {
+            log.warn("error reading file");
+            resolve(evt.target.result);
+        };
+        reader.readAsText(file, "UTF-8");
+    });
+}
+
+fileUtil.getFileExtension = function (file) {
+    let filename = file ? (file.name || '') : '';
+    return filename.substring(filename.lastIndexOf('.')).toLowerCase();
+}
+
+fileUtil.isGrdFile = function (file) {
+    return fileUtil.getFileExtension(file) === '.grd';
+}
+
+fileUtil.isObfFile = function (file) {
+    return fileUtil.getFileExtension(file) === '.obf';
+}
+
+fileUtil.isObzFile = function (file) {
+    return fileUtil.getFileExtension(file) === '.obz';
+}
+
+
 export {fileUtil};

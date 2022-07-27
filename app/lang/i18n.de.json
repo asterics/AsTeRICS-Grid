@@ -437,7 +437,7 @@
   "doYouReallyWantResetGlobalGrid": "Möchten Sie das globale Grid wirklich zurücksetzen?",
   "detailsForGridX": "Details für Grid {0}",
   "connectXWithThisGrid": "Verbinde \"{0}\" mit diesem Grid",
-  "exportBackupToFile": "Save backup to file",
+  "exportBackupToFile": "Backup als Datei speichern",
   "exportToFile": "Export to file",
   "importGridsFromFile": "Grid(s) aus Datei importieren",
   "clearAllAndImportFromFile": "Alles löschen und aus Datei importieren",

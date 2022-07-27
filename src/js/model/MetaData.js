@@ -4,6 +4,7 @@ import {constants} from "../util/constants";
 import {Model} from "../externals/objectmodel";
 import {ColorConfig} from "./ColorConfig.js";
 import {TextConfig} from "./TextConfig.js";
+import {LocaleConfig} from "./LocaleConfig.js";
 
 class MetaData extends Model({
     id: String,
@@ -18,7 +19,8 @@ class MetaData extends Model({
     hashCodes: [Object], //object keys: model names of hashed objects, object values: another object with keys = hashcodes, values = object ids
     inputConfig: InputConfig,
     colorConfig: [ColorConfig],
-    textConfig: [TextConfig]
+    textConfig: [TextConfig],
+    localeConfig: [LocaleConfig]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, MetaData) || {};
@@ -26,6 +28,7 @@ class MetaData extends Model({
         this.id = this.id || modelUtil.generateId(MetaData.getIdPrefix());
         this.colorConfig = properties.colorConfig || new ColorConfig();
         this.textConfig = properties.textConfig || new TextConfig();
+        this.localeConfig = properties.localeConfig || new LocaleConfig();
     }
 
     isEqual(otherMetadata) {

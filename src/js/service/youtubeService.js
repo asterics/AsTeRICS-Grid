@@ -106,7 +106,7 @@ youtubeService.play = function (action, videoTimeParam) {
                 playerVars: {
                     'mute': action.playMuted ? 1 : 0,
                     'cc_load_policy': action.showCC ? 1 : 0,
-                    'cc_lang_pref': i18nService.getCurrentLang(),
+                    'cc_lang_pref': i18nService.getContentLang(),
                     'rel': 0,
                     'iv_load_policy': 3
                 },
