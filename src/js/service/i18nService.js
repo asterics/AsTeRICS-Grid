@@ -12,6 +12,7 @@ let loadedLanguages = [];
 let fallbackLang = 'en';
 let currentContentLang = null;
 
+let appLanguages = ['de', 'eu', 'bg', 'ca', 'hr', 'gl', 'he', 'pt', 'es', 'uk'];
 //all languages in german and english + ISO-639-1 code, extracted from https://de.wikipedia.org/wiki/Liste_der_ISO-639-1-Codes, sorted by german translation
 let allLangCodes = ["ab", "aa", "af", "ak", "sq", "am", "ar", "an", "hy", "az", "as", "av", "ae", "ay", "bm", "ba", "eu", "bn", "bh", "my", "bi", "nb", "bs", "br", "bg", "ch", "ny", "zh", "cr", "da", "de", "dv", "dz", "en", "eo", "et", "ee", "fo", "fj", "fi", "fr", "ff", "gl", "ka", "el", "kl", "gn", "gu", "ht", "ha", "he", "hi", "ho", "io", "ig", "id", "ia", "ie", "iu", "ik", "ga", "xh", "zu", "is", "it", "ja", "jv", "yi", "kn", "kr", "kk", "ks", "ca", "km", "kg", "ki", "lu", "rw", "cu", "ky", "rn", "kv", "ko", "kw", "co", "hr", "ku", "lo", "la", "lv", "li", "ln", "lt", "lg", "lb", "mg", "ms", "ml", "mt", "gv", "mi", "mr", "mh", "mk", "mn", "na", "nv", "ng", "ne", "nl", "nd", "se", "no", "nn", "oj", "oc", "or", "om", "kj", "os", "hz", "pi", "pa", "ps", "fa", "pl", "pt", "qu", "rm", "ro", "ru", "sm", "sg", "sa", "sc", "gd", "sv", "sr", "st", "tn", "sn", "sd", "si", "ss", "sk", "sl", "so", "es", "nr", "su", "sw", "tg", "tl", "ty", "ta", "tt", "te", "th", "bo", "ti", "to", "cs", "ce", "cv", "ve", "tr", "tk", "tw", "ug", "uk", "hu", "ur", "uz", "vi", "vo", "cy", "wa", "be", "fy", "wo", "ts", "ii", "yo", "za"];
 let allLanguages = allLangCodes.map(code => {return {code}}); // dynamically filled array containing data like [{en: "English", de: "Englisch", code: "en"}, ...] of all languages, always sorted by translation of current language
@@ -94,7 +95,15 @@ i18nService.setContentLanguage = async function (lang, dontSave) {
  * @return {any} array in format [{de: "Deutsch", en: "German", code: "de"}, ...]
  */
 i18nService.getAllLanguages = function () {
-    return allLanguages;
+    return JSON.parse(JSON.stringify(allLanguages));
+};
+
+/**
+ * retrieves existing app languages translated via crowdin.com
+ * @return {any}
+ */
+i18nService.getAppLanguages = function () {
+    return JSON.parse(JSON.stringify(appLanguages));
 };
 
 i18nService.getLangReadable = function (lang) {

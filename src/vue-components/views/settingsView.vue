@@ -17,7 +17,7 @@
                         <label class="three columns" for="inLanguage">{{ $t('selectLanguage') }}</label>
                         <select class="five columns" id="inLanguage" v-model="appLang" @change="saveAppLang()">
                             <option value="">{{ $t('automatic') }}</option>
-                            <option v-for="lang in allLanguages.filter(lang => ['de', 'en'].indexOf(lang.code) !== -1 || gridLanguages.indexOf(lang.code) !== -1)" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
+                            <option v-for="lang in allLanguages.filter(langObject => appLanguages.includes(langObject.code))" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
                         </select>
                     </div>
                     <div class="srow" style="margin-bottom: 0.5em">
@@ -55,12 +55,12 @@
             </div>
             <div class="srow">
                 <div class="ten columns">
-                    <h3 class="mt-2">Grid content language</h3>
+                    <h3 class="mt-2">{{ $t('gridContentLanguage') }}</h3>
                     <div class="srow">
                         <label class="three columns" for="contentLang">{{ $t('selectLanguage') }}</label>
                         <select class="five columns" id="contentLang" v-model="metadata.localeConfig.contentLang" @change="saveMetadata()">
                             <option value="">{{ $t('automatic') }}</option>
-                            <option v-for="lang in allLanguages" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
+                            <option v-for="lang in allLanguages.filter(langObject => gridLanguages.includes(langObject.code))" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
                         </select>
                     </div>
                     <div class="srow">
@@ -167,6 +167,7 @@
                 show: false,
                 appLang: '',
                 gridLanguages: [],
+                appLanguages: i18nService.getAppLanguages(),
                 allLanguages: i18nService.getAllLanguages(),
                 currentLang: i18nService.getAppLang(),
                 saveSuccess: null,
@@ -186,8 +187,9 @@
         methods: {
             saveAppLang() {
                 this.saveSuccess = undefined;
-                util.debounce(() => {
-                    i18nService.setAppLanguage(this.appLang);
+                util.debounce(async () => {
+                    await i18nService.setAppLanguage(this.appLang);
+                    this.allLanguages = i18nService.getAllLanguages();
                     this.saveSuccess = true;
                 }, 300, 'SAVE_LANG');
             },
