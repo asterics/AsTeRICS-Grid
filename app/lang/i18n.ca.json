@@ -437,7 +437,7 @@
   "doYouReallyWantResetGlobalGrid": "Do you really want to reset the global grid to default?",
   "detailsForGridX": "Details for grid {0}",
   "connectXWithThisGrid": "Connect \"{0}\" with this grid",
-  "exportBackupToFile": "Export backup to file",
+  "exportBackupToFile": "Save backup to file",
   "importGridsFromFile": "Import grid(s) from file",
   "clearAllAndImportFromFile": "Clear all and import from file",
   "deleteAllGrids": "Delete all grids",
