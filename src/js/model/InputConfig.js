@@ -103,7 +103,7 @@ InputConfig.defaults({
     scanAuto: false,
     scanTimeoutMs: 1000,
     scanTimeoutFirstElementFactor: 1,
-    scanBinary: true,
+    scanBinary: false,
     hoverTimeoutMs: 1000,
     mouseclickEnabled: true,
     scanInputs: InputConfig.DEFAULT_SCAN_INPUTS,
