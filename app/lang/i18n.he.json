@@ -437,7 +437,7 @@
   "doYouReallyWantResetGlobalGrid": "האם באמת תרצו לאפס את הלוח הכללי לברירת המחדל?",
   "detailsForGridX": "פרטים ללוח {0}",
   "connectXWithThisGrid": "חבר \"{0}\" ללוח זה",
-  "exportBackupToFile": "Save backup to file",
+  "exportBackupToFile": "יצא את הגיבוי לקובץ",
   "exportToFile": "Export to file",
   "importGridsFromFile": "יבא לוח (לוחות) מקובץ",
   "clearAllAndImportFromFile": "נקה הכל ויבא מקובץ",
@@ -799,5 +799,6 @@
   "exportGlobalGrid": "Export global grid",
   "saveCustomDataToFile": "Save custom data to file",
   "restoreBackupFromFile": "Restore backup from file",
-  "importCustomDataFromFile": "Import custom data from file"
+  "importCustomDataFromFile": "Import custom data from file",
+  "gridContentLanguage": "Grid content language"
 }
