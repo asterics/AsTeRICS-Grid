@@ -36,6 +36,21 @@ dataUtil.getDefaultRemovedPlaceholder = function() {
     return defaultRemovedPlaceholder;
 };
 
+
+dataUtil.removeDatabaseProperties = function (listOrObject, deleteId) {
+    if (!listOrObject) {
+        return;
+    }
+    listOrObject = listOrObject instanceof Array ? listOrObject : [listOrObject];
+    for (let elem of listOrObject) {
+        delete elem._id;
+        delete elem._rev;
+        if (deleteId) {
+            delete elem.id;
+        }
+    }
+}
+
 function shortenObjectInternal(object, maxLength, removedPlaceholder) {
     if(!object) {
         return object;
