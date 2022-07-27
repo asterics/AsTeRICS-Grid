@@ -128,6 +128,27 @@
                 window.originalLog.apply(null, arguments);
             }
         }
+
+        //determine time needed for JSON.parse/stringify
+        /**window.originalJSONParse = JSON.parse;
+        window.originalJSONStringify = JSON.stringify;
+        window.parseTime = 0;
+
+        JSON.parse = function (arguments) {
+            let start = new Date().getTime();
+            let result = window.originalJSONParse(arguments);
+            window.parseTime += (new Date().getTime() - start);
+            console.warn(window.parseTime / 1000);
+            return result;
+        }
+
+        JSON.stringify = function (arguments) {
+            let start = new Date().getTime();
+            let result = window.originalJSONStringify(arguments);
+            window.parseTime += (new Date().getTime() - start);
+            console.warn(window.parseTime / 1000);
+            return result;
+        }*/
     }
 </script>
 <script type="text/javascript" src='app/lib/responsive-voice.js'></script>
