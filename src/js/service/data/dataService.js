@@ -16,7 +16,6 @@ import {localStorageService} from "./localStorageService";
 import {gridUtil} from "../../util/gridUtil";
 import {urlParamService} from "../urlParamService";
 import {filterService} from "./filterService";
-import {InputConfig} from "../../model/InputConfig";
 
 let dataService = {};
 
@@ -149,20 +148,35 @@ dataService.deleteAllGrids = function () {
 };
 
 /**
+ * deletes all dictionaries
+ * @return {Promise<void>}
+ */
+dataService.deleteAllDictionaries = async function () {
+    let dicts = await dataService.getDictionaries();
+    if (dicts && dicts.length > 0) {
+        await databaseService.bulkDelete(dicts);
+    }
+};
+
+/**
  * imports default gridset
  */
 dataService.importDefaultGridset = function() {
     return Promise.resolve().then(() => {
         return $.get(_defaultGridSetPath);
-    }).then(gridsData => {
-        if (!gridsData) {
+    }).then(importData => {
+        if (!importData) {
             return Promise.resolve();
         }
         log.info('importing default grid set ' + _defaultGridSetPath);
         try {
-            gridsData = JSON.parse(gridsData);
+            importData = JSON.parse(importData);
         } catch (e) {}
-        return dataService.importData(gridsData, false, true);
+        return dataService.importData(importData, {
+            generateGlobalGrid: false,
+            importDictionaries: true,
+            importUserSettings: true
+        });
     });
 };
 
@@ -332,130 +346,122 @@ dataService.deleteObject = function (id) {
 };
 
 /**
- * Downloads to a single grid to File. Opens a file download in Browser.
- * @param gridId the ID of the grid to download
+ * export configuration to file
+ * @param gridIds array of gridIds to export
+ * @param options options for exporting
+ * @param options.exportGlobalGrid if true, the global grid is exported (if existing and enabled)
+ * @param options.exportOnlyCurrentLang if true, only the current content language is exported
+ * @param options.exportDictionaries if true, all user dictionaries are exported
+ * @param options.exportUserSettings if true, all user settings are exported
+ * @return {Promise<void>}
  */
-dataService.downloadSingleGrid = function (gridId) {
-    dataService.getGrid(gridId).then(gridData => {
-        if (gridData) {
-            let blob = new Blob([JSON.stringify(gridData)], {type: "text/plain;charset=utf-8"});
-            FileSaver.saveAs(blob, i18nService.getTranslation(gridData.label) + ".grd");
+dataService.downloadToFile = async function (gridIds, options) {
+    if (!gridIds || gridIds.length === 0) {
+        return;
+    }
+    let exportData = {};
+    options = options || {};
+    let globalGridId = null;
+    if (options.exportGlobalGrid) {
+        let globalGrid = dataService.getGlobalGrid();
+        globalGridId = globalGrid ? globalGrid.id : null;
+    }
+    let allGrids = await dataService.getGrids(true, !options.exportGlobalGrid);
+    exportData.grids = allGrids.filter(grid => gridIds.includes(grid.id) || globalGridId === grid.id);
+    if (options.exportOnlyCurrentLang) {
+        let contentLang = i18nService.getContentLang();
+        for (let grid of exportData.grids) {
+            Object.keys(grid.label).forEach(key => key === contentLang || delete grid.label[key]);
+            for (let elem of grid.gridElements) {
+                Object.keys(elem.label).forEach(key => key === contentLang || delete elem.label[key]);
+                for (let action of elem.actions) {
+                    if (action.speakText) {
+                        Object.keys(action.speakText).forEach(key => key === contentLang || delete action.speakText[key]);
+                    }
+                }
+            }
         }
-    });
-};
-
-/**
- * Downloads all grids, dictionaries and metadata to File. Opens a file download in Browser.
- */
-window.backupPrepareForDefault = false;
-window.prepareForDefaultBackup = function () {
-    window.updateAllThumbnails(2000);
-    window.backupPrepareForDefault = true
+    }
+    if (options.exportDictionaries) {
+        exportData.dictionaries = await dataService.getDictionaries();
+    }
+    if (options.exportUserSettings) {
+        exportData.metadata = await dataService.getMetadata();
+    } else if (exportData.grids.map(grid => grid.id).includes(globalGridId)) {
+        exportData.metadata = {};
+        exportData.metadata.globalGridId = globalGridId;
+    }
+    let blob = new Blob([JSON.stringify(exportData)], {type: "text/plain;charset=utf-8"});
+    let filename = exportData.grids.length > 1 ? "asterics-grid-backup.grd" : i18nService.getTranslation(exportData.grids[0].label) + ".grd"
+    FileSaver.saveAs(blob, filename);
 }
 
-dataService.downloadBackup = function () {
-    let exportData = {};
-    let promises = [];
-    promises.push(dataService.getMetadata().then(metadata => {
-        exportData.metadata = metadata;
-        return Promise.resolve();
-    }));
-    promises.push(dataService.getDictionaries().then(dictionaries => {
-        let allDefault = dictionaries.reduce((total, current) => {
-            return total && current.isDefault;
-        }, true);
-        if (!allDefault) {
-            exportData.dictionaries = dictionaries;
-        }
-        return Promise.resolve();
-    }));
-    promises.push(dataService.getGrids(true).then(grids => {
-        exportData.grids = grids;
-        return Promise.resolve();
-    }));
-    Promise.all(promises).then(() => {
-        if (window.backupPrepareForDefault) {
-            delete exportData.dictionaries;
-            exportData.metadata.inputConfig = new InputConfig();
-            exportData.metadata.locked = undefined;
-            exportData.metadata.fullscreen = undefined;
-            exportData.metadata.hashCodes = {};
-        }
-        let blob = new Blob([JSON.stringify(exportData)], {type: "text/plain;charset=utf-8"});
-        FileSaver.saveAs(blob, "my-backup.grd");
-    });
-};
-
 /**
- * logs a simple version of all grids without base64 contents to console => used for legacy mode
+ * converts a file (.grd, .obf, .obz) to standardized import data
+ * @param file
+ * @return {Promise<null>}
  */
-dataService.downloadAllGridsSimple = function () {
-    dataService.getGrids(true).then(grids => {
-        if (grids) {
-            log.info("simple version of exported grids without images and files included:");
-            log.info(JSON.stringify({grids: dataUtil.removeLongPropertyValues(grids)})); //has to be in object to be valid JSON
+dataService.convertFileToImportData = async function (file) {
+    let fileContent = await fileUtil.readFileContent(file);
+    let importData = null;
+    if (!fileContent) {
+        return null;
+    }
+    if (fileUtil.isGrdFile(file)) {
+        importData = JSON.parse(fileContent);
+    } else if (fileUtil.isObfFile(file)) {
+        importData = await obfConverter.OBFToGridData(JSON.parse(fileContent));
+    } else if (fileUtil.isObzFile(file)) {
+        let obzFileMap = await fileUtil.readZip(file, true);
+        importData = await obfConverter.OBZToGridSet(obzFileMap);
+    }
+    return dataService.normalizeImportData(importData);
+}
+
+dataService.normalizeImportData = function (data) {
+    if (!data || data.length === 0) {
+        return {}
+    }
+    let importData = {};
+    if (data instanceof Array) { // array of grids
+        importData.grids = data;
+    } else if (!data.grids && data.id) { // single grid
+        importData.grids = [data];
+    } else {
+        importData = data;
+    }
+
+    importData.grids = importData.grids || [];
+    importData.dictionaries = importData.dictionaries || [];
+    importData.metadata = importData.metadata || {};
+    importData.grids = filterService.updateDataModel(importData.grids);
+    importData.dictionaries = filterService.updateDataModel(importData.dictionaries);
+    importData.metadata = filterService.updateDataModel(importData.metadata);
+    return importData;
+}
+
+dataService.importBackup = async function (file, progressFn) {
+    progressFn = progressFn || (() => {
+    });
+    progressFn(10, i18nService.t('extractingGridsFromFile'));
+    let importData = await dataService.convertFileToImportData(file);
+    if (!importData) {
+        progressFn(100); // TODO error message?!
+        return;
+    }
+    progressFn(20, i18nService.t('deletingGrids'));
+    await dataService.deleteAllGrids();
+    await dataService.deleteAllDictionaries();
+    progressFn(30, i18nService.t('encryptingAndSavingGrids'));
+    await dataService.importData(importData, {
+        generateGlobalGrid: fileUtil.isObzFile(file),
+        importDictionaries: true,
+        importUserSettings: true,
+        progressFn: p => {
+            progressFn(30 + (p / 100 * 70))
         }
     });
-};
-
-/**
- * imports grids from a file that was exported by downloadSingleGrid() or downloadAllGrids()
- *
- * @param file the file object from a file input that contains the data
- * @param backupMode if true all grids are deleted before importing the file -> restoring a backup. if false
- *        grids from file are imported in addition to existing grids.
- * @param progressFn a function where current progress is reported. passed parameters: <percentage:Number, text:String>
- * @return {Promise} resolves after operation finished successful
- */
-dataService.importGridsFromFile = function (file, backupMode, progressFn) {
-    let fileExtension = file.name.substring(file.name.length - 4);
-    let generateGlobalGrid = false;
-    progressFn = progressFn || function (){};
-    return new Promise((resolve, reject) => {
-        let reader = new FileReader();
-        reader.onload = (function (theFile) {
-            return function (e) {
-                let jsonString = e.target.result;
-                let promises = [];
-                if (backupMode) {
-                    progressFn(10, i18nService.t('deletingGrids'));
-                    promises.push(dataService.deleteAllGrids());
-                }
-                Promise.all(promises).then(() => {
-                    let importObjects = null;
-                    let promises = [];
-                    progressFn(40, i18nService.t('extractingGridsFromFile'));
-                    if (fileExtension === '.grd') {
-                        importObjects = JSON.parse(jsonString);
-                    } else if (fileExtension === '.obf') {
-                        promises.push(obfConverter.OBFToGridData(JSON.parse(jsonString)).then(object => {
-                            importObjects = object;
-                            return Promise.resolve();
-                        }));
-                    } else if (fileExtension === '.obz') {
-                        let promise = fileUtil.readZip(file, true).then(obzFileMap => {
-                            return obfConverter.OBZToGridSet(obzFileMap);
-                        }).then(list => {
-                            importObjects = list;
-                            if (backupMode) {
-                                generateGlobalGrid = true;
-                            }
-                            return Promise.resolve();
-                        });
-                        promises.push(promise);
-                    }
-                    Promise.all(promises).then(() => {
-                        progressFn(80, i18nService.t('encryptingAndSavingGrids'));
-                        dataService.importData(importObjects, generateGlobalGrid, backupMode).then(() => {
-                            progressFn(100);
-                            resolve();
-                        });
-                    });
-                });
-            }
-        })(file);
-        reader.readAsText(file);
-    });
+    progressFn(100);
 };
 
 /**
@@ -463,90 +469,76 @@ dataService.importGridsFromFile = function (file, backupMode, progressFn) {
  * @see{GridData}
  *
  * @param data a single GridData element, list of GridData elements or object containing grids, dictionaries, metadata
- * @param generateGlobalGrid if true a global grid is generated
- * @param backupMode if true, dictionaries and metadata will be imported, otherwise not
- * @param translate if true, the imported grids are tried to translate using the files in folder "translations"
+ * @param options options for import
+ * @param options.generateGlobalGrid if true a global grid is generated, if not already existing in the data
+ * @param options.importDictionaries if true, dictionaries are imported
+ * @param options.importUserSettings if true, user settings are imported
+ * @param options.progressFn an optional function where the current progress in percentage is returned
  * @return {Promise} resolves after operation finished successful
  */
-dataService.importData = function (data, generateGlobalGrid, backupMode) {
+dataService.importData = async function (data, options) {
     if (!data || data.length === 0) {
         return Promise.resolve();
     }
-    let importDictionaries = null;
-    let importMetadata = null;
-    let importGrids = null;
-    let promises = [];
-    let metadataPromise = null;
+    options = options || {};
+    options.progressFn = options.progressFn || (() => {});
+    options.progressFn(0);
 
-    if (!(data instanceof Array)) {
-        importDictionaries = backupMode ? filterService.updateDataModel(data.dictionaries) : null;
-        importMetadata = backupMode ? filterService.updateDataModel(data.metadata) : null;
-        importGrids = filterService.updateDataModel(data.grids);
-        if (!importDictionaries && !importMetadata && !importGrids && data.id) {
-            importGrids = [filterService.updateDataModel(data)];
-        }
-    } else {
-        importGrids = filterService.updateDataModel(data);
+    let importData = dataService.normalizeImportData(data);
+    dataUtil.removeDatabaseProperties(importData.grids);
+    dataUtil.removeDatabaseProperties(importData.dictionaries, true);
+    dataUtil.removeDatabaseProperties(importData.metadata, true);
+    options.progressFn(10);
+    let existingGrids = await dataService.getGrids();
+    let existingNames = existingGrids.map(grid => i18nService.getTranslation(grid.label));
+    let regenerateIdsReturn = gridUtil.regenerateIDs(importData.grids);
+    importData.grids = regenerateIdsReturn.grids;
+    if (importData.metadata) {
+        importData.metadata.lastOpenedGridId = regenerateIdsReturn.idMapping[importData.metadata.lastOpenedGridId];
+        importData.metadata.globalGridId = regenerateIdsReturn.idMapping[importData.metadata.globalGridId];
     }
-
-    if (importMetadata) {
-        metadataPromise = Promise.resolve(importMetadata);
-    } else {
-        metadataPromise = dataService.getMetadata();
-    }
-    return metadataPromise.then(metadata => {
-        if (importGrids) {
-            promises.push(dataService.getGrids().then(grids => {
-                let existingNames = grids.map(grid => i18nService.getTranslation(grid.label));
-                let globalGrid = null;
-                let regenerateIdsReturn = gridUtil.regenerateIDs(importGrids);
-                importGrids = regenerateIdsReturn.grids;
-                if (importMetadata) {
-                    metadata.lastOpenedGridId = regenerateIdsReturn.idMapping[metadata.lastOpenedGridId];
-                    metadata.globalGridId = regenerateIdsReturn.idMapping[metadata.globalGridId];
-                }
-                importGrids.forEach(grid => {
-                    let label = i18nService.getTranslation(grid.label);
-                    grid.label[i18nService.getContentLang()] = modelUtil.getNewName(label, existingNames);
-                    grid.gridElements.forEach(element => {
-                        if (element.image && element.image.url && navigator.serviceWorker && navigator.serviceWorker.controller) {
-                            navigator.serviceWorker.controller.postMessage({
-                                imageUrlToAdd: element.image.url
-                            });
-                        }
-                    });
+    importData.grids.forEach(grid => {
+        let label = i18nService.getTranslation(grid.label);
+        grid.label[i18nService.getContentLang()] = modelUtil.getNewName(label, existingNames);
+        grid.gridElements.forEach(element => {
+            if (element.image && element.image.url && navigator.serviceWorker && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({
+                    imageUrlToAdd: element.image.url
                 });
-                let locale = importGrids[0] ? (importGrids[0].locale || i18nService.getContentLang()) : null;
-                if (generateGlobalGrid) {
-                    let homeGridId = importGrids[0].id;
-                    globalGrid = gridUtil.generateGlobalGrid(homeGridId, locale);
-                    importGrids.unshift(globalGrid);
-                    metadata.globalGridId = globalGrid.id;
-                    metadata.globalGridActive = !!metadata.globalGridId;
-                }
-                return dataService.saveGrids(importGrids).then(() => {
-                    return dataService.saveMetadata(metadata, true);
-                });
-            }));
-        }
-        if (importDictionaries) {
-            promises.push(dataService.getDictionaries().then(dictionaries => {
-                return databaseService.bulkDelete(dictionaries);
-            }).then(() => {
-                importDictionaries = importDictionaries.map(dict => {
-                    delete dict.id;
-                    delete dict._id;
-                    delete dict._rev;
-                    return new Dictionary(dict);
-                });
-                return databaseService.bulkSave(importDictionaries).then(() => {
-                    predictionService.init();
-                    return Promise.resolve();
-                });
-            }));
-        }
-        return Promise.all(promises);
+            }
+        });
     });
+    options.progressFn(20);
+    if (options.generateGlobalGrid && !importData.metadata.globalGridId) {
+        let homeGridId = importData.grids[0].id;
+        let globalGrid = gridUtil.generateGlobalGrid(homeGridId, i18nService.getContentLang());
+        importData.grids.unshift(globalGrid);
+        importData.metadata.globalGridId = globalGrid.id;
+    }
+    importData.metadata.globalGridActive = !!importData.metadata.globalGridId;
+    if (options.importUserSettings) {
+        importData.metadata = Object.assign(await dataService.getMetadata(), importData.metadata);
+    } else if (importData.metadata.globalGridId) {
+        let existingMetadata = await dataService.getMetadata();
+        existingMetadata.globalGridId = importData.metadata.globalGridId;
+        importData.metadata = existingMetadata;
+    }
+    await dataService.saveGrids(importData.grids);
+    options.progressFn(70);
+    await dataService.saveMetadata(importData.metadata, true);
+    options.progressFn(80);
+
+    if (options.importDictionaries && importData.dictionaries) {
+        let existingDicts = await dataService.getDictionaries();
+        let existingNames = existingDicts.map(d => d.dictionaryKey);
+        for (let dict of importData.dictionaries) {
+            dict.dictionaryKey = modelUtil.getNewName(dict.dictionaryKey, existingNames);
+        }
+        importData.dictionaries = importData.dictionaries.map(dict => new Dictionary(dict));
+        await databaseService.bulkSave(importData.dictionaries);
+        predictionService.init();
+    }
+    options.progressFn(100);
 };
 
 /**
