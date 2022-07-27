@@ -437,7 +437,7 @@
   "doYouReallyWantResetGlobalGrid": "Realmente desexa restablecer o taboleiro global por defecto?",
   "detailsForGridX": "Detalles do taboleiro {0}",
   "connectXWithThisGrid": "Enlazar \"{0}\" con este taboleiro",
-  "exportBackupToFile": "Save backup to file",
+  "exportBackupToFile": "Exportar copia de seguridade",
   "exportToFile": "Export to file",
   "importGridsFromFile": "Importar taboleiro(s) desde un arquivo",
   "clearAllAndImportFromFile": "Borrar todo e importar dende un arquivo",
@@ -799,5 +799,6 @@
   "exportGlobalGrid": "Export global grid",
   "saveCustomDataToFile": "Save custom data to file",
   "restoreBackupFromFile": "Restore backup from file",
-  "importCustomDataFromFile": "Import custom data from file"
+  "importCustomDataFromFile": "Import custom data from file",
+  "gridContentLanguage": "Grid content language"
 }
