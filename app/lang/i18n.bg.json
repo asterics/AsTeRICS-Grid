@@ -437,7 +437,7 @@
   "doYouReallyWantResetGlobalGrid": "Наистина ли искате да нулирате глобалната решетка?",
   "detailsForGridX": "Детайли за решетка {0}",
   "connectXWithThisGrid": "Свързване на \"{0}\" с тази решетка",
-  "exportBackupToFile": "Save backup to file",
+  "exportBackupToFile": "Експортиране на резервно кипие във файл",
   "exportToFile": "Export to file",
   "importGridsFromFile": "Вмъкване на решетки от файл",
   "clearAllAndImportFromFile": "Изчистване на всички и импортиране от файл",
@@ -799,5 +799,6 @@
   "exportGlobalGrid": "Export global grid",
   "saveCustomDataToFile": "Save custom data to file",
   "restoreBackupFromFile": "Restore backup from file",
-  "importCustomDataFromFile": "Import custom data from file"
+  "importCustomDataFromFile": "Import custom data from file",
+  "gridContentLanguage": "Grid content language"
 }
