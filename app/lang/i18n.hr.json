@@ -437,7 +437,7 @@
   "doYouReallyWantResetGlobalGrid": "Želite li stvarno vratiti globalnu ploču na zadano?",
   "detailsForGridX": "Pojedinosti za ploču {0}",
   "connectXWithThisGrid": "Povežite \"{0}\" s ovom pločom",
-  "exportBackupToFile": "Save backup to file",
+  "exportBackupToFile": "Izvezi sigurnosnu kopiju u datoteku",
   "exportToFile": "Export to file",
   "importGridsFromFile": "Uvezi ploču(e) iz datoteke",
   "clearAllAndImportFromFile": "Očisti sve i uvezi iz datoteke",
@@ -799,5 +799,6 @@
   "exportGlobalGrid": "Export global grid",
   "saveCustomDataToFile": "Save custom data to file",
   "restoreBackupFromFile": "Restore backup from file",
-  "importCustomDataFromFile": "Import custom data from file"
+  "importCustomDataFromFile": "Import custom data from file",
+  "gridContentLanguage": "Grid content language"
 }
