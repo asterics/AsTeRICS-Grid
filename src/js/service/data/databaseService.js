@@ -156,6 +156,9 @@ databaseService.bulkSave = function (objectList) {
  * @return {Promise<never>}
  */
 databaseService.bulkDelete = function (objectList) {
+    if (!objectList || objectList.length === 0) {
+        return Promise.resolve();
+    }
     objectList.forEach(object => {
         object._deleted = true;
         object._id = object.id;
