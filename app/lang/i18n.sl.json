@@ -1,11 +1,11 @@
 {
-  "GridActionSpeak": "Speak label",
-  "GridActionSpeakCustom": "Speak custom text",
-  "GridActionNavigate": "Navigate to other grid",
-  "GridActionARE": "AsTeRICS action",
-  "GridActionPredict": "Fill prediction elements",
-  "GridActionCollectElement": "Collect element action",
-  "GridActionWebradio": "Web radio action",
+  "GridActionSpeak": "Izgovori besedilo",
+  "GridActionSpeakCustom": "Izgovori prilagojeno besedilo",
+  "GridActionNavigate": "Pojdi na drugo stran",
+  "GridActionARE": "AsTeRICS delo",
+  "GridActionPredict": "Zapolni predikcijo besed",
+  "GridActionCollectElement": "Zberi akcije elementa",
+  "GridActionWebradio": "Spletni radio",
   "GridActionYoutube": "YouTube action",
   "GridActionChangeLang": "Change app language",
   "GridActionOpenWebpage": "Open webpage in new tab",
@@ -799,5 +799,6 @@
   "exportGlobalGrid": "Export global grid",
   "saveCustomDataToFile": "Save custom data to file",
   "restoreBackupFromFile": "Restore backup from file",
-  "importCustomDataFromFile": "Import custom data from file"
+  "importCustomDataFromFile": "Import custom data from file",
+  "gridContentLanguage": "Grid content language"
 }

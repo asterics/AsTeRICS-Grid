@@ -799,5 +799,6 @@
   "exportGlobalGrid": "Export global grid",
   "saveCustomDataToFile": "Save custom data to file",
   "restoreBackupFromFile": "Restore backup from file",
-  "importCustomDataFromFile": "Import custom data from file"
+  "importCustomDataFromFile": "Import custom data from file",
+  "gridContentLanguage": "Grid content language"
 }
