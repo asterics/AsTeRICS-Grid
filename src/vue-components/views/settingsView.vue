@@ -175,7 +175,6 @@
                 syncNavigation: localStorageService.shouldSyncNavigation(),
                 unlockPasscode: localStorageService.getUnlockPasscode(),
                 voices: speechService.getVoices(),
-                selectedVoiceName: speechService.getPreferredVoiceName(),
                 testText: i18nService.t('thisIsAnEnglishSentence'),
                 i18nService: i18nService,
                 localStorageService: localStorageService,
@@ -228,7 +227,7 @@
                 }, null, 500, 'SAVE_METADATA');
             },
             testSpeak() {
-                speechService.speak(this.testText, null , this.selectedVoiceName);
+                speechService.speak(this.testText, null , this.metadata.localeConfig.preferredVoice);
             }
         },
         mounted() {
