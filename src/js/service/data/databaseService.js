@@ -29,6 +29,9 @@ let _defaultDictName = null;
  * @return {Promise}
  */
 databaseService.getObject = function (objectType, id, onlyShortVersion) {
+    if (!_initPromise) {
+        return Promise.resolve(null);
+    }
     return new Promise((resolve, reject) => {
         _initPromise.then(() => {
             if (!objectType.getIdPrefix) {
