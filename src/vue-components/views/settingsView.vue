@@ -11,7 +11,7 @@
                 <span class="break-word">{{ $t('generalSettingsAreAppliedToAllUsersOnThisDevice') }}</span>
             </div>
             <div class="srow">
-                <div class="ten columns">
+                <div class="eleven columns">
                     <h3 class="mt-2">{{ $t('applicationLanguage') }}</h3>
                     <div class="srow">
                         <label class="three columns" for="inLanguage">{{ $t('selectLanguage') }}</label>
@@ -33,7 +33,7 @@
                 </div>
             </div>
             <div class="srow">
-                <div class="ten columns">
+                <div class="eleven columns">
                     <h3>{{ $t('miscellaneous') }}</h3>
                     <div class="srow">
                         <input id="chkSyncNavigation" type="checkbox" v-model="syncNavigation" @change="saveSyncNavigation()"/>
@@ -54,14 +54,18 @@
                 <span class="break-word">{{ $t('userSettingsAreLinkedToTheCurrentUser') }}</span>
             </div>
             <div class="srow">
-                <div class="ten columns">
+                <div class="eleven columns">
                     <h3 class="mt-2">{{ $t('gridContentLanguage') }}</h3>
                     <div class="srow">
                         <label class="three columns" for="contentLang">{{ $t('selectLanguage') }}</label>
-                        <select class="five columns" id="contentLang" v-model="metadata.localeConfig.contentLang" @change="saveMetadata()">
+                        <select class="five columns mb-2" id="contentLang" v-model="metadata.localeConfig.contentLang" @change="saveMetadata()">
                             <option value="">{{ $t('automatic') }}</option>
-                            <option v-for="lang in allLanguages.filter(langObject => gridLanguages.includes(langObject.code))" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
+                            <option v-for="lang in selectLanguages" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
                         </select>
+                        <div class="four columns">
+                            <input id="selectAllLanguages" type="checkbox" v-model="selectAllLanguages"/>
+                            <label for="selectAllLanguages">{{ $t('showAllLanguages') }}</label>
+                        </div>
                     </div>
                     <div class="srow">
                         <span class="fa fa-info-circle"></span>
@@ -72,16 +76,20 @@
                 </div>
             </div>
             <div class="srow">
-                <div class="ten columns">
+                <div class="eleven columns">
                     <h3 class="mt-2">{{ $t('voice') }}</h3>
                     <div class="srow">
                         <label class="three columns" for="inVoice">
                             <span>{{ $t('preferredVoice') }}</span>
                         </label>
-                        <select id="inVoice" class="five columns" v-model="metadata.localeConfig.preferredVoice" @change="saveVoice()">
+                        <select id="inVoice" class="five columns mb-2" v-model="metadata.localeConfig.preferredVoice" @change="saveVoice()">
                             <option :value="undefined">{{ $t('automatic') }}</option>
-                            <option v-for="voice in voices" :value="voice.name">{{voice.name}}</option>
+                            <option v-for="voice in selectVoices" :value="voice.name">{{voice.name}}</option>
                         </select>
+                        <div class="four columns">
+                            <input id="selectAllVoices" type="checkbox" v-model="selectAllVoices"/>
+                            <label for="selectAllVoices">{{ $t('showAllVoices') }}</label>
+                        </div>
                     </div>
                     <div class="srow">
                         <label class="three columns" for="testText">
@@ -93,7 +101,7 @@
                 </div>
             </div>
             <div class="srow">
-                <div class="ten columns">
+                <div class="eleven columns">
                     <h3 class="mt-2">{{ $t('colors') }}</h3>
                     <div class="srow">
                         <label class="three columns" for="elemColor">
@@ -131,7 +139,7 @@
                 </div>
             </div>
             <div class="srow">
-                <div class="ten columns">
+                <div class="eleven columns">
                     <h3 class="mt-2">{{ $t('elementLabels') }}</h3>
                     <div class="srow">
                         <label class="three columns" for="convertText">{{ $t('convertElementLabels') }}</label>
@@ -165,6 +173,8 @@
             return {
                 metadata: null,
                 show: false,
+                selectAllLanguages: false,
+                selectAllVoices: false,
                 appLang: '',
                 gridLanguages: [],
                 appLanguages: i18nService.getAppLanguages(),
@@ -183,14 +193,40 @@
                 TextConfig: TextConfig
             }
         },
+        computed: {
+            selectLanguages() {
+                if (!this.allLanguages || !this.gridLanguages) {
+                    return []
+                }
+                if (this.selectAllLanguages) {
+                    return this.allLanguages;
+                }
+                return this.allLanguages.filter(langObject => this.gridLanguages.includes(langObject.code));
+            },
+            selectVoices() {
+                this.metadata.localeConfig.contentLang; // in order to recompute on change
+                this.appLang; // in order to recompute on change
+                if (!this.voices) {
+                    return []
+                }
+                if (this.selectAllVoices) {
+                    return this.voices;
+                }
+                let newVoices = this.voices.filter(v => v.lang === i18nService.getContentLang());
+                if (!(newVoices.map(v => v.name).includes(this.metadata.localeConfig.preferredVoice))) {
+                    this.metadata.localeConfig.preferredVoice = undefined;
+                    setTimeout(this.saveMetadata, 200);
+                }
+                this.setVoiceTestText();
+                return this.voices.filter(v => v.lang === i18nService.getContentLang());
+            }
+        },
         methods: {
-            saveAppLang() {
+            async saveAppLang() {
                 this.saveSuccess = undefined;
-                util.debounce(async () => {
-                    await i18nService.setAppLanguage(this.appLang);
-                    this.allLanguages = i18nService.getAllLanguages();
-                    this.saveSuccess = true;
-                }, 300, 'SAVE_LANG');
+                await i18nService.setAppLanguage(this.appLang);
+                this.allLanguages = i18nService.getAllLanguages();
+                this.saveSuccess = true;
             },
             saveSyncNavigation() {
                 this.saveSuccess = undefined;
@@ -212,7 +248,7 @@
             },
             setVoiceTestText() {
                 let voice = this.voices.filter(voice => voice.name === this.metadata.localeConfig.preferredVoice)[0];
-                let voiceLang = voice ? voice.lang : '';
+                let voiceLang = voice ? voice.lang : i18nService.getContentLang();
                 this.testText = i18nService.tl('thisIsAnEnglishSentence', [], voiceLang.substring(0, 2))
             },
             saveMetadata() {
