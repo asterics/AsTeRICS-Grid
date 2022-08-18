@@ -187,7 +187,7 @@ function addVoice(voiceName, voiceLang, voiceType, voiceReference) {
     }
     allVoices.push({
         name: voiceName,
-        lang: voiceLang.substring(0, 2),
+        lang: voiceLang.substring(0, 2).toLowerCase(),
         type: voiceType,
         ref: voiceReference
     });
