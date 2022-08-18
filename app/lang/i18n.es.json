@@ -801,6 +801,6 @@
   "restoreBackupFromFile": "Restaurar copia de seguridad",
   "importCustomDataFromFile": "Importar datos personalizados",
   "gridContentLanguage": "Idioma del contenido (tableros)",
-  "showAllLanguages": "Show all languages",
-  "showAllVoices": "Show all voices"
+  "showAllLanguages": "Mostrar todos los idiomas",
+  "showAllVoices": "Ver todas las voces disponibles"
 }
