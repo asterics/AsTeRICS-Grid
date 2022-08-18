@@ -81,7 +81,7 @@ i18nService.setAppLanguage = function (lang, dontSave) {
 };
 
 i18nService.setContentLanguage = async function (lang, dontSave) {
-    currentContentLang = lang || i18nService.getAppLang();
+    currentContentLang = lang || undefined;
     $(document).trigger(constants.EVENT_LANGUAGE_CHANGE);
     if (!dontSave) {
         let metadata = await dataService.getMetadata();
@@ -223,7 +223,7 @@ function loadLanguage(useLang, secondTry) {
 
 async function getMetadataConfig() {
     let metadata = await dataService.getMetadata();
-    currentContentLang = metadata.localeConfig.contentLang || i18nService.getAppLang();
+    currentContentLang = metadata.localeConfig.contentLang;
 }
 
 $(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
