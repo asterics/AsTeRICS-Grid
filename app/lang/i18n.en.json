@@ -802,5 +802,6 @@
   "importCustomDataFromFile": "Import custom data from file",
   "gridContentLanguage": "Grid content language",
   "showAllLanguages": "Show all languages",
-  "showAllVoices": "Show all voices"
+  "showAllVoices": "Show all voices",
+  "multilingual": "multilingual"
 }
