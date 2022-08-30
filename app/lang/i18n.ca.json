@@ -800,5 +800,7 @@
   "saveCustomDataToFile": "Guardar dades personalitzades",
   "restoreBackupFromFile": "Restaurar còpia de seguretat",
   "importCustomDataFromFile": "Importar dades personalitzades",
-  "gridContentLanguage": "Idioma del contingut (taulers)"
+  "gridContentLanguage": "Idioma del contingut (taulers)",
+  "showAllLanguages": "Show all languages",
+  "showAllVoices": "Show all voices"
 }

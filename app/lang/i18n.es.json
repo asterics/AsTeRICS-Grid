@@ -749,8 +749,8 @@
   "ARASAACaction": "Tiempo",
   "ARASAACskin": "Color de piel",
   "ARASAAChair": "Color de pelo",
-  "ARASAACidentifier": "Con texto",
-  "ARASAACidentifierPosition": "Posición del texto",
+  "ARASAACidentifier": "Identificador",
+  "ARASAACidentifierPosition": "Posición del identificador",
   "past": "pasado",
   "future": "futuro",
   "classroom": "clase",
@@ -800,5 +800,7 @@
   "saveCustomDataToFile": "Guardar datos personalizados",
   "restoreBackupFromFile": "Restaurar copia de seguridad",
   "importCustomDataFromFile": "Importar datos personalizados",
-  "gridContentLanguage": "Idioma del contenido (tableros)"
+  "gridContentLanguage": "Idioma del contenido (tableros)",
+  "showAllLanguages": "Mostrar todos los idiomas",
+  "showAllVoices": "Ver todas las voces disponibles"
 }
