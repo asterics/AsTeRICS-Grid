@@ -1,0 +1,51 @@
+[
+  {
+    "name": "AsTeRICS Grid default",
+    "filename": "default.grd.json",
+    "author": "AsTeRICS Foundation / UAS Technikum Wien",
+    "website": "https://www.asterics-foundation.org/1270-2/",
+    "languages": ["ar", "bn", "bg", "zh", "en", "fr", "de", "he", "hi", "id", "it", "ja", "pl", "pt", "ro", "ru", "sr", "es", "tr", "uk", "ur"],
+    "description": {
+      "en": "Demo configuration containing examples for basic communication, a YouTube player, webradio player, different keyboards and environmental control.",
+      "de": "Demo Konfiguration für einfache Kommunikation, einen YouTube-Player, Webradio-Player, verschiedene Keyboard-Layouts und Umgebungssteuerung."
+    },
+    "standardFor": ["de"],
+    "wordPrediction": true
+  },
+  {
+    "name": "Comunicador Global-Core ARASAAC",
+    "filename": "Comunicador_Global-Core_ARASAAC_ES_v3.grd.json",
+    "author": "ARASAAC",
+    "website": "https://arasaac.org/",
+    "languages": ["es"],
+    "description": {
+      "en": "TODO ARASAAC ES set"
+    },
+    "standardFor": ["es"],
+    "wordPrediction": true
+  },
+  {
+    "name": "Global-Core Communicator ARASAAC",
+    "filename": "Global-Core_Communicator_ARASAAC_EN_v9.grd.json",
+    "author": "ARASAAC",
+    "website": "https://arasaac.org/",
+    "languages": ["en"],
+    "description": {
+      "en": "TODO ARASAAC EN set"
+    },
+    "standardFor": ["en"],
+    "wordPrediction": true
+  },
+  {
+    "name": "Comunicador Global-Core ARASAAC",
+    "filename": "Globaler_Kommunikator-Core_ARASAAC_DE_v7.grd.json",
+    "author": "ARASAAC",
+    "website": "https://arasaac.org/",
+    "languages": ["de"],
+    "description": {
+      "en": "TODO ARASAAC de set"
+    },
+    "standardFor": null,
+    "wordPrediction": true
+  }
+]
