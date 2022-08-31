@@ -208,12 +208,10 @@ function loadLanguage(useLang, secondTry) {
                         elem[useLang] = i18nService.tl(`lang.${elem.code}`, [], useLang);
                     }
                 });
-                navigator.serviceWorker.addEventListener("message", (evt) => {
-                    if (evt.data && evt.data.activated) {
-                        navigator.serviceWorker.controller.postMessage({
-                            urlToAdd: url
-                        });
-                    }
+                navigator.serviceWorker.ready.then(() => {
+                    navigator.serviceWorker.controller.postMessage({
+                        urlToAdd: url
+                    });
                 });
                 resolve();
             })

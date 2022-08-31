@@ -494,8 +494,10 @@ dataService.importData = async function (data, options) {
         grid.label[i18nService.getContentLang()] = modelUtil.getNewName(label, existingNames);
         grid.gridElements.forEach(element => {
             if (element.image && element.image.url && navigator.serviceWorker && navigator.serviceWorker.controller) {
-                navigator.serviceWorker.controller.postMessage({
-                    imageUrlToAdd: element.image.url
+                navigator.serviceWorker.ready.then(() => {
+                    navigator.serviceWorker.controller.postMessage({
+                        imageUrlToAdd: element.image.url
+                    });
                 });
             }
         });
