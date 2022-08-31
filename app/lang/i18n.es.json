@@ -803,12 +803,12 @@
   "gridContentLanguage": "Idioma del contenido (tableros)",
   "showAllLanguages": "Mostrar todos los idiomas",
   "showAllVoices": "Ver todas las voces disponibles",
-  "multilingual": "multilingual",
-  "importConfiguration": "Import configuration",
-  "currentlyNoGridsAreSetUpChooseAConfiguration": "Currently no grids are set up, choose a configuration to import below.",
-  "alternativelyYouCan": "Alternatively you can",
-  "addAnEmptyGridAndStartFromScratch": "Add an empty grid and start from scratch",
-  "selectConfiguration": "Select configuration",
-  "languages": "Languages",
-  "description": "Description"
+  "multilingual": "multiidioma",
+  "importConfiguration": "Importar configuración",
+  "currentlyNoGridsAreSetUpChooseAConfiguration": "Actualmente no hay tableros configurados, elige una configuración para importar de las que se ofrecen a continuación.",
+  "alternativelyYouCan": "Alternativamente puedes",
+  "addAnEmptyGridAndStartFromScratch": "Crear un tablero vacío y empezar desde cero",
+  "selectConfiguration": "Seleccionar configuración",
+  "languages": "Idiomas",
+  "description": "Descripción"
 }
