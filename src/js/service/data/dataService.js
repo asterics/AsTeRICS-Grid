@@ -363,7 +363,7 @@ dataService.downloadToFile = async function (gridIds, options) {
     options = options || {};
     let globalGridId = null;
     if (options.exportGlobalGrid) {
-        let globalGrid = dataService.getGlobalGrid();
+        let globalGrid = await dataService.getGlobalGrid();
         globalGridId = globalGrid ? globalGrid.id : null;
     }
     let allGrids = await dataService.getGrids(true, !options.exportGlobalGrid);
