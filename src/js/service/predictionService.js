@@ -75,7 +75,7 @@ predictionService.doAction = function (elementId) {
 };
 
 predictionService.getDictionaryKeys = function () {
-    return predictionary.getDictionaryKeys();
+    return predictionary ? predictionary.getDictionaryKeys() : [];
 };
 
 predictionService.init = function (elements) {
