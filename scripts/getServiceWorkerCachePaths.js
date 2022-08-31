@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const namesToSkip = ['/examples/', '/gridsets/'];
-const namesMustInclude = ['/examples/translations/', '_gridset_metadata.json'];
+const namesMustInclude = ['/examples/translations/', 'gridset_metadata.json'];
 const namesMustSkip = ['convertOriginalToTranslateObjects.js', '/examples/translations/original', 'app/simple', 'build_legacy', 'app/lang', 'app/dictionaries'];
 let startDir = "../app/";
 let cutFromStartPath = "..";
