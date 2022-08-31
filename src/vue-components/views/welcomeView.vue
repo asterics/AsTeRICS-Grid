@@ -1,10 +1,10 @@
 <template>
     <div class="overflow-content">
         <header-icon full-header="true"></header-icon>
-        <div class="srow content spaced">
-            <h2><span class="show-mobile">AsTeRICS Grid - </span><span>{{ $t('welcome') }}</span></h2>
-            <div class="eight columns offset-by-one">
-                <div class="srow">
+        <div class="container ms-0">
+            <div class="row ps-3 ps-md-4 col-12 col-md-10">
+                <h2><span class="show-mobile">AsTeRICS Grid - </span><span>{{ $t('welcome') }}</span></h2>
+                <div>
                     <h3>
                         <i18n path="useAstericsGridWithoutRegistrationBold" tag="span">
                             <template v-slot:withoutReg>
@@ -17,14 +17,18 @@
                         <li><span class="fa-li"><i class="fas fa-check"></i></span><span>{{ $t('allFunctionsAvailable') }}</span></li>
                         <li><span class="fa-li"><i class="fas fa-check"></i></span><span>{{ $t('idealForUsingOnASingleDevice') }}</span></li>
                     </ul>
-                    <button @click="useDefaultUser()">
-                        <span>{{ $t('useAstericsGridWithoutRegistration') }}</span>&nbsp;&nbsp;<i v-if="loading" class="fas fa-spinner fa-spin"></i>
-                    </button>
+                    <div class="row">
+                        <div class="col-12">
+                            <button class="col-12" @click="useDefaultUser()">
+                                <span>{{ $t('useAstericsGridWithoutRegistration') }}</span>&nbsp;&nbsp;<i v-if="loading" class="fas fa-spinner fa-spin"></i>
+                            </button>
+                        </div>
+                    </div>
                     <div>
                         <span class="fa fa-info-circle"></span><span class="break-word">{{ $t('itsAlwaysPossibleToRegisterLater') }}</span>
                     </div>
                 </div>
-                <div class="srow">
+                <div class="mt-4">
                     <h3>
                         <i18n path="useAstericsGridWithRegistration" tag="span">
                             <template v-slot:withReg>
@@ -38,13 +42,18 @@
                         <li><span class="fa-li"><i class="fas fa-check"></i></span><span>{{ $t('allDataIsEndtoendEncryptedAndOnlyYouAreAble') }}</span></li>
                         <li><span class="fa-li"><i class="fas fa-check"></i></span><span>{{ $t('forRegistrationOnlyAUsernameAndAPasswordIsNeeded') }}</span></li>
                     </ul>
-                    <button @click="toRegister()">{{ $t('registerNow') }}</button>
+                    <div class="row">
+                        <div class="col-12">
+                            <button class="col-12" @click="toRegister()">{{ $t('registerNow') }}</button>
+                        </div>
+                    </div>
+
                 </div>
-                <div class="srow">
+                <div class="my-5">
                     <span>{{ $t('alreadyHaveAnAccount') }}</span>
                     <a href="#login">{{ $t('toLogin') }}</a>
                 </div>
-                <div class="srow">
+                <div>
                     <b>{{ $t('hint') }}</b>
                     <i18n path="ifYouNeedHelpWithinAstericsGrid" tag="span">
                         <template v-slot:openHelpIcon>
@@ -104,9 +113,6 @@
     h3 {
         margin-bottom: 0.5em;
     }
-    .srow {
-        margin-bottom: 1.5em;
-    }
     li {
         margin-bottom: 0;
         list-style-type: none;
@@ -128,15 +134,8 @@
         padding: 0.7em;
         border-radius: 10px;
         font-size: 1.3em;
-    }
-    @media (max-width: 850px) {
-        button {
-            width: 100%;
-        }
-    }
-    @media (min-width: 850px) {
-        button {
-            width: 30em;
-        }
+        max-width: 750px;
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
     }
 </style>
