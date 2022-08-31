@@ -802,5 +802,13 @@
   "importCustomDataFromFile": "Importar datos personalizados",
   "gridContentLanguage": "Idioma del contenido (tableros)",
   "showAllLanguages": "Mostrar todos los idiomas",
-  "showAllVoices": "Ver todas las voces disponibles"
+  "showAllVoices": "Ver todas las voces disponibles",
+  "multilingual": "multiidioma",
+  "importConfiguration": "Importar configuración",
+  "currentlyNoGridsAreSetUpChooseAConfiguration": "Actualmente no hay tableros configurados, elige una configuración para importar de las que se ofrecen a continuación.",
+  "alternativelyYouCan": "Alternativamente puedes",
+  "addAnEmptyGridAndStartFromScratch": "Crear un tablero vacío y empezar desde cero",
+  "selectConfiguration": "Seleccionar configuración",
+  "languages": "Idiomas",
+  "description": "Descripción"
 }
