@@ -46,7 +46,7 @@ self.addEventListener('message', (event) => {
         });
     }
     if (event.data && event.data.imageUrlToAdd) {
-        console.log(`adding ${event.data.imageUrlToAdd} to image cache...`);
+        console.debug(`adding ${event.data.imageUrlToAdd} to image cache...`);
         caches.open('image-cache').then((cache) => {
             cache.add(event.data.imageUrlToAdd);
         });
