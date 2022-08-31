@@ -802,5 +802,13 @@
   "importCustomDataFromFile": "Import custom data from file",
   "gridContentLanguage": "Grid content language",
   "showAllLanguages": "Mostra tutte le lingue",
-  "showAllVoices": "Mostra tutte le voci"
+  "showAllVoices": "Mostra tutte le voci",
+  "multilingual": "multilingual",
+  "importConfiguration": "Import configuration",
+  "currentlyNoGridsAreSetUpChooseAConfiguration": "Currently no grids are set up, choose a configuration to import below.",
+  "alternativelyYouCan": "Alternatively you can",
+  "addAnEmptyGridAndStartFromScratch": "Add an empty grid and start from scratch",
+  "selectConfiguration": "Select configuration",
+  "languages": "Languages",
+  "description": "Description"
 }
