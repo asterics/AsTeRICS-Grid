@@ -3,6 +3,7 @@ import VueI18n from 'vue-i18n';
 import {localStorageService} from "./data/localStorageService.js";
 import {constants} from "../util/constants";
 import {dataService} from "./data/dataService.js";
+import {serviceWorkerService} from "./serviceWorkerService.js";
 
 let i18nService = {};
 
@@ -208,11 +209,7 @@ function loadLanguage(useLang, secondTry) {
                         elem[useLang] = i18nService.tl(`lang.${elem.code}`, [], useLang);
                     }
                 });
-                navigator.serviceWorker.ready.then(() => {
-                    navigator.serviceWorker.controller.postMessage({
-                        urlToAdd: url
-                    });
-                });
+                serviceWorkerService.cacheUrl(url);
                 resolve();
             })
         }

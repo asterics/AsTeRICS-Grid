@@ -16,6 +16,7 @@ import {localStorageService} from "./localStorageService";
 import {gridUtil} from "../../util/gridUtil";
 import {urlParamService} from "../urlParamService";
 import {filterService} from "./filterService";
+import {serviceWorkerService} from "../serviceWorkerService.js";
 
 let dataService = {};
 
@@ -494,11 +495,7 @@ dataService.importData = async function (data, options) {
         grid.label[i18nService.getContentLang()] = modelUtil.getNewName(label, existingNames);
         grid.gridElements.forEach(element => {
             if (element.image && element.image.url && navigator.serviceWorker && navigator.serviceWorker.controller) {
-                navigator.serviceWorker.ready.then(() => {
-                    navigator.serviceWorker.controller.postMessage({
-                        imageUrlToAdd: element.image.url
-                    });
-                });
+                serviceWorkerService.cacheImageUrl(element.image.url);
             }
         });
     });

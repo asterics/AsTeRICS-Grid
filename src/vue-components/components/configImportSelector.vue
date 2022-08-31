@@ -32,6 +32,7 @@
     import {i18nService} from "../../js/service/i18nService.js";
     import {dataService} from "../../js/service/data/dataService.js";
     import {Router} from "../../js/router.js";
+    import {serviceWorkerService} from "../../js/service/serviceWorkerService.js";
 
     export default {
         props: [],
@@ -74,11 +75,7 @@
                 });
                 thiz.selectedGridset = result[0];
                 thiz.defaultGridsets = result;
-                navigator.serviceWorker.ready.then(() => {
-                    navigator.serviceWorker.controller.postMessage({
-                        urlToAdd: thiz.getGridsetUrl()
-                    });
-                });
+                serviceWorkerService.cacheUrl(thiz.getGridsetUrl());
             })
         },
         beforeDestroy() {
