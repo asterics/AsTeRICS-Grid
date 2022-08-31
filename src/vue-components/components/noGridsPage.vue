@@ -1,16 +1,18 @@
 <template>
-    <div class="container ms-2">
-        <h1>{{ $t('importConfiguration') }}</h1>
-        <div>{{ $t('currentlyNoGridsAreSetUpChooseAConfiguration') }}</div>
+    <div class="container ms-0">
+        <div class="row ps-3 ps-md-4 col-12 col-md-10">
+            <h1>{{ $t('importConfiguration') }}</h1>
+            <div>{{ $t('currentlyNoGridsAreSetUpChooseAConfiguration') }}</div>
 
-        <config-import-selector></config-import-selector>
-        <div>
-            <span>{{ $t('alternativelyYouCan') }}</span>:
-            <ul class="mt-3">
-                <li><a href="javascript:;" @click="addEmptyGrid()">{{ $t('addAnEmptyGridAndStartFromScratch') }}</a></li>
-                <li><a href="javascript:;" @click="restoreBackupHandler()">{{ $t('restoreBackupFromFile') }}</a></li>
-                <li><a href="javascript:;" @click="importCustomHandler()">{{ $t('importCustomDataFromFile') }}</a></li>
-            </ul>
+            <config-import-selector></config-import-selector>
+            <div>
+                <span>{{ $t('alternativelyYouCan') }}</span>:
+                <ul class="mt-3">
+                    <li><a href="javascript:;" @click="addEmptyGrid()">{{ $t('addAnEmptyGridAndStartFromScratch') }}</a></li>
+                    <li><a href="javascript:;" @click="restoreBackupHandler()">{{ $t('restoreBackupFromFile') }}</a></li>
+                    <li><a href="javascript:;" @click="importCustomHandler()">{{ $t('importCustomDataFromFile') }}</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>

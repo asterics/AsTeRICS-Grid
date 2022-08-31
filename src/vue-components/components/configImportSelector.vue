@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid g-0 mb-5">
+    <div class="mb-5">
         <div class="row" v-if="defaultGridsets">
             <label for="selectGridset" class="col-md-3">{{ $t('selectConfiguration') }}</label>
             <select v-model="selectedGridset" id="selectGridset" class="col-md-8">

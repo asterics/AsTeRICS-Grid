@@ -8,11 +8,12 @@
                 <input type="file" id="inputFileBackup" @change="importBackupFromFile" accept=".grd, .obf, .obz"/>
             </div>
         </header>
-        <div class="srow content text-content">
-            <div v-show="showLoading || grids === null" class="grid-container grid-mask">
+        <div class="srow content text-content" v-if="showLoading || grids === null">
+            <div class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin" style="position: relative; margin-top: 30vh; top: 0"/>
             </div>
-
+        </div>
+        <div class="srow content text-content" v-if="grids && grids.length > 0">
             <div v-if="selectedGraphElement">
                 <h1>{{headerDetails}}</h1>
                 <div class="srow">
@@ -40,7 +41,7 @@
                 </div>
             </div>
 
-            <div v-if="grids && grids.length > 0">
+            <div>
                 <h1>{{ $t('gridList') }}</h1>
                 <div class="srow" v-show="graphList.length > 0" style="margin-bottom: 1em">
                     <label for="selectMode" class="three columns">{{ $t('gridsToShow') }}</label>
@@ -94,14 +95,14 @@
                     </div>
                 </div>
             </div>
-
-            <no-grids-page v-if="!grids || grids.length == 0" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true"></no-grids-page>
-            <div class="srow" style="margin-bottom: 10em"></div>
-            <grid-link-modal v-if="linkModal.show" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @close="linkModal.show = false" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
-            <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.show = false; pdfModal.printGridId = null;"></export-pdf-modal>
-            <export-modal v-if="backupModal.show" :grids-data="grids" :export-options="backupModal.exportOptions" @close="backupModal.show = false"></export-modal>
-            <import-modal v-if="importModal.show" @close="importModal.show = false" :reload-fn="reload"></import-modal>
         </div>
+
+        <no-grids-page v-if="grids && grids.length === 0" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true"></no-grids-page>
+        <div class="srow" style="margin-bottom: 10em"></div>
+        <grid-link-modal v-if="linkModal.show" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @close="linkModal.show = false" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
+        <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.show = false; pdfModal.printGridId = null;"></export-pdf-modal>
+        <export-modal v-if="backupModal.show" :grids-data="grids" :export-options="backupModal.exportOptions" @close="backupModal.show = false"></export-modal>
+        <import-modal v-if="importModal.show" @close="importModal.show = false" :reload-fn="reload"></import-modal>
     </div>
 </template>
 
