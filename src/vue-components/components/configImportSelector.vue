@@ -48,12 +48,15 @@
                     return;
                 }
                 this.loading = true;
-                $.get(`app/gridsets/${this.selectedGridset.filename}`).then(result => {
+                $.get(this.getGridsetUrl()).then(result => {
                     dataService.importData(result, {}).then(() => {
                         this.loading = false;
                         Router.toMain();
                     });
                 });
+            },
+            getGridsetUrl() {
+                return `app/gridsets/${this.selectedGridset.filename}`;
             }
         },
         mounted() {
@@ -71,6 +74,11 @@
                 });
                 thiz.selectedGridset = result[0];
                 thiz.defaultGridsets = result;
+                navigator.serviceWorker.ready.then(() => {
+                    navigator.serviceWorker.controller.postMessage({
+                        urlToAdd: thiz.getGridsetUrl()
+                    });
+                });
             })
         },
         beforeDestroy() {
