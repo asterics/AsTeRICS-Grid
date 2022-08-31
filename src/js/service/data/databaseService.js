@@ -15,8 +15,6 @@ let databaseService = {};
 
 let _initPromise = null;
 let _lastDataModelVersion = null;
-let _defaultDictPath = null;
-let _defaultDictName = null;
 
 /**
  * queries for objects in database and resolves promise with result.
@@ -284,46 +282,10 @@ function initInternal(hashedUserPassword, username, isLocalUser) {
         return Promise.all(promises);
     });
     _initPromise.then(() => {
-        importDefaultDictionary();
         _lastDataModelVersion = null;
         $(document).trigger(constants.EVENT_USER_CHANGED);
     });
     return _initPromise;
-}
-
-function importDefaultDictionary() {
-    return pouchDbService.all(Dictionary.getIdPrefix()).then(result => {
-        if (result) {
-            return Promise.resolve();
-        }
-        return new Promise(resolve => {
-            if (!_defaultDictPath) {
-                log.info("not importing default dictionary, since language is not 'de' or 'en'");
-                return resolve();
-            }
-            log.info('importing dictionary: ' + _defaultDictPath);
-            $.get(_defaultDictPath, null, null, 'text').success(result => {
-                log.debug('success getting default dictionary.');
-                resolve(result);
-            }).fail((e) => {
-                log.debug('error getting default dictionary.');
-                resolve();
-            });
-        });
-    }).then(importData => {
-        if (!importData) {
-            return Promise.resolve();
-        }
-        let dict = new Dictionary({
-            dictionaryKey: _defaultDictName,
-            data: importData,
-            isDefault: true
-        });
-        return applyFiltersAndSave(Dictionary.getIdPrefix(), dict);
-    }).then(() => {
-        predictionService.init();
-        return Promise.resolve();
-    });
 }
 
 function applyFiltersAndSave(idPrefix, data) {
