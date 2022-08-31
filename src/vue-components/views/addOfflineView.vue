@@ -78,7 +78,7 @@
                     return;
                 }
                 loginService.registerOffline(thiz.user, thiz.user).then(() => {
-                    Router.toMain();
+                    Router.toManageGrids();
                 });
             },
             validateUsername() {

@@ -40,42 +40,42 @@
                 </div>
             </div>
 
-            <h1>{{ $t('gridList') }}</h1>
-            <div class="srow" v-show="graphList.length > 0" style="margin-bottom: 1em">
-                <label for="selectMode" class="three columns">{{ $t('gridsToShow') }}</label>
-                <select id="selectMode" class="four columns" v-model="selectValue" @change="reinitContextMenu">
-                    <option :value="SELECT_VALUES.ALL_GRIDS">{{ $t('allGrids') }}</option>
-                    <option :value="SELECT_VALUES.CONNECTED_GRIDS" v-if="selectedGraphElement">{{connectedGridsOptionLabel}}</option>
-                    <option :value="SELECT_VALUES.NOT_REACHABLE_GRIDS" >{{ $t('notReachableGrids') }}</option>
-                </select>
-            </div>
-            <div class="srow" v-show="graphList.length > 0" style="margin-bottom: 1.5em">
-                <label for="selectOrder" class="three columns">{{ $t('sortGridsBy') }}</label>
-                <select id="selectOrder" class="four columns" v-model="orderValue" @change="orderChanged">
-                    <option :value="ORDER_VALUES.ALPHABET">{{ $t('labelAlphabetically') }}</option>
-                    <option :value="ORDER_VALUES.CONNECTION_COUNT" v-if="selectedGraphElement">{{ $t('numberOfConnections') }}</option>
-                </select>
-                <span class="three columns">{{graphElemsToShow.length}} <span>{{ $t('elements') }}</span></span>
-            </div>
-            <div class="srow">
-                <ul>
-                    <li v-for="elem in graphElemsToShow" style="display: inline-block; margin-right: 2em; margin-bottom: 1.5em; position: relative">
-                        <a href="javascript:;" @click="setSelectedGraphElement(elem)" style="text-decoration: none;">
-                            <div style="width: 100%; border: 1px solid lightgray">
-                                <div>{{elem.grid.label | extractTranslation}}</div>
-                                <img :src="elem.grid.thumbnail ? elem.grid.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; max-width: 100%;"/>
-                            </div>
-                        </a>
-                        <button class="gridOptions" :data-grid-id="elem.grid.id" :title="$t('more')" style="position: absolute; bottom: 3px; right: 0; padding: 0 20px; margin: 0"><i class="fas fa-ellipsis-v"></i></button>
-                    </li>
-                    <li v-show="graphElemsToShow.length === 0"><span>{{ $t('noGrids') }}</span></li>
-                </ul>
-            </div>
-            <div class="srow" v-if="grids && grids.length > 0">
-                <button @click="updateAllThumbnails"><span class="fas fa-images"></span> {{ $t('updateAllGridThumbnails') }}</button>
-            </div>
+            <div v-if="grids && grids.length > 0">
+                <h1>{{ $t('gridList') }}</h1>
+                <div class="srow" v-show="graphList.length > 0" style="margin-bottom: 1em">
+                    <label for="selectMode" class="three columns">{{ $t('gridsToShow') }}</label>
+                    <select id="selectMode" class="four columns" v-model="selectValue" @change="reinitContextMenu">
+                        <option :value="SELECT_VALUES.ALL_GRIDS">{{ $t('allGrids') }}</option>
+                        <option :value="SELECT_VALUES.CONNECTED_GRIDS" v-if="selectedGraphElement">{{connectedGridsOptionLabel}}</option>
+                        <option :value="SELECT_VALUES.NOT_REACHABLE_GRIDS" >{{ $t('notReachableGrids') }}</option>
+                    </select>
+                </div>
+                <div class="srow" v-show="graphList.length > 0" style="margin-bottom: 1.5em">
+                    <label for="selectOrder" class="three columns">{{ $t('sortGridsBy') }}</label>
+                    <select id="selectOrder" class="four columns" v-model="orderValue" @change="orderChanged">
+                        <option :value="ORDER_VALUES.ALPHABET">{{ $t('labelAlphabetically') }}</option>
+                        <option :value="ORDER_VALUES.CONNECTION_COUNT" v-if="selectedGraphElement">{{ $t('numberOfConnections') }}</option>
+                    </select>
+                    <span class="three columns">{{graphElemsToShow.length}} <span>{{ $t('elements') }}</span></span>
+                </div>
+                <div class="srow">
+                    <ul>
+                        <li v-for="elem in graphElemsToShow" style="display: inline-block; margin-right: 2em; margin-bottom: 1.5em; position: relative">
+                            <a href="javascript:;" @click="setSelectedGraphElement(elem)" style="text-decoration: none;">
+                                <div style="width: 100%; border: 1px solid lightgray">
+                                    <div>{{elem.grid.label | extractTranslation}}</div>
+                                    <img :src="elem.grid.thumbnail ? elem.grid.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; max-width: 100%;"/>
+                                </div>
+                            </a>
+                            <button class="gridOptions" :data-grid-id="elem.grid.id" :title="$t('more')" style="position: absolute; bottom: 3px; right: 0; padding: 0 20px; margin: 0"><i class="fas fa-ellipsis-v"></i></button>
+                        </li>
+                        <li v-show="graphElemsToShow.length === 0"><span>{{ $t('noGrids') }}</span></li>
+                    </ul>
+                </div>
+                <div class="srow" v-if="grids && grids.length > 0">
+                    <button @click="updateAllThumbnails"><span class="fas fa-images"></span> {{ $t('updateAllGridThumbnails') }}</button>
+                </div>
 
-            <div v-if="graphList.length > 0">
                 <h1>{{ $t('globalGrid') }}</h1>
                 <p>{{ $t('aGlobalGridIsShownWithinEachOtherGridAndCan') }}</p>
                 <div class="srow" style="margin-bottom: 1em">
@@ -95,6 +95,7 @@
                 </div>
             </div>
 
+            <no-grids-page v-if="!grids || grids.length == 0" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true"></no-grids-page>
             <div class="srow" style="margin-bottom: 10em"></div>
             <grid-link-modal v-if="linkModal.show" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @close="linkModal.show = false" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
             <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.show = false; pdfModal.printGridId = null;"></export-pdf-modal>
@@ -124,6 +125,7 @@
     import {util} from "../../js/util/util.js";
     import ExportModal from "../modals/exportModal.vue";
     import ImportModal from "../modals/importModal.vue";
+    import NoGridsPage from "../components/noGridsPage.vue";
 
     let ORDER_MODE_KEY = "AG_ALLGRIDS_ORDER_MODE_KEY";
     let SELECTOR_CONTEXTMENU = '#moreButton';
@@ -139,7 +141,8 @@
 
     let vueApp = null;
     let vueConfig = {
-        components: {ImportModal, ExportModal, ExportPdfModal, GridLinkModal, Accordion, HeaderIcon},
+        components: {
+            NoGridsPage, ImportModal, ExportModal, ExportPdfModal, GridLinkModal, Accordion, HeaderIcon},
         data() {
             return {
                 metadata: null,
@@ -175,6 +178,9 @@
             };
         },
         methods: {
+            importBackup() {
+                document.getElementById('inputFileBackup').click();
+            },
             setSelectedGraphElement(element, dontScroll) {
                 if (!element) return;
                 this.selectedGraphElement = element;
@@ -270,7 +276,7 @@
                 if (!name) {
                     return;
                 }
-                if (!confirm(i18nService.t('CONFIRM_IMPORT_BACKUP', name))) {
+                if (this.grids.length > 0 && !confirm(i18nService.t('CONFIRM_IMPORT_BACKUP', name))) {
                     this.resetFileInput(event);
                     return;
                 }
@@ -288,6 +294,22 @@
                     thiz.metadata = JSON.parse(JSON.stringify(metadata));
                     return dataService.getGrids();
                 }).then(grids => {
+
+                    /*
+                    //test script for examining elements with image data (not links) and finding grids that refer to another one
+                    for(let grid of grids) {
+                        for (let elem of grid.gridElements) {
+                            if(elem.image && elem.image.data) {
+                                log.warn(JSON.stringify(grid.label) + " --> " + JSON.stringify(elem.label))
+                            }
+                            for(let action in elem.actions) {
+                                if(action.toGridId === "grid-data-1661934788261-462") {
+                                    log.warn("!!!!!!!!!!" + JSON.stringify(grid.label) + " --> " + JSON.stringify(elem.label))
+                                }
+                            }
+                        }
+                    }*/
+
                     thiz.selectedGraphElement = null;
                     thiz.grids = JSON.parse(JSON.stringify(grids)); //hack because otherwise vueJS databinding sometimes does not work;
                     thiz.showLoading = false;
@@ -301,24 +323,6 @@
             onPullUpdate() {
                 let id = this.selectedGraphElement ? this.selectedGraphElement.grid.id : null;
                 this.reload(id);
-            },
-            reset() {
-                if (confirm(i18nService.t('CONFIRM_RESET_DB'))) {
-                    this.showLoading = true;
-                    MainVue.showProgressBar(0, {
-                        header: i18nService.t('resetToDefaultGridset'),
-                        text: i18nService.t('deletingGrids')
-                    });
-                    dataService.deleteAllGrids().then(() => {
-                        MainVue.showProgressBar(50, {
-                            text: i18nService.t('importingData')
-                        });
-                        return dataService.importDefaultGridset();
-                    }).then(() => {
-                        MainVue.showProgressBar(100);
-                        this.reload();
-                    });
-                }
             },
             deleteAll() {
                 if (confirm(i18nService.t('doYouReallyWantDeleteAllGrids'))) {
@@ -569,22 +573,25 @@
         var CONTEXT_IMPORT_BACKUP = "CONTEXT_IMPORT_BACKUP";
         var CONTEXT_EXPORT_PDF_MODAL = "CONTEXT_EXPORT_PDF_MODAL";
         var CONTEXT_RESET = "CONTEXT_RESET";
-        var CONTEXT_DELETE_ALL = "CONTEXT_DELETE_ALL";
 
+        let noGrids = (() => vueApp.grids.length === 0);
         var itemsMoreMenu = {
             CONTEXT_NEW: {name: i18nService.t('newGrid'), icon: "fas fa-plus"},
             SEP1: "---------",
             CONTEXT_EXPORT: {
                 name: i18nService.t('exportBackupToFile'),
-                icon: "fas fa-download"
+                icon: "fas fa-download",
+                disabled: noGrids
             },
             CONTEXT_EXPORT_CUSTOM: {
                 name: i18nService.t('saveCustomDataToFile'),
-                icon: "fas fa-file-export"
+                icon: "fas fa-file-export",
+                disabled: noGrids
             },
             CONTEXT_EXPORT_PDF_MODAL: {
                 name: i18nService.t('saveGridsToPdfGrids'),
-                icon: "far fa-file-pdf"
+                icon: "far fa-file-pdf",
+                disabled: noGrids
             },
             SEP2: "---------",
             CONTEXT_IMPORT_BACKUP: {
@@ -596,8 +603,7 @@
                 icon: "fas fa-file-import"
             },
             SEP3: "---------",
-            CONTEXT_DELETE_ALL: {name: i18nService.t('deleteAllGrids'), icon: "fas fa-trash-alt", disabled: () => vueApp.grids.length === 0},
-            CONTEXT_RESET: {name: i18nService.t('resetToDefaultConfig'), icon: "fas fa-minus-circle"},
+            CONTEXT_RESET: {name: i18nService.t('resetToDefaultConfig'), icon: "fas fa-minus-circle", disabled: noGrids},
         };
 
         $.contextMenu({
@@ -621,7 +627,7 @@
                     break;
                 }
                 case CONTEXT_IMPORT_BACKUP: {
-                    document.getElementById('inputFileBackup').click();
+                    vueApp.importBackup();
                     break;
                 }
                 case CONTEXT_EXPORT_PDF_MODAL: {
@@ -636,12 +642,8 @@
                     vueApp.exportCustom();
                     break;
                 }
-                case CONTEXT_DELETE_ALL: {
-                    vueApp.deleteAll();
-                    break;
-                }
                 case CONTEXT_RESET: {
-                    vueApp.reset();
+                    vueApp.deleteAll();
                     break;
                 }
             }

@@ -159,28 +159,6 @@ dataService.deleteAllDictionaries = async function () {
 };
 
 /**
- * imports default gridset
- */
-dataService.importDefaultGridset = function() {
-    return Promise.resolve().then(() => {
-        return $.get(_defaultGridSetPath);
-    }).then(importData => {
-        if (!importData) {
-            return Promise.resolve();
-        }
-        log.info('importing default grid set ' + _defaultGridSetPath);
-        try {
-            importData = JSON.parse(importData);
-        } catch (e) {}
-        return dataService.importData(importData, {
-            generateGlobalGrid: false,
-            importDictionaries: true,
-            importUserSettings: true
-        });
-    });
-};
-
-/**
  * Gets a single element of a grid.
  * @see{GridElement}
  *
@@ -385,12 +363,16 @@ dataService.downloadToFile = async function (gridIds, options) {
     if (options.exportDictionaries) {
         exportData.dictionaries = await dataService.getDictionaries();
     }
+
+    let currentMetadata = await dataService.getMetadata();
     if (options.exportUserSettings) {
-        exportData.metadata = await dataService.getMetadata();
+        exportData.metadata = currentMetadata;
     } else if (exportData.grids.map(grid => grid.id).includes(globalGridId)) {
         exportData.metadata = {};
         exportData.metadata.globalGridId = globalGridId;
+        exportData.metadata.lastOpenedGridId = currentMetadata.lastOpenedGridId;
     }
+
     let blob = new Blob([JSON.stringify(exportData)], {type: "text/plain;charset=utf-8"});
     let filename = exportData.grids.length > 1 ? "asterics-grid-backup.grd" : i18nService.getTranslation(exportData.grids[0].label) + ".grd"
     FileSaver.saveAs(blob, filename);
@@ -449,19 +431,29 @@ dataService.importBackup = async function (file, progressFn) {
         progressFn(100); // TODO error message?!
         return;
     }
-    progressFn(20, i18nService.t('deletingGrids'));
+    return dataService.importBackupData(importData, {
+        progressFn: progressFn,
+        generateGlobalGrid: fileUtil.isObzFile(file)
+    })
+};
+
+dataService.importBackupData = async function (importData, options) {
+    options = options || {};
+    options.progressFn = options.progressFn || (() => {
+    });
+    options.progressFn(20, i18nService.t('deletingGrids'));
     await dataService.deleteAllGrids();
     await dataService.deleteAllDictionaries();
-    progressFn(30, i18nService.t('encryptingAndSavingGrids'));
+    options.progressFn(30, i18nService.t('encryptingAndSavingGrids'));
     await dataService.importData(importData, {
-        generateGlobalGrid: fileUtil.isObzFile(file),
+        generateGlobalGrid: options.generateGlobalGrid,
         importDictionaries: true,
         importUserSettings: true,
         progressFn: p => {
-            progressFn(30 + (p / 100 * 70))
+            options.progressFn(30 + (p / 100 * 70))
         }
     });
-    progressFn(100);
+    options.progressFn(100);
 };
 
 /**
@@ -515,14 +507,17 @@ dataService.importData = async function (data, options) {
         importData.grids.unshift(globalGrid);
         importData.metadata.globalGridId = globalGrid.id;
     }
-    importData.metadata.globalGridActive = !!importData.metadata.globalGridId;
+
     if (options.importUserSettings) {
         importData.metadata = Object.assign(await dataService.getMetadata(), importData.metadata);
-    } else if (importData.metadata.globalGridId) {
+    } else if (importData.metadata.globalGridId || importData.metadata.lastOpenedGridId) {
         let existingMetadata = await dataService.getMetadata();
         existingMetadata.globalGridId = importData.metadata.globalGridId;
+        existingMetadata.lastOpenedGridId = importData.metadata.lastOpenedGridId;
         importData.metadata = existingMetadata;
     }
+    importData.metadata.globalGridActive = !!importData.metadata.globalGridId;
+
     await dataService.saveGrids(importData.grids);
     options.progressFn(70);
     await dataService.saveMetadata(importData.metadata, true);

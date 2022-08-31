@@ -171,8 +171,6 @@ loginService.register = function (user, plainPassword, saveUser) {
     }).then(() => {
         log.info('registration successful!');
         return databaseService.registerForUser(_loggedInUser, password, loginService.getLoggedInUserDatabase(), !saveUser);
-    }).then(() => {
-        return dataService.importDefaultGridset();
     }).catch(reason => {
         log.info('registration failed!');
         log.info(reason);
@@ -190,9 +188,7 @@ loginService.registerOffline = function(username, hashedUserPassword) {
     loginService.logout();
     localStorageService.saveLocalUser(username);
     localStorageService.setAutologinUser(username);
-    return databaseService.registerForUser(username, hashedUserPassword).then(() => {
-        return dataService.importDefaultGridset();
-    });
+    return databaseService.registerForUser(username, hashedUserPassword);
 };
 
 /**

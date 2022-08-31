@@ -14,7 +14,7 @@
   },
   {
     "name": "Comunicador Global-Core ARASAAC",
-    "filename": "Comunicador_Global-Core_ARASAAC_ES_v3.grd.json",
+    "filename": "Comunicador_Global-Core_ARASAAC_ES.grd.json",
     "author": "ARASAAC",
     "website": "https://arasaac.org/",
     "languages": ["es"],
@@ -26,7 +26,7 @@
   },
   {
     "name": "Global-Core Communicator ARASAAC",
-    "filename": "Global-Core_Communicator_ARASAAC_EN_v9.grd.json",
+    "filename": "Global-Core_Communicator_ARASAAC_EN.grd.json",
     "author": "ARASAAC",
     "website": "https://arasaac.org/",
     "languages": ["en"],
@@ -38,7 +38,7 @@
   },
   {
     "name": "Comunicador Global-Core ARASAAC",
-    "filename": "Globaler_Kommunikator-Core_ARASAAC_DE_v7.grd.json",
+    "filename": "Globaler_Kommunikator-Core_ARASAAC_DE.grd.json",
     "author": "ARASAAC",
     "website": "https://arasaac.org/",
     "languages": ["de"],

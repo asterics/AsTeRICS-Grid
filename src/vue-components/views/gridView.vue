@@ -30,12 +30,12 @@
             <div style="margin-top: 2em">
                 <i18n path="noElementsClickToEnterEdit" tag="span">
                     <template v-slot:link>
-                        <a :href="'#grid/edit/' + gridId">Edit grid</a>
+                        <a :href="'#grid/edit/' + gridId">{{ $t('editingOn') }}</a>
                     </template>
                 </i18n>
             </div>
         </div>
-        <div class="srow content">
+        <div class="srow content" v-show="gridData.gridElements && gridData.gridElements.length > 0">
             <div v-if="!viewInitialized" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
             </div>

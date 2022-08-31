@@ -85,7 +85,7 @@
             useDefaultUser() {
                 this.loading = true;
                 loginService.registerOffline(constants.LOCAL_NOLOGIN_USERNAME, constants.LOCAL_NOLOGIN_USERNAME).then(() => {
-                    Router.toMain();
+                    Router.toManageGrids();
                 });
             },
             openHelp() {
