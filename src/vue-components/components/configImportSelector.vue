@@ -58,7 +58,7 @@
         },
         mounted() {
             let thiz = this;
-            $.get('app/gridsets/_gridset_metadata.json').then(result => {
+            $.get('app/gridsets/gridset_metadata.json').then(result => {
                 let currentLang = i18nService.getContentLang();
                 result.sort((a, b) => {
                     if (a.standardFor && a.standardFor.includes(currentLang)) return -1;
