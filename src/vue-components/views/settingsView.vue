@@ -58,12 +58,12 @@
                     <h3 class="mt-2">{{ $t('gridContentLanguage') }}</h3>
                     <div class="srow">
                         <label class="three columns" for="contentLang">{{ $t('selectLanguage') }}</label>
-                        <select class="five columns mb-2" id="contentLang" v-model="metadata.localeConfig.contentLang" @change="saveMetadata()">
-                            <option value="">{{ $t('automatic') }}</option>
+                        <select class="five columns mb-2" id="contentLang" v-model="metadata.localeConfig.contentLang" @change="saveContentLang()">
+                            <option :value="undefined">{{ $t('automatic') }}</option>
                             <option v-for="lang in selectLanguages" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
                         </select>
                         <div class="four columns">
-                            <input id="selectAllLanguages" type="checkbox" v-model="selectAllLanguages"/>
+                            <input id="selectAllLanguages" type="checkbox" v-model="selectAllLanguages" @change="showAllLangsChanged()"/>
                             <label for="selectAllLanguages">{{ $t('showAllLanguages') }}</label>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
                             <option v-for="voice in selectVoices" :value="voice.name">{{voice.name}}</option>
                         </select>
                         <div class="four columns">
-                            <input id="selectAllVoices" type="checkbox" v-model="selectAllVoices"/>
+                            <input id="selectAllVoices" type="checkbox" v-model="selectAllVoices" @change="showAllVoicesChanged()"/>
                             <label for="selectAllVoices">{{ $t('showAllVoices') }}</label>
                         </div>
                     </div>
@@ -166,6 +166,9 @@
     import {MetaData} from "../../js/model/MetaData.js";
     import {TextConfig} from "../../js/model/TextConfig.js";
 
+    let KEY_SETTINGS_SHOW_ALL_VOICES = "KEY_SETTINGS_SHOW_ALL_VOICES";
+    let KEY_SETTINGS_SHOW_ALL_CONTENTLANGS = "KEY_SETTINGS_SHOW_ALL_CONTENTLANGS";
+
     export default {
         components: {HeaderIcon},
         props: [],
@@ -173,8 +176,8 @@
             return {
                 metadata: null,
                 show: false,
-                selectAllLanguages: false,
-                selectAllVoices: false,
+                selectAllLanguages: localStorageService.get(KEY_SETTINGS_SHOW_ALL_CONTENTLANGS, this.selectAllVoices) || false,
+                selectAllVoices: localStorageService.get(KEY_SETTINGS_SHOW_ALL_VOICES, this.selectAllVoices) || false,
                 appLang: '',
                 gridLanguages: [],
                 appLanguages: i18nService.getAppLanguages(),
@@ -185,6 +188,7 @@
                 syncNavigation: localStorageService.shouldSyncNavigation(),
                 unlockPasscode: localStorageService.getUnlockPasscode(),
                 voices: speechService.getVoices(),
+                selectVoices: [],
                 testText: i18nService.t('thisIsAnEnglishSentence'),
                 i18nService: i18nService,
                 localStorageService: localStorageService,
@@ -202,31 +206,49 @@
                     return this.allLanguages;
                 }
                 return this.allLanguages.filter(langObject => this.gridLanguages.includes(langObject.code));
+            }
+        },
+        methods: {
+            async saveAppLang() {
+                await i18nService.setAppLanguage(this.appLang);
+                this.allLanguages = i18nService.getAllLanguages();
+                this.selectVoices = this.getSelectVoices();
+                this.fixCurrentVoice();
             },
-            selectVoices() {
-                this.metadata.localeConfig.contentLang; // in order to recompute on change
-                this.appLang; // in order to recompute on change
+            async saveContentLang() {
+                await i18nService.setContentLanguage(this.metadata.localeConfig.contentLang, true);
+                this.selectVoices = this.getSelectVoices();
+                this.fixCurrentVoice(true);
+                this.saveMetadata();
+            },
+            fixCurrentVoice(dontSave) {
+                if (!this.selectVoices.map(v => v.name).includes(this.metadata.localeConfig.preferredVoice)) {
+                    this.metadata.localeConfig.preferredVoice = undefined;
+                    if (!dontSave) {
+                        this.saveMetadata();
+                    }
+                }
+            },
+            showAllVoicesChanged() {
+                this.selectVoices = this.getSelectVoices();
+                this.fixCurrentVoice();
+                localStorageService.save(KEY_SETTINGS_SHOW_ALL_VOICES, this.selectAllVoices);
+            },
+            showAllLangsChanged() {
+                localStorageService.save(KEY_SETTINGS_SHOW_ALL_CONTENTLANGS, this.selectAllLanguages);
+            },
+            async savePreferredVoice() {
+                speechService.setPreferredVoiceName(this.metadata.localeConfig.preferredVoice);
+                this.saveMetadata();
+            },
+            getSelectVoices() {
                 if (!this.voices) {
                     return []
                 }
                 if (this.selectAllVoices) {
                     return this.voices;
                 }
-                let newVoices = this.voices.filter(v => v.lang === i18nService.getContentLang());
-                if (!(newVoices.map(v => v.name).includes(this.metadata.localeConfig.preferredVoice))) {
-                    this.metadata.localeConfig.preferredVoice = undefined;
-                    setTimeout(this.saveMetadata, 200);
-                }
-                this.setVoiceTestText();
                 return this.voices.filter(v => v.lang === i18nService.getContentLang());
-            }
-        },
-        methods: {
-            async saveAppLang() {
-                this.saveSuccess = undefined;
-                await i18nService.setAppLanguage(this.appLang);
-                this.allLanguages = i18nService.getAllLanguages();
-                this.saveSuccess = true;
             },
             saveSyncNavigation() {
                 this.saveSuccess = undefined;
@@ -255,8 +277,6 @@
                 let thiz = this;
                 this.saveSuccess = undefined;
                 util.throttle(() => {
-                    i18nService.setContentLanguage(thiz.metadata.localeConfig.contentLang, true);
-                    speechService.setPreferredVoiceName(thiz.metadata.localeConfig.preferredVoice);
                     dataService.saveMetadata(thiz.metadata).then(() => {
                         this.saveSuccess = true;
                     });
@@ -270,13 +290,13 @@
             let thiz = this;
             dataService.getMetadata().then(metadata => {
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
-                thiz.metadata.localeConfig.contentLang = thiz.metadata.localeConfig.contentLang !== undefined ? thiz.metadata.localeConfig.contentLang : i18nService.getAppLang();
+                thiz.metadata.localeConfig.contentLang = thiz.metadata.localeConfig.contentLang || undefined;
                 thiz.setVoiceTestText();
                 thiz.show = true;
             });
             dataService.getGrids(false, true).then(grids => {
                 let languages = grids.reduce((total, grid) => {
-                    total = total.concat(Object.keys(grid.label));
+                    //total = total.concat(Object.keys(grid.label));
                     return total.concat(grid.gridElements.reduce((t2, gridElem) => {
                         return t2.concat(Object.keys(gridElem.label));
                     }, []));
@@ -284,6 +304,7 @@
                 thiz.gridLanguages = [...new Set(languages)];
             });
             thiz.appLang = i18nService.getCustomAppLang();
+            thiz.selectVoices = thiz.getSelectVoices();
         }
     }
 </script>
