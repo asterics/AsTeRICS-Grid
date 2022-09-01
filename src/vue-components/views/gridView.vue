@@ -37,7 +37,7 @@
         </div>
         <div class="srow content" v-show="gridData.gridElements && gridData.gridElements.length > 0">
             <div v-if="!viewInitialized" class="grid-container grid-mask">
-                <i class="fas fa-4x fa-spinner fa-spin"/>
+                <i class="fas fa-4x fa-spinner fa-spin" style="position: relative"/>
             </div>
             <div id="grid-container" class="grid-container" :style="`background-color: ${backgroundColor}`">
             </div>

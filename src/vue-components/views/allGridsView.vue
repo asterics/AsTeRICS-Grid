@@ -10,7 +10,7 @@
         </header>
         <div class="srow content text-content" v-if="showLoading || grids === null">
             <div class="grid-container grid-mask">
-                <i class="fas fa-4x fa-spinner fa-spin" style="position: relative; margin-top: 30vh; top: 0"/>
+                <i class="fas fa-4x fa-spinner fa-spin" style="position: relative;"/>
             </div>
         </div>
         <div class="srow content text-content" v-if="grids && grids.length > 0">
