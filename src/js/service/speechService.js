@@ -52,6 +52,9 @@ speechService.speak = function (textOrOject, lang, preferredVoiceProp, dontStop)
     let voices = getVoicesByName(preferredVoiceProp) || getVoicesByName(_preferredVoiceName) || getVoicesByLang(lang);
     let nativeVoices = voices.filter(voice => voice.type === speechService.VOICE_TYPE_NATIVE);
     let responsiveVoices = voices.filter(voice => voice.type === speechService.VOICE_TYPE_RESPONSIVEVOICE);
+    // tried to fix alternating auto voices, but issue seems to be Google API since "Google UK English Female" returns both female and male voice
+    //nativeVoices.sort((a, b) => a.name.localeCompare(b.name));
+    //responsiveVoices.sort((a, b) => a.name.localeCompare(b.name));
     if (speechService.nativeSpeechSupported() && nativeVoices.length > 0) {
         var msg = new SpeechSynthesisUtterance(text);
         msg.voice = nativeVoices[0].ref;
