@@ -341,5 +341,6 @@ $(window).on(constants.EVENT_GRID_RESIZE, function () {
 });
 
 $(document).on(constants.EVENT_USER_CHANGED, clearAll);
+$(document).on(constants.EVENT_CONFIG_RESET, clearAll);
 
 export {collectElementService};

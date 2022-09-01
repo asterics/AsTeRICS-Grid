@@ -17,6 +17,7 @@ import {gridUtil} from "../../util/gridUtil";
 import {urlParamService} from "../urlParamService";
 import {filterService} from "./filterService";
 import {serviceWorkerService} from "../serviceWorkerService.js";
+import {constants} from "../../util/constants.js";
 
 let dataService = {};
 
@@ -138,6 +139,7 @@ dataService.deleteGrid = function (gridId) {
  * @return {Promise}
  */
 dataService.deleteAllGrids = function () {
+    $(document).trigger(constants.EVENT_CONFIG_RESET);
     return dataService.getGrids().then(grids => {
         if (!grids || grids.length === 0) {
             return Promise.resolve();
