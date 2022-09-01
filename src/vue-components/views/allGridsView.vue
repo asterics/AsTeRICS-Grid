@@ -13,7 +13,7 @@
                 <i class="fas fa-4x fa-spinner fa-spin" style="position: relative;"/>
             </div>
         </div>
-        <div class="srow content text-content" v-if="grids && grids.length > 0">
+        <div class="srow content text-content" v-if="grids && grids.length > 0  && !showLoading">
             <div v-if="selectedGraphElement">
                 <h1>{{headerDetails}}</h1>
                 <div class="srow">
@@ -97,7 +97,7 @@
             </div>
         </div>
 
-        <no-grids-page v-if="grids && grids.length === 0" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true"></no-grids-page>
+        <no-grids-page v-if="grids && grids.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true"></no-grids-page>
         <div class="srow" style="margin-bottom: 10em"></div>
         <grid-link-modal v-if="linkModal.show" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @close="linkModal.show = false" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
         <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.show = false; pdfModal.printGridId = null;"></export-pdf-modal>
