@@ -804,11 +804,12 @@
   "showAllLanguages": "Hizkuntza guztiak erakutsi",
   "showAllVoices": "Ikus eskuragarri dauden ahots guztiak",
   "multilingual": "hizkuntz-anitza",
-  "importConfiguration": "Konfigurazioa inportatu",
-  "currentlyNoGridsAreSetUpChooseAConfiguration": "Momentu honetan ez dago konfiguratutako taularik, aukeratu konfigurazio bat ondoren eskaintzen direnetatik inportatzeko.",
-  "alternativelyYouCan": "Txandaka egin dezakezu",
+  "importPredefinedConfiguration": "Import predefined configuration",
   "addAnEmptyGridAndStartFromScratch": "Taula huts bat sortu eta zerotik hasi",
   "selectConfiguration": "Konfigurazioa aukeratu",
   "languages": "Hizkuntzak",
-  "description": "Deskribapena"
+  "description": "Deskribapena",
+  "importBackup": "Import backup",
+  "newCommunicator": "New communicator",
+  "author": "Author"
 }
