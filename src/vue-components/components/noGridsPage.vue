@@ -117,6 +117,23 @@
                         }
                         await i18nService.setContentLanguage(newLang);
                     }
+
+                    //code for checking and correcting imported data
+                    /*result.grids.forEach(grid => {
+                        grid.gridElements.forEach(element => {
+                            element.actions.forEach(action => {
+                                if (action.modelName === "GridActionSpeak" || action.modelName === "GridActionSpeakCustom") {
+                                    if (action.speakLanguage) {
+                                        //log.warn(JSON.stringify(grid.label) + " --> " + JSON.stringify(element.label));
+                                        action.speakLanguage = undefined;
+                                    }
+                                    if (action.speakText) {
+                                        log.warn(JSON.stringify(grid.label) + " --> " + JSON.stringify(element.label) + " --> " + JSON.stringify(action.speakText));
+                                    }
+                                }
+                            })
+                        })
+                    });*/
                     dataService.importData(result, {}).then(() => {
                         thiz.loading = false;
                         Router.toMain();
