@@ -811,5 +811,9 @@
   "description": "Deskribapena",
   "importBackup": "Import backup",
   "newCommunicator": "New communicator",
-  "author": "Author"
+  "author": "Author",
+  "hello": "Hello",
+  "supportAstericsFoundationOnBetterplace": "Support AsTeRICS Foundation on betterplace.org",
+  "ifYouWantToSupportTheDevelopmentOfAstericsGrid": "If you want to support the development of AsTeRICS Grid or contribute to the costs for running the server/database for syncronization you''re very welcome to donate to the AsTeRICS Foundation",
+  "supportUs": "Support us"
 }
