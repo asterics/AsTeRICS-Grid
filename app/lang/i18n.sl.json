@@ -804,11 +804,12 @@
   "showAllLanguages": "Prikaži vse jezike",
   "showAllVoices": "Prikaži vse glasove",
   "multilingual": "večjezičen",
-  "importConfiguration": "Uvozi konfiguracijo",
-  "currentlyNoGridsAreSetUpChooseAConfiguration": "Trenutno ni postavljenih strani, izberi konfigurator za uvoz spodaj.",
-  "alternativelyYouCan": "Alternativno lahko",
+  "importPredefinedConfiguration": "Import predefined configuration",
   "addAnEmptyGridAndStartFromScratch": "Dodaj prazno stran in začni od začetka",
   "selectConfiguration": "Izberi konfiguracijo",
   "languages": "Jeziki",
-  "description": "Opis"
+  "description": "Opis",
+  "importBackup": "Import backup",
+  "newCommunicator": "New communicator",
+  "author": "Author"
 }
