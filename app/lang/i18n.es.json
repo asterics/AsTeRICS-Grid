@@ -804,11 +804,16 @@
   "showAllLanguages": "Mostrar todos los idiomas",
   "showAllVoices": "Ver todas las voces disponibles",
   "multilingual": "multiidioma",
-  "importConfiguration": "Importar configuración",
-  "currentlyNoGridsAreSetUpChooseAConfiguration": "Actualmente no hay tableros configurados, elige una configuración para importar de las que se ofrecen a continuación.",
-  "alternativelyYouCan": "Alternativamente puedes",
+  "importPredefinedConfiguration": "Import predefined configuration",
   "addAnEmptyGridAndStartFromScratch": "Crear un tablero vacío y empezar desde cero",
   "selectConfiguration": "Seleccionar configuración",
   "languages": "Idiomas",
-  "description": "Descripción"
+  "description": "Descripción",
+  "importBackup": "Import backup",
+  "newCommunicator": "New communicator",
+  "author": "Author",
+  "hello": "Hello",
+  "supportAstericsFoundationOnBetterplace": "Support AsTeRICS Foundation on betterplace.org",
+  "ifYouWantToSupportTheDevelopmentOfAstericsGrid": "If you want to support the development of AsTeRICS Grid or contribute to the costs for running the server/database for syncronization you''re very welcome to donate to the AsTeRICS Foundation",
+  "supportUs": "Support us"
 }

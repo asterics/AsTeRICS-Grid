@@ -804,11 +804,16 @@
   "showAllLanguages": "Hizkuntza guztiak erakutsi",
   "showAllVoices": "Ikus eskuragarri dauden ahots guztiak",
   "multilingual": "hizkuntz-anitza",
-  "importConfiguration": "Konfigurazioa inportatu",
-  "currentlyNoGridsAreSetUpChooseAConfiguration": "Momentu honetan ez dago konfiguratutako taularik, aukeratu konfigurazio bat ondoren eskaintzen direnetatik inportatzeko.",
-  "alternativelyYouCan": "Txandaka egin dezakezu",
+  "importPredefinedConfiguration": "Import predefined configuration",
   "addAnEmptyGridAndStartFromScratch": "Taula huts bat sortu eta zerotik hasi",
   "selectConfiguration": "Konfigurazioa aukeratu",
   "languages": "Hizkuntzak",
-  "description": "Deskribapena"
+  "description": "Deskribapena",
+  "importBackup": "Import backup",
+  "newCommunicator": "New communicator",
+  "author": "Author",
+  "hello": "Hello",
+  "supportAstericsFoundationOnBetterplace": "Support AsTeRICS Foundation on betterplace.org",
+  "ifYouWantToSupportTheDevelopmentOfAstericsGrid": "If you want to support the development of AsTeRICS Grid or contribute to the costs for running the server/database for syncronization you''re very welcome to donate to the AsTeRICS Foundation",
+  "supportUs": "Support us"
 }
