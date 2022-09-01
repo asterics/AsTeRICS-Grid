@@ -2,11 +2,11 @@
     <div>
         <div class="srow">
             <h3 class="six columns">{{ $t('selectedRadioStations') }}</h3>
-            <button class="six columns" :disabled="selectedRadioList.length === 0" @click="addAllRadioElements">{{ $t('createGridElementsForWebradios') }}</button>
+            <button class="six columns" :disabled="gridData.webRadios.length === 0" @click="addAllRadioElements">{{ $t('createGridElementsForWebradios') }}</button>
         </div>
         <div class="srow">
             <ul class="webradioList">
-                <li v-for="webradio in selectedRadioList">
+                <li v-for="webradio in gridData.webRadios">
                     <div class="webRadioListItem">
                         <img :src="webradio.faviconUrl"/>
                         <div class="webRadioLabel">{{webradio.radioName}}</div>
@@ -19,7 +19,7 @@
                     </div>
                 </li>
             </ul>
-            <div v-if="selectedRadioList.length === 0">{{ $t('noSelectedRadioStationsUseSearchBar') }}</div>
+            <div v-if="gridData.webRadios.length === 0">{{ $t('noSelectedRadioStationsUseSearchBar') }}</div>
         </div>
 
         <div class="srow">
@@ -46,7 +46,7 @@
                         <img :src="webradio.faviconUrl"/>
                         <div class="webRadioLabel">{{webradio.radioName}}</div>
                         <div class="webRadioButtons">
-                            <button class="right" @click="selectedRadioList.push(webradio); modelChanged();" :disabled="selectedRadioList.map(el => el.radioId).indexOf(webradio.radioId) > -1"><span class="hide-mobile">{{ $t('select') }}</span> <i class="fas fa-plus"></i></button>
+                            <button class="right" @click="gridData.webRadios.push(webradio);" :disabled="gridData.webRadios.map(el => el.radioId).indexOf(webradio.radioId) > -1"><span class="hide-mobile">{{ $t('select') }}</span> <i class="fas fa-plus"></i></button>
                             <button v-if="webradioPlaying !== webradio" class="right" @click="webradioPlaying = webradio; webradioService.play(webradio)"><span class="hide-mobile">{{ $t('play') }} </span><i class="fas fa-play"></i></button>
                             <button v-if="webradioPlaying === webradio" class="right" @click="webradioPlaying = null; webradioService.stop()"><span class="hide-mobile">{{ $t('stop') }} </span><i class="fas fa-pause"></i></button>
                         </div>
@@ -76,21 +76,10 @@
 
     export default {
         props: {
-            value: Object
-        },
-        watch: {
-            value: {
-                handler: function(newValue) {
-                    this.gridData = JSON.parse(JSON.stringify(newValue));
-                    this.selectedRadioList = this.gridData.webRadios;
-                },
-                deep: true
-            }
+            gridData: Object
         },
         data() {
             return {
-                gridData: null,
-                selectedRadioList: [],
                 webradioSearchResults: [],
                 webradioSearch: null,
                 webradioService: webradioService,
@@ -102,10 +91,6 @@
             }
         },
         methods: {
-            modelChanged() {
-                this.gridData.webRadios = this.selectedRadioList;
-                this.$emit('input', JSON.parse(JSON.stringify(this.gridData)));
-            },
             addAllRadioElements() {
                 if (!confirm(i18nService.t('thisActionAddsXNewElements', this.gridData.webRadios.length))) {
                     return;
@@ -131,9 +116,6 @@
                         return promise;
                     }
                     promiseChain = promiseChain.then(makeNextPromise(radio));
-                });
-                promiseChain.then(() => {
-                    this.modelChanged();
                 });
             },
             searchWebradios(event) {
@@ -168,22 +150,17 @@
                 }, 500);
             },
             moveWebradioUp(radio) {
-                let index = this.selectedRadioList.indexOf(radio);
+                let index = this.gridData.webRadios.indexOf(radio);
                 if (index > 0) {
-                    this.selectedRadioList.splice(index - 1, 0, this.selectedRadioList.splice(index, 1)[0]);
-                    this.modelChanged();
+                    this.gridData.webRadios.splice(index - 1, 0, this.gridData.webRadios.splice(index, 1)[0]);
                 }
             },
             removeRadio(webradio) {
                 webradioService.stop(webradio.radioId);
-                this.selectedRadioList = this.selectedRadioList.filter(radio => radio.radioId !== webradio.radioId);
-                this.modelChanged();
+                this.gridData.webRadios = this.gridData.webRadios.filter(radio => radio.radioId !== webradio.radioId);
             }
         },
         mounted() {
-            let thiz = this;
-            thiz.gridData = JSON.parse(JSON.stringify(thiz.value));
-            thiz.selectedRadioList = thiz.gridData.webRadios;
         }
     }
 </script>
