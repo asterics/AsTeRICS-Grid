@@ -58,10 +58,13 @@
     import {i18nService} from "../../js/service/i18nService.js";
     import $ from "../../js/externals/jquery.js";
     import {serviceWorkerService} from "../../js/service/serviceWorkerService.js";
+    import {gridUtil} from "../../js/util/gridUtil.js";
+    import {GridImage} from "../../js/model/GridImage.js";
+    import {GridElement} from "../../js/model/GridElement.js";
 
     export default {
         components: {},
-        props: ["restoreBackupHandler", "importCustomHandler"],
+        props: ["restoreBackupHandler", "importCustomHandler", "resetGlobalGrid"],
         data() {
             return {
                 defaultGridsets: [],
@@ -70,18 +73,34 @@
             }
         },
         methods: {
-            addEmptyGrid() {
+            async addEmptyGrid() {
                 let label = {};
+                let elemLabel = {};
                 label[i18nService.getContentLang()] = "New grid";
+                elemLabel[i18nService.getContentLang()] = i18nService.t('hello');
                 let gridData = new GridData({
                     label: label,
-                    gridElements: [],
+                    gridElements: [new GridElement({
+                        x: 0,
+                        y: 0,
+                        width: 1,
+                        height: 1,
+                        label: elemLabel,
+                        image: new GridImage({
+                            url: "https://api.arasaac.org/api/pictograms/35071?download=false&plural=false&color=true",
+                            author: "ARASAAC - CC (BY-NC-SA)",
+                            authorURL: "https://arasaac.org/terms-of-use",
+                            searchProviderName: "ARASAAC"
+                        })
+                    })],
                     rowCount: 3,
                     minColumnCount: 4
                 });
-                dataService.saveGrid(gridData).then(() => {
-                    Router.toEditGrid(gridData.id);
-                });
+                let elements = gridUtil.getFillElements(gridData);
+                gridData.gridElements = gridData.gridElements.concat(elements);
+                await dataService.saveGrid(gridData);
+                await this.resetGlobalGrid(gridData);
+                Router.toEditGrid(gridData.id);
             },
             importData() {
                 if (!this.selectedGridset) {

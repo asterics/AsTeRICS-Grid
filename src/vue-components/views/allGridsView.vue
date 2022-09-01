@@ -97,7 +97,7 @@
             </div>
         </div>
 
-        <no-grids-page v-if="grids && grids.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true"></no-grids-page>
+        <no-grids-page v-if="grids && grids.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true" :reset-global-grid="(grid) => {this.homeGrid = grid; this.resetGlobalGrid(true, true);}"></no-grids-page>
         <div class="srow" style="margin-bottom: 10em"></div>
         <grid-link-modal v-if="linkModal.show" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @close="linkModal.show = false" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
         <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.show = false; pdfModal.printGridId = null;"></export-pdf-modal>
@@ -340,7 +340,7 @@
                 this.metadata.globalGridActive = active;
                 dataService.saveMetadata(this.metadata);
             },
-            resetGlobalGrid(noConfirm) {
+            resetGlobalGrid(noConfirm, dontReload) {
                 if (!noConfirm) {
                     if (!confirm(i18nService.t('doYouReallyWantResetGlobalGrid'))) {
                         return;
@@ -357,7 +357,9 @@
                 }).then(() => {
                     return dataService.saveMetadata(this.metadata);
                 }).then(() => {
-                    this.reload();
+                    if (!dontReload) {
+                        this.reload();
+                    }
                 });
             },
             resetFileInput(event) {

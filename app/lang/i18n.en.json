@@ -811,5 +811,6 @@
   "description": "Description",
   "importBackup": "Import backup",
   "newCommunicator": "New communicator",
-  "author": "Author"
+  "author": "Author",
+  "hello": "Hello"
 }

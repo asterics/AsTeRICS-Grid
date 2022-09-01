@@ -26,7 +26,7 @@
         <sequential-input-modal v-if="showModal === modalTypes.MODAL_SEQUENTIAL" @close="showModal = null; reinitInputMethods();"/>
         <unlock-modal v-if="showModal === modalTypes.MODAL_UNLOCK" @unlock="unlock(true)" @close="showModal = null;"/>
 
-        <div class="srow content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0 && (!globalGridData || globalGridData.length === 0)">
+        <div class="srow content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0 && (!globalGridData || globalGridData.gridElements.length === 0)">
             <div style="margin-top: 2em">
                 <i18n path="noElementsClickToEnterEdit" tag="span">
                     <template v-slot:link>
@@ -35,7 +35,7 @@
                 </i18n>
             </div>
         </div>
-        <div class="srow content" v-show="gridData.gridElements && gridData.gridElements.length > 0">
+        <div class="srow content" v-show="gridData.gridElements && (gridData.gridElements.length > 0 || (globalGridData && globalGridData.gridElements.length > 0))">
             <div v-if="!viewInitialized" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin" style="position: relative"/>
             </div>
