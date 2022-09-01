@@ -45,6 +45,7 @@ speechService.speak = function (textOrOject, lang, preferredVoiceProp, dontStop)
         text = translation.text !== undefined ? translation.text : translation;
         lang = lang || translation.lang;
     }
+    text = text.toLowerCase();
     if (!dontStop) {
         speechService.stopSpeaking();
     }
