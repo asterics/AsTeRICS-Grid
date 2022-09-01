@@ -804,11 +804,12 @@
   "showAllLanguages": "Show all languages",
   "showAllVoices": "Show all voices",
   "multilingual": "multilingual",
-  "importConfiguration": "Import configuration",
-  "currentlyNoGridsAreSetUpChooseAConfiguration": "Currently no grids are set up, choose a configuration to import below.",
-  "alternativelyYouCan": "Alternatively you can",
+  "importPredefinedConfiguration": "Import predefined configuration",
   "addAnEmptyGridAndStartFromScratch": "Add an empty grid and start from scratch",
   "selectConfiguration": "Select configuration",
   "languages": "Languages",
-  "description": "Description"
+  "description": "Description",
+  "importBackup": "Import backup",
+  "newCommunicator": "New communicator",
+  "author": "Author"
 }
