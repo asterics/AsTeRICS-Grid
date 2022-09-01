@@ -58,7 +58,7 @@
                                 <a href="https://developers.google.com/youtube/v3" target="_blank">{{ $t('youtubeDataApi') }}</a>
                             </template>
                         </i18n>
-                        <i18n path="privacyPolicyInfo" tag="p">
+                        <i18n path="privacyPolicyInfo" tag="span">
                             <template v-slot:privacyPolicy>
                                 <a href="app/privacy_en.html?back=about">{{ $t('privacyPolicy') }}</a>
                             </template>
@@ -67,7 +67,15 @@
                             </template>
                         </i18n>
                     </div>
-
+                </div>
+                <div class="srow">
+                    <h3>{{ $t('supportUs') }}</h3>
+                    <span>{{ $t('ifYouWantToSupportTheDevelopmentOfAstericsGrid') }}</span>:
+                    <div>
+                        <a :title="$t('supportAstericsFoundationOnBetterplace')" target="_blank" href="https://www.betterplace.at/development-of-open-source-assistive-technologies/">
+                            <img class="mt-4" style="border:0px" alt="" src="https://betterplace-assets.betterplace.org/static-images/projects/donation-button-en.png" width="160" height="100">
+                        </a>
+                    </div>
                 </div>
                 <div class="srow">
                     <h3>{{ $t('acknowledgements') }}</h3>
@@ -132,6 +140,7 @@
     }
     h3 {
         margin-bottom: 0.5em;
+        margin-top: 1.5em;
     }
     .srow {
         margin-bottom: 1.5em;
