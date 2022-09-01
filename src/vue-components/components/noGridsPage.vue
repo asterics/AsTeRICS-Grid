@@ -103,16 +103,25 @@
                 Router.toEditGrid(gridData.id);
             },
             importData() {
+                let thiz = this;
                 if (!this.selectedGridset) {
                     return;
                 }
                 this.loading = true;
-                $.get(this.getGridsetUrl()).then(result => {
+                $.get(this.getGridsetUrl()).then(result => handleResult(result));
+                async function handleResult(result) {
+                    if (!thiz.selectedGridset.languages.includes(i18nService.getContentLang())) {
+                        let newLang = 'en';
+                        if (!thiz.selectedGridset.languages.includes('en')) {
+                            newLang = thiz.selectedGridset.languages[0]
+                        }
+                        await i18nService.setContentLanguage(newLang);
+                    }
                     dataService.importData(result, {}).then(() => {
-                        this.loading = false;
+                        thiz.loading = false;
                         Router.toMain();
                     });
-                });
+                }
             },
             getGridsetUrl() {
                 return `app/gridsets/${this.selectedGridset.filename}`;
