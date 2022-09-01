@@ -173,6 +173,19 @@ nav li:hover button span {
     margin-top: 0.5em;
 }
 
+.big-button {
+    background-color: lightblue;
+    padding: 0.6em;
+    border-radius: 10px;
+    font-size: 1.3em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.big-button:hover {
+    background-color: #dae7ff;
+}
+
 .scanFocus {
     outline: 10px solid red !important;
 }

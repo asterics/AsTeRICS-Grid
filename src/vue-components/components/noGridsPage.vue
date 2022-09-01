@@ -1,14 +1,48 @@
 <template>
     <div class="container ms-0">
-        <div class="row ps-3 ps-md-4 col-12 col-md-10">
-            <h1>{{ $t('importConfiguration') }}</h1>
-            <div>{{ $t('currentlyNoGridsAreSetUpChooseAConfiguration') }}</div>
+        <div class="row ps-2 ps-sm-3 ps-md-4 col-12 col-md-10 col-xl-8 mt-0">
+            <h1>{{ $t('newCommunicator') }}</h1>
+            <div class="row mt-2">
+                <div class="col-12">
+                    <button class="big-button col-12" @click="addEmptyGrid()"><span class="fas fa-sticky-note me-2"/> <span>{{ $t('addAnEmptyGridAndStartFromScratch') }}</span></button>
+                </div>
+            </div>
 
-            <config-import-selector></config-import-selector>
+            <h1 class="mt-5">{{ $t('importPredefinedConfiguration') }}</h1>
             <div>
-                <span>{{ $t('alternativelyYouCan') }}</span>:
+                <div class="row" v-if="defaultGridsets">
+                    <label for="selectGridset" class="col-md-3">{{ $t('selectConfiguration') }}</label>
+                    <select v-model="selectedGridset" id="selectGridset" class="col-md-8">
+                        <i class="fas fa-sticky-note"></i>
+                        <option v-for="set in defaultGridsets" :value="set">{{ set.name + ` (${(set.languages.length > 1 ? $t('multilingual') : $t(`lang.${set.languages[0]}`))})`}}</option>
+                    </select>
+                </div>
+                <div class="row" v-if="selectedGridset">
+                    <strong>{{selectedGridset.name}}</strong>
+                    <div class="col-11 mt-2">
+                        <strong>{{ $t('author') }}</strong>:
+                        <span v-if="!selectedGridset.website">{{selectedGridset.author}}</span>
+                        <a v-if="selectedGridset.website" :href="selectedGridset.website" target="_blank">{{selectedGridset.author}}</a>
+                    </div>
+                    <div class="col-11" v-if="selectedGridset.languages.length == 1"><strong>{{ $t('language') }}</strong>: {{ $t('lang.' + selectedGridset.languages[0]) }}</div>
+                    <div class="col-11" v-if="selectedGridset.languages.length > 1"><strong>{{ $t('languages') }}</strong>: {{ selectedGridset.languages.reduce((total, current, index, array) => {
+                        let separator = index < array.length - 1 ? ', ' : '';
+                        return total + $t('lang.' + current) + separator;
+                    }, '') }}
+                    </div>
+                    <div class="col-11" v-if="selectedGridset.description"><strong>{{ $t('description') }}</strong>: {{ selectedGridset.description | extractTranslation }}</div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <button class="big-button col-12" @click="importData">
+                            <span v-if="!loading" class="fas fa-file-import me-2"/><span v-if="loading" class="fas fa-spinner fa-spin me-2"/> <span>{{ $t('importData') }}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <h1 class="mt-5">{{ $t('importBackup') }}</h1>
+            <div>
                 <ul class="mt-3">
-                    <li><a href="javascript:;" @click="addEmptyGrid()">{{ $t('addAnEmptyGridAndStartFromScratch') }}</a></li>
                     <li><a href="javascript:;" @click="restoreBackupHandler()">{{ $t('restoreBackupFromFile') }}</a></li>
                     <li><a href="javascript:;" @click="importCustomHandler()">{{ $t('importCustomDataFromFile') }}</a></li>
                 </ul>
@@ -18,17 +52,21 @@
 </template>
 
 <script>
-    import ConfigImportSelector from "./configImportSelector.vue";
     import {dataService} from "../../js/service/data/dataService.js";
     import {GridData} from "../../js/model/GridData.js";
     import {Router} from "../../js/router.js";
     import {i18nService} from "../../js/service/i18nService.js";
+    import $ from "../../js/externals/jquery.js";
+    import {serviceWorkerService} from "../../js/service/serviceWorkerService.js";
 
     export default {
-        components: {ConfigImportSelector},
+        components: {},
         props: ["restoreBackupHandler", "importCustomHandler"],
         data() {
             return {
+                defaultGridsets: [],
+                selectedGridset: null,
+                loading: false
             }
         },
         methods: {
@@ -44,9 +82,40 @@
                 dataService.saveGrid(gridData).then(() => {
                     Router.toEditGrid(gridData.id);
                 });
+            },
+            importData() {
+                if (!this.selectedGridset) {
+                    return;
+                }
+                this.loading = true;
+                $.get(this.getGridsetUrl()).then(result => {
+                    dataService.importData(result, {}).then(() => {
+                        this.loading = false;
+                        Router.toMain();
+                    });
+                });
+            },
+            getGridsetUrl() {
+                return `app/gridsets/${this.selectedGridset.filename}`;
             }
         },
         mounted() {
+            let thiz = this;
+            $.get('app/gridsets/gridset_metadata.json').then(result => {
+                let currentLang = i18nService.getContentLang();
+                result.sort((a, b) => {
+                    if (a.standardFor && a.standardFor.includes(currentLang)) return -1;
+                    if (b.standardFor && b.standardFor.includes(currentLang)) return 1;
+                    let aLang = a.languages.includes(currentLang);
+                    let bLang = b.languages.includes(currentLang);
+                    if (aLang && !bLang) return -1;
+                    if (bLang && !aLang) return 1;
+                    return a.name.localeCompare(b.name);
+                });
+                thiz.selectedGridset = result[0];
+                thiz.defaultGridsets = result;
+                serviceWorkerService.cacheUrl(thiz.getGridsetUrl());
+            })
         },
         beforeDestroy() {
         }
@@ -54,4 +123,7 @@
 </script>
 
 <style scoped>
+.row {
+    margin-top: 1.5em;
+}
 </style>

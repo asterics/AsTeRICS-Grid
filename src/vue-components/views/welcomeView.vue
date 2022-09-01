@@ -2,7 +2,7 @@
     <div class="overflow-content">
         <header-icon full-header="true"></header-icon>
         <div class="container ms-0">
-            <div class="row ps-3 ps-md-4 col-12 col-md-10">
+            <div class="row ps-2 ps-sm-3 ps-md-4 col-12 col-md-10 col-xl-8">
                 <h2><span class="show-mobile">AsTeRICS Grid - </span><span>{{ $t('welcome') }}</span></h2>
                 <div>
                     <h3>
@@ -19,7 +19,8 @@
                     </ul>
                     <div class="row">
                         <div class="col-12">
-                            <button class="col-12" @click="useDefaultUser()">
+                            <button class="big-button col-12" @click="useDefaultUser()">
+                                <i class="fas fa-home me-2"></i>
                                 <span>{{ $t('useAstericsGridWithoutRegistration') }}</span>&nbsp;&nbsp;<i v-if="loading" class="fas fa-spinner fa-spin"></i>
                             </button>
                         </div>
@@ -44,7 +45,7 @@
                     </ul>
                     <div class="row">
                         <div class="col-12">
-                            <button class="col-12" @click="toRegister()">{{ $t('registerNow') }}</button>
+                            <button class="big-button col-12" @click="toRegister()"><i class="fas fa-user-plus me-2"></i> {{ $t('registerNow') }}</button>
                         </div>
                     </div>
 
@@ -67,11 +68,8 @@
 </template>
 
 <script>
-    import {i18nService} from "../../js/service/i18nService";
-    import {databaseService} from "../../js/service/data/databaseService";
     import {Router} from "../../js/router";
     import {constants} from "../../js/util/constants";
-    import {localStorageService} from "../../js/service/data/localStorageService";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {helpService} from "../../js/service/helpService";
     import {loginService} from "../../js/service/loginService";
@@ -128,14 +126,5 @@
     .fa-info-circle {
         color: #266697;
         margin-right: 0.5em;
-    }
-    button {
-        background-color: lightblue;
-        padding: 0.7em;
-        border-radius: 10px;
-        font-size: 1.3em;
-        max-width: 750px;
-        margin-top: 0.5em;
-        margin-bottom: 0.5em;
     }
 </style>
