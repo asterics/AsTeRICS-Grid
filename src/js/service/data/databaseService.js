@@ -283,6 +283,7 @@ function initInternal(hashedUserPassword, username, isLocalUser) {
     });
     _initPromise.then(() => {
         _lastDataModelVersion = null;
+        predictionService.init();
         $(document).trigger(constants.EVENT_USER_CHANGED);
     });
     return _initPromise;
