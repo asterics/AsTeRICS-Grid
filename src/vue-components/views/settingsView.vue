@@ -224,6 +224,7 @@
             fixCurrentVoice(dontSave) {
                 if (!this.selectVoices.map(v => v.name).includes(this.metadata.localeConfig.preferredVoice)) {
                     this.metadata.localeConfig.preferredVoice = undefined;
+                    this.saveVoice(true);
                     if (!dontSave) {
                         this.saveMetadata();
                     }
@@ -236,10 +237,6 @@
             },
             showAllLangsChanged() {
                 localStorageService.save(KEY_SETTINGS_SHOW_ALL_CONTENTLANGS, this.selectAllLanguages);
-            },
-            async savePreferredVoice() {
-                speechService.setPreferredVoiceName(this.metadata.localeConfig.preferredVoice);
-                this.saveMetadata();
             },
             getSelectVoices() {
                 if (!this.voices) {
@@ -264,9 +261,12 @@
                     this.saveSuccess = true;
                 }, 500, 'SAVE_UNLOCK');
             },
-            saveVoice() {
+            saveVoice(dontSaveMetadata) {
+                speechService.setPreferredVoiceName(this.metadata.localeConfig.preferredVoice);
                 this.setVoiceTestText();
-                this.saveMetadata();
+                if (!dontSaveMetadata) {
+                    this.saveMetadata();
+                }
             },
             setVoiceTestText() {
                 let voice = this.voices.filter(voice => voice.name === this.metadata.localeConfig.preferredVoice)[0];
