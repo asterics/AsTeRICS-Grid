@@ -139,6 +139,7 @@
                     importDictionaries: this.options.importDictionaries,
                     importUserSettings: this.options.importUserSettings,
                     generateGlobalGrid: this.options.generateGlobalGrid,
+                    resetBeforeImport: this.options.resetBeforeImport,
                     progressFn: p => {
                         MainVue.showProgressBar(20 + Math.round(p / 100 * 80), {
                             header: i18nService.t('importDataFromFile'),

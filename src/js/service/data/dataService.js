@@ -418,10 +418,11 @@ dataService.normalizeImportData = function (data) {
 
     importData.grids = importData.grids || [];
     importData.dictionaries = importData.dictionaries || [];
-    importData.metadata = importData.metadata || {};
     importData.grids = filterService.updateDataModel(importData.grids);
     importData.dictionaries = filterService.updateDataModel(importData.dictionaries);
-    importData.metadata = filterService.updateDataModel(importData.metadata);
+    if (importData.metadata) {
+        importData.metadata = filterService.updateDataModel(importData.metadata);
+    }
     return importData;
 }
 
@@ -469,6 +470,7 @@ dataService.importBackupData = async function (importData, options) {
  * @param options.importDictionaries if true, dictionaries are imported
  * @param options.importUserSettings if true, user settings are imported
  * @param options.progressFn an optional function where the current progress in percentage is returned
+ * @param options.resetBeforeImport info about if data was reset before import, reset not happening in this method!
  * @return {Promise} resolves after operation finished successful
  */
 dataService.importData = async function (data, options) {
@@ -478,7 +480,6 @@ dataService.importData = async function (data, options) {
     options = options || {};
     options.progressFn = options.progressFn || (() => {});
     options.progressFn(0);
-
     let importData = dataService.normalizeImportData(data);
     dataUtil.removeDatabaseProperties(importData.grids);
     dataUtil.removeDatabaseProperties(importData.dictionaries, true);
@@ -488,7 +489,7 @@ dataService.importData = async function (data, options) {
     let existingNames = existingGrids.map(grid => i18nService.getTranslation(grid.label));
     let regenerateIdsReturn = gridUtil.regenerateIDs(importData.grids);
     importData.grids = regenerateIdsReturn.grids;
-    if (importData.metadata) {
+    if (importData.metadata && (importData.metadata.lastOpenedGridId || importData.metadata.globalGridId)) {
         importData.metadata.lastOpenedGridId = regenerateIdsReturn.idMapping[importData.metadata.lastOpenedGridId];
         importData.metadata.globalGridId = regenerateIdsReturn.idMapping[importData.metadata.globalGridId];
     }
@@ -511,7 +512,7 @@ dataService.importData = async function (data, options) {
 
     if (options.importUserSettings) {
         importData.metadata = Object.assign(await dataService.getMetadata(), importData.metadata);
-    } else if (importData.metadata.globalGridId || importData.metadata.lastOpenedGridId) {
+    } else if (options.resetBeforeImport && importData.metadata && (importData.metadata.globalGridId || importData.metadata.lastOpenedGridId)) {
         let existingMetadata = await dataService.getMetadata();
         existingMetadata.globalGridId = importData.metadata.globalGridId;
         existingMetadata.lastOpenedGridId = importData.metadata.lastOpenedGridId;
