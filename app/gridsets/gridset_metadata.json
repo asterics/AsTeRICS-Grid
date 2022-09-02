@@ -45,7 +45,7 @@
     "languages": ["de"],
     "description": {
       "en": "Dynamic communicator, developed by the ARASAAC team, with robust vocabulary, and two communication options combined with each other: communicator with core vocabulary distributed by categories and core vocabulary - essential words communicator.",
-      "de": "Flexibler Kommunikator, entwickelt vom ARASAAC-Team, mit robustem Vokabular und zwei kombinierten Optionen zur Kommunikation: Kommunikator mit in Kategorien eingeteiltem Kernwortschatz und Grundwortschatz - Kommunikator mit den wichtigsten Wörtern."
+      "de": "Dynamischer Kommunikator, ausgearbeitet vom ARASAAC-Team, mit robustem Vokabular und zwei Möglichkeiten der Kommunikation, die miteinander kombinierbar sind: Kommunikator mit Kernvokabular aufgeteilt in Kategorien und Kommunikator vom Typ \"Core vocabulary\" - essentielle Wörter."
     },
     "standardFor": null,
     "wordPrediction": true
