@@ -20,7 +20,7 @@
                     <div class="row">
                         <div class="col-12">
                             <button class="big-button col-12" @click="useDefaultUser()">
-                                <i class="fas fa-home me-2"></i>
+                                <i class="fas fa-user-secret me-2"></i>
                                 <span>{{ $t('useAstericsGridWithoutRegistration') }}</span>&nbsp;&nbsp;<i v-if="loading" class="fas fa-spinner fa-spin"></i>
                             </button>
                         </div>
