@@ -77,7 +77,7 @@
                 let label = {};
                 let elemLabel = {};
                 label[i18nService.getContentLang()] = "New grid";
-                elemLabel[i18nService.getContentLang()] = i18nService.t('hello');
+                elemLabel[i18nService.getContentLang()] = i18nService.t('helloClickRightToEdit');
                 let gridData = new GridData({
                     label: label,
                     gridElements: [new GridElement({
