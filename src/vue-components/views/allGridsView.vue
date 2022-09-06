@@ -3,7 +3,8 @@
         <div style="display: none">
             <input type="file" id="inputFileBackup" @change="importBackupFromFile" accept=".grd, .obf, .obz"/>
         </div>
-        <header class="srow header" role="toolbar" v-if="grids && grids.length > 0">
+        <header-icon full-header="true" v-if="graphList && graphList.length === 0"></header-icon>
+        <header class="srow header" role="toolbar" v-if="graphList && graphList.length > 0">
             <header-icon></header-icon>
             <button tabindex="32" id="moreButton" :aria-label="$t('more')" class="small"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile">{{ $t('more') }}</span></button>
             <button tabindex="31" @click="addGrid()" class="spaced hide-mobile small"><i class="fas fa-plus"/> <span>{{ $t('newGrid') }}</span></button>
@@ -13,7 +14,7 @@
                 <i class="fas fa-4x fa-spinner fa-spin" style="position: relative;"/>
             </div>
         </div>
-        <div class="srow content text-content" v-if="grids && grids.length > 0  && !showLoading">
+        <div class="srow content text-content" v-if="graphList && graphList.length > 0  && !showLoading">
             <div v-if="selectedGraphElement">
                 <h1>{{headerDetails}}</h1>
                 <div class="srow">
@@ -73,7 +74,7 @@
                         <li v-show="graphElemsToShow.length === 0"><span>{{ $t('noGrids') }}</span></li>
                     </ul>
                 </div>
-                <div class="srow" v-if="grids && grids.length > 0">
+                <div class="srow" v-if="graphList && graphList.length > 0">
                     <button @click="updateAllThumbnails"><span class="fas fa-images"></span> {{ $t('updateAllGridThumbnails') }}</button>
                 </div>
 
@@ -97,7 +98,7 @@
             </div>
         </div>
 
-        <no-grids-page v-if="grids && grids.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true" :reset-global-grid="(grid) => {this.homeGrid = grid; this.resetGlobalGrid(true, true);}"></no-grids-page>
+        <no-grids-page v-if="graphList && graphList.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true" :reset-global-grid="(grid) => {this.homeGrid = grid; this.resetGlobalGrid(true, true);}"></no-grids-page>
         <div class="srow" style="margin-bottom: 10em"></div>
         <grid-link-modal v-if="linkModal.show" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @close="linkModal.show = false" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
         <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.show = false; pdfModal.printGridId = null;"></export-pdf-modal>
