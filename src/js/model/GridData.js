@@ -204,6 +204,15 @@ class GridData extends Model({
         return !!this.getAREModel();
     }
 
+    hasPredictionElements() {
+        for (let element of this.gridElements) {
+            if (element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * returns the first GridActionARE that is found in any gridElement of this grid
      * @return {*}
