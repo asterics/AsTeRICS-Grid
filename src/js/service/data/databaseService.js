@@ -195,6 +195,7 @@ databaseService.initForUser = function (username, hashedUserPassword, userDataba
     if (userAlreadyOpened && shouldSync === pouchDbService.isSyncEnabled()) {
         return Promise.resolve();
     }
+    $(document).trigger(constants.EVENT_USER_CHANGING);
     return pouchDbService.initDatabase(username, userDatabaseURL, onlyRemote).then(() => {
         if (userAlreadyOpened) {
             return Promise.resolve();
