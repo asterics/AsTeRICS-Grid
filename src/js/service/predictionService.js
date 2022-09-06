@@ -44,7 +44,7 @@ predictionService.learnFromInput = function (input, dictionaryKey) {
     _unsavedChanges = predictionary.learnFromInput(input, dictionaryKey) || _unsavedChanges;
 };
 
-predictionService.initWithElements = function (elements) {
+predictionService.initWithElements = async function (elements) {
     registeredPredictElements = [];
     elements.forEach(element => {
         if (element && element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
@@ -56,6 +56,9 @@ predictionService.initWithElements = function (elements) {
         if (a.x !== b.x) return a.x < b.x ? -1 : 1;
         return 0;
     });
+    if (registeredPredictElements.length > 0) {
+        await predictionService.initIfNewUser();
+    }
     saveDictionaries();
 };
 
@@ -83,14 +86,10 @@ predictionService.getDictionaryKeys = function () {
     return predictionary ? predictionary.getDictionaryKeys() : [];
 };
 
-predictionService.init = async function (elements, onlyIfNewUser) {
-    let currentUser = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
-    if (_currentInitUser === currentUser && onlyIfNewUser) {
-        return;
-    }
-    _currentInitUser = currentUser;
+predictionService.init = async function () {
+    log.debug("init prediction service");
+    _currentInitUser = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
     clearInterval(_intervalHandler);
-    registeredPredictElements = elements || [];
     _unsavedChanges = false;
     predictionary = Predictionary.instance();
 
@@ -103,6 +102,18 @@ predictionService.init = async function (elements, onlyIfNewUser) {
         return Promise.resolve();
     });
 };
+
+predictionService.initIfNewUser = async function() {
+    let currentUser = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
+    if (_currentInitUser === currentUser) {
+        return;
+    }
+    await predictionService.init();
+}
+
+predictionService.stopAutosave = function () {
+    clearInterval(_intervalHandler);
+}
 
 function saveDictionaries() {
     if (!_unsavedChanges || !predictionary) {
@@ -119,8 +130,12 @@ function saveDictionaries() {
 $(document).on(constants.EVENT_DB_PULL_UPDATED, (event, updatedIds, updatedDocs) => {
     let modelNames = updatedDocs.map(doc => doc.modelName);
     if (modelNames.indexOf(Dictionary.getModelName()) > -1) {
-        predictionService.init(registeredPredictElements);
+        predictionService.init();
     }
+});
+
+$(document).on(constants.EVENT_USER_CHANGING, () => {
+    predictionService.stopAutosave();
 });
 
 export {predictionService};

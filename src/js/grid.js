@@ -116,7 +116,7 @@ function Grid(gridContainerId, gridItemClass, options) {
 
         await Promise.all(promises);
         collectElementService.initWithElements(_gridData.gridElements, dragAndDrop);
-        predictionService.initWithElements(_gridData.gridElements);
+        await predictionService.initWithElements(_gridData.gridElements);
         $(gridContainerId).empty();
         $(gridContainerId).append(templates.getGridBase(gridDataParam.id));
         _gridElement = $('#' + gridDataParam.id);

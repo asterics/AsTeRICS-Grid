@@ -5,9 +5,7 @@ import {MetaData} from "../../model/MetaData";
 import {encryptionService} from "./encryptionService";
 import {pouchDbService} from "./pouchDbService";
 import {filterService} from "./filterService";
-import {Dictionary} from "../../model/Dictionary";
 import {localStorageService} from "./localStorageService";
-import {predictionService} from "../predictionService";
 import {util} from "../../util/util";
 import {constants} from "../../util/constants";
 
@@ -284,7 +282,6 @@ function initInternal(hashedUserPassword, username, isLocalUser) {
     });
     _initPromise.then(() => {
         _lastDataModelVersion = null;
-        predictionService.init();
         $(document).trigger(constants.EVENT_USER_CHANGED);
     });
     return _initPromise;
