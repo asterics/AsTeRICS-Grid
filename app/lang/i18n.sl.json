@@ -493,9 +493,9 @@
   "withoutRegistration": "brez registracije",
   "useAstericsGridWithoutRegistrationBold": "Uporabi AsTeRICS stran {withoutReg}",
   "aLocalUserIsStoredOnlyOnThisDevice": "Lokalni uporabnik je shranjen samo na tej napravi, v tem brskalniku. Če želiš ustvariti uporabnika, ki bo sinhroniziran na različnih napravah s pomočjo oblaka, lahko registriraš uporabnika s povezavo.",
-  "noActionsDefinedClickOnAdd": "No actions defined, click on \"{addAction}\" to add one.",
-  "searchPoweredBy": "powered by {opensymbolsLink}",
-  "noSearchResults": "No search results.",
+  "noActionsDefinedClickOnAdd": "Ni definirane akcije, klikni na \"{addAction}\", da jo dodaš.",
+  "searchPoweredBy": "omogočeno z {opensymbolsLink}",
+  "noSearchResults": "Ni rezultatov iskanja.",
   "thisElementAlreadyNavigatesToAnotherGrid": "This element already navigates to another grid. This navigation will be overwritten.",
   "copySomething": "copy {toCopy}",
   "pasteSomething": "prilepi {toPaste}",
@@ -815,5 +815,9 @@
   "helloClickRightToEdit": "Hello - click right to edit",
   "supportAstericsFoundationOnBetterplace": "Support AsTeRICS Foundation on betterplace.org",
   "ifYouWantToSupportTheDevelopmentOfAstericsGrid": "If you want to support the development of AsTeRICS Grid or contribute to the costs for running the server/database for syncronization you''re very welcome to donate to the AsTeRICS Foundation",
-  "supportUs": "Support us"
+  "supportUs": "Support us",
+  "theFollowingRessourcesForHelpOnAstericsGrid": "The following ressources for help on AsTeRICS Grid are available",
+  "userManual": "User manual",
+  "arasaacTutorial": "ARASAAC tutorial",
+  "tutorialVideosOnYoutube": "Tutorial videos on YouTube"
 }
