@@ -91,6 +91,11 @@
         </div>
         <main role="main" class="holy-grail-content" accesskey="2">
             <!-- Main page content -->
+            <div class="srow content text-content" v-if="!component">
+                <div class="grid-container grid-mask">
+                    <i class="fas fa-4x fa-spinner fa-spin"></i>
+                </div>
+            </div>
             <component v-if="component" v-bind:is="component" v-bind="properties" :key="componentKey"></component>
         </main>
     </div>
