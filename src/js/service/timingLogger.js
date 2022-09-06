@@ -5,6 +5,7 @@ let timingLogger = {};
 let servicesToLog = [];
 let _customStart = null;
 
+let simpleLastTime = 0;
 let startTimes = {};
 let totalTimes = {};
 let maxEntry = {
@@ -42,6 +43,16 @@ timingLogger.log = function (key) {
 timingLogger.start = function (key) {
     startTime(key);
 };
+
+timingLogger.startSimple = function () {
+    log.warn("timing started!");
+    simpleLastTime = new Date().getTime();
+};
+
+timingLogger.logSimple = function (logMsg) {
+    log.warn(`${new Date().getTime() - simpleLastTime}ms - ${logMsg}`);
+    simpleLastTime = new Date().getTime();
+}
 
 timingLogger.finish = function (key) {
     finishTime(key);
