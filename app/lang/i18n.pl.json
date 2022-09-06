@@ -7,7 +7,7 @@
   "GridActionCollectElement": "Pobierz akcję elementu",
   "GridActionWebradio": "Akcja radia internetowego",
   "GridActionYoutube": "Akcja YouTube",
-  "GridActionChangeLang": "Zmień język aplikacji",
+  "GridActionChangeLang": "Change content language",
   "GridActionOpenWebpage": "Otwórz stronę w nowej karcie",
   "COLLECT_ACTION_SPEAK": "Wypowiedz pobraną zawartość elementu",
   "COLLECT_ACTION_SPEAK_CLEAR": "Wypowiedz pobraną zawartość elementu i usuń",
