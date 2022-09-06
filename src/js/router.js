@@ -19,6 +19,7 @@ import {databaseService} from "./service/data/databaseService";
 import {localStorageService} from "./service/data/localStorageService";
 import {MainVue} from "./vue/mainVue";
 import {youtubeService} from "./service/youtubeService";
+import HelpView from "../vue-components/views/helpView.vue";
 
 let NO_DB_VIEWS = ['#login', '#register', '#welcome', '#add', '#about'];
 
@@ -107,6 +108,9 @@ Router.init = function (injectIdParam, initialHash) {
             'settings': function () {
                 //TODO add correct help location
                 loadVueView(SettingsView);
+            },
+            'help': function () {
+                loadVueView(HelpView);
             },
             '*': function () {
                 helpService.setHelpLocation('02_navigation', '#main-view');
