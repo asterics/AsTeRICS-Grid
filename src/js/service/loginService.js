@@ -5,7 +5,6 @@ import {encryptionService} from "./data/encryptionService";
 import {constants} from "../util/constants";
 import {databaseService} from "./data/databaseService";
 import {Router} from "../router";
-import {dataService} from "./data/dataService";
 
 let loginService = {};
 let _loginInfo = null;
@@ -98,6 +97,7 @@ loginService.loginStoredUser = function (user, dontRoute) {
 
         if (savedOnlineUsers.includes(user) && localStorageService.isDatabaseSynced(user)) {
             let password = localStorageService.getUserPassword(user);
+            localStorageService.setAutologinUser(user);
             databaseService.initForUser(user, password).then(() => {
                 loginService.loginHashedPassword(user, password, true);
                 resolve();
@@ -141,6 +141,7 @@ loginService.logout = function () {
     superlogin.logout(_loggedInUser);
     _loggedInUser = null;
     _loginInfo = null;
+    $(document).trigger(constants.EVENT_USER_CHANGING);
 };
 
 /**
