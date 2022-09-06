@@ -221,14 +221,9 @@ dataService.saveMetadata = function (newMetadata, forceDbSave) {
                 //new metadata is stored with ID of existing metadata -> there should only be one metadata object
                 let id = existingMetadata instanceof Array ? existingMetadata[0].id : existingMetadata.id;
                 newMetadata.id = id;
-                localStorageService.saveLocalMetadata(newMetadata);
-                if (!localStorageService.shouldSyncNavigation() && !forceDbSave) {
-                    newMetadata.locked = existingMetadata.locked;
-                    newMetadata.fullscreen = existingMetadata.fullscreen;
-                    newMetadata.lastOpenedGridId = existingMetadata.lastOpenedGridId;
-                }
             }
             if (!existingMetadata.isEqual(newMetadata)) {
+                localStorageService.saveLocalMetadata(newMetadata);
                 databaseService.saveObject(MetaData, newMetadata).then(() => {
                     resolve();
                 });
