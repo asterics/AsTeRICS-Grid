@@ -1,12 +1,12 @@
 <template>
     <div class="all-grids-view overflow-content box">
+        <div style="display: none">
+            <input type="file" id="inputFileBackup" @change="importBackupFromFile" accept=".grd, .obf, .obz"/>
+        </div>
         <header class="srow header" role="toolbar" v-if="grids && grids.length > 0">
             <header-icon></header-icon>
             <button tabindex="32" id="moreButton" :aria-label="$t('more')" class="small"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile">{{ $t('more') }}</span></button>
             <button tabindex="31" @click="addGrid()" class="spaced hide-mobile small"><i class="fas fa-plus"/> <span>{{ $t('newGrid') }}</span></button>
-            <div style="display: none">
-                <input type="file" id="inputFileBackup" @change="importBackupFromFile" accept=".grd, .obf, .obz"/>
-            </div>
         </header>
         <div class="srow content text-content" v-if="showLoading || grids === null">
             <div class="grid-container grid-mask">
