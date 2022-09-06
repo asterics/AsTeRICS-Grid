@@ -7,7 +7,7 @@
   "GridActionCollectElement": "Ação de célula de acumulação",
   "GridActionWebradio": "Ação de rádio web",
   "GridActionYoutube": "Ação do YouTube",
-  "GridActionChangeLang": "Alterar idioma",
+  "GridActionChangeLang": "Change content language",
   "GridActionOpenWebpage": "Abrir página num novo separador",
   "COLLECT_ACTION_SPEAK": "Falar conteúdo da célula de coleção",
   "COLLECT_ACTION_SPEAK_CLEAR": "Pronunciar conteúdo da célula de acumulação e apagar",
