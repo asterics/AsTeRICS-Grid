@@ -7,7 +7,7 @@
   "GridActionCollectElement": "행동적 요소들을 수집하기",
   "GridActionWebradio": "라디 채널들을 찾아보기",
   "GridActionYoutube": "유투브 열기",
-  "GridActionChangeLang": "앱 언어 변경하기",
+  "GridActionChangeLang": "Change content language",
   "GridActionOpenWebpage": "새로운 탭에서 웹페이지를 열기",
   "COLLECT_ACTION_SPEAK": "수집해야하는 요소들의 내용을 말하기",
   "COLLECT_ACTION_SPEAK_CLEAR": "수집해야하는 요소의 내용을 말하고 나중에 비우기",

@@ -7,7 +7,7 @@
   "GridActionCollectElement": "Acció de frase acumulada",
   "GridActionWebradio": "Acció de Ràdio Web",
   "GridActionYoutube": "Acció de Youtube",
-  "GridActionChangeLang": "Canviar l'idioma de l'aplicació",
+  "GridActionChangeLang": "Change content language",
   "GridActionOpenWebpage": "Obrir pàgina web en un altra pestanya",
   "COLLECT_ACTION_SPEAK": "Pronunciar frase acumulada",
   "COLLECT_ACTION_SPEAK_CLEAR": "Pronunciar frase acumulada i esborrar",

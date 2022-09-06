@@ -7,7 +7,7 @@
   "GridActionCollectElement": "Действие: Събиране на елемент",
   "GridActionWebradio": "Действие: Уеб Радио",
   "GridActionYoutube": "Действие: Youtube",
-  "GridActionChangeLang": "Език на приложението",
+  "GridActionChangeLang": "Change content language",
   "GridActionOpenWebpage": "Отваряне на страницата в нов Таб",
   "COLLECT_ACTION_SPEAK": "Изричане на съдържанието на събрания елемент",
   "COLLECT_ACTION_SPEAK_CLEAR": "Изричане на съдържанието на събрания елемент и после премахване",
