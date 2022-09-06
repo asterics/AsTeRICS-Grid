@@ -5,6 +5,7 @@ import {Dictionary} from "../model/Dictionary";
 import {fontUtil} from "../util/fontUtil";
 import {dataService} from "./data/dataService";
 import {constants} from "../util/constants";
+import {localStorageService} from "./data/localStorageService.js";
 
 let predictionService = {};
 let predictionary = null;
@@ -14,9 +15,10 @@ let _unsavedChanges = false;
 let _usedKeys = [];
 let _autosaveInterval = 10 * 60 * 1000; // 10 Minutes
 let _intervalHandler = null;
+let _currentInitUser = null;
 
 predictionService.predict = function (input, dictionaryKey) {
-    if (input === undefined || registeredPredictElements.length === 0) {
+    if (input === undefined || registeredPredictElements.length === 0 || !predictionary) {
         return;
     }
     if (!dictionaryKey) {
@@ -36,7 +38,7 @@ predictionService.predict = function (input, dictionaryKey) {
 };
 
 predictionService.learnFromInput = function (input, dictionaryKey) {
-    if (!input || !input.trim() || registeredPredictElements.length === 0) {
+    if (!input || !input.trim() || registeredPredictElements.length === 0 || !predictionary) {
         return;
     }
     _unsavedChanges = predictionary.learnFromInput(input, dictionaryKey) || _unsavedChanges;
@@ -58,7 +60,7 @@ predictionService.initWithElements = function (elements) {
 };
 
 predictionService.applyPrediction = function (input, prediction, dictionaryKey) {
-    if (registeredPredictElements.length === 0) {
+    if (registeredPredictElements.length === 0 || !predictionary) {
         return;
     }
     _unsavedChanges = true;
@@ -66,6 +68,9 @@ predictionService.applyPrediction = function (input, prediction, dictionaryKey) 
 };
 
 predictionService.doAction = function (elementId) {
+    if (!predictionary) {
+        return;
+    }
     let element = registeredPredictElements.filter(element => element.id === elementId)[0];
     if (element) {
         let word = $(`#${element.id} .text-container span`).text();
@@ -78,23 +83,29 @@ predictionService.getDictionaryKeys = function () {
     return predictionary ? predictionary.getDictionaryKeys() : [];
 };
 
-predictionService.init = function (elements) {
+predictionService.init = async function (elements, onlyIfNewUser) {
+    let currentUser = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
+    if (_currentInitUser === currentUser && onlyIfNewUser) {
+        return;
+    }
+    _currentInitUser = currentUser;
     clearInterval(_intervalHandler);
     registeredPredictElements = elements || [];
     _unsavedChanges = false;
     predictionary = Predictionary.instance();
 
-    dataService.getDictionaries().then(dicts => {
+    return dataService.getDictionaries().then(dicts => {
         _dbDictObjects = dicts;
         dicts.forEach(dict => {
             predictionary.loadDictionary(dict.data, dict.dictionaryKey);
         });
         _intervalHandler = setInterval(saveDictionaries, _autosaveInterval);
+        return Promise.resolve();
     });
 };
 
 function saveDictionaries() {
-    if (!_unsavedChanges) {
+    if (!_unsavedChanges || !predictionary) {
         return;
     }
     _unsavedChanges = false;
