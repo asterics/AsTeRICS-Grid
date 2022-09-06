@@ -815,5 +815,9 @@
   "helloClickRightToEdit": "Hola - haz clic derecho para editar la celda",
   "supportAstericsFoundationOnBetterplace": "Apoyar a la Fundación AsTeRICS en betterplace.org",
   "ifYouWantToSupportTheDevelopmentOfAstericsGrid": "Si quieres apoyar el desarrollo de AsTeRICS Grid y contribuir a sufragar los gatos de mantenimiento del servidor/base de datos para la sincronización puedes hacerlo con una donación a la Fudación AsTeRICS",
-  "supportUs": "Ayúdanos"
+  "supportUs": "Ayúdanos",
+  "theFollowingRessourcesForHelpOnAstericsGrid": "The following ressources for help on AsTeRICS Grid are available",
+  "userManual": "User manual",
+  "arasaacTutorial": "ARASAAC tutorial",
+  "tutorialVideosOnYoutube": "Tutorial videos on YouTube"
 }
