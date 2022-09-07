@@ -10,10 +10,16 @@
                     </div>
 
                     <div class="modal-body" v-if="inputConfig">
-                        <div class="srow" >
+                        <div class="srow">
                             <div class="twelve columns">
                                 <input v-focus type="checkbox" id="enableClick" v-model="inputConfig.mouseclickEnabled"/>
                                 <label class="inline" for="enableClick">{{ $t('selectWithMouseClickOrTap') }}</label>
+                            </div>
+                        </div>
+                        <div class="srow" v-if="inputConfig.mouseclickEnabled">
+                            <div class="twelve columns">
+                                <input v-focus type="checkbox" id="mousedown" v-model="inputConfig.mouseDownInsteadClick"/>
+                                <label class="inline" for="mousedown">{{ $t('directlySelectElementOnPressingMouseButton') }}</label>
                             </div>
                         </div>
                         <div class="srow" >
@@ -128,7 +134,7 @@
                     }
 
                     if (thiz.inputConfig.mouseclickEnabled) {
-                        thiz.clicker = new Clicker('.area-element-inner');
+                        thiz.clicker = new Clicker('.area-element-inner', thiz.inputConfig.mouseDownInsteadClick);
                         thiz.clicker.setSelectionListener(function (item) {
                             thiz.selectedTestElement = item;
                         });

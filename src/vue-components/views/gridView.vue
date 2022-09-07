@@ -235,7 +235,7 @@
                 }
 
                 if (inputConfig.mouseclickEnabled) {
-                    thiz.clicker = new Clicker('.grid-item-content');
+                    thiz.clicker = new Clicker('.grid-item-content', inputConfig.mouseDownInsteadClick);
                     thiz.clicker.setSelectionListener(selectionListener);
                     thiz.clicker.startClickcontrol();
                 }

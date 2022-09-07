@@ -21,6 +21,7 @@ class InputConfig extends Model({
     hoverHideCursor: [Boolean],
     hoverDisableHoverpane: [Boolean],
     mouseclickEnabled: [Boolean],
+    mouseDownInsteadClick: [Boolean],
     dirEnabled: [Boolean],
     dirInputs: [Model.Array(Object)], //array with input events with labels InputConfig.UP/DOWN/LEFT/RIGHT/SELECT
     dirWrapAround: [Boolean],
@@ -106,6 +107,7 @@ InputConfig.defaults({
     scanBinary: false,
     hoverTimeoutMs: 1000,
     mouseclickEnabled: true,
+    mouseDownInsteadClick: false,
     scanInputs: InputConfig.DEFAULT_SCAN_INPUTS,
     dirInputs: InputConfig.DEFAULT_DIR_INPUTS,
     seqInputs: InputConfig.DEFAULT_SEQ_INPUTS,

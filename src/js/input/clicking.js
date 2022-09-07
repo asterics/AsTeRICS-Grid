@@ -1,6 +1,6 @@
 import { L } from "../util/lquery.js";
 
-function Clicker(itemSelector) {
+function Clicker(itemSelector, useMousedownEvent) {
     let thiz = this;
     let _itemSelector = itemSelector;
     let _selectionListener = null;
@@ -24,14 +24,22 @@ function Clicker(itemSelector) {
     thiz.startClickcontrol = function () {
         _elements = L.selectAsList(_itemSelector);
         _elements.forEach(function (item) {
-            item.addEventListener('click', onclick);
+            if (useMousedownEvent) {
+                item.addEventListener('mousedown', onclick);
+            } else {
+                item.addEventListener('click', onclick);
+            }
             item.addEventListener('keydown', onkeydown);
         });
     };
 
     thiz.destroy = function () {
         _elements.forEach(function (item) {
-            item.removeEventListener('click', onclick);
+            if (useMousedownEvent) {
+                item.removeEventListener('mousedown', onclick);
+            } else {
+                item.removeEventListener('click', onclick);
+            }
             item.removeEventListener('keydown', onkeydown);
         });
     };
