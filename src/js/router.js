@@ -21,7 +21,7 @@ import {MainVue} from "./vue/mainVue";
 import {youtubeService} from "./service/youtubeService";
 import HelpView from "../vue-components/views/helpView.vue";
 
-let NO_DB_VIEWS = ['#login', '#register', '#welcome', '#add', '#about'];
+let NO_DB_VIEWS = ['#login', '#register', '#welcome', '#add', '#about', '#help'];
 
 let Router = {};
 let navigoInstance = null;
