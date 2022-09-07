@@ -819,5 +819,6 @@
   "theFollowingRessourcesForHelpOnAstericsGrid": "Para aprender las posibilidades y el manejo de AsTeRICS Grid te ofrecemos los siguientes recursos",
   "userManual": "Manual de usuario",
   "arasaacTutorial": "Tutorial de ARASAAC",
-  "tutorialVideosOnYoutube": "Videotutoriales en Youtube"
+  "tutorialVideosOnYoutube": "Videotutoriales en Youtube",
+  "directlySelectElementOnPressingMouseButton": "Directly select element on pressing mouse button (not waiting for complete click)"
 }
