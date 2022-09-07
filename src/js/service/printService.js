@@ -119,16 +119,16 @@ function addGridToPdf(doc, gridData, options, metadata) {
         let textL2 = i18nService.t("copyrightARASAACPDF");
         let textC = i18nService.getTranslation(gridData.label);
         let firstParentPage = options.idParentsMap[gridData.id][0];
+        let yLine1 = hasARASAACImages ? yBaseFooter - pdfOptions.footerHeight : yBaseFooter;
         if (options.showLinks && firstParentPage) {
             let prefix = JSON.stringify(options.idParentsMap[gridData.id].slice(0, 5));
             textC = prefix + " => " + textC;
             let textWidth = doc.getTextWidth(textC);
-            doc.link(DOC_WIDTH / 2 - textWidth / 2, yBaseFooter - footerHeight * 0.4, textWidth, footerHeight * 0.4, {pageNumber: firstParentPage});
+            doc.link(DOC_WIDTH / 2 - textWidth / 2, yLine1 - pdfOptions.footerHeight * 0.4, textWidth, pdfOptions.footerHeight * 0.4, {pageNumber: firstParentPage});
         }
         let currentPage = options.idPageMap[gridData.id] || 1;
         let totalPages = Object.keys(options.idPageMap).length || 1
         let textR = currentPage + " / " + totalPages;
-        let yLine1 = hasARASAACImages ? yBaseFooter - pdfOptions.footerHeight : yBaseFooter;
         doc.text(textL, pdfOptions.docPadding + pdfOptions.elementMargin, yLine1, {
             baseline: 'bottom',
             align: 'left'
