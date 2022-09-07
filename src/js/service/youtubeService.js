@@ -162,6 +162,11 @@ youtubeService.play = function (action, videoTimeParam) {
                     }).then(response => {
                         let videoIds = response.result.items.map(item => item.id.videoId).filter(id => !!id);
                         player.loadPlaylist(videoIds, ytState.lastPlaylistIndexes[action.data]);
+                        setTimeout(() => {
+                            if (!youtubeService.isPlaying()) {
+                                player.loadPlaylist(videoIds, ytState.lastPlaylistIndexes[action.data]);
+                            }
+                        }, 500)
                     });
                     break;
                 case GridActionYoutube.playTypes.YT_PLAY_PLAYLIST:
