@@ -820,5 +820,5 @@
   "userManual": "Manual de usuario",
   "arasaacTutorial": "Tutorial de ARASAAC",
   "tutorialVideosOnYoutube": "Videotutoriales en Youtube",
-  "directlySelectElementOnPressingMouseButton": "Directly select element on pressing mouse button (not waiting for complete click)"
+  "directlySelectElementOnPressingMouseButton": "Seleccionar elemento directamente al pulsar el botón del ratón (no esperar a un clic completo)"
 }
