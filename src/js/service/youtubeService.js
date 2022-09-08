@@ -163,6 +163,7 @@ youtubeService.play = function (action, videoTimeParam) {
                         let videoIds = response.result.items.map(item => item.id.videoId).filter(id => !!id);
                         player.loadPlaylist(videoIds, ytState.lastPlaylistIndexes[action.data]);
                         setTimeout(() => {
+                            if (!player) return;
                             if (!youtubeService.isPlaying()) {
                                 player.loadPlaylist(videoIds, ytState.lastPlaylistIndexes[action.data]);
                             }
@@ -348,7 +349,7 @@ youtubeService.isPaused = function () {
 }
 
 youtubeService.getCurrentVideoId = function () {
-    if (player) {
+    if (player && player.getVideoUrl) {
         let url = player.getVideoUrl();
         if (url && url.indexOf('v=') !== -1) {
             return youtubeService.getVideoId(player.getVideoUrl());
@@ -472,7 +473,7 @@ function getURLParam(urlString, paramName) {
 }
 
 function saveState() {
-    if (player) {
+    if (player && player.getPlaylistIndex) {
         let videoId = youtubeService.getCurrentVideoId();
         let currentIndex = player.getPlaylistIndex();
         if (videoId) {
