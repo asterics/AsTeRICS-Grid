@@ -13,9 +13,7 @@
             </div>
         </header>
         <div>
-            <edit-element v-if="showModal === GridElement.ELEMENT_TYPE_NORMAL" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showModal = null" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
-            <edit-youtube-element v-if="showModal === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-data="gridData" :edit-element-id="editElementId" @close="showModal = null" @reload="reload"/>
-            <edit-collect-element v-if="showModal === GridElement.ELEMENT_TYPE_COLLECT" :grid-data="gridData" :edit-element-id="editElementId" @close="showModal = null" @reload="reload"/>
+            <edit-element v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
         </div>
         <div>
             <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :grid-instance="getGridInstance()" @close="showMultipleModal = false"/>
@@ -69,8 +67,6 @@
     import GridTranslateModal from "../modals/gridTranslateModal.vue";
     import {GridActionYoutube} from "../../js/model/GridActionYoutube";
     import {printService} from "../../js/service/printService";
-    import EditCollectElement from "../modals/editCollectElement.vue";
-    import EditYoutubeElement from "../modals/editYoutubeElement.vue";
     import {GridElementCollect} from "../../js/model/GridElementCollect.js";
     import {GridActionCollectElement} from "../../js/model/GridActionCollectElement.js";
 
@@ -90,17 +86,15 @@
                 showDimensionsModal: false,
                 showMoveModal: false,
                 showTranslateModal: false,
-                showModal: '',
+                showEditModal: false,
                 editElementId: null,
                 showGrid: false,
                 constants: constants,
                 markedElement: null,
-                GridElement: GridElement,
                 backgroundColor: 'white'
             }
         },
         components: {
-            EditCollectElement, EditYoutubeElement,
             GridTranslateModal,
             ElementMoveModal,
             GridDimensionModal, EditElement, AddMultipleModal, HeaderIcon
@@ -137,7 +131,7 @@
                 this.editElementId = elementId;
                 let editElement = this.gridData.gridElements.filter(e => e.id === elementId)[0];
                 if (editElement) {
-                    this.showModal = editElement.type;
+                    this.showEditModal = true;
                 }
             },
             removeElement(id) {
@@ -149,7 +143,7 @@
             newElement(type) {
                 if (type === GridElement.ELEMENT_TYPE_NORMAL) {
                     this.editElementId = null;
-                    this.showModal = GridElement.ELEMENT_TYPE_NORMAL;
+                    this.showEditModal = true;
                 } else {
                     let newPos = new GridData(this.gridData).getNewXYPos();
                     let constructor = type === GridElement.ELEMENT_TYPE_COLLECT ? GridElementCollect : GridElement;
@@ -348,18 +342,15 @@
             }
         };
 
-        let itemsElemSpecial = JSON.parse(JSON.stringify(itemsElemNormal));
-        delete itemsElemSpecial[CONTEXT_EDIT];
-
         let visibleFn = () => !!vueApp.markedElement;
         let visibleFnFill = () => !new GridData({}, vueApp.gridData).isFull();
         var itemsMoreMenuButton = {
-            CONTEXT_ACTION_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit", visible: () => (vueApp.markedElement && [GridElement.ELEMENT_TYPE_NORMAL, GridElement.ELEMENT_TYPE_YT_PLAYER].indexOf(vueApp.markedElement.type) !== -1)},
+            CONTEXT_ACTION_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit", visible: () => (vueApp.markedElement)},
             CONTEXT_ACTION_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt", visible: visibleFn},
             CONTEXT_ACTION_DUPLICATE: {name: i18nService.t('clone'), icon: "far fa-clone", visible: visibleFn},
             CONTEXT_ACTION_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt", visible: visibleFn},
             CONTEXT_MOVE_TO: {name: i18nService.t('moveElementToOtherGrid'), icon: "fas fa-file-export", visible: visibleFn},
-            SEP0: "---------",
+            separator: { "type": "cm_separator", visible: () => (vueApp.markedElement)},
             CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP],
             'CONTEXT_FILL_EMPTY': {name: i18nService.t('fillWithEmptyElements'), icon: "fas fa-fill", visible: visibleFnFill},
             'CONTEXT_DELETE_ALL': {name: i18nService.t('deleteAllElements'), icon: "fas fa-minus-circle"},
@@ -390,22 +381,12 @@
         });
 
         $.contextMenu({
-            selector: '.item[data-type="ELEMENT_TYPE_NORMAL"],.item[data-type="ELEMENT_TYPE_YT_PLAYER"],.item[data-type="ELEMENT_TYPE_COLLECT"]',
+            selector: '.item',
             callback: function (key, options) {
                 var elementId = $(this).attr('data-id');
                 handleContextMenu(key, elementId);
             },
             items: itemsElemNormal,
-            zIndex: 10
-        });
-
-        $.contextMenu({
-            selector: '.item[data-type!="ELEMENT_TYPE_NORMAL"][data-type!="ELEMENT_TYPE_YT_PLAYER"][data-type!="ELEMENT_TYPE_COLLECT"]',
-            callback: function (key, options) {
-                var elementId = $(this).attr('data-id');
-                handleContextMenu(key, elementId);
-            },
-            items: itemsElemSpecial,
             zIndex: 10
         });
 

@@ -21,7 +21,12 @@
         watch: {
             value: function (newVal, oldVal) {
                 this.currentValue = newVal;
-            }
+            },
+            tabLabels: function (newVal, oldVal) {
+                if (newVal.length === 1) {
+                    this.selectTab(newVal[0]);
+                }
+            },
         },
         methods: {
             selectTab(tab) {

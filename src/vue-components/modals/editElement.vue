@@ -16,16 +16,25 @@
                             <a class="col-2 col-sm-1 col-md black order-md-3" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
                             <a class="col-2 col-sm-1 col-md black order-md-4" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                             <div class="col-12 col-md-5 d-flex align-items-center order-md-2" v-if="originalGridElement">
-                                <img height="30" :src="originalGridElement.image.data"/>
-                                <span class="mx-2">{{ originalGridElement.label | extractTranslation }}</span>
+                                <div v-if="originalGridElement.type === GridElement.ELEMENT_TYPE_NORMAL">
+                                    <img v-if="originalGridElement.image" height="30" :src="originalGridElement.image.data || originalGridElement.image.url"/>
+                                    <span class="mx-2">{{ originalGridElement.label | extractTranslation }}</span>
+                                </div>
+                                <div v-if="originalGridElement.type !== GridElement.ELEMENT_TYPE_NORMAL">
+                                    <span class="mx-2">{{ originalGridElement.type | translate }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <nav-tabs class="mb-3" :tab-labels="Object.keys(TABS)" v-model="currentTab" @input="imageSearch = ''"></nav-tabs>
+                    <nav-tabs class="mb-3" :tab-labels="Object.keys(possibleTabs)" v-model="currentTab" @input="imageSearch = ''"></nav-tabs>
 
                     <div class="modal-body mt-2" v-if="gridElement">
-                        <edit-element-general v-if="currentTab === TABS.TAB_GENERAL" :grid-element="gridElement" @searchImage="toImageSearch"></edit-element-general>
+                        <div v-if="currentTab === TABS.TAB_GENERAL">
+                            <edit-element-general v-if="gridElement.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="gridElement" @searchImage="toImageSearch"></edit-element-general>
+                            <edit-element-youtube v-if="gridElement.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="gridElement"></edit-element-youtube>
+                            <edit-element-collect v-if="gridElement.type === GridElement.ELEMENT_TYPE_COLLECT" :grid-element="gridElement"></edit-element-collect>
+                        </div>
                         <edit-element-image v-if="currentTab === TABS.TAB_IMAGE" :grid-element="gridElement" :grid-data="gridData" :image-search="imageSearch"></edit-element-image>
                         <edit-element-actions v-if="currentTab === TABS.TAB_ACTIONS" :grid-element="gridElement" :grid-data="gridData"></edit-element-actions>
                     </div>
@@ -69,7 +78,9 @@
     import EditElementGeneral from "./editElementGeneral.vue";
     import EditElementImage from "./editElementImage.vue";
     import EditElementActions from "./editElementActions.vue";
+    import EditElementYoutube from "./editElementYoutube.vue";
     import {i18nService} from "../../js/service/i18nService.js";
+    import EditElementCollect from "./editElementCollect.vue";
 
     const TAB_GENERAL = 'TAB_GENERAL';
     const TAB_IMAGE = 'TAB_IMAGE';
@@ -79,7 +90,8 @@
     export default {
         props: ['editElementIdParam', 'gridDataId', 'gridInstance'],
         components: {
-            NavTabs, EditElementGeneral, EditElementImage, EditElementActions
+            EditElementCollect,
+            NavTabs, EditElementGeneral, EditElementImage, EditElementActions, EditElementYoutube
         },
         data: function () {
             return {
@@ -89,8 +101,10 @@
                 originalGridElement: null,
                 editElementId: null,
                 TABS: TABS,
+                possibleTabs: {},
                 currentTab: TAB_GENERAL,
-                imageSearch: null
+                imageSearch: null,
+                GridElement: GridElement
             }
         },
         methods: {
@@ -165,6 +179,15 @@
                             y: newXYPos.y
                         })));
                         thiz.gridData.gridElements.push(thiz.gridElement);
+                    }
+                    if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_NORMAL) {
+                        this.possibleTabs = this.TABS;
+                    } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_YT_PLAYER) {
+                        this.possibleTabs = {TAB_GENERAL, TAB_ACTIONS};
+                    } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_COLLECT) {
+                        this.possibleTabs = {TAB_GENERAL, TAB_ACTIONS};
+                    } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_PREDICTION) {
+                        this.possibleTabs = {TAB_ACTIONS};
                     }
                     thiz.originalGridElement = JSON.parse(JSON.stringify(thiz.gridElement));
                 });
