@@ -16,12 +16,6 @@
                                 <label class="inline" for="enableClick">{{ $t('selectWithMouseClickOrTap') }}</label>
                             </div>
                         </div>
-                        <div class="srow" v-if="inputConfig.mouseclickEnabled">
-                            <div class="twelve columns">
-                                <input v-focus type="checkbox" id="mousedown" v-model="inputConfig.mouseDownInsteadClick"/>
-                                <label class="inline" for="mousedown">{{ $t('directlySelectElementOnPressingMouseButton') }}</label>
-                            </div>
-                        </div>
                         <div class="srow" >
                             <div class="twelve columns">
                                 <input v-focus type="checkbox" id="enableHover" v-model="inputConfig.hoverEnabled"/>
@@ -47,7 +41,16 @@
                                 <label for="chkDisableHoverpane">{{ $t('disableHoverPane') }}</label>
                             </div>
                         </div>
-                        <accordion class="srow" :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
+                        <div class="mb-4"></div>
+                        <accordion :acc-label="$t('ADVANCED_SETTINGS')" acc-label-type="h2" acc-background-color="white" v-if="inputConfig.mouseclickEnabled">
+                            <div class="srow">
+                                <div class="twelve columns">
+                                    <input v-focus type="checkbox" id="mousedown" v-model="inputConfig.mouseDownInsteadClick"/>
+                                    <label class="inline" for="mousedown">{{ $t('directlySelectElementOnPressingMouseButton') }}</label>
+                                </div>
+                            </div>
+                        </accordion>
+                        <accordion :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
                             <test-area :selected-element="selectedTestElement"></test-area>
                         </accordion>
                     </div>
