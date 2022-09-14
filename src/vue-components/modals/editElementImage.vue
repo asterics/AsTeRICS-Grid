@@ -16,7 +16,7 @@
             <div class="img-preview offset-by-two four columns">
                 <span class="show-mobile" v-show="!hasImage"><i class="fas fa-image"/> <span>{{ $t('noImageChosen') }}</span></span>
                 <span class="hide-mobile" v-show="!hasImage"><i class="fas fa-arrow-down"/> <span>{{ $t('dropImageHere') }}</span></span>
-                <img v-if="hasImage" id="imgPreview" :src="gridElement.image.data || gridElement.image.url" crossorigin="anonymous"/>
+                <img v-if="hasImage" id="imgPreview" :src="gridElement.image.data || gridElement.image.url"/>
                 <div v-if="gridElement.image.author">
                     {{ $t('by') }} <a :href="gridElement.image.authorURL" target="_blank">{{gridElement.image.author}}</a>
                 </div>
@@ -33,7 +33,7 @@
             </div>
             <div class="four columns" v-if="searchProvider">
                 <label for="searchProvider">{{ $t('searchProvider') }}</label>
-                <select id="searchProvider" v-model="searchProvider" @change="searchInput(0);">
+                <select id="searchProvider" v-model="searchProvider" @change="searchInput(0); localStorageService.save(EDIT_ELEM_SELECTED_SEARCH_PROVIDER, searchProvider.name)">
                     <option v-for="provider in searchProviders" :value="provider">{{provider.name}}</option>
                 </select>
                 <a :href="searchProvider.url" target="_blank">{{ $t('moreInfo') }}</a>
@@ -107,6 +107,9 @@
     import {arasaacService} from "../../js/service/pictograms/arasaacService.js";
     import {GridImage} from "../../js/model/GridImage.js";
     import {i18nService} from "../../js/service/i18nService.js";
+    import {localStorageService} from "../../js/service/data/localStorageService.js";
+
+    const EDIT_ELEM_SELECTED_SEARCH_PROVIDER = "AG_EDIT_ELEM_SELECTED_SEARCH_PROVIDER";
 
     export default {
         props: ['gridElement', 'gridData', 'imageSearch'],
@@ -126,7 +129,9 @@
                 searchError: false,
                 hasNextChunk: true,
                 constants: constants,
-                i18nService: i18nService
+                i18nService: i18nService,
+                localStorageService: localStorageService,
+                EDIT_ELEM_SELECTED_SEARCH_PROVIDER: EDIT_ELEM_SELECTED_SEARCH_PROVIDER
             }
         },
         watch: {
@@ -243,9 +248,9 @@
             }
         },
         mounted() {
-            let hasImage = !!this.gridElement.image;
-            let currentSearchProviderName = hasImage ? this.gridElement.image.searchProviderName : null;
-            let currentSearchOptions = hasImage ? this.gridElement.image.searchProviderOptions : null;
+            let hasSearchProvider = this.gridElement.image && this.gridElement.image.searchProviderName;
+            let currentSearchProviderName = hasSearchProvider ? this.gridElement.image.searchProviderName : localStorageService.get(EDIT_ELEM_SELECTED_SEARCH_PROVIDER);
+            let currentSearchOptions = hasSearchProvider ? this.gridElement.image.searchProviderOptions : null;
             this.searchProvider = this.searchProviders.filter(provider => provider.name === currentSearchProviderName)[0] || this.searchProviders[0];
             this.$set(this.searchProvider, 'options', currentSearchOptions || this.searchProvider.options);
             helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
