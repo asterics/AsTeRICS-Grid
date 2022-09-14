@@ -62,7 +62,11 @@ workbox.routing.registerRoute(({url, request, event}) => {
     //console.debug(`${url.href} should cache image: ${shouldCacheImage(url, request)}`);
     return shouldCacheImage(url, request);
 }, new workbox.strategies.CacheFirst({
-    cacheName: 'image-cache'
+    cacheName: 'image-cache',
+    fetchOptions: {
+        mode: 'cors',
+        credentials: 'omit'
+    }
 }));
 
 function shouldCacheImage(url, request) {
