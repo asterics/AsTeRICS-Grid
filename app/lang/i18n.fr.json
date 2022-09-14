@@ -705,7 +705,7 @@
   "selectHomeGridForCreatingGlobalGrid": "Select Home Grid for creating global Grid",
   "addThisElementToCollectionElementsDespiteNav": "Add this element to collection elements despite navigating",
   "sortGridsBy": "Trier les grilles par",
-  "labelAlphabetically": "Label (alphabetically)",
+  "labelAlphabetically": "(Par ordre alphabétique)",
   "numberOfConnections": "Number of connections",
   "factorForFontSizeOfOnlytextElements": "Factor for font size of only-text elements in separated mode",
   "convertUppercaseKeyboardLettersToLowercase": "Convert uppercase keyboard letters to lowercase",
