@@ -780,7 +780,7 @@
   "convertToLowercase": "Pretvori u mala slova",
   "elementLabels": "Nazivi elemenata",
   "exportLanguages": "Izvezite jezik",
-  "currentLanguage": "Current language: {contentLangReadable} ({contentLangCode})",
+  "currentLanguage": "Trenutni jezik",
   "currentLanguages": "{length} current languages:",
   "exportDictionaries": "Export dictionaries",
   "downloadBackup": "Download backup",
