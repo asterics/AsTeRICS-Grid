@@ -43,6 +43,12 @@ var localStorageService = {
             }
         }
     },
+    saveJSON: function (key, value) {
+        localStorageService.save(key, JSON.stringify(value));
+    },
+    getJSON: function (key) {
+        return JSON.parse(localStorageService.get(key));
+    },
     remove: function (key) {
         if (storage) {
             try {
