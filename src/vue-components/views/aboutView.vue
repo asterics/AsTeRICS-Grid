@@ -73,7 +73,7 @@
                     <span>{{ $t('ifYouWantToSupportTheDevelopmentOfAstericsGrid') }}</span>:
                     <div>
                         <a :title="$t('supportAstericsFoundationOnBetterplace')" target="_blank" href="https://www.betterplace.at/development-of-open-source-assistive-technologies/">
-                            <img class="mt-4" style="border:0px" alt="" src="https://betterplace-assets.betterplace.org/static-images/projects/donation-button-en.png" width="160" height="100">
+                            <img class="mt-4" style="border:0px" alt="" src="app/img/betterplace-donation-button.png" width="160" height="100">
                         </a>
                     </div>
                 </div>
@@ -90,7 +90,7 @@
                             <a target="_blank" href="https://responsivevoice.org">ResponsiveVoice.org</a>
                         </template>
                     </i18n>
-                    <div><a href="https://responsivevoice.org">ResponsiveVoice-NonCommercial</a> {{ $t('licensedUnder') }} <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img title="ResponsiveVoice Text To Speech" src="https://responsivevoice.org/wp-content/uploads/2014/08/95x15.png" alt="95x15" width="95" height="15" /></a></div>
+                    <div><a href="https://responsivevoice.org">ResponsiveVoice-NonCommercial</a> {{ $t('licensedUnder') }} <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img title="ResponsiveVoice Text To Speech" src="app/img/responsive-voice-license.png" alt="95x15" width="95" height="15" /></a></div>
                 </div>
                 <div class="srow" style="margin-top: 3em">
                     <i18n path="youreUsingAstericsGridVersion" tag="div">
