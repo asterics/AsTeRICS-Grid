@@ -176,8 +176,8 @@
             return {
                 metadata: null,
                 show: false,
-                selectAllLanguages: localStorageService.get(KEY_SETTINGS_SHOW_ALL_CONTENTLANGS, this.selectAllVoices) || false,
-                selectAllVoices: localStorageService.get(KEY_SETTINGS_SHOW_ALL_VOICES, this.selectAllVoices) || false,
+                selectAllLanguages: JSON.parse(localStorageService.get(KEY_SETTINGS_SHOW_ALL_CONTENTLANGS)) || false,
+                selectAllVoices: JSON.parse(localStorageService.get(KEY_SETTINGS_SHOW_ALL_VOICES)) || false,
                 appLang: '',
                 gridLanguages: [],
                 appLanguages: i18nService.getAppLanguages(),
@@ -237,6 +237,10 @@
             },
             showAllLangsChanged() {
                 localStorageService.save(KEY_SETTINGS_SHOW_ALL_CONTENTLANGS, this.selectAllLanguages);
+                if (!this.selectLanguages.map(e => e.code).includes(this.metadata.localeConfig.contentLang)) {
+                    this.metadata.localeConfig.contentLang = undefined;
+                    this.saveContentLang();
+                }
             },
             getSelectVoices() {
                 if (!this.voices) {
