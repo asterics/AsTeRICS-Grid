@@ -1,5 +1,4 @@
 import $ from '../../externals/jquery.js';
-import {imageUtil} from "../../util/imageUtil";
 import {i18nService} from "../i18nService.js";
 import {constants} from "../../util/constants.js";
 
@@ -11,6 +10,7 @@ let _lastSearchTerm = null;
 let _lastRawResultList = null;
 let _hasNextChunk = false;
 let _lastOptions = null;
+let _lastSearchLang = null;
 let arasaacAuthor = "ARASAAC - CC (BY-NC-SA)";
 let arasaacLicenseURL = "https://arasaac.org/terms-of-use";
 
@@ -19,6 +19,7 @@ arasaacService.SEARCH_PROVIDER_NAME = 'ARASAAC';
 let searchProviderInfo = {
     name: arasaacService.SEARCH_PROVIDER_NAME,
     url: "https://arasaac.org/",
+    searchLangs: ["an", "ar", "bg", "br", "ca", "de", "el", "en", "es", "et", "eu", "fa", "fr", "gl", "he", "hr", "hu", "it", "ko", "lt", "lv", "mk", "nl", "pl", "pt", "ro", "ru", "sk", "sq", "sv", "sr", "val", "uk", "zh"],
     options: [
         {
             name: "plural",
@@ -86,9 +87,9 @@ arasaacService.getSearchProviderInfo = function () {
  *         element.author ... name of the author of the image
  *         additional all properties that are received from opensymbols.org API are available: https://www.opensymbols.org/api/v1/symbols/search?q=test
  */
-arasaacService.query = function (search, options) {
+arasaacService.query = function (search, options, searchLang) {
     _lastOptions = options;
-    return queryInternal(search, 1, _lastChunkSize);
+    return queryInternal(search, searchLang, 1, _lastChunkSize);
 };
 
 /**
@@ -97,7 +98,7 @@ arasaacService.query = function (search, options) {
  */
 arasaacService.nextChunk = function () {
     _lastChunkNr++;
-    return queryInternal(_lastSearchTerm, _lastChunkNr, _lastChunkSize);
+    return queryInternal(_lastSearchTerm, _lastSearchLang, _lastChunkNr, _lastChunkSize);
 };
 
 /**
@@ -124,7 +125,7 @@ function getUrl(apiId, options) {
     return `https://api.arasaac.org/api/pictograms/${apiId}?download=false${paramSuffix}`;
 }
 
-function queryInternal(search, chunkNr, chunkSize) {
+function queryInternal(search, lang, chunkNr, chunkSize) {
     chunkSize = chunkSize || _lastChunkSize;
     chunkNr = chunkNr || 1;
     let queriedElements = [];
@@ -132,12 +133,17 @@ function queryInternal(search, chunkNr, chunkSize) {
         if (!search) {
             return resolve([]);
         }
-        if (_lastSearchTerm !== search) {
-            let url = `https://api.arasaac.org/api/pictograms/${i18nService.getContentLang()}/search/${search}`;
+        if (_lastSearchTerm !== search || _lastSearchLang !== lang) {
+            lang = lang || i18nService.getContentLang();
+            _lastSearchLang = lang;
+            let url = `https://api.arasaac.org/api/pictograms/${lang}/search/${search}`;
             $.get(url, null, function (resultList) {
                 _lastRawResultList = resultList;
                 processResultList(resultList);
-            }, 'json').fail(() => {
+            }, 'json').fail((reason) => {
+                if (reason.status === 404) {
+                    return resolve([]);
+                }
                 reject('no internet');
             });
         } else {

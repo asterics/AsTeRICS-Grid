@@ -39,8 +39,15 @@
                 <a :href="searchProvider.url" target="_blank">{{ $t('moreInfo') }}</a>
             </div>
         </div>
-        <div class="srow" v-if="searchProvider && searchProvider.options">
+        <div class="srow" v-if="searchProvider && (searchProvider.options || searchProvider.searchLangs)">
             <accordion class="offset-by-two ten columns" :acc-label="$t('settingsForImageSearch')" acc-label-type="span" acc-background-color="white">
+                <div class="srow">
+                    <label class="three columns" for="searchLang">{{$t('searchLang')}}</label>
+                    <select class="five columns" id="searchLang" v-model="searchLang" @input="searchInput(0)" @change="localStorageService.saveJSON(EDIT_ELEM_SEARCH_LANG_PREFIX + searchProvider.name, searchLang)">
+                        <option :value="null">{{ $t('automaticCurrentLanguage') }}</option>
+                        <option v-for="value in searchProvider.searchLangs" :value="value">{{ $t('lang.' + value) }}</option>
+                    </select>
+                </div>
                 <div v-for="option in searchProvider.options">
                     <div class="srow" v-if="option.type === constants.OPTION_TYPES.BOOLEAN">
                         <input :id="searchProvider.name + option.name" type="checkbox" v-model="option.value" @input="searchInput(0)"/>
@@ -110,6 +117,7 @@
     import {localStorageService} from "../../js/service/data/localStorageService.js";
 
     const EDIT_ELEM_SELECTED_SEARCH_PROVIDER = "AG_EDIT_ELEM_SELECTED_SEARCH_PROVIDER";
+    const EDIT_ELEM_SEARCH_LANG_PREFIX = "EDIT_ELEM_SEARCH_LANG_";
 
     export default {
         props: ['gridElement', 'gridData', 'imageSearch'],
@@ -126,12 +134,14 @@
                 searchProvider: null,
                 searchResults: null,
                 searchLoading: false,
+                searchLang: null,
                 searchError: false,
                 hasNextChunk: true,
                 constants: constants,
                 i18nService: i18nService,
                 localStorageService: localStorageService,
-                EDIT_ELEM_SELECTED_SEARCH_PROVIDER: EDIT_ELEM_SELECTED_SEARCH_PROVIDER
+                EDIT_ELEM_SELECTED_SEARCH_PROVIDER: EDIT_ELEM_SELECTED_SEARCH_PROVIDER,
+                EDIT_ELEM_SEARCH_LANG_PREFIX: EDIT_ELEM_SEARCH_LANG_PREFIX
             }
         },
         watch: {
@@ -221,7 +231,7 @@
                 thiz.searchResults = [];
                 thiz.searchLoading = true;
                 util.debounce(function () {
-                    thiz.searchProvider.service.query(thiz.searchText, thiz.searchProvider.options).then(resultList => {
+                    thiz.searchProvider.service.query(thiz.searchText, thiz.searchProvider.options, thiz.searchLang).then(resultList => {
                         thiz.processSearchResults(resultList);
                     }).catch(() => {
                         thiz.searchError = true;
@@ -252,7 +262,16 @@
             let currentSearchProviderName = hasSearchProvider ? this.gridElement.image.searchProviderName : localStorageService.get(EDIT_ELEM_SELECTED_SEARCH_PROVIDER);
             let currentSearchOptions = hasSearchProvider ? this.gridElement.image.searchProviderOptions : null;
             this.searchProvider = this.searchProviders.filter(provider => provider.name === currentSearchProviderName)[0] || this.searchProviders[0];
-            this.$set(this.searchProvider, 'options', currentSearchOptions || this.searchProvider.options);
+            if (currentSearchOptions) {
+                let currentNames = currentSearchOptions.map(e => e.name);
+                for (let i = 0; i < this.searchProvider.options.length; i++) {
+                    let index = currentNames.indexOf(this.searchProvider.options[i].name);
+                    if (index > -1 && currentSearchOptions[index].value) {
+                        this.searchProvider.options[i].value = currentSearchOptions[index].value;
+                    }
+                }
+            }
+            this.searchLang = localStorageService.getJSON(EDIT_ELEM_SEARCH_LANG_PREFIX + this.searchProvider.name);
             helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
             let maxElementX = Math.max(...this.gridData.gridElements.map(e => e.x + 1));
             this.elementW = Math.round($('#grid-container')[0].getBoundingClientRect().width / maxElementX);
