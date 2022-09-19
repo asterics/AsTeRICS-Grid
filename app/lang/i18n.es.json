@@ -237,7 +237,7 @@
   "hoverTimeMs": "Tiempo de superposición (ms)",
   "hideCursor": "Ocultar Cursor",
   "readOutActiveElement": "Pronunciar la celda activa",
-  "disableHoverPane": "Desactivar superposición",
+  "disableHoverPane": "Desactivar área flotante (usada con pantallas táctiles)",
   "scanning": "Barrido",
   "scanningInputMethod12InputEvents": "Método de escaneo de entrada: 1-2 eventos de entrada",
   "enableScanning": "Activar barrido",
