@@ -41,7 +41,7 @@ var config = {
         debugEmail: true
     },
     dbServer: {
-    publicURL: 'https://couchdb.asterics-foundation.org:6984',
+    publicURL: 'https://db.couchdb.asterics-foundation.org',
     protocol: 'http://',
     host: 'localhost:5984',
     user: 'admin',
