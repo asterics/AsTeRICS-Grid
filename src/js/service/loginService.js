@@ -16,7 +16,7 @@ let _loginInProgress = false;
 
 let _lastParamHashedPw = null;
 let _lastParamSaveUser = null;
-let _serverUrl = constants.IS_ENVIRONMENT_PROD ? 'https://couchdb.asterics-foundation.org:3001' : 'http://' + location.hostname + ':3000';
+let _serverUrl = constants.IS_ENVIRONMENT_PROD ? 'https://couchdb.asterics-foundation.org' : 'http://' + location.hostname + ':3000';
 loginService.ERROR_CODE_UNAUTHORIZED = 'ERROR_CODE_UNAUTHORIZED';
 
 loginService.ERROR_CODE_LOCKED = 'ERROR_CODE_LOCKED';

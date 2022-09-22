@@ -1,0 +1,22 @@
+Add this config to "/etc/apache2/sites-enabled/000-default-ssl.conf" in order to reverse proxy requests to couchdb.asterics-foundation.org to local superlogin on port 3001:
+
+<VirtualHost _default_:443>
+        ServerAdmin webmaster@localhost
+
+        ServerName couchdb.asterics-foundation.org
+        ProxyPreserveHost on
+
+        ProxyPass / https://localhost:3001/ retry=1 acquire=3000 timeout=600 Keepalive=On
+        ProxyPassReverse / https://localhost:3001/
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        SSLEngine on
+        SSLProxyEngine On
+
+        SSLCertificateFile /etc/letsencrypt/live/couchdb.asterics-foundation.org/fullchain.pem
+        SSLCertificateKeyFile /etc/letsencrypt/live/couchdb.asterics-foundation.org/privkey.pem
+
+        # SSLCertificateChainFile /opt/couchdb/ssl/asterics-foundation.org_ssl_certificate_combined.cer
+</VirtualHost>
