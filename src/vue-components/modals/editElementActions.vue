@@ -43,10 +43,15 @@
                             </div>
                             <select class="eight columns" id="selectLang" v-model="action.speakLanguage">
                                 <option :value="undefined">{{ $t('automaticCurrentLanguage') }}</option>
-                                <option v-for="lang in voiceLangs" :value="lang.code">
+                                <option v-for="lang in voiceLangs.filter(e => Object.keys(gridElement.label).includes(e.code))" :value="lang.code">
                                     {{lang | extractTranslation}}
                                 </option>
                             </select>
+                        </div>
+                        <div class="srow" v-if="action.speakLanguage">
+                            <div class="eight columns offset-by-four">
+                                <span>{{ $t('label') }}</span><span> ({{ $t('lang.' + action.speakLanguage) }})</span>: {{gridElement.label[action.speakLanguage]}}
+                            </div>
                         </div>
                     </div>
                     <div v-if="action.modelName == 'GridActionSpeakCustom'">
