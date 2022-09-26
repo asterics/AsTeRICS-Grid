@@ -823,7 +823,7 @@
   "arasaacTutorial": "Tutorial de ARASAAC",
   "tutorialVideosOnYoutube": "Videotutoriales en Youtube",
   "directlySelectElementOnPressingMouseButton": "Seleccionar elemento directamente al pulsar el botón del ratón (no esperar a un clic completo)",
-  "voicePitch": "Voice pitch",
-  "currentValue": "Current value",
-  "voiceRate": "Voice rate"
+  "voicePitch": "Tono de voz",
+  "currentValue": "Valor actual",
+  "voiceRate": "Velocidad de la voz"
 }
