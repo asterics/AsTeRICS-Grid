@@ -5,7 +5,9 @@ class LocaleConfig extends Model({
     modelName: String,
     modelVersion: String,
     contentLang: [String],
-    preferredVoice: [String]
+    preferredVoice: [String],
+    voicePitch: [Number],
+    voiceRate: [Number]
 }) {
     constructor(properties) {
         super(properties);

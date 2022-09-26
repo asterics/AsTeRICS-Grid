@@ -44,12 +44,12 @@ function doAction(gridElement, action, gridId, gridData) {
     switch (action.modelName) {
         case 'GridActionSpeak':
             log.debug('action speak');
-            speechService.speak(gridElement.label, action.speakLanguage);
+            speechService.speak(gridElement.label, {lang: action.speakLanguage});
             break;
         case 'GridActionSpeakCustom':
             log.debug('action speak custom');
             if (action.speakText) {
-                speechService.speak(action.speakText, action.speakLanguage);
+                speechService.speak(action.speakText, {lang: action.speakLanguage});
             }
             break;
         case 'GridActionNavigate':

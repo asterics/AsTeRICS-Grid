@@ -82,13 +82,33 @@
                         <label class="three columns" for="inVoice">
                             <span>{{ $t('preferredVoice') }}</span>
                         </label>
-                        <select id="inVoice" class="five columns mb-2" v-model="metadata.localeConfig.preferredVoice" @change="saveVoice()">
+                        <select id="inVoice" class="five columns mb-2" v-model="metadata.localeConfig.preferredVoice" @change="resetVoiceProps(); saveVoice()">
                             <option :value="undefined">{{ $t('automatic') }}</option>
                             <option v-for="voice in selectVoices" :value="voice.name">{{voice.name}}</option>
                         </select>
                         <div class="four columns">
                             <input id="selectAllVoices" type="checkbox" v-model="selectAllVoices" @change="showAllVoicesChanged()"/>
                             <label for="selectAllVoices">{{ $t('showAllVoices') }}</label>
+                        </div>
+                    </div>
+                    <div class="srow" v-if="metadata.localeConfig.preferredVoice">
+                        <label class="three columns" for="voicePitch">
+                            <span>{{ $t('voicePitch') }}</span>
+                        </label>
+                        <input id="voicePitch" class="five columns" type="range" min="0.1" max="2" step="0.1" v-model.number="metadata.localeConfig.voicePitch" @change="saveVoice()" @input="event => {metadata.localeConfig.voicePitch = parseFloat(event.target.value)}">
+                        <div class="three columns">
+                            <span>{{ $t('currentValue') }}</span>:
+                            <span>{{metadata.localeConfig.voicePitch.toFixed(1)}}</span>
+                        </div>
+                    </div>
+                    <div class="srow" v-if="metadata.localeConfig.preferredVoice">
+                        <label class="three columns" for="voiceRate">
+                            <span>{{ $t('voiceRate') }}</span>
+                        </label>
+                        <input id="voiceRate" class="five columns" type="range" min="0.1" max="10" step="0.1" v-model.number="metadata.localeConfig.voiceRate" @change="saveVoice()" @input="event => {metadata.localeConfig.voiceRate = parseFloat(event.target.value)}">
+                        <div class="three columns">
+                            <span>{{ $t('currentValue') }}</span>:
+                            <span>{{metadata.localeConfig.voiceRate.toFixed(1)}}</span>
                         </div>
                     </div>
                     <div class="srow">
@@ -265,8 +285,12 @@
                     this.saveSuccess = true;
                 }, 500, 'SAVE_UNLOCK');
             },
+            resetVoiceProps() {
+                this.metadata.localeConfig.voicePitch = 1;
+                this.metadata.localeConfig.voiceRate = 1;
+            },
             saveVoice(dontSaveMetadata) {
-                speechService.setPreferredVoiceName(this.metadata.localeConfig.preferredVoice);
+                speechService.setPreferredVoiceProps(this.metadata.localeConfig.preferredVoice, this.metadata.localeConfig.voicePitch, this.metadata.localeConfig.voiceRate);
                 this.setVoiceTestText();
                 if (!dontSaveMetadata) {
                     this.saveMetadata();
@@ -287,7 +311,7 @@
                 }, null, 500, 'SAVE_METADATA');
             },
             testSpeak() {
-                speechService.speak(this.testText, null , this.metadata.localeConfig.preferredVoice);
+                speechService.speak(this.testText, {preferredVoice: this.metadata.localeConfig.preferredVoice});
             }
         },
         mounted() {
@@ -295,6 +319,8 @@
             dataService.getMetadata().then(metadata => {
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
                 thiz.metadata.localeConfig.contentLang = thiz.metadata.localeConfig.contentLang || undefined;
+                thiz.metadata.localeConfig.voicePitch = thiz.metadata.localeConfig.voicePitch || 1;
+                thiz.metadata.localeConfig.voiceRate = thiz.metadata.localeConfig.voiceRate || 1;
                 thiz.setVoiceTestText();
                 thiz.show = true;
             });

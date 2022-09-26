@@ -11,6 +11,8 @@ speechService.VOICE_TYPE_NATIVE = 'VOICE_TYPE_NATIVE';
 speechService.VOICE_TYPE_RESPONSIVEVOICE = 'VOICE_TYPE_RESPONSIVEVOICE';
 
 let _preferredVoiceName = null;
+let _voicePitch = 1;
+let _voiceRate = 1;
 let allVoices = [];
 let responsiveVoiceVoices = JSON.parse('[{"name":"UK English Female","lang":"en-GB"},{"name":"UK English Male","lang":"en-GB"},{"name":"US English Female","lang":"en-US"},{"name":"US English Male","lang":"en-US"},{"name":"Arabic Male","lang":"ar-SA"},{"name":"Arabic Female","lang":"ar-SA"},{"name":"Armenian Male","lang":"hy-AM"},{"name":"Australian Female","lang":"en-AU"},{"name":"Australian Male","lang":"en-AU"},{"name":"Bangla Bangladesh Female","lang":"bn-BD"},{"name":"Bangla Bangladesh Male","lang":"bn-BD"},{"name":"Bangla India Female","lang":"bn-IN"},{"name":"Bangla India Male","lang":"bn-IN"},{"name":"Brazilian Portuguese Female","lang":"pt-BR"},{"name":"Chinese Female","lang":"zh-CN"},{"name":"Chinese Male","lang":"zh-CN"},{"name":"Chinese (Hong Kong) Female","lang":"zh-HK"},{"name":"Chinese (Hong Kong) Male","lang":"zh-HK"},{"name":"Chinese Taiwan Female","lang":"zh-TW"},{"name":"Chinese Taiwan Male","lang":"zh-TW"},{"name":"Czech Female","lang":"cs-CZ"},{"name":"Danish Female","lang":"da-DK"},{"name":"Deutsch Female","lang":"de-DE"},{"name":"Deutsch Male","lang":"de-DE"},{"name":"Dutch Female","lang":"nl-NL"},{"name":"Dutch Male","lang":"nl-NL"},{"name":"Estonian Male","lang":"et-EE"},{"name":"Filipino Female","lang":"fil-PH"},{"name":"Finnish Female","lang":"fi-FI"},{"name":"French Female","lang":"fr-FR"},{"name":"French Male","lang":"fr-FR"},{"name":"French Canadian Female","lang":"fr-CA"},{"name":"French Canadian Male","lang":"fr-CA"},{"name":"Greek Female","lang":"el-GR"},{"name":"Hindi Female","lang":"hi-IN"},{"name":"Hindi Male","lang":"hi-IN"},{"name":"Hungarian Female","lang":"hu-HU"},{"name":"Indonesian Female","lang":"id-ID"},{"name":"Indonesian Male","lang":"id-ID"},{"name":"Italian Female","lang":"it-IT"},{"name":"Italian Male","lang":"it-IT"},{"name":"Japanese Female","lang":"ja-JP"},{"name":"Japanese Male","lang":"ja-JP"},{"name":"Korean Female","lang":"ko-KR"},{"name":"Korean Male","lang":"ko-KR"},{"name":"Latin Male","lang":"la"},{"name":"Nepali","lang":"ne-NP"},{"name":"Norwegian Female","lang":"nb-NO"},{"name":"Norwegian Male","lang":"nb-NO"},{"name":"Polish Female","lang":"pl-PL"},{"name":"Polish Male","lang":"pl-PL"},{"name":"Portuguese Female","lang":"pt-BR"},{"name":"Portuguese Male","lang":"pt-BR"},{"name":"Romanian Female","lang":"ro-RO"},{"name":"Russian Female","lang":"ru-RU"},{"name":"Sinhala","lang":"si-LK"},{"name":"Slovak Female","lang":"sk-SK"},{"name":"Spanish Female","lang":"es-ES"},{"name":"Spanish Latin American Female","lang":"es-MX"},{"name":"Spanish Latin American Male","lang":"es-MX"},{"name":"Swedish Female","lang":"sv-SE"},{"name":"Swedish Male","lang":"sv-SE"},{"name":"Tamil Female","lang":"hi-IN"},{"name":"Tamil Male","lang":"hi-IN"},{"name":"Thai Female","lang":"th-TH"},{"name":"Thai Male","lang":"th-TH"},{"name":"Turkish Female","lang":"tr-TR"},{"name":"Turkish Male","lang":"tr-TR"},{"name":"Ukrainian Female","lang":"uk-UA"},{"name":"Vietnamese Female","lang":"vi-VN"},{"name":"Vietnamese Male","lang":"vi-VN"},{"name":"Afrikaans Male","lang":"af-ZA"},{"name":"Albanian Male","lang":"sq-AL"},{"name":"Bosnian Male","lang":"bs"},{"name":"Catalan Male","lang":"ca-ES"},{"name":"Croatian Male","lang":"hr-HR"},{"name":"Esperanto Male","lang":"eo"},{"name":"Icelandic Male","lang":"is-IS"},{"name":"Latvian Male","lang":"lv-LV"},{"name":"Macedonian Male","lang":"mk-MK"},{"name":"Moldavian Female","lang":"md"},{"name":"Montenegrin Male","lang":"me"},{"name":"Serbian Male","lang":"sr-RS"},{"name":"Serbo-Croatian Male","lang":"hr-HR"},{"name":"Swahili Male","lang":"sw-KE"},{"name":"Welsh Male","lang":"cy"},{"name":"Fallback UK Female","lang":"en-GB"}]');
 let currentSpeakArray = [];
@@ -18,7 +20,7 @@ let currentSpeakArray = [];
 /**
  * speaks given text.
  * Voice to use is determined by the following procedure:
- * 1) use voice with name of "preferredVoiceProp", (if set)
+ * 1) use voice with name of "preferredVoice", (if set)
  * 2) use voice with name of saved "_preferredVoiceName" from local storage, (if set)
  * 3) use any voice by language, from property "lang" (if set)
  * 4) if nothing set: use voice by language, language determined by current browser language
@@ -28,29 +30,42 @@ let currentSpeakArray = [];
  * preferred voice is "Google German" the german translation of the translation object "textOrObject" will be spoken.
  *
  * @param textOrOject string to speak, or translation object containing all translations
- * @param lang (optional) language code of preferred voice to use to speak
- * @param preferredVoiceProp (optional) voice name that should be used for speaking
+ * @param options.lang (optional) language code of preferred voice to use to speak
+ * @param options.preferredVoice (optional) voice name that should be used for speaking
+ * @param options.dontStop (optional) if true, currently spoken text isn't aborted
  */
-speechService.speak = function (textOrOject, lang, preferredVoiceProp, dontStop) {
+speechService.speak = function (textOrOject, options) {
+    options = options || {};
     let text = null;
     let isString = typeof textOrOject === 'string';
     if (!textOrOject || (!isString && Object.keys(textOrOject).length === 0)) {
         return;
     }
+
+    let preferredVoiceName = options.preferredVoice || _preferredVoiceName;
+    let prefVoiceLang = getVoiceLang(preferredVoiceName);
+    let voiceNameToUse = null;
+    let langToUse = options.lang;
+    if (options.lang) {
+        voiceNameToUse = prefVoiceLang === options.lang ? preferredVoiceName : null;
+    } else {
+        voiceNameToUse = preferredVoiceName;
+    }
+
     if (isString) {
         text = textOrOject;
     } else {
-        lang = getVoiceLang(_preferredVoiceName) || lang;
-        let translation = textOrOject[lang] || i18nService.getTranslation(textOrOject, null, true);
+        langToUse = langToUse || getVoiceLang(prefVoiceLang);
+        let translation = textOrOject[langToUse] || i18nService.getTranslation(textOrOject, null, true);
         text = translation.text !== undefined ? translation.text : translation;
-        lang = lang || translation.lang;
+        langToUse = langToUse || translation.lang;
     }
     text = text.toLowerCase();
-    if (!dontStop) {
+    if (!options.dontStop) {
         speechService.stopSpeaking();
     }
-    lang = lang || i18nService.getContentLang();
-    let voices = getVoicesByName(preferredVoiceProp) || getVoicesByName(_preferredVoiceName) || getVoicesByLang(lang);
+    langToUse = langToUse || i18nService.getContentLang();
+    let voices = getVoicesByName(voiceNameToUse) || getVoicesByLang(langToUse);
     let nativeVoices = voices.filter(voice => voice.type === speechService.VOICE_TYPE_NATIVE);
     let responsiveVoices = voices.filter(voice => voice.type === speechService.VOICE_TYPE_RESPONSIVEVOICE);
     nativeVoices.sort((a, b) => { // workaround for alternating auto voices, caused by Google bug where "Google UK English Female" returns both female and male voices
@@ -65,10 +80,16 @@ speechService.speak = function (textOrOject, lang, preferredVoiceProp, dontStop)
     if (speechService.nativeSpeechSupported() && nativeVoices.length > 0) {
         var msg = new SpeechSynthesisUtterance(text);
         msg.voice = nativeVoices[0].ref;
-        log.debug('used voice: ' + msg.voice.name);
+        let isSelectedVoice = nativeVoices[0].name === preferredVoiceName;
+        msg.pitch = isSelectedVoice ? _voicePitch : 1;
+        msg.rate = isSelectedVoice ? _voiceRate : 1;
         window.speechSynthesis.speak(msg);
     } else if(responsiveVoices.length > 0) {
-        responsiveVoice.speak(text, responsiveVoices[0].name);
+        let isSelectedVoice = responsiveVoices[0].name === preferredVoiceName;
+        responsiveVoice.speak(text, responsiveVoices[0].name, {
+            rate: isSelectedVoice ? _voiceRate : 1,
+            pitch: isSelectedVoice ? _voicePitch : 1
+        });
     }
     testIsSpeaking();
     setTimeout(() => { // Firefox takes a while until isSpeaking is true
@@ -95,7 +116,7 @@ speechService.speakArray = async function (array, progressFn, index, dontStop) {
     }
     let word = array.shift();
     progressFn(word, index);
-    speechService.speak(word, null, null, dontStop);
+    speechService.speak(word, {dontStop: dontStop});
     currentSpeakArray = JSON.parse(JSON.stringify(array));
     speechService.doAfterFinishedSpeaking(() => {
         speechService.speakArray(currentSpeakArray, progressFn, index + 1, true);
@@ -156,12 +177,10 @@ speechService.getVoices = function () {
     return allVoices;
 };
 
-speechService.setPreferredVoiceName = function(voiceName) {
+speechService.setPreferredVoiceProps = function(voiceName, voicePitch, voiceRate) {
     _preferredVoiceName = voiceName;
-};
-
-speechService.getPreferredVoiceName = function() {
-    return _preferredVoiceName;
+    _voicePitch = voicePitch || 1;
+    _voiceRate = voiceRate || 1;
 };
 
 /**
@@ -238,7 +257,9 @@ init();
 
 async function getMetadataConfig() {
     let metadata = await dataService.getMetadata();
-    _preferredVoiceName = metadata.localeConfig.preferredVoice || '';
+    _preferredVoiceName = metadata.localeConfig.preferredVoice || null;
+    _voicePitch = metadata.localeConfig.voicePitch || 1;
+    _voiceRate = metadata.localeConfig.voiceRate || 1;
 }
 
 $(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
