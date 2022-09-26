@@ -16,11 +16,17 @@ serviceWorkerService.cacheImageUrl = function (url) {
 
 function postMessageInternal(msg) {
     getController().then(controller => {
+        if (!controller) {
+            return;
+        }
         controller.postMessage(msg);
     })
 }
 
 function getController() {
+    if (!navigator.serviceWorker) {
+        return Promise.resolve(null);
+    }
     return new Promise(resolve => {
         if (controller) {
             return resolve(controller);

@@ -74,6 +74,10 @@ function initServiceWorker() {
     }
 
     function installServiceWorker() {
+        if (!navigator.serviceWorker) {
+            log.warn("ServiceWorker not supported!");
+            return;
+        }
         navigator.serviceWorker.register('./serviceWorker.js').then(reg => {
             let isUpdate = false;
             setInterval(() => {
