@@ -822,5 +822,8 @@
   "userManual": "Uporabniški priročnik",
   "arasaacTutorial": "ARASAAC praktično predavanje",
   "tutorialVideosOnYoutube": "Vodniki na Youtube",
-  "directlySelectElementOnPressingMouseButton": "Direktno izberi element ob pritisku miškinega gumba (ne čakaj na kompletni klik)"
+  "directlySelectElementOnPressingMouseButton": "Direktno izberi element ob pritisku miškinega gumba (ne čakaj na kompletni klik)",
+  "voicePitch": "Voice pitch",
+  "currentValue": "Current value",
+  "voiceRate": "Voice rate"
 }
