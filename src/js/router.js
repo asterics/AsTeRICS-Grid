@@ -20,8 +20,10 @@ import {localStorageService} from "./service/data/localStorageService";
 import {MainVue} from "./vue/mainVue";
 import {youtubeService} from "./service/youtubeService";
 import HelpView from "../vue-components/views/helpView.vue";
+import OutdatedBrowserView from "../vue-components/views/outdatedBrowserView.vue";
+import {featureDetectionService} from "./service/featureDetectionService.js";
 
-let NO_DB_VIEWS = ['#login', '#register', '#welcome', '#add', '#about', '#help'];
+let NO_DB_VIEWS = ['#login', '#register', '#welcome', '#add', '#about', '#help', '#outdated'];
 
 let Router = {};
 let navigoInstance = null;
@@ -111,6 +113,9 @@ Router.init = function (injectIdParam, initialHash) {
             },
             'help': function () {
                 loadVueView(HelpView);
+            },
+            'outdated': function () {
+                loadVueView(OutdatedBrowserView);
             },
             '*': function () {
                 helpService.setHelpLocation('02_navigation', '#main-view');
@@ -267,10 +272,14 @@ function setHash(hash, reset) {
     location.hash = hash;
 }
 
-function loadVueView(viewObject, properties, menuItemToHighlight) {
+async function loadVueView(viewObject, properties, menuItemToHighlight) {
     if (!routingEndabled) {
         return;
     }
+    if (await featureDetectionService.isBrowserOutdated() && viewObject !== OutdatedBrowserView) {
+        return setHash('#outdated');
+    }
+
     _currentView = viewObject;
     if (viewObject !== GridView) {
         $('#touchElement').hide();
