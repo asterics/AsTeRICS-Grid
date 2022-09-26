@@ -822,5 +822,8 @@
   "userManual": "User manual",
   "arasaacTutorial": "ARASAAC tutorial",
   "tutorialVideosOnYoutube": "Tutorial videos on YouTube",
-  "directlySelectElementOnPressingMouseButton": "Directly select element on pressing mouse button (not waiting for complete click)"
+  "directlySelectElementOnPressingMouseButton": "Directly select element on pressing mouse button (not waiting for complete click)",
+  "voicePitch": "Voice pitch",
+  "currentValue": "Current value",
+  "voiceRate": "Voice rate"
 }
