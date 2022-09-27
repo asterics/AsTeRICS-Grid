@@ -825,7 +825,5 @@
   "directlySelectElementOnPressingMouseButton": "Directly select element on pressing mouse button (not waiting for complete click)",
   "voicePitch": "Voice pitch",
   "currentValue": "Current value",
-  "voiceRate": "Voice rate",
-  "yourBrowserCantRunAstericsGridPleaseUseOneOfThese": "Your browser can''t run AsTeRICS Grid. Please use one of these browsers and don't use private or incognito mode",
-  "browserIncompatible": "Browser incompatible"
+  "voiceRate": "Voice rate"
 }

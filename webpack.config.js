@@ -114,5 +114,6 @@ module.exports = env => {
     } else if (env.legacyserver) {
         return configLegacy;
     }
-    return [configNormal, configLegacy];
+    //return [configNormal, configLegacy];
+    return [configNormal];
 };

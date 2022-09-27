@@ -101,12 +101,23 @@
     </div>
 </div>
 
-<!-- polyfills that are needed in all browsers -->
-<script src="app/polyfill/core.min.js"></script> <!-- added for IE and Edge - does implement Promise, but not Promise.finally() -->
+<!-- browser compatibility checks -->
+<script type="text/javascript" src='app/lib/modernizr-custom.js'></script>
+<script type="text/javascript">
+    Modernizr.on('promises', function (result) {
+        checkResult(result, 'Promises');
+    });
+    Modernizr.on('indexeddb', function (result) {
+        checkResult(result, 'IndexedDB');
+    });
 
-<!-- polyfills that are needed only in old browsers that do not support ES6 modules -->
-<script nomodule src="app/polyfill/fetch.js"></script>
-<script nomodule src="app/polyfill/url-search-params-polyfill.min.js"></script>
+    function checkResult(result, feature) {
+        if (!result) {
+            console.warn("Browser doesn't support " + feature + ".");
+            window.location.replace("unsupported.html");
+        }
+    }
+</script>
 
 <!-- libraries, not provided by npm -->
 <script src="app/lib/jquery.min.js"></script>
@@ -120,7 +131,7 @@
 <script type="text/javascript" src='app/lib/pouchdb-7.0.0.min.js'></script>
 <script type="text/javascript" src='app/lib/loglevel.min.js'></script>
 <script type="text/javascript" src='app/lib/sjcl.min.js'></script>
-<script type="text/javascript" src='app/lib/modernizr-custom.js'></script>
+
 <script type="text/javascript">
     if (Function.bind) {
         //remove RV log messages without altering RV source (forbidden by license)
@@ -165,7 +176,6 @@
 <!--script src="https://code.responsivevoice.org/responsivevoice.js"></script-->
 <script type="text/javascript" src='app/lib/responsive-voice.js'></script>
 
-<script nomodule src="app/build_legacy/asterics-grid.bundle.js"></script>
 <script type="module" src="app/build/asterics-grid.bundle.js"></script>
 </body>
 </html>
