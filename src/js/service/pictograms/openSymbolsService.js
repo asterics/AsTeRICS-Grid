@@ -40,11 +40,8 @@ openSymbolsService.getSearchProviderInfo = function () {
  *         element.author ... name of the author of the image
  *         additional all properties that are received from opensymbols.org API are available: https://www.opensymbols.org/api/v1/symbols/search?q=test
  */
-openSymbolsService.query = function (search, chunkNr, chunkSize) {
-    chunkNr = chunkNr || 1;
-    _lastChunkNr = chunkNr;
-    _lastChunkSize = chunkSize || _lastChunkSize;
-    return queryInternal(search, chunkNr, chunkSize);
+openSymbolsService.query = function (search) {
+    return queryInternal(search);
 };
 
 /**
