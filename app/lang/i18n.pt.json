@@ -825,5 +825,7 @@
   "directlySelectElementOnPressingMouseButton": "Selecionar diretamente a célula ao pressionar o botão do rato (não esperar clique completo)",
   "voicePitch": "Voice pitch",
   "currentValue": "Current value",
-  "voiceRate": "Voice rate"
+  "voiceRate": "Voice rate",
+  "secondVoice": "Secondary voice",
+  "advancedVoiceSettings": "Advanced voice settings"
 }
