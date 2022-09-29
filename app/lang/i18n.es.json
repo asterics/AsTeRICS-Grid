@@ -826,6 +826,6 @@
   "voicePitch": "Tono de voz",
   "currentValue": "Valor actual",
   "voiceRate": "Velocidad de la voz",
-  "secondVoice": "Secondary voice",
-  "advancedVoiceSettings": "Advanced voice settings"
+  "secondVoice": "Voz secundaria",
+  "advancedVoiceSettings": "Configuración avanzada de la voz sintetizada"
 }
