@@ -20,7 +20,7 @@
     "languages": ["es"],
     "description": {
       "en": "Dynamic communicator, developed by the ARASAAC team, with robust vocabulary, and two communication options combined with each other: communicator with core vocabulary distributed by categories and core vocabulary - essential words communicator.",
-      "es": "Comunicador dinámico, elaborado por el equipo de ARASAAC, con vocabulario robusto, y dos opciones de comunicadción combinadas entre sí: comunicador con vocabulario núcleo distribuido por categorías y comunicador tipo core vocabulary – palabras esenciales."
+      "es": "Comunicador dinámico, elaborado por el equipo de ARASAAC, con vocabulario robusto, y dos opciones de comunicación combinadas entre sí: comunicador con vocabulario núcleo distribuido por categorías y comunicador tipo core vocabulary – palabras esenciales."
     },
     "standardFor": ["es"],
     "wordPrediction": true
@@ -48,6 +48,19 @@
       "de": "Dynamischer Kommunikator, ausgearbeitet vom ARASAAC-Team, mit robustem Vokabular und zwei Möglichkeiten der Kommunikation, die miteinander kombinierbar sind: Kommunikator mit Kernvokabular aufgeteilt in Kategorien und Kommunikator vom Typ \"Core vocabulary\" - essentielle Wörter."
     },
     "standardFor": null,
+    "wordPrediction": true
+  },
+  {
+    "name": "Comunicador Global-Core ARASAAC",
+    "filename": "Comunicador_Global-Core_ARASAAC_CA.grd.json",
+    "author": "ARASAAC",
+    "website": "https://arasaac.org/",
+    "languages": ["ca"],
+    "description": {
+      "en": "Dynamic communicator, developed by the ARASAAC team, with robust vocabulary, and two communication options combined with each other: communicator with core vocabulary distributed by categories and core vocabulary - essential words communicator.",
+      "ca": "Comunicador dinàmic, elaborat per l'equip d' ARASAAC, amb vocabulari robust i dos opcions de comunicació combinades entre si: comunicador amb vocabulari nucli distribuït per categories i comunicador tipus core vocabulary— paraules essencials."
+    },
+    "standardFor": ["ca"],
     "wordPrediction": true
   }
 ]
