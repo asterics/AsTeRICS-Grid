@@ -20,6 +20,7 @@ import {localStorageService} from "./service/data/localStorageService";
 import {MainVue} from "./vue/mainVue";
 import {youtubeService} from "./service/youtubeService";
 import HelpView from "../vue-components/views/helpView.vue";
+import {constants} from "./util/constants.js";
 
 let NO_DB_VIEWS = ['#login', '#register', '#welcome', '#add', '#about', '#help', '#outdated'];
 
@@ -189,13 +190,23 @@ Router.toLastOpenedGrid = function () {
 Router.toGrid = function (id, props) {
     if (id) {
         let params = new URLSearchParams();
-        params.set("date", new Date().getTime());
+        let url = null;
         if (props) {
             Object.keys(props).forEach(key => {
                 params.set(key, props[key]);
-            })
+            });
+            url = `#grid/${id}?${params.toString()}`;
+        } else {
+            url = `#grid/${id}`;
         }
-        setHash(`#grid/${id}?${params.toString()}`);
+
+        if(window.location.href.includes('#grid/') || window.location.href.includes('#main')) {
+            dataService.getGrid(id).then(gridData => {
+                $(document).trigger(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, gridData);
+            });
+        } else {
+            setHash(url);
+        }
     }
 };
 

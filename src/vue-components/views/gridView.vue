@@ -35,7 +35,7 @@
             <div style="margin-top: 2em">
                 <i18n path="noElementsClickToEnterEdit" tag="span">
                     <template v-slot:link>
-                        <a :href="'#grid/edit/' + gridId">{{ $t('editingOn') }}</a>
+                        <a :href="'#grid/edit/' + gridData.id">{{ $t('editingOn') }}</a>
                     </template>
                 </i18n>
             </div>
@@ -257,6 +257,11 @@
                     this.reinitInputMethods();
                 });
             },
+            onNavigateEvent(event, gridData) {
+                this.metadata.lastOpenedGridId = gridData.id;
+                this.reload(gridData);
+                dataService.saveMetadata(this.metadata);
+            },
             reloadOnLangChange() {
                 this.reload();
             },
@@ -341,12 +346,14 @@
             $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
             $(document).on(constants.EVENT_LANGUAGE_CHANGE, this.reloadOnLangChange);
             $(document).on(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
+            $(document).on(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, this.onNavigateEvent);
             document.addEventListener('contextmenu', this.contextMenuListener);
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
             $(document).off(constants.EVENT_LANGUAGE_CHANGE, this.reloadOnLangChange);
             $(document).off(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
+            $(document).off(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, this.onNavigateEvent);
             document.removeEventListener('contextmenu', this.contextMenuListener);
             stopInputMethods();
             $.contextMenu('destroy');
