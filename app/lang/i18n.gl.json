@@ -825,5 +825,7 @@
   "directlySelectElementOnPressingMouseButton": "Seleccionar elemento directamente ao pulsar o botón do rato (non esperar a un clic completo)",
   "voicePitch": "Voice pitch",
   "currentValue": "Current value",
-  "voiceRate": "Voice rate"
+  "voiceRate": "Voice rate",
+  "secondVoice": "Secondary voice",
+  "advancedVoiceSettings": "Advanced voice settings"
 }
