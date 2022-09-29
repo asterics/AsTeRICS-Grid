@@ -93,10 +93,21 @@
                             searchProviderName: "ARASAAC"
                         })
                     })],
-                    rowCount: 3,
-                    minColumnCount: 4
+                    rowCount: 2,
+                    minColumnCount: 2
                 });
                 let elements = gridUtil.getFillElements(gridData);
+                /*elements.forEach(element => {
+                    let label = {};
+                    label[i18nService.getContentLang()] = i18nService.t('emptyElement');
+                    element.label = label;
+                    element.image = new GridImage({
+                        url: "https://api.arasaac.org/api/pictograms/4616?download=false&plural=false&color=true",
+                        author: "ARASAAC - CC (BY-NC-SA)",
+                        authorURL: "https://arasaac.org/terms-of-use",
+                        searchProviderName: "ARASAAC"
+                    })
+                });*/
                 gridData.gridElements = gridData.gridElements.concat(elements);
                 await dataService.saveGrid(gridData);
                 await this.resetGlobalGrid(gridData);
