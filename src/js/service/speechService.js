@@ -11,6 +11,7 @@ speechService.VOICE_TYPE_NATIVE = 'VOICE_TYPE_NATIVE';
 speechService.VOICE_TYPE_RESPONSIVEVOICE = 'VOICE_TYPE_RESPONSIVEVOICE';
 
 let _preferredVoiceName = null;
+let _secondVoiceName = null;
 let _voicePitch = 1;
 let _voiceRate = 1;
 let allVoices = [];
@@ -33,6 +34,8 @@ let currentSpeakArray = [];
  * @param options.lang (optional) language code of preferred voice to use to speak
  * @param options.preferredVoice (optional) voice name that should be used for speaking
  * @param options.dontStop (optional) if true, currently spoken text isn't aborted
+ * @param options.speakSecondary (optional) if true, spoken text is repeated using the secondary language
+ * @param options.useStandardRatePitch (optional) if true, the standard values for rate/pitch are used (1)
  */
 speechService.speak = function (textOrOject, options) {
     options = options || {};
@@ -55,7 +58,7 @@ speechService.speak = function (textOrOject, options) {
     if (isString) {
         text = textOrOject;
     } else {
-        langToUse = langToUse || getVoiceLang(prefVoiceLang);
+        langToUse = langToUse || prefVoiceLang;
         let translation = textOrOject[langToUse] || i18nService.getTranslation(textOrOject, null, true);
         text = translation.text !== undefined ? translation.text : translation;
         langToUse = langToUse || translation.lang;
@@ -81,14 +84,14 @@ speechService.speak = function (textOrOject, options) {
         var msg = new SpeechSynthesisUtterance(text);
         msg.voice = nativeVoices[0].ref;
         let isSelectedVoice = nativeVoices[0].name === preferredVoiceName;
-        msg.pitch = isSelectedVoice ? _voicePitch : 1;
-        msg.rate = isSelectedVoice ? _voiceRate : 1;
+        msg.pitch = isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1;
+        msg.rate = isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1;
         window.speechSynthesis.speak(msg);
     } else if(responsiveVoices.length > 0) {
         let isSelectedVoice = responsiveVoices[0].name === preferredVoiceName;
         responsiveVoice.speak(text, responsiveVoices[0].name, {
-            rate: isSelectedVoice ? _voiceRate : 1,
-            pitch: isSelectedVoice ? _voicePitch : 1
+            rate: isSelectedVoice && !options.useStandardRatePitch  ? _voiceRate : 1,
+            pitch: isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1
         });
     }
     testIsSpeaking();
@@ -99,6 +102,11 @@ speechService.speak = function (textOrOject, options) {
         if (speechService.isSpeaking()) {
             stateService.setState(constants.STATE_ACTIVATED_TTS, true);
         }
+    }
+    if (_secondVoiceName && options.speakSecondary) {
+        speechService.doAfterFinishedSpeaking(() => {
+            speechService.speak(textOrOject, {preferredVoice: _secondVoiceName, useStandardRatePitch: true});
+        })
     }
 };
 
@@ -177,10 +185,11 @@ speechService.getVoices = function () {
     return allVoices;
 };
 
-speechService.setPreferredVoiceProps = function(voiceName, voicePitch, voiceRate) {
+speechService.setPreferredVoiceProps = function(voiceName, voicePitch, voiceRate, secondVoice) {
     _preferredVoiceName = voiceName;
     _voicePitch = voicePitch || 1;
     _voiceRate = voiceRate || 1;
+    _secondVoiceName = secondVoice;
 };
 
 /**
@@ -260,6 +269,7 @@ async function getMetadataConfig() {
     _preferredVoiceName = metadata.localeConfig.preferredVoice || null;
     _voicePitch = metadata.localeConfig.voicePitch || 1;
     _voiceRate = metadata.localeConfig.voiceRate || 1;
+    _secondVoiceName = metadata.localeConfig.secondVoice || null;
 }
 
 $(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);

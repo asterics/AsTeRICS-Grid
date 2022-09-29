@@ -84,31 +84,14 @@
                         </label>
                         <select id="inVoice" class="five columns mb-2" v-model="metadata.localeConfig.preferredVoice" @change="resetVoiceProps(); saveVoice()">
                             <option :value="undefined">{{ $t('automatic') }}</option>
-                            <option v-for="voice in selectVoices" :value="voice.name">{{voice.name}}</option>
+                            <option v-for="voice in selectVoices" :value="voice.name">
+                                <span v-if="!selectAllVoices">{{voice.name}}</span>
+                                <span v-if="selectAllVoices">{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}</span>
+                            </option>
                         </select>
                         <div class="four columns">
                             <input id="selectAllVoices" type="checkbox" v-model="selectAllVoices" @change="showAllVoicesChanged()"/>
                             <label for="selectAllVoices">{{ $t('showAllVoices') }}</label>
-                        </div>
-                    </div>
-                    <div class="srow" v-if="metadata.localeConfig.preferredVoice">
-                        <label class="three columns" for="voicePitch">
-                            <span>{{ $t('voicePitch') }}</span>
-                        </label>
-                        <input id="voicePitch" class="five columns" type="range" min="0.1" max="2" step="0.1" v-model.number="metadata.localeConfig.voicePitch" @change="saveVoice()" @input="event => {metadata.localeConfig.voicePitch = parseFloat(event.target.value)}">
-                        <div class="three columns">
-                            <span>{{ $t('currentValue') }}</span>:
-                            <span>{{metadata.localeConfig.voicePitch.toFixed(1)}}</span>
-                        </div>
-                    </div>
-                    <div class="srow" v-if="metadata.localeConfig.preferredVoice">
-                        <label class="three columns" for="voiceRate">
-                            <span>{{ $t('voiceRate') }}</span>
-                        </label>
-                        <input id="voiceRate" class="five columns" type="range" min="0.1" max="10" step="0.1" v-model.number="metadata.localeConfig.voiceRate" @change="saveVoice()" @input="event => {metadata.localeConfig.voiceRate = parseFloat(event.target.value)}">
-                        <div class="three columns">
-                            <span>{{ $t('currentValue') }}</span>:
-                            <span>{{metadata.localeConfig.voiceRate.toFixed(1)}}</span>
                         </div>
                     </div>
                     <div class="srow">
@@ -117,6 +100,40 @@
                         </label>
                         <input id="testText" class="five columns" type="text" v-model="testText">
                         <button id="testVoice" class="three columns" @click="testSpeak">{{ $t('test') }}</button>
+                    </div>
+                    <div class="srow">
+                        <accordion :acc-label="$t('advancedVoiceSettings')" class="eleven columns">
+                            <div class="srow" v-if="metadata.localeConfig.preferredVoice">
+                                <label class="three columns" for="voicePitch">
+                                    <span>{{ $t('voicePitch') }}</span>
+                                </label>
+                                <input id="voicePitch" class="five columns" type="range" min="0.1" max="2" step="0.1" v-model.number="metadata.localeConfig.voicePitch" @change="saveVoice()" @input="event => {metadata.localeConfig.voicePitch = parseFloat(event.target.value)}">
+                                <div class="three columns">
+                                    <span>{{ $t('currentValue') }}</span>:
+                                    <span>{{metadata.localeConfig.voicePitch.toFixed(1)}}</span>
+                                </div>
+                            </div>
+                            <div class="srow" v-if="metadata.localeConfig.preferredVoice">
+                                <label class="three columns" for="voiceRate">
+                                    <span>{{ $t('voiceRate') }}</span>
+                                </label>
+                                <input id="voiceRate" class="five columns" type="range" min="0.1" max="10" step="0.1" v-model.number="metadata.localeConfig.voiceRate" @change="saveVoice()" @input="event => {metadata.localeConfig.voiceRate = parseFloat(event.target.value)}">
+                                <div class="three columns">
+                                    <span>{{ $t('currentValue') }}</span>:
+                                    <span>{{metadata.localeConfig.voiceRate.toFixed(1)}}</span>
+                                </div>
+                            </div>
+                            <div class="srow">
+                                <label class="three columns" for="inVoice2">
+                                    <span>{{ $t('secondVoice') }}</span>
+                                </label>
+                                <select id="inVoice2" class="five columns mb-2" v-model="metadata.localeConfig.secondVoice" @change="saveVoice()">
+                                    <option :value="undefined">{{ $t('noneSelected') }}</option>
+                                    <option v-for="voice in voices" :value="voice.name">{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}</option>
+                                </select>
+                                <button id="testVoice2" class="three columns" :disabled="!metadata.localeConfig.secondVoice" @click="testSpeak2">{{ $t('test') }}</button>
+                            </div>
+                        </accordion>
                     </div>
                 </div>
             </div>
@@ -185,12 +202,13 @@
     import {constants} from "../../js/util/constants.js";
     import {MetaData} from "../../js/model/MetaData.js";
     import {TextConfig} from "../../js/model/TextConfig.js";
+    import Accordion from "../components/accordion.vue";
 
     let KEY_SETTINGS_SHOW_ALL_VOICES = "KEY_SETTINGS_SHOW_ALL_VOICES";
     let KEY_SETTINGS_SHOW_ALL_CONTENTLANGS = "KEY_SETTINGS_SHOW_ALL_CONTENTLANGS";
 
     export default {
-        components: {HeaderIcon},
+        components: {Accordion, HeaderIcon},
         props: [],
         data() {
             return {
@@ -266,10 +284,22 @@
                 if (!this.voices) {
                     return []
                 }
+                this.sortVoices();
                 if (this.selectAllVoices) {
                     return this.voices;
                 }
                 return this.voices.filter(v => v.lang === i18nService.getContentLang());
+            },
+            sortVoices() {
+                this.voices.sort((a, b) => {
+                    if (a.type !== b.type && a.lang === b.lang) {
+                        if (a.type === speechService.VOICE_TYPE_NATIVE) return -1;
+                        if (b.type === speechService.VOICE_TYPE_NATIVE) return 1;
+                    }
+                    let v1 = i18nService.t(`lang.${a.lang}`) + a.name;
+                    let v2 = i18nService.t(`lang.${b.lang}`) + b.name;
+                    return v1.localeCompare(v2);
+                });
             },
             saveSyncNavigation() {
                 this.saveSuccess = undefined;
@@ -290,7 +320,7 @@
                 this.metadata.localeConfig.voiceRate = 1;
             },
             saveVoice(dontSaveMetadata) {
-                speechService.setPreferredVoiceProps(this.metadata.localeConfig.preferredVoice, this.metadata.localeConfig.voicePitch, this.metadata.localeConfig.voiceRate);
+                speechService.setPreferredVoiceProps(this.metadata.localeConfig.preferredVoice, this.metadata.localeConfig.voicePitch, this.metadata.localeConfig.voiceRate, this.metadata.localeConfig.secondVoice);
                 this.setVoiceTestText();
                 if (!dontSaveMetadata) {
                     this.saveMetadata();
@@ -312,6 +342,14 @@
             },
             testSpeak() {
                 speechService.speak(this.testText, {preferredVoice: this.metadata.localeConfig.preferredVoice});
+            },
+            testSpeak2() {
+                let secondVoice = this.metadata.localeConfig.secondVoice;
+                if(!secondVoice) {
+                    return;
+                }
+                let secondVoiceLang = this.voices.filter(lang => lang.name === secondVoice)[0].lang;
+                speechService.speak(i18nService.tl('thisIsAnEnglishSentence', null, secondVoiceLang), {preferredVoice: this.metadata.localeConfig.secondVoice, useStandardRatePitch: true});
             }
         },
         mounted() {
