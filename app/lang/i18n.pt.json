@@ -822,5 +822,10 @@
   "userManual": "Manual do utilizador",
   "arasaacTutorial": "Tutorial ARASAAC",
   "tutorialVideosOnYoutube": "Vídeos tutoriais no YouTube",
-  "directlySelectElementOnPressingMouseButton": "Selecionar diretamente a célula ao pressionar o botão do rato (não esperar clique completo)"
+  "directlySelectElementOnPressingMouseButton": "Selecionar diretamente a célula ao pressionar o botão do rato (não esperar clique completo)",
+  "voicePitch": "Voice pitch",
+  "currentValue": "Current value",
+  "voiceRate": "Voice rate",
+  "secondVoice": "Secondary voice",
+  "advancedVoiceSettings": "Advanced voice settings"
 }

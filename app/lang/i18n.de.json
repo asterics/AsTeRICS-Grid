@@ -822,5 +822,10 @@
   "userManual": "Benutzerhandbuch",
   "arasaacTutorial": "ARASAAC Tutorial",
   "tutorialVideosOnYoutube": "Tutorial-Videos auf YouTube",
-  "directlySelectElementOnPressingMouseButton": "Element bei Drücken der Maustaste direkt auswählen (nicht auf vollständigen Klick warten)"
+  "directlySelectElementOnPressingMouseButton": "Element bei Drücken der Maustaste direkt auswählen (nicht auf vollständigen Klick warten)",
+  "voicePitch": "Stimmhöhe",
+  "currentValue": "Aktueller Wert",
+  "voiceRate": "Sprechgeschwindigkeit",
+  "secondVoice": "Sekundäre Stimme",
+  "advancedVoiceSettings": "Erweiterte Optionen für Stimme"
 }
