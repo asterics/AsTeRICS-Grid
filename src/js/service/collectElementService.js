@@ -227,7 +227,7 @@ async function updateCollectElements(isSecondTry) {
                 let marked = markedImageIndex === index;
                 let imgHTML = null;
                 if (image) {
-                    imgHTML = `<img src="${image}" height="${imgHeight}"/>`;
+                    imgHTML = `<img src="${image}" height="${imgHeight}" style="height: ${imgHeight}px"/>`;
                     totalWidth += elemWidth + 2 * imgMargin;
                 } else {
                     let fontSizeFactor = collectElement.textElemSizeFactor || 1.5;
@@ -236,7 +236,7 @@ async function updateCollectElements(isSecondTry) {
                     totalWidth += elemWidth + 4 * imgMargin;
                     imgHTML = `<div style="padding: ${imgMargin}px; font-size: ${fontSize}px; width: ${elemWidth}px; height: ${imgHeight}px; display: flex; justify-content: center; align-items: center; text-align: center;"><span>${label}</span></div>`;
                 }
-                html += `<div id="collect${index}" style="display: flex; flex:0; justify-content: center; flex-direction: column; padding: ${imgMargin}px; title=${label}; ${marked ? 'background-color: lightgreen;' : ''}">
+                html += `<div id="collect${index}" style="display: flex; flex:0; justify-content: center; flex-direction: column; padding: ${imgMargin}px; ${marked ? 'background-color: lightgreen;' : ''}" title="${label}">
                                 <div style="display:flex; justify-content: center">
                                         ${imgHTML}
                                 </div>
