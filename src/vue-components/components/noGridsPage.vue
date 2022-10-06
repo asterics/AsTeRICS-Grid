@@ -93,7 +93,7 @@
                             searchProviderName: "ARASAAC"
                         })
                     })],
-                    rowCount: 2,
+                    rowCount: 1,
                     minColumnCount: 2
                 });
                 let elements = gridUtil.getFillElements(gridData);
