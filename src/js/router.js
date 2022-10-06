@@ -189,6 +189,7 @@ Router.toLastOpenedGrid = function () {
 
 Router.toGrid = function (id, props) {
     if (id) {
+        Router.addToGridHistory(id);
         let params = new URLSearchParams();
         let url = null;
         if (props) {
@@ -200,7 +201,7 @@ Router.toGrid = function (id, props) {
             url = `#grid/${id}`;
         }
 
-        if(window.location.href.includes('#grid/') || window.location.href.includes('#main')) {
+        if (window.location.href.includes('#grid/') || window.location.href.includes('#main')) {
             dataService.getGrid(id).then(gridData => {
                 $(document).trigger(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, gridData);
             });
