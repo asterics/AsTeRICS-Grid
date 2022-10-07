@@ -480,7 +480,7 @@
   "youtubeTermsOfService": "Conditions générales d'utilisation YouTube",
   "googlePrivacyPolicy": "Règles de confidentialité de Google",
   "youtubeDataApi": "API de données YouTube",
-  "privacyPolicyInfo": "La seule valeur de données potentiellement personnelles qui est traitée par AsTeRICS Grid est le nom d'utilisateur des utilisateurs en ligne. Toutes les autres données sont soit stockées localement ou chiffrées de bout en bout et donc lisibles uniquement par les utilisateurs. Des informations supplémentaires peuvent être trouvées dans le {privacyPolicy}.",
+  "privacyPolicyInfo": "La seule valeur de données potentiellement personnelles qui est traitée par AsTeRICS Grid est le nom d'utilisateur des utilisateurs en ligne. Toutes les autres données sont soit stockées localement ou chiffrées de bout en bout et donc lisibles uniquement par les utilisateurs. Des informations supplémentaires peuvent être trouvées dans la {privacyPolicy}.",
   "privacyPolicy": "Politique de Confidentialité",
   "acknowledgements": "Remerciements",
   "thankCrossbrowsertesting": "Nous remercions {crossbrowserTestingUrl} de nous avoir fourni une licence open source gratuite.",
