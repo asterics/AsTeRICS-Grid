@@ -372,17 +372,15 @@
             dataService.getGlobalGrid().then(globalGrid => {
                 thiz.globalGridData = globalGrid;
                 return dataService.getGrid(thiz.gridId);
-            }).then(gridData => {
+            }).then(async gridData => {
                 if (!gridData) {
                     log.warn('grid not found! gridId: ' + this.gridId);
-                    return dataService.getGrids(false, true).then(grids => {
-                        if (grids[0]) {
-                            Router.toGrid(grids[0].id);
-                        } else {
-                            Router.toManageGrids();
-                        }
-                        return Promise.reject();
-                    });
+                    let grids = await dataService.getGrids(false, true);
+                    if (grids[0]) {
+                        gridData = await dataService.getGrid(grids[0].id);
+                    } else {
+                        return Router.toManageGrids();
+                    }
                 }
                 if (gridData.hasAREModel()) {
                     let areModel = gridData.getAREModel();
