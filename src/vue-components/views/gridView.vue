@@ -376,10 +376,11 @@
                 if (!gridData) {
                     log.warn('grid not found! gridId: ' + this.gridId);
                     let grids = await dataService.getGrids(false, true);
-                    if (grids[0]) {
+                    if (grids && grids[0]) {
                         gridData = await dataService.getGrid(grids[0].id);
                     } else {
-                        return Router.toManageGrids();
+                        Router.toManageGrids();
+                        return Promise.reject();
                     }
                 }
                 if (gridData.hasAREModel()) {
