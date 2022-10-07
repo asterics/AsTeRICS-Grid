@@ -110,7 +110,7 @@
                 });*/
                 gridData.gridElements = gridData.gridElements.concat(elements);
                 await dataService.saveGrid(gridData);
-                await this.resetGlobalGrid(gridData);
+                await this.resetGlobalGrid({homeGridId: gridData.id});
                 Router.toEditGrid(gridData.id);
             },
             importData() {

@@ -92,13 +92,13 @@
                         <button v-show="!metadata.globalGridActive || !hasGlobalGrid" @click="setGlobalGridActive(true)"><i class="fas fa-globe"/> <span>{{ $t('activateGlobalGrid') }}</span></button>
                         <button v-show="metadata.globalGridActive && hasGlobalGrid" @click="setGlobalGridActive(false)"><i class="fas fa-globe"/> <span>{{ $t('deactivateGlobalGrid') }}</span></button>
                         <button :disabled="!metadata.globalGridActive" @click="edit(metadata.globalGridId)"><i class="fas fa-edit"/> <span>{{ $t('editGlobalGrid') }}</span></button>
-                        <button :disabled="!metadata.globalGridActive" @click="resetGlobalGrid()"><i class="fas fa-undo"/> <span>{{ $t('resetGlobalGridToDefault') }}</span></button>
+                        <button :disabled="!metadata.globalGridActive" @click="resetGlobalGrid({confirm: true, reload: true})"><i class="fas fa-undo"/> <span>{{ $t('resetGlobalGridToDefault') }}</span></button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <no-grids-page v-if="graphList && graphList.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true" :reset-global-grid="(grid) => {this.homeGrid = grid; this.resetGlobalGrid(true, true);}"></no-grids-page>
+        <no-grids-page v-if="graphList && graphList.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true" :reset-global-grid="this.resetGlobalGrid"></no-grids-page>
         <div class="srow" style="margin-bottom: 10em"></div>
         <grid-link-modal v-if="linkModal.show" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @close="linkModal.show = false" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
         <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.show = false; pdfModal.printGridId = null;"></export-pdf-modal>
@@ -336,21 +336,22 @@
             },
             setGlobalGridActive(active) {
                 if (!this.hasGlobalGrid) {
-                    return this.resetGlobalGrid(true);
+                    return this.resetGlobalGrid({reload: true});
                 }
                 this.metadata.globalGridActive = active;
                 dataService.saveMetadata(this.metadata);
             },
-            resetGlobalGrid(noConfirm, dontReload) {
-                if (!noConfirm) {
+            resetGlobalGrid(options) {
+                options = options || {};
+                if (options.confirm) {
                     if (!confirm(i18nService.t('doYouReallyWantResetGlobalGrid'))) {
                         return;
                     }
                 }
-                dataService.getGlobalGrid(true).then(existingGlobal => {
+                return dataService.getGlobalGrid(true).then(existingGlobal => {
                     return existingGlobal ? dataService.deleteGrid(existingGlobal.id) : Promise.resolve();
                 }).then(() => {
-                    let globalGrid = gridUtil.generateGlobalGrid(this.homeGrid.id);
+                    let globalGrid = gridUtil.generateGlobalGrid(options.homeGridId || this.homeGrid.id);
                     this.metadata.globalGridId = globalGrid.id;
                     this.metadata.globalGridActive = true;
                     this.metadata.globalGridHeightPercentage = new MetaData().globalGridHeightPercentage;
@@ -358,9 +359,10 @@
                 }).then(() => {
                     return dataService.saveMetadata(this.metadata);
                 }).then(() => {
-                    if (!dontReload) {
+                    if (options.reload) {
                         this.reload();
                     }
+                    return Promise.resolve();
                 });
             },
             resetFileInput(event) {
