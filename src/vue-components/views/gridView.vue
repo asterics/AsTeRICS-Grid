@@ -250,17 +250,19 @@
                 });
             },
             reload(gridData) {
-                gridInstance.reinit(gridData).then(() => {
+                return gridInstance.reinit(gridData).then(() => {
                     if (gridData) {
                         this.gridData = JSON.parse(JSON.stringify(gridData));
                     }
                     this.reinitInputMethods();
+                    return Promise.resolve();
                 });
             },
-            onNavigateEvent(event, gridData) {
+            async onNavigateEvent(event, gridData) {
                 this.metadata.lastOpenedGridId = gridData.id;
-                this.reload(gridData);
-                dataService.saveMetadata(this.metadata);
+                await this.reload(gridData);
+                await dataService.saveMetadata(this.metadata);
+                $(document).trigger(constants.EVENT_GRID_LOADED);
             },
             reloadOnLangChange() {
                 this.reload();
