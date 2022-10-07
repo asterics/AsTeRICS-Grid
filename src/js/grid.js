@@ -18,7 +18,7 @@ function Grid(gridContainerId, gridItemClass, options) {
     var gridItemClass = gridItemClass;
     var enableResizing = false;
     var dragAndDrop = false;
-    var gridId = null;
+    var gridId = options.gridId;
 
     //internal
     var _gridListInstance = null;
@@ -42,7 +42,7 @@ function Grid(gridContainerId, gridItemClass, options) {
                     resolve();
                 });
             } else {
-                dataService.getGrid(options.gridId).then(gridData => {
+                dataService.getGrid(gridId).then(gridData => {
                     initData(options, gridData);
                     initGrid(_gridData).then(() => {
                         resolve();
@@ -58,11 +58,11 @@ function Grid(gridContainerId, gridItemClass, options) {
 
     function initData(options, gridData) {
         if (options) {
-            gridId = options.gridId || gridId;
             enableResizing = options.enableResizing != undefined ? options.enableResizing : enableResizing;
             dragAndDrop = options.dragAndDrop;
         }
         _gridData = gridData;
+        gridId = _gridData.id;
         _gridRows = _gridData.rowCount;
         _minGridColumns = _gridData.minColumnCount;
     }
