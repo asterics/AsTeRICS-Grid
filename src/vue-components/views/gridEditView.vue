@@ -125,7 +125,7 @@
                 }
             },
             back() {
-                Router.toGrid(this.gridData.id);
+                Router.toMain();
             },
             editElement(elementId) {
                 this.editElementId = elementId;
