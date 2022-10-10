@@ -264,7 +264,7 @@
                 await dataService.saveMetadata(this.metadata);
                 $(document).trigger(constants.EVENT_GRID_LOADED);
             },
-            reloadOnLangChange() {
+            onReloadGrid() {
                 this.reload();
             },
             toEditGrid() {
@@ -346,14 +346,14 @@
         },
         created() {
             $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
-            $(document).on(constants.EVENT_LANGUAGE_CHANGE, this.reloadOnLangChange);
+            $(document).on(constants.EVENT_RELOAD_CURRENT_GRID, this.onReloadGrid);
             $(document).on(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
             $(document).on(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, this.onNavigateEvent);
             document.addEventListener('contextmenu', this.contextMenuListener);
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
-            $(document).off(constants.EVENT_LANGUAGE_CHANGE, this.reloadOnLangChange);
+            $(document).off(constants.EVENT_RELOAD_CURRENT_GRID, this.onReloadGrid);
             $(document).off(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
             $(document).off(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, this.onNavigateEvent);
             document.removeEventListener('contextmenu', this.contextMenuListener);

@@ -75,7 +75,6 @@ i18nService.setAppLanguage = function (lang, dontSave) {
     $('html').prop('lang', useLang);
     return loadLanguage(useLang).then(() => {
         vueI18n.locale = useLang;
-        $(document).trigger(constants.EVENT_LANGUAGE_CHANGE);
         allLanguages.sort((a, b) => (a[useLang].toLowerCase() > b[useLang].toLowerCase()) ? 1 : -1);
         return Promise.resolve();
     });
@@ -83,7 +82,6 @@ i18nService.setAppLanguage = function (lang, dontSave) {
 
 i18nService.setContentLanguage = async function (lang, dontSave) {
     currentContentLang = lang || undefined;
-    $(document).trigger(constants.EVENT_LANGUAGE_CHANGE);
     if (!dontSave) {
         let metadata = await dataService.getMetadata();
         metadata.localeConfig.contentLang = lang;

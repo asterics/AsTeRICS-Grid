@@ -10,6 +10,9 @@ import {GridActionCollectElement} from "../model/GridActionCollectElement";
 import {webradioService} from "./webradioService";
 import {i18nService} from "./i18nService";
 import {youtubeService} from "./youtubeService";
+import {GridActionNavigate} from "../model/GridActionNavigate.js";
+import {GridActionChangeLang} from "../model/GridActionChangeLang.js";
+import $ from "../externals/jquery.js";
 
 let actionService = {};
 
@@ -31,16 +34,44 @@ actionService.doAction = function (gridId, gridElementId) {
 };
 
 actionService.testAction = function (gridElement, action, gridData) {
-    doAction(gridElement, action, gridData.id, gridData);
+    doAction(gridElement, action, {
+        gridId: gridData.id,
+        gridData: gridData
+    });
 };
 
 function doActions(gridElement, gridId) {
-    gridElement.actions.forEach(action => {
-        doAction(gridElement, action, gridId);
+    let actions = gridElement.actions;
+    actions.sort((a, b) => {
+        // do lang change before navigation
+        if (a.modelName === GridActionChangeLang.getModelName() && b.modelName === GridActionNavigate.getModelName()) {
+            return -1;
+        }
+        if (b.modelName === GridActionChangeLang.getModelName() && a.modelName === GridActionNavigate.getModelName()) {
+            return 1;
+        }
+        return 0;
+    });
+    actions.forEach(action => {
+        doAction(gridElement, action, {
+            gridId: gridId,
+            actions: actions
+        });
     });
 }
 
-function doAction(gridElement, action, gridId, gridData) {
+/**
+ *
+ * @param gridElement
+ * @param action
+ * @param options.gridId the id of the grid the action is contained in (only needed for GridActionWebradio and GridActionARE)
+ * @param options.gridData the gridData object the action is contained in (optional)
+ * @param options.actions all actions that are currently executed
+ */
+function doAction(gridElement, action, options) {
+    options = options || {};
+    options.actions = options.actions || [];
+
     switch (action.modelName) {
         case 'GridActionSpeak':
             log.debug('action speak');
@@ -53,7 +84,6 @@ function doAction(gridElement, action, gridId, gridData) {
             }
             break;
         case 'GridActionNavigate':
-            log.debug('action navigate');
             if (action.toLastGrid) {
                 Router.toLastGrid();
             } else if (Router.isOnEditPage()) {
@@ -64,10 +94,10 @@ function doAction(gridElement, action, gridId, gridData) {
             break;
         case 'GridActionARE':
             log.debug('action are');
-            if (gridData) {
-                doAREAction(action, gridData)
+            if (options.gridData) {
+                doAREAction(action, options.gridData)
             } else {
-                dataService.getGrid(gridId).then(grid => {
+                dataService.getGrid(options.gridId).then(grid => {
                     doAREAction(action, grid);
                 });
             }
@@ -81,13 +111,16 @@ function doAction(gridElement, action, gridId, gridData) {
             collectElementService.doCollectElementActions(action.action);
             break;
         case 'GridActionWebradio':
-            webradioService.doAction(gridId, action);
+            webradioService.doAction(options.gridId, action);
             break;
         case 'GridActionYoutube':
             youtubeService.doAction(action);
             break;
         case 'GridActionChangeLang':
             i18nService.setContentLanguage(action.language);
+            if (options.actions.length === 0 || !options.actions.map(a => a.modelName).includes(GridActionNavigate.getModelName())) {
+                $(document).trigger(constants.EVENT_RELOAD_CURRENT_GRID);
+            }
             break;
         case 'GridActionOpenWebpage':
             let tab = window.open(action.openURL, '_blank');
