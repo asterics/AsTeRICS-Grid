@@ -58,9 +58,13 @@ gridUtil.sortGridElements = function (elements) {
  * generates a global grid with elements "home", "back", input field, "backspace" and "clear"
  * @param homeGridId id of the grid where the "home" buttons should navigate to
  * @param locale the locale of the grid to generate, e.g. "de" or "en"
+ * @param options.convertToLowercase if element labels collected in collect element should be converted to lowercase, default: true
  * @return {GridData}
  */
-gridUtil.generateGlobalGrid = function (homeGridId, locale) {
+gridUtil.generateGlobalGrid = function (homeGridId, locale, options) {
+    options = options || {};
+    options.convertToLowercase = options.convertToLowercase !== undefined ? options.convertToLowercase : true;
+
     let elementHome = new GridElement({
         width: 1,
         height: 1,
@@ -85,7 +89,8 @@ gridUtil.generateGlobalGrid = function (homeGridId, locale) {
         width: 10,
         height: 1,
         x: 2,
-        y: 0
+        y: 0,
+        convertToLowercase: options.convertToLowercase
     });
     let elementSpeak = new GridElement({
         width: 1,

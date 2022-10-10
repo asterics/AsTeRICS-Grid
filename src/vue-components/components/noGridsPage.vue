@@ -77,7 +77,7 @@
                 let label = {};
                 let elemLabel = {};
                 label[i18nService.getContentLang()] = "New grid";
-                elemLabel[i18nService.getContentLang()] = i18nService.t('helloClickRightToEdit');
+                elemLabel[i18nService.getContentLang()] = i18nService.tl('helloClickRightToEdit', null, i18nService.getContentLang());
                 let gridData = new GridData({
                     label: label,
                     gridElements: [new GridElement({
@@ -110,7 +110,7 @@
                 });*/
                 gridData.gridElements = gridData.gridElements.concat(elements);
                 await dataService.saveGrid(gridData);
-                await this.resetGlobalGrid({homeGridId: gridData.id});
+                await this.resetGlobalGrid({homeGridId: gridData.id, convertToLowercase: false});
                 Router.toEditGrid(gridData.id);
             },
             importData() {

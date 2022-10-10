@@ -351,7 +351,9 @@
                 return dataService.getGlobalGrid(true).then(existingGlobal => {
                     return existingGlobal ? dataService.deleteGrid(existingGlobal.id) : Promise.resolve();
                 }).then(() => {
-                    let globalGrid = gridUtil.generateGlobalGrid(options.homeGridId || this.homeGrid.id);
+                    let globalGrid = gridUtil.generateGlobalGrid(options.homeGridId || this.homeGrid.id, null, {
+                        convertToLowercase: options.convertToLowercase
+                    });
                     this.metadata.globalGridId = globalGrid.id;
                     this.metadata.globalGridActive = true;
                     this.metadata.globalGridHeightPercentage = new MetaData().globalGridHeightPercentage;
