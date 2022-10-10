@@ -6,7 +6,7 @@
             <form autocomplete="off" onsubmit="event.preventDefault()" style="margin-bottom: 0.5em">
                 <div class="srow">
                     <label for="inputUser" class="two columns"><span class="desktop-right inputlabel">{{ $t('username') }}</span></label>
-                    <input type="text" name="username" v-model="user" id="inputUser" class="six columns" @change="validateUsername" v-debounce="300" v-focus=""/>
+                    <input type="text" name="username" v-model="user" id="inputUser" class="six columns" @change="validateUsername" v-debounce="300" v-focus="" maxlength="16"/>
                     <div class="three columns" v-show="user != null && usernameValid == false">
                         <i style="color: red;" class="fas fa-times"/> <span>{{usernameValidationCode | translate}}</span>
                     </div>
