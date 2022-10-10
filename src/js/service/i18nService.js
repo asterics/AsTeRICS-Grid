@@ -87,6 +87,7 @@ i18nService.setContentLanguage = async function (lang, dontSave) {
         metadata.localeConfig.contentLang = lang;
         return dataService.saveMetadata(metadata);
     }
+    loadLanguage(currentContentLang);
 }
 
 /**
@@ -187,6 +188,9 @@ i18nService.getTranslationObject = function(label, locale) {
 };
 
 function loadLanguage(useLang, secondTry) {
+    if (!useLang) {
+        return Promise.resolve();
+    }
     return new Promise(resolve => {
         if (loadedLanguages.includes(useLang)) {
             resolve();
@@ -217,6 +221,7 @@ function loadLanguage(useLang, secondTry) {
 async function getMetadataConfig() {
     let metadata = await dataService.getMetadata();
     currentContentLang = metadata.localeConfig.contentLang;
+    loadLanguage(currentContentLang);
 }
 
 $(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
