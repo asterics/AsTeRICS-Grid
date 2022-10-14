@@ -62,5 +62,57 @@
     },
     "standardFor": ["ca"],
     "wordPrediction": true
+  },
+  {
+    "name": "CACE-UTAC 2021 - ARASAAC",
+    "filename": "CACE-UTAC_2021_CA.grd.json",
+    "author": "UTAC (Unitat de Tècniques Augmentatives de Comunicació)",
+    "website": "https://www.utac.cat/",
+    "languages": ["ca"],
+    "description": {
+      "en": "El CACE-UTAC és vocabulari pictogràfic de més de 800 paraules, organitzat en categories semàntiques. Per a més informació al respecte podeu consultar aquest document.",
+      "ca": "El CACE-UTAC és vocabulari pictogràfic de més de 800 paraules, organitzat en categories semàntiques. Per a més informació al respecte podeu consultar aquest document."
+    },
+    "standardFor": null,
+    "wordPrediction": false
+  },
+  {
+    "name": "CACE-UTAC 2021 ST-G - ARASAAC",
+    "filename": "CACE-UTAC_2021_ST-G_CA.grd.json",
+    "author": "UTAC (Unitat de Tècniques Augmentatives de Comunicació)",
+    "website": "https://www.utac.cat/",
+    "languages": ["ca"],
+    "description": {
+      "en": "El CACE-UTAC és un vocabulari pictogràfic de més de 800 paraules, organitzat en categories semàntiques. El format ST-G compta amb una organització que ofereix més suport a l’estructuració de la frase. Per a més informació sobre el CACE podeu consultar aquest document.",
+      "ca": "El CACE-UTAC és un vocabulari pictogràfic de més de 800 paraules, organitzat en categories semàntiques. El format ST-G compta amb una organització que ofereix més suport a l’estructuració de la frase. Per a més informació sobre el CACE podeu consultar aquest document."
+    },
+    "standardFor": null,
+    "wordPrediction": false
+  },
+  {
+    "name": "CACE-UTAC 2021 - ARASAAC",
+    "filename": "CACE-UTAC_2021_ES.grd.json",
+    "author": "UTAC (Unitat de Tècniques Augmentatives de Comunicació)",
+    "website": "https://www.utac.cat/",
+    "languages": ["es"],
+    "description": {
+      "en": "El CACE-UTAC es un vocabulario pictográfico de más de 800 palabras, organizado en categorías semánticas. Para más información al respecto se puede consultar este documento.",
+      "es": "El CACE-UTAC es un vocabulario pictográfico de más de 800 palabras, organizado en categorías semánticas. Para más información al respecto se puede consultar este documento."
+    },
+    "standardFor": null,
+    "wordPrediction": false
+  },
+  {
+    "name": "CACE-UTAC 2021 ST-G - ARASAAC",
+    "filename": "CACE-UTAC_2021_ST-G_ES.grd.json",
+    "author": "UTAC (Unitat de Tècniques Augmentatives de Comunicació)",
+    "website": "https://www.utac.cat/",
+    "languages": ["es"],
+    "description": {
+      "en": "El CACE-UTAC es un vocabulario pictográfico de más de 800 palabras, organizado en categorías semánticas. El formato ST-G cuenta con una organización que ofrece mayor apoyo a la estructura de la frase. Para más información al respecto se puede consultar este documento. ",
+      "es": "El CACE-UTAC es un vocabulario pictográfico de más de 800 palabras, organizado en categorías semánticas. El formato ST-G cuenta con una organización que ofrece mayor apoyo a la estructura de la frase. Para más información al respecto se puede consultar este documento. "
+    },
+    "standardFor": null,
+    "wordPrediction": false
   }
 ]
