@@ -54,8 +54,7 @@ If you want to support the development of AsTeRICS Grid or contribute to the cos
 ## Acknowledgements and Attribution
 * Thanks to [ARASAAC](https://arasaac.org/) for collaborating and providing their pictogram API
 * Thanks to [crowdin.com](https://crowdin.com/project/asterics-grid) for providing a free open source license
-* Thanks to [crossbrowsertesting.com](https://crossbrowsertesting.com/) for providing a free open source license.
-<a href="https://crossbrowsertesting.com/"><img src="https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/app/img/CBT_OS-logo_2Color-H.png" width="400px"/></a>
+* Thanks to [browserstack.com](https://browserstack.com/) for providing us free UI tests on their platform.
 * Thanks to Alex Segler for the great Webradio API [radio-browser.info](http://www.radio-browser.info/) which makes it possible to search and play webradios within AsTeRICS Grid
 * Thanks to the makers of the API from [opensymbols.org](https://www.opensymbols.org/) which makes it possible to search for open AAC symbols within AsTeRICS Grid
 * Thanks to ResponsiveVoice for providing an free non-commercial version, <a href="https://responsivevoice.org">ResponsiveVoice-NonCommercial</a> licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img title="ResponsiveVoice Text To Speech" src="https://responsivevoice.org/wp-content/uploads/2014/08/95x15.png" alt="95x15" width="95" height="15" /></a>
