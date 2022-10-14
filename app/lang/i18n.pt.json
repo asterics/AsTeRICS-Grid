@@ -483,7 +483,7 @@
   "privacyPolicyInfo": "O único dado potencialmente pessoal processado pelo AsTeRICS Grid é o nome de utilizador dos utilizadores online. Todos os outros dados são armazenados localmente ou encriptados ponto a ponto e, portanto, somente legíveis pelos utilizadores. Mais informações na {privacyPolicy}.",
   "privacyPolicy": "Política de Privacidade",
   "acknowledgements": "Agradecimentos",
-  "thankCrossbrowsertesting": "Agradecemos a {crossbrowserTestingUrl} por nos fornecer uma licença gratuita de código aberto.",
+  "thankBrowserstack": "We thank {browserstackUrl} for providing us free UI tests on their platform.",
   "thankResponsiveVoice": "Agradecemos a {responsiveVoiceUrl} pelo uso gratuito, não comercial.",
   "licensedUnder": "licenciado sob",
   "youreUsingAstericsGridVersion": "Está a usar a versão {gridVersion} do AsTeRICS Grid.",
