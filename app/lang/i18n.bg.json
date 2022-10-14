@@ -483,7 +483,7 @@
   "privacyPolicyInfo": "Единствените потенциално лични данни, които се обработват от АсТеРИКС Решетка са потребителското име на йнлайн потребителя. Всички останали данни, или се съхраняват локално, или са криптирани от край до край, следователно са четими само от потребителя. Повече информация може да бъде открита в {privacyPolicy}.",
   "privacyPolicy": "Политика за поверителност",
   "acknowledgements": "Признания",
-  "thankCrossbrowsertesting": "Благодарим на {crossbrowserTestingUrl} за това, че ни предоставиха безплатен и с отворен код лиценз.",
+  "thankBrowserstack": "We thank {browserstackUrl} for providing us free UI tests on their platform.",
   "thankResponsiveVoice": "Благодарим на {responsiveVoiceUrl} за безплатната употреба с некомерсиална цел.",
   "licensedUnder": "Лицензирано под",
   "youreUsingAstericsGridVersion": "Използвате версиа {gridVersion} на АсТеРИКС Решетка.",
