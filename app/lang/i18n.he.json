@@ -483,7 +483,7 @@
   "privacyPolicyInfo": "הנתון האישי המשמעותי המעובד על ידי AsTeRICS Grid הוא שם המשתמש של המשתמש המקוון. כל שאר הנתונים מאוחסנים מקומית או מקודדים מקצה לקצה ולכן לא ניתנים לקריאה על ידי משתמשים. מידע נוסף ניתן למצוא ב {privacyPolicy}.",
   "privacyPolicy": "מדיניות פרטיות",
   "acknowledgements": "תודות",
-  "thankCrossbrowsertesting": "אנו מודים ל {crossbrowserTestingUrl} על שסיפקו לנו רישיון לשימוש פתוח וחינמי.",
+  "thankBrowserstack": "We thank {browserstackUrl} for providing us free UI tests on their platform.",
   "thankResponsiveVoice": "אנו מודים ל {responsiveVoiceUrl} שאיפשרו שימוש ללא פירסומות.",
   "licensedUnder": "הרישיון תחת",
   "youreUsingAstericsGridVersion": "אתם משתמשים בגרסה {gridVersion} של AsTeRICS Grid.",
