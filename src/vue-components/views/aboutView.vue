@@ -79,12 +79,11 @@
                 </div>
                 <div class="srow">
                     <h3>{{ $t('acknowledgements') }}</h3>
-                    <i18n path="thankCrossbrowsertesting" tag="div">
-                        <template v-slot:crossbrowserTestingUrl>
-                            <a target="_blank" href="https://crossbrowsertesting.com/">crossbrowsertesting.com</a>
+                    <i18n path="thankBrowserstack" tag="div" class="mb-3">
+                        <template v-slot:browserstackUrl>
+                            <a target="_blank" href="https://www.browserstack.com//">browserstack.com</a>
                         </template>
                     </i18n>
-                    <a target="_blank" href="https://crossbrowsertesting.com/"><img src="app/img/CBT_OS-logo_2Color-H.png" width="300px"></a><br/>
                     <i18n path="thankResponsiveVoice" tag="div">
                         <template v-slot:responsiveVoiceUrl>
                             <a target="_blank" href="https://responsivevoice.org">ResponsiveVoice.org</a>
