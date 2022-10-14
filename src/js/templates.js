@@ -90,7 +90,7 @@ function getGridElementCollect(gridElem, metadata) {
     var template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-type="${gridElem.type}">
     <div class="grid-item-content" tabindex="40" aria-label="${i18nService.t('ELEMENT_TYPE_COLLECT')}" id="${gridElem.id}" data-id="${gridElem.id}" style="${`background-color: ${backgroundColor}; border: 1px solid ${getBorderColor(metadata)}`}">
-        <div class="collect-outer-container text-container" style="${`position: absolute; display:flex; inset: 5px; color: ${fontColor};`}">
+        <div class="collect-outer-container text-container" style="${`position: absolute; display: flex; top: 5px; right: 5px; bottom: 5px; left: 5px; color: ${fontColor};`}">
         </div>
     </div>
 </li>`;
