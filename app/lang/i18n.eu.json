@@ -483,7 +483,7 @@
   "privacyPolicyInfo": "AsTeRICS Grid-ek prozesatzen duen datu pertsonalen balio bakarra online erabiltzaileen erabiltzaile-izena da. Gainerako datu guztiak tokikoan edo muturretik muturrera enkriptatuak biltzen dira eta, beraz, erabiltzaileek soilik irakur ditzakete. Informazio gehiago {privacyPolicy} atalean aurki daiteke.",
   "privacyPolicy": "Pribatutasun-politika",
   "acknowledgements": "Eskerrak",
-  "thankCrossbrowsertesting": "Eskertu {crossbrowserTestingUrl}-ri doako kode irekiko lizentzia emateagatik.",
+  "thankBrowserstack": "We thank {browserstackUrl} for providing us free UI tests on their platform.",
   "thankResponsiveVoice": "Eskertu {responsiveVoiceUrl}-ri doako erabilera ez-komertzialagatik.",
   "licensedUnder": "lizentziapean",
   "youreUsingAstericsGridVersion": "AsTeRICS Grid-en {gridVersion} bertsioa erabiltzen ari zara.",
