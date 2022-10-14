@@ -483,7 +483,7 @@
   "privacyPolicyInfo": "Jedina potencijalno osobna vrijednost podataka koju obrađuje AsTeRICS Grid je korisničko ime online korisnika. Svi ostali podaci pohranjuju se lokalno ili s kraja na kraj kriptirani i stoga ih mogu čitati samo korisnici. Dodatne informacije možete pronaći u {pravilimaprivatnosti}.",
   "privacyPolicy": "Pravila o privatnosti",
   "acknowledgements": "Priznanja",
-  "thankCrossbrowsertesting": "Zahvaljujemo {crossbrowserTestingUrl} što nam je dao besplatnu licencu otvorenog koda.",
+  "thankBrowserstack": "We thank {browserstackUrl} for providing us free UI tests on their platform.",
   "thankResponsiveVoice": "Zahvaljujemo {responsiveVoiceUrl} na besplatnoj nekomercijalnoj upotrebi.",
   "licensedUnder": "licenciran od",
   "youreUsingAstericsGridVersion": "Koristite verziju {gridVersion} AsTeRICS Grida.",
