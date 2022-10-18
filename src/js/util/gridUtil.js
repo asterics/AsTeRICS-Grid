@@ -63,7 +63,7 @@ gridUtil.sortGridElements = function (elements) {
  */
 gridUtil.generateGlobalGrid = function (homeGridId, locale, options) {
     options = options || {};
-    options.convertToLowercase = options.convertToLowercase !== undefined ? options.convertToLowercase : true;
+    options.convertToLowercase = options.convertToLowercase !== undefined ? options.convertToLowercase : false;
 
     let elementHome = new GridElement({
         width: 1,

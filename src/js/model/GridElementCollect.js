@@ -14,7 +14,7 @@ class GridElementCollect extends GridElement.extend({
         props = props || {};
         props.showLabels = true;
         props.singleLine = true;
-        props.convertToLowercase = props.convertToLowercase !== undefined ? props.convertToLowercase : true;
+        props.convertToLowercase = props.convertToLowercase !== undefined ? props.convertToLowercase : false;
         props.imageHeightPercentage = 85;
         props.mode = GridElementCollect.MODE_AUTO;
         props.type = GridElement.ELEMENT_TYPE_COLLECT;
