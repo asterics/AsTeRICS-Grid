@@ -137,6 +137,7 @@
                 thiz.unlockCounter = UNLOCK_COUNT;
                 dataService.saveMetadata(thiz.metadata).then(() => {
                     $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
+                    $(document).trigger(constants.EVENT_UI_LOCKED);
                 });
             },
             unlock(force) {
@@ -153,6 +154,7 @@
                     thiz.metadata.locked = false;
                     dataService.saveMetadata(thiz.metadata).then(() => {
                         $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
+                        $(document).trigger(constants.EVENT_UI_UNLOCKED);
                     });
                 }
             },
@@ -397,6 +399,9 @@
                 this.backgroundColor = metadata.colorConfig.gridBackgroundColor;
                 metadata.lastOpenedGridId = this.gridId;
                 metadata.locked = metadata.locked === undefined ? urlParamService.isDemoMode() && dataService.getCurrentUser() === constants.LOCAL_DEMO_USERNAME : metadata.locked;
+                if (metadata.locked) {
+                    $(document).trigger(constants.EVENT_UI_LOCKED);
+                }
                 metadata.fullscreen = metadata.fullscreen === undefined ? urlParamService.isDemoMode() && dataService.getCurrentUser() === constants.LOCAL_DEMO_USERNAME : metadata.fullscreen;
                 metadata.inputConfig.scanEnabled = urlParamService.isScanningEnabled() ? true : metadata.inputConfig.scanEnabled;
                 metadata.inputConfig.dirEnabled = urlParamService.isDirectionEnabled() ? true : metadata.inputConfig.dirEnabled;

@@ -33,6 +33,7 @@ let _initialized = false;
 let _currentView = null;
 let _currentVueApp = null;
 let _gridHistory = [];
+let _locked = false;
 
 Router.init = function (injectIdParam, initialHash) {
     if (!routingEndabled) {
@@ -120,6 +121,10 @@ Router.init = function (injectIdParam, initialHash) {
         });
     navigoInstance.hooks({
         before: function (done, params) {
+            let hash = location.hash;
+            if (_locked && (hash.startsWith('#grid/edit') || (!hash.startsWith('#main') && !hash.startsWith('#grid/')))) {
+                return done(false);
+            }
             if (_currentView && _currentView.destroy) {
                 _currentView.destroy();
                 _currentView = null;
@@ -313,5 +318,13 @@ function toMainInternal() {
         });
     });
 }
+
+$(document).on(constants.EVENT_UI_LOCKED, () => {
+    _locked = true;
+});
+
+$(document).on(constants.EVENT_UI_UNLOCKED, () => {
+    _locked = false;
+});
 
 export {Router};
