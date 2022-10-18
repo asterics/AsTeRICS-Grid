@@ -40,6 +40,8 @@ echo "testing..."
 npm run test
 
 branch=$(git symbolic-ref --short HEAD)
+echo "git pull..."
+git pull
 tagname="release-beta-$(date +%Y-%m-%d-%H.%M/%z)"
 tagnameSed="release-beta-$(date +%Y-%m-%d-%H.%M\\/%z)"
 echo $tagnameSed
