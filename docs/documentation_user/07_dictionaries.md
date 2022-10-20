@@ -40,7 +40,7 @@ These are the elements of the "import words" modal:
 
 ### Example: import a big word list
 
-This example shows how to import a big list of words, for instance a list of the <a href="http://corpus.leeds.ac.uk/frqc/internet-en-forms.num" target="_blank">most frequent 25000 words</a> from from <a href="http://corpus.leeds.ac.uk/" target="_blank">Corpus leeds</a>. 
+This example shows how to import a big list of words, for instance a list of the <a href="http://corpus.leeds.ac.uk/frqc/internet-en-forms.num" target="_blank">most frequent 25000 words</a> from <a href="http://corpus.leeds.ac.uk/" target="_blank">Corpus leeds</a>. 
 
 The format of the list looks like this:
 
@@ -51,12 +51,15 @@ The format of the list looks like this:
 ...
 ```
 
-Each data record has the format `<rank> <frequency> <word>` and is separated by a line separator `\n`. In order to import this list to AsTeRICS Grid the whole list has to be copied, inserted into the text field of the import modal (Fig. 2, number 2) and the following advanced options have to be set:
+Each data record has the format `<rank> <frequency> <word>` and is separated by a line separator `\n`. In order to import this list to AsTeRICS Grid the whole list has to be copied, inserted into the text field of the import modal (Fig. 2, number 2) and the following advanced options have to be set (Fig. 2, number 6-9):
 
-1. **Element separator**: `\n` - since the data records are separated by line breaks
-2. **In-element separator**: `[ ]` (space) - since the data inside the lines is separated by spaces
-3. **Word index**: `2` - since the word is the third element within a data record (zero-based index)
-4. **Rank index**: `0` - since the rank is the first element within a data record (zero-based index)
+* **Element separator**: `\n` - since the data records are separated by line breaks
+
+* **In-element separator**: `[ ]` (space) - since the data inside the lines is separated by spaces
+
+* **Word index**: `2` - since the word is the third element within a data record (zero-based index)
+
+* **Rank index**: `0` - since the rank is the first element within a data record (zero-based index)
 
 [&#x2190; Previous Chapter](06_users.md) [Next Chapter &#x2192;](08_keyboard_shortcuts.md)
 

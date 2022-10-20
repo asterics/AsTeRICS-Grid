@@ -18,48 +18,50 @@ This chapter is about actions that can be performed if a grid element is selecte
 
 ## Edit actions modal
 
-Choosing "Edit in the [Edit grid element menu](03_appearance_layout.md#editing-grid-elements) and clicking on the *Actions* Tab opens the following configuration modal (Fig. 1)
+![edit element menu](./img/edit_element_menu_en_edit.jpg)
+*Fig. 1: Grid element menu*
+
+Choosing "Edit" in the [Edit grid element menu](03_appearance_layout.md#editing-grid-elements) (Fig.1) and clicking on the *Actions* Tab opens the following configuration modal (Fig. 2):
 
 ![edit grid element actions](./img/edit_grid_element_actions_en.jpg)
 
-*Fig. 1: Edit actions modal*
+*Fig. 2: Edit Actions modal*
 
 This modal configures the actions that will be performed if the grid element is selected. These are the elements in the action modal:
 
 1. **New action**: select a new action to the grid, in the combobox the action type has to be selected
 2. **Add action**: adds the selected action type as a new action to the grid
-   
-   **Current actions**: list of currently configured actions that will be performed if the grid element is selected
-3. **Edit**: edit and configure the particular action
-4. **Delete**: delete the action from this grid element
-5. **Test**: tests the action, e.g. speaks the label. This button is not available for all types of actions.
-6. **Cancel**: discard any changes and close the modal
-7. **OK**: save all changes and close the modal
-   
-   **OK, edit previous**: save all changes and edit the actions of the previous element
-   
-   **OK, edit next**: save all changes and edit the actions of the next element
+3. **Current actions**: list of currently configured actions that will be performed if the grid element is selected
+4. **Edit**: edit and configure the particular action
+5. **Delete**: delete the action from this grid element
+6. **Test**: tests the action, e.g. speaks the label. This button is not available for all types of actions.
+7. **Cancel**: discard any changes and close the modal
+8. **OK**: save all changes and close the modal
+9. **OK, edit previous**: save all changes and edit the actions of the previous element
+10. **OK, edit next**: save all changes and edit the actions of the next element
 
 ## Action types
 
-These are the types of actions that are selectable (Fig. 1, number 1):
+These are the types of actions that are selectable (Fig. 2, number 1):
 
 1. **Speak label**: speaks the label of the element using a computer voice (text-to-speech)
 2. **Navigate to other grid**: navigates to another grid
 3. **Speak custom text**: speaks a customizeable text using a computer voice (text-to-speech)
 4. **Fill prediction elements**: fills all [prediction elements](01_terms.md#grid-element) in the current grid with word suggestions
 5. **Collect element action**: performs actions on [collect elements](01_terms.md#grid-element) in the current grid, e.g. clearing it or copying it's text to clipboard
-6. **AsTeRICS Action**: do an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework)
-7. **Web radio action**
-8. **YouTube action**
-9. **Change app language**
-10. **Open web page in new tab**
+6. **AsTeRICS Action**: does an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework)
+7. **Web radio action**: plays a web radio station
+8. **YouTube action**: links to a YouTube video and shows it without leaving the communicator
+9. **Change content language**: changes the content language (description of grid elements / language of the communicator grid(s))
+10. **Open web page in new tab**: allows to assign an external web page to a cell and opens it in a new tab
 
 ### Speak label
 
-Clicking on "Edit" on a "speak label" action (or creating a new one) shows the following configuration possibilities:
+Clicking on "Edit" of a "speak label" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 3):
 
 ![action speak label](./img/action_speak_label_en.jpg)
+
+*Fig. 3: Configuration possibilites of "Speak label"*
 
 By default the language of the browser/system is selected. Available languages can differ depending on the browser, from experience [Google Chrome](https://www.google.com/chrome/) offers most languages. Clicking on the "Test" button speaks the label in the selected language.
 
@@ -67,17 +69,25 @@ By default the language of the browser/system is selected. Available languages c
 
 ### Navigate to other grid
 
-Clicking on "Edit" on a "navigate to other grid" action (or creating a new one) shows the following configuration possibilities:
+Clicking on "Edit" of a "navigate to other grid" action (or creating a new one) shows the following configuration possibilities:
 
 ![action navigate to other grid](./img/action_navigate_en.jpg)
 
-"Grid to navigate" selects the grid to switch to if this action is performed. The combobox contains a list of the names of all available grids of the current user.
+*Fig. 4: Configuration possibilites of "Navigate to other grid"*
+
+- "Navigate to grid" allows you to select the grid to switch to if this action is performed. The combobox contains a list of the names of all available grids of the current user. 
+
+- Alternatively the option "Navigate to last opened grid" can be activated.
+
+- Additionally, the option "Add this element to collection elements" can be activated, in case it is necessary for this cell to appear in the accumulated phrase.
 
 ### Speak custom text
 
-Clicking on "Edit" on a "speak custom text" action (or creating a new one) shows the following configuration possibilities:
+Clicking on "Edit" of a "speak custom text" action (or creating a new one) shows the following configuration possibilities:
 
 ![Speak custom text](./img/action_speak_custom_en.jpg)
+
+*Fig. 4: Configuration possibilites of "Speak custom text"*
 
 For language selection the same conditions as for [speak label](05_actions.md#speak-label) actions apply. "Text to speak" is the custom text that should be spoken. The button "Test" tests the configuration and speaks the current text.
 
@@ -93,10 +103,9 @@ Clicking on "Edit" on a "fill prediction elements" action (or creating a new one
 
 ![fill prediction elements action options](./img/action_fillprediction_en.jpg)
 
-The meaning of the options is:
+*Fig. 5: Configuration possibilites of "Fill prediction elements"*
 
-1. **Refresh suggestions on change** (only available on [collect elements](01_terms.md#grid-element)): if checked prediction elements are recalculated and refilled on every change of the collection element on base of the current value of the collection element: <div style="margin-left: 2em"><img src="./img/fill_predictions2.gif" alt="fill predictions elements with collect element animation" width="350"/></div>
-2. **Dictionary to use**: select the dictionary you want to use (see [manage dictionaries](02_navigation.md#manage-dictionaries-view)). If nothing selected words from all available dictionaries will be suggested.
+**Dictionary to use**: select the dictionary you want to use (see [manage dictionaries](02_navigation.md#manage-dictionaries-view)). If nothing selected words from all available dictionaries will be suggested.
 
 ### Collect element action
 
@@ -104,18 +113,23 @@ The meaning of the options is:
 
 Collect element actions are various actions that are related to [collect elements](01_terms.md#grid-element). 
 
-Clicking on "Edit" on a "collect element action" action (or creating a new one) shows the following configuration possibilities:
+Clicking on "Edit" of a "collect element action" action (or creating a new one) shows the following configuration possibilities:
 
 ![Collect element action options](./img/action_collectelement_en.jpg)
 
-The possible actions to chose are:
+*Fig. 5: Configuration possibilites of "Collect element action"*
 
-1. **Clear collect element** empties the collect element
-2. **Delete last word** deletes the last word of the collection elements: <div style="margin-left: 2em"><img src="./img/collect_delete.gif" alt="Delete last word animation" width="350"/></div>
-3. **Delete last character**: <div style="margin-left: 2em"><img src="./img/collect_delete_c.gif" alt="Delete last character animation" width="350"/></div>
-4. **Copy text to clipboard**: copies the current text of the collect element to clipboard in order to be available for paste in other programs
-5. **Append text to clipboard**: appends the current text of the collect element to clipboard making it possible to collect longer texts in the clipboard which can be used in another program afterwards
-6. **Clear clipboard**: empties the clipboard
+The possible actions to choose are (when opening the combo box):
+
+1. **Speak collect element content**: speaks out the content of the collect element
+2. **Speak collect element content and clear afterwards**: speaks out the content of the collect element and clear it afterwards
+3. **Clear collect element** empties the collect element
+4. **Delete last word/image** deletes the last word/image of the collection elements: <div style="margin-left: 2em"><img src="./img/collect_delete.gif" alt="Delete last word animation" width="350"/></div>
+5. **Delete last character**: <div style="margin-left: 2em"><img src="./img/collect_delete_c.gif" alt="Delete last character animation" width="350"/></div>
+6. **Copy text to clipboard**: copies the current text of the collect element to clipboard in order to be available for paste in other programs
+7. **Append text to clipboard**: appends the current text of the collect element to clipboard making it possible to collect longer texts in the clipboard which can be used in another program afterwards
+8. **Clear clipboard**: empties the clipboard
+9. **Search text on YouTube**
 
 ### AsTeRICS Action
 
@@ -123,16 +137,16 @@ The possible actions to chose are:
 
 An "AsTeRICS action" performs an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework). This can be any action that is possible with the AsTeRICS Framework, e.g. controlling a TV or performing computer actions like opening a program.
 
-Figure 2 shows how an AsTeRICS action that controls a TV is working in more detail:
+Figure 6 shows how an AsTeRICS action that controls a TV is working in more detail:
 
 ![asterics action detail concept](./img/asterics-action-are_en.png)
-*Fig. 2: AsTeRICS action concept, example of controlling a TV*
+*Fig. 6: AsTeRICS action concept, example of controlling a TV*
 
-The following steps are shown in Figure 2:
+The following steps are shown in Figure 6:
 
-1. A user selects a grid element with an associated AsTeRICS action. An [AsTeRICS model](01_terms.md#asterics-model) which can perform the desired action (e.g. controlling a TV) is saved within the current grid.
+1. An user selects a grid element with an associated AsTeRICS action. An [AsTeRICS model](01_terms.md#asterics-model) which can perform the desired action (e.g. controlling a TV) is saved within the current grid.
 2. The AsTeRICS model is uploaded to a running instance of the AsTeRICS Framework (ARE) and afterwards started. The model contains so-called "plugins" which are elements capable of communicating with external hardware, e.g. attached to the computer or accessible via network. In the example the "IrTrans" plugin is capable of communicating with an IrTrans device, which is a replacement for infrared remotes.
-3. After uploading and starting the model on the AsTeRICS Framework, data is sent to a plugin contained in the model. In Fig. 2 some data is sent to the "action" port of the IrTrans plugin.
+3. After uploading and starting the model on the AsTeRICS Framework, data is sent to a plugin contained in the model. In Fig. 6 some data is sent to the "action" port of the IrTrans plugin.
 4. Sending data to the plugin causes the AsTeRICS Framework to communicate with the external real "IrTrans" hardware. The action contains the needed information to perform the desired action, for instance sending a "Volume down" command to a TV.
 5. Finally the IrTrans device sends the infrared signal to the TV causing it to reduce the volume.
 
@@ -140,18 +154,43 @@ Clicking on "Edit" on a "AsTeRICS action" action (or creating a new one) shows t
 
 ![asterics action options](./img/action_asterics_en.jpg)
 
-These are the possibilities while configuring an AsTeRICS Action:
+*Fig. 7: Configuration possibilites of "AsTeRICS action"*
+
+These are the possibilities while configuring an AsTeRICS action:
 
 1. **ARE URL**: the URL of a running ARE (AsTeRICS Framework) to connect with. Standard URL is `http://127.0.0.1:8081/rest/` for a locally running ARE.
+
 2. **Test URL**: click in order to test the current URL. A tick (&#10003;) or times (&times;) symbol will indicate if the test was successful or has failed.
+
 3. **ARE Model**: if there is already a [model](01_terms.md#asterics-model) of this action defined, the name of it is shown here. A click on the link downloads the model.
+
 4. **Download from ARE**: downloads the currently running model from a running AsTeRICS Framework (ARE) instance and saves it to the grid. The current ARE model is replaced by this action.
+
 5. **Upload to ARE**: uploads the saved model to a running AsTeRICS Framework (ARE) for testing purpose or in order to adapt it.
+
 6. **Component**: selection of the component (plugin) of the selected model that should be used
+
 7. **Send data**: define data that should be sent to a specific port of the component
-8. **Trigger event**: selects an event that should be triggered on the selected component (optional, either "send data", "trigger event" or both can be used)
-9. **Test action**: performs the defined AsTeRICS action for testing, same as will be later performed if the grid element is selected
-10. **OK**: apply changes and close edit mode of this AsTeRICS action 
+
+8. **Data**: 
+
+9. **Event-Port**:
+
+10. **Cancel**: discard any changes and close the modal
+
+11. **OK**: save all changes and close the modal
+
+12. **OK, edit previous**: save all changes and edit the actions of the previous element
+
+13. **OK, edit next**: save all changes and edit the actions of the next element
+
+14. **End edit**: apply changes and close edit mode of this AsTeRICS action
+
+15. **Delete**: delete this action from this grid element
+
+16. **Test**: performs the defined AsTeRICS action for testing, same as will be later performed if the grid element is selected
+    
+    **Trigger event**: selects an event that should be triggered on the selected component (optional, either "send data", "trigger event" or both can be used)
 
 ### Web radio action
 
@@ -163,9 +202,18 @@ Clicking on "Edit" on a "Web radio action" (or creating a new one) shows the fol
 
 ![Web radio action options](./img/action_webradio_en.jpg)
 
+*Fig. 8: Configuration possibilites of "Web radio action"*
+
 These are the elements in this configuration dialog:
 
-1. **Web radio action**: chooses the type of web radio action to perform which can be one of the following:
+1. **End edit**: apply changes and close edit mode of this Web radio action
+
+2. **Delete**: delete this action from this grid element
+
+3. **Test**: performs the defined Web radio action for testing, same as will be later performed if the grid element is selected
+
+4. **Web radio action**: chooses the type of web radio action to perform which can be one of the following:
+   
    * *Turn radio on*: turns on the radio with the channel selected at *Webradio to play*
    * *Turn radio on/off*: toggles the radio on/off state with the channel selected at *Webradio to play*
    * *Turn radio off*: turns the radio off
@@ -173,19 +221,144 @@ These are the elements in this configuration dialog:
    * *Previous radio channel*: moves to previous radio channel in the list of selected radio stations, see (4)
    * *Radio volume up*: increases the radio volume
    * *Radio volume down*: decreases the radio volume
-2. **Webradio to play**: chooses which radio to play (only visible for *Turn radio on* and *Turn radio on/off*), possible channels to select are defined in selected radio stations list, see (4)
-3. **Manage webradio list**: accordion which folds/unfolds the section where radio stations can be searched and selected
-4. **Selected radio stations list**: list of selected radio stations which are available within the current grid
-5. **Up**: moves the station up in the list (reordering)
-6. **Play**: plays the radio channel
-7. **Remove**: removes the radio channel from the list of selected radio stations
-8. **Search term input**: search bar for searching new radio stations. By default search is done for radio station name, but the following additional properties are possible (see [API documentation](http://www.radio-browser.info/webservice#Advanced_station_search)): *name (default), country, state, language, tag, tagList, order*. To use this additional properties they have to be added with semicolon to the search term.
-   * *Examples*: The search term for looking for austrian radio stations with name `Hitradio` would be: `name:Hitradio country:austria`. If the search term is just `Hitradio` search will be done for radio stations with this name.
-9. **Webradio search result list**: result list for the current search term
-10. **Play**: plays the radio station
-11. **Select**: adds the radio station to the list of selected radio stations, see (4)
-12. **Previous page**: navigates to the previous page of search results (if available)
-13. **Next page**: navigates to the next page of search results (if available)
+
+5. **Webradio to play**: chooses which radio to play (only visible for *Turn radio on* and *Turn radio on/off*), possible channels to select are defined in selected radio stations list, see (4)
+
+6. **Manage webradio list**: accordion which folds/unfolds the section where radio stations can be searched and selected
+
+7. **Create grid elements for webradios**: 
+
+8. **Selected radio stations list**: list of selected radio stations which are available within the current grid
+
+9. **Up**: moves the station up in the list (reordering)
+
+10. **Play**: plays the radio channel
+
+11. **Remove**: removes the radio channel from the list of selected radio stations
+
+12. **Search term input**: search bar for searching new radio stations. By default search is done for radio station name, but the following additional properties are possible (see [API documentation](http://www.radio-browser.info/webservice#Advanced_station_search)): *name (default), country, state, language, tag, tagList, order*. To use this additional properties they have to be added with semicolon to the search term.
+    
+    * *Examples*: The search term for looking for austrian radio stations with name `Hitradio` would be: `name:Hitradio country:austria`. If the search term is just `Hitradio` search will be done for radio stations with this name.
+
+13. **Webradio search result list**: result list for the current search term
+
+14. **Play**: plays the radio station
+
+15. **Select**: adds the radio station to the list of selected radio stations, see (8)
+
+16. **Previous page**: navigates to the previous page of search results (if available)
+
+17. **Next page**: navigates to the next page of search results (if available)
+
+### YouTube Action
+
+The YouTube Action allows you to link videos from this web page to the communicator and view them without leavting the communicator. Different control functions can be assigned to the cells for the display of the videos.
+
+Clicking on "Edit" of a "YouTube" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 9):
+
+![action navigate to other grid](./img/action_youtube_en.jpg)
+
+*Fig. 9: Configuration possibilites of "YouTube Action"*
+
+The possible actions/functions to choose are (when opening the combo box):
+
+1. **Play video** 
+   
+   * Play type (Play single video, Play playlist, Play videos from search query, Play videos from channel)
+   
+   * Video link: insert the YouTube Video link here
+   
+   * Show video subtitles (if available): can be de/activated
+   
+   * Start video muted: can be de/activated
+   
+   * Perfrom action after navigation: can be de/activated
+
+2. **Pause video**
+
+3. **Play/Pause video**: same options like in *Play video*
+
+4. **Restart video**: same options like in *Play video*
+
+5. **Stop video**
+
+6. **Step forward within video**
+   
+   * Step forward within video (seconds):  the number typed in represents the time in seconds the video will be fast-forwarded
+
+7. **Step backward within video**
+   
+   * Step backward within video (seconds): the number typed in represents the time in seconds the video will be rewound
+
+8. **Next video**
+
+9. **Previous video**
+
+10. **Show video in fullscreen**
+
+11. **Video volume up**
+    
+    * Vido volume up (percent): the number typed in represents the percentage the volume will be volumed up
+
+12. **Video volume down**
+    
+    * Vido volume down (percent): the number typed in represents the percentage the volume will be volumed down
+
+13. **Mute/unmute video**
+
+To add a "YouTube Grid", one grid element hast to be a "YouTube Player", which can be created in the "Editing on view" in the menu "more" → 'New' → " New You Tube Player", as can be seen in Figure 10:
+
+![action navigate to other grid](./img/youtubeplayer_en.jpg)
+
+*Fig. 10: Creating a New YouTube Player element"*
+
+Other ("normal") grid elements can be assigned with the functions listed above and a corresponding image can be chosen in the *Image Tab*. In ARASAAC, a collection of multimedia buttons is prepared, just type the word *button* in the *Image search* field of the *Image Tab*. If different grid elements are assigned with the *Play video* functions and are linked to different YouTube videos, the selected video will be played in the "YouTube Player" element, which has been created as shown in Figure 10.
+
+### Change Content Language
+
+This action is used to change the language of the communicator grid(s) by clicking on a grid element that we have configured to perform this action. 
+
+Clicking on "Edit" of a "Change content language" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 11):
+
+![action navigate to other grid](./img/action_contentlanguage_en.jpg)
+
+*Fig. 11: Configuration possibilites of "Change content language - Action"*
+
+The language in which the application language shall be changed to can be selected in the corresponding combobox.
+
+In the following two figures an example is show, where the content language can be switched from english to french or inversely by clicking on the corresponding flag (Fig. 12 and 13). 
+
+![action navigate to other grid](./img/changecontent_en.jpg)
+*Fig. 12: Content language in English*
+
+![action navigate to other grid](./img/changecontent_fr.jpg)
+
+*Fig. 13: Content language in French*
+
+First of all, you have to check if the grid content can already be translated in the desired language. To do that, you click on the "more" button in the "Edtiting on" view and select the *Translate grid* option as shown in Fig. 14:
+![action navigate to other grid](./img/translategrid_en.jpg)
+*Fig. 14: Translate grid option*
+
+After clicking on the "Translate grid" option, the following window opens (Fig. 15): 
+
+![action navigate to other grid](./img/translategrid1_en.jpg)
+*Fig. 15: Translate grid - select language and translate the content*
+
+Here, the language, in which the grid content shall be translated, can be chosen. The right column shows the translations which are already stored in the application. Missing translations have to be filled in here.
+
+### Open webpage in new tab
+
+This action allows to assign an external web page to a grid element and, by clicking on it, to access the information contained therein.
+
+Clicking on "Edit" of a "Open webpage in new tab" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 16):
+![action navigate to other grid](./img/action_openwebpage_en.jpg)
+*Fig. 16: Configuration possibilites of "Open webpage in new tab"*
+
+* **Webpage URL**: copy the URL of the desired webpage and enter it here
+
+* **Automatically close timeout in seconds**: enter time in seconds you want the tab remains open. After this time, the web page will close and the communicator grid will be displayed again
+
+By clicking on the grid elemnt this action is assigned to, the chosen webpage is accessed and the user can navigate in it for the time which was set. After this time, the webpage will be closed and the user will return to the communicator. 
 
 [&#x2190; Previous Chapter](04_input_options.md) [Next Chapter &#x2192;](06_users.md)
 
