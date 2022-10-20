@@ -138,6 +138,7 @@
                 dataService.saveMetadata(thiz.metadata).then(() => {
                     $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
                     $(document).trigger(constants.EVENT_UI_LOCKED);
+                    $('#viewPortMeta').attr('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
                 });
             },
             unlock(force) {
@@ -155,6 +156,7 @@
                     dataService.saveMetadata(thiz.metadata).then(() => {
                         $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
                         $(document).trigger(constants.EVENT_UI_UNLOCKED);
+                        $('#viewPortMeta').attr('content', 'width=device-width, initial-scale=1');
                     });
                 }
             },
