@@ -71,7 +71,7 @@
     "languages": ["ca"],
     "description": {
       "en": "The CACE-UTAC is a pictographic vocabulary of more than 800 words, organised into semantic categories. Get <a target=\"_blank\" href=\"https://aulaabierta.arasaac.org/en/vocabulary-utac-cace\">more information about CACE-UTAC on ARASAAC aula abierta</a>.",
-      "ca": "El CACE-UTAC és vocabulari pictogràfic de més de 800 paraules, organitzat en categories semàntiques. Per a més informació al respecte podeu consultar aquest <a target=\"_blank\" href=\"https://www.dropbox.com/s/rztknn83bbgna49/Poster%20CACE%20-%20Handout.pdf?dl=0\">document</a>."
+      "ca": "El CACE-UTAC és un vocabulari pictogràfic de més de 800 paraules, organitzat en categories semàntiques. Per a més informació al respecte podeu consultar aquest <a target=\"_blank\" href=\"https://www.dropbox.com/s/rztknn83bbgna49/Poster%20CACE%20-%20Handout.pdf?dl=0\">pòster en format PDF a la pàgina de la UTAC</a>."
     },
     "standardFor": null,
     "wordPrediction": false
@@ -84,7 +84,7 @@
     "languages": ["ca"],
     "description": {
       "en": "The CACE-UTAC is a pictographic vocabulary of more than 800 words, organised into semantic categories. The ST-G format is organised in a way that provides more support for sentence structure. Get <a target=\"_blank\" href=\"https://aulaabierta.arasaac.org/en/vocabulary-utac-cace\">more information about CACE-UTAC on ARASAAC aula abierta</a>.",
-      "ca": "El CACE-UTAC és un vocabulari pictogràfic de més de 800 paraules, organitzat en categories semàntiques. El format ST-G compta amb una organització que ofereix més suport a l’estructuració de la frase. Per a més informació sobre el CACE podeu consultar aquest <a target=\"_blank\" href=\"https://www.dropbox.com/s/rztknn83bbgna49/Poster%20CACE%20-%20Handout.pdf?dl=0\">document</a>."
+      "ca": "El CACE-UTAC és un vocabulari pictogràfic de més de 800 paraules, organitzat en categories semàntiques. El format ST-G compta amb una organització que ofereix més suport a l’estructuració de la frase. Per a més informació al respecte podeu consultar aquest <a target=\"_blank\" href=\"https://www.dropbox.com/s/rztknn83bbgna49/Poster%20CACE%20-%20Handout.pdf?dl=0\">pòster en format PDF a la pàgina de la UTAC</a>."
     },
     "standardFor": null,
     "wordPrediction": false
@@ -97,7 +97,7 @@
     "languages": ["es"],
     "description": {
       "en": "The CACE-UTAC is a pictographic vocabulary of more than 800 words, organised into semantic categories. Get <a target=\"_blank\" href=\"https://aulaabierta.arasaac.org/en/vocabulary-utac-cace\">more information about CACE-UTAC on ARASAAC aula abierta</a>.",
-      "es": "El CACE-UTAC es un vocabulario pictográfico de más de 800 palabras, organizado en categorías semánticas. Para más información al respecto se puede consultar este <a target=\"_blank\" href=\"https://aulaabierta.arasaac.org/vocabulario-utac-cace\">documento</a>."
+      "es": "El CACE-UTAC es un vocabulario pictográfico de más de 800 palabras, organizado en categorías semánticas. Para más información al respecto se puede consultar la <a target=\"_blank\" href=\"https://aulaabierta.arasaac.org/vocabulario-utac-cace\">página sobre el vocabulario UTAC-CACE en el Aula Abierta de ARASAAC</a>."
     },
     "standardFor": null,
     "wordPrediction": false
@@ -110,7 +110,7 @@
     "languages": ["es"],
     "description": {
       "en": "The CACE-UTAC is a pictographic vocabulary of more than 800 words, organised into semantic categories. The ST-G format is organised in a way that provides more support for sentence structure. Get <a target=\"_blank\" href=\"https://aulaabierta.arasaac.org/en/vocabulary-utac-cace\">more information about CACE-UTAC on ARASAAC aula abierta</a>.",
-      "es": "El CACE-UTAC es un vocabulario pictográfico de más de 800 palabras, organizado en categorías semánticas. El formato ST-G cuenta con una organización que ofrece mayor apoyo a la estructura de la frase. Para más información al respecto se puede consultar este <a target=\"_blank\" href=\"https://aulaabierta.arasaac.org/vocabulario-utac-cace\">documento</a>."
+      "es": "El CACE-UTAC es un vocabulario pictográfico de más de 800 palabras, organizado en categorías semánticas. El formato ST-G cuenta con una organización que ofrece mayor apoyo a la estructura de la frase. Para más información al respecto se puede consultar la <a target=\"_blank\" href=\"https://aulaabierta.arasaac.org/vocabulario-utac-cace\">página sobre el vocabulario UTAC-CACE en el Aula Abierta de ARASAAC</a>."
     },
     "standardFor": null,
     "wordPrediction": false
