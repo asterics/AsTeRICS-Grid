@@ -22,6 +22,7 @@ This chapter is about actions that can be performed if a grid element is selecte
 ## Edit actions modal
 
 ![edit element menu](./img/edit_element_menu_en_edit.jpg)
+
 *Fig. 1: Grid element menu*
 
 Choosing "Edit" in the [Edit grid element menu](03_appearance_layout.md#editing-grid-elements) (Fig.1) and clicking on the *Actions* Tab opens the following configuration modal (Fig. 2):
@@ -90,7 +91,7 @@ Clicking on "Edit" of a "speak custom text" action (or creating a new one) shows
 
 ![Speak custom text](./img/action_speak_custom_en.jpg)
 
-*Fig. 4: Configuration possibilites of "Speak custom text"*
+*Fig. 5: Configuration possibilites of "Speak custom text"*
 
 For language selection the same conditions as for [speak label](05_actions.md#speak-label) actions apply. "Text to speak" is the custom text that should be spoken. The button "Test" tests the configuration and speaks the current text.
 
@@ -106,7 +107,7 @@ Clicking on "Edit" on a "fill prediction elements" action (or creating a new one
 
 ![fill prediction elements action options](./img/action_fillprediction_en.jpg)
 
-*Fig. 5: Configuration possibilites of "Fill prediction elements"*
+*Fig. 6: Configuration possibilites of "Fill prediction elements"*
 
 **Dictionary to use**: select the dictionary you want to use (see [manage dictionaries](02_navigation.md#manage-dictionaries-view)). If nothing selected words from all available dictionaries will be suggested.
 
@@ -120,7 +121,7 @@ Clicking on "Edit" of a "collect element action" action (or creating a new one) 
 
 ![Collect element action options](./img/action_collectelement_en.jpg)
 
-*Fig. 5: Configuration possibilites of "Collect element action"*
+*Fig. 7: Configuration possibilites of "Collect element action"*
 
 The possible actions to choose are (when opening the combo box):
 
@@ -140,16 +141,16 @@ The possible actions to choose are (when opening the combo box):
 
 An "AsTeRICS action" performs an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework). This can be any action that is possible with the AsTeRICS Framework, e.g. controlling a TV or performing computer actions like opening a program.
 
-Figure 6 shows how an AsTeRICS action that controls a TV is working in more detail:
+Figure 8 shows how an AsTeRICS action that controls a TV is working in more detail:
 
 ![asterics action detail concept](./img/asterics-action-are_en.png)
-*Fig. 6: AsTeRICS action concept, example of controlling a TV*
+*Fig. 8: AsTeRICS action concept, example of controlling a TV*
 
-The following steps are shown in Figure 6:
+The following steps are shown in Figure 8:
 
 1. A user selects a grid element with an associated AsTeRICS action. An [AsTeRICS model](01_terms.md#asterics-model) which can perform the desired action (e.g. controlling a TV) is saved within the current grid.
 2. The AsTeRICS model is uploaded to a running instance of the AsTeRICS Framework (ARE) and afterwards started. The model contains so-called "plugins" which are elements capable of communicating with external hardware, e.g. attached to the computer or accessible via network. In the example the "IrTrans" plugin is capable of communicating with an IrTrans device, which is a replacement for infrared remotes.
-3. After uploading and starting the model on the AsTeRICS Framework, data is sent to a plugin contained in the model. In Fig. 6 some data is sent to the "action" port of the IrTrans plugin.
+3. After uploading and starting the model on the AsTeRICS Framework, data is sent to a plugin contained in the model. In Fig. 8 some data is sent to the "action" port of the IrTrans plugin.
 4. Sending data to the plugin causes the AsTeRICS Framework to communicate with the external real "IrTrans" hardware. The action contains the needed information to perform the desired action, for instance sending a "Volume down" command to a TV.
 5. Finally the IrTrans device sends the infrared signal to the TV causing it to reduce the volume.
 
@@ -157,7 +158,7 @@ Clicking on "Edit" on a "AsTeRICS action" action (or creating a new one) shows t
 
 ![asterics action options](./img/action_asterics_en.jpg)
 
-*Fig. 7: Configuration possibilites of "AsTeRICS action"*
+*Fig. 9: Configuration possibilites of "AsTeRICS action"*
 
 These are the possibilities while configuring an AsTeRICS action:
 
@@ -190,7 +191,7 @@ Clicking on "Edit" on a "Web radio action" (or creating a new one) shows the fol
 
 ![Web radio action options](./img/action_webradio_en.jpg)
 
-*Fig. 8: Configuration possibilites of "Web radio action"*
+*Fig. 10: Configuration possibilites of "Web radio action"*
 
 These are the elements in this configuration dialog:
 
@@ -224,12 +225,12 @@ These are the elements in this configuration dialog:
 
 The YouTube Action allows you to link videos from this web page to the communicator and view them without leavting the communicator. Different control functions can be assigned to the cells for the display of the videos.
 
-Clicking on "Edit" of a "YouTube" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 9):
+Clicking on "Edit" of a "YouTube" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 11):
 
 ![action youtube](./img/action_youtube_en.jpg)
 ![youtubeaction](./img/action_youtube_en.jpg)
 
-*Fig. 9: Configuration possibilites of "YouTube Action"*
+*Fig. 11: Configuration possibilites of "YouTube Action"*
 
 The possible actions/functions to choose are (when opening the combo box):
 
@@ -256,11 +257,11 @@ The possible actions/functions to choose are (when opening the combo box):
     * Vido volume down (percent): the number typed in represents the percentage the volume will be volumed down
 13. **Mute/unmute video**
 
-To add a "YouTube Grid", one grid element hast to be a "YouTube Player", which can be created in the "Editing on view" in the menu "more" → 'New' → " New You Tube Player", as can be seen in Figure 10:
+To add a "YouTube Grid", one grid element hast to be a "YouTube Player", which can be created in the "Editing on view" in the menu "more" → 'New' → " New You Tube Player", as can be seen in Figure 12:
 
 ![action youtubeplayer](./img/youtubeplayer_en.jpg)
 
-*Fig. 10: Creating a New YouTube Player element"*
+*Fig. 12: Creating a New YouTube Player element"*
 
 Other ("normal") grid elements can be assigned with the functions listed above and a corresponding image can be chosen in the *Image Tab*. In ARASAAC, a collection of multimedia buttons is prepared, just type the word *button* in the *Image search* field of the *Image Tab*. If different grid elements are assigned with the *Play video* functions and are linked to different YouTube videos, the selected video will be played in the "YouTube Player" element, which has been created as shown in Figure 10.
 
@@ -268,31 +269,33 @@ Other ("normal") grid elements can be assigned with the functions listed above a
 
 This action is used to change the language of the communicator grid(s) by clicking on a grid element that we have configured to perform this action. 
 
-Clicking on "Edit" of a "Change content language" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 11):
+Clicking on "Edit" of a "Change content language" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 13):
 
 ![action contentlanguage](./img/action_contentlanguage_en.jpg)
 
-*Fig. 11: Configuration possibilites of "Change content language - Action"*
+*Fig. 13: Configuration possibilites of "Change content language - Action"*
 
 The language in which the application language shall be changed to can be selected in the corresponding combobox.
 
-In the following two figures an example is show, where the content language can be switched from english to french or inversely by clicking on the corresponding flag (Fig. 12 and 13). 
+In the following two figures an example is show, where the content language can be switched from english to french or inversely by clicking on the corresponding flag (Fig. 14 and 15). 
 
 ![action changecontentEN](./img/changecontent_en.jpg)
-*Fig. 12: Content language in English*
+*Fig. 14: Content language in English*
 
 ![action changecontentEN](./img/changecontent_fr.jpg)
 
-*Fig. 13: Content language in French*
+*Fig. 15: Content language in French*
 
-First of all, you have to check if the grid content can already be translated in the desired language. To do that, you click on the "more" button in the "Edtiting on" view and select the *Translate grid* option as shown in Fig. 14:
+First of all, you have to check if the grid content can already be translated in the desired language. To do that, you click on the "more" button in the "Edtiting on" view and select the *Translate grid* option as shown in Fig. 16:
 ![action translategrid](./img/translategrid_en.jpg)
-*Fig. 14: Translate grid option*
 
-After clicking on the "Translate grid" option, the following window opens (Fig. 15): 
+*Fig. 16: Translate grid option*
+
+After clicking on the "Translate grid" option, the following window opens (Fig. 17): 
 
 ![action translategrid1](./img/translategrid1_en.jpg)
-*Fig. 15: Translate grid - select language and translate the content*
+
+*Fig. 17: Translate grid - select language and translate the content*
 
 Here, the language, in which the grid content shall be translated, can be chosen. The right column shows the translations which are already stored in the application. Missing translations have to be filled in here.
 
@@ -300,9 +303,9 @@ Here, the language, in which the grid content shall be translated, can be chosen
 
 This action allows to assign an external web page to a grid element and, by clicking on it, to access the information contained therein.
 
-Clicking on "Edit" of a "Open webpage in new tab" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 16):
+Clicking on "Edit" of a "Open webpage in new tab" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 18):
 ![action openwebpage](./img/action_openwebpage_en.jpg)
-*Fig. 16: Configuration possibilites of "Open webpage in new tab"*
+*Fig. 18: Configuration possibilites of "Open webpage in new tab"*
 
 * **Webpage URL**: copy the URL of the desired webpage and enter it here
 * **Automatically close timeout in seconds**: enter time in seconds you want the tab remains open. After this time, the web page will close and the communicator grid will be displayed again
