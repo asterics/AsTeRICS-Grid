@@ -13,6 +13,9 @@ This chapter is about actions that can be performed if a grid element is selecte
    * [Collect element action](05_actions.md#collect-element-action)
    * [AsTeRICS Action](05_actions.md#asterics-action)
    * [Web radio action](05_actions.md#web-radio-action)
+   * [YouTube Action](05_actions.md#YouTube-Action)
+   * [Change Content Language](05_actions.md#Change-Content_Language)
+   * [Open webpage in new tab](05_actions.md#Open-webpage-in-new-tab)
 
 [Back to Overview](README.md)
 
@@ -159,35 +162,20 @@ Clicking on "Edit" on a "AsTeRICS action" action (or creating a new one) shows t
 These are the possibilities while configuring an AsTeRICS action:
 
 1. **ARE URL**: the URL of a running ARE (AsTeRICS Framework) to connect with. Standard URL is `http://127.0.0.1:8081/rest/` for a locally running ARE.
-
 2. **Test URL**: click in order to test the current URL. A tick (&#10003;) or times (&times;) symbol will indicate if the test was successful or has failed.
-
 3. **ARE Model**: if there is already a [model](01_terms.md#asterics-model) of this action defined, the name of it is shown here. A click on the link downloads the model.
-
 4. **Download from ARE**: downloads the currently running model from a running AsTeRICS Framework (ARE) instance and saves it to the grid. The current ARE model is replaced by this action.
-
 5. **Upload to ARE**: uploads the saved model to a running AsTeRICS Framework (ARE) for testing purpose or in order to adapt it.
-
 6. **Component**: selection of the component (plugin) of the selected model that should be used
-
 7. **Send data**: define data that should be sent to a specific port of the component
-
 8. **Data**: 
-
 9. **Event-Port**:
-
 10. **Cancel**: discard any changes and close the modal
-
 11. **OK**: save all changes and close the modal
-
 12. **OK, edit previous**: save all changes and edit the actions of the previous element
-
 13. **OK, edit next**: save all changes and edit the actions of the next element
-
 14. **End edit**: apply changes and close edit mode of this AsTeRICS action
-
 15. **Delete**: delete this action from this grid element
-
 16. **Test**: performs the defined AsTeRICS action for testing, same as will be later performed if the grid element is selected
     
     **Trigger event**: selects an event that should be triggered on the selected component (optional, either "send data", "trigger event" or both can be used)
@@ -207,13 +195,9 @@ Clicking on "Edit" on a "Web radio action" (or creating a new one) shows the fol
 These are the elements in this configuration dialog:
 
 1. **End edit**: apply changes and close edit mode of this Web radio action
-
 2. **Delete**: delete this action from this grid element
-
 3. **Test**: performs the defined Web radio action for testing, same as will be later performed if the grid element is selected
-
 4. **Web radio action**: chooses the type of web radio action to perform which can be one of the following:
-   
    * *Turn radio on*: turns on the radio with the channel selected at *Webradio to play*
    * *Turn radio on/off*: toggles the radio on/off state with the channel selected at *Webradio to play*
    * *Turn radio off*: turns the radio off
@@ -221,33 +205,19 @@ These are the elements in this configuration dialog:
    * *Previous radio channel*: moves to previous radio channel in the list of selected radio stations, see (4)
    * *Radio volume up*: increases the radio volume
    * *Radio volume down*: decreases the radio volume
-
 5. **Webradio to play**: chooses which radio to play (only visible for *Turn radio on* and *Turn radio on/off*), possible channels to select are defined in selected radio stations list, see (4)
-
 6. **Manage webradio list**: accordion which folds/unfolds the section where radio stations can be searched and selected
-
 7. **Create grid elements for webradios**: 
-
 8. **Selected radio stations list**: list of selected radio stations which are available within the current grid
-
 9. **Up**: moves the station up in the list (reordering)
-
 10. **Play**: plays the radio channel
-
 11. **Remove**: removes the radio channel from the list of selected radio stations
-
-12. **Search term input**: search bar for searching new radio stations. By default search is done for radio station name, but the following additional properties are possible (see [API documentation](http://www.radio-browser.info/webservice#Advanced_station_search)): *name (default), country, state, language, tag, tagList, order*. To use this additional properties they have to be added with semicolon to the search term.
-    
+12. **Search term input**: search bar for searching new radio stations. By default search is done for radio station name, but the following additional properties are possible (see [API documentation](http://www.radio-browser.info/webservice#Advanced_station_search)): *name (default), country, state, language, tag, tagList, order*. To use this additional properties they have to be added with semicolon to the search term. 
     * *Examples*: The search term for looking for austrian radio stations with name `Hitradio` would be: `name:Hitradio country:austria`. If the search term is just `Hitradio` search will be done for radio stations with this name.
-
 13. **Webradio search result list**: result list for the current search term
-
 14. **Play**: plays the radio station
-
 15. **Select**: adds the radio station to the list of selected radio stations, see (8)
-
 16. **Previous page**: navigates to the previous page of search results (if available)
-
 17. **Next page**: navigates to the next page of search results (if available)
 
 ### YouTube Action
@@ -264,47 +234,26 @@ Clicking on "Edit" of a "YouTube" action (or creating a new one by clicking on *
 The possible actions/functions to choose are (when opening the combo box):
 
 1. **Play video** 
-   
    * Play type (Play single video, Play playlist, Play videos from search query, Play videos from channel)
-   
    * Video link: insert the YouTube Video link here
-   
    * Show video subtitles (if available): can be de/activated
-   
    * Start video muted: can be de/activated
-   
    * Perfrom action after navigation: can be de/activated
-
 2. **Pause video**
-
 3. **Play/Pause video**: same options like in *Play video*
-
 4. **Restart video**: same options like in *Play video*
-
 5. **Stop video**
-
 6. **Step forward within video**
-   
    * Step forward within video (seconds):  the number typed in represents the time in seconds the video will be fast-forwarded
-
 7. **Step backward within video**
-   
    * Step backward within video (seconds): the number typed in represents the time in seconds the video will be rewound
-
 8. **Next video**
-
 9. **Previous video**
-
 10. **Show video in fullscreen**
-
 11. **Video volume up**
-    
     * Vido volume up (percent): the number typed in represents the percentage the volume will be volumed up
-
-12. **Video volume down**
-    
+12. **Video volume down** 
     * Vido volume down (percent): the number typed in represents the percentage the volume will be volumed down
-
 13. **Mute/unmute video**
 
 To add a "YouTube Grid", one grid element hast to be a "YouTube Player", which can be created in the "Editing on view" in the menu "more" → 'New' → " New You Tube Player", as can be seen in Figure 10:
@@ -356,7 +305,6 @@ Clicking on "Edit" of a "Open webpage in new tab" action (or creating a new one 
 *Fig. 16: Configuration possibilites of "Open webpage in new tab"*
 
 * **Webpage URL**: copy the URL of the desired webpage and enter it here
-
 * **Automatically close timeout in seconds**: enter time in seconds you want the tab remains open. After this time, the web page will close and the communicator grid will be displayed again
 
 By clicking on the grid elemnt this action is assigned to, the chosen webpage is accessed and the user can navigate in it for the time which was set. After this time, the webpage will be closed and the user will return to the communicator. 
