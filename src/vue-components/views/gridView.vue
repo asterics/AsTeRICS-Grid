@@ -203,11 +203,6 @@
 
                 if (inputConfig.huffEnabled) {
                     this.huffmanInput = HuffmanInput.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', 'scanInactive', selectionListener);
-                    this.huffmanInput.onDestroy(() => {
-                        if (gridInstance) {
-                            gridInstance.reinit(new GridData(JSON.parse(JSON.stringify(thiz.gridData))));
-                        }
-                    });
                     this.huffmanInput.start();
                 }
 

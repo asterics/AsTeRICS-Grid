@@ -54,6 +54,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
     let _alphabet = '';
     let _started = false;
     let _timeoutHandler = null;
+    let _appendedElements = [];
 
     thiz.start = function () {
         _started = true;
@@ -79,6 +80,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
 
     thiz.destroy = function () {
         thiz.stop();
+        _appendedElements.forEach(e => e.remove());
         if (_destroyCallback) {
             _destroyCallback();
             _destroyCallback = null;
@@ -178,7 +180,9 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
                 });
                 let fontSize = printCodes ? '10px' : '3px';
                 let elementWidth = $(item.element).width() + 'px';
-                $(item.element).append(`<div class="huffman-code-visualization" style="font-size:${fontSize}; display:block; position: absolute; bottom: 0; width: ${elementWidth}">${spans}</div>`);
+                let element = htmlToElement(`<div class="huffman-code-visualization" style="font-size:${fontSize}; display:block; position: absolute; bottom: 0; width: ${elementWidth}">${spans}</div>`);
+                $(item.element).append(element);
+                _appendedElements.push(element);
             }
         });
         _treeItems = _treeItems.filter(item => item.name);
@@ -235,6 +239,17 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
     function getColor(digitString) {
         let index = parseInt(digitString) - 1;
         return colors[index];
+    }
+
+    /**
+     * @param {String} HTML representing a single element
+     * @return {Element}
+     */
+    function htmlToElement(html) {
+        let template = document.createElement('template');
+        html = html.trim(); // Never return a text node of whitespace as the result
+        template.innerHTML = html;
+        return template.content.firstChild;
     }
 
     init();
