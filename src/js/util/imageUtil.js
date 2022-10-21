@@ -153,7 +153,7 @@ imageUtil.urlToBase64WithDimensions = function (url, maxWidth, mimeType) {
 
 imageUtil.urlToBase64 = function (url, maxWidth, mimeType) {
     return imageUtil.urlToBase64WithDimensions(url, maxWidth, mimeType).then(dataWithDim => {
-        return Promise.resolve(dataWithDim.data);
+        return Promise.resolve(dataWithDim ? dataWithDim.data : null);
     })
 };
 
