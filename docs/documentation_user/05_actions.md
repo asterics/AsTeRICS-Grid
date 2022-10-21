@@ -169,7 +169,7 @@ These are the possibilities while configuring an AsTeRICS action:
 6. **Component**: selection of the component (plugin) of the selected model that should be used
 7. **Send data to port**: define port the data should be sent
 8. **Data**: define data that should be sent to the port determined above (number 7)
-9. **Event-Port**
+9. **Event-Port**: define the event that should be triggered (optional)
 10. **Cancel**: discard any changes and close the modal
 11. **OK**: save all changes and close the modal
 12. **OK, edit previous**: save all changes and edit the actions of the previous element
