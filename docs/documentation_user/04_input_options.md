@@ -31,7 +31,6 @@ Figure 1 shows the configuration possibilities of a keypress event (f.e. choose 
 
 ![input event keypress options](./img/input_channel_keyboard_en.jpg)
 
-
 *Fig. 1: Configuration of a keypress input event*
 
 These are the shown elements and options:
@@ -71,7 +70,6 @@ AsTeRICS ARE input events are triggered by external events of a running [model](
 
 ![input event asterics are options](./img/input_channel_are_en.jpg)
 
-
 *Fig. 2: Configuration of an AsTeRICS ARE input event*
 
 Figure 2 shows the configuration of an AsTeRICS ARE input event (AsTeRICS ARE Event is selected as select element in Figure 1, (1)):
@@ -101,7 +99,6 @@ Each input option dialog opened by "[Main view](02_navigation.md#main-view) - In
 
 ![general structure of an input option dialog](./img/input_options_general_en.jpg)
 
-
 *Fig. 3: General structure of an input option dialog, when input option is enabled*
 
 These are the basic elements of an input option dialog as in figure 3:
@@ -124,7 +121,7 @@ These are the basic elements of an input option dialog as in figure 3:
   * **Hover time**: time in milliseconds to wait until a hovered element is selected. The value `0` means that the hovered element is never selected.
   * **Hide cursor**: if checked the cursor is hidden and not visible while hovering above elements. This can be useful e.g. for eye-tracking where the cursor may be distracting. 
   * **Read out active element**: if checked the label of the hovered element is directly read out if the active element has changed
-  * **Disable hover pane**: normally for hovering a global invisible hover pane is inserted. This makes it technically possible to continue hovering after navigation to another grid without lifting the finger (on a touchscreen). However this hover pane can cause problems in combination with a software controlled mouse cursor, because click actions may not reach the actual elements.
+  * **Disable hover pane**: Normally (without activating this option) it is possible to continue hovering after navigation to another grid without lifting the finger (on a touchscreen). Technically this function is implented by a global invisible hover pane., normally for hovering a global invisible hover pane is inserted. However this hover pane can cause problems in combination with a software controlled mouse cursor (emulated software mouse), because click actions may not reach the actual elements. In this case it might be useful / necessary to activate the function *Disable hover pane*.
 
 ### Scanning
 
@@ -224,14 +221,14 @@ These are the Advanced settings for *Huffman Input*:
 
 **Video on YouTube:** [Input method sequential input](https://www.youtube.com/watch?v=plpOzwMUahw&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=11&t=0s) (German, but auto-translated subtitles available)
 
-The sequential input method can be used with 2-3 [input events](04_input_options.md#introduction-to-input-events). It just sequentially focuses all elements and afterwards restarts at the first element.
+The sequential input method can be used with 2-3 [input events](04_input_options.md#introduction-to-input-events). 2 input events are necessary, one (Previous element) is optional. The sequential input sequentially focuses all elements and afterwards restarts at the first element.
 
 #### Input events
 
 These are the possible input events for *Sequential Input*:
 
 * **Next element**: moves the focus to the next element. If focus is currently on the last element, the first element will be focused.
-* **Previous Element**: moves the focus to the previous element. If focus is currently on the first element, the last element will be focused.
+* **Previous Element**: (optional) moves the focus to the previous element. If focus is currently on the first element, the last element will be focused.
 * **Select element**: selects the element that is currently focused
 
 The desired keys for each input event can be selected by clicking first on *Record key* and consecutively clicking on the desired key.

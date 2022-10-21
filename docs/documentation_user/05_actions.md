@@ -161,6 +161,7 @@ Clicking on "Edit" on a "AsTeRICS action" action (or creating a new one) shows t
 *Fig. 9: Configuration possibilites of "AsTeRICS action"*
 
 These are the possibilities while configuring an AsTeRICS action:
+
 1. **ARE URL**: the URL of a running ARE (AsTeRICS Framework) to connect with. Standard URL is `http://127.0.0.1:8081/rest/` for a locally running ARE.
 2. **Test URL**: click in order to test the current URL. A tick (&#10003;) or times (&times;) symbol will indicate if the test was successful or has failed.
 3. **ARE Model**: if there is already a [model](01_terms.md#asterics-model) of this action defined, the name of it is shown here. A click on the link downloads the model.
@@ -207,7 +208,7 @@ These are the elements in this configuration dialog:
    * *Radio volume down*: decreases the radio volume
 5. **Webradio to play**: chooses which radio to play (only visible for *Turn radio on* and *Turn radio on/off*), possible channels to select are defined in selected radio stations list, see (4)
 6. **Manage webradio list**: accordion which folds/unfolds the section where radio stations can be searched and selected
-7. **Create grid elements for webradios**
+7. **Create grid elements for webradios**: As many radio stations selected, as many grid elements will be created, each element corresponding to one of the selected radio stations
 8. **Selected radio stations list**: list of selected radio stations which are available within the current grid
 9. **Up**: moves the station up in the list (reordering)
 10. **Play**: plays the radio channel
@@ -226,7 +227,7 @@ The YouTube Action allows you to link videos from this web page to the communica
 
 Clicking on "Edit" of a "YouTube" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 11):
 
-![action youtube](./img/action_youtube_en.JPG)
+<img src="./img/action_youtube_en.JPG" width="850"/>
 
 *Fig. 11: Configuration possibilites of "YouTube Action"*
 
@@ -269,7 +270,7 @@ This action is used to change the language of the communicator grid(s) by clicki
 
 Clicking on "Edit" of a "Change content language" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 13):
 
-<img src="./img/action_contentlanguage_en.JPG" width="800"/>
+<img src="./img/action_contentlanguage_en.JPG" width="850"/>
 
 *Fig. 13: Configuration possibilites of "Change content language - Action"*
 
@@ -286,7 +287,8 @@ In the following two figures an example is show, where the content language can 
 *Fig. 15: Content language in French*
 
 First of all, you have to check if the grid content can already be translated in the desired language. To do that, you click on the "more" button in the "Edtiting on" view and select the *Translate grid* option as shown in Fig. 16:
-![action translategrid](./img/translategrid_en.JPG)
+
+![action changecontentEN](./img/translategrid_en.JPG)
 
 *Fig. 16: Translate grid option*
 
@@ -304,7 +306,7 @@ This action allows to assign an external web page to a grid element and, by clic
 
 Clicking on "Edit" of a "Open webpage in new tab" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 18):
 
-![action openwebpage](./img/action_openwebpage_en.JPG)
+<img src="./img/action_openwebpage_en.JPG" width="850"/>
 
 *Fig. 18: Configuration possibilites of "Open webpage in new tab"*
 
