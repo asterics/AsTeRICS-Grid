@@ -178,8 +178,6 @@
                 }
 
                 let inputConfig = thiz.metadata.inputConfig;
-                window.addEventListener('resize', thiz.resizeListener, true);
-                $(document).on(constants.EVENT_GRID_RESIZE, thiz.resizeListener);
                 let selectionListener = (item) => {
                     L.removeAddClass(item, 'selected');
                     actionService.doAction(thiz.gridData.id, item.id);
@@ -354,6 +352,8 @@
             $(document).on(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
             $(document).on(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, this.onNavigateEvent);
             document.addEventListener('contextmenu', this.contextMenuListener);
+            window.addEventListener('resize', this.resizeListener, true);
+            $(document).on(constants.EVENT_GRID_RESIZE, this.resizeListener);
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
@@ -361,6 +361,8 @@
             $(document).off(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
             $(document).off(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, this.onNavigateEvent);
             document.removeEventListener('contextmenu', this.contextMenuListener);
+            window.removeEventListener('resize', this.resizeListener, true);
+            $(document).off(constants.EVENT_GRID_RESIZE, this.resizeListener);
             stopInputMethods();
             $.contextMenu('destroy');
             vueApp = null;
@@ -444,8 +446,6 @@
     };
 
     function stopInputMethods() {
-        if (vueApp) window.removeEventListener('resize', vueApp.resizeListener, true);
-        if (vueApp) $(document).off(constants.EVENT_GRID_RESIZE, vueApp.resizeListener);
         if (vueApp && vueApp.scanner) vueApp.scanner.destroy();
         if (vueApp && vueApp.hover) vueApp.hover.destroy();
         if (vueApp && vueApp.clicker) vueApp.clicker.destroy();
