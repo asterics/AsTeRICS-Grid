@@ -227,8 +227,7 @@ The YouTube Action allows you to link videos from this web page to the communica
 
 Clicking on "Edit" of a "YouTube" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 11):
 
-![action youtube](./img/action_youtube_en.jpg)
-![youtubeaction](./img/action_youtube_en.jpg)
+![action youtube](./img/action_youtube_en.JPG)
 
 *Fig. 11: Configuration possibilites of "YouTube Action"*
 
@@ -259,7 +258,7 @@ The possible actions/functions to choose are (when opening the combo box):
 
 To add a "YouTube Grid", one grid element hast to be a "YouTube Player", which can be created in the "Editing on view" in the menu "more" → 'New' → " New You Tube Player", as can be seen in Figure 12:
 
-![action youtubeplayer](./img/youtubeplayer_en.jpg)
+![action youtubeplayer](./img/youtubeplayer_en.JPG)
 
 *Fig. 12: Creating a New YouTube Player element"*
 
@@ -271,7 +270,7 @@ This action is used to change the language of the communicator grid(s) by clicki
 
 Clicking on "Edit" of a "Change content language" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 13):
 
-![action contentlanguage](./img/action_contentlanguage_en.jpg)
+![action contentlanguage](./img/action_contentlanguage_en.JPG)
 
 *Fig. 13: Configuration possibilites of "Change content language - Action"*
 
@@ -279,21 +278,22 @@ The language in which the application language shall be changed to can be select
 
 In the following two figures an example is show, where the content language can be switched from english to french or inversely by clicking on the corresponding flag (Fig. 14 and 15). 
 
-![action changecontentEN](./img/changecontent_en.jpg)
+![action changecontentEN](./img/changecontent_en.JPG)
+
 *Fig. 14: Content language in English*
 
-![action changecontentEN](./img/changecontent_fr.jpg)
+![action changecontentEN](./img/changecontent_fr.JPG)
 
 *Fig. 15: Content language in French*
 
 First of all, you have to check if the grid content can already be translated in the desired language. To do that, you click on the "more" button in the "Edtiting on" view and select the *Translate grid* option as shown in Fig. 16:
-![action translategrid](./img/translategrid_en.jpg)
+![action translategrid](./img/translategrid_en.JPG)
 
 *Fig. 16: Translate grid option*
 
 After clicking on the "Translate grid" option, the following window opens (Fig. 17): 
 
-![action translategrid1](./img/translategrid1_en.jpg)
+![action translategrid1](./img/translategrid1_en.JPG)
 
 *Fig. 17: Translate grid - select language and translate the content*
 
@@ -304,7 +304,9 @@ Here, the language, in which the grid content shall be translated, can be chosen
 This action allows to assign an external web page to a grid element and, by clicking on it, to access the information contained therein.
 
 Clicking on "Edit" of a "Open webpage in new tab" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 18):
-![action openwebpage](./img/action_openwebpage_en.jpg)
+
+![action openwebpage](./img/action_openwebpage_en.JPG)
+
 *Fig. 18: Configuration possibilites of "Open webpage in new tab"*
 
 * **Webpage URL**: copy the URL of the desired webpage and enter it here
