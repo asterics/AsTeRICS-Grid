@@ -228,7 +228,7 @@ The sequential input method can be used with 2-3 [input events](04_input_options
 These are the possible input events for *Sequential Input*:
 
 * **Next element**: moves the focus to the next element. If focus is currently on the last element, the first element will be focused.
-* **Previous Element**: (optional) moves the focus to the previous element. If focus is currently on the first element, the last element will be focused.
+* **Previous Element** (optional): moves the focus to the previous element. If focus is currently on the first element, the last element will be focused.
 * **Select element**: selects the element that is currently focused
 
 The desired keys for each input event can be selected by clicking first on *Record key* and consecutively clicking on the desired key.
