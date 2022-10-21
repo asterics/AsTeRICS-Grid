@@ -257,6 +257,7 @@ The YouTube Action allows you to link videos from this web page to the communica
 Clicking on "Edit" of a "YouTube" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 9):
 
 ![action youtube](./img/action_youtube_en.jpg)
+![youtubeaction](./img/action_youtube_en.jpg)
 
 *Fig. 9: Configuration possibilites of "YouTube Action"*
 
