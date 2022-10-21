@@ -269,7 +269,7 @@ This action is used to change the language of the communicator grid(s) by clicki
 
 Clicking on "Edit" of a "Change content language" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 13):
 
-![action contentlanguage](./img/action_contentlanguage_en.JPG)
+<img src="./img/action_contentlanguage_en.JPG" width="800"/>
 
 *Fig. 13: Configuration possibilites of "Change content language - Action"*
 
