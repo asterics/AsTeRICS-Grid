@@ -54,11 +54,8 @@ The format of the list looks like this:
 Each data record has the format `<rank> <frequency> <word>` and is separated by a line separator `\n`. In order to import this list to AsTeRICS Grid the whole list has to be copied, inserted into the text field of the import modal (Fig. 2, number 2) and the following advanced options have to be set (Fig. 2, number 6-9):
 
 * **Element separator**: `\n` - since the data records are separated by line breaks
-
 * **In-element separator**: `[ ]` (space) - since the data inside the lines is separated by spaces
-
 * **Word index**: `2` - since the word is the third element within a data record (zero-based index)
-
 * **Rank index**: `0` - since the rank is the first element within a data record (zero-based index)
 
 [&#x2190; Previous Chapter](06_users.md) [Next Chapter &#x2192;](08_keyboard_shortcuts.md)

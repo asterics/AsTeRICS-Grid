@@ -61,15 +61,10 @@ Clicking on Button "Editing on" (Fig. 1, number 11) opens the edit view where a 
 The following elements are available in the edit view:
 
 1. Open or close the navigation sidebar
-
 2. **Editing off**: navigate back to main view
-
 3. **Undo**: reverts the last action
-
 4. **Redo**: redoes the last action after reverting it
-
 5. **More**: opens a menu with additional actions, e.g adding new elements
-
 6. **Right click on a grid element**: opens a menu for editing / deleting / etc.  the element (open it with long tap on a mobile device/touchscreen)
    
    **Reposition grid element / Edit area**: Grid elements can be repositioned by dragging them (drag & drop). On the right bottom corner it's possible to resize a grid element.

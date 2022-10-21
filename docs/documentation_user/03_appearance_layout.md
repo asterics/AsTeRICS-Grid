@@ -20,25 +20,15 @@ In the [Edit view ("Editing on")](02_navigation.md#edit-view) the following menu
 These are the actions to select in the menu:
 
 1. **New &#x2192; New Element**: creates a normal new element, opening a dialog where label and image can be defined
-
 2. **New &#x2192; Many new elements**: creates multiple new normal elements at once, opening a dialog where multiple elements can be defined and inserted into the grid
-
 3. **New &#x2192; New collect element**: creates a new collect element, see [Terms](01_terms.md#grid-element)
-
 4. **New &#x2192; New prediction element**: creates a new prediction element, see [Terms](01_terms.md#grid-element)
-
 5. **New → New YouTube Player**: creates a new YouTube Player element
-
 6. **Delete all elements**: removes all grid elements from the grid
-
 7. **Change grid dimensions**: set grid size (number of rows and minimum number of columns)
-
 8. **Translate grid**: select which grid(s) to translate and in which language the texts shall be translated
-
 9. **Fill gaps**: moves all grid elements as far left as possible, closing gaps as the following image shows:
-   
    <div style="margin-left: 2em"><img src="./img/fill_gaps.gif" alt="fill gaps" width="130" style="margin-left: 2em"/></div>
-
 10. **Edit global grid**: directly go to the page, where the global grid can be edited (otherwise go to *Manage grids → Edit global Grid* (at the bottom))
 
 ## Editing grid elements
@@ -87,19 +77,12 @@ These are the elements in the modal of Figure 3 (Edit grid item - Tab *General*)
 *Fig. 4: "Edit grid item" modal - Tab "Image"*
 
 1. **Choose file**: opens a file dialog to choose a different image
-
 2. **Search by label**: image search is done by label
-
 3. **Clear image**: deletes the currently chosen image
-
 4. **Drop area**: drag and drop image files in this area to select them. It's possible to drag and drop files from a file explorer or also other programs like e.g. METACOM MetaSearch*.
-
 ![fill gaps](file://C:\Users\Agnes Scheibenreif\OneDrive - FH Technikum Wien\Projekte\WBT\Github codes\AsTeRICS-Grid\docs\documentation_user\img\drag_metacom.gif)
-
 5. **Image Search**: type in the name of which images shall be looked for
-
 6. **Search Provider**: select the provider for the image search
-
 7. **Settings for image search**: select additional settings like Plural or Color (skin color, hair color,...)
 
 #### Tab "Actions"
@@ -109,23 +92,14 @@ These are the elements in the modal of Figure 3 (Edit grid item - Tab *General*)
 *Fig. 5: "Edit grid item" modal - Tab "Actions"*
 
 1. **New Action**: select type of new action in the combobox (e.g. Speak label, Navigate to other grid)
-
 2. **Add action**: add the selected type of action to the grid
-
 3. **Current actions**: actions currently assigned to the current grid element are shown here
-
 4. **Edit**: open additional drop down menus to edit and configure the particular action
-
 5. **Delete**: delete this action from the current grid element
-
 6. **Test**: tests the action, e.g. speaks the label. This button is not available for all types of actions.
-
 7. **Cancel**: discard all changes and close the modal
-
 8. **OK**: save all changes and close the modal
-
 9. **OK, edit previous**: save all changes, edit the previous grid element in the "Edit grid item" modal - Tab "Actions"
-
 10. **OK, edit next**: save all changes, edit the next grid element in the "Edit grid item" modal - Tab "Actions"
 
 <a href="https://www.metacom-symbole.de/" target="_blank">*METACOM and MetaSearch</a> &copy; Annette Kitzinger
