@@ -14,7 +14,7 @@ This chapter is about actions that can be performed if a grid element is selecte
    * [AsTeRICS Action](05_actions.md#asterics-action)
    * [Web radio action](05_actions.md#web-radio-action)
    * [YouTube Action](05_actions.md#YouTube-Action)
-   * [Change Content Language](05_actions.md#Change-Content_Language)
+   * [Change Content Language](05_actions.md#Change-Content-Language)
    * [Open webpage in new tab](05_actions.md#Open-webpage-in-new-tab)
 
 [Back to Overview](README.md)
@@ -147,7 +147,7 @@ Figure 6 shows how an AsTeRICS action that controls a TV is working in more deta
 
 The following steps are shown in Figure 6:
 
-1. An user selects a grid element with an associated AsTeRICS action. An [AsTeRICS model](01_terms.md#asterics-model) which can perform the desired action (e.g. controlling a TV) is saved within the current grid.
+1. A user selects a grid element with an associated AsTeRICS action. An [AsTeRICS model](01_terms.md#asterics-model) which can perform the desired action (e.g. controlling a TV) is saved within the current grid.
 2. The AsTeRICS model is uploaded to a running instance of the AsTeRICS Framework (ARE) and afterwards started. The model contains so-called "plugins" which are elements capable of communicating with external hardware, e.g. attached to the computer or accessible via network. In the example the "IrTrans" plugin is capable of communicating with an IrTrans device, which is a replacement for infrared remotes.
 3. After uploading and starting the model on the AsTeRICS Framework, data is sent to a plugin contained in the model. In Fig. 6 some data is sent to the "action" port of the IrTrans plugin.
 4. Sending data to the plugin causes the AsTeRICS Framework to communicate with the external real "IrTrans" hardware. The action contains the needed information to perform the desired action, for instance sending a "Volume down" command to a TV.
@@ -167,9 +167,9 @@ These are the possibilities while configuring an AsTeRICS action:
 4. **Download from ARE**: downloads the currently running model from a running AsTeRICS Framework (ARE) instance and saves it to the grid. The current ARE model is replaced by this action.
 5. **Upload to ARE**: uploads the saved model to a running AsTeRICS Framework (ARE) for testing purpose or in order to adapt it.
 6. **Component**: selection of the component (plugin) of the selected model that should be used
-7. **Send data**: define data that should be sent to a specific port of the component
-8. **Data**: 
-9. **Event-Port**:
+7. **Send data to port**: define port the data should be sent
+8. **Data**: define data that should be sent to the port determined above (number 7)
+9. **Event-Port**
 10. **Cancel**: discard any changes and close the modal
 11. **OK**: save all changes and close the modal
 12. **OK, edit previous**: save all changes and edit the actions of the previous element
