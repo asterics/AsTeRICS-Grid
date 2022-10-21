@@ -30,6 +30,8 @@ These types of input events can be used in all input methods except *Mouse/Touch
 Figure 1 shows the configuration possibilities of a keypress event (f.e. choose Scanning as Input option and enable Scanning):
 
 ![input event keypress options](./img/input_channel_keyboard_en.jpg)
+
+
 *Fig. 1: Configuration of a keypress input event*
 
 These are the shown elements and options:
@@ -68,6 +70,8 @@ Here are some examples for the properties *Timeout*, *Repetitions* and *Hold dur
 AsTeRICS ARE input events are triggered by external events of a running [model](01_terms.md#asterics-model) within the [AsTeRICS Framework](01_terms.md#asterics-framework).
 
 ![input event asterics are options](./img/input_channel_are_en.jpg)
+
+
 *Fig. 2: Configuration of an AsTeRICS ARE input event*
 
 Figure 2 shows the configuration of an AsTeRICS ARE input event (AsTeRICS ARE Event is selected as select element in Figure 1, (1)):
@@ -96,6 +100,8 @@ Follow these steps in order to set up an AsTeRICS Grid input method while using 
 Each input option dialog opened by "[Main view](02_navigation.md#main-view) - Input options" has about the same structure, see Figure 3 (can be seen as shown below when input option (here: Scanning) is enabled):
 
 ![general structure of an input option dialog](./img/input_options_general_en.jpg)
+
+
 *Fig. 3: General structure of an input option dialog, when input option is enabled*
 
 These are the basic elements of an input option dialog as in figure 3:
