@@ -161,40 +161,24 @@ Clicking on "Edit" on a "AsTeRICS action" action (or creating a new one) shows t
 *Fig. 9: Configuration possibilites of "AsTeRICS action"*
 
 These are the possibilities while configuring an AsTeRICS action:
-
 1. **ARE URL**: the URL of a running ARE (AsTeRICS Framework) to connect with. Standard URL is `http://127.0.0.1:8081/rest/` for a locally running ARE.
-
 2. **Test URL**: click in order to test the current URL. A tick (&#10003;) or times (&times;) symbol will indicate if the test was successful or has failed.
-
 3. **ARE Model**: if there is already a [model](01_terms.md#asterics-model) of this action defined, the name of it is shown here. A click on the link downloads the model.
-
 4. **Download from ARE**: downloads the currently running model from a running AsTeRICS Framework (ARE) instance and saves it to the grid. The current ARE model is replaced by this action.
-
 5. **Upload to ARE**: uploads the saved model to a running AsTeRICS Framework (ARE) for testing purpose or in order to adapt it.
-
 6. **Component**: selection of the component (plugin) of the selected model that should be used
-
 7. **Send data to port**: define port the data should be sent
-
 8. **Data**: define data that should be sent to the port determined above (number 7)
-
 9. **Event-Port**
-
 10. **Cancel**: discard any changes and close the modal
-
 11. **OK**: save all changes and close the modal
-
 12. **OK, edit previous**: save all changes and edit the actions of the previous element
-
 13. **OK, edit next**: save all changes and edit the actions of the next element
-
 14. **End edit**: apply changes and close edit mode of this AsTeRICS action
-
 15. **Delete**: delete this action from this grid element
-
 16. **Test**: performs the defined AsTeRICS action for testing, same as will be later performed if the grid element is selected
-    
-    **Trigger event**: selects an event that should be triggered on the selected component (optional, either "send data", "trigger event" or both can be used)
+
+**Trigger event**: selects an event that should be triggered on the selected component (optional, either "send data", "trigger event" or both can be used)
 
 ### Web radio action
 
