@@ -190,7 +190,7 @@ async function updateCollectElements(isSecondTry) {
             let html = `<span style="padding: 5px; display: flex; align-items: center; flex: 1; text-align: left;">
                             ${collectedText}
                         </span>`;
-            outerContainerJqueryElem.html(html = `<div class="collect-container" dir="auto" style="flex: 1; background-color: ${txtBackgroundColor}; text-align: justify;">${html}</div>`);
+            outerContainerJqueryElem.html(html = `<div class="collect-container" dir="auto" style="flex: 1; background-color: #e8e8e8; text-align: justify;">${html}</div>`);
             fontUtil.adaptFontSize($(`#${collectElement.id}`));
         } else {
             let html = '';
@@ -246,7 +246,7 @@ async function updateCollectElements(isSecondTry) {
                              </div>`
             }
             let additionalCSS = useSingleLine ? 'overflow-x: auto; overflow-y: hidden;' : 'flex-wrap: wrap;';
-            html = `<div class="collect-container" dir="auto" style="flex: 1; display: flex; flex-direction: row; background-color: ${txtBackgroundColor}; text-align: justify; ${additionalCSS}">${html}</div>`;
+            html = `<div class="collect-container" dir="auto" style="flex: 1; display: flex; flex-direction: row; background-color: #e8e8e8; text-align: justify; ${additionalCSS}">${html}</div>`;
             outerContainerJqueryElem.html(html);
             if (useSingleLine) {
                 let scroll = markedImageIndex !== null ? maxImgRatio * imgHeight * markedImageIndex : maxImgRatio * imgHeight * imageCount;
