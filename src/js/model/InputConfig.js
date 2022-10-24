@@ -9,6 +9,8 @@ class InputConfig extends Model({
     modelName: String,
     modelVersion: String,
     globalReadActive: [Boolean], //read out loud active element(s)?
+    globalReadActiveRate: [Number],
+    globalBeepFeedback: [Boolean],
     scanEnabled: [Boolean],
     scanAuto: [Boolean],
     scanTimeoutMs: [Number],
@@ -106,6 +108,7 @@ InputConfig.defaults({
     id: "", //will be replaced by constructor
     modelName: InputConfig.getModelName(),
     modelVersion: constants.MODEL_VERSION,
+    globalReadActiveRate: 1,
     scanAuto: false,
     scanTimeoutMs: 1000,
     scanTimeoutFirstElementFactor: 1,

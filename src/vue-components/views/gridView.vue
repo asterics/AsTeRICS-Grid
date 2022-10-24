@@ -81,6 +81,7 @@
     import {speechService} from "../../js/service/speechService";
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {imageUtil} from "../../js/util/imageUtil";
+    import {audioUtil} from "../../js/util/audioUtil.js";
     import UnlockModal from "../modals/unlockModal.vue";
     import {printService} from "../../js/service/printService";
 
@@ -182,9 +183,22 @@
                     L.removeAddClass(item, 'selected');
                     actionService.doAction(thiz.gridData.id, item.id);
                 };
-                let activeListener = (item) => {
-                    if (inputConfig.globalReadActive) {
-                        speechService.speakLabel(thiz.gridData.id, item.id);
+                let activeListener = (items, wrap, restarted) => {
+                    if (!Array.isArray(items)) {
+                        items = [items];
+                    }
+                    if (inputConfig.globalReadActive && items && items.length === 1 && items[0]) {
+                        speechService.speakLabel(thiz.gridData.id, items[0].id, {rate: inputConfig.globalReadActiveRate || 1});
+                    }
+
+                    if (inputConfig.globalBeepFeedback) {
+                        if (restarted) {
+                            audioUtil.beepHighDouble();
+                        } else if (wrap) {
+                            audioUtil.beepHigh();
+                        } else {
+                            audioUtil.beep();
+                        }
                     }
                 };
 
@@ -209,6 +223,7 @@
                 if (inputConfig.scanEnabled) {
                     thiz.scanner = Scanner.getInstanceFromConfig(inputConfig, '.grid-item-content:not([data-empty="true"])', 'scanFocus', 'scanInactive');
                     thiz.scanner.setSelectionListener(selectionListener);
+                    thiz.scanner.setActiveListener(activeListener);
 
                     gridInstance.setLayoutChangedStartListener(function () {
                         thiz.scanner.pauseScanning();

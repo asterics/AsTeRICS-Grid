@@ -64,6 +64,7 @@
                                     <input type="range" id="inFirstElement" v-model.number="inputConfig.scanTimeoutFirstElementFactor" min="1" max="5" step="0.1"/>
                                     <input type="number" v-model.number="inputConfig.scanTimeoutFirstElementFactor" min="1" max="5" step="0.5" />
                                 </div>
+                                <acoustic-feedback-options :input-config="inputConfig"></acoustic-feedback-options>
                             </accordion>
                             <accordion :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
                                 <test-area :selected-element="selectedTestElement"></test-area>
@@ -102,10 +103,11 @@
     import {InputConfig} from "../../../js/model/InputConfig";
     import {Scanner} from "../../../js/input/scanning";
     import {inputEventHandler} from "../../../js/input/inputEventHandler";
+    import AcousticFeedbackOptions from "./acousticFeedbackOptions.vue";
 
     export default {
         props: [],
-        components: {Accordion, InputEventList, TestArea},
+        components: {AcousticFeedbackOptions, Accordion, InputEventList, TestArea},
         data: function () {
             return {
                 inputConfig: null,
