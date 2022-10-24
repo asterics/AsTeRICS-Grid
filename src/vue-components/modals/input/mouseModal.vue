@@ -16,6 +16,12 @@
                                 <label class="inline" for="enableClick">{{ $t('selectWithMouseClickOrTap') }}</label>
                             </div>
                         </div>
+                        <div class="srow">
+                            <div class="twelve columns">
+                                <input v-focus type="checkbox" id="enableDoubleClick" v-model="inputConfig.mouseDoubleClickEnabled"/>
+                                <label class="inline" for="enableDoubleClick">{{ 'Select with double click (or double tap)' }}</label>
+                            </div>
+                        </div>
                         <div class="srow" >
                             <div class="twelve columns">
                                 <input v-focus type="checkbox" id="enableHover" v-model="inputConfig.hoverEnabled"/>
@@ -74,7 +80,6 @@
 <script>
     import {dataService} from '../../../js/service/data/dataService'
     import {helpService} from "../../../js/service/helpService";
-    import {i18nService} from "../../../js/service/i18nService";
     import Accordion from "../../components/accordion.vue"
     import InputEventList from "../../components/inputEventList.vue"
     import TestArea from "./testArea.vue"
@@ -136,8 +141,8 @@
                         thiz.hover.startHovering();
                     }
 
-                    if (thiz.inputConfig.mouseclickEnabled) {
-                        thiz.clicker = new Clicker('.area-element-inner', thiz.inputConfig.mouseDownInsteadClick);
+                    if (thiz.inputConfig.mouseclickEnabled || thiz.inputConfig.mouseDoubleClickEnabled) {
+                        thiz.clicker = Clicker.getInstanceFromConfig(thiz.inputConfig, '.area-element-inner');
                         thiz.clicker.setSelectionListener(function (item) {
                             thiz.selectedTestElement = item;
                         });

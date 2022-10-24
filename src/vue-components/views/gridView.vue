@@ -231,8 +231,8 @@
                     $('#touchElement').hide();
                 }
 
-                if (inputConfig.mouseclickEnabled) {
-                    thiz.clicker = new Clicker('.grid-item-content', inputConfig.mouseDownInsteadClick);
+                if (inputConfig.mouseclickEnabled || inputConfig.mouseDoubleClickEnabled) {
+                    thiz.clicker = Clicker.getInstanceFromConfig(inputConfig, '.grid-item-content');
                     thiz.clicker.setSelectionListener(selectionListener);
                     thiz.clicker.startClickcontrol();
                 }

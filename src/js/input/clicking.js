@@ -1,12 +1,29 @@
 import { L } from "../util/lquery.js";
 
-function Clicker(itemSelector, useMousedownEvent) {
+let Clicker = {};
+
+Clicker.getInstanceFromConfig = function (inputConfig, itemSelector) {
+    return new ClickerConstructor(itemSelector, {
+        useMousedownEvent: inputConfig.mouseDownInsteadClick,
+        useDoubleclick: inputConfig.mouseDoubleClickEnabled,
+        useSingleClick: inputConfig.mouseclickEnabled
+    });
+};
+
+function ClickerConstructor(itemSelector, options) {
+    options = options || {};
     let thiz = this;
     let _itemSelector = itemSelector;
     let _selectionListener = null;
     let _elements = [];
 
     function onclick(event) {
+        if (_selectionListener) {
+            _selectionListener(event.currentTarget);
+        }
+    }
+
+    function ondblclick(event) {
         if (_selectionListener) {
             _selectionListener(event.currentTarget);
         }
@@ -24,10 +41,13 @@ function Clicker(itemSelector, useMousedownEvent) {
     thiz.startClickcontrol = function () {
         _elements = L.selectAsList(_itemSelector);
         _elements.forEach(function (item) {
-            if (useMousedownEvent) {
+            if (options.useSingleClick && options.useMousedownEvent) {
                 item.addEventListener('mousedown', onclick);
-            } else {
+            } else if (options.useSingleClick) {
                 item.addEventListener('click', onclick);
+            }
+            if (options.useDoubleclick) {
+                item.addEventListener('dblclick', ondblclick);
             }
             item.addEventListener('keydown', onkeydown);
         });
@@ -35,11 +55,9 @@ function Clicker(itemSelector, useMousedownEvent) {
 
     thiz.destroy = function () {
         _elements.forEach(function (item) {
-            if (useMousedownEvent) {
-                item.removeEventListener('mousedown', onclick);
-            } else {
-                item.removeEventListener('click', onclick);
-            }
+            item.removeEventListener('mousedown', onclick);
+            item.removeEventListener('click', onclick);
+            item.removeEventListener('dblclick', ondblclick);
             item.removeEventListener('keydown', onkeydown);
         });
     };
