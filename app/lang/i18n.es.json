@@ -828,9 +828,9 @@
   "voiceRate": "Velocidad de la voz",
   "secondVoice": "Voz secundaria",
   "advancedVoiceSettings": "Configuración avanzada de la voz sintetizada",
-  "selectWithDoubleClickOrDoubleTap": "Select with double click (or double tap)",
-  "automaticTimedSequentialInput": "Automatic (timed) sequential input",
-  "acousticFeedbackOptions": "Acoustic Feedback Options",
-  "speedForReadingActiveElement": "Speed for reading active element",
-  "enableAcousticFeedbackUsingBeepingSounds": "Enable acoustic feedback using beeping sounds"
+  "selectWithDoubleClickOrDoubleTap": "Seleccionar con doble clic (o doble pulsación)",
+  "automaticTimedSequentialInput": "Barrido automático (temporizado)",
+  "acousticFeedbackOptions": "Opciones de feedback auditivo",
+  "speedForReadingActiveElement": "Velocidad de locución de la celda activa",
+  "enableAcousticFeedbackUsingBeepingSounds": "Activar feedback auditivo utilizando pitidos"
 }
