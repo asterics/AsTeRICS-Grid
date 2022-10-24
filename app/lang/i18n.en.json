@@ -828,5 +828,6 @@
   "voiceRate": "Voice rate",
   "secondVoice": "Secondary voice",
   "advancedVoiceSettings": "Advanced voice settings",
-  "selectWithDoubleClickOrDoubleTap": "Select with double click (or double tap)"
+  "selectWithDoubleClickOrDoubleTap": "Select with double click (or double tap)",
+  "automaticTimedSequentialInput": "Automatic (timed) sequential input"
 }
