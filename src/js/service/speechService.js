@@ -36,6 +36,7 @@ let currentSpeakArray = [];
  * @param options.dontStop (optional) if true, currently spoken text isn't aborted
  * @param options.speakSecondary (optional) if true, spoken text is repeated using the secondary language
  * @param options.useStandardRatePitch (optional) if true, the standard values for rate/pitch are used (1)
+ * @param options.rate (optional) rate value to use
  */
 speechService.speak = function (textOrOject, options) {
     options = options || {};
@@ -85,12 +86,12 @@ speechService.speak = function (textOrOject, options) {
         msg.voice = nativeVoices[0].ref;
         let isSelectedVoice = nativeVoices[0].name === preferredVoiceName;
         msg.pitch = isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1;
-        msg.rate = isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1;
+        msg.rate = options.rate || (isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1);
         window.speechSynthesis.speak(msg);
     } else if(responsiveVoices.length > 0) {
         let isSelectedVoice = responsiveVoices[0].name === preferredVoiceName;
         responsiveVoice.speak(text, responsiveVoices[0].name, {
-            rate: isSelectedVoice && !options.useStandardRatePitch  ? _voiceRate : 1,
+            rate: options.rate || (isSelectedVoice && !options.useStandardRatePitch  ? _voiceRate : 1),
             pitch: isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1
         });
     }
@@ -131,12 +132,12 @@ speechService.speakArray = async function (array, progressFn, index, dontStop) {
     });
 }
 
-speechService.speakLabel = function (gridId, gridElementId) {
+speechService.speakLabel = function (gridId, gridElementId, options) {
     if (!gridId || !gridElementId) {
         return;
     }
     dataService.getGridElement(gridId, gridElementId).then(gridElement => {
-        speechService.speak(i18nService.getTranslation(gridElement.label));
+        speechService.speak(i18nService.getTranslation(gridElement.label), options);
     });
 };
 
