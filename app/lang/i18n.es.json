@@ -827,5 +827,10 @@
   "currentValue": "Valor actual",
   "voiceRate": "Velocidad de la voz",
   "secondVoice": "Voz secundaria",
-  "advancedVoiceSettings": "Configuración avanzada de la voz sintetizada"
+  "advancedVoiceSettings": "Configuración avanzada de la voz sintetizada",
+  "selectWithDoubleClickOrDoubleTap": "Select with double click (or double tap)",
+  "automaticTimedSequentialInput": "Automatic (timed) sequential input",
+  "acousticFeedbackOptions": "Acoustic Feedback Options",
+  "speedForReadingActiveElement": "Speed for reading active element",
+  "enableAcousticFeedbackUsingBeepingSounds": "Enable acoustic feedback using beeping sounds"
 }
