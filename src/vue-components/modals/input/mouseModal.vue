@@ -19,7 +19,7 @@
                         <div class="srow">
                             <div class="twelve columns">
                                 <input v-focus type="checkbox" id="enableDoubleClick" v-model="inputConfig.mouseDoubleClickEnabled"/>
-                                <label class="inline" for="enableDoubleClick">{{ 'Select with double click (or double tap)' }}</label>
+                                <label class="inline" for="enableDoubleClick">{{ $t('selectWithDoubleClickOrDoubleTap') }}</label>
                             </div>
                         </div>
                         <div class="srow" >

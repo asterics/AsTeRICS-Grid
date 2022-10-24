@@ -827,5 +827,6 @@
   "currentValue": "Current value",
   "voiceRate": "Voice rate",
   "secondVoice": "Secondary voice",
-  "advancedVoiceSettings": "Advanced voice settings"
+  "advancedVoiceSettings": "Advanced voice settings",
+  "selectWithDoubleClickOrDoubleTap": "Select with double click (or double tap)"
 }
