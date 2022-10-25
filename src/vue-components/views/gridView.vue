@@ -188,7 +188,14 @@
                         items = [items];
                     }
                     if (inputConfig.globalReadActive && items && items.length === 1 && items[0]) {
-                        speechService.speakLabel(thiz.gridData.id, items[0].id, {rate: inputConfig.globalReadActiveRate || 1});
+                        let text = items[0].ariaLabel;
+                        let separatorIndex = text.indexOf(", ");
+                        if (!inputConfig.globalReadAdditionalActions && separatorIndex !== -1 && separatorIndex !== 0) {
+                            text = text.substring(0, separatorIndex);
+                        }
+                        speechService.speak(text, {
+                            rate: inputConfig.globalReadActiveRate || 1
+                        });
                     }
 
                     if (inputConfig.globalBeepFeedback) {

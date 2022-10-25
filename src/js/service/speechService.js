@@ -132,15 +132,6 @@ speechService.speakArray = async function (array, progressFn, index, dontStop) {
     });
 }
 
-speechService.speakLabel = function (gridId, gridElementId, options) {
-    if (!gridId || !gridElementId) {
-        return;
-    }
-    dataService.getGridElement(gridId, gridElementId).then(gridElement => {
-        speechService.speak(i18nService.getTranslation(gridElement.label), options);
-    });
-};
-
 speechService.stopSpeaking = function () {
     currentSpeakArray = [];
     if (speechService.nativeSpeechSupported()) {
