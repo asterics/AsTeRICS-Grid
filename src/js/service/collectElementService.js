@@ -186,6 +186,7 @@ async function updateCollectElements(isSecondTry) {
         let imageMode = isImageMode(collectElement.mode);
         let outerContainerJqueryElem = $(`#${collectElement.id} .collect-outer-container`);
         if (!imageMode) {
+            $(`#${collectElement.id}`).attr('aria-label', `${collectedText}, ${i18nService.t('ELEMENT_TYPE_COLLECT')}`);
             predictionService.learnFromInput(collectedText, dictionaryKey);
             let html = `<span style="padding: 5px; display: flex; align-items: center; flex: 1; text-align: left;">
                             ${collectedText}
@@ -193,6 +194,7 @@ async function updateCollectElements(isSecondTry) {
             outerContainerJqueryElem.html(html = `<div class="collect-container" dir="auto" style="flex: 1; background-color: #e8e8e8; text-align: justify;">${html}</div>`);
             fontUtil.adaptFontSize($(`#${collectElement.id}`));
         } else {
+            $(`#${collectElement.id}`).attr('aria-label', `${collectedImageLabels.join(' ')}, ${i18nService.t('ELEMENT_TYPE_COLLECT')}`);
             let html = '';
             let height = $(`#${collectElement.id} .collect-container`).prop("clientHeight") || outerContainerJqueryElem.prop("clientHeight"); // consider scrollbar height
 
