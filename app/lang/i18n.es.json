@@ -833,13 +833,13 @@
   "acousticFeedbackOptions": "Opciones de feedback auditivo",
   "speedForReadingActiveElement": "Velocidad de locución de la celda activa",
   "enableAcousticFeedbackUsingBeepingSounds": "Activar feedback auditivo utilizando pitidos",
-  "colon": "colon",
-  "period": "period",
-  "comma": "comma",
-  "exclamationMark": "exclamation mark",
-  "questionMark": "question mark",
-  "quotationMark": "quotation mark",
-  "hyphen": "hyphen",
-  "space": "space",
-  "readElementActionsInAdditionToLabel": "Read element actions in addition to label"
+  "colon": "dos puntos",
+  "period": "punto",
+  "comma": "coma",
+  "exclamationMark": "signo de exclamación",
+  "questionMark": "signo de Interrogación",
+  "quotationMark": "comillas",
+  "hyphen": "guión",
+  "space": "espacio",
+  "readElementActionsInAdditionToLabel": "Leer acciones de la celda además del texto"
 }
