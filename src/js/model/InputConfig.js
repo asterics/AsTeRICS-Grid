@@ -114,6 +114,7 @@ InputConfig.defaults({
     scanTimeoutFirstElementFactor: 1,
     scanBinary: false,
     hoverTimeoutMs: 1000,
+    hoverDisableHoverpane: true,
     mouseclickEnabled: true,
     mouseDoubleClickEnabled: false,
     mouseDownInsteadClick: false,
