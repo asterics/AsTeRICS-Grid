@@ -832,5 +832,14 @@
   "automaticTimedSequentialInput": "Automatische (zeitgesteuerte) sequentielle Eingabe",
   "acousticFeedbackOptions": "Optionen zu akustischem Feedback",
   "speedForReadingActiveElement": "Sprechgeschwindigkeit für Lesen des aktiven Elements",
-  "enableAcousticFeedbackUsingBeepingSounds": "Akustisches Feedback mit Piepton aktivieren"
+  "enableAcousticFeedbackUsingBeepingSounds": "Akustisches Feedback mit Piepton aktivieren",
+  "colon": "colon",
+  "period": "period",
+  "comma": "comma",
+  "exclamationMark": "exclamation mark",
+  "questionMark": "question mark",
+  "quotationMark": "quotation mark",
+  "hyphen": "hyphen",
+  "space": "space",
+  "readElementActionsInAdditionToLabel": "Read element actions in addition to label"
 }
