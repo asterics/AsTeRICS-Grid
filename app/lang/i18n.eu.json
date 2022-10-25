@@ -827,5 +827,19 @@
   "currentValue": "Current value",
   "voiceRate": "Voice rate",
   "secondVoice": "Secondary voice",
-  "advancedVoiceSettings": "Advanced voice settings"
+  "advancedVoiceSettings": "Advanced voice settings",
+  "selectWithDoubleClickOrDoubleTap": "Select with double click (or double tap)",
+  "automaticTimedSequentialInput": "Automatic (timed) sequential input",
+  "acousticFeedbackOptions": "Acoustic Feedback Options",
+  "speedForReadingActiveElement": "Speed for reading active element",
+  "enableAcousticFeedbackUsingBeepingSounds": "Enable acoustic feedback using beeping sounds",
+  "colon": "colon",
+  "period": "period",
+  "comma": "comma",
+  "exclamationMark": "exclamation mark",
+  "questionMark": "question mark",
+  "quotationMark": "quotation mark",
+  "hyphen": "hyphen",
+  "space": "space",
+  "readElementActionsInAdditionToLabel": "Read element actions in addition to label"
 }

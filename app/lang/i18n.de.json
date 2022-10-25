@@ -827,5 +827,19 @@
   "currentValue": "Aktueller Wert",
   "voiceRate": "Sprechgeschwindigkeit",
   "secondVoice": "Sekundäre Stimme",
-  "advancedVoiceSettings": "Erweiterte Optionen für Stimme"
+  "advancedVoiceSettings": "Erweiterte Optionen für Stimme",
+  "selectWithDoubleClickOrDoubleTap": "Auswahl mit Doppelklick (oder doppeltem Antippen)",
+  "automaticTimedSequentialInput": "Automatische (zeitgesteuerte) sequentielle Eingabe",
+  "acousticFeedbackOptions": "Optionen zu akustischem Feedback",
+  "speedForReadingActiveElement": "Sprechgeschwindigkeit für Lesen des aktiven Elements",
+  "enableAcousticFeedbackUsingBeepingSounds": "Akustisches Feedback mit Piepton aktivieren",
+  "colon": "Doppelpunkt",
+  "period": "Punkt",
+  "comma": "Beistrich",
+  "exclamationMark": "Rufzeichen",
+  "questionMark": "Fragezeichen",
+  "quotationMark": "Anführungszeichen",
+  "hyphen": "Bindestrich",
+  "space": "Leerzeichen",
+  "readElementActionsInAdditionToLabel": "Aktionen des Elements zusätzlich zu Label lesen"
 }
