@@ -10,6 +10,7 @@ class InputConfig extends Model({
     modelVersion: String,
     globalReadActive: [Boolean], //read out loud active element(s)?
     globalReadActiveRate: [Number],
+    globalReadAdditionalActions: [Boolean],
     globalBeepFeedback: [Boolean],
     scanEnabled: [Boolean],
     scanAuto: [Boolean],

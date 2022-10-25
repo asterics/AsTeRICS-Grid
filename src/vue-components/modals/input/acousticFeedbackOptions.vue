@@ -21,6 +21,12 @@
                 <label for="beepFeedback">{{ $t('enableAcousticFeedbackUsingBeepingSounds') }}</label>
             </div>
         </div>
+        <div class="srow">
+            <div class="twelve columns">
+                <input type="checkbox" id="readAdditional" v-model="inputConfig.globalReadAdditionalActions"/>
+                <label for="readAdditional">{{ $t('readElementActionsInAdditionToLabel') }}</label>
+            </div>
+        </div>
     </div>
 </template>
 
