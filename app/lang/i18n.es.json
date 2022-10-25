@@ -832,5 +832,14 @@
   "automaticTimedSequentialInput": "Barrido automático (temporizado)",
   "acousticFeedbackOptions": "Opciones de feedback auditivo",
   "speedForReadingActiveElement": "Velocidad de locución de la celda activa",
-  "enableAcousticFeedbackUsingBeepingSounds": "Activar feedback auditivo utilizando pitidos"
+  "enableAcousticFeedbackUsingBeepingSounds": "Activar feedback auditivo utilizando pitidos",
+  "colon": "colon",
+  "period": "period",
+  "comma": "comma",
+  "exclamationMark": "exclamation mark",
+  "questionMark": "question mark",
+  "quotationMark": "quotation mark",
+  "hyphen": "hyphen",
+  "space": "space",
+  "readElementActionsInAdditionToLabel": "Read element actions in addition to label"
 }
