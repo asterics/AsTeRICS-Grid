@@ -29,6 +29,8 @@ let dictionaryKey = null;
 let autoCollectImage = true;
 let collectMode = GridElementCollect.MODE_AUTO;
 let convertToLowercase = true;
+let preventDuplicatedCollect = false;
+let lastCollectId = null;
 
 collectElementService.initWithElements = function (elements, dontAutoPredict) {
     registeredCollectElements = [];
@@ -51,6 +53,7 @@ collectElementService.initWithElements = function (elements, dontAutoPredict) {
             }, null);
             collectMode = copy.mode || collectMode;
             convertToLowercase = copy.convertToLowercase !== false;
+            preventDuplicatedCollect = copy.preventDuplicatedCollect;
             registeredCollectElements.push(copy);
         }
     });
@@ -275,6 +278,10 @@ function isImageMode(elementMode) {
 }
 
 $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
+    if (lastCollectId === element.id && preventDuplicatedCollect) {
+        return;
+    }
+    lastCollectId = element.id;
     let label = i18nService.getTranslation(element.label);
     let image = element.image ? (element.image.data || element.image.url) : null;
 

@@ -8,7 +8,8 @@ class GridElementCollect extends GridElement.extend({
     mode: [String],
     singleLine: [Boolean],
     convertToLowercase: [Boolean],
-    textElemSizeFactor: [Number]
+    textElemSizeFactor: [Number],
+    preventDuplicatedCollect: [Boolean]
 }) {
     constructor(props) {
         props = props || {};

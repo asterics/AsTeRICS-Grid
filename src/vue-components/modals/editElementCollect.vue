@@ -38,6 +38,12 @@
                 <label for="convertToLowercase">{{ $t('convertUppercaseKeyboardLettersToLowercase') }}</label>
             </div>
         </div>
+        <div class="row">
+            <div class="col-12">
+                <input v-if="gridElement" id="preventDuplicatedCollect" type="checkbox" v-model="gridElement.preventDuplicatedCollect"/>
+                <label for="preventDuplicatedCollect">{{ $t('preventCollectingTheSameCellSeveralTimesInARow') }}</label>
+            </div>
+        </div>
     </div>
 </template>
 
