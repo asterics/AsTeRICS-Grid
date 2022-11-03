@@ -269,15 +269,18 @@
                 });
             },
             reload(gridData) {
+                if (gridData) {
+                    this.gridData = JSON.parse(JSON.stringify(gridData));
+                }
                 return gridInstance.reinit(gridData).then(() => {
-                    if (gridData) {
-                        this.gridData = JSON.parse(JSON.stringify(gridData));
-                    }
                     this.reinitInputMethods();
                     return Promise.resolve();
                 });
             },
             async onNavigateEvent(event, gridData) {
+                if (this.gridData.id === gridData.id) {
+                    return; //prevent duplicated navigation to same grid
+                }
                 this.metadata.lastOpenedGridId = gridData.id;
                 await this.reload(gridData);
                 await dataService.saveMetadata(this.metadata);
