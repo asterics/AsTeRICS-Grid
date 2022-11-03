@@ -841,5 +841,6 @@
   "quotationMark": "comillas",
   "hyphen": "guión",
   "space": "espacio",
-  "readElementActionsInAdditionToLabel": "Leer acciones de la celda además del texto"
+  "readElementActionsInAdditionToLabel": "Leer acciones de la celda además del texto",
+  "preventCollectingTheSameCellSeveralTimesInARow": "Prevent collecting the same cell several times in a row"
 }
