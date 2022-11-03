@@ -842,5 +842,5 @@
   "hyphen": "guión",
   "space": "espacio",
   "readElementActionsInAdditionToLabel": "Leer acciones de la celda además del texto",
-  "preventCollectingTheSameCellSeveralTimesInARow": "Prevent collecting the same cell several times in a row"
+  "preventCollectingTheSameCellSeveralTimesInARow": "Evitar la acumulación repetitiva de una misma celda en la frase"
 }
