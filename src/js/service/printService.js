@@ -274,6 +274,9 @@ async function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, yp
         imageData = dataWithDim.data;
         dim = dataWithDim.dim;
     }
+    if (!imageData) {
+        return Promise.resolve();
+    }
     if (!dim) {
         dim = await imageUtil.getImageDimensionsFromDataUrl(imageData);
     }
