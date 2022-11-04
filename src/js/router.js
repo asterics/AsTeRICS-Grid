@@ -208,6 +208,9 @@ Router.toGrid = function (id, props) {
 
         if (_currentView === GridView) {
             dataService.getGrid(id).then(gridData => {
+                if (!gridData) {
+                    return;
+                }
                 if (history && history.pushState) {
                     history.pushState(null, null, url);
                 }
