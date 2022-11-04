@@ -491,11 +491,6 @@ dataService.importData = async function (data, options) {
     importData.grids.forEach(grid => {
         let label = i18nService.getTranslation(grid.label);
         grid.label[i18nService.getContentLang()] = modelUtil.getNewName(label, existingNames);
-        grid.gridElements.forEach(element => {
-            if (element.image && element.image.url && navigator.serviceWorker && navigator.serviceWorker.controller) {
-                serviceWorkerService.cacheImageUrl(element.image.url);
-            }
-        });
     });
     options.progressFn(20);
     if (options.generateGlobalGrid && !importData.metadata.globalGridId) {
@@ -515,7 +510,7 @@ dataService.importData = async function (data, options) {
     }
     importData.metadata.globalGridActive = !!importData.metadata.globalGridId;
 
-    await dataService.saveGrids(importData.grids);
+    await dataService.saveGrids(JSON.parse(JSON.stringify(importData.grids)));
     options.progressFn(70);
     await dataService.saveMetadata(importData.metadata, true);
     options.progressFn(80);
@@ -530,6 +525,17 @@ dataService.importData = async function (data, options) {
         await databaseService.bulkSave(importData.dictionaries);
         predictionService.init();
     }
+
+    setTimeout(() => {
+        log.debug("pre-caching all images of gridset ...")
+        importData.grids.forEach(grid => {
+            grid.gridElements.forEach(element => {
+                if (element.image && element.image.url && navigator.serviceWorker && navigator.serviceWorker.controller) {
+                    serviceWorkerService.cacheImageUrl(element.image.url);
+                }
+            });
+        });
+    }, 3000);
     options.progressFn(100);
 };
 
