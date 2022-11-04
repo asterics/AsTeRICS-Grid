@@ -278,7 +278,7 @@
                 });
             },
             async onNavigateEvent(event, gridData) {
-                if (this.gridData.id === gridData.id) {
+                if (gridData && this.gridData.id === gridData.id) {
                     return; //prevent duplicated navigation to same grid
                 }
                 this.metadata.lastOpenedGridId = gridData.id;
