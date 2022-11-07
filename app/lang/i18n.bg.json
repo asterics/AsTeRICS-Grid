@@ -842,5 +842,6 @@
   "hyphen": "hyphen",
   "space": "space",
   "readElementActionsInAdditionToLabel": "Read element actions in addition to label",
-  "preventCollectingTheSameCellSeveralTimesInARow": "Prevent collecting the same cell several times in a row"
+  "generalInputSettings": "General input settings",
+  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimum pause for collecting and speaking the same cell several times in a row"
 }
