@@ -16,6 +16,8 @@ import $ from "../externals/jquery.js";
 
 let actionService = {};
 
+let minPauseSpeak = 0;
+
 actionService.doAction = function (gridId, gridElementId) {
     if (!gridId || !gridElementId) {
         return;
@@ -75,12 +77,12 @@ function doAction(gridElement, action, options) {
     switch (action.modelName) {
         case 'GridActionSpeak':
             log.debug('action speak');
-            speechService.speak(gridElement.label, {lang: action.speakLanguage, speakSecondary: true});
+            speechService.speak(gridElement.label, {lang: action.speakLanguage, speakSecondary: true, minEqualPause: minPauseSpeak});
             break;
         case 'GridActionSpeakCustom':
             log.debug('action speak custom');
             if (action.speakText) {
-                speechService.speak(action.speakText, {lang: action.speakLanguage, speakSecondary: true});
+                speechService.speak(action.speakText, {lang: action.speakLanguage, speakSecondary: true, minEqualPause: minPauseSpeak});
             }
             break;
         case 'GridActionNavigate':
@@ -147,5 +149,13 @@ function doAREAction(action, gridData) {
         }
     });
 }
+
+async function getMetadataConfig() {
+    let metadata = await dataService.getMetadata();
+    minPauseSpeak = metadata.inputConfig.globalMinPauseCollectSpeak || 0;
+}
+
+$(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
+$(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
 
 export {actionService};
