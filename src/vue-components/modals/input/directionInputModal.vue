@@ -40,7 +40,9 @@
                                         <label for="chkReset">{{ $t('goToStartPositionAfterSelect') }}</label>
                                     </div>
                                 </div>
-                                <acoustic-feedback-options :input-config="inputConfig"></acoustic-feedback-options>
+                            </accordion>
+                            <accordion :acc-label="$t('generalInputSettings')" acc-label-type="h2" acc-background-color="white">
+                                <global-input-options :input-config="inputConfig"/>
                             </accordion>
                             <accordion :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
                                 <test-area :selected-element="selectedTestElement"></test-area>
@@ -79,11 +81,11 @@
     import {InputConfig} from "../../../js/model/InputConfig";
     import {DirectionInput} from "../../../js/input/directionInput";
     import {inputEventHandler} from "../../../js/input/inputEventHandler";
-    import AcousticFeedbackOptions from "./acousticFeedbackOptions.vue";
+    import GlobalInputOptions from "./globalInputOptions.vue";
 
     export default {
         props: [],
-        components: {AcousticFeedbackOptions, Accordion, InputEventList, TestArea},
+        components: {GlobalInputOptions, Accordion, InputEventList, TestArea},
         data: function () {
             return {
                 inputConfig: null,
