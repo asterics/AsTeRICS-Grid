@@ -188,7 +188,7 @@
                         items = [items];
                     }
                     if (inputConfig.globalReadActive && items && items.length === 1 && items[0]) {
-                        let text = items[0].ariaLabel;
+                        let text = items[0].ariaLabel || '';
                         let separatorIndex = text.indexOf(", ");
                         if (!inputConfig.globalReadAdditionalActions && separatorIndex !== -1 && separatorIndex !== 0) {
                             text = text.substring(0, separatorIndex);
