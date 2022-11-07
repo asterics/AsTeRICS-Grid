@@ -842,6 +842,6 @@
   "hyphen": "guión",
   "space": "espacio",
   "readElementActionsInAdditionToLabel": "Leer acciones de la celda además del texto",
-  "generalInputSettings": "General input settings",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimum pause for collecting and speaking the same cell several times in a row"
+  "generalInputSettings": "Configuración general de las Opciones de entrada",
+  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Pausa mínima para acumular y locutar la misma celda varias veces seguidas"
 }
