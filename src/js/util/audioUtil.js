@@ -1,5 +1,3 @@
-import {speechService} from "../service/speechService.js";
-
 let audioUtil = {};
 
 let _beeping = false;
@@ -13,7 +11,7 @@ let _beeping = false;
  * @param callback to use on end of tone
  */
 audioUtil.beep = function (frequency, duration, volume, type, callback) {
-    if (_beeping || speechService.isSpeaking()) {
+    if (_beeping) {
         return;
     }
     _beeping = true;
