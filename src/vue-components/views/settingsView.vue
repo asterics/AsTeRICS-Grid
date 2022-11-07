@@ -161,6 +161,12 @@
             </div>
             <div class="srow">
                 <div class="eleven columns">
+                    <h3 class="mt-2">{{ $t('generalInputSettings') }}</h3>
+                    <global-input-options :input-config="metadata.inputConfig" heading-tag="h4" @change="saveMetadata()"></global-input-options>
+                </div>
+            </div>
+            <div class="srow">
+                <div class="eleven columns">
                     <h3 class="mt-2">{{ $t('elementLabels') }}</h3>
                     <div class="srow">
                         <label class="three columns" for="convertText">{{ $t('convertElementLabels') }}</label>
@@ -187,12 +193,15 @@
     import {MetaData} from "../../js/model/MetaData.js";
     import {TextConfig} from "../../js/model/TextConfig.js";
     import Accordion from "../components/accordion.vue";
+    import GlobalInputOptions from "../modals/input/globalInputOptions.vue";
+    import SliderInput from "../modals/input/sliderInput.vue";
+    import $ from "../../js/externals/jquery.js";
 
     let KEY_SETTINGS_SHOW_ALL_VOICES = "KEY_SETTINGS_SHOW_ALL_VOICES";
     let KEY_SETTINGS_SHOW_ALL_CONTENTLANGS = "KEY_SETTINGS_SHOW_ALL_CONTENTLANGS";
 
     export default {
-        components: {Accordion, HeaderIcon},
+        components: {SliderInput, GlobalInputOptions, Accordion, HeaderIcon},
         props: [],
         data() {
             return {
