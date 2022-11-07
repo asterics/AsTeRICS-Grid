@@ -177,13 +177,6 @@ speechService.getVoices = function () {
     return allVoices;
 };
 
-speechService.setPreferredVoiceProps = function(voiceName, voicePitch, voiceRate, secondVoice) {
-    _preferredVoiceName = voiceName;
-    _voicePitch = voicePitch || 1;
-    _voiceRate = voiceRate || 1;
-    _secondVoiceName = secondVoice;
-};
-
 /**
  * checks if native speech is supported.
  * @return {boolean} true, if speech synthesis is supported by the browser

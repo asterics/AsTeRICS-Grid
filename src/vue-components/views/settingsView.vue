@@ -304,7 +304,6 @@
                 this.metadata.localeConfig.voiceRate = 1;
             },
             saveVoice(dontSaveMetadata) {
-                speechService.setPreferredVoiceProps(this.metadata.localeConfig.preferredVoice, this.metadata.localeConfig.voicePitch, this.metadata.localeConfig.voiceRate, this.metadata.localeConfig.secondVoice);
                 this.setVoiceTestText();
                 if (!dontSaveMetadata) {
                     this.saveMetadata();
@@ -318,11 +317,12 @@
             saveMetadata() {
                 let thiz = this;
                 this.saveSuccess = undefined;
-                util.throttle(() => {
+                util.debounce(() => {
                     dataService.saveMetadata(thiz.metadata).then(() => {
                         this.saveSuccess = true;
+                        $(document).trigger(constants.EVENT_METADATA_UPDATED);
                     });
-                }, null, 500, 'SAVE_METADATA');
+                }, 250, 'SAVE_METADATA');
             },
             testSpeak() {
                 speechService.speak(this.testText, {preferredVoice: this.metadata.localeConfig.preferredVoice});
