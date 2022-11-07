@@ -29,8 +29,10 @@ let dictionaryKey = null;
 let autoCollectImage = true;
 let collectMode = GridElementCollect.MODE_AUTO;
 let convertToLowercase = true;
-let preventDuplicatedCollect = false;
+
+let duplicatedCollectPause = 0;
 let lastCollectId = null;
+let lastCollectTime = 0;
 
 collectElementService.initWithElements = function (elements, dontAutoPredict) {
     registeredCollectElements = [];
@@ -53,7 +55,6 @@ collectElementService.initWithElements = function (elements, dontAutoPredict) {
             }, null);
             collectMode = copy.mode || collectMode;
             convertToLowercase = copy.convertToLowercase !== false;
-            preventDuplicatedCollect = copy.preventDuplicatedCollect;
             registeredCollectElements.push(copy);
         }
     });
@@ -278,10 +279,12 @@ function isImageMode(elementMode) {
 }
 
 $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
-    if (lastCollectId === element.id && preventDuplicatedCollect) {
+    if (lastCollectId === element.id && new Date().getTime() - lastCollectTime < duplicatedCollectPause) {
         return;
     }
     lastCollectId = element.id;
+    lastCollectTime = new Date().getTime();
+
     let label = i18nService.getTranslation(element.label);
     let image = element.image ? (element.image.data || element.image.url) : null;
 
@@ -345,11 +348,19 @@ function triggerPredict() {
     });
 }
 
+async function getMetadataConfig() {
+    let metadata = await dataService.getMetadata();
+    duplicatedCollectPause = metadata.inputConfig.globalMinPauseCollectSpeak || 0;
+}
+
 $(window).on(constants.EVENT_GRID_RESIZE, function () {
     setTimeout(updateCollectElements, 500);
 });
 
 $(document).on(constants.EVENT_USER_CHANGED, clearAll);
 $(document).on(constants.EVENT_CONFIG_RESET, clearAll);
+
+$(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
+$(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
 
 export {collectElementService};
