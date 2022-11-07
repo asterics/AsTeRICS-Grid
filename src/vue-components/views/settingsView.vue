@@ -103,25 +103,9 @@
                     </div>
                     <div class="srow">
                         <accordion :acc-label="$t('advancedVoiceSettings')" class="eleven columns">
-                            <div class="srow" v-if="metadata.localeConfig.preferredVoice">
-                                <label class="three columns" for="voicePitch">
-                                    <span>{{ $t('voicePitch') }}</span>
-                                </label>
-                                <input id="voicePitch" class="five columns" type="range" min="0.1" max="2" step="0.1" v-model.number="metadata.localeConfig.voicePitch" @change="saveVoice()" @input="event => {metadata.localeConfig.voicePitch = parseFloat(event.target.value)}">
-                                <div class="three columns">
-                                    <span>{{ $t('currentValue') }}</span>:
-                                    <span>{{metadata.localeConfig.voicePitch.toFixed(1)}}</span>
-                                </div>
-                            </div>
-                            <div class="srow" v-if="metadata.localeConfig.preferredVoice">
-                                <label class="three columns" for="voiceRate">
-                                    <span>{{ $t('voiceRate') }}</span>
-                                </label>
-                                <input id="voiceRate" class="five columns" type="range" min="0.1" max="10" step="0.1" v-model.number="metadata.localeConfig.voiceRate" @change="saveVoice()" @input="event => {metadata.localeConfig.voiceRate = parseFloat(event.target.value)}">
-                                <div class="three columns">
-                                    <span>{{ $t('currentValue') }}</span>:
-                                    <span>{{metadata.localeConfig.voiceRate.toFixed(1)}}</span>
-                                </div>
+                            <div v-if="metadata.localeConfig.preferredVoice">
+                                <slider-input :label="$t('voicePitch')" id="voicePitch" min="0.1" max="2" step="0.1" decimals="1" v-model.number="metadata.localeConfig.voicePitch" @change="saveVoice()"/>
+                                <slider-input :label="$t('voiceRate')" id="voiceRate" min="0.1" max="10" step="0.1" decimals="1" v-model.number="metadata.localeConfig.voiceRate" @change="saveVoice()"/>
                             </div>
                             <div class="srow">
                                 <label class="three columns" for="inVoice2">
