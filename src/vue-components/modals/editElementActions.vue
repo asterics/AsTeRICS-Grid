@@ -70,7 +70,7 @@
                             <div class="four columns">
                                 <label for="inCustomText" class="normal-text">{{ $t('textToSpeak') }}</label>
                             </div>
-                            <input class="eight columns" id="inCustomText" type="text" v-model="action.speakText[currentLang]"/>
+                            <input class="eight columns" id="inCustomText" type="text" v-model="action.speakText[getCurrentSpeakLang(action)]"/>
                         </div>
                     </div>
                     <div v-if="action.modelName == 'GridActionNavigate'">
@@ -298,6 +298,9 @@
             EditAreAction
         },
         methods: {
+            getCurrentSpeakLang(action) {
+                return action && action.speakLanguage ? action.speakLanguage : this.currentLang;
+            },
             selectedRadioChanged(radioId) {
                 let faviconUrl = this.gridData.webRadios.filter(el => el.radioId === radioId)[0].faviconUrl;
                 if (faviconUrl) {
