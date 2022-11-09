@@ -128,16 +128,20 @@ speechService.speakArray = async function (array, progressFn, index, dontStop) {
     progressFn = progressFn || (() => {});
     array = JSON.parse(JSON.stringify(array));
     if (!array || array.length === 0) {
-        progressFn(null, null);
+        progressFn(null, null, true);
         return;
     }
     let word = array.shift();
     progressFn(word, index);
-    speechService.speak(word, {dontStop: dontStop});
     currentSpeakArray = JSON.parse(JSON.stringify(array));
-    speechService.doAfterFinishedSpeaking(() => {
-        speechService.speakArray(currentSpeakArray, progressFn, index + 1, true);
-    });
+    if (word) {
+        speechService.speak(word, {dontStop: true});
+        speechService.doAfterFinishedSpeaking(() => {
+            speechService.speakArray(currentSpeakArray, progressFn, index + 1);
+        });
+    } else {
+        speechService.speakArray(currentSpeakArray, progressFn, index + 1);
+    }
 }
 
 speechService.stopSpeaking = function () {

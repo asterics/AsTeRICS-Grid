@@ -89,10 +89,10 @@ collectElementService.doCollectElementActions = async function (action) {
             break;
         case GridActionCollectElement.COLLECT_ACTION_SPEAK_CLEAR:
             if (autoCollectImage || collectMode === GridElementCollect.MODE_COLLECT_SEPARATED) {
-                speechService.speakArray(collectedImageLabels, (word, index) => {
+                speechService.speakArray(collectedImageLabels, (word, index, finished) => {
                     markedImageIndex = index;
                     updateCollectElements();
-                    if (!word) {
+                    if (finished) {
                         clearAll();
                     }
                 });
@@ -306,7 +306,7 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
     if (label && convertToLowercase) {
         label = label.toLowerCase();
     }
-    if (label) {
+    if (label || image) {
         if (label.length === 1 && collectedImageLabels.length > 0 && !image && !lastImage && !collectedText.endsWith(' ')) {
             let lastElem = collectedImageLabels.pop();
             lastElem += label;
