@@ -842,6 +842,7 @@
   "hyphen": "Bindestrich",
   "space": "Leerzeichen",
   "readElementActionsInAdditionToLabel": "Aktionen des Elements zusätzlich zu Label lesen",
-  "generalInputSettings": "General input settings",
-  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimum pause for collecting and speaking the same cell several times in a row"
+  "generalInputSettings": "Allgemeine Eingabeoptionen",
+  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimale Pause um dasselbe Element mehrmals hintereinander zu sammeln / auszusprechen",
+  "backupFileDoesntContainData": "Backup file doesn't contain grid configuration!"
 }
