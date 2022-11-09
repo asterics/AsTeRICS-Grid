@@ -146,7 +146,7 @@
                             })
                         })
                     });*/
-                    dataService.importData(result, {}).then(() => {
+                    dataService.importData(dataService.normalizeImportData(result)).then(() => {
                         thiz.loading = false;
                         Router.toMain();
                     });
