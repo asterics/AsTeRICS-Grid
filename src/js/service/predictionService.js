@@ -7,6 +7,7 @@ import {dataService} from "./data/dataService";
 import {constants} from "../util/constants";
 import {localStorageService} from "./data/localStorageService.js";
 import {i18nService} from "./i18nService.js";
+import {util} from "../util/util.js";
 
 let predictionService = {};
 let predictionary = null;
@@ -17,6 +18,7 @@ let _usedKeys = [];
 let _autosaveInterval = 10 * 60 * 1000; // 10 Minutes
 let _intervalHandler = null;
 let _currentInitUser = null;
+let _textConvertMode = null;
 
 predictionService.predict = function (input, dictionaryKey) {
     if (input === undefined || registeredPredictElements.length === 0 || !predictionary) {
@@ -34,6 +36,7 @@ predictionService.predict = function (input, dictionaryKey) {
     let suggestions = predictionary.predict(input, {maxPredicitons: registeredPredictElements.length});
     for (let i = 0; i < registeredPredictElements.length; i++) {
         let text = suggestions[i] ? suggestions[i] : '';
+        text = util.convertLowerUppercase(text, _textConvertMode);
         $(`#${registeredPredictElements[i].id} .text-container span`).text(text);
         $(`#${registeredPredictElements[i].id}`).attr('aria-label', `${text}, ${i18nService.t('ELEMENT_TYPE_PREDICTION')}`);
     }
@@ -140,5 +143,13 @@ $(document).on(constants.EVENT_DB_PULL_UPDATED, (event, updatedIds, updatedDocs)
 $(document).on(constants.EVENT_USER_CHANGING, () => {
     predictionService.stopAutosave();
 });
+
+async function getMetadataConfig() {
+    let metadata = await dataService.getMetadata();
+    _textConvertMode = metadata.textConfig.convertMode;
+}
+
+$(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
+$(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
 
 export {predictionService};
