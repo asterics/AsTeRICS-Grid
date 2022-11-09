@@ -53,7 +53,7 @@ fileUtil.getFileExtension = function (file) {
 }
 
 fileUtil.isGrdFile = function (file) {
-    return fileUtil.getFileExtension(file) === '.grd';
+    return fileUtil.getFileExtension(file) === '.grd' || fileUtil.getFileExtension(file) === '.txt';
 }
 
 fileUtil.isObfFile = function (file) {

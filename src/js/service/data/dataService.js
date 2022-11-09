@@ -18,6 +18,7 @@ import {urlParamService} from "../urlParamService";
 import {filterService} from "./filterService";
 import {serviceWorkerService} from "../serviceWorkerService.js";
 import {constants} from "../../util/constants.js";
+import {MainVue} from "../../vue/mainVue.js";
 
 let dataService = {};
 
@@ -388,7 +389,11 @@ dataService.convertFileToImportData = async function (file) {
         return null;
     }
     if (fileUtil.isGrdFile(file)) {
-        importData = JSON.parse(fileContent);
+        try {
+            importData = JSON.parse(fileContent);
+        } catch (e) {
+            log.warn("couldn't parse import data");
+        }
     } else if (fileUtil.isObfFile(file)) {
         importData = await obfConverter.OBFToGridData(JSON.parse(fileContent));
     } else if (fileUtil.isObzFile(file)) {
@@ -427,7 +432,8 @@ dataService.importBackup = async function (file, progressFn) {
     progressFn(10, i18nService.t('extractingGridsFromFile'));
     let importData = await dataService.convertFileToImportData(file);
     if (!importData) {
-        progressFn(100); // TODO error message?!
+        progressFn(100);
+        MainVue.setTooltip(i18nService.t("backupFileDoesntContainData"), {msgType: 'warn'});
         return;
     }
     return dataService.importBackupData(importData, {
