@@ -568,4 +568,7 @@ $(document).on(constants.EVENT_GRID_LOADED, () => {
     }
 });
 
+$(document).on(constants.EVENT_NAVIGATE, youtubeService.destroy);
+$(document).on(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, youtubeService.destroy);
+
 export {youtubeService};

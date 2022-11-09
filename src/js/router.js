@@ -18,7 +18,6 @@ import SettingsView from '../vue-components/views/settingsView.vue'
 import {databaseService} from "./service/data/databaseService";
 import {localStorageService} from "./service/data/localStorageService";
 import {MainVue} from "./vue/mainVue";
-import {youtubeService} from "./service/youtubeService";
 import HelpView from "../vue-components/views/helpView.vue";
 import {constants} from "./util/constants.js";
 
@@ -122,6 +121,7 @@ Router.init = function (injectIdParam, initialHash) {
     navigoInstance.hooks({
         before: function (done, params) {
             let hash = location.hash;
+            $(document).trigger(constants.EVENT_NAVIGATE);
             if (_locked && (hash.startsWith('#grid/edit') || (!hash.startsWith('#main') && !hash.startsWith('#grid/')))) {
                 return done(false);
             }
@@ -139,7 +139,6 @@ Router.init = function (injectIdParam, initialHash) {
             } else {
                 done();
             }
-            youtubeService.destroy();
         },
         after: function (params) {
             //log.debug('after');
