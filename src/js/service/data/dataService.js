@@ -514,11 +514,13 @@ dataService.importData = async function (data, options) {
         existingMetadata.lastOpenedGridId = importData.metadata.lastOpenedGridId;
         importData.metadata = existingMetadata;
     }
-    importData.metadata.globalGridActive = !!importData.metadata.globalGridId;
 
     await dataService.saveGrids(JSON.parse(JSON.stringify(importData.grids)));
     options.progressFn(70);
-    await dataService.saveMetadata(importData.metadata, true);
+    if (importData.metadata) {
+        importData.metadata.globalGridActive = !!importData.metadata.globalGridId;
+        await dataService.saveMetadata(importData.metadata, true);
+    }
     options.progressFn(80);
 
     if (options.importDictionaries && importData.dictionaries) {
