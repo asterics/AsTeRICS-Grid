@@ -393,6 +393,11 @@ dataService.convertFileToImportData = async function (file) {
             importData = JSON.parse(fileContent);
         } catch (e) {
             log.warn("couldn't parse import data");
+            return null;
+        }
+        if (!importData || (!importData.grids && !importData.metadata && !importData.dictionaries)) {
+            log.warn("data doesn't contain AsTeRICS Grid config");
+            return null;
         }
     } else if (fileUtil.isObfFile(file)) {
         importData = await obfConverter.OBFToGridData(JSON.parse(fileContent));
