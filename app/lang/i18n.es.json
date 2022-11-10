@@ -844,5 +844,5 @@
   "readElementActionsInAdditionToLabel": "Leer acciones de la celda además del texto",
   "generalInputSettings": "Configuración general de las Opciones de entrada",
   "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Pausa mínima para acumular y locutar la misma celda varias veces seguidas",
-  "backupFileDoesntContainData": "Backup file doesn't contain grid configuration!"
+  "backupFileDoesntContainData": "¡El archivo importado no contiene una copia de seguridad válida!"
 }
