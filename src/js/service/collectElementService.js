@@ -286,6 +286,13 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
     lastCollectTime = new Date().getTime();
 
     let label = i18nService.getTranslation(element.label);
+    if (!label) {
+        let customSpeakAction = element.actions.filter(a => a.modelName === GridActionSpeakCustom.getModelName())[0];
+        if (customSpeakAction) {
+            let lang = customSpeakAction.speakLanguage || i18nService.getContentLang();
+            label = i18nService.getTranslation(customSpeakAction.speakText, null, false, lang);
+        }
+    }
     let image = element.image ? (element.image.data || element.image.url) : null;
 
     if (element.type === GridElement.ELEMENT_TYPE_COLLECT) {
