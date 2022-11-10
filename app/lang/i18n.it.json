@@ -841,5 +841,8 @@
   "quotationMark": "quotation mark",
   "hyphen": "hyphen",
   "space": "space",
-  "readElementActionsInAdditionToLabel": "Read element actions in addition to label"
+  "readElementActionsInAdditionToLabel": "Read element actions in addition to label",
+  "generalInputSettings": "General input settings",
+  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimum pause for collecting and speaking the same cell several times in a row",
+  "backupFileDoesntContainData": "Backup file doesn't contain grid configuration!"
 }

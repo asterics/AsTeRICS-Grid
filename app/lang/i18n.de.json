@@ -841,5 +841,8 @@
   "quotationMark": "Anführungszeichen",
   "hyphen": "Bindestrich",
   "space": "Leerzeichen",
-  "readElementActionsInAdditionToLabel": "Aktionen des Elements zusätzlich zu Label lesen"
+  "readElementActionsInAdditionToLabel": "Aktionen des Elements zusätzlich zu Label lesen",
+  "generalInputSettings": "Allgemeine Eingabeoptionen",
+  "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimale Pause um dasselbe Element mehrmals hintereinander zu sammeln / auszusprechen",
+  "backupFileDoesntContainData": "Backup-Datei enthält keine Grid-Konfiguration!"
 }
