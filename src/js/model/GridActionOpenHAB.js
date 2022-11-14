@@ -1,13 +1,13 @@
 import {modelUtil} from "../util/modelUtil";
 import {constants} from "../util/constants";
 import {Model} from "../externals/objectmodel";
-import {i18nService} from "../service/i18nService";
 
 class GridActionOpenHAB extends Model({
     id: String,
     modelName: String,
     modelVersion: String,
     openHABUrl: [String],
+    openHABItemName: [String],
     openHABAction: [String],
     openHABActionType: [String]
 }) {
@@ -25,8 +25,7 @@ class GridActionOpenHAB extends Model({
 GridActionOpenHAB.defaults({
     id: "", //will be replaced by constructor
     modelName: GridActionOpenHAB.getModelName(),
-    modelVersion: constants.MODEL_VERSION,
-    openHABUrl: null
+    modelVersion: constants.MODEL_VERSION
 });
 
 export {GridActionOpenHAB};
