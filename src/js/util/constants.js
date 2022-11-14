@@ -105,4 +105,8 @@ constants.OPTION_TYPES = {
     SELECT_COLORS: "SELECT_COLORS",
 }
 
+constants.OPENHAB_TYPES = [
+//Todo: Moving openhab types to constants
+]
+
 export {constants};
