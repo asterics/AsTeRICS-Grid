@@ -26,13 +26,12 @@
       <div class="eight columns">
         <div class="srow nomargin">
           <div class="d-inline" v-for="itemType in itemTypes">
-            <input type="radio" v-model="action.openHABActionType" :id="itemType.type" :value="itemType.type">
-            <label :for="itemType.type" class="button">{{ $t(itemType.type) }}</label>
+            <input type="radio" v-model="action.openHABActionType" :id="itemType.type" :value="itemType.type" class="custom-radio">
+            <label :for="itemType.type" class="button normal-text">{{ $t(itemType.type) }}</label>
           </div>
         </div>
         <div class="srow nomarign" v-if="action.openHABActionType">
           <select v-model="action.openHABItemName">
-            <option selected value="">{{ $t('empty') }}</option>
             <option v-for="item in openHABItems" v-if="item.type === action.openHABActionType" :id="item.name">
               {{ item.name }}
             </option>
@@ -40,14 +39,13 @@
         </div>
       </div>
     </div>
-    <div class="srow" v-if="isFetched && action.openHABActionType">
+    <div class="srow" v-if="isFetched && action.openHABActionType && action.openHABItemName">
       <div class="four columns">
         <label for="commandSelect" class="normal-text">{{ $t('selectAction') }}</label>
       </div>
       <div class="eight columns">
         <div class="srow nomargin">
           <select id="commandSelect" v-for="item in itemTypes" v-if="item.type === action.openHABActionType" v-model="action.openHABAction">
-            <option selected value="">{{ $t('empty') }}</option>
             <option v-for="command in item.commands" :value="command">
               {{ $t(command) }}
             </option>
@@ -106,5 +104,17 @@ export default {
 <style scoped>
 .normal-text {
   font-weight: normal;
+}
+
+.custom-radio{
+  opacity: 0;
+  z-index: -1;
+  position: absolute;
+}
+
+.custom-radio:checked ~ label {
+  border-width: 0.2em;
+  border-color: #33C3F0;
+  background-color: #cceff9;
 }
 </style>
