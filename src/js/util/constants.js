@@ -106,7 +106,18 @@ constants.OPTION_TYPES = {
 }
 
 constants.OPENHAB_TYPES = [
-//Todo: Moving openhab types to constants
+    {
+        type: 'Switch',
+        commands: ['ON', 'OFF']
+    },
+    {
+        type: 'Dimmer',
+        commands: ['ON', 'OFF','INCREASE','DECREASE']
+    },
+    {
+        type: 'Rollershutter',
+        commands: ['UP', 'DOWN', 'STOP']
+    }
 ]
 
 export {constants};

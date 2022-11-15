@@ -832,5 +832,16 @@
   "currentValue": "Current value",
   "voiceRate": "Voice rate",
   "secondVoice": "Secondary voice",
-  "advancedVoiceSettings": "Advanced voice settings"
+  "advancedVoiceSettings": "Advanced voice settings",
+  "Dimmer": "Dimmer",
+  "INCREASE": "Increase",
+  "DECREASE": "Decrease",
+  "Switch": "Switch",
+  "ON": "Turn on",
+  "OFF": "Turn off",
+  "Rollershutter": "Rollershutter",
+  "STOP": "Stop"
+
+
+
 }

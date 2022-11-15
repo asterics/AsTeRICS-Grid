@@ -27,12 +27,13 @@
         <div class="srow nomargin">
           <div class="d-inline" v-for="itemType in itemTypes">
             <input type="radio" v-model="action.openHABActionType" :id="itemType.type" :value="itemType.type">
-            <label :for="itemType.type" class="button">{{ itemType.name }}</label>
+            <label :for="itemType.type" class="button">{{ $t(itemType.type) }}</label>
           </div>
         </div>
-        <div class="srow nomarign">
+        <div class="srow nomarign" v-if="action.openHABActionType">
           <select v-model="action.openHABItemName">
-            <option v-for="item in openHABItems" v-if="item.type === action.openHABActionType" >
+            <option selected value="">{{ $t('empty') }}</option>
+            <option v-for="item in openHABItems" v-if="item.type === action.openHABActionType" :id="item.name">
               {{ item.name }}
             </option>
           </select>
@@ -46,20 +47,21 @@
       <div class="eight columns">
         <div class="srow nomargin">
           <select id="commandSelect" v-for="item in itemTypes" v-if="item.type === action.openHABActionType" v-model="action.openHABAction">
-            <option v-for="command in item.commands" >
-              {{ command }}
+            <option selected value="">{{ $t('empty') }}</option>
+            <option v-for="command in item.commands" :value="command">
+              {{ $t(command) }}
             </option>
           </select>
         </div>
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
 //TODO: Error handling, translation, style, more item types
 import {openHABService} from "../../../js/service/openHABService";
+import {constants} from "../../../js/util/constants";
 
 export default {
   props: ['action', 'gridData'],
@@ -68,10 +70,8 @@ export default {
       openHABUrl: '',
       openHABItems: null,
       isFetched: false,
-      itemTypes: [
-        {name: 'Switch', type: 'Switch', commands: ['ON', 'OFF']},
-        {name: 'Dimmer', type: 'Dimmer', commands: ['INCREASE', 'DECREASE'] }
-      ]
+      itemTypes:[],
+      itemAction:''
     }
   },
   methods: {
@@ -98,6 +98,7 @@ export default {
   mounted() {
     this.openHABUrl = this.action.openHABUrl || openHABService.getRestURL();
     this.updateUrl();
+    this.itemTypes = constants.OPENHAB_TYPES
   }
 }
 </script>
