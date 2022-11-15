@@ -6,12 +6,15 @@
       </div>
       <div class="eight columns">
         <div class="srow nomargin">
-          <input id="inputOpenHABUri" class="six columns" type="text" v-model="this.openHABUrl"
-                 @change="fixOpenHABUrl()">
+          <input id="inputOpenHABUri" class="six columns" type="text" v-model="openHABUrl"
+                @change="fixOpenHABUrl()">
           <div class="six columns">
             <button style="width: 70%" @click="fetchItems()"><i class="fas fa-bolt"/> <span>{{
                 $t('fetchItems')
               }}</span></button>
+            <span class="spaced" v-show="isFetched === undefined"><i class="fas fa-spinner fa-spin"/></span>
+            <span class="spaced" v-show="isFetched" style="color: green"><i class="fas fa-check"/></span>
+            <span class="spaced" v-show="isFetched === false" style="color: red"><i class="fas fa-times"/></span>
           </div>
         </div>
       </div>
@@ -62,7 +65,7 @@ export default {
   props: ['action', 'gridData'],
   data: () => {
     return {
-      openHABUrl: null,
+      openHABUrl: '',
       openHABItems: null,
       isFetched: false,
       itemTypes: [
@@ -73,18 +76,22 @@ export default {
   },
   methods: {
     fixOpenHABUrl() {
-      this.action.openHABUrl = openHABService.getRestURL(this.action.openHABUrl)
+      this.openHABUrl = openHABService.getRestURL(this.openHABUrl)
       this.updateUrl();
     },
     fetchItems() {
-      openHABService.getItems(this.action.openHABUrl).then((data) => {
-        this.openHABItems = data
-      }).then(() => (console.log(this.openHABItems)))
-      if (!this.openHABItems) {
+      this.isFetched = undefined;
+
+      openHABService.fetchItems(this.action.openHABUrl).then((data) => {
         this.isFetched = true;
-      }
+        this.openHABItems = data;
+        console.log(this.openHABItems)
+      }).catch((error) => {
+        this.isFetched = false;
+        console.error(error);
+      });
     },
-    updateUrl(){
+    updateUrl() {
       this.action.openHABUrl = this.openHABUrl;
     }
   },

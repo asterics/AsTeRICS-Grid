@@ -1,11 +1,12 @@
 let openHABService = {};
 
-openHABService.getItems = async function (url) {
-    return fetch(url + "?recursive=false")
-        .then((response) => {
-            return response.json();
-        })
-        .catch((rejection) => console.log(rejection));
+openHABService.fetchItems = async function (url) {
+    return fetch(url + "?recursive=false").then((response)=>{
+        if (!response.ok){
+            throw new Error('Failed to fetch items from openHAB')
+        }
+        return response.json();
+    });
 };
 
 openHABService.postCommand = async function (url, data) {
@@ -15,7 +16,7 @@ openHABService.postCommand = async function (url, data) {
             "Content-Type": "text/plain",
         },
         body: data,
-    }).catch((rejection) => console.log(rejection));
+    }).catch((rejection) => console.error(rejection));
 };
 
 openHABService.getRestURL = function (userUri) {
