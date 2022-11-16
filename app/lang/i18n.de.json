@@ -844,5 +844,10 @@
   "readElementActionsInAdditionToLabel": "Aktionen des Elements zusätzlich zu Label lesen",
   "generalInputSettings": "Allgemeine Eingabeoptionen",
   "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimale Pause um dasselbe Element mehrmals hintereinander zu sammeln / auszusprechen",
-  "backupFileDoesntContainData": "Backup-Datei enthält keine Grid-Konfiguration!"
+  "backupFileDoesntContainData": "Backup-Datei enthält keine Grid-Konfiguration!",
+  "currentRecording": "Current recording",
+  "recordingSeconds": "Recording... {0}s",
+  "record": "Record",
+  "stopRecording": "Stop recording",
+  "audioWithLengthOfSeconds": "Audio with length of {0}s"
 }
