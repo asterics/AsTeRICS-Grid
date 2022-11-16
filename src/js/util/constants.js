@@ -108,15 +108,60 @@ constants.OPTION_TYPES = {
 constants.OPENHAB_TYPES = [
     {
         type: 'Switch',
-        commands: ['ON', 'OFF']
+        name:'switch',
+        commands: [
+            {
+                name: 'On',
+                value: 'ON'
+            },
+            {
+                name: 'Off',
+                value: 'OFF'
+            }
+        ]
     },
     {
         type: 'Dimmer',
-        commands: ['ON', 'OFF','INCREASE','DECREASE']
-    },
+        name:'dimmer',
+        commands: [
+            {
+                name: 'on',
+                value: 'ON'
+            },
+            {
+                name: 'off',
+                value: 'OFF'
+            },
+            {
+                name: 'increase',
+                value: 'INCREASE'
+            },
+            {
+                name: 'decrease',
+                value: 'DECREASE'
+            }]
+    }
+    ,
     {
         type: 'Rollershutter',
-        commands: ['UP', 'DOWN', 'STOP']
+        name:'roller shutter',
+        commands: [
+            {
+                name: 'up',
+                value: 'UP'
+            },
+            {
+                name: 'down',
+                value: 'DOWN'
+            },
+            {
+                name: 'stop',
+                value: 'STOP'
+            }]
+    },
+    {
+        type: 'Number:Temperature',
+        name:'temperature'
     }
 ]
 

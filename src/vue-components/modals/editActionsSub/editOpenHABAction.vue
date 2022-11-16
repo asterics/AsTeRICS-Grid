@@ -27,7 +27,7 @@
         <div class="srow nomargin">
           <div class="d-inline" v-for="itemType in itemTypes">
             <input type="radio" v-model="action.openHABActionType" :id="itemType.type" :value="itemType.type" class="custom-radio">
-            <label :for="itemType.type" class="button normal-text">{{ $t(itemType.type) }}</label>
+            <label :for="itemType.type" class="button normal-text">{{ $t(itemType.name) }}</label>
           </div>
         </div>
         <div class="srow nomarign" v-if="action.openHABActionType">
@@ -46,8 +46,8 @@
       <div class="eight columns">
         <div class="srow nomargin">
           <select id="commandSelect" v-for="item in itemTypes" v-if="item.type === action.openHABActionType" v-model="action.openHABAction">
-            <option v-for="command in item.commands" :value="command">
-              {{ $t(command) }}
+            <option v-for="command in item.commands" :value="command.value">
+              {{ $t(command.name) }}
             </option>
           </select>
         </div>
@@ -83,7 +83,7 @@ export default {
       openHABService.fetchItems(this.action.openHABUrl).then((data) => {
         this.isFetched = true;
         this.openHABItems = data;
-        console.log(this.openHABItems)
+        console.debug(this.openHABItems)
       }).catch((error) => {
         this.isFetched = false;
         console.error(error);

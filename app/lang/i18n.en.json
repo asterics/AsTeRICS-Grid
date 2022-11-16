@@ -833,15 +833,12 @@
   "voiceRate": "Voice rate",
   "secondVoice": "Secondary voice",
   "advancedVoiceSettings": "Advanced voice settings",
-  "Dimmer": "Dimmer",
-  "INCREASE": "Increase",
-  "DECREASE": "Decrease",
-  "Switch": "Switch",
-  "ON": "Turn on",
-  "OFF": "Turn off",
-  "Rollershutter": "Rollershutter",
-  "STOP": "Stop"
-
-
-
+  "dimmer": "Dimmer",
+  "increase": "Increase",
+  "decrease": "Decrease",
+  "switch": "Switch",
+  "on": "Turn on",
+  "off": "Turn off",
+  "roller shutter": "Roller shutter",
+  "temperature": "Temperature"
 }
