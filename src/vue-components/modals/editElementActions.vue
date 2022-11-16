@@ -73,6 +73,9 @@
                             <input class="eight columns" id="inCustomText" type="text" v-model="action.speakText[getCurrentSpeakLang(action)]"/>
                         </div>
                     </div>
+                    <div v-if="action.modelName == 'GridActionAudio'">
+                        <edit-audio-action :action="action" :grid-data="gridData"></edit-audio-action>
+                    </div>
                     <div v-if="action.modelName == 'GridActionNavigate'">
                         <div class="srow">
                             <input id="navigateBackChkbox" type="checkbox" v-model="action.toLastGrid"/>
@@ -270,6 +273,7 @@
     import {GridImage} from "../../js/model/GridImage";
     import RadioListSelector from "../components/radioListSelector.vue";
     import {GridActionYoutube} from "../../js/model/GridActionYoutube";
+    import EditAudioAction from "./editActionsSub/editAudioAction.vue";
 
     export default {
         props: ['gridElement', 'gridData'],
@@ -293,6 +297,7 @@
             }
         },
         components: {
+            EditAudioAction,
             RadioListSelector,
             Accordion,
             EditAreAction

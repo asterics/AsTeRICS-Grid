@@ -85,6 +85,12 @@ function doAction(gridElement, action, options) {
                 speechService.speak(action.speakText, {lang: action.speakLanguage, speakSecondary: true, minEqualPause: minPauseSpeak});
             }
             break;
+        case 'GridActionAudio':
+            if (action.dataBase64) {
+                audioUtil.stopAudio();
+                audioUtil.playAudio(action.dataBase64);
+            }
+            break;
         case 'GridActionNavigate':
             if (action.toLastGrid) {
                 Router.toLastGrid();
