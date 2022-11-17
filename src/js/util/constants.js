@@ -139,9 +139,12 @@ constants.OPENHAB_TYPES = [
             {
                 name: 'decrease',
                 value: 'DECREASE'
+            },
+            {
+                name: 'customValue',
+                value: 'CUSTOM VALUE'
             }]
-    }
-    ,
+    },
     {
         type: 'Rollershutter',
         name:'roller shutter',
@@ -157,7 +160,41 @@ constants.OPENHAB_TYPES = [
             {
                 name: 'stop',
                 value: 'STOP'
+            },
+            {
+                name: 'customValue',
+                value: 'CUSTOM VALUE'
             }]
+    },
+    {
+        type: 'Color',
+        name: 'color item',
+        commands: [
+            {
+                name: 'on',
+                value: 'ON'
+            },
+            {
+                name: 'off',
+                value: 'OFF'
+            },
+            {
+                name: 'increase',
+                value: 'INCREASE'
+            },
+            {
+                name: 'decrease',
+                value: 'DECREASE'
+            },
+            {
+                name: 'customValue',
+                value: 'CUSTOM VALUE'
+            },
+            {
+                name: 'customColor',
+                value: 'CUSTOM COLOR'
+            }
+        ]
     },
     {
         type: 'Number:Temperature',
