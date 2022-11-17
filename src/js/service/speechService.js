@@ -119,29 +119,36 @@ speechService.speak = function (textOrOject, options) {
     }
 };
 
-speechService.speakArray = async function (array, progressFn, index, dontStop) {
-    if (!dontStop && speechService.isSpeaking()) {
+/**
+ * speaks an array of speak-elements one after each other
+ * @param array array of elements, where an element can be an object {text: "text-to-speak-tts"}
+ *              or {base64Sound: "base64Data"} containing binary data to play as sound
+ * @param progressFn
+ * @param index
+ * @return {Promise<void>}
+ */
+speechService.speakArray = async function (array, progressFn, index) {
+    if (speechService.isSpeaking()) {
         speechService.stopSpeaking();
-        await util.sleep(100);
     }
     index = index || 0;
     progressFn = progressFn || (() => {});
     array = JSON.parse(JSON.stringify(array));
     if (!array || array.length === 0) {
-        progressFn(null, null, true);
+        progressFn(null, true);
         return;
     }
-    let word = array.shift();
-    progressFn(word, index);
+    progressFn(index);
     currentSpeakArray = JSON.parse(JSON.stringify(array));
-    if (word) {
-        speechService.speak(word, {dontStop: true});
-        speechService.doAfterFinishedSpeaking(() => {
-            speechService.speakArray(currentSpeakArray, progressFn, index + 1);
-        });
-    } else {
-        speechService.speakArray(currentSpeakArray, progressFn, index + 1);
+    let object = currentSpeakArray.shift();
+    if (object.text) {
+        speechService.speak(object.text, {dontStop: true});
+        await speechService.waitForFinishedSpeaking();
+    } else if (object.base64Sound) {
+        await audioUtil.playAudio(object.base64Sound);
+        await audioUtil.waitForAudioEnded();
     }
+    speechService.speakArray(currentSpeakArray, progressFn, index + 1);
 }
 
 speechService.stopSpeaking = function () {
@@ -157,19 +164,27 @@ speechService.isSpeaking = function () {
 };
 
 speechService.doAfterFinishedSpeaking = async function (fn) {
+    await speechService.waitForFinishedSpeaking();
     fn = fn || (() => {});
+    fn();
+}
+
+speechService.waitForFinishedSpeaking = async function () {
     let maxWait = 10000;
     let wait = 0;
     while (!speechService.isSpeaking() && wait < maxWait) { // wait until speak starting (responsive voice)
         wait += 100;
         await util.sleep(100);
     }
-    let intervalHandler = setInterval(() => {
-        if (!speechService.isSpeaking()) {
-            clearInterval(intervalHandler);
-            fn();
-        }
-    }, 50);
+    let promise = new Promise(resolve => {
+        let intervalHandler = setInterval(() => {
+            if (!speechService.isSpeaking()) {
+                clearInterval(intervalHandler);
+                resolve();
+            }
+        }, 50);
+    });
+    await promise;
 }
 
 /**

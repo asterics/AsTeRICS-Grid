@@ -16,13 +16,13 @@
         </div>
         <div class="row mt-3">
             <div class="col-6 col-md-3 offset-md-4">
-                <button class="col-12" @click="toggleRecord()">
+                <button class="col-12" @click="toggleRecord()" :disabled="playing">
                     <span v-if="!recording"><span class="fas fa-microphone"/> <span>{{ $t('record') }}</span></span>
                     <span v-if="recording"><span class="fas fa-microphone-slash"/> <span>{{ $t('stopRecording') }}</span></span>
                 </button>
             </div>
             <div class="col-6 col-md-3">
-                <button class="col-12" @click="togglePlaying()">
+                <button class="col-12" @click="togglePlaying()" :disabled="recording">
                     <span v-if="!playing"><span class="fas fa-play"/> <span>{{ $t('play') }}</span></span>
                     <span v-if="playing"><span class="fas fa-stop"/> <span>{{ $t('stop') }}</span></span>
                 </button>

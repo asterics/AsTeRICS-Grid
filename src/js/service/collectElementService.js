@@ -16,13 +16,13 @@ import {GridElementCollect} from "../model/GridElementCollect.js";
 import {GridActionSpeak} from "../model/GridActionSpeak.js";
 import {GridActionSpeakCustom} from "../model/GridActionSpeakCustom.js";
 import {dataService} from "./data/dataService.js";
+import {GridActionAudio} from "../model/GridActionAudio.js";
 
 let collectElementService = {};
 
 let registeredCollectElements = [];
 let collectedText = '';
-let collectedImages = [];
-let collectedImageLabels = [];
+let collectedElements = [];
 let markedImageIndex = null;
 let keyboardLikeFactor = 0;
 let dictionaryKey = null;
@@ -79,7 +79,7 @@ collectElementService.doCollectElementActions = async function (action) {
     switch (action) {
         case GridActionCollectElement.COLLECT_ACTION_SPEAK:
             if (autoCollectImage || collectMode === GridElementCollect.MODE_COLLECT_SEPARATED) {
-                speechService.speakArray(collectedImageLabels, (word, index) => {
+                speechService.speakArray(getSpeakTextObjectArray(), (index) => {
                     markedImageIndex = index;
                     updateCollectElements();
                 });
@@ -87,9 +87,17 @@ collectElementService.doCollectElementActions = async function (action) {
                 speechService.speak(collectedText);
             }
             break;
+        case GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS:
+            speechService.speak(getSpeakTextArray().join(' '));
+            break;
+        case GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS_CLEAR:
+            speechService.speak(getSpeakTextArray().join(' '));
+            await speechService.waitForFinishedSpeaking();
+            clearAll();
+            break;
         case GridActionCollectElement.COLLECT_ACTION_SPEAK_CLEAR:
             if (autoCollectImage || collectMode === GridElementCollect.MODE_COLLECT_SEPARATED) {
-                speechService.speakArray(collectedImageLabels, (word, index, finished) => {
+                speechService.speakArray(getSpeakTextObjectArray(), (index, finished) => {
                     markedImageIndex = index;
                     updateCollectElements();
                     if (finished) {
@@ -108,12 +116,12 @@ collectElementService.doCollectElementActions = async function (action) {
             speechService.stopSpeaking();
             break;
         case GridActionCollectElement.COLLECT_ACTION_REMOVE_WORD:
-            collectedImages.pop();
-            let removedLabel = collectedImageLabels.pop();
+            let removedElement = collectedElements.pop();
+            let removedLabel = getLabel(removedElement);
             if (removedLabel) {
                 collectedText = collectedText.substring(0, collectedText.toLowerCase().lastIndexOf(removedLabel.toLowerCase()));
             }
-            if (autoCollectImage && collectedImages.length === 0) {
+            if (autoCollectImage && collectedElements.length === 0) {
                 collectedText = '';
             }
             updateCollectElements();
@@ -121,16 +129,16 @@ collectElementService.doCollectElementActions = async function (action) {
             break;
         case GridActionCollectElement.COLLECT_ACTION_REMOVE_CHAR:
             collectedText = collectedText.substring(0, collectedText.length - 1);
-            let lastImage = collectedImages[collectedImages.length - 1];
-            if (!lastImage && collectedImages.length > 0) {
-                collectedImageLabels[collectedImageLabels.length - 1] = collectedImageLabels[collectedImageLabels.length - 1].slice(0, -1);
-                if (!collectedImageLabels[collectedImageLabels.length - 1]) {
-                    collectedImageLabels.pop();
-                    collectedImages.pop();
+            let lastImage = getLastImage();
+            if (!lastImage && collectedElements.length > 0) {
+                let lastLabel = getLastLabel();
+                setLastLabel(lastLabel.substring(0, lastLabel.length - 1));
+                if (!getLastLabel()) {
+                    collectedElements.pop()
                 }
             } else {
-                let removedLabel = collectedImageLabels.pop();
-                collectedImages.pop();
+                let removedElement = collectedElements.pop();
+                let removedLabel = getLabel(removedElement)
                 if (removedLabel) {
                     collectedText = collectedText.substring(0, collectedText.toLowerCase().lastIndexOf(removedLabel.toLowerCase()));
                 }
@@ -158,8 +166,7 @@ collectElementService.doCollectElementActions = async function (action) {
 };
 
 function clearAll() {
-    collectedImages = [];
-    collectedImageLabels = [];
+    collectedElements = [];
     collectedText = '';
     updateCollectElements();
 }
@@ -180,7 +187,7 @@ function getActionTypes(elem) {
 }
 
 async function updateCollectElements(isSecondTry) {
-    autoCollectImage = collectedImages.some(e => !!e);
+    autoCollectImage = collectedElements.some(e => !!getImage(e));
     let metadata = null;
     if (registeredCollectElements.length > 0) {
         metadata = await dataService.getMetadata();
@@ -198,7 +205,7 @@ async function updateCollectElements(isSecondTry) {
             outerContainerJqueryElem.html(html = `<div class="collect-container" dir="auto" style="flex: 1; background-color: #e8e8e8; text-align: justify;">${html}</div>`);
             fontUtil.adaptFontSize($(`#${collectElement.id}`));
         } else {
-            $(`#${collectElement.id}`).attr('aria-label', `${collectedImageLabels.join(' ')}, ${i18nService.t('ELEMENT_TYPE_COLLECT')}`);
+            $(`#${collectElement.id}`).attr('aria-label', `${collectedElements.map(e => getLabel(e)).join(' ')}, ${i18nService.t('ELEMENT_TYPE_COLLECT')}`);
             let html = '';
             let height = $(`#${collectElement.id} .collect-container`).prop("clientHeight") || outerContainerJqueryElem.prop("clientHeight"); // consider scrollbar height
 
@@ -208,10 +215,10 @@ async function updateCollectElements(isSecondTry) {
             let textPercentage = 0.85; // precentage of text height compared to text-line height
             let imagePercentage = collectElement.imageHeightPercentage / 100; // percentage of total height used for image
             let useSingleLine = collectElement.singleLine;
-            let imageCount = collectedImages.length;
+            let imageCount = collectedElements.length;
             let imgContainerHeight = showLabel ? height * imagePercentage : height;
             let imageRatios = [];
-            for (const img of collectedImages) {
+            for (const img of collectedElements.map(e => getImage(e))) {
                 let dim = await imageUtil.getImageDimensionsFromDataUrl(img);
                 imageRatios.push(dim.ratio);
             }
@@ -227,8 +234,9 @@ async function updateCollectElements(isSecondTry) {
             let lineHeight = (height / numLines - (imgContainerHeight));
             let textHeight = lineHeight * textPercentage;
             let totalWidth = 0;
-            for (const [index, image] of collectedImages.entries()) {
-                let label = collectedImageLabels[index];
+            for (const [index, collectedElement] of collectedElements.entries()) {
+                let label = getLabel(collectedElement);
+                let image = getImage(collectedElement);
                 let elemWidth = imgHeight * imageRatios[index] || imgHeight;
                 let marked = markedImageIndex === index;
                 let imgHTML = null;
@@ -278,14 +286,49 @@ function isImageMode(elementMode) {
     return imageMode;
 }
 
-$(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
-    if (lastCollectId === element.id && new Date().getTime() - lastCollectTime < duplicatedCollectPause) {
+function getLastElement() {
+    return collectedElements.slice(-1)[0];
+}
+
+function getLabel(element) {
+    return i18nService.getTranslation(element.label) || '';
+}
+
+function setLabel(element, newLabel) {
+    if (!element || !element.label) {
         return;
     }
-    lastCollectId = element.id;
-    lastCollectTime = new Date().getTime();
+    element.label[i18nService.getContentLang()] = newLabel;
+}
 
-    let label = i18nService.getTranslation(element.label);
+function setLastLabel(newLabel) {
+    setLabel(getLastElement(), newLabel);
+}
+
+function getLastLabel() {
+    let lastElem = getLastElement();
+    return lastElem ? getLabel(lastElem) : undefined;
+}
+
+
+
+function getImage(element) {
+    return element.image ? (element.image.data || element.image.url) : null;
+}
+
+function getLastImage() {
+    let lastElem = collectedElements.slice(-1)[0];
+    return lastElem ? getImage(lastElem) : undefined;
+}
+
+function getSpeakTextObject(element, dontIncludeAudio) {
+    let audioAction = element.actions.filter(a => a.modelName === GridActionAudio.getModelName())[0];
+    if (audioAction && !dontIncludeAudio) {
+        return {
+            base64Sound: audioAction.dataBase64
+        }
+    }
+    let label = getLabel(element);
     if (!label) {
         let customSpeakAction = element.actions.filter(a => a.modelName === GridActionSpeakCustom.getModelName())[0];
         if (customSpeakAction) {
@@ -293,34 +336,59 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
             label = i18nService.getTranslation(customSpeakAction.speakText, null, false, lang);
         }
     }
-    let image = element.image ? (element.image.data || element.image.url) : null;
+    return {
+        text: label
+    };
+}
+
+function getSpeakTextObjectArray() {
+    return collectedElements.map(e => getSpeakTextObject(e));
+}
+
+function getSpeakTextArray() {
+    return collectedElements.map(e => getSpeakTextObject(e, true).text);
+}
+
+function addTextElem(text) {
+    collectedElements.push(new GridElement({
+        label: i18nService.getTranslationObject(text)
+    }));
+}
+
+$(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
+    if (lastCollectId === element.id && new Date().getTime() - lastCollectTime < duplicatedCollectPause) {
+        return;
+    }
+    lastCollectId = element.id;
+    lastCollectTime = new Date().getTime();
 
     if (element.type === GridElement.ELEMENT_TYPE_COLLECT) {
         return;
     }
 
-    let notIgonoreActions = [GridActionSpeak.getModelName(), GridActionSpeakCustom.getModelName(), GridActionNavigate.getModelName()];
+    let notIgonoreActions = [GridActionSpeak.getModelName(), GridActionSpeakCustom.getModelName(), GridActionNavigate.getModelName(), GridActionAudio.getModelName()];
     let ignoreActions = GridElement.getActionTypeModelNames().filter(e => !notIgonoreActions.includes(e));
     if (getActionTypes(element).some(type => ignoreActions.includes(type))) {
         return; // dont collect elements containing "ignoreActions"
     }
     let navigateAction = getActionOfType(element, GridActionNavigate.getModelName());
-    if (navigateAction && label.length !== 1 && !navigateAction.addToCollectElem) {
+    if (navigateAction && getLabel(element).length !== 1 && !navigateAction.addToCollectElem) {
         return; // no adding of text if the element contains an navigate action and it's no single keyboard character
     }
 
-    let lastImage = collectedImages.length > 0 ? collectedImages[collectedImages.length - 1] : null;
+    let label = getLabel(element);
+    let image = getImage(element);
+    let lastImage = getLastImage();
+
     if (label && convertToLowercase) {
-        label = label.toLowerCase();
+        setLabel(element, label.toLowerCase());
     }
     if (label || image) {
-        if (label.length === 1 && collectedImageLabels.length > 0 && !image && !lastImage && !collectedText.endsWith(' ')) {
-            let lastElem = collectedImageLabels.pop();
-            lastElem += label;
-            collectedImageLabels.push(lastElem.trim());
+        if (label.length === 1 && collectedElements.length > 0 && !image && !lastImage && !collectedText.endsWith(' ')) {
+            let newLabel = getLastLabel() + label;
+            setLastLabel(newLabel.trim());
         } else {
-            collectedImageLabels.push(label);
-            collectedImages.push(image);
+            collectedElements.push(element);
         }
     }
     if (label && element.type === GridElement.ELEMENT_TYPE_NORMAL) {
@@ -332,13 +400,11 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         if (word) {
             let appliedText = predictionService.applyPrediction(collectedText || '', word, dictionaryKey);
             collectedText = appliedText;
-            let lastImageLabel = collectedImageLabels.length > 0 ? collectedImageLabels[collectedImageLabels.length - 1] : null;
+            let lastImageLabel = getLastLabel();
             if (lastImageLabel && word.toLowerCase().startsWith(lastImageLabel.toLowerCase()) && word.toLowerCase() !== lastImageLabel.toLowerCase()) {
-                collectedImageLabels.pop();
-                collectedImageLabels.push(word);
+                setLastLabel(word);
             } else {
-                collectedImageLabels.push(word);
-                collectedImages.push(null);
+                addTextElem(word);
             }
             triggerPredict();
         }
