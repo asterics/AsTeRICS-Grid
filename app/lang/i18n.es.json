@@ -1,7 +1,7 @@
 {
   "GridActionSpeak": "Pronunciar texto de la celda",
   "GridActionSpeakCustom": "Pronunciar texto personalizado",
-  "GridActionAudio": "Play recorded audio",
+  "GridActionAudio": "Reproducir audio grabado",
   "GridActionNavigate": "Navegar a otro tablero",
   "GridActionARE": "Acción de AsTeRICS",
   "GridActionPredict": "Rellenar elementos de predicción",
@@ -10,10 +10,10 @@
   "GridActionYoutube": "Acción de Youtube",
   "GridActionChangeLang": "Cambiar el idioma del contenido",
   "GridActionOpenWebpage": "Abrir página web en otra pestaña",
-  "COLLECT_ACTION_SPEAK": "Speak collect element content (separately)",
-  "COLLECT_ACTION_SPEAK_CONTINUOUS": "Speak collect element content (continuously)",
-  "COLLECT_ACTION_SPEAK_CLEAR": "Speak collect element content (separately) and clear afterwards",
-  "COLLECT_ACTION_SPEAK_CONTINUOUS_CLEAR": "Speak collect element content (continuously) and clear afterwards",
+  "COLLECT_ACTION_SPEAK": "Pronunciar frase acumulada (cada elemento por separado)",
+  "COLLECT_ACTION_SPEAK_CONTINUOUS": "Pronunciar frase acumulada (globalmente)",
+  "COLLECT_ACTION_SPEAK_CLEAR": "Pronunciar frase acumulada (cada elemento por separado) y borrar",
+  "COLLECT_ACTION_SPEAK_CONTINUOUS_CLEAR": "Pronunciar frase acumulada (globalmente) y borrar",
   "COLLECT_ACTION_CLEAR": "Borrar frase acumulada",
   "COLLECT_ACTION_REMOVE_WORD": "Borrar la última palabra/imagen",
   "COLLECT_ACTION_REMOVE_CHAR": "Borrar el último carácter",
@@ -848,9 +848,9 @@
   "generalInputSettings": "Configuración general de las Opciones de entrada",
   "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Pausa mínima para acumular y locutar la misma celda varias veces seguidas",
   "backupFileDoesntContainData": "¡El archivo importado no contiene una copia de seguridad válida!",
-  "currentRecording": "Current recording",
-  "recordingSeconds": "Recording... {0}s",
-  "record": "Record",
-  "stopRecording": "Stop recording",
-  "audioWithLengthOfSeconds": "Audio with length of {0}s"
+  "currentRecording": "Grabación actual",
+  "recordingSeconds": "Grabando... {0}s",
+  "record": "Grabar",
+  "stopRecording": "Detener grabación",
+  "audioWithLengthOfSeconds": "Audio con una duración de {0}s"
 }
