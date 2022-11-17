@@ -63,25 +63,40 @@ audioUtil.isRecording = function () {
  *
  * @param base64
  * @param options.onended optional callback that is called after audio playback was ended.
+ * @return Promise that is resolved if audio was started
  */
 audioUtil.playAudio = function (base64, options) {
-    options = options || {};
-    let buffer = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
-    let context = new AudioContext();
-    context.decodeAudioData(buffer.buffer, play);
+    return new Promise(resolve => {
+        options = options || {};
+        let buffer = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+        let context = new AudioContext();
+        context.decodeAudioData(buffer.buffer, play);
 
+        function play(audioBuffer) {
+            _currentAudioSource = context.createBufferSource();
+            _currentAudioSource.buffer = audioBuffer;
+            _currentAudioSource.connect(context.destination);
+            _currentAudioSource.start(0);
+            resolve();
+            _currentAudioSource.onended = () => {
+                if (options.onended) {
+                    options.onended();
+                }
+            };
+        }
+    });
+}
 
-    function play(audioBuffer) {
-        _currentAudioSource = context.createBufferSource();
-        _currentAudioSource.buffer = audioBuffer;
-        _currentAudioSource.connect(context.destination);
-        _currentAudioSource.start(0);
-        _currentAudioSource.onended = () => {
-            if (options.onended) {
-                options.onended();
-            }
-        };
-    }
+audioUtil.waitForAudioEnded = async function () {
+    await new Promise(resolve => {
+        if (_currentAudioSource) {
+            _currentAudioSource.addEventListener('ended', () => {
+                resolve();
+            });
+        } else {
+            resolve();
+        }
+    });
 }
 
 audioUtil.stopAudio = function () {
