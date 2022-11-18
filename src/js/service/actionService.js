@@ -13,6 +13,8 @@ import {youtubeService} from "./youtubeService";
 import {GridActionNavigate} from "../model/GridActionNavigate.js";
 import {GridActionChangeLang} from "../model/GridActionChangeLang.js";
 import $ from "../externals/jquery.js";
+import {GridActionAudio} from "../model/GridActionAudio.js";
+import {GridActionSpeak} from "../model/GridActionSpeak.js";
 
 let actionService = {};
 
@@ -54,6 +56,10 @@ function doActions(gridElement, gridId) {
         }
         return 0;
     });
+    let hasAudioAction = actions.some(a => a.modelName === GridActionAudio.getModelName() && a.dataBase64);
+    if (hasAudioAction) {
+        actions = actions.filter(a => a.modelName !== GridActionSpeak.getModelName());
+    }
     actions.forEach(action => {
         doAction(gridElement, action, {
             gridId: gridId,
