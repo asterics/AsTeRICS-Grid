@@ -32,7 +32,11 @@
             <span class="col-12 col-md-8 offset-md-4">
                 <span class="fas fa-exclamation-triangle"/> <span>Please allow accessing microphone in order to record audio.</span>
             </span>
-
+        </div>
+        <div class="row mt-3" v-if="globalHasContinuousSpeakAction">
+            <span class="col-12 col-md-8 offset-md-4">
+                <span class="fas fa-info-circle"/> <span>Recorded audio is only played with collect element actions in mode "speak separately".</span> <a href="javascript:;" @click="setModePlaySeparately">Set actions of global grid to mode "speak separately"</a>
+            </span>
         </div>
     </div>
 </template>
@@ -41,6 +45,8 @@
 import './../../../css/modal.css';
 import {audioUtil} from "../../../js/util/audioUtil.js";
 import {i18nService} from "../../../js/service/i18nService.js";
+import {dataService} from "../../../js/service/data/dataService.js";
+import {GridActionCollectElement} from "../../../js/model/GridActionCollectElement.js";
 
 const MAX_RECORD_TIME = 10000;
 
@@ -54,7 +60,25 @@ export default {
             playing: false,
             intervalHandler: null,
             showError: null,
-            i18nService: i18nService
+            i18nService: i18nService,
+            globalGrid: null
+        }
+    },
+    computed: {
+        globalHasContinuousSpeakAction() {
+            if (!this.globalGrid) {
+                return false;
+            }
+            for (let element of this.globalGrid.gridElements) {
+                for (let action of element.actions) {
+                    if (action.modelName === GridActionCollectElement.getModelName()) {
+                        if ([GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS, GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS_CLEAR].includes(action.action)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
     },
     methods: {
@@ -94,6 +118,21 @@ export default {
                 }
             }, 100);
         },
+        setModePlaySeparately() {
+            for (let element of this.globalGrid.gridElements) {
+                for (let action of element.actions) {
+                    if (action.modelName === GridActionCollectElement.getModelName()) {
+                        if (action.action === GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS) {
+                            action.action = GridActionCollectElement.COLLECT_ACTION_SPEAK;
+                        }
+                        if (action.action === GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS_CLEAR) {
+                            action.action = GridActionCollectElement.COLLECT_ACTION_SPEAK_CLEAR;
+                        }
+                    }
+                }
+            }
+            dataService.saveGrid(this.globalGrid);
+        },
         stopRecording() {
             this.recording = false;
             clearInterval(this.intervalHandler);
@@ -112,7 +151,8 @@ export default {
             audioUtil.stopAudio();
         }
     },
-    mounted () {
+    async mounted () {
+        this.globalGrid = JSON.parse(JSON.stringify(await dataService.getGlobalGrid()));
     },
     beforeDestroy() {
     }
