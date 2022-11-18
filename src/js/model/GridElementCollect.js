@@ -19,7 +19,7 @@ class GridElementCollect extends GridElement.extend({
         props.mode = GridElementCollect.MODE_AUTO;
         props.type = GridElement.ELEMENT_TYPE_COLLECT;
         props.textElemSizeFactor = 1.5;
-        props.actions = props.actions || [new GridActionCollectElement({action: GridActionCollectElement.COLLECT_ACTION_SPEAK}), new GridActionPredict({suggestOnChange: true})];
+        props.actions = props.actions || [new GridActionCollectElement({action: GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS}), new GridActionPredict({suggestOnChange: true})];
         super(props);
     }
 }
