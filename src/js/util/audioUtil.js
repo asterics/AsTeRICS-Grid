@@ -6,6 +6,12 @@ let _mediaRecorder = null;
 let _isRecording = false;
 let _currentAudioSource = null;
 
+/**
+ * starts recording audio from microphone
+ *
+ * @param dataCallback callback function that is called passing recorded data as {base64: base64RecordedData, mimeType: dataMimeType} after recording is stopped
+ * @return {Promise<void>} promise that resolves after recording has started, rejected if user doesn't allow it.
+ */
 audioUtil.record = async function (dataCallback) { // see https://web.dev/media-recording-audio/
     if (!dataCallback) {
         return
@@ -15,7 +21,7 @@ audioUtil.record = async function (dataCallback) { // see https://web.dev/media-
     }
     if (!_audioStream) {
         log.warn('no access to audio stream!');
-        return;
+        return Promise.reject();
     }
 
     let mimeTypes = ['audio/webm', 'audio/ogg', 'audio/mp4'];
@@ -50,6 +56,10 @@ audioUtil.stopRecording = function () {
     if (_mediaRecorder) {
         _isRecording = false;
         _mediaRecorder.stop();
+        _audioStream.getTracks().forEach(track => {
+            track.stop();
+        });
+        _audioStream = null;
         _mediaRecorder = null;
     }
 }

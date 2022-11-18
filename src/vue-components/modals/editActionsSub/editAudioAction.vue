@@ -28,6 +28,12 @@
                 </button>
             </div>
         </div>
+        <div class="row mt-3" v-if="showError">
+            <span class="col-12 col-md-8 offset-md-4">
+                <span class="fas fa-exclamation-triangle"/> <span>Please allow accessing microphone in order to record audio.</span>
+            </span>
+
+        </div>
     </div>
 </template>
 
@@ -47,6 +53,7 @@ export default {
             recording: false,
             playing: false,
             intervalHandler: null,
+            showError: null,
             i18nService: i18nService
         }
     },
@@ -65,15 +72,21 @@ export default {
                 this.play();
             }
         },
-        record() {
+        async record() {
+            this.showError = false;
+            try {
+                await audioUtil.record(data => {
+                    this.action.dataBase64 = data.base64;
+                    this.action.mimeType = data.mimeType;
+                    this.action.durationMs = this.recordTimeMs;
+                    this.$forceUpdate();
+                });
+            } catch (e) {
+                this.showError = true;
+                return;
+            }
             this.recording = true;
             this.recordTimeMs = 0;
-            audioUtil.record(data => {
-                this.action.dataBase64 = data.base64;
-                this.action.mimeType = data.mimeType;
-                this.action.durationMs = this.recordTimeMs;
-                this.$forceUpdate();
-            });
             this.intervalHandler = setInterval(() => {
                 this.recordTimeMs += 100;
                 if (this.recordTimeMs === MAX_RECORD_TIME) {
