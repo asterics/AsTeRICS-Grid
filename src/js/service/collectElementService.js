@@ -323,7 +323,7 @@ function getLastImage() {
 
 function getSpeakTextObject(element, dontIncludeAudio) {
     let audioAction = element.actions.filter(a => a.modelName === GridActionAudio.getModelName())[0];
-    if (audioAction && !dontIncludeAudio) {
+    if (audioAction && !dontIncludeAudio && audioAction.dataBase64) {
         return {
             base64Sound: audioAction.dataBase64
         }
