@@ -30,12 +30,17 @@
         </div>
         <div class="row mt-3" v-if="showError">
             <span class="col-12 col-md-8 offset-md-4">
-                <span class="fas fa-exclamation-triangle"/> <span>Please allow accessing microphone in order to record audio.</span>
+                <span class="fas fa-exclamation-triangle"/> <span>{{ $t('pleaseAllowAccessingMicrophoneInOrderToRecordAudio') }}</span>.
             </span>
         </div>
         <div class="row mt-3" v-if="globalHasContinuousSpeakAction">
             <span class="col-12 col-md-8 offset-md-4">
-                <span class="fas fa-info-circle"/> <span>Recorded audio is only played with collect element actions in mode "speak separately".</span> <a href="javascript:;" @click="setModePlaySeparately">Set actions of global grid to mode "speak separately"</a>
+                <span class="fas fa-info-circle"/> <span>{{ $t('recordedAudioIsOnlyPlayedWithCollectElementActions') }}</span>. <a href="javascript:;" @click="setModePlaySeparately">{{ $t('setActionsOfGlobalGridToModeSpeakSeparately') }}</a>
+            </span>
+        </div>
+        <div class="row mt-3" v-if="updatedGlobalSpeakActions">
+            <span class="col-12 col-md-8 offset-md-4">
+                <span class="fas fa-check"/> <span>{{ $t('speakActionsOfGlobalGridWereSetToModeModeSpeak') }}</span>. <a href="javascript:;" @click="undoSetModePlaySeparately">{{ $t('undo') }}</a>
             </span>
         </div>
     </div>
@@ -61,7 +66,9 @@ export default {
             intervalHandler: null,
             showError: null,
             i18nService: i18nService,
-            globalGrid: null
+            globalGrid: null,
+            originalGlobalGrid: null,
+            updatedGlobalSpeakActions: false
         }
     },
     computed: {
@@ -132,6 +139,12 @@ export default {
                 }
             }
             dataService.saveGrid(this.globalGrid);
+            this.updatedGlobalSpeakActions = true;
+        },
+        undoSetModePlaySeparately() {
+            this.globalGrid = JSON.parse(JSON.stringify(this.originalGlobalGrid));
+            dataService.saveGrid(this.globalGrid);
+            this.updatedGlobalSpeakActions = false;
         },
         stopRecording() {
             this.recording = false;
@@ -153,6 +166,7 @@ export default {
     },
     async mounted () {
         this.globalGrid = JSON.parse(JSON.stringify(await dataService.getGlobalGrid()));
+        this.originalGlobalGrid = JSON.parse(JSON.stringify(this.globalGrid));
     },
     beforeDestroy() {
     }
