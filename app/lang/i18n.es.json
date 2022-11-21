@@ -854,7 +854,7 @@
   "stopRecording": "Detener grabación",
   "audioWithLengthOfSeconds": "Audio con una duración de {0}s",
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Por favor, permite el acceso al micrófono para grabar audio",
-  "recordedAudioIsOnlyPlayedWithCollectElementActions": "Recorded audio is only played with collect element actions in mode \"speak separately\"",
-  "setActionsOfGlobalGridToModeSpeakSeparately": "Cambiar las acciones de pronunciar frase acumulada del tablero global al modo \"elemento por elemento\"",
+  "recordedAudioIsOnlyPlayedWithCollectElementActions": "El audio grabado solo se reproduce cuando la acción pronunciar frase acumulada está configurada en el modo \"elemento por elemento\"",
+  "setActionsOfGlobalGridToModeSpeakSeparately": "Configurar las acciones de pronunciar frase acumulada del tablero global en modo \"elemento por elemento\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Todas las acciones de pronunciar frase del tablero global se han configurado en modo \"elemento por elemento\""
 }
