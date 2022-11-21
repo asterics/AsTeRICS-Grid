@@ -15,6 +15,7 @@ import {GridActionChangeLang} from "../model/GridActionChangeLang.js";
 import $ from "../externals/jquery.js";
 import {GridActionAudio} from "../model/GridActionAudio.js";
 import {GridActionSpeak} from "../model/GridActionSpeak.js";
+import {GridActionSpeakCustom} from "../model/GridActionSpeakCustom.js";
 
 let actionService = {};
 
@@ -58,7 +59,7 @@ function doActions(gridElement, gridId) {
     });
     let hasAudioAction = actions.some(a => a.modelName === GridActionAudio.getModelName() && a.dataBase64);
     if (hasAudioAction) {
-        actions = actions.filter(a => a.modelName !== GridActionSpeak.getModelName());
+        actions = actions.filter(a => a.modelName !== GridActionSpeak.getModelName() && a.modelName !== GridActionSpeakCustom.getModelName());
     }
     actions.forEach(action => {
         doAction(gridElement, action, {
