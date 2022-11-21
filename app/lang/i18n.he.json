@@ -845,12 +845,12 @@
   "hyphen": "מקף",
   "space": "רווח",
   "readElementActionsInAdditionToLabel": "Read element actions in addition to label",
-  "generalInputSettings": "General input settings",
+  "generalInputSettings": "הגדרות כלליות",
   "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimum pause for collecting and speaking the same cell several times in a row",
-  "backupFileDoesntContainData": "Backup file doesn't contain grid configuration!",
-  "currentRecording": "Current recording",
+  "backupFileDoesntContainData": "קובץ הגיבוי לא מכיל תצורת גריד!",
+  "currentRecording": "הקלטה נוכחית",
   "recordingSeconds": "Recording... {0}s",
-  "record": "Record",
-  "stopRecording": "Stop recording",
+  "record": "להקליט",
+  "stopRecording": "הפסק הקלטה",
   "audioWithLengthOfSeconds": "Audio with length of {0}s"
 }
