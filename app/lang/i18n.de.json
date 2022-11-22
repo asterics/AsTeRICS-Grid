@@ -1,6 +1,7 @@
 {
   "GridActionSpeak": "Label aussprechen",
   "GridActionSpeakCustom": "Benutzerdefinierten Text aussprechen",
+  "GridActionAudio": "Audioaufnahme abspielen",
   "GridActionNavigate": "Zu anderem Grid navigieren",
   "GridActionARE": "AsTeRICS Aktion",
   "GridActionPredict": "Vorhersage-Elemente füllen",
@@ -9,8 +10,10 @@
   "GridActionYoutube": "YouTube Aktion",
   "GridActionChangeLang": "Sprache der Grids ändern",
   "GridActionOpenWebpage": "Website in neuem Tab öffnen",
-  "COLLECT_ACTION_SPEAK": "Inhalt von Sammelelement sprechen",
-  "COLLECT_ACTION_SPEAK_CLEAR": "Inhalt von Sammelelement sprechen und danach leeren",
+  "COLLECT_ACTION_SPEAK": "Inhalt von Sammelelement sprechen (separat)",
+  "COLLECT_ACTION_SPEAK_CONTINUOUS": "Inhalt von Sammelelement sprechen (kontinuierlich)",
+  "COLLECT_ACTION_SPEAK_CLEAR": "Inhalt von Sammelelement sprechen (separat) und danach leeren",
+  "COLLECT_ACTION_SPEAK_CONTINUOUS_CLEAR": "Inhalt von Sammelelement sprechen (kontinuierlich) und danach leeren",
   "COLLECT_ACTION_CLEAR": "Sammelelement leeren",
   "COLLECT_ACTION_REMOVE_WORD": "Letztes Wort/Bild löschen",
   "COLLECT_ACTION_REMOVE_CHAR": "Letzten Buchstaben löschen",
@@ -844,5 +847,14 @@
   "readElementActionsInAdditionToLabel": "Aktionen des Elements zusätzlich zu Label lesen",
   "generalInputSettings": "Allgemeine Eingabeoptionen",
   "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimale Pause um dasselbe Element mehrmals hintereinander zu sammeln / auszusprechen",
-  "backupFileDoesntContainData": "Backup-Datei enthält keine Grid-Konfiguration!"
+  "backupFileDoesntContainData": "Backup-Datei enthält keine Grid-Konfiguration!",
+  "currentRecording": "Aktuelle Aufnahme",
+  "recordingSeconds": "Wird aufgenommen... {0}s",
+  "record": "Aufnehmen",
+  "stopRecording": "Aufnahme stoppen",
+  "audioWithLengthOfSeconds": "Audioaufnahme mit Länge von {0}s",
+  "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Bitte erlaube den Zugriff auf das Mikrofon, um Audio aufzunehmen",
+  "recordedAudioIsOnlyPlayedWithCollectElementActions": "Audioaufnahmen werden nur mit Sammelelement-Aktionen in Modus \"separat sprechen\" wiedergegeben",
+  "setActionsOfGlobalGridToModeSpeakSeparately": "Setze Aktionen im globalen Grid in Modus \"separat spechen\"",
+  "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Aktionen im globalen Grid wurden auf Modus \"separat sprechen\" gesetzt"
 }

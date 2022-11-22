@@ -1,6 +1,7 @@
 {
   "GridActionSpeak": "Pronuncia etichetta",
   "GridActionSpeakCustom": "Pronuncia il testo personalizzato",
+  "GridActionAudio": "Play recorded audio",
   "GridActionNavigate": "Vai ad altra griglia",
   "GridActionARE": "Azione di AsTeRICS",
   "GridActionPredict": "Riempi elementi di predizione",
@@ -9,8 +10,10 @@
   "GridActionYoutube": "Azione YouTube",
   "GridActionChangeLang": "Scegli la lingua del contenuto",
   "GridActionOpenWebpage": "Apri la pagina web in una nuova scheda",
-  "COLLECT_ACTION_SPEAK": "Pronuncia il contenuto dell'elemento di raccolta",
-  "COLLECT_ACTION_SPEAK_CLEAR": "Pronuncia il contenuto dell'elemento di raccolta e cancella dopo",
+  "COLLECT_ACTION_SPEAK": "Speak collect element content (separately)",
+  "COLLECT_ACTION_SPEAK_CONTINUOUS": "Speak collect element content (continuously)",
+  "COLLECT_ACTION_SPEAK_CLEAR": "Speak collect element content (separately) and clear afterwards",
+  "COLLECT_ACTION_SPEAK_CONTINUOUS_CLEAR": "Speak collect element content (continuously) and clear afterwards",
   "COLLECT_ACTION_CLEAR": "Cancella elemento di raccolta",
   "COLLECT_ACTION_REMOVE_WORD": "Elimina l'ultima parola/immagine",
   "COLLECT_ACTION_REMOVE_CHAR": "Elimina l'ultimo carattere",
@@ -844,5 +847,14 @@
   "readElementActionsInAdditionToLabel": "Read element actions in addition to label",
   "generalInputSettings": "General input settings",
   "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimum pause for collecting and speaking the same cell several times in a row",
-  "backupFileDoesntContainData": "Backup file doesn't contain grid configuration!"
+  "backupFileDoesntContainData": "Backup file doesn't contain grid configuration!",
+  "currentRecording": "Current recording",
+  "recordingSeconds": "Recording... {0}s",
+  "record": "Record",
+  "stopRecording": "Stop recording",
+  "audioWithLengthOfSeconds": "Audio with length of {0}s",
+  "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Please allow accessing microphone in order to record audio",
+  "recordedAudioIsOnlyPlayedWithCollectElementActions": "Recorded audio is only played with collect element actions in mode \"speak separately\"",
+  "setActionsOfGlobalGridToModeSpeakSeparately": "Set actions of global grid to mode \"speak separately\"",
+  "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Speak actions of global grid were set to mode mode \"speak separately\""
 }
