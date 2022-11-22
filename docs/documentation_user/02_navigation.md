@@ -128,13 +128,16 @@ These are the possible options:
 
 A global grid is a grid that is visible on every grid page. It may contain general elements that make sense within every grid like e.g. a "Home" grid element that navigates to the start page. A global grid could also contain some kind of core vocabulary that should be visible any time. The global grid of the main page of figure 1 contains the following elements: 
 
-![global grid](./img/global_grid_empty_en.jpg)
+![global grid](./img/global_grid_empty_en.JPG)
 
 *Fig.3.2: Global Grid*
 
-All the elements shown here are elements contained within the global grid. They are visible on every grid page. The global grid can be activated/deactivated and edited in the "Manage Grids" view at the bottom: 
+All the elements shown here are elements contained within the global grid. They are visible on every grid page.
+While editing the global grid it's possible to define its height by opening *More -> Change grid dimensions* and setting the value for *height of first global grid row*.
 
-![de/activate global grid](./img/global_grid_en.jpg)
+The global grid can be activated/deactivated and edited in the "Manage Grids" view at the bottom or by *More -> Edit global grid* while editing any other grid: 
+
+![de/activate global grid](./img/global_grid_en.JPG)
 
 *Fig.3.3: "Manage grids" - view - Global Grid*
 
