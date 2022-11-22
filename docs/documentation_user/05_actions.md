@@ -47,17 +47,17 @@ This modal configures the actions that will be performed if the grid element is 
 ## Action types
 
 These are the types of actions that are selectable (Fig. 2, number 1):
-
-1. **Speak label**: speaks the label of the element using a computer voice (text-to-speech)
-2. **Navigate to other grid**: navigates to another grid
-3. **Speak custom text**: speaks a customizeable text using a computer voice (text-to-speech)
-4. **Fill prediction elements**: fills all [prediction elements](01_terms.md#grid-element) in the current grid with word suggestions
-5. **Collect element action**: performs actions on [collect elements](01_terms.md#grid-element) in the current grid, e.g. clearing it or copying it's text to clipboard
-6. **AsTeRICS Action**: does an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework)
-7. **Web radio action**: plays a web radio station
-8. **YouTube action**: links to a YouTube video and shows it without leaving the communicator
-9. **Change content language**: changes the content language (description of grid elements / language of the communicator grid(s))
-10. **Open web page in new tab**: allows to assign an external web page to a cell and opens it in a new tab
+* **Speak label**: speaks the label of the element using a computer voice (text-to-speech)
+* **Navigate to other grid**: navigates to another grid
+* **Speak custom text**: speaks a customizeable text using a computer voice (text-to-speech)
+* **Play recorded audio**: plays custom audio, previously recorded via the microphone of the device
+* **Fill prediction elements**: fills all [prediction elements](01_terms.md#grid-element) in the current grid with word suggestions
+* **Collect element action**: performs actions on [collect elements](01_terms.md#grid-element) in the current grid, e.g. clearing it or copying it's text to clipboard
+* **AsTeRICS Action**: does an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework)
+* **Web radio action**: plays a web radio station
+* **YouTube action**: links to a YouTube video and shows it without leaving the communicator
+* **Change content language**: changes the content language (description of grid elements / language of the communicator grid(s))
+* **Open web page in new tab**: allows to assign an external web page to a cell and opens it in a new tab
 
 ### Speak label
 
@@ -95,6 +95,20 @@ Clicking on "Edit" of a "speak custom text" action (or creating a new one) shows
 
 For language selection the same conditions as for [speak label](05_actions.md#speak-label) actions apply. "Text to speak" is the custom text that should be spoken. The button "Test" tests the configuration and speaks the current text.
 
+### Play recorded audio
+
+![Play recorded audio](./img/action_play_recorded_audio.png)
+
+*Fig. 6: Configuration possibilities of action "Play recorded audio"*
+
+After clicking **Record** for the first time, the browser will show a confirmation popup to ask if it's allowed to access the microphone. After confirmation the record starts and can be stopped by clicking on the same button again.
+
+With the button **Play** an existing recording can be played.
+
+**Notes**:
+* an existing action containing recorded audio has priority over actions *Speak label* and *Speak custom text*. So if an action with recorded audio is present, these types of actions won't be performed.
+* if items are collected in collect elements, recorded audio is only played for collect element actions in mode "speak separately", see [Collect element action](05_actions.md#collect-element-action).
+
 ### Fill prediction elements
 
 **Video on YouTube:** [Prediction elements](https://www.youtube.com/watch?v=t0FWZcM9TMg&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=22&t=0s) (German, but auto-translated subtitles available)
@@ -107,7 +121,7 @@ Clicking on "Edit" on a "fill prediction elements" action (or creating a new one
 
 ![fill prediction elements action options](./img/action_fillprediction_en.jpg)
 
-*Fig. 6: Configuration possibilites of "Fill prediction elements"*
+*Fig. 7: Configuration possibilites of "Fill prediction elements"*
 
 **Dictionary to use**: select the dictionary you want to use (see [manage dictionaries](02_navigation.md#manage-dictionaries-view)). If nothing selected words from all available dictionaries will be suggested.
 
@@ -121,19 +135,21 @@ Clicking on "Edit" of a "collect element action" action (or creating a new one) 
 
 ![Collect element action options](./img/action_collectelement_en.jpg)
 
-*Fig. 7: Configuration possibilites of "Collect element action"*
+*Fig. 8: Configuration possibilites of "Collect element action"*
 
 The possible actions to choose are (when opening the combo box):
 
-1. **Speak collect element content**: speaks out the content of the collect element
-2. **Speak collect element content and clear afterwards**: speaks out the content of the collect element and clear it afterwards
+1. **Speak collect element content (separately)**: speaks out the content of the collect element, where each collected element is spoken one by one, highlighting the currently spoken element.
+1. **Speak collect element content (continuously)**: speaks out the content of the collect element as continuous text, not highlighting the currently spoken element.
+2. **Speak collect element content (separately) and clear afterwards**: see above, clears collect element content after speaking
+2. **Speak collect element content (continuously) and clear afterwards**: see above, clears collect element content after speaking
 3. **Clear collect element** empties the collect element
 4. **Delete last word/image** deletes the last word/image of the collection elements: <div style="margin-left: 2em"><img src="./img/collect_delete.gif" alt="Delete last word animation" width="350"/></div>
 5. **Delete last character**: <div style="margin-left: 2em"><img src="./img/collect_delete_c.gif" alt="Delete last character animation" width="350"/></div>
 6. **Copy text to clipboard**: copies the current text of the collect element to clipboard in order to be available for paste in other programs
 7. **Append text to clipboard**: appends the current text of the collect element to clipboard making it possible to collect longer texts in the clipboard which can be used in another program afterwards
 8. **Clear clipboard**: empties the clipboard
-9. **Search text on YouTube**
+9. **Search text on YouTube**: searches the currently collected text on YouTube and loads the first video of the result in a YouTube player element. The YouTube player element can be located within the current grid or within another one to which is concurrently navigated to. 
 
 ### AsTeRICS Action
 
@@ -144,13 +160,13 @@ An "AsTeRICS action" performs an action in a running [model](01_terms.md#asteric
 Figure 8 shows how an AsTeRICS action that controls a TV is working in more detail:
 
 ![asterics action detail concept](./img/asterics-action-are_en.png)
-*Fig. 8: AsTeRICS action concept, example of controlling a TV*
+*Fig. 9: AsTeRICS action concept, example of controlling a TV*
 
 The following steps are shown in Figure 8:
 
 1. A user selects a grid element with an associated AsTeRICS action. An [AsTeRICS model](01_terms.md#asterics-model) which can perform the desired action (e.g. controlling a TV) is saved within the current grid.
 2. The AsTeRICS model is uploaded to a running instance of the AsTeRICS Framework (ARE) and afterwards started. The model contains so-called "plugins" which are elements capable of communicating with external hardware, e.g. attached to the computer or accessible via network. In the example the "IrTrans" plugin is capable of communicating with an IrTrans device, which is a replacement for infrared remotes.
-3. After uploading and starting the model on the AsTeRICS Framework, data is sent to a plugin contained in the model. In Fig. 8 some data is sent to the "action" port of the IrTrans plugin.
+3. After uploading and starting the model on the AsTeRICS Framework, data is sent to a plugin contained in the model. In Fig. 9 some data is sent to the "action" port of the IrTrans plugin.
 4. Sending data to the plugin causes the AsTeRICS Framework to communicate with the external real "IrTrans" hardware. The action contains the needed information to perform the desired action, for instance sending a "Volume down" command to a TV.
 5. Finally the IrTrans device sends the infrared signal to the TV causing it to reduce the volume.
 
@@ -158,7 +174,7 @@ Clicking on "Edit" on a "AsTeRICS action" action (or creating a new one) shows t
 
 ![asterics action options](./img/action_asterics_en.jpg)
 
-*Fig. 9: Configuration possibilites of "AsTeRICS action"*
+*Fig. 10: Configuration possibilites of "AsTeRICS action"*
 
 These are the possibilities while configuring an AsTeRICS action:
 
@@ -191,7 +207,7 @@ Clicking on "Edit" on a "Web radio action" (or creating a new one) shows the fol
 
 ![Web radio action options](./img/action_webradio_en.jpg)
 
-*Fig. 10: Configuration possibilites of "Web radio action"*
+*Fig. 11: Configuration possibilites of "Web radio action"*
 
 These are the elements in this configuration dialog:
 
@@ -225,11 +241,11 @@ These are the elements in this configuration dialog:
 
 The YouTube Action allows you to link videos from this web page to the communicator and view them without leavting the communicator. Different control functions can be assigned to the cells for the display of the videos.
 
-Clicking on "Edit" of a "YouTube" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 11):
+Clicking on "Edit" of a "YouTube" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 12):
 
 <img src="./img/action_youtube_en.JPG" width="800"/>
 
-*Fig. 11: Configuration possibilites of "YouTube Action"*
+*Fig. 12: Configuration possibilites of "YouTube Action"*
 
 The possible actions/functions to choose are (when opening the combo box):
 
@@ -260,7 +276,7 @@ To add a "YouTube Grid", one grid element hast to be a "YouTube Player", which c
 
 ![action youtubeplayer](./img/youtubeplayer_en.JPG)
 
-*Fig. 12: Creating a New YouTube Player element"*
+*Fig. 13: Creating a New YouTube Player element"*
 
 Other ("normal") grid elements can be assigned with the functions listed above and a corresponding image can be chosen in the *Image Tab*. In ARASAAC, a collection of multimedia buttons is prepared, just type the word *button* in the *Image search* field of the *Image Tab*. If different grid elements are assigned with the *Play video* functions and are linked to different YouTube videos, the selected video will be played in the "YouTube Player" element, which has been created as shown in Figure 10.
 
@@ -268,35 +284,35 @@ Other ("normal") grid elements can be assigned with the functions listed above a
 
 This action is used to change the language of the communicator grid(s) by clicking on a grid element that we have configured to perform this action. 
 
-Clicking on "Edit" of a "Change content language" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 13):
+Clicking on "Edit" of a "Change content language" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 14):
 
 <img src="./img/action_contentlanguage_en.JPG" width="850"/>
 
-*Fig. 13: Configuration possibilites of "Change content language - Action"*
+*Fig. 14: Configuration possibilites of "Change content language - Action"*
 
 The language in which the application language shall be changed to can be selected in the corresponding combobox.
 
-In the following two figures an example is show, where the content language can be switched from english to french or inversely by clicking on the corresponding flag (Fig. 14 and 15). 
+In the following two figures an example is show, where the content language can be switched from english to french or inversely by clicking on the corresponding flag (Fig. 15 and 16). 
 
 ![action changecontentEN](./img/changecontent_en.JPG)
 
-*Fig. 14: Content language in English*
+*Fig. 15: Content language in English*
 
 ![action changecontentEN](./img/changecontent_fr.JPG)
 
-*Fig. 15: Content language in French*
+*Fig. 16: Content language in French*
 
-First of all, you have to check if the grid content can already be translated in the desired language. To do that, you click on the "more" button in the "Edtiting on" view and select the *Translate grid* option as shown in Fig. 16:
+First of all, you have to check if the grid content can already be translated in the desired language. To do that, you click on the "more" button in the "Edtiting on" view and select the *Translate grid* option as shown in Fig. 17:
 
 ![action changecontentEN](./img/translategrid_en.JPG)
 
-*Fig. 16: Translate grid option*
+*Fig. 17: Translate grid option*
 
-After clicking on the "Translate grid" option, the following window opens (Fig. 17): 
+After clicking on the "Translate grid" option, the following window opens (Fig. 18): 
 
 ![action translategrid1](./img/translategrid1_en.JPG)
 
-*Fig. 17: Translate grid - select language and translate the content*
+*Fig. 18: Translate grid - select language and translate the content*
 
 Here, the language, in which the grid content shall be translated, can be chosen. The right column shows the translations which are already stored in the application. Missing translations have to be filled in here.
 
@@ -304,11 +320,11 @@ Here, the language, in which the grid content shall be translated, can be chosen
 
 This action allows to assign an external web page to a grid element and, by clicking on it, to access the information contained therein.
 
-Clicking on "Edit" of a "Open webpage in new tab" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 18):
+Clicking on "Edit" of a "Open webpage in new tab" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Fig. 19):
 
 <img src="./img/action_openwebpage_en.JPG" width="850"/>
 
-*Fig. 18: Configuration possibilites of "Open webpage in new tab"*
+*Fig. 19: Configuration possibilites of "Open webpage in new tab"*
 
 * **Webpage URL**: copy the URL of the desired webpage and enter it here
 * **Automatically close timeout in seconds**: enter time in seconds you want the tab remains open. After this time, the web page will close and the communicator grid will be displayed again
