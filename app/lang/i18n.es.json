@@ -1,6 +1,7 @@
 {
   "GridActionSpeak": "Pronunciar texto de la celda",
   "GridActionSpeakCustom": "Pronunciar texto personalizado",
+  "GridActionAudio": "Reproducir audio grabado",
   "GridActionNavigate": "Navegar a otro tablero",
   "GridActionARE": "Acción de AsTeRICS",
   "GridActionPredict": "Rellenar elementos de predicción",
@@ -9,8 +10,10 @@
   "GridActionYoutube": "Acción de Youtube",
   "GridActionChangeLang": "Cambiar el idioma del contenido",
   "GridActionOpenWebpage": "Abrir página web en otra pestaña",
-  "COLLECT_ACTION_SPEAK": "Pronunciar frase acumulada",
-  "COLLECT_ACTION_SPEAK_CLEAR": "Pronunciar frase acumulada y borrar",
+  "COLLECT_ACTION_SPEAK": "Pronunciar frase acumulada (elemento por elemento)",
+  "COLLECT_ACTION_SPEAK_CONTINUOUS": "Pronunciar frase acumulada (continua)",
+  "COLLECT_ACTION_SPEAK_CLEAR": "Pronunciar frase acumulada (elemento por elemento) y borrar",
+  "COLLECT_ACTION_SPEAK_CONTINUOUS_CLEAR": "Pronunciar frase acumulada (continua) y borrar",
   "COLLECT_ACTION_CLEAR": "Borrar frase acumulada",
   "COLLECT_ACTION_REMOVE_WORD": "Borrar la última palabra/imagen",
   "COLLECT_ACTION_REMOVE_CHAR": "Borrar el último carácter",
@@ -844,5 +847,14 @@
   "readElementActionsInAdditionToLabel": "Leer acciones de la celda además del texto",
   "generalInputSettings": "Configuración general de las Opciones de entrada",
   "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Pausa mínima para acumular y locutar la misma celda varias veces seguidas",
-  "backupFileDoesntContainData": "¡El archivo importado no contiene una copia de seguridad válida!"
+  "backupFileDoesntContainData": "¡El archivo importado no contiene una copia de seguridad válida!",
+  "currentRecording": "Grabación actual",
+  "recordingSeconds": "Grabando... {0}s",
+  "record": "Grabar",
+  "stopRecording": "Detener grabación",
+  "audioWithLengthOfSeconds": "Audio con una duración de {0}s",
+  "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Por favor, permite el acceso al micrófono para grabar audio",
+  "recordedAudioIsOnlyPlayedWithCollectElementActions": "El audio grabado solo se reproduce cuando la acción pronunciar frase acumulada está configurada en el modo \"elemento por elemento\"",
+  "setActionsOfGlobalGridToModeSpeakSeparately": "Configurar las acciones de pronunciar frase acumulada del tablero global en modo \"elemento por elemento\"",
+  "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Todas las acciones de pronunciar frase del tablero global se han configurado en modo \"elemento por elemento\""
 }
