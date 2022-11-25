@@ -308,11 +308,14 @@
                 }
                 log.debug('got update event, ids updated:' + updatedIds);
                 let updatedGridDoc = updatedDocs.filter(doc => (vueApp.gridData && doc.id === vueApp.gridData.id))[0];
+                let hasUpdatedGlobalGrid = updatedDocs.filter(doc => (this.metadata && doc.id === this.metadata.globalGridId)).length > 0;
                 this.updatedMetadataDoc = updatedDocs.filter(doc => (vueApp.metadata && doc.id === vueApp.metadata.id))[0] || this.updatedMetadataDoc;
                 if (updatedGridDoc) {
                     vueApp.reload(new GridData(updatedGridDoc));
+                } else if (hasUpdatedGlobalGrid) {
+                    vueApp.reload();
                 }
-                if (JSON.stringify(this.metadata.colorConfig) !== JSON.stringify(this.updatedMetadataDoc.colorConfig)) {
+                if (this.updatedMetadataDoc && JSON.stringify(this.metadata.colorConfig) !== JSON.stringify(this.updatedMetadataDoc.colorConfig)) {
                     this.backgroundColor = this.updatedMetadataDoc.colorConfig.gridBackgroundColor;
                     vueApp.reload();
                 }
