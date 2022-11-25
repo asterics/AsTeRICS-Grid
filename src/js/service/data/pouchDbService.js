@@ -97,6 +97,20 @@ pouchDbService.all = function (idPrefix, id) {
 };
 
 /**
+ * returns all docs that are stored in pouchDb, can be limited by parameters, always returns Array
+ * @param idPrefix (optional) only return docs where IDs have the given prefix
+ * @param id (optional) only return doc with this ID
+ * @return {Promise<Array>} Array of results, empty Array if no result
+ */
+pouchDbService.allArray = async function (idPrefix, id) {
+    let result = await pouchDbService.all(idPrefix, id);
+    if (Array.isArray(result)) {
+        return result;
+    }
+    return result ? [result] : [];
+}
+
+/**
  * saves an object to database that is already encrypted
  *
  * @param idPrefix the idPrefix to save, e.g. 'grid-data'
