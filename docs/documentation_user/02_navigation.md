@@ -3,7 +3,7 @@
 This chapter is about general appearance, navigation and basic functionality of the different views in AsTeRICS Grid:
 
 1. [Welcome view](02_navigation.md#welcome-view): intial view shown at first usage
-2. [Main view](02_navigation.md#main-view): starting view showing the recently used grid and navigation
+2. [Main view](02_navigation.md#main---view): starting view showing the recently used grid and navigation
 3. [Edit view](02_navigation.md#edit-view): view that allows modification of a grid
 4. [Manage grids view](02_navigation.md#manage-grids-view): show all grids, create new ones, create a backup
 5. [Manage dictionaries view](02_navigation.md#manage-dictionaries-view): show, edit and create new dictionaries
