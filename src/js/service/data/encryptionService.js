@@ -7,10 +7,11 @@ import {MapCache} from "../../util/MapCache";
 let STATIC_USER_PW_SALT = "STATIC_USER_PW_SALT";
 
 let encryptionService = {};
-let _encryptionSalt = null;
-let _encryptionKey = null;
+let _encryptionSalts = null;
+let _encryptionBasePassword = null;
 let _isLocalUser = false;
 let _decryptionCache = new MapCache();
+let _hashCache = new MapCache();
 
 let _cryptoTime = 0;
 let _operationStartTime = null;
@@ -20,17 +21,13 @@ let _operationStartTime = null;
  * @see{EncryptedObject}
  *
  * @param object any model object to encrypt
- * @param options map of options, can contain:
- *        encryption key: the key that should be used for encryption (optional, local _encryptionKey variable is used
- *        if not set)
  * @return {*} encrypted object of type @see{EncryptedObject}
  */
-encryptionService.encryptObject = function (object, options) {
+encryptionService.encryptObject = function (object) {
     throwErrorIfUninitialized();
     if (!object) {
         return object;
     }
-    options = options || {};
 
     let encryptedObject = new EncryptedObject({
         id: object.id,
@@ -43,8 +40,8 @@ encryptionService.encryptObject = function (object, options) {
     let jsonString = JSON.stringify(object);
     let shortJsonString = JSON.stringify(dataUtil.removeLongPropertyValues(object));
     let shortVersionDifferent = jsonString !== shortJsonString;
-    encryptedObject.encryptedDataBase64 = encryptionService.encryptString(jsonString, options.encryptionKey);
-    encryptedObject.encryptedDataBase64Short = shortVersionDifferent ? encryptionService.encryptString(shortJsonString, options.encryptionKey) : null;
+    encryptedObject.encryptedDataBase64 = encryptionService.encryptString(jsonString, _encryptionSalts[0]);
+    encryptedObject.encryptedDataBase64Short = shortVersionDifferent ? encryptionService.encryptString(shortJsonString, _encryptionSalts[0]) : null;
     return encryptedObject;
 };
 
@@ -55,8 +52,6 @@ encryptionService.encryptObject = function (object, options) {
  * @param encryptedObjects an array of encrypted objects or a single encrypted object
  * @param options map of options, can contain:
  *        onlyShortVersion: if true only the short version (with stripped binary data) is decrypted and returned
- *        encryption key: the key that should be used for encryption (optional, local _encryptionKey variable is used
- *        if not set)
  * @return {*} an array or single object (depending on input) of decrypted instances of objects
  */
 encryptionService.decryptObjects = function (encryptedObjects, options) {
@@ -76,11 +71,11 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
             let decryptedObject = null;
             if (onlyShortVersion) {
                 let toDecrypt = encryptedObject.encryptedDataBase64Short || encryptedObject.encryptedDataBase64;
-                decryptedString = encryptionService.decryptString(toDecrypt, options.encryptionKey);
+                decryptedString = encryptionService.decryptStringTrySalts(toDecrypt, _encryptionSalts);
                 decryptedObject = JSON.parse(decryptedString);
                 decryptedObject.isShortVersion = true;
             } else {
-                decryptedString = encryptionService.decryptString(encryptedObject.encryptedDataBase64, options.encryptionKey);
+                decryptedString = encryptionService.decryptStringTrySalts(encryptedObject.encryptedDataBase64, _encryptionSalts);
                 decryptedObject = JSON.parse(decryptedString);
             }
             decryptedObject._id = encryptedObject._id;
@@ -100,15 +95,12 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
  * encrypts a string and returns a base64 representation of the encrypted data.
  *
  * @param string the string to encrypt
- * @param encryptionKey the key that should be used for encryption (optional, local _encryptionKey variable is used
- *        if not set). If no encryption key is set in both, this method just encodes the given string to base64.
+ * @param encryptionSalt the salt that should be used to encrypt, base encryption key is used from _encryptionBasePassword
  * @return {string} the given string in encrypted form, encoded in base64
  */
-encryptionService.encryptString = function (string, encryptionKey) {
-    if (!encryptionKey) {
-        throwErrorIfUninitialized();
-    }
-    encryptionKey = encryptionKey || _encryptionKey;
+encryptionService.encryptString = function (string, encryptionSalt) {
+    throwErrorIfUninitialized();
+    let encryptionKey = getEncryptionKey(encryptionSalt);
     let encryptedString = null;
     if (encryptionKey && !_isLocalUser) {
         encryptedString =  sjcl.encrypt(encryptionKey, string, {iter: 1000});
@@ -122,20 +114,17 @@ encryptionService.encryptString = function (string, encryptionKey) {
  * decrypts a given base64 encoded string.
  *
  * @param encryptedString a base64 encoded string that was encrypted before
- * @param encryptionKey the key that should be used for decryption (optional, local _encryptionKey variable is used
- *        if not set). If no encryption key is set in both, this method just decodes a given base64 encoded string.
+ * @param encryptionSalt the salt that should be used to encrypt, base encryption key is used from _encryptionBasePassword
  * @return {string} the decrypted string, not base64 encoded
  */
-encryptionService.decryptString = function (encryptedString, encryptionKey) {
-    if (!encryptionKey) {
-        throwErrorIfUninitialized();
-    }
+encryptionService.decryptString = function (encryptedString, encryptionSalt) {
+    throwErrorIfUninitialized();
     if (_decryptionCache.has(encryptedString)) {
         log.debug('using decryption cache...');
         return _decryptionCache.get(encryptedString);
     }
 
-    encryptionKey = encryptionKey || _encryptionKey;
+    let encryptionKey = getEncryptionKey(encryptionSalt);
     let decryptedString = null;
     let startTime = new Date().getTime();
     if (encryptionKey && !_isLocalUser) {
@@ -156,13 +145,32 @@ encryptionService.decryptString = function (encryptedString, encryptionKey) {
     return decryptedString;
 };
 
+encryptionService.decryptStringTrySalts = function (encryptedString, trySalts) {
+    try {
+        trySalts = JSON.parse(JSON.stringify(trySalts));
+        return encryptionService.decryptString(encryptedString, trySalts.shift());
+    } catch (e) {
+        if (trySalts.length === 0) {
+            log.error("wasn't able to decrypt string, no remaining salts for trying!");
+            throw e;
+        }
+        log.warn("wasn't able to decrypt string, try next salt...");
+        return encryptionService.decryptStringTrySalts(encryptedString, trySalts);
+    }
+}
+
 /**
  * returns a cryptographic hash of a string (SHA-256)
  * @param string the string to hash
  */
 encryptionService.getStringHash = function (string) {
+    if (_hashCache.has(string)) {
+        return _hashCache.get(string);
+    }
     let bitArray = sjcl.hash.sha256.hash(string);
-    return sjcl.codec.hex.fromBits(bitArray);
+    let hash = sjcl.codec.hex.fromBits(bitArray);
+    _hashCache.set(string, hash);
+    return hash;
 };
 
 /**
@@ -180,29 +188,33 @@ encryptionService.getUserPasswordHash = function (plaintextPassword) {
 /**
  * sets the encryption properties
  * @param hashedPassword the hashed user password
- * @param salt the salt to use -> ID of metadata object
+ * @param salts array of salts to use -> ID(s) of metadata object(s)
  */
-encryptionService.setEncryptionProperties = function (hashedPassword, salt, isLocalUser) {
+encryptionService.setEncryptionProperties = function (hashedPassword, salts, isLocalUser) {
     hashedPassword = hashedPassword || '';
-    _encryptionSalt = salt;
-    _encryptionKey = encryptionService.getStringHash('' + _encryptionSalt + hashedPassword);
+    _encryptionBasePassword = hashedPassword;
+    _encryptionSalts = Array.isArray(salts) ? salts : [salts];
     _isLocalUser = isLocalUser;
     _decryptionCache.clearAll();
-    log.debug('new encryption key is: ' + _encryptionKey);
+    _hashCache.clearAll();
 };
+
+function getEncryptionKey(salt) {
+    return encryptionService.getStringHash('' + salt + _encryptionBasePassword);
+}
 
 /**
  * clears the encryption properties
  */
 encryptionService.resetEncryptionProperties = function () {
     log.debug('reset encryption properties...');
-    _encryptionSalt = null;
-    _encryptionKey = null;
+    _encryptionSalts = null;
+    _encryptionBasePassword = null;
     _isLocalUser = false;
 };
 
 function throwErrorIfUninitialized() {
-    if (!_encryptionKey || !_encryptionSalt) {
+    if (!_encryptionBasePassword || !_encryptionSalts || _encryptionSalts.length === 0) {
         let msg = 'using encryptionService uninitialized is not possible, aborting...';
         log.error(msg);
         throw msg;

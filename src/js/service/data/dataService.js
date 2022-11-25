@@ -247,7 +247,8 @@ dataService.getMetadata = function () {
             let returnValue = null;
             if (!result) {
                 returnValue = new MetaData();
-            } else if (result instanceof Array) {
+            } else if (Array.isArray(result)) {
+                result.sort((a, b) => a.id.localeCompare(b.id)); // always prefer older metadata objects
                 returnValue = result[0];
             } else {
                 returnValue = result;
