@@ -5,7 +5,7 @@
 This chapter is about actions that can be performed if a grid element is selected and how to configure them:
 
 1. [Edit actions modal](05_actions.md#edit-actions-modal)
-2. [Action Types](05_actions.md#speak-label)
+2. [Action Types](05_actions.md#action-types)
    * [Speak label](05_actions.md#speak-label)
    * [Navigate to other grid](05_actions.md#navigate-to-other-grid)
    * [Speak custom text](05_actions.md#speak-custom-text)
@@ -124,7 +124,7 @@ Clicking on "Edit" on a "fill prediction elements" action (or creating a new one
 
 *Fig. 7: Configuration possibilites of "Fill prediction elements"*
 
-**Dictionary to use**: select the dictionary you want to use (see [manage dictionaries](02_navigation.md#manage-dictionaries-view)). If nothing selected words from all available dictionaries will be suggested.
+**Dictionary to use**: select the dictionary you want to use (see [manage dictionaries](02_navigation.md#manage-dictionaries---view)). If nothing selected words from all available dictionaries will be suggested.
 
 ### Collect element action
 
