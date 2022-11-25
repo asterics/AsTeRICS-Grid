@@ -42,8 +42,8 @@
                                 </div>
                                 <div class="srow" v-show="inputConfig.seqAuto">
                                     <label class="four columns" for="inScanTime">{{ $t('scanningTimeMs') }}</label>
-                                    <input type="range" id="inScanTime" v-model.number="inputConfig.seqTimeoutMs" min="100" max="3000" step="100"/>
-                                    <input type="number" v-model.number="inputConfig.seqTimeoutMs" min="100" max="3000" step="100"/>
+                                    <input type="range" id="inScanTime" v-model.number="inputConfig.seqTimeoutMs" min="100" max="6000" step="100"/>
+                                    <input type="number" v-model.number="inputConfig.seqTimeoutMs" min="100" max="6000" step="100"/>
                                 </div>
                                 <div class="srow" v-show="inputConfig.seqAuto">
                                     <label class="four columns" for="inFirstElement">{{ $t('timeFactorFirstElement') }}</label>
