@@ -6,7 +6,7 @@ This chapter is about how grid elements can be selected with different input mod
 
 [Back to Overview](README.md)
 
-Clicking on Button "Input Options" in [Main view](02_navigation.md#main-view) opens a menu with the following entries:
+Clicking on Button "Input Options" in [Main view](02_navigation.md#main---view) opens a menu with the following entries:
 
 * **Mouse/Touch input:** options for input types like normal mouse click, tap or hovering
 * **Scanning:** Input method for 1-2 input events, subsequently select groups of elements until one element is chosen
@@ -95,7 +95,7 @@ Follow these steps in order to set up an AsTeRICS Grid input method while using 
 
 ## Input options modals
 
-Each input option dialog opened by "[Main view](02_navigation.md#main-view) - Input options" has about the same structure, see Figure 3 (can be seen as shown below when input option (here: Scanning) is enabled):
+Each input option dialog opened by "[Main view](02_navigation.md#main---view) - Input options" has about the same structure, see Figure 3 (can be seen as shown below when input option (here: Scanning) is enabled):
 
 ![general structure of an input option dialog](./img/input_options_general_en.jpg)
 

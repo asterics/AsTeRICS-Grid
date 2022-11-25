@@ -6,7 +6,7 @@ This chapter is about a grid's layout and appearance and how to edit it:
 
 1. [Adding elements and change the layout](03_appearance_layout.md#adding-elements-and-layout-options)
 2. [Editing grid elements menu](03_appearance_layout.md#editing-grid-elements)
-3. [Edit modal](03_appearance_layout.md#edit-modal): changing label and image
+3. [Edit modal](03_appearance_layout.md#edit-grid-item-modal): changing label and image
 
 [Back to Overview](README.md)
 

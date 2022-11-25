@@ -3,11 +3,11 @@
 This chapter is about general appearance, navigation and basic functionality of the different views in AsTeRICS Grid:
 
 1. [Welcome view](02_navigation.md#welcome-view): intial view shown at first usage
-2. [Main view](02_navigation.md#main-view): starting view showing the recently used grid and navigation
-3. [Edit view](02_navigation.md#edit-view): view that allows modification of a grid
-4. [Manage grids view](02_navigation.md#manage-grids-view): show all grids, create new ones, create a backup
-5. [Manage dictionaries view](02_navigation.md#manage-dictionaries-view): show, edit and create new dictionaries
-6. [Change user view](02_navigation.md#change-user-view): switch users or login an existing one
+2. [Main view](02_navigation.md#main---view): starting view showing the recently used grid and navigation
+3. [Edit view](02_navigation.md#edit-view---editing-on): view that allows modification of a grid
+4. [Manage grids view](02_navigation.md#manage-grids---view): show all grids, create new ones, create a backup
+5. [Manage dictionaries view](02_navigation.md#manage-dictionaries---view): show, edit and create new dictionaries
+6. [Change user view](02_navigation.md#change-user---view): switch users or login an existing one
 
 [Back to Overview](README.md)
 
@@ -35,15 +35,15 @@ The elements have this functionality:
 
 1. Open or close the left navigation sidebar
 2. **Main**: navigate to the main view (currently shown)
-3. **[Manage grids](02_navigation.md#manage-grids-view)**: show all grids of the current user, add new ones or backup them to a file, manage the global grid
-4. **[Manage Dictionaries](02_navigation.md#manage-dictionaries-view)**: show all saved dictionaries, edit them or add new empty ones or import existing dictionaries
-5. **[Change User](02_navigation.md#change-user-view)**: switch between saved users or log in an existing online user
+3. **[Manage grids](02_navigation.md#manage-grids---view)**: show all grids of the current user, add new ones or backup them to a file, manage the global grid
+4. **[Manage Dictionaries](02_navigation.md#manage-dictionaries---view)**: show all saved dictionaries, edit them or add new empty ones or import existing dictionaries
+5. **[Change User](02_navigation.md#change-user---view)**: switch between saved users or log in an existing online user
 6. **Add online user**: register a new online user (synchronized across devices), see [Users](06_users.md)
 7. **Add offline users**: add a new offline user (only for this device)
 8. **Settings**: select between general settings like application language and user settings like grid content language, voice or colors
 9. **About AsTeRICS Grid**: Show general information, links, contact address
 10. **Help**: find the AsTeRICS Grid user manuel, the ARASAAC tutorial or video tutorials
-11. **[Editing on](02_navigation.md#edit-view)**: edit the layout of the grid, add new elements, actions for grid elements
+11. **[Editing on](02_navigation.md##edit-view---editing-on)**: edit the layout of the grid, add new elements, actions for grid elements
 12. **[Input options](04_input_options.md)**: Options about how to select grid elements (e.g. click, hover, scanning)
 13. **Fullscreen**: hide the sidebar and the bar on the top, only showing the current grid 
 14. **Lock**: lock the screen in order to prevent unintended input or changes beside using and navigating the grid 
