@@ -1,7 +1,7 @@
 {
   "GridActionSpeak": "Pronunciar texto de la celda",
   "GridActionSpeakCustom": "Pronunciar texto personalizado",
-  "GridActionAudio": "Reproducir audio grabado",
+  "GridActionAudio": "Grabar voz",
   "GridActionNavigate": "Navegar a otro tablero",
   "GridActionARE": "Acción de AsTeRICS",
   "GridActionPredict": "Rellenar elementos de predicción",
