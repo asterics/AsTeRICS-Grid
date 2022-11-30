@@ -84,7 +84,6 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
         } catch (e) {
             log.error('error decrypting object: ' + encryptedObject.modelName + ', id: ' + encryptedObject.id);
             log.error(e);
-            throw  e;
         }
     });
 
