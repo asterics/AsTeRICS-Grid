@@ -97,7 +97,7 @@
                         <edit-are-action :action="action" :grid-data="gridData"/>
                     </div>
                     <div v-if="action.modelName == 'GridActionOpenHAB'">
-                        <edit-open-hab-action :action="action" :grid-data="gridData"/>
+                        <edit-open-hab-action :action="action"/>
                     </div>
                     <div v-if="action.modelName == 'GridActionPredict'">
                         <div class="srow" v-show="gridElement.type === GridElementClass.ELEMENT_TYPE_COLLECT">

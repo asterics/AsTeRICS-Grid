@@ -7,9 +7,11 @@ class GridActionOpenHAB extends Model({
     modelName: String,
     modelVersion: String,
     openHABUrl: [String],
-    openHABItemName: [String],
-    openHABAction: [String],
-    openHABActionType: [String]
+    itemType: [String], //Dimmer, Switch, ... itemType
+    itemName: [String], //itemName
+    actionType: [String], //ON, OFF, CUSTOM_VALUE ... actionType
+    actionValue: [String] //HSL, 0-100, ... (optional)
+
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionOpenHAB);
@@ -25,7 +27,11 @@ class GridActionOpenHAB extends Model({
 GridActionOpenHAB.defaults({
     id: "", //will be replaced by constructor
     modelName: GridActionOpenHAB.getModelName(),
-    modelVersion: constants.MODEL_VERSION
+    modelVersion: constants.MODEL_VERSION,
+    actionValue: '0',
+    itemType: '', //Dimmer, Switch, ... itemType
+    itemName: '', //itemName
+    actionType: '' //ON, OFF, CUSTOM_VALUE ... actionType
 });
 
 export {GridActionOpenHAB};

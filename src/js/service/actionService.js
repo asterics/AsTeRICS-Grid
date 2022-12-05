@@ -105,7 +105,7 @@ function doAction(gridElement, action, options) {
             break;
         case 'GridActionOpenHAB':
             log.debug('action openHAB');
-            openHABService.postCommand(action.openHABUrl + action.openHABItemName, action.openHABAction)
+            openHABService.sendAction(action)
             break;
         case 'GridActionPredict':
             log.debug('action predict');
