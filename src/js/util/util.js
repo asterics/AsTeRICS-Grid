@@ -192,7 +192,7 @@ util.hexToRGB = function (hex) {
         , (m, r, g, b) => '#' + r + r + g + g + b + b)
         .substring(1).match(/.{2}/g)
         .map(x => parseInt(x, 16));
-    return array[0] && array[1] && array[2] ? array : null;
+    return !array.some(isNaN) ? array : null;
 }
 
 /**
