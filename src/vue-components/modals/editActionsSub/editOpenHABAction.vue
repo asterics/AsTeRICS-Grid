@@ -2,18 +2,18 @@
   <div>
     <div class="srow">
       <div class="four columns">
-        <label for="inputOpenHABUri" class="normal-text">{{ $t('openHABUrl') }}</label>
+        <label class="normal-text" for="inputOpenHABUri">{{ $t('openHABUrl') }}</label>
       </div>
       <div class="eight columns">
         <div class="srow nomargin">
-          <input id="inputOpenHABUri" class="six columns" type="text" v-model="url" @change="fixOpenHABUrl()">
+          <input id="inputOpenHABUri" v-model="url" class="six columns" type="text" @change="fixOpenHABUrl()">
           <div class="six columns">
-            <button style="width: 70%" @click="fetchItems()"><i class="fas fa-bolt"/> <span>{{
+            <button style="width: 70%" @click="fetchItems()"><i class="fas fa-cloud-download-alt"/> <span>{{
                 $t('fetchItems')
               }}</span></button>
-            <span class="spaced" v-show="isFetched === undefined"><i class="fas fa-spinner fa-spin"/></span>
-            <span class="spaced" v-show="isFetched" style="color: green"><i class="fas fa-check"/></span>
-            <span class="spaced" v-show="isFetched === false" style="color: red"><i class="fas fa-times"/></span>
+            <span v-show="isFetched === undefined" class="spaced"><i class="fas fa-spinner fa-spin"/></span>
+            <span v-show="isFetched" class="spaced" style="color: green"><i class="fas fa-check"/></span>
+            <span v-show="isFetched === false" class="spaced" style="color: red"><i class="fas fa-times"/></span>
           </div>
         </div>
       </div>
@@ -21,16 +21,16 @@
     <div v-if="isFetched === true">
       <div class="srow">
         <div class="four columns">
-          <label for="selectType" class="normal-text">{{ $t('filterItem') }}</label>
+          <label class="normal-text" for="selectType">{{ $t('filterItem') }}</label>
         </div>
         <div class="eight columns">
           <div class="d-inline">
-            <input type="radio" id="All" value="All" class="custom-radio" v-model="typeItem">
-            <label for="All" class="button normal-text">{{ $t('All') }}</label>
+            <input id="All" v-model="typeItem" class="custom-radio" type="radio" value="All">
+            <label class="button normal-text" for="All">{{ $t('All') }}</label>
           </div>
-          <div class="d-inline" v-for="type in OPENHAB_TYPES">
-            <input type="radio" v-model="typeItem" :id="getKeyName(type)" :value="getKeyName(type)"
-                   class="custom-radio">
+          <div v-for="type in OPENHAB_TYPES" class="d-inline">
+            <input :id="getKeyName(type)" v-model="typeItem" :value="getKeyName(type)" class="custom-radio"
+                   type="radio">
             <label :for="getKeyName(type)" class="button normal-text">{{
                 $t(getKeyName(type))
               }}</label>
@@ -39,14 +39,26 @@
       </div>
       <div class="srow">
         <div class="four columns">
-          <label for="selectItem" class="normal-text">{{ $t('selectItem') }}</label>
+          <label class="normal-text" for="searchItems">{{ $t('searchItem') }}</label>
         </div>
         <div class="eight columns">
-          <select id="selectItem" v-model="action.itemName" v-if="typeItem === 'All'" @change="getItemType($event)">
-            <option v-for="item in fetchedItems" :id="item.type">{{ item.name }}</option>
+          <input id="searchItems" v-model="searchText" :placeholder="$t('placeholder-searchItem')" spellcheck="false"
+                 type="text">
+          <button style="height: unset; padding: 0 5px !important;
+    line-height: unset;" @click="searchText = ''"><i class="fas fa-trash"/> <span>{{ $t('DeleteSearchText') }}</span></button>
+        </div>
+      </div>
+      <div class="srow">
+        <div class="four columns">
+          <label class="normal-text" for="selectItem">{{ $t('selectItem') }}</label>
+        </div>
+        <div class="eight columns">
+          <select v-if="typeItem === 'All'" id="selectItem" v-model="action.itemName"
+                  @change="(event)=>{getItemType(event);this.action.actionType = this.OPENHAB_TYPES[this.action.itemType][0]}">
+            <option v-for="item in filteredItems" :id="item.type">{{ item.name }}</option>
           </select>
-          <select id="selectItem" v-model="action.itemName" @change="updateType()" v-else>
-            <option v-for="item in fetchedItems" v-if="item.type === typeItem">{{ item.name }}</option>
+          <select v-else id="selectItem" v-model="action.itemName" @change="updateType()">
+            <option v-for="item in filteredItems" v-if="item.type === typeItem">{{ item.name }}</option>
           </select>
         </div>
       </div>
@@ -56,7 +68,7 @@
         <div class="four columns">
           <label :for="action.itemName" class="normal-text">{{ $t('selectedItem') }}</label>
         </div>
-        <div class="eight columns" :id="action.itemName">
+        <div :id="action.itemName" class="eight columns">
           {{ action.itemName }}
         </div>
       </div>
@@ -64,7 +76,7 @@
     <div v-if="isFetched === true || action.itemName">
       <div class="srow">
         <div class="four columns">
-          <label for="selectAction" class="normal-text">{{ $t('selectAction') }}</label>
+          <label class="normal-text" for="selectAction">{{ $t('selectAction') }}</label>
         </div>
         <div class="eight columns">
           <select id="selectAction" v-model="action.actionType" @change="action.actionValue = '0'">
@@ -78,17 +90,18 @@
     <div v-if="action.actionType === 'CUSTOM_VALUE' || action.actionType === 'CUSTOM_COLOR'">
       <div class="srow">
         <div class="four columns">
-          <label v-if="action.itemType === 'Number:Temperature'" for="customTemperature"
-                 class="normal-text">{{ $t('customTemperature') }}</label>
+          <label v-if="action.itemType === 'Number:Temperature'" class="normal-text"
+                 for="customTemperature">{{ $t('customTemperature') }}</label>
           <label
               v-if="(action.itemType === 'Rollershutter' || action.itemType === 'Dimmer' || action.itemType === 'Color') && action.actionType === 'CUSTOM_VALUE'"
-              for="customValue" class="normal-text">{{ $t('customValue') }}</label>
-          <label v-if="action.itemType === 'Color' && action.actionType === 'CUSTOM_COLOR'" for="customColor"
-                 class="normal-text">{{ $t('customColor') }}</label>
+              class="normal-text" for="customValue">{{ $t('customValue') }}</label>
+          <label v-if="action.itemType === 'Color' && action.actionType === 'CUSTOM_COLOR'" class="normal-text"
+                 for="customColor">{{ $t('customColor') }}</label>
         </div>
         <div class="eight columns">
-          <input id="customTemperature" v-if="action.itemType === 'Number:Temperature'" type="number" min="0" max="100"
-                 v-model="action.actionValue">
+          <input v-if="action.itemType === 'Number:Temperature'" id="customTemperature" v-model="action.actionValue"
+                 max="100" min="0"
+                 type="number">
           <div
               v-if="(action.itemType === 'Rollershutter' || action.itemType === 'Dimmer' || action.itemType === 'Color') && action.actionType === 'CUSTOM_VALUE'">
             <div class="srow">
@@ -96,13 +109,13 @@
                 <span>{{ action.actionValue }}</span>
               </div>
               <div class="eleven columns">
-                <input class="eleven columns" style="width: 100%; cursor:pointer;" id="customValue" type="range" min="0"
-                       max="100" v-model="action.actionValue">
+                <input id="customValue" v-model="action.actionValue" class="eleven columns" max="100" min="0"
+                       style="width: 100%; cursor:pointer;" type="range">
               </div>
             </div>
           </div>
-          <input id="customColor" v-if="action.itemType === 'Color' && action.actionType === 'CUSTOM_COLOR'"
-                 type="color" v-model="action.actionValue" max="254">
+          <input v-if="action.itemType === 'Color' && action.actionType === 'CUSTOM_COLOR'" id="customColor"
+                 v-model="action.actionValue" max="254" type="color">
         </div>
       </div>
     </div>
@@ -111,7 +124,8 @@
 
 <script>
 import {openHABService} from "../../../js/service/openHABService";
-import {util} from "../../../js/util/util";
+
+//TODO: watch to function (Maybe not, starts to brake things), Docu, Media player NEXT duplicate, placeholder with i18n
 
 export default {
   props: ['action'],
@@ -121,26 +135,38 @@ export default {
       url: '',
       typeItem: 'All',
       isFetched: null,
+      searchText: '',
       OPENHAB_TYPES: {
         "Switch": ["ON", "OFF"],
         "Dimmer": ["ON", "OFF", "INCREASE", "DECREASE", "CUSTOM_VALUE"],
         "Rollershutter": ["UP", "DOWN", "STOP", "CUSTOM_VALUE"],
         "Color": ["ON", "OFF", "INCREASE", "DECREASE", "CUSTOM_VALUE", "CUSTOM_COLOR"],
-        "Number:Temperature": ["CUSTOM_VALUE"]
+        "Number:Temperature": ["CUSTOM_VALUE"],
+        "Player": ["PLAY", "PAUSE", "NEXT", "PREVIOUS", "REWIND", "FASTFORWARD"]
       },
-      filteredItemTypes: ["String", "Group", "DateTime", "Location", "Image", "Contact"]
+      filteredItemTypes: ["Switch", "Dimmer", "Rollershutter", "Color", "Number:Temperature", "Player"]
     }
   },
   watch: {
     typeItem(newItem, oldItem) {
-      console.log(newItem, oldItem)
       if (newItem !== 'All') {
-        this.action.itemType = newItem;
-        this.action.itemName = this.fetchedItems.find(item => item.type === newItem).name;
-        this.action.actionType = this.OPENHAB_TYPES[newItem][0];
+        let firstItem = this.fetchedItems.find(item => item.type === newItem);
+        if (firstItem !== undefined) {
+          this.action.itemType = newItem;
+          this.action.itemName = firstItem.name;
+          this.action.actionType = this.OPENHAB_TYPES[newItem][0];
+          this.searchText = '';
+        }
       } else {
         this.setFirstItem();
       }
+    }
+  },
+  computed: {
+    filteredItems() {
+      return this.fetchedItems.filter((item) => {
+        return item.name.toLowerCase().match((this.searchText.toLowerCase()))
+      })
     }
   },
   methods: {
@@ -149,8 +175,11 @@ export default {
 
       openHABService.fetchItems(this.action.openHABUrl).then((data) => {
         this.isFetched = true;
-        this.fetchedItems = data.filter(e => !this.filteredItemTypes.includes(e.type));
-        this.setFirstItem();
+        let newItems = data.filter(e => this.filteredItemTypes.includes(e.type));
+        if (!this.checkForNew(this.fetchedItems, newItems)) {
+          this.fetchedItems = newItems;
+          this.setFirstItem();
+        }
         console.debug(this.fetchedItems)
       }).catch((error) => {
         this.isFetched = false;
@@ -176,17 +205,19 @@ export default {
         this.action.itemType = options[options.selectedIndex].getAttribute('id');
       }
     },
-    setFirstItem(){
+    setFirstItem() {
       this.action.itemName = this.fetchedItems[0].name;
       this.action.itemType = this.fetchedItems[0].type;
       this.action.actionType = this.OPENHAB_TYPES[this.action.itemType][0]
+      this.searchText = '';
+    },
+    checkForNew(oldItems, newItems) {
+      return JSON.stringify(newItems) === JSON.stringify(oldItems);
     }
   },
   mounted() {
-    log.warn(this.action);
     this.url = this.action.openHABUrl || openHABService.getRestURL();
     this.typeItem = this.action.itemType || 'All';
-    //this.$set(this.action ,"itemType", this.action.itemType || 'All');
   }
 }
 </script>

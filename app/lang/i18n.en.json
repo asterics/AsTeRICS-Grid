@@ -257,6 +257,7 @@
   "fetchItems": "Fetch items",
   "selectItem": "Select item",
   "filterItem": "Filter item",
+  "searchItem": "Search item",
   "selectedItem": "Selected Item",
   "selectAction": "Select action for the item",
   "setTemperature": "Set temperature for item",
@@ -853,5 +854,12 @@
   "customColor": "Set a custom color for the item",
   "CUSTOM_COLOR": "Custom color",
   "All": "All",
-  "STOP": "Stop"
+  "STOP": "Stop",
+  "PLAY": "Play",
+  "PAUSE": "Pause",
+  "PREVIOUS": "Previous",
+  "REWIND": "Rewind",
+  "FASTFORWARD": "Fast-forward",
+  "placeholder-searchItem": "Search for item...",
+  "DeleteSearchText": "Delete search text"
 }
