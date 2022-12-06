@@ -45,7 +45,7 @@
           <input id="searchItems" v-model="searchText" :placeholder="$t('placeholder-searchItem')" spellcheck="false"
                  type="text">
           <button style="height: unset; padding: 0 5px !important;
-    line-height: unset;" @click="searchText = ''"><i class="fas fa-trash"/> <span>{{ $t('DeleteSearchText') }}</span></button>
+    line-height: unset;" @click="searchText = ''" :title="$t('DeleteSearchText')"><i class="fas fa-trash"/></button>
         </div>
       </div>
       <div class="srow">
@@ -125,7 +125,7 @@
 <script>
 import {openHABService} from "../../../js/service/openHABService";
 
-//TODO: watch to function (Maybe not, starts to brake things), Docu, Media player NEXT duplicate, placeholder with i18n
+//TODO: watch to function (Maybe not, starts to brake things), Docu, Media player NEXT duplicate
 
 export default {
   props: ['action'],
