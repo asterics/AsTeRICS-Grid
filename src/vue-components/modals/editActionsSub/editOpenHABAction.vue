@@ -25,12 +25,12 @@
         </div>
         <div class="eight columns">
           <div class="d-inline">
-            <input id="All" v-model="typeItem" class="custom-radio" type="radio" value="All">
+            <input id="All" v-model="typeItem" class="custom-radio" type="radio" value="All" @change="getFirstItem(typeItem)">
             <label class="button normal-text" for="All">{{ $t('All') }}</label>
           </div>
           <div v-for="type in OPENHAB_TYPES" class="d-inline">
             <input :id="getKeyName(type)" v-model="typeItem" :value="getKeyName(type)" class="custom-radio"
-                   type="radio">
+                   type="radio" @change="getFirstItem(typeItem)">
             <label :for="getKeyName(type)" class="button normal-text">{{
                 $t(getKeyName(type))
               }}</label>
@@ -53,13 +53,16 @@
           <label class="normal-text" for="selectItem">{{ $t('selectItem') }}</label>
         </div>
         <div class="eight columns">
-          <select v-if="typeItem === 'All'" id="selectItem" v-model="action.itemName"
-                  @change="(event)=>{getItemType(event);this.action.actionType = this.OPENHAB_TYPES[this.action.itemType][0]}">
-            <option v-for="item in filteredItems" :id="item.type">{{ item.name }}</option>
-          </select>
-          <select v-else id="selectItem" v-model="action.itemName" @change="updateType()">
-            <option v-for="item in filteredItems" v-if="item.type === typeItem">{{ item.name }}</option>
-          </select>
+          <div class="srow">
+            <select class="twelve columns" v-if="typeItem === 'All'" id="selectItem" v-model="action.itemName"
+                    @change="(event)=>{getItemType(event);this.action.actionType = this.OPENHAB_TYPES[this.action.itemType][0]}">
+              <option v-for="item in filteredItems" :id="item.type">{{ item.name }}</option>
+            </select>
+            <select class="twelve" v-else id="selectItem" v-model="action.itemName" @change="updateType()">
+              <option v-for="item in filteredItems" v-if="item.type === typeItem">{{ item.name }}</option>
+            </select>
+          </div>
+
         </div>
       </div>
     </div>
@@ -81,7 +84,7 @@
         <div class="eight columns">
           <select id="selectAction" v-model="action.actionType" @change="action.actionValue = '0'">
             <option v-for="action in OPENHAB_TYPES[action.itemType]" :value="action">
-              {{ $t(action) }}
+              {{ $t(`openHAB.${action}`) }}
             </option>
           </select>
         </div>
@@ -125,8 +128,6 @@
 <script>
 import {openHABService} from "../../../js/service/openHABService";
 
-//TODO: watch to function (Maybe not, starts to brake things), Docu, Media player NEXT duplicate
-
 export default {
   props: ['action'],
   data: () => {
@@ -145,28 +146,6 @@ export default {
         "Player": ["PLAY", "PAUSE", "NEXT", "PREVIOUS", "REWIND", "FASTFORWARD"]
       },
       filteredItemTypes: ["Switch", "Dimmer", "Rollershutter", "Color", "Number:Temperature", "Player"]
-    }
-  },
-  watch: {
-    typeItem(newItem, oldItem) {
-      if (newItem !== 'All') {
-        let firstItem = this.fetchedItems.find(item => item.type === newItem);
-        if (firstItem !== undefined) {
-          this.action.itemType = newItem;
-          this.action.itemName = firstItem.name;
-          this.action.actionType = this.OPENHAB_TYPES[newItem][0];
-          this.searchText = '';
-        }
-      } else {
-        this.setFirstItem();
-      }
-    }
-  },
-  computed: {
-    filteredItems() {
-      return this.fetchedItems.filter((item) => {
-        return item.name.toLowerCase().match((this.searchText.toLowerCase()))
-      })
     }
   },
   methods: {
@@ -213,10 +192,37 @@ export default {
     },
     checkForNew(oldItems, newItems) {
       return JSON.stringify(newItems) === JSON.stringify(oldItems);
+    },
+    getFirstItem(newItem) {
+      if (newItem !== 'All') {
+        let firstItem = this.fetchedItems.find(item => item.type === newItem);
+        if (firstItem !== undefined) {
+          this.action.itemType = newItem;
+          this.action.itemName = firstItem.name;
+          this.action.actionType = this.OPENHAB_TYPES[newItem][0];
+          this.searchText = '';
+        }
+      } else {
+        this.setFirstItem();
+      }
+    }
+  },
+  computed: {
+    filteredItems() {
+      // For the next action version
+      /*let filtered = this.fetchedItems.filter((item) => {
+        return item.name.toLowerCase().match((this.searchText.toLowerCase()))
+      });
+      filtered = filtered.filter(e => this.typeItem === "All" || e.type === this.typeItem);
+      return filtered;*/
+      return this.fetchedItems.filter((item) => {
+        return item.name.toLowerCase().match((this.searchText.toLowerCase()))
+      });
     }
   },
   mounted() {
     this.url = this.action.openHABUrl || openHABService.getRestURL();
+    this.updateUrl();
     this.typeItem = this.action.itemType || 'All';
   }
 }
@@ -250,6 +256,7 @@ export default {
   box-shadow: none;
   background-color: white;
   border: 1px solid #bbbbbb;
+  border-radius: 5px;
 }
 
 .button:hover {
