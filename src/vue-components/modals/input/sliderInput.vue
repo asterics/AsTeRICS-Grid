@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="srow">
         <label class="three columns" :for="id">
             <span>{{ label }}</span>
         </label>
