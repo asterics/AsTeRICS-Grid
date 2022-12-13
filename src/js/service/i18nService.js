@@ -82,12 +82,12 @@ i18nService.setAppLanguage = function (lang, dontSave) {
 
 i18nService.setContentLanguage = async function (lang, dontSave) {
     currentContentLang = lang || undefined;
+    loadLanguage(currentContentLang);
     if (!dontSave) {
         let metadata = await dataService.getMetadata();
         metadata.localeConfig.contentLang = lang;
         return dataService.saveMetadata(metadata);
     }
-    loadLanguage(currentContentLang);
 }
 
 /**
