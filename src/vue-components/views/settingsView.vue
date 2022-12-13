@@ -115,7 +115,7 @@
                                     <option :value="undefined">{{ $t('noneSelected') }}</option>
                                     <option v-for="voice in voices" :value="voice.name">{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}</option>
                                 </select>
-                                <button id="testVoice2" class="three columns" :disabled="!metadata.localeConfig.secondVoice" @click="testSpeak2">{{ $t('test') }}</button>
+                                <button id="testVoice2" class="three columns" :disabled="!metadata.localeConfig.secondVoice" @click="speechService.testSpeak(metadata.localeConfig.secondVoice)">{{ $t('test') }}</button>
                             </div>
                         </accordion>
                     </div>
@@ -334,14 +334,6 @@
             },
             testSpeak() {
                 speechService.speak(this.testText, {preferredVoice: this.metadata.localeConfig.preferredVoice});
-            },
-            testSpeak2() {
-                let secondVoice = this.metadata.localeConfig.secondVoice;
-                if(!secondVoice) {
-                    return;
-                }
-                let secondVoiceLang = this.voices.filter(lang => lang.name === secondVoice)[0].lang;
-                speechService.speak(i18nService.tl('thisIsAnEnglishSentence', null, secondVoiceLang), {preferredVoice: this.metadata.localeConfig.secondVoice, useStandardRatePitch: true});
             }
         },
         mounted() {

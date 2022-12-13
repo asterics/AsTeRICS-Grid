@@ -187,6 +187,18 @@ speechService.waitForFinishedSpeaking = async function () {
     await promise;
 }
 
+speechService.testSpeak = function (voiceName, testSentence) {
+    if (!voiceName) {
+        return;
+    }
+    let voiceLang = speechService.getVoices().filter(lang => lang.name === voiceName)[0].lang;
+    testSentence = testSentence || i18nService.tl('thisIsAnEnglishSentence', null, voiceLang);
+    speechService.speak(testSentence, {
+        preferredVoice: voiceName,
+        useStandardRatePitch: true
+    });
+}
+
 /**
  * returns array of languages where a TTS voice exists
  * @return {*} array of languages where one element has properties [en, de, code].
