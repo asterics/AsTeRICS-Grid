@@ -13,6 +13,19 @@
     "wordPrediction": true
   },
   {
+    "name": "Communication in hospital - Dachverband AT",
+    "filename": "Communication_hospital_Dachverband_AT.grd.json",
+    "author": "Dachverband der Wiener Sozialeinrichtungen, AT",
+    "website": "https://dachverband.at/",
+    "languages": ["de", "en", "fr", "es", "it", "pt", "ru", "tr", "sr", "ar", "ro", "fa", "zh", "hi", "ja", "uk", "pl", "bn", "id", "ur", "he", "bg"],
+    "description": {
+      "en": "Configuration for communication in the context of hospitals. Developed by \"Dachverband der Wiener Sozialeinrichtungen\" in cooperation with the hospital \"Klinik Floridsdorf\" in Vienna, Austria.",
+      "de": "Konfiguration für Kommunikation im Krankenhaus-Kontext. Entwickelt vom Dachverband der Wiener Sozialeinrichtungen gemeinsam mit der Klinik Floridsdorf in Wien."
+    },
+    "standardFor": [],
+    "wordPrediction": true
+  },
+  {
     "name": "Comunicador Global-Core ARASAAC",
     "filename": "Comunicador_Global-Core_ARASAAC_ES.grd.json",
     "author": "ARASAAC",
