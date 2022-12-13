@@ -8,7 +8,7 @@
   "GridActionCollectElement": "Ação de célula de acumulação",
   "GridActionWebradio": "Ação de rádio web",
   "GridActionYoutube": "Ação do YouTube",
-  "GridActionChangeLang": "Alterar idioma do conteúdo",
+  "GridActionChangeLang": "Change content language / voice",
   "GridActionOpenWebpage": "Abrir página num novo separador",
   "COLLECT_ACTION_SPEAK": "Pronunciar frase acumulada (elementos separados)",
   "COLLECT_ACTION_SPEAK_CONTINUOUS": "Pronunciar frase acumulada (continuamente)",
@@ -112,7 +112,7 @@
   "showVideoSubtitlesIfAvailable": "Mostrar legendas (se disponíveis)",
   "startVideoMuted": "Iniciar vídeo sem som",
   "performActionAfterNavigation": "Executar ação após a navegação",
-  "changeApplicationLanguageTo": "Alterar idioma da aplicação para",
+  "changeLanguageTo": "Change language to",
   "systemLanguage": "Idioma do sistema",
   "showAllLanguagesForSelection": "Mostrar todos os idiomas para seleção",
   "webpageUrl": "URL da página",
@@ -856,5 +856,6 @@
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Por favor, permita acesso ao microfone para gravar áudio",
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Áudio gravado só é reproduzido quando a ação de célula acumulada está no modo \"elementos separados\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Definir ações da tabela global para o modo \"elementos separados\"",
-  "speakActionsOfGlobalGridWereSetToModeModeSpeak": "As ações de pronunciar frase da tabela global estão agora em modo \"elementos separados\""
+  "speakActionsOfGlobalGridWereSetToModeModeSpeak": "As ações de pronunciar frase da tabela global estão agora em modo \"elementos separados\"",
+  "changeVoiceTo": "Change voice to"
 }
