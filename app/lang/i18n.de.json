@@ -8,7 +8,7 @@
   "GridActionCollectElement": "Sammelelement Aktion",
   "GridActionWebradio": "Web-Radio Aktion",
   "GridActionYoutube": "YouTube Aktion",
-  "GridActionChangeLang": "Sprache der Grids ändern",
+  "GridActionChangeLang": "Change content language / voice",
   "GridActionOpenWebpage": "Website in neuem Tab öffnen",
   "COLLECT_ACTION_SPEAK": "Inhalt von Sammelelement sprechen (separat)",
   "COLLECT_ACTION_SPEAK_CONTINUOUS": "Inhalt von Sammelelement sprechen (kontinuierlich)",
@@ -112,7 +112,7 @@
   "showVideoSubtitlesIfAvailable": "Zeige Video-Untertitel (wenn verfügbar)",
   "startVideoMuted": "Video stummgeschaltet starten",
   "performActionAfterNavigation": "Aktion erst nach Navigation ausführen",
-  "changeApplicationLanguageTo": "Sprache der Anwendung ändern zu",
+  "changeLanguageTo": "Change language to",
   "systemLanguage": "Systemsprache",
   "showAllLanguagesForSelection": "Zeige alle Sprachen zur Auswahl",
   "webpageUrl": "Webseiten-URL",
@@ -468,7 +468,7 @@
   "generalInformation": "Allgemeine Informationen",
   "theInitialDevelopmentOfAstericsGridWasDoneAt": "Die erste Version von AsTeRICS Grid wurde an der FH Technikum Wien im Projekt ToRaDes entwickelt, das von von der Stadt Wien gefördert wurde (Projektnummer 18-04).",
   "moreInfoAbouTorades": "Mehr Informationen zum Projekt ToRaDes",
-  "currentDeleopmentAstericsGridIsDoneWBT": "Die Weiterentwicklung von AsTeRICS Grid erfolgt derzeit im Projekt \"Wissensdrehscheibe für Barrierefreie Technologien\" (WBT) an der FH Technikum Wien, gefördert von der Stadt Wien (Projektnummer 26-02).",
+  "currentDeleopmentAstericsGridIsDoneWBT": "Die Weiterentwicklung von AsTeRICS Grid erfolgt derzeit im Projekt \"Wissensdrehscheibe für Barrierefreie Technologien\" (WBT), gefördert von der Stadt Wien (Projektnummer 26-02).",
   "moreInfoAboutWBT": "Mehr Informationen zum Projekt WBT",
   "astericsGridIsFreeAndOpenSource": "AsTeRICS Grid ist kostenlos und OpenSource und als Projekt auf github.com verfügbar.",
   "astericsGridOnGithub": "AsTeRICS Grid auf Github",
@@ -856,5 +856,6 @@
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Bitte erlaube den Zugriff auf das Mikrofon, um Audio aufzunehmen",
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Audioaufnahmen werden nur mit Sammelelement-Aktionen in Modus \"separat sprechen\" wiedergegeben",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Setze Aktionen im globalen Grid in Modus \"separat spechen\"",
-  "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Aktionen im globalen Grid wurden auf Modus \"separat sprechen\" gesetzt"
+  "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Aktionen im globalen Grid wurden auf Modus \"separat sprechen\" gesetzt",
+  "changeVoiceTo": "Change voice to"
 }
