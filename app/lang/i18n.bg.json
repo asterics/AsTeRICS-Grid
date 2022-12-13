@@ -8,7 +8,7 @@
   "GridActionCollectElement": "Действие: Събиране на елемент",
   "GridActionWebradio": "Действие: Уеб Радио",
   "GridActionYoutube": "Действие: Youtube",
-  "GridActionChangeLang": "Change content language",
+  "GridActionChangeLang": "Change content language / voice",
   "GridActionOpenWebpage": "Отваряне на страницата в нов Таб",
   "COLLECT_ACTION_SPEAK": "Speak collect element content (separately)",
   "COLLECT_ACTION_SPEAK_CONTINUOUS": "Speak collect element content (continuously)",
@@ -112,7 +112,7 @@
   "showVideoSubtitlesIfAvailable": "Показване на субтитри във видеото (ако са налични)",
   "startVideoMuted": "Пускане на видеото със заглушен звук",
   "performActionAfterNavigation": "Прилагане на действие след навигиране",
-  "changeApplicationLanguageTo": "Промяна на езика на приложението на",
+  "changeLanguageTo": "Change language to",
   "systemLanguage": "Системен език",
   "showAllLanguagesForSelection": "Показване на всички езици за избор",
   "webpageUrl": "URL на уеб страницата",
@@ -856,5 +856,6 @@
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Please allow accessing microphone in order to record audio",
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Recorded audio is only played with collect element actions in mode \"speak separately\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Set actions of global grid to mode \"speak separately\"",
-  "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Speak actions of global grid were set to mode mode \"speak separately\""
+  "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Speak actions of global grid were set to mode mode \"speak separately\"",
+  "changeVoiceTo": "Change voice to"
 }
