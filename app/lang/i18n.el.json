@@ -8,7 +8,7 @@
   "GridActionCollectElement": "Ενέργεια συλλογής στοιχείου",
   "GridActionWebradio": "Ενέργεια ραδιοφώνου ιστού",
   "GridActionYoutube": "Ενέργεια YouTube",
-  "GridActionChangeLang": "Αλλαγή γλώσσας περιεχομένου",
+  "GridActionChangeLang": "Change content language / voice",
   "GridActionOpenWebpage": "Άνοιγμα ιστοσελίδας σε νέα καρτέλα",
   "COLLECT_ACTION_SPEAK": "Speak collect element content (separately)",
   "COLLECT_ACTION_SPEAK_CONTINUOUS": "Speak collect element content (continuously)",
@@ -112,7 +112,7 @@
   "showVideoSubtitlesIfAvailable": "Show video subtitles (if available)",
   "startVideoMuted": "Start video muted",
   "performActionAfterNavigation": "Perform action after navigation",
-  "changeApplicationLanguageTo": "Change application language to",
+  "changeLanguageTo": "Change language to",
   "systemLanguage": "System language",
   "showAllLanguagesForSelection": "Show all Languages for selection",
   "webpageUrl": "Webpage URL",
@@ -856,5 +856,6 @@
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Please allow accessing microphone in order to record audio",
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Recorded audio is only played with collect element actions in mode \"speak separately\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Set actions of global grid to mode \"speak separately\"",
-  "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Speak actions of global grid were set to mode mode \"speak separately\""
+  "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Speak actions of global grid were set to mode mode \"speak separately\"",
+  "changeVoiceTo": "Change voice to"
 }
