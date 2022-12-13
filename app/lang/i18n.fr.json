@@ -8,7 +8,7 @@
   "GridActionCollectElement": "Collect element action",
   "GridActionWebradio": "Web radio action",
   "GridActionYoutube": "YouTube action",
-  "GridActionChangeLang": "Changer la langue de la grille",
+  "GridActionChangeLang": "Change content language / voice",
   "GridActionOpenWebpage": "Ouvrir la page Web dans un nouvel onglet",
   "COLLECT_ACTION_SPEAK": "Speak collect element content (separately)",
   "COLLECT_ACTION_SPEAK_CONTINUOUS": "Speak collect element content (continuously)",
@@ -112,7 +112,7 @@
   "showVideoSubtitlesIfAvailable": "Afficher les sous-titres vidéo (si disponible)",
   "startVideoMuted": "Démarrer la vidéo en mode muet",
   "performActionAfterNavigation": "Effectuer l'action après la navigation",
-  "changeApplicationLanguageTo": "Changer la langue de l'application en",
+  "changeLanguageTo": "Change language to",
   "systemLanguage": "Langue du système",
   "showAllLanguagesForSelection": "Afficher toutes les langues pour la sélection",
   "webpageUrl": "URL de la page Web",
@@ -856,5 +856,6 @@
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Please allow accessing microphone in order to record audio",
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Recorded audio is only played with collect element actions in mode \"speak separately\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Set actions of global grid to mode \"speak separately\"",
-  "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Speak actions of global grid were set to mode mode \"speak separately\""
+  "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Speak actions of global grid were set to mode mode \"speak separately\"",
+  "changeVoiceTo": "Change voice to"
 }
