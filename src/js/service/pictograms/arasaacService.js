@@ -4,7 +4,7 @@ import {constants} from "../../util/constants.js";
 
 let arasaacService = {};
 
-let _lastChunkSize = 10;
+let _lastChunkSize = 20;
 let _lastChunkNr = 1;
 let _lastSearchTerm = null;
 let _lastRawResultList = null;
@@ -89,6 +89,8 @@ arasaacService.getSearchProviderInfo = function () {
  */
 arasaacService.query = function (search, options, searchLang) {
     _lastOptions = options;
+    _lastChunkNr = 1;
+    _hasNextChunk = false;
     return queryInternal(search, searchLang, 1, _lastChunkSize);
 };
 
