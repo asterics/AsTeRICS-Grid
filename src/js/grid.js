@@ -80,13 +80,8 @@ function Grid(gridContainerId, gridItemClass, options) {
                     if (globalGrid.getHeight() === 1) {
                         heightFactorGlobal = (heightPercentage * _gridData.rowCount) / (1 - heightPercentage);
                         heightFactorNormal = 1 / (_gridData.rowCount * heightPercentage) - (1 / _gridData.rowCount);
-                        if (heightFactorGlobal >= 1) {
-                            heightFactorNormal = 1;
-                            heightFactorGlobal = Math.round(heightFactorGlobal);
-                        } else {
-                            heightFactorGlobal = 1;
-                            heightFactorNormal = Math.round(heightFactorNormal);
-                        }
+                        heightFactorGlobal = Math.round(heightPercentage * 1000);
+                        heightFactorNormal = Math.round((1-heightPercentage) / _gridData.rowCount * 1000);
                     }
                     let offset = gridUtil.getOffset(globalGrid);
                     let factorGrid = autowidth ? globalGrid.getWidth() - offset.x : 1;
@@ -102,7 +97,7 @@ function Grid(gridContainerId, gridItemClass, options) {
                         gridElement.width *= factorGrid;
                         gridElement.x *= factorGrid;
                         gridElement.x += offset.x * factorGlobal;
-                        gridElement.y += offset.y * heightFactorGlobal + (gridElement.y * (heightFactorNormal - 1));
+                        gridElement.y = offset.y * heightFactorGlobal + (gridElement.y * heightFactorNormal);
                         gridElement.height *= heightFactorNormal;
                     });
                     _gridData.rowCount *= heightFactorNormal;
