@@ -117,11 +117,14 @@ These are the basic elements of an input option dialog as in figure 3:
 *Mouse/Touch input* has the following options:
 
 * **Select with mouse click (or tap)**: if checked, elements can be selected by a simple mouse click or tap on a touchscreen 
+* **Select with double click (or tap)**: if checked, elements can be selected by a double mouse click or tap on a touchscreen 
 * **Enable hovering**: enables hovering where elements are selected by moving the mouse on the element (=hovering) and waiting for some time. Hovering also works on touchscreens where the finger is held on an element for some time.
   * **Hover time**: time in milliseconds to wait until a hovered element is selected. The value `0` means that the hovered element is never selected.
   * **Hide cursor**: if checked the cursor is hidden and not visible while hovering above elements. This can be useful e.g. for eye-tracking where the cursor may be distracting. 
   * **Read out active element**: if checked the label of the hovered element is directly read out if the active element has changed
   * **Disable hover pane**: Normally (without activating this option) it is possible to continue hovering after navigation to another grid without lifting the finger (on a touchscreen). Technically this function is implented by a global invisible hover pane., normally for hovering a global invisible hover pane is inserted. However this hover pane can cause problems in combination with a software controlled mouse cursor (emulated software mouse), because click actions may not reach the actual elements. In this case it might be useful / necessary to activate the function *Disable hover pane*.
+
+In Advanced Settings there is the additional option "*Directly select element on pressing mouse button (not waiting for complete click)*". If it is enabled, the element is selected when pressing the mouse button, not when releasing the mouse button (which is default). This can make sense when using AsTeRICS Grid with an eyetracker and an additional button for clicking / selecting. Since the mouse controlled via an eyetracker always moves a little bit, in default mode it can happen that instead of selecting an element, the image of an element is dragged. This can be prevented if the selection of the element is done directly at pressing the mouse button.
 
 ### Scanning
 
