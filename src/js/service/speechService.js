@@ -276,15 +276,17 @@ async function init() {
 }
 init();
 
-async function getMetadataConfig() {
-    let metadata = await dataService.getMetadata();
+function updateMetadataConfig(event, metadata) {
     _preferredVoiceName = metadata.localeConfig.preferredVoice || null;
     _voicePitch = metadata.localeConfig.voicePitch || 1;
     _voiceRate = metadata.localeConfig.voiceRate || 1;
     _secondVoiceName = metadata.localeConfig.secondVoice || null;
 }
 
-$(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
-$(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
+$(document).on(constants.EVENT_USER_CHANGED, async () => {
+    let metadata = await dataService.getMetadata();
+    updateMetadataConfig(null, metadata);
+});
+$(document).on(constants.EVENT_METADATA_UPDATED, updateMetadataConfig);
 
 export {speechService};

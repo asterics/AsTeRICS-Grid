@@ -329,7 +329,6 @@
                 util.debounce(() => {
                     dataService.saveMetadata(thiz.metadata).then(() => {
                         this.saveSuccess = true;
-                        $(document).trigger(constants.EVENT_METADATA_UPDATED);
                     });
                 }, 250, 'SAVE_METADATA');
             },

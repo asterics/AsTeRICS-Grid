@@ -227,6 +227,7 @@ dataService.saveMetadata = function (newMetadata, forceDbSave) {
                 localStorageService.saveLocalMetadata(newMetadata);
                 databaseService.saveObject(MetaData, newMetadata).then(() => {
                     resolve();
+                    $(document).trigger(constants.EVENT_METADATA_UPDATED, newMetadata);
                 });
             } else {
                 resolve();
