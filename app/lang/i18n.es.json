@@ -8,7 +8,7 @@
   "GridActionCollectElement": "Acción de frase acumulada",
   "GridActionWebradio": "Acción de Radio Web",
   "GridActionYoutube": "Acción de Youtube",
-  "GridActionChangeLang": "Change content language / voice",
+  "GridActionChangeLang": "Cambiar el idioma del contenido / voz",
   "GridActionOpenWebpage": "Abrir página web en otra pestaña",
   "COLLECT_ACTION_SPEAK": "Pronunciar frase acumulada (elemento por elemento)",
   "COLLECT_ACTION_SPEAK_CONTINUOUS": "Pronunciar frase acumulada (continua)",
@@ -112,7 +112,7 @@
   "showVideoSubtitlesIfAvailable": "Mostrar subtítulos de vídeo (si está disponible)",
   "startVideoMuted": "Iniciar vídeo silenciado",
   "performActionAfterNavigation": "Realizar acción después de la navegación",
-  "changeLanguageTo": "Change language to",
+  "changeLanguageTo": "Cambiar idioma a",
   "systemLanguage": "Idioma del sistema",
   "showAllLanguagesForSelection": "Mostrar todos los idiomas para la selección",
   "webpageUrl": "URL de página web",
@@ -857,5 +857,5 @@
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "El audio grabado solo se reproduce cuando la acción pronunciar frase acumulada está configurada en el modo \"elemento por elemento\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Configurar las acciones de pronunciar frase acumulada del tablero global en modo \"elemento por elemento\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Todas las acciones de pronunciar frase del tablero global se han configurado en modo \"elemento por elemento\"",
-  "changeVoiceTo": "Change voice to"
+  "changeVoiceTo": "Cambiar voz a"
 }
