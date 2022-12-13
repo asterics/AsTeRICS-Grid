@@ -77,7 +77,7 @@ function doActions(gridElement, gridId) {
  * @param options.gridData the gridData object the action is contained in (optional)
  * @param options.actions all actions that are currently executed
  */
-function doAction(gridElement, action, options) {
+async function doAction(gridElement, action, options) {
     options = options || {};
     options.actions = options.actions || [];
 
@@ -132,10 +132,13 @@ function doAction(gridElement, action, options) {
             youtubeService.doAction(action);
             break;
         case 'GridActionChangeLang':
-            i18nService.setContentLanguage(action.language);
+            await i18nService.setContentLanguage(action.language);
             if (options.actions.length === 0 || !options.actions.map(a => a.modelName).includes(GridActionNavigate.getModelName())) {
                 $(document).trigger(constants.EVENT_RELOAD_CURRENT_GRID);
             }
+            let metadata = await dataService.getMetadata();
+            metadata.localeConfig.preferredVoice = action.voice;
+            await dataService.saveMetadata(metadata);
             break;
         case 'GridActionOpenWebpage':
             let tab = window.open(action.openURL, '_blank');

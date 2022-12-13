@@ -4,7 +4,8 @@ import {Model} from "../externals/objectmodel";
 class GridActionChangeLang extends Model({
     id: String,
     modelName: String,
-    language: [String]
+    language: [String],
+    voice: [String]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionChangeLang);
