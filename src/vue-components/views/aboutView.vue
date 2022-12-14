@@ -29,18 +29,6 @@
                     </div>
                 </div>
                 <div class="srow">
-                    <h3>{{ $t('feedback') }}</h3>
-                    <div>
-                        {{ $t('ifYouEncounterAnErrorHaveSuggestions') }}<br/>
-                        <a href="mailto:office@asterics-foundation.org">office@asterics-foundation.org</a>
-                        <br/><br/>
-
-                        {{ $t('ifYouAreAGithubUserYouAreAlsoWelcomeToFileIssue') }}<br/>
-                        <a target="_blank" href="https://github.com/asterics/AsTeRICS-Grid/issues/">{{ $t('astericsGridIssuesOnGithub') }}</a>
-                        <br/>
-                    </div>
-                </div>
-                <div class="srow">
                     <h3>{{ $t('termsOfServiceAndPrivacyPolicy') }}</h3>
                     <div>
                         <i18n path="astericsGridLicenseInfo" tag="p">
