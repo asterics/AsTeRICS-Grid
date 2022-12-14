@@ -234,7 +234,7 @@
                         <div class="srow">
                             <div class="twelve columns">
                                 <label for="changeVoice" class="four columns normal-text">{{ $t('changeVoiceTo') }}</label>
-                                <select id="changeVoice" class="four columns" v-model="action.voice">
+                                <select id="changeVoice" class="four columns mb-2" v-model="action.voice">
                                     <option :value="undefined">{{ $t('automatic') }}</option>
                                     <option v-for="voice in allVoices.filter(v => !action.language || v.lang === action.language)" :value="voice.name">
                                         <span v-if="action.language">{{voice.name}}</span>
