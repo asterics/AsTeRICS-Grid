@@ -857,5 +857,14 @@
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Todas as accións de pronunciar frase do taboleiro global configuráronse en modo \"elemento por elemento\"",
   "changeVoiceTo": "Change voice to",
   "navigateToOtherGrid": "Set navigation",
-  "NAV_CREATE_NEW_GRID": "(create new grid)"
+  "NAV_CREATE_NEW_GRID": "(create new grid)",
+  "generalSupportSocialMedia": "For general support and questions please send us a message at the {instagramLink} or the {facebookLink}",
+  "foundBugReportGithubIssue": "If you found a bug or have a feature request, please {githubLink}",
+  "discussIdeasGithubDiscussions": "To discuss ideas for upcoming features, share usage examples or get in contact with other users, please {githubLink}",
+  "specialRequestsSendEmail": "For other requests, you can also contact us by email: {foundationEmail}",
+  "contactAndFeedback": "Contact and Feedback",
+  "instagramAstericsGridPage": "Instagram AsTeRICS Grid page",
+  "facebookAstericsGridPage": "Facebook AsTeRICS Grid page",
+  "createAnIssueOnGithub": "create an issue on GitHub",
+  "postSomethingOnGithubDiscussions": "post something on GitHub Discussions"
 }
