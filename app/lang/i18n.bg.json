@@ -388,7 +388,7 @@
   "noKey": "(няма клавиш)",
   "errorConnectingToARE": "Грешка при свързване с АРЕ!",
   "empty": "(празно)",
-  "moveElementToGrid": "Преместване на елемент\"{0}\" в решетка",
+  "moveElementToGrid": "Move element to grid",
   "emptyElement": "(празен елемент)",
   "pleaseSelect": "(Моля, изберете)",
   "noGrids": "(няма решетки)",
@@ -855,5 +855,7 @@
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Recorded audio is only played with collect element actions in mode \"speak separately\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Set actions of global grid to mode \"speak separately\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Speak actions of global grid were set to mode mode \"speak separately\"",
-  "changeVoiceTo": "Change voice to"
+  "changeVoiceTo": "Change voice to",
+  "navigateToOtherGrid": "Set navigation",
+  "NAV_CREATE_NEW_GRID": "(create new grid)"
 }
