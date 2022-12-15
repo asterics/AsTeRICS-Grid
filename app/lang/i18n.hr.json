@@ -388,7 +388,7 @@
   "noKey": "(bez tipke)",
   "errorConnectingToARE": "Greška pri povezivanju na ARE!",
   "empty": "(prazno)",
-  "moveElementToGrid": "Premjesti element \"{0}\" u ploču",
+  "moveElementToGrid": "Move element to grid",
   "emptyElement": "(prazan element)",
   "pleaseSelect": "(Molim vas izaberite)",
   "noGrids": "(nema ploča)",
@@ -855,5 +855,7 @@
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Snimljeni zvuk reproducira se samo radnjama prikupljanja elemenata u načinu \"govori odvojeno\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Postavite radnje globalne pločena način \"govori odvojeno\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Govorne radnje globalne ploče postavljene su na način \"govori odvojeno\"",
-  "changeVoiceTo": "Promijeni glas u"
+  "changeVoiceTo": "Promijeni glas u",
+  "navigateToOtherGrid": "Set navigation",
+  "NAV_CREATE_NEW_GRID": "(create new grid)"
 }
