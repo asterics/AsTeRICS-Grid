@@ -5,6 +5,7 @@
             <div class="btn-group left">
                 <button tabindex="30" v-show="!metadata.locked" @click="toEditGrid()" class="spaced small" :aria-label="$t('editingOn')"><i class="fas fa-pencil-alt"/> <span class="hide-mobile">{{ $t('editingOn') }}</span></button>
                 <button tabindex="31" id="inputConfigButton" v-show="!metadata.locked" class="small" :aria-label="$t('inputOptions')"><i class="fas fa-cog"></i> <span class="hide-mobile">{{ $t('inputOptions') }}</span></button>
+                <div id="inputConfigMenu"></div>
             </div>
             <button tabindex="34" v-show="metadata.locked" @click="unlock()" class="small" :aria-label="$t('unlock')">
                 <i class="fas fa-unlock"></i>
@@ -534,6 +535,7 @@
 
         $.contextMenu({
             selector: '#inputConfigButton',
+            appendTo: '#inputConfigMenu',
             callback: function (key, options) {
                 handleContextMenu(key);
             },

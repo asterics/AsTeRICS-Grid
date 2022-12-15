@@ -7,6 +7,7 @@
         <header class="srow header" role="toolbar" v-if="graphList && graphList.length > 0">
             <header-icon></header-icon>
             <button tabindex="32" id="moreButton" :aria-label="$t('more')" class="small"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile">{{ $t('more') }}</span></button>
+            <div id="moreButtonMenu"></div>
             <button tabindex="31" @click="addGrid()" class="spaced hide-mobile small"><i class="fas fa-plus"/> <span>{{ $t('newGrid') }}</span></button>
         </header>
         <div class="srow content text-content" v-if="showLoading || grids === null">
@@ -616,6 +617,7 @@
 
         $.contextMenu({
             selector: SELECTOR_CONTEXTMENU,
+            appendTo: '#moreButtonMenu',
             callback: function (key, options) {
                 handleContextMenu(key);
             },
