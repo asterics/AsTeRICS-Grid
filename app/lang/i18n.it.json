@@ -388,7 +388,7 @@
   "noKey": "(nessun tasto)",
   "errorConnectingToARE": "Errore di connessione a ARE!",
   "empty": "(vuoto)",
-  "moveElementToGrid": "Sposta l'elemento \"{0}\" nella griglia",
+  "moveElementToGrid": "Move element to grid",
   "emptyElement": "(elemento vuoto)",
   "pleaseSelect": "(Si prega di selezionare)",
   "noGrids": "(nessuna griglia)",
@@ -855,5 +855,7 @@
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "L'audio registrato viene riprodotto solo con azioni di raccolta elementi in modalità \"parla separatamente\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Imposta le azioni della griglia globale sulla modalità \"parla separatamente\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Le azioni vocali della griglia globale sono state impostate sulla modalità \"parla separatamente\"",
-  "changeVoiceTo": "Change voice to"
+  "changeVoiceTo": "Change voice to",
+  "navigateToOtherGrid": "Set navigation",
+  "NAV_CREATE_NEW_GRID": "(create new grid)"
 }
