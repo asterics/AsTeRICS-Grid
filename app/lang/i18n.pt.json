@@ -388,7 +388,7 @@
   "noKey": "(sem chave)",
   "errorConnectingToARE": "Erro ao ligar a ARE!",
   "empty": "(vazio)",
-  "moveElementToGrid": "Mover célula \"{0}\" para a tabela",
+  "moveElementToGrid": "Move element to grid",
   "emptyElement": "(elemento vazio)",
   "pleaseSelect": "(Por favor, selecione)",
   "noGrids": "(sem tabelas)",
@@ -855,5 +855,7 @@
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Áudio gravado só é reproduzido quando a ação de célula acumulada está no modo \"elementos separados\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Definir ações da tabela global para o modo \"elementos separados\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "As ações de pronunciar frase da tabela global estão agora em modo \"elementos separados\"",
-  "changeVoiceTo": "Alterar voz para"
+  "changeVoiceTo": "Alterar voz para",
+  "navigateToOtherGrid": "Set navigation",
+  "NAV_CREATE_NEW_GRID": "(create new grid)"
 }
