@@ -388,7 +388,7 @@
   "noKey": "(keine Taste)",
   "errorConnectingToARE": "Verbindung zu ARE konnte nicht hergestellt werden!",
   "empty": "(kein)",
-  "moveElementToGrid": "Verschiebe Element \"{0}\" nach Grid",
+  "moveElementToGrid": "Move element to grid",
   "emptyElement": "(leeres Element)",
   "pleaseSelect": "(Bitte auswählen)",
   "noGrids": "(keine Grids)",
@@ -855,5 +855,7 @@
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Audioaufnahmen werden nur mit Sammelelement-Aktionen in Modus \"separat sprechen\" wiedergegeben",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Setze Aktionen im globalen Grid in Modus \"separat spechen\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Aktionen im globalen Grid wurden auf Modus \"separat sprechen\" gesetzt",
-  "changeVoiceTo": "Change voice to"
+  "changeVoiceTo": "Change voice to",
+  "navigateToOtherGrid": "Set navigation",
+  "NAV_CREATE_NEW_GRID": "(create new grid)"
 }
