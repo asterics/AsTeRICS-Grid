@@ -11,7 +11,7 @@
                         <grid-selector class="mt-4" v-model="selectedGrid" :exclude-id="gridId" :select-label="i18nService.t('navigateToGrid')" :additional-select-options="[NAV_CREATE_NEW_GRID]"></grid-selector>
 
                         <div class="row mt-3" v-if="selectedGrid === NAV_CREATE_NEW_GRID">
-                            <label for="gridName" class="col-12">New grid name</label>
+                            <label for="gridName" class="col-12">{{ $t('newGridName') }}</label>
                             <div class="col-12 col-md-5">
                                 <input id="gridName" v-model="newName" @change="newName = modelUtil.getNewName(newName, existingGridNames)" autocomplete="off" v-focus class="col-12" type="text"/>
                             </div>
