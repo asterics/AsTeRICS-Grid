@@ -11,8 +11,7 @@ openHABService.fetchItems = async function (url) {
     });
 };
 
-openHABService.sendAction = async function (action) { // .doAction (Übergabe action statt url,data)
-    console.log(action)
+openHABService.sendAction = async function (action) {
     let data;
     if (action.actionType === 'CUSTOM_VALUE' || action.actionType === 'CUSTOM_COLOR') {
         if (action.actionType === 'CUSTOM_COLOR') {
@@ -23,7 +22,6 @@ openHABService.sendAction = async function (action) { // .doAction (Übergabe ac
     } else {
         data = action.actionType;
     }
-    console.log(data)
     await fetch(action.openHABUrl + action.itemName, {
         method: "POST",
         headers: {
@@ -54,7 +52,6 @@ openHABService.getRestURL = function (userUri) {
 
 function hexToHSV(action) {
     let rgb = util.getRGB(action.actionValue)
-    console.log(rgb)
     let r = rgb[0] / 255;
     let g = rgb[1] / 255;
     let b = rgb[2] / 255;
