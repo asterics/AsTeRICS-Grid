@@ -388,7 +388,7 @@
   "noKey": "(sen tecla)",
   "errorConnectingToARE": "Erro ao conectar con ARE!",
   "empty": "(baleiro)",
-  "moveElementToGrid": "Mover cela \"{0}\" o taboleiro",
+  "moveElementToGrid": "Move element to grid",
   "emptyElement": "(cela baleira)",
   "pleaseSelect": "(Por favor, seleccione)",
   "noGrids": "(non hai taboleiros)",
@@ -855,5 +855,7 @@
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "O audio gravado só se reproduce cando a acción pronunciar frase acumulada está configurada no modo \"elemento por elemento\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Configurar as accións de pronunciar frase acumulada do taboleiro global en modo \"elemento por elemento\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Todas as accións de pronunciar frase do taboleiro global configuráronse en modo \"elemento por elemento\"",
-  "changeVoiceTo": "Change voice to"
+  "changeVoiceTo": "Change voice to",
+  "navigateToOtherGrid": "Set navigation",
+  "NAV_CREATE_NEW_GRID": "(create new grid)"
 }
