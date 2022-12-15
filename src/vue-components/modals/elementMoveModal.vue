@@ -3,44 +3,31 @@
         <div class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
-                    <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                     <div class="modal-header">
-                        <h1 name="header">
-                            {{ $t('moveGridElement') }}
-                        </h1>
+                        <edit-element-header :grid-element="gridElement" :header="$t('moveGridElement')" :close-fn="close" :open-help-fn="openHelp"></edit-element-header>
                     </div>
 
-                    <div class="modal-body container" v-if="otherGrids && gridElement && selectedGrid">
-                        <div class="srow">
-                            <label class="four columns" for="moveGrid">{{i18nService.t('moveElementToGrid', i18nService.getTranslation(this.gridElement.label))}}</label>
-                            <select class="four columns" id="moveGrid" v-model="selectedGrid" style="margin-bottom: 1em">
-                                <option v-for="grid in otherGrids" :value="grid">{{grid.label | extractTranslation}}</option>
-                            </select>
+                    <div class="modal-body container-fluid px-0" v-if="gridElement">
+                        <grid-selector class="mt-4" v-model="selectedGrid" :exclude-id="gridId" :select-label="i18nService.t('moveElementToGrid')"></grid-selector>
 
-                        </div>
-                        <div class="srow">
-                            <div class="four columns">
-                                <img :src="selectedGrid.thumbnail ? selectedGrid.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; border: 1px solid lightgray"/>
-                            </div>
-                            <div class="four columns">
-                                <button @click="prev" style="width: 49%"><i class="fas fa-arrow-left"></i> <span>{{ $t('back') }}</span></button>
-                                <button @click="next" style="width: 49%"><span>{{ $t('next') }}</span> <i class="fas fa-arrow-right"></i></button>
-                            </div>
-                        </div>
                         <div class="srow">
                             <input id="moveAll" type="checkbox" v-model="moveAllElements"/>
                             <label for="moveAll">{{ $t('moveAllElementsToThisGrid') }}</label>
                         </div>
                     </div>
 
-                    <div class="modal-footer">
-                        <div class="button-container srow">
-                            <button class="six columns" @click="$emit('close')" :title="$t('keyboardEsc')">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                            </button>
-                            <button class="six columns" @click="save()" :title="$t('keyboardCtrlEnter')">
-                                <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
-                            </button>
+                    <div class="modal-footer container-fluid px-0">
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <button class="col-12" @click="$emit('close')" :title="$t('keyboardEsc')">
+                                    <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
+                                </button>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <button class="col-12" @click="save()" :title="$t('keyboardCtrlEnter')">
+                                    <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -54,14 +41,17 @@
     import './../../css/modal.css';
     import {dataService} from "../../js/service/data/dataService";
     import {imageUtil} from "../../js/util/imageUtil";
+    import GridSelector from "../components/gridSelector.vue";
+    import EditElementHeader from "../components/editElementHeader.vue";
+    import {helpService} from "../../js/service/helpService.js";
 
     export default {
+        components: {EditElementHeader, GridSelector},
         props: ['gridId', 'gridElementId'],
         data: function () {
             return {
                 gridData: null,
                 gridElement: null,
-                otherGrids: null,
                 selectedGrid: null,
                 moveAllElements: false,
                 i18nService: i18nService,
@@ -69,26 +59,6 @@
             }
         },
         methods: {
-            prev() {
-                let newSelected = null;
-                this.otherGrids.forEach((grid, index) => {
-                    if (this.selectedGrid === grid) {
-                        let newIndex = (index - 1) < 0 ? this.otherGrids.length - 1 : index - 1;
-                        newSelected = this.otherGrids[newIndex];
-                    }
-                });
-                this.selectedGrid = newSelected;
-            },
-            next() {
-                let newSelected = null;
-                this.otherGrids.forEach((grid, index) => {
-                    if (this.selectedGrid === grid) {
-                        let newIndex = (index + 1) < this.otherGrids.length ? index + 1 : 0;
-                        newSelected = this.otherGrids[newIndex];
-                    }
-                });
-                this.selectedGrid = newSelected;
-            },
             save() {
                 this.saveInternal().then(() => {
                     this.$emit('reload');
@@ -112,6 +82,12 @@
                     promises.push(dataService.saveGrid(targetGrid));
                     return Promise.all(promises);
                 });
+            },
+            openHelp() {
+                helpService.openHelp();
+            },
+            close() {
+                this.$emit('close');
             }
         },
         mounted() {
@@ -119,10 +95,6 @@
                 this.gridData = JSON.parse(JSON.stringify(gridData));
                 this.gridElement = this.gridData.gridElements.filter(e => e.id === this.gridElementId)[0];
             });
-            dataService.getGrids(false, true).then(grids => {
-                this.otherGrids = JSON.parse(JSON.stringify(grids)).filter(grid => grid.id !== this.gridId);
-                this.selectedGrid = this.otherGrids[0];
-            })
         }
     }
 </script>
