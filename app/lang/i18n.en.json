@@ -867,5 +867,6 @@
   "instagramAstericsGridPage": "Instagram AsTeRICS Grid page",
   "facebookAstericsGridPage": "Facebook AsTeRICS Grid page",
   "createAnIssueOnGithub": "create an issue on GitHub",
-  "postSomethingOnGithubDiscussions": "post something on GitHub Discussions"
+  "postSomethingOnGithubDiscussions": "post something on GitHub Discussions",
+  "newGridName": "New grid name"
 }
