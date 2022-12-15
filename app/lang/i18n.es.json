@@ -388,7 +388,7 @@
   "noKey": "(sin tecla)",
   "errorConnectingToARE": "¡Error al conectar con ARE!",
   "empty": "(vacío)",
-  "moveElementToGrid": "Move element to grid",
+  "moveElementToGrid": "Mover celda al tablero",
   "emptyElement": "(celda vacía)",
   "pleaseSelect": "(Por favor, seleccione)",
   "noGrids": "(no hay tableros)",
@@ -856,6 +856,15 @@
   "setActionsOfGlobalGridToModeSpeakSeparately": "Configurar las acciones de pronunciar frase acumulada del tablero global en modo \"elemento por elemento\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Todas las acciones de pronunciar frase del tablero global se han configurado en modo \"elemento por elemento\"",
   "changeVoiceTo": "Cambiar voz a",
-  "navigateToOtherGrid": "Set navigation",
-  "NAV_CREATE_NEW_GRID": "(create new grid)"
+  "navigateToOtherGrid": "Navegar a otro tablero",
+  "NAV_CREATE_NEW_GRID": "(crear nuevo tablero)",
+  "generalSupportSocialMedia": "Si necesitas soporte o realizar alguna pregunta general, por favor envíanos un mensaje a la página de AsTeRICS Grid en {instagramLink} o {facebookLink}",
+  "foundBugReportGithubIssue": "Si encuentras un error o quieres sugerir alguna nueva funcionalidad, por favor {githubLink}",
+  "discussIdeasGithubDiscussions": "Para sugerir nuevas funcionalidades, compartir ejemplos de uso o ponerse en contacto con otros usuarios, por favor {githubLink}",
+  "specialRequestsSendEmail": "Para otras peticiones, puede ponerse en contacto con nosotros también por correo electrónico: {foundationEmail}",
+  "contactAndFeedback": "Contacto, comentarios y sugerencias",
+  "instagramAstericsGridPage": "Instagram",
+  "facebookAstericsGridPage": "Facebook",
+  "createAnIssueOnGithub": "crea una nueva solicitud o abre una incidencia en Github",
+  "postSomethingOnGithubDiscussions": "publica una nueva entrada en GitHub Discussions"
 }
