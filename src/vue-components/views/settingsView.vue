@@ -162,7 +162,7 @@
             <div class="srow">
                 <div class="eleven columns">
                     <h3 class="mt-2">{{ $t('generalInputSettings') }}</h3>
-                    <global-input-options :input-config="metadata.inputConfig" heading-tag="h4" @change="saveMetadata()"></global-input-options>
+                    <global-input-options :input-config="metadata.inputConfig" heading-tag="h4" @change="saveMetadata()" :hide-acoustic-feedback="true"></global-input-options>
                 </div>
             </div>
             <div class="srow">
