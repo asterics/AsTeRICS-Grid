@@ -16,18 +16,43 @@
                 </ul>
             </div>
             <div class="row">
-                <h2>Contact and Feedback</h2>
+                <h2>{{ $t('contactAndFeedback') }}</h2>
                 <span>{{ $t('ifYouEncounterAnErrorHaveSuggestions') }}</span>
                 <ul>
-                    <li>For <b>general support and questions</b> please send us a message at the <a href="https://www.instagram.com/asterics_grid/" target="_blank">Instagram AsTeRICS Grid page</a> or the <a href="https://www.facebook.com/asterics.grid.y.arasaac" target="_blank">Facebook AsTeRICS Grid page</a></li>
-                    <li>If you <b>found a bug</b> or have a <b>feature request</b>, please <a href="https://github.com/asterics/AsTeRICS-Grid/issues/new" target="_blank">create an issue on GitHub</a></li>
-                    <li>To <b>discuss ideas</b> for upcoming features, <b>share usage examples</b> or <b>get in contact</b> with other users, please <a href="https://github.com/asterics/AsTeRICS-Grid/discussions" target="_blank">post something on GitHub Discussions</a></li>
                     <li>
-                        For <b>special requests</b> or just to say thanks, you can also contact us by email:
-                        <ul class="ms-0 ps-0" style="list-style-type: none">
-                            <li>AsTeRICS Foundation, creators of AsTeRICS Grid: <a href="mailto:office@asterics-foundation.org">office@asterics-foundation.org</a></li>
-                            <li>ARASAAC, creators of the ARASAAC pictograms and collaborators for AsTeRICS Grid development: <a href="mailto:arasaac@aragon.es">arasaac@aragon.es</a></li>
-                        </ul>
+                        <i18n path="generalSupportSocialMedia" tag="span">
+                            <template v-slot:instagramLink>
+                                <a href="https://www.instagram.com/asterics_grid/" target="_blank">{{ $t('instagramAstericsGridPage') }}</a>
+                            </template>
+                            <template v-slot:facebookLink>
+                                <a href="https://www.facebook.com/asterics.grid.y.arasaac" target="_blank">{{ $t('facebookAstericsGridPage') }}</a>
+                            </template>
+                        </i18n>
+                        <span>({{ $t('lang.en') }}, {{ $t('lang.es') }})</span>
+                    </li>
+                    <li>
+                        <i18n path="foundBugReportGithubIssue" tag="span">
+                            <template v-slot:githubLink>
+                                <a href="https://github.com/asterics/AsTeRICS-Grid/issues/new" target="_blank">{{ $t('createAnIssueOnGithub') }}</a>
+                            </template>
+                        </i18n>
+                        <span>({{ $t('lang.en') }})</span>
+                    </li>
+                    <li>
+                        <i18n path="discussIdeasGithubDiscussions" tag="span">
+                            <template v-slot:githubLink>
+                                <a href="https://github.com/asterics/AsTeRICS-Grid/discussions" target="_blank">{{ $t('postSomethingOnGithubDiscussions') }}</a>
+                            </template>
+                        </i18n>
+                        <span>({{ $t('lang.en') }})</span>
+                    </li>
+                    <li>
+                        <i18n path="specialRequestsSendEmail" tag="span">
+                            <template v-slot:foundationEmail>
+                                <a href="mailto:office@asterics-foundation.org">office@asterics-foundation.org</a>
+                            </template>
+                        </i18n>
+                        <span>({{ $t('lang.en') }}, {{ $t('lang.de') }})</span>
                     </li>
                 </ul>
             </div>
