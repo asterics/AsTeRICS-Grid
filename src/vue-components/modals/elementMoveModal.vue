@@ -24,7 +24,7 @@
                                 </button>
                             </div>
                             <div class="col-12 col-md-6">
-                                <button class="col-12" @click="save()" :title="$t('keyboardCtrlEnter')">
+                                <button class="col-12" @click="save()" :disabled="!selectedGrid" :title="$t('keyboardCtrlEnter')">
                                     <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
                                 </button>
                             </div>
@@ -60,6 +60,9 @@
         },
         methods: {
             save() {
+                if (!this.selectedGrid) {
+                    return;
+                }
                 this.saveInternal().then(() => {
                     this.$emit('reload');
                     this.$emit('close');
