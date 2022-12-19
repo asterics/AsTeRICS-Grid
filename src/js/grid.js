@@ -9,6 +9,7 @@ import {fontUtil} from "./util/fontUtil";
 import {predictionService} from "./service/predictionService";
 import {constants} from "./util/constants";
 import {gridUtil} from "./util/gridUtil";
+import {GridElement} from "./model/GridElement.js";
 
 function Grid(gridContainerId, gridItemClass, options) {
     var thiz = this;
@@ -80,8 +81,8 @@ function Grid(gridContainerId, gridItemClass, options) {
                     if (globalGrid.getHeight() === 1) {
                         heightFactorGlobal = (heightPercentage * _gridData.rowCount) / (1 - heightPercentage);
                         heightFactorNormal = 1 / (_gridData.rowCount * heightPercentage) - (1 / _gridData.rowCount);
-                        heightFactorGlobal = Math.round(heightPercentage * 1000);
-                        heightFactorNormal = Math.round((1-heightPercentage) / _gridData.rowCount * 1000);
+                        heightFactorGlobal = Math.round(heightPercentage * 100);
+                        heightFactorNormal = Math.round((1-heightPercentage) / _gridData.rowCount * 100);
                     }
                     let offset = gridUtil.getOffset(globalGrid);
                     let factorGrid = autowidth ? globalGrid.getWidth() - offset.x : 1;
@@ -133,12 +134,15 @@ function Grid(gridContainerId, gridItemClass, options) {
             stop: handleLayoutChange
         });
         _gridListInstance = _gridElement.data('_gridList');
-        if (!gridDataParam.hasSetPositions()) {
-            _gridElement.gridList('resize', _gridRows);
-            thiz.toGridData().then(gridData => {
-                _gridData = gridData;
-                dataService.updateGrid(_gridData.id, _gridData);
-            });
+
+        if (options.dragAndDrop) { // only save something in edit mode
+            if (!gridDataParam.hasSetPositions()) {
+                _gridElement.gridList('resize', _gridRows);
+                thiz.toGridData().then(gridData => {
+                    _gridData = gridData;
+                    dataService.updateGrid(_gridData.id, _gridData);
+                });
+            }
         }
         initResizing().then(() => {
             thiz.autosize(_animationTimeMs);
@@ -314,6 +318,27 @@ function Grid(gridContainerId, gridItemClass, options) {
      */
     thiz.fillGaps = function () {
         notifyLayoutChangeStart();
+        _gridElement.gridList('fillGaps');
+        handleLayoutChange();
+    };
+
+    /**
+     * normalizes the layout of the grid: all elements are sized to width height 1/1
+     * gaps are filled (move all items to the left)
+     * duplicated IDs are fixed
+     */
+    thiz.normalizeGrid = async function () {
+        notifyLayoutChangeStart();
+        let seenIds = [];
+        for (let gridElement of _gridData.gridElements) {
+            gridElement.width = 1;
+            gridElement.height = 1;
+            if (seenIds.includes(gridElement.id)) {
+                gridElement.id = new GridElement().id;
+            }
+            seenIds.push(gridElement.id);
+        }
+        await init(_gridData);
         _gridElement.gridList('fillGaps');
         handleLayoutChange();
     };

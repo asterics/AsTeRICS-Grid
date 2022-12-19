@@ -460,6 +460,7 @@
   "changeGridDimensions": "Change grid dimensions",
   "translateGrid": "Translate grid",
   "fillGaps": "Fill gaps",
+  "normalizeGridLayout": "Normalize grid layout",
   "endEditGlobalGrid": "End edit global grid",
   "noPasscodeBracket": "(no passcode)",
   "thisIsAnEnglishSentence": "This is an english sentence.",

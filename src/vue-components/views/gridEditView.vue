@@ -113,6 +113,9 @@
             fillGaps: function () {
                 gridInstance.fillGaps();
             },
+            normalizeGrid: function () {
+                gridInstance.normalizeGrid();
+            },
             undo: function () {
                 this.doingUndoRedo = true;
                 setTimeout(function () {
@@ -305,6 +308,7 @@
         var CONTEXT_NEW_YT_PLAYER = "CONTEXT_NEW_YT_PLAYER";
 
         var CONTEXT_LAYOUT_FILL = "CONTEXT_LAYOUT_FILL";
+        var CONTEXT_LAYOUT_NORMALIZE = "CONTEXT_LAYOUT_NORMALIZE";
         var CONTEXT_GRID_DIMENSIONS = "CONTEXT_GRID_DIMENSIONS";
         var CONTEXT_GRID_NAVIGATION = "CONTEXT_GRID_NAVIGATION";
         var CONTEXT_GRID_TRANSLATION = "CONTEXT_GRID_TRANSLATION";
@@ -365,6 +369,7 @@
                 icon: "fas fa-language"
             },
             'CONTEXT_LAYOUT_FILL': {name: i18nService.t('fillGaps'), icon: "fas fa-angle-double-left"},
+            'CONTEXT_LAYOUT_NORMALIZE': {name: i18nService.t('normalizeGridLayout'), icon: "fas fa-th"},
             'CONTEXT_EDIT_GLOBAL_GRID': {name: i18nService.t('editGlobalGrid'), icon: "fas fa-globe", visible: !!vueApp.metadata.globalGridId && vueApp.metadata.globalGridActive && vueApp.metadata.globalGridId !== vueApp.gridData.id},
             'CONTEXT_END_EDIT_GLOBAL_GRID': {name: i18nService.t('endEditGlobalGrid'), icon: "fas fa-globe", visible: vueApp.metadata.globalGridId === vueApp.gridData.id},
         };
@@ -443,6 +448,10 @@
                 }
                 case CONTEXT_LAYOUT_FILL: {
                     vueApp.fillGaps();
+                    break;
+                }
+                case CONTEXT_LAYOUT_NORMALIZE: {
+                    vueApp.normalizeGrid();
                     break;
                 }
                 case CONTEXT_GRID_DIMENSIONS: {
