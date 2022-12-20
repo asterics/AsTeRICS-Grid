@@ -179,7 +179,7 @@ export default {
     }
   },
   mounted() {
-    this.action.openHABUrl = 'http://fhtw-building-control.technikum-wien.at:8080/rest/items/' || this.action.openHABUrl || openHABService.getRestURL();
+    this.action.openHABUrl = this.action.openHABUrl || openHABService.getRestURL();
     this.selectedTypeFilter = this.action.itemType || 'All';
   }
 }
