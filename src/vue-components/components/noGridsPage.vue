@@ -30,7 +30,7 @@
                         return total + $t('lang.' + current) + separator;
                     }, '') }}
                     </div>
-                    <div class="col-11" v-if="selectedGridset.description"><strong>{{ $t('description') }}</strong>: {{ selectedGridset.description | extractTranslation }}</div>
+                    <div class="col-11" v-if="selectedGridset.description"><strong>{{ $t('description') }}</strong>: <span v-html="i18nService.getTranslation(selectedGridset.description)"></span></div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-12">
@@ -69,7 +69,8 @@
             return {
                 defaultGridsets: [],
                 selectedGridset: null,
-                loading: false
+                loading: false,
+                i18nService: i18nService
             }
         },
         methods: {
@@ -145,7 +146,7 @@
                             })
                         })
                     });*/
-                    dataService.importData(result, {}).then(() => {
+                    dataService.importData(dataService.normalizeImportData(result)).then(() => {
                         thiz.loading = false;
                         Router.toMain();
                     });

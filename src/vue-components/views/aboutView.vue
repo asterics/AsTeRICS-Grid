@@ -16,27 +16,16 @@
                         {{ $t('currentDeleopmentAstericsGridIsDoneWBT') }}<br/>
                         <a target="_blank" href="https://embsys.technikum-wien.at/projects/khat/index.php">{{ $t('moreInfoAboutWBT') }}</a>
                         <br/><br/>
-                        <a href="https://www.wien.gv.at/kontakte/ma23/" target="_blank" :title="$t('ma23CityOfVienna')"><img src="app/img/ma23-gefoerdertvon.jpg" width="80px" :alt="$t('logoMa23CityVienna')"></a>
+                        <a href="https://www.technikum-wien.at/" class="me-5" target="_blank" title="UAS Technikum Wien"><img src="app/img/fhtw.svg" height="90"></a>
+                        <a href="https://www.wien.gv.at/kontakte/ma23/" target="_blank" :title="$t('ma23CityOfVienna')"><img src="app/img/ma23_logo_neu.jpg" height="90"></a>
                         <br/>
 
-                        <i18n path="arasaacCollaboration" tag="p">
+                        <i18n path="arasaacCollaboration" tag="div" class="mb-3 mt-5">
                             <template v-slot:arasaacLink>
                                 <a href="https://arasaac.org/" target="_blank">{{ $t('aragoneseCenterOfAAC') }}</a>
                             </template>
                         </i18n>
-                        <a href="https://arasaac.org/" aria-hidden="true" target="_blank"><img src="app/img/arasaac.png" width="250px"></a>
-                    </div>
-                </div>
-                <div class="srow">
-                    <h3>{{ $t('feedback') }}</h3>
-                    <div>
-                        {{ $t('ifYouEncounterAnErrorHaveSuggestions') }}<br/>
-                        <a href="mailto:office@asterics-foundation.org">office@asterics-foundation.org</a>
-                        <br/><br/>
-
-                        {{ $t('ifYouAreAGithubUserYouAreAlsoWelcomeToFileIssue') }}<br/>
-                        <a target="_blank" href="https://github.com/asterics/AsTeRICS-Grid/issues/">{{ $t('astericsGridIssuesOnGithub') }}</a>
-                        <br/>
+                        <a href="https://arasaac.org/" title="ARASAAC" aria-hidden="true" target="_blank"><img src="app/img/arasaac.png" width="250px"></a>
                     </div>
                 </div>
                 <div class="srow">

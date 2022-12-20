@@ -39,6 +39,7 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
 
     //internal
     var _selectionListener = null;
+    let _activeListener = function (){};
     var _isScanning = false;
     var _currentActiveScanElements = null;
     var _scanTimeoutHandler = null;
@@ -48,6 +49,7 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
     var _touchElement = null;
     let _inputEventHandler = null;
     let _nextScanFn = null;
+    let _scanningDepth = 0;
 
     function init() {
         parseOptions(options);
@@ -235,16 +237,27 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
         return item.getBoundingClientRect().right;
     }
 
-    function scan(elems, firstElementDelay, index, count) {
+    /**
+     * do scanning step
+     * @param elems the array of current scanning elements
+     * @param options.index the current index of selected scan element
+     * @param options.count number of times scanning was repeated over the same groups
+     * @param options.restarted true if scanning just has restarted
+     */
+    function scan(elems, options) {
+        options = options || {};
         _inputEventHandler.startListening();
         elems = elems || [];
-        count = count || 0;
-        index = index || 0;
-        index = (index <= elems.length - 1) ? index : 0;
-        if (count >= subScanRepeat * elems.length) {
+        let count = options.count || 0;
+        let index = options.index || 0;
+        let wrap = index === 0;
+        wrap = wrap || (index > elems.length - 1);
+        index = wrap ? 0 : index;
+        if (count >= subScanRepeat * elems.length && _scanningDepth !== 0) {
             thiz.restartScanning();
             return;
         }
+        _activeListener(L.flattenArray(elems[index]), wrap, options.restarted);
         L.removeClass(itemSelector, scanActiveClass);
         L.addClass(itemSelector, scanInactiveClass);
 
@@ -253,10 +266,10 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
             L.removeClass(elems, scanInactiveClass);
             _currentActiveScanElements = elems[index];
             _nextScanFn = () => {
-                scan(elems, true, index + 1, count + 1);
+                scan(elems, {index: index + 1, count: count + 1});
             };
             if (autoScan) {
-                let timeout = index === 0 && firstElementDelay && elems.length > 2 ? scanTimeoutMs * scanTimeoutFirstElementFactor : scanTimeoutMs;
+                let timeout = index === 0 && elems.length > 2 ? scanTimeoutMs * scanTimeoutFirstElementFactor : scanTimeoutMs;
                 _scanTimeoutHandler = setTimeout(function () {
                     _nextScanFn();
                 }, timeout);
@@ -278,18 +291,23 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
         return returnArray;
     }
 
-    thiz.startScanning = function () {
+    thiz.startScanning = function (restarted) {
         if (!_isScanning) {
+            _scanningDepth = 0;
             var elements = L.selectAsList(itemSelector);
-            if(elements.length == 0) {
+            if (elements.length === 0) {
                 return;
             }
             var rows = getGroups(elements, scanVertical);
             _isScanning = true;
-            if(rows.length == 1) {
-                scan(spitToSubarrays(L.flattenArray(rows)), true);
+            if (rows.length === 1) {
+                scan(spitToSubarrays(L.flattenArray(rows)), {
+                    restarted: restarted
+                });
             } else {
-                scan(spitToSubarrays(rows), true);
+                scan(spitToSubarrays(rows), {
+                    restarted: restarted
+                });
             }
             _inputEventHandler.startListening();
         }
@@ -316,7 +334,7 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
      */
     thiz.restartScanning = function () {
         thiz.stopScanning();
-        thiz.startScanning(scanVertical);
+        thiz.startScanning(true);
     };
 
     /**
@@ -362,6 +380,12 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
         }
     };
 
+    thiz.setActiveListener = function (fn) {
+        if (L.isFunction(fn)) {
+            _activeListener = fn;
+        }
+    }
+
     /**
      * method to be called if the layout of elements changed and scanning should be restarted in order to adapt
      * to new layout. If this method is called multiple times in the timeout period, restarting of scanning will
@@ -393,10 +417,11 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
         if (_isScanning) {
             thiz.stopScanning();
             _isScanning = true;
+            _scanningDepth++;
             if (_currentActiveScanElements.length > 1) {
-                scan(spitToSubarrays(_currentActiveScanElements), true);
+                scan(spitToSubarrays(_currentActiveScanElements));
             } else if (L.flattenArray(_currentActiveScanElements).length > 1) {
-                scan(spitToSubarrays(L.flattenArray(_currentActiveScanElements)), true);
+                scan(spitToSubarrays(L.flattenArray(_currentActiveScanElements)));
             } else {
                 if (_selectionListener) {
                     _selectionListener(L.flattenArray(_currentActiveScanElements)[0]);

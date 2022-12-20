@@ -7,6 +7,7 @@
                 <span class="hide-mobile">{{ $t('editingOff') }}</span>
             </button>
             <button tabindex="33" id="moreButton" :aria-label="$t('more')" class="spaced"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile">{{ $t('more') }}</span></button>
+            <div id="moreButtonMenu"></div>
             <div class="spaced btn-group">
                 <button tabindex="31" @click="undo" :aria-label="$t('undo')" :disabled="!canUndo || doingUndoRedo" class="small"><i class="fas fa-undo"></i> <span class="hide-mobile">{{ $t('undo') }}</span></button>
                 <button tabindex="32" @click="redo"  :aria-label="$t('redo')" :disabled="!canRedo || doingUndoRedo" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span></button>
@@ -26,6 +27,9 @@
         </div>
         <div>
             <grid-translate-modal v-if="showTranslateModal" :grid-data-id="gridData.id" @close="showTranslateModal = false" @reload="reload"/>
+        </div>
+        <div>
+            <set-navigation-modal v-if="showNavigateModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showNavigateModal = false" @reload="reload"></set-navigation-modal>
         </div>
         <div class="srow content">
             <div v-if="!showGrid" class="grid-container grid-mask">
@@ -65,6 +69,7 @@
     import {gridUtil} from "../../js/util/gridUtil";
     import ElementMoveModal from "../modals/elementMoveModal.vue";
     import GridTranslateModal from "../modals/gridTranslateModal.vue";
+    import SetNavigationModal from "../modals/setNavigationModal.vue";
     import {GridActionYoutube} from "../../js/model/GridActionYoutube";
     import {printService} from "../../js/service/printService";
     import {GridElementCollect} from "../../js/model/GridElementCollect.js";
@@ -84,6 +89,7 @@
                 doingUndoRedo: false,
                 showMultipleModal: false,
                 showDimensionsModal: false,
+                showNavigateModal: false,
                 showMoveModal: false,
                 showTranslateModal: false,
                 showEditModal: false,
@@ -95,6 +101,7 @@
             }
         },
         components: {
+            SetNavigationModal,
             GridTranslateModal,
             ElementMoveModal,
             GridDimensionModal, EditElement, AddMultipleModal, HeaderIcon
@@ -105,6 +112,9 @@
             },
             fillGaps: function () {
                 gridInstance.fillGaps();
+            },
+            normalizeGrid: function () {
+                gridInstance.normalizeGrid();
             },
             undo: function () {
                 this.doingUndoRedo = true;
@@ -281,10 +291,6 @@
     function initContextmenu() {
         //see https://swisnl.github.io/jQuery-contextMenu/demo.html
 
-        var CONTEXT_EDIT = "CONTEXT_EDIT";
-        var CONTEXT_DUPLICATE = "CONTEXT_DUPLICATE";
-        var CONTEXT_DO_ACTION = "CONTEXT_DO_ACTION";
-        var CONTEXT_DELETE = "CONTEXT_DELETE";
         var CONTEXT_FILL_EMPTY = "CONTEXT_FILL_EMPTY";
         var CONTEXT_DELETE_ALL = "CONTEXT_DELETE_ALL";
 
@@ -302,7 +308,9 @@
         var CONTEXT_NEW_YT_PLAYER = "CONTEXT_NEW_YT_PLAYER";
 
         var CONTEXT_LAYOUT_FILL = "CONTEXT_LAYOUT_FILL";
+        var CONTEXT_LAYOUT_NORMALIZE = "CONTEXT_LAYOUT_NORMALIZE";
         var CONTEXT_GRID_DIMENSIONS = "CONTEXT_GRID_DIMENSIONS";
+        var CONTEXT_GRID_NAVIGATION = "CONTEXT_GRID_NAVIGATION";
         var CONTEXT_GRID_TRANSLATION = "CONTEXT_GRID_TRANSLATION";
         var CONTEXT_EDIT_GLOBAL_GRID = "CONTEXT_EDIT_GLOBAL_GRID";
         var CONTEXT_END_EDIT_GLOBAL_GRID = "CONTEXT_END_EDIT_GLOBAL_GRID";
@@ -328,28 +336,25 @@
             }
         };
 
-        var itemsMoreMenuItem = {
-            CONTEXT_DUPLICATE: {name: i18nService.t('clone'), icon: "far fa-clone"},
-            CONTEXT_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt"},
-            CONTEXT_MOVE_TO: {name: i18nService.t('moveElementToOtherGrid'), icon: "fas fa-file-export"},
-        };
-
         var itemsElemNormal = {
-            CONTEXT_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit"},
-            CONTEXT_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt"},
-            CONTEXT_MORE_GROUP: {
-                name: i18nService.t('more'), icon: "fas fa-bars", items: itemsMoreMenuItem
-            }
+            CONTEXT_ACTION_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit"},
+            CONTEXT_ACTION_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt"},
+            CONTEXT_ACTION_DUPLICATE: {name: i18nService.t('clone'), icon: "far fa-clone"},
+            SEP1: "---------",
+            CONTEXT_GRID_NAVIGATION: {name: i18nService.t('navigateToOtherGrid'), icon: "fas fa-arrow-right"},
+            CONTEXT_MOVE_TO: {name: i18nService.t('moveElementToOtherGrid'), icon: "fas fa-file-export"},
+            CONTEXT_ACTION_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt"},
         };
 
         let visibleFn = () => !!vueApp.markedElement;
         let visibleFnFill = () => !new GridData({}, vueApp.gridData).isFull();
         var itemsMoreMenuButton = {
-            CONTEXT_ACTION_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit", visible: () => (vueApp.markedElement)},
+            CONTEXT_ACTION_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit", visible: visibleFn},
             CONTEXT_ACTION_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt", visible: visibleFn},
             CONTEXT_ACTION_DUPLICATE: {name: i18nService.t('clone'), icon: "far fa-clone", visible: visibleFn},
-            CONTEXT_ACTION_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt", visible: visibleFn},
+            CONTEXT_GRID_NAVIGATION: {name: i18nService.t('navigateToOtherGrid'), icon: "fas fa-arrow-right", visible: visibleFn},
             CONTEXT_MOVE_TO: {name: i18nService.t('moveElementToOtherGrid'), icon: "fas fa-file-export", visible: visibleFn},
+            CONTEXT_ACTION_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt", visible: visibleFn},
             separator: { "type": "cm_separator", visible: () => (vueApp.markedElement)},
             CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP],
             'CONTEXT_FILL_EMPTY': {name: i18nService.t('fillWithEmptyElements'), icon: "fas fa-fill", visible: visibleFnFill},
@@ -364,6 +369,7 @@
                 icon: "fas fa-language"
             },
             'CONTEXT_LAYOUT_FILL': {name: i18nService.t('fillGaps'), icon: "fas fa-angle-double-left"},
+            'CONTEXT_LAYOUT_NORMALIZE': {name: i18nService.t('normalizeGridLayout'), icon: "fas fa-th"},
             'CONTEXT_EDIT_GLOBAL_GRID': {name: i18nService.t('editGlobalGrid'), icon: "fas fa-globe", visible: !!vueApp.metadata.globalGridId && vueApp.metadata.globalGridActive && vueApp.metadata.globalGridId !== vueApp.gridData.id},
             'CONTEXT_END_EDIT_GLOBAL_GRID': {name: i18nService.t('endEditGlobalGrid'), icon: "fas fa-globe", visible: vueApp.metadata.globalGridId === vueApp.gridData.id},
         };
@@ -401,6 +407,7 @@
 
         $.contextMenu({
             selector: '#moreButton',
+            appendTo: '#moreButtonMenu',
             callback: function (key, options) {
                 handleContextMenu(key);
             },
@@ -411,22 +418,6 @@
 
         function handleContextMenu(key, elementId) {
             switch (key) {
-                case CONTEXT_EDIT: {
-                    vueApp.editElement(elementId);
-                    break;
-                }
-                case CONTEXT_DUPLICATE: {
-                    gridInstance.duplicateElement(elementId);
-                    break;
-                }
-                case CONTEXT_DO_ACTION: {
-                    actionService.doAction(vueApp.gridData.id, elementId);
-                    break;
-                }
-                case CONTEXT_DELETE: {
-                    vueApp.removeElement(elementId);
-                    break;
-                }
                 case CONTEXT_NEW_SINGLE: {
                     vueApp.newElement(GridElement.ELEMENT_TYPE_NORMAL);
                     break;
@@ -459,6 +450,10 @@
                     vueApp.fillGaps();
                     break;
                 }
+                case CONTEXT_LAYOUT_NORMALIZE: {
+                    vueApp.normalizeGrid();
+                    break;
+                }
                 case CONTEXT_GRID_DIMENSIONS: {
                     vueApp.showDimensionsModal = true;
                     break;
@@ -467,20 +462,26 @@
                     vueApp.showTranslateModal = true;
                     break;
                 }
+                case CONTEXT_GRID_NAVIGATION: {
+                    vueApp.editElementId = elementId || vueApp.markedElement.id;
+                    vueApp.markElement(null);
+                    vueApp.showNavigateModal = true;
+                    break;
+                }
                 case CONTEXT_ACTION_EDIT:
-                    vueApp.editElement(vueApp.markedElement.id);
+                    vueApp.editElement(elementId || vueApp.markedElement.id);
                     vueApp.markElement(null);
                     break;
                 case CONTEXT_ACTION_DELETE:
-                    vueApp.removeElement(vueApp.markedElement.id);
+                    vueApp.removeElement(elementId || vueApp.markedElement.id);
                     vueApp.markElement(null);
                     break;
                 case CONTEXT_ACTION_DUPLICATE:
-                    gridInstance.duplicateElement(vueApp.markedElement.id);
+                    gridInstance.duplicateElement(elementId || vueApp.markedElement.id);
                     vueApp.markElement(null);
                     break;
                 case CONTEXT_ACTION_DO_ACTION:
-                    actionService.doAction(vueApp.gridData.id, vueApp.markedElement.id);
+                    actionService.doAction(vueApp.gridData.id, elementId || vueApp.markedElement.id);
                     vueApp.markElement(null);
                     break;
                 case CONTEXT_MOVE_TO:

@@ -18,7 +18,6 @@ import SettingsView from '../vue-components/views/settingsView.vue'
 import {databaseService} from "./service/data/databaseService";
 import {localStorageService} from "./service/data/localStorageService";
 import {MainVue} from "./vue/mainVue";
-import {youtubeService} from "./service/youtubeService";
 import HelpView from "../vue-components/views/helpView.vue";
 import {constants} from "./util/constants.js";
 
@@ -33,6 +32,7 @@ let _initialized = false;
 let _currentView = null;
 let _currentVueApp = null;
 let _gridHistory = [];
+let _locked = false;
 
 Router.init = function (injectIdParam, initialHash) {
     if (!routingEndabled) {
@@ -120,6 +120,11 @@ Router.init = function (injectIdParam, initialHash) {
         });
     navigoInstance.hooks({
         before: function (done, params) {
+            let hash = location.hash;
+            $(document).trigger(constants.EVENT_NAVIGATE);
+            if (_locked && (hash.startsWith('#grid/edit') || (!hash.startsWith('#main') && !hash.startsWith('#grid/')))) {
+                return done(false);
+            }
             if (_currentView && _currentView.destroy) {
                 _currentView.destroy();
                 _currentView = null;
@@ -134,7 +139,6 @@ Router.init = function (injectIdParam, initialHash) {
             } else {
                 done();
             }
-            youtubeService.destroy();
         },
         after: function (params) {
             //log.debug('after');
@@ -203,6 +207,9 @@ Router.toGrid = function (id, props) {
 
         if (_currentView === GridView) {
             dataService.getGrid(id).then(gridData => {
+                if (!gridData) {
+                    return;
+                }
                 if (history && history.pushState) {
                     history.pushState(null, null, url);
                 }
@@ -313,5 +320,13 @@ function toMainInternal() {
         });
     });
 }
+
+$(document).on(constants.EVENT_UI_LOCKED, () => {
+    _locked = true;
+});
+
+$(document).on(constants.EVENT_UI_UNLOCKED, () => {
+    _locked = false;
+});
 
 export {Router};

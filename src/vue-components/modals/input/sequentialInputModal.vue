@@ -28,12 +28,31 @@
                                 </div>
                             </accordion>
                             <accordion :acc-label="$t('ADVANCED_SETTINGS')" acc-label-type="h2" acc-background-color="white">
-                                <div class="srow" style="margin-top: 0">
+                                <div class="srow">
                                     <div class="twelve columns">
-                                        <input type="checkbox" id="chkReadActive" v-model="inputConfig.globalReadActive"/>
-                                        <label for="chkReadActive">{{ $t('readOutActiveElement') }}</label>
+                                        <input type="checkbox" id="chkResetToStart" v-model="inputConfig.seqResetToStart"/>
+                                        <label for="chkResetToStart">{{ $t('goToStartPositionAfterSelect') }}</label>
                                     </div>
                                 </div>
+                                <div class="srow">
+                                    <div class="twelve columns">
+                                        <input type="checkbox" id="chkAutoScanning" v-model="inputConfig.seqAuto"/>
+                                        <label for="chkAutoScanning">{{ $t('automaticTimedSequentialInput') }}</label>
+                                    </div>
+                                </div>
+                                <div class="srow" v-show="inputConfig.seqAuto">
+                                    <label class="four columns" for="inScanTime">{{ $t('scanningTimeMs') }}</label>
+                                    <input type="range" id="inScanTime" v-model.number="inputConfig.seqTimeoutMs" min="100" max="6000" step="100"/>
+                                    <input type="number" v-model.number="inputConfig.seqTimeoutMs" min="100" max="6000" step="100"/>
+                                </div>
+                                <div class="srow" v-show="inputConfig.seqAuto">
+                                    <label class="four columns" for="inFirstElement">{{ $t('timeFactorFirstElement') }}</label>
+                                    <input type="range" id="inFirstElement" v-model.number="inputConfig.seqTimeoutFirstElementFactor" min="1" max="5" step="0.1"/>
+                                    <input type="number" v-model.number="inputConfig.seqTimeoutFirstElementFactor" min="1" max="5" step="0.5" />
+                                </div>
+                            </accordion>
+                            <accordion :acc-label="$t('generalInputSettings')" acc-label-type="h2" acc-background-color="white">
+                                <global-input-options :input-config="inputConfig"/>
                             </accordion>
                             <accordion :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
                                 <test-area :selected-element="selectedTestElement"></test-area>
@@ -72,10 +91,11 @@
     import {InputConfig} from "../../../js/model/InputConfig";
     import {inputEventHandler} from "../../../js/input/inputEventHandler";
     import {SequentialInput} from "../../../js/input/sequentialInput";
+    import GlobalInputOptions from "./globalInputOptions.vue";
 
     export default {
         props: [],
-        components: {Accordion, InputEventList, TestArea},
+        components: {GlobalInputOptions, Accordion, InputEventList, TestArea},
         data: function () {
             return {
                 inputConfig: null,
@@ -149,7 +169,8 @@
                         thiz.seqInput = SequentialInput.getInstanceFromConfig(thiz.inputConfig, '.area-element-inner', {
                             selectionListener: (item) => {
                                 thiz.selectedTestElement = item;
-                            }
+                            },
+                            activeClass: 'active'
                         });
                         thiz.seqInput.start();
                     }

@@ -29,11 +29,7 @@ imageUtil.getBase64FromImg = function (img, maxWidth, quality, mimeType) {
         let data = canvas.toDataURL(mimeType, quality);
         return {
             data: data,
-            dim: {
-                width: canvas.width,
-                height: canvas.height,
-                ratio: canvas.width / canvas.height
-            }
+            dim: getDimObject(canvas.width, canvas.height)
         };
     } catch (e) {
         throw "image converting failed!"
@@ -88,6 +84,9 @@ imageUtil.convertBase64 = function (originalBase64, maxWidth, quality) {
  * @return {Promise<unknown>} resolves to png data url of the image
  */
 imageUtil.base64SvgToBase64Png = function (originalBase64, width, secondTry) {
+    if (!originalBase64) {
+        return Promise.resolve(null);
+    }
     return new Promise(resolve => {
         let img = document.createElement('img');
         img.onload = function () {
@@ -129,7 +128,10 @@ imageUtil.urlToBase64WithDimensions = function (url, maxWidth, mimeType) {
         if (url.lastIndexOf('.svg') === url.length - 4) {
             $.get(url, null, function (svgDocument) {
                 let fixedSvg = fixSvgDocumentFF(svgDocument);
-                resolve(svgDocumentToBase64(fixedSvg));
+                resolve({
+                    data: svgDocumentToBase64(fixedSvg),
+                    dim: getSvgDim(fixedSvg)
+                });
             }).fail(function () {
                 resolve(null);
             });
@@ -153,7 +155,7 @@ imageUtil.urlToBase64WithDimensions = function (url, maxWidth, mimeType) {
 
 imageUtil.urlToBase64 = function (url, maxWidth, mimeType) {
     return imageUtil.urlToBase64WithDimensions(url, maxWidth, mimeType).then(dataWithDim => {
-        return Promise.resolve(dataWithDim.data);
+        return Promise.resolve(dataWithDim ? dataWithDim.data : null);
     })
 };
 
@@ -251,6 +253,16 @@ function fixSvgDocumentFF(svgDocument) {
     }
 }
 
+function getSvgDim(svgDocument) {
+    try {
+        let widthInt = parseInt(svgDocument.documentElement.width.baseVal.value) || 500;
+        let heightInt = parseInt(svgDocument.documentElement.height.baseVal.value) || 500;
+        return getDimObject(widthInt, heightInt);
+    } catch (e) {
+        return getDimObject(0, 0);
+    }
+}
+
 function svgDocumentToBase64(svgDocument) {
     try {
         let base64EncodedSVG = btoa(new XMLSerializer().serializeToString(svgDocument));
@@ -265,6 +277,14 @@ function base64ToSvgDocument(base64) {
     svg = svg.substring(svg.indexOf('<svg'));
     let parser = new DOMParser();
     return parser.parseFromString(svg, "image/svg+xml");
+}
+
+function getDimObject(width, height) {
+    return {
+        width: width,
+        height: height,
+        ratio: width / height
+    }
 }
 
 export {imageUtil};

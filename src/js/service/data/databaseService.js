@@ -255,8 +255,6 @@ databaseService.getCurrentUsedDatabase = function () {
 };
 
 function initInternal(hashedUserPassword, username, isLocalUser) {
-    let metadata = null;
-
     _initPromise = Promise.resolve().then(() => { //reset DB if specified by URL
         let promises = [];
         if (urlParamService.shouldResetDatabase()) {
@@ -264,19 +262,21 @@ function initInternal(hashedUserPassword, username, isLocalUser) {
         }
         return Promise.all(promises);
     }).then(() => {
-        return pouchDbService.all(MetaData.getIdPrefix());
+        return pouchDbService.allArray(MetaData.getIdPrefix());
     }).then(metadataObjects => { //create metadata object if not exisiting, update datamodel version, if outdated
         let promises = [];
-        if (!metadataObjects || metadataObjects.length === 0) {
-            metadata = new MetaData();
+        if (metadataObjects.length === 0) {
+            let metadata = new MetaData();
+            metadataObjects = [metadata];
             encryptionService.setEncryptionProperties(hashedUserPassword, metadata.id, isLocalUser);
             promises.push(applyFiltersAndSave(MetaData.getIdPrefix(), metadata));
-        } else {
-            metadata = metadataObjects instanceof Array ? metadataObjects[0] : metadataObjects;
-            encryptionService.setEncryptionProperties(hashedUserPassword, metadata.id, isLocalUser);
-            if (metadataObjects.length && metadataObjects.length > 1) {
-                promises.push(fixDuplicatedMetadata(hashedUserPassword, metadataObjects))
-            }
+        }
+        metadataObjects.sort((a, b) => a.id.localeCompare(b.id)); // always prefer older metadata objects
+        let metadataIds = metadataObjects.map(o => o.id);
+        encryptionService.setEncryptionProperties(hashedUserPassword, metadataIds, isLocalUser);
+
+        if (metadataObjects.length && metadataObjects.length > 1) {
+            log.warn("found duplicated metadata!");
         }
         return Promise.all(promises);
     });
@@ -310,54 +310,6 @@ function getModelVersion(dataOrArray) {
         return dataOrArray[0].modelVersion;
     }
     return null;
-}
-
-function fixDuplicatedMetadata(hashedUserPassword, metadataObjects) {
-    log.warn('fixing duplicated metadata...');
-    let metadataIds = null;
-    return pouchDbService.all().then(encryptedDocs => {
-        let decryptedDocs = [];
-        metadataIds = metadataObjects.map(e => e.id);
-        let promises = [];
-        encryptedDocs.forEach(doc => {
-            decryptedDocs.push(tryToDecrypt(doc, metadataIds));
-        });
-        let keepMetadataId = metadataIds.pop();
-        encryptionService.setEncryptionProperties(hashedUserPassword, keepMetadataId);
-        log.warn('keeiping metadata: ' + keepMetadataId);
-        log.warn('decrypted docs:');
-        log.warn(decryptedDocs);
-        log.warn('re-encrypting and saving them...');
-        decryptedDocs.forEach(doc => {
-            let promise = applyFiltersAndSave(doc.modelName, doc);
-            promises.push(promise);
-        });
-        return Promise.all(promises);
-    }).then(() => {
-        let promises = [];
-        log.warn('deleting superfluous metadata objects ...');
-        metadataIds.forEach(id => {
-            promises.push(pouchDbService.remove(id));
-        });
-        return Promise.all(promises);
-    }).then(() => {
-        log.warn('all done - reloading page...');
-        window.location.reload();
-        return Promise.reject();
-    });
-
-    function tryToDecrypt(object, metadataIds) {
-        let remainingIds = JSON.parse(JSON.stringify(metadataIds));
-        try {
-            return encryptionService.decryptObjects(object)
-        } catch (e) {
-            if (remainingIds.length === 0) {
-                throw "something really went wrong - unable to decrypt object: " + object.modelName + ', id: ' + object.id;
-            }
-            encryptionService.setEncryptionProperties(hashedUserPassword, remainingIds.pop());
-            return tryToDecrypt(object, remainingIds);
-        }
-    }
 }
 
 export {databaseService};

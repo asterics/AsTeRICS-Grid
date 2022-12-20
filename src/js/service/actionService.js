@@ -14,8 +14,13 @@ import {youtubeService} from "./youtubeService";
 import {GridActionNavigate} from "../model/GridActionNavigate.js";
 import {GridActionChangeLang} from "../model/GridActionChangeLang.js";
 import $ from "../externals/jquery.js";
+import {GridActionAudio} from "../model/GridActionAudio.js";
+import {GridActionSpeak} from "../model/GridActionSpeak.js";
+import {GridActionSpeakCustom} from "../model/GridActionSpeakCustom.js";
 
 let actionService = {};
+
+let minPauseSpeak = 0;
 
 actionService.doAction = function (gridId, gridElementId) {
     if (!gridId || !gridElementId) {
@@ -53,6 +58,10 @@ function doActions(gridElement, gridId) {
         }
         return 0;
     });
+    let hasAudioAction = actions.some(a => a.modelName === GridActionAudio.getModelName() && a.dataBase64);
+    if (hasAudioAction) {
+        actions = actions.filter(a => a.modelName !== GridActionSpeak.getModelName() && a.modelName !== GridActionSpeakCustom.getModelName());
+    }
     actions.forEach(action => {
         doAction(gridElement, action, {
             gridId: gridId,
@@ -69,19 +78,25 @@ function doActions(gridElement, gridId) {
  * @param options.gridData the gridData object the action is contained in (optional)
  * @param options.actions all actions that are currently executed
  */
-function doAction(gridElement, action, options) {
+async function doAction(gridElement, action, options) {
     options = options || {};
     options.actions = options.actions || [];
 
     switch (action.modelName) {
         case 'GridActionSpeak':
             log.debug('action speak');
-            speechService.speak(gridElement.label, {lang: action.speakLanguage, speakSecondary: true});
+            speechService.speak(gridElement.label, {lang: action.speakLanguage, speakSecondary: true, minEqualPause: minPauseSpeak});
             break;
         case 'GridActionSpeakCustom':
             log.debug('action speak custom');
             if (action.speakText) {
-                speechService.speak(action.speakText, {lang: action.speakLanguage, speakSecondary: true});
+                speechService.speak(action.speakText, {lang: action.speakLanguage, speakSecondary: true, minEqualPause: minPauseSpeak});
+            }
+            break;
+        case 'GridActionAudio':
+            if (action.dataBase64) {
+                audioUtil.stopAudio();
+                audioUtil.playAudio(action.dataBase64);
             }
             break;
         case 'GridActionNavigate':
@@ -122,10 +137,13 @@ function doAction(gridElement, action, options) {
             youtubeService.doAction(action);
             break;
         case 'GridActionChangeLang':
-            i18nService.setContentLanguage(action.language);
+            await i18nService.setContentLanguage(action.language);
             if (options.actions.length === 0 || !options.actions.map(a => a.modelName).includes(GridActionNavigate.getModelName())) {
                 $(document).trigger(constants.EVENT_RELOAD_CURRENT_GRID);
             }
+            let metadata = await dataService.getMetadata();
+            metadata.localeConfig.preferredVoice = action.voice;
+            await dataService.saveMetadata(metadata);
             break;
         case 'GridActionOpenWebpage':
             let tab = window.open(action.openURL, '_blank');
@@ -152,5 +170,13 @@ function doAREAction(action, gridData) {
         }
     });
 }
+
+async function getMetadataConfig() {
+    let metadata = await dataService.getMetadata();
+    minPauseSpeak = metadata.inputConfig.globalMinPauseCollectSpeak || 0;
+}
+
+$(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
+$(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
 
 export {actionService};

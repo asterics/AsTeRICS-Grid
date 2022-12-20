@@ -70,8 +70,11 @@
                             <div class="four columns">
                                 <label for="inCustomText" class="normal-text">{{ $t('textToSpeak') }}</label>
                             </div>
-                            <input class="eight columns" id="inCustomText" type="text" v-model="action.speakText[currentLang]"/>
+                            <input class="eight columns" id="inCustomText" type="text" v-model="action.speakText[getCurrentSpeakLang(action)]"/>
                         </div>
+                    </div>
+                    <div v-if="action.modelName == 'GridActionAudio'">
+                        <edit-audio-action :action="action" :grid-data="gridData"></edit-audio-action>
                     </div>
                     <div v-if="action.modelName == 'GridActionNavigate'">
                         <div class="srow">
@@ -218,19 +221,30 @@
                     <div v-if="action.modelName === 'GridActionChangeLang'">
                         <div class="srow">
                             <div class="twelve columns">
-                                <label for="changeLang" class="four columns normal-text">{{ $t('changeApplicationLanguageTo') }}</label>
-                                <select id="changeLang" class="eight columns" v-model="action.language">
+                                <label for="changeLang" class="four columns normal-text">{{ $t('changeLanguageTo') }}</label>
+                                <select id="changeLang" class="four columns mb-2" v-model="action.language">
                                     <option :value="undefined">{{ $t('systemLanguage') }}</option>
                                     <option v-for="lang in (selectFromAllLanguages ? allLanguages : gridLanguages)" :value="lang.code">
                                         {{lang | extractTranslation}}
                                     </option>
                                 </select>
+                                <div class="four columns">
+                                    <input id="selectFromAllLangs" type="checkbox" v-model="selectFromAllLanguages"/>
+                                    <label for="selectFromAllLangs" class="normal-text">{{ $t('showAllLanguagesForSelection') }}</label>
+                                </div>
                             </div>
                         </div>
                         <div class="srow">
-                            <div class="offset-by-four eight columns">
-                                <input id="selectFromAllLangs" type="checkbox" v-model="selectFromAllLanguages"/>
-                                <label for="selectFromAllLangs" class="normal-text">{{ $t('showAllLanguagesForSelection') }}</label>
+                            <div class="twelve columns">
+                                <label for="changeVoice" class="four columns normal-text">{{ $t('changeVoiceTo') }}</label>
+                                <select id="changeVoice" class="four columns mb-2" v-model="action.voice">
+                                    <option :value="undefined">{{ $t('automatic') }}</option>
+                                    <option v-for="voice in allVoices.filter(v => !action.language || v.lang === action.language)" :value="voice.name">
+                                        <span v-if="action.language">{{voice.name}}</span>
+                                        <span v-if="!action.language">{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}</span>
+                                    </option>
+                                </select>
+                                <button id="testVoice2" class="four columns" :disabled="!action.voice" @click="speechService.testSpeak(action.voice)">{{ $t('test') }}</button>
                             </div>
                         </div>
                     </div>
@@ -274,6 +288,7 @@
     import {GridImage} from "../../js/model/GridImage";
     import RadioListSelector from "../components/radioListSelector.vue";
     import {GridActionYoutube} from "../../js/model/GridActionYoutube";
+    import EditAudioAction from "./editActionsSub/editAudioAction.vue";
 
     export default {
         props: ['gridElement', 'gridData'],
@@ -284,6 +299,7 @@
                 editActionId: null,
                 selectedNewAction: GridElement.getActionTypes()[0].getModelName(),
                 actionTypes: GridElement.getActionTypes(),
+                allVoices: speechService.getVoices(),
                 voiceLangs: speechService.getVoicesLangs(),
                 dictionaryKeys: predictionService.getDictionaryKeys(),
                 collectActions: GridActionCollectElement.getActions(),
@@ -293,16 +309,21 @@
                 gridLanguages: null,
                 selectFromAllLanguages: false,
                 GridActionYoutube: GridActionYoutube,
-                GridElement: GridElement
+                GridElement: GridElement,
+                speechService: speechService
             }
         },
         components: {
+            EditAudioAction,
             RadioListSelector,
             Accordion,
             EditAreAction,
             EditOpenHabAction
         },
         methods: {
+            getCurrentSpeakLang(action) {
+                return action && action.speakLanguage ? action.speakLanguage : this.currentLang;
+            },
             selectedRadioChanged(radioId) {
                 let faviconUrl = this.gridData.webRadios.filter(el => el.radioId === radioId)[0].faviconUrl;
                 if (faviconUrl) {

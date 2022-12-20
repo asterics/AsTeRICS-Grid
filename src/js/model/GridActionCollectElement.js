@@ -19,7 +19,8 @@ class GridActionCollectElement extends Model({
     }
 
     static getActions() {
-        return [GridActionCollectElement.COLLECT_ACTION_SPEAK,GridActionCollectElement.COLLECT_ACTION_SPEAK_CLEAR,
+        return [GridActionCollectElement.COLLECT_ACTION_SPEAK,GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS,
+            GridActionCollectElement.COLLECT_ACTION_SPEAK_CLEAR,GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS_CLEAR,
             GridActionCollectElement.COLLECT_ACTION_CLEAR, GridActionCollectElement.COLLECT_ACTION_REMOVE_WORD,
             GridActionCollectElement.COLLECT_ACTION_REMOVE_CHAR, GridActionCollectElement.COLLECT_ACTION_COPY_CLIPBOARD,
             GridActionCollectElement.COLLECT_ACTION_APPEND_CLIPBOARD, GridActionCollectElement.COLLECT_ACTION_CLEAR_CLIPBOARD, GridActionCollectElement.COLLECT_ACTION_TO_YOUTUBE];
@@ -29,7 +30,9 @@ class GridActionCollectElement extends Model({
 GridActionCollectElement.canBeTested = false;
 
 GridActionCollectElement.COLLECT_ACTION_SPEAK = 'COLLECT_ACTION_SPEAK';
+GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS = 'COLLECT_ACTION_SPEAK_CONTINUOUS';
 GridActionCollectElement.COLLECT_ACTION_SPEAK_CLEAR = 'COLLECT_ACTION_SPEAK_CLEAR';
+GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS_CLEAR = 'COLLECT_ACTION_SPEAK_CONTINUOUS_CLEAR';
 GridActionCollectElement.COLLECT_ACTION_CLEAR = 'COLLECT_ACTION_CLEAR';
 GridActionCollectElement.COLLECT_ACTION_REMOVE_WORD = 'COLLECT_ACTION_REMOVE_WORD';
 GridActionCollectElement.COLLECT_ACTION_REMOVE_CHAR = 'COLLECT_ACTION_REMOVE_CHAR';

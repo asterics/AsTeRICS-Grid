@@ -17,6 +17,8 @@ let _voiceRate = 1;
 let allVoices = [];
 let responsiveVoiceVoices = JSON.parse('[{"name":"UK English Female","lang":"en-GB"},{"name":"UK English Male","lang":"en-GB"},{"name":"US English Female","lang":"en-US"},{"name":"US English Male","lang":"en-US"},{"name":"Arabic Male","lang":"ar-SA"},{"name":"Arabic Female","lang":"ar-SA"},{"name":"Armenian Male","lang":"hy-AM"},{"name":"Australian Female","lang":"en-AU"},{"name":"Australian Male","lang":"en-AU"},{"name":"Bangla Bangladesh Female","lang":"bn-BD"},{"name":"Bangla Bangladesh Male","lang":"bn-BD"},{"name":"Bangla India Female","lang":"bn-IN"},{"name":"Bangla India Male","lang":"bn-IN"},{"name":"Brazilian Portuguese Female","lang":"pt-BR"},{"name":"Chinese Female","lang":"zh-CN"},{"name":"Chinese Male","lang":"zh-CN"},{"name":"Chinese (Hong Kong) Female","lang":"zh-HK"},{"name":"Chinese (Hong Kong) Male","lang":"zh-HK"},{"name":"Chinese Taiwan Female","lang":"zh-TW"},{"name":"Chinese Taiwan Male","lang":"zh-TW"},{"name":"Czech Female","lang":"cs-CZ"},{"name":"Danish Female","lang":"da-DK"},{"name":"Deutsch Female","lang":"de-DE"},{"name":"Deutsch Male","lang":"de-DE"},{"name":"Dutch Female","lang":"nl-NL"},{"name":"Dutch Male","lang":"nl-NL"},{"name":"Estonian Male","lang":"et-EE"},{"name":"Filipino Female","lang":"fil-PH"},{"name":"Finnish Female","lang":"fi-FI"},{"name":"French Female","lang":"fr-FR"},{"name":"French Male","lang":"fr-FR"},{"name":"French Canadian Female","lang":"fr-CA"},{"name":"French Canadian Male","lang":"fr-CA"},{"name":"Greek Female","lang":"el-GR"},{"name":"Hindi Female","lang":"hi-IN"},{"name":"Hindi Male","lang":"hi-IN"},{"name":"Hungarian Female","lang":"hu-HU"},{"name":"Indonesian Female","lang":"id-ID"},{"name":"Indonesian Male","lang":"id-ID"},{"name":"Italian Female","lang":"it-IT"},{"name":"Italian Male","lang":"it-IT"},{"name":"Japanese Female","lang":"ja-JP"},{"name":"Japanese Male","lang":"ja-JP"},{"name":"Korean Female","lang":"ko-KR"},{"name":"Korean Male","lang":"ko-KR"},{"name":"Latin Male","lang":"la"},{"name":"Nepali","lang":"ne-NP"},{"name":"Norwegian Female","lang":"nb-NO"},{"name":"Norwegian Male","lang":"nb-NO"},{"name":"Polish Female","lang":"pl-PL"},{"name":"Polish Male","lang":"pl-PL"},{"name":"Portuguese Female","lang":"pt-BR"},{"name":"Portuguese Male","lang":"pt-BR"},{"name":"Romanian Female","lang":"ro-RO"},{"name":"Russian Female","lang":"ru-RU"},{"name":"Sinhala","lang":"si-LK"},{"name":"Slovak Female","lang":"sk-SK"},{"name":"Spanish Female","lang":"es-ES"},{"name":"Spanish Latin American Female","lang":"es-MX"},{"name":"Spanish Latin American Male","lang":"es-MX"},{"name":"Swedish Female","lang":"sv-SE"},{"name":"Swedish Male","lang":"sv-SE"},{"name":"Tamil Female","lang":"hi-IN"},{"name":"Tamil Male","lang":"hi-IN"},{"name":"Thai Female","lang":"th-TH"},{"name":"Thai Male","lang":"th-TH"},{"name":"Turkish Female","lang":"tr-TR"},{"name":"Turkish Male","lang":"tr-TR"},{"name":"Ukrainian Female","lang":"uk-UA"},{"name":"Vietnamese Female","lang":"vi-VN"},{"name":"Vietnamese Male","lang":"vi-VN"},{"name":"Afrikaans Male","lang":"af-ZA"},{"name":"Albanian Male","lang":"sq-AL"},{"name":"Bosnian Male","lang":"bs"},{"name":"Catalan Male","lang":"ca-ES"},{"name":"Croatian Male","lang":"hr-HR"},{"name":"Esperanto Male","lang":"eo"},{"name":"Icelandic Male","lang":"is-IS"},{"name":"Latvian Male","lang":"lv-LV"},{"name":"Macedonian Male","lang":"mk-MK"},{"name":"Moldavian Female","lang":"md"},{"name":"Montenegrin Male","lang":"me"},{"name":"Serbian Male","lang":"sr-RS"},{"name":"Serbo-Croatian Male","lang":"hr-HR"},{"name":"Swahili Male","lang":"sw-KE"},{"name":"Welsh Male","lang":"cy"},{"name":"Fallback UK Female","lang":"en-GB"}]');
 let currentSpeakArray = [];
+let lastSpeakText = null;
+let lastSpeakTime = 0;
 
 /**
  * speaks given text.
@@ -36,6 +38,8 @@ let currentSpeakArray = [];
  * @param options.dontStop (optional) if true, currently spoken text isn't aborted
  * @param options.speakSecondary (optional) if true, spoken text is repeated using the secondary language
  * @param options.useStandardRatePitch (optional) if true, the standard values for rate/pitch are used (1)
+ * @param options.rate (optional) rate value to use
+ * @param options.minEqualPause (optional) minimum pause between 2 times speaking the same text
  */
 speechService.speak = function (textOrOject, options) {
     options = options || {};
@@ -64,6 +68,11 @@ speechService.speak = function (textOrOject, options) {
         langToUse = langToUse || translation.lang;
     }
     text = text.toLowerCase();
+    if (text === lastSpeakText && new Date().getTime() - lastSpeakTime < options.minEqualPause) {
+        return;
+    }
+    lastSpeakText = text;
+    lastSpeakTime = new Date().getTime();
     if (!options.dontStop) {
         speechService.stopSpeaking();
     }
@@ -85,12 +94,12 @@ speechService.speak = function (textOrOject, options) {
         msg.voice = nativeVoices[0].ref;
         let isSelectedVoice = nativeVoices[0].name === preferredVoiceName;
         msg.pitch = isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1;
-        msg.rate = isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1;
+        msg.rate = options.rate || (isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1);
         window.speechSynthesis.speak(msg);
     } else if(responsiveVoices.length > 0) {
         let isSelectedVoice = responsiveVoices[0].name === preferredVoiceName;
         responsiveVoice.speak(text, responsiveVoices[0].name, {
-            rate: isSelectedVoice && !options.useStandardRatePitch  ? _voiceRate : 1,
+            rate: options.rate || (isSelectedVoice && !options.useStandardRatePitch  ? _voiceRate : 1),
             pitch: isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1
         });
     }
@@ -110,35 +119,37 @@ speechService.speak = function (textOrOject, options) {
     }
 };
 
-speechService.speakArray = async function (array, progressFn, index, dontStop) {
-    if (!dontStop && speechService.isSpeaking()) {
+/**
+ * speaks an array of speak-elements one after each other
+ * @param array array of elements, where an element can be an object {text: "text-to-speak-tts"}
+ *              or {base64Sound: "base64Data"} containing binary data to play as sound
+ * @param progressFn
+ * @param index
+ * @return {Promise<void>}
+ */
+speechService.speakArray = async function (array, progressFn, index) {
+    if (speechService.isSpeaking()) {
         speechService.stopSpeaking();
-        await util.sleep(100);
     }
     index = index || 0;
     progressFn = progressFn || (() => {});
     array = JSON.parse(JSON.stringify(array));
     if (!array || array.length === 0) {
-        progressFn(null, null);
+        progressFn(null, true);
         return;
     }
-    let word = array.shift();
-    progressFn(word, index);
-    speechService.speak(word, {dontStop: dontStop});
+    progressFn(index);
     currentSpeakArray = JSON.parse(JSON.stringify(array));
-    speechService.doAfterFinishedSpeaking(() => {
-        speechService.speakArray(currentSpeakArray, progressFn, index + 1, true);
-    });
-}
-
-speechService.speakLabel = function (gridId, gridElementId) {
-    if (!gridId || !gridElementId) {
-        return;
+    let object = currentSpeakArray.shift();
+    if (object.text) {
+        speechService.speak(object.text, {dontStop: true});
+        await speechService.waitForFinishedSpeaking();
+    } else if (object.base64Sound) {
+        await audioUtil.playAudio(object.base64Sound);
+        await audioUtil.waitForAudioEnded();
     }
-    dataService.getGridElement(gridId, gridElementId).then(gridElement => {
-        speechService.speak(i18nService.getTranslation(gridElement.label));
-    });
-};
+    speechService.speakArray(currentSpeakArray, progressFn, index + 1);
+}
 
 speechService.stopSpeaking = function () {
     currentSpeakArray = [];
@@ -153,19 +164,39 @@ speechService.isSpeaking = function () {
 };
 
 speechService.doAfterFinishedSpeaking = async function (fn) {
+    await speechService.waitForFinishedSpeaking();
     fn = fn || (() => {});
+    fn();
+}
+
+speechService.waitForFinishedSpeaking = async function () {
     let maxWait = 10000;
     let wait = 0;
     while (!speechService.isSpeaking() && wait < maxWait) { // wait until speak starting (responsive voice)
         wait += 100;
         await util.sleep(100);
     }
-    let intervalHandler = setInterval(() => {
-        if (!speechService.isSpeaking()) {
-            clearInterval(intervalHandler);
-            fn();
-        }
-    }, 50);
+    let promise = new Promise(resolve => {
+        let intervalHandler = setInterval(() => {
+            if (!speechService.isSpeaking()) {
+                clearInterval(intervalHandler);
+                resolve();
+            }
+        }, 50);
+    });
+    await promise;
+}
+
+speechService.testSpeak = function (voiceName, testSentence) {
+    if (!voiceName) {
+        return;
+    }
+    let voiceLang = speechService.getVoices().filter(lang => lang.name === voiceName)[0].lang;
+    testSentence = testSentence || i18nService.tl('thisIsAnEnglishSentence', null, voiceLang);
+    speechService.speak(testSentence, {
+        preferredVoice: voiceName,
+        useStandardRatePitch: true
+    });
 }
 
 /**
@@ -183,13 +214,6 @@ speechService.getVoicesLangs = function () {
  */
 speechService.getVoices = function () {
     return allVoices;
-};
-
-speechService.setPreferredVoiceProps = function(voiceName, voicePitch, voiceRate, secondVoice) {
-    _preferredVoiceName = voiceName;
-    _voicePitch = voicePitch || 1;
-    _voiceRate = voiceRate || 1;
-    _secondVoiceName = secondVoice;
 };
 
 /**
@@ -264,14 +288,17 @@ async function init() {
 }
 init();
 
-async function getMetadataConfig() {
-    let metadata = await dataService.getMetadata();
+function updateMetadataConfig(event, metadata) {
     _preferredVoiceName = metadata.localeConfig.preferredVoice || null;
     _voicePitch = metadata.localeConfig.voicePitch || 1;
     _voiceRate = metadata.localeConfig.voiceRate || 1;
     _secondVoiceName = metadata.localeConfig.secondVoice || null;
 }
 
-$(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
+$(document).on(constants.EVENT_USER_CHANGED, async () => {
+    let metadata = await dataService.getMetadata();
+    updateMetadataConfig(null, metadata);
+});
+$(document).on(constants.EVENT_METADATA_UPDATED, updateMetadataConfig);
 
 export {speechService};

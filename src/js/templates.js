@@ -11,7 +11,8 @@ import {GridActionChangeLang} from "./model/GridActionChangeLang.js";
 import {GridActionPredict} from "./model/GridActionPredict.js";
 import {GridActionWebradio} from "./model/GridActionWebradio.js";
 import {MetaData} from "./model/MetaData.js";
-import {TextConfig} from "./model/TextConfig.js";
+import {GridActionSpeakCustom} from "./model/GridActionSpeakCustom.js";
+import {util} from "./util/util.js";
 
 var templates = {};
 
@@ -48,14 +49,7 @@ function getGridElementNormal(gridElem, fallbackLocale, metadata) {
     var txtContainerStyle = 'font-size:' + fontUtil.getLastFontSize() + ';';
     var imgContainerMargin = '1%';
     let label = i18nService.getTranslation(gridElem.label, fallbackLocale);
-    switch (metadata.textConfig.convertMode) {
-        case TextConfig.CONVERT_MODE_UPPERCASE:
-            label = label.toUpperCase();
-            break;
-        case TextConfig.CONVERT_MODE_LOWERCASE:
-            label = label.toLowerCase();
-            break;
-    }
+    label = util.convertLowerUppercase(label, metadata.textConfig.convertMode);
     var imgContainerMaxHeight = label ? '80%' : '100%';
     if (gridElem.image && (gridElem.image.data || gridElem.image.url)) {
         imgData = gridElem.image.data || gridElem.image.url;
@@ -66,7 +60,7 @@ function getGridElementNormal(gridElem, fallbackLocale, metadata) {
     }
     let backgroundColor = MetaData.getElementColor(gridElem, metadata);
     let fontColor = fontUtil.getHighContrastColor(backgroundColor);
-    let ariaLabel = label ? label : getAriaLabel(gridElem);
+    let ariaLabel = getAriaLabel(gridElem);
 
     var template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-label="${label}" data-img-id="${imgId}" data-type="${gridElem.type}">
@@ -84,13 +78,11 @@ function getGridElementNormal(gridElem, fallbackLocale, metadata) {
 function getGridElementCollect(gridElem, metadata) {
     gridElem = fillDefaultValues(gridElem);
     let backgroundColor = MetaData.getElementColor(gridElem, metadata);
-    let txtBackgroundColor = metadata.colorConfig.gridBackgroundColor || '#ffffff';
-    let fontColor = fontUtil.getHighContrastColor(txtBackgroundColor);
 
     var template = `
 <li class="item" data-w="${gridElem.width}" data-h="${gridElem.height}" data-x="${gridElem.posX}" data-y="${gridElem.posY}" data-id="${gridElem.id}" data-type="${gridElem.type}">
-    <div class="grid-item-content" tabindex="40" aria-label="${i18nService.t('ELEMENT_TYPE_COLLECT')}" id="${gridElem.id}" data-id="${gridElem.id}" style="${`background-color: ${backgroundColor}; border: 1px solid ${getBorderColor(metadata)}`}">
-        <div class="collect-outer-container text-container" style="${`position: absolute; display: flex; top: 5px; right: 5px; bottom: 5px; left: 5px; color: ${fontColor};`}">
+    <div class="grid-item-content" tabindex="40" id="${gridElem.id}" data-id="${gridElem.id}" style="${`background-color: ${backgroundColor}; border: 1px solid ${getBorderColor(metadata)}`}">
+        <div class="collect-outer-container text-container" style="${`position: absolute; display: flex; top: 5px; right: 5px; bottom: 5px; left: 5px;`}">
         </div>
     </div>
 </li>`;
@@ -153,8 +145,30 @@ function getBorderColor(metadata) {
 }
 
 function getAriaLabel(gridElem) {
-    let actions = gridElem.actions.filter(a => a.modelName !== GridActionSpeak.getModelName() && a.modelName !== GridActionPredict.getModelName());
-    let ariaLabel = actions.reduce((total, action) => {
+    let label = i18nService.getTranslation(gridElem.label);
+    let ariaLabel = label ? label + ", " : "";
+    let singleCharMapping = {
+        ":": "colon",
+        ".": "period",
+        ",": "comma",
+        "!": "exclamationMark",
+        "?": "questionMark",
+        "\"": "quotationMark",
+        "-": "hyphen",
+        " ": "space"
+    };
+
+    if (Object.keys(singleCharMapping).includes(label)) {
+        ariaLabel = i18nService.t(singleCharMapping[label]) + ", ";
+    }
+
+    let speakCustomAction = gridElem.actions.filter(a => a.modelName === GridActionSpeakCustom.getModelName())[0];
+    if (!ariaLabel && speakCustomAction) {
+        ariaLabel = i18nService.getTranslation(speakCustomAction.speakText) + ", ";
+    }
+
+    let actions = gridElem.actions.filter(a => a.modelName !== GridActionSpeak.getModelName() && a.modelName !== GridActionSpeakCustom.getModelName() && a.modelName !== GridActionPredict.getModelName());
+    ariaLabel += actions.reduce((total, action) => {
         switch (action.modelName) {
             case GridActionChangeLang.getModelName():
                 total += i18nService.t(GridActionChangeLang.getModelName());
@@ -169,7 +183,7 @@ function getAriaLabel(gridElem) {
                 if (action.toLastGrid) {
                     total += i18nService.t('navigateToLastOpenedGrid');
                 } else {
-                    total += i18nService.t('navigateToGrid');
+                    total += i18nService.t('navigation');
                 }
                 total += ", ";
                 break;
@@ -190,6 +204,9 @@ function getAriaLabel(gridElem) {
         }
         return total;
     }, '');
+    if (ariaLabel.endsWith(", ")) {
+        ariaLabel = ariaLabel.slice(0, -2);
+    }
     return ariaLabel;
 }
 

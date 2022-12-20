@@ -8,7 +8,7 @@ openSymbolsService.PROP_AUTHOR = 'author';
 openSymbolsService.PROP_AUTHOR_URL = 'author_url';
 openSymbolsService.SEARCH_PROVIDER_NAME = 'OPENSYMBOLS';
 
-let _lastChunkSize = 10;
+let _lastChunkSize = 20;
 let _lastChunkNr = 1;
 let _lastSearchTerm = null;
 let _lastRawResultList = null;
@@ -41,6 +41,8 @@ openSymbolsService.getSearchProviderInfo = function () {
  *         additional all properties that are received from opensymbols.org API are available: https://www.opensymbols.org/api/v1/symbols/search?q=test
  */
 openSymbolsService.query = function (search) {
+    _lastChunkNr = 1;
+    _hasNextChunk = false;
     return queryInternal(search);
 };
 

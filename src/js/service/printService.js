@@ -173,6 +173,9 @@ function addGridToPdf(doc, gridData, options, metadata) {
         }
     }
     gridData.gridElements.forEach(element => {
+        if (element.hidden) {
+            return;
+        }
         let currentWidth = elementTotalWidth * element.width - (2 * pdfOptions.elementMargin);
         let currentHeight = elementTotalHeight * element.height - (2 * pdfOptions.elementMargin);
         let xStartPos = pdfOptions.docPadding + (elementTotalWidth * element.x) + pdfOptions.elementMargin;
@@ -273,6 +276,9 @@ async function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, yp
         let dataWithDim = await imageUtil.urlToBase64WithDimensions(element.image.url, 500, type);
         imageData = dataWithDim.data;
         dim = dataWithDim.dim;
+    }
+    if (!imageData) {
+        return Promise.resolve();
     }
     if (!dim) {
         dim = await imageUtil.getImageDimensionsFromDataUrl(imageData);

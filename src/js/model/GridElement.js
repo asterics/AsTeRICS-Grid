@@ -14,6 +14,7 @@ import {GridActionWebradio} from "./GridActionWebradio";
 import {GridActionChangeLang} from "./GridActionChangeLang";
 import {GridActionYoutube} from "./GridActionYoutube";
 import {GridActionOpenWebpage} from "./GridActionOpenWebpage.js";
+import {GridActionAudio} from "./GridActionAudio.js";
 
 class GridElement extends Model({
     id: String,
@@ -74,7 +75,7 @@ class GridElement extends Model({
     }
 
     static getActionTypes() {
-        return [GridActionSpeak, GridActionNavigate, GridActionSpeakCustom, GridActionPredict, GridActionCollectElement, GridActionARE, GridActionOpenHAB, GridActionWebradio, GridActionYoutube, GridActionChangeLang, GridActionOpenWebpage];
+        return [GridActionSpeak, GridActionNavigate, GridActionSpeakCustom, GridActionAudio, GridActionPredict, GridActionCollectElement, GridActionARE, GridActionOpenHAB, GridActionWebradio, GridActionYoutube, GridActionChangeLang, GridActionOpenWebpage];
     }
 
     static getActionTypeModelNames() {

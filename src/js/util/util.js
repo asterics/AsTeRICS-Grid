@@ -1,3 +1,5 @@
+import {TextConfig} from "../model/TextConfig.js";
+
 let util = {};
 
 let _timeoutHandlers = {};
@@ -216,5 +218,14 @@ util.isString = function (value) {
     return typeof value === 'string' || value instanceof String;
 }
 
+util.convertLowerUppercase = function (text, convertMode) {
+    if (!convertMode || !text) {
+        return text;
+    } else if (convertMode === TextConfig.CONVERT_MODE_LOWERCASE) {
+        return text.toLowerCase();
+    } else if (convertMode === TextConfig.CONVERT_MODE_UPPERCASE) {
+        return text.toUpperCase();
+    }
+}
 
 export {util};

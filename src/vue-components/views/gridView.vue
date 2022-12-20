@@ -5,6 +5,7 @@
             <div class="btn-group left">
                 <button tabindex="30" v-show="!metadata.locked" @click="toEditGrid()" class="spaced small" :aria-label="$t('editingOn')"><i class="fas fa-pencil-alt"/> <span class="hide-mobile">{{ $t('editingOn') }}</span></button>
                 <button tabindex="31" id="inputConfigButton" v-show="!metadata.locked" class="small" :aria-label="$t('inputOptions')"><i class="fas fa-cog"></i> <span class="hide-mobile">{{ $t('inputOptions') }}</span></button>
+                <div id="inputConfigMenu"></div>
             </div>
             <button tabindex="34" v-show="metadata.locked" @click="unlock()" class="small" :aria-label="$t('unlock')">
                 <i class="fas fa-unlock"></i>
@@ -81,6 +82,7 @@
     import {speechService} from "../../js/service/speechService";
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {imageUtil} from "../../js/util/imageUtil";
+    import {audioUtil} from "../../js/util/audioUtil.js";
     import UnlockModal from "../modals/unlockModal.vue";
     import {printService} from "../../js/service/printService";
 
@@ -137,6 +139,8 @@
                 thiz.unlockCounter = UNLOCK_COUNT;
                 dataService.saveMetadata(thiz.metadata).then(() => {
                     $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
+                    $(document).trigger(constants.EVENT_UI_LOCKED);
+                    $('#viewPortMeta').attr('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
                 });
             },
             unlock(force) {
@@ -153,6 +157,8 @@
                     thiz.metadata.locked = false;
                     dataService.saveMetadata(thiz.metadata).then(() => {
                         $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
+                        $(document).trigger(constants.EVENT_UI_UNLOCKED);
+                        $('#viewPortMeta').attr('content', 'width=device-width, initial-scale=1');
                     });
                 }
             },
@@ -174,15 +180,33 @@
                 }
 
                 let inputConfig = thiz.metadata.inputConfig;
-                window.addEventListener('resize', thiz.resizeListener, true);
-                $(document).on(constants.EVENT_GRID_RESIZE, thiz.resizeListener);
                 let selectionListener = (item) => {
                     L.removeAddClass(item, 'selected');
                     actionService.doAction(thiz.gridData.id, item.id);
                 };
-                let activeListener = (item) => {
-                    if (inputConfig.globalReadActive) {
-                        speechService.speakLabel(thiz.gridData.id, item.id);
+                let activeListener = (items, wrap, restarted) => {
+                    if (!Array.isArray(items)) {
+                        items = [items];
+                    }
+                    if (inputConfig.globalReadActive && items && items.length === 1 && items[0]) {
+                        let text = items[0].ariaLabel || '';
+                        let separatorIndex = text.indexOf(", ");
+                        if (!inputConfig.globalReadAdditionalActions && separatorIndex !== -1 && separatorIndex !== 0) {
+                            text = text.substring(0, separatorIndex);
+                        }
+                        speechService.speak(text, {
+                            rate: inputConfig.globalReadActiveRate || 1
+                        });
+                    }
+
+                    if (inputConfig.globalBeepFeedback) {
+                        if (restarted) {
+                            audioUtil.beepHighDouble();
+                        } else if (wrap) {
+                            audioUtil.beepHigh();
+                        } else {
+                            audioUtil.beep();
+                        }
                     }
                 };
 
@@ -201,17 +225,13 @@
 
                 if (inputConfig.huffEnabled) {
                     this.huffmanInput = HuffmanInput.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', 'scanInactive', selectionListener);
-                    this.huffmanInput.onDestroy(() => {
-                        if (gridInstance) {
-                            gridInstance.reinit(new GridData(JSON.parse(JSON.stringify(thiz.gridData))));
-                        }
-                    });
                     this.huffmanInput.start();
                 }
 
                 if (inputConfig.scanEnabled) {
                     thiz.scanner = Scanner.getInstanceFromConfig(inputConfig, '.grid-item-content:not([data-empty="true"])', 'scanFocus', 'scanInactive');
                     thiz.scanner.setSelectionListener(selectionListener);
+                    thiz.scanner.setActiveListener(activeListener);
 
                     gridInstance.setLayoutChangedStartListener(function () {
                         thiz.scanner.pauseScanning();
@@ -234,8 +254,8 @@
                     $('#touchElement').hide();
                 }
 
-                if (inputConfig.mouseclickEnabled) {
-                    thiz.clicker = new Clicker('.grid-item-content', inputConfig.mouseDownInsteadClick);
+                if (inputConfig.mouseclickEnabled || inputConfig.mouseDoubleClickEnabled) {
+                    thiz.clicker = Clicker.getInstanceFromConfig(inputConfig, '.grid-item-content');
                     thiz.clicker.setSelectionListener(selectionListener);
                     thiz.clicker.startClickcontrol();
                 }
@@ -250,15 +270,18 @@
                 });
             },
             reload(gridData) {
+                if (gridData) {
+                    this.gridData = JSON.parse(JSON.stringify(gridData));
+                }
                 return gridInstance.reinit(gridData).then(() => {
-                    if (gridData) {
-                        this.gridData = JSON.parse(JSON.stringify(gridData));
-                    }
                     this.reinitInputMethods();
                     return Promise.resolve();
                 });
             },
             async onNavigateEvent(event, gridData) {
+                if (gridData && this.gridData.id === gridData.id) {
+                    return; //prevent duplicated navigation to same grid
+                }
                 this.metadata.lastOpenedGridId = gridData.id;
                 await this.reload(gridData);
                 await dataService.saveMetadata(this.metadata);
@@ -286,11 +309,14 @@
                 }
                 log.debug('got update event, ids updated:' + updatedIds);
                 let updatedGridDoc = updatedDocs.filter(doc => (vueApp.gridData && doc.id === vueApp.gridData.id))[0];
+                let hasUpdatedGlobalGrid = updatedDocs.filter(doc => (this.metadata && doc.id === this.metadata.globalGridId)).length > 0;
                 this.updatedMetadataDoc = updatedDocs.filter(doc => (vueApp.metadata && doc.id === vueApp.metadata.id))[0] || this.updatedMetadataDoc;
                 if (updatedGridDoc) {
                     vueApp.reload(new GridData(updatedGridDoc));
+                } else if (hasUpdatedGlobalGrid) {
+                    vueApp.reload();
                 }
-                if (JSON.stringify(this.metadata.colorConfig) !== JSON.stringify(this.updatedMetadataDoc.colorConfig)) {
+                if (this.updatedMetadataDoc && JSON.stringify(this.metadata.colorConfig) !== JSON.stringify(this.updatedMetadataDoc.colorConfig)) {
                     this.backgroundColor = this.updatedMetadataDoc.colorConfig.gridBackgroundColor;
                     vueApp.reload();
                 }
@@ -350,6 +376,8 @@
             $(document).on(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
             $(document).on(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, this.onNavigateEvent);
             document.addEventListener('contextmenu', this.contextMenuListener);
+            window.addEventListener('resize', this.resizeListener, true);
+            $(document).on(constants.EVENT_GRID_RESIZE, this.resizeListener);
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
@@ -357,6 +385,8 @@
             $(document).off(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
             $(document).off(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, this.onNavigateEvent);
             document.removeEventListener('contextmenu', this.contextMenuListener);
+            window.removeEventListener('resize', this.resizeListener, true);
+            $(document).off(constants.EVENT_GRID_RESIZE, this.resizeListener);
             stopInputMethods();
             $.contextMenu('destroy');
             vueApp = null;
@@ -397,6 +427,9 @@
                 this.backgroundColor = metadata.colorConfig.gridBackgroundColor;
                 metadata.lastOpenedGridId = this.gridId;
                 metadata.locked = metadata.locked === undefined ? urlParamService.isDemoMode() && dataService.getCurrentUser() === constants.LOCAL_DEMO_USERNAME : metadata.locked;
+                if (metadata.locked) {
+                    $(document).trigger(constants.EVENT_UI_LOCKED);
+                }
                 metadata.fullscreen = metadata.fullscreen === undefined ? urlParamService.isDemoMode() && dataService.getCurrentUser() === constants.LOCAL_DEMO_USERNAME : metadata.fullscreen;
                 metadata.inputConfig.scanEnabled = urlParamService.isScanningEnabled() ? true : metadata.inputConfig.scanEnabled;
                 metadata.inputConfig.dirEnabled = urlParamService.isDirectionEnabled() ? true : metadata.inputConfig.dirEnabled;
@@ -437,8 +470,6 @@
     };
 
     function stopInputMethods() {
-        if (vueApp) window.removeEventListener('resize', vueApp.resizeListener, true);
-        if (vueApp) $(document).off(constants.EVENT_GRID_RESIZE, vueApp.resizeListener);
         if (vueApp && vueApp.scanner) vueApp.scanner.destroy();
         if (vueApp && vueApp.hover) vueApp.hover.destroy();
         if (vueApp && vueApp.clicker) vueApp.clicker.destroy();
@@ -504,6 +535,7 @@
 
         $.contextMenu({
             selector: '#inputConfigButton',
+            appendTo: '#inputConfigMenu',
             callback: function (key, options) {
                 handleContextMenu(key);
             },

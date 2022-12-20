@@ -4,7 +4,7 @@ import {constants} from "../../util/constants.js";
 
 let arasaacService = {};
 
-let _lastChunkSize = 10;
+let _lastChunkSize = 20;
 let _lastChunkNr = 1;
 let _lastSearchTerm = null;
 let _lastRawResultList = null;
@@ -89,6 +89,8 @@ arasaacService.getSearchProviderInfo = function () {
  */
 arasaacService.query = function (search, options, searchLang) {
     _lastOptions = options;
+    _lastChunkNr = 1;
+    _hasNextChunk = false;
     return queryInternal(search, searchLang, 1, _lastChunkSize);
 };
 
@@ -129,59 +131,80 @@ function queryInternal(search, lang, chunkNr, chunkSize) {
     chunkSize = chunkSize || _lastChunkSize;
     chunkNr = chunkNr || 1;
     let queriedElements = [];
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         if (!search) {
             return resolve([]);
         }
         if (_lastSearchTerm !== search || _lastSearchLang !== lang) {
             lang = lang || i18nService.getContentLang();
             _lastSearchLang = lang;
-            let url = `https://api.arasaac.org/api/pictograms/${lang}/search/${search}`;
-            $.get(url, null, function (resultList) {
-                _lastRawResultList = resultList;
-                processResultList(resultList);
-            }, 'json').fail((reason) => {
-                if (reason.status === 404) {
-                    return resolve([]);
-                }
-                reject('no internet');
-            });
-        } else {
-            processResultList(_lastRawResultList);
-        }
-
-        function processResultList(resultList) {
-            if (!resultList || !resultList.length || resultList.length === 0) {
-                resultList = [];
+            try {
+                _lastRawResultList = await getResultListLangs([lang, i18nService.getContentLang(), i18nService.getBrowserLang(), "en", "es"], search);
+            } catch (e) {
+                reject(e);
             }
-            let startIndex = (chunkNr * chunkSize) - chunkSize;
-            let endIndex = startIndex + chunkSize - 1;
-            _hasNextChunk = resultList.length > (endIndex + 1);
-            for (let i = startIndex; i <= endIndex; i++) {
-                if (resultList[i]) {
-                    let element = {};
-                    let apiElement = JSON.parse(JSON.stringify(resultList[i]));
-                    element.url = getUrl(apiElement._id, _lastOptions);
-                    element.author = arasaacAuthor;
-                    element.authorURL = arasaacLicenseURL;
-                    element.searchProviderName = arasaacService.SEARCH_PROVIDER_NAME;
-                    element.searchProviderOptions = JSON.parse(JSON.stringify(_lastOptions));
-                    /*element.promise = imageUtil.urlToBase64(element.url, 500, 'image/png');
-                    element.promise.then((base64) => {
-                        if (base64) {
-                            element.data = base64;
-                        } else {
-                            element.failed = true;
-                        }
-                    });*/
-                    queriedElements.push(element);
-                }
-            }
-            _lastSearchTerm = search;
-            resolve(queriedElements);
         }
+        
+        if (!_lastRawResultList || !_lastRawResultList.length || _lastRawResultList.length === 0) {
+            _lastRawResultList = [];
+        }
+        let startIndex = (chunkNr * chunkSize) - chunkSize;
+        let endIndex = startIndex + chunkSize - 1;
+        _hasNextChunk = _lastRawResultList.length > (endIndex + 1);
+        for (let i = startIndex; i <= endIndex; i++) {
+            if (_lastRawResultList[i]) {
+                let element = {};
+                let apiElement = JSON.parse(JSON.stringify(_lastRawResultList[i]));
+                element.url = getUrl(apiElement._id, _lastOptions);
+                element.author = arasaacAuthor;
+                element.authorURL = arasaacLicenseURL;
+                element.searchProviderName = arasaacService.SEARCH_PROVIDER_NAME;
+                element.searchProviderOptions = JSON.parse(JSON.stringify(_lastOptions));
+                /*element.promise = imageUtil.urlToBase64(element.url, 500, 'image/png');
+                element.promise.then((base64) => {
+                    if (base64) {
+                        element.data = base64;
+                    } else {
+                        element.failed = true;
+                    }
+                });*/
+                queriedElements.push(element);
+            }
+        }
+        _lastSearchTerm = search;
+        resolve(queriedElements);
     });
 }
 
+async function getResultListLangs(langs, search) {
+    langs = langs || [i18nService.getContentLang()];
+    langs = [...new Set(langs)];
+    let list = [];
+    for (let lang of langs) {
+        try {
+            list = await getResultList(lang, search);
+        } catch (e) {
+            return Promise.reject(e);
+        }
+        if (list.length > 0) {
+            return list;
+        }
+    }
+    return list;
+}
+
+function getResultList(lang, search) {
+    let url = `https://api.arasaac.org/api/pictograms/${lang}/search/${search}`;
+    return new Promise((resolve, reject) => {
+        $.get(url, null, function (resultList) {
+            resolve(resultList);
+        }, 'json').fail((reason) => {
+            if (reason.status === 404) {
+                return resolve([]);
+            }
+            reject('no internet');
+        });
+    });
+}
 
 export {arasaacService};

@@ -16,6 +16,12 @@
                                 <label class="inline" for="enableClick">{{ $t('selectWithMouseClickOrTap') }}</label>
                             </div>
                         </div>
+                        <div class="srow">
+                            <div class="twelve columns">
+                                <input v-focus type="checkbox" id="enableDoubleClick" v-model="inputConfig.mouseDoubleClickEnabled"/>
+                                <label class="inline" for="enableDoubleClick">{{ $t('selectWithDoubleClickOrDoubleTap') }}</label>
+                            </div>
+                        </div>
                         <div class="srow" >
                             <div class="twelve columns">
                                 <input v-focus type="checkbox" id="enableHover" v-model="inputConfig.hoverEnabled"/>
@@ -33,22 +39,21 @@
                                 <label class="inline" for="hoverHideCursor">{{ $t('hideCursor') }}</label>
                             </div>
                             <div class="twelve columns">
-                                <input type="checkbox" id="chkReadActive" v-model="inputConfig.globalReadActive"/>
-                                <label for="chkReadActive">{{ $t('readOutActiveElement') }}</label>
-                            </div>
-                            <div class="twelve columns">
                                 <input type="checkbox" id="chkDisableHoverpane" v-model="inputConfig.hoverDisableHoverpane"/>
                                 <label for="chkDisableHoverpane">{{ $t('disableHoverPane') }}</label>
                             </div>
                         </div>
                         <div class="mb-4"></div>
-                        <accordion :acc-label="$t('ADVANCED_SETTINGS')" acc-label-type="h2" acc-background-color="white" v-if="inputConfig.mouseclickEnabled">
+                        <accordion :acc-label="$t('ADVANCED_SETTINGS')" acc-label-type="h2" acc-background-color="white">
                             <div class="srow">
                                 <div class="twelve columns">
                                     <input v-focus type="checkbox" id="mousedown" v-model="inputConfig.mouseDownInsteadClick"/>
                                     <label class="inline" for="mousedown">{{ $t('directlySelectElementOnPressingMouseButton') }}</label>
                                 </div>
                             </div>
+                        </accordion>
+                        <accordion :acc-label="$t('generalInputSettings')" acc-label-type="h2" acc-background-color="white">
+                            <global-input-options :input-config="inputConfig"/>
                         </accordion>
                         <accordion :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
                             <test-area :selected-element="selectedTestElement"></test-area>
@@ -74,7 +79,6 @@
 <script>
     import {dataService} from '../../../js/service/data/dataService'
     import {helpService} from "../../../js/service/helpService";
-    import {i18nService} from "../../../js/service/i18nService";
     import Accordion from "../../components/accordion.vue"
     import InputEventList from "../../components/inputEventList.vue"
     import TestArea from "./testArea.vue"
@@ -83,10 +87,11 @@
     import {Hover} from "../../../js/input/hovering";
     import {Clicker} from "../../../js/input/clicking";
     import {inputEventHandler} from "../../../js/input/inputEventHandler";
+    import GlobalInputOptions from "./globalInputOptions.vue";
 
     export default {
         props: [],
-        components: {Accordion, InputEventList, TestArea},
+        components: {GlobalInputOptions, Accordion, InputEventList, TestArea},
         data: function () {
             return {
                 inputConfig: null,
@@ -136,8 +141,8 @@
                         thiz.hover.startHovering();
                     }
 
-                    if (thiz.inputConfig.mouseclickEnabled) {
-                        thiz.clicker = new Clicker('.area-element-inner', thiz.inputConfig.mouseDownInsteadClick);
+                    if (thiz.inputConfig.mouseclickEnabled || thiz.inputConfig.mouseDoubleClickEnabled) {
+                        thiz.clicker = Clicker.getInstanceFromConfig(thiz.inputConfig, '.area-element-inner');
                         thiz.clicker.setSelectionListener(function (item) {
                             thiz.selectedTestElement = item;
                         });

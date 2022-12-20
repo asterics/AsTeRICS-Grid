@@ -1,0 +1,109 @@
+# cat /etc/apache2/sites-enabled/000-default-ssl.conf
+
+<IfModule mod_ssl.c>
+        <VirtualHost _default_:443>
+                ServerAdmin webmaster@localhost
+
+                ServerName fabi.asterics.eu
+
+                DocumentRoot /var/www/html
+
+                ErrorLog ${APACHE_LOG_DIR}/error.log
+                CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+                SSLEngine on
+                SSLProxyEngine On
+
+                SSLCertificateFile /etc/letsencrypt/live/fabi.asterics.eu/fullchain.pem
+                SSLCertificateKeyFile /etc/letsencrypt/live/fabi.asterics.eu/privkey.pem
+
+                # SSLCertificateChainFile /opt/couchdb/ssl/asterics-foundation.org_ssl_certificate_combined.cer
+        </VirtualHost>
+        <VirtualHost _default_:443>
+                ServerAdmin webmaster@localhost
+
+                ServerName flipmouse.asterics.eu
+
+                DocumentRoot /var/www/html/flipmouse
+
+                ErrorLog ${APACHE_LOG_DIR}/error.log
+                CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+                SSLEngine on
+                SSLProxyEngine On
+
+                SSLCertificateFile /etc/letsencrypt/live/flipmouse.asterics.eu/fullchain.pem
+                SSLCertificateKeyFile /etc/letsencrypt/live/flipmouse.asterics.eu/privkey.pem
+
+                # SSLCertificateChainFile /opt/couchdb/ssl/asterics-foundation.org_ssl_certificate_combined.cer
+        </VirtualHost>
+        <VirtualHost _default_:443>
+                ServerAdmin webmaster@localhost
+
+                ServerName flippad.asterics.eu
+
+                DocumentRoot /var/www/html/flippad
+
+                ErrorLog ${APACHE_LOG_DIR}/error.log
+                CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+                SSLEngine on
+                SSLProxyEngine On
+
+                SSLCertificateFile /etc/letsencrypt/live/flippad.asterics.eu/fullchain.pem
+                SSLCertificateKeyFile /etc/letsencrypt/live/flippad.asterics.eu/privkey.pem
+
+                # SSLCertificateChainFile /opt/couchdb/ssl/asterics-foundation.org_ssl_certificate_combined.cer
+        </VirtualHost>
+        <VirtualHost _default_:443>
+                ServerAdmin webmaster@localhost
+
+                ServerName login.couchdb.asterics-foundation.org
+                ProxyPreserveHost on
+
+                ProxyPass / https://localhost:3001/ retry=1 acquire=3000 timeout=600 Keepalive=On
+                ProxyPassReverse / https://localhost:3001/
+
+                ErrorLog ${APACHE_LOG_DIR}/error.log
+                CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+                SSLEngine on
+                SSLProxyEngine On
+                SSLProxyVerify none
+                SSLProxyCheckPeerCN off
+                SSLProxyCheckPeerName off
+                SSLProxyCheckPeerExpire off
+
+                SSLCertificateFile /etc/letsencrypt/live/login.couchdb.asterics-foundation.org/fullchain.pem
+                SSLCertificateKeyFile /etc/letsencrypt/live/login.couchdb.asterics-foundation.org/privkey.pem
+
+                # SSLCertificateChainFile /opt/couchdb/ssl/asterics-foundation.org_ssl_certificate_combined.cer
+        </VirtualHost>
+        <VirtualHost _default_:443>
+                ServerAdmin webmaster@localhost
+
+                ServerName db.couchdb.asterics-foundation.org
+                ProxyPreserveHost on
+
+                ProxyPass / https://localhost:6984/ retry=1 acquire=3000 timeout=600 Keepalive=On
+                ProxyPassReverse / https://localhost:6984/
+
+                ErrorLog ${APACHE_LOG_DIR}/error.log
+                CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+                SSLEngine on
+                SSLProxyEngine On
+                SSLProxyVerify none
+                SSLProxyCheckPeerCN off
+                SSLProxyCheckPeerName off
+                SSLProxyCheckPeerExpire off
+
+                SSLCertificateFile /etc/letsencrypt/live/db.couchdb.asterics-foundation.org/fullchain.pem
+                SSLCertificateKeyFile /etc/letsencrypt/live/db.couchdb.asterics-foundation.org/privkey.pem
+
+                # SSLCertificateChainFile /opt/couchdb/ssl/asterics-foundation.org_ssl_certificate_combined.cer
+        </VirtualHost>
+</IfModule>
+
+
+

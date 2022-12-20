@@ -18,6 +18,7 @@ import {urlParamService} from "../urlParamService";
 import {filterService} from "./filterService";
 import {serviceWorkerService} from "../serviceWorkerService.js";
 import {constants} from "../../util/constants.js";
+import {MainVue} from "../../vue/mainVue.js";
 
 let dataService = {};
 
@@ -77,10 +78,10 @@ dataService.getGrids = function (fullVersion, withoutGlobal) {
             let retVal = grids instanceof Array ? grids : [grids];
             if (withoutGlobal) {
                 dataService.getMetadata().then(metadata => {
-                    resolve(retVal.filter(grid => grid.id !== metadata.globalGridId));
+                    resolve(retVal.filter(grid => grid && grid.id !== metadata.globalGridId));
                 })
             } else {
-                resolve(retVal);
+                resolve(retVal.filter(grid => !!grid));
             }
         });
     });
@@ -226,6 +227,7 @@ dataService.saveMetadata = function (newMetadata, forceDbSave) {
                 localStorageService.saveLocalMetadata(newMetadata);
                 databaseService.saveObject(MetaData, newMetadata).then(() => {
                     resolve();
+                    $(document).trigger(constants.EVENT_METADATA_UPDATED, newMetadata);
                 });
             } else {
                 resolve();
@@ -246,7 +248,8 @@ dataService.getMetadata = function () {
             let returnValue = null;
             if (!result) {
                 returnValue = new MetaData();
-            } else if (result instanceof Array) {
+            } else if (Array.isArray(result)) {
+                result.sort((a, b) => a.id.localeCompare(b.id)); // always prefer older metadata objects
                 returnValue = result[0];
             } else {
                 returnValue = result;
@@ -388,7 +391,16 @@ dataService.convertFileToImportData = async function (file) {
         return null;
     }
     if (fileUtil.isGrdFile(file)) {
-        importData = JSON.parse(fileContent);
+        try {
+            importData = JSON.parse(fileContent);
+        } catch (e) {
+            log.warn("couldn't parse import data");
+            return null;
+        }
+        if (!importData || (!importData.grids && !importData.metadata && !importData.dictionaries)) {
+            log.warn("data doesn't contain AsTeRICS Grid config");
+            return null;
+        }
     } else if (fileUtil.isObfFile(file)) {
         importData = await obfConverter.OBFToGridData(JSON.parse(fileContent));
     } else if (fileUtil.isObzFile(file)) {
@@ -427,7 +439,8 @@ dataService.importBackup = async function (file, progressFn) {
     progressFn(10, i18nService.t('extractingGridsFromFile'));
     let importData = await dataService.convertFileToImportData(file);
     if (!importData) {
-        progressFn(100); // TODO error message?!
+        progressFn(100);
+        MainVue.setTooltip(i18nService.t("backupFileDoesntContainData"), {msgType: 'warn'});
         return;
     }
     return dataService.importBackupData(importData, {
@@ -491,11 +504,6 @@ dataService.importData = async function (data, options) {
     importData.grids.forEach(grid => {
         let label = i18nService.getTranslation(grid.label);
         grid.label[i18nService.getContentLang()] = modelUtil.getNewName(label, existingNames);
-        grid.gridElements.forEach(element => {
-            if (element.image && element.image.url && navigator.serviceWorker && navigator.serviceWorker.controller) {
-                serviceWorkerService.cacheImageUrl(element.image.url);
-            }
-        });
     });
     options.progressFn(20);
     if (options.generateGlobalGrid && !importData.metadata.globalGridId) {
@@ -513,11 +521,13 @@ dataService.importData = async function (data, options) {
         existingMetadata.lastOpenedGridId = importData.metadata.lastOpenedGridId;
         importData.metadata = existingMetadata;
     }
-    importData.metadata.globalGridActive = !!importData.metadata.globalGridId;
 
-    await dataService.saveGrids(importData.grids);
+    await dataService.saveGrids(JSON.parse(JSON.stringify(importData.grids)));
     options.progressFn(70);
-    await dataService.saveMetadata(importData.metadata, true);
+    if (importData.metadata) {
+        importData.metadata.globalGridActive = !!importData.metadata.globalGridId;
+        await dataService.saveMetadata(importData.metadata, true);
+    }
     options.progressFn(80);
 
     if (options.importDictionaries && importData.dictionaries) {
@@ -530,6 +540,17 @@ dataService.importData = async function (data, options) {
         await databaseService.bulkSave(importData.dictionaries);
         predictionService.init();
     }
+
+    setTimeout(() => {
+        log.debug("pre-caching all images of gridset ...")
+        importData.grids.forEach(grid => {
+            grid.gridElements.forEach(element => {
+                if (element.image && element.image.url && navigator.serviceWorker && navigator.serviceWorker.controller) {
+                    serviceWorkerService.cacheImageUrl(element.image.url);
+                }
+            });
+        });
+    }, 3000);
     options.progressFn(100);
 };
 

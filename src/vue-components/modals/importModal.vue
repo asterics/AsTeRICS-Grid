@@ -17,8 +17,9 @@
                         <div class="row">
                             <div class="col-12 col-md-6 mb-2">
                                 <label class="me-3" for="fileInput">{{ $t('selectFile') }}</label>
-                                <input id="fileInput" type="file" @change="fileChanged" accept=".grd"/>
+                                <input id="fileInput" type="file" @change="fileChanged" accept=".grd, .txt"/>
                             </div>
+                            <div class="col-12 col-md-6" v-if="file && !importData">{{ $t('backupFileDoesntContainData') }}</div>
                             <div class="col-12 col-md-6" v-if="importData">
                                 <ul>
                                     <li v-if="hasGrids">
@@ -86,6 +87,7 @@
         data: function () {
             return {
                 data: null,
+                file: null,
                 importData: null,
                 options: {
                     importDictionaries: true,
@@ -112,10 +114,10 @@
         },
         methods: {
             async fileChanged(event) {
-                let file = event.target.files[0];
+                this.file = event.target.files[0];
                 this.importData = null;
-                if (file) {
-                    this.importData = await dataService.convertFileToImportData(file);
+                if (this.file) {
+                    this.importData = await dataService.convertFileToImportData(this.file);
                 }
             },
             async save() {

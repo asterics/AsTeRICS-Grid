@@ -1,8 +1,8 @@
 <template>
     <div>
         <header-icon full-header="true"></header-icon>
-        <div class="container ms-0">
-            <div class="row ps-2 ps-sm-3 ps-md-4 col-12 col-md-10 col-xl-8 mt-0">
+        <div class="container px-3 px-md-5 ms-0 col-12 col-md-10 col-xl-9 pt-4 pt-lg-5 mb-5 overflow-content">
+            <div class="row">
                 <h1>{{ $t('help') }}</h1>
                 <div>
                     <span>{{ $t('theFollowingRessourcesForHelpOnAstericsGrid') }}</span>:
@@ -13,6 +13,47 @@
                     <li v-if="currentLang === 'es'"><a href="https://aulaabierta.arasaac.org/asterics-grid_inicio" target="_blank">{{ $t('arasaacTutorial') }} <span>({{ 'lang.es' | translate }})</span></a></li>
                     <li><a href="https://www.youtube.com/playlist?list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz" target="_blank"><span>{{ $t('tutorialVideosOnYoutube') }}</span> <span>({{ 'lang.de' | translate }})</span></a></li>
                     <li><a href="https://www.youtube.com/channel/UCVIQETg6tIMu3SdEHaIftIw/videos" target="_blank"><span>{{ $t('tutorialVideosOnYoutube') }}</span> <span>(Jim Luther, {{ 'lang.en' | translate }})</span></a></li>
+                </ul>
+            </div>
+            <div class="row">
+                <h2>{{ $t('contactAndFeedback') }}</h2>
+                <span>{{ $t('ifYouEncounterAnErrorHaveSuggestions') }}</span>
+                <ul>
+                    <li>
+                        <i18n path="generalSupportSocialMedia" tag="span">
+                            <template v-slot:instagramLink>
+                                <a href="https://www.instagram.com/asterics_grid/" target="_blank">{{ $t('instagramAstericsGridPage') }}</a>
+                            </template>
+                            <template v-slot:facebookLink>
+                                <a href="https://www.facebook.com/asterics.grid.y.arasaac" target="_blank">{{ $t('facebookAstericsGridPage') }}</a>
+                            </template>
+                        </i18n>
+                        <span>({{ $t('lang.en') }}, {{ $t('lang.es') }})</span>
+                    </li>
+                    <li>
+                        <i18n path="foundBugReportGithubIssue" tag="span">
+                            <template v-slot:githubLink>
+                                <a href="https://github.com/asterics/AsTeRICS-Grid/issues/new" target="_blank">{{ $t('createAnIssueOnGithub') }}</a>
+                            </template>
+                        </i18n>
+                        <span>({{ $t('lang.en') }})</span>
+                    </li>
+                    <li>
+                        <i18n path="discussIdeasGithubDiscussions" tag="span">
+                            <template v-slot:githubLink>
+                                <a href="https://github.com/asterics/AsTeRICS-Grid/discussions" target="_blank">{{ $t('postSomethingOnGithubDiscussions') }}</a>
+                            </template>
+                        </i18n>
+                        <span>({{ $t('lang.en') }})</span>
+                    </li>
+                    <li>
+                        <i18n path="specialRequestsSendEmail" tag="span">
+                            <template v-slot:foundationEmail>
+                                <a href="mailto:office@asterics-foundation.org">office@asterics-foundation.org</a>
+                            </template>
+                        </i18n>
+                        <span>({{ $t('lang.en') }}, {{ $t('lang.de') }})</span>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -48,5 +89,10 @@
     }
     li {
         margin-top: 0.5em;
+    }
+    ul {
+        list-style-position: outside;
+        padding-left: 2em;
+        margin-top: 1em;
     }
 </style>

@@ -3,28 +3,8 @@
         <div class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container modal-container-flex" @keydown.esc="$emit('close')" @keydown.ctrl.enter="save()" @keydown.ctrl.right="nextFromKeyboard()" @keydown.ctrl.left="editNext(true)" @keydown.ctrl.y="save(true)">
-                    <div class="container-fluid px-0 mb-5">
-                        <div class="row">
-                            <div class="modal-header col-8 col-sm-10 col-md-5 order-md-1">
-                                <h1 v-if="editElementId" name="header" class="inline">
-                                    {{ $t('editGridItem') }}
-                                </h1>
-                                <h1 v-if="!editElementId" name="header" class="inline">
-                                    {{ $t('newGridItem') }}
-                                </h1>
-                            </div>
-                            <a class="col-2 col-sm-1 col-md black order-md-3" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
-                            <a class="col-2 col-sm-1 col-md black order-md-4" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
-                            <div class="col-12 col-md-5 d-flex align-items-center order-md-2" v-if="originalGridElement">
-                                <div v-if="originalGridElement.type === GridElement.ELEMENT_TYPE_NORMAL">
-                                    <img v-if="originalGridElement.image" height="30" :src="originalGridElement.image.data || originalGridElement.image.url"/>
-                                    <span class="mx-2">{{ originalGridElement.label | extractTranslation }}</span>
-                                </div>
-                                <div v-if="originalGridElement.type !== GridElement.ELEMENT_TYPE_NORMAL">
-                                    <span class="mx-2">{{ originalGridElement.type | translate }}</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="modal-header">
+                        <edit-element-header :grid-element="originalGridElement" :header="editElementId ? $t('editGridItem') : $t('newGridItem')" :close-fn="close" :open-help-fn="openHelp"></edit-element-header>
                     </div>
 
                     <nav-tabs class="mb-3" :tab-labels="Object.keys(possibleTabs)" v-model="currentTab" @input="imageSearch = ''"></nav-tabs>
@@ -81,6 +61,7 @@
     import EditElementYoutube from "./editElementYoutube.vue";
     import {i18nService} from "../../js/service/i18nService.js";
     import EditElementCollect from "./editElementCollect.vue";
+    import EditElementHeader from "../components/editElementHeader.vue";
 
     const TAB_GENERAL = 'TAB_GENERAL';
     const TAB_IMAGE = 'TAB_IMAGE';
@@ -90,6 +71,7 @@
     export default {
         props: ['editElementIdParam', 'gridDataId', 'gridInstance'],
         components: {
+            EditElementHeader,
             EditElementCollect,
             NavTabs, EditElementGeneral, EditElementImage, EditElementActions, EditElementYoutube
         },
@@ -200,6 +182,9 @@
             },
             openHelp() {
                 helpService.openHelp();
+            },
+            close() {
+                this.$emit('close');
             }
         },
         mounted() {

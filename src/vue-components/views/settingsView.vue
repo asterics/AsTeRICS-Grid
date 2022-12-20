@@ -103,25 +103,9 @@
                     </div>
                     <div class="srow">
                         <accordion :acc-label="$t('advancedVoiceSettings')" class="eleven columns">
-                            <div class="srow" v-if="metadata.localeConfig.preferredVoice">
-                                <label class="three columns" for="voicePitch">
-                                    <span>{{ $t('voicePitch') }}</span>
-                                </label>
-                                <input id="voicePitch" class="five columns" type="range" min="0.1" max="2" step="0.1" v-model.number="metadata.localeConfig.voicePitch" @change="saveVoice()" @input="event => {metadata.localeConfig.voicePitch = parseFloat(event.target.value)}">
-                                <div class="three columns">
-                                    <span>{{ $t('currentValue') }}</span>:
-                                    <span>{{metadata.localeConfig.voicePitch.toFixed(1)}}</span>
-                                </div>
-                            </div>
-                            <div class="srow" v-if="metadata.localeConfig.preferredVoice">
-                                <label class="three columns" for="voiceRate">
-                                    <span>{{ $t('voiceRate') }}</span>
-                                </label>
-                                <input id="voiceRate" class="five columns" type="range" min="0.1" max="10" step="0.1" v-model.number="metadata.localeConfig.voiceRate" @change="saveVoice()" @input="event => {metadata.localeConfig.voiceRate = parseFloat(event.target.value)}">
-                                <div class="three columns">
-                                    <span>{{ $t('currentValue') }}</span>:
-                                    <span>{{metadata.localeConfig.voiceRate.toFixed(1)}}</span>
-                                </div>
+                            <div v-if="metadata.localeConfig.preferredVoice">
+                                <slider-input :label="$t('voicePitch')" id="voicePitch" min="0.1" max="2" step="0.1" decimals="1" v-model.number="metadata.localeConfig.voicePitch" @change="saveVoice()"/>
+                                <slider-input :label="$t('voiceRate')" id="voiceRate" min="0.1" max="10" step="0.1" decimals="1" v-model.number="metadata.localeConfig.voiceRate" @change="saveVoice()"/>
                             </div>
                             <div class="srow">
                                 <label class="three columns" for="inVoice2">
@@ -131,7 +115,7 @@
                                     <option :value="undefined">{{ $t('noneSelected') }}</option>
                                     <option v-for="voice in voices" :value="voice.name">{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}</option>
                                 </select>
-                                <button id="testVoice2" class="three columns" :disabled="!metadata.localeConfig.secondVoice" @click="testSpeak2">{{ $t('test') }}</button>
+                                <button id="testVoice2" class="three columns" :disabled="!metadata.localeConfig.secondVoice" @click="speechService.testSpeak(metadata.localeConfig.secondVoice)">{{ $t('test') }}</button>
                             </div>
                         </accordion>
                     </div>
@@ -177,6 +161,12 @@
             </div>
             <div class="srow">
                 <div class="eleven columns">
+                    <h3 class="mt-2">{{ $t('generalInputSettings') }}</h3>
+                    <global-input-options :input-config="metadata.inputConfig" heading-tag="h4" @change="saveMetadata()" :hide-acoustic-feedback="true"></global-input-options>
+                </div>
+            </div>
+            <div class="srow">
+                <div class="eleven columns">
                     <h3 class="mt-2">{{ $t('elementLabels') }}</h3>
                     <div class="srow">
                         <label class="three columns" for="convertText">{{ $t('convertElementLabels') }}</label>
@@ -203,12 +193,15 @@
     import {MetaData} from "../../js/model/MetaData.js";
     import {TextConfig} from "../../js/model/TextConfig.js";
     import Accordion from "../components/accordion.vue";
+    import GlobalInputOptions from "../modals/input/globalInputOptions.vue";
+    import SliderInput from "../modals/input/sliderInput.vue";
+    import $ from "../../js/externals/jquery.js";
 
     let KEY_SETTINGS_SHOW_ALL_VOICES = "KEY_SETTINGS_SHOW_ALL_VOICES";
     let KEY_SETTINGS_SHOW_ALL_CONTENTLANGS = "KEY_SETTINGS_SHOW_ALL_CONTENTLANGS";
 
     export default {
-        components: {Accordion, HeaderIcon},
+        components: {SliderInput, GlobalInputOptions, Accordion, HeaderIcon},
         props: [],
         data() {
             return {
@@ -320,7 +313,6 @@
                 this.metadata.localeConfig.voiceRate = 1;
             },
             saveVoice(dontSaveMetadata) {
-                speechService.setPreferredVoiceProps(this.metadata.localeConfig.preferredVoice, this.metadata.localeConfig.voicePitch, this.metadata.localeConfig.voiceRate, this.metadata.localeConfig.secondVoice);
                 this.setVoiceTestText();
                 if (!dontSaveMetadata) {
                     this.saveMetadata();
@@ -334,22 +326,14 @@
             saveMetadata() {
                 let thiz = this;
                 this.saveSuccess = undefined;
-                util.throttle(() => {
+                util.debounce(() => {
                     dataService.saveMetadata(thiz.metadata).then(() => {
                         this.saveSuccess = true;
                     });
-                }, null, 500, 'SAVE_METADATA');
+                }, 250, 'SAVE_METADATA');
             },
             testSpeak() {
                 speechService.speak(this.testText, {preferredVoice: this.metadata.localeConfig.preferredVoice});
-            },
-            testSpeak2() {
-                let secondVoice = this.metadata.localeConfig.secondVoice;
-                if(!secondVoice) {
-                    return;
-                }
-                let secondVoiceLang = this.voices.filter(lang => lang.name === secondVoice)[0].lang;
-                speechService.speak(i18nService.tl('thisIsAnEnglishSentence', null, secondVoiceLang), {preferredVoice: this.metadata.localeConfig.secondVoice, useStandardRatePitch: true});
             }
         },
         mounted() {
