@@ -886,6 +886,7 @@
   "Switch": "Switch",
   "Rollershutter": "Roller shutter",
   "Number": "Number",
+  "Number:Temperature": "Temperature",
   "customValue": "Custom value",
   "Color": "Color item",
   "customColor": "Custom color",
