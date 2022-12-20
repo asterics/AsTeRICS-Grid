@@ -31,7 +31,8 @@ GridActionOpenHAB.defaults({
     actionValue: '0',
     itemType: '', //Dimmer, Switch, ... itemType
     itemName: '', //itemName
-    actionType: '' //ON, OFF, CUSTOM_VALUE ... actionType
+    actionType: '', //ON, OFF, CUSTOM_VALUE ... actionType,
+    openHABUrl: ''
 });
 
 export {GridActionOpenHAB};
