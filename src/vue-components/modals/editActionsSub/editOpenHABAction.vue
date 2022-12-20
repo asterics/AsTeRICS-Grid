@@ -173,7 +173,6 @@ export default {
       this.action.actionType = this.action.itemType ? OPENHAB_TYPES_TO_ACTIONS[this.action.itemType][0] : null;
     },
     setFirstItem() {
-        log.warn("setfirstItem");
         let filteredItems = this.getFilteredItems();
         this.selectedItem = filteredItems[0];
       this.updateAction();
