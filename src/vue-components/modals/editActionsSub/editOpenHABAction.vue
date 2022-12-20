@@ -160,7 +160,7 @@ export default {
         let filtered = this.fetchedItems.filter((item) => {
             return item.name.toLowerCase().match((this.searchText.toLowerCase()))
         });
-        filtered = filtered.filter(e => this.selectedTypeFilter === "All" || e.type === this.selectedTypeFilter);
+        filtered = filtered.filter(e => this.selectedTypeFilter === OPENHAB_ITEM_TYPES.ALL || e.type === this.selectedTypeFilter);
         return filtered;
     },
     fixOpenHABUrl() {
