@@ -1,4 +1,5 @@
 import {areService} from "./areService";
+import {openHABService} from "./openHABService";
 import {dataService} from "./data/dataService";
 import {speechService} from "./speechService";
 import {collectElementService} from "./collectElementService";
@@ -116,6 +117,10 @@ async function doAction(gridElement, action, options) {
                     doAREAction(action, grid);
                 });
             }
+            break;
+        case 'GridActionOpenHAB':
+            log.debug('action openHAB');
+            openHABService.sendAction(action)
             break;
         case 'GridActionPredict':
             log.debug('action predict');

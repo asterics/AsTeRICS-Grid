@@ -17,6 +17,7 @@ This chapter is about actions that can be performed if a grid element is selecte
    * [YouTube Action](05_actions.md#YouTube-Action)
    * [Change Content Language](05_actions.md#Change-Content-Language)
    * [Open webpage in new tab](05_actions.md#Open-webpage-in-new-tab)
+   * [openHAB Action](05_actions.md#openhab-action)
 
 [Back to Overview](README.md)
 
@@ -331,6 +332,78 @@ Clicking on "Edit" of a "Open webpage in new tab" action (or creating a new one 
 * **Automatically close timeout in seconds**: enter time in seconds you want the tab remains open. After this time, the web page will close and the communicator grid will be displayed again
 
 By clicking on the grid elemnt this action is assigned to, the chosen webpage is accessed and the user can navigate in it for the time which was set. After this time, the webpage will be closed and the user will return to the communicator. 
+
+### openHAB Action
+
+AsTeRICS Grid is capable of controlling a local openHAB installation through the browser. This action utilize the REST
+API of openHAB (see [API documentation](https://www.openhab.org/docs/configuration/restdocs.html)).
+
+#### Accessing openHAB via http/https
+
+By default, the actions searches for a local openHAB instance on port 8080.
+If the openHAB installation is hosted in the local network, there are two possible ways to access it via the browser:
+
+- **http**:
+  If you are using openHAB over http with port 8080, you need to allow your browser to use ***mixed content***.
+  Otherwise, the browser has no permission to access your local network.
+- **https**:
+  If you are using openHAB over https with port 8443, some browser need a one-time-exception to use the resources from
+  the REST-API.
+    - **Google Chrome**:
+      Does not require additional steps for using the REST-API over https.
+    - **Firefox and Safari**:
+      In order to use the REST-API, a new tab with the address `https://openHAB-IP-address:8443/rest/items` must be
+      open. Firefox/Safari will prompt that this resource is insecure. By allowing to show the content of this website,
+      an exception is created to allow general connections to the resource. After granting this exception, the
+      openHAB-Action can access openHAB via https. Figure 3 shows an example of such a security prompt.
+
+![openHAB set exception](./img/openHAB-https-exception.png)
+*Fig. 3: Example of a security prompt by Firefox*
+
+Creating a new openHAB action shows the following configuration possibilities:
+
+![openHAB action options](./img/openHAB-configuration.png)
+
+These are the elements in this configuration dialog:
+
+1. **openHAB URL**: the URL of a running openHAB instance to connect with. Standard URL is `http://127.0.0.1:8080/rest/items/` for a locally running openHAB.
+2. **Fetch Items**: click in order to fetch all available items from the current URL. A tick (&#10003;) or times (&times;) symbol will indicate if fetching was successful or has failed.
+3. **Filter through item types**: filter fetched items with its item type (see [controllable Items](05_actions.md#controllable-items) for what items are controllable). By default, all items are selected. 
+4. **Search for items by name**: search for items by name.
+5. **Select item**: all or filtered items will be listed in a dropdown menu.
+6. **Choose command to send**: according to the item type, a selection of commands will be available.
+7. **(Optional) Choose custom value for item**: some items (Dimmer, Color, Roller shutter, Temperature) can be controlled with custom values (e.g.: absolute value for dimmer, custom color). The input variant for the specific item will change accordingly.
+
+When editing an already created action, selecting a new item will be disabled and only the command can be changed.
+If the item should be changed, it is required to fetch the items again (2. Fetch Items).
+After the items are fetched, the action can be configured as if it was created new.
+
+#### Controllable items
+
+Following items are implemented and controllable via the action:
+
+- **Switch**:
+  Includes item like light switches, switches for automations, switches for outlets, ...
+- **Dimmer**:
+  Includes all dimmable lights
+- **Roller shutter**:
+  Includes all roller shutter and blinds
+- **Color**:
+  Includes all multicolor lights
+- **Temperature**:
+  Inlcudes items with a setable temperature like thermostats
+- **Media player**:
+  Includes all media player devices
+
+An item must be implemented in openHAB in order to be accessible via the action.
+
+#### Note:
+
+- The ARE is not required for this action.
+- In order to use this action, CORS must be enabled by your openHAB installation. Otherwise, openHAB will deny the
+  action calls.
+- You must be in the same network as your openHAB installation.
+- Basic Authentication is not supported.
 
 [&#x2190; Previous Chapter](04_input_options.md) [Next Chapter &#x2192;](06_users.md)
 

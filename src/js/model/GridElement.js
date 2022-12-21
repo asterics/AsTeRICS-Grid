@@ -5,6 +5,7 @@ import {GridActionSpeak} from "./GridActionSpeak";
 import {GridActionSpeakCustom} from "./GridActionSpeakCustom";
 import {GridActionNavigate} from "./GridActionNavigate";
 import {GridActionARE} from "./GridActionARE";
+import {GridActionOpenHAB} from "./GridActionOpenHAB";
 import {GridActionPredict} from "./GridActionPredict";
 import {GridActionCollectElement} from "./GridActionCollectElement";
 import {constants} from "../util/constants";
@@ -74,7 +75,7 @@ class GridElement extends Model({
     }
 
     static getActionTypes() {
-        return [GridActionSpeak, GridActionNavigate, GridActionSpeakCustom, GridActionAudio, GridActionPredict, GridActionCollectElement, GridActionARE, GridActionWebradio, GridActionYoutube, GridActionChangeLang, GridActionOpenWebpage];
+        return [GridActionSpeak, GridActionNavigate, GridActionSpeakCustom, GridActionAudio, GridActionPredict, GridActionCollectElement, GridActionARE, GridActionOpenHAB, GridActionWebradio, GridActionYoutube, GridActionChangeLang, GridActionOpenWebpage];
     }
 
     static getActionTypeModelNames() {
@@ -83,7 +84,7 @@ class GridElement extends Model({
 
     static getActionInstance(modelName) {
         let constructor = this.getActionClass(modelName);
-        if(constructor) {
+        if (constructor) {
             return new constructor();
         } else {
             log.warn('action type not found: ' + modelName);
