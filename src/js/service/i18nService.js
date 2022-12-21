@@ -181,7 +181,7 @@ i18nService.getTranslationAppLang = function (i18nObject) {
  * @return translation object, e.g. {en: 'given label'}
  */
 i18nService.getTranslationObject = function(label, locale) {
-    locale = locale || currentContentLang;
+    locale = locale || i18nService.getContentLang();
     let object = {};
     object[locale] = label;
     return object;
