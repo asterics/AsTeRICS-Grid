@@ -367,7 +367,7 @@
             let thiz = this;
             let langKeys = Object.keys(thiz.gridData.label);
             thiz.gridLanguages = thiz.allLanguages.filter(lang => langKeys.indexOf(lang.code) !== -1);
-            dataService.getGrids().then(grids => {
+            dataService.getGrids(false, true).then(grids => {
                 thiz.grids = grids;
                 thiz.grids = thiz.grids.sort((a, b) => i18nService.getTranslation(a.label).localeCompare(i18nService.getTranslation(b.label)));
             });
