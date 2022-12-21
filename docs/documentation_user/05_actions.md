@@ -335,8 +335,8 @@ By clicking on the grid elemnt this action is assigned to, the chosen webpage is
 
 ### openHAB Action
 
-AsTeRICS Grid is capable of controlling a local openHAB installation through the browser. This action utilize the REST
-API of openHAB (see [API documentation](https://www.openhab.org/docs/configuration/restdocs.html)).
+AsTeRICS Grid is capable of controlling a local openHAB installation through the browser. This action utilizes the REST
+API of openHAB (see [openHAB API documentation](https://www.openhab.org/docs/configuration/restdocs.html)).
 
 #### Accessing openHAB via http/https
 
@@ -352,13 +352,14 @@ If the openHAB installation is hosted in the local network, there are two possib
     - **Google Chrome**:
       Does not require additional steps for using the REST-API over https.
     - **Firefox and Safari**:
-      In order to use the REST-API, a new tab with the address `https://openHAB-IP-address:8443/rest/items` must be
-      open. Firefox/Safari will prompt that this resource is insecure. By allowing to show the content of this website,
+      In order to use the REST-API, a new tab with the address `https://<openHAB-IP-address>:8443/rest/items` must be
+      opened. Firefox/Safari will prompt that this resource is insecure. By allowing to show the content of this website,
       an exception is created to allow general connections to the resource. After granting this exception, the
-      openHAB-Action can access openHAB via https. Figure 3 shows an example of such a security prompt.
+      openHAB-Action can access openHAB via https. Figure 20 shows an example of such a security prompt.
 
-![openHAB set exception](./img/openHAB-https-exception.png)
-*Fig. 3: Example of a security prompt by Firefox*
+<img src="./img/openHAB-https-exception.png" title="openHAB action set browser exception" width="700"/>
+
+*Fig. 20: Example of a security prompt by Firefox*
 
 Creating a new openHAB action shows the following configuration possibilities:
 
@@ -366,7 +367,7 @@ Creating a new openHAB action shows the following configuration possibilities:
 
 These are the elements in this configuration dialog:
 
-1. **openHAB URL**: the URL of a running openHAB instance to connect with. Standard URL is `http://127.0.0.1:8080/rest/items/` for a locally running openHAB.
+1. **openHAB URL**: the URL of a running openHAB instance to connect with. Standard URL is `http://127.0.0.1:8080/rest/items/` for a local openHAB instance.
 2. **Fetch Items**: click in order to fetch all available items from the current URL. A tick (&#10003;) or times (&times;) symbol will indicate if fetching was successful or has failed.
 3. **Filter through item types**: filter fetched items with its item type (see [controllable Items](05_actions.md#controllable-items) for what items are controllable). By default, all items are selected. 
 4. **Search for items by name**: search for items by name.
@@ -374,8 +375,8 @@ These are the elements in this configuration dialog:
 6. **Choose command to send**: according to the item type, a selection of commands will be available.
 7. **(Optional) Choose custom value for item**: some items (Dimmer, Color, Roller shutter, Temperature) can be controlled with custom values (e.g.: absolute value for dimmer, custom color). The input variant for the specific item will change accordingly.
 
-When editing an already created action, selecting a new item will be disabled and only the command can be changed.
-If the item should be changed, it is required to fetch the items again (2. Fetch Items).
+When editing an already created action, selecting a new item will be disabled and only the action for the current command can be changed.
+If the item should be changed, it is required to fetch the items again.
 After the items are fetched, the action can be configured as if it was created new.
 
 #### Controllable items
@@ -383,7 +384,7 @@ After the items are fetched, the action can be configured as if it was created n
 Following items are implemented and controllable via the action:
 
 - **Switch**:
-  Includes item like light switches, switches for automations, switches for outlets, ...
+  Includes items like light switches, switches for automations, switches for outlets, ...
 - **Dimmer**:
   Includes all dimmable lights
 - **Roller shutter**:
@@ -397,9 +398,8 @@ Following items are implemented and controllable via the action:
 
 An item must be implemented in openHAB in order to be accessible via the action.
 
-#### Note:
+#### Notes:
 
-- The ARE is not required for this action.
 - In order to use this action, CORS must be enabled by your openHAB installation. Otherwise, openHAB will deny the
   action calls.
 - You must be in the same network as your openHAB installation.
