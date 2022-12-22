@@ -373,7 +373,8 @@ These are the elements in this configuration dialog:
 4. **Search for items by name**: search for items by name.
 5. **Select item**: all or filtered items will be listed in a dropdown menu.
 6. **Choose command to send**: according to the item type, a selection of commands will be available.
-7. **(Optional) Choose custom value for item**: some items (Dimmer, Color, Roller shutter, Temperature) can be controlled with custom values (e.g.: absolute value for dimmer, custom color). The input variant for the specific item will change accordingly.
+7. **Create grid elements**: this button allows to create grid elements for all actions of the currently selected items. Note that generated grid elements will only appear after clicking "OK" in the grid element edit modal. 
+8. **Choose custom value for item (optional)**: some items (Dimmer, Color, Roller shutter, Temperature) can be controlled with custom values (e.g.: absolute value for dimmer, custom color). The input variant for the specific item will change accordingly.
 
 When editing an already created action, selecting a new item will be disabled and only the action for the current command can be changed.
 If the item should be changed, it is required to fetch the items again.

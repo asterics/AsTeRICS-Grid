@@ -36,13 +36,12 @@
                 <label class="col-12 col-md-4 normal-text" for="searchItems">{{ $t('searchItem') }}</label>
                 <div class="col-9 col-md-4">
                     <input class="col-12" id="searchItems" v-model="searchText" @input="setFirstItem()"
-                           :placeholder="$t('placeholder-searchItem')" spellcheck="false" autocomplete="false"
+                           :placeholder="$t('placeholder-searchItem')" spellcheck="false" autocomplete="true"
                            type="text">
                 </div>
                 <div class="col-3">
                     <button class="py-0 px-3 mb-0" @click="searchText = ''; setFirstItem();"
-                            :title="$t('DeleteSearchText')"><i
-                        class="fas fa-trash"/></button>
+                            :title="$t('clearSearchText')"><i class="fas fa-trash"/></button>
                 </div>
             </div>
             <div v-if="filteredItems.length > 0">
@@ -52,10 +51,7 @@
                     </div>
                     <div class="col-12 col-md-4">
                         <select class="col-12" id="selectItem" v-model="selectedItem" @change="updateAction()">
-                            <option v-for="item in filteredItems" :value="item">{{ $t(item.type) }}: {{
-                                    item.name
-                                }}
-                            </option>
+                            <option v-for="item in filteredItems" :value="item">{{ $t(item.type) }}: {{ item.name }}</option>
                         </select>
                     </div>
                 </div>
@@ -79,13 +75,16 @@
                 <div class="col-12 col-md-4">
                     <label class="normal-text" for="selectAction">{{ $t('selectAction') }}</label>
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-4 mb-2">
                     <select id="selectAction" class="col-12" v-model="action.actionType"
                             @change="action.actionValue = '0'">
-                        <option v-for="action in OPENHAB_TYPES_TO_ACTIONS[action.itemType]" :value="action">
-                            {{ $t(`openHAB.${action}`) }}
+                        <option v-for="ohAction in OPENHAB_TYPES_TO_ACTIONS[action.itemType]" :value="ohAction">
+                            {{ $t(`openHAB.${ohAction}`) }}
                         </option>
                     </select>
+                </div>
+                <div class="col-12 col-md-4">
+                    <button class="col-12 col-md-10" @click="addAllActionElements"><i class="fas fa-plus"/> {{ $t('createGridElements') }}</button>
                 </div>
             </div>
         </div>
@@ -114,6 +113,9 @@
 
 <script>
 import {openHABService} from "../../../js/service/openHABService";
+import {i18nService} from "../../../js/service/i18nService.js";
+import {GridData} from "../../../js/model/GridData.js";
+import {arasaacService} from "../../../js/service/pictograms/arasaacService.js";
 
 const OPENHAB_ITEM_TYPES = {
     "ALL": "All",
@@ -128,15 +130,32 @@ const OPENHAB_ITEM_TYPES = {
 
 const OPENHAB_TYPES_TO_ACTIONS = {};
 OPENHAB_TYPES_TO_ACTIONS[OPENHAB_ITEM_TYPES.SWITCH] = ["ON", "OFF", "TOGGLE"];
-OPENHAB_TYPES_TO_ACTIONS[OPENHAB_ITEM_TYPES.DIMMER] = ["ON", "OFF", "INCREASE", "DECREASE", "CUSTOM_VALUE"];
+OPENHAB_TYPES_TO_ACTIONS[OPENHAB_ITEM_TYPES.DIMMER] = ["ON", "OFF", "DECREASE", "INCREASE", "CUSTOM_VALUE"];
 OPENHAB_TYPES_TO_ACTIONS[OPENHAB_ITEM_TYPES.ROLLERSHUTTER] = ["UP", "DOWN", "STOP", "CUSTOM_VALUE"];
 OPENHAB_TYPES_TO_ACTIONS[OPENHAB_ITEM_TYPES.COLOR] = ["ON", "OFF", "CUSTOM_VALUE", "CUSTOM_COLOR"];
 OPENHAB_TYPES_TO_ACTIONS[OPENHAB_ITEM_TYPES.NUMBER] = ["CUSTOM_VALUE"];
 OPENHAB_TYPES_TO_ACTIONS[OPENHAB_ITEM_TYPES.TEMPERATURE] = ["CUSTOM_VALUE"];
 OPENHAB_TYPES_TO_ACTIONS[OPENHAB_ITEM_TYPES.PLAYER] = ["PLAY", "PAUSE", "NEXT", "PREVIOUS", "REWIND", "FASTFORWARD"];
 
+const ACTIONS_FOR_ELEMENT_GENERATION = ["ON", "OFF", "TOGGLE", "INCREASE", "DECREASE", "UP", "DOWN", "STOP", "PLAY", "PAUSE", "NEXT", "PREVIOUS", "REWIND", "FASTFORWARD"];
+const MAP_ACTION_TO_IMAGE = {};
+MAP_ACTION_TO_IMAGE["ON"] = arasaacService.getGridImageById(21818);
+MAP_ACTION_TO_IMAGE["OFF"] = arasaacService.getGridImageById(21365);
+MAP_ACTION_TO_IMAGE["TOGGLE"] = arasaacService.getGridImageById(38753);
+MAP_ACTION_TO_IMAGE["INCREASE"] = arasaacService.getGridImageById(5521);
+MAP_ACTION_TO_IMAGE["DECREASE"] = arasaacService.getGridImageById(5546);
+MAP_ACTION_TO_IMAGE["UP"] = arasaacService.getGridImageById(38755);
+MAP_ACTION_TO_IMAGE["DOWN"] = arasaacService.getGridImageById(38754);
+MAP_ACTION_TO_IMAGE["STOP"] = arasaacService.getGridImageById(38251);
+MAP_ACTION_TO_IMAGE["PLAY"] = arasaacService.getGridImageById(38221);
+MAP_ACTION_TO_IMAGE["PAUSE"] = arasaacService.getGridImageById(38213);
+MAP_ACTION_TO_IMAGE["NEXT"] = arasaacService.getGridImageById(38223);
+MAP_ACTION_TO_IMAGE["PREVIOUS"] = arasaacService.getGridImageById(38224);
+MAP_ACTION_TO_IMAGE["REWIND"] = arasaacService.getGridImageById(38219);
+MAP_ACTION_TO_IMAGE["FASTFORWARD"] = arasaacService.getGridImageById(38220);
+
 export default {
-    props: ['action'],
+    props: ['action', 'gridData'],
     data: () => {
         return {
             fetchedItems: [],
@@ -191,7 +210,25 @@ export default {
             let filteredItems = this.getFilteredItems();
             this.selectedItem = filteredItems[0];
             this.updateAction();
-        }
+        },
+        addAllActionElements() {
+            let allActions = OPENHAB_TYPES_TO_ACTIONS[this.action.itemType] || [];
+            let createActions = allActions.filter(action => ACTIONS_FOR_ELEMENT_GENERATION.includes(action));
+            if (!confirm(i18nService.t('thisActionAddsXNewElements', createActions.length))) {
+                return;
+            }
+            this.gridData.rowCount++;
+            for (let ohAction of createActions) {
+                let actionCopy = JSON.parse(JSON.stringify(this.action));
+                actionCopy.actionType = ohAction;
+                let newElement = new GridData(this.gridData).getNewGridElement({
+                    label: i18nService.getTranslationObject(`${this.action.itemName} - ${i18nService.t(`openHAB.${ohAction}`)}`),
+                    actions: [actionCopy],
+                    image: MAP_ACTION_TO_IMAGE[ohAction]
+                });
+                this.gridData.gridElements.push(newElement);
+            }
+        },
     },
     mounted() {
         this.action.openHABUrl = this.action.openHABUrl || openHABService.getRestURL();

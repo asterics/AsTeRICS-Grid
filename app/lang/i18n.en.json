@@ -891,7 +891,7 @@
   "Color": "Color item",
   "customColor": "Custom color",
   "placeholder-searchItem": "Search for item...",
-  "DeleteSearchText": "Delete search text",
+  "clearSearchText": "Clear search text",
   "openHAB": {
     "INCREASE": "Increase",
     "DECREASE": "Decrease",
@@ -909,5 +909,6 @@
     "NEXT": "Next",
     "UP": "Up",
     "DOWN": "Down"
-  }
+  },
+  "createGridElements": "Create grid elements"
 }
