@@ -1,6 +1,7 @@
 import $ from '../../externals/jquery.js';
 import {i18nService} from "../i18nService.js";
 import {constants} from "../../util/constants.js";
+import {GridImage} from "../../model/GridImage.js";
 
 let arasaacService = {};
 
@@ -72,6 +73,18 @@ arasaacService.getSearchProviderInfo = function () {
     newInfo.service = arasaacService;
     return newInfo;
 }
+
+arasaacService.getGridImageById = function (arasaacId) {
+    if (!arasaacId) {
+        return null;
+    }
+    return new GridImage({
+        url: `https://api.arasaac.org/api/pictograms/${arasaacId}?download=false&plural=false&color=true`,
+        author: arasaacAuthor,
+        authorURL: arasaacLicenseURL,
+        searchProviderName: arasaacService.SEARCH_PROVIDER_NAME
+    })
+};
 
 /**
  * searches for images

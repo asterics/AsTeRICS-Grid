@@ -59,8 +59,8 @@
     import $ from "../../js/externals/jquery.js";
     import {serviceWorkerService} from "../../js/service/serviceWorkerService.js";
     import {gridUtil} from "../../js/util/gridUtil.js";
-    import {GridImage} from "../../js/model/GridImage.js";
     import {GridElement} from "../../js/model/GridElement.js";
+    import {arasaacService} from "../../js/service/pictograms/arasaacService.js";
 
     export default {
         components: {},
@@ -87,12 +87,7 @@
                         width: 1,
                         height: 1,
                         label: elemLabel,
-                        image: new GridImage({
-                            url: "https://api.arasaac.org/api/pictograms/35071?download=false&plural=false&color=true",
-                            author: "ARASAAC - CC (BY-NC-SA)",
-                            authorURL: "https://arasaac.org/terms-of-use",
-                            searchProviderName: "ARASAAC"
-                        })
+                        image: arasaacService.getGridImageById(35071),
                     })],
                     rowCount: 1,
                     minColumnCount: 2
