@@ -1,7 +1,7 @@
 {
   "GridActionSpeak": "Wypowiedz etykietę",
   "GridActionSpeakCustom": "Użyj niestandardowego tekstu",
-  "GridActionAudio": "Play recorded audio",
+  "GridActionAudio": "Odtwórz nagrany dźwięk",
   "GridActionNavigate": "Przejdź do innej siatki",
   "GridActionARE": "Akcja AsTeRICS",
   "GridActionOpenHAB": "OpenHAB action",
@@ -354,7 +354,7 @@
   "allFunctionsAvailable": "wszystkie dostępne funkcje",
   "idealForUsingOnASingleDevice": "idealne do używania na jednym urządzeniu",
   "useAstericsGridWithoutRegistration": "Używaj AsTeRICS Grid bez rejestracji",
-  "itsAlwaysPossibleToRegisterLater": "zawsze możesz zarejestrować się później.",
+  "itsAlwaysPossibleToRegisterLater": "it's always possible to register later.",
   "allGridsAreSavedOfflineAndOnline": "wszystkie siatki są zapisywane offline i online",
   "automaticSynchronizationAcrossMultipleDevices": "automatyczna synchronizacja pomiędzy wieloma urządzeniami (np. PC, tablet, smartfon)",
   "allDataIsEndtoendEncryptedAndOnlyYouAreAble": "wszystkie dane są zaszyfrowane end-to-end i tylko Ty masz do nich dostęp",
