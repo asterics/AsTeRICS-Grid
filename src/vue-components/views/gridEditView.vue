@@ -1,5 +1,5 @@
 <template>
-    <div v-cloak v-if="gridData" class="box">
+    <div class="box">
         <header class="srow header" role="toolbar">
             <header-icon class="left"></header-icon>
             <button tabindex="30" @click="back" :aria-label="$t('editingOff')" class="spaced small left">
@@ -31,7 +31,7 @@
         <div>
             <set-navigation-modal v-if="showNavigateModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showNavigateModal = false" @reload="reload"></set-navigation-modal>
         </div>
-        <div class="srow content">
+        <div class="srow content" id="contentContainer">
             <div v-if="!showGrid" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
             </div>
@@ -208,23 +208,32 @@
                 }
             },
             markElement(id) {
-                $('.grid-item-content').removeClass('marked');
                 if (!id) {
                     return;
                 }
-                setTimeout(() => {
-                    util.throttle(() => {
-                        if (!this.markedElement || this.markedElement.id !== id) {
-                            this.markedElement = !id ? null : this.gridData.gridElements.filter(el => el.id === id)[0];
-                            $('#' + id).addClass('marked');
-                        } else {
-                            this.markedElement = null;
-                        }
-                    }, null, 200);
-                }, 10);
+                util.throttle(() => {
+                    $('.grid-item-content').removeClass('marked');
+                    if (!this.markedElement || this.markedElement.id !== id) {
+                        this.markedElement = !id ? null : this.gridData.gridElements.filter(el => el.id === id)[0];
+                        $('#' + id).addClass('marked');
+                    } else {
+                        this.markedElement = null;
+                    }
+                }, null, 200, "MARK_ELEMENT");
             },
             getGridInstance() {
                 return gridInstance;
+            },
+            handleClickEvent(event) {
+                if (vueApp) {
+                    let id = null;
+                    let element = event.target;
+                    while (!id && element.parentNode) {
+                        id = $(element).attr('data-id');
+                        element = element.parentNode;
+                    }
+                    vueApp.markElement(id);
+                }
             }
         },
         created() {
@@ -264,9 +273,12 @@
                 initContextmenu();
                 thiz.showGrid = true;
             });
+
+            $('#contentContainer').on('click', this.handleClickEvent);
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
+            $('#contentContainer').off('click', this.handleClickEvent);
             vueApp = null;
             inputEventHandler.global.startListening();
             if (gridInstance) {
@@ -373,18 +385,6 @@
             'CONTEXT_EDIT_GLOBAL_GRID': {name: i18nService.t('editGlobalGrid'), icon: "fas fa-globe", visible: !!vueApp.metadata.globalGridId && vueApp.metadata.globalGridActive && vueApp.metadata.globalGridId !== vueApp.gridData.id},
             'CONTEXT_END_EDIT_GLOBAL_GRID': {name: i18nService.t('endEditGlobalGrid'), icon: "fas fa-globe", visible: vueApp.metadata.globalGridId === vueApp.gridData.id},
         };
-
-        $('.grid-container').on('click', function (event) {
-            if (vueApp) {
-                let id = null;
-                let element = event.target;
-                while (!id && element.parentNode) {
-                    id = $(element).attr('data-id');
-                    element = element.parentNode;
-                }
-                vueApp.markElement(id);
-            }
-        });
 
         $.contextMenu({
             selector: '.item',
