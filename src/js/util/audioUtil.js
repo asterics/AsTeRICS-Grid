@@ -80,13 +80,15 @@ audioUtil.playAudio = function (base64, options) {
         options = options || {};
         let buffer = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
         let context = new AudioContext();
-        context.decodeAudioData(buffer.buffer, play);
+        _currentAudioSource = context.createBufferSource();
+        _currentAudioSource.connect(context.destination);
+        _currentAudioSource.start(0);
+        context.decodeAudioData(buffer.buffer, play, (e) => {
+            log.warn("error decoding audio", e)
+        });
 
         function play(audioBuffer) {
-            _currentAudioSource = context.createBufferSource();
             _currentAudioSource.buffer = audioBuffer;
-            _currentAudioSource.connect(context.destination);
-            _currentAudioSource.start(0);
             resolve();
             _currentAudioSource.onended = () => {
                 if (options.onended) {
