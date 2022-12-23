@@ -78,7 +78,14 @@ audioUtil.isRecording = function () {
 audioUtil.playAudio = function (base64, options) {
     return new Promise(resolve => {
         options = options || {};
-        let buffer = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+        let decoded = null;
+        try {
+            decoded = atob(base64);
+        } catch (e) {
+            log.warn("error decoding base64 audio", e);
+            return resolve();
+        }
+        let buffer = Uint8Array.from(decoded, c => c.charCodeAt(0));
         let context = new AudioContext();
         _currentAudioSource = context.createBufferSource();
         _currentAudioSource.connect(context.destination);
@@ -172,6 +179,7 @@ function blobToBase64(blob) {
     return new Promise((resolve, _) => {
         const reader = new FileReader();
         reader.onloadend = () => {
+            log.debug(reader.result);
             let base64 = reader.result.substring(reader.result.indexOf(',') + 1);
             resolve(base64);
         }
