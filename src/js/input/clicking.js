@@ -17,6 +17,7 @@ function ClickerConstructor(itemSelector, options) {
     let _itemSelector = itemSelector;
     let _selectionListener = null;
     let _elements = [];
+    let _isIncompleteTouch = false;
 
     function onclick(event) {
         if (_selectionListener) {
@@ -25,11 +26,22 @@ function ClickerConstructor(itemSelector, options) {
     }
 
     function onMouseDown(event) {
+        if (_isIncompleteTouch) {
+            return;
+        }
         util.throttle(onclick, [event], 300, "CLICK_EVENT_HANDLER");
     }
 
     function onTouchStart(event) {
+        if (_isIncompleteTouch) {
+            return;
+        }
+        _isIncompleteTouch = true;
         util.throttle(onclick, [event], 300, "CLICK_EVENT_HANDLER");
+    }
+
+    function onTouchEnd(event) {
+        _isIncompleteTouch = false;
     }
 
     function ondblclick(event) {
@@ -53,6 +65,7 @@ function ClickerConstructor(itemSelector, options) {
             if (options.useSingleClick && options.useMousedownEvent) {
                 item.addEventListener('mousedown', onMouseDown);
                 item.addEventListener('touchstart', onTouchStart);
+                item.addEventListener('touchend', onTouchEnd);
             } else if (options.useSingleClick) {
                 item.addEventListener('click', onclick);
             }
@@ -67,6 +80,7 @@ function ClickerConstructor(itemSelector, options) {
         _elements.forEach(function (item) {
             item.removeEventListener('mousedown', onMouseDown);
             item.removeEventListener('touchstart', onTouchStart);
+            item.removeEventListener('touchend', onTouchEnd);
             item.removeEventListener('click', onclick);
             item.removeEventListener('dblclick', ondblclick);
             item.removeEventListener('keydown', onkeydown);
