@@ -1,4 +1,5 @@
 import { L } from "../util/lquery.js";
+import {util} from "../util/util.js";
 
 let Clicker = {};
 
@@ -23,6 +24,14 @@ function ClickerConstructor(itemSelector, options) {
         }
     }
 
+    function onMouseDown(event) {
+        util.throttle(onclick, [event], 300, "CLICK_EVENT_HANDLER");
+    }
+
+    function onTouchStart(event) {
+        util.throttle(onclick, [event], 300, "CLICK_EVENT_HANDLER");
+    }
+
     function ondblclick(event) {
         if (_selectionListener) {
             _selectionListener(event.currentTarget);
@@ -42,7 +51,8 @@ function ClickerConstructor(itemSelector, options) {
         _elements = L.selectAsList(_itemSelector);
         _elements.forEach(function (item) {
             if (options.useSingleClick && options.useMousedownEvent) {
-                item.addEventListener('mousedown', onclick);
+                item.addEventListener('mousedown', onMouseDown);
+                item.addEventListener('touchstart', onTouchStart);
             } else if (options.useSingleClick) {
                 item.addEventListener('click', onclick);
             }
@@ -55,7 +65,8 @@ function ClickerConstructor(itemSelector, options) {
 
     thiz.destroy = function () {
         _elements.forEach(function (item) {
-            item.removeEventListener('mousedown', onclick);
+            item.removeEventListener('mousedown', onMouseDown);
+            item.removeEventListener('touchstart', onTouchStart);
             item.removeEventListener('click', onclick);
             item.removeEventListener('dblclick', ondblclick);
             item.removeEventListener('keydown', onkeydown);
