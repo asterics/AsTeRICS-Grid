@@ -52,6 +52,7 @@ function Constructor() {
     let keyHandlers = {}; //keycode => [{handler, lastKeydown, lastAction, counter, inputEventKey}]
     let _touchElement = document.body;
     let _listening = false;
+    let _hasIncompleteTouchEvent = false;
     let _areInputEvents = {}; //ID -> inputEvent, fn
     let _id = (idCounter++);
 
@@ -138,6 +139,15 @@ function Constructor() {
     thiz.onExitFullscreen = function(fn) {
         return registerHandler(fn, exitFullscreenHandlers);
     };
+
+    thiz.hasIncompleteTouchEvent = function () {
+        return _hasIncompleteTouchEvent;
+    }
+
+    thiz.resetIncompleteTouchEvent = function () {
+        log.warn("reset incomplete touch event")
+        _hasIncompleteTouchEvent = false;
+    }
 
     thiz.off = function(fn) {
         let filterFn = (f) => f !== fn;
@@ -246,12 +256,15 @@ function Constructor() {
     }
 
     function touchEndListener(event) {
+        _hasIncompleteTouchEvent = false;
+        log.warn("touch ended!")
         callHandlers(touchEndHandlers, [event], true);
         _touchMoveBeginPosX = null;
         _touchMoveBeginPosY = null;
     }
 
     function touchStartListener(event) {
+        _hasIncompleteTouchEvent = true;
         callHandlers(touchStartHandlers, [event], true);
     }
 

@@ -1,5 +1,6 @@
 import { L } from "../util/lquery.js";
 import {util} from "../util/util.js";
+import {inputEventHandler} from "./inputEventHandler.js";
 
 let Clicker = {};
 
@@ -17,31 +18,32 @@ function ClickerConstructor(itemSelector, options) {
     let _itemSelector = itemSelector;
     let _selectionListener = null;
     let _elements = [];
-    let _isIncompleteTouch = false;
+    log.warn("init!")
+    let _enableMouseDown = true;
 
     function onclick(event) {
+        log.warn("click", inputEventHandler.global.hasIncompleteTouchEvent());
         if (_selectionListener) {
             _selectionListener(event.currentTarget);
         }
     }
 
     function onMouseDown(event) {
-        if (_isIncompleteTouch) {
+        event.preventDefault(); // prevent zooming on longpress on images on iOS
+        log.warn("mousedown", inputEventHandler.global.hasIncompleteTouchEvent(), _enableMouseDown);
+        if(!_enableMouseDown || inputEventHandler.global.hasIncompleteTouchEvent()) {
             return;
         }
         util.throttle(onclick, [event], 300, "CLICK_EVENT_HANDLER");
     }
 
     function onTouchStart(event) {
-        if (_isIncompleteTouch) {
+        _enableMouseDown = false;
+        log.warn("touchstart", inputEventHandler.global.hasIncompleteTouchEvent());
+        if (inputEventHandler.global.hasIncompleteTouchEvent()) {
             return;
         }
-        _isIncompleteTouch = true;
         util.throttle(onclick, [event], 300, "CLICK_EVENT_HANDLER");
-    }
-
-    function onTouchEnd(event) {
-        _isIncompleteTouch = false;
     }
 
     function ondblclick(event) {
@@ -65,7 +67,7 @@ function ClickerConstructor(itemSelector, options) {
             if (options.useSingleClick && options.useMousedownEvent) {
                 item.addEventListener('mousedown', onMouseDown);
                 item.addEventListener('touchstart', onTouchStart);
-                item.addEventListener('touchend', onTouchEnd);
+                item.addEventListener('touchend', inputEventHandler.global.resetIncompleteTouchEvent); //needed because 'touchend' on document does not fire (but on element does) if element removed, see https://bugs.chromium.org/p/chromium/issues/detail?id=464579 and https://jsfiddle.net/jq3L6xo4/4/
             } else if (options.useSingleClick) {
                 item.addEventListener('click', onclick);
             }
@@ -80,7 +82,6 @@ function ClickerConstructor(itemSelector, options) {
         _elements.forEach(function (item) {
             item.removeEventListener('mousedown', onMouseDown);
             item.removeEventListener('touchstart', onTouchStart);
-            item.removeEventListener('touchend', onTouchEnd);
             item.removeEventListener('click', onclick);
             item.removeEventListener('dblclick', ondblclick);
             item.removeEventListener('keydown', onkeydown);
