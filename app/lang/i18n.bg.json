@@ -115,7 +115,6 @@
   "performActionAfterNavigation": "Прилагане на действие след навигиране",
   "changeLanguageTo": "Change language to",
   "systemLanguage": "Системен език",
-  "showAllLanguagesForSelection": "Показване на всички езици за избор",
   "webpageUrl": "URL на уеб страницата",
   "automaticallyCloseTimeoutInSeconds": "Таимаут за автоматично затваряне в секунди (0 = никога), работи само във Firefox към момента",
   "keyboardEsc": "Клавиатура: [ескейп]",
@@ -906,5 +905,7 @@
     "UP": "Up",
     "DOWN": "Down"
   },
-  "createGridElements": "Create grid elements"
+  "createGridElements": "Create grid elements",
+  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Link voice language to translation language of spoken text",
+  "testVoice": "Test voice"
 }
