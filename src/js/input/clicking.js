@@ -18,11 +18,9 @@ function ClickerConstructor(itemSelector, options) {
     let _itemSelector = itemSelector;
     let _selectionListener = null;
     let _elements = [];
-    log.warn("init!")
     let _enableMouseDown = true;
 
     function onclick(event) {
-        log.warn("click", inputEventHandler.global.hasIncompleteTouchEvent());
         if (_selectionListener) {
             _selectionListener(event.currentTarget);
         }
@@ -30,7 +28,6 @@ function ClickerConstructor(itemSelector, options) {
 
     function onMouseDown(event) {
         event.preventDefault(); // prevent zooming on longpress on images on iOS
-        log.warn("mousedown", inputEventHandler.global.hasIncompleteTouchEvent(), _enableMouseDown);
         if(!_enableMouseDown || inputEventHandler.global.hasIncompleteTouchEvent()) {
             return;
         }
@@ -39,7 +36,6 @@ function ClickerConstructor(itemSelector, options) {
 
     function onTouchStart(event) {
         _enableMouseDown = false;
-        log.warn("touchstart", inputEventHandler.global.hasIncompleteTouchEvent());
         if (inputEventHandler.global.hasIncompleteTouchEvent()) {
             return;
         }

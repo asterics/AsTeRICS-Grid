@@ -145,7 +145,6 @@ function Constructor() {
     }
 
     thiz.resetIncompleteTouchEvent = function () {
-        log.warn("reset incomplete touch event")
         _hasIncompleteTouchEvent = false;
     }
 
@@ -257,7 +256,6 @@ function Constructor() {
 
     function touchEndListener(event) {
         _hasIncompleteTouchEvent = false;
-        log.warn("touch ended!")
         callHandlers(touchEndHandlers, [event], true);
         _touchMoveBeginPosX = null;
         _touchMoveBeginPosY = null;
