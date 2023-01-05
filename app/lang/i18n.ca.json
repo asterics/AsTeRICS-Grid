@@ -115,7 +115,6 @@
   "performActionAfterNavigation": "Realitzar acció després de la navegació",
   "changeLanguageTo": "Change language to",
   "systemLanguage": "Idioma del sistema",
-  "showAllLanguagesForSelection": "Veure tots els idiomes per a la selecció",
   "webpageUrl": "URL de pàgina web",
   "automaticallyCloseTimeoutInSeconds": "Tancar automàticament després del temps d'espera en segons ( 0 = mai), actualment només funciona en Firefox",
   "keyboardEsc": "Teclat: [Esc]",
@@ -906,5 +905,7 @@
     "UP": "Up",
     "DOWN": "Down"
   },
-  "createGridElements": "Create grid elements"
+  "createGridElements": "Create grid elements",
+  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Link voice language to translation language of spoken text",
+  "testVoice": "Test voice"
 }
