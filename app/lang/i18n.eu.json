@@ -115,7 +115,6 @@
   "performActionAfterNavigation": "Ekintza egin nabegazioaren ondoren",
   "changeLanguageTo": "Change language to",
   "systemLanguage": "Sistemaren hizkuntza",
-  "showAllLanguagesForSelection": "Erakutsi aukeratzeko hizkuntza guztiak",
   "webpageUrl": "Web orriaren URLa",
   "automaticallyCloseTimeoutInSeconds": "Itxi automatikoki denbora-muga igaro ondoren (0 = inoiz ez), momentuz Firefox-en bakarrik funtzionatzen du",
   "keyboardEsc": "Teklatua: [Esc]",
@@ -906,5 +905,7 @@
     "UP": "Up",
     "DOWN": "Down"
   },
-  "createGridElements": "Create grid elements"
+  "createGridElements": "Create grid elements",
+  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Link voice language to translation language of spoken text",
+  "testVoice": "Test voice"
 }
