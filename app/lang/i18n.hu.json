@@ -115,7 +115,6 @@
   "performActionAfterNavigation": "Művelet végrehajtása navigáció után",
   "changeLanguageTo": "Nyelv módosítása",
   "systemLanguage": "Rendszernyelv",
-  "showAllLanguagesForSelection": "Az összel nyelv mutatása",
   "webpageUrl": "Weboldal címe",
   "automaticallyCloseTimeoutInSeconds": "Automatikus bezárás időzítés másodpercekben (0 = soha), jelenleg csak Firefox böngészőben támogatott",
   "keyboardEsc": "Billentyűzet: [Esc]",
@@ -906,5 +905,7 @@
     "UP": "Fel",
     "DOWN": "Le"
   },
-  "createGridElements": "Kártyák létrehozása"
+  "createGridElements": "Kártyák létrehozása",
+  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Link voice language to translation language of spoken text",
+  "testVoice": "Test voice"
 }
