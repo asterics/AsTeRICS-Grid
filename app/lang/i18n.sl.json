@@ -115,7 +115,6 @@
   "performActionAfterNavigation": "Izvedi dejanje po navigaciji",
   "changeLanguageTo": "Spremeni jezik v",
   "systemLanguage": "Sistemski jezik",
-  "showAllLanguagesForSelection": "Prikaži vse jezike na izbor",
   "webpageUrl": "URL spletne strani",
   "automaticallyCloseTimeoutInSeconds": "Samodejno zapri v sekundah (0 = nikoli), trenutno deluje samo v Firefoxu",
   "keyboardEsc": "Tipkovnica [Esc]",
@@ -906,5 +905,7 @@
     "UP": "Up",
     "DOWN": "Down"
   },
-  "createGridElements": "Create grid elements"
+  "createGridElements": "Create grid elements",
+  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Link voice language to translation language of spoken text",
+  "testVoice": "Test voice"
 }
