@@ -115,7 +115,6 @@
   "performActionAfterNavigation": "בצע פעולה אחרי ניווט",
   "changeLanguageTo": "Change language to",
   "systemLanguage": "שפת המערכת",
-  "showAllLanguagesForSelection": "הראה את כל השפות שניתן לבחור",
   "webpageUrl": "כתובת האתר",
   "automaticallyCloseTimeoutInSeconds": "סוגר פסק זמן אוטומטית בשניות (0=אף פעם לא), כרגע עובד רק בפיירפוקס",
   "keyboardEsc": "מקלדת: [Esc]",
@@ -906,5 +905,7 @@
     "UP": "Up",
     "DOWN": "Down"
   },
-  "createGridElements": "Create grid elements"
+  "createGridElements": "Create grid elements",
+  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Link voice language to translation language of spoken text",
+  "testVoice": "Test voice"
 }
