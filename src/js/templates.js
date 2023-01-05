@@ -48,7 +48,7 @@ function getGridElementNormal(gridElem, fallbackLocale, metadata) {
     var imgId = '';
     var txtContainerStyle = 'font-size:' + fontUtil.getLastFontSize() + ';';
     var imgContainerMargin = '1%';
-    let label = i18nService.getTranslation(gridElem.label, fallbackLocale);
+    let label = i18nService.getTranslation(gridElem.label, {fallbackLocale: fallbackLocale});
     label = util.convertLowerUppercase(label, metadata.textConfig.convertMode);
     var imgContainerMaxHeight = label ? '80%' : '100%';
     if (gridElem.image && (gridElem.image.data || gridElem.image.url)) {

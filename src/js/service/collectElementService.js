@@ -333,7 +333,7 @@ function getSpeakTextObject(element, dontIncludeAudio) {
         let customSpeakAction = element.actions.filter(a => a.modelName === GridActionSpeakCustom.getModelName())[0];
         if (customSpeakAction) {
             let lang = customSpeakAction.speakLanguage || i18nService.getContentLang();
-            label = i18nService.getTranslation(customSpeakAction.speakText, null, false, lang);
+            label = i18nService.getTranslation(customSpeakAction.speakText, {forceLang: lang});
         }
     }
     return {
