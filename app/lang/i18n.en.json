@@ -115,7 +115,6 @@
   "performActionAfterNavigation": "Perform action after navigation",
   "changeLanguageTo": "Change language to",
   "systemLanguage": "System language",
-  "showAllLanguagesForSelection": "Show all Languages for selection",
   "webpageUrl": "Webpage URL",
   "automaticallyCloseTimeoutInSeconds": "Automatically close timeout in seconds (0 = never), currently only works in Firefox",
   "keyboardEsc": "Keyboard: [Esc]",
@@ -908,5 +907,6 @@
     "DOWN": "Down"
   },
   "createGridElements": "Create grid elements",
-  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Link voice language to translation language of spoken text"
+  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Link voice language to translation language of spoken text",
+  "testVoice": "Test voice"
 }
