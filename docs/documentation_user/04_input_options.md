@@ -124,7 +124,11 @@ These are the basic elements of an input option dialog as in figure 3:
   * **Read out active element**: if checked the label of the hovered element is directly read out if the active element has changed
   * **Disable hover pane**: Normally (without activating this option) it is possible to continue hovering after navigation to another grid without lifting the finger (on a touchscreen). Technically this function is implented by a global invisible hover pane., normally for hovering a global invisible hover pane is inserted. However this hover pane can cause problems in combination with a software controlled mouse cursor (emulated software mouse), because click actions may not reach the actual elements. In this case it might be useful / necessary to activate the function *Disable hover pane*.
 
-In Advanced Settings there is the additional option "*Directly select element on pressing mouse button (not waiting for complete click)*". If it is enabled, the element is selected when pressing the mouse button, not when releasing the mouse button (which is default). This can make sense when using AsTeRICS Grid with an eyetracker and an additional button for clicking / selecting. Since the mouse controlled via an eyetracker always moves a little bit, in default mode it can happen that instead of selecting an element, the image of an element is dragged. This can be prevented if the selection of the element is done directly at pressing the mouse button.
+#### Advanced setting "directly select element"
+
+In Advanced Settings there is the additional option "*Directly select element on pressing mouse button (not waiting for complete click)*". If it is enabled, the element is selected when pressing the mouse button, not when releasing the mouse button (which is default). For Touchscreens it's similar: an element is selected directly at touching the screen, not after lifting the finger again (which is default). This can make sense for:
+* facilitating operation for people which can't reliably "tap" (quickly put finger on and lifting the finger afterwards) on the touchscreen.
+* when using AsTeRICS Grid with an eyetracker and an additional button for clicking / selecting. Since the mouse controlled via an eyetracker always moves a little bit, in default mode it can happen that instead of selecting an element, the image of an element is dragged. This can be prevented if the selection of the element is done directly at pressing the mouse button.
 
 ### Scanning
 
