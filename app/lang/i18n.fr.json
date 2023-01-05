@@ -115,7 +115,6 @@
   "performActionAfterNavigation": "Effectuer l'action après la navigation",
   "changeLanguageTo": "Change language to",
   "systemLanguage": "Langue du système",
-  "showAllLanguagesForSelection": "Afficher toutes les langues pour la sélection",
   "webpageUrl": "URL de la page Web",
   "automaticallyCloseTimeoutInSeconds": "Fermer automatiquement le délai d'attente en secondes (0 = jamais), ne fonctionne actuellement que dans Firefox",
   "keyboardEsc": "Clavier : [Esc]",
@@ -906,5 +905,7 @@
     "UP": "Up",
     "DOWN": "Down"
   },
-  "createGridElements": "Create grid elements"
+  "createGridElements": "Create grid elements",
+  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Link voice language to translation language of spoken text",
+  "testVoice": "Test voice"
 }
