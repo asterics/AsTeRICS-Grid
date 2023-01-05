@@ -310,7 +310,6 @@
                 dictionaryKeys: predictionService.getDictionaryKeys(),
                 collectActions: GridActionCollectElement.getActions(),
                 webradioActions: GridActionWebradio.getActions(),
-                currentLang: i18nService.getContentLang(),
                 allLanguages: i18nService.getAllLanguages(),
                 gridLanguages: null,
                 selectFromAllLanguages: false,
@@ -329,7 +328,9 @@
         },
         methods: {
             getCurrentSpeakLang(action) {
-                return action && action.speakLanguage ? action.speakLanguage : this.currentLang;
+                let prefVoiceLang = speechService.getPreferredVoiceLang() || i18nService.getContentLang();
+                let currentVoiceLang = speechService.isVoiceLangLinkedToTextLang()  ? prefVoiceLang : i18nService.getContentLang();
+                return action && action.speakLanguage ? action.speakLanguage : currentVoiceLang;
             },
             selectedRadioChanged(radioId) {
                 let faviconUrl = this.gridData.webRadios.filter(el => el.radioId === radioId)[0].faviconUrl;
