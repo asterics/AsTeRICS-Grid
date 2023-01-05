@@ -7,6 +7,7 @@ class LocaleConfig extends Model({
     contentLang: [String],
     preferredVoice: [String],
     secondVoice: [String],
+    voiceLangIsTextLang: [Boolean],
     voicePitch: [Number],
     voiceRate: [Number]
 }) {

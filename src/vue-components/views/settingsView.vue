@@ -117,6 +117,10 @@
                                 </select>
                                 <button id="testVoice2" class="three columns" :disabled="!metadata.localeConfig.secondVoice" @click="speechService.testSpeak(metadata.localeConfig.secondVoice)">{{ $t('test') }}</button>
                             </div>
+                            <div class="srow">
+                                <input id="voiceLangIsTextLang" type="checkbox" v-model="metadata.localeConfig.voiceLangIsTextLang" @change="saveVoice()"/>
+                                <label for="voiceLangIsTextLang">{{ $t('linkVoiceLanguageToTranslationLanguageOfSpokenText') }}</label>
+                            </div>
                         </accordion>
                     </div>
                 </div>
@@ -284,15 +288,7 @@
                 return this.voices.filter(v => v.lang === i18nService.getContentLang());
             },
             sortVoices() {
-                this.voices.sort((a, b) => {
-                    if (a.type !== b.type && a.lang === b.lang) {
-                        if (a.type === speechService.VOICE_TYPE_NATIVE) return -1;
-                        if (b.type === speechService.VOICE_TYPE_NATIVE) return 1;
-                    }
-                    let v1 = i18nService.t(`lang.${a.lang}`) + a.name;
-                    let v2 = i18nService.t(`lang.${b.lang}`) + b.name;
-                    return v1.localeCompare(v2);
-                });
+                this.voices.sort(speechService.voiceSortFn);
             },
             saveSyncNavigation() {
                 this.saveSuccess = undefined;
