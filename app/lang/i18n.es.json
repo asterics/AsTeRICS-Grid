@@ -906,6 +906,6 @@
     "DOWN": "Bajar"
   },
   "createGridElements": "Crear celdas",
-  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Link voice language to translation language of spoken text",
-  "testVoice": "Test voice"
+  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Vincular el idioma de la voz a la traducción del texto locutado",
+  "testVoice": "Probar voz"
 }
