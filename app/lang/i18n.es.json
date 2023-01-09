@@ -805,7 +805,7 @@
   "deleteExistingDataBeforeImporting": "Borrar los datos existentes antes de importar",
   "importData": "Importar tablero/s",
   "doYouWantToDeleteBeforeImporting": "¿Realmente desea borrar todos los tableros y diccionarios existentes antes de importar los nuevos? ¡Esta acción no se puede deshacer!",
-  "importDataFromFile": "Importar tablero desde archivo",
+  "importDataFromFile": "Importar tablero/s desde archivo",
   "exportUserSettingsAndInputConfig": "Exportar configuración de usuario y de entrada",
   "exportGlobalGrid": "Exportar tablero global",
   "saveCustomDataToFile": "Exportar tablero/s",
