@@ -17,6 +17,7 @@ import {GridActionSpeak} from "../model/GridActionSpeak.js";
 import {GridActionSpeakCustom} from "../model/GridActionSpeakCustom.js";
 import {dataService} from "./data/dataService.js";
 import {GridActionAudio} from "../model/GridActionAudio.js";
+import {TextConfig} from "../model/TextConfig.js";
 
 let collectElementService = {};
 
@@ -28,7 +29,8 @@ let keyboardLikeFactor = 0;
 let dictionaryKey = null;
 let autoCollectImage = true;
 let collectMode = GridElementCollect.MODE_AUTO;
-let convertToLowercase = true;
+let convertToLowercaseIfKeyboard = true;
+let convertMode = null;
 
 let duplicatedCollectPause = 0;
 let lastCollectId = null;
@@ -54,7 +56,7 @@ collectElementService.initWithElements = function (elements, dontAutoPredict) {
                 return total || dictKey;
             }, null);
             collectMode = copy.mode || collectMode;
-            convertToLowercase = copy.convertToLowercase !== false;
+            convertToLowercaseIfKeyboard = copy.convertToLowercase !== false;
             registeredCollectElements.push(copy);
         }
     });
@@ -380,9 +382,17 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
     let image = getImage(element);
     let lastImage = getLastImage();
 
-    if (label && convertToLowercase) {
-        setLabel(element, label.toLowerCase());
+    if (label && convertMode === TextConfig.CONVERT_MODE_LOWERCASE) {
+        label = label.toLowerCase();
     }
+    if (label && convertMode === TextConfig.CONVERT_MODE_UPPERCASE) {
+        label = label.toUpperCase();
+    }
+    if (label && convertToLowercaseIfKeyboard && keyboardLikeFactor > 0.4) {
+        label = label.toLowerCase();
+    }
+    setLabel(element, label);
+
     if (label || image) {
         if (label.length === 1 && collectedElements.length > 0 && !image && !lastImage && !collectedText.endsWith(' ')) {
             let newLabel = getLastLabel() + label;
@@ -424,6 +434,7 @@ function triggerPredict() {
 async function getMetadataConfig() {
     let metadata = await dataService.getMetadata();
     duplicatedCollectPause = metadata.inputConfig.globalMinPauseCollectSpeak || 0;
+    convertMode = metadata.textConfig.convertMode;
 }
 
 $(window).on(constants.EVENT_GRID_RESIZE, function () {
