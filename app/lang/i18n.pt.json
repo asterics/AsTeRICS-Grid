@@ -906,6 +906,6 @@
     "DOWN": "Baixar"
   },
   "createGridElements": "Criar células da tabela",
-  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Link voice language to translation language of spoken text",
-  "testVoice": "Test voice"
+  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Vincular o idioma da voz ao idioma de tradução do texto falado",
+  "testVoice": "Testar voz"
 }
