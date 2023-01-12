@@ -141,7 +141,8 @@
                             })
                         })
                     });*/
-                    dataService.importData(dataService.normalizeImportData(result)).then(() => {
+                    dataService.importData(dataService.normalizeImportData(result)).then(async () => {
+                        await dataService.markCurrentConfigAsBackedUp();
                         thiz.loading = false;
                         Router.toMain();
                     });

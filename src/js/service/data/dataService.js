@@ -88,6 +88,16 @@ dataService.getGrids = function (fullVersion, withoutGlobal) {
 };
 
 /**
+ * get the unix time (in ms) when the last update of a grid was made
+ * @return {Promise<number|number>}
+ */
+dataService.getLastGridUpdateTime = async function () {
+    let grids = await dataService.getGrids(false, false);
+    let updateTimes = grids.map(grid => grid.lastUpdateTime).filter(time => Number.isInteger(time));
+    return updateTimes.length > 0 ? Math.max(...updateTimes) : 0;
+}
+
+/**
  * Saves a grid or updates it, if existing.
  * @see{GridData}
  *
@@ -96,6 +106,7 @@ dataService.getGrids = function (fullVersion, withoutGlobal) {
  */
 dataService.saveGrid = function (gridData) {
     gridData.gridElements = gridUtil.sortGridElements(gridData.gridElements);
+    gridData.lastUpdateTime = new Date().getTime();
     return databaseService.saveObject(GridData, gridData);
 };
 
@@ -106,6 +117,7 @@ dataService.saveGrid = function (gridData) {
 dataService.saveGrids = function (gridDataList) {
     gridDataList.forEach(gridData => {
         gridData.gridElements = gridUtil.sortGridElements(gridData.gridElements);
+        gridData.lastUpdateTime = new Date().getTime();
     });
     return databaseService.bulkSave(gridDataList);
 };
@@ -121,6 +133,7 @@ dataService.saveGrids = function (gridDataList) {
 dataService.updateGrid = function (gridId, newConfig) {
     newConfig.id = gridId;
     newConfig.gridElements = gridUtil.sortGridElements(newConfig.gridElements);
+    newConfig.lastUpdateTime = new Date().getTime();
     return databaseService.saveObject(GridData, newConfig, true);
 };
 
@@ -237,6 +250,18 @@ dataService.saveMetadata = function (newMetadata, forceDbSave) {
 };
 
 /**
+ * set "lastBackup" time in metadata.notificationConfig to current time in order to
+ * indicate that no additional backup is needed.
+ *
+ * @return {Promise<void>}
+ */
+dataService.markCurrentConfigAsBackedUp = async function () {
+    let metadata = await dataService.getMetadata();
+    metadata.notificationConfig.lastBackup = new Date().getTime();
+    await dataService.saveMetadata(metadata);
+}
+
+/**
  * Retrieves the metadata object.
  * @see{MetaData}
  *
@@ -323,6 +348,21 @@ dataService.saveDictionary = function (dictionaryData) {
 dataService.deleteObject = function (id) {
     return databaseService.removeObject(id);
 };
+
+/**
+ * Downloads a complete backup of the current user config to file
+ * @return {Promise<void>}
+ */
+dataService.downloadBackupToFile = async function () {
+    let grids = await dataService.getGrids();
+    let ids = grids.map(grid => grid.id);
+    await dataService.downloadToFile(ids, {
+        exportGlobalGrid: true,
+        exportOnlyCurrentLang: false,
+        exportDictionaries: true,
+        exportUserSettings: true
+    });
+}
 
 /**
  * export configuration to file
@@ -465,6 +505,8 @@ dataService.importBackupData = async function (importData, options) {
             options.progressFn(30 + (p / 100 * 70))
         }
     });
+
+    await dataService.markCurrentConfigAsBackedUp();
     options.progressFn(100);
 };
 

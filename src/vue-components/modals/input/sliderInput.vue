@@ -6,7 +6,7 @@
         <input :id="id" class="five columns" type="range" :min="min" :max="max" :step="step" :value="value" @input="changed">
         <div class="three columns">
             <span>{{ $t('currentValue') }}</span>:
-            <span>{{ showValue }}{{unit ? unit : ''}}</span>
+            <span>{{ showValue }}{{unit ? (' ' + unit) : ''}}</span>
         </div>
     </div>
 </template>

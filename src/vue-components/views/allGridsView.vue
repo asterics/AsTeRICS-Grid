@@ -250,13 +250,7 @@
                 })
             },
             exportBackup() {
-                let ids = this.grids.map(grid => grid.id);
-                dataService.downloadToFile(ids, {
-                    exportGlobalGrid: true,
-                    exportOnlyCurrentLang: false,
-                    exportDictionaries: true,
-                    exportUserSettings: true
-                });
+                dataService.downloadBackupToFile();
             },
             exportCustom(gridId) {
                 if (gridId) {

@@ -149,6 +149,9 @@
                         });
                     }
                 });
+                if (this.options.resetBeforeImport) {
+                    await dataService.markCurrentConfigAsBackedUp();
+                }
                 MainVue.showProgressBar(100);
                 if (this.reloadFn) {
                     this.reloadFn();

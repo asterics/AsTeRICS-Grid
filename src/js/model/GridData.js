@@ -13,6 +13,7 @@ class GridData extends Model({
     id: String,
     modelName: String,
     modelVersion: String,
+    lastUpdateTime: [Number],
     isShortVersion: Boolean, // if true this object represents a non-full short version excluding binary base64 data
     label: [Object, String], //map locale -> translation, e.g. "de" => LabelDE
     rowCount: [Number],
@@ -257,7 +258,8 @@ GridData.defaults({
     isShortVersion: false,
     additionalFiles: [],
     webRadios: [],
-    label: {}
+    label: {},
+    lastUpdateTime: new Date().getTime()
 });
 
 export {GridData};
