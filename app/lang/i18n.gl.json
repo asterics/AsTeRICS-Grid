@@ -894,18 +894,18 @@
     "PLAY": "Reproducir",
     "PAUSE": "Pausar",
     "PREVIOUS": "Anterior",
-    "REWIND": "Rewind",
+    "REWIND": "Retroceder",
     "FASTFORWARD": "Avanzar",
     "CUSTOM_COLOR": "Configurar cor personalizada",
-    "ON": "Turn on",
-    "OFF": "Turn off",
-    "TOGGLE": "Toggle",
-    "CUSTOM_VALUE": "Set custom value",
-    "NEXT": "Next",
-    "UP": "Up",
-    "DOWN": "Down"
+    "ON": "Acender",
+    "OFF": "Apagar",
+    "TOGGLE": "Activar/Desactivar",
+    "CUSTOM_VALUE": "Acender",
+    "NEXT": "Seguinte",
+    "UP": "Subir",
+    "DOWN": "Baixar"
   },
-  "createGridElements": "Create grid elements",
-  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Link voice language to translation language of spoken text",
-  "testVoice": "Test voice"
+  "createGridElements": "Crear celas",
+  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Vincular o idioma da voz á tradución do texto locutado",
+  "testVoice": "Probar voz"
 }
