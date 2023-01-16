@@ -39,16 +39,19 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('message', (event) => {
     if (event.data && event.data.urlToAdd) {
-        console.log(`adding ${event.data.urlToAdd} to normal cache...`);
+        console.debug(`adding ${event.data.urlToAdd} to normal cache...`);
         const cacheName = workbox.core.cacheNames.runtime;
         caches.open(cacheName).then((cache) => {
             cache.add(event.data.urlToAdd);
         });
     }
     if (event.data && event.data.imageUrlToAdd) {
-        console.debug(`adding ${event.data.imageUrlToAdd} to image cache...`);
-        caches.open('image-cache').then((cache) => {
-            cache.add(event.data.imageUrlToAdd);
+        caches.open('image-cache').then(async (cache) => {
+            let response = await cache.match(event.data.imageUrlToAdd);
+            if (!response || response.status !== 200) {
+                console.debug(`adding ${event.data.imageUrlToAdd} to image cache...`);
+                cache.add(event.data.imageUrlToAdd);
+            }
         });
     }
 });
