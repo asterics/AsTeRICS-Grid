@@ -115,7 +115,6 @@
   "performActionAfterNavigation": "Aktion erst nach Navigation ausführen",
   "changeLanguageTo": "Sprache ändern zu",
   "systemLanguage": "Systemsprache",
-  "showAllLanguagesForSelection": "Zeige alle Sprachen zur Auswahl",
   "webpageUrl": "Webseiten-URL",
   "automaticallyCloseTimeoutInSeconds": "Timeout zum automatischen Schließen in Sekunden (0 = nie), funktioniert derzeit nur in Firefox",
   "keyboardEsc": "Tastatur: [Esc]",
@@ -906,5 +905,13 @@
     "UP": "Nach oben",
     "DOWN": "Nach unten"
   },
-  "createGridElements": "Grid-Elemente erstellen"
+  "createGridElements": "Grid-Elemente erstellen",
+  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Link voice language to translation language of spoken text",
+  "testVoice": "Test voice",
+  "pleaseConsiderToDownloadABackup": "Please consider to download a backup of your configuration in order to be safe of not loosing your work.",
+  "downloadNow": "Download now",
+  "stopRemembering": "Stop remembering",
+  "intervalForRemindingMakeBackups": "Interval for reminding to make backups",
+  "notifications": "Notifications",
+  "days": "days"
 }

@@ -115,7 +115,6 @@
   "performActionAfterNavigation": "Executar ação após a navegação",
   "changeLanguageTo": "Alterar idioma para",
   "systemLanguage": "Idioma do sistema",
-  "showAllLanguagesForSelection": "Mostrar todos os idiomas para seleção",
   "webpageUrl": "URL da página",
   "automaticallyCloseTimeoutInSeconds": "Fechar automaticamente em segundos (0 = nunca), só funciona no Firefox",
   "keyboardEsc": "Teclado: [Esc]",
@@ -289,7 +288,7 @@
   "actionsForGlobalGrid": "Ações para a tabela global",
   "activateGlobalGrid": "Ativar Tabela global",
   "deactivateGlobalGrid": "Desativar Tabela global",
-  "editGlobalGrid": "Editar Tabela global",
+  "editGlobalGrid": "Editar tabela global",
   "resetGlobalGridToDefault": "Redefinir tabela global para padrão",
   "newEmptyDictionary": "Novo Dicionário vazio",
   "savedDictionaries": "Dicionários guardados",
@@ -906,5 +905,13 @@
     "UP": "Subir",
     "DOWN": "Baixar"
   },
-  "createGridElements": "Criar células da tabela"
+  "createGridElements": "Criar células da tabela",
+  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Vincular o idioma da voz ao idioma de tradução do texto falado",
+  "testVoice": "Testar voz",
+  "pleaseConsiderToDownloadABackup": "Please consider to download a backup of your configuration in order to be safe of not loosing your work.",
+  "downloadNow": "Download now",
+  "stopRemembering": "Stop remembering",
+  "intervalForRemindingMakeBackups": "Interval for reminding to make backups",
+  "notifications": "Notifications",
+  "days": "days"
 }

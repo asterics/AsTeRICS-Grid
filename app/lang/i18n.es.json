@@ -115,7 +115,6 @@
   "performActionAfterNavigation": "Realizar acción después de la navegación",
   "changeLanguageTo": "Cambiar idioma a",
   "systemLanguage": "Idioma del sistema",
-  "showAllLanguagesForSelection": "Mostrar todos los idiomas para la selección",
   "webpageUrl": "URL de página web",
   "automaticallyCloseTimeoutInSeconds": "Cerrar automáticamente después del tiempo de espera en segundos (0 = nunca), actualmente sólo funciona en Firefox",
   "keyboardEsc": "Teclado: [Esc]",
@@ -806,7 +805,7 @@
   "deleteExistingDataBeforeImporting": "Borrar los datos existentes antes de importar",
   "importData": "Importar tablero/s",
   "doYouWantToDeleteBeforeImporting": "¿Realmente desea borrar todos los tableros y diccionarios existentes antes de importar los nuevos? ¡Esta acción no se puede deshacer!",
-  "importDataFromFile": "Importar tablero desde archivo",
+  "importDataFromFile": "Importar tablero/s desde archivo",
   "exportUserSettingsAndInputConfig": "Exportar configuración de usuario y de entrada",
   "exportGlobalGrid": "Exportar tablero global",
   "saveCustomDataToFile": "Exportar tablero/s",
@@ -906,5 +905,13 @@
     "UP": "Subir",
     "DOWN": "Bajar"
   },
-  "createGridElements": "Crear celdas"
+  "createGridElements": "Crear celdas",
+  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Vincular el idioma de la voz a la traducción del texto locutado",
+  "testVoice": "Probar voz",
+  "pleaseConsiderToDownloadABackup": "Please consider to download a backup of your configuration in order to be safe of not loosing your work.",
+  "downloadNow": "Download now",
+  "stopRemembering": "Stop remembering",
+  "intervalForRemindingMakeBackups": "Interval for reminding to make backups",
+  "notifications": "Notifications",
+  "days": "days"
 }
