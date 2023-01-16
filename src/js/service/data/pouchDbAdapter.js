@@ -291,6 +291,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
                         log.debug('initial sync took: ' + (new Date().getTime() - starttime) + "ms");
                         _useLocalDb = true;
                         setupLiveSync();
+                        $(document).trigger(constants.EVENT_DB_INITIAL_SYNC_COMPLETE);
                     }
                 });
                 resolve();

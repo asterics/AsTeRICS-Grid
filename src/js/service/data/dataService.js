@@ -590,13 +590,7 @@ dataService.importData = async function (data, options) {
 
     setTimeout(() => {
         log.debug("pre-caching all images of gridset ...")
-        importData.grids.forEach(grid => {
-            grid.gridElements.forEach(element => {
-                if (element.image && element.image.url && navigator.serviceWorker && navigator.serviceWorker.controller) {
-                    serviceWorkerService.cacheImageUrl(element.image.url);
-                }
-            });
-        });
+        serviceWorkerService.cacheImagesOfGrids(importData.grids);
     }, 3000);
     options.progressFn(100);
 };
@@ -617,6 +611,16 @@ dataService.getCurrentUser = function () {
     return databaseService.getCurrentUsedDatabase();
 };
 
+/**
+ * caches all the images of all grids of the current configuration
+ * in the ServiceWorker cache
+ * @return {Promise<void>}
+ */
+dataService.cacheAllImages = async function () {
+    let grids = await dataService.getGrids();
+    serviceWorkerService.cacheImagesOfGrids(grids);
+}
+
 function saveGlobalGridId(globalGridId) {
     return dataService.getMetadata().then(metadata => {
         metadata.globalGridId = globalGridId;
@@ -624,5 +628,9 @@ function saveGlobalGridId(globalGridId) {
         return dataService.saveMetadata(metadata);
     })
 }
+
+$(document).on(constants.EVENT_DB_INITIAL_SYNC_COMPLETE, () => {
+    dataService.cacheAllImages();
+});
 
 export {dataService};

@@ -355,6 +355,7 @@ function changeHandler(changedIds, changedDocsEncrypted) {
     });
     if (currentUserDataModelVersion === localStorageService.getUserMajorModelVersion(user)) {
         $(document).trigger(constants.EVENT_DB_PULL_UPDATED, [changedIds, changedDocs]);
+        serviceWorkerService.cacheImagesOfGrids(changedDocs);
     } else {
         $(document).trigger(constants.EVENT_DB_DATAMODEL_UPDATE, [changedIds, changedDocs]);
     }
