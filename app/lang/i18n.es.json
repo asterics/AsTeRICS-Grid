@@ -908,10 +908,10 @@
   "createGridElements": "Crear celdas",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Vincular el idioma de la voz a la traducción del texto locutado",
   "testVoice": "Probar voz",
-  "pleaseConsiderToDownloadABackup": "Por favor, considere descargar una copia de seguridad de su comunicador para no perder su trabajo.",
+  "pleaseConsiderToDownloadABackup": "Por favor, considere la posibilidad de descargar una copia de seguridad de su comunicador para no perder su trabajo.",
   "downloadNow": "Descargar ahora",
   "stopRemembering": "No volver a recordar",
-  "intervalForRemindingMakeBackups": "Interval for reminding to make backups",
+  "intervalForRemindingMakeBackups": "Recordar la realización de copias de seguridad cada",
   "notifications": "Notificaciones",
   "days": "días"
 }
