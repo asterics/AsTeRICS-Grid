@@ -907,5 +907,11 @@
   },
   "createGridElements": "Crear celas",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Vincular o idioma da voz á tradución do texto locutado",
-  "testVoice": "Probar voz"
+  "testVoice": "Probar voz",
+  "pleaseConsiderToDownloadABackup": "Please consider to download a backup of your configuration in order to be safe of not loosing your work.",
+  "downloadNow": "Download now",
+  "stopRemembering": "Stop remembering",
+  "intervalForRemindingMakeBackups": "Interval for reminding to make backups",
+  "notifications": "Notifications",
+  "days": "days"
 }
