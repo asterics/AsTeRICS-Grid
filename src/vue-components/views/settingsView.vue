@@ -117,6 +117,10 @@
                                 </select>
                                 <button id="testVoice2" class="three columns" :disabled="!metadata.localeConfig.secondVoice" @click="speechService.testSpeak(metadata.localeConfig.secondVoice)">{{ $t('test') }}</button>
                             </div>
+                            <div class="srow">
+                                <input id="voiceLangIsTextLang" type="checkbox" v-model="metadata.localeConfig.voiceLangIsTextLang" @change="saveVoice()"/>
+                                <label for="voiceLangIsTextLang">{{ $t('linkVoiceLanguageToTranslationLanguageOfSpokenText') }}</label>
+                            </div>
                         </accordion>
                     </div>
                 </div>
@@ -175,6 +179,14 @@
                             <option :value="TextConfig.CONVERT_MODE_UPPERCASE">{{ $t('convertToUppercasse') }}</option>
                             <option :value="TextConfig.CONVERT_MODE_LOWERCASE">{{ $t('convertToLowercase') }}</option>
                         </select>
+                    </div>
+                </div>
+            </div>
+            <div class="srow">
+                <div class="eleven columns">
+                    <h3 class="mt-2">{{ $t('notifications') }}</h3>
+                    <div class="srow">
+                        <slider-input :label="'intervalForRemindingMakeBackups'" unit="days" id="backupReminderInterval" min="0" max="100" step="1" v-model.number="metadata.notificationConfig.backupNotifyIntervalDays" @change="saveMetadata()"/>
                     </div>
                 </div>
             </div>
@@ -284,15 +296,7 @@
                 return this.voices.filter(v => v.lang === i18nService.getContentLang());
             },
             sortVoices() {
-                this.voices.sort((a, b) => {
-                    if (a.type !== b.type && a.lang === b.lang) {
-                        if (a.type === speechService.VOICE_TYPE_NATIVE) return -1;
-                        if (b.type === speechService.VOICE_TYPE_NATIVE) return 1;
-                    }
-                    let v1 = i18nService.t(`lang.${a.lang}`) + a.name;
-                    let v2 = i18nService.t(`lang.${b.lang}`) + b.name;
-                    return v1.localeCompare(v2);
-                });
+                this.voices.sort(speechService.voiceSortFn);
             },
             saveSyncNavigation() {
                 this.saveSuccess = undefined;

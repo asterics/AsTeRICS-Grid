@@ -5,6 +5,7 @@ import {Model} from "../externals/objectmodel";
 import {ColorConfig} from "./ColorConfig.js";
 import {TextConfig} from "./TextConfig.js";
 import {LocaleConfig} from "./LocaleConfig.js";
+import {NotificationConfig} from "./NotificationConfig.js";
 
 class MetaData extends Model({
     id: String,
@@ -20,7 +21,8 @@ class MetaData extends Model({
     inputConfig: InputConfig,
     colorConfig: [ColorConfig],
     textConfig: [TextConfig],
-    localeConfig: [LocaleConfig]
+    localeConfig: [LocaleConfig],
+    notificationConfig: [NotificationConfig]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, MetaData) || {};
@@ -29,6 +31,7 @@ class MetaData extends Model({
         this.colorConfig = properties.colorConfig || new ColorConfig();
         this.textConfig = properties.textConfig || new TextConfig();
         this.localeConfig = properties.localeConfig || new LocaleConfig();
+        this.notificationConfig = properties.notificationConfig || new NotificationConfig();
     }
 
     isEqual(otherMetadata) {

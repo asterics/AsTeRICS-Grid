@@ -230,7 +230,7 @@
                                 </select>
                                 <div class="four columns">
                                     <input id="selectFromAllLangs" type="checkbox" v-model="selectFromAllLanguages"/>
-                                    <label for="selectFromAllLangs" class="normal-text">{{ $t('showAllLanguagesForSelection') }}</label>
+                                    <label for="selectFromAllLangs" class="normal-text">{{ $t('showAllLanguages') }}</label>
                                 </div>
                             </div>
                         </div>
@@ -239,13 +239,19 @@
                                 <label for="changeVoice" class="four columns normal-text">{{ $t('changeVoiceTo') }}</label>
                                 <select id="changeVoice" class="four columns mb-2" v-model="action.voice">
                                     <option :value="undefined">{{ $t('automatic') }}</option>
-                                    <option v-for="voice in allVoices.filter(v => !action.language || v.lang === action.language)" :value="voice.name">
-                                        <span v-if="action.language">{{voice.name}}</span>
-                                        <span v-if="!action.language">{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}</span>
+                                    <option v-for="voice in allVoices.filter(v => selectFromAllVoices || !action.language || v.lang === action.language)" :value="voice.name">
+                                        <span v-if="!selectFromAllVoices && action.language">{{voice.name}}</span>
+                                        <span v-if="selectFromAllVoices || !action.language">{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}</span>
                                     </option>
                                 </select>
-                                <button id="testVoice2" class="four columns" :disabled="!action.voice" @click="speechService.testSpeak(action.voice)">{{ $t('test') }}</button>
+                                <div class="four columns mb-2">
+                                    <input id="selectAllVoices" type="checkbox" v-model="selectFromAllVoices"/>
+                                    <label for="selectAllVoices" class="normal-text">{{ $t('showAllVoices') }}</label>
+                                </div>
                             </div>
+                        </div>
+                        <div class="srow">
+                            <button id="testVoice2" class="four columns offset-by-four" :disabled="!action.voice" @click="speechService.testSpeak(action.voice, null, action.language)">{{ $t('testVoice') }}</button>
                         </div>
                     </div>
                     <div v-if="action.modelName === 'GridActionOpenWebpage'">
@@ -304,10 +310,10 @@
                 dictionaryKeys: predictionService.getDictionaryKeys(),
                 collectActions: GridActionCollectElement.getActions(),
                 webradioActions: GridActionWebradio.getActions(),
-                currentLang: i18nService.getContentLang(),
                 allLanguages: i18nService.getAllLanguages(),
                 gridLanguages: null,
                 selectFromAllLanguages: false,
+                selectFromAllVoices: false,
                 GridActionYoutube: GridActionYoutube,
                 GridElement: GridElement,
                 speechService: speechService
@@ -322,7 +328,9 @@
         },
         methods: {
             getCurrentSpeakLang(action) {
-                return action && action.speakLanguage ? action.speakLanguage : this.currentLang;
+                let prefVoiceLang = speechService.getPreferredVoiceLang() || i18nService.getContentLang();
+                let currentVoiceLang = speechService.isVoiceLangLinkedToTextLang()  ? prefVoiceLang : i18nService.getContentLang();
+                return action && action.speakLanguage ? action.speakLanguage : currentVoiceLang;
             },
             selectedRadioChanged(radioId) {
                 let faviconUrl = this.gridData.webRadios.filter(el => el.radioId === radioId)[0].faviconUrl;

@@ -34,21 +34,24 @@ self.addEventListener('activate', event => {
     self.clients.matchAll().then(clients => {
         clients.forEach(client => client.postMessage({activated: true}));
     });
-    console.log('Service Worker active! Version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/release-beta-2022-12-28-15.48/+0100');
+    console.log('Service Worker active! Version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
 });
 
 self.addEventListener('message', (event) => {
     if (event.data && event.data.urlToAdd) {
-        console.log(`adding ${event.data.urlToAdd} to normal cache...`);
+        console.debug(`adding ${event.data.urlToAdd} to normal cache...`);
         const cacheName = workbox.core.cacheNames.runtime;
         caches.open(cacheName).then((cache) => {
             cache.add(event.data.urlToAdd);
         });
     }
     if (event.data && event.data.imageUrlToAdd) {
-        console.debug(`adding ${event.data.imageUrlToAdd} to image cache...`);
-        caches.open('image-cache').then((cache) => {
-            cache.add(event.data.imageUrlToAdd);
+        caches.open('image-cache').then(async (cache) => {
+            let response = await cache.match(event.data.imageUrlToAdd);
+            if (!response || response.status !== 200) {
+                console.debug(`adding ${event.data.imageUrlToAdd} to image cache...`);
+                cache.add(event.data.imageUrlToAdd);
+            }
         });
     }
 });

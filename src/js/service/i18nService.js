@@ -139,39 +139,45 @@ i18nService.tl = function (key, args, lang) {
 /**
  * get plain translation string from an translation object
  * @param i18nObject translation object, e.g. {en: 'english text', de: 'deutscher Text'}
- * @param fallbackLang language to use if current browser language not available, default: 'en'
- * @param includeLang if true return format is {lang: <languageCode>, text: <translatedText>}
- * @param forceLang language in which the translation is forced to be returned (if available)
+ * @param options.fallbackLang language to use if current browser language not available, default: 'en'
+ * @param options.includeLang if true return format is {lang: <languageCode>, text: <translatedText>}
+ * @param options.forceLang language in which the translation is forced to be returned (if available)
+ * @param options.noFallback if true nothing is returned if the current content lang / force lang isn't existing in the
+ *                           translation object
  * @return {string|*|string} the translated string in current browser language, e.g. 'english text'
  */
-i18nService.getTranslation = function (i18nObject, fallbackLang, includeLang, forceLang) {
+i18nService.getTranslation = function (i18nObject, options) {
+    options = options || {};
     if (!i18nObject) {
         return '';
     }
-    let lang = forceLang || i18nService.getContentLang();
-    fallbackLang = fallbackLang || 'en';
+    let lang = options.forceLang || i18nService.getContentLang();
+    options.fallbackLang = options.fallbackLang || 'en';
     if (typeof i18nObject === 'string') {
         return i18nService.t(i18nObject);
     }
     if (i18nObject[lang]) {
-        return !includeLang ? i18nObject[lang] : {lang: lang, text: i18nObject[lang]};
-    }
-    if (i18nObject[fallbackLang]) {
-        return !includeLang ? `${i18nObject[fallbackLang]}` : {lang: fallbackLang, text: `${i18nObject[fallbackLang]}`};
+        return !options.includeLang ? i18nObject[lang] : {lang: lang, text: i18nObject[lang]};
     }
 
-    let keys = Object.keys(i18nObject);
-    for (let key of keys) {
-        if (i18nObject[key]) {
-            return !includeLang ? `${i18nObject[key]}` : {lang: key, text: `${i18nObject[key]}`};
+    if (!options.noFallback) {
+        if (i18nObject[options.fallbackLang]) {
+            return !options.includeLang ? `${i18nObject[options.fallbackLang]}` : {lang: options.fallbackLang, text: `${i18nObject[options.fallbackLang]}`};
+        }
+
+        let keys = Object.keys(i18nObject);
+        for (let key of keys) {
+            if (i18nObject[key]) {
+                return !options.includeLang ? `${i18nObject[key]}` : {lang: key, text: `${i18nObject[key]}`};
+            }
         }
     }
 
-    return !includeLang ? '' : {lang: undefined, text: ''};
+    return !options.includeLang ? '' : {lang: undefined, text: ''};
 };
 
 i18nService.getTranslationAppLang = function (i18nObject) {
-    return i18nService.getTranslation(i18nObject, null, null, i18nService.getAppLang());
+    return i18nService.getTranslation(i18nObject, {forceLang: i18nService.getAppLang()});
 }
 
 /**

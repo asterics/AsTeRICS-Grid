@@ -5,6 +5,8 @@ import {encryptionService} from "./data/encryptionService";
 import {constants} from "../util/constants";
 import {databaseService} from "./data/databaseService";
 import {Router} from "../router";
+import {webradioService} from "./webradioService.js";
+import {MainVue} from "../vue/mainVue.js";
 
 let loginService = {};
 let _loginInfo = null;
@@ -132,16 +134,17 @@ loginService.loginStoredUser = function (user, dontRoute) {
  * logs out a logged in user from remote superlogin
  */
 loginService.logout = function () {
-    loginService.stopAutoRetryLogin();
-    if (!_loggedInUser) {
-        return;
-    }
     log.debug('logging out user: ' + _loggedInUser);
+    $(document).trigger(constants.EVENT_USER_CHANGING);
+    loginService.stopAutoRetryLogin();
+    webradioService.stop();
+    MainVue.clearTooltip();
     databaseService.closeCurrentDatabase();
-    superlogin.logout(_loggedInUser);
+    if (_loggedInUser) {
+        superlogin.logout(_loggedInUser);
+    }
     _loggedInUser = null;
     _loginInfo = null;
-    $(document).trigger(constants.EVENT_USER_CHANGING);
 };
 
 /**

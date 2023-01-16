@@ -1,3 +1,5 @@
+import {GridData} from "../model/GridData.js";
+
 let serviceWorkerService = {};
 
 let controller = null;
@@ -13,6 +15,25 @@ serviceWorkerService.cacheImageUrl = function (url) {
         imageUrlToAdd: url
     })
 };
+
+/**
+ * caches all images contained in an array of grids in the serviceWorker
+ * @param array array of grids, can also contain other documents from couchDB/pouchDB
+ */
+serviceWorkerService.cacheImagesOfGrids = function (array) {
+    array = array || [];
+    for (let doc of array) {
+        if (doc.modelName === GridData.getModelName()) {
+            for (let element of doc.gridElements) {
+                if (element.image && element.image.url) {
+                    serviceWorkerService.cacheImageUrl(element.image.url);
+                }
+            }
+        }
+    }
+}
+
+window.serviceWorkerService = serviceWorkerService;
 
 function postMessageInternal(msg) {
     getController().then(controller => {

@@ -228,4 +228,17 @@ util.convertLowerUppercase = function (text, convertMode) {
     }
 }
 
+/**
+ * returns the current date and time as formatted string like 2023-01-16_15-56
+ * @return {string}
+ */
+util.getCurrentDateTimeString = function () {
+    let d = new Date();
+    let pad = v => `0${v}`.slice(-2);
+    let datestring = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}`;
+    return datestring;
+}
+
+console.log(util.getCurrentDateTimeString());
+
 export {util};

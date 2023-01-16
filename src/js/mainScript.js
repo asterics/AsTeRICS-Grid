@@ -14,6 +14,7 @@ import {modelUtil} from "./util/modelUtil";
 import {keyboardShortcuts} from "./service/keyboardShortcuts";
 import {i18nService} from "./service/i18nService";
 import {printService} from "./service/printService";
+import {notificationService} from "./service/notificationService.js";
 //import {timingLogger} from "./service/timingLogger";
 
 let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
@@ -29,6 +30,7 @@ function init() {
     printService.initPrintHandlers();
     VuePluginManager.init();
     keyboardShortcuts.init();
+    notificationService.init();
     let lastActiveUser = localStorageService.getLastActiveUser();
     let autologinUser = localStorageService.getAutologinUser();
     if (localStorageService.getUserMajorModelVersion(autologinUser) > modelUtil.getLatestModelVersion().major) {

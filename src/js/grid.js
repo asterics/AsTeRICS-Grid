@@ -10,6 +10,7 @@ import {predictionService} from "./service/predictionService";
 import {constants} from "./util/constants";
 import {gridUtil} from "./util/gridUtil";
 import {GridElement} from "./model/GridElement.js";
+import {GridActionNavigate} from "./model/GridActionNavigate.js";
 
 function Grid(gridContainerId, gridItemClass, options) {
     var thiz = this;
@@ -293,6 +294,8 @@ function Grid(gridContainerId, gridItemClass, options) {
     thiz.duplicateElement = function (id) {
         notifyLayoutChangeStart();
         let duplicatedElement = _gridData.gridElements.filter(el => el.id === id)[0].duplicate();
+        duplicatedElement.actions = duplicatedElement.actions || [];
+        duplicatedElement.actions = duplicatedElement.actions.filter(action => action.modelName !== GridActionNavigate.getModelName());
         _gridData.gridElements.push(duplicatedElement);
         init(_gridData).then(() => {
             _gridListInstance.resolveCollisions(duplicatedElement.id);

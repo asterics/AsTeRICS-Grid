@@ -19,6 +19,7 @@ import {filterService} from "./filterService";
 import {serviceWorkerService} from "../serviceWorkerService.js";
 import {constants} from "../../util/constants.js";
 import {MainVue} from "../../vue/mainVue.js";
+import {util} from "../../util/util.js";
 
 let dataService = {};
 
@@ -88,6 +89,21 @@ dataService.getGrids = function (fullVersion, withoutGlobal) {
 };
 
 /**
+ * get the unix time (in ms) when the last update of a grid was made
+ * @return {Promise<number|number>} the time of the latest update of all grids
+ *                                  0 if there wasn't any update yet or previous updates weren't recorded
+ *                                  undefined if there are no grids in the current configuration
+ */
+dataService.getLastGridUpdateTime = async function () {
+    let grids = await dataService.getGrids(false, false);
+    if (grids.length === 0) {
+        return undefined;
+    }
+    let updateTimes = grids.map(grid => grid.lastUpdateTime).filter(time => Number.isInteger(time));
+    return updateTimes.length > 0 ? Math.max(...updateTimes) : 0;
+}
+
+/**
  * Saves a grid or updates it, if existing.
  * @see{GridData}
  *
@@ -96,6 +112,7 @@ dataService.getGrids = function (fullVersion, withoutGlobal) {
  */
 dataService.saveGrid = function (gridData) {
     gridData.gridElements = gridUtil.sortGridElements(gridData.gridElements);
+    gridData.lastUpdateTime = new Date().getTime();
     return databaseService.saveObject(GridData, gridData);
 };
 
@@ -106,6 +123,7 @@ dataService.saveGrid = function (gridData) {
 dataService.saveGrids = function (gridDataList) {
     gridDataList.forEach(gridData => {
         gridData.gridElements = gridUtil.sortGridElements(gridData.gridElements);
+        gridData.lastUpdateTime = new Date().getTime();
     });
     return databaseService.bulkSave(gridDataList);
 };
@@ -121,6 +139,7 @@ dataService.saveGrids = function (gridDataList) {
 dataService.updateGrid = function (gridId, newConfig) {
     newConfig.id = gridId;
     newConfig.gridElements = gridUtil.sortGridElements(newConfig.gridElements);
+    newConfig.lastUpdateTime = new Date().getTime();
     return databaseService.saveObject(GridData, newConfig, true);
 };
 
@@ -237,6 +256,18 @@ dataService.saveMetadata = function (newMetadata, forceDbSave) {
 };
 
 /**
+ * set "lastBackup" time in metadata.notificationConfig to current time in order to
+ * indicate that no additional backup is needed.
+ *
+ * @return {Promise<void>}
+ */
+dataService.markCurrentConfigAsBackedUp = async function () {
+    let metadata = await dataService.getMetadata();
+    metadata.notificationConfig.lastBackup = new Date().getTime();
+    await dataService.saveMetadata(metadata);
+}
+
+/**
  * Retrieves the metadata object.
  * @see{MetaData}
  *
@@ -325,6 +356,23 @@ dataService.deleteObject = function (id) {
 };
 
 /**
+ * Downloads a complete backup of the current user config to file
+ * @return {Promise<void>}
+ */
+dataService.downloadBackupToFile = async function () {
+    let grids = await dataService.getGrids();
+    let ids = grids.map(grid => grid.id);
+    let user = localStorageService.getAutologinUser();
+    await dataService.downloadToFile(ids, {
+        exportGlobalGrid: true,
+        exportOnlyCurrentLang: false,
+        exportDictionaries: true,
+        exportUserSettings: true,
+        filename: `${user}_${util.getCurrentDateTimeString()}_asterics-grid-full-backup.grd`
+    });
+}
+
+/**
  * export configuration to file
  * @param gridIds array of gridIds to export
  * @param options options for exporting
@@ -332,6 +380,7 @@ dataService.deleteObject = function (id) {
  * @param options.exportOnlyCurrentLang if true, only the current content language is exported
  * @param options.exportDictionaries if true, all user dictionaries are exported
  * @param options.exportUserSettings if true, all user settings are exported
+ * @param options.filename the filename to use for downloading
  * @return {Promise<void>}
  */
 dataService.downloadToFile = async function (gridIds, options) {
@@ -375,7 +424,7 @@ dataService.downloadToFile = async function (gridIds, options) {
     }
 
     let blob = new Blob([JSON.stringify(exportData)], {type: "text/plain;charset=utf-8"});
-    let filename = exportData.grids.length > 1 ? "asterics-grid-backup.grd" : i18nService.getTranslation(exportData.grids[0].label) + ".grd"
+    let filename = options.filename || (exportData.grids.length > 1 ? "asterics-grid-backup.grd" : i18nService.getTranslation(exportData.grids[0].label) + ".grd");
     FileSaver.saveAs(blob, filename);
 }
 
@@ -465,6 +514,8 @@ dataService.importBackupData = async function (importData, options) {
             options.progressFn(30 + (p / 100 * 70))
         }
     });
+
+    await dataService.markCurrentConfigAsBackedUp();
     options.progressFn(100);
 };
 
@@ -543,13 +594,7 @@ dataService.importData = async function (data, options) {
 
     setTimeout(() => {
         log.debug("pre-caching all images of gridset ...")
-        importData.grids.forEach(grid => {
-            grid.gridElements.forEach(element => {
-                if (element.image && element.image.url && navigator.serviceWorker && navigator.serviceWorker.controller) {
-                    serviceWorkerService.cacheImageUrl(element.image.url);
-                }
-            });
-        });
+        serviceWorkerService.cacheImagesOfGrids(importData.grids);
     }, 3000);
     options.progressFn(100);
 };
@@ -570,6 +615,16 @@ dataService.getCurrentUser = function () {
     return databaseService.getCurrentUsedDatabase();
 };
 
+/**
+ * caches all the images of all grids of the current configuration
+ * in the ServiceWorker cache
+ * @return {Promise<void>}
+ */
+dataService.cacheAllImages = async function () {
+    let grids = await dataService.getGrids();
+    serviceWorkerService.cacheImagesOfGrids(grids);
+}
+
 function saveGlobalGridId(globalGridId) {
     return dataService.getMetadata().then(metadata => {
         metadata.globalGridId = globalGridId;
@@ -577,5 +632,9 @@ function saveGlobalGridId(globalGridId) {
         return dataService.saveMetadata(metadata);
     })
 }
+
+$(document).on(constants.EVENT_DB_INITIAL_SYNC_COMPLETE, () => {
+    dataService.cacheAllImages();
+});
 
 export {dataService};
