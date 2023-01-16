@@ -368,7 +368,7 @@ dataService.downloadBackupToFile = async function () {
         exportOnlyCurrentLang: false,
         exportDictionaries: true,
         exportUserSettings: true,
-        filename: `${util.getCurrentDateTimeString()}_${user}_asterics-grid-full-backup.grd`
+        filename: `${user}_${util.getCurrentDateTimeString()}_asterics-grid-full-backup.grd`
     });
 }
 

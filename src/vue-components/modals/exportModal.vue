@@ -149,9 +149,9 @@
                 let user = localStorageService.getAutologinUser();
                 let filename = null;
                 if (gridIds.length === 1 && this.selectedGrid) {
-                    filename = `${util.getCurrentDateTimeString()}_${user}_${i18nService.getTranslation(this.selectedGrid.label)}.grd`;
+                    filename = `${user}_${util.getCurrentDateTimeString()}_${i18nService.getTranslation(this.selectedGrid.label)}.grd`;
                 } else {
-                    filename = `${util.getCurrentDateTimeString()}_${user}_asterics-grid-custom-backup.grd`;
+                    filename = `${user}_${util.getCurrentDateTimeString()}_asterics-grid-custom-backup.grd`;
                 }
                 dataService.downloadToFile(gridIds, {
                     exportGlobalGrid: this.options.exportGlobalGrid,
