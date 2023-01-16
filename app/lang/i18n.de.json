@@ -907,5 +907,11 @@
   },
   "createGridElements": "Grid-Elemente erstellen",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Link voice language to translation language of spoken text",
-  "testVoice": "Test voice"
+  "testVoice": "Test voice",
+  "pleaseConsiderToDownloadABackup": "Please consider to download a backup of your configuration in order to be safe of not loosing your work.",
+  "downloadNow": "Download now",
+  "stopRemembering": "Stop remembering",
+  "intervalForRemindingMakeBackups": "Interval for reminding to make backups",
+  "notifications": "Notifications",
+  "days": "days"
 }
