@@ -92,6 +92,8 @@
     import {helpService} from "../../js/service/helpService";
     import {gridUtil} from "../../js/util/gridUtil.js";
     import {i18nService} from "../../js/service/i18nService.js";
+    import {localStorageService} from "../../js/service/data/localStorageService.js";
+    import {util} from "../../js/util/util.js";
 
     let constants = {
         LANG_EXPORT_CURRENT: 'LANG_EXPORT_CURRENT',
@@ -143,11 +145,20 @@
                 if (this.selectedGrid && this.options.exportConnected) {
                     gridIds = gridIds.concat(this.allChildren.map(grid => grid.id));
                 }
+
+                let user = localStorageService.getAutologinUser();
+                let filename = null;
+                if (gridIds.length === 1 && this.selectedGrid) {
+                    filename = `${util.getCurrentDateTimeString()}_${user}_${i18nService.getTranslation(this.selectedGrid.label)}.grd`;
+                } else {
+                    filename = `${util.getCurrentDateTimeString()}_${user}_asterics-grid-custom-backup.grd`;
+                }
                 dataService.downloadToFile(gridIds, {
                     exportGlobalGrid: this.options.exportGlobalGrid,
                     exportOnlyCurrentLang: this.options.exportLang === constants.LANG_EXPORT_CURRENT,
                     exportDictionaries: this.options.exportDictionaries,
-                    exportUserSettings: this.options.exportUserSettings
+                    exportUserSettings: this.options.exportUserSettings,
+                    filename: filename
                 });
                 this.$emit('close');
             },

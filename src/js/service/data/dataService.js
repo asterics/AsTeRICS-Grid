@@ -19,6 +19,7 @@ import {filterService} from "./filterService";
 import {serviceWorkerService} from "../serviceWorkerService.js";
 import {constants} from "../../util/constants.js";
 import {MainVue} from "../../vue/mainVue.js";
+import {util} from "../../util/util.js";
 
 let dataService = {};
 
@@ -361,11 +362,13 @@ dataService.deleteObject = function (id) {
 dataService.downloadBackupToFile = async function () {
     let grids = await dataService.getGrids();
     let ids = grids.map(grid => grid.id);
+    let user = localStorageService.getAutologinUser();
     await dataService.downloadToFile(ids, {
         exportGlobalGrid: true,
         exportOnlyCurrentLang: false,
         exportDictionaries: true,
-        exportUserSettings: true
+        exportUserSettings: true,
+        filename: `${util.getCurrentDateTimeString()}_${user}_asterics-grid-full-backup.grd`
     });
 }
 
@@ -377,6 +380,7 @@ dataService.downloadBackupToFile = async function () {
  * @param options.exportOnlyCurrentLang if true, only the current content language is exported
  * @param options.exportDictionaries if true, all user dictionaries are exported
  * @param options.exportUserSettings if true, all user settings are exported
+ * @param options.filename the filename to use for downloading
  * @return {Promise<void>}
  */
 dataService.downloadToFile = async function (gridIds, options) {
@@ -420,7 +424,7 @@ dataService.downloadToFile = async function (gridIds, options) {
     }
 
     let blob = new Blob([JSON.stringify(exportData)], {type: "text/plain;charset=utf-8"});
-    let filename = exportData.grids.length > 1 ? "asterics-grid-backup.grd" : i18nService.getTranslation(exportData.grids[0].label) + ".grd"
+    let filename = options.filename || (exportData.grids.length > 1 ? "asterics-grid-backup.grd" : i18nService.getTranslation(exportData.grids[0].label) + ".grd");
     FileSaver.saveAs(blob, filename);
 }
 
