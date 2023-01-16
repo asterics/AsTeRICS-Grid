@@ -20,7 +20,7 @@ class NotificationConfig extends Model({
 NotificationConfig.defaults({
     modelName: NotificationConfig.getModelName(),
     modelVersion: constants.MODEL_VERSION,
-    backupNotifyIntervalDays: 14,
+    backupNotifyIntervalDays: 7,
     lastBackupNotification: 0,
     lastBackup: 0
 });
