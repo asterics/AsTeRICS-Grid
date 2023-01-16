@@ -89,10 +89,15 @@ dataService.getGrids = function (fullVersion, withoutGlobal) {
 
 /**
  * get the unix time (in ms) when the last update of a grid was made
- * @return {Promise<number|number>}
+ * @return {Promise<number|number>} the time of the latest update of all grids
+ *                                  0 if there wasn't any update yet or previous updates weren't recorded
+ *                                  undefined if there are no grids in the current configuration
  */
 dataService.getLastGridUpdateTime = async function () {
     let grids = await dataService.getGrids(false, false);
+    if (grids.length === 0) {
+        return undefined;
+    }
     let updateTimes = grids.map(grid => grid.lastUpdateTime).filter(time => Number.isInteger(time));
     return updateTimes.length > 0 ? Math.max(...updateTimes) : 0;
 }
