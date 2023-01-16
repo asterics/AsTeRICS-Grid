@@ -184,9 +184,9 @@
             </div>
             <div class="srow">
                 <div class="eleven columns">
-                    <h3 class="mt-2">Notifications</h3>
+                    <h3 class="mt-2">{{ $t('notifications') }}</h3>
                     <div class="srow">
-                        <slider-input :label="'Interval for reminding to make backups'" unit="days" id="backupReminderInterval" min="0" max="100" step="1" v-model.number="metadata.notificationConfig.backupNotifyIntervalDays" @change="saveMetadata()"/>
+                        <slider-input :label="'intervalForRemindingMakeBackups'" unit="days" id="backupReminderInterval" min="0" max="100" step="1" v-model.number="metadata.notificationConfig.backupNotifyIntervalDays" @change="saveMetadata()"/>
                     </div>
                 </div>
             </div>
