@@ -906,8 +906,8 @@
     "DOWN": "Nach unten"
   },
   "createGridElements": "Grid-Elemente erstellen",
-  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Link voice language to translation language of spoken text",
-  "testVoice": "Test voice",
+  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Verknüpfe Sprache der Stimme mit Übersetzungs-Sprache des gesprochenen Textes",
+  "testVoice": "Stimme testen",
   "pleaseConsiderToDownloadABackup": "Please consider to download a backup of your configuration in order to be safe of not loosing your work.",
   "downloadNow": "Download now",
   "stopRemembering": "Stop remembering",
