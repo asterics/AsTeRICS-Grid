@@ -906,12 +906,12 @@
     "DOWN": "Bajar"
   },
   "createGridElements": "Crear celdas",
-  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Vincular el idioma de la voz a la traducción del texto locutado",
+  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Vincular idioma de la voz a la traducción del texto locutado",
   "testVoice": "Probar voz",
-  "pleaseConsiderToDownloadABackup": "Please consider to download a backup of your configuration in order to be safe of not loosing your work.",
-  "downloadNow": "Download now",
-  "stopRemembering": "Stop remembering",
-  "intervalForRemindingMakeBackups": "Interval for reminding to make backups",
-  "notifications": "Notifications",
-  "days": "days"
+  "pleaseConsiderToDownloadABackup": "Por favor, considere la posibilidad de descargar una copia de seguridad de su comunicador para no perder su trabajo.",
+  "downloadNow": "Descargar ahora",
+  "stopRemembering": "No volver a recordar",
+  "intervalForRemindingMakeBackups": "Recordar la realización de copias de seguridad cada",
+  "notifications": "Notificaciones",
+  "days": "días"
 }
