@@ -298,7 +298,7 @@ function Grid(gridContainerId, gridItemClass, options) {
         duplicatedElement.actions = duplicatedElement.actions.filter(action => action.modelName !== GridActionNavigate.getModelName());
         _gridData.gridElements.push(duplicatedElement);
         init(_gridData).then(() => {
-            _gridListInstance.resolveCollisions(duplicatedElement.id);
+            _gridListInstance.resolveCollisions(id);
             handleLayoutChange();
         });
     };
