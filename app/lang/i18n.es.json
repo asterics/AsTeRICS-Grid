@@ -906,7 +906,7 @@
     "DOWN": "Bajar"
   },
   "createGridElements": "Crear celdas",
-  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Vincular el idioma de la voz a la traducción del texto locutado",
+  "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Vincular el idioma seleccionado para la voz secundaria al de la traducción del texto",
   "testVoice": "Probar voz",
   "pleaseConsiderToDownloadABackup": "Por favor, considere la posibilidad de descargar una copia de seguridad de su comunicador para no perder su trabajo.",
   "downloadNow": "Descargar ahora",
