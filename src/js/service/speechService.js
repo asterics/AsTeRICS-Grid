@@ -10,7 +10,7 @@ let speechService = {};
 speechService.VOICE_TYPE_NATIVE = 'VOICE_TYPE_NATIVE';
 speechService.VOICE_TYPE_RESPONSIVEVOICE = 'VOICE_TYPE_RESPONSIVEVOICE';
 
-let _preferredVoiceName = null;
+let _preferredVoiceId = null;
 let _secondVoiceName = null;
 let _voicePitch = 1;
 let _voiceRate = 1;
@@ -25,17 +25,17 @@ let lastSpeakTime = 0;
  * speaks given text.
  * Voice to use is determined by the following procedure:
  * 1) use voice with name of "preferredVoice", (if set)
- * 2) use voice with name of saved "_preferredVoiceName" from local storage, (if set)
+ * 2) use voice with name of saved "_preferredVoiceId" from local storage, (if set)
  * 3) use any voice by language, from property "lang" (if set)
  * 4) if nothing set: use voice by language, language determined by current browser language
  *
  * If "textOrObject" is an translation object and it contains a translation with the same language as the voice from
- * saved "_preferredVoiceName", the translation to use will be determined by the language of this voice. E.g. if the
+ * saved "_preferredVoiceId", the translation to use will be determined by the language of this voice. E.g. if the
  * preferred voice is "Google German" the german translation of the translation object "textOrObject" will be spoken.
  *
  * @param textOrOject string to speak, or translation object containing all translations
  * @param options.lang (optional) language code of preferred voice to use to speak
- * @param options.preferredVoice (optional) voice name that should be used for speaking
+ * @param options.preferredVoice (optional) voice id that should be used for speaking
  * @param options.voiceLangIsTextLang (optional) if true and a preferred voice is set, the language of this voice is
  *                                      used as content language to speak
  * @param options.dontStop (optional) if true, currently spoken text isn't aborted
@@ -53,16 +53,16 @@ speechService.speak = function (textOrOject, options) {
         return;
     }
 
-    let preferredVoiceName = options.preferredVoice || _preferredVoiceName;
-    let prefVoiceLang = getVoiceLang(preferredVoiceName);
+    let preferredVoiceId = options.preferredVoice || _preferredVoiceId;
+    let prefVoiceLang = getVoiceLang(preferredVoiceId);
     let alternativeLang = options.voiceLangIsTextLang && prefVoiceLang ? prefVoiceLang : i18nService.getContentLang();
     let langToUse = options.lang || alternativeLang;
     if (isString) {
         text = textOrOject;
     } else {
         text = textOrOject[langToUse];
-        if (options.voiceLangIsTextLang && preferredVoiceName && prefVoiceLang !== langToUse && getVoicesByLang(langToUse)) {
-            preferredVoiceName = null; // use auto voice for language
+        if (options.voiceLangIsTextLang && preferredVoiceId && prefVoiceLang !== langToUse && getVoicesByLang(langToUse)) {
+            preferredVoiceId = null; // use auto voice for language
         }
     }
     if (!text) {
@@ -77,7 +77,7 @@ speechService.speak = function (textOrOject, options) {
     if (!options.dontStop) {
         speechService.stopSpeaking();
     }
-    let voices = getVoicesByName(preferredVoiceName) || getVoicesByLang(langToUse);
+    let voices = getVoicesById(preferredVoiceId) || getVoicesByLang(langToUse);
     let nativeVoices = voices.filter(voice => voice.type === speechService.VOICE_TYPE_NATIVE);
     let responsiveVoices = voices.filter(voice => voice.type === speechService.VOICE_TYPE_RESPONSIVEVOICE);
     nativeVoices.sort((a, b) => { // workaround for alternating auto voices, caused by Google bug where "Google UK English Female" returns both female and male voices
@@ -92,12 +92,12 @@ speechService.speak = function (textOrOject, options) {
     if (speechService.nativeSpeechSupported() && nativeVoices.length > 0) {
         var msg = new SpeechSynthesisUtterance(text);
         msg.voice = nativeVoices[0].ref;
-        let isSelectedVoice = nativeVoices[0].name === preferredVoiceName;
+        let isSelectedVoice = nativeVoices[0].id === preferredVoiceId;
         msg.pitch = isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1;
         msg.rate = options.rate || (isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1);
         window.speechSynthesis.speak(msg);
     } else if(responsiveVoices.length > 0) {
-        let isSelectedVoice = responsiveVoices[0].name === preferredVoiceName;
+        let isSelectedVoice = responsiveVoices[0].id === preferredVoiceId;
         responsiveVoice.speak(text, responsiveVoices[0].name, {
             rate: options.rate || (isSelectedVoice && !options.useStandardRatePitch  ? _voiceRate : 1),
             pitch: isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1
@@ -237,7 +237,7 @@ speechService.nativeSpeechSupported = function () {
 };
 
 speechService.getPreferredVoiceLang = function () {
-    return getVoiceLang(_preferredVoiceName);
+    return getVoiceLang(_preferredVoiceId);
 }
 
 speechService.isVoiceLangLinkedToTextLang = function () {
@@ -250,26 +250,38 @@ function getVoicesByLang(lang) {
 
 /**
  * returns a list of voices by name
- * @param voiceName the voice name to search
+ * @param voiceId the voice id to search
  * @return {*[]|null} a list of voices with this name, or null if not found
  */
-function getVoicesByName(voiceName) {
-    let voices = allVoices.filter(voice => voice.name === voiceName);
+function getVoicesById(voiceId) {
+    let voices = allVoices.filter(voice => voice.id === voiceId);
+    if (voices.length === 0) { //fallback for data created before inventing ID
+        voices = allVoices.filter(voice => voice.name === voiceId);
+    }
     return voices.length > 0 ? voices : null;
 }
 
-function getVoiceLang(voiceName) {
-    let voices = getVoicesByName(voiceName);
+function getVoiceLang(voiceId) {
+    let voices = getVoicesById(voiceId);
     return voices && voices[0] ? voices[0].lang : null;
 }
 
 function addVoice(voiceName, voiceLang, voiceType, voiceReference) {
-    if (allVoices.map(voice => voice.name).indexOf(voiceName) !== -1) {
+    let id = voiceReference ? voiceReference.voiceURI : voiceName;
+    if (allVoices.map(voice => voice.id).indexOf(id) !== -1) {
         return;
     }
+    let existingNameIndex = allVoices.map(voice => voice.name).indexOf(voiceName);
+    if (existingNameIndex !== -1) {
+        voiceName = `${voiceName} (${voiceLang})`;
+        let existingVoice = allVoices[existingNameIndex];
+        existingVoice.name = `${existingVoice.name} (${existingVoice.langFull})`;
+    }
     allVoices.push({
+        id: id,
         name: voiceName,
         lang: voiceLang.substring(0, 2).toLowerCase(),
+        langFull: voiceLang,
         type: voiceType,
         ref: voiceReference
     });
@@ -295,7 +307,7 @@ async function init() {
 init();
 
 function updateMetadataConfig(event, metadata) {
-    _preferredVoiceName = metadata.localeConfig.preferredVoice || null;
+    _preferredVoiceId = metadata.localeConfig.preferredVoice || null;
     _voicePitch = metadata.localeConfig.voicePitch || 1;
     _voiceRate = metadata.localeConfig.voiceRate || 1;
     _secondVoiceName = metadata.localeConfig.secondVoice || null;

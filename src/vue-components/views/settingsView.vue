@@ -84,7 +84,7 @@
                         </label>
                         <select id="inVoice" class="five columns mb-2" v-model="metadata.localeConfig.preferredVoice" @change="resetVoiceProps(); saveVoice()">
                             <option :value="undefined">{{ $t('automatic') }}</option>
-                            <option v-for="voice in selectVoices" :value="voice.name">
+                            <option v-for="voice in selectVoices" :value="voice.id">
                                 <span v-if="!selectAllVoices">{{voice.name}}</span>
                                 <span v-if="selectAllVoices">{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}</span>
                             </option>
@@ -113,7 +113,7 @@
                                 </label>
                                 <select id="inVoice2" class="five columns mb-2" v-model="metadata.localeConfig.secondVoice" @change="saveVoice()">
                                     <option :value="undefined">{{ $t('noneSelected') }}</option>
-                                    <option v-for="voice in voices" :value="voice.name">{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}</option>
+                                    <option v-for="voice in voices" :value="voice.id">{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}</option>
                                 </select>
                                 <button id="testVoice2" class="three columns" :disabled="!metadata.localeConfig.secondVoice" @click="speechService.testSpeak(metadata.localeConfig.secondVoice)">{{ $t('test') }}</button>
                             </div>
@@ -323,7 +323,7 @@
                 }
             },
             setVoiceTestText() {
-                let voice = this.voices.filter(voice => voice.name === this.metadata.localeConfig.preferredVoice)[0];
+                let voice = this.voices.filter(voice => voice.id === this.metadata.localeConfig.preferredVoice)[0];
                 let voiceLang = voice ? voice.lang : i18nService.getContentLang();
                 this.testText = i18nService.tl('thisIsAnEnglishSentence', [], voiceLang.substring(0, 2))
             },
