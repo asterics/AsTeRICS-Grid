@@ -107,6 +107,7 @@
                 gridData.gridElements = gridData.gridElements.concat(elements);
                 await dataService.saveGrid(gridData);
                 await this.resetGlobalGrid({homeGridId: gridData.id, convertToLowercase: false});
+                await dataService.markCurrentConfigAsBackedUp();
                 Router.toEditGrid(gridData.id);
             },
             importData() {
