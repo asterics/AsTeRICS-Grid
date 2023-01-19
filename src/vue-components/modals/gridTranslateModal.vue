@@ -59,7 +59,7 @@
                                     <div class="srow" style="height: 2em;">
                                         <strong>{{ $t('textsIn') }}</strong>
                                         &nbsp;<select v-model="chosenLocale">
-                                            <option v-for="lang in allLanguages.filter(lang => lang.code !== currentLocale)" :value="lang.code">{{lang | extractTranslation}} ({{lang.code}})</option>
+                                            <option v-for="lang in allLanguages.filter(lang => lang.code !== currentLocale)" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
                                         </select>
                                     </div>
                                     <div class="srow">
@@ -182,7 +182,7 @@
                 }
             },
             getLocaleTranslation(locale) {
-                return i18nService.getTranslation(this.allLanguages.filter(lang => lang.code === locale)[0]);
+                return i18nService.getTranslationAppLang(this.allLanguages.filter(lang => lang.code === locale)[0]);
             },
             copy(locale) {
                 let result = $(`#translationList input[lang='${locale}']`).toArray();
