@@ -21,7 +21,7 @@ let currentSpeakArray = [];
 let lastSpeakText = null;
 let lastSpeakTime = 0;
 let voiceIgnoreList = ['com.apple.speech.synthesis.voice']; //joke voices by Apple
-let voiceSortBackList = ['com.apple.eloquence', 'Google'];
+let voiceSortBackList = ['com.apple.eloquence'];
 
 /**
  * speaks given text.
@@ -224,6 +224,10 @@ speechService.voiceSortFn = function (a, b) {
         if (a.type === speechService.VOICE_TYPE_NATIVE) return -1;
         if (b.type === speechService.VOICE_TYPE_NATIVE) return 1;
     }
+    if (a.local !== b.local) {
+        if (a.local) return -1;
+        if (b.local) return 1;
+    }
     let aSortBack = voiceSortBackList.some(id => a.id.toLowerCase().includes(id.toLowerCase()));
     let bSortBack = voiceSortBackList.some(id => b.id.toLowerCase().includes(id.toLowerCase()));
     if (aSortBack && !bSortBack) {
@@ -292,7 +296,8 @@ function addVoice(voiceName, voiceLang, voiceType, voiceReference) {
         lang: voiceLang.substring(0, 2).toLowerCase(),
         langFull: voiceLang,
         type: voiceType,
-        ref: voiceReference
+        ref: voiceReference,
+        local: voiceReference && voiceReference.localService ? true : false
     });
 }
 

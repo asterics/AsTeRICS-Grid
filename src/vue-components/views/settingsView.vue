@@ -85,8 +85,8 @@
                         <select id="inVoice" class="five columns mb-2" v-model="metadata.localeConfig.preferredVoice" @change="resetVoiceProps(); saveVoice()">
                             <option :value="undefined">{{ $t('automatic') }}</option>
                             <option v-for="voice in selectVoices" :value="voice.id">
-                                <span v-if="!selectAllVoices">{{voice.name}}</span>
-                                <span v-if="selectAllVoices">{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}</span>
+                                <span v-if="!selectAllVoices">{{voice.name}}, {{voice.local ? 'offline' : 'online'}}</span>
+                                <span v-if="selectAllVoices">{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}, {{voice.local ? $t('offline') : $t('online')}}</span>
                             </option>
                         </select>
                         <div class="four columns">

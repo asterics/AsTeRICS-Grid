@@ -240,8 +240,8 @@
                                 <select id="changeVoice" class="four columns mb-2" v-model="action.voice">
                                     <option :value="undefined">{{ $t('automatic') }}</option>
                                     <option v-for="voice in allVoices.filter(v => selectFromAllVoices || !action.language || v.lang === action.language)" :value="voice.id">
-                                        <span v-if="!selectFromAllVoices && action.language">{{voice.name}}</span>
-                                        <span v-if="selectFromAllVoices || !action.language">{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}</span>
+                                        <span v-if="!selectFromAllVoices && action.language">{{voice.name}}, {{voice.local ? $t('offline') : $t('online')}}</span>
+                                        <span v-if="selectFromAllVoices || !action.language">{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}, {{voice.local ? $t('offline') : $t('online')}}</span>
                                     </option>
                                 </select>
                                 <div class="four columns mb-2">
