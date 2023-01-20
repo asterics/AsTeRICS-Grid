@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <div class="overflow-content box" :aria-hidden="showWordsModal || showImportModal">
+    <div class="overflow-content box">
+        <div :aria-hidden="showWordsModal || showImportModal">
             <div class="all-dicts-view">
                 <header class="srow header" role="toolbar">
                     <header-icon></header-icon>
@@ -88,6 +88,7 @@
                         {{ $t('noDictionariesFound') }}
                     </p>
                 </div>
+                <div class="bottom-spacer"></div>
             </div>
         </div>
         <import-words-modal v-if="showWordsModal" v-bind:dict-data="modalDict"

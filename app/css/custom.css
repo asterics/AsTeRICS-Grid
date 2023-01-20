@@ -19,7 +19,17 @@ body {
 
 .overflow-content {
     overflow-y: auto;
-    height: 100vh;
+    height: 100%;
+}
+
+.overflow-content .content {
+    margin: 0 1.3em 0 1.3em;
+}
+
+@media (max-width: 768px) {
+    .overflow-content .content {
+        margin: 0 0.7em 0 0.7em;
+    }
 }
 
 button:focus {
@@ -100,8 +110,6 @@ nav li button::-moz-focus-inner {
     border: 0;
 }
 
-
-
 nav li button span {
     margin-left: 0.5em;
 }
@@ -118,6 +126,11 @@ nav li:hover button, nav li button:focus {
     background-color: #DBF4FF; !important;
 }
 
+nav li a:focus, nav li a:hover {
+    outline: none;
+    color: #266697;
+}
+
 nav button.selected {
     background-color: #DBF4FF; !important;
     border: 3px solid lightblue;
@@ -129,10 +142,6 @@ nav #helpButton:focus {
     border: none;
     outline: none;
     background-color: transparent;
-}
-
-nav li:hover button span {
-    color: darkblue;
 }
 
 .hg-sidebar h2 {
@@ -152,7 +161,11 @@ nav li:hover button span {
 .box {
     display: flex;
     flex-flow: column;
-    height: 100vh;
+    height: 100%;
+}
+
+.bottom-spacer {
+    margin-bottom: 200px;
 }
 
 .box .srow.header {

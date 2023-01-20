@@ -100,11 +100,11 @@
         </div>
 
         <no-grids-page v-if="graphList && graphList.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true" :reset-global-grid="this.resetGlobalGrid"></no-grids-page>
-        <div class="srow" style="margin-bottom: 10em"></div>
         <grid-link-modal v-if="linkModal.show" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @close="linkModal.show = false" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
         <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.show = false; pdfModal.printGridId = null;"></export-pdf-modal>
         <export-modal v-if="backupModal.show" :grids-data="grids" :export-options="backupModal.exportOptions" @close="backupModal.show = false"></export-modal>
         <import-modal v-if="importModal.show" @close="importModal.show = false" :reload-fn="reload"></import-modal>
+        <div class="bottom-spacer"></div>
     </div>
 </template>
 

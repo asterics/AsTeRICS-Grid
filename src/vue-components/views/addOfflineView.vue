@@ -6,7 +6,7 @@
             <form autocomplete="off" onsubmit="event.preventDefault()">
                 <div class="srow">
                     <label for="inputUser" class="two columns"><span class="desktop-right">{{ $t('username') }}</span></label>
-                    <input type="text" name="username" v-model="user" id="inputUser" class="six columns" @input="validationError = undefined" @change="validateUsername" v-debounce="300" v-focus=""/>
+                    <input type="text" name="username" autocapitalize="none" v-model="user" id="inputUser" class="six columns" @input="validationError = undefined" @change="validateUsername" v-debounce="300" v-focus=""/>
                     <div class="three columns" v-show="user != '' && validationError">
                         <i style="color: red;" class="fas fa-times"/> <span>{{validationError | translate}}</span>
                     </div>
@@ -42,6 +42,7 @@
             </div>
             <comparison-component></comparison-component>
         </div>
+        <div class="bottom-spacer"></div>
     </div>
 </template>
 

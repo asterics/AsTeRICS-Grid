@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="overflow-content">
         <header-icon full-header="true"></header-icon>
-        <div class="container px-3 px-md-5 ms-0 col-12 col-md-10 col-xl-9 pt-4 pt-lg-5 mb-5 overflow-content">
+        <div class="container px-3 px-md-5 ms-0 col-12 col-md-10 col-xl-9 pt-4 pt-lg-5">
             <div class="row">
                 <h1>{{ $t('help') }}</h1>
                 <div>
@@ -57,6 +57,7 @@
                 </ul>
             </div>
         </div>
+        <div class="bottom-spacer"></div>
     </div>
 </template>
 
