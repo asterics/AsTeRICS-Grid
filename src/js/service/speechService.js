@@ -20,6 +20,8 @@ let responsiveVoiceVoices = JSON.parse('[{"name":"UK English Female","lang":"en-
 let currentSpeakArray = [];
 let lastSpeakText = null;
 let lastSpeakTime = 0;
+let voiceIgnoreList = ['com.apple.speech.synthesis.voice']; //joke voices by Apple
+let voiceSortBackList = ['com.apple.eloquence', 'Google'];
 
 /**
  * speaks given text.
@@ -43,6 +45,7 @@ let lastSpeakTime = 0;
  * @param options.useStandardRatePitch (optional) if true, the standard values for rate/pitch are used (1)
  * @param options.rate (optional) rate value to use
  * @param options.minEqualPause (optional) minimum pause between 2 times speaking the same text
+ * @param options.progressFn (optional) function where boundary events of the spoken phrase are sent to
  */
 speechService.speak = function (textOrOject, options) {
     options = options || {};
@@ -80,21 +83,16 @@ speechService.speak = function (textOrOject, options) {
     let voices = getVoicesById(preferredVoiceId) || getVoicesByLang(langToUse);
     let nativeVoices = voices.filter(voice => voice.type === speechService.VOICE_TYPE_NATIVE);
     let responsiveVoices = voices.filter(voice => voice.type === speechService.VOICE_TYPE_RESPONSIVEVOICE);
-    nativeVoices.sort((a, b) => { // workaround for alternating auto voices, caused by Google bug where "Google UK English Female" returns both female and male voices
-        if (a.name.includes('Google')) {
-            return 1;
-        }
-        if (b.name.includes('Google')) {
-            return -1;
-        }
-        return a.name.localeCompare(b.name)
-    });
     if (speechService.nativeSpeechSupported() && nativeVoices.length > 0) {
         var msg = new SpeechSynthesisUtterance(text);
         msg.voice = nativeVoices[0].ref;
         let isSelectedVoice = nativeVoices[0].id === preferredVoiceId;
         msg.pitch = isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1;
         msg.rate = options.rate || (isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1);
+        if (options.progressFn) {
+            msg.addEventListener('boundary', options.progressFn);
+            msg.addEventListener('end', options.progressFn);
+        }
         window.speechSynthesis.speak(msg);
     } else if(responsiveVoices.length > 0) {
         let isSelectedVoice = responsiveVoices[0].id === preferredVoiceId;
@@ -219,13 +217,21 @@ speechService.getVoices = function () {
 };
 
 speechService.voiceSortFn = function (a, b) {
-    if (a.type !== b.type && a.lang === b.lang) {
+    if (a.lang !== b.lang) {
+        return i18nService.t(`lang.${a.lang}`).localeCompare(i18nService.t(`lang.${b.lang}`));
+    }
+    if (a.type !== b.type) {
         if (a.type === speechService.VOICE_TYPE_NATIVE) return -1;
         if (b.type === speechService.VOICE_TYPE_NATIVE) return 1;
     }
-    let v1 = i18nService.t(`lang.${a.lang}`) + a.name;
-    let v2 = i18nService.t(`lang.${b.lang}`) + b.name;
-    return v1.localeCompare(v2);
+    let aSortBack = voiceSortBackList.some(id => a.id.toLowerCase().includes(id.toLowerCase()));
+    let bSortBack = voiceSortBackList.some(id => b.id.toLowerCase().includes(id.toLowerCase()));
+    if (aSortBack && !bSortBack) {
+        return 1;
+    } else if (!aSortBack && bSortBack) {
+        return -1;
+    }
+    return a.name.localeCompare(b.name);
 }
 
 /**
@@ -268,6 +274,9 @@ function getVoiceLang(voiceId) {
 
 function addVoice(voiceName, voiceLang, voiceType, voiceReference) {
     let id = voiceReference ? voiceReference.voiceURI : voiceName;
+    if (voiceIgnoreList.some(ignore => id.includes(ignore))) {
+        return;
+    }
     if (allVoices.map(voice => voice.id).indexOf(id) !== -1) {
         return;
     }
@@ -302,7 +311,8 @@ async function init() {
     }
     responsiveVoiceVoices.forEach(voice => {
         addVoice(voice.name, voice.lang, speechService.VOICE_TYPE_RESPONSIVEVOICE);
-    })
+    });
+    allVoices.sort(speechService.voiceSortFn);
 }
 init();
 
