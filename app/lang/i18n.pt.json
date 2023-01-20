@@ -913,5 +913,7 @@
   "stopRemembering": "Parar de lembrar",
   "intervalForRemindingMakeBackups": "Intervalo para lembrar cópias de segurança",
   "notifications": "Notificações",
-  "days": "dias"
+  "days": "dias",
+  "offline": "offline",
+  "online": "online"
 }
