@@ -914,5 +914,7 @@
   "stopRemembering": "Stop remembering",
   "intervalForRemindingMakeBackups": "Interval for reminding to make backups",
   "notifications": "Notifications",
-  "days": "days"
+  "days": "days",
+  "offline": "offline",
+  "online": "online"
 }
