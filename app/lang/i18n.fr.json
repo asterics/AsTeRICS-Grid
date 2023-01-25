@@ -870,7 +870,7 @@
   "foundBugReportGithubIssue": "If you found a bug or have a feature request, please {githubLink}",
   "discussIdeasGithubDiscussions": "To discuss ideas for upcoming features, share usage examples or get in contact with other users, please {githubLink}",
   "specialRequestsSendEmail": "Pour toute autre demande, vous pouvez également nous contacter par e-mail : {foundationEmail}",
-  "contactAndFeedback": "Contact and Feedback",
+  "contactAndFeedback": "Contact et Commentaires",
   "instagramAstericsGridPage": "Compte Instagram d'AsTeRICS Grid",
   "facebookAstericsGridPage": "Page Facebook d'AsTeRICS Grid",
   "createAnIssueOnGithub": "create an issue on GitHub",
@@ -885,7 +885,7 @@
   "customValue": "Custom value",
   "Color": "Color item",
   "customColor": "Custom color",
-  "placeholder-searchItem": "Search for item...",
+  "placeholder-searchItem": "Rechercher un objet...",
   "clearSearchText": "Clear search text",
   "openHAB": {
     "INCREASE": "Increase",
