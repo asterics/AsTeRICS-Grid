@@ -19,6 +19,11 @@ let pdfOptions = {
     imgHeightPercentage: 0.8
 }
 
+let patternFontMappings = [{
+    pattern: /^[\u0400-\u04FF]+$/,
+    font: '/app/fonts/Arimo-Regular-Cyrillic.ttf'
+}];
+
 printService.initPrintHandlers = function () {
     window.addEventListener('beforeprint', () => {
         if (gridInstance) {
@@ -53,50 +58,61 @@ printService.setGridInstance = function (instance) {
  * @return {Promise<void>}
  */
 printService.gridsToPdf = async function (gridsData, options) {
-    import(/* webpackChunkName: "jspdf" */ 'jspdf').then(async jsPDF => {
-        options = options || {};
-        options.idPageMap = {};
-        options.idParentsMap = {};
-        gridsData.forEach((grid, index) => {
-            options.idPageMap[grid.id] = index + 1;
-        });
-        gridsData.forEach((grid) => {
-            options.idParentsMap[grid.id] = options.idParentsMap[grid.id] || [];
-            grid.gridElements.forEach(element => {
-                element = new GridElement(element);
-                let nav = element.getNavigateGridId();
-                if (nav) {
-                    options.idParentsMap[nav] = options.idParentsMap[nav] || [];
-                    options.idParentsMap[nav].push(options.idPageMap[grid.id]);
-                }
-            })
-        });
-        const doc = new jsPDF.jsPDF({
-            orientation: "landscape",
-            compress: true
-        });
-        options.pages = gridsData.length;
-        let metadata = await dataService.getMetadata();
-        for (let i = 0; i < gridsData.length && !options.abort; i++) {
-            if (options.progressFn) {
-                options.progressFn(Math.round(100 * (i) / gridsData.length), i18nService.t('creatingPageXOfY', i+1, gridsData.length), () => {
-                    options.abort = true;
-                });
-            }
-            options.page = i + 1;
-            await addGridToPdf(doc, gridsData[i], options, metadata);
-            if (i < gridsData.length - 1) {
-                doc.addPage();
-            }
-        }
-        if (!options.abort) {
-            if (options.progressFn) {
-                options.progressFn(100);
-            }
-            //window.open(doc.output('bloburl'))
-            doc.save('grid-export.pdf');
-        }
+    let jsPDF = await import(/* webpackChunkName: "jspdf" */ 'jspdf');
+    options = options || {};
+    options.idPageMap = {};
+    options.idParentsMap = {};
+    options.fontPath = '';
+    gridsData.forEach((grid, index) => {
+        options.idPageMap[grid.id] = index + 1;
     });
+
+    for (let grid of gridsData) {
+        options.idParentsMap[grid.id] = options.idParentsMap[grid.id] || [];
+        for (let element of grid.gridElements) {
+            element = new GridElement(element);
+            let nav = element.getNavigateGridId();
+            if (nav) {
+                options.idParentsMap[nav] = options.idParentsMap[nav] || [];
+                options.idParentsMap[nav].push(options.idPageMap[grid.id]);
+            }
+            let label = i18nService.getTranslation(element.label);
+            for (let elem of patternFontMappings) {
+                if (elem.pattern && elem.pattern.test && elem.pattern.test(label)) {
+                    options.fontPath = elem.font;
+                }
+            }
+        }
+    }
+    const doc = new jsPDF.jsPDF({
+        orientation: "landscape",
+        compress: true
+    });
+    if (options.fontPath) {
+        await loadFont(options.fontPath, doc)
+    }
+
+    options.pages = gridsData.length;
+    let metadata = await dataService.getMetadata();
+    for (let i = 0; i < gridsData.length && !options.abort; i++) {
+        if (options.progressFn) {
+            options.progressFn(Math.round(100 * (i) / gridsData.length), i18nService.t('creatingPageXOfY', i+1, gridsData.length), () => {
+                options.abort = true;
+            });
+        }
+        options.page = i + 1;
+        await addGridToPdf(doc, gridsData[i], options, metadata);
+        if (i < gridsData.length - 1) {
+            doc.addPage();
+        }
+    }
+    if (!options.abort) {
+        if (options.progressFn) {
+            options.progressFn(100);
+        }
+        //window.open(doc.output('bloburl'))
+        doc.save('grid-export.pdf');
+    }
 }
 
 function addGridToPdf(doc, gridData, options, metadata) {
@@ -311,6 +327,28 @@ async function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, yp
         let pixelWidth = width / 0.084666667; //convert width in mm to pixel at 300dpi
         let pngBase64 = await imageUtil.base64SvgToBase64Png(imageData, pixelWidth);
         doc.addImage(pngBase64, type, x, y, width, height);
+    }
+}
+
+/**
+ * load a font from remote and add it to jsPDF doc
+ * @param path the path of the font, e.g. '/app/fonts/My-Font.ttf'
+ * @param doc the jsPDF doc instance to install the font to
+ * @return {Promise<void>}
+ */
+async function loadFont(path, doc) {
+    let response = await fetch(path).catch((e) => console.error(e));
+    if (!response) {
+        return;
+    }
+    let fontName = path.substring(path.lastIndexOf("/") + 1);
+    log.info("using font", fontName);
+    let contentBuffer = await response.arrayBuffer();
+    let contentString = util.arrayBufferToBase64(contentBuffer)
+    if (contentString) {
+        doc.addFileToVFS(fontName, contentString);
+        doc.addFont(fontName, fontName, "normal");
+        doc.setFont(fontName);
     }
 }
 
