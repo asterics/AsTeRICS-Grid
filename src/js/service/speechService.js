@@ -317,7 +317,6 @@ async function init() {
     responsiveVoiceVoices.forEach(voice => {
         addVoice(voice.name, voice.lang, speechService.VOICE_TYPE_RESPONSIVEVOICE);
     });
-    allVoices.sort(speechService.voiceSortFn);
 }
 init();
 
