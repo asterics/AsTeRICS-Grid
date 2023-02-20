@@ -72,7 +72,6 @@ function Grid(gridContainerId, gridItemClass, options) {
     async function initGrid(gridDataParam) {
         let promises = [];
         if (!options.dragAndDrop) { //only add global grid if not in edit mode
-            gridDataParam.gridElements = gridDataParam.gridElements.filter(elem => !elem.hidden);
             promises.push(dataService.getGlobalGrid().then(globalGrid => {
                 if (globalGrid) {
                     let autowidth = true;
@@ -107,6 +106,7 @@ function Grid(gridContainerId, gridItemClass, options) {
                     _gridRows = _gridData.rowCount;
                     _gridData.gridElements = globalGrid.gridElements.concat(_gridData.gridElements);
                 }
+                _gridData.gridElements = _gridData.gridElements.filter(elem => !elem.hidden);
                 return Promise.resolve();
             }));
         }
