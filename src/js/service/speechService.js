@@ -112,7 +112,7 @@ speechService.speak = function (textOrOject, options) {
     }
     if (_secondVoiceName && options.speakSecondary) {
         speechService.doAfterFinishedSpeaking(() => {
-            speechService.speak(textOrOject, {preferredVoice: _secondVoiceName, useStandardRatePitch: true});
+            speechService.speak(textOrOject, {preferredVoice: _secondVoiceName, useStandardRatePitch: true, voiceLangIsTextLang: true});
         })
     }
 };

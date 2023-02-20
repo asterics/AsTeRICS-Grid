@@ -113,7 +113,9 @@
                                 </label>
                                 <select id="inVoice2" class="five columns mb-2" v-model="metadata.localeConfig.secondVoice" @change="saveVoice()">
                                     <option :value="undefined">{{ $t('noneSelected') }}</option>
-                                    <option v-for="voice in voices" :value="voice.id">{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}</option>
+                                    <option v-for="voice in voices" :value="voice.id">
+                                        <span>{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}, {{voice.local ? $t('offline') : $t('online')}}</span>
+                                    </option>
                                 </select>
                                 <button id="testVoice2" class="three columns" :disabled="!metadata.localeConfig.secondVoice" @click="speechService.testSpeak(metadata.localeConfig.secondVoice)">{{ $t('test') }}</button>
                             </div>
