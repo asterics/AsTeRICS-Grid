@@ -51,7 +51,7 @@
     "wordPrediction": true
   },
   {
-    "name": "Comunicador Global-Core ARASAAC",
+    "name": "Global-Core Communicator ARASAAC",
     "filename": "Globaler_Kommunikator-Core_ARASAAC_DE.grd.json",
     "author": "ARASAAC",
     "website": "https://arasaac.org/",
@@ -64,7 +64,7 @@
     "wordPrediction": true
   },
   {
-    "name": "Comunicador Global-Core ARASAAC",
+    "name": "Global-Core Communicator ARASAAC",
     "filename": "Comunicador_Global-Core_ARASAAC_CA.grd.json",
     "author": "ARASAAC",
     "website": "https://arasaac.org/",
@@ -77,7 +77,7 @@
     "wordPrediction": true
   },
   {
-    "name": "Comunicador Global-Core ARASAAC",
+    "name": "Global-Core Communicator ARASAAC",
     "filename": "Comunicador_Global-Core_ARASAAC_GL.grd.json",
     "author": "ARASAAC / translated by Departamento de Orientación CPI Eusebio Lorenzo Baleirón",
     "website": "https://arasaac.org/",
@@ -87,6 +87,19 @@
       "gl": "Comunicador dinámico elaborado polo equipo de ARASAAC, con vocabulario robusto, e dúas opcións de comunicación misturadas: comunicador con vocabulario base distribuído por categorias e comunicador tipo core vocabulary-palabras esenciais."
     },
     "standardFor": ["gl"],
+    "wordPrediction": true
+  },
+  {
+    "name": "Global-Core Communicator ARASAAC",
+    "filename": "Comunicador_Global-Core_ARASAAC_EU.grd.json",
+    "author": "ARASAAC",
+    "website": "https://arasaac.org/",
+    "languages": ["eu"],
+    "description": {
+      "en": "Dynamic communicator, developed by the ARASAAC team, with robust vocabulary, and two communication options combined with each other: communicator with core vocabulary distributed by categories and core vocabulary - essential words communicator.",
+      "eu": "Komunikatzaile dinamikoa, ARASAACeko taldeak egina, hiztegi sendoarekin, eta elkarren artean konbinatutako bi komunikazio-aukerekin: nukleo-hiztegia duen komunikatzailea, kategorien arabera banatua, eta core vocabulary motako komunikatzailea – funtsezko hitzakin."
+    },
+    "standardFor": ["eu"],
     "wordPrediction": true
   },
   {
