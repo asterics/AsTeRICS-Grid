@@ -9,6 +9,11 @@ var cors = require('cors');
 var { CouchAuth: SuperLogin } = require('@perfood/couch-auth');
 var isProd = process.argv.length > 2 && process.argv[2] == 'prod';
 var path = require('path');
+var dotenvFlow = require('dotenv-flow');
+
+dotenvFlow.config({
+  silent: true,
+});
 
 var app = express();
 var accessLogStream = null;

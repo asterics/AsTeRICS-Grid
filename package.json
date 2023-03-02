@@ -9,6 +9,7 @@
     "@perfood/couch-auth": "^0.19.0",
     "@sensu/superlogin": "^1.2.1",
     "cors": "^2.8.5",
+    "dotenv-flow": "^3.2.0",
     "file-saver": "^1.3.8",
     "hls.js": "^0.14.14",
     "html2canvas": "^1.4.1",
