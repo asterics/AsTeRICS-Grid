@@ -6,3 +6,5 @@ stats.json
 yarn-error.log
 backup/
 .idea/
+
+.env
