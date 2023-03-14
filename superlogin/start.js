@@ -5,8 +5,8 @@ var https = require('https');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
 var cors = require('cors');
-// var SuperLogin = require('@sensu/superlogin');
-var { CouchAuth: SuperLogin } = require('@perfood/couch-auth');
+var SuperLogin = require('@sensu/superlogin');
+// var { CouchAuth: SuperLogin } = require('@perfood/couch-auth');
 var isProd = process.argv.length > 2 && process.argv[2] == 'prod';
 var path = require('path');
 var dotenvFlow = require('dotenv-flow');
@@ -58,8 +58,8 @@ var config = {
   local: {
     sendConfirmEmail: false,
     requireEmailConfirm: false,
-    usernameLogin: true,
-    emailUsername: false,
+    // usernameLogin: true,
+    // emailUsername: false,
   },
   mailer: {
     fromEmail: process.env.MAILER_FROM_EMAIL,
