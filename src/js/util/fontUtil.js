@@ -84,7 +84,7 @@ fontUtil.getTextWidth = function (text, containerElem, targetSize) {
 }
 
 fontUtil.getHighContrastColor = function (hexBackground, lightColor, darkColor) {
-    if (!hexBackground) {
+    if (!hexBackground || !hexBackground.startsWith("#")) {
         return '';
     }
     lightColor = lightColor || '#ffffff';

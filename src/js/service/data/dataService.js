@@ -479,6 +479,7 @@ dataService.normalizeImportData = function (data) {
     if (importData.metadata) {
         importData.metadata = filterService.updateDataModel(importData.metadata);
     }
+    importData.metadata = importData.metadata || {};
     return importData;
 }
 
