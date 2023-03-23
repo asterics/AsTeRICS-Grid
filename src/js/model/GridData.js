@@ -233,6 +233,9 @@ class GridData extends Model({
 
     clone() {
         let newGrid = new GridData(this);
+        for (let element of newGrid.gridElements) {
+            element.id = new GridElement().id;
+        }
         delete newGrid._id;
         delete newGrid._rev;
         newGrid.id = modelUtil.generateId('grid-data');
