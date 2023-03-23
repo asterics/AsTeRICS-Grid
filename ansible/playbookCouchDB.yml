@@ -1,0 +1,9 @@
+---
+- hosts: couchdbserver1
+  become: true
+  roles:
+    - couchDBSetupServer
+    - couchDBDockerCouchdb
+    - couchDBDockerCompose
+    - couchDBDockerNginx
+    - couchDBDockerCertbot

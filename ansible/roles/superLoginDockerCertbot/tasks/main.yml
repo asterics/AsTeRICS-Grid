@@ -1,0 +1,177 @@
+#####
+###  DOCKER CERTBOT
+#
+---
+- debug:
+    msg: START DOCKER CERTBOT...
+
+- name: check if certificate exists for {{DOMAIN_NAME_AUTH}}
+  become: true
+  shell: 'docker compose run nginx test -e /etc/nginx/ssl/live/{{DOMAIN_NAME_AUTH}}/fullchain.pem && echo 1 || echo 0'
+  # if "0" certificate does not exist, if "1" certificate exists
+  register: hasAValidCertificateSuperLogin
+- name: debug [check if certificate exists for {{DOMAIN_NAME_AUTH}}]
+  debug:
+    var: hasAValidCertificateSuperLogin
+
+- name: DRY RUN create certificate for {{DOMAIN_NAME_AUTH}}
+  become: true
+  shell: 'docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --agree-tos --dry-run -d {{DOMAIN_NAME_AUTH}} -m {{EMAIL}}'
+  register: dryRunCertificateWasSuccessfullyCreatedSuperLogin
+  # if "0" certificate does not exist, we need to create a certificate config
+  when: hasAValidCertificateSuperLogin.stdout == "0"
+- name: debug [DRY RUN create certificate for {{DOMAIN_NAME_AUTH}}]
+  debug:
+    var: dryRunCertificateWasSuccessfullyCreatedSuperLogin
+
+- name: REAL create certificate for {{DOMAIN_NAME_AUTH}}
+  become: true
+  shell: 'docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --agree-tos -d {{DOMAIN_NAME_AUTH}} -m {{EMAIL}}'
+  register: realCertificateWasSuccessfullyCreatedSuperLogin
+  # if "0" certificate does not exist, we need to create a certificate config
+  when: hasAValidCertificateSuperLogin.stdout == "0"
+- name: debug [REAL create certificate for {{DOMAIN_NAME_AUTH}}]
+  debug:
+    var: realCertificateWasSuccessfullyCreatedSuperLogin
+
+- name: check if certificate exists for {{DOMAIN_NAME_FLIPMOUSE}}
+  become: true
+  shell: 'docker compose run nginx test -e /etc/nginx/ssl/live/{{DOMAIN_NAME_FLIPMOUSE}}/fullchain.pem && echo 1 || echo 0'
+  # if "0" certificate does not exist, if "1" certificate exists
+  register: hasAValidCertificateFlipmouse
+- name: debug [check if certificate exists for {{DOMAIN_NAME_FLIPMOUSE}}]
+  debug:
+    var: hasAValidCertificateFlipmouse
+
+- name: DRY RUN create certificate for {{DOMAIN_NAME_FLIPMOUSE}}
+  become: true
+  shell: 'docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --agree-tos --dry-run -d {{DOMAIN_NAME_FLIPMOUSE}} -m {{EMAIL}}'
+  register: dryRunCertificateWasSuccessfullyCreatedFlipmouse
+  # if "0" certificate does not exist, we need to create a certificate config
+  when: hasAValidCertificateFlipmouse.stdout == "0"
+- name: debug [DRY RUN create certificate for {{DOMAIN_NAME_FLIPMOUSE}}]
+  debug:
+    var: dryRunCertificateWasSuccessfullyCreatedFlipmouse
+
+- name: REAL create certificate for {{DOMAIN_NAME_FLIPMOUSE}}
+  become: true
+  shell: 'docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --agree-tos -d {{DOMAIN_NAME_FLIPMOUSE}} -m {{EMAIL}}'
+  register: realCertificateWasSuccessfullyCreatedFlipmouse
+  # if "0" certificate does not exist, we need to create a certificate config
+  when: hasAValidCertificateFlipmouse.stdout == "0"
+- name: debug [REAL create certificate for {{DOMAIN_NAME_FLIPMOUSE}}]
+  debug:
+    var: realCertificateWasSuccessfullyCreatedFlipmouse
+
+- name: check if certificate exists for {{DOMAIN_NAME_FLIPPAD}}
+  become: true
+  shell: 'docker compose run nginx test -e /etc/nginx/ssl/live/{{DOMAIN_NAME_FLIPPAD}}/fullchain.pem && echo 1 || echo 0'
+  # if "0" certificate does not exist, if "1" certificate exists
+  register: hasAValidCertificateFlippad
+- name: debug [check if certificate exists for {{DOMAIN_NAME_FLIPPAD}}]
+  debug:
+    var: hasAValidCertificateFlippad
+
+- name: DRY RUN create certificate for {{DOMAIN_NAME_FLIPPAD}}
+  become: true
+  shell: 'docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --agree-tos --dry-run -d {{DOMAIN_NAME_FLIPPAD}} -m {{EMAIL}}'
+  register: dryRunCertificateWasSuccessfullyCreatedFlippad
+  # if "0" certificate does not exist, we need to create a certificate config
+  when: hasAValidCertificateFlippad.stdout == "0"
+- name: debug [DRY RUN create certificate for {{DOMAIN_NAME_FLIPPAD}}]
+  debug:
+    var: dryRunCertificateWasSuccessfullyCreatedFlippad
+
+- name: REAL create certificate for {{DOMAIN_NAME_FLIPPAD}}
+  become: true
+  shell: 'docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --agree-tos -d {{DOMAIN_NAME_FLIPPAD}} -m {{EMAIL}}'
+  register: realCertificateWasSuccessfullyCreatedFlippad
+  # if "0" certificate does not exist, we need to create a certificate config
+  when: hasAValidCertificateFlippad.stdout == "0"
+- name: debug [REAL create certificate for {{DOMAIN_NAME_FLIPPAD}}]
+  debug:
+    var: realCertificateWasSuccessfullyCreatedFlippad
+
+- name: check if certificate exists for {{DOMAIN_NAME_FABI}}
+  become: true
+  shell: 'docker compose run nginx test -e /etc/nginx/ssl/live/{{DOMAIN_NAME_FABI}}/fullchain.pem && echo 1 || echo 0'
+  # if "0" certificate does not exist, if "1" certificate exists
+  register: hasAValidCertificateFabi
+- name: debug [check if certificate exists for {{DOMAIN_NAME_FABI}}]
+  debug:
+    var: hasAValidCertificateFabi
+
+- name: DRY RUN create certificate for {{DOMAIN_NAME_FABI}}
+  become: true
+  shell: 'docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --agree-tos --dry-run -d {{DOMAIN_NAME_FABI}} -m {{EMAIL}}'
+  register: dryRunCertificateWasSuccessfullyCreatedFabi
+  # if "0" certificate does not exist, we need to create a certificate config
+  when: hasAValidCertificateFabi.stdout == "0"
+- name: debug [DRY RUN create certificate for {{DOMAIN_NAME_FABI}}]
+  debug:
+    var: dryRunCertificateWasSuccessfullyCreatedFabi
+
+- name: REAL create certificate for {{DOMAIN_NAME_FABI}}
+  become: true
+  shell: 'docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ --agree-tos -d {{DOMAIN_NAME_FABI}} -m {{EMAIL}}'
+  register: realCertificateWasSuccessfullyCreatedFabi
+  # if "0" certificate does not exist, we need to create a certificate config
+  when: hasAValidCertificateFabi.stdout == "0"
+- name: debug [REAL create certificate for {{DOMAIN_NAME_FABI}}]
+  debug:
+    var: realCertificateWasSuccessfullyCreatedFabi
+
+- name: remove old http config
+  file:
+    path: ./nginx/conf/superLoginHttpCreateCert.conf
+    state: absent
+  register: result
+  # if "0" certificate does not exist, we need to create a certificate config
+  when: hasAValidCertificateSuperLogin.stdout == "0"
+- name: debug [remove old http config]
+  debug:
+    var: result
+
+- name: copy files local to remote with a template (superLoginHttps)
+  template:
+    src: superLoginHttps
+    dest: ./nginx/conf/superLoginHttps.conf
+  register: result
+  # if "0" certificate does not exist, we need to create a certificate config
+  when: hasAValidCertificateSuperLogin.stdout == "0"
+- name: debug [copy files local to remote with a template (superLoginHttps)]
+  debug:
+    var: result
+
+- name: reload nginx config
+  become: true
+  shell: 'docker compose exec nginx nginx -s reload'
+  register: result
+- name: debug [reload nginx config]
+  debug:
+    var: result
+
+- name: create a new log file for the cerbot renewal process
+  file:
+    path: ./certbot-renewal.log
+    state: touch
+  when: hasAValidCertificateSuperLogin.stdout == "0"
+  register: result
+- name: debug [create a new log file for the cerbot renewal process]
+  debug:
+    var: result
+
+- name: add cron job to renew certificate
+  cron:
+    name: renew certificate
+    minute: '10'
+    hour: '0'
+    day: '*'
+    job: 'docker compose run --rm certbot renew > certbot-renewal.log  >certbot-renewal.log 2>&1'
+  register: result
+- name: debug [add cron job to renew certificate]
+  debug:
+    var: result
+
+- debug:
+    msg: END DOCKER CERTBOT...
