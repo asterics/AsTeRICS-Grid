@@ -1,6 +1,6 @@
-import {modelUtil} from "../util/modelUtil";
-import {constants} from "../util/constants";
-import {Model} from "../externals/objectmodel";
+import { modelUtil } from "../util/modelUtil";
+import { constants } from "../util/constants";
+import { Model } from "../externals/objectmodel";
 
 class AdditionalGridFile extends Model({
     id: String,
@@ -26,4 +26,4 @@ AdditionalGridFile.defaults({
     modelVersion: constants.MODEL_VERSION
 });
 
-export {AdditionalGridFile};
+export { AdditionalGridFile };

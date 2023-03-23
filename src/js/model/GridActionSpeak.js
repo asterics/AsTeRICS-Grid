@@ -1,7 +1,7 @@
-import {modelUtil} from "../util/modelUtil";
-import {constants} from "../util/constants";
-import {Model} from "../externals/objectmodel";
-import {i18nService} from "../service/i18nService";
+import { modelUtil } from "../util/modelUtil";
+import { constants } from "../util/constants";
+import { Model } from "../externals/objectmodel";
+import { i18nService } from "../service/i18nService";
 
 class GridActionSpeak extends Model({
     id: String,
@@ -12,7 +12,7 @@ class GridActionSpeak extends Model({
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionSpeak);
         super(properties);
-        this.id = this.id || modelUtil.generateId('grid-action-speak')
+        this.id = this.id || modelUtil.generateId("grid-action-speak");
     }
 
     static getModelName() {
@@ -26,4 +26,4 @@ GridActionSpeak.defaults({
     modelVersion: constants.MODEL_VERSION
 });
 
-export {GridActionSpeak};
+export { GridActionSpeak };

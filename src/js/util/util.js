@@ -1,12 +1,12 @@
-import {TextConfig} from "../model/TextConfig.js";
+import { TextConfig } from "../model/TextConfig.js";
 
 let util = {};
 
 let _timeoutHandlers = {};
 let _throttleHistory = {}; //fn -> lastCallTime
-let lastClipboardData = '';
-util.DEFAULT_KEY = 'DEFAULT_KEY';
-util.DEFAULT_KEY2 = 'DEFAULT_KEY2';
+let lastClipboardData = "";
+util.DEFAULT_KEY = "DEFAULT_KEY";
+util.DEFAULT_KEY2 = "DEFAULT_KEY2";
 
 /**
  * Calls the given function after a specified timeout. Another subsequent call cancels and restarts the timeout.
@@ -19,7 +19,7 @@ util.DEFAULT_KEY2 = 'DEFAULT_KEY2';
 util.debounce = function (fn, timeout, key) {
     key = key || util.DEFAULT_KEY;
     if (!fn && !timeout) {
-        log.warn('called util.debounce() without needed parameters. aborting.');
+        log.warn("called util.debounce() without needed parameters. aborting.");
         return;
     }
     if (_timeoutHandlers[key]) {
@@ -74,12 +74,12 @@ util.copyToClipboard = function copyTextToClipboard(text) {
     textArea.focus();
     textArea.select();
     try {
-        var successful = document.execCommand('copy');
-        var msg = successful ? 'successful' : 'unsuccessful';
+        var successful = document.execCommand("copy");
+        var msg = successful ? "successful" : "unsuccessful";
         lastClipboardData = text;
-        log.debug('Copying text command was ' + msg);
+        log.debug("Copying text command was " + msg);
     } catch (err) {
-        log.warn('Unable to copy to clipboard.');
+        log.warn("Unable to copy to clipboard.");
     }
     document.body.removeChild(textArea);
 };
@@ -102,12 +102,13 @@ util.appendToClipboard = function (text) {
  * @return Promise
  */
 util.getClipboardContent = function () {
-    return navigator.clipboard.readText()
-        .then(text => {
+    return navigator.clipboard
+        .readText()
+        .then((text) => {
             return Promise.resolve(text);
         })
-        .catch(err => {
-            log.warn('failed to read clipboard.');
+        .catch((err) => {
+            log.warn("failed to read clipboard.");
             return Promise.resolve(null);
         });
 };
@@ -122,7 +123,7 @@ util.getClipboardContent = function () {
 util.getElement = function (possibleElements, x, y) {
     let baseElements = document.elementsFromPoint(x, y);
     let element = null;
-    baseElements.forEach(baseElement => {
+    baseElements.forEach((baseElement) => {
         element = element || getParentElement(baseElement, possibleElements);
     });
     return element;
@@ -143,15 +144,15 @@ util.getElement = function (possibleElements, x, y) {
  */
 util.splitInChunks = function (array, chunkSize) {
     let R = [];
-    for (let i = 0, len = array.length; i < len; i += chunkSize)
-        R.push(array.slice(i, i + chunkSize));
+    for (let i = 0, len = array.length; i < len; i += chunkSize) R.push(array.slice(i, i + chunkSize));
     return R;
 };
 
 util.openFullscreen = function () {
     let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     let elem = isSafari ? document.documentElement : document.body;
-    let openFn = elem.requestFullscreen || elem.mozRequestFullScreen || elem.webkitRequestFullscreen || elem.msRequestFullscreen;
+    let openFn =
+        elem.requestFullscreen || elem.mozRequestFullScreen || elem.webkitRequestFullscreen || elem.msRequestFullscreen;
     if (openFn) {
         openFn.call(elem);
     }
@@ -161,7 +162,11 @@ util.closeFullscreen = function () {
     if (!document.fullscreenElement) {
         return;
     }
-    let closeFn = document.exitFullscreen || document.mozCancelFullScreen || document.webkitExitFullscreen || document.msExitFullscreen;
+    let closeFn =
+        document.exitFullscreen ||
+        document.mozCancelFullScreen ||
+        document.webkitExitFullscreen ||
+        document.msExitFullscreen;
     if (closeFn) {
         closeFn.call(document);
     }
@@ -173,13 +178,13 @@ util.closeFullscreen = function () {
  * @return {null|*[]}
  */
 util.getRGB = function (hexOrCssRGB) {
-    if (hexOrCssRGB && hexOrCssRGB[0] === '#') {
+    if (hexOrCssRGB && hexOrCssRGB[0] === "#") {
         return util.hexToRGB(hexOrCssRGB);
-    } else if (hexOrCssRGB && hexOrCssRGB.indexOf('rgb') === 0) {
+    } else if (hexOrCssRGB && hexOrCssRGB.indexOf("rgb") === 0) {
         return util.cssRGBToRGB(hexOrCssRGB);
     }
     return null;
-}
+};
 
 /**
  * converts HEX String to array[3] with RGB colors
@@ -190,12 +195,13 @@ util.hexToRGB = function (hex) {
     if (!hex) {
         return null;
     }
-    let array = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
-        , (m, r, g, b) => '#' + r + r + g + g + b + b)
-        .substring(1).match(/.{2}/g)
-        .map(x => parseInt(x, 16));
+    let array = hex
+        .replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => "#" + r + r + g + g + b + b)
+        .substring(1)
+        .match(/.{2}/g)
+        .map((x) => parseInt(x, 16));
     return !array.some(isNaN) ? array : null;
-}
+};
 
 /**
  * converts css RGB String (e.g. 'rgb(123, 123, 123)') to RGB array, e.g. [123, 123, 123]
@@ -206,17 +212,17 @@ util.cssRGBToRGB = function (cssRGB) {
     if (!cssRGB) {
         return null;
     }
-    let array = cssRGB.match(/[0-9.]+/gi).map(string => parseInt(string));
+    let array = cssRGB.match(/[0-9.]+/gi).map((string) => parseInt(string));
     return array[0] && array[1] && array[2] ? array : null;
-}
+};
 
 util.sleep = function (ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+    return new Promise((resolve) => setTimeout(resolve, ms));
+};
 
 util.isString = function (value) {
-    return typeof value === 'string' || value instanceof String;
-}
+    return typeof value === "string" || value instanceof String;
+};
 
 util.convertLowerUppercase = function (text, convertMode) {
     if (!convertMode || !text) {
@@ -226,7 +232,7 @@ util.convertLowerUppercase = function (text, convertMode) {
     } else if (convertMode === TextConfig.CONVERT_MODE_UPPERCASE) {
         return text.toUpperCase();
     }
-}
+};
 
 /**
  * returns the current date and time as formatted string like 2023-01-16_15-56
@@ -234,20 +240,22 @@ util.convertLowerUppercase = function (text, convertMode) {
  */
 util.getCurrentDateTimeString = function () {
     let d = new Date();
-    let pad = v => `0${v}`.slice(-2);
-    let datestring = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}`;
+    let pad = (v) => `0${v}`.slice(-2);
+    let datestring = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(
+        d.getMinutes()
+    )}`;
     return datestring;
-}
+};
 
 //see https://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string
 util.arrayBufferToBase64 = function (buffer) {
-    let binary = '';
+    let binary = "";
     let bytes = new Uint8Array(buffer);
     let len = bytes.byteLength;
     for (let i = 0; i < len; i++) {
         binary += String.fromCharCode(bytes[i]);
     }
     return window.btoa(binary);
-}
+};
 
-export {util};
+export { util };

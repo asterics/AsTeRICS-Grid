@@ -1,13 +1,13 @@
 import { L } from "../util/lquery.js";
-import $ from '../externals/jquery.js';
-import {inputEventHandler} from "./inputEventHandler";
-import {util} from "../util/util";
-import {speechService} from "../service/speechService";
-import {i18nService} from "../service/i18nService";
-import {MainVue} from "../vue/mainVue";
-import {stateService} from "../service/stateService";
-import {constants} from "../util/constants";
-import {InputConfig} from "../model/InputConfig";
+import $ from "../externals/jquery.js";
+import { inputEventHandler } from "./inputEventHandler";
+import { util } from "../util/util";
+import { speechService } from "../service/speechService";
+import { i18nService } from "../service/i18nService";
+import { MainVue } from "../vue/mainVue";
+import { stateService } from "../service/stateService";
+import { constants } from "../util/constants";
+import { InputConfig } from "../model/InputConfig";
 
 let Hover = {};
 Hover.getInstanceFromConfig = function (inputConfig, itemSelector, options) {
@@ -16,8 +16,8 @@ Hover.getInstanceFromConfig = function (inputConfig, itemSelector, options) {
         selectionListener: options.selectionListener,
         activeListener: options.activeListener,
         containerClass: options.containerClass,
-        inputEventSelect: inputConfig.seqInputs.filter(e => e.label === InputConfig.SELECT)[0],
-        inputEventNext: inputConfig.seqInputs.filter(e => e.label === InputConfig.NEXT)[0],
+        inputEventSelect: inputConfig.seqInputs.filter((e) => e.label === InputConfig.SELECT)[0],
+        inputEventNext: inputConfig.seqInputs.filter((e) => e.label === InputConfig.NEXT)[0],
         timeoutMs: inputConfig.hoverTimeoutMs,
         demoMode: options.demoMode || inputConfig.hoverDisableHoverpane,
         hideCursor: inputConfig.hoverHideCursor
@@ -60,9 +60,13 @@ function HoverConstructor(itemSelector, options) {
         if (!_touchElementHidden) {
             setTouchElementVisibility(false);
         }
-        util.debounce(() => {
-            setTouchElementVisibility(true);
-        }, _hoverTimeoutMs + 300, 'hovering-mouseMove');
+        util.debounce(
+            () => {
+                setTouchElementVisibility(true);
+            },
+            _hoverTimeoutMs + 300,
+            "hovering-mouseMove"
+        );
     }
 
     function mouseUp() {
@@ -83,21 +87,26 @@ function HoverConstructor(itemSelector, options) {
         if (!_demoMode) {
             event.preventDefault();
         }
-        util.throttle(() => {
-            let element = getTouchEventElement(event);
-            onElement(element);
-            _lastElement = element;
-            _lastTouchEvent = event;
-        }, [], 50, 'hovering-touchmove');
+        util.throttle(
+            () => {
+                let element = getTouchEventElement(event);
+                onElement(element);
+                _lastElement = element;
+                _lastTouchEvent = event;
+            },
+            [],
+            50,
+            "hovering-touchmove"
+        );
     }
 
     function clickHandler(event) {
-        speechService.speak(i18nService.t('speechOutputActivated'));
+        speechService.speak(i18nService.t("speechOutputActivated"));
         MainVue.clearTooltip();
         stateService.setState(constants.STATE_ACTIVATED_TTS, true);
         setTouchElementVisibility(true);
         _elements.forEach(function (item) {
-            item.removeEventListener('click', clickHandler);
+            item.removeEventListener("click", clickHandler);
         });
     }
 
@@ -108,7 +117,7 @@ function HoverConstructor(itemSelector, options) {
         if (!element || _hoverMap[element]) {
             return;
         }
-        L.addClass(element, 'mouseentered');
+        L.addClass(element, "mouseentered");
         if (_activeListener && element !== _lastElement) {
             _activeListener(element);
         }
@@ -125,7 +134,7 @@ function HoverConstructor(itemSelector, options) {
         if (!element) {
             return;
         }
-        L.removeClass(element, 'mouseentered');
+        L.removeClass(element, "mouseentered");
         clearTimeout(_hoverMap[element]);
         _hoverMap[element] = null;
         _lastElement = null;
@@ -136,7 +145,7 @@ function HoverConstructor(itemSelector, options) {
             event = _lastTouchEvent;
         }
         if (!event) {
-            log.warn('no event');
+            log.warn("no event");
             return;
         }
         let x = event.touches ? event.touches[0].pageX : event.pageX || event.clientX;
@@ -148,40 +157,40 @@ function HoverConstructor(itemSelector, options) {
         _touchElementHidden = !visible;
         if (!_demoMode) {
             if (visible) {
-                $('#touchElement').show();
+                $("#touchElement").show();
             } else {
-                $('#touchElement').hide();
+                $("#touchElement").hide();
             }
         }
     }
 
     thiz.startHovering = function () {
         if (options.hideCursor) {
-            $(_itemSelector).css('cursor', 'none');
-            $('#touchElement').css('cursor', 'none');
+            $(_itemSelector).css("cursor", "none");
+            $("#touchElement").css("cursor", "none");
             if (options.containerClass) {
-                $(options.containerClass).css('cursor', 'none');
+                $(options.containerClass).css("cursor", "none");
             }
         }
         _elements = L.selectAsList(_itemSelector);
         let alreadyActivatedTTS = stateService.getState(constants.STATE_ACTIVATED_TTS);
         if (speechService.nativeSpeechSupported() && !alreadyActivatedTTS && !_demoMode) {
-            MainVue.setTooltip(i18nService.t('tapOnAnyElementToActivateSpeech'));
+            MainVue.setTooltip(i18nService.t("tapOnAnyElementToActivateSpeech"));
             stateService.onStateChanged(constants.STATE_ACTIVATED_TTS, (acivatedTTS) => {
                 if (acivatedTTS) {
                     MainVue.clearTooltip();
                 }
             });
             _elements.forEach(function (item) {
-                item.addEventListener('click', clickHandler);
+                item.addEventListener("click", clickHandler);
             });
         } else {
             setTouchElementVisibility(true);
         }
         _elements.forEach(function (item) {
-            item.addEventListener('mouseenter', mouseEnter);
-            item.addEventListener('mouseleave', mouseLeave);
-            item.addEventListener('mouseup', mouseUp);
+            item.addEventListener("mouseenter", mouseEnter);
+            item.addEventListener("mouseleave", mouseLeave);
+            item.addEventListener("mouseup", mouseUp);
         });
         _inputEventHandler = inputEventHandler.instance();
         _inputEventHandler.onTouchStart(touchStart);
@@ -193,22 +202,22 @@ function HoverConstructor(itemSelector, options) {
 
     thiz.destroy = function () {
         if (options.hideCursor) {
-            $(_itemSelector).css('cursor', 'default');
-            $('#touchElement').css('cursor', 'default');
+            $(_itemSelector).css("cursor", "default");
+            $("#touchElement").css("cursor", "default");
             if (options.containerClass) {
-                $(options.containerClass).css('cursor', 'default');
+                $(options.containerClass).css("cursor", "default");
             }
         }
-        util.clearDebounce('hovering-mouseMove');
+        util.clearDebounce("hovering-mouseMove");
         _elements.forEach(function (item) {
-            item.removeEventListener('mouseenter', mouseEnter);
-            item.removeEventListener('mouseleave', mouseLeave);
-            item.removeEventListener('mouseup', mouseUp);
-            item.removeEventListener('click', clickHandler);
+            item.removeEventListener("mouseenter", mouseEnter);
+            item.removeEventListener("mouseleave", mouseLeave);
+            item.removeEventListener("mouseup", mouseUp);
+            item.removeEventListener("click", clickHandler);
         });
         _inputEventHandler.destroy();
         document.removeEventListener("mousemove", mouseMove);
-        Object.keys(_hoverMap).forEach(key => {
+        Object.keys(_hoverMap).forEach((key) => {
             clearTimeout(_hoverMap[key]);
         });
         stateService.clearListeners(constants.STATE_ACTIVATED_TTS);
@@ -223,5 +232,4 @@ function HoverConstructor(itemSelector, options) {
     };
 }
 
-
-export {Hover};
+export { Hover };

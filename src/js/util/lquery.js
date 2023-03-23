@@ -1,13 +1,13 @@
 //very lightweight replacement for jquery,
 //see https://blog.garstasio.com/you-dont-need-jquery/selectors/#multiple-selectors
 var L = function (selector) {
-    if(selector instanceof Node || selector instanceof NodeList || selector instanceof Array) {
+    if (selector instanceof Node || selector instanceof NodeList || selector instanceof Array) {
         return selector;
     }
-    var selectorType = 'querySelectorAll';
+    var selectorType = "querySelectorAll";
 
-    if (selector.indexOf('#') === 0) {
-        selectorType = 'getElementById';
+    if (selector.indexOf("#") === 0) {
+        selectorType = "getElementById";
         selector = selector.substr(1, selector.length);
     }
 
@@ -52,7 +52,7 @@ L.isVisible = function (selector) {
 L.setVisible = function (selector, visible, visibleClass) {
     var elems = L.selectAsList(selector);
     elems.forEach(function (x) {
-        if(visible == false) {
+        if (visible == false) {
             x.style.display = "none";
         } else {
             x.style.display = visibleClass ? visibleClass : "block";
@@ -62,9 +62,9 @@ L.setVisible = function (selector, visible, visibleClass) {
 
 L.selectAsList = function (selector) {
     var result = L(selector);
-    if(result instanceof Array) {
+    if (result instanceof Array) {
         return L.flattenArrayDeep(result);
-    } else if(result instanceof NodeList) {
+    } else if (result instanceof NodeList) {
         return Array.prototype.slice.call(result); //convert NodeList to Array
     }
     return [result];
@@ -73,7 +73,7 @@ L.selectAsList = function (selector) {
 L.addClass = function (selector, className) {
     var list = L.selectAsList(selector);
     list.forEach(function (elem) {
-        if(!elem.classList.contains(className)) {
+        if (!elem.classList.contains(className)) {
             elem.classList.add(className);
         }
     });
@@ -98,7 +98,7 @@ L.removeAddClass = function (selector, className) {
 L.toggleClass = function (selector, className) {
     var list = L.selectAsList(selector);
     list.forEach(function (elem) {
-        if(elem.classList.contains(className)) {
+        if (elem.classList.contains(className)) {
             elem.classList.remove(className);
         } else {
             elem.classList.add(className);
@@ -107,28 +107,28 @@ L.toggleClass = function (selector, className) {
 };
 
 L.setSelected = function (selector, selected) {
-    if(selected == undefined) selected = true;
+    if (selected == undefined) selected = true;
     var list = L.selectAsList(selector);
     list.forEach(function (elem) {
-        if(selected) {
-            L.addClass(elem, 'selected');
+        if (selected) {
+            L.addClass(elem, "selected");
         } else {
-            L.removeClass(elem, 'selected');
+            L.removeClass(elem, "selected");
         }
-        elem.setAttribute('aria-selected', selected);
+        elem.setAttribute("aria-selected", selected);
     });
 };
 
 L.setValue = function (selector, value) {
     var list = L.selectAsList(selector);
     list.forEach(function (elem) {
-        if(elem.value) {
+        if (elem.value) {
             elem.value = value;
         }
     });
 };
 
-L.hasFocus = function(selector) {
+L.hasFocus = function (selector) {
     return L(selector) == document.activeElement;
 };
 
@@ -143,15 +143,15 @@ L.val2key = function (val, array) {
 
 L.isFunction = function (functionToCheck) {
     var getType = {};
-    return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+    return functionToCheck && getType.toString.call(functionToCheck) === "[object Function]";
 };
 
 L.getIDSelector = function (id) {
-    return '#' + id;
+    return "#" + id;
 };
 
 L.getPercentage = function (value, minRange, maxRange) {
-    return (Math.round(((value - minRange) / (maxRange - minRange) * 100) * 1000) / 1000)
+    return Math.round(((value - minRange) / (maxRange - minRange)) * 100 * 1000) / 1000;
 };
 
 L.getMs = function () {
@@ -178,7 +178,7 @@ L.createElement = function (tagName, className, inner) {
     if (inner) {
         inner = inner instanceof Array ? inner : [inner];
         inner.forEach(function (innerElem) {
-            if (typeof innerElem === 'string') {
+            if (typeof innerElem === "string") {
                 e.innerHTML += innerElem;
             } else {
                 e.appendChild(innerElem);
@@ -199,19 +199,20 @@ L.createElement = function (tagName, className, inner) {
  * @return {string}
  */
 L.createSelectItems = function (listValues, listHtml, defaultOption) {
-    var result = '';
+    var result = "";
     var hasHtml = listHtml && listHtml.length == listValues.length;
     var hasHtmlFn = L.isFunction(listHtml);
 
     for (var i = 0; i < listValues.length; i++) {
-        var html = hasHtmlFn ? listHtml(listValues[i]) : (hasHtml ? listHtml[i] : L.translate(listValues[i]));
-        var elem = L.createElement('option', '', html);
+        var html = hasHtmlFn ? listHtml(listValues[i]) : hasHtml ? listHtml[i] : L.translate(listValues[i]);
+        var elem = L.createElement("option", "", html);
         elem.value = listValues[i];
-        result += elem.outerHTML + '\n';
+        result += elem.outerHTML + "\n";
     }
 
     if (defaultOption) {
-        result = '<option value="-1" disabled selected hidden>' + L.translate('SELECT_SPECIAL_KEY') + '</option>\n' + result;
+        result =
+            '<option value="-1" disabled selected hidden>' + L.translate("SELECT_SPECIAL_KEY") + "</option>\n" + result;
     }
     return result;
 };
@@ -226,7 +227,7 @@ L.isLang = function (localeString) {
 
 L.getLang = function () {
     var lang = navigator.userLanguage || navigator.language;
-    return lang.substring(0,2);
+    return lang.substring(0, 2);
 };
 
 /**
@@ -239,20 +240,20 @@ L.getLang = function () {
  * @param translationKey the key to translate
  * @return {*}
  */
-L.translate = function(translationKey) {
+L.translate = function (translationKey) {
     var translated = i18n[translationKey] ? i18n[translationKey] : translationKey;
-    for(var i=1; i<arguments.length; i++) {
-        translated = translated.replace('{?}', arguments[i]);
+    for (var i = 1; i < arguments.length; i++) {
+        translated = translated.replace("{?}", arguments[i]);
     }
     return translated;
 };
 
-L.getLastElement = function(array) {
+L.getLastElement = function (array) {
     return array.slice(-1)[0];
 };
 
-L.replaceAll = function(string, search, replace) {
-    return string.replace(new RegExp(search, 'g'), replace);
+L.replaceAll = function (string, search, replace) {
+    return string.replace(new RegExp(search, "g"), replace);
 };
 
 L.equalIgnoreCase = function (str1, str2) {
@@ -261,7 +262,7 @@ L.equalIgnoreCase = function (str1, str2) {
 
 L.loadScript = function (source, fallbackSource) {
     console.log("loading script: " + source);
-    var script = document.createElement('script');
+    var script = document.createElement("script");
     return new Promise(function (resolve) {
         script.onload = function () {
             console.log("loaded: " + source);
@@ -269,7 +270,7 @@ L.loadScript = function (source, fallbackSource) {
         };
         script.onerror = function () {
             console.log("error loading: " + source);
-            if(fallbackSource) {
+            if (fallbackSource) {
                 L.loadScript(fallbackSource).then(resolve);
             } else {
                 resolve(false);
@@ -285,11 +286,11 @@ L.flattenArray = function (array) {
 };
 
 L.flattenArrayDeep = function (arr) {
-    return arr.reduce((acc, e) => Array.isArray(e) ? acc.concat(L.flattenArrayDeep(e)) : acc.concat(e), []);
+    return arr.reduce((acc, e) => (Array.isArray(e) ? acc.concat(L.flattenArrayDeep(e)) : acc.concat(e)), []);
 };
 
-L.convertToKeyCode = function(character) {
-    if(/^[a-zA-Z0-9]$/.test(character)) {
+L.convertToKeyCode = function (character) {
+    if (/^[a-zA-Z0-9]$/.test(character)) {
         return character.toUpperCase().charCodeAt(0);
     }
     return null;
@@ -299,9 +300,9 @@ L.convertToKeyCode = function(character) {
  * Returns a random integer between min (inclusive) and max (inclusive)
  * Using Math.round() will give you a non-uniform distribution!
  */
-L.getRandomInt = function(min, max) {
+L.getRandomInt = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 window.L = L; //make also global for usage in browser console
-export {L};
+export { L };

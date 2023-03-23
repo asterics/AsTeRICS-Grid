@@ -18,7 +18,7 @@
     "navigo": "^7.1.2",
     "predictionary": "^1.6.0",
     "superlogin-client": "^0.8.0",
-    "vue": "^2.5.17",
+    "vue": "^2.6",
     "vue-i18n": "8"
   },
   "devDependencies": {
@@ -28,13 +28,15 @@
     "@babel/preset-env": "^7.8.4",
     "babel-loader": "^8.0.6",
     "css-loader": "^1.0.0",
+    "husky": "^8.0.3",
     "jest": "^24.5.0",
     "nano": "^9.0.3",
     "node-sass": "^7.0.1",
+    "prettier": "^2.8.4",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.22.1",
     "vue-loader": "^15.4.0",
-    "vue-template-compiler": "^2.5.17",
+    "vue-template-compiler": "^2.7.0",
     "webpack": "^4.30.0",
     "webpack-bundle-analyzer": "^3.3.2",
     "webpack-cli": "^3.3.0",
@@ -54,7 +56,8 @@
     "release-latest": "cp scripts/releaseBeta.sh scripts/releaseBeta.tmp.sh && sh scripts/releaseBeta.tmp.sh && rm scripts/releaseBeta.tmp.sh",
     "test": "jest",
     "stats": "webpack --config webpack.config.js --env.production --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json app/build_legacy",
-    "stats-dev": "webpack --config webpack.config.js --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json app/build_legacy"
+    "stats-dev": "webpack --config webpack.config.js --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json app/build_legacy",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -65,5 +68,8 @@
   "bugs": {
     "url": "https://github.com/asterics/AsTeRICS-Grid/issues"
   },
-  "homepage": "https://github.com/asterics/AsTeRICS-Grid#readme"
+  "homepage": "https://github.com/asterics/AsTeRICS-Grid#readme",
+  "lint-staged": {
+    "*.{js,css,md}": "prettier --write"
+  }
 }

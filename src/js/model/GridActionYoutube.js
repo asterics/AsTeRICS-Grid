@@ -1,6 +1,6 @@
-import {modelUtil} from "../util/modelUtil";
-import {constants} from "../util/constants";
-import {Model} from "../externals/objectmodel";
+import { modelUtil } from "../util/modelUtil";
+import { constants } from "../util/constants";
+import { Model } from "../externals/objectmodel";
 
 class GridActionYoutube extends Model({
     id: String,
@@ -37,28 +37,28 @@ class GridActionYoutube extends Model({
 GridActionYoutube.canBeTested = false;
 
 GridActionYoutube.actions = {
-    YT_PLAY: 'YT_PLAY',
-    YT_PAUSE: 'YT_PAUSE',
-    YT_TOGGLE: 'YT_TOGGLE',
-    YT_RESTART: 'YT_RESTART',
-    YT_STOP: 'YT_STOP',
-    YT_STEP_FORWARD: 'YT_STEP_FORWARD',
-    YT_STEP_BACKWARD: 'YT_STEP_BACKWARD',
-    YT_NEXT_VIDEO: 'YT_NEXT_VIDEO',
-    YT_PREV_VIDEO: 'YT_PREV_VIDEO',
-    YT_ENTER_FULLSCREEN: 'YT_ENTER_FULLSCREEN',
-    YT_VOLUME_UP: 'YT_VOLUME_UP',
-    YT_VOLUME_DOWN: 'YT_VOLUME_DOWN',
-    YT_VOLUME_MUTE: 'YT_VOLUME_MUTE',
-}
+    YT_PLAY: "YT_PLAY",
+    YT_PAUSE: "YT_PAUSE",
+    YT_TOGGLE: "YT_TOGGLE",
+    YT_RESTART: "YT_RESTART",
+    YT_STOP: "YT_STOP",
+    YT_STEP_FORWARD: "YT_STEP_FORWARD",
+    YT_STEP_BACKWARD: "YT_STEP_BACKWARD",
+    YT_NEXT_VIDEO: "YT_NEXT_VIDEO",
+    YT_PREV_VIDEO: "YT_PREV_VIDEO",
+    YT_ENTER_FULLSCREEN: "YT_ENTER_FULLSCREEN",
+    YT_VOLUME_UP: "YT_VOLUME_UP",
+    YT_VOLUME_DOWN: "YT_VOLUME_DOWN",
+    YT_VOLUME_MUTE: "YT_VOLUME_MUTE"
+};
 
 GridActionYoutube.playTypes = {
-    YT_PLAY_VIDEO: 'YT_PLAY_VIDEO',
-    YT_PLAY_PLAYLIST: 'YT_PLAY_PLAYLIST',
-    YT_PLAY_SEARCH: 'YT_PLAY_SEARCH',
-    YT_PLAY_CHANNEL: 'YT_PLAY_CHANNEL',
-    YT_PLAY_RELATED: 'YT_PLAY_RELATED',
-}
+    YT_PLAY_VIDEO: "YT_PLAY_VIDEO",
+    YT_PLAY_PLAYLIST: "YT_PLAY_PLAYLIST",
+    YT_PLAY_SEARCH: "YT_PLAY_SEARCH",
+    YT_PLAY_CHANNEL: "YT_PLAY_CHANNEL",
+    YT_PLAY_RELATED: "YT_PLAY_RELATED"
+};
 
 GridActionYoutube.defaults({
     id: "", //will be replaced by constructor
@@ -69,4 +69,4 @@ GridActionYoutube.defaults({
     playType: GridActionYoutube.playTypes.YT_PLAY_VIDEO
 });
 
-export {GridActionYoutube};
+export { GridActionYoutube };

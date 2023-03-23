@@ -1,6 +1,6 @@
 import { L } from "../util/lquery.js";
-import {util} from "../util/util.js";
-import {inputEventHandler} from "./inputEventHandler.js";
+import { util } from "../util/util.js";
+import { inputEventHandler } from "./inputEventHandler.js";
 
 let Clicker = {};
 
@@ -28,7 +28,7 @@ function ClickerConstructor(itemSelector, options) {
 
     function onMouseDown(event) {
         event.preventDefault(); // prevent zooming on longpress on images on iOS
-        if(!_enableMouseDown || inputEventHandler.global.hasIncompleteTouchEvent()) {
+        if (!_enableMouseDown || inputEventHandler.global.hasIncompleteTouchEvent()) {
             return;
         }
         util.throttle(onclick, [event], 300, "CLICK_EVENT_HANDLER");
@@ -61,26 +61,26 @@ function ClickerConstructor(itemSelector, options) {
         _elements = L.selectAsList(_itemSelector);
         _elements.forEach(function (item) {
             if (options.useSingleClick && options.useMousedownEvent) {
-                item.addEventListener('mousedown', onMouseDown);
-                item.addEventListener('touchstart', onTouchStart);
-                item.addEventListener('touchend', inputEventHandler.global.resetIncompleteTouchEvent); //needed because 'touchend' on document does not fire (but on element does) if element removed, see https://bugs.chromium.org/p/chromium/issues/detail?id=464579 and https://jsfiddle.net/jq3L6xo4/4/
+                item.addEventListener("mousedown", onMouseDown);
+                item.addEventListener("touchstart", onTouchStart);
+                item.addEventListener("touchend", inputEventHandler.global.resetIncompleteTouchEvent); //needed because 'touchend' on document does not fire (but on element does) if element removed, see https://bugs.chromium.org/p/chromium/issues/detail?id=464579 and https://jsfiddle.net/jq3L6xo4/4/
             } else if (options.useSingleClick) {
-                item.addEventListener('click', onclick);
+                item.addEventListener("click", onclick);
             }
             if (options.useDoubleclick) {
-                item.addEventListener('dblclick', ondblclick);
+                item.addEventListener("dblclick", ondblclick);
             }
-            item.addEventListener('keydown', onkeydown);
+            item.addEventListener("keydown", onkeydown);
         });
     };
 
     thiz.destroy = function () {
         _elements.forEach(function (item) {
-            item.removeEventListener('mousedown', onMouseDown);
-            item.removeEventListener('touchstart', onTouchStart);
-            item.removeEventListener('click', onclick);
-            item.removeEventListener('dblclick', ondblclick);
-            item.removeEventListener('keydown', onkeydown);
+            item.removeEventListener("mousedown", onMouseDown);
+            item.removeEventListener("touchstart", onTouchStart);
+            item.removeEventListener("click", onclick);
+            item.removeEventListener("dblclick", ondblclick);
+            item.removeEventListener("keydown", onkeydown);
         });
     };
 
@@ -89,4 +89,4 @@ function ClickerConstructor(itemSelector, options) {
     };
 }
 
-export {Clicker};
+export { Clicker };

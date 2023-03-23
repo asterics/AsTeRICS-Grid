@@ -12,7 +12,7 @@ stateService.setState = function (key, state) {
     if (originalState !== state) {
         _states[key] = state;
         _listeners[key] = _listeners[key] || [];
-        _listeners[key].forEach(fn => {
+        _listeners[key].forEach((fn) => {
             fn(state);
         });
     }
@@ -49,4 +49,4 @@ stateService.clearListeners = function (key) {
     }
 };
 
-export {stateService};
+export { stateService };

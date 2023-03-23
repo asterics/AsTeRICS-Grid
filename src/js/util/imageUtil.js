@@ -1,4 +1,4 @@
-import {constants} from "./constants";
+import { constants } from "./constants";
 
 var imageUtil = {};
 
@@ -11,10 +11,10 @@ var imageUtil = {};
  */
 imageUtil.getBase64FromImg = function (img, maxWidth, quality, mimeType) {
     maxWidth = maxWidth || 150;
-    mimeType = mimeType || img.src.indexOf('data:') === 0 ? img.src.substring(5, img.src.indexOf(';')) : null;
-    mimeType = mimeType || (img.src.indexOf('.png') > -1 ? 'image/png' : null);
-    mimeType = mimeType || (img.src.indexOf('.svg') > -1 ? 'image/svg+xml' : null);
-    mimeType = mimeType || 'image/jpeg';
+    mimeType = mimeType || img.src.indexOf("data:") === 0 ? img.src.substring(5, img.src.indexOf(";")) : null;
+    mimeType = mimeType || (img.src.indexOf(".png") > -1 ? "image/png" : null);
+    mimeType = mimeType || (img.src.indexOf(".svg") > -1 ? "image/svg+xml" : null);
+    mimeType = mimeType || "image/jpeg";
 
     var canvas = document.createElement("canvas");
     var factor = 1;
@@ -32,7 +32,7 @@ imageUtil.getBase64FromImg = function (img, maxWidth, quality, mimeType) {
             dim: getDimObject(canvas.width, canvas.height)
         };
     } catch (e) {
-        throw "image converting failed!"
+        throw "image converting failed!";
     }
 };
 
@@ -42,7 +42,7 @@ imageUtil.getBase64FromImg = function (img, maxWidth, quality, mimeType) {
  * @return {Promise}
  */
 imageUtil.getBase64FromInput = function (input) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
 
@@ -60,11 +60,11 @@ imageUtil.convertBase64 = function (originalBase64, maxWidth, quality) {
         if (!originalBase64) {
             return resolve(null);
         }
-        if(originalBase64.substring(5, originalBase64.indexOf(';')) === 'image/svg+xml') {
+        if (originalBase64.substring(5, originalBase64.indexOf(";")) === "image/svg+xml") {
             return resolve(originalBase64);
         }
         maxWidth = maxWidth || 150;
-        var img = document.createElement('img');
+        var img = document.createElement("img");
         img.onload = function () {
             try {
                 resolve(imageUtil.getBase64FromImg(img, maxWidth, quality).data);
@@ -73,7 +73,7 @@ imageUtil.convertBase64 = function (originalBase64, maxWidth, quality) {
             }
         };
         img.src = originalBase64;
-    })
+    });
 };
 
 /**
@@ -87,13 +87,13 @@ imageUtil.base64SvgToBase64Png = function (originalBase64, width, secondTry) {
     if (!originalBase64) {
         return Promise.resolve(null);
     }
-    return new Promise(resolve => {
-        let img = document.createElement('img');
+    return new Promise((resolve) => {
+        let img = document.createElement("img");
         img.onload = function () {
             if (!secondTry && (img.naturalWidth === 0 || img.naturalHeight === 0)) {
                 let svgDoc = base64ToSvgDocument(originalBase64);
                 let fixedDoc = fixSvgDocumentFF(svgDoc);
-                return imageUtil.base64SvgToBase64Png(svgDocumentToBase64(fixedDoc), width, true).then(result => {
+                return imageUtil.base64SvgToBase64Png(svgDocumentToBase64(fixedDoc), width, true).then((result) => {
                     resolve(result);
                 });
             }
@@ -105,7 +105,7 @@ imageUtil.base64SvgToBase64Png = function (originalBase64, width, secondTry) {
             let ctx = canvas.getContext("2d");
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             try {
-                let data = canvas.toDataURL('image/png');
+                let data = canvas.toDataURL("image/png");
                 resolve(data);
             } catch (e) {
                 resolve(null);
@@ -113,7 +113,7 @@ imageUtil.base64SvgToBase64Png = function (originalBase64, width, secondTry) {
         };
         img.src = originalBase64;
     });
-}
+};
 
 /**
  * converts a given url to a base64 data and also returns image dimensions
@@ -125,7 +125,7 @@ imageUtil.base64SvgToBase64Png = function (originalBase64, width, secondTry) {
 imageUtil.urlToBase64WithDimensions = function (url, maxWidth, mimeType) {
     maxWidth = maxWidth || 500;
     return new Promise((resolve, reject) => {
-        if (url.lastIndexOf('.svg') === url.length - 4) {
+        if (url.lastIndexOf(".svg") === url.length - 4) {
             $.get(url, null, function (svgDocument) {
                 let fixedSvg = fixSvgDocumentFF(svgDocument);
                 resolve({
@@ -145,7 +145,7 @@ imageUtil.urlToBase64WithDimensions = function (url, maxWidth, mimeType) {
                     resolve(null);
                 }
             };
-            img.onerror = function() {
+            img.onerror = function () {
                 resolve(null);
             };
             img.src = url;
@@ -154,23 +154,25 @@ imageUtil.urlToBase64WithDimensions = function (url, maxWidth, mimeType) {
 };
 
 imageUtil.urlToBase64 = function (url, maxWidth, mimeType) {
-    return imageUtil.urlToBase64WithDimensions(url, maxWidth, mimeType).then(dataWithDim => {
+    return imageUtil.urlToBase64WithDimensions(url, maxWidth, mimeType).then((dataWithDim) => {
         return Promise.resolve(dataWithDim ? dataWithDim.data : null);
-    })
+    });
 };
 
 imageUtil.getScreenshot = function (selector) {
-    return import(/* webpackChunkName: "html2canvas" */ 'html2canvas').then(html2canvas => {
-        return html2canvas.default(document.querySelector(selector), {
-            scale: 0.2,
-            logging: false,
-            useCORS: true,
-            ignoreElements: (node) => {
-                return constants.IS_FIREFOX && node.style['background-image'].indexOf('image/svg') !== -1;
-            }
-        }).then(canvas => {
-            return Promise.resolve(canvas.toDataURL('image/webp', 0.6));
-        });
+    return import(/* webpackChunkName: "html2canvas" */ "html2canvas").then((html2canvas) => {
+        return html2canvas
+            .default(document.querySelector(selector), {
+                scale: 0.2,
+                logging: false,
+                useCORS: true,
+                ignoreElements: (node) => {
+                    return constants.IS_FIREFOX && node.style["background-image"].indexOf("image/svg") !== -1;
+                }
+            })
+            .then((canvas) => {
+                return Promise.resolve(canvas.toDataURL("image/webp", 0.6));
+            });
     });
 };
 
@@ -187,14 +189,14 @@ imageUtil.getImageDimensionsFromDataUrl = function (dataUrl) {
     if (!dataUrl) {
         return Promise.resolve({});
     }
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         let img = new Image();
         img.onload = function () {
             resolve(imageUtil.getImageDimensionsFromImg(img));
         };
         img.src = dataUrl;
     });
-}
+};
 
 /**
  * gets the dimensions of an image based on a given Image object
@@ -203,7 +205,7 @@ imageUtil.getImageDimensionsFromDataUrl = function (dataUrl) {
  */
 imageUtil.getImageDimensionsFromImg = function (img) {
     if (!img) {
-        return {}
+        return {};
     }
     let width = img.naturalWidth;
     let height = img.naturalHeight;
@@ -218,19 +220,20 @@ imageUtil.getImageDimensionsFromImg = function (img) {
         height: height,
         ratio: width / height
     };
-}
+};
 
 imageUtil.allImagesLoaded = function () {
     // https://stackoverflow.com/a/60949881/9219743
-    return Promise.all(Array.from(document.images).map(img => {
-        if (img.complete)
-            return Promise.resolve(img.naturalHeight !== 0);
-        return new Promise(resolve => {
-            img.addEventListener('load', () => resolve(true));
-            img.addEventListener('error', (error) => resolve(false));
-        });
-    })).then(results => {
-        if (results.every(res => res)) {
+    return Promise.all(
+        Array.from(document.images).map((img) => {
+            if (img.complete) return Promise.resolve(img.naturalHeight !== 0);
+            return new Promise((resolve) => {
+                img.addEventListener("load", () => resolve(true));
+                img.addEventListener("error", (error) => resolve(false));
+            });
+        })
+    ).then((results) => {
+        if (results.every((res) => res)) {
             // all images loaded successfully
             return Promise.resolve(true);
         } else {
@@ -266,15 +269,15 @@ function getSvgDim(svgDocument) {
 function svgDocumentToBase64(svgDocument) {
     try {
         let base64EncodedSVG = btoa(new XMLSerializer().serializeToString(svgDocument));
-        return 'data:image/svg+xml;base64,' + base64EncodedSVG;
+        return "data:image/svg+xml;base64," + base64EncodedSVG;
     } catch (e) {
         return null;
     }
 }
 
 function base64ToSvgDocument(base64) {
-    let svg = atob(base64.substring(base64.indexOf('base64,') + 7));
-    svg = svg.substring(svg.indexOf('<svg'));
+    let svg = atob(base64.substring(base64.indexOf("base64,") + 7));
+    svg = svg.substring(svg.indexOf("<svg"));
     let parser = new DOMParser();
     return parser.parseFromString(svg, "image/svg+xml");
 }
@@ -284,7 +287,7 @@ function getDimObject(width, height) {
         width: width,
         height: height,
         ratio: width / height
-    }
+    };
 }
 
-export {imageUtil};
+export { imageUtil };

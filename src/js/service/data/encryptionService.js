@@ -1,8 +1,8 @@
-import {EncryptedObject} from "../../model/EncryptedObject";
-import {dataUtil} from "../../util/dataUtil";
-import {sjcl} from "../../externals/sjcl";
-import {log} from "../../util/log.js";
-import {MapCache} from "../../util/MapCache";
+import { EncryptedObject } from "../../model/EncryptedObject";
+import { dataUtil } from "../../util/dataUtil";
+import { sjcl } from "../../externals/sjcl";
+import { log } from "../../util/log.js";
+import { MapCache } from "../../util/MapCache";
 
 let STATIC_USER_PW_SALT = "STATIC_USER_PW_SALT";
 
@@ -41,7 +41,9 @@ encryptionService.encryptObject = function (object) {
     let shortJsonString = JSON.stringify(dataUtil.removeLongPropertyValues(object));
     let shortVersionDifferent = jsonString !== shortJsonString;
     encryptedObject.encryptedDataBase64 = encryptionService.encryptString(jsonString, _encryptionSalts[0]);
-    encryptedObject.encryptedDataBase64Short = shortVersionDifferent ? encryptionService.encryptString(shortJsonString, _encryptionSalts[0]) : null;
+    encryptedObject.encryptedDataBase64Short = shortVersionDifferent
+        ? encryptionService.encryptString(shortJsonString, _encryptionSalts[0])
+        : null;
     return encryptedObject;
 };
 
@@ -65,7 +67,7 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
 
     encryptedObjects = encryptedObjects instanceof Array ? encryptedObjects : [encryptedObjects];
     let decryptedObjects = [];
-    encryptedObjects.forEach(encryptedObject => {
+    encryptedObjects.forEach((encryptedObject) => {
         try {
             let decryptedString = null;
             let decryptedObject = null;
@@ -75,14 +77,17 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
                 decryptedObject = JSON.parse(decryptedString);
                 decryptedObject.isShortVersion = true;
             } else {
-                decryptedString = encryptionService.decryptStringTrySalts(encryptedObject.encryptedDataBase64, _encryptionSalts);
+                decryptedString = encryptionService.decryptStringTrySalts(
+                    encryptedObject.encryptedDataBase64,
+                    _encryptionSalts
+                );
                 decryptedObject = JSON.parse(decryptedString);
             }
             decryptedObject._id = encryptedObject._id;
             decryptedObject._rev = encryptedObject._rev;
             decryptedObjects.push(decryptedObject);
         } catch (e) {
-            log.error('error decrypting object: ' + encryptedObject.modelName + ', id: ' + encryptedObject.id);
+            log.error("error decrypting object: " + encryptedObject.modelName + ", id: " + encryptedObject.id);
             log.error(e);
         }
     });
@@ -102,7 +107,7 @@ encryptionService.encryptString = function (string, encryptionSalt) {
     let encryptionKey = getEncryptionKey(encryptionSalt);
     let encryptedString = null;
     if (encryptionKey && !_isLocalUser) {
-        encryptedString =  sjcl.encrypt(encryptionKey, string, {iter: 1000});
+        encryptedString = sjcl.encrypt(encryptionKey, string, { iter: 1000 });
     } else {
         encryptedString = string;
     }
@@ -119,7 +124,7 @@ encryptionService.encryptString = function (string, encryptionSalt) {
 encryptionService.decryptString = function (encryptedString, encryptionSalt) {
     throwErrorIfUninitialized();
     if (_decryptionCache.has(encryptedString)) {
-        log.debug('using decryption cache...');
+        log.debug("using decryption cache...");
         return _decryptionCache.get(encryptedString);
     }
 
@@ -156,7 +161,7 @@ encryptionService.decryptStringTrySalts = function (encryptedString, trySalts) {
         log.warn("wasn't able to decrypt string, try next salt...");
         return encryptionService.decryptStringTrySalts(encryptedString, trySalts);
     }
-}
+};
 
 /**
  * returns a cryptographic hash of a string (SHA-256)
@@ -190,7 +195,7 @@ encryptionService.getUserPasswordHash = function (plaintextPassword) {
  * @param salts array of salts to use -> ID(s) of metadata object(s)
  */
 encryptionService.setEncryptionProperties = function (hashedPassword, salts, isLocalUser) {
-    hashedPassword = hashedPassword || '';
+    hashedPassword = hashedPassword || "";
     _encryptionBasePassword = hashedPassword;
     _encryptionSalts = Array.isArray(salts) ? salts : [salts];
     _isLocalUser = isLocalUser;
@@ -199,14 +204,14 @@ encryptionService.setEncryptionProperties = function (hashedPassword, salts, isL
 };
 
 function getEncryptionKey(salt) {
-    return encryptionService.getStringHash('' + salt + _encryptionBasePassword);
+    return encryptionService.getStringHash("" + salt + _encryptionBasePassword);
 }
 
 /**
  * clears the encryption properties
  */
 encryptionService.resetEncryptionProperties = function () {
-    log.debug('reset encryption properties...');
+    log.debug("reset encryption properties...");
     _encryptionSalts = null;
     _encryptionBasePassword = null;
     _isLocalUser = false;
@@ -214,10 +219,10 @@ encryptionService.resetEncryptionProperties = function () {
 
 function throwErrorIfUninitialized() {
     if (!_encryptionBasePassword || !_encryptionSalts || _encryptionSalts.length === 0) {
-        let msg = 'using encryptionService uninitialized is not possible, aborting...';
+        let msg = "using encryptionService uninitialized is not possible, aborting...";
         log.error(msg);
         throw msg;
     }
 }
 
-export {encryptionService};
+export { encryptionService };

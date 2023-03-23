@@ -7,16 +7,28 @@ log.levels.INFO = 2;
 log.levels.WARN = 3;
 log.levels.ERROR = 4;
 
-log.error = function () { logInternal(arguments); };
-log.warn = function () { logInternal(arguments); };
-log.info = function () { logInternal(arguments); };
-log.debug = function () { logInternal(arguments); };
-log.trace = function () { logInternal(arguments); };
-log.getLevel = function () { return log.levels.ERROR };
+log.error = function () {
+    logInternal(arguments);
+};
+log.warn = function () {
+    logInternal(arguments);
+};
+log.info = function () {
+    logInternal(arguments);
+};
+log.debug = function () {
+    logInternal(arguments);
+};
+log.trace = function () {
+    logInternal(arguments);
+};
+log.getLevel = function () {
+    return log.levels.ERROR;
+};
 
 function logInternal(args) {
-    if(enabled) {
+    if (enabled) {
         console.log(args);
     }
 }
-export {log};
+export { log };

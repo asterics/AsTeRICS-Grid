@@ -1,5 +1,5 @@
-import {Model} from "../externals/objectmodel";
-import {constants} from "../util/constants";
+import { Model } from "../externals/objectmodel";
+import { constants } from "../util/constants";
 
 class TextConfig extends Model({
     modelName: String,
@@ -15,8 +15,8 @@ class TextConfig extends Model({
     }
 }
 
-TextConfig.CONVERT_MODE_UPPERCASE = 'CONVERT_MODE_UPPERCASE';
-TextConfig.CONVERT_MODE_LOWERCASE = 'CONVERT_MODE_LOWERCASE';
+TextConfig.CONVERT_MODE_UPPERCASE = "CONVERT_MODE_UPPERCASE";
+TextConfig.CONVERT_MODE_LOWERCASE = "CONVERT_MODE_LOWERCASE";
 
 TextConfig.defaults({
     modelName: TextConfig.getModelName(),
@@ -24,4 +24,4 @@ TextConfig.defaults({
     convertMode: null
 });
 
-export {TextConfig};
+export { TextConfig };
