@@ -1,0 +1,149 @@
+#####
+###  SETUP SERVER
+#
+---
+- debug:
+    msg: START SETUP SERVER...
+
+- name: install aptitude
+  apt:
+    name: aptitude
+    state: latest
+    update_cache: true
+  register: result
+- name: debug [install aptitude]
+  debug:
+    var: result
+
+- name: install required system packages
+  apt:
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+      - python3-pip
+      - virtualenv
+      - python3-setuptools
+      - gnupg
+      - lsb-release
+      - ufw
+      - nano
+      - git
+    state: latest
+    update_cache: true
+  register: result
+- name: debug [install required system packages]
+  debug:
+    var: result
+
+- name: add docker gpg apt key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  register: result
+- name: debug [add docker gpg apt key]
+  debug:
+    var: result
+
+- name: add docker repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu focal stable
+    state: present
+  register: result
+- name: debug [add docker repository]
+  debug:
+    var: result
+
+- name: update apt and install docker-ce
+  apt:
+    name: docker-ce
+    state: latest
+    update_cache: true
+  register: result
+- name: debug [update apt and install docker-ce]
+  debug:
+    var: result
+
+- name: update apt and install docker-compose-plugin
+  apt:
+    name: docker-compose-plugin
+    state: latest
+    update_cache: true
+  register: result
+- name: debug [update apt and install docker-compose-plugin]
+  debug:
+    var: result
+
+- name: ufw - reset firewall
+  ufw:
+    state: reset
+  register: result
+- name: debug [ufw - reset firewall]
+  debug:
+    var: result
+
+- name: ufw - enable firewall
+  ufw:
+    state: enabled
+  register: result
+- name: debug [ufw - enable firewall]
+  debug:
+    var: result
+
+- name: ufw - only allow ssh (22) in
+  ufw:
+    rule: allow
+    port: 22
+    direction: in
+  register: result
+- name: debug [ufw - only allow ssh (22) in]
+  debug:
+    var: result
+
+- name: ufw - only allow port 80 in
+  ufw:
+    rule: allow
+    port: 80
+    proto: tcp
+    direction: in
+  register: result
+- name: debug [ufw - only allow port 80 in]
+  debug:
+    var: result
+
+- name: ufw - only allow port 80 out
+  ufw:
+    rule: allow
+    port: 80
+    proto: tcp
+    direction: out
+  register: result
+- name: debug [ufw - only allow port 80 out]
+  debug:
+    var: result
+
+- name: ufw - only allow port 443 in
+  ufw:
+    rule: allow
+    port: 443
+    proto: tcp
+    direction: in
+  register: result
+- name: debug [ufw - only allow port 443 in]
+  debug:
+    var: result
+
+- name: ufw - only allow port 443 out
+  ufw:
+    rule: allow
+    port: 443
+    proto: tcp
+    direction: out
+  register: result
+- name: debug [ufw - only allow port 443 out]
+  debug:
+    var: result
+
+- debug:
+    msg: END SETUP SERVER...

@@ -1,0 +1,54 @@
+#####
+###  DOCKER NGINX
+#
+---
+- debug:
+    msg: START DOCKER NGINX...
+
+- name: create folder ./nginx/conf/
+  file:
+    path: ./nginx/conf/
+    state: directory
+  register: result
+- name: debug [create folder ./nginx/conf/]
+  debug:
+    var: result
+
+- name: check if certificate exists
+  become: true
+  shell: 'docker compose run nginx test -e /etc/nginx/ssl/live/{{DOMAIN_NAME}}/fullchain.pem && echo 1 || echo 0'
+  # if "0" certificate does not exist, if "1" certificate exists
+  register: hasAValidCertificateSuperLogin
+- name: debug [check if certificate exists]
+  debug:
+    var: hasAValidCertificateSuperLogin
+
+- name: copy files local to remote with a template (superloginHttpCreateCert)
+  template:
+    src: superLoginHttpCreateCert
+    dest: ./nginx/conf/superLoginHttpCreateCert.conf
+  register: result
+  # if "0" certificate does not exist, we need to create a certificate config
+  when: hasAValidCertificateSuperLogin.stdout == "0"
+- name: debug [copy files local to remote with a template (superloginHttpCreateCert)]
+  debug:
+    var: result
+
+- name: start superlogin, nginx, and certbot with docker-compose up
+  become: true
+  shell: 'docker compose -f ./docker-compose.yml up --build --detach'
+  register: result
+- name: debug [start superlogin, nginx, and certbot with docker-compose up]
+  debug:
+    var: result
+
+- name: reload nginx config
+  become: true
+  shell: 'docker compose exec nginx nginx -s reload'
+  register: result
+- name: debug [reload nginx config]
+  debug:
+    var: result
+
+- debug:
+    msg: END DOCKER NGINX...
