@@ -1,0 +1,156 @@
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name {{DOMAIN_NAME_AUTH}};
+    server_tokens off;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        # redirect all http traffic to https
+        # the domain name in the docker network
+        # is called like the service defined
+        # the docker-compose.yml (superlogin)
+        proxy_pass_request_headers on;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://superlogin:3000/;
+    }
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name {{DOMAIN_NAME_FABI}};
+    server_tokens off;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location /js/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js/;
+    }
+
+    location /css/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/css/;
+    }
+
+    location /lib/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/lib/;
+    }
+
+    location /js_fm/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_fm/;
+    }
+
+    location /js_pad/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_pad/;
+    }
+
+    location /js_fabi/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_fabi/;
+    }
+
+    location /img/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/img/;
+    }
+
+    location / {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/index_fabi.htm;
+    }
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name {{DOMAIN_NAME_FLIPMOUSE}};
+    server_tokens off;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location /js/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js/;
+    }
+
+    location /css/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/css/;
+    }
+
+    location /lib/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/lib/;
+    }
+
+    location /js_fm/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_fm/;
+    }
+
+    location /js_pad/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_pad/;
+    }
+
+    location /js_fabi/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_fabi/;
+    }
+
+    location /img/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/img/;
+    }
+
+    location / {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/index_fm.htm;
+    }
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name {{DOMAIN_NAME_FLIPPAD}};
+    server_tokens off;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+
+    location /js/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js/;
+    }
+
+    location /css/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/css/;
+    }
+
+    location /lib/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/lib/;
+    }
+
+    location /js_fm/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_fm/;
+    }
+
+    location /js_pad/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_pad/;
+    }
+
+    location /js_fabi/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_fabi/;
+    }
+
+    location /img/ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/img/;
+    }
+
+    location / {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/index_pad.htm;
+    }
+}

@@ -1,0 +1,56 @@
+# Package-introduced administrative user
+[admins]
+{{COUCHDB_USER}} = {{COUCHDB_PASSWORD}}
+
+[couchdb]
+uuid = 6e6f3ffc4ebcd37718e80256fe1060c1
+max_dbs_open = 1000
+
+[couch_httpd_auth]
+secret = 2faf0ca5378c76bd7466599313864a4d
+timeout = 20000
+;WWW-Authenticate = Basic realm="administrator"
+
+[httpd]
+enable_cors = true
+;WWW-Authenticate = Basic realm="administrator"
+
+[cors]
+origins = https://grid.asterics.eu, http://localhost:9095, http://bs-local.com:9095
+credentials = true
+headers = accept, authorization, content-type, origin, referer
+methods = GET, PUT, POST, HEAD, DELETE
+
+[compactions]
+_default = [{db_fragmentation, "2%"}, {view_fragmentation, "2%"}, {from, "22:00"}, {to, "06:30"}]
+
+[compaction_daemon]
+min_file_size = 1024
+check_interval = 1800
+snooze_period_ms = 50
+
+[smoosh]
+db_channels = db_overnight_channel
+view_channels = view_overnight_channel
+
+[smoosh.view_overnight_channel]
+priority = ratio
+min_priority = 2.0
+from = 22:00
+to = 06:30
+strict_window = true
+
+[smoosh.db_overnight_channel]
+priority = ratio
+min_priority = 2.0
+from = 22:00
+to = 06:30
+strict_window = true
+
+[chttpd]
+admin_only_all_dbs = true
+;require_valid_user = true
+max_db_number_for_dbs_info_req = 500
+
+[query_server_config]
+os_process_limit = 200
