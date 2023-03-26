@@ -11,7 +11,7 @@
   "GridActionYoutube": "YouTube actie",
   "GridActionChangeLang": "Wijzig taal voor inhoud / stem",
   "GridActionOpenWebpage": "Open de webpagina in nieuw tabblad",
-  "COLLECT_ACTION_SPEAK": "Spreek verzamel element inhoud (afzonderlijk)",
+  "COLLECT_ACTION_SPEAK": "Spreek verzamel(de) element(en) uit (afzonderlijk)",
   "COLLECT_ACTION_SPEAK_CONTINUOUS": "Spreek verzamel element inhoud (continue)",
   "COLLECT_ACTION_SPEAK_CLEAR": "Spreek verzamel element inhoud (afzonderlijk) en wis daarna",
   "COLLECT_ACTION_SPEAK_CONTINUOUS_CLEAR": "Spreek, verzamel element inhoud (continue) en wis daarna",
