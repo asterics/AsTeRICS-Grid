@@ -1,12 +1,12 @@
-import $ from "../../externals/jquery.js";
-import { imageUtil } from "../../util/imageUtil";
+import $ from '../../externals/jquery.js';
+import { imageUtil } from '../../util/imageUtil';
 
-let QUERY_URL = "https://www.opensymbols.org/api/v1/symbols/search?q=";
+let QUERY_URL = 'https://www.opensymbols.org/api/v1/symbols/search?q=';
 let openSymbolsService = {};
-openSymbolsService.PROP_IMAGE_URL = "image_url";
-openSymbolsService.PROP_AUTHOR = "author";
-openSymbolsService.PROP_AUTHOR_URL = "author_url";
-openSymbolsService.SEARCH_PROVIDER_NAME = "OPENSYMBOLS";
+openSymbolsService.PROP_IMAGE_URL = 'image_url';
+openSymbolsService.PROP_AUTHOR = 'author';
+openSymbolsService.PROP_AUTHOR_URL = 'author_url';
+openSymbolsService.SEARCH_PROVIDER_NAME = 'OPENSYMBOLS';
 
 let _lastChunkSize = 20;
 let _lastChunkNr = 1;
@@ -16,7 +16,7 @@ let _hasNextChunk = false;
 
 let searchProviderInfo = {
     name: openSymbolsService.SEARCH_PROVIDER_NAME,
-    url: "https://www.opensymbols.org/",
+    url: 'https://www.opensymbols.org/',
     service: openSymbolsService
 };
 
@@ -77,7 +77,7 @@ function queryInternal(search, chunkNr, chunkSize) {
                 _lastRawResultList = resultList;
                 processResultList(resultList);
             }).fail(() => {
-                reject("no internet");
+                reject('no internet');
             });
         } else {
             processResultList(_lastRawResultList);

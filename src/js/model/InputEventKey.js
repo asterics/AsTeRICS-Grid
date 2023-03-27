@@ -1,6 +1,6 @@
-import { modelUtil } from "../util/modelUtil";
-import { constants } from "../util/constants";
-import { Model } from "../externals/objectmodel";
+import { modelUtil } from '../util/modelUtil';
+import { constants } from '../util/constants';
+import { Model } from '../externals/objectmodel';
 
 class InputEventKey extends Model({
     id: String,
@@ -16,7 +16,7 @@ class InputEventKey extends Model({
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, InputEventKey);
         super(properties);
-        this.id = this.id || modelUtil.generateId("input-event-key");
+        this.id = this.id || modelUtil.generateId('input-event-key');
     }
 
     isValid() {
@@ -24,12 +24,12 @@ class InputEventKey extends Model({
     }
 
     static getModelName() {
-        return "InputEventKey";
+        return 'InputEventKey';
     }
 }
 
 InputEventKey.defaults({
-    id: "", //will be replaced by constructor
+    id: '', //will be replaced by constructor
     modelName: InputEventKey.getModelName(),
     modelVersion: constants.MODEL_VERSION,
     repeat: 1,

@@ -1,20 +1,20 @@
-import { MapCache } from "./MapCache";
+import { MapCache } from './MapCache';
 
-let KEY = "KEY";
-let KEY2 = "KEY2";
-let VALUE = "VALUE";
+let KEY = 'KEY';
+let KEY2 = 'KEY2';
+let VALUE = 'VALUE';
 let VALUE_ARRAY = [1, 2, 3];
 let VALUE_OBJECT = { a: VALUE, b: VALUE_ARRAY };
 
-test("MapCache - Test 1", () => {
+test('MapCache - Test 1', () => {
     let cache = new MapCache();
     cache.set(KEY, VALUE);
     expect(cache.has(KEY)).toBeTruthy();
-    expect(cache.has("otherkey")).toBeFalsy();
+    expect(cache.has('otherkey')).toBeFalsy();
     expect(cache.get(KEY)).toBe(VALUE);
 });
 
-test("MapCache - Test 2", () => {
+test('MapCache - Test 2', () => {
     let cache = new MapCache();
     cache.set(KEY, VALUE);
     cache.set(KEY2, VALUE);
@@ -25,7 +25,7 @@ test("MapCache - Test 2", () => {
     expect(cache.get(KEY2)).toBe(VALUE);
 });
 
-test("MapCache - Test 3", () => {
+test('MapCache - Test 3', () => {
     let cache = new MapCache();
     cache.set(KEY, VALUE);
     cache.set(KEY2, VALUE);
@@ -36,7 +36,7 @@ test("MapCache - Test 3", () => {
     expect(cache.get(KEY2)).toBeFalsy();
 });
 
-test("MapCache - Test 4", () => {
+test('MapCache - Test 4', () => {
     let cache = new MapCache();
     function Constructor() {}
     cache.set(KEY, VALUE, Constructor);
@@ -44,7 +44,7 @@ test("MapCache - Test 4", () => {
     expect(cache.get(KEY) instanceof Constructor).toBeTruthy();
 });
 
-test("MapCache - Test 5", () => {
+test('MapCache - Test 5', () => {
     let cache = new MapCache();
     function Constructor() {}
     cache.set(KEY, VALUE, Constructor);
@@ -55,7 +55,7 @@ test("MapCache - Test 5", () => {
     expect(cache.get(KEY)).toBe(VALUE);
 });
 
-test("MapCache - Test 6", () => {
+test('MapCache - Test 6', () => {
     let cache = new MapCache();
     function Constructor() {}
     cache.set(KEY, [VALUE, VALUE, VALUE], Constructor);
@@ -66,7 +66,7 @@ test("MapCache - Test 6", () => {
     });
 });
 
-test("MapCache - Test 7", () => {
+test('MapCache - Test 7', () => {
     let cache = new MapCache();
     cache.set(KEY, VALUE_ARRAY);
     expect(cache.has(KEY)).toBeTruthy();
@@ -74,7 +74,7 @@ test("MapCache - Test 7", () => {
     expect(cache.get(KEY) === VALUE_ARRAY).toBeFalsy();
 });
 
-test("MapCache - Test 8", () => {
+test('MapCache - Test 8', () => {
     let cache = new MapCache();
     cache.set(KEY, VALUE_OBJECT);
     expect(cache.has(KEY)).toBeTruthy();
@@ -82,7 +82,7 @@ test("MapCache - Test 8", () => {
     expect(cache.get(KEY) === VALUE_OBJECT).toBeFalsy();
 });
 
-test("MapCache - Test 9", () => {
+test('MapCache - Test 9', () => {
     let cache = new MapCache();
     function Constructor() {}
     cache.set(KEY, VALUE, Constructor);

@@ -1,17 +1,17 @@
-import $ from "../externals/jquery.js";
-import Vue from "vue";
-import VueI18n from "vue-i18n";
-import { i18nService } from "../service/i18nService";
-import { constants } from "../util/constants";
-import { util } from "../util/util";
-import { inputEventHandler } from "../input/inputEventHandler";
-import { dataService } from "../service/data/dataService";
-import { databaseService } from "../service/data/databaseService";
-import { localStorageService } from "../service/data/localStorageService";
-import { helpService } from "../service/helpService";
-import { Router } from "../router";
-import NotificationBar from "../../vue-components/components/notificationBar.vue";
-import ProgressBarModal from "../../vue-components/modals/progressBarModal.vue";
+import $ from '../externals/jquery.js';
+import Vue from 'vue';
+import VueI18n from 'vue-i18n';
+import { i18nService } from '../service/i18nService';
+import { constants } from '../util/constants';
+import { util } from '../util/util';
+import { inputEventHandler } from '../input/inputEventHandler';
+import { dataService } from '../service/data/dataService';
+import { databaseService } from '../service/data/databaseService';
+import { localStorageService } from '../service/data/localStorageService';
+import { helpService } from '../service/helpService';
+import { Router } from '../router';
+import NotificationBar from '../../vue-components/components/notificationBar.vue';
+import ProgressBarModal from '../../vue-components/modals/progressBarModal.vue';
 
 let MainVue = {};
 let app = null;
@@ -66,7 +66,7 @@ MainVue.init = function () {
     return i18nService.getVueI18n().then((i18n) => {
         app = new Vue({
             i18n: i18n,
-            el: "#app",
+            el: '#app',
             components: { NotificationBar, ProgressBarModal },
             data() {
                 return {
@@ -99,9 +99,9 @@ MainVue.init = function () {
                     helpService.openHelp();
                 },
                 moreNavigation() {
-                    $.contextMenu("destroy");
+                    $.contextMenu('destroy');
                     setupContextMenu();
-                    $("#moreNavigation").contextMenu();
+                    $('#moreNavigation').contextMenu();
                 }
             },
             mounted() {
@@ -146,7 +146,7 @@ MainVue.init = function () {
                     thiz.syncState = syncState;
                 });
                 thiz.syncState = dataService.getSyncState();
-                window.addEventListener("resize", () => {
+                window.addEventListener('resize', () => {
                     util.debounce(
                         function () {
                             $(document).trigger(constants.EVENT_GRID_RESIZE);
@@ -183,21 +183,21 @@ MainVue.init = function () {
 };
 
 function setupContextMenu() {
-    let CONTEXT_ADD_ONLINE = "CONTEXT_ADD_ONLINE";
-    let CONTEXT_ADD_OFFLINE = "CONTEXT_ADD_OFFLINE";
-    let CONTEXT_ABOUT = "CONTEXT_ABOUT";
+    let CONTEXT_ADD_ONLINE = 'CONTEXT_ADD_ONLINE';
+    let CONTEXT_ADD_OFFLINE = 'CONTEXT_ADD_OFFLINE';
+    let CONTEXT_ABOUT = 'CONTEXT_ABOUT';
     let menuItems = {
-        CONTEXT_ADD_ONLINE: { name: i18nService.t("addOnlineUser"), icon: "fas fa-user-plus" },
-        CONTEXT_ADD_OFFLINE: { name: i18nService.t("addOfflineUser"), icon: "fas fa-user-plus" },
-        CONTEXT_ABOUT: { name: i18nService.t("aboutAstericsGrid"), icon: "fas fa-info-circle" }
+        CONTEXT_ADD_ONLINE: { name: i18nService.t('addOnlineUser'), icon: 'fas fa-user-plus' },
+        CONTEXT_ADD_OFFLINE: { name: i18nService.t('addOfflineUser'), icon: 'fas fa-user-plus' },
+        CONTEXT_ABOUT: { name: i18nService.t('aboutAstericsGrid'), icon: 'fas fa-info-circle' }
     };
     $.contextMenu({
-        selector: "#moreNavigation",
+        selector: '#moreNavigation',
         callback: function (key, options) {
             handleContextMenu(key);
         },
         items: menuItems,
-        trigger: "left",
+        trigger: 'left',
         zIndex: 10
     });
 

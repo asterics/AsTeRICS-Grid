@@ -1,6 +1,6 @@
-import { GridElement } from "./GridElement.js";
-import { GridActionCollectElement } from "./GridActionCollectElement.js";
-import { GridActionPredict } from "./GridActionPredict.js";
+import { GridElement } from './GridElement.js';
+import { GridActionCollectElement } from './GridActionCollectElement.js';
+import { GridActionPredict } from './GridActionPredict.js';
 
 class GridElementCollect extends GridElement.extend({
     showLabels: [Boolean],
@@ -27,9 +27,9 @@ class GridElementCollect extends GridElement.extend({
     }
 }
 
-GridElementCollect.MODE_AUTO = "MODE_AUTO";
-GridElementCollect.MODE_COLLECT_SEPARATED = "MODE_COLLECT_SEPARATED";
-GridElementCollect.MODE_COLLECT_TEXT = "MODE_COLLECT_TEXT";
+GridElementCollect.MODE_AUTO = 'MODE_AUTO';
+GridElementCollect.MODE_COLLECT_SEPARATED = 'MODE_COLLECT_SEPARATED';
+GridElementCollect.MODE_COLLECT_TEXT = 'MODE_COLLECT_TEXT';
 GridElementCollect.MODES = [
     GridElementCollect.MODE_AUTO,
     GridElementCollect.MODE_COLLECT_SEPARATED,

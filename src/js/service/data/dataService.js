@@ -1,31 +1,31 @@
-import $ from "../../externals/jquery.js";
-import FileSaver from "file-saver";
+import $ from '../../externals/jquery.js';
+import FileSaver from 'file-saver';
 
-import { GridData } from "../../model/GridData.js";
-import { MetaData } from "../../model/MetaData";
-import { modelUtil } from "../../util/modelUtil";
-import { databaseService } from "./databaseService";
-import { dataUtil } from "../../util/dataUtil";
-import { pouchDbService } from "./pouchDbService";
-import { Dictionary } from "../../model/Dictionary";
-import { obfConverter } from "../../util/obfConverter";
-import { fileUtil } from "../../util/fileUtil";
-import { i18nService } from "../i18nService";
-import { predictionService } from "../predictionService";
-import { localStorageService } from "./localStorageService";
-import { gridUtil } from "../../util/gridUtil";
-import { urlParamService } from "../urlParamService";
-import { filterService } from "./filterService";
-import { serviceWorkerService } from "../serviceWorkerService.js";
-import { constants } from "../../util/constants.js";
-import { MainVue } from "../../vue/mainVue.js";
-import { util } from "../../util/util.js";
+import { GridData } from '../../model/GridData.js';
+import { MetaData } from '../../model/MetaData';
+import { modelUtil } from '../../util/modelUtil';
+import { databaseService } from './databaseService';
+import { dataUtil } from '../../util/dataUtil';
+import { pouchDbService } from './pouchDbService';
+import { Dictionary } from '../../model/Dictionary';
+import { obfConverter } from '../../util/obfConverter';
+import { fileUtil } from '../../util/fileUtil';
+import { i18nService } from '../i18nService';
+import { predictionService } from '../predictionService';
+import { localStorageService } from './localStorageService';
+import { gridUtil } from '../../util/gridUtil';
+import { urlParamService } from '../urlParamService';
+import { filterService } from './filterService';
+import { serviceWorkerService } from '../serviceWorkerService.js';
+import { constants } from '../../util/constants.js';
+import { MainVue } from '../../vue/mainVue.js';
+import { util } from '../../util/util.js';
 
 let dataService = {};
 
-let _defaultGridSetPath = "app/examples/default.grd.json";
+let _defaultGridSetPath = 'app/examples/default.grd.json';
 if (urlParamService.getDefaultGridsetName()) {
-    _defaultGridSetPath = "app/examples/" + urlParamService.getDefaultGridsetName();
+    _defaultGridSetPath = 'app/examples/' + urlParamService.getDefaultGridsetName();
 }
 
 /**
@@ -169,7 +169,7 @@ dataService.deleteAllGrids = function () {
             return databaseService.bulkDelete(grids);
         })
         .then(() => {
-            return saveGlobalGridId("");
+            return saveGlobalGridId('');
         });
 };
 
@@ -431,12 +431,12 @@ dataService.downloadToFile = async function (gridIds, options) {
         exportData.metadata.lastOpenedGridId = currentMetadata.lastOpenedGridId;
     }
 
-    let blob = new Blob([JSON.stringify(exportData)], { type: "text/plain;charset=utf-8" });
+    let blob = new Blob([JSON.stringify(exportData)], { type: 'text/plain;charset=utf-8' });
     let filename =
         options.filename ||
         (exportData.grids.length > 1
-            ? "asterics-grid-backup.grd"
-            : i18nService.getTranslation(exportData.grids[0].label) + ".grd");
+            ? 'asterics-grid-backup.grd'
+            : i18nService.getTranslation(exportData.grids[0].label) + '.grd');
     FileSaver.saveAs(blob, filename);
 };
 
@@ -499,11 +499,11 @@ dataService.normalizeImportData = function (data) {
 
 dataService.importBackup = async function (file, progressFn) {
     progressFn = progressFn || (() => {});
-    progressFn(10, i18nService.t("extractingGridsFromFile"));
+    progressFn(10, i18nService.t('extractingGridsFromFile'));
     let importData = await dataService.convertFileToImportData(file);
     if (!importData) {
         progressFn(100);
-        MainVue.setTooltip(i18nService.t("backupFileDoesntContainData"), { msgType: "warn" });
+        MainVue.setTooltip(i18nService.t('backupFileDoesntContainData'), { msgType: 'warn' });
         return;
     }
     return dataService.importBackupData(importData, {
@@ -515,10 +515,10 @@ dataService.importBackup = async function (file, progressFn) {
 dataService.importBackupData = async function (importData, options) {
     options = options || {};
     options.progressFn = options.progressFn || (() => {});
-    options.progressFn(20, i18nService.t("deletingGrids"));
+    options.progressFn(20, i18nService.t('deletingGrids'));
     await dataService.deleteAllGrids();
     await dataService.deleteAllDictionaries();
-    options.progressFn(30, i18nService.t("encryptingAndSavingGrids"));
+    options.progressFn(30, i18nService.t('encryptingAndSavingGrids'));
     await dataService.importData(importData, {
         generateGlobalGrid: options.generateGlobalGrid,
         importDictionaries: true,
@@ -610,7 +610,7 @@ dataService.importData = async function (data, options) {
     }
 
     setTimeout(() => {
-        log.debug("pre-caching all images of gridset ...");
+        log.debug('pre-caching all images of gridset ...');
         serviceWorkerService.cacheImagesOfGrids(importData.grids);
     }, 3000);
     options.progressFn(100);

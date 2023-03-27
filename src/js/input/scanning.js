@@ -1,7 +1,7 @@
-import { L } from "../util/lquery.js";
-import { inputEventHandler } from "./inputEventHandler";
-import { InputEventKey } from "../model/InputEventKey";
-import { InputConfig } from "../model/InputConfig";
+import { L } from '../util/lquery.js';
+import { inputEventHandler } from './inputEventHandler';
+import { InputEventKey } from '../model/InputEventKey';
+import { InputConfig } from '../model/InputConfig';
 
 let Scanner = {};
 
@@ -27,7 +27,7 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
     //options
     var itemSelector = itemSelector;
     var scanActiveClass = scanActiveClass;
-    var scanInactiveClass = "";
+    var scanInactiveClass = '';
     var scanTimeoutMs = 1000;
     var scanVertical = false;
     var subScanRepeat = 3;
@@ -453,14 +453,14 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
             _touchListener = function () {
                 thiz.select();
             };
-            _touchElement = L(".area")[0] ? L(".area")[0] : L("#grid-container");
-            _touchElement.addEventListener("click", _touchListener);
+            _touchElement = L('.area')[0] ? L('.area')[0] : L('#grid-container');
+            _touchElement.addEventListener('click', _touchListener);
         }
     };
 
     thiz.disableTouchScanning = function () {
         if (_touchListener) {
-            _touchElement.removeEventListener("click", _touchListener);
+            _touchElement.removeEventListener('click', _touchListener);
             _touchListener = null;
         }
     };

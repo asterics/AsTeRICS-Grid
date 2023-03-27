@@ -1,12 +1,12 @@
-import $ from "../../externals/jquery.js";
-import PouchDB from "PouchDB";
-import { localStorageService } from "./localStorageService";
-import { constants } from "../../util/constants";
-import { filterService } from "./filterService";
-import { PouchDbAdapter } from "./pouchDbAdapter";
-import { MapCache } from "../../util/MapCache";
-import { MetaData } from "../../model/MetaData";
-import { GridData } from "../../model/GridData";
+import $ from '../../externals/jquery.js';
+import PouchDB from 'PouchDB';
+import { localStorageService } from './localStorageService';
+import { constants } from '../../util/constants';
+import { filterService } from './filterService';
+import { PouchDbAdapter } from './pouchDbAdapter';
+import { MapCache } from '../../util/MapCache';
+import { MetaData } from '../../model/MetaData';
+import { GridData } from '../../model/GridData';
 
 let pouchDbService = {};
 
@@ -60,10 +60,10 @@ pouchDbService.createDatabase = function (databaseName, remoteCouchDbAddress, on
  */
 pouchDbService.all = function (idPrefix, id) {
     if (id && _documentCache.has(id)) {
-        log.debug("using cache for retrieving id: " + id);
+        log.debug('using cache for retrieving id: ' + id);
         return _documentCache.getAsPromise(id);
     } else if (!id && idPrefix && _documentCache.has(idPrefix)) {
-        log.debug("using cache for retrieving bulk with id-prefix: " + idPrefix);
+        log.debug('using cache for retrieving bulk with id-prefix: ' + idPrefix);
         return _documentCache.getAsPromise(idPrefix);
     }
     let dbToUse = getDbToUse();
@@ -77,7 +77,7 @@ pouchDbService.all = function (idPrefix, id) {
             options.key = id;
         } else if (idPrefix) {
             options.startkey = idPrefix;
-            options.endkey = idPrefix + "\uffff";
+            options.endkey = idPrefix + '\uffff';
         }
         dbToUse
             .allDocs(options)
@@ -122,7 +122,7 @@ pouchDbService.allArray = async function (idPrefix, id) {
  * @return {Promise} promise that resolves if operation finished, rejects on a failure
  */
 pouchDbService.save = function (idPrefix, data) {
-    log.debug("saving " + idPrefix + "...");
+    log.debug('saving ' + idPrefix + '...');
     cancelSyncInternal();
     if (data.id) {
         _documentCache.clear(data.id, data);
@@ -138,15 +138,15 @@ pouchDbService.save = function (idPrefix, data) {
             .then((response) => {
                 data._rev = response.rev;
                 _documentCache.set(data.id, data);
-                log.debug("updated " + idPrefix + ", id: " + data._id);
+                log.debug('updated ' + idPrefix + ', id: ' + data._id);
                 resolve();
             })
             .catch(function (err) {
                 if (data.id) {
                     _documentCache.clear(data.id);
                 }
-                if (err.error === "conflict") {
-                    log.warn("conflict with remote version updating document with id: " + data.id);
+                if (err.error === 'conflict') {
+                    log.warn('conflict with remote version updating document with id: ' + data.id);
                     resolve();
                 } else {
                     log.error(err);
@@ -162,7 +162,7 @@ pouchDbService.save = function (idPrefix, data) {
 
 pouchDbService.bulkDocs = function (dataList) {
     if (!dataList || !(dataList instanceof Array) || dataList.length === 0) {
-        log.warn("bulkSave: no valid dataList");
+        log.warn('bulkSave: no valid dataList');
         return Promise.reject();
     }
     cancelSyncInternal();
@@ -184,7 +184,7 @@ pouchDbService.remove = function (id) {
     let dbToUse = getDbToUse();
     return pouchDbService.all(null, id).then((object) => {
         _documentCache.clearAll();
-        log.debug("deleted object from db! id: " + object.id);
+        log.debug('deleted object from db! id: ' + object.id);
         return dbToUse.remove(object);
     });
 };
@@ -195,7 +195,7 @@ pouchDbService.remove = function (id) {
  */
 pouchDbService.resetDatabase = function (databaseName) {
     if (!pouchDbService.isUsingLocalDb() || pouchDbService.getOpenedDatabaseName() !== constants.LOCAL_DEMO_USERNAME) {
-        return Promise.reject("do not destroy!");
+        return Promise.reject('do not destroy!');
     }
     _documentCache.clearAll();
     return new Promise((resolve) => {
@@ -206,7 +206,7 @@ pouchDbService.resetDatabase = function (databaseName) {
                 pouchDbService.initDatabase(databaseName).then(() => resolve());
             })
             .catch(function (err) {
-                log.error("error destroying database: " + err);
+                log.error('error destroying database: ' + err);
             });
     });
 };
@@ -291,7 +291,7 @@ function getDbToUse() {
 
 function getPouchDbAdapter() {
     if (!_pouchDbAdapter || !_pouchDbAdapter.getDbToUse()) {
-        throw "Using pouchDbService uninitialized is not possible. First initialize a database by using pouchDbService.initDatabase() or pouchDbService.createDatabase().";
+        throw 'Using pouchDbService uninitialized is not possible. First initialize a database by using pouchDbService.initDatabase() or pouchDbService.createDatabase().';
     }
     return _pouchDbAdapter;
 }

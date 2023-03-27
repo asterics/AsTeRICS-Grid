@@ -1,6 +1,6 @@
-import $ from "../externals/jquery.js";
-import { inputEventHandler } from "./inputEventHandler";
-import { InputConfig } from "../model/InputConfig";
+import $ from '../externals/jquery.js';
+import { inputEventHandler } from './inputEventHandler';
+import { InputConfig } from '../model/InputConfig';
 
 let DirectionInput = {};
 
@@ -53,19 +53,19 @@ function DirectionInputConstructor(paramItemSelector, paramScanActiveClass, opti
     };
 
     thiz.left = function () {
-        doMove("left");
+        doMove('left');
     };
 
     thiz.right = function () {
-        doMove("right");
+        doMove('right');
     };
 
     thiz.up = function () {
-        doMove("up");
+        doMove('up');
     };
 
     thiz.down = function () {
-        doMove("down");
+        doMove('down');
     };
 
     thiz.select = function () {
@@ -164,10 +164,10 @@ function DirectionInputConstructor(paramItemSelector, paramScanActiveClass, opti
                 return null;
             }
 
-            let left = getElement(distances, "left", "right", "absDiffX", "absDiffY");
-            let right = getElement(distances, "right", "left", "absDiffX", "absDiffY");
-            let up = getElement(distances, "up", "down", "absDiffY", "absDiffX");
-            let down = getElement(distances, "down", "up", "absDiffY", "absDiffX");
+            let left = getElement(distances, 'left', 'right', 'absDiffX', 'absDiffY');
+            let right = getElement(distances, 'right', 'left', 'absDiffX', 'absDiffY');
+            let up = getElement(distances, 'up', 'down', 'absDiffY', 'absDiffX');
+            let down = getElement(distances, 'down', 'up', 'absDiffY', 'absDiffX');
 
             _elementPosInfo[element.id] = {
                 element: element,

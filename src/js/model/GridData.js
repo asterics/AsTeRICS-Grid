@@ -1,13 +1,13 @@
-import { modelUtil } from "../util/modelUtil";
-import { GridElement } from "./GridElement";
-import { AdditionalGridFile } from "./AdditionalGridFile";
-import { GridActionARE } from "./GridActionARE";
-import { constants } from "../util/constants";
-import { Model } from "../externals/objectmodel";
-import { Webradio } from "./Webradio";
-import { gridUtil } from "../util/gridUtil";
-import { localStorageService } from "../service/data/localStorageService";
-import { encryptionService } from "../service/data/encryptionService";
+import { modelUtil } from '../util/modelUtil';
+import { GridElement } from './GridElement';
+import { AdditionalGridFile } from './AdditionalGridFile';
+import { GridActionARE } from './GridActionARE';
+import { constants } from '../util/constants';
+import { Model } from '../externals/objectmodel';
+import { Webradio } from './Webradio';
+import { gridUtil } from '../util/gridUtil';
+import { localStorageService } from '../service/data/localStorageService';
+import { encryptionService } from '../service/data/encryptionService';
 
 class GridData extends Model({
     id: String,
@@ -36,7 +36,7 @@ class GridData extends Model({
             4;
         this.rowCount =
             properties.rowCount || this.getHeight() || localStorageService.getLastGridDimensions().rowCount || 3;
-        this.id = this.id || modelUtil.generateId("grid-data");
+        this.id = this.id || modelUtil.generateId('grid-data');
     }
 
     hasSetPositions() {
@@ -44,7 +44,7 @@ class GridData extends Model({
     }
 
     getHash() {
-        let string = "";
+        let string = '';
         this.gridElements.forEach((e) => {
             string += JSON.stringify(e.label) + e.x + e.y;
             if (e.image && (e.image.data || e.image.url)) {
@@ -249,24 +249,24 @@ class GridData extends Model({
         }
         delete newGrid._id;
         delete newGrid._rev;
-        newGrid.id = modelUtil.generateId("grid-data");
+        newGrid.id = modelUtil.generateId('grid-data');
         Object.keys(this.label).forEach((key) => {
-            newGrid.label[key] = this.label[key] + " (Copy)";
+            newGrid.label[key] = this.label[key] + ' (Copy)';
         });
         return newGrid;
     }
 
     static getModelName() {
-        return "GridData";
+        return 'GridData';
     }
 
     static getIdPrefix() {
-        return "grid-data";
+        return 'grid-data';
     }
 }
 
 GridData.defaults({
-    id: "", //will be replaced by constructor
+    id: '', //will be replaced by constructor
     modelName: GridData.getModelName(),
     modelVersion: constants.MODEL_VERSION,
     isShortVersion: false,

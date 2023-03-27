@@ -1,4 +1,4 @@
-import { constants } from "./constants";
+import { constants } from './constants';
 
 var modelUtil = {};
 var idCounter = 100;
@@ -10,8 +10,8 @@ let _emptyVersionObject = {
 };
 
 modelUtil.generateId = function (prefix) {
-    prefix = prefix || "id";
-    return prefix + "-" + new Date().getTime() + "-" + idCounter++;
+    prefix = prefix || 'id';
+    return prefix + '-' + new Date().getTime() + '-' + idCounter++;
 };
 
 /**
@@ -22,7 +22,7 @@ modelUtil.generateId = function (prefix) {
  * @return {*}
  */
 modelUtil.getAsObject = function (jsonStringOrObject) {
-    return typeof jsonStringOrObject === "string" ? JSON.parse(jsonStringOrObject) : jsonStringOrObject;
+    return typeof jsonStringOrObject === 'string' ? JSON.parse(jsonStringOrObject) : jsonStringOrObject;
 };
 
 /**
@@ -36,7 +36,7 @@ modelUtil.getNewName = function (baseName, existingNames) {
     var i = 1;
     var returnName = baseName;
     while (existingNames.includes(returnName)) {
-        returnName = baseName + " (" + i + ")";
+        returnName = baseName + ' (' + i + ')';
         i++;
     }
     return returnName;
@@ -75,7 +75,7 @@ modelUtil.hashCode = function (modelItem) {
     delete plainObject._id;
     delete plainObject.id;
     var str = JSON.stringify(plainObject);
-    return str.split("").reduce((prevHash, currVal) => ((prevHash << 5) - prevHash + currVal.charCodeAt(0)) | 0, 0);
+    return str.split('').reduce((prevHash, currVal) => ((prevHash << 5) - prevHash + currVal.charCodeAt(0)) | 0, 0);
 };
 
 /**

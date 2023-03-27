@@ -1,11 +1,11 @@
-import { modelUtil } from "../util/modelUtil";
-import { InputConfig } from "./InputConfig";
-import { constants } from "../util/constants";
-import { Model } from "../externals/objectmodel";
-import { ColorConfig } from "./ColorConfig.js";
-import { TextConfig } from "./TextConfig.js";
-import { LocaleConfig } from "./LocaleConfig.js";
-import { NotificationConfig } from "./NotificationConfig.js";
+import { modelUtil } from '../util/modelUtil';
+import { InputConfig } from './InputConfig';
+import { constants } from '../util/constants';
+import { Model } from '../externals/objectmodel';
+import { ColorConfig } from './ColorConfig.js';
+import { TextConfig } from './TextConfig.js';
+import { LocaleConfig } from './LocaleConfig.js';
+import { NotificationConfig } from './NotificationConfig.js';
 
 class MetaData extends Model({
     id: String,
@@ -66,16 +66,16 @@ class MetaData extends Model({
     }
 
     static getModelName() {
-        return "MetaData";
+        return 'MetaData';
     }
 
     static getIdPrefix() {
-        return "meta-data";
+        return 'meta-data';
     }
 }
 
 MetaData.defaults({
-    id: "", //will be replaced by constructor
+    id: '', //will be replaced by constructor
     modelName: MetaData.getModelName(),
     modelVersion: constants.MODEL_VERSION,
     locked: undefined,

@@ -1,6 +1,6 @@
-import $ from "../externals/jquery.js";
-import { inputEventHandler } from "./inputEventHandler";
-import { InputConfig } from "../model/InputConfig";
+import $ from '../externals/jquery.js';
+import { inputEventHandler } from './inputEventHandler';
+import { InputConfig } from '../model/InputConfig';
 
 let SequentialInput = {};
 
@@ -115,7 +115,7 @@ function SequentialInputConstructor(paramItemSelector, options) {
         if ($.isFunction(options.activeListener)) {
             _activeListener = options.activeListener;
         }
-        _activeClass = options.activeClass || "scanFocus";
+        _activeClass = options.activeClass || 'scanFocus';
 
         _inputEventHandler.onInputEvent(options.inputEventSelect, () => {
             thiz.select();

@@ -1,7 +1,7 @@
-import { util } from "../util/util";
-import { InputEventKey } from "../model/InputEventKey";
-import { InputEventARE } from "../model/InputEventARE";
-import { areService } from "../service/areService";
+import { util } from '../util/util';
+import { InputEventKey } from '../model/InputEventKey';
+import { InputEventARE } from '../model/InputEventARE';
+import { areService } from '../service/areService';
 
 let inputEventHandler = {};
 let allInstances = [];
@@ -62,25 +62,25 @@ function Constructor() {
         }
         _listening = true;
         subscribeAREEvents();
-        document.addEventListener("mousemove", mouseMoveListener);
-        document.addEventListener("keydown", keyboardListener);
-        document.addEventListener("keyup", keyUpListener);
-        document.addEventListener("fullscreenchange", fullscreenChangeListener);
-        _touchElement.addEventListener("touchmove", touchMoveListener, { passive: false });
-        _touchElement.addEventListener("touchstart", touchStartListener);
-        _touchElement.addEventListener("touchend", touchEndListener);
+        document.addEventListener('mousemove', mouseMoveListener);
+        document.addEventListener('keydown', keyboardListener);
+        document.addEventListener('keyup', keyUpListener);
+        document.addEventListener('fullscreenchange', fullscreenChangeListener);
+        _touchElement.addEventListener('touchmove', touchMoveListener, { passive: false });
+        _touchElement.addEventListener('touchstart', touchStartListener);
+        _touchElement.addEventListener('touchend', touchEndListener);
     };
 
     thiz.stopListening = function () {
         _listening = false;
         unsubscribeAREEvents();
-        document.removeEventListener("mousemove", mouseMoveListener);
-        document.removeEventListener("keydown", keyboardListener);
-        document.removeEventListener("keyup", keyUpListener);
-        document.removeEventListener("fullscreenchange", fullscreenChangeListener);
-        _touchElement.removeEventListener("touchmove", touchMoveListener);
-        _touchElement.removeEventListener("touchstart", touchStartListener);
-        _touchElement.removeEventListener("touchend", touchEndListener);
+        document.removeEventListener('mousemove', mouseMoveListener);
+        document.removeEventListener('keydown', keyboardListener);
+        document.removeEventListener('keyup', keyUpListener);
+        document.removeEventListener('fullscreenchange', fullscreenChangeListener);
+        _touchElement.removeEventListener('touchmove', touchMoveListener);
+        _touchElement.removeEventListener('touchstart', touchStartListener);
+        _touchElement.removeEventListener('touchend', touchEndListener);
     };
 
     thiz.destroy = function () {
@@ -206,7 +206,7 @@ function Constructor() {
         if (!inputEventKeyInstance || !inputEventKeyInstance.keyCode || !fn) {
             return;
         }
-        let key = inputEventKeyInstance.keyCode + "";
+        let key = inputEventKeyInstance.keyCode + '';
         let array = keyHandlers[key] ? keyHandlers[key] : [];
         keyHandlers[key] = array;
         array.push(getKeyHandlerEntry(fn, inputEventKeyInstance));
@@ -236,19 +236,19 @@ function Constructor() {
             _touchMoveBeginPosY = event.touches[0].clientY;
             _touchMoveBeginPosX = event.touches[0].clientX;
         } else if (event.touches[0].clientY > _touchMoveBeginPosY + touchMoveLength) {
-            log.debug("swipe down.");
+            log.debug('swipe down.');
             _touchMoveBeginPosY = null;
             callHandlers(swipeDownHandlers);
         } else if (event.touches[0].clientY < _touchMoveBeginPosY - touchMoveLength) {
-            log.debug("swipe up.");
+            log.debug('swipe up.');
             _touchMoveBeginPosY = null;
             callHandlers(swipeUpHandlers);
         } else if (event.touches[0].clientX > _touchMoveBeginPosX + touchMoveLength) {
-            log.debug("swipe right.");
+            log.debug('swipe right.');
             _touchMoveBeginPosX = null;
             callHandlers(swipeRightHandles);
         } else if (event.touches[0].clientX < _touchMoveBeginPosX - touchMoveLength) {
-            log.debug("swipe left.");
+            log.debug('swipe left.');
             _touchMoveBeginPosX = null;
             callHandlers(swipeLeftHandles);
         }
@@ -273,7 +273,7 @@ function Constructor() {
                 fn(keyCode, event.code, event);
             });
         }
-        let key = keyCode + "";
+        let key = keyCode + '';
         if (keyHandlers[key]) {
             event.preventDefault();
             if (event.repeat) {
@@ -348,7 +348,7 @@ function Constructor() {
             return;
         }
         let keyCode = event.which || event.keyCode;
-        let key = keyCode + "";
+        let key = keyCode + '';
         if (keyHandlers[key]) {
             let entries = keyHandlers[key];
             entries.forEach((entry) => {
@@ -401,7 +401,7 @@ function Constructor() {
     function callHandlers(array, argsArray, dontThrottle) {
         array.forEach((handler) => {
             if (!handler.apply) {
-                log.warn("handler seems to be not a function!");
+                log.warn('handler seems to be not a function!');
                 return;
             }
             if (dontThrottle) {

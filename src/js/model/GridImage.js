@@ -1,6 +1,6 @@
-import { modelUtil } from "../util/modelUtil";
-import { Model } from "../externals/objectmodel";
-import { imageUtil } from "../util/imageUtil";
+import { modelUtil } from '../util/modelUtil';
+import { Model } from '../externals/objectmodel';
+import { imageUtil } from '../util/imageUtil';
 
 class GridImage extends Model({
     data: [String],
@@ -20,31 +20,31 @@ class GridImage extends Model({
             return null;
         }
         if (this.data) {
-            let type = this.data.substring("data:image/".length, this.data.indexOf(";base64"));
+            let type = this.data.substring('data:image/'.length, this.data.indexOf(';base64'));
             switch (type) {
-                case "png":
+                case 'png':
                     return GridImage.IMAGE_TYPES.PNG;
-                case "jpeg":
+                case 'jpeg':
                     return GridImage.IMAGE_TYPES.JPEG;
-                case "svg":
-                case "svg+xml":
+                case 'svg':
+                case 'svg+xml':
                     return GridImage.IMAGE_TYPES.SVG;
                 default:
-                    log.warn("not recognized image type: " + type);
+                    log.warn('not recognized image type: ' + type);
                     return null;
             }
         }
         if (this.url) {
-            if (this.url.includes("api.arasaac.org")) {
+            if (this.url.includes('api.arasaac.org')) {
                 return GridImage.IMAGE_TYPES.PNG;
             }
-            if (this.url.toLowerCase().includes(".jpeg") || this.url.toLowerCase().includes(".jpg")) {
+            if (this.url.toLowerCase().includes('.jpeg') || this.url.toLowerCase().includes('.jpg')) {
                 return GridImage.IMAGE_TYPES.JPEG;
             }
-            if (this.url.toLowerCase().includes(".png")) {
+            if (this.url.toLowerCase().includes('.png')) {
                 return GridImage.IMAGE_TYPES.PNG;
             }
-            if (this.url.toLowerCase().includes(".svg")) {
+            if (this.url.toLowerCase().includes('.svg')) {
                 return GridImage.IMAGE_TYPES.SVG;
             }
         }
@@ -55,18 +55,18 @@ class GridImage extends Model({
     }
 
     static getModelName() {
-        return "GridImage";
+        return 'GridImage';
     }
 
     static getIdPrefix() {
-        return "grid-image";
+        return 'grid-image';
     }
 }
 
 GridImage.IMAGE_TYPES = {
-    PNG: "PNG",
-    JPEG: "JPEG",
-    SVG: "SVG"
+    PNG: 'PNG',
+    JPEG: 'JPEG',
+    SVG: 'SVG'
 };
 
 GridImage.defaults({

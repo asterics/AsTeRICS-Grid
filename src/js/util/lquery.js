@@ -4,10 +4,10 @@ var L = function (selector) {
     if (selector instanceof Node || selector instanceof NodeList || selector instanceof Array) {
         return selector;
     }
-    var selectorType = "querySelectorAll";
+    var selectorType = 'querySelectorAll';
 
-    if (selector.indexOf("#") === 0) {
-        selectorType = "getElementById";
+    if (selector.indexOf('#') === 0) {
+        selectorType = 'getElementById';
         selector = selector.substr(1, selector.length);
     }
 
@@ -16,13 +16,13 @@ var L = function (selector) {
 
 L.toggle = function () {
     var args = Array.prototype.slice.call(arguments);
-    args.unshift("block");
+    args.unshift('block');
     toggleInternal(args);
 };
 
 L.toggleInline = function () {
     var args = Array.prototype.slice.call(arguments);
-    args.unshift("inline");
+    args.unshift('inline');
     toggleInternal(args);
 };
 
@@ -35,10 +35,10 @@ function toggleInternal(args) {
         var selector = args[i];
         var elems = L.selectAsList(selector);
         elems.forEach(function (x) {
-            if (x.style && x.style.display === "none") {
+            if (x.style && x.style.display === 'none') {
                 x.style.display = displayModeShown;
             } else {
-                x.style.display = "none";
+                x.style.display = 'none';
             }
         });
     }
@@ -46,16 +46,16 @@ function toggleInternal(args) {
 
 L.isVisible = function (selector) {
     var x = L(selector);
-    return !(x.style && x.style.display === "none");
+    return !(x.style && x.style.display === 'none');
 };
 
 L.setVisible = function (selector, visible, visibleClass) {
     var elems = L.selectAsList(selector);
     elems.forEach(function (x) {
         if (visible == false) {
-            x.style.display = "none";
+            x.style.display = 'none';
         } else {
-            x.style.display = visibleClass ? visibleClass : "block";
+            x.style.display = visibleClass ? visibleClass : 'block';
         }
     });
 };
@@ -111,11 +111,11 @@ L.setSelected = function (selector, selected) {
     var list = L.selectAsList(selector);
     list.forEach(function (elem) {
         if (selected) {
-            L.addClass(elem, "selected");
+            L.addClass(elem, 'selected');
         } else {
-            L.removeClass(elem, "selected");
+            L.removeClass(elem, 'selected');
         }
-        elem.setAttribute("aria-selected", selected);
+        elem.setAttribute('aria-selected', selected);
     });
 };
 
@@ -143,11 +143,11 @@ L.val2key = function (val, array) {
 
 L.isFunction = function (functionToCheck) {
     var getType = {};
-    return functionToCheck && getType.toString.call(functionToCheck) === "[object Function]";
+    return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
 };
 
 L.getIDSelector = function (id) {
-    return "#" + id;
+    return '#' + id;
 };
 
 L.getPercentage = function (value, minRange, maxRange) {
@@ -178,7 +178,7 @@ L.createElement = function (tagName, className, inner) {
     if (inner) {
         inner = inner instanceof Array ? inner : [inner];
         inner.forEach(function (innerElem) {
-            if (typeof innerElem === "string") {
+            if (typeof innerElem === 'string') {
                 e.innerHTML += innerElem;
             } else {
                 e.appendChild(innerElem);
@@ -199,20 +199,20 @@ L.createElement = function (tagName, className, inner) {
  * @return {string}
  */
 L.createSelectItems = function (listValues, listHtml, defaultOption) {
-    var result = "";
+    var result = '';
     var hasHtml = listHtml && listHtml.length == listValues.length;
     var hasHtmlFn = L.isFunction(listHtml);
 
     for (var i = 0; i < listValues.length; i++) {
         var html = hasHtmlFn ? listHtml(listValues[i]) : hasHtml ? listHtml[i] : L.translate(listValues[i]);
-        var elem = L.createElement("option", "", html);
+        var elem = L.createElement('option', '', html);
         elem.value = listValues[i];
-        result += elem.outerHTML + "\n";
+        result += elem.outerHTML + '\n';
     }
 
     if (defaultOption) {
         result =
-            '<option value="-1" disabled selected hidden>' + L.translate("SELECT_SPECIAL_KEY") + "</option>\n" + result;
+            '<option value="-1" disabled selected hidden>' + L.translate('SELECT_SPECIAL_KEY') + '</option>\n' + result;
     }
     return result;
 };
@@ -243,7 +243,7 @@ L.getLang = function () {
 L.translate = function (translationKey) {
     var translated = i18n[translationKey] ? i18n[translationKey] : translationKey;
     for (var i = 1; i < arguments.length; i++) {
-        translated = translated.replace("{?}", arguments[i]);
+        translated = translated.replace('{?}', arguments[i]);
     }
     return translated;
 };
@@ -253,7 +253,7 @@ L.getLastElement = function (array) {
 };
 
 L.replaceAll = function (string, search, replace) {
-    return string.replace(new RegExp(search, "g"), replace);
+    return string.replace(new RegExp(search, 'g'), replace);
 };
 
 L.equalIgnoreCase = function (str1, str2) {
@@ -261,15 +261,15 @@ L.equalIgnoreCase = function (str1, str2) {
 };
 
 L.loadScript = function (source, fallbackSource) {
-    console.log("loading script: " + source);
-    var script = document.createElement("script");
+    console.log('loading script: ' + source);
+    var script = document.createElement('script');
     return new Promise(function (resolve) {
         script.onload = function () {
-            console.log("loaded: " + source);
+            console.log('loaded: ' + source);
             resolve(true);
         };
         script.onerror = function () {
-            console.log("error loading: " + source);
+            console.log('error loading: ' + source);
             if (fallbackSource) {
                 L.loadScript(fallbackSource).then(resolve);
             } else {

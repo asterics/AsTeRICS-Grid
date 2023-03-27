@@ -1,4 +1,4 @@
-import { log } from "./log";
+import { log } from './log';
 
 /**
  * simple cache, storing key-value pairs while ensuring that
@@ -19,20 +19,20 @@ function MapCache() {
      */
     thiz.set = function (key, value, objectType) {
         let firstValue = value instanceof Array && value.length > 1 ? value[0] : value;
-        if (typeof key !== "string") {
-            log.warn("cache-key has to be a string, aborting.");
+        if (typeof key !== 'string') {
+            log.warn('cache-key has to be a string, aborting.');
             return;
         }
         if (!value) {
-            log.warn("cache-values has to be set, aborting.");
+            log.warn('cache-values has to be set, aborting.');
             return;
         }
-        if (objectType && typeof objectType !== "function") {
-            log.warn("object type has to be a constructor function or empty, aborting.");
+        if (objectType && typeof objectType !== 'function') {
+            log.warn('object type has to be a constructor function or empty, aborting.');
             return;
         }
         if (firstValue && firstValue.isShortVersion) {
-            log.debug("not caching model instances only containing short version of data, aborting.");
+            log.debug('not caching model instances only containing short version of data, aborting.');
             return;
         }
         _cache[key] = JSON.stringify(value);
@@ -51,8 +51,8 @@ function MapCache() {
      *         the returned value will be [new constructor(originalValue[0]), new constructor(originalValue[1]), ...]
      */
     thiz.get = function (key) {
-        if (typeof key !== "string") {
-            log.warn("cache-key has to be a string, aborting.");
+        if (typeof key !== 'string') {
+            log.warn('cache-key has to be a string, aborting.');
             return;
         }
         if (!_cache[key]) {
@@ -85,8 +85,8 @@ function MapCache() {
      * @return {boolean}
      */
     thiz.has = function (key) {
-        if (typeof key !== "string") {
-            log.warn("cache-key has to be a string, aborting.");
+        if (typeof key !== 'string') {
+            log.warn('cache-key has to be a string, aborting.');
             return false;
         }
         return !!_cache[key];

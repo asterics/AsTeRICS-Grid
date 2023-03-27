@@ -1,6 +1,6 @@
-import { modelUtil } from "../util/modelUtil";
-import { constants } from "../util/constants";
-import { Model } from "../externals/objectmodel";
+import { modelUtil } from '../util/modelUtil';
+import { constants } from '../util/constants';
+import { Model } from '../externals/objectmodel';
 
 class Dictionary extends Model({
     id: String,
@@ -20,22 +20,22 @@ class Dictionary extends Model({
         let newDict = new Dictionary(this);
         delete newDict._id;
         delete newDict._rev;
-        newDict.id = modelUtil.generateId("dictionary");
-        newDict.dictionaryKey = this.dictionaryKey + " (Copy)";
+        newDict.id = modelUtil.generateId('dictionary');
+        newDict.dictionaryKey = this.dictionaryKey + ' (Copy)';
         return newDict;
     }
 
     static getModelName() {
-        return "Dictionary";
+        return 'Dictionary';
     }
 
     static getIdPrefix() {
-        return "dictionary";
+        return 'dictionary';
     }
 }
 
 Dictionary.defaults({
-    id: "", //will be replaced by constructor
+    id: '', //will be replaced by constructor
     modelName: Dictionary.getModelName(),
     modelVersion: constants.MODEL_VERSION,
     data: JSON.stringify({})

@@ -1,13 +1,13 @@
 //Converter for OBF (open board format), see https://www.openboardformat.org/
 
-import { GridData } from "../model/GridData";
-import { GridElement } from "../model/GridElement";
-import { GridImage } from "../model/GridImage";
-import { GridActionSpeakCustom } from "../model/GridActionSpeakCustom";
-import { GridActionNavigate } from "../model/GridActionNavigate";
-import { GridActionSpeak } from "../model/GridActionSpeak";
-import { imageUtil } from "./imageUtil";
-import { i18nService } from "../service/i18nService";
+import { GridData } from '../model/GridData';
+import { GridElement } from '../model/GridElement';
+import { GridImage } from '../model/GridImage';
+import { GridActionSpeakCustom } from '../model/GridActionSpeakCustom';
+import { GridActionNavigate } from '../model/GridActionNavigate';
+import { GridActionSpeak } from '../model/GridActionSpeak';
+import { imageUtil } from './imageUtil';
+import { i18nService } from '../service/i18nService';
 
 let obfConverter = {};
 
@@ -76,7 +76,7 @@ obfConverter.OBZToGridSet = function (obzFileMap) {
     let promises = [];
     let grids = [];
     Object.keys(obzFileMap).forEach((filename) => {
-        if (filename.indexOf(".obf") !== -1) {
+        if (filename.indexOf('.obf') !== -1) {
             promises.push(
                 obfConverter.OBFToGridData(obzFileMap[filename], obzFileMap).then((grid) => {
                     grids.push(grid);
@@ -156,7 +156,7 @@ function obfPathToId(path, obfObjects) {
     if (!obfObjects) {
         return null;
     }
-    let manifest = obfObjects["manifest.json"];
+    let manifest = obfObjects['manifest.json'];
     let boardsMap = manifest.paths.boards;
     let resultId = null;
     Object.keys(boardsMap).forEach((boardId) => {
@@ -207,9 +207,9 @@ function getGridImage(imageId, obfObject, obfObjects) {
     if (obfImage.data) {
         data = obfImage.data;
     } else if (obfImage.path) {
-        let postfix = obfImage.path.substring(obfImage.path.lastIndexOf("."));
-        let contentType = obfImage.content_type || "image/png";
-        contentType = postfix === ".svg" ? "image/svg+xml" : contentType;
+        let postfix = obfImage.path.substring(obfImage.path.lastIndexOf('.'));
+        let contentType = obfImage.content_type || 'image/png';
+        contentType = postfix === '.svg' ? 'image/svg+xml' : contentType;
         let preString = `data:${contentType};base64,`;
         let fileContent = obfObjects[obfImage.path];
         data = preString + fileContent;
@@ -223,7 +223,7 @@ function getGridImage(imageId, obfObject, obfObjects) {
     }
     return Promise.all(promises).then(() => {
         if (!data) {
-            log.info("failed to import image: " + imageId);
+            log.info('failed to import image: ' + imageId);
             return Promise.resolve(null);
         } else {
             return Promise.resolve(

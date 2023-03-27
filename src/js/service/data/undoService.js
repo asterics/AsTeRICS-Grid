@@ -1,4 +1,4 @@
-import { dataService } from "./dataService";
+import { dataService } from './dataService';
 
 function UndoService() {
     var thiz = this;
@@ -36,7 +36,7 @@ function UndoService() {
                         resolve(true);
                     });
                 } else {
-                    log.debug("grid not updated, do noting");
+                    log.debug('grid not updated, do noting');
                     resolve(false);
                 }
             });

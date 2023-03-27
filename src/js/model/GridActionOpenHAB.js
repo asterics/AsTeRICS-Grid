@@ -1,6 +1,6 @@
-import { modelUtil } from "../util/modelUtil";
-import { constants } from "../util/constants";
-import { Model } from "../externals/objectmodel";
+import { modelUtil } from '../util/modelUtil';
+import { constants } from '../util/constants';
+import { Model } from '../externals/objectmodel';
 
 class GridActionOpenHAB extends Model({
     id: String,
@@ -15,23 +15,23 @@ class GridActionOpenHAB extends Model({
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionOpenHAB);
         super(properties);
-        this.id = this.id || modelUtil.generateId("grid-action-openHAB");
+        this.id = this.id || modelUtil.generateId('grid-action-openHAB');
     }
 
     static getModelName() {
-        return "GridActionOpenHAB";
+        return 'GridActionOpenHAB';
     }
 }
 
 GridActionOpenHAB.defaults({
-    id: "", //will be replaced by constructor
+    id: '', //will be replaced by constructor
     modelName: GridActionOpenHAB.getModelName(),
     modelVersion: constants.MODEL_VERSION,
-    actionValue: "0",
-    itemType: "", //Dimmer, Switch, ... itemType
-    itemName: "", //itemName
-    actionType: "", //ON, OFF, CUSTOM_VALUE ... actionType,
-    openHABUrl: ""
+    actionValue: '0',
+    itemType: '', //Dimmer, Switch, ... itemType
+    itemName: '', //itemName
+    actionType: '', //ON, OFF, CUSTOM_VALUE ... actionType,
+    openHABUrl: ''
 });
 
 export { GridActionOpenHAB };

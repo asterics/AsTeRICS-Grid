@@ -1,10 +1,10 @@
-import { inputEventHandler } from "../input/inputEventHandler";
-import { localStorageService } from "./data/localStorageService";
-import { dataService } from "./data/dataService";
-import { loginService } from "./loginService";
-import { Router } from "../router.js";
-import { actionService } from "./actionService.js";
-import { GridActionNavigate } from "../model/GridActionNavigate.js";
+import { inputEventHandler } from '../input/inputEventHandler';
+import { localStorageService } from './data/localStorageService';
+import { dataService } from './data/dataService';
+import { loginService } from './loginService';
+import { Router } from '../router.js';
+import { actionService } from './actionService.js';
+import { GridActionNavigate } from '../model/GridActionNavigate.js';
 
 let keyboardShortcuts = {};
 
@@ -20,7 +20,7 @@ keyboardShortcuts.init = function () {
             let index = users.indexOf(currentUser);
             index = index + 1 < users.length ? index + 1 : 0;
             let newUser = users[index];
-            log.info("changing user via keyboard shortcut to: " + newUser);
+            log.info('changing user via keyboard shortcut to: ' + newUser);
             loginService.loginStoredUser(newUser);
         }
         if (event.ctrlKey && keycode === 8) {

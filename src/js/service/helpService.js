@@ -1,14 +1,14 @@
-import { i18nService } from "./i18nService";
+import { i18nService } from './i18nService';
 
 let helpService = {};
 //let HELP_BASE_PATH = 'https://github.com/asterics/AsTeRICS-Grid/blob/master/docs/documentation_user/';
-let HELP_BASE_PATH = "https://www.asterics.eu/manuals/asterics-grid/";
-let GOOGLE_TRANSLATE_BASE_PATH = "https://translate.google.com/translate?sl=en&tl=de&u=";
+let HELP_BASE_PATH = 'https://www.asterics.eu/manuals/asterics-grid/';
+let GOOGLE_TRANSLATE_BASE_PATH = 'https://translate.google.com/translate?sl=en&tl=de&u=';
 //let HELP_FILE_POSTFIX = '.md';
-let HELP_FILE_POSTFIX = ".html";
+let HELP_FILE_POSTFIX = '.html';
 
-let _initHelpFile = "";
-let _initHash = "#asterics-grid-user-documentation";
+let _initHelpFile = '';
+let _initHash = '#asterics-grid-user-documentation';
 let _helpFile = _initHelpFile;
 let _helpHash = _initHash;
 let _lastHelpFile = _helpFile;
@@ -24,7 +24,7 @@ helpService.setHelpLocation = function (filename, hash) {
     _lastHelpFile = _helpFile;
     _lastHelpHash = _helpHash;
     _helpFile = filename;
-    _helpHash = !!hash ? hash : "";
+    _helpHash = !!hash ? hash : '';
 };
 
 /**
@@ -50,16 +50,16 @@ helpService.openHelp = function () {
     /*if (i18nService.isCurrentAppLangDE()) {
         link = GOOGLE_TRANSLATE_BASE_PATH + encodeURI(link);
     }*/
-    window.open(link, "_blank");
+    window.open(link, '_blank');
 };
 
 function init() {
     window.onhelp = function () {
         return false;
     };
-    window.addEventListener("keydown", function (event) {
+    window.addEventListener('keydown', function (event) {
         let keyCode = event.keyCode || event.which;
-        if (keyCode === 112 || event.key === "F1") {
+        if (keyCode === 112 || event.key === 'F1') {
             event.preventDefault();
             helpService.openHelp();
         }

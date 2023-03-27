@@ -1,6 +1,6 @@
-import { modelUtil } from "../util/modelUtil";
-import { constants } from "../util/constants";
-import { Model } from "../externals/objectmodel";
+import { modelUtil } from '../util/modelUtil';
+import { constants } from '../util/constants';
+import { Model } from '../externals/objectmodel';
 
 class GridActionOpenWebpage extends Model({
     id: String,
@@ -16,12 +16,12 @@ class GridActionOpenWebpage extends Model({
     }
 
     static getModelName() {
-        return "GridActionOpenWebpage";
+        return 'GridActionOpenWebpage';
     }
 }
 
 GridActionOpenWebpage.defaults({
-    id: "", //will be replaced by constructor
+    id: '', //will be replaced by constructor
     modelName: GridActionOpenWebpage.getModelName(),
     modelVersion: constants.MODEL_VERSION,
     timeoutSeconds: 0

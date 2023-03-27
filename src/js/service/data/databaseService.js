@@ -1,13 +1,13 @@
-import $ from "../../externals/jquery.js";
+import $ from '../../externals/jquery.js';
 
-import { urlParamService } from "../urlParamService";
-import { MetaData } from "../../model/MetaData";
-import { encryptionService } from "./encryptionService";
-import { pouchDbService } from "./pouchDbService";
-import { filterService } from "./filterService";
-import { localStorageService } from "./localStorageService";
-import { util } from "../../util/util";
-import { constants } from "../../util/constants";
+import { urlParamService } from '../urlParamService';
+import { MetaData } from '../../model/MetaData';
+import { encryptionService } from './encryptionService';
+import { pouchDbService } from './pouchDbService';
+import { filterService } from './filterService';
+import { localStorageService } from './localStorageService';
+import { util } from '../../util/util';
+import { constants } from '../../util/constants';
 
 let databaseService = {};
 
@@ -31,7 +31,7 @@ databaseService.getObject = function (objectType, id, onlyShortVersion) {
     return new Promise((resolve, reject) => {
         _initPromise.then(() => {
             if (!objectType.getIdPrefix) {
-                log.warn("missing method getIdPrefix() in allObjects()");
+                log.warn('missing method getIdPrefix() in allObjects()');
                 return reject();
             }
             pouchDbService
@@ -86,15 +86,15 @@ databaseService.saveObject = function (objectType, data, onlyUpdate) {
                 return Promise.reject();
             }
             if (data.isShortVersion) {
-                log.warn("short versions of objects cannot be saved/updated! aborting.");
+                log.warn('short versions of objects cannot be saved/updated! aborting.');
                 return Promise.reject();
             }
-            log.debug("saving " + objectType.getModelName() + "...");
+            log.debug('saving ' + objectType.getModelName() + '...');
             return databaseService.getObject(objectType, data.id);
         })
         .then((existingObject) => {
             if (existingObject) {
-                log.debug(objectType.getModelName() + " already existing, doing update. id: " + existingObject.id);
+                log.debug(objectType.getModelName() + ' already existing, doing update. id: ' + existingObject.id);
                 let newObject = new objectType(data, existingObject);
                 let saveData = JSON.parse(JSON.stringify(newObject));
                 saveData._id = existingObject._id;
@@ -105,7 +105,7 @@ databaseService.saveObject = function (objectType, data, onlyUpdate) {
                 saveData._id = saveData.id;
                 return applyFiltersAndSave(objectType.getIdPrefix(), saveData);
             } else {
-                log.warn("no existing " + objectType.getModelName() + " found to update, aborting.");
+                log.warn('no existing ' + objectType.getModelName() + ' found to update, aborting.');
                 return Promise.reject();
             }
         });
@@ -121,7 +121,7 @@ databaseService.bulkSave = function (objectList) {
         return Promise.resolve();
     }
     if (objectList[0].isShortVersion) {
-        log.warn("not saving short version!");
+        log.warn('not saving short version!');
         return Promise.resolve();
     }
     let elementCount = objectList.reduce((total, grid) => {
@@ -286,7 +286,7 @@ function initInternal(hashedUserPassword, username, isLocalUser) {
             encryptionService.setEncryptionProperties(hashedUserPassword, metadataIds, isLocalUser);
 
             if (metadataObjects.length && metadataObjects.length > 1) {
-                log.warn("found duplicated metadata!");
+                log.warn('found duplicated metadata!');
             }
             return Promise.all(promises);
         });
@@ -303,7 +303,7 @@ function applyFiltersAndSave(idPrefix, data) {
         pouchDbService
             .save(idPrefix, convertedData)
             .then(() => {
-                log.debug("saved " + idPrefix + ", id: " + data.id);
+                log.debug('saved ' + idPrefix + ', id: ' + data.id);
                 resolve();
             })
             .catch(function (err) {

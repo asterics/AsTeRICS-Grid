@@ -1,13 +1,13 @@
-import $ from "../externals/jquery.js";
-import Predictionary from "predictionary";
-import { GridElement } from "../model/GridElement";
-import { Dictionary } from "../model/Dictionary";
-import { fontUtil } from "../util/fontUtil";
-import { dataService } from "./data/dataService";
-import { constants } from "../util/constants";
-import { localStorageService } from "./data/localStorageService.js";
-import { i18nService } from "./i18nService.js";
-import { util } from "../util/util.js";
+import $ from '../externals/jquery.js';
+import Predictionary from 'predictionary';
+import { GridElement } from '../model/GridElement';
+import { Dictionary } from '../model/Dictionary';
+import { fontUtil } from '../util/fontUtil';
+import { dataService } from './data/dataService';
+import { constants } from '../util/constants';
+import { localStorageService } from './data/localStorageService.js';
+import { i18nService } from './i18nService.js';
+import { util } from '../util/util.js';
 
 let predictionService = {};
 let predictionary = null;
@@ -35,12 +35,12 @@ predictionService.predict = function (input, dictionaryKey) {
     }
     let suggestions = predictionary.predict(input, { maxPredicitons: registeredPredictElements.length });
     for (let i = 0; i < registeredPredictElements.length; i++) {
-        let text = suggestions[i] ? suggestions[i] : "";
+        let text = suggestions[i] ? suggestions[i] : '';
         text = util.convertLowerUppercase(text, _textConvertMode);
         $(`#${registeredPredictElements[i].id} .text-container span`).text(text);
         $(`#${registeredPredictElements[i].id}`).attr(
-            "aria-label",
-            `${text}, ${i18nService.t("ELEMENT_TYPE_PREDICTION")}`
+            'aria-label',
+            `${text}, ${i18nService.t('ELEMENT_TYPE_PREDICTION')}`
         );
     }
     fontUtil.adaptFontSize($('.item[data-type="ELEMENT_TYPE_PREDICTION"]'));
@@ -96,7 +96,7 @@ predictionService.getDictionaryKeys = function () {
 };
 
 predictionService.init = async function () {
-    log.debug("init prediction service");
+    log.debug('init prediction service');
     _currentInitUser = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
     clearInterval(_intervalHandler);
     _unsavedChanges = false;

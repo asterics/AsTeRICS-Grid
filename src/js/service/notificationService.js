@@ -1,8 +1,8 @@
-import { dataService } from "./data/dataService.js";
-import $ from "../externals/jquery.js";
-import { constants } from "../util/constants.js";
-import { MainVue } from "../vue/mainVue.js";
-import { i18nService } from "./i18nService.js";
+import { dataService } from './data/dataService.js';
+import $ from '../externals/jquery.js';
+import { constants } from '../util/constants.js';
+import { MainVue } from '../vue/mainVue.js';
+import { i18nService } from './i18nService.js';
 
 let notificationService = {};
 
@@ -45,12 +45,12 @@ notificationService.checkNotifications = async function () {
         if (lastBackup < gridUpdateTime || (lastBackup === 0 && gridUpdateTime === 0)) {
             notificationConfig.lastBackupNotification = new Date().getTime();
             saveNotificationConfig();
-            MainVue.setTooltip(i18nService.t("pleaseConsiderToDownloadABackup"), {
-                msgType: "info",
+            MainVue.setTooltip(i18nService.t('pleaseConsiderToDownloadABackup'), {
+                msgType: 'info',
                 closeOnNavigate: false,
-                actionLink: i18nService.t("downloadNow"),
+                actionLink: i18nService.t('downloadNow'),
                 actionLinkFn: downloadConfig,
-                actionLink2: i18nService.t("stopRemembering"),
+                actionLink2: i18nService.t('stopRemembering'),
                 actionLinkFn2: stopRemembering
             });
         }

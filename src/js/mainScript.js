@@ -1,20 +1,20 @@
-import $ from "./externals/jquery.js";
-import { localStorageService } from "./service/data/localStorageService.js";
-import { Router } from "./router.js";
-import { VuePluginManager } from "./vue/vuePluginManager";
-import { MainVue } from "./vue/mainVue";
+import $ from './externals/jquery.js';
+import { localStorageService } from './service/data/localStorageService.js';
+import { Router } from './router.js';
+import { VuePluginManager } from './vue/vuePluginManager';
+import { MainVue } from './vue/mainVue';
 
-import "./../css/gridlist.css";
-import "./../css/jquery.contextMenu.css";
-import "./../css/holy-grail.css";
-import { loginService } from "./service/loginService";
-import { urlParamService } from "./service/urlParamService";
-import { constants } from "./util/constants";
-import { modelUtil } from "./util/modelUtil";
-import { keyboardShortcuts } from "./service/keyboardShortcuts";
-import { i18nService } from "./service/i18nService";
-import { printService } from "./service/printService";
-import { notificationService } from "./service/notificationService.js";
+import './../css/gridlist.css';
+import './../css/jquery.contextMenu.css';
+import './../css/holy-grail.css';
+import { loginService } from './service/loginService';
+import { urlParamService } from './service/urlParamService';
+import { constants } from './util/constants';
+import { modelUtil } from './util/modelUtil';
+import { keyboardShortcuts } from './service/keyboardShortcuts';
+import { i18nService } from './service/i18nService';
+import { printService } from './service/printService';
+import { notificationService } from './service/notificationService.js';
 //import {timingLogger} from "./service/timingLogger";
 
 let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
@@ -24,7 +24,7 @@ function init() {
     //timingLogger.initLogging();
     log.setLevel(log.levels.INFO);
     log.info(
-        "AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/" +
+        'AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/' +
             constants.CURRENT_VERSION
     );
     checkAppVersion();
@@ -41,12 +41,12 @@ function init() {
             `data model version of user "${autologinUser}" is newer than version of running AsTeRICS Grid -> prevent autologin.`
         );
         autologinUser = null;
-        localStorageService.setAutologinUser("");
+        localStorageService.setAutologinUser('');
     }
-    log.info("autologin user: " + autologinUser);
+    log.info('autologin user: ' + autologinUser);
     if (urlParamService.isDemoMode()) {
         promises.push(loginService.registerOffline(constants.LOCAL_DEMO_USERNAME, constants.LOCAL_DEMO_USERNAME));
-        localStorageService.setAutologinUser("");
+        localStorageService.setAutologinUser('');
     } else {
         promises.push(loginService.loginStoredUser(autologinUser, true));
     }
@@ -57,10 +57,10 @@ function init() {
         .then(() => {
             let toMain = autologinUser || urlParamService.isDemoMode();
             let toLogin = lastActiveUser || localStorageService.getSavedUsers().length > 0;
-            localStorageService.setLastActiveUser(autologinUser || lastActiveUser || "");
-            let initHash = location.hash || (toMain ? "#main" : toLogin ? "#login" : "#welcome");
+            localStorageService.setLastActiveUser(autologinUser || lastActiveUser || '');
+            let initHash = location.hash || (toMain ? '#main' : toLogin ? '#login' : '#welcome');
             if (!Router.isInitialized()) {
-                Router.init("#injectView", initHash);
+                Router.init('#injectView', initHash);
             }
         });
 }
@@ -68,15 +68,15 @@ init();
 
 function initServiceWorker() {
     if (!constants.IS_ENVIRONMENT_PROD) {
-        log.warn("Not installing Service Worker because on development environment.");
+        log.warn('Not installing Service Worker because on development environment.');
         return;
     }
-    if ("serviceWorker" in navigator) {
+    if ('serviceWorker' in navigator) {
         if (window.loaded) {
             installServiceWorker();
         } else {
             // Use the window load event to keep the page load performant
-            window.addEventListener("load", () => {
+            window.addEventListener('load', () => {
                 installServiceWorker();
             });
         }
@@ -84,29 +84,29 @@ function initServiceWorker() {
 
     function installServiceWorker() {
         if (!navigator.serviceWorker) {
-            log.warn("ServiceWorker not supported!");
+            log.warn('ServiceWorker not supported!');
             return;
         }
-        navigator.serviceWorker.register("./serviceWorker.js").then((reg) => {
+        navigator.serviceWorker.register('./serviceWorker.js').then((reg) => {
             let isUpdate = false;
             setInterval(() => {
-                log.debug("Check for serviceworker update...");
+                log.debug('Check for serviceworker update...');
                 reg.update();
             }, SERVICE_WORKER_UPDATE_CHECK_INTERVAL);
-            reg.addEventListener("updatefound", function () {
+            reg.addEventListener('updatefound', function () {
                 if (navigator.serviceWorker.controller) {
                     isUpdate = true;
                 }
             });
-            navigator.serviceWorker.addEventListener("message", (evt) => {
+            navigator.serviceWorker.addEventListener('message', (evt) => {
                 if (isUpdate && evt.data && evt.data.activated) {
-                    MainVue.setTooltipI18n(i18nService.t("newVersionAvailableTheNextTimeYoullUseUpdated"), {
+                    MainVue.setTooltipI18n(i18nService.t('newVersionAvailableTheNextTimeYoullUseUpdated'), {
                         closeOnNavigate: false,
-                        actionLink: i18nService.t("updateNow"),
+                        actionLink: i18nService.t('updateNow'),
                         actionLinkFn: () => {
                             window.location.reload();
                         },
-                        msgType: "info"
+                        msgType: 'info'
                     });
                 }
             });
@@ -118,13 +118,13 @@ function checkAppVersion() {
     let version = localStorageService.getCurrentAppVersion();
     if (version && version !== constants.CURRENT_VERSION) {
         let showMsg = () => {
-            let text = i18nService.t("youreNowUsingVersion", constants.CURRENT_VERSION);
+            let text = i18nService.t('youreNowUsingVersion', constants.CURRENT_VERSION);
             MainVue.setTooltip(text, {
                 closeOnNavigate: true,
                 timeout: 30000,
-                actionLink: i18nService.t("moreInformation"),
-                actionLinkUrl: "https://github.com/asterics/AsTeRICS-Grid/releases/tag/" + constants.CURRENT_VERSION,
-                msgType: "info"
+                actionLink: i18nService.t('moreInformation'),
+                actionLinkUrl: 'https://github.com/asterics/AsTeRICS-Grid/releases/tag/' + constants.CURRENT_VERSION,
+                msgType: 'info'
             });
             $(document).off(constants.EVENT_GRID_LOADED, showMsg);
         };
@@ -135,26 +135,26 @@ function checkAppVersion() {
 
 function initMatomoAnalytics() {
     if (!constants.IS_ENVIRONMENT_PROD) {
-        log.warn("Not doing analytics because on development environment.");
+        log.warn('Not doing analytics because on development environment.');
         return;
     }
 
     var _paq = (window._paq = window._paq || []);
     /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-    _paq.push(["setDoNotTrack", true]);
-    _paq.push(["disableCookies"]);
-    _paq.push(["trackPageView"]);
-    _paq.push(["enableLinkTracking"]);
+    _paq.push(['setDoNotTrack', true]);
+    _paq.push(['disableCookies']);
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
     (function () {
-        var u = "//analytics.wbt.wien/";
-        _paq.push(["setTrackerUrl", u + "matomo.php"]);
-        _paq.push(["setSiteId", "5"]);
+        var u = '//analytics.wbt.wien/';
+        _paq.push(['setTrackerUrl', u + 'matomo.php']);
+        _paq.push(['setSiteId', '5']);
         var d = document,
-            g = d.createElement("script"),
-            s = d.getElementsByTagName("script")[0];
-        g.type = "text/javascript";
+            g = d.createElement('script'),
+            s = d.getElementsByTagName('script')[0];
+        g.type = 'text/javascript';
         g.async = true;
-        g.src = u + "matomo.js";
+        g.src = u + 'matomo.js';
         s.parentNode.insertBefore(g, s);
     })();
 }

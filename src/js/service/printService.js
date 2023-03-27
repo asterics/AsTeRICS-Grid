@@ -1,12 +1,12 @@
-import { GridData } from "../model/GridData";
-import { GridImage } from "../model/GridImage";
-import { i18nService } from "./i18nService";
-import { imageUtil } from "../util/imageUtil";
-import { GridElement } from "../model/GridElement";
-import { util } from "../util/util";
-import { dataService } from "./data/dataService.js";
-import { MetaData } from "../model/MetaData.js";
-import { arasaacService } from "./pictograms/arasaacService.js";
+import { GridData } from '../model/GridData';
+import { GridImage } from '../model/GridImage';
+import { i18nService } from './i18nService';
+import { imageUtil } from '../util/imageUtil';
+import { GridElement } from '../model/GridElement';
+import { util } from '../util/util';
+import { dataService } from './data/dataService.js';
+import { MetaData } from '../model/MetaData.js';
+import { arasaacService } from './pictograms/arasaacService.js';
 
 let printService = {};
 let gridInstance = null;
@@ -22,22 +22,22 @@ let pdfOptions = {
 let patternFontMappings = [
     {
         pattern: /^[\u0400-\u04FF]+$/,
-        font: "/app/fonts/Arimo-Regular-Cyrillic.ttf"
+        font: '/app/fonts/Arimo-Regular-Cyrillic.ttf'
     }
 ];
 
 printService.initPrintHandlers = function () {
-    window.addEventListener("beforeprint", () => {
+    window.addEventListener('beforeprint', () => {
         if (gridInstance) {
-            $("#grid-container").width("27.7cm");
-            $("#grid-container").height("19cm");
+            $('#grid-container').width('27.7cm');
+            $('#grid-container').height('19cm');
             gridInstance.autosize();
         }
     });
-    window.addEventListener("afterprint", () => {
+    window.addEventListener('afterprint', () => {
         if (gridInstance) {
-            $("#grid-container").width("");
-            $("#grid-container").height("");
+            $('#grid-container').width('');
+            $('#grid-container').height('');
             gridInstance.autosize();
         }
     });
@@ -60,11 +60,11 @@ printService.setGridInstance = function (instance) {
  * @return {Promise<void>}
  */
 printService.gridsToPdf = async function (gridsData, options) {
-    let jsPDF = await import(/* webpackChunkName: "jspdf" */ "jspdf");
+    let jsPDF = await import(/* webpackChunkName: "jspdf" */ 'jspdf');
     options = options || {};
     options.idPageMap = {};
     options.idParentsMap = {};
-    options.fontPath = "";
+    options.fontPath = '';
     gridsData.forEach((grid, index) => {
         options.idPageMap[grid.id] = index + 1;
     });
@@ -87,7 +87,7 @@ printService.gridsToPdf = async function (gridsData, options) {
         }
     }
     const doc = new jsPDF.jsPDF({
-        orientation: "landscape",
+        orientation: 'landscape',
         compress: true
     });
     if (options.fontPath) {
@@ -100,7 +100,7 @@ printService.gridsToPdf = async function (gridsData, options) {
         if (options.progressFn) {
             options.progressFn(
                 Math.round((100 * i) / gridsData.length),
-                i18nService.t("creatingPageXOfY", i + 1, gridsData.length),
+                i18nService.t('creatingPageXOfY', i + 1, gridsData.length),
                 () => {
                     options.abort = true;
                 }
@@ -117,7 +117,7 @@ printService.gridsToPdf = async function (gridsData, options) {
             options.progressFn(100);
         }
         //window.open(doc.output('bloburl'))
-        doc.save("grid-export.pdf");
+        doc.save('grid-export.pdf');
     }
 };
 
@@ -142,14 +142,14 @@ function addGridToPdf(doc, gridData, options, metadata) {
         let fontSizePt = (pdfOptions.footerHeight * 0.4) / 0.352778;
         doc.setTextColor(0);
         doc.setFontSize(fontSizePt);
-        let textL = i18nService.t("printedByAstericsGrid");
-        let textL2 = i18nService.t("copyrightARASAACPDF");
+        let textL = i18nService.t('printedByAstericsGrid');
+        let textL2 = i18nService.t('copyrightARASAACPDF');
         let textC = i18nService.getTranslation(gridData.label);
         let firstParentPage = options.idParentsMap[gridData.id][0];
         let yLine1 = hasARASAACImages ? yBaseFooter - pdfOptions.footerHeight : yBaseFooter;
         if (options.showLinks && firstParentPage) {
             let prefix = JSON.stringify(options.idParentsMap[gridData.id].slice(0, 5));
-            textC = prefix + " => " + textC;
+            textC = prefix + ' => ' + textC;
             let textWidth = doc.getTextWidth(textC);
             doc.link(
                 DOC_WIDTH / 2 - textWidth / 2,
@@ -161,24 +161,24 @@ function addGridToPdf(doc, gridData, options, metadata) {
         }
         let currentPage = options.idPageMap[gridData.id] || 1;
         let totalPages = Object.keys(options.idPageMap).length || 1;
-        let textR = currentPage + " / " + totalPages;
+        let textR = currentPage + ' / ' + totalPages;
         doc.text(textL, pdfOptions.docPadding + pdfOptions.elementMargin, yLine1, {
-            baseline: "bottom",
-            align: "left"
+            baseline: 'bottom',
+            align: 'left'
         });
         if (hasARASAACImages) {
             doc.text(textL2, pdfOptions.docPadding + pdfOptions.elementMargin, yBaseFooter, {
-                baseline: "bottom",
-                align: "left"
+                baseline: 'bottom',
+                align: 'left'
             });
         }
         doc.text(textC, DOC_WIDTH / 2, yLine1, {
-            baseline: "bottom",
-            align: "center"
+            baseline: 'bottom',
+            align: 'center'
         });
         doc.text(textR, DOC_WIDTH - pdfOptions.docPadding - pdfOptions.elementMargin, yLine1, {
-            baseline: "bottom",
-            align: "right"
+            baseline: 'bottom',
+            align: 'right'
         });
     }
     if (registerHeight > 0) {
@@ -206,12 +206,12 @@ function addGridToPdf(doc, gridData, options, metadata) {
             let maxPage = i * stepSize + 1;
             if (maxPage <= options.page) {
                 doc.text(
-                    maxPage + "",
+                    maxPage + '',
                     i * registerElementWidth + registerElementWidth / 2,
                     DOC_HEIGHT - registerHeight / 2,
                     {
-                        baseline: "middle",
-                        align: "center"
+                        baseline: 'middle',
+                        align: 'center'
                     }
                 );
             }
@@ -232,7 +232,7 @@ function addGridToPdf(doc, gridData, options, metadata) {
             let colorRGB = util.getRGB(MetaData.getElementColor(element, metadata));
             doc.setFillColor(colorRGB[0], colorRGB[1], colorRGB[2]);
         }
-        doc.roundedRect(xStartPos, yStartPos, currentWidth, currentHeight, 3, 3, "FD");
+        doc.roundedRect(xStartPos, yStartPos, currentWidth, currentHeight, 3, 3, 'FD');
         if (i18nService.getTranslation(element.label)) {
             addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos);
         }
@@ -245,19 +245,19 @@ function addGridToPdf(doc, gridData, options, metadata) {
                     let offsetY = 1;
                     doc.setDrawColor(255);
                     doc.setFillColor(90, 113, 122);
-                    doc.roundedRect(xStartPos + offsetX, yStartPos + offsetY, iconWidth, iconWidth, 1, 1, "FD");
+                    doc.roundedRect(xStartPos + offsetX, yStartPos + offsetY, iconWidth, iconWidth, 1, 1, 'FD');
                     doc.link(xStartPos, yStartPos, currentWidth, currentHeight, { pageNumber: targetPage });
                     if (targetPage) {
                         let fontSizePt = (iconWidth * 0.6) / 0.352778;
                         doc.setTextColor(255, 255, 255);
                         doc.setFontSize(fontSizePt);
                         doc.text(
-                            targetPage + "",
+                            targetPage + '',
                             xStartPos + offsetX + iconWidth / 2,
                             yStartPos + offsetY + iconWidth / 2,
                             {
-                                baseline: "middle",
-                                align: "center",
+                                baseline: 'middle',
+                                align: 'center',
                                 maxWidth: iconWidth
                             }
                         );
@@ -290,8 +290,8 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
     let lines = Math.ceil(dim.w / maxWidth);
     let yOffset = hasImg ? currentHeight - 2 * pdfOptions.elementMargin : (currentHeight - dim.h * lines) / 2;
     doc.text(label, xStartPos + currentWidth / 2, yStartPos + yOffset, {
-        baseline: hasImg ? "bottom" : "top",
-        align: "center",
+        baseline: hasImg ? 'bottom' : 'top',
+        align: 'center',
         maxWidth: maxWidth
     });
 }
@@ -303,7 +303,7 @@ function getOptimalFontsize(doc, text, baseSize, maxWidth, maxHeight, multipleLi
     for (let i = 0; i < steps; i++) {
         doc.setFontSize(size);
         let dim = doc.getTextDimensions(text);
-        if (multipleLines && text.indexOf(" ") !== -1) {
+        if (multipleLines && text.indexOf(' ') !== -1) {
             let possibleLines = Math.floor(maxHeight / dim.h);
             let currentLines = Math.ceil(dim.w / maxWidth);
             if (dim.w / possibleLines > maxWidth * 0.5 || currentLines > possibleLines) {
@@ -367,9 +367,9 @@ async function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, yp
     let x = xpos + pdfOptions.imgMargin + xOffset;
     let y = ypos + pdfOptions.imgMargin + yOffset;
     if (type === GridImage.IMAGE_TYPES.PNG) {
-        doc.addImage(imageData, "PNG", x, y, width, height);
+        doc.addImage(imageData, 'PNG', x, y, width, height);
     } else if (type === GridImage.IMAGE_TYPES.JPEG) {
-        doc.addImage(imageData, "JPEG", x, y, width, height);
+        doc.addImage(imageData, 'JPEG', x, y, width, height);
     } else if (type === GridImage.IMAGE_TYPES.SVG) {
         let pixelWidth = width / 0.084666667; //convert width in mm to pixel at 300dpi
         let pngBase64 = await imageUtil.base64SvgToBase64Png(imageData, pixelWidth);
@@ -388,13 +388,13 @@ async function loadFont(path, doc) {
     if (!response) {
         return;
     }
-    let fontName = path.substring(path.lastIndexOf("/") + 1);
-    log.info("using font", fontName);
+    let fontName = path.substring(path.lastIndexOf('/') + 1);
+    log.info('using font', fontName);
     let contentBuffer = await response.arrayBuffer();
     let contentString = util.arrayBufferToBase64(contentBuffer);
     if (contentString) {
         doc.addFileToVFS(fontName, contentString);
-        doc.addFont(fontName, fontName, "normal");
+        doc.addFont(fontName, fontName, 'normal');
         doc.setFont(fontName);
     }
 }

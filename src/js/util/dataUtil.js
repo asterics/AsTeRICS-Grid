@@ -1,7 +1,7 @@
 let dataUtil = {};
 
-let defaultRemovedPlaceholder = "_removed_";
-let noTrimProperties = ["thumbnail"];
+let defaultRemovedPlaceholder = '_removed_';
+let noTrimProperties = ['thumbnail'];
 
 /**
  * Recursively iterates over all properties of a given object and removes all String values longer than a given threshold.
@@ -54,7 +54,7 @@ function shortenObjectInternal(object, maxLength, removedPlaceholder) {
     if (!object) {
         return object;
     }
-    if (typeof object === "string" || object instanceof String) {
+    if (typeof object === 'string' || object instanceof String) {
         if (object.length > maxLength) {
             return removedPlaceholder;
         }

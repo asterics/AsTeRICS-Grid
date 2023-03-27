@@ -1,11 +1,11 @@
-import { util } from "../util/util";
+import { util } from '../util/util';
 
 let openHABService = {};
 
 openHABService.fetchItems = async function (url) {
-    return fetch(url + "?recursive=false").then((response) => {
+    return fetch(url + '?recursive=false').then((response) => {
         if (!response.ok) {
-            throw new Error("Failed to fetch items from openHAB");
+            throw new Error('Failed to fetch items from openHAB');
         }
         return response.json();
     });
@@ -13,8 +13,8 @@ openHABService.fetchItems = async function (url) {
 
 openHABService.sendAction = async function (action) {
     let data;
-    if (action.actionType === "CUSTOM_VALUE" || action.actionType === "CUSTOM_COLOR") {
-        if (action.actionType === "CUSTOM_COLOR") {
+    if (action.actionType === 'CUSTOM_VALUE' || action.actionType === 'CUSTOM_COLOR') {
+        if (action.actionType === 'CUSTOM_COLOR') {
             data = hexToHSV(action);
         } else {
             data = action.actionValue;
@@ -23,9 +23,9 @@ openHABService.sendAction = async function (action) {
         data = action.actionType;
     }
     await fetch(action.openHABUrl + action.itemName, {
-        method: "POST",
+        method: 'POST',
         headers: {
-            "Content-Type": "text/plain"
+            'Content-Type': 'text/plain'
         },
         body: data
     }).catch((rejection) => console.error(rejection));
@@ -34,18 +34,18 @@ openHABService.sendAction = async function (action) {
 openHABService.getRestURL = function (userUri) {
     if (!userUri) {
         userUri =
-            window.location.hostname.indexOf("grid.asterics.eu") > -1
-                ? "http://127.0.0.1:8080"
-                : "http://" + window.location.hostname + ":8080";
+            window.location.hostname.indexOf('grid.asterics.eu') > -1
+                ? 'http://127.0.0.1:8080'
+                : 'http://' + window.location.hostname + ':8080';
     }
 
-    if (userUri.indexOf("http") === -1) {
-        userUri = "http://" + userUri;
+    if (userUri.indexOf('http') === -1) {
+        userUri = 'http://' + userUri;
     }
 
-    let parser = document.createElement("a");
+    let parser = document.createElement('a');
     parser.href = userUri;
-    parser.pathname = "/rest/items/";
+    parser.pathname = '/rest/items/';
     if (!parser.port) {
         parser.port = 8080;
     }
@@ -82,7 +82,7 @@ function hexToHSV(action) {
     // compute v
     var v = cmax * 100;
 
-    return h + "," + s + "," + v;
+    return h + ',' + s + ',' + v;
 }
 
 export { openHABService };

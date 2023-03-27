@@ -1,5 +1,5 @@
-import { encryptionService } from "./data/encryptionService";
-import { log } from "../util/log";
+import { encryptionService } from './data/encryptionService';
+import { log } from '../util/log';
 
 let timingLogger = {};
 let servicesToLog = [];
@@ -9,7 +9,7 @@ let simpleLastTime = 0;
 let startTimes = {};
 let totalTimes = {};
 let maxEntry = {
-    name: "",
+    name: '',
     time: 0
 };
 
@@ -30,13 +30,13 @@ timingLogger.initLogging = function () {
  * @param key a custom string for identifying the log message
  */
 timingLogger.log = function (key) {
-    key = key ? key + " - " : "";
+    key = key ? key + ' - ' : '';
     if (!_customStart) {
-        log.warn("timing log started.");
+        log.warn('timing log started.');
         _customStart = new Date().getTime();
         return;
     }
-    log.warn(key + "time since last log: " + (new Date().getTime() - _customStart) + "ms");
+    log.warn(key + 'time since last log: ' + (new Date().getTime() - _customStart) + 'ms');
     _customStart = new Date().getTime();
 };
 
@@ -45,7 +45,7 @@ timingLogger.start = function (key) {
 };
 
 timingLogger.startSimple = function () {
-    log.warn("timing started!");
+    log.warn('timing started!');
     simpleLastTime = new Date().getTime();
 };
 
@@ -93,15 +93,15 @@ function finishTime(key, fnName) {
     if (totalTimes[key + fnName] > maxEntry.time) {
         maxEntry.time = totalTimes[key + fnName];
         if (maxEntry.name !== fnName) {
-            log.warn("new maximum time consuming method: " + maxEntry.name + " (" + maxEntry.time + "ms)");
+            log.warn('new maximum time consuming method: ' + maxEntry.name + ' (' + maxEntry.time + 'ms)');
         }
         maxEntry.name = fnName || key;
     }
-    log.info("total needed time for " + fnName + ": " + totalTimes[key + fnName] + ", last operation:" + operationTime);
+    log.info('total needed time for ' + fnName + ': ' + totalTimes[key + fnName] + ', last operation:' + operationTime);
 }
 
 function isFunction(functionToCheck) {
-    return typeof functionToCheck === "function";
+    return typeof functionToCheck === 'function';
 }
 
 export { timingLogger };

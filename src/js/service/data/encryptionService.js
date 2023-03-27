@@ -1,10 +1,10 @@
-import { EncryptedObject } from "../../model/EncryptedObject";
-import { dataUtil } from "../../util/dataUtil";
-import { sjcl } from "../../externals/sjcl";
-import { log } from "../../util/log.js";
-import { MapCache } from "../../util/MapCache";
+import { EncryptedObject } from '../../model/EncryptedObject';
+import { dataUtil } from '../../util/dataUtil';
+import { sjcl } from '../../externals/sjcl';
+import { log } from '../../util/log.js';
+import { MapCache } from '../../util/MapCache';
 
-let STATIC_USER_PW_SALT = "STATIC_USER_PW_SALT";
+let STATIC_USER_PW_SALT = 'STATIC_USER_PW_SALT';
 
 let encryptionService = {};
 let _encryptionSalts = null;
@@ -87,7 +87,7 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
             decryptedObject._rev = encryptedObject._rev;
             decryptedObjects.push(decryptedObject);
         } catch (e) {
-            log.error("error decrypting object: " + encryptedObject.modelName + ", id: " + encryptedObject.id);
+            log.error('error decrypting object: ' + encryptedObject.modelName + ', id: ' + encryptedObject.id);
             log.error(e);
         }
     });
@@ -124,7 +124,7 @@ encryptionService.encryptString = function (string, encryptionSalt) {
 encryptionService.decryptString = function (encryptedString, encryptionSalt) {
     throwErrorIfUninitialized();
     if (_decryptionCache.has(encryptedString)) {
-        log.debug("using decryption cache...");
+        log.debug('using decryption cache...');
         return _decryptionCache.get(encryptedString);
     }
 
@@ -195,7 +195,7 @@ encryptionService.getUserPasswordHash = function (plaintextPassword) {
  * @param salts array of salts to use -> ID(s) of metadata object(s)
  */
 encryptionService.setEncryptionProperties = function (hashedPassword, salts, isLocalUser) {
-    hashedPassword = hashedPassword || "";
+    hashedPassword = hashedPassword || '';
     _encryptionBasePassword = hashedPassword;
     _encryptionSalts = Array.isArray(salts) ? salts : [salts];
     _isLocalUser = isLocalUser;
@@ -204,14 +204,14 @@ encryptionService.setEncryptionProperties = function (hashedPassword, salts, isL
 };
 
 function getEncryptionKey(salt) {
-    return encryptionService.getStringHash("" + salt + _encryptionBasePassword);
+    return encryptionService.getStringHash('' + salt + _encryptionBasePassword);
 }
 
 /**
  * clears the encryption properties
  */
 encryptionService.resetEncryptionProperties = function () {
-    log.debug("reset encryption properties...");
+    log.debug('reset encryption properties...');
     _encryptionSalts = null;
     _encryptionBasePassword = null;
     _isLocalUser = false;
@@ -219,7 +219,7 @@ encryptionService.resetEncryptionProperties = function () {
 
 function throwErrorIfUninitialized() {
     if (!_encryptionBasePassword || !_encryptionSalts || _encryptionSalts.length === 0) {
-        let msg = "using encryptionService uninitialized is not possible, aborting...";
+        let msg = 'using encryptionService uninitialized is not possible, aborting...';
         log.error(msg);
         throw msg;
     }

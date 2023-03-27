@@ -1,6 +1,6 @@
-import { modelUtil } from "../util/modelUtil";
-import { constants } from "../util/constants";
-import { Model } from "../externals/objectmodel";
+import { modelUtil } from '../util/modelUtil';
+import { constants } from '../util/constants';
+import { Model } from '../externals/objectmodel';
 
 class EncryptedObject extends Model({
     id: String, //ID of the encrypted object
@@ -16,7 +16,7 @@ class EncryptedObject extends Model({
     }
 
     static getModelName() {
-        return "EncryptedObject";
+        return 'EncryptedObject';
     }
 }
 

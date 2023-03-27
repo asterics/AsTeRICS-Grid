@@ -5,7 +5,7 @@ dataUtil.removeLongPropertyValues = function (object, maxLength, removedPlacehol
 };
 
 dataUtil.getDefaultRemovedPlaceholder = function () {
-    return "shortened";
+    return 'shortened';
 };
 
 export { dataUtil };

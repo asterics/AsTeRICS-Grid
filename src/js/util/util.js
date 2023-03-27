@@ -1,12 +1,12 @@
-import { TextConfig } from "../model/TextConfig.js";
+import { TextConfig } from '../model/TextConfig.js';
 
 let util = {};
 
 let _timeoutHandlers = {};
 let _throttleHistory = {}; //fn -> lastCallTime
-let lastClipboardData = "";
-util.DEFAULT_KEY = "DEFAULT_KEY";
-util.DEFAULT_KEY2 = "DEFAULT_KEY2";
+let lastClipboardData = '';
+util.DEFAULT_KEY = 'DEFAULT_KEY';
+util.DEFAULT_KEY2 = 'DEFAULT_KEY2';
 
 /**
  * Calls the given function after a specified timeout. Another subsequent call cancels and restarts the timeout.
@@ -19,7 +19,7 @@ util.DEFAULT_KEY2 = "DEFAULT_KEY2";
 util.debounce = function (fn, timeout, key) {
     key = key || util.DEFAULT_KEY;
     if (!fn && !timeout) {
-        log.warn("called util.debounce() without needed parameters. aborting.");
+        log.warn('called util.debounce() without needed parameters. aborting.');
         return;
     }
     if (_timeoutHandlers[key]) {
@@ -68,18 +68,18 @@ util.throttle = function (fn, args, minPauseMs, key) {
  * @param text
  */
 util.copyToClipboard = function copyTextToClipboard(text) {
-    let textArea = document.createElement("textarea");
+    let textArea = document.createElement('textarea');
     textArea.value = text;
     document.body.appendChild(textArea);
     textArea.focus();
     textArea.select();
     try {
-        var successful = document.execCommand("copy");
-        var msg = successful ? "successful" : "unsuccessful";
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
         lastClipboardData = text;
-        log.debug("Copying text command was " + msg);
+        log.debug('Copying text command was ' + msg);
     } catch (err) {
-        log.warn("Unable to copy to clipboard.");
+        log.warn('Unable to copy to clipboard.');
     }
     document.body.removeChild(textArea);
 };
@@ -108,7 +108,7 @@ util.getClipboardContent = function () {
             return Promise.resolve(text);
         })
         .catch((err) => {
-            log.warn("failed to read clipboard.");
+            log.warn('failed to read clipboard.');
             return Promise.resolve(null);
         });
 };
@@ -178,9 +178,9 @@ util.closeFullscreen = function () {
  * @return {null|*[]}
  */
 util.getRGB = function (hexOrCssRGB) {
-    if (hexOrCssRGB && hexOrCssRGB[0] === "#") {
+    if (hexOrCssRGB && hexOrCssRGB[0] === '#') {
         return util.hexToRGB(hexOrCssRGB);
-    } else if (hexOrCssRGB && hexOrCssRGB.indexOf("rgb") === 0) {
+    } else if (hexOrCssRGB && hexOrCssRGB.indexOf('rgb') === 0) {
         return util.cssRGBToRGB(hexOrCssRGB);
     }
     return null;
@@ -196,7 +196,7 @@ util.hexToRGB = function (hex) {
         return null;
     }
     let array = hex
-        .replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => "#" + r + r + g + g + b + b)
+        .replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => '#' + r + r + g + g + b + b)
         .substring(1)
         .match(/.{2}/g)
         .map((x) => parseInt(x, 16));
@@ -221,7 +221,7 @@ util.sleep = function (ms) {
 };
 
 util.isString = function (value) {
-    return typeof value === "string" || value instanceof String;
+    return typeof value === 'string' || value instanceof String;
 };
 
 util.convertLowerUppercase = function (text, convertMode) {
@@ -249,7 +249,7 @@ util.getCurrentDateTimeString = function () {
 
 //see https://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string
 util.arrayBufferToBase64 = function (buffer) {
-    let binary = "";
+    let binary = '';
     let bytes = new Uint8Array(buffer);
     let len = bytes.byteLength;
     for (let i = 0; i < len; i++) {

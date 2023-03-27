@@ -21,14 +21,14 @@ audioUtil.record = async function (dataCallback) {
         _audioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
     }
     if (!_audioStream) {
-        log.warn("no access to audio stream!");
+        log.warn('no access to audio stream!');
         return Promise.reject();
     }
 
-    let mimeTypes = ["audio/webm", "audio/ogg", "audio/mp4"];
+    let mimeTypes = ['audio/webm', 'audio/ogg', 'audio/mp4'];
     let supportedTypes = mimeTypes.filter((type) => MediaRecorder.isTypeSupported(type));
     if (supportedTypes.length === 0) {
-        log.warn("recorder supports no mimeType");
+        log.warn('recorder supports no mimeType');
         return;
     }
 
@@ -36,11 +36,11 @@ audioUtil.record = async function (dataCallback) {
     audioUtil.stopRecording();
     _mediaRecorder = new MediaRecorder(_audioStream, { mimeType: supportedTypes[0] });
 
-    _mediaRecorder.addEventListener("dataavailable", function (e) {
+    _mediaRecorder.addEventListener('dataavailable', function (e) {
         if (e.data.size > 0) recordedChunks.push(e.data);
     });
 
-    _mediaRecorder.addEventListener("stop", async function () {
+    _mediaRecorder.addEventListener('stop', async function () {
         let blob = new Blob(recordedChunks);
         let base64 = await blobToBase64(blob);
         dataCallback({
@@ -83,7 +83,7 @@ audioUtil.playAudio = function (base64, options) {
         try {
             decoded = atob(base64);
         } catch (e) {
-            log.warn("error decoding base64 audio", e);
+            log.warn('error decoding base64 audio', e);
             return resolve();
         }
         let buffer = Uint8Array.from(decoded, (c) => c.charCodeAt(0));
@@ -92,7 +92,7 @@ audioUtil.playAudio = function (base64, options) {
         _currentAudioSource.connect(context.destination);
         _currentAudioSource.start(0);
         context.decodeAudioData(buffer.buffer, play, (e) => {
-            log.warn("error decoding audio", e);
+            log.warn('error decoding audio', e);
         });
 
         function play(audioBuffer) {
@@ -110,7 +110,7 @@ audioUtil.playAudio = function (base64, options) {
 audioUtil.waitForAudioEnded = async function () {
     await new Promise((resolve) => {
         if (_currentAudioSource) {
-            _currentAudioSource.addEventListener("ended", () => {
+            _currentAudioSource.addEventListener('ended', () => {
                 resolve();
             });
         } else {
@@ -181,7 +181,7 @@ function blobToBase64(blob) {
         const reader = new FileReader();
         reader.onloadend = () => {
             log.debug(reader.result);
-            let base64 = reader.result.substring(reader.result.indexOf(",") + 1);
+            let base64 = reader.result.substring(reader.result.indexOf(',') + 1);
             resolve(base64);
         };
         reader.readAsDataURL(blob);

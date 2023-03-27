@@ -1,7 +1,7 @@
-import Huffman from "n-ary-huffman";
-import $ from "../externals/jquery.js";
-import { inputEventHandler } from "./inputEventHandler";
-import { fontUtil } from "../util/fontUtil.js";
+import Huffman from 'n-ary-huffman';
+import $ from '../externals/jquery.js';
+import { inputEventHandler } from './inputEventHandler';
+import { fontUtil } from '../util/fontUtil.js';
 
 let HuffmanInput = {};
 let _destroyCallback = null;
@@ -55,9 +55,9 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
     let _elements = null;
     let _currentElement = null;
     let _treeItems = null;
-    let _currentInput = "";
+    let _currentInput = '';
     let _inputEventHandler = null;
-    let _alphabet = "";
+    let _alphabet = '';
     let _started = false;
     let _timeoutHandler = null;
     let _appendedElements = [];
@@ -65,17 +65,17 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
     thiz.start = function () {
         _started = true;
         if (colorWholeElement) {
-            $(_elements).addClass("noanimation");
+            $(_elements).addClass('noanimation');
         }
         _inputEventHandler.startListening();
     };
 
     thiz.stop = function () {
         _started = false;
-        $(_elements).find(".huffman-code-visualization").remove();
+        $(_elements).find('.huffman-code-visualization').remove();
         if (colorWholeElement) {
-            $(_elements).removeClass("noanimation");
-            $(_elements).css("background", "");
+            $(_elements).removeClass('noanimation');
+            $(_elements).css('background', '');
         }
         _inputEventHandler.stopListening();
     };
@@ -104,7 +104,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
     };
 
     thiz.input = function (id) {
-        id = id + "";
+        id = id + '';
         clearTimeout(_timeoutHandler);
         if (id.length !== 1) {
             return;
@@ -127,13 +127,13 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
         }
         if (selectedElement[0] || possibleElements.length === 0) {
             setPossibleElements(_elements.toArray());
-            _currentInput = "";
+            _currentInput = '';
             colorElements();
         }
         if (timeout > 0) {
             _timeoutHandler = setTimeout(() => {
                 setPossibleElements(_elements.toArray());
-                _currentInput = "";
+                _currentInput = '';
                 colorElements();
             }, timeout);
         }
@@ -145,7 +145,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
 
     function init() {
         _inputEventHandler = inputEventHandler.instance();
-        _alphabet = "";
+        _alphabet = '';
         parseOptions(options);
         _elements = $(itemSelector);
         if (_elements.length === 0) {
@@ -179,16 +179,16 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
             item.codeWord = codeWord;
             item.element = document.getElementById(item.name);
             if (printColors || printCodes) {
-                let spans = "";
-                item.codeWord.split("").forEach((c) => {
-                    let color = printColors ? getColor(c) : "";
+                let spans = '';
+                item.codeWord.split('').forEach((c) => {
+                    let color = printColors ? getColor(c) : '';
                     let textColor = fontUtil.getHighContrastColor(color);
-                    let width = (100 - 5 * longestCodeLength) / longestCodeLength + "%";
-                    let char = printCodes ? c : "&nbsp;";
+                    let width = (100 - 5 * longestCodeLength) / longestCodeLength + '%';
+                    let char = printCodes ? c : '&nbsp;';
                     spans += `<span style="background-color: ${color}; color: ${textColor}; width: ${width}; display: inline-block; margin: 0 1%; border-radius: 5px; border: 1px solid whitesmoke;">${char}</span>`;
                 });
-                let fontSize = printCodes ? "10px" : "3px";
-                let elementWidth = $(item.element).width() + "px";
+                let fontSize = printCodes ? '10px' : '3px';
+                let elementWidth = $(item.element).width() + 'px';
                 let element = htmlToElement(
                     `<div class="huffman-code-visualization" style="font-size:${fontSize}; display:block; position: absolute; bottom: 0; width: ${elementWidth}">${spans}</div>`
                 );
@@ -202,7 +202,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
 
     function parseOptions(options) {
         if (!options || !options.inputEvents || !options.inputEvents.length || options.inputEvents.length < 2) {
-            log.warn("huffman input: invalid options");
+            log.warn('huffman input: invalid options');
             return;
         }
         if ($.isFunction(options.selectionListener)) {
@@ -257,7 +257,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
      * @return {Element}
      */
     function htmlToElement(html) {
-        let template = document.createElement("template");
+        let template = document.createElement('template');
         html = html.trim(); // Never return a text node of whitespace as the result
         template.innerHTML = html;
         return template.content.firstChild;

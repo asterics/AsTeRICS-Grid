@@ -1,20 +1,20 @@
-import { modelUtil } from "../util/modelUtil";
-import { templates } from "../templates";
-import { GridImage } from "./GridImage";
-import { GridActionSpeak } from "./GridActionSpeak";
-import { GridActionSpeakCustom } from "./GridActionSpeakCustom";
-import { GridActionNavigate } from "./GridActionNavigate";
-import { GridActionARE } from "./GridActionARE";
-import { GridActionOpenHAB } from "./GridActionOpenHAB";
-import { GridActionPredict } from "./GridActionPredict";
-import { GridActionCollectElement } from "./GridActionCollectElement";
-import { constants } from "../util/constants";
-import { Model } from "../externals/objectmodel";
-import { GridActionWebradio } from "./GridActionWebradio";
-import { GridActionChangeLang } from "./GridActionChangeLang";
-import { GridActionYoutube } from "./GridActionYoutube";
-import { GridActionOpenWebpage } from "./GridActionOpenWebpage.js";
-import { GridActionAudio } from "./GridActionAudio.js";
+import { modelUtil } from '../util/modelUtil';
+import { templates } from '../templates';
+import { GridImage } from './GridImage';
+import { GridActionSpeak } from './GridActionSpeak';
+import { GridActionSpeakCustom } from './GridActionSpeakCustom';
+import { GridActionNavigate } from './GridActionNavigate';
+import { GridActionARE } from './GridActionARE';
+import { GridActionOpenHAB } from './GridActionOpenHAB';
+import { GridActionPredict } from './GridActionPredict';
+import { GridActionCollectElement } from './GridActionCollectElement';
+import { constants } from '../util/constants';
+import { Model } from '../externals/objectmodel';
+import { GridActionWebradio } from './GridActionWebradio';
+import { GridActionChangeLang } from './GridActionChangeLang';
+import { GridActionYoutube } from './GridActionYoutube';
+import { GridActionOpenWebpage } from './GridActionOpenWebpage.js';
+import { GridActionAudio } from './GridActionAudio.js';
 
 class GridElement extends Model({
     id: String,
@@ -35,7 +35,7 @@ class GridElement extends Model({
 }) {
     constructor(properties, elementToCopy) {
         let defaults = {
-            id: "", //will be replaced by constructor
+            id: '', //will be replaced by constructor
             modelName: GridElement.getModelName(),
             modelVersion: constants.MODEL_VERSION,
             label: {},
@@ -48,12 +48,12 @@ class GridElement extends Model({
         properties = modelUtil.setDefaults(properties, elementToCopy, GridElement) || {};
         properties.actions = properties.actions || [new GridActionSpeak()];
         super(Object.assign(defaults, properties));
-        this.id = this.id || modelUtil.generateId("grid-element");
+        this.id = this.id || modelUtil.generateId('grid-element');
     }
 
     duplicate() {
         var newElem = new GridElement(JSON.parse(JSON.stringify(this)));
-        newElem.id = modelUtil.generateId("grid-element");
+        newElem.id = modelUtil.generateId('grid-element');
         return newElem;
     }
 
@@ -100,7 +100,7 @@ class GridElement extends Model({
         if (constructor) {
             return new constructor();
         } else {
-            log.warn("action type not found: " + modelName);
+            log.warn('action type not found: ' + modelName);
         }
     }
 
@@ -109,7 +109,7 @@ class GridElement extends Model({
         if (constructor) {
             return constructor;
         } else {
-            log.warn("action type not found: " + modelName);
+            log.warn('action type not found: ' + modelName);
         }
     }
 
@@ -118,15 +118,15 @@ class GridElement extends Model({
     }
 
     static getModelName() {
-        return "GridElement";
+        return 'GridElement';
     }
 }
 
-GridElement.ELEMENT_TYPE_NORMAL = "ELEMENT_TYPE_NORMAL";
-GridElement.ELEMENT_TYPE_COLLECT = "ELEMENT_TYPE_COLLECT";
-GridElement.ELEMENT_TYPE_PREDICTION = "ELEMENT_TYPE_PREDICTION";
-GridElement.ELEMENT_TYPE_YT_PLAYER = "ELEMENT_TYPE_YT_PLAYER";
+GridElement.ELEMENT_TYPE_NORMAL = 'ELEMENT_TYPE_NORMAL';
+GridElement.ELEMENT_TYPE_COLLECT = 'ELEMENT_TYPE_COLLECT';
+GridElement.ELEMENT_TYPE_PREDICTION = 'ELEMENT_TYPE_PREDICTION';
+GridElement.ELEMENT_TYPE_YT_PLAYER = 'ELEMENT_TYPE_YT_PLAYER';
 
-GridElement.PROP_YT_PREVENT_CLICK = "PROP_YT_PREVENT_CLICK";
+GridElement.PROP_YT_PREVENT_CLICK = 'PROP_YT_PREVENT_CLICK';
 
 export { GridElement };

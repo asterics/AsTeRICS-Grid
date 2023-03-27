@@ -1,14 +1,14 @@
-import { i18nService } from "./i18nService";
-import { stateService } from "./stateService";
-import { constants } from "../util/constants";
-import { dataService } from "./data/dataService";
-import { util } from "../util/util.js";
-import $ from "../externals/jquery.js";
+import { i18nService } from './i18nService';
+import { stateService } from './stateService';
+import { constants } from '../util/constants';
+import { dataService } from './data/dataService';
+import { util } from '../util/util.js';
+import $ from '../externals/jquery.js';
 
 let speechService = {};
 
-speechService.VOICE_TYPE_NATIVE = "VOICE_TYPE_NATIVE";
-speechService.VOICE_TYPE_RESPONSIVEVOICE = "VOICE_TYPE_RESPONSIVEVOICE";
+speechService.VOICE_TYPE_NATIVE = 'VOICE_TYPE_NATIVE';
+speechService.VOICE_TYPE_RESPONSIVEVOICE = 'VOICE_TYPE_RESPONSIVEVOICE';
 
 let _preferredVoiceId = null;
 let _secondVoiceName = null;
@@ -22,8 +22,8 @@ let responsiveVoiceVoices = JSON.parse(
 let currentSpeakArray = [];
 let lastSpeakText = null;
 let lastSpeakTime = 0;
-let voiceIgnoreList = ["com.apple.speech.synthesis.voice"]; //joke voices by Apple
-let voiceSortBackList = ["com.apple.eloquence"];
+let voiceIgnoreList = ['com.apple.speech.synthesis.voice']; //joke voices by Apple
+let voiceSortBackList = ['com.apple.eloquence'];
 
 /**
  * speaks given text.
@@ -53,7 +53,7 @@ speechService.speak = function (textOrOject, options) {
     options = options || {};
     options.voiceLangIsTextLang = options.voiceLangIsTextLang || _voiceLangIsTextLang;
     let text = null;
-    let isString = typeof textOrOject === "string";
+    let isString = typeof textOrOject === 'string';
     if (!textOrOject || (!isString && Object.keys(textOrOject).length === 0)) {
         return;
     }
@@ -97,8 +97,8 @@ speechService.speak = function (textOrOject, options) {
         msg.pitch = isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1;
         msg.rate = options.rate || (isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1);
         if (options.progressFn) {
-            msg.addEventListener("boundary", options.progressFn);
-            msg.addEventListener("end", options.progressFn);
+            msg.addEventListener('boundary', options.progressFn);
+            msg.addEventListener('end', options.progressFn);
         }
         window.speechSynthesis.speak(msg);
     } else if (responsiveVoices.length > 0) {
@@ -204,7 +204,7 @@ speechService.testSpeak = function (voiceName, testSentence, testLang) {
     }
     let voiceLang = speechService.getVoices().filter((lang) => lang.name === voiceName)[0].lang;
     testLang = testLang || voiceLang;
-    testSentence = testSentence || i18nService.tl("thisIsAnEnglishSentence", null, testLang);
+    testSentence = testSentence || i18nService.tl('thisIsAnEnglishSentence', null, testLang);
     speechService.speak(testSentence, {
         preferredVoice: voiceName,
         useStandardRatePitch: true
@@ -257,7 +257,7 @@ speechService.voiceSortFn = function (a, b) {
  */
 speechService.nativeSpeechSupported = function () {
     return !!(
-        typeof SpeechSynthesisUtterance !== "undefined" &&
+        typeof SpeechSynthesisUtterance !== 'undefined' &&
         window.speechSynthesis &&
         window.speechSynthesis.getVoices
     );
