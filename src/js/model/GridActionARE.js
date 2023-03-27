@@ -1,6 +1,6 @@
-import {modelUtil} from "../util/modelUtil";
-import {constants} from "../util/constants";
-import {Model} from "../externals/objectmodel";
+import { modelUtil } from "../util/modelUtil";
+import { constants } from "../util/constants";
+import { Model } from "../externals/objectmodel";
 
 class GridActionARE extends Model({
     id: String,
@@ -16,7 +16,7 @@ class GridActionARE extends Model({
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionARE);
         super(properties);
-        this.id = this.id || modelUtil.generateId('grid-action-are')
+        this.id = this.id || modelUtil.generateId("grid-action-are");
     }
 
     static getModelName() {
@@ -30,4 +30,4 @@ GridActionARE.defaults({
     modelVersion: constants.MODEL_VERSION
 });
 
-export {GridActionARE};
+export { GridActionARE };

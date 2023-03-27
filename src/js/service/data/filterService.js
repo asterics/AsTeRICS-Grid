@@ -1,17 +1,17 @@
-import {modelUtil} from "../../util/modelUtil";
-import {encryptionService} from "./encryptionService";
-import {log} from "../../util/log";
-import {InputConfig} from "../../model/InputConfig";
-import {InputEventKey} from "../../model/InputEventKey";
-import {MetaData} from "../../model/MetaData";
-import {GridData} from "../../model/GridData";
-import {i18nService} from "../i18nService";
-import {GridActionSpeakCustom} from "../../model/GridActionSpeakCustom";
-import {GridActionSpeak} from "../../model/GridActionSpeak";
-import {GridElement} from "../../model/GridElement.js";
-import {GridElementCollect} from "../../model/GridElementCollect.js";
-import {GridActionCollectElement} from "../../model/GridActionCollectElement.js";
-import {GridActionPredict} from "../../model/GridActionPredict.js";
+import { modelUtil } from "../../util/modelUtil";
+import { encryptionService } from "./encryptionService";
+import { log } from "../../util/log";
+import { InputConfig } from "../../model/InputConfig";
+import { InputEventKey } from "../../model/InputEventKey";
+import { MetaData } from "../../model/MetaData";
+import { GridData } from "../../model/GridData";
+import { i18nService } from "../i18nService";
+import { GridActionSpeakCustom } from "../../model/GridActionSpeakCustom";
+import { GridActionSpeak } from "../../model/GridActionSpeak";
+import { GridElement } from "../../model/GridElement.js";
+import { GridElementCollect } from "../../model/GridElementCollect.js";
+import { GridActionCollectElement } from "../../model/GridActionCollectElement.js";
+import { GridActionPredict } from "../../model/GridActionPredict.js";
 
 let filterService = {};
 
@@ -28,9 +28,9 @@ V0 -> V1: Introduction of encryption and modelVersion property on all data model
  * @return object of list of objects that is/are ready for saving to database
  */
 filterService.convertLiveToDatabaseObjects = function (objects, filterOptions) {
-    log.trace('conversion to database - before filters:', objects);
+    log.trace("conversion to database - before filters:", objects);
     let filtered = filterObjects(objects, filterOptions, getFilterFunctionsToDatabase);
-    log.trace('conversion to database - after filters:', filtered);
+    log.trace("conversion to database - after filters:", filtered);
     return filtered;
 };
 
@@ -41,9 +41,9 @@ filterService.convertLiveToDatabaseObjects = function (objects, filterOptions) {
  * @return object of list of objects that is/are ready for using in the application
  */
 filterService.convertDatabaseToLiveObjects = function (objects, filterOptions) {
-    log.trace('conversion to live - before filters:', objects);
+    log.trace("conversion to live - before filters:", objects);
     let filtered = filterObjects(objects, filterOptions, getFilterFunctionsFromDatabase);
-    log.trace('conversion to live - after filters:', filtered);
+    log.trace("conversion to live - after filters:", filtered);
     return filtered;
 };
 
@@ -75,7 +75,7 @@ function filterObjects(objects, filterOptions, getFilterFunctionsFunction) {
     objects = passedArray ? objects : [objects];
     for (let i = 0; i < objects.length; i++) {
         let filterFunctions = getFilterFunctionsFunction(modelUtil.getModelVersionObject(objects[i].modelVersion));
-        filterFunctions.forEach(filterFn => {
+        filterFunctions.forEach((filterFn) => {
             objects[i] = filterFn(objects[i], filterOptions);
         });
     }
@@ -100,7 +100,8 @@ function getFilterFunctionsToDatabase(objectModelVersion) {
  */
 function getFilterFunctionsFromDatabase(objectModelVersion) {
     let filterFns = getModelConversionFunctions(objectModelVersion);
-    if (objectModelVersion.major) { //before introduction of objectModel version there was no encryption, so no need of decryption
+    if (objectModelVersion.major) {
+        //before introduction of objectModel version there was no encryption, so no need of decryption
         filterFns.unshift(encryptionService.decryptObjects); //decryption is first step before other conversions
     }
     return filterFns;
@@ -123,21 +124,24 @@ function getModelConversionFunctions(objectModelVersion) {
     //for more conversions switch fallthrough is intended - all needed conversion functions are added
     switch (objectModelVersion.major) {
         case 1:
-            filterFns.push(function (object, filterOptions) { //fn from V1 to V2
+            filterFns.push(function (object, filterOptions) {
+                //fn from V1 to V2
                 // new structure of input configuration
                 if (object.modelName === MetaData.getModelName()) {
-                    log.info('converting model version from V1 to V2: ' + object.modelName);
+                    log.info("converting model version from V1 to V2: " + object.modelName);
                     let inputConfig = object.inputConfig;
                     inputConfig.dirInputs = InputConfig.DEFAULT_DIR_INPUTS;
                     inputConfig.huffInputs = InputConfig.DEFAULT_HUFF_INPUTS;
                     inputConfig.scanInputs = InputConfig.DEFAULT_SCAN_INPUTS;
                     if (inputConfig.scanKey) {
                         inputConfig.scanInputs = [];
-                        inputConfig.scanInputs.push(new InputEventKey({
-                            label: InputConfig.SELECT,
-                            keyCode: inputConfig.scanKey,
-                            keyName: inputConfig.scanKeyName
-                        }));
+                        inputConfig.scanInputs.push(
+                            new InputEventKey({
+                                label: InputConfig.SELECT,
+                                keyCode: inputConfig.scanKey,
+                                keyName: inputConfig.scanKeyName
+                            })
+                        );
                         inputConfig.scanEnabled = inputConfig.scanAutostart;
                         inputConfig.scanAuto = inputConfig.scanAutostart;
                         delete inputConfig.scanKey;
@@ -152,27 +156,28 @@ function getModelConversionFunctions(objectModelVersion) {
             });
         //no break intended!
         case 2:
-            filterFns.push(function (gridData, filterOptions) { //fn from V2 to V3
+            filterFns.push(function (gridData, filterOptions) {
+                //fn from V2 to V3
                 // added translatable labels of all elements
                 if (gridData.modelName === GridData.getModelName()) {
-                    log.debug('converting model version from V2 to V3: ' + gridData.modelName);
+                    log.debug("converting model version from V2 to V3: " + gridData.modelName);
                     let locale = gridData.locale || i18nService.getContentLang();
-                    if (typeof gridData.label === 'string') {
+                    if (typeof gridData.label === "string") {
                         let label = gridData.label;
                         gridData.label = {};
                         gridData.label[locale] = label;
                     } else {
                         gridData.label = {};
                     }
-                    gridData.gridElements.forEach(element => {
-                        if (typeof element.label === 'string') {
+                    gridData.gridElements.forEach((element) => {
+                        if (typeof element.label === "string") {
                             let label = element.label;
                             element.label = {};
                             element.label[locale] = label;
                         } else {
                             element.label = {};
                         }
-                        element.actions.forEach(action => {
+                        element.actions.forEach((action) => {
                             if (action.modelName === GridActionSpeakCustom.getModelName()) {
                                 let text = action.speakText;
                                 action.speakText = {};
@@ -181,28 +186,34 @@ function getModelConversionFunctions(objectModelVersion) {
                             } else if (action.modelName === GridActionSpeak.getModelName()) {
                                 action.speakLanguage = undefined;
                             }
-                        })
+                        });
                     });
                 }
                 gridData.modelVersion = modelUtil.getModelVersionString();
                 return gridData;
             });
         case 3:
-            filterFns.push(function (gridData, filterOptions) { //fn from V3 to V4
+            filterFns.push(function (gridData, filterOptions) {
+                //fn from V3 to V4
                 // new collect elements with image collecting capabilities and options
                 if (gridData.modelName === GridData.getModelName()) {
-                    log.debug('converting model version from V3 to V4: ' + (gridData.label ? gridData.label.de : ''));
+                    log.debug("converting model version from V3 to V4: " + (gridData.label ? gridData.label.de : ""));
                     for (let i = 0; i < gridData.gridElements.length; i++) {
                         let gridElement = gridData.gridElements[i];
                         if (gridElement.type === GridElement.ELEMENT_TYPE_COLLECT) {
                             let collectElem = new GridElementCollect();
-                            gridElement.imageHeightPercentage = gridElement.imageHeightPercentage ? parseInt(gridElement.imageHeightPercentage) : 85;
+                            gridElement.imageHeightPercentage = gridElement.imageHeightPercentage
+                                ? parseInt(gridElement.imageHeightPercentage)
+                                : 85;
                             Object.assign(collectElem, gridElement);
-                            collectElem.actions = [new GridActionCollectElement({
-                                action: GridActionCollectElement.COLLECT_ACTION_SPEAK
-                            }), new GridActionPredict({
-                                suggestOnChange: true
-                            })];
+                            collectElem.actions = [
+                                new GridActionCollectElement({
+                                    action: GridActionCollectElement.COLLECT_ACTION_SPEAK
+                                }),
+                                new GridActionPredict({
+                                    suggestOnChange: true
+                                })
+                            ];
                             gridData.gridElements[i] = collectElem;
                         }
                     }
@@ -210,7 +221,7 @@ function getModelConversionFunctions(objectModelVersion) {
                 gridData.modelVersion = modelUtil.getModelVersionString();
                 return gridData;
             });
-/*        case 4:
+        /*        case 4:
             filterFns.push(function (object, filterOptions) { //fn from V4 to V5
                 object.modelVersion = modelUtil.getModelVersionString();
                 return object
@@ -220,4 +231,4 @@ function getModelConversionFunctions(objectModelVersion) {
     return filterFns;
 }
 
-export {filterService};
+export { filterService };

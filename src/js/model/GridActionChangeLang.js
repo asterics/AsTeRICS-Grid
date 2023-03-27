@@ -1,5 +1,5 @@
-import {modelUtil} from "../util/modelUtil";
-import {Model} from "../externals/objectmodel";
+import { modelUtil } from "../util/modelUtil";
+import { Model } from "../externals/objectmodel";
 
 class GridActionChangeLang extends Model({
     id: String,
@@ -10,7 +10,7 @@ class GridActionChangeLang extends Model({
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionChangeLang);
         super(properties);
-        this.id = this.id || modelUtil.generateId('grid-action-change-lang')
+        this.id = this.id || modelUtil.generateId("grid-action-change-lang");
     }
 
     static getModelName() {
@@ -20,7 +20,7 @@ class GridActionChangeLang extends Model({
 
 GridActionChangeLang.defaults({
     id: "", //will be replaced by constructor
-    modelName: GridActionChangeLang.getModelName(),
+    modelName: GridActionChangeLang.getModelName()
 });
 
-export {GridActionChangeLang};
+export { GridActionChangeLang };

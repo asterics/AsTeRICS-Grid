@@ -1,7 +1,7 @@
-import {util} from "../util/util";
-import {InputEventKey} from "../model/InputEventKey";
-import {InputEventARE} from "../model/InputEventARE";
-import {areService} from "../service/areService";
+import { util } from "../util/util";
+import { InputEventKey } from "../model/InputEventKey";
+import { InputEventARE } from "../model/InputEventARE";
+import { areService } from "../service/areService";
 
 let inputEventHandler = {};
 let allInstances = [];
@@ -15,14 +15,14 @@ inputEventHandler.instance = function () {
 };
 
 inputEventHandler.pauseAll = function () {
-    allInstances.forEach(instance => {
+    allInstances.forEach((instance) => {
         pausedStates[instance.getID()] = instance.isListening();
         instance.stopListening();
     });
 };
 
 inputEventHandler.resumeAll = function () {
-    allInstances.forEach(instance => {
+    allInstances.forEach((instance) => {
         if (pausedStates[instance.getID()]) {
             instance.startListening();
         }
@@ -54,7 +54,7 @@ function Constructor() {
     let _listening = false;
     let _hasIncompleteTouchEvent = false;
     let _areInputEvents = {}; //ID -> inputEvent, fn
-    let _id = (idCounter++);
+    let _id = idCounter++;
 
     thiz.startListening = function () {
         if (_listening) {
@@ -62,37 +62,37 @@ function Constructor() {
         }
         _listening = true;
         subscribeAREEvents();
-        document.addEventListener('mousemove', mouseMoveListener);
-        document.addEventListener('keydown', keyboardListener);
-        document.addEventListener('keyup', keyUpListener);
-        document.addEventListener('fullscreenchange', fullscreenChangeListener);
-        _touchElement.addEventListener('touchmove', touchMoveListener, {passive: false} );
-        _touchElement.addEventListener('touchstart', touchStartListener);
-        _touchElement.addEventListener('touchend', touchEndListener);
+        document.addEventListener("mousemove", mouseMoveListener);
+        document.addEventListener("keydown", keyboardListener);
+        document.addEventListener("keyup", keyUpListener);
+        document.addEventListener("fullscreenchange", fullscreenChangeListener);
+        _touchElement.addEventListener("touchmove", touchMoveListener, { passive: false });
+        _touchElement.addEventListener("touchstart", touchStartListener);
+        _touchElement.addEventListener("touchend", touchEndListener);
     };
 
     thiz.stopListening = function () {
         _listening = false;
         unsubscribeAREEvents();
-        document.removeEventListener('mousemove', mouseMoveListener);
-        document.removeEventListener('keydown', keyboardListener);
-        document.removeEventListener('keyup', keyUpListener);
-        document.removeEventListener('fullscreenchange', fullscreenChangeListener);
-        _touchElement.removeEventListener('touchmove', touchMoveListener);
-        _touchElement.removeEventListener('touchstart', touchStartListener);
-        _touchElement.removeEventListener('touchend', touchEndListener);
+        document.removeEventListener("mousemove", mouseMoveListener);
+        document.removeEventListener("keydown", keyboardListener);
+        document.removeEventListener("keyup", keyUpListener);
+        document.removeEventListener("fullscreenchange", fullscreenChangeListener);
+        _touchElement.removeEventListener("touchmove", touchMoveListener);
+        _touchElement.removeEventListener("touchstart", touchStartListener);
+        _touchElement.removeEventListener("touchend", touchEndListener);
     };
 
     thiz.destroy = function () {
         thiz.stopListening();
-        allInstances = allInstances.filter(instance => instance.getID() !== thiz.getID());
+        allInstances = allInstances.filter((instance) => instance.getID() !== thiz.getID());
     };
 
     thiz.isListening = function () {
         return _listening;
     };
 
-    thiz.getID = function() {
+    thiz.getID = function () {
         return _id;
     };
 
@@ -117,7 +117,7 @@ function Constructor() {
     };
 
     thiz.onEscape = function (fn) {
-        return registerKey(new InputEventKey({keyCode: 27}), fn); //ESC
+        return registerKey(new InputEventKey({ keyCode: 27 }), fn); //ESC
     };
 
     thiz.onAnyKey = function (fn) {
@@ -136,19 +136,19 @@ function Constructor() {
         return registerHandler(fn, touchEndHandlers);
     };
 
-    thiz.onExitFullscreen = function(fn) {
+    thiz.onExitFullscreen = function (fn) {
         return registerHandler(fn, exitFullscreenHandlers);
     };
 
     thiz.hasIncompleteTouchEvent = function () {
         return _hasIncompleteTouchEvent;
-    }
+    };
 
     thiz.resetIncompleteTouchEvent = function () {
         _hasIncompleteTouchEvent = false;
-    }
+    };
 
-    thiz.off = function(fn) {
+    thiz.off = function (fn) {
         let filterFn = (f) => f !== fn;
         mouseBorderHandlers = mouseBorderHandlers.filter(filterFn);
         swipeUpHandlers = swipeUpHandlers.filter(filterFn);
@@ -181,7 +181,7 @@ function Constructor() {
     };
 
     function subscribeAREEvent(inputEvent, fn) {
-        areService.subscribeEvents(inputEvent.areURL,(eventString) => {
+        areService.subscribeEvents(inputEvent.areURL, (eventString) => {
             if (inputEvent.eventNames.indexOf(eventString) > -1) {
                 fn();
             }
@@ -189,14 +189,14 @@ function Constructor() {
     }
 
     function subscribeAREEvents() {
-        Object.keys(_areInputEvents).forEach(key => {
+        Object.keys(_areInputEvents).forEach((key) => {
             let entry = _areInputEvents[key];
             subscribeAREEvent(entry.inputEvent, entry.fn);
         });
     }
 
     function unsubscribeAREEvents() {
-        Object.keys(_areInputEvents).forEach(key => {
+        Object.keys(_areInputEvents).forEach((key) => {
             let entry = _areInputEvents[key];
             areService.unsubscribeEvents(entry.areURL);
         });
@@ -221,7 +221,7 @@ function Constructor() {
             lastAction: null,
             counter: 0,
             timeoutHandler: null
-        }
+        };
     }
 
     function mouseMoveListener(event) {
@@ -236,19 +236,19 @@ function Constructor() {
             _touchMoveBeginPosY = event.touches[0].clientY;
             _touchMoveBeginPosX = event.touches[0].clientX;
         } else if (event.touches[0].clientY > _touchMoveBeginPosY + touchMoveLength) {
-            log.debug('swipe down.');
+            log.debug("swipe down.");
             _touchMoveBeginPosY = null;
             callHandlers(swipeDownHandlers);
         } else if (event.touches[0].clientY < _touchMoveBeginPosY - touchMoveLength) {
-            log.debug('swipe up.');
+            log.debug("swipe up.");
             _touchMoveBeginPosY = null;
             callHandlers(swipeUpHandlers);
         } else if (event.touches[0].clientX > _touchMoveBeginPosX + touchMoveLength) {
-            log.debug('swipe right.');
+            log.debug("swipe right.");
             _touchMoveBeginPosX = null;
             callHandlers(swipeRightHandles);
         } else if (event.touches[0].clientX < _touchMoveBeginPosX - touchMoveLength) {
-            log.debug('swipe left.');
+            log.debug("swipe left.");
             _touchMoveBeginPosX = null;
             callHandlers(swipeLeftHandles);
         }
@@ -269,7 +269,7 @@ function Constructor() {
     function keyboardListener(event) {
         let keyCode = event.which || event.keyCode;
         if (anyKeyHandlers.length > 0 && !event.repeat) {
-            anyKeyHandlers.forEach(fn => {
+            anyKeyHandlers.forEach((fn) => {
                 fn(keyCode, event.code, event);
             });
         }
@@ -280,36 +280,46 @@ function Constructor() {
                 return;
             }
             let entries = keyHandlers[key];
-            entries = entries.sort((a,b) => (a.counter - b.counter) || (a.inputEvent.repeat - b.inputEvent.repeat));
-            entries.forEach(entry => {
-                entry.inputEvent.timeout = entry.inputEvent.repeat > 1 ? (entry.inputEvent.timeout || 500) : entry.inputEvent.timeout;
+            entries = entries.sort((a, b) => a.counter - b.counter || a.inputEvent.repeat - b.inputEvent.repeat);
+            entries.forEach((entry) => {
+                entry.inputEvent.timeout =
+                    entry.inputEvent.repeat > 1 ? entry.inputEvent.timeout || 500 : entry.inputEvent.timeout;
                 if (timeoutPassed(entry.lastKeydown, entry.inputEvent.timeout)) {
                     entry.counter = 0;
                 }
             });
-            entries.forEach(entry => {
+            entries.forEach((entry) => {
                 let ie = entry.inputEvent;
-                if ((!ie.repeat || ie.repeat === 1) && !ie.holdDuration && timeoutPassed(entry.lastAction, ie.timeout)) {
-                    let existsConflictingHold = entries.filter(e => e !== entry && e.inputEvent.holdDuration).length > 0;
-                    let conflictingRepeat = entries.filter(e => e !== entry && e.inputEvent.repeat > 1);
+                if (
+                    (!ie.repeat || ie.repeat === 1) &&
+                    !ie.holdDuration &&
+                    timeoutPassed(entry.lastAction, ie.timeout)
+                ) {
+                    let existsConflictingHold =
+                        entries.filter((e) => e !== entry && e.inputEvent.holdDuration).length > 0;
+                    let conflictingRepeat = entries.filter((e) => e !== entry && e.inputEvent.repeat > 1);
                     let existsConflictingRepeat = conflictingRepeat.length > 0;
-                    let maxConflictingCounter = Math.max.apply(null, conflictingRepeat.map(e => e.counter));
+                    let maxConflictingCounter = Math.max.apply(
+                        null,
+                        conflictingRepeat.map((e) => e.counter)
+                    );
                     if (existsConflictingHold) {
                         entry.doOnKeyup = () => {
                             doEntry(entry);
-                        }
+                        };
                     } else if (existsConflictingRepeat && maxConflictingCounter < 1) {
-                        let maxTimeout = Math.max(...conflictingRepeat.map(item => item.inputEvent.timeout));
+                        let maxTimeout = Math.max(...conflictingRepeat.map((item) => item.inputEvent.timeout));
                         entry.timeoutHandler = setTimeout(() => {
                             doEntry(entry);
                         }, maxTimeout + 10);
-                    } else if(!existsConflictingRepeat) {
+                    } else if (!existsConflictingRepeat) {
                         doEntry(entry);
                     }
                 } else if (ie.repeat > 1) {
                     entry.counter++;
                     if (entry.counter === ie.repeat) {
-                        let existsConflicting = entries.filter(e => e !== entry && e.inputEvent.repeat > ie.repeat).length > 0;
+                        let existsConflicting =
+                            entries.filter((e) => e !== entry && e.inputEvent.repeat > ie.repeat).length > 0;
                         let timeout = existsConflicting ? ie.timeout : 0;
                         entry.counter = 0;
                         resetTimeouts(entries);
@@ -341,7 +351,7 @@ function Constructor() {
         let key = keyCode + "";
         if (keyHandlers[key]) {
             let entries = keyHandlers[key];
-            entries.forEach(entry => {
+            entries.forEach((entry) => {
                 if (entry.doOnKeyup) {
                     entry.doOnKeyup();
                     resetEntries(entries);
@@ -350,7 +360,6 @@ function Constructor() {
                     resetEntry(entry);
                 }
             });
-
         }
     }
 
@@ -361,7 +370,7 @@ function Constructor() {
     }
 
     function resetTimeouts(entries) {
-        entries.forEach(e => clearTimeout(e.timeoutHandler));
+        entries.forEach((e) => clearTimeout(e.timeoutHandler));
     }
 
     function resetEntry(entry) {
@@ -372,7 +381,7 @@ function Constructor() {
     }
 
     function resetEntries(entries) {
-        entries.forEach(e => resetEntry(e));
+        entries.forEach((e) => resetEntry(e));
     }
 
     function timeoutPassed(lastTimeMs, timeoutMs) {
@@ -390,9 +399,9 @@ function Constructor() {
     }
 
     function callHandlers(array, argsArray, dontThrottle) {
-        array.forEach(handler => {
+        array.forEach((handler) => {
             if (!handler.apply) {
-                log.warn('handler seems to be not a function!')
+                log.warn("handler seems to be not a function!");
                 return;
             }
             if (dontThrottle) {
@@ -410,4 +419,4 @@ function Constructor() {
 
 inputEventHandler.global = inputEventHandler.instance();
 
-export {inputEventHandler};
+export { inputEventHandler };

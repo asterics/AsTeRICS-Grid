@@ -1,13 +1,13 @@
-import $ from '../../externals/jquery.js';
+import $ from "../../externals/jquery.js";
 
-import {urlParamService} from "../urlParamService";
-import {MetaData} from "../../model/MetaData";
-import {encryptionService} from "./encryptionService";
-import {pouchDbService} from "./pouchDbService";
-import {filterService} from "./filterService";
-import {localStorageService} from "./localStorageService";
-import {util} from "../../util/util";
-import {constants} from "../../util/constants";
+import { urlParamService } from "../urlParamService";
+import { MetaData } from "../../model/MetaData";
+import { encryptionService } from "./encryptionService";
+import { pouchDbService } from "./pouchDbService";
+import { filterService } from "./filterService";
+import { localStorageService } from "./localStorageService";
+import { util } from "../../util/util";
+import { constants } from "../../util/constants";
 
 let databaseService = {};
 
@@ -31,24 +31,27 @@ databaseService.getObject = function (objectType, id, onlyShortVersion) {
     return new Promise((resolve, reject) => {
         _initPromise.then(() => {
             if (!objectType.getIdPrefix) {
-                log.warn('missing method getIdPrefix() in allObjects()');
+                log.warn("missing method getIdPrefix() in allObjects()");
                 return reject();
             }
-            pouchDbService.all(objectType.getIdPrefix(), id).then(result => {
-                let options = {
-                    objectType: objectType,
-                    onlyShortVersion: onlyShortVersion
-                };
-                let filteredData = filterService.convertDatabaseToLiveObjects(result, options);
-                let modelVersion = getModelVersion(filteredData);
-                if (modelVersion && _lastDataModelVersion !== modelVersion) {
-                    _lastDataModelVersion = modelVersion;
-                    localStorageService.setUserModelVersion(pouchDbService.getOpenedDatabaseName(), modelVersion);
-                }
-                resolve(filteredData);
-            }).catch(reason => {
-                reject(reason);
-            })
+            pouchDbService
+                .all(objectType.getIdPrefix(), id)
+                .then((result) => {
+                    let options = {
+                        objectType: objectType,
+                        onlyShortVersion: onlyShortVersion
+                    };
+                    let filteredData = filterService.convertDatabaseToLiveObjects(result, options);
+                    let modelVersion = getModelVersion(filteredData);
+                    if (modelVersion && _lastDataModelVersion !== modelVersion) {
+                        _lastDataModelVersion = modelVersion;
+                        localStorageService.setUserModelVersion(pouchDbService.getOpenedDatabaseName(), modelVersion);
+                    }
+                    resolve(filteredData);
+                })
+                .catch((reason) => {
+                    reject(reason);
+                });
         });
     });
 };
@@ -60,7 +63,7 @@ databaseService.getObject = function (objectType, id, onlyShortVersion) {
  * @param onlyShortVersion
  */
 databaseService.getSingleObject = function (objectType, id, onlyShortVersion) {
-    return databaseService.getObject(objectType, id, onlyShortVersion).then(result => {
+    return databaseService.getObject(objectType, id, onlyShortVersion).then((result) => {
         return Promise.resolve(result instanceof Array ? result[0] : result);
     });
 };
@@ -76,34 +79,36 @@ databaseService.getSingleObject = function (objectType, id, onlyShortVersion) {
  * @return {Promise} promise that resolves if operation finished, rejects on a failure
  */
 databaseService.saveObject = function (objectType, data, onlyUpdate) {
-    return _initPromise.then(() => {
-        if (!data || !objectType || !objectType.getModelName) {
-            log.error('did not specify needed parameter "objectType"!');
-            return Promise.reject();
-        }
-        if (data.isShortVersion) {
-            log.warn('short versions of objects cannot be saved/updated! aborting.');
-            return Promise.reject();
-        }
-        log.debug('saving ' + objectType.getModelName() + '...');
-        return databaseService.getObject(objectType, data.id);
-    }).then(existingObject => {
-        if (existingObject) {
-            log.debug(objectType.getModelName() + ' already existing, doing update. id: ' + existingObject.id);
-            let newObject = new objectType(data, existingObject);
-            let saveData = JSON.parse(JSON.stringify(newObject));
-            saveData._id = existingObject._id;
-            saveData._rev = existingObject._rev;
-            return applyFiltersAndSave(objectType.getIdPrefix(), saveData);
-        } else if (!onlyUpdate) {
-            let saveData = JSON.parse(JSON.stringify(data));
-            saveData._id = saveData.id;
-            return applyFiltersAndSave(objectType.getIdPrefix(), saveData);
-        } else {
-            log.warn('no existing ' + objectType.getModelName() + ' found to update, aborting.');
-            return Promise.reject();
-        }
-    });
+    return _initPromise
+        .then(() => {
+            if (!data || !objectType || !objectType.getModelName) {
+                log.error('did not specify needed parameter "objectType"!');
+                return Promise.reject();
+            }
+            if (data.isShortVersion) {
+                log.warn("short versions of objects cannot be saved/updated! aborting.");
+                return Promise.reject();
+            }
+            log.debug("saving " + objectType.getModelName() + "...");
+            return databaseService.getObject(objectType, data.id);
+        })
+        .then((existingObject) => {
+            if (existingObject) {
+                log.debug(objectType.getModelName() + " already existing, doing update. id: " + existingObject.id);
+                let newObject = new objectType(data, existingObject);
+                let saveData = JSON.parse(JSON.stringify(newObject));
+                saveData._id = existingObject._id;
+                saveData._rev = existingObject._rev;
+                return applyFiltersAndSave(objectType.getIdPrefix(), saveData);
+            } else if (!onlyUpdate) {
+                let saveData = JSON.parse(JSON.stringify(data));
+                saveData._id = saveData.id;
+                return applyFiltersAndSave(objectType.getIdPrefix(), saveData);
+            } else {
+                log.warn("no existing " + objectType.getModelName() + " found to update, aborting.");
+                return Promise.reject();
+            }
+        });
 };
 
 /**
@@ -116,7 +121,7 @@ databaseService.bulkSave = function (objectList) {
         return Promise.resolve();
     }
     if (objectList[0].isShortVersion) {
-        log.warn('not saving short version!');
+        log.warn("not saving short version!");
         return Promise.resolve();
     }
     let elementCount = objectList.reduce((total, grid) => {
@@ -127,7 +132,7 @@ databaseService.bulkSave = function (objectList) {
     let elemsPerGrid = Math.floor(elementCount / objectList.length);
     let encryptedList = filterService.convertLiveToDatabaseObjects(objectList);
     let chunks = [];
-    encryptedList.forEach(object => {
+    encryptedList.forEach((object) => {
         object._id = object.id;
     });
     if (elementCount > maxCountSaveAtOnce) {
@@ -144,7 +149,7 @@ databaseService.bulkSave = function (objectList) {
             } else {
                 return Promise.resolve();
             }
-        })
+        });
     }
     return saveChunksSequentially(chunks);
 };
@@ -158,7 +163,7 @@ databaseService.bulkDelete = function (objectList) {
     if (!objectList || objectList.length === 0) {
         return Promise.resolve();
     }
-    objectList.forEach(object => {
+    objectList.forEach((object) => {
         object._deleted = true;
         object._id = object.id;
     });
@@ -187,7 +192,7 @@ databaseService.removeObject = function (id) {
  * @return {*}
  */
 databaseService.initForUser = function (username, hashedUserPassword, userDatabaseURL, onlyRemote) {
-    let shouldSync = userDatabaseURL && !onlyRemote || false;
+    let shouldSync = (userDatabaseURL && !onlyRemote) || false;
     let userAlreadyOpened = pouchDbService.getOpenedDatabaseName() === username;
     let isLocalUser = localStorageService.getSavedLocalUsers().indexOf(username) !== -1;
     if (userAlreadyOpened && shouldSync === pouchDbService.isSyncEnabled()) {
@@ -255,31 +260,36 @@ databaseService.getCurrentUsedDatabase = function () {
 };
 
 function initInternal(hashedUserPassword, username, isLocalUser) {
-    _initPromise = Promise.resolve().then(() => { //reset DB if specified by URL
-        let promises = [];
-        if (urlParamService.shouldResetDatabase()) {
-            promises.push(pouchDbService.resetDatabase(username));
-        }
-        return Promise.all(promises);
-    }).then(() => {
-        return pouchDbService.allArray(MetaData.getIdPrefix());
-    }).then(metadataObjects => { //create metadata object if not exisiting, update datamodel version, if outdated
-        let promises = [];
-        if (metadataObjects.length === 0) {
-            let metadata = new MetaData();
-            metadataObjects = [metadata];
-            encryptionService.setEncryptionProperties(hashedUserPassword, metadata.id, isLocalUser);
-            promises.push(applyFiltersAndSave(MetaData.getIdPrefix(), metadata));
-        }
-        metadataObjects.sort((a, b) => a.id.localeCompare(b.id)); // always prefer older metadata objects
-        let metadataIds = metadataObjects.map(o => o.id);
-        encryptionService.setEncryptionProperties(hashedUserPassword, metadataIds, isLocalUser);
+    _initPromise = Promise.resolve()
+        .then(() => {
+            //reset DB if specified by URL
+            let promises = [];
+            if (urlParamService.shouldResetDatabase()) {
+                promises.push(pouchDbService.resetDatabase(username));
+            }
+            return Promise.all(promises);
+        })
+        .then(() => {
+            return pouchDbService.allArray(MetaData.getIdPrefix());
+        })
+        .then((metadataObjects) => {
+            //create metadata object if not exisiting, update datamodel version, if outdated
+            let promises = [];
+            if (metadataObjects.length === 0) {
+                let metadata = new MetaData();
+                metadataObjects = [metadata];
+                encryptionService.setEncryptionProperties(hashedUserPassword, metadata.id, isLocalUser);
+                promises.push(applyFiltersAndSave(MetaData.getIdPrefix(), metadata));
+            }
+            metadataObjects.sort((a, b) => a.id.localeCompare(b.id)); // always prefer older metadata objects
+            let metadataIds = metadataObjects.map((o) => o.id);
+            encryptionService.setEncryptionProperties(hashedUserPassword, metadataIds, isLocalUser);
 
-        if (metadataObjects.length && metadataObjects.length > 1) {
-            log.warn("found duplicated metadata!");
-        }
-        return Promise.all(promises);
-    });
+            if (metadataObjects.length && metadataObjects.length > 1) {
+                log.warn("found duplicated metadata!");
+            }
+            return Promise.all(promises);
+        });
     _initPromise.then(() => {
         _lastDataModelVersion = null;
         $(document).trigger(constants.EVENT_USER_CHANGED);
@@ -290,12 +300,15 @@ function initInternal(hashedUserPassword, username, isLocalUser) {
 function applyFiltersAndSave(idPrefix, data) {
     return new Promise((resolve, reject) => {
         let convertedData = filterService.convertLiveToDatabaseObjects(data);
-        pouchDbService.save(idPrefix, convertedData).then(() => {
-            log.debug('saved ' + idPrefix + ', id: ' + data.id);
-            resolve();
-        }).catch(function (err) {
-            reject(err);
-        });
+        pouchDbService
+            .save(idPrefix, convertedData)
+            .then(() => {
+                log.debug("saved " + idPrefix + ", id: " + data.id);
+                resolve();
+            })
+            .catch(function (err) {
+                reject(err);
+            });
     });
 }
 
@@ -312,4 +325,4 @@ function getModelVersion(dataOrArray) {
     return null;
 }
 
-export {databaseService};
+export { databaseService };

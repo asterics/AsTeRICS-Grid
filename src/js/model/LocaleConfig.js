@@ -1,5 +1,5 @@
-import {Model} from "../externals/objectmodel";
-import {constants} from "../util/constants";
+import { Model } from "../externals/objectmodel";
+import { constants } from "../util/constants";
 
 class LocaleConfig extends Model({
     modelName: String,
@@ -25,4 +25,4 @@ LocaleConfig.defaults({
     modelVersion: constants.MODEL_VERSION
 });
 
-export {LocaleConfig};
+export { LocaleConfig };

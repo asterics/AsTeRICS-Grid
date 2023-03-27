@@ -1,13 +1,13 @@
 let urlParamService = {};
 
 urlParamService.params = {
-    PARAM_DEMO_MODE: 'demo',
-    PARAM_SCANNING: 'scanning',
-    PARAM_HUFFMAN: 'huffman',
-    PARAM_DIR_INPUT: 'direction',
-    PARAM_RESET_DATABASE: 'reset',
-    PARAM_DEFAULT_GRIDSET: 'default'
-}
+    PARAM_DEMO_MODE: "demo",
+    PARAM_SCANNING: "scanning",
+    PARAM_HUFFMAN: "huffman",
+    PARAM_DIR_INPUT: "direction",
+    PARAM_RESET_DATABASE: "reset",
+    PARAM_DEFAULT_GRIDSET: "default"
+};
 
 let _demoMode = false;
 let _alreadyResetted = false;
@@ -31,7 +31,8 @@ urlParamService.isHuffmanEnabled = function () {
 };
 
 urlParamService.shouldResetDatabase = function () {
-    let shouldReset = !_alreadyResetted && (urlParamService.isDemoMode() || isParamTrue(urlParamService.params.PARAM_RESET_DATABASE));
+    let shouldReset =
+        !_alreadyResetted && (urlParamService.isDemoMode() || isParamTrue(urlParamService.params.PARAM_RESET_DATABASE));
     _alreadyResetted = true;
     return shouldReset;
 };
@@ -39,7 +40,6 @@ urlParamService.shouldResetDatabase = function () {
 urlParamService.getDefaultGridsetName = function () {
     return getParam(urlParamService.params.PARAM_DEFAULT_GRIDSET);
 };
-
 
 function hasParam(name) {
     let searchParams = new URLSearchParams(window.location.search);
@@ -52,11 +52,11 @@ function getParam(name) {
 }
 
 function isParamTrue(name) {
-    return getParam(name) === 'true';
+    return getParam(name) === "true";
 }
 
 function isParamFalse(name) {
-    return getParam(name) === 'false';
+    return getParam(name) === "false";
 }
 
 function removeParam(paramName) {
@@ -66,10 +66,16 @@ function removeParam(paramName) {
     let searchParams = new URLSearchParams(window.location.search);
     searchParams.delete(paramName);
     if (history.replaceState) {
-        let searchString = searchParams.toString().length > 0 ? '?' + searchParams.toString() : '';
-        let newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname +  searchString + window.location.hash;
-        history.replaceState(null, '', newUrl);
+        let searchString = searchParams.toString().length > 0 ? "?" + searchParams.toString() : "";
+        let newUrl =
+            window.location.protocol +
+            "//" +
+            window.location.host +
+            window.location.pathname +
+            searchString +
+            window.location.hash;
+        history.replaceState(null, "", newUrl);
     }
 }
 
-export {urlParamService};
+export { urlParamService };

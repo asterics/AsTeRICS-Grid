@@ -1,5 +1,5 @@
-import {Model} from "../externals/objectmodel";
-import {constants} from "../util/constants";
+import { Model } from "../externals/objectmodel";
+import { constants } from "../util/constants";
 
 class NotificationConfig extends Model({
     modelName: String,
@@ -25,4 +25,4 @@ NotificationConfig.defaults({
     lastBackup: 0
 });
 
-export {NotificationConfig};
+export { NotificationConfig };

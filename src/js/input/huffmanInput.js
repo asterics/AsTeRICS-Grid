@@ -1,12 +1,18 @@
-import Huffman from 'n-ary-huffman'
-import $ from '../externals/jquery.js';
-import {inputEventHandler} from "./inputEventHandler";
-import {fontUtil} from "../util/fontUtil.js";
+import Huffman from "n-ary-huffman";
+import $ from "../externals/jquery.js";
+import { inputEventHandler } from "./inputEventHandler";
+import { fontUtil } from "../util/fontUtil.js";
 
 let HuffmanInput = {};
 let _destroyCallback = null;
 
-HuffmanInput.getInstanceFromConfig = function (inputConfig, itemSelector, scanActiveClass, scanInactiveClass, selectionListener) {
+HuffmanInput.getInstanceFromConfig = function (
+    inputConfig,
+    itemSelector,
+    scanActiveClass,
+    scanInactiveClass,
+    selectionListener
+) {
     return new HuffmanInputConstructor(itemSelector, scanActiveClass, scanInactiveClass, {
         printCodes: inputConfig.huffShowNumbers,
         printColors: inputConfig.huffShowColors,
@@ -49,9 +55,9 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
     let _elements = null;
     let _currentElement = null;
     let _treeItems = null;
-    let _currentInput = '';
+    let _currentInput = "";
     let _inputEventHandler = null;
-    let _alphabet = '';
+    let _alphabet = "";
     let _started = false;
     let _timeoutHandler = null;
     let _appendedElements = [];
@@ -59,28 +65,28 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
     thiz.start = function () {
         _started = true;
         if (colorWholeElement) {
-            $(_elements).addClass('noanimation');
+            $(_elements).addClass("noanimation");
         }
         _inputEventHandler.startListening();
     };
 
     thiz.stop = function () {
         _started = false;
-        $(_elements).find('.huffman-code-visualization').remove();
+        $(_elements).find(".huffman-code-visualization").remove();
         if (colorWholeElement) {
-            $(_elements).removeClass('noanimation');
-            $(_elements).css('background', '');
+            $(_elements).removeClass("noanimation");
+            $(_elements).css("background", "");
         }
         _inputEventHandler.stopListening();
     };
 
     thiz.onDestroy = function (fn) {
         _destroyCallback = fn;
-    }
+    };
 
     thiz.destroy = function () {
         thiz.stop();
-        _appendedElements.forEach(e => e.remove());
+        _appendedElements.forEach((e) => e.remove());
         if (_destroyCallback) {
             _destroyCallback();
             _destroyCallback = null;
@@ -88,7 +94,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
         _inputEventHandler.destroy();
     };
 
-    thiz.reinit = function() {
+    thiz.reinit = function () {
         if (!_started) {
             return;
         }
@@ -98,15 +104,17 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
     };
 
     thiz.input = function (id) {
-        id = id + '';
+        id = id + "";
         clearTimeout(_timeoutHandler);
         if (id.length !== 1) {
             return;
         }
         _currentInput += id;
         colorElements();
-        let selectedElement = _treeItems.filter(el => el.codeWord === _currentInput).map(el => el.element);
-        let possibleElements = _treeItems.filter(el => el.codeWord.indexOf(_currentInput) === 0).map(el => el.element);
+        let selectedElement = _treeItems.filter((el) => el.codeWord === _currentInput).map((el) => el.element);
+        let possibleElements = _treeItems
+            .filter((el) => el.codeWord.indexOf(_currentInput) === 0)
+            .map((el) => el.element);
         _elements.removeClass(scanActiveClass);
         if (selectedElement[0]) {
             setActiveElement(selectedElement[0]);
@@ -119,13 +127,13 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
         }
         if (selectedElement[0] || possibleElements.length === 0) {
             setPossibleElements(_elements.toArray());
-            _currentInput = '';
+            _currentInput = "";
             colorElements();
         }
         if (timeout > 0) {
             _timeoutHandler = setTimeout(() => {
                 setPossibleElements(_elements.toArray());
-                _currentInput = '';
+                _currentInput = "";
                 colorElements();
             }, timeout);
         }
@@ -137,14 +145,15 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
 
     function init() {
         _inputEventHandler = inputEventHandler.instance();
-        _alphabet = '';
+        _alphabet = "";
         parseOptions(options);
         _elements = $(itemSelector);
         if (_elements.length === 0) {
             return;
         }
-        let ids = _elements.toArray().map(e => e.id);
-        if (ids.length < elementCount) { // fill up to number defined by elementCount
+        let ids = _elements.toArray().map((e) => e.id);
+        if (ids.length < elementCount) {
+            // fill up to number defined by elementCount
             let missing = elementCount - ids.length;
             for (let i = 0; i < missing; i++) {
                 ids.push(null);
@@ -155,12 +164,12 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
                 name: name,
                 weight: 10000 - index,
                 codeWord: null
-            }
+            };
         });
 
         let tree = Huffman.createTree(_treeItems, _alphabet.length);
         let longestCodeLength = 0;
-        tree.assignCodeWords(_alphabet, function(item, codeWord) {
+        tree.assignCodeWords(_alphabet, function (item, codeWord) {
             longestCodeLength = codeWord.length > longestCodeLength ? codeWord.length : longestCodeLength;
         });
         tree.assignCodeWords(_alphabet, function (item, codeWord) {
@@ -170,28 +179,30 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
             item.codeWord = codeWord;
             item.element = document.getElementById(item.name);
             if (printColors || printCodes) {
-                let spans = '';
-                item.codeWord.split('').forEach(c => {
-                    let color = printColors ? getColor(c) : '';
+                let spans = "";
+                item.codeWord.split("").forEach((c) => {
+                    let color = printColors ? getColor(c) : "";
                     let textColor = fontUtil.getHighContrastColor(color);
-                    let width = ((100 - 5 * longestCodeLength) / longestCodeLength) + '%';
-                    let char = printCodes ? c : '&nbsp;';
+                    let width = (100 - 5 * longestCodeLength) / longestCodeLength + "%";
+                    let char = printCodes ? c : "&nbsp;";
                     spans += `<span style="background-color: ${color}; color: ${textColor}; width: ${width}; display: inline-block; margin: 0 1%; border-radius: 5px; border: 1px solid whitesmoke;">${char}</span>`;
                 });
-                let fontSize = printCodes ? '10px' : '3px';
-                let elementWidth = $(item.element).width() + 'px';
-                let element = htmlToElement(`<div class="huffman-code-visualization" style="font-size:${fontSize}; display:block; position: absolute; bottom: 0; width: ${elementWidth}">${spans}</div>`);
+                let fontSize = printCodes ? "10px" : "3px";
+                let elementWidth = $(item.element).width() + "px";
+                let element = htmlToElement(
+                    `<div class="huffman-code-visualization" style="font-size:${fontSize}; display:block; position: absolute; bottom: 0; width: ${elementWidth}">${spans}</div>`
+                );
                 $(item.element).append(element);
                 _appendedElements.push(element);
             }
         });
-        _treeItems = _treeItems.filter(item => item.name);
+        _treeItems = _treeItems.filter((item) => item.name);
         colorElements();
     }
 
     function parseOptions(options) {
         if (!options || !options.inputEvents || !options.inputEvents.length || options.inputEvents.length < 2) {
-            log.warn('huffman input: invalid options');
+            log.warn("huffman input: invalid options");
             return;
         }
         if ($.isFunction(options.selectionListener)) {
@@ -205,7 +216,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
         elementCount = options.elementCount || 0;
         timeout = options.timeout || 1000;
         options.inputEvents.forEach((el, index) => {
-            _alphabet += (index + 1);
+            _alphabet += index + 1;
             _inputEventHandler.onInputEvent(el, () => {
                 thiz.input(index + 1);
             });
@@ -214,12 +225,12 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
 
     function colorElements() {
         if (colorWholeElement) {
-            _treeItems.forEach(item => {
+            _treeItems.forEach((item) => {
                 if (item.codeWord.indexOf(_currentInput) === 0) {
                     let nextDigit = item.codeWord.substring(_currentInput.length)[0];
                     item.element.style.background = getColor(nextDigit);
                 }
-            })
+            });
         }
     }
 
@@ -231,8 +242,8 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
 
     function setPossibleElements(elements) {
         _elements.removeClass(scanIncativeClass);
-        let possibleIds = elements.map(e => e.id);
-        let impossibleElements = _elements.toArray().filter(e => possibleIds.indexOf(e.id) === -1);
+        let possibleIds = elements.map((e) => e.id);
+        let impossibleElements = _elements.toArray().filter((e) => possibleIds.indexOf(e.id) === -1);
         $(impossibleElements).addClass(scanIncativeClass);
     }
 
@@ -246,7 +257,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
      * @return {Element}
      */
     function htmlToElement(html) {
-        let template = document.createElement('template');
+        let template = document.createElement("template");
         html = html.trim(); // Never return a text node of whitespace as the result
         template.innerHTML = html;
         return template.content.firstChild;
@@ -255,4 +266,4 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
     init();
 }
 
-export {HuffmanInput};
+export { HuffmanInput };

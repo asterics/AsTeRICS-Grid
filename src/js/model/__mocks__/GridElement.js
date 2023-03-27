@@ -1,5 +1,7 @@
 let GridElement = {};
 
-GridElement.extend = () => {return null};
+GridElement.extend = () => {
+    return null;
+};
 
-export {GridElement};
+export { GridElement };

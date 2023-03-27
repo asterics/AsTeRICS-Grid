@@ -1,17 +1,16 @@
 let encryptionService = {};
 
-encryptionService.encryptObject = function(object) {
+encryptionService.encryptObject = function (object) {
     object.encrypted = true;
     return object;
 };
 
-encryptionService.decryptObjects = function(objects) {
+encryptionService.decryptObjects = function (objects) {
     objects = objects instanceof Array ? objects : [objects];
-    objects.forEach(object => {
+    objects.forEach((object) => {
         object.decrypted = true;
     });
-    return objects.length > 1 ? objects: objects[0];
+    return objects.length > 1 ? objects : objects[0];
 };
 
-
-export {encryptionService};
+export { encryptionService };

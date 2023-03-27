@@ -1,6 +1,6 @@
-import {modelUtil} from "../util/modelUtil";
-import {constants} from "../util/constants";
-import {Model} from "../externals/objectmodel";
+import { modelUtil } from "../util/modelUtil";
+import { constants } from "../util/constants";
+import { Model } from "../externals/objectmodel";
 
 class GridActionAudio extends Model({
     id: String,
@@ -13,7 +13,7 @@ class GridActionAudio extends Model({
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionAudio);
         super(properties);
-        this.id = this.id || modelUtil.generateId('grid-action-audio')
+        this.id = this.id || modelUtil.generateId("grid-action-audio");
     }
 
     static getModelName() {
@@ -27,4 +27,4 @@ GridActionAudio.defaults({
     modelVersion: constants.MODEL_VERSION
 });
 
-export {GridActionAudio};
+export { GridActionAudio };

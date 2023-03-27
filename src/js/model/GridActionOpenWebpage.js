@@ -1,6 +1,6 @@
-import {modelUtil} from "../util/modelUtil";
-import {constants} from "../util/constants";
-import {Model} from "../externals/objectmodel";
+import { modelUtil } from "../util/modelUtil";
+import { constants } from "../util/constants";
+import { Model } from "../externals/objectmodel";
 
 class GridActionOpenWebpage extends Model({
     id: String,
@@ -12,7 +12,7 @@ class GridActionOpenWebpage extends Model({
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionOpenWebpage);
         super(properties);
-        this.id = this.id || modelUtil.generateId(GridActionOpenWebpage.getModelName())
+        this.id = this.id || modelUtil.generateId(GridActionOpenWebpage.getModelName());
     }
 
     static getModelName() {
@@ -27,4 +27,4 @@ GridActionOpenWebpage.defaults({
     timeoutSeconds: 0
 });
 
-export {GridActionOpenWebpage};
+export { GridActionOpenWebpage };

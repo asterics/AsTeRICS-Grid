@@ -1,31 +1,31 @@
-import $ from '../../externals/jquery.js';
-import FileSaver from 'file-saver';
+import $ from "../../externals/jquery.js";
+import FileSaver from "file-saver";
 
-import {GridData} from "../../model/GridData.js";
-import {MetaData} from "../../model/MetaData";
-import {modelUtil} from "../../util/modelUtil";
-import {databaseService} from "./databaseService";
-import {dataUtil} from "../../util/dataUtil";
-import {pouchDbService} from "./pouchDbService";
-import {Dictionary} from "../../model/Dictionary";
-import {obfConverter} from "../../util/obfConverter";
-import {fileUtil} from "../../util/fileUtil";
-import {i18nService} from "../i18nService";
-import {predictionService} from "../predictionService";
-import {localStorageService} from "./localStorageService";
-import {gridUtil} from "../../util/gridUtil";
-import {urlParamService} from "../urlParamService";
-import {filterService} from "./filterService";
-import {serviceWorkerService} from "../serviceWorkerService.js";
-import {constants} from "../../util/constants.js";
-import {MainVue} from "../../vue/mainVue.js";
-import {util} from "../../util/util.js";
+import { GridData } from "../../model/GridData.js";
+import { MetaData } from "../../model/MetaData";
+import { modelUtil } from "../../util/modelUtil";
+import { databaseService } from "./databaseService";
+import { dataUtil } from "../../util/dataUtil";
+import { pouchDbService } from "./pouchDbService";
+import { Dictionary } from "../../model/Dictionary";
+import { obfConverter } from "../../util/obfConverter";
+import { fileUtil } from "../../util/fileUtil";
+import { i18nService } from "../i18nService";
+import { predictionService } from "../predictionService";
+import { localStorageService } from "./localStorageService";
+import { gridUtil } from "../../util/gridUtil";
+import { urlParamService } from "../urlParamService";
+import { filterService } from "./filterService";
+import { serviceWorkerService } from "../serviceWorkerService.js";
+import { constants } from "../../util/constants.js";
+import { MainVue } from "../../vue/mainVue.js";
+import { util } from "../../util/util.js";
 
 let dataService = {};
 
-let _defaultGridSetPath = 'app/examples/default.grd.json';
+let _defaultGridSetPath = "app/examples/default.grd.json";
 if (urlParamService.getDefaultGridsetName()) {
-    _defaultGridSetPath = 'app/examples/' + urlParamService.getDefaultGridsetName();
+    _defaultGridSetPath = "app/examples/" + urlParamService.getDefaultGridsetName();
 }
 
 /**
@@ -40,7 +40,7 @@ dataService.getGrid = async function (id, onlyShortVersion) {
     if (!id) {
         return Promise.resolve(null);
     }
-    return databaseService.getSingleObject(GridData, id, onlyShortVersion).then(result => {
+    return databaseService.getSingleObject(GridData, id, onlyShortVersion).then((result) => {
         return Promise.resolve(result ? new GridData(result) : null);
     });
 };
@@ -51,14 +51,14 @@ dataService.getGrid = async function (id, onlyShortVersion) {
  * @return {Promise<unknown>}
  */
 dataService.getGlobalGrid = function (alsoReturnIfDeactivated) {
-    return dataService.getMetadata().then(metadata => {
+    return dataService.getMetadata().then((metadata) => {
         if (!metadata.globalGridId || (!alsoReturnIfDeactivated && !metadata.globalGridActive)) {
             return Promise.resolve(null);
         }
-        return dataService.getGrid(metadata.globalGridId).then(globalGrid => {
+        return dataService.getGrid(metadata.globalGridId).then((globalGrid) => {
             return Promise.resolve(globalGrid);
         });
-    })
+    });
 };
 
 /**
@@ -70,19 +70,19 @@ dataService.getGlobalGrid = function (alsoReturnIfDeactivated) {
  * @return {Promise} resolves to an array of all stored grids.
  */
 dataService.getGrids = function (fullVersion, withoutGlobal) {
-    return new Promise(resolve => {
-        databaseService.getObject(GridData, null, !fullVersion).then(grids => {
+    return new Promise((resolve) => {
+        databaseService.getObject(GridData, null, !fullVersion).then((grids) => {
             if (!grids) {
                 resolve([]);
                 return;
             }
             let retVal = grids instanceof Array ? grids : [grids];
             if (withoutGlobal) {
-                dataService.getMetadata().then(metadata => {
-                    resolve(retVal.filter(grid => grid && grid.id !== metadata.globalGridId));
-                })
+                dataService.getMetadata().then((metadata) => {
+                    resolve(retVal.filter((grid) => grid && grid.id !== metadata.globalGridId));
+                });
             } else {
-                resolve(retVal.filter(grid => !!grid));
+                resolve(retVal.filter((grid) => !!grid));
             }
         });
     });
@@ -99,9 +99,9 @@ dataService.getLastGridUpdateTime = async function () {
     if (grids.length === 0) {
         return undefined;
     }
-    let updateTimes = grids.map(grid => grid.lastUpdateTime).filter(time => Number.isInteger(time));
+    let updateTimes = grids.map((grid) => grid.lastUpdateTime).filter((time) => Number.isInteger(time));
     return updateTimes.length > 0 ? Math.max(...updateTimes) : 0;
-}
+};
 
 /**
  * Saves a grid or updates it, if existing.
@@ -121,7 +121,7 @@ dataService.saveGrid = function (gridData) {
  * @param gridDataList the list of grids to save
  */
 dataService.saveGrids = function (gridDataList) {
-    gridDataList.forEach(gridData => {
+    gridDataList.forEach((gridData) => {
         gridData.gridElements = gridUtil.sortGridElements(gridData.gridElements);
         gridData.lastUpdateTime = new Date().getTime();
     });
@@ -160,14 +160,17 @@ dataService.deleteGrid = function (gridId) {
  */
 dataService.deleteAllGrids = function () {
     $(document).trigger(constants.EVENT_CONFIG_RESET);
-    return dataService.getGrids().then(grids => {
-        if (!grids || grids.length === 0) {
-            return Promise.resolve();
-        }
-        return databaseService.bulkDelete(grids);
-    }).then(() => {
-        return saveGlobalGridId('');
-    });
+    return dataService
+        .getGrids()
+        .then((grids) => {
+            if (!grids || grids.length === 0) {
+                return Promise.resolve();
+            }
+            return databaseService.bulkDelete(grids);
+        })
+        .then(() => {
+            return saveGlobalGridId("");
+        });
 };
 
 /**
@@ -190,15 +193,15 @@ dataService.deleteAllDictionaries = async function () {
  * @return {Promise} resolves with the grid element as parameter.
  */
 dataService.getGridElement = function (gridId, gridElementId) {
-    return new Promise(resolve => {
-        dataService.getGrid(gridId).then(grid => {
-            let element = grid.gridElements.filter(elm => elm.id === gridElementId)[0];
+    return new Promise((resolve) => {
+        dataService.getGrid(gridId).then((grid) => {
+            let element = grid.gridElements.filter((elm) => elm.id === gridElementId)[0];
             if (element) {
                 resolve(element);
             } else {
-                dataService.getGlobalGrid().then(globalGrid => {
-                    resolve(globalGrid.gridElements.filter(elm => elm.id === gridElementId)[0]);
-                })
+                dataService.getGlobalGrid().then((globalGrid) => {
+                    resolve(globalGrid.gridElements.filter((elm) => elm.id === gridElementId)[0]);
+                });
             }
         });
     });
@@ -213,8 +216,8 @@ dataService.getGridElement = function (gridId, gridElementId) {
  * @return {Promise} resolves after operation finished successful
  */
 dataService.addGridElements = function (gridId, newGridElements) {
-    return new Promise(resolve => {
-        dataService.getGrid(gridId).then(grid => {
+    return new Promise((resolve) => {
+        dataService.getGrid(gridId).then((grid) => {
             grid = JSON.parse(JSON.stringify(grid));
             grid.gridElements = grid.gridElements.concat(newGridElements);
             dataService.updateGrid(gridId, grid).then(() => {
@@ -235,8 +238,8 @@ dataService.addGridElements = function (gridId, newGridElements) {
  */
 dataService.saveMetadata = function (newMetadata, forceDbSave) {
     newMetadata = JSON.parse(JSON.stringify(newMetadata));
-    return new Promise(resolve => {
-        dataService.getMetadata().then(existingMetadata => {
+    return new Promise((resolve) => {
+        dataService.getMetadata().then((existingMetadata) => {
             if (existingMetadata) {
                 //new metadata is stored with ID of existing metadata -> there should only be one metadata object
                 let id = existingMetadata instanceof Array ? existingMetadata[0].id : existingMetadata.id;
@@ -265,7 +268,7 @@ dataService.markCurrentConfigAsBackedUp = async function () {
     let metadata = await dataService.getMetadata();
     metadata.notificationConfig.lastBackup = new Date().getTime();
     await dataService.saveMetadata(metadata);
-}
+};
 
 /**
  * Retrieves the metadata object.
@@ -274,8 +277,8 @@ dataService.markCurrentConfigAsBackedUp = async function () {
  * @return {Promise} resolving with the metadata object as parameter
  */
 dataService.getMetadata = function () {
-    return new Promise(resolve => {
-        databaseService.getObject(MetaData).then(result => {
+    return new Promise((resolve) => {
+        databaseService.getObject(MetaData).then((result) => {
             let returnValue = null;
             if (!result) {
                 returnValue = new MetaData();
@@ -309,7 +312,7 @@ dataService.getDictionary = function (id) {
     if (!id) {
         return Promise.resolve(null);
     }
-    return databaseService.getSingleObject(Dictionary, id).then(result => {
+    return databaseService.getSingleObject(Dictionary, id).then((result) => {
         return Promise.resolve(new Dictionary(result));
     });
 };
@@ -321,13 +324,16 @@ dataService.getDictionary = function (id) {
  * @return {Promise} resolves to an array of all stored dictionaries.
  */
 dataService.getDictionaries = function () {
-    return new Promise(resolve => {
-        databaseService.getObject(Dictionary).then(dictionaries => {
+    return new Promise((resolve) => {
+        databaseService.getObject(Dictionary).then((dictionaries) => {
             if (!dictionaries) {
                 resolve([]);
                 return;
             }
-            let retVal = dictionaries instanceof Array ? dictionaries.map(dict => new Dictionary(dict)) : [new Dictionary(dictionaries)];
+            let retVal =
+                dictionaries instanceof Array
+                    ? dictionaries.map((dict) => new Dictionary(dict))
+                    : [new Dictionary(dictionaries)];
             resolve(retVal);
         });
     });
@@ -361,7 +367,7 @@ dataService.deleteObject = function (id) {
  */
 dataService.downloadBackupToFile = async function () {
     let grids = await dataService.getGrids();
-    let ids = grids.map(grid => grid.id);
+    let ids = grids.map((grid) => grid.id);
     let user = localStorageService.getAutologinUser();
     await dataService.downloadToFile(ids, {
         exportGlobalGrid: true,
@@ -370,7 +376,7 @@ dataService.downloadBackupToFile = async function () {
         exportUserSettings: true,
         filename: `${user}_${util.getCurrentDateTimeString()}_asterics-grid-full-backup.grd`
     });
-}
+};
 
 /**
  * export configuration to file
@@ -395,16 +401,18 @@ dataService.downloadToFile = async function (gridIds, options) {
         globalGridId = globalGrid ? globalGrid.id : null;
     }
     let allGrids = await dataService.getGrids(true, !options.exportGlobalGrid);
-    exportData.grids = allGrids.filter(grid => gridIds.includes(grid.id) || globalGridId === grid.id);
+    exportData.grids = allGrids.filter((grid) => gridIds.includes(grid.id) || globalGridId === grid.id);
     if (options.exportOnlyCurrentLang) {
         let contentLang = i18nService.getContentLang();
         for (let grid of exportData.grids) {
-            Object.keys(grid.label).forEach(key => key === contentLang || delete grid.label[key]);
+            Object.keys(grid.label).forEach((key) => key === contentLang || delete grid.label[key]);
             for (let elem of grid.gridElements) {
-                Object.keys(elem.label).forEach(key => key === contentLang || delete elem.label[key]);
+                Object.keys(elem.label).forEach((key) => key === contentLang || delete elem.label[key]);
                 for (let action of elem.actions) {
                     if (action.speakText) {
-                        Object.keys(action.speakText).forEach(key => key === contentLang || delete action.speakText[key]);
+                        Object.keys(action.speakText).forEach(
+                            (key) => key === contentLang || delete action.speakText[key]
+                        );
                     }
                 }
             }
@@ -417,16 +425,20 @@ dataService.downloadToFile = async function (gridIds, options) {
     let currentMetadata = await dataService.getMetadata();
     if (options.exportUserSettings) {
         exportData.metadata = currentMetadata;
-    } else if (exportData.grids.map(grid => grid.id).includes(globalGridId)) {
+    } else if (exportData.grids.map((grid) => grid.id).includes(globalGridId)) {
         exportData.metadata = {};
         exportData.metadata.globalGridId = globalGridId;
         exportData.metadata.lastOpenedGridId = currentMetadata.lastOpenedGridId;
     }
 
-    let blob = new Blob([JSON.stringify(exportData)], {type: "text/plain;charset=utf-8"});
-    let filename = options.filename || (exportData.grids.length > 1 ? "asterics-grid-backup.grd" : i18nService.getTranslation(exportData.grids[0].label) + ".grd");
+    let blob = new Blob([JSON.stringify(exportData)], { type: "text/plain;charset=utf-8" });
+    let filename =
+        options.filename ||
+        (exportData.grids.length > 1
+            ? "asterics-grid-backup.grd"
+            : i18nService.getTranslation(exportData.grids[0].label) + ".grd");
     FileSaver.saveAs(blob, filename);
-}
+};
 
 /**
  * converts a file (.grd, .obf, .obz) to standardized import data
@@ -457,16 +469,18 @@ dataService.convertFileToImportData = async function (file) {
         importData = await obfConverter.OBZToGridSet(obzFileMap);
     }
     return dataService.normalizeImportData(importData);
-}
+};
 
 dataService.normalizeImportData = function (data) {
     if (!data || data.length === 0) {
-        return {}
+        return {};
     }
     let importData = {};
-    if (data instanceof Array) { // array of grids
+    if (data instanceof Array) {
+        // array of grids
         importData.grids = data;
-    } else if (!data.grids && data.id) { // single grid
+    } else if (!data.grids && data.id) {
+        // single grid
         importData.grids = [data];
     } else {
         importData = data;
@@ -481,38 +495,36 @@ dataService.normalizeImportData = function (data) {
     }
     importData.metadata = importData.metadata || {};
     return importData;
-}
+};
 
 dataService.importBackup = async function (file, progressFn) {
-    progressFn = progressFn || (() => {
-    });
-    progressFn(10, i18nService.t('extractingGridsFromFile'));
+    progressFn = progressFn || (() => {});
+    progressFn(10, i18nService.t("extractingGridsFromFile"));
     let importData = await dataService.convertFileToImportData(file);
     if (!importData) {
         progressFn(100);
-        MainVue.setTooltip(i18nService.t("backupFileDoesntContainData"), {msgType: 'warn'});
+        MainVue.setTooltip(i18nService.t("backupFileDoesntContainData"), { msgType: "warn" });
         return;
     }
     return dataService.importBackupData(importData, {
         progressFn: progressFn,
         generateGlobalGrid: fileUtil.isObzFile(file)
-    })
+    });
 };
 
 dataService.importBackupData = async function (importData, options) {
     options = options || {};
-    options.progressFn = options.progressFn || (() => {
-    });
-    options.progressFn(20, i18nService.t('deletingGrids'));
+    options.progressFn = options.progressFn || (() => {});
+    options.progressFn(20, i18nService.t("deletingGrids"));
     await dataService.deleteAllGrids();
     await dataService.deleteAllDictionaries();
-    options.progressFn(30, i18nService.t('encryptingAndSavingGrids'));
+    options.progressFn(30, i18nService.t("encryptingAndSavingGrids"));
     await dataService.importData(importData, {
         generateGlobalGrid: options.generateGlobalGrid,
         importDictionaries: true,
         importUserSettings: true,
-        progressFn: p => {
-            options.progressFn(30 + (p / 100 * 70))
+        progressFn: (p) => {
+            options.progressFn(30 + (p / 100) * 70);
         }
     });
 
@@ -546,14 +558,14 @@ dataService.importData = async function (data, options) {
     dataUtil.removeDatabaseProperties(importData.metadata, true);
     options.progressFn(10);
     let existingGrids = await dataService.getGrids();
-    let existingNames = existingGrids.map(grid => i18nService.getTranslation(grid.label));
+    let existingNames = existingGrids.map((grid) => i18nService.getTranslation(grid.label));
     let regenerateIdsReturn = gridUtil.regenerateIDs(importData.grids);
     importData.grids = regenerateIdsReturn.grids;
     if (importData.metadata && (importData.metadata.lastOpenedGridId || importData.metadata.globalGridId)) {
         importData.metadata.lastOpenedGridId = regenerateIdsReturn.idMapping[importData.metadata.lastOpenedGridId];
         importData.metadata.globalGridId = regenerateIdsReturn.idMapping[importData.metadata.globalGridId];
     }
-    importData.grids.forEach(grid => {
+    importData.grids.forEach((grid) => {
         let label = i18nService.getTranslation(grid.label);
         grid.label[i18nService.getContentLang()] = modelUtil.getNewName(label, existingNames);
     });
@@ -567,7 +579,11 @@ dataService.importData = async function (data, options) {
 
     if (options.importUserSettings) {
         importData.metadata = Object.assign(await dataService.getMetadata(), importData.metadata);
-    } else if (options.resetBeforeImport && importData.metadata && (importData.metadata.globalGridId || importData.metadata.lastOpenedGridId)) {
+    } else if (
+        options.resetBeforeImport &&
+        importData.metadata &&
+        (importData.metadata.globalGridId || importData.metadata.lastOpenedGridId)
+    ) {
         let existingMetadata = await dataService.getMetadata();
         existingMetadata.globalGridId = importData.metadata.globalGridId;
         existingMetadata.lastOpenedGridId = importData.metadata.lastOpenedGridId;
@@ -584,17 +600,17 @@ dataService.importData = async function (data, options) {
 
     if (options.importDictionaries && importData.dictionaries) {
         let existingDicts = await dataService.getDictionaries();
-        let existingNames = existingDicts.map(d => d.dictionaryKey);
+        let existingNames = existingDicts.map((d) => d.dictionaryKey);
         for (let dict of importData.dictionaries) {
             dict.dictionaryKey = modelUtil.getNewName(dict.dictionaryKey, existingNames);
         }
-        importData.dictionaries = importData.dictionaries.map(dict => new Dictionary(dict));
+        importData.dictionaries = importData.dictionaries.map((dict) => new Dictionary(dict));
         await databaseService.bulkSave(importData.dictionaries);
         predictionService.init();
     }
 
     setTimeout(() => {
-        log.debug("pre-caching all images of gridset ...")
+        log.debug("pre-caching all images of gridset ...");
         serviceWorkerService.cacheImagesOfGrids(importData.grids);
     }, 3000);
     options.progressFn(100);
@@ -624,18 +640,18 @@ dataService.getCurrentUser = function () {
 dataService.cacheAllImages = async function () {
     let grids = await dataService.getGrids();
     serviceWorkerService.cacheImagesOfGrids(grids);
-}
+};
 
 function saveGlobalGridId(globalGridId) {
-    return dataService.getMetadata().then(metadata => {
+    return dataService.getMetadata().then((metadata) => {
         metadata.globalGridId = globalGridId;
         metadata.globalGridActive = !!globalGridId;
         return dataService.saveMetadata(metadata);
-    })
+    });
 }
 
 $(document).on(constants.EVENT_DB_INITIAL_SYNC_COMPLETE, () => {
     dataService.cacheAllImages();
 });
 
-export {dataService};
+export { dataService };
