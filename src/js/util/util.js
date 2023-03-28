@@ -258,4 +258,13 @@ util.arrayBufferToBase64 = function (buffer) {
     return window.btoa(binary);
 };
 
+/**
+ * formats an array to be printable to UI
+ * e.g. ["1", "2", "3"] => string '1, 2, 3'
+ * @param array
+ */
+util.arrayToPrintable = function (array) {
+    return JSON.stringify(array).replaceAll('[', '').replaceAll(']', '').replaceAll('"', '');
+};
+
 export { util };

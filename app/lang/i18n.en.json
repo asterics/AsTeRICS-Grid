@@ -916,5 +916,7 @@
   "notifications": "Notifications",
   "days": "days",
   "offline": "offline",
-  "online": "online"
+  "online": "online",
+  "activateAutomaticGrammarCorrectionARASAACAPI": "Activate automatic grammar correction via ARASAAC's API (available for: {availableLangs})",
+  "noteThatActivatingThisSendsSentencesToARASAACSeePrivacy": "Note that activating this feature results in sending all constructed sentences to ARASAAC's natural language API. See {link}."
 }

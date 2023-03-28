@@ -14,6 +14,7 @@ let _lastOptions = null;
 let _lastSearchLang = null;
 let arasaacAuthor = 'ARASAAC - CC (BY-NC-SA)';
 let arasaacLicenseURL = 'https://arasaac.org/terms-of-use';
+let supportedGrammarLangs = ['es'];
 
 arasaacService.SEARCH_PROVIDER_NAME = 'ARASAAC';
 
@@ -162,6 +163,29 @@ arasaacService.hasNextChunk = function () {
 arasaacService.getUpdatedUrl = function (oldUrl, newOptions) {
     let id = oldUrl.substring(oldUrl.lastIndexOf('/') + 1, oldUrl.indexOf('?'));
     return getUrl(id, newOptions);
+};
+
+arasaacService.getCorrectGrammar = async function (text) {
+    if (!text || !supportedGrammarLangs.includes(i18nService.getContentLang())) {
+        return text;
+    }
+    text = text.trim();
+    let contentLang = i18nService.getContentLang();
+    let path = `https://api.arasaac.org/api/phrases/flex/${contentLang}/${text}`;
+    let response = await fetch(path).catch((e) => console.error(e));
+    if (!response || response.status !== 200) {
+        return text;
+    }
+    let result = (await response.text()).replaceAll('"', '');
+    return result || text;
+};
+
+arasaacService.getSupportedGrammarLangs = function (translate) {
+    let langs = supportedGrammarLangs;
+    if (translate) {
+        langs = langs.map((e) => i18nService.getTranslation(`lang.${e}`));
+    }
+    return JSON.parse(JSON.stringify(langs));
 };
 
 function getUrl(apiId, options) {

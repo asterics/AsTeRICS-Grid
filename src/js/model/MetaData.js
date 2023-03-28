@@ -22,7 +22,8 @@ class MetaData extends Model({
     colorConfig: [ColorConfig],
     textConfig: [TextConfig],
     localeConfig: [LocaleConfig],
-    notificationConfig: [NotificationConfig]
+    notificationConfig: [NotificationConfig],
+    activateARASAACGrammarAPI: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, MetaData) || {};

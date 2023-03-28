@@ -18,6 +18,15 @@ class GridActionCollectElement extends Model({
         return 'GridActionCollectElement';
     }
 
+    static isSpeakAction(action) {
+        return [
+            GridActionCollectElement.COLLECT_ACTION_SPEAK,
+            GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS,
+            GridActionCollectElement.COLLECT_ACTION_SPEAK_CLEAR,
+            GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS_CLEAR
+        ].includes(action);
+    }
+
     static getActions() {
         return [
             GridActionCollectElement.COLLECT_ACTION_SPEAK,
