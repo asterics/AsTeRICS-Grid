@@ -23,7 +23,9 @@ There are two versions of AsTeRICS Grid online:
 * https://grid.asterics.eu/latest/ current testing (beta) release, possibly unstable
 
 ## Documentation
-see [User documentation](docs/documentation_user/README.md) or [AsTeRICS Grid Playlist on YouTube](https://www.youtube.com/playlist?list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz).
+See [User documentation](docs/documentation_user/README.md) or [AsTeRICS Grid Playlist on YouTube](https://www.youtube.com/playlist?list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz).
+
+Also see [Developer documentation (not finished, maybe outdated)](docs/documentation_dev/README.md) and the [Collaboration guide](docs/documentation_dev/collaboration.md).
 
 ## Run project locally
 1. clone the project `git clone git@github.com:asterics/AsTeRICS-Grid.git`
