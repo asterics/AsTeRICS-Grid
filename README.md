@@ -51,9 +51,13 @@ The AsTeRICS Grid evolved out of [AsTeRICS Ergo](https://github.com/asterics/AsT
 ## Support us
 If you want to support the development of AsTeRICS Grid or contribute to the costs for running the server/database for syncronization you're very welcome to donate:
 
-<a title="Support AsTeRICS Grid on opencollective.com" href="https://opencollective.com/asterics-foundation/projects/asterics-grid" target="_blank">
-  <img src="https://opencollective.com/webpack/donate/button@2x.png?color=blue" width=300 />
-</a>
+<div>
+<a title="Donate with PayPal" href="https://www.paypal.com/donate/?hosted_button_id=38AJJNS427MJ2" target="_blank" style="margin-right:3em">
+<img src="https://github.com/asterics/AsTeRICS-Grid/raw/master/app/img/donate-paypal.png" width=300/></a>
+<span>&nbsp;&nbsp;&nbsp;</span>
+<a title="Donate on opencollective.com" href="https://opencollective.com/asterics-foundation/projects/asterics-grid" target="_blank">
+<img src="https://github.com/asterics/AsTeRICS-Grid/raw/master/app/img/donate-open-collective.png" width=300/></a>
+</div>
 
 ## Acknowledgements and Attribution
 * Thanks to [ARASAAC](https://arasaac.org/) for collaborating and providing their pictogram API
