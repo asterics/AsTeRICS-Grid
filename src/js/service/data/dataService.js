@@ -512,12 +512,21 @@ dataService.importBackup = async function (file, progressFn) {
     });
 };
 
+/**
+ * deletes current config and imports data from backup
+ * @param importData
+ * @param options also see options of dataService.importData
+ * @param options.skipDelete skip deleting existing data (fresh import for new user)
+ * @return {Promise<void>}
+ */
 dataService.importBackupData = async function (importData, options) {
     options = options || {};
     options.progressFn = options.progressFn || (() => {});
-    options.progressFn(20, i18nService.t('deletingGrids'));
-    await dataService.deleteAllGrids();
-    await dataService.deleteAllDictionaries();
+    if (options.skipDelete) {
+        options.progressFn(20, i18nService.t('deletingGrids'));
+        await dataService.deleteAllGrids();
+        await dataService.deleteAllDictionaries();
+    }
     options.progressFn(30, i18nService.t('encryptingAndSavingGrids'));
     await dataService.importData(importData, {
         generateGlobalGrid: options.generateGlobalGrid,
@@ -529,6 +538,10 @@ dataService.importBackupData = async function (importData, options) {
     });
 
     await dataService.markCurrentConfigAsBackedUp();
+    if (importData.grids && importData.grids.length) {
+        let contentLang = gridUtil.getGridsContentLang(importData.grids, i18nService.getContentLang());
+        await i18nService.setContentLanguage(contentLang);
+    }
     options.progressFn(100);
 };
 

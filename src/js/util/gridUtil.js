@@ -272,6 +272,32 @@ gridUtil.getAllChildrenRecursive = function (gridGraphList, gridId, children) {
     return allChildren.filter((child) => child.id !== gridId);
 };
 
+/**
+ * returns a language which has existing labels in the grid elements within the given array of grids
+ * @param gridElements array of grid elements
+ * @param preferredLang the language which is preferred
+ */
+gridUtil.getGridsContentLang = function (grids, preferredLang) {
+    if (!grids || !grids.length) {
+        return preferredLang;
+    }
+    let allLangs = grids.reduce((total, grid) => {
+        let gridLangs = getAllLangs(grid.gridElements);
+        return total.concat(gridLangs);
+    }, []);
+    return allLangs.includes(preferredLang) ? preferredLang : allLangs[0];
+};
+
+function getAllLangs(gridElements) {
+    if (!gridElements && !gridElements.length) {
+        return [];
+    }
+    return gridElements.reduce((total, element) => {
+        let labelLangs = Object.keys(element.label).filter((lang) => !!element.label[lang]);
+        return total.concat(labelLangs);
+    }, []);
+}
+
 function getAllChildrenRecursive(gridGraphList, gridId, children) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];
     children = children || [];

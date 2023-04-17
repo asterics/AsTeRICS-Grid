@@ -118,13 +118,6 @@
                 this.loading = true;
                 $.get(this.getGridsetUrl()).then(result => handleResult(result));
                 async function handleResult(result) {
-                    if (!thiz.selectedGridset.languages.includes(i18nService.getContentLang())) {
-                        let newLang = 'en';
-                        if (!thiz.selectedGridset.languages.includes('en')) {
-                            newLang = thiz.selectedGridset.languages[0]
-                        }
-                        await i18nService.setContentLanguage(newLang);
-                    }
 
                     //code for checking and correcting imported data
                     /*result.grids.forEach(grid => {
@@ -142,8 +135,9 @@
                             })
                         })
                     });*/
-                    dataService.importData(dataService.normalizeImportData(result)).then(async () => {
-                        await dataService.markCurrentConfigAsBackedUp();
+                    dataService.importBackupData(dataService.normalizeImportData(result), {
+                        skipDelete: true
+                    }).then(async () => {
                         thiz.loading = false;
                         Router.toMain();
                     });
