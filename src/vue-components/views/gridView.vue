@@ -1,6 +1,6 @@
 <template>
     <div class="box" v-cloak>
-        <header class="srow header" role="toolbar" v-if="metadata && !metadata.fullscreen">
+        <header class="srow header" role="toolbar" v-if="metadata" v-show="!metadata.fullscreen">
             <header-icon class="left" v-show="!metadata.locked"></header-icon>
             <div class="btn-group left">
                 <button tabindex="30" v-show="!metadata.locked" @click="toEditGrid()" class="spaced small" :aria-label="$t('editingOn')"><i class="fas fa-pencil-alt"/> <span class="hide-mobile">{{ $t('editingOn') }}</span></button>
