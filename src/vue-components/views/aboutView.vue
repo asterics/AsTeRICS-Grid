@@ -61,8 +61,11 @@
                     <h3>{{ $t('supportUs') }}</h3>
                     <span>{{ $t('ifYouWantToSupportTheDevelopmentOfAstericsGrid') }}</span>:
                     <div>
-                        <a :title="$t('supportAstericsFoundationOnBetterplace')" target="_blank" href="https://opencollective.com/asterics-foundation/projects/asterics-grid">
-                            <img class="mt-4" style="border:0px; max-width: 75vw" alt="" src="app/img/betterplace-donation-button.png" width="300">
+                        <a :title="$t('donateWithPaypal')" target="_blank" href="https://www.paypal.com/donate/?hosted_button_id=38AJJNS427MJ2" class="me-3">
+                            <img class="mt-4" style="border:0px; max-width: 75vw" alt="" src="app/img/donate-paypal.png" width="250">
+                        </a>
+                        <a :title="$t('donateAtOpencollective')" target="_blank" href="https://opencollective.com/asterics-foundation/projects/asterics-grid">
+                            <img class="mt-4" style="border:0px; max-width: 75vw" alt="" src="app/img/donate-open-collective.png" width="250">
                         </a>
                     </div>
                 </div>

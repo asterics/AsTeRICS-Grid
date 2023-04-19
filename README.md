@@ -23,7 +23,9 @@ There are two versions of AsTeRICS Grid online:
 * https://grid.asterics.eu/latest/ current testing (beta) release, possibly unstable
 
 ## Documentation
-see [User documentation](docs/documentation_user/README.md) or [AsTeRICS Grid Playlist on YouTube](https://www.youtube.com/playlist?list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz).
+See [User documentation](docs/documentation_user/README.md) or [AsTeRICS Grid Playlist on YouTube](https://www.youtube.com/playlist?list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz).
+
+Also see [Developer documentation (not finished, maybe outdated)](docs/documentation_dev/README.md) and the [Collaboration guide](docs/documentation_dev/collaboration.md).
 
 ## Run project locally
 1. clone the project `git clone git@github.com:asterics/AsTeRICS-Grid.git`
@@ -49,9 +51,13 @@ The AsTeRICS Grid evolved out of [AsTeRICS Ergo](https://github.com/asterics/AsT
 ## Support us
 If you want to support the development of AsTeRICS Grid or contribute to the costs for running the server/database for syncronization you're very welcome to donate:
 
-<a title="Support AsTeRICS Grid on opencollective.com" href="https://opencollective.com/asterics-foundation/projects/asterics-grid" target="_blank">
-  <img src="https://opencollective.com/webpack/donate/button@2x.png?color=blue" width=300 />
-</a>
+<div>
+<a title="Donate with PayPal" href="https://www.paypal.com/donate/?hosted_button_id=38AJJNS427MJ2" target="_blank" style="margin-right:3em">
+<img src="https://github.com/asterics/AsTeRICS-Grid/raw/master/app/img/donate-paypal.png" width=300/></a>
+<span>&nbsp;&nbsp;&nbsp;</span>
+<a title="Donate at opencollective.com" href="https://opencollective.com/asterics-foundation/projects/asterics-grid" target="_blank">
+<img src="https://github.com/asterics/AsTeRICS-Grid/raw/master/app/img/donate-open-collective.png" width=300/></a>
+</div>
 
 ## Acknowledgements and Attribution
 * Thanks to [ARASAAC](https://arasaac.org/) for collaborating and providing their pictogram API
