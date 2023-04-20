@@ -1,21 +1,20 @@
 import $ from '../externals/jquery.js';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
-import {i18nService} from "../service/i18nService";
-import {constants} from "../util/constants";
-import {util} from "../util/util";
-import {inputEventHandler} from "../input/inputEventHandler";
-import {dataService} from "../service/data/dataService";
-import {databaseService} from "../service/data/databaseService";
-import {localStorageService} from "../service/data/localStorageService";
-import {helpService} from "../service/helpService";
-import {Router} from "../router";
-import NotificationBar from "../../vue-components/components/notificationBar.vue"
-import ProgressBarModal from "../../vue-components/modals/progressBarModal.vue"
+import { i18nService } from '../service/i18nService';
+import { constants } from '../util/constants';
+import { util } from '../util/util';
+import { inputEventHandler } from '../input/inputEventHandler';
+import { dataService } from '../service/data/dataService';
+import { databaseService } from '../service/data/databaseService';
+import { localStorageService } from '../service/data/localStorageService';
+import { helpService } from '../service/helpService';
+import { Router } from '../router';
+import NotificationBar from '../../vue-components/components/notificationBar.vue';
+import ProgressBarModal from '../../vue-components/modals/progressBarModal.vue';
 
 let MainVue = {};
 let app = null;
-
 
 MainVue.setViewComponent = function (component, properties) {
     if (app && app.$refs.notificationBar.tooltipOptions.closeOnNavigate) {
@@ -35,7 +34,7 @@ MainVue.setTooltip = function (html, options) {
     return app.$refs.notificationBar.setTooltip(html, options);
 };
 
-MainVue.setTooltipI18n = function(text, options) {
+MainVue.setTooltipI18n = function (text, options) {
     MainVue.setTooltip(text, options);
 };
 
@@ -60,15 +59,15 @@ MainVue.showProgressBar = function (percentage, options) {
     }
     app.showProgressBar = true;
     app.$refs.progressBar.setProgress(percentage, options);
-}
+};
 
 MainVue.init = function () {
     Vue.use(VueI18n);
-    return i18nService.getVueI18n().then(i18n => {
+    return i18nService.getVueI18n().then((i18n) => {
         app = new Vue({
             i18n: i18n,
             el: '#app',
-            components: {NotificationBar, ProgressBarModal},
+            components: { NotificationBar, ProgressBarModal },
             data() {
                 return {
                     component: null,
@@ -82,7 +81,7 @@ MainVue.init = function () {
                     constants: constants,
                     tooltipHTML: null,
                     actionLink: null
-                }
+                };
             },
             methods: {
                 setComponent(component, properties) {
@@ -119,7 +118,7 @@ MainVue.init = function () {
                         });
                         return;
                     }
-                    dataService.getMetadata().then(metadata => {
+                    dataService.getMetadata().then((metadata) => {
                         if (!metadata.locked && !metadata.fullscreen) {
                             thiz.showSidebar = true;
                             this.$nextTick(() => {
@@ -148,9 +147,13 @@ MainVue.init = function () {
                 });
                 thiz.syncState = dataService.getSyncState();
                 window.addEventListener('resize', () => {
-                    util.debounce(function () {
-                        $(document).trigger(constants.EVENT_GRID_RESIZE);
-                    }, 300, constants.EVENT_GRID_RESIZE);
+                    util.debounce(
+                        function () {
+                            $(document).trigger(constants.EVENT_GRID_RESIZE);
+                        },
+                        300,
+                        constants.EVENT_GRID_RESIZE
+                    );
                 });
                 inputEventHandler.global
                     .onSwipedDown(openSidebarIfFullscreen)
@@ -164,7 +167,7 @@ MainVue.init = function () {
                         return;
                     }
                     util.closeFullscreen();
-                    dataService.getMetadata().then(metadata => {
+                    dataService.getMetadata().then((metadata) => {
                         if (metadata.fullscreen) {
                             metadata.fullscreen = false;
                             dataService.saveMetadata(metadata).then(() => {
@@ -184,9 +187,9 @@ function setupContextMenu() {
     let CONTEXT_ADD_OFFLINE = 'CONTEXT_ADD_OFFLINE';
     let CONTEXT_ABOUT = 'CONTEXT_ABOUT';
     let menuItems = {
-        CONTEXT_ADD_ONLINE: {name: i18nService.t('addOnlineUser'), icon: "fas fa-user-plus"},
-        CONTEXT_ADD_OFFLINE: {name: i18nService.t('addOfflineUser'), icon: "fas fa-user-plus"},
-        CONTEXT_ABOUT: {name: i18nService.t('aboutAstericsGrid'), icon: "fas fa-info-circle"},
+        CONTEXT_ADD_ONLINE: { name: i18nService.t('addOnlineUser'), icon: 'fas fa-user-plus' },
+        CONTEXT_ADD_OFFLINE: { name: i18nService.t('addOfflineUser'), icon: 'fas fa-user-plus' },
+        CONTEXT_ABOUT: { name: i18nService.t('aboutAstericsGrid'), icon: 'fas fa-info-circle' }
     };
     $.contextMenu({
         selector: '#moreNavigation',
@@ -213,4 +216,4 @@ function setupContextMenu() {
     }
 }
 
-export {MainVue}
+export { MainVue };

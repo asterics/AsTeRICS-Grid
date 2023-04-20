@@ -1,8 +1,8 @@
 import $ from '../../externals/jquery.js';
 import PouchDB from 'PouchDB';
-import {localStorageService} from "./localStorageService";
-import {encryptionService} from "./encryptionService";
-import {constants} from "../../util/constants";
+import { localStorageService } from './localStorageService';
+import { encryptionService } from './encryptionService';
+import { constants } from '../../util/constants';
 
 /**
  * PouchDbAdapter -> class responsible for opening pouchDb databases, managing synchronization and update events
@@ -51,23 +51,28 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
         }
 
         if (remoteCouchDbAddress) {
-            promises.push(openDbInternal(remoteCouchDbAddress, true).then((dbHandler) => {
-                _remoteDb = dbHandler;
-                if (!onlyRemote) {
-                    return _openLocalPromise.then(() => { //make sure local DB opened before set up sync
-                        return setupSync();
-                    });
-                } else {
-                    _remoteDb.changes({
-                        since: 'now',
-                        live: true,
-                        include_docs: true
-                    }).on('change', function (info) {
-                        handleDbChange(info);
-                    });
-                    return Promise.resolve();
-                }
-            }));
+            promises.push(
+                openDbInternal(remoteCouchDbAddress, true).then((dbHandler) => {
+                    _remoteDb = dbHandler;
+                    if (!onlyRemote) {
+                        return _openLocalPromise.then(() => {
+                            //make sure local DB opened before set up sync
+                            return setupSync();
+                        });
+                    } else {
+                        _remoteDb
+                            .changes({
+                                since: 'now',
+                                live: true,
+                                include_docs: true
+                            })
+                            .on('change', function (info) {
+                                handleDbChange(info);
+                            });
+                        return Promise.resolve();
+                    }
+                })
+            );
         }
 
         let returnPromise = Promise.all(promises);
@@ -82,7 +87,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
      * @param data
      * @return {IDBRequest<IDBValidKey> | Promise<void>}
      */
-    thiz.put = function(data) {
+    thiz.put = function (data) {
         let promise = thiz.getDbToUse().put(data);
         promise.then((result) => {
             updateRevisions([result]);
@@ -95,7 +100,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
      * @param dataList
      * @return {IDBRequest<IDBValidKey> | Promise<void>}
      */
-    thiz.bulkDocs = function(dataList) {
+    thiz.bulkDocs = function (dataList) {
         let promise = thiz.getDbToUse().bulkDocs(dataList);
         promise.then((result) => {
             updateRevisions([result]);
@@ -114,12 +119,14 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
             log.warn('startSync() is not possible if remote database is already open, or local database not opened');
             return;
         }
-        return _openLocalPromise.then(() => {
-            return openDbInternal(remoteCouchDbAddress, true)
-        }).then((dbHandler) => {
-            _remoteDb = dbHandler;
-            return setupSync();
-        });
+        return _openLocalPromise
+            .then(() => {
+                return openDbInternal(remoteCouchDbAddress, true);
+            })
+            .then((dbHandler) => {
+                _remoteDb = dbHandler;
+                return setupSync();
+            });
     };
 
     /**
@@ -127,9 +134,9 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
      * @return {*}
      */
     thiz.getDbToUse = function () {
-        let dbToUse = (_useLocalDb && !onlyRemote) ? _db : _remoteDb;
+        let dbToUse = _useLocalDb && !onlyRemote ? _db : _remoteDb;
         if (!dbToUse || _closed) {
-            throw 'Using pouchDbService uninitialized is not possible. First initialize a database by using pouchDbService.initDatabase().'
+            throw 'Using pouchDbService uninitialized is not possible. First initialize a database by using pouchDbService.initDatabase().';
         }
         return dbToUse;
     };
@@ -158,7 +165,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
         return returnPromise;
     };
 
-    thiz.destroyDb = function(dbName) {
+    thiz.destroyDb = function (dbName) {
         return thiz.close().then(() => {
             return new PouchDB(dbName).destroy();
         });
@@ -176,7 +183,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
      * returns true if the current database was already fully synced at any time
      * @return {*}
      */
-    thiz.wasCurrentDatabaseSynced = function() {
+    thiz.wasCurrentDatabaseSynced = function () {
         return localStorageService.isDatabaseSynced(databaseName);
     };
 
@@ -236,7 +243,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
      * @return {*}
      */
     function openDbInternal(dbNameOrAddress, isOnlineDb) {
-        let dbHandler = new PouchDB(dbNameOrAddress, {auto_compaction: true});
+        let dbHandler = new PouchDB(dbNameOrAddress, { auto_compaction: true });
         return dbHandler.info().then(function (info) {
             log.debug(dbNameOrAddress + ' info:');
             log.debug(info);
@@ -262,38 +269,43 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
             log.error('trying to setupSync() but remoteDb or db is not specified! Aborting...');
             return Promise.reject();
         }
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             //first completely update DB
             let starttime = new Date().getTime();
             if (!thiz.wasCurrentDatabaseSynced() && !justCreated) {
                 //first-time full sync will maybe take longer, so use remote DB meanwhile
                 log.debug("database wasn't synced before, so temporarily use remote db until sync is done...");
                 _useLocalDb = false;
-                _syncHandler = _db.sync(_remoteDb, {
-                    live: false,
-                    retry: false
-                }).on('active', function (info) {
-                    setSyncState(constants.DB_SYNC_STATE_SYNCINC);
-                }).on('paused', function () {
-                    setSyncState(constants.DB_SYNC_STATE_SYNCED);
-                }).on('error', function (err) {
-                    log.info('couchdb error');
-                    log.error(err);
-                    triggerConnectionLost();
-                }).on('complete', function (info) {
-                    log.debug('sync complete event');
-                    log.debug(info);
-                    let status = info && info.pull ? info.pull.status : (info && info.push ? info.push.status : null);
-                    if (status === 'cancelled') {
-                        log.debug('sync cancelled!');
-                    } else if (status === 'complete') {
-                        log.info('couchdb sync complete! setting up live sync and using local db now...');
-                        log.debug('initial sync took: ' + (new Date().getTime() - starttime) + "ms");
-                        _useLocalDb = true;
-                        setupLiveSync();
-                        $(document).trigger(constants.EVENT_DB_INITIAL_SYNC_COMPLETE);
-                    }
-                });
+                _syncHandler = _db
+                    .sync(_remoteDb, {
+                        live: false,
+                        retry: false
+                    })
+                    .on('active', function (info) {
+                        setSyncState(constants.DB_SYNC_STATE_SYNCINC);
+                    })
+                    .on('paused', function () {
+                        setSyncState(constants.DB_SYNC_STATE_SYNCED);
+                    })
+                    .on('error', function (err) {
+                        log.info('couchdb error');
+                        log.error(err);
+                        triggerConnectionLost();
+                    })
+                    .on('complete', function (info) {
+                        log.debug('sync complete event');
+                        log.debug(info);
+                        let status = info && info.pull ? info.pull.status : info && info.push ? info.push.status : null;
+                        if (status === 'cancelled') {
+                            log.debug('sync cancelled!');
+                        } else if (status === 'complete') {
+                            log.info('couchdb sync complete! setting up live sync and using local db now...');
+                            log.debug('initial sync took: ' + (new Date().getTime() - starttime) + 'ms');
+                            _useLocalDb = true;
+                            setupLiveSync();
+                            $(document).trigger(constants.EVENT_DB_INITIAL_SYNC_COMPLETE);
+                        }
+                    });
                 resolve();
             } else {
                 //if local DB was already synced, we can immediately use it and don't have to wait for possibly upcoming updates
@@ -304,24 +316,29 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
             //setup live sync
             function setupLiveSync() {
                 localStorageService.markSyncedDatabase(databaseName);
-                _syncHandler = _db.sync(_remoteDb, {
-                    live: true,
-                    retry: false
-                }).on('paused', function (info) {
-                    log.debug('sync paused');
-                    log.debug(info);
-                    setSyncState(constants.DB_SYNC_STATE_SYNCED);
-                }).on('active', function (info) {
-                    log.debug('sync active');
-                    log.debug(info);
-                    setSyncState(constants.DB_SYNC_STATE_SYNCINC);
-                }).on('change', function (info) {
-                    handleDbChange(info);
-                }).on('error', function (err) {
-                    log.info('couchdb error');
-                    log.info(err);
-                    triggerConnectionLost();
-                });
+                _syncHandler = _db
+                    .sync(_remoteDb, {
+                        live: true,
+                        retry: false
+                    })
+                    .on('paused', function (info) {
+                        log.debug('sync paused');
+                        log.debug(info);
+                        setSyncState(constants.DB_SYNC_STATE_SYNCED);
+                    })
+                    .on('active', function (info) {
+                        log.debug('sync active');
+                        log.debug(info);
+                        setSyncState(constants.DB_SYNC_STATE_SYNCINC);
+                    })
+                    .on('change', function (info) {
+                        handleDbChange(info);
+                    })
+                    .on('error', function (err) {
+                        log.info('couchdb error');
+                        log.info(err);
+                        triggerConnectionLost();
+                    });
             }
         });
     }
@@ -369,8 +386,8 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
             updateRevisions(info.change ? info.change.docs : null);
             if (info.direction && info.direction === 'pull') {
                 if (info.change && info.change.docs && info.change.docs.length > 0) {
-                    changedDocsEncrypted = info.change.docs.filter(doc => !!getId(doc) && !isOutdatedRevision(doc));
-                    changedIds = changedDocsEncrypted.map(doc => getId(doc));
+                    changedDocsEncrypted = info.change.docs.filter((doc) => !!getId(doc) && !isOutdatedRevision(doc));
+                    changedIds = changedDocsEncrypted.map((doc) => getId(doc));
                 }
                 if (info.change.docs.length > 0 && changedIds.length === 0) {
                     log.info('ignoring pull because of outdated revision');
@@ -396,7 +413,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
 
     function updateRevisions(docs) {
         if (docs && docs.length > 0) {
-            docs.forEach(doc => {
+            docs.forEach((doc) => {
                 let id = getId(doc);
                 let nr = getRevNumber(doc);
                 if (!_revisionMap[id] || _revisionMap[id] < nr) {
@@ -428,4 +445,4 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
     }
 }
 
-export {PouchDbAdapter};
+export { PouchDbAdapter };

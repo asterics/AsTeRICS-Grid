@@ -1,9 +1,9 @@
 import $ from '../externals/jquery';
-import {GridActionWebradio} from "../model/GridActionWebradio";
-import {dataService} from "./data/dataService";
-import {localStorageService} from "./data/localStorageService";
-import {MainVue} from "../vue/mainVue";
-import {i18nService} from "./i18nService";
+import { GridActionWebradio } from '../model/GridActionWebradio';
+import { dataService } from './data/dataService';
+import { localStorageService } from './data/localStorageService';
+import { MainVue } from '../vue/mainVue';
+import { i18nService } from './i18nService';
 
 let WEBRADIO_LAST_PLAYED_ID_KEY = 'WEBRADIO_LAST_PLAYED_ID_KEY';
 let WEBRADIO_LAST_VOLUME_KEY = 'WEBRADIO_LAST_VOLUME_KEY';
@@ -24,10 +24,10 @@ let hasMoreSearchResults = false;
 let playingVideo = false;
 
 webradioService.doAction = function (gridId, action) {
-    dataService.getGrid(gridId).then(grid => {
+    dataService.getGrid(gridId).then((grid) => {
         let radios = grid.webRadios || [];
         let radioId = action.radioId || lastPlayedId;
-        let webradio = radios.filter(radio => radioId === radio.radioId)[0] || radios[0];
+        let webradio = radios.filter((radio) => radioId === radio.radioId)[0] || radios[0];
         let index = 0;
         if (!webradio) {
             log.info('no radio station to play found.');
@@ -49,7 +49,7 @@ webradioService.doAction = function (gridId, action) {
                 webradioService.stop();
                 break;
             case GridActionWebradio.WEBRADIO_ACTION_NEXT:
-                index = radios.map(e => e.radioId).indexOf(webradio.radioId);
+                index = radios.map((e) => e.radioId).indexOf(webradio.radioId);
                 if (index < 0 || radios.length < 2) {
                     return;
                 }
@@ -59,7 +59,7 @@ webradioService.doAction = function (gridId, action) {
                 });
                 break;
             case GridActionWebradio.WEBRADIO_ACTION_PREV:
-                index = radios.map(e => e.radioId).indexOf(webradio.radioId);
+                index = radios.map((e) => e.radioId).indexOf(webradio.radioId);
                 if (index < 0 || radios.length < 2) {
                     return;
                 }
@@ -87,19 +87,19 @@ webradioService.play = function (webradio) {
     }
     lastPlayedId = webradio.radioId || lastPlayedId;
     localStorageService.save(WEBRADIO_LAST_PLAYED_ID_KEY, lastPlayedId);
-    fillUrl(webradio).then(radioWithUrl => {
+    fillUrl(webradio).then((radioWithUrl) => {
         log.debug('playing: ' + radioWithUrl.radioUrl);
         let promise = Promise.resolve();
         if (webradio.radioUrl.indexOf('.m3u8') !== -1) {
             playingVideo = true;
             videoPlayer.src = radioWithUrl.radioUrl;
-            import(/* webpackChunkName: "hls.js" */ 'hls.js').then(Hls => {
+            import(/* webpackChunkName: "hls.js" */ 'hls.js').then((Hls) => {
                 Hls = Hls.default;
                 if (Hls.isSupported()) {
                     let hls = new Hls();
                     hls.loadSource(radioWithUrl.radioUrl);
                     hls.attachMedia(videoPlayer);
-                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    hls.on(Hls.Events.MANIFEST_PARSED, function () {
                         videoPlayer.play();
                     });
                 }
@@ -117,7 +117,8 @@ webradioService.play = function (webradio) {
             actionLinkFn: webradioService.stop,
             imageUrl: radioWithUrl.faviconUrl
         });
-        if (promise && promise.then) { //IE does not return promise on play
+        if (promise && promise.then) {
+            //IE does not return promise on play
             promise.catch(() => {
                 if (lastPlayedId === webradio.radioId) {
                     showErrorMsg(webradio);
@@ -136,7 +137,7 @@ webradioService.stop = function (radioId) {
 };
 
 webradioService.toggle = function (webradio) {
-    if (!playingVideo && player.paused || playingVideo && videoPlayer.paused) {
+    if ((!playingVideo && player.paused) || (playingVideo && videoPlayer.paused)) {
         webradioService.play(webradio);
     } else {
         webradioService.stop();
@@ -178,7 +179,7 @@ webradioService.search = function (searchString, limit, offset) {
     }
     let params = {};
     let paramPositions = [];
-    searchParameters.forEach(parameter => {
+    searchParameters.forEach((parameter) => {
         let index = searchString.indexOf(parameter + ':');
         if (index > -1) {
             paramPositions.push({
@@ -207,26 +208,31 @@ webradioService.search = function (searchString, limit, offset) {
 
     return new Promise((resolve, reject) => {
         $.ajax({
-            type: "POST",
+            type: 'POST',
             url: API_URL + API_ACTION_SEARCH,
             data: params,
             dataType: 'json',
             contentType: 'application/x-www-form-urlencoded'
-        }).then(data => {
-            hasMoreSearchResults = data.length === limitToUse;
-            let workingRadios = data.filter(radio => radio.lastcheckok !== '0');
-            workingRadios = workingRadios.slice(0, limitToUse - 1);
-            resolve(workingRadios.map(el => {
-                return {
-                    radioId: el.stationuuid,
-                    radioUUID: el.stationuuid,
-                    radioName: el.name,
-                    faviconUrl: el.favicon
-                };
-            }));
-        }, error => {
-            reject(error);
-        });
+        }).then(
+            (data) => {
+                hasMoreSearchResults = data.length === limitToUse;
+                let workingRadios = data.filter((radio) => radio.lastcheckok !== '0');
+                workingRadios = workingRadios.slice(0, limitToUse - 1);
+                resolve(
+                    workingRadios.map((el) => {
+                        return {
+                            radioId: el.stationuuid,
+                            radioUUID: el.stationuuid,
+                            radioName: el.name,
+                            faviconUrl: el.favicon
+                        };
+                    })
+                );
+            },
+            (error) => {
+                reject(error);
+            }
+        );
     });
 };
 
@@ -257,16 +263,16 @@ function fillUrl(webradio, gridId) {
             return resolve(webradio);
         }
         $.ajax({
-            type: "GET",
+            type: 'GET',
             url: API_URL + API_ACTION_GETURL + '/' + webradio.radioId,
             dataType: 'json'
         });
 
         $.ajax({
-            type: "GET",
+            type: 'GET',
             url: API_URL + API_ACTION_STATIONS_UUID + '/' + webradio.radioId,
             dataType: 'json'
-        }).then(list => {
+        }).then((list) => {
             let data = list[0];
             webradio.radioUrl = data.url_resolved || data.url;
             if (webradio.radioUrl.lastIndexOf('/') === webradio.radioUrl.length - 1) {
@@ -275,14 +281,15 @@ function fillUrl(webradio, gridId) {
             let lastcolon = webradio.radioUrl.lastIndexOf(':');
             if (lastcolon > -1) {
                 let port = webradio.radioUrl.substring(lastcolon + 1);
-                if (parseInt(port) + '' === port) { //url ends with a port, e.g. :8000
+                if (parseInt(port) + '' === port) {
+                    //url ends with a port, e.g. :8000
                     webradio.radioUrl = webradio.radioUrl + '/;';
                 }
             }
             if (gridId) {
-                dataService.getGrid(gridId).then(grid => {
+                dataService.getGrid(gridId).then((grid) => {
                     let radios = grid.webRadios || [];
-                    let savedRadio = radios.filter(radio => webradio.radioId === radio.radioId)[0];
+                    let savedRadio = radios.filter((radio) => webradio.radioId === radio.radioId)[0];
                     if (savedRadio) {
                         savedRadio.radioUrl = webradio.radioUrl;
                         dataService.saveGrid(grid);
@@ -294,4 +301,4 @@ function fillUrl(webradio, gridId) {
     });
 }
 
-export {webradioService};
+export { webradioService };

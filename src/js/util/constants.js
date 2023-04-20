@@ -1,6 +1,6 @@
 let constants = {};
 
-constants.ELEMENT_EVENT_ID = "ELEMENT_EVENT_ID";
+constants.ELEMENT_EVENT_ID = 'ELEMENT_EVENT_ID';
 constants.MODEL_VERSION = '{"major": 4, "minor": 0, "patch": 0}';
 
 constants.LOCAL_NOLOGIN_USERNAME = 'default-user';
@@ -42,10 +42,10 @@ constants.DB_SYNC_STATE_FAIL = 'DB_SYNC_STATE_FAIL';
 constants.DB_SYNC_STATE_ONLINEONLY = 'DB_SYNC_STATE_ONLINEONLY';
 
 constants.ENVIRONMENT = '#ASTERICS_GRID_ENV#';
-constants.IS_ENVIRONMENT_DEV = constants.ENVIRONMENT === ('#ASTERICS_' + 'GRID_ENV#');
+constants.IS_ENVIRONMENT_DEV = constants.ENVIRONMENT === '#ASTERICS_' + 'GRID_ENV#';
 constants.IS_ENVIRONMENT_PROD = !constants.IS_ENVIRONMENT_DEV;
 constants.CURRENT_VERSION = '#ASTERICS_GRID_VERSION#';
-constants.IS_FIREFOX = navigator.userAgent.indexOf("Firefox") !== -1;
+constants.IS_FIREFOX = navigator.userAgent.indexOf('Firefox') !== -1;
 
 constants.STATE_ACTIVATED_TTS = 'STATE_ACTIVATED_TTS';
 
@@ -54,7 +54,18 @@ constants.DEFAULT_GRID_BACKGROUND_COLOR = '#e8e8e8';
 constants.DEFAULT_COLOR_SCHEMES = [
     {
         name: 'CS_MODIFIED_FITZGERALD_KEY_LIGHT',
-        categories: ['CC_PRONOUN_PERSON_NAME', 'CC_NOUN', 'CC_VERB', 'CC_DESCRIPTOR', 'CC_SOCIAL_EXPRESSIONS', 'CC_MISC', 'CC_PLACE', 'CC_CATEGORY', 'CC_IMPORTANT', 'CC_OTHERS'],
+        categories: [
+            'CC_PRONOUN_PERSON_NAME',
+            'CC_NOUN',
+            'CC_VERB',
+            'CC_DESCRIPTOR',
+            'CC_SOCIAL_EXPRESSIONS',
+            'CC_MISC',
+            'CC_PLACE',
+            'CC_CATEGORY',
+            'CC_IMPORTANT',
+            'CC_OTHERS'
+        ],
         colors: [
             '#fdfd96',
             '#ffda89',
@@ -65,10 +76,23 @@ constants.DEFAULT_COLOR_SCHEMES = [
             '#bc98f3',
             '#d8af97',
             '#ff9688',
-            '#bdbfbf']
-    }, {
+            '#bdbfbf'
+        ]
+    },
+    {
         name: 'CS_MODIFIED_FITZGERALD_KEY_MEDIUM',
-        categories: ['CC_PRONOUN_PERSON_NAME', 'CC_NOUN', 'CC_VERB', 'CC_DESCRIPTOR', 'CC_SOCIAL_EXPRESSIONS', 'CC_MISC', 'CC_PLACE', 'CC_CATEGORY', 'CC_IMPORTANT', 'CC_OTHERS'],
+        categories: [
+            'CC_PRONOUN_PERSON_NAME',
+            'CC_NOUN',
+            'CC_VERB',
+            'CC_DESCRIPTOR',
+            'CC_SOCIAL_EXPRESSIONS',
+            'CC_MISC',
+            'CC_PLACE',
+            'CC_CATEGORY',
+            'CC_IMPORTANT',
+            'CC_OTHERS'
+        ],
         colors: [
             '#ffff6b',
             '#ffb56b',
@@ -79,35 +103,26 @@ constants.DEFAULT_COLOR_SCHEMES = [
             '#ce6bff',
             '#bd754e',
             '#ff704d',
-            '#a3a3a3']
+            '#a3a3a3'
+        ]
     },
     {
         name: 'CS_GOOSENS_LIGHT',
         categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
-        colors: [
-            '#fdcae1',
-            '#84b6f4',
-            '#c7f3c7',
-            '#fdfd96',
-            '#ffda89']
+        colors: ['#fdcae1', '#84b6f4', '#c7f3c7', '#fdfd96', '#ffda89']
     },
     {
         name: 'CS_GOOSENS_MEDIUM',
         categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
-        colors: [
-            '#ff6bff',
-            '#6bb5ff',
-            '#b5ff6b',
-            '#ffff6b',
-            '#ffb56b']
+        colors: ['#ff6bff', '#6bb5ff', '#b5ff6b', '#ffff6b', '#ffb56b']
     }
 ];
 
 constants.OPTION_TYPES = {
-    BOOLEAN: "BOOLEAN",
-    COLOR: "COLOR",
-    SELECT: "SELECT",
-    SELECT_COLORS: "SELECT_COLORS",
-}
+    BOOLEAN: 'BOOLEAN',
+    COLOR: 'COLOR',
+    SELECT: 'SELECT',
+    SELECT_COLORS: 'SELECT_COLORS'
+};
 
-export {constants};
+export { constants };

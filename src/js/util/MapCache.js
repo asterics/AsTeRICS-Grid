@@ -1,4 +1,4 @@
-import {log} from "./log";
+import { log } from './log';
 
 /**
  * simple cache, storing key-value pairs while ensuring that
@@ -61,7 +61,7 @@ function MapCache() {
         let value = JSON.parse(_cache[key]);
         let objectType = _objectTypeMap[key];
         let isArray = value instanceof Array;
-        return isArray ? value.map(e => instantiate(objectType, e)) : instantiate(objectType, value);
+        return isArray ? value.map((e) => instantiate(objectType, e)) : instantiate(objectType, value);
     };
 
     /**
@@ -72,10 +72,10 @@ function MapCache() {
      */
     thiz.getAsPromise = function (key) {
         let value = thiz.get(key);
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             setTimeout(() => {
                 resolve(value);
-            }, 1)
+            }, 1);
         });
     };
 
@@ -116,4 +116,4 @@ function MapCache() {
     }
 }
 
-export {MapCache};
+export { MapCache };

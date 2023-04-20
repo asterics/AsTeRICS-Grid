@@ -1,13 +1,13 @@
 import $ from '../externals/jquery.js';
-import Predictionary from 'predictionary'
-import {GridElement} from "../model/GridElement";
-import {Dictionary} from "../model/Dictionary";
-import {fontUtil} from "../util/fontUtil";
-import {dataService} from "./data/dataService";
-import {constants} from "../util/constants";
-import {localStorageService} from "./data/localStorageService.js";
-import {i18nService} from "./i18nService.js";
-import {util} from "../util/util.js";
+import Predictionary from 'predictionary';
+import { GridElement } from '../model/GridElement';
+import { Dictionary } from '../model/Dictionary';
+import { fontUtil } from '../util/fontUtil';
+import { dataService } from './data/dataService';
+import { constants } from '../util/constants';
+import { localStorageService } from './data/localStorageService.js';
+import { i18nService } from './i18nService.js';
+import { util } from '../util/util.js';
 
 let predictionService = {};
 let predictionary = null;
@@ -33,12 +33,15 @@ predictionService.predict = function (input, dictionaryKey) {
             _usedKeys.push(dictionaryKey);
         }
     }
-    let suggestions = predictionary.predict(input, {maxPredicitons: registeredPredictElements.length});
+    let suggestions = predictionary.predict(input, { maxPredicitons: registeredPredictElements.length });
     for (let i = 0; i < registeredPredictElements.length; i++) {
         let text = suggestions[i] ? suggestions[i] : '';
         text = util.convertLowerUppercase(text, _textConvertMode);
         $(`#${registeredPredictElements[i].id} .text-container span`).text(text);
-        $(`#${registeredPredictElements[i].id}`).attr('aria-label', `${text}, ${i18nService.t('ELEMENT_TYPE_PREDICTION')}`);
+        $(`#${registeredPredictElements[i].id}`).attr(
+            'aria-label',
+            `${text}, ${i18nService.t('ELEMENT_TYPE_PREDICTION')}`
+        );
     }
     fontUtil.adaptFontSize($('.item[data-type="ELEMENT_TYPE_PREDICTION"]'));
 };
@@ -52,7 +55,7 @@ predictionService.learnFromInput = function (input, dictionaryKey) {
 
 predictionService.initWithElements = async function (elements) {
     registeredPredictElements = [];
-    elements.forEach(element => {
+    elements.forEach((element) => {
         if (element && element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
             registeredPredictElements.push(JSON.parse(JSON.stringify(element)));
         }
@@ -73,14 +76,14 @@ predictionService.applyPrediction = function (input, prediction, dictionaryKey) 
         return;
     }
     _unsavedChanges = true;
-    return predictionary.applyPrediction(input, prediction, {addToDictionary: dictionaryKey});
+    return predictionary.applyPrediction(input, prediction, { addToDictionary: dictionaryKey });
 };
 
 predictionService.doAction = function (elementId) {
     if (!predictionary) {
         return;
     }
-    let element = registeredPredictElements.filter(element => element.id === elementId)[0];
+    let element = registeredPredictElements.filter((element) => element.id === elementId)[0];
     if (element) {
         let word = $(`#${element.id} .text-container span`).text();
         predictionary.learn(word);
@@ -93,15 +96,15 @@ predictionService.getDictionaryKeys = function () {
 };
 
 predictionService.init = async function () {
-    log.debug("init prediction service");
+    log.debug('init prediction service');
     _currentInitUser = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
     clearInterval(_intervalHandler);
     _unsavedChanges = false;
     predictionary = Predictionary.instance();
 
-    return dataService.getDictionaries().then(dicts => {
+    return dataService.getDictionaries().then((dicts) => {
         _dbDictObjects = dicts;
-        dicts.forEach(dict => {
+        dicts.forEach((dict) => {
             predictionary.loadDictionary(dict.data, dict.dictionaryKey);
         });
         _intervalHandler = setInterval(saveDictionaries, _autosaveInterval);
@@ -109,32 +112,33 @@ predictionService.init = async function () {
     });
 };
 
-predictionService.initIfNewUser = async function() {
+predictionService.initIfNewUser = async function () {
     let currentUser = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
     if (_currentInitUser === currentUser) {
         return;
     }
     await predictionService.init();
-}
+};
 
 predictionService.stopAutosave = function () {
     clearInterval(_intervalHandler);
-}
+};
 
 function saveDictionaries() {
     if (!_unsavedChanges || !predictionary) {
         return;
     }
     _unsavedChanges = false;
-    _usedKeys.forEach(key => {
-        let dbDict = _dbDictObjects.filter(el => el.dictionaryKey === key)[0] || new Dictionary({dictionaryKey: key});
+    _usedKeys.forEach((key) => {
+        let dbDict =
+            _dbDictObjects.filter((el) => el.dictionaryKey === key)[0] || new Dictionary({ dictionaryKey: key });
         dbDict.data = predictionary.dictionaryToJSON(key);
         dataService.saveDictionary(dbDict);
     });
 }
 
 $(document).on(constants.EVENT_DB_PULL_UPDATED, (event, updatedIds, updatedDocs) => {
-    let modelNames = updatedDocs.map(doc => doc.modelName);
+    let modelNames = updatedDocs.map((doc) => doc.modelName);
     if (modelNames.indexOf(Dictionary.getModelName()) > -1) {
         predictionService.init();
     }
@@ -152,4 +156,4 @@ async function getMetadataConfig() {
 $(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
 $(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
 
-export {predictionService};
+export { predictionService };

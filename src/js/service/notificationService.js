@@ -1,8 +1,8 @@
-import {dataService} from "./data/dataService.js";
-import $ from "../externals/jquery.js";
-import {constants} from "../util/constants.js";
-import {MainVue} from "../vue/mainVue.js";
-import {i18nService} from "./i18nService.js";
+import { dataService } from './data/dataService.js';
+import $ from '../externals/jquery.js';
+import { constants } from '../util/constants.js';
+import { MainVue } from '../vue/mainVue.js';
+import { i18nService } from './i18nService.js';
 
 let notificationService = {};
 
@@ -33,9 +33,13 @@ notificationService.checkNotifications = async function () {
         return;
     }
 
-    if (currentTime - lastBackup > notificationIntervalMs && currentTime - lastBackupNotification > notificationIntervalMs) {
+    if (
+        currentTime - lastBackup > notificationIntervalMs &&
+        currentTime - lastBackupNotification > notificationIntervalMs
+    ) {
         let gridUpdateTime = await dataService.getLastGridUpdateTime();
-        if (gridUpdateTime === undefined) { // no grids existing
+        if (gridUpdateTime === undefined) {
+            // no grids existing
             return;
         }
         if (lastBackup < gridUpdateTime || (lastBackup === 0 && gridUpdateTime === 0)) {
@@ -44,14 +48,14 @@ notificationService.checkNotifications = async function () {
             MainVue.setTooltip(i18nService.t('pleaseConsiderToDownloadABackup'), {
                 msgType: 'info',
                 closeOnNavigate: false,
-                actionLink: i18nService.t("downloadNow"),
+                actionLink: i18nService.t('downloadNow'),
                 actionLinkFn: downloadConfig,
-                actionLink2: i18nService.t("stopRemembering"),
+                actionLink2: i18nService.t('stopRemembering'),
                 actionLinkFn2: stopRemembering
-            })
+            });
         }
     }
-}
+};
 
 function checkNotificationAndSetTimer() {
     notificationService.checkNotifications();
@@ -85,4 +89,4 @@ $(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
 $(document).on(constants.EVENT_USER_CHANGED, notificationService.init);
 $(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
 
-export {notificationService};
+export { notificationService };

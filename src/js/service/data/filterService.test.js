@@ -1,5 +1,4 @@
-test('empty', () => {
-});
+test('empty', () => {});
 
 /*import {filterService} from "./filterService";
 import {modelUtil} from "../../util/modelUtil";

@@ -1,25 +1,25 @@
 import $ from './externals/jquery.js';
-import Navigo from 'navigo'
+import Navigo from 'navigo';
 
-import {i18nService} from "./service/i18nService";
-import {dataService} from "./service/data/dataService.js";
-import {helpService} from "./service/helpService";
+import { i18nService } from './service/i18nService';
+import { dataService } from './service/data/dataService.js';
+import { helpService } from './service/helpService';
 
-import AllGridsView from '../vue-components/views/allGridsView.vue'
-import GridEditView from '../vue-components/views/gridEditView.vue'
-import GridView from '../vue-components/views/gridView.vue'
-import LoginView from '../vue-components/views/loginView.vue'
-import RegisterView from '../vue-components/views/registerView.vue'
-import AddOfflineView from '../vue-components/views/addOfflineView.vue'
-import WelcomeView from '../vue-components/views/welcomeView.vue'
-import AboutView from '../vue-components/views/aboutView.vue'
-import DictionariesView from '../vue-components/views/dictionariesView.vue'
-import SettingsView from '../vue-components/views/settingsView.vue'
-import {databaseService} from "./service/data/databaseService";
-import {localStorageService} from "./service/data/localStorageService";
-import {MainVue} from "./vue/mainVue";
-import HelpView from "../vue-components/views/helpView.vue";
-import {constants} from "./util/constants.js";
+import AllGridsView from '../vue-components/views/allGridsView.vue';
+import GridEditView from '../vue-components/views/gridEditView.vue';
+import GridView from '../vue-components/views/gridView.vue';
+import LoginView from '../vue-components/views/loginView.vue';
+import RegisterView from '../vue-components/views/registerView.vue';
+import AddOfflineView from '../vue-components/views/addOfflineView.vue';
+import WelcomeView from '../vue-components/views/welcomeView.vue';
+import AboutView from '../vue-components/views/aboutView.vue';
+import DictionariesView from '../vue-components/views/dictionariesView.vue';
+import SettingsView from '../vue-components/views/settingsView.vue';
+import { databaseService } from './service/data/databaseService';
+import { localStorageService } from './service/data/localStorageService';
+import { MainVue } from './vue/mainVue';
+import HelpView from '../vue-components/views/helpView.vue';
+import { constants } from './util/constants.js';
 
 let NO_DB_VIEWS = ['#login', '#register', '#welcome', '#add', '#about', '#help', '#outdated'];
 
@@ -41,88 +41,94 @@ Router.init = function (injectIdParam, initialHash) {
     _initialized = true;
     injectId = injectIdParam;
     navigoInstance = new Navigo(null, true);
-    navigoInstance
-        .on({
-            'main': function () {
-                helpService.setHelpLocation('02_navigation', '#main-view');
-                toMainInternal();
-            },
-            'grids/': function () {
-                helpService.setHelpLocation('02_navigation', '#manage-grids-view');
-                loadVueView(AllGridsView);
-            },
-            'grid/:gridId': function (params, query) {
-                log.debug('route grid with ID: ' + params.gridId);
-                let queryParams = new URLSearchParams(query);
-                let passParams = Object.fromEntries(queryParams);
-                passParams.gridId = params.gridId;
-                helpService.setHelpLocation('02_navigation', '#main-view');
-                loadVueView(GridView, passParams, '#main');
-            },
-            'grid/name/:gridName': function (params) {
-                log.debug('route grid with Name: ' + params.gridName);
-                helpService.setHelpLocation('02_navigation', '#main-view');
-                dataService.getGrids().then((result) => {
-                    let gridsWithName = result.filter(grid => i18nService.getTranslation(grid.label) === params.gridName);
-                    let id = gridsWithName[0] ? gridsWithName[0].id : null;
-                    if (id) {
-                        loadVueView(GridView, {
+    navigoInstance.on({
+        main: function () {
+            helpService.setHelpLocation('02_navigation', '#main-view');
+            toMainInternal();
+        },
+        'grids/': function () {
+            helpService.setHelpLocation('02_navigation', '#manage-grids-view');
+            loadVueView(AllGridsView);
+        },
+        'grid/:gridId': function (params, query) {
+            log.debug('route grid with ID: ' + params.gridId);
+            let queryParams = new URLSearchParams(query);
+            let passParams = Object.fromEntries(queryParams);
+            passParams.gridId = params.gridId;
+            helpService.setHelpLocation('02_navigation', '#main-view');
+            loadVueView(GridView, passParams, '#main');
+        },
+        'grid/name/:gridName': function (params) {
+            log.debug('route grid with Name: ' + params.gridName);
+            helpService.setHelpLocation('02_navigation', '#main-view');
+            dataService.getGrids().then((result) => {
+                let gridsWithName = result.filter((grid) => i18nService.getTranslation(grid.label) === params.gridName);
+                let id = gridsWithName[0] ? gridsWithName[0].id : null;
+                if (id) {
+                    loadVueView(
+                        GridView,
+                        {
                             gridId: id
-                        }, '#main');
-                    } else {
-                        log.warn(`no grid with name ${params.gridName} found!`);
-                        toMainInternal();
-                    }
-                });
-            },
-            'grid/edit/:gridId': function (params) {
-                log.debug('route edit grid with ID: ' + params.gridId);
-                helpService.setHelpLocation('02_navigation', '#edit-view');
-                loadVueView(GridEditView, {
-                    gridId: params.gridId
-                });
-            },
-            'login': function () {
-                helpService.setHelpLocation('02_navigation', '#change-user-view');
-                loadVueView(LoginView);
-            },
-            'register': function () {
-                helpService.setHelpLocation('06_users', '#online-users');
-                loadVueView(RegisterView);
-            },
-            'add': function () {
-                helpService.setHelpLocation('06_users', '#offline-users');
-                loadVueView(AddOfflineView);
-            },
-            'welcome': function () {
-                helpService.setHelpLocationIndex();
-                loadVueView(WelcomeView);
-            },
-            'about': function () {
-                helpService.setHelpLocationIndex();
-                loadVueView(AboutView);
-            },
-            'dictionaries': function () {
-                helpService.setHelpLocation('02_navigation', '#manage-dictionaries-view');
-                loadVueView(DictionariesView);
-            },
-            'settings': function () {
-                //TODO add correct help location
-                loadVueView(SettingsView);
-            },
-            'help': function () {
-                loadVueView(HelpView);
-            },
-            '*': function () {
-                helpService.setHelpLocation('02_navigation', '#main-view');
-                Router.toMain();
-            }
-        });
+                        },
+                        '#main'
+                    );
+                } else {
+                    log.warn(`no grid with name ${params.gridName} found!`);
+                    toMainInternal();
+                }
+            });
+        },
+        'grid/edit/:gridId': function (params) {
+            log.debug('route edit grid with ID: ' + params.gridId);
+            helpService.setHelpLocation('02_navigation', '#edit-view');
+            loadVueView(GridEditView, {
+                gridId: params.gridId
+            });
+        },
+        login: function () {
+            helpService.setHelpLocation('02_navigation', '#change-user-view');
+            loadVueView(LoginView);
+        },
+        register: function () {
+            helpService.setHelpLocation('06_users', '#online-users');
+            loadVueView(RegisterView);
+        },
+        add: function () {
+            helpService.setHelpLocation('06_users', '#offline-users');
+            loadVueView(AddOfflineView);
+        },
+        welcome: function () {
+            helpService.setHelpLocationIndex();
+            loadVueView(WelcomeView);
+        },
+        about: function () {
+            helpService.setHelpLocationIndex();
+            loadVueView(AboutView);
+        },
+        dictionaries: function () {
+            helpService.setHelpLocation('02_navigation', '#manage-dictionaries-view');
+            loadVueView(DictionariesView);
+        },
+        settings: function () {
+            //TODO add correct help location
+            loadVueView(SettingsView);
+        },
+        help: function () {
+            loadVueView(HelpView);
+        },
+        '*': function () {
+            helpService.setHelpLocation('02_navigation', '#main-view');
+            Router.toMain();
+        }
+    });
     navigoInstance.hooks({
         before: function (done, params) {
             let hash = location.hash;
             $(document).trigger(constants.EVENT_NAVIGATE);
-            if (_locked && (hash.startsWith('#grid/edit') || (!hash.startsWith('#main') && !hash.startsWith('#grid/')))) {
+            if (
+                _locked &&
+                (hash.startsWith('#grid/edit') || (!hash.startsWith('#main') && !hash.startsWith('#grid/')))
+            ) {
                 return done(false);
             }
             if (_currentView && _currentView.destroy) {
@@ -133,7 +139,7 @@ Router.init = function (injectIdParam, initialHash) {
                 _currentVueApp.$destroy();
             }
             let validHash = getValidHash();
-            if(location.hash !== validHash) {
+            if (location.hash !== validHash) {
                 done(false);
                 setHash(validHash);
             } else {
@@ -157,13 +163,13 @@ Router.init = function (injectIdParam, initialHash) {
  * returns false if Router.init() wasn't called before, otherwise true
  * @return {boolean}
  */
-Router.isInitialized = function() {
+Router.isInitialized = function () {
     return _initialized;
 };
 
 Router.toMain = function () {
     if (getHash().indexOf('#main') === 0) {
-        setHash('#main' + "?date=" + new Date().getTime());
+        setHash('#main' + '?date=' + new Date().getTime());
     } else {
         setHash('#main');
     }
@@ -186,8 +192,8 @@ Router.toLogin = function () {
 };
 
 Router.toLastOpenedGrid = function () {
-    dataService.getMetadata().then(metadata => {
-       Router.toGrid(metadata.lastOpenedGridId);
+    dataService.getMetadata().then((metadata) => {
+        Router.toGrid(metadata.lastOpenedGridId);
     });
 };
 
@@ -197,7 +203,7 @@ Router.toGrid = function (id, props) {
         let params = new URLSearchParams();
         let url = null;
         if (props) {
-            Object.keys(props).forEach(key => {
+            Object.keys(props).forEach((key) => {
                 params.set(key, props[key]);
             });
             url = `#grid/${id}?${params.toString()}`;
@@ -206,7 +212,7 @@ Router.toGrid = function (id, props) {
         }
 
         if (_currentView === GridView) {
-            dataService.getGrid(id).then(gridData => {
+            dataService.getGrid(id).then((gridData) => {
                 if (!gridData) {
                     return;
                 }
@@ -222,7 +228,7 @@ Router.toGrid = function (id, props) {
 };
 
 Router.toEditGrid = function (id) {
-    if(id) {
+    if (id) {
         setHash('#grid/edit/' + id);
     }
 };
@@ -313,7 +319,7 @@ function toMainInternal() {
     if (!routingEndabled) {
         return;
     }
-    dataService.getMetadata().then(metadata => {
+    dataService.getMetadata().then((metadata) => {
         let gridId = metadata ? metadata.lastOpenedGridId : null;
         loadVueView(GridView, {
             gridId: gridId
@@ -329,4 +335,4 @@ $(document).on(constants.EVENT_UI_UNLOCKED, () => {
     _locked = false;
 });
 
-export {Router};
+export { Router };

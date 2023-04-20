@@ -1,6 +1,6 @@
 import $ from '../externals/jquery.js';
-import {inputEventHandler} from "./inputEventHandler";
-import {InputConfig} from "../model/InputConfig";
+import { inputEventHandler } from './inputEventHandler';
+import { InputConfig } from '../model/InputConfig';
 
 let SequentialInput = {};
 
@@ -9,9 +9,9 @@ SequentialInput.getInstanceFromConfig = function (inputConfig, itemSelector, opt
         selectionListener: options.selectionListener,
         activeListener: options.activeListener,
         activeClass: options.activeClass,
-        inputEventSelect: inputConfig.seqInputs.filter(e => e.label === InputConfig.SELECT)[0],
-        inputEventNext: inputConfig.seqInputs.filter(e => e.label === InputConfig.NEXT_ELEMENT)[0],
-        inputEventPrev: inputConfig.seqInputs.filter(e => e.label === InputConfig.PREVIOUS_ELEMENT)[0],
+        inputEventSelect: inputConfig.seqInputs.filter((e) => e.label === InputConfig.SELECT)[0],
+        inputEventNext: inputConfig.seqInputs.filter((e) => e.label === InputConfig.NEXT_ELEMENT)[0],
+        inputEventPrev: inputConfig.seqInputs.filter((e) => e.label === InputConfig.PREVIOUS_ELEMENT)[0],
         enableAuto: inputConfig.seqAuto,
         autoTimeout: inputConfig.seqTimeoutMs,
         firstElementFactor: inputConfig.seqTimeoutFirstElementFactor,
@@ -50,7 +50,7 @@ function SequentialInputConstructor(paramItemSelector, options) {
 
     thiz.stop = function () {
         clearTimeout(_autoTimeoutHandler);
-    }
+    };
 
     thiz.destroy = function () {
         thiz.stop();
@@ -141,4 +141,4 @@ function SequentialInputConstructor(paramItemSelector, options) {
     init();
 }
 
-export {SequentialInput};
+export { SequentialInput };

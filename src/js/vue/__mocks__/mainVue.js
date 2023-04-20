@@ -1,3 +1,3 @@
 let MainVue = {};
 
-export {MainVue};
+export { MainVue };

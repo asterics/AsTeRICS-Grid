@@ -1,6 +1,6 @@
-import {modelUtil} from "../util/modelUtil";
-import {Model} from "../externals/objectmodel";
-import {imageUtil} from "../util/imageUtil";
+import { modelUtil } from '../util/modelUtil';
+import { Model } from '../externals/objectmodel';
+import { imageUtil } from '../util/imageUtil';
 
 class GridImage extends Model({
     data: [String],
@@ -55,7 +55,7 @@ class GridImage extends Model({
     }
 
     static getModelName() {
-        return "GridImage";
+        return 'GridImage';
     }
 
     static getIdPrefix() {
@@ -64,10 +64,10 @@ class GridImage extends Model({
 }
 
 GridImage.IMAGE_TYPES = {
-    PNG: "PNG",
-    JPEG: "JPEG",
-    SVG: "SVG"
-}
+    PNG: 'PNG',
+    JPEG: 'JPEG',
+    SVG: 'SVG'
+};
 
 GridImage.defaults({
     data: null,
@@ -75,4 +75,4 @@ GridImage.defaults({
     authorURL: null
 });
 
-export {GridImage};
+export { GridImage };

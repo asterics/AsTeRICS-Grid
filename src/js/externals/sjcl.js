@@ -1,2 +1,2 @@
 let sjcl = window.sjcl;
-export {sjcl};
+export { sjcl };
