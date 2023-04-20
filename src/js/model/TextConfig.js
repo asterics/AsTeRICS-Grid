@@ -1,5 +1,5 @@
-import {Model} from "../externals/objectmodel";
-import {constants} from "../util/constants";
+import { Model } from '../externals/objectmodel';
+import { constants } from '../util/constants';
 
 class TextConfig extends Model({
     modelName: String,
@@ -11,7 +11,7 @@ class TextConfig extends Model({
     }
 
     static getModelName() {
-        return "TextConfig";
+        return 'TextConfig';
     }
 }
 
@@ -24,4 +24,4 @@ TextConfig.defaults({
     convertMode: null
 });
 
-export {TextConfig};
+export { TextConfig };

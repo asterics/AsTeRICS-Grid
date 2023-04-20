@@ -1,10 +1,10 @@
 import $ from '../externals/jquery.js';
-import {GridActionYoutube} from "../model/GridActionYoutube";
-import {constants} from "../util/constants";
-import {localStorageService} from "./data/localStorageService";
-import {inputEventHandler} from "../input/inputEventHandler";
-import {MainVue} from "../vue/mainVue";
-import {i18nService} from "./i18nService";
+import { GridActionYoutube } from '../model/GridActionYoutube';
+import { constants } from '../util/constants';
+import { localStorageService } from './data/localStorageService';
+import { inputEventHandler } from '../input/inputEventHandler';
+import { MainVue } from '../vue/mainVue';
+import { i18nService } from './i18nService';
 
 let youtubeService = {};
 
@@ -101,24 +101,27 @@ youtubeService.play = function (action, videoTimeParam) {
         ytState.lastData = action.data;
         if (!player) {
             player = new YT.Player(playerID, {
-                height: $(".yt-container")[0].getBoundingClientRect().height,
-                width: $(".yt-container")[0].getBoundingClientRect().width,
+                height: $('.yt-container')[0].getBoundingClientRect().height,
+                width: $('.yt-container')[0].getBoundingClientRect().width,
                 playerVars: {
-                    'mute': action.playMuted ? 1 : 0,
-                    'cc_load_policy': action.showCC ? 1 : 0,
-                    'cc_lang_pref': i18nService.getContentLang(),
-                    'rel': 0,
-                    'iv_load_policy': 3
+                    mute: action.playMuted ? 1 : 0,
+                    cc_load_policy: action.showCC ? 1 : 0,
+                    cc_lang_pref: i18nService.getContentLang(),
+                    rel: 0,
+                    iv_load_policy: 3
                 },
                 events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': (event) => {
-                        if (waitForBuffering && event.data === PLAYER_STATES.PLAYING || event.data === PLAYER_STATES.PAUSED) {
+                    onReady: onPlayerReady,
+                    onStateChange: (event) => {
+                        if (
+                            (waitForBuffering && event.data === PLAYER_STATES.PLAYING) ||
+                            event.data === PLAYER_STATES.PAUSED
+                        ) {
                             waitForBuffering = false;
                             onBuffering();
                         }
                     },
-                    'onError' : () => {
+                    onError: () => {
                         log.warn('error on playing YouTube video');
                         errorMessage();
                     }
@@ -154,20 +157,20 @@ youtubeService.play = function (action, videoTimeParam) {
                 case GridActionYoutube.playTypes.YT_PLAY_SEARCH:
                     waitForBuffering = true;
                     //see API doc: https://developers.google.com/youtube/v3/docs/search/list
-                    callGapiCached("gapi.client.youtube.search.list", {
+                    callGapiCached('gapi.client.youtube.search.list', {
                         maxResults: 100,
                         q: action.data,
                         type: 'video',
                         videoEmbeddable: true
-                    }).then(response => {
-                        let videoIds = response.result.items.map(item => item.id.videoId).filter(id => !!id);
+                    }).then((response) => {
+                        let videoIds = response.result.items.map((item) => item.id.videoId).filter((id) => !!id);
                         player.loadPlaylist(videoIds, ytState.lastPlaylistIndexes[action.data]);
                         setTimeout(() => {
                             if (!player) return;
                             if (!youtubeService.isPlaying()) {
                                 player.loadPlaylist(videoIds, ytState.lastPlaylistIndexes[action.data]);
                             }
-                        }, 500)
+                        }, 500);
                     });
                     break;
                 case GridActionYoutube.playTypes.YT_PLAY_PLAYLIST:
@@ -225,21 +228,21 @@ youtubeService.play = function (action, videoTimeParam) {
             saveState();
         }
     });
-}
+};
 
 youtubeService.pause = function () {
     if (player) {
         player.pauseVideo();
         saveState();
     }
-}
+};
 
 youtubeService.stop = function () {
     if (player) {
         player.seekTo(0);
         youtubeService.pause();
     }
-}
+};
 
 youtubeService.toggle = function (action) {
     if (youtubeService.isPaused()) {
@@ -249,7 +252,7 @@ youtubeService.toggle = function (action) {
     } else {
         youtubeService.pause();
     }
-}
+};
 
 youtubeService.restart = function (action) {
     if (player) {
@@ -261,52 +264,60 @@ youtubeService.restart = function (action) {
     } else if (!youtubeService.isPlaying()) {
         youtubeService.play(action, 0);
     }
-}
+};
 
 youtubeService.nextVideo = function () {
     if (player) {
         player.nextVideo();
     }
-}
+};
 
 youtubeService.previousVideo = function () {
     if (player) {
         player.previousVideo();
     }
-}
+};
 
 youtubeService.seekToRelative = function (offset) {
     if (player) {
         player.seekTo(player.getCurrentTime() + offset);
         saveState();
     }
-}
+};
 
 youtubeService.enterFullscreen = function () {
     if (player && iframe) {
-        let requestFullScreen = iframe.requestFullScreen || iframe.mozRequestFullScreen || iframe.webkitRequestFullScreen || iframe.msRequestFullscreen;
+        let requestFullScreen =
+            iframe.requestFullScreen ||
+            iframe.mozRequestFullScreen ||
+            iframe.webkitRequestFullScreen ||
+            iframe.msRequestFullscreen;
         if (requestFullScreen) {
             requestFullScreen.bind(iframe)();
             inputEventHandler.global.onAnyKey(youtubeService.exitFullscreen);
         }
     }
-}
+};
 
 youtubeService.exitFullscreen = function () {
-    let exitFullscreen = document.exitFullscreen || document.mozCancelFullScreen || document.webkitExitFullscreen || document.msExitFullscreen;
+    let exitFullscreen =
+        document.exitFullscreen ||
+        document.mozCancelFullScreen ||
+        document.webkitExitFullscreen ||
+        document.msExitFullscreen;
     if (exitFullscreen) {
         exitFullscreen.bind(document)();
     }
     inputEventHandler.global.off(youtubeService.exitFullscreen);
-}
+};
 
 youtubeService.volumeUp = function (diffPercentage) {
     youtubeService.setVolume(Math.min(player.getVolume() + diffPercentage, 100));
-}
+};
 
 youtubeService.volumeDown = function (diffPercentage) {
     youtubeService.setVolume(Math.max(player.getVolume() - diffPercentage, 0));
-}
+};
 
 youtubeService.setVolume = function (volume, initSet) {
     if (player) {
@@ -324,7 +335,7 @@ youtubeService.setVolume = function (volume, initSet) {
             saveState();
         }
     }
-}
+};
 
 youtubeService.volumeToggleMute = function () {
     if (player) {
@@ -333,20 +344,20 @@ youtubeService.volumeToggleMute = function () {
         ytState.muted = !isMuted;
         saveState();
     }
-}
+};
 
 youtubeService.setActionAfterNavigate = function (action) {
     action.performAfterNav = false;
     navigateAction = action;
-}
+};
 
 youtubeService.isPlaying = function () {
     return player && player.getPlayerState() === PLAYER_STATES.PLAYING;
-}
+};
 
 youtubeService.isPaused = function () {
     return player && player.getPlayerState() === PLAYER_STATES.PAUSED;
-}
+};
 
 youtubeService.getCurrentVideoId = function () {
     if (player && player.getVideoUrl) {
@@ -355,8 +366,8 @@ youtubeService.getCurrentVideoId = function () {
             return youtubeService.getVideoId(player.getVideoUrl());
         }
     }
-    return "";
-}
+    return '';
+};
 
 youtubeService.getVideoId = function (videoLink) {
     if (!videoLink) {
@@ -372,7 +383,7 @@ youtubeService.getVideoId = function (videoLink) {
         return videoLink.substring(startIndex, endIndex);
     }
     return videoLink;
-}
+};
 
 youtubeService.getPlaylistId = function (videoLink) {
     if (!videoLink) {
@@ -380,7 +391,7 @@ youtubeService.getPlaylistId = function (videoLink) {
     }
     let listParam = getURLParam(videoLink, 'list');
     return listParam ? listParam : videoLink;
-}
+};
 
 youtubeService.getChannelId = function (link) {
     if (!link) {
@@ -398,7 +409,7 @@ youtubeService.getChannelId = function (link) {
         }
     }
     return link;
-}
+};
 
 youtubeService.getChannelPlaylist = function (channelId) {
     if (channelId.indexOf('UC') === 0) {
@@ -413,7 +424,7 @@ youtubeService.destroy = function () {
         player.destroy();
     }
     player = null;
-}
+};
 
 /**
  * Calls a function of Google API (gapi) or returns a cached value of the result value.
@@ -424,11 +435,11 @@ youtubeService.destroy = function () {
  *        call to the real API, a new API call is done and the result is returned, The cached version is updated.
  */
 function callGapiCached(fnNameString, parameters, timeout) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         timeout = timeout || DATA_API_CACHE_TIMEOUT_MS;
         let parts = fnNameString.split('.');
         let fn = window;
-        parts.forEach(part => {
+        parts.forEach((part) => {
             if (fn) {
                 fn = fn[part];
             }
@@ -442,17 +453,20 @@ function callGapiCached(fnNameString, parameters, timeout) {
                 return resolve(JSON.parse(cached.response));
             } else {
                 //call real API
-                fn(parameters).then(response => {
-                    ytState.dataApiCalls[key] = {
-                        time: new Date().getTime(),
-                        response: JSON.stringify(response)
+                fn(parameters).then(
+                    (response) => {
+                        ytState.dataApiCalls[key] = {
+                            time: new Date().getTime(),
+                            response: JSON.stringify(response)
+                        };
+                        saveState();
+                        return resolve(response);
+                    },
+                    (error) => {
+                        log.error('Execute Google API call error', error);
+                        return resolve(null);
                     }
-                    saveState();
-                    return resolve(response);
-                }, error => {
-                    log.error("Execute Google API call error", error);
-                    return resolve(null);
-                });
+                );
             }
         }
     });
@@ -466,10 +480,8 @@ function getURLParam(urlString, paramName) {
     let url = null;
     try {
         url = new URL(urlString);
-    } catch (e) {
-    }
+    } catch (e) {}
     return url ? url.searchParams.get(paramName) : null;
-
 }
 
 function saveState() {
@@ -483,7 +495,8 @@ function saveState() {
             ytState.lastPlaylistIndexes[ytState.lastData] = currentIndex;
         }
     }
-    if (JSON.stringify(ytState).length > 1024 * 1024) { // bigger than 1 MB -> reset
+    if (JSON.stringify(ytState).length > 1024 * 1024) {
+        // bigger than 1 MB -> reset
         ytState.lastPlaylistIndexes = {};
         ytState.lastTimes = {};
         ytState.dataApiCalls = {};
@@ -506,7 +519,7 @@ function init() {
     $(document).on(constants.EVENT_GRID_RESIZE, () => {
         if (player) {
             setTimeout(() => {
-                let rect = $(".yt-container")[0].getBoundingClientRect();
+                let rect = $('.yt-container')[0].getBoundingClientRect();
                 player.setSize(rect.width, rect.height);
             }, 400);
         }
@@ -529,35 +542,40 @@ function init() {
     tagIframeAPI.onerror = function (e) {
         log.warn('error on loading YouTube Iframe API script');
         errorMessage();
-    }
+    };
 
     tagDataAPI.onerror = function (e) {
         log.warn('error on loading YouTube data API script');
-    }
+    };
 
-    let promiseIframe = new Promise(resolve => {
+    let promiseIframe = new Promise((resolve) => {
         window.onYouTubeIframeAPIReady = function () {
             initialized = true;
             resolve();
-        }
+        };
     });
 
-    let promiseData = new Promise(resolve => {
+    let promiseData = new Promise((resolve) => {
         tagDataAPI.addEventListener('load', function () {
             resolve();
         });
-    }).then(() => {
-        return new Promise(resolve => {gapi.load("client", resolve)});
-    }).then(() => {
-        gapi.client.setApiKey(DATA_API_KEY);
-        return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest");
-    }).catch(err => {
-        log.error("Error loading GAPI client for API", err);
-        return Promise.resolve();
-    });
+    })
+        .then(() => {
+            return new Promise((resolve) => {
+                gapi.load('client', resolve);
+            });
+        })
+        .then(() => {
+            gapi.client.setApiKey(DATA_API_KEY);
+            return gapi.client.load('https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest');
+        })
+        .catch((err) => {
+            log.error('Error loading GAPI client for API', err);
+            return Promise.resolve();
+        });
 
-    tagIframeAPI.src = "https://www.youtube.com/iframe_api";
-    tagDataAPI.src = "https://apis.google.com/js/api.js";
+    tagIframeAPI.src = 'https://www.youtube.com/iframe_api';
+    tagDataAPI.src = 'https://apis.google.com/js/api.js';
     return Promise.all([promiseData, promiseIframe]);
 }
 
@@ -571,4 +589,4 @@ $(document).on(constants.EVENT_GRID_LOADED, () => {
 $(document).on(constants.EVENT_NAVIGATE, youtubeService.destroy);
 $(document).on(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, youtubeService.destroy);
 
-export {youtubeService};
+export { youtubeService };

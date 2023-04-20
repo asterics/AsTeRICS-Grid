@@ -44,6 +44,7 @@
     import GridSelector from "../components/gridSelector.vue";
     import EditElementHeader from "../components/editElementHeader.vue";
     import {helpService} from "../../js/service/helpService.js";
+    import {GridElement} from "../../js/model/GridElement.js";
 
     export default {
         components: {EditElementHeader, GridSelector},
@@ -71,11 +72,15 @@
             saveInternal() {
                 return dataService.getGrid(this.selectedGrid.id).then(targetGrid => {
                     let moveElements = this.moveAllElements ? this.gridData.gridElements : [this.gridElement];
+                    let targetGridIds = targetGrid.gridElements.map(e => e.id);
                     moveElements.forEach(element => {
                         let isBigElement = element.width > 1 || element.height > 1;
                         let newPosition = targetGrid.getNewXYPos(isBigElement);
                         element.x = newPosition.x;
                         element.y = newPosition.y;
+                        if (targetGridIds.includes(element.id)) {
+                            element.id = new GridElement().id;
+                        }
                         targetGrid.gridElements.push(element);
                     });
                     this.gridData.gridElements = this.moveAllElements ? [] : this.gridData.gridElements.filter(e => e.id !== this.gridElement.id);

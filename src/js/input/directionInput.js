@@ -1,16 +1,16 @@
 import $ from '../externals/jquery.js';
-import {inputEventHandler} from "./inputEventHandler";
-import {InputConfig} from "../model/InputConfig";
+import { inputEventHandler } from './inputEventHandler';
+import { InputConfig } from '../model/InputConfig';
 
 let DirectionInput = {};
 
 DirectionInput.getInstanceFromConfig = function (inputConfig, itemSelector, scanActiveClass, selectionListener) {
     return new DirectionInputConstructor(itemSelector, scanActiveClass, {
-        inputEventLeft: inputConfig.dirInputs.filter(e => e.label === InputConfig.LEFT)[0],
-        inputEventRight: inputConfig.dirInputs.filter(e => e.label === InputConfig.RIGHT)[0],
-        inputEventUp: inputConfig.dirInputs.filter(e => e.label === InputConfig.UP)[0],
-        inputEventDown: inputConfig.dirInputs.filter(e => e.label === InputConfig.DOWN)[0],
-        inputEventSelect: inputConfig.dirInputs.filter(e => e.label === InputConfig.SELECT)[0],
+        inputEventLeft: inputConfig.dirInputs.filter((e) => e.label === InputConfig.LEFT)[0],
+        inputEventRight: inputConfig.dirInputs.filter((e) => e.label === InputConfig.RIGHT)[0],
+        inputEventUp: inputConfig.dirInputs.filter((e) => e.label === InputConfig.UP)[0],
+        inputEventDown: inputConfig.dirInputs.filter((e) => e.label === InputConfig.DOWN)[0],
+        inputEventSelect: inputConfig.dirInputs.filter((e) => e.label === InputConfig.SELECT)[0],
         wrapAround: inputConfig.dirWrapAround,
         resetToStart: inputConfig.dirResetToStart,
         selectionListener: selectionListener
@@ -90,7 +90,7 @@ function DirectionInputConstructor(paramItemSelector, paramScanActiveClass, opti
 
     function doMove(direction) {
         if (!_elementPosInfo[_currentElement.id]) {
-            return
+            return;
         }
         setActiveElement(_elementPosInfo[_currentElement.id][direction]);
     }
@@ -118,12 +118,12 @@ function DirectionInputConstructor(paramItemSelector, paramScanActiveClass, opti
     }
 
     function calcPositions() {
-        _elements.toArray().forEach(element => {
-            let otherElements = _elements.toArray().filter(e => e.id !== element.id);
+        _elements.toArray().forEach((element) => {
+            let otherElements = _elements.toArray().filter((e) => e.id !== element.id);
             let pos = element.getBoundingClientRect();
             let allPos = (a, b, c, d) => a > 0 && b > 0 && c > 0 && d > 0;
             let allNeg = (a, b, c, d) => a < 0 && b < 0 && c < 0 && d < 0;
-            let distances = otherElements.map(e => {
+            let distances = otherElements.map((e) => {
                 let boundingRect = e.getBoundingClientRect();
                 let diff1 = pos.left - boundingRect.right;
                 let diff2 = pos.right - boundingRect.left;
@@ -151,14 +151,14 @@ function DirectionInputConstructor(paramItemSelector, paramScanActiveClass, opti
             distances = distances.sort(sortFn);
 
             function getElement(distances, firstChoiceDir, secondChoiceDir, secondChoiceMax, secondChoiceMin) {
-                let firstChoice = distances.filter(e => e[firstChoiceDir]);
+                let firstChoice = distances.filter((e) => e[firstChoiceDir]);
                 if (firstChoice.length > 0) {
                     return firstChoice[0].element;
                 } else if (wrapAround) {
-                    let min = Math.min(...distances.map(e => e[secondChoiceMin]));
-                    let possibleElements = distances.filter(e => e[secondChoiceMin] === min && e[secondChoiceDir]);
-                    let max = Math.max(...possibleElements.map(e => e[secondChoiceMax]));
-                    let result = possibleElements.filter(e => e[secondChoiceMax] === max)[0];
+                    let min = Math.min(...distances.map((e) => e[secondChoiceMin]));
+                    let possibleElements = distances.filter((e) => e[secondChoiceMin] === min && e[secondChoiceDir]);
+                    let max = Math.max(...possibleElements.map((e) => e[secondChoiceMax]));
+                    let result = possibleElements.filter((e) => e[secondChoiceMax] === max)[0];
                     return result ? result.element : null;
                 }
                 return null;
@@ -175,10 +175,10 @@ function DirectionInputConstructor(paramItemSelector, paramScanActiveClass, opti
                 right: right,
                 up: up,
                 down: down
-            }
+            };
         });
     }
     init();
 }
 
-export {DirectionInput};
+export { DirectionInput };

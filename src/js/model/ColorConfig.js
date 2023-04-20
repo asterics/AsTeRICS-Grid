@@ -1,5 +1,5 @@
-import {Model} from "../externals/objectmodel";
-import {constants} from "../util/constants";
+import { Model } from '../externals/objectmodel';
+import { constants } from '../util/constants';
 
 class ColorConfig extends Model({
     modelName: String,
@@ -15,7 +15,7 @@ class ColorConfig extends Model({
     }
 
     static getModelName() {
-        return "ColorConfig";
+        return 'ColorConfig';
     }
 }
 
@@ -29,4 +29,4 @@ ColorConfig.defaults({
     gridBackgroundColor: constants.DEFAULT_GRID_BACKGROUND_COLOR
 });
 
-export {ColorConfig};
+export { ColorConfig };

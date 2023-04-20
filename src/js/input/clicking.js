@@ -1,6 +1,6 @@
-import { L } from "../util/lquery.js";
-import {util} from "../util/util.js";
-import {inputEventHandler} from "./inputEventHandler.js";
+import { L } from '../util/lquery.js';
+import { util } from '../util/util.js';
+import { inputEventHandler } from './inputEventHandler.js';
 
 let Clicker = {};
 
@@ -28,10 +28,10 @@ function ClickerConstructor(itemSelector, options) {
 
     function onMouseDown(event) {
         event.preventDefault(); // prevent zooming on longpress on images on iOS
-        if(!_enableMouseDown || inputEventHandler.global.hasIncompleteTouchEvent()) {
+        if (!_enableMouseDown || inputEventHandler.global.hasIncompleteTouchEvent()) {
             return;
         }
-        util.throttle(onclick, [event], 300, "CLICK_EVENT_HANDLER");
+        util.throttle(onclick, [event], 300, 'CLICK_EVENT_HANDLER');
     }
 
     function onTouchStart(event) {
@@ -39,7 +39,7 @@ function ClickerConstructor(itemSelector, options) {
         if (inputEventHandler.global.hasIncompleteTouchEvent()) {
             return;
         }
-        util.throttle(onclick, [event], 300, "CLICK_EVENT_HANDLER");
+        util.throttle(onclick, [event], 300, 'CLICK_EVENT_HANDLER');
     }
 
     function ondblclick(event) {
@@ -89,4 +89,4 @@ function ClickerConstructor(itemSelector, options) {
     };
 }
 
-export {Clicker};
+export { Clicker };

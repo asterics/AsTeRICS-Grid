@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  superlogin:
+    build: ./{{REPO_NAME}}
+    ports:
+      # allow the http traffic only via localhost
+      - 127.0.0.1:3000:3000
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2048m"
+  superloginold:
+    build: ./{{REPO_NAME_OLD}}
+    ports:
+      # allow the http traffic only via localhost
+      - 127.0.0.1:3001:3000
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2048m"
+  nginx:
+    image: nginx:1.23.1-alpine
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      # path-in-repo:path-in-container (:ro = read-only)
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+      - ./certbot/www:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2048m"
+  certbot:
+    image: certbot/certbot:v2.2.0
+    volumes:
+        # path-in-repo:path-in-container (:rw = read and write)
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2048m"
+

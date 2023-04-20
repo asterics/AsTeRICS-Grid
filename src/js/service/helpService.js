@@ -1,4 +1,4 @@
-import {i18nService} from "./i18nService";
+import { i18nService } from './i18nService';
 
 let helpService = {};
 //let HELP_BASE_PATH = 'https://github.com/asterics/AsTeRICS-Grid/blob/master/docs/documentation_user/';
@@ -68,4 +68,4 @@ function init() {
 
 init();
 
-export {helpService};
+export { helpService };

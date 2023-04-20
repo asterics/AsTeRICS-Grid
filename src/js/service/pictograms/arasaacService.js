@@ -1,7 +1,7 @@
 import $ from '../../externals/jquery.js';
-import {i18nService} from "../i18nService.js";
-import {constants} from "../../util/constants.js";
-import {GridImage} from "../../model/GridImage.js";
+import { i18nService } from '../i18nService.js';
+import { constants } from '../../util/constants.js';
+import { GridImage } from '../../model/GridImage.js';
 
 let arasaacService = {};
 
@@ -12,67 +12,101 @@ let _lastRawResultList = null;
 let _hasNextChunk = false;
 let _lastOptions = null;
 let _lastSearchLang = null;
-let arasaacAuthor = "ARASAAC - CC (BY-NC-SA)";
-let arasaacLicenseURL = "https://arasaac.org/terms-of-use";
+let arasaacAuthor = 'ARASAAC - CC (BY-NC-SA)';
+let arasaacLicenseURL = 'https://arasaac.org/terms-of-use';
 
 arasaacService.SEARCH_PROVIDER_NAME = 'ARASAAC';
 
 let searchProviderInfo = {
     name: arasaacService.SEARCH_PROVIDER_NAME,
-    url: "https://arasaac.org/",
-    searchLangs: ["an", "ar", "bg", "br", "ca", "de", "el", "en", "es", "et", "eu", "fa", "fr", "gl", "he", "hr", "hu", "it", "ko", "lt", "lv", "mk", "nl", "pl", "pt", "ro", "ru", "sk", "sq", "sv", "sr", "val", "uk", "zh"],
+    url: 'https://arasaac.org/',
+    searchLangs: [
+        'an',
+        'ar',
+        'bg',
+        'br',
+        'ca',
+        'de',
+        'el',
+        'en',
+        'es',
+        'et',
+        'eu',
+        'fa',
+        'fr',
+        'gl',
+        'he',
+        'hr',
+        'hu',
+        'it',
+        'ko',
+        'lt',
+        'lv',
+        'mk',
+        'nl',
+        'pl',
+        'pt',
+        'ro',
+        'ru',
+        'sk',
+        'sq',
+        'sv',
+        'sr',
+        'val',
+        'uk',
+        'zh'
+    ],
     options: [
         {
-            name: "plural",
+            name: 'plural',
             type: constants.OPTION_TYPES.BOOLEAN,
             value: false
         },
         {
-            name: "color",
+            name: 'color',
             type: constants.OPTION_TYPES.BOOLEAN,
             value: true
         },
         {
-            name: "action",
+            name: 'action',
             type: constants.OPTION_TYPES.SELECT,
             value: undefined,
-            options: ["past", "future"]
+            options: ['past', 'future']
         },
         {
-            name: "skin",
+            name: 'skin',
             type: constants.OPTION_TYPES.SELECT_COLORS,
             value: undefined,
-            options: ["white", "black", "assian", "mulatto", "aztec"],
-            colors: ["#F5E5DE", "#A65C17", "#F4ECAD", "#E3AB72", "#CF9D7C"]
+            options: ['white', 'black', 'assian', 'mulatto', 'aztec'],
+            colors: ['#F5E5DE', '#A65C17', '#F4ECAD', '#E3AB72', '#CF9D7C']
         },
         {
-            name: "hair",
+            name: 'hair',
             type: constants.OPTION_TYPES.SELECT_COLORS,
             value: undefined,
-            options: ["blonde", "brown", "darkBrown", "gray", "darkGray", "red", "black"],
-            colors: ["#FDD700", "#A65E26", "#6A2703", "#EFEFEF", "#AAABAB", "#ED4120", "#020100"]
+            options: ['blonde', 'brown', 'darkBrown', 'gray', 'darkGray', 'red', 'black'],
+            colors: ['#FDD700', '#A65E26', '#6A2703', '#EFEFEF', '#AAABAB', '#ED4120', '#020100']
         },
         {
-            name: "identifier",
+            name: 'identifier',
             type: constants.OPTION_TYPES.SELECT,
             value: undefined,
-            options: ["classroom", "health", "library", "office"]
+            options: ['classroom', 'health', 'library', 'office']
         },
         {
-            name: "identifierPosition",
+            name: 'identifierPosition',
             type: constants.OPTION_TYPES.SELECT,
             value: undefined,
-            options: ["left", "right"]
-        },
+            options: ['left', 'right']
+        }
     ]
-}
-
+};
 
 arasaacService.getSearchProviderInfo = function () {
     let newInfo = JSON.parse(JSON.stringify(searchProviderInfo));
     newInfo.service = arasaacService;
     return newInfo;
-}
+};
 
 arasaacService.getGridImageById = function (arasaacId) {
     if (!arasaacId) {
@@ -83,7 +117,7 @@ arasaacService.getGridImageById = function (arasaacId) {
         author: arasaacAuthor,
         authorURL: arasaacLicenseURL,
         searchProviderName: arasaacService.SEARCH_PROVIDER_NAME
-    })
+    });
 };
 
 /**
@@ -128,13 +162,13 @@ arasaacService.hasNextChunk = function () {
 arasaacService.getUpdatedUrl = function (oldUrl, newOptions) {
     let id = oldUrl.substring(oldUrl.lastIndexOf('/') + 1, oldUrl.indexOf('?'));
     return getUrl(id, newOptions);
-}
+};
 
 function getUrl(apiId, options) {
     let paramSuffix = '';
-    options.forEach(option => {
+    options.forEach((option) => {
         if (option.value !== undefined) {
-            paramSuffix += `&${option.name}=${encodeURIComponent(option.value)}`
+            paramSuffix += `&${option.name}=${encodeURIComponent(option.value)}`;
         }
     });
     return `https://api.arasaac.org/api/pictograms/${apiId}?download=false${paramSuffix}`;
@@ -152,18 +186,21 @@ function queryInternal(search, lang, chunkNr, chunkSize) {
             lang = lang || i18nService.getContentLang();
             _lastSearchLang = lang;
             try {
-                _lastRawResultList = await getResultListLangs([lang, i18nService.getContentLang(), i18nService.getBrowserLang(), "en", "es"], search);
+                _lastRawResultList = await getResultListLangs(
+                    [lang, i18nService.getContentLang(), i18nService.getBrowserLang(), 'en', 'es'],
+                    search
+                );
             } catch (e) {
                 reject(e);
             }
         }
-        
+
         if (!_lastRawResultList || !_lastRawResultList.length || _lastRawResultList.length === 0) {
             _lastRawResultList = [];
         }
-        let startIndex = (chunkNr * chunkSize) - chunkSize;
+        let startIndex = chunkNr * chunkSize - chunkSize;
         let endIndex = startIndex + chunkSize - 1;
-        _hasNextChunk = _lastRawResultList.length > (endIndex + 1);
+        _hasNextChunk = _lastRawResultList.length > endIndex + 1;
         for (let i = startIndex; i <= endIndex; i++) {
             if (_lastRawResultList[i]) {
                 let element = {};
@@ -209,9 +246,14 @@ async function getResultListLangs(langs, search) {
 function getResultList(lang, search) {
     let url = `https://api.arasaac.org/api/pictograms/${lang}/search/${search}`;
     return new Promise((resolve, reject) => {
-        $.get(url, null, function (resultList) {
-            resolve(resultList);
-        }, 'json').fail((reason) => {
+        $.get(
+            url,
+            null,
+            function (resultList) {
+                resolve(resultList);
+            },
+            'json'
+        ).fail((reason) => {
             if (reason.status === 404) {
                 return resolve([]);
             }
@@ -220,4 +262,4 @@ function getResultList(lang, search) {
     });
 }
 
-export {arasaacService};
+export { arasaacService };

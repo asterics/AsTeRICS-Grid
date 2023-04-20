@@ -1,0 +1,9 @@
+---
+- hosts: authserver1
+  become: true
+  roles:
+    - superLoginSetupServer
+    - superLoginCloneRepoDocker
+    - superLoginDockerCompose
+    - superLoginDockerNginx
+    - superLoginDockerCertbot

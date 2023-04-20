@@ -11,23 +11,28 @@ fontUtil.getFontSizePx = function (elem, oneLine) {
     let elementType = elem.attr('data-type');
     let imageId = elem.attr('data-img-id');
     if (!label) {
-        return "10px";
+        return '10px';
     }
 
     var rectElem = elem[0].getBoundingClientRect();
-    var areaElem = rectElem.height * rectElem.width / (imageId ? 2 : 1);
-    var fontSize1 = Math.floor(Math.sqrt(areaElem * 0.5 / Math.max(15, label.length)));
-    var longestWordLength = oneLine ? label.length : Math.max.apply(null, label.split(' ').map(elem => elem.length));
-    var fontSize2 = 1.4 * rectElem.width / longestWordLength;
+    var areaElem = (rectElem.height * rectElem.width) / (imageId ? 2 : 1);
+    var fontSize1 = Math.floor(Math.sqrt((areaElem * 0.5) / Math.max(15, label.length)));
+    var longestWordLength = oneLine
+        ? label.length
+        : Math.max.apply(
+              null,
+              label.split(' ').map((elem) => elem.length)
+          );
+    var fontSize2 = (1.4 * rectElem.width) / longestWordLength;
     fontSize2 = !oneLine ? fontSize2 : Math.min(fontSize2, 30);
     lastSize = Math.min(fontSize1, fontSize2);
     if (lastSize > rectElem.height / 3) {
         lastSize = rectElem.height * 0.3;
     }
-    if(label.length === 1 && elementType === 'ELEMENT_TYPE_NORMAL') {
+    if (label.length === 1 && elementType === 'ELEMENT_TYPE_NORMAL') {
         lastSize *= 2;
     }
-    return lastSize + "px";
+    return lastSize + 'px';
 };
 
 /**
@@ -44,9 +49,8 @@ fontUtil.adaptFontSize = function (elems) {
         let hintElems = $(elem).find('.element-hint');
         let fontPx = Math.min($(elem).width() / 10, 30);
         fontPx = fontPx < 5 ? 0 : fontPx;
-        hintElems.css("fontSize", fontPx + "px");
+        hintElems.css('fontSize', fontPx + 'px');
     }
-
 };
 
 /**
@@ -76,15 +80,15 @@ fontUtil.getTextWidth = function (text, containerElem, targetSize) {
     containerElem = document.body || containerElem;
     let font = getCanvasFontSize(containerElem, targetSize);
     // re-use canvas object for better performance
-    const canvas = fontUtil.getTextWidth.canvas || (fontUtil.getTextWidth.canvas = document.createElement("canvas"));
-    const context = canvas.getContext("2d");
+    const canvas = fontUtil.getTextWidth.canvas || (fontUtil.getTextWidth.canvas = document.createElement('canvas'));
+    const context = canvas.getContext('2d');
     context.font = font;
     const metrics = context.measureText(text);
     return metrics.width;
-}
+};
 
 fontUtil.getHighContrastColor = function (hexBackground, lightColor, darkColor) {
-    if (!hexBackground) {
+    if (!hexBackground || !hexBackground.startsWith('#')) {
         return '';
     }
     lightColor = lightColor || '#ffffff';
@@ -100,11 +104,13 @@ fontUtil.getHighContrastColor = function (hexBackground, lightColor, darkColor) 
 
 function hexToRgb(hex) {
     let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : null;
+    return result
+        ? {
+              r: parseInt(result[1], 16),
+              g: parseInt(result[2], 16),
+              b: parseInt(result[3], 16)
+          }
+        : null;
 }
 
 function getCssStyle(element, prop) {
@@ -129,7 +135,7 @@ function getLabel(elem) {
     if ($(elem).find('.collect-container').text().trim()) {
         return $(elem).find('.collect-container').text().trim();
     }
-    return "";
+    return '';
 }
 
-export {fontUtil};
+export { fontUtil };

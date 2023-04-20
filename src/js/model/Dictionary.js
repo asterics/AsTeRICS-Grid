@@ -1,6 +1,6 @@
-import {modelUtil} from "../util/modelUtil";
-import {constants} from "../util/constants";
-import {Model} from "../externals/objectmodel";
+import { modelUtil } from '../util/modelUtil';
+import { constants } from '../util/constants';
+import { Model } from '../externals/objectmodel';
 
 class Dictionary extends Model({
     id: String,
@@ -26,7 +26,7 @@ class Dictionary extends Model({
     }
 
     static getModelName() {
-        return "Dictionary";
+        return 'Dictionary';
     }
 
     static getIdPrefix() {
@@ -35,10 +35,10 @@ class Dictionary extends Model({
 }
 
 Dictionary.defaults({
-    id: "", //will be replaced by constructor
+    id: '', //will be replaced by constructor
     modelName: Dictionary.getModelName(),
     modelVersion: constants.MODEL_VERSION,
     data: JSON.stringify({})
 });
 
-export {Dictionary};
+export { Dictionary };

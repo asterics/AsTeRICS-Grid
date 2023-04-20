@@ -1,6 +1,6 @@
-import {encryptionService} from "./encryptionService";
-import {EncryptedObject} from "../../model/EncryptedObject";
-import {dataUtil} from "../../util/dataUtil";
+import { encryptionService } from './encryptionService';
+import { EncryptedObject } from '../../model/EncryptedObject';
+import { dataUtil } from '../../util/dataUtil';
 
 jest.mock('../../externals/sjcl');
 jest.mock('../../model/EncryptedObject');
@@ -16,7 +16,7 @@ let DEFAULT_SALT = 'DEFAULT_SALT';
 let DEFAULT_ENC_KEY = DEFAULT_SALT + DEFAULT_PASSWORD;
 
 test('encryptionService.encryptObject - Test 0', () => {
-    let object = {data: 'testdata'};
+    let object = { data: 'testdata' };
     let json = JSON.stringify(object);
     expect(() => {
         encryptionService.encryptObject(object);
@@ -24,7 +24,7 @@ test('encryptionService.encryptObject - Test 0', () => {
 });
 
 test('encryptionService.encryptObject - Test 1', () => {
-    let object = {data: 'testdata'};
+    let object = { data: 'testdata' };
     let json = JSON.stringify(object);
     encryptionService.setEncryptionProperties(DEFAULT_PASSWORD, DEFAULT_SALT);
     let result = encryptionService.encryptObject(object);
@@ -56,7 +56,7 @@ test('encryptionService.encryptObject - Test 2', () => {
 
 test('encryptionService.encryptObject - Test 3', () => {
     //with password -> real encryption
-    let object = {data: 'testdata'};
+    let object = { data: 'testdata' };
     let json = JSON.stringify(object);
     let encryptionKey = 'mykey';
     encryptionService.setEncryptionProperties(encryptionKey, DEFAULT_SALT);
@@ -135,8 +135,8 @@ test('encryptionService.decryptObject - shortening', () => {
     };
     encryptionService.setEncryptionProperties(encryptionKey, DEFAULT_SALT);
     let result = encryptionService.encryptObject(object);
-    expect(encryptionService.decryptObjects(result, {onlyShortVersion: false}).data).toEqual(object.data);
-    expect(encryptionService.decryptObjects(result, {onlyShortVersion: true}).data).toEqual(objectShortened.data);
+    expect(encryptionService.decryptObjects(result, { onlyShortVersion: false }).data).toEqual(object.data);
+    expect(encryptionService.decryptObjects(result, { onlyShortVersion: true }).data).toEqual(objectShortened.data);
 });
 
 test('encryptionService.decryptObject - shortening, no short version', () => {
@@ -150,7 +150,7 @@ test('encryptionService.decryptObject - shortening, no short version', () => {
     };
     encryptionService.setEncryptionProperties(encryptionKey, DEFAULT_SALT);
     let result = encryptionService.encryptObject(object);
-    expect(encryptionService.decryptObjects(result, {onlyShortVersion: true}).data).toEqual(object.data);
+    expect(encryptionService.decryptObjects(result, { onlyShortVersion: true }).data).toEqual(object.data);
 });
 
 test('encryptionService.encryptObject - shortening 2, below threshold', () => {

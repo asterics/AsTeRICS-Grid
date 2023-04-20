@@ -1,10 +1,10 @@
-import {EncryptedObject} from "../../model/EncryptedObject";
-import {dataUtil} from "../../util/dataUtil";
-import {sjcl} from "../../externals/sjcl";
-import {log} from "../../util/log.js";
-import {MapCache} from "../../util/MapCache";
+import { EncryptedObject } from '../../model/EncryptedObject';
+import { dataUtil } from '../../util/dataUtil';
+import { sjcl } from '../../externals/sjcl';
+import { log } from '../../util/log.js';
+import { MapCache } from '../../util/MapCache';
 
-let STATIC_USER_PW_SALT = "STATIC_USER_PW_SALT";
+let STATIC_USER_PW_SALT = 'STATIC_USER_PW_SALT';
 
 let encryptionService = {};
 let _encryptionSalts = null;
@@ -41,7 +41,9 @@ encryptionService.encryptObject = function (object) {
     let shortJsonString = JSON.stringify(dataUtil.removeLongPropertyValues(object));
     let shortVersionDifferent = jsonString !== shortJsonString;
     encryptedObject.encryptedDataBase64 = encryptionService.encryptString(jsonString, _encryptionSalts[0]);
-    encryptedObject.encryptedDataBase64Short = shortVersionDifferent ? encryptionService.encryptString(shortJsonString, _encryptionSalts[0]) : null;
+    encryptedObject.encryptedDataBase64Short = shortVersionDifferent
+        ? encryptionService.encryptString(shortJsonString, _encryptionSalts[0])
+        : null;
     return encryptedObject;
 };
 
@@ -65,7 +67,7 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
 
     encryptedObjects = encryptedObjects instanceof Array ? encryptedObjects : [encryptedObjects];
     let decryptedObjects = [];
-    encryptedObjects.forEach(encryptedObject => {
+    encryptedObjects.forEach((encryptedObject) => {
         try {
             let decryptedString = null;
             let decryptedObject = null;
@@ -75,7 +77,10 @@ encryptionService.decryptObjects = function (encryptedObjects, options) {
                 decryptedObject = JSON.parse(decryptedString);
                 decryptedObject.isShortVersion = true;
             } else {
-                decryptedString = encryptionService.decryptStringTrySalts(encryptedObject.encryptedDataBase64, _encryptionSalts);
+                decryptedString = encryptionService.decryptStringTrySalts(
+                    encryptedObject.encryptedDataBase64,
+                    _encryptionSalts
+                );
                 decryptedObject = JSON.parse(decryptedString);
             }
             decryptedObject._id = encryptedObject._id;
@@ -102,7 +107,7 @@ encryptionService.encryptString = function (string, encryptionSalt) {
     let encryptionKey = getEncryptionKey(encryptionSalt);
     let encryptedString = null;
     if (encryptionKey && !_isLocalUser) {
-        encryptedString =  sjcl.encrypt(encryptionKey, string, {iter: 1000});
+        encryptedString = sjcl.encrypt(encryptionKey, string, { iter: 1000 });
     } else {
         encryptedString = string;
     }
@@ -156,7 +161,7 @@ encryptionService.decryptStringTrySalts = function (encryptedString, trySalts) {
         log.warn("wasn't able to decrypt string, try next salt...");
         return encryptionService.decryptStringTrySalts(encryptedString, trySalts);
     }
-}
+};
 
 /**
  * returns a cryptographic hash of a string (SHA-256)
@@ -220,4 +225,4 @@ function throwErrorIfUninitialized() {
     }
 }
 
-export {encryptionService};
+export { encryptionService };

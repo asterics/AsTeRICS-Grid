@@ -17,3 +17,5 @@ This documentation is divided in the following parts:
 1. [Testing](01_terms.md)
 1. [Development setup](01_terms.md)
 1. [Production setup](01_terms.md)
+
+For general info about collaboration possibilities, see [collaboration.md](collaboration.md)

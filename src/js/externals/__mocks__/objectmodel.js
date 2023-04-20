@@ -3,15 +3,13 @@ class Test {
         Object.assign(this, props);
     }
 
-    static defaults() {
-    }
+    static defaults() {}
 }
 
 function Model() {
     return Test;
 }
 
-Model.Array = function () {
-};
+Model.Array = function () {};
 
-export {Model};
+export { Model };

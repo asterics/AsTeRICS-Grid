@@ -1,6 +1,6 @@
-import {modelUtil} from "../util/modelUtil";
-import {constants} from "../util/constants";
-import {Model} from "../externals/objectmodel";
+import { modelUtil } from '../util/modelUtil';
+import { constants } from '../util/constants';
+import { Model } from '../externals/objectmodel';
 
 class GridActionYoutube extends Model({
     id: String,
@@ -22,7 +22,7 @@ class GridActionYoutube extends Model({
     }
 
     static getModelName() {
-        return "GridActionYoutube";
+        return 'GridActionYoutube';
     }
 
     static getActions() {
@@ -49,19 +49,19 @@ GridActionYoutube.actions = {
     YT_ENTER_FULLSCREEN: 'YT_ENTER_FULLSCREEN',
     YT_VOLUME_UP: 'YT_VOLUME_UP',
     YT_VOLUME_DOWN: 'YT_VOLUME_DOWN',
-    YT_VOLUME_MUTE: 'YT_VOLUME_MUTE',
-}
+    YT_VOLUME_MUTE: 'YT_VOLUME_MUTE'
+};
 
 GridActionYoutube.playTypes = {
     YT_PLAY_VIDEO: 'YT_PLAY_VIDEO',
     YT_PLAY_PLAYLIST: 'YT_PLAY_PLAYLIST',
     YT_PLAY_SEARCH: 'YT_PLAY_SEARCH',
     YT_PLAY_CHANNEL: 'YT_PLAY_CHANNEL',
-    YT_PLAY_RELATED: 'YT_PLAY_RELATED',
-}
+    YT_PLAY_RELATED: 'YT_PLAY_RELATED'
+};
 
 GridActionYoutube.defaults({
-    id: "", //will be replaced by constructor
+    id: '', //will be replaced by constructor
     modelName: GridActionYoutube.getModelName(),
     modelVersion: constants.MODEL_VERSION,
     stepSeconds: 10,
@@ -69,4 +69,4 @@ GridActionYoutube.defaults({
     playType: GridActionYoutube.playTypes.YT_PLAY_VIDEO
 });
 
-export {GridActionYoutube};
+export { GridActionYoutube };

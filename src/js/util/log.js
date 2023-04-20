@@ -1,2 +1,2 @@
 let log = window.log;
-export {log};
+export { log };

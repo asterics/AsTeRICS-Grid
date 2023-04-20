@@ -1,9 +1,9 @@
 let $ = {};
 
-module.exports = function (){
+module.exports = function () {
     return {
-        on: function (){}
-    }
+        on: function () {}
+    };
 };
 
-export {$};
+export { $ };

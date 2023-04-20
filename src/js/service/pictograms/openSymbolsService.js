@@ -1,5 +1,5 @@
 import $ from '../../externals/jquery.js';
-import {imageUtil} from "../../util/imageUtil";
+import { imageUtil } from '../../util/imageUtil';
 
 let QUERY_URL = 'https://www.opensymbols.org/api/v1/symbols/search?q=';
 let openSymbolsService = {};
@@ -16,7 +16,7 @@ let _hasNextChunk = false;
 
 let searchProviderInfo = {
     name: openSymbolsService.SEARCH_PROVIDER_NAME,
-    url: "https://www.opensymbols.org/",
+    url: 'https://www.opensymbols.org/',
     service: openSymbolsService
 };
 
@@ -24,7 +24,7 @@ openSymbolsService.getSearchProviderInfo = function () {
     let newInfo = JSON.parse(JSON.stringify(searchProviderInfo));
     newInfo.service = openSymbolsService;
     return newInfo;
-}
+};
 
 /**
  * searches for images
@@ -78,7 +78,7 @@ function queryInternal(search, chunkNr, chunkSize) {
                 processResultList(resultList);
             }).fail(() => {
                 reject('no internet');
-            });;
+            });
         } else {
             processResultList(_lastRawResultList);
         }
@@ -87,9 +87,9 @@ function queryInternal(search, chunkNr, chunkSize) {
             if (!resultList || !resultList.length || resultList.length === 0) {
                 resultList = [];
             }
-            let startIndex = (chunkNr * chunkSize) - chunkSize;
+            let startIndex = chunkNr * chunkSize - chunkSize;
             let endIndex = startIndex + chunkSize - 1;
-            _hasNextChunk = resultList.length > (endIndex + 1);
+            _hasNextChunk = resultList.length > endIndex + 1;
             for (let i = startIndex; i <= endIndex; i++) {
                 if (resultList[i]) {
                     let element = {};
@@ -116,5 +116,4 @@ function queryInternal(search, chunkNr, chunkSize) {
     });
 }
 
-
-export {openSymbolsService};
+export { openSymbolsService };

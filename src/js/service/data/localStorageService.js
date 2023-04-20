@@ -1,26 +1,26 @@
-import {constants} from "../../util/constants";
-import {MetaData} from "../../model/MetaData";
+import { constants } from '../../util/constants';
+import { MetaData } from '../../model/MetaData';
 
 var errorMsg = 'could not access local storage, maybe disabled by user? Error: ';
 var storage = null;
-let USER_PASSWORDS_KEY = "USER_PASSWORDS_KEY";
-let USER_MODELVERSION_KEY = "USER_MODELVERSION_KEY";
-let SYNCED_DBS_LIST_KEY = "SYNCED_DBS_LIST_KEY";
-let LAST_ACTIVEUSER_KEY = "LAST_ACTIVEUSER_KEY";
-let AUTOLOGIN_USER_KEY = "AUTOLOGIN_USER_KEY";
-let SYNC_NAVIGATION_KEY = "AG_SYNC_NAVIGATION_KEY";
-let UNLOCK_PASSCODE_KEY = "AG_UNLOCK_PASSCODE_KEY";
-let LOCAL_METADATA_KEY = "AG_LOCAL_METADATA_KEY";
-let GRID_DIMENSIONS_KEY = "AG_GRID_DIMENSIONS_KEY";
-let USED_LOCALES_KEY = "AG_USED_LOCALES_KEY";
-let YT_STATE_KEY = "AG_YT_STATE_KEY";
-let CURRENT_VERSION_KEY = "AG_CURRENT_VERSION_KEY";
+let USER_PASSWORDS_KEY = 'USER_PASSWORDS_KEY';
+let USER_MODELVERSION_KEY = 'USER_MODELVERSION_KEY';
+let SYNCED_DBS_LIST_KEY = 'SYNCED_DBS_LIST_KEY';
+let LAST_ACTIVEUSER_KEY = 'LAST_ACTIVEUSER_KEY';
+let AUTOLOGIN_USER_KEY = 'AUTOLOGIN_USER_KEY';
+let SYNC_NAVIGATION_KEY = 'AG_SYNC_NAVIGATION_KEY';
+let UNLOCK_PASSCODE_KEY = 'AG_UNLOCK_PASSCODE_KEY';
+let LOCAL_METADATA_KEY = 'AG_LOCAL_METADATA_KEY';
+let GRID_DIMENSIONS_KEY = 'AG_GRID_DIMENSIONS_KEY';
+let USED_LOCALES_KEY = 'AG_USED_LOCALES_KEY';
+let YT_STATE_KEY = 'AG_YT_STATE_KEY';
+let CURRENT_VERSION_KEY = 'AG_CURRENT_VERSION_KEY';
 
-if (typeof (Storage) !== "undefined") {
+if (typeof Storage !== 'undefined') {
     try {
         var storage = window.localStorage;
     } catch (e) {
-        log.error(errorMsg + e)
+        log.error(errorMsg + e);
     }
 }
 
@@ -30,7 +30,7 @@ var localStorageService = {
             try {
                 return storage.setItem(key, value);
             } catch (e) {
-                log.error(errorMsg + e)
+                log.error(errorMsg + e);
             }
         }
     },
@@ -39,7 +39,7 @@ var localStorageService = {
             try {
                 return storage.getItem(key);
             } catch (e) {
-                log.error(errorMsg + e)
+                log.error(errorMsg + e);
             }
         }
     },
@@ -54,7 +54,7 @@ var localStorageService = {
             try {
                 return storage.removeItem(key);
             } catch (e) {
-                log.error(errorMsg + e)
+                log.error(errorMsg + e);
             }
         }
     },
@@ -128,7 +128,7 @@ var localStorageService = {
         let onlineUsers = localStorageService.getSavedOnlineUsers();
         let allUsers = onlineUsers.concat(localUsers);
         if (loggedInUser && allUsers.includes(loggedInUser)) {
-            allUsers = allUsers.filter(user => user !== loggedInUser);
+            allUsers = allUsers.filter((user) => user !== loggedInUser);
             allUsers.unshift(loggedInUser);
         }
         return allUsers;
@@ -139,15 +139,17 @@ var localStorageService = {
     getSavedLocalUsers() {
         let object = getSaveObject(USER_PASSWORDS_KEY);
         let allUsers = Object.keys(object) || [];
-        return allUsers.filter(username => object[username] === '').sort((a, b) => {
-            if (a === constants.LOCAL_DEMO_USERNAME) {
-                return 1;
-            }
-            if (b === constants.LOCAL_DEMO_USERNAME) {
-                return -1;
-            }
-            return a.localeCompare(b);
-        });
+        return allUsers
+            .filter((username) => object[username] === '')
+            .sort((a, b) => {
+                if (a === constants.LOCAL_DEMO_USERNAME) {
+                    return 1;
+                }
+                if (b === constants.LOCAL_DEMO_USERNAME) {
+                    return -1;
+                }
+                return a.localeCompare(b);
+            });
     },
     /**
      * returns all saved online users as a string list
@@ -155,7 +157,7 @@ var localStorageService = {
     getSavedOnlineUsers() {
         let object = getSaveObject(USER_PASSWORDS_KEY);
         let allUsers = Object.keys(object) || [];
-        return allUsers.filter(username => object[username] !== '').sort();
+        return allUsers.filter((username) => object[username] !== '').sort();
     },
     /**
      * saves the last active user by username
@@ -183,8 +185,7 @@ var localStorageService = {
      */
     getAutologinUser() {
         return localStorageService.get(AUTOLOGIN_USER_KEY);
-    }
-    ,
+    },
     /**
      * saves a name of the database that should be marked as "completely synced"
      * @param databaseName the name of the database to save
@@ -212,7 +213,7 @@ var localStorageService = {
      */
     unmarkSyncedDatabase(databaseName) {
         let list = getSyncedDbsList();
-        list = list.filter(name => name !== databaseName);
+        list = list.filter((name) => name !== databaseName);
         localStorageService.save(SYNCED_DBS_LIST_KEY, JSON.stringify(list));
     },
     /**
@@ -307,7 +308,7 @@ var localStorageService = {
 function getSaveObject(key) {
     let objectString = localStorageService.get(key);
     let object = JSON.parse(objectString);
-    let isObject = (object instanceof Object);
+    let isObject = object instanceof Object;
     if (key === LOCAL_METADATA_KEY && object && object.modelName === MetaData.getModelName()) {
         let user = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
         let value = {};
@@ -331,5 +332,4 @@ function getSyncedDbsList() {
     return JSON.parse(syncedDbsString);
 }
 
-
-export {localStorageService};
+export { localStorageService };

@@ -13,5 +13,6 @@ The documentation is divided in the following parts:
 1. [Dictionaries](07_dictionaries.md)
 1. [Keyboard Shortcuts](08_keyboard_shortcuts.md)
 1. [Translation](09_translation.md)
+1. [FAQ - frequently asked questions](10_faq.md)
 
 **Hint:** Most of the content of this documentation is also available in [this video playlist](https://www.youtube.com/playlist?list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz) on YouTube. The videos are in German, but auto-translated subtitles are available.

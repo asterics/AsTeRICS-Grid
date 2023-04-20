@@ -1,0 +1,81 @@
+#####
+###  CLONE REPO
+#
+---
+- debug:
+    msg: START CLONE REPO...
+
+- name: git - pull or clone {{REPOSITORY}}
+  become: true
+  shell: '[ -d "./{{REPO_NAME}}" ] && (cd "./{{REPO_NAME}}" && git fetch origin) || (git clone {{REPOSITORY}} && git fetch origin)'
+  register: result
+- name: debug [git - pull or clone {{REPOSITORY}}]
+  debug:
+    var: result
+
+- name: git - checkout {{BRANCH_NAME}}
+  become: true
+  shell: 'cd "./{{REPO_NAME}}" && git checkout {{BRANCH_NAME}} && git pull origin {{BRANCH_NAME}}'
+  register: result
+- name: debug [git - checkout {{BRANCH_NAME}}]
+  debug:
+    var: result
+
+- name: copy files local to remote with a template (.env)
+  template:
+    src: env
+    dest: ./{{REPO_NAME}}/.env
+  register: result
+- name: debug [copy files local to remote with a template (.env)]
+  debug:
+    var: result
+
+- name: copy files local to remote with a template (Dockerfile)
+  template:
+    src: Dockerfile
+    dest: ./{{REPO_NAME}}/Dockerfile
+  register: result
+- name: debug [copy files local to remote with a template (Dockerfile)]
+  debug:
+    var: result
+
+### DELETE AFTER TEST
+
+- name: git - pull or clone {{REPOSITORY}} old
+  become: true
+  shell: '[ -d "./{{REPO_NAME_OLD}}" ] && (cd "./{{REPO_NAME_OLD}}" && git fetch origin) || (git clone {{REPOSITORY}} {{REPO_NAME_OLD}} && git fetch origin)'
+  register: result
+- name: debug [git - pull or clone {{REPOSITORY}} old]
+  debug:
+    var: result
+
+- name: git - checkout {{BRANCH_NAME_OLD}} old
+  become: true
+  shell: 'cd "./{{REPO_NAME_OLD}}" && git checkout {{BRANCH_NAME_OLD}} && git pull origin {{BRANCH_NAME_OLD}}'
+  register: result
+- name: debug [git - checkout {{BRANCH_NAME_OLD}}  old]
+  debug:
+    var: result
+
+- name: copy files local to remote with a template (.env) old
+  template:
+    src: env
+    dest: ./{{REPO_NAME_OLD}}/.env
+  register: result
+- name: debug [copy files local to remote with a template (.env) old]
+  debug:
+    var: result
+
+- name: copy files local to remote with a template (Dockerfile) old
+  template:
+    src: Dockerfile
+    dest: ./{{REPO_NAME_OLD}}/Dockerfile
+  register: result
+- name: debug [copy files local to remote with a template (Dockerfile) old]
+  debug:
+    var: result
+
+### DELETE AFTER TEST
+
+- debug:
+    msg: END CLONE REPO...

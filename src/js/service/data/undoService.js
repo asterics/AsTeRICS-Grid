@@ -1,4 +1,4 @@
-import {dataService} from "./dataService";
+import { dataService } from './dataService';
 
 function UndoService() {
     var thiz = this;
@@ -10,7 +10,7 @@ function UndoService() {
      * @return {boolean}
      */
     thiz.canUndo = function () {
-        return _undoGridDataStack.length > 0
+        return _undoGridDataStack.length > 0;
     };
 
     /**
@@ -18,7 +18,7 @@ function UndoService() {
      * @return {boolean}
      */
     thiz.canRedo = function () {
-        return _redoGridDataStack.length > 0
+        return _redoGridDataStack.length > 0;
     };
 
     /**
@@ -28,7 +28,7 @@ function UndoService() {
      */
     thiz.updateGrid = function (newGridData) {
         return new Promise((resolve) => {
-            dataService.getGrid(newGridData.id).then(savedGrid => {
+            dataService.getGrid(newGridData.id).then((savedGrid) => {
                 if (!savedGrid.isEqual(newGridData)) {
                     _undoGridDataStack.push(JSON.parse(JSON.stringify(savedGrid)));
                     _redoGridDataStack = [];
@@ -39,7 +39,6 @@ function UndoService() {
                     log.debug('grid not updated, do noting');
                     resolve(false);
                 }
-
             });
         });
     };
@@ -51,7 +50,7 @@ function UndoService() {
     thiz.doUndo = function () {
         if (this.canUndo()) {
             var undoData = _undoGridDataStack.pop();
-            dataService.getGrid(undoData.id).then(savedGrid => {
+            dataService.getGrid(undoData.id).then((savedGrid) => {
                 _redoGridDataStack.push(JSON.parse(JSON.stringify(savedGrid)));
                 dataService.saveGrid(undoData);
             });
@@ -66,7 +65,7 @@ function UndoService() {
     thiz.doRedo = function () {
         if (this.canRedo()) {
             var redoData = _redoGridDataStack.pop();
-            dataService.getGrid(redoData.id).then(savedGrid => {
+            dataService.getGrid(redoData.id).then((savedGrid) => {
                 _undoGridDataStack.push(JSON.parse(JSON.stringify(savedGrid)));
                 dataService.saveGrid(redoData);
             });
@@ -75,4 +74,4 @@ function UndoService() {
     };
 }
 
-export {UndoService};
+export { UndoService };

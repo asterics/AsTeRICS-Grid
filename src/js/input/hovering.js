@@ -1,13 +1,13 @@
-import { L } from "../util/lquery.js";
+import { L } from '../util/lquery.js';
 import $ from '../externals/jquery.js';
-import {inputEventHandler} from "./inputEventHandler";
-import {util} from "../util/util";
-import {speechService} from "../service/speechService";
-import {i18nService} from "../service/i18nService";
-import {MainVue} from "../vue/mainVue";
-import {stateService} from "../service/stateService";
-import {constants} from "../util/constants";
-import {InputConfig} from "../model/InputConfig";
+import { inputEventHandler } from './inputEventHandler';
+import { util } from '../util/util';
+import { speechService } from '../service/speechService';
+import { i18nService } from '../service/i18nService';
+import { MainVue } from '../vue/mainVue';
+import { stateService } from '../service/stateService';
+import { constants } from '../util/constants';
+import { InputConfig } from '../model/InputConfig';
 
 let Hover = {};
 Hover.getInstanceFromConfig = function (inputConfig, itemSelector, options) {
@@ -16,8 +16,8 @@ Hover.getInstanceFromConfig = function (inputConfig, itemSelector, options) {
         selectionListener: options.selectionListener,
         activeListener: options.activeListener,
         containerClass: options.containerClass,
-        inputEventSelect: inputConfig.seqInputs.filter(e => e.label === InputConfig.SELECT)[0],
-        inputEventNext: inputConfig.seqInputs.filter(e => e.label === InputConfig.NEXT)[0],
+        inputEventSelect: inputConfig.seqInputs.filter((e) => e.label === InputConfig.SELECT)[0],
+        inputEventNext: inputConfig.seqInputs.filter((e) => e.label === InputConfig.NEXT)[0],
         timeoutMs: inputConfig.hoverTimeoutMs,
         demoMode: options.demoMode || inputConfig.hoverDisableHoverpane,
         hideCursor: inputConfig.hoverHideCursor
@@ -60,9 +60,13 @@ function HoverConstructor(itemSelector, options) {
         if (!_touchElementHidden) {
             setTouchElementVisibility(false);
         }
-        util.debounce(() => {
-            setTouchElementVisibility(true);
-        }, _hoverTimeoutMs + 300, 'hovering-mouseMove');
+        util.debounce(
+            () => {
+                setTouchElementVisibility(true);
+            },
+            _hoverTimeoutMs + 300,
+            'hovering-mouseMove'
+        );
     }
 
     function mouseUp() {
@@ -83,12 +87,17 @@ function HoverConstructor(itemSelector, options) {
         if (!_demoMode) {
             event.preventDefault();
         }
-        util.throttle(() => {
-            let element = getTouchEventElement(event);
-            onElement(element);
-            _lastElement = element;
-            _lastTouchEvent = event;
-        }, [], 50, 'hovering-touchmove');
+        util.throttle(
+            () => {
+                let element = getTouchEventElement(event);
+                onElement(element);
+                _lastElement = element;
+                _lastTouchEvent = event;
+            },
+            [],
+            50,
+            'hovering-touchmove'
+        );
     }
 
     function clickHandler(event) {
@@ -188,7 +197,7 @@ function HoverConstructor(itemSelector, options) {
         _inputEventHandler.onTouchEnd(touchEnd);
         _inputEventHandler.onTouchMove(touchMove);
         _inputEventHandler.startListening();
-        document.addEventListener("mousemove", mouseMove);
+        document.addEventListener('mousemove', mouseMove);
     };
 
     thiz.destroy = function () {
@@ -207,8 +216,8 @@ function HoverConstructor(itemSelector, options) {
             item.removeEventListener('click', clickHandler);
         });
         _inputEventHandler.destroy();
-        document.removeEventListener("mousemove", mouseMove);
-        Object.keys(_hoverMap).forEach(key => {
+        document.removeEventListener('mousemove', mouseMove);
+        Object.keys(_hoverMap).forEach((key) => {
             clearTimeout(_hoverMap[key]);
         });
         stateService.clearListeners(constants.STATE_ACTIVATED_TTS);
@@ -223,5 +232,4 @@ function HoverConstructor(itemSelector, options) {
     };
 }
 
-
-export {Hover};
+export { Hover };
