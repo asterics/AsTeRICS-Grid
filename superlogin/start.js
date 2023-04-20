@@ -52,8 +52,8 @@ var config = {
     host: process.env.DB_SERVER_HOST,
     user: process.env.DB_SERVER_USER,
     password: process.env.DB_SERVER_PASSWORD,
-    userDB: process.env.DB_SERVER_USER_DB,
-    couchAuthDB: process.env.DB_SERVER_COUCH_AUTH_DB,
+    userDB: process.env.CAUTH_USER_DB,
+    couchAuthDB: process.env.CAUTH_COUCH_AUTH_DB,
   },
   local: {
     sendConfirmEmail: false,
