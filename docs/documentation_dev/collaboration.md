@@ -36,7 +36,7 @@ For emails regarding AsTeRICS Grid received at `office@asterics-foundation.org` 
 ```
 Hello,
 
-thanks for contacting us. Unfortunately we cannot provide support in Spanish.
+thanks for contacting us. Unfortunately we at the AsTeRICS Foundation cannot provide support in Spanish.
 Please to go our Instagram or Facebook pages maintained by ARASAAC and send them a private message there including your questions:
 https://www.instagram.com/asterics_grid/
 https://www.facebook.com/asterics.grid.y.arasaac
