@@ -16,13 +16,14 @@ On most operating systems it's possible to install additional offline voices and
 
 #### Microsoft Windows 10
 On Windows 10 follow these steps to install additional voices:
-* go to language system settings
-* click on "add language"
-* search for the language you want to install
-* if there is a speech balloon icon next to the language it indicates that a text-to-speech (TTS) voice is available for this language:
+1. go to **language system settings**
+1. click on **add language**
+1. search for the language you want to install
+1. if there is a speech balloon icon next to the language it indicates that a text-to-speech (TTS) voice is available for this language:
 <div align="center"><img width=350 src="https://user-images.githubusercontent.com/2537025/233000407-6d8410b7-834f-45bb-ab06-d4931340071a.png"/></div>
 
-* if a TTS voice is available for your language, install it, restart the computer and afterwards the new offline voices should be available in AsTeRICS Grid
+1. If a TTS voice is available for your language, **install it**!
+2. **Restart the computer**: Afterwards the new offline voices should be available in AsTeRICS Grid
 
 #### Android
 Please follow this tutorial from ARASAAC to read about possibilities to install additional offline voices on an Android device: [ARASAAC tutorial for installing voices on Android](https://aulaabierta.arasaac.org/en/dynamic-communicator-asterics-grid-installation-of-speech-synthesis-tts-android)
