@@ -916,5 +916,7 @@
   "notifications": "התראות",
   "days": "ימים",
   "offline": "לא מקוון",
-  "online": "מקוון"
+  "online": "מקוון",
+  "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Couldn't play webradio, because the browser didn't allow it.",
+  "allowPlayingRadio": "Allow playing radio"
 }
