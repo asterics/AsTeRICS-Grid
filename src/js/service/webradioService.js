@@ -119,8 +119,17 @@ webradioService.play = function (webradio) {
         });
         if (promise && promise.then) {
             //IE does not return promise on play
-            promise.catch(() => {
-                if (lastPlayedId === webradio.radioId) {
+            promise.catch((e) => {
+                let error = e + '';
+                if (error.includes('NotAllowedError')) {
+                    MainVue.setTooltip(i18nService.t('couldntPlayWebradioBecauseTheBrowserDidntAllow'), {
+                        msgType: 'warn',
+                        actionLink: i18nService.t('allowPlayingRadio'),
+                        actionLinkFn: () => {
+                            webradioService.play(webradio);
+                        }
+                    });
+                } else if (lastPlayedId === webradio.radioId) {
                     showErrorMsg(webradio);
                 }
             });
