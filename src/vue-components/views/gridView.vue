@@ -140,7 +140,7 @@
                 dataService.saveMetadata(thiz.metadata).then(() => {
                     $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
                     $(document).trigger(constants.EVENT_UI_LOCKED);
-                    $('#viewPortMeta').attr('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
+                    this.setZoomable(false);
                 });
             },
             unlock(force) {
@@ -158,8 +158,23 @@
                     dataService.saveMetadata(thiz.metadata).then(() => {
                         $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
                         $(document).trigger(constants.EVENT_UI_UNLOCKED);
-                        $('#viewPortMeta').attr('content', 'width=device-width, initial-scale=1');
+                        this.setZoomable(true);
                     });
+                }
+            },
+            setZoomable(zoomable) {
+                if (zoomable) {
+                    $('#viewPortMeta').attr('content', 'width=device-width, initial-scale=1');
+                    $('body').attr('touch-action', '');
+                    document.removeEventListener('touchmove', this.preventZoomHandler);
+                } else {
+                    $('#viewPortMeta').attr('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
+                    document.addEventListener('touchmove', this.preventZoomHandler, {passive: false});
+                }
+            },
+            preventZoomHandler(event) {
+                if (event.scale !== 1) {
+                    event.preventDefault();
                 }
             },
             applyFullscreen(dontSave) {
@@ -437,6 +452,7 @@
                 dataService.saveMetadata(metadata).then(() => {
                     if (metadata.locked) {
                         $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
+                        this.setZoomable(!metadata.locked);
                     }
                 });
                 thiz.metadata = metadata;
