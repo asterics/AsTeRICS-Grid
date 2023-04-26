@@ -38,6 +38,6 @@ It's **not possible to reset or recover the password of an online user**. If the
 
 So there are two things that are important in order to prevent loosing data:
 * keep the usernames and passwords of your online users safe, write them down somewhere or use a password safe software for saving them.
-* regularily download backups of your users data to file. AsTeRICS Grid automatically reminds for downloading backups, but it can be done at any time by going to `Manage grids -> More (right top) -> Save backup to file`. Backups saved to file are not encrypted and therefore can be used and imported for a new user.
+* regularily download backups of your user's data to file. AsTeRICS Grid automatically reminds for downloading backups, but it can be done at any time by going to `Manage grids -> More (right top) -> Save backup to file`. Backups saved to file are not encrypted and therefore can be used and imported for a new user.
 
 If you've lost the password of a user and you're still logged in with this user on any device, just make a backup to file and you can create a new user and import the data from backup there.
