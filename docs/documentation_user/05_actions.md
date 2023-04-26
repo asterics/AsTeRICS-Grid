@@ -71,7 +71,11 @@ Clicking on "Edit" of a "speak label" action (or creating a new one by clicking 
 
 By default the language of the browser/system is selected. Available languages can differ depending on the browser, from experience [Google Chrome](https://www.google.com/chrome/) offers most languages. Clicking on the "Test" button speaks the label in the selected language.
 
-*Note: some browsers like Internet Explorer do not support text-to-speech. In these browsers speak actions will do nothing.*
+You can change the language and voice settings in the **Settings** menu.
+
+*Note: Some browsers like Internet Explorer (old default Windows browser) do not support text-to-speech. In these browsers, speak actions will do nothing. In contrast, the Microsoft Edge browser (new default Windows browser) supports many text-to-speech voices.*
+
+***Note: In case of problems when speaking the label (e.g. no spoken label or bad quality voice), check the [FAQ page](10_faq.html).***
 
 ### Navigate to other grid
 

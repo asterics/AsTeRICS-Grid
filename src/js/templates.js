@@ -71,7 +71,7 @@ function getGridElementNormal(gridElem, fallbackLocale, metadata) {
         !label && !imgData
     }" style="${`background-color: ${backgroundColor}; border: 1px solid ${getBorderColor(metadata)}`}">
         <div class="img-container" style="width: 100%; max-height: ${imgContainerMaxHeight};">
-            <img src="${imgData}" style="max-width: 98%; max-height: 98%; object-fit: contain; margin: 1%;" crossorigin="anonymous"/>
+            <img src="${imgData}" draggable="false" style="max-width: 98%; max-height: 98%; object-fit: contain; margin: 1%;" crossorigin="anonymous"/>
         </div>
         <div class="text-container" style="${txtContainerStyle + `color: ${fontColor}`}"><span>${label}</span></div>
         ${getHintsElement(gridElem)}
