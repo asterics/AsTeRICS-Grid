@@ -34,7 +34,7 @@ self.addEventListener('activate', event => {
     self.clients.matchAll().then(clients => {
         clients.forEach(client => client.postMessage({activated: true}));
     });
-    console.log('Service Worker active! Version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/release-beta-2023-04-27-13.16/+0200');
+    console.log('Service Worker active! Version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
 });
 
 self.addEventListener('message', (event) => {
