@@ -916,5 +916,7 @@
   "notifications": "Benachrichtigungen",
   "days": "Tage",
   "offline": "offline",
-  "online": "online"
+  "online": "online",
+  "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Webradio konnte nicht abgespielt werden, da der Browser es nicht erlaubt hat.",
+  "allowPlayingRadio": "Radio abspielen erlauben"
 }

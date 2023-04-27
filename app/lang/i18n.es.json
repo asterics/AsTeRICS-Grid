@@ -824,8 +824,8 @@
   "newCommunicator": "Nuevo comunicador",
   "author": "Autor",
   "helloClickRightToEdit": "Hola - haz clic derecho para editar la celda",
-  "donateWithPaypal": "Donate with PayPal",
-  "donateAtOpencollective": "Donate at open collective",
+  "donateWithPaypal": "Donar con PayPal",
+  "donateAtOpencollective": "Donar en open collective",
   "ifYouWantToSupportTheDevelopmentOfAstericsGrid": "Si quieres apoyar el desarrollo de AsTeRICS Grid y contribuir a sufragar los gatos de mantenimiento del servidor/base de datos para la sincronización puedes hacerlo con una donación a la Fundación AsTeRICS",
   "supportUs": "Ayúdanos",
   "theFollowingRessourcesForHelpOnAstericsGrid": "Para aprender las posibilidades y el manejo de AsTeRICS Grid te ofrecemos los siguientes recursos",
@@ -916,5 +916,7 @@
   "notifications": "Notificaciones",
   "days": "días",
   "offline": "offline",
-  "online": "online"
+  "online": "online",
+  "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Couldn't play webradio, because the browser didn't allow it.",
+  "allowPlayingRadio": "Allow playing radio"
 }
