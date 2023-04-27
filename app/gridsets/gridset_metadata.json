@@ -26,6 +26,19 @@
     "wordPrediction": true
   },
   {
+    "name": "Mobile Frühförderung (Early Intervention)",
+    "filename": "Mobile_Fruehfoerderung.grd.json",
+    "author": "Wiener Sozialdienste, Vienna, AT",
+    "website": "https://www.wienersozialdienste.at/mobile-fruehfoerderung-und-familienbegleitung/",
+    "languages": ["de", "en", "fr", "es", "sr", "tr", "ar"],
+    "description": {
+      "en": "Configuration for communication in the context of early intervention. Developed by the team of \"mobile Frühförderung\" (mobile early intervention) at \"Wiener Sozialdienste\" in Vienna, Austria.",
+      "de": "Konfiguration für Kommunikation im Kontext von Frühförderung. Entwickelt vom Team der mobilen Frühförderung der Wiener Sozialdienste in Wien."
+    },
+    "standardFor": [],
+    "wordPrediction": false
+  },
+  {
     "name": "Comunicador Global-Core ARASAAC",
     "filename": "Comunicador_Global-Core_ARASAAC_ES.grd.json",
     "author": "ARASAAC",
