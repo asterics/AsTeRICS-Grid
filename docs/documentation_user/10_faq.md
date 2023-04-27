@@ -30,3 +30,14 @@ Please follow this tutorial from ARASAAC to read about possibilities to install 
 
 #### iOS
 With iOS 15 it was possible to use all voices installed on the device within AsTeRICS Grid. With iOS 16 Apple seems to have decided to remove the possibility to use high quality voices within web applications and therefore also to remove them from AsTeRICS Grid. See this [issue on Github about iOS voices](https://github.com/asterics/AsTeRICS-Grid/issues/223) and this [question in the Apple developer forum](https://developer.apple.com/forums/thread/723503) which shows that this isn't a bug, but is behaviour that's intended by Apple. We've contacted Apple directly and asked them to revert this change, but didn't receive an answer. If you're experiencing this issue, you can send feedback to Apple directly: [send feedback to Apple](https://www.apple.com/feedback/ipad/)
+
+## Can I recover the password of my online user?
+We care about the protection of private data that can be inserted into grids, e.g. images or sound recordings. Therefore we've designed AsTeRICS Grid in a way where only the user itself can see his/her data, nobody else. All data of online users is encrypted using the password of the user. So even if we have access to the database, we cannot see anything but encrypted, unreadable data. While that's great for privacy, it also has this major drawback:
+
+It's **not possible to reset or recover the password of an online user**. If the password of an online user is lost, also the data of this user is lost and cannot be recovered.
+
+So there are two things that are important in order to prevent loosing data:
+* keep the usernames and passwords of your online users safe, write them down somewhere or use a password safe software for saving them.
+* regularily download backups of your user's data to file. AsTeRICS Grid automatically reminds for downloading backups, but it can be done at any time by going to `Manage grids -> More (right top) -> Save backup to file`. Backups saved to file are not encrypted and therefore can be used and imported for a new user.
+
+If you've lost the password of a user and you're still logged in with this user on any device, just make a backup to file and you can create a new user and import the data from backup there.
