@@ -824,8 +824,8 @@
   "newCommunicator": "Novo comunicador",
   "author": "Autor",
   "helloClickRightToEdit": "Olá - clique direito para editar",
-  "donateWithPaypal": "Donate with PayPal",
-  "donateAtOpencollective": "Donate at open collective",
+  "donateWithPaypal": "Doar pelo PayPal",
+  "donateAtOpencollective": "Doar no Open collective",
   "ifYouWantToSupportTheDevelopmentOfAstericsGrid": "Para apoiar o desenvolvimento do AsTeRICS Grid ou contribuir para os custos do servidor/base de dados de sincronização pode fazer uma doação à Fundação AsTeRICS",
   "supportUs": "Ajude-nos",
   "theFollowingRessourcesForHelpOnAstericsGrid": "Estão disponíveis os seguintes recursos de ajuda sobre o AsTeRICS Grid",
@@ -916,5 +916,7 @@
   "notifications": "Notificações",
   "days": "dias",
   "offline": "offline",
-  "online": "online"
+  "online": "online",
+  "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Não foi possível reproduzir o webradio, porque o navegador não o permitiu.",
+  "allowPlayingRadio": "Permitir reprodução de rádio"
 }

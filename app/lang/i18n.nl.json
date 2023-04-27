@@ -916,5 +916,7 @@
   "notifications": "Meldingen",
   "days": "dagen",
   "offline": "offline",
-  "online": "online"
+  "online": "online",
+  "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Couldn't play webradio, because the browser didn't allow it.",
+  "allowPlayingRadio": "Allow playing radio"
 }
