@@ -917,6 +917,6 @@
   "days": "días",
   "offline": "offline",
   "online": "online",
-  "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Couldn't play webradio, because the browser didn't allow it.",
+  "couldntPlayWebradioBecauseTheBrowserDidntAllow": "No se ha podido reproducir la radio web, porque el navegador no lo permitía.",
   "allowPlayingRadio": "Allow playing radio"
 }
