@@ -918,5 +918,5 @@
   "offline": "offline",
   "online": "online",
   "couldntPlayWebradioBecauseTheBrowserDidntAllow": "No se ha podido reproducir la radio web, porque el navegador no lo permitía.",
-  "allowPlayingRadio": "Allow playing radio"
+  "allowPlayingRadio": "Permitir la reproducción de la radio web"
 }
