@@ -41,3 +41,14 @@ So there are two things that are important in order to prevent loosing data:
 * regularily download backups of your user's data to file. AsTeRICS Grid automatically reminds for downloading backups, but it can be done at any time by going to `Manage grids -> More (right top) -> Save backup to file`. Backups saved to file are not encrypted and therefore can be used and imported for a new user.
 
 If you've lost the password of a user and you're still logged in with this user on any device, just make a backup to file and you can create a new user and import the data from backup there.
+
+## The global grid disappeared or the "Home" button doesn't work
+If the global grid (first line including navigation to "Home" and "Back" and line for collecting elements) disappears or doesn't work as expected any more, try this:
+* go to "Manage Grids"
+* scroll all down to the bottom of the page
+* select the correct home grid at `Select Home grid for creating global Grid`
+* Click on `Reset global grid to default`
+
+Also see this screenshot:
+![grafik](https://user-images.githubusercontent.com/2537025/235093846-96ec29f7-267f-42b0-8181-d5d6612adffa.png)
+
