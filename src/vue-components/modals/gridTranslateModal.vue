@@ -96,13 +96,13 @@
                                             <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="data.label[chosenLocale]" @change="changedGrid(data)"/>
                                         </div>
                                     </li>
-                                    <li v-for="el in data.gridElements" v-if="showGridElements(data.label[currentLocale])">
+                                    <li v-for="el in data.gridElements" v-if="showGridElements(data)">
                                         <div class="srow" v-if="el.label[currentLocale] || el.label[chosenLocale]">
                                             <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" :i18nid="getI18nId(el)" v-model="el.label[currentLocale]" @change="changedGrid(data)"/>
                                             <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" :i18nid="getI18nId(el)" v-model="el.label[chosenLocale]" @change="changedGrid(data)"/>
                                         </div>
                                     </li>
-                                    <li v-for="el in data.gridElements" v-if="showGridElements(data.label[currentLocale])">
+                                    <li v-for="el in data.gridElements" v-if="showGridElements(data)">
                                         <div class="srow" v-for="action in el.actions" v-if="action.modelName === GridActionSpeakCustom.getModelName() && (action.speakText[currentLocale] || action.speakText[chosenLocale])">
                                             <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" :i18nid="getI18nId(el, GridActionSpeakCustom.getModelName())" v-model="action.speakText[currentLocale]" @change="changedGrid(data)"/>
                                             <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" :i18nid="getI18nId(el, GridActionSpeakCustom.getModelName())" v-model="action.speakText[chosenLocale]" @change="changedGrid(data)"/>
@@ -227,8 +227,9 @@
                     }
                 })
             },
-            showGridElements(label) {
-                if (!window.hideKeyboardTranslations || this.gridData !== null) {
+            showGridElements(data) {
+                let label = data.label[this.currentLocale] || data.label[Object.keys(data.label)[0]];
+                if (!window.hideKeyboardTranslations || this.gridData !== null || !label) {
                     return true;
                 }
                 label = label.toLowerCase();
