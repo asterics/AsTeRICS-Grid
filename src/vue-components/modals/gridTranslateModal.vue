@@ -31,7 +31,7 @@
                                         <strong>{{ $t('textsIn') }}</strong> <strong>{{currentLangTranslated}} ({{currentLocale}})</strong>
                                     </div>
                                     <div class="srow">
-                                        <button class="six columns" @click="copy(currentLocale)" :title="$t('copyColumn')">
+                                        <button class="six columns" @click.exact="copy(currentLocale)" @click.ctrl="copy(currentLocale, true)" :title="$t('copyColumn')">
                                             <i class="far fa-copy"></i>
                                             <span class="show-mobile">
                                                 <i18n path="copySomething" tag="span">
@@ -42,7 +42,7 @@
                                             </span>
                                             <span class="hide-mobile">{{ $t('copyColumn') }}</span>
                                         </button>
-                                        <button class="six columns" @click="paste(currentLocale)" :title="$t('pasteColumn')">
+                                        <button class="six columns" @click.exact="paste(chosenLocale)" @click.ctrl="paste(chosenLocale, true)" :title="$t('pasteColumn')">
                                             <i class="far fa-clipboard"></i>
                                             <span class="show-mobile">
                                                 <i18n path="pasteSomething" tag="span">
@@ -63,7 +63,7 @@
                                         </select>
                                     </div>
                                     <div class="srow">
-                                        <button class="six columns" @click="copy(chosenLocale)" :title="$t('copyColumn')">
+                                        <button class="six columns" @click.exact="copy(currentLocale)" @click.ctrl="copy(currentLocale, true)" :title="$t('copyColumn')">
                                             <i class="far fa-copy"></i>
                                             <span class="show-mobile">
                                                 <i18n path="copySomething" tag="span">
@@ -74,7 +74,7 @@
                                             </span>
                                             <span class="hide-mobile">{{ $t('copyColumn') }}</span>
                                         </button>
-                                        <button class="six columns" @click="paste(chosenLocale)" :title="$t('pasteColumn')">
+                                        <button class="six columns" @click.exact="paste(chosenLocale)" @click.ctrl="paste(chosenLocale, true)" :title="$t('pasteColumn')">
                                             <i class="far fa-clipboard"></i>
                                             <span class="show-mobile">
                                                 <i18n path="pasteSomething" tag="span">
@@ -98,14 +98,14 @@
                                     </li>
                                     <li v-for="el in data.gridElements" v-if="showGridElements(data.label[currentLocale])">
                                         <div class="srow" v-if="el.label[currentLocale] || el.label[chosenLocale]">
-                                            <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="el.label[currentLocale]" @change="changedGrid(data)"/>
-                                            <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="el.label[chosenLocale]" @change="changedGrid(data)"/>
+                                            <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" :i18nid="getI18nId(el)" v-model="el.label[currentLocale]" @change="changedGrid(data)"/>
+                                            <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" :i18nid="getI18nId(el)" v-model="el.label[chosenLocale]" @change="changedGrid(data)"/>
                                         </div>
                                     </li>
                                     <li v-for="el in data.gridElements" v-if="showGridElements(data.label[currentLocale])">
                                         <div class="srow" v-for="action in el.actions" v-if="action.modelName === GridActionSpeakCustom.getModelName() && (action.speakText[currentLocale] || action.speakText[chosenLocale])">
-                                            <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="action.speakText[currentLocale]" @change="changedGrid(data)"/>
-                                            <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="action.speakText[chosenLocale]" @change="changedGrid(data)"/>
+                                            <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" :i18nid="getI18nId(el, GridActionSpeakCustom.getModelName())" v-model="action.speakText[currentLocale]" @change="changedGrid(data)"/>
+                                            <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" :i18nid="getI18nId(el, GridActionSpeakCustom.getModelName())" v-model="action.speakText[chosenLocale]" @change="changedGrid(data)"/>
                                         </div>
                                     </li>
                                 </ul>
@@ -184,25 +184,47 @@
             getLocaleTranslation(locale) {
                 return i18nService.getTranslationAppLang(this.allLanguages.filter(lang => lang.code === locale)[0]);
             },
-            copy(locale) {
+            copy(locale, copyKey) {
                 let result = $(`#translationList input[lang='${locale}']`).toArray();
-                let text = result.reduce((total, current) => total + current.value + '\n', '');
+                let text = null;
+                if (copyKey) {
+                    let array = result.map(e => {
+                        return {key: e.getAttribute('i18nid'), value: e.value}
+                    }).filter(e => !!e.key);
+                    text = JSON.stringify(array);
+                } else {
+                    text = result.reduce((total, current) => total + current.value + '\n', '');
+                }
                 util.copyToClipboard(text);
             },
-            paste(locale) {
+            paste(locale, withKeys) {
                 util.getClipboardContent().then(result => {
                     if (!result) {
                         return;
                     }
                     this.changedGrid(this.gridData);
-                    let clipBoardTexts = result.trim().split('\n');
-                    let elements = $(`#translationList input[lang='${locale}']`).toArray();
-                    elements.forEach((el, index) => {
-                        if (clipBoardTexts[index]) {
-                            $(el).val(clipBoardTexts[index]);
-                            $(el)[0].dispatchEvent(new Event('input'));
+                    if (withKeys) {
+                        let array = JSON.parse(result);
+                        let counter = 0;
+                        for (let pastedElement of array) {
+                            let el = $(`#translationList input[i18nid='${pastedElement.key}'][lang='${locale}']`).toArray()[0];
+                            if (el && pastedElement.value) {
+                                $(el).val(pastedElement.value);
+                                $(el)[0].dispatchEvent(new Event('input'));
+                                counter++;
+                            }
                         }
-                    })
+                        log.info(`inserted ${counter} (of ${array.length}) translations from json from clipboard.`);
+                    } else {
+                        let clipBoardTexts = result.trim().split('\n');
+                        let elements = $(`#translationList input[lang='${locale}']`).toArray();
+                        elements.forEach((el, index) => {
+                            if (clipBoardTexts[index]) {
+                                $(el).val(clipBoardTexts[index]);
+                                $(el)[0].dispatchEvent(new Event('input'));
+                            }
+                        })
+                    }
                 })
             },
             showGridElements(label) {
@@ -215,6 +237,12 @@
             getElementCount() {
                 let array = this.gridData ? [this.gridData] : this.allGrids;
                 return array.reduce((total, data) => total + data.gridElements.length, 0);
+            },
+            getI18nId(gridElement, prefix) {
+                prefix = prefix || '';
+                let imageData = gridElement.image ? (gridElement.image.url || gridElement.image.data) : '';
+                imageData = imageData.substring(0, 100);
+                return btoa(gridElement.x + gridElement.y + prefix + imageData);
             }
         },
         mounted() {
