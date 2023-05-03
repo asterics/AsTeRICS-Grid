@@ -2,15 +2,20 @@ if (!process.argv[2] || !process.argv[2].trim()) {
     console.log('Migrates users from superlogin to couch-auth. Superlogin database is "sl-users" and couch-auth database is "auth-users".')
     console.log("----");
     console.log('USAGE:');
-    console.log(`node couchDBTransferSuperlogin.js <COUCHDB_URL>`);
+    console.log(`node couchDBTransferSuperlogin.js <COUCHDB_URL> [prod]`);
     console.log("----");
     console.log("Example:");
     console.log(`node couchDBTransferSuperlogin.js http://admin:admin@localhost:5984`);
     console.log(`node couchDBTransferSuperlogin.js https://admin:admin@db.couchdb.asterics-foundation.org`);
+    console.log(`actual database changes are only done with second parameter "prod".`);
     return;
 }
 
 let dbUrl = process.argv[2] || 'https://admin:admin@db.couchdb.asterics-foundation.org';
+let isProd = process.argv[3] === 'prod';
+if (isProd) {
+    console.log('[!] prod run [!]');
+}
 const nano = require('nano')({
     url: dbUrl.trim(),
     requestDefaults: { timeout: 250000 } // 250 seconds
@@ -104,23 +109,22 @@ async function sleep(ms) {
 
 async function main() {
     console.log("starting...");
-    let slDocs = await getDocs(DB_NAME_SL_USERS, DESIGN_DOC_ID);
+    let slUsers = await getDocIds(DB_NAME_SL_USERS, DESIGN_DOC_ID);
     let authDocs = await getDocs(DB_NAME_AUTH_USERS, DESIGN_DOC_ID);
-    let slUsers = slDocs.map((doc) => doc._id);
     let authUsers = authDocs.map((doc) => doc.key);
 
     console.log(DB_NAME_SL_USERS, JSON.stringify(slUsers));
     console.log(DB_NAME_AUTH_USERS, JSON.stringify(authUsers));
 
     let missingUsers = slUsers.filter((username) => !authUsers.includes(username));
-    let missingUserDocs = slDocs.filter((doc) => missingUsers.includes(doc._id));
+    let missingUserDocs = await getDocsByIds(DB_NAME_SL_USERS, missingUsers);
     console.log('missing users in new DB', JSON.stringify(missingUsers));
     console.log('missing users docs length', missingUserDocs.length);
     //console.log("missing user docs", JSON.stringify(missingUserDocs));
 
     let convertedDocs = missingUserDocs.map((missingDoc) => convertSlToAuthDoc(missingDoc));
     //console.log('converted docs', JSON.stringify(convertedDocs));
-    await saveDocsBulk(convertedDocs);
+    await saveDocsBulk(convertedDocs, isProd);
 
     // test array to chunks
     /*let longArray = [...Array(99).keys()];
