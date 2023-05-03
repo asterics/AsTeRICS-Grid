@@ -13,6 +13,7 @@ if (!process.argv[2] || !process.argv[2].trim()) {
 
 let dbUrl = process.argv[2] || 'https://admin:admin@db.couchdb.asterics-foundation.org';
 let isProd = process.argv[3] === 'prod';
+let CHUNK_SIZE = 250;
 if (isProd) {
     console.log('[!] prod run [!]');
 }
@@ -34,7 +35,7 @@ async function getDocs(dbName, excludeDocId) {
 
 async function getDocsByIds(dbName, ids) {
     const db = nano.db.use(dbName);
-    let idChunks = arrayToChunks(ids, 250);
+    let idChunks = arrayToChunks(ids, CHUNK_SIZE);
     let resultDocs = [];
     let counter = 1;
     for (let idChunk of idChunks) {
@@ -88,7 +89,7 @@ async function saveDocsBulk(docs, prodRun) {
         console.log('noting to save!');
         return;
     }
-    let chunks = arrayToChunks(docs, 100);
+    let chunks = arrayToChunks(docs, CHUNK_SIZE);
     let counter = 1;
     for (let chunk of chunks) {
         let response = [];
