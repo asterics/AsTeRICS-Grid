@@ -353,16 +353,17 @@ function getSpeakTextObject(element, dontIncludeAudio) {
             base64Sound: audioAction.dataBase64
         };
     }
-    let label = getLabel(element);
-    if (!label) {
-        let customSpeakAction = element.actions.filter((a) => a.modelName === GridActionSpeakCustom.getModelName())[0];
-        if (customSpeakAction) {
-            let lang = customSpeakAction.speakLanguage || i18nService.getContentLang();
-            label = i18nService.getTranslation(customSpeakAction.speakText, { forceLang: lang });
-        }
+    let text;
+    let customSpeakAction = element.actions.filter((a) => a.modelName === GridActionSpeakCustom.getModelName())[0];
+    if (customSpeakAction) {
+        let lang = customSpeakAction.speakLanguage || i18nService.getContentLang();
+        text = i18nService.getTranslation(customSpeakAction.speakText, { forceLang: lang });
+    }
+    if (!text) {
+        text = getLabel(element);
     }
     return {
-        text: label
+        text: text
     };
 }
 
