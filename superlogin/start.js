@@ -5,9 +5,15 @@ var https = require('https');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
 var cors = require('cors');
-var SuperLogin = require('@sensu/superlogin');
+// var SuperLogin = require('@sensu/superlogin');
+var { CouchAuth: SuperLogin } = require('@perfood/couch-auth');
 var isProd = process.argv.length > 2 && process.argv[2] == 'prod';
 var path = require('path');
+var dotenvFlow = require('dotenv-flow');
+
+dotenvFlow.config({
+  silent: true,
+});
 
 var app = express();
 var accessLogStream = null;
@@ -20,8 +26,8 @@ if (isProd) {
         stream: accessLogStream,
         skip: (req, res) => req.url.indexOf('/validate-username/') > -1
     }));
-    privateKey = fs.readFileSync('/opt/couchdb/letsencrypt/live/couchdb.asterics-foundation.org/privkey.pem', 'utf8');
-    certificate = fs.readFileSync('/opt/couchdb/letsencrypt/live/couchdb.asterics-foundation.org/fullchain.pem', 'utf8');
+    privateKey = fs.readFileSync(process.env.PATH_TO_KEY, 'utf8');
+    certificate = fs.readFileSync(process.env.PATH_TO_CERT, 'utf8');
     credentials = {key: privateKey, cert: certificate};
 } else {
     app.use(logger('dev'));
@@ -32,37 +38,39 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 var config = {
-    testMode: {
-        // Use a stub transport so no email is actually sent
-        noEmail: true,
-        // Displays debug information in the oauth dialogs
-        oauthDebug: false,
-        // Logs out-going emails to the console
-        debugEmail: true
-    },
-    dbServer: {
-    publicURL: 'https://db.couchdb.asterics-foundation.org',
-    protocol: 'http://',
-    host: 'localhost:5984',
-    user: 'admin',
-    password: 'admin',
-    userDB: 'sl-users',
-    couchAuthDB: '_users'
+  testMode: {
+    // Use a stub transport so no email is actually sent
+    noEmail: true,
+    // Displays debug information in the oauth dialogs
+    oauthDebug: false,
+    // Logs out-going emails to the console
+    debugEmail: true
+  },
+  dbServer: {
+    publicURL: process.env.DB_SERVER_PUBLIC_URL,
+    protocol: process.env.DB_SERVER_PROTOCOL,
+    host: process.env.DB_SERVER_HOST,
+    user: process.env.DB_SERVER_USER,
+    password: process.env.DB_SERVER_PASSWORD,
+    userDB: process.env.CAUTH_USER_DB,
+    couchAuthDB: process.env.CAUTH_COUCH_AUTH_DB,
   },
   local: {
     sendConfirmEmail: false,
     requireEmailConfirm: false,
+    usernameLogin: true,
+    emailUsername: false,
   },
   mailer: {
-    fromEmail: 'noreply@asterics-foundation.org',
+    fromEmail: process.env.MAILER_FROM_EMAIL,
     options: {
-		host: 'smtp.1und1.de',
-        port: 587,
-        secure: false,
-        auth: {
-            user: 'noreply@asterics-foundation.org',
-            pass: '...'
-        }
+  		host: process.env.MAILER_HOST,
+      port: process.env.MAILER_PORT,
+      secure: process.env.MAILER_SECURE,
+      auth: {
+        user: process.env.MAILER_USER,
+        pass: process.env.MAILER_PASS,
+      }
     }
   },
   emails: {
@@ -81,7 +89,12 @@ var config = {
 };
 
 // Initialize SuperLogin
-var superlogin = new SuperLogin(config);
+try {
+  var superlogin = new SuperLogin(config);
+} catch(err) {
+  console.error('err');
+  console.error(err);
+}
 
 // Mount SuperLogin's routes to our app
 app.use('/auth', superlogin.router);
