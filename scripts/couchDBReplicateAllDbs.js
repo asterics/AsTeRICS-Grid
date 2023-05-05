@@ -54,7 +54,10 @@ async function replicateDB(sourceDBName) {
         source.replicate
             .to(target, {
                 checkpoint: false,
-                style: 'main_only'
+                style: 'main_only',
+                filter: function (doc) {
+                    return !doc._deleted;
+                }
             })
             .on('complete', function (info) {
                 console.log(`completed! written: ${info.docs_written}, errors: ${JSON.stringify(info.errors)}\n`);
