@@ -32,7 +32,8 @@ let appLanguages = [
     'sl',
     'es',
     'uk',
-    'val'
+    'val',
+    'ro'
 ];
 //all languages in german and english + ISO-639-1 code, extracted from https://de.wikipedia.org/wiki/Liste_der_ISO-639-1-Codes, sorted by german translation
 let allLangCodes = [
