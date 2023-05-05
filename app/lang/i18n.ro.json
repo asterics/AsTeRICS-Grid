@@ -863,7 +863,7 @@
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Vă rugăm să permiteți accesarea microfonului pentru a înregistra audio",
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Înregistrarea audio este redată numai cu acțiuni de colectare a elementelor în modul \"vorbește separat\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Setează acțiunile din grila globală în modul \"vorbește separat\"",
-  "speakActionsOfGlobalGridWereSetToModeModeSpeakSpeak": "Acțiunile de vorbire din grila globală au fost setate la modul \"vorbește separat\"",
+  "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Acțiunile de vorbire din grila globală au fost setate la modul \"vorbește separat\"",
   "changeVoiceTo": "Schimbați vocea în",
   "navigateToOtherGrid": "Setați navigația",
   "NAV_CREATE_NEW_GRID": "(creează o nouă grilă)",
