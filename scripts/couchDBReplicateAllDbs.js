@@ -16,16 +16,33 @@ sourceDBUrl = sourceDBUrl.trim();
 targetDBUrl = targetDBUrl.trim();
 
 const sourceServer = require('nano')(sourceDBUrl);
+const targetServer = require('nano')(targetDBUrl);
 const PouchDB = require('pouchdb');
+
+let successNames = [];
+let errorNames = [];
 
 async function main() {
     console.log("retrieve db names of source...");
     let sourceDBNames = await sourceServer.db.list();
-    console.log(`source server has ${sourceDBNames.length} databases.\n`);
-    let successNames = [];
-    let errorNames = [];
-    for (let sourceDBName of sourceDBNames) {
-        console.log(`[s: ${successNames.length} / e: ${errorNames.length}] replicating ${sourceDBName}...`);
+    console.log("retrieve db names of target...");
+    let targetDBNames = await targetServer.db.list();
+    console.log(`source server has ${sourceDBNames.length} databases.`);
+    console.log(`target server has ${targetDBNames.length} databases.`);
+
+    let missingNames = sourceDBNames.filter(name => !targetDBNames.includes(name));
+    let existingNames = sourceDBNames.filter(name => targetDBNames.includes(name));
+    console.log(`replicating ${missingNames.length} missing databases to target...`);
+    await replicateDBs(missingNames);
+
+    console.log(`updating ${existingNames.length} existing databases on target...`);
+    await replicateDBs(existingNames);
+}
+main();
+
+async function replicateDBs(dbNames, isUpdate) {
+    for (let sourceDBName of dbNames) {
+        console.log(`[s: ${successNames.length} / e: ${errorNames.length}] ${isUpdate ? 'updating' : 'replicating'} ${sourceDBName}...`);
         let success = await replicateDB(sourceDBName);
         if (success) {
             successNames.push(sourceDBName);
@@ -33,7 +50,7 @@ async function main() {
             errorNames.push(sourceDBName);
         }
     }
-    
+
     console.log(`successfully replicated ${successNames.length} databases!`);
     if (errorNames.length === 0) {
         console.log("no errors.");
@@ -41,9 +58,7 @@ async function main() {
         console.log(`replication failed for ${errorNames.length} databases:`);
         console.log(JSON.stringify(errorNames));
     }
-
 }
-main();
 
 async function replicateDB(sourceDBName) {
     return new Promise(async (resolve) => {
