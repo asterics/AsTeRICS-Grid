@@ -522,7 +522,7 @@ dataService.importBackup = async function (file, progressFn) {
 dataService.importBackupData = async function (importData, options) {
     options = options || {};
     options.progressFn = options.progressFn || (() => {});
-    if (options.skipDelete) {
+    if (!options.skipDelete) {
         options.progressFn(20, i18nService.t('deletingGrids'));
         await dataService.deleteAllGrids();
         await dataService.deleteAllDictionaries();
