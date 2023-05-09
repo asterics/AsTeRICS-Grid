@@ -1,119 +1,54 @@
-var path = require('path');
+let path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = env => {
-    var baseDir = '';
-    var buildDir = 'app/build/';
-    var buildDirLegacy = 'app/build_legacy/';
-    var entryScript = './src/js/mainScript.js';
-    var outputFilename = 'asterics-grid.bundle.js';
-    var mode = env && env.production ? 'production' : 'development';
+    let buildDir = 'app/build/';
+    let entryScript = './src/js/mainScript.js';
+    let outputFilename = 'asterics-grid.bundle.js';
+    let mode = env && env.production ? 'production' : 'development';
 
-    var scssRule = {
+    let scssRule = {
         test: /\.(s*)css$/,
         use: ['style-loader', 'css-loader']
     };
 
-    var vueRule = {
+    let vueRule = {
         test: /\.vue$/,
         loader: 'vue-loader'
     };
 
-    var babelRule = {
-        test: /\.m?js$/,
-        use: {
-            loader: 'babel-loader',
-            options: {
-                presets: [
-                    ['@babel/env', {
-                        modules: false,
-                        useBuiltIns: false,
-                        targets: {
-                            browsers: [
-                                '> 1%',
-                                'last 2 versions',
-                                'Firefox ESR',
-                                'ie >= 11'
-                            ],
-                        },
-                    }]
-                ],
-            },
-        },
-    };
-
-    var resolve = {
-        alias: {
-            //objectmodel: "../../../node_modules/objectmodel/dist/object-model.js"
-            vue: 'vue/dist/vue.esm.js'
-        }
-    };
-
-    var externals = {
-        jquery: '$',
-        PouchDB: 'PouchDB'
-    };
-
-    var plugins = [new VueLoaderPlugin()];
-
-    function log(msg) {
-        if(!env || !env.nolog) {
-            console.log(msg);
-        }
-    }
-
-    function getDevServer(publicPath) {
-        return {
-            contentBase: path.resolve(__dirname),
-            publicPath:  '/' + publicPath,
-            host: '0.0.0.0',
-            port: 9095,
-            open: false,
-            watchContentBase: true
-        };
-    }
-
-    var configNormal = {
+    return {
         mode: mode,
         entry: entryScript,
-        plugins: plugins,
+        plugins: [new VueLoaderPlugin()],
         output: {
-            path: path.resolve(__dirname, baseDir + buildDir),
-            publicPath: "./" + buildDir,
+            path: path.resolve(__dirname, buildDir),
+            publicPath: "/" + buildDir,
             filename: outputFilename,
             chunkFilename: '[name].bundle.js',
         },
-        resolve: resolve,
-        devServer: getDevServer(buildDir),
-        externals: externals,
+        resolve: {
+            alias: {
+                vue: 'vue/dist/vue.esm.js',
+                predictionary: 'predictionary/src/index.mjs'
+            }
+        },
+        devServer: {
+            static: {
+                directory: path.resolve(__dirname),
+                watch: true
+            },
+            host: '0.0.0.0',
+            port: 9095,
+            open: false,
+            hot: true
+        },
+        externals: {
+            jquery: '$',
+            PouchDB: 'PouchDB'
+        },
         module: {
             rules: [scssRule, vueRule]
         }
     };
-
-    var configLegacy = {
-        mode: mode,
-        entry: entryScript,
-        plugins: plugins,
-        output: {
-            path: path.resolve(__dirname, baseDir + buildDirLegacy),
-            publicPath: "./" + buildDirLegacy,
-            filename: outputFilename,
-            chunkFilename: '[name].bundle.js',
-        },
-        resolve: resolve,
-        devServer: getDevServer(buildDirLegacy),
-        externals: externals,
-        module: {
-            rules: [babelRule, scssRule, vueRule],
-        }
-    };
-
-    if (env.normalserver) {
-        return configNormal;
-    } else if (env.legacyserver) {
-        return configLegacy;
-    }
-    //return [configNormal, configLegacy];
-    return [configNormal];
 };
