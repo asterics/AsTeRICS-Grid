@@ -5,7 +5,7 @@ let https = require('https');
 let bodyParser = require('body-parser');
 let logger = require('morgan');
 let cors = require('cors');
-let CouchAuth = require('@perfood/couch-auth');
+let { CouchAuth } = require('@perfood/couch-auth');
 let useSSL = process.argv.length > 2 && process.argv[2] === 'ssl';
 let dotenvFlow = require('dotenv-flow');
 
