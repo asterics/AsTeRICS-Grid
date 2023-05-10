@@ -72,6 +72,8 @@ let config = {
 
 // Initialize CouchAuth
 try {
+    console.log("starting with this config:");
+    console.log(JSON.stringify(config));
     let couchAuth = new CouchAuth(config);
     app.use('/auth', couchAuth.router);
 } catch (err) {
