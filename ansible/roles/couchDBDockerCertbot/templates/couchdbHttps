@@ -24,6 +24,8 @@ server {
     ssl_certificate /etc/nginx/ssl/live/{{DOMAIN_NAME}}/fullchain.pem;
     ssl_certificate_key /etc/nginx/ssl/live/{{DOMAIN_NAME}}/privkey.pem;
 
+    client_max_body_size 200M;
+
     location / {
         # the domain name in the docker network
         # is called like the service defined
