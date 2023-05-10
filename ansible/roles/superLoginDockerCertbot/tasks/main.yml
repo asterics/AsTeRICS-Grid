@@ -137,8 +137,6 @@
     src: superLoginHttps
     dest: ./nginx/conf/superLoginHttps.conf
   register: result
-  # if "0" certificate does not exist, we need to create a certificate config
-  when: hasAValidCertificateSuperLogin.stdout == "0"
 - name: debug [copy files local to remote with a template (superLoginHttps)]
   debug:
     var: result
