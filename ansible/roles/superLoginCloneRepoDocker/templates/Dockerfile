@@ -1,14 +1,17 @@
 FROM node:18-alpine3.16
 
-COPY . ./app
+COPY ./package.json ./app/
+COPY ./yarn.lock ./app/
 
 WORKDIR ./app
 
 RUN apk update \
   && apk add --no-cache --virtual .gyp python3 make g++ \
-  && npm i
+  && yarn install
+
+COPY . ./app
 
 EXPOSE 3000
 
 ## change to prod
-CMD npm run start-superlogin-dev
+CMD npm run start-auth
