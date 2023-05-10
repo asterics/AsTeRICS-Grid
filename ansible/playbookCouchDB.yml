@@ -3,7 +3,11 @@
   become: true
   roles:
     - couchDBSetupServer
-    - couchDBDockerCouchdb
-    - couchDBDockerCompose
-    - couchDBDockerNginx
-    - couchDBDockerCertbot
+    - role: couchDBDockerCouchdb
+      tags: [couchdb, update]
+    - role: couchDBDockerCompose
+      tags: [docker-compose, update]
+    - role: couchDBDockerNginx
+      tags: [docker-compose, update]
+    - role: couchDBDockerCertbot
+      tags: update

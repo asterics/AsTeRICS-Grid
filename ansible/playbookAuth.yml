@@ -3,7 +3,11 @@
   become: true
   roles:
     - superLoginSetupServer
-    - superLoginCloneRepoDocker
-    - superLoginDockerCompose
-    - superLoginDockerNginx
-    - superLoginDockerCertbot
+    - role: superLoginCloneRepoDocker
+      tags: [update, clone]
+    - role: superLoginDockerCompose
+      tags: update
+    - role: superLoginDockerNginx
+      tags: update
+    - role: superLoginDockerCertbot
+      tags: [update, certbot]
