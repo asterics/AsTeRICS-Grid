@@ -9,6 +9,7 @@ services:
       # open the port directly on the host
       # allowing to connect via {{DOMAIN_NAME}}:6984
       - 6984:6984
+    restart: always
     environment:
       - COUCHDB_USER={{COUCHDB_USER}}
       - COUCHDB_PASSWORD={{COUCHDB_PASSWORD}}
