@@ -11,10 +11,6 @@ secret = 2faf0ca5378c76bd7466599313864a4d
 timeout = 20000
 ;WWW-Authenticate = Basic realm="administrator"
 
-[httpd]
-enable_cors = true
-;WWW-Authenticate = Basic realm="administrator"
-
 [cors]
 origins = https://grid.asterics.eu, http://localhost:9095, http://bs-local.com:9095
 credentials = true
@@ -48,6 +44,7 @@ to = 06:30
 strict_window = true
 
 [chttpd]
+enable_cors = true
 admin_only_all_dbs = true
 ;require_valid_user = true
 max_db_number_for_dbs_info_req = 500

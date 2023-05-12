@@ -54,7 +54,6 @@ echo "building..."
 npm run build
 echo "commiting bundles and manifest..."
 git add app/build
-git add app/build_legacy
 git add app/manifest.appcache
 git add serviceWorker.js
 git commit -m "added bundles and appcache for beta-release $tagname"

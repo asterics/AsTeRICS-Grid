@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const namesToSkip = ['/examples/', '/gridsets/'];
+const namesToSkip = ['/examples/', '/gridsets/', '.LICENSE.txt'];
 const namesMustInclude = ['/examples/translations/', 'gridset_metadata.json'];
-const namesMustSkip = ['convertOriginalToTranslateObjects.js', '/examples/translations/original', 'app/simple', 'build_legacy', 'app/lang', 'app/dictionaries'];
+const namesMustSkip = ['convertOriginalToTranslateObjects.js', '/examples/translations/original', 'app/simple', 'app/lang', 'app/dictionaries'];
 let startDir = "../app/";
 let cutFromStartPath = "..";
 let printPaths = ['/', '/latest/', 'index.html'];

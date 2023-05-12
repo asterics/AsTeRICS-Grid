@@ -24,18 +24,7 @@ server {
     ssl_certificate /etc/nginx/ssl/live/{{DOMAIN_NAME_AUTH}}/fullchain.pem;
     ssl_certificate_key /etc/nginx/ssl/live/{{DOMAIN_NAME_AUTH}}/privkey.pem;
 
-    location /old/ {
-        # the domain name in the docker network
-        # is called like the service defined
-        # the docker-compose.yml (superlogin)
-        proxy_pass_request_headers on;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_pass http://superloginold:3000/;
-    }
-
-    location /new/ {
+    location / {
         # the domain name in the docker network
         # is called like the service defined
         # the docker-compose.yml (superlogin)

@@ -36,7 +36,7 @@
 
 - name: start superlogin, nginx, and certbot with docker-compose up
   become: true
-  shell: 'docker compose -f ./docker-compose.yml up --build --detach'
+  shell: 'docker compose -f ./docker-compose.yml up --build --detach --remove-orphans &> docker-compose-output'
   register: result
 - name: debug [start superlogin, nginx, and certbot with docker-compose up]
   debug:

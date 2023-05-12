@@ -5,7 +5,7 @@
 ; overwritten on server upgrade.
 
 [couchdb]
-;max_document_size = 4294967296 ; bytes
+max_document_size = 68157440 ; bytes
 ;os_process_timeout = 5000
 
 [couch_peruser]

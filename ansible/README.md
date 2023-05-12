@@ -126,7 +126,10 @@ You need to be inside of the ansible folder to be able to run ansible playbooks
 # will use the ansible.cfg + hosts file (holds connection details)
 # use the appropriate password for the user
 $ ansible-playbook <playbook-name>.yml --extra-vars "@env.json" --ask-become-pass
+$ ansible-playbook -i secrets/hosts --ask-become-pass --extra-vars "@secrets/env.json" playbookAuth.yml
+$ ansible-playbook -i secrets/hosts --extra-vars "@secrets/env.json" --tags "update" playbookAuth.yml
 ```
+
 
 ### Playbook names
 

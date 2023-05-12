@@ -48,8 +48,7 @@ All custom sources are located in the `src` folder which has the following struc
 ### Elements in folder "app/"
 
 Besides the custom sources in the `src/` folder the `app/` folder contains these elements which in total realize the working AsTeRICS Grid application:
-* **build/**: folder containing a built and minified file of all sources that are included in the `src/` folder. For transpiling and bundling [webpack](https://webpack.js.org/) is used.
-* **build_legacy/**: also containing a built and minified file of all sources in the `src/` folder, but not transpiled with [Babel](https://babeljs.io/) and therefore containing newer language features (e.g. arrow functions) which may not be working in older browsers (e.g. IE).
+* **build/**: folder containing a built and minified file of all sources that are included in the `src/` folder. For bundling [webpack](https://webpack.js.org/) is used.
 * **css/**: global stylesheets which are directly included `index.html`. There is no specific reason for not putting them into `src/css/` and let them also be bundled with webpack to the bundle in `build/`. 
 * **dictionaries/**: [lz-string](http://pieroxy.net/blog/pages/lz-string/index.html) compressed [predictionary](https://github.com/asterics/predictionary) dictionaries including the most frequently used words of different languages. The dictionary fitting the user's language preferences is automatically imported on creating a new user and visible in the [manage dictionaries view](../documentation_user/02_navigation.md#manage-dictionaries-view).
 * **examples/**: folder containing example grid-sets. The gridset `default_[language_code].grd` is automatically imported on creating a new user.

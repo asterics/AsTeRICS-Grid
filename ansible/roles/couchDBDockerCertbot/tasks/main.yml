@@ -49,8 +49,6 @@
     src: couchdbHttps
     dest: ./nginx/conf/couchdbHttps.conf
   register: result
-  # if "0" certificate does not exist, we need to create a certificate config
-  when: hasAValidCertificate.stdout == "0"
 - name: debug [copy files local to remote with a template (couchdbHttps)]
   debug:
     var: result
@@ -59,8 +57,6 @@
   become: true
   shell: 'docker compose exec nginx nginx -s reload'
   register: result
-  # if "0" certificate does not exist, we need to create a certificate config
-  when: hasAValidCertificate.stdout == "0"
 - name: debug [reload nginx config]
   debug:
     var: result
