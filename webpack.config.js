@@ -23,7 +23,7 @@ module.exports = env => {
         plugins: [new VueLoaderPlugin()],
         output: {
             path: path.resolve(__dirname, buildDir),
-            publicPath: "/" + buildDir,
+            publicPath: buildDir,
             filename: outputFilename,
             chunkFilename: '[name].bundle.js',
         },
