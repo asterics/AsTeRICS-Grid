@@ -122,6 +122,8 @@ areService.uploadAndStartModel = function (modelInBase64, areURI, modelName) {
                     resolve();
                 });
             }
+        }).catch(() => {
+            resolve(false);
         });
     });
 };
@@ -177,6 +179,7 @@ areService.getModelName = function (areURI) {
                 resolve(name, textStatus);
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                log.info("couldn't get ARE model name");
                 reject(errorThrown, jqXHR.responseText);
             }
         });
