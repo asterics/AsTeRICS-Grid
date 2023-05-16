@@ -47,7 +47,7 @@
   "DB_SYNC_STATE_STOPPED": "синхронізацію з хмарою призупинено",
   "DB_SYNC_STATE_FAIL": "не синхронізовано з хмарою",
   "DB_SYNC_STATE_ONLINEONLY": "Тільки онлайн: немає автономної синхронізації",
-  "VALIDATION_ERROR_REGEX": "Username must contain only lowercase letters, digits or the characters  [\"-\", \"_\"], valid length is 3-16 characters.",
+  "VALIDATION_ERROR_REGEX": "Username must contain only letters, digits or the characters  [\"-\", \"_\"], valid length is 2-50 characters.",
   "VALIDATION_ERROR_EXISTING": "Ім'я користувача вже існує",
   "SEARCH_IMAGE_PLACEHOLDER": "введіть слово для пошуку",
   "HEADER_COMPARE_ONLINE_OFFLINE": "Інформація про онлайн/автономних користувачів",
