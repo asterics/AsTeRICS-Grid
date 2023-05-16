@@ -17,13 +17,14 @@ module.exports = env => {
         loader: 'vue-loader'
     };
 
+    let publicPath = env.production ? buildDir : `/${buildDir}`
     return {
         mode: mode,
         entry: entryScript,
         plugins: [new VueLoaderPlugin()],
         output: {
             path: path.resolve(__dirname, buildDir),
-            publicPath: buildDir,
+            publicPath: publicPath,
             filename: outputFilename,
             chunkFilename: '[name].bundle.js',
         },
