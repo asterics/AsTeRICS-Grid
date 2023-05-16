@@ -6,8 +6,11 @@ let bodyParser = require('body-parser');
 let logger = require('morgan');
 let cors = require('cors');
 let { CouchAuth } = require('@perfood/couch-auth');
-let useSSL = process.argv.length > 2 && process.argv[2] === 'ssl';
+let useSSL = false;
 let dotenvFlow = require('dotenv-flow');
+let otherAPIs = require('./otherAPIs/otherAPIs.js');
+
+const USERNAME_REGEX = /^[A-Za-z0-9_-]{2,50}$/; // also see src/js/util/constants.js:8
 
 dotenvFlow.config({
     silent: true
@@ -70,16 +73,35 @@ let config = {
     }
 };
 
+const nano = require('nano')(`${config.dbServer.protocol}${config.dbServer.user}:${config.dbServer.password}@${config.dbServer.host}`);
+const authUsers = nano.use('auth-users');
+
 // Initialize CouchAuth
 try {
-    console.log("starting with this config:");
-    console.log(JSON.stringify(config));
+    logConfig();
     let couchAuth = new CouchAuth(config);
     app.use('/auth', couchAuth.router);
 } catch (err) {
     console.error('err');
     console.error(err);
 }
+
+app.use('/user/validate-username/:name', async (req, res, next) => {
+    res.set('Cache-Control', 'no-store');
+    let name = req.params.name;
+    if (!USERNAME_REGEX.test(name)) {
+        console.log("regex not matching");
+        res.status(200).json(false);
+        next();
+        return;
+    }
+    let result = await authUsers.view('views', 'view-usernames', { key: name });
+    let valid = result && result.rows && result.rows.length === 0;
+    res.status(200).json(valid);
+    next();
+});
+
+app.use('/api', otherAPIs.getRouter(config.dbServer.host));
 
 if (useSSL) {
     let privateKey = fs.readFileSync(process.env.PATH_TO_KEY, 'utf8');
@@ -88,4 +110,11 @@ if (useSSL) {
     https.createServer(credentials, app).listen(3001);
 } else {
     http.createServer(app).listen(3000);
+}
+
+function logConfig() {
+    console.log("starting with this config:");
+    let logConfig = JSON.parse(JSON.stringify(config));
+    logConfig.dbServer.password = '***';
+    console.log(JSON.stringify(logConfig));
 }
