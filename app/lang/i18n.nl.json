@@ -47,7 +47,7 @@
   "DB_SYNC_STATE_STOPPED": "Synchronisatie met de cloud onderbroken",
   "DB_SYNC_STATE_FAIL": "niet gesynchroniseerd met de cloud",
   "DB_SYNC_STATE_ONLINEONLY": "alleen online, geen offline synchronisatie",
-  "VALIDATION_ERROR_REGEX": "De gebruikersnaam mag alleen kleine letters, cijfers of de karakters [\"-\", \"_\"\"] bevatten, de geldige lengte is 3-16 tekens.",
+  "VALIDATION_ERROR_REGEX": "Username must contain only letters, digits or the characters  [\"-\", \"_\"], valid length is 2-50 characters.",
   "VALIDATION_ERROR_EXISTING": "Gebruikersnaam bestaat al.",
   "SEARCH_IMAGE_PLACEHOLDER": "voer zoekterm in",
   "HEADER_COMPARE_ONLINE_OFFLINE": "Informatie over online/offline gebruikers",
