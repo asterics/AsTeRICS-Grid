@@ -47,7 +47,7 @@
   "DB_SYNC_STATE_STOPPED": "sincronización con nube en pausa",
   "DB_SYNC_STATE_FAIL": "no sincronizando con la nube",
   "DB_SYNC_STATE_ONLINEONLY": "sólo online, sin sincronización offline",
-  "VALIDATION_ERROR_REGEX": "El nombre de usuario debe contener sólo letras minúsculas, dígitos o caracteres [\"-\", \"_\"] y de 3-16 caracteres.",
+  "VALIDATION_ERROR_REGEX": "Username must contain only letters, digits or the characters  [\"-\", \"_\"], valid length is 2-50 characters.",
   "VALIDATION_ERROR_EXISTING": "El nombre de usuario ya existe.",
   "SEARCH_IMAGE_PLACEHOLDER": "introducir término de búsqueda",
   "HEADER_COMPARE_ONLINE_OFFLINE": "Información sobre usuarios online/offline",
