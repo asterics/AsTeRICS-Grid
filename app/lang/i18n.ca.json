@@ -47,7 +47,7 @@
   "DB_SYNC_STATE_STOPPED": "sincronització amb núvol en pausa",
   "DB_SYNC_STATE_FAIL": "no s'està sincronitzant amb el núvol",
   "DB_SYNC_STATE_ONLINEONLY": "només en línia, sense sincronització fora de línia",
-  "VALIDATION_ERROR_REGEX": "El nom de l'usuari ha de tindre només lletres minúscules, dígits o caràcters [\"-\", \"_\"] i de 3-16 caràcters.",
+  "VALIDATION_ERROR_REGEX": "Username must contain only letters, digits or the characters  [\"-\", \"_\"], valid length is 2-50 characters.",
   "VALIDATION_ERROR_EXISTING": "El nom d'usuari ja existeix",
   "SEARCH_IMAGE_PLACEHOLDER": "introduir paraula de cerca",
   "HEADER_COMPARE_ONLINE_OFFLINE": "Informació sobre usuaris en línia/fora de línia",
