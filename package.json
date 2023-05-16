@@ -15,7 +15,7 @@
     "jszip": "3.8.0",
     "morgan": "^1.9.1",
     "n-ary-huffman": "^4.0.0",
-    "navigo": "^7.1.2",
+    "navigo": "7.1.2",
     "pouchdb": "^8.0.1",
     "predictionary": "^1.6.0",
     "superlogin-client": "^0.8.0",
