@@ -9,9 +9,8 @@ RUN apk update \
   && apk add --no-cache --virtual .gyp python3 make g++ \
   && yarn install
 
-COPY . ./app
+COPY . .
 
 EXPOSE 3000
 
-## change to prod
 CMD npm run start-auth
