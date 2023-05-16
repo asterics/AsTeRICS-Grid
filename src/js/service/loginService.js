@@ -7,6 +7,7 @@ import { databaseService } from './data/databaseService';
 import { Router } from '../router';
 import { webradioService } from './webradioService.js';
 import { MainVue } from '../vue/mainVue.js';
+import {util} from "../util/util.js";
 
 let loginService = {};
 let _loginInfo = null;
@@ -177,7 +178,8 @@ loginService.register = function (user, plainPassword, saveUser) {
             password: password,
             confirmPassword: password
         })
-        .then((info) => {
+        .then(async () => {
+            await util.sleep(500);
             return loginInternal(user, password, saveUser);
         })
         .then(() => {
