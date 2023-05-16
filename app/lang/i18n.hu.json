@@ -47,7 +47,7 @@
   "DB_SYNC_STATE_STOPPED": "felhőbe szinkronizálás felfüggesztve",
   "DB_SYNC_STATE_FAIL": "nincs felhőbe szinkronizálva",
   "DB_SYNC_STATE_ONLINEONLY": "online felhasználó, nincs offline szinkronizáció",
-  "VALIDATION_ERROR_REGEX": "A felhasználó név csak kisbetűket, számokat, vagy a [\"-\", \"_\"] karaktereket tartalmazhatja és minimum 3, maximum 16 karakter hosszú lehet.",
+  "VALIDATION_ERROR_REGEX": "Username must contain only letters, digits or the characters  [\"-\", \"_\"], valid length is 2-50 characters.",
   "VALIDATION_ERROR_EXISTING": "A felhasználónév már létezik.",
   "SEARCH_IMAGE_PLACEHOLDER": "keresőszó",
   "HEADER_COMPARE_ONLINE_OFFLINE": "Online és offline felhasználó összehasonlítása",
