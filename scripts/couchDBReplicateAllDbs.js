@@ -37,12 +37,13 @@ async function main() {
     console.log(`replicating ${missingNames.length} missing databases to target...`);
     await replicateDBs(missingNames);
 
-
     if (onlynew) {
         console.log(`updating auth-users database to target...`);
         await replicateDBs(['accessibility-info-tree', 'accessibility-for-appliances', 'auth-users'], true);
         return;
     }
+
+    existingNames = existingNames.filter(name => name !== '_users');
     console.log(`updating ${existingNames.length} existing databases on target...`);
     await replicateDBs(existingNames, true);
 }
