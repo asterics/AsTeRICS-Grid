@@ -23,17 +23,24 @@ const PouchDB = require('pouchdb');
 
 let successNames = [];
 let errorNames = [];
+let manualSyncDBs = null;
 
 async function main() {
-    console.log("retrieve db names of source...");
+    if (manualSyncDBs && manualSyncDBs.length > 0) {
+        console.log(`syncing ${manualSyncDBs.length} manually defined dbs...`);
+        await replicateDBs(manualSyncDBs);
+        return;
+    }
+
+    console.log('retrieve db names of source...');
     let sourceDBNames = await sourceServer.db.list();
-    console.log("retrieve db names of target...");
+    console.log('retrieve db names of target...');
     let targetDBNames = await targetServer.db.list();
     console.log(`source server has ${sourceDBNames.length} databases.`);
     console.log(`target server has ${targetDBNames.length} databases.`);
 
-    let missingNames = sourceDBNames.filter(name => !targetDBNames.includes(name));
-    let existingNames = sourceDBNames.filter(name => targetDBNames.includes(name));
+    let missingNames = sourceDBNames.filter((name) => !targetDBNames.includes(name));
+    let existingNames = sourceDBNames.filter((name) => targetDBNames.includes(name));
     console.log(`replicating ${missingNames.length} missing databases to target...`);
     await replicateDBs(missingNames);
 
@@ -43,7 +50,7 @@ async function main() {
         return;
     }
 
-    existingNames = existingNames.filter(name => name !== '_users');
+    existingNames = existingNames.filter((name) => name !== '_users');
     console.log(`updating ${existingNames.length} existing databases on target...`);
     await replicateDBs(existingNames, true);
 }
