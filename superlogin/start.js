@@ -32,13 +32,13 @@ let config = {
         debugEmail: true
     },
     dbServer: {
-        publicURL: process.env.DB_SERVER_PUBLIC_URL,
-        protocol: process.env.DB_SERVER_PROTOCOL,
-        host: process.env.DB_SERVER_HOST,
-        user: process.env.DB_SERVER_USER,
-        password: process.env.DB_SERVER_PASSWORD,
-        userDB: process.env.CAUTH_USER_DB,
-        couchAuthDB: process.env.CAUTH_COUCH_AUTH_DB
+        publicURL: process.env.DB_SERVER_PUBLIC_URL || 'http://127.0.0.1:5984',
+        protocol: process.env.DB_SERVER_PROTOCOL || 'http://',
+        host: process.env.DB_SERVER_HOST || '127.0.0.1:5984',
+        user: process.env.DB_SERVER_USER || 'admin',
+        password: process.env.DB_SERVER_PASSWORD || 'admin',
+        userDB: process.env.CAUTH_USER_DB || 'auth-users',
+        couchAuthDB: process.env.CAUTH_COUCH_AUTH_DB || '_users'
     },
     local: {
         sendConfirmEmail: false,
@@ -101,7 +101,7 @@ app.use('/user/validate-username/:name', async (req, res, next) => {
     next();
 });
 
-app.use('/api', otherAPIs.getRouter(config.dbServer.host));
+app.use('/api', otherAPIs.getRouter(config.dbServer.protocol, config.dbServer.host));
 
 if (useSSL) {
     let privateKey = fs.readFileSync(process.env.PATH_TO_KEY, 'utf8');

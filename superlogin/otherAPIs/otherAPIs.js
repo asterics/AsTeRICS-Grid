@@ -119,8 +119,8 @@ function tagsToRes(tags, single) {
     }
 }
 
-exports.getRouter = (host) => {
-    couchDBServer = nano(`https://accessibility-info-tree-user-readonly:plaintext_password@${host}`);
+exports.getRouter = (protocol, host) => {
+    couchDBServer = nano(`${protocol}accessibility-info-tree-user-readonly:plaintext_password@${host}`);
     db = couchDBServer.use('accessibility-info-tree');
     return router;
 }
