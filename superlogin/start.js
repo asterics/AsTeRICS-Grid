@@ -8,7 +8,7 @@ let cors = require('cors');
 let { CouchAuth } = require('@perfood/couch-auth');
 let useSSL = false;
 let dotenvFlow = require('dotenv-flow');
-let otherAPIs = require('./otherAPIs/otherAPIs.js');
+let infoTreeAPI = require('./infoTreeAPI/infoTreeAPI.js');
 
 const USERNAME_REGEX = /^[A-Za-z0-9_-]{2,50}$/; // also see src/js/util/constants.js:8
 
@@ -101,7 +101,7 @@ app.use('/user/validate-username/:name', async (req, res, next) => {
     next();
 });
 
-app.use('/api', otherAPIs.getRouter(config.dbServer.protocol, config.dbServer.host));
+app.use('/api/infotree', infoTreeAPI.getRouter(config.dbServer.protocol, config.dbServer.host));
 
 if (useSSL) {
     let privateKey = fs.readFileSync(process.env.PATH_TO_KEY, 'utf8');
