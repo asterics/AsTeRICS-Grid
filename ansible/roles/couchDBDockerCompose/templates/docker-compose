@@ -22,7 +22,7 @@ services:
       options:
         max-size: "2048m"
   nginx:
-    image: nginx:1.23.1-alpine
+    image: {{DOCKER_NGINX_IMAGE}}
     ports:
       - 80:80
       - 443:443
@@ -39,7 +39,7 @@ services:
       options:
         max-size: "2048m"
   certbot:
-    image: certbot/certbot:v2.2.0
+    image: {{DOCKER_CERTBOT_IMAGE}}
     volumes:
         # path-in-repo:path-in-container (:rw = read and write)
       - ./certbot/www/:/var/www/certbot/:rw
