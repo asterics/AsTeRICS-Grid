@@ -2,7 +2,10 @@
 - hosts: couchdbserver1
   become: true
   roles:
-    - couchDBSetupServer
+    - role: couchDBSetupServer
+      tags: setup
+    - role: couchDBSetupMunin
+      tags: [update, munin]
     - role: couchDBDockerCouchdb
       tags: [couchdb, update]
     - role: couchDBDockerCompose

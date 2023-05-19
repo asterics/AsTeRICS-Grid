@@ -1,0 +1,55 @@
+#####
+###  SETUP SERVER
+#
+---
+- debug:
+    msg: START SETUP MUNIN (MONITORING)...
+
+- name: install munin packages
+  apt:
+    pkg:
+      - munin-node
+      - munin
+    state: latest
+    update_cache: true
+  register: result
+- name: debug [install munin packages]
+  debug:
+    var: result
+
+- name: copy munin.conf to remote
+  template:
+    src: munin.conf
+    dest: /etc/munin/munin.conf
+  register: result
+- name: debug [copy munin.conf to remote]
+  debug:
+    var: result
+
+- name: copy munin-node.conf to remote
+  template:
+    src: munin-node.conf
+    dest: /etc/munin/munin-node.conf
+  register: result
+- name: debug [copy munin-node.conf to remote]
+  debug:
+    var: result
+
+- name: restart munin-node service
+  become: true
+  shell: 'service munin-node restart'
+  register: result
+- name: debug [restart munin-node service]
+  debug:
+    var: result
+
+- name: restart munin service
+  become: true
+  shell: 'service munin restart'
+  register: result
+- name: debug [restart munin service]
+  debug:
+    var: result
+
+- debug:
+    msg: END SETUP MUNIN (MONITORING)...
