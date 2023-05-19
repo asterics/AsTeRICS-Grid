@@ -126,8 +126,6 @@
     path: ./nginx/conf/superLoginHttpCreateCert.conf
     state: absent
   register: result
-  # if "0" certificate does not exist, we need to create a certificate config
-  when: hasAValidCertificateSuperLogin.stdout == "0"
 - name: debug [remove old http config]
   debug:
     var: result
