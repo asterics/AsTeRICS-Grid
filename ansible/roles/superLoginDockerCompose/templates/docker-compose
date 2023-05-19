@@ -22,6 +22,8 @@ services:
       - ./nginx/conf/:/etc/nginx/conf.d/:ro
       - ./certbot/www:/var/www/certbot/:ro
       - ./certbot/conf/:/etc/nginx/ssl/:ro
+      - /etc/munin/static/:/etc/munin/static/:ro
+      - /var/cache/munin/www/:/var/cache/munin/www/:ro
     logging:
       driver: "json-file"
       options:
