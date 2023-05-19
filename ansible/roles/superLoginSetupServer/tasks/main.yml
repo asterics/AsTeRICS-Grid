@@ -145,5 +145,27 @@
   debug:
     var: result
 
+- name: ufw - only allow port 4949 in
+  ufw:
+    rule: allow
+    port: 4949
+    proto: tcp
+    direction: in
+  register: result
+- name: debug [ufw - only allow port 4949 in]
+  debug:
+    var: result
+
+- name: ufw - only allow port 4949 out
+  ufw:
+    rule: allow
+    port: 4949
+    proto: tcp
+    direction: out
+  register: result
+- name: debug [ufw - only allow port 4949 out]
+  debug:
+    var: result
+
 - debug:
     msg: END SETUP SERVER...
