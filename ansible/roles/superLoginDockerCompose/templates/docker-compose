@@ -2,7 +2,7 @@ version: '3'
 
 services:
   superlogin:
-    build: ./{{REPO_NAME}}
+    image: couch-auth:latest
     ports:
       # allow the http traffic only via localhost
       - 127.0.0.1:3000:3000

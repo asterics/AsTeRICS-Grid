@@ -34,9 +34,50 @@
   debug:
     var: result
 
+- name: copy htpasswd file
+  template:
+    src: htpasswd
+    dest: ./nginx/conf/htpasswd
+  register: result
+- name: debug [copy htpasswd file]
+  debug:
+    var: result
+
+- name: docker pull nginx
+  become: true
+  shell: 'docker pull {{DOCKER_NGINX_IMAGE}}'
+  register: result
+- name: debug [docker pull nginx]
+  debug:
+    var: result
+
+- name: docker pull certbot
+  become: true
+  shell: 'docker pull {{DOCKER_CERTBOT_IMAGE}}'
+  register: result
+- name: debug [docker pull certbot]
+  debug:
+    var: result
+
+- name: build couch-auth
+  become: true
+  shell: 'docker build ./{{REPO_NAME}} -t couch-auth:latest'
+  register: result
+- name: debug [build couch-auth]
+  debug:
+    var: result
+
+- name: stop docker images
+  become: true
+  shell: 'docker compose down'
+  register: result
+- name: debug [stop docker images]
+  debug:
+    var: result
+
 - name: start superlogin, nginx, and certbot with docker-compose up
   become: true
-  shell: 'docker compose -f ./docker-compose.yml up --build --detach --remove-orphans &> docker-compose-output'
+  shell: 'docker compose -f ./docker-compose.yml up --detach --remove-orphans'
   register: result
 - name: debug [start superlogin, nginx, and certbot with docker-compose up]
   debug:
