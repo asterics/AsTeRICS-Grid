@@ -75,37 +75,12 @@ server {
     ssl_certificate /etc/nginx/ssl/live/{{DOMAIN_NAME_FLIPMOUSE}}/fullchain.pem;
     ssl_certificate_key /etc/nginx/ssl/live/{{DOMAIN_NAME_FLIPMOUSE}}/privkey.pem;
 
-
-    location /js/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js/;
-    }
-
-    location /css/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/css/;
-    }
-
-    location /lib/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/lib/;
-    }
-
-    location /js_fm/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_fm/;
-    }
-
-    location /js_pad/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_pad/;
-    }
-
-    location /js_fabi/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_fabi/;
-    }
-
-    location /img/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/img/;
-    }
-
     location / {
         proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/index_fm.htm;
+    }
+
+    location ~* /.+$ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui$request_uri;
     }
 }
 
@@ -135,36 +110,12 @@ server {
     ssl_certificate /etc/nginx/ssl/live/{{DOMAIN_NAME_FLIPPAD}}/fullchain.pem;
     ssl_certificate_key /etc/nginx/ssl/live/{{DOMAIN_NAME_FLIPPAD}}/privkey.pem;
 
-    location /js/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js/;
-    }
-
-    location /css/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/css/;
-    }
-
-    location /lib/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/lib/;
-    }
-
-    location /js_fm/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_fm/;
-    }
-
-    location /js_pad/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_pad/;
-    }
-
-    location /js_fabi/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_fabi/;
-    }
-
-    location /img/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/img/;
-    }
-
     location / {
         proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/index_pad.htm;
+    }
+
+    location ~* /.+$ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui$request_uri;
     }
 }
 
@@ -194,36 +145,11 @@ server {
     ssl_certificate /etc/nginx/ssl/live/{{DOMAIN_NAME_FABI}}/fullchain.pem;
     ssl_certificate_key /etc/nginx/ssl/live/{{DOMAIN_NAME_FABI}}/privkey.pem;
 
-
-    location /js/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js/;
-    }
-
-    location /css/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/css/;
-    }
-
-    location /lib/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/lib/;
-    }
-
-    location /js_fm/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_fm/;
-    }
-
-    location /js_pad/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_pad/;
-    }
-
-    location /js_fabi/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/js_fabi/;
-    }
-
-    location /img/ {
-        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/img/;
-    }
-
     location / {
         proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui/index_fabi.htm;
+    }
+
+    location ~* /.+$ {
+        proxy_pass https://asterics.github.io/Addon-Bluetooth-WebGUI/webgui$request_uri;
     }
 }
