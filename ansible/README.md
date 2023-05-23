@@ -167,21 +167,3 @@ After that you will be asked to add the server to the known hosts again. You can
 # Are you sure you want to continue connecting (yes/no/[fingerprint])?
 $ yes
 ```
-
-# Todo:
-
-* Currently superlogin runs in dev mode
-  * HTTPS traffic to nginx -> proxy to app on the same machine in HTTP
-  * add the folders in the docker compose as volumes
-  * reference the folders in the start.js
-  * change the cmd in the docker file for super login
-* Test old and new superlogin
-  * after tests decide
-    * remove the new or the old depending on tests and further usage
-    * change docker compose to only allow one superlogin (old or new)
-* sync from old db to new db
-  * one time or continuously
-  * you can set up a new couch db on another server by running the script
-    * setup user and domains
-    * change env.json
-    * run asnible playbook
