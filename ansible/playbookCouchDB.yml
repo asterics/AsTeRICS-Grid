@@ -13,4 +13,4 @@
     - role: couchDBDockerNginx
       tags: [docker-compose, update]
     - role: couchDBDockerCertbot
-      tags: update
+      tags: [update, certbot]

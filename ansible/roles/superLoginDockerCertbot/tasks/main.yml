@@ -169,5 +169,19 @@
   debug:
     var: result
 
+- name: add cron job to weekly reload nginx to use new certificate
+  cron:
+    name: reload nginx
+    minute: '30'
+    hour: '0'
+    day: '*'
+    month: '*'
+    weekday: '0'
+    job: 'docker compose exec nginx nginx -s reload'
+  register: result
+- name: debug [add cron job to weekly reload nginx to use new certificate]
+  debug:
+    var: result
+
 - debug:
     msg: END DOCKER CERTBOT...
