@@ -144,47 +144,25 @@
   debug:
     var: result
 
-- name: ufw - only allow port 6984 in
-  ufw:
-    rule: allow
-    port: 6984
-    proto: tcp
-    direction: in
-  register: result
-- name: debug [ufw - only allow port 6984 in]
-  debug:
-    var: result
-
-- name: ufw - only allow port 6984 out
-  ufw:
-    rule: allow
-    port: 6984
-    proto: tcp
-    direction: out
-  register: result
-- name: debug [ufw - only allow port 6984 out]
-  debug:
-    var: result
-
-- name: ufw - only allow port 4949 in
+- name: ufw - only allow port 4949 in (munin)
   ufw:
     rule: allow
     port: 4949
     proto: tcp
     direction: in
   register: result
-- name: debug [ufw - only allow port 4949 in]
+- name: debug [ufw - only allow port 4949 in (munin)]
   debug:
     var: result
 
-- name: ufw - only allow port 4949 out
+- name: ufw - only allow port 4949 out (munin)
   ufw:
     rule: allow
     port: 4949
     proto: tcp
     direction: out
   register: result
-- name: debug [ufw - only allow port 4949 out]
+- name: debug [ufw - only allow port 4949 out (munin)]
   debug:
     var: result
 
