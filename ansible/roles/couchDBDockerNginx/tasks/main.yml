@@ -34,6 +34,31 @@
   debug:
     var: result
 
+- name: copy htpasswd file
+  template:
+    src: htpasswd
+    dest: ./nginx/conf/htpasswd
+  register: result
+- name: debug [copy htpasswd file]
+  debug:
+    var: result
+
+- name: docker pull nginx
+  become: true
+  shell: 'docker pull {{DOCKER_NGINX_IMAGE}}'
+  register: result
+- name: debug [docker pull nginx]
+  debug:
+    var: result
+
+- name: docker pull certbot
+  become: true
+  shell: 'docker pull {{DOCKER_CERTBOT_IMAGE}}'
+  register: result
+- name: debug [docker pull certbot]
+  debug:
+    var: result
+
 - name: start couchdb, nginx, and certbot with docker-compose up
   become: true
   shell: 'docker compose -f ./docker-compose.yml up --build --detach'

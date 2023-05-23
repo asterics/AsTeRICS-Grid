@@ -47,7 +47,7 @@
   "DB_SYNC_STATE_STOPPED": "synchronization with cloud paused",
   "DB_SYNC_STATE_FAIL": "not synchronizing with cloud",
   "DB_SYNC_STATE_ONLINEONLY": "online-only, no offline synchronization",
-  "VALIDATION_ERROR_REGEX": "Username must contain only lowercase letters, digits or the characters  [\"-\", \"_\"], valid length is 3-16 characters.",
+  "VALIDATION_ERROR_REGEX": "Username must contain only letters, digits or the characters  [\"-\", \"_\"], valid length is 2-50 characters.",
   "VALIDATION_ERROR_EXISTING": "Username is already existing.",
   "SEARCH_IMAGE_PLACEHOLDER": "input search term",
   "HEADER_COMPARE_ONLINE_OFFLINE": "Information about online/offline users",

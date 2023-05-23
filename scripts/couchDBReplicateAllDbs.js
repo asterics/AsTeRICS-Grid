@@ -2,7 +2,7 @@ if (!process.argv[2] || !process.argv[3]) {
     console.log('Replicates all databases between two CouchDB servers.')
     console.log("----");
     console.log('USAGE:');
-    console.log(`node couchDBReplicateAllDbs.js <SOURCE_COUCHDB_URL> <TARGET_COUCHDB_URL>`);
+    console.log(`node couchDBReplicateAllDbs.js <SOURCE_COUCHDB_URL> <TARGET_COUCHDB_URL> [onlynew]`);
     console.log("----");
     console.log("Example:");
     console.log(`node couchDBReplicateAllDbs.js https://admin:admin@my.couchdb.org:6984 http://admin:admin@localhost:5984`);
@@ -12,6 +12,8 @@ if (!process.argv[2] || !process.argv[3]) {
 
 let sourceDBUrl = process.argv[2] || 'http://admin:admin@localhost:5984';
 let targetDBUrl = process.argv[3] || 'http://admin:admin@localhost:5984';
+let onlynew = process.argv[4] === 'onlynew';
+
 sourceDBUrl = sourceDBUrl.trim();
 targetDBUrl = targetDBUrl.trim();
 
@@ -21,22 +23,36 @@ const PouchDB = require('pouchdb');
 
 let successNames = [];
 let errorNames = [];
+let manualSyncDBs = null;
 
 async function main() {
-    console.log("retrieve db names of source...");
+    if (manualSyncDBs && manualSyncDBs.length > 0) {
+        console.log(`syncing ${manualSyncDBs.length} manually defined dbs...`);
+        await replicateDBs(manualSyncDBs);
+        return;
+    }
+
+    console.log('retrieve db names of source...');
     let sourceDBNames = await sourceServer.db.list();
-    console.log("retrieve db names of target...");
+    console.log('retrieve db names of target...');
     let targetDBNames = await targetServer.db.list();
     console.log(`source server has ${sourceDBNames.length} databases.`);
     console.log(`target server has ${targetDBNames.length} databases.`);
 
-    let missingNames = sourceDBNames.filter(name => !targetDBNames.includes(name));
-    let existingNames = sourceDBNames.filter(name => targetDBNames.includes(name));
+    let missingNames = sourceDBNames.filter((name) => !targetDBNames.includes(name));
+    let existingNames = sourceDBNames.filter((name) => targetDBNames.includes(name));
     console.log(`replicating ${missingNames.length} missing databases to target...`);
     await replicateDBs(missingNames);
 
+    if (onlynew) {
+        console.log(`updating auth-users database to target...`);
+        await replicateDBs(['accessibility-info-tree', 'accessibility-for-appliances', 'auth-users'], true);
+        return;
+    }
+
+    existingNames = existingNames.filter((name) => name !== '_users');
     console.log(`updating ${existingNames.length} existing databases on target...`);
-    await replicateDBs(existingNames);
+    await replicateDBs(existingNames, true);
 }
 main();
 

@@ -145,5 +145,27 @@
   debug:
     var: result
 
+- name: ufw - only allow port 4949 in (munin)
+  ufw:
+    rule: allow
+    port: 4949
+    proto: tcp
+    direction: in
+  register: result
+- name: debug [ufw - only allow port 4949 in (munin)]
+  debug:
+    var: result
+
+- name: ufw - only allow port 4949 out (munin)
+  ufw:
+    rule: allow
+    port: 4949
+    proto: tcp
+    direction: out
+  register: result
+- name: debug [ufw - only allow port 4949 out (munin)]
+  debug:
+    var: result
+
 - debug:
     msg: END SETUP SERVER...

@@ -2,7 +2,7 @@ version: '3'
 
 services:
   superlogin:
-    build: ./{{REPO_NAME}}
+    image: couch-auth:latest
     ports:
       # allow the http traffic only via localhost
       - 127.0.0.1:3000:3000
@@ -12,7 +12,7 @@ services:
       options:
         max-size: "2048m"
   nginx:
-    image: nginx:1.23.1-alpine
+    image: {{DOCKER_NGINX_IMAGE}}
     ports:
       - 80:80
       - 443:443
@@ -22,12 +22,16 @@ services:
       - ./nginx/conf/:/etc/nginx/conf.d/:ro
       - ./certbot/www:/var/www/certbot/:ro
       - ./certbot/conf/:/etc/nginx/ssl/:ro
+      - /etc/munin/static/:/etc/munin/static/:ro
+      - /var/cache/munin/www/:/var/cache/munin/www/:ro
     logging:
       driver: "json-file"
       options:
         max-size: "2048m"
+    depends_on:
+      - superlogin
   certbot:
-    image: certbot/certbot:v2.2.0
+    image: {{DOCKER_CERTBOT_IMAGE}}
     volumes:
         # path-in-repo:path-in-container (:rw = read and write)
       - ./certbot/www/:/var/www/certbot/:rw
@@ -36,4 +40,7 @@ services:
       driver: "json-file"
       options:
         max-size: "2048m"
+    depends_on:
+      - superlogin
+      - nginx
 

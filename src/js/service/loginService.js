@@ -7,6 +7,7 @@ import { databaseService } from './data/databaseService';
 import { Router } from '../router';
 import { webradioService } from './webradioService.js';
 import { MainVue } from '../vue/mainVue.js';
+import {util} from "../util/util.js";
 
 let loginService = {};
 let _loginInfo = null;
@@ -19,8 +20,8 @@ let _loginInProgress = false;
 let _lastParamHashedPw = null;
 let _lastParamSaveUser = null;
 let _serverUrl = constants.IS_ENVIRONMENT_PROD
-    ? 'https://login.couchdb.asterics-foundation.org'
-    : 'http://' + location.hostname + ':3000';
+    ? 'https://login1.couchdb.asterics-foundation.org'
+    : `http://${location.hostname}:3000`;
 loginService.ERROR_CODE_UNAUTHORIZED = 'ERROR_CODE_UNAUTHORIZED';
 
 loginService.ERROR_CODE_LOCKED = 'ERROR_CODE_LOCKED';
@@ -177,7 +178,8 @@ loginService.register = function (user, plainPassword, saveUser) {
             password: password,
             confirmPassword: password
         })
-        .then((info) => {
+        .then(async () => {
+            await util.sleep(500);
             return loginInternal(user, password, saveUser);
         })
         .then(() => {
@@ -224,15 +226,15 @@ loginService.validateUsername = function (username) {
             resolve(constants.VALIDATION_ERROR_EXISTING);
             return;
         }
-        superlogin.validateUsername(username).then(
-            () => {
-                resolve(constants.VALIDATION_VALID);
-            },
-            (reason) => {
-                log.debug(reason);
+        fetch(`${_serverUrl}/user/validate-username/${username}`)
+            .then(async (response) => {
+                let valid = await response.json();
+                resolve(valid ? constants.VALIDATION_VALID : constants.VALIDATION_ERROR_EXISTING);
+            })
+            .catch((e) => {
+                log.warn("couldn't check username");
                 resolve(constants.VALIDATION_ERROR_EXISTING);
-            }
-        );
+            });
     });
 };
 

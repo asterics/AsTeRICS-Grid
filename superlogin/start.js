@@ -6,8 +6,11 @@ let bodyParser = require('body-parser');
 let logger = require('morgan');
 let cors = require('cors');
 let { CouchAuth } = require('@perfood/couch-auth');
-let useSSL = process.argv.length > 2 && process.argv[2] === 'ssl';
+let useSSL = false;
 let dotenvFlow = require('dotenv-flow');
+let infoTreeAPI = require('./infoTreeAPI/infoTreeAPI.js');
+
+const USERNAME_REGEX = /^[A-Za-z0-9_-]{2,50}$/; // also see src/js/util/constants.js:8
 
 dotenvFlow.config({
     silent: true
@@ -29,13 +32,13 @@ let config = {
         debugEmail: true
     },
     dbServer: {
-        publicURL: process.env.DB_SERVER_PUBLIC_URL,
-        protocol: process.env.DB_SERVER_PROTOCOL,
-        host: process.env.DB_SERVER_HOST,
-        user: process.env.DB_SERVER_USER,
-        password: process.env.DB_SERVER_PASSWORD,
-        userDB: process.env.CAUTH_USER_DB,
-        couchAuthDB: process.env.CAUTH_COUCH_AUTH_DB
+        publicURL: process.env.DB_SERVER_PUBLIC_URL || 'http://127.0.0.1:5984',
+        protocol: process.env.DB_SERVER_PROTOCOL || 'http://',
+        host: process.env.DB_SERVER_HOST || '127.0.0.1:5984',
+        user: process.env.DB_SERVER_USER || 'admin',
+        password: process.env.DB_SERVER_PASSWORD || 'admin',
+        userDB: process.env.CAUTH_USER_DB || 'auth-users',
+        couchAuthDB: process.env.CAUTH_COUCH_AUTH_DB || '_users'
     },
     local: {
         sendConfirmEmail: false,
@@ -70,16 +73,35 @@ let config = {
     }
 };
 
+const nano = require('nano')(`${config.dbServer.protocol}${config.dbServer.user}:${config.dbServer.password}@${config.dbServer.host}`);
+const authUsers = nano.use('auth-users');
+
 // Initialize CouchAuth
 try {
-    console.log("starting with this config:");
-    console.log(JSON.stringify(config));
+    logConfig();
     let couchAuth = new CouchAuth(config);
     app.use('/auth', couchAuth.router);
 } catch (err) {
     console.error('err');
     console.error(err);
 }
+
+app.use('/user/validate-username/:name', async (req, res, next) => {
+    res.set('Cache-Control', 'no-store');
+    let name = req.params.name;
+    if (!USERNAME_REGEX.test(name)) {
+        console.log("regex not matching");
+        res.status(200).json(false);
+        next();
+        return;
+    }
+    let result = await authUsers.view('views', 'view-usernames', { key: name });
+    let valid = result && result.rows && result.rows.length === 0;
+    res.status(200).json(valid);
+    next();
+});
+
+app.use('/api/infotree', infoTreeAPI.getRouter(config.dbServer.protocol, config.dbServer.host));
 
 if (useSSL) {
     let privateKey = fs.readFileSync(process.env.PATH_TO_KEY, 'utf8');
@@ -88,4 +110,11 @@ if (useSSL) {
     https.createServer(credentials, app).listen(3001);
 } else {
     http.createServer(app).listen(3000);
+}
+
+function logConfig() {
+    console.log("starting with this config:");
+    let logConfig = JSON.parse(JSON.stringify(config));
+    logConfig.dbServer.password = '***';
+    console.log(JSON.stringify(logConfig));
 }

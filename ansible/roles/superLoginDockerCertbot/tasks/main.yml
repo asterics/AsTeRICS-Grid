@@ -126,8 +126,6 @@
     path: ./nginx/conf/superLoginHttpCreateCert.conf
     state: absent
   register: result
-  # if "0" certificate does not exist, we need to create a certificate config
-  when: hasAValidCertificateSuperLogin.stdout == "0"
 - name: debug [remove old http config]
   debug:
     var: result
@@ -168,6 +166,20 @@
     job: 'docker compose run --rm certbot renew > certbot-renewal.log  >certbot-renewal.log 2>&1'
   register: result
 - name: debug [add cron job to renew certificate]
+  debug:
+    var: result
+
+- name: add cron job to weekly reload nginx to use new certificate
+  cron:
+    name: reload nginx
+    minute: '30'
+    hour: '0'
+    day: '*'
+    month: '*'
+    weekday: '0'
+    job: 'docker compose exec nginx nginx -s reload'
+  register: result
+- name: debug [add cron job to weekly reload nginx to use new certificate]
   debug:
     var: result
 

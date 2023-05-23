@@ -12,7 +12,7 @@ timeout = 20000
 ;WWW-Authenticate = Basic realm="administrator"
 
 [cors]
-origins = https://grid.asterics.eu, http://localhost:9095, http://bs-local.com:9095
+origins = https://grid.asterics.eu, http://localhost:9095, http://bs-local.com:9095, https://wissensbasis.wbt.wien, https://haushalt.wbt.wien
 credentials = true
 headers = accept, authorization, content-type, origin, referer
 methods = GET, PUT, POST, HEAD, DELETE
