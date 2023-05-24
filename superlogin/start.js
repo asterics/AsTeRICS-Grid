@@ -31,6 +31,10 @@ let config = {
         // Logs out-going emails to the console
         debugEmail: true
     },
+    security: {
+        // The maximum number of entries in the activity log in each user doc. Zero to disable completely
+        userActivityLogSize: 15
+    },
     dbServer: {
         publicURL: process.env.DB_SERVER_PUBLIC_URL || 'http://127.0.0.1:5984',
         protocol: process.env.DB_SERVER_PROTOCOL || 'http://',
