@@ -163,7 +163,7 @@
     minute: '10'
     hour: '0'
     day: '*'
-    job: 'docker compose run --rm certbot renew > certbot-renewal.log  >certbot-renewal.log 2>&1'
+    job: 'docker compose -f /home/auth/docker-compose.yml run --rm certbot renew &> certbot-renewal.log'
   register: result
 - name: debug [add cron job to renew certificate]
   debug:
@@ -177,7 +177,7 @@
     day: '*'
     month: '*'
     weekday: '0'
-    job: 'docker compose exec nginx nginx -s reload'
+    job: 'docker compose -f /home/auth/docker-compose.yml exec nginx nginx -s reload &> nginx-reload.log'
   register: result
 - name: debug [add cron job to weekly reload nginx to use new certificate]
   debug:
