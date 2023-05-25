@@ -6,7 +6,10 @@
             <form autocomplete="off" onsubmit="event.preventDefault()" style="margin-bottom: 0.5em">
                 <div class="srow">
                     <label for="inputUser" class="two columns"><span class="desktop-right inputlabel">{{ $t('username') }}</span></label>
-                    <input type="text" name="username" autocapitalize="none" v-model="user" id="inputUser" class="six columns" @change="validateUsername" v-debounce="300" v-focus="" maxlength="50"/>
+                    <input type="text" name="username" autocapitalize="none" v-model="user" id="inputUser" class="six columns" @input="validateUsername" v-focus="" maxlength="16"/>
+                    <div class="three columns" v-show="user != null && usernameValid === undefined">
+                        <i class="fas fa-spinner fa-spin"/>
+                    </div>
                     <div class="three columns" v-show="user != null && usernameValid == false">
                         <i style="color: red;" class="fas fa-times"/> <span>{{usernameValidationCode | translate}}</span>
                     </div>
@@ -114,6 +117,7 @@
     import {constants} from "../../js/util/constants";
     import ComparisonComponent from "./../components/comparisonComponent.vue";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
+    import {util} from "../../js/util/util.js";
 
     export default {
         components: {ComparisonComponent, HeaderIcon},
@@ -163,10 +167,14 @@
             },
             validateUsername() {
                 var thiz = this;
-                loginService.validateUsername(thiz.user).then((code) => {
-                    thiz.usernameValid = code === constants.VALIDATION_VALID;
-                    thiz.usernameValidationCode = code;
-                });
+                thiz.usernameValid = undefined;
+                thiz.usernameValidationCode = null;
+                util.debounce(() => {
+                    loginService.validateUsername(thiz.user).then((code) => {
+                        thiz.usernameValid = code === constants.VALIDATION_VALID;
+                        thiz.usernameValidationCode = code;
+                    });
+                }, 300, 'CHECK_USERNAME');
             }
         },
         mounted() {
