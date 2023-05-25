@@ -210,7 +210,7 @@
                         <span></span>
                         <i18n path="noteThatActivatingThisSendsSentencesToARASAACSeePrivacy" tag="span">
                             <template v-slot:link>
-                                <a v-if="!i18nService.isCurrentAppLangDE()" target="_blank" href="app/privacy_en.html?back=settings">{{ $t('privacyPolicy') }}</a><a v-if="i18nService.isCurrentAppLangDE()" target="_blank" href="app/privacy_de.html?back=settings">{{ $t('privacyPolicy') }}</a>
+                                <a v-if="!i18nService.isCurrentAppLangDE()" target="_blank" href="app/privacy_en.html?back=settings#data-transfer">{{ $t('privacyPolicy') }}</a><a v-if="i18nService.isCurrentAppLangDE()" target="_blank" href="app/privacy_de.html?back=settings#data-transfer">{{ $t('privacyPolicy') }}</a>
                             </template>
                         </i18n>
                     </div>
