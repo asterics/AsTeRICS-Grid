@@ -10,7 +10,7 @@ let useSSL = false;
 let dotenvFlow = require('dotenv-flow');
 let infoTreeAPI = require('./infoTreeAPI/infoTreeAPI.js');
 
-const USERNAME_REGEX = /^[A-Za-z0-9_-]{2,50}$/; // also see src/js/util/constants.js:8
+const USERNAME_REGEX = /^[a-z0-9][a-z0-9_-]{2,15}$/;; // also see src/js/util/constants.js:8
 
 dotenvFlow.config({
     silent: true
@@ -30,6 +30,10 @@ let config = {
         oauthDebug: false,
         // Logs out-going emails to the console
         debugEmail: true
+    },
+    security: {
+        // The maximum number of entries in the activity log in each user doc. Zero to disable completely
+        userActivityLogSize: 15
     },
     dbServer: {
         publicURL: process.env.DB_SERVER_PUBLIC_URL || 'http://127.0.0.1:5984',

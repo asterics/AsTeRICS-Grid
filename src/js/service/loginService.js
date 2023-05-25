@@ -233,7 +233,7 @@ loginService.validateUsername = function (username) {
             })
             .catch((e) => {
                 log.warn("couldn't check username");
-                resolve(constants.VALIDATION_ERROR_EXISTING);
+                resolve(constants.VALIDATION_ERROR_FAILED);
             });
     });
 };

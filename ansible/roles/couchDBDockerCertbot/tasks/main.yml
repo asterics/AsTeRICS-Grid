@@ -77,7 +77,7 @@
     minute: '10'
     hour: '0'
     day: '*'
-    job: 'docker compose -f /home/couchdb/docker-compose.yml run --rm certbot renew &> certbot-renewal.log'
+    job: 'docker compose -f /home/{{SSH_USER_COUCHDB}}/docker-compose.yml run --rm certbot renew &> certbot-renewal.log'
   register: result
 - name: debug [add cron job to renew certificate]
   debug:
@@ -86,12 +86,12 @@
 - name: add cron job to weekly reload nginx to use new certificate
   cron:
     name: reload nginx
-    minute: '30'
+    minute: '50'
     hour: '0'
     day: '*'
     month: '*'
     weekday: '0'
-    job: 'docker compose -f /home/couchdb/docker-compose.yml exec nginx nginx -s reload &> nginx-reload.log'
+    job: 'docker compose -f /home/{{SSH_USER_COUCHDB}}/docker-compose.yml exec nginx nginx -s reload &> nginx-reload.log'
   register: result
 - name: debug [add cron job to weekly reload nginx to use new certificate]
   debug:
