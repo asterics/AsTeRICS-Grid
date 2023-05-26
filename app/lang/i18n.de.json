@@ -49,6 +49,7 @@
   "DB_SYNC_STATE_ONLINEONLY": "nur online, keine Offline-Synchronisierung",
   "VALIDATION_ERROR_REGEX": "Username darf nur Kleinbuchstaben, Ziffern und die Zeichen [\"-\", \"_\"] enthalten, erlaubte Länge ist 3-16 Zeichen.",
   "VALIDATION_ERROR_EXISTING": "Username existiert bereits.",
+  "VALIDATION_ERROR_FAILED": "Benutzername konnte nicht überprüft werden",
   "SEARCH_IMAGE_PLACEHOLDER": "Suchbegriff eingeben",
   "HEADER_COMPARE_ONLINE_OFFLINE": "Informationen über Online-/Offline-User",
   "ADVANCED_SETTINGS": "Erweiterte Einstellungen",
