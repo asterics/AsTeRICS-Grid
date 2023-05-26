@@ -1,0 +1,5 @@
+#<domain>    <type>    <item>    <value>
+couchdb      hard      nofile    102400
+couchdb      soft      nofile    102400
+root         hard      nofile    102400
+root         soft      nofile    102400
