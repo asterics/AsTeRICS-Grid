@@ -42,7 +42,7 @@
                                             </span>
                                             <span class="hide-mobile">{{ $t('copyColumn') }}</span>
                                         </button>
-                                        <button class="six columns" @click.exact="paste(chosenLocale)" @click.ctrl="paste(chosenLocale, true)" :title="$t('pasteColumn')">
+                                        <button class="six columns" @click.exact="paste(currentLocale)" @click.ctrl="paste(currentLocale, true)" :title="$t('pasteColumn')">
                                             <i class="far fa-clipboard"></i>
                                             <span class="show-mobile">
                                                 <i18n path="pasteSomething" tag="span">
@@ -63,7 +63,7 @@
                                         </select>
                                     </div>
                                     <div class="srow">
-                                        <button class="six columns" @click.exact="copy(currentLocale)" @click.ctrl="copy(currentLocale, true)" :title="$t('copyColumn')">
+                                        <button class="six columns" @click.exact="copy(chosenLocale)" @click.ctrl="copy(chosenLocale, true)" :title="$t('copyColumn')">
                                             <i class="far fa-copy"></i>
                                             <span class="show-mobile">
                                                 <i18n path="copySomething" tag="span">
@@ -244,7 +244,7 @@
                 let imageData = gridElement.image ? (gridElement.image.url || gridElement.image.data) : '';
                 imageData = imageData || '';
                 imageData = imageData.substring(0, 100);
-                return btoa(gridData.rowCount + gridData.minColumnCount + gridElement.x + gridElement.y + prefix + imageData);
+                return btoa('' + gridData.gridElements.length + gridData.rowCount + gridData.minColumnCount + gridElement.x + gridElement.y + prefix + imageData);
             }
         },
         mounted() {
