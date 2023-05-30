@@ -18,6 +18,7 @@ import { GridActionSpeakCustom } from '../model/GridActionSpeakCustom.js';
 import { dataService } from './data/dataService.js';
 import { GridActionAudio } from '../model/GridActionAudio.js';
 import { TextConfig } from '../model/TextConfig.js';
+import {arasaacService} from "./pictograms/arasaacService.js";
 
 let collectElementService = {};
 
@@ -31,6 +32,7 @@ let autoCollectImage = true;
 let collectMode = GridElementCollect.MODE_AUTO;
 let convertToLowercaseIfKeyboard = true;
 let convertMode = null;
+let activateARASAACGrammarAPI = false;
 
 let duplicatedCollectPause = 0;
 let lastCollectId = null;
@@ -80,6 +82,22 @@ collectElementService.doCollectElementActions = async function (action) {
     if (!action) {
         return;
     }
+    let speakText = getSpeakText();
+    if (activateARASAACGrammarAPI && GridActionCollectElement.isSpeakAction(action)) {
+        if (autoCollectImage || collectMode === GridElementCollect.MODE_COLLECT_SEPARATED) {
+            speakText = await arasaacService.getCorrectGrammar(speakText);
+            let changed = applyGrammarCorrection(speakText);
+            if (changed) {
+                updateCollectElements();
+            }
+        } else {
+            let original = collectedText;
+            collectedText = speakText = await arasaacService.getCorrectGrammar(collectedText);
+            if (original !== collectedText) {
+                updateCollectElements();
+            }
+        }
+    }
     switch (action) {
         case GridActionCollectElement.COLLECT_ACTION_SPEAK:
             if (autoCollectImage || collectMode === GridElementCollect.MODE_COLLECT_SEPARATED) {
@@ -88,14 +106,14 @@ collectElementService.doCollectElementActions = async function (action) {
                     updateCollectElements();
                 });
             } else {
-                speechService.speak(collectedText);
+                speechService.speak(speakText);
             }
             break;
         case GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS:
-            speechService.speak(getSpeakTextArray().join(' '));
+            speechService.speak(speakText);
             break;
         case GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS_CLEAR:
-            speechService.speak(getSpeakTextArray().join(' '));
+            speechService.speak(speakText);
             await speechService.waitForFinishedSpeaking();
             clearAll();
             break;
@@ -109,7 +127,7 @@ collectElementService.doCollectElementActions = async function (action) {
                     }
                 });
             } else {
-                speechService.speak(collectedText);
+                speechService.speak(speakText);
                 speechService.doAfterFinishedSpeaking(() => {
                     clearAll();
                 });
@@ -176,6 +194,30 @@ collectElementService.doCollectElementActions = async function (action) {
     }
     predictionService.predict(collectedText, dictionaryKey);
 };
+
+async function applyGrammarCorrection(newText) {
+    let changedSomething = false;
+    let originalText = getSpeakText();
+    if (originalText === newText) {
+        return false;
+    }
+    let originalWords = originalText.split(' ');
+    let newWords = newText.split(' ');
+    if (originalWords.length !== newWords.length) {
+        return false;
+    }
+    for (let element of collectedElements) {
+        let label = element.fixedGrammarText || getLabel(element).trim().replace(/\s+/g, ' ');
+        let wordCount = label.split(' ').length;
+        let newLabel = newWords.slice(0, wordCount).join(' ');
+        newWords = newWords.slice(wordCount);
+        if (newLabel !== label) {
+            element.fixedGrammarText = newLabel;
+            changedSomething = true;
+        }
+    }
+    return changedSomething;
+}
 
 function clearAll() {
     collectedElements = [];
@@ -254,7 +296,7 @@ async function updateCollectElements(isSecondTry) {
             let textHeight = lineHeight * textPercentage;
             let totalWidth = 0;
             for (const [index, collectedElement] of collectedElements.entries()) {
-                let label = getLabel(collectedElement);
+                let label = collectedElement.fixedGrammarText || getLabel(collectedElement);
                 let image = getImage(collectedElement);
                 let elemWidth = imgHeight * imageRatios[index] || imgHeight;
                 let marked = markedImageIndex === index;
@@ -360,7 +402,7 @@ function getSpeakTextObject(element, dontIncludeAudio) {
         text = i18nService.getTranslation(customSpeakAction.speakText, { forceLang: lang });
     }
     if (!text) {
-        text = getLabel(element);
+        text = element.fixedGrammarText || getLabel(element);
     }
     return {
         text: text
@@ -373,6 +415,10 @@ function getSpeakTextObjectArray() {
 
 function getSpeakTextArray() {
     return collectedElements.map((e) => getSpeakTextObject(e, true).text);
+}
+
+function getSpeakText() {
+    return getSpeakTextArray().join(' ').trim().replace(/\s+/g, ' ');
 }
 
 function addTextElem(text) {
@@ -476,6 +522,7 @@ async function getMetadataConfig() {
     let metadata = await dataService.getMetadata();
     duplicatedCollectPause = metadata.inputConfig.globalMinPauseCollectSpeak || 0;
     convertMode = metadata.textConfig.convertMode;
+    activateARASAACGrammarAPI = metadata.activateARASAACGrammarAPI;
 }
 
 $(window).on(constants.EVENT_GRID_RESIZE, function () {

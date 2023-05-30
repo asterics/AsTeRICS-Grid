@@ -187,8 +187,32 @@
             <div class="srow">
                 <div class="eleven columns">
                     <h3 class="mt-2">{{ $t('notifications') }}</h3>
-                    <div class="srow">
+                    <div>
                         <slider-input :label="'intervalForRemindingMakeBackups'" unit="days" id="backupReminderInterval" min="0" max="100" step="1" v-model.number="metadata.notificationConfig.backupNotifyIntervalDays" @change="saveMetadata()"/>
+                    </div>
+                </div>
+            </div>
+            <div class="srow">
+                <div class="eleven columns">
+                    <h3 class="mt-2">{{ $t('miscellaneous') }}</h3>
+                    <div>
+                        <input id="activateARASAACGrammarAPI" type="checkbox" v-model="metadata.activateARASAACGrammarAPI" @change="saveMetadata()"/>
+                        <label for="activateARASAACGrammarAPI">
+                            <i18n path="activateAutomaticGrammarCorrectionARASAACAPI" tag="span">
+                                <template v-slot:availableLangs>
+                                    <span>{{util.arrayToPrintable(arasaacService.getSupportedGrammarLangs(true))}}</span>
+                                </template>
+                            </i18n>
+                        </label>
+                    </div>
+                    <div>
+                        <span class="fa fa-info-circle"></span>
+                        <span></span>
+                        <i18n path="noteThatActivatingThisSendsSentencesToARASAACSeePrivacy" tag="span">
+                            <template v-slot:link>
+                                <a v-if="!i18nService.isCurrentAppLangDE()" target="_blank" href="app/privacy_en.html?back=settings#data-transfer">{{ $t('privacyPolicy') }}</a><a v-if="i18nService.isCurrentAppLangDE()" target="_blank" href="app/privacy_de.html?back=settings#data-transfer">{{ $t('privacyPolicy') }}</a>
+                            </template>
+                        </i18n>
                     </div>
                 </div>
             </div>
@@ -211,6 +235,7 @@
     import GlobalInputOptions from "../modals/input/globalInputOptions.vue";
     import SliderInput from "../modals/input/sliderInput.vue";
     import $ from "../../js/externals/jquery.js";
+    import {arasaacService} from "../../js/service/pictograms/arasaacService.js";
 
     let KEY_SETTINGS_SHOW_ALL_VOICES = "KEY_SETTINGS_SHOW_ALL_VOICES";
     let KEY_SETTINGS_SHOW_ALL_CONTENTLANGS = "KEY_SETTINGS_SHOW_ALL_CONTENTLANGS";
@@ -240,7 +265,9 @@
                 localStorageService: localStorageService,
                 constants: constants,
                 MetaData: MetaData,
-                TextConfig: TextConfig
+                TextConfig: TextConfig,
+                arasaacService: arasaacService,
+                util: util
             }
         },
         computed: {

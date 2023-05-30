@@ -41,5 +41,23 @@
   debug:
     var: result
 
+- name: copy files local to remote (vm.args)
+  template:
+    src: vm-args
+    dest: ./couchdb/conf/vm.args
+  register: result
+- name: debug [copy files local to remote with a template (vm.args)]
+  debug:
+    var: result
+
+- name: copy files local to remote (100-couchdb.conf)
+  template:
+    src: 100-couchdb-conf
+    dest: ./couchdb/conf/100-couchdb.conf
+  register: result
+- name: debug [copy files local to remote with a template (100-couchdb.conf)]
+  debug:
+    var: result
+
 - debug:
     msg: END DOCKER COUCHDB...

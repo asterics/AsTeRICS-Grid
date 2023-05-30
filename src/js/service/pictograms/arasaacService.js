@@ -14,6 +14,9 @@ let _lastOptions = null;
 let _lastSearchLang = null;
 let arasaacAuthor = 'ARASAAC - CC (BY-NC-SA)';
 let arasaacLicenseURL = 'https://arasaac.org/terms-of-use';
+let supportedGrammarLangs = ['es'];
+let apiBaseUrl = 'https://api.arasaac.org';
+let betaApiBaseUrl = 'https://beta.api.arasaac.org';
 
 arasaacService.SEARCH_PROVIDER_NAME = 'ARASAAC';
 
@@ -113,7 +116,7 @@ arasaacService.getGridImageById = function (arasaacId) {
         return null;
     }
     return new GridImage({
-        url: `https://api.arasaac.org/api/pictograms/${arasaacId}?download=false&plural=false&color=true`,
+        url: `${apiBaseUrl}/api/pictograms/${arasaacId}?download=false&plural=false&color=true`,
         author: arasaacAuthor,
         authorURL: arasaacLicenseURL,
         searchProviderName: arasaacService.SEARCH_PROVIDER_NAME
@@ -164,6 +167,30 @@ arasaacService.getUpdatedUrl = function (oldUrl, newOptions) {
     return getUrl(id, newOptions);
 };
 
+arasaacService.getCorrectGrammar = async function (text) {
+    if (!text || !supportedGrammarLangs.includes(i18nService.getContentLang())) {
+        return text;
+    }
+    text = text.trim();
+    let contentLang = i18nService.getContentLang();
+    let path = `${betaApiBaseUrl}/api/phrases/flex/${contentLang}/${text}`;
+    let response = await fetch(path).catch((e) => console.error(e));
+    if (!response || response.status !== 200) {
+        return text;
+    }
+    let resultJSON = await response.json();
+    let result = resultJSON ? resultJSON.msg : null;
+    return result || text;
+};
+
+arasaacService.getSupportedGrammarLangs = function (translate) {
+    let langs = supportedGrammarLangs;
+    if (translate) {
+        langs = langs.map((e) => i18nService.getTranslation(`lang.${e}`));
+    }
+    return JSON.parse(JSON.stringify(langs));
+};
+
 function getUrl(apiId, options) {
     let paramSuffix = '';
     options.forEach((option) => {
@@ -171,7 +198,7 @@ function getUrl(apiId, options) {
             paramSuffix += `&${option.name}=${encodeURIComponent(option.value)}`;
         }
     });
-    return `https://api.arasaac.org/api/pictograms/${apiId}?download=false${paramSuffix}`;
+    return `${apiBaseUrl}/api/pictograms/${apiId}?download=false${paramSuffix}`;
 }
 
 function queryInternal(search, lang, chunkNr, chunkSize) {
@@ -244,7 +271,7 @@ async function getResultListLangs(langs, search) {
 }
 
 function getResultList(lang, search) {
-    let url = `https://api.arasaac.org/api/pictograms/${lang}/search/${search}`;
+    let url = `${apiBaseUrl}/api/pictograms/${lang}/search/${search}`;
     return new Promise((resolve, reject) => {
         $.get(
             url,

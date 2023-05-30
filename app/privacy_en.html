@@ -105,9 +105,15 @@
     The legal basis for the usage of the username (the only potentially personal data processed by AsTeRICS Grid) is
     consent, since when registering for an "online user" the user has to consent the processing of the data.
 </div>
-<h2>Data transfer</h2>
+<h2 id="data-transfer">Data transfer</h2>
 <div>
-    No data is transferred to third parties.
+    If you're activating the optional function for automatically correct grammar via the API from ARASAAC in the settings,
+    all sentences constructed via the app will be sent to ARASAAC's API. This will happen at the time of speaking out the
+    sentence and the reason for transmitting the data is to provide the function for correcting grammar. For further
+    details see <a href="https://arasaac.org/privacy-policy" target="_blank">ARASAAC's privacy policy</a>.
+    <br/>
+    <br/>
+    Apart from this no data is transferred to third parties.
 </div>
 <h2>Storage period</h2>
 <div>
@@ -140,6 +146,10 @@
     let backHash = url.searchParams.get("back") || "about";
     document.getElementById('backLink1').href = '../#' + backHash;
     document.getElementById('backLink2').href = '../#' + backHash;
+    if (window.location.hash) {
+        console.warn(document.getElementById(window.location.hash.replace('#', '')));
+        document.getElementById(window.location.hash.replace('#', '')).style = 'outline: 3px solid lightblue';
+    }
 </script>
 </body>
 </html>

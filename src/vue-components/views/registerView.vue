@@ -74,7 +74,7 @@
                 </div>
             </div>
             <div class="srow">
-                <button @click="register" :disabled="!user || !password || !password2 || password !== password2 || !privacyConsent" class="six columns offset-by-two">{{ $t('register') }}</button>
+                <button @click="register" :disabled="!user || !password || !password2 || password !== password2 || !usernameValid || !privacyConsent" class="six columns offset-by-two">{{ $t('register') }}</button>
             </div>
             <div class="srow">
                 <div class="six columns offset-by-two">

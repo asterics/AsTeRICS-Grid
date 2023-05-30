@@ -105,9 +105,15 @@
     personenbezogener Datenwert) ist Einwilligung, da bei der Registrierung für einen Online-User ein
     entsprechendes Häkchen zu setzen ist.
 </div>
-<h2>Datenübertragung</h2>
+<h2 id="data-transfer">Datenübertragung</h2>
 <div>
-    Es werden keine Daten an Dritte weitergegeben.
+    Wenn Sie die optionale Funktion der automatischen Grammatikkorrektur durch die ARASAAC API über die Einstellungen aktivieren,
+    werden alle über die App gebildeten Sätze an die API von ARASAAC übertragen. Das geschieht zum Zeitpunkt der Aussprache
+    und zum Zweck der Korrektur der Grammatik.
+    Siehe die <a href="https://arasaac.org/privacy-policy" target="_blank">Datenschutzerklärung von ARASAAC</a> für weitere Details.
+    <br/>
+    <br/>
+    Es werden ansonsten keine Daten an Dritte weitergegeben.
 </div>
 <h2>Speicherdauer</h2>
 <div>
@@ -140,6 +146,10 @@
     let backHash = url.searchParams.get("back") || "about";
     document.getElementById('backLink1').href = '../#' + backHash;
     document.getElementById('backLink2').href = '../#' + backHash;
+    if (window.location.hash) {
+        console.warn(document.getElementById(window.location.hash.replace('#', '')));
+        document.getElementById(window.location.hash.replace('#', '')).style = 'outline: 3px solid lightblue';
+    }
 </script>
 
 </body>
