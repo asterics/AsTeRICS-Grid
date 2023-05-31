@@ -116,6 +116,19 @@
     "wordPrediction": true
   },
   {
+    "name": "Global-Core Communicator ARASAAC",
+    "filename": "Comunicador_Global-Core_ARASAAC_IT.grd.json",
+    "author": "ARASAAC / translated by Paolo Mauri",
+    "website": "https://arasaac.org/",
+    "languages": ["it"],
+    "description": {
+      "en": "Dynamic communicator, developed by the ARASAAC team, with robust vocabulary, and two communication options combined with each other: communicator with core vocabulary distributed by categories and core vocabulary - essential words communicator.",
+      "it": "Comunicatore dinamico, sviluppato dal team ARASAAC, con un vocabolario robusto e due opzioni di comunicazione combinate tra loro: comunicatore con vocabolario di base distribuito per categorie e vocabolario di base - comunicatore di parole essenziali."
+    },
+    "standardFor": ["it"],
+    "wordPrediction": true
+  },
+  {
     "name": "CACE-UTAC 2021 - ARASAAC",
     "filename": "CACE-UTAC_2021_CA.grd.json",
     "author": "UTAC (Unitat de Tècniques Augmentatives de Comunicació)",
