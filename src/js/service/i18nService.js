@@ -29,11 +29,11 @@ let appLanguages = [
     'ko',
     'pl',
     'pt',
+    'ro',
     'sl',
     'es',
     'uk',
-    'val',
-    'ro'
+    'val'
 ];
 //all languages in german and english + ISO-639-1 code, extracted from https://de.wikipedia.org/wiki/Liste_der_ISO-639-1-Codes, sorted by german translation
 let allLangCodes = [
