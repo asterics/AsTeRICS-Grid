@@ -207,7 +207,7 @@ async function applyGrammarCorrection(newText) {
         return false;
     }
     for (let element of collectedElements) {
-        let label = element.fixedGrammarText || getLabel(element).trim().replace(/\s+/g, ' ');
+        let label = element.fixedGrammarText || getSpeakTextOfElement(element).trim().replace(/\s+/g, ' ');
         let wordCount = label.split(' ').length;
         let newLabel = newWords.slice(0, wordCount).join(' ');
         newWords = newWords.slice(wordCount);
@@ -296,7 +296,7 @@ async function updateCollectElements(isSecondTry) {
             let textHeight = lineHeight * textPercentage;
             let totalWidth = 0;
             for (const [index, collectedElement] of collectedElements.entries()) {
-                let label = collectedElement.fixedGrammarText || getLabel(collectedElement);
+                let label = collectedElement.fixedGrammarText || getSpeakTextOfElement(collectedElement);
                 let image = getImage(collectedElement);
                 let elemWidth = imgHeight * imageRatios[index] || imgHeight;
                 let marked = markedImageIndex === index;
@@ -407,6 +407,11 @@ function getSpeakTextObject(element, dontIncludeAudio) {
     return {
         text: text
     };
+}
+
+function getSpeakTextOfElement(element) {
+    let textObject = getSpeakTextObject(element, true);
+    return textObject && textObject.text ? textObject.text : '';
 }
 
 function getSpeakTextObjectArray() {
