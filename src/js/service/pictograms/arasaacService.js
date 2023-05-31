@@ -16,7 +16,6 @@ let arasaacAuthor = 'ARASAAC - CC (BY-NC-SA)';
 let arasaacLicenseURL = 'https://arasaac.org/terms-of-use';
 let supportedGrammarLangs = ['es'];
 let apiBaseUrl = 'https://api.arasaac.org';
-let betaApiBaseUrl = 'https://beta.api.arasaac.org';
 
 arasaacService.SEARCH_PROVIDER_NAME = 'ARASAAC';
 
@@ -173,7 +172,7 @@ arasaacService.getCorrectGrammar = async function (text) {
     }
     text = text.trim();
     let contentLang = i18nService.getContentLang();
-    let path = `${betaApiBaseUrl}/api/phrases/flex/${contentLang}/${text}`;
+    let path = `${apiBaseUrl}/api/phrases/flex/${contentLang}/${text}`;
     let response = await fetch(path).catch((e) => console.error(e));
     if (!response || response.status !== 200) {
         return text;
