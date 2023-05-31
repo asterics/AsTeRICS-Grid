@@ -918,6 +918,9 @@
   "days": "dias",
   "offline": "offline",
   "online": "online",
+  "activateAutomaticGrammarCorrectionARASAACAPI": "Activate automatic grammar correction via ARASAAC's API (available for: {availableLangs})",
+  "noteThatActivatingThisSendsSentencesToARASAACSeePrivacy": "Note that activating this feature results in sending all constructed sentences to ARASAAC's natural language API. See {link}.",
+  "thanksToEduardoLleidaSolanoProfessorAtDepartment": "Thanks to Eduardo Lleida Solano, Professor at the Department of Electronic Engineering and Communications of the University of Zaragoza for collaborating in the development of the ARASAAC API that integrates Natural Language Processing (NLP). It's used to provide a feature for automatically fix the grammar of sentences within AsTeRICS Grid.",
   "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Não foi possível reproduzir o webradio, porque o navegador não o permitiu.",
   "allowPlayingRadio": "Permitir reprodução de rádio"
 }
