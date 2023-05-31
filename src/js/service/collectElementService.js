@@ -402,7 +402,7 @@ function getSpeakTextObject(element, dontIncludeAudio) {
         text = i18nService.getTranslation(customSpeakAction.speakText, { forceLang: lang });
     }
     if (!text) {
-        text = element.fixedGrammarText || getLabel(element);
+        text = getLabel(element);
     }
     return {
         text: text
