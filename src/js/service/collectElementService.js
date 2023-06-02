@@ -83,6 +83,7 @@ collectElementService.doCollectElementActions = async function (action) {
         return;
     }
     let speakText = getSpeakText();
+    let speakArray = getSpeakTextObjectArray();
     if (activateARASAACGrammarAPI && GridActionCollectElement.isSpeakAction(action)) {
         if (autoCollectImage || collectMode === GridElementCollect.MODE_COLLECT_SEPARATED) {
             speakText = await arasaacService.getCorrectGrammar(speakText);
@@ -97,11 +98,12 @@ collectElementService.doCollectElementActions = async function (action) {
                 updateCollectElements();
             }
         }
+        speakArray = getSpeakTextObjectArray(true);
     }
     switch (action) {
         case GridActionCollectElement.COLLECT_ACTION_SPEAK:
             if (autoCollectImage || collectMode === GridElementCollect.MODE_COLLECT_SEPARATED) {
-                speechService.speakArray(getSpeakTextObjectArray(), (index) => {
+                speechService.speakArray(speakArray, (index) => {
                     markedImageIndex = index;
                     updateCollectElements();
                 });
@@ -119,7 +121,7 @@ collectElementService.doCollectElementActions = async function (action) {
             break;
         case GridActionCollectElement.COLLECT_ACTION_SPEAK_CLEAR:
             if (autoCollectImage || collectMode === GridElementCollect.MODE_COLLECT_SEPARATED) {
-                speechService.speakArray(getSpeakTextObjectArray(), (index, finished) => {
+                speechService.speakArray(speakArray, (index, finished) => {
                     markedImageIndex = index;
                     updateCollectElements();
                     if (finished) {
@@ -388,16 +390,16 @@ function getLastImage() {
     return lastElem ? getImage(lastElem) : undefined;
 }
 
-function getSpeakTextObject(element, dontIncludeAudio) {
+function getSpeakTextObject(element, dontIncludeAudio, inlcudeCorrectedGrammar) {
     let audioAction = element.actions.filter((a) => a.modelName === GridActionAudio.getModelName())[0];
     if (audioAction && !dontIncludeAudio && audioAction.dataBase64) {
         return {
             base64Sound: audioAction.dataBase64
         };
     }
-    let text;
+    let text = inlcudeCorrectedGrammar ? element.fixedGrammarText : null;
     let customSpeakAction = element.actions.filter((a) => a.modelName === GridActionSpeakCustom.getModelName())[0];
-    if (customSpeakAction) {
+    if (customSpeakAction && !text) {
         let lang = customSpeakAction.speakLanguage || i18nService.getContentLang();
         text = i18nService.getTranslation(customSpeakAction.speakText, { forceLang: lang });
     }
@@ -414,8 +416,8 @@ function getSpeakTextOfElement(element) {
     return textObject && textObject.text ? textObject.text : '';
 }
 
-function getSpeakTextObjectArray() {
-    return collectedElements.map((e) => getSpeakTextObject(e));
+function getSpeakTextObjectArray(includeCorrectedGrammar) {
+    return collectedElements.map((e) => getSpeakTextObject(e, false, includeCorrectedGrammar));
 }
 
 function getSpeakTextArray() {
