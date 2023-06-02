@@ -42,7 +42,10 @@ module.exports = env => {
             host: '0.0.0.0',
             port: 9095,
             open: false,
-            hot: true
+            hot: true,
+            client: {
+                overlay: true
+            }
         },
         externals: {
             jquery: '$',
