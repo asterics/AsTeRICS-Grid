@@ -1,6 +1,5 @@
 import { L } from '../util/lquery.js';
-import { util } from '../util/util.js';
-import { inputEventHandler } from './inputEventHandler.js';
+import {speechService} from "../service/speechService.js";
 
 let Clicker = {};
 
@@ -18,28 +17,31 @@ function ClickerConstructor(itemSelector, options) {
     let _itemSelector = itemSelector;
     let _selectionListener = null;
     let _elements = [];
-    let _enableMouseDown = true;
+    let lastOnClick = 0;
 
     function onclick(event) {
+        if (new Date().getTime() - lastOnClick < 100) {
+            return;
+        }
+        lastOnClick = new Date().getTime();
         if (_selectionListener) {
             _selectionListener(event.currentTarget);
         }
     }
 
-    function onMouseDown(event) {
-        event.preventDefault(); // prevent zooming on longpress on images on iOS
-        if (!_enableMouseDown || inputEventHandler.global.hasIncompleteTouchEvent()) {
+    function onInputStart(event) {
+        if (!speechService.hasSpoken() && event.type === 'mousedown') {
+            onclick(event);
             return;
         }
-        util.throttle(onclick, [event], 300, 'CLICK_EVENT_HANDLER');
-    }
-
-    function onTouchStart(event) {
-        _enableMouseDown = false;
-        if (inputEventHandler.global.hasIncompleteTouchEvent()) {
+        if (speechService.hasSpoken()) {
+            event.preventDefault(); // prevent zooming on longpress on images on iOS
+        }
+        if (event.type === 'mousedown' && event.buttons === 0) {
+            // no button pressed (emulated from touchscreen)
             return;
         }
-        util.throttle(onclick, [event], 300, 'CLICK_EVENT_HANDLER');
+        onclick(event);
     }
 
     function ondblclick(event) {
@@ -61,9 +63,8 @@ function ClickerConstructor(itemSelector, options) {
         _elements = L.selectAsList(_itemSelector);
         _elements.forEach(function (item) {
             if (options.useSingleClick && options.useMousedownEvent) {
-                item.addEventListener('mousedown', onMouseDown);
-                item.addEventListener('touchstart', onTouchStart);
-                item.addEventListener('touchend', inputEventHandler.global.resetIncompleteTouchEvent); //needed because 'touchend' on document does not fire (but on element does) if element removed, see https://bugs.chromium.org/p/chromium/issues/detail?id=464579 and https://jsfiddle.net/jq3L6xo4/4/
+                item.addEventListener('mousedown', onInputStart);
+                item.addEventListener('touchstart', onInputStart);
             } else if (options.useSingleClick) {
                 item.addEventListener('click', onclick);
             }
@@ -76,8 +77,8 @@ function ClickerConstructor(itemSelector, options) {
 
     thiz.destroy = function () {
         _elements.forEach(function (item) {
-            item.removeEventListener('mousedown', onMouseDown);
-            item.removeEventListener('touchstart', onTouchStart);
+            item.removeEventListener('mousedown', onInputStart);
+            item.removeEventListener('touchstart', onInputStart);
             item.removeEventListener('click', onclick);
             item.removeEventListener('dblclick', ondblclick);
             item.removeEventListener('keydown', onkeydown);

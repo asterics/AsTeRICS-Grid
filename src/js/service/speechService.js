@@ -24,6 +24,7 @@ let lastSpeakText = null;
 let lastSpeakTime = 0;
 let voiceIgnoreList = ['com.apple.speech.synthesis.voice']; //joke voices by Apple
 let voiceSortBackList = ['com.apple.eloquence'];
+let hasSpoken = false;
 
 /**
  * speaks given text.
@@ -101,12 +102,16 @@ speechService.speak = function (textOrOject, options) {
             msg.addEventListener('end', options.progressFn);
         }
         window.speechSynthesis.speak(msg);
+        msg.addEventListener('start', () => {
+            hasSpoken = true;
+        });
     } else if (responsiveVoices.length > 0) {
         let isSelectedVoice = responsiveVoices[0].id === preferredVoiceId;
         responsiveVoice.speak(text, responsiveVoices[0].name, {
             rate: options.rate || (isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1),
             pitch: isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1
         });
+        hasSpoken = true;
     }
     testIsSpeaking();
     setTimeout(() => {
@@ -270,6 +275,10 @@ speechService.getPreferredVoiceLang = function () {
 speechService.isVoiceLangLinkedToTextLang = function () {
     return _voiceLangIsTextLang;
 };
+
+speechService.hasSpoken = function () {
+    return hasSpoken;
+}
 
 function getVoicesByLang(lang) {
     return allVoices.filter((voice) => voice.lang.substring(0, 2) === lang);
