@@ -919,8 +919,8 @@
   "offline": "offline",
   "online": "online",
   "activateAutomaticGrammarCorrectionARASAACAPI": "Automatikus nyelvi ellenőrzés az ARASAAC API-val. (elérhető nyelvek: {availableLangs})",
-  "noteThatActivatingThisSendsSentencesToARASAACSeePrivacy": "Note that activating this feature results in sending all constructed sentences to ARASAAC's natural language API. See {link}.",
-  "thanksToEduardoLleidaSolanoProfessorAtDepartment": "Thanks to Eduardo Lleida Solano, Professor at the Department of Electronic Engineering and Communications of the University of Zaragoza for collaborating in the development of the ARASAAC API that integrates Natural Language Processing (NLP). It's used to provide a feature for automatically fix the grammar of sentences within AsTeRICS Grid.",
+  "noteThatActivatingThisSendsSentencesToARASAACSeePrivacy": "Figyelem, ezen funkció bekapcsolásával a összeállított mondatok továbbításra kerülnek az ARASAAC nyelvi API-nak. Lásd: {link}. ",
+  "thanksToEduardoLleidaSolanoProfessorAtDepartment": "Köszönet Eduardo Lleida Solano-nak, a Zaragozai Egyetem Electronic Engineering and Communications tanszéke oktatójának, az ARASAAC természetes beszédfeldolgozó (NLP) API-ának fejlesztésében való együttműködéséért. Ezt az eszköz biztosítja az automatikus nyelv helyesség javítást az AsTeRICS Grid-ben.",
   "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Nem lejátszható a webrádió, mert a böngésző nem engedélyezi.",
   "allowPlayingRadio": "Rádió lejátszás engedélyezése"
 }
