@@ -16,7 +16,7 @@ Please do the following things if you want to work on an issue:
 * Assign yourself to the issue. If you don't have the right to do it:
    * write to office@asterics-foundation.org and ask to be added as collaborator to the project on Github
    * as an alternative fork the project on Github, leave a comment that you're working on the issue and start to work on it in your fork.
-* create a new branch for your issue (if not working on your own fork). The branch name should be `#[issuenumber]/short-description-of-issue`
+* create a new branch for your issue (if not working on your own fork). The branch name should be something like `issue#<issue-number>/short-description-of-issue`
 * after finishing working on the issue, create a PR for merging it to the `master` branch
 
 ### Review and test open PR's
