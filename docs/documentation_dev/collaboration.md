@@ -20,10 +20,10 @@ Please do the following things if you want to work on an issue:
 * after finishing working on the issue, create a PR for merging it to the `master` branch
 
 ### Review and test open PR's
+You're welcome to test open PR's and add your comments or code reviews.
 
-### Working on translations of the app
-
-### Working on translations of grid configurations
+### Working on translations
+Please see [Translation of AsTeRICS Grid](https://github.com/asterics/AsTeRICS-Grid/blob/master/docs/documentation_user/09_translation.md) for information how to contribute translations of the application or the content.
 
 ## Internal collaboration
 This section is for people who have access to our email address and servers.
