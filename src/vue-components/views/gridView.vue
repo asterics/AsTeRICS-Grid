@@ -138,9 +138,7 @@
                 thiz.metadata.locked = true;
                 thiz.unlockCounter = UNLOCK_COUNT;
                 dataService.saveMetadata(thiz.metadata).then(() => {
-                    $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
-                    $(document).trigger(constants.EVENT_UI_LOCKED);
-                    this.setZoomable(false);
+                    this.setViewPropsLocked();
                 });
             },
             unlock(force) {
@@ -156,21 +154,26 @@
                 if (thiz.unlockCounter === 0 || force) {
                     thiz.metadata.locked = false;
                     dataService.saveMetadata(thiz.metadata).then(() => {
-                        $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
-                        $(document).trigger(constants.EVENT_UI_UNLOCKED);
-                        this.setZoomable(true);
+                        this.setViewPropsUnlocked();
                     });
                 }
             },
-            setZoomable(zoomable) {
-                if (zoomable) {
-                    $('#viewPortMeta').attr('content', 'width=device-width, initial-scale=1');
-                    $('body').attr('touch-action', '');
-                    document.removeEventListener('touchmove', this.preventZoomHandler);
-                } else {
-                    $('#viewPortMeta').attr('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
-                    document.addEventListener('touchmove', this.preventZoomHandler, {passive: false});
-                }
+            setViewPropsLocked() {
+                $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
+                $(document).trigger(constants.EVENT_UI_LOCKED);
+
+                // prevent zoom
+                $('#viewPortMeta').attr('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
+                document.addEventListener('touchmove', this.preventZoomHandler, {passive: false});
+            },
+            setViewPropsUnlocked() {
+                $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
+                $(document).trigger(constants.EVENT_UI_UNLOCKED);
+
+                //enable zoom
+                $('#viewPortMeta').attr('content', 'width=device-width, initial-scale=1');
+                $('body').attr('touch-action', '');
+                document.removeEventListener('touchmove', this.preventZoomHandler);
             },
             preventZoomHandler(event) {
                 if (event.scale !== 1) {
@@ -451,8 +454,7 @@
                 metadata.inputConfig.huffEnabled = urlParamService.isHuffmanEnabled() ? true : metadata.inputConfig.huffEnabled;
                 dataService.saveMetadata(metadata).then(() => {
                     if (metadata.locked) {
-                        $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
-                        this.setZoomable(!metadata.locked);
+                        this.setViewPropsLocked();
                     }
                 });
                 thiz.metadata = metadata;
