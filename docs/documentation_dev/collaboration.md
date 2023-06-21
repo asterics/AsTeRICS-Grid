@@ -16,14 +16,14 @@ Please do the following things if you want to work on an issue:
 * Assign yourself to the issue. If you don't have the right to do it:
    * write to office@asterics-foundation.org and ask to be added as collaborator to the project on Github
    * as an alternative fork the project on Github, leave a comment that you're working on the issue and start to work on it in your fork.
-* create a new branch for your issue (if not working on your own fork). The branch name should be `#[issuenumber]/short-description-of-issue`
+* create a new branch for your issue (if not working on your own fork). The branch name should be something like `issue#<issue-number>/short-description-of-issue`
 * after finishing working on the issue, create a PR for merging it to the `master` branch
 
 ### Review and test open PR's
+You're welcome to test open PR's and add your comments or code reviews.
 
-### Working on translations of the app
-
-### Working on translations of grid configurations
+### Working on translations
+Please see [Translation of AsTeRICS Grid](https://github.com/asterics/AsTeRICS-Grid/blob/master/docs/documentation_user/09_translation.md) for information how to contribute translations of the application or the content.
 
 ## Internal collaboration
 This section is for people who have access to our email address and servers.
