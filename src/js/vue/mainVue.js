@@ -80,7 +80,8 @@ MainVue.init = function () {
                     showProgressBar: false,
                     constants: constants,
                     tooltipHTML: null,
-                    actionLink: null
+                    actionLink: null,
+                    Router: Router
                 };
             },
             methods: {
