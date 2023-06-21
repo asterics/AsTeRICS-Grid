@@ -176,9 +176,7 @@
                 document.removeEventListener('touchmove', this.preventZoomHandler);
             },
             preventZoomHandler(event) {
-                if (event.scale !== 1) {
-                    event.preventDefault();
-                }
+                event.preventDefault();
             },
             applyFullscreen(dontSave) {
                 util.openFullscreen();
