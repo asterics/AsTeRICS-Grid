@@ -141,6 +141,9 @@ collectElementService.doCollectElementActions = async function (action) {
             break;
         case GridActionCollectElement.COLLECT_ACTION_REMOVE_WORD:
             let removedElement = collectedElements.pop();
+            if (!removedElement) {
+                return;
+            }
             let removedLabel = getLabel(removedElement);
             if (removedLabel) {
                 collectedText = collectedText.substring(
