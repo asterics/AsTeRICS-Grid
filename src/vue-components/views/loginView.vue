@@ -131,7 +131,7 @@
                     <div class="twelve columns">
                         <span v-show="allUsersList.length === 0">{{ $t('noAccount') }}</span>
                         <span v-show="allUsersList.length > 0">{{ $t('addNewAccount') }}</span>
-                        <a href="#register">{{ $t('registernow') }}</a>
+                        <a href="javascript:;" @click="Router.to('#register')">{{ $t('registernow') }}</a>
                         <div v-show="allUsersList.length === 0">
                             <span>{{ $t('astericsGridIsFreeAndAllYouNeedToRegister') }}</span>
                         </div>
@@ -140,7 +140,7 @@
                 <div class="srow">
                     <div class="twelve columns">
                         <span>{{ $t('wantToCreateAnOfflineonlyUser') }}</span>
-                        <a href="#add">{{ $t('addofflineuser') }}</a>
+                        <a href="javascript:;" @click="Router.to('#add')">{{ $t('addofflineuser') }}</a>
                     </div>
                 </div>
             </div>
@@ -173,7 +173,8 @@
                 savedOnlineUsers: [],
                 savedLocalUsers: [],
                 allUsersList: [],
-                activeUser: null
+                activeUser: null,
+                Router: Router
             }
         },
         methods: {

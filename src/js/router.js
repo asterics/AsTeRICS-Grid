@@ -141,7 +141,7 @@ Router.init = function (injectIdParam, initialHash) {
             let validHash = getValidHash();
             if (location.hash !== validHash) {
                 done(false);
-                setHash(validHash);
+                Router.to(validHash);
             } else {
                 done();
             }
@@ -154,7 +154,7 @@ Router.init = function (injectIdParam, initialHash) {
         }
     });
     if (initialHash) {
-        setHash(initialHash);
+        Router.to(initialHash);
     }
     navigoInstance.resolve();
 };
@@ -167,28 +167,38 @@ Router.isInitialized = function () {
     return _initialized;
 };
 
+/**
+ * navigate to the given hash
+ * @param hash the hash to navigate to, e.g. '#main'
+ * @param reset if true, the last hash isn't stored for "back" navigation purposes
+ */
+Router.to = function (hash, reset) {
+    lastHash = reset ? null : location.hash;
+    location.replace(location.origin + location.pathname + hash);
+};
+
 Router.toMain = function () {
     if (getHash().indexOf('#main') === 0) {
-        setHash('#main' + '?date=' + new Date().getTime());
+        Router.to('#main' + '?date=' + new Date().getTime());
     } else {
-        setHash('#main');
+        Router.to('#main');
     }
 };
 
 Router.toRegister = function () {
-    setHash('#register');
+    Router.to('#register');
 };
 
 Router.toAddOffline = function () {
-    setHash('#add');
+    Router.to('#add');
 };
 
 Router.toAbout = function () {
-    setHash('#about');
+    Router.to('#about');
 };
 
 Router.toLogin = function () {
-    setHash('#login');
+    Router.to('#login');
 };
 
 Router.toLastOpenedGrid = function () {
@@ -216,30 +226,30 @@ Router.toGrid = function (id, props) {
                 if (!gridData) {
                     return;
                 }
-                if (history && history.pushState) {
-                    history.pushState(null, null, url);
+                if (history && history.replaceState) {
+                    history.replaceState(null, null, url);
                 }
                 $(document).trigger(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, gridData);
             });
         } else {
-            setHash(url);
+            Router.to(url);
         }
     }
 };
 
 Router.toEditGrid = function (id) {
     if (id) {
-        setHash('#grid/edit/' + id);
+        Router.to('#grid/edit/' + id);
     }
 };
 
 Router.toManageGrids = function () {
-    setHash('#grids');
+    Router.to('#grids');
 };
 
 Router.back = function () {
     if (lastHash && lastHash !== location.hash) {
-        setHash(lastHash, true);
+        Router.to(lastHash, true);
     } else {
         this.toMain();
     }
@@ -288,11 +298,6 @@ function getHash() {
     let index = hash.lastIndexOf('/');
     index = index > -1 ? index : hash.length;
     return hash.substring(0, index);
-}
-
-function setHash(hash, reset) {
-    lastHash = reset ? null : location.hash;
-    location.hash = hash;
 }
 
 function loadVueView(viewObject, properties, menuItemToHighlight) {

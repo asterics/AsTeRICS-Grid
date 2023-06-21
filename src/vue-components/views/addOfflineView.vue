@@ -31,13 +31,13 @@
             <div class="srow">
                 <div class="six columns offset-by-two">
                     <span>{{ $t('wantToRegisterAnOnlineUser') }}</span>
-                    <a href="#register">{{ $t('toRegister') }}</a>
+                    <a href="javascript:;" @click="Router.to('#register')">{{ $t('toRegister') }}</a>
                 </div>
             </div>
             <div class="srow">
                 <div class="six columns offset-by-two">
                     <span>{{ $t('alreadyHaveAnAccount') }}</span>
-                    <a href="#login">{{ $t('toLogin') }}</a>
+                    <a href="javascript:;" @click="Router.to('#login')">{{ $t('toLogin') }}</a>
                 </div>
             </div>
             <comparison-component></comparison-component>
@@ -65,7 +65,8 @@
                 validationError: undefined,
                 showInfo: false,
                 savedUsers: localStorageService.getSavedUsers(),
-                loading: false
+                loading: false,
+                Router: Router
             }
         },
         methods: {
