@@ -125,9 +125,16 @@ Router.init = function (injectIdParam, initialHash) {
         before: function (done, params) {
             let hash = location.hash;
             $(document).trigger(constants.EVENT_NAVIGATE);
-            if (_locked && hash !== '#main') {
-                done(false);
-                return Router.to('#main');
+            let validForLocked =
+                !hash.startsWith('#grid/edit') && (hash.startsWith('#main') || hash.startsWith('#grid/'));
+            if (_locked && !validForLocked) {
+                done(constants.IS_SAFARI ? undefined : false);
+                if (constants.IS_SAFARI) {
+                    return setTimeout(() => {
+                        Router.toMain();
+                    }, 100);
+                }
+                return Router.toMain();
             }
             if (_currentView && _currentView.destroy) {
                 _currentView.destroy();
@@ -169,20 +176,21 @@ Router.isInitialized = function () {
  * navigate to the given hash
  * @param hash the hash to navigate to, e.g. '#main'
  * @param options.reset if true, the last hash isn't stored for "back" navigation purposes
+ * @param options.noHistory if true, the last hash isn't stored for "back" navigation purposes
  */
 Router.to = function (hash, options) {
     options = options || {};
     lastHash = options.reset ? null : location.hash;
-    let url = location.origin + location.pathname + hash;
-    location.assign(url);
+    let url = getFullUrl(hash);
+    if (options.noHistory) {
+        location.replace(url);
+    } else {
+        location.assign(url);
+    }
 };
 
 Router.toMain = function () {
-    if (getHash().indexOf('#main') === 0) {
-        Router.to('#main' + '?date=' + new Date().getTime());
-    } else {
-        Router.to('#main');
-    }
+    Router.to('#main' + '?date=' + new Date().getTime());
 };
 
 Router.toRegister = function () {
@@ -211,14 +219,14 @@ Router.toGrid = function (id, props) {
     if (id) {
         Router.addToGridHistory(id);
         let params = new URLSearchParams();
-        let url = null;
+        let hash = null;
         if (props) {
             Object.keys(props).forEach((key) => {
                 params.set(key, props[key]);
             });
-            url = `#grid/${id}?${params.toString()}`;
+            hash = `#grid/${id}?${params.toString()}`;
         } else {
-            url = `#grid/${id}`;
+            hash = `#grid/${id}`;
         }
 
         if (_currentView === GridView) {
@@ -226,13 +234,14 @@ Router.toGrid = function (id, props) {
                 if (!gridData) {
                     return;
                 }
-                if (history && history.pushState) {
-                    history.pushState(null, null, url);
+                if (history && history.replaceState) {
+                    history.replaceState(null, null, getFullUrl(hash));
                 }
                 $(document).trigger(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, gridData);
             });
         } else {
-            Router.to(url);
+            let noHistory = location.hash.startsWith('#main');
+            Router.to(hash, { noHistory: noHistory });
         }
     }
 };
@@ -300,6 +309,10 @@ function getHash() {
     return hash.substring(0, index);
 }
 
+function getFullUrl(hash) {
+    return location.origin + location.pathname + hash;
+}
+
 function loadVueView(viewObject, properties, menuItemToHighlight) {
     if (!routingEndabled) {
         return;
@@ -326,9 +339,10 @@ function toMainInternal() {
     }
     dataService.getMetadata().then((metadata) => {
         let gridId = metadata ? metadata.lastOpenedGridId : null;
-        loadVueView(GridView, {
-            gridId: gridId
-        });
+        if (gridId) {
+            return Router.toGrid(gridId);
+        }
+        loadVueView(GridView);
     });
 }
 
