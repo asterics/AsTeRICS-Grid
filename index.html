@@ -41,7 +41,7 @@
                 </div>
                 <div class="hide-mobile" style="display: inline-flex">
                     <a tabindex="1" href="javascript:void(0)" :aria-label="$t('closeSidebar')" @click="closeSidebar()" style="margin: 0.2em 0.5em 0 1.2em"><i class="fas fa-2x fa-bars inline"></i></a>
-                    <a tabindex="-1" aria-hidden="true" href="javascript:;" @click="Router.to('#main')"><h1 class="inline hide-mobile"><img id="astericsIcon" src="app/img/asterics-grid-icon-raw.svg" height="40" width="121" alt="AsTeRICS Grid"/></h1></a>
+                    <a tabindex="-1" aria-hidden="true" href="#main"><h1 class="inline hide-mobile"><img id="astericsIcon" src="app/img/asterics-grid-icon-raw.svg" height="40" width="121" alt="AsTeRICS Grid"/></h1></a>
                 </div>
             </div>
 
@@ -50,28 +50,28 @@
                     <h2 class="hide-mobile" style="margin-top: 1.5em;">{{ $t('navigation') }}</h2>
                     <br class="show-mobile" aria-hidden="true"/>
                     <ul>
-                        <li><a tabindex="2" href="javascript:;" @click="Router.to('#main')" :aria-label="$t('mainView')"><button tabindex="-1"><i class="fas fa-2x fa-home"></i><span class="hide-mobile">{{ $t('mainView') }}</span></button></a></li>
-                        <li><a tabindex="3" href="javascript:;" @click="Router.to('#grids')" :aria-label="$t('manageGrids')"><button tabindex="-1"><i class="fas fa-2x fa-list-ul"></i><span class="hide-mobile">{{ $t('manageGrids') }}</span></button></a></li>
-                        <li><a tabindex="4" href="javascript:;" @click="Router.to('#dictionaries')" :aria-label="$t('manageDictionaries')"><button tabindex="-1"><i class="fas fa-2x fa-book"></i><span class="hide-mobile">{{ $t('manageDictionaries') }}</span></button></a></li>
+                        <li><a tabindex="2" href="#main" :aria-label="$t('mainView')"><button tabindex="-1"><i class="fas fa-2x fa-home"></i><span class="hide-mobile">{{ $t('mainView') }}</span></button></a></li>
+                        <li><a tabindex="3" href="#grids" :aria-label="$t('manageGrids')"><button tabindex="-1"><i class="fas fa-2x fa-list-ul"></i><span class="hide-mobile">{{ $t('manageGrids') }}</span></button></a></li>
+                        <li><a tabindex="4" href="#dictionaries" :aria-label="$t('manageDictionaries')"><button tabindex="-1"><i class="fas fa-2x fa-book"></i><span class="hide-mobile">{{ $t('manageDictionaries') }}</span></button></a></li>
                     </ul>
                 </div>
 
                 <h2 class="hide-mobile">{{ $t('users') }}</h2>
                 <ul>
-                    <li><a tabindex="5" href="javascript:;" @click="Router.to('#login')" :aria-label="$t('changeUser')">
+                    <li><a tabindex="5" href="#login" :aria-label="$t('changeUser')">
                         <button tabindex="-1">
                             <i class="fas fa-2x fa-users"></i><span v-show="!currentUser" class="hide-mobile">{{ $t('login') }}</span><span v-show="currentUser" class="hide-mobile">{{ $t('changeUser') }}</span>
                         </button></a>
                     </li>
-                    <li class="hide-mobile"><a tabindex="6" href="javascript:;" @click="Router.to('#register')" :aria-label="$t('addOnlineUser')"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span class="hide-mobile">{{ $t('addOnlineUser') }}</span></button></a></li>
-                    <li class="hide-mobile"><a tabindex="7" href="javascript:;" @click="Router.to('#add')" :aria-label="$t('addOfflineUser')"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span>{{ $t('addOfflineUser') }}</span></button></a></li>
+                    <li class="hide-mobile"><a tabindex="6" href="#register" :aria-label="$t('addOnlineUser')"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span class="hide-mobile">{{ $t('addOnlineUser') }}</span></button></a></li>
+                    <li class="hide-mobile"><a tabindex="7" href="#add" :aria-label="$t('addOfflineUser')"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span>{{ $t('addOfflineUser') }}</span></button></a></li>
                 </ul>
 
                 <br class="hide-mobile" aria-hidden="true"/>
                 <ul style="margin-bottom: 0;">
-                    <li v-show="currentUser"><a tabindex="8" href="javascript:;" @click="Router.to('#settings')" :aria-label="$t('settings')"><button tabindex="-1"><i class="fas fa-2x fa-cog"></i><span class="hide-mobile">{{ $t('settings') }}</span></button></a></li>
-                    <li class="hide-mobile"><a tabindex="9" href="javascript:;" @click="Router.to('#about')" :aria-label="$t('aboutAstericsGrid')"><button tabindex="-1"><i class="fas fa-2x fa-info-circle"></i><span class="hide-mobile">{{ $t('aboutAstericsGrid') }}</span></button></a></li>
-                    <li><a tabindex="10" href="javascript:;" @click="Router.to('#help')" :aria-label="$t('help')"><button tabindex="-1" id="helpButton"><i class="fas fa-2x fa-question-circle"></i><span class="hide-mobile">{{ $t('help') }}</span></button></a></li>
+                    <li v-show="currentUser"><a tabindex="8" href="#settings" :aria-label="$t('settings')"><button tabindex="-1"><i class="fas fa-2x fa-cog"></i><span class="hide-mobile">{{ $t('settings') }}</span></button></a></li>
+                    <li class="hide-mobile"><a tabindex="9" href="#about" :aria-label="$t('aboutAstericsGrid')"><button tabindex="-1"><i class="fas fa-2x fa-info-circle"></i><span class="hide-mobile">{{ $t('aboutAstericsGrid') }}</span></button></a></li>
+                    <li><a tabindex="10" href="#help" :aria-label="$t('help')"><button tabindex="-1" id="helpButton"><i class="fas fa-2x fa-question-circle"></i><span class="hide-mobile">{{ $t('help') }}</span></button></a></li>
                     <li class="show-mobile"><a tabindex="11" href="javascript:;" :aria-label="$t('more')" @click="moreNavigation()" id="moreNavigation"><button tabindex="-1"><i class="fas fa-2x fa-ellipsis-v"></i></button></a></li>
                 </ul>
             </nav>

@@ -125,11 +125,9 @@ Router.init = function (injectIdParam, initialHash) {
         before: function (done, params) {
             let hash = location.hash;
             $(document).trigger(constants.EVENT_NAVIGATE);
-            if (
-                _locked &&
-                (hash.startsWith('#grid/edit') || (!hash.startsWith('#main') && !hash.startsWith('#grid/')))
-            ) {
-                return done(false);
+            if (_locked && hash !== '#main') {
+                done(false);
+                return Router.to('#main', { addToHistory: true });
             }
             if (_currentView && _currentView.destroy) {
                 _currentView.destroy();
@@ -170,11 +168,18 @@ Router.isInitialized = function () {
 /**
  * navigate to the given hash
  * @param hash the hash to navigate to, e.g. '#main'
- * @param reset if true, the last hash isn't stored for "back" navigation purposes
+ * @param options.reset if true, the last hash isn't stored for "back" navigation purposes
+ * @param options.addToHistory if true, the navigation is added to navigation history (user can use "back" button)
  */
-Router.to = function (hash, reset) {
-    lastHash = reset ? null : location.hash;
-    location.replace(location.origin + location.pathname + hash);
+Router.to = function (hash, options) {
+    options = options || {};
+    lastHash = options.reset ? null : location.hash;
+    let url = location.origin + location.pathname + hash;
+    if (options.addToHistory) {
+        location.assign(url);
+    } else {
+        location.replace(url);
+    }
 };
 
 Router.toMain = function () {
@@ -226,8 +231,8 @@ Router.toGrid = function (id, props) {
                 if (!gridData) {
                     return;
                 }
-                if (history && history.replaceState) {
-                    history.replaceState(null, null, url);
+                if (history && history.pushState) {
+                    history.pushState(null, null, url);
                 }
                 $(document).trigger(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, gridData);
             });
@@ -249,7 +254,7 @@ Router.toManageGrids = function () {
 
 Router.back = function () {
     if (lastHash && lastHash !== location.hash) {
-        Router.to(lastHash, true);
+        Router.to(lastHash, { reset: true });
     } else {
         this.toMain();
     }

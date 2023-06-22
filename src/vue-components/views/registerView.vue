@@ -79,13 +79,13 @@
             <div class="srow">
                 <div class="six columns offset-by-two">
                     <span>{{ $t('alreadyHaveAnAccount') }}</span>
-                    <a href="javascript:;" @click="Router.to('#login')">{{ $t('toLogin') }}</a>
+                    <a href="#login">{{ $t('toLogin') }}</a>
                 </div>
             </div>
             <div class="srow">
                 <div class="six columns offset-by-two">
                     <span>{{ $t('wantToCreateAnOfflineonlyUser') }}</span>
-                    <a href="javascript:;" @click="Router.to('#add')">{{ $t('addofflineuser') }}</a>
+                    <a href="#add">{{ $t('addofflineuser') }}</a>
                 </div>
             </div>
             <div class="srow">
@@ -111,6 +111,7 @@
 </template>
 
 <script>
+    import {i18nService} from "../../js/service/i18nService";
     import {loginService} from './../../js/service/loginService.js';
     import {Router} from "../../js/router";
     import {constants} from "../../js/util/constants";
@@ -133,8 +134,7 @@
                 registerSuccess: null,
                 creationTime: new Date().getTime(),
                 spamTime: 10000,
-                validationErrors: [],
-                Router: Router
+                validationErrors: []
             }
         },
         methods: {

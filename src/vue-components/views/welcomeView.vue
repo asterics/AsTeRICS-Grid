@@ -52,7 +52,7 @@
                 </div>
                 <div class="my-5">
                     <span>{{ $t('alreadyHaveAnAccount') }}</span>
-                    <a href="javascript:;" @click="Router.to('#login')">{{ $t('toLogin') }}</a>
+                    <a href="#login">{{ $t('toLogin') }}</a>
                 </div>
                 <div>
                     <b>{{ $t('hint') }}</b>
@@ -79,8 +79,7 @@
         props: [],
         data() {
             return {
-                loading: false,
-                Router: Router
+                loading: false
             }
         },
         methods: {
