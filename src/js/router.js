@@ -127,7 +127,7 @@ Router.init = function (injectIdParam, initialHash) {
             $(document).trigger(constants.EVENT_NAVIGATE);
             if (_locked && hash !== '#main') {
                 done(false);
-                return Router.to('#main', { addToHistory: true });
+                return Router.to('#main');
             }
             if (_currentView && _currentView.destroy) {
                 _currentView.destroy();
@@ -169,17 +169,12 @@ Router.isInitialized = function () {
  * navigate to the given hash
  * @param hash the hash to navigate to, e.g. '#main'
  * @param options.reset if true, the last hash isn't stored for "back" navigation purposes
- * @param options.addToHistory if true, the navigation is added to navigation history (user can use "back" button)
  */
 Router.to = function (hash, options) {
     options = options || {};
     lastHash = options.reset ? null : location.hash;
     let url = location.origin + location.pathname + hash;
-    if (options.addToHistory) {
-        location.assign(url);
-    } else {
-        location.replace(url);
-    }
+    location.assign(url);
 };
 
 Router.toMain = function () {
