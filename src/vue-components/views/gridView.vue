@@ -1,5 +1,5 @@
 <template>
-    <div class="box" v-cloak>
+    <div class="box" id="gridView" v-cloak>
         <header class="srow header" role="toolbar" v-if="metadata" v-show="!metadata.fullscreen">
             <header-icon class="left" v-show="!metadata.locked"></header-icon>
             <div class="btn-group left">
@@ -164,7 +164,7 @@
 
                 // prevent zoom
                 $('#viewPortMeta').attr('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
-                document.addEventListener('touchmove', this.preventZoomHandler, {passive: false});
+                $('#gridView').on('touchmove', this.preventZoomHandler);
             },
             setViewPropsUnlocked() {
                 $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
@@ -173,7 +173,7 @@
                 //enable zoom
                 $('#viewPortMeta').attr('content', 'width=device-width, initial-scale=1');
                 $('body').attr('touch-action', '');
-                document.removeEventListener('touchmove', this.preventZoomHandler);
+                $('#gridView').off('touchmove', this.preventZoomHandler);
             },
             preventZoomHandler(event) {
                 event.preventDefault();
@@ -404,6 +404,7 @@
             window.removeEventListener('resize', this.resizeListener, true);
             $(document).off(constants.EVENT_GRID_RESIZE, this.resizeListener);
             stopInputMethods();
+            this.setViewPropsUnlocked();
             $.contextMenu('destroy');
             vueApp = null;
             if (gridInstance) {
