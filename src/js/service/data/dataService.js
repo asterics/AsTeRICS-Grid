@@ -622,10 +622,8 @@ dataService.importData = async function (data, options) {
         predictionService.init();
     }
 
-    setTimeout(() => {
-        log.debug('pre-caching all images of gridset ...');
-        serviceWorkerService.cacheImagesOfGrids(importData.grids);
-    }, 3000);
+    log.debug('pre-caching all images of gridset ...');
+    serviceWorkerService.cacheImagesOfGrids(importData.grids);
     options.progressFn(100);
 };
 

@@ -1,5 +1,12 @@
 importScripts('app/lib/workbox-sw.js');
 
+let constants = {};
+constants.SW_EVENT_ACTIVATED = 'SW_EVENT_ACTIVATED';
+constants.SW_EVENT_URL_CACHED = 'SW_EVENT_URL_CACHED';
+constants.SW_EVENT_REQ_CACHE = 'SW_EVENT_REQ_CACHE';
+constants.SW_CACHE_TYPE_IMG = 'CACHE_TYPE_IMG';
+constants.SW_CACHE_TYPE_GENERIC = 'CACHE_TYPE_GENERIC';
+
 if (!workbox) {
     console.log("Workbox in service worker failed to load!");
 }
@@ -31,29 +38,26 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', event => {
     clients.claim();
-    self.clients.matchAll().then(clients => {
-        clients.forEach(client => client.postMessage({activated: true}));
-    });
+    sendToClients({type: constants.SW_EVENT_ACTIVATED, activated: true});
     console.log('Service Worker active! Version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/#ASTERICS_GRID_VERSION#');
 });
 
 self.addEventListener('message', (event) => {
-    if (event.data && event.data.urlToAdd) {
-        console.debug(`adding ${event.data.urlToAdd} to normal cache...`);
-        const cacheName = workbox.core.cacheNames.runtime;
-        caches.open(cacheName).then((cache) => {
-            cache.add(event.data.urlToAdd);
-        });
+    let msg = event.data;
+    if(!msg || msg.type !== constants.SW_EVENT_REQ_CACHE || !msg.url) {
+        return;
     }
-    if (event.data && event.data.imageUrlToAdd) {
-        caches.open('image-cache').then(async (cache) => {
-            let response = await cache.match(event.data.imageUrlToAdd);
-            if (!response || response.status !== 200) {
-                console.debug(`adding ${event.data.imageUrlToAdd} to image cache...`);
-                cache.add(event.data.imageUrlToAdd);
-            }
-        });
-    }
+    let cacheName = msg.cacheType === constants.SW_CACHE_TYPE_IMG ? 'image-cache' : workbox.core.cacheNames.runtime;
+
+    caches.open(cacheName).then(async (cache) => {
+        let validResponse = await hasValidResponse(cache, msg.url);
+        if (!validResponse) {
+            console.info(`adding ${msg.url} to cache "${cacheName}".`);
+            await cache.add(msg.url).catch(() => {});
+            validResponse = await hasValidResponse(cache, msg.url);
+        }
+        sendToClients({type: constants.SW_EVENT_URL_CACHED, url: msg.url, success: validResponse});
+    });
 });
 
 workbox.routing.registerRoute(({url, request, event}) => {
@@ -81,4 +85,15 @@ function shouldCacheImage(url, request) {
 function shouldCacheNormal(url, request) {
     let isOwnHost = url.hostname === 'localhost' || url.hostname === 'grid.asterics.eu';
     return !shouldCacheImage(url, request) && isOwnHost;
+}
+
+async function hasValidResponse(cache, url) {
+    let response = await cache.match(url);
+    return !!response && response.status === 200;
+}
+
+function sendToClients(msg) {
+    self.clients.matchAll().then(clients => {
+        clients.forEach(client => client.postMessage(msg));
+    });
 }
