@@ -423,7 +423,7 @@
   "addOfflineUser": "Offline felh. hozzáadás",
   "aboutAstericsGrid": "Az AsTeRICS Grid-ről",
   "loggedInAs": "Bejelentkezve mint:",
-  "usingOfflineUser": "Belejentkezve a követkető offline felhasználóval:",
+  "usingOfflineUser": "offline user:",
   "notLoggedIn": "Nincs bejelentkezve",
   "accessKey1NavigationAccessKey2Main": "1. gomb: Navigáció, 2. gomb: Kezdőtábla",
   "navigation": "Navigáció",
@@ -922,5 +922,6 @@
   "noteThatActivatingThisSendsSentencesToARASAACSeePrivacy": "Figyelem, ezen funkció bekapcsolásával a összeállított mondatok továbbításra kerülnek az ARASAAC nyelvi API-nak. Lásd: {link}. ",
   "thanksToEduardoLleidaSolanoProfessorAtDepartment": "Köszönet Eduardo Lleida Solano-nak, a Zaragozai Egyetem Electronic Engineering and Communications tanszéke oktatójának, az ARASAAC természetes beszédfeldolgozó (NLP) API-ának fejlesztésében való együttműködéséért. Ezt az eszköz biztosítja az automatikus nyelv helyesség javítást az AsTeRICS Grid-ben.",
   "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Nem lejátszható a webrádió, mert a böngésző nem engedélyezi.",
-  "allowPlayingRadio": "Rádió lejátszás engedélyezése"
+  "allowPlayingRadio": "Rádió lejátszás engedélyezése",
+  "cachingImages": "Caching images..."
 }
