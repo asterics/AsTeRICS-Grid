@@ -146,6 +146,12 @@ MainVue.init = function () {
                 $(document).on(constants.EVENT_DB_SYNC_STATE_CHANGE, (event, syncState) => {
                     thiz.syncState = syncState;
                 });
+                $(document).on(constants.EVENT_GRID_IMAGES_CACHING, () => {
+                    thiz.syncState = constants.DB_SYNC_STATE_SYNCINC;
+                });
+                $(document).on(constants.EVENT_GRID_IMAGES_CACHED, () => {
+                    thiz.syncState = dataService.getSyncState();
+                });
                 thiz.syncState = dataService.getSyncState();
                 window.addEventListener('resize', () => {
                     util.debounce(

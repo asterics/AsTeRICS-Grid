@@ -87,6 +87,9 @@
                     <i v-show="syncState === constants.DB_SYNC_STATE_ONLINEONLY" class="fas fa-globe fa-stack-1x"></i>
                     <i v-show="!syncState || syncState === constants.DB_SYNC_STATE_FAIL" class="fas fa-times fa-stack-1x"></i>
                 </span>
+                <span id="syncVisualization2" v-if="currentUser && isLocalUser && syncState === constants.DB_SYNC_STATE_SYNCINC" class="fa-stack fa-1x right" :title="$t('cachingImages')">
+                    <i class="fas fa-sync-alt fa-stack-1x fa-spin"></i>
+                </span>
             </div>
         </div>
         <main role="main" class="holy-grail-content" accesskey="2">

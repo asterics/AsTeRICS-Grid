@@ -1,6 +1,7 @@
 import { GridData } from '../model/GridData.js';
 import { constants } from '../util/constants.js';
 import { localStorageService } from './data/localStorageService.js';
+import $ from "../externals/jquery.js";
 
 let serviceWorkerService = {};
 let KEY_SHOULD_CACHE_ELEMS = 'KEY_SHOULD_CACHE_ELEMS';
@@ -59,11 +60,15 @@ function init() {
 function cacheNext() {
     if (isCaching || shouldCacheElements.length === 0) {
         log.warn("aborting...", isCaching, shouldCacheElements.length);
+        $(document).trigger(constants.EVENT_GRID_IMAGES_CACHED);
         return;
     }
     isCaching = true;
     shouldCacheElements = shouldCacheElements.filter((e) => !!e.url);
     log.warn(`cache ${shouldCacheElements[0].url}, remaining`, shouldCacheElements.length);
+    if (shouldCacheElements[0].type === constants.SW_CACHE_TYPE_IMG) {
+        $(document).trigger(constants.EVENT_GRID_IMAGES_CACHING);
+    }
     postMessageInternal({
         type: constants.SW_EVENT_REQ_CACHE,
         cacheType: shouldCacheElements[0].type,

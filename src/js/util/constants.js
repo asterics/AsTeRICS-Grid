@@ -20,6 +20,9 @@ constants.EVENT_DB_INITIALIZED = 'EVENT_DB_INITIALIZED';
 constants.EVENT_DB_CLOSED = 'EVENT_DB_CLOSED';
 constants.EVENT_DB_DATAMODEL_UPDATE = 'EVENT_DB_DATAMODEL_UPDATE';
 
+constants.EVENT_GRID_IMAGES_CACHING = 'EVENT_GRID_IMAGES_CACHING';
+constants.EVENT_GRID_IMAGES_CACHED = 'EVENT_GRID_IMAGES_CACHED';
+
 constants.EVENT_SIDEBAR_OPEN = 'event-sidebar-open'; //start open
 constants.EVENT_SIDEBAR_OPENED = 'event-sidebar-opened'; //after sidebar opened
 constants.EVENT_SIDEBAR_CLOSE = 'event-sidebar-close';
