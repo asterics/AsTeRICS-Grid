@@ -423,7 +423,7 @@
   "addOfflineUser": "Adaugă un utilizator offline",
   "aboutAstericsGrid": "Despre grila AsTeRICS Grid",
   "loggedInAs": "conectat ca",
-  "usingOfflineUser": "utilizând un utilizator offline:",
+  "usingOfflineUser": "offline user:",
   "notLoggedIn": "nu este conectat.",
   "accessKey1NavigationAccessKey2Main": "Tasta de acces 1: Navigație, Tasta de acces 2: Principal",
   "navigation": "Navigație",
@@ -922,5 +922,6 @@
   "noteThatActivatingThisSendsSentencesToARASAACSeePrivacy": "Note that activating this feature results in sending all constructed sentences to ARASAAC's natural language API. See {link}.",
   "thanksToEduardoLleidaSolanoProfessorAtDepartment": "Thanks to Eduardo Lleida Solano, Professor at the Department of Electronic Engineering and Communications of the University of Zaragoza for collaborating in the development of the ARASAAC API that integrates Natural Language Processing (NLP). It's used to provide a feature for automatically fix the grammar of sentences within AsTeRICS Grid.",
   "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Nu am putut reda webradio, deoarece browserul nu a permis acest lucru.",
-  "allowPlayingRadio": "Permite redarea radioului"
+  "allowPlayingRadio": "Permite redarea radioului",
+  "cachingImages": "Caching images..."
 }
