@@ -423,7 +423,7 @@
   "addOfflineUser": "Offline-User hinzufügen",
   "aboutAstericsGrid": "Über AsTeRICS Grid",
   "loggedInAs": "eingeloggt als",
-  "usingOfflineUser": "aktiver Offline-User:",
+  "usingOfflineUser": "offline user:",
   "notLoggedIn": "nicht eingeloggt.",
   "accessKey1NavigationAccessKey2Main": "Access key 1: Navigation, Access key 2: Inhalt",
   "navigation": "Navigation",
@@ -922,5 +922,6 @@
   "noteThatActivatingThisSendsSentencesToARASAACSeePrivacy": "Die Aktivierung dieser Funktion führt dazu, dass alle konstruierten Sätze an die API von ARASAAC gesendet werden. Siehe {link}.",
   "thanksToEduardoLleidaSolanoProfessorAtDepartment": "Danke an Eduardo Lleida Solano, Professor am Department Electronic Engineering and Communications der Universität Saragossa, für die Zusammenarbeit bei der Entwicklung der ARASAAC API für die Verarbeitung natürlicher Sprache. Sie wird für das Feature zur automatischen Korrektur der Grammatik in AsTeRICS Grid verwendet.",
   "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Webradio konnte nicht abgespielt werden, da der Browser es nicht erlaubt hat.",
-  "allowPlayingRadio": "Radio abspielen erlauben"
+  "allowPlayingRadio": "Radio abspielen erlauben",
+  "cachingImages": "Caching images..."
 }
