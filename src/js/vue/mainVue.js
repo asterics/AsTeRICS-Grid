@@ -31,6 +31,13 @@ MainVue.setTooltip = function (html, options) {
     if (!app) {
         return;
     }
+    if (app.uiLocked) {
+        app.hiddenPopupData = {
+            html: html,
+            options: options
+        };
+        return;
+    }
     return app.$refs.notificationBar.setTooltip(html, options);
 };
 
@@ -42,6 +49,7 @@ MainVue.clearTooltip = function () {
     if (!app) {
         return;
     }
+    app.hiddenPopupData = null;
     app.$refs.notificationBar.clearTooltip();
 };
 
@@ -81,7 +89,9 @@ MainVue.init = function () {
                     constants: constants,
                     tooltipHTML: null,
                     actionLink: null,
-                    Router: Router
+                    Router: Router,
+                    uiLocked: false,
+                    hiddenPopupData: null
                 };
             },
             methods: {
@@ -151,6 +161,17 @@ MainVue.init = function () {
                 });
                 $(document).on(constants.EVENT_GRID_IMAGES_CACHED, () => {
                     thiz.syncState = dataService.getSyncState();
+                });
+                $(document).on(constants.EVENT_UI_UNLOCKED, () => {
+                    this.uiLocked = false;
+                    if (this.hiddenPopupData) {
+                        MainVue.setTooltip(this.hiddenPopupData.html, this.hiddenPopupData.options);
+                        this.hiddenPopupData = null;
+                    }
+                });
+                $(document).on(constants.EVENT_UI_LOCKED, () => {
+                    this.uiLocked = true;
+                    MainVue.clearTooltip();
                 });
                 thiz.syncState = dataService.getSyncState();
                 window.addEventListener('resize', () => {
