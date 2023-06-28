@@ -29,7 +29,7 @@ serviceWorkerService.cacheImagesOfGrids = function (array) {
             }
         }
     }
-    log.warn('caching', shouldCacheElements.length, 'elements...');
+    log.info('caching', shouldCacheElements.length, 'grid images...');
     cacheNext();
 };
 
@@ -45,7 +45,6 @@ function init() {
                     removeCacheUrl(msg.url);
                     cacheNext();
                 } else {
-                    log.warn('schedule cache next');
                     setTimeout(() => {
                         cacheNext();
                     }, 15000);
@@ -58,14 +57,15 @@ function init() {
 }
 
 function cacheNext() {
+    if (shouldCacheElements.length === 0) {
+        log.info('caching files via service worker finished.');
+    }
     if (isCaching || shouldCacheElements.length === 0) {
-        log.warn("aborting...", isCaching, shouldCacheElements.length);
         $(document).trigger(constants.EVENT_GRID_IMAGES_CACHED);
         return;
     }
     isCaching = true;
     shouldCacheElements = shouldCacheElements.filter((e) => !!e.url);
-    log.warn(`cache ${shouldCacheElements[0].url}, remaining`, shouldCacheElements.length);
     if (shouldCacheElements[0].type === constants.SW_CACHE_TYPE_IMG) {
         $(document).trigger(constants.EVENT_GRID_IMAGES_CACHING);
     }

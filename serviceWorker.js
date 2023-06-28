@@ -52,7 +52,7 @@ self.addEventListener('message', (event) => {
     caches.open(cacheName).then(async (cache) => {
         let validResponse = await hasValidResponse(cache, msg.url);
         if (!validResponse) {
-            console.info(`adding ${msg.url} to cache "${cacheName}".`);
+            //console.debug(`adding ${msg.url} to cache "${cacheName}".`);
             await cache.add(msg.url).catch(() => {});
             validResponse = await hasValidResponse(cache, msg.url);
         }
