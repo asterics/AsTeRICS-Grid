@@ -423,7 +423,7 @@
   "addOfflineUser": "Adicionar utilizador offline",
   "aboutAstericsGrid": "Sobre o AsTeRICS Grid",
   "loggedInAs": "sessão iniciada como",
-  "usingOfflineUser": "offline user:",
+  "usingOfflineUser": "utilizador offline:",
   "notLoggedIn": "sem sessão iniciada.",
   "accessKey1NavigationAccessKey2Main": "Tecla de acesso 1: Navegação, Tecla de acesso 2: Principal",
   "navigation": "Navegação",
@@ -923,5 +923,5 @@
   "thanksToEduardoLleidaSolanoProfessorAtDepartment": "Agradecemos a Eduardo Lleida Solano, Professor do Departamento de Engenharia Eletrônica e Comunicações da Universidade de Zaragoza pela colaboração no desenvolvimento da API ARASAAC que integra o Processamento de Linguagem Natural (NLP), um recurso usado para corrigir automaticamente a gramática das frases no AsTeRICS Grid.",
   "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Não foi possível reproduzir o webradio, porque o navegador não o permitiu.",
   "allowPlayingRadio": "Permitir reprodução de rádio",
-  "cachingImages": "Caching images..."
+  "cachingImages": "Armazenando imagens..."
 }
