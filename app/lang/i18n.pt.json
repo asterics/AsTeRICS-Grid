@@ -714,7 +714,7 @@
   "useHorizontalScrollbarIfElementsDontFit": "Usar barra de deslocação horizontal se os elementos não couberem (caso contrário múltiplas linhas)",
   "speak": "Falar",
   "selectHomeGridForCreatingGlobalGrid": "Selecione a tabela inicial para ligar à tabela global",
-  "addThisElementToCollectionElementsDespiteNav": "Adicionar esta célula a células de acumulação mesmo ao navegar",
+  "addThisElementToCollectionElementsDespiteNav": "Adicionar esta célula à frase acumulada",
   "sortGridsBy": "Ordenar tabelas por",
   "labelAlphabetically": "Texto (alfabeticamente)",
   "numberOfConnections": "Número de ligações",
