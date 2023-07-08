@@ -515,7 +515,7 @@
   "radioSearchPoweredBy": "desenvolvido por {radioLink}",
   "gridsCanBeTranslatedToEveryLanguage": "As Tabelas podem ser traduzidas para cada idioma. Para adicionar ou editar uma tradução, use \"Editar tabela -> Mais -> Traduzir Tabela\".",
   "iAcceptPrivacyPolicy": "Aceito o {link}",
-  "theOnlyPersonalDataSavedIs": "O único dado potencialmente pessoal qeu é guardado desencriptado é o nome de utilizador. Todos os outros dados são encriptados ponto a ponto e não podem ser acedidos por mais ninguém. O consentimento pode ser revogado a qualquer momento enviando um e-mail para {link}. A revogação não afeta a legalidade do tratamento de dados que já teve lugar.",
+  "theOnlyPersonalDataSavedIs": "O único dado potencialmente pessoal que é guardado desencriptado é o nome de utilizador. Todos os outros dados são encriptados ponto a ponto e não podem ser acedidos por mais ninguém. O consentimento pode ser revogado a qualquer momento enviando um e-mail para {link}. A revogação não afeta a legalidade do tratamento de dados já ocorrido.",
   "lang": {
     "ab": "Abecásio",
     "aa": "Afar",
