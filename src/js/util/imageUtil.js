@@ -159,7 +159,7 @@ imageUtil.urlToBase64 = function (url, maxWidth, mimeType) {
     });
 };
 
-imageUtil.getScreenshot = function (selector) {
+imageUtil.getScreenshot = function (selector, ignoreSVG) {
     return import(/* webpackChunkName: "html2canvas" */ 'html2canvas').then((html2canvas) => {
         return html2canvas
             .default(document.querySelector(selector), {
@@ -167,11 +167,24 @@ imageUtil.getScreenshot = function (selector) {
                 logging: false,
                 useCORS: true,
                 ignoreElements: (node) => {
-                    return constants.IS_FIREFOX && node.style['background-image'].indexOf('image/svg') !== -1;
+                    return ignoreSVG && (
+                        node.style['background-image'].indexOf('image/svg') !== -1 ||
+                        (node.src && node.src.endsWith('.svg'))
+                    );
                 }
             })
             .then((canvas) => {
-                return Promise.resolve(canvas.toDataURL('image/webp', 0.6));
+                try {
+                    return Promise.resolve(canvas.toDataURL('image/webp', 0.6));
+                } catch (e) {
+                    log.warn('error while creating screenshot');
+                    log.warn(e);
+                    if (ignoreSVG) {
+                        return Promise.resolve(imageUtil.getEmptyImage());
+                    } else {
+                        return imageUtil.getScreenshot(selector, true);
+                    }
+                }
             });
     });
 };
