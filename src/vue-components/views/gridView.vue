@@ -45,7 +45,8 @@
             <div v-if="!viewInitialized" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin" style="position: relative"/>
             </div>
-            <div id="grid-container" class="grid-container" :style="`background-color: ${backgroundColor}`">
+            <div id="grid-container" v-if="viewInitialized" class="grid-container" :style="`background-color: ${backgroundColor}`">
+                <vue-gridlist-wrapper v-once :grid-data="gridData"></vue-gridlist-wrapper>
             </div>
         </div>
     </div>
@@ -85,6 +86,7 @@
     import {audioUtil} from "../../js/util/audioUtil.js";
     import UnlockModal from "../modals/unlockModal.vue";
     import {printService} from "../../js/service/printService";
+    import VueGridlistWrapper from "../components/vue-gridlist-wrapper.vue";
 
     let vueApp = null;
     let gridInstance = null;
@@ -121,6 +123,7 @@
             }
         },
         components: {
+            VueGridlistWrapper,
             UnlockModal,
             SequentialInputModal,
             HuffmanInputModal,
@@ -458,9 +461,9 @@
                 });
                 thiz.metadata = metadata;
                 return Promise.resolve();
-            }).then(() => {
+            })/*.then(() => {
                 return initGrid(thiz.gridData.id);
-            }).then(() => {
+            })*/.then(() => {
                 initContextmenu();
                 thiz.viewInitialized = true;
                 $(document).trigger(constants.EVENT_GRID_LOADED);
