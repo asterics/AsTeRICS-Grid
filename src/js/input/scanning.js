@@ -9,7 +9,7 @@ Scanner.getInstanceFromConfig = function (inputConfig, itemSelector, scanActiveC
     return new ScannerConstructor(itemSelector, scanActiveClass, {
         autoScan: inputConfig.scanAuto,
         scanVertical: inputConfig.scanVertical,
-        subScanRepeat: 3,
+        subScanRepeat: inputConfig.scanRoundsUntilBack,
         scanBinary: inputConfig.scanBinary,
         scanInactiveClass: scanInactiveClass,
         minBinarySplitThreshold: 3,
@@ -17,7 +17,8 @@ Scanner.getInstanceFromConfig = function (inputConfig, itemSelector, scanActiveC
         scanTimeoutFirstElementFactor: inputConfig.scanTimeoutFirstElementFactor,
         touchScanning: !inputConfig.mouseclickEnabled,
         inputEventSelect: inputConfig.scanInputs.filter((e) => e.label === InputConfig.SELECT)[0],
-        inputEventNext: inputConfig.scanInputs.filter((e) => e.label === InputConfig.NEXT)[0]
+        inputEventNext: inputConfig.scanInputs.filter((e) => e.label === InputConfig.NEXT)[0],
+        scanStartWithAction: inputConfig.scanStartWithAction
     });
 };
 
@@ -47,7 +48,8 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
     var _scanningPaused = false;
     var _touchListener = null;
     var _touchElement = null;
-    let _inputEventHandler = null;
+    let _inputEventHandler = inputEventHandler.instance();
+    let _startEventHandler = inputEventHandler.instance();
     let _nextScanFn = null;
     let _scanningDepth = 0;
 
@@ -72,17 +74,6 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
             autoScan = options.autoScan !== undefined ? options.autoScan : true;
         }
         if (touchScanning) thiz.enableTouchScanning();
-        _inputEventHandler = inputEventHandler.instance();
-
-        if (options.inputEventSelect) {
-            _inputEventHandler.onInputEvent(options.inputEventSelect, thiz.select);
-        } else {
-            _inputEventHandler.onInputEvent(new InputEventKey({ keyCode: 32 }), thiz.select); //space as default key
-        }
-
-        if (options.inputEventNext) {
-            _inputEventHandler.onInputEvent(options.inputEventNext, thiz.next);
-        }
     }
 
     function getGroups(allElements, scanVertical) {
@@ -253,12 +244,12 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
      * @param options.count number of times scanning was repeated over the same groups
      * @param options.restarted true if scanning just has restarted
      */
-    function scan(elems, options) {
-        options = options || {};
+    function scan(elems, scanOptions) {
+        scanOptions = scanOptions || {};
         _inputEventHandler.startListening();
         elems = elems || [];
-        let count = options.count || 0;
-        let index = options.index || 0;
+        let count = scanOptions.count || 0;
+        let index = scanOptions.index || 0;
         let wrap = index === 0;
         wrap = wrap || index > elems.length - 1;
         index = wrap ? 0 : index;
@@ -266,7 +257,14 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
             thiz.restartScanning();
             return;
         }
-        _activeListener(L.flattenArray(elems[index]), wrap, options.restarted);
+        if (options.scanStartWithAction) {
+            if (count >= subScanRepeat * elems.length && _scanningDepth === 0) {
+                thiz.stopScanning();
+                thiz.startScanning();
+                return;
+            }
+        }
+        _activeListener(L.flattenArray(elems[index]), wrap, scanOptions.restarted);
         L.removeClass(itemSelector, scanActiveClass);
         L.addClass(itemSelector, scanInactiveClass);
 
@@ -301,7 +299,7 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
         return returnArray;
     }
 
-    thiz.startScanning = function (restarted) {
+    function startScanningInternal(restarted) {
         if (!_isScanning) {
             _scanningDepth = 0;
             var elements = L.selectAsList(itemSelector);
@@ -321,6 +319,36 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
             }
             _inputEventHandler.startListening();
         }
+    }
+
+    function setupInputEventHandler() {
+        _inputEventHandler.destroy();
+        _inputEventHandler = inputEventHandler.instance();
+        if (options.inputEventSelect) {
+            _inputEventHandler.onInputEvent(options.inputEventSelect, thiz.select);
+        } else {
+            _inputEventHandler.onInputEvent(new InputEventKey({ keyCode: 32 }), thiz.select); //space as default key
+        }
+        if (options.inputEventNext) {
+            _inputEventHandler.onInputEvent(options.inputEventNext, thiz.next);
+        }
+    }
+
+    thiz.startScanning = function (forceStart) {
+        if (!forceStart && options.scanStartWithAction) {
+            _startEventHandler.onInputEvent(options.inputEventSelect, start);
+            _startEventHandler.onInputEvent(options.inputEventNext, start);
+            function start() {
+                _startEventHandler.destroy();
+                _startEventHandler = inputEventHandler.instance();
+                setupInputEventHandler();
+                startScanningInternal();
+            }
+            _startEventHandler.startListening();
+        } else {
+            setupInputEventHandler()
+            startScanningInternal();
+        }
     };
 
     thiz.stopScanning = function () {
@@ -331,12 +359,14 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
         L.removeClass(itemSelector, scanActiveClass);
         L.removeClass(itemSelector, scanInactiveClass);
         _inputEventHandler.stopListening();
+        _startEventHandler.stopListening();
     };
 
     thiz.destroy = function () {
         thiz.stopScanning();
         thiz.disableTouchScanning();
         _inputEventHandler.destroy();
+        _startEventHandler.destroy();
     };
 
     /**
@@ -344,7 +374,7 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
      */
     thiz.restartScanning = function () {
         thiz.stopScanning();
-        thiz.startScanning(true);
+        startScanningInternal(true);
     };
 
     /**
@@ -364,7 +394,7 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
      */
     thiz.resumeScanning = function () {
         if (_scanningPaused) {
-            thiz.startScanning();
+            startScanningInternal();
             _scanningPaused = false;
         }
     };
