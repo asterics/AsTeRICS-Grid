@@ -189,7 +189,7 @@
                     $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
                 });
             },
-            initInputMethods() {
+            initInputMethods(continueRunningMethods) {
                 let thiz = this;
                 if (!gridInstance) {
                     return;
@@ -256,7 +256,7 @@
                         thiz.scanner.resumeScanning();
                     });
 
-                    thiz.scanner.startScanning();
+                    thiz.scanner.startScanning(continueRunningMethods);
                 }
 
                 if (inputConfig.hoverEnabled) {
@@ -276,13 +276,13 @@
                     thiz.clicker.startClickcontrol();
                 }
             },
-            reinitInputMethods() {
+            reinitInputMethods(continueRunningMethods) {
                 let thiz = this;
                 stopInputMethods();
                 dataService.getMetadata().then(newMetadata => {
                     thiz.metadata = JSON.parse(JSON.stringify(newMetadata));
                     initContextmenu(); //in order to update visualization of active input methods in context menu
-                    thiz.initInputMethods();
+                    thiz.initInputMethods(continueRunningMethods);
                 });
             },
             reload(gridData) {
@@ -290,7 +290,7 @@
                     this.gridData = JSON.parse(JSON.stringify(gridData));
                 }
                 return gridInstance.reinit(gridData).then(() => {
-                    this.reinitInputMethods();
+                    this.reinitInputMethods(true);
                     return Promise.resolve();
                 });
             },
