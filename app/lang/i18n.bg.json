@@ -64,6 +64,7 @@
   "RIGHT": "Надясно",
   "GENERAL_INPUT": "Въвеждане",
   "InputEventKey": "Натискане на клавиш",
+  "InputEventAudio": "Microphone input",
   "InputEventARE": "АсТеРИКС АРЕ събитие",
   "ELEMENT_TYPE_COLLECT": "Събиране на елементи",
   "ELEMENT_TYPE_PREDICTION": "Елемент за Прогнозиране",
@@ -923,5 +924,10 @@
   "thanksToEduardoLleidaSolanoProfessorAtDepartment": "Благодарности на Едуардо Лейда Солано, професор в катедрата по електронно инженерство и комуникации на университета в Сарагоса за сътрудничеството в разработването на ARASAAC API, който интегрира Обработката на естествен език (NLP). Използва се за осигуряване на функция за автоматично коригиране на граматиката на изреченията в AsTeRICS Grid.",
   "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Не може да възпроизведете уеб радио, защото браузерът не позволява.",
   "allowPlayingRadio": "Разрешаване на радио",
-  "cachingImages": "Кеширане на изображения..."
+  "cachingImages": "Кеширане на изображения...",
+  "volume": "Volume",
+  "frequency": "Frequency",
+  "thresholdHigh": "Threshold high",
+  "currentlyNotListeningToMicrophone": "Currently not listening to microphone",
+  "thresholdLow": "Threshold low"
 }
