@@ -64,6 +64,7 @@
   "RIGHT": "Jobbra",
   "GENERAL_INPUT": "Beviteli mód",
   "InputEventKey": "Billentyűleütés",
+  "InputEventAudio": "Microphone input",
   "InputEventARE": "AsTeRICS ARE esemény",
   "ELEMENT_TYPE_COLLECT": "Gyűjtőkártya",
   "ELEMENT_TYPE_PREDICTION": "Prediktív kártya",
@@ -923,5 +924,10 @@
   "thanksToEduardoLleidaSolanoProfessorAtDepartment": "Köszönet Eduardo Lleida Solano-nak, a Zaragozai Egyetem Electronic Engineering and Communications tanszéke oktatójának, az ARASAAC természetes beszédfeldolgozó (NLP) API-ának fejlesztésében való együttműködéséért. Ezt az eszköz biztosítja az automatikus nyelv helyesség javítást az AsTeRICS Grid-ben.",
   "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Nem lejátszható a webrádió, mert a böngésző nem engedélyezi.",
   "allowPlayingRadio": "Rádió lejátszás engedélyezése",
-  "cachingImages": "Caching images..."
+  "cachingImages": "Caching images...",
+  "volume": "Volume",
+  "frequency": "Frequency",
+  "thresholdHigh": "Threshold high",
+  "currentlyNotListeningToMicrophone": "Currently not listening to microphone",
+  "thresholdLow": "Threshold low"
 }
