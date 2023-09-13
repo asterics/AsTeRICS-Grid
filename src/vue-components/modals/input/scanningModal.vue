@@ -50,19 +50,24 @@
                                 </div>
                                 <div class="srow">
                                     <div class="twelve columns">
+                                        <input type="checkbox" id="chkStartWithAction" v-model="inputConfig.scanStartWithAction"/>
+                                        <label for="chkStartWithAction">Start scanning manually by user input event</label>
+                                    </div>
+                                </div>
+                                <div class="srow">
+                                    <slider-input label="Rounds until going back" id="roundsUntilBack" min="1" max="10" step="1" decimals="0" default="3" v-model.number="inputConfig.scanRoundsUntilBack"/>
+                                </div>
+                                <div class="srow">
+                                    <div class="twelve columns">
                                         <input type="checkbox" id="chkAutoScanning" v-model="inputConfig.scanAuto"/>
                                         <label for="chkAutoScanning">{{ $t('automaticTimedScanning') }}</label>
                                     </div>
                                 </div>
                                 <div class="srow" v-show="inputConfig.scanAuto">
-                                    <label class="four columns" for="inScanTime">{{ $t('scanningTimeMs') }}</label>
-                                    <input type="range" id="inScanTime" v-model.number="inputConfig.scanTimeoutMs" min="100" max="6000" step="100"/>
-                                    <input type="number" v-model.number="inputConfig.scanTimeoutMs" min="100" max="6000" step="100"/>
+                                    <slider-input :label="$t('scanningTimeMs')" id="inScanTime" min="100" max="6000" step="100" decimals="0" v-model.number="inputConfig.scanTimeoutMs"/>
                                 </div>
                                 <div class="srow" v-show="inputConfig.scanAuto">
-                                    <label class="four columns" for="inFirstElement">{{ $t('timeFactorFirstElement') }}</label>
-                                    <input type="range" id="inFirstElement" v-model.number="inputConfig.scanTimeoutFirstElementFactor" min="1" max="5" step="0.1"/>
-                                    <input type="number" v-model.number="inputConfig.scanTimeoutFirstElementFactor" min="1" max="5" step="0.5" />
+                                    <slider-input :label="$t('timeFactorFirstElement')" id="inFirstElement" min="1" max="5" step="0.1" decimals="1" v-model.number="inputConfig.scanTimeoutFirstElementFactor"/>
                                 </div>
                             </accordion>
                             <accordion :acc-label="$t('generalInputSettings')" acc-label-type="h2" acc-background-color="white">
@@ -106,10 +111,11 @@
     import {Scanner} from "../../../js/input/scanning";
     import {inputEventHandler} from "../../../js/input/inputEventHandler";
     import GlobalInputOptions from "./globalInputOptions.vue";
+    import SliderInput from "./sliderInput.vue";
 
     export default {
         props: [],
-        components: {GlobalInputOptions, Accordion, InputEventList, TestArea},
+        components: {GlobalInputOptions, Accordion, InputEventList, TestArea, SliderInput},
         data: function () {
             return {
                 inputConfig: null,
