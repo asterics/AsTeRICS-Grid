@@ -64,6 +64,7 @@
   "RIGHT": "Ir para a direita",
   "GENERAL_INPUT": "Acesso",
   "InputEventKey": "Pressão de tecla",
+  "InputEventAudio": "Microphone input",
   "InputEventARE": "Evento AsTeRICS ARE",
   "ELEMENT_TYPE_COLLECT": "Frase acumulada",
   "ELEMENT_TYPE_PREDICTION": "Célula de predição",
@@ -923,5 +924,10 @@
   "thanksToEduardoLleidaSolanoProfessorAtDepartment": "Agradecemos a Eduardo Lleida Solano, Professor do Departamento de Engenharia Eletrónica e Comunicações da Universidade de Zaragoza pela colaboração no desenvolvimento da API ARASAAC que integra o Processamento de Linguagem Natural (NLP), um recurso usado para corrigir automaticamente a gramática das frases no AsTeRICS Grid.",
   "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Não foi possível reproduzir o webradio, porque o navegador não o permitiu.",
   "allowPlayingRadio": "Permitir reprodução de rádio",
-  "cachingImages": "Armazenando imagens..."
+  "cachingImages": "Armazenando imagens...",
+  "volume": "Volume",
+  "frequency": "Frequency",
+  "thresholdHigh": "Threshold high",
+  "currentlyNotListeningToMicrophone": "Currently not listening to microphone",
+  "thresholdLow": "Threshold low"
 }
