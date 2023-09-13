@@ -64,6 +64,7 @@
   "RIGHT": "Mergeți la dreapta",
   "GENERAL_INPUT": "Comenzi",
   "InputEventKey": "Apăsare tastă",
+  "InputEventAudio": "Microphone input",
   "InputEventARE": "Eveniment AsTeRICS ARE",
   "ELEMENT_TYPE_COLLECT": "Colectează elementul",
   "ELEMENT_TYPE_PREDICTION": "Completează elementele de predicție",
@@ -923,5 +924,10 @@
   "thanksToEduardoLleidaSolanoProfessorAtDepartment": "Mulțumiri către Eduardo Lleida Solano, Profesor în departamentul de Inginerie Electronica și Comunicare al Universității de Zaragoza, pentru colaborarea în dezvoltarea ARASAAC API-ului ce integrează Prelucrarea Limbajului Natural (PLN). Este utilizat pentru a oferi o caracteristică pentru corectarea automatică a gramaticii propozițiilor în grila AsTeRICS.",
   "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Nu am putut reda webradio, deoarece browserul nu a permis acest lucru.",
   "allowPlayingRadio": "Permite redarea radioului",
-  "cachingImages": "Încărcarea imaginii..."
+  "cachingImages": "Încărcarea imaginii...",
+  "volume": "Volume",
+  "frequency": "Frequency",
+  "thresholdHigh": "Threshold high",
+  "currentlyNotListeningToMicrophone": "Currently not listening to microphone",
+  "thresholdLow": "Threshold low"
 }
