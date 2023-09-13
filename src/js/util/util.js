@@ -267,4 +267,8 @@ util.arrayToPrintable = function (array) {
     return JSON.stringify(array).replaceAll('[', '').replaceAll(']', '').replaceAll('"', '');
 };
 
+util.mapRange = function (number, inMin, inMax, outMin, outMax) {
+    return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+}
+
 export { util };
