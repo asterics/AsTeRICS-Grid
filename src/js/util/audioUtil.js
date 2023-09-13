@@ -1,10 +1,19 @@
+import {util} from "./util.js";
+
 let audioUtil = {};
 
 let _beeping = false;
 let _audioStream = null;
 let _mediaRecorder = null;
 let _isRecording = false;
+let _isVolumeRecording = false;
 let _currentAudioSource = null;
+
+let _recMicVolumeIntervalHandler = null;
+let _analyserNode = null;
+let _mediaStreamAudioSourceNode = null;
+let _audioContext = null;
+let _micVolumeCallbacks = [];
 
 /**
  * starts recording audio from microphone
@@ -67,6 +76,44 @@ audioUtil.stopRecording = function () {
 
 audioUtil.isRecording = function () {
     return _isRecording;
+};
+
+audioUtil.addMicVolumeCallback = async function (valueCallback) {
+    // thanks to https://jameshfisher.com/2021/01/18/measuring-audio-volume-in-javascript/
+    if (!valueCallback) {
+        return;
+    }
+    if (!_micVolumeCallbacks.includes(valueCallback)) {
+        _micVolumeCallbacks.push(valueCallback);
+    }
+    await startMicVolumeRecording();
+};
+
+audioUtil.removeMicVolumeCallback = function (valueCallback) {
+    _micVolumeCallbacks = _micVolumeCallbacks.filter((c) => c !== valueCallback);
+    if (_micVolumeCallbacks.length === 0) {
+        audioUtil.stopRecordMicVolume();
+    }
+};
+
+audioUtil.stopRecordMicVolume = function () {
+    clearInterval(_recMicVolumeIntervalHandler);
+    if (_mediaStreamAudioSourceNode) {
+        _mediaStreamAudioSourceNode.disconnect();
+        _mediaStreamAudioSourceNode = null;
+    }
+    if (_audioContext) {
+        _audioContext.close();
+        _audioContext = null;
+    }
+    if (_audioStream) {
+        _audioStream.getTracks().forEach((track) => {
+            track.stop();
+        });
+        _audioStream = null;
+    }
+    _micVolumeCallbacks = [];
+    _isVolumeRecording = false;
 };
 
 /**
@@ -174,7 +221,57 @@ audioUtil.beepHighDouble = function () {
     }, 100);
 };
 
-window.audioUtil = audioUtil;
+async function startMicVolumeRecording() {
+    //thanks to https://jameshfisher.com/2021/01/18/measuring-audio-volume-in-javascript/
+    if (_isVolumeRecording) {
+        return;
+    }
+    _isVolumeRecording = true;
+    if (!_audioStream) {
+        _audioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    }
+    if (!_audioStream) {
+        log.warn('no access to audio stream!');
+        return Promise.reject();
+    }
+    _audioContext = new AudioContext();
+    _mediaStreamAudioSourceNode = _audioContext.createMediaStreamSource(_audioStream);
+    let sampleRate = _audioContext.sampleRate;
+    _analyserNode = _audioContext.createAnalyser();
+    _analyserNode.fftSize = 2048;
+    _mediaStreamAudioSourceNode.connect(_analyserNode);
+
+    const pcmData = new Uint8Array(_analyserNode.fftSize);
+    const frequencyData = new Uint8Array(_analyserNode.frequencyBinCount);
+    _recMicVolumeIntervalHandler = setInterval(() => {
+        _analyserNode.getByteTimeDomainData(pcmData);
+        _analyserNode.getByteFrequencyData(frequencyData);
+        let volumeSum = 0;
+        for (const amplitude of pcmData) {
+            volumeSum += Math.abs(128 - amplitude);
+        }
+        let volume = util.mapRange(volumeSum / pcmData.length, 0, 128, 0, 1);
+
+        let maxFrequencyVol = -Infinity;
+        let maxFrequency = 0;
+        for (let i = 0; i < frequencyData.length; i++) {
+            if (frequencyData[i] > maxFrequencyVol) {
+                maxFrequencyVol = frequencyData[i];
+                maxFrequency = util.mapRange(
+                    i,
+                    0,
+                    frequencyData.length - 1,
+                    0,
+                    sampleRate / 2
+                );
+            }
+        }
+
+        for (let valueCallback of _micVolumeCallbacks) {
+            valueCallback(volume, maxFrequency);
+        }
+    }, 43); // 48000 / 2048 = 46,9 => 1/46.9 = 0.043 = 43ms
+}
 
 function blobToBase64(blob) {
     return new Promise((resolve, _) => {
