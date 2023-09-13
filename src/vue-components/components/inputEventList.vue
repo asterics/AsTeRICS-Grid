@@ -53,6 +53,73 @@
                         </accordion>
                     </div>
                 </div>
+                <div v-if="input.modelName === InputEventAudio.getModelName()">
+                    <div class="srow">
+                        <button @click="toggleMicRecording" class="five columns offset-by-three">
+                            <span v-if="!micRecording"><span class="fas fa-microphone"/> <span>Start listening to microphone</span></span>
+                            <span v-if="micRecording"><span class="fas fa-microphone-slash"/> <span>Stop listening</span></span>
+                        </button>
+                    </div>
+                    <div class="srow" v-if="micRecordError">
+                        <span class="five columns offset-by-three">
+                            <span class="fas fa-exclamation-triangle"/> <span>{{ $t('pleaseAllowAccessingMicrophoneInOrderToRecordAudio') }}</span>.
+                        </span>
+                    </div>
+                    <div class="srow">
+                        <div class="nine columns offset-by-three">
+                            <h3 class="mt-0">{{ $t('volume') }}</h3>
+                            <div>
+                                <label :for="'volThresholdHigh' + index"><span class="sr-only">{{ $t('volume') }}</span>{{ $t('thresholdHigh') }}</label>
+                            </div>
+                            <div class="srow mb-4 mt-0">
+                                <input class="eight columns" :id="'volThresholdHigh' + index" type="range" min="0.01" :max="getMicVolMaxRange(input)" step="0.01" v-model.number="input.volThresholdHigh" @input="validateChange(input, true); modelChanged();"/>
+                                <span class="three columns">{{ input.volThresholdHigh.toFixed(2) }}</span>
+                            </div>
+                            <div>
+                                <label :for="'currentValue' + index"><span class="sr-only">{{ $t('volume') }}</span>{{ $t('currentValue') }}</label>
+                            </div>
+                            <div class="srow mb-4 mt-0" v-show="micRecording">
+                                <input class="eight columns" :id="'currentValue' + index" type="range" min="0.01" :max="getMicVolMaxRange(input)" step="0.01" disabled v-model.number="micValues.volLive"/>
+                                <span class="three columns">{{ (Math.round(micValues.volLive * 100) / 100).toFixed(2) }}</span>
+                            </div>
+                            <div class="srow mb-4 mt-0" v-show="!micRecording">{{ $t('currentlyNotListeningToMicrophone') }}</div>
+                            <div>
+                                <label :for="'volThresholdLow' + index"><span class="sr-only">{{ $t('volume') }}</span>{{ $t('thresholdLow') }}</label>
+                            </div>
+                            <div class="srow mb-4 mt-0">
+                                <input class="eight columns" :id="'volThresholdLow' + index" type="range" min="0.01" :max="getMicVolMaxRange(input)" step="0.01" v-model.number="input.volThresholdLow" @input="validateChange(input, false); modelChanged();"/>
+                                <span class="three columns">{{ input.volThresholdLow.toFixed(2) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="srow">
+                        <div class="nine columns offset-by-three">
+                            <h3 class="mt-0">{{ $t('frequency') }}</h3>
+                            <div>
+                                <label :for="'freqThresholdHigh' + index"><span class="sr-only">{{ $t('frequency') }}</span>{{ $t('thresholdHigh') }}</label>
+                            </div>
+                            <div class="srow mb-4 mt-0">
+                                <input class="eight columns" :id="'freqThresholdHigh' + index" type="range" min="0" :max="getMicFreqMaxRange(input)" step="100" v-model.number="input.freqThresholdHigh" @input="validateChange(input, true); modelChanged();"/>
+                                <span class="three columns">{{ input.freqThresholdHigh }}</span>
+                            </div>
+                            <div>
+                                <label :for="'currentValue' + index"><span class="sr-only">{{ $t('frequency') }}</span>{{ $t('currentValue') }}</label>
+                            </div>
+                            <div class="srow mb-4 mt-0" v-show="micRecording">
+                                <input class="eight columns" :id="'currentValue' + index" type="range" min="0" :max="getMicFreqMaxRange(input)" step="100" disabled v-model.number="micValues.inputMaxFreqMap[input]"/>
+                                <span class="three columns">{{ Math.round(micValues.inputMaxFreqMap[input]) }}</span>
+                            </div>
+                            <div class="srow mb-4 mt-0" v-show="!micRecording">{{ $t('currentlyNotListeningToMicrophone') }}</div>
+                            <div>
+                                <label :for="'freqThresholdLow' + index"><span class="sr-only">{{ $t('frequency') }}</span>{{ $t('thresholdLow') }}</label>
+                            </div>
+                            <div class="srow mb-4 mt-0">
+                                <input class="eight columns" :id="'freqThresholdLow' + index" type="range" min="0" :max="getMicFreqMaxRange(input)" step="100" v-model.number="input.freqThresholdLow" @input="validateChange(input, false); modelChanged();"/>
+                                <span class="three columns">{{ input.freqThresholdLow }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div v-if="input.modelName === InputEventARE.getModelName()">
                     <div class="srow">
                         <button @click="recordAREEvent(input, index)" class="five columns offset-by-three">
@@ -82,13 +149,14 @@
 
 <script>
     import Vue from 'vue';
-    import {i18nService} from "../../js/service/i18nService";
     import {InputConfig} from "../../js/model/InputConfig";
     import {InputEventKey} from "../../js/model/InputEventKey";
+    import {InputEventAudio} from "../../js/model/InputEventAudio";
     import {InputEventARE} from "../../js/model/InputEventARE";
     import {inputEventHandler} from "../../js/input/inputEventHandler";
     import Accordion from "./accordion.vue";
     import {areService} from "../../js/service/areService";
+    import {audioUtil} from "../../js/util/audioUtil.js";
 
     export default {
         components: {Accordion},
@@ -114,11 +182,19 @@
                 inputs: [],
                 inputEventTypes: InputConfig.getInputEventTypes(),
                 InputEventKey: InputEventKey,
+                InputEventAudio: InputEventAudio,
                 InputEventARE: InputEventARE,
                 InputConfig: InputConfig,
                 keyRecording: {},
                 areRecording: {},
                 areError: {},
+                micRecording: false,
+                micRecordError: false,
+                micValues: {
+                    volLive: 0,
+                    volMax: 0,
+                    inputMaxFreqMap: {}
+                },
                 lastEmitValue: null,
                 localEventHandler: inputEventHandler.instance(),
                 lastInitTime: null,
@@ -216,6 +292,22 @@
                 }
                 input.areURL = areService.getRestURL(input.areURL);
             },
+            validateChange(input, highChanged) {
+                if (input.volThresholdHigh < input.volThresholdLow) {
+                    if (highChanged) {
+                        input.volThresholdHigh = input.volThresholdLow;
+                    } else {
+                        input.volThresholdLow = input.volThresholdHigh;
+                    }
+                }
+                if (input.freqThresholdHigh < input.freqThresholdLow) {
+                    if (highChanged) {
+                        input.freqThresholdHigh = input.freqThresholdLow;
+                    } else {
+                        input.freqThresholdLow = input.freqThresholdHigh;
+                    }
+                }
+            },
             modelChanged() {
                 let passInputs = this.inputs.filter(input => {
                     if (!input.modelName) {
@@ -265,6 +357,38 @@
                 if (this.minInputs && this.inputs.length < this.minInputs) {
                     this.addInput(this.minInputs - this.inputs.length);
                 }
+            },
+            micVolumeCallback(volume, frequency) {
+                this.micValues.volLive = volume;
+                this.micValues.volMax = Math.max(volume, this.micValues.volMax);
+                for (let input of this.inputs) {
+                    if (volume > input.volThresholdHigh) {
+                        this.micValues.inputMaxFreqMap[input] = frequency;
+                    }
+                }
+            },
+            async toggleMicRecording() {
+                this.micRecordError = false;
+                try {
+                    if (!this.micRecording) {
+                        await audioUtil.addMicVolumeCallback(this.micVolumeCallback);
+                        this.micRecording = true;
+                    } else {
+                        await audioUtil.removeMicVolumeCallback(this.micVolumeCallback);
+                        this.micRecording = false;
+                    }
+                } catch (e) {
+                    this.micRecordError = true;
+                }
+            },
+            getMicVolMaxRange(input) {
+                let maxValueConsidered = Math.max(this.micValues.volMax + 0.1, input.volThresholdLow + 0.1, input.volThresholdHigh + 0.1);
+                return Math.min(maxValueConsidered, 1);
+            },
+            getMicFreqMaxRange(input) {
+                let inputMaxFreq = this.micValues.inputMaxFreqMap[input] || 0;
+                let maxValueConsidered = Math.max(inputMaxFreq + 1000, input.freqThresholdLow + 1000, input.freqThresholdHigh + 1000);
+                return Math.min(maxValueConsidered, 20000);
             }
         },
         mounted() {
