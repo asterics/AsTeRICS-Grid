@@ -2,6 +2,8 @@ import { util } from '../util/util';
 import { InputEventKey } from '../model/InputEventKey';
 import { InputEventARE } from '../model/InputEventARE';
 import { areService } from '../service/areService';
+import {InputEventAudio} from "../model/InputEventAudio.js";
+import {audioUtil} from "../util/audioUtil.js";
 
 let inputEventHandler = {};
 let allInstances = [];
@@ -50,10 +52,12 @@ function Constructor() {
     let anyKeyHandlers = [];
     let exitFullscreenHandlers = [];
     let keyHandlers = {}; //keycode => [{handler, lastKeydown, lastAction, counter, inputEventKey}]
+    let audioVolumeHandlers = []; // object {handler: fn, thresholds: number}
     let _touchElement = document.body;
     let _listening = false;
     let _areInputEvents = {}; //ID -> inputEvent, fn
     let _id = idCounter++;
+    let _recordingMic = false;
 
     thiz.startListening = function () {
         if (_listening) {
@@ -68,6 +72,9 @@ function Constructor() {
         _touchElement.addEventListener('touchmove', touchMoveListener, { passive: false });
         _touchElement.addEventListener('touchstart', touchStartListener);
         _touchElement.addEventListener('touchend', touchEndListener);
+        if (audioVolumeHandlers.length > 0) {
+            audioUtil.addMicVolumeCallback(micVolumeCallback);
+        }
     };
 
     thiz.stopListening = function () {
@@ -80,6 +87,8 @@ function Constructor() {
         _touchElement.removeEventListener('touchmove', touchMoveListener);
         _touchElement.removeEventListener('touchstart', touchStartListener);
         _touchElement.removeEventListener('touchend', touchEndListener);
+        audioUtil.removeMicVolumeCallback(micVolumeCallback);
+        audioUtil.stopRecordMicVolume();
     };
 
     thiz.destroy = function () {
@@ -139,6 +148,24 @@ function Constructor() {
         return registerHandler(fn, exitFullscreenHandlers);
     };
 
+    thiz.onMicVolumeThreshold = async function (fn, inputEventAudio) {
+        if (!_recordingMic) {
+            await audioUtil.addMicVolumeCallback(micVolumeCallback);
+        }
+        return registerHandler(
+            {
+                handler: fn,
+                volThresholdHigh: inputEventAudio.volThresholdHigh,
+                volThresholdLow: inputEventAudio.volThresholdLow,
+                freqThresholdHigh: inputEventAudio.freqThresholdHigh,
+                freqThresholdLow: inputEventAudio.freqThresholdLow,
+                debounceMs: inputEventAudio.debounceMs,
+                aboveThreshold: true //to prevent immediate triggering after registering
+            },
+            audioVolumeHandlers
+        );
+    };
+
     thiz.off = function (fn) {
         let filterFn = (f) => f !== fn;
         mouseBorderHandlers = mouseBorderHandlers.filter(filterFn);
@@ -168,8 +195,31 @@ function Constructor() {
                     subscribeAREEvent(inputEvent, fn);
                 }
                 break;
+            case InputEventAudio.getModelName():
+                return thiz.onMicVolumeThreshold(fn, inputEvent)
         }
     };
+
+    function micVolumeCallback(volume, frequency) {
+        for (let audioHandler of audioVolumeHandlers) {
+            audioHandler.lastTriggerTime = audioHandler.lastTriggerTime || 0;
+            audioHandler.debounceMs = audioHandler.debounceMs || 100;
+            if (
+                volume > audioHandler.volThresholdHigh &&
+                frequency > audioHandler.freqThresholdLow &&
+                frequency < audioHandler.freqThresholdHigh &&
+                !audioHandler.aboveThreshold &&
+                new Date().getTime() - audioHandler.lastTriggerTime > audioHandler.debounceMs
+            ) {
+                audioHandler.lastTriggerTime = new Date().getTime();
+                audioHandler.aboveThreshold = true;
+                audioHandler.handler();
+            }
+            if (volume < audioHandler.volThresholdLow) {
+                audioHandler.aboveThreshold = false;
+            }
+        }
+    }
 
     function subscribeAREEvent(inputEvent, fn) {
         areService.subscribeEvents(inputEvent.areURL, (eventString) => {
