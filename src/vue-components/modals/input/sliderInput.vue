@@ -15,7 +15,7 @@
     import {i18nService} from "../../../js/service/i18nService.js";
 
     export default {
-        props: ['id', 'label', 'value', 'min', 'max', 'step', 'decimals', 'unit', 'displayFactor'],
+        props: ['id', 'label', 'value', 'min', 'max', 'step', 'decimals', 'unit', 'displayFactor', 'default'],
         data() {
             return {
                 i18nService: i18nService
@@ -29,12 +29,18 @@
             }
         },
         methods: {
+            emitChange(value) {
+                this.$emit('input', value);
+                this.$emit('change', value);
+            },
             changed(event) {
-                this.$emit('input', event.target.value);
-                this.$emit('change', event.target.value);
+                this.emitChange(event.target.value)
             }
         },
         mounted() {
+            if (this.value === undefined && this.default) {
+                this.emitChange(parseFloat(this.default));
+            }
         },
         updated() {
         }
