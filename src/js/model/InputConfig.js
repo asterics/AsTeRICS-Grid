@@ -58,7 +58,7 @@ class InputConfig extends Model({
     }
 
     static getInputEventTypes() {
-        return [InputEventKey, InputEventARE];
+        return [InputEventKey, InputEventAudio, InputEventARE];
     }
 
     static getInputEventInstance(modelName, options) {
