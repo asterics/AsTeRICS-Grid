@@ -3,6 +3,7 @@ import { constants } from '../util/constants';
 import { Model } from '../externals/objectmodel';
 import { InputEventKey } from './InputEventKey';
 import { InputEventARE } from './InputEventARE';
+import {InputEventAudio} from "./InputEventAudio.js";
 
 class InputConfig extends Model({
     id: String,
@@ -125,6 +126,8 @@ InputConfig.defaults({
     scanTimeoutMs: 1000,
     scanTimeoutFirstElementFactor: 1,
     scanBinary: false,
+    scanStartWithAction: false,
+    scanRoundsUntilBack: 3,
     hoverTimeoutMs: 1000,
     hoverDisableHoverpane: true,
     mouseclickEnabled: true,
