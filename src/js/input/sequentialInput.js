@@ -4,8 +4,9 @@ import { InputConfig } from '../model/InputConfig';
 
 let SequentialInput = {};
 
-SequentialInput.getInstanceFromConfig = function (inputConfig, itemSelector, options) {
-    return new SequentialInputConstructor(itemSelector, {
+SequentialInput.getInstanceFromConfig = function (inputConfig, options) {
+    return new SequentialInputConstructor({
+        itemSelector: options.itemSelector,
         selectionListener: options.selectionListener,
         activeListener: options.activeListener,
         activeClass: options.activeClass,
@@ -15,47 +16,66 @@ SequentialInput.getInstanceFromConfig = function (inputConfig, itemSelector, opt
         enableAuto: inputConfig.seqAuto,
         autoTimeout: inputConfig.seqTimeoutMs,
         firstElementFactor: inputConfig.seqTimeoutFirstElementFactor,
-        resetAfterSelect: inputConfig.seqResetToStart
+        resetAfterSelect: inputConfig.seqResetToStart,
+        startWithAction: inputConfig.seqStartWithAction,
+        roundsUntilStop: inputConfig.seqRoundsUntilStop
     });
 };
 
 /**
  * implements an input method that just iterates through all elements sequentially
- * @param paramItemSelector
  * @param options
  * @constructor
  */
-function SequentialInputConstructor(paramItemSelector, options) {
+function SequentialInputConstructor(options) {
     let thiz = this;
 
     //options
-    let itemSelector = paramItemSelector;
+    if (!options || !options.inputEventSelect || !options.inputEventNext) {
+        log.warn("missing parameters for instantiating sequential input");
+        return;
+    }
     options.firstElementFactor = options.firstElementFactor || 1;
+    options.activeClass = options.activeClass || 'scanFocus';
 
     //internal
-    let _activeClass = null;
-    let _selectionListener = null;
-    let _activeListener = null;
-    let _elements = null;
-    let _inputEventHandler = null;
+    let _elements = $(options.itemSelector);
+    let _inputEventHandler = inputEventHandler.instance();
+    let _startEventHandler = inputEventHandler.instance();
     let _activeId = 0;
+    let _currentRound = 0;
     let _autoTimeoutHandler = null;
 
-    thiz.start = function () {
-        _inputEventHandler.startListening();
-        setActiveElement(_elements[0], true);
-        _activeId = 0;
-        scheduleNextAuto();
+    thiz.start = function (forceStart) {
+        if (options.startWithAction && !forceStart) {
+            _startEventHandler.onInputEvent(options.inputEventSelect, start);
+            _startEventHandler.onInputEvent(options.inputEventNext, start);
+            _startEventHandler.onInputEvent(options.inputEventPrev, start);
+
+            function start() {
+                _startEventHandler.destroy();
+                _startEventHandler = inputEventHandler.instance();
+                startInternal();
+            }
+
+            _startEventHandler.startListening();
+        } else {
+            startInternal();
+        }
     };
 
     thiz.stop = function () {
         clearTimeout(_autoTimeoutHandler);
+        _elements.removeClass(options.activeClass);
+        _inputEventHandler.stopListening();
+        _startEventHandler.stopListening();
     };
 
     thiz.destroy = function () {
         thiz.stop();
         _inputEventHandler.destroy();
-        _elements.removeClass(_activeClass);
+        _startEventHandler.destroy();
+        _elements.removeClass(options.activeClass);
     };
 
     thiz.next = function () {
@@ -80,64 +100,54 @@ function SequentialInputConstructor(paramItemSelector, options) {
     };
 
     thiz.select = function () {
-        if (_selectionListener) {
-            _selectionListener(_elements[_activeId]);
+        if (options.selectionListener) {
+            options.selectionListener(_elements[_activeId]);
         }
         if (options.resetAfterSelect) {
             thiz.stop();
-            thiz.start();
+            startInternal();
         }
     };
+
+    function startInternal() {
+        _inputEventHandler.startListening();
+        setActiveElement(_elements[0], true);
+        _activeId = 0;
+        scheduleNextAuto();
+    }
 
     function scheduleNextAuto() {
         if (options.enableAuto) {
             let timeout = options.autoTimeout || 1000;
             let factor = _activeId === 0 ? options.firstElementFactor : 1;
+            if (_activeId === 0) {
+                _currentRound++;
+            }
+            if (options.startWithAction && options.roundsUntilStop && _currentRound > options.roundsUntilStop) {
+                _currentRound = 0;
+                thiz.stop();
+                thiz.start();
+                return;
+            }
             _autoTimeoutHandler = setTimeout(() => {
                 thiz.next();
             }, timeout * factor);
         }
     }
 
-    function init() {
-        _inputEventHandler = inputEventHandler.instance();
-        parseOptions(options);
-        _elements = $(itemSelector);
-    }
-
-    function parseOptions(options) {
-        if (!options || !options.inputEventSelect || !options.inputEventNext) {
-            return;
-        }
-        if ($.isFunction(options.selectionListener)) {
-            _selectionListener = options.selectionListener;
-        }
-        if ($.isFunction(options.activeListener)) {
-            _activeListener = options.activeListener;
-        }
-        _activeClass = options.activeClass || 'scanFocus';
-
-        _inputEventHandler.onInputEvent(options.inputEventSelect, () => {
-            thiz.select();
-        });
-
-        _inputEventHandler.onInputEvent(options.inputEventNext, () => {
-            thiz.next();
-        });
-
-        _inputEventHandler.onInputEvent(options.inputEventPrev, () => {
-            thiz.prev();
-        });
-    }
-
     function setActiveElement(element, wrap) {
-        _elements.removeClass(_activeClass);
-        $(element).addClass(_activeClass);
-        if (_activeListener) {
-            _activeListener(element, wrap);
+        _elements.removeClass(options.activeClass);
+        $(element).addClass(options.activeClass);
+        if (options.activeListener) {
+            options.activeListener(element, wrap);
         }
     }
 
+    function init() {
+        _inputEventHandler.onInputEvent(options.inputEventSelect, thiz.select);
+        _inputEventHandler.onInputEvent(options.inputEventNext, thiz.next);
+        _inputEventHandler.onInputEvent(options.inputEventPrev, thiz.prev);
+    }
     init();
 }
 

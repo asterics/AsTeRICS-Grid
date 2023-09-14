@@ -227,11 +227,12 @@
                 };
 
                 if (inputConfig.seqEnabled) {
-                    thiz.seqInput = SequentialInput.getInstanceFromConfig(inputConfig, '.grid-item-content:not([data-empty="true"])', {
+                    thiz.seqInput = SequentialInput.getInstanceFromConfig(inputConfig, {
+                        itemSelector: '.grid-item-content:not([data-empty="true"])',
                         selectionListener: selectionListener,
                         activeListener: activeListener
                     });
-                    thiz.seqInput.start();
+                    thiz.seqInput.start(continueRunningMethods);
                 }
 
                 if (inputConfig.dirEnabled) {

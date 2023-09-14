@@ -36,19 +36,24 @@
                                 </div>
                                 <div class="srow">
                                     <div class="twelve columns">
+                                        <input type="checkbox" id="chkStartWithAction" v-model="inputConfig.seqStartWithAction"/>
+                                        <label for="chkStartWithAction">{{ $t('startManuallyByUserInputEvent') }}</label>
+                                    </div>
+                                </div>
+                                <div class="srow">
+                                    <slider-input :label="$t('roundsUntilStop')" id="roundsUntilStop" min="1" max="10" step="1" decimals="0" default="3" v-model.number="inputConfig.seqRoundsUntilStop"/>
+                                </div>
+                                <div class="srow">
+                                    <div class="twelve columns">
                                         <input type="checkbox" id="chkAutoScanning" v-model="inputConfig.seqAuto"/>
                                         <label for="chkAutoScanning">{{ $t('automaticTimedSequentialInput') }}</label>
                                     </div>
                                 </div>
                                 <div class="srow" v-show="inputConfig.seqAuto">
-                                    <label class="four columns" for="inScanTime">{{ $t('scanningTimeMs') }}</label>
-                                    <input type="range" id="inScanTime" v-model.number="inputConfig.seqTimeoutMs" min="100" max="6000" step="100"/>
-                                    <input type="number" v-model.number="inputConfig.seqTimeoutMs" min="100" max="6000" step="100"/>
+                                    <slider-input :label="$t('scanningTimeMs')" id="inScanTime" min="100" max="10000" step="100" decimals="0" v-model.number="inputConfig.seqTimeoutMs"/>
                                 </div>
                                 <div class="srow" v-show="inputConfig.seqAuto">
-                                    <label class="four columns" for="inFirstElement">{{ $t('timeFactorFirstElement') }}</label>
-                                    <input type="range" id="inFirstElement" v-model.number="inputConfig.seqTimeoutFirstElementFactor" min="1" max="5" step="0.1"/>
-                                    <input type="number" v-model.number="inputConfig.seqTimeoutFirstElementFactor" min="1" max="5" step="0.5" />
+                                    <slider-input :label="$t('timeFactorFirstElement')" id="inFirstElement" min="1" max="5" step="0.1" decimals="1" v-model.number="inputConfig.seqTimeoutFirstElementFactor"/>
                                 </div>
                             </accordion>
                             <accordion :acc-label="$t('generalInputSettings')" acc-label-type="h2" acc-background-color="white">
@@ -87,6 +92,7 @@
     import Accordion from "../../components/accordion.vue"
     import InputEventList from "../../components/inputEventList.vue"
     import TestArea from "./testArea.vue"
+    import SliderInput from "./sliderInput.vue";
     import './../../../css/modal.css';
     import {InputConfig} from "../../../js/model/InputConfig";
     import {inputEventHandler} from "../../../js/input/inputEventHandler";
@@ -95,7 +101,7 @@
 
     export default {
         props: [],
-        components: {GlobalInputOptions, Accordion, InputEventList, TestArea},
+        components: {GlobalInputOptions, Accordion, InputEventList, TestArea, SliderInput},
         data: function () {
             return {
                 inputConfig: null,
@@ -166,7 +172,8 @@
                     let thiz = this;
                     thiz.stopTest();
                     if (thiz.inputConfig.seqEnabled) {
-                        thiz.seqInput = SequentialInput.getInstanceFromConfig(thiz.inputConfig, '.area-element-inner', {
+                        thiz.seqInput = SequentialInput.getInstanceFromConfig(thiz.inputConfig, {
+                            itemSelector: '.area-element-inner',
                             selectionListener: (item) => {
                                 thiz.selectedTestElement = item;
                             },

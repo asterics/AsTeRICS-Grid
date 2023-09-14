@@ -20,6 +20,8 @@ class InputConfig extends Model({
     scanTimeoutFirstElementFactor: [Number], //factor for first element scanning time, e.g. scanTimeoutMs = 1000, scanTimeoutFirstElementFactor = 2 => scanning time for first element = 2000ms
     scanVertical: [Boolean],
     scanBinary: [Boolean],
+    scanStartWithAction: [Boolean],
+    scanRoundsUntilBack: [Number],
     scanInputs: [Model.Array(Object)], //array with input events with labels InputConfig.NEXT/SELECT
     hoverEnabled: [Boolean],
     hoverTimeoutMs: Number,
@@ -38,6 +40,8 @@ class InputConfig extends Model({
     seqTimeoutFirstElementFactor: [Number],
     seqTimeoutMs: [Number],
     seqResetToStart: [Boolean],
+    seqStartWithAction: [Boolean],
+    seqRoundsUntilStop: [Number],
     huffEnabled: [Boolean],
     huffElementCount: [Number],
     huffInputs: [Model.Array(Object)], // ordered array of InputEvent objects
@@ -140,6 +144,8 @@ InputConfig.defaults({
     seqTimeoutMs: 1000,
     seqTimeoutFirstElementFactor: 1,
     seqResetToStart: true,
+    seqStartWithAction: false,
+    seqRoundsUntilStop: 3,
     dirWrapAround: true,
     huffInputs: InputConfig.DEFAULT_HUFF_INPUTS,
     huffColors: InputConfig.DEFAULT_HUFF_COLORS,
