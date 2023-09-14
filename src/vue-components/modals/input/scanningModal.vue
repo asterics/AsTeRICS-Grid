@@ -51,11 +51,11 @@
                                 <div class="srow">
                                     <div class="twelve columns">
                                         <input type="checkbox" id="chkStartWithAction" v-model="inputConfig.scanStartWithAction"/>
-                                        <label for="chkStartWithAction">Start scanning manually by user input event</label>
+                                        <label for="chkStartWithAction">{{ $t('startManuallyByUserInputEvent') }}</label>
                                     </div>
                                 </div>
                                 <div class="srow">
-                                    <slider-input label="Rounds until going back" id="roundsUntilBack" min="1" max="10" step="1" decimals="0" default="3" v-model.number="inputConfig.scanRoundsUntilBack"/>
+                                    <slider-input :label="$t('roundsUntilGoingBack')" id="roundsUntilBack" min="1" max="10" step="1" decimals="0" default="3" v-model.number="inputConfig.scanRoundsUntilBack"/>
                                 </div>
                                 <div class="srow">
                                     <div class="twelve columns">
@@ -64,7 +64,7 @@
                                     </div>
                                 </div>
                                 <div class="srow" v-show="inputConfig.scanAuto">
-                                    <slider-input :label="$t('scanningTimeMs')" id="inScanTime" min="100" max="6000" step="100" decimals="0" v-model.number="inputConfig.scanTimeoutMs"/>
+                                    <slider-input :label="$t('scanningTimeMs')" id="inScanTime" min="100" max="10000" step="100" decimals="0" v-model.number="inputConfig.scanTimeoutMs"/>
                                 </div>
                                 <div class="srow" v-show="inputConfig.scanAuto">
                                     <slider-input :label="$t('timeFactorFirstElement')" id="inFirstElement" min="1" max="5" step="0.1" decimals="1" v-model.number="inputConfig.scanTimeoutFirstElementFactor"/>
