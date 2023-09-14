@@ -64,7 +64,7 @@
   "RIGHT": "Ir para a direita",
   "GENERAL_INPUT": "Acesso",
   "InputEventKey": "Pressão de tecla",
-  "InputEventAudio": "Microphone input",
+  "InputEventAudio": "Entrada de microfone",
   "InputEventARE": "Evento AsTeRICS ARE",
   "ELEMENT_TYPE_COLLECT": "Frase acumulada",
   "ELEMENT_TYPE_PREDICTION": "Célula de predição",
@@ -926,11 +926,11 @@
   "allowPlayingRadio": "Permitir reprodução de rádio",
   "cachingImages": "Armazenando imagens...",
   "volume": "Volume",
-  "frequency": "Frequency",
-  "thresholdHigh": "Threshold high",
-  "currentlyNotListeningToMicrophone": "Currently not listening to microphone",
-  "thresholdLow": "Threshold low",
-  "startManuallyByUserInputEvent": "Start manually by user input event",
-  "roundsUntilGoingBack": "Rounds until going back",
-  "roundsUntilStop": "Rounds until stop"
+  "frequency": "Frequência",
+  "thresholdHigh": "Limite superior",
+  "currentlyNotListeningToMicrophone": "Neste momento, não se ouve o microfone",
+  "thresholdLow": "Limite inferior",
+  "startManuallyByUserInputEvent": "Iniciar manualmente por evento de entrada do utilizador",
+  "roundsUntilGoingBack": "Número de vezes até retornar",
+  "roundsUntilStop": "Número de vezes até parar"
 }
