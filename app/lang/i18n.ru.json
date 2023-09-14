@@ -929,5 +929,8 @@
   "frequency": "Frequency",
   "thresholdHigh": "Threshold high",
   "currentlyNotListeningToMicrophone": "Currently not listening to microphone",
-  "thresholdLow": "Threshold low"
+  "thresholdLow": "Threshold low",
+  "startManuallyByUserInputEvent": "Start manually by user input event",
+  "roundsUntilGoingBack": "Rounds until going back",
+  "roundsUntilStop": "Rounds until stop"
 }
