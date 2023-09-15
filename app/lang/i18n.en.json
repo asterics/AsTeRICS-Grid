@@ -932,6 +932,6 @@
   "currentlyNotListeningToMicrophone": "Currently not listening to microphone",
   "thresholdLow": "Threshold low",
   "startManuallyByUserInputEvent": "Start manually by user input event",
-  "roundsUntilGoingBack": "Rounds until going back",
-  "roundsUntilStop": "Rounds until stop"
+  "roundsUntilGoingBack": "Scanning rounds until going back",
+  "roundsUntilStop": "Scanning rounds until stop"
 }
