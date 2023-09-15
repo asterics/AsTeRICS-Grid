@@ -55,11 +55,13 @@ function SequentialInputConstructor(options) {
             function start() {
                 _startEventHandler.destroy();
                 _startEventHandler = inputEventHandler.instance();
+                setupInputEventHandler();
                 startInternal();
             }
 
             _startEventHandler.startListening();
         } else {
+            setupInputEventHandler();
             startInternal();
         }
     };
@@ -123,13 +125,13 @@ function SequentialInputConstructor(options) {
             if (_activeId === 0) {
                 _currentRound++;
             }
-            if (options.startWithAction && options.roundsUntilStop && _currentRound > options.roundsUntilStop) {
-                _currentRound = 0;
-                thiz.stop();
-                thiz.start();
-                return;
-            }
             _autoTimeoutHandler = setTimeout(() => {
+                if (options.startWithAction && options.roundsUntilStop && _currentRound === options.roundsUntilStop && _activeId === _elements.length - 1) {
+                    _currentRound = 0;
+                    thiz.stop();
+                    thiz.start();
+                    return;
+                }
                 thiz.next();
             }, timeout * factor);
         }
@@ -143,12 +145,13 @@ function SequentialInputConstructor(options) {
         }
     }
 
-    function init() {
+    function setupInputEventHandler() {
+        _inputEventHandler.destroy();
+        _inputEventHandler = inputEventHandler.instance();
         _inputEventHandler.onInputEvent(options.inputEventSelect, thiz.select);
         _inputEventHandler.onInputEvent(options.inputEventNext, thiz.next);
         _inputEventHandler.onInputEvent(options.inputEventPrev, thiz.prev);
     }
-    init();
 }
 
 export { SequentialInput };
