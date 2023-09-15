@@ -64,6 +64,7 @@
   "RIGHT": "Nach rechts",
   "GENERAL_INPUT": "Eingabe",
   "InputEventKey": "Tastendruck",
+  "InputEventAudio": "Mikrofon-Eingabe",
   "InputEventARE": "AsTeRICS ARE Event",
   "ELEMENT_TYPE_COLLECT": "Sammel-Element",
   "ELEMENT_TYPE_PREDICTION": "Vorhersage-Element",
@@ -923,5 +924,13 @@
   "thanksToEduardoLleidaSolanoProfessorAtDepartment": "Danke an Eduardo Lleida Solano, Professor am Department Electronic Engineering and Communications der Universität Saragossa, für die Zusammenarbeit bei der Entwicklung der ARASAAC API für die Verarbeitung natürlicher Sprache. Sie wird für das Feature zur automatischen Korrektur der Grammatik in AsTeRICS Grid verwendet.",
   "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Webradio konnte nicht abgespielt werden, da der Browser es nicht erlaubt hat.",
   "allowPlayingRadio": "Radio abspielen erlauben",
-  "cachingImages": "Lade Symbole herunter..."
+  "cachingImages": "Lade Symbole herunter...",
+  "volume": "Lautstärke",
+  "frequency": "Frequenz",
+  "thresholdHigh": "Obere Grenze",
+  "currentlyNotListeningToMicrophone": "Mikrofon nicht aktiv",
+  "thresholdLow": "Untere Grenze",
+  "startManuallyByUserInputEvent": "Manuell durch Benutzerktion starten",
+  "roundsUntilGoingBack": "Scanning-Runden bis zum Zurückgehen",
+  "roundsUntilStop": "Scanning-Runden bis zum Stoppen"
 }
