@@ -928,7 +928,7 @@
   "volume": "Volumen",
   "frequency": "Frecuencia",
   "thresholdHigh": "Umbral máximo",
-  "currentlyNotListeningToMicrophone": "Currently not listening to microphone",
+  "currentlyNotListeningToMicrophone": "Actualmente no se detecta sonido en el micrófono",
   "thresholdLow": "Umbral mínimo",
   "startManuallyByUserInputEvent": "Iniciar manualmente por el evento de entrada del usuario",
   "roundsUntilGoingBack": "Scanning rounds until going back",
