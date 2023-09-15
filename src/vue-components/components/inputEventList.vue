@@ -72,23 +72,23 @@
                                 <label :for="'volThresholdHigh' + index"><span class="sr-only">{{ $t('volume') }}</span>{{ $t('thresholdHigh') }}</label>
                             </div>
                             <div class="srow mb-4 mt-0">
-                                <input class="eight columns" :id="'volThresholdHigh' + index" type="range" min="0.01" :max="getMicVolMaxRange(input)" step="0.01" v-model.number="input.volThresholdHigh" @input="validateChange(input, true); modelChanged();"/>
-                                <span class="three columns">{{ input.volThresholdHigh.toFixed(2) }}</span>
+                                <input class="eight columns" :id="'volThresholdHigh' + index" type="range" min="0.1" :max="getMicVolMaxRange(input)" step="0.1" v-model.number="input.volThresholdHigh" @input="validateChange(input, true); modelChanged();"/>
+                                <span class="three columns">{{ input.volThresholdHigh.toFixed(1) }}</span>
                             </div>
                             <div>
                                 <label :for="'currentValue' + index"><span class="sr-only">{{ $t('volume') }}</span>{{ $t('currentValue') }}</label>
                             </div>
                             <div class="srow mb-4 mt-0" v-show="micRecording">
-                                <input class="eight columns" :id="'currentValue' + index" type="range" min="0.01" :max="getMicVolMaxRange(input)" step="0.01" disabled v-model.number="micValues.volLive"/>
-                                <span class="three columns">{{ (Math.round(micValues.volLive * 100) / 100).toFixed(2) }}</span>
+                                <input class="eight columns" :id="'currentValue' + index" type="range" min="0.1" :max="getMicVolMaxRange(input)" step="0.1" disabled v-model.number="micValues.volLive"/>
+                                <span class="three columns">{{ (Math.round(micValues.volLive * 100) / 100).toFixed(1) }}</span>
                             </div>
                             <div class="srow mb-4 mt-0" v-show="!micRecording">{{ $t('currentlyNotListeningToMicrophone') }}</div>
                             <div>
                                 <label :for="'volThresholdLow' + index"><span class="sr-only">{{ $t('volume') }}</span>{{ $t('thresholdLow') }}</label>
                             </div>
                             <div class="srow mb-4 mt-0">
-                                <input class="eight columns" :id="'volThresholdLow' + index" type="range" min="0.01" :max="getMicVolMaxRange(input)" step="0.01" v-model.number="input.volThresholdLow" @input="validateChange(input, false); modelChanged();"/>
-                                <span class="three columns">{{ input.volThresholdLow.toFixed(2) }}</span>
+                                <input class="eight columns" :id="'volThresholdLow' + index" type="range" min="0.1" :max="getMicVolMaxRange(input)" step="0.1" v-model.number="input.volThresholdLow" @input="validateChange(input, false); modelChanged();"/>
+                                <span class="three columns">{{ input.volThresholdLow.toFixed(1) }}</span>
                             </div>
                         </div>
                     </div>
@@ -382,8 +382,8 @@
                 }
             },
             getMicVolMaxRange(input) {
-                let maxValueConsidered = Math.max(this.micValues.volMax + 0.1, input.volThresholdLow + 0.1, input.volThresholdHigh + 0.1);
-                return Math.min(maxValueConsidered, 1);
+                let maxValueConsidered = Math.max(input.volThresholdLow + 5, input.volThresholdHigh + 5);
+                return Math.min(maxValueConsidered, 100);
             },
             getMicFreqMaxRange(input) {
                 let inputMaxFreq = this.micValues.inputMaxFreqMap[input] || 0;
