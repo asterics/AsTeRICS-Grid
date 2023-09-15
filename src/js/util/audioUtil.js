@@ -78,6 +78,12 @@ audioUtil.isRecording = function () {
     return _isRecording;
 };
 
+/**
+ * starts recording from microphone and passes current values to given callback
+ * @param valueCallback called with parameters (volume, frequency) where volume is in range [0..100] and frequency is the
+ *                      frequency in Hz where the maximum volume was registered
+ * @return {Promise<void>}
+ */
 audioUtil.addMicVolumeCallback = async function (valueCallback) {
     // thanks to https://jameshfisher.com/2021/01/18/measuring-audio-volume-in-javascript/
     if (!valueCallback) {
@@ -250,7 +256,7 @@ async function startMicVolumeRecording() {
         for (const amplitude of pcmData) {
             volumeSum += Math.abs(128 - amplitude);
         }
-        let volume = util.mapRange(volumeSum / pcmData.length, 0, 128, 0, 1);
+        let volume = util.mapRange(volumeSum / pcmData.length, 0, 128, 0, 100);
 
         let maxFrequencyVol = -Infinity;
         let maxFrequency = 0;

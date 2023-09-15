@@ -31,8 +31,8 @@ InputEventAudio.defaults({
     id: '', //will be replaced by constructor
     modelName: InputEventAudio.getModelName(),
     modelVersion: constants.MODEL_VERSION,
-    volThresholdHigh: 0.3,
-    volThresholdLow: 0.01,
+    volThresholdHigh: 5,
+    volThresholdLow: 1,
     freqThresholdHigh: 20000,
     freqThresholdLow: 0,
     debounceMs: 200,
