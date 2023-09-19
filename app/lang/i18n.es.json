@@ -372,7 +372,7 @@
   "repetitions": "Repeticiones",
   "disabledIfHoldDurationIsSet": "desactivado si se ha establecido un tiempo de espera.",
   "enable": "Activar",
-  "holdDurationMs": "Teimpo de espera (ms)",
+  "holdDurationMs": "Tiempo de espera (ms)",
   "disabledIfRepetitionsAreSet": "desactivado si se han establecido repeticiones.",
   "recordAreEvent": "Grabar evento ARE",
   "waitingForEvent": "esperando el evento...",
