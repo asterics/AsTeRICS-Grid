@@ -931,6 +931,6 @@
   "currentlyNotListeningToMicrophone": "Neste momento, não se ouve o microfone",
   "thresholdLow": "Limite inferior",
   "startManuallyByUserInputEvent": "Iniciar manualmente por evento de entrada do utilizador",
-  "roundsUntilGoingBack": "Scanning rounds until going back",
-  "roundsUntilStop": "Scanning rounds until stop"
+  "roundsUntilGoingBack": "Número de varrimentos até voltar atrás",
+  "roundsUntilStop": "Número de varrimentos até parar"
 }
