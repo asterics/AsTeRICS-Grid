@@ -930,7 +930,7 @@
   "thresholdHigh": "Umbral máximo",
   "currentlyNotListeningToMicrophone": "Actualmente no se detecta sonido en el micrófono",
   "thresholdLow": "Umbral mínimo",
-  "startManuallyByUserInputEvent": "Iniciar manualmente por el evento de entrada del usuario",
+  "startManuallyByUserInputEvent": "Iniciar manualmente por un evento de entrada del usuario",
   "roundsUntilGoingBack": "Scanning rounds until going back",
   "roundsUntilStop": "Scanning rounds until stop"
 }
