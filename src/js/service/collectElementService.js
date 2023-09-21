@@ -84,8 +84,9 @@ collectElementService.doCollectElementActions = async function (action) {
     }
     let speakText = getSpeakText();
     let speakArray = getSpeakTextObjectArray();
+    let useModeSeparated = (collectMode === GridElementCollect.MODE_AUTO && autoCollectImage) || collectMode === GridElementCollect.MODE_COLLECT_SEPARATED;
     if (activateARASAACGrammarAPI && GridActionCollectElement.isSpeakAction(action)) {
-        if (autoCollectImage || collectMode === GridElementCollect.MODE_COLLECT_SEPARATED) {
+        if (useModeSeparated) {
             speakText = await arasaacService.getCorrectGrammar(speakText);
             let changed = applyGrammarCorrection(speakText);
             if (changed) {
@@ -102,7 +103,7 @@ collectElementService.doCollectElementActions = async function (action) {
     }
     switch (action) {
         case GridActionCollectElement.COLLECT_ACTION_SPEAK:
-            if (autoCollectImage || collectMode === GridElementCollect.MODE_COLLECT_SEPARATED) {
+            if (useModeSeparated) {
                 speechService.speakArray(speakArray, (index) => {
                     markedImageIndex = index;
                     updateCollectElements();
@@ -120,7 +121,7 @@ collectElementService.doCollectElementActions = async function (action) {
             clearAll();
             break;
         case GridActionCollectElement.COLLECT_ACTION_SPEAK_CLEAR:
-            if (autoCollectImage || collectMode === GridElementCollect.MODE_COLLECT_SEPARATED) {
+            if (useModeSeparated) {
                 speechService.speakArray(speakArray, (index, finished) => {
                     markedImageIndex = index;
                     updateCollectElements();
