@@ -578,10 +578,10 @@
   resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
-"@perfood/couch-auth@^0.19.0":
-  version "0.19.1"
-  resolved "https://registry.yarnpkg.com/@perfood/couch-auth/-/couch-auth-0.19.1.tgz#88f7e2d52d245e27cbb9e3447c8245ed5f98fed7"
-  integrity sha512-OcRPKF6H8MHyiqz0kiBVDbLzVBbuSiucCwLi7MXN6kO7djFLrd8eumswizpvmOiMTRnxG0xpKkOcuHUMOGxGXw==
+"@perfood/couch-auth@^0.19.2":
+  version "0.19.2"
+  resolved "https://registry.yarnpkg.com/@perfood/couch-auth/-/couch-auth-0.19.2.tgz#507aabc3ad1fa6666ec3aca9c89532769fc5a2c3"
+  integrity sha512-5ZKIpTFIiAzama/9yk8ARIP5gQwIg3C4jc45F7fsH4H+9GMOkwg9PM277lMq2zFNv4wjWQ7T+MnDQSIGNrp8+Q==
   dependencies:
     "@sl-nx/couch-pwd" "2.0.0"
     "@sl-nx/sofa-model" "^1.0.3"
