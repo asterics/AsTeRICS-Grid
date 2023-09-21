@@ -84,9 +84,8 @@ collectElementService.doCollectElementActions = async function (action) {
     }
     let speakText = getSpeakText();
     let speakArray = getSpeakTextObjectArray();
-    let useModeSeparated = (collectMode === GridElementCollect.MODE_AUTO && autoCollectImage) || collectMode === GridElementCollect.MODE_COLLECT_SEPARATED;
     if (activateARASAACGrammarAPI && GridActionCollectElement.isSpeakAction(action)) {
-        if (useModeSeparated) {
+        if (isSeparateMode(collectMode)) {
             speakText = await arasaacService.getCorrectGrammar(speakText);
             let changed = applyGrammarCorrection(speakText);
             if (changed) {
@@ -103,7 +102,7 @@ collectElementService.doCollectElementActions = async function (action) {
     }
     switch (action) {
         case GridActionCollectElement.COLLECT_ACTION_SPEAK:
-            if (useModeSeparated) {
+            if (isSeparateMode(collectMode)) {
                 speechService.speakArray(speakArray, (index) => {
                     markedImageIndex = index;
                     updateCollectElements();
@@ -121,7 +120,7 @@ collectElementService.doCollectElementActions = async function (action) {
             clearAll();
             break;
         case GridActionCollectElement.COLLECT_ACTION_SPEAK_CLEAR:
-            if (useModeSeparated) {
+            if (isSeparateMode(collectMode)) {
                 speechService.speakArray(speakArray, (index, finished) => {
                     markedImageIndex = index;
                     updateCollectElements();
@@ -254,7 +253,7 @@ async function updateCollectElements(isSecondTry) {
     }
     for (let collectElement of registeredCollectElements) {
         let txtBackgroundColor = metadata.colorConfig.gridBackgroundColor || '#ffffff';
-        let imageMode = isImageMode(collectElement.mode);
+        let imageMode = isSeparateMode(collectElement.mode);
         let outerContainerJqueryElem = $(`#${collectElement.id} .collect-outer-container`);
         if (!imageMode) {
             $(`#${collectElement.id}`).attr('aria-label', `${collectedText}, ${i18nService.t('ELEMENT_TYPE_COLLECT')}`);
@@ -348,17 +347,14 @@ async function updateCollectElements(isSecondTry) {
     }
 }
 
-function isImageMode(elementMode) {
-    let imageMode = autoCollectImage;
-    switch (elementMode) {
+function isSeparateMode(collectElementMode) {
+    switch (collectElementMode) {
         case GridElementCollect.MODE_COLLECT_SEPARATED:
-            imageMode = true;
-            break;
+            return true;
         case GridElementCollect.MODE_COLLECT_TEXT:
-            imageMode = false;
-            break;
+            return false;
     }
-    return imageMode;
+    return autoCollectImage;
 }
 
 function getLastElement() {
@@ -429,7 +425,10 @@ function getSpeakTextArray() {
 }
 
 function getSpeakText() {
-    return getSpeakTextArray().join(' ').trim().replace(/\s+/g, ' ');
+    if(isSeparateMode(collectMode)) {
+        return getSpeakTextArray().join(' ').trim().replace(/\s+/g, ' ');
+    }
+    return collectedText;
 }
 
 function addTextElem(text) {
