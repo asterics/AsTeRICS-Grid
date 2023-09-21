@@ -931,6 +931,6 @@
   "currentlyNotListeningToMicrophone": "Actualmente no se detecta sonido en el micrófono",
   "thresholdLow": "Umbral mínimo",
   "startManuallyByUserInputEvent": "Iniciar manualmente por un evento de entrada del usuario",
-  "roundsUntilGoingBack": "Número de pasadas del escaneo antes de regresar al anterior grupo de escaneo",
-  "roundsUntilStop": "Número de pasadas del escaneo antes de detener"
+  "roundsUntilGoingBack": "Número de rondas de escaneo antes de regresar a la anterior",
+  "roundsUntilStop": "Número de rondas de escaneo antes de detener"
 }
