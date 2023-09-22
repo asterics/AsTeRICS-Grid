@@ -66,8 +66,9 @@ If you want to support the development of AsTeRICS Grid or contribute to the cos
 * Thanks to Alex Segler for the great Webradio API [radio-browser.info](http://www.radio-browser.info/) which makes it possible to search and play webradios within AsTeRICS Grid
 * Thanks to the makers of the API from [opensymbols.org](https://www.opensymbols.org/) which makes it possible to search for open AAC symbols within AsTeRICS Grid
 * Thanks to ResponsiveVoice for providing an free non-commercial version, <a href="https://responsivevoice.org">ResponsiveVoice-NonCommercial</a> licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img title="ResponsiveVoice Text To Speech" src="https://responsivevoice.org/wp-content/uploads/2014/08/95x15.png" alt="95x15" width="95" height="15" /></a>
-* Thanks to all the developers of these Javascript libraries, which are all used by AsTeRICS Grid in production:
+* Thanks to all the developers of these projects, which are all used by AsTeRICS Grid in production:
     * [core-js](https://github.com/zloirock/core-js)
+    * [couch-auth](https://github.com/perfood/couch-auth)
     * [dom-i18n](https://github.com/ruyadorno/dom-i18n)
     * [file-saver](https://www.npmjs.com/package/file-saver)
     * [fontawesome](https://fontawesome.com/)
@@ -85,7 +86,6 @@ If you want to support the development of AsTeRICS Grid or contribute to the cos
     * [PouchDB](https://pouchdb.com/)
     * [predictionary](https://github.com/asterics/predictionary)
     * [Stanford Javascript Crypto Library (SJCL)](https://crypto.stanford.edu/sjcl/)
-    * [superlogin](https://github.com/colinskow/superlogin)
     * [superlogin-client](https://www.npmjs.com/package/superlogin-client)
     * [Vue.js](https://vuejs.org/)
     * [Workbox](https://github.com/GoogleChrome/workbox)
