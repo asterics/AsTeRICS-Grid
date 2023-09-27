@@ -213,7 +213,7 @@
   "enableHuffmanInput": "Ativar acesso huffman",
   "showNumbers": "Mostrar números",
   "showColors": "Mostrar cores",
-  "colorWholeElement": "Color da célula",
+  "colorWholeElement": "Colorir célula",
   "markInactiveElements": "Marcar células inativas",
   "timeoutInMs0MeansDisabled": "Tempo limite em ms (0 significa desativado)",
   "numberOfElements0MeansAutomatic": "Número de células (0 significa automático)",
@@ -931,6 +931,6 @@
   "currentlyNotListeningToMicrophone": "Neste momento, não se ouve o microfone",
   "thresholdLow": "Limite inferior",
   "startManuallyByUserInputEvent": "Iniciar manualmente por evento de entrada do utilizador",
-  "roundsUntilGoingBack": "Número de varrimentos até voltar atrás",
+  "roundsUntilGoingBack": "Número de varrimentos até parar",
   "roundsUntilStop": "Número de varrimentos até parar"
 }
