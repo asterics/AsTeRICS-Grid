@@ -4,7 +4,7 @@
   "description": "Flexible Grid System for the AsTeRICS Framework",
   "main": "index.js",
   "dependencies": {
-    "@perfood/couch-auth": "^0.19.2",
+    "@klues/couch-auth": "^0.20.1",
     "cors": "^2.8.5",
     "dotenv-flow": "^3.2.0",
     "express": "^4.18.2",

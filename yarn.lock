@@ -573,23 +573,20 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@leichtgewicht/ip-codec@^2.0.1":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
-  integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
-
-"@perfood/couch-auth@^0.19.2":
-  version "0.19.2"
-  resolved "https://registry.yarnpkg.com/@perfood/couch-auth/-/couch-auth-0.19.2.tgz#507aabc3ad1fa6666ec3aca9c89532769fc5a2c3"
-  integrity sha512-5ZKIpTFIiAzama/9yk8ARIP5gQwIg3C4jc45F7fsH4H+9GMOkwg9PM277lMq2zFNv4wjWQ7T+MnDQSIGNrp8+Q==
+"@klues/couch-auth@^0.20.1":
+  version "0.20.1"
+  resolved "https://registry.yarnpkg.com/@klues/couch-auth/-/couch-auth-0.20.1.tgz#1d7cac0595c1be4ffb80b30bfc4729a52cc61feb"
+  integrity sha512-bOXys3n7I+CwPlHtCCulg26D3c4iA//zidZ3ZXjp/VKHskGT0dqicPiGsdFbj1Ux955740uIFR6voCj1I0SyNw==
   dependencies:
     "@sl-nx/couch-pwd" "2.0.0"
     "@sl-nx/sofa-model" "^1.0.3"
     "@types/express" "^4.17.11"
+    "@types/express-slow-down" "1.3.2"
     "@types/nodemailer" "^6.4.0"
     "@types/passport" "^1.0.6"
     deepmerge "^4.2.2"
     express "^4.17.1"
+    express-slow-down "1.6.0"
     nano "^10.0.0"
     nodemailer "^6.7.0"
     nunjucks "^3.2.3"
@@ -600,6 +597,11 @@
     uuid "^9.0.0"
   optionalDependencies:
     nodemailer-stub-transport "^1.1.0"
+
+"@leichtgewicht/ip-codec@^2.0.1":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
+  integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
 "@polka/url@^1.0.0-next.20":
   version "1.0.0-next.21"
@@ -737,6 +739,13 @@
     "@types/qs" "*"
     "@types/range-parser" "*"
     "@types/send" "*"
+
+"@types/express-slow-down@1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@types/express-slow-down/-/express-slow-down-1.3.2.tgz#99a5513b3f465efb1cb4f2db6375d36d7ab72fa4"
+  integrity sha512-Jw/orNMX+htFMYMugjhLotS5eRkdId4V5/89vqNXoUfxaHBU8VVIshItDh5YuWeyGeKuPli2fh94ORjYz/dkxA==
+  dependencies:
+    "@types/express" "*"
 
 "@types/express@*", "@types/express@^4.17.11", "@types/express@^4.17.13":
   version "4.17.17"
@@ -2175,6 +2184,11 @@ expect@^29.5.0:
     jest-matcher-utils "^29.5.0"
     jest-message-util "^29.5.0"
     jest-util "^29.5.0"
+
+express-slow-down@1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/express-slow-down/-/express-slow-down-1.6.0.tgz#6af1cd98471c4928e43e97d02770fdfe03b894a1"
+  integrity sha512-M2+Gl6vtvHW5CiRwy82epoiMHWWDVsLws+YnhO2C0lY6eAbRSvRdCA1G1VxSY68y+Urfb74npTO0kdHgC6OPHg==
 
 express@^4.17.1, express@^4.17.3, express@^4.18.2:
   version "4.18.2"
