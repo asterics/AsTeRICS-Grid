@@ -4,6 +4,7 @@ import { constants } from '../util/constants';
 import { dataService } from './data/dataService';
 import { util } from '../util/util.js';
 import $ from '../externals/jquery.js';
+import {audioUtil} from "../util/audioUtil.js";
 
 let speechService = {};
 
