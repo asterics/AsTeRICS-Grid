@@ -9,7 +9,7 @@
     - role: superLoginCloneRepoDocker
       tags: [update, clone]
     - role: superLoginDockerCompose
-      tags: update
+      tags: [update, docker-compose]
     - role: superLoginDockerNginx
       tags: [update, docker-compose]
     - role: superLoginDockerCertbot

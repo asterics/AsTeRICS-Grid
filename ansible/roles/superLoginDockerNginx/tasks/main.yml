@@ -14,6 +14,15 @@
   debug:
     var: result
 
+- name: copy files local to remote (100-couchdb.conf)
+  template:
+    src: 100-couchdb-conf
+    dest: /etc/security/limits.d/100-couchdb.conf
+  register: result
+- name: debug [copy files local to remote with a template (100-couchdb.conf)]
+  debug:
+    var: result
+
 - name: check if certificate exists
   become: true
   shell: 'docker compose run nginx test -e /etc/nginx/ssl/live/{{DOMAIN_NAME}}/fullchain.pem && echo 1 || echo 0'

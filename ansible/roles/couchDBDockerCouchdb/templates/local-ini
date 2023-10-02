@@ -6,7 +6,11 @@
 
 [couchdb]
 max_document_size = 68157440 ; bytes
+max_dbs_open = 20000
 ;os_process_timeout = 5000
+
+[query_server_config]
+os_process_limit = 5000
 
 [couch_peruser]
 ; If enabled, couch_peruser ensures that a private per-user database
@@ -24,7 +28,7 @@ max_document_size = 68157440 ; bytes
 [chttpd]
 port = 5984
 bind_address = 0.0.0.0
-require_valid_user = false
+require_valid_user = true
 ; Options for the MochiWeb HTTP server.
 ;server_options = [{backlog, 128}, {acceptor_pool_size, 16}]
 ; For more socket options, consult Erlang's module 'inet' man page.
