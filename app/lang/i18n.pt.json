@@ -932,5 +932,7 @@
   "thresholdLow": "Limite inferior",
   "startManuallyByUserInputEvent": "Iniciar manualmente por evento de entrada do utilizador",
   "roundsUntilGoingBack": "Número de varrimentos até parar",
-  "roundsUntilStop": "Número de varrimentos até parar"
+  "roundsUntilStop": "Número de varrimentos até parar",
+  "startListeningToMicrophone": "Start listening to microphone",
+  "stopListening": "Stop listening"
 }
