@@ -932,5 +932,7 @@
   "thresholdLow": "Umbral mínimo",
   "startManuallyByUserInputEvent": "Iniciar manualmente por un evento de entrada del usuario",
   "roundsUntilGoingBack": "Número de rondas de escaneo antes de regresar a la anterior",
-  "roundsUntilStop": "Número de rondas de escaneo antes de detener"
+  "roundsUntilStop": "Número de rondas de escaneo antes de detener",
+  "startListeningToMicrophone": "Start listening to microphone",
+  "stopListening": "Stop listening"
 }
