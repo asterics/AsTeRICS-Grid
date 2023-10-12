@@ -271,4 +271,12 @@ util.mapRange = function (number, inMin, inMax, outMin, outMax) {
     return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }
 
+/**
+ * Returns a random float number between min (inclusive) and max (exclusive)
+ * see https://stackoverflow.com/a/1527820
+ */
+util.getRandom = function (min, max) {
+    return Math.random() * (max - min) + min;
+}
+
 export { util };

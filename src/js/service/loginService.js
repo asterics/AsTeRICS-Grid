@@ -14,6 +14,7 @@ let _loginInfo = null;
 let _loggedInUser = null;
 let _tryUser = null;
 let _autoRetryHandler;
+let _retryCount = 0;
 let _lastParamUser = null;
 let _loginInProgress = false;
 
@@ -243,7 +244,7 @@ loginService.validateUsername = function (username) {
  */
 loginService.stopAutoRetryLogin = function () {
     if (_autoRetryHandler) {
-        window.clearInterval(_autoRetryHandler);
+        clearTimeout(_autoRetryHandler);
         _autoRetryHandler = null;
     }
 };
@@ -278,6 +279,7 @@ function loginInternal(user, hashedPassword, saveUser) {
 function loginHashedPasswordInternal(user, hashedPassword, saveUser) {
     return loginInternal(user, hashedPassword, saveUser).then(
         () => {
+            _retryCount = 0;
             return databaseService
                 .initForUser(user, hashedPassword, loginService.getLoggedInUserDatabase(), !saveUser)
                 .then(() => {
@@ -327,10 +329,13 @@ function reasonToErrorCode(reason) {
 
 function autoRetryLogin(user, hashedPassword, saveUser) {
     loginService.stopAutoRetryLogin();
-    _autoRetryHandler = window.setTimeout(function () {
-        log.info('auto-retry for online login with user: ' + user);
+    _retryCount++;
+    let waitTimeSeconds = Math.min(5 + (2 * _retryCount * _retryCount), 30 * 60); // exponentially rising waiting time, max. 30 minutes about at attempt 30
+    waitTimeSeconds = Math.round(waitTimeSeconds * util.getRandom(1, 1.5));
+    _autoRetryHandler = setTimeout(function () {
+        log.info(`auto-retry for online login user ${user} (attempt ${_retryCount}, waited for ${waitTimeSeconds}s)`);
         loginHashedPasswordInternal(user, hashedPassword, saveUser);
-    }, 10000);
+    }, waitTimeSeconds * 1000);
 }
 
 function getConfig() {
