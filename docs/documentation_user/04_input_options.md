@@ -179,6 +179,8 @@ These are the advanced settings for *Scanning*:
   * **binary** (checked): groups are built by separating remaining elements in two halves each scanning step <div style="margin-left: 2em"><img src="./img/scanning_binary.gif" alt="binary scanning" width="130"/></div>
   * **non-binary** (unchecked): groups are built row/column by row/column <div style="margin-left: 2em"><img src="./img/scanning_non_binary.gif" alt="non-binary scanning" width="130" style="margin-left: 2em"/></div>
 * **Scanning selection by mouse click or tap**: if checked the current scanning group can also be selected by a mouse click or tap anywhere on the screen
+* **Start manually by user input event**: if checked, scanning will only start after a user input event, e.g. pressing a key / button.
+* **Scanning rounds until going back**: the number of times the current scanning elements are iterated, until scanning goes back one step. For row/column scanning a value of `3` means that after selecting a row, the selected row is iterated 3 times and if no element is selected, scanning restarts for selecting a different row. If *start manually by user event* is checked, this number also defines the number of iterations on the top level until scanning is stopped.
 * **Automatic (timed) scanning**: if checked the active scanning group is automatically changed after a specific time, making it possible to use scanning just with a single input event
   * **Scanning time**: time to wait before highlighting the next scanning group (in milliseconds)
   * **Time factor first element**: the time to keep the first scanning group (e.g. first row/column) highlighted is "Scanning Time" multiplied with this factor. Increasing the time for the first group often improves usability.
@@ -263,7 +265,12 @@ The desired keys for each input event can be selected by clicking first on *Reco
 
 These are the Advanced settings for *Sequential Input*:
 
-* **Read out active element**: if checked the label of the currently focused element is read out on each change of focus
+* **Go to start position after select**: if checked, the first element is highlighted after selecting an element. Otherwise focus stays on the current element after selection.
+* **Start manually by user input event**: if checked, the input method will only start after a user input event, e.g. pressing a key / button.
+* **Scanning rounds until stop**: the number of times all elements are iterated, until the input method is stopped. Only takes effect if *start manually by user input event* is active.
+* **Automatic (timed) sequential input**: if checked the active element is automatically changed after a specific time, making it possible to use this input just with a single input event
+    * **Scanning time**: time to wait before highlighting the next element (in milliseconds)
+    * **Time factor first element**: the time to keep the first element highlighted is "Scanning Time" multiplied with this factor. Increasing the time for the first element often improves usability.
 
 [&#x2190; Previous Chapter](03_appearance_layout.md) [Next Chapter &#x2192;](05_actions.md)
 
