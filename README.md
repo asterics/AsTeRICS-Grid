@@ -60,6 +60,13 @@ If you want to support the development of AsTeRICS Grid or contribute to the cos
 </div>
 
 ## Acknowledgements and Attribution
+Most of the work for AsTeRICS Grid has been accomplished at the [UAS Technikum Wien](https://www.technikum-wien.at/) in course of the R&D-projects *ToRaDes* (MA23 project 18-04) and *WBT* (MA23 project 26-02), which have been supported by the [City of Vienna](https://www.wien.gv.at/kontakte/ma23/index.html),
+see: [ToRaDes Project Information](https://embsys.technikum-wien.at/projects/torades/index.php), [Webpage WBT project](https://wbt.wien).
+
+<img src="https://github.com/asterics/AsTeRICS-Grid/assets/2537025/290d809f-1ccf-4362-be68-f07ff0e21878" width="400"/>
+<br/><br/>
+
+Other people and organizations we want to thank:
 * Thanks to [ARASAAC](https://arasaac.org/) for collaborating and providing their pictogram API
 * Thanks to [crowdin.com](https://crowdin.com/project/asterics-grid) for providing a free open source license
 * Thanks to [browserstack.com](https://browserstack.com/) for providing us free UI tests on their platform.
