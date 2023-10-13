@@ -14,6 +14,7 @@ let fallbackLang = 'en';
 let currentContentLang = null;
 
 let appLanguages = [
+    'cs',
     'en',
     'de',
     'eu',
@@ -284,7 +285,7 @@ i18nService.setAppLanguage = function (lang, dontSave) {
     $('html').prop('lang', useLang);
     return loadLanguage(useLang).then(() => {
         vueI18n.locale = useLang;
-        allLanguages.sort((a, b) => (a[useLang].toLowerCase() > b[useLang].toLowerCase() ? 1 : -1));
+        allLanguages.sort((a, b) => a[useLang].toLowerCase().localeCompare(b[useLang].toLowerCase()));
         return Promise.resolve();
     });
 };
