@@ -933,6 +933,6 @@
   "startManuallyByUserInputEvent": "Iniciar manualmente por un evento de entrada del usuario",
   "roundsUntilGoingBack": "Número de rondas de escaneo antes de regresar a la anterior",
   "roundsUntilStop": "Número de rondas de escaneo antes de detener",
-  "startListeningToMicrophone": "Start listening to microphone",
-  "stopListening": "Stop listening"
+  "startListeningToMicrophone": "Activar la detección de sonido del micrófono",
+  "stopListening": "Detener la detección de sonido"
 }
