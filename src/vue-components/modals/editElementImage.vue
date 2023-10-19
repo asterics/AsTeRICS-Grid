@@ -63,7 +63,7 @@
                     </div>
                     <div class="srow" v-if="option.type === constants.OPTION_TYPES.SELECT">
                         <label class="three columns" :for="searchProvider.name + option.name">{{$t(searchProvider.name + option.name)}}</label>
-                        <select class="three columns" :id="searchProvider.name + option.name" v-model="option.value" @input="searchInput(0)">
+                        <select class="three columns" :id="searchProvider.name + option.name" v-model="option.value" @change="searchInput(0)">
                             <option :value="undefined">{{ $t('noneSelected') }}</option>
                             <option v-for="value in option.options" :value="value">{{ $t(value) }}</option>
                         </select>
