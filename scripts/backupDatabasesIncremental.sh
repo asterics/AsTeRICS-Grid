@@ -22,7 +22,7 @@ mkdir -p $2/$foldername
 echo "Folder size before backup: "$(du -sh $2/$foldername)
 echo "Copying data from CouchDB..."
 
-rsync --bwlimit=20000 -urv -e "ssh -i $3" $1 $2/$foldername &> $log_file
+sudo rsync --bwlimit=20000 -urv -e "ssh -i $3" $1 $2/$foldername &> $log_file
 
 echo "Copied data. New folder size: "$(du -sh $2/$foldername)
 echo "Backup successfully created!"
