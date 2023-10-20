@@ -661,6 +661,8 @@ function saveGlobalGridId(globalGridId) {
     });
 }
 
+window.setGlobalGridId = saveGlobalGridId;
+
 $(document).on(constants.EVENT_DB_INITIAL_SYNC_COMPLETE, () => {
     dataService.cacheAllImages();
 });
