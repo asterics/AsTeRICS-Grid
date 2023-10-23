@@ -22,7 +22,17 @@ mkdir -p $2/$foldername
 echo "Folder size before backup: "$(du -sh $2/$foldername)
 echo "Copying data from CouchDB..."
 
-sudo rsync --bwlimit=20000 -urv -e "ssh -i $3" $1 $2/$foldername &> $log_file
+# see https://stackoverflow.com/a/56484954
+current_day=$(date +%d)
+if (( current_day <= 7 ))
+then
+    # running rsync with --delete flag once a month on order to delete deleted/compacted CouchDB files
+    echo "running rsync with --delete flag..."
+    sudo rsync --delete --bwlimit=20000 -urv -e "ssh -i $3" $1 $2/$foldername &> $log_file
+else
+    echo "running rsync without --delete flag..."
+    sudo rsync --bwlimit=20000 -urv -e "ssh -i $3" $1 $2/$foldername &> $log_file
+fi
 
 echo "Copied data. New folder size: "$(du -sh $2/$foldername)
 echo "Backup successfully created!"
