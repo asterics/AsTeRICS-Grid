@@ -247,6 +247,13 @@ dataService.saveMetadata = function (newMetadata, forceDbSave) {
             }
             if (!existingMetadata.isEqual(newMetadata)) {
                 localStorageService.saveLocalMetadata(newMetadata);
+            }
+            if (!localStorageService.shouldSyncNavigation()) {
+                newMetadata.locked = existingMetadata.locked;
+                newMetadata.fullscreen = existingMetadata.fullscreen;
+                newMetadata.lastOpenedGridId = existingMetadata.lastOpenedGridId;
+            }
+            if (!existingMetadata.isEqual(newMetadata)) {
                 databaseService.saveObject(MetaData, newMetadata).then(() => {
                     resolve();
                     $(document).trigger(constants.EVENT_METADATA_UPDATED, newMetadata);
