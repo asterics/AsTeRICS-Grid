@@ -430,7 +430,7 @@
   "navigation": "Navegação",
   "users": "Utilizadores",
   "newVersionAvailableTheNextTimeYoullUseUpdated": "Nova versão disponível! A próxima vez que abrir o AsTeRICS vai usar a versão atualizada.",
-  "youreNowUsingVersion": "Está a usar a nova Versão '{0}'.",
+  "youreNowUsingVersion": "Está a usar a nova versão '{0}'.",
   "emptyIsAutomatic": "vazio = automático",
   "byDefaultSearchesForRadioStationNameAdvanced": "por definição, pesquisa pelo nome da estação de rádio, pesquisa avançada possível, como tag:jazz, idioma:english ou país:portugal",
   "thisActionAddsXNewElements": "Esta ação adiciona {0} novas células à tabela. Continuar?",
