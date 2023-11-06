@@ -933,6 +933,6 @@
   "startManuallyByUserInputEvent": "Iniciar manualmente por evento de entrada do utilizador",
   "roundsUntilGoingBack": "Número de varrimentos até parar",
   "roundsUntilStop": "Número de varrimentos até parar",
-  "startListeningToMicrophone": "Start listening to microphone",
-  "stopListening": "Stop listening"
+  "startListeningToMicrophone": "Começar a ouvir o microfone",
+  "stopListening": "Parar de ouvir o microfone"
 }
