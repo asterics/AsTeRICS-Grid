@@ -1,6 +1,6 @@
 if (!process.argv[2] || !process.argv[2].trim()) {
     console.log('USAGE:');
-    console.log("node couchDbCompact.js <COUCHDB_URL> ['compact']");
+    console.log("node couchDbCompact.js <COUCHDB_URL> ['compact'] [singleDatabaseNameToCompact]");
     console.log("----");
     console.log("Examples:");
     console.log("node couchDbCompact.js http://admin:admin@localhost:5984 ... for just analyzing current disk usage");
@@ -10,6 +10,7 @@ if (!process.argv[2] || !process.argv[2].trim()) {
 
 let dbUrl = process.argv[2] || 'http://admin:admin@localhost:5984';
 let doCompact = process.argv[3] && process.argv[3].trim() === 'compact';
+let singleCompactDBName = process.argv[4] || null;
 console.log('using url: ' + dbUrl);
 const nano = require('nano')({
     "url": dbUrl.trim(),
@@ -41,7 +42,21 @@ async function getInfos(dbNames, doLog) {
 }
 
 async function main() {
+    if (singleCompactDBName) {
+        try {
+            console.log(`compacting "${singleCompactDBName}" ...`);
+            await nano.db.compact(singleCompactDBName).catch((err) => {
+                console.log(err);
+            });
+        } catch (e) {
+            console.log(e);
+        }
+        console.log("finished!");
+        return;
+    }
+
     const dblist = await nano.db.list().catch(err => console.log(err));
+    console.log(`number of dbs: ${dblist.length}`);
     console.log('calculating current disk size ...');
     let sumBefore = doCompact ? 0 : await getInfos(dblist, !doCompact); //only calculate before if no compact to avoid running out of system ressources/connections in compact ("no db shards could be opened")
     console.log(`DISK SIZE: ${sumBefore}MB`);
@@ -52,18 +67,18 @@ async function main() {
             if (dbName !== 'sl-users') {
                 console.log(`compacting "${dbName}" ...`);
                 try {
-                    await nano.db.compact(dbName).catch(err => {
+                    await nano.db.compact(dbName).catch((err) => {
                         console.log(err);
                         failed.push(dbName);
                     });
-		    await new Promise(resolve => setTimeout(() => resolve(), 5000));
+                    await new Promise((resolve) => setTimeout(() => resolve(), 5000));
                 } catch (e) {
                     console.log(e);
                     failed.push(dbName);
                 }
             }
         }
-        let sumAfter = await getInfos(dblist, true);
+        let sumAfter = doCompact ? 0 : await getInfos(dblist, !doCompact); //only calculate before if no compact to avoid running out of system ressources/connections in compact ("no db shards could be opened")
         console.log(`DISK SIZE BEFORE: ${sumBefore}MB`);
         console.log(`DISK SIZE AFTER COMPACT: ${sumAfter}MB`);
         console.log(`DISK SIZE REDUCED BY: ${sumBefore - sumAfter}MB`);
