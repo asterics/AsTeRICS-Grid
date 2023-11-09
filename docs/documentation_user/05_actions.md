@@ -350,6 +350,7 @@ If the openHAB installation is hosted in the local network, there are two possib
 - **http**:
   If you are using openHAB over http with port 8080, you need to allow your browser to use ***mixed content***.
   Otherwise, the browser has no permission to access your local network.
+  Read [Allow mixed content (http/https)](10_faq.md#allow-mixed-content-httphttps) to enable it.
 - **https**:
   If you are using openHAB over https with port 8443, some browser need a one-time-exception to use the resources from
   the REST-API.
