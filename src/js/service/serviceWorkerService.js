@@ -59,9 +59,10 @@ function init() {
 function cacheNext() {
     if (shouldCacheElements.length === 0) {
         log.info('caching files via service worker finished.');
-    }
-    if (isCaching || shouldCacheElements.length === 0) {
         $(document).trigger(constants.EVENT_GRID_IMAGES_CACHED);
+        return;
+    }
+    if (isCaching) {
         return;
     }
     isCaching = true;
