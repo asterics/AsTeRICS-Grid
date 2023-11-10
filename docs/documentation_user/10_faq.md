@@ -59,3 +59,25 @@ If the global grid (first line including navigation to "Home" and "Back" and lin
 Also see this screenshot:
 ![grafik](https://user-images.githubusercontent.com/2537025/235093846-96ec29f7-267f-42b0-8181-d5d6612adffa.png)
 
+## Allow mixed content (http/https)
+
+In order to be allowed to access a local network (e.g. OpenHAB for environmental control), it may be necessary to allow mixed content in the current page.
+You can do according to the following steps:
+
+### Allow mixed content Firefox
+With the OpenHAB editing action opened,
+
+1. Click on the lock symbol left to the address bar.
+2. Click on ```Connection secure```
+3. Click on ```Disable protection for now```
+
+![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/840d4f6d-20c1-4406-a0c8-0cbd77d5d2f9)
+
+### Allow mixed content Chrome
+With the OpenHAB editing action opened, 
+
+1. Click on ```Not secure``` left to the address bar.
+2. Click on ```Site settings```
+3. **Allow** ```Insecure contents```
+
+![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/8bbe29a5-e5bd-4ece-bd28-ae4bb3c0e0b3)
