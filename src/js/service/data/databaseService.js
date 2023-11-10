@@ -137,7 +137,7 @@ databaseService.bulkSave = function (objectList) {
     });
     if (elementCount > maxCountSaveAtOnce) {
         let gridsPerChunk = Math.floor(maxCountSaveAtOnce / elemsPerGrid);
-        chunks = util.splitInChunks(objectList, gridsPerChunk);
+        chunks = util.splitInChunks(encryptedList, gridsPerChunk);
     } else {
         chunks = [objectList];
     }
