@@ -364,6 +364,7 @@ function changeHandler(changedIds, changedDocsEncrypted) {
             _documentCache.clear(GridData.getIdPrefix());
         }
     });
+    let deletedIds = changedDocsEncrypted.filter((doc) => doc._deleted).map(e => e._id);
     changedDocsEncrypted = changedDocsEncrypted.filter((doc) => !doc._deleted);
     changedIds = changedDocsEncrypted.map((doc) => doc.id);
     let changedDocs = changedDocsEncrypted.map((rawDoc) => filterService.convertDatabaseToLiveObjects(rawDoc));
@@ -373,10 +374,10 @@ function changeHandler(changedIds, changedDocsEncrypted) {
         localStorageService.setUserModelVersion(user, doc.modelVersion);
     });
     if (currentUserDataModelVersion === localStorageService.getUserMajorModelVersion(user)) {
-        $(document).trigger(constants.EVENT_DB_PULL_UPDATED, [changedIds, changedDocs]);
+        $(document).trigger(constants.EVENT_DB_PULL_UPDATED, [changedIds, changedDocs, deletedIds]);
         serviceWorkerService.cacheImagesOfGrids(changedDocs);
     } else {
-        $(document).trigger(constants.EVENT_DB_DATAMODEL_UPDATE, [changedIds, changedDocs]);
+        $(document).trigger(constants.EVENT_DB_DATAMODEL_UPDATE, [changedIds, changedDocs, deletedIds]);
     }
 }
 
