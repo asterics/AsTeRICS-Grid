@@ -192,7 +192,11 @@
                 this.gridData.gridElements = this.gridData.gridElements.concat(elements);
                 gridInstance.updateGridWithUndo(this.gridData);
             },
-            reloadFn(event, updatedIds, updatedDocs) {
+            reloadFn(event, updatedIds, updatedDocs, deletedIds) {
+                if (vueApp && deletedIds.includes(vueApp.gridId)) {
+                    Router.toManageGrids();
+                    return;
+                }
                 if (vueApp && updatedIds.includes(vueApp.gridData.id) && gridInstance && gridInstance.isInitialized()) {
                     let gridData = new GridData(updatedDocs.filter(doc => doc.id === vueApp.gridData.id)[0]);
                     if (!gridData.isEqual(vueApp.gridData)) {
