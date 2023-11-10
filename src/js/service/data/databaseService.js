@@ -163,11 +163,12 @@ databaseService.bulkDelete = function (objectList) {
     if (!objectList || objectList.length === 0) {
         return Promise.resolve();
     }
-    objectList.forEach((object) => {
-        object._deleted = true;
-        object._id = object.id;
-    });
-    return pouchDbService.bulkDocs(JSON.parse(JSON.stringify(objectList)));
+    let deletedObjects = objectList.map(e => ({
+        _id: e.id,
+        _rev: e._rev,
+        _deleted: true
+    }));
+    return pouchDbService.bulkDocs(deletedObjects);
 };
 
 /**
