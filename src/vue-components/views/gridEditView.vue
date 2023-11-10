@@ -74,6 +74,7 @@
     import {printService} from "../../js/service/printService";
     import {GridElementCollect} from "../../js/model/GridElementCollect.js";
     import {GridActionCollectElement} from "../../js/model/GridActionCollectElement.js";
+    import {pouchDbService} from "../../js/service/data/pouchDbService.js";
 
     let vueApp = null;
     let gridInstance = null;
@@ -244,6 +245,7 @@
             $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
         },
         mounted: function () {
+            pouchDbService.pauseSync();
             let thiz = this;
             vueApp = thiz;
             inputEventHandler.global.stopListening();
@@ -281,6 +283,7 @@
             $('#contentContainer').on('click', this.handleClickEvent);
         },
         beforeDestroy() {
+            pouchDbService.resumeSync();
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
             $('#contentContainer').off('click', this.handleClickEvent);
             vueApp = null;

@@ -14,6 +14,8 @@ let _pouchDbAdapter = null;
 let _documentCache = new MapCache();
 let _lastQueryTime = 1000;
 let _resumeSyncTimeoutHandler = null;
+let _pausedSyncManually = false;
+let _remoteCouchAddress = null;
 
 /**
  * inits the pouchdb to use to a user-database, e.g. with the same name as the username
@@ -29,6 +31,11 @@ let _resumeSyncTimeoutHandler = null;
  */
 pouchDbService.initDatabase = function (databaseName, remoteCouchDbAddress, onlyRemote) {
     if (_pouchDbAdapter && _pouchDbAdapter.getOpenedDatabaseName() === databaseName && remoteCouchDbAddress) {
+        if (_pausedSyncManually) {
+            _remoteCouchAddress = remoteCouchDbAddress;
+            $(document).trigger(constants.EVENT_DB_SYNC_STATE_CHANGE, constants.DB_SYNC_STATE_STOPPED);
+            return Promise.resolve();
+        }
         return _pouchDbAdapter.startSync(remoteCouchDbAddress);
     }
     _documentCache.clearAll();
@@ -285,6 +292,16 @@ pouchDbService.isSyncEnabled = function () {
     return _pouchDbAdapter ? _pouchDbAdapter.isSyncEnabled() : null;
 };
 
+pouchDbService.pauseSync = function () {
+    _pausedSyncManually = true;
+    getPouchDbAdapter().cancelSync();
+}
+
+pouchDbService.resumeSync = function () {
+    _pausedSyncManually = false;
+    getPouchDbAdapter().resumeSync(_remoteCouchAddress);
+}
+
 function getDbToUse() {
     return getPouchDbAdapter().getDbToUse();
 }
@@ -348,6 +365,9 @@ function cancelSyncInternal() {
  * Sync is not resumed/started if global onlyRemote parameter is set
  */
 function resumeSyncInternal() {
+    if (_pausedSyncManually) {
+        return;
+    }
     let timeout = getPouchDbAdapter().wasCurrentDatabaseSynced() ? 0 : _lastQueryTime + 1000;
     _resumeSyncTimeoutHandler = setTimeout(() => {
         getPouchDbAdapter().resumeSync();

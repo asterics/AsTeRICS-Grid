@@ -225,10 +225,13 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
     };
 
     /**
-     * Resumes sync. Sync is not resumed/started if global onlyRemote parameter is set, sync is already running,
-     * or no remote database is open.
+     * Resumes sync. Sync is not resumed/started if global onlyRemote parameter is set, sync is already running.
+     * if no remote database is open and remoteAddress is specified, sync is initialized
      */
-    thiz.resumeSync = function () {
+    thiz.resumeSync = function (remoteAddress) {
+        if (!_remoteDb && !_syncHandler && remoteAddress) {
+            return thiz.startSync(remoteAddress);
+        }
         if (onlyRemote || _syncHandler || !_remoteDb) {
             return;
         }
