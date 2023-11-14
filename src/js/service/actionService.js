@@ -18,6 +18,8 @@ import { GridActionAudio } from '../model/GridActionAudio.js';
 import { GridActionSpeak } from '../model/GridActionSpeak.js';
 import { GridActionSpeakCustom } from '../model/GridActionSpeakCustom.js';
 import {audioUtil} from "../util/audioUtil.js";
+import {puckjs} from '../externals/puck.js';
+import {puckjsService} from './puckjsService.js';
 
 let actionService = {};
 
@@ -167,6 +169,10 @@ async function doAction(gridElement, action, options) {
                     tab.close();
                 }, action.timeoutSeconds * 1000);
             }
+            break;
+        case 'GridActionPuckJS':
+            log.debug("execute GridActionPuckJS")
+            puckjsService.doAction(action)
             break;
     }
 }

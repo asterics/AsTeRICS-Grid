@@ -268,6 +268,14 @@
                             </div>
                         </div>
                     </div>
+                    <div v-if="action.modelName === 'GridActionPuckJS'">
+                        <div class="srow">
+                            <div class="twelve columns">
+                                <label for="jscmd" class="four columns normal-text">PuckJS Action</label>
+                                <input id="jscmd" type="text" class="eight columns" v-model="action.puckjsCmd"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </li>
         </ul>
