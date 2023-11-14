@@ -328,7 +328,7 @@
                     Router.toManageGrids();
                     return;
                 }
-                log.warn('got update event, ids updated:' + updatedIds);
+                log.debug('got update event, ids updated:' + updatedIds);
                 let updatedGridDoc = updatedDocs.filter(doc => (vueApp.gridData && doc.id === vueApp.gridData.id))[0];
                 let hasUpdatedGlobalGrid = updatedDocs.filter(doc => (this.metadata && doc.id === this.metadata.globalGridId)).length > 0;
                 this.updatedMetadataDoc = updatedDocs.filter(doc => (vueApp.metadata && doc.id === vueApp.metadata.id))[0] || this.updatedMetadataDoc;
