@@ -42,18 +42,6 @@ async function main() {
     //console.log('retrieve db names of target...');
     //console.log(`server has ${sourceDBNames.length} databases.`);
     let allDbNames = [];
-    allDbNames = [
-        'asterics-grid-data$arasaac',
-        'asterics-grid-data$arasaac1',
-        'asterics-grid-data$arasaac2',
-        'asterics-grid-data$arasaac3',
-        'asterics-grid-data$arasaac4',
-        'asterics-grid-data$arasaac5',
-        'asterics-grid-data$arasaac6',
-        'asterics-grid-data$486586682b4a4696a25e3447ae9629c8',
-        'asterics-grid-data$arasaac_pruebas',
-        'asterics-grid-data$cv1_prueba'
-    ];
 
     let dbNames = customDbName ? [customDbName] : allDbNames;
     console.log(`found ${dbNames.length} databases. removing all finished ones...`);
