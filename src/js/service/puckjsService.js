@@ -1,5 +1,5 @@
 import { util } from '../util/util';
-import { puckjs } from '../externals/puck.js';
+import { puckjs } from '/app/lib/puck.js';
 
 let puckjsService = {};
 
