@@ -1,5 +1,6 @@
 import { areService } from './areService';
 import { openHABService } from './openHABService';
+import { restService } from './restService';
 import { dataService } from './data/dataService';
 import { speechService } from './speechService';
 import { collectElementService } from './collectElementService';
@@ -133,6 +134,10 @@ async function doAction(gridElement, action, options) {
         case 'GridActionOpenHAB':
             log.debug('action openHAB');
             openHABService.sendAction(action);
+            break;
+        case 'GridActionREST':
+            log.debug('action REST');
+            restService.doAction(action);
             break;
         case 'GridActionPredict':
             log.debug('action predict');

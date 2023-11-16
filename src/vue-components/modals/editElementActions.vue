@@ -102,6 +102,9 @@
                     <div v-if="action.modelName == 'GridActionOpenHAB'">
                         <edit-open-hab-action :action="action" :grid-data="gridData"/>
                     </div>
+                    <div v-if="action.modelName == 'GridActionREST'">
+                      <edit-rest-action :action="action" :grid-data="gridData"/>
+                    </div>
                     <div v-if="action.modelName == 'GridActionPredict'">
                         <div class="srow" v-show="gridElement.type === GridElementClass.ELEMENT_TYPE_COLLECT">
                             <div class="eight columns">
@@ -295,6 +298,7 @@
     import RadioListSelector from "../components/radioListSelector.vue";
     import {GridActionYoutube} from "../../js/model/GridActionYoutube";
     import EditAudioAction from "./editActionsSub/editAudioAction.vue";
+    import EditRestAction from "./editActionsSub/editRESTAction.vue";
 
     export default {
         props: ['gridElement', 'gridData'],
@@ -324,7 +328,8 @@
             RadioListSelector,
             Accordion,
             EditAreAction,
-            EditOpenHabAction
+            EditOpenHabAction,
+            EditRestAction
         },
         methods: {
             getCurrentSpeakLang(action) {

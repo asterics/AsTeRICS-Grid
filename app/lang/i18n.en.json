@@ -935,5 +935,12 @@
   "roundsUntilGoingBack": "Scanning rounds until going back",
   "roundsUntilStop": "Scanning rounds until stop",
   "startListeningToMicrophone": "Start listening to microphone",
-  "stopListening": "Stop listening"
+  "stopListening": "Stop listening",
+  "egOnoff": "e.g. ON|OFF",
+  "httpshostnameportpathToRestFunction": "http(s)://<hostname>:<port>/<path to rest function>",
+  "httpMethod": "HTTP method (default: POST)",
+  "httpContenttype": "HTTP content-type (default: text/plain)",
+  "httpBodyData": "HTTP body (data)",
+  "GridActionREST": "REST API Action",
+  "httpUrl": "HTTP URL"
 }
