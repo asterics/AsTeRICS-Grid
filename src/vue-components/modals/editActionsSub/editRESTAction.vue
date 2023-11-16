@@ -1,13 +1,15 @@
 <template>
     <div class="container-fluid px-0">
         <div class="row">
-            <div class="col-12 col-md-4">
-                <label class="normal-text" for="inputRestUri">{{ $t('httpUrl') }}</label>
-            </div>
-            <div class="col-12 col-md-4 mb-2">
+          <label class="col-12 col-md-4 normal-text" for="inputRestUri">{{ $t('httpUrl') }}</label>
+          <div class="col-12 col-md-8">
+            <div class="row m-0">
+              <div class="col-10 col-sm-11">
                 <input class="col-12" id="inputRestUri" v-model="action.restUrl"
                        spellcheck="false" autocomplete="true" type="text" :placeholder="$t('httpshostnameportpathToRestFunction')">
+              </div>
             </div>
+          </div>
         </div>
         <div class="row">
             <label class="col-12 col-md-4 normal-text" for="body">{{ $t('httpBodyData') }}</label>
