@@ -55,19 +55,20 @@ async function main() {
         console.log('------------------------');
         console.log(`[${dbName}] starting...`);
 
-        let deleteIems = await getDeletedItems(pouch);
-        if (deleteIems.length > 0) {
+        let deleteItems = await getDeletedItems(pouch);
+        if (deleteItems.length > 0) {
             let resultState = BULK_STATES.INIT;
             while (resultState !== BULK_STATES.DONE) {
-                console.log(`[${resultState}] re-deleting ${deleteIems.length} elements...`);
+                console.log(`[${resultState}] re-deleting ${deleteItems.length} elements...`);
                 if (resultState === BULK_STATES.INIT) {
-                    resultState = await emptyDeletedBulk(pouch, deleteIems);
+                    resultState = await emptyDeletedBulk(pouch, deleteItems);
                 } else if (resultState === BULK_STATES.SET_UNDELETED) {
-                    resultState = await fixUndeletedState(pouch, dbName, deleteIems);
+                    resultState = await fixUndeletedState(pouch, dbName, deleteItems);
                 }
             }
+
             // no purge because it results in syncing all deleted docs back from client -> server
-            // await purgeDocs(dbName, deleteIems);
+            //await purgeDocs(dbName, deleteItems);
 
             console.log('success! compacting db...');
             await pouch.compact();
@@ -237,6 +238,7 @@ function clearUndeletedState() {
 
 async function purgeDocs(dbName, deleteItems) {
     let deleteChunks = arrayToChunks(deleteItems, CHUNK_SIZE);
+    console.log(`purging ${deleteItems.length} elements in ${deleteChunks.length} chunks (size: ${CHUNK_SIZE})...`);
     for (let chunk of deleteChunks) {
         let body = {};
         for (let item of chunk) {
@@ -250,7 +252,7 @@ async function purgeDocs(dbName, deleteItems) {
                 body: body
             })
             .then((result) => {
-                console.log('result', JSON.stringify(result));
+                //console.log('result', JSON.stringify(result));
             })
             .catch((e) => {
                 console.log('error', JSON.stringify(e));
