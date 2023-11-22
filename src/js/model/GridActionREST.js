@@ -29,8 +29,8 @@ GridActionREST.defaults({
     modelName: GridActionREST.getModelName(),
     modelVersion: constants.MODEL_VERSION,
     restUrl: '',
-    method: '', // POST, PUT, GET,....
-    contentType: '', //text/plain, application/json
+    method: 'POST', // POST, PUT, GET,....
+    contentType: 'text/plain', //text/plain, application/json
     body: '' //The body / data of the request
 
 });
