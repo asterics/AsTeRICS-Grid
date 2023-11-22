@@ -5,26 +5,37 @@ let restService = {};
 
 restService.doAction = async function (action) {
     try {
+        //ensure to have default values also in case the user deletes the field contents
         let method=action.method;
         if(!method) {
             method=GridActionREST.defaults.method;
         }
+
         let contentType=action.contentType;
         if(contentType === '') {
             contentType=GridActionREST.defaults.contentType;
         }
+
+        //as method GET does not have a body, conditionally set the body variable
+        let body;
+        if(method!='GET') {
+            body=action.body;
+        }
+
+        console.log(`url: ${action.restUrl}, body: ${body}, method: ${method}, contenttype: ${contentType}`);
         const response = await fetch(action.restUrl, {
-                method: "POST", //method,
+                method: method,
                 //mode: "no-cors",
                 headers: {
-                    'Content-Type': "text/plain" //contentType
+                    'Content-Type': contentType
                 },
-                body: action.body
+                body: body
             }
         );
         if(!response.ok) {
             console.error(`REST call failed with status message (${response.statusText}), statusCode (${response.status})`);
         } else {
+            //console.log(`response body: ${response.json().then()}`);
             log.debug(`REST call ok, url: ${action.restUrl}, body ${action.body}`)
         }
     }catch(error) {
