@@ -934,5 +934,6 @@
   "roundsUntilGoingBack": "Scanning-Runden bis zum Zurückgehen",
   "roundsUntilStop": "Scanning-Runden bis zum Stoppen",
   "startListeningToMicrophone": "Mikrofonaufnahme starten",
-  "stopListening": "Aufnahme stoppen"
+  "stopListening": "Aufnahme stoppen",
+  "searchElement": "Search element"
 }
