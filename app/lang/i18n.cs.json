@@ -934,5 +934,6 @@
   "roundsUntilGoingBack": "Skenovat dokola až do návratu",
   "roundsUntilStop": "Skenovat dokola až do zastavení",
   "startListeningToMicrophone": "Začít poslouchat z mikrofonu",
-  "stopListening": "Přestat poslouchat"
+  "stopListening": "Přestat poslouchat",
+  "searchElement": "Search element"
 }
