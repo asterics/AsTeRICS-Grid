@@ -12,6 +12,7 @@
                 <span class="hide-mobile">{{ $t('unlock') }}</span>
                 <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
             </button>
+            <button tabindex="34" @click="showModal = modalTypes.MODAL_SEARCH" class="spaced small" :aria-label="$t('fullscreen')"><i class="fas fa-search"/> <span class="hide-mobile">Suchen</span></button>
             <button tabindex="33" v-show="!metadata.locked" @click="lock()" class="small" :aria-label="$t('lock')">
                 <i class="fas fa-lock"></i>
                 <span class="hide-mobile">{{ $t('lock') }}</span>
@@ -31,6 +32,7 @@
         <scanning-modal v-if="showModal === modalTypes.MODAL_SCANNING" @close="showModal = null; reinitInputMethods();"/>
         <sequential-input-modal v-if="showModal === modalTypes.MODAL_SEQUENTIAL" @close="showModal = null; reinitInputMethods();"/>
         <unlock-modal v-if="showModal === modalTypes.MODAL_UNLOCK" @unlock="unlock(true)" @close="showModal = null;"/>
+        <search-modal v-if="showModal === modalTypes.MODAL_SEARCH" @close="showModal = null;"/>
 
         <div class="srow content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0 && (!globalGridData || globalGridData.gridElements.length === 0)">
             <div style="margin-top: 2em">
@@ -85,6 +87,7 @@
     import {audioUtil} from "../../js/util/audioUtil.js";
     import UnlockModal from "../modals/unlockModal.vue";
     import {printService} from "../../js/service/printService";
+    import SearchModal from "../modals/searchModal.vue";
 
     let vueApp = null;
     let gridInstance = null;
@@ -95,7 +98,8 @@
         MODAL_DIRECTION: 'MODAL_DIRECTION',
         MODAL_HUFFMAN: 'MODAL_HUFFMAN',
         MODAL_SEQUENTIAL: 'MODAL_SEQUENTIAL',
-        MODAL_UNLOCK: 'MODAL_UNLOCK'
+        MODAL_UNLOCK: 'MODAL_UNLOCK',
+        MODAL_SEARCH: 'MODAL_SEARCH'
     };
 
     let vueConfig = {
@@ -121,6 +125,7 @@
             }
         },
         components: {
+            SearchModal,
             UnlockModal,
             SequentialInputModal,
             HuffmanInputModal,
@@ -292,11 +297,22 @@
                 }
                 return gridInstance.reinit(gridData).then(() => {
                     this.reinitInputMethods(true);
+                    this.highlightFromParam();
                     return Promise.resolve();
                 });
             },
+            highlightFromParam() {
+                if (urlParamService.getParam(urlParamService.params.PARAM_HIGHLIGHT)) {
+                    let highlightId = urlParamService.getParam(urlParamService.params.PARAM_HIGHLIGHT);
+                    $(`#${highlightId}`).addClass('highlight');
+                    setTimeout(() => {
+                        $(`#${highlightId}`).removeClass('highlight');
+                    }, 2000);
+                }
+            },
             async onNavigateEvent(event, gridData) {
                 if (gridData && this.gridData.id === gridData.id) {
+                    this.highlightFromParam();
                     return; //prevent duplicated navigation to same grid
                 }
                 this.metadata.lastOpenedGridId = gridData.id;

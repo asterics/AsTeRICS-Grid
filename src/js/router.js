@@ -224,7 +224,7 @@ Router.toGrid = function (id, props) {
             Object.keys(props).forEach((key) => {
                 params.set(key, props[key]);
             });
-            hash = `#grid/${id}?${params.toString()}`;
+            hash = `?${params.toString()}#grid/${id}`;
         } else {
             hash = `#grid/${id}`;
         }

@@ -6,7 +6,8 @@ urlParamService.params = {
     PARAM_HUFFMAN: 'huffman',
     PARAM_DIR_INPUT: 'direction',
     PARAM_RESET_DATABASE: 'reset',
-    PARAM_DEFAULT_GRIDSET: 'default'
+    PARAM_DEFAULT_GRIDSET: 'default',
+    PARAM_HIGHLIGHT: 'highlight'
 };
 
 let _demoMode = false;
@@ -40,6 +41,10 @@ urlParamService.shouldResetDatabase = function () {
 urlParamService.getDefaultGridsetName = function () {
     return getParam(urlParamService.params.PARAM_DEFAULT_GRIDSET);
 };
+
+urlParamService.getParam = function (name) {
+    return getParam(name);
+}
 
 function hasParam(name) {
     let searchParams = new URLSearchParams(window.location.search);
