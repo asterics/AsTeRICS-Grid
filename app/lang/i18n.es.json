@@ -935,5 +935,5 @@
   "roundsUntilStop": "Número de rondas de escaneo antes de detener",
   "startListeningToMicrophone": "Activar la detección de sonido del micrófono",
   "stopListening": "Detener la detección de sonido",
-  "searchElement": "Search element"
+  "searchElement": "Buscar celda"
 }
