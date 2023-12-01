@@ -1,4 +1,4 @@
-import { util } from '../util/util';
+import {util} from '../util/util';
 import {GridActionREST} from "../model/GridActionREST";
 
 let restService = {};
@@ -6,20 +6,20 @@ let restService = {};
 restService.doAction = async function (action) {
     try {
         //ensure to have default values also in case the user deletes the field contents
-        let method=action.method;
-        if(!method) {
-            method=GridActionREST.defaults.method;
+        let method = action.method;
+        if (!method) {
+            method = GridActionREST.defaults.method;
         }
 
-        let contentType=action.contentType;
-        if(contentType === '') {
-            contentType=GridActionREST.defaults.contentType;
+        let contentType = action.contentType;
+        if (contentType === '') {
+            contentType = GridActionREST.defaults.contentType;
         }
 
         //as method GET does not have a body, conditionally set the body variable
         let body;
-        if(method!='GET') {
-            body=action.body;
+        if (method != 'GET') {
+            body = action.body;
         }
 
         console.log(`url: ${action.restUrl}, body: ${body}, method: ${method}, contenttype: ${contentType}`);
@@ -32,13 +32,13 @@ restService.doAction = async function (action) {
                 body: body
             }
         );
-        if(!response.ok) {
+        if (!response.ok) {
             console.error(`REST call failed with status message (${response.statusText}), statusCode (${response.status})`);
         } else {
             //console.log(`response body: ${response.json().then()}`);
             log.debug(`REST call ok, url: ${action.restUrl}, body ${action.body}`)
         }
-    }catch(error) {
+    } catch (error) {
         console.error(error);
     }
 };
@@ -65,4 +65,4 @@ restService.getRestURL = function (userUri) {
     return parser.href;
 };
 
-export { restService };
+export {restService};
