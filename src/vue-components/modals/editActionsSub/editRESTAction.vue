@@ -70,18 +70,6 @@ export default {
     font-weight: normal;
 }
 
-.custom-radio {
-    opacity: 0;
-    z-index: -1;
-    position: absolute;
-}
-
-.custom-radio:checked ~ label {
-    border-width: 0.2em;
-    border-color: #33C3F0;
-    background-color: #cceff9;
-}
-
 .button {
     display: inline-block;
     padding: 0 5px !important;
