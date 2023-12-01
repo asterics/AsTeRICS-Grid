@@ -942,5 +942,6 @@
   "httpContenttype": "HTTP content-type (default: text/plain)",
   "httpBodyData": "HTTP body (data)",
   "GridActionREST": "REST API Action",
-  "httpUrl": "HTTP URL"
+  "httpUrl": "HTTP URL",
+  "restActionFailed!Reason:": "REST action failed! Reason: {0}"
 }

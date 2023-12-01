@@ -1,5 +1,7 @@
 import {util} from '../util/util';
 import {GridActionREST} from "../model/GridActionREST";
+import {MainVue} from "../vue/mainVue";
+import {i18nService} from "./i18nService";
 
 let restService = {};
 
@@ -33,13 +35,21 @@ restService.doAction = async function (action) {
             }
         );
         if (!response.ok) {
-            console.error(`REST call failed with status message (${response.statusText}), statusCode (${response.status})`);
+            console.error(`REST call failed! Status message (${response.statusText}), statusCode (${response.status})`);
+            MainVue.setTooltip(i18nService.t("restActionFailed!Reason:", response.statusText), {
+                revertOnClose: true,
+                timeout: 5000
+            });
         } else {
             //console.log(`response body: ${response.json().then()}`);
             log.debug(`REST call ok, url: ${action.restUrl}, body ${action.body}`)
         }
     } catch (error) {
         console.error(error);
+        MainVue.setTooltip(i18nService.t("restActionFailed!Reason:", error), {
+            revertOnClose: true,
+            timeout: 5000
+        });
     }
 };
 
