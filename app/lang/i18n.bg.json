@@ -97,6 +97,7 @@
   "language": "Език",
   "automaticCurrentLanguage": "Автоматично (Текущ език)",
   "textToSpeak": "Текст за изричане",
+  "navigateToHomeGrid": "Navigate to home grid",
   "navigateToLastOpenedGrid": "Навигирайте до последно отворената решетка",
   "navigateToGrid": "Навигирайте до решетка",
   "refreshSuggestionsOnChange": "Опресняване на предложенията при промяна",
@@ -714,7 +715,6 @@
   "MODE_COLLECT_TEXT": "Събиране на свързан текст",
   "useHorizontalScrollbarIfElementsDontFit": "Използване на хоризонтална скрол лента, ако елементите не се събират(в противен случай - много редове)",
   "speak": "Говори",
-  "selectHomeGridForCreatingGlobalGrid": "Изберете начална мрежа за създаване на глобална нрежа",
   "addThisElementToCollectionElementsDespiteNav": "Добавяне на елемента към събраните елементи без да се използва навигацията",
   "sortGridsBy": "Сортиране на решетката по",
   "labelAlphabetically": "Етикет (по азбучен ред)",
@@ -936,5 +936,9 @@
   "startListeningToMicrophone": "Start listening to microphone",
   "stopListening": "Stop listening",
   "searchElement": "Search element",
-  "search": "Search"
+  "search": "Search",
+  "homeGrid": "Home Grid",
+  "selectHomeGrid": "Select home grid",
+  "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
+  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element"
 }
