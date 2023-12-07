@@ -178,7 +178,7 @@ arasaacService.getCorrectGrammar = async function (text) {
         return text;
     }
     let resultJSON = await response.json();
-    return resultJSON ? resultJSON.msg : text;
+    return resultJSON ? resultJSON.msg + '' : text;
 };
 
 arasaacService.getSupportedGrammarLangs = function (translate) {
