@@ -56,7 +56,7 @@ modelUtil.setDefaults = function (propertyObject, baseObject, modelClass) {
     if (baseObject && propertyObject && modelClass && modelClass.definition) {
         var neededParams = Object.keys(modelClass.definition);
         Object.keys(baseObject).forEach(function (key) {
-            if (neededParams.includes(key) && propertyObject[key] == undefined) {
+            if (neededParams.includes(key) && propertyObject[key] === undefined) {
                 propertyObject[key] = baseObject[key];
             }
         });
