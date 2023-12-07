@@ -97,6 +97,7 @@
   "language": "Idioma",
   "automaticCurrentLanguage": "automático (idioma atual)",
   "textToSpeak": "Texto a falar",
+  "navigateToHomeGrid": "Navigate to home grid",
   "navigateToLastOpenedGrid": "Ir para a última tabela aberta",
   "navigateToGrid": "Ir para a tabela",
   "refreshSuggestionsOnChange": "Atualizar sugestões ao mudar",
@@ -714,7 +715,6 @@
   "MODE_COLLECT_TEXT": "Acumular texto",
   "useHorizontalScrollbarIfElementsDontFit": "Usar barra de deslocação horizontal se os elementos não couberem (caso contrário múltiplas linhas)",
   "speak": "Falar",
-  "selectHomeGridForCreatingGlobalGrid": "Escolha a tabela inicial para ligar à tabela global",
   "addThisElementToCollectionElementsDespiteNav": "Adicionar esta célula à frase acumulada",
   "sortGridsBy": "Ordenar tabelas por",
   "labelAlphabetically": "Texto (alfabeticamente)",
@@ -936,5 +936,9 @@
   "startListeningToMicrophone": "Começar a ouvir o microfone",
   "stopListening": "Parar de ouvir o microfone",
   "searchElement": "Search element",
-  "search": "Search"
+  "search": "Search",
+  "homeGrid": "Home Grid",
+  "selectHomeGrid": "Select home grid",
+  "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
+  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element"
 }
