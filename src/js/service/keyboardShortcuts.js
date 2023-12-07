@@ -29,18 +29,7 @@ keyboardShortcuts.init = function () {
         }
         if (event.ctrlKey && keycode === 36) {
             //Ctrl + Pos1
-            dataService.getGlobalGrid().then((globalGrid) => {
-                if (globalGrid) {
-                    for (const elem of globalGrid.gridElements) {
-                        if (
-                            elem.actions[0].modelName === GridActionNavigate.getModelName() &&
-                            !elem.actions[0].toLastGrid
-                        ) {
-                            Router.toGrid(elem.actions[0].toGridId);
-                        }
-                    }
-                }
-            });
+            Router.toMain();
         }
     });
 };
