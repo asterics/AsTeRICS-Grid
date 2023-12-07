@@ -97,6 +97,7 @@
   "language": "Idioma",
   "automaticCurrentLanguage": "automàtic (idioma actual)",
   "textToSpeak": "Text a veu",
+  "navigateToHomeGrid": "Navigate to home grid",
   "navigateToLastOpenedGrid": "Navegar a l'últim tauler obert",
   "navigateToGrid": "Navegar a un tauler",
   "refreshSuggestionsOnChange": "Actualitzar suggeriments al canviar",
@@ -714,7 +715,6 @@
   "MODE_COLLECT_TEXT": "Acumular només text",
   "useHorizontalScrollbarIfElementsDontFit": "Utilitzar la barra de desplaçament horitzontal si els elements no caben (en cas contrari els elements es col·locaran en varies línies)",
   "speak": "Parlar",
-  "selectHomeGridForCreatingGlobalGrid": "Seleccioni el tauler inicial per enllaçar-lo al tauler global",
   "addThisElementToCollectionElementsDespiteNav": "Afegir aquesta cel·la a la frase acumulada",
   "sortGridsBy": "Ordenar taulers per",
   "labelAlphabetically": "Nom (alfabèticament)",
@@ -936,5 +936,9 @@
   "startListeningToMicrophone": "Start listening to microphone",
   "stopListening": "Stop listening",
   "searchElement": "Search element",
-  "search": "Search"
+  "search": "Search",
+  "homeGrid": "Home Grid",
+  "selectHomeGrid": "Select home grid",
+  "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
+  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element"
 }
