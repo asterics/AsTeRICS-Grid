@@ -91,12 +91,16 @@
                     </div>
                 </div>
                 <h1>{{ $t('homeGrid') }}</h1>
-                <div class="srow" style="margin-bottom: 1em">
+                <div class="srow mb-4">
                     <label class="three columns" for="selectHomeGrid">{{ $t('selectHomeGrid') }}</label>
                     <select class="seven columns" id="selectHomeGrid" v-model="metadata.homeGridId" @change="homeGridChanged">
                         <option :value="null">{{ $t('noneAlwaysOpenLastOpenedGrid') }}</option>
                         <option v-for="elem in graphList" :value="elem.grid.id">{{elem.grid.label | extractTranslation}}</option>
                     </select>
+                </div>
+                <div class="srow">
+                    <input id="toHomeAfterSelect" type="checkbox" v-model="metadata.toHomeAfterSelect" @change="homeGridChanged"/>
+                    <label for="toHomeAfterSelect">{{ $t('navigateToHomeGridAfterSelectingAnElement') }}</label>
                 </div>
             </div>
         </div>

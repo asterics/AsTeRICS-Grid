@@ -22,6 +22,7 @@ import {audioUtil} from "../util/audioUtil.js";
 let actionService = {};
 
 let minPauseSpeak = 0;
+let metadata = null;
 
 actionService.doAction = function (gridId, gridElementId) {
     if (!gridId || !gridElementId) {
@@ -47,7 +48,7 @@ actionService.testAction = function (gridElement, action, gridData) {
     });
 };
 
-function doActions(gridElement, gridId) {
+async function doActions(gridElement, gridId) {
     let actions = gridElement.actions;
     actions.sort((a, b) => {
         // do lang change before navigation
@@ -72,6 +73,11 @@ function doActions(gridElement, gridId) {
             actions: actions
         });
     });
+    metadata = metadata || (await dataService.getMetadata());
+    let actionTypes = actions.map((a) => a.modelName);
+    if (!actionTypes.includes(GridActionNavigate.getModelName()) && metadata.toHomeAfterSelect) {
+        Router.toMain();
+    }
 }
 
 /**
@@ -194,7 +200,7 @@ function doAREAction(action, gridData) {
 }
 
 async function getMetadataConfig() {
-    let metadata = await dataService.getMetadata();
+    metadata = await dataService.getMetadata();
     minPauseSpeak = metadata.inputConfig.globalMinPauseCollectSpeak || 0;
 }
 

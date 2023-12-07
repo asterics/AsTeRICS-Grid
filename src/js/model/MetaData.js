@@ -12,6 +12,7 @@ class MetaData extends Model({
     modelName: String,
     modelVersion: String,
     homeGridId: [String],
+    toHomeAfterSelect: [Boolean],
     lastOpenedGridId: [String],
     globalGridId: [String],
     globalGridActive: [Boolean],
