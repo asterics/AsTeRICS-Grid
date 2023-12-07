@@ -97,6 +97,7 @@
   "language": "שפה",
   "automaticCurrentLanguage": "אוטומטי (שפה נוכחית)",
   "textToSpeak": "הקראת טקסט",
+  "navigateToHomeGrid": "Navigate to home grid",
   "navigateToLastOpenedGrid": "נווט ללוח שנפתח אחרון",
   "navigateToGrid": "נווט ללוח",
   "refreshSuggestionsOnChange": "רענן הצעות בשינוי",
@@ -714,7 +715,6 @@
   "MODE_COLLECT_TEXT": "אסוף את כל הטקסט",
   "useHorizontalScrollbarIfElementsDontFit": "השתמשו בפס הגלילה האופקי אם הרכיבים אינם מתאימים (אחרת תכפיל שורות)",
   "speak": "דבר",
-  "selectHomeGridForCreatingGlobalGrid": "בחר לוח בית כדי ליצור לוח כללי",
   "addThisElementToCollectionElementsDespiteNav": "הוסף רכיב זה לאוסף הרכיבים, למרות הניווט",
   "sortGridsBy": "מיין לוחות לפי",
   "labelAlphabetically": "תווית (לפי הא\"ב)",
@@ -936,5 +936,9 @@
   "startListeningToMicrophone": "התחל להאזין למקרופון",
   "stopListening": "עצור האזנה",
   "searchElement": "Search element",
-  "search": "Search"
+  "search": "Search",
+  "homeGrid": "Home Grid",
+  "selectHomeGrid": "Select home grid",
+  "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
+  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element"
 }
