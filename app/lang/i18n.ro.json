@@ -97,6 +97,7 @@
   "language": "Limbă",
   "automaticCurrentLanguage": "automat (limbă curentă)",
   "textToSpeak": "Textul pentru vorbire",
+  "navigateToHomeGrid": "Navigate to home grid",
   "navigateToLastOpenedGrid": "Navigați spre ultima grilă deschisă",
   "navigateToGrid": "Navigați la grilă",
   "refreshSuggestionsOnChange": "Reîmprospătează sugestiile la schimbare",
@@ -714,7 +715,6 @@
   "MODE_COLLECT_TEXT": "Colectează text coerent",
   "useHorizontalScrollbarIfElementsDontFit": "Utilizează bara de defilare orizontală dacă elementele nu se potrivesc (în caz contrar, mai multe linii)",
   "speak": "Vorbește",
-  "selectHomeGridForCreatingGlobalGrid": "Selectați grila de start pentru crearea unei grile globale",
   "addThisElementToCollectionElementsDespiteNav": "Adaugă acest element la elementele colecției în ciuda navigării",
   "sortGridsBy": "Sortează grilele după",
   "labelAlphabetically": "Etichetă (în ordine alfabetică)",
@@ -936,5 +936,9 @@
   "startListeningToMicrophone": "Start listening to microphone",
   "stopListening": "Stop listening",
   "searchElement": "Search element",
-  "search": "Search"
+  "search": "Search",
+  "homeGrid": "Home Grid",
+  "selectHomeGrid": "Select home grid",
+  "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
+  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element"
 }
