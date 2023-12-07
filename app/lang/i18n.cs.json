@@ -97,6 +97,7 @@
   "language": "Jazyk",
   "automaticCurrentLanguage": "automaticky (aktuální jazyk)",
   "textToSpeak": "Text, který chcete vyslovit",
+  "navigateToHomeGrid": "Navigate to home grid",
   "navigateToLastOpenedGrid": "Přejít na poslední otevřenou tabulku",
   "navigateToGrid": "Přejít na tabulku",
   "refreshSuggestionsOnChange": "Obnovit návrhy při změně",
@@ -714,7 +715,6 @@
   "MODE_COLLECT_TEXT": "Sbírat soudržný text",
   "useHorizontalScrollbarIfElementsDontFit": "Použít horizontální posuvník, pokud se prvky nevejdou (jinak více řádků)",
   "speak": "Vyslovit",
-  "selectHomeGridForCreatingGlobalGrid": "Vyberte domovskou tabulku pro vytvoření globální tabulky",
   "addThisElementToCollectionElementsDespiteNav": "Přidat tento prvek do kolekce prvků navzdory navigaci",
   "sortGridsBy": "Seřadit tabulky podle",
   "labelAlphabetically": "Název (abecedně)",
@@ -936,5 +936,9 @@
   "startListeningToMicrophone": "Začít poslouchat z mikrofonu",
   "stopListening": "Přestat poslouchat",
   "searchElement": "Search element",
-  "search": "Search"
+  "search": "Search",
+  "homeGrid": "Home Grid",
+  "selectHomeGrid": "Select home grid",
+  "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
+  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element"
 }
