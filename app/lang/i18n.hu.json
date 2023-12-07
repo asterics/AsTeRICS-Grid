@@ -97,6 +97,7 @@
   "language": "Nyelv",
   "automaticCurrentLanguage": "automatikus (kiválasztott nyelv)",
   "textToSpeak": "Kimondandó szöveg",
+  "navigateToHomeGrid": "Navigate to home grid",
   "navigateToLastOpenedGrid": "Az utolsó megyitott táblára lépés",
   "navigateToGrid": "Táblára ugrás",
   "refreshSuggestionsOnChange": "Javaslatok frissítése változtatáskor",
@@ -714,7 +715,6 @@
   "MODE_COLLECT_TEXT": "Kártyafeliratok gyűjtése",
   "useHorizontalScrollbarIfElementsDontFit": "Vízszintes görgetősáv mutatása, ha nem férnek ki az elemek (egyébként több sorban jelennek meg)",
   "speak": "Beszéljen",
-  "selectHomeGridForCreatingGlobalGrid": "Válassza ki a főtáblát a fix kártyasorok létrehozásához",
   "addThisElementToCollectionElementsDespiteNav": "Kártya gyűjtőhöz adása a navigáció ellenére",
   "sortGridsBy": "Tábla rendezés szempontja",
   "labelAlphabetically": "Cimke (abc sorrendben)",
@@ -936,5 +936,9 @@
   "startListeningToMicrophone": "Start listening to microphone",
   "stopListening": "Stop listening",
   "searchElement": "Search element",
-  "search": "Search"
+  "search": "Search",
+  "homeGrid": "Home Grid",
+  "selectHomeGrid": "Select home grid",
+  "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
+  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element"
 }
