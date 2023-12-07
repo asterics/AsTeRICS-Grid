@@ -458,7 +458,7 @@
                         elems = this.selectedGraphElement.allRelatives;
                         break;
                     case this.SELECT_VALUES.NOT_REACHABLE_GRIDS:
-                        elems = this.graphList.filter(e => e.parents.length === 0);
+                        elems = this.graphList.filter(e => e.parents.length === 0 && e.grid.id !== this.metadata.homeGridId);
                         break;
                     case this.SELECT_VALUES.ALL_GRIDS:
                         elems = this.graphList;
