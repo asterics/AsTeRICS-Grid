@@ -97,6 +97,7 @@
   "language": "Langue",
   "automaticCurrentLanguage": "automatique (langue actuelle)",
   "textToSpeak": "Texte à dire",
+  "navigateToHomeGrid": "Navigate to home grid",
   "navigateToLastOpenedGrid": "Aller à la dernière grille ouverte",
   "navigateToGrid": "Aller à la grille",
   "refreshSuggestionsOnChange": "Refresh suggestions on change",
@@ -714,7 +715,6 @@
   "MODE_COLLECT_TEXT": "Collect cohesive text",
   "useHorizontalScrollbarIfElementsDontFit": "Utiliser une barre de défilement horizontale si les éléments ne correspondent pas (sinon plusieurs lignes)",
   "speak": "Parler",
-  "selectHomeGridForCreatingGlobalGrid": "Select Home Grid for creating global Grid",
   "addThisElementToCollectionElementsDespiteNav": "Add this element to collection elements despite navigating",
   "sortGridsBy": "Trier les grilles par",
   "labelAlphabetically": "(Par ordre alphabétique)",
@@ -936,5 +936,9 @@
   "startListeningToMicrophone": "Start listening to microphone",
   "stopListening": "Stop listening",
   "searchElement": "Search element",
-  "search": "Search"
+  "search": "Search",
+  "homeGrid": "Home Grid",
+  "selectHomeGrid": "Select home grid",
+  "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
+  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element"
 }
