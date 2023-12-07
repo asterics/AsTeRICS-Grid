@@ -935,5 +935,6 @@
   "roundsUntilStop": "Número de varrimentos até parar",
   "startListeningToMicrophone": "Começar a ouvir o microfone",
   "stopListening": "Parar de ouvir o microfone",
-  "searchElement": "Search element"
+  "searchElement": "Search element",
+  "search": "Search"
 }
