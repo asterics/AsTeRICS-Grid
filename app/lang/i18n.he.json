@@ -935,5 +935,6 @@
   "roundsUntilStop": "Scanning rounds until stop",
   "startListeningToMicrophone": "התחל להאזין למקרופון",
   "stopListening": "עצור האזנה",
-  "searchElement": "Search element"
+  "searchElement": "Search element",
+  "search": "Search"
 }
