@@ -97,6 +97,7 @@
   "language": "Language",
   "automaticCurrentLanguage": "automatic (current language)",
   "textToSpeak": "Text to speak",
+  "navigateToHomeGrid": "Navigate to home grid",
   "navigateToLastOpenedGrid": "Navigate to last opened grid",
   "navigateToGrid": "Navigate to grid",
   "refreshSuggestionsOnChange": "Refresh suggestions on change",
@@ -714,7 +715,6 @@
   "MODE_COLLECT_TEXT": "Collect cohesive text",
   "useHorizontalScrollbarIfElementsDontFit": "Use horizontal scrollbar if elements don't fit (otherwise multiple lines)",
   "speak": "Speak",
-  "selectHomeGridForCreatingGlobalGrid": "Select Home Grid for creating global Grid",
   "addThisElementToCollectionElementsDespiteNav": "Add this element to collection elements despite navigating",
   "sortGridsBy": "Sort grids by",
   "labelAlphabetically": "Label (alphabetically)",
@@ -936,5 +936,9 @@
   "startListeningToMicrophone": "Start listening to microphone",
   "stopListening": "Stop listening",
   "searchElement": "Search element",
-  "search": "Search"
+  "search": "Search",
+  "homeGrid": "Home Grid",
+  "selectHomeGrid": "Select home grid",
+  "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
+  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element"
 }
