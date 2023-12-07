@@ -97,6 +97,7 @@
   "language": "Hizkuntza",
   "automaticCurrentLanguage": "automatikoa (egungo hizkuntza)",
   "textToSpeak": "Testua ahoz",
+  "navigateToHomeGrid": "Navigate to home grid",
   "navigateToLastOpenedGrid": "Nabigatu irekitako azken taulara",
   "navigateToGrid": "Taula batera nabigatu",
   "refreshSuggestionsOnChange": "Aldatzean iradokizunak eguneratu",
@@ -714,7 +715,6 @@
   "MODE_COLLECT_TEXT": "Testua bakarrik metatu",
   "useHorizontalScrollbarIfElementsDontFit": "Elementuak sartzen ez badira desplazamendu-barra horizontala erabili (bestela, elementuak hainbat lerrotan antolatuko dira)",
   "speak": "Hitz egin",
-  "selectHomeGridForCreatingGlobalGrid": "Taula orokorra estekatzeko hasierako taula hautatu",
   "addThisElementToCollectionElementsDespiteNav": "Gehitu gelaxka hau metatutako esaldiari",
   "sortGridsBy": "Ordenatu taulak arabera",
   "labelAlphabetically": "Izena (alfabetikoki)",
@@ -936,5 +936,9 @@
   "startListeningToMicrophone": "Start listening to microphone",
   "stopListening": "Stop listening",
   "searchElement": "Search element",
-  "search": "Search"
+  "search": "Search",
+  "homeGrid": "Home Grid",
+  "selectHomeGrid": "Select home grid",
+  "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
+  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element"
 }
