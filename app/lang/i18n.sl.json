@@ -97,6 +97,7 @@
   "language": "Jezik",
   "automaticCurrentLanguage": "avtomatski (trenutni jezik)",
   "textToSpeak": "Besedilo v govor",
+  "navigateToHomeGrid": "Navigate to home grid",
   "navigateToLastOpenedGrid": "Pojdi na zadnjo odprto mrežo",
   "navigateToGrid": "Pojdi na mrežo",
   "refreshSuggestionsOnChange": "Osveži predloge ob spremembi",
@@ -714,7 +715,6 @@
   "MODE_COLLECT_TEXT": "Zberi besedilo, ki se lahko poveže",
   "useHorizontalScrollbarIfElementsDontFit": "Uporabi vodoravno drsno vrstico, če se elementi ne prilegajo (v nasprotnem primeru več vrstic)",
   "speak": "Izgovori",
-  "selectHomeGridForCreatingGlobalGrid": "Select Home Grid for creating global Grid",
   "addThisElementToCollectionElementsDespiteNav": "Dodaj ta element k zbirki kljub navigaciji",
   "sortGridsBy": "Razvrsti mreže po",
   "labelAlphabetically": "Oznaka (po abecednem redu)",
@@ -936,5 +936,9 @@
   "startListeningToMicrophone": "Start listening to microphone",
   "stopListening": "Stop listening",
   "searchElement": "Search element",
-  "search": "Search"
+  "search": "Search",
+  "homeGrid": "Home Grid",
+  "selectHomeGrid": "Select home grid",
+  "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
+  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element"
 }
