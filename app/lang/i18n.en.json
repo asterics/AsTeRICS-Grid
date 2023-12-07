@@ -936,5 +936,6 @@
   "roundsUntilStop": "Scanning rounds until stop",
   "startListeningToMicrophone": "Start listening to microphone",
   "stopListening": "Stop listening",
-  "searchElement": "Search element"
+  "searchElement": "Search element",
+  "search": "Search"
 }
