@@ -12,7 +12,7 @@
                 <span class="hide-mobile">{{ $t('unlock') }}</span>
                 <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
             </button>
-            <button tabindex="34" @click="showModal = modalTypes.MODAL_SEARCH" class="spaced small" :aria-label="$t('fullscreen')"><i class="fas fa-search"/> <span class="hide-mobile">Suchen</span></button>
+            <button tabindex="34" @click="showModal = modalTypes.MODAL_SEARCH" class="spaced small" :aria-label="$t('fullscreen')"><i class="fas fa-search"/> <span class="hide-mobile">{{ $t('search') }}</span></button>
             <button tabindex="33" v-show="!metadata.locked" @click="lock()" class="small" :aria-label="$t('lock')">
                 <i class="fas fa-lock"></i>
                 <span class="hide-mobile">{{ $t('lock') }}</span>
