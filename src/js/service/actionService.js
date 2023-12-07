@@ -112,7 +112,9 @@ async function doAction(gridElement, action, options) {
             }
             break;
         case 'GridActionNavigate':
-            if (action.toLastGrid) {
+            if (action.toHomeGrid) {
+                Router.toMain();
+            } else if (action.toLastGrid) {
                 Router.toLastGrid();
             } else if (Router.isOnEditPage()) {
                 Router.toEditGrid(action.toGridId);

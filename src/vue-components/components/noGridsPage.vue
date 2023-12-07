@@ -106,8 +106,11 @@
                 });*/
                 gridData.gridElements = gridData.gridElements.concat(elements);
                 await dataService.saveGrid(gridData);
-                await this.resetGlobalGrid({homeGridId: gridData.id, convertToLowercase: false});
+                await this.resetGlobalGrid({convertToLowercase: false});
                 await dataService.markCurrentConfigAsBackedUp();
+                let metadata = await dataService.getMetadata();
+                metadata.homeGridId = gridData.id;
+                await dataService.saveMetadata(metadata);
                 Router.toEditGrid(gridData.id);
             },
             importData() {

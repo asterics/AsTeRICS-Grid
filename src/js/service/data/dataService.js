@@ -592,9 +592,10 @@ dataService.importData = async function (data, options) {
     options.progressFn(20);
     if (options.generateGlobalGrid && !importData.metadata.globalGridId) {
         let homeGridId = importData.grids[0].id;
-        let globalGrid = gridUtil.generateGlobalGrid(homeGridId, i18nService.getContentLang());
+        let globalGrid = gridUtil.generateGlobalGrid(i18nService.getContentLang());
         importData.grids.unshift(globalGrid);
         importData.metadata.globalGridId = globalGrid.id;
+        importData.metadata.homeGridId = importData.metadata.homeGridId || homeGridId;
     }
 
     if (options.importUserSettings) {

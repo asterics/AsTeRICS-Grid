@@ -81,20 +81,22 @@
 
                 <h1>{{ $t('globalGrid') }}</h1>
                 <p>{{ $t('aGlobalGridIsShownWithinEachOtherGridAndCan') }}</p>
-                <div class="srow" style="margin-bottom: 1em">
-                    <label class="four columns" for="selectHomeGrid">{{ $t('selectHomeGridForCreatingGlobalGrid') }}</label>
-                    <select class="seven columns" id="selectHomeGrid" v-model="homeGrid">
-                        <option v-for="elem in graphList" :value="elem.grid">{{elem.grid.label | extractTranslation}}</option>
-                    </select>
-                </div>
                 <div class="srow">
-                    <label class="four columns" for="globalGridActions">{{ $t('actionsForGlobalGrid') }}</label>
+                    <label class="three columns" for="globalGridActions">{{ $t('actionsForGlobalGrid') }}</label>
                     <div id="globalGridActions" class="eight columns" v-if="metadata">
                         <button v-show="!metadata.globalGridActive || !hasGlobalGrid" @click="setGlobalGridActive(true)"><i class="fas fa-globe"/> <span>{{ $t('activateGlobalGrid') }}</span></button>
                         <button v-show="metadata.globalGridActive && hasGlobalGrid" @click="setGlobalGridActive(false)"><i class="fas fa-globe"/> <span>{{ $t('deactivateGlobalGrid') }}</span></button>
                         <button :disabled="!metadata.globalGridActive" @click="edit(metadata.globalGridId)"><i class="fas fa-edit"/> <span>{{ $t('editGlobalGrid') }}</span></button>
                         <button :disabled="!metadata.globalGridActive" @click="resetGlobalGrid({confirm: true, reload: true})"><i class="fas fa-undo"/> <span>{{ $t('resetGlobalGridToDefault') }}</span></button>
                     </div>
+                </div>
+                <h1>{{ $t('homeGrid') }}</h1>
+                <div class="srow" style="margin-bottom: 1em">
+                    <label class="three columns" for="selectHomeGrid">{{ $t('selectHomeGrid') }}</label>
+                    <select class="seven columns" id="selectHomeGrid" v-model="metadata.homeGridId" @change="homeGridChanged">
+                        <option :value="null">{{ $t('noneAlwaysOpenLastOpenedGrid') }}</option>
+                        <option v-for="elem in graphList" :value="elem.grid.id">{{elem.grid.label | extractTranslation}}</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -176,8 +178,7 @@
                 },
                 i18nService: i18nService,
                 currentLanguage: i18nService.getContentLang(),
-                imageUtil: imageUtil,
-                homeGrid: null
+                imageUtil: imageUtil
             };
         },
         methods: {
@@ -311,7 +312,6 @@
                     thiz.grids = JSON.parse(JSON.stringify(grids)); //hack because otherwise vueJS databinding sometimes does not work;
                     thiz.showLoading = false;
                     thiz.graphList = gridUtil.getGraphList(thiz.grids, thiz.metadata.globalGridId);
-                    thiz.homeGrid = thiz.graphList[0] ? thiz.graphList[0].grid : null;
                     let gridToOpen = openGridId || thiz.metadata.lastOpenedGridId;
                     thiz.setSelectedGraphElement(thiz.graphList.filter(graphItem => graphItem.grid.id === gridToOpen)[0] || thiz.graphList[0], true);
                     return Promise.resolve();
@@ -336,6 +336,9 @@
                 this.metadata.globalGridActive = active;
                 dataService.saveMetadata(this.metadata);
             },
+            homeGridChanged() {
+                dataService.saveMetadata(this.metadata);
+            },
             resetGlobalGrid(options) {
                 options = options || {};
                 if (options.confirm) {
@@ -346,7 +349,7 @@
                 return dataService.getGlobalGrid(true).then(existingGlobal => {
                     return existingGlobal ? dataService.deleteGrid(existingGlobal.id) : Promise.resolve();
                 }).then(() => {
-                    let globalGrid = gridUtil.generateGlobalGrid(options.homeGridId || this.homeGrid.id, null, {
+                    let globalGrid = gridUtil.generateGlobalGrid(null, {
                         convertToLowercase: options.convertToLowercase
                     });
                     this.metadata.globalGridId = globalGrid.id;

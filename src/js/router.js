@@ -338,7 +338,7 @@ function toMainInternal() {
         return;
     }
     dataService.getMetadata().then((metadata) => {
-        let gridId = metadata ? metadata.lastOpenedGridId : null;
+        let gridId = metadata ? metadata.homeGridId || metadata.lastOpenedGridId : null;
         if (gridId) {
             return Router.toGrid(gridId);
         }

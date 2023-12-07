@@ -78,7 +78,11 @@
                     </div>
                     <div v-if="action.modelName == 'GridActionNavigate'">
                         <div class="srow">
-                            <input id="navigateBackChkbox" type="checkbox" v-model="action.toLastGrid"/>
+                            <input id="toHomeCheckbox" type="checkbox" :disabled="action.toLastGrid" v-model="action.toHomeGrid"/>
+                            <label for="toHomeCheckbox" class="normal-text">{{ $t('navigateToHomeGrid') }}</label>
+                        </div>
+                        <div class="srow">
+                            <input id="navigateBackChkbox" type="checkbox" :disabled="action.toHomeGrid" v-model="action.toLastGrid"/>
                             <label for="navigateBackChkbox" class="normal-text">{{ $t('navigateToLastOpenedGrid') }}</label>
                         </div>
                         <div class="srow">
@@ -89,7 +93,7 @@
                             <div class="four columns">
                                 <label for="selectGrid" class="normal-text">{{ $t('navigateToGrid') }}</label>
                             </div>
-                            <select class="eight columns" id="selectGrid" type="text" v-model="action.toGridId" :disabled="action.toLastGrid">
+                            <select class="eight columns" id="selectGrid" v-model="action.toGridId" :disabled="action.toHomeGrid || action.toLastGrid">
                                 <option v-for="grid in grids" :value="grid.id">
                                     {{grid.label | extractTranslation}}
                                 </option>

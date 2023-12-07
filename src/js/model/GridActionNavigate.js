@@ -8,6 +8,7 @@ class GridActionNavigate extends Model({
     modelVersion: String,
     toGridId: [String],
     toLastGrid: [Boolean],
+    toHomeGrid: [Boolean],
     addToCollectElem: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
