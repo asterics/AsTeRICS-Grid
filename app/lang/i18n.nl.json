@@ -97,6 +97,7 @@
   "language": "Taal",
   "automaticCurrentLanguage": "automatisch (huidige taal)",
   "textToSpeak": "Tekst naar spraak",
+  "navigateToHomeGrid": "Navigate to home grid",
   "navigateToLastOpenedGrid": "Naar laatst geopende raster",
   "navigateToGrid": "Ga naar raster",
   "refreshSuggestionsOnChange": "Vernieuw suggesties bij wijziging",
@@ -714,7 +715,6 @@
   "MODE_COLLECT_TEXT": "Verzamel samenhangende tekst",
   "useHorizontalScrollbarIfElementsDontFit": "Gebruik de horizontale schuifbalk als elementen niet passen (anders meerdere regels)",
   "speak": "Spreek",
-  "selectHomeGridForCreatingGlobalGrid": "Selecteer het start raster voor het maken van een globaal raster",
   "addThisElementToCollectionElementsDespiteNav": "Voeg dit element toe aan de verzameling ondanks navigatie",
   "sortGridsBy": "Rasters sorteren op",
   "labelAlphabetically": "Label (alfabetisch)",
@@ -936,5 +936,9 @@
   "startListeningToMicrophone": "Start listening to microphone",
   "stopListening": "Stop listening",
   "searchElement": "Search element",
-  "search": "Search"
+  "search": "Search",
+  "homeGrid": "Home Grid",
+  "selectHomeGrid": "Select home grid",
+  "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
+  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element"
 }
