@@ -80,7 +80,7 @@
     let gridInstance = null;
 
     let vueConfig = {
-        props: ['gridId'],
+        props: ['gridId', 'highlightId'],
         data() {
             return {
                 gridData: null,
@@ -239,7 +239,15 @@
                     }
                     vueApp.markElement(id);
                 }
-            }
+            },
+            highlightElement() {
+                if (this.highlightId) {
+                    $(`#${this.highlightId}`).addClass('highlight');
+                    setTimeout(() => {
+                        $(`#${this.highlightId}`).removeClass('highlight');
+                    }, 2000);
+                }
+            },
         },
         created() {
             $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
@@ -278,6 +286,7 @@
                 });
                 initContextmenu();
                 thiz.showGrid = true;
+                thiz.highlightElement();
             });
 
             $('#contentContainer').on('click', this.handleClickEvent);

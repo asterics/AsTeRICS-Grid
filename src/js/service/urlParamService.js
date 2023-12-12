@@ -6,8 +6,7 @@ urlParamService.params = {
     PARAM_HUFFMAN: 'huffman',
     PARAM_DIR_INPUT: 'direction',
     PARAM_RESET_DATABASE: 'reset',
-    PARAM_DEFAULT_GRIDSET: 'default',
-    PARAM_HIGHLIGHT: 'highlight'
+    PARAM_DEFAULT_GRIDSET: 'default'
 };
 
 let _demoMode = false;

@@ -9,7 +9,7 @@
                     </div>
 
                     <div class="modal-body mt-5 row">
-                        <input type="text" v-model="searchTerm" @input="search" v-focus :placeholder="$t('searchElement') + '...'" class="col-12 mb-4"/>
+                        <input type="text" v-model="searchTerm" @input="search" v-focus :placeholder="$t('searchElement') + '...'" class="col-12 mb-4" @keydown.enter="goToFirstResult"/>
                         <ul v-if="results && results.length > 0" style="list-style-type: none">
                             <li v-for="result in results">
                                 <a href="javascript:;" class="d-flex align-items-center" @click="toResult(result)" style="flex-direction: row; height: 40px;">
@@ -50,7 +50,7 @@
     import {Router} from "../../js/router.js";
 
     export default {
-        props: [],
+        props: ['routeToEdit'],
         components: {
         },
         data: function () {
@@ -64,15 +64,31 @@
         },
         methods: {
             toResult(result) {
-                Router.toGrid(result.grid.id, {
-                    highlight: result.elem.id
-                });
+                /*let homeGridId = this.homeGridId || this.graphList[0].grid.id;
+                let homeGraphElem = this.graphList.filter(elem => elem.grid.id === homeGridId)[0];
+                let path = [homeGraphElem];
+                for(let child of homeGraphElem.children) {
+
+                }*/
+
+                if (this.routeToEdit) {
+                    Router.toEditGrid(result.grid.id, result.elem.id);
+                } else {
+                    Router.toGrid(result.grid.id, {
+                        highlightIds: [result.elem.id]
+                    });
+                }
                 this.close();
             },
             highlightSearch(text) {
                 let index = text.toLocaleLowerCase().indexOf(this.searchTerm.toLocaleLowerCase());
                 let realPart = text.substring(index, index + this.searchTerm.length);
                 return text.replace(realPart, `<b>${realPart}</b>`)
+            },
+            goToFirstResult() {
+                if (this.results && this.results.length > 0) {
+                    this.toResult(this.results[0]);
+                }
             },
             async search() {
                 let thiz = this;

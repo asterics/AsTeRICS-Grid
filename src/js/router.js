@@ -34,6 +34,12 @@ let _currentVueApp = null;
 let _gridHistory = [];
 let _locked = false;
 
+Router.VIEWS = {
+    AllGridsView: AllGridsView,
+    GridView: GridView,
+    GridEditView: GridEditView
+}
+
 Router.init = function (injectIdParam, initialHash) {
     if (!routingEndabled) {
         return;
@@ -55,6 +61,8 @@ Router.init = function (injectIdParam, initialHash) {
             let queryParams = new URLSearchParams(query);
             let passParams = Object.fromEntries(queryParams);
             passParams.gridId = params.gridId;
+            passParams.highlightIds = passParams.highlightIds ? JSON.parse(passParams.highlightIds) : undefined;
+            passParams.skipThumbnailCheck = passParams.skipThumbnailCheck ? JSON.parse(passParams.skipThumbnailCheck) : undefined;
             helpService.setHelpLocation('02_navigation', '#main-view');
             loadVueView(GridView, passParams, '#main');
         },
@@ -79,11 +87,12 @@ Router.init = function (injectIdParam, initialHash) {
             });
         },
         'grid/edit/:gridId': function (params) {
-            log.debug('route edit grid with ID: ' + params.gridId);
             helpService.setHelpLocation('02_navigation', '#edit-view');
-            loadVueView(GridEditView, {
-                gridId: params.gridId
-            });
+            loadVueView(GridEditView, params);
+        },
+        'grid/edit/:gridId/:highlightId': function (params) {
+            helpService.setHelpLocation('02_navigation', '#edit-view');
+            loadVueView(GridEditView, params);
         },
         login: function () {
             helpService.setHelpLocation('02_navigation', '#change-user-view');
@@ -222,9 +231,9 @@ Router.toGrid = function (id, props) {
         let hash = null;
         if (props) {
             Object.keys(props).forEach((key) => {
-                params.set(key, props[key]);
+                params.set(key, JSON.stringify(props[key]));
             });
-            hash = `?${params.toString()}#grid/${id}`;
+            hash = `#grid/${id}?${params.toString()}`;
         } else {
             hash = `#grid/${id}`;
         }
@@ -235,9 +244,9 @@ Router.toGrid = function (id, props) {
                     return;
                 }
                 if (history && history.replaceState) {
-                    history.replaceState(null, null, getFullUrl(hash));
+                    history.replaceState(null, null, getFullUrl(`#grid/${id}`));
                 }
-                $(document).trigger(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, gridData);
+                $(document).trigger(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, [gridData, props]);
             });
         } else {
             let noHistory = location.hash.startsWith('#main');
@@ -246,9 +255,9 @@ Router.toGrid = function (id, props) {
     }
 };
 
-Router.toEditGrid = function (id) {
+Router.toEditGrid = function (id, highlightId) {
     if (id) {
-        Router.to('#grid/edit/' + id);
+        Router.to(`#grid/edit/${id}/${highlightId ? highlightId : ''}`);
     }
 };
 

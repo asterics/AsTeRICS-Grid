@@ -3,8 +3,7 @@ import { localStorageService } from './data/localStorageService';
 import { dataService } from './data/dataService';
 import { loginService } from './loginService';
 import { Router } from '../router.js';
-import { actionService } from './actionService.js';
-import { GridActionNavigate } from '../model/GridActionNavigate.js';
+import {MainVue} from "../vue/mainVue.js";
 
 let keyboardShortcuts = {};
 
@@ -30,6 +29,14 @@ keyboardShortcuts.init = function () {
         if (event.ctrlKey && keycode === 36) {
             //Ctrl + Pos1
             Router.toMain();
+        }
+        if (event.ctrlKey && keycode === 75) {
+            //Ctrl + K
+            event.preventDefault();
+            let validViews = [Router.VIEWS.AllGridsView, Router.VIEWS.GridView, Router.VIEWS.GridEditView];
+            if (validViews.includes(Router.getCurrentView())) {
+                MainVue.showSearchModal();
+            }
         }
     });
 };

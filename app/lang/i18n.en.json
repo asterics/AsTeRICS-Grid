@@ -938,6 +938,7 @@
   "stopListening": "Stop listening",
   "searchElement": "Search element",
   "search": "Search",
+  "searchBtnTitle": "Search (Ctrl + K)",
   "homeGrid": "Home Grid",
   "selectHomeGrid": "Select home grid",
   "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
