@@ -259,6 +259,23 @@ gridUtil.getGraphList = function (grids, removeGridId, orderByName) {
     return gridGraphList;
 };
 
+
+gridUtil.getAllPaths = function (graphElem, paths, currentPath) {
+    paths = paths || [];
+    currentPath = currentPath || [];
+    if (currentPath.includes(graphElem)) {
+        return paths.push(currentPath);
+    }
+    currentPath.push(graphElem);
+    if (graphElem.children.length === 0) {
+        return paths.push(currentPath);
+    }
+    for (let child of graphElem.children) {
+        gridUtil.getAllPaths(child, paths, currentPath.concat([]));
+    }
+    return paths;
+}
+
 /**
  * returns a path from one grid to another one.
  * @param gridsOrGraphList array of grids of graphElements (returned by gridUtil.getGraphList)
@@ -283,8 +300,12 @@ gridUtil.getGridPath = function (gridsOrGraphList, fromGridId, toGridId) {
     if (fromGridId === toGridId) {
         return [startElem.grid];
     }
-    return getPath(startElem, toGridId).map(graphElem => graphElem.grid);
-}
+    let allPaths = gridUtil.getAllPaths(startElem);
+    allPaths = allPaths.filter((path) => path.map((e) => e.grid.id).includes(toGridId));
+    allPaths = allPaths.map((path) => path.slice(0, path.map((e) => e.grid.id).indexOf(toGridId) + 1));
+    allPaths.sort((a, b) => a.length - b.length);
+    return allPaths[0].map(graphElem => graphElem.grid) || null;
+};
 
 /**
  * returns a list of all children of a given grid (recursive)
@@ -341,19 +362,6 @@ function getAllChildrenRecursiveGraphElement(graphElem, children) {
         children = getAllChildrenRecursiveGraphElement(elem, children);
     });
     return children;
-}
-
-function getPath(graphElem, searchId) {
-    if (graphElem.grid.id === searchId) {
-        return [graphElem];
-    }
-    for (let child of graphElem.children) {
-        let childWithChildren = [child].concat(getAllChildrenRecursiveGraphElement(child));
-        if (childWithChildren.map(child => child.grid.id).includes(searchId)) {
-            return [graphElem].concat(getPath(child, searchId));
-        }
-    }
-    return [];
 }
 
 function getElemsNavigatingTo(elems, id) {
