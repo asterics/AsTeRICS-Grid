@@ -260,14 +260,40 @@ gridUtil.getGraphList = function (grids, removeGridId, orderByName) {
 };
 
 /**
+ * returns a path from one grid to another one.
+ * @param gridsOrGraphList array of grids of graphElements (returned by gridUtil.getGraphList)
+ * @param fromGridId id of grid to start navigation from
+ * @param toGridId id of target grid
+ * @return {null|*[]} sorted array of grids representing the path, including start and target grid
+ */
+gridUtil.getGridPath = function (gridsOrGraphList, fromGridId, toGridId) {
+    if (!gridsOrGraphList || !gridsOrGraphList.length || !fromGridId || !toGridId) {
+        return null;
+    }
+    let graphList = null;
+    if (gridsOrGraphList[0].children) {
+        graphList = gridsOrGraphList;
+    } else {
+        graphList = gridUtil.getGraphList(gridsOrGraphList);
+    }
+    let startElem = graphList.filter((elem) => elem.grid.id === fromGridId)[0];
+    if (!startElem) {
+        return null;
+    }
+    if (fromGridId === toGridId) {
+        return [startElem.grid];
+    }
+    return getPath(startElem, toGridId).map(graphElem => graphElem.grid);
+}
+
+/**
  * returns a list of all children of a given grid (recursive)
  * @param gridGraphList a graph list returned by gridUtil.getGraphList()
  * @param gridId the ID of the grid to get the children of
- * @param children used internally for recursion, not needed
- * @return {*|*[]}
+ * @return {*|*[]} array of children grid objects
  */
-gridUtil.getAllChildrenRecursive = function (gridGraphList, gridId, children) {
-    let allChildren = getAllChildrenRecursive(gridGraphList, gridId, children);
+gridUtil.getAllChildrenRecursive = function (gridGraphList, gridId) {
+    let allChildren = getAllChildrenRecursive(gridGraphList, gridId);
     return allChildren.filter((child) => child.id !== gridId);
 };
 
@@ -297,20 +323,37 @@ function getAllLangs(gridElements) {
     }, []);
 }
 
-function getAllChildrenRecursive(gridGraphList, gridId, children) {
+function getAllChildrenRecursive(gridGraphList, gridId) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];
+    return getAllChildrenRecursiveGraphElement(graphElem).map(graphElem => graphElem.grid);
+}
+
+function getAllChildrenRecursiveGraphElement(graphElem, children) {
     children = children || [];
     let newAdded = [];
     graphElem.children.forEach((child) => {
-        if (children.indexOf(child.grid) === -1) {
-            children.push(child.grid);
-            newAdded.push(child.grid.id);
+        if (children.indexOf(child) === -1) {
+            children.push(child);
+            newAdded.push(child);
         }
     });
-    newAdded.forEach((id) => {
-        children = getAllChildrenRecursive(gridGraphList, id, children);
+    newAdded.forEach((elem) => {
+        children = getAllChildrenRecursiveGraphElement(elem, children);
     });
     return children;
+}
+
+function getPath(graphElem, searchId) {
+    if (graphElem.grid.id === searchId) {
+        return [graphElem];
+    }
+    for (let child of graphElem.children) {
+        let childWithChildren = [child].concat(getAllChildrenRecursiveGraphElement(child));
+        if (childWithChildren.map(child => child.grid.id).includes(searchId)) {
+            return [graphElem].concat(getPath(child, searchId));
+        }
+    }
+    return [];
 }
 
 function getElemsNavigatingTo(elems, id) {
