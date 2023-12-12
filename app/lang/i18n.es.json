@@ -937,6 +937,7 @@
   "stopListening": "Detener la detección de sonido",
   "searchElement": "Buscar celda",
   "search": "Buscar",
+  "searchBtnTitle": "Search (Ctrl + K)",
   "homeGrid": "Tablero inicial",
   "selectHomeGrid": "Seleccionar tablero inicial",
   "noneAlwaysOpenLastOpenedGrid": "ninguno (mostrar siempre el último tablero abierto)",
