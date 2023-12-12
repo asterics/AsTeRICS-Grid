@@ -256,7 +256,6 @@
             pouchDbService.pauseSync();
             let thiz = this;
             vueApp = thiz;
-            inputEventHandler.global.stopListening();
             dataService.getGrid(this.gridId).then(gridData => {
                 if (!gridData) {
                     log.warn('grid not found! gridId: ' + this.gridId);
@@ -296,7 +295,6 @@
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
             $('#contentContainer').off('click', this.handleClickEvent);
             vueApp = null;
-            inputEventHandler.global.startListening();
             if (gridInstance) {
                 gridInstance.destroy();
                 gridInstance = null;
