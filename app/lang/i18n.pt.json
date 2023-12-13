@@ -97,7 +97,7 @@
   "language": "Idioma",
   "automaticCurrentLanguage": "automático (idioma atual)",
   "textToSpeak": "Texto a falar",
-  "navigateToHomeGrid": "Navigate to home grid",
+  "navigateToHomeGrid": "Ir para a tabela inicial",
   "navigateToLastOpenedGrid": "Ir para a última tabela aberta",
   "navigateToGrid": "Ir para a tabela",
   "refreshSuggestionsOnChange": "Atualizar sugestões ao mudar",
@@ -935,11 +935,11 @@
   "roundsUntilStop": "Número de varrimentos até parar",
   "startListeningToMicrophone": "Começar a ouvir o microfone",
   "stopListening": "Parar de ouvir o microfone",
-  "searchElement": "Search element",
-  "search": "Search",
-  "searchBtnTitle": "Search (Ctrl + K)",
-  "homeGrid": "Home Grid",
-  "selectHomeGrid": "Select home grid",
-  "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
-  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element"
+  "searchElement": "Procurar célula",
+  "search": "Procurar",
+  "searchBtnTitle": "Procurar (Ctrl + K)",
+  "homeGrid": "Tabela inicial",
+  "selectHomeGrid": "Selecionar tabela inicial",
+  "noneAlwaysOpenLastOpenedGrid": "nenhuma (mostra sempre última tabela aberta)",
+  "navigateToHomeGridAfterSelectingAnElement": "Navegar para tabela inicial depois de selecionar uma célula"
 }
