@@ -124,7 +124,8 @@
                 unlockCount: UNLOCK_COUNT,
                 unlockCounter: UNLOCK_COUNT,
                 backgroundColor: 'white',
-                MainVue: MainVue
+                MainVue: MainVue,
+                localHighlightIds: this.highlightIds
             }
         },
         components: {
@@ -304,8 +305,7 @@
                 });
             },
             highlightElements(highlightIds) {
-                highlightIds = highlightIds || this.highlightIds;
-                this.highlightIds = highlightIds;
+                highlightIds = highlightIds || this.localHighlightIds;
                 if (highlightIds) {
                     $(`#${highlightIds[0]}`).addClass('highlight');
                     setTimeout(() => {
@@ -314,12 +314,13 @@
                 }
             },
             stopHighlightElements() {
-                if (this.highlightIds && this.highlightIds[0]) {
-                    $(`#${this.highlightIds[0]}`).removeClass('highlight');
+                if (this.localHighlightIds && this.localHighlightIds[0]) {
+                    $(`#${this.localHighlightIds[0]}`).removeClass('highlight');
                 }
             },
             async onNavigateEvent(event, gridData, params) {
                 let highlightIds = params ? params.highlightIds : null;
+                this.localHighlightIds = highlightIds;
                 if (gridData && this.gridData.id === gridData.id) {
                     this.highlightElements(highlightIds);
                     return; //prevent duplicated navigation to same grid
