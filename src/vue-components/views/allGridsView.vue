@@ -135,6 +135,7 @@
     import ExportModal from "../modals/exportModal.vue";
     import ImportModal from "../modals/importModal.vue";
     import NoGridsPage from "../components/noGridsPage.vue";
+    import {GridActionNavigate} from "../../js/model/GridActionNavigate.js";
 
     let ORDER_MODE_KEY = "AG_ALLGRIDS_ORDER_MODE_KEY";
     let SELECTOR_CONTEXTMENU = '#moreButton';
@@ -340,8 +341,20 @@
                 this.metadata.globalGridActive = active;
                 dataService.saveMetadata(this.metadata);
             },
-            homeGridChanged() {
+            async homeGridChanged() {
                 dataService.saveMetadata(this.metadata);
+                if (this.metadata.homeGridId) {
+                    // change nav action of first global grid element ("home")
+                    let globalGrid = await dataService.getGlobalGrid();
+                    if (globalGrid) {
+                        let navActions = gridUtil.getActionsOfType(globalGrid.gridElements[0], GridActionNavigate.getModelName());
+                        if (navActions.length > 0) {
+                            navActions[0].navType = GridActionNavigate.NAV_TYPES.TO_HOME;
+                            await dataService.saveGrid(globalGrid);
+                        }
+                    }
+
+                }
             },
             resetGlobalGrid(options) {
                 options = options || {};
