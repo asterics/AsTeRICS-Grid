@@ -122,7 +122,8 @@
   "automaticallyCloseTimeoutInSeconds": "Časový limit automatického uzavření v sekundách (0 = nikdy), v současné době funguje pouze ve Firefoxu",
   "keyboardEsc": "Klávesnice: [Esc]",
   "cancel": "Zrušit",
-  "keyboardCtrlEnter": "Klávesnice: [Ctrl + Enter]",
+  "keyboardEnter": "[Enter]",
+  "keyboardCtrlEnter": "[Ctrl + Enter]",
   "save": "Uložit",
   "keyboardCtrlLeft": "Klávesnice: [Ctrl + Vlevo]",
   "okEditPrevious": "OK, upravit předchozí",
@@ -937,9 +938,13 @@
   "stopListening": "Přestat poslouchat",
   "searchElement": "Search element",
   "search": "Search",
-  "searchBtnTitle": "Search (Ctrl + K)",
+  "searchBtnTitle": "Search [Ctrl + F]",
   "homeGrid": "Home Grid",
   "selectHomeGrid": "Select home grid",
   "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
-  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element"
+  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element",
+  "openSearchDialog": "Open search dialog",
+  "showElement": "Show element",
+  "showPathToElement": "Show path to element",
+  "notShowingAllResultsTryALongerSearchTerm": "Not showing all results. Try a longer search term."
 }
