@@ -178,6 +178,14 @@ test('gridUtil.getAllPaths - Test 3 - circular', () => {
     expect(pathsWithIdsString).toContain("[1,2,3]");
 });
 
+test('gridUtil.getAllPaths - Test 4 - single elem', () => {
+    let grids = [getGrid(1, [])];
+    let graphList = gridUtil.getGraphList(grids);
+    let paths = gridUtil.getAllPaths(graphList[0]);
+    let pathsWithIds = paths.map((path) => path.map((e) => e.grid.id));
+    expect(pathsWithIds.length).toEqual(1);
+});
+
 function getGrid(id, navigateToList) {
     let elements = [];
     for (let navId of navigateToList) {

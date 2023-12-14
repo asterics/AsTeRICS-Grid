@@ -293,14 +293,19 @@ gridUtil.getGraphList = function (grids, removeGridId, orderByName) {
  *                            [startElem.grid, otherChild, ...], ...]
  */
 gridUtil.getAllPaths = function (startGraphElem, paths, currentPath) {
+    if (!startGraphElem) {
+        return [];
+    }
     paths = paths || [];
     currentPath = currentPath || [];
     if (currentPath.includes(startGraphElem)) {
-        return paths.push(currentPath);
+        paths.push(currentPath);
+        return paths;
     }
     currentPath.push(startGraphElem);
     if (startGraphElem.children.length === 0) {
-        return paths.push(currentPath);
+        paths.push(currentPath);
+        return paths;
     }
     for (let child of startGraphElem.children) {
         gridUtil.getAllPaths(child, paths, currentPath.concat([]));
@@ -419,6 +424,17 @@ gridUtil.getGridsContentLang = function (grids, preferredLang) {
     }, []);
     return allLangs.includes(preferredLang) ? preferredLang : allLangs[0];
 };
+
+/**
+ * returns all actions of given type for a grid element
+ * @param gridElement
+ * @param modelName
+ */
+gridUtil.getActionsOfType = function (gridElement, modelName) {
+    let actions = gridElement ? gridElement.actions : null;
+    let relevantActions = actions ? actions.filter(a => a.modelName === modelName) : [];
+    return relevantActions;
+}
 
 function getAllLangs(gridElements) {
     if (!gridElements && !gridElements.length) {
