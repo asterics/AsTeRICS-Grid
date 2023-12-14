@@ -100,6 +100,7 @@
   "navigateToHomeGrid": "Navigate to home grid",
   "navigateToLastOpenedGrid": "Navigate to last opened grid",
   "navigateToGrid": "Navigate to grid",
+  "navigateToSearch": "Open search dialog",
   "refreshSuggestionsOnChange": "Refresh suggestions on change",
   "dictionaryToUse": "Dictionary to use",
   "allDictionaries": "all dictionaries",
@@ -400,7 +401,6 @@
   "errorConnectingToARE": "Error connecting to ARE!",
   "empty": "(empty)",
   "moveElementToGrid": "Move element to grid",
-  "navigateToGrid": "Navigate to grid",
   "emptyElement": "(empty element)",
   "pleaseSelect": "(Please select)",
   "noGrids": "(no grids)",
@@ -944,8 +944,11 @@
   "selectHomeGrid": "Select home grid",
   "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
   "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element",
-  "openSearchDialog": "Open search dialog",
   "showElement": "Show element",
   "showPathToElement": "Show path to element",
-  "notShowingAllResultsTryALongerSearchTerm": "Not showing all results. Try a longer search term."
+  "notShowingAllResultsTryALongerSearchTerm": "Not showing all results. Try a longer search term.",
+  "navigationType": "Navigation Type",
+  "searchForCustomText": "Search for custom text",
+  "customText": "Custom text",
+  "searchForCollectedText": "Search for collected text"
 }
