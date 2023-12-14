@@ -75,7 +75,7 @@
                 graphList: [],
                 homeGridId: null,
                 i18nService: i18nService,
-                allPaths: null,
+                allPathsCombined: null,
                 overflow: false,
                 MAX_RESULTS: 10
             }
@@ -128,8 +128,8 @@
                     let results = [];
                     let homeGridId = thiz.homeGridId || thiz.graphList[0].grid.id;
                     let homeGridGraphElem = thiz.graphList.filter(elem => elem.grid.id === homeGridId)[0];
-                    if (!thiz.allPaths) {
-                        thiz.allPaths = gridUtil.getAllPaths(homeGridGraphElem);
+                    if (!thiz.allPathsCombined) {
+                        thiz.allPathsCombined = gridUtil.getAllPathsCombined(homeGridGraphElem);
                     }
                     let count = 0;
                     for (let grid of thiz.grids) {
@@ -186,7 +186,7 @@
                             matchLabel: matchLabel,
                             matchLang: matchLang,
                             priority: priority,
-                            path: gridUtil.getGridPath(thiz.graphList, homeGridId, grid.id, thiz.allPaths)
+                            path: gridUtil.getGridPath(thiz.graphList, homeGridId, grid.id, thiz.allPathsCombined)
                         })
                     }
                 }, 300, "SEARCH_ELEMENTS");
@@ -196,11 +196,13 @@
             }
         },
         async mounted() {
-            this.initPromise = dataService.getGrids(true, true);
-            this.grids = await this.initPromise;
-            this.graphList = gridUtil.getGraphList(this.grids);
-            let metadata = await dataService.getMetadata();
-            this.homeGridId = metadata.homeGridId;
+            this.initPromise = new Promise(async resolve => {
+                this.grids = await dataService.getGrids(true, true);
+                this.graphList = gridUtil.getGraphList(this.grids);
+                let metadata = await dataService.getMetadata();
+                this.homeGridId = metadata.homeGridId;
+                resolve();
+            });
             $('.grid-item-content').removeClass('highlight');
         },
         beforeDestroy() {

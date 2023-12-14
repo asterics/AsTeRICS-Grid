@@ -286,16 +286,43 @@ gridUtil.getAllPaths = function (startGraphElem, paths, currentPath) {
 }
 
 /**
+ * @see gridUtil.getAllPaths
+ * @return {*[]|number} an array containing all possible paths through the graph with the given
+ *                      start element in two different forms: as an array of grids and an array of ids.
+ *                      e.g. [{
+ *                              path: [startElem.grid, childGrid, childOfChild, ...],
+ *                              ids: [startElemId, childGridId, childOfChildId, ...],
+ *                            },
+ *                            {
+ *                              path: [startElem.grid, otherChild, ...]
+ *                              ids: [startElemId, otherChildId, ...]
+ *                            }, ...]
+ *
+ */
+gridUtil.getAllPathsCombined = function (startGraphElem) {
+    let allPaths = gridUtil.getAllPaths(startGraphElem);
+    let allPathsOnlyIds = allPaths.map(path => path.map(elem => elem.grid.id));
+    let pathsCombined = allPaths.map((path, index) => {
+        return {
+            path: path,
+            ids: allPathsOnlyIds[index],
+            idsSet: new Set(allPathsOnlyIds[index])
+        }
+    });
+    return pathsCombined;
+}
+
+/**
  * returns a path from one grid to another one.
  * @param gridsOrGraphList array of grids of graphElements (returned by gridUtil.getGraphList)
  * @param fromGridId id of grid to start navigation from
  * @param toGridId id of target grid
- * @param allPaths optional result of gridUtil.getAllPaths(fromGridGraphElement) for performance optimization
+ * @param allPathsCombined optional result of gridUtil.getAllPathsCombined(fromGridGraphElement) for performance optimization
  * @return {null|*[]} sorted array of grids representing the path, including start and target grid,
  *                    including additional property "toNextElementId" and "toNextElementLabel" with the
  *                    element ID/label which navigates to the next entry in the list.
  */
-gridUtil.getGridPath = function (gridsOrGraphList, fromGridId, toGridId, allPaths) {
+gridUtil.getGridPath = function (gridsOrGraphList, fromGridId, toGridId, allPathsCombined) {
     if (!gridsOrGraphList || !gridsOrGraphList.length || !fromGridId || !toGridId) {
         return [];
     }
@@ -312,11 +339,19 @@ gridUtil.getGridPath = function (gridsOrGraphList, fromGridId, toGridId, allPath
     if (fromGridId === toGridId) {
         return [startElem.grid];
     }
-    allPaths = allPaths || gridUtil.getAllPaths(startElem);
-    allPaths = allPaths.filter((path) => path.map((e) => e.grid.id).includes(toGridId));
-    allPaths = allPaths.map((path) => path.slice(0, path.map((e) => e.grid.id).indexOf(toGridId) + 1));
-    allPaths.sort((a, b) => a.length - b.length);
-    let returnPath = allPaths.length > 0 ? allPaths[0].map((graphElem) => graphElem.grid) : [];
+    allPathsCombined = allPathsCombined || gridUtil.getAllPathsCombined(startElem);
+    let shortestPath;
+    let shortestPathLength = Number.MAX_SAFE_INTEGER;
+    for (let elem of allPathsCombined) {
+        if (elem.ids.length < shortestPathLength) {
+            if (elem.idsSet.has(toGridId)) {
+                shortestPath = elem.path.slice(0, elem.ids.indexOf(toGridId) + 1);
+                shortestPathLength = shortestPath.length;
+            }
+        }
+    }
+
+    let returnPath = shortestPath ? shortestPath.map((graphElem) => graphElem.grid) : [];
     returnPath = JSON.parse(JSON.stringify(returnPath));
     if (returnPath && returnPath.length > 1) {
         for (let i = 0; i < returnPath.length - 1; i++) {
@@ -326,6 +361,7 @@ gridUtil.getGridPath = function (gridsOrGraphList, fromGridId, toGridId, allPath
                     if (action.modelName === GridActionNavigate.getModelName() && action.toGridId === nextId) {
                         returnPath[i].toNextElementId = element.id;
                         returnPath[i].toNextElementLabel = element.label;
+                        break;
                     }
                 }
             }
