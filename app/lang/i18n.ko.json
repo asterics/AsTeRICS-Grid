@@ -122,7 +122,8 @@
   "automaticallyCloseTimeoutInSeconds": "초 단위로 자동 종료 시간 초과(0 = 안 함), 현재 '파이어폭스'에서만 작동합니다.",
   "keyboardEsc": "키보드: [Esc]",
   "cancel": "취소",
-  "keyboardCtrlEnter": "키보드: [Ctrl + Enter]",
+  "keyboardEnter": "[Enter]",
+  "keyboardCtrlEnter": "[Ctrl + Enter]",
   "save": "저장",
   "keyboardCtrlLeft": "키보드: [Ctrl + Left]",
   "okEditPrevious": "OK, edit previous",
@@ -937,9 +938,13 @@
   "stopListening": "Stop listening",
   "searchElement": "Search element",
   "search": "Search",
-  "searchBtnTitle": "Search (Ctrl + K)",
+  "searchBtnTitle": "Search [Ctrl + F]",
   "homeGrid": "Home Grid",
   "selectHomeGrid": "Select home grid",
   "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
-  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element"
+  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element",
+  "openSearchDialog": "Open search dialog",
+  "showElement": "Show element",
+  "showPathToElement": "Show path to element",
+  "notShowingAllResultsTryALongerSearchTerm": "Not showing all results. Try a longer search term."
 }
