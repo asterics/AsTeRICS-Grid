@@ -9,7 +9,7 @@
                     </div>
 
                     <div class="modal-body mt-5 row">
-                        <input type="text" v-model="searchTerm" @input="search" v-focus :placeholder="$t('searchElement') + '...'" class="col-8 col-sm-10 mb-5" @keydown.enter="goToFirstResult" @keydown.ctrl.enter="goToFirstResult(true)"/>
+                        <input type="text" v-model="searchTerm" @input="search()" v-focus :placeholder="$t('searchElement') + '...'" class="col-8 col-sm-10 mb-5" @keydown.enter="goToFirstResult" @keydown.ctrl.enter="goToFirstResult(true)"/>
                         <div class="col-sm-2 col-4">
                             <button class="col-12" :title="$t('search')"><i class="fas fa-search"/></button>
                         </div>
@@ -61,9 +61,10 @@
     import {i18nService} from "../../js/service/i18nService.js";
     import {Router} from "../../js/router.js";
     import {gridUtil} from "../../js/util/gridUtil.js";
+    import {collectElementService} from "../../js/service/collectElementService.js";
 
     export default {
-        props: ['routeToEdit'],
+        props: ['routeToEdit', 'options'],
         components: {
         },
         data: function () {
@@ -108,12 +109,11 @@
                     this.toResult(this.results[0], usePath);
                 }
             },
-            async search() {
+            async search(force) {
                 let thiz = this;
-
                 util.debounce(async () => {
                     thiz.overflow = false;
-                    if (thiz.searchTerm.length < 2) {
+                    if (!force && thiz.searchTerm.length < 2) {
                         thiz.results = undefined;
                         return;
                     }
@@ -203,6 +203,12 @@
                 this.homeGridId = metadata.homeGridId;
                 resolve();
             });
+            if (this.options) {
+                this.searchTerm = this.options.searchCollectedText ? collectElementService.getText() : this.options.searchText || '';
+                if (this.searchTerm) {
+                    this.search(true);
+                }
+            }
             $('.grid-item-content').removeClass('highlight');
         },
         beforeDestroy() {

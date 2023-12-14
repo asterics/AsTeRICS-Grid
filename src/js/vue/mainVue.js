@@ -74,8 +74,14 @@ MainVue.showProgressBar = function (percentage, options) {
     app.$refs.progressBar.setProgress(percentage, options);
 };
 
-MainVue.showSearchModal = function () {
+/**
+ * show search modal
+ * @param options.searchText text to be pre-filled in search bar
+ * @param options.searchCollectedText use text from collect element to be pre-filled in search bar, if true
+ */
+MainVue.showSearchModal = function (options) {
     app.showModal = modalTypes.MODAL_SEARCH;
+    app.modalOptions = options || {};
 };
 
 MainVue.init = function () {
@@ -101,7 +107,8 @@ MainVue.init = function () {
                     uiLocked: false,
                     hiddenPopupData: null,
                     modalTypes: modalTypes,
-                    showModal: null
+                    showModal: null,
+                    modalOptions: {}
                 };
             },
             methods: {
