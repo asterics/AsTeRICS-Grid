@@ -100,6 +100,7 @@
   "navigateToHomeGrid": "Navegar al tablero inicial",
   "navigateToLastOpenedGrid": "Navegar al último tablero abierto",
   "navigateToGrid": "Navegar a un tablero",
+  "navigateToSearch": "Open search dialog",
   "refreshSuggestionsOnChange": "Actualizar sugerencias al cambiar",
   "dictionaryToUse": "Diccionario a utilizar",
   "allDictionaries": "todos los diccionarios",
@@ -943,8 +944,11 @@
   "selectHomeGrid": "Seleccionar tablero inicial",
   "noneAlwaysOpenLastOpenedGrid": "ninguno (mostrar siempre el último tablero abierto)",
   "navigateToHomeGridAfterSelectingAnElement": "Navegar al tablero inicial después de seleccionar un elemento",
-  "openSearchDialog": "Open search dialog",
   "showElement": "Show element",
   "showPathToElement": "Show path to element",
-  "notShowingAllResultsTryALongerSearchTerm": "Not showing all results. Try a longer search term."
+  "notShowingAllResultsTryALongerSearchTerm": "Not showing all results. Try a longer search term.",
+  "navigationType": "Navigation Type",
+  "searchForCustomText": "Search for custom text",
+  "customText": "Custom text",
+  "searchForCollectedText": "Search for collected text"
 }
