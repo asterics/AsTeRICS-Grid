@@ -12,6 +12,7 @@ import { GridElement } from '../../model/GridElement.js';
 import { GridElementCollect } from '../../model/GridElementCollect.js';
 import { GridActionCollectElement } from '../../model/GridActionCollectElement.js';
 import { GridActionPredict } from '../../model/GridActionPredict.js';
+import {GridActionNavigate} from "../../model/GridActionNavigate.js";
 
 let filterService = {};
 
@@ -194,7 +195,7 @@ function getModelConversionFunctions(objectModelVersion) {
             });
         case 3:
             filterFns.push(function (gridData, filterOptions) {
-                //fn from V3 to V4
+                // fn from V3 to V4
                 // new collect elements with image collecting capabilities and options
                 if (gridData.modelName === GridData.getModelName()) {
                     log.debug('converting model version from V3 to V4: ' + (gridData.label ? gridData.label.de : ''));
@@ -221,12 +222,29 @@ function getModelConversionFunctions(objectModelVersion) {
                 gridData.modelVersion = modelUtil.getModelVersionString();
                 return gridData;
             });
-        /*        case 4:
-            filterFns.push(function (object, filterOptions) { //fn from V4 to V5
-                object.modelVersion = modelUtil.getModelVersionString();
-                return object
+        case 4:
+            filterFns.push(function (gridData, filterOptions) {
+                // fn from V4 to V5
+                // new structure for GridActionNavigate actions
+                if (gridData.modelName === GridData.getModelName()) {
+                    for (let element of gridData.gridElements) {
+                        for (let action of element.actions) {
+                            if (action.modelName === GridActionNavigate.getModelName() && !action.navType) {
+                                action.modelVersion = modelUtil.getModelVersionString();
+                                if (action.toHomeGrid) {
+                                    action.navType = GridActionNavigate.NAV_TYPES.TO_HOME;
+                                } else if (action.toLastGrid) {
+                                    action.navType = GridActionNavigate.NAV_TYPES.TO_LAST;
+                                } else {
+                                    action.navType = GridActionNavigate.NAV_TYPES.TO_GRID;
+                                }
+                            }
+                        }
+                    }
+                }
+                gridData.modelVersion = modelUtil.getModelVersionString();
+                return gridData;
             });
- */
     }
     return filterFns;
 }
