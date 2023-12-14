@@ -581,9 +581,10 @@ dataService.importData = async function (data, options) {
     let existingNames = existingGrids.map((grid) => i18nService.getTranslation(grid.label));
     let regenerateIdsReturn = gridUtil.regenerateIDs(importData.grids);
     importData.grids = regenerateIdsReturn.grids;
-    if (importData.metadata && (importData.metadata.lastOpenedGridId || importData.metadata.globalGridId)) {
+    if (importData.metadata && (importData.metadata.lastOpenedGridId || importData.metadata.globalGridId || importData.metadata.homeGridId)) {
         importData.metadata.lastOpenedGridId = regenerateIdsReturn.idMapping[importData.metadata.lastOpenedGridId];
         importData.metadata.globalGridId = regenerateIdsReturn.idMapping[importData.metadata.globalGridId];
+        importData.metadata.homeGridId = regenerateIdsReturn.idMapping[importData.metadata.homeGridId] || null;
     }
     importData.grids.forEach((grid) => {
         let label = i18nService.getTranslation(grid.label);
@@ -591,11 +592,9 @@ dataService.importData = async function (data, options) {
     });
     options.progressFn(20);
     if (options.generateGlobalGrid && !importData.metadata.globalGridId) {
-        let homeGridId = importData.grids[0].id;
         let globalGrid = gridUtil.generateGlobalGrid(i18nService.getContentLang());
         importData.grids.unshift(globalGrid);
         importData.metadata.globalGridId = globalGrid.id;
-        importData.metadata.homeGridId = importData.metadata.homeGridId || homeGridId;
     }
 
     if (options.importUserSettings) {
