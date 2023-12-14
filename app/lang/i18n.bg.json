@@ -122,7 +122,8 @@
   "automaticallyCloseTimeoutInSeconds": "Таимаут за автоматично затваряне в секунди (0 = никога), работи само във Firefox към момента",
   "keyboardEsc": "Клавиатура: [ескейп]",
   "cancel": "Отказ",
-  "keyboardCtrlEnter": "Клавиатура: [контрол + ентър]",
+  "keyboardEnter": "[Enter]",
+  "keyboardCtrlEnter": "[Ctrl + Enter]",
   "save": "Запази",
   "keyboardCtrlLeft": "Клавиатура: [контрол + стрелка наляво]",
   "okEditPrevious": "Окей, редактиране на предното",
@@ -937,9 +938,13 @@
   "stopListening": "Stop listening",
   "searchElement": "Search element",
   "search": "Search",
-  "searchBtnTitle": "Search (Ctrl + K)",
+  "searchBtnTitle": "Search [Ctrl + F]",
   "homeGrid": "Home Grid",
   "selectHomeGrid": "Select home grid",
   "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
-  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element"
+  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element",
+  "openSearchDialog": "Open search dialog",
+  "showElement": "Show element",
+  "showPathToElement": "Show path to element",
+  "notShowingAllResultsTryALongerSearchTerm": "Not showing all results. Try a longer search term."
 }
