@@ -140,6 +140,13 @@ test('gridUtil.getPath - Test 5 - get shorter path of two', () => {
     expect(path[1].id).toEqual(3);
 });
 
+test('gridUtil.getPath - Test 6 - no path', () => {
+    let grids = [getGrid(1, [2]), getGrid(2, [0]), getGrid(3, [])];
+    let graphList = gridUtil.getGraphList(grids);
+    let path = gridUtil.getGridPath(graphList, 1, 3);
+    expect(path.length).toEqual(0);
+});
+
 test('gridUtil.getAllPaths - Test 1 - normal tree', () => {
     let grids = [getGrid(1, [2, 3]), getGrid(2, []), getGrid(3, [4, 5]), getGrid(4, []), getGrid(5, [])];
     let graphList = gridUtil.getGraphList(grids);

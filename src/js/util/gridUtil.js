@@ -259,18 +259,27 @@ gridUtil.getGraphList = function (grids, removeGridId, orderByName) {
     return gridGraphList;
 };
 
-
-gridUtil.getAllPaths = function (graphElem, paths, currentPath) {
+/**
+ * returns an array of all possible paths through the grid graph given a start element
+ * @param startGraphElem the graph element to start
+ * @param paths internal, used for recursion
+ * @param currentPath internal, used for recursion
+ * @return {*[]|number} an array containing all possible paths through the graph with the given
+ *                      start element.
+ *                      e.g. [[startElem.grid, childGrid, childOfChild, ...],
+ *                            [startElem.grid, otherChild, ...], ...]
+ */
+gridUtil.getAllPaths = function (startGraphElem, paths, currentPath) {
     paths = paths || [];
     currentPath = currentPath || [];
-    if (currentPath.includes(graphElem)) {
+    if (currentPath.includes(startGraphElem)) {
         return paths.push(currentPath);
     }
-    currentPath.push(graphElem);
-    if (graphElem.children.length === 0) {
+    currentPath.push(startGraphElem);
+    if (startGraphElem.children.length === 0) {
         return paths.push(currentPath);
     }
-    for (let child of graphElem.children) {
+    for (let child of startGraphElem.children) {
         gridUtil.getAllPaths(child, paths, currentPath.concat([]));
     }
     return paths;
@@ -281,13 +290,16 @@ gridUtil.getAllPaths = function (graphElem, paths, currentPath) {
  * @param gridsOrGraphList array of grids of graphElements (returned by gridUtil.getGraphList)
  * @param fromGridId id of grid to start navigation from
  * @param toGridId id of target grid
- * @return {null|*[]} sorted array of grids representing the path, including start and target grid
+ * @param allPaths optional result of gridUtil.getAllPaths(fromGridGraphElement) for performance optimization
+ * @return {null|*[]} sorted array of grids representing the path, including start and target grid,
+ *                    including additional property "toNextElementId" and "toNextElementLabel" with the
+ *                    element ID/label which navigates to the next entry in the list.
  */
-gridUtil.getGridPath = function (gridsOrGraphList, fromGridId, toGridId) {
+gridUtil.getGridPath = function (gridsOrGraphList, fromGridId, toGridId, allPaths) {
     if (!gridsOrGraphList || !gridsOrGraphList.length || !fromGridId || !toGridId) {
-        return null;
+        return [];
     }
-    let graphList = null;
+    let graphList;
     if (gridsOrGraphList[0].children) {
         graphList = gridsOrGraphList;
     } else {
@@ -295,16 +307,31 @@ gridUtil.getGridPath = function (gridsOrGraphList, fromGridId, toGridId) {
     }
     let startElem = graphList.filter((elem) => elem.grid.id === fromGridId)[0];
     if (!startElem) {
-        return null;
+        return [];
     }
     if (fromGridId === toGridId) {
         return [startElem.grid];
     }
-    let allPaths = gridUtil.getAllPaths(startElem);
+    allPaths = allPaths || gridUtil.getAllPaths(startElem);
     allPaths = allPaths.filter((path) => path.map((e) => e.grid.id).includes(toGridId));
     allPaths = allPaths.map((path) => path.slice(0, path.map((e) => e.grid.id).indexOf(toGridId) + 1));
     allPaths.sort((a, b) => a.length - b.length);
-    return allPaths[0].map(graphElem => graphElem.grid) || null;
+    let returnPath = allPaths.length > 0 ? allPaths[0].map((graphElem) => graphElem.grid) : [];
+    returnPath = JSON.parse(JSON.stringify(returnPath));
+    if (returnPath && returnPath.length > 1) {
+        for (let i = 0; i < returnPath.length - 1; i++) {
+            let nextId = returnPath[i + 1].id;
+            for (let element of returnPath[i].gridElements) {
+                for (let action of element.actions) {
+                    if (action.modelName === GridActionNavigate.getModelName() && action.toGridId === nextId) {
+                        returnPath[i].toNextElementId = element.id;
+                        returnPath[i].toNextElementLabel = element.label;
+                    }
+                }
+            }
+        }
+    }
+    return returnPath;
 };
 
 /**
