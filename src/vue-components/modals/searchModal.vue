@@ -201,6 +201,7 @@
             this.graphList = gridUtil.getGraphList(this.grids);
             let metadata = await dataService.getMetadata();
             this.homeGridId = metadata.homeGridId;
+            $('.grid-item-content').removeClass('highlight');
         },
         beforeDestroy() {
         }
