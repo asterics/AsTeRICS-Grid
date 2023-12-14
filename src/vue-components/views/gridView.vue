@@ -204,6 +204,7 @@
 
                 let inputConfig = thiz.metadata.inputConfig;
                 let selectionListener = (item) => {
+                    this.stopHighlightElements();
                     L.removeAddClass(item, 'selected');
                     actionService.doAction(thiz.gridData.id, item.id);
                 };
@@ -304,13 +305,17 @@
             },
             highlightElements(highlightIds) {
                 highlightIds = highlightIds || this.highlightIds;
+                this.highlightIds = highlightIds;
                 if (highlightIds) {
-                    for (let id of highlightIds) {
-                        $(`#${id}`).addClass('highlight');
-                        setTimeout(() => {
-                            $(`#${id}`).removeClass('highlight');
-                        }, 2000);
-                    }
+                    $(`#${highlightIds[0]}`).addClass('highlight');
+                    setTimeout(() => {
+                        this.stopHighlightElements();
+                    }, 15000);
+                }
+            },
+            stopHighlightElements() {
+                if (this.highlightIds && this.highlightIds[0]) {
+                    $(`#${this.highlightIds[0]}`).removeClass('highlight');
                 }
             },
             async onNavigateEvent(event, gridData, params) {

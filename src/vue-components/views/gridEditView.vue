@@ -245,7 +245,7 @@
                     $(`#${this.highlightId}`).addClass('highlight');
                     setTimeout(() => {
                         $(`#${this.highlightId}`).removeClass('highlight');
-                    }, 2000);
+                    }, 4000);
                 }
             },
         },

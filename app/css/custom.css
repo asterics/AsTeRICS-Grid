@@ -254,8 +254,8 @@ nav #helpButton:focus {
 }
 
 .highlight.grid-item-content {
-    -webkit-animation: background 2s cubic-bezier(1,0,0,1);
-    animation: background 2s cubic-bezier(1,0,0,1);
+    animation: background 1s steps(20, end) infinite;
+    -webkit-animation: background 1s steps(20, end) infinite;
 }
 
 .noanimation {
