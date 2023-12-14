@@ -12,6 +12,7 @@ let maxEntry = {
     name: '',
     time: 0
 };
+let simpleTotalTimes = {};
 
 /**
  * if this method is called, all method calls on services/modules
@@ -49,9 +50,20 @@ timingLogger.startSimple = function () {
     simpleLastTime = new Date().getTime();
 };
 
+timingLogger.addToKeySimple = function (key) {
+    simpleTotalTimes[key] = simpleTotalTimes[key] || 0;
+    simpleTotalTimes[key] += new Date().getTime() - simpleLastTime;
+    simpleLastTime = new Date().getTime();
+}
+
 timingLogger.logSimple = function (logMsg) {
     log.warn(`${new Date().getTime() - simpleLastTime}ms - ${logMsg}`);
     simpleLastTime = new Date().getTime();
+};
+
+timingLogger.finishSimple = function () {
+    log.warn(simpleTotalTimes);
+    simpleTotalTimes = {};
 };
 
 timingLogger.finish = function (key) {
