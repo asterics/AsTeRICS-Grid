@@ -33,6 +33,7 @@ let _currentView = null;
 let _currentVueApp = null;
 let _gridHistory = [];
 let _locked = false;
+let _currentHighlightIds = null;
 
 Router.VIEWS = {
     AllGridsView: AllGridsView,
@@ -227,6 +228,9 @@ Router.toLastOpenedGrid = function () {
 Router.toGrid = function (id, props) {
     if (id) {
         Router.addToGridHistory(id);
+        if (props && props.highlightIds) {
+            _currentHighlightIds = props.highlightIds;
+        }
         let params = new URLSearchParams();
         let hash = null;
         if (props) {
@@ -243,6 +247,16 @@ Router.toGrid = function (id, props) {
                 if (!gridData) {
                     return;
                 }
+                if (_currentHighlightIds) {
+                    let elemIds = gridData.gridElements.map((e) => e.id);
+                    if (!elemIds.includes(_currentHighlightIds[0])) {
+                        _currentHighlightIds.shift();
+                    }
+                    props = props || {};
+                    props.highlightIds = _currentHighlightIds.length > 0 ? _currentHighlightIds : undefined;
+                    _currentHighlightIds = props.highlightIds;
+                }
+                
                 if (history && history.replaceState) {
                     history.replaceState(null, null, getFullUrl(`#grid/${id}`));
                 }

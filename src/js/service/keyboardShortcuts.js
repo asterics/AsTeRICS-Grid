@@ -30,8 +30,8 @@ keyboardShortcuts.init = function () {
             //Ctrl + Pos1
             Router.toMain();
         }
-        if (event.ctrlKey && keycode === 75) {
-            //Ctrl + K
+        if (event.ctrlKey && keycode === 70) {
+            //Ctrl + F
             event.preventDefault();
             let validViews = [Router.VIEWS.AllGridsView, Router.VIEWS.GridView, Router.VIEWS.GridEditView];
             if (validViews.includes(Router.getCurrentView())) {

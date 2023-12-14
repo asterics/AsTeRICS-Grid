@@ -9,28 +9,40 @@
                     </div>
 
                     <div class="modal-body mt-5 row">
-                        <input type="text" v-model="searchTerm" @input="search" v-focus :placeholder="$t('searchElement') + '...'" class="col-12 mb-4" @keydown.enter="goToFirstResult"/>
+                        <input type="text" v-model="searchTerm" @input="search" v-focus :placeholder="$t('searchElement') + '...'" class="col-8 col-sm-10 mb-5" @keydown.enter="goToFirstResult" @keydown.ctrl.enter="goToFirstResult(true)"/>
+                        <div class="col-sm-2 col-4">
+                            <button class="col-12" :title="$t('search')"><i class="fas fa-search"/></button>
+                        </div>
                         <ul v-if="results && results.length > 0" style="list-style-type: none">
-                            <li v-for="result in results">
-                                <a href="javascript:;" class="d-flex align-items-center" @click="toResult(result)" style="flex-direction: row; height: 40px;">
+                            <li v-for="(result, index) in results" class="d-flex align-items-center" style="flex-direction: row; min-height: 40px;">
+                                <a href="javascript:;" @click="toResult(result)" class="d-flex align-items-center" :title="index === 0 ? `${$t('showElement')} ${$t('keyboardEnter')}` : $t('showElement')">
                                     <img v-if="result.elem.image" :src="result.elem.image.data || result.elem.image.url" width="40" style="margin-right: 1em"/>
+                                </a>
+                                <a href="javascript:;" @click="toResult(result, true)" class="d-flex align-items-center" :title="index === 0 ? `${$t('showPathToElement')} ${$t('keyboardCtrlEnter')}` : $t('showPathToElement')">
                                     <div class="d-flex align-items-center">
                                         <div>
-                                            <span>{{ result.grid.label | extractTranslation }}</span>
-                                            <span class="fas fa-arrow-right"/>
+                                            <span v-for="(pathElem, index) in result.path">
+                                                <span v-if="index === 0">{{ pathElem.label | extractTranslation }}<span class="fas fa-arrow-right mx-2"/></span>
+                                                <span v-if="pathElem.toNextElementLabel">{{ pathElem.toNextElementLabel | extractTranslation }}<span class="fas fa-arrow-right mx-2"/></span>
+                                            </span>
                                             <span v-if="i18nService.getContentLang() === result.matchLang" v-html="highlightSearch(result.matchLabel)"></span>
                                             <span v-if="i18nService.getContentLang() !== result.matchLang">
                                                 <span>{{ i18nService.getTranslation(result.elem.label) }}</span>
                                                 <span>( {{ i18nService.t(`lang.${result.matchLang}`) }}: <span v-html="highlightSearch(result.matchLabel)"></span> )</span>
                                             </span>
                                         </div>
-
                                     </div>
                                 </a>
                             </li>
                         </ul>
+                        <div v-if="results === null">
+                            {{ $t('searching') }}
+                        </div>
                         <div v-if="results && results.length === 0 && searchTerm">
                             {{ $t('noSearchResults') }}
+                        </div>
+                        <div v-if="overflow">
+                            {{ $t('notShowingAllResultsTryALongerSearchTerm') }}
                         </div>
                     </div>
 
@@ -48,6 +60,7 @@
     import {util} from "../../js/util/util.js";
     import {i18nService} from "../../js/service/i18nService.js";
     import {Router} from "../../js/router.js";
+    import {gridUtil} from "../../js/util/gridUtil.js";
 
     export default {
         props: ['routeToEdit'],
@@ -59,23 +72,28 @@
                 initPromise: null,
                 searchTerm: '',
                 results: undefined,
-                i18nService: i18nService
+                graphList: [],
+                homeGridId: null,
+                i18nService: i18nService,
+                allPaths: null,
+                overflow: false,
+                MAX_RESULTS: 10
             }
         },
         methods: {
-            toResult(result) {
-                /*let homeGridId = this.homeGridId || this.graphList[0].grid.id;
-                let homeGraphElem = this.graphList.filter(elem => elem.grid.id === homeGridId)[0];
-                let path = [homeGraphElem];
-                for(let child of homeGraphElem.children) {
-
-                }*/
-
+            toResult(result, usePath) {
                 if (this.routeToEdit) {
                     Router.toEditGrid(result.grid.id, result.elem.id);
                 } else {
-                    Router.toGrid(result.grid.id, {
-                        highlightIds: [result.elem.id]
+                    let highlightIds = [result.elem.id];
+                    let firstGrid = result.grid.id;
+                    if (usePath && result.path.length > 1) {
+                        firstGrid = result.path[0].id;
+                        highlightIds = result.path.map(e => e.toNextElementId);
+                        highlightIds[highlightIds.length - 1] = result.elem.id;
+                    }
+                    Router.toGrid(firstGrid, {
+                        highlightIds: highlightIds
                     });
                 }
                 this.close();
@@ -85,34 +103,39 @@
                 let realPart = text.substring(index, index + this.searchTerm.length);
                 return text.replace(realPart, `<b>${realPart}</b>`)
             },
-            goToFirstResult() {
+            goToFirstResult(usePath) {
                 if (this.results && this.results.length > 0) {
-                    this.toResult(this.results[0]);
+                    this.toResult(this.results[0], usePath);
                 }
             },
             async search() {
                 let thiz = this;
 
                 util.debounce(async () => {
-                    await this.initPromise;
-                    this.results = undefined;
-
-                    if (!this.searchTerm) {
-                        this.results = [];
+                    thiz.overflow = false;
+                    if (thiz.searchTerm.length < 2) {
+                        thiz.results = undefined;
                         return;
                     }
-
-                    if (this.searchTerm.length < 2) {
-                        this.results = undefined;
+                    thiz.results = null;
+                    thiz.$forceUpdate();
+                    await new Promise(resolve => setTimeout(resolve, 10)); // to repaint and render "searching ..."
+                    await thiz.initPromise;
+                    if (!thiz.searchTerm) {
+                        thiz.results = [];
                         return;
                     }
-
                     let results = [];
-                    for (let grid of this.grids) {
+                    let homeGridId = thiz.homeGridId || thiz.graphList[0].grid.id;
+                    let homeGridGraphElem = thiz.graphList.filter(elem => elem.grid.id === homeGridId)[0];
+                    if (!thiz.allPaths) {
+                        thiz.allPaths = gridUtil.getAllPaths(homeGridGraphElem);
+                    }
+                    let count = 0;
+                    for (let grid of thiz.grids) {
                         for (let elem of grid.gridElements) {
-                            let currentLabel = i18nService.getTranslation(elem.label);
-                            let firstLabel = [i18nService.getContentLang(), currentLabel];
-                            let labels = firstLabel.concat(Object.entries(elem.label)).filter(([lang, label]) => !!label);
+                            count++;
+                            let labels = Object.entries(elem.label).filter(([lang, label]) => !!label);
                             let hadMatch = false;
                             for (let [lang, label] of labels) {
                                 let priority = getMatchPriority(label);
@@ -123,7 +146,6 @@
                             }
                         }
                     }
-
                     results.sort((a, b) => {
                         if (a.matchLang !== b.matchLang) {
                             if (a.matchLang === i18nService.getContentLang()) {
@@ -133,8 +155,17 @@
                                 return 1;
                             }
                         }
+                        if (a.path.length !== b.path.length) {
+                            if (a.path.length === 0) return 1;
+                            if (b.path.length === 0) return -1;
+                            return a.path.length - b.path.length;
+                        }
                         return a.priority - b.priority
                     });
+                    if (results.length > thiz.MAX_RESULTS) {
+                        results = results.slice(0, thiz.MAX_RESULTS - 1);
+                        thiz.overflow = true;
+                    }
                     thiz.results = results;
 
                     function getMatchPriority(label) {
@@ -154,7 +185,8 @@
                             elem: elem,
                             matchLabel: matchLabel,
                             matchLang: matchLang,
-                            priority: priority
+                            priority: priority,
+                            path: gridUtil.getGridPath(thiz.graphList, homeGridId, grid.id, thiz.allPaths)
                         })
                     }
                 }, 300, "SEARCH_ELEMENTS");
@@ -166,6 +198,9 @@
         async mounted() {
             this.initPromise = dataService.getGrids(true, true);
             this.grids = await this.initPromise;
+            this.graphList = gridUtil.getGraphList(this.grids);
+            let metadata = await dataService.getMetadata();
+            this.homeGridId = metadata.homeGridId;
         },
         beforeDestroy() {
         }
@@ -175,5 +210,9 @@
 <style scoped>
 .modal-container {
     min-height: 50vh;
+}
+
+input, button {
+    border-width: 1px;
 }
 </style>
