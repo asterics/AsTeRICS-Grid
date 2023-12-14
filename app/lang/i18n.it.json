@@ -122,7 +122,8 @@
   "automaticallyCloseTimeoutInSeconds": "Chiude automaticamente il timeout in secondi (0 = mai), attualmente funziona solo in Firefox",
   "keyboardEsc": "Tastiera: [Esc]",
   "cancel": "Annulla",
-  "keyboardCtrlEnter": "Tastiera: [Ctrl + Invio]",
+  "keyboardEnter": "[Enter]",
+  "keyboardCtrlEnter": "[Ctrl + Enter]",
   "save": "Salva",
   "keyboardCtrlLeft": "Tastiera: [Ctrl + Sinistra]",
   "okEditPrevious": "OK, modifica precedente",
@@ -937,9 +938,13 @@
   "stopListening": "Stop listening",
   "searchElement": "Search element",
   "search": "Search",
-  "searchBtnTitle": "Search (Ctrl + K)",
+  "searchBtnTitle": "Search [Ctrl + F]",
   "homeGrid": "Home Grid",
   "selectHomeGrid": "Select home grid",
   "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
-  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element"
+  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element",
+  "openSearchDialog": "Open search dialog",
+  "showElement": "Show element",
+  "showPathToElement": "Show path to element",
+  "notShowingAllResultsTryALongerSearchTerm": "Not showing all results. Try a longer search term."
 }
