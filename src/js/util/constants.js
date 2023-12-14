@@ -136,4 +136,7 @@ constants.OPTION_TYPES = {
     SELECT_COLORS: 'SELECT_COLORS'
 };
 
+constants.ARASAAC_AUTHOR = 'ARASAAC - CC (BY-NC-SA)';
+constants.ARASAAC_LICENSE_URL = 'https://arasaac.org/terms-of-use';
+
 export { constants };
