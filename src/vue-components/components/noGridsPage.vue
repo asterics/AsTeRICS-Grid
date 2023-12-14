@@ -34,7 +34,7 @@
                 </div>
                 <div class="row mt-3">
                     <div class="col-12">
-                        <button class="big-button col-12" @click="importData">
+                        <button class="big-button col-12" @click="importData" :disabled="loading">
                             <span v-if="!loading" class="fas fa-file-import me-2"/><span v-if="loading" class="fas fa-spinner fa-spin me-2"/> <span>{{ $t('importPredefinedConfiguration') }}</span>
                         </button>
                     </div>
