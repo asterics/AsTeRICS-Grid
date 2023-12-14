@@ -18,6 +18,7 @@ import { GridActionAudio } from '../model/GridActionAudio.js';
 import { GridActionSpeak } from '../model/GridActionSpeak.js';
 import { GridActionSpeakCustom } from '../model/GridActionSpeakCustom.js';
 import {audioUtil} from "../util/audioUtil.js";
+import {MainVue} from "../vue/mainVue.js";
 
 let actionService = {};
 
@@ -118,10 +119,12 @@ async function doAction(gridElement, action, options) {
             }
             break;
         case 'GridActionNavigate':
-            if (action.toHomeGrid) {
+            if (action.navType === GridActionNavigate.NAV_TYPES.TO_HOME) {
                 Router.toMain();
-            } else if (action.toLastGrid) {
+            } else if (action.navType === GridActionNavigate.NAV_TYPES.TO_LAST) {
                 Router.toLastGrid();
+            } else if (action.navType === GridActionNavigate.NAV_TYPES.OPEN_SEARCH) {
+                MainVue.showSearchModal(action);
             } else if (Router.isOnEditPage()) {
                 Router.toEditGrid(action.toGridId);
             } else {

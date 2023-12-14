@@ -78,26 +78,34 @@
                     </div>
                     <div v-if="action.modelName == 'GridActionNavigate'">
                         <div class="srow">
-                            <input id="toHomeCheckbox" type="checkbox" :disabled="action.toLastGrid" v-model="action.toHomeGrid"/>
-                            <label for="toHomeCheckbox" class="normal-text">{{ $t('navigateToHomeGrid') }}</label>
+                            <label for="selectNavType" class="four columns normal-text">{{ $t('navigationType') }}</label>
+                            <select class="eight columns" id="selectNavType" v-model="action.navType">
+                                <option v-for="type in Object.values(GridActionNavigate.NAV_TYPES)" :value="type">{{ type | translate }}</option>
+                            </select>
                         </div>
-                        <div class="srow">
-                            <input id="navigateBackChkbox" type="checkbox" :disabled="action.toHomeGrid" v-model="action.toLastGrid"/>
-                            <label for="navigateBackChkbox" class="normal-text">{{ $t('navigateToLastOpenedGrid') }}</label>
-                        </div>
-                        <div class="srow">
-                            <input id="addToCollectChk" type="checkbox" v-model="action.addToCollectElem"/>
-                            <label for="addToCollectChk" class="normal-text">{{ $t('addThisElementToCollectionElementsDespiteNav') }}</label>
-                        </div>
-                        <div class="srow">
+                        <div class="srow" v-if="action.navType === GridActionNavigate.NAV_TYPES.TO_GRID">
                             <div class="four columns">
                                 <label for="selectGrid" class="normal-text">{{ $t('navigateToGrid') }}</label>
                             </div>
-                            <select class="eight columns" id="selectGrid" v-model="action.toGridId" :disabled="action.toHomeGrid || action.toLastGrid">
+                            <select class="eight columns" id="selectGrid" v-model="action.toGridId" :disabled="action.toHomeGrid || action.toLastGrid || action.openSearchModal">
                                 <option v-for="grid in grids" :value="grid.id">
                                     {{grid.label | extractTranslation}}
                                 </option>
                             </select>
+                        </div>
+                        <div v-if="action.navType === GridActionNavigate.NAV_TYPES.OPEN_SEARCH">
+                            <div class="srow">
+                                <label for="searchTextInput" class="four columns normal-text">{{ $t('searchForCustomText') }}</label>
+                                <input id="searchTextInput" class="eight columns" type="text" v-model="action.searchText" :placeholder="$t('customText')"/>
+                            </div>
+                            <div class="srow">
+                                <input id="searchCollected" type="checkbox" v-model="action.searchCollectedText"/>
+                                <label for="searchCollected" class="normal-text">{{ $t('searchForCollectedText') }}</label>
+                            </div>
+                        </div>
+                        <div class="srow">
+                            <input id="addToCollectChk" type="checkbox" v-model="action.addToCollectElem"/>
+                            <label for="addToCollectChk" class="normal-text">{{ $t('addThisElementToCollectionElementsDespiteNav') }}</label>
                         </div>
                     </div>
                     <div v-if="action.modelName == 'GridActionARE'">
@@ -319,6 +327,7 @@
                 selectFromAllLanguages: false,
                 selectFromAllVoices: false,
                 GridActionYoutube: GridActionYoutube,
+                GridActionNavigate: GridActionNavigate,
                 GridElement: GridElement,
                 speechService: speechService
             }
