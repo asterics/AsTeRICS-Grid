@@ -38,6 +38,10 @@ let duplicatedCollectPause = 0;
 let lastCollectId = null;
 let lastCollectTime = 0;
 
+collectElementService.getText = function () {
+    return getSpeakText();
+};
+
 collectElementService.initWithElements = function (elements, dontAutoPredict) {
     registeredCollectElements = [];
     let oneCharacterElements = 0;
