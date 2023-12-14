@@ -100,6 +100,7 @@
   "navigateToHomeGrid": "Navigate to home grid",
   "navigateToLastOpenedGrid": "Prijeđi do zadnje otvorene ploče",
   "navigateToGrid": "Prijeđi na drugu ploču",
+  "navigateToSearch": "Open search dialog",
   "refreshSuggestionsOnChange": "Osvježi prijedloge za promjenu",
   "dictionaryToUse": "Rječnik za korištenje",
   "allDictionaries": "svi rječnici",
@@ -943,8 +944,11 @@
   "selectHomeGrid": "Select home grid",
   "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
   "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element",
-  "openSearchDialog": "Open search dialog",
   "showElement": "Show element",
   "showPathToElement": "Show path to element",
-  "notShowingAllResultsTryALongerSearchTerm": "Not showing all results. Try a longer search term."
+  "notShowingAllResultsTryALongerSearchTerm": "Not showing all results. Try a longer search term.",
+  "navigationType": "Navigation Type",
+  "searchForCustomText": "Search for custom text",
+  "customText": "Custom text",
+  "searchForCollectedText": "Search for collected text"
 }
