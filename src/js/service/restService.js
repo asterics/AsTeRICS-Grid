@@ -7,35 +7,21 @@ let restService = {};
 
 restService.doAction = async function (action) {
     try {
-        //ensure to have default values also in case the user deletes the field contents
-        let method = action.method;
-        if (!method) {
-            method = GridActionREST.defaults.method;
-        }
-
-        let contentType = action.contentType;
-        if (contentType === '') {
-            contentType = GridActionREST.defaults.contentType;
-        }
-
-        //as method GET does not have a body, conditionally set the body variable
-        let body;
-        if (method != 'GET') {
-            body = action.body;
-        }
-
-        console.log(`url: ${action.restUrl}, body: ${body}, method: ${method}, contenttype: ${contentType}`);
-        const response = await fetch(action.restUrl, {
-                method: method,
-                //mode: "no-cors",
-                headers: {
-                    'Content-Type': contentType
-                },
-                body: body
+        log.info(`url: ${action.restUrl}, body: ${action.body}, method: ${action.method}, contenttype: ${action.contentType}`);
+        let requestOptions = {
+            method: (action.method || GridActionREST.defaults.method),
+            //mode: "no-cors",method
+            headers: {
+                'Content-Type': (action.contentType || GridActionREST.defaults.contentType)
             }
-        );
+        };
+        if (!['GET', 'HEAD'].includes(requestOptions.method)) {
+            requestOptions.body = action.body;
+        }
+        log.info(`requestOptions: ${requestOptions}`);
+        const response = await fetch(action.restUrl, requestOptions);
         if (!response.ok) {
-            console.error(`REST call failed! Status message (${response.statusText}), statusCode (${response.status})`);
+            log.error(`REST call failed! Status message (${response.statusText}), statusCode (${response.status})`);
             MainVue.setTooltip(i18nService.t("restActionFailed!Reason:", response.statusText), {
                 revertOnClose: true,
                 timeout: 5000
@@ -45,7 +31,7 @@ restService.doAction = async function (action) {
             log.debug(`REST call ok, url: ${action.restUrl}, body ${action.body}`)
         }
     } catch (error) {
-        console.error(error);
+        log.error(error);
         MainVue.setTooltip(i18nService.t("restActionFailed!Reason:", error), {
             revertOnClose: true,
             timeout: 5000
