@@ -28,11 +28,8 @@ GridActionREST.defaults({
     id: '', //will be replaced by constructor
     modelName: GridActionREST.getModelName(),
     modelVersion: constants.MODEL_VERSION,
-    restUrl: '',
     method: 'POST', // POST, PUT, GET,....
-    contentType: 'text/plain', //text/plain, application/json
-    body: '' //The body / data of the request
-
+    contentType: 'text/plain' //text/plain, application/json
 });
 
 export { GridActionREST };
