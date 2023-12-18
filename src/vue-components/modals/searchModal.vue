@@ -1,6 +1,6 @@
 <template>
     <div class="modal">
-        <div class="modal-mask">
+        <div class="modal-mask" style="z-index: 9999">
             <div class="modal-wrapper">
                 <div class="modal-container" @keydown.esc="$emit('close')">
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
