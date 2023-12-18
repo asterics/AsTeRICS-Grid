@@ -87,7 +87,7 @@
                             <div class="four columns">
                                 <label for="selectGrid" class="normal-text">{{ $t('navigateToGrid') }}</label>
                             </div>
-                            <select class="eight columns" id="selectGrid" v-model="action.toGridId" :disabled="action.toHomeGrid || action.toLastGrid || action.openSearchModal">
+                            <select class="eight columns" id="selectGrid" v-model="action.toGridId">
                                 <option v-for="grid in grids" :value="grid.id">
                                     {{grid.label | extractTranslation}}
                                 </option>
