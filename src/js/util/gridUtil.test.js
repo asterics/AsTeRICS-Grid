@@ -194,7 +194,7 @@ function getGrid(id, navigateToList) {
             actions: [
                 {
                     modelName: 'GridActionNavigate',
-                    toLastGrid: navId === NAV_CONSTANTS.TO_LAST,
+                    navType: navId === NAV_CONSTANTS.TO_LAST ? GridActionNavigate.NAV_TYPES.TO_LAST : GridActionNavigate.NAV_TYPES.TO_GRID,
                     toGridId: [NAV_CONSTANTS.TO_LAST, NAV_CONSTANTS.TO_HOME].includes(navId) ? undefined : navId
                 }
             ]

@@ -87,7 +87,7 @@ gridUtil.generateGlobalGrid = function (locale, options) {
             authorURL: constants.ARASAAC_LICENSE_URL,
             url: 'https://api.arasaac.org/api/pictograms/38249?download=false&plural=false&color=true'
         }),
-        actions: [new GridActionNavigate({ toLastGrid: true })]
+        actions: [new GridActionNavigate({ navType: GridActionNavigate.NAV_TYPES.TO_LAST })]
     });
     let elementCollect = new GridElementCollect({
         width: 10,
@@ -471,7 +471,14 @@ function getNavigationIds(grid) {
     let allNavActions = grid.gridElements.reduce((total, elem) => {
         return total.concat(elem.actions.filter((a) => a.modelName === GridActionNavigate.getModelName()));
     }, []);
-    return allNavActions.map((a) => (a.toLastGrid ? NAVIGATION_ID_TO_LAST : a.toGridId));
+    return allNavActions
+        .map((a) => {
+            if (a.navType === GridActionNavigate.NAV_TYPES.TO_LAST) {
+                return NAVIGATION_ID_TO_LAST;
+            }
+            return a.navType === GridActionNavigate.NAV_TYPES.TO_GRID ? a.toGridId : null;
+        })
+        .filter((a) => !!a);
 }
 
 export { gridUtil };
