@@ -237,10 +237,14 @@ gridUtil.getGraphList = function (grids, removeGridId, orderByName) {
     grids = grids.filter((g) => g.id !== removeGridId);
     let gridGraphList = [];
     let gridGraphMap = {};
+    let gridNavMap = {};
+    for (let grid of grids) {
+        gridNavMap[grid.id] = getNavigationIds(grid);
+    }
     grids.forEach((grid) => {
-        let parents = grids.filter((g) => hasElemNavigatingTo(g.gridElements, grid.id));
-        let children = grids.filter((g) => getNavigationIds(grid).indexOf(g.id) !== -1);
-        if (parents.length === 1 && getNavigationIds(grid).indexOf(NAVIGATION_ID_TO_LAST) !== -1) {
+        let parents = grids.filter((g) => gridNavMap[g.id].includes(grid.id));
+        let children = grids.filter((g) => gridNavMap[grid.id].indexOf(g.id) !== -1);
+        if (parents.length === 1 && gridNavMap[grid.id].indexOf(NAVIGATION_ID_TO_LAST) !== -1) {
             children.push(parents[0]);
         }
         let graphListElem = {
@@ -302,30 +306,23 @@ gridUtil.getAllPaths = function (startGraphElem, paths, currentPath) {
 }
 
 /**
- * @see gridUtil.getAllPaths
- * @return {*[]|number} an array containing all possible paths through the graph with the given
- *                      start element in two different forms: as an array of grids and an array of ids.
- *                      e.g. [{
- *                              path: [startElem.grid, childGrid, childOfChild, ...],
- *                              ids: [startElemId, childGridId, childOfChildId, ...],
- *                            },
- *                            {
- *                              path: [startElem.grid, otherChild, ...]
- *                              ids: [startElemId, otherChildId, ...]
- *                            }, ...]
- *
+ * returns a map [gridID] => [shortest path from start elem] for all existing grids that can be reached
+ * from startElem
+ * @param startGraphElem start element, one that was returned by gridUtil.getGraphList
+ * @return {{}}
  */
-gridUtil.getAllPathsCombined = function (startGraphElem) {
+gridUtil.getIdPathMap = function (startGraphElem) {
     let allPaths = gridUtil.getAllPaths(startGraphElem);
-    let allPathsOnlyIds = allPaths.map(path => path.map(elem => elem.grid.id));
-    let pathsCombined = allPaths.map((path, index) => {
-        return {
-            path: path,
-            ids: allPathsOnlyIds[index],
-            idsSet: new Set(allPathsOnlyIds[index])
+    let idPathMap = {};
+    for (let path of allPaths) {
+        for (let i = 0; i < path.length; i++) {
+            let elem = path[i];
+            if (!idPathMap[elem.grid.id] || idPathMap[elem.grid.id].length > i + 1) {
+                idPathMap[elem.grid.id] = path.slice(0, i + 1);
+            }
         }
-    });
-    return pathsCombined;
+    }
+    return idPathMap;
 }
 
 /**
@@ -333,12 +330,12 @@ gridUtil.getAllPathsCombined = function (startGraphElem) {
  * @param gridsOrGraphList array of grids of graphElements (returned by gridUtil.getGraphList)
  * @param fromGridId id of grid to start navigation from
  * @param toGridId id of target grid
- * @param allPathsCombined optional result of gridUtil.getAllPathsCombined(fromGridGraphElement) for performance optimization
+ * @param idPathMap optional result of gridUtil.getIdPathMap(fromGridGraphElement) for performance optimization
  * @return {null|*[]} sorted array of grids representing the path, including start and target grid,
  *                    including additional property "toNextElementId" and "toNextElementLabel" with the
  *                    element ID/label which navigates to the next entry in the list.
  */
-gridUtil.getGridPath = function (gridsOrGraphList, fromGridId, toGridId, allPathsCombined) {
+gridUtil.getGridPath = function (gridsOrGraphList, fromGridId, toGridId, idPathMap) {
     if (!gridsOrGraphList || !gridsOrGraphList.length || !fromGridId || !toGridId) {
         return [];
     }
@@ -355,18 +352,8 @@ gridUtil.getGridPath = function (gridsOrGraphList, fromGridId, toGridId, allPath
     if (fromGridId === toGridId) {
         return [startElem.grid];
     }
-    allPathsCombined = allPathsCombined || gridUtil.getAllPathsCombined(startElem);
-    let shortestPath;
-    let shortestPathLength = Number.MAX_SAFE_INTEGER;
-    for (let elem of allPathsCombined) {
-        if (elem.ids.length < shortestPathLength) {
-            if (elem.idsSet.has(toGridId)) {
-                shortestPath = elem.path.slice(0, elem.ids.indexOf(toGridId) + 1);
-                shortestPathLength = shortestPath.length;
-            }
-        }
-    }
-
+    idPathMap = idPathMap || gridUtil.getIdPathMap(startElem);
+    let shortestPath = idPathMap[toGridId] ? idPathMap[toGridId] : null;
     let returnPath = shortestPath ? shortestPath.map((graphElem) => graphElem.grid) : [];
     returnPath = JSON.parse(JSON.stringify(returnPath));
     if (returnPath && returnPath.length > 1) {
@@ -374,7 +361,11 @@ gridUtil.getGridPath = function (gridsOrGraphList, fromGridId, toGridId, allPath
             let nextId = returnPath[i + 1].id;
             for (let element of returnPath[i].gridElements) {
                 for (let action of element.actions) {
-                    if (action.modelName === GridActionNavigate.getModelName() && action.toGridId === nextId) {
+                    if (
+                        action.modelName === GridActionNavigate.getModelName() &&
+                        action.navType === GridActionNavigate.NAV_TYPES.TO_GRID &&
+                        action.toGridId === nextId
+                    ) {
                         returnPath[i].toNextElementId = element.id;
                         returnPath[i].toNextElementLabel = element.label;
                         break;
@@ -452,19 +443,6 @@ function getAllChildrenRecursiveGraphElement(graphElem, children) {
         children = getAllChildrenRecursiveGraphElement(elem, children);
     });
     return children;
-}
-
-function getElemsNavigatingTo(elems, id) {
-    return elems.filter(
-        (elem) =>
-            elem.actions.filter(
-                (action) => action.modelName === GridActionNavigate.getModelName() && action.toGridId === id
-            ).length > 0
-    );
-}
-
-function hasElemNavigatingTo(elems, id) {
-    return getElemsNavigatingTo(elems, id).length > 0;
 }
 
 function getNavigationIds(grid) {
