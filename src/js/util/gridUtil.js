@@ -132,21 +132,9 @@ gridUtil.generateGlobalGrid = function (locale, options) {
         }),
         actions: [new GridActionCollectElement({ action: GridActionCollectElement.COLLECT_ACTION_CLEAR })]
     });
-    let elementSearch = new GridElement({
-        width: 1,
-        height: 1,
-        x: 5 + elementCollect.width,
-        y: 0,
-        image: new GridImage({
-            author: constants.ARASAAC_AUTHOR,
-            authorURL: constants.ARASAAC_LICENSE_URL,
-            url: 'https://api.arasaac.org/api/pictograms/27391?download=false&plural=false&color=false'
-        }),
-        actions: [new GridActionNavigate({ navType: GridActionNavigate.NAV_TYPES.OPEN_SEARCH })]
-    });
     return new GridData({
         label: i18nService.getTranslationObject(i18nService.t('globalGrid'), locale),
-        gridElements: [elementHome, elementBack, elementCollect, elementSpeak, elementBackspace, elementClear, elementSearch],
+        gridElements: [elementHome, elementBack, elementCollect, elementSpeak, elementBackspace, elementClear],
         rowCount: 3
     });
 };

@@ -76,7 +76,7 @@
                 graphList: [],
                 homeGridId: null,
                 i18nService: i18nService,
-                allPathsCombined: null,
+                idPathMap: null,
                 overflow: false,
                 MAX_RESULTS: 10
             }
@@ -128,8 +128,8 @@
                     let results = [];
                     let homeGridId = thiz.homeGridId || thiz.graphList[0].grid.id;
                     let homeGridGraphElem = thiz.graphList.filter(elem => elem.grid.id === homeGridId)[0];
-                    if (!thiz.allPathsCombined) {
-                        thiz.allPathsCombined = gridUtil.getAllPathsCombined(homeGridGraphElem);
+                    if (!thiz.idPathMap) {
+                        thiz.idPathMap = gridUtil.getIdPathMap(homeGridGraphElem);
                     }
                     let count = 0;
                     for (let grid of thiz.grids) {
@@ -186,7 +186,7 @@
                             matchLabel: matchLabel,
                             matchLang: matchLang,
                             priority: priority,
-                            path: gridUtil.getGridPath(thiz.graphList, homeGridId, grid.id, thiz.allPathsCombined)
+                            path: gridUtil.getGridPath(thiz.graphList, homeGridId, grid.id, thiz.idPathMap)
                         })
                     }
                 }, 300, "SEARCH_ELEMENTS");
