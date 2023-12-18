@@ -125,7 +125,8 @@
                 unlockCounter: UNLOCK_COUNT,
                 backgroundColor: 'white',
                 MainVue: MainVue,
-                localHighlightIds: this.highlightIds
+                localHighlightIds: this.highlightIds,
+                highlightTimeoutHandler: null
             }
         },
         components: {
@@ -305,10 +306,11 @@
                 });
             },
             highlightElements(highlightIds) {
+                clearTimeout(this.highlightTimeoutHandler);
                 highlightIds = highlightIds || this.localHighlightIds;
                 if (highlightIds) {
                     $(`#${highlightIds[0]}`).addClass('highlight');
-                    setTimeout(() => {
+                    this.highlightTimeoutHandler = setTimeout(() => {
                         this.stopHighlightElements();
                     }, 15000);
                 }
