@@ -22,7 +22,7 @@
                                     <div class="d-flex align-items-center">
                                         <div>
                                             <span v-for="(pathElem, index) in result.path">
-                                                <span v-if="index === 0">{{ pathElem.label | extractTranslation }}<span class="fas fa-arrow-right mx-2"/></span>
+                                                <span v-if="index === 0">{{ $t('homeGrid')  }}<span class="fas fa-arrow-right mx-2"/></span>
                                                 <span v-if="pathElem.toNextElementLabel">{{ pathElem.toNextElementLabel | extractTranslation }}<span class="fas fa-arrow-right mx-2"/></span>
                                             </span>
                                             <span v-if="i18nService.getContentLang() === result.matchLang" v-html="highlightSearch(result.matchLabel)"></span>
