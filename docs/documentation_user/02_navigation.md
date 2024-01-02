@@ -186,6 +186,22 @@ The following elements are available in the change users view:
 
 For information about offline or online users and how to add them see [Users](06_users.md).
 
+## Search functionality
+These are the possibilities to open the dialog for searching for grid elements in the current configuration:
+1. Click the button `Search` in the top bar in the Main View
+2. Press `Ctrl + F` on the keyboard in one of these views: "Main", "Manage Grids" or "Edit grid"
+3. Click on `More -> Search` in the top bar of "Edit grid" view
+
+### Search results
+Search results can be used in these ways:
+1. **Click on the image of the result**: directly navigates to the selected element and highlights it.
+2. **Click on the path next to the image**: navigates to the selected element step-by-step by highlighting the path beginning from the home grid.
+
+These keyboard shortcuts are available:
+1. `[Enter]`: directly navigates to the first search result
+2. `[Ctrl + Enter]`: shows the path to the first search result
+
+
 [&#x2190; Previous Chapter](01_terms.md) [Next Chapter &#x2192;](03_appearance_layout.md)
 
 [Back to Overview](README.md)
