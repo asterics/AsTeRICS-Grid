@@ -9,7 +9,7 @@
                     </div>
 
                     <div class="modal-body mt-5 row">
-                        <input type="text" v-model="searchTerm" @input="search()" v-focus :placeholder="$t('searchElement') + '...'" class="col-8 col-sm-10 mb-5" @keydown.enter="goToFirstResult" @keydown.ctrl.enter="goToFirstResult(true)"/>
+                        <input type="text" v-model="searchTerm" @input="search()" v-focus :placeholder="$t('searchElement') + '...'" class="col-8 col-sm-10 mb-5" @keydown.enter="goToFirstResult()" @keydown.ctrl.enter="goToFirstResult(true)"/>
                         <div class="col-sm-2 col-4">
                             <button class="col-12" :title="$t('search')"><i class="fas fa-search"/></button>
                         </div>
