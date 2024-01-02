@@ -75,6 +75,7 @@
     import {GridElementCollect} from "../../js/model/GridElementCollect.js";
     import {GridActionCollectElement} from "../../js/model/GridActionCollectElement.js";
     import {pouchDbService} from "../../js/service/data/pouchDbService.js";
+    import {MainVue} from "../../js/vue/mainVue.js";
 
     let vueApp = null;
     let gridInstance = null;
@@ -340,6 +341,7 @@
         var CONTEXT_GRID_TRANSLATION = "CONTEXT_GRID_TRANSLATION";
         var CONTEXT_EDIT_GLOBAL_GRID = "CONTEXT_EDIT_GLOBAL_GRID";
         var CONTEXT_END_EDIT_GLOBAL_GRID = "CONTEXT_END_EDIT_GLOBAL_GRID";
+        var CONTEXT_SEARCH = "CONTEXT_SEARCH";
 
         var itemsGlobal = {
             CONTEXT_NEW_GROUP: {
@@ -398,6 +400,8 @@
             'CONTEXT_LAYOUT_NORMALIZE': {name: i18nService.t('normalizeGridLayout'), icon: "fas fa-th"},
             'CONTEXT_EDIT_GLOBAL_GRID': {name: i18nService.t('editGlobalGrid'), icon: "fas fa-globe", visible: !!vueApp.metadata.globalGridId && vueApp.metadata.globalGridActive && vueApp.metadata.globalGridId !== vueApp.gridData.id},
             'CONTEXT_END_EDIT_GLOBAL_GRID': {name: i18nService.t('endEditGlobalGrid'), icon: "fas fa-globe", visible: vueApp.metadata.globalGridId === vueApp.gridData.id},
+            SEP2: "---------",
+            'CONTEXT_SEARCH': {name: i18nService.t('searchBtnTitle'), icon: "fas fa-search"},
         };
 
         $.contextMenu({
@@ -508,6 +512,9 @@
                     break;
                 case CONTEXT_END_EDIT_GLOBAL_GRID:
                     Router.toEditGrid(vueApp.metadata.lastOpenedGridId);
+                    break;
+                case CONTEXT_SEARCH:
+                    MainVue.showSearchModal();
                     break;
             }
         }
