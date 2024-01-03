@@ -79,17 +79,21 @@ You can change the language and voice settings in the **Settings** menu.
 
 ### Navigate to other grid
 
-Clicking on "Edit" of a "navigate to other grid" action (or creating a new one) shows the following configuration possibilities:
-
-![action navigate to other grid](./img/action_navigate_en.jpg)
+![action navigate to other grid](./img/action_navigate_en1.jpg)
 
 *Fig. 4: Configuration possibilites of "Navigate to other grid"*
 
-- "Navigate to grid" allows you to select the grid to switch to if this action is performed. The combobox contains a list of the names of all available grids of the current user. 
+Clicking on "Edit" of a "navigate to other grid" action (or creating a new one) shows the following configuration possibilities (Fig. 4):
 
-- Alternatively the option "Navigate to last opened grid" can be activated.
-
-- Additionally, the option "Add this element to collection elements" can be activated, in case it is necessary for this cell to appear in the accumulated phrase.
+* **Navigation type**: allows to choose which type of navigation should be performed:
+   * **Navigate to grid**: navigates to any other grid that is selected by name. This type has this additional property:
+      * *Navigate to grid*: allows you to select the grid to switch to if this action is performed. The combobox contains a list of the names of all available grids of the current user.
+   * **Navigate to home grid**: navigates to the home grid, see [documentation for home grid](02_navigation.md#home-grid)
+   * **Navigate to last opened grid**: navigates to the previously opened grid, can be used for a "back" functionality
+   * **Open search dialog**: opens the search dialog, which allows to navigate to any element in the current configuration, see [documentation of search function](02_navigation.md#search-function). This type has these additional properties:
+       * *Search for custom text*: if specified the custom text is used to pre-fill the text in the search bar (optional)
+       * *Search for collected text*: if checked the currently collected text of the collect element is used to pre-fill the search bar
+* **Add this element to collection elements despite navigating**: if checked, this element is added to the collect element, despite the fact that it navigates to another grid.
 
 ### Speak custom text
 
