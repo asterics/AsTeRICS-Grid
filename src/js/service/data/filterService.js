@@ -128,6 +128,7 @@ function getModelConversionFunctions(objectModelVersion) {
             filterFns.push(function (object, filterOptions) {
                 //fn from V1 to V2
                 // new structure of input configuration
+                if (!object) return;
                 if (object.modelName === MetaData.getModelName()) {
                     log.info('converting model version from V1 to V2: ' + object.modelName);
                     let inputConfig = object.inputConfig;
@@ -160,6 +161,7 @@ function getModelConversionFunctions(objectModelVersion) {
             filterFns.push(function (gridData, filterOptions) {
                 //fn from V2 to V3
                 // added translatable labels of all elements
+                if (!gridData) return;
                 if (gridData.modelName === GridData.getModelName()) {
                     log.debug('converting model version from V2 to V3: ' + gridData.modelName);
                     let locale = gridData.locale || i18nService.getContentLang();
@@ -197,6 +199,7 @@ function getModelConversionFunctions(objectModelVersion) {
             filterFns.push(function (gridData, filterOptions) {
                 // fn from V3 to V4
                 // new collect elements with image collecting capabilities and options
+                if (!gridData) return;
                 if (gridData.modelName === GridData.getModelName()) {
                     log.debug('converting model version from V3 to V4: ' + (gridData.label ? gridData.label.de : ''));
                     for (let i = 0; i < gridData.gridElements.length; i++) {
@@ -226,6 +229,7 @@ function getModelConversionFunctions(objectModelVersion) {
             filterFns.push(function (gridData, filterOptions) {
                 // fn from V4 to V5
                 // new structure for GridActionNavigate actions
+                if (!gridData) return;
                 if (gridData.modelName === GridData.getModelName()) {
                     for (let element of gridData.gridElements) {
                         for (let action of element.actions) {
