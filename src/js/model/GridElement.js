@@ -15,6 +15,7 @@ import { GridActionChangeLang } from './GridActionChangeLang';
 import { GridActionYoutube } from './GridActionYoutube';
 import { GridActionOpenWebpage } from './GridActionOpenWebpage.js';
 import { GridActionAudio } from './GridActionAudio.js';
+import {WordForm} from "./WordForm.js";
 
 class GridElement extends Model({
     id: String,
@@ -25,6 +26,7 @@ class GridElement extends Model({
     x: [Number],
     y: [Number],
     label: [Object, String, undefined], //map locale -> translation, e.g. "de" => LabelDE
+    wordForms: [Model.Array(WordForm)],
     backgroundColor: [String],
     colorCategory: [String],
     hidden: [Boolean],
@@ -47,6 +49,7 @@ class GridElement extends Model({
         };
         properties = modelUtil.setDefaults(properties, elementToCopy, GridElement) || {};
         properties.actions = properties.actions || [new GridActionSpeak()];
+        properties.wordForms = properties.wordForms || [];
         super(Object.assign(defaults, properties));
         this.id = this.id || modelUtil.generateId('grid-element');
     }

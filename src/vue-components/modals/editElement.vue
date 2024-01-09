@@ -16,6 +16,7 @@
                             <edit-element-collect v-if="gridElement.type === GridElement.ELEMENT_TYPE_COLLECT" :grid-element="gridElement"></edit-element-collect>
                         </div>
                         <edit-element-image v-if="currentTab === TABS.TAB_IMAGE" :grid-element="gridElement" :grid-data="gridData" :image-search="imageSearch"></edit-element-image>
+                        <edit-element-word-forms v-if="currentTab === TABS.TAB_WORDFORMS" :grid-element="gridElement" :grid-data="gridData"></edit-element-word-forms>
                         <edit-element-actions v-if="currentTab === TABS.TAB_ACTIONS" :grid-element="gridElement" :grid-data="gridData"></edit-element-actions>
                     </div>
 
@@ -62,15 +63,18 @@
     import {i18nService} from "../../js/service/i18nService.js";
     import EditElementCollect from "./editElementCollect.vue";
     import EditElementHeader from "../components/editElementHeader.vue";
+    import EditElementWordForms from "./editElementWordForms.vue";
 
     const TAB_GENERAL = 'TAB_GENERAL';
     const TAB_IMAGE = 'TAB_IMAGE';
+    const TAB_WORDFORMS = 'TAB_WORDFORMS';
     const TAB_ACTIONS = 'TAB_ACTIONS';
-    const TABS = {TAB_GENERAL, TAB_IMAGE, TAB_ACTIONS};
+    const TABS = {TAB_GENERAL, TAB_IMAGE, TAB_WORDFORMS,TAB_ACTIONS};
 
     export default {
         props: ['editElementIdParam', 'gridDataId', 'gridInstance'],
         components: {
+            EditElementWordForms,
             EditElementHeader,
             EditElementCollect,
             NavTabs, EditElementGeneral, EditElementImage, EditElementActions, EditElementYoutube

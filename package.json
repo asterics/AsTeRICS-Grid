@@ -20,7 +20,8 @@
     "predictionary": "^1.6.0",
     "superlogin-client": "^0.8.0",
     "vue": "^2.7.0",
-    "vue-i18n": "8"
+    "vue-i18n": "8",
+    "vue-multiselect": "^2.1.8"
   },
   "devDependencies": {
     "@babel/core": "^7.21.8",
