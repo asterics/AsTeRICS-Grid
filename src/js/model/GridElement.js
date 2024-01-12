@@ -31,6 +31,7 @@ class GridElement extends Model({
     backgroundColor: [String],
     colorCategory: [String],
     hidden: [Boolean],
+    dontCollect: [Boolean],
     image: [GridImage],
     actions: [Object],
     type: String,

@@ -952,5 +952,6 @@
   "navigationType": "Navigation Type",
   "searchForCustomText": "Search for custom text",
   "customText": "Custom text",
-  "searchForCollectedText": "Search for collected text"
+  "searchForCollectedText": "Search for collected text",
+  "dontAddElementToCollectElement": "Don''t add element to collect element"
 }
