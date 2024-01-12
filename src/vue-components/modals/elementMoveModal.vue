@@ -8,7 +8,7 @@
                     </div>
 
                     <div class="modal-body container-fluid px-0" v-if="gridElement">
-                        <grid-selector class="mt-4" v-model="selectedGrid" :exclude-id="gridId" :select-label="i18nService.t('moveElementToGrid')"></grid-selector>
+                        <grid-selector class="mt-4" v-model="selectedGrid" :exclude-id="gridId" :include-global="true" :select-label="i18nService.t('moveElementToGrid')"></grid-selector>
 
                         <div class="srow">
                             <input id="moveAll" type="checkbox" v-model="moveAllElements"/>
