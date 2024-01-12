@@ -471,6 +471,9 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
     if (getActionTypes(element).some((type) => ignoreActions.includes(type))) {
         return; // dont collect elements containing "ignoreActions"
     }
+    if (element.dontCollect) {
+        return;
+    }
     let navigateAction = getActionOfType(element, GridActionNavigate.getModelName());
     if (navigateAction && getLabel(element).length !== 1 && !navigateAction.addToCollectElem) {
         return; // no adding of text if the element contains an navigate action and it's no single keyboard character
