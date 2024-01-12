@@ -9,7 +9,7 @@
         </div>
         <div class="srow">
             <label class="three columns">Tags</label>
-            <multiselect class="nine columns" v-model="wordForm.tags" :options="TAGS" :multiple="true" :close-on-select="false" :clear-on-select="false" placeholder="Choose tags">
+            <multiselect class="nine columns" v-model="wordForm.tags" :options="TAGS" :multiple="true" :close-on-select="false" :clear-on-select="false" :taggable="true" @tag="addTag(wordForm, $event)" placeholder="Choose tags">
             </multiselect>
         </div>
         <div class="srow">
@@ -22,6 +22,7 @@
 <script>
     import Multiselect from 'vue-multiselect';
     import {i18nService} from "../../js/service/i18nService.js";
+    import {constants} from "../../js/util/constants.js";
 
     export default {
         props: ["value"],
@@ -30,15 +31,7 @@
             return {
                 wordForm: this.value,
                 langs: i18nService.getAllLanguages(),
-                TAGS: ["BASE",
-                    "NEGATION",
-                    "SINGULAR", "PLURAL",
-                    "1.PERS", "2.PERS", "3.PERS",
-                    "1.CASE", "2.CASE", "3.CASE", "4.CASE", "5.CASE", "6.CASE",
-                    "FEMININE", "MASCULINE", "NEUTRAL",
-                    "COMPARATIVE", "SUPERLATIVE",
-                    "PRESENT", "PAST", "FUTURE",
-                    "INDEFINITE", "DEFINITE"]
+                TAGS: JSON.parse(JSON.stringify(constants.WORDFORM_TAGS))
             }
         },
         watch: {
@@ -50,6 +43,10 @@
             }
         },
         methods: {
+            addTag(wordForm, newTag) {
+                this.TAGS.push(newTag);
+                wordForm.tags.push(newTag);
+            }
         },
         mounted() {
         },

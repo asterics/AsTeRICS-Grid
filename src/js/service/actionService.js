@@ -19,6 +19,8 @@ import { GridActionSpeak } from '../model/GridActionSpeak.js';
 import { GridActionSpeakCustom } from '../model/GridActionSpeakCustom.js';
 import {audioUtil} from "../util/audioUtil.js";
 import {MainVue} from "../vue/mainVue.js";
+import {stateService} from "./stateService.js";
+import {GridActionWordForm} from "../model/GridActionWordForm.js";
 
 let actionService = {};
 
@@ -38,7 +40,6 @@ actionService.doAction = function (gridId, gridElementId) {
             }
         }
         doActions(gridElement, gridId);
-        $(window).trigger(constants.ELEMENT_EVENT_ID, [gridElement]);
     });
 };
 
@@ -74,10 +75,14 @@ async function doActions(gridElement, gridId) {
             actions: actions
         });
     });
+    $(window).trigger(constants.ELEMENT_EVENT_ID, [gridElement]);
     metadata = metadata || (await dataService.getMetadata());
     let actionTypes = actions.map((a) => a.modelName);
     if (!actionTypes.includes(GridActionNavigate.getModelName()) && metadata.toHomeAfterSelect) {
         Router.toMain();
+    }
+    if (!actionTypes.includes(GridActionWordForm.getModelName())) {
+        stateService.resetWordFormTags();
     }
 }
 
@@ -96,7 +101,10 @@ async function doAction(gridElement, action, options) {
     switch (action.modelName) {
         case 'GridActionSpeak':
             log.debug('action speak');
-            speechService.speak(gridElement.label, {
+            let langWordFormMap = stateService.getCurrentWordFormAllLangs(gridElement.id);
+            let labelCopy = JSON.parse(JSON.stringify(gridElement.label));
+            Object.assign(labelCopy, langWordFormMap);
+            speechService.speak(labelCopy, {
                 lang: action.speakLanguage,
                 speakSecondary: true,
                 minEqualPause: minPauseSpeak
@@ -117,6 +125,10 @@ async function doAction(gridElement, action, options) {
                 audioUtil.stopAudio();
                 audioUtil.playAudio(action.dataBase64);
             }
+            break;
+        case 'GridActionWordForm':
+            stateService.addWordFormTags(action.tags);
+            collectElementService.addWordFormTagsToLast(action.tags);
             break;
         case 'GridActionNavigate':
             if (action.navType === GridActionNavigate.NAV_TYPES.TO_HOME) {

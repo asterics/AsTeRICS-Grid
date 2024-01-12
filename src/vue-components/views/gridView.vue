@@ -87,6 +87,7 @@
     import UnlockModal from "../modals/unlockModal.vue";
     import {printService} from "../../js/service/printService";
     import {MainVue} from "../../js/vue/mainVue.js";
+    import {stateService} from "../../js/service/stateService.js";
 
     let vueApp = null;
     let gridInstance = null;
@@ -299,6 +300,7 @@
             reload(gridData) {
                 if (gridData) {
                     this.gridData = JSON.parse(JSON.stringify(gridData));
+                    stateService.setCurrentGrid(this.gridData);
                 }
                 return gridInstance.reinit(gridData).then(() => {
                     this.reinitInputMethods(true);
@@ -495,6 +497,7 @@
                 thiz.metadata = metadata;
                 return Promise.resolve();
             }).then(() => {
+                stateService.setCurrentGrid(thiz.gridData);
                 return initGrid(thiz.gridData.id);
             }).then(() => {
                 initContextmenu();

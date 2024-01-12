@@ -16,6 +16,7 @@ import { GridActionYoutube } from './GridActionYoutube';
 import { GridActionOpenWebpage } from './GridActionOpenWebpage.js';
 import { GridActionAudio } from './GridActionAudio.js';
 import {WordForm} from "./WordForm.js";
+import {GridActionWordForm} from "./GridActionWordForm.js";
 
 class GridElement extends Model({
     id: String,
@@ -60,8 +61,8 @@ class GridElement extends Model({
         return newElem;
     }
 
-    toHTML(metadata, locale) {
-        return templates.getGridItem(this, locale, metadata);
+    toHTML(metadata) {
+        return templates.getGridItem(this, metadata);
     }
 
     hasSetPosition() {
@@ -83,6 +84,7 @@ class GridElement extends Model({
             GridActionNavigate,
             GridActionSpeakCustom,
             GridActionAudio,
+            GridActionWordForm,
             GridActionPredict,
             GridActionCollectElement,
             GridActionARE,

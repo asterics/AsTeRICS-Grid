@@ -19,6 +19,8 @@ import { dataService } from './data/dataService.js';
 import { GridActionAudio } from '../model/GridActionAudio.js';
 import { TextConfig } from '../model/TextConfig.js';
 import {arasaacService} from "./pictograms/arasaacService.js";
+import {GridActionWordForm} from "../model/GridActionWordForm.js";
+import {stateService} from "./stateService.js";
 
 let collectElementService = {};
 
@@ -204,6 +206,20 @@ collectElementService.doCollectElementActions = async function (action) {
     predictionService.predict(collectedText, dictionaryKey);
 };
 
+collectElementService.addWordFormTagsToLast = function (tags) {
+    let lastElement = collectedElements[collectedElements.length - 1];
+    if (lastElement) {
+        let currentLabel = getLabel(lastElement);
+        let allTags = util.deduplicateArray(lastElement.wordFormTags.concat(tags));
+        let newLabel = stateService.getWordForm(lastElement, allTags);
+        if (newLabel && newLabel !== currentLabel) {
+            lastElement.wordFormTags = allTags;
+            setLabel(lastElement, newLabel);
+            updateCollectElements();
+        }
+    }
+};
+
 async function applyGrammarCorrection(newText) {
     let changedSomething = false;
     let originalText = getSpeakText();
@@ -366,7 +382,11 @@ function getLastElement() {
 }
 
 function getLabel(element) {
-    return i18nService.getTranslation(element.label) || '';
+    let wordForm = null;
+    if (element.wordFormTags.length > 0) {
+        wordForm = stateService.getWordForm(element, element.wordFormTags);
+    }
+    return wordForm || i18nService.getTranslation(element.label) || '';
 }
 
 function setLabel(element, newLabel) {
@@ -458,7 +478,8 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         GridActionSpeak.getModelName(),
         GridActionSpeakCustom.getModelName(),
         GridActionNavigate.getModelName(),
-        GridActionAudio.getModelName()
+        GridActionAudio.getModelName(),
+        GridActionWordForm.getModelName()
     ];
     let ignoreActions = GridElement.getActionTypeModelNames().filter((e) => !notIgonoreActions.includes(e));
     if (getActionTypes(element).some((type) => ignoreActions.includes(type))) {
@@ -469,7 +490,8 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         return; // no adding of text if the element contains an navigate action and it's no single keyboard character
     }
 
-    let label = getLabel(element);
+    let label = stateService.getDisplayText(element.id) || getLabel(element);
+    element.wordFormTags = stateService.getCurrentWordFormTags();
     let image = getImage(element);
     let lastImage = getLastImage();
 
