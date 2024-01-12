@@ -6,6 +6,7 @@ class GridActionWordForm extends Model({
     id: String,
     modelName: String,
     modelVersion: String,
+    type: [String],
     tags: [Model.Array(String)]
 }) {
     constructor(properties, elementToCopy) {
@@ -19,10 +20,23 @@ class GridActionWordForm extends Model({
     }
 }
 
+GridActionWordForm.WORDFORM_MODE_CHANGE_ELEMENTS = "WORDFORM_MODE_CHANGE_ELEMENTS";
+GridActionWordForm.WORDFORM_MODE_CHANGE_BAR = "WORDFORM_MODE_CHANGE_BAR";
+GridActionWordForm.WORDFORM_MODE_CHANGE_EVERYWHERE = "WORDFORM_MODE_CHANGE_EVERYWHERE";
+GridActionWordForm.WORDFORM_MODE_NEXT_FORM = 'WORDFORM_MODE_NEXT_FORM';
+
+GridActionWordForm.MODES = [
+    GridActionWordForm.WORDFORM_MODE_CHANGE_ELEMENTS,
+    GridActionWordForm.WORDFORM_MODE_CHANGE_BAR,
+    GridActionWordForm.WORDFORM_MODE_CHANGE_EVERYWHERE,
+    GridActionWordForm.WORDFORM_MODE_NEXT_FORM
+];
+
 GridActionWordForm.defaults({
     id: '', //will be replaced by constructor
     modelName: GridActionWordForm.getModelName(),
     modelVersion: constants.MODEL_VERSION,
+    type: GridActionWordForm.WORDFORM_MODE_CHANGE_ELEMENTS,
     tags: []
 });
 

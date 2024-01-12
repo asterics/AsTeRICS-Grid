@@ -209,15 +209,33 @@ collectElementService.doCollectElementActions = async function (action) {
 collectElementService.addWordFormTagsToLast = function (tags) {
     let lastElement = collectedElements[collectedElements.length - 1];
     if (lastElement) {
-        let currentLabel = getLabel(lastElement);
-        let allTags = util.deduplicateArray(lastElement.wordFormTags.concat(tags));
-        let newLabel = stateService.getWordForm(lastElement, allTags);
+        let lastElementCopy = JSON.parse(JSON.stringify(lastElement));
+        lastElementCopy.wordFormTags = lastElementCopy.wordFormTags || [];
+        let currentLabel = getLabel(lastElementCopy);
+        for (let tag of tags) {
+            if (!lastElementCopy.wordFormTags.includes(tag)) {
+                lastElementCopy.wordFormTags.push(tag);
+            } else {
+                lastElementCopy.wordFormTags = lastElementCopy.wordFormTags.filter((t) => t !== tag);
+            }
+        }
+        let newLabel = stateService.getWordForm(lastElementCopy, lastElementCopy.wordFormTags);
         if (newLabel && newLabel !== currentLabel) {
-            lastElement.wordFormTags = allTags;
-            setLabel(lastElement, newLabel);
+            collectedElements[collectedElements.length - 1] = lastElementCopy;
             updateCollectElements();
         }
     }
+};
+
+collectElementService.replaceLast = function (element, currentId) {
+    element = JSON.parse(JSON.stringify(element));
+    let lastElement = collectedElements[collectedElements.length - 1];
+    if (lastElement && lastElement.id === element.id) {
+        collectedElements.pop();
+    }
+    element.wordFormId = currentId;
+    collectedElements.push(element);
+    updateCollectElements();
 };
 
 async function applyGrammarCorrection(newText) {
@@ -382,10 +400,7 @@ function getLastElement() {
 }
 
 function getLabel(element) {
-    let wordForm = null;
-    if (element.wordFormTags.length > 0) {
-        wordForm = stateService.getWordForm(element, element.wordFormTags);
-    }
+    let wordForm = stateService.getWordForm(element, element.wordFormTags, element.wordFormId);
     return wordForm || i18nService.getTranslation(element.label) || '';
 }
 
@@ -491,6 +506,10 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
     let navigateAction = getActionOfType(element, GridActionNavigate.getModelName());
     if (navigateAction && getLabel(element).length !== 1 && !navigateAction.addToCollectElem) {
         return; // no adding of text if the element contains an navigate action and it's no single keyboard character
+    }
+    let wordFormAction = getActionOfType(element, GridActionWordForm.getModelName());
+    if (wordFormAction && wordFormAction.type === GridActionWordForm.WORDFORM_MODE_NEXT_FORM) {
+        return; // no adding, since the action itself adds the element
     }
 
     let label = stateService.getDisplayText(element.id) || getLabel(element);

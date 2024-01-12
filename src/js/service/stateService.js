@@ -9,6 +9,7 @@ let _listeners = {};
 let _currentGrid = null;
 let _currentGlobalGrid = null;
 let _currentWordFormTags = [];
+let _currentWordFormIds = {}; //elementId -> id of word form list for current lang
 
 stateService.setCurrentGrid = function (gridData) {
     _currentGrid = gridData;
@@ -22,6 +23,8 @@ stateService.addWordFormTags = function (tags) {
     for (let tag of tags) {
         if (!_currentWordFormTags.includes(tag)) {
             _currentWordFormTags.push(tag);
+        } else {
+            _currentWordFormTags = _currentWordFormTags.filter(t => t !== tag);
         }
     }
     stateService.applyWordFormsToUI();
@@ -29,6 +32,7 @@ stateService.addWordFormTags = function (tags) {
 
 stateService.resetWordFormTags = function () {
     _currentWordFormTags = [];
+    _currentWordFormIds = {};
     stateService.applyWordFormsToUI();
 };
 
@@ -37,7 +41,7 @@ stateService.applyWordFormsToUI = function () {
     elements = _currentGlobalGrid ? elements.concat(_currentGlobalGrid.gridElements) : elements;
     for (let element of elements) {
         if (element.type === GridElement.ELEMENT_TYPE_NORMAL) {
-            $(`#${element.id} .text-container span`).text(stateService.getDisplayText(element.id));
+            setTextInUI(element.id, stateService.getDisplayText(element.id));
         }
     }
 };
@@ -46,8 +50,13 @@ stateService.getCurrentWordFormTags = function () {
     return JSON.parse(JSON.stringify(_currentWordFormTags));
 };
 
-stateService.getWordForm = function (element, searchTags) {
-    if (searchTags.length === 0 || element.wordForms.length === 0) {
+stateService.getWordForm = function (element, searchTags, wordFormId) {
+    wordFormId = wordFormId === undefined ? _currentWordFormIds[element.id] : wordFormId;
+    if (wordFormId !== undefined) {
+        let langForms = getWordFormsCurrentLang(element);
+        return langForms[wordFormId].value;
+    }
+    if (!searchTags || searchTags.length === 0 || element.wordForms.length === 0) {
         return null;
     }
     for (let form of element.wordForms) {
@@ -59,14 +68,13 @@ stateService.getWordForm = function (element, searchTags) {
         }
     }
     return null;
-}
+};
 
 stateService.getBaseForm = function (element) {
     let baseForm = element.wordForms.filter(
         (f) =>
             (!f.lang || f.lang === i18nService.getContentLang()) &&
-            f.tags.length === 1 &&
-            f.tags[0] === constants.WORDFORM_TAG_BASE
+            (f.tags.length === 0 || (f.tags.length === 1 && f.tags[0] === constants.WORDFORM_TAG_BASE))
     )[0];
     return baseForm ? baseForm.value : null;
 }
@@ -93,6 +101,23 @@ stateService.getCurrentWordFormAllLangs = function (elementId) {
         }
     }
     return langWordFormMap;
+};
+
+stateService.getCurrentUIWordForm = function (elementId) {
+    return getTextInUI(elementId);
+}
+
+stateService.nextWordForm = function (elementId) {
+    let element = getElement(elementId);
+    if (!element) {
+        return;
+    }
+    let currentId = _currentWordFormIds[element.id] || 0;
+    let currentLangForms = getWordFormsCurrentLang(element);
+    let nextId = currentId < currentLangForms.length - 1 ? currentId + 1 : 0;
+    setTextInUI(element.id, currentLangForms[nextId].value);
+    _currentWordFormIds[element.id] = nextId;
+    return currentId;
 };
 
 /**
@@ -150,6 +175,18 @@ function getElement(id) {
         _currentGrid.gridElements.filter((e) => e.id === id)[0] ||
         _currentGlobalGrid.gridElements.filter((e) => e.id === id)[0]
     );
+}
+
+function setTextInUI (elementId, text) {
+    $(`#${elementId} .text-container span`).text(text);
+}
+
+function getTextInUI (elementId) {
+    return $(`#${elementId} .text-container span`).text().trim();
+}
+
+function getWordFormsCurrentLang(element) {
+    return element.wordForms.filter((form) => !form.lang || form.lang === i18nService.getContentLang());
 }
 
 export { stateService };

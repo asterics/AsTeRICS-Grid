@@ -953,5 +953,22 @@
   "searchForCustomText": "Search for custom text",
   "customText": "Custom text",
   "searchForCollectedText": "Search for collected text",
-  "dontAddElementToCollectElement": "Don''t add element to collect element"
+  "dontAddElementToCollectElement": "Don''t add element to collect element",
+  "addWordForm": "Add word form",
+  "importExport": "Import / Export",
+  "importFromClipboard": "Import from clipboard",
+  "copyToClipboard": "Copy to clipboard",
+  "currentWordForms": "Current word forms",
+  "noWordFormsDefined": "(no word forms defined)",
+  "moveUp": "Move up",
+  "moveDown": "Move down",
+  "overrideExistingWordForms": "Override existing word forms",
+  "doYouReallyWantDeleteExistingWordForms": "Do you really want to delete all existing word forms and replace them by the content of the clipboard?",
+  "clipboardContainsNoWordFormsPleaseCopyFrom": "Clipboard contains no word forms, please copy from any spreadsheet with 4 columns: (1) language code, e.g. \"EN\", (2) base form, e.g. \"be\", (3) word form tags, e.g. \"1.PERS, PLURAL\", (4) value, e.g. \"are\".",
+  "actionType": "Action type",
+  "tags": "Tags",
+  "WORDFORM_MODE_CHANGE_ELEMENTS": "Change word form in grid elements",
+  "WORDFORM_MODE_CHANGE_BAR": "Change word form in collection element",
+  "WORDFORM_MODE_CHANGE_EVERYWHERE": "Change word form everywhere",
+  "WORDFORM_MODE_NEXT_FORM": "Change this element to next word form"
 }

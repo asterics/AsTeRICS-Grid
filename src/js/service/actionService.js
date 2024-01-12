@@ -104,6 +104,7 @@ async function doAction(gridElement, action, options) {
             let langWordFormMap = stateService.getCurrentWordFormAllLangs(gridElement.id);
             let labelCopy = JSON.parse(JSON.stringify(gridElement.label));
             Object.assign(labelCopy, langWordFormMap);
+            labelCopy[i18nService.getContentLang()] = stateService.getCurrentUIWordForm(gridElement.id);
             speechService.speak(labelCopy, {
                 lang: action.speakLanguage,
                 speakSecondary: true,
@@ -127,8 +128,22 @@ async function doAction(gridElement, action, options) {
             }
             break;
         case 'GridActionWordForm':
-            stateService.addWordFormTags(action.tags);
-            collectElementService.addWordFormTagsToLast(action.tags);
+            switch (action.type) {
+                case GridActionWordForm.WORDFORM_MODE_CHANGE_ELEMENTS:
+                    stateService.addWordFormTags(action.tags);
+                    break;
+                case GridActionWordForm.WORDFORM_MODE_CHANGE_BAR:
+                    collectElementService.addWordFormTagsToLast(action.tags);
+                    break;
+                case GridActionWordForm.WORDFORM_MODE_CHANGE_EVERYWHERE:
+                    stateService.addWordFormTags(action.tags);
+                    collectElementService.addWordFormTagsToLast(action.tags);
+                    break;
+                case GridActionWordForm.WORDFORM_MODE_NEXT_FORM:
+                    let currentId = stateService.nextWordForm(gridElement.id);
+                    collectElementService.replaceLast(gridElement, currentId);
+                    break;
+            }
             break;
         case 'GridActionNavigate':
             if (action.navType === GridActionNavigate.NAV_TYPES.TO_HOME) {
