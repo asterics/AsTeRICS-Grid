@@ -1,37 +1,55 @@
 <template>
     <div>
-        <accordion :acc-label="$t('Add word form')" acc-label-type="h2" acc-open="true" acc-background-color="white">
+        <accordion :acc-label="$t('addWordForm')" acc-label-type="h2" acc-open="true" acc-background-color="white">
             <edit-word-form v-model="newWordForm"></edit-word-form>
             <div class="srow mb-4">
-                <button class="three columns offset-by-nine" @click="addWordForm()" :disabled="!newWordForm.value">Add word form</button>
+                <button class="three columns offset-by-nine" @click="addWordForm()" :disabled="!newWordForm.value">{{ $t('addWordForm') }}</button>
             </div>
         </accordion>
-        <accordion :acc-label="$t('Import / Export')" acc-label-type="h2" acc-background-color="white">
-            <span>Import / Export from spreadsheet to come</span>
+        <accordion :acc-label="$t('importExport')" acc-label-type="h2" acc-background-color="white">
+            <div class="srow">
+                <input id="overrideAtImport" type="checkbox" v-model="overrideAtImport"/>
+                <label for="overrideAtImport">{{ $t('overrideExistingWordForms') }}</label>
+            </div>
+            <div class="srow">
+                <button class="three columns six columns" @click="importFromClipboard()">{{ $t('importFromClipboard') }}</button>
+                <button class="three columns six columns" @click="copyToClipboard()">{{ $t('copyToClipboard') }}</button>
+            </div>
+            <div class="srow warn" v-if="showError">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>{{ $t('clipboardContainsNoWordFormsPleaseCopyFrom') }}</span>
+            </div>
+            <div class="srow success" v-if="successImportedCount">
+                <i class="fas fa-check"></i>
+                <span>Successfully imported {{successImportedCount}} word forms.</span>
+            </div>
         </accordion>
 
-        <h2 class="mb-3 mt-5">Current word forms</h2>
+        <h2 class="mb-3 mt-5">{{ $t('currentWordForms') }}</h2>
         <ol v-if="gridElement.wordForms.length > 0" style="list-style-type: none">
             <li v-for="(form, index) in gridElement.wordForms" :class="index % 2 === 1 && index !== editId ? 'bg-gray' : ''">
-                <div class="srow ps-2">
-                    <div class="eight columns">
-                        <span class="me-2"><strong>{{ form.value }}</strong></span>
-                        <span v-if="form.tags.length" class="me-2">{{ form.tags }}</span>
-                        <span v-if="!form.tags.length" class="me-2">(no tags)</span>
-                        <span v-if="form.lang" class="me-2">{{ form.lang }}</span>
-                        <span v-if="!form.lang" class="me-2">(no language)</span>
+                <div class="row d-flex">
+                    <div class="col-12 col-sm-8 d-flex align-items-center my-2 my-sm-0">
+                        <div class="row col-12">
+                            <span v-if="form.lang" class="col-2 lang-tag">{{ form.lang }}</span>
+                            <span class="col-2 me-2 value"><strong>{{ form.value }}</strong></span>
+                            <span v-if="form.tags.length" class="col-8 me-2">
+                                <span v-for="tag in form.tags" class="tag p-2 m-1">{{ tag }}</span>
+                            </span>
+                            <span v-if="!form.tags.length" class="col-8 me-2">(no tags)</span>
+                        </div>
                     </div>
-                    <div class="four columns d-flex">
+                    <div class="col-12 col-sm-4 d-flex mb-2 mb-sm-0">
                         <button :title="editId !== index ? 'Edit' : 'End editing'" @click="edit(index)"><i class="fas fa-pencil-alt"/></button>
-                        <button title="Delete" @click="remove(form)"><i class="fas fa-trash"/></button>
-                        <button title="Move up" @click="moveUp(form)"><i class="fas fa-arrow-up"/></button>
-                        <button title="Move down" @click="moveDown(form)"><i class="fas fa-arrow-down"/></button>
+                        <button :title="$t('delete')" @click="remove(form)"><i class="fas fa-trash"/></button>
+                        <button :title="$t('moveUp')" @click="moveUp(form)"><i class="fas fa-arrow-up"/></button>
+                        <button :title="$t('moveDown')" @click="moveDown(form)"><i class="fas fa-arrow-down"/></button>
                     </div>
                 </div>
                 <edit-word-form v-if="editId === index" class="my-3 ps-2 pe-4" v-model="gridElement.wordForms[index]"></edit-word-form>
             </li>
         </ol>
-        <span v-if="gridElement.wordForms.length === 0">(no word forms defined)</span>
+        <span v-if="gridElement.wordForms.length === 0">{{ $t('noWordFormsDefined') }}</span>
     </div>
 </template>
 
@@ -42,6 +60,8 @@
     import EditWordForm from "../components/editWordForm.vue";
     import Accordion from "../components/accordion.vue";
     import {util} from "../../js/util/util.js";
+    import {constants} from "../../js/util/constants.js";
+    import {i18nService} from "../../js/service/i18nService.js";
 
     export default {
         components: {Accordion, EditWordForm},
@@ -49,22 +69,16 @@
         data: function () {
             return {
                 newWordForm: JSON.parse(JSON.stringify(new WordForm())),
-                editId: undefined
+                editId: undefined,
+                overrideAtImport: false,
+                showError: false,
+                successImportedCount: 0
             }
         },
         methods: {
             addWordForm() {
                 this.gridElement.wordForms.push(this.newWordForm);
                 this.newWordForm = JSON.parse(JSON.stringify(new WordForm()));
-                /*util.getClipboardContent().then(result => {
-                    log.warn(result);
-                    for(let c of result) {
-                        console.log(c, c.charCodeAt(0));
-                    }
-                    let rows = result.split('\n').map(row => row.trim());
-                    rows = rows.map(row => row.split('\t'));
-                    log.warn(rows);
-                })*/
             },
             remove(toRemove) {
                 this.gridElement.wordForms = this.gridElement.wordForms.filter(f => f !== toRemove);
@@ -89,6 +103,49 @@
                 this.gridElement.wordForms[i1] = this.gridElement.wordForms[i2];
                 this.gridElement.wordForms[i2] = temp;
                 this.$forceUpdate();
+            },
+            importFromClipboard() {
+                this.showError = this.successImportedCount = false;
+                util.getClipboardContent().then(result => {
+                    let rows = result.split('\n').map(row => row.trim()).filter(row => !!row);
+                    rows = rows.map(row => row.split('\t'));
+                    rows = rows.map(row => {
+                        row[2] = row[2] ? row[2].split(",").map(tag => tag.trim().toLocaleUpperCase()).filter(tag => !!tag) : null;
+                        return row;
+                    });
+                    rows = rows.filter(row => (!row[0] || row[0].length === 2) && row[3])
+                    if (!rows.length) {
+                        this.showError = true;
+                        return;
+                    }
+                    if(this.overrideAtImport && this.gridElement.wordForms.length > 0) {
+                        if(!confirm(i18nService.t("doYouReallyWantDeleteExistingWordForms"))) {
+                            return;
+                        }
+                    }
+                    this.gridElement.wordForms = this.overrideAtImport ? [] : this.gridElement.wordForms;
+                    for (let row of rows) {
+                        this.gridElement.wordForms.push({
+                            lang: row[0] ? row[0].toLocaleLowerCase() : undefined,
+                            tags: row[2] ? row[2] : [],
+                            value: row[3]
+                        })
+                    }
+                    this.successImportedCount = rows.length;
+                })
+
+            },
+            copyToClipboard() {
+                this.showError = this.successImportedCount = false;
+                let copyString = '';
+                let baseForm = this.gridElement.wordForms.filter(form => form.tags.length === 1 && form.tags[0] === constants.WORDFORM_TAG_BASE)[0] || {};
+                for (let form of this.gridElement.wordForms) {
+                    let tags = JSON.stringify(form.tags).replaceAll('"', '').replaceAll("'", "").replaceAll("[", "").replaceAll("]", "").replaceAll(",", ", ");
+                    let lang = form.lang || '';
+                    let base = baseForm.value || i18nService.getTranslation(this.gridElement.label, {forceLang: lang}) || i18nService.getTranslation(this.gridElement.label);
+                    copyString += `${lang}\t${base}\t${tags}\t${form.value}\n`;
+                }
+                util.copyToClipboard(copyString);
             }
         },
         mounted() {
@@ -107,7 +164,7 @@ li {
     margin-bottom: 0;
 }
 
-li > .srow {
+li > .row {
     margin: 0;
 }
 
@@ -122,7 +179,19 @@ button {
     background-color: lightgray;
 }
 
-@media (max-width: 850px) {
+.tag {
+    background-color: #41b883;
+}
+
+.value {
+    min-width: 4em;
+}
+
+.lang-tag {
+    background-color: #266697;
+}
+
+@media (max-width: 575px) {
     li {
         margin-bottom: 0.8em;
     }
