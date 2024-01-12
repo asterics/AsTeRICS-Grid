@@ -76,6 +76,7 @@
     import {GridActionCollectElement} from "../../js/model/GridActionCollectElement.js";
     import {pouchDbService} from "../../js/service/data/pouchDbService.js";
     import {MainVue} from "../../js/vue/mainVue.js";
+    import {stateService} from "../../js/service/stateService.js";
 
     let vueApp = null;
     let gridInstance = null;
@@ -264,6 +265,7 @@
                     return Promise.reject();
                 }
                 thiz.gridData = JSON.parse(JSON.stringify(gridData));
+                stateService.setCurrentGrid(thiz.gridData);
                 return Promise.resolve();
             }).then(() => {
                 return dataService.getMetadata().then(savedMetadata => {
