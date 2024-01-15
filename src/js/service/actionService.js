@@ -130,18 +130,22 @@ async function doAction(gridElement, action, options) {
         case 'GridActionWordForm':
             switch (action.type) {
                 case GridActionWordForm.WORDFORM_MODE_CHANGE_ELEMENTS:
-                    stateService.addWordFormTags(action.tags);
+                    stateService.addWordFormTags(action.tags, action.toggle);
                     break;
                 case GridActionWordForm.WORDFORM_MODE_CHANGE_BAR:
                     collectElementService.addWordFormTagsToLast(action.tags);
                     break;
                 case GridActionWordForm.WORDFORM_MODE_CHANGE_EVERYWHERE:
-                    stateService.addWordFormTags(action.tags);
+                    stateService.addWordFormTags(action.tags, action.toggle);
                     collectElementService.addWordFormTagsToLast(action.tags);
                     break;
                 case GridActionWordForm.WORDFORM_MODE_NEXT_FORM:
                     let currentId = stateService.nextWordForm(gridElement.id);
                     collectElementService.replaceLast(gridElement, currentId);
+                    break;
+                case GridActionWordForm.WORDFORM_MODE_RESET_FORMS:
+                    stateService.resetWordFormTags();
+                    collectElementService.fixateLastWordForm();
                     break;
             }
             break;

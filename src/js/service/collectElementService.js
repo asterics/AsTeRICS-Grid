@@ -206,20 +206,14 @@ collectElementService.doCollectElementActions = async function (action) {
     predictionService.predict(collectedText, dictionaryKey);
 };
 
-collectElementService.addWordFormTagsToLast = function (tags) {
+collectElementService.addWordFormTagsToLast = function (tags, toggle) {
     let lastElement = collectedElements[collectedElements.length - 1];
-    if (lastElement) {
+    if (lastElement && !lastElement.wordFormFixated) {
         let lastElementCopy = JSON.parse(JSON.stringify(lastElement));
         lastElementCopy.wordFormTags = lastElementCopy.wordFormTags || [];
         let currentLabel = getLabel(lastElementCopy);
-        for (let tag of tags) {
-            if (!lastElementCopy.wordFormTags.includes(tag)) {
-                lastElementCopy.wordFormTags.push(tag);
-            } else {
-                lastElementCopy.wordFormTags = lastElementCopy.wordFormTags.filter((t) => t !== tag);
-            }
-        }
-        let newLabel = stateService.getWordForm(lastElementCopy, lastElementCopy.wordFormTags);
+        lastElementCopy.wordFormTags = stateService.mergeTags(lastElementCopy.wordFormTags, tags, toggle);
+        let newLabel = stateService.getWordForm(lastElementCopy, {searchTags: lastElementCopy.wordFormTags});
         if (newLabel && newLabel !== currentLabel) {
             collectedElements[collectedElements.length - 1] = lastElementCopy;
             updateCollectElements();
@@ -237,6 +231,13 @@ collectElementService.replaceLast = function (element, currentId) {
     collectedElements.push(element);
     updateCollectElements();
 };
+
+collectElementService.fixateLastWordForm = function () {
+    let lastElement = collectedElements[collectedElements.length - 1];
+    if (lastElement) {
+        lastElement.wordFormFixated = true;
+    }
+}
 
 async function applyGrammarCorrection(newText) {
     let changedSomething = false;
@@ -400,7 +401,7 @@ function getLastElement() {
 }
 
 function getLabel(element) {
-    let wordForm = stateService.getWordForm(element, element.wordFormTags, element.wordFormId);
+    let wordForm = stateService.getWordForm(element, {searchTags: element.wordFormTags, wordFormId: element.wordFormId});
     return wordForm || i18nService.getTranslation(element.label) || '';
 }
 

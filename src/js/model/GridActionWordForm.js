@@ -7,7 +7,8 @@ class GridActionWordForm extends Model({
     modelName: String,
     modelVersion: String,
     type: [String],
-    tags: [Model.Array(String)]
+    tags: [Model.Array(String)],
+    toggle: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionWordForm);
@@ -24,12 +25,14 @@ GridActionWordForm.WORDFORM_MODE_CHANGE_ELEMENTS = "WORDFORM_MODE_CHANGE_ELEMENT
 GridActionWordForm.WORDFORM_MODE_CHANGE_BAR = "WORDFORM_MODE_CHANGE_BAR";
 GridActionWordForm.WORDFORM_MODE_CHANGE_EVERYWHERE = "WORDFORM_MODE_CHANGE_EVERYWHERE";
 GridActionWordForm.WORDFORM_MODE_NEXT_FORM = 'WORDFORM_MODE_NEXT_FORM';
+GridActionWordForm.WORDFORM_MODE_RESET_FORMS = 'WORDFORM_MODE_RESET_FORMS';
 
 GridActionWordForm.MODES = [
     GridActionWordForm.WORDFORM_MODE_CHANGE_ELEMENTS,
     GridActionWordForm.WORDFORM_MODE_CHANGE_BAR,
     GridActionWordForm.WORDFORM_MODE_CHANGE_EVERYWHERE,
-    GridActionWordForm.WORDFORM_MODE_NEXT_FORM
+    GridActionWordForm.WORDFORM_MODE_NEXT_FORM,
+    GridActionWordForm.WORDFORM_MODE_RESET_FORMS
 ];
 
 GridActionWordForm.defaults({

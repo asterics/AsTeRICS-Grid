@@ -19,15 +19,24 @@ stateService.setGlobalGrid = function (gridData) {
     _currentGlobalGrid = gridData;
 };
 
-stateService.addWordFormTags = function (tags) {
-    for (let tag of tags) {
-        if (!_currentWordFormTags.includes(tag)) {
-            _currentWordFormTags.push(tag);
+stateService.addWordFormTags = function (tags, toggle) {
+    _currentWordFormTags = stateService.mergeTags(_currentWordFormTags, tags, toggle);
+    stateService.applyWordFormsToUI();
+};
+
+stateService.mergeTags = function (existingTags, newTags, toggle) {
+    for (let tag of newTags) {
+        if (toggle) {
+            if (!existingTags.includes(tag)) {
+                existingTags.push(tag);
+            } else {
+                existingTags = existingTags.filter((t) => t !== tag);
+            }
         } else {
-            _currentWordFormTags = _currentWordFormTags.filter(t => t !== tag);
+            existingTags.push(tag);
         }
     }
-    stateService.applyWordFormsToUI();
+    return existingTags;
 };
 
 stateService.resetWordFormTags = function () {
@@ -50,22 +59,37 @@ stateService.getCurrentWordFormTags = function () {
     return JSON.parse(JSON.stringify(_currentWordFormTags));
 };
 
-stateService.getWordForm = function (element, searchTags, wordFormId) {
-    wordFormId = wordFormId === undefined ? _currentWordFormIds[element.id] : wordFormId;
-    if (wordFormId !== undefined) {
+/**
+ * 
+ * @param element
+ * @param options.searchTags
+ * @param options.wordFormId
+ * @param options.searchSubTags
+ * @return {null|*}
+ */
+stateService.getWordForm = function (element, options) {
+    options.wordFormId = options.wordFormId === undefined ? _currentWordFormIds[element.id] : options.wordFormId;
+    options.searchTags = options.searchTags ? JSON.parse(JSON.stringify(options.searchTags)) : undefined;
+    if (options.wordFormId !== undefined) {
         let langForms = getWordFormsCurrentLang(element);
-        return langForms[wordFormId].value;
+        return langForms[options.wordFormId].value;
     }
-    if (!searchTags || searchTags.length === 0 || element.wordForms.length === 0) {
+    if (!options.searchTags || options.searchTags.length === 0 || element.wordForms.length === 0) {
         return null;
     }
-    for (let form of element.wordForms) {
-        if (
-            (!form.lang || form.lang === i18nService.getContentLang()) &&
-            searchTags.every((tag) => form.tags.includes(tag))
-        ) {
-            return form.value;
+    while (options.searchTags.length > 0) {
+        for (let form of element.wordForms) {
+            if (
+                (!form.lang || form.lang === i18nService.getContentLang()) &&
+                options.searchTags.every((tag) => form.tags.includes(tag))
+            ) {
+                return form.value;
+            }
         }
+        if (!options.searchSubTags) {
+            return null;
+        }
+        options.searchTags.shift();
     }
     return null;
 };
@@ -84,7 +108,7 @@ stateService.getDisplayText = function (elementId) {
     if (!element) {
         return '';
     }
-    return stateService.getWordForm(element, _currentWordFormTags) || stateService.getBaseForm(element) || i18nService.getTranslation(element.label);
+    return stateService.getWordForm(element, {searchTags: _currentWordFormTags, searchSubTags: true}) || stateService.getBaseForm(element) || i18nService.getTranslation(element.label);
 };
 
 stateService.getCurrentWordFormAllLangs = function (elementId) {

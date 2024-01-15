@@ -1,15 +1,21 @@
 <template>
     <div>
         <div class="srow">
-            <label class="three columns">{{ $t('actionType') }}</label>
-            <select class="nine columns" v-model="action.type">
+            <label for="selectMode" class="four columns">{{ $t('actionType') }}</label>
+            <select id="selectMode" class="eight columns" v-model="action.type">
                 <option v-for="mode in GridActionWordForm.MODES" :value="mode">{{ mode | translate }}</option>
             </select>
         </div>
-        <div class="srow" v-if="action.type !== GridActionWordForm.WORDFORM_MODE_NEXT_FORM">
-            <label class="three columns">{{ $t('tags') }}</label>
-            <multiselect class="nine columns" v-model="action.tags" :options="TAGS" :multiple="true" :close-on-select="false" :clear-on-select="false" :taggable="true" @tag="addTag($event)" placeholder="Choose tags">
-            </multiselect>
+        <div v-if="![GridActionWordForm.WORDFORM_MODE_NEXT_FORM, GridActionWordForm.WORDFORM_MODE_RESET_FORMS].includes(action.type)">
+            <div class="srow">
+                <label class="four columns">{{ $t('tags') }}</label>
+                <multiselect class="eight columns" v-model="action.tags" :options="TAGS" :multiple="true" :close-on-select="false" :clear-on-select="false" :taggable="true" @tag="addTag($event)" placeholder="Choose tags">
+                </multiselect>
+            </div>
+            <div class="srow mt-4">
+                <input type="checkbox" id="chkToggle" v-model="action.toggle"/>
+                <label for="chkToggle">{{ $t('toggleTagOnSelectingItMultipleTimes') }}</label>
+            </div>
         </div>
     </div>
 </template>

@@ -953,7 +953,7 @@
   "searchForCustomText": "Search for custom text",
   "customText": "Custom text",
   "searchForCollectedText": "Search for collected text",
-  "dontAddElementToCollectElement": "Don''t add element to collect element",
+  "dontAddElementToCollectElement": "Don't add element to collect element",
   "addWordForm": "Add word form",
   "importExport": "Import / Export",
   "importFromClipboard": "Import from clipboard",
@@ -970,5 +970,7 @@
   "WORDFORM_MODE_CHANGE_ELEMENTS": "Change word form in grid elements",
   "WORDFORM_MODE_CHANGE_BAR": "Change word form in collection element",
   "WORDFORM_MODE_CHANGE_EVERYWHERE": "Change word form everywhere",
-  "WORDFORM_MODE_NEXT_FORM": "Change this element to next word form"
+  "WORDFORM_MODE_NEXT_FORM": "Change this element to next word form",
+  "WORDFORM_MODE_RESET_FORMS": "Reset currently displayed word forms",
+  "toggleTagOnSelectingItMultipleTimes": "Toggle tag on selecting it multiple times"
 }
