@@ -21,32 +21,36 @@
             </div>
             <div class="srow success" v-if="successImportedCount">
                 <i class="fas fa-check"></i>
-                <span>Successfully imported {{successImportedCount}} word forms.</span>
+                <span>{{ $t('successfullyImportedWordForms', {count: successImportedCount}) }}</span>
             </div>
         </accordion>
 
         <h2 class="mb-3 mt-5">{{ $t('currentWordForms') }}</h2>
         <ol v-if="gridElement.wordForms.length > 0" style="list-style-type: none">
             <li v-for="(form, index) in gridElement.wordForms" :class="index % 2 === 1 && index !== editId ? 'bg-gray' : ''">
-                <div class="row d-flex">
-                    <div class="col-12 col-sm-8 d-flex align-items-center my-2 my-sm-0">
-                        <div class="row col-12">
-                            <span v-if="form.lang" class="col-2 lang-tag">{{ form.lang }}</span>
-                            <span class="col-2 me-2 value"><strong>{{ form.value }}</strong></span>
-                            <span v-if="form.tags.length" class="col-8 me-2">
-                                <span v-for="tag in form.tags" class="tag p-2 m-1">{{ tag }}</span>
+                <div class="row">
+                    <div class="col-12 col-sm-8 my-2 my-sm-0 d-flex">
+                        <div class="row d-flex align-items-center flex-grow-1">
+                            <span v-if="form.lang" class="col-2 col-md-1">
+                                <span class="lang-tag p-2 m-1">{{ form.lang }}</span>
                             </span>
-                            <span v-if="!form.tags.length" class="col-8 me-2">(no tags)</span>
+                            <span class="col-3 col-md-3 value"><strong>{{ form.value }}</strong></span>
+                            <div v-if="form.tags.length" class="col-7 col-md-8">
+                                <div class="row">
+                                    <span v-for="tag in form.tags" class="tag">{{ tag }}</span>
+                                </div>
+                            </div>
+                            <span v-if="!form.tags.length" class="col-7 col-md-8">(no tags)</span>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-4 d-flex mb-2 mb-sm-0">
-                        <button :title="editId !== index ? 'Edit' : 'End editing'" @click="edit(index)"><i class="fas fa-pencil-alt"/></button>
-                        <button :title="$t('delete')" @click="remove(form)"><i class="fas fa-trash"/></button>
-                        <button :title="$t('moveUp')" @click="moveUp(form)"><i class="fas fa-arrow-up"/></button>
-                        <button :title="$t('moveDown')" @click="moveDown(form)"><i class="fas fa-arrow-down"/></button>
+                    <div class="col-12 col-sm-4 mb-2 mb-sm-0 d-flex">
+                        <button class="col" :title="editId !== index ? 'Edit' : 'End editing'" @click="edit(index)"><i class="fas fa-pencil-alt"/></button>
+                        <button class="col" :title="$t('delete')" @click="remove(form)"><i class="fas fa-trash"/></button>
+                        <button class="col" :title="$t('moveUp')" @click="moveUp(form)"><i class="fas fa-arrow-up"/></button>
+                        <button class="col" :title="$t('moveDown')" @click="moveDown(form)"><i class="fas fa-arrow-down"/></button>
                     </div>
                 </div>
-                <edit-word-form v-if="editId === index" class="my-3 ps-2 pe-4" v-model="gridElement.wordForms[index]"></edit-word-form>
+                <edit-word-form v-if="editId === index" class="my-3 ps-4 pe-4" v-model="gridElement.wordForms[index]"></edit-word-form>
             </li>
         </ol>
         <span v-if="gridElement.wordForms.length === 0">{{ $t('noWordFormsDefined') }}</span>
@@ -184,6 +188,10 @@ button {
 
 .tag {
     background-color: #41b883;
+    flex-basis: min-content;
+    flex-shrink: 1;
+    margin: 0.3em 0.3em 0.3em 0;
+    border-radius: 5px;
 }
 
 .value {
@@ -191,7 +199,8 @@ button {
 }
 
 .lang-tag {
-    background-color: #266697;
+    background-color: lightblue;
+    border-radius: 5px;
 }
 
 @media (max-width: 575px) {
