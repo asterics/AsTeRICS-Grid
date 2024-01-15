@@ -943,5 +943,7 @@
   "httpBodyData": "HTTP body (data)",
   "GridActionREST": "REST API Action",
   "httpUrl": "HTTP URL",
-  "restActionFailed!Reason:": "REST action failed! Reason: {0}"
+  "restActionFailed!Reason:": "REST action failed! Reason: {0}",
+  "httpAuthUser": "HTTP Auth User",
+  "httpAuthPw": "HTTP Auth Password"
 }

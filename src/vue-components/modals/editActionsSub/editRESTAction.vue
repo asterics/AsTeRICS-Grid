@@ -44,6 +44,28 @@
           </div>
         </div>
       </div>
+      <div class="row">
+        <label class="col-12 col-md-4 normal-text" for="auth-user">{{ $t('httpAuthUser') }}</label>
+        <div class="col-12 col-md-8">
+          <div class="row m-0">
+            <div class="col-10 col-sm-11">
+              <input id="auth-user" v-model="action.authUser" class="col-12"
+                     placeholder="" spellcheck="false" autocomplete="true" type="text">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <label class="col-12 col-md-4 normal-text" for="auth-pw">{{ $t('httpAuthPw') }}</label>
+        <div class="col-12 col-md-8">
+          <div class="row m-0">
+            <div class="col-10 col-sm-11">
+              <input id="auth-pw" v-model="action.authPw" class="col-12"
+                     placeholder="" spellcheck="false" autocomplete="false" type="password">
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 </template>
 

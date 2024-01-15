@@ -9,7 +9,9 @@ class GridActionREST extends Model({
     restUrl: [String],
     method: [String], // one of POST, PUT, GET,...
     contentType: [String], //REST content type
-    body: [String] //The body / data of the request
+    body: [String], //The body / data of the request
+    authUser: [String], //user for http authentication
+    authPw: [String] //password for http authentication
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionREST);

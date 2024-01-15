@@ -1,13 +1,14 @@
-import {util} from '../util/util';
-import {GridActionREST} from "../model/GridActionREST";
-import {MainVue} from "../vue/mainVue";
-import {i18nService} from "./i18nService";
+import { util } from '../util/util';
+import { GridActionREST } from "../model/GridActionREST";
+import { MainVue } from "../vue/mainVue";
+import { i18nService } from "./i18nService";
 
 let restService = {};
 
 restService.doAction = async function (action) {
     try {
         log.info(`url: ${action.restUrl}, body: ${action.body}, method: ${action.method}, contenttype: ${action.contentType}`);
+
         let requestOptions = {
             method: (action.method || GridActionREST.defaults.method),
             //mode: "no-cors",method
@@ -18,7 +19,15 @@ restService.doAction = async function (action) {
         if (!['GET', 'HEAD'].includes(requestOptions.method)) {
             requestOptions.body = action.body;
         }
-        log.info(`requestOptions: ${requestOptions}`);
+        log.info(`requestOptions: ${Object.values(requestOptions)}`);
+
+        //action.authUser = "admin";
+        //action.authPw = "mad";
+        if (action.authUser || action.authPw) {
+            let authStringBase64 = util.stringToBase64(`${action.authUser}:${action.authPw}`);
+            requestOptions.Authorization = `Basic ${authStringBase64}`;
+        }
+
         const response = await fetch(action.restUrl, requestOptions);
         if (!response.ok) {
             log.error(`REST call failed! Status message (${response.statusText}), statusCode (${response.status})`);
@@ -39,4 +48,4 @@ restService.doAction = async function (action) {
     }
 };
 
-export {restService};
+export { restService };
