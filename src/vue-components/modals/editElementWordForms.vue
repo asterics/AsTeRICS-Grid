@@ -108,12 +108,15 @@
                 this.showError = this.successImportedCount = false;
                 util.getClipboardContent().then(result => {
                     let rows = result.split('\n').map(row => row.trim()).filter(row => !!row);
+                    let colNrValue = 0;
+                    let colNrLang = 1;
+                    let colNrTags = 2;
                     rows = rows.map(row => row.split('\t'));
                     rows = rows.map(row => {
-                        row[2] = row[2] ? row[2].split(",").map(tag => tag.trim().toLocaleUpperCase()).filter(tag => !!tag) : null;
+                        row[colNrTags] = row[colNrTags] ? row[colNrTags].split(",").map(tag => tag.trim().toLocaleUpperCase()).filter(tag => !!tag) : null;
                         return row;
                     });
-                    rows = rows.filter(row => (!row[0] || row[0].length === 2) && row[3])
+                    rows = rows.filter(row => (!row[colNrLang] || row[colNrLang].length === 2) && row[colNrValue])
                     if (!rows.length) {
                         this.showError = true;
                         return;
@@ -126,9 +129,9 @@
                     this.gridElement.wordForms = this.overrideAtImport ? [] : this.gridElement.wordForms;
                     for (let row of rows) {
                         this.gridElement.wordForms.push({
-                            lang: row[0] ? row[0].toLocaleLowerCase() : undefined,
-                            tags: row[2] ? row[2] : [],
-                            value: row[3]
+                            lang: row[colNrLang] ? row[colNrLang].toLocaleLowerCase() : undefined,
+                            tags: row[colNrTags] ? row[colNrTags] : [],
+                            value: row[colNrValue]
                         })
                     }
                     this.successImportedCount = rows.length;
@@ -143,7 +146,7 @@
                     let tags = JSON.stringify(form.tags).replaceAll('"', '').replaceAll("'", "").replaceAll("[", "").replaceAll("]", "").replaceAll(",", ", ");
                     let lang = form.lang || '';
                     let base = baseForm.value || i18nService.getTranslation(this.gridElement.label, {forceLang: lang}) || i18nService.getTranslation(this.gridElement.label);
-                    copyString += `${lang}\t${base}\t${tags}\t${form.value}\n`;
+                    copyString += `${form.value}\t${lang}\t${tags}\t${base}\n`;
                 }
                 util.copyToClipboard(copyString);
             }
