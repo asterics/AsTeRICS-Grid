@@ -19,14 +19,15 @@ restService.doAction = async function (action) {
         if (!['GET', 'HEAD'].includes(requestOptions.method)) {
             requestOptions.body = action.body;
         }
-        log.info(`requestOptions: ${Object.values(requestOptions)}`);
 
         //action.authUser = "admin";
         //action.authPw = "mad";
         if (action.authUser || action.authPw) {
             let authStringBase64 = util.stringToBase64(`${action.authUser}:${action.authPw}`);
-            requestOptions.Authorization = `Basic ${authStringBase64}`;
+            requestOptions.headers["Authorization"] = `Basic ${authStringBase64}`;
         }
+        //log.info(`requestOptions: ${requestOptions.headers}`);
+        console.log(requestOptions.headers);
 
         const response = await fetch(action.restUrl, requestOptions);
         if (!response.ok) {
