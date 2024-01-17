@@ -9,11 +9,17 @@
                     </div>
 
                     <div class="modal-body mt-5 row">
-                        <input type="text" v-model="searchTerm" @input="search()" v-focus :placeholder="$t('searchElement') + '...'" class="col-8 col-sm-10 mb-5" @keydown.enter="goToFirstResult()" @keydown.ctrl.enter="goToFirstResult(true)"/>
+                        <input type="text" v-model="searchTerm" @input="search()" v-focus :placeholder="$t('searchElement') + '...'" class="col-8 col-sm-10" @keydown.enter="goToFirstResult()" @keydown.ctrl.enter="goToFirstResult(true)"/>
                         <div class="col-sm-2 col-4">
-                            <button class="col-12" :title="$t('search')"><i class="fas fa-search"/></button>
+                            <button class="col-12 mb-0" :title="$t('search')"><i class="fas fa-search"/></button>
                         </div>
-                        <ul v-if="results && results.length > 0" style="list-style-type: none">
+                    </div>
+                    <div>
+                        <div class="warn mt-5" v-if="results && !homeGridId">
+                            <i class="fas fa-info-circle"></i>
+                            <span>{{ $t('infoPleaseDefineAHomeGridInManageGrids') }}</span>
+                        </div>
+                        <ul v-if="results && results.length > 0" style="list-style-type: none" class="mt-5">
                             <li v-for="(result, index) in results" class="d-flex align-items-center" style="flex-direction: row; min-height: 40px;">
                                 <a href="javascript:;" @click="toResult(result)" class="d-flex align-items-center" :title="index === 0 ? `${$t('showElement')} ${$t('keyboardEnter')}` : $t('showElement')">
                                     <img v-if="result.elem.image" :src="result.elem.image.data || result.elem.image.url" width="40" style="margin-right: 1em"/>
@@ -35,14 +41,16 @@
                                 </a>
                             </li>
                         </ul>
-                        <div v-if="results === null">
-                            {{ $t('searching') }}
-                        </div>
-                        <div v-if="results && results.length === 0 && searchTerm">
-                            {{ $t('noSearchResults') }}
-                        </div>
-                        <div v-if="overflow">
-                            {{ $t('notShowingAllResultsTryALongerSearchTerm') }}
+                        <div class="mt-5">
+                            <div v-if="results === null">
+                                {{ $t('searching') }}
+                            </div>
+                            <div v-if="results && results.length === 0 && searchTerm">
+                                {{ $t('noSearchResults') }}
+                            </div>
+                            <div v-if="overflow">
+                                {{ $t('notShowingAllResultsTryALongerSearchTerm') }}
+                            </div>
                         </div>
                     </div>
 
