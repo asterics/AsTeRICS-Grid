@@ -7,7 +7,7 @@ class InputEventKey extends Model({
     modelName: String,
     modelVersion: String,
     label: [String],
-    keyCode: [Number, String],
+    keyCode: [Number, String, undefined],
     keyName: [String],
     repeat: [Number],
     timeout: [Number],
