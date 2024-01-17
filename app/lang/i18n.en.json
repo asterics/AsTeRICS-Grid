@@ -950,5 +950,6 @@
   "navigationType": "Navigation Type",
   "searchForCustomText": "Search for custom text",
   "customText": "Custom text",
-  "searchForCollectedText": "Search for collected text"
+  "searchForCollectedText": "Search for collected text",
+  "infoPleaseDefineAHomeGridInManageGrids": "Info: please define a home grid in \"Manage grids -> Home grid\" in order to reliably showing correct paths."
 }
