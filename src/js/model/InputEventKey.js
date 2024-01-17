@@ -7,7 +7,7 @@ class InputEventKey extends Model({
     modelName: String,
     modelVersion: String,
     label: [String],
-    keyCode: [Number],
+    keyCode: [Number, String],
     keyName: [String],
     repeat: [Number],
     timeout: [Number],
@@ -27,6 +27,18 @@ class InputEventKey extends Model({
         return 'InputEventKey';
     }
 }
+
+InputEventKey.KEY_MOUSE_PREFIX = "KEY_MOUSE";
+InputEventKey.KEY_MOUSE_LEFT = "KEY_MOUSE0";
+InputEventKey.KEY_MOUSE_MIDDLE = "KEY_MOUSE1";
+InputEventKey.KEY_MOUSE_RIGHT = "KEY_MOUSE2";
+InputEventKey.KEY_TAP = "KEY_TAP";
+InputEventKey.SPECIAL_KEYS = [
+    InputEventKey.KEY_MOUSE_LEFT,
+    InputEventKey.KEY_MOUSE_MIDDLE,
+    InputEventKey.KEY_MOUSE_RIGHT,
+    InputEventKey.KEY_TAP
+];
 
 InputEventKey.defaults({
     id: '', //will be replaced by constructor
