@@ -138,7 +138,11 @@
                 }
             },
             back() {
-                Router.toGrid(this.gridData.id);
+                if (this.metadata && this.metadata.globalGridId === this.gridData.id) {
+                    Router.toMain();
+                } else {
+                    Router.toGrid(this.gridData.id);
+                }
             },
             editElement(elementId) {
                 this.editElementId = elementId;
