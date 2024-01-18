@@ -19,6 +19,13 @@ stateService.setGlobalGrid = function (gridData) {
     _currentGlobalGrid = gridData;
 };
 
+stateService.hasGlobalGridElement = function (elementId) {
+    if (!_currentGlobalGrid) {
+        return false;
+    }
+    return _currentGlobalGrid.gridElements.some((e) => e.id === elementId);
+};
+
 stateService.addWordFormTags = function (tags, toggle) {
     _currentWordFormTags = stateService.mergeTags(_currentWordFormTags, tags, toggle);
     stateService.applyWordFormsToUI();
