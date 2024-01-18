@@ -78,7 +78,9 @@ async function doActions(gridElement, gridId) {
     $(window).trigger(constants.ELEMENT_EVENT_ID, [gridElement]);
     metadata = metadata || (await dataService.getMetadata());
     let actionTypes = actions.map((a) => a.modelName);
-    if (!actionTypes.includes(GridActionNavigate.getModelName()) && metadata.toHomeAfterSelect) {
+    let navBackActions = [GridActionAudio.getModelName(), GridActionChangeLang.getModelName(), GridActionSpeak.getModelName(), GridActionSpeakCustom.getModelName()];
+    let noNavBackActions = GridElement.getActionTypeModelNames().filter(name => !navBackActions.includes(name));
+    if (metadata.toHomeAfterSelect && !collectElementService.isCurrentGridKeyboard() && !actionTypes.some(type => noNavBackActions.includes(type))) {
         Router.toMain();
     }
     if (!actionTypes.includes(GridActionWordForm.getModelName())) {

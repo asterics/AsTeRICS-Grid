@@ -239,6 +239,13 @@ collectElementService.fixateLastWordForm = function () {
     }
 }
 
+/**
+ * @return returns true if the current grid is (probably) a keyboard
+ */
+collectElementService.isCurrentGridKeyboard = function () {
+    return keyboardLikeFactor > 0.4;
+}
+
 async function applyGrammarCorrection(newText) {
     let changedSomething = false;
     let originalText = getSpeakText();
@@ -524,7 +531,7 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
     if (label && convertMode === TextConfig.CONVERT_MODE_UPPERCASE) {
         label = label.toUpperCase();
     }
-    if (label && convertToLowercaseIfKeyboard && keyboardLikeFactor > 0.4) {
+    if (label && convertToLowercaseIfKeyboard && collectElementService.isCurrentGridKeyboard()) {
         label = label.toLowerCase();
     }
     setLabel(element, label);
@@ -544,7 +551,7 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         }
     }
     if (label && element.type === GridElement.ELEMENT_TYPE_NORMAL) {
-        let textToAdd = label.length === 1 && keyboardLikeFactor > 0.4 ? label : label + ' ';
+        let textToAdd = label.length === 1 && collectElementService.isCurrentGridKeyboard() ? label : label + ' ';
         collectedText += textToAdd;
         triggerPredict();
     } else if (element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
