@@ -125,6 +125,7 @@ function SequentialInputConstructor(options) {
             if (_activeId === 0) {
                 _currentRound++;
             }
+            clearTimeout(_autoTimeoutHandler);
             _autoTimeoutHandler = setTimeout(() => {
                 if (options.startWithAction && options.roundsUntilStop && _currentRound === options.roundsUntilStop && _activeId === _elements.length - 1) {
                     _currentRound = 0;
