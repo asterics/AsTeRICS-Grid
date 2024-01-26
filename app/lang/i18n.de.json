@@ -954,5 +954,6 @@
   "searchForCustomText": "Suche nach benutzerdefiniertem Text",
   "customText": "Benutzerdefinierter Text",
   "searchForCollectedText": "Suche nach Text aus Sammelelement",
-  "infoPleaseDefineAHomeGridInManageGrids": "Info: bitte ein Start-Grid unter \"Grids verwalten -> Start-Grid\" definieren um Pfade zuverlässig anzuzeigen."
+  "infoPleaseDefineAHomeGridInManageGrids": "Info: bitte ein Start-Grid unter \"Grids verwalten -> Start-Grid\" definieren um Pfade zuverlässig anzuzeigen.",
+  "dontAddElementToCollectElement": "Don't add element to collect element"
 }
