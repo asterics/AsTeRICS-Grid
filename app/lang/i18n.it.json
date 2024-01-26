@@ -954,5 +954,6 @@
   "searchForCustomText": "Cerca testo personalizzato",
   "customText": "Testo personalizzato",
   "searchForCollectedText": "Cerca il testo raccolto",
-  "infoPleaseDefineAHomeGridInManageGrids": "Info: please define a home grid in \"Manage grids -> Home grid\" in order to reliably showing correct paths."
+  "infoPleaseDefineAHomeGridInManageGrids": "Info: please define a home grid in \"Manage grids -> Home grid\" in order to reliably showing correct paths.",
+  "dontAddElementToCollectElement": "Don't add element to collect element"
 }
