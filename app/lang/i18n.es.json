@@ -954,5 +954,6 @@
   "searchForCustomText": "Buscar texto personalizado",
   "customText": "Texto personalizado",
   "searchForCollectedText": "Buscar texto acumulado",
-  "infoPleaseDefineAHomeGridInManageGrids": "Información: para que se muestren correctamente las rutas de navegación a los elemento, por favor, seleccione el tablero inicial en \"Gestionar tableros-> Tablero inicial\"."
+  "infoPleaseDefineAHomeGridInManageGrids": "Información: para que se muestren correctamente las rutas de navegación a los elemento, por favor, seleccione el tablero inicial en \"Gestionar tableros-> Tablero inicial\".",
+  "dontAddElementToCollectElement": "Don't add element to collect element"
 }
