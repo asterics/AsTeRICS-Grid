@@ -954,5 +954,6 @@
   "searchForCustomText": "Pesquisar texto personalizado",
   "customText": "Texto personalizado",
   "searchForCollectedText": "Procurar texto acumulado",
-  "infoPleaseDefineAHomeGridInManageGrids": "Informação: Defina uma tabela inicial em Gerir tabelas -> Tabela inicial para mostrar corretamente as ligações entre tabelas."
+  "infoPleaseDefineAHomeGridInManageGrids": "Informação: Defina uma tabela inicial em Gerir tabelas -> Tabela inicial para mostrar corretamente as ligações entre tabelas.",
+  "dontAddElementToCollectElement": "Don't add element to collect element"
 }
