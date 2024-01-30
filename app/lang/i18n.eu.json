@@ -1,7 +1,7 @@
 {
   "GridActionSpeak": "Gelaxkako testua ahoskatu",
   "GridActionSpeakCustom": "Ahoskatu testu pertsonalizatua",
-  "GridActionAudio": "Play recorded audio",
+  "GridActionAudio": "",
   "GridActionNavigate": "Beste taula batera nabigatu",
   "GridActionARE": "AsTeRICSen ekintza",
   "GridActionOpenHAB": "OpenHAB action",
