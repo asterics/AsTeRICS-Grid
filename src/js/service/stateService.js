@@ -9,7 +9,7 @@ let _listeners = {};
 let _currentGrid = null;
 let _currentGlobalGrid = null;
 let _currentWordFormTags = [];
-let _currentWordFormIds = {}; //elementId -> id of word form list for current lang
+let _currentWordFormIds = {}; //elementId -> id of word form list (for current lang!)
 
 stateService.setCurrentGrid = function (gridData) {
     _currentGrid = gridData;
