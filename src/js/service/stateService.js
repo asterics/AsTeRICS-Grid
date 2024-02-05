@@ -85,11 +85,13 @@ stateService.getWordForm = function (element, options) {
         return null;
     }
     while (options.searchTags.length > 0) {
-        for (let form of element.wordForms) {
+        for (let index = 0; index < element.wordForms.length; index++) {
+            let form = element.wordForms[index];
             if (
                 (!form.lang || form.lang === i18nService.getContentLang()) &&
                 options.searchTags.every((tag) => form.tags.includes(tag))
             ) {
+                _currentWordFormIds[element.id] = index;
                 return form.value;
             }
         }
