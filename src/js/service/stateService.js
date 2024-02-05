@@ -28,6 +28,7 @@ stateService.hasGlobalGridElement = function (elementId) {
 
 stateService.addWordFormTags = function (tags, toggle) {
     _currentWordFormTags = stateService.mergeTags(_currentWordFormTags, tags, toggle);
+    _currentWordFormIds = {};
     stateService.applyWordFormsToUI();
 };
 
@@ -67,19 +68,33 @@ stateService.getCurrentWordFormTags = function () {
 };
 
 /**
- * 
+ * returns the value of a word form with given options
  * @param element
- * @param options.searchTags
- * @param options.wordFormId
- * @param options.searchSubTags
+ * @param options.searchTags (optional) a list of tags to search
+ * @param options.wordFormId (optional) the id (index) of the word form to retrieve
+ * @param options.searchSubTags if true, given searchTags are reduced using "shift()" until a valid word form is found
  * @return {null|*}
  */
 stateService.getWordForm = function (element, options) {
+    let object = stateService.getWordFormObject(element, options);
+    return object && object.wordForm ? object.wordForm.value : null;
+}
+
+/**
+ * returns an object {wordForm: <wordFormObject>, id: <index>} for the given options
+ * @param element
+ * @param options
+ * @return {{wordForm: *, id}|null|{wordForm, id: number}}
+ */
+stateService.getWordFormObject = function (element, options) {
     options.wordFormId = options.wordFormId === undefined ? _currentWordFormIds[element.id] : options.wordFormId;
     options.searchTags = options.searchTags ? JSON.parse(JSON.stringify(options.searchTags)) : undefined;
     if (options.wordFormId !== undefined) {
         let langForms = getWordFormsCurrentLang(element);
-        return langForms[options.wordFormId].value;
+        return {
+            wordForm: langForms[options.wordFormId],
+            id: options.wordFormId
+        };
     }
     if (!options.searchTags || options.searchTags.length === 0 || element.wordForms.length === 0) {
         return null;
@@ -91,8 +106,10 @@ stateService.getWordForm = function (element, options) {
                 (!form.lang || form.lang === i18nService.getContentLang()) &&
                 options.searchTags.every((tag) => form.tags.includes(tag))
             ) {
-                _currentWordFormIds[element.id] = index;
-                return form.value;
+                return {
+                    wordForm: form,
+                    id: index
+                };
             }
         }
         if (!options.searchSubTags) {
@@ -145,7 +162,8 @@ stateService.nextWordForm = function (elementId) {
     if (!element) {
         return;
     }
-    let currentId = _currentWordFormIds[element.id] || 0;
+    let currentWordFormObject = this.getWordFormObject(element, {searchTags: _currentWordFormTags, searchSubTags: true}) || {};
+    let currentId = _currentWordFormIds[element.id] || currentWordFormObject.id || 0;
     let currentLangForms = getWordFormsCurrentLang(element);
     let nextId = currentId < currentLangForms.length - 1 ? currentId + 1 : 0;
     setTextInUI(element.id, currentLangForms[nextId].value);
