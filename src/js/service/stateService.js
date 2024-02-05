@@ -77,7 +77,7 @@ stateService.getCurrentWordFormTags = function () {
  */
 stateService.getWordForm = function (element, options) {
     let object = stateService.getWordFormObject(element, options);
-    return object && object.wordForm ? object.wordForm.value : null;
+    return object ? object.value : null;
 }
 
 /**
@@ -91,10 +91,7 @@ stateService.getWordFormObject = function (element, options) {
     options.searchTags = options.searchTags ? JSON.parse(JSON.stringify(options.searchTags)) : undefined;
     if (options.wordFormId !== undefined) {
         let langForms = getWordFormsCurrentLang(element);
-        return {
-            wordForm: langForms[options.wordFormId],
-            id: options.wordFormId
-        };
+        return langForms[options.wordFormId];
     }
     if (!options.searchTags || options.searchTags.length === 0 || element.wordForms.length === 0) {
         return null;
@@ -106,10 +103,7 @@ stateService.getWordFormObject = function (element, options) {
                 (!form.lang || form.lang === i18nService.getContentLang()) &&
                 options.searchTags.every((tag) => form.tags.includes(tag))
             ) {
-                return {
-                    wordForm: form,
-                    id: index
-                };
+                return form;
             }
         }
         if (!options.searchSubTags) {
@@ -162,9 +156,11 @@ stateService.nextWordForm = function (elementId) {
     if (!element) {
         return;
     }
-    let currentWordFormObject = this.getWordFormObject(element, {searchTags: _currentWordFormTags, searchSubTags: true}) || {};
-    let currentId = _currentWordFormIds[element.id] || currentWordFormObject.id || 0;
     let currentLangForms = getWordFormsCurrentLang(element);
+    let currentWordFormObject = this.getWordFormObject(element, {searchTags: _currentWordFormTags, searchSubTags: true}) || {};
+    let index = currentLangForms.indexOf(currentWordFormObject);
+    index = index >= 0 ? index : null;
+    let currentId = _currentWordFormIds[element.id] || index || 0;
     let nextId = currentId < currentLangForms.length - 1 ? currentId + 1 : 0;
     setTextInUI(element.id, currentLangForms[nextId].value);
     _currentWordFormIds[element.id] = nextId;
