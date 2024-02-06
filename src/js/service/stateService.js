@@ -122,13 +122,18 @@ stateService.getWordFormObject = function (element, options) {
 };
 
 stateService.getBaseForm = function (element, lang) {
+    let object = stateService.getBaseFormObject(element, lang);
+    return object ? object.value : null;
+};
+
+stateService.getBaseFormObject = function (element, lang) {
     lang = lang || i18nService.getContentLang();
     let baseForm = element.wordForms.filter(
         (f) =>
             (!f.lang || f.lang === lang) &&
             (f.tags.length === 0 || (f.tags.length === 1 && f.tags[0] === constants.WORDFORM_TAG_BASE))
     )[0];
-    return baseForm ? baseForm.value : null;
+    return baseForm ? baseForm : null;
 }
 
 stateService.getDisplayText = function (elementId) {
@@ -147,10 +152,13 @@ stateService.getSpeakText = function (elementId, options) {
     options = options || {};
     options.searchSubTags = true;
     let wordForm = stateService.getWordFormObject(element, options) || {};
+    if (wordForm.pronunciation || wordForm.value) {
+        return wordForm.pronunciation || wordForm.value;
+    }
+    let baseForm = stateService.getBaseFormObject(element, options.lang) || {};
     return (
-        wordForm.pronunciation ||
-        wordForm.value ||
-        stateService.getBaseForm(element, options.lang) ||
+        baseForm.pronunciation ||
+        baseForm.value ||
         i18nService.getTranslation(element.label, {forceLang: options.lang}) ||
         i18nService.getTranslation(element.label)
     );
