@@ -4,6 +4,7 @@ import {GridElement} from "../model/GridElement.js";
 import {constants} from "../util/constants.js";
 import {util} from "../util/util.js";
 import {speechService} from "./speechService.js";
+import {dataService} from "./data/dataService.js";
 
 let stateService = {};
 let _states = {};
@@ -12,6 +13,7 @@ let _currentGrid = null;
 let _currentGlobalGrid = null;
 let _currentWordFormTags = [];
 let _currentWordFormIds = {}; //elementId -> id of word form list (for current lang!)
+let _convertMode = null;
 
 stateService.setCurrentGrid = function (gridData) {
     _currentGrid = gridData;
@@ -259,6 +261,7 @@ function getElement(id) {
 }
 
 function setTextInUI (elementId, text) {
+    text = util.convertLowerUppercase(text, _convertMode);
     $(`#${elementId} .text-container span`).text(text);
 }
 
@@ -266,5 +269,13 @@ function getWordFormsForLang(element, lang) {
     lang = lang || i18nService.getContentLang();
     return element.wordForms.filter((form) => !form.lang || form.lang === lang);
 }
+
+async function getMetadataConfig() {
+    let metadata = await dataService.getMetadata();
+    _convertMode = metadata.textConfig.convertMode;
+}
+
+$(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
+$(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
 
 export { stateService };
