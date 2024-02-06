@@ -3,6 +3,7 @@ import { i18nService } from './i18nService.js';
 import {GridElement} from "../model/GridElement.js";
 import {constants} from "../util/constants.js";
 import {util} from "../util/util.js";
+import {speechService} from "./speechService.js";
 
 let stateService = {};
 let _states = {};
@@ -96,7 +97,7 @@ stateService.getWordFormObject = function (element, options) {
     options.searchTags = JSON.parse(JSON.stringify(options.searchTags));
     options.lang = options.lang || i18nService.getContentLang();
     if (options.wordFormId !== undefined) {
-        let langForms = getWordFormsCurrentLang(element);
+        let langForms = getWordFormsForLang(element, options.lang);
         return langForms[options.wordFormId];
     }
     if (!options.searchTags || options.searchTags.length === 0 || element.wordForms.length === 0) {
@@ -120,10 +121,11 @@ stateService.getWordFormObject = function (element, options) {
     return null;
 };
 
-stateService.getBaseForm = function (element) {
+stateService.getBaseForm = function (element, lang) {
+    lang = lang || i18nService.getContentLang();
     let baseForm = element.wordForms.filter(
         (f) =>
-            (!f.lang || f.lang === i18nService.getContentLang()) &&
+            (!f.lang || f.lang === lang) &&
             (f.tags.length === 0 || (f.tags.length === 1 && f.tags[0] === constants.WORDFORM_TAG_BASE))
     )[0];
     return baseForm ? baseForm.value : null;
@@ -148,7 +150,8 @@ stateService.getSpeakText = function (elementId, options) {
     return (
         wordForm.pronunciation ||
         wordForm.value ||
-        stateService.getBaseForm(element) ||
+        stateService.getBaseForm(element, options.lang) ||
+        i18nService.getTranslation(element.label, {forceLang: options.lang}) ||
         i18nService.getTranslation(element.label)
     );
 };
@@ -159,9 +162,17 @@ stateService.getSpeakTextAllLangs = function (elementId) {
     if (!element) {
         return '';
     }
-    let possibleLangs = util.deduplicateArray(element.wordForms.map((e) => e.lang));
+    let possibleLangs = element.wordForms.map((e) => e.lang);
+    let secondaryVoiceLang = speechService.getSecondaryVoiceLang();
+    if (secondaryVoiceLang) {
+        possibleLangs.push(secondaryVoiceLang);
+    }
+    possibleLangs = util.deduplicateArray(possibleLangs);
     for (let lang of possibleLangs) {
         langWordFormMap[lang] = stateService.getSpeakText(element, { lang: lang });
+    }
+    if (!langWordFormMap[i18nService.getContentLang()]) {
+        langWordFormMap[i18nService.getContentLang()] = stateService.getSpeakText(element);
     }
     return langWordFormMap;
 };
@@ -171,7 +182,7 @@ stateService.nextWordForm = function (elementId) {
     if (!element) {
         return;
     }
-    let currentLangForms = getWordFormsCurrentLang(element);
+    let currentLangForms = getWordFormsForLang(element);
     let currentWordFormObject = this.getWordFormObject(element, {searchTags: _currentWordFormTags, searchSubTags: true}) || {};
     let index = currentLangForms.indexOf(currentWordFormObject);
     index = index >= 0 ? index : null;
@@ -243,8 +254,9 @@ function setTextInUI (elementId, text) {
     $(`#${elementId} .text-container span`).text(text);
 }
 
-function getWordFormsCurrentLang(element) {
-    return element.wordForms.filter((form) => !form.lang || form.lang === i18nService.getContentLang());
+function getWordFormsForLang(element, lang) {
+    lang = lang || i18nService.getContentLang();
+    return element.wordForms.filter((form) => !form.lang || form.lang === lang);
 }
 
 export { stateService };

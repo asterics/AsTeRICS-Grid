@@ -287,6 +287,13 @@ speechService.getPreferredVoiceLang = function () {
     return getVoiceLang(_preferredVoiceId);
 };
 
+speechService.getSecondaryVoiceLang = function () {
+    if (_secondVoiceId) {
+        return getVoiceLang(_secondVoiceId);
+    }
+    return null;
+};
+
 speechService.isVoiceLangLinkedToTextLang = function () {
     return _voiceLangIsTextLang;
 };
