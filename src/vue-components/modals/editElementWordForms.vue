@@ -130,7 +130,7 @@
                 this.gridElement.wordForms = this.gridElement.wordForms.filter(f => f !== toRemove);
             },
             edit(id) {
-                this.editId = this.editId === undefined ? id : undefined;
+                this.editId = this.editId === id ? undefined : id;
             },
             moveUp(toMove) {
                 let index = this.gridElement.wordForms.indexOf(toMove);
