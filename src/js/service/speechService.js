@@ -12,7 +12,7 @@ speechService.VOICE_TYPE_NATIVE = 'VOICE_TYPE_NATIVE';
 speechService.VOICE_TYPE_RESPONSIVEVOICE = 'VOICE_TYPE_RESPONSIVEVOICE';
 
 let _preferredVoiceId = null;
-let _secondVoiceName = null;
+let _secondVoiceId = null;
 let _voicePitch = 1;
 let _voiceRate = 1;
 let _voiceLangIsTextLang = false;
@@ -26,6 +26,8 @@ let lastSpeakTime = 0;
 let voiceIgnoreList = ['com.apple.speech.synthesis.voice']; //joke voices by Apple
 let voiceSortBackList = ['com.apple.eloquence'];
 let hasSpoken = false;
+
+let _waitingSpeakOptions = {};
 
 /**
  * speaks given text.
@@ -124,16 +126,28 @@ speechService.speak = function (textOrOject, options) {
             stateService.setState(constants.STATE_ACTIVATED_TTS, true);
         }
     }
-    if (_secondVoiceName && options.speakSecondary) {
-        speechService.doAfterFinishedSpeaking(() => {
-            speechService.speak(textOrOject, {
-                preferredVoice: _secondVoiceName,
-                useStandardRatePitch: true,
-                voiceLangIsTextLang: true
-            });
+    if (_secondVoiceId && options.speakSecondary) {
+        speechService.speakAfterFinished(textOrOject, {
+            preferredVoice: _secondVoiceId,
+            useStandardRatePitch: true,
+            voiceLangIsTextLang: true
         });
     }
 };
+
+speechService.speakAfterFinished = function (txtOrObject, options) {
+    _waitingSpeakOptions.txtOrObject = txtOrObject;
+    _waitingSpeakOptions.options = options;
+    if (!_waitingSpeakOptions.waiting) {
+        _waitingSpeakOptions.waiting = true;
+        speechService.doAfterFinishedSpeaking(() => {
+            speechService.speak(_waitingSpeakOptions.txtOrObject, _waitingSpeakOptions.options);
+            _waitingSpeakOptions.waiting = false;
+            _waitingSpeakOptions.txtOrObject = '';
+            _waitingSpeakOptions.options = undefined;
+        })
+    }
+}
 
 /**
  * speaks an array of speak-elements one after each other
@@ -352,7 +366,7 @@ function updateMetadataConfig(event, metadata) {
     _preferredVoiceId = metadata.localeConfig.preferredVoice || null;
     _voicePitch = metadata.localeConfig.voicePitch || 1;
     _voiceRate = metadata.localeConfig.voiceRate || 1;
-    _secondVoiceName = metadata.localeConfig.secondVoice || null;
+    _secondVoiceId = metadata.localeConfig.secondVoice || null;
     _voiceLangIsTextLang = metadata.localeConfig.voiceLangIsTextLang || false;
 }
 
