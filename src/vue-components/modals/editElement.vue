@@ -16,7 +16,7 @@
                             <edit-element-collect v-if="gridElement.type === GridElement.ELEMENT_TYPE_COLLECT" :grid-element="gridElement"></edit-element-collect>
                         </div>
                         <edit-element-image v-if="currentTab === TABS.TAB_IMAGE" :grid-element="gridElement" :grid-data="gridData" :image-search="imageSearch"></edit-element-image>
-                        <edit-element-word-forms v-if="currentTab === TABS.TAB_WORDFORMS" :grid-element="gridElement" :grid-data="gridData"></edit-element-word-forms>
+                        <edit-element-word-forms v-if="currentTab === TABS.TAB_WORDFORMS" :grid-element="gridElement" :grid-data="gridData" @reloadData="initInternal(true)"></edit-element-word-forms>
                         <edit-element-actions v-if="currentTab === TABS.TAB_ACTIONS" :grid-element="gridElement" :grid-data="gridData"></edit-element-actions>
                     </div>
 
@@ -145,9 +145,9 @@
                     }
                 });
             },
-            initInternal() {
+            initInternal(dontReset) {
                 let thiz = this;
-                thiz.resetInternal();
+                if (!dontReset) thiz.resetInternal();
                 dataService.getGrid(thiz.gridDataId).then(gridData => {
                     thiz.gridData = JSON.parse(JSON.stringify(gridData));
                     thiz.originalGridData = JSON.parse(JSON.stringify(gridData));

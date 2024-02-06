@@ -347,7 +347,7 @@ async function updateCollectElements(isSecondTry) {
             let textHeight = lineHeight * textPercentage;
             let totalWidth = 0;
             for (const [index, collectedElement] of collectedElements.entries()) {
-                let label = collectedElement.fixedGrammarText || getSpeakTextOfElement(collectedElement);
+                let label = collectedElement.fixedGrammarText || getSpeakTextOfElement(collectedElement, {dontIncludePronunciation: true});
                 let image = getImage(collectedElement);
                 let elemWidth = imgHeight * imageRatios[index] || imgHeight;
                 let marked = markedImageIndex === index;
@@ -409,7 +409,7 @@ function getLastElement() {
 
 function getLabel(element) {
     let wordForm = stateService.getWordForm(element, {searchTags: element.wordFormTags, wordFormId: element.wordFormId});
-    return wordForm || i18nService.getTranslation(element.label) || '';
+    return wordForm || stateService.getBaseForm(element) || i18nService.getTranslation(element.label) || '';
 }
 
 function setLabel(element, newLabel) {
@@ -437,18 +437,31 @@ function getLastImage() {
     return lastElem ? getImage(lastElem) : undefined;
 }
 
-function getSpeakTextObject(element, dontIncludeAudio, inlcudeCorrectedGrammar) {
+/**
+ *
+ * @param element
+ * @param options.dontIncludeAudio
+ * @param options.inlcudeCorrectedGrammar
+ * @param options.dontIncludePronunciation
+ * @return {{text: *}|{base64Sound: ([String | StringConstructor]|[String | StringConstructor]|null|*)}}
+ */
+function getSpeakTextObject(element, options) {
+    options = options || {};
     let audioAction = element.actions.filter((a) => a.modelName === GridActionAudio.getModelName())[0];
-    if (audioAction && !dontIncludeAudio && audioAction.dataBase64) {
+    if (audioAction && !options.dontIncludeAudio && audioAction.dataBase64) {
         return {
             base64Sound: audioAction.dataBase64
         };
     }
-    let text = inlcudeCorrectedGrammar ? element.fixedGrammarText : null;
+    let text = options.inlcudeCorrectedGrammar ? element.fixedGrammarText : null;
     let customSpeakAction = element.actions.filter((a) => a.modelName === GridActionSpeakCustom.getModelName())[0];
     if (customSpeakAction && !text) {
         let lang = customSpeakAction.speakLanguage || i18nService.getContentLang();
         text = i18nService.getTranslation(customSpeakAction.speakText, { forceLang: lang });
+    }
+    if (!text && !options.dontIncludePronunciation) {
+        let wordForm = stateService.getWordFormObject(element, {searchTags: element.wordFormTags, wordFormId: element.wordFormId}) || {};
+        text = wordForm.pronunciation;
     }
     if (!text) {
         text = getLabel(element);
@@ -458,17 +471,19 @@ function getSpeakTextObject(element, dontIncludeAudio, inlcudeCorrectedGrammar) 
     };
 }
 
-function getSpeakTextOfElement(element) {
-    let textObject = getSpeakTextObject(element, true);
+function getSpeakTextOfElement(element, options) {
+    options = options || {};
+    options.dontIncludeAudio = true;
+    let textObject = getSpeakTextObject(element, options);
     return textObject && textObject.text ? textObject.text : '';
 }
 
 function getSpeakTextObjectArray(includeCorrectedGrammar) {
-    return collectedElements.map((e) => getSpeakTextObject(e, false, includeCorrectedGrammar));
+    return collectedElements.map((e) => getSpeakTextObject(e, {inlcudeCorrectedGrammar: includeCorrectedGrammar}));
 }
 
 function getSpeakTextArray() {
-    return collectedElements.map((e) => getSpeakTextObject(e, true).text);
+    return collectedElements.map((e) => getSpeakTextObject(e, {dontIncludeAudio: true}).text);
 }
 
 function getSpeakText() {
@@ -520,8 +535,8 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         return; // no adding, since the action itself adds the element
     }
 
-    let label = stateService.getDisplayText(element.id) || getLabel(element);
     element.wordFormTags = stateService.getCurrentWordFormTags();
+    let label = getLabel(element);
     let image = getImage(element);
     let lastImage = getLastImage();
 

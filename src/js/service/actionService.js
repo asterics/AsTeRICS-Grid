@@ -108,10 +108,9 @@ async function doAction(gridElement, action, options) {
     switch (action.modelName) {
         case 'GridActionSpeak':
             log.debug('action speak');
-            let langWordFormMap = stateService.getCurrentWordFormAllLangs(gridElement.id);
+            let langWordFormMap = stateService.getSpeakTextAllLangs(gridElement.id);
             let labelCopy = JSON.parse(JSON.stringify(gridElement.label));
             Object.assign(labelCopy, langWordFormMap);
-            labelCopy[i18nService.getContentLang()] = stateService.getCurrentUIWordForm(gridElement.id);
             speechService.speak(labelCopy, {
                 lang: action.speakLanguage,
                 speakSecondary: true,

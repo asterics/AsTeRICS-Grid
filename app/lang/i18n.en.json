@@ -757,6 +757,8 @@
   "openSidebar": "open sidebar",
   "userSettings": "User settings",
   "noneSelected": "(none)",
+  "allSelected": "(all)",
+  "optionalBracket": "(optional)",
   "generalSettingsAreAppliedToAllUsersOnThisDevice": "General settings are applied to all users on this device.",
   "userSettingsAreLinkedToTheCurrentUser": "User settings are linked to the current user and are synchronized to other devices (only for online users).",
   "disableColorCategoryToEnableCustomColor": "Disable color category to enable custom color",
@@ -967,6 +969,7 @@
   "moveDown": "Move down",
   "overrideExistingWordForms": "Override existing word forms",
   "doYouReallyWantDeleteExistingWordForms": "Do you really want to delete all existing word forms and replace them by the content of the clipboard?",
+  "doYouReallyWantDeleteAllWordForms": "Do you really want to delete all existing word forms?",
   "clipboardContainsNoWordFormsPleaseCopyFrom": "Clipboard contains no word forms, please copy from any spreadsheet with 1-3 columns: (1) value, e.g. \"are\", (2) optional language code, e.g. \"EN\", (3) optional word form tags, e.g. \"1.PERS, PLURAL\".",
   "actionType": "Action type",
   "tags": "Tags",
@@ -976,6 +979,12 @@
   "WORDFORM_MODE_NEXT_FORM": "Change this element to next word form",
   "WORDFORM_MODE_RESET_FORMS": "Reset currently displayed word forms",
   "toggleTagOnSelectingItMultipleTimes": "Toggle tags on selecting it multiple times",
-  "successfullyImportedWordForms": "Successfully imported {count} word forms.",
-  "infoPleaseDefineAHomeGridInManageGrids": "Info: please define a home grid in \"Manage grids -> Home grid\" in order to reliably showing correct paths."
+  "importedWordForms": "Imported {count} word forms.",
+  "importedWordFormsGrids": "Imported {count} word forms to {gridCount} grids.",
+  "copiedWordForms": "Copied {count} word forms.",
+  "infoPleaseDefineAHomeGridInManageGrids": "Info: please define a home grid in \"Manage grids -> Home grid\" in order to reliably showing correct paths.",
+  "wordFormValue": "Word form",
+  "importexportDataTofromAllGrids": "Import/export data to/from all grids",
+  "pronunciation": "Pronunciation",
+  "deleteAll": "Delete all"
 }

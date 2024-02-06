@@ -2,6 +2,7 @@ import $ from '../externals/jquery.js';
 import { i18nService } from './i18nService.js';
 import {GridElement} from "../model/GridElement.js";
 import {constants} from "../util/constants.js";
+import {util} from "../util/util.js";
 
 let stateService = {};
 let _states = {};
@@ -83,12 +84,17 @@ stateService.getWordForm = function (element, options) {
 /**
  * returns an object {wordForm: <wordFormObject>, id: <index>} for the given options
  * @param element
- * @param options
+ * @param options.searchTags (optional) a list of tags to search
+ * @param options.wordFormId (optional) the id (index) of the word form to retrieve
+ * @param options.searchSubTags if true, given searchTags are reduced using "shift()" until a valid word form is found
+ * @param options.lang (optional) lang to return
  * @return {{wordForm: *, id}|null|{wordForm, id: number}}
  */
 stateService.getWordFormObject = function (element, options) {
     options.wordFormId = options.wordFormId === undefined ? _currentWordFormIds[element.id] : options.wordFormId;
-    options.searchTags = options.searchTags ? JSON.parse(JSON.stringify(options.searchTags)) : undefined;
+    options.searchTags = options.searchTags ? options.searchTags : _currentWordFormTags;
+    options.searchTags = JSON.parse(JSON.stringify(options.searchTags));
+    options.lang = options.lang || i18nService.getContentLang();
     if (options.wordFormId !== undefined) {
         let langForms = getWordFormsCurrentLang(element);
         return langForms[options.wordFormId];
@@ -100,7 +106,7 @@ stateService.getWordFormObject = function (element, options) {
         for (let index = 0; index < element.wordForms.length; index++) {
             let form = element.wordForms[index];
             if (
-                (!form.lang || form.lang === i18nService.getContentLang()) &&
+                (!form.lang || form.lang === options.lang) &&
                 options.searchTags.every((tag) => form.tags.includes(tag))
             ) {
                 return form;
@@ -131,25 +137,34 @@ stateService.getDisplayText = function (elementId) {
     return stateService.getWordForm(element, {searchTags: _currentWordFormTags, searchSubTags: true}) || stateService.getBaseForm(element) || i18nService.getTranslation(element.label);
 };
 
-stateService.getCurrentWordFormAllLangs = function (elementId) {
+stateService.getSpeakText = function (elementId, options) {
+    let element = elementId.id ? elementId : getElement(elementId);
+    if (!element) {
+        return '';
+    }
+    options = options || {};
+    options.searchSubTags = true;
+    let wordForm = stateService.getWordFormObject(element, options) || {};
+    return (
+        wordForm.pronunciation ||
+        wordForm.value ||
+        stateService.getBaseForm(element) ||
+        i18nService.getTranslation(element.label)
+    );
+};
+
+stateService.getSpeakTextAllLangs = function (elementId) {
     let langWordFormMap = {};
     let element = getElement(elementId);
     if (!element) {
         return '';
     }
-    for (let form of element.wordForms) {
-        if (_currentWordFormTags.every((tag) => form.tags.includes(tag))) {
-            if (form.lang && !Object.keys(langWordFormMap).includes(form.lang)) {
-                langWordFormMap[form.lang] = form.value;
-            }
-        }
+    let possibleLangs = util.deduplicateArray(element.wordForms.map((e) => e.lang));
+    for (let lang of possibleLangs) {
+        langWordFormMap[lang] = stateService.getSpeakText(element, { lang: lang });
     }
     return langWordFormMap;
 };
-
-stateService.getCurrentUIWordForm = function (elementId) {
-    return getTextInUI(elementId);
-}
 
 stateService.nextWordForm = function (elementId) {
     let element = getElement(elementId);
@@ -226,10 +241,6 @@ function getElement(id) {
 
 function setTextInUI (elementId, text) {
     $(`#${elementId} .text-container span`).text(text);
-}
-
-function getTextInUI (elementId) {
-    return $(`#${elementId} .text-container span`).text().trim();
 }
 
 function getWordFormsCurrentLang(element) {
