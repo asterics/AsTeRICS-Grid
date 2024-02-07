@@ -109,7 +109,7 @@ function finishTime(key, fnName) {
         }
         maxEntry.name = fnName || key;
     }
-    log.info('total needed time for ' + fnName + ': ' + totalTimes[key + fnName] + ', last operation:' + operationTime);
+    log.info('total needed time for ' + (fnName || key) + ': ' + totalTimes[key + fnName] + ', last operation:' + operationTime);
 }
 
 function isFunction(functionToCheck) {
