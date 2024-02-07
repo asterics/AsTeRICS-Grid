@@ -15,7 +15,6 @@ import { GridActionChangeLang } from './GridActionChangeLang';
 import { GridActionYoutube } from './GridActionYoutube';
 import { GridActionOpenWebpage } from './GridActionOpenWebpage.js';
 import { GridActionAudio } from './GridActionAudio.js';
-import {WordForm} from "./WordForm.js";
 import {GridActionWordForm} from "./GridActionWordForm.js";
 
 class GridElement extends Model({
@@ -27,7 +26,7 @@ class GridElement extends Model({
     x: [Number],
     y: [Number],
     label: [Object, String, undefined], //map locale -> translation, e.g. "de" => LabelDE
-    wordForms: [Model.Array(WordForm)],
+    wordForms: [Model.Array(Object)], //Array of WordForm, removed for performance reasons
     backgroundColor: [String],
     colorCategory: [String],
     hidden: [Boolean],
