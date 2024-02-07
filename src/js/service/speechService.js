@@ -61,6 +61,7 @@ speechService.speak = function (textOrOject, options) {
     if (!textOrOject || (!isString && Object.keys(textOrOject).length === 0)) {
         return;
     }
+    speechService.resetSpeakAfterFinished();
 
     let preferredVoiceId = options.preferredVoice || _preferredVoiceId;
     let prefVoiceLang = getVoiceLang(preferredVoiceId);
@@ -143,10 +144,14 @@ speechService.speakAfterFinished = function (txtOrObject, options) {
         speechService.doAfterFinishedSpeaking(() => {
             speechService.speak(_waitingSpeakOptions.txtOrObject, _waitingSpeakOptions.options);
             _waitingSpeakOptions.waiting = false;
-            _waitingSpeakOptions.txtOrObject = '';
-            _waitingSpeakOptions.options = undefined;
+            speechService.resetSpeakAfterFinished();
         })
     }
+}
+
+speechService.resetSpeakAfterFinished = function () {
+    _waitingSpeakOptions.txtOrObject = '';
+    _waitingSpeakOptions.options = undefined;
 }
 
 /**
