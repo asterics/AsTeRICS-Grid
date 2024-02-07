@@ -234,7 +234,8 @@
                 let copyString = '';
                 let alreadyCopied = {}; // base -> tags
                 for (let element of elements) {
-                    for (let form of element.wordForms) {
+                    let forms = element.wordForms || [];
+                    for (let form of forms) {
                         let tags = JSON.stringify(form.tags).replaceAll('"', '').replaceAll("'", "").replaceAll("[", "").replaceAll("]", "").replaceAll(",", ", ");
                         let lang = form.lang || '';
                         let pronunciation = form.pronunciation || '';
