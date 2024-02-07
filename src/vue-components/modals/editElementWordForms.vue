@@ -159,6 +159,7 @@
                 let colNrLang = 1;
                 let colNrTags = 2;
                 let colNrBase = 3;
+                let colNrPronunciation = 4;
                 rows = rows.map(row => row.split('\t'));
                 rows = rows.map(row => {
                     row[colNrTags] = row[colNrTags] ? row[colNrTags].split(",").map(tag => tag.trim().toLocaleUpperCase()).filter(tag => !!tag) : null;
@@ -179,6 +180,7 @@
                         lang: row[colNrLang] ? row[colNrLang].toLocaleLowerCase() : undefined,
                         tags: row[colNrTags] ? row[colNrTags] : [],
                         value: row[colNrValue],
+                        pronunciation: row[colNrPronunciation],
                         base: this.importExportGlobally ? row[colNrBase] : undefined
                     }
                 })
@@ -235,12 +237,13 @@
                     for (let form of element.wordForms) {
                         let tags = JSON.stringify(form.tags).replaceAll('"', '').replaceAll("'", "").replaceAll("[", "").replaceAll("]", "").replaceAll(",", ", ");
                         let lang = form.lang || '';
+                        let pronunciation = form.pronunciation || '';
                         let base = i18nService.getTranslation(element.label);
                         let key = tags + lang;
                         alreadyCopied[key] = alreadyCopied[key] || [];
                         if (!this.importExportGlobally || (base && !alreadyCopied[key].includes(tags))) {
                             alreadyCopied[key].push(tags);
-                            copyString += `${form.value}\t${lang}\t${tags}\t${base}\n`;
+                            copyString += `${form.value}\t${lang}\t${tags}\t${base}\t${pronunciation}\n`;
                             this.msgCount++;
                         }
                     }
