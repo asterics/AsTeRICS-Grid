@@ -277,6 +277,13 @@ function getActionOfType(elem, type) {
     return elem.actions[index];
 }
 
+function getActionsOfType(elem, type) {
+    if (!elem) {
+        return [];
+    }
+    return elem.actions.filter(action => action.modelName === type);
+}
+
 function getActionTypes(elem) {
     return elem.actions.map((action) => action.modelName);
 }
@@ -521,6 +528,14 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
     if (getActionTypes(element).some((type) => ignoreActions.includes(type))) {
         return; // dont collect elements containing "ignoreActions"
     }
+    let navigateAction = getActionOfType(element, GridActionNavigate.getModelName());
+    if (navigateAction && getLabel(element).length !== 1 && !navigateAction.addToCollectElem) {
+        return; // no adding of text if the element contains an navigate action and it's no single keyboard character
+    }
+    let wordFormActions = getActionsOfType(element, GridActionWordForm.getModelName());
+    if (wordFormActions.length > 0 && wordFormActions.some(a => a.type === GridActionWordForm.WORDFORM_MODE_NEXT_FORM)) {
+        return; // no adding, since the action itself adds the element
+    }
     if (element.dontCollect) {
         return;
     }
@@ -531,14 +546,6 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
             updateCollectElements();
             return;
         }
-    }
-    let navigateAction = getActionOfType(element, GridActionNavigate.getModelName());
-    if (navigateAction && getLabel(element).length !== 1 && !navigateAction.addToCollectElem) {
-        return; // no adding of text if the element contains an navigate action and it's no single keyboard character
-    }
-    let wordFormAction = getActionOfType(element, GridActionWordForm.getModelName());
-    if (wordFormAction && wordFormAction.type === GridActionWordForm.WORDFORM_MODE_NEXT_FORM) {
-        return; // no adding, since the action itself adds the element
     }
 
     if (element.type === GridElement.ELEMENT_TYPE_NORMAL) {
