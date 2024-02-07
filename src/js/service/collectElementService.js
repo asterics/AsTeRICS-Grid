@@ -17,10 +17,10 @@ import { GridActionSpeak } from '../model/GridActionSpeak.js';
 import { GridActionSpeakCustom } from '../model/GridActionSpeakCustom.js';
 import { dataService } from './data/dataService.js';
 import { GridActionAudio } from '../model/GridActionAudio.js';
-import { TextConfig } from '../model/TextConfig.js';
 import {arasaacService} from "./pictograms/arasaacService.js";
 import {GridActionWordForm} from "../model/GridActionWordForm.js";
 import {stateService} from "./stateService.js";
+import {MapCache} from "../util/MapCache.js";
 
 let collectElementService = {};
 
@@ -38,6 +38,8 @@ let activateARASAACGrammarAPI = false;
 let duplicatedCollectPause = 0;
 let lastCollectId = null;
 let lastCollectTime = 0;
+
+let imgDimensionsCache = new MapCache();
 
 collectElementService.getText = function () {
     return getPrintText();
@@ -280,7 +282,7 @@ function getActionTypes(elem) {
 }
 
 async function updateCollectElements(isSecondTry) {
-    autoCollectImage = collectedElements.some((e) => !!getImage(e));
+    autoCollectImage = collectedElements.some((e) => !!getImageData(e));
     let metadata = null;
     if (registeredCollectElements.length > 0) {
         metadata = await dataService.getMetadata();
@@ -319,9 +321,19 @@ async function updateCollectElements(isSecondTry) {
             let imageCount = collectedElements.length;
             let imgContainerHeight = showLabel ? height * imagePercentage : height;
             let imageRatios = [];
-            for (const img of collectedElements.map((e) => getImage(e))) {
-                let dim = await imageUtil.getImageDimensionsFromDataUrl(img);
-                imageRatios.push(dim.ratio);
+            for (const elem of collectedElements) {
+                let imageData = getImageData(elem);
+                if (imageData) {
+                    if (elem.image.searchProviderName) {
+                        imageRatios.push(1);
+                    } else if (imgDimensionsCache.has(imageData)) {
+                        imageRatios.push(imgDimensionsCache.get(imageData));
+                    } else {
+                        let dim = await imageUtil.getImageDimensionsFromDataUrl(imageData);
+                        imageRatios.push(dim.ratio);
+                        imgDimensionsCache.set(imageData, dim.ratio);
+                    }
+                }
             }
             let maxImgRatio = Math.max(...imageRatios) || 1;
             let maxImages = Math.floor(width / (imgContainerHeight * maxImgRatio));
@@ -337,7 +349,7 @@ async function updateCollectElements(isSecondTry) {
             let totalWidth = 0;
             for (const [index, collectedElement] of collectedElements.entries()) {
                 let label = getPrintTextOfElement(collectedElement);
-                let image = getImage(collectedElement);
+                let image = getImageData(collectedElement);
                 let elemWidth = imgHeight * imageRatios[index] || imgHeight;
                 let marked = markedImageIndex === index;
                 let imgHTML = null;
@@ -410,7 +422,7 @@ function setLabel(element, newLabel) {
     element.label[i18nService.getContentLang()] = newLabel;
 }
 
-function getImage(element) {
+function getImageData(element) {
     return element.image ? element.image.data || element.image.url : null;
 }
 
@@ -533,7 +545,7 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         element.wordFormTags = stateService.getCurrentWordFormTags();
         let label = getLabel(element);
         let printText = getPrintTextOfElement(element);
-        let image = getImage(element);
+        let image = getImageData(element);
         if (label && label.length === 1 && collectElementService.isCurrentGridKeyboard()) {
             if (convertToLowercaseIfKeyboard) {
                 label = label.toLowerCase();
