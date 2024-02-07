@@ -986,5 +986,6 @@
   "wordFormValue": "Word form",
   "importexportDataTofromAllGrids": "Import/export data to/from all grids",
   "pronunciation": "Pronunciation",
-  "deleteAll": "Delete all"
+  "deleteAll": "Delete all",
+  "toggleInCollectionElementIfAddedMultipleTimes": "Toggle in collection element if added multiple times"
 }

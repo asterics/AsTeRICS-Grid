@@ -32,6 +32,7 @@ class GridElement extends Model({
     colorCategory: [String],
     hidden: [Boolean],
     dontCollect: [Boolean],
+    toggleInBar: [Boolean],
     image: [GridImage],
     actions: [Object],
     type: String,
