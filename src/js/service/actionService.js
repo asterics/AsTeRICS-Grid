@@ -140,12 +140,18 @@ async function doAction(gridElement, action, options) {
         case 'GridActionWordForm':
             switch (action.type) {
                 case GridActionWordForm.WORDFORM_MODE_CHANGE_ELEMENTS:
+                    if (!hasNextWordFormAction(gridElement)) {
+                        stateService.resetWordFormIds();
+                    }
                     stateService.addWordFormTags(action.tags, action.toggle);
                     break;
                 case GridActionWordForm.WORDFORM_MODE_CHANGE_BAR:
                     collectElementService.addWordFormTagsToLast(action.tags);
                     break;
                 case GridActionWordForm.WORDFORM_MODE_CHANGE_EVERYWHERE:
+                    if (!hasNextWordFormAction(gridElement)) {
+                        stateService.resetWordFormIds();
+                    }
                     stateService.addWordFormTags(action.tags, action.toggle);
                     collectElementService.addWordFormTagsToLast(action.tags);
                     break;
@@ -241,6 +247,19 @@ function doAREAction(action, gridData) {
             areService.triggerEvent(action.componentId, action.eventPortId, action.areURL);
         }
     });
+}
+
+function getActionsOfType(elem, type) {
+    if (!elem) {
+        return [];
+    }
+    return elem.actions.filter(action => action.modelName === type);
+}
+
+function hasNextWordFormAction(elem) {
+    return getActionsOfType(elem, GridActionWordForm.getModelName()).some(
+        (a) => a.type === GridActionWordForm.WORDFORM_MODE_NEXT_FORM
+    );
 }
 
 async function getMetadataConfig() {

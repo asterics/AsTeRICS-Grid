@@ -32,7 +32,6 @@ stateService.hasGlobalGridElement = function (elementId) {
 
 stateService.addWordFormTags = function (tags, toggle) {
     _currentWordFormTags = stateService.mergeTags(_currentWordFormTags, tags, toggle);
-    _currentWordFormIds = {};
     stateService.applyWordFormsToUI();
 };
 
@@ -55,6 +54,10 @@ stateService.resetWordFormTags = function () {
     _currentWordFormTags = [];
     _currentWordFormIds = {};
     stateService.applyWordFormsToUI();
+};
+
+stateService.resetWordFormIds = function () {
+    _currentWordFormIds = {};
 };
 
 stateService.applyWordFormsToUI = function () {
