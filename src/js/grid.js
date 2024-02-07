@@ -4,13 +4,13 @@ import { collectElementService } from "./service/collectElementService";
 import { UndoService } from "./service/data/undoService";
 import { GridData } from "./model/GridData";
 import { templates } from "./templates";
-import { imageUtil } from "./util/imageUtil";
 import { fontUtil } from "./util/fontUtil";
 import { predictionService } from "./service/predictionService";
 import { constants } from "./util/constants";
 import { gridUtil } from "./util/gridUtil";
 import { GridElement } from "./model/GridElement.js";
 import { GridActionNavigate } from "./model/GridActionNavigate.js";
+import {stateService} from "./service/stateService.js";
 
 function Grid(gridContainerId, gridItemClass, options) {
     var thiz = this;
@@ -75,6 +75,7 @@ function Grid(gridContainerId, gridItemClass, options) {
             //only add global grid if not in edit mode
             promises.push(
                 dataService.getGlobalGrid().then((globalGrid) => {
+                    stateService.setGlobalGrid(globalGrid);
                     if (globalGrid) {
                         let autowidth = true;
                         let heightPercentage = options.globalGridHeightPercentage

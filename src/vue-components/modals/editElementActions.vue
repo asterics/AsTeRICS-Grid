@@ -76,6 +76,9 @@
                     <div v-if="action.modelName == 'GridActionAudio'">
                         <edit-audio-action :action="action" :grid-data="gridData"></edit-audio-action>
                     </div>
+                    <div v-if="action.modelName == 'GridActionWordForm'">
+                        <edit-word-form-action :action="action" :grid-data="gridData"></edit-word-form-action>
+                    </div>
                     <div v-if="action.modelName == 'GridActionNavigate'">
                         <div class="srow">
                             <label for="selectNavType" class="four columns normal-text">{{ $t('navigationType') }}</label>
@@ -307,6 +310,7 @@
     import RadioListSelector from "../components/radioListSelector.vue";
     import {GridActionYoutube} from "../../js/model/GridActionYoutube";
     import EditAudioAction from "./editActionsSub/editAudioAction.vue";
+    import EditWordFormAction from "./editActionsSub/editWordFormAction.vue";
 
     export default {
         props: ['gridElement', 'gridData'],
@@ -333,6 +337,7 @@
             }
         },
         components: {
+            EditWordFormAction,
             EditAudioAction,
             RadioListSelector,
             Accordion,

@@ -357,6 +357,10 @@ nav #helpButton:focus {
     font-weight: bold;
 }
 
+.multiselect__tag {
+    color: black !important;
+}
+
 @media (max-height: 355px) {
     #syncVisualization {
         display: none;

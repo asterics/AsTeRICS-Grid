@@ -139,4 +139,31 @@ constants.OPTION_TYPES = {
 constants.ARASAAC_AUTHOR = 'ARASAAC - CC (BY-NC-SA)';
 constants.ARASAAC_LICENSE_URL = 'https://arasaac.org/terms-of-use';
 
+constants.WORDFORM_TAG_BASE = 'BASE';
+constants.WORDFORM_TAGS = [
+    constants.WORDFORM_TAG_BASE,
+    'NEGATION',
+    'SINGULAR',
+    'PLURAL',
+    '1.PERS',
+    '2.PERS',
+    '3.PERS',
+    '1.CASE',
+    '2.CASE',
+    '3.CASE',
+    '4.CASE',
+    '5.CASE',
+    '6.CASE',
+    'FEMININE',
+    'MASCULINE',
+    'NEUTRAL',
+    'COMPARATIVE',
+    'SUPERLATIVE',
+    'PRESENT',
+    'PAST',
+    'FUTURE',
+    'INDEFINITE',
+    'DEFINITE'
+];
+
 export { constants };

@@ -76,6 +76,7 @@
     import {GridActionCollectElement} from "../../js/model/GridActionCollectElement.js";
     import {pouchDbService} from "../../js/service/data/pouchDbService.js";
     import {MainVue} from "../../js/vue/mainVue.js";
+    import {stateService} from "../../js/service/stateService.js";
 
     let vueApp = null;
     let gridInstance = null;
@@ -137,7 +138,11 @@
                 }
             },
             back() {
-                Router.toMain();
+                if (this.metadata && this.metadata.globalGridId === this.gridData.id) {
+                    Router.toMain();
+                } else {
+                    Router.toGrid(this.gridData.id);
+                }
             },
             editElement(elementId) {
                 this.editElementId = elementId;
@@ -264,6 +269,7 @@
                     return Promise.reject();
                 }
                 thiz.gridData = JSON.parse(JSON.stringify(gridData));
+                stateService.setCurrentGrid(thiz.gridData);
                 return Promise.resolve();
             }).then(() => {
                 return dataService.getMetadata().then(savedMetadata => {

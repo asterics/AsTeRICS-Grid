@@ -19,6 +19,8 @@ import { GridActionSpeak } from '../model/GridActionSpeak.js';
 import { GridActionSpeakCustom } from '../model/GridActionSpeakCustom.js';
 import {audioUtil} from "../util/audioUtil.js";
 import {MainVue} from "../vue/mainVue.js";
+import {stateService} from "./stateService.js";
+import {GridActionWordForm} from "../model/GridActionWordForm.js";
 
 let actionService = {};
 
@@ -38,7 +40,6 @@ actionService.doAction = function (gridId, gridElementId) {
             }
         }
         doActions(gridElement, gridId);
-        $(window).trigger(constants.ELEMENT_EVENT_ID, [gridElement]);
     });
 };
 
@@ -74,12 +75,21 @@ async function doActions(gridElement, gridId) {
             actions: actions
         });
     });
+    $(window).trigger(constants.ELEMENT_EVENT_ID, [gridElement]);
     metadata = metadata || (await dataService.getMetadata());
     let actionTypes = actions.map((a) => a.modelName);
     let navBackActions = [GridActionAudio.getModelName(), GridActionChangeLang.getModelName(), GridActionSpeak.getModelName(), GridActionSpeakCustom.getModelName()];
-    let noNavBackActions = GridElement.getActionTypeModelNames().filter(name => !navBackActions.includes(name));
-    if (metadata.toHomeAfterSelect && !collectElementService.isCurrentGridKeyboard() && !actionTypes.some(type => noNavBackActions.includes(type))) {
+    let noNavBackActions = GridElement.getActionTypeModelNames().filter((name) => !navBackActions.includes(name));
+    if (
+        metadata.toHomeAfterSelect &&
+        !collectElementService.isCurrentGridKeyboard() &&
+        !stateService.hasGlobalGridElement(gridElement.id) &&
+        !actionTypes.some((type) => noNavBackActions.includes(type))
+    ) {
         Router.toMain();
+    }
+    if (!actionTypes.includes(GridActionWordForm.getModelName())) {
+        stateService.resetWordFormTags();
     }
 }
 
@@ -98,7 +108,10 @@ async function doAction(gridElement, action, options) {
     switch (action.modelName) {
         case 'GridActionSpeak':
             log.debug('action speak');
-            speechService.speak(gridElement.label, {
+            let langWordFormMap = stateService.getSpeakTextAllLangs(gridElement.id);
+            let labelCopy = JSON.parse(JSON.stringify(gridElement.label));
+            Object.assign(labelCopy, langWordFormMap);
+            speechService.speak(labelCopy, {
                 lang: action.speakLanguage,
                 speakSecondary: true,
                 minEqualPause: minPauseSpeak
@@ -118,6 +131,28 @@ async function doAction(gridElement, action, options) {
             if (action.dataBase64) {
                 audioUtil.stopAudio();
                 audioUtil.playAudio(action.dataBase64);
+            }
+            break;
+        case 'GridActionWordForm':
+            switch (action.type) {
+                case GridActionWordForm.WORDFORM_MODE_CHANGE_ELEMENTS:
+                    stateService.addWordFormTags(action.tags, action.toggle);
+                    break;
+                case GridActionWordForm.WORDFORM_MODE_CHANGE_BAR:
+                    collectElementService.addWordFormTagsToLast(action.tags);
+                    break;
+                case GridActionWordForm.WORDFORM_MODE_CHANGE_EVERYWHERE:
+                    stateService.addWordFormTags(action.tags, action.toggle);
+                    collectElementService.addWordFormTagsToLast(action.tags);
+                    break;
+                case GridActionWordForm.WORDFORM_MODE_NEXT_FORM:
+                    let currentId = stateService.nextWordForm(gridElement.id);
+                    collectElementService.replaceLast(gridElement, currentId);
+                    break;
+                case GridActionWordForm.WORDFORM_MODE_RESET_FORMS:
+                    stateService.resetWordFormTags();
+                    collectElementService.fixateLastWordForm();
+                    break;
             }
             break;
         case 'GridActionNavigate':
