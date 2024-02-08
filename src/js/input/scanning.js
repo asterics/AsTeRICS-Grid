@@ -15,7 +15,7 @@ Scanner.getInstanceFromConfig = function (inputConfig, itemSelector, scanActiveC
         minBinarySplitThreshold: 3,
         scanTimeoutMs: inputConfig.scanTimeoutMs,
         scanTimeoutFirstElementFactor: inputConfig.scanTimeoutFirstElementFactor,
-        touchScanning: !inputConfig.mouseclickEnabled,
+        touchScanning: false,
         inputEventSelect: inputConfig.scanInputs.filter((e) => e.label === InputConfig.SELECT)[0],
         inputEventNext: inputConfig.scanInputs.filter((e) => e.label === InputConfig.NEXT)[0],
         scanStartWithAction: inputConfig.scanStartWithAction

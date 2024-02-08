@@ -3,8 +3,7 @@ import { localStorageService } from './data/localStorageService';
 import { dataService } from './data/dataService';
 import { loginService } from './loginService';
 import { Router } from '../router.js';
-import { actionService } from './actionService.js';
-import { GridActionNavigate } from '../model/GridActionNavigate.js';
+import {MainVue} from "../vue/mainVue.js";
 
 let keyboardShortcuts = {};
 
@@ -29,18 +28,15 @@ keyboardShortcuts.init = function () {
         }
         if (event.ctrlKey && keycode === 36) {
             //Ctrl + Pos1
-            dataService.getGlobalGrid().then((globalGrid) => {
-                if (globalGrid) {
-                    for (const elem of globalGrid.gridElements) {
-                        if (
-                            elem.actions[0].modelName === GridActionNavigate.getModelName() &&
-                            !elem.actions[0].toLastGrid
-                        ) {
-                            Router.toGrid(elem.actions[0].toGridId);
-                        }
-                    }
-                }
-            });
+            Router.toMain();
+        }
+        if (event.ctrlKey && keycode === 70) {
+            //Ctrl + F
+            event.preventDefault();
+            let validViews = [Router.VIEWS.AllGridsView, Router.VIEWS.GridView, Router.VIEWS.GridEditView];
+            if (validViews.includes(Router.getCurrentView())) {
+                MainVue.showSearchModal();
+            }
         }
     });
 };

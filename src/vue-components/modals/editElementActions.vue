@@ -76,24 +76,39 @@
                     <div v-if="action.modelName == 'GridActionAudio'">
                         <edit-audio-action :action="action" :grid-data="gridData"></edit-audio-action>
                     </div>
+                    <div v-if="action.modelName == 'GridActionWordForm'">
+                        <edit-word-form-action :action="action" :grid-data="gridData"></edit-word-form-action>
+                    </div>
                     <div v-if="action.modelName == 'GridActionNavigate'">
                         <div class="srow">
-                            <input id="navigateBackChkbox" type="checkbox" v-model="action.toLastGrid"/>
-                            <label for="navigateBackChkbox" class="normal-text">{{ $t('navigateToLastOpenedGrid') }}</label>
+                            <label for="selectNavType" class="four columns normal-text">{{ $t('navigationType') }}</label>
+                            <select class="eight columns" id="selectNavType" v-model="action.navType">
+                                <option v-for="type in Object.values(GridActionNavigate.NAV_TYPES)" :value="type">{{ type | translate }}</option>
+                            </select>
                         </div>
-                        <div class="srow">
-                            <input id="addToCollectChk" type="checkbox" v-model="action.addToCollectElem"/>
-                            <label for="addToCollectChk" class="normal-text">{{ $t('addThisElementToCollectionElementsDespiteNav') }}</label>
-                        </div>
-                        <div class="srow">
+                        <div class="srow" v-if="action.navType === GridActionNavigate.NAV_TYPES.TO_GRID">
                             <div class="four columns">
                                 <label for="selectGrid" class="normal-text">{{ $t('navigateToGrid') }}</label>
                             </div>
-                            <select class="eight columns" id="selectGrid" type="text" v-model="action.toGridId" :disabled="action.toLastGrid">
+                            <select class="eight columns" id="selectGrid" v-model="action.toGridId">
                                 <option v-for="grid in grids" :value="grid.id">
                                     {{grid.label | extractTranslation}}
                                 </option>
                             </select>
+                        </div>
+                        <div v-if="action.navType === GridActionNavigate.NAV_TYPES.OPEN_SEARCH">
+                            <div class="srow">
+                                <label for="searchTextInput" class="four columns normal-text">{{ $t('searchForCustomText') }}</label>
+                                <input id="searchTextInput" class="eight columns" type="text" v-model="action.searchText" :placeholder="$t('customText')"/>
+                            </div>
+                            <div class="srow">
+                                <input id="searchCollected" type="checkbox" v-model="action.searchCollectedText"/>
+                                <label for="searchCollected" class="normal-text">{{ $t('searchForCollectedText') }}</label>
+                            </div>
+                        </div>
+                        <div class="srow">
+                            <input id="addToCollectChk" type="checkbox" v-model="action.addToCollectElem"/>
+                            <label for="addToCollectChk" class="normal-text">{{ $t('addThisElementToCollectionElementsDespiteNav') }}</label>
                         </div>
                     </div>
                     <div v-if="action.modelName == 'GridActionARE'">
@@ -298,6 +313,7 @@
     import RadioListSelector from "../components/radioListSelector.vue";
     import {GridActionYoutube} from "../../js/model/GridActionYoutube";
     import EditAudioAction from "./editActionsSub/editAudioAction.vue";
+    import EditWordFormAction from "./editActionsSub/editWordFormAction.vue";
     import EditRestAction from "./editActionsSub/editRESTAction.vue";
 
     export default {
@@ -319,11 +335,13 @@
                 selectFromAllLanguages: false,
                 selectFromAllVoices: false,
                 GridActionYoutube: GridActionYoutube,
+                GridActionNavigate: GridActionNavigate,
                 GridElement: GridElement,
                 speechService: speechService
             }
         },
         components: {
+            EditWordFormAction,
             EditAudioAction,
             RadioListSelector,
             Accordion,

@@ -321,4 +321,8 @@ util.getRandom = function (min, max) {
     return Math.random() * (max - min) + min;
 }
 
+util.deduplicateArray = function (array) {
+    return [...new Set(array)];
+}
+
 export { util };

@@ -44,12 +44,6 @@
                                 </div>
                                 <div class="srow">
                                     <div class="twelve columns">
-                                        <input type="checkbox" id="chkTouchScanning" v-model="touchScanning" @change="changeTouchScanning"/>
-                                        <label for="chkTouchScanning">{{ $t('scanningselectionByMouseClickOrTap') }}</label>
-                                    </div>
-                                </div>
-                                <div class="srow">
-                                    <div class="twelve columns">
                                         <input type="checkbox" id="chkStartWithAction" v-model="inputConfig.scanStartWithAction"/>
                                         <label for="chkStartWithAction">{{ $t('startManuallyByUserInputEvent') }}</label>
                                     </div>
@@ -182,9 +176,6 @@
             resetInput() {
                 this.$set(this.inputConfig, 'scanInputs', JSON.parse(JSON.stringify(InputConfig.DEFAULT_SCAN_INPUTS)));
                 this.inputChanged();
-            },
-            changeTouchScanning() {
-                this.inputConfig.mouseclickEnabled = !this.touchScanning;
             },
             initTest() {
                 setTimeout(() => {

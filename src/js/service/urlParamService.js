@@ -41,6 +41,10 @@ urlParamService.getDefaultGridsetName = function () {
     return getParam(urlParamService.params.PARAM_DEFAULT_GRIDSET);
 };
 
+urlParamService.getParam = function (name) {
+    return getParam(name);
+}
+
 function hasParam(name) {
     let searchParams = new URLSearchParams(window.location.search);
     return searchParams.has(name);

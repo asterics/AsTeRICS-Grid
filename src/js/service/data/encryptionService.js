@@ -158,7 +158,7 @@ encryptionService.decryptStringTrySalts = function (encryptedString, trySalts) {
             log.error("wasn't able to decrypt string, no remaining salts for trying!");
             throw e;
         }
-        log.warn("wasn't able to decrypt string, try next salt...");
+        log.warn("wasn't able to decrypt string, try next salt...", trySalts[0]);
         return encryptionService.decryptStringTrySalts(encryptedString, trySalts);
     }
 };

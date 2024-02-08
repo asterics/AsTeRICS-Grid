@@ -104,7 +104,8 @@
                 element.label = element.label || this.newElementLabel;
                 element.actions = element.actions.filter(a => a.modelName !== GridActionNavigate.getModelName());
                 element.actions.push(new GridActionNavigate({
-                    toGridId: this.gridTo.id
+                    toGridId: this.gridTo.id,
+                    navType: GridActionNavigate.NAV_TYPES.TO_GRID
                 }));
                 return dataService.saveGrid(this.gridFrom);
             }

@@ -13,9 +13,9 @@
                         </select>
                     </div>
                 </div>
-                <div class="row" v-if="selectedGrid && selectedGrid.id">
+                <div class="row" v-if="selectedGrid && selectedGrid.thumbnail && selectedGrid.thumbnail.data">
                     <div class="col-12">
-                        <img :src="selectedGrid.thumbnail ? selectedGrid.thumbnail.data : imageUtil.getEmptyImage()" style="max-width: 100%; border: 1px solid lightgray"/>
+                        <img :src="selectedGrid.thumbnail.data" style="max-width: 100%; border: 1px solid lightgray"/>
                     </div>
                 </div>
                 <div class="row" v-if="selectedGrid && selectedGrid.id">
@@ -35,7 +35,7 @@
     import {imageUtil} from "../../js/util/imageUtil.js";
 
     export default {
-        props: ["excludeId", "value", "selectLabel", "additionalSelectOptions"],
+        props: ["excludeId", "value", "selectLabel", "additionalSelectOptions", "includeGlobal"],
         data() {
             return {
                 currentValue: this.value,
@@ -68,7 +68,7 @@
         },
         mounted() {
             let additionalOpts = this.additionalSelectOptions || [];
-            dataService.getGrids(false, true).then(grids => {
+            dataService.getGrids(false, !this.includeGlobal).then(grids => {
                 this.grids = JSON.parse(JSON.stringify(grids)).filter(grid => !this.excludeId || grid.id !== this.excludeId);
                 this.grids.sort((a, b) => {
                     return i18nService.getTranslation(a.label).localeCompare(i18nService.getTranslation(b.label));

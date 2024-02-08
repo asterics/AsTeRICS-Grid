@@ -13,6 +13,7 @@ import { GridActionWebradio } from './model/GridActionWebradio.js';
 import { MetaData } from './model/MetaData.js';
 import { GridActionSpeakCustom } from './model/GridActionSpeakCustom.js';
 import { util } from './util/util.js';
+import {stateService} from "./service/stateService.js";
 
 var templates = {};
 
@@ -24,7 +25,7 @@ templates.getGridBase = function (gridId) {
             </ul>`;
 };
 
-templates.getGridItem = function (gridElem, locale, metadata) {
+templates.getGridItem = function (gridElem, metadata) {
     switch (gridElem.type) {
         case GridElement.ELEMENT_TYPE_COLLECT: {
             return getGridElementCollect(gridElem, metadata);
@@ -36,18 +37,18 @@ templates.getGridItem = function (gridElem, locale, metadata) {
             return getGridElementYTPlayer(gridElem, metadata);
         }
         default: {
-            return getGridElementNormal(gridElem, locale, metadata);
+            return getGridElementNormal(gridElem, metadata);
         }
     }
 };
 
-function getGridElementNormal(gridElem, fallbackLocale, metadata) {
+function getGridElementNormal(gridElem, metadata) {
     gridElem = fillDefaultValues(gridElem);
     var imgData = '';
     var imgId = '';
     var txtContainerStyle = 'font-size:' + fontUtil.getLastFontSize() + ';';
     var imgContainerMargin = '1%';
-    let label = i18nService.getTranslation(gridElem.label, { fallbackLocale: fallbackLocale });
+    let label = stateService.getDisplayText(gridElem.id) || i18nService.getTranslation(gridElem.label);
     label = util.convertLowerUppercase(label, metadata.textConfig.convertMode);
     var imgContainerMaxHeight = label ? '80%' : '100%';
     if (gridElem.image && (gridElem.image.data || gridElem.image.url)) {

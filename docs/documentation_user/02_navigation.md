@@ -141,6 +141,14 @@ The global grid can be activated/deactivated and edited in the "Manage Grids" vi
 
 *Fig.3.3: "Manage grids" - view - Global Grid*
 
+### Home grid
+
+At the bottom of "Manage grids" it's possible to define a `Home grid`. This grid is automatically opened at startup of AsTeRICS Grid. If no home grid is defined, the last opened grid is opened.
+
+`Navigate to home grid after selecting an element` can be selected in order to automatically navigate to home grid after any element (which doesn't navigate to an other grid) is selected. This can speed up the construction of sentences in more complex communicator interfaces.
+
+It's possible to define an action that navigates to the home grid, see [action "Navigate to other grid"](05_actions.md#navigate-to-other-grid).
+
 ## "Manage Dictionaries" - view
 
 **Video on YouTube:** [Manage dictionaries](https://www.youtube.com/watch?v=DS9om8MDEDY&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=19&t=0s) (German, but auto-translated subtitles available)
@@ -185,6 +193,22 @@ The following elements are available in the change users view:
 9. **Remember checkbox**: if checked, the newly logged in online user will be saved to the device and listed in the list of users in the current user view. If unchecked the user will only be opened temporarily and no user data will be saved on the device (recommended for logging in on foreign devices).
 
 For information about offline or online users and how to add them see [Users](06_users.md).
+
+## Search function
+These are the possibilities to open the dialog for searching for grid elements in the current configuration:
+1. Click the button `Search` in the top bar in the Main View
+2. Press `Ctrl + F` on the keyboard in one of these views: "Main", "Manage Grids" or "Edit grid"
+3. Click on `More -> Search` in the top bar of "Edit grid" view
+4. Grid element action [navigate to other grid](05_actions.md#navigate-to-other-grid) with navigation type `Open search dialog` (e.g. to be added to [global grid](02_navigation.md#global-grid) in order to be able to open the search dialog in fullscreen mode).
+
+![change user view](./img/search-dialog.png)
+*Fig. 6: Search dialog and search results*
+
+Figure 6 shows the search dialog:
+1. **search term**: text input field for the search term
+2. **result image**: directly navigates to the selected element and highlights it. Keyboard shortcut for first search result: `[Enter]`
+3. **result path**: navigates to the selected element step-by-step by highlighting the path beginning from the home grid. Keyboard shortcut for first search result: `[Ctrl + Enter]`
+
 
 [&#x2190; Previous Chapter](01_terms.md) [Next Chapter &#x2192;](03_appearance_layout.md)
 

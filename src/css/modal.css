@@ -129,3 +129,8 @@ font-weight: bold;
     font-weight: bold;
     color: #c96a00;
 }
+
+.modal .success {
+    font-weight: bold;
+    color: darkgreen;
+}

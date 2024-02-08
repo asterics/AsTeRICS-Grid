@@ -43,7 +43,7 @@
             <accordion class="offset-by-two ten columns" :acc-label="$t('settingsForImageSearch')" acc-label-type="span" acc-background-color="white">
                 <div class="srow">
                     <label class="three columns" for="searchLang">{{$t('searchLang')}}</label>
-                    <select class="five columns" id="searchLang" v-model="searchLang" @input="searchInput(0)" @change="localStorageService.saveJSON(EDIT_ELEM_SEARCH_LANG_PREFIX + searchProvider.name, searchLang)">
+                    <select class="five columns" id="searchLang" v-model="searchLang" @change="searchInput(0); localStorageService.saveJSON(EDIT_ELEM_SEARCH_LANG_PREFIX + searchProvider.name, searchLang)">
                         <option :value="null">{{ $t('automaticCurrentLanguage') }}</option>
                         <option v-for="value in searchProvider.searchLangs" :value="value">{{ $t('lang.' + value) }}</option>
                     </select>

@@ -29,10 +29,16 @@
             </div>
         </div>
         <div class="srow">
-            <div class="three columns">
-                <input type="checkbox" id="inputHidden" v-if="gridElement" v-model="gridElement.hidden"/>
-                <label for="inputHidden">{{ $t('hideElement') }}</label>
-            </div>
+            <input type="checkbox" id="inputHidden" v-if="gridElement" v-model="gridElement.hidden"/>
+            <label for="inputHidden">{{ $t('hideElement') }}</label>
+        </div>
+        <div class="srow">
+            <input type="checkbox" id="inputDontCollect" v-if="gridElement" v-model="gridElement.dontCollect"/>
+            <label for="inputDontCollect">{{ $t('dontAddElementToCollectElement') }}</label>
+        </div>
+        <div class="srow">
+            <input type="checkbox" id="toggleInBar" v-if="gridElement" v-model="gridElement.toggleInBar"/>
+            <label for="toggleInBar">{{ $t('toggleInCollectionElementIfAddedMultipleTimes') }}</label>
         </div>
     </div>
 </template>

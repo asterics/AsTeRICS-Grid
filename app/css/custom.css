@@ -253,6 +253,11 @@ nav #helpButton:focus {
     animation: background 0.5s cubic-bezier(1,0,0,1);
 }
 
+.highlight.grid-item-content {
+    animation: background 1s steps(20, end) infinite;
+    -webkit-animation: background 1s steps(20, end) infinite;
+}
+
 .noanimation {
     -webkit-animation: none !important;
     animation: none !important;
@@ -350,6 +355,10 @@ nav #helpButton:focus {
 
 .boldFont {
     font-weight: bold;
+}
+
+.multiselect__tag {
+    color: black !important;
 }
 
 @media (max-height: 355px) {
