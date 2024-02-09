@@ -2,7 +2,7 @@
   "GridActionSpeak": "Pronunciar text de la cel·la",
   "GridActionSpeakCustom": "Pronunciar text personalitzat",
   "GridActionAudio": "Gravar audio",
-  "GridActionWordForm": "Change word forms",
+  "GridActionWordForm": "",
   "GridActionNavigate": "Navegar a un altre tauler",
   "GridActionARE": "Acció d'AsTeRICS",
   "GridActionOpenHAB": "Acció d' Open HAB",
