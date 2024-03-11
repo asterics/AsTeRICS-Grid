@@ -37,7 +37,10 @@
             </div>
         </accordion>
 
-        <h2 class="mb-3 mt-5">{{ $t('currentWordForms') }}</h2>
+        <div class="mb-3 mt-5 d-flex align-items-end">
+            <h2 class="me-3">{{ $t('currentWordForms') }}</h2>
+            <span v-if="gridElement.wordForms.length > 0">{{ gridElement.wordForms.length }} {{ 'elementsBracket' | translate}}</span>
+        </div>
         <div class="row mb-3">
             <label for="filterLang" class="col-12 col-md-3">{{ $t('language') }}</label>
             <div class="col-12 col-md-3 mb-2">
