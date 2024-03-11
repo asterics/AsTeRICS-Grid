@@ -158,7 +158,7 @@
                 this.currentMsg = null;
                 this.msgCount = this.gridPasteCount = 0;
                 let result = await util.getClipboardContent();
-                let rows = result.split('\n').map(row => row.trim()).filter(row => !!row);
+                let rows = result.split('\n').filter(row => !!row);
                 let colNrValue = 0;
                 let colNrLang = 1;
                 let colNrTags = 2;
@@ -169,7 +169,7 @@
                     row[colNrTags] = row[colNrTags] ? row[colNrTags].split(",").map(tag => tag.trim().toLocaleUpperCase()).filter(tag => !!tag) : null;
                     return row;
                 });
-                rows = rows.filter(row => (!row[colNrLang] || row[colNrLang].length === 2) && row[colNrValue])
+                rows = rows.filter(row => (!row[colNrLang] || row[colNrLang].length === 2) && row[colNrValue]);
                 if (!rows.length) {
                     this.currentMsg = this.msgTypes.ERROR_PASTE;
                     return;
