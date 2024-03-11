@@ -196,7 +196,10 @@ stateService.nextWordForm = function (elementId) {
         return;
     }
     let currentLangForms = getWordFormsForLang(element);
-    let currentWordFormObject = this.getWordFormObject(element, {searchTags: _currentWordFormTags, searchSubTags: true}) || {};
+    if (currentLangForms.length === 0) {
+        return;
+    }
+    let currentWordFormObject = this.getWordFormObject(element, { searchTags: _currentWordFormTags, searchSubTags: true }) || {};
     let index = currentLangForms.indexOf(currentWordFormObject);
     index = index >= 0 ? index : null;
     let currentId = _currentWordFormIds[element.id] || index || 0;
