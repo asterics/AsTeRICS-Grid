@@ -126,18 +126,14 @@ stateService.getWordFormObject = function (element, options) {
     return null;
 };
 
-stateService.getBaseForm = function (element, lang) {
-    let object = stateService.getBaseFormObject(element, lang);
+stateService.getFirstForm = function (element, lang) {
+    let object = stateService.getFirstFormObject(element, lang);
     return object ? object.value : null;
 };
 
-stateService.getBaseFormObject = function (element, lang) {
+stateService.getFirstFormObject = function (element, lang) {
     lang = lang || i18nService.getContentLang();
-    let baseForm = element.wordForms.filter(
-        (f) =>
-            (!f.lang || f.lang === lang) &&
-            (f.tags.length === 0 || (f.tags.length === 1 && f.tags[0] === constants.WORDFORM_TAG_BASE))
-    )[0];
+    let baseForm = element.wordForms.filter((f) => (!f.lang || f.lang === lang))[0];
     return baseForm ? baseForm : null;
 }
 
@@ -146,7 +142,7 @@ stateService.getDisplayText = function (elementId) {
     if (!element) {
         return '';
     }
-    return stateService.getWordForm(element, {searchTags: _currentWordFormTags, searchSubTags: true}) || stateService.getBaseForm(element) || i18nService.getTranslation(element.label);
+    return stateService.getWordForm(element, {searchTags: _currentWordFormTags, searchSubTags: true}) || stateService.getFirstForm(element) || i18nService.getTranslation(element.label);
 };
 
 stateService.getSpeakText = function (elementId, options) {
@@ -160,7 +156,7 @@ stateService.getSpeakText = function (elementId, options) {
     if (wordForm.pronunciation || wordForm.value) {
         return wordForm.pronunciation || wordForm.value;
     }
-    let baseForm = stateService.getBaseFormObject(element, options.lang) || {};
+    let baseForm = stateService.getFirstFormObject(element, options.lang) || {};
     return (
         baseForm.pronunciation ||
         baseForm.value ||
@@ -196,7 +192,10 @@ stateService.nextWordForm = function (elementId) {
         return;
     }
     let currentLangForms = getWordFormsForLang(element);
-    let currentWordFormObject = this.getWordFormObject(element, {searchTags: _currentWordFormTags, searchSubTags: true}) || {};
+    if (currentLangForms.length === 0) {
+        return;
+    }
+    let currentWordFormObject = this.getWordFormObject(element, { searchTags: _currentWordFormTags, searchSubTags: true }) || {};
     let index = currentLangForms.indexOf(currentWordFormObject);
     index = index >= 0 ? index : null;
     let currentId = _currentWordFormIds[element.id] || index || 0;

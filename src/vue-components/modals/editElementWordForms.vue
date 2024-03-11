@@ -37,7 +37,10 @@
             </div>
         </accordion>
 
-        <h2 class="mb-3 mt-5">{{ $t('currentWordForms') }}</h2>
+        <div class="mb-3 mt-5 d-flex align-items-end">
+            <h2 class="me-3">{{ $t('currentWordForms') }}</h2>
+            <span v-if="gridElement.wordForms.length > 0">{{ gridElement.wordForms.length }} {{ 'elementsBracket' | translate}}</span>
+        </div>
         <div class="row mb-3">
             <label for="filterLang" class="col-12 col-md-3">{{ $t('language') }}</label>
             <div class="col-12 col-md-3 mb-2">
@@ -91,7 +94,8 @@
     import {util} from "../../js/util/util.js";
     import {i18nService} from "../../js/service/i18nService.js";
     import {dataService} from "../../js/service/data/dataService.js";
-    
+    import {constants} from "../../js/util/constants.js";
+
     export default {
         components: {Accordion, EditWordForm},
         props: ['gridElement', 'gridData'],
@@ -191,20 +195,29 @@
                     this.allGrids = this.allGrids || (await dataService.getGrids(true));
                     let baseMap = {}; // base -> list of word form objects
                     for (let newForm of importForms) {
-                        baseMap[newForm.base] = baseMap[newForm.base] || [];
-                        baseMap[newForm.base].push(newForm);
+                        let baseString = newForm.base || "";
+                        let bases = baseString.split(";");
+                        for (let base of bases) {
+                            baseMap[base] = baseMap[base] || [];
+                            baseMap[base].push(newForm);
+                        }
                     }
                     let ownGridChanged = false;
                     for (let grid of this.allGrids) {
-                        let changed = false;
+                        let changedGrid = false;
                         for (let element of grid.gridElements) {
-                            let baseValue = i18nService.getTranslation(element.label);
-                            if (baseMap[baseValue]) {
-                                element.wordForms = baseMap[baseValue];
-                                changed = true;
+                            let allNewWordForms = new Set();
+                            let baseStrings = this.getBaseStringsFromWordForms(element.wordForms);
+                            for (let baseString of baseStrings) {
+                                if (baseMap[baseString]) {
+                                    allNewWordForms = new Set([...allNewWordForms, ...baseMap[baseString]]);
+                                }
                             }
+                            let newArray = Array.from(allNewWordForms);
+                            changedGrid = changedGrid || element.wordForms.length !== newArray.length || JSON.stringify(element.wordForms) !== JSON.stringify(newArray);
+                            element.wordForms = newArray;
                         }
-                        if (changed) {
+                        if (changedGrid) {
                             this.gridPasteCount++;
                             await dataService.saveGrid(grid);
                             if (grid.id === this.gridData.id) {
@@ -235,22 +248,33 @@
                 let alreadyCopied = {}; // base -> tags
                 for (let element of elements) {
                     let forms = element.wordForms || [];
+                    let baseStrings = this.getBaseStringsFromWordForms(forms);
+                    let baseFormsString = baseStrings.join(";");
                     for (let form of forms) {
                         let tags = JSON.stringify(form.tags).replaceAll('"', '').replaceAll("'", "").replaceAll("[", "").replaceAll("]", "").replaceAll(",", ", ");
                         let lang = form.lang || '';
                         let pronunciation = form.pronunciation || '';
-                        let base = i18nService.getTranslation(element.label);
-                        let key = tags + lang;
+                        let key = baseFormsString + tags + lang;
                         alreadyCopied[key] = alreadyCopied[key] || [];
-                        if (!this.importExportGlobally || (base && !alreadyCopied[key].includes(tags))) {
+                        if (!this.importExportGlobally || (baseFormsString && !alreadyCopied[key].includes(tags))) {
                             alreadyCopied[key].push(tags);
-                            copyString += `${form.value}\t${lang}\t${tags}\t${base}\t${pronunciation}\n`;
+                            copyString += `${form.value}\t${lang}\t${tags}\t${baseFormsString}\t${pronunciation}\n`;
                             this.msgCount++;
                         }
                     }
                 }
                 util.copyToClipboard(copyString);
                 this.currentMsg = this.msgTypes.SUCCESS_COPY;
+            },
+            /**
+             * returns a list of base form strings in form of "<baseForm>:<lang>" from a given list of word forms.
+             * @param wordForms
+             * @return list of base form strings, e.g. ["sein:de", "be:en", "ser:es", ...]
+             */
+            getBaseStringsFromWordForms (forms) {
+                forms = forms || [];
+                let baseForms = forms.filter(form => form.tags.includes(constants.WORDFORM_TAG_BASE));
+                return baseForms.map(form => `${form.value}:${form.lang}`);
             }
         },
         mounted() {
