@@ -53,4 +53,4 @@ Figure 2.3 shows an additional option `Toggle tags on selecting it multiple time
 
 ## Example configuration
 A grid configuration including examples for all word form features can be downloaded here:
-[Grid configuration with word form examples](files/test-grammar_2024-02-07_09-55_asterics-grid-full-backup.grd). It contains examples for all different action types of `change word forms`.
+<a download href="https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/docs/documentation_user/files/test-grammar_2024-02-07_09-55_asterics-grid-full-backup.grd">Grid configuration with word form examples</a>. It contains examples for all different action types of `change word forms`.
