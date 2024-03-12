@@ -13,19 +13,28 @@
             <button class="three columns" v-show="hasImage" @click="clearImage"><i class="fas fa-times"/> <span>{{ $t('clearImage') }}</span></button>
         </div>
         <div class="srow">
-            <div class="img-preview offset-by-two four columns">
+            <div class="img-preview-container offset-by-two four columns">
                 <span class="show-mobile" v-show="!hasImage"><i class="fas fa-image"/> <span>{{ $t('noImageChosen') }}</span></span>
                 <span class="hide-mobile" v-show="!hasImage"><i class="fas fa-arrow-down"/> <span>{{ $t('dropImageHere') }}</span></span>
-                <img v-if="hasImage" id="imgPreview" :src="gridElement.image.data || gridElement.image.url"/>
+                <div style="position: relative" class="u-full-width">
+                    <img v-if="hasImage" class="img-preview" id="imgPreview" :src="gridElement.image.data || gridElement.image.url"/>
+                    <img v-if="hasImage && gridElement.image.crossOut" style="position: absolute; left: 0" class="img-preview" src="app/img/cross-out.svg"/>
+                </div>
                 <div v-if="gridElement.image.author">
                     {{ $t('by') }} <a :href="gridElement.image.authorURL" target="_blank">{{gridElement.image.author}}</a>
                 </div>
             </div>
-            <div class="img-preview five columns hide-mobile" v-show="hasImage" style="margin-top: 50px;">
+            <div class="img-preview-container five columns hide-mobile" v-show="hasImage" style="margin-top: 50px;">
                 <span><i class="fas fa-arrow-down"/> <span>{{ $t('dropNewImageHere') }}</span></span>
             </div>
         </div>
-        <div class="srow">
+        <div class="srow" v-if="hasImage">
+            <div class="eight columns offset-by-two">
+                <input id="crossOut" type="checkbox" v-model="gridElement.image.crossOut"/>
+                <label for="crossOut" style="font-weight: normal">Cross out image</label>
+            </div>
+        </div>
+        <div class="srow mt-5">
             <label for="inputSearch" class="two columns">{{ $t('imageSearch') }}</label>
             <div class="five columns">
                 <input id="inputSearch" type="text" v-model="searchText" @input="searchInput(500, $event)" :placeholder="'SEARCH_IMAGE_PLACEHOLDER' | translate"/>
@@ -286,13 +295,13 @@
 </script>
 
 <style scoped>
-    .img-preview > span {
+    .img-preview-container > span {
         border: 1px solid lightgray;
         padding: 0.3em;
         width: 150px;
     }
 
-    #imgPreview {
+    .img-preview {
         width: 150px;
     }
 

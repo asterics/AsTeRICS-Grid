@@ -8,7 +8,8 @@ class GridImage extends Model({
     author: [String],
     authorURL: [String],
     searchProviderName: [String],
-    searchProviderOptions: [Array]
+    searchProviderOptions: [Array],
+    crossOut: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridImage);
