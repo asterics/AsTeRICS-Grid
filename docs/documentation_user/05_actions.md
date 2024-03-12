@@ -18,7 +18,7 @@ This chapter is about actions that can be performed if a grid element is selecte
    * [Change Content Language](05_actions.md#Change-Content-Language)
    * [Open webpage in new tab](05_actions.md#Open-webpage-in-new-tab)
    * [openHAB Action](05_actions.md#openhab-action)
-   * [HTTP action](05_actions.md#HTTP-action)
+   * [HTTP action](05_actions.md#http-action)
 
 [Back to Overview](README.md)
 
