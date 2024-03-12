@@ -15,7 +15,7 @@ import { GridActionChangeLang } from './GridActionChangeLang';
 import { GridActionYoutube } from './GridActionYoutube';
 import { GridActionOpenWebpage } from './GridActionOpenWebpage.js';
 import { GridActionAudio } from './GridActionAudio.js';
-import { GridActionREST } from "./GridActionREST";
+import { GridActionHTTP } from "./GridActionHTTP.js";
 import {GridActionWordForm} from "./GridActionWordForm.js";
 
 class GridElement extends Model({
@@ -95,7 +95,7 @@ class GridElement extends Model({
             GridActionYoutube,
             GridActionChangeLang,
             GridActionOpenWebpage,
-            GridActionREST
+            GridActionHTTP
         ];
     }
 
