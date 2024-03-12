@@ -26,12 +26,13 @@ The dialog in Figure 1 shows the following options:
 15. **Down button**: moves the word form down within the list
 
 ## Word form actions
-Once word forms are defined for different elements, they can be used and selected using the action type `Change word forms`. Figure 2 shows the possibilities for configuring this action.
+Once word forms are defined for different elements, they can be used and selected using the action type `change word forms` in tab `Actions` of the modal for editing a grid element (see Fig. 1). Figure 2 shows the possibilities for configuring this action.
 
 ![edit view](./img/action-word-forms.png)
 *Fig.2: Configuring an action of type "Change word forms".*
 
-In general most action types for `Change word forms` allow it to define tags (Figure 2.2) which are added to an internal (hidden) list of current tags, if the action is performed.
+### General function
+In general most action types for `change word forms` allow it to define tags (Figure 2.2) which are added to an internal (hidden) list of current tags, if the action is performed.
 
 **Example 1**: for example there could be the following elements within a grid:
 * **Element "You"**: has action `change word forms` with tag `2.PERS`.
@@ -39,18 +40,19 @@ In general most action types for `Change word forms` allow it to define tags (Fi
 * **Element "to be"**: has defined various word forms with tags like `am [1.PERS, PRESENT]`, `are [2.PERS, PRESENT]`, `were [2.PERS, PAST]`.
 
 Now using these elements would work as follows:
-1. **Select "You"**: tag `2.PERS` is added to internal list, word forms are changed in order to match this tag -> element "to be" is changed to `are` because it's the first word form including the tag `2.PERS`
-2. **Select "Past"**: tag `PAST` is added to internal list, which now includes `2.PERS, PAST`. Word forms are changed to match these tags -> element "to be" is changed to `were` because it's the first word form including the tags `2.PERS` and `PAST`.
+1. **Select element "You"**: tag `2.PERS` is added to internal list, word forms are changed in order to match this tag -> element "to be" is changed to `are` because it's the first word form including the tag `2.PERS`
+2. **Select element "Past"**: tag `PAST` is added to internal list, which now includes `2.PERS, PAST`. Word forms are changed to match these tags -> element "to be" is changed to `were` because it's the first word form including the tags `2.PERS` and `PAST`.
 
-These are the action types (Fig. 2.1) for `change word forms`:
+### Action types
+These are the action types for `change word forms` (Fig. 2.1):
 * **Change word form in grid elements**: changes the labels of grid elements to the word form that best matches the current internal list of tags.
 * **Change word form in collection element**: changes the last element in the collection element to the word form that best matches the current internal list of tags.
-* **Change word form everywhere**: changes word forms both within grid elements and within the collect element.
+* **Change word form everywhere**: changes word forms both within grid elements and within the last word of the collect element.
 * **Change this element to next word form**: doesn't use tags for selecting word forms, but simply iterates through the list of word forms defined within this element. *Example usage:* word forms contain a list of names, clicking on the element several times allows to select one of the names.
-* **Reset currently displayed word forms**: resets the word forms currently stored within the internal list. This is done automatically each time an element is selected which doesn't include any `change word form` action.
+* **Reset currently displayed word forms**: resets the word forms, clears the tags currently stored within the internal list. This is done automatically each time an element is selected which doesn't include any `change word form` action.
 
 Figure 2.3 shows an additional option `Toggle tags on selecting it multiple times`. If this option is activated, selecting this element several times in a row, toggles the tags of this action in the internal list. So in example 1 (see above) selecting the element "Past" multiple times would add and remove the tag `PAST` from the internal list, causing to toggle between the words `are` and `were`.
 
 ## Example configuration
 A grid configuration including examples for all word form features can be downloaded here:
-<a download href="https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/docs/documentation_user/files/test-grammar_2024-02-07_09-55_asterics-grid-full-backup.grd">Grid configuration with word form examples</a> (use right click and "save target as"). It contains examples for all different action types of `change word forms`.
+<a download href="https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/docs/documentation_user/files/grammar-demo_2024-03-12_09-29_asterics-grid-full-backup.grd">Grid configuration with word form examples</a> (use right click and "save target as"). It contains examples for all different action types of `change word forms`.
