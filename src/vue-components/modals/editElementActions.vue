@@ -19,14 +19,15 @@
                                 </i18n>
                             </span>
             <li v-for="action in gridElement.actions" class="srow">
-                <div class="srow" style="margin-top: 0">
-                    <div class="four columns" style="margin-bottom: 1em">
+                <div class="row mt-0">
+                    <div class="col-12 col-md-4 mb-3">
                         <span v-show="editActionId !== action.id">{{action.modelName | translate}}</span>
                         <span v-show="editActionId === action.id">
-                                            <b>{{action.modelName | translate}}</b> <a class="black" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
-                                        </span>
+                            <b>{{action.modelName | translate}}</b>
+                            <a class="black" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
+                        </span>
                     </div>
-                    <div class="eight columns actionbtns">
+                    <div class="col-12 col-md-8 actionbtns">
                         <button @click="editAction(action)"><i class="far fa-edit"/>
                             <span class="hide-mobile" v-show="editActionId !== action.id">{{ $t('edit') }}</span>
                             <span class="hide-mobile" v-show="editActionId === action.id">{{ $t('endEdit') }}</span>
