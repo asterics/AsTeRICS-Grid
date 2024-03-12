@@ -984,8 +984,8 @@
   "copiedWordForms": "Es wurden {count} Wortformen in die Zwischenablage kopiert.",
   "infoPleaseDefineAHomeGridInManageGrids": "Info: bitte ein Start-Grid unter \"Grids verwalten -> Start-Grid\" definieren um Pfade zuverlässig anzuzeigen.",
   "wordFormValue": "Wortform",
-  "importexportDataTofromAllGrids": "Import/export data to/from all grids",
-  "pronunciation": "Pronunciation",
-  "deleteAll": "Delete all",
-  "toggleInCollectionElementIfAddedMultipleTimes": "Toggle in collection element if added multiple times"
+  "importexportDataTofromAllGrids": "Daten von/in alle Grids exportieren/importieren",
+  "pronunciation": "Aussprache",
+  "deleteAll": "Alle löschen",
+  "toggleInCollectionElementIfAddedMultipleTimes": "Bei Mehrfachauswahl in Sammelelement hinzufügen und wieder entfernen"
 }
