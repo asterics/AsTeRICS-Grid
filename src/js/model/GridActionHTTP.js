@@ -2,7 +2,7 @@ import { modelUtil } from '../util/modelUtil';
 import { constants } from '../util/constants';
 import { Model } from '../externals/objectmodel';
 
-class GridActionREST extends Model({
+class GridActionHTTP extends Model({
     id: String,
     modelName: String,
     modelVersion: String,
@@ -14,24 +14,24 @@ class GridActionREST extends Model({
     authPw: [String] //password for http authentication
 }) {
     constructor(properties, elementToCopy) {
-        properties = modelUtil.setDefaults(properties, elementToCopy, GridActionREST);
+        properties = modelUtil.setDefaults(properties, elementToCopy, GridActionHTTP);
         super(properties);
-        this.id = this.id || modelUtil.generateId('grid-action-rest');
+        this.id = this.id || modelUtil.generateId('grid-action-http');
         //this.method=GridActionREST.defaults.method;
         //this.contentType=GridActionREST.defaults.contentType;
     }
 
     static getModelName() {
-        return 'GridActionREST';
+        return 'GridActionHTTP';
     }
 }
 
-GridActionREST.defaults({
+GridActionHTTP.defaults({
     id: '', //will be replaced by constructor
-    modelName: GridActionREST.getModelName(),
+    modelName: GridActionHTTP.getModelName(),
     modelVersion: constants.MODEL_VERSION,
     method: 'POST', // POST, PUT, GET,....
     contentType: 'text/plain' //text/plain, application/json
 });
 
-export { GridActionREST };
+export { GridActionHTTP };
