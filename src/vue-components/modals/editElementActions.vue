@@ -117,8 +117,8 @@
                     <div v-if="action.modelName == 'GridActionOpenHAB'">
                         <edit-open-hab-action :action="action" :grid-data="gridData"/>
                     </div>
-                    <div v-if="action.modelName == 'GridActionREST'">
-                      <edit-rest-action :action="action" :grid-data="gridData"/>
+                    <div v-if="action.modelName == 'GridActionHTTP'">
+                      <edit-http-action :action="action" :grid-data="gridData"/>
                     </div>
                     <div v-if="action.modelName == 'GridActionPredict'">
                         <div class="srow" v-show="gridElement.type === GridElementClass.ELEMENT_TYPE_COLLECT">
@@ -314,7 +314,7 @@
     import {GridActionYoutube} from "../../js/model/GridActionYoutube";
     import EditAudioAction from "./editActionsSub/editAudioAction.vue";
     import EditWordFormAction from "./editActionsSub/editWordFormAction.vue";
-    import EditRestAction from "./editActionsSub/editRESTAction.vue";
+    import EditHttpAction from "./editActionsSub/editHttpAction.vue";
 
     export default {
         props: ['gridElement', 'gridData'],
@@ -347,7 +347,7 @@
             Accordion,
             EditAreAction,
             EditOpenHabAction,
-            EditRestAction
+            EditHttpAction
         },
         methods: {
             getCurrentSpeakLang(action) {
