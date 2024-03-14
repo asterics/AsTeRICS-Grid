@@ -30,9 +30,9 @@ speechServiceExternal.isSpeaking = async function () {
     if (new Date().getTime() - lastSpeakingRequestTime < 200) {
         return lastSpeakingResult;
     }
-    lastSpeakingRequestTime = new Date().getTime();
     let result = await fetch(`${externalSpeechServiceUrl}/speaking`);
     let speaking = await result.json();
+    lastSpeakingRequestTime = new Date().getTime();
     lastSpeakingResult = speaking;
     return speaking;
 }
