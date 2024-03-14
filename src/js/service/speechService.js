@@ -29,6 +29,10 @@ let lastSpeakTime = 0;
 let voiceIgnoreList = ['com.apple.speech.synthesis.voice']; //joke voices by Apple
 let voiceSortBackList = ['com.apple.eloquence'];
 let hasSpoken = false;
+let _initPromiseResolveFn;
+let initPromise = new Promise(resolve => {
+    _initPromiseResolveFn = resolve;
+});
 
 let _waitingSpeakOptions = {};
 
@@ -267,6 +271,11 @@ speechService.getVoices = function () {
     allVoices.sort(speechService.voiceSortFn);
     return allVoices;
 };
+
+speechService.getVoicesInitialized = async function () {
+    await initPromise;
+    return speechService.getVoices();
+}
 
 speechService.voiceSortFn = function (a, b) {
     if (a.lang !== b.lang) {

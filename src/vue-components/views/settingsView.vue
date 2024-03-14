@@ -258,7 +258,7 @@
                 speechService: speechService,
                 syncNavigation: localStorageService.shouldSyncNavigation(),
                 unlockPasscode: localStorageService.getUnlockPasscode(),
-                voices: speechService.getVoices(),
+                voices: [],
                 selectVoices: [],
                 testText: i18nService.t('thisIsAnEnglishSentence'),
                 i18nService: i18nService,
@@ -370,7 +370,7 @@
                 speechService.speak(this.testText, {preferredVoice: this.metadata.localeConfig.preferredVoice});
             }
         },
-        mounted() {
+        async mounted() {
             let thiz = this;
             dataService.getMetadata().then(metadata => {
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
@@ -390,6 +390,7 @@
                 thiz.gridLanguages = [...new Set(languages)];
             });
             thiz.appLang = i18nService.getCustomAppLang();
+            thiz.voices = await speechService.getVoicesInitialized();
             thiz.selectVoices = thiz.getSelectVoices();
         }
     }
