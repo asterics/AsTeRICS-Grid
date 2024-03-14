@@ -336,6 +336,17 @@ i18nService.t = function (key, ...args) {
 };
 
 /**
+ * checks if translation exists
+ * @param key
+ * @return true, if translations exists
+ */
+i18nService.te = function (key) {
+    return vueI18n.te(key, i18nService.getAppLang());
+}
+
+window.te = i18nService.te;
+
+/**
  * get app translation for the given key in the given language
  * @param key
  * @param args optional arguments for placeholders within the translation
