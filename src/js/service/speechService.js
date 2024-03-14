@@ -279,7 +279,9 @@ speechService.getVoicesInitialized = async function () {
 
 speechService.voiceSortFn = function (a, b) {
     if (a.lang !== b.lang) {
-        return i18nService.t(`lang.${a.lang}`).localeCompare(i18nService.t(`lang.${b.lang}`));
+        let lang1 = i18nService.te(`lang.${a.lang}`) ? i18nService.t(`lang.${a.lang}`) : a.langFull;
+        let lang2 = i18nService.te(`lang.${b.lang}`) ? i18nService.t(`lang.${b.lang}`) : b.langFull;
+        return lang1.localeCompare(lang2);
     }
     if (a.type !== b.type) {
         if (a.type === speechService.VOICE_TYPE_NATIVE) return -1;

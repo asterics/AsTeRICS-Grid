@@ -85,8 +85,7 @@
                         <select id="inVoice" class="five columns mb-2" v-model="metadata.localeConfig.preferredVoice" @change="resetVoiceProps(); saveVoice()">
                             <option :value="undefined">{{ $t('automatic') }}</option>
                             <option v-for="voice in selectVoices" :value="voice.id">
-                                <span v-if="!selectAllVoices">{{voice.name}}, {{voice.local ? 'offline' : 'online'}}</span>
-                                <span v-if="selectAllVoices">{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}, {{voice.local ? $t('offline') : $t('online')}}</span>
+                                <span>{{ getVoiceDisplayText(voice, selectAllVoices) }}</span>
                             </option>
                         </select>
                         <div class="four columns">
@@ -114,7 +113,7 @@
                                 <select id="inVoice2" class="five columns mb-2" v-model="metadata.localeConfig.secondVoice" @change="saveVoice()">
                                     <option :value="undefined">{{ $t('noneSelected') }}</option>
                                     <option v-for="voice in voices" :value="voice.id">
-                                        <span>{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}, {{voice.local ? $t('offline') : $t('online')}}</span>
+                                        <span>{{ getVoiceDisplayText(voice, true) }}</span>
                                     </option>
                                 </select>
                                 <button id="testVoice2" class="three columns" :disabled="!metadata.localeConfig.secondVoice" @click="speechService.testSpeak(metadata.localeConfig.secondVoice)">{{ $t('test') }}</button>
@@ -368,6 +367,14 @@
             },
             testSpeak() {
                 speechService.speak(this.testText, {preferredVoice: this.metadata.localeConfig.preferredVoice});
+            },
+            getVoiceDisplayText(voice, allVoicesShown) {
+                if (allVoicesShown) {
+                    let lang = i18nService.te(`lang.${voice.lang}`) ? i18nService.t(`lang.${voice.lang}`) : voice.langFull;
+                    return `${lang}: ${voice.name}, ${voice.local ? 'offline' : 'online'}`
+                } else {
+                    return `${voice.name}, ${voice.local ? 'offline' : 'online'}`
+                }
             }
         },
         async mounted() {
