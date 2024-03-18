@@ -70,13 +70,13 @@ async function doActions(gridElement, gridId) {
                 a.modelName !== GridActionSpeak.getModelName() && a.modelName !== GridActionSpeakCustom.getModelName()
         );
     }
+    $(window).trigger(constants.ELEMENT_EVENT_ID, [gridElement]);
     actions.forEach((action) => {
         doAction(gridElement, action, {
             gridId: gridId,
             actions: actions
         });
     });
-    $(window).trigger(constants.ELEMENT_EVENT_ID, [gridElement]);
     metadata = metadata || (await dataService.getMetadata());
     let actionTypes = actions.map((a) => a.modelName);
     let navBackActions = [GridActionAudio.getModelName(), GridActionChangeLang.getModelName(), GridActionSpeak.getModelName(), GridActionSpeakCustom.getModelName()];
