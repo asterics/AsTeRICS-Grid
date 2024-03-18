@@ -972,6 +972,7 @@
   "doYouReallyWantDeleteAllWordForms": "¿Realmente desea eliminar todas las flexiones gramaticales existentes?",
   "clipboardContainsNoWordFormsPleaseCopyFrom": "El portapapeles no contiene flexiones gramaticales, por favor copia al portapapeles desde cualquier hoja de cálculo con 1 a 3 columnas, donde: (1) valor, p.ej. \"son\", (2) código de idioma opcional, p. ej., \"es\", (3) etiquetas opcionales de forma de palabra separadas por coma, por ejemplo \"3.PERS, PLURAL\".",
   "actionType": "Acción",
+  "secondaryActionType": "Secondary action type",
   "tags": "Etiquetas",
   "WORDFORM_MODE_CHANGE_ELEMENTS": "Realizar la flexión gramatical de la palabra en la propia celda",
   "WORDFORM_MODE_CHANGE_BAR": "Realizar la flexión gramatical de la palabra en la frase acumulada",
@@ -987,5 +988,11 @@
   "importexportDataTofromAllGrids": "Importar/exportar datos a/desde todos tableros",
   "pronunciation": "Pronunciación alternativa",
   "deleteAll": "Borrar todo",
-  "toggleInCollectionElementIfAddedMultipleTimes": "Alternar en la frase acumulada si se añade varias veces"
+  "toggleInCollectionElementIfAddedMultipleTimes": "Alternar en la frase acumulada si se añade varias veces",
+  "httpMethod": "HTTP method",
+  "httpBodyData": "HTTP body (data)",
+  "GridActionHTTP": "HTTP action",
+  "restActionFailed": "HTTP action failed! Reason: {0}",
+  "httpAuthUser": "HTTP Authentication User",
+  "httpAuthPw": "HTTP Authentication Password"
 }
