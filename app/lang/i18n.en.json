@@ -993,6 +993,6 @@
   "httpBodyData": "HTTP body (data)",
   "GridActionHTTP": "HTTP action",
   "restActionFailed": "HTTP action failed! Reason: {0}",
-  "httpAuthUser": "HTTP Authorization User",
-  "httpAuthPw": "HTTP Authorization Password"
+  "httpAuthUser": "HTTP Authentication User",
+  "httpAuthPw": "HTTP Authentication Password"
 }
