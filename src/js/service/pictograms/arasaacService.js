@@ -2,6 +2,7 @@ import $ from '../../externals/jquery.js';
 import { i18nService } from '../i18nService.js';
 import { constants } from '../../util/constants.js';
 import { GridImage } from '../../model/GridImage.js';
+import {util} from "../../util/util.js";
 
 let arasaacService = {};
 
@@ -171,7 +172,7 @@ arasaacService.getCorrectGrammar = async function (text) {
     text = text.trim();
     let contentLang = i18nService.getContentLang();
     let path = `${apiBaseUrl}/api/phrases/flex/${contentLang}/${text}`;
-    let response = await fetch(path).catch((e) => console.error(e));
+    let response = await util.fetchWithTimeout(path, 1500).catch((e) => console.error(e));
     if (!response || response.status !== 200) {
         return text;
     }
