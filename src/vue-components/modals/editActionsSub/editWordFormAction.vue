@@ -6,6 +6,13 @@
                 <option v-for="mode in GridActionWordForm.MODES" :value="mode">{{ mode | translate }}</option>
             </select>
         </div>
+        <div class="srow" v-if="action.type === GridActionWordForm.WORDFORM_MODE_NEXT_FORM">
+            <label for="selectMode2" class="four columns">{{ $t('secondaryActionType') }}</label>
+            <select id="selectMode2" class="eight columns" v-model="action.secondaryType">
+                <option :value="undefined">{{ $t('noneSelected') }}</option>
+                <option v-for="mode in GridActionWordForm.MODES_SECONDARY" :value="mode">{{ mode | translate }}</option>
+            </select>
+        </div>
         <div v-if="![GridActionWordForm.WORDFORM_MODE_NEXT_FORM, GridActionWordForm.WORDFORM_MODE_RESET_FORMS].includes(action.type)">
             <div class="srow">
                 <label class="four columns">{{ $t('tags') }}</label>

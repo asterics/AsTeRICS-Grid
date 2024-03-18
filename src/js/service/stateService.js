@@ -50,14 +50,26 @@ stateService.mergeTags = function (existingTags, newTags, toggle) {
     return existingTags;
 };
 
-stateService.resetWordFormTags = function () {
+stateService.resetWordForms = function () {
     _currentWordFormTags = [];
+    _currentWordFormTagsOfElements = {};
     _currentWordFormIds = {};
     stateService.applyWordFormsToUI();
 };
 
-stateService.resetWordFormIds = function () {
+stateService.resetWordFormTags = function () {
+    _currentWordFormTags = [];
+}
+
+stateService.resetWordFormIds = function (currentElement) {
+    let keep = null;
+    if (currentElement && hasNextWordFormAction(currentElement)) {
+        keep = _currentWordFormIds[currentElement.id];
+    }
     _currentWordFormIds = {};
+    if (keep) {
+        _currentWordFormIds[currentElement.id] = keep;
+    }
 };
 
 stateService.applyWordFormsToUI = function () {
@@ -275,6 +287,19 @@ function getWordFormsForLang(element, lang) {
 async function getMetadataConfig() {
     let metadata = await dataService.getMetadata();
     _convertMode = metadata.textConfig.convertMode;
+}
+
+function getActionsOfType(elem, type) {
+    if (!elem) {
+        return [];
+    }
+    return elem.actions.filter(action => action.modelName === type);
+}
+
+function hasNextWordFormAction(elem) {
+    return getActionsOfType(elem, GridActionWordForm.getModelName()).some(
+        (a) => a.type === GridActionWordForm.WORDFORM_MODE_NEXT_FORM
+    );
 }
 
 $(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
