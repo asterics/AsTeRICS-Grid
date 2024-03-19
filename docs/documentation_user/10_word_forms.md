@@ -14,7 +14,7 @@ The dialog in Figure 1 shows the following options:
 3. **Word form**: the value of the new word form
 4. **Pronunciation**: (optional) alternative pronunciation for the new word form
 5. **Add word form**: adds the newly defined word form to the list
-6. **Import/export data to/from all grids**: if activated, word forms are not only imported/exported for the current element, but for all elements within all grids. This options helps to quickly edit all word forms (e.g. managed in an external spreadsheet).
+6. **Import/export data to/from all grids**: if activated, word forms are not only imported/exported for the current element, but for all elements within all grids. This options helps to quickly edit all word forms (e.g. managed in an external spreadsheet). Note that data can only be imported to all grids (globally) if the data to import contains the fourth column `ID` (see below) and the target elements contain a word form with tag `BASE` (which is used for mapping the word forms correctly).
 7. **Override existing word forms**: if activated, all existing word forms are overwritten at import. Always activated if importing globally.
 8. **Import from clipboard**: imports word forms from the clipboard, copied from an external spreadsheet. The columns that can be imported are: `WORD FORM`, `LANG (2 digits)`, `TAGS (comma separated)`, `ID`, `PRONUNCIATION`. The order of columns is important, but not all have to be existing, so it's also possible to copy only the first ones. The value `ID` is only relevant for importing elements to all grids (globally) and it's automatically generated at exporting from all grids globally.
 9. **Copy to clipboard**: copies word forms to the clipboard in a format that can be pasted to a spreadsheet.
