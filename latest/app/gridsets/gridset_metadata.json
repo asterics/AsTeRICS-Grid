@@ -1,0 +1,195 @@
+[
+  {
+    "name": "AsTeRICS Grid default",
+    "filename": "default.grd.json",
+    "author": "AsTeRICS Foundation / UAS Technikum Wien",
+    "website": "https://www.asterics-foundation.org/1270-2/",
+    "languages": ["ar", "bn", "bg", "zh", "en", "fr", "de", "he", "hi", "id", "it", "ja", "pl", "pt", "ro", "ru", "sr", "es", "tr", "uk", "ur"],
+    "description": {
+      "en": "Demo configuration containing examples for basic communication, a YouTube player, webradio player, different keyboards and environmental control.",
+      "de": "Demo Konfiguration für einfache Kommunikation, einen YouTube-Player, Webradio-Player, verschiedene Keyboard-Layouts und Umgebungssteuerung."
+    },
+    "standardFor": ["de"],
+    "wordPrediction": true
+  },
+  {
+    "name": "Communication in hospital - Dachverband AT",
+    "filename": "Communication_hospital_Dachverband_AT.grd.json",
+    "author": "Dachverband der Wiener Sozialeinrichtungen, AT",
+    "website": "https://dachverband.at/",
+    "languages": ["de", "en", "fr", "es", "it", "pt", "ru", "tr", "sr", "ar", "ro", "fa", "zh", "hi", "ja", "uk", "pl", "bn", "id", "ur", "he", "bg"],
+    "description": {
+      "en": "Configuration for communication in the context of hospitals. Developed by \"Dachverband der Wiener Sozialeinrichtungen\" in cooperation with the hospital \"Klinik Floridsdorf\" in Vienna, Austria.",
+      "de": "Konfiguration für Kommunikation im Krankenhaus-Kontext. Entwickelt vom Dachverband der Wiener Sozialeinrichtungen gemeinsam mit der Klinik Floridsdorf in Wien."
+    },
+    "standardFor": [],
+    "wordPrediction": true
+  },
+  {
+    "name": "Mobile Frühförderung (Early Intervention)",
+    "filename": "Mobile_Fruehfoerderung.grd.json",
+    "author": "Wiener Sozialdienste, Vienna, AT",
+    "website": "https://www.wienersozialdienste.at/mobile-fruehfoerderung-und-familienbegleitung/",
+    "languages": ["de", "en", "fr", "es", "sr", "tr", "ar", "it"],
+    "description": {
+      "en": "Configuration for communication in the context of early intervention. Developed by the team of \"mobile Frühförderung\" (mobile early intervention) at \"Wiener Sozialdienste\" in Vienna, Austria.",
+      "de": "Konfiguration für Kommunikation im Kontext von Frühförderung. Entwickelt vom Team der mobilen Frühförderung der Wiener Sozialdienste in Wien."
+    },
+    "standardFor": [],
+    "wordPrediction": false
+  },
+  {
+    "name": "Comunicador Global-Core ARASAAC",
+    "filename": "Comunicador_Global-Core_ARASAAC_ES.grd.json",
+    "author": "ARASAAC",
+    "website": "https://arasaac.org/",
+    "languages": ["es"],
+    "description": {
+      "en": "Dynamic communicator, developed by the ARASAAC team, with robust vocabulary, and two communication options combined with each other: communicator with core vocabulary distributed by categories and core vocabulary - essential words communicator.",
+      "es": "Comunicador dinámico, elaborado por el equipo de ARASAAC, con vocabulario robusto, y dos opciones de comunicación combinadas entre sí: comunicador con vocabulario núcleo distribuido por categorías y comunicador tipo core vocabulary – palabras esenciales."
+    },
+    "standardFor": ["es"],
+    "wordPrediction": true
+  },
+  {
+    "name": "Global-Core Communicator ARASAAC",
+    "filename": "Global-Core_Communicator_ARASAAC_EN.grd.json",
+    "author": "ARASAAC",
+    "website": "https://arasaac.org/",
+    "languages": ["en"],
+    "description": {
+      "en": "Dynamic communicator, developed by the ARASAAC team, with robust vocabulary, and two communication options combined with each other: communicator with core vocabulary distributed by categories and core vocabulary - essential words communicator."
+    },
+    "standardFor": ["en"],
+    "wordPrediction": true
+  },
+  {
+    "name": "Global-Core Communicator ARASAAC",
+    "filename": "Globaler_Kommunikator-Core_ARASAAC_DE.grd.json",
+    "author": "ARASAAC",
+    "website": "https://arasaac.org/",
+    "languages": ["de"],
+    "description": {
+      "en": "Dynamic communicator, developed by the ARASAAC team, with robust vocabulary, and two communication options combined with each other: communicator with core vocabulary distributed by categories and core vocabulary - essential words communicator.",
+      "de": "Dynamischer Kommunikator, ausgearbeitet vom ARASAAC-Team, mit robustem Vokabular und zwei Möglichkeiten der Kommunikation, die miteinander kombinierbar sind: Kommunikator mit Kernvokabular aufgeteilt in Kategorien und Kommunikator vom Typ \"Core vocabulary\" - essentielle Wörter."
+    },
+    "standardFor": null,
+    "wordPrediction": true
+  },
+  {
+    "name": "Global-Core Communicator ARASAAC",
+    "filename": "Comunicador_Global-Core_ARASAAC_CA.grd.json",
+    "author": "ARASAAC",
+    "website": "https://arasaac.org/",
+    "languages": ["ca"],
+    "description": {
+      "en": "Dynamic communicator, developed by the ARASAAC team, with robust vocabulary, and two communication options combined with each other: communicator with core vocabulary distributed by categories and core vocabulary - essential words communicator.",
+      "ca": "Comunicador dinàmic, elaborat per l'equip d' ARASAAC, amb vocabulari robust i dos opcions de comunicació combinades entre si: comunicador amb vocabulari nucli distribuït per categories i comunicador tipus core vocabulary— paraules essencials."
+    },
+    "standardFor": ["ca"],
+    "wordPrediction": true
+  },
+  {
+    "name": "Global-Core Communicator ARASAAC",
+    "filename": "Comunicador_Global-Core_ARASAAC_GL.grd.json",
+    "author": "ARASAAC / translated by Departamento de Orientación CPI Eusebio Lorenzo Baleirón",
+    "website": "https://arasaac.org/",
+    "languages": ["gl"],
+    "description": {
+      "en": "Dynamic communicator, developed by the ARASAAC team, with robust vocabulary, and two communication options combined with each other: communicator with core vocabulary distributed by categories and core vocabulary - essential words communicator.",
+      "gl": "Comunicador dinámico elaborado polo equipo de ARASAAC, con vocabulario robusto, e dúas opcións de comunicación misturadas: comunicador con vocabulario base distribuído por categorias e comunicador tipo core vocabulary-palabras esenciais."
+    },
+    "standardFor": ["gl"],
+    "wordPrediction": true
+  },
+  {
+    "name": "Global-Core Communicator ARASAAC",
+    "filename": "Comunicador_Global-Core_ARASAAC_EU.grd.json",
+    "author": "ARASAAC",
+    "website": "https://arasaac.org/",
+    "languages": ["eu"],
+    "description": {
+      "en": "Dynamic communicator, developed by the ARASAAC team, with robust vocabulary, and two communication options combined with each other: communicator with core vocabulary distributed by categories and core vocabulary - essential words communicator.",
+      "eu": "Komunikatzaile dinamikoa, ARASAACeko taldeak egina, hiztegi sendoarekin, eta elkarren artean konbinatutako bi komunikazio-aukerekin: nukleo-hiztegia duen komunikatzailea, kategorien arabera banatua, eta core vocabulary motako komunikatzailea – funtsezko hitzakin."
+    },
+    "standardFor": ["eu"],
+    "wordPrediction": true
+  },
+  {
+    "name": "Global-Core Communicator ARASAAC",
+    "filename": "Comunicador_Global-Core_ARASAAC_IT.grd.json",
+    "author": "ARASAAC / translated by Paolo Mauri",
+    "website": "https://arasaac.org/",
+    "languages": ["it"],
+    "description": {
+      "en": "Dynamic communicator, developed by the ARASAAC team, with robust vocabulary, and two communication options combined with each other: communicator with core vocabulary distributed by categories and core vocabulary - essential words communicator.",
+      "it": "Comunicatore dinamico, sviluppato dal team ARASAAC, con un vocabolario robusto e due opzioni di comunicazione combinate tra loro: comunicatore con vocabolario di base distribuito per categorie e vocabolario di base - comunicatore di parole essenziali."
+    },
+    "standardFor": ["it"],
+    "wordPrediction": true
+  },
+  {
+    "name": "CACE-UTAC 2021 - ARASAAC",
+    "filename": "CACE-UTAC_2021_CA.grd.json",
+    "author": "UTAC (Unitat de Tècniques Augmentatives de Comunicació)",
+    "website": "https://www.utac.cat/",
+    "languages": ["ca"],
+    "description": {
+      "en": "The CACE-UTAC is a pictographic vocabulary of more than 800 words, organised into semantic categories. Get <a target=\"_blank\" href=\"https://aulaabierta.arasaac.org/en/vocabulary-utac-cace\">more information about CACE-UTAC on ARASAAC aula abierta</a>.",
+      "ca": "El CACE-UTAC és un vocabulari pictogràfic de més de 800 paraules, organitzat en categories semàntiques. Per a més informació al respecte podeu consultar aquest <a target=\"_blank\" href=\"https://www.dropbox.com/s/rztknn83bbgna49/Poster%20CACE%20-%20Handout.pdf?dl=0\">pòster en format PDF a la pàgina de la UTAC</a>."
+    },
+    "standardFor": null,
+    "wordPrediction": false
+  },
+  {
+    "name": "CACE-UTAC 2021 ST-G - ARASAAC",
+    "filename": "CACE-UTAC_2021_ST-G_CA.grd.json",
+    "author": "UTAC (Unitat de Tècniques Augmentatives de Comunicació)",
+    "website": "https://www.utac.cat/",
+    "languages": ["ca"],
+    "description": {
+      "en": "The CACE-UTAC is a pictographic vocabulary of more than 800 words, organised into semantic categories. The ST-G format is organised in a way that provides more support for sentence structure. Get <a target=\"_blank\" href=\"https://aulaabierta.arasaac.org/en/vocabulary-utac-cace\">more information about CACE-UTAC on ARASAAC aula abierta</a>.",
+      "ca": "El CACE-UTAC és un vocabulari pictogràfic de més de 800 paraules, organitzat en categories semàntiques. El format ST-G compta amb una organització que ofereix més suport a l’estructuració de la frase. Per a més informació al respecte podeu consultar aquest <a target=\"_blank\" href=\"https://www.dropbox.com/s/rztknn83bbgna49/Poster%20CACE%20-%20Handout.pdf?dl=0\">pòster en format PDF a la pàgina de la UTAC</a>."
+    },
+    "standardFor": null,
+    "wordPrediction": false
+  },
+  {
+    "name": "CACE-UTAC 2021 - ARASAAC",
+    "filename": "CACE-UTAC_2021_ES.grd.json",
+    "author": "UTAC (Unitat de Tècniques Augmentatives de Comunicació)",
+    "website": "https://www.utac.cat/",
+    "languages": ["es"],
+    "description": {
+      "en": "The CACE-UTAC is a pictographic vocabulary of more than 800 words, organised into semantic categories. Get <a target=\"_blank\" href=\"https://aulaabierta.arasaac.org/en/vocabulary-utac-cace\">more information about CACE-UTAC on ARASAAC aula abierta</a>.",
+      "es": "El CACE-UTAC es un vocabulario pictográfico de más de 800 palabras, organizado en categorías semánticas. Para más información al respecto se puede consultar la <a target=\"_blank\" href=\"https://aulaabierta.arasaac.org/vocabulario-utac-cace\">página sobre el vocabulario UTAC-CACE en el Aula Abierta de ARASAAC</a>."
+    },
+    "standardFor": null,
+    "wordPrediction": false
+  },
+  {
+    "name": "CACE-UTAC 2021 ST-G - ARASAAC",
+    "filename": "CACE-UTAC_2021_ST-G_ES.grd.json",
+    "author": "UTAC (Unitat de Tècniques Augmentatives de Comunicació)",
+    "website": "https://www.utac.cat/",
+    "languages": ["es"],
+    "description": {
+      "en": "The CACE-UTAC is a pictographic vocabulary of more than 800 words, organised into semantic categories. The ST-G format is organised in a way that provides more support for sentence structure. Get <a target=\"_blank\" href=\"https://aulaabierta.arasaac.org/en/vocabulary-utac-cace\">more information about CACE-UTAC on ARASAAC aula abierta</a>.",
+      "es": "El CACE-UTAC es un vocabulario pictográfico de más de 800 palabras, organizado en categorías semánticas. El formato ST-G cuenta con una organización que ofrece mayor apoyo a la estructura de la frase. Para más información al respecto se puede consultar la <a target=\"_blank\" href=\"https://aulaabierta.arasaac.org/vocabulario-utac-cace\">página sobre el vocabulario UTAC-CACE en el Aula Abierta de ARASAAC</a>."
+    },
+    "standardFor": null,
+    "wordPrediction": false
+  },
+  {
+    "name": "Quick_Say20 - a 20 element language model",
+    "filename": "Quick_Say_20_EN.grd.json",
+    "author": "Jim Luther",
+    "website": "https://github.com/jamjolu",
+    "languages": ["en"],
+    "description": {
+      "en": "Quick_Say20 is meant to provide grammatically correct, flexible, conversational ability that is as efficient as possible in a 4 row, 5 column format that is usable on a small tablet or phone. I positioned the most commonly used words close to the home page, prioritizing core language. Quick_Say20 may be a good choice for users who already have some grammar and literacy skills."
+    },
+    "standardFor": null,
+    "wordPrediction": false
+  }
+]

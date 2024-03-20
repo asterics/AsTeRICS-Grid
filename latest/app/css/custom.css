@@ -1,0 +1,387 @@
+/* start of screen rules. */
+
+/* Generic pane rules */
+html,
+body {
+    margin: 0;
+    font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+* {
+    touch-action: manipulation;
+}
+
+.grid-container {
+    overflow: hidden;
+}
+
+.overflow-content {
+    overflow-y: auto;
+    height: 100%;
+}
+
+.overflow-content .content {
+    margin: 0 1.3em 0 1.3em;
+}
+
+@media (max-width: 768px) {
+    .overflow-content .content {
+        margin: 0 0.7em 0 0.7em;
+    }
+}
+
+button:focus {
+    border: 3px solid lightblue;
+    outline: 0;
+}
+
+.grid-item-content:focus {
+    outline: 3px solid #819fad;
+}
+
+*:focus {
+    outline: 3px solid lightblue;
+}
+
+header {
+    z-index: 3;
+    margin: 0;
+    padding: 2vh;
+    border-bottom: 2px solid lightgray;
+    max-height: 40px;
+}
+
+header div {
+    display: inline-flex;
+}
+
+header button {
+    float: right;
+    height: 100%;
+    font-size: 1.2em;
+    min-width: 40px;
+}
+
+@media (max-width: 1150px) and (min-width: 850px) {
+    header button {
+        font-size: 1.2vw;
+    }
+
+}
+
+header button i {
+    font-size: 1.2em;
+    margin-right: 0.5em;
+}
+
+header button.small {
+    padding: 0 1vw;
+}
+
+header .btn-group, header input {
+    height: 100%;
+    float: right;
+}
+
+h1 {
+    font-size: 1.5em;
+    margin: 0;
+}
+
+nav h2 {
+    font-size: 1.2em;
+}
+
+.hg-sidebar button {
+    padding: 0.5vh 1vh;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    color: #266697;
+    border: 3px solid transparent;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+nav li button::-moz-focus-inner {
+    border: 0;
+}
+
+nav li button span {
+    margin-left: 0.5em;
+}
+
+nav li {
+    margin: 0;
+}
+
+nav ul {
+    list-style-type: none;
+}
+
+nav li:hover button, nav li button:focus {
+    background-color: #DBF4FF; !important;
+}
+
+nav li a:focus, nav li a:hover {
+    outline: none;
+    color: #266697;
+}
+
+nav button.selected {
+    background-color: #DBF4FF; !important;
+    border: 3px solid lightblue;
+    text-decoration: underline;
+    outline: none;
+}
+
+nav #helpButton:focus {
+    border: none;
+    outline: none;
+    background-color: transparent;
+}
+
+.hg-sidebar h2 {
+    margin-left: 0.5em;
+}
+
+#astericsIcon {
+    height: 40px;
+    margin-right: 0.5em;
+    margin-left: 1.1em;
+}
+
+[v-cloak] {
+    display: none;
+}
+
+.box {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.bottom-spacer {
+    margin-bottom: 200px;
+}
+
+.box .srow.header {
+    flex: 0 1 auto;
+    /* The above is shorthand for:
+    flex-grow: 0,
+    flex-shrink: 1,
+    flex-basis: auto
+    */
+}
+
+.box .srow.content {
+    flex: 1 1 auto;
+    position: relative;
+}
+
+.menuButtons{
+    margin-top: 0.5em;
+}
+
+.big-button {
+    background-color: lightblue;
+    padding: 0.6em;
+    border-radius: 10px;
+    font-size: 1.3em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.big-button:hover {
+    background-color: #dae7ff;
+}
+
+.scanFocus {
+    outline: 10px solid red !important;
+}
+
+.text-content {
+    margin-left: 1em;
+}
+
+.grid-mask {
+    background-color: white;
+    z-index: 99;
+}
+
+.grid-mask i {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    margin-left: -30px;
+    margin-top: -30px;
+    transform: translate(-50%, -50%);
+}
+
+.grid-item-content {
+    overflow: hidden;
+    background: lightblue;
+    border: 1px solid gray;
+    display: flex;
+    flex-flow: column;
+}
+
+.grid-item-content .img-container {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    justify-content: center;
+}
+
+.grid-item-content .text-container {
+    flex: 0 1 auto;
+}
+
+.grid, .grid-item-content .text-container span {
+    /* make non-selectable */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+.selected.grid-item-content {
+    -webkit-animation: background 0.5s cubic-bezier(1,0,0,1);
+    animation: background 0.5s cubic-bezier(1,0,0,1);
+}
+
+.highlight.grid-item-content {
+    animation: background 1s steps(20, end) infinite;
+    -webkit-animation: background 1s steps(20, end) infinite;
+}
+
+.noanimation {
+    -webkit-animation: none !important;
+    animation: none !important;
+}
+
+@-webkit-keyframes background {
+    0% { filter: brightness(50%); }
+}
+
+@keyframes background {
+    0% { filter: brightness(50%); }
+}
+
+.mouseentered.grid-item-content {
+    outline: thick solid green !important;
+    background: lightgreen;
+}
+
+.scanInactive.grid-item-content, .scanInactive.grid-item-content span {
+    background: lightgray !important;
+    color: darkgray !important;
+    opacity: 0.4;
+}
+
+.inactive span {
+    background-color: whitesmoke !important;
+    color: darkgray !important;
+}
+
+.scanInactive .img-container {
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+    filter: grayscale(100%);
+    filter: grayscale(1); /* Microsoft Edge and Firefox 35+ */
+}
+
+.spaced {
+    margin-left: 1.5vw;
+    margin-right: 1.5vw;
+}
+
+.inline {
+    display: inline-block;
+}
+
+#menuExpandedInputOpts input[type=range] {
+    width: 5em;
+}
+
+#menuExpandedInputOpts input[type=number] {
+    width: 2.5em;
+}
+
+.break-word {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+
+    -ms-word-break: break-all;
+    /* This is the dangerous one in WebKit, as it breaks things wherever */
+    word-break: break-all;
+    /* Instead use this non-standard one: */
+    word-break: break-word;
+
+    /* Adds a hyphen where the word breaks, if supported (No Blink) */
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+.left {
+    float: left !important;
+}
+
+.right {
+    float: right;
+}
+
+
+#syncVisualization {
+    margin: -0.3em 1em 0 0;
+}
+
+#syncVisualization .fa-stack-1x {
+    left: 10%;
+    top: 30%;
+    line-height: 1;
+}
+
+#syncVisualizationWrapper {
+    padding: 1.5vh 0.5em 1.5vh 0.7em;
+}
+
+.boldFont {
+    font-weight: bold;
+}
+
+.multiselect__tag {
+    color: black !important;
+}
+
+@media (max-height: 355px) {
+    #syncVisualization {
+        display: none;
+    }
+    #syncVisualizationWrapper {
+        display: none;
+    }
+}
+
+@media (max-width: 850px) {
+    #syncVisualization {
+        margin: -0.3em 0.4em 0 0;
+    }
+}
+
+@media print {
+    .no-print, .no-print *, header {
+        display: none !important;
+    }
+    * {
+        -webkit-print-color-adjust: exact !important; /*Chrome, Safari */
+        color-adjust: exact !important;  /*Firefox*/
+    }
+}
