@@ -13,6 +13,8 @@ import { GridElementCollect } from '../../model/GridElementCollect.js';
 import { GridActionCollectElement } from '../../model/GridActionCollectElement.js';
 import { GridActionPredict } from '../../model/GridActionPredict.js';
 import {GridActionNavigate} from "../../model/GridActionNavigate.js";
+import {VoiceConfig} from "../../model/VoiceConfig.js";
+import {localStorageService} from "./localStorageService.js";
 
 let convertServiceDb = {};
 
@@ -222,6 +224,22 @@ function getModelConversionFunctions(objectModelVersion) {
                 }
                 gridData.modelVersion = modelUtil.getModelVersionString();
                 return gridData;
+            });
+        case 5:
+            filterFns.push(function (object, filterOptions) {
+                // fn from V5 to V6
+                // moved voice config from MetaData to SettingsUserLocal
+                if (!object) return;
+                if (object.modelName === MetaData.getModelName()) {
+                    let voiceConfig = new VoiceConfig(object.localeConfig);
+                    let userSettings = localStorageService.getUserSettings();
+                    if (!userSettings.voiceConfig) {
+                        userSettings.voiceConfig = userSettings.voiceConfig || voiceConfig;
+                        localStorageService.saveUserSettings(userSettings);
+                    }
+                }
+                object.modelVersion = modelUtil.getModelVersionString();
+                return object;
             });
     }
     return filterFns;

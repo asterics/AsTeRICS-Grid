@@ -246,7 +246,7 @@ dataService.saveMetadata = function (newMetadata, forceDbSave) {
                 newMetadata.id = id;
             }
             if (!existingMetadata.isEqual(newMetadata)) {
-                localStorageService.saveLocalMetadata(newMetadata);
+                localStorageService.saveUserSettings({metadata: newMetadata});
             }
             if (!localStorageService.getAppSettings().syncNavigation) {
                 newMetadata.locked = existingMetadata.locked;
@@ -296,7 +296,7 @@ dataService.getMetadata = function () {
                 returnValue = result;
             }
             if (!localStorageService.getAppSettings().syncNavigation) {
-                let localMetadata = localStorageService.getLocalMetadata();
+                let localMetadata = localStorageService.getUserSettings().metadata;
                 if (localMetadata) {
                     returnValue.locked = localMetadata.locked;
                     returnValue.fullscreen = localMetadata.fullscreen;

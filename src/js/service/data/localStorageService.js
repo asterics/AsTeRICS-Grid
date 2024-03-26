@@ -1,24 +1,28 @@
 import { constants } from '../../util/constants';
-import { MetaData } from '../../model/MetaData';
 import { SettingsApp } from '../../model/SettingsApp.js';
 import $ from "../../externals/jquery.js";
+import {SettingsUserLocal} from "../../model/SettingsUserLocal.js";
 
 let errorMsg = 'could not access local storage, maybe disabled by user? Error: ';
-let USER_PASSWORDS_KEY = 'USER_PASSWORDS_KEY';
-let USER_MODELVERSION_KEY = 'USER_MODELVERSION_KEY';
+let DEPRECATED_USER_PASSWORDS_KEY = 'USER_PASSWORDS_KEY';
 let SYNCED_DBS_LIST_KEY = 'SYNCED_DBS_LIST_KEY';
 let LAST_ACTIVEUSER_KEY = 'LAST_ACTIVEUSER_KEY';
 let AUTOLOGIN_USER_KEY = 'AUTOLOGIN_USER_KEY';
-let LOCAL_METADATA_KEY = 'AG_LOCAL_METADATA_KEY';
 let GRID_DIMENSIONS_KEY = 'AG_GRID_DIMENSIONS_KEY';
 let USED_LOCALES_KEY = 'AG_USED_LOCALES_KEY';
-let YT_STATE_KEY = 'AG_YT_STATE_KEY';
-let APP_SETTINGS = 'AG_APP_SETTINGS';
 let CURRENT_VERSION_KEY = 'AG_CURRENT_VERSION_KEY';
+let APP_SETTINGS = 'AG_APP_SETTINGS';
+let USER_SETTINGS = 'AG_USER_SETTINGS';
 
 let localStorageService = {};
 let storage = window.localStorage;
+window.service = localStorageService;
 
+/**
+ * saves a key/value pair (both string) to local storage
+ * @param key
+ * @param value
+ */
 localStorageService.save = function (key, value) {
     if (storage) {
         try {
@@ -58,26 +62,60 @@ localStorageService.getJSON = function (key) {
 };
 
 /**
- * returns a previously saved user password
- * @param username the username as used for login
- * @return {*}
+ * returns locally saved global app settings
+ * @return {SettingsApp}
  */
-localStorageService.getUserPassword = function (username) {
-    if (!username) {
-        return null;
-    }
-    return getSaveObject(USER_PASSWORDS_KEY)[username];
+localStorageService.getAppSettings = function () {
+    let data = localStorageService.getJSON(APP_SETTINGS);
+    return new SettingsApp(data);
 };
 
 /**
- * saves a given local user without a password
- * @param username the username of the local user to save
+ * saves global app settings
+ * @param settings full SettingsApp object or part of new settings object to be saved, e.g. {appLang: "en"}
  */
-localStorageService.saveLocalUser = function (username) {
-    let object = getSaveObject(USER_PASSWORDS_KEY);
-    object[username] = '';
-    localStorageService.save(USER_PASSWORDS_KEY, JSON.stringify(object));
+localStorageService.saveAppSettings = function (settings) {
+    settings = settings || {};
+    let existingSettings = localStorageService.getAppSettings();
+    Object.assign(existingSettings, settings);
+    localStorageService.saveJSON(APP_SETTINGS, existingSettings);
+    $(document).trigger(constants.EVENT_APPSETTINGS_UPDATED, existingSettings);
 };
+
+/**
+ * returns local user settings
+ * @param username optional user to get settings, defaults to current user
+ * @return {null|SettingsUserLocal}
+ */
+localStorageService.getUserSettings = function (username) {
+    username = username || localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
+    if (!username) {
+        return null;
+    }
+    let object = localStorageService.getJSON(USER_SETTINGS) || {};
+    let userSettings = object[username] || {};
+    userSettings.username = username;
+    return new SettingsUserLocal(userSettings);
+}
+
+/**
+ * saves local user settings
+ * @param settings the settings to save, can be full SettingsUserLocal object, or part of settings, e.g. {password: '123'}
+ * @param username
+ */
+localStorageService.saveUserSettings = function (settings, username) {
+    settings = settings || {};
+    username = settings.username || username || localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
+    if (!username) {
+        return;
+    }
+    let existingSettings = localStorageService.getUserSettings(username) || {};
+    Object.assign(existingSettings, settings);
+    let fullSettings = localStorageService.getJSON(USER_SETTINGS) || {};
+    fullSettings[username] = existingSettings;
+    localStorageService.saveJSON(USER_SETTINGS, fullSettings);
+    $(document).trigger(constants.EVENT_USERSETTINGS_UPDATED, existingSettings);
+}
 
 /**
  * checks if the given username is a saved local user without password
@@ -85,16 +123,8 @@ localStorageService.saveLocalUser = function (username) {
  * @return true if the given username is a saved local user without password, false otherwise
  */
 localStorageService.isSavedLocalUser = function (username) {
-    let object = getSaveObject(USER_PASSWORDS_KEY);
-    return object[username] === '';
-};
-
-/**
- * checks if the last active user is a local user (not synced with cloud)
- */
-localStorageService.isLastActiveUserLocal = function () {
-    let object = getSaveObject(USER_PASSWORDS_KEY);
-    return object[localStorageService.getLastActiveUser()] === '';
+    let settings = localStorageService.getUserSettings(username);
+    return settings.password === '';
 };
 
 /**
@@ -103,9 +133,7 @@ localStorageService.isLastActiveUserLocal = function () {
  * @param password the password to save (should be salted + hashed)
  */
 localStorageService.saveUserPassword = function (username, password) {
-    let object = getSaveObject(USER_PASSWORDS_KEY);
-    object[username] = password;
-    localStorageService.save(USER_PASSWORDS_KEY, JSON.stringify(object));
+    localStorageService.saveUserSettings({username: username, password: password});
 };
 
 /**
@@ -113,10 +141,11 @@ localStorageService.saveUserPassword = function (username, password) {
  * autologin user is cleared.
  * @param username the username as used for login
  */
-localStorageService.removeUserPassword = function (username) {
-    let object = getSaveObject(USER_PASSWORDS_KEY);
+localStorageService.removeLocalUser = function (username) {
+    localStorageService.unmarkSyncedDatabase(username);
+    let object = localStorageService.getJSON(USER_SETTINGS) || {};
     delete object[username];
-    localStorageService.save(USER_PASSWORDS_KEY, JSON.stringify(object));
+    localStorageService.saveJSON(USER_SETTINGS, object);
     let autologinUser = localStorageService.getAutologinUser();
     if (autologinUser === username) {
         localStorageService.setAutologinUser('');
@@ -143,10 +172,11 @@ localStorageService.getSavedUsers = function (loggedInUser) {
  * returns all saved offline/local users as a string list
  */
 localStorageService.getSavedLocalUsers = function () {
-    let object = getSaveObject(USER_PASSWORDS_KEY);
+    transferAllUsersNewToOld();
+    let object = localStorageService.getJSON(USER_SETTINGS) || {};
     let allUsers = Object.keys(object) || [];
     return allUsers
-        .filter((username) => object[username] === '')
+        .filter((username) => object[username].password === '')
         .sort((a, b) => {
             if (a === constants.LOCAL_DEMO_USERNAME) {
                 return 1;
@@ -162,9 +192,10 @@ localStorageService.getSavedLocalUsers = function () {
  * returns all saved online users as a string list
  */
 localStorageService.getSavedOnlineUsers = function () {
-    let object = getSaveObject(USER_PASSWORDS_KEY);
+    transferAllUsersNewToOld();
+    let object = localStorageService.getJSON(USER_SETTINGS) || {};
     let allUsers = Object.keys(object) || [];
-    return allUsers.filter((username) => object[username] !== '').sort();
+    return allUsers.filter((username) => object[username].password !== '').sort();
 };
 
 /**
@@ -237,9 +268,9 @@ localStorageService.unmarkSyncedDatabase = function (databaseName) {
  * @return {number}
  */
 localStorageService.getUserMajorModelVersion = function (user) {
-    let object = getSaveObject(USER_MODELVERSION_KEY);
-    let modelVersionString = object[user];
-    let majorNumber = !modelVersionString ? 1 : parseInt(JSON.parse(object[user]).major);
+    let settings = localStorageService.getUserSettings(user);
+    let modelVersionString = settings.modelVersionDb;
+    let majorNumber = !modelVersionString ? 1 : parseInt(JSON.parse(modelVersionString).major);
     return majorNumber;
 };
 
@@ -254,36 +285,8 @@ localStorageService.setUserModelVersion = function (user, modelVersionString) {
     let savedVersion = localStorageService.getUserMajorModelVersion(user);
     let newVersion = JSON.parse(modelVersionString).major;
     if (savedVersion < newVersion) {
-        let object = getSaveObject(USER_MODELVERSION_KEY);
-        object[user] = modelVersionString;
-        localStorageService.save(USER_MODELVERSION_KEY, JSON.stringify(object));
+        localStorageService.saveUserSettings({modelVersionDb: modelVersionString}, user);
     }
-};
-
-localStorageService.getAppSettings = function () {
-    let data = localStorageService.getJSON(APP_SETTINGS);
-    return new SettingsApp(data);
-};
-
-localStorageService.saveAppSettings = function (settings) {
-    settings = settings || {};
-    let existingSettings = localStorageService.getAppSettings();
-    Object.assign(existingSettings, settings);
-    localStorageService.saveJSON(APP_SETTINGS, existingSettings);
-    $(document).trigger(constants.EVENT_APPSETTINGS_UPDATED, existingSettings);
-};
-
-localStorageService.saveLocalMetadata = function (metadata) {
-    let user = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
-    let object = getSaveObject(LOCAL_METADATA_KEY);
-    object[user] = metadata;
-    return localStorageService.save(LOCAL_METADATA_KEY, JSON.stringify(object));
-};
-
-localStorageService.getLocalMetadata = function () {
-    let user = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
-    let object = getSaveObject(LOCAL_METADATA_KEY);
-    return object[user];
 };
 
 localStorageService.saveLastGridDimensions = function (dimensions) {
@@ -307,20 +310,6 @@ localStorageService.getUsedLocales = function () {
     return json ? JSON.parse(json) : [];
 };
 
-localStorageService.getYTState = function (full) {
-    let json = localStorageService.get(YT_STATE_KEY);
-    if (full) {
-        return json ? JSON.parse(json) : null;
-    }
-    return json ? JSON.parse(json)[localStorageService.getAutologinUser()] : null;
-};
-
-localStorageService.saveYTState = function (state) {
-    let currentFullState = localStorageService.getYTState(true) || {};
-    currentFullState[localStorageService.getAutologinUser()] = state;
-    return localStorageService.save(YT_STATE_KEY, JSON.stringify(currentFullState));
-};
-
 localStorageService.getCurrentAppVersion = function () {
     return localStorageService.get(CURRENT_VERSION_KEY);
 };
@@ -329,24 +318,6 @@ localStorageService.setCurrentAppVersion = function (versionString) {
     localStorageService.save(CURRENT_VERSION_KEY, versionString);
 };
 
-function getSaveObject(key) {
-    let objectString = localStorageService.get(key);
-    let object = JSON.parse(objectString);
-    let isObject = object instanceof Object;
-    if (key === LOCAL_METADATA_KEY && object && object.modelName === MetaData.getModelName()) {
-        let user = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
-        let value = {};
-        value[user] = object;
-        localStorageService.save(key, JSON.stringify(value));
-        return value;
-    }
-    if (!objectString || !isObject) {
-        localStorageService.save(key, JSON.stringify({}));
-        return {};
-    }
-    return object;
-}
-
 function getSyncedDbsList() {
     let syncedDbsString = localStorageService.get(SYNCED_DBS_LIST_KEY);
     if (!syncedDbsString) {
@@ -354,6 +325,23 @@ function getSyncedDbsList() {
         return [];
     }
     return JSON.parse(syncedDbsString);
+}
+
+/**
+ * transfers user data (username, password) from old local storage object "DEPRECATED_USER_PASSWORDS_KEY" to
+ * new SettingsUserLocal objects (saved as single object with key "USER_SETTINGS" in local storage).
+ * Is only done once, if no "USER_SETTINGS" object exists.
+ */
+function transferAllUsersNewToOld() {
+    if (localStorageService.getJSON(USER_SETTINGS)) {
+        return;
+    }
+    log.info('transferring user data to new data model...');
+    let objectOld = localStorageService.getJSON(DEPRECATED_USER_PASSWORDS_KEY) || {};
+    let oldKeys = Object.keys(objectOld) || [];
+    for (let key of oldKeys) {
+        localStorageService.saveUserSettings({ username: key, password: objectOld[key] });
+    }
 }
 
 export { localStorageService };

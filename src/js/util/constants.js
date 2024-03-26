@@ -1,7 +1,7 @@
 let constants = {};
 
 constants.ELEMENT_EVENT_ID = 'ELEMENT_EVENT_ID';
-constants.MODEL_VERSION = '{"major": 5, "minor": 0, "patch": 0}';
+constants.MODEL_VERSION = '{"major": 6, "minor": 0, "patch": 0}';
 constants.MODEL_VERSION_LOCAL = '{"major": 1, "minor": 0, "patch": 0}';
 
 constants.LOCAL_NOLOGIN_USERNAME = 'default-user';
@@ -36,6 +36,7 @@ constants.EVENT_USER_CHANGING = 'EVENT_USER_CHANGING';
 constants.EVENT_USER_CHANGED = 'EVENT_USER_CHANGED';
 constants.EVENT_METADATA_UPDATED = 'EVENT_METADATA_UPDATED';
 constants.EVENT_APPSETTINGS_UPDATED = 'EVENT_APPSETTINGS_UPDATED';
+constants.EVENT_USERSETTINGS_UPDATED = 'EVENT_USERSETTINGS_UPDATED';
 constants.EVENT_CONFIG_RESET = 'EVENT_CONFIG_RESET';
 constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE = 'EVENT_NAVIGATE_GRID_IN_VIEWMODE';
 constants.EVENT_NAVIGATE = 'EVENT_NAVIGATE';

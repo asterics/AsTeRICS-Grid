@@ -102,7 +102,7 @@ loginService.loginStoredUser = function (user, dontRoute) {
         }
 
         if (savedOnlineUsers.includes(user) && localStorageService.isDatabaseSynced(user)) {
-            let password = localStorageService.getUserPassword(user);
+            let password = localStorageService.getUserSettings(user).password;
             localStorageService.setAutologinUser(user);
             databaseService.initForUser(user, password).then(() => {
                 loginService.loginHashedPassword(user, password, true);
@@ -117,6 +117,7 @@ loginService.loginStoredUser = function (user, dontRoute) {
                     resolve();
                 })
                 .catch((reason) => {
+                    log.warn("online login failed!", reason);
                     reject(reason);
                 });
         } else if (savedLocalUsers.includes(user)) {
@@ -207,7 +208,7 @@ loginService.register = function (user, plainPassword, saveUser) {
  */
 loginService.registerOffline = function (username, hashedUserPassword) {
     loginService.logout();
-    localStorageService.saveLocalUser(username);
+    localStorageService.saveUserPassword(username, '');
     localStorageService.setAutologinUser(username);
     return databaseService.registerForUser(username, hashedUserPassword);
 };
