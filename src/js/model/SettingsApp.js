@@ -1,7 +1,4 @@
-import {localStorageService} from "../service/data/localStorageService.js";
-
-let DEPRECATED_UNLOCK_PASSCODE_KEY = 'AG_UNLOCK_PASSCODE_KEY';
-let DEPRECATED_SYNC_NAVIGATION_KEY = 'AG_SYNC_NAVIGATION_KEY';
+import {convertServiceLocal} from "../service/data/convertServiceLocal.js";
 
 class SettingsApp {
     /**
@@ -11,8 +8,13 @@ class SettingsApp {
      */
     constructor(settings) {
         settings = settings || {};
-        this.unlockPasscode = settings.unlockPasscode !== undefined ? settings.unlockPasscode : localStorageService.getJSON(DEPRECATED_UNLOCK_PASSCODE_KEY);
-        this.syncNavigation = settings.syncNavigation !== undefined ? settings.syncNavigation : localStorageService.getJSON(DEPRECATED_SYNC_NAVIGATION_KEY);
+        this.modelVersion = settings.modelVersion;
+        this.appLang = settings.appLang;
+        this.unlockPasscode = settings.unlockPasscode;
+        this.syncNavigation = settings.syncNavigation;
+        this.externalSpeechServiceUrl = settings.externalSpeechServiceUrl;
+
+        convertServiceLocal.updateDataModel(this);
     }
 }
 

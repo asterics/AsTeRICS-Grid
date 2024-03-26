@@ -15,7 +15,7 @@
                     <h3 class="mt-2">{{ $t('applicationLanguage') }}</h3>
                     <div class="srow">
                         <label class="three columns" for="inLanguage">{{ $t('selectLanguage') }}</label>
-                        <select class="five columns" id="inLanguage" v-model="appLang" @change="saveAppLang()">
+                        <select class="five columns" id="inLanguage" v-model="appSettings.appLang" @change="saveAppLang()">
                             <option value="">{{ $t('automatic') }}</option>
                             <option v-for="lang in allLanguages.filter(langObject => appLanguages.includes(langObject.code))" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
                         </select>
@@ -252,7 +252,6 @@
                 show: false,
                 selectAllLanguages: JSON.parse(localStorageService.get(KEY_SETTINGS_SHOW_ALL_CONTENTLANGS)) || false,
                 selectAllVoices: JSON.parse(localStorageService.get(KEY_SETTINGS_SHOW_ALL_VOICES)) || false,
-                appLang: '',
                 gridLanguages: [],
                 appLanguages: i18nService.getAppLanguages(),
                 allLanguages: i18nService.getAllLanguages(),
@@ -285,7 +284,7 @@
         },
         methods: {
             async saveAppLang() {
-                await i18nService.setAppLanguage(this.appLang);
+                await i18nService.setAppLanguage(this.appSettings.appLang);
                 this.allLanguages = i18nService.getAllLanguages();
                 this.selectVoices = this.getSelectVoices();
                 this.fixCurrentVoice();
@@ -392,7 +391,6 @@
                 }, []);
                 thiz.gridLanguages = [...new Set(languages)];
             });
-            thiz.appLang = i18nService.getCustomAppLang();
             thiz.voices = await speechService.getVoicesInitialized();
             thiz.selectVoices = thiz.getSelectVoices();
         }
