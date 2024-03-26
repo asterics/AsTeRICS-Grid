@@ -2,7 +2,7 @@ import $ from '../../externals/jquery.js';
 import PouchDB from 'PouchDB';
 import { localStorageService } from './localStorageService';
 import { constants } from '../../util/constants';
-import { filterService } from './filterService';
+import { convertServiceDb } from './convertServiceDb';
 import { PouchDbAdapter } from './pouchDbAdapter';
 import { MapCache } from '../../util/MapCache';
 import { MetaData } from '../../model/MetaData';
@@ -387,7 +387,7 @@ function changeHandler(changedIds, changedDocsEncrypted) {
     let deletedIds = changedDocsEncrypted.filter((doc) => doc._deleted).map(e => e._id);
     changedDocsEncrypted = changedDocsEncrypted.filter((doc) => !doc._deleted);
     changedIds = changedDocsEncrypted.map((doc) => doc.id);
-    let changedDocs = changedDocsEncrypted.map((rawDoc) => filterService.convertDatabaseToLiveObjects(rawDoc));
+    let changedDocs = changedDocsEncrypted.map((rawDoc) => convertServiceDb.convertDatabaseToLiveObjects(rawDoc));
     let user = pouchDbService.getOpenedDatabaseName();
     let currentUserDataModelVersion = localStorageService.getUserMajorModelVersion(user);
     changedDocs.forEach((doc) => {

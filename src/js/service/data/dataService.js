@@ -15,7 +15,7 @@ import { predictionService } from '../predictionService';
 import { localStorageService } from './localStorageService';
 import { gridUtil } from '../../util/gridUtil';
 import { urlParamService } from '../urlParamService';
-import { filterService } from './filterService';
+import { convertServiceDb } from './convertServiceDb';
 import { serviceWorkerService } from '../serviceWorkerService.js';
 import { constants } from '../../util/constants.js';
 import { MainVue } from '../../vue/mainVue.js';
@@ -495,10 +495,10 @@ dataService.normalizeImportData = function (data) {
 
     importData.grids = importData.grids || [];
     importData.dictionaries = importData.dictionaries || [];
-    importData.grids = filterService.updateDataModel(importData.grids);
-    importData.dictionaries = filterService.updateDataModel(importData.dictionaries);
+    importData.grids = convertServiceDb.updateDataModel(importData.grids);
+    importData.dictionaries = convertServiceDb.updateDataModel(importData.dictionaries);
     if (importData.metadata) {
-        importData.metadata = filterService.updateDataModel(importData.metadata);
+        importData.metadata = convertServiceDb.updateDataModel(importData.metadata);
     }
     importData.metadata = importData.metadata || {};
     return importData;

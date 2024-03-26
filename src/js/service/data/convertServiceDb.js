@@ -14,7 +14,7 @@ import { GridActionCollectElement } from '../../model/GridActionCollectElement.j
 import { GridActionPredict } from '../../model/GridActionPredict.js';
 import {GridActionNavigate} from "../../model/GridActionNavigate.js";
 
-let filterService = {};
+let convertServiceDb = {};
 
 /*
 Model Version Changelog:
@@ -28,7 +28,7 @@ V0 -> V1: Introduction of encryption and modelVersion property on all data model
  * @param filterOptions object of filter options that is passed to each filter function
  * @return object of list of objects that is/are ready for saving to database
  */
-filterService.convertLiveToDatabaseObjects = function (objects, filterOptions) {
+convertServiceDb.convertLiveToDatabaseObjects = function (objects, filterOptions) {
     log.trace('conversion to database - before filters:', objects);
     let filtered = modelUtil.convertObjects(objects, getFilterFunctionsToDatabase, filterOptions);
     log.trace('conversion to database - after filters:', filtered);
@@ -41,7 +41,7 @@ filterService.convertLiveToDatabaseObjects = function (objects, filterOptions) {
  * @param filterOptions object of filter options that is passed to each filter function
  * @return object of list of objects that is/are ready for using in the application
  */
-filterService.convertDatabaseToLiveObjects = function (objects, filterOptions) {
+convertServiceDb.convertDatabaseToLiveObjects = function (objects, filterOptions) {
     log.trace('conversion to live - before filters:', objects);
     let filtered = modelUtil.convertObjects(objects, getFilterFunctionsFromDatabase, filterOptions);
     log.trace('conversion to live - after filters:', filtered);
@@ -53,7 +53,7 @@ filterService.convertDatabaseToLiveObjects = function (objects, filterOptions) {
  * @param objects objects with current or outdated data model, can be array or single object
  * @return {*} array or single object (depending on param objects) with updated/current data model
  */
-filterService.updateDataModel = function (objects) {
+convertServiceDb.updateDataModel = function (objects) {
     return modelUtil.convertObjects(objects, getModelConversionFunctions);
 };
 
@@ -227,4 +227,4 @@ function getModelConversionFunctions(objectModelVersion) {
     return filterFns;
 }
 
-export { filterService };
+export { convertServiceDb };

@@ -4,7 +4,7 @@ import { urlParamService } from '../urlParamService';
 import { MetaData } from '../../model/MetaData';
 import { encryptionService } from './encryptionService';
 import { pouchDbService } from './pouchDbService';
-import { filterService } from './filterService';
+import { convertServiceDb } from './convertServiceDb';
 import { localStorageService } from './localStorageService';
 import { util } from '../../util/util';
 import { constants } from '../../util/constants';
@@ -41,7 +41,7 @@ databaseService.getObject = function (objectType, id, onlyShortVersion) {
                         objectType: objectType,
                         onlyShortVersion: onlyShortVersion
                     };
-                    let filteredData = filterService.convertDatabaseToLiveObjects(result, options);
+                    let filteredData = convertServiceDb.convertDatabaseToLiveObjects(result, options);
                     let modelVersion = getModelVersion(filteredData);
                     if (modelVersion && _lastDataModelVersion !== modelVersion) {
                         _lastDataModelVersion = modelVersion;
@@ -130,7 +130,7 @@ databaseService.bulkSave = function (objectList) {
     }, 0);
     let maxCountSaveAtOnce = 1000; //found out by tests, above pouchdb errors occured
     let elemsPerGrid = Math.floor(elementCount / objectList.length);
-    let encryptedList = filterService.convertLiveToDatabaseObjects(objectList);
+    let encryptedList = convertServiceDb.convertLiveToDatabaseObjects(objectList);
     let chunks = [];
     encryptedList.forEach((object) => {
         object._id = object.id;
@@ -300,7 +300,7 @@ function initInternal(hashedUserPassword, username, isLocalUser) {
 
 function applyFiltersAndSave(idPrefix, data) {
     return new Promise((resolve, reject) => {
-        let convertedData = filterService.convertLiveToDatabaseObjects(data);
+        let convertedData = convertServiceDb.convertLiveToDatabaseObjects(data);
         pouchDbService
             .save(idPrefix, convertedData)
             .then(() => {
