@@ -1,9 +1,11 @@
-import {convertServiceLocal} from "../service/data/convertServiceLocal.js";
+import { convertServiceLocal } from '../service/data/convertServiceLocal.js';
 
 class SettingsApp {
     /**
+     * @param settings.modelVersion
      * @param settings.appLang
      * @param settings.unlockPasscode
+     * @param settings.syncNavigation
      * @param settings.externalSpeechServiceUrl
      */
     constructor(settings) {
@@ -18,4 +20,4 @@ class SettingsApp {
     }
 }
 
-export {SettingsApp};
+export { SettingsApp };
