@@ -36,15 +36,19 @@
                 <div class="eleven columns">
                     <h3>{{ $t('miscellaneous') }}</h3>
                     <div class="srow">
-                        <input id="chkSyncNavigation" type="checkbox" v-model="syncNavigation" @change="saveSyncNavigation()"/>
-                        <label for="chkSyncNavigation">{{ $t('synchronizeNavigationAndLockedState') }}</label>
-                    </div>
-                    <div class="srow">
                         <label class="three columns" for="unlockPass">{{ $t('passcodeForUnlockingUserInterface') }}</label>
-                        <input class="five columns" id="unlockPass" type="number" v-model="unlockPasscode" @input="unlockPasscode = unlockPasscode.substring(0, 6); savePasscode()" :placeholder="$t('noPasscodeBracket')"/>
-                        <button class="three columns" @click="unlockPasscode = null; savePasscode()">{{ $t('reset') }}</button>
+                        <input class="five columns" id="unlockPass" type="number" v-model="appSettings.unlockPasscode" @input="appSettings.unlockPasscode = appSettings.unlockPasscode.substring(0, 6); saveAppSettings()" :placeholder="$t('noPasscodeBracket')"/>
+                        <button class="three columns" @click="appSettings.unlockPasscode = null; saveAppSettings()">{{ $t('reset') }}</button>
                     </div>
                 </div>
+            </div>
+            <div class="srow">
+                <accordion :acc-label="$t('advancedGeneralSettings')" class="eleven columns">
+                    <div class="srow">
+                        <input id="chkSyncNavigation" type="checkbox" v-model="appSettings.syncNavigation" @change="saveAppSettings()"/>
+                        <label for="chkSyncNavigation">{{ $t('synchronizeNavigationAndLockedState') }}</label>
+                    </div>
+                </accordion>
             </div>
             <div class="srow" style="margin-bottom: 0">
                 <h2 class="six columns">{{ $t('userSettings') }}</h2>
@@ -255,8 +259,7 @@
                 currentLang: i18nService.getAppLang(),
                 saveSuccess: null,
                 speechService: speechService,
-                syncNavigation: localStorageService.shouldSyncNavigation(),
-                unlockPasscode: localStorageService.getUnlockPasscode(),
+                appSettings: localStorageService.getAppSettings(),
                 voices: [],
                 selectVoices: [],
                 testText: i18nService.t('thisIsAnEnglishSentence'),
@@ -327,19 +330,12 @@
             sortVoices() {
                 this.voices.sort(speechService.voiceSortFn);
             },
-            saveSyncNavigation() {
+            saveAppSettings() {
                 this.saveSuccess = undefined;
                 util.debounce(() => {
-                    localStorageService.setShouldSyncNavigation(this.syncNavigation);
+                    localStorageService.saveAppSettings(this.appSettings);
                     this.saveSuccess = true;
-                }, 300, 'SAVE_NAV');
-            },
-            savePasscode() {
-                this.saveSuccess = undefined;
-                util.debounce(() => {
-                    localStorageService.setUnlockPasscode(this.unlockPasscode);
-                    this.saveSuccess = true;
-                }, 500, 'SAVE_UNLOCK');
+                }, 500, 'SAVE_APP_SETTINGS');
             },
             resetVoiceProps() {
                 this.metadata.localeConfig.voicePitch = 1;

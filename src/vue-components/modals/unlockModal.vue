@@ -50,7 +50,7 @@
         props: [],
         data: function () {
             return {
-                passcode: localStorageService.getUnlockPasscode(),
+                passcode: localStorageService.getAppSettings().unlockPasscode,
                 inputPasscode: '',
                 timeoutHandler: null,
                 masterkeyPossible: true,

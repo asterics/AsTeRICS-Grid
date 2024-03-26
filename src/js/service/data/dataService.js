@@ -233,7 +233,7 @@ dataService.addGridElements = function (gridId, newGridElements) {
  * @see{MetaData}
  *
  * @param newMetadata new or updated metadata object
- * @param forceDbSave if set to true, metadata is saved to database, even if localStorageService.shouldSyncNavigation() is not set
+ * @param forceDbSave if set to true, metadata is saved to database, even if localStorageService.getAppSettings().syncNavigation is not set
  * @return {Promise} resolves after operation finished successful
  */
 dataService.saveMetadata = function (newMetadata, forceDbSave) {
@@ -248,7 +248,7 @@ dataService.saveMetadata = function (newMetadata, forceDbSave) {
             if (!existingMetadata.isEqual(newMetadata)) {
                 localStorageService.saveLocalMetadata(newMetadata);
             }
-            if (!localStorageService.shouldSyncNavigation()) {
+            if (!localStorageService.getAppSettings().syncNavigation) {
                 newMetadata.locked = existingMetadata.locked;
                 newMetadata.fullscreen = existingMetadata.fullscreen;
                 newMetadata.lastOpenedGridId = existingMetadata.lastOpenedGridId;
@@ -295,7 +295,7 @@ dataService.getMetadata = function () {
             } else {
                 returnValue = result;
             }
-            if (!localStorageService.shouldSyncNavigation()) {
+            if (!localStorageService.getAppSettings().syncNavigation) {
                 let localMetadata = localStorageService.getLocalMetadata();
                 if (localMetadata) {
                     returnValue.locked = localMetadata.locked;
