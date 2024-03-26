@@ -1,10 +1,12 @@
 import {constants} from "../util/constants.js";
 import {audioUtil} from "../util/audioUtil.js";
 import {i18nService} from "./i18nService.js";
+import $ from "../externals/jquery.js";
+import {localStorageService} from "./data/localStorageService.js";
 
 let speechServiceExternal = {};
 
-let externalSpeechServiceUrl = 'http://localhost:5555';
+let externalSpeechServiceUrl = localStorageService.getAppSettings().externalSpeechServiceUrl;
 let lastSpeakingResult = false;
 let lastSpeakingRequestTime = 0;
 let playingInternal = false;
@@ -46,11 +48,12 @@ speechServiceExternal.speak = async function (text, providerId, voice) {
     }
 };
 
-speechServiceExternal.getVoices = async function () {
-    if (!externalSpeechServiceUrl) {
+speechServiceExternal.getVoices = async function (url) {
+    url = url || externalSpeechServiceUrl;
+    if (!url) {
         return [];
     }
-    let result = await fetchErrorHandling(`${externalSpeechServiceUrl}/voices`);
+    let result = await fetchErrorHandling(`${url}/voices`);
     return result ? (await result.json()) : [];
 };
 
@@ -66,6 +69,9 @@ speechServiceExternal.stop = function () {
 };
 
 speechServiceExternal.isSpeaking = async function () {
+    if (!externalSpeechServiceUrl) {
+        return;
+    }
     if (playingInternal) {
         return true;
     }
@@ -83,6 +89,9 @@ speechServiceExternal.isSpeaking = async function () {
 }
 
 speechServiceExternal.cacheAll = async function (grids, providerId, voiceId) {
+    if (!externalSpeechServiceUrl) {
+        return;
+    }
     let allElements = [];
     for (let grid of grids) {
         allElements = allElements.concat(grid.gridElements);
@@ -101,6 +110,19 @@ speechServiceExternal.cacheAll = async function (grids, providerId, voiceId) {
     }
     log.info('cached all tts values!');
 };
+
+/**
+ * returns true if the given url is a valid speech service url
+ * @param url
+ * @return {Promise<boolean>}
+ */
+speechServiceExternal.validateUrl = async function (url) {
+    if (!url) {
+        return false;
+    }
+    let voices = await speechServiceExternal.getVoices(url);
+    return voices.length > 0;
+}
 
 /**
  * fetch request with error handling.
@@ -125,5 +147,9 @@ async function fetchErrorHandling(url, options) {
     }
     return result;
 }
+
+$(document).on(constants.EVENT_APPSETTINGS_UPDATED, (event, appSettings) => {
+    externalSpeechServiceUrl = appSettings.externalSpeechServiceUrl;
+});
 
 export { speechServiceExternal };

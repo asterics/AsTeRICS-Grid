@@ -9,8 +9,8 @@
                 <div class="six columns">
                     <button @click="testAREUrl()" style="width: 70%"><i class="fas fa-bolt"/> <span>{{ $t('testUrl') }}</span></button>
                     <span class="spaced" v-show="areConnected === undefined"><i class="fas fa-spinner fa-spin"/></span>
-                    <span class="spaced" v-show="areConnected" style="color: green"><i class="fas fa-check"/></span>
-                    <span class="spaced" v-show="areConnected === false" style="color: red"><i class="fas fa-times"/></span>
+                    <span class="spaced" v-show="areConnected" style="color: green" :title="$t('urlIsValid')"><i class="fas fa-check"/></span>
+                    <span class="spaced" v-show="areConnected === false" style="color: red" :title="$t('urlIsInvalid')"><i class="fas fa-times"/></span>
                 </div>
             </div>
         </div>

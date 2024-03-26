@@ -48,6 +48,13 @@
                         <input id="chkSyncNavigation" type="checkbox" v-model="appSettings.syncNavigation" @change="saveAppSettings()"/>
                         <label for="chkSyncNavigation">{{ $t('synchronizeNavigationAndLockedState') }}</label>
                     </div>
+                    <div class="srow">
+                        <label class="three columns" for="externalSpeechUrl">{{ $t('externalSpeechUrl') }}</label>
+                        <input type="text" id="externalSpeechUrl" class="seven columns" v-model="appSettings.externalSpeechServiceUrl" @input="saveAppSettings(reloadVoices)" placeholder="http://localhost:5555"/>
+                        <span class="spaced" v-show="validSpeechServiceUrl === undefined"><i class="fas fa-spinner fa-spin"/></span>
+                        <span class="spaced" v-show="validSpeechServiceUrl" style="color: green" :title="$t('urlIsValid')"><i class="fas fa-check"/></span>
+                        <span class="spaced" v-show="validSpeechServiceUrl === false" style="color: red" :title="$t('urlIsInvalid')"><i class="fas fa-times"/></span>
+                    </div>
                 </accordion>
             </div>
             <div class="srow" style="margin-bottom: 0">
@@ -239,6 +246,7 @@
     import SliderInput from "../modals/input/sliderInput.vue";
     import $ from "../../js/externals/jquery.js";
     import {arasaacService} from "../../js/service/pictograms/arasaacService.js";
+    import {speechServiceExternal} from "../../js/service/speechServiceExternal.js";
 
     let KEY_SETTINGS_SHOW_ALL_VOICES = "KEY_SETTINGS_SHOW_ALL_VOICES";
     let KEY_SETTINGS_SHOW_ALL_CONTENTLANGS = "KEY_SETTINGS_SHOW_ALL_CONTENTLANGS";
@@ -261,6 +269,7 @@
                 appSettings: localStorageService.getAppSettings(),
                 voices: [],
                 selectVoices: [],
+                validSpeechServiceUrl: null,
                 testText: i18nService.t('thisIsAnEnglishSentence'),
                 i18nService: i18nService,
                 localStorageService: localStorageService,
@@ -329,12 +338,25 @@
             sortVoices() {
                 this.voices.sort(speechService.voiceSortFn);
             },
-            saveAppSettings() {
+            saveAppSettings(postFn) {
                 this.saveSuccess = undefined;
                 util.debounce(() => {
                     localStorageService.saveAppSettings(this.appSettings);
                     this.saveSuccess = true;
+                    if (postFn) {
+                        postFn();
+                    }
                 }, 500, 'SAVE_APP_SETTINGS');
+            },
+            async reloadVoices() {
+                this.validSpeechServiceUrl = undefined;
+                this.validSpeechServiceUrl = await speechServiceExternal.validateUrl(this.appSettings.externalSpeechServiceUrl);
+                let timeout = this.validSpeechServiceUrl ? 0 : 3000;
+                util.debounce(async () => {
+                    await speechService.reinit();
+                    this.voices = speechService.getVoices();
+                    this.selectVoices = this.getSelectVoices();
+                }, timeout, 'SAVE_APP_SETTINGS');
             },
             resetVoiceProps() {
                 this.metadata.localeConfig.voicePitch = 1;

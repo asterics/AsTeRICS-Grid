@@ -995,5 +995,8 @@
   "GridActionHTTP": "HTTP action",
   "restActionFailed": "HTTP action failed! Reason: {0}",
   "httpAuthUser": "HTTP Authentication User",
-  "httpAuthPw": "HTTP Authentication Password"
+  "httpAuthPw": "HTTP Authentication Password",
+  "externalSpeechUrl": "External speech service URL",
+  "urlIsValid": "URL is valid",
+  "urlIsInvalid": "URL is invalid"
 }

@@ -327,6 +327,15 @@ speechService.hasSpoken = function () {
     return hasSpoken;
 }
 
+/**
+ * reloads all voices
+ * @return {Promise<void>}
+ */
+speechService.reinit = async function () {
+    allVoices = [];
+    await init();
+};
+
 function getVoicesByLang(lang) {
     return allVoices.filter((voice) => voice.lang.substring(0, 2) === lang);
 }

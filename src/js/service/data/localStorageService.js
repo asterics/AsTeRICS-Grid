@@ -1,6 +1,7 @@
 import { constants } from '../../util/constants';
 import { MetaData } from '../../model/MetaData';
 import { SettingsApp } from '../../model/SettingsApp.js';
+import $ from "../../externals/jquery.js";
 
 let errorMsg = 'could not access local storage, maybe disabled by user? Error: ';
 let USER_PASSWORDS_KEY = 'USER_PASSWORDS_KEY';
@@ -269,6 +270,7 @@ localStorageService.saveAppSettings = function (settings) {
     let existingSettings = localStorageService.getAppSettings();
     Object.assign(existingSettings, settings);
     localStorageService.saveJSON(APP_SETTINGS, existingSettings);
+    $(document).trigger(constants.EVENT_APPSETTINGS_UPDATED, existingSettings);
 };
 
 localStorageService.saveLocalMetadata = function (metadata) {
