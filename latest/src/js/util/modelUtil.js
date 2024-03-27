@@ -3,6 +3,7 @@ import { constants } from './constants';
 var modelUtil = {};
 var idCounter = 100;
 let _currentModelVersion = JSON.parse(constants.MODEL_VERSION);
+let _currentModelVersionLocal = JSON.parse(constants.MODEL_VERSION);
 let _emptyVersionObject = {
     major: null,
     minor: null,
@@ -105,11 +106,48 @@ modelUtil.getModelVersionObject = function (modelVersionString) {
 };
 
 /**
- * returns the latest/current model version
+ * returns the latest/current model version for database objects
  * @return {*}
  */
 modelUtil.getLatestModelVersion = function () {
     return _currentModelVersion;
 };
+
+/**
+ * returns the latest/current model version for local objects
+ * @return {*}
+ */
+modelUtil.getLatestModelVersionLocal = function () {
+    return _currentModelVersionLocal;
+};
+
+/**
+ * converts given objects using conversion functions retrieved by passed function "getConversionFunctionsFunction".
+ *
+ * @param objects the objects to filter, can be a singe object or an array
+ * @param conversionOptions object of options that is passed to each filter function
+ * @param getConversionFunctionsFunction a function that returns an array of conversion functions that should be used for
+ *        the conversion:
+ *        (versionObject) => conversionFns[]
+ *
+ *        A conversion function has the following format:
+ *        (object, options) => converted object
+ *
+ * @return {*} array of converted objects (or a single converted object, if a single object object was passed as "objects")
+ */
+modelUtil.convertObjects = function (objects, getConversionFunctionsFunction, conversionOptions) {
+    if (!objects || !getConversionFunctionsFunction) {
+        return objects;
+    }
+    let passedArray = objects instanceof Array;
+    objects = passedArray ? objects : [objects];
+    for (let i = 0; i < objects.length; i++) {
+        let filterFunctions = getConversionFunctionsFunction(modelUtil.getModelVersionObject(objects[i].modelVersion));
+        filterFunctions.forEach((filterFn) => {
+            objects[i] = filterFn(objects[i], conversionOptions);
+        });
+    }
+    return passedArray ? objects : objects[0];
+}
 
 export { modelUtil };

@@ -15,7 +15,7 @@ import { predictionService } from '../predictionService';
 import { localStorageService } from './localStorageService';
 import { gridUtil } from '../../util/gridUtil';
 import { urlParamService } from '../urlParamService';
-import { filterService } from './filterService';
+import { convertServiceDb } from './convertServiceDb';
 import { serviceWorkerService } from '../serviceWorkerService.js';
 import { constants } from '../../util/constants.js';
 import { MainVue } from '../../vue/mainVue.js';
@@ -233,7 +233,7 @@ dataService.addGridElements = function (gridId, newGridElements) {
  * @see{MetaData}
  *
  * @param newMetadata new or updated metadata object
- * @param forceDbSave if set to true, metadata is saved to database, even if localStorageService.shouldSyncNavigation() is not set
+ * @param forceDbSave if set to true, metadata is saved to database, even if localStorageService.getAppSettings().syncNavigation is not set
  * @return {Promise} resolves after operation finished successful
  */
 dataService.saveMetadata = function (newMetadata, forceDbSave) {
@@ -246,9 +246,9 @@ dataService.saveMetadata = function (newMetadata, forceDbSave) {
                 newMetadata.id = id;
             }
             if (!existingMetadata.isEqual(newMetadata)) {
-                localStorageService.saveLocalMetadata(newMetadata);
+                localStorageService.saveUserSettings({metadata: newMetadata});
             }
-            if (!localStorageService.shouldSyncNavigation()) {
+            if (!localStorageService.getAppSettings().syncNavigation) {
                 newMetadata.locked = existingMetadata.locked;
                 newMetadata.fullscreen = existingMetadata.fullscreen;
                 newMetadata.lastOpenedGridId = existingMetadata.lastOpenedGridId;
@@ -295,8 +295,8 @@ dataService.getMetadata = function () {
             } else {
                 returnValue = result;
             }
-            if (!localStorageService.shouldSyncNavigation()) {
-                let localMetadata = localStorageService.getLocalMetadata();
+            if (!localStorageService.getAppSettings().syncNavigation) {
+                let localMetadata = localStorageService.getUserSettings().metadata;
                 if (localMetadata) {
                     returnValue.locked = localMetadata.locked;
                     returnValue.fullscreen = localMetadata.fullscreen;
@@ -495,10 +495,10 @@ dataService.normalizeImportData = function (data) {
 
     importData.grids = importData.grids || [];
     importData.dictionaries = importData.dictionaries || [];
-    importData.grids = filterService.updateDataModel(importData.grids);
-    importData.dictionaries = filterService.updateDataModel(importData.dictionaries);
+    importData.grids = convertServiceDb.updateDataModel(importData.grids);
+    importData.dictionaries = convertServiceDb.updateDataModel(importData.dictionaries);
     if (importData.metadata) {
-        importData.metadata = filterService.updateDataModel(importData.metadata);
+        importData.metadata = convertServiceDb.updateDataModel(importData.metadata);
     }
     importData.metadata = importData.metadata || {};
     return importData;

@@ -7,11 +7,11 @@ import { serviceWorkerService } from './serviceWorkerService.js';
 
 let i18nService = {};
 
-let CUSTOM_LANGUAGE_KEY = 'CUSTOM_LANGUAGE_KEY';
 let vueI18n = null;
 let loadedLanguages = [];
 let fallbackLang = 'en';
 let currentContentLang = null;
+let currentAppLang = localStorageService.getAppSettings().appLang;
 
 let appLanguages = [
     'cs',
@@ -261,7 +261,7 @@ i18nService.getAppLang = function () {
 };
 
 i18nService.getCustomAppLang = function () {
-    return localStorageService.get(CUSTOM_LANGUAGE_KEY) || '';
+    return currentAppLang || '';
 };
 
 i18nService.isCurrentAppLangDE = function () {
@@ -279,13 +279,13 @@ i18nService.isCurrentAppLangEN = function () {
  */
 i18nService.setAppLanguage = function (lang, dontSave) {
     if (!dontSave) {
-        localStorageService.save(CUSTOM_LANGUAGE_KEY, lang);
+        localStorageService.saveAppSettings({appLang: lang});
     }
-    let useLang = lang || i18nService.getBrowserLang();
-    $('html').prop('lang', useLang);
-    return loadLanguage(useLang).then(() => {
-        vueI18n.locale = useLang;
-        allLanguages.sort((a, b) => a[useLang].toLowerCase().localeCompare(b[useLang].toLowerCase()));
+    currentAppLang = lang || i18nService.getBrowserLang();
+    $('html').prop('lang', currentAppLang);
+    return loadLanguage(currentAppLang).then(() => {
+        vueI18n.locale = currentAppLang;
+        allLanguages.sort((a, b) => a[currentAppLang].toLowerCase().localeCompare(b[currentAppLang].toLowerCase()));
         return Promise.resolve();
     });
 };
@@ -334,6 +334,17 @@ i18nService.getLangReadable = function (lang) {
 i18nService.t = function (key, ...args) {
     return vueI18n.t(key, i18nService.getAppLang(), args);
 };
+
+/**
+ * checks if translation exists
+ * @param key
+ * @return true, if translations exists
+ */
+i18nService.te = function (key) {
+    return vueI18n.te(key, i18nService.getAppLang());
+}
+
+window.te = i18nService.te;
 
 /**
  * get app translation for the given key in the given language

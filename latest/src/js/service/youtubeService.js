@@ -32,7 +32,7 @@ let DATA_API_CACHE_TIMEOUT_MS = 15 * 60 * 1000; //15 minutes
 let initialized = false;
 let player = null;
 let playerID = 'player';
-let ytState = localStorageService.getYTState() || JSON.parse(JSON.stringify(initYtState));
+let ytState = localStorageService.getUserSettings().ytState || JSON.parse(JSON.stringify(initYtState));
 let waitForBuffering = false;
 let navigateAction = null;
 let iframe = null;
@@ -501,7 +501,7 @@ function saveState() {
         ytState.lastTimes = {};
         ytState.dataApiCalls = {};
     }
-    localStorageService.saveYTState(ytState);
+    localStorageService.saveUserSettings({ytState: ytState});
 }
 
 function errorMessage() {
@@ -526,7 +526,7 @@ function init() {
     });
 
     $(document).on(constants.EVENT_USER_CHANGED, () => {
-        ytState = localStorageService.getYTState() || JSON.parse(JSON.stringify(initYtState));
+        ytState = localStorageService.getUserSettings().ytState || JSON.parse(JSON.stringify(initYtState));
     });
 
     window.addEventListener('beforeunload', (event) => {

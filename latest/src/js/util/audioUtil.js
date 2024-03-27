@@ -130,21 +130,32 @@ audioUtil.stopRecordMicVolume = function () {
  * @return Promise that is resolved if audio was started
  */
 audioUtil.playAudio = function (base64, options) {
+    options = options || {};
+    let decoded = null;
+    try {
+        decoded = atob(base64);
+    } catch (e) {
+        log.warn('error decoding base64 audio', e);
+        return Promise.resolve();
+    }
+    let buffer = Uint8Array.from(decoded, (c) => c.charCodeAt(0));
+    return audioUtil.playAudioUint8(buffer, options);
+};
+
+/**
+ * plays audio data
+ * @param uint8Array audio data as Uint8Array
+ * @param options.onended optional callback that is called after audio playback was ended.
+ * @return Promise that is resolved if audio was started
+ */
+audioUtil.playAudioUint8 = function (uint8Array, options) {
+    options = options || {};
     return new Promise((resolve) => {
-        options = options || {};
-        let decoded = null;
-        try {
-            decoded = atob(base64);
-        } catch (e) {
-            log.warn('error decoding base64 audio', e);
-            return resolve();
-        }
-        let buffer = Uint8Array.from(decoded, (c) => c.charCodeAt(0));
         let context = new AudioContext();
         _currentAudioSource = context.createBufferSource();
         _currentAudioSource.connect(context.destination);
         _currentAudioSource.start(0);
-        context.decodeAudioData(buffer.buffer, play, (e) => {
+        context.decodeAudioData(uint8Array.buffer, play, (e) => {
             log.warn('error decoding audio', e);
         });
 

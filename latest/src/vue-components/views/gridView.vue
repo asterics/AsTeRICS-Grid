@@ -153,7 +153,7 @@
             },
             unlock(force) {
                 let thiz = this;
-                if (!force && localStorageService.getUnlockPasscode()) {
+                if (!force && localStorageService.getAppSettings().unlockPasscode) {
                     thiz.showModal = modalTypes.MODAL_UNLOCK;
                     return;
                 }
@@ -374,7 +374,7 @@
                     this.backgroundColor = this.updatedMetadataDoc.colorConfig.gridBackgroundColor;
                     vueApp.reload();
                 }
-                if (!localStorageService.shouldSyncNavigation()) {
+                if (!localStorageService.getAppSettings().syncNavigation) {
                     return;
                 }
                 if (this.updatedMetadataDoc && this.updatedMetadataDoc.lastOpenedGridId !== vueApp.gridData.id) {
