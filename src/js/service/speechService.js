@@ -97,7 +97,7 @@ speechService.speak = function (textOrOject, options) {
     let voices = getVoicesById(preferredVoiceId) || getVoicesByLang(langToUse);
     let nativeVoices = voices.filter((voice) => voice.type === constants.VOICE_TYPE_NATIVE);
     let responsiveVoices = voices.filter((voice) => voice.type === constants.VOICE_TYPE_RESPONSIVEVOICE);
-    let externalVoices = voices.filter((voice) => voice.type === constants.VOICE_TYPE_EXTERNAL_PLAYING || constants.VOICE_TYPE_EXTERNAL_DATA);
+    let externalVoices = voices.filter((voice) => voice.type === constants.VOICE_TYPE_EXTERNAL_PLAYING || voice.type === constants.VOICE_TYPE_EXTERNAL_DATA);
     if (speechService.nativeSpeechSupported() && nativeVoices.length > 0) {
         var msg = new SpeechSynthesisUtterance(text);
         msg.voice = nativeVoices[0].ref;
