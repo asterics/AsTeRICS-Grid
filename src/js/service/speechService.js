@@ -1,11 +1,11 @@
 import { i18nService } from './i18nService';
 import { stateService } from './stateService';
 import { constants } from '../util/constants';
-import { dataService } from './data/dataService';
 import { util } from '../util/util.js';
 import $ from '../externals/jquery.js';
 import {audioUtil} from "../util/audioUtil.js";
 import {speechServiceExternal} from './speechServiceExternal.js';
+import {localStorageService} from "./data/localStorageService.js";
 
 let speechService = {};
 
@@ -409,18 +409,16 @@ async function init() {
 }
 init();
 
-function updateMetadataConfig(event, metadata) {
-    _preferredVoiceId = metadata.localeConfig.preferredVoice || null;
-    _voicePitch = metadata.localeConfig.voicePitch || 1;
-    _voiceRate = metadata.localeConfig.voiceRate || 1;
-    _secondVoiceId = metadata.localeConfig.secondVoice || null;
-    _voiceLangIsTextLang = metadata.localeConfig.voiceLangIsTextLang || false;
+function updateSettings() {
+    let userSettings = localStorageService.getUserSettings();
+    _preferredVoiceId = userSettings.voiceConfig.preferredVoice || null;
+    _voicePitch = userSettings.voiceConfig.voicePitch || 1;
+    _voiceRate = userSettings.voiceConfig.voiceRate || 1;
+    _secondVoiceId = userSettings.voiceConfig.secondVoice || null;
+    _voiceLangIsTextLang = userSettings.voiceConfig.voiceLangIsTextLang || false;
 }
 
-$(document).on(constants.EVENT_USER_CHANGED, async () => {
-    let metadata = await dataService.getMetadata();
-    updateMetadataConfig(null, metadata);
-});
-$(document).on(constants.EVENT_METADATA_UPDATED, updateMetadataConfig);
+$(document).on(constants.EVENT_USER_CHANGED, updateSettings);
+$(document).on(constants.EVENT_USERSETTINGS_UPDATED, updateSettings);
 
 export { speechService };

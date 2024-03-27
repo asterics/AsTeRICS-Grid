@@ -4,12 +4,7 @@ import { constants } from '../util/constants';
 class LocaleConfig extends Model({
     modelName: String,
     modelVersion: String,
-    contentLang: [String],
-    preferredVoice: [String],
-    secondVoice: [String],
-    voiceLangIsTextLang: [Boolean],
-    voicePitch: [Number],
-    voiceRate: [Number]
+    contentLang: [String]
 }) {
     constructor(properties) {
         super(properties);
