@@ -41,6 +41,10 @@ speechServiceExternal.speak = async function (text, providerId, voice) {
         }
         let blob = await response.blob();
         let binary = new Uint8Array(await blob.arrayBuffer());
+        if (binary.length === 0) {
+            log.warn("got no data from external speech service.");
+            return;
+        }
         await audioUtil.playAudioUint8(binary, {
             onended: () => {
                 playingInternal = false;
@@ -55,7 +59,9 @@ speechServiceExternal.getVoices = async function (url) {
     if (!url) {
         return [];
     }
-    let result = await fetchErrorHandling(`${url}/voices`);
+    let result = await fetchErrorHandling(`${url}/voices`, {
+        timeout: 3000
+    });
     return result ? (await result.json()) : [];
 };
 
@@ -128,10 +134,16 @@ speechServiceExternal.validateUrl = async function (url) {
  * @param url the url to fetch
  * @param options options passed to fetch
  * @param options.noLogErrorNames array of error names (e.name) that are allowed and aren't logged
+ * @param options.timeout optional request timeout in ms
  */
 async function fetchErrorHandling(url, options) {
     let result = null;
     options = options || {};
+    if (options.timeout) {
+        let abortController = new AbortController();
+        options.signal = abortController.signal;
+        setTimeout(() => abortController.abort(), options.timeout);
+    }
     try {
         result = await fetch(url, options);
     } catch (e) {
