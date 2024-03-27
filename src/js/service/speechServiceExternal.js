@@ -3,6 +3,7 @@ import {audioUtil} from "../util/audioUtil.js";
 import {i18nService} from "./i18nService.js";
 import $ from "../externals/jquery.js";
 import {localStorageService} from "./data/localStorageService.js";
+import {GridActionSpeakCustom} from "../model/GridActionSpeakCustom.js";
 
 let speechServiceExternal = {};
 
@@ -11,6 +12,7 @@ let lastSpeakingResult = false;
 let lastSpeakingRequestTime = 0;
 let playingInternal = false;
 let spokeAtAnyTime = false;
+let _caching = false;
 
 let speakFetchController = new AbortController();
 let speakFetchSignal = speakFetchController.signal;
@@ -93,11 +95,18 @@ speechServiceExternal.isSpeaking = async function () {
     return speaking;
 }
 
-speechServiceExternal.cacheAll = async function (grids, providerId, voiceId) {
-    if (!externalSpeechServiceUrl) {
+speechServiceExternal.cacheAll = async function (grids, externalVoice, progressFn) {
+    if (!externalSpeechServiceUrl || _caching) {
+        log.info("not starting caching, because no external provider defined or caching already in progress.");
         return;
     }
+    _caching = true;
+    progressFn(0);
+    let providerId = externalVoice.ref.providerId;
+    let voiceId = externalVoice.id;
+    progressFn = progressFn || (() => {});
     let allElements = [];
+    let allStrings = [];
     for (let grid of grids) {
         allElements = allElements.concat(grid.gridElements);
     }
@@ -105,14 +114,26 @@ speechServiceExternal.cacheAll = async function (grids, providerId, voiceId) {
     for (let element of allElements) {
         let label = i18nService.getTranslation(element.label);
         if (label) {
-            log.info(`[${Math.round((doneCount / allElements.length) * 100)}%] caching tts value: '${label}'`);
-            label = encodeURIComponent(label);
-            providerId = encodeURIComponent(providerId);
-            voiceId = encodeURIComponent(voiceId);
-            await fetchErrorHandling(`${externalSpeechServiceUrl}/cache/${label}/${providerId}/${voiceId}`);
+            allStrings.push(label);
         }
+        let speakCustomActions = element.actions.filter(a => a.modelName === GridActionSpeakCustom.getModelName()) || [];
+        for (let action of speakCustomActions) {
+            let speakText = i18nService.getTranslation(action.speakText);
+            allStrings.push(speakText);
+        }
+    }
+    for (let string of allStrings) {
+        let progress = Math.round((doneCount / allStrings.length) * 100);
+        log.info(`[${progress}%] caching tts value: '${string}'`);
+        progressFn(progress);
+        string = encodeURIComponent(string);
+        providerId = encodeURIComponent(providerId);
+        voiceId = encodeURIComponent(voiceId);
+        await fetchErrorHandling(`${externalSpeechServiceUrl}/cache/${string}/${providerId}/${voiceId}`);
         doneCount++;
     }
+    _caching = false;
+    progressFn(100);
     log.info('cached all tts values!');
 };
 

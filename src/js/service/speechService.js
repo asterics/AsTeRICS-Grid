@@ -327,6 +327,15 @@ speechService.hasSpoken = function () {
     return hasSpoken;
 }
 
+speechService.getExternalVoice = function (voiceId) {
+    if (!voiceId) {
+        return false;
+    }
+    let voices = getVoicesById(voiceId) || [];
+    let externalVoices = voices.filter((voice) => voice.type === constants.VOICE_TYPE_EXTERNAL_PLAYING || voice.type === constants.VOICE_TYPE_EXTERNAL_DATA);
+    return externalVoices[0];
+}
+
 /**
  * reloads all voices
  * @return {Promise<void>}

@@ -998,5 +998,6 @@
   "httpAuthPw": "HTTP Authentication Password",
   "externalSpeechUrl": "External speech service URL",
   "urlIsValid": "URL is valid",
-  "urlIsInvalid": "URL is invalid"
+  "urlIsInvalid": "URL is invalid",
+  "cacheAllTextsOfCurrentConfigurationExternalVoice": "Cache all texts of current configuration using external voice"
 }

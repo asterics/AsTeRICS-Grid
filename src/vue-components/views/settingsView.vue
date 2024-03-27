@@ -133,6 +133,10 @@
                                 <input id="voiceLangIsTextLang" type="checkbox" v-model="userSettingsLocal.voiceConfig.voiceLangIsTextLang" @change="saveVoice()"/>
                                 <label for="voiceLangIsTextLang">{{ $t('linkVoiceLanguageToTranslationLanguageOfSpokenText') }}</label>
                             </div>
+                            <div class="srow" v-show="!!speechService.getExternalVoice(userSettingsLocal.voiceConfig.preferredVoice)">
+                                <button @click="cacheAll()" :disabled="externalVoiceCacheProgress !== undefined && externalVoiceCacheProgress !== 100">{{ $t('cacheAllTextsOfCurrentConfigurationExternalVoice') }}</button>
+                                <span v-show="externalVoiceCacheProgress !== undefined"> ... {{ externalVoiceCacheProgress }}%</span>
+                            </div>
                         </accordion>
                     </div>
                 </div>
@@ -271,6 +275,7 @@
                 voices: [],
                 selectVoices: [],
                 validSpeechServiceUrl: null,
+                externalVoiceCacheProgress: undefined,
                 testText: i18nService.t('thisIsAnEnglishSentence'),
                 i18nService: i18nService,
                 localStorageService: localStorageService,
@@ -393,6 +398,13 @@
                 } else {
                     return `${voice.name}, ${voice.local ? 'offline' : 'online'}`
                 }
+            },
+            async cacheAll() {
+                let allGrids = await dataService.getGrids();
+                let externalVoice = speechService.getExternalVoice(this.userSettingsLocal.voiceConfig.preferredVoice);
+                speechServiceExternal.cacheAll(allGrids, externalVoice, (progress) => {
+                    this.externalVoiceCacheProgress = progress;
+                });
             }
         },
         async mounted() {
