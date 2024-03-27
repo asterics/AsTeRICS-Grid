@@ -233,8 +233,8 @@ function getModelConversionFunctions(objectModelVersion) {
                 if (object.modelName === MetaData.getModelName()) {
                     let voiceConfig = new VoiceConfig(object.localeConfig);
                     let userSettings = localStorageService.getUserSettings();
-                    if (!userSettings.voiceConfig) {
-                        userSettings.voiceConfig = userSettings.voiceConfig || voiceConfig;
+                    if (Object.keys(userSettings.voiceConfig).length === 0) {
+                        userSettings.voiceConfig = voiceConfig;
                         localStorageService.saveUserSettings(userSettings);
                     }
                 }

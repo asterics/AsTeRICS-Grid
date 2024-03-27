@@ -21,7 +21,7 @@ class SettingsUserLocal {
         this.password = settings.password;
         this.metadata = settings.metadata;
         this.ytState = settings.ytState;
-        this.voiceConfig = settings.voiceConfig ? new VoiceConfig(settings.voiceConfig) : undefined;
+        this.voiceConfig = new VoiceConfig(settings.voiceConfig);
 
         convertServiceLocal.updateDataModel(this);
     }
