@@ -10,6 +10,7 @@ let externalSpeechServiceUrl = localStorageService.getAppSettings().externalSpee
 let lastSpeakingResult = false;
 let lastSpeakingRequestTime = 0;
 let playingInternal = false;
+let spokeAtAnyTime = false;
 
 let speakFetchController = new AbortController();
 let speakFetchSignal = speakFetchController.signal;
@@ -18,6 +19,7 @@ speechServiceExternal.speak = async function (text, providerId, voice) {
     if (!externalSpeechServiceUrl) {
         return;
     }
+    spokeAtAnyTime = true;
     text = encodeURIComponent(text);
     providerId = encodeURIComponent(providerId);
     let voiceId = encodeURIComponent(voice.id);
@@ -58,7 +60,7 @@ speechServiceExternal.getVoices = async function (url) {
 };
 
 speechServiceExternal.stop = function () {
-    if (!externalSpeechServiceUrl) {
+    if (!externalSpeechServiceUrl || !spokeAtAnyTime) {
         return;
     }
     fetchErrorHandling(`${externalSpeechServiceUrl}/stop`);
@@ -69,8 +71,8 @@ speechServiceExternal.stop = function () {
 };
 
 speechServiceExternal.isSpeaking = async function () {
-    if (!externalSpeechServiceUrl) {
-        return;
+    if (!externalSpeechServiceUrl || !spokeAtAnyTime) {
+        return false;
     }
     if (playingInternal) {
         return true;
@@ -79,10 +81,7 @@ speechServiceExternal.isSpeaking = async function () {
         return lastSpeakingResult;
     }
     let result = await fetchErrorHandling(`${externalSpeechServiceUrl}/speaking`);
-    if (!result) {
-        return false;
-    }
-    let speaking = await result.json();
+    let speaking = result ? (await result.json()) : false;
     lastSpeakingRequestTime = new Date().getTime();
     lastSpeakingResult = speaking;
     return speaking;
