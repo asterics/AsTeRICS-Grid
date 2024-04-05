@@ -75,6 +75,9 @@ function Grid(gridContainerId, gridItemClass, options) {
             //only add global grid if not in edit mode
             promises.push(
                 dataService.getGlobalGrid().then((globalGrid) => {
+                    if (globalGrid.gridElements.length === 0) {
+                        return Promise.resolve();
+                    }
                     stateService.setGlobalGrid(globalGrid);
                     if (globalGrid) {
                         let autowidth = true;
