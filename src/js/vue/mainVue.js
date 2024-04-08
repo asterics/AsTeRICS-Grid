@@ -12,9 +12,14 @@ import { helpService } from '../service/helpService';
 import { Router } from '../router';
 import NotificationBar from '../../vue-components/components/notificationBar.vue';
 import ProgressBarModal from '../../vue-components/modals/progressBarModal.vue';
+import SearchModal from "../../vue-components/modals/searchModal.vue";
 
 let MainVue = {};
 let app = null;
+let modalTypes = {
+    MODAL_SEARCH: 'MODAL_SEARCH',
+    MODAL_PROGRESSBAR: 'MODAL_PROGRESSBAR'
+};
 
 MainVue.setViewComponent = function (component, properties) {
     if (app && app.$refs.notificationBar.tooltipOptions.closeOnNavigate) {
@@ -65,8 +70,18 @@ MainVue.showProgressBar = function (percentage, options) {
     if (!app) {
         return;
     }
-    app.showProgressBar = true;
+    app.showModal = modalTypes.MODAL_PROGRESSBAR;
     app.$refs.progressBar.setProgress(percentage, options);
+};
+
+/**
+ * show search modal
+ * @param options.searchText text to be pre-filled in search bar
+ * @param options.searchCollectedText use text from collect element to be pre-filled in search bar, if true
+ */
+MainVue.showSearchModal = function (options) {
+    app.showModal = modalTypes.MODAL_SEARCH;
+    app.modalOptions = options || {};
 };
 
 MainVue.init = function () {
@@ -75,7 +90,7 @@ MainVue.init = function () {
         app = new Vue({
             i18n: i18n,
             el: '#app',
-            components: { NotificationBar, ProgressBarModal },
+            components: { NotificationBar, ProgressBarModal, SearchModal },
             data() {
                 return {
                     component: null,
@@ -85,13 +100,15 @@ MainVue.init = function () {
                     currentUser: databaseService.getCurrentUsedDatabase(),
                     isLocalUser: localStorageService.isSavedLocalUser(databaseService.getCurrentUsedDatabase()),
                     syncState: dataService.getSyncState(),
-                    showProgressBar: false,
                     constants: constants,
                     tooltipHTML: null,
                     actionLink: null,
                     Router: Router,
                     uiLocked: false,
-                    hiddenPopupData: null
+                    hiddenPopupData: null,
+                    modalTypes: modalTypes,
+                    showModal: null,
+                    modalOptions: {}
                 };
             },
             methods: {

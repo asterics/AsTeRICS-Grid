@@ -75,12 +75,14 @@
     import {GridElementCollect} from "../../js/model/GridElementCollect.js";
     import {GridActionCollectElement} from "../../js/model/GridActionCollectElement.js";
     import {pouchDbService} from "../../js/service/data/pouchDbService.js";
+    import {MainVue} from "../../js/vue/mainVue.js";
+    import {stateService} from "../../js/service/stateService.js";
 
     let vueApp = null;
     let gridInstance = null;
 
     let vueConfig = {
-        props: ['gridId'],
+        props: ['gridId', 'highlightId'],
         data() {
             return {
                 gridData: null,
@@ -136,7 +138,11 @@
                 }
             },
             back() {
-                Router.toMain();
+                if (this.metadata && this.metadata.globalGridId === this.gridData.id) {
+                    Router.toMain();
+                } else {
+                    Router.toGrid(this.gridData.id);
+                }
             },
             editElement(elementId) {
                 this.editElementId = elementId;
@@ -239,7 +245,15 @@
                     }
                     vueApp.markElement(id);
                 }
-            }
+            },
+            highlightElement() {
+                if (this.highlightId) {
+                    $(`#${this.highlightId}`).addClass('highlight');
+                    setTimeout(() => {
+                        $(`#${this.highlightId}`).removeClass('highlight');
+                    }, 4000);
+                }
+            },
         },
         created() {
             $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
@@ -248,7 +262,6 @@
             pouchDbService.pauseSync();
             let thiz = this;
             vueApp = thiz;
-            inputEventHandler.global.stopListening();
             dataService.getGrid(this.gridId).then(gridData => {
                 if (!gridData) {
                     log.warn('grid not found! gridId: ' + this.gridId);
@@ -256,6 +269,7 @@
                     return Promise.reject();
                 }
                 thiz.gridData = JSON.parse(JSON.stringify(gridData));
+                stateService.setCurrentGrid(thiz.gridData);
                 return Promise.resolve();
             }).then(() => {
                 return dataService.getMetadata().then(savedMetadata => {
@@ -278,6 +292,7 @@
                 });
                 initContextmenu();
                 thiz.showGrid = true;
+                thiz.highlightElement();
             });
 
             $('#contentContainer').on('click', this.handleClickEvent);
@@ -287,7 +302,6 @@
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
             $('#contentContainer').off('click', this.handleClickEvent);
             vueApp = null;
-            inputEventHandler.global.startListening();
             if (gridInstance) {
                 gridInstance.destroy();
                 gridInstance = null;
@@ -333,6 +347,7 @@
         var CONTEXT_GRID_TRANSLATION = "CONTEXT_GRID_TRANSLATION";
         var CONTEXT_EDIT_GLOBAL_GRID = "CONTEXT_EDIT_GLOBAL_GRID";
         var CONTEXT_END_EDIT_GLOBAL_GRID = "CONTEXT_END_EDIT_GLOBAL_GRID";
+        var CONTEXT_SEARCH = "CONTEXT_SEARCH";
 
         var itemsGlobal = {
             CONTEXT_NEW_GROUP: {
@@ -391,6 +406,8 @@
             'CONTEXT_LAYOUT_NORMALIZE': {name: i18nService.t('normalizeGridLayout'), icon: "fas fa-th"},
             'CONTEXT_EDIT_GLOBAL_GRID': {name: i18nService.t('editGlobalGrid'), icon: "fas fa-globe", visible: !!vueApp.metadata.globalGridId && vueApp.metadata.globalGridActive && vueApp.metadata.globalGridId !== vueApp.gridData.id},
             'CONTEXT_END_EDIT_GLOBAL_GRID': {name: i18nService.t('endEditGlobalGrid'), icon: "fas fa-globe", visible: vueApp.metadata.globalGridId === vueApp.gridData.id},
+            SEP2: "---------",
+            'CONTEXT_SEARCH': {name: i18nService.t('searchBtnTitle'), icon: "fas fa-search"},
         };
 
         $.contextMenu({
@@ -501,6 +518,9 @@
                     break;
                 case CONTEXT_END_EDIT_GLOBAL_GRID:
                     Router.toEditGrid(vueApp.metadata.lastOpenedGridId);
+                    break;
+                case CONTEXT_SEARCH:
+                    MainVue.showSearchModal();
                     break;
             }
         }

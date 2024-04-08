@@ -18,6 +18,7 @@ This chapter is about actions that can be performed if a grid element is selecte
    * [Change Content Language](05_actions.md#Change-Content-Language)
    * [Open webpage in new tab](05_actions.md#Open-webpage-in-new-tab)
    * [openHAB Action](05_actions.md#openhab-action)
+   * [HTTP action](05_actions.md#http-action)
 
 [Back to Overview](README.md)
 
@@ -79,17 +80,21 @@ You can change the language and voice settings in the **Settings** menu.
 
 ### Navigate to other grid
 
-Clicking on "Edit" of a "navigate to other grid" action (or creating a new one) shows the following configuration possibilities:
-
-![action navigate to other grid](./img/action_navigate_en.jpg)
+![action navigate to other grid](./img/action_navigate_en1.jpg)
 
 *Fig. 4: Configuration possibilites of "Navigate to other grid"*
 
-- "Navigate to grid" allows you to select the grid to switch to if this action is performed. The combobox contains a list of the names of all available grids of the current user. 
+Clicking on "Edit" of a "navigate to other grid" action (or creating a new one) shows the following configuration possibilities (Fig. 4):
 
-- Alternatively the option "Navigate to last opened grid" can be activated.
-
-- Additionally, the option "Add this element to collection elements" can be activated, in case it is necessary for this cell to appear in the accumulated phrase.
+* **Navigation type**: allows to choose which type of navigation should be performed:
+   * **Navigate to grid**: navigates to any other grid that is selected by name. This type has this additional property:
+      * *Navigate to grid*: allows you to select the grid to switch to if this action is performed. The combobox contains a list of the names of all available grids of the current user.
+   * **Navigate to home grid**: navigates to the home grid, see [documentation for home grid](02_navigation.md#home-grid)
+   * **Navigate to last opened grid**: navigates to the previously opened grid, can be used for a "back" functionality
+   * **Open search dialog**: opens the search dialog, which allows to navigate to any element in the current configuration, see [documentation of search function](02_navigation.md#search-function). This type has these additional properties:
+       * *Search for custom text*: if specified the custom text is used to pre-fill the text in the search bar (optional)
+       * *Search for collected text*: if checked the currently collected text of the collect element is used to pre-fill the search bar
+* **Add this element to collection elements despite navigating**: if checked, this element is added to the collect element, despite the fact that it navigates to another grid.
 
 ### Speak custom text
 
@@ -342,33 +347,11 @@ By clicking on the grid elemnt this action is assigned to, the chosen webpage is
 AsTeRICS Grid is capable of controlling a local openHAB installation through the browser. This action utilizes the REST
 API of openHAB (see [openHAB API documentation](https://www.openhab.org/docs/configuration/restdocs.html)).
 
-#### Accessing openHAB via http/https
-
-By default, the actions searches for a local openHAB instance on port 8080.
-If the openHAB installation is hosted in the local network, there are two possible ways to access it via the browser:
-
-- **http**:
-  If you are using openHAB over http with port 8080, you need to allow your browser to use ***mixed content***.
-  Otherwise, the browser has no permission to access your local network.
-  Read [Allow mixed content (http/https)](10_faq.md#allow-mixed-content-httphttps) to enable it.
-- **https**:
-  If you are using openHAB over https with port 8443, some browser need a one-time-exception to use the resources from
-  the REST-API.
-    - **Google Chrome**:
-      Does not require additional steps for using the REST-API over https.
-    - **Firefox and Safari**:
-      In order to use the REST-API, a new tab with the address `https://<openHAB-IP-address>:8443/rest/items` must be
-      opened. Firefox/Safari will prompt that this resource is insecure. By allowing to show the content of this website,
-      an exception is created to allow general connections to the resource. After granting this exception, the
-      openHAB-Action can access openHAB via https. Figure 20 shows an example of such a security prompt.
-
-<img src="./img/openHAB-https-exception.png" title="openHAB action set browser exception" width="700"/>
-
-*Fig. 20: Example of a security prompt by Firefox*
-
-Creating a new openHAB action shows the following configuration possibilities:
+Figure 20 shows the configuration possibilities of an openHAB action:
 
 ![openHAB action options](./img/openHAB-configuration.png)
+
+*Fig. 20: Defining a new openHAB action*
 
 These are the elements in this configuration dialog:
 
@@ -410,6 +393,48 @@ An item must be implemented in openHAB in order to be accessible via the action.
   action calls.
 - You must be in the same network as your openHAB installation.
 - Basic Authentication is not supported.
+
+#### Accessing openHAB via http/https
+
+By default, the action searches for a local openHAB instance on port 8080.
+If the openHAB installation is hosted in the local network, there are two possible ways to access it via the browser:
+
+- **http**:
+  If you are using openHAB over http with port 8080, you need to allow your browser to use ***mixed content***.
+  Otherwise, the browser has no permission to access your local network.
+  Read [Allow mixed content (http/https)](10_faq.md#allow-mixed-content-httphttps) to enable it.
+- **https**:
+  If you are using openHAB over https with port 8443, some browser need a one-time-exception to use the resources from
+  the REST-API.
+    - **Google Chrome**:
+      Does not require additional steps for using the REST-API over https.
+    - **Firefox and Safari**:
+      In order to use the REST-API, a new tab with the address `https://<openHAB-IP-address>:8443/rest/items` must be
+      opened. Firefox/Safari will prompt that this resource is insecure. By allowing to show the content of this website,
+      an exception is created to allow general connections to the resource. After granting this exception, the
+      openHAB-Action can access openHAB via https. Figure 21 shows an example of such a security prompt.
+
+<img src="./img/openHAB-https-exception.png" title="openHAB action set browser exception" width="700"/>
+
+*Fig. 21: Example of a security prompt by Firefox*
+
+### HTTP action
+
+This action can send arbitrary HTTP requests, e.g. for accessing any REST API.
+
+![Configuration of a HTTP action](./img/action-http.png)
+
+*Fig. 22: Configuration of a HTTP action*
+
+Figure 22 shows the configuration of a HTTP action, which has these properties:
+1. **HTTP URL**: the URL where the request should be sent to
+1. **HTTP body**: the data that should be sent within the request (not applicable for HTTP method `GET` and `HEAD`)
+1. **HTTP method**: the method to be used for the request. Can be `GET`, `POST`, `PUT`, `DELETE`, `HEAD`, `OPTIONS` and `PATCH`
+1. **HTTP Content-Type**: the Content-Type of the request, defaults to `text/plain`
+1. **HTTP Authorization User**: the (optional) username for HTTP authorization 
+1. **HTTP Authorization Password**: the (optional) password for HTTP authorization
+
+Any errors from requests will be shown in a popup in the lower right corner of the application.
 
 [&#x2190; Previous Chapter](04_input_options.md) [Next Chapter &#x2192;](06_users.md)
 

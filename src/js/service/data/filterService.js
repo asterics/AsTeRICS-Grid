@@ -12,6 +12,7 @@ import { GridElement } from '../../model/GridElement.js';
 import { GridElementCollect } from '../../model/GridElementCollect.js';
 import { GridActionCollectElement } from '../../model/GridActionCollectElement.js';
 import { GridActionPredict } from '../../model/GridActionPredict.js';
+import {GridActionNavigate} from "../../model/GridActionNavigate.js";
 
 let filterService = {};
 
@@ -127,6 +128,7 @@ function getModelConversionFunctions(objectModelVersion) {
             filterFns.push(function (object, filterOptions) {
                 //fn from V1 to V2
                 // new structure of input configuration
+                if (!object) return;
                 if (object.modelName === MetaData.getModelName()) {
                     log.info('converting model version from V1 to V2: ' + object.modelName);
                     let inputConfig = object.inputConfig;
@@ -159,6 +161,7 @@ function getModelConversionFunctions(objectModelVersion) {
             filterFns.push(function (gridData, filterOptions) {
                 //fn from V2 to V3
                 // added translatable labels of all elements
+                if (!gridData) return;
                 if (gridData.modelName === GridData.getModelName()) {
                     log.debug('converting model version from V2 to V3: ' + gridData.modelName);
                     let locale = gridData.locale || i18nService.getContentLang();
@@ -194,8 +197,9 @@ function getModelConversionFunctions(objectModelVersion) {
             });
         case 3:
             filterFns.push(function (gridData, filterOptions) {
-                //fn from V3 to V4
+                // fn from V3 to V4
                 // new collect elements with image collecting capabilities and options
+                if (!gridData) return;
                 if (gridData.modelName === GridData.getModelName()) {
                     log.debug('converting model version from V3 to V4: ' + (gridData.label ? gridData.label.de : ''));
                     for (let i = 0; i < gridData.gridElements.length; i++) {
@@ -221,12 +225,30 @@ function getModelConversionFunctions(objectModelVersion) {
                 gridData.modelVersion = modelUtil.getModelVersionString();
                 return gridData;
             });
-        /*        case 4:
-            filterFns.push(function (object, filterOptions) { //fn from V4 to V5
-                object.modelVersion = modelUtil.getModelVersionString();
-                return object
+        case 4:
+            filterFns.push(function (gridData, filterOptions) {
+                // fn from V4 to V5
+                // new structure for GridActionNavigate actions
+                if (!gridData) return;
+                if (gridData.modelName === GridData.getModelName()) {
+                    for (let element of gridData.gridElements) {
+                        for (let action of element.actions) {
+                            if (action.modelName === GridActionNavigate.getModelName() && !action.navType) {
+                                action.modelVersion = modelUtil.getModelVersionString();
+                                if (action.toHomeGrid) {
+                                    action.navType = GridActionNavigate.NAV_TYPES.TO_HOME;
+                                } else if (action.toLastGrid) {
+                                    action.navType = GridActionNavigate.NAV_TYPES.TO_LAST;
+                                } else {
+                                    action.navType = GridActionNavigate.NAV_TYPES.TO_GRID;
+                                }
+                            }
+                        }
+                    }
+                }
+                gridData.modelVersion = modelUtil.getModelVersionString();
+                return gridData;
             });
- */
     }
     return filterFns;
 }

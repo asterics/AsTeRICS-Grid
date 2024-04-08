@@ -15,6 +15,8 @@ import { GridActionChangeLang } from './GridActionChangeLang';
 import { GridActionYoutube } from './GridActionYoutube';
 import { GridActionOpenWebpage } from './GridActionOpenWebpage.js';
 import { GridActionAudio } from './GridActionAudio.js';
+import { GridActionHTTP } from "./GridActionHTTP.js";
+import {GridActionWordForm} from "./GridActionWordForm.js";
 import { GridActionPuckJS } from './GridActionPuckJS.js';
 
 class GridElement extends Model({
@@ -26,9 +28,12 @@ class GridElement extends Model({
     x: [Number],
     y: [Number],
     label: [Object, String, undefined], //map locale -> translation, e.g. "de" => LabelDE
+    wordForms: [Model.Array(Object)], //Array of WordForm, removed for performance reasons
     backgroundColor: [String],
     colorCategory: [String],
     hidden: [Boolean],
+    dontCollect: [Boolean],
+    toggleInBar: [Boolean],
     image: [GridImage],
     actions: [Object],
     type: String,
@@ -48,6 +53,7 @@ class GridElement extends Model({
         };
         properties = modelUtil.setDefaults(properties, elementToCopy, GridElement) || {};
         properties.actions = properties.actions || [new GridActionSpeak()];
+        properties.wordForms = properties.wordForms || [];
         super(Object.assign(defaults, properties));
         this.id = this.id || modelUtil.generateId('grid-element');
     }
@@ -58,8 +64,8 @@ class GridElement extends Model({
         return newElem;
     }
 
-    toHTML(metadata, locale) {
-        return templates.getGridItem(this, locale, metadata);
+    toHTML(metadata) {
+        return templates.getGridItem(this, metadata);
     }
 
     hasSetPosition() {
@@ -81,6 +87,7 @@ class GridElement extends Model({
             GridActionNavigate,
             GridActionSpeakCustom,
             GridActionAudio,
+            GridActionWordForm,
             GridActionPredict,
             GridActionCollectElement,
             GridActionARE,
@@ -89,6 +96,7 @@ class GridElement extends Model({
             GridActionYoutube,
             GridActionChangeLang,
             GridActionOpenWebpage,
+            GridActionHTTP,
             GridActionPuckJS
         ];
     }

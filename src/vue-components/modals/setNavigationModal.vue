@@ -97,7 +97,8 @@ export default {
             }
             this.gridElement.actions = this.gridElement.actions.filter(action => action.modelName !== GridActionNavigate.getModelName());
             let navAction = new GridActionNavigate({
-                toGridId: gridId
+                toGridId: gridId,
+                navType: GridActionNavigate.NAV_TYPES.TO_GRID
             });
             if (!i18nService.getTranslation(this.gridElement.label)) {
                 this.gridElement.label = this.gridElement.label || {};

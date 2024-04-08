@@ -2,6 +2,7 @@ import $ from '../../externals/jquery.js';
 import { i18nService } from '../i18nService.js';
 import { constants } from '../../util/constants.js';
 import { GridImage } from '../../model/GridImage.js';
+import {util} from "../../util/util.js";
 
 let arasaacService = {};
 
@@ -12,8 +13,6 @@ let _lastRawResultList = null;
 let _hasNextChunk = false;
 let _lastOptions = null;
 let _lastSearchLang = null;
-let arasaacAuthor = 'ARASAAC - CC (BY-NC-SA)';
-let arasaacLicenseURL = 'https://arasaac.org/terms-of-use';
 let supportedGrammarLangs = ['es'];
 let apiBaseUrl = 'https://api.arasaac.org';
 
@@ -116,8 +115,8 @@ arasaacService.getGridImageById = function (arasaacId) {
     }
     return new GridImage({
         url: `${apiBaseUrl}/api/pictograms/${arasaacId}?download=false&plural=false&color=true`,
-        author: arasaacAuthor,
-        authorURL: arasaacLicenseURL,
+        author: constants.ARASAAC_AUTHOR,
+        authorURL: constants.ARASAAC_LICENSE_URL,
         searchProviderName: arasaacService.SEARCH_PROVIDER_NAME
     });
 };
@@ -173,12 +172,12 @@ arasaacService.getCorrectGrammar = async function (text) {
     text = text.trim();
     let contentLang = i18nService.getContentLang();
     let path = `${apiBaseUrl}/api/phrases/flex/${contentLang}/${text}`;
-    let response = await fetch(path).catch((e) => console.error(e));
+    let response = await util.fetchWithTimeout(path, 1500).catch((e) => console.error(e));
     if (!response || response.status !== 200) {
         return text;
     }
     let resultJSON = await response.json();
-    return resultJSON ? resultJSON.msg : text;
+    return resultJSON ? resultJSON.msg + '' : text;
 };
 
 arasaacService.getSupportedGrammarLangs = function (translate) {
@@ -231,8 +230,8 @@ function queryInternal(search, lang, chunkNr, chunkSize) {
                 let element = {};
                 let apiElement = JSON.parse(JSON.stringify(_lastRawResultList[i]));
                 element.url = getUrl(apiElement._id, _lastOptions);
-                element.author = arasaacAuthor;
-                element.authorURL = arasaacLicenseURL;
+                element.author = constants.ARASAAC_AUTHOR;
+                element.authorURL = constants.ARASAAC_LICENSE_URL;
                 element.searchProviderName = arasaacService.SEARCH_PROVIDER_NAME;
                 element.searchProviderOptions = JSON.parse(JSON.stringify(_lastOptions));
                 /*element.promise = imageUtil.urlToBase64(element.url, 500, 'image/png');

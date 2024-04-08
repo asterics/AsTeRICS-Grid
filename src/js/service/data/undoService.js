@@ -1,4 +1,5 @@
 import { dataService } from './dataService';
+import { stateService } from '../stateService.js';
 
 function UndoService() {
     var thiz = this;
@@ -32,6 +33,7 @@ function UndoService() {
                 if (!savedGrid.isEqual(newGridData)) {
                     _undoGridDataStack.push(JSON.parse(JSON.stringify(savedGrid)));
                     _redoGridDataStack = [];
+                    stateService.setCurrentGrid(newGridData);
                     dataService.saveGrid(newGridData).then(() => {
                         resolve(true);
                     });
@@ -50,6 +52,7 @@ function UndoService() {
     thiz.doUndo = function () {
         if (this.canUndo()) {
             var undoData = _undoGridDataStack.pop();
+            stateService.setCurrentGrid(undoData);
             dataService.getGrid(undoData.id).then((savedGrid) => {
                 _redoGridDataStack.push(JSON.parse(JSON.stringify(savedGrid)));
                 dataService.saveGrid(undoData);
@@ -65,6 +68,7 @@ function UndoService() {
     thiz.doRedo = function () {
         if (this.canRedo()) {
             var redoData = _redoGridDataStack.pop();
+            stateService.setCurrentGrid(redoData);
             dataService.getGrid(redoData.id).then((savedGrid) => {
                 _undoGridDataStack.push(JSON.parse(JSON.stringify(savedGrid)));
                 dataService.saveGrid(redoData);

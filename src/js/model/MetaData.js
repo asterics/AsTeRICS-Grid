@@ -11,6 +11,8 @@ class MetaData extends Model({
     id: String,
     modelName: String,
     modelVersion: String,
+    homeGridId: [String],
+    toHomeAfterSelect: [Boolean],
     lastOpenedGridId: [String],
     globalGridId: [String],
     globalGridActive: [Boolean],
@@ -33,6 +35,7 @@ class MetaData extends Model({
         this.textConfig = properties.textConfig || new TextConfig();
         this.localeConfig = properties.localeConfig || new LocaleConfig();
         this.notificationConfig = properties.notificationConfig || new NotificationConfig();
+        this.homeGridId = properties.homeGridId || null;
     }
 
     isEqual(otherMetadata) {

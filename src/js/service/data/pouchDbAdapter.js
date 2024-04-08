@@ -272,18 +272,21 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
             log.error('trying to setupSync() but remoteDb or db is not specified! Aborting...');
             return Promise.reject();
         }
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             //first completely update DB
             let starttime = new Date().getTime();
             if (!thiz.wasCurrentDatabaseSynced() && !justCreated) {
                 //first-time full sync will maybe take longer, so use remote DB meanwhile
                 log.debug("database wasn't synced before, so temporarily use remote db until sync is done...");
                 _useLocalDb = false;
+                let allDocsResult = await _remoteDb.allDocs();
+                let syncIds = allDocsResult.rows.map((r) => r.id);
                 _syncHandler = _db
                     .sync(_remoteDb, {
                         live: false,
                         retry: false,
-                        style: 'main_only'
+                        style: 'main_only',
+                        doc_ids: syncIds
                     })
                     .on('active', function (info) {
                         setSyncState(constants.DB_SYNC_STATE_SYNCINC);
@@ -296,7 +299,7 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
                         log.error(err);
                         triggerConnectionLost();
                     })
-                    .on('complete', function (info) {
+                    .on('complete', async function (info) {
                         log.debug('sync complete event');
                         log.debug(info);
                         let status = info && info.pull ? info.pull.status : info && info.push ? info.push.status : null;
@@ -306,7 +309,12 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
                             log.info('couchdb sync complete! setting up live sync and using local db now...');
                             log.debug('initial sync took: ' + (new Date().getTime() - starttime) + 'ms');
                             _useLocalDb = true;
-                            setupLiveSync();
+                            let changes = await _remoteDb.changes({
+                                style: 'main_only',
+                                limit: 1,
+                                descending: true
+                            });
+                            setupLiveSync(changes.results[0].seq);
                             $(document).trigger(constants.EVENT_DB_INITIAL_SYNC_COMPLETE);
                         }
                     });
@@ -318,13 +326,16 @@ function PouchDbAdapter(databaseName, remoteCouchDbAddress, onlyRemote, justCrea
             }
 
             //setup live sync
-            function setupLiveSync() {
+            function setupLiveSync(sinceSeq) {
                 localStorageService.markSyncedDatabase(databaseName);
                 _syncHandler = _db
                     .sync(_remoteDb, {
                         live: true,
                         retry: false,
-                        style: 'main_only'
+                        style: 'main_only',
+                        pull: {
+                            since: sinceSeq ? sinceSeq : undefined
+                        }
                     })
                     .on('paused', function (info) {
                         log.debug('sync paused');

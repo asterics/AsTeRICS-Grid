@@ -138,6 +138,7 @@ function addActions(gridElement, obfButton, obfObject, obfObjects) {
         if (obfId) {
             gridElement.actions.push(
                 new GridActionNavigate({
+                    navType: GridActionNavigate.NAV_TYPES.TO_GRID,
                     toGridId: obfId
                 })
             );

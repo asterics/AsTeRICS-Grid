@@ -258,6 +258,48 @@ util.arrayBufferToBase64 = function (buffer) {
     return window.btoa(binary);
 };
 
+/*
+Utility functions for base64 encoding, see: https://developer.mozilla.org/en-US/docs/Glossary/Base64
+*/
+/**
+ * Converts the given string value into a base64 encoded string.
+ * @param {*} str 
+ * @returns base64 encoded string
+ */
+util.stringToBase64 = function (str) {
+    // Usage
+    return util.bytesToBase64(new TextEncoder().encode(str));
+};
+
+/**
+ * Converts the given base64 string into a decoded string value.
+ * @param {*} base64 
+ * @returns decoded base64 string
+ */
+util.base64ToString = function (base64) {
+    return new TextDecoder().decode(util.base64ToBytes(base64));
+};
+
+/**
+ * Converts a given base64 string into a Uint8Array of bytes.
+ * @param {*} base64 
+ * @returns Uint8Array 
+ */
+util.base64ToBytes = function (base64) {
+    const binString = window.atob(base64);
+    return Uint8Array.from(binString, (m) => m.codePointAt(0));
+};
+
+/**
+ * Converts the given bytes (Uint8Array) into a base64 encoded string.
+ * @param {*} bytes 
+ * @returns 
+ */
+util.bytesToBase64 = function (bytes) {
+    const binString = String.fromCodePoint(...bytes);
+    return window.btoa(binString);
+};
+
 /**
  * formats an array to be printable to UI
  * e.g. ["1", "2", "3"] => string '1, 2, 3'
@@ -271,12 +313,23 @@ util.mapRange = function (number, inMin, inMax, outMin, outMax) {
     return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }
 
+util.fetchWithTimeout = function (url, timeoutMs) {
+    // see https://stackoverflow.com/a/50101022/9219743
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+    return fetch(url, { signal: controller.signal });
+}
+
 /**
  * Returns a random float number between min (inclusive) and max (exclusive)
  * see https://stackoverflow.com/a/1527820
  */
 util.getRandom = function (min, max) {
     return Math.random() * (max - min) + min;
+}
+
+util.deduplicateArray = function (array) {
+    return [...new Set(array)];
 }
 
 export { util };

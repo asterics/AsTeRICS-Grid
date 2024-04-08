@@ -1,5 +1,6 @@
 import { areService } from './areService';
 import { openHABService } from './openHABService';
+import { httpService } from './httpService.js';
 import { dataService } from './data/dataService';
 import { speechService } from './speechService';
 import { collectElementService } from './collectElementService';
@@ -18,11 +19,15 @@ import { GridActionAudio } from '../model/GridActionAudio.js';
 import { GridActionSpeak } from '../model/GridActionSpeak.js';
 import { GridActionSpeakCustom } from '../model/GridActionSpeakCustom.js';
 import {audioUtil} from "../util/audioUtil.js";
+import {MainVue} from "../vue/mainVue.js";
+import {stateService} from "./stateService.js";
+import {GridActionWordForm} from "../model/GridActionWordForm.js";
 import {puckjsService} from './puckjsService.js';
 
 let actionService = {};
 
 let minPauseSpeak = 0;
+let metadata = null;
 
 actionService.doAction = function (gridId, gridElementId) {
     if (!gridId || !gridElementId) {
@@ -37,7 +42,6 @@ actionService.doAction = function (gridId, gridElementId) {
             }
         }
         doActions(gridElement, gridId);
-        $(window).trigger(constants.ELEMENT_EVENT_ID, [gridElement]);
     });
 };
 
@@ -48,7 +52,7 @@ actionService.testAction = function (gridElement, action, gridData) {
     });
 };
 
-function doActions(gridElement, gridId) {
+async function doActions(gridElement, gridId) {
     let actions = gridElement.actions;
     actions.sort((a, b) => {
         // do lang change before navigation
@@ -67,12 +71,28 @@ function doActions(gridElement, gridId) {
                 a.modelName !== GridActionSpeak.getModelName() && a.modelName !== GridActionSpeakCustom.getModelName()
         );
     }
+    $(window).trigger(constants.ELEMENT_EVENT_ID, [gridElement]);
     actions.forEach((action) => {
         doAction(gridElement, action, {
             gridId: gridId,
             actions: actions
         });
     });
+    metadata = metadata || (await dataService.getMetadata());
+    let actionTypes = actions.map((a) => a.modelName);
+    let navBackActions = [GridActionAudio.getModelName(), GridActionChangeLang.getModelName(), GridActionSpeak.getModelName(), GridActionSpeakCustom.getModelName()];
+    let noNavBackActions = GridElement.getActionTypeModelNames().filter((name) => !navBackActions.includes(name));
+    if (
+        metadata.toHomeAfterSelect &&
+        !collectElementService.isCurrentGridKeyboard() &&
+        !stateService.hasGlobalGridElement(gridElement.id) &&
+        !actionTypes.some((type) => noNavBackActions.includes(type))
+    ) {
+        Router.toMain();
+    }
+    if (!actionTypes.includes(GridActionWordForm.getModelName())) {
+        stateService.resetWordForms();
+    }
 }
 
 /**
@@ -90,7 +110,14 @@ async function doAction(gridElement, action, options) {
     switch (action.modelName) {
         case 'GridActionSpeak':
             log.debug('action speak');
-            speechService.speak(gridElement.label, {
+            let langWordFormMap = stateService.getSpeakTextAllLangs(gridElement.id);
+            let labelCopy = JSON.parse(JSON.stringify(gridElement.label));
+            Object.assign(labelCopy, langWordFormMap);
+            if (gridElement.type === GridElement.ELEMENT_TYPE_PREDICTION) {
+                let currentPrediction = $(`#${gridElement.id} .text-container span`).text();
+                labelCopy[i18nService.getContentLang()] = currentPrediction;
+            }
+            speechService.speak(labelCopy, {
                 lang: action.speakLanguage,
                 speakSecondary: true,
                 minEqualPause: minPauseSpeak
@@ -112,9 +139,46 @@ async function doAction(gridElement, action, options) {
                 audioUtil.playAudio(action.dataBase64);
             }
             break;
+        case 'GridActionWordForm':
+            switch (action.type) {
+                case GridActionWordForm.WORDFORM_MODE_CHANGE_ELEMENTS:
+                    stateService.resetWordFormIds(gridElement);
+                    stateService.addWordFormTags(action.tags, action.toggle);
+                    break;
+                case GridActionWordForm.WORDFORM_MODE_CHANGE_BAR:
+                    collectElementService.addWordFormTagsToLast(action.tags);
+                    break;
+                case GridActionWordForm.WORDFORM_MODE_CHANGE_EVERYWHERE:
+                    stateService.resetWordFormIds(gridElement);
+                    stateService.addWordFormTags(action.tags, action.toggle);
+                    collectElementService.addWordFormTagsToLast(action.tags);
+                    break;
+                case GridActionWordForm.WORDFORM_MODE_NEXT_FORM:
+                    let currentId = stateService.nextWordForm(gridElement.id);
+                    collectElementService.replaceLast(gridElement, currentId);
+                    if (action.secondaryType) {
+                        let wordForm = stateService.getWordFormObject(gridElement, { wordFormId: currentId });
+                        let tags = wordForm.tags || [];
+                        if (tags.length > 0) {
+                            stateService.resetWordFormTags();
+                            let newAction = new GridActionWordForm({ type: action.secondaryType, tags: tags });
+                            await doAction(gridElement, newAction, options);
+                        }
+                    }
+                    break;
+                case GridActionWordForm.WORDFORM_MODE_RESET_FORMS:
+                    stateService.resetWordForms();
+                    collectElementService.fixateLastWordForm();
+                    break;
+            }
+            break;
         case 'GridActionNavigate':
-            if (action.toLastGrid) {
+            if (action.navType === GridActionNavigate.NAV_TYPES.TO_HOME) {
+                Router.toMain();
+            } else if (action.navType === GridActionNavigate.NAV_TYPES.TO_LAST) {
                 Router.toLastGrid();
+            } else if (action.navType === GridActionNavigate.NAV_TYPES.OPEN_SEARCH) {
+                MainVue.showSearchModal(action);
             } else if (Router.isOnEditPage()) {
                 Router.toEditGrid(action.toGridId);
             } else {
@@ -134,6 +198,10 @@ async function doAction(gridElement, action, options) {
         case 'GridActionOpenHAB':
             log.debug('action openHAB');
             openHABService.sendAction(action);
+            break;
+        case 'GridActionHTTP':
+            log.debug('action HTTP');
+            httpService.doAction(action);
             break;
         case 'GridActionPredict':
             log.debug('action predict');
@@ -197,7 +265,7 @@ function doAREAction(action, gridData) {
 }
 
 async function getMetadataConfig() {
-    let metadata = await dataService.getMetadata();
+    metadata = await dataService.getMetadata();
     minPauseSpeak = metadata.inputConfig.globalMinPauseCollectSpeak || 0;
 }
 

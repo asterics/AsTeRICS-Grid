@@ -22,7 +22,7 @@
     import {i18nService} from "../../../js/service/i18nService";
 
     export default {
-        props: ['areURLProp'],
+        props: ["value"],
         data: function () {
             return {
                 areConnected: null,
@@ -50,7 +50,7 @@
             }
         },
         mounted () {
-            this.areURL = this.areURLProp || areService.getRestURL();
+            this.areURL = this.value || areService.getRestURL();
             this.updateValue();
         }
     }

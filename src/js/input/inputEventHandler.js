@@ -66,7 +66,9 @@ function Constructor() {
         _listening = true;
         subscribeAREEvents();
         document.addEventListener('mousemove', mouseMoveListener);
-        document.addEventListener('keydown', keyboardListener);
+        document.addEventListener('mousedown', mouseDownListener);
+        document.addEventListener('mouseup', mouseUpListener);
+        document.addEventListener('keydown', keyDownListener);
         document.addEventListener('keyup', keyUpListener);
         document.addEventListener('fullscreenchange', fullscreenChangeListener);
         _touchElement.addEventListener('touchmove', touchMoveListener, { passive: false });
@@ -81,7 +83,9 @@ function Constructor() {
         _listening = false;
         unsubscribeAREEvents();
         document.removeEventListener('mousemove', mouseMoveListener);
-        document.removeEventListener('keydown', keyboardListener);
+        document.removeEventListener('mousedown', mouseDownListener);
+        document.removeEventListener('mouseup', mouseUpListener);
+        document.removeEventListener('keydown', keyDownListener);
         document.removeEventListener('keyup', keyUpListener);
         document.removeEventListener('fullscreenchange', fullscreenChangeListener);
         _touchElement.removeEventListener('touchmove', touchMoveListener);
@@ -271,6 +275,20 @@ function Constructor() {
         }
     }
 
+    function mouseDownListener(event) {
+        keyDownListener({
+            keyCode: InputEventKey.KEY_MOUSE_PREFIX + event.button,
+            preventDefault: () => {}
+        })
+    }
+
+    function mouseUpListener(event) {
+        keyUpListener({
+            keyCode: InputEventKey.KEY_MOUSE_PREFIX + event.button,
+            preventDefault: () => {}
+        });
+    }
+
     function touchMoveListener(event) {
         callHandlers(touchMoveHandlers, [event], true);
         if (!_touchMoveBeginPosY || !_touchMoveBeginPosX) {
@@ -296,16 +314,24 @@ function Constructor() {
     }
 
     function touchEndListener(event) {
+        keyUpListener({
+            keyCode: InputEventKey.KEY_TAP,
+            preventDefault: () => {}
+        })
         callHandlers(touchEndHandlers, [event], true);
         _touchMoveBeginPosX = null;
         _touchMoveBeginPosY = null;
     }
 
     function touchStartListener(event) {
+        keyDownListener({
+            keyCode: InputEventKey.KEY_TAP,
+            preventDefault: () => {}
+        })
         callHandlers(touchStartHandlers, [event], true);
     }
 
-    function keyboardListener(event) {
+    function keyDownListener(event) {
         let keyCode = event.which || event.keyCode;
         if (anyKeyHandlers.length > 0 && !event.repeat) {
             anyKeyHandlers.forEach((fn) => {

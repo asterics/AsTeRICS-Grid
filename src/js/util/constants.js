@@ -1,7 +1,7 @@
 let constants = {};
 
 constants.ELEMENT_EVENT_ID = 'ELEMENT_EVENT_ID';
-constants.MODEL_VERSION = '{"major": 4, "minor": 0, "patch": 0}';
+constants.MODEL_VERSION = '{"major": 5, "minor": 0, "patch": 0}';
 
 constants.LOCAL_NOLOGIN_USERNAME = 'default-user';
 constants.LOCAL_DEMO_USERNAME = 'local-demo-user';
@@ -135,5 +135,35 @@ constants.OPTION_TYPES = {
     SELECT: 'SELECT',
     SELECT_COLORS: 'SELECT_COLORS'
 };
+
+constants.ARASAAC_AUTHOR = 'ARASAAC - CC (BY-NC-SA)';
+constants.ARASAAC_LICENSE_URL = 'https://arasaac.org/terms-of-use';
+
+constants.WORDFORM_TAG_BASE = 'BASE';
+constants.WORDFORM_TAGS = [
+    constants.WORDFORM_TAG_BASE,
+    'NEGATION',
+    'SINGULAR',
+    'PLURAL',
+    '1.PERS',
+    '2.PERS',
+    '3.PERS',
+    '1.CASE',
+    '2.CASE',
+    '3.CASE',
+    '4.CASE',
+    '5.CASE',
+    '6.CASE',
+    'FEMININE',
+    'MASCULINE',
+    'NEUTRAL',
+    'COMPARATIVE',
+    'SUPERLATIVE',
+    'PRESENT',
+    'PAST',
+    'FUTURE',
+    'INDEFINITE',
+    'DEFINITE'
+];
 
 export { constants };

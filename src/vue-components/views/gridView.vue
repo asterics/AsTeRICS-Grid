@@ -12,6 +12,7 @@
                 <span class="hide-mobile">{{ $t('unlock') }}</span>
                 <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
             </button>
+            <button tabindex="34" v-show="!metadata.locked" @click="MainVue.showSearchModal()" class="spaced small" :aria-label="$t('fullscreen')" :title="$t('searchBtnTitle')"><i class="fas fa-search"/> <span class="hide-mobile">{{ $t('search') }}</span></button>
             <button tabindex="33" v-show="!metadata.locked" @click="lock()" class="small" :aria-label="$t('lock')">
                 <i class="fas fa-lock"></i>
                 <span class="hide-mobile">{{ $t('lock') }}</span>
@@ -85,6 +86,8 @@
     import {audioUtil} from "../../js/util/audioUtil.js";
     import UnlockModal from "../modals/unlockModal.vue";
     import {printService} from "../../js/service/printService";
+    import {MainVue} from "../../js/vue/mainVue.js";
+    import {stateService} from "../../js/service/stateService.js";
 
     let vueApp = null;
     let gridInstance = null;
@@ -99,7 +102,11 @@
     };
 
     let vueConfig = {
-        props: ['gridId', 'skipThumbnailCheck'],
+        props: {
+            gridId: String,
+            skipThumbnailCheck: Boolean,
+            highlightIds: Array
+        },
         data() {
             return {
                 gridData: {},
@@ -117,7 +124,10 @@
                 viewInitialized: false,
                 unlockCount: UNLOCK_COUNT,
                 unlockCounter: UNLOCK_COUNT,
-                backgroundColor: 'white'
+                backgroundColor: 'white',
+                MainVue: MainVue,
+                localHighlightIds: this.highlightIds,
+                highlightTimeoutHandler: null
             }
         },
         components: {
@@ -197,6 +207,7 @@
 
                 let inputConfig = thiz.metadata.inputConfig;
                 let selectionListener = (item) => {
+                    this.stopHighlightElements();
                     L.removeAddClass(item, 'selected');
                     actionService.doAction(thiz.gridData.id, item.id);
                 };
@@ -289,18 +300,40 @@
             reload(gridData) {
                 if (gridData) {
                     this.gridData = JSON.parse(JSON.stringify(gridData));
+                    stateService.setCurrentGrid(this.gridData);
                 }
                 return gridInstance.reinit(gridData).then(() => {
                     this.reinitInputMethods(true);
                     return Promise.resolve();
                 });
             },
-            async onNavigateEvent(event, gridData) {
+            highlightElements(highlightIds) {
+                clearTimeout(this.highlightTimeoutHandler);
+                highlightIds = highlightIds || this.localHighlightIds;
+                if (highlightIds) {
+                    $(`#${highlightIds[0]}`).addClass('highlight');
+                    this.highlightTimeoutHandler = setTimeout(() => {
+                        this.stopHighlightElements();
+                    }, 15000);
+                }
+            },
+            stopHighlightElements() {
+                if (this.localHighlightIds && this.localHighlightIds[0]) {
+                    $(`#${this.localHighlightIds[0]}`).removeClass('highlight');
+                }
+            },
+            async onNavigateEvent(event, gridData, params) {
+                let highlightIds = params ? params.highlightIds : null;
+                this.localHighlightIds = highlightIds;
                 if (gridData && this.gridData.id === gridData.id) {
+                    this.highlightElements(highlightIds);
                     return; //prevent duplicated navigation to same grid
                 }
                 this.metadata.lastOpenedGridId = gridData.id;
                 await this.reload(gridData);
+                if (highlightIds) {
+                    this.highlightElements(highlightIds);
+                }
                 await dataService.saveMetadata(this.metadata);
                 $(document).trigger(constants.EVENT_GRID_LOADED);
             },
@@ -328,7 +361,7 @@
                     Router.toManageGrids();
                     return;
                 }
-                log.warn('got update event, ids updated:' + updatedIds);
+                log.debug('got update event, ids updated:' + updatedIds);
                 let updatedGridDoc = updatedDocs.filter(doc => (vueApp.gridData && doc.id === vueApp.gridData.id))[0];
                 let hasUpdatedGlobalGrid = updatedDocs.filter(doc => (this.metadata && doc.id === this.metadata.globalGridId)).length > 0;
                 this.updatedMetadataDoc = updatedDocs.filter(doc => (vueApp.metadata && doc.id === vueApp.metadata.id))[0] || this.updatedMetadataDoc;
@@ -464,6 +497,7 @@
                 thiz.metadata = metadata;
                 return Promise.resolve();
             }).then(() => {
+                stateService.setCurrentGrid(thiz.gridData);
                 return initGrid(thiz.gridData.id);
             }).then(() => {
                 initContextmenu();
@@ -483,6 +517,7 @@
                     })
                 }
                 thiz.initInputMethods();
+                thiz.highlightElements();
             }).catch((e) => {
                 if (e) {
                     log.warn(e);

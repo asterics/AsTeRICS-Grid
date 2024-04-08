@@ -25,7 +25,8 @@
                         <span class="four columns">
                             <b>{{ $t('currentKey') }}</b>
                             <span v-show="!input.keyCode">{{ $t('noKey') }}</span>
-                            <span v-show="input.keyCode">{{input.keyName + ' (' + input.keyCode + ')'}}</span>
+                            <span v-show="input.keyCode && InputEventKey.SPECIAL_KEYS.includes(input.keyCode)">{{input.keyCode | translate}}</span>
+                            <span v-show="input.keyCode && !InputEventKey.SPECIAL_KEYS.includes(input.keyCode)">{{input.keyName + ' (' + input.keyCode + ')'}}</span>
                         </span>
                     </div>
                     <div class="srow">
