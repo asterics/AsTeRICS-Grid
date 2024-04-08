@@ -6,6 +6,7 @@ class SettingsUserLocal {
     /**
      * @param settings.modelVersion current model version string for local storage models
      * @param settings.modelVersionDb current model version string for database models
+     * @param settings.contentLang
      * @param settings.username
      * @param settings.password
      * @param settings.metadata
@@ -17,6 +18,7 @@ class SettingsUserLocal {
         this.modelVersion = settings.modelVersion;
 
         this.modelVersionDb = settings.modelVersionDb;
+        this.contentLang = settings.contentLang;
         this.username = settings.username;
         this.password = settings.password;
         this.metadata = settings.metadata;

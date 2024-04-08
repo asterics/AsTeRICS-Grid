@@ -22,6 +22,7 @@ import {audioUtil} from "../util/audioUtil.js";
 import {MainVue} from "../vue/mainVue.js";
 import {stateService} from "./stateService.js";
 import {GridActionWordForm} from "../model/GridActionWordForm.js";
+import {localStorageService} from "./data/localStorageService.js";
 
 let actionService = {};
 
@@ -224,9 +225,9 @@ async function doAction(gridElement, action, options) {
             ) {
                 $(document).trigger(constants.EVENT_RELOAD_CURRENT_GRID);
             }
-            let metadata = await dataService.getMetadata();
-            metadata.localeConfig.preferredVoice = action.voice;
-            await dataService.saveMetadata(metadata);
+            let voiceConfig = localStorageService.getUserSettings().voiceConfig;
+            voiceConfig.preferredVoice = action.voice;
+            localStorageService.saveUserSettings({voiceConfig: voiceConfig});
             break;
         case 'GridActionOpenWebpage':
             let tab = window.open(action.openURL, '_blank');

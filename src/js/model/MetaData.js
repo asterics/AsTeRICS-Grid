@@ -4,7 +4,6 @@ import { constants } from '../util/constants';
 import { Model } from '../externals/objectmodel';
 import { ColorConfig } from './ColorConfig.js';
 import { TextConfig } from './TextConfig.js';
-import { LocaleConfig } from './LocaleConfig.js';
 import { NotificationConfig } from './NotificationConfig.js';
 
 class MetaData extends Model({
@@ -23,7 +22,6 @@ class MetaData extends Model({
     inputConfig: InputConfig,
     colorConfig: [ColorConfig],
     textConfig: [TextConfig],
-    localeConfig: [LocaleConfig],
     notificationConfig: [NotificationConfig],
     activateARASAACGrammarAPI: [Boolean]
 }) {
@@ -33,7 +31,6 @@ class MetaData extends Model({
         this.id = this.id || modelUtil.generateId(MetaData.getIdPrefix());
         this.colorConfig = properties.colorConfig || new ColorConfig();
         this.textConfig = properties.textConfig || new TextConfig();
-        this.localeConfig = properties.localeConfig || new LocaleConfig();
         this.notificationConfig = properties.notificationConfig || new NotificationConfig();
         this.homeGridId = properties.homeGridId || null;
     }

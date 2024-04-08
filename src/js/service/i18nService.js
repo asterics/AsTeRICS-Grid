@@ -238,7 +238,7 @@ i18nService.getVueI18n = async function () {
         messages: {}
     });
     await loadLanguage(fallbackLang);
-    getMetadataConfig();
+    getUserSettings();
     return i18nService.setAppLanguage(i18nService.getAppLang(), true).then(() => {
         return Promise.resolve(vueI18n);
     });
@@ -292,12 +292,10 @@ i18nService.setAppLanguage = function (lang, dontSave) {
 
 i18nService.setContentLanguage = async function (lang, dontSave) {
     currentContentLang = lang || undefined;
-    loadLanguage(currentContentLang);
     if (!dontSave) {
-        let metadata = await dataService.getMetadata();
-        metadata.localeConfig.contentLang = lang;
-        return dataService.saveMetadata(metadata);
+        localStorageService.saveUserSettings({contentLang: currentContentLang})
     }
+    return loadLanguage(currentContentLang); // use promise for return!
 };
 
 /**
@@ -450,12 +448,12 @@ function loadLanguage(useLang, secondTry) {
     });
 }
 
-async function getMetadataConfig() {
-    let metadata = await dataService.getMetadata();
-    currentContentLang = metadata.localeConfig.contentLang;
+async function getUserSettings() {
+    let userSettings = localStorageService.getUserSettings();
+    currentContentLang = userSettings.contentLang;
     loadLanguage(currentContentLang);
 }
 
-$(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
+$(document).on(constants.EVENT_USER_CHANGED, getUserSettings);
 
 export { i18nService };

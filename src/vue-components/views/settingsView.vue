@@ -69,7 +69,7 @@
                     <h3 class="mt-2">{{ $t('gridContentLanguage') }}</h3>
                     <div class="srow">
                         <label class="three columns" for="contentLang">{{ $t('selectLanguage') }}</label>
-                        <select class="five columns mb-2" id="contentLang" v-model="metadata.localeConfig.contentLang" @change="saveContentLang()">
+                        <select class="five columns mb-2" id="contentLang" v-model="userSettingsLocal.contentLang" @change="saveUserSettingsLocal()">
                             <option :value="undefined">{{ $t('automatic') }}</option>
                             <option v-for="lang in selectLanguages" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
                         </select>
@@ -93,7 +93,7 @@
                         <label class="three columns" for="inVoice">
                             <span>{{ $t('preferredVoice') }}</span>
                         </label>
-                        <select id="inVoice" class="five columns mb-2" v-model="userSettingsLocal.voiceConfig.preferredVoice" @change="resetVoiceProps(); saveVoice()">
+                        <select id="inVoice" class="five columns mb-2" v-model="userSettingsLocal.voiceConfig.preferredVoice" @change="resetVoiceProps(); saveUserSettingsLocal()">
                             <option :value="undefined">{{ $t('automatic') }}</option>
                             <option v-for="voice in selectVoices" :value="voice.id">
                                 <span>{{ getVoiceDisplayText(voice, selectAllVoices) }}</span>
@@ -114,14 +114,14 @@
                     <div class="srow">
                         <accordion :acc-label="$t('advancedVoiceSettings')" class="eleven columns">
                             <div v-if="userSettingsLocal.voiceConfig.preferredVoice">
-                                <slider-input :label="$t('voicePitch')" id="voicePitch" min="0.1" max="2" step="0.1" decimals="1" v-model.number="userSettingsLocal.voiceConfig.voicePitch" @change="saveVoice()"/>
-                                <slider-input :label="$t('voiceRate')" id="voiceRate" min="0.1" max="10" step="0.1" decimals="1" v-model.number="userSettingsLocal.voiceConfig.voiceRate" @change="saveVoice()"/>
+                                <slider-input :label="$t('voicePitch')" id="voicePitch" min="0.1" max="2" step="0.1" decimals="1" v-model.number="userSettingsLocal.voiceConfig.voicePitch" @change="saveUserSettingsLocal()"/>
+                                <slider-input :label="$t('voiceRate')" id="voiceRate" min="0.1" max="10" step="0.1" decimals="1" v-model.number="userSettingsLocal.voiceConfig.voiceRate" @change="saveUserSettingsLocal()"/>
                             </div>
                             <div class="srow">
                                 <label class="three columns" for="inVoice2">
                                     <span>{{ $t('secondVoice') }}</span>
                                 </label>
-                                <select id="inVoice2" class="five columns mb-2" v-model="userSettingsLocal.voiceConfig.secondVoice" @change="saveVoice()">
+                                <select id="inVoice2" class="five columns mb-2" v-model="userSettingsLocal.voiceConfig.secondVoice" @change="saveUserSettingsLocal()">
                                     <option :value="undefined">{{ $t('noneSelected') }}</option>
                                     <option v-for="voice in voices" :value="voice.id">
                                         <span>{{ getVoiceDisplayText(voice, true) }}</span>
@@ -130,7 +130,7 @@
                                 <button id="testVoice2" class="three columns" :disabled="!userSettingsLocal.voiceConfig.secondVoice" @click="speechService.testSpeak(userSettingsLocal.voiceConfig.secondVoice)">{{ $t('test') }}</button>
                             </div>
                             <div class="srow">
-                                <input id="voiceLangIsTextLang" type="checkbox" v-model="userSettingsLocal.voiceConfig.voiceLangIsTextLang" @change="saveVoice()"/>
+                                <input id="voiceLangIsTextLang" type="checkbox" v-model="userSettingsLocal.voiceConfig.voiceLangIsTextLang" @change="saveUserSettingsLocal()"/>
                                 <label for="voiceLangIsTextLang">{{ $t('linkVoiceLanguageToTranslationLanguageOfSpokenText') }}</label>
                             </div>
                             <div class="srow" v-show="!!speechService.getExternalVoice(userSettingsLocal.voiceConfig.preferredVoice)">
@@ -304,18 +304,11 @@
                 this.selectVoices = this.getSelectVoices();
                 this.fixCurrentVoice();
             },
-            async saveContentLang() {
-                await i18nService.setContentLanguage(this.metadata.localeConfig.contentLang, true);
-                this.selectVoices = this.getSelectVoices();
-                this.fixCurrentVoice(true);
-                this.saveMetadata();
-            },
             fixCurrentVoice(dontSave) {
                 if (!this.selectVoices.map(v => v.name).includes(this.userSettingsLocal.voiceConfig.preferredVoice)) {
                     this.userSettingsLocal.voiceConfig.preferredVoice = undefined;
-                    this.saveVoice(true);
                     if (!dontSave) {
-                        this.saveMetadata();
+                        this.saveUserSettingsLocal();
                     }
                 }
             },
@@ -326,9 +319,9 @@
             },
             showAllLangsChanged() {
                 localStorageService.save(KEY_SETTINGS_SHOW_ALL_CONTENTLANGS, this.selectAllLanguages);
-                if (!this.selectLanguages.map(e => e.code).includes(this.metadata.localeConfig.contentLang)) {
-                    this.metadata.localeConfig.contentLang = undefined;
-                    this.saveContentLang();
+                if (!this.selectLanguages.map(e => e.code).includes(this.userSettingsLocal.contentLang)) {
+                    this.userSettingsLocal.contentLang = undefined;
+                    this.saveUserSettingsLocal();
                 }
             },
             getSelectVoices() {
@@ -362,16 +355,20 @@
                     await speechService.reinit();
                     this.voices = speechService.getVoices();
                     this.selectVoices = this.getSelectVoices();
-                }, timeout, 'SAVE_APP_SETTINGS');
+                }, timeout, 'RELOAD_VOICES');
             },
             resetVoiceProps() {
                 this.userSettingsLocal.voiceConfig.voicePitch = 1;
                 this.userSettingsLocal.voiceConfig.voiceRate = 1;
             },
-            saveVoice(dontSaveSettings) {
+            async saveUserSettingsLocal(dontSaveSettings) {
+                await i18nService.setContentLanguage(this.userSettingsLocal.contentLang, true);
+                this.selectVoices = this.getSelectVoices();
+                this.fixCurrentVoice(true);
                 this.setVoiceTestText();
                 if (!dontSaveSettings) {
                     localStorageService.saveUserSettings(this.userSettingsLocal);
+                    this.saveSuccess = true;
                 }
             },
             setVoiceTestText() {
@@ -411,7 +408,6 @@
             let thiz = this;
             dataService.getMetadata().then(metadata => {
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
-                thiz.metadata.localeConfig.contentLang = thiz.metadata.localeConfig.contentLang || undefined;
                 thiz.setVoiceTestText();
                 thiz.show = true;
             });

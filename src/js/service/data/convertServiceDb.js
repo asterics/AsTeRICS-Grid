@@ -18,6 +18,7 @@ import {localStorageService} from "./localStorageService.js";
 
 let convertServiceDb = {};
 
+let _alreadyConvertedUsersV5V6 = [];
 /*
 Model Version Changelog:
 V0 -> V1: Introduction of encryption and modelVersion property on all data models
@@ -231,10 +232,14 @@ function getModelConversionFunctions(objectModelVersion) {
                 // moved voice config from MetaData to SettingsUserLocal
                 if (!object) return;
                 if (object.modelName === MetaData.getModelName()) {
-                    let voiceConfig = new VoiceConfig(object.localeConfig);
+                    let localeConfig = object.localeConfig || {};
+                    let voiceConfig = new VoiceConfig(localeConfig);
                     let userSettings = localStorageService.getUserSettings();
-                    if (Object.keys(userSettings.voiceConfig).length === 0) {
+                    let currentUser = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
+                    if (Object.keys(userSettings.voiceConfig).length === 0 && !_alreadyConvertedUsersV5V6.includes(currentUser)) {
+                        _alreadyConvertedUsersV5V6.push(currentUser);
                         userSettings.voiceConfig = voiceConfig;
+                        userSettings.contentLang = userSettings.contentLang || object.localeConfig.contentLang;
                         localStorageService.saveUserSettings(userSettings);
                     }
                 }
