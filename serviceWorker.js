@@ -77,13 +77,13 @@ workbox.routing.registerRoute(({url, request, event}) => {
 }));
 
 function shouldCacheImage(url, request) {
-    let isOwnHost = url.hostname === 'localhost' || url.hostname === 'grid.asterics.eu';
+    let isOwnHost = url.hostname === 'grid.asterics.eu';
     let isImageRequest = request.destination === 'image';
     return !isOwnHost && isImageRequest;
 }
 
 function shouldCacheNormal(url, request) {
-    let isOwnHost = url.hostname === 'localhost' || url.hostname === 'grid.asterics.eu';
+    let isOwnHost = url.hostname === 'grid.asterics.eu';
     return !shouldCacheImage(url, request) && isOwnHost;
 }
 
