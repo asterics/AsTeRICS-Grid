@@ -299,9 +299,10 @@ function getElement(id) {
     if (!_currentGrid || !id) {
         return null;
     }
+    let globalGridElements = _currentGlobalGrid ? _currentGlobalGrid.gridElements : [];
     return (
         _currentGrid.gridElements.filter((e) => e.id === id)[0] ||
-        _currentGlobalGrid.gridElements.filter((e) => e.id === id)[0]
+        globalGridElements.filter((e) => e.id === id)[0]
     );
 }
 
