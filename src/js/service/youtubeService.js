@@ -525,10 +525,6 @@ function init() {
         }
     });
 
-    $(document).on(constants.EVENT_USER_CHANGED, () => {
-        ytState = localStorageService.getUserSettings().ytState || JSON.parse(JSON.stringify(initYtState));
-    });
-
     window.addEventListener('beforeunload', (event) => {
         saveState();
     });
@@ -588,5 +584,9 @@ $(document).on(constants.EVENT_GRID_LOADED, () => {
 
 $(document).on(constants.EVENT_NAVIGATE, youtubeService.destroy);
 $(document).on(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, youtubeService.destroy);
+
+$(document).on(constants.EVENT_USER_CHANGED, () => {
+    ytState = localStorageService.getUserSettings().ytState || JSON.parse(JSON.stringify(initYtState));
+});
 
 export { youtubeService };
