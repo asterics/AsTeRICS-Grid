@@ -995,7 +995,6 @@
   "restActionFailed": "HTTP action failed! Reason: {0}",
   "httpAuthUser": "HTTP Authentication User",
   "httpAuthPw": "HTTP Authentication Password",
-  "stopListening": "Stop listening",
   "actionPuckjsJavascriptCode": "Action (Puck.js Javascript code)",
   "GridActionPuckJS": "Puck.js action"
 }
