@@ -76,7 +76,7 @@ function Grid(gridContainerId, gridItemClass, options) {
             promises.push(
                 dataService.getGlobalGrid().then((globalGrid) => {
                     stateService.setGlobalGrid(globalGrid);
-                    if (globalGrid) {
+                    if (globalGrid && globalGrid.gridElements && globalGrid.gridElements.length > 0) {
                         let autowidth = true;
                         let heightPercentage = options.globalGridHeightPercentage
                             ? options.globalGridHeightPercentage / 100
