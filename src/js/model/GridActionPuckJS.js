@@ -6,8 +6,7 @@ class GridActionPuckJS extends Model({
     id: String,
     modelName: String,
     modelVersion: String,
-    puckjsCmd: [String],
-    timeoutSeconds: [Number]
+    puckjsCmd: [String]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionPuckJS);
@@ -23,8 +22,7 @@ class GridActionPuckJS extends Model({
 GridActionPuckJS.defaults({
     id: '', //will be replaced by constructor
     modelName: GridActionPuckJS.getModelName(),
-    modelVersion: constants.MODEL_VERSION,
-    timeoutSeconds: 0
+    modelVersion: constants.MODEL_VERSION
 });
 
 export { GridActionPuckJS };
