@@ -1,5 +1,3 @@
-import { util } from '../util/util';
-
 let puckjsService = {};
 
 puckjsService.doAction = function (action) {
