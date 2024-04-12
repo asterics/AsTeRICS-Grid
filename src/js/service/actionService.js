@@ -23,6 +23,7 @@ import {MainVue} from "../vue/mainVue.js";
 import {stateService} from "./stateService.js";
 import {GridActionWordForm} from "../model/GridActionWordForm.js";
 import {localStorageService} from "./data/localStorageService.js";
+import {puckjsService} from './puckjsService.js';
 
 let actionService = {};
 
@@ -236,6 +237,10 @@ async function doAction(gridElement, action, options) {
                     tab.close();
                 }, action.timeoutSeconds * 1000);
             }
+            break;
+        case 'GridActionPuckJS':
+            log.debug("execute GridActionPuckJS")
+            puckjsService.doAction(action)
             break;
     }
 }

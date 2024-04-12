@@ -999,5 +999,7 @@
   "externalSpeechUrl": "External speech service URL",
   "urlIsValid": "URL is valid",
   "urlIsInvalid": "URL is invalid",
-  "cacheAllTextsOfCurrentConfigurationExternalVoice": "Cache all texts of current configuration using external voice"
+  "cacheAllTextsOfCurrentConfigurationExternalVoice": "Cache all texts of current configuration using external voice",
+  "actionPuckjsJavascriptCode": "Action (Puck.js Javascript code)",
+  "GridActionPuckJS": "Puck.js action"
 }

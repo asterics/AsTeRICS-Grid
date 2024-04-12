@@ -287,6 +287,17 @@
                             </div>
                         </div>
                     </div>
+                    <div v-if="action.modelName === 'GridActionPuckJS'">
+                        <div class="srow">
+                            <div class="twelve columns">
+                                <label for="jscmd" class="four columns normal-text">{{ $t('actionPuckjsJavascriptCode') }}</label>
+                                <div class="col-12">
+                                  <textarea id="jscmd" v-model="action.puckjsCmd" class="col-12" rows="1"
+                                    placeholder="LED1.set();LED1.reset();" spellcheck="false" type="text"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </li>
         </ul>
