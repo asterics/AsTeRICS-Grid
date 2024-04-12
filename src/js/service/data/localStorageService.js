@@ -90,7 +90,7 @@ localStorageService.saveAppSettings = function (settings) {
 localStorageService.getUserSettings = function (username) {
     username = username || localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
     if (!username) {
-        return null;
+        return new SettingsUserLocal();
     }
     let object = localStorageService.getJSON(USER_SETTINGS) || {};
     let userSettings = object[username] || {};
@@ -341,6 +341,9 @@ function transferAllUsersNewToOld() {
     let oldKeys = Object.keys(objectOld) || [];
     for (let key of oldKeys) {
         localStorageService.saveUserSettings({ username: key, password: objectOld[key] });
+    }
+    if (oldKeys.length === 0) {
+        localStorageService.saveJSON(USER_SETTINGS, {});
     }
 }
 
