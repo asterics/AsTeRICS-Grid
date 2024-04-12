@@ -436,7 +436,7 @@ This action allows sending commands to microcontrollers using the UART (Serial) 
 * Creating accessible battery-powered toys (e.g. soap bubble machine, disco light or duplo train)
 * Creating a mouse click or keyboard input using the button interface FABI or the mouth mouse FLipMouse.
 
-For hands-on tutorials, have a look at the UART action tutorials.
+For hands-on tutorials, have a look at the [UART action tutorials](514_uart-action-tutorials.md).
 
 #### Supported devices
 
