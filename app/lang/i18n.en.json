@@ -999,7 +999,10 @@
   "externalSpeechUrl": "External speech service URL",
   "urlIsValid": "URL is valid",
   "urlIsInvalid": "URL is invalid",
-  "cacheAllTextsOfCurrentConfigurationExternalVoice": "Cache all texts of current configuration using external voice",
-  "actionPuckjsJavascriptCode": "Action (Puck.js Javascript code)",
-  "GridActionPuckJS": "Puck.js action"
+  "cacheAllTextsOfCurrentConfigurationExternalVoice": "Cache all texts of current configuration using external voice"
+  "GridActionUART": "UART action (Bluetooth or Serial)",
+  "uartActionFailedConnection": "UART action failed, couldn't open connection!",
+  "uartConnectionClosed": "UART connection closed!",
+  "CONN_TYPE_BT": "Bluetooth",
+  "CONN_TYPE_SERIAL": "Serial"
 }

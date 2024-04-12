@@ -23,7 +23,7 @@ import {MainVue} from "../vue/mainVue.js";
 import {stateService} from "./stateService.js";
 import {GridActionWordForm} from "../model/GridActionWordForm.js";
 import {localStorageService} from "./data/localStorageService.js";
-import {puckjsService} from './puckjsService.js';
+import {uartService} from './uartService.js';
 
 let actionService = {};
 
@@ -238,9 +238,8 @@ async function doAction(gridElement, action, options) {
                 }, action.timeoutSeconds * 1000);
             }
             break;
-        case 'GridActionPuckJS':
-            log.debug("execute GridActionPuckJS")
-            puckjsService.doAction(action)
+        case 'GridActionUART':
+            uartService.doAction(action);
             break;
     }
 }

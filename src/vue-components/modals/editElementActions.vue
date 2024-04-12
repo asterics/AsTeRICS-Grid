@@ -287,13 +287,21 @@
                             </div>
                         </div>
                     </div>
-                    <div v-if="action.modelName === 'GridActionPuckJS'">
+                    <div v-if="action.modelName === GridActionUART.getModelName()">
                         <div class="srow">
                             <div class="twelve columns">
-                                <label for="jscmd" class="four columns normal-text">{{ $t('actionPuckjsJavascriptCode') }}</label>
-                                <div class="col-12">
-                                  <textarea id="jscmd" v-model="action.puckjsCmd" class="col-12" rows="1"
-                                    placeholder="LED1.set();LED1.reset();" spellcheck="false" type="text"/>
+                                <label for="uartType" class="four columns normal-text">UART Type</label>
+                                <select id="uartType" class="eight columns" v-model="action.connectionType">
+                                    <option v-for="type in GridActionUART.CONN_TYPES" :value="type">{{ type | translate}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="srow">
+                            <div class="twelve columns">
+                                <label for="uartCmd" class="four columns normal-text">{{ $t('dataToSend') }}</label>
+                                <div class="eight columns">
+                                  <textarea id="uartCmd" v-model="action.data" class="col-12" rows="1"
+                                    placeholder="LED1.set(); or AT MX 10" spellcheck="false" type="text"/>
                                 </div>
                             </div>
                         </div>
@@ -327,6 +335,7 @@
     import EditAudioAction from "./editActionsSub/editAudioAction.vue";
     import EditWordFormAction from "./editActionsSub/editWordFormAction.vue";
     import EditHttpAction from "./editActionsSub/editHttpAction.vue";
+    import {GridActionUART} from "../../js/model/GridActionUART.js";
 
     export default {
         props: ['gridElement', 'gridData'],
@@ -348,6 +357,7 @@
                 selectFromAllVoices: false,
                 GridActionYoutube: GridActionYoutube,
                 GridActionNavigate: GridActionNavigate,
+                GridActionUART: GridActionUART,
                 GridElement: GridElement,
                 speechService: speechService
             }
