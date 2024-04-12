@@ -6,7 +6,7 @@ Subsequently, you will find tutorials of how to use the UART action.
 
 The following tutorial explains, how to create a remote control for a TV by sending Infrared commands to the Open Source microcontroller [Puck.js](https://www.puck-js.com/), which supports emitting infrared light codes out of the box. The commands can be directly copied from [puckmote](https://asterics.github.io/puckmote/) (online remote control database).
 
-
+![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/ebfbca0d-6647-49e9-9f30-b898ca111659)
 
 1. Get a [Puck.js](https://www.puck-js.com) device (**not Puck.js Lite**) from the [official shop](https://shop.espruino.com/puckjs) or [another distributor](http://www.espruino.com/Order).
 2. Follow the [Puck.js Getting Started Guide](https://www.espruino.com/Quick+Start+BLE#puckjs)
