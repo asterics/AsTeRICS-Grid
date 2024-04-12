@@ -27,7 +27,7 @@ The shelly plug has a built-in wifi access point or can connect itself to a wifi
 Fig 1: HTTP action to toggle Shelly plug.
  
 ::: tip
-You can also use dedicated on/off commands:
+You can also use dedicated on/off commands (see [Shelly 2 HTTP manual](https://shelly-api-docs.shelly.cloud/gen1/#shelly2)):
 ```
 http://192.168.33.1/relay/0?turn=on
 ```
