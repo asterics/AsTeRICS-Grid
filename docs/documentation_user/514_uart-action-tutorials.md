@@ -27,16 +27,15 @@ You can actually send any Javascript command supported by the Puck.js device, se
 
 ## Accessible toy
 
-The following tutorial explains, how to create an accessible battery-powered toy (e.g. disco light, soap bubble machine or duplo train) using the [Puck.js](https://www.puck-js.com/) device.
-It contains an on-board FET (transistor) and allows you to control medium current (up to 200mA) devices directly from Puck.js, without external components, see [Puck.js+FET tutorial](https://www.espruino.com/Puck.js+FET).
+The following tutorial explains, how to create an accessible battery-powered toy (e.g. disco light, soap bubble machine or duplo train). The [Puck.js](https://www.puck-js.com/) device contains an on-board FET (transistor) and allows you to control medium current devices (up to 200mA) directly from Puck.js, without external components (see [Puck.js+FET tutorial](https://www.espruino.com/Puck.js+FET)).
 
 ![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/f6ef3379-99a8-44e0-a8fc-e110d5216e94)
 
 1. Get a [Puck.js](https://www.puck-js.com) device (**not Puck.js Lite**) from the [official shop](https://shop.espruino.com/puckjs) or [another distributor](http://www.espruino.com/Order).
 2. Get a battery-powered toy. (**The battery voltage must be below 20V**).
-3. [Create a battery-interruptor DIY](https://www.upstate.edu/specialneeds/pdf/inclusive/2021_family-fun-series_create-your-own-battery-interrupter.pdf) and insert it at the flat side of the battery (see Fig xx). For our example keep the wires open ended and don't solder the audio socket onto them. 
-5. Connect the negative pole of the battery ```N1``` to the ```GND``` pin of the Puck.js device.
-6. Connect the positive pole of the battery ```P1```to the ```FET```of the Puck.js device.
+3. [Create a battery-interruptor DIY](https://www.upstate.edu/specialneeds/pdf/inclusive/2021_family-fun-series_create-your-own-battery-interrupter.pdf) and insert it at the flat side of the battery (see Fig 2). For our example keep the wires open ended and don't solder the audio socket onto them. 
+5. Connect the negative pole of the battery ```N1``` to the ```GND``` pin of the Puck.js device (see Fig. 3).
+6. Connect the positive pole of the battery ```P1```to the ```FET```of the Puck.js device (see Fig. 3).
 7. Turn on the on/off switch of the toy (if there is one).
 8. Now the toy is ready to be switched by the transistor of the Puck.js device.
 9. Open a grid and turn on ```Editing mode```
@@ -45,6 +44,14 @@ It contains an on-board FET (transistor) and allows you to control medium curren
 12. Enter ```FET.set();\n``` into the field ```command string```.
 13. Click on ```OK``` to save the action.
 14. Turn off ```Editing mode```
+
+![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/b35856fc-3cbd-4747-a410-353e95bea12b)
+
+Fig 2: Battery interrupter
+
+![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/31e9bafe-f2d1-401b-b601-df5c065ad394)
+
+Fig 3: Wiring of battery interrupter and Puck.js
 
 ::: tip
 * ```FET.set();\n```: will turn the toy on.
