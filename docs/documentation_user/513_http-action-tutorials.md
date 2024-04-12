@@ -9,7 +9,7 @@ The shelly plug has a built-in wifi access point or can connect itself to a wifi
 ![Shelly plug](https://fr.alternate.be/p/1200x630/3/8/Shelly_Plug_S_smart_wifi__Prise_de_courant@@1826083_2.jpg)
 ![Shelly Plus Plug UK](https://www.shelly.com/_Resources/Persistent/8/2/b/e/82beea31e4b257307de29a5671e3738113348abb/Shelly_Plus_PlugUK_x1-625x625.png)
 
-1. Get a shelly plus plug (see [UK model](https://www.shelly.com/en-de/products/product-overview/shelly-plus-plug-uk) or [Shelly Plug S](https://www.amazon.de/s?k=shelly+s+plug&adgrpid=71094184076&hvadid=352674859116&hvdev=c&hvlocphy=1000739&hvnetw=g&hvqmt=e&hvrand=3009423075800256500&hvtargid=kwd-910071249511&hydadcr=1608_1721139&tag=googhydr08-21&ref=pd_sl_2xiktl7icw_e).
+1. Get a shelly plus plug (see [UK model](https://www.shelly.com/en-de/products/product-overview/shelly-plus-plug-uk) or [Shelly Plug S](https://www.amazon.de/s?k=shelly+s+plug&adgrpid=71094184076&hvadid=352674859116&hvdev=c&hvlocphy=1000739&hvnetw=g&hvqmt=e&hvrand=3009423075800256500&hvtargid=kwd-910071249511&hydadcr=1608_1721139&tag=googhydr08-21&ref=pd_sl_2xiktl7icw_e)).
 2. Plug it in and enable the shelly wifi access point according to the shelly plug manual.
 3. Connect to the wifi access point of the shelly plug. 
 4. Now the shally plug should be reachable through an ip address, e.g ```http://192.168.33.1```.
