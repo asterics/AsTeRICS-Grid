@@ -34,21 +34,26 @@ It contains an on-board FET (transistor) and allows you to control medium curren
 
 1. Get a [Puck.js](https://www.puck-js.com) device (**not Puck.js Lite**) from the [official shop](https://shop.espruino.com/puckjs) or [another distributor](http://www.espruino.com/Order).
 2. Get a battery-powered toy. (**The battery voltage must be below 20V**).
-3. Create a battery-interruptor (Fig xx) and insert it at the flat side of the battery (see Fig xx).
-4. Connect the negative pole of the battery ```N1``` to the ```GND``` pin of the Puck.js device.
-5. Connect the positive pole of the battery ```P1```to the ```FET```of the Puck.js device.
-6. Turn on the on/off switch of the toy (if there is one).
-7. Now the toy is ready to be switched by the transistor of the Puck.js device.
-8. Open a grid and turn on ```Editing mode```
-9. Edit cell and got to ```Actions``` tab
-10. Select ```UART action```
-11. Enter ```FET.set();\n``` into the field ```command string```.
-12. Click on ```OK``` to save the action.
-13. Turn off ```Editing mode```
+3. [Create a battery-interruptor DIY](https://www.upstate.edu/specialneeds/pdf/inclusive/2021_family-fun-series_create-your-own-battery-interrupter.pdf) and insert it at the flat side of the battery (see Fig xx). For our example keep the wires open ended and don't solder the audio socket onto them. 
+5. Connect the negative pole of the battery ```N1``` to the ```GND``` pin of the Puck.js device.
+6. Connect the positive pole of the battery ```P1```to the ```FET```of the Puck.js device.
+7. Turn on the on/off switch of the toy (if there is one).
+8. Now the toy is ready to be switched by the transistor of the Puck.js device.
+9. Open a grid and turn on ```Editing mode```
+10. Edit cell and got to ```Actions``` tab
+11. Select ```UART action```
+12. Enter ```FET.set();\n``` into the field ```command string```.
+13. Click on ```OK``` to save the action.
+14. Turn off ```Editing mode```
 
 ::: tip
 * ```FET.set();\n```: will turn the toy on.
 * ```FET.reset();\n```: will turn the toy off.
+:::
+
+::: tip
+You can also buy already adapted toys e.g. from [enablingdevices](https://enablingdevices.com/product-category/adapted-toys-games/) or [Ariadne Inklusivshop](https://inklusiv-shop.ariadne.de/spiele/adaptiertes-spielzeug/?p=1).
+In such a case the Puck.js pins must be soldered to an audio jack plug.
 :::
 
 ::: warning
