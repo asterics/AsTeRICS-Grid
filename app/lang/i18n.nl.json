@@ -849,6 +849,7 @@
   "voiceRate": "Stem snelheid",
   "secondVoice": "Secundaire stem",
   "advancedVoiceSettings": "Geavanceerde stem instellingen",
+  "advancedGeneralSettings": "Advanced general settings",
   "selectWithDoubleClickOrDoubleTap": "Selecteer met dubbele klik (of dubbele tik)",
   "automaticTimedSequentialInput": "Automatische (getimed) sequentiële invoer",
   "acousticFeedbackOptions": "Akoestische feedbackopties",
@@ -994,5 +995,9 @@
   "GridActionHTTP": "HTTP action",
   "restActionFailed": "HTTP action failed! Reason: {0}",
   "httpAuthUser": "HTTP Authentication User",
-  "httpAuthPw": "HTTP Authentication Password"
+  "httpAuthPw": "HTTP Authentication Password",
+  "externalSpeechUrl": "External speech service URL",
+  "urlIsValid": "URL is valid",
+  "urlIsInvalid": "URL is invalid",
+  "cacheAllTextsOfCurrentConfigurationExternalVoice": "Cache all texts of current configuration using external voice"
 }
