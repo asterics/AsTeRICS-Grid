@@ -411,6 +411,7 @@ If the openHAB installation is hosted in the local network, there are two possib
 ### HTTP action
 
 This action can send arbitrary HTTP requests, e.g. for accessing any REST API.
+For hands-on tutorials, have a look at the [HTTP action tutorials](513_http-action-tutorials.md).
 
 ![Configuration of a HTTP action](./img/action-http.png)
 
@@ -421,8 +422,8 @@ Figure 22 shows the configuration of a HTTP action, which has these properties:
 1. **HTTP body**: the data that should be sent within the request (not applicable for HTTP method `GET` and `HEAD`)
 1. **HTTP method**: the method to be used for the request. Can be `GET`, `POST`, `PUT`, `DELETE`, `HEAD`, `OPTIONS` and `PATCH`
 1. **HTTP Content-Type**: the Content-Type of the request, defaults to `text/plain`
-1. **HTTP Authorization User**: the (optional) username for HTTP authorization 
-1. **HTTP Authorization Password**: the (optional) password for HTTP authorization
+1. **HTTP Authentication User**: the (optional) username for HTTP authentication 
+1. **HTTP Authentication Password**: the (optional) password for HTTP authentication
 
 Any errors from requests will be shown in a popup in the lower right corner of the application.
 
