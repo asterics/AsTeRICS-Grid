@@ -11,7 +11,7 @@ class SettingsApp {
     constructor(settings) {
         settings = settings || {};
         this.modelVersion = settings.modelVersion;
-        this.appLang = settings.appLang;
+        this.appLang = settings.appLang || "";
         this.unlockPasscode = settings.unlockPasscode;
         this.syncNavigation = settings.syncNavigation;
         this.externalSpeechServiceUrl = settings.externalSpeechServiceUrl;

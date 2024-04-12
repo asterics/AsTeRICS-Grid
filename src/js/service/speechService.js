@@ -420,11 +420,12 @@ init();
 
 function updateSettings() {
     let userSettings = localStorageService.getUserSettings();
-    _preferredVoiceId = userSettings.voiceConfig.preferredVoice || null;
-    _voicePitch = userSettings.voiceConfig.voicePitch || 1;
-    _voiceRate = userSettings.voiceConfig.voiceRate || 1;
-    _secondVoiceId = userSettings.voiceConfig.secondVoice || null;
-    _voiceLangIsTextLang = userSettings.voiceConfig.voiceLangIsTextLang || false;
+    let voiceConfig = userSettings.voiceConfig || {};
+    _preferredVoiceId = voiceConfig.preferredVoice || null;
+    _voicePitch = voiceConfig.voicePitch || 1;
+    _voiceRate = voiceConfig.voiceRate || 1;
+    _secondVoiceId = voiceConfig.secondVoice || null;
+    _voiceLangIsTextLang = voiceConfig.voiceLangIsTextLang || false;
 }
 
 $(document).on(constants.EVENT_USER_CHANGED, updateSettings);
