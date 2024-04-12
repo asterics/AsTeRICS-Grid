@@ -16,11 +16,15 @@ The shelly plug has a built-in wifi access point or can connect itself to a wifi
 5. Turn on ```Editing mode```
 6. Edit cell and got to ```Actions``` tab
 7. Select ```HTTP action```
-8. Enter ```http://192.168.33.1/relay/0?turn=toggle``` command into the field ```HTTP URL```.
+8. Enter ```http://192.168.33.1/relay/0?turn=toggle``` command into the field ```HTTP URL``` (see Fig 1).
 9. Enter ```GET``` into the field ```HTTP method```.
 10. Enter ```text/plain``` into the field ```HTTP Content-Type```.
 9. Click on ```OK``` to save the action.
 10. Turn off ```Editing mode```
+
+![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/56792e15-1162-43ff-a112-f95d0a29d0c0)
+
+Fig 1: HTTP action to toggle Shelly plug.
  
 ::: tip
 You can also use dedicated on/off commands:
