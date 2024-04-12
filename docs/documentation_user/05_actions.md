@@ -436,6 +436,30 @@ Figure 22 shows the configuration of a HTTP action, which has these properties:
 
 Any errors from requests will be shown in a popup in the lower right corner of the application.
 
+### UART action
+
+This action allows sending commands to microcontrollers using the UART (Serial) interface. The connections can be wired (using [Web Serial](https://developer.mozilla.org/en-US/docs/Web/API/Web_Serial_API), Chrome/Edge-Desktop) or wireless (using [Web Bluetooth](https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API), Chrome/Edge-Desktop/Mobile). 
+
+#### Example use cases
+
+* Creating a remote control for a TV by sending Infrared commands to Open Source microcontroller [Puck.js](https://www.puck-js.com/). The commands can be directly copied from [puckmote](https://asterics.github.io/puckmote/) (online remote control database).
+* Creating accessible battery-powered toys (e.g. soap bubble machine, disco light or duplo train)
+* Creating a mouse click or keyboard input using the button interface FABI or the mouth mouse FLipMouse.
+
+For hands-on tutorials, have a look at the UART action tutorials.
+
+#### Supported devices
+
+* [Devices supported by Espruino](https://www.espruino.com/Other+Boards#boards-that-espruino-works-on), e.g. [Puck.js](https://www.puck-js.com/)
+* [Flexible Assistive Button Interface (FABI)](https://www.asterics-foundation.org/projects/fabi/)
+* [Finger and Lip mouse (FLipMouse)](https://www.asterics-foundation.org/projects/the-flipmouse/)
+
+#### Supported commands
+
+The action supports the following input fields:
+1. connectionType: Choose between Serial/wired or Serial/Bluetooth
+2. command string: A string to be executed on the microcontroller (e.g. Javascript code (Espruino devices) or AT commands (FABI, FLipMouse)).
+
 [&#x2190; Previous Chapter](04_input_options.md) [Next Chapter &#x2192;](06_users.md)
 
 [Back to Overview](README.md)
