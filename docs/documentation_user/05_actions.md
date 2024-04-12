@@ -6,19 +6,20 @@ This chapter is about actions that can be performed if a grid element is selecte
 
 1. [Edit actions modal](05_actions.md#edit-actions-modal)
 2. [Action Types](05_actions.md#action-types)
-   * [Speak label](05_actions.md#speak-label)
-   * [Navigate to other grid](05_actions.md#navigate-to-other-grid)
-   * [Speak custom text](05_actions.md#speak-custom-text)
-   * [Play recorded audio](05_actions.md#play-recorded-audio)
-   * [Fill prediction elements](05_actions.md#fill-prediction-elements)
-   * [Collect element action](05_actions.md#collect-element-action)
-   * [AsTeRICS Action](05_actions.md#asterics-action)
-   * [Web radio action](05_actions.md#web-radio-action)
-   * [YouTube Action](05_actions.md#YouTube-Action)
-   * [Change Content Language](05_actions.md#Change-Content-Language)
-   * [Open webpage in new tab](05_actions.md#Open-webpage-in-new-tab)
-   * [openHAB Action](05_actions.md#openhab-action)
-   * [HTTP action](05_actions.md#http-action)
+   * [Speak label](05_actions.md#speak-label): speaks the label of the element using a computer voice (text-to-speech)
+   * [Navigate to other grid](05_actions.md#navigate-to-other-grid): navigates to another grid
+   * [Speak custom text](05_actions.md#speak-custom-text): speaks a customizeable text using a computer voice (text-to-speech)
+   * [Play recorded audio](05_actions.md#play-recorded-audio): plays custom audio, previously recorded via the microphone of the device
+   * [Fill prediction elements](05_actions.md#fill-prediction-elements): fills all [prediction elements](01_terms.md#grid-element) in the current grid with word suggestions
+   * [Collect element action](05_actions.md#collect-element-action): performs actions on [collect elements](01_terms.md#grid-element) in the current grid, e.g. clearing it or copying it's text to clipboard
+   * [AsTeRICS Action](05_actions.md#asterics-action): does an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework)
+   * [Web radio action](05_actions.md#web-radio-action): plays a web radio station
+   * [YouTube Action](05_actions.md#YouTube-Action): links to a YouTube video and shows it without leaving the communicator
+   * [Change Content Language](05_actions.md#Change-Content-Language): changes the content language (description of grid elements / language of the communicator grid(s))
+   * [Open webpage in new tab](05_actions.md#Open-webpage-in-new-tab): allows to assign an external web page to a cell and opens it in a new tab
+   * [openHAB Action](05_actions.md#openhab-action): allows to do environmental control using devices interfaced by the OpenHAB framework
+   * [HTTP action](05_actions.md#http-action): allows to execute commands on programs and devices providing a REST API through HTTP.
+   * [UART action](05_actions.md#uart-action): allows to execute commands on microcontrollers providing a UART (Serial) interface (wired or Bluetooth).
 
 [Back to Overview](README.md)
 
@@ -49,18 +50,7 @@ This modal configures the actions that will be performed if the grid element is 
 
 ## Action types
 
-These are the types of actions that are selectable (Fig. 2, number 1):
-* **Speak label**: speaks the label of the element using a computer voice (text-to-speech)
-* **Navigate to other grid**: navigates to another grid
-* **Speak custom text**: speaks a customizeable text using a computer voice (text-to-speech)
-* **Play recorded audio**: plays custom audio, previously recorded via the microphone of the device
-* **Fill prediction elements**: fills all [prediction elements](01_terms.md#grid-element) in the current grid with word suggestions
-* **Collect element action**: performs actions on [collect elements](01_terms.md#grid-element) in the current grid, e.g. clearing it or copying it's text to clipboard
-* **AsTeRICS Action**: does an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework)
-* **Web radio action**: plays a web radio station
-* **YouTube action**: links to a YouTube video and shows it without leaving the communicator
-* **Change content language**: changes the content language (description of grid elements / language of the communicator grid(s))
-* **Open web page in new tab**: allows to assign an external web page to a cell and opens it in a new tab
+These are the types of actions that are selectable (Fig. 2, number 1).
 
 ### Speak label
 
