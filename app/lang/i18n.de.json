@@ -849,7 +849,7 @@
   "voiceRate": "Sprechgeschwindigkeit",
   "secondVoice": "Sekundäre Stimme",
   "advancedVoiceSettings": "Erweiterte Optionen für Stimme",
-  "advancedGeneralSettings": "Advanced general settings",
+  "advancedGeneralSettings": "Erweiterte allgemeine Einstellungen",
   "selectWithDoubleClickOrDoubleTap": "Auswahl mit Doppelklick (oder doppeltem Antippen)",
   "automaticTimedSequentialInput": "Automatische (zeitgesteuerte) sequentielle Eingabe",
   "acousticFeedbackOptions": "Optionen zu akustischem Feedback",
@@ -996,8 +996,8 @@
   "restActionFailed": "HTTP-Aktion fehlgeschlagen! Grund: {0}",
   "httpAuthUser": "HTTP Authentication User",
   "httpAuthPw": "HTTP Authentication Passwort",
-  "externalSpeechUrl": "External speech service URL",
-  "urlIsValid": "URL is valid",
-  "urlIsInvalid": "URL is invalid",
-  "cacheAllTextsOfCurrentConfigurationExternalVoice": "Cache all texts of current configuration using external voice"
+  "externalSpeechUrl": "URL für externe Stimmen-Integration",
+  "urlIsValid": "URL ist OK",
+  "urlIsInvalid": "URL ist ungültig",
+  "cacheAllTextsOfCurrentConfigurationExternalVoice": "Alle Texte der aktuellen Konfiguration mit externer Stimme zwischenspeichern"
 }
