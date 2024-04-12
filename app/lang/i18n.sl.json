@@ -849,6 +849,7 @@
   "voiceRate": "Hitrost govora",
   "secondVoice": "Sekundarni glas",
   "advancedVoiceSettings": "Napredne nastavitve glasu",
+  "advancedGeneralSettings": "Advanced general settings",
   "selectWithDoubleClickOrDoubleTap": "Izberi z dvojnim klikom (ali z dvojnim dotikom)",
   "automaticTimedSequentialInput": "Samodejni (časovni) zaporedni vnos",
   "acousticFeedbackOptions": "Možnosti akustičnih povratnih informacij",
@@ -994,5 +995,9 @@
   "GridActionHTTP": "HTTP action",
   "restActionFailed": "HTTP action failed! Reason: {0}",
   "httpAuthUser": "HTTP Authentication User",
-  "httpAuthPw": "HTTP Authentication Password"
+  "httpAuthPw": "HTTP Authentication Password",
+  "externalSpeechUrl": "External speech service URL",
+  "urlIsValid": "URL is valid",
+  "urlIsInvalid": "URL is invalid",
+  "cacheAllTextsOfCurrentConfigurationExternalVoice": "Cache all texts of current configuration using external voice"
 }
