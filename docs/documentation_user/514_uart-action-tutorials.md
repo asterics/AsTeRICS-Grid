@@ -6,7 +6,7 @@ Subsequently, you will find tutorials of how to use the UART action.
 
 The following tutorial explains, how to create a remote control for a TV by sending Infrared commands to the Open Source microcontroller [Puck.js](https://www.puck-js.com/), which supports emitting infrared light codes out of the box. The commands can be directly copied from [puckmote](https://asterics.github.io/puckmote/) (online remote control database).
 
-![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/ebfbca0d-6647-49e9-9f30-b898ca111659)
+
 
 1. Get a [Puck.js](https://www.puck-js.com) device (**not Puck.js Lite**) from the [official shop](https://shop.espruino.com/puckjs) or [another distributor](http://www.espruino.com/Order).
 2. Follow the [Puck.js Getting Started Guide](https://www.espruino.com/Quick+Start+BLE#puckjs)
@@ -29,7 +29,7 @@ You can actually send any Javascript command supported by the Puck.js device, se
 
 The following tutorial explains, how to create an accessible battery-powered toy (e.g. disco light, soap bubble machine or duplo train). The [Puck.js](https://www.puck-js.com/) device contains an on-board FET (transistor) and allows you to control medium current devices (up to 200mA) directly from Puck.js, without external components (see [Puck.js+FET tutorial](https://www.espruino.com/Puck.js+FET)).
 
-![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/f6ef3379-99a8-44e0-a8fc-e110d5216e94)
+![AG-puckjs-accessible-toy-FET-action-small](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/136c33c3-027f-40ad-b2b7-bad928901f34)
 
 1. Get a [Puck.js](https://www.puck-js.com) device (**not Puck.js Lite**) from the [official shop](https://shop.espruino.com/puckjs) or [another distributor](http://www.espruino.com/Order).
 2. Get a battery-powered toy. (**The battery voltage must be below 20V**).
@@ -69,7 +69,7 @@ Electromagnetic devices (motors, solenoids, speakers, etc) let out big spikes of
 
 ## FABI / FLipMouse
 
-This tutorial explains, how to create a mouse movement, mouse click or keyboard input using the button interface FABI or the mouth mouse FLipMouse. This currently only supports a wired serial connection to the device.
+This tutorial explains, how to create a mouse movement using the button interface FABI or the mouth mouse FLipMouse. This currently only supports a wired serial connection to the device.
 
 ### Move mouse cursor to the right
 
@@ -82,5 +82,5 @@ This tutorial explains, how to create a mouse movement, mouse click or keyboard 
 7. Turn off ```Editing mode```
 
 ::: tip
-You can send any [FABI AT command](https://github.com/asterics/FABI/blob/master/FabiWare/commands.h) or [FLipMouse AT](https://github.com/asterics/FLipMouse/blob/master/FLipWare/commands.h) command that is supported.
+You can send any [FABI AT command](https://github.com/asterics/FABI/blob/master/FabiWare/commands.h) or [FLipMouse AT](https://github.com/asterics/FLipMouse/blob/master/FLipWare/commands.h) command (e.g. mouse click, keyboard input, slot change to remote control a Smartphone via Bluetooth HID, ...) that is supported.
 :::
