@@ -849,7 +849,7 @@
   "voiceRate": "Velocidade de voz",
   "secondVoice": "Voz secundária",
   "advancedVoiceSettings": "Definições avançadas de voz",
-  "advancedGeneralSettings": "Advanced general settings",
+  "advancedGeneralSettings": "Definições gerais avançadas",
   "selectWithDoubleClickOrDoubleTap": "Selecionar com o clique do rato (ou duplo toque)",
   "automaticTimedSequentialInput": "Varrimento automático (temporizado)",
   "acousticFeedbackOptions": "Opções de retorno auditivo",
@@ -996,8 +996,8 @@
   "restActionFailed": "A ação HTTP falhou! Motivo: {0}",
   "httpAuthUser": "Autenticação HTTP Palavra passe",
   "httpAuthPw": "Autenticação HTTP Utilizador",
-  "externalSpeechUrl": "External speech service URL",
-  "urlIsValid": "URL is valid",
-  "urlIsInvalid": "URL is invalid",
-  "cacheAllTextsOfCurrentConfigurationExternalVoice": "Cache all texts of current configuration using external voice"
+  "externalSpeechUrl": "URL do serviço de voz externa",
+  "urlIsValid": "URL válido",
+  "urlIsInvalid": "URL inválido",
+  "cacheAllTextsOfCurrentConfigurationExternalVoice": "Armazenar todos os textos da configuração atual usando voz externa"
 }
