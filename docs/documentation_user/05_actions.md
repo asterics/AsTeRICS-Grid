@@ -433,7 +433,7 @@ This action allows sending commands to microcontrollers using the UART (Serial) 
 
 #### Example use cases
 
-* Creating a remote control for a TV by sending Infrared commands to Open Source microcontroller [Puck.js](https://www.puck-js.com/). The commands can be directly copied from [puckmote](https://asterics.github.io/puckmote/) (online remote control database).
+* Creating a remote control for a TV by sending Infrared commands to the Open Source microcontroller [Puck.js](https://www.puck-js.com/). The commands can be directly copied from the [puckmote](https://asterics.github.io/puckmote/) online remote control database.
 * Creating accessible battery-powered toys (e.g. soap bubble machine, disco light or duplo train)
 * Creating a mouse click or keyboard input using the button interface FABI or the mouth mouse FLipMouse.
 
@@ -447,9 +447,13 @@ For hands-on tutorials, have a look at the [UART action tutorials](514_uart-acti
 
 #### Supported commands
 
+![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/a1f3d53c-0237-4342-a85d-90d745d2f0d9)
+
+*Fig. 23: Configuration of a UART action.*
+
 The action supports the following input fields:
-1. connectionType: Choose between Serial/wired or Serial/Bluetooth
-2. command string: A string to be executed on the microcontroller (e.g. Javascript code (Espruino devices) or AT commands (FABI, FLipMouse)).
+1. **UART Type**: Choose between ```Bluetooth``` and ```Serial```(wired)
+2. **Data**: A string to be executed on the microcontroller (e.g. Javascript code (Espruino devices) or AT commands (FABI, FLipMouse)).
 
 [&#x2190; Previous Chapter](04_input_options.md) [Next Chapter &#x2192;](06_users.md)
 
