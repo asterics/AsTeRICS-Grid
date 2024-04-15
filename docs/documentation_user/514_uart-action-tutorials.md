@@ -19,9 +19,10 @@ The following tutorial explains, how to create a remote control for a TV by send
 7. Turn on ```Editing mode```
 8. Edit cell and got to ```Actions``` tab
 9. Select ```UART action```
-10. Paste copied ```Puck.IR(....);\n``` command into the field ```command string```.
-11. Click on ```OK``` to save the action.
-12. Turn off ```Editing mode```
+10. Select ```Bluetooth``` as ```UART Type```. 
+11. Paste copied ```Puck.IR(....);\n``` command into the field ```Data```.
+12. Click on ```OK``` to save the action.
+13. Turn off ```Editing mode```
 
 ::: tip
 You can actually send any Javascript command supported by the Puck.js device, see [Puck.js API Documentation](https://www.espruino.com/Puck.js).
@@ -37,7 +38,7 @@ The following tutorial explains, how to create an accessible battery-powered toy
 
 1. Get a [Puck.js](https://www.puck-js.com) device (**not Puck.js Lite**) from the [official shop](https://shop.espruino.com/puckjs) or [another distributor](http://www.espruino.com/Order).
 2. Get a battery-powered toy. (**The battery voltage must be below 20V**).
-3. [Create a battery-interruptor DIY](https://www.upstate.edu/specialneeds/pdf/inclusive/2021_family-fun-series_create-your-own-battery-interrupter.pdf) and insert it at the flat side of the battery (see Fig 3). For our example keep the wires open ended and don't solder the audio socket onto them. 
+3. [Create a battery-interruptor DIY](https://www.upstate.edu/specialneeds/pdf/inclusive/2021_family-fun-series_create-your-own-battery-interrupter.pdf) (see Fig 3) and insert it at the flat side of the battery. For our example keep the wires open ended and don't solder the audio socket onto them. 
 5. Connect the negative pole of the battery ```N1``` to the ```GND``` pin of the Puck.js device (see Fig. 4).
 6. Connect the positive pole of the battery ```P1```to the ```FET```of the Puck.js device (see Fig. 4).
 7. Turn on the on/off switch of the toy (if there is one).
@@ -45,9 +46,10 @@ The following tutorial explains, how to create an accessible battery-powered toy
 9. Open a grid and turn on ```Editing mode```
 10. Edit cell and got to ```Actions``` tab
 11. Select ```UART action```
-12. Enter ```FET.set();\n``` into the field ```command string```.
-13. Click on ```OK``` to save the action.
-14. Turn off ```Editing mode```
+12. Select ```Bluetooth``` as ```UART Type```. 
+13. Enter ```FET.set();\n``` into the field ```Data```.
+14. Click on ```OK``` to save the action.
+15. Turn off ```Editing mode```
 
 ![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/b35856fc-3cbd-4747-a410-353e95bea12b)
 
@@ -81,9 +83,10 @@ This tutorial explains, how to create a mouse movement using the button interfac
 2. Open a grid and turn on ```Editing mode```
 3. Edit cell and got to ```Actions``` tab
 4. Select ```UART action```
-5. Enter ```AT MX 100;\n``` into the field ```command string```.
-6. Click on ```OK``` to save the action.
-7. Turn off ```Editing mode```
+5. Select ```Bluetooth``` as ```UART Type```. 
+6. Enter ```AT MX 100;\n``` into the field ```Data```.
+7. Click on ```OK``` to save the action.
+8. Turn off ```Editing mode```
 
 ::: tip
 You can send any [FABI AT command](https://github.com/asterics/FABI/blob/master/FabiWare/commands.h) or [FLipMouse AT](https://github.com/asterics/FLipMouse/blob/master/FLipWare/commands.h) command (e.g. mouse click, keyboard input, slot change to remote control a Smartphone via Bluetooth HID, ...) that is supported.
