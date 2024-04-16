@@ -999,5 +999,10 @@
   "externalSpeechUrl": "URL do serviço de voz externa",
   "urlIsValid": "URL válido",
   "urlIsInvalid": "URL inválido",
-  "cacheAllTextsOfCurrentConfigurationExternalVoice": "Armazenar todos os textos da configuração atual usando voz externa"
+  "cacheAllTextsOfCurrentConfigurationExternalVoice": "Armazenar todos os textos da configuração atual usando voz externa",
+  "GridActionUART": "UART action (Bluetooth or Serial)",
+  "uartActionFailedConnection": "UART action failed, couldn't open connection!",
+  "uartConnectionClosed": "UART connection closed!",
+  "CONN_TYPE_BT": "Bluetooth",
+  "CONN_TYPE_SERIAL": "Serial"
 }
