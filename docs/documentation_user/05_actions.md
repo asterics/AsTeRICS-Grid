@@ -6,19 +6,20 @@ This chapter is about actions that can be performed if a grid element is selecte
 
 1. [Edit actions modal](05_actions.md#edit-actions-modal)
 2. [Action Types](05_actions.md#action-types)
-   * [Speak label](05_actions.md#speak-label)
-   * [Navigate to other grid](05_actions.md#navigate-to-other-grid)
-   * [Speak custom text](05_actions.md#speak-custom-text)
-   * [Play recorded audio](05_actions.md#play-recorded-audio)
-   * [Fill prediction elements](05_actions.md#fill-prediction-elements)
-   * [Collect element action](05_actions.md#collect-element-action)
-   * [AsTeRICS Action](05_actions.md#asterics-action)
-   * [Web radio action](05_actions.md#web-radio-action)
-   * [YouTube Action](05_actions.md#YouTube-Action)
-   * [Change Content Language](05_actions.md#Change-Content-Language)
-   * [Open webpage in new tab](05_actions.md#Open-webpage-in-new-tab)
-   * [openHAB Action](05_actions.md#openhab-action)
-   * [HTTP action](05_actions.md#http-action)
+   * [Speak label](05_actions.md#speak-label): speaks the label of the element using a computer voice (text-to-speech)
+   * [Navigate to other grid](05_actions.md#navigate-to-other-grid): navigates to another grid
+   * [Speak custom text](05_actions.md#speak-custom-text): speaks a customizeable text using a computer voice (text-to-speech)
+   * [Play recorded audio](05_actions.md#play-recorded-audio): plays custom audio, previously recorded via the microphone of the device
+   * [Fill prediction elements](05_actions.md#fill-prediction-elements): fills all [prediction elements](01_terms.md#grid-element) in the current grid with word suggestions
+   * [Collect element action](05_actions.md#collect-element-action): performs actions on [collect elements](01_terms.md#grid-element) in the current grid, e.g. clearing it or copying it's text to clipboard
+   * [AsTeRICS Action](05_actions.md#asterics-action): does an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework)
+   * [Web radio action](05_actions.md#web-radio-action): plays a web radio station
+   * [YouTube Action](05_actions.md#YouTube-Action): links to a YouTube video and shows it without leaving the communicator
+   * [Change Content Language](05_actions.md#Change-Content-Language): changes the content language (description of grid elements / language of the communicator grid(s))
+   * [Open webpage in new tab](05_actions.md#Open-webpage-in-new-tab): allows to assign an external web page to a cell and opens it in a new tab
+   * [openHAB Action](05_actions.md#openhab-action): allows to do environmental control using devices interfaced by the OpenHAB framework
+   * [HTTP action](05_actions.md#http-action): allows to execute commands on programs and devices providing a REST API through HTTP.
+   * [UART action](05_actions.md#uart-action): allows to execute commands on microcontrollers providing a UART (Serial) interface (wired or Bluetooth).
 
 [Back to Overview](README.md)
 
@@ -49,18 +50,7 @@ This modal configures the actions that will be performed if the grid element is 
 
 ## Action types
 
-These are the types of actions that are selectable (Fig. 2, number 1):
-* **Speak label**: speaks the label of the element using a computer voice (text-to-speech)
-* **Navigate to other grid**: navigates to another grid
-* **Speak custom text**: speaks a customizeable text using a computer voice (text-to-speech)
-* **Play recorded audio**: plays custom audio, previously recorded via the microphone of the device
-* **Fill prediction elements**: fills all [prediction elements](01_terms.md#grid-element) in the current grid with word suggestions
-* **Collect element action**: performs actions on [collect elements](01_terms.md#grid-element) in the current grid, e.g. clearing it or copying it's text to clipboard
-* **AsTeRICS Action**: does an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework)
-* **Web radio action**: plays a web radio station
-* **YouTube action**: links to a YouTube video and shows it without leaving the communicator
-* **Change content language**: changes the content language (description of grid elements / language of the communicator grid(s))
-* **Open web page in new tab**: allows to assign an external web page to a cell and opens it in a new tab
+These are the types of actions that are selectable (Fig. 2, number 1).
 
 ### Speak label
 
@@ -421,6 +411,7 @@ If the openHAB installation is hosted in the local network, there are two possib
 ### HTTP action
 
 This action can send arbitrary HTTP requests, e.g. for accessing any REST API.
+For hands-on tutorials, have a look at the [HTTP action tutorials](513_http-action-tutorials.md).
 
 ![Configuration of a HTTP action](./img/action-http.png)
 
@@ -431,10 +422,38 @@ Figure 22 shows the configuration of a HTTP action, which has these properties:
 1. **HTTP body**: the data that should be sent within the request (not applicable for HTTP method `GET` and `HEAD`)
 1. **HTTP method**: the method to be used for the request. Can be `GET`, `POST`, `PUT`, `DELETE`, `HEAD`, `OPTIONS` and `PATCH`
 1. **HTTP Content-Type**: the Content-Type of the request, defaults to `text/plain`
-1. **HTTP Authorization User**: the (optional) username for HTTP authorization 
-1. **HTTP Authorization Password**: the (optional) password for HTTP authorization
+1. **HTTP Authentication User**: the (optional) username for HTTP authentication 
+1. **HTTP Authentication Password**: the (optional) password for HTTP authentication
 
 Any errors from requests will be shown in a popup in the lower right corner of the application.
+
+### UART action
+
+This action allows sending commands to microcontrollers using the UART (Serial) interface. The connections can be wired (using [Web Serial](https://developer.mozilla.org/en-US/docs/Web/API/Web_Serial_API), Chrome/Edge-Desktop) or wireless (using [Web Bluetooth](https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API), Chrome/Edge-Desktop/Mobile). 
+
+#### Example use cases
+
+* Creating a remote control for a TV by sending Infrared commands to the Open Source microcontroller [Puck.js](https://www.puck-js.com/). The commands can be directly copied from the [puckmote](https://asterics.github.io/puckmote/) online remote control database.
+* Creating accessible battery-powered toys (e.g. soap bubble machine, disco light or duplo train)
+* Creating a mouse click or keyboard input using the button interface FABI or the mouth mouse FLipMouse.
+
+For hands-on tutorials, have a look at the [UART action tutorials](514_uart-action-tutorials.md).
+
+#### Supported devices
+
+* [Devices supported by Espruino](https://www.espruino.com/Other+Boards#boards-that-espruino-works-on), e.g. [Puck.js](https://www.puck-js.com/)
+* [Flexible Assistive Button Interface (FABI)](https://www.asterics-foundation.org/projects/fabi/)
+* [Finger and Lip mouse (FLipMouse)](https://www.asterics-foundation.org/projects/the-flipmouse/)
+
+#### Supported commands
+
+![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/a1f3d53c-0237-4342-a85d-90d745d2f0d9)
+
+*Fig. 23: Configuration of a UART action.*
+
+The action supports the following input fields:
+1. **UART Type**: Choose between ```Bluetooth``` and ```Serial```(wired)
+2. **Data**: A string to be executed on the microcontroller (e.g. Javascript code (Espruino devices) or AT commands (FABI, FLipMouse)).
 
 [&#x2190; Previous Chapter](04_input_options.md) [Next Chapter &#x2192;](06_users.md)
 
