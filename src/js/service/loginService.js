@@ -110,7 +110,7 @@ loginService.loginStoredUser = function (user, dontRoute) {
             });
         } else if (savedOnlineUsers.includes(user)) {
             log.info("waiting for successful login because user wasn't completely synced before...");
-            let password = localStorageService.getUserPassword(user);
+            let password = localStorageService.getUserSettings(user).password;
             loginService
                 .loginHashedPassword(user, password, true)
                 .then(() => {
