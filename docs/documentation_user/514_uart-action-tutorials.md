@@ -4,22 +4,22 @@ Subsequently, you will find tutorials of how to use the UART action.
 
 ## Remote control (Infrared)
 
-The following tutorial explains, how to create a remote control for a TV by sending Infrared commands to the Open Source microcontroller [Puck.js](https://www.puck-js.com/), which supports emitting infrared light codes out of the box. The commands can be directly copied from [puckmote](https://asterics.github.io/puckmote/) (online remote control database).
+The following tutorial explains, how to create a remote control for a TV by sending Infrared commands to the Open Source microcontroller [Puck.js](https://www.puck-js.com/), which supports emitting infrared light codes out of the box. The commands can be directly copied from the [puckmote](https://asterics.github.io/puckmote/) online remote control database (modified version for AsTeRICS Grid).
 
-![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/ebfbca0d-6647-49e9-9f30-b898ca111659)
+![AG-puckmote](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/6459d87a-aac6-4456-84a1-00fbcb847e9a)
 
 *Fig. 1: Pasting infrared command into action field and try out of command.*
 
 1. Get a [Puck.js](https://www.puck-js.com) device (**not Puck.js Lite**) from the [official shop](https://shop.espruino.com/puckjs) or [another distributor](http://www.espruino.com/Order).
 2. Follow the [Puck.js Getting Started Guide](https://www.espruino.com/Quick+Start+BLE#puckjs)
 3. Enable Bluetooth on your host device
-4. Check if your device is contained in the [puckmote database](https://asterics.github.io/puckmote/).
-5. Test infrared command of choice, e.g. click on ```Power On``` or ```On```.
-6. Copy the ```Puck.IR(....);\n``` command.
 7. Turn on ```Editing mode```
 8. Edit cell and got to ```Actions``` tab
 9. Select ```UART action```
 10. Select ```Bluetooth``` as ```UART Type```. 
+4. Check if your device is contained in the [puckmote database](https://asterics.github.io/puckmote/).
+5. Test infrared command of choice, e.g. click on ```Power On``` or ```On```.
+6. Copy the ```Puck.IR(....);\n``` command.
 11. Paste copied ```Puck.IR(....);\n``` command into the field ```Data```.
 12. Click on ```OK``` to save the action.
 13. Turn off ```Editing mode```
