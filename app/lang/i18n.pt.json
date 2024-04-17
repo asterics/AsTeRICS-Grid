@@ -1000,9 +1000,9 @@
   "urlIsValid": "URL válido",
   "urlIsInvalid": "URL inválido",
   "cacheAllTextsOfCurrentConfigurationExternalVoice": "Armazenar todos os textos da configuração atual usando voz externa",
-  "GridActionUART": "UART action (Bluetooth or Serial)",
-  "uartActionFailedConnection": "UART action failed, couldn't open connection!",
-  "uartConnectionClosed": "UART connection closed!",
+  "GridActionUART": "Ação UART (Bluetooth ou Série)",
+  "uartActionFailedConnection": "A ação UART falhou. Não foi possível ligar!",
+  "uartConnectionClosed": "Ligação UART encerrada!",
   "CONN_TYPE_BT": "Bluetooth",
-  "CONN_TYPE_SERIAL": "Serial"
+  "CONN_TYPE_SERIAL": "Série"
 }
