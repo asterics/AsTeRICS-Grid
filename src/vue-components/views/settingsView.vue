@@ -305,7 +305,7 @@
                 this.fixCurrentVoice();
             },
             fixCurrentVoice(dontSave) {
-                if (!this.selectVoices.map(v => v.name).includes(this.userSettingsLocal.voiceConfig.preferredVoice)) {
+                if (!this.selectVoices.map(v => v.id).includes(this.userSettingsLocal.voiceConfig.preferredVoice)) {
                     this.userSettingsLocal.voiceConfig.preferredVoice = undefined;
                     if (!dontSave) {
                         this.saveUserSettingsLocal();
