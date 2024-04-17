@@ -1,7 +1,7 @@
 {
   "GridActionSpeak": "Sema lebo",
-  "GridActionSpeakCustom": "Speak custom text",
-  "GridActionAudio": "Play recorded audio",
+  "GridActionSpeakCustom": "Ongea maandishi maalum",
+  "GridActionAudio": "Ongea maandishi maalum",
   "GridActionWordForm": "Change word forms",
   "GridActionNavigate": "Navigate to other grid",
   "GridActionARE": "AsTeRICS action",
