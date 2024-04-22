@@ -3,7 +3,7 @@
   "GridActionSpeakCustom": "Ongea maandishi maalum",
   "GridActionAudio": "Ongea maandishi maalum",
   "GridActionWordForm": "Ongea maandishi maalum",
-  "GridActionNavigate": "Navigate to other grid",
+  "GridActionNavigate": "Nenda kwenye gridi nyingine",
   "GridActionARE": "AsTeRICS action",
   "GridActionOpenHAB": "OpenHAB action",
   "GridActionPredict": "Fill prediction elements",
