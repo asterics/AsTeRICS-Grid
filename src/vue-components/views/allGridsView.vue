@@ -284,7 +284,7 @@
                     this.resetFileInput(event);
                     return;
                 }
-                await dataService.importBackup(importFile, (progress, text) => {
+                await dataService.importBackupUploadedFile(importFile, (progress, text) => {
                     MainVue.showProgressBar(progress, {
                         text: text
                     });

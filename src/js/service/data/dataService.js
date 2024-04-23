@@ -499,7 +499,7 @@ dataService.normalizeImportData = function (data) {
     return importData;
 };
 
-dataService.importBackup = async function (file, progressFn) {
+dataService.importBackupUploadedFile = async function (file, progressFn) {
     progressFn = progressFn || (() => {});
     progressFn(10, i18nService.t('extractingGridsFromFile'));
     let importData = await dataService.convertFileToImportData(file);
