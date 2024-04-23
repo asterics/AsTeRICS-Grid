@@ -71,6 +71,7 @@ git push origin $tagname
 sed -i -e "s/$tagnameSed/#ASTERICS_GRID_VERSION#/g" serviceWorker.js
 git add serviceWorker.js
 git commit -m "reverted release version to placeholder"
+git push origin HEAD
 do_gh_pages_update
 if $doStash; then
     echo "pop stashed changes..."
