@@ -12,7 +12,7 @@
             <div>
                 <div class="row" v-if="defaultGridsets">
                     <label for="selectGridset" class="col-md-3">{{ $t('selectConfiguration') }}</label>
-                    <select v-model="selectedGridset" id="selectGridset" class="col-md-8">
+                    <select v-model="selectedGridset" id="selectGridset" class="col-md-8" @change="linkCopied = false">
                         <i class="fas fa-sticky-note"></i>
                         <option v-for="set in defaultGridsets" :value="set">{{ set.name + ` (${(set.languages.length > 1 ? $t('multilingual') : $t(`lang.${set.languages[0]}`))})`}}</option>
                     </select>
@@ -31,6 +31,10 @@
                     }, '') }}
                     </div>
                     <div class="col-11" v-if="selectedGridset.description"><strong>{{ $t('description') }}</strong>: <span v-html="i18nService.getTranslation(selectedGridset.description)"></span></div>
+                </div>
+                <div class="mt-2">
+                    <a href="javascript:;" class="me-2" @click="copyLink">{{ $t('copyDirectLinkToConfigToClipboard') }}</a>
+                    <span v-if="linkCopied" class="fas fa-check"/>
                 </div>
                 <div class="row mt-3">
                     <div class="col-12">
@@ -61,6 +65,9 @@
     import {gridUtil} from "../../js/util/gridUtil.js";
     import {GridElement} from "../../js/model/GridElement.js";
     import {arasaacService} from "../../js/service/pictograms/arasaacService.js";
+    import {constants} from '../../js/util/constants';
+    import { urlParamService } from '../../js/service/urlParamService';
+    import { util } from '../../js/util/util';
 
     export default {
         components: {},
@@ -70,7 +77,8 @@
                 defaultGridsets: [],
                 selectedGridset: null,
                 loading: false,
-                i18nService: i18nService
+                i18nService: i18nService,
+                linkCopied: false
             }
         },
         methods: {
@@ -119,40 +127,22 @@
                     return;
                 }
                 this.loading = true;
-                $.get(this.getGridsetUrl()).then(result => handleResult(result));
-                async function handleResult(result) {
-
-                    //code for checking and correcting imported data
-                    /*result.grids.forEach(grid => {
-                        grid.gridElements.forEach(element => {
-                            element.actions.forEach(action => {
-                                if (action.modelName === "GridActionSpeak" || action.modelName === "GridActionSpeakCustom") {
-                                    if (action.speakLanguage) {
-                                        //log.warn(JSON.stringify(grid.label) + " --> " + JSON.stringify(element.label));
-                                        action.speakLanguage = undefined;
-                                    }
-                                    if (action.speakText) {
-                                        log.warn(JSON.stringify(grid.label) + " --> " + JSON.stringify(element.label) + " --> " + JSON.stringify(action.speakText));
-                                    }
-                                }
-                            })
-                        })
-                    });*/
-                    dataService.importBackupData(dataService.normalizeImportData(result), {
-                        skipDelete: true
-                    }).then(async () => {
-                        thiz.loading = false;
-                        Router.toMain();
-                    });
-                }
+                dataService.importBackupDefaultFile(this.selectedGridset.filename, {
+                    skipDelete: true
+                }).then(async () => {
+                    thiz.loading = false;
+                    Router.toMain();
+                });
             },
-            getGridsetUrl() {
-                return `app/gridsets/${this.selectedGridset.filename}`;
+            copyLink() {
+                let link = location.origin + location.pathname + `?${urlParamService.params.PARAM_USE_GRIDSET_FILENAME}=${this.selectedGridset.filename}`;
+                util.copyToClipboard(link);
+                this.linkCopied = true;
             }
         },
         mounted() {
             let thiz = this;
-            $.get('app/gridsets/gridset_metadata.json').then(result => {
+            $.get(constants.GRIDSET_FOLDER + 'gridset_metadata.json').then(result => {
                 let currentLang = i18nService.getContentLang();
                 result.sort((a, b) => {
                     if (a.standardFor && a.standardFor.includes(currentLang)) return -1;
@@ -165,7 +155,7 @@
                 });
                 thiz.selectedGridset = result[0];
                 thiz.defaultGridsets = result;
-                serviceWorkerService.cacheUrl(thiz.getGridsetUrl());
+                serviceWorkerService.cacheUrl(constants.GRIDSET_FOLDER + this.selectedGridset.filename);
             })
         },
         beforeDestroy() {

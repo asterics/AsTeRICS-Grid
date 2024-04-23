@@ -117,6 +117,24 @@ localStorageService.saveUserSettings = function (settings, username) {
     $(document).trigger(constants.EVENT_USERSETTINGS_UPDATED, existingSettings);
 }
 
+localStorageService.getAutoImportedUserSettings = function() {
+    let allSettings = localStorageService.getJSON(USER_SETTINGS) || {};
+    let autoUsers = Object.keys(allSettings).filter(key => key.startsWith(constants.LOCAL_DEFAULT_USER_PREFIX));
+    return autoUsers.map(username => new SettingsUserLocal(allSettings[username]));
+}
+
+localStorageService.getNextAutoUserName = function() {
+    let allSettings = localStorageService.getJSON(USER_SETTINGS) || {};
+    let usernames = Object.keys(allSettings);
+    for (let i = 1; i < 20; i++) {
+        let newAutoUsername = constants.LOCAL_DEFAULT_USER_PREFIX + i;
+        if (!usernames.includes(newAutoUsername)) {
+            return newAutoUsername;
+        }
+    }
+    return constants.LOCAL_DEFAULT_USER_PREFIX + 'fallback';
+};
+
 /**
  * checks if the given username is a saved local user without password
  * @param username the username to check
