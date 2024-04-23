@@ -12,6 +12,7 @@ class SettingsUserLocal {
      * @param settings.metadata
      * @param settings.ytState
      * @param settings.voiceConfig
+     * @param settings.originGridsetFilename
      */
     constructor(settings) {
         settings = settings || {};
@@ -24,6 +25,7 @@ class SettingsUserLocal {
         this.metadata = settings.metadata;
         this.ytState = settings.ytState;
         this.voiceConfig = settings.voiceConfig && Object.keys(settings.voiceConfig).length ? new VoiceConfig(settings.voiceConfig) : {};
+        this.originGridsetFilename = settings.originGridsetFilename;
 
         convertServiceLocal.updateDataModel(this);
     }
