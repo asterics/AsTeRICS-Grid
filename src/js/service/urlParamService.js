@@ -84,7 +84,7 @@ urlParamService.removeParam = function(name) {
 
 function setURLSearchParamsToURL (searchParams) {
     let questionMark = searchParams.size > 0 ? "?" : "";
-    history.replaceState(null, null, `/${questionMark}${searchParams.toString()}${location.hash}`);
+    history.replaceState(null, null, `${location.pathname}${questionMark}${searchParams.toString()}${location.hash}`);
 }
 
 function hasParam(name) {
