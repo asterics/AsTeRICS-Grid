@@ -21,11 +21,13 @@ uartService.doAction = function (action) {
                 btConnection.on("data", (data) => console.log("received BT data:", data));
                 btConnection.on("close", btClosed);
                 btConnection.write(cmdString);
+                break;
             case GridActionUART.CONN_TYPE_SERIAL:
                 serialConnection = serialConnection || (await getConnection(UART.connectSerial));
                 serialConnection.on("data", (data) => console.log("received serial data:", data));
                 serialConnection.on("close", serialClosed);
                 serialConnection.write(cmdString);
+                break;
         }
     });
 };
