@@ -1005,5 +1005,5 @@
   "uartConnectionClosed": "UART-Verbindung wurde beendet!",
   "CONN_TYPE_BT": "Bluetooth",
   "CONN_TYPE_SERIAL": "Serielle Schnittstelle",
-  "copyDirectLinkToConfigToClipboard": "Copy direct link to this configuration to clipboard"
+  "copyDirectLinkToConfigToClipboard": "Direkten Link zu dieser Konfiguration kopieren"
 }
