@@ -20,6 +20,7 @@ import { localStorageService } from './service/data/localStorageService';
 import { MainVue } from './vue/mainVue';
 import HelpView from '../vue-components/views/helpView.vue';
 import { constants } from './util/constants.js';
+import { urlParamService } from './service/urlParamService';
 
 let NO_DB_VIEWS = ['#login', '#register', '#welcome', '#add', '#about', '#help', '#outdated'];
 
@@ -33,7 +34,6 @@ let _currentView = null;
 let _currentVueApp = null;
 let _gridHistory = [];
 let _locked = false;
-let _currentHighlightIds = null;
 
 Router.VIEWS = {
     AllGridsView: AllGridsView,
@@ -59,11 +59,7 @@ Router.init = function (injectIdParam, initialHash) {
         },
         'grid/:gridId': function (params, query) {
             log.debug('route grid with ID: ' + params.gridId);
-            let queryParams = new URLSearchParams(query);
-            let passParams = Object.fromEntries(queryParams);
-            passParams.gridId = params.gridId;
-            passParams.highlightIds = passParams.highlightIds ? JSON.parse(passParams.highlightIds) : undefined;
-            passParams.skipThumbnailCheck = passParams.skipThumbnailCheck ? JSON.parse(passParams.skipThumbnailCheck) : undefined;
+            let passParams = urlParamService.getSearchQueryParams(params);
             helpService.setHelpLocation('02_navigation', '#main-view');
             loadVueView(GridView, passParams, '#main');
         },
@@ -229,25 +225,8 @@ Router.toGrid = function (id, props) {
     if (id) {
         Router.addToGridHistory(id);
         props = props || {};
-        if (props.highlightIds) {
-            _currentHighlightIds = props.highlightIds;
-        } else if (_currentHighlightIds) {
-            _currentHighlightIds.shift();
-            props.highlightIds = _currentHighlightIds.length > 0 ? _currentHighlightIds : undefined;
-            _currentHighlightIds = props.highlightIds;
-        }
-        let params = new URLSearchParams();
-        let hash = null;
-        if (props) {
-            Object.keys(props).forEach((key) => {
-                if (props[key]) {
-                    params.set(key, JSON.stringify(props[key]));
-                }
-            });
-            hash = `#grid/${id}?${params.toString()}`;
-        } else {
-            hash = `#grid/${id}`;
-        }
+        urlParamService.setParamsToSearchQuery(props);
+        let hash = `#grid/${id}`;
 
         if (_currentView === GridView) {
             dataService.getGrid(id).then((gridData) => {
@@ -330,7 +309,7 @@ function getHash() {
 }
 
 function getFullUrl(hash) {
-    return location.origin + location.pathname + hash;
+    return location.origin + location.pathname + location.search + hash;
 }
 
 function loadVueView(viewObject, properties, menuItemToHighlight) {

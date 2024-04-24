@@ -6,6 +6,7 @@ constants.MODEL_VERSION_LOCAL = '{"major": 1, "minor": 0, "patch": 0}';
 
 constants.LOCAL_NOLOGIN_USERNAME = 'default-user';
 constants.LOCAL_DEMO_USERNAME = 'local-demo-user';
+constants.LOCAL_DEFAULT_USER_PREFIX = 'default-';
 constants.USERNAME_REGEX = /^[a-z0-9][a-z0-9_-]{2,15}$/;
 
 constants.VALIDATION_ERROR_REGEX = 'VALIDATION_ERROR_REGEX';
@@ -67,6 +68,8 @@ constants.VOICE_TYPE_NATIVE = 'VOICE_TYPE_NATIVE';
 constants.VOICE_TYPE_RESPONSIVEVOICE = 'VOICE_TYPE_RESPONSIVEVOICE';
 constants.VOICE_TYPE_EXTERNAL_PLAYING = 'VOICE_TYPE_EXTERNAL_PLAYING';
 constants.VOICE_TYPE_EXTERNAL_DATA = 'VOICE_TYPE_EXTERNAL_DATA';
+
+constants.GRIDSET_FOLDER = 'app/gridsets/';
 
 constants.DEFAULT_ELEMENT_BACKGROUND_COLOR = '#ffffff';
 constants.DEFAULT_GRID_BACKGROUND_COLOR = '#e8e8e8';

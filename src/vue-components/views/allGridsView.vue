@@ -136,6 +136,7 @@
     import ImportModal from "../modals/importModal.vue";
     import NoGridsPage from "../components/noGridsPage.vue";
     import {GridActionNavigate} from "../../js/model/GridActionNavigate.js";
+    import { urlParamService } from '../../js/service/urlParamService';
 
     let ORDER_MODE_KEY = "AG_ALLGRIDS_ORDER_MODE_KEY";
     let SELECTOR_CONTEXTMENU = '#moreButton';
@@ -283,7 +284,7 @@
                     this.resetFileInput(event);
                     return;
                 }
-                await dataService.importBackup(importFile, (progress, text) => {
+                await dataService.importBackupUploadedFile(importFile, (progress, text) => {
                     MainVue.showProgressBar(progress, {
                         text: text
                     });
@@ -428,6 +429,7 @@
                             }
                         });
                     }
+                    urlParamService.removeParam("skipThumbnailCheck");
                     log.info(`saved all thumbnails with total size of ${totalSize / 1024}kB`);
                     Router.toManageGrids();
                     setTimeout(() => {

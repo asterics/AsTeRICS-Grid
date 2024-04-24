@@ -34,7 +34,7 @@ superlogin.configure(getConfig());
  * @return {*}
  */
 loginService.getLoggedInUsername = function () {
-    return _loggedInUser;
+    return _loggedInUser || databaseService.getCurrentUsedDatabase();
 };
 
 /**

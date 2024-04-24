@@ -23,11 +23,6 @@ import { util } from '../../util/util.js';
 
 let dataService = {};
 
-let _defaultGridSetPath = 'app/examples/default.grd.json';
-if (urlParamService.getDefaultGridsetName()) {
-    _defaultGridSetPath = 'app/examples/' + urlParamService.getDefaultGridsetName();
-}
-
 /**
  * gets a grid by ID.
  * @see{GridData}
@@ -504,7 +499,7 @@ dataService.normalizeImportData = function (data) {
     return importData;
 };
 
-dataService.importBackup = async function (file, progressFn) {
+dataService.importBackupUploadedFile = async function (file, progressFn) {
     progressFn = progressFn || (() => {});
     progressFn(10, i18nService.t('extractingGridsFromFile'));
     let importData = await dataService.convertFileToImportData(file);
@@ -518,6 +513,12 @@ dataService.importBackup = async function (file, progressFn) {
         generateGlobalGrid: fileUtil.isObzFile(file)
     });
 };
+
+dataService.importBackupDefaultFile = async function(filename, options) {
+    let path = constants.GRIDSET_FOLDER + filename;
+    let result = await $.get(path);
+    return dataService.importBackupData(result, options);
+}
 
 /**
  * deletes current config and imports data from backup
