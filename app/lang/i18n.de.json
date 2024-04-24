@@ -1004,5 +1004,6 @@
   "uartActionFailedConnection": "UART-Aktion fehlgeschlagen, Verbindung konnte nicht geöffnet werden!",
   "uartConnectionClosed": "UART-Verbindung wurde beendet!",
   "CONN_TYPE_BT": "Bluetooth",
-  "CONN_TYPE_SERIAL": "Serielle Schnittstelle"
+  "CONN_TYPE_SERIAL": "Serielle Schnittstelle",
+  "copyDirectLinkToConfigToClipboard": "Copy direct link to this configuration to clipboard"
 }
