@@ -48,7 +48,9 @@ async function main() {
     }
 
     console.log(`found ${deleteItems.length} users for deletion, which were inactive for at least ${MAX_USER_AGE_DAYS} days.`)
-    return;
+    if(!prod) {
+        return;
+    }
 
     let doneCount = 0;
     let successCount = 0;
