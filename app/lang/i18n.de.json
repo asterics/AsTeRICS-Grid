@@ -1005,5 +1005,7 @@
   "uartConnectionClosed": "UART-Verbindung wurde beendet!",
   "CONN_TYPE_BT": "Bluetooth",
   "CONN_TYPE_SERIAL": "Serielle Schnittstelle",
-  "copyDirectLinkToConfigToClipboard": "Direkten Link zu dieser Konfiguration kopieren"
+  "copyDirectLinkToConfigToClipboard": "Direkten Link zu dieser Konfiguration kopieren",
+  "importantInformation": "Important information",
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations."
 }
