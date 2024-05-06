@@ -1006,6 +1006,6 @@
   "CONN_TYPE_BT": "Bluetooth",
   "CONN_TYPE_SERIAL": "Serial",
   "copyDirectLinkToConfigToClipboard": "Copiar enlace directo a esta configuración en el portapapeles",
-  "importantInformation": "Important information",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations."
+  "importantInformation": "Información importante",
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Los usuarios online que no hayan iniciado sesión en un plazo de 365 días se entenderá que han sido abandonados y serán eliminados de los servidores de Asterics Grid. Rogamos cree copias de seguridad de aquellas configuraciones que considere importantes."
 }
