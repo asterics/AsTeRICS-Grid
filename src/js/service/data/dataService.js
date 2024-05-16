@@ -376,12 +376,12 @@ dataService.downloadBackupToFile = async function () {
         exportOnlyCurrentLang: false,
         exportDictionaries: true,
         exportUserSettings: true,
-        filename: `${user}_${util.getCurrentDateTimeString()}_asterics-grid-full-backup.grd`
+        filename: `${user}_${util.getCurrentDateTimeString()}_asterics-grid-full-backup`
     });
 };
 
 /**
- * export configuration to file
+ * get configuration data for downloading
  * @param gridIds array of gridIds to export
  * @param options options for exporting
  * @param options.exportGlobalGrid if true, the global grid is exported (if existing and enabled)
@@ -389,13 +389,15 @@ dataService.downloadBackupToFile = async function () {
  * @param options.exportDictionaries if true, all user dictionaries are exported
  * @param options.exportUserSettings if true, all user settings are exported
  * @param options.filename the filename to use for downloading
- * @return {Promise<void>}
+ * @param options.obzFormat if true, data is returned in obz format (as blob)
+ * @returns {Promise<{}|null>} promise resolving to a javascript object containing native AG backup data or to a blob
+ *                             containing the backup in .obz format if options.obzFormat is true.
  */
-dataService.downloadToFile = async function (gridIds, options) {
+dataService.getBackupData = async function (gridIds, options) {
     if (!gridIds || gridIds.length === 0) {
-        return;
+        return null;
     }
-    let exportData = {};
+    let backupData = {};
     options = options || {};
     let globalGridId = null;
     if (options.exportGlobalGrid) {
@@ -403,10 +405,10 @@ dataService.downloadToFile = async function (gridIds, options) {
         globalGridId = globalGrid ? globalGrid.id : null;
     }
     let allGrids = await dataService.getGrids(true, !options.exportGlobalGrid);
-    exportData.grids = allGrids.filter((grid) => gridIds.includes(grid.id) || globalGridId === grid.id);
+    backupData.grids = allGrids.filter((grid) => gridIds.includes(grid.id) || globalGridId === grid.id);
     if (options.exportOnlyCurrentLang) {
         let contentLang = i18nService.getContentLang();
-        for (let grid of exportData.grids) {
+        for (let grid of backupData.grids) {
             Object.keys(grid.label).forEach((key) => key === contentLang || delete grid.label[key]);
             for (let elem of grid.gridElements) {
                 Object.keys(elem.label).forEach((key) => key === contentLang || delete elem.label[key]);
@@ -421,24 +423,53 @@ dataService.downloadToFile = async function (gridIds, options) {
         }
     }
     if (options.exportDictionaries) {
-        exportData.dictionaries = await dataService.getDictionaries();
+        backupData.dictionaries = await dataService.getDictionaries();
     }
 
     let currentMetadata = await dataService.getMetadata();
     if (options.exportUserSettings) {
-        exportData.metadata = currentMetadata;
-    } else if (exportData.grids.map((grid) => grid.id).includes(globalGridId)) {
-        exportData.metadata = {};
-        exportData.metadata.globalGridId = globalGridId;
-        exportData.metadata.lastOpenedGridId = currentMetadata.lastOpenedGridId;
+        backupData.metadata = currentMetadata;
+    } else if (backupData.grids.map((grid) => grid.id).includes(globalGridId)) {
+        backupData.metadata = {};
+        backupData.metadata.globalGridId = globalGridId;
+        backupData.metadata.lastOpenedGridId = currentMetadata.lastOpenedGridId;
+    }
+    if (options.obzFormat) {
+        backupData = await obfConverter.backupDataToOBZ(backupData);
+    }
+    return backupData;
+}
+
+/**
+ * export configuration to file
+ * @param gridIds array of gridIds to export
+ * @param options options for exporting
+ * @param options.exportGlobalGrid if true, the global grid is exported (if existing and enabled)
+ * @param options.exportOnlyCurrentLang if true, only the current content language is exported
+ * @param options.exportDictionaries if true, all user dictionaries are exported
+ * @param options.exportUserSettings if true, all user settings are exported
+ * @param options.filename the base filename to use for downloading (without file extension)
+ * @param options.obzFormat if true, data is downloaded in obz format
+ * @return {Promise<void>}
+ */
+dataService.downloadToFile = async function (gridIds, options) {
+    let backupData = await dataService.getBackupData(gridIds, options);
+    if (!backupData) {
+        return;
     }
 
-    let blob = new Blob([JSON.stringify(exportData)], { type: 'text/plain;charset=utf-8' });
-    let filename =
+    let blob = backupData;
+    let postfix = '.obz';
+    if (!options.obzFormat) {
+        blob = new Blob([JSON.stringify(backupData)], { type: 'text/plain;charset=utf-8' });
+        postfix = '.grd';
+    }
+    let filenameBase =
         options.filename ||
-        (exportData.grids.length > 1
-            ? 'asterics-grid-backup.grd'
-            : i18nService.getTranslation(exportData.grids[0].label) + '.grd');
+        (backupData.grids.length > 1
+            ? `asterics-grid-backup`
+            : i18nService.getTranslation(backupData.grids[0].label));
+    let filename = filenameBase + postfix;
     FileSaver.saveAs(blob, filename);
 };
 
@@ -468,7 +499,7 @@ dataService.convertFileToImportData = async function (file) {
         importData = await obfConverter.OBFToGridData(JSON.parse(fileContent));
     } else if (fileUtil.isObzFile(file)) {
         let obzFileMap = await fileUtil.readZip(file, true);
-        importData = await obfConverter.OBZToGridSet(obzFileMap);
+        importData = await obfConverter.OBZToImportData(obzFileMap);
     }
     return dataService.normalizeImportData(importData);
 };

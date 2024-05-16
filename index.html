@@ -111,6 +111,10 @@
     // polyfill for String.replaceAll, https://stackoverflow.com/questions/1144783/how-do-i-replace-all-occurrences-of-a-string-in-javascript
     if(!String.prototype.replaceAll){Object.defineProperty(String.prototype,'replaceAll',{configurable:!0,writable:!0,enumerable:!1,value:function(search,replace){return this.replace(Object.prototype.toString.call(search)==='[object RegExp]'?search.global?search:RegExp(search.source,/\/([a-z]*)$/.exec(search.toString())[1]+'g'):RegExp(String(search).replace(/[.^$*+?()[{|\\]/g,"\\$&"),"g"),replace)}})}
 
+    if(![].fill) {
+        logAndRedirect("Browser doesn't support Array.fill");
+    }
+
     Modernizr.on('promises', function (result) {
         checkResult(result, 'Promises');
     });
@@ -120,9 +124,13 @@
 
     function checkResult(result, feature) {
         if (!result) {
-            console.warn("Browser doesn't support " + feature + ".");
-            window.location.replace("unsupported.html");
+            logAndRedirect("Browser doesn't support " + feature + ".")
         }
+    }
+
+    function logAndRedirect(msg) {
+        console.warn(msg);
+        window.location.replace("unsupported.html");
     }
 </script>
 

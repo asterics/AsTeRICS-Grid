@@ -1,3 +1,5 @@
+import { util } from './util';
+
 let fileUtil = {};
 
 /**
@@ -31,6 +33,27 @@ fileUtil.readZip = function (file, parseJSON) {
         });
     });
 };
+
+/**
+ * creates a .zip file based on a map of paths and file contents.
+ * @param fileMap map of elements "file path" -> "file content", which define which contents should be included at
+ *                which paths in the .zip file. if "file content" is not a string, it is stringified before
+ *                adding it to the .zip file.
+ * @return Promise which resolves to blob of created .zip file
+ */
+fileUtil.createZip = async function(fileMap = {}) {
+    const JSZipImport = await import('jszip');
+    const JSZip = JSZipImport.default;
+    let zip = new JSZip();
+    for (let path of Object.keys(fileMap)) {
+        let content = fileMap[path];
+        if (!util.isString(content) && !ArrayBuffer.isView(content)) {
+            content = JSON.stringify(content);
+        }
+        zip.file(path, content, {binary: true}); //binary: true, in order to keep special chars correctly
+    }
+    return zip.generateAsync({ type: 'blob' });
+}
 
 fileUtil.readFileContent = function (file) {
     if (!file) {
