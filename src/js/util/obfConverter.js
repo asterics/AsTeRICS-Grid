@@ -91,7 +91,8 @@ obfConverter.backupDataToOBZ = async function(backupData, options) {
 function gridElementToObfButton(gridElement, obfGrid) {
     let obfButton = {
         id: gridElement.id,
-        label: i18nService.getTranslation(gridElement.label)
+        label: i18nService.getTranslation(gridElement.label),
+        background_color: gridElement.backgroundColor
     };
     let obfImage = gridImageToObfImage(gridElement.image);
     if (obfImage) {
