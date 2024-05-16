@@ -59,6 +59,12 @@
                                 <label for="exportGlobalGrid">{{ $t('exportGlobalGrid') }}</label>
                             </div>
                         </div>
+                        <div class="row">
+                            <div>
+                                <input id="exportOBZ" type="checkbox" v-model="options.exportOBZ"/>
+                                <label for="exportOBZ">{{ $t('exportOBZ') }}</label>
+                            </div>
+                        </div>
                         <div class="row" v-show="selectedGrid && allChildren && allChildren.length > 0">
                             <div>
                                 <input id="exportConnected" type="checkbox" v-model="options.exportConnected"/>
@@ -114,6 +120,7 @@
                     exportDictionaries: true,
                     exportUserSettings: true,
                     exportGlobalGrid: true,
+                    exportOBZ: false,
                     exportLang: constants.LANG_EXPORT_ALL,
                     exportLangOptions: [constants.LANG_EXPORT_ALL, constants.LANG_EXPORT_CURRENT]
                 },
@@ -158,7 +165,8 @@
                     exportOnlyCurrentLang: this.options.exportLang === constants.LANG_EXPORT_CURRENT,
                     exportDictionaries: this.options.exportDictionaries,
                     exportUserSettings: this.options.exportUserSettings,
-                    filename: filename
+                    filename: filename,
+                    obzFormat: this.options.exportOBZ
                 });
                 this.$emit('close');
             },

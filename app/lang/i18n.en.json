@@ -819,6 +819,7 @@
   "importDataFromFile": "Import data from file",
   "exportUserSettingsAndInputConfig": "Export user settings and input config",
   "exportGlobalGrid": "Export global grid",
+  "exportOBZ": "Export in OBZ format",
   "saveCustomDataToFile": "Save custom data to file",
   "restoreBackupFromFile": "Restore backup from file",
   "importCustomDataFromFile": "Import custom data from file",
