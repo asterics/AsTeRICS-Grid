@@ -111,26 +111,34 @@
     // polyfill for String.replaceAll, https://stackoverflow.com/questions/1144783/how-do-i-replace-all-occurrences-of-a-string-in-javascript
     if(!String.prototype.replaceAll){Object.defineProperty(String.prototype,'replaceAll',{configurable:!0,writable:!0,enumerable:!1,value:function(search,replace){return this.replace(Object.prototype.toString.call(search)==='[object RegExp]'?search.global?search:RegExp(search.source,/\/([a-z]*)$/.exec(search.toString())[1]+'g'):RegExp(String(search).replace(/[.^$*+?()[{|\\]/g,"\\$&"),"g"),replace)}})}
 
+    testEval("function x(a = 1){}", "default parameters")
     if(![].fill) {
         logAndRedirect("Browser doesn't support Array.fill");
     }
 
-    Modernizr.on('promises', function (result) {
-        checkResult(result, 'Promises');
-    });
-    Modernizr.on('indexeddb', function (result) {
-        checkResult(result, 'IndexedDB');
-    });
+    checkModernizr('promises');
+    checkModernizr('indexeddb');
 
-    function checkResult(result, feature) {
-        if (!result) {
-            logAndRedirect("Browser doesn't support " + feature + ".")
-        }
+    function checkModernizr(modernizrFeature) {
+        Modernizr.on(modernizrFeature, function (result) {
+            if (!result) {
+                logAndRedirect(modernizrFeature)
+            }
+        });
     }
 
-    function logAndRedirect(msg) {
-        console.warn(msg);
+    function logAndRedirect(missingFeature) {
+        console.warn("Browser doesn't support " + missingFeature + ".");
         window.location.replace("unsupported.html");
+    }
+
+    function testEval(evalString, msg) {
+        try {
+            eval(evalString);
+        } catch (e) {
+            console.log(e);
+            logAndRedirect(msg);
+        }
     }
 </script>
 
