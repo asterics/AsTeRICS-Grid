@@ -44,7 +44,7 @@ obfConverter.gridDataToOBF = function(gridData, manifest) {
     return obfGrid;
 };
 
-obfConverter.backupDataToOBZ = async function(backupData, options) {
+obfConverter.backupDataToOBZ = async function(backupData, options = {}) {
     if (!backupData || !backupData.grids) {
         return null;
     }
@@ -86,7 +86,7 @@ obfConverter.backupDataToOBZ = async function(backupData, options) {
         manifest.paths.boards[board.id] = path;
     }
     fileMap[OBF_MANIFEST_FILENAME] = manifest;
-    return fileUtil.createZip(fileMap);
+    return fileUtil.createZip(fileMap, options);
 };
 
 function gridElementToObfButton(gridElement, obfGrid) {

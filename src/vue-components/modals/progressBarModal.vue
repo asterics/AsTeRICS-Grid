@@ -13,7 +13,7 @@
                         <div id="progressWrapper" style="border: 1px solid; border-radius: 3px; width: 100%; height: 50px; margin: 0.5em 0">
                             <div id="progressBar" :style="`width: ${progressPercentage}%; height: 100%; background-color: green`"></div>
                         </div>
-                        <div class="biggerFont" style="text-align: right; width: 100%">{{progressPercentage}}%</div>
+                        <div class="biggerFont" style="text-align: right; width: 100%">{{Math.round(progressPercentage)}}%</div>
                     </div>
 
                     <div class="modal-footer">
@@ -56,7 +56,7 @@
                         this.options[key] = options[key];
                     }
                 });
-                if (this.progressPercentage === 100) {
+                if (Math.abs(this.progressPercentage - 100) < 0.001) {
                     setTimeout(() => {
                         this.options = JSON.parse(JSON.stringify(defaultOptions));
                         this.$emit('close');

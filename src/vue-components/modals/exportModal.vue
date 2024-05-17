@@ -100,6 +100,7 @@
     import {i18nService} from "../../js/service/i18nService.js";
     import {localStorageService} from "../../js/service/data/localStorageService.js";
     import {util} from "../../js/util/util.js";
+    import { MainVue } from '../../js/vue/mainVue';
 
     let constants = {
         LANG_EXPORT_CURRENT: 'LANG_EXPORT_CURRENT',
@@ -166,7 +167,13 @@
                     exportDictionaries: this.options.exportDictionaries,
                     exportUserSettings: this.options.exportUserSettings,
                     filename: filename,
-                    obzFormat: this.options.exportOBZ
+                    obzFormat: this.options.exportOBZ,
+                    progressFn: (percent, text) => {
+                        MainVue.showProgressBar(percent, {
+                            header: i18nService.t('exportToFile'),
+                            text: text
+                        });
+                    }
                 });
                 this.$emit('close');
             },

@@ -390,13 +390,15 @@ dataService.downloadBackupToFile = async function () {
  * @param options.exportUserSettings if true, all user settings are exported
  * @param options.filename the filename to use for downloading
  * @param options.obzFormat if true, data is returned in obz format (as blob)
+ * @param options.progressFn fn for reporting progress, called with params percentage and text
  * @returns {Promise<{}|null>} promise resolving to a javascript object containing native AG backup data or to a blob
  *                             containing the backup in .obz format if options.obzFormat is true.
  */
-dataService.getBackupData = async function (gridIds, options) {
+dataService.getBackupData = async function (gridIds, options = {}) {
     if (!gridIds || gridIds.length === 0) {
         return null;
     }
+    options.progressFn = options.progressFn || (() => {});
     let backupData = {};
     options = options || {};
     let globalGridId = null;
@@ -404,6 +406,7 @@ dataService.getBackupData = async function (gridIds, options) {
         let globalGrid = await dataService.getGlobalGrid();
         globalGridId = globalGrid ? globalGrid.id : null;
     }
+    options.progressFn(10, i18nService.t('retrievingGrids'));
     let allGrids = await dataService.getGrids(true, !options.exportGlobalGrid);
     backupData.grids = allGrids.filter((grid) => gridIds.includes(grid.id) || globalGridId === grid.id);
     if (options.exportOnlyCurrentLang) {
@@ -435,7 +438,12 @@ dataService.getBackupData = async function (gridIds, options) {
         backupData.metadata.lastOpenedGridId = currentMetadata.lastOpenedGridId;
     }
     if (options.obzFormat) {
-        backupData = await obfConverter.backupDataToOBZ(backupData);
+        options.progressFn(10, i18nService.t('convertingToOBZ'));
+        backupData = await obfConverter.backupDataToOBZ(backupData, {
+            progressFn: (zipProgress => {
+                options.progressFn(10 + util.mapRange(zipProgress, 0, 100, 0, 90));
+            })
+        });
     }
     return backupData;
 }
@@ -450,9 +458,10 @@ dataService.getBackupData = async function (gridIds, options) {
  * @param options.exportUserSettings if true, all user settings are exported
  * @param options.filename the base filename to use for downloading (without file extension)
  * @param options.obzFormat if true, data is downloaded in obz format
+ * @param options.progressFn fn for reporting progress, called with params percentage and text
  * @return {Promise<void>}
  */
-dataService.downloadToFile = async function (gridIds, options) {
+dataService.downloadToFile = async function (gridIds, options = {}) {
     let backupData = await dataService.getBackupData(gridIds, options);
     if (!backupData) {
         return;
@@ -476,9 +485,11 @@ dataService.downloadToFile = async function (gridIds, options) {
 /**
  * converts a file (.grd, .obf, .obz) to standardized import data
  * @param file
+ * @param options
  * @return {Promise<null>}
  */
-dataService.convertFileToImportData = async function (file) {
+dataService.convertFileToImportData = async function (file, options = {}) {
+    options.progressFn = options.progressFn || (() => {});
     let fileContent = await fileUtil.readFileContent(file);
     let importData = null;
     if (!fileContent) {
@@ -500,7 +511,8 @@ dataService.convertFileToImportData = async function (file) {
     } else if (fileUtil.isObzFile(file)) {
         let obzFileMap = await fileUtil.readZip(file, {
             jsonFileExtensions: ["json", "obf"],
-            defaultEncoding: "base64"
+            defaultEncoding: "base64",
+            progressFn: options.progressFn
         });
         importData = await obfConverter.OBZToImportData(obzFileMap);
     }
@@ -536,7 +548,11 @@ dataService.normalizeImportData = function (data) {
 dataService.importBackupUploadedFile = async function (file, progressFn) {
     progressFn = progressFn || (() => {});
     progressFn(10, i18nService.t('extractingGridsFromFile'));
-    let importData = await dataService.convertFileToImportData(file);
+    let importData = await dataService.convertFileToImportData(file, {
+        progressFn: progress => {
+            progressFn(10 + util.mapRange(progress, 0, 100, 0, 10));
+        }
+    });
     if (!importData) {
         progressFn(100);
         MainVue.setTooltip(i18nService.t('backupFileDoesntContainData'), { msgType: 'warn' });

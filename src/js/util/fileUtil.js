@@ -5,30 +5,36 @@ let fileUtil = {};
 /**
  * reads the contents of a .zip file
  * @param file the zip file to read
+ * @param options
  * @param options.jsonFileExtensions array of file extensions that should be parsed as json (without dot, e.g. "json", "obf")
  * @param options.defaultEncoding default file content encoding, see https://stuk.github.io/jszip/documentation/api_zipobject/async.html
+ * @param options.progressFn function that is called with current progress in percent
  * @return a Promise resolving to a map {filename => file content}
  */
-fileUtil.readZip = async function (file, options = {}) {
+fileUtil.readZip = async function(file, options = {}) {
     options.jsonFileExtensions = options.jsonFileExtensions || [];
+    options.progressFn = options.progressFn || (() => {});
     let returnMap = {};
     const JSZipImport = await import('jszip');
     const JSZip = JSZipImport.default;
     let zip = await JSZip.loadAsync(file);
     let promises = [];
-    for(let filename of Object.keys(zip.files)) {
+    let filenames = Object.keys(zip.files);
+    let readCount = 0;
+    for (let filename of filenames) {
         let file = zip.files[filename];
         let type = options.defaultEncoding || 'base64';
         let parseJson = options.jsonFileExtensions.some(ext => filename.endsWith(`.${ext}`));
         type = parseJson ? 'binarystring' : type;
         promises.push(Promise.resolve().then(async () => {
             let content = await file.async(type);
-            //let text = await content.text();
+            readCount++;
+            options.progressFn((readCount / filenames.length) * 100);
             if (parseJson) {
                 try {
                     content = JSON.parse(content);
                 } catch (e) {
-                    log.warn("couldn't parse json from zip!", filename);
+                    log.warn('couldn\'t parse json from zip!', filename);
                 }
             }
             returnMap[filename] = content;
@@ -43,9 +49,12 @@ fileUtil.readZip = async function (file, options = {}) {
  * @param fileMap map of elements "file path" -> "file content", which define which contents should be included at
  *                which paths in the .zip file. if "file content" is not a string, it is stringified before
  *                adding it to the .zip file.
+ * @param options
+ * @param options.progressFn function that is called with current progress in percent
  * @return Promise which resolves to blob of created .zip file
  */
-fileUtil.createZip = async function(fileMap = {}) {
+fileUtil.createZip = async function(fileMap = {}, options = {}) {
+    options.progressFn = options.progressFn || (() => {});
     const JSZipImport = await import('jszip');
     const JSZip = JSZipImport.default;
     let zip = new JSZip();
@@ -56,7 +65,9 @@ fileUtil.createZip = async function(fileMap = {}) {
         }
         zip.file(path, content, {binary: true}); //binary: true, in order to keep special chars correctly
     }
-    return zip.generateAsync({ type: 'blob' });
+    return zip.generateAsync({ type: 'blob' }, (metadata) => {
+        options.progressFn(metadata.percent);
+    });
 }
 
 fileUtil.readFileContent = function (file) {

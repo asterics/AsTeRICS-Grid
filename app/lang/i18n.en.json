@@ -415,6 +415,8 @@
   "deletingGrids": "Deleting grids",
   "importingData": "Importing data",
   "readingFile": "Reading file",
+  "retrievingGrids": "Retrieving grids",
+  "convertingToOBZ": "Converting to OBZ",
   "extractingGridsFromFile": "Extracting grids from file",
   "encryptingAndSavingGrids": "Encrypting and saving grids to database",
   "creatingPageXOfY": "Creating page {0} of {1}",
