@@ -12,6 +12,7 @@ import { modelUtil } from './modelUtil';
 import { MetaData } from '../model/MetaData';
 import { imageUtil } from './imageUtil';
 import { util } from './util';
+import { dataService } from '../service/data/dataService';
 
 let obfConverter = {};
 let OBF_FORMAT_VERSION = 'open-board-0.1';
@@ -47,7 +48,7 @@ obfConverter.backupDataToOBZ = async function(backupData, options) {
     if (!backupData || !backupData.grids) {
         return null;
     }
-    let metadata = backupData.metadata || {};
+    let metadata = backupData.metadata || (await dataService.getMetadata());
     let manifest = {
         format: OBF_FORMAT_VERSION,
         root: metadata.homeGridId ? `${OBF_BOARDS_PATH_PREFIX}${metadata.homeGridId}${OBF_BOARD_POSTFIX}` : undefined,
