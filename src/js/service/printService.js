@@ -1,4 +1,4 @@
-// Importation des modules nécessaires pour la gestion des grilles et la génération de PDF
+// Import of modules required for grid management and PDF generation
 import { GridData } from '../model/GridData';
 import { GridImage } from '../model/GridImage';
 import { i18nService } from './i18nService';  // Service d'internationalisation
@@ -12,7 +12,7 @@ import { arasaacService } from './pictograms/arasaacService.js';
 let printService = {};
 let gridInstance = null;
 
-// Options de configuration pour la génération de PDF
+// PDF generation configuration options
 let pdfOptions = {
     docPadding: 5,
     footerHeight: 8,
@@ -22,7 +22,7 @@ let pdfOptions = {
     imgHeightPercentage: 0.8
 };
 
-// Mapping des polices selon les motifs utilisés
+// Mapping of fonts according to the motifs used
 let patternFontMappings = [
     {
         pattern: /^[\u0400-\u04FF]+$/,
@@ -30,7 +30,7 @@ let patternFontMappings = [
     }
 ];
 
-// Initialisation des gestionnaires d'événements pour l'impression
+// Initialising event handlers for printing
 printService.initPrintHandlers = function () {
     window.addEventListener('beforeprint', () => {
         if (gridInstance) {
@@ -46,7 +46,7 @@ printService.initPrintHandlers = function () {
     });
 };
 
-// Fonction pour configurer l'instance de grille utilisée
+// Function for configuring the grid instance used
 printService.setGridInstance = function (instance) {
     gridInstance = instance;
 };
@@ -65,14 +65,14 @@ printService.setGridInstance = function (instance) {
  */
 printService.gridsToPdf = async function (gridsData, options = {}) {
     try {
-        const { jsPDF } = await import(/* webpackChunkName: "jspdf" */ 'jspdf'); // Importation dynamique de jsPDF
+        const { jsPDF } = await import(/* webpackChunkName: "jspdf" */ 'jspdf'); // Dynamic import of jsPDF
         const doc = new jsPDF({ orientation: 'landscape', compress: true });
 
         if (options.fontPath) {
-            await loadFont(options.fontPath, doc); // Assure que la police est chargée avant utilisation
+            await loadFont(options.fontPath, doc); // Ensures that the policy is loaded before use
         }
 
-        await processGrids(doc, gridsData, options); // Traite chaque grille pour le PDF
+        await processGrids(doc, gridsData, options); // Processes each grid for the PDF
 
         if (!options.abort) {
             doc.save('grid-export.pdf');
@@ -94,18 +94,18 @@ async function loadFont(fontPath, doc) {
 
 async function processGrids(doc, gridsData, options) {
     for (const grid of gridsData) {
-        // Ajoutez ici la logique pour traiter chaque grille individuellement
+        // Add the logic for processing each grid individually here
         if (options.progressFn) {
             options.progressFn(Math.round((100 * gridsData.indexOf(grid)) / gridsData.length), `Processing grid ${gridsData.indexOf(grid) + 1} of ${gridsData.length}`);
         }
-        // Supposons qu'une fonction `addGridToPdf` existe pour ajouter chaque grille au PDF
+        // Let's assume that an `addGridToPdf` function exists to add each grid to the PDF
         await addGridToPdf(doc, grid, options);
     }
 }
 
 async function addGridToPdf(doc, grid, options) {
-    // Logique pour ajouter des détails de la grille au PDF
-    // Cette partie nécessite une implémentation basée sur les besoins spécifiques du projet
+    // Logic for adding grid details to the PDF
+    // This part requires an implementation based on the specific needs of the project.
 }
 
 export { printService };
