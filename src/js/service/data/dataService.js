@@ -498,7 +498,10 @@ dataService.convertFileToImportData = async function (file) {
     } else if (fileUtil.isObfFile(file)) {
         importData = await obfConverter.OBFToGridData(JSON.parse(fileContent));
     } else if (fileUtil.isObzFile(file)) {
-        let obzFileMap = await fileUtil.readZip(file, true);
+        let obzFileMap = await fileUtil.readZip(file, {
+            jsonFileExtensions: ["json", "obf"],
+            defaultEncoding: "base64"
+        });
         importData = await obfConverter.OBZToImportData(obzFileMap);
     }
     return dataService.normalizeImportData(importData);

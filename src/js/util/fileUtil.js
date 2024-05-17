@@ -5,33 +5,37 @@ let fileUtil = {};
 /**
  * reads the contents of a .zip file
  * @param file the zip file to read
- * @param parseJSON if true the file content is parsed as JSON
- * @return a Promise resolving to a map {filename => String file content}
+ * @param options.jsonFileExtensions array of file extensions that should be parsed as json (without dot, e.g. "json", "obf")
+ * @param options.defaultEncoding default file content encoding, see https://stuk.github.io/jszip/documentation/api_zipobject/async.html
+ * @return a Promise resolving to a map {filename => file content}
  */
-fileUtil.readZip = function (file, parseJSON) {
+fileUtil.readZip = async function (file, options = {}) {
+    options.jsonFileExtensions = options.jsonFileExtensions || [];
     let returnMap = {};
-    return new Promise((resolve) => {
-        import('jszip').then((JSZip) => {
-            JSZip.default.loadAsync(file).then((zip) => {
-                let promises = [];
-                Object.keys(zip.files).forEach((filename) => {
-                    let file = zip.files[filename];
-                    promises.push(
-                        file.async('base64').then((content) => {
-                            try {
-                                returnMap[filename] = parseJSON ? JSON.parse(atob(content)) : content;
-                            } catch (e) {
-                                returnMap[filename] = content;
-                            }
-                        })
-                    );
-                });
-                Promise.all(promises).then(() => {
-                    resolve(returnMap);
-                });
-            });
-        });
-    });
+    const JSZipImport = await import('jszip');
+    const JSZip = JSZipImport.default;
+    let zip = await JSZip.loadAsync(file);
+    let promises = [];
+    for(let filename of Object.keys(zip.files)) {
+        let file = zip.files[filename];
+        let type = options.defaultEncoding || 'base64';
+        let parseJson = options.jsonFileExtensions.some(ext => filename.endsWith(`.${ext}`));
+        type = parseJson ? 'binarystring' : type;
+        promises.push(Promise.resolve().then(async () => {
+            let content = await file.async(type);
+            //let text = await content.text();
+            if (parseJson) {
+                try {
+                    content = JSON.parse(content);
+                } catch (e) {
+                    log.warn("couldn't parse json from zip!", filename);
+                }
+            }
+            returnMap[filename] = content;
+        }));
+    }
+    await Promise.all(promises);
+    return returnMap;
 };
 
 /**
