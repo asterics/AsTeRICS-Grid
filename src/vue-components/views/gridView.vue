@@ -3,8 +3,12 @@
         <header class="srow header" role="toolbar" v-if="metadata" v-show="!metadata.fullscreen">
             <header-icon class="left" v-show="!metadata.locked"></header-icon>
             <div class="btn-group left">
-                <button tabindex="30" v-show="!metadata.locked" @click="toEditGrid()" class="spaced small" :aria-label="$t('editingOn')"><i class="fas fa-pencil-alt"/> <span class="hide-mobile">{{ $t('editingOn') }}</span></button>
-                <button tabindex="31" id="inputConfigButton" v-show="!metadata.locked" class="small" :aria-label="$t('inputOptions')"><i class="fas fa-cog"></i> <span class="hide-mobile">{{ $t('inputOptions') }}</span></button>
+                <button tabindex="30" v-show="!metadata.locked" @click="toEditGrid()" class="spaced small" :aria-label="$t('editingOn')">
+                    <i class="fas fa-pencil-alt"/> <span class="hide-mobile">{{ $t('editingOn') }}</span>
+                </button>
+                <button tabindex="31" id="inputConfigButton" v-show="!metadata.locked" class="small" :aria-label="$t('inputOptions')">
+                    <i class="fas fa-cog"></i> <span class="hide-mobile">{{ $t('inputOptions') }}</span>
+                </button>
                 <div id="inputConfigMenu"></div>
             </div>
             <button tabindex="34" v-show="metadata.locked" @click="unlock()" class="small" :aria-label="$t('unlock')">
@@ -12,13 +16,16 @@
                 <span class="hide-mobile">{{ $t('unlock') }}</span>
                 <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
             </button>
-            <button tabindex="34" v-show="!metadata.locked" @click="MainVue.showSearchModal()" class="spaced small" :aria-label="$t('fullscreen')" :title="$t('searchBtnTitle')"><i class="fas fa-search"/> <span class="hide-mobile">{{ $t('search') }}</span></button>
+            <button tabindex="34" v-show="!metadata.locked" @click="MainVue.showSearchModal()" class="spaced small" :aria-label="$t('fullscreen')" :title="$t('searchBtnTitle')">
+                <i class="fas fa-search"/> <span class="hide-mobile">{{ $t('search') }}</span>
+            </button>
             <button tabindex="33" v-show="!metadata.locked" @click="lock()" class="small" :aria-label="$t('lock')">
                 <i class="fas fa-lock"></i>
                 <span class="hide-mobile">{{ $t('lock') }}</span>
             </button>
-            <button tabindex="32" @click="applyFullscreen()" class="spaced small" :aria-label="$t('fullscreen')"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
-
+            <button tabindex="32" @click="applyFullscreen()" class="spaced small" :aria-label="$t('fullscreen')">
+                <i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span>
+            </button>
         </header>
         <div class="srow content text-content" v-show="!gridData.gridElements">
             <div class="grid-container grid-mask">
@@ -47,6 +54,10 @@
                 <i class="fas fa-4x fa-spinner fa-spin" style="position: relative"/>
             </div>
             <div id="grid-container" class="grid-container" :style="`background-color: ${backgroundColor}`">
+                <div v-for="element in gridData.gridElements" :key="element.id" class="grid-item-content" :class="{ crossed: isCrossed(element.id) }">
+                    <!-- Render the element content here -->
+                    <button @click="handleCross(element.id)">Cross/Uncross</button>
+                </div>
             </div>
         </div>
     </div>
@@ -126,7 +137,9 @@
                 backgroundColor: 'white',
                 MainVue: MainVue,
                 highlightTimeoutHandler: null,
-                highlightedElementId: null
+                highlightedElementId: null,
+                crossedElements: [] // New data property to track crossed elements
+
             }
         },
         components: {
@@ -417,6 +430,16 @@
             },
             contextMenuListener(event) {
                 event.preventDefault();
+            },
+            isCrossed(elementId) {
+                return this.crossedElements.includes(elementId);
+            },
+            handleCross(elementId) {
+                if (this.isCrossed(elementId)) {
+                    this.crossedElements = this.crossedElements.filter(id => id !== elementId);
+                } else {
+                    this.crossedElements.push(elementId);
+                }
             }
         },
         computed: {
@@ -633,5 +656,27 @@
 <style scoped>
 #grid-container {
     -webkit-touch-callout: none;
+}
+
+.grid-item-content.crossed {
+    position: relative;
+}
+
+.grid-item-content.crossed::before,
+.grid-item-content.crossed::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: red;
+    transform: rotate(45deg);
+    transform-origin: center;
+    opacity: 0.7;
+}
+
+.grid-item-content.crossed::after {
+    transform: rotate(-45deg);
 }
 </style>
