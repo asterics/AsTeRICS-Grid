@@ -105,3 +105,39 @@ nav li:focus {
         line-height: 0;
     }
 }
+
+/* Styles pour le menu hamburger */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+}
+
+.nav-links li {
+    margin: 0 10px;
+}
+
+.menu-icon {
+    display: none;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+    }
+    .menu-icon {
+        display: block;
+    }
+    .nav-links.active {
+        display: flex;
+    }
+}

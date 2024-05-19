@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="app/css/jquery-ui.css">
     <link rel="stylesheet" href="app/css/skeleton.css">
     <link rel="stylesheet" href="app/css/bootstrap-grid.css">
+    <link rel="stylesheet" href="app/css/holy-grail.css"> <!-- Ajout du fichier holy-grail.css -->
 </head>
 <body onload="window.loaded = true;">
 <div style="display: none" aria-hidden="false">
@@ -38,7 +39,7 @@
         <div class="holy-grail-sidebar-1 hg-sidebar no-print" v-show="showSidebar">
             <div style="flex: 0 0 auto;">
                 <div class="show-mobile">
-                    <a tabindex="1" href="javascript:void(0)" :aria-label="$t('closeSidebar')" @click="closeSidebar()"><button tabindex="-1"><i class="fas fa-2x fa-bars inline"></i></button></a>
+                    <a tabindex="1" href="javascript:void(0)" :aria-label="$t('closeSidebar')" @click="closeSidebar()"><button tabindex="-1"><i class="fas fa-2x fa-bars inline" id="menu-icon"></i></button></a>
                 </div>
                 <div class="hide-mobile" style="display: inline-flex">
                     <a tabindex="1" href="javascript:void(0)" :aria-label="$t('closeSidebar')" @click="closeSidebar()" style="margin: 0.2em 0.5em 0 1.2em"><i class="fas fa-2x fa-bars inline"></i></a>
@@ -46,7 +47,7 @@
                 </div>
             </div>
 
-            <nav role="navigation" class="srow content" style="flex: 1 1 auto" accesskey="1">
+            <nav role="navigation" class="srow content nav-links" style="flex: 1 1 auto" accesskey="1">
                 <div v-if="currentUser">
                     <h2 class="hide-mobile" style="margin-top: 1.5em;">{{ $t('navigation') }}</h2>
                     <br class="show-mobile" aria-hidden="true"/>
@@ -184,5 +185,18 @@
 <script type="text/javascript" src='app/lib/responsive-voice.js'></script>
 
 <script type="module" src="app/build/asterics-grid.bundle.js"></script>
+
+<!-- Add the JavaScript for the menu -->
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        const menuIcon = document.getElementById('menu-icon');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuIcon.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    });
+</script>
+
 </body>
 </html>
