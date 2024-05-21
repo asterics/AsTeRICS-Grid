@@ -7,7 +7,7 @@
  * of height: 100% in <html> and
  * min-height: 100% in <body>.
  */
-.holy-grail {
+ .holy-grail {
     /*min-height: 100vh;*/
     height: 100%;
     width: 100%;
@@ -104,4 +104,17 @@ nav li:focus {
         font-size: 4vh;
         line-height: 0;
     }
+}
+
+/* Styles for editing mode indicators */
+.editing-on {
+    background-color: #dff0d8; /* Light green background for editing mode */
+}
+
+.editing-off {
+    background-color: #f2dede; /* Light red background for view mode */
+}
+
+.editing-on-cursor {
+    cursor: pointer; /* Pointer cursor for elements in editing mode */
 }
