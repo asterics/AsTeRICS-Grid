@@ -29,8 +29,14 @@ do_gh_pages_update () {
     git checkout $branch
 }
 
-git reset HEAD app/manifest.appcache
-git checkout app/manifest.appcache
+branch=$(git symbolic-ref --short HEAD)
+if [ $branch != "stable" ]; then
+   echo "main release should be done from branch 'stable', currently on '$branch', aborting."
+   exit 1
+fi
+
+exit 1
+
 doStash=true
 if git diff-index --quiet HEAD --; then
     doStash=false
@@ -44,7 +50,6 @@ fi
 echo "testing..."
 npm run test
 
-branch=$(git symbolic-ref --short HEAD)
 echo "git pull..."
 git pull
 tagname="release-$(date +%Y-%m-%d-%H.%M/%z)"
@@ -59,9 +64,8 @@ echo "building..."
 npm run build
 echo "commiting bundles and manifest..."
 git add app/build
-git add app/manifest.appcache
 git add serviceWorker.js
-git commit -m "added bundles and appcache for release $tagname"
+git commit -m "added bundles for release $tagname"
 git push origin HEAD
 git checkout src/vue-components/views/aboutView.vue
 git checkout src/js/util/constants.js
