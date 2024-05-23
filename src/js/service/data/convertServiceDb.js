@@ -13,9 +13,12 @@ import { GridElementCollect } from '../../model/GridElementCollect.js';
 import { GridActionCollectElement } from '../../model/GridActionCollectElement.js';
 import { GridActionPredict } from '../../model/GridActionPredict.js';
 import {GridActionNavigate} from "../../model/GridActionNavigate.js";
+import {VoiceConfig} from "../../model/VoiceConfig.js";
+import {localStorageService} from "./localStorageService.js";
 
-let filterService = {};
+let convertServiceDb = {};
 
+let _alreadyConvertedUsersV5V6 = [];
 /*
 Model Version Changelog:
 V0 -> V1: Introduction of encryption and modelVersion property on all data models
@@ -28,9 +31,9 @@ V0 -> V1: Introduction of encryption and modelVersion property on all data model
  * @param filterOptions object of filter options that is passed to each filter function
  * @return object of list of objects that is/are ready for saving to database
  */
-filterService.convertLiveToDatabaseObjects = function (objects, filterOptions) {
+convertServiceDb.convertLiveToDatabaseObjects = function (objects, filterOptions) {
     log.trace('conversion to database - before filters:', objects);
-    let filtered = filterObjects(objects, filterOptions, getFilterFunctionsToDatabase);
+    let filtered = modelUtil.convertObjects(objects, getFilterFunctionsToDatabase, filterOptions);
     log.trace('conversion to database - after filters:', filtered);
     return filtered;
 };
@@ -41,9 +44,9 @@ filterService.convertLiveToDatabaseObjects = function (objects, filterOptions) {
  * @param filterOptions object of filter options that is passed to each filter function
  * @return object of list of objects that is/are ready for using in the application
  */
-filterService.convertDatabaseToLiveObjects = function (objects, filterOptions) {
+convertServiceDb.convertDatabaseToLiveObjects = function (objects, filterOptions) {
     log.trace('conversion to live - before filters:', objects);
-    let filtered = filterObjects(objects, filterOptions, getFilterFunctionsFromDatabase);
+    let filtered = modelUtil.convertObjects(objects, getFilterFunctionsFromDatabase, filterOptions);
     log.trace('conversion to live - after filters:', filtered);
     return filtered;
 };
@@ -53,35 +56,9 @@ filterService.convertDatabaseToLiveObjects = function (objects, filterOptions) {
  * @param objects objects with current or outdated data model, can be array or single object
  * @return {*} array or single object (depending on param objects) with updated/current data model
  */
-filterService.updateDataModel = function (objects) {
-    return filterObjects(objects, null, getModelConversionFunctions);
+convertServiceDb.updateDataModel = function (objects) {
+    return modelUtil.convertObjects(objects, getModelConversionFunctions);
 };
-
-/**
- * filters (converts) given objects.
- *
- * @param objects the objects to filter, can be a singe object or an array
- * @param filterOptions object of filter options that is passed to each filter function
- * @param getFilterFunctionsFunction a function that returns an array of filter functions that should be used for
- *        filtering. A Filter function is a function that takes two parameters "object" and "filterOptions" and returns
- *        a filtered/converted object.
- *
- * @return {*} a list of filtered/converted objects
- */
-function filterObjects(objects, filterOptions, getFilterFunctionsFunction) {
-    if (!objects) {
-        return objects;
-    }
-    let passedArray = objects instanceof Array;
-    objects = passedArray ? objects : [objects];
-    for (let i = 0; i < objects.length; i++) {
-        let filterFunctions = getFilterFunctionsFunction(modelUtil.getModelVersionObject(objects[i].modelVersion));
-        filterFunctions.forEach((filterFn) => {
-            objects[i] = filterFn(objects[i], filterOptions);
-        });
-    }
-    return passedArray ? objects : objects[0];
-}
 
 /**
  * returns a list of filters that are applied before saving an object to the database.
@@ -249,8 +226,28 @@ function getModelConversionFunctions(objectModelVersion) {
                 gridData.modelVersion = modelUtil.getModelVersionString();
                 return gridData;
             });
+        case 5:
+            filterFns.push(function (object, filterOptions) {
+                // fn from V5 to V6
+                // moved voice config from MetaData to SettingsUserLocal
+                if (!object) return;
+                if (object.modelName === MetaData.getModelName()) {
+                    let localeConfig = object.localeConfig || {};
+                    let voiceConfig = new VoiceConfig(localeConfig);
+                    let userSettings = localStorageService.getUserSettings();
+                    let currentUser = localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
+                    if (Object.keys(userSettings.voiceConfig).length === 0 && !_alreadyConvertedUsersV5V6.includes(currentUser)) {
+                        _alreadyConvertedUsersV5V6.push(currentUser);
+                        userSettings.voiceConfig = voiceConfig;
+                        userSettings.contentLang = userSettings.contentLang || object.localeConfig.contentLang;
+                        localStorageService.saveUserSettings(userSettings);
+                    }
+                }
+                object.modelVersion = modelUtil.getModelVersionString();
+                return object;
+            });
     }
     return filterFns;
 }
 
-export { filterService };
+export { convertServiceDb };

@@ -22,6 +22,8 @@ import {audioUtil} from "../util/audioUtil.js";
 import {MainVue} from "../vue/mainVue.js";
 import {stateService} from "./stateService.js";
 import {GridActionWordForm} from "../model/GridActionWordForm.js";
+import {localStorageService} from "./data/localStorageService.js";
+import {uartService} from './uartService.js';
 
 let actionService = {};
 
@@ -70,13 +72,13 @@ async function doActions(gridElement, gridId) {
                 a.modelName !== GridActionSpeak.getModelName() && a.modelName !== GridActionSpeakCustom.getModelName()
         );
     }
+    $(window).trigger(constants.ELEMENT_EVENT_ID, [gridElement]);
     actions.forEach((action) => {
         doAction(gridElement, action, {
             gridId: gridId,
             actions: actions
         });
     });
-    $(window).trigger(constants.ELEMENT_EVENT_ID, [gridElement]);
     metadata = metadata || (await dataService.getMetadata());
     let actionTypes = actions.map((a) => a.modelName);
     let navBackActions = [GridActionAudio.getModelName(), GridActionChangeLang.getModelName(), GridActionSpeak.getModelName(), GridActionSpeakCustom.getModelName()];
@@ -90,7 +92,7 @@ async function doActions(gridElement, gridId) {
         Router.toMain();
     }
     if (!actionTypes.includes(GridActionWordForm.getModelName())) {
-        stateService.resetWordFormTags();
+        stateService.resetWordForms();
     }
 }
 
@@ -141,27 +143,32 @@ async function doAction(gridElement, action, options) {
         case 'GridActionWordForm':
             switch (action.type) {
                 case GridActionWordForm.WORDFORM_MODE_CHANGE_ELEMENTS:
-                    if (!hasNextWordFormAction(gridElement)) {
-                        stateService.resetWordFormIds();
-                    }
+                    stateService.resetWordFormIds(gridElement);
                     stateService.addWordFormTags(action.tags, action.toggle);
                     break;
                 case GridActionWordForm.WORDFORM_MODE_CHANGE_BAR:
                     collectElementService.addWordFormTagsToLast(action.tags);
                     break;
                 case GridActionWordForm.WORDFORM_MODE_CHANGE_EVERYWHERE:
-                    if (!hasNextWordFormAction(gridElement)) {
-                        stateService.resetWordFormIds();
-                    }
+                    stateService.resetWordFormIds(gridElement);
                     stateService.addWordFormTags(action.tags, action.toggle);
                     collectElementService.addWordFormTagsToLast(action.tags);
                     break;
                 case GridActionWordForm.WORDFORM_MODE_NEXT_FORM:
                     let currentId = stateService.nextWordForm(gridElement.id);
                     collectElementService.replaceLast(gridElement, currentId);
+                    if (action.secondaryType) {
+                        let wordForm = stateService.getWordFormObject(gridElement, { wordFormId: currentId });
+                        let tags = wordForm.tags || [];
+                        if (tags.length > 0) {
+                            stateService.resetWordFormTags();
+                            let newAction = new GridActionWordForm({ type: action.secondaryType, tags: tags });
+                            await doAction(gridElement, newAction, options);
+                        }
+                    }
                     break;
                 case GridActionWordForm.WORDFORM_MODE_RESET_FORMS:
-                    stateService.resetWordFormTags();
+                    stateService.resetWordForms();
                     collectElementService.fixateLastWordForm();
                     break;
             }
@@ -219,9 +226,9 @@ async function doAction(gridElement, action, options) {
             ) {
                 $(document).trigger(constants.EVENT_RELOAD_CURRENT_GRID);
             }
-            let metadata = await dataService.getMetadata();
-            metadata.localeConfig.preferredVoice = action.voice;
-            await dataService.saveMetadata(metadata);
+            let voiceConfig = localStorageService.getUserSettings().voiceConfig;
+            voiceConfig.preferredVoice = action.voice;
+            localStorageService.saveUserSettings({voiceConfig: voiceConfig});
             break;
         case 'GridActionOpenWebpage':
             let tab = window.open(action.openURL, '_blank');
@@ -230,6 +237,9 @@ async function doAction(gridElement, action, options) {
                     tab.close();
                 }, action.timeoutSeconds * 1000);
             }
+            break;
+        case 'GridActionUART':
+            uartService.doAction(action);
             break;
     }
 }
@@ -252,19 +262,6 @@ function doAREAction(action, gridData) {
             areService.triggerEvent(action.componentId, action.eventPortId, action.areURL);
         }
     });
-}
-
-function getActionsOfType(elem, type) {
-    if (!elem) {
-        return [];
-    }
-    return elem.actions.filter(action => action.modelName === type);
-}
-
-function hasNextWordFormAction(elem) {
-    return getActionsOfType(elem, GridActionWordForm.getModelName()).some(
-        (a) => a.type === GridActionWordForm.WORDFORM_MODE_NEXT_FORM
-    );
 }
 
 async function getMetadataConfig() {

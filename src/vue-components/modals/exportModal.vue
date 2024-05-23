@@ -59,6 +59,12 @@
                                 <label for="exportGlobalGrid">{{ $t('exportGlobalGrid') }}</label>
                             </div>
                         </div>
+                        <div class="row">
+                            <div>
+                                <input id="exportOBZ" type="checkbox" v-model="options.exportOBZ"/>
+                                <label for="exportOBZ">{{ $t('exportOBZ') }}</label>
+                            </div>
+                        </div>
                         <div class="row" v-show="selectedGrid && allChildren && allChildren.length > 0">
                             <div>
                                 <input id="exportConnected" type="checkbox" v-model="options.exportConnected"/>
@@ -94,6 +100,7 @@
     import {i18nService} from "../../js/service/i18nService.js";
     import {localStorageService} from "../../js/service/data/localStorageService.js";
     import {util} from "../../js/util/util.js";
+    import { MainVue } from '../../js/vue/mainVue';
 
     let constants = {
         LANG_EXPORT_CURRENT: 'LANG_EXPORT_CURRENT',
@@ -114,6 +121,7 @@
                     exportDictionaries: true,
                     exportUserSettings: true,
                     exportGlobalGrid: true,
+                    exportOBZ: false,
                     exportLang: constants.LANG_EXPORT_ALL,
                     exportLangOptions: [constants.LANG_EXPORT_ALL, constants.LANG_EXPORT_CURRENT]
                 },
@@ -149,16 +157,23 @@
                 let user = localStorageService.getAutologinUser();
                 let filename = null;
                 if (gridIds.length === 1 && this.selectedGrid) {
-                    filename = `${user}_${util.getCurrentDateTimeString()}_${i18nService.getTranslation(this.selectedGrid.label)}.grd`;
+                    filename = `${user}_${util.getCurrentDateTimeString()}_${i18nService.getTranslation(this.selectedGrid.label)}`;
                 } else {
-                    filename = `${user}_${util.getCurrentDateTimeString()}_asterics-grid-custom-backup.grd`;
+                    filename = `${user}_${util.getCurrentDateTimeString()}_asterics-grid-custom-backup`;
                 }
                 dataService.downloadToFile(gridIds, {
                     exportGlobalGrid: this.options.exportGlobalGrid,
                     exportOnlyCurrentLang: this.options.exportLang === constants.LANG_EXPORT_CURRENT,
                     exportDictionaries: this.options.exportDictionaries,
                     exportUserSettings: this.options.exportUserSettings,
-                    filename: filename
+                    filename: filename,
+                    obzFormat: this.options.exportOBZ,
+                    progressFn: (percent, text) => {
+                        MainVue.showProgressBar(percent, {
+                            header: i18nService.t('exportToFile'),
+                            text: text
+                        });
+                    }
                 });
                 this.$emit('close');
             },

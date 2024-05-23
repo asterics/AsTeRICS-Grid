@@ -204,7 +204,7 @@ collectElementService.addWordFormTagsToLast = function (tags, toggle) {
         lastElementCopy.wordFormTags = lastElementCopy.wordFormTags || [];
         let currentLabel = getPrintTextOfElement(lastElementCopy);
         lastElementCopy.wordFormTags = stateService.mergeTags(lastElementCopy.wordFormTags, tags, toggle);
-        let newLabel = stateService.getWordForm(lastElementCopy, {searchTags: lastElementCopy.wordFormTags});
+        let newLabel = stateService.getWordForm(lastElementCopy, {searchTags: lastElementCopy.wordFormTags, searchSubTags: true});
         if (newLabel && newLabel !== currentLabel) {
             collectedElements[collectedElements.length - 1] = lastElementCopy;
             updateCollectElements();
@@ -456,7 +456,7 @@ function getOutputObject(element, options) {
         text = i18nService.getTranslation(customSpeakAction.speakText, { forceLang: lang });
     }
     if (!text) {
-        let wordForm = stateService.getWordFormObject(element, {searchTags: element.wordFormTags, wordFormId: element.wordFormId}) || {};
+        let wordForm = stateService.getWordFormObject(element, {searchTags: element.wordFormTags, wordFormId: element.wordFormId, searchSubTags: true}) || {};
         if (!options.dontIncludePronunciation) {
             text = wordForm.pronunciation;
         }

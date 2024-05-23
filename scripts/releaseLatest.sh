@@ -24,8 +24,12 @@ do_gh_pages_update () {
    git checkout $branch
 }
 
-git reset HEAD app/manifest.appcache
-git checkout app/manifest.appcache
+branch=$(git symbolic-ref --short HEAD)
+if [ $branch != "master" ]; then
+   echo "latest release should be done from branch 'master', currently on '$branch', aborting."
+   exit 1
+fi
+
 doStash=true
 if git diff-index --quiet HEAD --; then
     doStash=false
@@ -39,7 +43,6 @@ fi
 echo "testing..."
 npm run test
 
-branch=$(git symbolic-ref --short HEAD)
 echo "git pull..."
 git pull
 tagname="release-beta-$(date +%Y-%m-%d-%H.%M/%z)"
@@ -52,9 +55,8 @@ sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" serviceWorker.js
 
 echo "building..."
 npm run build
-echo "commiting bundles and manifest..."
+echo "commiting bundles..."
 git add app/build
-git add app/manifest.appcache
 git add serviceWorker.js
 git commit -m "added bundles and appcache for beta-release $tagname"
 git push origin HEAD
@@ -66,6 +68,7 @@ git push origin $tagname
 sed -i -e "s/$tagnameSed/#ASTERICS_GRID_VERSION#/g" serviceWorker.js
 git add serviceWorker.js
 git commit -m "reverted release version to placeholder"
+git push origin HEAD
 do_gh_pages_update
 if $doStash; then
     echo "pop stashed changes..."

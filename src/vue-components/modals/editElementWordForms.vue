@@ -174,7 +174,7 @@
                     this.currentMsg = this.msgTypes.ERROR_PASTE;
                     return;
                 }
-                if (this.overrideAtImport && this.gridElement.wordForms.length > 0) {
+                if (this.overrideAtImport && (this.gridElement.wordForms.length > 0 || this.importExportGlobally)) {
                     if (!confirm(i18nService.t("doYouReallyWantDeleteExistingWordForms"))) {
                         return;
                     }
@@ -191,6 +191,7 @@
                 if (!this.importExportGlobally) {
                     this.gridElement.wordForms = this.overrideAtImport ? [] : this.gridElement.wordForms;
                     this.gridElement.wordForms = this.gridElement.wordForms.concat(importForms);
+                    this.msgCount = rows.length;
                 } else {
                     this.allGrids = this.allGrids || (await dataService.getGrids(true));
                     let baseMap = {}; // base -> list of word form objects
@@ -198,6 +199,7 @@
                         let baseString = newForm.base || "";
                         let bases = baseString.split(";");
                         for (let base of bases) {
+                            base = base.trim();
                             baseMap[base] = baseMap[base] || [];
                             baseMap[base].push(newForm);
                         }
@@ -214,8 +216,12 @@
                                 }
                             }
                             let newArray = Array.from(allNewWordForms);
-                            changedGrid = changedGrid || element.wordForms.length !== newArray.length || JSON.stringify(element.wordForms) !== JSON.stringify(newArray);
-                            element.wordForms = newArray;
+                            let changeCurrentElement = newArray.length > 0 && (element.wordForms.length !== newArray.length || JSON.stringify(element.wordForms) !== JSON.stringify(newArray));
+                            changedGrid = changedGrid || changeCurrentElement;
+                            if (changeCurrentElement) {
+                                element.wordForms = newArray;
+                                this.msgCount += newArray.length;
+                            }
                         }
                         if (changedGrid) {
                             this.gridPasteCount++;
@@ -229,7 +235,6 @@
                         this.$emit('reloadData');
                     }
                 }
-                this.msgCount = rows.length;
                 this.currentMsg = this.msgTypes.SUCCESS_PASTE;
             },
             async copyToClipboard() {

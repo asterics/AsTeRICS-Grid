@@ -15,11 +15,11 @@ import { keyboardShortcuts } from './service/keyboardShortcuts';
 import { i18nService } from './service/i18nService';
 import { printService } from './service/printService';
 import { notificationService } from './service/notificationService.js';
-//import {timingLogger} from "./service/timingLogger";
+import { dataService } from './service/data/dataService';
 
 let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
 
-function init() {
+async function init() {
     let promises = [];
     //timingLogger.initLogging();
     log.setLevel(log.levels.INFO);
@@ -34,8 +34,26 @@ function init() {
     VuePluginManager.init();
     keyboardShortcuts.init();
     notificationService.init();
+    await MainVue.init();
     let lastActiveUser = localStorageService.getLastActiveUser();
     let autologinUser = localStorageService.getAutologinUser();
+
+    let gridsetFilename = urlParamService.getParam(urlParamService.params.PARAM_USE_GRIDSET_FILENAME)
+    if (gridsetFilename) {
+        urlParamService.removeParam(urlParamService.params.PARAM_USE_GRIDSET_FILENAME);
+        let autoUserSettings = localStorageService.getAutoImportedUserSettings();
+        let matchingUserConfig = autoUserSettings.filter(settings => settings.originGridsetFilename === gridsetFilename)[0];
+        if (matchingUserConfig) {
+            autologinUser = matchingUserConfig.username;
+        } else {
+            let newUsername = localStorageService.getNextAutoUserName();
+            await loginService.registerOffline(newUsername, newUsername);
+            await dataService.importBackupDefaultFile(gridsetFilename);
+            localStorageService.saveUserSettings({originGridsetFilename: gridsetFilename}, newUsername);
+            autologinUser = newUsername;
+        }
+    }
+
     if (localStorageService.getUserMajorModelVersion(autologinUser) > modelUtil.getLatestModelVersion().major) {
         log.info(
             `data model version of user "${autologinUser}" is newer than version of running AsTeRICS Grid -> prevent autologin.`
@@ -52,9 +70,6 @@ function init() {
     }
     Promise.all(promises)
         .finally(() => {
-            return MainVue.init();
-        })
-        .then(() => {
             let toMain = autologinUser || urlParamService.isDemoMode();
             let toLogin = lastActiveUser || localStorageService.getSavedUsers().length > 0;
             localStorageService.setLastActiveUser(autologinUser || lastActiveUser || '');

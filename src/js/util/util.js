@@ -313,6 +313,13 @@ util.mapRange = function (number, inMin, inMax, outMin, outMax) {
     return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }
 
+util.fetchWithTimeout = function (url, timeoutMs) {
+    // see https://stackoverflow.com/a/50101022/9219743
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+    return fetch(url, { signal: controller.signal });
+}
+
 /**
  * Returns a random float number between min (inclusive) and max (exclusive)
  * see https://stackoverflow.com/a/1527820

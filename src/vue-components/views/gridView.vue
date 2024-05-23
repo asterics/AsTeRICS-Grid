@@ -104,8 +104,7 @@
     let vueConfig = {
         props: {
             gridId: String,
-            skipThumbnailCheck: Boolean,
-            highlightIds: Array
+            skipThumbnailCheck: Boolean
         },
         data() {
             return {
@@ -126,8 +125,8 @@
                 unlockCounter: UNLOCK_COUNT,
                 backgroundColor: 'white',
                 MainVue: MainVue,
-                localHighlightIds: this.highlightIds,
-                highlightTimeoutHandler: null
+                highlightTimeoutHandler: null,
+                highlightedElementId: null
             }
         },
         components: {
@@ -153,7 +152,7 @@
             },
             unlock(force) {
                 let thiz = this;
-                if (!force && localStorageService.getUnlockPasscode()) {
+                if (!force && localStorageService.getAppSettings().unlockPasscode) {
                     thiz.showModal = modalTypes.MODAL_UNLOCK;
                     return;
                 }
@@ -307,33 +306,34 @@
                     return Promise.resolve();
                 });
             },
-            highlightElements(highlightIds) {
+            highlightElements() {
                 clearTimeout(this.highlightTimeoutHandler);
-                highlightIds = highlightIds || this.localHighlightIds;
-                if (highlightIds) {
-                    $(`#${highlightIds[0]}`).addClass('highlight');
+                let params = urlParamService.getSearchQueryParams();
+                if (params.highlightIds) {
+                    $(`#${params.highlightIds[0]}`).addClass('highlight');
                     this.highlightTimeoutHandler = setTimeout(() => {
                         this.stopHighlightElements();
                     }, 15000);
+                    this.highlightedElementId = params.highlightIds[0];
+                    params.highlightIds.shift();
+                    params.highlightIds = params.highlightIds.length > 0 ? params.highlightIds : null;
+                    urlParamService.setParamsToSearchQuery(params);
                 }
             },
             stopHighlightElements() {
-                if (this.localHighlightIds && this.localHighlightIds[0]) {
-                    $(`#${this.localHighlightIds[0]}`).removeClass('highlight');
+                if (this.highlightedElementId) {
+                    $(`#${this.highlightedElementId}`).removeClass('highlight');
+                    this.highlightedElementId = null;
                 }
             },
             async onNavigateEvent(event, gridData, params) {
-                let highlightIds = params ? params.highlightIds : null;
-                this.localHighlightIds = highlightIds;
                 if (gridData && this.gridData.id === gridData.id) {
-                    this.highlightElements(highlightIds);
+                    this.highlightElements();
                     return; //prevent duplicated navigation to same grid
                 }
                 this.metadata.lastOpenedGridId = gridData.id;
                 await this.reload(gridData);
-                if (highlightIds) {
-                    this.highlightElements(highlightIds);
-                }
+                this.highlightElements();
                 await dataService.saveMetadata(this.metadata);
                 $(document).trigger(constants.EVENT_GRID_LOADED);
             },
@@ -374,7 +374,7 @@
                     this.backgroundColor = this.updatedMetadataDoc.colorConfig.gridBackgroundColor;
                     vueApp.reload();
                 }
-                if (!localStorageService.shouldSyncNavigation()) {
+                if (!localStorageService.getAppSettings().syncNavigation) {
                     return;
                 }
                 if (this.updatedMetadataDoc && this.updatedMetadataDoc.lastOpenedGridId !== vueApp.gridData.id) {

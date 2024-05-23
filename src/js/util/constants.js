@@ -1,10 +1,12 @@
 let constants = {};
 
 constants.ELEMENT_EVENT_ID = 'ELEMENT_EVENT_ID';
-constants.MODEL_VERSION = '{"major": 5, "minor": 0, "patch": 0}';
+constants.MODEL_VERSION = '{"major": 6, "minor": 0, "patch": 0}';
+constants.MODEL_VERSION_LOCAL = '{"major": 1, "minor": 0, "patch": 0}';
 
 constants.LOCAL_NOLOGIN_USERNAME = 'default-user';
 constants.LOCAL_DEMO_USERNAME = 'local-demo-user';
+constants.LOCAL_DEFAULT_USER_PREFIX = 'default-';
 constants.USERNAME_REGEX = /^[a-z0-9][a-z0-9_-]{2,15}$/;
 
 constants.VALIDATION_ERROR_REGEX = 'VALIDATION_ERROR_REGEX';
@@ -34,6 +36,8 @@ constants.EVENT_GRID_LOADED = 'EVENT_GRID_LOADED';
 constants.EVENT_USER_CHANGING = 'EVENT_USER_CHANGING';
 constants.EVENT_USER_CHANGED = 'EVENT_USER_CHANGED';
 constants.EVENT_METADATA_UPDATED = 'EVENT_METADATA_UPDATED';
+constants.EVENT_APPSETTINGS_UPDATED = 'EVENT_APPSETTINGS_UPDATED';
+constants.EVENT_USERSETTINGS_UPDATED = 'EVENT_USERSETTINGS_UPDATED';
 constants.EVENT_CONFIG_RESET = 'EVENT_CONFIG_RESET';
 constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE = 'EVENT_NAVIGATE_GRID_IN_VIEWMODE';
 constants.EVENT_NAVIGATE = 'EVENT_NAVIGATE';
@@ -59,6 +63,13 @@ constants.IS_FIREFOX = navigator.userAgent.indexOf('Firefox') !== -1;
 constants.IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 constants.STATE_ACTIVATED_TTS = 'STATE_ACTIVATED_TTS';
+
+constants.VOICE_TYPE_NATIVE = 'VOICE_TYPE_NATIVE';
+constants.VOICE_TYPE_RESPONSIVEVOICE = 'VOICE_TYPE_RESPONSIVEVOICE';
+constants.VOICE_TYPE_EXTERNAL_PLAYING = 'VOICE_TYPE_EXTERNAL_PLAYING';
+constants.VOICE_TYPE_EXTERNAL_DATA = 'VOICE_TYPE_EXTERNAL_DATA';
+
+constants.GRIDSET_FOLDER = 'app/gridsets/';
 
 constants.DEFAULT_ELEMENT_BACKGROUND_COLOR = '#ffffff';
 constants.DEFAULT_GRID_BACKGROUND_COLOR = '#e8e8e8';

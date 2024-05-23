@@ -37,6 +37,24 @@ imageUtil.getBase64FromImg = function (img, maxWidth, quality, mimeType) {
 };
 
 /**
+ * returns the correct file suffix for a given data string
+ * @param dataString
+ * @return {string}
+ */
+imageUtil.dataStringToFileSuffix = function(dataString = '') {
+    if (dataString.startsWith('data:image/png')) {
+        return 'png';
+    }
+    if (dataString.startsWith('data:image/svg')) {
+        return 'svg';
+    }
+    if (dataString.startsWith('data:image/jpeg')) {
+        return 'jpg';
+    }
+    return '';
+};
+
+/**
  * returns promise that resolves to a base64 string that represents the content of the file
  * @param input the imput element to read the file from
  * @return {Promise}
@@ -256,6 +274,10 @@ imageUtil.allImagesLoaded = function () {
     });
 };
 
+imageUtil.dataStringToBase64 = function(dataString = "") {
+    return dataString.substring(dataString.indexOf('base64,') + 7);
+}
+
 //needed because Firefox doesn't correctly handle SVG with size = 0, see https://bugzilla.mozilla.org/show_bug.cgi?id=700533
 function fixSvgDocumentFF(svgDocument) {
     try {
@@ -289,7 +311,7 @@ function svgDocumentToBase64(svgDocument) {
 }
 
 function base64ToSvgDocument(base64) {
-    let svg = atob(base64.substring(base64.indexOf('base64,') + 7));
+    let svg = atob(imageUtil.dataStringToBase64(base64));
     svg = svg.substring(svg.indexOf('<svg'));
     let parser = new DOMParser();
     return parser.parseFromString(svg, 'image/svg+xml');

@@ -223,8 +223,7 @@
                     if (!confirm(i18nService.t(messageKey, user))) {
                         return;
                     }
-                    localStorageService.unmarkSyncedDatabase(user);
-                    localStorageService.removeUserPassword(user);
+                    localStorageService.removeLocalUser(user);
                     if (loginService.getLoggedInUsername() === user) {
                         loginService.logout();
                     }

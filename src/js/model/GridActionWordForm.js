@@ -7,6 +7,7 @@ class GridActionWordForm extends Model({
     modelName: String,
     modelVersion: String,
     type: [String],
+    secondaryType: [String],
     tags: [Model.Array(String)],
     toggle: [Boolean]
 }) {
@@ -33,6 +34,12 @@ GridActionWordForm.MODES = [
     GridActionWordForm.WORDFORM_MODE_CHANGE_EVERYWHERE,
     GridActionWordForm.WORDFORM_MODE_NEXT_FORM,
     GridActionWordForm.WORDFORM_MODE_RESET_FORMS
+];
+
+GridActionWordForm.MODES_SECONDARY = [
+    GridActionWordForm.WORDFORM_MODE_CHANGE_ELEMENTS,
+    GridActionWordForm.WORDFORM_MODE_CHANGE_BAR,
+    GridActionWordForm.WORDFORM_MODE_CHANGE_EVERYWHERE
 ];
 
 GridActionWordForm.defaults({

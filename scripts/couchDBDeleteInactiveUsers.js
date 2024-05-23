@@ -11,6 +11,7 @@ let couchUrl = process.argv[2] || 'http://admin:admin@localhost:5984';
 let prod = process.argv[3] === "prod";
 
 couchUrl = couchUrl.trim();
+const fs = require('fs');
 const nano = require('nano')(couchUrl);
 const authUsers = nano.use('auth-users');
 
@@ -18,6 +19,12 @@ const https = require('https');
 let MAX_TIMEDIFF_SECONDS = 100;
 let MS_PER_DAY = 1000 * 60 * 60 * 24;
 let MAX_USER_AGE_DAYS = 365;
+
+let SUCCESS_FILENAME = 'couchDBDeleteInactiveUsers.success.txt';
+let ERROR_FILENAME = 'couchDBDeleteInactiveUsers.error.txt';
+
+let successUsers = readFromFile(SUCCESS_FILENAME) || [];
+let errorUsers = readFromFile(ERROR_FILENAME) || [];
 
 async function main() {
     let localTimestamp = Math.round(new Date().getTime() / 1000);
@@ -48,7 +55,9 @@ async function main() {
     }
 
     console.log(`found ${deleteItems.length} users for deletion, which were inactive for at least ${MAX_USER_AGE_DAYS} days.`)
-    return;
+    if(!prod) {
+        return;
+    }
 
     let doneCount = 0;
     let successCount = 0;
@@ -62,8 +71,10 @@ async function main() {
         if (deletedDb && deletedUser) {
             console.log(`${!prod ? '[DRY_RUN]' : ''}[SUCCESS] user "${item.value.user}" deleted. ${deleteItems.length - doneCount} remaining...`);
             successCount++;
+            saveSuccess(item.value.user);
         } else {
             console.log(`[WARN] error deleting db of user "${item.value.user}".`);
+            saveError(item.value.user);
         }
     }
     console.log(`[DONE] deleted ${successCount} / ${deleteItems.length} users.`);
@@ -122,4 +133,34 @@ async function deleteUserDoc(deleteItem) {
         console.warn("[WARN] user document not deleted!", e.reason);
     }
     return deleted;
+}
+
+function writeToFile(filename, data) {
+    try {
+        fs.writeFileSync(filename, JSON.stringify(data));
+    } catch (error) {
+        console.error(err);
+    }
+}
+
+function readFromFile(filename) {
+    try {
+        const data = fs.readFileSync(filename, {
+            flag: 'a+'
+        });
+        let string = data.toString();
+        return string ? JSON.parse(string) : null;
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+function saveSuccess(user) {
+    successUsers.push(user);
+    writeToFile(SUCCESS_FILENAME, successUsers);
+}
+
+function saveError(user) {
+    errorUsers.push(user);
+    writeToFile(ERROR_FILENAME, errorUsers);
 }

@@ -15,18 +15,13 @@ import { predictionService } from '../predictionService';
 import { localStorageService } from './localStorageService';
 import { gridUtil } from '../../util/gridUtil';
 import { urlParamService } from '../urlParamService';
-import { filterService } from './filterService';
+import { convertServiceDb } from './convertServiceDb';
 import { serviceWorkerService } from '../serviceWorkerService.js';
 import { constants } from '../../util/constants.js';
 import { MainVue } from '../../vue/mainVue.js';
 import { util } from '../../util/util.js';
 
 let dataService = {};
-
-let _defaultGridSetPath = 'app/examples/default.grd.json';
-if (urlParamService.getDefaultGridsetName()) {
-    _defaultGridSetPath = 'app/examples/' + urlParamService.getDefaultGridsetName();
-}
 
 /**
  * gets a grid by ID.
@@ -233,7 +228,7 @@ dataService.addGridElements = function (gridId, newGridElements) {
  * @see{MetaData}
  *
  * @param newMetadata new or updated metadata object
- * @param forceDbSave if set to true, metadata is saved to database, even if localStorageService.shouldSyncNavigation() is not set
+ * @param forceDbSave if set to true, metadata is saved to database, even if localStorageService.getAppSettings().syncNavigation is not set
  * @return {Promise} resolves after operation finished successful
  */
 dataService.saveMetadata = function (newMetadata, forceDbSave) {
@@ -246,9 +241,9 @@ dataService.saveMetadata = function (newMetadata, forceDbSave) {
                 newMetadata.id = id;
             }
             if (!existingMetadata.isEqual(newMetadata)) {
-                localStorageService.saveLocalMetadata(newMetadata);
+                localStorageService.saveUserSettings({metadata: newMetadata});
             }
-            if (!localStorageService.shouldSyncNavigation()) {
+            if (!localStorageService.getAppSettings().syncNavigation) {
                 newMetadata.locked = existingMetadata.locked;
                 newMetadata.fullscreen = existingMetadata.fullscreen;
                 newMetadata.lastOpenedGridId = existingMetadata.lastOpenedGridId;
@@ -295,8 +290,8 @@ dataService.getMetadata = function () {
             } else {
                 returnValue = result;
             }
-            if (!localStorageService.shouldSyncNavigation()) {
-                let localMetadata = localStorageService.getLocalMetadata();
+            if (!localStorageService.getAppSettings().syncNavigation) {
+                let localMetadata = localStorageService.getUserSettings().metadata;
                 if (localMetadata) {
                     returnValue.locked = localMetadata.locked;
                     returnValue.fullscreen = localMetadata.fullscreen;
@@ -381,12 +376,12 @@ dataService.downloadBackupToFile = async function () {
         exportOnlyCurrentLang: false,
         exportDictionaries: true,
         exportUserSettings: true,
-        filename: `${user}_${util.getCurrentDateTimeString()}_asterics-grid-full-backup.grd`
+        filename: `${user}_${util.getCurrentDateTimeString()}_asterics-grid-full-backup`
     });
 };
 
 /**
- * export configuration to file
+ * get configuration data for downloading
  * @param gridIds array of gridIds to export
  * @param options options for exporting
  * @param options.exportGlobalGrid if true, the global grid is exported (if existing and enabled)
@@ -394,24 +389,29 @@ dataService.downloadBackupToFile = async function () {
  * @param options.exportDictionaries if true, all user dictionaries are exported
  * @param options.exportUserSettings if true, all user settings are exported
  * @param options.filename the filename to use for downloading
- * @return {Promise<void>}
+ * @param options.obzFormat if true, data is returned in obz format (as blob)
+ * @param options.progressFn fn for reporting progress, called with params percentage and text
+ * @returns {Promise<{}|null>} promise resolving to a javascript object containing native AG backup data or to a blob
+ *                             containing the backup in .obz format if options.obzFormat is true.
  */
-dataService.downloadToFile = async function (gridIds, options) {
+dataService.getBackupData = async function (gridIds, options = {}) {
     if (!gridIds || gridIds.length === 0) {
-        return;
+        return null;
     }
-    let exportData = {};
+    options.progressFn = options.progressFn || (() => {});
+    let backupData = {};
     options = options || {};
     let globalGridId = null;
     if (options.exportGlobalGrid) {
         let globalGrid = await dataService.getGlobalGrid();
         globalGridId = globalGrid ? globalGrid.id : null;
     }
+    options.progressFn(10, i18nService.t('retrievingGrids'));
     let allGrids = await dataService.getGrids(true, !options.exportGlobalGrid);
-    exportData.grids = allGrids.filter((grid) => gridIds.includes(grid.id) || globalGridId === grid.id);
+    backupData.grids = allGrids.filter((grid) => gridIds.includes(grid.id) || globalGridId === grid.id);
     if (options.exportOnlyCurrentLang) {
         let contentLang = i18nService.getContentLang();
-        for (let grid of exportData.grids) {
+        for (let grid of backupData.grids) {
             Object.keys(grid.label).forEach((key) => key === contentLang || delete grid.label[key]);
             for (let elem of grid.gridElements) {
                 Object.keys(elem.label).forEach((key) => key === contentLang || delete elem.label[key]);
@@ -426,33 +426,70 @@ dataService.downloadToFile = async function (gridIds, options) {
         }
     }
     if (options.exportDictionaries) {
-        exportData.dictionaries = await dataService.getDictionaries();
+        backupData.dictionaries = await dataService.getDictionaries();
     }
 
     let currentMetadata = await dataService.getMetadata();
     if (options.exportUserSettings) {
-        exportData.metadata = currentMetadata;
-    } else if (exportData.grids.map((grid) => grid.id).includes(globalGridId)) {
-        exportData.metadata = {};
-        exportData.metadata.globalGridId = globalGridId;
-        exportData.metadata.lastOpenedGridId = currentMetadata.lastOpenedGridId;
+        backupData.metadata = currentMetadata;
+    } else if (backupData.grids.map((grid) => grid.id).includes(globalGridId)) {
+        backupData.metadata = {};
+        backupData.metadata.globalGridId = globalGridId;
+        backupData.metadata.lastOpenedGridId = currentMetadata.lastOpenedGridId;
+    }
+    if (options.obzFormat) {
+        options.progressFn(10, i18nService.t('convertingToOBZ'));
+        backupData = await obfConverter.backupDataToOBZ(backupData, {
+            progressFn: (zipProgress => {
+                options.progressFn(10 + util.mapRange(zipProgress, 0, 100, 0, 90));
+            })
+        });
+    }
+    return backupData;
+}
+
+/**
+ * export configuration to file
+ * @param gridIds array of gridIds to export
+ * @param options options for exporting
+ * @param options.exportGlobalGrid if true, the global grid is exported (if existing and enabled)
+ * @param options.exportOnlyCurrentLang if true, only the current content language is exported
+ * @param options.exportDictionaries if true, all user dictionaries are exported
+ * @param options.exportUserSettings if true, all user settings are exported
+ * @param options.filename the base filename to use for downloading (without file extension)
+ * @param options.obzFormat if true, data is downloaded in obz format
+ * @param options.progressFn fn for reporting progress, called with params percentage and text
+ * @return {Promise<void>}
+ */
+dataService.downloadToFile = async function (gridIds, options = {}) {
+    let backupData = await dataService.getBackupData(gridIds, options);
+    if (!backupData) {
+        return;
     }
 
-    let blob = new Blob([JSON.stringify(exportData)], { type: 'text/plain;charset=utf-8' });
-    let filename =
+    let blob = backupData;
+    let postfix = '.obz';
+    if (!options.obzFormat) {
+        blob = new Blob([JSON.stringify(backupData)], { type: 'text/plain;charset=utf-8' });
+        postfix = '.grd';
+    }
+    let filenameBase =
         options.filename ||
-        (exportData.grids.length > 1
-            ? 'asterics-grid-backup.grd'
-            : i18nService.getTranslation(exportData.grids[0].label) + '.grd');
+        (backupData.grids.length > 1
+            ? `asterics-grid-backup`
+            : i18nService.getTranslation(backupData.grids[0].label));
+    let filename = filenameBase + postfix;
     FileSaver.saveAs(blob, filename);
 };
 
 /**
  * converts a file (.grd, .obf, .obz) to standardized import data
  * @param file
+ * @param options
  * @return {Promise<null>}
  */
-dataService.convertFileToImportData = async function (file) {
+dataService.convertFileToImportData = async function (file, options = {}) {
+    options.progressFn = options.progressFn || (() => {});
     let fileContent = await fileUtil.readFileContent(file);
     let importData = null;
     if (!fileContent) {
@@ -472,8 +509,12 @@ dataService.convertFileToImportData = async function (file) {
     } else if (fileUtil.isObfFile(file)) {
         importData = await obfConverter.OBFToGridData(JSON.parse(fileContent));
     } else if (fileUtil.isObzFile(file)) {
-        let obzFileMap = await fileUtil.readZip(file, true);
-        importData = await obfConverter.OBZToGridSet(obzFileMap);
+        let obzFileMap = await fileUtil.readZip(file, {
+            jsonFileExtensions: ["json", "obf"],
+            defaultEncoding: "base64",
+            progressFn: options.progressFn
+        });
+        importData = await obfConverter.OBZToImportData(obzFileMap);
     }
     return dataService.normalizeImportData(importData);
 };
@@ -495,19 +536,23 @@ dataService.normalizeImportData = function (data) {
 
     importData.grids = importData.grids || [];
     importData.dictionaries = importData.dictionaries || [];
-    importData.grids = filterService.updateDataModel(importData.grids);
-    importData.dictionaries = filterService.updateDataModel(importData.dictionaries);
+    importData.grids = convertServiceDb.updateDataModel(importData.grids);
+    importData.dictionaries = convertServiceDb.updateDataModel(importData.dictionaries);
     if (importData.metadata) {
-        importData.metadata = filterService.updateDataModel(importData.metadata);
+        importData.metadata = convertServiceDb.updateDataModel(importData.metadata);
     }
     importData.metadata = importData.metadata || {};
     return importData;
 };
 
-dataService.importBackup = async function (file, progressFn) {
+dataService.importBackupUploadedFile = async function (file, progressFn) {
     progressFn = progressFn || (() => {});
     progressFn(10, i18nService.t('extractingGridsFromFile'));
-    let importData = await dataService.convertFileToImportData(file);
+    let importData = await dataService.convertFileToImportData(file, {
+        progressFn: progress => {
+            progressFn(10 + util.mapRange(progress, 0, 100, 0, 10));
+        }
+    });
     if (!importData) {
         progressFn(100);
         MainVue.setTooltip(i18nService.t('backupFileDoesntContainData'), { msgType: 'warn' });
@@ -518,6 +563,12 @@ dataService.importBackup = async function (file, progressFn) {
         generateGlobalGrid: fileUtil.isObzFile(file)
     });
 };
+
+dataService.importBackupDefaultFile = async function(filename, options) {
+    let path = constants.GRIDSET_FOLDER + filename;
+    let result = await $.get(path);
+    return dataService.importBackupData(result, options);
+}
 
 /**
  * deletes current config and imports data from backup

@@ -14,7 +14,7 @@ The dialog in Figure 1 shows the following options:
 3. **Word form**: the value of the new word form
 4. **Pronunciation**: (optional) alternative pronunciation for the new word form
 5. **Add word form**: adds the newly defined word form to the list
-6. **Import/export data to/from all grids**: if activated, word forms are not only imported/exported for the current element, but for all elements within all grids. This options helps to quickly edit all word forms (e.g. managed in an external spreadsheet).
+6. **Import/export data to/from all grids**: if activated, word forms are not only imported/exported for the current element, but for all elements within all grids. This options helps to quickly edit all word forms (e.g. managed in an external spreadsheet). Note that data can only be imported to all grids (globally) if the data to import contains the fourth column `ID` (see below) and the target elements contain a word form with tag `BASE` (which is used for mapping the word forms correctly).
 7. **Override existing word forms**: if activated, all existing word forms are overwritten at import. Always activated if importing globally.
 8. **Import from clipboard**: imports word forms from the clipboard, copied from an external spreadsheet. The columns that can be imported are: `WORD FORM`, `LANG (2 digits)`, `TAGS (comma separated)`, `ID`, `PRONUNCIATION`. The order of columns is important, but not all have to be existing, so it's also possible to copy only the first ones. The value `ID` is only relevant for importing elements to all grids (globally) and it's automatically generated at exporting from all grids globally.
 9. **Copy to clipboard**: copies word forms to the clipboard in a format that can be pasted to a spreadsheet.
@@ -53,6 +53,8 @@ These are the action types for `change word forms` (Fig. 2.1):
 
 Figure 2.3 shows an additional option `Toggle tags on selecting it multiple times`. If this option is activated, selecting this element several times in a row, toggles the tags of this action in the internal list. So in example 1 (see above) selecting the element "Past" multiple times would add and remove the tag `PAST` from the internal list, causing to toggle between the words `are` and `were`.
 
+The action type `change this element to next word form` also has an option `secondary action type`. If selected, the tags of the current word form are used for a secondary action. *Example usage:* an element has 2 word forms `I [1.PERS]` and `You [2.PERS]`. Iterating through these values using `change this element to next word form` with `secondary action type` = `change word form in grid elements` will cause changing all other grid elements to `1.PERS` after selecting `I` and to `2.PERS` after selecting `You`.
+
 ## Example configuration
 A grid configuration including examples for all word form features can be downloaded here:
-<a download href="https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/docs/documentation_user/files/grammar-demo_2024-03-12_09-29_asterics-grid-full-backup.grd">Grid configuration with word form examples</a> (use right click and "save target as"). It contains examples for all different action types of `change word forms`.
+<a download href="https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/docs/documentation_user/files/demo-grammar_2024-03-18_15-07_asterics-grid-full-backup.grd">Grid configuration with word form examples</a> (use right click and "save target as"). It contains examples for all different action types of `change word forms`.

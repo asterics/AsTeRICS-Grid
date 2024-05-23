@@ -5,6 +5,7 @@ import {constants} from "../util/constants.js";
 import {util} from "../util/util.js";
 import {speechService} from "./speechService.js";
 import {dataService} from "./data/dataService.js";
+import {GridActionWordForm} from "../model/GridActionWordForm.js";
 
 let stateService = {};
 let _states = {};
@@ -13,6 +14,7 @@ let _currentGrid = null;
 let _currentGlobalGrid = null;
 let _currentWordFormTags = [];
 let _currentWordFormIds = {}; //elementId -> id of word form list (for current lang!)
+let _currentWordFormTagsOfElements = {}; //elementId -> list of tags for currently shown wordForm
 let _convertMode = null;
 
 stateService.setCurrentGrid = function (gridData) {
@@ -50,14 +52,26 @@ stateService.mergeTags = function (existingTags, newTags, toggle) {
     return existingTags;
 };
 
-stateService.resetWordFormTags = function () {
+stateService.resetWordForms = function () {
     _currentWordFormTags = [];
+    _currentWordFormTagsOfElements = {};
     _currentWordFormIds = {};
     stateService.applyWordFormsToUI();
 };
 
-stateService.resetWordFormIds = function () {
+stateService.resetWordFormTags = function () {
+    _currentWordFormTags = [];
+}
+
+stateService.resetWordFormIds = function (currentElement) {
+    let keep = null;
+    if (currentElement && hasNextWordFormAction(currentElement)) {
+        keep = _currentWordFormIds[currentElement.id];
+    }
     _currentWordFormIds = {};
+    if (keep) {
+        _currentWordFormIds[currentElement.id] = keep;
+    }
 };
 
 stateService.applyWordFormsToUI = function () {
@@ -115,6 +129,7 @@ stateService.getWordFormObject = function (element, options) {
                 (!form.lang || form.lang === options.lang) &&
                 options.searchTags.every((tag) => form.tags.includes(tag))
             ) {
+                _currentWordFormTagsOfElements[element.id] = options.searchTags;
                 return form;
             }
         }
@@ -192,14 +207,42 @@ stateService.nextWordForm = function (elementId) {
         return;
     }
     let currentLangForms = getWordFormsForLang(element);
+
+    // all indexes that match current language
+    let possibleIndexes = currentLangForms.map((form, index) => {
+        return index;
+    });
     if (currentLangForms.length === 0) {
         return;
     }
-    let currentWordFormObject = this.getWordFormObject(element, { searchTags: _currentWordFormTags, searchSubTags: true }) || {};
-    let index = currentLangForms.indexOf(currentWordFormObject);
-    index = index >= 0 ? index : null;
-    let currentId = _currentWordFormIds[element.id] || index || 0;
-    let nextId = currentId < currentLangForms.length - 1 ? currentId + 1 : 0;
+    let currentWordFormObject = this.getWordFormObject(element, { searchTags: _currentWordFormTags, searchSubTags: true });
+
+    // limit to all indexes that match current tags
+    let currentTags = _currentWordFormTagsOfElements[element.id] || []
+    possibleIndexes = possibleIndexes.filter(index => currentTags.every((tag) => currentLangForms[index].tags.includes(tag)));
+
+    // get id of current word form object
+    let currentObjectIndex = currentLangForms.indexOf(currentWordFormObject);
+    currentObjectIndex = currentObjectIndex >= 0 ? currentObjectIndex : null;
+    let currentId = _currentWordFormIds[element.id] || currentObjectIndex || possibleIndexes[0];
+
+    // filter out duplicate values
+    let newPossibleIndexes = [];
+    let takenForms = [];
+    for (let index of possibleIndexes) {
+        if (index === currentId || !takenForms.includes(currentLangForms[index].value)) {
+            takenForms.push(currentLangForms[index].value);
+            newPossibleIndexes.push(index);
+        }
+    }
+    possibleIndexes = newPossibleIndexes;
+
+    // get next id
+    let indexOfIndexes = possibleIndexes.indexOf(currentId);
+    indexOfIndexes = indexOfIndexes >= 0 ? indexOfIndexes : 0;
+    let nextIndexOfIndexes = indexOfIndexes < possibleIndexes.length - 1 ? indexOfIndexes + 1 : 0;
+    let nextId = possibleIndexes[nextIndexOfIndexes];
+
     setTextInUI(element.id, currentLangForms[nextId].value);
     _currentWordFormIds[element.id] = nextId;
     return currentId;
@@ -256,9 +299,10 @@ function getElement(id) {
     if (!_currentGrid || !id) {
         return null;
     }
+    let globalGridElements = _currentGlobalGrid ? _currentGlobalGrid.gridElements : [];
     return (
         _currentGrid.gridElements.filter((e) => e.id === id)[0] ||
-        _currentGlobalGrid.gridElements.filter((e) => e.id === id)[0]
+        globalGridElements.filter((e) => e.id === id)[0]
     );
 }
 
@@ -275,6 +319,19 @@ function getWordFormsForLang(element, lang) {
 async function getMetadataConfig() {
     let metadata = await dataService.getMetadata();
     _convertMode = metadata.textConfig.convertMode;
+}
+
+function getActionsOfType(elem, type) {
+    if (!elem) {
+        return [];
+    }
+    return elem.actions.filter(action => action.modelName === type);
+}
+
+function hasNextWordFormAction(elem) {
+    return getActionsOfType(elem, GridActionWordForm.getModelName()).some(
+        (a) => a.type === GridActionWordForm.WORDFORM_MODE_NEXT_FORM
+    );
 }
 
 $(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
