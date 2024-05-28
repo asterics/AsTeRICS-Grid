@@ -445,6 +445,7 @@ dataService.getBackupData = async function (gridIds, options = {}) {
             })
         });
     }
+    options.progressFn(100);
     return backupData;
 }
 
