@@ -358,6 +358,7 @@ i18nService.tl = function (key, args, lang) {
 /**
  * get plain translation string from an translation object
  * @param i18nObject translation object, e.g. {en: 'english text', de: 'deutscher Text'}
+ * @param options
  * @param options.fallbackLang language to use if current browser language not available, default: 'en'
  * @param options.includeLang if true return format is {lang: <languageCode>, text: <translatedText>}
  * @param options.forceLang language in which the translation is forced to be returned (if available)
@@ -365,8 +366,7 @@ i18nService.tl = function (key, args, lang) {
  *                           translation object
  * @return {string|*|string} the translated string in current browser language, e.g. 'english text'
  */
-i18nService.getTranslation = function (i18nObject, options) {
-    options = options || {};
+i18nService.getTranslation = function (i18nObject, options = {}) {
     if (!i18nObject) {
         return '';
     }

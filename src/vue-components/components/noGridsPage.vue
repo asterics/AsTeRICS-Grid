@@ -1,20 +1,54 @@
 <template>
-    <div class="container ms-0">
-        <div class="row ps-2 ps-sm-3 ps-md-4 col-12 col-md-10 col-xl-8 mt-0">
-            <h1>{{ $t('newCommunicator') }}</h1>
-            <div class="row mt-2">
-                <div class="col-12">
-                    <button class="big-button col-12" @click="addEmptyGrid()"><span class="fas fa-sticky-note me-2"/> <span>{{ $t('addAnEmptyGridAndStartFromScratch') }}</span></button>
-                </div>
+    <div class="container-fluid ms-0">
+        <div class="row ps-2 ps-sm-3 ps-md-4 col-12 col-md-12 col-xl-10 mt-0">
+            <h2 class="my-3">Choose how to start</h2>
+            <div class="row mt-2 mb-5">
+                <a href="javascript:;" @click="restoreBackupHandler()">{{ $t('restoreBackupFromFile') }}</a>
             </div>
 
-            <h1 class="mt-5">{{ $t('importPredefinedConfiguration') }}</h1>
+            <div class="my-3">
+                <label>Search</label>
+                <input type="text" v-model="searchTerm" @input="search"/>
+                <accordion acc-label="more search options" class="mt-3">
+                    <div class="container-fluid p-0">
+                        <div class="row mt-2">
+                            <label>Language</label>
+                            <select v-model="searchOptions.lang" @change="search">
+                                <option value="">(all)</option>
+                                <option v-for="lang in selectLanguages" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <label>Type</label>
+                            <select v-model="searchOptions.type" @change="search">
+                                <option value="">(all)</option>
+                                <option :value="constants.BOARD_TYPE_SELFCONTAINED">Self-contained</option>
+                                <option :value="constants.BOARD_TYPE_SINGLE">Single boards</option>
+                            </select>
+                        </div>
+                    </div>
+                </accordion>
+            </div>
+            <div v-if="gridPreviews" class="mt-5">
+                <ul class="d-grid" style="grid-template-columns: repeat(auto-fill, 400px); grid-gap: 1rem; list-style-type: none">
+                    <li v-for="preview in gridPreviews" style="height: 350px; padding: 10px; border: 1px solid gray">
+                        <div>{{ preview.name | extractTranslation }}</div>
+                        <img v-if="preview.thumbnail" :src="preview.thumbnail" width="380"/>
+                        <div class="d-flex col-12" style="flex-wrap: wrap">
+                            <span class="tag" style="background-color: lightgreen">{{ preview.languages.length === 1 ? $t(`lang.${preview.languages[0]}`) : "multi-lang" }}</span>
+                            <span class="tag" style="background-color: lightgray" v-for="tag in preview.tags">{{ tag }}</span>
+                        </div>
+                        <button @click="importData(preview)">Import</button>
+                    </li>
+                </ul>
+            </div>
+            
             <div>
-                <div class="row" v-if="defaultGridsets">
+                <div class="row" v-if="gridPreviews">
                     <label for="selectGridset" class="col-md-3">{{ $t('selectConfiguration') }}</label>
                     <select v-model="selectedGridset" id="selectGridset" class="col-md-8" @change="linkCopied = false">
                         <i class="fas fa-sticky-note"></i>
-                        <option v-for="set in defaultGridsets" :value="set">{{ set.name + ` (${(set.languages.length > 1 ? $t('multilingual') : $t(`lang.${set.languages[0]}`))})`}}</option>
+                        <option v-for="set in gridPreviews" :value="set">{{ set.name + ` (${(set.languages.length > 1 ? $t('multilingual') : $t(`lang.${set.languages[0]}`))})`}}</option>
                     </select>
                 </div>
                 <div class="row" v-if="selectedGridset">
@@ -44,13 +78,6 @@
                     </div>
                 </div>
             </div>
-            <h1 class="mt-5">{{ $t('importBackup') }}</h1>
-            <div>
-                <ul class="mt-3">
-                    <li><a href="javascript:;" @click="restoreBackupHandler()">{{ $t('restoreBackupFromFile') }}</a></li>
-                    <li><a href="javascript:;" @click="importCustomHandler()">{{ $t('importCustomDataFromFile') }}</a></li>
-                </ul>
-            </div>
         </div>
     </div>
 </template>
@@ -68,20 +95,35 @@
     import {constants} from '../../js/util/constants';
     import { urlParamService } from '../../js/service/urlParamService';
     import { util } from '../../js/util/util';
+    import {boardService} from '../../js/service/boards/boardService';
+    import Accordion from './accordion.vue';
 
     export default {
-        components: {},
+        components: { Accordion },
         props: ["restoreBackupHandler", "importCustomHandler", "resetGlobalGrid"],
         data() {
             return {
-                defaultGridsets: [],
+                gridPreviews: [],
                 selectedGridset: null,
                 loading: false,
                 i18nService: i18nService,
-                linkCopied: false
+                linkCopied: false,
+                searchTerm: '',
+                searchOptions: {
+                    lang: "",
+                    type: constants.BOARD_TYPE_SELFCONTAINED
+                },
+                allLanguages: i18nService.getAllLanguages(),
+                selectLanguages: [],
+                constants: constants
             }
         },
         methods: {
+            search() {
+                util.debounce(async () => {
+                    this.gridPreviews = await boardService.query(this.searchTerm, this.searchOptions);
+                }, 300, "SEARCH_BOARDS");
+            },
             async addEmptyGrid() {
                 let label = {};
                 let elemLabel = {};
@@ -121,14 +163,12 @@
                 await dataService.saveMetadata(metadata);
                 Router.toEditGrid(gridData.id);
             },
-            importData() {
+            importData(preview) {
                 let thiz = this;
-                if (!this.selectedGridset) {
-                    return;
-                }
                 this.loading = true;
-                dataService.importBackupDefaultFile(this.selectedGridset.filename, {
-                    skipDelete: true
+                dataService.importBackupFromUrl(preview.url, {
+                    skipDelete: true,
+                    translate: preview.translate
                 }).then(async () => {
                     thiz.loading = false;
                     Router.toMain();
@@ -140,9 +180,13 @@
                 this.linkCopied = true;
             }
         },
-        mounted() {
+        async mounted() {
             let thiz = this;
-            $.get(constants.GRIDSET_FOLDER + 'gridset_metadata.json').then(result => {
+            thiz.gridPreviews = await boardService.query();
+            thiz.selectLanguages = this.allLanguages.filter(lang => this.gridPreviews.some(preview => preview.languages.includes(lang.code)));
+            thiz.searchOptions.lang = thiz.selectLanguages.map(e => e.code).includes(i18nService.getAppLang()) ? i18nService.getAppLang() : "";
+            thiz.gridPreviews = await boardService.query("", thiz.searchOptions);
+            /*$.get(constants.GRIDSET_FOLDER + 'gridset_metadata.json').then(result => {
                 let currentLang = i18nService.getContentLang();
                 result.sort((a, b) => {
                     if (a.standardFor && a.standardFor.includes(currentLang)) return -1;
@@ -154,9 +198,9 @@
                     return a.name.localeCompare(b.name);
                 });
                 thiz.selectedGridset = result[0];
-                thiz.defaultGridsets = result;
+                thiz.gridPreviews = result;
                 serviceWorkerService.cacheUrl(constants.GRIDSET_FOLDER + this.selectedGridset.filename);
-            })
+            })*/
         },
         beforeDestroy() {
         }
@@ -166,5 +210,12 @@
 <style scoped>
 .row {
     margin-top: 1.5em;
+}
+
+.tag {
+    flex-shrink: 1;
+    margin: 0.3em 0.3em 0.3em 0;
+    border-radius: 5px;
+    padding: 0px 3px 0px 3px;
 }
 </style>

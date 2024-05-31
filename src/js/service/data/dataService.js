@@ -565,6 +565,18 @@ dataService.importBackupUploadedFile = async function (file, progressFn) {
     });
 };
 
+dataService.importBackupFromUrl = async function(url, options) {
+    let result = await $.get(url);
+    if (options.translate && result.grids) {
+        for (let grid of result.grids) {
+            for (let element of grid.gridElements) {
+                element.label = i18nService.t(i18nService.getTranslation(element.label));
+            }
+        }
+    }
+    return dataService.importBackupData(result, options);
+}
+
 dataService.importBackupDefaultFile = async function(filename, options) {
     let path = constants.GRIDSET_FOLDER + filename;
     let result = await $.get(path);
