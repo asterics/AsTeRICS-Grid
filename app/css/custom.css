@@ -37,6 +37,16 @@ button:focus {
     outline: 0;
 }
 
+.btn-primary {
+    background-color: lightblue;
+}
+
+button.btn-primary:hover {
+    border: 3px solid lightblue;
+    outline: 0;
+    background-color: #d4ebf2;
+}
+
 .grid-item-content:focus {
     outline: 3px solid #819fad;
 }
