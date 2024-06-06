@@ -100,7 +100,11 @@
                     }
                 }).then(async () => {
                     thiz.loading = false;
-                    Router.toMain();
+                    if (preview.translate) { // currently empty config is the only one with .translate prop
+                        Router.toEditGrid();
+                    } else {
+                        Router.toMain();
+                    }
                 });
             },
             copyLink() {

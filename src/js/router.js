@@ -245,7 +245,11 @@ Router.toGrid = function (id, props) {
     }
 };
 
-Router.toEditGrid = function (id, highlightId) {
+Router.toEditGrid = async function(id, highlightId) {
+    if (!id) {
+        let grids = await dataService.getGrids(false, true);
+        id = grids.length > 0 ? grids[0].id : null;
+    }
     if (id) {
         Router.to(`#grid/edit/${id}/${highlightId ? highlightId : ''}`);
     }
