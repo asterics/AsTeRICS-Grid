@@ -132,6 +132,9 @@
     border-radius: 5px;
     padding: 10px;
     border: 1px solid lightgray;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 #boardGrid li .preview-content {
