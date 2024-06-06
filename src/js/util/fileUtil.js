@@ -87,13 +87,18 @@ fileUtil.readFileContent = function (file) {
     });
 };
 
+fileUtil.getFilename = function(file) {
+    return file ? file.name || '' : '';
+}
+
 fileUtil.getFileExtension = function (file) {
-    let filename = file ? file.name || '' : '';
+    let filename = fileUtil.getFilename(file);
     return filename.substring(filename.lastIndexOf('.')).toLowerCase();
 };
 
 fileUtil.isGrdFile = function (file) {
-    return fileUtil.getFileExtension(file) === '.grd' || fileUtil.getFileExtension(file) === '.txt';
+    let filename = fileUtil.getFilename(file);
+    return fileUtil.getFileExtension(file) === '.grd' || fileUtil.getFileExtension(file) === '.txt' || filename.endsWith('.grd.json');
 };
 
 fileUtil.isObfFile = function (file) {

@@ -1,7 +1,7 @@
 <template>
     <div class="all-grids-view overflow-content box">
         <div style="display: none">
-            <input type="file" id="inputFileBackup" @change="importBackupFromFile" accept=".grd, .obf, .obz, .txt"/>
+            <input type="file" id="inputFileBackup" @change="importBackupFromFile" accept=".grd, .obf, .obz, .txt, .json"/>
         </div>
         <header-icon full-header="true" v-show="graphList && graphList.length === 0"></header-icon>
         <header class="srow header" role="toolbar" v-show="graphList && graphList.length > 0">
