@@ -3,8 +3,8 @@
         <div style="display: none">
             <input type="file" id="inputFileBackup" @change="importBackupFromFile" accept=".grd, .obf, .obz, .txt"/>
         </div>
-        <header-icon full-header="true" v-if="graphList && graphList.length === 0"></header-icon>
-        <header class="srow header" role="toolbar" v-if="graphList && graphList.length > 0">
+        <header-icon full-header="true" v-show="graphList && graphList.length === 0"></header-icon>
+        <header class="srow header" role="toolbar" v-show="graphList && graphList.length > 0">
             <header-icon></header-icon>
             <button tabindex="32" id="moreButton" :aria-label="$t('more')" class="small"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile">{{ $t('more') }}</span></button>
             <div id="moreButtonMenu"></div>
