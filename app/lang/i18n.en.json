@@ -1018,5 +1018,6 @@
   "chooseHowToStart": "Choose how to start",
   "type": "Type",
   "BOARD_TYPE_SELFCONTAINED": "Self-contained",
-  "BOARD_TYPE_SINGLE": "Single boards"
+  "BOARD_TYPE_SINGLE": "Single boards",
+  "moreSearchOptions": "More search options"
 }

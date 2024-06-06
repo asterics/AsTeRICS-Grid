@@ -7,7 +7,7 @@
 
             <div class="my-3">
                 <input class="col-12" id="searchBar" type="text" v-model="searchTerm" @input="search" :aria-label="$t('search')" :placeholder="$t('search')"/>
-                <accordion acc-label="more search options" class="mt-3">
+                <accordion :acc-label="$t('moreSearchOptions')" class="mt-3">
                     <div class="container-fluid p-0">
                         <div class="row mt-2">
                             <label>{{ $t('language') }}</label>
