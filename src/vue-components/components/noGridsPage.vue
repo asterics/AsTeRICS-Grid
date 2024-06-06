@@ -1,51 +1,52 @@
 <template>
     <div class="p-4">
-            <h2 class="my-3">{{ $t('chooseHowToStart') }}</h2>
-            <div class="mt-2 mb-5">
-                <a href="javascript:;" @click="restoreBackupHandler()"><span class="fa fa-file-import"/> {{ $t('restoreBackupFromFile') }}</a>
-            </div>
+        <h2 class="my-3">{{ $t('chooseHowToStart') }}</h2>
+        <div class="mt-2 mb-5">
+            <a href="javascript:;" @click="restoreBackupHandler()"><span class="fa fa-file-import"/> {{ $t('restoreBackupFromFile') }}</a>
+        </div>
 
-            <div class="my-3">
-                <input class="col-12" id="searchBar" type="text" v-model="searchTerm" @input="search" :aria-label="$t('search')" :placeholder="$t('search')"/>
-                <accordion :acc-label="$t('moreSearchOptions')" class="mt-3">
-                    <div class="container-fluid p-0">
-                        <div class="row mt-2">
-                            <label>{{ $t('language') }}</label>
-                            <select v-model="searchOptions.lang" @change="search">
-                                <option value="">(all)</option>
-                                <option v-for="lang in selectLanguages" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
-                            </select>
-                        </div>
-                        <div class="row">
-                            <label>{{ $t('type') }}</label>
-                            <select v-model="searchOptions.type" @change="search">
-                                <option value="">(all)</option>
-                                <option :value="constants.BOARD_TYPE_SELFCONTAINED">{{ $t(constants.BOARD_TYPE_SELFCONTAINED) }}</option>
-                                <option :value="constants.BOARD_TYPE_SINGLE">{{ $t(constants.BOARD_TYPE_SINGLE) }}</option>
-                            </select>
+        <div class="my-3">
+            <input class="col-12" id="searchBar" type="text" v-model="searchTerm" @input="search" :aria-label="$t('search')" :placeholder="$t('search')"/>
+            <accordion :acc-label="$t('moreSearchOptions')" class="mt-3">
+                <div class="container-fluid p-0">
+                    <div class="row mt-2">
+                        <label>{{ $t('language') }}</label>
+                        <select v-model="searchOptions.lang" @change="search">
+                            <option value="">(all)</option>
+                            <option v-for="lang in selectLanguages" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <label>{{ $t('type') }}</label>
+                        <select v-model="searchOptions.type" @change="search">
+                            <option value="">(all)</option>
+                            <option :value="constants.BOARD_TYPE_SELFCONTAINED">{{ $t(constants.BOARD_TYPE_SELFCONTAINED) }}</option>
+                            <option :value="constants.BOARD_TYPE_SINGLE">{{ $t(constants.BOARD_TYPE_SINGLE) }}</option>
+                        </select>
+                    </div>
+                </div>
+            </accordion>
+        </div>
+        <div v-if="gridPreviews" class="mt-5">
+            <ul id="boardGrid">
+                <li v-for="preview in gridPreviews">
+                    <div class="preview-content">
+                        <strong class="d-block mb-3">{{ preview.name | extractTranslation }}</strong>
+                        <img aria-hidden="true" v-if="preview.thumbnail" :src="preview.thumbnail" style="width: 100%"/>
+                        <div v-if="!preview.thumbnail" class="img-placeholder mb-3" style="aspect-ratio: 16/9; width: 99%; border: 1px solid lightgray"></div>
+                        <div class="d-flex col-12" style="flex-wrap: wrap">
+                            <span class="tag" style="background-color: lightgreen">{{ preview.languages.length === 1 ? $t(`lang.${preview.languages[0]}`) : "multi-lang" }}</span>
+                            <span class="tag" style="background-color: lightgray" v-for="tag in preview.tags">{{ tag }}</span>
                         </div>
                     </div>
-                </accordion>
-            </div>
-            <div v-if="gridPreviews" class="mt-5">
-                <ul id="boardGrid">
-                    <li v-for="preview in gridPreviews">
-                        <div class="preview-content">
-                            <strong class="d-block mb-3">{{ preview.name | extractTranslation }}</strong>
-                            <img aria-hidden="true" v-if="preview.thumbnail" :src="preview.thumbnail" style="width: 100%"/>
-                            <div v-if="!preview.thumbnail" class="img-placeholder mb-3" style="aspect-ratio: 16/9; width: 99%; border: 1px solid lightgray"></div>
-                            <div class="d-flex col-12" style="flex-wrap: wrap">
-                                <span class="tag" style="background-color: lightgreen">{{ preview.languages.length === 1 ? $t(`lang.${preview.languages[0]}`) : "multi-lang" }}</span>
-                                <span class="tag" style="background-color: lightgray" v-for="tag in preview.tags">{{ tag }}</span>
-                            </div>
-                        </div>
-                        <div class="preview-buttons d-flex justify-content-between">
-                            <button @click="importData(preview)"><span class="fa fa-info-circle"/> {{ $t('details') }}</button>
-                            <button class="btn-primary" @click="importData(preview)"><span class="fa fa-check"/> {{ $t('useIt') }}</button>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+                    <div class="preview-buttons d-flex justify-content-between">
+                        <button @click="detailPreview = preview"><span class="fa fa-info-circle"/> {{ $t('details') }}</button>
+                        <button class="btn-primary" @click="importData(preview)"><span class="fa fa-check"/> {{ $t('useIt') }}</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <config-preview-detail v-if="detailPreview" :preview="detailPreview" @close="detailPreview = null"></config-preview-detail>
     </div>
 </template>
 
@@ -59,9 +60,10 @@
     import {boardService} from '../../js/service/boards/boardService';
     import Accordion from './accordion.vue';
     import { MainVue } from '../../js/vue/mainVue';
+    import ConfigPreviewDetail from '../modals/configPreviewDetail.vue';
 
     export default {
-        components: { Accordion },
+        components: { ConfigPreviewDetail, Accordion },
         props: ["restoreBackupHandler", "importCustomHandler", "resetGlobalGrid"],
         data() {
             return {
@@ -77,7 +79,8 @@
                 },
                 allLanguages: i18nService.getAllLanguages(),
                 selectLanguages: [],
-                constants: constants
+                constants: constants,
+                detailPreview: null
             }
         },
         methods: {
