@@ -412,6 +412,7 @@
   "welcome": "Welcome",
   "speechOutputActivated": "speech output activated",
   "tapOnAnyElementToActivateSpeech": "Tap/click on any element to activate speech output",
+  "downloadingConfig": "Downloading configuration",
   "deletingGrids": "Deleting grids",
   "importingData": "Importing data",
   "readingFile": "Reading file",
@@ -1011,5 +1012,11 @@
   "CONN_TYPE_SERIAL": "Serial",
   "copyDirectLinkToConfigToClipboard": "Copy direct link to this configuration to clipboard",
   "importantInformation": "Important information",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations."
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations.",
+  "useIt": "Use it",
+  "details": "Details",
+  "chooseHowToStart": "Choose how to start",
+  "type": "Type",
+  "BOARD_TYPE_SELFCONTAINED": "Self-contained",
+  "BOARD_TYPE_SINGLE": "Single boards"
 }

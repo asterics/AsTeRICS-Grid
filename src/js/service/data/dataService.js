@@ -565,12 +565,16 @@ dataService.importBackupUploadedFile = async function (file, progressFn) {
     });
 };
 
-dataService.importBackupFromUrl = async function(url, options) {
+dataService.importBackupFromUrl = async function(url, options = {}) {
+    options.progressFn = options.progressFn || (() => {})
+    options.progressFn(10, i18nService.t('downloadingConfig'));
     let result = await $.get(url);
+    options.progressFn(50, i18nService.t('importingData'));
     if (options.translate && result.grids) {
         for (let grid of result.grids) {
+            grid.label[i18nService.getContentLang()] = i18nService.t(i18nService.getTranslation(grid.label));
             for (let element of grid.gridElements) {
-                element.label = i18nService.t(i18nService.getTranslation(element.label));
+                element.label[i18nService.getContentLang()] = i18nService.t(i18nService.getTranslation(element.label));
             }
         }
     }
