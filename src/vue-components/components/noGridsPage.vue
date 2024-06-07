@@ -46,7 +46,7 @@
                 </li>
             </ul>
         </div>
-        <config-preview-detail v-if="detailPreview" :preview="detailPreview" @close="detailPreview = null"></config-preview-detail>
+        <config-preview-detail v-if="detailPreview" :preview="detailPreview" @close="detailPreview = null" @import="importData(detailPreview)"></config-preview-detail>
     </div>
 </template>
 
