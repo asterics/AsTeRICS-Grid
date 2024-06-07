@@ -412,6 +412,7 @@
   "welcome": "Üdvözöljük",
   "speechOutputActivated": "felolvasás bekapcsolva",
   "tapOnAnyElementToActivateSpeech": "Klikkeljen vagy koppintson a felolvasás bekapcsolásához",
+  "downloadingConfig": "Downloading configuration",
   "deletingGrids": "Táblák törlése",
   "importingData": "Adatok importálása",
   "readingFile": "Fájl olvasása",
@@ -830,7 +831,8 @@
   "showAllVoices": "Beszédhangok mutatása",
   "multilingual": "többnyelvű",
   "importPredefinedConfiguration": "Előre meghatározott beállítások importálása",
-  "addAnEmptyGridAndStartFromScratch": "Egy üres tábla megnyitása és kezdés előlről",
+  "emptyCommunicator": "Empty communicator",
+  "emptyConfigToCreateAnything": "Start with empty configuration in order to create any content by yourself.",
   "selectConfiguration": "Beállítások választása",
   "languages": "Nyelvek",
   "description": "Leírás",
@@ -1010,5 +1012,12 @@
   "CONN_TYPE_SERIAL": "Serial",
   "copyDirectLinkToConfigToClipboard": "Copy direct link to this configuration to clipboard",
   "importantInformation": "Important information",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations."
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations.",
+  "useIt": "Use it",
+  "details": "Details",
+  "chooseHowToStart": "Choose how to start",
+  "type": "Type",
+  "BOARD_TYPE_SELFCONTAINED": "Self-contained",
+  "BOARD_TYPE_SINGLE": "Single boards",
+  "moreSearchOptions": "More search options"
 }
