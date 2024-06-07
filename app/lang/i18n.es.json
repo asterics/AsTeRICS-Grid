@@ -412,6 +412,7 @@
   "welcome": "Bienvenida",
   "speechOutputActivated": "salida de voz activada",
   "tapOnAnyElementToActivateSpeech": "Pulse/haga clic en cualquier celda para activar la salida de voz",
+  "downloadingConfig": "Downloading configuration",
   "deletingGrids": "Borrando tableros",
   "importingData": "Importando datos",
   "readingFile": "Leyendo archivo",
@@ -830,7 +831,8 @@
   "showAllVoices": "Ver todas las voces disponibles",
   "multilingual": "multiidioma",
   "importPredefinedConfiguration": "Importar comunicador predefinido",
-  "addAnEmptyGridAndStartFromScratch": "Crear un tablero vacío y empezar desde cero",
+  "emptyCommunicator": "Empty communicator",
+  "emptyConfigToCreateAnything": "Start with empty configuration in order to create any content by yourself.",
   "selectConfiguration": "Seleccionar configuración",
   "languages": "Idiomas",
   "description": "Descripción",
@@ -1010,5 +1012,12 @@
   "CONN_TYPE_SERIAL": "Serial",
   "copyDirectLinkToConfigToClipboard": "Copiar enlace directo a esta configuración en el portapapeles",
   "importantInformation": "Información importante",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Los usuarios online que no hayan iniciado sesión en un plazo de 365 días se entenderá que han sido abandonados y serán eliminados de los servidores de Asterics Grid. Rogamos cree copias de seguridad de aquellas configuraciones que considere importantes."
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Los usuarios online que no hayan iniciado sesión en un plazo de 365 días se entenderá que han sido abandonados y serán eliminados de los servidores de Asterics Grid. Rogamos cree copias de seguridad de aquellas configuraciones que considere importantes.",
+  "useIt": "Use it",
+  "details": "Details",
+  "chooseHowToStart": "Choose how to start",
+  "type": "Type",
+  "BOARD_TYPE_SELFCONTAINED": "Self-contained",
+  "BOARD_TYPE_SINGLE": "Single boards",
+  "moreSearchOptions": "More search options"
 }
