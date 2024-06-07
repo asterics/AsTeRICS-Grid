@@ -412,6 +412,7 @@
   "welcome": "ברוכים הבאים",
   "speechOutputActivated": "הפקת דיבור מופעלת",
   "tapOnAnyElementToActivateSpeech": "הקלק על רכיב כלשהו כדי להפעיל את הפקת הדיבור",
+  "downloadingConfig": "Downloading configuration",
   "deletingGrids": "מחיקת לוחות",
   "importingData": "יבוא נתונים",
   "readingFile": "קובץ קריאה",
@@ -830,7 +831,8 @@
   "showAllVoices": "הראה את כל הקולות",
   "multilingual": "רב לשוני",
   "importPredefinedConfiguration": "יבא תצורת הגדרות",
-  "addAnEmptyGridAndStartFromScratch": "הוסף לוח ריק והתחל מההתחלה",
+  "emptyCommunicator": "Empty communicator",
+  "emptyConfigToCreateAnything": "Start with empty configuration in order to create any content by yourself.",
   "selectConfiguration": "בחר תצורה",
   "languages": "שפות",
   "description": "תיאור",
@@ -1010,5 +1012,12 @@
   "CONN_TYPE_SERIAL": "Serial",
   "copyDirectLinkToConfigToClipboard": "Copy direct link to this configuration to clipboard",
   "importantInformation": "Important information",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations."
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations.",
+  "useIt": "Use it",
+  "details": "Details",
+  "chooseHowToStart": "Choose how to start",
+  "type": "Type",
+  "BOARD_TYPE_SELFCONTAINED": "Self-contained",
+  "BOARD_TYPE_SINGLE": "Single boards",
+  "moreSearchOptions": "More search options"
 }
