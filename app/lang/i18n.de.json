@@ -412,6 +412,7 @@
   "welcome": "Willkommen",
   "speechOutputActivated": "Sprachausgabe aktiviert",
   "tapOnAnyElementToActivateSpeech": "Klicken/tippen Sie auf ein beliebiges Element um Sprachausgabe zu aktivieren",
+  "downloadingConfig": "Downloading configuration",
   "deletingGrids": "Grids werden gelöscht",
   "importingData": "Importiere Daten",
   "readingFile": "Datei wird gelesen",
@@ -830,7 +831,8 @@
   "showAllVoices": "Zeige alle Stimmen",
   "multilingual": "mehrsprachig",
   "importPredefinedConfiguration": "Standard-Konfiguration importieren",
-  "addAnEmptyGridAndStartFromScratch": "Neue Konfiguration mit leerem Grid erstellen",
+  "emptyCommunicator": "Empty communicator",
+  "emptyConfigToCreateAnything": "Start with empty configuration in order to create any content by yourself.",
   "selectConfiguration": "Konfiguration auswählen",
   "languages": "Sprachen",
   "description": "Beschreibung",
@@ -1010,5 +1012,12 @@
   "CONN_TYPE_SERIAL": "Serielle Schnittstelle",
   "copyDirectLinkToConfigToClipboard": "Direkten Link zu dieser Konfiguration kopieren",
   "importantInformation": "Important information",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations."
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations.",
+  "useIt": "Use it",
+  "details": "Details",
+  "chooseHowToStart": "Choose how to start",
+  "type": "Type",
+  "BOARD_TYPE_SELFCONTAINED": "Self-contained",
+  "BOARD_TYPE_SINGLE": "Single boards",
+  "moreSearchOptions": "More search options"
 }
