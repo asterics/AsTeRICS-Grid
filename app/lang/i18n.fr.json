@@ -412,6 +412,7 @@
   "welcome": "Bienvenue",
   "speechOutputActivated": "sortie vocale activée",
   "tapOnAnyElementToActivateSpeech": "Appuyer/cliquer sur n'importe quel élément pour activer la sortie vocale",
+  "downloadingConfig": "Downloading configuration",
   "deletingGrids": "Suppression des grilles",
   "importingData": "Importation des données",
   "readingFile": "Lecture du fichier",
@@ -830,7 +831,8 @@
   "showAllVoices": "Afficher toutes les voix",
   "multilingual": "multilingue",
   "importPredefinedConfiguration": "Importer la configuration prédéfinie",
-  "addAnEmptyGridAndStartFromScratch": "Ajouter une grille vide et commencer à partir de zéro",
+  "emptyCommunicator": "Empty communicator",
+  "emptyConfigToCreateAnything": "Start with empty configuration in order to create any content by yourself.",
   "selectConfiguration": "Sélectionner la configuration",
   "languages": "Langues",
   "description": "Description",
@@ -1010,5 +1012,12 @@
   "CONN_TYPE_SERIAL": "Serial",
   "copyDirectLinkToConfigToClipboard": "Copy direct link to this configuration to clipboard",
   "importantInformation": "Important information",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations."
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations.",
+  "useIt": "Use it",
+  "details": "Details",
+  "chooseHowToStart": "Choose how to start",
+  "type": "Type",
+  "BOARD_TYPE_SELFCONTAINED": "Self-contained",
+  "BOARD_TYPE_SINGLE": "Single boards",
+  "moreSearchOptions": "More search options"
 }
