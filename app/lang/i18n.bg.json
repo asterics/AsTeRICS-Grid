@@ -412,6 +412,7 @@
   "welcome": "Добре Дошли",
   "speechOutputActivated": "Активирано речево изказване",
   "tapOnAnyElementToActivateSpeech": "Чукнете/кликнете върху някой елемент, за да активирате речево изказване",
+  "downloadingConfig": "Downloading configuration",
   "deletingGrids": "Изтриване на решетки",
   "importingData": "Импорт на данни",
   "readingFile": "Прочитане на файл",
@@ -830,7 +831,8 @@
   "showAllVoices": "Показване на всички гласове",
   "multilingual": "многоезичен",
   "importPredefinedConfiguration": "Импортирайте предварително дефинирана конфигурация",
-  "addAnEmptyGridAndStartFromScratch": "Добавете празна мрежа и започнете от нула",
+  "emptyCommunicator": "Empty communicator",
+  "emptyConfigToCreateAnything": "Start with empty configuration in order to create any content by yourself.",
   "selectConfiguration": "Изберете конфигурация",
   "languages": "Езици",
   "description": "Описание",
@@ -1010,5 +1012,12 @@
   "CONN_TYPE_SERIAL": "Serial",
   "copyDirectLinkToConfigToClipboard": "Copy direct link to this configuration to clipboard",
   "importantInformation": "Important information",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations."
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations.",
+  "useIt": "Use it",
+  "details": "Details",
+  "chooseHowToStart": "Choose how to start",
+  "type": "Type",
+  "BOARD_TYPE_SELFCONTAINED": "Self-contained",
+  "BOARD_TYPE_SINGLE": "Single boards",
+  "moreSearchOptions": "More search options"
 }
