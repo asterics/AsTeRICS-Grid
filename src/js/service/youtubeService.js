@@ -312,11 +312,17 @@ youtubeService.exitFullscreen = function () {
 };
 
 youtubeService.volumeUp = function (diffPercentage) {
-    youtubeService.setVolume(Math.min(player.getVolume() + diffPercentage, 100));
+    if (!player) {
+        return;
+    }
+    youtubeService.setVolume(Math.min(player.getVolume() + +diffPercentage, 100));
 };
 
 youtubeService.volumeDown = function (diffPercentage) {
-    youtubeService.setVolume(Math.max(player.getVolume() - diffPercentage, 0));
+    if (!player) {
+        return;
+    }
+    youtubeService.setVolume(Math.max(player.getVolume() - +diffPercentage, 0));
 };
 
 youtubeService.setVolume = function (volume, initSet) {
