@@ -22,6 +22,7 @@ class GridPreview {
         data.images = data.images || [];
         this.name = data.name;
         this.url = options.baseUrl + data.url;
+        this.filename = data.url.substring(data.url.lastIndexOf('/') + 1);
         this.selfContained = data.selfContained;
         this.author = data.author;
         this.website = data.website;

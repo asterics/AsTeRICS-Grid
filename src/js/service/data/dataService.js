@@ -14,12 +14,12 @@ import { i18nService } from '../i18nService';
 import { predictionService } from '../predictionService';
 import { localStorageService } from './localStorageService';
 import { gridUtil } from '../../util/gridUtil';
-import { urlParamService } from '../urlParamService';
 import { convertServiceDb } from './convertServiceDb';
 import { serviceWorkerService } from '../serviceWorkerService.js';
 import { constants } from '../../util/constants.js';
 import { MainVue } from '../../vue/mainVue.js';
 import { util } from '../../util/util.js';
+import { boardService } from '../boards/boardService';
 
 let dataService = {};
 
@@ -164,6 +164,7 @@ dataService.deleteAllGrids = function () {
             return databaseService.bulkDelete(grids);
         })
         .then(() => {
+            localStorageService.saveUserSettings({originGridsetFilename: '', isEmpty: true}, localStorageService.getAutologinUser());
             return saveGlobalGridId('');
         });
 };
@@ -581,10 +582,15 @@ dataService.importBackupFromUrl = async function(url, options = {}) {
     return dataService.importBackupData(result, options);
 }
 
-dataService.importBackupDefaultFile = async function(filename, options) {
-    let path = constants.GRIDSET_FOLDER + filename;
-    let result = await $.get(path);
-    return dataService.importBackupData(result, options);
+dataService.importBackupDefaultFile = async function(filename, options = {}) {
+    let url = boardService.getUrl(filename);
+    if (url) {
+        let result = await $.get(url);
+        options.filename = options.filename || filename;
+        return dataService.importBackupData(result, options);
+    } else {
+        log.warn(`no url found for filename ${filename}!`);
+    }
 }
 
 /**
@@ -592,16 +598,19 @@ dataService.importBackupDefaultFile = async function(filename, options) {
  * @param importData
  * @param options also see options of dataService.importData
  * @param options.skipDelete skip deleting existing data (fresh import for new user)
+ * @param options.filename original filename of the imported data - is saved to recognize which user has which default gridset
  * @return {Promise<void>}
  */
 dataService.importBackupData = async function (importData, options) {
     options = options || {};
     options.progressFn = options.progressFn || (() => {});
+    options.filename = options.filename || '';
     if (!options.skipDelete) {
         options.progressFn(20, i18nService.t('deletingGrids'));
         await dataService.deleteAllGrids();
         await dataService.deleteAllDictionaries();
     }
+    localStorageService.saveUserSettings({originGridsetFilename: options.filename, isEmpty: false}, localStorageService.getAutologinUser());
     options.progressFn(30, i18nService.t('encryptingAndSavingGrids'));
     await dataService.importData(importData, {
         generateGlobalGrid: options.generateGlobalGrid,

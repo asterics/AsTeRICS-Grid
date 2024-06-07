@@ -34,14 +34,17 @@
                                         return total + $t('lang.' + current) + separator;
                                     }, '') }}
                                     </div>
-                                    <div class="mt-3" v-if="preview.tags">
+                                    <div class="mt-3" v-if="preview.tags.length > 0">
                                         <strong>{{ $t('tags') }}</strong>:
                                         <span class="tag" style="background-color: lightgray" v-for="tag in preview.tags">{{ tag }}</span>
                                     </div>
                                 </div>
                             </div>
+                            <div class="mt-3">
+                                <a href="javascript:;" class="me-2" @click="copyLink">{{ $t('copyDirectLinkToConfigToClipboard') }}</a>
+                                <span v-if="linkCopied" class="fas fa-check"/>
+                            </div>
                         </div>
-
                     </div>
 
                     <div class="modal-footer container-fluid p-0">
@@ -67,19 +70,27 @@
 <script>
     import './../../css/modal.css';
     import { i18nService } from '../../js/service/i18nService';
+    import { urlParamService } from '../../js/service/urlParamService';
+    import { util } from '../../js/util/util';
 
     export default {
         props: ['preview'],
         data: function () {
             return {
                 selectedImage: this.preview.images[0],
-                i18nService: i18nService
+                i18nService: i18nService,
+                linkCopied: false
             }
         },
         methods: {
             save() {
                 this.$emit('import');
                 this.$emit('close');
+            },
+            copyLink() {
+                let link = location.origin + location.pathname + `?${urlParamService.params.PARAM_USE_GRIDSET_FILENAME}=${this.preview.filename}`;
+                util.copyToClipboard(link);
+                this.linkCopied = true;
             }
         },
         mounted() {

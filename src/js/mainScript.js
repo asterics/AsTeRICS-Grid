@@ -42,14 +42,18 @@ async function init() {
     if (gridsetFilename) {
         urlParamService.removeParam(urlParamService.params.PARAM_USE_GRIDSET_FILENAME);
         let autoUserSettings = localStorageService.getAutoImportedUserSettings();
-        let matchingUserConfig = autoUserSettings.filter(settings => settings.originGridsetFilename === gridsetFilename)[0];
+        let matchingUserConfig = autoUserSettings.find(settings => settings.originGridsetFilename === gridsetFilename);
         if (matchingUserConfig) {
             autologinUser = matchingUserConfig.username;
         } else {
-            let newUsername = localStorageService.getNextAutoUserName();
-            await loginService.registerOffline(newUsername, newUsername);
+            let emptyAutoUser = autoUserSettings.find(settings => settings.isEmpty) || {};
+            let newUsername = emptyAutoUser.username || localStorageService.getNextAutoUserName();
+            if (!emptyAutoUser.username) {
+                await loginService.registerOffline(newUsername, newUsername);
+            } else {
+                await loginService.loginStoredUser(newUsername, true)
+            }
             await dataService.importBackupDefaultFile(gridsetFilename);
-            localStorageService.saveUserSettings({originGridsetFilename: gridsetFilename}, newUsername);
             autologinUser = newUsername;
         }
     }

@@ -95,6 +95,7 @@
                 dataService.importBackupFromUrl(preview.url, {
                     skipDelete: true,
                     translate: preview.translate,
+                    filename: preview.filename,
                     progressFn: (percent, text) => {
                         MainVue.showProgressBar(percent, {
                             header: i18nService.t('importingData'),
@@ -109,11 +110,6 @@
                         Router.toMain();
                     }
                 });
-            },
-            copyLink() {
-                let link = location.origin + location.pathname + `?${urlParamService.params.PARAM_USE_GRIDSET_FILENAME}=${this.selectedGridset.filename}`;
-                util.copyToClipboard(link);
-                this.linkCopied = true;
             }
         },
         async mounted() {

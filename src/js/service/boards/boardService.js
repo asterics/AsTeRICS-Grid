@@ -7,7 +7,7 @@ let boardService = {};
 
 let BASE_URL = "https://asterics.github.io/AsTeRICS-Grid-Boards/";
 let METADATA_URL = BASE_URL + "live_metadata.json";
-let allResults = [];
+let ownResults = [];
 let searchTermsMap = new Map();
 let translationMap = {};
 let initResolve = null;
@@ -25,7 +25,7 @@ let initPromise = new Promise(resolve => {
  */
 boardService.query = async function (searchTerm = '', options = {}) {
     await initPromise;
-    let results = allResults;
+    let results = ownResults;
     if (options.lang) {
         results = results.filter(preview => preview.languages.includes(options.lang) || preview.translate);
     }
@@ -46,6 +46,16 @@ boardService.query = async function (searchTerm = '', options = {}) {
     return sortResults(results, options);
 };
 
+/**
+ * returns the url for a given filename for the results coming from AsTeRICS-Grid-Boards
+ * @param filename
+ * @return {*|string}
+ */
+boardService.getUrl = function(filename) {
+    let preview = ownResults.find(preview => preview.filename === filename);
+    return preview ? preview.url : "";
+}
+
 async function init() {
     try {
         await fetchData();
@@ -59,9 +69,9 @@ init();
 async function fetchData() {
     let response = await fetch(METADATA_URL);
     let data = await response.json();
-    allResults = data.map(object => new GridPreview(object, { baseUrl: BASE_URL }));
+    ownResults = data.map(object => new GridPreview(object, { baseUrl: BASE_URL }));
     searchTermsMap = new Map();
-    for (let preview of allResults) {
+    for (let preview of ownResults) {
         if (preview.translate) {
             preview.name = i18nService.t(preview.name);
             preview.description = i18nService.t(preview.description);
