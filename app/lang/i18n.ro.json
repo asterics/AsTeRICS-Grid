@@ -412,6 +412,7 @@
   "welcome": "Bine ați venit",
   "speechOutputActivated": "ieșire vocală activată",
   "tapOnAnyElementToActivateSpeech": "Atingeți / faceți clic pe orice element pentru a activa ieșirea vocală",
+  "downloadingConfig": "Downloading configuration",
   "deletingGrids": "Ștergerea grilelor",
   "importingData": "Importul de date",
   "readingFile": "Citirea fișierului",
@@ -830,7 +831,8 @@
   "showAllVoices": "Afișează toate vocile",
   "multilingual": "multilingv",
   "importPredefinedConfiguration": "Importați configurația predefinită",
-  "addAnEmptyGridAndStartFromScratch": "Adaugă o grilă goală și începe de la zero",
+  "emptyCommunicator": "Empty communicator",
+  "emptyConfigToCreateAnything": "Start with empty configuration in order to create any content by yourself.",
   "selectConfiguration": "Selectați configurația",
   "languages": "Limbi",
   "description": "Descriere",
@@ -1010,5 +1012,12 @@
   "CONN_TYPE_SERIAL": "Serial",
   "copyDirectLinkToConfigToClipboard": "Copy direct link to this configuration to clipboard",
   "importantInformation": "Important information",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations."
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations.",
+  "useIt": "Use it",
+  "details": "Details",
+  "chooseHowToStart": "Choose how to start",
+  "type": "Type",
+  "BOARD_TYPE_SELFCONTAINED": "Self-contained",
+  "BOARD_TYPE_SINGLE": "Single boards",
+  "moreSearchOptions": "More search options"
 }
