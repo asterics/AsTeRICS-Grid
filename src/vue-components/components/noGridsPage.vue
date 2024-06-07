@@ -92,10 +92,7 @@
             importData(preview) {
                 let thiz = this;
                 this.loading = true;
-                dataService.importBackupFromUrl(preview.url, {
-                    skipDelete: true,
-                    translate: preview.translate,
-                    filename: preview.filename,
+                dataService.importBackupFromPreview(preview, {
                     progressFn: (percent, text) => {
                         MainVue.showProgressBar(percent, {
                             header: i18nService.t('importingData'),

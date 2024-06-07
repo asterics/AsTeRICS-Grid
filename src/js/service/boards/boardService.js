@@ -47,13 +47,12 @@ boardService.query = async function (searchTerm = '', options = {}) {
 };
 
 /**
- * returns the url for a given filename for the results coming from AsTeRICS-Grid-Boards
+ * returns the preview for a given filename for the results coming from AsTeRICS-Grid-Boards
  * @param filename
  * @return {*|string}
  */
-boardService.getUrl = function(filename) {
-    let preview = ownResults.find(preview => preview.filename === filename);
-    return preview ? preview.url : "";
+boardService.getPreview = function(filename) {
+    return  ownResults.find(preview => preview.filename === filename);
 }
 
 async function init() {

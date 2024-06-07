@@ -13,6 +13,7 @@ class SettingsUserLocal {
      * @param settings.ytState
      * @param settings.voiceConfig
      * @param settings.originGridsetFilename
+     * @param settings.isEmpty true if this user configuration is empty
      */
     constructor(settings) {
         settings = settings || {};
@@ -26,6 +27,7 @@ class SettingsUserLocal {
         this.ytState = settings.ytState;
         this.voiceConfig = settings.voiceConfig && Object.keys(settings.voiceConfig).length ? new VoiceConfig(settings.voiceConfig) : {};
         this.originGridsetFilename = settings.originGridsetFilename;
+        this.isEmpty = settings.isEmpty !== undefined ? settings.isEmpty : true;
 
         convertServiceLocal.updateDataModel(this);
     }

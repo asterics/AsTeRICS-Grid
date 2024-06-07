@@ -566,12 +566,17 @@ dataService.importBackupUploadedFile = async function (file, progressFn) {
     });
 };
 
-dataService.importBackupFromUrl = async function(url, options = {}) {
-    options.progressFn = options.progressFn || (() => {})
+dataService.importBackupFromPreview = async function(preview, options = {}) {
+    if (!preview) {
+        return;
+    }
+    options.progressFn = options.progressFn || (() => {});
+    options.filename = options.filename || preview.filename;
+    options.skipDelete = true;
     options.progressFn(10, i18nService.t('downloadingConfig'));
-    let result = await $.get(url);
+    let result = await $.get(preview.url);
     options.progressFn(50, i18nService.t('importingData'));
-    if (options.translate && result.grids) {
+    if (preview.translate && result.grids) {
         for (let grid of result.grids) {
             grid.label[i18nService.getContentLang()] = i18nService.t(i18nService.getTranslation(grid.label));
             for (let element of grid.gridElements) {
@@ -583,14 +588,8 @@ dataService.importBackupFromUrl = async function(url, options = {}) {
 }
 
 dataService.importBackupDefaultFile = async function(filename, options = {}) {
-    let url = boardService.getUrl(filename);
-    if (url) {
-        let result = await $.get(url);
-        options.filename = options.filename || filename;
-        return dataService.importBackupData(result, options);
-    } else {
-        log.warn(`no url found for filename ${filename}!`);
-    }
+    let preview = boardService.getPreview(filename);
+    return dataService.importBackupFromPreview(preview, options);
 }
 
 /**
