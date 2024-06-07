@@ -412,6 +412,7 @@
   "welcome": "Benvingut! Benvinguda!",
   "speechOutputActivated": "sortida de veu activada",
   "tapOnAnyElementToActivateSpeech": "Premi/faci clic en qualsevol cel·la per activar la sortida de veu ",
+  "downloadingConfig": "Downloading configuration",
   "deletingGrids": "Esborrant taulers",
   "importingData": "S'estan important les dades...",
   "readingFile": "Llegint arxiu",
@@ -830,7 +831,8 @@
   "showAllVoices": "Mostrar totes les veus disponibles",
   "multilingual": "Multiidioma",
   "importPredefinedConfiguration": "Importar comunicador predefinit",
-  "addAnEmptyGridAndStartFromScratch": "Crear un tauler buit i començar des de zero",
+  "emptyCommunicator": "Empty communicator",
+  "emptyConfigToCreateAnything": "Start with empty configuration in order to create any content by yourself.",
   "selectConfiguration": "Seleccionar configuració",
   "languages": "Idiomes",
   "description": "Descripció",
@@ -1010,5 +1012,12 @@
   "CONN_TYPE_SERIAL": "Serial",
   "copyDirectLinkToConfigToClipboard": "Copy direct link to this configuration to clipboard",
   "importantInformation": "Important information",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations."
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations.",
+  "useIt": "Use it",
+  "details": "Details",
+  "chooseHowToStart": "Choose how to start",
+  "type": "Type",
+  "BOARD_TYPE_SELFCONTAINED": "Self-contained",
+  "BOARD_TYPE_SINGLE": "Single boards",
+  "moreSearchOptions": "More search options"
 }
