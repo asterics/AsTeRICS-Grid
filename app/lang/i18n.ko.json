@@ -412,6 +412,7 @@
   "welcome": "Welcome",
   "speechOutputActivated": "speech output activated",
   "tapOnAnyElementToActivateSpeech": "Tap/click on any element to activate speech output",
+  "downloadingConfig": "Downloading configuration",
   "deletingGrids": "그리드 삭제",
   "importingData": "데이터 가져오기",
   "readingFile": "파일읽기",
@@ -830,7 +831,8 @@
   "showAllVoices": "Show all voices",
   "multilingual": "multilingual",
   "importPredefinedConfiguration": "Import predefined configuration",
-  "addAnEmptyGridAndStartFromScratch": "Add an empty grid and start from scratch",
+  "emptyCommunicator": "Empty communicator",
+  "emptyConfigToCreateAnything": "Start with empty configuration in order to create any content by yourself.",
   "selectConfiguration": "Select configuration",
   "languages": "Languages",
   "description": "Description",
@@ -1010,5 +1012,12 @@
   "CONN_TYPE_SERIAL": "Serial",
   "copyDirectLinkToConfigToClipboard": "Copy direct link to this configuration to clipboard",
   "importantInformation": "Important information",
-  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations."
+  "usersWillBeDeletedAfterNotLoggingInFor365Days": "Users will be deleted after not logging in for 365 days, so please create backups of important configurations.",
+  "useIt": "Use it",
+  "details": "Details",
+  "chooseHowToStart": "Choose how to start",
+  "type": "Type",
+  "BOARD_TYPE_SELFCONTAINED": "Self-contained",
+  "BOARD_TYPE_SINGLE": "Single boards",
+  "moreSearchOptions": "More search options"
 }
