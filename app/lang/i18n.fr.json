@@ -152,7 +152,7 @@
   "help": "Aide",
   "enableDirectionInput": "Activer l'entrée de direction",
   "resetToDefaultInputConfiguration": "Rétablir la configuration par défaut",
-  "wrapAroundJumpToFirstElementAfterLastElem": "Wrap around (jump to first element after last element)",
+  "wrapAroundJumpToFirstElementAfterLastElem": "Revenir à l'élément initial (revenir au premier élément après le dernier)",
   "goToStartPositionAfterSelect": "Aller à la position de départ après la sélection",
   "ok": "OK",
   "areModel": "Modèle ARE",
