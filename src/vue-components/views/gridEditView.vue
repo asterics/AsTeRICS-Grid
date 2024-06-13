@@ -29,7 +29,7 @@
             <grid-translate-modal v-if="showTranslateModal" :grid-data-id="gridData.id" @close="showTranslateModal = false" @reload="reload"/>
         </div>
         <div>
-            <set-navigation-modal v-if="showNavigateModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showNavigateModal = false" @reload="reload"></set-navigation-modal>
+            <set-navigation-modal ref="setNavigationModal" :grid-id="gridData.id" :grid-element-id="editElementId" @reload="reload"></set-navigation-modal>
         </div>
         <div class="srow content" id="contentContainer">
             <div v-if="!showGrid" class="grid-container grid-mask">
@@ -92,7 +92,6 @@
                 doingUndoRedo: false,
                 showMultipleModal: false,
                 showDimensionsModal: false,
-                showNavigateModal: false,
                 showMoveModal: false,
                 showTranslateModal: false,
                 showEditModal: false,
@@ -489,7 +488,7 @@
                 case CONTEXT_GRID_NAVIGATION: {
                     vueApp.editElementId = elementId || vueApp.markedElement.id;
                     vueApp.markElement(null);
-                    vueApp.showNavigateModal = true;
+                    vueApp.$refs.setNavigationModal.openModal();
                     break;
                 }
                 case CONTEXT_ACTION_EDIT:
