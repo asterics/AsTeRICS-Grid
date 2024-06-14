@@ -34,6 +34,9 @@ predictionService.predict = function (input, dictionaryKey) {
         }
     }
     let suggestions = predictionary.predict(input, { maxPredicitons: registeredPredictElements.length });
+    if(suggestions.length === 0) {
+        suggestions = predictionary.predict("", { maxPredicitons: registeredPredictElements.length });
+    }
     for (let i = 0; i < registeredPredictElements.length; i++) {
         let text = suggestions[i] ? suggestions[i] : '';
         text = util.convertLowerUppercase(text, _textConvertMode);
