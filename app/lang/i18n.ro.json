@@ -1019,5 +1019,6 @@
   "type": "Type",
   "BOARD_TYPE_SELFCONTAINED": "Self-contained",
   "BOARD_TYPE_SINGLE": "Single boards",
-  "moreSearchOptions": "More search options"
+  "moreSearchOptions": "More search options",
+  "useDictionaryOfCurrentContentLanguage": "Use dictionary of current content language"
 }
