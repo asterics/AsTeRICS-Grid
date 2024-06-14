@@ -78,7 +78,7 @@ collectElementService.initWithElements = function (elements, dontAutoPredict) {
                 clearInterval(intervalHandler);
                 updateCollectElements();
                 if (!dontAutoPredict) {
-                    predictionService.predict(getPrintText(), dictionaryKey);
+                    predictionService.predict(getPredictText(), dictionaryKey);
                 }
             }
         }, 100);
@@ -194,7 +194,7 @@ collectElementService.doCollectElementActions = async function (action) {
             );
             break;
     }
-    predictionService.predict(getPrintText(), dictionaryKey);
+    predictionService.predict(getPredictText(), dictionaryKey);
 };
 
 collectElementService.addWordFormTagsToLast = function (tags, toggle) {
@@ -480,13 +480,19 @@ function getSpeakArray(options) {
 
 function getPrintText(options) {
     options = options || {};
+    options.trim = options.trim !== undefined ? options.trim : true;
     options.dontIncludeAudio = true;
     options.dontIncludePronunciation =
         options.dontIncludePronunciation !== undefined ? options.dontIncludePronunciation : true;
     options.inlcudeCorrectedGrammar =
         options.inlcudeCorrectedGrammar !== undefined ? options.inlcudeCorrectedGrammar : true;
     let textArray = collectedElements.map((e) => getOutputObject(e, options).text)
-    return textArray.join(' ').trim().replace(/\s+/g, ' ');
+    let returnValue = options.trim ? textArray.join(' ').trim() : textArray.join(' ');
+    return returnValue.replace(/\s+/g, ' ');
+}
+
+function getPredictText() {
+    return getPrintText({trim: false});
 }
 
 function getPrintTextOfElement(element) {
@@ -595,7 +601,7 @@ function triggerPredict() {
     registeredCollectElements.forEach((collectElement) => {
         let predictAction = getActionOfType(collectElement, 'GridActionPredict');
         if (predictAction && predictAction.suggestOnChange) {
-            predictionService.predict(getPrintText(), dictionaryKey);
+            predictionService.predict(getPredictText(), dictionaryKey);
         }
     });
 }
