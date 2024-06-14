@@ -21,6 +21,7 @@ class GridActionPredict extends Model({
 }
 
 GridActionPredict.canBeTested = false;
+GridActionPredict.USE_DICTIONARY_CURRENT_LANG = "USE_DICTIONARY_CURRENT_LANG";
 
 GridActionPredict.defaults({
     id: '', //will be replaced by constructor

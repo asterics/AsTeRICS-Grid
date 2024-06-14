@@ -20,9 +20,9 @@
                         <div v-show="importType === c.SELECT_ONLINE">
                             <div class="srow">
                                 <label class="three columns" for="selectDict">{{ $t('selectDictionary') }}</label>
-                                <select id="selectDict" class="nine columns" type="file" v-model="selectedOption">
+                                <select id="selectDict" class="nine columns" type="file" v-model="selectedOption" @change="console.log(selectedOption.lang)">
                                     <option disabled selected hidden :value="null">{{ $t('pleaseSelect') }}</option>
-                                    <option v-for="option in options" :value="option">{{option.name | translate}}</option>
+                                    <option v-for="option in options" :value="option">{{ option.name }}</option>
                                 </select>
                             </div>
                             <div class="srow" v-show="selectedOption && selectedOption.type === c.OPTION_TYPE_GITHUB_FREQUENCYWORDS">
@@ -84,17 +84,20 @@
                 options: [{
                     name: i18nService.t('astericsGridGermanDefault'),
                     downloadUrl: 'https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/app/dictionaries/default_de.json',
-                    type: c.OPTION_TYPE_PREDEFINED
+                    type: c.OPTION_TYPE_PREDEFINED,
+                    lang: "de"
                 }, {
                     name: i18nService.t('astericsGridEnglishDefault'),
                     downloadUrl: 'https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/app/dictionaries/default_en.json',
-                    type: c.OPTION_TYPE_PREDEFINED
+                    type: c.OPTION_TYPE_PREDEFINED,
+                    lang: "en"
                 }],
                 selectedOption: null,
                 selectedFile: null,
                 c: c,
                 error: null,
-                loading: false
+                loading: false,
+                console: console
             }
         },
         methods: {
@@ -145,7 +148,8 @@
                     let dict = new Dictionary({
                         dictionaryKey: modelUtil.getNewName(name, existingNames),
                         data: dictData,
-                        isDefault: true
+                        isDefault: true,
+                        lang: thiz.selectedOption.lang
                     });
                     return dataService.saveDictionary(dict).then(() => {
                         thiz.$emit('reload', dict);
@@ -182,6 +186,7 @@
             additionalOptions = additionalOptions.map(o => {
                 let lang = i18nService.t(`lang.${o.langCode}`);
                 o.name = `${lang} (hermitdave@github.com)`;
+                o.lang = o.langCode;
                 return o;
             })
             additionalOptions.sort((a, b) => {

@@ -133,7 +133,8 @@
                                 <label for="comboUseDict" class="normal-text">{{ $t('dictionaryToUse') }}</label>
                             </div>
                             <select class="eight columns" id="comboUseDict" v-model="action.dictionaryKey">
-                                <option :value="undefined">{{ $t('allDictionaries') }}</option>
+                                <option :value="null">{{ $t('allDictionaries') }}</option>
+                                <option :value="GridActionPredict.USE_DICTIONARY_CURRENT_LANG">{{ $t('useDictionaryOfCurrentContentLanguage') }}</option>
                                 <option v-for="id in dictionaryKeys" :value="id">
                                     {{id}}
                                 </option>
@@ -336,6 +337,7 @@
     import EditWordFormAction from "./editActionsSub/editWordFormAction.vue";
     import EditHttpAction from "./editActionsSub/editHttpAction.vue";
     import {GridActionUART} from "../../js/model/GridActionUART.js";
+    import { GridActionPredict } from '../../js/model/GridActionPredict';
 
     export default {
         props: ['gridElement', 'gridData'],
@@ -358,6 +360,7 @@
                 GridActionYoutube: GridActionYoutube,
                 GridActionNavigate: GridActionNavigate,
                 GridActionUART: GridActionUART,
+                GridActionPredict: GridActionPredict,
                 GridElement: GridElement,
                 speechService: speechService
             }

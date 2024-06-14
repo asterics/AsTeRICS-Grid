@@ -8,6 +8,7 @@ import { constants } from '../util/constants';
 import { localStorageService } from './data/localStorageService.js';
 import { i18nService } from './i18nService.js';
 import { util } from '../util/util.js';
+import { GridActionPredict } from '../model/GridActionPredict';
 
 let predictionService = {};
 let predictionary = null;
@@ -24,7 +25,12 @@ predictionService.predict = function (input, dictionaryKey) {
     if (input === undefined || registeredPredictElements.length === 0 || !predictionary) {
         return;
     }
-    if (!dictionaryKey) {
+    if (dictionaryKey === GridActionPredict.USE_DICTIONARY_CURRENT_LANG) {
+        let langDicts = _dbDictObjects.filter(dict => dict.lang === i18nService.getContentLang());
+        let keys = langDicts.map(dict => dict.dictionaryKey);
+        predictionary.useDictionaries(keys);
+        _usedKeys = keys;
+    } else if (!dictionaryKey) {
         predictionary.useAllDictionaries();
         _usedKeys = predictionary.getDictionaryKeys();
     } else {

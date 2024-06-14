@@ -7,6 +7,7 @@ class Dictionary extends Model({
     modelName: String,
     modelVersion: String,
     dictionaryKey: String,
+    lang: [String],
     data: [String], //JSON data
     isDefault: [Boolean]
 }) {
