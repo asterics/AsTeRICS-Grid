@@ -32,7 +32,7 @@
                 <li v-for="preview in gridPreviews">
                     <div class="preview-content">
                         <strong class="d-block mb-3">{{ preview.name | extractTranslation }}</strong>
-                        <img aria-hidden="true" v-if="preview.thumbnail" :src="preview.thumbnail" style="width: 100%"/>
+                        <img aria-hidden="true" v-if="preview.thumbnail" :src="preview.thumbnail" style="width: 100%; aspect-ratio: 16/9;"/>
                         <div v-if="!preview.thumbnail" class="img-placeholder mb-3" style="aspect-ratio: 16/9; width: 99%; border: 1px solid lightgray"></div>
                         <div class="d-flex col-12" style="flex-wrap: wrap">
                             <span class="tag" style="background-color: lightgreen">{{ preview.languages.length === 1 ? $t(`lang.${preview.languages[0]}`) : "multi-lang" }}</span>
