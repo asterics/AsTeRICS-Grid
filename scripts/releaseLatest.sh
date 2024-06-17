@@ -15,8 +15,9 @@ set -e
 do_gh_pages_update () {
    echo "apply beta-release to gh-pages..."
    git checkout gh-pages
-   echo "git pull gh-pages..."
-   git pull
+   echo "git update gh-pages..."
+   git fetch origin gh-pages
+   git reset --hard origin/gh-pages
    rm -rf latest
    git clone --depth=1 --branch $tagname https://github.com/asterics/AsTeRICS-Grid.git latest
    rm -rf latest/.git/
