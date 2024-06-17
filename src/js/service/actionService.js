@@ -115,8 +115,7 @@ async function doAction(gridElement, action, options) {
             let labelCopy = JSON.parse(JSON.stringify(gridElement.label));
             Object.assign(labelCopy, langWordFormMap);
             if (gridElement.type === GridElement.ELEMENT_TYPE_PREDICTION) {
-                let currentPrediction = $(`#${gridElement.id} .text-container span`).text();
-                labelCopy[i18nService.getContentLang()] = currentPrediction;
+                labelCopy[i18nService.getContentLang()] = predictionService.getLastAppliedPrediction();
             }
             speechService.speak(labelCopy, {
                 lang: action.speakLanguage,

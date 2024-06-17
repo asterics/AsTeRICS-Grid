@@ -20,6 +20,7 @@ let _autosaveInterval = 10 * 60 * 1000; // 10 Minutes
 let _intervalHandler = null;
 let _currentInitUser = null;
 let _textConvertMode = null;
+let _lastAppliedPrediction = null;
 
 predictionService.predict = function (input, dictionaryKey) {
     if (input === undefined || registeredPredictElements.length === 0 || !predictionary) {
@@ -85,8 +86,13 @@ predictionService.applyPrediction = function (input, prediction, dictionaryKey) 
         return;
     }
     _unsavedChanges = true;
+    _lastAppliedPrediction = prediction;
     return predictionary.applyPrediction(input, prediction, { addToDictionary: dictionaryKey });
 };
+
+predictionService.getLastAppliedPrediction = function() {
+    return _lastAppliedPrediction;
+}
 
 predictionService.doAction = function (elementId) {
     if (!predictionary) {
