@@ -1,8 +1,11 @@
 <template>
     <div class="p-4">
         <h2 class="my-3">{{ $t('chooseHowToStart') }}</h2>
-        <div class="mt-2 mb-5">
-            <a href="javascript:;" @click="restoreBackupHandler()"><span class="fa fa-file-import"/> {{ $t('restoreBackupFromFile') }}</a>
+        <div class="container-fluid">
+            <div class="mt-2 mb-5 row">
+                <a href="javascript:;" class="col-12 col-lg" @click="restoreBackupHandler()"><span class="fas fa-upload"/> {{ $t('restoreBackupFromFile') }}</a>
+                <a href="javascript:;" class="col-12 col-lg" @click="importCustomHandler()"><span class="fas fa-file-import"/> {{ $t('importCustomDataFromFile') }}</a>
+            </div>
         </div>
 
         <div class="my-3">
