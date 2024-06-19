@@ -35,8 +35,6 @@ if [ $branch != "stable" ]; then
    exit 1
 fi
 
-exit 1
-
 doStash=true
 if git diff-index --quiet HEAD --; then
     doStash=false
