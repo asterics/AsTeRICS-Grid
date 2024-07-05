@@ -56,5 +56,5 @@ Figure 2.3 shows an additional option `Toggle tags on selecting it multiple time
 The action type `change this element to next word form` also has an option `secondary action type`. If selected, the tags of the current word form are used for a secondary action. *Example usage:* an element has 2 word forms `I [1.PERS]` and `You [2.PERS]`. Iterating through these values using `change this element to next word form` with `secondary action type` = `change word form in grid elements` will cause changing all other grid elements to `1.PERS` after selecting `I` and to `2.PERS` after selecting `You`.
 
 ## Example configuration
-A grid configuration including examples for all word form features can be downloaded here:
-<a download href="https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/docs/documentation_user/files/demo-grammar_2024-03-18_15-07_asterics-grid-full-backup.grd">Grid configuration with word form examples</a> (use right click and "save target as"). It contains examples for all different action types of `change word forms`.
+A grid configuration including examples for all word form features can be tested here:
+<a href="https://grid.asterics.eu/?gridset_filename=grammar-demos.grd.json">Grid configuration with word form examples</a>. It contains examples for all different action types of `change word forms`.
