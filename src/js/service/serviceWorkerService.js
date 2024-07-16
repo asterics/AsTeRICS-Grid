@@ -2,12 +2,14 @@ import { GridData } from '../model/GridData.js';
 import { constants } from '../util/constants.js';
 import { localStorageService } from './data/localStorageService.js';
 import $ from "../externals/jquery.js";
+import { util } from '../util/util';
 
 let serviceWorkerService = {};
 let KEY_SHOULD_CACHE_ELEMS = 'KEY_SHOULD_CACHE_ELEMS';
 
 let shouldCacheElements = localStorageService.getJSON(KEY_SHOULD_CACHE_ELEMS) || [];
 let isCaching = false;
+let _retryCount = 0;
 
 serviceWorkerService.cacheUrl = function (url) {
     addCacheElem(url, constants.SW_CACHE_TYPE_GENERIC);
@@ -41,13 +43,19 @@ function init() {
             let msg = evt.data;
             if (msg.type === constants.SW_EVENT_URL_CACHED) {
                 isCaching = false;
-                if (msg.success) {
+                if (msg.success || msg.responseCode === 404) { // assuming 404 is permanently, so also remove
+                    _retryCount = 0;
                     removeCacheUrl(msg.url);
                     cacheNext();
-                } else {
+                } else { // assuming temporary network error, so retry
+                    let waitTimeSeconds = Math.min(5 + (2 * _retryCount * _retryCount), 30 * 60); // exponentially rising waiting time, max. 30 minutes about at attempt 30
+                    waitTimeSeconds = Math.round(waitTimeSeconds * util.getRandom(1, 1.5));
+                    log.warn("failed to cache url: ", msg.url, ", next try in seconds: ", waitTimeSeconds);
+                    _retryCount++;
+                    util.shuffleArray(shouldCacheElements); // prevent trying permanently failing element over and over again
                     setTimeout(() => {
                         cacheNext();
-                    }, 15000);
+                    }, waitTimeSeconds * 1000);
                 }
             }
         });

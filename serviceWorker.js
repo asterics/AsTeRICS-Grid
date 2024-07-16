@@ -50,13 +50,13 @@ self.addEventListener('message', (event) => {
     let cacheName = msg.cacheType === constants.SW_CACHE_TYPE_IMG ? 'image-cache' : workbox.core.cacheNames.runtime;
 
     caches.open(cacheName).then(async (cache) => {
-        let validResponse = await hasValidResponse(cache, msg.url);
-        if (!validResponse) {
+        let responseCode = await getResponseCode(cache, msg.url);
+        if (responseCode !== 200) {
             //console.debug(`adding ${msg.url} to cache "${cacheName}".`);
             await cache.add(msg.url).catch(() => {});
-            validResponse = await hasValidResponse(cache, msg.url);
+            responseCode = await getResponseCode(cache, msg.url);
         }
-        sendToClients({type: constants.SW_EVENT_URL_CACHED, url: msg.url, success: validResponse});
+        sendToClients({type: constants.SW_EVENT_URL_CACHED, url: msg.url, success: responseCode === 200, responseCode: responseCode});
     });
 });
 
@@ -87,9 +87,9 @@ function shouldCacheNormal(url, request) {
     return !shouldCacheImage(url, request) && isOwnHost;
 }
 
-async function hasValidResponse(cache, url) {
+async function getResponseCode(cache, url) {
     let response = await cache.match(url);
-    return !!response && response.status === 200;
+    return response ? response.status : -1;
 }
 
 function sendToClients(msg) {
