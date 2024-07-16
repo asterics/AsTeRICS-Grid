@@ -1019,5 +1019,6 @@
   "BOARD_TYPE_SELFCONTAINED": "Eigenständig",
   "BOARD_TYPE_SINGLE": "Einzelne Grids",
   "moreSearchOptions": "Mehr Suchoptionen",
-  "useDictionaryOfCurrentContentLanguage": "Verwende Wörterbuch in der aktuellen Sprache der Grids"
+  "useDictionaryOfCurrentContentLanguage": "Verwende Wörterbuch in der aktuellen Sprache der Grids",
+  "editOnGithub": "Edit on GitHub"
 }
