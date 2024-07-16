@@ -931,7 +931,6 @@
   "stopRemembering": "Stop met onthouden",
   "intervalForRemindingMakeBackups": "Interval voor herinneringen om back-ups te maken",
   "notifications": "Meldingen",
-  "days": "dagen",
   "offline": "offline",
   "online": "online",
   "activateAutomaticGrammarCorrectionARASAACAPI": "Activate automatic grammar correction via ARASAAC's API (available for: {availableLangs})",
