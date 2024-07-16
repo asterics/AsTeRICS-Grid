@@ -1019,5 +1019,6 @@
   "BOARD_TYPE_SELFCONTAINED": "Self-contained",
   "BOARD_TYPE_SINGLE": "Jednostruke ploče",
   "moreSearchOptions": "Više opcija traženja",
-  "useDictionaryOfCurrentContentLanguage": "Koristi rječnik trenutnog jezika sadržaja"
+  "useDictionaryOfCurrentContentLanguage": "Koristi rječnik trenutnog jezika sadržaja",
+  "editOnGithub": "Edit on GitHub"
 }
