@@ -931,7 +931,6 @@
   "stopRemembering": "הפסק זכירה",
   "intervalForRemindingMakeBackups": "מרווחים לתזכורת ליצירת גיבוי",
   "notifications": "התראות",
-  "days": "ימים",
   "offline": "לא מקוון",
   "online": "מקוון",
   "activateAutomaticGrammarCorrectionARASAACAPI": "Activate automatic grammar correction via ARASAAC's API (available for: {availableLangs})",
