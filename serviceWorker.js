@@ -53,8 +53,11 @@ self.addEventListener('message', (event) => {
         let responseCode = await getResponseCode(cache, msg.url);
         if (responseCode !== 200) {
             //console.debug(`adding ${msg.url} to cache "${cacheName}".`);
-            await cache.add(msg.url).catch(() => {});
-            responseCode = await getResponseCode(cache, msg.url);
+            let response = await fetch(msg.url);
+            responseCode = response.status;
+            if (responseCode === 200) {
+                await cache.put(msg.url, response);
+            }
         }
         sendToClients({type: constants.SW_EVENT_URL_CACHED, url: msg.url, success: responseCode === 200, responseCode: responseCode});
     });

@@ -44,13 +44,16 @@ function init() {
             if (msg.type === constants.SW_EVENT_URL_CACHED) {
                 isCaching = false;
                 if (msg.success || msg.responseCode === 404) { // assuming 404 is permanently, so also remove
+                    if (msg.responseCode === 404) {
+                        log.warn('failed to cache url with status 404: ', msg.url, ', not trying again.');
+                    }
                     _retryCount = 0;
                     removeCacheUrl(msg.url);
                     cacheNext();
                 } else { // assuming temporary network error, so retry
                     let waitTimeSeconds = Math.min(5 + (2 * _retryCount * _retryCount), 30 * 60); // exponentially rising waiting time, max. 30 minutes about at attempt 30
                     waitTimeSeconds = Math.round(waitTimeSeconds * util.getRandom(1, 1.5));
-                    log.warn("failed to cache url: ", msg.url, ", next try in seconds: ", waitTimeSeconds);
+                    log.warn("failed to cache url: ", msg.url, msg.responseCode, ", next try in seconds: ", waitTimeSeconds);
                     _retryCount++;
                     util.shuffleArray(shouldCacheElements); // prevent trying permanently failing element over and over again
                     setTimeout(() => {
