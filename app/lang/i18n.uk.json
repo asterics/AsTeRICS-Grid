@@ -1019,5 +1019,6 @@
   "BOARD_TYPE_SELFCONTAINED": "Самодостатній",
   "BOARD_TYPE_SINGLE": "Single boards",
   "moreSearchOptions": "Більше параметрів пошуку",
-  "useDictionaryOfCurrentContentLanguage": "Використовувати словник поточної мови контенту"
+  "useDictionaryOfCurrentContentLanguage": "Використовувати словник поточної мови контенту",
+  "editOnGithub": "Edit on GitHub"
 }
