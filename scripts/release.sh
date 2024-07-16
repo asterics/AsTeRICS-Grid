@@ -41,8 +41,8 @@ if git diff-index --quiet HEAD --; then
 fi
 if $doStash; then
     # Changes
-    echo "detected local changes, doing git stash..."
-    git stash
+    echo "detected local changes, aborting."
+    exit 1
 fi
 
 echo "testing..."
@@ -75,10 +75,7 @@ git add serviceWorker.js
 git commit -m "reverted release version to placeholder"
 git push origin HEAD
 do_gh_pages_update
-if $doStash; then
-    echo "pop stashed changes..."
-    git stash pop
-fi
+git checkout master
 echo "$tagname successfully released!"
 
 
