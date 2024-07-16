@@ -931,7 +931,6 @@
   "stopRemembering": "Prestani pamtiti",
   "intervalForRemindingMakeBackups": "Interval za podsjetnik o sigurnosnoj kopiji",
   "notifications": "Obavijesti",
-  "days": "dani",
   "offline": "izvan mreže",
   "online": "na mreži",
   "activateAutomaticGrammarCorrectionARASAACAPI": "Aktiviraj automatsko ispravljanje gramatike putem ARASAAC API (dostupno za: {availableLangs})",
