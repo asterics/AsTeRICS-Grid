@@ -1019,5 +1019,6 @@
   "BOARD_TYPE_SELFCONTAINED": "Auto-contido",
   "BOARD_TYPE_SINGLE": "Paneis individuais",
   "moreSearchOptions": "Máis opcións de búsqueda",
-  "useDictionaryOfCurrentContentLanguage": "Usa o dicionario da lingua de contido actual"
+  "useDictionaryOfCurrentContentLanguage": "Usa o dicionario da lingua de contido actual",
+  "editOnGithub": "Edit on GitHub"
 }
