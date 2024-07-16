@@ -1019,5 +1019,6 @@
   "BOARD_TYPE_SELFCONTAINED": "Niezależnie",
   "BOARD_TYPE_SINGLE": "Pojedyncze tablice",
   "moreSearchOptions": "Więcej opcji wyszukiwania",
-  "useDictionaryOfCurrentContentLanguage": "Użyj słownika bieżącego języka treści"
+  "useDictionaryOfCurrentContentLanguage": "Użyj słownika bieżącego języka treści",
+  "editOnGithub": "Edit on GitHub"
 }
