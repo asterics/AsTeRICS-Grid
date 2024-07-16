@@ -6,6 +6,7 @@ import { constants } from '../../util/constants';
 let boardService = {};
 
 let BASE_URL = "https://asterics.github.io/AsTeRICS-Grid-Boards/";
+let GITHUB_BASE_URL = "https://github.com/asterics/AsTeRICS-Grid-Boards/tree/main/";
 let METADATA_URL = BASE_URL + "live_metadata.json";
 let ownResults = [];
 let searchTermsMap = new Map();
@@ -68,7 +69,7 @@ init();
 async function fetchData() {
     let response = await fetch(METADATA_URL);
     let data = await response.json();
-    ownResults = data.map(object => new GridPreview(object, { baseUrl: BASE_URL }));
+    ownResults = data.map(object => new GridPreview(object, { baseUrl: BASE_URL, githubEditable: true, githubBaseUrl: GITHUB_BASE_URL }));
     searchTermsMap = new Map();
     for (let preview of ownResults) {
         if (preview.translate) {

@@ -38,6 +38,9 @@
                                         <strong>{{ $t('tags') }}</strong>:
                                         <span class="tag" style="background-color: lightgray" v-for="tag in preview.tags">{{ tag }}</span>
                                     </div>
+                                    <div class="mt-5" v-if="preview.githubUrl">
+                                        <a :href="preview.githubUrl" target="_blank"><i class="fab fa-github"/> {{ $t('editOnGithub') }}</a>
+                                    </div>
                                 </div>
                             </div>
                             <div class="mt-3">

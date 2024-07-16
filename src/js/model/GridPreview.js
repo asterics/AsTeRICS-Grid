@@ -18,10 +18,14 @@ class GridPreview {
      * @param {string} [options.baseUrl] base url that is appended to all urls (data.url, data.images, data.thumbnail)
      * @param {number|Object<string,number>} [data.priority] priority information about this config, higher numbers mean higher priority, can be a map of langCode -> priority to define different priorities for different languages
      */
-    constructor(data, options = {baseUrl: ''}) {
+    constructor(data, options = {baseUrl: '', githubEditable: false, githubBaseUrl: ''}) {
         data.images = data.images || [];
         this.name = data.name;
         this.url = options.baseUrl + data.url;
+        if (options.githubEditable) {
+            let githubUrl = options.githubBaseUrl + data.url;
+            this.githubUrl = githubUrl.substring(0, githubUrl.lastIndexOf('/'));
+        }
         this.filename = data.url.substring(data.url.lastIndexOf('/') + 1);
         this.selfContained = data.selfContained;
         this.author = data.author;
