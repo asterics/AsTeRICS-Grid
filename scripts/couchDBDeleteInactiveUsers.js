@@ -18,7 +18,7 @@ const authUsers = nano.use('auth-users');
 const https = require('https');
 let MAX_TIMEDIFF_SECONDS = 100;
 let MS_PER_DAY = 1000 * 60 * 60 * 24;
-let MAX_USER_AGE_DAYS = 365;
+let MAX_USER_AGE_DAYS = 280; // about 9 months
 
 let SUCCESS_FILENAME = 'couchDBDeleteInactiveUsers.success.txt';
 let ERROR_FILENAME = 'couchDBDeleteInactiveUsers.error.txt';
