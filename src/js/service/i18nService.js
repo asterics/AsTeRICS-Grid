@@ -31,6 +31,7 @@ let appLanguages = [
     'pl',
     'pt',
     'ro',
+    'ru',
     'sl',
     'es',
     'uk',
