@@ -931,7 +931,6 @@
   "stopRemembering": "Nu vă mai amintiți",
   "intervalForRemindingMakeBackups": "Interval pentru reamintirea de a face copii de rezervă",
   "notifications": "Notificări",
-  "days": "zile",
   "offline": "offline",
   "online": "online",
   "activateAutomaticGrammarCorrectionARASAACAPI": "Activați corectarea automata a gramaticii prin API ARASAAC (valabil pentru: {availableLangs})",
