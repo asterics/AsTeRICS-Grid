@@ -931,7 +931,6 @@
   "stopRemembering": "Zastavit zapamatování",
   "intervalForRemindingMakeBackups": "Interval pro připomenutí vytvoření zálohy",
   "notifications": "Notifikace",
-  "days": "dny",
   "offline": "offline",
   "online": "online",
   "activateAutomaticGrammarCorrectionARASAACAPI": "Aktivovat automatickou korekci gramatiky pomocí rozhraní ARASAAC (k dispozici pro: {availableLangs})",
