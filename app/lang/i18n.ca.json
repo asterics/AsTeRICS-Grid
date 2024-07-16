@@ -931,7 +931,6 @@
   "stopRemembering": "No tornar a recordar-m'ho",
   "intervalForRemindingMakeBackups": "Recordar fer còpies de seguretat cada",
   "notifications": "Notificacions",
-  "days": "dies",
   "offline": "fora de línia",
   "online": "en línia",
   "activateAutomaticGrammarCorrectionARASAACAPI": "Activate automatic grammar correction via ARASAAC's API (available for: {availableLangs})",
