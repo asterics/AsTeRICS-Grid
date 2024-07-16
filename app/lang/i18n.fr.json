@@ -931,7 +931,6 @@
   "stopRemembering": "Ne plus me le rappeler",
   "intervalForRemindingMakeBackups": "Fréquence de rappel pour effectuer des sauvegardes",
   "notifications": "Notifications",
-  "days": "jours",
   "offline": "hors ligne",
   "online": "en ligne",
   "activateAutomaticGrammarCorrectionARASAACAPI": "Activate automatic grammar correction via ARASAAC's API (available for: {availableLangs})",
