@@ -931,7 +931,6 @@
   "stopRemembering": "Спри запомнянето",
   "intervalForRemindingMakeBackups": "Интервал за напомняне на създаване на резервни копия",
   "notifications": "Известия",
-  "days": "дни",
   "offline": "офлайн",
   "online": "онлайн",
   "activateAutomaticGrammarCorrectionARASAACAPI": "Активиране на автоматично коригиране на граматични грешки чрез ARASAAC's API (налични на: {availableLangs})",
