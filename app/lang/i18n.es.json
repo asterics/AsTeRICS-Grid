@@ -1019,5 +1019,6 @@
   "BOARD_TYPE_SELFCONTAINED": "Comunicador",
   "BOARD_TYPE_SINGLE": "Tablero",
   "moreSearchOptions": "Más opciones de búsqueda",
-  "useDictionaryOfCurrentContentLanguage": "Usar diccionario correspondiente al idioma del contenido seleccionado"
+  "useDictionaryOfCurrentContentLanguage": "Usar diccionario correspondiente al idioma del contenido seleccionado",
+  "editOnGithub": "Edit on GitHub"
 }
