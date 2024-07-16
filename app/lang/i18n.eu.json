@@ -1019,5 +1019,6 @@
   "BOARD_TYPE_SELFCONTAINED": "Komunikatzailea",
   "BOARD_TYPE_SINGLE": "Taula",
   "moreSearchOptions": "Bilaketa aukera gehiago",
-  "useDictionaryOfCurrentContentLanguage": "Use dictionary of current content language"
+  "useDictionaryOfCurrentContentLanguage": "Use dictionary of current content language",
+  "editOnGithub": "Edit on GitHub"
 }
