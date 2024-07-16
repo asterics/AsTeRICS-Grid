@@ -931,7 +931,6 @@
   "stopRemembering": "Ez gogoratu berriro",
   "intervalForRemindingMakeBackups": "Interval for reminding to make backups",
   "notifications": "Jakinarazpenak",
-  "days": "egunak",
   "offline": "offline",
   "online": "online",
   "activateAutomaticGrammarCorrectionARASAACAPI": "Gramatika-zuzenketa automatikoa ARASAACen Lengoaia Naturaleko APIaren bidez aktibatu (hemen eskuragarri: {availableLangs})",
