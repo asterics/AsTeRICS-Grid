@@ -1019,5 +1019,6 @@
   "BOARD_TYPE_SELFCONTAINED": "Bircok konulu pano",
   "BOARD_TYPE_SINGLE": "Tekli panolar",
   "moreSearchOptions": "Daha fazla arama secenegi",
-  "useDictionaryOfCurrentContentLanguage": "Su anki dil sözlügünü kullan"
+  "useDictionaryOfCurrentContentLanguage": "Su anki dil sözlügünü kullan",
+  "editOnGithub": "Edit on GitHub"
 }
