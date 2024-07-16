@@ -931,7 +931,6 @@
   "stopRemembering": "Felejts el",
   "intervalForRemindingMakeBackups": "Biztonsági mentés emlékeztető gyakorisága",
   "notifications": "Értesítések",
-  "days": "napok",
   "offline": "offline",
   "online": "online",
   "activateAutomaticGrammarCorrectionARASAACAPI": "Automatikus nyelvi ellenőrzés az ARASAAC API-val. (elérhető nyelvek: {availableLangs})",
