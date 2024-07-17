@@ -140,7 +140,7 @@
                 <div class="srow">
                     <div class="twelve columns">
                         <span>{{ $t('wantToCreateAnOfflineonlyUser') }}</span>
-                        <a href="#add">{{ $t('addofflineuser') }}</a>
+                        <a href="#add">{{ $t('addOfflineUser') }}</a>
                     </div>
                 </div>
             </div>

@@ -2,7 +2,7 @@
     <div class="overflow-content">
         <header-icon full-header="true"></header-icon>
         <div class="srow content spaced">
-            <h2><span class="show-mobile">AsTeRICS Grid - </span><span>{{ $t('addofflineuser') }}</span></h2>
+            <h2><span class="show-mobile">AsTeRICS Grid - </span><span>{{ $t('addOfflineUser') }}</span></h2>
             <form autocomplete="off" onsubmit="event.preventDefault()">
                 <div class="srow">
                     <label for="inputUser" class="two columns"><span class="desktop-right">{{ $t('username') }}</span></label>
