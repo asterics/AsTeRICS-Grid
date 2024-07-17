@@ -809,7 +809,6 @@
   "currentLanguages": "{length} текущ език:",
   "exportDictionaries": "Изтегляне на речници",
   "downloadBackup": "Изтегляне на резервното копие",
-  "closeModal": "затваряне на модалния прозорец",
   "LANG_EXPORT_CURRENT": "Изтегли само текущия език на съдържанието",
   "LANG_EXPORT_ALL": "Изтегли всички езици налични в мрежата (ите)",
   "numDictionaries": "{length} речници",
