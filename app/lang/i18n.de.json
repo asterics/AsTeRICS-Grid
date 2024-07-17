@@ -809,7 +809,6 @@
   "currentLanguages": "{length} aktuelle Sprachen:",
   "exportDictionaries": "Wörterbücher exportieren",
   "downloadBackup": "Backup herunterladen",
-  "closeModal": "Dialog schließen",
   "LANG_EXPORT_CURRENT": "Exportiere nur die aktuelle Inhaltssprache",
   "LANG_EXPORT_ALL": "Alle verfügbaren Sprachen in den Rastern exportieren",
   "numDictionaries": "{length} Wörterbücher",
