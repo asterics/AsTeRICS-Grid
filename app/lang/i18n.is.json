@@ -809,7 +809,6 @@
   "currentLanguages": "{length} current languages:",
   "exportDictionaries": "Export dictionaries",
   "downloadBackup": "Download backup",
-  "closeModal": "close modal",
   "LANG_EXPORT_CURRENT": "Export only current content language",
   "LANG_EXPORT_ALL": "Export all languages available in the grid(s)",
   "numDictionaries": "{length} dictionaries",
