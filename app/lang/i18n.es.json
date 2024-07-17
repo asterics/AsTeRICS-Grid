@@ -809,7 +809,6 @@
   "currentLanguages": "{length} idioma(s) actualmente:",
   "exportDictionaries": "Exportar diccionarios",
   "downloadBackup": "Descargar tablero/s",
-  "closeModal": "cerrar ventana",
   "LANG_EXPORT_CURRENT": "Exportar sólo el idioma seleccionado para el contenido",
   "LANG_EXPORT_ALL": "Exportar todos los idiomas disponibles en el(los) tablero(s)",
   "numDictionaries": "{length} diccionario(s)",
