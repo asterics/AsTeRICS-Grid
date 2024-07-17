@@ -809,7 +809,6 @@
   "currentLanguages": "{length} bieżących języków:",
   "exportDictionaries": "Eksportuj słowniki",
   "downloadBackup": "Pobierz kopię zapasową",
-  "closeModal": "zamknij modalne",
   "LANG_EXPORT_CURRENT": "Eksportuj tylko bieżący język treści",
   "LANG_EXPORT_ALL": "Eksportuj wszystkie języki dostępne w siatce(ach)",
   "numDictionaries": "{length} słowników",
