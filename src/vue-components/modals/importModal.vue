@@ -9,7 +9,7 @@
                                 <h1 class="inline">{{ $t('importDataFromFile') }}</h1>
                             </div>
                             <a class="col-2 col-sm-1 col-md black" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
-                            <a class="col-2 col-sm-1 col-md black" href="javascript:void(0);" :title="$t('closeModal')" @click="$emit('close')"><i class="fas fa-times"/></a>
+                            <a class="col-2 col-sm-1 col-md black" href="javascript:void(0);" :title="$t('close')" @click="$emit('close')"><i class="fas fa-times"/></a>
                         </div>
                     </div>
 
