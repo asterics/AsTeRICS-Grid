@@ -809,7 +809,6 @@
   "currentLanguages": "{length} kiválasztott nyelv:",
   "exportDictionaries": "Szótárak exportálása",
   "downloadBackup": "Biztonsági másolat letöltése",
-  "closeModal": "ablak bezárás",
   "LANG_EXPORT_CURRENT": "Csak a kiválaszott nyevű tartalom fordítás exportálása",
   "LANG_EXPORT_ALL": "A táblákon szerepelő összes tartalom fordítás exportálása",
   "numDictionaries": "{length} szótár(ak)",
