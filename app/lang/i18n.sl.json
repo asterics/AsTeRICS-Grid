@@ -809,7 +809,6 @@
   "currentLanguages": "{length} trenutni jeziki:",
   "exportDictionaries": "Izvozi slovarje",
   "downloadBackup": "Prenesi varnostno kopijo",
-  "closeModal": "zapri način",
   "LANG_EXPORT_CURRENT": "Izvozi samo trenutno vsebino jezika",
   "LANG_EXPORT_ALL": "Izvozi vse jezike, ki so na voljo na straneh",
   "numDictionaries": "{length} slovarji",
