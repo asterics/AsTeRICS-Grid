@@ -809,7 +809,6 @@
   "currentLanguages": "{length} idioma(es) actualment:",
   "exportDictionaries": "Exportar diccionaris",
   "downloadBackup": "Descarregar còpia de seguretat",
-  "closeModal": "tancar finestra",
   "LANG_EXPORT_CURRENT": "Exportar només l'idioma seleccionat per al contingut",
   "LANG_EXPORT_ALL": "Exportar tots els idiomes disponibles al(s) tauler(s)",
   "numDictionaries": "{length} diccionari(s)",
