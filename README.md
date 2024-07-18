@@ -18,9 +18,10 @@ These are the most important features of AsTeRICS Grid:
 * **Search and play YouTube videos**
 
 ## Production environments
-There are two versions of AsTeRICS Grid online:
+There are 3 versions of AsTeRICS Grid online:
 * https://grid.asterics.eu/ current stable release
 * https://grid.asterics.eu/latest/ current testing (beta) release, possibly unstable
+* http://grid.asterics-foundation.org/ non-https version, but otherwise exactly the same app as https://grid.asterics.eu/ - may be used in cases where interaction with local resources (e.g. HTTP action) is needed and [browsers are refusing it because of mixed content](https://github.com/asterics/AsTeRICS-Grid/discussions/410). 
 
 ## Documentation
 See [User documentation](docs/documentation_user/README.md) or [AsTeRICS Grid Playlist on YouTube](https://www.youtube.com/playlist?list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz).
