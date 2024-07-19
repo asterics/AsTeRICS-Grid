@@ -933,7 +933,7 @@
   "online": "online",
   "activateAutomaticGrammarCorrectionARASAACAPI": "Ativar correção gramatical automática via API de Linguagem Natural ARASAAC (disponível em: {availableLangs})",
   "noteThatActivatingThisSendsSentencesToARASAACSeePrivacy": "Note que ao ativar este recurso todas as frases construídas serão enviadas para a API de linguagem natural ARASAAC. Veja {link}.",
-  "thanksToEduardoLleidaSolanoProfessorAtDepartment": "Thanks to Eduardo Lleida Solano, Professor at the Department of Electronic Engineering and Communications of the University of Zaragoza for collaborating in the development of the ARASAAC API that integrates Natural Language Processing (NLP). It's used to provide a feature to automatically fix the grammar of sentences within AsTeRICS Grid.",
+  "thanksToEduardoLleidaSolanoProfessorAtDepartment": "Agradecemos a Eduardo Lleida Solano, Professor do Departamento de Engenharia Eletrónica e Comunicações da Universidade de Zaragoza pela colaboração no desenvolvimento da API ARASAAC que integra o Processamento de Linguagem Natural (NLP), um recurso usado para corrigir automaticamente a gramática das frases no AsTeRICS Grid.",
   "couldntPlayWebradioBecauseTheBrowserDidntAllow": "Não foi possível reproduzir o webradio, porque o navegador não o permitiu.",
   "allowPlayingRadio": "Permitir reprodução de rádio",
   "cachingImages": "Armazenando imagens...",
@@ -986,7 +986,7 @@
   "importedWordForms": "Importadas {count} formas de palavras.",
   "importedWordFormsGrids": "Importadas {count} formas de palavras para {gridCount} tabelas.",
   "copiedWordForms": "Copiadas {count} formas de palavras.",
-  "infoPleaseDefineAHomeGridInManageGrids": "Info: please define a home grid in \"Manage grids -> Home grid\" in order to reliably show correct paths.",
+  "infoPleaseDefineAHomeGridInManageGrids": "Informação: Defina uma tabela inicial em Gerir tabelas -> Tabela inicial para mostrar corretamente as ligações entre tabelas.",
   "wordFormValue": "Forma de palavra",
   "importexportDataTofromAllGrids": "Importar/exportar dados de/para todas as tabelas",
   "pronunciation": "Pronúncia",
@@ -1018,5 +1018,5 @@
   "BOARD_TYPE_SINGLE": "Tabela",
   "moreSearchOptions": "Mais opções de pesquisa",
   "useDictionaryOfCurrentContentLanguage": "Usar dicionário do idioma do conteúdo atual",
-  "editOnGithub": "Edit on GitHub"
+  "editOnGithub": "Editar no GitHub"
 }
