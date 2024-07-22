@@ -333,7 +333,6 @@
   "registernow": "Registra't ara",
   "astericsGridIsFreeAndAllYouNeedToRegister": "AsTeRICS Grid és gratuït i només necessites per registrar-te un nom d'usuari i una contrasenya.",
   "wantToCreateAnOfflineonlyUser": "Vols crear un usuari fora de línia?",
-  "addofflineuser": "Crear un usuari fora de línia",
   "registerOnlineUser": "Crear un usuari en línia",
   "confirmPassword": "Confirmar contrasenya",
   "passwordsDoNotMatch": "Les contrasenyes no coincideixen",
@@ -809,7 +808,6 @@
   "currentLanguages": "{length} idioma(es) actualment:",
   "exportDictionaries": "Exportar diccionaris",
   "downloadBackup": "Descarregar còpia de seguretat",
-  "closeModal": "tancar finestra",
   "LANG_EXPORT_CURRENT": "Exportar només l'idioma seleccionat per al contingut",
   "LANG_EXPORT_ALL": "Exportar tots els idiomes disponibles al(s) tauler(s)",
   "numDictionaries": "{length} diccionari(s)",
@@ -1019,5 +1017,6 @@
   "BOARD_TYPE_SELFCONTAINED": "Self-contained",
   "BOARD_TYPE_SINGLE": "Single boards",
   "moreSearchOptions": "More search options",
-  "useDictionaryOfCurrentContentLanguage": "Use dictionary of current content language"
+  "useDictionaryOfCurrentContentLanguage": "Use dictionary of current content language",
+  "editOnGithub": "Edit on GitHub"
 }

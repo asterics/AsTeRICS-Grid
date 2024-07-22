@@ -333,7 +333,6 @@
   "registernow": "Registrirajte se sada",
   "astericsGridIsFreeAndAllYouNeedToRegister": "AsTeRICS Grid je besplatan i sve što trebate za registraciju su korisničko ime i lozinka.",
   "wantToCreateAnOfflineonlyUser": "Želite li stvoriti samo offline korisnika?",
-  "addofflineuser": "Dodaj offline korisnika",
   "registerOnlineUser": "Registriraj online korisnika",
   "confirmPassword": "Potvrdi lozinku",
   "passwordsDoNotMatch": "Lozinke se ne podudaraju",
@@ -809,7 +808,6 @@
   "currentLanguages": "{length} trenutni jezici:",
   "exportDictionaries": "Izvoz rječnika",
   "downloadBackup": "Preuzmi sigurnosnu kopiju",
-  "closeModal": "Zatvoreni način",
   "LANG_EXPORT_CURRENT": "Izvezi samo trenutni sadržaj jezika",
   "LANG_EXPORT_ALL": "Izvezi sve jezike dostupne u pločama",
   "numDictionaries": "{length} rječnici\n",
@@ -1019,5 +1017,6 @@
   "BOARD_TYPE_SELFCONTAINED": "Self-contained",
   "BOARD_TYPE_SINGLE": "Jednostruke ploče",
   "moreSearchOptions": "Više opcija traženja",
-  "useDictionaryOfCurrentContentLanguage": "Koristi rječnik trenutnog jezika sadržaja"
+  "useDictionaryOfCurrentContentLanguage": "Koristi rječnik trenutnog jezika sadržaja",
+  "editOnGithub": "Edit on GitHub"
 }

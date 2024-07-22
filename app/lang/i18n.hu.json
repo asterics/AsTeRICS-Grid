@@ -333,7 +333,6 @@
   "registernow": "Regisztráljon most",
   "astericsGridIsFreeAndAllYouNeedToRegister": "Az Asterics Grid ingyenes szoftver, csak felhasználói fiókot kell regisztrálnia felhasználónév és jelszó megadásával.",
   "wantToCreateAnOfflineonlyUser": "Csak offline felhasználót kíván létrehozni?",
-  "addofflineuser": "Offline felhasználó létrehozása",
   "registerOnlineUser": "Online felhasználó regisztrációja",
   "confirmPassword": "Jelszó újra",
   "passwordsDoNotMatch": "A jelszavak nem egyeznek",
@@ -809,7 +808,6 @@
   "currentLanguages": "{length} kiválasztott nyelv:",
   "exportDictionaries": "Szótárak exportálása",
   "downloadBackup": "Biztonsági másolat letöltése",
-  "closeModal": "ablak bezárás",
   "LANG_EXPORT_CURRENT": "Csak a kiválaszott nyevű tartalom fordítás exportálása",
   "LANG_EXPORT_ALL": "A táblákon szerepelő összes tartalom fordítás exportálása",
   "numDictionaries": "{length} szótár(ak)",
@@ -1019,5 +1017,6 @@
   "BOARD_TYPE_SELFCONTAINED": "Self-contained",
   "BOARD_TYPE_SINGLE": "Single boards",
   "moreSearchOptions": "More search options",
-  "useDictionaryOfCurrentContentLanguage": "Use dictionary of current content language"
+  "useDictionaryOfCurrentContentLanguage": "Use dictionary of current content language",
+  "editOnGithub": "Edit on GitHub"
 }

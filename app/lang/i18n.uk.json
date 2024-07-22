@@ -333,7 +333,6 @@
   "registernow": "Зареєструватися зараз",
   "astericsGridIsFreeAndAllYouNeedToRegister": "AsTeRICS Grid є безкоштовним, і все, що вам потрібно для реєстрації, це ім’я користувача та пароль.",
   "wantToCreateAnOfflineonlyUser": "Хочете створити користувача лише в автономному режимі?",
-  "addofflineuser": "Додати офлайн-користувача",
   "registerOnlineUser": "Реєстрація онлайн користувача",
   "confirmPassword": "Підтвердити пароль",
   "passwordsDoNotMatch": "Паролі не співпадають",
@@ -809,7 +808,6 @@
   "currentLanguages": "{length} поточні мови:",
   "exportDictionaries": "Експорт словників",
   "downloadBackup": "Завантажити резервну копію",
-  "closeModal": "close modal",
   "LANG_EXPORT_CURRENT": "Експортувати лише поточну мову вмісту",
   "LANG_EXPORT_ALL": "Експорт усіх мов, доступних у сітці(ках)",
   "numDictionaries": "{length} словників",
@@ -1019,5 +1017,6 @@
   "BOARD_TYPE_SELFCONTAINED": "Самодостатній",
   "BOARD_TYPE_SINGLE": "Single boards",
   "moreSearchOptions": "Більше параметрів пошуку",
-  "useDictionaryOfCurrentContentLanguage": "Використовувати словник поточної мови контенту"
+  "useDictionaryOfCurrentContentLanguage": "Використовувати словник поточної мови контенту",
+  "editOnGithub": "Edit on GitHub"
 }

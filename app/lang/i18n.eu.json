@@ -333,7 +333,6 @@
   "registernow": "Izena eman orain",
   "astericsGridIsFreeAndAllYouNeedToRegister": "AsTeRICS Grid doan da, eta erregistratzeko behar duzun guztia erabiltzaile-izena eta pasahitza dira.",
   "wantToCreateAnOfflineonlyUser": "Lineaz kanpoko erabiltzaile bat sortu nahi duzu?",
-  "addofflineuser": "Sortu lineaz kanpoko erabiltzaile bat",
   "registerOnlineUser": "Sortu lineaz kanpoko erabiltzaile bat",
   "confirmPassword": "Pasahitza baieztatu",
   "passwordsDoNotMatch": "Pasahitzak ez datoz bat",
@@ -809,7 +808,6 @@
   "currentLanguages": "{length} hizkuntza(k) une honetan:",
   "exportDictionaries": "Hiztegiak esportatu",
   "downloadBackup": "Babeskopia deskargatu",
-  "closeModal": "leihoa itxi",
   "LANG_EXPORT_CURRENT": "Edukirako hautatutako hizkuntza soilik esportatu",
   "LANG_EXPORT_ALL": "Tableroan(etan) erabilgarri dauden hizkuntza guztiak esportatu",
   "numDictionaries": "{length} hiztegia(k)",
@@ -1019,5 +1017,6 @@
   "BOARD_TYPE_SELFCONTAINED": "Komunikatzailea",
   "BOARD_TYPE_SINGLE": "Taula",
   "moreSearchOptions": "Bilaketa aukera gehiago",
-  "useDictionaryOfCurrentContentLanguage": "Use dictionary of current content language"
+  "useDictionaryOfCurrentContentLanguage": "Use dictionary of current content language",
+  "editOnGithub": "Edit on GitHub"
 }

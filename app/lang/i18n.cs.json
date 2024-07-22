@@ -333,7 +333,6 @@
   "registernow": "Zaregistrovat se nyní",
   "astericsGridIsFreeAndAllYouNeedToRegister": "AsTeRICS Grid je zdarma a jediné, co potřebujete pro přihlášení, je uživatelské jméno a heslo.",
   "wantToCreateAnOfflineonlyUser": "Chcete vytvořit pouze offline uživatele?",
-  "addofflineuser": "Přidat offline uživatele",
   "registerOnlineUser": "Registrovat online uživatele",
   "confirmPassword": "Potvrdit heslo",
   "passwordsDoNotMatch": "Hesla se neshodují",
@@ -809,7 +808,6 @@
   "currentLanguages": "{length} aktuálních jazyků:",
   "exportDictionaries": "Export slovníků",
   "downloadBackup": "Stáhnout zálohu",
-  "closeModal": "zavřít okno",
   "LANG_EXPORT_CURRENT": "Exportovat obsah pouze aktuálního jazyka",
   "LANG_EXPORT_ALL": "Exportovat všechny jazyky dostupné v tabulkách",
   "numDictionaries": "{length} slovníků",
@@ -1019,5 +1017,6 @@
   "BOARD_TYPE_SELFCONTAINED": "Self-contained",
   "BOARD_TYPE_SINGLE": "Single boards",
   "moreSearchOptions": "More search options",
-  "useDictionaryOfCurrentContentLanguage": "Use dictionary of current content language"
+  "useDictionaryOfCurrentContentLanguage": "Use dictionary of current content language",
+  "editOnGithub": "Edit on GitHub"
 }

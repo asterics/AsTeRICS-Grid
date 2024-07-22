@@ -333,7 +333,6 @@
   "registernow": "Zarejestruj się teraz",
   "astericsGridIsFreeAndAllYouNeedToRegister": "AsTeRICS Grid jest darmowy: rejestracja wymaga jedynie podania nazwy użytkownika i hasła.",
   "wantToCreateAnOfflineonlyUser": "Chcesz utworzyć użytkownika tylko dla trybu offline?",
-  "addofflineuser": "Dodaj użytkownika offline",
   "registerOnlineUser": "Zarejestruj użytkownika online",
   "confirmPassword": "Powtórz hasło",
   "passwordsDoNotMatch": "Hasła nie są zgodne",
@@ -809,7 +808,6 @@
   "currentLanguages": "{length} bieżących języków:",
   "exportDictionaries": "Eksportuj słowniki",
   "downloadBackup": "Pobierz kopię zapasową",
-  "closeModal": "zamknij modalne",
   "LANG_EXPORT_CURRENT": "Eksportuj tylko bieżący język treści",
   "LANG_EXPORT_ALL": "Eksportuj wszystkie języki dostępne w siatce(ach)",
   "numDictionaries": "{length} słowników",
@@ -1019,5 +1017,6 @@
   "BOARD_TYPE_SELFCONTAINED": "Niezależnie",
   "BOARD_TYPE_SINGLE": "Pojedyncze tablice",
   "moreSearchOptions": "Więcej opcji wyszukiwania",
-  "useDictionaryOfCurrentContentLanguage": "Użyj słownika bieżącego języka treści"
+  "useDictionaryOfCurrentContentLanguage": "Użyj słownika bieżącego języka treści",
+  "editOnGithub": "Edit on GitHub"
 }
