@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="notranslate" translate="no">
+<head>
+    <title>AsTeRICS Grid - OAuth redirect page</title>
+</head>
+<body>
+
+<script type="module">
+    import {constants} from '../src/js/util/constants.js';
+
+    let referrer = new URL(document.referrer).host;
+
+    for (let config of constants.OAUTH_CONFIGS) {
+        if (new URL(config.authority).host === referrer) {
+            let key = constants.OAUTH_RETURNED_PARAMS_MAP;
+            let map = localStorage.getItem(key);
+            map = map ? JSON.parse(map) : {};
+            map[config.id] = window.location.search;
+            window.localStorage.setItem(key, JSON.stringify(map));
+            location.replace(location.origin);
+        }
+    }
+</script>
+</body>
+</html>

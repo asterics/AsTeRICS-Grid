@@ -181,4 +181,17 @@ constants.WORDFORM_TAGS = [
     'DEFINITE'
 ];
 
+constants.OAUTH_RETURNED_PARAMS_MAP = 'OAUTH_RETURNED_PARAMS_MAP';
+constants.OAUTH_CONFIG_GLOBALSYMBOLS = {
+    id: 'globalsymbols',
+    authority: 'http://localhost:3000',
+    client_id: 'GJa5KKWZrPs4TQfYs0ov7wg20IeurBd6xd9y4HbU-j0',
+    redirect_uri: 'http://localhost:9095/html/oauth-redirect.html',
+    response_type: 'code',
+    scope: 'openid profile email boardset:read boardset:write offline_access',
+    automaticSilentRenew: true,
+    loadUserInfo: true
+}
+constants.OAUTH_CONFIGS = [constants.OAUTH_CONFIG_GLOBALSYMBOLS];
+
 export { constants };
