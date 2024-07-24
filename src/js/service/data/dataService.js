@@ -391,6 +391,7 @@ dataService.downloadBackupToFile = async function () {
  * @param options.exportUserSettings if true, all user settings are exported
  * @param options.filename the filename to use for downloading
  * @param options.obzFormat if true, data is returned in obz format (as blob)
+ * @param options.obzFileMap if true, data is returned in obz format (as map of files)
  * @param options.progressFn fn for reporting progress, called with params percentage and text
  * @returns {Promise<{}|null>} promise resolving to a javascript object containing native AG backup data or to a blob
  *                             containing the backup in .obz format if options.obzFormat is true.
@@ -445,6 +446,9 @@ dataService.getBackupData = async function (gridIds, options = {}) {
                 options.progressFn(10 + util.mapRange(zipProgress, 0, 100, 0, 90));
             })
         });
+    }
+    if (options.obzFileMap) {
+        backupData = await obfConverter.backupDataToOBZFileMap(backupData);
     }
     options.progressFn(100);
     return backupData;
