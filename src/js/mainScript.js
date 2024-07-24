@@ -79,8 +79,9 @@ async function init() {
             localStorageService.setLastActiveUser(autologinUser || lastActiveUser || '');
             let initHash = location.hash || (toMain ? '#main' : toLogin ? '#login' : '#welcome');
             if (!Router.isInitialized()) {
-                Router.init('#injectView', initHash);
+                Router.init('#injectView');
             }
+            Router.to(initHash);
         });
 }
 init();

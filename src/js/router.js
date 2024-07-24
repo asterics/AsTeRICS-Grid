@@ -41,7 +41,7 @@ Router.VIEWS = {
     GridEditView: GridEditView
 }
 
-Router.init = function (injectIdParam, initialHash) {
+Router.init = function (injectIdParam) {
     if (!routingEndabled) {
         return;
     }
@@ -164,9 +164,6 @@ Router.init = function (injectIdParam, initialHash) {
             //log.debug('leave');
         }
     });
-    if (initialHash) {
-        Router.to(initialHash);
-    }
     navigoInstance.resolve();
 };
 
@@ -181,11 +178,11 @@ Router.isInitialized = function () {
 /**
  * navigate to the given hash
  * @param hash the hash to navigate to, e.g. '#main'
+ * @param options
  * @param options.reset if true, the last hash isn't stored for "back" navigation purposes
  * @param options.noHistory if true, the last hash isn't stored for "back" navigation purposes
  */
-Router.to = function (hash, options) {
-    options = options || {};
+Router.to = function (hash, options = {}) {
     lastHash = options.reset ? null : location.hash;
     let url = getFullUrl(hash);
     if (options.noHistory) {
