@@ -45,6 +45,31 @@ obfConverter.gridDataToOBF = function(gridData, manifest) {
 };
 
 obfConverter.backupDataToOBZ = async function(backupData, options = {}) {
+    let fileMap = await backupDataToOBZileMapRaw(backupData);
+    return fileUtil.createZip(fileMap, options);
+};
+
+/**
+ * Converts backup data to an obz file map [filename => content]. Content may be json or base64 for images.
+ * @param backupData
+ */
+obfConverter.backupDataToOBZFileMap = async function(backupData) {
+    let fileMap = await backupDataToOBZileMapRaw(backupData);
+    for (let key of Object.keys(fileMap)) {
+        let content = fileMap[key];
+        if (ArrayBuffer.isView(content)) {
+            fileMap[key] = util.bytesToBase64(content);
+        }
+    }
+    return fileMap;
+}
+
+/**
+ * Converts backup data to an obz file map [filename => content]. content may be json or Uint8Array for images.
+ * @param backupData
+ * @return {Promise<{}|null>}
+ */
+async function backupDataToOBZileMapRaw (backupData) {
     if (!backupData || !backupData.grids) {
         return null;
     }
@@ -86,8 +111,8 @@ obfConverter.backupDataToOBZ = async function(backupData, options = {}) {
         manifest.paths.boards[board.id] = path;
     }
     fileMap[OBF_MANIFEST_FILENAME] = manifest;
-    return fileUtil.createZip(fileMap, options);
-};
+    return fileMap;
+}
 
 function gridElementToObfButton(gridElement, obfGrid) {
     let obfButton = {
