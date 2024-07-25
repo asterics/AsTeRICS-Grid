@@ -336,6 +336,25 @@ localStorageService.setCurrentAppVersion = function (versionString) {
     localStorageService.save(CURRENT_VERSION_KEY, versionString);
 };
 
+localStorageService.setRedirectTarget = function(key, props) {
+    return localStorageService.saveJSON(constants.OAUTH_REDIRECT_KEY, {
+        key: key,
+        props: props
+    });
+}
+
+/**
+ * @return {any} a redirect target (object with keys "key" and "props") defining a redirect location after coming back
+ * from OAuth authentication. Returns null, if no target existing.
+ */
+localStorageService.getRedirectTarget = function() {
+    return localStorageService.getJSON(constants.OAUTH_REDIRECT_KEY);
+}
+
+localStorageService.removeRedirectTarget = function() {
+    localStorageService.remove(constants.OAUTH_REDIRECT_KEY);
+}
+
 function getSyncedDbsList() {
     let syncedDbsString = localStorageService.get(SYNCED_DBS_LIST_KEY);
     if (!syncedDbsString) {
