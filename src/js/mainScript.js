@@ -36,7 +36,6 @@ async function init() {
     keyboardShortcuts.init();
     notificationService.init();
     await MainVue.init();
-    oauthService.processCallbackData();
     let lastActiveUser = localStorageService.getLastActiveUser();
     let autologinUser = localStorageService.getAutologinUser();
 
@@ -74,16 +73,25 @@ async function init() {
     } else {
         promises.push(loginService.loginStoredUser(autologinUser, true));
     }
+    let oauthPromise = oauthService.processCallbackData();
+    promises.push(oauthPromise);
     Promise.all(promises)
-        .finally(() => {
-            let toMain = autologinUser || urlParamService.isDemoMode();
-            let toLogin = lastActiveUser || localStorageService.getSavedUsers().length > 0;
+        .finally(async () => {
             localStorageService.setLastActiveUser(autologinUser || lastActiveUser || '');
-            let initHash = location.hash || (toMain ? '#main' : toLogin ? '#login' : '#welcome');
             if (!Router.isInitialized()) {
                 Router.init('#injectView');
             }
-            Router.to(initHash);
+            let processedOAuthCallback = await oauthPromise;
+            let redirectTarget = localStorageService.getRedirectTarget();
+            if (processedOAuthCallback && redirectTarget) {
+                localStorageService.removeRedirectTarget();
+                Router.toRedirectTarget(redirectTarget);
+            } else {
+                let toMain = autologinUser || urlParamService.isDemoMode();
+                let toLogin = lastActiveUser || localStorageService.getSavedUsers().length > 0;
+                let initHash = location.hash || (toMain ? '#main' : toLogin ? '#login' : '#welcome');
+                Router.to(initHash);
+            }
         });
 }
 init();
