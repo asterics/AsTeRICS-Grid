@@ -28,18 +28,30 @@ oauthService.isLoggedIn = async function(config) {
     return user && user.access_token;
 }
 
+/**
+ * Processes data returned by OAuth callback, which was saved within constants.OAUTH_RETURNED_PARAMS_MAP in
+ * local storage. Data in local storage is cleared after processing.
+ * @return {Promise<boolean>} true, there was data to process, false otherwise
+ */
 oauthService.processCallbackData = async function() {
+    let processedData = false;
     let paramsMap = localStorageService.getJSON(constants.OAUTH_RETURNED_PARAMS_MAP) || {};
     for (let id of Object.keys(paramsMap)) {
         let config = constants.OAUTH_CONFIGS.find(e => e.id === id);
         if (config) {
             log.debug(`processing OAuth parameters for ${config.id}, data: ${paramsMap[id]}`)
-            let manager = await initManager(config);
-            await manager.signinCallback(paramsMap[id]);
+            processedData = true;
+            try {
+                let manager = await initManager(config);
+                await manager.signinCallback(paramsMap[id]);
+            } catch (e) {
+                log.warn("failed to process OAuth callback data.", e);
+            }
         }
         delete paramsMap[id];
         localStorageService.saveJSON(constants.OAUTH_RETURNED_PARAMS_MAP, paramsMap);
     }
+    return processedData;
 }
 
 oauthService.getAccessToken = async function(config) {
