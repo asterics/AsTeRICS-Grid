@@ -181,7 +181,12 @@ constants.WORDFORM_TAGS = [
     'DEFINITE'
 ];
 
+// local storage keys for OAuth
 constants.OAUTH_RETURNED_PARAMS_MAP = 'OAUTH_RETURNED_PARAMS_MAP';
+constants.OAUTH_REDIRECT_KEY = 'OAUTH_REDIRECT_KEY';
+
+// constants for OAuth authentication at globalsymbols
+constants.OAUTH_REDIRECT_GS_UPLOAD = 'OAUTH_REDIRECT_GS_UPLOAD'; // redirect to upload modal
 constants.OAUTH_CONFIG_GLOBALSYMBOLS = {
     id: 'globalsymbols',
     authority: 'http://localhost:3000',
