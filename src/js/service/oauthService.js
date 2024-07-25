@@ -10,8 +10,13 @@ oauthService.login = async function(config) {
         log.debug(`OAuth: already logged in for ${config.id}!`);
         return;
     }
-    let manager = await initManager(config);
-    manager.signinRedirect();
+    try {
+        let manager = await initManager(config);
+        await manager.signinRedirect();
+    } catch (e) {
+        log.warn(`failed to redirect to authorization page for ${config.id}`);
+    }
+
 }
 
 oauthService.logout = async function(config) {
