@@ -64,6 +64,10 @@ async function getUser(config) {
 async function initManager(config) {
     if (!managers[config.id]) {
         managers[config.id] = new UserManager(config);
+        managers[config.id].events.addAccessTokenExpired(function() {
+            log.debug("auto-renewing access token...")
+            managers[config.id].signinSilent();
+        })
     }
     return managers[config.id];
 }
