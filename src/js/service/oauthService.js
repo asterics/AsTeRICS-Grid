@@ -6,7 +6,6 @@ let oauthService = {};
 let managers = {}
 
 oauthService.login = async function(config) {
-    await oauthService.processCallbackData();
     if (await oauthService.isLoggedIn(config)) {
         log.debug(`OAuth: already logged in for ${config.id}!`);
         return;
@@ -25,7 +24,7 @@ oauthService.logout = async function(config) {
 
 oauthService.isLoggedIn = async function(config) {
     let user = await getUser(config);
-    return user && user.access_token;
+    return !!user && !!user.access_token;
 }
 
 /**
