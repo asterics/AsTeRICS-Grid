@@ -34,6 +34,7 @@ let _currentView = null;
 let _currentVueApp = null;
 let _gridHistory = [];
 let _locked = false;
+let _passParams = undefined; // set before Router.to() in order to pass parameters to a view, automatically cleared after passing
 
 Router.VIEWS = {
     AllGridsView: AllGridsView,
@@ -256,6 +257,21 @@ Router.toManageGrids = function () {
     Router.to('#grids');
 };
 
+/**
+ * routes to a redirect target after returning from OAuth authentication
+ * @param target as returned by localStorageService.getRedirectTarget
+ */
+Router.toRedirectTarget = function(target = {}) {
+    switch (target.key) {
+        case constants.OAUTH_REDIRECT_GS_UPLOAD:
+            _passParams = target.props;
+            Router.toManageGrids();
+            break;
+        default:
+            Router.toMain();
+    }
+}
+
 Router.back = function () {
     if (lastHash && lastHash !== location.hash) {
         Router.to(lastHash, { reset: true });
@@ -317,7 +333,8 @@ function loadVueView(viewObject, properties, menuItemToHighlight) {
     if (!routingEndabled) {
         return;
     }
-
+    properties = properties || _passParams;
+    _passParams = undefined;
     _currentView = viewObject;
     if (viewObject !== GridView) {
         $('#touchElement').hide();
