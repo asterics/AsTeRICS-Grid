@@ -1018,5 +1018,6 @@
   "BOARD_TYPE_SINGLE": "Single boards",
   "moreSearchOptions": "More search options",
   "useDictionaryOfCurrentContentLanguage": "Use dictionary of current content language",
-  "editOnGithub": "Edit on GitHub"
+  "editOnGithub": "Edit on GitHub",
+  "failedToGetBoardData": "Failed to get board data from provider \"{0}\". Please try again later."
 }
