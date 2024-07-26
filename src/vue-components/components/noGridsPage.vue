@@ -27,6 +27,13 @@
                             <option :value="constants.BOARD_TYPE_SINGLE">{{ $t(constants.BOARD_TYPE_SINGLE) }}</option>
                         </select>
                     </div>
+                    <div class="row">
+                        <label>{{ $t('searchProvider') }}</label>
+                        <select v-model="searchOptions.provider" @change="search">
+                            <option value="">(all)</option>
+                            <option v-for="name in providerNames" :value="name">{{ name }}</option>
+                        </select>
+                    </div>
                 </div>
             </accordion>
         </div>
@@ -58,9 +65,8 @@
     import {Router} from "../../js/router.js";
     import {i18nService} from "../../js/service/i18nService.js";
     import {constants} from '../../js/util/constants';
-    import { urlParamService } from '../../js/service/urlParamService';
     import { util } from '../../js/util/util';
-    import {boardService} from '../../js/service/boards/boardService';
+    import {externalBoardsService} from '../../js/service/boards/externalBoardsService';
     import Accordion from './accordion.vue';
     import { MainVue } from '../../js/vue/mainVue';
     import ConfigPreviewDetail from '../modals/configPreviewDetail.vue';
@@ -78,8 +84,10 @@
                 searchTerm: '',
                 searchOptions: {
                     lang: "",
-                    type: constants.BOARD_TYPE_SELFCONTAINED
+                    type: constants.BOARD_TYPE_SELFCONTAINED,
+                    provider: ""
                 },
+                providerNames: externalBoardsService.getProviders(),
                 allLanguages: i18nService.getAllLanguages(),
                 selectLanguages: [],
                 constants: constants,
@@ -89,7 +97,7 @@
         methods: {
             search() {
                 util.debounce(async () => {
-                    this.gridPreviews = await boardService.query(this.searchTerm, this.searchOptions);
+                    this.gridPreviews = await externalBoardsService.query(this.searchTerm, this.searchOptions);
                 }, 300, "SEARCH_BOARDS");
             },
             importData(preview) {
@@ -102,8 +110,11 @@
                             text: text
                         });
                     }
-                }).then(async () => {
+                }).then(async (success) => {
                     thiz.loading = false;
+                    if (!success) {
+                        return;
+                    }
                     if (preview.translate) { // currently empty config is the only one with .translate prop
                         Router.toEditGrid();
                     } else {
@@ -114,10 +125,10 @@
         },
         async mounted() {
             let thiz = this;
-            thiz.gridPreviews = await boardService.query();
+            thiz.gridPreviews = await externalBoardsService.query(); // in order to get all languages
             thiz.selectLanguages = this.allLanguages.filter(lang => this.gridPreviews.some(preview => preview.languages.includes(lang.code)));
             thiz.searchOptions.lang = thiz.selectLanguages.map(e => e.code).includes(i18nService.getAppLang()) ? i18nService.getAppLang() : "";
-            thiz.gridPreviews = await boardService.query("", thiz.searchOptions);
+            thiz.gridPreviews = await externalBoardsService.query("", thiz.searchOptions);
         },
         beforeDestroy() {
         }
