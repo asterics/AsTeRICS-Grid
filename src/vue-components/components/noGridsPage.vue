@@ -45,7 +45,8 @@
                         <img aria-hidden="true" v-if="preview.thumbnail" :src="preview.thumbnail" style="width: 100%; aspect-ratio: 16/9;"/>
                         <div v-if="!preview.thumbnail" class="img-placeholder mb-3" style="aspect-ratio: 16/9; width: 99%; border: 1px solid lightgray"></div>
                         <div class="d-flex col-12" style="flex-wrap: wrap">
-                            <span class="tag" style="background-color: lightgreen">{{ preview.languages.length === 1 ? $t(`lang.${preview.languages[0]}`) : "multi-lang" }}</span>
+                            <span class="tag" v-if="preview.languages.length === 1" style="background-color: lightgreen">{{ $t(`lang.${preview.languages[0]}`) }}</span>
+                            <span class="tag" v-if="preview.languages.length > 1" style="background-color: lightgreen">{{ "multi-lang" }}</span>
                             <span class="tag" style="background-color: lightgray" v-for="tag in preview.tags">{{ tag }}</span>
                         </div>
                     </div>
