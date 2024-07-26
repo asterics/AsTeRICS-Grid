@@ -28,6 +28,7 @@
                                         <a v-if="preview.website" :href="preview.website" target="_blank">{{preview.author}}</a>
                                     </div>
                                     <div class="mb-3" v-if="preview.description"><strong>{{ $t('description') }}</strong>: <span v-html="i18nService.getTranslation(preview.description)"></span></div>
+                                    <div class="mb-3"><strong>{{ $t('searchProvider') }}</strong>: <a :href="preview.providerUrl" target="_blank">{{preview.providerName}}</a></div>
                                     <div v-if="preview.languages.length === 1"><strong>{{ $t('language') }}</strong>: {{ $t('lang.' + preview.languages[0]) }}</div>
                                     <div v-if="preview.languages.length > 1"><strong>{{ $t('languages') }}</strong>: {{ preview.languages.reduce((total, current, index, array) => {
                                         let separator = index < array.length - 1 ? ', ' : '';
@@ -38,14 +39,14 @@
                                         <strong>{{ $t('tags') }}</strong>:
                                         <span class="tag" style="background-color: lightgray" v-for="tag in preview.tags">{{ tag }}</span>
                                     </div>
-                                    <div class="mt-5" v-if="preview.githubUrl">
-                                        <a :href="preview.githubUrl" target="_blank"><i class="fab fa-github"/> {{ $t('editOnGithub') }}</a>
-                                    </div>
                                 </div>
                             </div>
-                            <div class="mt-3">
-                                <a href="javascript:;" class="me-2" @click="copyLink">{{ $t('copyDirectLinkToConfigToClipboard') }}</a>
+                            <div class="mt-5">
+                                <a href="javascript:;" class="me-2" @click="copyLink"><i class="far fa-copy"/> {{ $t('copyDirectLinkToConfigToClipboard') }}</a>
                                 <span v-if="linkCopied" class="fas fa-check"/>
+                            </div>
+                            <div class="mt-2" v-if="preview.githubUrl">
+                                <a :href="preview.githubUrl" target="_blank"><i class="fab fa-github"/> {{ $t('editOnGithub') }}</a>
                             </div>
                         </div>
                     </div>
