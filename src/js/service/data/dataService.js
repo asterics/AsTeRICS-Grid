@@ -19,7 +19,7 @@ import { serviceWorkerService } from '../serviceWorkerService.js';
 import { constants } from '../../util/constants.js';
 import { MainVue } from '../../vue/mainVue.js';
 import { util } from '../../util/util.js';
-import { boardService } from '../boards/boardService';
+import { externalBoardsService } from '../boards/externalBoardsService';
 
 let dataService = {};
 
@@ -570,15 +570,29 @@ dataService.importBackupUploadedFile = async function (file, progressFn) {
     });
 };
 
+/**
+ * imports board data related to a given preview
+ * @param preview
+ * @param options
+ * @return {Promise<Boolean>} true, if successful, otherwise false
+ */
 dataService.importBackupFromPreview = async function(preview, options = {}) {
     if (!preview) {
-        return;
+        return false;
     }
     options.progressFn = options.progressFn || (() => {});
     options.filename = options.filename || preview.filename;
     options.skipDelete = true;
     options.progressFn(10, i18nService.t('downloadingConfig'));
-    let result = await $.get(preview.url);
+    let result = await externalBoardsService.getImportData(preview);
+    if (!result) {
+        options.progressFn(100);
+        MainVue.setTooltip(i18nService.t('failedToGetBoardData', preview.providerName), {
+            msgType: 'warn',
+            timeout: 20000
+        });
+        return false;
+    }
     options.progressFn(50, i18nService.t('importingData'));
     if (preview.translate && result.grids) {
         for (let grid of result.grids) {
@@ -588,11 +602,12 @@ dataService.importBackupFromPreview = async function(preview, options = {}) {
             }
         }
     }
-    return dataService.importBackupData(result, options);
+    await dataService.importBackupData(result, options);
+    return true;
 }
 
 dataService.importBackupDefaultFile = async function(filename, options = {}) {
-    let preview = boardService.getPreview(filename);
+    let preview = await externalBoardsService.getAGBoardsPreview(filename);
     return dataService.importBackupFromPreview(preview, options);
 }
 
