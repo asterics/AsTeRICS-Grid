@@ -21,14 +21,13 @@ oauthService.login = async function(config) {
 
 oauthService.logout = async function(config) {
     let manager = await initManager(config);
-    let user = await manager.getUser();
     await manager.revokeTokens();
     await manager.removeUser();
     log.debug(`oauth user for ${config.id} logged out!`);
 }
 
 oauthService.isLoggedIn = async function(config) {
-    let user = await getUser(config);
+    let user = await oauthService.getUser(config);
     return !!user && !!user.access_token;
 }
 
@@ -59,16 +58,16 @@ oauthService.processCallbackData = async function() {
 }
 
 oauthService.getAccessToken = async function(config) {
-    let user = await getUser(config);
+    let user = await oauthService.getUser(config);
     return user ? user.access_token : "";
 }
 
 oauthService.getProfile = async function(config) {
-    let user = await getUser(config);
+    let user = await oauthService.getUser(config);
     return user ? user.profile : null;
 }
 
-async function getUser(config) {
+oauthService.getUser = async function(config) {
     let manager = await initManager(config);
     if (!manager) {
         log.warn(`manager with id ${config.id} not existing!`);
