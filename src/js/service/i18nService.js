@@ -236,7 +236,8 @@ i18nService.getVueI18n = async function () {
     vueI18n = new VueI18n({
         locale: i18nService.getAppLang(), // set locale
         fallbackLocale: fallbackLang,
-        messages: {}
+        messages: {},
+        silentTranslationWarn: true
     });
     await loadLanguage(fallbackLang);
     getUserSettings();
