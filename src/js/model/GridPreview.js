@@ -26,7 +26,7 @@ class GridPreview {
             let githubUrl = options.githubBaseUrl + data.url;
             this.githubUrl = githubUrl.substring(0, githubUrl.lastIndexOf('/'));
         }
-        this.filename = data.url.substring(data.url.lastIndexOf('/') + 1);
+        this.filename = data.url ? data.url.substring(data.url.lastIndexOf('/') + 1) : '';
         this.selfContained = data.selfContained;
         this.author = data.author;
         this.website = data.website;
@@ -39,6 +39,9 @@ class GridPreview {
         this.tags = data.tags || [];
         this.pdf = data.pdf;
         this.priority = data.priority || 0;
+        this.providerName = ''; // set by externalBoardService.js after retrieving of data
+        this.providerUrl = '';
+        this.originalData = data; // as coming from the original provider
     }
 }
 
