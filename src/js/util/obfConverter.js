@@ -13,6 +13,7 @@ import { MetaData } from '../model/MetaData';
 import { imageUtil } from './imageUtil';
 import { util } from './util';
 import { dataService } from '../service/data/dataService';
+import { gridUtil } from './gridUtil';
 
 let obfConverter = {};
 let OBF_FORMAT_VERSION = 'open-board-0.1';
@@ -21,7 +22,7 @@ let OBF_IMAGES_PATH_PREFIX = 'images/';
 let OBF_BOARD_POSTFIX = '.obf';
 let OBF_MANIFEST_FILENAME = 'manifest.json';
 
-obfConverter.gridDataToOBF = function(gridData, manifest) {
+obfConverter.gridDataToOBF = function(gridData, manifest, graphList) {
     let columns = new GridData(gridData).getWidthWithBounds();
     let obfGrid = {
         format: OBF_FORMAT_VERSION,
@@ -37,7 +38,7 @@ obfConverter.gridDataToOBF = function(gridData, manifest) {
     };
     obfGrid.grid.order = obfGrid.grid.order.map(() => new Array(columns).fill(null));
     for (let gridElement of gridData.gridElements) {
-        let obfButton = gridElementToObfButton(gridElement, obfGrid, manifest);
+        let obfButton = gridElementToObfButton(gridElement, obfGrid, graphList);
         obfGrid.buttons.push(obfButton);
         obfGrid.grid.order[gridElement.y][gridElement.x] = gridElement.id;
     }
@@ -85,8 +86,9 @@ async function backupDataToOBZileMapRaw (backupData) {
     };
     let boards = [];
     let fileMap = {};
+    let graphList = gridUtil.getGraphList(backupData.grids);
     for (let gridData of backupData.grids) {
-        let obfGrid = obfConverter.gridDataToOBF(gridData, manifest);
+        let obfGrid = obfConverter.gridDataToOBF(gridData, manifest, graphList);
         boards.push(obfGrid);
     }
 
@@ -114,7 +116,7 @@ async function backupDataToOBZileMapRaw (backupData) {
     return fileMap;
 }
 
-function gridElementToObfButton(gridElement, obfGrid) {
+function gridElementToObfButton(gridElement, obfGrid, graphList) {
     let obfButton = {
         id: gridElement.id,
         label: i18nService.getTranslation(gridElement.label),
@@ -127,9 +129,18 @@ function gridElementToObfButton(gridElement, obfGrid) {
     }
     for (let action of gridElement.actions) {
         if (action.modelName === GridActionNavigate.getModelName()) {
-            obfButton.load_board = {
-                path: `${OBF_BOARDS_PATH_PREFIX}${action.toGridId}${OBF_BOARD_POSTFIX}`
-            };
+            if (action.navType === GridActionNavigate.NAV_TYPES.TO_GRID) {
+                obfButton.load_board = {
+                    path: `${OBF_BOARDS_PATH_PREFIX}${action.toGridId}${OBF_BOARD_POSTFIX}`
+                };
+            } else if (action.navType === GridActionNavigate.NAV_TYPES.TO_LAST) {
+                let graphItem = graphList.find(item => item.grid.id === obfGrid.id) || {};
+                let parent = graphItem.parents[0] || {};
+                let parentGrid = parent.grid || {};
+                obfButton.load_board = {
+                    path: `${OBF_BOARDS_PATH_PREFIX}${parentGrid.id}${OBF_BOARD_POSTFIX}`
+                };
+            }
         }
     }
 
