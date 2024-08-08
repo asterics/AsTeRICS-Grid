@@ -14,6 +14,8 @@ import { imageUtil } from './imageUtil';
 import { util } from './util';
 import { dataService } from '../service/data/dataService';
 import { gridUtil } from './gridUtil';
+import $ from '../externals/jquery';
+import { constants } from './constants';
 
 let obfConverter = {};
 let OBF_FORMAT_VERSION = 'open-board-0.1';
@@ -21,6 +23,8 @@ let OBF_BOARDS_PATH_PREFIX = 'boards/';
 let OBF_IMAGES_PATH_PREFIX = 'images/';
 let OBF_BOARD_POSTFIX = '.obf';
 let OBF_MANIFEST_FILENAME = 'manifest.json';
+
+let metadata = null;
 
 obfConverter.gridDataToOBF = function(gridData, manifest, graphList) {
     let columns = new GridData(gridData).getWidthWithBounds();
@@ -121,7 +125,7 @@ function gridElementToObfButton(gridElement, obfGrid, graphList) {
     let obfButton = {
         id: gridElement.id,
         label: i18nService.getTranslation(gridElement.label),
-        background_color: gridElement.backgroundColor
+        background_color: gridElement.backgroundColor || (gridElement.colorCategory ? MetaData.getElementColor(gridElement, metadata) : undefined)
     };
     let obfImage = gridImageToObfImage(gridElement.image);
     if (obfImage) {
@@ -382,5 +386,12 @@ function getGridImage(imageId, obfObject, obfObjects) {
     }
     return Promise.resolve(null);
 }
+
+async function getMetadataConfig() {
+    metadata = await dataService.getMetadata();
+}
+
+$(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
+$(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
 
 export { obfConverter };
