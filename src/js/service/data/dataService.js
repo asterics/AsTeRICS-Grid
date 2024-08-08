@@ -455,6 +455,16 @@ dataService.getBackupData = async function (gridIds, options = {}) {
 }
 
 /**
+ * get backup data for all grids, no need for passing IDs of grids
+ * @param options see #dataService.getBackupData()
+ */
+dataService.getBackupDataAllGrids = async function(options) {
+    let grids = await dataService.getGrids();
+    let ids = grids.map((grid) => grid.id);
+    return dataService.getBackupData(ids, options);
+}
+
+/**
  * export configuration to file
  * @param gridIds array of gridIds to export
  * @param options options for exporting
