@@ -55,22 +55,19 @@ obfConverter.backupDataToOBZ = async function(backupData, options = {}) {
  * @param backupData
  */
 obfConverter.backupDataToOBZFileMap = async function(backupData) {
-    let fileMap = await backupDataToOBZileMapRaw(backupData);
-    for (let key of Object.keys(fileMap)) {
-        let content = fileMap[key];
-        if (ArrayBuffer.isView(content)) {
-            fileMap[key] = util.bytesToBase64(content);
-        }
-    }
-    return fileMap;
+    return await backupDataToOBZileMapRaw(backupData, {
+        base64Images: true
+    });
 }
 
 /**
  * Converts backup data to an obz file map [filename => content]. content may be json or Uint8Array for images.
  * @param backupData
+ * @param options
+ * @param options.base64Images if true images are returned in base64 format, otherwise binary
  * @return {Promise<{}|null>}
  */
-async function backupDataToOBZileMapRaw (backupData) {
+async function backupDataToOBZileMapRaw (backupData, options = {}) {
     if (!backupData || !backupData.grids) {
         return null;
     }
@@ -99,7 +96,11 @@ async function backupDataToOBZileMapRaw (backupData) {
             if (image && image.data) {
                 let suffix = imageUtil.dataStringToFileSuffix(image.data);
                 let path = `${OBF_IMAGES_PATH_PREFIX}${image.id}.${suffix}`;
-                fileMap[path] = util.base64ToBytes(imageUtil.dataStringToBase64(image.data));
+                if (options.base64Images) {
+                    fileMap[path] = image.data;
+                } else {
+                    fileMap[path] = util.base64ToBytes(imageUtil.dataStringToBase64(image.data));
+                }
                 manifest.paths.images[image.id] = path;
                 delete image.data;
                 image.path = path;
