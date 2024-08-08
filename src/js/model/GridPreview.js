@@ -16,9 +16,10 @@ class GridPreview {
      * @param {Array<string>} data.tags
      * @param {Object} options
      * @param {string} [options.baseUrl] base url that is appended to all urls (data.url, data.images, data.thumbnail)
+     * @param {boolean} [options.hasGlobalGrid] true if this configuration contains a global grid (e.g. collection bar)
      * @param {number|Object<string,number>} [data.priority] priority information about this config, higher numbers mean higher priority, can be a map of langCode -> priority to define different priorities for different languages
      */
-    constructor(data, options = {baseUrl: '', githubEditable: false, githubBaseUrl: ''}) {
+    constructor(data, options = {baseUrl: '', githubEditable: false, githubBaseUrl: '', hasGlobalGrid: false}) {
         data.images = data.images || [];
         this.name = data.name;
         this.url = options.baseUrl + data.url;
@@ -42,6 +43,7 @@ class GridPreview {
         this.providerName = ''; // set by externalBoardService.js after retrieving of data
         this.providerUrl = '';
         this.originalData = data; // as coming from the original provider
+        this.hasGlobalGrid = options.hasGlobalGrid;
     }
 }
 

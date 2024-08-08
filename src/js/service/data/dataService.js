@@ -594,6 +594,8 @@ dataService.importBackupFromPreview = async function(preview, options = {}) {
     options.filename = options.filename || preview.filename;
     options.skipDelete = true;
     options.progressFn(10, i18nService.t('downloadingConfig'));
+    options.generateGlobalGrid = !preview.hasGlobalGrid;
+    options.resetHomeBoard = !preview.hasGlobalGrid;
     let result = await externalBoardsService.getImportData(preview);
     if (!result) {
         options.progressFn(100);
@@ -627,6 +629,8 @@ dataService.importBackupDefaultFile = async function(filename, options = {}) {
  * @param options also see options of dataService.importData
  * @param options.skipDelete skip deleting existing data (fresh import for new user)
  * @param options.filename original filename of the imported data - is saved to recognize which user has which default gridset
+ * @param options.generateGlobalGrid if true a default global grid is generated
+ * @param options.resetHomeBoard if true don't trust in existing home board ID in given metadata, but reset home board ID to the most likely home board
  * @return {Promise<void>}
  */
 dataService.importBackupData = async function (importData, options) {
@@ -642,6 +646,7 @@ dataService.importBackupData = async function (importData, options) {
     options.progressFn(30, i18nService.t('encryptingAndSavingGrids'));
     await dataService.importData(importData, {
         generateGlobalGrid: options.generateGlobalGrid,
+        resetHomeBoard: options.resetHomeBoard,
         importDictionaries: true,
         importUserSettings: true,
         progressFn: (p) => {
@@ -668,6 +673,7 @@ dataService.importBackupData = async function (importData, options) {
  * @param options.importUserSettings if true, user settings are imported
  * @param options.progressFn an optional function where the current progress in percentage is returned
  * @param options.resetBeforeImport info about if data was reset before import, reset not happening in this method!
+ * @param options.resetHomeBoard if true don't trust in existing home board ID in given metadata, but reset home board ID to the most likely home board
  * @return {Promise} resolves after operation finished successful
  */
 dataService.importData = async function (data, options) {
@@ -683,6 +689,7 @@ dataService.importData = async function (data, options) {
     dataUtil.removeDatabaseProperties(importData.metadata, true);
     options.progressFn(10);
     let existingGrids = await dataService.getGrids();
+    let existingMetadata = await dataService.getMetadata();
     let existingNames = existingGrids.map((grid) => i18nService.getTranslation(grid.label));
     let regenerateIdsReturn = gridUtil.regenerateIDs(importData.grids);
     importData.grids = regenerateIdsReturn.grids;
@@ -709,7 +716,6 @@ dataService.importData = async function (data, options) {
         importData.metadata &&
         (importData.metadata.globalGridId || importData.metadata.lastOpenedGridId)
     ) {
-        let existingMetadata = await dataService.getMetadata();
         existingMetadata.globalGridId = importData.metadata.globalGridId;
         existingMetadata.lastOpenedGridId = importData.metadata.lastOpenedGridId;
         importData.metadata = existingMetadata;
@@ -720,6 +726,12 @@ dataService.importData = async function (data, options) {
     if (importData.metadata) {
         importData.metadata.globalGridActive = !!importData.metadata.globalGridId;
         await dataService.saveMetadata(importData.metadata, true);
+        existingMetadata = Object.assign(existingMetadata, importData.metadata);
+    }
+    if (options.resetHomeBoard) {
+        let graphList = gridUtil.getGraphList(importData.grids);
+        existingMetadata.homeGridId = graphList[0].grid.id;
+        await dataService.saveMetadata(existingMetadata, true);
     }
     options.progressFn(80);
 

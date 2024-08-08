@@ -65,7 +65,7 @@ providerAGBoards.getImportData = async function(preview) {
 async function fetchData() {
     let response = await fetch(METADATA_URL);
     let data = await response.json();
-    ownResults = data.map(object => new GridPreview(object, { baseUrl: BASE_URL, githubEditable: true, githubBaseUrl: GITHUB_TREE_URL }));
+    ownResults = data.map(object => new GridPreview(object, { baseUrl: BASE_URL, githubEditable: true, githubBaseUrl: GITHUB_TREE_URL, hasGlobalGrid: true }));
     searchTermsMap = new Map();
     for (let preview of ownResults) {
         if (preview.translate) {
