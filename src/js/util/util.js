@@ -350,4 +350,12 @@ util.shuffleArray = function (array) {
     return array;
 }
 
+util.getFilledArray = function(sizeX, sizeY, value) {
+    let baseArray = new Array(sizeX);
+    for (let x = 0; x < sizeX; x++) {
+        baseArray[x] = new Array(sizeY).fill(value);
+    }
+    return baseArray;
+};
+
 export { util };
