@@ -28,6 +28,14 @@ let metadata = null;
 
 obfConverter.gridDataToOBF = function(gridData, manifest, graphList) {
     let columns = new GridData(gridData).getWidthWithBounds();
+    if (gridData.gridElements.some(e => e.width > 1 || e.height > 1)) {
+        // normalize elements to size 1 and move them to top left corner, no big element support in obz
+        gridData.gridElements = gridData.gridElements.filter(e => e.type === GridElement.ELEMENT_TYPE_NORMAL);
+        let xy_full = util.getFilledArray(columns, gridData.rowCount, false);
+        moveAllElements(gridData, xy_full, true, false);
+        moveAllElements(gridData, xy_full, false, true);
+        columns = new GridData(gridData).getWidth();
+    }
     let obfGrid = {
         format: OBF_FORMAT_VERSION,
         id: gridData.id,
@@ -62,6 +70,29 @@ obfConverter.backupDataToOBZFileMap = async function(backupData) {
     return await backupDataToOBZileMapRaw(backupData, {
         base64Images: true
     });
+}
+
+function moveAllElements(gridData, xy_full, moveLeft, moveUp) {
+    let columns = new GridData(gridData).getWidthWithBounds();
+    for (let x = 0; x < columns; x++) {
+        for (let y = 0; y < gridData.rowCount; y++) {
+            let element = gridData.gridElements.find(e => e.x === x && e.y === y);
+            if (element) {
+                element.width = 1;
+                element.height = 1;
+                // move elements left/up as far as possible
+                while (moveLeft && element.x !== undefined && element.x > 0 && !xy_full[element.x - 1][element.y]) {
+                    xy_full[element.x][element.y] = false;
+                    element.x--;
+                }
+                while (moveUp && element.y !== undefined && element.y > 0 && !xy_full[element.x][element.y - 1]) {
+                    xy_full[element.x][element.y] = false;
+                    element.y--;
+                }
+                xy_full[element.x][element.y] = true;
+            }
+        }
+    }
 }
 
 /**
