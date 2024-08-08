@@ -51,6 +51,9 @@ imageUtil.dataStringToFileSuffix = function(dataString = '') {
     if (dataString.startsWith('data:image/jpeg')) {
         return 'jpg';
     }
+    if (dataString.startsWith('data:image/gif')) {
+        return 'gif';
+    }
     return '';
 };
 
