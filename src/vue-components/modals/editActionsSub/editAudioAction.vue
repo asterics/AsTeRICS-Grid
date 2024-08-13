@@ -10,27 +10,45 @@
             <div class="col-12 col-md-4" v-if="!action.dataBase64 && !recording">
                 (none)
             </div>
-            <div class="col-12 col-md-4" v-if="action.dataBase64 && !recording">
+            <div class="col-12 col-md-4" v-if="action.dataBase64 && action.durationMs">
                 {{ i18nService.t('audioWithLengthOfSeconds', (action.durationMs / 1000).toFixed(1)) }}
+            </div>
+            <div class="col-12 col-md-4" v-if="action.dataBase64 && action.filename">
+                {{ i18nService.t('audioFromFileWithName', action.filename) }}
             </div>
         </div>
         <div class="row mt-3">
-            <div class="col-6 col-md-3 offset-md-4">
-                <button class="col-12" @click="toggleRecord()" :disabled="playing">
-                    <span v-if="!recording"><span class="fas fa-microphone"/> <span>{{ $t('record') }}</span></span>
-                    <span v-if="recording"><span class="fas fa-microphone-slash"/> <span>{{ $t('stopRecording') }}</span></span>
-                </button>
-            </div>
-            <div class="col-6 col-md-3">
-                <button class="col-12" @click="togglePlaying()" :disabled="recording">
-                    <span v-if="!playing"><span class="fas fa-play"/> <span>{{ $t('play') }}</span></span>
-                    <span v-if="playing"><span class="fas fa-stop"/> <span>{{ $t('stop') }}</span></span>
-                </button>
+            <div class="col-12 col-md-8 offset-md-4">
+                <div class="row">
+                    <div class="col-12 col-md">
+                        <button class="col-12" @click="toggleRecord()" :disabled="playing">
+                            <span v-if="!recording"><span class="fas fa-microphone"/> <span>{{ $t('record') }}</span></span>
+                            <span v-if="recording"><span class="fas fa-microphone-slash"/> <span>{{ $t('stopRecording') }}</span></span>
+                        </button>
+                    </div>
+                    <div class="col-12 col-md">
+                        <button onclick="document.getElementById('inputFile').click();" class="file-input col-12">
+                            <input type="file" class="five columns" id="inputFile" @change="changedFile" accept="audio/*"/>
+                            <span><i class="fas fa-file-upload"/> <span>{{ $t('chooseFile') }}</span></span>
+                        </button>
+                    </div>
+                    <div class="col-12 col-md">
+                        <button class="col-12" @click="togglePlaying()" :disabled="recording || !action.dataBase64">
+                            <span v-if="!playing"><span class="fas fa-play"/> <span>{{ $t('play') }}</span></span>
+                            <span v-if="playing"><span class="fas fa-stop"/> <span>{{ $t('stop') }}</span></span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row mt-3" v-if="showError">
             <span class="col-12 col-md-8 offset-md-4">
                 <span class="fas fa-exclamation-triangle"/> <span>{{ $t('pleaseAllowAccessingMicrophoneInOrderToRecordAudio') }}</span>.
+            </span>
+        </div>
+        <div class="row mt-3" v-if="showError2">
+            <span class="col-12 col-md-8 offset-md-4">
+                <span class="fas fa-exclamation-triangle"/> <span>{{ $t('selectedAudioFileIsTooBig') }}</span>.
             </span>
         </div>
         <div class="row mt-3" v-if="globalHasContinuousSpeakAction">
@@ -52,6 +70,7 @@ import {audioUtil} from "../../../js/util/audioUtil.js";
 import {i18nService} from "../../../js/service/i18nService.js";
 import {dataService} from "../../../js/service/data/dataService.js";
 import {GridActionCollectElement} from "../../../js/model/GridActionCollectElement.js";
+import { imageUtil } from '../../../js/util/imageUtil';
 
 const MAX_RECORD_TIME = 10000;
 
@@ -65,6 +84,7 @@ export default {
             playing: false,
             intervalHandler: null,
             showError: null,
+            showError2: null,
             i18nService: i18nService,
             globalGrid: null,
             originalGlobalGrid: null,
@@ -89,6 +109,19 @@ export default {
         }
     },
     methods: {
+        changedFile() {
+            let thiz = this;
+            imageUtil.getBase64FromInput($('#inputFile')[0]).then(base64 => {
+                if (base64.length > 250000) {
+                    this.showError2 = true;
+                    return;
+                }
+                this.clearAll();
+                thiz.action.dataBase64 = imageUtil.dataStringToBase64(base64)
+                thiz.action.filename = $('#inputFile')[0].files[0].name;
+                thiz.$forceUpdate();
+            });
+        },
         toggleRecord() {
             if (this.recording) {
                 this.stopRecording();
@@ -104,7 +137,7 @@ export default {
             }
         },
         async record() {
-            this.showError = false;
+            this.clearAll();
             try {
                 await audioUtil.record(data => {
                     this.action.dataBase64 = data.base64;
@@ -162,6 +195,14 @@ export default {
         stopPlaying() {
             this.playing = false;
             audioUtil.stopAudio();
+        },
+        clearAll() {
+            this.showError = false;
+            this.showError2 = false;
+            this.action.dataBase64 = '';
+            this.action.filename = '';
+            this.action.durationMs = null;
+            this.action.mimeType = '';
         }
     },
     async mounted () {

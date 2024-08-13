@@ -8,7 +8,8 @@ class GridActionAudio extends Model({
     modelVersion: String,
     dataBase64: [String],
     mimeType: [String],
-    durationMs: [Number]
+    durationMs: [Number],
+    filename: [String]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionAudio);

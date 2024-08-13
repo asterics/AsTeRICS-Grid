@@ -102,6 +102,10 @@
                     <input id="toHomeAfterSelect" type="checkbox" v-model="metadata.toHomeAfterSelect" @change="homeGridChanged"/>
                     <label for="toHomeAfterSelect">{{ $t('navigateToHomeGridAfterSelectingAnElement') }}</label>
                 </div>
+                <h1>{{ $t('advancedOptions') }}</h1>
+                <div class="srow">
+                    <button @click="deleteImages()"><i class="fas fa-times"/> {{ $t('deleteAllImages') }}</button>
+                </div>
             </div>
         </div>
 
@@ -137,6 +141,7 @@
     import NoGridsPage from "../components/noGridsPage.vue";
     import {GridActionNavigate} from "../../js/model/GridActionNavigate.js";
     import { urlParamService } from '../../js/service/urlParamService';
+    import { GridImage } from '../../js/model/GridImage';
 
     let ORDER_MODE_KEY = "AG_ALLGRIDS_ORDER_MODE_KEY";
     let SELECTOR_CONTEXTMENU = '#moreButton';
@@ -335,6 +340,24 @@
                     });
                 }
             },
+            async deleteImages() {
+                if (confirm(i18nService.t('doYouReallyWantDeleteAllImages'))) {
+                    MainVue.showProgressBar(10, {
+                        text: i18nService.t('retrievingGrids')
+                    });
+                    let allGrids = await dataService.getGrids(true, true);
+                    MainVue.showProgressBar(50, {
+                        text: i18nService.t('Deleting images and saving grids ...')
+                    });
+                    for (let grid of allGrids) {
+                        for (let element of grid.gridElements) {
+                            element.image = new GridImage();
+                        }
+                    }
+                    await dataService.saveGrids(allGrids);
+                    MainVue.showProgressBar(100);
+                }
+            },
             setGlobalGridActive(active) {
                 if (!this.hasGlobalGrid) {
                     return this.resetGlobalGrid({reload: true});
@@ -409,10 +432,11 @@
                             Router.toManageGrids();
                             return;
                         }
-                        Router.toGrid(gridShort.id, {skipThumbnailCheck: true});
-                        await new Promise(resolve => {
+                        let loadPromise = new Promise(resolve => {
                             $(document).on(constants.EVENT_GRID_LOADED, resolve);
                         });
+                        Router.toGrid(gridShort.id, {skipThumbnailCheck: true});
+                        await loadPromise;
                         await util.sleep(100);
                         await updateScreenshot(gridShort.id);
                         if (cancelled) {
