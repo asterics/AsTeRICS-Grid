@@ -432,10 +432,11 @@
                             Router.toManageGrids();
                             return;
                         }
-                        Router.toGrid(gridShort.id, {skipThumbnailCheck: true});
-                        await new Promise(resolve => {
+                        let loadPromise = new Promise(resolve => {
                             $(document).on(constants.EVENT_GRID_LOADED, resolve);
                         });
+                        Router.toGrid(gridShort.id, {skipThumbnailCheck: true});
+                        await loadPromise;
                         await util.sleep(100);
                         await updateScreenshot(gridShort.id);
                         if (cancelled) {
