@@ -50,8 +50,8 @@ If you want to create a new default gridset for a single language, follow these 
    * Select `Export only current content language`
    * Uncheck `Export dictionaries`
    * Check `Export global grid`
-  <div><img src="https://github.com/asterics/AsTeRICS-Grid/assets/2537025/580ada47-e78c-4fba-929f-e3fd2d09e2cc" width="650"/></div>
+  <div><img src="https://github.com/user-attachments/assets/6d3adaf4-7041-4303-a715-ee0db5352dfb" width="650"/></div>
 * Send the file to [office@asterics-foundation.org](mailto:office@asterics-foundation.org) and we can offer it as new default gridset! Alternatively you can also [directly create a Pull Request at AsTeRICS Grid Boards](https://github.com/asterics/AsTeRICS-Grid-Boards?tab=readme-ov-file#add-translated-version-of-monolingual-configuration).
 
 You can also watch the [video tutorial about gridset translation](https://www.youtube.com/watch?v=QPqZlTSMR8U)
-(use auto-translation of subtitles, as this is a german video!)
+(use auto-translation of subtitles, as this is a german video
