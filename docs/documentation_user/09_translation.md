@@ -36,7 +36,7 @@ Follow these steps to translate an existing multilingual default gridset (e.g. `
 * **Hint**: you can select `show all grids` and use the buttons `Copy column` and `Paste column` to copy/paste elements from/to a translation service like Google tranlsate. This can greatly speed up the translation process. <div><img src="https://github.com/asterics/AsTeRICS-Grid/assets/2537025/3962002b-c737-4a3f-b55c-116a20197d31" width="650"/></div>
 * **Important**: don't change anything else in the configuration (e.g. adding new grid elements)
 * Create a backup with the new language via `Manage grids -> More (right top corner) -> Save backup to file`
-* Send the file to [office@asterics-foundation.org](mailto:office@asterics-foundation.org) and we can add this translation to the default gridset!
+* Send the file to [office@asterics-foundation.org](mailto:office@asterics-foundation.org) and we can add this translation to the default gridset! Alternatively you can also [directly create a Pull Request at AsTeRICS Grid Boards](https://github.com/asterics/AsTeRICS-Grid-Boards?tab=readme-ov-file#update-the-contents-of-the-boards-of-existing-configuration).
 
 ### Creation of a new monolingual default gridset
 If you want to create a new default gridset for a single language, follow these steps:
@@ -44,14 +44,14 @@ If you want to create a new default gridset for a single language, follow these 
 * Import an existing default gridset if you want to build upon it or start with an empty configuration if you want to build something new
 * Set the correct content language under "Settings":
   <img src="https://user-images.githubusercontent.com/328325/188639307-88ee550d-a0aa-433f-9c2e-de2748f6734c.png" width="650"/>
-* Adjust configuration as you like and how it works best for the desired language. This can also be something completely different than the base gridset.
+* Translate the gridset or adjust configuration as you like and how it works best for the desired language. This can also be something completely different than the base gridset.
 * Export the finished configuration using `Manage grids -> More (right top corner) -> Save custom data to file` and there select these options:
    * Export `All grids`
    * Select `Export only current content language`
-   * Uncheck `Export dictionaries` and uncheck `Export user settings`
+   * Uncheck `Export dictionaries`
    * Check `Export global grid`
   <div><img src="https://github.com/asterics/AsTeRICS-Grid/assets/2537025/580ada47-e78c-4fba-929f-e3fd2d09e2cc" width="650"/></div>
-* Send the file to [office@asterics-foundation.org](mailto:office@asterics-foundation.org) and we can offer it as new default gridset!
+* Send the file to [office@asterics-foundation.org](mailto:office@asterics-foundation.org) and we can offer it as new default gridset! Alternatively you can also [directly create a Pull Request at AsTeRICS Grid Boards](https://github.com/asterics/AsTeRICS-Grid-Boards?tab=readme-ov-file#add-translated-version-of-monolingual-configuration).
 
 You can also watch the [video tutorial about gridset translation](https://www.youtube.com/watch?v=QPqZlTSMR8U)
 (use auto-translation of subtitles, as this is a german video!)
