@@ -746,6 +746,35 @@ function saveGlobalGridId(globalGridId) {
 
 window.setGlobalGridId = saveGlobalGridId;
 
+/**
+ * move translation from fallbackLang to lang, if translation of lang is empty
+ * @param langCode
+ * @param fallbackLangCode
+ * @returns {Promise<void>}
+ */
+async function fillEmptyTranslations(langCode, fallbackLangCode) {
+    if (langCode?.length !== 2 && fallbackLangCode?.length !== 2) {
+        console.log('invalid params');
+        return;
+    }
+    let allGrids = await dataService.getGrids(true, false);
+    let originalJSON = JSON.stringify(allGrids);
+    for (let grid of allGrids) {
+        grid.label[langCode] = grid.label[langCode] || grid.label[fallbackLangCode];
+        for (let element of grid.gridElements) {
+            element.label[langCode] = element.label[langCode] || element.label[fallbackLangCode];
+        }
+    }
+    if (originalJSON !== JSON.stringify(allGrids)) {
+        await dataService.saveGrids(allGrids);
+        console.log('updated all grids!');
+    } else {
+        console.log('nothing updated.');
+    }
+}
+
+window.fillEmptyTranslations = fillEmptyTranslations;
+
 $(document).on(constants.EVENT_DB_INITIAL_SYNC_COMPLETE, () => {
     dataService.cacheAllImages();
 });
