@@ -18,8 +18,9 @@
                         </div>
                         <div class="container-fluid p-0">
                             <div class="row" aria-hidden="true">
-                                <div class="col-12 col-md-7" v-if="selectedImage">
-                                    <img :src="selectedImage" class="col-12"/>
+                                <div class="col-12 col-md-7" v-if="selectedImage || preview.images.length === 0 && preview.thumbnail">
+                                    <img v-if="selectedImage" :src="selectedImage" class="col-12"/>
+                                    <img v-if="!selectedImage && preview.thumbnail" :src="preview.thumbnail" class="col-12"/>
                                 </div>
                                 <div class="col-12 col-md-5">
                                     <div class="mb-3" v-if="preview.author">
