@@ -335,6 +335,7 @@
                 await this.reload(gridData);
                 this.highlightElements();
                 await dataService.saveMetadata(this.metadata);
+                this.checkThumbnail();
                 $(document).trigger(constants.EVENT_GRID_LOADED);
             },
             onReloadGrid() {
@@ -398,6 +399,29 @@
                     } else {
                         vueApp.unlock(true);
                     }
+                }
+            },
+            checkThumbnail() {
+                let gridDataObject = new GridData(this.gridData);
+                let isHomeGrid = this.metadata.homeGridId === this.gridData.id;
+                if (gridDataObject.hasOutdatedThumbnail(isHomeGrid) && !this.skipThumbnailCheck) {
+                    imageUtil.allImagesLoaded().then(() => {
+                        let options = {};
+                        if (this.metadata.homeGridId === this.gridData.id) {
+                            // better thumbnail quality for home grid -> also used for exporting to GlobalSymbols as thumbnail
+                            options.targetWidth = 800;
+                            options.targetHeight = 600;
+                            options.quality = 0.75;
+                        }
+                        imageUtil.getScreenshot('#grid-container', options).then(async screenshot => {
+                            let thumbnail = {
+                                data: screenshot,
+                                hash: gridDataObject.getHash()
+                            };
+                            this.gridData.thumbnail = thumbnail;
+                            dataService.saveGrid(this.gridData);
+                        });
+                    });
                 }
             },
             onSidebarOpen() {
@@ -503,19 +527,7 @@
                 initContextmenu();
                 thiz.viewInitialized = true;
                 $(document).trigger(constants.EVENT_GRID_LOADED);
-                let gridDataObject = new GridData(thiz.gridData);
-                if (gridDataObject.hasOutdatedThumbnail() && !thiz.skipThumbnailCheck) {
-                    imageUtil.allImagesLoaded().then(() => {
-                        imageUtil.getScreenshot("#grid-container").then(screenshot => {
-                            let thumbnail = {
-                                data: screenshot,
-                                hash: gridDataObject.getHash()
-                            };
-                            thiz.gridData.thumbnail = thumbnail;
-                            dataService.saveGrid(thiz.gridData);
-                        });
-                    })
-                }
+                thiz.checkThumbnail();
                 thiz.initInputMethods();
                 thiz.highlightElements();
             }).catch((e) => {

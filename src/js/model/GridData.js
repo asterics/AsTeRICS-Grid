@@ -59,8 +59,8 @@ class GridData extends Model({
         return encryptionService.getStringHash(string);
     }
 
-    hasOutdatedThumbnail() {
-        return !this.thumbnail || !this.thumbnail.data || this.thumbnail.hash !== this.getHash();
+    hasOutdatedThumbnail(isHomeGrid) {
+        return !this.thumbnail || !this.thumbnail.data || (isHomeGrid && this.thumbnail.data.length < 20000) || this.thumbnail.hash !== this.getHash();
     }
 
     getWidth() {
