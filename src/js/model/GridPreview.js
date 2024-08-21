@@ -2,6 +2,7 @@ class GridPreview {
     /**
      * @param {Object} data
      * @param {(string | Object<string, string>)} data.name
+     * @param {string} data.id id of the preview
      * @param {string} data.url url where to download the data to import
      * @param {string} [data.selfContained] true, if the configuration is a self-contained, false if it's just single boards that could be imported within an existing communicator
      * @param {Array<string>} data.languages
@@ -28,6 +29,7 @@ class GridPreview {
             this.githubUrl = githubUrl.substring(0, githubUrl.lastIndexOf('/'));
         }
         this.filename = data.url ? data.url.substring(data.url.lastIndexOf('/') + 1) : '';
+        this.id = data.id + '' || this.filename; // legacy - id of previews from AG boards is "filename"
         this.selfContained = data.selfContained;
         this.author = data.author;
         this.website = data.website;
