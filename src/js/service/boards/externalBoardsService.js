@@ -12,10 +12,13 @@ let externalProviders = [providerAGBoards, providerGlobalSymbols];
  * @param options.type the type of board previews (self-contained or single boards), see constants.BOARD_TYPES
  * @param options.lang language code of the board previews that should be returned
  * @param options.provider name of the provider to use, all providers if not specified
+ * @param options.selfContained true, if self-contained boards should be returned, false if single boards should be returned,
+ *                              if not specified depending on options.type or all types
  * @return {Promise<*[]>}
  */
 externalBoardsService.query = async function (searchTerm = '', options = {}) {
     let promisesToProvider = new Map();
+    options.selfContained = options.selfContained || typeToSelfContained(options.type);
     for (let provider of externalProviders) {
         if (!options.provider || options.provider === provider.getName()) {
             let promise = provider.query(searchTerm, options);
@@ -86,6 +89,14 @@ function sortResults(results, options) {
         return b.name.localeCompare(a.name);
     });
     return results;
+}
+
+function typeToSelfContained(type) {
+    switch (type) {
+        case constants.BOARD_TYPE_SELFCONTAINED: return true;
+        case constants.BOARD_TYPE_SINGLE: return false;
+    }
+    return undefined;
 }
 
 export { externalBoardsService };

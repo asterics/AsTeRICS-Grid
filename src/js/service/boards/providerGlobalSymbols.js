@@ -18,14 +18,14 @@ providerGlobalSymbols.getURL = function() {
  * queries board previews according to given parameters
  * @param searchTerm a search term for filtering the results
  * @param options additional search options
- * @param options.type the type of board previews (self-contained or single boards), see constants.BOARD_TYPES
  * @param options.lang language code of the board previews that should be returned
+ * @param options.selfContained true: return self-contained boards, false: single boards, undefined: all boards
  * @return {Promise<*[]>}
  */
 providerGlobalSymbols.query = async function (searchTerm = '', options = {}) {
     options.lang = options.lang || '';
-    let selfContained = options.type ? options.type === constants.BOARD_TYPE_SELFCONTAINED : false;
-    let response = await fetch(`${constants.GLOBALSYMBOLS_BASE_URL}api/boardbuilder/v1/board_sets/public?search=${searchTerm}&lang=${options.lang}&self_contained=${selfContained}`);
+    options.selfContained = options.selfContained === undefined ? '' : options.selfContained;
+    let response = await fetch(`${constants.GLOBALSYMBOLS_BASE_URL}api/boardbuilder/v1/board_sets/public?search=${searchTerm}&lang=${options.lang}&self_contained=${options.selfContained}`);
     let data = await response.json();
     return data.map(object => new GridPreview(translateProps(object)));
 }
