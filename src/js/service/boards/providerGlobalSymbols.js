@@ -43,6 +43,7 @@ function translateProps(object) {
     if (object.lang) {
         object.languages = [object.lang];
     }
+    object.thumbnail = object.thumbnail_url;
     return object;
 }
 
