@@ -180,15 +180,31 @@ imageUtil.urlToBase64 = function (url, maxWidth, mimeType) {
     });
 };
 
-imageUtil.getScreenshot = function (selector, ignoreSVG) {
+/**
+ * gets a screenshot in base64 format
+ * @param selector the element selector which defines the container of the area of the screenshot
+ * @param options
+ * @param options.ignoreSVG if true, a screenshot without svg images is returned
+ * @param options.quality quality to use for the screenshot, defaults to 0.6
+ * @param options.targetWidth max width of the resulting image
+ * @param options.targetHeight max height of the resulting image
+ * @return {Promise<*>}
+ */
+imageUtil.getScreenshot = function (selector, options = {}) {
     return import(/* webpackChunkName: "html2canvas" */ 'html2canvas').then((html2canvas) => {
+        let element = document.querySelector(selector);
+        let domSize = element.getBoundingClientRect();
+        options.targetWidth = options.targetWidth || 300;
+        options.targetHeight = options.targetHeight || 300;
+        let scaleX = options.targetWidth / domSize.width;
+        let scaleY = options.targetHeight / domSize.height;
         return html2canvas
-            .default(document.querySelector(selector), {
-                scale: 0.2,
+            .default(element, {
+                scale: Math.min(scaleX, scaleY, 1),
                 logging: false,
                 useCORS: true,
                 ignoreElements: (node) => {
-                    return ignoreSVG && (
+                    return options.ignoreSVG && (
                         node.style['background-image'].indexOf('image/svg') !== -1 ||
                         (node.src && node.src.endsWith('.svg'))
                     );
@@ -196,14 +212,16 @@ imageUtil.getScreenshot = function (selector, ignoreSVG) {
             })
             .then((canvas) => {
                 try {
-                    return Promise.resolve(canvas.toDataURL('image/webp', 0.6));
+                    return Promise.resolve(canvas.toDataURL('image/webp', options.quality || 0.6));
                 } catch (e) {
                     log.warn('error while creating screenshot');
                     log.warn(e);
                     if (ignoreSVG) {
                         return Promise.resolve(imageUtil.getEmptyImage());
                     } else {
-                        return imageUtil.getScreenshot(selector, true);
+                        return imageUtil.getScreenshot(selector, {
+                            ignoreSVG: true
+                        });
                     }
                 }
             });
