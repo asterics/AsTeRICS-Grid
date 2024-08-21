@@ -93,7 +93,7 @@
                 this.$emit('close');
             },
             copyLink() {
-                let link = location.origin + location.pathname + `?${urlParamService.params.PARAM_USE_GRIDSET_FILENAME}=${this.preview.filename}`;
+                let link = location.origin + location.pathname + `?${urlParamService.params.PARAM_USE_GRIDSET_PROVIDER}=${this.preview.providerName}&${urlParamService.params.PARAM_USE_GRIDSET_ID}=${this.preview.id}`;
                 util.copyToClipboard(link);
                 this.linkCopied = true;
             }

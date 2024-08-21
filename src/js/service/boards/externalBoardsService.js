@@ -1,5 +1,6 @@
 import { providerGlobalSymbols } from './providerGlobalSymbols';
 import { providerAGBoards } from './providerAGBoards';
+import { constants } from '../../util/constants';
 
 let externalBoardsService = {};
 
@@ -39,16 +40,11 @@ externalBoardsService.query = async function (searchTerm = '', options = {}) {
     return results;
 };
 
-/**
- * returns the preview for a given filename for the results coming from AsTeRICS-Grid-Boards
- * @param filename
- * @return {*|string}
- */
-externalBoardsService.getAGBoardsPreview = async function(filename) {
+externalBoardsService.getPreview = async function(providerName, id) {
     let results = await externalBoardsService.query('', {
-        provider: providerAGBoards.getName()
+        provider: providerName
     });
-    return results.find(preview => preview.filename === filename);
+    return results.find(result => result.id === id);
 }
 
 externalBoardsService.getProviders = function() {

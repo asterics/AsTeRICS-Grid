@@ -591,7 +591,7 @@ dataService.importBackupFromPreview = async function(preview, options = {}) {
         return false;
     }
     options.progressFn = options.progressFn || (() => {});
-    options.filename = options.filename || preview.filename;
+    options.filename = options.filename || (preview.providerName + preview.id);
     options.skipDelete = true;
     options.progressFn(10, i18nService.t('downloadingConfig'));
     options.generateGlobalGrid = !preview.hasGlobalGrid;
@@ -618,9 +618,9 @@ dataService.importBackupFromPreview = async function(preview, options = {}) {
     return true;
 }
 
-dataService.importBackupDefaultFile = async function(filename, options = {}) {
-    let preview = await externalBoardsService.getAGBoardsPreview(filename);
-    return dataService.importBackupFromPreview(preview, options);
+dataService.importExternalBackup = async function(provider, id) {
+    let preview = await externalBoardsService.getPreview(provider, id);
+    return dataService.importBackupFromPreview(preview);
 }
 
 /**
