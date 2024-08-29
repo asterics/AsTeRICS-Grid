@@ -29,7 +29,7 @@ class GridPreview {
             this.githubUrl = githubUrl.substring(0, githubUrl.lastIndexOf('/'));
         }
         this.filename = data.url ? data.url.substring(data.url.lastIndexOf('/') + 1) : '';
-        this.id = data.id + '' || this.filename; // legacy - id of previews from AG boards is "filename"
+        this.id = (data.id || this.filename) + ''; // legacy - id of previews from AG boards is "filename"
         this.selfContained = data.selfContained;
         this.author = data.author;
         this.website = data.website;
