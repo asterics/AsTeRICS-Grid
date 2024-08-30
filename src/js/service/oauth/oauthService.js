@@ -1,6 +1,6 @@
 import { UserManager } from 'oidc-client-ts';
-import { localStorageService } from './data/localStorageService';
-import { constants } from '../util/constants';
+import { localStorageService } from '../data/localStorageService';
+import { constants } from '../../util/constants';
 
 let oauthService = {};
 let managers = {}
