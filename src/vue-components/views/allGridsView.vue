@@ -157,6 +157,7 @@
 
     let vueApp = null;
     let vueConfig = {
+        props: ['redirectInfo'],
         components: {
             NoGridsPage, ImportModal, ExportModal, ExportPdfModal, GridLinkModal, Accordion, HeaderIcon},
         data() {
@@ -529,6 +530,10 @@
             thiz.reload().then(() => {
                 this.reinitContextMenu();
             });
+            if (this.redirectInfo && this.redirectInfo.redirectTarget === constants.OAUTH_REDIRECT_GS_UPLOAD) {
+                this.backupModal.exportOptions = this.redirectInfo.exportOptions;
+                this.backupModal.show = true;
+            }
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.onPullUpdate);
@@ -633,7 +638,7 @@
                 disabled: noGrids
             },
             CONTEXT_EXPORT_CUSTOM: {
-                name: i18nService.t('saveCustomDataToFile'),
+                name: i18nService.t('exportShareGrids'),
                 icon: "fas fa-file-export",
                 disabled: noGrids
             },
@@ -648,7 +653,7 @@
                 icon: "fas fa-upload"
             },
             CONTEXT_IMPORT: {
-                name: i18nService.t('importCustomDataFromFile'),
+                name: i18nService.t('importGrids'),
                 icon: "fas fa-file-import"
             },
             SEP3: "---------",
