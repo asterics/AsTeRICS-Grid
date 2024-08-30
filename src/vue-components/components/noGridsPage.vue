@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="mt-2 mb-5 row">
                 <a href="javascript:;" class="col-12 col-lg" @click="restoreBackupHandler()"><span class="fas fa-upload"/> {{ $t('restoreBackupFromFile') }}</a>
-                <a href="javascript:;" class="col-12 col-lg" @click="importCustomHandler()"><span class="fas fa-file-import"/> {{ $t('importCustomDataFromFile') }}</a>
+                <a href="javascript:;" class="col-12 col-lg" @click="importCustomHandler()"><span class="fas fa-file-import"/> {{ $t('importGrids') }}</a>
             </div>
         </div>
 
