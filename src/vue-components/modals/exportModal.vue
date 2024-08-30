@@ -2,76 +2,93 @@
     <div class="modal">
         <div class="modal-mask">
             <div class="modal-wrapper">
-                <div class="modal-container modal-container-flex" @keydown.esc="$emit('close')" @keydown.ctrl.enter="save()">
-                    <div class="container-fluid px-0 mb-5">
+                <div class="modal-container modal-container-flex" @keydown.esc="$emit('close')" @keydown.ctrl.enter="exportData()">
+                    <div class="container-fluid px-0">
                         <div class="row">
                             <div class="modal-header col-8 col-sm-10 col-md-10">
-                                <h1 class="inline">{{ $t('exportToFile') }}</h1>
+                                <h1 class="inline">{{ $t('exportShareGrids') }}</h1>
                             </div>
                             <a class="col-2 col-sm-1 col-md black" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
                             <a class="col-2 col-sm-1 col-md black" href="javascript:void(0);" :title="$t('close')" @click="$emit('close')"><i class="fas fa-times"/></a>
                         </div>
                     </div>
 
-                    <div class="modal-body mt-2">
-                        <div class="row mb-4">
-                            <label class="col-12 col-md-2" for="selectGrid">{{ $t('selectGrid') }}</label>
-                            <div class="col-12 col-md-4 mb-4">
-                                <select class="col-12" id="selectGrid" v-model="selectedGrid" @change="selectedGridChanged">
-                                    <option :value="null">{{ $t('allGrids') }}</option>
-                                    <option v-for="elem in graphList" :value="elem.grid">{{elem.grid.label | extractTranslation}}</option>
-                                </select>
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <img v-if="selectedGrid && selectedGrid.thumbnail" :src="selectedGrid.thumbnail.data">
-                            </div>
+                    <div class="modal-body mt-1">
+                        <nav-tabs :tab-labels="[tab_constants.TAB_EXPORT_FILE, tab_constants.TAB_EXPORT_ONLINE]" v-model="currentTab"></nav-tabs>
+                        <div v-if="currentTab === tab_constants.TAB_EXPORT_FILE">
+                            <export-modal-data-selector v-model="backupInfo" :export-options="exportOptions"></export-modal-data-selector>
                         </div>
-                        <div class="row">
-                            <label class="col-12 col-md-2" for="selectExportLang">{{ $t('exportLanguages') }}</label>
-                            <div class="col-12 col-md-4 mb-4">
-                                <select class="col-12" id="selectExportLang" v-model="options.exportLang">
-                                    <option v-for="option in options.exportLangOptions" :value="option">{{option | translate}}</option>
-                                </select>
+                        <div v-if="currentTab === tab_constants.TAB_EXPORT_ONLINE">
+                            <div class="d-flex align-items-center mb-5">
+                                <img class="me-3" src="app/img/globalsymbols_logo.png" alt="" style="width: 40px; outline: none">
+                                <div v-if="!loggedIn">
+                                    <span>{{ $t('toExportBoardsToLogIn', [constants.GLOBALSYMBOLS_NAME]) }}</span>
+                                    <a href="javascript:;" @click="login">{{ $t('login') }}</a>
+                                </div>
+                                <div v-if="loggedIn">
+                                    <span>{{ $t('youAreLoggedInToAs', [constants.GLOBALSYMBOLS_NAME, loggedInUser]) }}.</span>
+                                    <a href="javascript:;" @click="logout">{{ $t('logout') }}</a>
+                                </div>
                             </div>
-                            <div class="col-12 col-md-4">
-                                <span v-if="options.exportLang === constants.LANG_EXPORT_CURRENT">{{ $t('currentLanguage', {contentLangReadable: i18nService.getContentLangReadable(), contentLangCode: i18nService.getContentLang()}) }}</span>
-                                <span v-if="options.exportLang === constants.LANG_EXPORT_ALL">
-                                    <span>{{ $t('currentLanguages', {length: currentLanguages.length}) }} </span>
-                                    <span v-for="(lang, index) in currentLanguages" :title="i18nService.getLangReadable(lang)">{{lang + (index < currentLanguages.length -1 ? ', ' : '')}}</span>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div>
-                                <input id="exportDictionaries" type="checkbox" v-model="options.exportDictionaries"/>
-                                <label for="exportDictionaries">{{ $t('exportDictionaries') }}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div>
-                                <input id="exportUserSettings" type="checkbox" v-model="options.exportUserSettings"/>
-                                <label for="exportUserSettings">{{ $t('exportUserSettingsAndInputConfig') }}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div>
-                                <input id="exportGlobalGrid" type="checkbox" v-model="options.exportGlobalGrid"/>
-                                <label for="exportGlobalGrid">{{ $t('exportGlobalGrid') }}</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div>
-                                <input id="exportOBZ" type="checkbox" v-model="options.exportOBZ"/>
-                                <label for="exportOBZ">{{ $t('exportOBZ') }}</label>
-                            </div>
-                        </div>
-                        <div class="row" v-show="selectedGrid && allChildren && allChildren.length > 0">
-                            <div>
-                                <input id="exportConnected" type="checkbox" v-model="options.exportConnected"/>
-                                <label for="exportConnected">
-                                    <span>{{ $t('exportAllChildGrids') }}</span>
-                                    <span>({{allChildren ? allChildren.length : 0}} <span>{{ $t('grids') }}</span>)</span>
-                                </label>
+                            <div v-if="loggedIn">
+                                <export-modal-data-selector v-model="backupInfo" :export-options="exportOptions" :hide-advanced-settings="true"></export-modal-data-selector>
+                                <form id="exportOnlineForm" @submit="(event) => event.preventDefault()" ref="form" class="mb-0">
+                                    <div class="row">
+                                        <div class="col-12 col-md-4">
+                                            <div class="row">
+                                                <label for="exportName">{{ $t('titleOfExportedGrids') }}</label>
+                                                <div class="col-12">
+                                                    <input class="col-12" id="exportName" type="text" v-model="metadata.name" required maxlength="250">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <div class="row">
+                                                <label for="author">{{ $t('author') }}</label>
+                                                <div class="col-12">
+                                                    <input class="col-12" id="author" type="text" v-model="metadata.author" required maxlength="100">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <div class="row">
+                                                <label for="authorURL">{{ $t('authorURL') }}</label>
+                                                <div class="col-12">
+                                                    <input class="col-12" id="authorURL" maxlength="200" pattern="https?://.*" type="text" v-model="metadata.author_url" :placeholder="$t('optionalBracket')">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
+                                            <label for="desc">{{ $t('description') }}</label>
+                                            <div class="col-12">
+                                                <textarea class="col-12" id="desc" v-model="metadata.description" maxlength="1000" :placeholder="$t('optionalBracket')"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <label for="selectTags">{{ $t('tags') }}</label>
+                                            <div class="col-12">
+                                                <multiselect id="selectTags" class="col-12" v-model="metadata.tags" :options="possibleTags" @tag="addTag($event)" :multiple="true" :close-on-select="false" :clear-on-select="false" :taggable="true" :max="10" :placeholder="$t('chooseTagsOrAddNew')">
+                                                </multiselect>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="selfContained" v-model="metadata.self_contained">
+                                        <label for="selfContained">{{ $t('gridsAreSelfContained') }}</label>
+                                    </div>
+                                    <div class="mb-4">
+                                        <i class="fas fa-info-circle"></i> {{ $t('selfContainedInfo') }}
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="public" v-model="metadata.public">
+                                        <label for="public">{{ $t('makePublic') }}</label>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-info-circle"></i> {{ $t('publicInfo') }}
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -81,8 +98,10 @@
                             <button class="six columns" @click="$emit('close')" :title="$t('keyboardEsc')">
                                 <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
-                            <button class="six columns" @click="save()" :title="$t('keyboardCtrlEnter')">
-                                <i class="fas fa-check"/> <span>{{ $t('downloadBackup') }}</span>
+                            <button form="exportOnlineForm" :disabled="currentTab === tab_constants.TAB_EXPORT_ONLINE && !loggedIn" class="six columns" @click="exportData()" :title="$t('keyboardCtrlEnter')">
+                                <i class="fas fa-check"/>
+                                <span v-if="currentTab === tab_constants.TAB_EXPORT_FILE">{{ $t('downloadBackup') }}</span>
+                                <span v-if="currentTab === tab_constants.TAB_EXPORT_ONLINE">{{ $t('exportToGlobalSymbols') }}</span>
                             </button>
                         </div>
                     </div>
@@ -93,115 +112,106 @@
 </template>
 
 <script>
-    import {dataService} from '../../js/service/data/dataService'
-    import './../../css/modal.css';
-    import {helpService} from "../../js/service/helpService";
-    import {gridUtil} from "../../js/util/gridUtil.js";
-    import {i18nService} from "../../js/service/i18nService.js";
-    import {localStorageService} from "../../js/service/data/localStorageService.js";
-    import {util} from "../../js/util/util.js";
-    import { MainVue } from '../../js/vue/mainVue';
+import {dataService} from '../../js/service/data/dataService'
+import './../../css/modal.css';
+import {helpService} from "../../js/service/helpService";
+import {i18nService} from "../../js/service/i18nService.js";
+import NavTabs from '../components/nav-tabs.vue';
+import { MainVue } from '../../js/vue/mainVue';
+import ExportModalDataSelector from './exportModalDataSelector.vue';
+import { constants } from '../../js/util/constants';
+import { localStorageService } from '../../js/service/data/localStorageService';
+import { oauthServiceGlobalSymbols } from '../../js/service/oauth/oauthServiceGlobalSymbols';
+import Multiselect from 'vue-multiselect';
+import Accordion from '../components/accordion.vue';
 
-    let constants = {
-        LANG_EXPORT_CURRENT: 'LANG_EXPORT_CURRENT',
-        LANG_EXPORT_ALL: 'LANG_EXPORT_ALL'
-    }
+let tab_constants = {
+    TAB_EXPORT_FILE: 'TAB_EXPORT_FILE',
+    TAB_EXPORT_ONLINE: 'TAB_EXPORT_ONLINE'
+}
 
-
-    export default {
-        props: ['gridsData', 'exportOptions'],
-        data: function () {
-            return {
-                selectedGrid: null,
-                globalGridId: null,
-                graphList: [],
-                allChildren: null,
-                options: {
-                    exportConnected: true,
-                    exportDictionaries: true,
-                    exportUserSettings: true,
-                    exportGlobalGrid: true,
-                    exportOBZ: false,
-                    exportLang: constants.LANG_EXPORT_ALL,
-                    exportLangOptions: [constants.LANG_EXPORT_ALL, constants.LANG_EXPORT_CURRENT]
-                },
-                constants: constants,
-                i18nService: i18nService
-            }
+export default {
+    components: { Accordion, Multiselect, ExportModalDataSelector, NavTabs },
+    props: ['exportOptions'],
+    data: function () {
+        return {
+            backupInfo: {
+                gridIds: [],
+                options: {}
+            },
+            currentTab: tab_constants.TAB_EXPORT_FILE,
+            tab_constants: tab_constants,
+            i18nService: i18nService,
+            metadata: {
+                name: '',
+                description: '',
+                tags: [],
+                lang: '',
+                author: '',
+                author_url: '',
+                self_contained: false,
+                public: true,
+                thumbnail: ''
+            },
+            loggedIn: false,
+            loggedInUser: '',
+            possibleTags: JSON.parse(JSON.stringify(constants.EXPORT_ONLINE_GRID_TAGS)),
+            constants: constants
+        }
+    },
+    methods: {
+        login() {
+            let exportOptions = Object.assign({}, this.exportOptions, this.backupInfo.options);
+            exportOptions.currentTab = tab_constants.TAB_EXPORT_ONLINE;
+            localStorageService.setRedirectTarget(constants.OAUTH_REDIRECT_GS_UPLOAD, {exportOptions: exportOptions});
+            oauthServiceGlobalSymbols.login();
         },
-        computed: {
-            currentLanguages: function () {
-                let grids = this.selectedGrid ? [this.selectedGrid] : this.gridsData;
-                let langs = [];
-                for (let grid of grids) {
-                    for (let element of grid.gridElements) {
-                        langs = [...new Set(langs.concat(Object.keys(element.label)))];
-                    }
-                }
-                return langs;
-            }
+        logout() {
+            oauthServiceGlobalSymbols.logout();
+            this.loggedIn = false;
+            this.loggedInUser = '';
         },
-        methods: {
-            selectedGridChanged() {
-                if (!this.selectedGrid) {
+        exportData() {
+            this.backupInfo.options.progressFn = (percent, text) => {
+                MainVue.showProgressBar(percent, {
+                    header: i18nService.t('exportShareGrids'),
+                    text: text
+                });
+            };
+            if (this.currentTab === tab_constants.TAB_EXPORT_FILE) {
+                dataService.downloadToFile(this.backupInfo.gridIds, this.backupInfo.options);
+            } else if (this.currentTab === tab_constants.TAB_EXPORT_ONLINE) {
+                if (!this.$refs.form.reportValidity()) {
+                    log.warn('form is invalid');
                     return;
                 }
-                this.allChildren = gridUtil.getAllChildrenRecursive(this.graphList, this.selectedGrid.id);
-            },
-            save() {
-                let gridIds = this.selectedGrid ? [this.selectedGrid.id] : this.gridsData.map(grid => grid.id);
-                if (this.selectedGrid && this.options.exportConnected) {
-                    gridIds = gridIds.concat(this.allChildren.map(grid => grid.id));
+                if(this.metadata.public && !confirm(i18nService.t('confirmExportPublicNoPrivateImages'))) {
+                    return;
                 }
-
-                let user = localStorageService.getAutologinUser();
-                let filename = null;
-                if (gridIds.length === 1 && this.selectedGrid) {
-                    filename = `${user}_${util.getCurrentDateTimeString()}_${i18nService.getTranslation(this.selectedGrid.label)}`;
-                } else {
-                    filename = `${user}_${util.getCurrentDateTimeString()}_asterics-grid-custom-backup`;
-                }
-                dataService.downloadToFile(gridIds, {
-                    exportGlobalGrid: this.options.exportGlobalGrid,
-                    exportOnlyCurrentLang: this.options.exportLang === constants.LANG_EXPORT_CURRENT,
-                    exportDictionaries: this.options.exportDictionaries,
-                    exportUserSettings: this.options.exportUserSettings,
-                    filename: filename,
-                    obzFormat: this.options.exportOBZ,
-                    progressFn: (percent, text) => {
-                        MainVue.showProgressBar(percent, {
-                            header: i18nService.t('exportToFile'),
-                            text: text
-                        });
-                    }
-                });
-                this.$emit('close');
-            },
-            openHelp() {
-                helpService.openHelp();
+                log.warn('export!');
+                return;
+                oauthServiceGlobalSymbols.exportGrids(this.backupInfo.gridIds, this.metadata);
             }
+            this.$emit('close');
         },
-        mounted() {
-            dataService.getGlobalGrid().then(globalGrid => {
-                this.globalGridId = globalGrid ? globalGrid.id : null;
-                this.graphList = gridUtil.getGraphList(this.gridsData, this.globalGridId, true);
-                if (this.exportOptions.gridId) {
-                    for (let elem of this.graphList) {
-                        if (this.exportOptions.gridId === elem.grid.id) {
-                            this.selectedGrid = elem.grid;
-                            this.selectedGridChanged();
-                        }
-                    }
-                }
-                if (this.exportOptions) {
-                    this.options = Object.assign(this.options, this.exportOptions);
-                }
-            });
+        addTag(tag) {
+            tag = tag.toLocaleUpperCase().replace(/\s/g,'').substring(0, 20);
+            this.metadata.tags.push(tag.toLocaleUpperCase());
+            this.possibleTags.push(tag.toLocaleUpperCase());
         },
-        beforeDestroy() {
-            helpService.revertToLastLocation();
+        openHelp() {
+            helpService.openHelp();
         }
+    },
+    async mounted() {
+        this.loggedIn = await oauthServiceGlobalSymbols.isLoggedIn();
+        this.loggedInUser = await oauthServiceGlobalSymbols.getUsername();
+        this.currentTab = this.exportOptions.currentTab || tab_constants.TAB_EXPORT_FILE;
+    },
+    beforeDestroy() {
+        helpService.revertToLastLocation();
     }
+}
 </script>
 
 <style scoped>
