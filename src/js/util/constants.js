@@ -187,6 +187,7 @@ constants.OAUTH_REDIRECT_KEY = 'OAUTH_REDIRECT_KEY';
 
 // constants for OAuth authentication at globalsymbols
 constants.OAUTH_REDIRECT_GS_UPLOAD = 'OAUTH_REDIRECT_GS_UPLOAD'; // redirect to upload modal
+constants.GLOBALSYMBOLS_NAME = 'Global Symbols';
 constants.GLOBALSYMBOLS_BASE_URL = 'http://localhost:3000/';
 constants.OAUTH_CONFIG_GLOBALSYMBOLS = {
     id: 'globalsymbols',
@@ -199,5 +200,7 @@ constants.OAUTH_CONFIG_GLOBALSYMBOLS = {
     loadUserInfo: true
 }
 constants.OAUTH_CONFIGS = [constants.OAUTH_CONFIG_GLOBALSYMBOLS];
+
+constants.EXPORT_ONLINE_GRID_TAGS = ["ADL", "MEDICAL", "LEISURE", "EMOTIONS", "SOCIAL", "FOOD", "CARE", "EDUCATION", "WORK", "HOSPITAL", "SMALLTALK", "4x3", "3X4", "5X6", "6X11", "5X9", "4X7"];
 
 export { constants };
