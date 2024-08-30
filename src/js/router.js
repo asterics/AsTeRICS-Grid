@@ -264,7 +264,9 @@ Router.toManageGrids = function () {
 Router.toRedirectTarget = function(target = {}) {
     switch (target.key) {
         case constants.OAUTH_REDIRECT_GS_UPLOAD:
-            _passParams = target.props;
+            _passParams = {};
+            _passParams.redirectInfo = target.props;
+            _passParams.redirectInfo.redirectTarget = target.key;
             Router.toManageGrids();
             break;
         default:
