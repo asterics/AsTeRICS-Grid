@@ -7,6 +7,7 @@ import { GridActionCollectElement } from '../model/GridActionCollectElement';
 import { GridData } from '../model/GridData';
 import { GridElementCollect } from '../model/GridElementCollect.js';
 import {constants} from "./constants.js";
+import { util } from './util';
 
 let gridUtil = {};
 
@@ -413,6 +414,21 @@ gridUtil.getActionsOfType = function (gridElement, modelName) {
     let actions = gridElement ? gridElement.actions : null;
     let relevantActions = actions ? actions.filter(a => a.modelName === modelName) : [];
     return relevantActions;
+}
+
+/**
+ * returns all languages existing in the given grids
+ * @param grids
+ */
+gridUtil.getLanguages = function(grids) {
+    grids = grids || [];
+    let langs = [];
+    for (let grid of grids) {
+        for (let element of grid.gridElements) {
+            langs = langs.concat(Object.keys(element.label));
+        }
+    }
+    return util.deduplicateArray(langs);
 }
 
 function getAllLangs(gridElements) {

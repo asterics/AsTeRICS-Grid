@@ -248,9 +248,9 @@
     import Accordion from "../components/accordion.vue";
     import GlobalInputOptions from "../modals/input/globalInputOptions.vue";
     import SliderInput from "../modals/input/sliderInput.vue";
-    import $ from "../../js/externals/jquery.js";
     import {arasaacService} from "../../js/service/pictograms/arasaacService.js";
     import {speechServiceExternal} from "../../js/service/speechServiceExternal.js";
+    import { gridUtil } from '../../js/util/gridUtil';
 
     let KEY_SETTINGS_SHOW_ALL_VOICES = "KEY_SETTINGS_SHOW_ALL_VOICES";
     let KEY_SETTINGS_SHOW_ALL_CONTENTLANGS = "KEY_SETTINGS_SHOW_ALL_CONTENTLANGS";
@@ -411,15 +411,8 @@
                 thiz.setVoiceTestText();
                 thiz.show = true;
             });
-            dataService.getGrids(false, true).then(grids => {
-                let languages = grids.reduce((total, grid) => {
-                    //total = total.concat(Object.keys(grid.label));
-                    return total.concat(grid.gridElements.reduce((t2, gridElem) => {
-                        return t2.concat(Object.keys(gridElem.label));
-                    }, []));
-                }, []);
-                thiz.gridLanguages = [...new Set(languages)];
-            });
+            let grids = await dataService.getGrids(false, true);
+            this.gridLanguages = gridUtil.getLanguages(grids);
             thiz.voices = await speechService.getVoicesInitialized();
             thiz.selectVoices = thiz.getSelectVoices();
         }
