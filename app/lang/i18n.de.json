@@ -463,7 +463,7 @@
   "importGridsFromFile": "Grid(s) aus Datei importieren",
   "clearAllAndImportFromFile": "Alles löschen und aus Datei importieren",
   "deleteAllGrids": "Alle Grids löschen",
-  "deleteAllImages": "Delete all images",
+  "deleteAllImages": "Alle Bilder löschen",
   "doYouReallyWantDeleteAllImages": "Do you really want to delete all images and symbols from all grids? This cannot be undone.",
   "resetToDefaultConfig": "Auf Standardkonfiguration zurücksetzen",
   "new": "Neu",
