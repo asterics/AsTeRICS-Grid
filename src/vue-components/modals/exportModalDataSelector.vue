@@ -98,7 +98,7 @@ export default {
             graphList: [],
             allChildren: [],
             options: {
-                exportConnected: true,
+                exportConnected: false,
                 exportDictionaries: false,
                 exportUserSettings: true,
                 exportGlobalGrid: true,
@@ -121,8 +121,8 @@ export default {
             let gridIds = [];
             if (this.selectedGrid) {
                 gridIds = [this.selectedGrid.id];
+                this.allChildren = gridUtil.getAllChildrenRecursive(this.graphList, this.selectedGrid.id);
                 if (this.options.exportConnected) {
-                    this.allChildren = gridUtil.getAllChildrenRecursive(this.graphList, this.selectedGrid.id);
                     gridIds = gridIds.concat(this.allChildren.map(grid => grid.id));
                 }
             } else { // "All grids"
