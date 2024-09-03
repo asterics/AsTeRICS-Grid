@@ -26,7 +26,7 @@ oauthServiceGlobalSymbols.getUsername = async function() {
     return user && user.profile ? user.profile.name : '';
 }
 
-oauthServiceGlobalSymbols.exportGrids = async function(gridIds, metadata = {
+oauthServiceGlobalSymbols.exportGrids = async function(gridIds, uploadMetadata = {
     name: '',
     description: '',
     tags: [],
@@ -36,23 +36,31 @@ oauthServiceGlobalSymbols.exportGrids = async function(gridIds, metadata = {
     self_contained: false,
     public: true,
     thumbnail: '',
-}) {
+}, progressFn = () => {}) {
     if (!oauthServiceGlobalSymbols.isLoggedIn()) {
         return;
     }
+    progressFn(10);
     let backupData = await dataService.getBackupData(gridIds, {
         obzFileMap: true
     });
+    progressFn(20);
     let accessToken = await oauthService.getAccessToken(constants.OAUTH_CONFIG_GLOBALSYMBOLS);
     let sendData = {
         obz_file_map: JSON.stringify(backupData),
         lang: i18nService.getContentLang(),
-        self_contained: metadata.self_contained || false,
-        public: metadata.public === true,
+        self_contained: uploadMetadata.self_contained || false,
+        public: uploadMetadata.public === true,
     }
-    for (let key of Object.keys(metadata)) {
-        sendData[key] = metadata[key] || sendData[key];
+    for (let key of Object.keys(uploadMetadata)) {
+        sendData[key] = uploadMetadata[key] || sendData[key];
     }
+    let metadata = await dataService.getMetadata();
+    let thumbGridId = metadata.homeGridId || gridIds[0];
+    let firstGrid = await dataService.getGrid(thumbGridId) || {};
+    let firstThumb = firstGrid.thumbnail ? firstGrid.thumbnail.data : '';
+    sendData.thumbnail = sendData.thumbnail || firstThumb;
+    progressFn(30);
     let result = await $.ajax({
         type: 'POST',
         url: `${constants.GLOBALSYMBOLS_BASE_URL}api/boardbuilder/v1/board_sets/obz`,
@@ -61,6 +69,7 @@ oauthServiceGlobalSymbols.exportGrids = async function(gridIds, metadata = {
             "Authorization": `Bearer ${accessToken}`
         }
     });
+    progressFn(100);
 }
 
 export { oauthServiceGlobalSymbols };
