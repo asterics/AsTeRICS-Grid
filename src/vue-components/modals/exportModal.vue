@@ -38,7 +38,7 @@
                                             <div class="row">
                                                 <label for="exportName">{{ $t('titleOfExportedGrids') }}</label>
                                                 <div class="col-12">
-                                                    <input class="col-12" id="exportName" type="text" v-model="metadata.name" required maxlength="250">
+                                                    <input class="col-12" id="exportName" type="text" v-model="metadata.name" required maxlength="250" autocomplete="off">
                                                 </div>
                                             </div>
                                         </div>
