@@ -182,15 +182,12 @@ export default {
                 dataService.downloadToFile(this.backupInfo.gridIds, this.backupInfo.options);
             } else if (this.currentTab === tab_constants.TAB_EXPORT_ONLINE) {
                 if (!this.$refs.form.reportValidity()) {
-                    log.warn('form is invalid');
                     return;
                 }
-                if(this.metadata.public && !confirm(i18nService.t('confirmExportPublicNoPrivateImages'))) {
+                if (this.metadata.public && !confirm(i18nService.t('confirmExportPublicNoPrivateImages'))) {
                     return;
                 }
-                log.warn('export!');
-                return;
-                oauthServiceGlobalSymbols.exportGrids(this.backupInfo.gridIds, this.metadata);
+                oauthServiceGlobalSymbols.exportGrids(this.backupInfo.gridIds, this.metadata, this.backupInfo.options.progressFn);
             }
             this.$emit('close');
         },
