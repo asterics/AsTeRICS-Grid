@@ -465,7 +465,13 @@
                 async function updateScreenshot(gridId) {
                     let grid = await dataService.getGrid(gridId);
                     await imageUtil.allImagesLoaded();
-                    let screenshot = await imageUtil.getScreenshot("#grid-container");
+                    let options = gridId !== (await dataService.getMetadata()).homeGridId ? {} : {
+                        // better thumbnail quality for home grid -> also used for exporting to GlobalSymbols as thumbnail
+                        targetWidth: 800,
+                        targetHeight: 600,
+                        quality: 0.75
+                    };
+                    let screenshot = await imageUtil.getScreenshot("#grid-container", options);
                     log.info(`save screenshot for: ${i18nService.getTranslation(grid.label)}, size: ${screenshot.length / 1024}kB`);
                     totalSize += screenshot.length;
                     let thumbnail = {
