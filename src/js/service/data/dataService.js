@@ -736,7 +736,8 @@ dataService.importData = async function (data, options) {
         existingMetadata = Object.assign(existingMetadata, importData.metadata);
     }
     if (options.resetHomeBoard) {
-        let graphList = gridUtil.getGraphList(importData.grids);
+        let globalGridId = importData.metadata ? importData.metadata.globalGridId : null;
+        let graphList = gridUtil.getGraphList(importData.grids, globalGridId);
         existingMetadata.homeGridId = graphList[0].grid.id;
         await dataService.saveMetadata(existingMetadata, true);
     }
