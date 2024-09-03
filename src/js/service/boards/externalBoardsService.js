@@ -83,6 +83,9 @@ function sortResults(results, options) {
         if (prioA !== prioB) {
             return prioB - prioA;
         }
+        if (a.originalData.download_count !== undefined && b.originalData.download_count !== undefined) {
+            return b.originalData.download_count - a.originalData.download_count;
+        }
         return b.name.localeCompare(a.name);
     });
     return results;
