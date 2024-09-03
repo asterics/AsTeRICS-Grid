@@ -1024,6 +1024,7 @@
   "useDictionaryOfCurrentContentLanguage": "Use dictionary of current content language",
   "editOnGithub": "Edit on GitHub",
   "failedToGetBoardData": "Failed to get board data from provider \"{0}\". Please try again later.",
+  "failedToFindExternalConfig": "Failed to find board configuration for the given direct link. Maybe it was deleted.",
   "TAB_EXPORT_FILE": "Export file",
   "TAB_EXPORT_ONLINE": "Share online",
   "youAreLoggedInToAs": "You are logged in to {0} as \"{1}\"",

@@ -587,10 +587,11 @@ dataService.importBackupUploadedFile = async function (file, progressFn) {
  * @return {Promise<Boolean>} true, if successful, otherwise false
  */
 dataService.importBackupFromPreview = async function(preview, options = {}) {
+    options.progressFn = options.progressFn || (() => {});
     if (!preview) {
+        showErrorTooltip('failedToFindExternalConfig');
         return false;
     }
-    options.progressFn = options.progressFn || (() => {});
     options.filename = options.filename || (preview.providerName + preview.id);
     options.skipDelete = true;
     options.progressFn(10, i18nService.t('downloadingConfig'));
@@ -598,11 +599,7 @@ dataService.importBackupFromPreview = async function(preview, options = {}) {
     options.resetHomeBoard = !preview.hasGlobalGrid;
     let result = await externalBoardsService.getImportData(preview);
     if (!result) {
-        options.progressFn(100);
-        MainVue.setTooltip(i18nService.t('failedToGetBoardData', preview.providerName), {
-            msgType: 'warn',
-            timeout: 20000
-        });
+        showErrorTooltip('failedToGetBoardData');
         return false;
     }
     options.progressFn(50, i18nService.t('importingData'));
@@ -616,6 +613,16 @@ dataService.importBackupFromPreview = async function(preview, options = {}) {
     }
     await dataService.importBackupData(result, options);
     return true;
+
+    function showErrorTooltip(msg) {
+        options.progressFn(100);
+        let providerName = preview ? preview.providerName : '';
+        MainVue.setTooltip(i18nService.t(msg, providerName), {
+            msgType: 'warn',
+            timeout: 20000,
+            closeOnNavigate: false
+        });
+    }
 }
 
 dataService.importExternalBackup = async function(provider, id) {
