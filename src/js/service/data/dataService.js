@@ -31,7 +31,7 @@ let dataService = {};
  * @param onlyShortVersion if true only the short version (with stripped binary data) is returned (optional)
  * @return {Promise} resolves to a grid object that was found
  */
-dataService.getGrid = async function (id, onlyShortVersion) {
+dataService.getGrid = async function (id, onlyShortVersion = false) {
     if (!id) {
         return Promise.resolve(null);
     }
