@@ -19,6 +19,7 @@ let externalProviders = [providerAGBoards, providerGlobalSymbols];
  */
 externalBoardsService.query = async function (searchTerm = '', options = {}) {
     let promisesToProvider = new Map();
+    options = JSON.parse(JSON.stringify(options));
     options.selfContained = options.selfContained || typeToSelfContained(options.type);
     for (let provider of externalProviders) {
         if (!options.provider || options.provider === provider.getName()) {
