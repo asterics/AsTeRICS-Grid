@@ -75,8 +75,8 @@
 <script>
     import './../../css/modal.css';
     import { i18nService } from '../../js/service/i18nService';
-    import { urlParamService } from '../../js/service/urlParamService';
     import { util } from '../../js/util/util';
+    import { externalBoardsService } from '../../js/service/boards/externalBoardsService';
 
     export default {
         props: ['preview'],
@@ -93,7 +93,7 @@
                 this.$emit('close');
             },
             copyLink() {
-                let link = location.origin + location.pathname + `?${urlParamService.params.PARAM_USE_GRIDSET_PROVIDER}=${this.preview.providerName}&${urlParamService.params.PARAM_USE_GRIDSET_ID}=${this.preview.id}`;
+                let link = externalBoardsService.getDirectLink(this.preview.providerName, this.preview.id);
                 util.copyToClipboard(link);
                 this.linkCopied = true;
             }

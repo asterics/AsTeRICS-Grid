@@ -1,6 +1,7 @@
 import { providerGlobalSymbols } from './providerGlobalSymbols';
 import { providerAGBoards } from './providerAGBoards';
 import { constants } from '../../util/constants';
+import { urlParamService } from '../urlParamService';
 
 let externalBoardsService = {};
 
@@ -66,6 +67,10 @@ externalBoardsService.getImportData = async function(preview) {
         }
     }
     return null;
+}
+
+externalBoardsService.getDirectLink = function(providerID, boardSetID) {
+    return location.origin + location.pathname + `?${urlParamService.params.PARAM_USE_GRIDSET_PROVIDER}=${providerID}&${urlParamService.params.PARAM_USE_GRIDSET_ID}=${boardSetID}`;
 }
 
 function sortResults(results, options) {
