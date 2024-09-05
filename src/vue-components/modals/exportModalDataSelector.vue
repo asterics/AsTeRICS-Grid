@@ -153,7 +153,7 @@ export default {
         }
     },
     async mounted() {
-        this.grids = await dataService.getGrids();
+        this.grids = await dataService.getGrids(false, true);
         this.graphList = gridUtil.getGraphList(this.grids);
         let startId = this.exportOptions ? this.exportOptions.gridId : null;
         this.selectedGrid = this.grids.find(grid => grid.id === startId) || null;
