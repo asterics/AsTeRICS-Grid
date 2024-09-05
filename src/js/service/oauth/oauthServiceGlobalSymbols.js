@@ -18,6 +18,10 @@ oauthServiceGlobalSymbols.logout = function() {
     return oauthService.logout(constants.OAUTH_CONFIG_GLOBALSYMBOLS);
 }
 
+oauthServiceGlobalSymbols.getAccessToken = async function() {
+    return await oauthService.getAccessToken(constants.OAUTH_CONFIG_GLOBALSYMBOLS);
+}
+
 oauthServiceGlobalSymbols.getUsername = async function() {
     if (!oauthServiceGlobalSymbols.isLoggedIn()) {
         return '';
@@ -45,7 +49,7 @@ oauthServiceGlobalSymbols.exportGrids = async function(gridIds, uploadMetadata =
         obzFileMap: true
     });
     progressFn(20);
-    let accessToken = await oauthService.getAccessToken(constants.OAUTH_CONFIG_GLOBALSYMBOLS);
+    let accessToken = await oauthServiceGlobalSymbols.getAccessToken();
     let sendData = {
         obz_file_map: JSON.stringify(backupData),
         lang: i18nService.getContentLang(),
@@ -70,6 +74,48 @@ oauthServiceGlobalSymbols.exportGrids = async function(gridIds, uploadMetadata =
         }
     });
     progressFn(100);
+}
+
+window.deleteGSResources = deleteGSResources;
+async function deleteGSResources(deleteImages, deleteBoardSets) {
+    if (!deleteImages && !deleteBoardSets) {
+        log.warn('dry run, set params deleteAll(deleteImages, deleteBoardSets) to specify what to delete.');
+    }
+    await oauthServiceGlobalSymbols.login();
+    let accessToken = await oauthServiceGlobalSymbols.getAccessToken();
+
+    let boardSets = await $.ajax({
+        type: 'GET',
+        url: constants.GLOBALSYMBOLS_BASE_URL + "api/boardbuilder/v1/board_sets",
+        headers: {
+            "Authorization": `Bearer ${accessToken}`
+        }
+    });
+    log.warn("found board sets: ", boardSets);
+
+    if (deleteBoardSets) {
+        for (let set of boardSets) {
+            log.warn('delete', set.id);
+            await $.ajax({
+                type: 'DELETE',
+                url: constants.GLOBALSYMBOLS_BASE_URL + 'api/boardbuilder/v1/board_sets/' + set.id,
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
+        }
+    }
+
+    if (deleteImages) {
+        let result = await $.ajax({
+            type: 'DELETE',
+            url: constants.GLOBALSYMBOLS_BASE_URL + '/api/boardbuilder/v1/media/delete_unreferenced',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        log.warn("deleted unreferenced images", result);
+    }
 }
 
 export { oauthServiceGlobalSymbols };
