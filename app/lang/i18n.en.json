@@ -1029,11 +1029,16 @@
   "TAB_EXPORT_ONLINE": "Share online",
   "youAreLoggedInToAs": "You are logged in to {0} as \"{1}\"",
   "toExportBoardsToLogIn": "To export boards to {0}, you have to log in.",
+  "failedToLoginTryAgainLater": "Failed to log in! Please try again later.",
   "moreUploadInformation": "More upload information",
   "makePublic": "Make public",
   "publicInfo": "If exporting grids to the public, anyone will be able to download them.",
   "confirmExportPublicNoPrivateImages": "Attention: you're exporting your grids publicly. Are you sure that they aren't containing any private images?",
   "gridsAreSelfContained": "Grids are self-contained",
   "titleOfExportedGrids": "Title of exported grids",
-  "selfContainedInfo": "Self-contained grids can be used independently (e.g. full communicator), non self-contained grids are meant to be included in other configurations (e.g grids about food)."
+  "selfContainedInfo": "Self-contained grids can be used independently (e.g. full communicator), non self-contained grids are meant to be included in other configurations (e.g grids about food).",
+  "exportingDataToFailedTryAgainLater": "Exporting data to {0} failed, please try again later.",
+  "sucessfullyExportedDataTo": "Successfully exported data to {0}!",
+  "openAt": "Open at {0}",
+  "copyDirectLinkForAG": "Copy direct link for AsTeRICS Grid"
 }

@@ -128,6 +128,8 @@ import { localStorageService } from '../../js/service/data/localStorageService';
 import { oauthServiceGlobalSymbols } from '../../js/service/oauth/oauthServiceGlobalSymbols';
 import Multiselect from 'vue-multiselect';
 import Accordion from '../components/accordion.vue';
+import { util } from '../../js/util/util';
+import { externalBoardsService } from '../../js/service/boards/externalBoardsService';
 
 let tab_constants = {
     TAB_EXPORT_FILE: 'TAB_EXPORT_FILE',
@@ -181,7 +183,7 @@ export default {
             this.loggedIn = false;
             this.loggedInUser = '';
         },
-        exportData() {
+        async exportData() {
             this.backupInfo.options.progressFn = (percent, text) => {
                 MainVue.showProgressBar(percent, {
                     header: i18nService.t('exportShareGrids'),
@@ -197,9 +199,31 @@ export default {
                 if (this.metadata.public && !confirm(i18nService.t('confirmExportPublicNoPrivateImages'))) {
                     return;
                 }
-                oauthServiceGlobalSymbols.exportGrids(this.backupInfo.gridIds, this.metadata, this.backupInfo.options.progressFn);
+                this.$emit('close');
+                try {
+                    let result = await oauthServiceGlobalSymbols.exportGrids(this.backupInfo.gridIds, this.metadata, this.backupInfo.options.progressFn);
+                    MainVue.setTooltip(i18nService.t('sucessfullyExportedDataTo', [constants.GLOBALSYMBOLS_NAME]), {
+                        closeOnNavigate: true,
+                        timeout: 30000,
+                        actionLink: i18nService.t('openAt', [constants.GLOBALSYMBOLS_NAME]),
+                        actionLinkUrl: result.externalURL,
+                        actionLink2: i18nService.t('copyDirectLinkForAG'),
+                        actionLinkFn2: () => {
+                            let link = externalBoardsService.getDirectLink(constants.GLOBALSYMBOLS_NAME, result.externalId);
+                            util.copyToClipboard(link);
+                            MainVue.clearTooltip();
+                        },
+                        msgType: 'success'
+                    });
+                } catch (e) {
+                    this.backupInfo.options.progressFn(100);
+                    MainVue.setTooltip(i18nService.t('exportingDataToFailedTryAgainLater', [constants.GLOBALSYMBOLS_NAME]), {
+                        closeOnNavigate: true,
+                        timeout: 30000,
+                        msgType: 'warn'
+                    });
+                }
             }
-            this.$emit('close');
         },
         addTag(tag) {
             tag = tag.toLocaleUpperCase().replace(/\s/g,'').substring(0, 20);
