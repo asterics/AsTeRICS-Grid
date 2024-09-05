@@ -101,7 +101,7 @@
             },
         },
         mounted() {
-            initNotificationBar();
+            // initNotificationBar();
             notificationBar = this;
         },
         beforeDestroy() {
