@@ -164,6 +164,7 @@
             }, 300, 'RESIZE_RESET_NOTIFICATIONBAR');
         });
 
+        window.resetSavedNotificationBarStyles = resetSavedNotificationBarStyles;
         function resetSavedNotificationBarStyles() {
             let displayStyle = element.style.display;
             element.setAttribute('style', "");
