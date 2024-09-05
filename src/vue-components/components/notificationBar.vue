@@ -2,12 +2,13 @@
     <div id="notificationBar" v-cloak v-show="tooltipHTML" style="display: flex">
         <img id="notificationBarImg" v-show="tooltipImageUrl" :src="tooltipImageUrl" alt="">
         <i v-if="tooltipOptions.faIcon" :class="tooltipOptions.faIcon"></i>
-        <div style="padding-left: 0.5em">
+        <div class="px-3" style="width: 100%">
             <span v-html="tooltipHTML"></span>
             <div class="d-block d-md-flex justify-content-between" v-if="tooltipOptions.actionLinkFn || tooltipOptions.actionLinkFn2 || tooltipOptions.actionLinkUrl">
                 <a class="d-block" v-if="tooltipOptions.actionLinkFn" href="javascript:;" @click="onActionLink" style="color: #44a8f1">{{actionLink | translate}}</a>
-                <a class="d-block" v-if="tooltipOptions.actionLinkFn2" href="javascript:;" @click="tooltipOptions.actionLinkFn2()" style="color: #44a8f1">{{tooltipOptions.actionLink2 | translate}}</a>
                 <a class="d-block" v-if="tooltipOptions.actionLinkUrl" :href="tooltipOptions.actionLinkUrl" target="_blank" style="color: #44a8f1">{{actionLink | translate}}</a>
+                <a class="d-block" v-if="tooltipOptions.actionLinkFn2" href="javascript:;" @click="tooltipOptions.actionLinkFn2()" style="color: #44a8f1">{{tooltipOptions.actionLink2 | translate}}</a>
+                <a class="d-block" v-if="tooltipOptions.actionLinkUrl2" :href="tooltipOptions.actionLinkUrl2" target="_blank" style="color: #44a8f1">{{tooltipOptions.actionLink2 | translate}}</a>
             </div>
         </div>
         <button @click="tooltipHTML = ''" style="position: absolute; top: 0; right: 10px; padding: 0 10px" :label="$t('close')">X</button>
