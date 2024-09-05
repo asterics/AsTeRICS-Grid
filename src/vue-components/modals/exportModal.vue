@@ -202,19 +202,22 @@ export default {
                 this.$emit('close');
                 try {
                     let result = await oauthServiceGlobalSymbols.exportGrids(this.backupInfo.gridIds, this.metadata, this.backupInfo.options.progressFn);
-                    MainVue.setTooltip(i18nService.t('sucessfullyExportedDataTo', [constants.GLOBALSYMBOLS_NAME]), {
+                    let tooltipOptions = {
                         closeOnNavigate: true,
                         timeout: 30000,
                         actionLink: i18nService.t('openAt', [constants.GLOBALSYMBOLS_NAME]),
                         actionLinkUrl: result.externalURL,
-                        actionLink2: i18nService.t('copyDirectLinkForAG'),
-                        actionLinkFn2: () => {
+                        msgType: 'success'
+                    };
+                    if (this.metadata.public) {
+                        tooltipOptions.actionLink2 = i18nService.t('copyDirectLinkForAG');
+                        tooltipOptions.actionLinkFn2 = () => {
                             let link = externalBoardsService.getDirectLink(constants.GLOBALSYMBOLS_NAME, result.externalId);
                             util.copyToClipboard(link);
                             MainVue.clearTooltip();
-                        },
-                        msgType: 'success'
-                    });
+                        };
+                    }
+                    MainVue.setTooltip(i18nService.t('sucessfullyExportedDataTo', [constants.GLOBALSYMBOLS_NAME]), tooltipOptions);
                 } catch (e) {
                     this.backupInfo.options.progressFn(100);
                     MainVue.setTooltip(i18nService.t('exportingDataToFailedTryAgainLater', [constants.GLOBALSYMBOLS_NAME]), {
