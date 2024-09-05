@@ -15,6 +15,7 @@ oauthService.login = async function(config) {
         await manager.signinRedirect();
     } catch (e) {
         log.warn(`failed to redirect to authorization page for ${config.id}`);
+        throw e;
     }
 
 }

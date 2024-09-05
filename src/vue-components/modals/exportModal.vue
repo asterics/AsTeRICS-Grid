@@ -24,6 +24,10 @@
                                 <div v-if="!loggedIn">
                                     <span>{{ $t('toExportBoardsToLogIn', [constants.GLOBALSYMBOLS_NAME]) }}</span>
                                     <a href="javascript:;" @click="login">{{ $t('login') }}</a>
+                                    <div v-if="loginError">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <span>{{ $t('failedToLoginTryAgainLater') }}</span>
+                                    </div>
                                 </div>
                                 <div v-if="loggedIn">
                                     <span>{{ $t('youAreLoggedInToAs', [constants.GLOBALSYMBOLS_NAME, loggedInUser]) }}.</span>
@@ -155,16 +159,22 @@ export default {
             },
             loggedIn: false,
             loggedInUser: '',
+            loginError: false,
             possibleTags: JSON.parse(JSON.stringify(constants.EXPORT_ONLINE_GRID_TAGS)),
             constants: constants
         }
     },
     methods: {
-        login() {
+        async login() {
+            this.loginError = false;
             let exportOptions = Object.assign({}, this.exportOptions, this.backupInfo.options);
             exportOptions.currentTab = tab_constants.TAB_EXPORT_ONLINE;
             localStorageService.setRedirectTarget(constants.OAUTH_REDIRECT_GS_UPLOAD, {exportOptions: exportOptions});
-            oauthServiceGlobalSymbols.login();
+            try {
+                await oauthServiceGlobalSymbols.login();
+            } catch (e) {
+                this.loginError = true;
+            }
         },
         logout() {
             oauthServiceGlobalSymbols.logout();
