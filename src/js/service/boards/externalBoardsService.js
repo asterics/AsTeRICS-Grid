@@ -28,10 +28,15 @@ externalBoardsService.query = async function (searchTerm = '', options = {}) {
             promisesToProvider.set(promise, provider);
         }
     }
-    await Promise.all(promisesToProvider.keys());
+    await Promise.allSettled(promisesToProvider.keys());
     let results = [];
     for (let promise of promisesToProvider.keys()) {
-        let newResults = await promise;
+        let newResults = [];
+        try {
+            newResults = await promise;
+        } catch (e) {
+            log.warn("error fetching data from", promisesToProvider.get(promise).getName());
+        }
         for (let result of newResults) {
             result.providerName = promisesToProvider.get(promise).getName();
             result.providerUrl = promisesToProvider.get(promise).getURL();
