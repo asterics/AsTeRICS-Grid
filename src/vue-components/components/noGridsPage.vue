@@ -9,7 +9,7 @@
         </div>
 
         <div class="my-3">
-            <input class="col-12" id="searchBar" type="text" v-model="searchTerm" @input="search" :aria-label="$t('search')" :placeholder="$t('search')"/>
+            <search-bar v-model="searchTerm" @input="search"/>
             <accordion :acc-label="$t('moreSearchOptions')" class="mt-3">
                 <div class="container-fluid p-0">
                     <div class="row mt-2">
@@ -71,9 +71,10 @@
     import Accordion from './accordion.vue';
     import { MainVue } from '../../js/vue/mainVue';
     import ConfigPreviewDetail from '../modals/configPreviewDetail.vue';
+    import SearchBar from './searchBar.vue';
 
     export default {
-        components: { ConfigPreviewDetail, Accordion },
+        components: { SearchBar, ConfigPreviewDetail, Accordion },
         props: ["restoreBackupHandler", "importCustomHandler", "resetGlobalGrid"],
         data() {
             return {
