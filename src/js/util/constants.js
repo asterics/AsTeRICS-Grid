@@ -189,6 +189,7 @@ constants.OAUTH_REDIRECT_KEY = 'OAUTH_REDIRECT_KEY';
 constants.OAUTH_REDIRECT_GS_UPLOAD = 'OAUTH_REDIRECT_GS_UPLOAD'; // redirect to upload modal
 constants.GLOBALSYMBOLS_NAME = 'Global Symbols';
 constants.GLOBALSYMBOLS_BASE_URL = 'http://localhost:3000/';
+constants.BOARDBUILDER_BASE_URL = 'http://localhost:4200/';
 constants.OAUTH_CONFIG_GLOBALSYMBOLS = {
     id: 'globalsymbols',
     authority: constants.GLOBALSYMBOLS_BASE_URL,
