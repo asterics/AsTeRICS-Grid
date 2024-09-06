@@ -988,6 +988,7 @@
   "toggleTagOnSelectingItMultipleTimes": "Toggle tags on selecting it multiple times",
   "importedWordForms": "Imported {count} word forms.",
   "importedWordFormsGrids": "Imported {count} word forms to {gridCount} grids.",
+  "imported": "imported",
   "copiedWordForms": "Copied {count} word forms.",
   "infoPleaseDefineAHomeGridInManageGrids": "Info: please define a home grid in \"Manage grids -> Home grid\" in order to reliably show correct paths.",
   "wordFormValue": "Word form",
