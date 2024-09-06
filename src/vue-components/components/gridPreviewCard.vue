@@ -11,8 +11,8 @@
             </div>
         </div>
         <div v-if="hideButtons !== true" class="preview-buttons d-flex justify-content-between">
-            <button @click="detailButtonCallback(preview)"><span class="fa fa-info-circle"/> {{ $t('details') }}</button>
-            <button class="btn-primary" @click="useButtonCallback(preview)"><span class="fa fa-check"/> {{ $t('useIt') }}</button>
+            <button v-if="detailButtonCallback" @click="detailButtonCallback(preview)"><span class="fa fa-info-circle"/> {{ $t('details') }}</button>
+            <button :class="(detailButtonCallback ? ' btn-primary' : 'flex-grow-1')" @click="useButtonCallback(preview)"><span class="fa fa-check"/> {{ $t('useIt') }}</button>
         </div>
     </li>
 </template>
