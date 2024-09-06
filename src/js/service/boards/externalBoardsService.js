@@ -74,8 +74,8 @@ externalBoardsService.getImportData = async function(preview) {
     return null;
 }
 
-externalBoardsService.getDirectLink = function(providerID, boardSetID) {
-    return location.origin + location.pathname + `?${urlParamService.params.PARAM_USE_GRIDSET_PROVIDER}=${providerID}&${urlParamService.params.PARAM_USE_GRIDSET_ID}=${boardSetID}`;
+externalBoardsService.getDirectLink = function(providerID, boardSetID, selfContained) {
+    return location.origin + location.pathname + `?${urlParamService.params.PARAM_USE_GRIDSET_PROVIDER}=${providerID}&${urlParamService.params.PARAM_USE_GRIDSET_ID}=${boardSetID}&${urlParamService.params.PARAM_USE_GRIDSET_SINGLE_BOARDS}=${!selfContained}`;
 }
 
 function sortResults(results, options) {
