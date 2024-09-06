@@ -60,7 +60,7 @@
                             </div>
                         </div>
                         <div v-if="currentTab === tab_constants.TAB_IMPORT_ONLINE">
-                            online
+                            <import-modal-tab-online/>
                         </div>
                     </div>
 
@@ -87,6 +87,7 @@
     import {i18nService} from "../../js/service/i18nService.js";
     import {MainVue} from "../../js/vue/mainVue.js";
     import NavTabs from '../components/nav-tabs.vue';
+    import ImportModalTabOnline from './importModalTabOnline.vue';
 
     let tab_constants = {
         TAB_IMPORT_FILE: 'TAB_IMPORT_FILE',
@@ -94,7 +95,7 @@
     }
 
     export default {
-        components: { NavTabs },
+        components: { ImportModalTabOnline, NavTabs },
         props: ['gridsData', 'reloadFn'],
         data: function () {
             return {
