@@ -62,7 +62,7 @@
                 this.$emit('close');
             },
             copyLink() {
-                let link = externalBoardsService.getDirectLink(this.preview.providerName, this.preview.id);
+                let link = externalBoardsService.getDirectLink(this.preview.providerName, this.preview.id, this.preview.selfContained);
                 util.copyToClipboard(link);
                 this.linkCopied = true;
             }

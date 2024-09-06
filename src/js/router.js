@@ -263,7 +263,13 @@ Router.toManageGrids = function () {
  */
 Router.toRedirectTarget = function(target = {}) {
     switch (target.key) {
-        case constants.OAUTH_REDIRECT_GS_UPLOAD:
+        case constants.REDIRECT_OAUTH_GS_UPLOAD:
+            _passParams = {};
+            _passParams.redirectInfo = target.props;
+            _passParams.redirectInfo.redirectTarget = target.key;
+            Router.toManageGrids();
+            break;
+        case constants.REDIRECT_IMPORT_DATA_ONLINE:
             _passParams = {};
             _passParams.redirectInfo = target.props;
             _passParams.redirectInfo.redirectTarget = target.key;

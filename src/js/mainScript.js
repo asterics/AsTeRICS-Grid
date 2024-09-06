@@ -17,6 +17,7 @@ import { printService } from './service/printService';
 import { notificationService } from './service/notificationService.js';
 import { dataService } from './service/data/dataService';
 import { oauthService } from './service/oauth/oauthService';
+import { externalBoardsService } from './service/boards/externalBoardsService';
 
 let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
 
@@ -42,21 +43,27 @@ async function init() {
     let urlImportProps = urlParamService.getImportGridsetProps();
     if (urlImportProps) {
         urlParamService.removeImportGridsetProps();
-        let autoUserSettings = localStorageService.getAutoImportedUserSettings();
-        // also checking only for id for legacy reasons
-        let matchingUserConfig = autoUserSettings.find(settings => settings.originGridsetFilename === urlImportProps.id || settings.originGridsetFilename === (urlImportProps.provider + urlImportProps.id));
-        if (matchingUserConfig) {
-            autologinUser = matchingUserConfig.username;
-        } else {
-            let emptyAutoUser = autoUserSettings.find(settings => settings.isEmpty) || {};
-            let newUsername = emptyAutoUser.username || localStorageService.getNextAutoUserName();
-            if (!emptyAutoUser.username) {
-                await loginService.registerOffline(newUsername, newUsername);
+        if (!urlImportProps.singleBoards) {
+            let autoUserSettings = localStorageService.getAutoImportedUserSettings();
+            // also checking only for id for legacy reasons
+            let matchingUserConfig = autoUserSettings.find(settings => settings.originGridsetFilename === urlImportProps.id || settings.originGridsetFilename === (urlImportProps.provider + urlImportProps.id));
+            if (matchingUserConfig) {
+                autologinUser = matchingUserConfig.username;
             } else {
-                await loginService.loginStoredUser(newUsername, true)
+                let emptyAutoUser = autoUserSettings.find(settings => settings.isEmpty) || {};
+                let newUsername = emptyAutoUser.username || localStorageService.getNextAutoUserName();
+                if (!emptyAutoUser.username) {
+                    await loginService.registerOffline(newUsername, newUsername);
+                } else {
+                    await loginService.loginStoredUser(newUsername, true)
+                }
+                await dataService.importExternalBackup(urlImportProps.provider, urlImportProps.id);
+                autologinUser = newUsername;
             }
-            await dataService.importExternalBackup(urlImportProps.provider, urlImportProps.id);
-            autologinUser = newUsername;
+        } else if (urlImportProps.singleBoards) {
+            let selectedPreview = await externalBoardsService.getPreview(urlImportProps.provider, urlImportProps.id);
+            localStorageService.setRedirectTarget(constants.REDIRECT_IMPORT_DATA_ONLINE, {selectedPreview: selectedPreview});
+            log.warn("set target", selectedPreview)
         }
     }
 
@@ -82,9 +89,8 @@ async function init() {
             if (!Router.isInitialized()) {
                 Router.init('#injectView');
             }
-            let processedOAuthCallback = await oauthPromise;
             let redirectTarget = localStorageService.getRedirectTarget();
-            if (processedOAuthCallback && redirectTarget) {
+            if (redirectTarget) {
                 localStorageService.removeRedirectTarget();
                 Router.toRedirectTarget(redirectTarget);
             } else {

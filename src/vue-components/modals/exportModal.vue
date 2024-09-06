@@ -171,7 +171,7 @@ export default {
             this.loginError = false;
             let exportOptions = Object.assign({}, this.exportOptions, this.backupInfo.options);
             exportOptions.currentTab = tab_constants.TAB_EXPORT_ONLINE;
-            localStorageService.setRedirectTarget(constants.OAUTH_REDIRECT_GS_UPLOAD, {exportOptions: exportOptions});
+            localStorageService.setRedirectTarget(constants.REDIRECT_OAUTH_GS_UPLOAD, {exportOptions: exportOptions});
             try {
                 await oauthServiceGlobalSymbols.login();
             } catch (e) {
@@ -212,7 +212,7 @@ export default {
                     if (this.metadata.public) {
                         tooltipOptions.actionLink2 = i18nService.t('copyDirectLinkForAG');
                         tooltipOptions.actionLinkFn2 = () => {
-                            let link = externalBoardsService.getDirectLink(constants.GLOBALSYMBOLS_NAME, result.externalId);
+                            let link = externalBoardsService.getDirectLink(constants.GLOBALSYMBOLS_NAME, result.externalId, this.metadata.self_contained);
                             util.copyToClipboard(link);
                             MainVue.clearTooltip();
                         };

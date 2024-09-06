@@ -37,7 +37,7 @@
 
     export default {
         components: { GridPreviewDetails, GridPreviewCard, SearchBarGridPreviews },
-        props: ['value'],
+        props: ['value', 'selectedPreviewProp'],
         data: function () {
             return {
                 gridPreviews: [],
@@ -48,7 +48,7 @@
                     provider: ""
                 },
                 currentValue: {
-                    selectedPreview: null,
+                    selectedPreview: this.selectedPreviewProp,
                     targetGrid: null
                 },
                 graphList: [],

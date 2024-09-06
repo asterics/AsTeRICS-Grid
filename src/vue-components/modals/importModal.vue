@@ -60,7 +60,7 @@
                             </div>
                         </div>
                         <div v-if="currentTab === tab_constants.TAB_IMPORT_ONLINE">
-                            <import-modal-tab-online v-model="tabOnlineImportData"/>
+                            <import-modal-tab-online :selected-preview-prop="selectedPreview" v-model="tabOnlineImportData"/>
                         </div>
                     </div>
 
@@ -103,7 +103,7 @@
 
     export default {
         components: { ImportModalTabOnline, NavTabs },
-        props: ['gridsData', 'reloadFn'],
+        props: ['gridsData', 'reloadFn', "selectedPreview"],
         data: function () {
             return {
                 data: null,
@@ -224,6 +224,9 @@
             }
         },
         mounted() {
+            if (this.selectedPreview) {
+                this.currentTab = tab_constants.TAB_IMPORT_ONLINE;
+            }
         },
         beforeDestroy() {
             helpService.revertToLastLocation();
