@@ -276,6 +276,29 @@ gridUtil.getGraphList = function (grids, removeGridId, orderByName) {
 };
 
 /**
+ * returns a list of independent graphs based on a given graph list.
+ * e.g. a set of 4 grids, with these connections:
+ * food => fruits
+ * keyboard1 => keyboard2
+ * will return a list [food, keyboard1], where "food" and "keyboard1" are the
+ * actual graph elements containing these grids from the given graphList.
+ * So the returned elements are the parents containing all other grids as children.
+ * @param graphList
+ * @return {*[]}
+ */
+gridUtil.getIndependentGraphs = function(graphList) {
+    let indpendentGraphs = [];
+    while (graphList.length > 0) {
+        let firstElem = graphList[0];
+        let allChildren = gridUtil.getAllChildrenRecursive(graphList, firstElem.grid.id);
+        let allChildrenIds = allChildren.map(grid => grid.id);
+        indpendentGraphs.push(firstElem);
+        graphList = graphList.filter(item => !allChildrenIds.includes(item.grid.id) && !indpendentGraphs.includes(item));
+    }
+    return indpendentGraphs;
+};
+
+/**
  * returns an array of all possible paths through the grid graph given a start element
  * @param startGraphElem the graph element to start
  * @param paths internal, used for recursion
