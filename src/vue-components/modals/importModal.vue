@@ -60,7 +60,7 @@
                             </div>
                         </div>
                         <div v-if="currentTab === tab_constants.TAB_IMPORT_ONLINE">
-                            <import-modal-tab-online/>
+                            <import-modal-tab-online v-model="tabOnlineImportData"/>
                         </div>
                     </div>
 
@@ -69,7 +69,10 @@
                             <button class="six columns" @click="$emit('close')" :title="$t('keyboardEsc')">
                                 <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
-                            <button class="six columns" @click="save()" :disabled="!this.importData" :title="$t('keyboardCtrlEnter')">
+                            <button class="six columns" @click="save()"
+                                    :disabled="currentTab === tab_constants.TAB_IMPORT_FILE && !this.importData ||
+                                               currentTab === tab_constants.TAB_IMPORT_ONLINE && !tabOnlineImportData.selectedPreview"
+                                    :title="$t('keyboardCtrlEnter')">
                                 <i class="fas fa-check"/> <span>{{ $t('importData') }}</span>
                             </button>
                         </div>
@@ -88,6 +91,10 @@
     import {MainVue} from "../../js/vue/mainVue.js";
     import NavTabs from '../components/nav-tabs.vue';
     import ImportModalTabOnline from './importModalTabOnline.vue';
+    import { externalBoardsService } from '../../js/service/boards/externalBoardsService';
+    import { gridUtil } from '../../js/util/gridUtil';
+    import { GridData } from '../../js/model/GridData';
+    import { GridActionNavigate } from '../../js/model/GridActionNavigate';
 
     let tab_constants = {
         TAB_IMPORT_FILE: 'TAB_IMPORT_FILE',
@@ -108,6 +115,7 @@
                     generateGlobalGrid: false,
                     resetBeforeImport: false
                 },
+                tabOnlineImportData: {},
                 currentTab: tab_constants.TAB_IMPORT_FILE,
                 tab_constants: tab_constants,
                 i18nService: i18nService
@@ -136,6 +144,17 @@
                 }
             },
             async save() {
+                if (this.currentTab === tab_constants.TAB_IMPORT_FILE) {
+                    await this.importFromFile();
+                }
+                if (this.currentTab === tab_constants.TAB_IMPORT_ONLINE) {
+                    await this.importFromOnline();
+                }
+                if (this.reloadFn) {
+                    this.reloadFn();
+                }
+            },
+            async importFromFile() {
                 if (!this.importData || (this.options.resetBeforeImport && !confirm(i18nService.t("doYouWantToDeleteBeforeImporting")))) {
                     return;
                 }
@@ -168,8 +187,36 @@
                     await dataService.markCurrentConfigAsBackedUp();
                 }
                 MainVue.showProgressBar(100);
-                if (this.reloadFn) {
-                    this.reloadFn();
+            },
+            async importFromOnline() {
+                if (!this.tabOnlineImportData.selectedPreview) {
+                    return;
+                }
+                this.$emit('close');
+                let importData = await externalBoardsService.getImportData(this.tabOnlineImportData.selectedPreview);
+                if (importData.grids && importData.grids.length > 0) {
+                    importData.grids = gridUtil.regenerateIDs(importData.grids).grids;
+                    if (this.tabOnlineImportData.targetGrid) {
+                        let targetGridDB = await dataService.getGrid(this.tabOnlineImportData.targetGrid.id);
+                        let targetGrid = new GridData(targetGridDB);
+                        let graphList = gridUtil.getGraphList(importData.grids);
+                        let independentGraphs = gridUtil.getIndependentGraphs(graphList);
+                        for (let item of independentGraphs) {
+                            let navLabel = JSON.parse(JSON.stringify(item.grid.label));
+                            for (let lang of Object.keys(navLabel)) {
+                                navLabel[lang] = `${navLabel[lang]} (${i18nService.t('imported')})`;
+                            }
+                            let newElem = targetGrid.getNewGridElement({
+                                label: navLabel,
+                                actions: [new GridActionNavigate( {
+                                    toGridId: item.grid.id
+                                })]
+                            });
+                            targetGrid.gridElements.push(newElem);
+                        }
+                        await dataService.saveGrid(targetGrid);
+                    }
+                    await dataService.saveGrids(importData.grids);
                 }
             },
             openHelp() {
