@@ -16,7 +16,7 @@
                 <grid-preview-card v-for="preview in gridPreviews" :key="preview.id" :preview="preview" :detail-button-callback="(preview) => detailPreview = preview" :use-button-callback="importData"/>
             </ul>
         </div>
-        <config-preview-detail v-if="detailPreview" :preview="detailPreview" @close="detailPreview = null" @import="importData(detailPreview)"></config-preview-detail>
+        <grid-preview-details-modal v-if="detailPreview" :preview="detailPreview" @close="detailPreview = null" @import="importData(detailPreview)"></grid-preview-details-modal>
     </div>
 </template>
 
@@ -29,13 +29,13 @@
     import {externalBoardsService} from '../../js/service/boards/externalBoardsService';
     import Accordion from './accordion.vue';
     import { MainVue } from '../../js/vue/mainVue';
-    import ConfigPreviewDetail from '../modals/configPreviewDetail.vue';
+    import GridPreviewDetailsModal from '../modals/gridPreviewDetailsModal.vue';
     import SearchBar from './searchBar.vue';
     import GridPreviewCard from './gridPreviewCard.vue';
     import SearchBarGridPreviews from './searchBarGridPreviews.vue';
 
     export default {
-        components: { SearchBarGridPreviews, GridPreviewCard, SearchBar, ConfigPreviewDetail, Accordion },
+        components: { SearchBarGridPreviews, GridPreviewCard, SearchBar, GridPreviewDetailsModal, Accordion },
         props: ["restoreBackupHandler", "importCustomHandler", "resetGlobalGrid"],
         data() {
             return {
