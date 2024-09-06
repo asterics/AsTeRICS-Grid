@@ -9,13 +9,13 @@
             </div>
         </div>
         <div v-if="currentValue.selectedPreview">
-            <h2>Selected configuration "{{currentValue.selectedPreview.name}}"</h2>
+            <h2>{{ $t('selectedConfiguration', [currentValue.selectedPreview.name]) }}</h2>
             <div class="mb-4">
-                <a href="javascript:;" @click="currentValue.selectedPreview = null">Back to search</a>
+                <a href="javascript:;" @click="currentValue.selectedPreview = null">{{ $t('backToSearch') }}</a>
             </div>
             <grid-preview-details :preview="currentValue.selectedPreview"/>
             <div v-if="graphList.length > 0" class="row mt-5">
-                <label for="target" class="col-12 col-md-4">Create links to imported grids at</label>
+                <label for="target" class="col-12 col-md-4">{{ $t('createLinksToImportedGridsAt') }}</label>
                 <select id="target" v-model="currentValue.targetGrid" class="col-12 col-md-4">
                     <option v-for="item of graphList" :value="item.grid">{{ i18nService.getTranslation(item.grid.label) }}</option>
                 </select>
