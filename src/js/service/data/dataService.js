@@ -83,6 +83,17 @@ dataService.getGrids = function (fullVersion, withoutGlobal) {
     });
 };
 
+dataService.getGridsGraphList = async function() {
+    let grids = await dataService.getGrids(false, true);
+    let homeGridId = (await dataService.getMetadata()).homeGridId;
+    let graphList = gridUtil.getGraphList(grids);
+    graphList.sort((a, b) => {
+        if (a.grid.id === homeGridId) return -1;
+        if (b.grid.id === homeGridId) return 1;
+    });
+    return graphList;
+}
+
 /**
  * get the unix time (in ms) when the last update of a grid was made
  * @return {Promise<number|number>} the time of the latest update of all grids
