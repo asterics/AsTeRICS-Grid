@@ -63,7 +63,7 @@ export default {
     async mounted() {
         let allPreviews = await externalBoardsService.query(); // in order to get all languages
         this.selectLanguages = this.allLanguages.filter(lang => allPreviews.some(preview => preview.languages.includes(lang.code)));
-        this.currentValue.lang = this.selectLanguages.map(e => e.code).includes(i18nService.getAppLang()) ? i18nService.getAppLang() : "";
+        this.currentValue.lang = this.selectLanguages.map(e => e.code).includes(i18nService.getContentLang()) ? i18nService.getContentLang() : "";
         this.changed();
     },
 }
