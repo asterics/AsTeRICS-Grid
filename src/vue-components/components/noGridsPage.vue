@@ -13,7 +13,8 @@
         </div>
         <div v-if="gridPreviews" class="mt-5">
             <ul id="boardGrid">
-                <grid-preview-card v-for="preview in gridPreviews" :key="preview.id" :preview="preview" :detail-button-callback="(preview) => detailPreview = preview" :use-button-callback="importData"/>
+                <grid-preview-card v-for="(preview, index) in gridPreviews" v-if="index < limitResults" :key="preview.id" :preview="preview" :detail-button-callback="(preview) => detailPreview = preview" :use-button-callback="importData"/>
+                <grid-preview-card v-if="limitResults < gridPreviews.length" :more-button-callback="() => limitResults += 10"/>
             </ul>
         </div>
         <grid-preview-details-modal v-if="detailPreview" :preview="detailPreview" @close="detailPreview = null" @import="importData(detailPreview)"></grid-preview-details-modal>
@@ -47,6 +48,7 @@
                     type: constants.BOARD_TYPE_SELFCONTAINED,
                     provider: ""
                 },
+                limitResults: 20,
                 constants: constants,
                 detailPreview: null
             }

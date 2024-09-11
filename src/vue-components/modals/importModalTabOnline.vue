@@ -4,7 +4,8 @@
             <search-bar-grid-previews v-model="searchOptions" :hide-type="true" @input="search"/>
             <div v-if="gridPreviews" class="mt-5">
                 <ul id="boardGrid">
-                    <grid-preview-card v-for="preview in gridPreviews" :key="preview.id" :preview="preview" :use-button-callback="selectPreview" use-button-label="select"/>
+                    <grid-preview-card v-for="(preview, index) in gridPreviews" v-if="index < limitResults" :key="preview.id" :preview="preview" :use-button-callback="selectPreview" use-button-label="select"/>
+                    <grid-preview-card v-if="limitResults < gridPreviews.length" :more-button-callback="() => limitResults += 10"/>
                 </ul>
             </div>
         </div>
@@ -52,6 +53,7 @@
                     targetGrid: null
                 },
                 graphList: [],
+                limitResults: 10,
                 i18nService: i18nService
             }
         },

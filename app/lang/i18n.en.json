@@ -1045,5 +1045,6 @@
   "copyDirectLinkForAG": "Copy direct link for AsTeRICS Grid",
   "selectedConfiguration": "Selected configuration \"{0}\"",
   "backToSearch": "Back to search",
-  "createLinksToImportedGridsAt": "Create links to imported grids at"
+  "createLinksToImportedGridsAt": "Create links to imported grids at",
+  "loadMoreResults": "load more"
 }
