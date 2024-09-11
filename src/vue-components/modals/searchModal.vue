@@ -8,11 +8,8 @@
                         <h1>{{ $t('searchElement') }}</h1>
                     </div>
 
-                    <div class="modal-body mt-5 row">
-                        <input type="text" v-model="searchTerm" @input="search()" v-focus :placeholder="$t('searchElement') + '...'" class="col-8 col-sm-10" @keydown.enter="goToFirstResult()" @keydown.ctrl.enter="goToFirstResult(true)"/>
-                        <div class="col-sm-2 col-4">
-                            <button class="col-12 mb-0" :title="$t('search')"><i class="fas fa-search"/></button>
-                        </div>
+                    <div class="modal-body mt-5">
+                        <search-bar v-model="searchTerm" @input="search()" :keydown-enter-fn="goToFirstResult" :keydown-ctrl-enter-fn="() => goToFirstResult(true)"/>
                     </div>
                     <div>
                         <div class="warn mt-5" v-if="results && !homeGridId">
@@ -70,10 +67,12 @@
     import {Router} from "../../js/router.js";
     import {gridUtil} from "../../js/util/gridUtil.js";
     import {collectElementService} from "../../js/service/collectElementService.js";
+    import SearchBar from '../components/searchBar.vue';
 
     export default {
         props: ['routeToEdit', 'options'],
         components: {
+            SearchBar
         },
         data: function () {
             return {
@@ -129,7 +128,7 @@
                     thiz.$forceUpdate();
                     await new Promise(resolve => setTimeout(resolve, 10)); // to repaint and render "searching ..."
                     await thiz.initPromise;
-                    if (!thiz.searchTerm) {
+                    if (!thiz.searchTerm || thiz.graphList.length === 0) {
                         thiz.results = [];
                         return;
                     }
