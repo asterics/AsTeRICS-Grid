@@ -150,6 +150,7 @@
                 if (this.currentTab === tab_constants.TAB_IMPORT_ONLINE) {
                     await this.importFromOnline();
                 }
+                MainVue.showProgressBar(100);
                 if (this.reloadFn) {
                     this.reloadFn();
                 }
@@ -186,14 +187,29 @@
                 if (this.options.resetBeforeImport) {
                     await dataService.markCurrentConfigAsBackedUp();
                 }
-                MainVue.showProgressBar(100);
             },
             async importFromOnline() {
                 if (!this.tabOnlineImportData.selectedPreview) {
                     return;
                 }
                 this.$emit('close');
+                MainVue.showProgressBar(20, {
+                    header: i18nService.t('importGrids'),
+                    text: i18nService.t('downloadingConfig')
+                });
                 let importData = await externalBoardsService.getImportData(this.tabOnlineImportData.selectedPreview);
+                MainVue.showProgressBar(40, {
+                    header: i18nService.t('importGrids'),
+                    text: i18nService.t('importingData')
+                });
+                if (!importData) {
+                    MainVue.setTooltip(i18nService.t('importingDataFromFailedTryAgainLater', [this.tabOnlineImportData.selectedPreview.providerName]), {
+                        closeOnNavigate: true,
+                        timeout: 30000,
+                        msgType: 'warn'
+                    });
+                    return;
+                }
                 if (importData.grids && importData.grids.length > 0) {
                     importData.grids = gridUtil.regenerateIDs(importData.grids).grids;
                     if (this.tabOnlineImportData.targetGrid) {
