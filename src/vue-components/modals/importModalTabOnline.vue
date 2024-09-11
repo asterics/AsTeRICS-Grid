@@ -3,10 +3,13 @@
         <div v-if="!currentValue.selectedPreview">
             <search-bar-grid-previews v-model="searchOptions" :hide-type="true" @input="search"/>
             <div v-if="gridPreviews" class="mt-5">
-                <ul id="boardGrid">
+                <ul id="boardGrid" v-if="gridPreviews.length > 0">
                     <grid-preview-card v-for="(preview, index) in gridPreviews" v-if="index < limitResults" :key="preview.id" :preview="preview" :use-button-callback="selectPreview" use-button-label="select"/>
                     <grid-preview-card v-if="limitResults < gridPreviews.length" :more-button-callback="() => limitResults += 10"/>
                 </ul>
+                <div v-if="gridPreviews.length === 0">
+                    {{ $t('noSearchResults') }}
+                </div>
             </div>
         </div>
         <div v-if="currentValue.selectedPreview">
