@@ -12,14 +12,14 @@
         </div>
         <div v-if="hideButtons !== true" class="preview-buttons d-flex justify-content-between">
             <button v-if="detailButtonCallback" @click="detailButtonCallback(preview)"><span class="fa fa-info-circle"/> {{ $t('details') }}</button>
-            <button :class="(detailButtonCallback ? ' btn-primary' : 'flex-grow-1')" @click="useButtonCallback(preview)"><span class="fa fa-check"/> {{ $t('useIt') }}</button>
+            <button :class="(detailButtonCallback ? ' btn-primary' : 'flex-grow-1')" @click="useButtonCallback(preview)"><span class="fa fa-check"/> {{ this.useButtonLabel ? $t(this.useButtonLabel) : $t('useIt') }}</button>
         </div>
     </li>
 </template>
 
 <script>
 export default {
-    props: ["preview", "hideButtons", "detailButtonCallback", "useButtonCallback"],
+    props: ["preview", "hideButtons", "detailButtonCallback", "useButtonCallback", "useButtonLabel"],
     data() {
         return {
         }

@@ -4,7 +4,7 @@
             <search-bar-grid-previews v-model="searchOptions" :hide-type="true" @input="search"/>
             <div v-if="gridPreviews" class="mt-5">
                 <ul id="boardGrid">
-                    <grid-preview-card v-for="preview in gridPreviews" :key="preview.id" :preview="preview" :use-button-callback="selectPreview"/>
+                    <grid-preview-card v-for="preview in gridPreviews" :key="preview.id" :preview="preview" :use-button-callback="selectPreview" use-button-label="select"/>
                 </ul>
             </div>
         </div>
