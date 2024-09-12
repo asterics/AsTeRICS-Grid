@@ -2,9 +2,10 @@
   "name": "AsTeRICS Grid",
   "short_name": "Grid",
   "start_url": "../",
+  "id": "/",
   "display": "standalone",
   "background_color" : "#fff" ,
-  "description": "Simple to use, offline web communication grid (AAC), integrated with AsTeRICS",
+  "description": "Free and simple to use app for augmentative and alternative communication (AAC) with offline support, flexible input methods and media access",
   "icons": [{
     "src": "img/app-icons/Icon-48.png",
     "sizes": "48x48",
@@ -29,5 +30,19 @@
     "src": "img/app-icons/Icon-512.png",
     "sizes": "512x512",
     "type": "image/png"
+  }],
+  "screenshots": [{
+    "src": "img/screenshots/wide.jpg",
+    "sizes": "1920x1080",
+    "type": "image/jpeg",
+    "form_factor": "wide",
+    "label": "AsTeRICS Grid on desktop"
+  },
+  {
+    "src": "img/screenshots/narrow.png",
+    "sizes": "776x1120",
+    "type": "image/png",
+    "form_factor": "narrow",
+    "label": "AsTeRICS Grid on mobile"
   }]
 }
