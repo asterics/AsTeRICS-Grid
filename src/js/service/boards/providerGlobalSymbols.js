@@ -44,6 +44,7 @@ function translateProps(object) {
         object.languages = [object.lang];
     }
     object.thumbnail = object.thumbnail_url;
+    object.website = object.author_url;
     return object;
 }
 
