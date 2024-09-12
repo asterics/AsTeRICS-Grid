@@ -603,6 +603,9 @@ dataService.importBackupFromPreview = async function(preview, options = {}) {
         showErrorTooltip('failedToFindExternalConfig');
         return false;
     }
+    if (preview.languages.length > 0 && !preview.languages.includes(i18nService.getContentLang())) {
+        await i18nService.setContentLanguage(preview.languages[0]);
+    }
     options.filename = options.filename || (preview.providerName + preview.id);
     options.skipDelete = true;
     options.progressFn(10, i18nService.t('downloadingConfig'));
