@@ -48,10 +48,12 @@ export default {
     position: absolute;
     right: 0;
     top: 0;
+    height: 100%;
 }
 
 .barButtons button {
-    line-height: 1.5;
+    height: 100%;
+    line-height: initial;
     margin: 0;
     padding: 0 1em;
     box-shadow: none;
