@@ -89,7 +89,7 @@ urlParamService.removeParam = function(name) {
 urlParamService.getImportGridsetProps = function() {
     let id = urlParamService.getParam(urlParamService.params.PARAM_USE_GRIDSET_ID) || urlParamService.getParam(urlParamService.params.PARAM_USE_GRIDSET_FILENAME);
     let provider = urlParamService.getParam(urlParamService.params.PARAM_USE_GRIDSET_PROVIDER) || providerAGBoards.getName();
-    let singleBoards = urlParamService.getParam(urlParamService.params.PARAM_USE_GRIDSET_SINGLE_BOARDS) || false;
+    let singleBoards = urlParamService.getParam(urlParamService.params.PARAM_USE_GRIDSET_SINGLE_BOARDS) === "true";
     if (id && provider) {
         return {
             id: id,
