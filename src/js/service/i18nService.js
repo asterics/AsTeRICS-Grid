@@ -38,193 +38,7 @@ let appLanguages = [
     'val'
 ];
 //all languages in german and english + ISO-639-1 code, extracted from https://de.wikipedia.org/wiki/Liste_der_ISO-639-1-Codes, sorted by german translation
-let allLangCodes = [
-    'ab',
-    'aa',
-    'af',
-    'ak',
-    'sq',
-    'am',
-    'ar',
-    'an',
-    'hy',
-    'az',
-    'as',
-    'av',
-    'ae',
-    'ay',
-    'bm',
-    'ba',
-    'eu',
-    'bn',
-    'bh',
-    'my',
-    'bi',
-    'nb',
-    'bs',
-    'br',
-    'bg',
-    'ch',
-    'ny',
-    'zh',
-    'cr',
-    'da',
-    'de',
-    'dv',
-    'dz',
-    'en',
-    'eo',
-    'et',
-    'ee',
-    'fo',
-    'fj',
-    'fi',
-    'fr',
-    'ff',
-    'gl',
-    'ka',
-    'el',
-    'kl',
-    'gn',
-    'gu',
-    'ht',
-    'ha',
-    'he',
-    'hi',
-    'ho',
-    'io',
-    'ig',
-    'id',
-    'ia',
-    'ie',
-    'iu',
-    'ik',
-    'ga',
-    'xh',
-    'zu',
-    'is',
-    'it',
-    'ja',
-    'jv',
-    'yi',
-    'kn',
-    'kr',
-    'kk',
-    'ks',
-    'ca',
-    'km',
-    'kg',
-    'ki',
-    'lu',
-    'rw',
-    'cu',
-    'ky',
-    'rn',
-    'kv',
-    'ko',
-    'kw',
-    'co',
-    'hr',
-    'ku',
-    'lo',
-    'la',
-    'lv',
-    'li',
-    'ln',
-    'lt',
-    'lg',
-    'lb',
-    'mg',
-    'ms',
-    'ml',
-    'mt',
-    'gv',
-    'mi',
-    'mr',
-    'mh',
-    'mk',
-    'mn',
-    'na',
-    'nv',
-    'ng',
-    'ne',
-    'nl',
-    'nd',
-    'se',
-    'no',
-    'nn',
-    'oj',
-    'oc',
-    'or',
-    'om',
-    'kj',
-    'os',
-    'hz',
-    'pi',
-    'pa',
-    'ps',
-    'fa',
-    'pl',
-    'pt',
-    'qu',
-    'rm',
-    'ro',
-    'ru',
-    'sm',
-    'sg',
-    'sa',
-    'sc',
-    'gd',
-    'sv',
-    'sr',
-    'st',
-    'tn',
-    'sn',
-    'sd',
-    'si',
-    'ss',
-    'sk',
-    'sl',
-    'so',
-    'es',
-    'nr',
-    'su',
-    'sw',
-    'tg',
-    'tl',
-    'ty',
-    'ta',
-    'tt',
-    'te',
-    'th',
-    'bo',
-    'ti',
-    'to',
-    'cs',
-    'ce',
-    'cv',
-    've',
-    'tr',
-    'tk',
-    'tw',
-    'ug',
-    'uk',
-    'hu',
-    'ur',
-    'uz',
-    'val',
-    'vi',
-    'vo',
-    'cy',
-    'wa',
-    'be',
-    'fy',
-    'wo',
-    'ts',
-    'ii',
-    'yo',
-    'za'
-];
+let allLangCodes = ["aa","ab","ae","af","ak","am","an","ar","ar-ae","ar-bh","ar-dz","ar-eg","ar-iq","ar-jo","ar-kw","ar-lb","ar-ly","ar-ma","ar-om","ar-qa","ar-sa","ar-sy","ar-tn","ar-ye","as","av","ay","az","ba","be","bg","bh","bi","bm","bn","bo","br","bs","ca","ce","ch","co","cr","cs","cu","cv","cy","da","de","de-at","de-ch","de-ch-loc","de-li","de-lu","dv","dz","ee","el","en","en-au","en-bz","en-ca","en-gb","en-ie","en-jm","en-nz","en-tt","en-us","en-za","eo","es","es-ar","es-bo","es-cl","es-co","es-cr","es-do","es-ec","es-gt","es-hn","es-mx","es-ni","es-pa","es-pe","es-pr","es-py","es-sv","es-uy","es-ve","et","eu","fa","ff","fi","fj","fo","fr","fr-be","fr-ca","fr-ch","fr-lu","fy","ga","gd","gl","gn","gu","gv","ha","he","hi","ho","hr","ht","hu","hy","hz","ia","id","ie","ig","ii","ik","io","is","it","it-ch","iu","ja","ji","jv","ka","kg","ki","kj","kk","kl","km","kn","ko","kr","ks","ku","kv","kw","ky","la","lb","lg","li","ln","lo","lt","lu","lv","mg","mh","mi","mk","ml","mn","mr","ms","mt","my","na","nb","nd","ne","ng","nl","nl-be","nn","no","nr","nv","ny","oc","oj","om","or","os","pa","pi","pl","ps","pt","pt-br","qu","rm","rn","ro","ro-md","ru","ru-md","rw","sa","sb","sc","sd","se","sg","si","sk","sl","sm","sn","so","sq","sr","ss","st","su","sv","sv-fi","sw","ta","te","tg","th","ti","tk","tl","tn","to","tr","ts","tt","tw","ty","ug","uk","ur","uz","val","ve","vi","vo","wa","wo","xh","yi","yo","za","zh","zh-cn","zh-hk","zh-sg","zh-tw","zu"];
 let allLanguages = allLangCodes.map((code) => {
     return { code };
 }); // dynamically filled array containing data like [{en: "English", de: "Englisch", code: "en"}, ...] of all languages, always sorted by translation of current language
@@ -251,6 +65,16 @@ i18nService.getBrowserLang = function () {
 
 i18nService.getContentLang = function () {
     return currentContentLang || i18nService.getAppLang();
+};
+
+/**
+ * returns the current content language, but without country code, e.g. "de" if content lang is "de-at"
+ * @return {string|*}
+ */
+i18nService.getContentLangNoCountry = function () {
+    let contentLang = currentContentLang || i18nService.getAppLang();
+    let dashIndex = contentLang.indexOf('-');
+    return dashIndex !== -1 ? contentLang.substring(0, dashIndex) : contentLang;
 };
 
 i18nService.getContentLangReadable = function () {
@@ -379,6 +203,12 @@ i18nService.getTranslation = function (i18nObject, options = {}) {
     if (i18nObject[lang]) {
         return !options.includeLang ? i18nObject[lang] : { lang: lang, text: i18nObject[lang] };
     }
+    if (!options.forceLang && i18nObject[i18nService.getContentLangNoCountry()]) {
+        return !options.includeLang ? i18nObject[i18nService.getContentLangNoCountry()] : {
+            lang: i18nService.getContentLangNoCountry(),
+            text: i18nObject[i18nService.getContentLangNoCountry()]
+        };
+    }
 
     if (!options.noFallback) {
         if (i18nObject[options.fallbackLang]) {
@@ -439,7 +269,14 @@ function loadLanguage(useLang, secondTry) {
                 .then(() => {
                     allLanguages.forEach((elem) => {
                         if (!elem[useLang]) {
-                            elem[useLang] = i18nService.tl(`lang.${elem.code}`, [], useLang);
+                            let hasCountry = elem.code.includes('-');
+                            let langCode = elem.code.includes('-') ? elem.code.substring(0, elem.code.indexOf('-')) : elem.code;
+                            elem[useLang] = i18nService.tl(`lang.${langCode}`, [], useLang);
+                            if (hasCountry) {
+                                let dashIndex = elem.code.indexOf('-');
+                                let countryCode = elem.code.substring(dashIndex + 1); // get "at" from "de-at"
+                                elem[useLang] = `${elem[useLang]}, ${i18nService.tl(`country.${countryCode}`, [], useLang)}`
+                            }
                         }
                     });
                     serviceWorkerService.cacheUrl(url);
