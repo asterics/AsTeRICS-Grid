@@ -202,7 +202,7 @@ function getAriaLabel(gridElem) {
         switch (action.modelName) {
             case GridActionChangeLang.getModelName():
                 total += i18nService.t(GridActionChangeLang.getModelName());
-                total += ' ' + i18nService.t(`lang.${action.language}`);
+                total += ' ' + i18nService.getLangReadable(action.language);
                 total += ', ';
                 break;
             case GridActionCollectElement.getModelName():
