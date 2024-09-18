@@ -27,6 +27,7 @@ obfConverter.gridDataToOBF = function(gridData, manifest) {
         format: OBF_FORMAT_VERSION,
         id: gridData.id,
         name: i18nService.getTranslation(gridData.label),
+        locale: i18nService.getContentLang(),
         buttons: [],
         grid: {
             rows: gridData.rowCount,
