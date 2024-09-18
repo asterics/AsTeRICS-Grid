@@ -167,9 +167,12 @@
                 rows = rows.map(row => row.split('\t'));
                 rows = rows.map(row => {
                     row[colNrTags] = row[colNrTags] ? row[colNrTags].split(",").map(tag => tag.trim().toLocaleUpperCase()).filter(tag => !!tag) : null;
+                    row[colNrLang] = row[colNrLang] ? row[colNrLang].trim().toLocaleLowerCase() : null;
+                    row[colNrPronunciation] = row[colNrPronunciation] ? row[colNrPronunciation].trim() : null;
                     return row;
                 });
-                rows = rows.filter(row => (!row[colNrLang] || row[colNrLang].length === 2) && row[colNrValue]);
+                let validLangCodes = i18nService.getAllLangCodes();
+                rows = rows.filter(row => (!row[colNrLang] || validLangCodes.includes(row[colNrLang])) && row[colNrValue]);
                 if (!rows.length) {
                     this.currentMsg = this.msgTypes.ERROR_PASTE;
                     return;
