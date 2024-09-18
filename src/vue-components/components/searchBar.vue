@@ -1,7 +1,7 @@
 <template>
     <div class="searchContainer" style="position: relative; width: 100%">
         <label class="sr-only" for="searchBar">{{ $t('search') }}</label>
-        <input v-focus id="searchBar" type="search" v-model="currentValue" autocomplete="off" :placeholder="$t('search') + '...'" @input="changed" @change="changed" @keydown.enter.exact="keydownEnter" @keydown.ctrl.enter.exact="keydownCtrlEnter" style="width: 100%;">
+        <input v-focus id="searchBar" type="search" v-model="currentValue" autocomplete="off" :placeholder="$t(placeholder || 'search') + '...'" @input="changed" @change="changed" @keydown.enter.exact="keydownEnter" @keydown.ctrl.enter.exact="keydownCtrlEnter" style="width: 100%;">
         <div class="barButtons">
             <button :title="$t('clear')" @click="clear" style="background-color: transparent; outline: none;"><i class="fas fa-times"></i></button>
             <button :title="$t('search')" @click="changed"><i class="fas fa-search"></i></button>
@@ -11,7 +11,7 @@
 
 <script>
 export default {
-    props: ["value", "keydownEnterFn", "keydownCtrlEnterFn"],
+    props: ["value", "placeholder", "keydownEnterFn", "keydownCtrlEnterFn"],
     data() {
         return {
             currentValue: this.value
