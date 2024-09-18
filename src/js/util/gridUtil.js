@@ -398,10 +398,29 @@ gridUtil.getGridsContentLang = function (grids, preferredLang) {
         return preferredLang;
     }
     let allLangs = grids.reduce((total, grid) => {
-        let gridLangs = getAllLangs(grid.gridElements);
+        let gridLangs = gridUtil.getGridLangs(grid);
         return total.concat(gridLangs);
     }, []);
     return allLangs.includes(preferredLang) ? preferredLang : allLangs[0];
+};
+
+gridUtil.getGridLangs = function(grid) {
+    if (!grid || !grid.gridElements || !grid.gridElements.length) {
+        return [];
+    }
+    let langs= grid.gridElements.reduce((total, element) => {
+        let labelLangs = Object.keys(element.label).filter((lang) => !!element.label[lang]);
+        return total.concat(labelLangs);
+    }, []);
+    return new Array(...new Set(langs));
+};
+
+gridUtil.getGridsLangs = function(grids) {
+    let langs = [];
+    for (let grid of grids) {
+        langs = langs.concat(gridUtil.getGridLangs(grid));
+    }
+    return new Array(...new Set(langs));
 };
 
 /**
@@ -413,16 +432,6 @@ gridUtil.getActionsOfType = function (gridElement, modelName) {
     let actions = gridElement ? gridElement.actions : null;
     let relevantActions = actions ? actions.filter(a => a.modelName === modelName) : [];
     return relevantActions;
-}
-
-function getAllLangs(gridElements) {
-    if (!gridElements && !gridElements.length) {
-        return [];
-    }
-    return gridElements.reduce((total, element) => {
-        let labelLangs = Object.keys(element.label).filter((lang) => !!element.label[lang]);
-        return total.concat(labelLangs);
-    }, []);
 }
 
 function getAllChildrenRecursive(gridGraphList, gridId) {
