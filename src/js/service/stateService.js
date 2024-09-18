@@ -115,20 +115,16 @@ stateService.getWordFormObject = function (element, options) {
     options.searchTags = options.searchTags ? options.searchTags : _currentWordFormTags;
     options.searchTags = JSON.parse(JSON.stringify(options.searchTags));
     options.lang = options.lang || i18nService.getContentLang();
+    let langForms = stateService.getWordFormsForLang(element, options.lang);
     if (options.wordFormId !== undefined) {
-        let langForms = stateService.getWordFormsForLang(element, options.lang);
         return langForms[options.wordFormId];
     }
     if (!options.searchTags || options.searchTags.length === 0 || element.wordForms.length === 0) {
         return null;
     }
     while (options.searchTags.length > 0) {
-        for (let index = 0; index < element.wordForms.length; index++) {
-            let form = element.wordForms[index];
-            if (
-                (!form.lang || form.lang === options.lang) &&
-                options.searchTags.every((tag) => form.tags.includes(tag))
-            ) {
+        for (let form of langForms) {
+            if (options.searchTags.every((tag) => form.tags.includes(tag))) {
                 _currentWordFormTagsOfElements[element.id] = options.searchTags;
                 return form;
             }
