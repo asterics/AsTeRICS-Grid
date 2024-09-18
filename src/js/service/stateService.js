@@ -102,7 +102,7 @@ stateService.getWordForm = function (element, options) {
 }
 
 /**
- * returns an object {wordForm: <wordFormObject>, id: <index>} for the given options
+ * returns a wordFormObject for the given options
  * @param element
  * @param options.searchTags (optional) a list of tags to search
  * @param options.wordFormId (optional) the id (index) of the word form to retrieve
@@ -176,8 +176,15 @@ stateService.getDisplayText = function (elementId) {
     return stateService.getWordForm(element, {searchTags: _currentWordFormTags, searchSubTags: true}) || stateService.getFirstForm(element) || i18nService.getTranslation(element.label);
 };
 
-stateService.getSpeakText = function (elementId, options) {
-    let element = elementId.id ? elementId : getElement(elementId);
+/**
+ * returns the current text which should be spoken for the given element
+ * @param elementOrId element or id of element from which text should be retrieved
+ * @param options passed to stateService.getWordFormObject
+ * @param options.lang code of the desired language
+ * @returns {[String | StringConstructor]|*|string}
+ */
+stateService.getSpeakText = function (elementOrId, options) {
+    let element = elementOrId.id ? elementOrId : getElement(elementOrId);
     if (!element) {
         return '';
     }
