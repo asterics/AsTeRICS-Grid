@@ -244,7 +244,7 @@
                                 <label for="changeLang" class="four columns normal-text">{{ $t('changeLanguageTo') }}</label>
                                 <select id="changeLang" class="four columns mb-2" v-model="action.language">
                                     <option :value="undefined">{{ $t('systemLanguage') }}</option>
-                                    <option v-for="lang in (selectFromAllLanguages ? allLanguages : gridLanguages)" :value="lang.code">
+                                    <option v-for="lang in allLanguages" :value="lang.code" v-show="selectFromAllLanguages || lang.code === action.language || gridLanguageCodes.includes(lang.code)">
                                         {{lang | extractTranslation}}
                                     </option>
                                 </select>
@@ -259,7 +259,7 @@
                                 <label for="changeVoice" class="four columns normal-text">{{ $t('changeVoiceTo') }}</label>
                                 <select id="changeVoice" class="four columns mb-2" v-model="action.voice">
                                     <option :value="undefined">{{ $t('automatic') }}</option>
-                                    <option v-for="voice in allVoices.filter(v => selectFromAllVoices || !action.language || v.lang === action.language)" :value="voice.id">
+                                    <option v-for="voice in allVoices" :value="voice.id" v-show="selectFromAllVoices || !action.language || i18nService.getBaseLang(voice.lang) === i18nService.getBaseLang(action.language)">
                                         <span v-if="!selectFromAllVoices && action.language">{{voice.name}}, {{voice.local ? $t('offline') : $t('online')}}</span>
                                         <span v-if="selectFromAllVoices || !action.language">{{ $t(`lang.${voice.lang}`) }}: {{voice.name}}, {{voice.local ? $t('offline') : $t('online')}}</span>
                                     </option>
@@ -338,6 +338,7 @@
     import EditHttpAction from "./editActionsSub/editHttpAction.vue";
     import {GridActionUART} from "../../js/model/GridActionUART.js";
     import { GridActionPredict } from '../../js/model/GridActionPredict';
+    import { gridUtil } from '../../js/util/gridUtil';
 
     export default {
         props: ['gridElement', 'gridData'],
@@ -354,7 +355,7 @@
                 collectActions: GridActionCollectElement.getActions(),
                 webradioActions: GridActionWebradio.getActions(),
                 allLanguages: i18nService.getAllLanguages(),
-                gridLanguages: null,
+                gridLanguageCodes: [],
                 selectFromAllLanguages: false,
                 selectFromAllVoices: false,
                 GridActionYoutube: GridActionYoutube,
@@ -362,7 +363,8 @@
                 GridActionUART: GridActionUART,
                 GridActionPredict: GridActionPredict,
                 GridElement: GridElement,
-                speechService: speechService
+                speechService: speechService,
+                i18nService: i18nService
             }
         },
         components: {
@@ -421,8 +423,7 @@
         },
         mounted () {
             let thiz = this;
-            let langKeys = Object.keys(thiz.gridData.label);
-            thiz.gridLanguages = thiz.allLanguages.filter(lang => langKeys.indexOf(lang.code) !== -1);
+            thiz.gridLanguageCodes = gridUtil.getGridLangs(thiz.gridData);
             dataService.getGrids(false, true).then(grids => {
                 thiz.grids = grids;
                 thiz.grids = thiz.grids.sort((a, b) => i18nService.getTranslation(a.label).localeCompare(i18nService.getTranslation(b.label)));
