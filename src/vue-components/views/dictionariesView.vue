@@ -52,12 +52,17 @@
                             </div>
                             <div class="edit-container" v-if="editId === dict.id">
                                 <div class="srow">
-                                    <input type="text" class="four columns" :placeholder="$t('searchWord')" v-model="searchWord"
-                                           @input="inputSearchWord()"/>
-                                    <button @click="showWordsModal = true; modalDict = dict" class="four columns">
+                                    <label class="three columns">{{ $t('language') }}</label>
+                                    <select class="four columns" v-model="dict.lang">
+                                        <option v-for="lang in languages" :value="lang.code">{{ lang | extractTranslation }}</option>
+                                    </select>
+                                    <button @click="showWordsModal = true; modalDict = dict" class="five columns">
                                         <i class="fas fa-file-import"/>
                                         <span>{{ $t('importWords') }}</span>
                                     </button>
+                                </div>
+                                <div class="srow mt-3 mb-4">
+                                    <search-bar v-model="searchWord" placeholder="searchWord" @input="inputSearchWord()"></search-bar>
                                 </div>
                                 <div class="srow">
                                     <span>{{ $t('words') }}</span>
@@ -113,6 +118,7 @@
     import ImportDictionaryModal from '../modals/importDictionaryModal.vue'
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {helpService} from "../../js/service/helpService";
+    import SearchBar from '../components/searchBar.vue';
 
     let vueApp = null;
     let vueConfig = {
@@ -130,10 +136,12 @@
                 showWordsModal: false,
                 showImportModal: false,
                 totalWords: 0,
-                filterWords: 0
+                filterWords: 0,
+                languages: i18nService.getAllLanguages()
             };
         },
         components: {
+            SearchBar,
             ImportDictionaryModal, ImportWordsModal, HeaderIcon
         },
         methods: {
@@ -155,6 +163,7 @@
                 let existingNames = this.dicts.map(dict => dict.dictionaryKey);
                 let dictData = new Dictionary({
                     dictionaryKey: modelUtil.getNewName('newDictionary', existingNames),
+                    lang: i18nService.getContentLang()
                 });
                 dataService.saveDictionary(dictData).then(() => {
                     this.editModeId = dictData.id;
