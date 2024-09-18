@@ -268,17 +268,29 @@ i18nService.getTranslationObject = function (label, locale) {
 };
 
 /**
- * returns the base lang of a localized language including a country code.
+ * returns the base lang code of a localized language code including a country code.
  * e.g. for "en-us" the base lang is "en"
  *
- * @param longLang
+ * @param langCode
  * @returns {string|*}
  */
-i18nService.getBaseLang = function(longLang = '') {
+i18nService.getBaseLang = function(langCode = '') {
     // not using simple substring(0,2) because there is also "val" (Valencian) as base lang
-    let delimiterIndex = longLang.search(/[^A-Za-z]/); // index of first non-alphabetic character (= delimiter, "dash" in most cases)
-    return delimiterIndex !== -1 ? longLang.substring(0, delimiterIndex) : longLang;
+    let delimiterIndex = langCode.search(/[^A-Za-z]/); // index of first non-alphabetic character (= delimiter, "dash" in most cases)
+    return delimiterIndex !== -1 ? langCode.substring(0, delimiterIndex) : langCode;
 }
+
+/**
+ * get country code from a language code
+ * e.g. "en-us" => country code is "us"
+ *
+ * @param langCode
+ * @returns {string|*}
+ */
+i18nService.getCountryCode = function(langCode) {
+    let delimiterIndex = langCode.search(/[^A-Za-z]/); // index of first non-alphabetic character (= delimiter, "dash" in most cases)
+    return delimiterIndex !== -1 ? langCode.substring(delimiterIndex + 1) : '';
+};
 
 function loadLanguage(useLang, secondTry) {
     if (!useLang) {
@@ -304,12 +316,10 @@ function loadLanguage(useLang, secondTry) {
                 .then(() => {
                     allLanguages.forEach((elem) => {
                         if (!elem[useLang]) {
-                            let hasCountry = elem.code.includes('-');
-                            let langCode = elem.code.includes('-') ? elem.code.substring(0, elem.code.indexOf('-')) : elem.code;
+                            let langCode = i18nService.getBaseLang(elem.code);
+                            let countryCode = i18nService.getCountryCode(elem.code);
                             elem[useLang] = i18nService.tl(`lang.${langCode}`, [], useLang);
-                            if (hasCountry) {
-                                let dashIndex = elem.code.indexOf('-');
-                                let countryCode = elem.code.substring(dashIndex + 1); // get "at" from "de-at"
+                            if (countryCode) {
                                 elem[useLang] = `${elem[useLang]}, ${i18nService.tl(`country.${countryCode}`, [], useLang)}`
                             }
                         }
