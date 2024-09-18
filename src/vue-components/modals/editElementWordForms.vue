@@ -59,16 +59,16 @@
                 <div class="row">
                     <div class="col-12 col-sm-8 my-2 my-sm-0 d-flex">
                         <div class="row d-flex align-items-center flex-grow-1">
-                            <span v-if="form.lang" class="col-2 col-md-1">
+                            <span v-if="form.lang" class="col-3 col-md-2">
                                 <span class="lang-tag p-2 m-1">{{ form.lang }}</span>
                             </span>
                             <span class="col-3 col-md-3 value"><strong>{{ form.value }}</strong></span>
-                            <div v-if="form.tags.length" class="col-7 col-md-8">
+                            <div v-if="form.tags.length" class="col-6 col-md-7">
                                 <div class="row">
                                     <span v-for="tag in form.tags" class="tag">{{ tag }}</span>
                                 </div>
                             </div>
-                            <span v-if="!form.tags.length" class="col-7 col-md-8">(no tags)</span>
+                            <span v-if="!form.tags.length" class="col-6 col-md-7">(no tags)</span>
                         </div>
                     </div>
                     <div class="col-12 col-sm-4 mb-2 mb-sm-0 d-flex">
@@ -167,9 +167,12 @@
                 rows = rows.map(row => row.split('\t'));
                 rows = rows.map(row => {
                     row[colNrTags] = row[colNrTags] ? row[colNrTags].split(",").map(tag => tag.trim().toLocaleUpperCase()).filter(tag => !!tag) : null;
+                    row[colNrLang] = row[colNrLang] ? row[colNrLang].trim().toLocaleLowerCase() : null;
+                    row[colNrPronunciation] = row[colNrPronunciation] ? row[colNrPronunciation].trim() : null;
                     return row;
                 });
-                rows = rows.filter(row => (!row[colNrLang] || row[colNrLang].length === 2) && row[colNrValue]);
+                let validLangCodes = i18nService.getAllLangCodes();
+                rows = rows.filter(row => (!row[colNrLang] || validLangCodes.includes(row[colNrLang])) && row[colNrValue]);
                 if (!rows.length) {
                     this.currentMsg = this.msgTypes.ERROR_PASTE;
                     return;

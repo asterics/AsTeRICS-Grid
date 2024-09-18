@@ -38,193 +38,7 @@ let appLanguages = [
     'val'
 ];
 //all languages in german and english + ISO-639-1 code, extracted from https://de.wikipedia.org/wiki/Liste_der_ISO-639-1-Codes, sorted by german translation
-let allLangCodes = [
-    'ab',
-    'aa',
-    'af',
-    'ak',
-    'sq',
-    'am',
-    'ar',
-    'an',
-    'hy',
-    'az',
-    'as',
-    'av',
-    'ae',
-    'ay',
-    'bm',
-    'ba',
-    'eu',
-    'bn',
-    'bh',
-    'my',
-    'bi',
-    'nb',
-    'bs',
-    'br',
-    'bg',
-    'ch',
-    'ny',
-    'zh',
-    'cr',
-    'da',
-    'de',
-    'dv',
-    'dz',
-    'en',
-    'eo',
-    'et',
-    'ee',
-    'fo',
-    'fj',
-    'fi',
-    'fr',
-    'ff',
-    'gl',
-    'ka',
-    'el',
-    'kl',
-    'gn',
-    'gu',
-    'ht',
-    'ha',
-    'he',
-    'hi',
-    'ho',
-    'io',
-    'ig',
-    'id',
-    'ia',
-    'ie',
-    'iu',
-    'ik',
-    'ga',
-    'xh',
-    'zu',
-    'is',
-    'it',
-    'ja',
-    'jv',
-    'yi',
-    'kn',
-    'kr',
-    'kk',
-    'ks',
-    'ca',
-    'km',
-    'kg',
-    'ki',
-    'lu',
-    'rw',
-    'cu',
-    'ky',
-    'rn',
-    'kv',
-    'ko',
-    'kw',
-    'co',
-    'hr',
-    'ku',
-    'lo',
-    'la',
-    'lv',
-    'li',
-    'ln',
-    'lt',
-    'lg',
-    'lb',
-    'mg',
-    'ms',
-    'ml',
-    'mt',
-    'gv',
-    'mi',
-    'mr',
-    'mh',
-    'mk',
-    'mn',
-    'na',
-    'nv',
-    'ng',
-    'ne',
-    'nl',
-    'nd',
-    'se',
-    'no',
-    'nn',
-    'oj',
-    'oc',
-    'or',
-    'om',
-    'kj',
-    'os',
-    'hz',
-    'pi',
-    'pa',
-    'ps',
-    'fa',
-    'pl',
-    'pt',
-    'qu',
-    'rm',
-    'ro',
-    'ru',
-    'sm',
-    'sg',
-    'sa',
-    'sc',
-    'gd',
-    'sv',
-    'sr',
-    'st',
-    'tn',
-    'sn',
-    'sd',
-    'si',
-    'ss',
-    'sk',
-    'sl',
-    'so',
-    'es',
-    'nr',
-    'su',
-    'sw',
-    'tg',
-    'tl',
-    'ty',
-    'ta',
-    'tt',
-    'te',
-    'th',
-    'bo',
-    'ti',
-    'to',
-    'cs',
-    'ce',
-    'cv',
-    've',
-    'tr',
-    'tk',
-    'tw',
-    'ug',
-    'uk',
-    'hu',
-    'ur',
-    'uz',
-    'val',
-    'vi',
-    'vo',
-    'cy',
-    'wa',
-    'be',
-    'fy',
-    'wo',
-    'ts',
-    'ii',
-    'yo',
-    'za'
-];
+let allLangCodes = ["aa","ab","ae","af","ak","am","an","ar","ar-ae","ar-bh","ar-dz","ar-eg","ar-iq","ar-jo","ar-kw","ar-lb","ar-ly","ar-ma","ar-om","ar-qa","ar-sa","ar-sy","ar-tn","ar-ye","as","av","ay","az","ba","be","bg","bh","bi","bm","bn","bo","br","bs","ca","ce","ch","co","cr","cs","cu","cv","cy","da","de","de-at","de-ch","de-ch-loc","de-li","de-lu","dv","dz","ee","el","en","en-au","en-bz","en-ca","en-gb","en-ie","en-jm","en-nz","en-tt","en-us","en-za","eo","es","es-ar","es-bo","es-cl","es-co","es-cr","es-do","es-ec","es-gt","es-hn","es-mx","es-ni","es-pa","es-pe","es-pr","es-py","es-sv","es-uy","es-ve","et","eu","fa","ff","fi","fj","fo","fr","fr-be","fr-ca","fr-ch","fr-lu","fy","ga","gd","gl","gn","gu","gv","ha","he","hi","ho","hr","ht","hu","hy","hz","ia","id","ie","ig","ii","ik","io","is","it","it-ch","iu","ja","ji","jv","ka","kg","ki","kj","kk","kl","km","kn","ko","kr","ks","ku","kv","kw","ky","la","lb","lg","li","ln","lo","lt","lu","lv","mg","mh","mi","mk","ml","mn","mr","ms","mt","my","na","nb","nd","ne","ng","nl","nl-be","nn","no","nr","nv","ny","oc","oj","om","or","os","pa","pi","pl","ps","pt","pt-br","qu","rm","rn","ro","ro-md","ru","ru-md","rw","sa","sb","sc","sd","se","sg","si","sk","sl","sm","sn","so","sq","sr","ss","st","su","sv","sv-fi","sw","ta","te","tg","th","ti","tk","tl","tn","to","tr","ts","tt","tw","ty","ug","uk","ur","uz","val","ve","vi","vo","wa","wo","xh","yi","yo","za","zh","zh-cn","zh-hk","zh-sg","zh-tw","zu"];
 let allLanguages = allLangCodes.map((code) => {
     return { code };
 }); // dynamically filled array containing data like [{en: "English", de: "Englisch", code: "en"}, ...] of all languages, always sorted by translation of current language
@@ -252,6 +66,14 @@ i18nService.getBrowserLang = function () {
 
 i18nService.getContentLang = function () {
     return currentContentLang || i18nService.getAppLang();
+};
+
+/**
+ * returns the current content language, but without country code, e.g. "de" if content lang is "de-at"
+ * @return {string|*}
+ */
+i18nService.getContentLangBase = function () {
+    return i18nService.getBaseLang(i18nService.getContentLang());
 };
 
 i18nService.getContentLangReadable = function () {
@@ -297,7 +119,7 @@ i18nService.setContentLanguage = async function (lang, dontSave) {
     if (!dontSave) {
         localStorageService.saveUserSettings({contentLang: currentContentLang})
     }
-    return loadLanguage(currentContentLang); // use promise for return!
+    return loadLanguage(i18nService.getContentLangBase()); // use promise for return!
 };
 
 /**
@@ -308,6 +130,10 @@ i18nService.getAllLanguages = function () {
     return JSON.parse(JSON.stringify(allLanguages));
 };
 
+i18nService.getAllLangCodes = function() {
+    return i18nService.getAllLanguages().map(lang => lang.code);
+}
+
 /**
  * retrieves existing app languages translated via crowdin.com
  * @return {any}
@@ -316,13 +142,17 @@ i18nService.getAppLanguages = function () {
     return JSON.parse(JSON.stringify(appLanguages));
 };
 
+/**
+ * gets translation of the given language (e.g. "English")
+ * @param lang language code, either only 2 digits (e.g. "en") or localized (e.g. "en-us")
+ * @returns {*}
+ */
 i18nService.getLangReadable = function (lang) {
-    for (let langObject of allLanguages) {
-        if (lang === langObject.code) {
-            return langObject[i18nService.getAppLang()];
-        }
-    }
-    return '';
+    let baseLang = i18nService.getBaseLang(lang);
+    let langObject = allLanguages.find(object => object.code === lang);
+    let baselangObject = allLanguages.find(object => object.code === baseLang) || {};
+
+    return langObject ? langObject[i18nService.getAppLang()] : baselangObject[i18nService.getAppLang()];
 };
 
 /**
@@ -344,7 +174,20 @@ i18nService.te = function (key) {
     return vueI18n.te(key, i18nService.getAppLang());
 }
 
-window.te = i18nService.te;
+/**
+ * returns the translation of the first existing given translation key. If no translation is existing, the last
+ * key is returned.
+ * @param keys
+ * @returns {*|string}
+ */
+i18nService.tFallback = function(...keys) {
+    for (let key of keys) {
+        if (i18nService.te(key)) {
+            return i18nService.t(key);
+        }
+    }
+    return keys.length > 0 ? keys[keys.length - 1] : '';
+};
 
 /**
  * get app translation for the given key in the given language
@@ -363,7 +206,8 @@ i18nService.tl = function (key, args, lang) {
  * @param options
  * @param options.fallbackLang language to use if current browser language not available, default: 'en'
  * @param options.includeLang if true return format is {lang: <languageCode>, text: <translatedText>}
- * @param options.forceLang language in which the translation is forced to be returned (if available)
+ * @param options.lang language in which the translation is forced to be returned (if available), no exact matching, so "en-us" also matches for "en"
+ * @param options.forceLang exact language in which the translation is forced to be returned (if available), exact matching, so "en-us" doesn't match for "en"
  * @param options.noFallback if true nothing is returned if the current content lang / force lang isn't existing in the
  *                           translation object
  * @return {string|*|string} the translated string in current browser language, e.g. 'english text'
@@ -372,13 +216,21 @@ i18nService.getTranslation = function (i18nObject, options = {}) {
     if (!i18nObject) {
         return '';
     }
-    let lang = options.forceLang || i18nService.getContentLang();
+    options.lang = options.lang || '';
+    let lang = options.forceLang || options.lang || i18nService.getContentLang();
+    let baseLang = options.forceLang || i18nService.getBaseLang(options.lang) || i18nService.getContentLangBase();
     options.fallbackLang = options.fallbackLang || 'en';
     if (typeof i18nObject === 'string') {
         return i18nService.t(i18nObject);
     }
     if (i18nObject[lang]) {
         return !options.includeLang ? i18nObject[lang] : { lang: lang, text: i18nObject[lang] };
+    }
+    if (i18nObject[baseLang]) {
+        return !options.includeLang ? i18nObject[baseLang] : {
+            lang: baseLang,
+            text: i18nObject[baseLang]
+        };
     }
 
     if (!options.noFallback) {
@@ -416,6 +268,31 @@ i18nService.getTranslationObject = function (label, locale) {
     return object;
 };
 
+/**
+ * returns the base lang code of a localized language code including a country code.
+ * e.g. for "en-us" the base lang is "en"
+ *
+ * @param langCode
+ * @returns {string|*}
+ */
+i18nService.getBaseLang = function(langCode = '') {
+    // not using simple substring(0,2) because there is also "val" (Valencian) as base lang
+    let delimiterIndex = langCode.search(/[^A-Za-z]/); // index of first non-alphabetic character (= delimiter, "dash" in most cases)
+    return delimiterIndex !== -1 ? langCode.substring(0, delimiterIndex) : langCode;
+}
+
+/**
+ * get country code from a language code
+ * e.g. "en-us" => country code is "us"
+ *
+ * @param langCode
+ * @returns {string|*}
+ */
+i18nService.getCountryCode = function(langCode) {
+    let delimiterIndex = langCode.search(/[^A-Za-z]/); // index of first non-alphabetic character (= delimiter, "dash" in most cases)
+    return delimiterIndex !== -1 ? langCode.substring(delimiterIndex + 1) : '';
+};
+
 function loadLanguage(useLang, secondTry) {
     if (!useLang) {
         return Promise.resolve();
@@ -440,7 +317,12 @@ function loadLanguage(useLang, secondTry) {
                 .then(() => {
                     allLanguages.forEach((elem) => {
                         if (!elem[useLang]) {
-                            elem[useLang] = i18nService.tl(`lang.${elem.code}`, [], useLang);
+                            let langCode = i18nService.getBaseLang(elem.code);
+                            let countryCode = i18nService.getCountryCode(elem.code);
+                            elem[useLang] = i18nService.tl(`lang.${langCode}`, [], useLang);
+                            if (countryCode) {
+                                elem[useLang] = `${elem[useLang]}, ${i18nService.tl(`country.${countryCode}`, [], useLang)}`
+                            }
                         }
                     });
                     serviceWorkerService.cacheUrl(url);
@@ -453,7 +335,7 @@ function loadLanguage(useLang, secondTry) {
 async function getUserSettings() {
     let userSettings = localStorageService.getUserSettings();
     currentContentLang = userSettings.contentLang;
-    loadLanguage(currentContentLang);
+    loadLanguage(i18nService.getContentLangBase());
 }
 
 $(document).on(constants.EVENT_USER_CHANGED, getUserSettings);

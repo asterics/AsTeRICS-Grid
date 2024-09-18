@@ -332,7 +332,7 @@
                 if (this.selectAllVoices) {
                     return this.voices;
                 }
-                return this.voices.filter(v => v.lang === i18nService.getContentLang());
+                return this.voices.filter(v => i18nService.getBaseLang(v.lang) === i18nService.getContentLangBase());
             },
             sortVoices() {
                 this.voices.sort(speechService.voiceSortFn);
@@ -374,7 +374,7 @@
             setVoiceTestText() {
                 let voice = this.voices.filter(voice => voice.id === this.userSettingsLocal.voiceConfig.preferredVoice)[0];
                 let voiceLang = voice ? voice.lang : i18nService.getContentLang();
-                this.testText = i18nService.tl('thisIsAnEnglishSentence', [], voiceLang.substring(0, 2))
+                this.testText = i18nService.tl('thisIsAnEnglishSentence', [], i18nService.getBaseLang(voiceLang))
             },
             saveMetadata() {
                 let thiz = this;
@@ -412,7 +412,7 @@
                 thiz.show = true;
             });
             let grids = await dataService.getGrids(false, true);
-            this.gridLanguages = gridUtil.getLanguages(grids);
+            thiz.gridLanguages = gridUtil.getGridsLangs(grids);
             thiz.voices = await speechService.getVoicesInitialized();
             thiz.selectVoices = thiz.getSelectVoices();
         }

@@ -422,10 +422,29 @@ gridUtil.getGridsContentLang = function (grids, preferredLang) {
         return preferredLang;
     }
     let allLangs = grids.reduce((total, grid) => {
-        let gridLangs = getAllLangs(grid.gridElements);
+        let gridLangs = gridUtil.getGridLangs(grid);
         return total.concat(gridLangs);
     }, []);
     return allLangs.includes(preferredLang) ? preferredLang : allLangs[0];
+};
+
+gridUtil.getGridLangs = function(grid) {
+    if (!grid || !grid.gridElements || !grid.gridElements.length) {
+        return [];
+    }
+    let langs= grid.gridElements.reduce((total, element) => {
+        let labelLangs = Object.keys(element.label).filter((lang) => !!element.label[lang]);
+        return total.concat(labelLangs);
+    }, []);
+    return new Array(...new Set(langs));
+};
+
+gridUtil.getGridsLangs = function(grids) {
+    let langs = [];
+    for (let grid of grids) {
+        langs = langs.concat(gridUtil.getGridLangs(grid));
+    }
+    return new Array(...new Set(langs));
 };
 
 /**
@@ -443,6 +462,7 @@ gridUtil.getActionsOfType = function (gridElement, modelName) {
  * returns all languages existing in the given grids
  * @param grids
  */
+// TODO remove and use gridUtil.getGridLangs
 gridUtil.getLanguages = function(grids) {
     grids = grids || [];
     let langs = [];

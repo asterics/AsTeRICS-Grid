@@ -66,18 +66,18 @@ speechService.speak = function (textOrOject, options) {
     speechService.resetSpeakAfterFinished();
 
     let preferredVoiceId = options.preferredVoice || _preferredVoiceId;
-    let prefVoiceLang = getVoiceLang(preferredVoiceId);
+    let prefVoiceLang = speechService.getVoiceLang(preferredVoiceId);
     let alternativeLang = options.voiceLangIsTextLang && prefVoiceLang ? prefVoiceLang : i18nService.getContentLang();
     let langToUse = options.lang || alternativeLang;
     if (isString) {
         text = textOrOject;
     } else {
-        text = textOrOject[langToUse];
+        text = i18nService.getTranslation(textOrOject, { lang: langToUse });
         if (
             options.voiceLangIsTextLang &&
             preferredVoiceId &&
             prefVoiceLang !== langToUse &&
-            getVoicesByLang(langToUse)
+            getVoicesByLang(langToUse).length > 0
         ) {
             preferredVoiceId = null; // use auto voice for language
         }
@@ -236,26 +236,27 @@ speechService.waitForFinishedSpeaking = async function () {
     await promise;
 };
 
-speechService.testSpeak = function (voiceName, testSentence, testLang) {
-    if (!voiceName) {
+speechService.testSpeak = function(voiceId, testSentence, testLang) {
+    if (!voiceId) {
         return;
     }
-    let voiceLang = speechService.getVoices().filter((voice) => voice.name === voiceName || voice.id === voiceName)[0].lang;
+    let voiceLang = speechService.getVoiceLang(voiceId);
     testLang = testLang || voiceLang;
-    testSentence = testSentence || i18nService.tl('thisIsAnEnglishSentence', null, testLang);
+    testSentence = testSentence || i18nService.tl('thisIsAnEnglishSentence', null, i18nService.getBaseLang(testLang));
     speechService.speak(testSentence, {
-        preferredVoice: voiceName,
+        preferredVoice: voiceId,
         useStandardRatePitch: true
     });
 };
 
 /**
- * returns array of languages where a TTS voice exists
+ * returns array of languages codes where a TTS voice exists
  * @return {*} array of languages where one element has properties [en, de, code].
  */
-speechService.getVoicesLangs = function () {
-    let voiceLangCodes = allVoices.map((voice) => voice.lang.substring(0, 2));
-    return i18nService.getAllLanguages().filter((lang) => voiceLangCodes.indexOf(lang.code) !== -1);
+speechService.getVoicesLangs = function() {
+    let voiceLangCodesFull = allVoices.map((voice) => voice.langFull);
+    let allVoiceLangCodes = voiceLangCodesFull.concat(allVoices.map((voice) => voice.lang));
+    return i18nService.getAllLanguages().filter((lang) => allVoiceLangCodes.indexOf(lang.code) !== -1);
 };
 
 /**
@@ -308,13 +309,18 @@ speechService.nativeSpeechSupported = function () {
     );
 };
 
+speechService.getVoiceLang = function(voiceId) {
+    let voices = getVoicesById(voiceId);
+    return voices && voices[0] ? voices[0].langFull : null;
+}
+
 speechService.getPreferredVoiceLang = function () {
-    return getVoiceLang(_preferredVoiceId);
+    return speechService.getVoiceLang(_preferredVoiceId);
 };
 
 speechService.getSecondaryVoiceLang = function () {
     if (_secondVoiceId) {
-        return getVoiceLang(_secondVoiceId);
+        return speechService.getVoiceLang(_secondVoiceId);
     }
     return null;
 };
@@ -346,7 +352,9 @@ speechService.reinit = async function () {
 };
 
 function getVoicesByLang(lang) {
-    return allVoices.filter((voice) => voice.lang.substring(0, 2) === lang);
+    let fullLangVoices = allVoices.filter((voice) => voice.langFull === lang);
+    let langVoices = allVoices.filter((voice) => voice.lang === i18nService.getBaseLang(lang));
+    return fullLangVoices.length > 0 ? fullLangVoices : langVoices;
 }
 
 /**
@@ -361,11 +369,6 @@ function getVoicesById(voiceId) {
         voices = allVoices.filter((voice) => voice.name === voiceId);
     }
     return voices.length > 0 ? voices : null;
-}
-
-function getVoiceLang(voiceId) {
-    let voices = getVoicesById(voiceId);
-    return voices && voices[0] ? voices[0].lang : null;
 }
 
 function addVoice(voiceId, voiceName, voiceLang, voiceType, localVoice, originalReference) {
@@ -385,8 +388,8 @@ function addVoice(voiceId, voiceName, voiceLang, voiceType, localVoice, original
     allVoices.push({
         id: voiceId,
         name: voiceName,
-        lang: voiceLang.substring(0, 2).toLowerCase(),
-        langFull: voiceLang,
+        lang: i18nService.getBaseLang(voiceLang).toLowerCase(),
+        langFull: voiceLang.toLowerCase(),
         type: voiceType,
         ref: originalReference,
         local: localVoice

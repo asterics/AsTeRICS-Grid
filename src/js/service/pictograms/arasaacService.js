@@ -166,11 +166,11 @@ arasaacService.getUpdatedUrl = function (oldUrl, newOptions) {
 };
 
 arasaacService.getCorrectGrammar = async function (text) {
-    if (!text || !supportedGrammarLangs.includes(i18nService.getContentLang())) {
+    if (!text || !supportedGrammarLangs.includes(i18nService.getContentLangBase())) {
         return text;
     }
     text = text.trim();
-    let contentLang = i18nService.getContentLang();
+    let contentLang = i18nService.getContentLangBase();
     let path = `${apiBaseUrl}/api/phrases/flex/${contentLang}/${text}`;
     let response = await util.fetchWithTimeout(path, 1500).catch((e) => console.error(e));
     if (!response || response.status !== 200) {
@@ -207,11 +207,11 @@ function queryInternal(search, lang, chunkNr, chunkSize) {
             return resolve([]);
         }
         if (_lastSearchTerm !== search || _lastSearchLang !== lang) {
-            lang = lang || i18nService.getContentLang();
+            lang = lang || i18nService.getContentLangBase();
             _lastSearchLang = lang;
             try {
                 _lastRawResultList = await getResultListLangs(
-                    [lang, i18nService.getContentLang(), i18nService.getBrowserLang(), 'en', 'es'],
+                    [lang, i18nService.getContentLangBase(), i18nService.getBrowserLang(), 'en', 'es'],
                     search
                 );
             } catch (e) {
@@ -251,7 +251,7 @@ function queryInternal(search, lang, chunkNr, chunkSize) {
 }
 
 async function getResultListLangs(langs, search) {
-    langs = langs || [i18nService.getContentLang()];
+    langs = langs || [i18nService.getContentLangBase()];
     langs = [...new Set(langs)];
     let list = [];
     for (let lang of langs) {
