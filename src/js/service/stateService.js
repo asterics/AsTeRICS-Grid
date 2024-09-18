@@ -191,7 +191,7 @@ stateService.getSpeakText = function (elementId, options) {
     return (
         baseForm.pronunciation ||
         baseForm.value ||
-        i18nService.getTranslation(element.label, {forceLang: options.lang}) ||
+        i18nService.getTranslation(element.label, {lang: options.lang}) ||
         i18nService.getTranslation(element.label)
     );
 };

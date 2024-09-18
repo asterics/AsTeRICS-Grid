@@ -348,7 +348,7 @@ speechService.reinit = async function () {
 
 function getVoicesByLang(lang) {
     let fullLangVoices = allVoices.filter((voice) => voice.langFull === lang);
-    let langVoices = allVoices.filter((voice) => voice.lang === lang);
+    let langVoices = allVoices.filter((voice) => voice.lang === i18nService.getBaseLang(lang));
     return fullLangVoices.length > 0 ? fullLangVoices : langVoices;
 }
 
