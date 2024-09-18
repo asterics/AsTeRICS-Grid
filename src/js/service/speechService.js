@@ -66,7 +66,7 @@ speechService.speak = function (textOrOject, options) {
     speechService.resetSpeakAfterFinished();
 
     let preferredVoiceId = options.preferredVoice || _preferredVoiceId;
-    let prefVoiceLang = getVoiceLang(preferredVoiceId);
+    let prefVoiceLang = speechService.getVoiceLang(preferredVoiceId);
     let alternativeLang = options.voiceLangIsTextLang && prefVoiceLang ? prefVoiceLang : i18nService.getContentLang();
     let langToUse = options.lang || alternativeLang;
     if (isString) {
@@ -236,15 +236,15 @@ speechService.waitForFinishedSpeaking = async function () {
     await promise;
 };
 
-speechService.testSpeak = function (voiceName, testSentence, testLang) {
-    if (!voiceName) {
+speechService.testSpeak = function(voiceId, testSentence, testLang) {
+    if (!voiceId) {
         return;
     }
-    let voiceLang = speechService.getVoices().filter((voice) => voice.name === voiceName || voice.id === voiceName)[0].lang;
+    let voiceLang = speechService.getVoiceLang(voiceId);
     testLang = testLang || voiceLang;
-    testSentence = testSentence || i18nService.tl('thisIsAnEnglishSentence', null, testLang);
+    testSentence = testSentence || i18nService.tl('thisIsAnEnglishSentence', null, i18nService.getBaseLang(testLang));
     speechService.speak(testSentence, {
-        preferredVoice: voiceName,
+        preferredVoice: voiceId,
         useStandardRatePitch: true
     });
 };
@@ -309,13 +309,18 @@ speechService.nativeSpeechSupported = function () {
     );
 };
 
+speechService.getVoiceLang = function(voiceId) {
+    let voices = getVoicesById(voiceId);
+    return voices && voices[0] ? voices[0].langFull : null;
+}
+
 speechService.getPreferredVoiceLang = function () {
-    return getVoiceLang(_preferredVoiceId);
+    return speechService.getVoiceLang(_preferredVoiceId);
 };
 
 speechService.getSecondaryVoiceLang = function () {
     if (_secondVoiceId) {
-        return getVoiceLang(_secondVoiceId);
+        return speechService.getVoiceLang(_secondVoiceId);
     }
     return null;
 };
@@ -364,11 +369,6 @@ function getVoicesById(voiceId) {
         voices = allVoices.filter((voice) => voice.name === voiceId);
     }
     return voices.length > 0 ? voices : null;
-}
-
-function getVoiceLang(voiceId) {
-    let voices = getVoicesById(voiceId);
-    return voices && voices[0] ? voices[0].lang : null;
 }
 
 function addVoice(voiceId, voiceName, voiceLang, voiceType, localVoice, originalReference) {
