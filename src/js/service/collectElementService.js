@@ -453,7 +453,7 @@ function getOutputObject(element, options) {
     let customSpeakAction = element.actions.filter((a) => a.modelName === GridActionSpeakCustom.getModelName())[0];
     if (!text && customSpeakAction) {
         let lang = customSpeakAction.speakLanguage || i18nService.getContentLang();
-        text = i18nService.getTranslation(customSpeakAction.speakText, { forceLang: lang });
+        text = i18nService.getTranslation(customSpeakAction.speakText, { lang: lang });
     }
     if (!text) {
         let wordForm = stateService.getWordFormObject(element, {searchTags: element.wordFormTags, wordFormId: element.wordFormId, searchSubTags: true}) || {};

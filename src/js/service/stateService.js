@@ -116,7 +116,7 @@ stateService.getWordFormObject = function (element, options) {
     options.searchTags = JSON.parse(JSON.stringify(options.searchTags));
     options.lang = options.lang || i18nService.getContentLang();
     if (options.wordFormId !== undefined) {
-        let langForms = getWordFormsForLang(element, options.lang);
+        let langForms = stateService.getWordFormsForLang(element, options.lang);
         return langForms[options.wordFormId];
     }
     if (!options.searchTags || options.searchTags.length === 0 || element.wordForms.length === 0) {
@@ -141,16 +141,32 @@ stateService.getWordFormObject = function (element, options) {
     return null;
 };
 
-stateService.getFirstForm = function (element, lang) {
+/**
+ * returns a list of all word forms for the given language
+ * If word forms for exact given language (localized, e.g. "en-us") are not existing,
+ * word forms for base language (e.g. "en") or other localized languages (e.g. "en-gb") are returned.
+ * Word forms without language are returned always.
+ *
+ * @param element
+ * @param lang
+ * @returns {T[]}
+ */
+stateService.getWordFormsForLang = function(element, lang = '') {
+    lang = lang || i18nService.getContentLang();
+    let formsLang = element.wordForms.filter((form) => !form.lang || form.lang === lang);
+    let formsBaseLang = element.wordForms.filter((form) => !form.lang || i18nService.getBaseLang(form.lang) === i18nService.getBaseLang(lang));
+    return formsLang.length > 0 ? formsLang : formsBaseLang;
+};
+
+stateService.getFirstForm = function(element, lang) {
     let object = stateService.getFirstFormObject(element, lang);
     return object ? object.value : null;
 };
 
-stateService.getFirstFormObject = function (element, lang) {
-    lang = lang || i18nService.getContentLang();
-    let baseForm = element.wordForms.filter((f) => (!f.lang || f.lang === lang))[0];
-    return baseForm ? baseForm : null;
-}
+stateService.getFirstFormObject = function(element, lang) {
+    let forms = stateService.getWordFormsForLang(element, lang);
+    return forms.length > 0 ? forms[0] : null;
+};
 
 stateService.getDisplayText = function (elementId) {
     let element = getElement(elementId);
@@ -206,7 +222,7 @@ stateService.nextWordForm = function (elementId) {
     if (!element) {
         return;
     }
-    let currentLangForms = getWordFormsForLang(element);
+    let currentLangForms = stateService.getWordFormsForLang(element);
 
     // all indexes that match current language
     let possibleIndexes = currentLangForms.map((form, index) => {
@@ -309,11 +325,6 @@ function getElement(id) {
 function setTextInUI (elementId, text) {
     text = util.convertLowerUppercase(text, _convertMode);
     $(`#${elementId} .text-container span`).text(text);
-}
-
-function getWordFormsForLang(element, lang) {
-    lang = lang || i18nService.getContentLang();
-    return element.wordForms.filter((form) => !form.lang || form.lang === lang);
 }
 
 async function getMetadataConfig() {

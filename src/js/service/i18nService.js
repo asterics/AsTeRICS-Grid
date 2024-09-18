@@ -71,10 +71,8 @@ i18nService.getContentLang = function () {
  * returns the current content language, but without country code, e.g. "de" if content lang is "de-at"
  * @return {string|*}
  */
-i18nService.getContentLangNoCountry = function () {
-    let contentLang = currentContentLang || i18nService.getAppLang();
-    let dashIndex = contentLang.indexOf('-');
-    return dashIndex !== -1 ? contentLang.substring(0, dashIndex) : contentLang;
+i18nService.getContentLangBase = function () {
+    return i18nService.getBaseLang(i18nService.getContentLang());
 };
 
 i18nService.getContentLangReadable = function () {
@@ -120,7 +118,7 @@ i18nService.setContentLanguage = async function (lang, dontSave) {
     if (!dontSave) {
         localStorageService.saveUserSettings({contentLang: currentContentLang})
     }
-    return loadLanguage(currentContentLang); // use promise for return!
+    return loadLanguage(i18nService.getContentLangBase()); // use promise for return!
 };
 
 /**
@@ -131,6 +129,10 @@ i18nService.getAllLanguages = function () {
     return JSON.parse(JSON.stringify(allLanguages));
 };
 
+i18nService.getAllLangCodes = function() {
+    return i18nService.getAllLanguages().map(lang => lang.code);
+}
+
 /**
  * retrieves existing app languages translated via crowdin.com
  * @return {any}
@@ -139,13 +141,17 @@ i18nService.getAppLanguages = function () {
     return JSON.parse(JSON.stringify(appLanguages));
 };
 
+/**
+ * gets translation of the given language (e.g. "English")
+ * @param lang language code, either only 2 digits (e.g. "en") or localized (e.g. "en-us")
+ * @returns {*}
+ */
 i18nService.getLangReadable = function (lang) {
-    for (let langObject of allLanguages) {
-        if (lang === langObject.code) {
-            return langObject[i18nService.getAppLang()];
-        }
-    }
-    return '';
+    let baseLang = i18nService.getBaseLang(lang);
+    let langObject = allLanguages.find(object => object.code === lang);
+    let baselangObject = allLanguages.find(object => object.code === baseLang) || {};
+
+    return langObject ? langObject[i18nService.getAppLang()] : baselangObject[i18nService.getAppLang()];
 };
 
 /**
@@ -167,7 +173,20 @@ i18nService.te = function (key) {
     return vueI18n.te(key, i18nService.getAppLang());
 }
 
-window.te = i18nService.te;
+/**
+ * returns the translation of the first existing given translation key. If no translation is existing, the last
+ * key is returned.
+ * @param keys
+ * @returns {*|string}
+ */
+i18nService.tFallback = function(...keys) {
+    for (let key of keys) {
+        if (i18nService.te(key)) {
+            return i18nService.t(key);
+        }
+    }
+    return keys.length > 0 ? keys[keys.length - 1] : '';
+};
 
 /**
  * get app translation for the given key in the given language
@@ -186,7 +205,8 @@ i18nService.tl = function (key, args, lang) {
  * @param options
  * @param options.fallbackLang language to use if current browser language not available, default: 'en'
  * @param options.includeLang if true return format is {lang: <languageCode>, text: <translatedText>}
- * @param options.forceLang language in which the translation is forced to be returned (if available)
+ * @param options.lang language in which the translation is forced to be returned (if available), no exact matching, so "en-us" also matches for "en"
+ * @param options.forceLang exact language in which the translation is forced to be returned (if available), exact matching, so "en-us" doesn't match for "en"
  * @param options.noFallback if true nothing is returned if the current content lang / force lang isn't existing in the
  *                           translation object
  * @return {string|*|string} the translated string in current browser language, e.g. 'english text'
@@ -195,7 +215,9 @@ i18nService.getTranslation = function (i18nObject, options = {}) {
     if (!i18nObject) {
         return '';
     }
-    let lang = options.forceLang || i18nService.getContentLang();
+    options.lang = options.lang || '';
+    let lang = options.forceLang || options.lang || i18nService.getContentLang();
+    let baseLang = options.forceLang || i18nService.getBaseLang(options.lang) || i18nService.getContentLangBase();
     options.fallbackLang = options.fallbackLang || 'en';
     if (typeof i18nObject === 'string') {
         return i18nService.t(i18nObject);
@@ -203,10 +225,10 @@ i18nService.getTranslation = function (i18nObject, options = {}) {
     if (i18nObject[lang]) {
         return !options.includeLang ? i18nObject[lang] : { lang: lang, text: i18nObject[lang] };
     }
-    if (!options.forceLang && i18nObject[i18nService.getContentLangNoCountry()]) {
-        return !options.includeLang ? i18nObject[i18nService.getContentLangNoCountry()] : {
-            lang: i18nService.getContentLangNoCountry(),
-            text: i18nObject[i18nService.getContentLangNoCountry()]
+    if (i18nObject[baseLang]) {
+        return !options.includeLang ? i18nObject[baseLang] : {
+            lang: baseLang,
+            text: i18nObject[baseLang]
         };
     }
 
@@ -244,6 +266,19 @@ i18nService.getTranslationObject = function (label, locale) {
     object[locale] = label;
     return object;
 };
+
+/**
+ * returns the base lang of a localized language including a country code.
+ * e.g. for "en-us" the base lang is "en"
+ *
+ * @param longLang
+ * @returns {string|*}
+ */
+i18nService.getBaseLang = function(longLang = '') {
+    // not using simple substring(0,2) because there is also "val" (Valencian) as base lang
+    let delimiterIndex = longLang.search(/[^A-Za-z]/); // index of first non-alphabetic character (= delimiter, "dash" in most cases)
+    return delimiterIndex !== -1 ? longLang.substring(0, delimiterIndex) : longLang;
+}
 
 function loadLanguage(useLang, secondTry) {
     if (!useLang) {
@@ -289,7 +324,7 @@ function loadLanguage(useLang, secondTry) {
 async function getUserSettings() {
     let userSettings = localStorageService.getUserSettings();
     currentContentLang = userSettings.contentLang;
-    loadLanguage(currentContentLang);
+    loadLanguage(i18nService.getContentLangBase());
 }
 
 $(document).on(constants.EVENT_USER_CHANGED, getUserSettings);

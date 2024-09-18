@@ -137,10 +137,10 @@ function gridImageToObfImage(gridImage) {
  */
 obfConverter.OBFToGridData = function(obfObject, obfObjects) {
     let promises = [];
-    let locale =
-        obfObject.locale && obfObject.locale.length === 2
-            ? obfObject.locale.toLowerCase()
-            : i18nService.getContentLang();
+    let locale = obfObject.locale ? obfObject.locale.toLowerCase() : i18nService.getContentLang();
+    let baseLocale = i18nService.getBaseLang(locale);
+    locale = i18nService.getAllLangCodes().includes(locale) ? locale :
+        (i18nService.getAllLangCodes().includes(baseLocale) ? baseLocale : i18nService.getContentLang());
     obfObject.grid = obfObject.grid || { rows: 1, columns: 1, order: [] };
     let gridData = new GridData({
         obfId: obfObject.id,
