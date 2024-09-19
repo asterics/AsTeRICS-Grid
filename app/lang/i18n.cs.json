@@ -779,6 +779,7 @@
   "ifTheTranslationForYourLanguageIsNotAvailable": "Pokud překlad pro váš jazyk není k dispozici nebo má chyby, přispějte prosím na překladatelské platformě {crowdin}.",
   "editCollect": "Upravit prvek sběru",
   "showLabelsOfCollectedImages": "Zobrazit popisky shromážděných obrázků",
+  "fullyShowLongLabels": "Fully show long labels below images",
   "heightOfCollectedImages": "Výška shromážděných obrázků [%]",
   "collectMode": "Režim shromažďování",
   "MODE_AUTO": "Automaticky",
