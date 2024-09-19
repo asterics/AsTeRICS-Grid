@@ -109,6 +109,7 @@ speechService.speak = function (textOrOject, options) {
         msg.pitch = isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1;
         msg.rate = options.rate || (isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1);
         msg.volume = userSettings.systemVolume / 100.0;
+        log.debug("speak volume", userSettings.systemVolume);
         if (options.progressFn) {
             msg.addEventListener('boundary', options.progressFn);
             msg.addEventListener('end', options.progressFn);

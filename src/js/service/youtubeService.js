@@ -329,6 +329,7 @@ youtubeService.setVolume = function (volume, initSet) {
         if (playerVolume === 0) {
             player.mute();
         }
+        log.debug("yt volumes (system, yt, result)", userSettings.systemVolume, volume, playerVolume);
         if (!initSet) {
             MainVue.setTooltip(i18nService.t('youTubeVolume', volume), {
                 revertOnClose: true,
