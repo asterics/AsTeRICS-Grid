@@ -779,6 +779,7 @@
   "ifTheTranslationForYourLanguageIsNotAvailable": "Dacă traducerea pentru limba dvs. nu este disponibilă sau are erori, vă rugăm să contribuiți pe platforma de traducere {crowdin}.",
   "editCollect": "Editarea elementului de colectare",
   "showLabelsOfCollectedImages": "Afișați etichetele imaginilor colectate",
+  "fullyShowLongLabels": "Fully show long labels below images",
   "heightOfCollectedImages": "Înălțimea imaginilor colectate [%]",
   "collectMode": "Mod colectare",
   "MODE_AUTO": "Automat",
