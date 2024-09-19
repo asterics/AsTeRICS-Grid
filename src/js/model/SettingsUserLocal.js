@@ -14,6 +14,8 @@ class SettingsUserLocal {
      * @param settings.voiceConfig
      * @param settings.originGridsetFilename
      * @param settings.isEmpty true if this user configuration is empty
+     * @param settings.systemVolume
+     * @param settings.systemVolumeMuted
      */
     constructor(settings) {
         settings = settings || {};
@@ -28,6 +30,8 @@ class SettingsUserLocal {
         this.voiceConfig = settings.voiceConfig && Object.keys(settings.voiceConfig).length ? new VoiceConfig(settings.voiceConfig) : {};
         this.originGridsetFilename = settings.originGridsetFilename;
         this.isEmpty = settings.isEmpty !== undefined ? settings.isEmpty : true;
+        this.systemVolume = settings.systemVolume !== undefined ? settings.systemVolume : 100;
+        this.systemVolumeMuted = settings.systemVolumeMuted || false;
 
         convertServiceLocal.updateDataModel(this);
     }
