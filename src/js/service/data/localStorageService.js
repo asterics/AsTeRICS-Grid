@@ -87,7 +87,7 @@ localStorageService.saveAppSettings = function (settings) {
  * @param username optional user to get settings, defaults to current user
  * @return {null|SettingsUserLocal}
  */
-localStorageService.getUserSettings = function (username) {
+localStorageService.getUserSettings = function (username = null) {
     username = username || localStorageService.getAutologinUser() || localStorageService.getLastActiveUser();
     if (!username) {
         return new SettingsUserLocal();
