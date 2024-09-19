@@ -779,6 +779,7 @@
   "ifTheTranslationForYourLanguageIsNotAvailable": "Ако превода на Вашия език не е наличен или има грешки, молим Ви да допринесете на платформата за превеждане {crowdin}.",
   "editCollect": "Редактирайте елемента collect",
   "showLabelsOfCollectedImages": "Покажи заглавията на събраните изображения",
+  "fullyShowLongLabels": "Fully show long labels below images",
   "heightOfCollectedImages": "Височина на събраните изображения[%]",
   "collectMode": "Режим Събиране",
   "MODE_AUTO": "Автоматично",
