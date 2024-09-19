@@ -34,7 +34,6 @@
     };
 
     export default {
-        props: ['fullHeader'], //if true this component is rendered as full header, otherwise as part of an already existing header
         data() {
             return {
                 tooltipHTML: null,
