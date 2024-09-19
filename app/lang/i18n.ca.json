@@ -779,6 +779,7 @@
   "ifTheTranslationForYourLanguageIsNotAvailable": "Si la traducció per al seu idioma no està disponible o té errades, pot col·laborar en la traducció a la plataforma {crowdin}.",
   "editCollect": "Configurar frase acumulada",
   "showLabelsOfCollectedImages": "Mostrar text de les imatges acumulades",
+  "fullyShowLongLabels": "Fully show long labels below images",
   "heightOfCollectedImages": "Alçada de les imatges acumulades [%]",
   "collectMode": "Mode d'acumulació",
   "MODE_AUTO": "Automàtic",
