@@ -779,6 +779,7 @@
   "ifTheTranslationForYourLanguageIsNotAvailable": "Якщо переклад вашою мовою недоступний або містить помилки, зробіть свій внесок на платформі перекладу {crowdin}.",
   "editCollect": "Редагувати елемент збірки",
   "showLabelsOfCollectedImages": "Показати мітки зібраних зображень",
+  "fullyShowLongLabels": "Fully show long labels below images",
   "heightOfCollectedImages": "Висота зібраних зображень [%]",
   "collectMode": "Режим збору",
   "MODE_AUTO": "Автоматично",
