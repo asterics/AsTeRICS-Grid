@@ -17,7 +17,7 @@
                 <i class="fas fa-lock"></i>
                 <span class="hide-mobile">{{ $t('lock') }}</span>
             </button>
-            <button tabindex="32" @click="applyFullscreen()" class="spaced small" :aria-label="$t('fullscreen')"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
+            <button tabindex="32" @click="systemActionService.enterFullscreen()" class="spaced small" :aria-label="$t('fullscreen')"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
 
         </header>
         <div class="srow content text-content" v-show="!gridData.gridElements">
@@ -88,6 +88,7 @@
     import {printService} from "../../js/service/printService";
     import {MainVue} from "../../js/vue/mainVue.js";
     import {stateService} from "../../js/service/stateService.js";
+    import { systemActionService } from '../../js/service/systemActionService';
 
     let vueApp = null;
     let gridInstance = null;
@@ -126,7 +127,8 @@
                 backgroundColor: 'white',
                 MainVue: MainVue,
                 highlightTimeoutHandler: null,
-                highlightedElementId: null
+                highlightedElementId: null,
+                systemActionService: systemActionService
             }
         },
         components: {
@@ -186,17 +188,6 @@
             },
             preventZoomHandler(event) {
                 event.preventDefault();
-            },
-            applyFullscreen(dontSave) {
-                util.openFullscreen();
-                this.metadata.fullscreen = true;
-                let promise = Promise.resolve();
-                if (!dontSave) {
-                    promise = dataService.saveMetadata(this.metadata);
-                }
-                promise.then(() => {
-                    $(document).trigger(constants.EVENT_SIDEBAR_CLOSE);
-                });
             },
             initInputMethods(continueRunningMethods) {
                 let thiz = this;
@@ -387,7 +378,7 @@
                 }
                 if (this.updatedMetadataDoc && this.updatedMetadataDoc.fullscreen !== vueApp.metadata.fullscreen) {
                     if (this.updatedMetadataDoc.fullscreen) {
-                        vueApp.applyFullscreen(true);
+                        systemActionService.enterFullscreen(true);
                     } else {
                         $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
                     }
@@ -417,12 +408,10 @@
             },
             contextMenuListener(event) {
                 event.preventDefault();
-            }
-        },
-        computed: {
-            filteredGrids: function () {
-                return []
             },
+            async metadataUpdated() {
+                this.metadata = await dataService.getMetadata();
+            }
         },
         created() {
             $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
@@ -432,6 +421,7 @@
             document.addEventListener('contextmenu', this.contextMenuListener);
             window.addEventListener('resize', this.resizeListener, true);
             $(document).on(constants.EVENT_GRID_RESIZE, this.resizeListener);
+            $(document).on(constants.EVENT_METADATA_UPDATED, this.metadataUpdated);
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
@@ -441,6 +431,7 @@
             document.removeEventListener('contextmenu', this.contextMenuListener);
             window.removeEventListener('resize', this.resizeListener, true);
             $(document).off(constants.EVENT_GRID_RESIZE, this.resizeListener);
+            $(document).off(constants.EVENT_METADATA_UPDATED, this.metadataUpdated);
             stopInputMethods();
             this.setViewPropsUnlocked();
             $.contextMenu('destroy');
