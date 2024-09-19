@@ -231,33 +231,31 @@ dataService.addGridElements = function (gridId, newGridElements) {
  * @param newMetadata new or updated metadata object
  * @return {Promise} resolves after operation finished successful
  */
-dataService.saveMetadata = function (newMetadata) {
+dataService.saveMetadata = async function(newMetadata) {
     newMetadata = JSON.parse(JSON.stringify(newMetadata));
-    return new Promise((resolve) => {
-        dataService.getMetadata().then((existingMetadata) => {
-            if (existingMetadata) {
-                //new metadata is stored with ID of existing metadata -> there should only be one metadata object
-                let id = existingMetadata instanceof Array ? existingMetadata[0].id : existingMetadata.id;
-                newMetadata.id = id;
-            }
-            if (!existingMetadata.isEqual(newMetadata)) {
-                localStorageService.saveUserSettings({metadata: newMetadata});
-            }
-            if (!localStorageService.getAppSettings().syncNavigation) {
-                newMetadata.locked = existingMetadata.locked;
-                newMetadata.fullscreen = existingMetadata.fullscreen;
-                newMetadata.lastOpenedGridId = existingMetadata.lastOpenedGridId;
-            }
-            if (!existingMetadata.isEqual(newMetadata)) {
-                databaseService.saveObject(MetaData, newMetadata).then(() => {
-                    resolve();
-                    $(document).trigger(constants.EVENT_METADATA_UPDATED, newMetadata);
-                });
-            } else {
-                resolve();
-            }
-        });
-    });
+    let updated = false;
+    let existingMetadata = await dataService.getMetadata();
+    if (existingMetadata) {
+        //new metadata is stored with ID of existing metadata -> there should only be one metadata object
+        let id = existingMetadata instanceof Array ? existingMetadata[0].id : existingMetadata.id;
+        newMetadata.id = id;
+    }
+    if (!existingMetadata.isEqual(newMetadata)) {
+        localStorageService.saveUserSettings({ metadata: newMetadata });
+        updated = true;
+    }
+    if (!localStorageService.getAppSettings().syncNavigation) {
+        newMetadata.locked = existingMetadata.locked;
+        newMetadata.fullscreen = existingMetadata.fullscreen;
+        newMetadata.lastOpenedGridId = existingMetadata.lastOpenedGridId;
+    }
+    if (!existingMetadata.isEqual(newMetadata)) {
+        await databaseService.saveObject(MetaData, newMetadata);
+        updated = true;
+    }
+    if (updated) {
+        $(document).trigger(constants.EVENT_METADATA_UPDATED, newMetadata);
+    }
 };
 
 /**
