@@ -280,6 +280,11 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
     let fontSizeMM = hasImg ? currentHeight * (1 - pdfOptions.imgHeightPercentage) : currentHeight / 2;
     let fontSizePt = (fontSizeMM / 0.352778) * 0.8;
     let maxWidth = currentWidth - 2 * pdfOptions.textPadding;
+    if (convertMode === TextConfig.CONVERT_MODE_UPPERCASE) {
+        label = label.toLocaleUpperCase();
+    } else if (convertMode === TextConfig.CONVERT_MODE_LOWERCASE) {
+        label = label.toLocaleLowerCase();
+    }
     let optimalFontSize = getOptimalFontsize(
         doc,
         label,
@@ -293,11 +298,6 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
     let dim = doc.getTextDimensions(label);
     let lines = Math.ceil(dim.w / maxWidth);
     let yOffset = hasImg ? currentHeight - 2 * pdfOptions.elementMargin : (currentHeight - dim.h * lines) / 2;
-    if (convertMode === TextConfig.CONVERT_MODE_UPPERCASE) {
-        label = label.toLocaleUpperCase();
-    } else if (convertMode === TextConfig.CONVERT_MODE_LOWERCASE) {
-        label = label.toLocaleLowerCase();
-    }
     doc.text(label, xStartPos + currentWidth / 2, yStartPos + yOffset, {
         baseline: hasImg ? 'bottom' : 'top',
         align: 'center',
