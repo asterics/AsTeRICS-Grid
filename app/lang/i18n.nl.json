@@ -779,6 +779,7 @@
   "ifTheTranslationForYourLanguageIsNotAvailable": "Als de vertaling voor uw taal niet beschikbaar is of fouten heeft, stuur dan een bijdrage op het vertaalplatform {crowdin}.",
   "editCollect": "Bewerk verzamelelement",
   "showLabelsOfCollectedImages": "Toon labels van verzamelde afbeeldingen",
+  "fullyShowLongLabels": "Fully show long labels below images",
   "heightOfCollectedImages": "Hoogte van verzamelde afbeeldingen [%]",
   "collectMode": "Verzamel Mode",
   "MODE_AUTO": "Automatisch",
