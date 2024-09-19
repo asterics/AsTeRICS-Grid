@@ -13,6 +13,7 @@ import { Router } from '../router';
 import NotificationBar from '../../vue-components/components/notificationBar.vue';
 import ProgressBarModal from '../../vue-components/modals/progressBarModal.vue';
 import SearchModal from "../../vue-components/modals/searchModal.vue";
+import { systemActionService } from '../service/systemActionService';
 
 let MainVue = {};
 let app = null;
@@ -207,19 +208,9 @@ MainVue.init = function () {
                 inputEventHandler.global.startListening();
                 thiz.openSidebar();
 
-                function openSidebarIfFullscreen() {
-                    if (thiz.showSidebar || !databaseService.getCurrentUsedDatabase()) {
-                        return;
-                    }
-                    util.closeFullscreen();
-                    dataService.getMetadata().then((metadata) => {
-                        if (metadata.fullscreen) {
-                            metadata.fullscreen = false;
-                            dataService.saveMetadata(metadata).then(() => {
-                                thiz.openSidebar();
-                            });
-                        }
-                    });
+                async function openSidebarIfFullscreen() {
+                    await systemActionService.exitFullscreen();
+                    thiz.openSidebar();
                 }
             }
         });
