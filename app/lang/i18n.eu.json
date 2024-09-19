@@ -779,6 +779,7 @@
   "ifTheTranslationForYourLanguageIsNotAvailable": "Zure hizkuntzarako itzulpena erabilgarri ez badago edo akatsak baditu, egin ekarpena {crowdin} itzulpen plataforman.",
   "editCollect": "Esaldi metatua konfiguratu",
   "showLabelsOfCollectedImages": "Erakutsi metatutako irudien testua",
+  "fullyShowLongLabels": "Fully show long labels below images",
   "heightOfCollectedImages": "Metatutako irudien altuera [%]",
   "collectMode": "Metaketa modua",
   "MODE_AUTO": "Automatikoa",
