@@ -779,6 +779,7 @@
   "ifTheTranslationForYourLanguageIsNotAvailable": "Wenn Ihre Sprache nicht verfügbar oder fehlerhaft ist, helfen Sie bitte auf {crowdin} die Übersetzungen zu verbessern.",
   "editCollect": "Sammelelement bearbeiten",
   "showLabelsOfCollectedImages": "Zeige Text von gesammelten Bildern",
+  "fullyShowLongLabels": "Fully show long labels below images",
   "heightOfCollectedImages": "Höhe von gesammelten Bildern [%]",
   "collectMode": "Sammel-Modus",
   "MODE_AUTO": "Automatisch",
