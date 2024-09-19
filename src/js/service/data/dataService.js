@@ -229,10 +229,9 @@ dataService.addGridElements = function (gridId, newGridElements) {
  * @see{MetaData}
  *
  * @param newMetadata new or updated metadata object
- * @param forceDbSave if set to true, metadata is saved to database, even if localStorageService.getAppSettings().syncNavigation is not set
  * @return {Promise} resolves after operation finished successful
  */
-dataService.saveMetadata = function (newMetadata, forceDbSave) {
+dataService.saveMetadata = function (newMetadata) {
     newMetadata = JSON.parse(JSON.stringify(newMetadata));
     return new Promise((resolve) => {
         dataService.getMetadata().then((existingMetadata) => {
@@ -693,7 +692,7 @@ dataService.importData = async function (data, options) {
     options.progressFn(70);
     if (importData.metadata) {
         importData.metadata.globalGridActive = !!importData.metadata.globalGridId;
-        await dataService.saveMetadata(importData.metadata, true);
+        await dataService.saveMetadata(importData.metadata);
     }
     options.progressFn(80);
 
