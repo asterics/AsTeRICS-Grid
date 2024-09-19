@@ -423,7 +423,9 @@
   "printedByAstericsGrid": "Vytisknuto z AsTeRICS Grid, https://grid.asterics.eu",
   "playingWebradio": "hraje: {0}",
   "errorPlayingWebradio": "Chyba přehrávání: {0}, žádný internet?!",
-  "webradioVolume": "Hlasitost: {0} / 100",
+  "webradioVolume": "Webradio Volume: {0} / 100",
+  "youTubeVolume": "YouTube Volume: {0} / 100",
+  "systemVolume": "System Volume: {0} / 100",
   "errorPlayingYoutube": "Chyba při přehrávání videa na YouTube. Zkontrolujte připojení k internetu.",
   "mainView": "Hlavní",
   "manageGrids": "Spravovat tabulky",
@@ -1081,5 +1083,11 @@
   "BOARD_TYPE_SINGLE": "Single boards",
   "moreSearchOptions": "More search options",
   "useDictionaryOfCurrentContentLanguage": "Use dictionary of current content language",
-  "editOnGithub": "Edit on GitHub"
+  "editOnGithub": "Edit on GitHub",
+  "GridActionSystem": "System action",
+  "SYS_VOLUME_UP": "System volume up",
+  "SYS_VOLUME_DOWN": "System volume down",
+  "SYS_VOLUME_TOGGLE_MUTE": "Toggle system volume mute",
+  "SYS_ENTER_FULLSCREEN": "Enter fullscreen",
+  "SYS_LEAVE_FULLSCREEN": "Exit fullscreen"
 }
