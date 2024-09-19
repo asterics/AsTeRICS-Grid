@@ -779,6 +779,7 @@
   "ifTheTranslationForYourLanguageIsNotAvailable": "Amennyiben az ön nyelvén hiányos vagy hibás a fordítás, kérjük segítse munkánkat fordítással a {crowdin} platformon.",
   "editCollect": "Gyűjtőkártya szerkesztése",
   "showLabelsOfCollectedImages": "Gyűjtött képek cimkének mutatása",
+  "fullyShowLongLabels": "Fully show long labels below images",
   "heightOfCollectedImages": "Képek magassága a gyűjtőkártyán [%]",
   "collectMode": "Gyűjtés módja",
   "MODE_AUTO": "Automatikus",
