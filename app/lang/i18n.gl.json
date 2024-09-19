@@ -779,6 +779,7 @@
   "ifTheTranslationForYourLanguageIsNotAvailable": "Si a tradución para o seu idioma non está dispoñible ou ten erros, pode colaborar na tradución na plataforma {crowdin}.",
   "editCollect": "Configurar frase acumulada",
   "showLabelsOfCollectedImages": "Mostrar texto das imaxes acumuladas",
+  "fullyShowLongLabels": "Fully show long labels below images",
   "heightOfCollectedImages": "Altura das imaxes acumuladas [%]",
   "collectMode": "Modo de acumulación",
   "MODE_AUTO": "Automático",
