@@ -7,6 +7,9 @@ import { util } from '../util/util';
 import { dataService } from './data/dataService.js';
 import { MetaData } from '../model/MetaData.js';
 import { arasaacService } from './pictograms/arasaacService.js';
+import $ from "../externals/jquery.js";
+import {constants} from "../util/constants.js";
+import {TextConfig} from "../model/TextConfig.js";
 
 let printService = {};
 let gridInstance = null;
@@ -18,6 +21,7 @@ let pdfOptions = {
     imgMargin: 1,
     imgHeightPercentage: 0.8
 };
+let convertMode = null;
 
 let patternFontMappings = [
     {
@@ -289,6 +293,11 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
     let dim = doc.getTextDimensions(label);
     let lines = Math.ceil(dim.w / maxWidth);
     let yOffset = hasImg ? currentHeight - 2 * pdfOptions.elementMargin : (currentHeight - dim.h * lines) / 2;
+    if (convertMode === TextConfig.CONVERT_MODE_UPPERCASE) {
+        label = label.toLocaleUpperCase();
+    } else if (convertMode === TextConfig.CONVERT_MODE_LOWERCASE) {
+        label = label.toLocaleLowerCase();
+    }
     doc.text(label, xStartPos + currentWidth / 2, yStartPos + yOffset, {
         baseline: hasImg ? 'bottom' : 'top',
         align: 'center',
@@ -398,5 +407,15 @@ async function loadFont(path, doc) {
         doc.setFont(fontName);
     }
 }
+
+async function getMetadataConfig() {
+    let metadata = await dataService.getMetadata();
+    if (metadata.textConfig) {
+        convertMode = metadata.textConfig.convertMode;
+    }
+}
+
+$(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
+$(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
 
 export { printService };
