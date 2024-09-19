@@ -779,6 +779,7 @@
   "ifTheTranslationForYourLanguageIsNotAvailable": "Se la traduzione per la tua lingua non è disponibile o presenta errori, contribuisci sulla piattaforma di traduzione {crowdin}.",
   "editCollect": "Modifica elemento di raccolta",
   "showLabelsOfCollectedImages": "Mostra le etichette delle immagini raccolte",
+  "fullyShowLongLabels": "Fully show long labels below images",
   "heightOfCollectedImages": "Altezza delle immagini raccolte [%]",
   "collectMode": "Modalità Di Raccolta",
   "MODE_AUTO": "Automatico",
