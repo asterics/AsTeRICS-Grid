@@ -307,6 +307,22 @@
                             </div>
                         </div>
                     </div>
+                    <div v-if="action.modelName === GridActionSystem.getModelName()">
+                        <div class="srow">
+                            <div class="twelve columns">
+                                <label for="systemActionType" class="four columns normal-text">{{ $t('actionType') }}</label>
+                                <select id="systemActionType" class="eight columns" v-model="action.action">
+                                    <option v-for="action in GridActionSystem.actions" :value="action">{{ action | translate}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="srow" v-if="[GridActionSystem.actions.SYS_VOLUME_UP, GridActionSystem.actions.SYS_VOLUME_DOWN].includes(action.action)">
+                            <div class="twelve columns">
+                                <label for="systemActionValue" class="four columns normal-text">{{ $t(action.action) }} {{ $t('percentBracket') }}</label>
+                                <input type="number" class="eight columns" min="0" max="100" v-model.number="action.actionValue">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </li>
         </ul>
@@ -339,6 +355,7 @@
     import {GridActionUART} from "../../js/model/GridActionUART.js";
     import { GridActionPredict } from '../../js/model/GridActionPredict';
     import { gridUtil } from '../../js/util/gridUtil';
+    import { GridActionSystem } from '../../js/model/GridActionSystem';
 
     export default {
         props: ['gridElement', 'gridData'],
@@ -362,6 +379,7 @@
                 GridActionNavigate: GridActionNavigate,
                 GridActionUART: GridActionUART,
                 GridActionPredict: GridActionPredict,
+                GridActionSystem: GridActionSystem,
                 GridElement: GridElement,
                 speechService: speechService,
                 i18nService: i18nService

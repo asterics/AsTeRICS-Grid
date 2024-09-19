@@ -18,6 +18,7 @@ import { GridActionAudio } from './GridActionAudio.js';
 import { GridActionHTTP } from "./GridActionHTTP.js";
 import {GridActionWordForm} from "./GridActionWordForm.js";
 import { GridActionUART } from './GridActionUART.js';
+import { GridActionSystem } from './GridActionSystem';
 
 class GridElement extends Model({
     id: String,
@@ -97,7 +98,8 @@ class GridElement extends Model({
             GridActionChangeLang,
             GridActionOpenWebpage,
             GridActionHTTP,
-            GridActionUART
+            GridActionUART,
+            GridActionSystem
         ];
     }
 
