@@ -24,6 +24,8 @@ import {stateService} from "./stateService.js";
 import {GridActionWordForm} from "../model/GridActionWordForm.js";
 import {localStorageService} from "./data/localStorageService.js";
 import {uartService} from './uartService.js';
+import { systemActionService } from './systemActionService';
+import { GridActionSystem } from '../model/GridActionSystem';
 
 let actionService = {};
 
@@ -62,6 +64,9 @@ async function doActions(gridElement, gridId) {
         }
         if (b.modelName === GridActionChangeLang.getModelName() && a.modelName === GridActionNavigate.getModelName()) {
             return 1;
+        }
+        if (a.modelName === GridActionSystem.getModelName()) { // do system actions first (e.g. set volume)
+            return -1;
         }
         return 0;
     });
@@ -239,6 +244,9 @@ async function doAction(gridElement, action, options) {
             break;
         case 'GridActionUART':
             uartService.doAction(action);
+            break;
+        case 'GridActionSystem':
+            systemActionService.doAction(action);
             break;
     }
 }

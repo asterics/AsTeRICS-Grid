@@ -73,12 +73,13 @@ fontUtil.getLastFontSize = function () {
  * @param {String} text The text to be rendered.
  * @param {DOMElement} containerElem the element containing the text, default document.body
  * @param {String} targetSize the optional targetSize of the text, e.g. "16px"
+ * @param {String} fontWeight the font weight, e.g. "bold" or 700, default: "bold"
  *
  * @see https://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
  */
-fontUtil.getTextWidth = function (text, containerElem, targetSize) {
+fontUtil.getTextWidth = function (text, containerElem, targetSize, fontWeight = "bold") {
     containerElem = document.body || containerElem;
-    let font = getCanvasFontSize(containerElem, targetSize);
+    let font = getCanvasFontSize(containerElem, targetSize, fontWeight);
     // re-use canvas object for better performance
     const canvas = fontUtil.getTextWidth.canvas || (fontUtil.getTextWidth.canvas = document.createElement('canvas'));
     const context = canvas.getContext('2d');
@@ -117,8 +118,8 @@ function getCssStyle(element, prop) {
     return window.getComputedStyle(element, null).getPropertyValue(prop);
 }
 
-function getCanvasFontSize(el = document.body, fontSize) {
-    const fontWeight = getCssStyle(el, 'font-weight') || 'normal';
+function getCanvasFontSize(el = document.body, fontSize, weight) {
+    const fontWeight = weight || getCssStyle(el, 'font-weight') || 'normal';
     fontSize = fontSize || getCssStyle(el, 'font-size') || '16px';
     const fontFamily = getCssStyle(el, 'font-family') || 'Times New Roman';
 

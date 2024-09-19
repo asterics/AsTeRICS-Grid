@@ -58,9 +58,13 @@ let _waitingSpeakOptions = {};
 speechService.speak = function (textOrOject, options) {
     options = options || {};
     options.voiceLangIsTextLang = options.voiceLangIsTextLang || _voiceLangIsTextLang;
+    let userSettings = localStorageService.getUserSettings();
     let text = null;
     let isString = typeof textOrOject === 'string';
     if (!textOrOject || (!isString && Object.keys(textOrOject).length === 0)) {
+        return;
+    }
+    if (userSettings.systemVolume === 0 || userSettings.systemVolumeMuted) {
         return;
     }
     speechService.resetSpeakAfterFinished();
@@ -104,6 +108,8 @@ speechService.speak = function (textOrOject, options) {
         let isSelectedVoice = nativeVoices[0].id === preferredVoiceId;
         msg.pitch = isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1;
         msg.rate = options.rate || (isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1);
+        msg.volume = userSettings.systemVolume / 100.0;
+        log.debug("speak volume", userSettings.systemVolume);
         if (options.progressFn) {
             msg.addEventListener('boundary', options.progressFn);
             msg.addEventListener('end', options.progressFn);

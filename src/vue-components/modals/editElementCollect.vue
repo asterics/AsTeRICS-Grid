@@ -28,6 +28,12 @@
         </div>
         <div class="row">
             <div class="col-12">
+                <input v-if="gridElement" id="showLongLabels" type="checkbox" v-model="gridElement.showFullLabels"/>
+                <label for="showLongLabels">{{ $t('fullyShowLongLabels') }}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
                 <input v-if="gridElement" id="useSingleLine" type="checkbox" v-model="gridElement.singleLine" :disabled="!autoOrSeparatedMode"/>
                 <label for="useSingleLine">{{ $t('useHorizontalScrollbarIfElementsDontFit') }}</label>
             </div>

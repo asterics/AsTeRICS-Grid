@@ -4,6 +4,7 @@ import { GridActionPredict } from './GridActionPredict.js';
 
 class GridElementCollect extends GridElement.extend({
     showLabels: [Boolean],
+    showFullLabels: [Boolean],
     imageHeightPercentage: [Number],
     mode: [String],
     singleLine: [Boolean],

@@ -358,6 +358,10 @@ async function updateCollectElements(isSecondTry) {
                 let label = getPrintTextOfElement(collectedElement);
                 let image = getImageData(collectedElement);
                 let elemWidth = imgHeight * imageRatios[index] || imgHeight;
+                if (collectElement.showFullLabels) {
+                    let textWidth = fontUtil.getTextWidth(label, outerContainerJqueryElem[0], `${textHeight}px`);
+                    elemWidth = Math.max(elemWidth, textWidth + 2 * imgMargin);
+                }
                 let marked = markedImageIndex === index;
                 let imgHTML = null;
                 if (image) {

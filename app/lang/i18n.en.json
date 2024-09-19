@@ -423,7 +423,9 @@
   "printedByAstericsGrid": "Printed by AsTeRICS Grid, https://grid.asterics.eu",
   "playingWebradio": "playing: {0}",
   "errorPlayingWebradio": "Error playing: {0}, no internet?!",
-  "webradioVolume": "Volume: {0} / 100",
+  "webradioVolume": "Webradio Volume: {0} / 100",
+  "youTubeVolume": "YouTube Volume: {0} / 100",
+  "systemVolume": "System Volume: {0} / 100",
   "errorPlayingYoutube": "Error on playing YouTube video. Please check internet connection.",
   "mainView": "Main",
   "manageGrids": "Manage grids",
@@ -776,6 +778,7 @@
   "ifTheTranslationForYourLanguageIsNotAvailable": "If the translation for your language is not available or has errors, please contribute on the translation platform {crowdin}.",
   "editCollect": "Edit collect element",
   "showLabelsOfCollectedImages": "Show labels of collected images",
+  "fullyShowLongLabels": "Fully show long labels below images",
   "heightOfCollectedImages": "Height of collected images [%]",
   "collectMode": "Collect Mode",
   "MODE_AUTO": "Automatic",
@@ -1106,5 +1109,11 @@
   "selectedConfiguration": "Selected configuration \"{0}\"",
   "backToSearch": "Back to search",
   "createLinksToImportedGridsAt": "Create links to imported grids at",
-  "loadMoreResults": "load more"
+  "loadMoreResults": "load more",
+  "GridActionSystem": "System action",
+  "SYS_VOLUME_UP": "System volume up",
+  "SYS_VOLUME_DOWN": "System volume down",
+  "SYS_VOLUME_TOGGLE_MUTE": "Toggle system volume mute",
+  "SYS_ENTER_FULLSCREEN": "Enter fullscreen",
+  "SYS_LEAVE_FULLSCREEN": "Exit fullscreen"
 }

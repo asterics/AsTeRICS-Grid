@@ -16,23 +16,13 @@ let PLAYER_STATES = {
     PLAYING: 1,
     UNSTARTED: -1
 };
-let initYtState = {
-    lastPlayType: GridActionYoutube.playTypes.YT_PLAY_PLAYLIST,
-    lastData: 'https://www.youtube.com/watch?v=5ffLB4a9APc&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz',
-    lastVideoId: null,
-    lastTimes: {}, // Video ID -> Player Time
-    lastPlaylistIndexes: {}, // Playlist ID -> last played video index
-    dataApiCalls: {},
-    muted: false,
-    volume: 100
-};
 
 let DATA_API_KEY = 'AIzaSyCDOUROr3UWS8K-WJNlAG21yBTOsveWQn8';
 let DATA_API_CACHE_TIMEOUT_MS = 15 * 60 * 1000; //15 minutes
 let initialized = false;
 let player = null;
 let playerID = 'player';
-let ytState = localStorageService.getUserSettings().ytState || JSON.parse(JSON.stringify(initYtState));
+let userSettings = localStorageService.getUserSettings();
 let waitForBuffering = false;
 let navigateAction = null;
 let iframe = null;
@@ -94,11 +84,11 @@ youtubeService.play = function (action, videoTimeParam) {
     }
     promise.then(() => {
         if (!action.data) {
-            action.playType = ytState.lastPlayType;
-            action.data = ytState.lastData;
+            action.playType = userSettings.ytState.lastPlayType;
+            action.data = userSettings.ytState.lastData;
         }
-        ytState.lastPlayType = action.playType;
-        ytState.lastData = action.data;
+        userSettings.ytState.lastPlayType = action.playType;
+        userSettings.ytState.lastData = action.data;
         if (!player) {
             player = new YT.Player(playerID, {
                 height: $('.yt-container')[0].getBoundingClientRect().height,
@@ -133,8 +123,8 @@ youtubeService.play = function (action, videoTimeParam) {
 
         function onPlayerReady(event) {
             iframe = $('#' + playerID)[0];
-            youtubeService.setVolume(ytState.volume, true);
-            if (ytState.muted) {
+            youtubeService.setVolume(userSettings.ytState.volume, true);
+            if (userSettings.ytState.muted) {
                 player.mute();
             }
             processAction();
@@ -151,7 +141,7 @@ youtubeService.play = function (action, videoTimeParam) {
                         player.playVideo();
                         return;
                     }
-                    ytState.lastVideoId = videoId;
+                    userSettings.ytState.lastVideoId = videoId;
                     player.loadVideoById(videoId, getVideoTime(videoTimeParam, videoId));
                     break;
                 case GridActionYoutube.playTypes.YT_PLAY_SEARCH:
@@ -164,11 +154,11 @@ youtubeService.play = function (action, videoTimeParam) {
                         videoEmbeddable: true
                     }).then((response) => {
                         let videoIds = response.result.items.map((item) => item.id.videoId).filter((id) => !!id);
-                        player.loadPlaylist(videoIds, ytState.lastPlaylistIndexes[action.data]);
+                        player.loadPlaylist(videoIds, userSettings.ytState.lastPlaylistIndexes[action.data]);
                         setTimeout(() => {
                             if (!player) return;
                             if (!youtubeService.isPlaying()) {
-                                player.loadPlaylist(videoIds, ytState.lastPlaylistIndexes[action.data]);
+                                player.loadPlaylist(videoIds, userSettings.ytState.lastPlaylistIndexes[action.data]);
                             }
                         }, 500);
                     });
@@ -179,7 +169,7 @@ youtubeService.play = function (action, videoTimeParam) {
                     player.loadPlaylist({
                         list: playlistId,
                         listType: 'playlist',
-                        index: ytState.lastPlaylistIndexes[action.data]
+                        index: userSettings.ytState.lastPlaylistIndexes[action.data]
                     });
                     break;
                 case GridActionYoutube.playTypes.YT_PLAY_CHANNEL:
@@ -189,12 +179,12 @@ youtubeService.play = function (action, videoTimeParam) {
                     player.loadPlaylist({
                         list: channelPlaylist,
                         listType: 'playlist',
-                        index: ytState.lastPlaylistIndexes[action.data]
+                        index: userSettings.ytState.lastPlaylistIndexes[action.data]
                     });
                     break;
                 case GridActionYoutube.playTypes.YT_PLAY_RELATED:
-                    /*let currentID = youtubeService.getCurrentVideoId() || ytState.lastVideoId;
-                    action.data = ytState.lastData = currentID; // for correctly saving playlist index
+                    /*let currentID = youtubeService.getCurrentVideoId() || userSettings.ytState.lastVideoId;
+                    action.data = userSettings.ytState.lastData = currentID; // for correctly saving playlist index
                     log.warn(currentID);
                     if (!currentID) {
                         return;
@@ -211,7 +201,7 @@ youtubeService.play = function (action, videoTimeParam) {
                         log.warn(response);
                         let videoIds = response.result.items.map(item => item.id.videoId).filter(id => !!id);
                         log.warn(videoIds);
-                        player.loadPlaylist(videoIds, ytState.lastPlaylistIndexes[action.data]);
+                        player.loadPlaylist(videoIds, userSettings.ytState.lastPlaylistIndexes[action.data]);
                     });*/
                     break;
             }
@@ -220,7 +210,7 @@ youtubeService.play = function (action, videoTimeParam) {
 
         function onBuffering() {
             player.setLoop(true);
-            ytState.lastVideoId = youtubeService.getCurrentVideoId();
+            userSettings.ytState.lastVideoId = youtubeService.getCurrentVideoId();
             let seekTime = getVideoTime(videoTimeParam, youtubeService.getCurrentVideoId());
             if (seekTime) {
                 player.seekTo(seekTime, true);
@@ -315,29 +305,37 @@ youtubeService.volumeUp = function (diffPercentage) {
     if (!player) {
         return;
     }
-    youtubeService.setVolume(Math.min(player.getVolume() + +diffPercentage, 100));
+    youtubeService.setVolume(Math.min(userSettings.ytState.volume + +diffPercentage, 100));
 };
 
 youtubeService.volumeDown = function (diffPercentage) {
     if (!player) {
         return;
     }
-    youtubeService.setVolume(Math.max(player.getVolume() - +diffPercentage, 0));
+    youtubeService.setVolume(Math.max(userSettings.ytState.volume - +diffPercentage, 0));
 };
 
 youtubeService.setVolume = function (volume, initSet) {
     if (player) {
-        player.setVolume(volume);
+        volume = volume !== null ? volume : userSettings.ytState.volume;
+        let playerVolume = volume * (userSettings.systemVolume / 100.0);
+        if (userSettings.systemVolumeMuted) {
+            playerVolume = 0;
+        }
+        player.setVolume(playerVolume);
+        if (player.isMuted || !userSettings.ytState.muted) {
+            player.unMute();
+        }
+        if (playerVolume === 0) {
+            player.mute();
+        }
+        log.debug("yt volumes (system, yt, result)", userSettings.systemVolume, volume, playerVolume);
         if (!initSet) {
-            if (player.isMuted) {
-                player.unMute();
-                ytState.muted = false;
-            }
-            MainVue.setTooltip(i18nService.t('webradioVolume', volume), {
+            MainVue.setTooltip(i18nService.t('youTubeVolume', volume), {
                 revertOnClose: true,
                 timeout: 5000
             });
-            ytState.volume = volume;
+            userSettings.ytState.volume = volume;
             saveState();
         }
     }
@@ -347,7 +345,7 @@ youtubeService.volumeToggleMute = function () {
     if (player) {
         let isMuted = player.isMuted();
         isMuted ? player.unMute() : player.mute();
-        ytState.muted = !isMuted;
+        userSettings.ytState.muted = !isMuted;
         saveState();
     }
 };
@@ -451,9 +449,9 @@ function callGapiCached(fnNameString, parameters, timeout) {
             }
         });
         if (fn) {
-            ytState.dataApiCalls = ytState.dataApiCalls || {};
+            userSettings.ytState.dataApiCalls = userSettings.ytState.dataApiCalls || {};
             let key = fnNameString + JSON.stringify(parameters);
-            let cached = ytState.dataApiCalls[key];
+            let cached = userSettings.ytState.dataApiCalls[key];
             if (cached && new Date().getTime() - cached.time < timeout) {
                 //return cache
                 return resolve(JSON.parse(cached.response));
@@ -461,7 +459,7 @@ function callGapiCached(fnNameString, parameters, timeout) {
                 //call real API
                 fn(parameters).then(
                     (response) => {
-                        ytState.dataApiCalls[key] = {
+                        userSettings.ytState.dataApiCalls[key] = {
                             time: new Date().getTime(),
                             response: JSON.stringify(response)
                         };
@@ -479,7 +477,7 @@ function callGapiCached(fnNameString, parameters, timeout) {
 }
 
 function getVideoTime(timeParam, videoId) {
-    return timeParam !== undefined ? timeParam : ytState.lastTimes[videoId];
+    return timeParam !== undefined ? timeParam : userSettings.ytState.lastTimes[videoId];
 }
 
 function getURLParam(urlString, paramName) {
@@ -495,19 +493,19 @@ function saveState() {
         let videoId = youtubeService.getCurrentVideoId();
         let currentIndex = player.getPlaylistIndex();
         if (videoId) {
-            ytState.lastTimes[videoId] = player.getCurrentTime();
+            userSettings.ytState.lastTimes[videoId] = player.getCurrentTime();
         }
-        if (currentIndex >= 0 && ytState.lastPlayType !== GridActionYoutube.playTypes.YT_PLAY_VIDEO) {
-            ytState.lastPlaylistIndexes[ytState.lastData] = currentIndex;
+        if (currentIndex >= 0 && userSettings.ytState.lastPlayType !== GridActionYoutube.playTypes.YT_PLAY_VIDEO) {
+            userSettings.ytState.lastPlaylistIndexes[userSettings.ytState.lastData] = currentIndex;
         }
     }
-    if (JSON.stringify(ytState).length > 1024 * 1024) {
+    if (JSON.stringify(userSettings.ytState).length > 1024 * 1024) {
         // bigger than 1 MB -> reset
-        ytState.lastPlaylistIndexes = {};
-        ytState.lastTimes = {};
-        ytState.dataApiCalls = {};
+        userSettings.ytState.lastPlaylistIndexes = {};
+        userSettings.ytState.lastTimes = {};
+        userSettings.ytState.dataApiCalls = {};
     }
-    localStorageService.saveUserSettings({ytState: ytState});
+    localStorageService.saveUserSettings({ ytState: userSettings.ytState });
 }
 
 function errorMessage() {
@@ -581,6 +579,11 @@ function init() {
     return Promise.all([promiseData, promiseIframe]);
 }
 
+function updateUserSettings() {
+    userSettings = localStorageService.getUserSettings();
+    youtubeService.setVolume(null, true);
+}
+
 $(document).on(constants.EVENT_GRID_LOADED, () => {
     if (navigateAction) {
         youtubeService.doAction(navigateAction);
@@ -591,8 +594,7 @@ $(document).on(constants.EVENT_GRID_LOADED, () => {
 $(document).on(constants.EVENT_NAVIGATE, youtubeService.destroy);
 $(document).on(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, youtubeService.destroy);
 
-$(document).on(constants.EVENT_USER_CHANGED, () => {
-    ytState = localStorageService.getUserSettings().ytState || JSON.parse(JSON.stringify(initYtState));
-});
+$(document).on(constants.EVENT_USER_CHANGED, updateUserSettings);
+$(document).on(constants.EVENT_USERSETTINGS_UPDATED, updateUserSettings);
 
 export { youtubeService };
