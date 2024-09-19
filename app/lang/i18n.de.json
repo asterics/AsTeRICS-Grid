@@ -423,7 +423,9 @@
   "printedByAstericsGrid": "Gedruckt mit AsTeRICS Grid, https://grid.asterics.eu",
   "playingWebradio": "Wiedergabe: {0}",
   "errorPlayingWebradio": "Fehler bei Wiedergabe: {0}, kein Internet?!",
-  "webradioVolume": "Lautstärke: {0} / 100",
+  "webradioVolume": "Webradio Volume: {0} / 100",
+  "youTubeVolume": "YouTube Volume: {0} / 100",
+  "systemVolume": "System Volume: {0} / 100",
   "errorPlayingYoutube": "Fehler bei der Wiedergabe des YouTube Videos. Bitte Internet-Verbindung überprüfen.",
   "mainView": "Start",
   "manageGrids": "Grids verwalten",
@@ -1081,5 +1083,11 @@
   "BOARD_TYPE_SINGLE": "Einzelne Grids",
   "moreSearchOptions": "Mehr Suchoptionen",
   "useDictionaryOfCurrentContentLanguage": "Verwende Wörterbuch in der aktuellen Sprache der Grids",
-  "editOnGithub": "Auf GitHub editieren"
+  "editOnGithub": "Auf GitHub editieren",
+  "GridActionSystem": "System action",
+  "SYS_VOLUME_UP": "System volume up",
+  "SYS_VOLUME_DOWN": "System volume down",
+  "SYS_VOLUME_TOGGLE_MUTE": "Toggle system volume mute",
+  "SYS_ENTER_FULLSCREEN": "Enter fullscreen",
+  "SYS_LEAVE_FULLSCREEN": "Exit fullscreen"
 }
