@@ -4,6 +4,7 @@ import { dataService } from './data/dataService';
 import { localStorageService } from './data/localStorageService';
 import { MainVue } from '../vue/mainVue';
 import { i18nService } from './i18nService';
+import { constants } from '../util/constants';
 
 let WEBRADIO_LAST_PLAYED_ID_KEY = 'WEBRADIO_LAST_PLAYED_ID_KEY';
 let WEBRADIO_LAST_VOLUME_KEY = 'WEBRADIO_LAST_VOLUME_KEY';
@@ -22,6 +23,7 @@ let lastPlayedId = localStorageService.get(WEBRADIO_LAST_PLAYED_ID_KEY);
 let volume = parseFloat(localStorageService.get(WEBRADIO_LAST_VOLUME_KEY) || 1.0);
 let hasMoreSearchResults = false;
 let playingVideo = false;
+let userSettings = localStorageService.getUserSettings();
 
 webradioService.doAction = function (gridId, action) {
     dataService.getGrid(gridId).then((grid) => {
@@ -107,7 +109,7 @@ webradioService.play = function (webradio) {
         } else {
             playingVideo = false;
             player.src = radioWithUrl.radioUrl;
-            player.volume = volume;
+            webradioService.setVolume();
             promise = player.play();
         }
         let tooltipText = i18nService.t('playingWebradio', radioWithUrl.radioName);
@@ -155,20 +157,27 @@ webradioService.toggle = function (webradio) {
 
 webradioService.volumeUp = function () {
     volume = volume + VOLUME_STEP <= 1.0 ? volume + VOLUME_STEP : 1;
-    volume = Math.round(volume * 100) / 100;
-    localStorageService.save(WEBRADIO_LAST_VOLUME_KEY, volume);
+    webradioService.setVolume(volume);
     setVolumeTooltip();
-    player.volume = volume;
-    videoPlayer.volume = volume;
 };
 
 webradioService.volumeDown = function () {
     volume = volume - VOLUME_STEP >= 0 ? volume - VOLUME_STEP : 0;
+    webradioService.setVolume(volume);
+    setVolumeTooltip();
+};
+
+webradioService.setVolume = function(volumeParam) {
+    volume = volumeParam !== undefined ? volumeParam : volume;
     volume = Math.round(volume * 100) / 100;
     localStorageService.save(WEBRADIO_LAST_VOLUME_KEY, volume);
-    setVolumeTooltip();
-    player.volume = volume;
-    videoPlayer.volume = volume;
+    let playerVolume = volume * (userSettings.systemVolume / 100.0);
+    if (userSettings.systemVolumeMuted) {
+        playerVolume = 0;
+    }
+    player.volume = playerVolume;
+    videoPlayer.volume = playerVolume;
+    log.debug("radio volumes (system, radio, result)", userSettings.systemVolume, volume * 100, playerVolume * 100);
 };
 
 /**
@@ -309,5 +318,13 @@ function fillUrl(webradio, gridId) {
         });
     });
 }
+
+function updateUserSettings() {
+    userSettings = localStorageService.getUserSettings();
+    webradioService.setVolume();
+}
+
+$(document).on(constants.EVENT_USER_CHANGED, updateUserSettings);
+$(document).on(constants.EVENT_USERSETTINGS_UPDATED, updateUserSettings);
 
 export { webradioService };
