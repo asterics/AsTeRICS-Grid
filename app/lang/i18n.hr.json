@@ -779,6 +779,7 @@
   "ifTheTranslationForYourLanguageIsNotAvailable": "Ako prijevod za vaš jezik nije dostupan ili ima pogreške, doprinesite na prevoditeljskoj platformi {crowdin}.",
   "editCollect": "Uredi prikupljeni element",
   "showLabelsOfCollectedImages": "Prikaži oznake prikupljenih slika",
+  "fullyShowLongLabels": "Fully show long labels below images",
   "heightOfCollectedImages": "Visina prikupljenih slika [%]",
   "collectMode": "Način prikupljanja",
   "MODE_AUTO": "Automatski",
