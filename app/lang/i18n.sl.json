@@ -779,6 +779,7 @@
   "ifTheTranslationForYourLanguageIsNotAvailable": "Če prevod vašega jezika ni na voljo ali ima napake, prosimo sodelujte na platformi za prevajanje {crowdin}.",
   "editCollect": "Uredi izbrani element",
   "showLabelsOfCollectedImages": "Prikaži oznake izbranih slik",
+  "fullyShowLongLabels": "Fully show long labels below images",
   "heightOfCollectedImages": "Višina izbranih slik [%]",
   "collectMode": "Način izbire",
   "MODE_AUTO": "Samodejno",
