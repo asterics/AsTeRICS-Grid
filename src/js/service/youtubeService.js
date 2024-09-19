@@ -333,7 +333,7 @@ youtubeService.setVolume = function (volume, initSet) {
                 player.unMute();
                 ytState.muted = false;
             }
-            MainVue.setTooltip(i18nService.t('webradioVolume', volume), {
+            MainVue.setTooltip(i18nService.t('youTubeVolume', volume), {
                 revertOnClose: true,
                 timeout: 5000
             });
