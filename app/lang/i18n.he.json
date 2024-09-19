@@ -779,6 +779,7 @@
   "ifTheTranslationForYourLanguageIsNotAvailable": "אם אין תרגום לשפה שלכם או שיש שגיאות בתרגום, בבקשה התייחסו לכך במסד התרגום {crowdin}.",
   "editCollect": "ערוך את הרכיב הנוסף",
   "showLabelsOfCollectedImages": "הראה תוויות של הרכיבים שנאספו",
+  "fullyShowLongLabels": "Fully show long labels below images",
   "heightOfCollectedImages": "גובה הסימבולים במבע [%]",
   "collectMode": "דרך איסוף הפריטים",
   "MODE_AUTO": "אוטומטי",
