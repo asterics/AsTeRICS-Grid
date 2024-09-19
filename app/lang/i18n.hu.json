@@ -423,7 +423,9 @@
   "printedByAstericsGrid": "Az AsTeRICS Grid által nyomtatva, https://grid.asterics.eu",
   "playingWebradio": "lejátszva: {0}",
   "errorPlayingWebradio": "Lejátszási hiba: {0}, nincs internet?!",
-  "webradioVolume": "Hangerő: {0} / 100",
+  "webradioVolume": "Webradio Volume: {0} / 100",
+  "youTubeVolume": "YouTube Volume: {0} / 100",
+  "systemVolume": "System Volume: {0} / 100",
   "errorPlayingYoutube": "Hiba a YouTube video lejátszása közben. Ellenőrizze az internetkapcsolatot.",
   "mainView": "Kezdőtábla",
   "manageGrids": "Táblák kezelése",
@@ -1081,5 +1083,11 @@
   "BOARD_TYPE_SINGLE": "Single boards",
   "moreSearchOptions": "More search options",
   "useDictionaryOfCurrentContentLanguage": "Use dictionary of current content language",
-  "editOnGithub": "Edit on GitHub"
+  "editOnGithub": "Edit on GitHub",
+  "GridActionSystem": "System action",
+  "SYS_VOLUME_UP": "System volume up",
+  "SYS_VOLUME_DOWN": "System volume down",
+  "SYS_VOLUME_TOGGLE_MUTE": "Toggle system volume mute",
+  "SYS_ENTER_FULLSCREEN": "Enter fullscreen",
+  "SYS_LEAVE_FULLSCREEN": "Exit fullscreen"
 }
