@@ -199,6 +199,7 @@
   "insertLinksBetweenPages": "\nInsereix enllaços entre pàgines",
   "printBackgroundColor": "Imprimeix el color del fons negre",
   "printIndexAtSideEdge": "Imprimeix l'índex a la vora lateral",
+  "includeGlobalGrid": "Include global grid",
   "downloadPdf": "Descarrega PDF",
   "setGridSize": "Estableix la mida de la cel·la",
   "numberOfRows": "Número de files",
