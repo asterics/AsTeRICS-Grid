@@ -199,6 +199,7 @@
   "insertLinksBetweenPages": "Link beszúrása az oldalak közé",
   "printBackgroundColor": "Nyomtatási háttérszín",
   "printIndexAtSideEdge": "Tábla index nyomtatása a lap szélére",
+  "includeGlobalGrid": "Include global grid",
   "downloadPdf": "PDF letöltése",
   "setGridSize": "Rács méret beállátás",
   "numberOfRows": "Sorok száma",
