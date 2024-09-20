@@ -199,6 +199,7 @@
   "insertLinksBetweenPages": "Verknüpfungen zwischen Seiten anzeigen",
   "printBackgroundColor": "Hintergrundfarbe drucken",
   "printIndexAtSideEdge": "Griffregister am Seitenrand drucken",
+  "includeGlobalGrid": "Include global grid",
   "downloadPdf": "PDF herunterladen",
   "setGridSize": "Grid-Größe anpassen",
   "numberOfRows": "Anzahl der Zeilen",
