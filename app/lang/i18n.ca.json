@@ -199,6 +199,7 @@
   "insertLinksBetweenPages": "Inserir enllaços entre pàgines",
   "printBackgroundColor": "Imprimir el color de fons",
   "printIndexAtSideEdge": "Imprimir índex al lateral",
+  "includeGlobalGrid": "Include global grid",
   "downloadPdf": "Descarregar PDF",
   "setGridSize": "Establir tamany del tauler",
   "numberOfRows": "Nombre de files",
