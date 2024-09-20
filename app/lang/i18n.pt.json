@@ -199,6 +199,7 @@
   "insertLinksBetweenPages": "Inserir ligações entre páginas",
   "printBackgroundColor": "Imprimir cor de fundo",
   "printIndexAtSideEdge": "Imprimir índice na lateral",
+  "includeGlobalGrid": "Include global grid",
   "downloadPdf": "Transferir PDF",
   "setGridSize": "Definir tamanho da tabela",
   "numberOfRows": "Número de linhas",
