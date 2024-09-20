@@ -199,6 +199,7 @@
   "insertLinksBetweenPages": "पेजों के बीच लिंक डालें",
   "printBackgroundColor": "Print background color",
   "printIndexAtSideEdge": "Print index at side edge",
+  "includeGlobalGrid": "Include global grid",
   "downloadPdf": "डाउनलोड पीडीऍफ़",
   "setGridSize": "ग्रिड का आकार सेट करें",
   "numberOfRows": "पंक्तियों की संख्या",
