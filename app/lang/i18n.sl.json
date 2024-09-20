@@ -199,6 +199,7 @@
   "insertLinksBetweenPages": "Vnesi povezave med stranmi",
   "printBackgroundColor": "Natisni barvo ozadja",
   "printIndexAtSideEdge": "Natisni kazalo ob strani",
+  "includeGlobalGrid": "Include global grid",
   "downloadPdf": "Prenesi PDF",
   "setGridSize": "Nastavi velikost strani",
   "numberOfRows": "Število vrstic",
