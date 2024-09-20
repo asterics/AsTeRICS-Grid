@@ -199,6 +199,7 @@
   "insertLinksBetweenPages": "Sartu estekak orrialdeen artean",
   "printBackgroundColor": "Inprimatu atzeko planoaren kolorea",
   "printIndexAtSideEdge": "Inprimatu aurkibidea alboan",
+  "includeGlobalGrid": "Include global grid",
   "downloadPdf": "Deskargatu PDFa",
   "setGridSize": "Ezarri taularen tamaina",
   "numberOfRows": "Ilara kopurua",
