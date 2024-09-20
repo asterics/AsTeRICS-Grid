@@ -138,9 +138,9 @@ function addGridToPdf(doc, gridData, options, metadata) {
     );
     let registerHeight = options.showRegister && options.pages > 1 ? 10 : 0;
     let footerHeight = hasARASAACImages ? 2 * pdfOptions.footerHeight : pdfOptions.footerHeight;
-    let elementTotalWidth = (DOC_WIDTH - 2 * pdfOptions.docPadding) / gridData.getWidth();
+    let elementTotalWidth = (DOC_WIDTH - 2 * pdfOptions.docPadding) / gridData.getWidthWithBounds();
     let elementTotalHeight =
-        (DOC_HEIGHT - 2 * pdfOptions.docPadding - footerHeight - registerHeight) / gridData.getHeight();
+        (DOC_HEIGHT - 2 * pdfOptions.docPadding - footerHeight - registerHeight) / gridData.getHeightWithBounds();
     if (footerHeight > 0) {
         let yBaseFooter = DOC_HEIGHT - pdfOptions.docPadding - registerHeight;
         let fontSizePt = (pdfOptions.footerHeight * 0.4) / 0.352778;
