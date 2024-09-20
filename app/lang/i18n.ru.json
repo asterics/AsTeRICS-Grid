@@ -199,6 +199,7 @@
   "insertLinksBetweenPages": "Вставка ссылок между страницами",
   "printBackgroundColor": "Печатать фон листа",
   "printIndexAtSideEdge": "Печать индекса сбоку",
+  "includeGlobalGrid": "Include global grid",
   "downloadPdf": "Скачать PDF",
   "setGridSize": "Задать размер сетки",
   "numberOfRows": "Количество строк",
