@@ -199,6 +199,7 @@
   "insertLinksBetweenPages": "הוסף קישור בין לוחות",
   "printBackgroundColor": "הדפס את צבע הרקע",
   "printIndexAtSideEdge": "הדפס תוכן בצד",
+  "includeGlobalGrid": "Include global grid",
   "downloadPdf": "הורד PDF",
   "setGridSize": "קבע את גודל הלוח",
   "numberOfRows": "מספר שורות",
