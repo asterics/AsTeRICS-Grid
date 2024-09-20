@@ -199,6 +199,7 @@
   "insertLinksBetweenPages": "Voeg links tussen pagina's in",
   "printBackgroundColor": "Achtergrondkleur afdrukken",
   "printIndexAtSideEdge": "Print index aan de zijkant",
+  "includeGlobalGrid": "Include global grid",
   "downloadPdf": "Download PDF",
   "setGridSize": "Stel rastergrootte in",
   "numberOfRows": "Aantal rijen",
