@@ -199,6 +199,7 @@
   "insertLinksBetweenPages": "Vložit odkazy mezi stránkami",
   "printBackgroundColor": "Tisknout barvu pozadí",
   "printIndexAtSideEdge": "Tisknout index na bočním okraji",
+  "includeGlobalGrid": "Include global grid",
   "downloadPdf": "Stáhnout PDF",
   "setGridSize": "Nastavit velikost tabulky",
   "numberOfRows": "Počet řádků",
