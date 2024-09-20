@@ -199,6 +199,7 @@
   "insertLinksBetweenPages": "Inserare link-uri între pagini",
   "printBackgroundColor": "Tipărește culoarea de fundal",
   "printIndexAtSideEdge": "Tipărește indexul pe marginea laterală",
+  "includeGlobalGrid": "Include global grid",
   "downloadPdf": "Descărcați PDF",
   "setGridSize": "Setează dimensiunea grilei",
   "numberOfRows": "Număr de rânduri",
