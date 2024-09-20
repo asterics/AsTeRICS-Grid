@@ -199,6 +199,7 @@
   "insertLinksBetweenPages": "Umetni poveznice između stranica",
   "printBackgroundColor": "Boja pozadine ispisa",
   "printIndexAtSideEdge": "Ispiši indeks na bočnom rubu",
+  "includeGlobalGrid": "Include global grid",
   "downloadPdf": "Preuzmi PDF",
   "setGridSize": "Postavi veličinu ploče",
   "numberOfRows": "Broj redova",
