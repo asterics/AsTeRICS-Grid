@@ -199,6 +199,7 @@
   "insertLinksBetweenPages": "Вмъкване на връзки между решетките",
   "printBackgroundColor": "Принтиране на фоновия цвят",
   "printIndexAtSideEdge": "Принтиране на индекса в страничния край",
+  "includeGlobalGrid": "Include global grid",
   "downloadPdf": "Сваляне на PDF",
   "setGridSize": "Вписване на размер на решетката",
   "numberOfRows": "Брой редове",
