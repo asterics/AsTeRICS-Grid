@@ -10,6 +10,7 @@ import { arasaacService } from './pictograms/arasaacService.js';
 import $ from "../externals/jquery.js";
 import {constants} from "../util/constants.js";
 import {TextConfig} from "../model/TextConfig.js";
+import { gridUtil } from '../util/gridUtil';
 
 let printService = {};
 let gridInstance = null;
@@ -58,6 +59,7 @@ printService.setGridInstance = function (instance) {
  * @param options (optional) object containing options
  * @param options.showLinks if true, links on elements are created which are referring to another grid/page
  * @param options.backgroundColor object with r/g/b properties defining a background color for grid elements. Default: white.
+ * @param options.includeGlobalGrid if true, the global grid is included to each grid
  * @param options.progressFn a function that is called in order to report progress of the task.
  *                           Parameters passed: <percentage:Number, text:String, abortFn:Function>.
  *                           "abortFn" can be called in order to abort the task.
@@ -66,6 +68,11 @@ printService.setGridInstance = function (instance) {
 printService.gridsToPdf = async function (gridsData, options) {
     let jsPDF = await import(/* webpackChunkName: "jspdf" */ 'jspdf');
     options = options || {};
+    let metadata = await dataService.getMetadata();
+    let globalGrid = null;
+    if (options.includeGlobalGrid) {
+        globalGrid = await dataService.getGlobalGrid();
+    }
     options.idPageMap = {};
     options.idParentsMap = {};
     options.fontPath = '';
@@ -99,7 +106,6 @@ printService.gridsToPdf = async function (gridsData, options) {
     }
 
     options.pages = gridsData.length;
-    let metadata = await dataService.getMetadata();
     for (let i = 0; i < gridsData.length && !options.abort; i++) {
         if (options.progressFn) {
             options.progressFn(
@@ -111,7 +117,7 @@ printService.gridsToPdf = async function (gridsData, options) {
             );
         }
         options.page = i + 1;
-        await addGridToPdf(doc, gridsData[i], options, metadata);
+        await addGridToPdf(doc, gridsData[i], options, metadata, globalGrid);
         if (i < gridsData.length - 1) {
             doc.addPage();
         }
@@ -125,12 +131,13 @@ printService.gridsToPdf = async function (gridsData, options) {
     }
 };
 
-function addGridToPdf(doc, gridData, options, metadata) {
+function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
     let promises = [];
     let DOC_WIDTH = 297;
     let DOC_HEIGHT = 210;
 
     gridData = new GridData(gridData);
+    gridData = gridUtil.mergeGrids(gridData, globalGrid, metadata);
     let hasARASAACImages = gridData.gridElements.reduce(
         (total, element) =>
             total || (element.image && element.image.searchProviderName === arasaacService.SEARCH_PROVIDER_NAME),
