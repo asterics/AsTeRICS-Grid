@@ -1,7 +1,7 @@
 <template>
     <div class="mt-0">
         <div class="srow mt-0">
-            <slider-input :label="$t('minimumPauseForCollectingAndSpeakingTheSameCellSev')" id="minPauseSeCollectSpeak" min="0" max="10000" step="200" unit="s" decimals="1" display-factor="0.001" v-model.number="inputConfig.globalMinPauseCollectSpeak" @change="changed"/>
+            <slider-input label="minimumPauseForCollectingAndSpeakingTheSameCellSev" id="minPauseSeCollectSpeak" min="0" max="10000" step="200" unit="s" decimals="1" display-factor="0.001" v-model.number="inputConfig.globalMinPauseCollectSpeak" @change="changed"/>
         </div>
         <div v-if="!hideAcousticFeedback">
             <component class="mb-3 mt-4" :is="headingTagInternal">{{ $t('acousticFeedbackOptions') }}</component>

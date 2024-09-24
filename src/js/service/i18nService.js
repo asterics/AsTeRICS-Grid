@@ -2,8 +2,6 @@ import $ from '../externals/jquery.js';
 import VueI18n from 'vue-i18n';
 import { localStorageService } from './data/localStorageService.js';
 import { constants } from '../util/constants';
-import { dataService } from './data/dataService.js';
-import { serviceWorkerService } from './serviceWorkerService.js';
 
 let i18nService = {};
 
@@ -201,6 +199,16 @@ i18nService.tl = function (key, args, lang) {
 };
 
 /**
+ * translates a key, but loads current language before translating
+ * @param key
+ * @returns {Promise<*>}
+ */
+i18nService.tLoad = async function(key) {
+    await loadLanguage(i18nService.getAppLang());
+    return i18nService.t(key);
+};
+
+/**
  * get plain translation string from an translation object
  * @param i18nObject translation object, e.g. {en: 'english text', de: 'deutscher Text'}
  * @param options
@@ -293,43 +301,33 @@ i18nService.getCountryCode = function(langCode) {
     return delimiterIndex !== -1 ? langCode.substring(delimiterIndex + 1) : '';
 };
 
-function loadLanguage(useLang, secondTry) {
-    if (!useLang) {
-        return Promise.resolve();
+async function loadLanguage(useLang, secondTry) {
+    if (!useLang || loadedLanguages.includes(useLang)) {
+        return;
     }
-    return new Promise((resolve) => {
-        if (loadedLanguages.includes(useLang)) {
-            resolve();
-        } else {
-            let url = 'app/lang/i18n.' + useLang + '.json';
-            $.get(url)
-                .then((messages) => {
-                    loadedLanguages.push(useLang);
-                    vueI18n.setLocaleMessage(useLang, messages);
-                })
-                .fail(() => {
-                    if (!secondTry) {
-                        loadLanguage(fallbackLang, true).finally(resolve);
-                    } else {
-                        resolve();
-                    }
-                })
-                .then(() => {
-                    allLanguages.forEach((elem) => {
-                        if (!elem[useLang]) {
-                            let langCode = i18nService.getBaseLang(elem.code);
-                            let countryCode = i18nService.getCountryCode(elem.code);
-                            elem[useLang] = i18nService.tl(`lang.${langCode}`, [], useLang);
-                            if (countryCode) {
-                                elem[useLang] = `${elem[useLang]}, ${i18nService.tl(`country.${countryCode}`, [], useLang)}`
-                            }
-                        }
-                    });
-                    serviceWorkerService.cacheUrl(url);
-                    resolve();
-                });
+    let url = 'app/lang/i18n.' + useLang + '.json';
+    try {
+        let messages = await $.get(url);
+        loadedLanguages.push(useLang);
+        vueI18n.setLocaleMessage(useLang, messages);
+    } catch (e) {
+        if (!secondTry) {
+            await loadLanguage(fallbackLang, true);
+        }
+        return;
+    }
+    allLanguages.forEach((elem) => {
+        if (!elem[useLang]) {
+            let langCode = i18nService.getBaseLang(elem.code);
+            let countryCode = i18nService.getCountryCode(elem.code);
+            elem[useLang] = i18nService.tl(`lang.${langCode}`, [], useLang);
+            if (countryCode) {
+                elem[useLang] = `${elem[useLang]}, ${i18nService.tl(`country.${countryCode}`, [], useLang)}`
+            }
         }
     });
+    let module = await import("./serviceWorkerService.js");
+    module.serviceWorkerService.cacheUrl(url);
 }
 
 async function getUserSettings() {

@@ -40,6 +40,10 @@
                             <input id="showRegister" type="checkbox" v-model="options.showRegister"/>
                             <label for="showRegister">{{ $t('printIndexAtSideEdge') }}</label>
                         </div>
+                        <div class="srow">
+                            <input id="includeGlobalGrid" type="checkbox" v-model="options.includeGlobalGrid"/>
+                            <label for="includeGlobalGrid">{{ $t('includeGlobalGrid') }}</label>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -78,7 +82,8 @@
                     exportConnected: true,
                     printBackground: false,
                     showLinks: true,
-                    showRegister: false
+                    showRegister: false,
+                    includeGlobalGrid: true
                 }
             }
         },
@@ -108,6 +113,7 @@
                         printBackground: this.options.printBackground,
                         showLinks: this.options.showLinks,
                         showRegister: this.options.showRegister,
+                        includeGlobalGrid: this.options.includeGlobalGrid,
                         progressFn: (progress, text, abortFn) => {
                             MainVue.showProgressBar(progress, {
                                 header: i18nService.t('creatingPDFFile'),

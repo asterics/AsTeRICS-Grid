@@ -199,6 +199,7 @@
   "insertLinksBetweenPages": "Insert links between pages",
   "printBackgroundColor": "Print background color",
   "printIndexAtSideEdge": "Print index at side edge",
+  "includeGlobalGrid": "Include global grid",
   "downloadPdf": "Download PDF",
   "setGridSize": "Set grid size",
   "numberOfRows": "Number of rows",
@@ -1115,5 +1116,6 @@
   "SYS_VOLUME_DOWN": "System volume down",
   "SYS_VOLUME_TOGGLE_MUTE": "Toggle system volume mute",
   "SYS_ENTER_FULLSCREEN": "Enter fullscreen",
-  "SYS_LEAVE_FULLSCREEN": "Exit fullscreen"
+  "SYS_LEAVE_FULLSCREEN": "Exit fullscreen",
+  "defaultDeviceVoice": "Default device voice"
 }

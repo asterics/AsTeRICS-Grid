@@ -459,6 +459,52 @@ gridUtil.getActionsOfType = function (gridElement, modelName) {
 }
 
 /**
+ * merges a grid with the global grid
+ * @param grid
+ * @param globalGrid
+ * @param options.globalGridHeightPercentage the height of the global grid in percentage
+ * @returns {*} grid data of the merged grid
+ */
+gridUtil.mergeGrids = function(grid, globalGrid, options = {}) {
+    if (grid && globalGrid && globalGrid.gridElements && globalGrid.gridElements.length > 0) {
+        globalGrid = new GridData(JSON.parse(JSON.stringify(globalGrid)));
+        let autowidth = true;
+        let heightPercentage = options.globalGridHeightPercentage
+            ? options.globalGridHeightPercentage / 100
+            : 0.15;
+        let heightFactorNormal = 1;
+        let heightFactorGlobal = 1;
+        if (globalGrid.getHeight() === 1) {
+            heightFactorGlobal = (heightPercentage * grid.rowCount) / (1 - heightPercentage);
+            heightFactorNormal = 1 / (grid.rowCount * heightPercentage) - 1 / grid.rowCount;
+            heightFactorGlobal = Math.round(heightPercentage * 100);
+            heightFactorNormal = Math.round(((1 - heightPercentage) / grid.rowCount) * 100);
+        }
+        let offset = gridUtil.getOffset(globalGrid);
+        let factorGrid = autowidth ? globalGrid.getWidth() - offset.x : 1;
+        let factorGlobal = autowidth ? grid.getWidthWithBounds() : 1;
+        globalGrid.gridElements.forEach((gridElement) => {
+            gridElement.width *= factorGlobal;
+            gridElement.x *= factorGlobal;
+            if (gridElement.y === 0) {
+                gridElement.height *= heightFactorGlobal;
+            }
+        });
+        grid.gridElements.forEach((gridElement) => {
+            gridElement.width *= factorGrid;
+            gridElement.x *= factorGrid;
+            gridElement.x += offset.x * factorGlobal;
+            gridElement.y = offset.y * heightFactorGlobal + gridElement.y * heightFactorNormal;
+            gridElement.height *= heightFactorNormal;
+        });
+        grid.rowCount *= heightFactorNormal;
+        grid.rowCount += offset.y * heightFactorGlobal;
+        grid.gridElements = globalGrid.gridElements.concat(grid.gridElements);
+    }
+    return grid;
+}
+
+/**
  * returns all languages existing in the given grids
  * @param grids
  */
