@@ -363,6 +363,10 @@ function getVoicesByLang(lang) {
     return fullLangVoices.length > 0 ? fullLangVoices : langVoices;
 }
 
+window.printVoicesByLang = function(lang) {
+    log.warn(JSON.stringify(getVoicesByLang(lang)));
+};
+
 /**
  * returns a list of voices by name
  * @param voiceId the voice id to search
