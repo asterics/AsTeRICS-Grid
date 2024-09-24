@@ -1,11 +1,11 @@
-import { i18nService } from './i18nService';
 import { stateService } from './stateService';
 import { constants } from '../util/constants';
 import { util } from '../util/util.js';
 import $ from '../externals/jquery.js';
-import {audioUtil} from "../util/audioUtil.js";
-import {speechServiceExternal} from './speechServiceExternal.js';
-import {localStorageService} from "./data/localStorageService.js";
+import { audioUtil } from '../util/audioUtil.js';
+import { speechServiceExternal } from './speechServiceExternal.js';
+import { localStorageService } from './data/localStorageService.js';
+import { i18nService } from './i18nService';
 
 let speechService = {};
 
@@ -293,6 +293,12 @@ speechService.voiceSortFn = function (a, b) {
         if (a.local) return -1;
         if (b.local) return 1;
     }
+    if (a.id === constants.VOICE_DEVICE_DEFAULT) {
+        return 1;
+    }
+    if (b.id === constants.VOICE_DEVICE_DEFAULT) {
+        return -1;
+    }
     let aSortBack = voiceSortBackList.some((id) => a.id.toLowerCase().includes(id.toLowerCase()));
     let bSortBack = voiceSortBackList.some((id) => b.id.toLowerCase().includes(id.toLowerCase()));
     if (aSortBack && !bSortBack) {
@@ -363,16 +369,6 @@ function getVoicesByLang(lang) {
     return fullLangVoices.length > 0 ? fullLangVoices : langVoices;
 }
 
-window.printVoicesByLang = function(lang) {
-    console.log(JSON.stringify(getVoicesByLang(lang)));
-};
-
-window.speakVoiceId = function(voiceId, text = "Test") {
-    speechService.speak(text, {
-        preferredVoice: voiceId
-    })
-}
-
 /**
  * returns a list of voices by name
  * @param voiceId the voice id to search
@@ -425,6 +421,7 @@ async function init() {
             registerVoices(window.speechSynthesis.getVoices());
         };
     }
+    addVoice(constants.VOICE_DEVICE_DEFAULT, await i18nService.tLoad("defaultDeviceVoice"), i18nService.getBrowserLang(), constants.VOICE_TYPE_NATIVE, true, undefined);
     responsiveVoiceVoices.forEach((voice) => {
         addVoice(voice.name, voice.name, voice.lang, constants.VOICE_TYPE_RESPONSIVEVOICE, false, voice);
     });
