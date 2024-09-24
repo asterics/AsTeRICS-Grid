@@ -364,7 +364,7 @@ function getVoicesByLang(lang) {
 }
 
 window.printVoicesByLang = function(lang) {
-    log.warn(JSON.stringify(getVoicesByLang(lang)));
+    console.log(JSON.stringify(getVoicesByLang(lang)));
 };
 
 window.speakVoiceId = function(voiceId, text = "Test") {
