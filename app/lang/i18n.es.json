@@ -1092,5 +1092,5 @@
   "SYS_VOLUME_TOGGLE_MUTE": "Silenciar el volumen del sistema",
   "SYS_ENTER_FULLSCREEN": "Mostrar en pantalla completa",
   "SYS_LEAVE_FULLSCREEN": "Salir de pantalla completa",
-  "defaultDeviceVoice": "Default device voice"
+  "defaultDeviceVoice": "Voz predeterminada del dispositivo"
 }
