@@ -367,6 +367,12 @@ window.printVoicesByLang = function(lang) {
     log.warn(JSON.stringify(getVoicesByLang(lang)));
 };
 
+window.speakVoiceId = function(voiceId, text = "Test") {
+    speechService.speak(text, {
+        preferredVoice: voiceId
+    })
+}
+
 /**
  * returns a list of voices by name
  * @param voiceId the voice id to search
