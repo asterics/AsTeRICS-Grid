@@ -19,4 +19,10 @@
  * Released under the MIT License.
  */
 
+/*!
+ * vue-i18n v8.28.2 
+ * (c) 2022 kazuya kawaguchi
+ * Released under the MIT License.
+ */
+
 /*! @source http://purl.eligrey.com/github/FileSaver.js/blob/master/FileSaver.js */
