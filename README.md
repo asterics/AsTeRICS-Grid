@@ -70,7 +70,7 @@ AsTeRICS Grid was developed within several funded projects:
 
 <img src="https://github.com/asterics/AsTeRICS-Grid/assets/2537025/290d809f-1ccf-4362-be68-f07ff0e21878" width="400"/>
 <br/><br/>
-<img src="https://github.com/asterics/AsTeRICS-Grid/raw/master/app/img/netidee.svg" width="400"/>
+<img src="https://github.com/asterics/AsTeRICS-Grid/raw/master/app/img/netidee.svg" width="250"/>
 <br/><br/>
 
 Other people and organizations we want to thank:
