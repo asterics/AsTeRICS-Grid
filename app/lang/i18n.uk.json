@@ -490,10 +490,6 @@
   "deleteWord": "Видалити Слово",
   "deleteWordParam": "видалити слово {0}",
   "generalInformation": "Загальна інформація",
-  "theInitialDevelopmentOfAstericsGridWasDoneAt": "Початкова розробка AsTeRICS Grid була виконана в UAS Technikum Wien в рамках проєкту ToRaDes, фінансованого містом Відень (номер проєкту 18-04).",
-  "moreInfoAbouTorades": "Детальніше про проєкт ToRaDes",
-  "currentDeleopmentAstericsGridIsDoneWBT": "Поточна розробка AsTeRICS Grid здійснюється в рамках проєкту «Центр знань для доступних технологій» (WBT), фінансованого містом Відень (номер проєкту 26-02).",
-  "moreInfoAboutWBT": "Більше інформації про проєкт WBT",
   "astericsGridIsFreeAndOpenSource": "AsTeRICS Grid є безкоштовним і відкритим кодом, розміщеним на github.com.",
   "astericsGridOnGithub": "AsTeRICS Grid на github",
   "logoMa23CityVienna": "Логотип MA23 Місто Відень",
@@ -1092,5 +1088,7 @@
   "SYS_VOLUME_TOGGLE_MUTE": "Toggle system volume mute",
   "SYS_ENTER_FULLSCREEN": "Enter fullscreen",
   "SYS_LEAVE_FULLSCREEN": "Exit fullscreen",
-  "defaultDeviceVoice": "Default device voice"
+  "defaultDeviceVoice": "Default device voice",
+  "fundedBy": "funded by",
+  "astericsGridWasFundedWithinProjects": "AsTeRICS Grid was developed within several funded projects"
 }
