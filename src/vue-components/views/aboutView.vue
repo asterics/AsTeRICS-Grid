@@ -5,20 +5,37 @@
             <h2 class="twelve columns">{{ $t('aboutAstericsGrid') }}</h2>
             <div>
                 <div class="srow">
-                    <h3>{{ $t('generalInformation') }}</h3>
+                    <h3 class="mt-2">{{ $t('generalInformation') }}</h3>
                     <div>
                         {{ $t('astericsGridIsFreeAndOpenSource') }}<br/>
                         <a target="_blank" href="https://github.com/asterics/AsTeRICS-Grid">{{ $t('astericsGridOnGithub') }}</a><br/><br/>
-
-                        {{ $t('theInitialDevelopmentOfAstericsGridWasDoneAt') }}<br/>
-                        <a target="_blank" href="https://embsys.technikum-wien.at/projects/torades/index.php">{{ $t('moreInfoAbouTorades') }}</a><br/><br/>
-
-                        {{ $t('currentDeleopmentAstericsGridIsDoneWBT') }}<br/>
-                        <a target="_blank" href="https://embsys.technikum-wien.at/projects/khat/index.php">{{ $t('moreInfoAboutWBT') }}</a>
-                        <br/><br/>
-                        <a href="https://www.technikum-wien.at/" class="me-5" target="_blank" title="UAS Technikum Wien"><img src="app/img/fhtw.svg" height="90"></a>
-                        <a href="https://www.wien.gv.at/kontakte/ma23/" target="_blank" :title="$t('ma23CityOfVienna')"><img src="app/img/ma23_logo_neu.jpg" height="90"></a>
-                        <br/>
+                    </div>
+                    <div>
+                        <span>{{ $t('astericsGridWasFundedWithinProjects') }}</span>:
+                        <ul class="mt-3 mb-2" style="list-style-type: none">
+                            <project-acknowledgement name-link="https://embsys.technikum-wien.at/projects/torades/index.php" name-label="Toolbox for Rapid Design of Smart Homes and Assistive Technologies (ToRaDes)"
+                                                     host-link="https://www.technikum-wien.at/" host-label="UAS Technikum Wien // FH Technikum Wien"
+                                                     fund-link="https://www.wien.gv.at/kontakte/ma23/index.html" fund-label="City of Vienna // Stadt Wien"
+                                                     timespan="2018-2019" additional-info="Project 18-04 // Projekt 18-04"/>
+                            <project-acknowledgement name-link="https://embsys.technikum-wien.at/projects/khat/index.php" name-label="Knowledge Hub for Accessible Technologies (WBT) // Wissensdrehscheibe für Barrierefreie Technologien (WBT)"
+                                                     host-link="https://www.technikum-wien.at/" host-label="UAS Technikum Wien // FH Technikum Wien"
+                                                     fund-link="https://www.wien.gv.at/kontakte/ma23/index.html" fund-label="City of Vienna // Stadt Wien"
+                                                     timespan="2019-2023" additional-info="Project 26-02 // Projekt 26-02"/>
+                            <project-acknowledgement name-link="https://www.netidee.at/asterics-grid" name-label="netidee project funding // netidee Projektförderung"
+                                                     fund-link="https://www.internetstiftung.at/" fund-label="Internet Foundation Austria // Internet Privatstiftung Austria"
+                                                     timespan="2024-2025" additional-info="Call 18"/>
+                            <project-acknowledgement name-link="javascript:;" name-label="Inclusion via digital augmentative and alternative communication (InDiKo) // Inklusion durch Digital Unterstützte Kommunikation (InDiKo)"
+                                                     host-link="https://www.technikum-wien.at/" host-label="UAS Technikum Wien // FH Technikum Wien"
+                                                     fund-link="https://www.wien.gv.at/kontakte/ma23/index.html" fund-label="City of Vienna // Stadt Wien"
+                                                     timespan="2024-2028" additional-info="Project 38-09 // Projekt 38-09"/>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="d-block d-lg-flex justify-content-between align-items-center">
+                            <div class="mt-3"><a href="https://www.technikum-wien.at/" target="_blank" title="UAS Technikum Wien"><img src="app/img/fhtw.svg" height="90"></a></div>
+                            <div class="mt-3"><a href="https://www.wien.gv.at/kontakte/ma23/" target="_blank" :title="$t('ma23CityOfVienna')"><img src="app/img/ma23_logo_neu.jpg" height="90"></a></div>
+                            <div class="mt-3"><a href="https://www.netidee.at/asterics-grid" target="_blank" title="netidee"><img src="app/img/netidee.svg" height="50"></a></div>
+                        </div>
 
                         <i18n path="arasaacCollaboration" tag="div" class="mb-3 mt-5">
                             <template v-slot:arasaacLink>
@@ -102,9 +119,10 @@
 <script>
     import {Router} from "../../js/router";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
+    import ProjectAcknowledgement from '../components/projectAcknowledgement.vue';
 
     export default {
-        components: {HeaderIcon},
+        components: { ProjectAcknowledgement, HeaderIcon},
         props: [],
         data() {
             return {
