@@ -490,10 +490,6 @@
   "deleteWord": "Izbriši besedo",
   "deleteWordParam": "izbriši besedo {0}",
   "generalInformation": "Splošne informacije",
-  "theInitialDevelopmentOfAstericsGridWasDoneAt": "Začetni razvoj AsTeRICS Mrežeje potekal na UAS Technikum Wien v okviru projekta ToRaDes, ki ga je financiralo mesto Dunaj (številka projekta 18-04).",
-  "moreInfoAbouTorades": "Več informacij o projektu ToRaDes",
-  "currentDeleopmentAstericsGridIsDoneWBT": "Trenutni razvoj AsTeRICS Grid poteka v okviru projekta \"Knowledge Hub for Accessible Technologies\" (WBT), ki ga financira mesto Dunaj (številka projekta 26-02).",
-  "moreInfoAboutWBT": "Več informacij o projektu WBT",
   "astericsGridIsFreeAndOpenSource": "AsTeRICS Grid je brezplačen in odprtokoden ter gostuje na github.com.",
   "astericsGridOnGithub": "AsTeRICS Grid na github-u",
   "logoMa23CityVienna": "Logo MA23 mesta Dunaj",
@@ -1092,5 +1088,7 @@
   "SYS_VOLUME_TOGGLE_MUTE": "Toggle system volume mute",
   "SYS_ENTER_FULLSCREEN": "Enter fullscreen",
   "SYS_LEAVE_FULLSCREEN": "Exit fullscreen",
-  "defaultDeviceVoice": "Default device voice"
+  "defaultDeviceVoice": "Default device voice",
+  "fundedBy": "funded by",
+  "astericsGridWasFundedWithinProjects": "AsTeRICS Grid was developed within several funded projects"
 }
