@@ -490,10 +490,6 @@
   "deleteWord": "Szó törlése",
   "deleteWordParam": "a {0} szó törllése",
   "generalInformation": "Általános tudnivalók",
-  "theInitialDevelopmentOfAstericsGridWasDoneAt": "Az AsTeRICS Grid kezdeti fejlesztését az UAS Technikum Wien végezte a ToRaDes projekt keretében, Bécs városának pénzügyi támogatásával (a projekt száma 18-04).",
-  "moreInfoAbouTorades": "További információk a ToRaDes projektről",
-  "currentDeleopmentAstericsGridIsDoneWBT": "Az AsTeRICS Grid jelenlegi fejlesztése a \"Knowledge Hub for Accessible Technologies\" (WBT) projekt keretében folyik, Bécs városának pénzügyi támogatásával. (projekt száma 26-02).",
-  "moreInfoAboutWBT": "További információk a WBT projektről",
   "astericsGridIsFreeAndOpenSource": "Az AsTeRICS Grid egy ingyenes és nyílt forráskódú alkalmazás, a github.com-on hosztolva.",
   "astericsGridOnGithub": "Az AsTeRICS Grid a github-on",
   "logoMa23CityVienna": "Logo MA23 City of Vienna",
@@ -1092,5 +1088,7 @@
   "SYS_VOLUME_TOGGLE_MUTE": "Toggle system volume mute",
   "SYS_ENTER_FULLSCREEN": "Enter fullscreen",
   "SYS_LEAVE_FULLSCREEN": "Exit fullscreen",
-  "defaultDeviceVoice": "Default device voice"
+  "defaultDeviceVoice": "Default device voice",
+  "fundedBy": "funded by",
+  "astericsGridWasFundedWithinProjects": "AsTeRICS Grid was developed within several funded projects"
 }
