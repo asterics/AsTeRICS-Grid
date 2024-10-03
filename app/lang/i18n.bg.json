@@ -490,10 +490,6 @@
   "deleteWord": "Изтриване на дума",
   "deleteWordParam": "изтриване на дума {0}",
   "generalInformation": "Основна информация",
-  "theInitialDevelopmentOfAstericsGridWasDoneAt": "Първоначалната разработка на АсТеРИКС Решетка беше направена в UAS Technikum Wien в проекта ToRaDes,  финансиран от град Виена (номер на проекта 18-04).",
-  "moreInfoAbouTorades": "Повече информация за проект ToRaDes",
-  "currentDeleopmentAstericsGridIsDoneWBT": "Текущата разработка на АсТеРИКС Решетка се извършва в проекта \"Хъб за знания за Достъпни Технологии\" (WBT), финансиран от град Виена (номер на проекта 26-02).",
-  "moreInfoAboutWBT": "Повече информация за проекта WBT",
   "astericsGridIsFreeAndOpenSource": "АсТеРИКС Решетка е безплатен и с отворен код и се хоства на github.com.",
   "astericsGridOnGithub": "АсТеРИКС Решетка в github",
   "logoMa23CityVienna": "Лого МА23 Град Виена",
@@ -1092,5 +1088,7 @@
   "SYS_VOLUME_TOGGLE_MUTE": "Toggle system volume mute",
   "SYS_ENTER_FULLSCREEN": "Enter fullscreen",
   "SYS_LEAVE_FULLSCREEN": "Exit fullscreen",
-  "defaultDeviceVoice": "Default device voice"
+  "defaultDeviceVoice": "Default device voice",
+  "fundedBy": "funded by",
+  "astericsGridWasFundedWithinProjects": "AsTeRICS Grid was developed within several funded projects"
 }
