@@ -490,10 +490,6 @@
   "deleteWord": "Ștergeți cuvântul",
   "deleteWordParam": "șterge cuvântul {0}",
   "generalInformation": "Informații generale",
-  "theInitialDevelopmentOfAstericsGridWasDoneAt": "Dezvoltarea inițială a grilei AsTeRICS Grid a fost realizată la UAS Technikum Wien în cadrul proiectului ToRaDes, finanțat de orașul Viena (numărul de proiect 18-04).",
-  "moreInfoAbouTorades": "Mai multe informații despre proiectul ToRaDes",
-  "currentDeleopmentAstericsGridIsDoneWBT": "Dezvoltarea actuală a grilei AsTeRICS Grid se face în cadrul proiectului \"Knowledge Hub for Accessible Technologies\" (WBT), finanțat de orașul Viena (număr de proiect 26-02).",
-  "moreInfoAboutWBT": "Mai multe informații despre proiectul WBT",
   "astericsGridIsFreeAndOpenSource": "AsTeRICS Grid este gratuit și open source și este găzduit pe github.com.",
   "astericsGridOnGithub": "AsTeRICS Grid pe github",
   "logoMa23CityVienna": "Logo MA23 Orașul Viena",
@@ -1092,5 +1088,7 @@
   "SYS_VOLUME_TOGGLE_MUTE": "Toggle system volume mute",
   "SYS_ENTER_FULLSCREEN": "Enter fullscreen",
   "SYS_LEAVE_FULLSCREEN": "Exit fullscreen",
-  "defaultDeviceVoice": "Default device voice"
+  "defaultDeviceVoice": "Default device voice",
+  "fundedBy": "funded by",
+  "astericsGridWasFundedWithinProjects": "AsTeRICS Grid was developed within several funded projects"
 }
