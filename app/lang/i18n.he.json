@@ -490,10 +490,6 @@
   "deleteWord": "מחק מילה",
   "deleteWordParam": "מחק מילה {0}",
   "generalInformation": "מידע כללי",
-  "theInitialDevelopmentOfAstericsGridWasDoneAt": "הפיתוח ההתחלתי של AsTeRICS Grid נעשה ב UAS Technikum Wien במסגרת תוכנית ToRaDes, במימון עיריית וינה (מספר פרויקט 18-04).",
-  "moreInfoAbouTorades": "מידע נוסף על תוכנית ToRaDes",
-  "currentDeleopmentAstericsGridIsDoneWBT": "פיתוח נוכחי של AsTeRICS Grid נעשה במסגרת הפרויקט \"מרכז ידע לטכנולוגיה נגישה\" (WBT), שממומן על ידי עירית וינה (מספר פרויקט 26-02).",
-  "moreInfoAboutWBT": "מידע נוסף על פרויקט \"מרכז ידע לטכנולוגיה נגישה\" (WBT)",
   "astericsGridIsFreeAndOpenSource": "AsTeRICS Grid מקור פתוח לשימוש חופשי שמאוחסן על github.com.",
   "astericsGridOnGithub": "AsTeRICS Grid ב github",
   "logoMa23CityVienna": "סמל MA23 העיר וינה",
@@ -1092,5 +1088,7 @@
   "SYS_VOLUME_TOGGLE_MUTE": "Toggle system volume mute",
   "SYS_ENTER_FULLSCREEN": "Enter fullscreen",
   "SYS_LEAVE_FULLSCREEN": "Exit fullscreen",
-  "defaultDeviceVoice": "Default device voice"
+  "defaultDeviceVoice": "Default device voice",
+  "fundedBy": "funded by",
+  "astericsGridWasFundedWithinProjects": "AsTeRICS Grid was developed within several funded projects"
 }
