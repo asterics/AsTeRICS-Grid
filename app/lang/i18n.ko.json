@@ -490,10 +490,6 @@
   "deleteWord": "단어 삭제",
   "deleteWordParam": "단어 {0} 삭제",
   "generalInformation": "General information",
-  "theInitialDevelopmentOfAstericsGridWasDoneAt": "AsTeRICS 그리드의 초기 개발은 비엔나 시(프로젝트 번호 18-04) 가 자금을 지원하는 ToRaDes 프로젝트의 UAS 테크니쿰 비엔나(UAS Technikum Wien) 에서 수행했습니다.",
-  "moreInfoAbouTorades": "프로젝트 ToRaDes에 대한 추가 정보",
-  "currentDeleopmentAstericsGridIsDoneWBT": "현재 AsTeRICS 그리드의 개발은 비엔나 시(프로젝트 번호 26-02) 가 자금을 지원하는 \"접근 가능한 기술을 위한 지식 허브\"(WBT) 프로젝트에서 이루어지고 있습니다.",
-  "moreInfoAboutWBT": "프로젝트 WBT에 대한 자세한 정보",
   "astericsGridIsFreeAndOpenSource": "AsTeRICS Grid는 무료 오픈 소스이며 github.com에서 호스팅됩니다.",
   "astericsGridOnGithub": "AsTeRICS Grid on github",
   "logoMa23CityVienna": "Logo MA23 City of Vienna",
@@ -1092,5 +1088,7 @@
   "SYS_VOLUME_TOGGLE_MUTE": "Toggle system volume mute",
   "SYS_ENTER_FULLSCREEN": "Enter fullscreen",
   "SYS_LEAVE_FULLSCREEN": "Exit fullscreen",
-  "defaultDeviceVoice": "Default device voice"
+  "defaultDeviceVoice": "Default device voice",
+  "fundedBy": "funded by",
+  "astericsGridWasFundedWithinProjects": "AsTeRICS Grid was developed within several funded projects"
 }
