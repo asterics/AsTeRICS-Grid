@@ -489,10 +489,6 @@
   "deleteWord": "Delete Word",
   "deleteWordParam": "delete word {0}",
   "generalInformation": "General information",
-  "theInitialDevelopmentOfAstericsGridWasDoneAt": "The initial development of AsTeRICS Grid was done at the UAS Technikum Wien within the project ToRaDes, funded by the city of Vienna (project number 18-04).",
-  "moreInfoAbouTorades": "More information about project ToRaDes",
-  "currentDeleopmentAstericsGridIsDoneWBT": "Current development of AsTeRICS Grid is done in the project \"Knowledge Hub for Accessible Technologies\" (WBT), funded by the city of Vienna (project number 26-02).",
-  "moreInfoAboutWBT": "More information about project WBT",
   "astericsGridIsFreeAndOpenSource": "AsTeRICS Grid is free and open source and hosted on github.com.",
   "astericsGridOnGithub": "AsTeRICS Grid on github",
   "logoMa23CityVienna": "Logo MA23 City of Vienna",
@@ -679,6 +675,7 @@
     "sl": "Slovenian",
     "so": "Somali",
     "es": "Spanish",
+    "sp": "Spanish",
     "nr": "South Ndebele",
     "su": "Sundanese",
     "sw": "Swahili",
@@ -743,6 +740,7 @@
     "gt": "Guatemala",
     "hk": "Hong Kong",
     "hn": "Honduras",
+    "in": "India",
     "ie": "Ireland",
     "iq": "Iraq",
     "jm": "Jamaica",
@@ -1117,5 +1115,7 @@
   "SYS_VOLUME_TOGGLE_MUTE": "Toggle system volume mute",
   "SYS_ENTER_FULLSCREEN": "Enter fullscreen",
   "SYS_LEAVE_FULLSCREEN": "Exit fullscreen",
-  "defaultDeviceVoice": "Default device voice"
+  "defaultDeviceVoice": "Default device voice",
+  "fundedBy": "funded by",
+  "astericsGridWasFundedWithinProjects": "AsTeRICS Grid was developed within several funded projects"
 }

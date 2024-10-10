@@ -293,17 +293,17 @@ speechService.voiceSortFn = function (a, b) {
         if (a.local) return -1;
         if (b.local) return 1;
     }
-    if (a.id === constants.VOICE_DEVICE_DEFAULT) {
-        return 1;
-    }
-    if (b.id === constants.VOICE_DEVICE_DEFAULT) {
-        return -1;
-    }
     let aSortBack = voiceSortBackList.some((id) => a.id.toLowerCase().includes(id.toLowerCase()));
     let bSortBack = voiceSortBackList.some((id) => b.id.toLowerCase().includes(id.toLowerCase()));
     if (aSortBack && !bSortBack) {
         return 1;
     } else if (!aSortBack && bSortBack) {
+        return -1;
+    }
+    if (a.id === constants.VOICE_DEVICE_DEFAULT) {
+        return 1;
+    }
+    if (b.id === constants.VOICE_DEVICE_DEFAULT) {
         return -1;
     }
     return a.name.localeCompare(b.name);
