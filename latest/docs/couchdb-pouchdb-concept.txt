@@ -1,0 +1,21 @@
+1) Without login:
+local pouchDb "localDb" used for default grid, saving data for non-logged in users
+
+2) At create user "newUsername":
+"localDb" is copied to "newUsername" local database, synchronization start of local database "newUsername" and remote couchdb for "newUsername".
+After first copy no synchronization between "localDb" and "newUsername"
+"localDb" -> revert to default grids
+
+3) At login of user "username"
+if local DB "username" already exists: just start synchronization with remote DB of "username"
+if local DB "username" does not exist: create new local DB "username" and start sync with remote DB "username"
+
+4) Logout of "username"
+local DB "username" is deleted, configuration of "localDb" is shown/opened
+any username/password that is saved, is deleted.
+
+5) Switch user to "username2"
+Stop running sync of local database "username"
+login to "username2" as (3)
+
+
