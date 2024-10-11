@@ -65,8 +65,9 @@ If you want to support the development of AsTeRICS Grid or contribute to the cos
 AsTeRICS Grid was developed within several funded projects:
 * **2018-2019:** project [Toolbox for Rapid Design of Smart Homes and Assistive Technologies (ToRaDes)](https://embsys.technikum-wien.at/projects/torades/index.php) at the [UAS Technikum Wien](https://www.technikum-wien.at/), funded by the [City of Vienna](https://www.wien.gv.at/kontakte/ma23/index.html), Project 18-04
 * **2019-2023:** project [Knowledge Hub for Accessible Technologies (WBT)](https://embsys.technikum-wien.at/projects/khat/index.php) at the [UAS Technikum Wien](https://www.technikum-wien.at/), funded by the [City of Vienna](https://www.wien.gv.at/kontakte/ma23/index.html), Project 26-02
+* **2022-2025:** project [Inclusion International (In2)](https://www.technikum-wien.at/forschungsprojekte/inclusion-international/) at the [UAS Technikum Wien](https://www.technikum-wien.at/), funded by the [City of Vienna](https://www.wien.gv.at/kontakte/ma23/index.html), Project 33-02
 * **2024-2025:** [netidee project funding for AsTeRICS Grid](https://www.netidee.at/asterics-grid), Call 18
-* **2024-2028:** project "Inclusion via digital augmentative and alternative communication (InDiKo)" at the [UAS Technikum Wien](https://www.technikum-wien.at/), funded by the [City of Vienna](https://www.wien.gv.at/kontakte/ma23/index.html), Project 38-09
+* **2024-2028:** project [Inclusion via digital augmentative and alternative communication (InDiKo)](https://www.technikum-wien.at/forschungsprojekte/indiko/) at the [UAS Technikum Wien](https://www.technikum-wien.at/), funded by the [City of Vienna](https://www.wien.gv.at/kontakte/ma23/index.html), Project 38-09
 
 <img src="https://github.com/asterics/AsTeRICS-Grid/assets/2537025/290d809f-1ccf-4362-be68-f07ff0e21878" width="400"/>
 <br/><br/>

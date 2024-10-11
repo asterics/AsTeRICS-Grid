@@ -223,7 +223,11 @@ async function doAction(gridElement, action, options) {
             youtubeService.doAction(action);
             break;
         case 'GridActionChangeLang':
-            await i18nService.setContentLanguage(action.language);
+            let language = action.language;
+            if (action.language === GridActionChangeLang.LAST_LANG) {
+                language = localStorageService.getUserSettings().lastContentLang || i18nService.getContentLang();
+            }
+            await i18nService.setContentLanguage(language);
             if (
                 options.actions.length === 0 ||
                 !options.actions.map((a) => a.modelName).includes(GridActionNavigate.getModelName())
