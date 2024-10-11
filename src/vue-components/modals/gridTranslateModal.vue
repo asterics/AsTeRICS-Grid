@@ -31,7 +31,7 @@
                                         <strong>{{ $t('textsIn') }}</strong> <strong>{{currentLangTranslated}} ({{currentLocale}})</strong>
                                     </div>
                                     <div class="srow">
-                                        <button class="six columns" @click.exact="copy(currentLocale)" @click.ctrl="copy(currentLocale, true)" :title="$t('copyColumn')">
+                                        <button class="six columns" @click.exact="copy(currentLocale)" @click.ctrl.exact="copy(currentLocale, false, true)" @click.ctrl.shift.exact="copy(currentLocale, true, false)" :title="$t('copyColumn')">
                                             <i class="far fa-copy"></i>
                                             <span class="show-mobile">
                                                 <i18n path="copySomething" tag="span">
@@ -42,7 +42,7 @@
                                             </span>
                                             <span class="hide-mobile">{{ $t('copyColumn') }}</span>
                                         </button>
-                                        <button class="six columns" @click.exact="paste(currentLocale)" @click.ctrl="paste(currentLocale, true)" :title="$t('pasteColumn')">
+                                        <button class="six columns" @click.exact="paste(currentLocale)" @click.ctrl.exact="paste(currentLocale, false, true)" @click.ctrl.shift.exact="paste(currentLocale, true)" :title="$t('pasteColumn')">
                                             <i class="far fa-clipboard"></i>
                                             <span class="show-mobile">
                                                 <i18n path="pasteSomething" tag="span">
@@ -63,7 +63,7 @@
                                         </select>
                                     </div>
                                     <div class="srow">
-                                        <button class="six columns" @click.exact="copy(chosenLocale)" @click.ctrl="copy(chosenLocale, true)" :title="$t('copyColumn')">
+                                        <button class="six columns" @click.exact="copy(chosenLocale)" @click.ctrl.exact="copy(chosenLocale, false, true)" @click.ctrl.shift.exact="copy(chosenLocale, true, false)" :title="$t('copyColumn')">
                                             <i class="far fa-copy"></i>
                                             <span class="show-mobile">
                                                 <i18n path="copySomething" tag="span">
@@ -74,7 +74,7 @@
                                             </span>
                                             <span class="hide-mobile">{{ $t('copyColumn') }}</span>
                                         </button>
-                                        <button class="six columns" @click.exact="paste(chosenLocale)" @click.ctrl="paste(chosenLocale, true)" :title="$t('pasteColumn')">
+                                        <button class="six columns" @click.exact="paste(chosenLocale)" @click.ctrl.exact="paste(chosenLocale, false, true)" @click.ctrl.shift.exact="paste(chosenLocale, true)" :title="$t('pasteColumn')">
                                             <i class="far fa-clipboard"></i>
                                             <span class="show-mobile">
                                                 <i18n path="pasteSomething" tag="span">
@@ -208,20 +208,27 @@
             getLocaleTranslation(locale) {
                 return i18nService.getTranslationAppLang(this.allLanguages.filter(lang => lang.code === locale)[0]);
             },
-            copy(locale, copyKey) {
-                let result = $(`#translationList input[lang='${locale}']`).toArray();
+            copy(locale, withKeys, onlyOtherEmpty) {
+                let elements = $(`#translationList input[lang='${locale}']`).toArray();
                 let text = null;
-                if (copyKey) {
-                    let array = result.map(e => {
+                if (withKeys) {
+                    let array = elements.map(e => {
                         return {key: e.getAttribute('i18nid'), value: e.value}
                     }).filter(e => !!e.key);
                     text = JSON.stringify(array);
                 } else {
-                    text = result.reduce((total, current) => total + current.value + '\n', '');
+                    let otherLocale = locale === this.currentLocale ? this.chosenLocale : this.currentLocale;
+                    let elements2 = $(`#translationList input[lang='${otherLocale}']`).toArray();
+                    text = '';
+                    for (let i = 0; i < elements.length; i++) {
+                        if (!onlyOtherEmpty || !elements2[i].value) {
+                            text += elements[i].value + '\n';
+                        }
+                    }
                 }
                 util.copyToClipboard(text);
             },
-            paste(locale, withKeys) {
+            paste(locale, withKeys, onlyEmpty) {
                 util.getClipboardContent().then(result => {
                     if (!result) {
                         return;
@@ -242,12 +249,14 @@
                     } else {
                         let clipBoardTexts = result.trim().split('\n');
                         let elements = $(`#translationList input[lang='${locale}']`).toArray();
-                        elements.forEach((el, index) => {
-                            if (clipBoardTexts[index]) {
-                                $(el).val(clipBoardTexts[index]);
-                                $(el)[0].dispatchEvent(new Event('input'));
+                        let clipBoardIndex = 0;
+                        for (let element of elements) {
+                            if ((!onlyEmpty || !element.value) && clipBoardTexts[clipBoardIndex]) {
+                                $(element).val(clipBoardTexts[clipBoardIndex]);
+                                $(element)[0].dispatchEvent(new Event('input'));
+                                clipBoardIndex++;
                             }
-                        })
+                        }
                     }
                 })
             },
