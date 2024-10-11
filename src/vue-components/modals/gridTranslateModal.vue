@@ -221,7 +221,7 @@
                     let elements2 = $(`#translationList input[lang='${otherLocale}']`).toArray();
                     text = '';
                     for (let i = 0; i < elements.length; i++) {
-                        if (!onlyOtherEmpty || !elements2[i].value) {
+                        if (!onlyOtherEmpty || (elements[i].value && !elements2[i].value)) {
                             text += elements[i].value + '\n';
                         }
                     }
@@ -249,11 +249,13 @@
                     } else {
                         let clipBoardTexts = result.trim().split('\n');
                         let elements = $(`#translationList input[lang='${locale}']`).toArray();
+                        let otherLocale = locale === this.currentLocale ? this.chosenLocale : this.currentLocale;
+                        let elements2 = $(`#translationList input[lang='${otherLocale}']`).toArray();
                         let clipBoardIndex = 0;
-                        for (let element of elements) {
-                            if ((!onlyEmpty || !element.value) && clipBoardTexts[clipBoardIndex]) {
-                                $(element).val(clipBoardTexts[clipBoardIndex]);
-                                $(element)[0].dispatchEvent(new Event('input'));
+                        for (let i = 0; i < elements.length; i++) {
+                            if ((!onlyEmpty || (!elements[i].value && elements2[i].value)) && clipBoardTexts[clipBoardIndex]) {
+                                $(elements[i]).val(clipBoardTexts[clipBoardIndex]);
+                                $(elements[i])[0].dispatchEvent(new Event('input'));
                                 clipBoardIndex++;
                             }
                         }
