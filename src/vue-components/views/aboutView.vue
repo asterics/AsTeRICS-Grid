@@ -21,6 +21,10 @@
                                                      host-link="https://www.technikum-wien.at/" host-label="UAS Technikum Wien // FH Technikum Wien"
                                                      fund-link="https://www.wien.gv.at/kontakte/ma23/index.html" fund-label="City of Vienna // Stadt Wien"
                                                      timespan="2019-2023" additional-info="Project 26-02 // Projekt 26-02"/>
+                            <project-acknowledgement name-link="https://www.technikum-wien.at/forschungsprojekte/inclusion-international/" name-label="Inclusion International (In2)"
+                                                     host-link="https://www.technikum-wien.at/" host-label="UAS Technikum Wien // FH Technikum Wien"
+                                                     fund-link="https://www.wien.gv.at/kontakte/ma23/index.html" fund-label="City of Vienna // Stadt Wien"
+                                                     timespan="2012-2025" additional-info="Project 33-02 // Projekt 33-02"/>
                             <project-acknowledgement name-link="https://www.netidee.at/asterics-grid" name-label="netidee project funding // netidee Projektförderung"
                                                      fund-link="https://www.internetstiftung.at/" fund-label="Internet Foundation Austria // Internet Privatstiftung Austria"
                                                      timespan="2024-2025" additional-info="Call 18"/>
