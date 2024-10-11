@@ -18,6 +18,8 @@ class GridActionChangeLang extends Model({
     }
 }
 
+GridActionChangeLang.LAST_LANG = "LAST_LANG";
+
 GridActionChangeLang.defaults({
     id: '', //will be replaced by constructor
     modelName: GridActionChangeLang.getModelName()

@@ -116,9 +116,10 @@ i18nService.setAppLanguage = function (lang, dontSave) {
 };
 
 i18nService.setContentLanguage = async function (lang, dontSave) {
+    let lastContentLang = currentContentLang;
     currentContentLang = lang || undefined;
     if (!dontSave) {
-        localStorageService.saveUserSettings({contentLang: currentContentLang})
+        localStorageService.saveUserSettings({contentLang: currentContentLang, lastContentLang: lastContentLang})
     }
     return loadLanguage(i18nService.getContentLangBase()); // use promise for return!
 };

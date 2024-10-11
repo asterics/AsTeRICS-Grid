@@ -244,6 +244,7 @@
                                 <label for="changeLang" class="four columns normal-text">{{ $t('changeLanguageTo') }}</label>
                                 <select id="changeLang" class="four columns mb-2" v-model="action.language">
                                     <option :value="undefined">{{ $t('systemLanguage') }}</option>
+                                    <option :value="GridActionChangeLang.LAST_LANG">{{ $t(GridActionChangeLang.LAST_LANG) }}</option>
                                     <option v-for="lang in allLanguages" :value="lang.code" v-show="selectFromAllLanguages || lang.code === action.language || gridLanguageCodes.includes(lang.code)">
                                         {{lang | extractTranslation}}
                                     </option>
@@ -356,6 +357,7 @@
     import { GridActionPredict } from '../../js/model/GridActionPredict';
     import { gridUtil } from '../../js/util/gridUtil';
     import { GridActionSystem } from '../../js/model/GridActionSystem';
+    import { GridActionChangeLang } from '../../js/model/GridActionChangeLang';
 
     export default {
         props: ['gridElement', 'gridData'],
@@ -380,6 +382,7 @@
                 GridActionUART: GridActionUART,
                 GridActionPredict: GridActionPredict,
                 GridActionSystem: GridActionSystem,
+                GridActionChangeLang: GridActionChangeLang,
                 GridElement: GridElement,
                 speechService: speechService,
                 i18nService: i18nService
