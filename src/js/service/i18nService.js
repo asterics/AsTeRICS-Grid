@@ -93,6 +93,10 @@ i18nService.isCurrentAppLangEN = function () {
     return i18nService.getAppLang() === 'en';
 };
 
+i18nService.isCurrentContentLangEN = function() {
+    return i18nService.getContentLangBase() === 'en';
+}
+
 /**
  * sets the language code to use (ISO 639-1)
  * @param lang two-letter language code to use
