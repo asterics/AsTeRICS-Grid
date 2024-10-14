@@ -676,7 +676,7 @@
     "sl": "Esloveno",
     "so": "Somali",
     "es": "Espanhol",
-    "sp": "Spanish",
+    "sp": "Espanhol",
     "nr": "Ndebele do Sul",
     "su": "Sundanês",
     "sw": "Suaili",
@@ -741,7 +741,7 @@
     "gt": "Guatemala",
     "hk": "Hong Kong",
     "hn": "Honduras",
-    "in": "India",
+    "in": "Índia",
     "ie": "Irlanda",
     "iq": "Iraque",
     "jm": "Jamaica",
@@ -1091,7 +1091,7 @@
   "SYS_ENTER_FULLSCREEN": "Entrar no modo de ecrã completo",
   "SYS_LEAVE_FULLSCREEN": "Sair do modo de ecrã completo",
   "defaultDeviceVoice": "Voz padrão do dispositivo",
-  "fundedBy": "funded by",
-  "astericsGridWasFundedWithinProjects": "AsTeRICS Grid was developed within several funded projects",
-  "LAST_LANG": "Previously used language"
+  "fundedBy": "financiado por",
+  "astericsGridWasFundedWithinProjects": "O AsTeRICS Grid foi desenvolvido no contexto de vários projetos financiados",
+  "LAST_LANG": "Idioma usado anteriormente"
 }
