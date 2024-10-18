@@ -1092,5 +1092,6 @@
   "SYS_LEAVE_FULLSCREEN": "Vollbildmodus beenden",
   "defaultDeviceVoice": "Standard-Gerätesprache",
   "fundedBy": "gefördert von der",
-  "astericsGridWasFundedWithinProjects": "AsTeRICS Grid wurde im Rahmen mehrerer geförderter Projekte entwickelt"
+  "astericsGridWasFundedWithinProjects": "AsTeRICS Grid wurde im Rahmen mehrerer geförderter Projekte entwickelt",
+  "LAST_LANG": "Previously used language"
 }
