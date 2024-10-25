@@ -19,7 +19,7 @@
     "pouchdb": "^8.0.1",
     "predictionary": "^1.6.0",
     "superlogin-client": "^0.8.0",
-    "vue": "^2.7.0",
+    "vue": "^3.0.0",
     "vue-i18n": "8",
     "vue-multiselect": "^2.1.8"
   },
