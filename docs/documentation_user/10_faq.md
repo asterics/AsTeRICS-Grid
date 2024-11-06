@@ -33,6 +33,20 @@ With iOS 15 it was possible to use all voices installed on the device within AsT
 
 **Update**: with iOS 17 the situation became better again, now for most languages at least one higher quality voice is available for AsTeRICS Grid, also see https://github.com/asterics/AsTeRICS-Grid/issues/223#issuecomment-1729299302
 
+## Is there a recommended Tablet which works well with AsTeRICS Grid?
+We recommend Samsung tablets because Samsung makes available high quality offline Speech Synthesis Voices in their Galaxy Store.
+These voices are offered for the most important languages. Example models are the Galaxy Tab A9 or A9+ (good quality/price ratio) or the more expensive Galaxy Tab S9.
+Generally, all Android tablets support an offline text-to-speech engine (and it is important to have voices available offline.) 
+You can read more about the topic in an article by ARASAAC here: https://aulaabierta.arasaac.org/comunicador-dinamico-asterics-grid-voces-sintetizadas-tts-android-ios
+We currently don't recommend iOS devcies (iPads) for AsTeRICS grid because Apple restricted the use of offline voices from web applications (like AsTeRICS Grid). 
+
+Other criteria for selecting a particular tablet model could be:
+* The audio output and quality of the built-in speakers
+* The size and quality of the touchscreen
+* The availablility of protective cases/shells, keyguards (if necessary) or mounting solutions
+* The availability of a USB port in case an assistive switch should be connected via USB - (note that there are also switches with a Bluetooth interface)
+
+
 ## Can I recover the password of my online user?
 We care about the protection of private data that can be inserted into grids, e.g. images or sound recordings. Therefore we've designed AsTeRICS Grid in a way where only the user itself can see his/her data, nobody else. All data of online users is encrypted using the password of the user. So even if we have access to the database, we cannot see anything but encrypted, unreadable data. While that's great for privacy, it also has this major drawback:
 

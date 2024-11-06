@@ -93,6 +93,10 @@ i18nService.isCurrentAppLangEN = function () {
     return i18nService.getAppLang() === 'en';
 };
 
+i18nService.isCurrentContentLangEN = function() {
+    return i18nService.getContentLangBase() === 'en';
+}
+
 /**
  * sets the language code to use (ISO 639-1)
  * @param lang two-letter language code to use
@@ -112,9 +116,10 @@ i18nService.setAppLanguage = function (lang, dontSave) {
 };
 
 i18nService.setContentLanguage = async function (lang, dontSave) {
+    let lastContentLang = currentContentLang;
     currentContentLang = lang || undefined;
     if (!dontSave) {
-        localStorageService.saveUserSettings({contentLang: currentContentLang})
+        localStorageService.saveUserSettings({contentLang: currentContentLang, lastContentLang: lastContentLang})
     }
     return loadLanguage(i18nService.getContentLangBase()); // use promise for return!
 };

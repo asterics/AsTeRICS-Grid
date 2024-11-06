@@ -752,8 +752,8 @@ window.setGlobalGridId = saveGlobalGridId;
  * @param fallbackLangCode
  * @returns {Promise<void>}
  */
-async function fillEmptyTranslations(langCode, fallbackLangCode) {
-    if (langCode?.length !== 2 && fallbackLangCode?.length !== 2) {
+async function fillEmptyTranslations(langCode = '', fallbackLangCode = '') {
+    if (langCode.length !== 2 || fallbackLangCode.length !== 2) {
         console.log('invalid params');
         return;
     }
