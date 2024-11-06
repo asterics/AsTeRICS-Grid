@@ -36,6 +36,16 @@ urlParamService.setParamsToSearchQuery = function(params = {}) {
  */
 urlParamService.getSearchQueryParams = function(additionalParams = {}) {
     let params = new URLSearchParams(location.search);
+
+    // Object.fromEntries polyfill https://stackoverflow.com/a/68655198/9219743
+    function fromEntries(entries) {
+        var res = {};
+        for (var i = 0; i < entries.length; i++) res[entries[i][0]] = entries[i][1];
+        return res;
+    }
+
+    if (!Object.fromEntries) Object.fromEntries = fromEntries;
+
     let paramObject = Object.fromEntries(params);
     for (let key of Object.keys(paramObject)) {
         try {
