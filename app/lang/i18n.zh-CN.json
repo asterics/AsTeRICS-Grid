@@ -1,5 +1,5 @@
 {
-  "GridActionSpeak": "",
+  "GridActionSpeak": "Speak label",
   "GridActionSpeakCustom": "Speak custom text",
   "GridActionAudio": "Play recorded audio",
   "GridActionWordForm": "Change word forms",
