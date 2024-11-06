@@ -76,6 +76,7 @@ git commit -m "reverted release version to placeholder"
 git push origin HEAD
 do_gh_pages_update
 git checkout master
+git merge stable
 echo "$tagname successfully released!"
 
 
