@@ -35,6 +35,7 @@ fileUtil.readZip = async function(file, options = {}) {
                     content = JSON.parse(content);
                 } catch (e) {
                     log.warn('couldn\'t parse json from zip!', filename);
+                    content = null;
                 }
             }
             returnMap[filename] = content;
@@ -106,7 +107,7 @@ fileUtil.isObfFile = function (file) {
 };
 
 fileUtil.isObzFile = function (file) {
-    return fileUtil.getFileExtension(file) === '.obz';
+    return fileUtil.getFileExtension(file) === '.obz' || fileUtil.getFileExtension(file) === '.zip';
 };
 
 export { fileUtil };

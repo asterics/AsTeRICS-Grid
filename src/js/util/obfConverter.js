@@ -137,6 +137,9 @@ function gridImageToObfImage(gridImage) {
  *                    with the actual IDs of the GridData objects.
  */
 obfConverter.OBFToGridData = function(obfObject, obfObjects) {
+    if (!obfObject) {
+        return Promise.resolve(null);
+    }
     let promises = [];
     let locale = obfObject.locale ? obfObject.locale.toLowerCase() : i18nService.getContentLang();
     let baseLocale = i18nService.getBaseLang(locale);
@@ -196,7 +199,9 @@ obfConverter.OBZToImportData = async function(obzFileMap) {
     for (let filename of Object.keys(obzFileMap)) {
         if (filename.indexOf('.obf') !== -1) {
             let grid = await obfConverter.OBFToGridData(obzFileMap[filename], obzFileMap);
-            grids.push(grid);
+            if (grid) {
+                grids.push(grid);
+            }
         }
     }
 
