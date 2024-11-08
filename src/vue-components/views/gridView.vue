@@ -20,11 +20,6 @@
             <button tabindex="32" @click="systemActionService.enterFullscreen()" class="spaced small" :aria-label="$t('fullscreen')"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
 
         </header>
-        <div class="srow content text-content" v-show="!gridData.gridElements">
-            <div class="grid-container grid-mask">
-                <i class="fas fa-4x fa-spinner fa-spin" style="position: relative;"/>
-            </div>
-        </div>
 
         <huffman-input-modal v-if="showModal === modalTypes.MODAL_HUFFMAN" @close="showModal = null; reinitInputMethods();"/>
         <direction-input-modal v-if="showModal === modalTypes.MODAL_DIRECTION" @close="showModal = null; reinitInputMethods();"/>
@@ -33,7 +28,7 @@
         <sequential-input-modal v-if="showModal === modalTypes.MODAL_SEQUENTIAL" @close="showModal = null; reinitInputMethods();"/>
         <unlock-modal v-if="showModal === modalTypes.MODAL_UNLOCK" @unlock="unlock(true)" @close="showModal = null;"/>
 
-        <div class="srow content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0 && (!globalGridData || globalGridData.gridElements.length === 0)">
+        <div class="srow content spaced" v-show="gridData.gridElements && gridData.gridElements.length === 0 && (!globalGridData || globalGridData.gridElements.length === 0)">
             <div style="margin-top: 2em">
                 <i18n path="noElementsClickToEnterEdit" tag="span">
                     <template v-slot:link>
@@ -42,12 +37,8 @@
                 </i18n>
             </div>
         </div>
-        <div class="srow content" v-show="gridData.gridElements && (gridData.gridElements.length > 0 || (globalGridData && globalGridData.gridElements.length > 0))">
-            <div v-if="!viewInitialized" class="grid-container grid-mask">
-                <i class="fas fa-4x fa-spinner fa-spin" style="position: relative"/>
-            </div>
-            <div id="grid-container" class="grid-container" :style="`background-color: ${backgroundColor}`">
-            </div>
+        <div class="srow content" v-if="metadata && gridData.gridElements && (gridData.gridElements.length > 0 || (globalGridData && globalGridData.gridElements.length > 0))" style="max-width: 100%; min-height: 0">
+            <grid-display id="grid-container" :grid-data="gridData" :global-grid-data="globalGridData" :metadata="metadata"/>
         </div>
     </div>
 </template>
@@ -55,7 +46,6 @@
 <script>
     import $ from '../../js/externals/jquery.js';
     import {L} from "../../js/util/lquery.js";
-    import {Grid} from "../../js/grid.js";
     import {actionService} from "../../js/service/actionService";
     import {dataService} from "../../js/service/data/dataService";
     import {areService} from "../../js/service/areService";
@@ -85,13 +75,12 @@
     import {imageUtil} from "../../js/util/imageUtil";
     import {audioUtil} from "../../js/util/audioUtil.js";
     import UnlockModal from "../modals/unlockModal.vue";
-    import {printService} from "../../js/service/printService";
     import {MainVue} from "../../js/vue/mainVue.js";
     import {stateService} from "../../js/service/stateService.js";
     import { systemActionService } from '../../js/service/systemActionService';
+    import GridDisplay from '../grid-layout/grid-display.vue';
 
     let vueApp = null;
-    let gridInstance = null;
     let UNLOCK_COUNT = 8;
     let modalTypes = {
         MODAL_SCANNING: 'MODAL_SCANNING',
@@ -121,7 +110,6 @@
                 huffmanInput: null,
                 showModal: null,
                 modalTypes: modalTypes,
-                viewInitialized: false,
                 unlockCount: UNLOCK_COUNT,
                 unlockCounter: UNLOCK_COUNT,
                 backgroundColor: 'white',
@@ -132,6 +120,7 @@
             }
         },
         components: {
+            GridDisplay,
             UnlockModal,
             SequentialInputModal,
             HuffmanInputModal,
@@ -191,10 +180,6 @@
             },
             initInputMethods(continueRunningMethods) {
                 let thiz = this;
-                if (!gridInstance) {
-                    return;
-                }
-
                 let inputConfig = thiz.metadata.inputConfig;
                 let selectionListener = (item) => {
                     this.stopHighlightElements();
@@ -250,14 +235,6 @@
                     thiz.scanner = Scanner.getInstanceFromConfig(inputConfig, '.grid-item-content:not([data-empty="true"])', 'scanFocus', 'scanInactive');
                     thiz.scanner.setSelectionListener(selectionListener);
                     thiz.scanner.setActiveListener(activeListener);
-
-                    gridInstance.setLayoutChangedStartListener(function () {
-                        thiz.scanner.pauseScanning();
-                    });
-                    gridInstance.setLayoutChangedEndListener(function () {
-                        thiz.scanner.resumeScanning();
-                    });
-
                     thiz.scanner.startScanning(continueRunningMethods);
                 }
 
@@ -292,10 +269,8 @@
                     this.gridData = JSON.parse(JSON.stringify(gridData));
                     stateService.setCurrentGrid(this.gridData);
                 }
-                return gridInstance.reinit(gridData).then(() => {
-                    this.reinitInputMethods(true);
-                    return Promise.resolve();
-                });
+                this.reinitInputMethods(true);
+                return Promise.resolve();
             },
             highlightElements() {
                 clearTimeout(this.highlightTimeoutHandler);
@@ -334,15 +309,12 @@
             toEditGrid() {
                 Router.toEditGrid(this.gridData.id);
             },
-            toManageGrids() {
-                Router.toManageGrids();
-            },
             toLogin() {
                 Router.toLogin();
             },
             reloadFn(event, updatedIds, updatedDocs, deletedIds) {
                 let thiz = this;
-                if (!vueApp || !gridInstance || !gridInstance.isInitialized()) {
+                if (!vueApp) {
                     setTimeout(() => {
                         thiz.reloadFn(event, updatedIds, updatedDocs);
                     }, 500);
@@ -436,11 +408,6 @@
             this.setViewPropsUnlocked();
             $.contextMenu('destroy');
             vueApp = null;
-            if (gridInstance) {
-                gridInstance.destroy();
-                gridInstance = null;
-                printService.setGridInstance(null);
-            }
         },
         mounted: function () {
             let thiz = this;
@@ -489,10 +456,9 @@
                 return Promise.resolve();
             }).then(() => {
                 stateService.setCurrentGrid(thiz.gridData);
-                return initGrid(thiz.gridData.id);
+                return Promise.resolve();
             }).then(() => {
                 initContextmenu();
-                thiz.viewInitialized = true;
                 $(document).trigger(constants.EVENT_GRID_LOADED);
                 let gridDataObject = new GridData(thiz.gridData);
                 if (gridDataObject.hasOutdatedThumbnail() && !thiz.skipThumbnailCheck) {
@@ -524,17 +490,6 @@
         if (vueApp && vueApp.directionInput) vueApp.directionInput.destroy();
         if (vueApp && vueApp.huffmanInput) vueApp.huffmanInput.destroy();
         if (vueApp && vueApp.seqInput) vueApp.seqInput.destroy();
-    }
-
-    function initGrid(gridId) {
-        gridInstance = new Grid('#grid-container', '.grid-item-content', {
-            enableResizing: false,
-            dragAndDrop: false,
-            gridId: gridId,
-            globalGridHeightPercentage: vueApp.metadata.globalGridHeightPercentage
-        });
-        printService.setGridInstance(gridInstance);
-        return gridInstance.getInitPromise();
     }
 
     function initContextmenu() {

@@ -444,6 +444,7 @@ gridUtil.getActionsOfType = function (gridElement, modelName) {
 gridUtil.mergeGrids = function(grid, globalGrid, options = {}) {
     if (grid && globalGrid && globalGrid.gridElements && globalGrid.gridElements.length > 0) {
         globalGrid = new GridData(JSON.parse(JSON.stringify(globalGrid)));
+        grid = new GridData(JSON.parse(JSON.stringify(grid)));
         let autowidth = true;
         let heightPercentage = options.globalGridHeightPercentage
             ? options.globalGridHeightPercentage / 100

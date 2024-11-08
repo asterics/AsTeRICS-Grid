@@ -305,7 +305,6 @@
             if (gridInstance) {
                 gridInstance.destroy();
                 gridInstance = null;
-                printService.setGridInstance(null);
             }
             $.contextMenu('destroy');
         }
@@ -317,7 +316,6 @@
             dragAndDrop: true,
             gridId: gridData.id
         });
-        printService.setGridInstance(gridInstance);
         return gridInstance.getInitPromise();
     }
 
