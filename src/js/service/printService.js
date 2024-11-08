@@ -13,7 +13,6 @@ import {TextConfig} from "../model/TextConfig.js";
 import { gridUtil } from '../util/gridUtil';
 
 let printService = {};
-let gridInstance = null;
 let pdfOptions = {
     docPadding: 5,
     footerHeight: 8,
@@ -33,23 +32,13 @@ let patternFontMappings = [
 
 printService.initPrintHandlers = function () {
     window.addEventListener('beforeprint', () => {
-        if (gridInstance) {
-            $('#grid-container').width('27.7cm');
-            $('#grid-container').height('19cm');
-            gridInstance.autosize();
-        }
+        $('#grid-container').width('27.7cm');
+        $('#grid-container').height('19cm');
     });
     window.addEventListener('afterprint', () => {
-        if (gridInstance) {
-            $('#grid-container').width('');
-            $('#grid-container').height('');
-            gridInstance.autosize();
-        }
+        $('#grid-container').width('');
+        $('#grid-container').height('');
     });
-};
-
-printService.setGridInstance = function (instance) {
-    gridInstance = instance;
 };
 
 /**

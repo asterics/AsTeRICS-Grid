@@ -1,5 +1,5 @@
 <template>
-    <div :style="`display: grid; grid-template-columns: repeat(${columns}, 1fr); grid-template-rows: repeat(${rows}, 1fr); height: 100%`">
+    <div class="grid-layout" :style="`grid-template-columns: repeat(${columns}, 1fr); grid-template-rows: repeat(${rows}, 1fr);`">
         <slot></slot>
     </div>
 </template>
@@ -20,4 +20,8 @@ export default {
 </script>
 
 <style scoped>
+.grid-layout {
+    display: grid;
+    height: 100%;
+}
 </style>
