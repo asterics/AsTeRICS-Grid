@@ -1,44 +1,23 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
-                    <div class="modal-header">
-                        <edit-element-header :grid-element="gridElement" :header="$t('moveGridElement')" :close-fn="close" :open-help-fn="openHelp"></edit-element-header>
-                    </div>
+    <modal :title="$t('moveGridElement')" :help-fn="openHelp">
+        <template #header>
+            <edit-element-header :grid-element="gridElement" :header="$t('moveGridElement')" :close-fn="close" :open-help-fn="openHelp"></edit-element-header>
+        </template>
+        <template #default>
+            <grid-selector class="mt-4" v-model="selectedGrid" :exclude-id="gridId" :include-global="true" :select-label="i18nService.t('moveElementToGrid')"></grid-selector>
 
-                    <div class="modal-body container-fluid px-0" v-if="gridElement">
-                        <grid-selector class="mt-4" v-model="selectedGrid" :exclude-id="gridId" :include-global="true" :select-label="i18nService.t('moveElementToGrid')"></grid-selector>
-
-                        <div class="srow">
-                            <input id="moveAll" type="checkbox" v-model="moveAllElements"/>
-                            <label for="moveAll">{{ $t('moveAllElementsToThisGrid') }}</label>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer container-fluid px-0">
-                        <div class="row">
-                            <div class="col-12 col-md-6">
-                                <button class="col-12" @click="$emit('close')" :title="$t('keyboardEsc')">
-                                    <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                                </button>
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <button class="col-12" @click="save()" :disabled="!selectedGrid" :title="$t('keyboardCtrlEnter')">
-                                    <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="srow">
+                <input id="moveAll" type="checkbox" v-model="moveAllElements"/>
+                <label for="moveAll">{{ $t('moveAllElementsToThisGrid') }}</label>
             </div>
-        </div>
-    </div>
+        </template>
+    </modal>
 </template>
 
 <script>
     import {i18nService} from "../../js/service/i18nService";
-    import './../../css/modal.css';
+    import Modal from "./modal.vue"
+    import { modalMixin } from "../mixins/modalMixin.js";
     import {dataService} from "../../js/service/data/dataService";
     import {imageUtil} from "../../js/util/imageUtil";
     import GridSelector from "../components/gridSelector.vue";
@@ -47,8 +26,8 @@
     import {GridElement} from "../../js/model/GridElement.js";
 
     export default {
-        components: {EditElementHeader, GridSelector},
-        props: ['gridId', 'gridElementId'],
+        components: {Modal, EditElementHeader, GridSelector},
+        mixins: [modalMixin],
         data: function () {
             return {
                 gridData: null,
@@ -96,6 +75,14 @@
             },
             close() {
                 this.$emit('close');
+            }
+        },
+        computed: {
+            gridId() {
+                return this.$store.state.gridData?.id;
+            },
+            gridElementId() {
+                return this.$store.state.editElementId;
             }
         },
         mounted() {
