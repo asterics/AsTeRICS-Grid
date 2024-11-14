@@ -1,8 +1,8 @@
 <template>
-    <modal>
-        <template #header>
-            <edit-element-header :grid-element="gridElement" :header="$t('navigateToOtherGrid')" :close-fn="closeModal" :open-help-fn="openHelp"></edit-element-header>
-        </template>
+    <modal :title="$t('navigateToOtherGrid')" :help-fn="openHelp">
+        <!-- <template #header> -->
+            <!-- <edit-element-header :grid-element="gridElement" :header="$t('navigateToOtherGrid')" :close-fn="closeModal" :open-help-fn="openHelp"></edit-element-header> -->
+        <!-- </template> -->
         
         <template #default>
             <grid-selector class="mt-4" v-model="selectedGrid" :exclude-id="gridId" :select-label="i18nService.t('navigateToGrid')" :additional-select-options="[NAV_CREATE_NEW_GRID]"></grid-selector>
@@ -15,26 +15,26 @@
             </div>
         </template>
 
-        <template #footer>
-            <div class="row">
-                <div class="col-12 col-md-6">
-                    <button class="col-12" @click="closeModal()" :title="$t('keyboardEsc')">
-                        <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                    </button>
-                </div>
-                <div class="col-12 col-md-6">
-                    <button class="col-12" @click="save()" :disabled="selectedGrid === NAV_CREATE_NEW_GRID && !newName" :title="$t('keyboardCtrlEnter')">
-                        <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
-                    </button>
-                </div>
-            </div>
-        </template>
+        <!-- <template #footer> -->
+            <!-- <div class="row"> -->
+                <!-- <div class="col-12 col-md-6"> -->
+                    <!-- <button class="col-12" @click="closeModal()" :title="$t('keyboardEsc')"> -->
+                        <!-- <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span> -->
+                    <!-- </button> -->
+                <!-- </div> -->
+                <!-- <div class="col-12 col-md-6"> -->
+                    <!-- <button class="col-12" @click="save()" :disabled="selectedGrid === NAV_CREATE_NEW_GRID && !newName" :title="$t('keyboardCtrlEnter')"> -->
+                        <!-- <i class="fas fa-check"/> <span>{{ $t('ok') }}</span> -->
+                    <!-- </button> -->
+                <!-- </div> -->
+            <!-- </div> -->
+        <!-- </template> -->
     </modal>
 </template>
 
 <script>
 import {i18nService} from "../../js/service/i18nService";
-import './../../css/modal.css';
+// import './../../css/modal.css';
 import {dataService} from "../../js/service/data/dataService";
 import {imageUtil} from "../../js/util/imageUtil";
 import Modal from "./modal.vue"
