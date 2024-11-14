@@ -1,12 +1,10 @@
 <template>
     <modal :title="$t('navigateToOtherGrid')" :help-fn="openHelp">
-        <!-- <template #header> -->
-            <!-- <edit-element-header :grid-element="gridElement" :header="$t('navigateToOtherGrid')" :close-fn="closeModal" :open-help-fn="openHelp"></edit-element-header> -->
-        <!-- </template> -->
-        
+        <template #header>
+            <edit-element-header :header="$t('navigateToOtherGrid')" :close-fn="closeModal" :open-help-fn="openHelp"></edit-element-header>
+        </template>
         <template #default>
             <grid-selector class="mt-4" v-model="selectedGrid" :exclude-id="gridId" :select-label="i18nService.t('navigateToGrid')" :additional-select-options="[NAV_CREATE_NEW_GRID]"></grid-selector>
-
             <div class="row mt-3" v-if="selectedGrid === NAV_CREATE_NEW_GRID">
                 <label for="gridName" class="col-12">{{ $t('newGridName') }}</label>
                 <div class="col-12 col-md-5">
@@ -14,27 +12,11 @@
                 </div>
             </div>
         </template>
-
-        <!-- <template #footer> -->
-            <!-- <div class="row"> -->
-                <!-- <div class="col-12 col-md-6"> -->
-                    <!-- <button class="col-12" @click="closeModal()" :title="$t('keyboardEsc')"> -->
-                        <!-- <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span> -->
-                    <!-- </button> -->
-                <!-- </div> -->
-                <!-- <div class="col-12 col-md-6"> -->
-                    <!-- <button class="col-12" @click="save()" :disabled="selectedGrid === NAV_CREATE_NEW_GRID && !newName" :title="$t('keyboardCtrlEnter')"> -->
-                        <!-- <i class="fas fa-check"/> <span>{{ $t('ok') }}</span> -->
-                    <!-- </button> -->
-                <!-- </div> -->
-            <!-- </div> -->
-        <!-- </template> -->
     </modal>
 </template>
 
 <script>
 import {i18nService} from "../../js/service/i18nService";
-// import './../../css/modal.css';
 import {dataService} from "../../js/service/data/dataService";
 import {imageUtil} from "../../js/util/imageUtil";
 import Modal from "./modal.vue"
@@ -48,7 +30,6 @@ import {GridData} from "../../js/model/GridData.js";
 
 export default {
     components: {Modal, EditElementHeader, GridSelector},
-    props: ['gridId', 'gridElementId'],
     mixins: [modalMixin],
     data: function () {
         return {
@@ -109,6 +90,14 @@ export default {
         },
         close() {
             this.$emit('close');
+        }
+    },
+    computed: {
+        gridId() {
+            return this.$store.state.gridData?.id;
+        },
+        gridElementId() {
+            return this.$store.state.editElementId;
         }
     },
     async mounted() {
