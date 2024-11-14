@@ -11,6 +11,18 @@
                 <label for="moveAll">{{ $t('moveAllElementsToThisGrid') }}</label>
             </div>
         </template>
+        <template #ok-button>
+            <button
+                @click="save"
+                @keydown.ctrl.enter="save"
+                :aria-label="$t('keyboardCtrlEnter')"
+                :title="$t('keyboardCtrlEnter')"
+                :disabled="!selectedGrid"
+                >
+                    <i class="fas fa-check" aria-hidden="true"></i>
+                    {{ $t('ok') }}
+            </button>
+        </template>
     </modal>
 </template>
 
