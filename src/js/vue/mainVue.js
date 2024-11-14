@@ -1,6 +1,7 @@
 import $ from '../externals/jquery.js';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
+import store from "./plugins/store";
 import { i18nService } from '../service/i18nService';
 import { constants } from '../util/constants';
 import { util } from '../util/util';
@@ -89,6 +90,7 @@ MainVue.init = function () {
     Vue.use(VueI18n);
     return i18nService.getVueI18n().then((i18n) => {
         app = new Vue({
+            store,
             i18n: i18n,
             el: '#app',
             components: { NotificationBar, ProgressBarModal, SearchModal },
