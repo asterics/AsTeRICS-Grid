@@ -14,7 +14,7 @@
   "GridActionOpenWebpage": "Open webpage in new tab",
   "COLLECT_ACTION_SPEAK": "Speak collect element content (separately)",
   "COLLECT_ACTION_SPEAK_CONTINUOUS": "Speak collect element content (continuously)",
-  "COLLECT_ACTION_SPEAK_CLEAR": "Speak collect element content (separately) and clear afterwards",
+  "COLLECT_ACTION_SPEAK_CLEAR": "Udtal beskedfelt (separat) og slet besked bagefter",
   "COLLECT_ACTION_SPEAK_CONTINUOUS_CLEAR": "Speak collect element content (continuously) and clear afterwards",
   "COLLECT_ACTION_CLEAR": "Clear collect element",
   "COLLECT_ACTION_REMOVE_WORD": "Delete last word/image",
