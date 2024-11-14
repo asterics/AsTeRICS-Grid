@@ -31,7 +31,7 @@
                 </button>
             </div>
         </header>
-        <component v-if="currentModal" :is="currentModal" ref="modal" @reload="reload"></component>
+        <component v-if="currentModal" :is="currentModal" ref="modal" @reload="reload" @close="handleModalClose"></component>
         <div>
             <edit-element
                 v-if="showEditModal"
@@ -182,6 +182,9 @@ let vueConfig = {
             if (gridData) {
                 this.gridData = JSON.parse(JSON.stringify(gridData));
             }
+        },
+        handleModalClose() {
+            this.currentModal = null;
         },
         back() {
             if (this.metadata && this.metadata.globalGridId === this.gridData.id) {

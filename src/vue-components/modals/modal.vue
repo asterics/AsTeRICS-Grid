@@ -62,6 +62,7 @@ export default {
         },
         close() {
             this.$refs.modal.close();
+            this.$emit('close');
         }
     },
     props: {
