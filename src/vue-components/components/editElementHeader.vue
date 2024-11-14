@@ -26,10 +26,22 @@
     import {GridElement} from "../../js/model/GridElement.js";
 
     export default {
-        props: ["header", "gridElement", "openHelpFn", "closeFn"],
+        props: ["header", "openHelpFn", "closeFn"],
         data() {
             return {
                 GridElement: GridElement
+            }
+        },
+        computed: {
+            gridElementId() {
+                return this.$store.state.editElementId;
+            },
+            gridElement() {
+                const gridData = this.$store.state.gridData;
+                if (gridData && this.gridElementId) {
+                    return gridData.gridElements.find(e => e.id === this.gridElementId);
+                }
+                return null;
             }
         },
         methods: {
