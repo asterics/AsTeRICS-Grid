@@ -110,6 +110,17 @@
                 </ul>
             </div>
         </template>
+        <template #ok-button>
+            <button
+                @click="save"
+                @keydown.ctrl.enter="save"
+                :aria-label="$t('save')"
+                :title="$t('keyboardCtrlEnter')"
+                >
+                    <i class="fas fa-check" aria-hidden="true"></i>
+                    {{ $t('save') }}
+            </button>
+        </template>
     </modal>
 </template>
 

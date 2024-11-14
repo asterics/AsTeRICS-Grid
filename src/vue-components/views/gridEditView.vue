@@ -26,9 +26,6 @@
         <div>
             <element-move-modal v-if="showMoveModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showMoveModal = false" @reload="reload"/>
         </div>
-        <div>
-            <grid-translate-modal v-if="showTranslateModal" :grid-data-id="gridData.id" @close="showTranslateModal = false" @reload="reload"/>
-        </div>
         <div class="srow content" id="contentContainer">
             <div v-if="!showGrid" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
@@ -91,7 +88,6 @@
                 showMultipleModal: false,
                 showDimensionsModal: false,
                 showMoveModal: false,
-                showTranslateModal: false,
                 showEditModal: false,
                 currentModal: null,
                 editElementId: null,
@@ -481,7 +477,11 @@
                     break;
                 }
                 case CONTEXT_GRID_TRANSLATION: {
-                    vueApp.showTranslateModal = true;
+                    vueApp.$store.commit("setGridData", vueApp.gridData);
+                    vueApp.currentModal = "gridTranslateModal";
+                    vueApp.$nextTick(() => {
+                        vueApp.$refs.modal.openModal();
+                    });
                     break;
                 }
                 case CONTEXT_GRID_NAVIGATION: {
