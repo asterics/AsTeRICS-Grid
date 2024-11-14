@@ -13,6 +13,7 @@
                 <button tabindex="32" @click="redo"  :aria-label="$t('redo')" :disabled="!canRedo || doingUndoRedo" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span></button>
             </div>
         </header>
+        <component v-if="currentModal" :is="currentModal" ref="modal" @reload="reload"></component>
         <div>
             <edit-element v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
         </div>
@@ -27,9 +28,6 @@
         </div>
         <div>
             <grid-translate-modal v-if="showTranslateModal" :grid-data-id="gridData.id" @close="showTranslateModal = false" @reload="reload"/>
-        </div>
-        <div>
-            <set-navigation-modal ref="setNavigationModal" :grid-id="gridData.id" :grid-element-id="editElementId" @reload="reload"></set-navigation-modal>
         </div>
         <div class="srow content" id="contentContainer">
             <div v-if="!showGrid" class="grid-container grid-mask">
@@ -95,6 +93,7 @@
                 showMoveModal: false,
                 showTranslateModal: false,
                 showEditModal: false,
+                currentModal: null,
                 editElementId: null,
                 showGrid: false,
                 constants: constants,
@@ -488,7 +487,13 @@
                 case CONTEXT_GRID_NAVIGATION: {
                     vueApp.editElementId = elementId || vueApp.markedElement.id;
                     vueApp.markElement(null);
-                    vueApp.$refs.setNavigationModal.openModal();
+
+                    vueApp.$store.commit("setGridData", vueApp.gridData);
+                    vueApp.$store.commit("setEditElementId", vueApp.editElementId);
+                    vueApp.currentModal = "setNavigationModal";
+                    vueApp.$nextTick(() => {
+                        vueApp.$refs.modal.openModal();
+                    });
                     break;
                 }
                 case CONTEXT_ACTION_EDIT:
