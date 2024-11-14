@@ -1,14 +1,15 @@
 <template>
     <dialog ref="modal">
         <div class="modal-header">
-            <h1 v-if="title">{{ title }}</h1>
-            <slot name="header"></slot>
-            <button v-if="helpFn" class="remove-btn-skeleton help" @click="helpFn" :aria-label="ariaLabelHelp">
-                <i class="fas fa-question-circle fa-lg" aria-hidden="true"></i>
-            </button>
-            <button class="remove-btn-skeleton close" @click="close" :aria-label="ariaLabelEsc">
-                <i class="fas fa-times fa-lg" aria-hidden="true"></i>
-            </button>
+            <slot name="header">
+                <h1 v-if="title">{{ title }}</h1>
+                <button v-if="helpFn" class="remove-btn-skeleton help" @click="helpFn" :aria-label="ariaLabelHelp">
+                    <i class="fas fa-question-circle fa-lg" aria-hidden="true"></i>
+                </button>
+                <button class="remove-btn-skeleton close" @click="close" :aria-label="ariaLabelEsc">
+                    <i class="fas fa-times fa-lg" aria-hidden="true"></i>
+                </button>
+            </slot>
             <!-- TODO: insert label/esc, aria-hidden (https://getbootstrap.com/docs/4.0/components/modal/#modal-components) -->
         </div>
         <div class="modal-body"><slot></slot></div>
