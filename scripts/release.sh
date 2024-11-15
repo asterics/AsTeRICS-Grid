@@ -77,6 +77,7 @@ git push origin HEAD
 do_gh_pages_update
 git checkout master
 git merge stable
+git push origin master
 echo "$tagname successfully released!"
 
 
