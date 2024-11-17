@@ -28,7 +28,6 @@
 
         <component v-if="currentModal" :is="currentModal" ref="modal" @close="handleModalClose(); reinitInputMethods();"/>
 
-        <direction-input-modal v-if="showModal === modalTypes.MODAL_DIRECTION" @close="showModal = null; reinitInputMethods();"/>
         <mouse-modal v-if="showModal === modalTypes.MODAL_MOUSE" @close="showModal = null; reinitInputMethods();"/>
         <scanning-modal v-if="showModal === modalTypes.MODAL_SCANNING" @close="showModal = null; reinitInputMethods();"/>
         <sequential-input-modal v-if="showModal === modalTypes.MODAL_SEQUENTIAL" @close="showModal = null; reinitInputMethods();"/>
@@ -98,7 +97,6 @@
     let modalTypes = {
         MODAL_SCANNING: 'MODAL_SCANNING',
         MODAL_MOUSE: 'MODAL_MOUSE',
-        MODAL_DIRECTION: 'MODAL_DIRECTION',
         MODAL_SEQUENTIAL: 'MODAL_SEQUENTIAL',
         MODAL_UNLOCK: 'MODAL_UNLOCK'
     };
@@ -605,7 +603,10 @@
                     break;
                 }
                 case CONTEXT_DIRECTION: {
-                    vueApp.openModal(modalTypes.MODAL_DIRECTION);
+                    vueApp.setModal("DirectionInputModal");
+                    vueApp.$nextTick(() => {
+                        vueApp.$refs.modal.openModal();
+                    });
                     break;
                 }
                 case CONTEXT_HUFFMAN: {
