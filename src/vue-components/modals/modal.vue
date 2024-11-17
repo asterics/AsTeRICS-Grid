@@ -58,7 +58,7 @@
 export default {
     methods: {
         ok() {
-            this.$emit("ok")
+            this.$emit('ok');
         },
         open() {
             this.$refs.modal.showModal();
@@ -121,6 +121,10 @@ button {
         font-weight: 600;
         font-size: 2.2rem;
         flex-grow: 6;
+    }
+
+    button {
+        margin: auto 0.75rem;
     }
 }
 
