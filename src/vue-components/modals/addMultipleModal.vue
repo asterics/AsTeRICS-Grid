@@ -1,67 +1,53 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
-                    <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
-                    <div class="modal-header">
-                        <h1 name="header">
-                            {{ $t('addMultipleGridItems') }}
-                        </h1>
-                    </div>
-
-                    <div class="modal-body">
-                        <div class="srow">
-                            <label class="three columns" for="inputText">{{ $t('input') }}</label>
-                            <span class="nine columns">{{ $t('insertLabelsForNewElements') }}</span>
-                        </div>
-                        <div class="srow">
-                            <textarea v-focus class="twelve columns" id="inputText" v-model="inputText" @input="textChanged" style="resize: vertical;min-height: 70px;" placeholder="Element1;Element2;Element3;..."/>
-                        </div>
-                        <div class="srow">
-                            <label class="three columns">{{ $t('recognizedElements') }}</label>
-                            <div v-show="parsedElems.length > 0" class="nine columns">
-                                <span>{{parsedElems.length}}</span>
-                                <span>{{ $t('elementsBracket') }}</span>
-                                <span class="break-word">{{JSON.stringify(parsedElems)}}</span>
-                            </div>
-                            <div v-show="parsedElems.length == 0" class="nine columns">
-                                <span>{{ $t('noElements') }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <div class="button-container srow">
-                            <button class="four columns offset-by-four" @click="$emit('close')" :title="$t('keyboardEsc')">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                            </button>
-                            <button class="four columns" @click="save()" :title="$t('keyboardCtrlEnter')" :disabled="parsedElems.length == 0">
-                                <i class="fas fa-check"/> <span>{{ $t('insertElements') }}</span>
-                            </button>
-                        </div>
-                    </div>
+    <modal :title="$t('addMultipleGridItems')" @ok="save">
+        <template #default>
+            <div class="srow">
+                <label class="three columns" for="inputText">{{ $t('input') }}</label>
+                <span class="nine columns">{{ $t('insertLabelsForNewElements') }}</span>
+            </div>
+            <div class="srow">
+                <textarea v-focus class="twelve columns" id="inputText" v-model="inputText" @input="textChanged" style="resize: vertical;min-height: 70px;" placeholder="Element1;Element2;Element3;..."/>
+            </div>
+            <div class="srow">
+                <label class="three columns">{{ $t('recognizedElements') }}</label>
+                <div v-show="parsedElems.length > 0" class="nine columns">
+                    <span>{{parsedElems.length}}</span>
+                    <span>{{ $t('elementsBracket') }}</span>
+                    <span class="break-word">{{JSON.stringify(parsedElems)}}</span>
+                </div>
+                <div v-show="parsedElems.length == 0" class="nine columns">
+                    <span>{{ $t('noElements') }}</span>
                 </div>
             </div>
-        </div>
-    </div>
+        </template>
+    </modal>
 </template>
 
 <script>
     import {dataService} from '../../js/service/data/dataService'
     import {i18nService} from "../../js/service/i18nService";
-    import './../../css/modal.css';
+    import Modal from './modal.vue';
+    import { modalMixin } from '../mixins/modalMixin.js';
     import {GridElement} from "../../js/model/GridElement";
     import {GridData} from "../../js/model/GridData";
     import {helpService} from "../../js/service/helpService";
 
     export default {
-        props: ['gridData', 'gridInstance'],
+        components: { Modal },
+        mixins: [modalMixin],
         data: function () {
             return {
                 inputText: "",
                 parsedElems: []
             }
+        },
+        computed: {
+            gridData() {
+                return this.$store.state.gridData;
+            },
+            gridInstance() {
+                return this.$store.state.gridInstance;
+            },
         },
         methods: {
             textChanged() {
@@ -83,6 +69,7 @@
                     gridDataObject.gridElements.push(newElem);
                 });
                 this.gridInstance.updateGridWithUndo(gridDataObject);
+                this.$emit('save', this.gridInstance);
                 this.$emit('close');
             }
         },
