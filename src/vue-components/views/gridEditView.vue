@@ -6,89 +6,33 @@
                 <i class="fas fa-eye"></i>
                 <span class="hide-mobile">{{ $t('editingOff') }}</span>
             </button>
-            <button tabindex="33" id="moreButton" :aria-label="$t('more')" class="spaced">
-                <i class="fas fa-ellipsis-v"></i> <span class="hide-mobile">{{ $t('more') }}</span>
-            </button>
+            <button tabindex="33" id="moreButton" :aria-label="$t('more')" class="spaced"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile">{{ $t('more') }}</span></button>
             <div id="moreButtonMenu"></div>
             <div class="spaced btn-group">
-                <button
-                    tabindex="31"
-                    @click="undo"
-                    :aria-label="$t('undo')"
-                    :disabled="!canUndo || doingUndoRedo"
-                    class="small"
-                >
-                    <i class="fas fa-undo"></i> <span class="hide-mobile">{{ $t('undo') }}</span>
-                </button>
-                <button
-                    tabindex="32"
-                    @click="redo"
-                    :aria-label="$t('redo')"
-                    :disabled="!canRedo || doingUndoRedo"
-                    class="small spaced"
-                >
-                    <i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span>
-                </button>
+                <button tabindex="31" @click="undo" :aria-label="$t('undo')" :disabled="!canUndo || doingUndoRedo" class="small"><i class="fas fa-undo"></i> <span class="hide-mobile">{{ $t('undo') }}</span></button>
+                <button tabindex="32" @click="redo"  :aria-label="$t('redo')" :disabled="!canRedo || doingUndoRedo" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span></button>
             </div>
         </header>
-        <component v-if="currentModal" :is="currentModal" ref="modal" @reload="reload" @close="handleModalClose"></component>
+        <component v-if="currentModal" :is="currentModal" ref="modal" @reload="reload" @close="handleModalClose" @save="handleModalSave"/>
         <div>
-            <edit-element
-                v-if="showEditModal"
-                v-bind:edit-element-id-param="editElementId"
-                :grid-instance="getGridInstance()"
-                :grid-data-id="gridData.id"
-                @close="showEditModal = false"
-                @mark="markElement"
-                @actions="
-                    (id) => {
-                        editElementId = id;
-                        showActionsModal = true;
-                    }
-                "
-            />
+            <edit-element v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
         </div>
         <div>
-            <add-multiple-modal
-                v-if="showMultipleModal"
-                v-bind:grid-data="gridData"
-                :grid-instance="getGridInstance()"
-                @close="showMultipleModal = false"
-            />
-        </div>
-        <div>
-            <grid-dimension-modal
-                v-if="showDimensionsModal"
-                v-bind:grid-data-param="gridData"
-                :is-global-grid="metadata.globalGridId === gridData.id"
-                @close="showDimensionsModal = false"
-                @save="setDimensions"
-            />
+            <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :grid-instance="getGridInstance()" @close="showMultipleModal = false"/>
         </div>
         <div class="srow content" id="contentContainer">
             <div v-if="!showGrid" class="grid-container grid-mask">
-                <i class="fas fa-4x fa-spinner fa-spin" />
+                <i class="fas fa-4x fa-spinner fa-spin"/>
             </div>
-            <div id="grid-container" class="grid-container" :style="`background-color: ${backgroundColor}`"></div>
+            <div id="grid-container" class="grid-container" :style="`background-color: ${backgroundColor}`">
+            </div>
             <div id="grid-layout-background-wrapper" class="grid-container" style="margin: 10px; display: none">
-                <div
-                    id="grid-layout-background-vertical"
-                    class="grid-container"
-                    style="
-                        margin-left: 204px;
-                        background-size: 209px 209px;
-                        background-image: linear-gradient(to right, grey 1px, transparent 1px);
-                    "
-                ></div>
-                <div
-                    id="grid-layout-background-horizontal"
-                    class="grid-container"
-                    style="
-                        margin-top: 204px;
-                        background-size: 209px 209px;
-                        background-image: linear-gradient(to bottom, grey 1px, transparent 1px);
-                    "
-                ></div>
+                <div id="grid-layout-background-vertical" class="grid-container" style="margin-left: 204px; background-size: 209px 209px;
+    background-image: linear-gradient(to right, grey 1px, transparent 1px)">
+                </div>
+                <div id="grid-layout-background-horizontal" class="grid-container" style="margin-top: 204px; background-size: 209px 209px;
+    background-image: linear-gradient(to bottom, grey 1px, transparent 1px);">
+                </div>
             </div>
         </div>
     </div>
@@ -136,7 +80,6 @@ let vueConfig = {
             canRedo: false,
             doingUndoRedo: false,
             showMultipleModal: false,
-            showDimensionsModal: false,
             showEditModal: false,
             currentModal: null,
             editElementId: null,
@@ -150,10 +93,7 @@ let vueConfig = {
         SetNavigationModal,
         GridTranslateModal,
         ElementMoveModal,
-        GridDimensionModal,
-        EditElement,
-        AddMultipleModal,
-        HeaderIcon
+        GridDimensionModal, EditElement, AddMultipleModal, HeaderIcon
     },
     methods: {
         setDimensions: function (rows, cols) {
@@ -185,6 +125,11 @@ let vueConfig = {
         },
         handleModalClose() {
             this.currentModal = null;
+        },
+        handleModalSave(...args) {
+            if (this.currentModal === 'GridDimensionModal') {
+                this.setDimensions(...args);
+            }
         },
         back() {
             if (this.metadata && this.metadata.globalGridId === this.gridData.id) {
@@ -563,7 +508,13 @@ function initContextmenu() {
                 break;
             }
             case CONTEXT_GRID_DIMENSIONS: {
-                vueApp.showDimensionsModal = true;
+                // vueApp.showDimensionsModal = true;
+                vueApp.$store.commit('setGridData', vueApp.gridData);
+                vueApp.$store.commit('setMetadata', vueApp.metadata);
+                vueApp.currentModal = 'GridDimensionModal';
+                vueApp.$nextTick(() => {
+                    vueApp.$refs.modal.openModal();
+                });
                 break;
             }
             case CONTEXT_GRID_TRANSLATION: {
@@ -605,9 +556,9 @@ function initContextmenu() {
             case CONTEXT_MOVE_TO:
                 vueApp.editElementId = elementId || vueApp.markedElement.id;
                 vueApp.markElement(null);
-                vueApp.$store.commit("setGridData", vueApp.gridData);
-                vueApp.$store.commit("setEditElementId", vueApp.editElementId);
-                vueApp.currentModal = "ElementMoveModal";
+                vueApp.$store.commit('setGridData', vueApp.gridData);
+                vueApp.$store.commit('setEditElementId', vueApp.editElementId);
+                vueApp.currentModal = 'ElementMoveModal';
                 vueApp.$nextTick(() => {
                     vueApp.$refs.modal.openModal();
                 });
