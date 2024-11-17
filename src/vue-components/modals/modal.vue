@@ -35,8 +35,8 @@
                                 </button>
                                 <slot name="ok-button">
                                     <button
-                                        @click="open"
-                                        @keydown.ctrl.enter="open"
+                                        @click="ok"
+                                        @keydown.ctrl.enter="ok"
                                         :aria-label="ariaLabelOk"
                                         :title="titleOk"
                                     >
@@ -57,6 +57,9 @@
 <script>
 export default {
     methods: {
+        ok() {
+            this.$emit("ok")
+        },
         open() {
             this.$refs.modal.showModal();
         },
