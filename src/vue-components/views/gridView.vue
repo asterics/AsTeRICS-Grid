@@ -28,7 +28,6 @@
 
         <component v-if="currentModal" :is="currentModal" ref="modal" @close="handleModalClose(); reinitInputMethods();"/>
 
-        <mouse-modal v-if="showModal === modalTypes.MODAL_MOUSE" @close="showModal = null; reinitInputMethods();"/>
         <scanning-modal v-if="showModal === modalTypes.MODAL_SCANNING" @close="showModal = null; reinitInputMethods();"/>
         <sequential-input-modal v-if="showModal === modalTypes.MODAL_SEQUENTIAL" @close="showModal = null; reinitInputMethods();"/>
         <unlock-modal v-if="showModal === modalTypes.MODAL_UNLOCK" @unlock="unlock(true)" @close="showModal = null;"/>
@@ -96,7 +95,6 @@
     let UNLOCK_COUNT = 8;
     let modalTypes = {
         MODAL_SCANNING: 'MODAL_SCANNING',
-        MODAL_MOUSE: 'MODAL_MOUSE',
         MODAL_SEQUENTIAL: 'MODAL_SEQUENTIAL',
         MODAL_UNLOCK: 'MODAL_UNLOCK'
     };
@@ -595,7 +593,10 @@
         function handleContextMenu(key, elementId) {
             switch (key) {
                 case CONTEXT_MOUSE: {
-                    vueApp.openModal(modalTypes.MODAL_MOUSE);
+                    vueApp.setModal("MouseModal");
+                    vueApp.$nextTick(() => {
+                        vueApp.$refs.modal.openModal();
+                    });
                     break;
                 }
                 case CONTEXT_SCANNING: {
