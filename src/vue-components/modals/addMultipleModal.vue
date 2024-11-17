@@ -1,5 +1,5 @@
 <template>
-    <modal :title="$t('addMultipleGridItems')" @ok="save">
+    <modal :title="$t('addMultipleGridItems')">
         <template #default>
             <div class="srow">
                 <label class="three columns" for="inputText">{{ $t('input') }}</label>
@@ -19,6 +19,18 @@
                     <span>{{ $t('noElements') }}</span>
                 </div>
             </div>
+        </template>
+        <template #ok-button>
+            <button
+                @click="save"
+                @keydown.ctrl.enter="save"
+                :aria-label="$t('insertElements')"
+                :title="$t('keyboardCtrlEnter')"
+                :disabled="parsedElems.length == 0"
+                >
+                    <i class="fas fa-check" aria-hidden="true"></i>
+                    {{ $t('insertElements') }}
+            </button>
         </template>
     </modal>
 </template>

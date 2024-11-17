@@ -17,9 +17,6 @@
         <div>
             <edit-element v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
         </div>
-        <div>
-            <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :grid-instance="getGridInstance()" @close="showMultipleModal = false"/>
-        </div>
         <div class="srow content" id="contentContainer">
             <div v-if="!showGrid" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
@@ -79,7 +76,6 @@ let vueConfig = {
             canUndo: false,
             canRedo: false,
             doingUndoRedo: false,
-            showMultipleModal: false,
             showEditModal: false,
             currentModal: null,
             editElementId: null,
@@ -129,6 +125,8 @@ let vueConfig = {
         handleModalSave(...args) {
             if (this.currentModal === 'GridDimensionModal') {
                 this.setDimensions(...args);
+            } else if (this.currentModal === 'AddMultipleModal') {
+                this.gridInstance = args;
             }
         },
         back() {
@@ -180,7 +178,13 @@ let vueConfig = {
             }
         },
         newElements() {
-            this.showMultipleModal = true;
+            vueApp.$store.commit('setGridData', vueApp.gridData);
+            vueApp.$store.commit('setGridInstance', this.getGridInstance());
+            vueApp.currentModal = 'AddMultipleModal';
+            vueApp.$nextTick(() => {
+                vueApp.$refs.modal.openModal();
+            });
+
         },
         clearElements() {
             if (confirm(i18nService.t('CONFIRM_DELETE_ALL_ELEMS'))) {
