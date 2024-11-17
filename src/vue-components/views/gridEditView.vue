@@ -13,10 +13,7 @@
                 <button tabindex="32" @click="redo"  :aria-label="$t('redo')" :disabled="!canRedo || doingUndoRedo" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span></button>
             </div>
         </header>
-        <component v-if="currentModal" :is="currentModal" ref="modal" @reload="reload" @close="handleModalClose" @save="handleModalSave"/>
-        <div>
-            <edit-element v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
-        </div>
+        <component v-if="currentModal" :is="currentModal" ref="modal" @reload="reload" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}" @close="handleModalClose" @save="handleModalSave"/>
         <div class="srow content" id="contentContainer">
             <div v-if="!showGrid" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
@@ -76,7 +73,6 @@ let vueConfig = {
             canUndo: false,
             canRedo: false,
             doingUndoRedo: false,
-            showEditModal: false,
             currentModal: null,
             editElementId: null,
             showGrid: false,
@@ -127,6 +123,8 @@ let vueConfig = {
                 this.setDimensions(...args);
             } else if (this.currentModal === 'AddMultipleModal') {
                 this.gridInstance = args;
+            } else if (this.currentModal === 'EditElement') {
+                this.editElementId = args;
             }
         },
         back() {
@@ -140,7 +138,13 @@ let vueConfig = {
             this.editElementId = elementId;
             let editElement = this.gridData.gridElements.filter((e) => e.id === elementId)[0];
             if (editElement) {
-                this.showEditModal = true;
+                vueApp.$store.commit('setGridData', vueApp.gridData);
+                vueApp.$store.commit('setEditElementId', this.editElementId);
+                vueApp.$store.commit('setGridInstance', this.getGridInstance());
+                vueApp.currentModal = 'EditElement';
+                vueApp.$nextTick(() => {
+                    vueApp.$refs.modal.openModal();
+                });
             }
         },
         removeElement(id) {
@@ -152,7 +156,13 @@ let vueConfig = {
         newElement(type) {
             if (type === GridElement.ELEMENT_TYPE_NORMAL) {
                 this.editElementId = null;
-                this.showEditModal = true;
+                vueApp.$store.commit('setGridData', vueApp.gridData);
+                vueApp.$store.commit('setEditElementId', this.editElementId);
+                vueApp.$store.commit('setGridInstance', this.getGridInstance());
+                vueApp.currentModal = 'EditElement';
+                vueApp.$nextTick(() => {
+                    vueApp.$refs.modal.openModal();
+                });
             } else {
                 let newPos = new GridData(this.gridData).getNewXYPos();
                 let constructor = type === GridElement.ELEMENT_TYPE_COLLECT ? GridElementCollect : GridElement;
@@ -512,7 +522,6 @@ function initContextmenu() {
                 break;
             }
             case CONTEXT_GRID_DIMENSIONS: {
-                // vueApp.showDimensionsModal = true;
                 vueApp.$store.commit('setGridData', vueApp.gridData);
                 vueApp.$store.commit('setMetadata', vueApp.metadata);
                 vueApp.currentModal = 'GridDimensionModal';
