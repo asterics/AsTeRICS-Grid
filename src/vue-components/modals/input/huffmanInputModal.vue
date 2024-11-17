@@ -1,101 +1,78 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keydown.27="cancel()" @keydown.enter="save()">
-                    <a class="inline close-button" href="javascript:void(0);" @click="cancel()"><i class="fas fa-times"/></a>
-                    <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
-                    <div class="modal-header">
-                        <h1 name="header">{{ $t('huffmanInput') }}</h1>
-                    </div>
-
-                    <div class="modal-body" v-if="inputConfig">
-                        <div class="srow">
-                            <span>{{ $t('huffmanInputMethod2OrMoreInputEvents') }}</span>
-                            <a :aria-label="$t('help')" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
-                        </div>
-                        <div class="srow" >
-                            <div class="twelve columns">
-                                <input v-focus type="checkbox" id="enableHuffinput" v-model="inputConfig.huffEnabled"/>
-                                <label class="inline" for="enableHuffinput">{{ $t('enableHuffmanInput') }}</label>
-                            </div>
-                        </div>
-                        <div v-show="inputConfig.huffEnabled">
-                            <accordion :acc-label="$t('input')" acc-open="true" acc-label-type="h2" acc-background-color="white" class="srow">
-                                <input-event-list v-model="inputConfig.huffInputs" :min-inputs="2" :max-inputs="9" :error-inputs="errorInputs" @input="inputChanged"></input-event-list>
-                                <div class="srow">
-                                    <button class="twelve columns" @click="resetInput">{{ $t('resetToDefaultInputConfiguration') }}</button>
-                                </div>
-                            </accordion>
-                            <accordion :acc-label="$t('ADVANCED_SETTINGS')" acc-label-type="h2" acc-background-color="white">
-                                <div class="srow" style="margin-top: 0">
-                                    <div class="twelve columns">
-                                        <input type="checkbox" id="chkNumbers" v-model="inputConfig.huffShowNumbers"/>
-                                        <label for="chkNumbers">{{ $t('showNumbers') }}</label>
-                                    </div>
-                                </div>
-                                <div class="srow">
-                                    <div class="twelve columns">
-                                        <input type="checkbox" id="chkColors" v-model="inputConfig.huffShowColors"/>
-                                        <label for="chkColors">{{ $t('showColors') }}</label>
-                                    </div>
-                                </div>
-                                <div class="srow">
-                                    <div class="twelve columns">
-                                        <input type="checkbox" id="chkColorWholeElement" v-model="inputConfig.huffColorWholeElement"/>
-                                        <label for="chkColorWholeElement">{{ $t('colorWholeElement') }}</label>
-                                    </div>
-                                </div>
-                                <div class="srow">
-                                    <div class="twelve columns">
-                                        <input type="checkbox" id="chkMarkInactive" v-model="inputConfig.huffMarkInactive"/>
-                                        <label for="chkMarkInactive">{{ $t('markInactiveElements') }}</label>
-                                    </div>
-                                </div>
-                                <div class="srow">
-                                    <label class="four columns" for="inTimeout">{{ $t('timeoutInMs0MeansDisabled') }}</label>
-                                    <input type="range" id="inTimeout" v-model.number="inputConfig.huffTimeout" min="0" max="10000" step="100"/>
-                                    <input type="number" v-model.number="inputConfig.huffTimeout" min="0" max="10000" step="200" />
-                                </div>
-                                <div class="srow">
-                                    <label for="inElementCount" class="four columns">{{ $t('numberOfElements0MeansAutomatic') }}</label>
-                                    <input type="range" min="0" max="300" id="inElementCount" v-model.number="inputConfig.huffElementCount"/>
-                                    <input type="number" min="0" max="300" id="inElementCount2" v-model.number="inputConfig.huffElementCount"/>
-                                </div>
-                                <div class="srow">
-                                    <div class="four columns">
-                                        <div v-for="i in inputConfig.huffInputs.length">
-                                            <label :for="'colorInput' + i" style="margin-right: 1em"><span>{{ $t('color') }}</span> {{i}}</label>
-                                            <input :id="'colorInput' + i" type="color" v-model="inputConfig.huffColors[i-1]"/>
-                                        </div>
-                                    </div>
-                                    <button @click="inputConfig.huffColors = JSON.parse(JSON.stringify(InputConfig.DEFAULT_HUFF_COLORS))" class="four columns" style="margin-top: 1em">{{ $t('resetColors') }}</button>
-                                </div>
-                            </accordion>
-                            <accordion :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
-                                <test-area :selected-element="selectedTestElement"></test-area>
-                            </accordion>
-
-                            <div class="warn" v-show="error">
-                                <i class="fas fa-exclamation-triangle"></i> {{error}}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <div class="button-container srow">
-                            <button @click="cancel()" class="four columns offset-by-four">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                            </button>
-                            <button @click="save()" class="four columns">
-                                <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
-                            </button>
-                        </div>
-                    </div>
+    <modal :title="$t('huffmanInput')" @ok="save" @close="cancel" :help-fn="openHelp" >
+        <template #default v-if="inputConfig"">
+            <div class="srow">
+                <span>{{ $t('huffmanInputMethod2OrMoreInputEvents') }}</span>
+                <a :aria-label="$t('help')" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
+            </div>
+            <div class="srow" >
+                <div class="twelve columns">
+                    <input v-focus type="checkbox" id="enableHuffinput" v-model="inputConfig.huffEnabled"/>
+                    <label class="inline" for="enableHuffinput">{{ $t('enableHuffmanInput') }}</label>
                 </div>
             </div>
-        </div>
-    </div>
+            <div v-show="inputConfig.huffEnabled">
+                <accordion :acc-label="$t('input')" acc-open="true" acc-label-type="h2" acc-background-color="white" class="srow">
+                    <input-event-list v-model="inputConfig.huffInputs" :min-inputs="2" :max-inputs="9" :error-inputs="errorInputs" @input="inputChanged"></input-event-list>
+                    <div class="srow">
+                        <button class="twelve columns" @click="resetInput">{{ $t('resetToDefaultInputConfiguration') }}</button>
+                    </div>
+                </accordion>
+                <accordion :acc-label="$t('ADVANCED_SETTINGS')" acc-label-type="h2" acc-background-color="white">
+                    <div class="srow" style="margin-top: 0">
+                        <div class="twelve columns">
+                            <input type="checkbox" id="chkNumbers" v-model="inputConfig.huffShowNumbers"/>
+                            <label for="chkNumbers">{{ $t('showNumbers') }}</label>
+                        </div>
+                    </div>
+                    <div class="srow">
+                        <div class="twelve columns">
+                            <input type="checkbox" id="chkColors" v-model="inputConfig.huffShowColors"/>
+                            <label for="chkColors">{{ $t('showColors') }}</label>
+                        </div>
+                    </div>
+                    <div class="srow">
+                        <div class="twelve columns">
+                            <input type="checkbox" id="chkColorWholeElement" v-model="inputConfig.huffColorWholeElement"/>
+                            <label for="chkColorWholeElement">{{ $t('colorWholeElement') }}</label>
+                        </div>
+                    </div>
+                    <div class="srow">
+                        <div class="twelve columns">
+                            <input type="checkbox" id="chkMarkInactive" v-model="inputConfig.huffMarkInactive"/>
+                            <label for="chkMarkInactive">{{ $t('markInactiveElements') }}</label>
+                        </div>
+                    </div>
+                    <div class="srow">
+                        <label class="four columns" for="inTimeout">{{ $t('timeoutInMs0MeansDisabled') }}</label>
+                        <input type="range" id="inTimeout" v-model.number="inputConfig.huffTimeout" min="0" max="10000" step="100"/>
+                        <input type="number" v-model.number="inputConfig.huffTimeout" min="0" max="10000" step="200" />
+                    </div>
+                    <div class="srow">
+                        <label for="inElementCount" class="four columns">{{ $t('numberOfElements0MeansAutomatic') }}</label>
+                        <input type="range" min="0" max="300" id="inElementCount" v-model.number="inputConfig.huffElementCount"/>
+                        <input type="number" min="0" max="300" id="inElementCount2" v-model.number="inputConfig.huffElementCount"/>
+                    </div>
+                    <div class="srow">
+                        <div class="four columns">
+                            <div v-for="i in inputConfig.huffInputs.length">
+                                <label :for="'colorInput' + i" style="margin-right: 1em"><span>{{ $t('color') }}</span> {{i}}</label>
+                                <input :id="'colorInput' + i" type="color" v-model="inputConfig.huffColors[i-1]"/>
+                            </div>
+                        </div>
+                        <button @click="inputConfig.huffColors = JSON.parse(JSON.stringify(InputConfig.DEFAULT_HUFF_COLORS))" class="four columns" style="margin-top: 1em">{{ $t('resetColors') }}</button>
+                    </div>
+                </accordion>
+                <accordion :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
+                    <test-area :selected-element="selectedTestElement"></test-area>
+                </accordion>
+
+                <div class="warn" v-show="error">
+                    <i class="fas fa-exclamation-triangle"></i> {{error}}
+                </div>
+            </div>
+        </template>
+    </modal>
 </template>
 
 <script>
@@ -105,14 +82,16 @@
     import Accordion from "../../components/accordion.vue"
     import InputEventList from "../../components/inputEventList.vue"
     import TestArea from "./testArea.vue"
-    import './../../../css/modal.css';
+    import Modal from '../modal.vue';
+    import { modalMixin } from '../../mixins/modalMixin.js';
     import {InputConfig} from "../../../js/model/InputConfig";
     import {HuffmanInput} from "../../../js/input/huffmanInput";
     import {inputEventHandler} from "../../../js/input/inputEventHandler";
 
     export default {
         props: [],
-        components: {Accordion, InputEventList, TestArea},
+        components: {Accordion, InputEventList, TestArea, Modal},
+        mixins: [modalMixin],
         data: function () {
             return {
                 inputConfig: null,
