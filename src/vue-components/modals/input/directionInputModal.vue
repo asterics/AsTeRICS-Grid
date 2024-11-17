@@ -1,73 +1,50 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keydown.27="cancel()" @keydown.enter="save()">
-                    <a class="inline close-button" href="javascript:void(0);" @click="cancel()"><i class="fas fa-times"/></a>
-                    <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
-                    <div class="modal-header">
-                        <h1 name="header">{{ $t('directionInput') }}</h1>
-                    </div>
-
-                    <div class="modal-body" v-if="inputConfig">
-                        <div class="srow">
-                            <span>{{ $t('directionInputMethod25InputEvents') }}</span>
-                            <a :aria-label="$t('help')" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
-                        </div>
-                        <div class="srow" >
-                            <div class="twelve columns">
-                                <input v-focus type="checkbox" id="enableDirinput" v-model="inputConfig.dirEnabled"/>
-                                <label class="inline" for="enableDirinput">{{ $t('enableDirectionInput') }}</label>
-                            </div>
-                        </div>
-                        <div v-show="inputConfig.dirEnabled">
-                            <accordion :acc-label="$t('input')" acc-open="true" acc-label-type="h2" acc-background-color="white" class="srow">
-                                <input-event-list v-model="inputConfig.dirInputs" :input-labels="[InputConfig.SELECT, InputConfig.RIGHT, InputConfig.DOWN, InputConfig.LEFT, InputConfig.UP]" :error-inputs="errorInputs" @input="inputChanged"></input-event-list>
-                                <div class="srow">
-                                    <button class="twelve columns" @click="resetInput">{{ $t('resetToDefaultInputConfiguration') }}</button>
-                                </div>
-                            </accordion>
-                            <accordion :acc-label="$t('ADVANCED_SETTINGS')" acc-label-type="h2" acc-background-color="white">
-                                <div class="srow" style="margin-top: 0">
-                                    <div class="twelve columns">
-                                        <input type="checkbox" id="chkWrapAround" v-model="inputConfig.dirWrapAround"/>
-                                        <label for="chkWrapAround">{{ $t('wrapAroundJumpToFirstElementAfterLastElem') }}</label>
-                                    </div>
-                                </div>
-                                <div class="srow">
-                                    <div class="twelve columns">
-                                        <input type="checkbox" id="chkReset" v-model="inputConfig.dirResetToStart"/>
-                                        <label for="chkReset">{{ $t('goToStartPositionAfterSelect') }}</label>
-                                    </div>
-                                </div>
-                            </accordion>
-                            <accordion :acc-label="$t('generalInputSettings')" acc-label-type="h2" acc-background-color="white">
-                                <global-input-options :input-config="inputConfig"/>
-                            </accordion>
-                            <accordion :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
-                                <test-area :selected-element="selectedTestElement"></test-area>
-                            </accordion>
-
-                            <div class="warn" v-show="error">
-                                <i class="fas fa-exclamation-triangle"></i> {{error}}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <div class="button-container srow">
-                            <button @click="cancel()" class="four columns offset-by-four">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                            </button>
-                            <button @click="save()" class="four columns">
-                                <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
-                            </button>
-                        </div>
-                    </div>
+    <modal :title="$t('directionInput')" @ok="save" @close="cancel" :help-fn="openHelp">
+        <template #default v-if="inputConfig">
+            <div class="srow">
+                <span>{{ $t('directionInputMethod25InputEvents') }}</span>
+                <a :aria-label="$t('help')" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
+            </div>
+            <div class="srow" >
+                <div class="twelve columns">
+                    <input v-focus type="checkbox" id="enableDirinput" v-model="inputConfig.dirEnabled"/>
+                    <label class="inline" for="enableDirinput">{{ $t('enableDirectionInput') }}</label>
                 </div>
             </div>
-        </div>
-    </div>
+            <div v-show="inputConfig.dirEnabled">
+                <accordion :acc-label="$t('input')" acc-open="true" acc-label-type="h2" acc-background-color="white" class="srow">
+                    <input-event-list v-model="inputConfig.dirInputs" :input-labels="[InputConfig.SELECT, InputConfig.RIGHT, InputConfig.DOWN, InputConfig.LEFT, InputConfig.UP]" :error-inputs="errorInputs" @input="inputChanged"></input-event-list>
+                    <div class="srow">
+                        <button class="twelve columns" @click="resetInput">{{ $t('resetToDefaultInputConfiguration') }}</button>
+                    </div>
+                </accordion>
+                <accordion :acc-label="$t('ADVANCED_SETTINGS')" acc-label-type="h2" acc-background-color="white">
+                    <div class="srow" style="margin-top: 0">
+                        <div class="twelve columns">
+                            <input type="checkbox" id="chkWrapAround" v-model="inputConfig.dirWrapAround"/>
+                            <label for="chkWrapAround">{{ $t('wrapAroundJumpToFirstElementAfterLastElem') }}</label>
+                        </div>
+                    </div>
+                    <div class="srow">
+                        <div class="twelve columns">
+                            <input type="checkbox" id="chkReset" v-model="inputConfig.dirResetToStart"/>
+                            <label for="chkReset">{{ $t('goToStartPositionAfterSelect') }}</label>
+                        </div>
+                    </div>
+                </accordion>
+                <accordion :acc-label="$t('generalInputSettings')" acc-label-type="h2" acc-background-color="white">
+                    <global-input-options :input-config="inputConfig"/>
+                </accordion>
+                <accordion :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
+                    <test-area :selected-element="selectedTestElement"></test-area>
+                </accordion>
+
+                <div class="warn" v-show="error">
+                    <i class="fas fa-exclamation-triangle"></i> {{error}}
+                </div>
+            </div>
+        </template>
+    </modal>
 </template>
 
 <script>
@@ -77,7 +54,8 @@
     import Accordion from "../../components/accordion.vue"
     import InputEventList from "../../components/inputEventList.vue"
     import TestArea from "./testArea.vue"
-    import './../../../css/modal.css';
+    import Modal from '../modal.vue';
+    import { modalMixin } from '../../mixins/modalMixin.js';
     import {InputConfig} from "../../../js/model/InputConfig";
     import {DirectionInput} from "../../../js/input/directionInput";
     import {inputEventHandler} from "../../../js/input/inputEventHandler";
@@ -85,7 +63,8 @@
 
     export default {
         props: [],
-        components: {GlobalInputOptions, Accordion, InputEventList, TestArea},
+        components: { GlobalInputOptions, Accordion, InputEventList, TestArea, Modal },
+        mixins: [modalMixin],
         data: function () {
             return {
                 inputConfig: null,
