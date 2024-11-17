@@ -39,6 +39,7 @@ import { dataService } from '../../js/service/data/dataService';
 import { Router } from './../../js/router.js';
 import { i18nService } from '../../js/service/i18nService';
 
+import { modalDisplayMixin } from '../mixins/modalDisplayMixin.js';
 import EditElement from '../modals/editElement.vue';
 import AddMultipleModal from '../modals/addMultipleModal.vue';
 import { actionService } from '../../js/service/actionService';
@@ -66,6 +67,7 @@ let gridInstance = null;
 
 let vueConfig = {
     props: ['gridId', 'highlightId'],
+    mixins: [modalDisplayMixin],
     data() {
         return {
             gridData: null,
@@ -73,7 +75,6 @@ let vueConfig = {
             canUndo: false,
             canRedo: false,
             doingUndoRedo: false,
-            currentModal: null,
             editElementId: null,
             showGrid: false,
             constants: constants,
@@ -115,9 +116,6 @@ let vueConfig = {
                 this.gridData = JSON.parse(JSON.stringify(gridData));
             }
         },
-        handleModalClose() {
-            this.currentModal = null;
-        },
         handleModalSave(...args) {
             if (this.currentModal === 'GridDimensionModal') {
                 this.setDimensions(...args);
@@ -141,7 +139,7 @@ let vueConfig = {
                 vueApp.$store.commit('setGridData', vueApp.gridData);
                 vueApp.$store.commit('setEditElementId', this.editElementId);
                 vueApp.$store.commit('setGridInstance', this.getGridInstance());
-                vueApp.currentModal = 'EditElement';
+                vueApp.setModal('EditElement');
                 vueApp.$nextTick(() => {
                     vueApp.$refs.modal.openModal();
                 });
@@ -159,7 +157,7 @@ let vueConfig = {
                 vueApp.$store.commit('setGridData', vueApp.gridData);
                 vueApp.$store.commit('setEditElementId', this.editElementId);
                 vueApp.$store.commit('setGridInstance', this.getGridInstance());
-                vueApp.currentModal = 'EditElement';
+                vueApp.setModal('EditElement');
                 vueApp.$nextTick(() => {
                     vueApp.$refs.modal.openModal();
                 });
@@ -190,7 +188,7 @@ let vueConfig = {
         newElements() {
             vueApp.$store.commit('setGridData', vueApp.gridData);
             vueApp.$store.commit('setGridInstance', this.getGridInstance());
-            vueApp.currentModal = 'AddMultipleModal';
+            vueApp.setModal('AddMultipleModal');
             vueApp.$nextTick(() => {
                 vueApp.$refs.modal.openModal();
             });
@@ -524,7 +522,7 @@ function initContextmenu() {
             case CONTEXT_GRID_DIMENSIONS: {
                 vueApp.$store.commit('setGridData', vueApp.gridData);
                 vueApp.$store.commit('setMetadata', vueApp.metadata);
-                vueApp.currentModal = 'GridDimensionModal';
+                vueApp.setModal('GridDimensionModal');
                 vueApp.$nextTick(() => {
                     vueApp.$refs.modal.openModal();
                 });
@@ -532,7 +530,7 @@ function initContextmenu() {
             }
             case CONTEXT_GRID_TRANSLATION: {
                 vueApp.$store.commit('setGridData', vueApp.gridData);
-                vueApp.currentModal = 'GridTranslateModal';
+                vueApp.setModal('GridTranslateModal');
                 vueApp.$nextTick(() => {
                     vueApp.$refs.modal.openModal();
                 });
@@ -544,7 +542,7 @@ function initContextmenu() {
 
                 vueApp.$store.commit('setGridData', vueApp.gridData);
                 vueApp.$store.commit('setEditElementId', vueApp.editElementId);
-                vueApp.currentModal = 'SetNavigationModal';
+                vueApp.setModal('SetNavigationModal');
                 vueApp.$nextTick(() => {
                     vueApp.$refs.modal.openModal();
                 });
@@ -571,7 +569,7 @@ function initContextmenu() {
                 vueApp.markElement(null);
                 vueApp.$store.commit('setGridData', vueApp.gridData);
                 vueApp.$store.commit('setEditElementId', vueApp.editElementId);
-                vueApp.currentModal = 'ElementMoveModal';
+                vueApp.setModal('ElementMoveModal');
                 vueApp.$nextTick(() => {
                     vueApp.$refs.modal.openModal();
                 });
