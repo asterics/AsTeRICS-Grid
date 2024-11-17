@@ -127,7 +127,6 @@
 <script>
     import $ from '../../js/externals/jquery.js';
     import {i18nService} from "../../js/service/i18nService";
-    import Modal from "./modal.vue";
     import { modalMixin } from "../mixins/modalMixin.js";
     import {GridActionSpeakCustom} from "../../js/model/GridActionSpeakCustom";
     import {util} from "../../js/util/util";
@@ -136,7 +135,6 @@
 
     window.hideKeyboardTranslations = true;
     export default {
-        components: {Modal},
         mixins: [modalMixin],
         data: function () {
             return {

@@ -82,7 +82,6 @@
     import Accordion from "../../components/accordion.vue"
     import InputEventList from "../../components/inputEventList.vue"
     import TestArea from "./testArea.vue"
-    import Modal from '../modal.vue';
     import { modalMixin } from '../../mixins/modalMixin.js';
     import {InputConfig} from "../../../js/model/InputConfig";
     import {HuffmanInput} from "../../../js/input/huffmanInput";
@@ -90,7 +89,7 @@
 
     export default {
         props: [],
-        components: {Accordion, InputEventList, TestArea, Modal},
+        components: {Accordion, InputEventList, TestArea},
         mixins: [modalMixin],
         data: function () {
             return {

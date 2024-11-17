@@ -43,7 +43,6 @@
 <script>
     import {dataService} from '../../js/service/data/dataService'
     import {GridImage} from "../../js/model/GridImage";
-    import Modal from './modal.vue';
     import { modalMixin } from '../mixins/modalMixin.js';
     import {GridElement} from "../../js/model/GridElement";
     import {GridData} from "../../js/model/GridData";
@@ -67,7 +66,6 @@
 
     export default {
         components: {
-            Modal,
             EditElementWordForms,
             EditElementHeader,
             EditElementCollect,

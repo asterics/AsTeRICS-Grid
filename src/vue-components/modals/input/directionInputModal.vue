@@ -54,7 +54,6 @@
     import Accordion from "../../components/accordion.vue"
     import InputEventList from "../../components/inputEventList.vue"
     import TestArea from "./testArea.vue"
-    import Modal from '../modal.vue';
     import { modalMixin } from '../../mixins/modalMixin.js';
     import {InputConfig} from "../../../js/model/InputConfig";
     import {DirectionInput} from "../../../js/input/directionInput";
@@ -63,7 +62,7 @@
 
     export default {
         props: [],
-        components: { GlobalInputOptions, Accordion, InputEventList, TestArea, Modal },
+        components: { GlobalInputOptions, Accordion, InputEventList, TestArea },
         mixins: [modalMixin],
         data: function () {
             return {

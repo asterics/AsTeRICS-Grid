@@ -38,14 +38,12 @@
 <script>
     import {dataService} from '../../js/service/data/dataService'
     import {i18nService} from "../../js/service/i18nService";
-    import Modal from './modal.vue';
     import { modalMixin } from '../mixins/modalMixin.js';
     import {GridElement} from "../../js/model/GridElement";
     import {GridData} from "../../js/model/GridData";
     import {helpService} from "../../js/service/helpService";
 
     export default {
-        components: { Modal },
         mixins: [modalMixin],
         data: function () {
             return {

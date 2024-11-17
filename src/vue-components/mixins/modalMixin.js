@@ -1,4 +1,7 @@
+import Modal from '../modals/modal.vue';
+
 export const modalMixin = {
+    components: {Modal},
     methods: {
         openModal() {
             // Test if component using the mixin has the vue component Modal.vue as root element.

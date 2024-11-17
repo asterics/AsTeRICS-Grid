@@ -19,7 +19,6 @@
 import {i18nService} from "../../js/service/i18nService";
 import {dataService} from "../../js/service/data/dataService";
 import {imageUtil} from "../../js/util/imageUtil";
-import Modal from "./modal.vue"
 import { modalMixin } from "../mixins/modalMixin.js";
 import GridSelector from "../components/gridSelector.vue";
 import EditElementHeader from "../components/editElementHeader.vue";
@@ -29,7 +28,7 @@ import {GridActionNavigate} from "../../js/model/GridActionNavigate.js";
 import {GridData} from "../../js/model/GridData.js";
 
 export default {
-    components: {Modal, EditElementHeader, GridSelector},
+    components: {EditElementHeader, GridSelector},
     mixins: [modalMixin],
     data: function () {
         return {

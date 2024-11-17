@@ -19,14 +19,12 @@
 
 <script>
 import { i18nService } from '../../js/service/i18nService';
-import Modal from './modal.vue';
 import { modalMixin } from '../mixins/modalMixin.js';
 import { localStorageService } from '../../js/service/data/localStorageService';
 import { dataService } from '../../js/service/data/dataService';
 import { GridData } from '../../js/model/GridData';
 
 export default {
-    components: { Modal },
     mixins: [modalMixin],
     computed: {
         gridData() {

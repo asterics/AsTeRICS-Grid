@@ -28,7 +28,6 @@
 
 <script>
     import {i18nService} from "../../js/service/i18nService";
-    import Modal from "./modal.vue"
     import { modalMixin } from "../mixins/modalMixin.js";
     import {dataService} from "../../js/service/data/dataService";
     import {imageUtil} from "../../js/util/imageUtil";
@@ -38,7 +37,7 @@
     import {GridElement} from "../../js/model/GridElement.js";
 
     export default {
-        components: {Modal, EditElementHeader, GridSelector},
+        components: {EditElementHeader, GridSelector},
         mixins: [modalMixin],
         data: function () {
             return {
