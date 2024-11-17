@@ -26,7 +26,8 @@
             </div>
         </div>
 
-        <huffman-input-modal v-if="showModal === modalTypes.MODAL_HUFFMAN" @close="showModal = null; reinitInputMethods();"/>
+        <component v-if="currentModal" :is="currentModal" ref="modal" @close="handleModalClose(); reinitInputMethods();"/>
+
         <direction-input-modal v-if="showModal === modalTypes.MODAL_DIRECTION" @close="showModal = null; reinitInputMethods();"/>
         <mouse-modal v-if="showModal === modalTypes.MODAL_MOUSE" @close="showModal = null; reinitInputMethods();"/>
         <scanning-modal v-if="showModal === modalTypes.MODAL_SCANNING" @close="showModal = null; reinitInputMethods();"/>
@@ -75,6 +76,7 @@
     import {GridData} from "../../js/model/GridData";
     import {i18nService} from "../../js/service/i18nService";
     import {util} from "../../js/util/util";
+    import { modalDisplayMixin } from '../mixins/modalDisplayMixin.js';
     import ScanningModal from '../../vue-components/modals/input/scanningModal.vue'
     import MouseModal from "../modals/input/mouseModal.vue";
     import DirectionInputModal from "../modals/input/directionInputModal.vue";
@@ -97,7 +99,6 @@
         MODAL_SCANNING: 'MODAL_SCANNING',
         MODAL_MOUSE: 'MODAL_MOUSE',
         MODAL_DIRECTION: 'MODAL_DIRECTION',
-        MODAL_HUFFMAN: 'MODAL_HUFFMAN',
         MODAL_SEQUENTIAL: 'MODAL_SEQUENTIAL',
         MODAL_UNLOCK: 'MODAL_UNLOCK'
     };
@@ -107,6 +108,7 @@
             gridId: String,
             skipThumbnailCheck: Boolean
         },
+        mixins: [modalDisplayMixin],
         data() {
             return {
                 gridData: {},
@@ -607,7 +609,10 @@
                     break;
                 }
                 case CONTEXT_HUFFMAN: {
-                    vueApp.openModal(modalTypes.MODAL_HUFFMAN);
+                    vueApp.setModal("HuffmanInputModal");
+                    vueApp.$nextTick(() => {
+                        vueApp.$refs.modal.openModal();
+                    });
                     break;
                 }
                 case CONTEXT_SEQUENTIAL: {
