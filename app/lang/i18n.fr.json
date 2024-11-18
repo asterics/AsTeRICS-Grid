@@ -466,7 +466,7 @@
   "importGridsFromFile": "Importer la/les grille(s) depuis un fichier",
   "clearAllAndImportFromFile": "Effacer tout et importer du fichier",
   "deleteAllGrids": "Supprimer toutes les grilles",
-  "deleteAllImages": "Delete all images",
+  "deleteAllImages": "Effacer toutes les images",
   "doYouReallyWantDeleteAllImages": "Do you really want to delete all images and symbols from all grids? This cannot be undone.",
   "resetToDefaultConfig": "Rétablir la configuration par défaut",
   "new": "Nouveau",
