@@ -590,40 +590,28 @@
             switch (key) {
                 case CONTEXT_MOUSE: {
                     vueApp.setModal("MouseModal");
-                    vueApp.$nextTick(() => {
-                        vueApp.$refs.modal.openModal();
-                    });
                     break;
                 }
                 case CONTEXT_SCANNING: {
                     vueApp.setModal("ScanningModal");
-                    vueApp.$nextTick(() => {
-                        vueApp.$refs.modal.openModal();
-                    });
                     break;
                 }
                 case CONTEXT_DIRECTION: {
                     vueApp.setModal("DirectionInputModal");
-                    vueApp.$nextTick(() => {
-                        vueApp.$refs.modal.openModal();
-                    });
                     break;
                 }
                 case CONTEXT_HUFFMAN: {
                     vueApp.setModal("HuffmanInputModal");
-                    vueApp.$nextTick(() => {
-                        vueApp.$refs.modal.openModal();
-                    });
                     break;
                 }
                 case CONTEXT_SEQUENTIAL: {
                     vueApp.setModal("SequentialInputModal");
-                    vueApp.$nextTick(() => {
-                        vueApp.$refs.modal.openModal();
-                    });
                     break;
                 }
             }
+            vueApp.$nextTick(() => {
+                vueApp.$refs.modal.openModal();
+            });
         }
     }
 
