@@ -4,7 +4,7 @@
             <div class="modal-mask">
                 <div class="modal-wrapper">
                     <div class="modal-container">
-                        <div class="modal-header">
+                        <div v-if="header" class="modal-header">
                             <slot name="header">
                                 <h1 v-if="title">{{ title }}</h1>
                                 <button
@@ -22,7 +22,7 @@
                             <!-- TODO: insert label/esc, aria-hidden (https://getbootstrap.com/docs/4.0/components/modal/#modal-components) -->
                         </div>
                         <div class="modal-body"><slot></slot></div>
-                        <div class="modal-footer">
+                        <div v-if="footer" class="modal-footer">
                             <slot name="footer">
                                 <button
                                     @click="close"
@@ -76,6 +76,14 @@ export default {
         helpFn: {
             type: Function,
             default: null
+        },
+        header: {
+            type: Boolean,
+            default: true
+        },
+        footer: {
+            type: Boolean,
+            default: true
         }
     },
     data() {
