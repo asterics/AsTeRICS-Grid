@@ -1,88 +1,64 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keydown.27="cancel()" @keydown.enter="save()">
-                    <a class="inline close-button" href="javascript:void(0);" @click="cancel()"><i class="fas fa-times"/></a>
-                    <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
-                    <div class="modal-header">
-                        <h1 name="header">{{ $t('sequentialInput') }}</h1>
-                    </div>
-
-                    <div class="modal-body" v-if="inputConfig">
-                        <div class="srow">
-                            <span>{{ $t('sequentialInputMethod2InputEvents') }}</span>
-                            <a :aria-label="$t('help')" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
-                        </div>
-                        <div class="srow" >
-                            <div class="twelve columns">
-                                <input v-focus type="checkbox" id="enableSeqinput" v-model="inputConfig.seqEnabled"/>
-                                <label class="inline" for="enableSeqinput">{{ $t('enableSequentialInput') }}</label>
-                            </div>
-                        </div>
-                        <div v-show="inputConfig.seqEnabled">
-                            <accordion :acc-label="$t('input')" acc-open="true" acc-label-type="h2" acc-background-color="white" class="srow">
-                                <input-event-list v-model="inputConfig.seqInputs" :input-labels="[InputConfig.NEXT_ELEMENT, InputConfig.PREVIOUS_ELEMENT, InputConfig.SELECT]" :error-inputs="errorInputs" @input="inputChanged"></input-event-list>
-                                <div class="srow">
-                                    <button class="twelve columns" @click="resetInput">{{ $t('resetToDefaultInputConfiguration') }}</button>
-                                </div>
-                            </accordion>
-                            <accordion :acc-label="$t('ADVANCED_SETTINGS')" acc-label-type="h2" acc-background-color="white">
-                                <div class="srow">
-                                    <div class="twelve columns">
-                                        <input type="checkbox" id="chkResetToStart" v-model="inputConfig.seqResetToStart"/>
-                                        <label for="chkResetToStart">{{ $t('goToStartPositionAfterSelect') }}</label>
-                                    </div>
-                                </div>
-                                <div class="srow">
-                                    <div class="twelve columns">
-                                        <input type="checkbox" id="chkStartWithAction" v-model="inputConfig.seqStartWithAction"/>
-                                        <label for="chkStartWithAction">{{ $t('startManuallyByUserInputEvent') }}</label>
-                                    </div>
-                                </div>
-                                <div class="srow">
-                                    <slider-input :label="$t('roundsUntilStop')" id="roundsUntilStop" min="1" max="10" step="1" decimals="0" default="3" v-model.number="inputConfig.seqRoundsUntilStop"/>
-                                </div>
-                                <div class="srow">
-                                    <div class="twelve columns">
-                                        <input type="checkbox" id="chkAutoScanning" v-model="inputConfig.seqAuto"/>
-                                        <label for="chkAutoScanning">{{ $t('automaticTimedSequentialInput') }}</label>
-                                    </div>
-                                </div>
-                                <div class="srow" v-show="inputConfig.seqAuto">
-                                    <slider-input :label="$t('scanningTimeMs')" id="inScanTime" min="100" max="10000" step="100" decimals="0" v-model.number="inputConfig.seqTimeoutMs"/>
-                                </div>
-                                <div class="srow" v-show="inputConfig.seqAuto">
-                                    <slider-input :label="$t('timeFactorFirstElement')" id="inFirstElement" min="1" max="5" step="0.1" decimals="1" v-model.number="inputConfig.seqTimeoutFirstElementFactor"/>
-                                </div>
-                            </accordion>
-                            <accordion :acc-label="$t('generalInputSettings')" acc-label-type="h2" acc-background-color="white">
-                                <global-input-options :input-config="inputConfig"/>
-                            </accordion>
-                            <accordion :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
-                                <test-area :selected-element="selectedTestElement"></test-area>
-                            </accordion>
-
-                            <div class="warn" v-show="error">
-                                <i class="fas fa-exclamation-triangle"></i> {{error}}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <div class="button-container row">
-                            <button @click="cancel()" class="four columns offset-by-four">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                            </button>
-                            <button @click="save()" class="four columns">
-                                <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
-                            </button>
-                        </div>
-                    </div>
+    <modal :title="$t('sequentialInput')" @ok="save" @close="cancel" :help-fn="openHelp">
+        <template #default v-if="inputConfig">
+            <div class="srow">
+                <span>{{ $t('sequentialInputMethod2InputEvents') }}</span>
+                <a :aria-label="$t('help')" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
+            </div>
+            <div class="srow" >
+                <div class="twelve columns">
+                    <input v-focus type="checkbox" id="enableSeqinput" v-model="inputConfig.seqEnabled"/>
+                    <label class="inline" for="enableSeqinput">{{ $t('enableSequentialInput') }}</label>
                 </div>
             </div>
-        </div>
-    </div>
+            <div v-show="inputConfig.seqEnabled">
+                <accordion :acc-label="$t('input')" acc-open="true" acc-label-type="h2" acc-background-color="white" class="srow">
+                    <input-event-list v-model="inputConfig.seqInputs" :input-labels="[InputConfig.NEXT_ELEMENT, InputConfig.PREVIOUS_ELEMENT, InputConfig.SELECT]" :error-inputs="errorInputs" @input="inputChanged"></input-event-list>
+                    <div class="srow">
+                        <button class="twelve columns" @click="resetInput">{{ $t('resetToDefaultInputConfiguration') }}</button>
+                    </div>
+                </accordion>
+                <accordion :acc-label="$t('ADVANCED_SETTINGS')" acc-label-type="h2" acc-background-color="white">
+                    <div class="srow">
+                        <div class="twelve columns">
+                            <input type="checkbox" id="chkResetToStart" v-model="inputConfig.seqResetToStart"/>
+                            <label for="chkResetToStart">{{ $t('goToStartPositionAfterSelect') }}</label>
+                        </div>
+                    </div>
+                    <div class="srow">
+                        <div class="twelve columns">
+                            <input type="checkbox" id="chkStartWithAction" v-model="inputConfig.seqStartWithAction"/>
+                            <label for="chkStartWithAction">{{ $t('startManuallyByUserInputEvent') }}</label>
+                        </div>
+                    </div>
+                    <div class="srow">
+                        <slider-input :label="$t('roundsUntilStop')" id="roundsUntilStop" min="1" max="10" step="1" decimals="0" default="3" v-model.number="inputConfig.seqRoundsUntilStop"/>
+                    </div>
+                    <div class="srow">
+                        <div class="twelve columns">
+                            <input type="checkbox" id="chkAutoScanning" v-model="inputConfig.seqAuto"/>
+                            <label for="chkAutoScanning">{{ $t('automaticTimedSequentialInput') }}</label>
+                        </div>
+                    </div>
+                    <div class="srow" v-show="inputConfig.seqAuto">
+                        <slider-input :label="$t('scanningTimeMs')" id="inScanTime" min="100" max="10000" step="100" decimals="0" v-model.number="inputConfig.seqTimeoutMs"/>
+                    </div>
+                    <div class="srow" v-show="inputConfig.seqAuto">
+                        <slider-input :label="$t('timeFactorFirstElement')" id="inFirstElement" min="1" max="5" step="0.1" decimals="1" v-model.number="inputConfig.seqTimeoutFirstElementFactor"/>
+                    </div>
+                </accordion>
+                <accordion :acc-label="$t('generalInputSettings')" acc-label-type="h2" acc-background-color="white">
+                    <global-input-options :input-config="inputConfig"/>
+                </accordion>
+                <accordion :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
+                    <test-area :selected-element="selectedTestElement"></test-area>
+                </accordion>
+                <div class="warn" v-show="error">
+                    <i class="fas fa-exclamation-triangle"></i> {{error}}
+                </div>
+            </div>
+        </template>
+    </modal>
 </template>
 
 <script>
@@ -93,7 +69,7 @@
     import InputEventList from "../../components/inputEventList.vue"
     import TestArea from "./testArea.vue"
     import SliderInput from "./sliderInput.vue";
-    import './../../../css/modal.css';
+    import { modalMixin } from '../../mixins/modalMixin.js';
     import {InputConfig} from "../../../js/model/InputConfig";
     import {inputEventHandler} from "../../../js/input/inputEventHandler";
     import {SequentialInput} from "../../../js/input/sequentialInput";
@@ -101,7 +77,8 @@
 
     export default {
         props: [],
-        components: {GlobalInputOptions, Accordion, InputEventList, TestArea, SliderInput},
+        components: { GlobalInputOptions, Accordion, InputEventList, TestArea, SliderInput },
+        mixins: [modalMixin],
         data: function () {
             return {
                 inputConfig: null,
