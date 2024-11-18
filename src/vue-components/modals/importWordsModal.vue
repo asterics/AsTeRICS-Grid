@@ -1,92 +1,79 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
-                    <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
-                    <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
-                    <div class="modal-header">
-                        <h1 name="header">
-                            {{ $t('importWordsToDictionary') }}
-                        </h1>
+    <modal :title="$t('importWordsToDictionary')" @ok="save" @close="$emit('close')" :help-fn="openHelp">
+        <template #default>
+            <div class="srow">
+                <label class="three columns" for="inputText">{{ $t('input') }}</label>
+                <span class="nine columns">{{ $t('insertWordsSeparatedBySpaceEnter') }}</span>
+            </div>
+            <div class="srow">
+                <button @click="() => {showAdvanced = !showAdvanced}" class="nine columns offset-by-three btn-accordion" style="margin-bottom: 0">
+                    <i class="fas fa-chevron-down" v-show="!showAdvanced"></i>
+                    <i class="fas fa-chevron-up" v-show="showAdvanced"></i>
+                    <span>{{ $t('advancedOptions') }}</span>
+                </button>
+            </div>
+            <div class="srow" v-if="showAdvanced">
+                <div class="nine columns offset-by-three" style="background-color: whitesmoke;">
+                    <div class="srow">
+                        <label for="inputElementSeparator" class="five columns">{{ $t('elementSeparator') }}</label>
+                        <input id="inputElementSeparator" type="text" v-model="elementSeparator" @input="textChanged"/>
                     </div>
-
-                    <div class="modal-body container">
-                        <div class="srow">
-                            <label class="three columns" for="inputText">{{ $t('input') }}</label>
-                            <span class="nine columns">{{ $t('insertWordsSeparatedBySpaceEnter') }}</span>
-                        </div>
-                        <div class="srow">
-                            <button @click="() => {showAdvanced = !showAdvanced}" class="nine columns offset-by-three btn-accordion" style="margin-bottom: 0">
-                                <i class="fas fa-chevron-down" v-show="!showAdvanced"></i>
-                                <i class="fas fa-chevron-up" v-show="showAdvanced"></i>
-                                <span>{{ $t('advancedOptions') }}</span>
-                            </button>
-                        </div>
-                        <div class="srow" v-if="showAdvanced">
-                            <div class="nine columns offset-by-three" style="background-color: whitesmoke;">
-                                <div class="srow">
-                                    <label for="inputElementSeparator" class="five columns">{{ $t('elementSeparator') }}</label>
-                                    <input id="inputElementSeparator" type="text" v-model="elementSeparator" @input="textChanged"/>
-                                </div>
-                                <div class="srow">
-                                    <label for="inputRankSeparator" class="five columns">{{ $t('inelementSeparator') }}</label>
-                                    <input id="inputRankSeparator" type="text" v-model="rankSeparator" @input="textChanged"/>
-                                </div>
-                                <div class="srow">
-                                    <label for="inputElIndex" class="five columns">{{ $t('wordIndex0based') }}</label>
-                                    <input id="inputElIndex" type="number" v-model="wordPosition" @input="textChanged"/>
-                                </div>
-                                <div class="srow">
-                                    <label for="inputRankIndex" class="five columns">{{ $t('rankIndex0based') }}</label>
-                                    <input id="inputRankIndex" type="number" v-model="rankPosition" @input="textChanged"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="srow">
-                            <textarea v-focus class="twelve columns" id="inputText" v-model="inputText" @input="textChanged" style="resize: vertical;min-height: 70px;" :placeholder="$t('word1Word2Word3')"/>
-                        </div>
-                        <div class="srow">
-                            <label class="three columns">{{ $t('recognizedWords') }}</label>
-                            <div v-show="parsedElems.length > 0" class="nine columns">
-                                <span>{{elementCount}}</span>
-                                <span>{{ $t('wordsBracket') }}</span>
-                                <span class="break-word">{{JSON.stringify(parsedElems)}}</span>
-                                <span v-if="parsedElems.length < elementCount">...</span>
-                            </div>
-                            <div v-show="parsedElems.length === 0" class="nine columns">
-                                <span>{{ $t('noWords') }}</span>
-                            </div>
-                        </div>
+                    <div class="srow">
+                        <label for="inputRankSeparator" class="five columns">{{ $t('inelementSeparator') }}</label>
+                        <input id="inputRankSeparator" type="text" v-model="rankSeparator" @input="textChanged"/>
                     </div>
-
-                    <div class="modal-footer">
-                        <div class="button-container">
-                            <button @click="$emit('close')" :title="$t('keyboardEsc')">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                            </button>
-                            <button @click="save()" :title="$t('keyboardCtrlEnter')" :disabled="parsedElems.length == 0">
-                                <i class="fas fa-check"/> <span>{{ $t('insertWords') }}</span>
-                            </button>
-                        </div>
+                    <div class="srow">
+                        <label for="inputElIndex" class="five columns">{{ $t('wordIndex0based') }}</label>
+                        <input id="inputElIndex" type="number" v-model="wordPosition" @input="textChanged"/>
+                    </div>
+                    <div class="srow">
+                        <label for="inputRankIndex" class="five columns">{{ $t('rankIndex0based') }}</label>
+                        <input id="inputRankIndex" type="number" v-model="rankPosition" @input="textChanged"/>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+            <div class="srow">
+                <textarea v-focus class="twelve columns" id="inputText" v-model="inputText" @input="textChanged" style="resize: vertical;min-height: 70px;" :placeholder="$t('word1Word2Word3')"/>
+            </div>
+            <div class="srow">
+                <label class="three columns">{{ $t('recognizedWords') }}</label>
+                <div v-show="parsedElems.length > 0" class="nine columns">
+                    <span>{{elementCount}}</span>
+                    <span>{{ $t('wordsBracket') }}</span>
+                    <span class="break-word">{{JSON.stringify(parsedElems)}}</span>
+                    <span v-if="parsedElems.length < elementCount">...</span>
+                </div>
+                <div v-show="parsedElems.length === 0" class="nine columns">
+                    <span>{{ $t('noWords') }}</span>
+                </div>
+            </div>
+        </template>
+        <template #ok-button>
+            <button
+                @click="save"
+                @keydown.ctrl.enter="save"
+                :aria-label="$t('insertWords')"
+                :title="$t('keyboardCtrlEnter')"
+                :disabled="parsedElems.length == 0"
+                >
+                    <i class="fas fa-check" aria-hidden="true"></i>
+                    {{ $t('insertWords') }}
+            </button>
+        </template>
+    </modal>
 </template>
 
 <script>
     import {dataService} from '../../js/service/data/dataService'
     import {i18nService} from "../../js/service/i18nService";
-    import './../../css/modal.css';
+    import { modalMixin } from '../mixins/modalMixin.js';
     import Predictionary from 'predictionary'
     import {helpService} from "../../js/service/helpService";
 
     let predictionary = Predictionary.instance();
 
     export default {
-        props: ['dictData'],
+        mixins: [modalMixin],
         data: function () {
             return {
                 inputText: "",
@@ -100,6 +87,11 @@
                 originalPredictionary: null
             }
         },
+        computed: {
+            dictData() {
+                return this.$store.state.dict;
+            }
+        },
         methods: {
             textChanged() {
                 predictionary = Predictionary.instance();
@@ -108,6 +100,7 @@
                 this.elementCount = predictionary.getWords().length;
             },
             save() {
+                console.log("DUMMY", "save");
                 var thiz = this;
                 thiz.parseInternal(this.originalPredictionary);
                 thiz.dictData.data = this.originalPredictionary.dictionaryToJSON(this.dictData.dictionaryKey);
