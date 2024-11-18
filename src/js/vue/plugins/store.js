@@ -5,14 +5,18 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
     state: {
-        // NOTE: gridData, metadata, gridInstance are objects, thus properties itself are not reactive.
+        // NOTE: dict, gridData, metadata, gridInstance are objects, thus properties itself are not reactive.
         //       Always replace the object with a new one to trigger reactivity.
+        dict: null,
         gridData: null,
         metadata: null,
         gridInstance: null,
         editElementId: null
     },
     mutations: {
+        setDict(state, payload) {
+            state.dict = payload;
+        },
         setGridData(state, payload) {
             state.gridData = payload;
         },
