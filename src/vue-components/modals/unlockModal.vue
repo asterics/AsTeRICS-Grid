@@ -1,53 +1,39 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
-                    <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
-                    <div class="modal-header">
-                        <h1 name="header">
-                            {{ $t('unlockApplication') }}
-                        </h1>
-                    </div>
-
-                    <div class="modal-body">
-                        <div class="number-row" style="text-align: center; margin-bottom: 1em;">
-                            <span>{{ $t('inputPasscode') }}</span>
-                            <span class="hide-mobile">{{ $t('useButtonsOrKeyboard') }}</span><br/>
-                            <span aria-hidden="true" style="font-size: 3em">
-                                <span v-for="n in inputPasscode.length">&#9679;</span>
-                                <span v-for="n in (Math.max(0, passcode.length - inputPasscode.length))">_</span>
-                            </span>
-                        </div>
-                        <div class="number-row">
-                            <button v-for="i in [1,2,3]" @click="inputDigit(i)">{{i}}</button>
-                        </div>
-                        <div class="number-row">
-                            <button v-for="i in [4,5,6]" @click="inputDigit(i)">{{i}}</button>
-                        </div>
-                        <div class="number-row">
-                            <button v-for="i in [7,8,9]" @click="inputDigit(i)">{{i}}</button>
-                        </div>
-                        <div class="number-row">
-                            <button style="margin-left: 33%" @click="inputDigit(0)">0</button>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                    </div>
-                </div>
+    <modal :title="$t('unlockApplication')" :footer="false">
+        <template #default>
+            <div class="number-row" style="text-align: center; margin-bottom: 1em;">
+                <span>{{ $t('inputPasscode') }}</span>
+                <span class="hide-mobile">{{ $t('useButtonsOrKeyboard') }}</span><br/>
+                <span aria-hidden="true" style="font-size: 3em">
+                    <span v-for="n in inputPasscode.length">&#9679;</span>
+                    <span v-for="n in (Math.max(0, passcode.length - inputPasscode.length))">_</span>
+                </span>
             </div>
-        </div>
-    </div>
+            <div class="number-row">
+                <button v-for="i in [1,2,3]" @click="inputDigit(i)">{{i}}</button>
+            </div>
+            <div class="number-row">
+                <button v-for="i in [4,5,6]" @click="inputDigit(i)">{{i}}</button>
+            </div>
+            <div class="number-row">
+                <button v-for="i in [7,8,9]" @click="inputDigit(i)">{{i}}</button>
+            </div>
+            <div class="number-row">
+                <button style="margin-left: 33%" @click="inputDigit(0)">0</button>
+            </div>
+        </template>
+    </modal>
 </template>
 
 <script>
     import {i18nService} from "../../js/service/i18nService";
-    import './../../css/modal.css';
+    import { modalMixin } from '../mixins/modalMixin.js';
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {inputEventHandler} from "../../js/input/inputEventHandler";
 
     export default {
         props: [],
+        mixins: [modalMixin],
         data: function () {
             return {
                 passcode: localStorageService.getAppSettings().unlockPasscode,
