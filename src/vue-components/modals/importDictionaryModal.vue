@@ -1,69 +1,58 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="$emit('close')">
-                    <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
-                    <div class="modal-header">
-                        <h1 name="header">
-                            {{ $t('importDictionary') }}
-                        </h1>
-                    </div>
-
-                    <div class="modal-body">
-                        <div class="srow" style="margin-bottom: 3em">
-                            <input type="radio" id="radiopredef" name="importType" :value="c.SELECT_ONLINE" v-model="importType">
-                            <label for="radiopredef">{{ $t('importFromOnlineDictionaries') }}</label><br/>
-                            <input type="radio" id="radiofile" name="importType" :value="c.SELECT_FILE" v-model="importType">
-                            <label for="radiofile">{{ $t('importFromFile') }}</label>
-                        </div>
-                        <div v-show="importType === c.SELECT_ONLINE">
-                            <div class="srow">
-                                <label class="three columns" for="selectDict">{{ $t('selectDictionary') }}</label>
-                                <select id="selectDict" class="nine columns" type="file" v-model="selectedOption" @change="console.log(selectedOption.lang)">
-                                    <option disabled selected hidden :value="null">{{ $t('pleaseSelect') }}</option>
-                                    <option v-for="option in options" :value="option">{{ option.name }}</option>
-                                </select>
-                            </div>
-                            <div class="srow" v-show="selectedOption && selectedOption.type === c.OPTION_TYPE_GITHUB_FREQUENCYWORDS">
-                                <div class="nine columns offset-by-three">
-                                    <span>{{ $t('thanksToHermitDaveForSupplyingDataForThis') }} </span>
-                                    <a href="https://github.com/hermitdave/FrequencyWords" target="_blank">Github.com</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div v-show="importType === c.SELECT_FILE">
-                            <div class="srow">
-                                <label class="three columns" for="fileInput">{{ $t('selectFile') }}</label>
-                                <input id="fileInput" class="nine columns" type="file" accept=".json" @change="onFileSelect"/>
-                            </div>
-                        </div>
-                        <div v-show="!!error" class="srow" style="color: darkred; margin-top: 2.5em">
-                            <i class="fas fa-exclamation-triangle"/> <span>{{error | translate}}</span>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <div class="button-container srow">
-                            <button class="six columns" @click="$emit('close')" :title="$t('keyboardEsc')">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                            </button>
-                            <button class="six columns" @click="save()" :title="$t('keyboardCtrlEnter')" :disabled="importType === c.SELECT_ONLINE && !selectedOption || importType === c.SELECT_FILE && !selectedFile">
-                                <i class="fas fa-check"/> <span>{{ $t('importDictionary') }}</span> <i class="fas fa-spinner fa-spin" v-show="loading"/>
-                            </button>
-                        </div>
+    <modal :title="$t('importDictionary')" @close="$emit('close')">
+        <template #default>
+            <div class="srow" style="margin-bottom: 3em">
+                <input type="radio" id="radiopredef" name="importType" :value="c.SELECT_ONLINE" v-model="importType">
+                <label for="radiopredef">{{ $t('importFromOnlineDictionaries') }}</label><br/>
+                <input type="radio" id="radiofile" name="importType" :value="c.SELECT_FILE" v-model="importType">
+                <label for="radiofile">{{ $t('importFromFile') }}</label>
+            </div>
+            <div v-show="importType === c.SELECT_ONLINE">
+                <div class="srow">
+                    <label class="three columns" for="selectDict">{{ $t('selectDictionary') }}</label>
+                    <select id="selectDict" class="nine columns" type="file" v-model="selectedOption" @change="console.log(selectedOption.lang)">
+                        <option disabled selected hidden :value="null">{{ $t('pleaseSelect') }}</option>
+                        <option v-for="option in options" :value="option">{{ option.name }}</option>
+                    </select>
+                </div>
+                <div class="srow" v-show="selectedOption && selectedOption.type === c.OPTION_TYPE_GITHUB_FREQUENCYWORDS">
+                    <div class="nine columns offset-by-three">
+                        <span>{{ $t('thanksToHermitDaveForSupplyingDataForThis') }} </span>
+                        <a href="https://github.com/hermitdave/FrequencyWords" target="_blank">Github.com</a>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+            <div v-show="importType === c.SELECT_FILE">
+                <div class="srow">
+                    <label class="three columns" for="fileInput">{{ $t('selectFile') }}</label>
+                    <input id="fileInput" class="nine columns" type="file" accept=".json" @change="onFileSelect"/>
+                </div>
+            </div>
+            <div v-show="!!error" class="srow" style="color: darkred; margin-top: 2.5em">
+                <i class="fas fa-exclamation-triangle"/> <span>{{error | translate}}</span>
+            </div>
+        </template>
+        <template #ok-button>
+            <button
+                @click="save"
+                @keydown.ctrl.enter="save"
+                :aria-label="$t('importDictionary')"
+                :title="$t('keyboardCtrlEnter')"
+                :disabled="disabledOkButton"
+                >
+                    <i class="fas fa-check" aria-hidden="true"></i>
+                    {{ $t('importDictionary') }}
+                    <i class="fas fa-spinner fa-spin" v-show="loading"></i>
+            </button>
+        </template>
+    </modal>
 </template>
 
 <script>
     import {dataService} from '../../js/service/data/dataService'
     import Predictionary from 'predictionary';
     import {i18nService} from "../../js/service/i18nService";
-    import './../../css/modal.css';
+    import { modalMixin } from '../mixins/modalMixin.js';
     import {Dictionary} from "../../js/model/Dictionary.js";
     import {modelUtil} from "../../js/util/modelUtil.js";
 
@@ -77,7 +66,7 @@
     let githubFrequencyWordsURLRaw = 'https://raw.githubusercontent.com/klues/FrequencyWords/master';
 
     export default {
-        props: ['dicts'],
+        mixins: [modalMixin],
         data: function () {
             return {
                 importType: c.SELECT_ONLINE,
@@ -98,6 +87,14 @@
                 error: null,
                 loading: false,
                 console: console
+            }
+        },
+        computed: {
+            dicts() {
+                return this.$store.state.dicts;
+            },
+            disabledOkButton() {
+                return importType === c.SELECT_ONLINE && !selectedOption || importType === c.SELECT_FILE && !selectedFile
             }
         },
         methods: {
