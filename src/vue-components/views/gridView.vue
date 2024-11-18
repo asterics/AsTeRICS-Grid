@@ -28,7 +28,6 @@
 
         <component v-if="currentModal" :is="currentModal" ref="modal" @close="handleModalClose(); reinitInputMethods();"/>
 
-        <sequential-input-modal v-if="showModal === modalTypes.MODAL_SEQUENTIAL" @close="showModal = null; reinitInputMethods();"/>
         <unlock-modal v-if="showModal === modalTypes.MODAL_UNLOCK" @unlock="unlock(true)" @close="showModal = null;"/>
 
         <div class="srow content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0 && (!globalGridData || globalGridData.gridElements.length === 0)">
@@ -93,7 +92,6 @@
     let gridInstance = null;
     let UNLOCK_COUNT = 8;
     let modalTypes = {
-        MODAL_SEQUENTIAL: 'MODAL_SEQUENTIAL',
         MODAL_UNLOCK: 'MODAL_UNLOCK'
     };
 
@@ -619,7 +617,10 @@
                     break;
                 }
                 case CONTEXT_SEQUENTIAL: {
-                    vueApp.openModal(modalTypes.MODAL_SEQUENTIAL);
+                    vueApp.setModal("SequentialInputModal");
+                    vueApp.$nextTick(() => {
+                        vueApp.$refs.modal.openModal();
+                    });
                     break;
                 }
             }
