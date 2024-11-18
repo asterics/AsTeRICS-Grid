@@ -1,11 +1,11 @@
 <template>
     <div class="overflow-content box">
-        <div :aria-hidden="currentModal || showImportModal">
+        <div :aria-hidden="currentModal">
             <div class="all-dicts-view">
                 <header class="srow header" role="toolbar">
                     <header-icon></header-icon>
                     <button tabindex="32" @click="addDictionary()" :aria-label="$t('newEmptyDictionary')" class="small spaced"><i class="fas fa-plus"/> <span class="hide-mobile">{{ $t('newEmptyDictionary') }}</span></button>
-                    <button tabindex="31" @click="showImportModal = true" :aria-label="$t('importDictionary')" class="small spaced"><i class="fas fa-file-import"/> <span class="hide-mobile">{{ $t('importDictionary') }}</span></button>
+                    <button tabindex="31" @click="handleImportModal" :aria-label="$t('importDictionary')" class="small spaced"><i class="fas fa-file-import"/> <span class="hide-mobile">{{ $t('importDictionary') }}</span></button>
                 </header>
                 <div class="srow content text-content">
                     <div v-if="!dicts" class="grid-container grid-mask">
@@ -97,8 +97,6 @@
             </div>
         </div>
         <component v-if="currentModal" :is="currentModal" ref="modal" @reload="reload" @close="handleModalClose"/>
-        <import-dictionary-modal v-if="showImportModal" :dicts="dicts"
-                                 @close="showImportModal = false" @reload="reload"/>
     </div>
 </template>
 
@@ -134,7 +132,6 @@
                 predictionary: null,
                 wordlist: [],
                 searchWord: "",
-                showImportModal: false,
                 totalWords: 0,
                 filterWords: 0,
                 languages: i18nService.getAllLanguages()
@@ -149,6 +146,13 @@
                 this.modalDict = dict;
                 vueApp.$store.commit('setDict', dict);
                 vueApp.setModal('ImportWordsModal');
+                vueApp.$nextTick(() => {
+                    this.$refs.modal.openModal();
+                })
+            },
+            handleImportModal() {
+                vueApp.$store.commit('setDicts', this.dicts);
+                vueApp.setModal('ImportDictionaryModal');
                 vueApp.$nextTick(() => {
                     this.$refs.modal.openModal();
                 })
