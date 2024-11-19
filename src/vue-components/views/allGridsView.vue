@@ -110,7 +110,7 @@
         </div>
 
         <no-grids-page v-if="graphList && graphList.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true" :reset-global-grid="this.resetGlobalGrid"></no-grids-page>
-        <grid-link-modal v-if="linkModal.show" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @close="linkModal.show = false" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
+        <component v-if="currentModal" :is="currentModal" ref="modal" @reload="handleModalReload" @close="handleModalClose"></component>
         <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.show = false; pdfModal.printGridId = null;"></export-pdf-modal>
         <export-modal v-if="backupModal.show" :grids-data="grids" :export-options="backupModal.exportOptions" @close="backupModal.show = false"></export-modal>
         <import-modal v-if="importModal.show" @close="importModal.show = false" :reload-fn="reload"></import-modal>
@@ -130,6 +130,7 @@
     import {gridUtil} from "../../js/util/gridUtil";
     import Accordion from "../components/accordion.vue";
     import {imageUtil} from "../../js/util/imageUtil";
+    import { modalDisplayMixin } from '../mixins/modalDisplayMixin.js';
     import GridLinkModal from "../modals/gridLinkModal.vue";
     import ExportPdfModal from "../modals/exportPdfModal.vue";
     import {MainVue} from "../../js/vue/mainVue";
@@ -159,6 +160,7 @@
     let vueConfig = {
         components: {
             NoGridsPage, ImportModal, ExportModal, ExportPdfModal, GridLinkModal, Accordion, HeaderIcon},
+        mixins: [modalDisplayMixin],
         data() {
             return {
                 metadata: null,
@@ -171,11 +173,6 @@
                 ORDER_VALUES: ORDER_VALUES,
                 selectValue: null,
                 orderValue: localStorageService.get(ORDER_MODE_KEY) || ORDER_VALUES.CONNECTION_COUNT,
-                linkModal: {
-                    show: false,
-                    gridFrom: null,
-                    gridTo: null
-                },
                 pdfModal: {
                     show: false,
                     printGridId: null
@@ -296,6 +293,11 @@
                 });
                 this.resetFileInput(event);
                 this.reload();
+            },
+            handleModalReload() {
+                if (this.currentModal === 'GridLinkModal') {
+                    this.reload(gridFrom.id)
+                }
             },
             reload: function (openGridId) {
                 let thiz = this;
@@ -479,6 +481,9 @@
             }
         },
         computed: {
+            gridFrom() {
+                return this.$store.state.gridFrom;
+            },
             headerDetails: function() {
                 return this.selectedGraphElement ? i18nService.t('detailsForGridX', `"${i18nService.getTranslation(this.selectedGraphElement.grid.label)}"`) :'';
             },
@@ -586,9 +591,12 @@
         function handleContextMenu(key, gridId) {
             switch (key) {
                 case "CONTEXT_CONNECT":
-                    vueApp.linkModal.gridFrom = vueApp.selectedGraphElement.grid;
-                    vueApp.linkModal.gridTo = vueApp.grids.filter(g => g.id === gridId)[0];
-                    vueApp.linkModal.show = true;
+                    vueApp.$store.commit('setGridFrom', vueApp.selectedGraphElement.grid);
+                    vueApp.$store.commit('setGridTo', vueApp.grids.filter(g => g.id === gridId)[0]);
+                    vueApp.setModal('GridLinkModal');
+                    vueApp.$nextTick(() => {
+                        vueApp.$refs.modal.openModal();
+                    });
                     break;
                 case "CONTEXT_SHOW":
                     vueApp.show(gridId);
