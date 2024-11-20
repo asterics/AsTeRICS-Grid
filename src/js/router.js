@@ -229,7 +229,7 @@ Router.toGrid = function (id, props) {
         let hash = `#grid/${id}`;
 
         if (_currentView === GridView) {
-            dataService.getGrid(id).then((gridData) => {
+            dataService.getGrid(id, false, true).then((gridData) => {
                 if (!gridData) {
                     return;
                 }
