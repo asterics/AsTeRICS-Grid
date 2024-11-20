@@ -37,8 +37,8 @@
                 </i18n>
             </div>
         </div>
-        <div class="srow content" v-if="metadata && gridData.gridElements && (gridData.gridElements.length > 0 || (globalGridData && globalGridData.gridElements.length > 0))" style="max-width: 100%; min-height: 0">
-            <grid-display id="grid-container" :grid-data="gridData" :global-grid-data="globalGridData" :metadata="metadata"/>
+        <div class="srow content" v-if="renderGridData && renderGridData.gridElements.length > 0" style="max-width: 100%; min-height: 0">
+            <grid-display id="grid-container" :grid-data="renderGridData" :metadata="metadata"/>
         </div>
     </div>
 </template>

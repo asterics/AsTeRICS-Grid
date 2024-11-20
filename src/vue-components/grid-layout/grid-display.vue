@@ -10,12 +10,11 @@
 
 import GridLayout from './grid-layout.vue';
 import GridElementNormal from './gridElementNormal.vue';
-import { GridData } from '../../js/model/GridData';
 import { gridUtil } from '../../js/util/gridUtil';
 
 export default {
     components: { GridElementNormal, GridLayout },
-    props: ["gridData", "globalGridData", "metadata"],
+    props: ["gridData", "metadata"],
     data() {
         return {
             renderGrid: null,
@@ -29,9 +28,8 @@ export default {
     },
     methods: {
         async load() {
-            let renderGrid = gridUtil.mergeGrids(this.gridData, this.globalGridData);
-            this.columns = new GridData(renderGrid).getWidthWithBounds();
-            this.renderGrid = renderGrid;
+            this.columns = gridUtil.getWidthWithBounds(this.gridData);
+            this.renderGrid = this.gridData;
         }
     },
     mounted() {
