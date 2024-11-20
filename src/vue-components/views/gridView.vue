@@ -20,6 +20,11 @@
             <button tabindex="32" @click="systemActionService.enterFullscreen()" class="spaced small" :aria-label="$t('fullscreen')"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
 
         </header>
+        <div class="srow content text-content" v-show="!renderGridData">
+            <div class="grid-container grid-mask">
+                <i class="fas fa-4x fa-spinner fa-spin" style="position: relative;"/>
+            </div>
+        </div>
 
         <huffman-input-modal v-if="showModal === modalTypes.MODAL_HUFFMAN" @close="showModal = null; reinitInputMethods();"/>
         <direction-input-modal v-if="showModal === modalTypes.MODAL_DIRECTION" @close="showModal = null; reinitInputMethods();"/>
