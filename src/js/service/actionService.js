@@ -32,20 +32,21 @@ let actionService = {};
 let minPauseSpeak = 0;
 let metadata = null;
 
-actionService.doAction = function (gridId, gridElementId) {
-    if (!gridId || !gridElementId) {
+actionService.doAction = async function (gridIdOrObject, gridElementId) {
+    if (!gridIdOrObject || !gridElementId) {
         return;
     }
-    dataService.getGridElement(gridId, gridElementId).then((gridElement) => {
-        log.debug('do actions for: ' + i18nService.getTranslation(gridElement.label) + ', ' + gridElementId);
-        switch (gridElement.type) {
-            case GridElement.ELEMENT_TYPE_PREDICTION: {
-                predictionService.doAction(gridElement.id);
-                break;
-            }
+    let gridData = gridIdOrObject.gridElements ? gridIdOrObject : (await dataService.getGrid(gridIdOrObject, false, true));
+    let gridElement = gridData.gridElements.find(e => e.id === gridElementId);
+
+    log.debug('do actions for: ' + i18nService.getTranslation(gridElement.label) + ', ' + gridElementId);
+    switch (gridElement.type) {
+        case GridElement.ELEMENT_TYPE_PREDICTION: {
+            predictionService.doAction(gridElement.id);
+            break;
         }
-        doActions(gridElement, gridId);
-    });
+    }
+    doActions(gridElement, gridData.id);
 };
 
 actionService.testAction = function (gridElement, action, gridData) {
