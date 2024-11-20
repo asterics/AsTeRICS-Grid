@@ -367,6 +367,12 @@ dataService.deleteObject = function (id) {
     return databaseService.removeObject(id);
 };
 
+dataService.saveThumbnail = async function(gridId, thumbnailData) {
+    let gridData = await dataService.getGrid(gridId, false, true);
+    gridData.thumbnail = thumbnailData;
+    return dataService.saveGrid(gridData);
+}
+
 /**
  * Downloads a complete backup of the current user config to file
  * @return {Promise<void>}
