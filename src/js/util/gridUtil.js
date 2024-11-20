@@ -7,6 +7,8 @@ import { GridActionCollectElement } from '../model/GridActionCollectElement';
 import { GridData } from '../model/GridData';
 import { GridElementCollect } from '../model/GridElementCollect.js';
 import {constants} from "./constants.js";
+import { GridActionARE } from '../model/GridActionARE';
+import { encryptionService } from '../service/data/encryptionService';
 
 let gridUtil = {};
 
@@ -480,6 +482,77 @@ gridUtil.mergeGrids = function(grid, globalGrid, options = {}) {
     }
     return grid;
 }
+
+gridUtil.getAREFirstAction = function(gridData) {
+    let allActions = [];
+    gridData.gridElements.forEach((element) => {
+        allActions = allActions.concat(element.actions);
+    });
+    return allActions.filter((a) => a.modelName === GridActionARE.getModelName())[0];
+};
+
+gridUtil.getAREModel = function(gridData) {
+    let areAction = gridUtil.getAREFirstAction(gridData);
+    if (areAction) {
+        let filteredFiles = gridData.additionalFiles.filter((f) => f.fileName === areAction.areModelGridFileName);
+        return filteredFiles[0];
+    }
+    return null;
+};
+
+gridUtil.getAREURL = function(gridData) {
+    let areAction = gridUtil.getAREFirstAction(gridData);
+    return areAction ? areAction.areURL : null;
+};
+
+gridUtil.hasAREModel = function(gridData) {
+    return !!gridUtil.getAREModel(gridData);
+};
+
+gridUtil.hasOutdatedThumbnail = function(gridData) {
+    return !gridData.thumbnail || !gridData.thumbnail.data || gridData.thumbnail.hash !== gridUtil.getHash(gridData);
+};
+
+gridUtil.getHash = function(gridData) {
+    let string = '';
+    gridData.gridElements.forEach((e) => {
+        string += JSON.stringify(e.label) + e.x + e.y;
+        if (e.image && (e.image.data || e.image.url)) {
+            let temp = e.image.data || e.image.url;
+            string += temp.substring(temp.length > 30 ? temp.length - 30 : 0);
+        }
+    });
+    return encryptionService.getStringHash(string);
+};
+
+gridUtil.getWidth = function(gridData) {
+    if (gridData.gridElements.length === 0) {
+        return 0;
+    }
+    return Math.max.apply(
+        null,
+        gridData.gridElements.map((el) => el.x + el.width)
+    );
+};
+
+gridUtil.getHeight = function(gridData) {
+    if (gridData.gridElements.length === 0) {
+        return 0;
+    }
+    return Math.max.apply(
+        null,
+        gridData.gridElements.map((el) => el.y + el.height)
+    );
+};
+
+gridUtil.getWidthWithBounds = function(gridData) {
+    return Math.max(gridUtil.getWidth(gridData), gridData.minColumnCount);
+}
+
+gridUtil.getHeightWithBounds = function(gridData) {
+    return Math.max(gridUtil.getHeight(gridData), gridData.rowCount);
+}
+
 /**
  * ensure that all defaults are set within the given GridData object
  * and all contained GridElement objects
