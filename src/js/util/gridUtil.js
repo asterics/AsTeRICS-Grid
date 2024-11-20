@@ -441,27 +441,30 @@ gridUtil.getActionsOfType = function (gridElement, modelName) {
  * @param grid
  * @param globalGrid
  * @param options.globalGridHeightPercentage the height of the global grid in percentage
+ * @param options.noDeepCopy if set to true, not deep copy of the input grids will be done before merging. This is better
+ *                           for performance, but will change the original object. Make sure that it's not saved to
+ *                           database afterwards, if setting noDeepCopy to true
  * @returns {*} grid data of the merged grid
  */
 gridUtil.mergeGrids = function(grid, globalGrid, options = {}) {
     if (grid && globalGrid && globalGrid.gridElements && globalGrid.gridElements.length > 0) {
-        globalGrid = new GridData(JSON.parse(JSON.stringify(globalGrid)));
-        grid = new GridData(JSON.parse(JSON.stringify(grid)));
+        globalGrid = JSON.parse(JSON.stringify(globalGrid));
+        grid = options.noDeepCopy ? grid : JSON.parse(JSON.stringify(grid));
         let autowidth = true;
         let heightPercentage = options.globalGridHeightPercentage
             ? options.globalGridHeightPercentage / 100
             : 0.15;
         let heightFactorNormal = 1;
         let heightFactorGlobal = 1;
-        if (globalGrid.getHeight() === 1) {
+        if (gridUtil.getHeight(globalGrid) === 1) {
             heightFactorGlobal = (heightPercentage * grid.rowCount) / (1 - heightPercentage);
             heightFactorNormal = 1 / (grid.rowCount * heightPercentage) - 1 / grid.rowCount;
             heightFactorGlobal = Math.round(heightPercentage * 100);
             heightFactorNormal = Math.round(((1 - heightPercentage) / grid.rowCount) * 100);
         }
         let offset = gridUtil.getOffset(globalGrid);
-        let factorGrid = autowidth ? globalGrid.getWidth() - offset.x : 1;
-        let factorGlobal = autowidth ? grid.getWidthWithBounds() : 1;
+        let factorGrid = autowidth ? gridUtil.getWidth(globalGrid) - offset.x : 1;
+        let factorGlobal = autowidth ? gridUtil.getWidthWithBounds(grid) : 1;
         globalGrid.gridElements.forEach((gridElement) => {
             gridElement.width *= factorGlobal;
             gridElement.x *= factorGlobal;
