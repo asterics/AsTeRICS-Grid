@@ -480,6 +480,23 @@ gridUtil.mergeGrids = function(grid, globalGrid, options = {}) {
     }
     return grid;
 }
+/**
+ * ensure that all defaults are set within the given GridData object
+ * and all contained GridElement objects
+ * @param gridData
+ * @returns {*}
+ */
+gridUtil.ensureDefaults = function(gridData) {
+    for (let key of Object.keys(GridData.DEFAULTS)) {
+        gridData[key] = gridData[key] || GridData.DEFAULTS[key];
+    }
+    for (let key of Object.keys(GridElement.DEFAULTS)) {
+        for (let element of gridData.gridElements) {
+            element[key] = element[key] || GridElement.DEFAULTS[key];
+        }
+    }
+    return gridData;
+};
 
 function getAllChildrenRecursive(gridGraphList, gridId) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];

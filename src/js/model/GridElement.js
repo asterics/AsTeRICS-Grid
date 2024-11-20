@@ -41,20 +41,9 @@ class GridElement extends Model({
     additionalProps: [Object]
 }) {
     constructor(properties, elementToCopy) {
-        let defaults = {
-            id: '', //will be replaced by constructor
-            modelName: GridElement.getModelName(),
-            modelVersion: constants.MODEL_VERSION,
-            label: {},
-            width: 1,
-            height: 1,
-            image: new GridImage(),
-            type: GridElement.ELEMENT_TYPE_NORMAL,
-            additionalProps: {}
-        };
+        let defaults = JSON.parse(JSON.stringify(GridElement.DEFAULTS));
         properties = modelUtil.setDefaults(properties, elementToCopy, GridElement) || {};
         properties.actions = properties.actions || [new GridActionSpeak()];
-        properties.wordForms = properties.wordForms || [];
         super(Object.assign(defaults, properties));
         this.id = this.id || modelUtil.generateId('grid-element');
     }
@@ -132,6 +121,19 @@ class GridElement extends Model({
     static getModelName() {
         return 'GridElement';
     }
+}
+
+GridElement.DEFAULTS = {
+    id: '', //will be replaced by constructor
+    modelName: GridElement.getModelName(),
+    modelVersion: constants.MODEL_VERSION,
+    label: {},
+    width: 1,
+    height: 1,
+    image: new GridImage(),
+    type: GridElement.ELEMENT_TYPE_NORMAL,
+    additionalProps: {},
+    wordForms: []
 }
 
 GridElement.ELEMENT_TYPE_NORMAL = 'ELEMENT_TYPE_NORMAL';

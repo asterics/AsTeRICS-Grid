@@ -265,7 +265,7 @@ class GridData extends Model({
     }
 }
 
-GridData.defaults({
+GridData.DEFAULTS = {
     id: '', //will be replaced by constructor
     modelName: GridData.getModelName(),
     modelVersion: constants.MODEL_VERSION,
@@ -274,6 +274,8 @@ GridData.defaults({
     webRadios: [],
     label: {},
     lastUpdateTime: new Date().getTime()
-});
+};
+
+GridData.defaults(GridData.DEFAULTS);
 
 export { GridData };
