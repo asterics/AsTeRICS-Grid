@@ -29,14 +29,20 @@ let dataService = {};
  *
  * @param id the ID of the grid
  * @param onlyShortVersion if true only the short version (with stripped binary data) is returned (optional)
+ * @param noObjectModel if true, result is not converted to object model instance (performance)
  * @return {Promise} resolves to a grid object that was found
  */
-dataService.getGrid = async function (id, onlyShortVersion) {
+dataService.getGrid = async function (id, onlyShortVersion, noObjectModel) {
     if (!id) {
         return Promise.resolve(null);
     }
     return databaseService.getSingleObject(GridData, id, onlyShortVersion).then((result) => {
-        return Promise.resolve(result ? new GridData(result) : null);
+        if (!noObjectModel) {
+            result = result ? new GridData(result) : null;
+        } else {
+            result = result ? gridUtil.ensureDefaults(result) : null;
+        }
+        return Promise.resolve(result);
     });
 };
 
