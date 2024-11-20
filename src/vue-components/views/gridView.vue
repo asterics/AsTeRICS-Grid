@@ -33,11 +33,11 @@
         <sequential-input-modal v-if="showModal === modalTypes.MODAL_SEQUENTIAL" @close="showModal = null; reinitInputMethods();"/>
         <unlock-modal v-if="showModal === modalTypes.MODAL_UNLOCK" @unlock="unlock(true)" @close="showModal = null;"/>
 
-        <div class="srow content spaced" v-show="gridData.gridElements && gridData.gridElements.length === 0 && (!globalGridData || globalGridData.gridElements.length === 0)">
+        <div class="srow content spaced" v-if="renderGridData && renderGridData.gridElements.length === 0">
             <div style="margin-top: 2em">
                 <i18n path="noElementsClickToEnterEdit" tag="span">
                     <template v-slot:link>
-                        <a :href="'#grid/edit/' + gridData.id">{{ $t('editingOn') }}</a>
+                        <a :href="'#grid/edit/' + renderGridData.id">{{ $t('editingOn') }}</a>
                     </template>
                 </i18n>
             </div>
@@ -84,6 +84,7 @@
     import {stateService} from "../../js/service/stateService.js";
     import { systemActionService } from '../../js/service/systemActionService';
     import GridDisplay from '../grid-layout/grid-display.vue';
+    import { gridUtil } from '../../js/util/gridUtil';
 
     let vueApp = null;
     let UNLOCK_COUNT = 8;
@@ -103,8 +104,8 @@
         },
         data() {
             return {
-                gridData: {},
                 globalGridData: null,
+                renderGridData: null,
                 metadata: null,
                 updatedMetadataDoc: null,
                 scanner: null,
@@ -189,7 +190,7 @@
                 let selectionListener = (item) => {
                     this.stopHighlightElements();
                     L.removeAddClass(item, 'selected');
-                    actionService.doAction(thiz.gridData.id, item.id);
+                    actionService.doAction(thiz.renderGridData, item.id);
                 };
                 let activeListener = (items, wrap, restarted) => {
                     if (!Array.isArray(items)) {
@@ -271,8 +272,7 @@
             },
             reload(gridData) {
                 if (gridData) {
-                    this.gridData = JSON.parse(JSON.stringify(gridData));
-                    stateService.setCurrentGrid(this.gridData);
+                    this.recalculateRenderGrid(gridData);
                 }
                 this.reinitInputMethods(true);
                 return Promise.resolve();
@@ -298,7 +298,7 @@
                 }
             },
             async onNavigateEvent(event, gridData, params) {
-                if (gridData && this.gridData.id === gridData.id) {
+                if (gridData && this.renderGridData.id === gridData.id) {
                     this.highlightElements();
                     return; //prevent duplicated navigation to same grid
                 }
@@ -312,7 +312,7 @@
                 this.reload();
             },
             toEditGrid() {
-                Router.toEditGrid(this.gridData.id);
+                Router.toEditGrid(this.renderGridData.id);
             },
             toLogin() {
                 Router.toLogin();
@@ -330,7 +330,7 @@
                     return;
                 }
                 log.debug('got update event, ids updated:' + updatedIds);
-                let updatedGridDoc = updatedDocs.filter(doc => (vueApp.gridData && doc.id === vueApp.gridData.id))[0];
+                let updatedGridDoc = updatedDocs.filter(doc => (vueApp.renderGridData && doc.id === vueApp.renderGridData.id))[0];
                 let hasUpdatedGlobalGrid = updatedDocs.filter(doc => (this.metadata && doc.id === this.metadata.globalGridId)).length > 0;
                 this.updatedMetadataDoc = updatedDocs.filter(doc => (vueApp.metadata && doc.id === vueApp.metadata.id))[0] || this.updatedMetadataDoc;
                 if (updatedGridDoc) {
@@ -345,9 +345,9 @@
                 if (!localStorageService.getAppSettings().syncNavigation) {
                     return;
                 }
-                if (this.updatedMetadataDoc && this.updatedMetadataDoc.lastOpenedGridId !== vueApp.gridData.id) {
+                if (this.updatedMetadataDoc && this.updatedMetadataDoc.lastOpenedGridId !== vueApp.renderGridData.id) {
                     dataService.getGrid(this.updatedMetadataDoc.lastOpenedGridId).then(toGrid => {
-                        if (!toGrid.hasOutdatedThumbnail()) {
+                        if (!gridUtil.hasOutdatedThumbnail(toGrid)) {
                             Router.toLastOpenedGrid();
                         }
                     });
@@ -367,6 +367,15 @@
                         vueApp.unlock(true);
                     }
                 }
+            },
+            recalculateRenderGrid(gridData) {
+                // attention: gridData also changes because of "noDeepCopy: true"
+                // just using this.renderGridData for clarity
+                this.renderGridData = gridUtil.mergeGrids(gridData, this.globalGridData, {
+                    globalGridHeightPercentage: this.metadata.globalGridHeightPercentage,
+                    noDeepCopy: true
+                });
+                stateService.setCurrentGrid(this.renderGridData);
             },
             onSidebarOpen() {
                 if (!vueApp || !vueApp.metadata) {
