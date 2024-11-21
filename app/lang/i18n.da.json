@@ -31,7 +31,7 @@
   "WEBRADIO_ACTION_VOLUP": "Radio volume up",
   "WEBRADIO_ACTION_VOLDOWN": "Radio volume down",
   "CONFIRM_IMPORT_BACKUP": "Caution: This action will delete the existing configuration and replace it with the data from file \"{0}\". Continue?",
-  "CONFIRM_DELETE_GRID": "Do you really want to delete the grid \"{0}\"?",
+  "CONFIRM_DELETE_GRID": "",
   "CONFIRM_DELETE_DICT": "Do you really want to delete the dictionary \"{0}\"?",
   "CONFIRM_RESET_DB": "Do you really want to reset to default configuration? All current grids will be deleted!",
   "CONFIRM_DELETE_ALL_ELEMS": "Do you really want to delete all elements of the current grid?",
