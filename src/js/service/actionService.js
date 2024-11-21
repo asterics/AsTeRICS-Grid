@@ -229,12 +229,6 @@ async function doAction(gridElement, action, options) {
                 language = localStorageService.getUserSettings().lastContentLang || i18nService.getContentLang();
             }
             await i18nService.setContentLanguage(language);
-            if (
-                options.actions.length === 0 ||
-                !options.actions.map((a) => a.modelName).includes(GridActionNavigate.getModelName())
-            ) {
-                $(document).trigger(constants.EVENT_RELOAD_CURRENT_GRID);
-            }
             let voiceConfig = localStorageService.getUserSettings().voiceConfig;
             voiceConfig.preferredVoice = action.voice;
             localStorageService.saveUserSettings({voiceConfig: voiceConfig});
