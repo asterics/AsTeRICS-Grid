@@ -1,9 +1,9 @@
 <template>
     <div class="grid-item-content">
-        <div class="img-container" v-if="imageData" :style="`flex: 1 1 auto;`">
+        <div class="img-container" v-if="imageData">
             <img :src="imageData" draggable="false" style="max-width: 98%; max-height: 98%; object-fit: contain; margin: 1%;" crossorigin="anonymous"/>
         </div>
-        <div class="text-container" v-if="label" :style="`flex: 1 1 auto; text-align: center; font-size: 14px;`"><span>{{label}}</span></div>
+        <div class="text-container" v-if="label" :style="`text-align: center; font-size: 14px; flex-grow: ${imageData ? '0' : '1'}`"><span>{{label}}</span></div>
     </div>
 </template>
 
