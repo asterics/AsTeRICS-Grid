@@ -15,6 +15,7 @@ const store = new Vuex.Store({
         gridInstance: null,
         gridFrom: null,
         gridTo: null,
+        exportOptions: null,
         editElementId: null,
         printGridId: null,
     },
@@ -42,6 +43,9 @@ const store = new Vuex.Store({
         },
         setGridTo(state, payload) {
             state.gridTo = payload;
+        },
+        setExportOptions(state, payload) {
+            state.exportOptions = payload;
         },
         setEditElementId(state, payload) {
             state.editElementId = payload;
