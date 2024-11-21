@@ -1,5 +1,5 @@
 <template>
-    <div class="grid-item-content" tabindex="40" aria-label="${ariaLabel}" :id="gridElement.id" :data-empty="!label && !imageData"  data-empty="${!label && !imgData}" :style="`background-color: ${backgroundColor}; border: 1px solid ${getBorderColor(metadata)}`">
+    <div class="grid-item-content">
         <div class="img-container" v-if="imageData" :style="`flex: 1 1 auto;`">
             <img :src="imageData" draggable="false" style="max-width: 98%; max-height: 98%; object-fit: contain; margin: 1%;" crossorigin="anonymous"/>
         </div>
@@ -12,7 +12,6 @@ import { stateService } from '../../js/service/stateService';
 import { i18nService } from '../../js/service/i18nService';
 import { util } from '../../js/util/util';
 import { fontUtil } from '../../js/util/fontUtil';
-import { MetaData } from '../../js/model/MetaData';
 
 export default {
     props: ["gridElement", "metadata"],
@@ -23,16 +22,7 @@ export default {
             fontUtil: fontUtil
         }
     },
-    computed: {
-        backgroundColor () {
-            return MetaData.getElementColor(this.gridElement, this.metadata);
-        }
-    },
     methods: {
-        getBorderColor(metadata) {
-            let backgroundColor = metadata && metadata.colorConfig ? metadata.colorConfig.gridBackgroundColor : '#ffffff';
-            return fontUtil.getHighContrastColor(backgroundColor, 'whitesmoke', 'gray');
-        }
     },
     mounted() {
         this.label = stateService.getDisplayText(this.gridElement.id) || i18nService.getTranslation(this.gridElement.label);
@@ -42,7 +32,4 @@ export default {
 </script>
 
 <style scoped>
-.grid-item-content, .img-container, .text-container {
-    display: flex; justify-content: center; align-items: center;
-}
 </style>

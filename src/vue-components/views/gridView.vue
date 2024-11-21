@@ -82,7 +82,7 @@
     import {MainVue} from "../../js/vue/mainVue.js";
     import {stateService} from "../../js/service/stateService.js";
     import { systemActionService } from '../../js/service/systemActionService';
-    import GridDisplay from '../grid-layout/grid-display.vue';
+    import GridDisplay from '../grid-display/grid-display.vue';
     import { gridUtil } from '../../js/util/gridUtil';
 
     let vueApp = null;
@@ -232,7 +232,7 @@
 
                 if (inputConfig.seqEnabled) {
                     thiz.seqInput = SequentialInput.getInstanceFromConfig(inputConfig, {
-                        itemSelector: '.grid-item-content:not([data-empty="true"])',
+                        itemSelector: '.element-container:not([data-empty="true"])',
                         selectionListener: selectionListener,
                         activeListener: activeListener
                     });
@@ -240,24 +240,24 @@
                 }
 
                 if (inputConfig.dirEnabled) {
-                    thiz.directionInput = DirectionInput.getInstanceFromConfig(inputConfig, '.grid-item-content:not([data-empty="true"])', 'scanFocus', selectionListener);
+                    thiz.directionInput = DirectionInput.getInstanceFromConfig(inputConfig, '.element-container:not([data-empty="true"])', 'scanFocus', selectionListener);
                     thiz.directionInput.start();
                 }
 
                 if (inputConfig.huffEnabled) {
-                    this.huffmanInput = HuffmanInput.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', 'scanInactive', selectionListener);
+                    this.huffmanInput = HuffmanInput.getInstanceFromConfig(inputConfig, '.element-container', 'scanFocus', 'scanInactive', selectionListener);
                     this.huffmanInput.start();
                 }
 
                 if (inputConfig.scanEnabled) {
-                    thiz.scanner = Scanner.getInstanceFromConfig(inputConfig, '.grid-item-content:not([data-empty="true"])', 'scanFocus', 'scanInactive');
+                    thiz.scanner = Scanner.getInstanceFromConfig(inputConfig, '.element-container:not([data-empty="true"])', 'scanFocus', 'scanInactive');
                     thiz.scanner.setSelectionListener(selectionListener);
                     thiz.scanner.setActiveListener(activeListener);
                     thiz.scanner.startScanning(options.continueInputMethods);
                 }
 
                 if (inputConfig.hoverEnabled) {
-                    thiz.hover = Hover.getInstanceFromConfig(inputConfig, '.grid-item-content', {
+                    thiz.hover = Hover.getInstanceFromConfig(inputConfig, '.element-container', {
                         activeListener: activeListener,
                         containerClass: '.grid-container li'
                     });
@@ -268,7 +268,7 @@
                 }
 
                 if (inputConfig.mouseclickEnabled || inputConfig.mouseDoubleClickEnabled) {
-                    thiz.clicker = Clicker.getInstanceFromConfig(inputConfig, '.grid-item-content');
+                    thiz.clicker = Clicker.getInstanceFromConfig(inputConfig, '.element-container');
                     thiz.clicker.setSelectionListener(selectionListener);
                     thiz.clicker.startClickcontrol();
                 }
