@@ -1,5 +1,5 @@
 <template>
-    <div class="grid-layout" :style="`grid-template-columns: repeat(${columns}, 1fr); grid-template-rows: repeat(${rows}, 1fr);`">
+    <div class="grid-layout" :style="`grid-template-columns: repeat(${columns}, 1fr); grid-template-rows: repeat(${rows}, 1fr); background-color: ${useOptions.backgroundColor}`">
         <slot></slot>
     </div>
 </template>
@@ -7,9 +7,17 @@
 <script>
 
 export default {
-    props: ["rows", "columns"],
+    props: ["rows", "columns", "options"],
     data() {
         return {
+            defaultOptions: {
+                backgroundColor: 'white'
+            }
+        }
+    },
+    computed: {
+        useOptions() {
+            return Object.assign(this.defaultOptions, this.options);
         }
     },
     methods: {

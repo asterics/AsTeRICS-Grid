@@ -20,8 +20,12 @@ export default {
         return {
             imageData: this.gridElement.image ? this.gridElement.image.data || this.gridElement.image.url : null,
             label: '',
-            backgroundColor: MetaData.getElementColor(this.gridElement, this.metadata),
             fontUtil: fontUtil
+        }
+    },
+    computed: {
+        backgroundColor () {
+            return MetaData.getElementColor(this.gridElement, this.metadata);
         }
     },
     methods: {
