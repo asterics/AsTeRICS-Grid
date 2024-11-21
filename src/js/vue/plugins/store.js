@@ -10,11 +10,13 @@ const store = new Vuex.Store({
         dict: null,
         dicts: null,
         gridData: null,
+        grids: null,
         metadata: null,
         gridInstance: null,
         gridFrom: null,
         gridTo: null,
-        editElementId: null
+        editElementId: null,
+        printGridId: null,
     },
     mutations: {
         setDict(state, payload) {
@@ -25,6 +27,9 @@ const store = new Vuex.Store({
         },
         setGridData(state, payload) {
             state.gridData = payload;
+        },
+        setGrids(state, payload) {
+            state.grids = payload;
         },
         setMetadata(state, payload) {
             state.metadata = payload;
@@ -40,6 +45,9 @@ const store = new Vuex.Store({
         },
         setEditElementId(state, payload) {
             state.editElementId = payload;
+        },
+        setPrintGridId(state, payload) {
+            state.printGridId = payload;
         }
     }
 });
