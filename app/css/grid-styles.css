@@ -1,0 +1,84 @@
+.grid-item-content {
+    overflow: hidden;
+    display: flex;
+    flex: 1 1 auto;
+    flex-flow: column;
+}
+
+.grid-item-content .img-container {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+}
+
+.grid-item-content .text-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.grid, .grid-item-content .text-container span {
+    /* make non-selectable */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+.grid-layout-container li {
+    margin-bottom: 0;
+}
+
+.selected.grid-item-content {
+    -webkit-animation: background 0.5s cubic-bezier(1,0,0,1);
+    animation: background 0.5s cubic-bezier(1,0,0,1);
+}
+
+.highlight.grid-item-content {
+    animation: background 1s steps(20, end) infinite;
+    -webkit-animation: background 1s steps(20, end) infinite;
+}
+
+.noanimation {
+    -webkit-animation: none !important;
+    animation: none !important;
+}
+
+@-webkit-keyframes background {
+    0% { filter: brightness(50%); }
+}
+
+@keyframes background {
+    0% { filter: brightness(50%); }
+}
+
+.mouseentered.element-container {
+    outline: thick solid green !important;
+    background: lightgreen;
+}
+
+.grid-item-content.marked {
+    outline: 5px solid green !important;
+}
+
+.scanInactive.element-container, .scanInactive.element-container span {
+    background: lightgray !important;
+    color: darkgray !important;
+    opacity: 0.4;
+}
+
+.inactive span {
+    background-color: whitesmoke !important;
+    color: darkgray !important;
+}
+
+.scanInactive .img-container {
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+    filter: grayscale(100%);
+    filter: grayscale(1); /* Microsoft Edge and Firefox 35+ */
+}
