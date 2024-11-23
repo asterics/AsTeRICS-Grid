@@ -19,10 +19,6 @@ import { systemActionService } from '../service/systemActionService';
 
 let MainVue = {};
 let app = null;
-let modalTypes = {
-    MODAL_SEARCH: 'MODAL_SEARCH',
-    MODAL_PROGRESSBAR: 'MODAL_PROGRESSBAR'
-};
 
 MainVue.setViewComponent = function (component, properties) {
     if (app && app.$refs.notificationBar.tooltipOptions.closeOnNavigate) {
@@ -86,8 +82,13 @@ MainVue.showProgressBar = function (percentage, options) {
  * @param options.searchCollectedText use text from collect element to be pre-filled in search bar, if true
  */
 MainVue.showSearchModal = function (options) {
-    app.showModal = modalTypes.MODAL_SEARCH;
     app.modalOptions = options || {};
+    app.$store.commit('setSearchModalOptions', app.modalOptions);
+    app.$store.commit('setRouteToEdit', Router.getCurrentView() === Router.VIEWS.GridEditView);
+    app.setModal("SearchModal");
+    app.$nextTick(() => {
+        app.$refs.mainModal.openModal();
+    });
 };
 
 MainVue.init = function () {
@@ -114,8 +115,6 @@ MainVue.init = function () {
                     Router: Router,
                     uiLocked: false,
                     hiddenPopupData: null,
-                    modalTypes: modalTypes,
-                    showModal: null,
                     modalOptions: {}
                 };
             },
