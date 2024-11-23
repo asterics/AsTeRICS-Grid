@@ -1,5 +1,5 @@
 <template>
-    <dialog ref="modal">
+    <dialog ref="modal" @keydown.esc="close">
         <div class="modal">
             <div class="modal-mask">
                 <div class="modal-wrapper">
@@ -26,7 +26,6 @@
                             <slot name="footer">
                                 <button
                                     @click="close"
-                                    @keydown.esc="close"
                                     :aria-label="ariaLabelCancel"
                                     :title="titleCancel"
                                 >
