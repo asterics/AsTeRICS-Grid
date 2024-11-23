@@ -16,6 +16,8 @@ const store = new Vuex.Store({
         gridFrom: null,
         gridTo: null,
         exportOptions: null,
+        searchModalOptions: null,
+        routeToEdit: null,
         editElementId: null,
         printGridId: null,
     },
@@ -46,6 +48,12 @@ const store = new Vuex.Store({
         },
         setExportOptions(state, payload) {
             state.exportOptions = payload;
+        },
+        setSearchModalOptions(state, payload) {
+            state.searchModalOptions = payload;
+        },
+        setRouteToEdit(state, payload) {
+            state.routeToEdit = payload;
         },
         setEditElementId(state, payload) {
             state.editElementId = payload;
