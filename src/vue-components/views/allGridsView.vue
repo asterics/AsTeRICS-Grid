@@ -111,7 +111,6 @@
 
         <no-grids-page v-if="graphList && graphList.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true" :reset-global-grid="this.resetGlobalGrid"></no-grids-page>
         <component v-if="currentModal" :is="currentModal" ref="modal" @reload="handleModalReload" @close="handleModalClose"></component>
-        <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.show = false; pdfModal.printGridId = null;"></export-pdf-modal>
         <export-modal v-if="backupModal.show" :grids-data="grids" :export-options="backupModal.exportOptions" @close="backupModal.show = false"></export-modal>
         <import-modal v-if="importModal.show" @close="importModal.show = false" :reload-fn="reload"></import-modal>
         <div class="bottom-spacer"></div>
@@ -173,10 +172,6 @@
                 ORDER_VALUES: ORDER_VALUES,
                 selectValue: null,
                 orderValue: localStorageService.get(ORDER_MODE_KEY) || ORDER_VALUES.CONNECTION_COUNT,
-                pdfModal: {
-                    show: false,
-                    printGridId: null
-                },
                 backupModal: {
                     show: false,
                     exportOptions: {}
@@ -273,8 +268,12 @@
                 this.backupModal.show = true;
             },
             exportToPdf(gridId) {
-                this.pdfModal.printGridId = gridId;
-                this.pdfModal.show = true;
+                this.$store.commit('setPrintGridId', gridId);
+                this.$store.commit('setGrids', this.grids);
+                this.setModal('ExportPdfModal');
+                this.$nextTick(() => {
+                    this.$refs.modal.openModal();
+                });
             },
             importBackupFromFile: async function (event) {
                 let importFile = event && event.target && event.target.files[0] ? event.target.files[0] : null;
@@ -689,7 +688,7 @@
                     break;
                 }
                 case CONTEXT_EXPORT_PDF_MODAL: {
-                    vueApp.pdfModal.show = true;
+                    vueApp.exportToPdf(null);
                     break;
                 }
                 case CONTEXT_EXPORT: {
