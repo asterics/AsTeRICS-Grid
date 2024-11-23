@@ -111,7 +111,6 @@
 
         <no-grids-page v-if="graphList && graphList.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true" :reset-global-grid="this.resetGlobalGrid"></no-grids-page>
         <component v-if="currentModal" :is="currentModal" ref="modal" @reload="handleModalReload" @close="handleModalClose"></component>
-        <export-modal v-if="backupModal.show" :grids-data="grids" :export-options="backupModal.exportOptions" @close="backupModal.show = false"></export-modal>
         <import-modal v-if="importModal.show" @close="importModal.show = false" :reload-fn="reload"></import-modal>
         <div class="bottom-spacer"></div>
     </div>
@@ -172,10 +171,6 @@
                 ORDER_VALUES: ORDER_VALUES,
                 selectValue: null,
                 orderValue: localStorageService.get(ORDER_MODE_KEY) || ORDER_VALUES.CONNECTION_COUNT,
-                backupModal: {
-                    show: false,
-                    exportOptions: {}
-                },
                 importModal: {
                     show: false
                 },
@@ -257,15 +252,19 @@
                 dataService.downloadBackupToFile();
             },
             exportCustom(gridId) {
+                const exportOptions = {};
                 if (gridId) {
-                    this.backupModal.exportOptions.gridId = gridId;
-                    this.backupModal.exportOptions.exportDictionaries = false;
-                    this.backupModal.exportOptions.exportUserSettings = false;
-                    this.backupModal.exportOptions.exportGlobalGrid = false;
-                } else {
-                    this.backupModal.exportOptions = {}
+                    exportOptions.gridId = gridId;
+                    exportOptions.exportDictionaries = false;
+                    exportOptions.exportUserSettings = false;
+                    exportOptions.exportGlobalGrid = false;
                 }
-                this.backupModal.show = true;
+                this.$store.commit("setExportOptions", exportOptions);
+                this.$store.commit("setGrids", this.grids);
+                this.setModal('ExportModal');
+                this.$nextTick(() => {
+                    this.$refs.modal.openModal();
+                });
             },
             exportToPdf(gridId) {
                 this.$store.commit('setPrintGridId', gridId);
