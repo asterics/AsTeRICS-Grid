@@ -1,69 +1,57 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask" style="z-index: 9999">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keydown.esc="$emit('close')">
-                    <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
-                    <div class="modal-header">
-                        <h1>{{ $t('searchElement') }}</h1>
-                    </div>
-
-                    <div class="modal-body mt-5 row">
-                        <input type="text" v-model="searchTerm" @input="search()" v-focus :placeholder="$t('searchElement') + '...'" class="col-8 col-sm-10" @keydown.enter.exact="goToFirstResult()" @keydown.ctrl.enter.exact="goToFirstResult(true)"/>
-                        <div class="col-sm-2 col-4">
-                            <button class="col-12 mb-0" :title="$t('search')"><i class="fas fa-search"/></button>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="warn mt-5" v-if="results && !homeGridId">
-                            <i class="fas fa-info-circle"></i>
-                            <span>{{ $t('infoPleaseDefineAHomeGridInManageGrids') }}</span>
-                        </div>
-                        <ul v-if="results && results.length > 0" style="list-style-type: none" class="mt-5">
-                            <li v-for="(result, index) in results" class="d-flex align-items-center" style="flex-direction: row; min-height: 40px;">
-                                <a href="javascript:;" @click="toResult(result)" class="d-flex align-items-center" :title="index === 0 ? `${$t('showElement')} ${$t('keyboardEnter')}` : $t('showElement')">
-                                    <img v-if="result.elem.image" :src="result.elem.image.data || result.elem.image.url" width="40" style="margin-right: 1em"/>
-                                </a>
-                                <a href="javascript:;" @click="toResult(result, true)" class="d-flex align-items-center" :title="index === 0 ? `${$t('showPathToElement')} ${$t('keyboardCtrlEnter')}` : $t('showPathToElement')">
-                                    <div class="d-flex align-items-center">
-                                        <div>
-                                            <span v-for="(pathElem, index) in result.path">
-                                                <span v-if="index === 0">{{ $t('homeGrid')  }}<span class="fas fa-arrow-right mx-2"/></span>
-                                                <span v-if="pathElem.toNextElementLabel">{{ pathElem.toNextElementLabel | extractTranslation }}<span class="fas fa-arrow-right mx-2"/></span>
-                                            </span>
-                                            <span v-if="i18nService.getContentLang() === result.matchLang" v-html="highlightSearch(result.matchLabel)"></span>
-                                            <span v-if="i18nService.getContentLang() !== result.matchLang">
-                                                <span>{{ i18nService.getTranslation(result.elem.label) }}</span>
-                                                <span>( {{ i18nService.t(`lang.${result.matchLang}`) }}: <span v-html="highlightSearch(result.matchLabel)"></span> )</span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
-                        <div class="mt-5">
-                            <div v-if="results === null">
-                                {{ $t('searching') }}
+    <modal :title="$t('searchElement')" style="z-index: 9999" :footer="false">
+        <template #default>
+            <div class="modal-body mt-5 row">
+                <input type="text" v-model="searchTerm" @input="search()" v-focus :placeholder="$t('searchElement') + '...'" class="col-8 col-sm-10" @keydown.enter.exact="goToFirstResult()" @keydown.ctrl.enter.exact="goToFirstResult(true)"/>
+                <div class="col-sm-2 col-4">
+                    <button class="col-12 mb-0" :title="$t('search')"><i class="fas fa-search"/></button>
+                </div>
+            </div>
+            <div>
+                <div class="warn mt-5" v-if="results && !homeGridId">
+                    <i class="fas fa-info-circle"></i>
+                    <span>{{ $t('infoPleaseDefineAHomeGridInManageGrids') }}</span>
+                </div>
+                <ul v-if="results && results.length > 0" style="list-style-type: none" class="mt-5">
+                    <li v-for="(result, index) in results" class="d-flex align-items-center" style="flex-direction: row; min-height: 40px;">
+                        <a href="javascript:;" @click="toResult(result)" class="d-flex align-items-center" :title="index === 0 ? `${$t('showElement')} ${$t('keyboardEnter')}` : $t('showElement')">
+                            <img v-if="result.elem.image" :src="result.elem.image.data || result.elem.image.url" width="40" style="margin-right: 1em"/>
+                        </a>
+                        <a href="javascript:;" @click="toResult(result, true)" class="d-flex align-items-center" :title="index === 0 ? `${$t('showPathToElement')} ${$t('keyboardCtrlEnter')}` : $t('showPathToElement')">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <span v-for="(pathElem, index) in result.path">
+                                        <span v-if="index === 0">{{ $t('homeGrid')  }}<span class="fas fa-arrow-right mx-2"/></span>
+                                        <span v-if="pathElem.toNextElementLabel">{{ pathElem.toNextElementLabel | extractTranslation }}<span class="fas fa-arrow-right mx-2"/></span>
+                                    </span>
+                                    <span v-if="i18nService.getContentLang() === result.matchLang" v-html="highlightSearch(result.matchLabel)"></span>
+                                    <span v-if="i18nService.getContentLang() !== result.matchLang">
+                                        <span>{{ i18nService.getTranslation(result.elem.label) }}</span>
+                                        <span>( {{ i18nService.t(`lang.${result.matchLang}`) }}: <span v-html="highlightSearch(result.matchLabel)"></span> )</span>
+                                    </span>
+                                </div>
                             </div>
-                            <div v-if="results && results.length === 0 && searchTerm">
-                                {{ $t('noSearchResults') }}
-                            </div>
-                            <div v-if="overflow">
-                                {{ $t('notShowingAllResultsTryALongerSearchTerm') }}
-                            </div>
-                        </div>
+                        </a>
+                    </li>
+                </ul>
+                <div class="mt-5">
+                    <div v-if="results === null">
+                        {{ $t('searching') }}
                     </div>
-
-                    <div class="modal-footer">
+                    <div v-if="results && results.length === 0 && searchTerm">
+                        {{ $t('noSearchResults') }}
+                    </div>
+                    <div v-if="overflow">
+                        {{ $t('notShowingAllResultsTryALongerSearchTerm') }}
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </template>
+    </modal>
 </template>
 
 <script>
-    import './../../css/modal.css';
+    import { modalMixin } from '../mixins/modalMixin.js';
     import {dataService} from "../../js/service/data/dataService.js";
     import {util} from "../../js/util/util.js";
     import {i18nService} from "../../js/service/i18nService.js";
@@ -72,9 +60,7 @@
     import {collectElementService} from "../../js/service/collectElementService.js";
 
     export default {
-        props: ['routeToEdit', 'options'],
-        components: {
-        },
+        mixins: [modalMixin],
         data: function () {
             return {
                 grids: null,
@@ -87,6 +73,14 @@
                 idPathMap: null,
                 overflow: false,
                 MAX_RESULTS: 10
+            }
+        },
+        computed: {
+            routeToEdit() {
+                return this.$store.state.routeToEdit;
+            },
+            options() {
+                return this.$store.state.searchModalOptions;
             }
         },
         methods: {
