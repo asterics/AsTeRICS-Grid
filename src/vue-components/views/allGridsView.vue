@@ -109,9 +109,8 @@
             </div>
         </div>
 
-        <no-grids-page v-if="graphList && graphList.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true" :reset-global-grid="this.resetGlobalGrid"></no-grids-page>
+        <no-grids-page v-if="graphList && graphList.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="handleImport" :reset-global-grid="this.resetGlobalGrid"></no-grids-page>
         <component v-if="currentModal" :is="currentModal" ref="modal" @reload="handleModalReload" @close="handleModalClose"></component>
-        <import-modal v-if="importModal.show" @close="importModal.show = false" :reload-fn="reload"></import-modal>
         <div class="bottom-spacer"></div>
     </div>
 </template>
@@ -171,9 +170,6 @@
                 ORDER_VALUES: ORDER_VALUES,
                 selectValue: null,
                 orderValue: localStorageService.get(ORDER_MODE_KEY) || ORDER_VALUES.CONNECTION_COUNT,
-                importModal: {
-                    show: false
-                },
                 i18nService: i18nService,
                 currentLanguage: i18nService.getContentLang(),
                 imageUtil: imageUtil
@@ -292,9 +288,17 @@
                 this.resetFileInput(event);
                 this.reload();
             },
+            handleImport() {
+                this.setModal('ImportModal');
+                this.$nextTick(() => {
+                    this.$refs.modal.openModal();
+                });
+            },
             handleModalReload() {
                 if (this.currentModal === 'GridLinkModal') {
                     this.reload(gridFrom.id)
+                } else if (this.currentModal === 'ImportModal') {
+                    this.reload();
                 }
             },
             reload: function (openGridId) {
@@ -679,7 +683,10 @@
                     break;
                 }
                 case CONTEXT_IMPORT: {
-                    vueApp.importModal.show = true;
+                    vueApp.setModal('ImportModal');
+                    vueApp.$nextTick(() => {
+                        vueApp.$refs.modal.openModal();
+                    });
                     break;
                 }
                 case CONTEXT_IMPORT_BACKUP: {
