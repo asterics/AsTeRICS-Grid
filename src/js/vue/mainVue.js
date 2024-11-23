@@ -2,6 +2,7 @@ import $ from '../externals/jquery.js';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import store from "./plugins/store";
+import { modalDisplayMixin } from '../../vue-components/mixins/modalDisplayMixin.js';
 import { i18nService } from '../service/i18nService';
 import { constants } from '../util/constants';
 import { util } from '../util/util';
@@ -72,8 +73,11 @@ MainVue.showProgressBar = function (percentage, options) {
     if (!app) {
         return;
     }
-    app.showModal = modalTypes.MODAL_PROGRESSBAR;
-    app.$refs.progressBar.setProgress(percentage, options);
+    app.setModal("ProgressBarModal");
+    app.$nextTick(() => {
+        app.$refs.mainModal.openModal();
+        app.$refs.mainModal.setProgress(percentage, options);
+    });
 };
 
 /**
@@ -94,6 +98,7 @@ MainVue.init = function () {
             i18n: i18n,
             el: '#app',
             components: { NotificationBar, ProgressBarModal, SearchModal },
+            mixins: [modalDisplayMixin],
             data() {
                 return {
                     component: null,
