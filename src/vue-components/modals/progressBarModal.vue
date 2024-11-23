@@ -1,37 +1,32 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="close()">
-                    <a v-if="options.closable" class="inline close-button" href="javascript:void(0);" @click="close()"><i class="fas fa-times"/></a>
-                    <div class="modal-header">
-                        <h1 name="header">{{options.header}}</h1>
-                    </div>
-
-                    <div class="modal-body">
-                        <div class="biggerFont">{{options.text}} ...</div>
-                        <div id="progressWrapper" style="border: 1px solid; border-radius: 3px; width: 100%; height: 50px; margin: 0.5em 0">
-                            <div id="progressBar" :style="`width: ${progressPercentage}%; height: 100%; background-color: green`"></div>
-                        </div>
-                        <div class="biggerFont" style="text-align: right; width: 100%">{{Math.round(progressPercentage)}}%</div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <div v-if="options.closable" class="button-container srow">
-                            <button class="four columns offset-by-eight" @click="close()" :title="$t('keyboardEsc')">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+    <modal :title="options.header">
+        <template>
+            <div class="biggerFont">{{options.text}} ...</div>
+            <div id="progressWrapper" style="border: 1px solid; border-radius: 3px; width: 100%; height: 50px; margin: 0.5em 0">
+                <div id="progressBar" :style="`width: ${progressPercentage}%; height: 100%; background-color: green`"></div>
             </div>
-        </div>
-    </div>
+            <div class="biggerFont" style="text-align: right; width: 100%">{{Math.round(progressPercentage)}}%</div>
+        </template>
+        <template #footer>
+            <div v-if="options.closable" class="button-container srow">
+                <button
+                    class="four columns offset-by-eight"
+                    @click="close"
+                    @keydown.esc="close"
+                    :aria-label="$t('cancel')"
+                    :title="$t('keyboardEsc')"
+                    >
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                        {{ $t('cancel') }}
+                </button>
+            </div>
+        </template>
+    </modal>
 </template>
 
 <script>
     import {i18nService} from "../../js/service/i18nService";
-    import './../../css/modal.css';
+    import { modalMixin } from '../mixins/modalMixin.js';
 
     let defaultOptions = {
         header: '',
@@ -41,7 +36,7 @@
     }
 
     export default {
-        props: [],
+        mixins: [modalMixin],
         data: function () {
             return {
                 progressPercentage: 0,
@@ -73,8 +68,6 @@
                 }
             }
         },
-        mounted() {
-        }
     }
 </script>
 
@@ -82,4 +75,8 @@
     .biggerFont {
         font-size: 1.3em;
     }
+    .modal-mask {
+        z-index: 9999;
+    }
+
 </style>
