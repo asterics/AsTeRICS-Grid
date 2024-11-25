@@ -43,13 +43,13 @@
                         </div>
                     </div>
                     <div class="preview-buttons d-flex justify-content-between">
-                        <button @click="detailPreview = preview"><span class="fa fa-info-circle"/> {{ $t('details') }}</button>
+                        <button @click="handleClickDetails(preview)"><span class="fa fa-info-circle"/> {{ $t('details') }}</button>
                         <button class="btn-primary" @click="importData(preview)"><span class="fa fa-check"/> {{ $t('useIt') }}</button>
                     </div>
                 </li>
             </ul>
         </div>
-        <config-preview-detail v-if="detailPreview" :preview="detailPreview" @close="detailPreview = null" @import="importData(detailPreview)"></config-preview-detail>
+        <component v-if="currentModal" :is="currentModal" ref="modal" @import="handleModalImport" @close="handleModalClose"/>
     </div>
 </template>
 
@@ -60,12 +60,14 @@
     import {constants} from '../../js/util/constants';
     import { urlParamService } from '../../js/service/urlParamService';
     import { util } from '../../js/util/util';
+    import { modalDisplayMixin } from '../mixins/modalDisplayMixin.js';
     import {boardService} from '../../js/service/boards/boardService';
     import Accordion from './accordion.vue';
     import { MainVue } from '../../js/vue/mainVue';
     import ConfigPreviewDetail from '../modals/configPreviewDetail.vue';
 
     export default {
+        mixins: [modalDisplayMixin],
         components: { ConfigPreviewDetail, Accordion },
         props: ["restoreBackupHandler", "importCustomHandler", "resetGlobalGrid"],
         data() {
@@ -110,7 +112,19 @@
                         Router.toMain();
                     }
                 });
-            }
+            },
+            handleModalImport() {
+                if (this.currentModal === "ConfigPreviewDetail") {
+                    this.importData(this.detailPreview);
+                }
+            },
+            handleClickDetails(preview) {
+                this.$store.commit("setPreview", preview);
+                this.setModal("ConfigPreviewDetail");
+                this.$nextTick(() => {
+                    this.$refs.modal.openModal();
+                });
+            },
         },
         async mounted() {
             let thiz = this;
