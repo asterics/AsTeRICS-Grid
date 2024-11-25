@@ -18,8 +18,9 @@ const store = new Vuex.Store({
         exportOptions: null,
         searchModalOptions: null,
         routeToEdit: null,
+        preview: null,
         editElementId: null,
-        printGridId: null,
+        printGridId: null
     },
     mutations: {
         setDict(state, payload) {
@@ -54,6 +55,9 @@ const store = new Vuex.Store({
         },
         setRouteToEdit(state, payload) {
             state.routeToEdit = payload;
+        },
+        setPreview(state, payload) {
+            state.preview = payload;
         },
         setEditElementId(state, payload) {
             state.editElementId = payload;
