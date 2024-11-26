@@ -1,80 +1,77 @@
 <template>
-    <dialog ref="modal" @keydown.esc="close">
-        <div class="modal">
-            <div class="modal-mask">
-                <div class="modal-wrapper">
-                    <div class="modal-container">
-                        <div v-if="header" class="modal-header">
-                            <slot name="header">
-                                <h1 v-if="title">{{ title }}</h1>
-                                <button
-                                    v-if="helpFn"
-                                    class="remove-btn-skeleton help"
-                                    @click="helpFn"
-                                    :aria-label="ariaLabelHelp"
-                                >
-                                    <i class="fas fa-question-circle fa-lg" aria-hidden="true"></i>
-                                </button>
-                                <button class="remove-btn-skeleton close" @click="close" :aria-label="ariaLabelEsc">
-                                    <i class="fas fa-times fa-lg" aria-hidden="true"></i>
-                                </button>
-                            </slot>
-                            <!-- TODO: insert label/esc, aria-hidden (https://getbootstrap.com/docs/4.0/components/modal/#modal-components) -->
-                        </div>
-                        <div class="modal-body"><slot></slot></div>
-                        <div v-if="footer" class="modal-footer">
-                            <slot name="footer">
-                                <button
-                                    @click="close"
-                                    :aria-label="ariaLabelCancel"
-                                    :title="titleCancel"
-                                >
-                                    <i class="fas fa-times" aria-hidden="true"></i>
-                                    {{ $t('cancel') }}
-                                </button>
-                                <slot name="ok-button">
-                                    <button
-                                        @click="ok"
-                                        @keydown.ctrl.enter="ok"
-                                        :aria-label="ariaLabelOk"
-                                        :title="titleOk"
-                                    >
-                                        <i class="fas fa-check" aria-hidden="true"></i>
-                                        {{ $t('ok') }}
-                                    </button>
-                                </slot>
-                                <slot name="footer-appendix"></slot>
-                            </slot>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <dialog
+        ref="modal"
+        aria-labelledby="modal-label"
+        @keydown.esc="close"
+        >
+        <div v-if="header" class="modal-header">
+            <slot name="header">
+                <h1 id="modal-label" class="col-8 col-sm-10 col-md-10" v-if="title">{{ title }}</h1>
+                <button
+                    v-if="helpFn"
+                    class="remove-btn-skeleton help"
+                    @click="helpFn"
+                    :aria-label="ariaLabelHelp"
+                    >
+                        <i class="fas fa-question-circle" aria-hidden="true"></i>
+                </button>
+                <button
+                    class="remove-btn-skeleton close"
+                    @click="close"
+                    :aria-label="ariaLabelEsc"
+                    >
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </slot>
+            <!-- TODO: insert label/esc, aria-hidden (https://getbootstrap.com/docs/4.0/components/modal/#modal-components) -->
+        </div>
+        <div class="modal-body"><slot></slot></div>
+        <div v-if="footer" class="modal-footer">
+            <slot name="footer">
+                <button
+                    @click="close"
+                    :aria-label="ariaLabelCancel"
+                    :title="keyboardCancel"
+                    >
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                        {{ ariaLabelCancel }}
+                </button>
+                <slot name="ok-button">
+                    <button
+                        @click="ok"
+                        @keydown.ctrl.enter="ok"
+                        :aria-label="ariaLabelOk"
+                        :title="keyboardOk"
+                        >
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                            {{ ariaLabelOk }}
+                    </button>
+                </slot>
+            </slot>
         </div>
     </dialog>
 </template>
 
 <script>
+import { helpService } from "../../js/service/helpService";
+
 export default {
     methods: {
         ok() {
             this.$emit('ok');
         },
-        open() {
-            this.$refs.modal.showModal();
-        },
         close() {
-            this.$refs.modal.close();
             this.$emit('close');
+        },
+        help() {
+            helpService.openHelp();
+            this.$emit('help');
         }
     },
     props: {
         title: {
             type: String,
             default: ''
-        },
-        helpFn: {
-            type: Function,
-            default: null
         },
         header: {
             type: Boolean,
@@ -85,28 +82,25 @@ export default {
             default: true
         }
     },
-    data() {
-        return {};
-    },
     computed: {
-        titleCancel() {
-            return this.$t('cancel') + ' ' + this.$t('keyboardEsc');
-        },
-        titleOk() {
-            return this.$t('ok') + ' ' + this.$t('keyboardCtrlEnter');
-        },
-        ariaLabelCancel() {
-            return '';
-        },
-        ariaLabelOk() {
-            return '';
+        ariaLabelHelp() {
+            return this.$t('help');
         },
         ariaLabelEsc() {
-            return '';
+            return this.$t('close');
         },
-        ariaLabelHelp() {
-            return '';
-        }
+        keyboardCancel() {
+            return this.$t('keyboardEsc');
+        },
+        keyboardOk() {
+            return this.$t('keyboardCtrlEnter');
+        },
+        ariaLabelCancel() {
+            return this.$t('cancel');
+        },
+        ariaLabelOk() {
+            return this.$t('ok');
+        },
     }
 };
 </script>
@@ -124,19 +118,56 @@ button {
 
 .modal-header {
     display: flex;
+    border-bottom: 1px solid #123148;
+    box-shadow: 0 0 2px 1px #123148;
+    margin-bottom: 2rem;
+    padding: 2rem 4rem;
+
     h1 {
         font-weight: 600;
         font-size: 2.2rem;
         flex-grow: 6;
+        display: flex;
+        align-items: center;
+        /* margin-left: 1rem; */
     }
 
     button {
-        margin: auto 0.75rem;
+        padding: 5px;
+        margin: 0 0.5rem 0.25rem;
+        background-color: #2d7bb433;
+        border: 1px solid #12314833;
+        box-shadow: 0 0 0 1px #123148;
+
+        &:focus {
+            outline: 3px solid lightblue;
+        }
+    }
+
+    i {
+        font-size: 2rem;
+        width: 2rem;
+        text-align: center;
+        display: inline-block
+    }
+}
+
+.modal-body {
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 2rem 4rem;
+
+    label {
+        font-weight: bold;
     }
 }
 
 .modal-footer {
     display: flex;
+    flex-flow: column nowrap;
+    margin-bottom: 2rem;
+    padding: 0 2rem 0;
+
     > * {
         flex-grow: 1;
         margin: 0.25rem 0.5rem;
@@ -166,5 +197,23 @@ button {
     padding: unset;
     text-align: unset;
     transition: unset;
+}
+
+dialog {
+    width: 100%;
+    max-width: 940px;
+    min-height: 50vh;
+
+    padding: 0;
+
+    & * {
+        font-size: 1.6rem;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .modal-footer {
+        flex-flow: row nowrap;
+    }
 }
 </style>
