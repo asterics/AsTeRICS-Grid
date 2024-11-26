@@ -29,7 +29,7 @@
         <huffman-input-modal ref="huffman" @close="reinitInputMethods"/>
         <direction-input-modal ref="direction" @close="reinitInputMethods"/>
         <mouse-modal ref="mouse" @close="reinitInputMethods"/>
-        <scanning-modal v-if="showModal === modalTypes.MODAL_SCANNING" @close="showModal = null; reinitInputMethods();"/>
+        <scanning-modal ref="scanning" @close="reinitInputMethods"/>
         <sequential-input-modal v-if="showModal === modalTypes.MODAL_SEQUENTIAL" @close="showModal = null; reinitInputMethods();"/>
         <unlock-modal v-if="showModal === modalTypes.MODAL_UNLOCK" @unlock="unlock(true)" @close="showModal = null;"/>
 
@@ -94,7 +94,6 @@
     let gridInstance = null;
     let UNLOCK_COUNT = 8;
     let modalTypes = {
-        MODAL_SCANNING: 'MODAL_SCANNING',
         MODAL_SEQUENTIAL: 'MODAL_SEQUENTIAL',
         MODAL_UNLOCK: 'MODAL_UNLOCK'
     };
@@ -596,7 +595,7 @@
                     break;
                 }
                 case CONTEXT_SCANNING: {
-                    vueApp.openModal(modalTypes.MODAL_SCANNING);
+                    vueApp.$refs.scanning.openModal();
                     break;
                 }
                 case CONTEXT_DIRECTION: {
