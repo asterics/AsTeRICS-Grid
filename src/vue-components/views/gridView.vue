@@ -30,7 +30,7 @@
         <direction-input-modal ref="direction" @close="reinitInputMethods"/>
         <mouse-modal ref="mouse" @close="reinitInputMethods"/>
         <scanning-modal ref="scanning" @close="reinitInputMethods"/>
-        <sequential-input-modal v-if="showModal === modalTypes.MODAL_SEQUENTIAL" @close="showModal = null; reinitInputMethods();"/>
+        <sequential-input-modal ref="sequential" @close="reinitInputMethods"/>
         <unlock-modal v-if="showModal === modalTypes.MODAL_UNLOCK" @unlock="unlock(true)" @close="showModal = null;"/>
 
         <div class="srow content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0 && (!globalGridData || globalGridData.gridElements.length === 0)">
@@ -94,7 +94,6 @@
     let gridInstance = null;
     let UNLOCK_COUNT = 8;
     let modalTypes = {
-        MODAL_SEQUENTIAL: 'MODAL_SEQUENTIAL',
         MODAL_UNLOCK: 'MODAL_UNLOCK'
     };
 
@@ -136,8 +135,8 @@
             ScanningModal, HeaderIcon
         },
         methods: {
-            openModal(modalType) {
-                this.showModal = modalType;
+            openModal(modal) {
+                modal.openModal();
                 stopInputMethods();
             },
             lock() {
@@ -591,23 +590,23 @@
         function handleContextMenu(key, elementId) {
             switch (key) {
                 case CONTEXT_MOUSE: {
-                    vueApp.$refs.mouse.openModal();
+                    vueApp.openModal(vueApp.$refs.mouse);
                     break;
                 }
                 case CONTEXT_SCANNING: {
-                    vueApp.$refs.scanning.openModal();
+                    vueApp.openModal(vueApp.$refs.scanning);
                     break;
                 }
                 case CONTEXT_DIRECTION: {
-                    vueApp.$refs.direction.openModal();
+                    vueApp.openModal(vueApp.$refs.direction);
                     break;
                 }
                 case CONTEXT_HUFFMAN: {
-                    vueApp.$refs.huffman.openModal();
+                    vueApp.openModal(vueApp.$refs.huffman);
                     break;
                 }
                 case CONTEXT_SEQUENTIAL: {
-                    vueApp.openModal(modalTypes.MODAL_SEQUENTIAL);
+                    vueApp.openModal(vueApp.$refs.sequential);
                     break;
                 }
             }
