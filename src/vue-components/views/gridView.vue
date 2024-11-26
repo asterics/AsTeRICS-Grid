@@ -26,7 +26,7 @@
             </div>
         </div>
 
-        <huffman-input-modal v-if="showModal === modalTypes.MODAL_HUFFMAN" @close="showModal = null; reinitInputMethods();"/>
+        <huffman-input-modal ref="huffman" @close="reinitInputMethods"/>
         <direction-input-modal v-if="showModal === modalTypes.MODAL_DIRECTION" @close="showModal = null; reinitInputMethods();"/>
         <mouse-modal v-if="showModal === modalTypes.MODAL_MOUSE" @close="showModal = null; reinitInputMethods();"/>
         <scanning-modal v-if="showModal === modalTypes.MODAL_SCANNING" @close="showModal = null; reinitInputMethods();"/>
@@ -97,7 +97,6 @@
         MODAL_SCANNING: 'MODAL_SCANNING',
         MODAL_MOUSE: 'MODAL_MOUSE',
         MODAL_DIRECTION: 'MODAL_DIRECTION',
-        MODAL_HUFFMAN: 'MODAL_HUFFMAN',
         MODAL_SEQUENTIAL: 'MODAL_SEQUENTIAL',
         MODAL_UNLOCK: 'MODAL_UNLOCK'
     };
@@ -607,7 +606,7 @@
                     break;
                 }
                 case CONTEXT_HUFFMAN: {
-                    vueApp.openModal(modalTypes.MODAL_HUFFMAN);
+                    vueApp.$refs.huffman.openModal();
                     break;
                 }
                 case CONTEXT_SEQUENTIAL: {
