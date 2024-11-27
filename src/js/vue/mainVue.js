@@ -19,7 +19,6 @@ let MainVue = {};
 let app = null;
 let modalTypes = {
     MODAL_SEARCH: 'MODAL_SEARCH',
-    MODAL_PROGRESSBAR: 'MODAL_PROGRESSBAR'
 };
 
 MainVue.setViewComponent = function (component, properties) {
@@ -71,7 +70,7 @@ MainVue.showProgressBar = function (percentage, options) {
     if (!app) {
         return;
     }
-    app.showModal = modalTypes.MODAL_PROGRESSBAR;
+    app.$refs.progressBar.openModal();
     app.$refs.progressBar.setProgress(percentage, options);
 };
 
