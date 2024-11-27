@@ -31,7 +31,7 @@
         <mouse-modal ref="mouse" @close="reinitInputMethods"/>
         <scanning-modal ref="scanning" @close="reinitInputMethods"/>
         <sequential-input-modal ref="sequential" @close="reinitInputMethods"/>
-        <unlock-modal v-if="showModal === modalTypes.MODAL_UNLOCK" @unlock="unlock(true)" @close="showModal = null;"/>
+        <unlock-modal ref="unlock" @unlock="unlock(true)"/>
 
         <div class="srow content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0 && (!globalGridData || globalGridData.gridElements.length === 0)">
             <div style="margin-top: 2em">
@@ -93,9 +93,6 @@
     let vueApp = null;
     let gridInstance = null;
     let UNLOCK_COUNT = 8;
-    let modalTypes = {
-        MODAL_UNLOCK: 'MODAL_UNLOCK'
-    };
 
     let vueConfig = {
         props: {
@@ -115,7 +112,6 @@
                 seqInput: null,
                 huffmanInput: null,
                 showModal: null,
-                modalTypes: modalTypes,
                 viewInitialized: false,
                 unlockCount: UNLOCK_COUNT,
                 unlockCounter: UNLOCK_COUNT,
@@ -150,7 +146,7 @@
             unlock(force) {
                 let thiz = this;
                 if (!force && localStorageService.getAppSettings().unlockPasscode) {
-                    thiz.showModal = modalTypes.MODAL_UNLOCK;
+                    thiz.$refs.unlock.openModal();
                     return;
                 }
                 thiz.unlockCounter--;

@@ -1,53 +1,27 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
-                    <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
-                    <div class="modal-header">
-                        <h1 name="header">
-                            {{ $t('unlockApplication') }}
-                        </h1>
-                    </div>
-
-                    <div class="modal-body">
-                        <div class="number-row" style="text-align: center; margin-bottom: 1em;">
+    <base-modal icon="fas fa-unlock" :title="$t('unlockApplication')" :help="false" :footer="false" @open="init" v-on="$listeners">
+                        <div class="number-row">
                             <span>{{ $t('inputPasscode') }}</span>
                             <span class="hide-mobile">{{ $t('useButtonsOrKeyboard') }}</span><br/>
                             <span aria-hidden="true" style="font-size: 3em">
                                 <span v-for="n in inputPasscode.length">&#9679;</span>
-                                <span v-for="n in (Math.max(0, passcode.length - inputPasscode.length))">_</span>
+                                <span v-for="n in (Math.max(0, passcode ? passcode.length - inputPasscode.length: 1))">_</span>
                             </span>
                         </div>
-                        <div class="number-row">
-                            <button v-for="i in [1,2,3]" @click="inputDigit(i)">{{i}}</button>
+                        <div class="keypad">
+                            <button v-for="i in [1,2,3,4,5,6,7,8,9,0]" @click="inputDigit(i)">{{ i }}</button>
                         </div>
-                        <div class="number-row">
-                            <button v-for="i in [4,5,6]" @click="inputDigit(i)">{{i}}</button>
-                        </div>
-                        <div class="number-row">
-                            <button v-for="i in [7,8,9]" @click="inputDigit(i)">{{i}}</button>
-                        </div>
-                        <div class="number-row">
-                            <button style="margin-left: 33%" @click="inputDigit(0)">0</button>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </base-modal>
 </template>
 
 <script>
     import {i18nService} from "../../js/service/i18nService";
-    import './../../css/modal.css';
+    import {modalMixin} from "../mixins/modalMixin";
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {inputEventHandler} from "../../js/input/inputEventHandler";
 
     export default {
-        props: [],
+        mixins: [modalMixin],
         data: function () {
             return {
                 passcode: localStorageService.getAppSettings().unlockPasscode,
@@ -64,26 +38,28 @@
                 this.inputPasscode = this.inputPasscode + digit;
                 if (this.inputPasscode === this.passcode) {
                     this.$emit('unlock');
-                    this.$emit('close');
+                    this.closeModal();
                 } else if (!this.masterkeyPossible && this.inputPasscode.length >= this.passcode.length) {
-                    this.$emit('close');
+                    this.closeModal();
                 } else if (this.masterkeyPossible && this.inputPasscode.length === 10) {
                     this.$emit('unlock');
-                    this.$emit('close');
+                    this.closeModal();
                 }
             },
             resetTimeout() {
                 clearTimeout(this.timeoutHandler);
                 clearTimeout(this.timeoutMasterkeyHandler);
                 this.timeoutHandler = setTimeout(() => {
-                    this.$emit('close');
+                    this.closeModal();
                 }, 5000);
                 this.timeoutMasterkeyHandler = setTimeout(() => {
                     this.masterkeyPossible = false;
                 }, 500);
-            }
-        },
-        mounted() {
+
+            },
+        init() {
+            this.keyHandler?.destroy();
+            this.inputPasscode = '';
             this.keyHandler = inputEventHandler.instance();
             this.keyHandler.onAnyKey((keycode) => {
                 let digit = keycode - 48;
@@ -94,21 +70,38 @@
             this.keyHandler.startListening();
             this.resetTimeout();
         },
+        },
         beforeDestroy() {
-            this.keyHandler.destroy();
+            this.keyHandler?.destroy();
         }
     }
 </script>
 
-<style scoped>
-    .number-row {
+<style lang="scss" scoped>
+    .number-row, .keypad {
         width: 60%;
         margin: 0 auto;
+        margin-bottom: 1rem;
+        text-align: center;
     }
-    .modal-body button {
-        width: 30%;
-        padding: 3% 0;
-        margin-right: 3%;
-        font-size: 2.5em;
+    .keypad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.4rem;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 2rem;
+
+        button {
+            padding: 2vw 4vw;
+            margin: 0;
+            font-size: 4rem;
+            font-weight: 400;
+            cursor: pointer;
+
+            &:last-child {
+                grid-column: 2;
+            }
+        }
     }
 </style>
