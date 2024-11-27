@@ -1,6 +1,6 @@
 <template>
     <div class="overflow-content box">
-        <div :aria-hidden="showWordsModal || showImportModal">
+        <div :aria-hidden="showImportModal">
             <div class="all-dicts-view">
                 <header class="srow header" role="toolbar">
                     <header-icon></header-icon>
@@ -56,7 +56,7 @@
                                     <select class="four columns" v-model="dict.lang">
                                         <option v-for="lang in languages" :value="lang.code">{{ lang | extractTranslation }}</option>
                                     </select>
-                                    <button @click="showWordsModal = true; modalDict = dict" class="five columns">
+                                    <button @click="handleImportWords(dict)" class="five columns">
                                         <i class="fas fa-file-import"/>
                                         <span>{{ $t('importWords') }}</span>
                                     </button>
@@ -96,8 +96,7 @@
                 <div class="bottom-spacer"></div>
             </div>
         </div>
-        <import-words-modal v-if="showWordsModal" v-bind:dict-data="modalDict"
-                            @close="showWordsModal = false" @reload="reload"/>
+        <import-words-modal ref="words" v-bind:dict-data="modalDict" @reload="reload"/>
         <import-dictionary-modal v-if="showImportModal" :dicts="dicts"
                                  @close="showImportModal = false" @reload="reload"/>
     </div>
@@ -133,7 +132,6 @@
                 predictionary: null,
                 wordlist: [],
                 searchWord: "",
-                showWordsModal: false,
                 showImportModal: false,
                 totalWords: 0,
                 filterWords: 0,
@@ -145,6 +143,10 @@
             ImportDictionaryModal, ImportWordsModal, HeaderIcon
         },
         methods: {
+            handleImportWords(dict) {
+                this.modalDict = dict;
+                this.$refs.words.openModal();
+            },
             deleteDict: function (id, label) {
                 let thiz = this;
                 if (!confirm(i18nService.t('CONFIRM_DELETE_DICT', label))) {
