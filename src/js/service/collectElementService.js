@@ -301,7 +301,7 @@ async function updateCollectElements(isSecondTry) {
             let text = getPrintText();
             $(`#${collectElement.id}`).attr('aria-label', `${text}, ${i18nService.t('ELEMENT_TYPE_COLLECT')}`);
             predictionService.learnFromInput(text, dictionaryKey);
-            let html = `<span style="padding: 5px; display: flex; align-items: center; flex: 1; text-align: left;">
+            let html = `<span style="padding: 5px; display: flex; align-items: center; flex: 1; text-align: left; font-weight: bold;">
                             ${text}
                         </span>`;
             outerContainerJqueryElem.html(
