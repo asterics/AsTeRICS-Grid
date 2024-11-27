@@ -30,7 +30,7 @@
     margin-bottom: 0;
 }
 
-.selected.grid-item-content {
+.selected.element-container {
     -webkit-animation: background 0.5s cubic-bezier(1,0,0,1);
     animation: background 0.5s cubic-bezier(1,0,0,1);
 }
