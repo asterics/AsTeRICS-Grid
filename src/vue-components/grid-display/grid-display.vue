@@ -4,6 +4,7 @@
             <div class="element-container" :id="elem.id" tabindex="40" :aria-label="getAriaLabel(elem)" :data-empty="isEmpty(elem)" :style="`margin: 2px; border-radius: 3px; border: 1px solid ${getBorderColor()}; background-color: ${getBackgroundColor(elem)};`">
                 <grid-element-normal v-if="elem.type === GridElementModel.ELEMENT_TYPE_NORMAL" :grid-element="elem" :metadata="metadata" aria-hidden="true"/>
                 <grid-element-collect v-if="elem.type === GridElementModel.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
+                <grid-element-youtube v-if="elem.type === GridElementModel.ELEMENT_TYPE_YT_PLAYER" :grid-element="elem" aria-hidden="true"/>
             </div>
         </grid-element>
     </grid-layout>
@@ -29,9 +30,10 @@ import { GridActionNavigate } from '../../js/model/GridActionNavigate';
 import { GridActionWebradio } from '../../js/model/GridActionWebradio';
 import { GridActionYoutube } from '../../js/model/GridActionYoutube';
 import GridElementCollect from './gridElementCollect.vue';
+import GridElementYoutube from './gridElementYoutube.vue';
 
 export default {
-    components: { GridElementCollect, GridElement, GridElementNormal, GridLayout },
+    components: { GridElementYoutube, GridElementCollect, GridElement, GridElementNormal, GridLayout },
     props: ["gridData", "metadata"],
     data() {
         return {
