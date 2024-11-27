@@ -6,6 +6,7 @@
                 <grid-element-collect v-if="elem.type === GridElementModel.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
                 <grid-element-youtube v-if="elem.type === GridElementModel.ELEMENT_TYPE_YT_PLAYER" :grid-element="elem" aria-hidden="true"/>
                 <grid-element-predict v-if="elem.type === GridElementModel.ELEMENT_TYPE_PREDICTION" aria-hidden="true"/>
+                <grid-element-hints :grid-element="elem"/>
             </div>
         </grid-element>
     </grid-layout>
@@ -33,9 +34,10 @@ import { GridActionYoutube } from '../../js/model/GridActionYoutube';
 import GridElementCollect from './gridElementCollect.vue';
 import GridElementYoutube from './gridElementYoutube.vue';
 import GridElementPredict from './gridElementPredict.vue';
+import GridElementHints from './gridElementHints.vue';
 
 export default {
-    components: { GridElementPredict, GridElementYoutube, GridElementCollect, GridElement, GridElementNormal, GridLayout },
+    components: { GridElementHints, GridElementPredict, GridElementYoutube, GridElementCollect, GridElement, GridElementNormal, GridLayout },
     props: ["gridData", "metadata"],
     data() {
         return {
