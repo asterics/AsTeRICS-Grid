@@ -1,5 +1,5 @@
 <template>
-    <component :is="useOptions.componentType" class="grid-layout" :style="`grid-template-columns: repeat(${columns}, 1fr); grid-template-rows: repeat(${rows}, 1fr); background-color: ${useOptions.backgroundColor}`">
+    <component :is="useOptions.componentType" class="grid-layout" :style="`grid-template-columns: repeat(${columns}, minmax(0, 1fr)); grid-template-rows: repeat(${rows}, minmax(0, 1fr)); background-color: ${useOptions.backgroundColor}`">
         <slot></slot>
     </component>
 </template>
