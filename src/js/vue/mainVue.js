@@ -17,12 +17,9 @@ import { systemActionService } from '../service/systemActionService';
 
 let MainVue = {};
 let app = null;
-let modalTypes = {
-    MODAL_SEARCH: 'MODAL_SEARCH',
-};
 
 MainVue.setViewComponent = function (component, properties) {
-    if (app && app.$refs.notificationBar.tooltipOptions.closeOnNavigate) {
+    if (app && app.$refs.notificationBar?.tooltipOptions.closeOnNavigate) {
         MainVue.clearTooltip();
     }
     app.setComponent(component, properties);
@@ -55,7 +52,7 @@ MainVue.clearTooltip = function () {
         return;
     }
     app.hiddenPopupData = null;
-    app.$refs.notificationBar.clearTooltip();
+    app.$refs.notificationBar?.clearTooltip();
 };
 
 /**
@@ -80,7 +77,7 @@ MainVue.showProgressBar = function (percentage, options) {
  * @param options.searchCollectedText use text from collect element to be pre-filled in search bar, if true
  */
 MainVue.showSearchModal = function (options) {
-    app.showModal = modalTypes.MODAL_SEARCH;
+    app.$refs.search.openModal();
     app.modalOptions = options || {};
 };
 
@@ -106,7 +103,6 @@ MainVue.init = function () {
                     Router: Router,
                     uiLocked: false,
                     hiddenPopupData: null,
-                    modalTypes: modalTypes,
                     showModal: null,
                     modalOptions: {}
                 };

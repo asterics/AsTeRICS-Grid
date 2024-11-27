@@ -1,20 +1,12 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask" style="z-index: 9999">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keydown.esc="$emit('close')">
-                    <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
-                    <div class="modal-header">
-                        <h1>{{ $t('searchElement') }}</h1>
-                    </div>
-
-                    <div class="modal-body mt-5 row">
-                        <input type="text" v-model="searchTerm" @input="search()" v-focus :placeholder="$t('searchElement') + '...'" class="col-8 col-sm-10" @keydown.enter.exact="goToFirstResult()" @keydown.ctrl.enter.exact="goToFirstResult(true)"/>
+    <base-modal icon="fas fa-search" :title="$t('searchElement')" :help="false" :footer="false" @open="init" v-on="$listeners" style="z-index: 9999;">
+                    <div class="mt-5 row">
+                        <input type="text" v-model="searchTerm" @input="search()" :placeholder="$t('searchElement') + '...'" class="col-8 col-sm-10" @keydown.enter.exact="goToFirstResult()" @keydown.ctrl.enter.exact="goToFirstResult(true)"/>
                         <div class="col-sm-2 col-4">
                             <button class="col-12 mb-0" :title="$t('search')"><i class="fas fa-search"/></button>
                         </div>
                     </div>
-                    <div>
+                    <div class="results mt-4 mb-4">
                         <div class="warn mt-5" v-if="results && !homeGridId">
                             <i class="fas fa-info-circle"></i>
                             <span>{{ $t('infoPleaseDefineAHomeGridInManageGrids') }}</span>
@@ -41,7 +33,7 @@
                                 </a>
                             </li>
                         </ul>
-                        <div class="mt-5">
+                        <div class="mt-5 mb-5">
                             <div v-if="results === null">
                                 {{ $t('searching') }}
                             </div>
@@ -53,17 +45,11 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="modal-footer">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </base-modal>
 </template>
 
 <script>
-    import './../../css/modal.css';
+    import {modalMixin} from "../mixins/modalMixin";
     import {dataService} from "../../js/service/data/dataService.js";
     import {util} from "../../js/util/util.js";
     import {i18nService} from "../../js/service/i18nService.js";
@@ -73,8 +59,7 @@
 
     export default {
         props: ['routeToEdit', 'options'],
-        components: {
-        },
+        mixins: [modalMixin],
         data: function () {
             return {
                 grids: null,
@@ -105,7 +90,7 @@
                         highlightIds: highlightIds
                     });
                 }
-                this.close();
+                this.closeModal();
             },
             highlightSearch(text) {
                 let index = text.toLocaleLowerCase().indexOf(this.searchTerm.toLocaleLowerCase());
@@ -134,7 +119,7 @@
                         return;
                     }
                     let results = [];
-                    let homeGridId = thiz.homeGridId || thiz.graphList[0].grid.id;
+                    let homeGridId = thiz.homeGridId || thiz.graphList[0]?.grid.id;
                     let homeGridGraphElem = thiz.graphList.filter(elem => elem.grid.id === homeGridId)[0];
                     if (!thiz.idPathMap) {
                         thiz.idPathMap = gridUtil.getIdPathMap(homeGridGraphElem);
@@ -199,11 +184,10 @@
                     }
                 }, 300, "SEARCH_ELEMENTS");
             },
-            close() {
-                this.$emit('close');
-            }
-        },
-        async mounted() {
+        async init() {
+            this.searchTerm = '';
+            this.results = undefined;
+            this.overflow = false;
             this.initPromise = new Promise(async resolve => {
                 this.grids = await dataService.getGrids(true, true);
                 this.graphList = gridUtil.getGraphList(this.grids);
@@ -218,8 +202,7 @@
                 }
             }
             $('.grid-item-content').removeClass('highlight');
-        },
-        beforeDestroy() {
+        }
         }
     }
 </script>
@@ -231,5 +214,10 @@
 
 input, button {
     border-width: 1px;
+}
+
+.results {
+    max-height: 50vh;
+    overflow-y: auto;
 }
 </style>

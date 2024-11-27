@@ -27,7 +27,7 @@
     <video style="display: none" id="videoPlayer" src="" preload="none"></video>
     <notification-bar ref="notificationBar"></notification-bar>
     <progress-bar-modal ref="progressBar"></progress-bar-modal>
-    <search-modal v-if="showModal === modalTypes.MODAL_SEARCH" @close="showModal = null;" :route-to-edit="Router.getCurrentView() === Router.VIEWS.GridEditView" :options="modalOptions"></search-modal>
+    <search-modal ref="search" :route-to-edit="Router.getCurrentView() === Router.VIEWS.GridEditView" :options="modalOptions"></search-modal>
     <div class="grid-container grid-mask" v-if="false">
         <i class="fas fa-4x fa-spinner fa-spin" style="top: 40%;"></i>
         <div style="position: fixed; top: 50%; width: 100%; text-align: center; font-size: 2em;">
