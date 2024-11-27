@@ -16,6 +16,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    font-weight: bold;
 }
 
 .grid, .grid-item-content .text-container span {
