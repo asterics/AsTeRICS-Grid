@@ -37,7 +37,7 @@ actionService.doAction = async function (gridIdOrObject, gridElementId) {
         return;
     }
     let gridData = gridIdOrObject.gridElements ? gridIdOrObject : (await dataService.getGrid(gridIdOrObject, false, true));
-    let gridElement = gridData.gridElements.find(e => e.id === gridElementId);
+    let gridElement = JSON.parse(JSON.stringify(gridData.gridElements.find(e => e.id === gridElementId)));
 
     log.debug('do actions for: ' + i18nService.getTranslation(gridElement.label) + ', ' + gridElementId);
     switch (gridElement.type) {
