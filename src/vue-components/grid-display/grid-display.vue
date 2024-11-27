@@ -5,6 +5,7 @@
                 <grid-element-normal v-if="elem.type === GridElementModel.ELEMENT_TYPE_NORMAL" :grid-element="elem" :metadata="metadata" aria-hidden="true"/>
                 <grid-element-collect v-if="elem.type === GridElementModel.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
                 <grid-element-youtube v-if="elem.type === GridElementModel.ELEMENT_TYPE_YT_PLAYER" :grid-element="elem" aria-hidden="true"/>
+                <grid-element-predict v-if="elem.type === GridElementModel.ELEMENT_TYPE_PREDICTION" aria-hidden="true"/>
             </div>
         </grid-element>
     </grid-layout>
@@ -31,9 +32,10 @@ import { GridActionWebradio } from '../../js/model/GridActionWebradio';
 import { GridActionYoutube } from '../../js/model/GridActionYoutube';
 import GridElementCollect from './gridElementCollect.vue';
 import GridElementYoutube from './gridElementYoutube.vue';
+import GridElementPredict from './gridElementPredict.vue';
 
 export default {
-    components: { GridElementYoutube, GridElementCollect, GridElement, GridElementNormal, GridLayout },
+    components: { GridElementPredict, GridElementYoutube, GridElementCollect, GridElement, GridElementNormal, GridLayout },
     props: ["gridData", "metadata"],
     data() {
         return {

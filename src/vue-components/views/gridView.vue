@@ -85,6 +85,7 @@
     import GridDisplay from '../grid-display/grid-display.vue';
     import { gridUtil } from '../../js/util/gridUtil';
     import { collectElementService } from '../../js/service/collectElementService';
+    import { predictionService } from '../../js/service/predictionService';
 
     let vueApp = null;
     let UNLOCK_COUNT = 8;
@@ -316,6 +317,7 @@
                 initContextmenu();
                 this.initInputMethods(options);
                 this.highlightElements();
+                await predictionService.initWithElements(this.renderGridData.gridElements);
                 collectElementService.initWithElements(this.renderGridData.gridElements);
                 $(document).trigger(constants.EVENT_GRID_LOADED);
             },
