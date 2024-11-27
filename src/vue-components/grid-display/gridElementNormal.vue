@@ -1,7 +1,7 @@
 <template>
     <div class="grid-item-content">
         <div class="img-container" v-if="imageData">
-            <img :src="imageData" draggable="false" style="max-width: 98%; max-height: 98%; object-fit: contain; margin: 1%;" crossorigin="anonymous"/>
+            <img :src="imageData" draggable="false" style="box-sizing: border-box; max-width: 100%; max-height: 100%; object-fit: contain; padding: 2%;" crossorigin="anonymous"/>
         </div>
         <div class="text-container" v-if="label" :style="`text-align: center; font-size: 14px; flex-grow: ${imageData ? '0' : '1'}`"><span>{{label}}</span></div>
     </div>
