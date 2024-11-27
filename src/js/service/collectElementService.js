@@ -73,17 +73,16 @@ collectElementService.initWithElements = function (elements, dontAutoPredict) {
     });
     keyboardLikeFactor = oneCharacterElements / normalElements;
     if (registeredCollectElements.length > 0) {
-        let intervalHandler = setInterval(() => {
-            if ($('.item[data-type="ELEMENT_TYPE_COLLECT"]').length > 0) {
-                clearInterval(intervalHandler);
-                updateCollectElements();
-                if (!dontAutoPredict) {
-                    predictionService.predict(getPredictText(), dictionaryKey);
-                }
-            }
-        }, 100);
+        updateCollectElements();
+        if (!dontAutoPredict) {
+            predictionService.predict(getPredictText(), dictionaryKey);
+        }
     }
 };
+
+collectElementService.clearCollectElements = function() {
+    $('.collect-container').empty();
+}
 
 collectElementService.doCollectElementActions = async function (action) {
     if (!action) {
@@ -306,7 +305,7 @@ async function updateCollectElements(isSecondTry) {
                             ${text}
                         </span>`;
             outerContainerJqueryElem.html(
-                (html = `<div class="collect-container" dir="auto" style="flex: 1; background-color: #e8e8e8; text-align: justify;">${html}</div>`)
+                (html = `<div class="collect-container" dir="auto" style="height: 100%; flex: 1; background-color: #e8e8e8; text-align: justify;">${html}</div>`)
             );
             fontUtil.adaptFontSize($(`#${collectElement.id}`));
         } else {
@@ -381,7 +380,7 @@ async function updateCollectElements(isSecondTry) {
                                 <div style="display:flex; justify-content: center">
                                         ${imgHTML}
                                 </div>
-                                <div style="text-align: center; font-size: ${textHeight}px; line-height: ${lineHeight}px; height: ${lineHeight}px; width: ${elemWidth}px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; ${
+                                <div style="text-align: center; font-weight: bold; font-size: ${textHeight}px; line-height: ${lineHeight}px; height: ${lineHeight}px; width: ${elemWidth}px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; ${
                     !showLabel ? 'display: none' : ''
                 }">
                                     ${image ? label : ''}
@@ -389,7 +388,7 @@ async function updateCollectElements(isSecondTry) {
                              </div>`;
             }
             let additionalCSS = useSingleLine ? 'overflow-x: auto; overflow-y: hidden;' : 'flex-wrap: wrap;';
-            html = `<div class="collect-container" dir="auto" style="flex: 1; display: flex; flex-direction: row; background-color: #e8e8e8; text-align: justify; ${additionalCSS}">${html}</div>`;
+            html = `<div class="collect-container" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: #e8e8e8; text-align: justify; ${additionalCSS}">${html}</div>`;
             outerContainerJqueryElem.html(html);
             if (useSingleLine) {
                 let scroll =

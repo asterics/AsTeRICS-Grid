@@ -84,6 +84,7 @@
     import { systemActionService } from '../../js/service/systemActionService';
     import GridDisplay from '../grid-display/grid-display.vue';
     import { gridUtil } from '../../js/util/gridUtil';
+    import { collectElementService } from '../../js/service/collectElementService';
 
     let vueApp = null;
     let UNLOCK_COUNT = 8;
@@ -280,6 +281,7 @@
             async loadGrid(gridData, options = {}) {
                 options.continueInputMethods = options.continueInputMethods || false;
                 options.forceReload = options.forceReload || false;
+                collectElementService.clearCollectElements();
                 if (gridData && (options.forceReload || !this.renderGridData || this.renderGridData.id !== gridData.id)) {
                     if (gridUtil.hasAREModel(gridData)) {
                         let areModel = gridUtil.getAREModel(gridData);
@@ -314,6 +316,7 @@
                 initContextmenu();
                 this.initInputMethods(options);
                 this.highlightElements();
+                collectElementService.initWithElements(this.renderGridData.gridElements);
                 $(document).trigger(constants.EVENT_GRID_LOADED);
             },
             highlightElements() {

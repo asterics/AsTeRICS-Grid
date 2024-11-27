@@ -2,7 +2,8 @@
     <grid-layout class="grid-layout-container" v-if="renderGrid" :rows="renderGrid.rowCount" :columns="columns" :options="{backgroundColor: metadata.colorConfig.gridBackgroundColor, componentType: 'ol'}">
         <grid-element v-for="elem in renderGrid.gridElements" :key="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" component-type="li">
             <div class="element-container" :id="elem.id" tabindex="40" :aria-label="getAriaLabel(elem)" :data-empty="isEmpty(elem)" :style="`margin: 2px; border-radius: 3px; border: 1px solid ${getBorderColor()}; background-color: ${getBackgroundColor(elem)};`">
-                <grid-element-normal :grid-element="elem" :metadata="metadata" aria-hidden="true"/>
+                <grid-element-normal v-if="elem.type === GridElementModel.ELEMENT_TYPE_NORMAL" :grid-element="elem" :metadata="metadata" aria-hidden="true"/>
+                <grid-element-collect v-if="elem.type === GridElementModel.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
             </div>
         </grid-element>
     </grid-layout>
@@ -27,14 +28,16 @@ import { GridActionCollectElement } from '../../js/model/GridActionCollectElemen
 import { GridActionNavigate } from '../../js/model/GridActionNavigate';
 import { GridActionWebradio } from '../../js/model/GridActionWebradio';
 import { GridActionYoutube } from '../../js/model/GridActionYoutube';
+import GridElementCollect from './gridElementCollect.vue';
 
 export default {
-    components: { GridElement, GridElementNormal, GridLayout },
+    components: { GridElementCollect, GridElement, GridElementNormal, GridLayout },
     props: ["gridData", "metadata"],
     data() {
         return {
             renderGrid: null,
-            columns: null
+            columns: null,
+            GridElementModel: GridElementModel
         }
     },
     watch: {
