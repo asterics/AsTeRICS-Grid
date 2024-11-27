@@ -123,6 +123,13 @@ class GridElement extends Model({
     }
 }
 
+GridElement.ELEMENT_TYPE_NORMAL = 'ELEMENT_TYPE_NORMAL';
+GridElement.ELEMENT_TYPE_COLLECT = 'ELEMENT_TYPE_COLLECT';
+GridElement.ELEMENT_TYPE_PREDICTION = 'ELEMENT_TYPE_PREDICTION';
+GridElement.ELEMENT_TYPE_YT_PLAYER = 'ELEMENT_TYPE_YT_PLAYER';
+
+GridElement.PROP_YT_PREVENT_CLICK = 'PROP_YT_PREVENT_CLICK';
+
 GridElement.DEFAULTS = {
     id: '', //will be replaced by constructor
     modelName: GridElement.getModelName(),
@@ -135,12 +142,5 @@ GridElement.DEFAULTS = {
     additionalProps: {},
     wordForms: []
 }
-
-GridElement.ELEMENT_TYPE_NORMAL = 'ELEMENT_TYPE_NORMAL';
-GridElement.ELEMENT_TYPE_COLLECT = 'ELEMENT_TYPE_COLLECT';
-GridElement.ELEMENT_TYPE_PREDICTION = 'ELEMENT_TYPE_PREDICTION';
-GridElement.ELEMENT_TYPE_YT_PLAYER = 'ELEMENT_TYPE_YT_PLAYER';
-
-GridElement.PROP_YT_PREVENT_CLICK = 'PROP_YT_PREVENT_CLICK';
 
 export { GridElement };
