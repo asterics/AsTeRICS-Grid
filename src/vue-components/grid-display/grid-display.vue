@@ -1,7 +1,7 @@
 <template>
     <grid-layout class="grid-layout-container" v-if="renderGrid" :rows="renderGrid.rowCount" :columns="columns" :options="{backgroundColor: metadata.colorConfig.gridBackgroundColor, componentType: 'ol'}">
         <grid-element v-for="elem in renderGrid.gridElements" :key="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" component-type="li">
-            <div class="element-container" :id="elem.id" tabindex="40" :aria-label="getAriaLabel(elem)" :data-empty="isEmpty(elem)" :style="`margin: 2px; border-radius: 3px; border: 1px solid ${getBorderColor()}; background-color: ${getBackgroundColor(elem)};`">
+            <div class="element-container" :id="elem.id" tabindex="40" :aria-label="getAriaLabel(elem)" :data-empty="isEmpty(elem)" :style="`margin: 2px; border-radius: 3px; cursor: pointer; border: 1px solid ${getBorderColor()}; background-color: ${getBackgroundColor(elem)};`">
                 <grid-element-normal v-if="elem.type === GridElementModel.ELEMENT_TYPE_NORMAL" :grid-element="elem" :metadata="metadata" aria-hidden="true"/>
                 <grid-element-collect v-if="elem.type === GridElementModel.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
                 <grid-element-youtube v-if="elem.type === GridElementModel.ELEMENT_TYPE_YT_PLAYER" :grid-element="elem" aria-hidden="true"/>
