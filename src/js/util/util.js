@@ -350,4 +350,13 @@ util.shuffleArray = function (array) {
     return array;
 }
 
+util.getFilled2DimArray = function(firstCount, secondCount, initValue) {
+    let array = [];
+    for (let i = 0; i < firstCount; i++) {
+        let secondArray = new Array(secondCount).fill(initValue);
+        array.push(secondArray);
+    }
+    return array;
+}
+
 export { util };

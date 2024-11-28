@@ -13,7 +13,11 @@ export default {
     props: ["gridElement"],
     data() {
         return {
-            hasNavigation: !!this.gridElement.actions.find((a) => a.modelName === GridActionNavigate.getModelName())
+        }
+    },
+    computed: {
+        hasNavigation() {
+            return !!this.gridElement.actions.find((a) => a.modelName === GridActionNavigate.getModelName());
         }
     },
     methods: {
