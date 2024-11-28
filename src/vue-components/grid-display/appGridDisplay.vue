@@ -1,5 +1,5 @@
 <template>
-    <grid-layout class="grid-layout-container" v-if="renderGrid" :rows="renderGrid.rowCount" :columns="columns" :options="{backgroundColor: metadata.colorConfig.gridBackgroundColor, componentType: 'ol'}">
+    <grid-layout v-if="renderGrid" :rows="renderGrid.rowCount" :columns="columns" :options="{backgroundColor: metadata.colorConfig.gridBackgroundColor, componentType: 'ol'}">
         <grid-element v-for="elem in renderGrid.gridElements" :key="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" component-type="li">
             <app-grid-element :grid-element="elem" :metadata="metadata"/>
         </grid-element>
