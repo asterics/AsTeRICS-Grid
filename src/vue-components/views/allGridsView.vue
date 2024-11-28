@@ -112,7 +112,7 @@
         <no-grids-page v-if="graphList && graphList.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true" :reset-global-grid="this.resetGlobalGrid"></no-grids-page>
         <grid-link-modal ref="link" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
         <export-pdf-modal ref="pdf" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.printGridId = null;"></export-pdf-modal>
-        <export-modal v-if="backupModal.show" :grids-data="grids" :export-options="backupModal.exportOptions" @close="backupModal.show = false"></export-modal>
+        <export-modal ref="export" :grids-data="grids" :export-options="exportOptions"></export-modal>
         <import-modal v-if="importModal.show" @close="importModal.show = false" :reload-fn="reload"></import-modal>
         <div class="bottom-spacer"></div>
     </div>
@@ -178,10 +178,7 @@
                 pdfModal: {
                     printGridId: null
                 },
-                backupModal: {
-                    show: false,
-                    exportOptions: {}
-                },
+                exportOptions: {},
                 importModal: {
                     show: false
                 },
@@ -264,14 +261,14 @@
             },
             exportCustom(gridId) {
                 if (gridId) {
-                    this.backupModal.exportOptions.gridId = gridId;
-                    this.backupModal.exportOptions.exportDictionaries = false;
-                    this.backupModal.exportOptions.exportUserSettings = false;
-                    this.backupModal.exportOptions.exportGlobalGrid = false;
+                    this.exportOptions.gridId = gridId;
+                    this.exportOptions.exportDictionaries = false;
+                    this.exportOptions.exportUserSettings = false;
+                    this.exportOptions.exportGlobalGrid = false;
                 } else {
-                    this.backupModal.exportOptions = {}
+                    this.exportOptions = {}
                 }
-                this.backupModal.show = true;
+                this.$refs.export.openModal();
             },
             exportToPdf(gridId) {
                 this.pdfModal.printGridId = gridId;
