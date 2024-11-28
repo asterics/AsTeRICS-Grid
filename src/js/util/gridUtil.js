@@ -530,10 +530,7 @@ gridUtil.getHash = function(gridData) {
 };
 
 gridUtil.getWidth = function(gridDataOrElements) {
-    let gridElements = gridDataOrElements.gridElements ? gridDataOrElements.gridElements : gridDataOrElements;
-    if (!gridElements || gridElements.length === 0) {
-        return 0;
-    }
+    let gridElements = getGridElements(gridDataOrElements);
     if (gridElements.length === 0) {
         return 0;
     }
@@ -544,10 +541,7 @@ gridUtil.getWidth = function(gridDataOrElements) {
 };
 
 gridUtil.getHeight = function(gridDataOrElements) {
-    let gridElements = gridDataOrElements.gridElements ? gridDataOrElements.gridElements : gridDataOrElements;
-    if (!gridElements || gridElements.length === 0) {
-        return 0;
-    }
+    let gridElements = getGridElements(gridDataOrElements);
     if (gridElements.length === 0) {
         return 0;
     }
@@ -557,13 +551,13 @@ gridUtil.getHeight = function(gridDataOrElements) {
     );
 };
 
-gridUtil.getWidthWithBounds = function(gridData) {
-    return Math.max(gridUtil.getWidth(gridData), gridData.minColumnCount);
-}
+gridUtil.getWidthWithBounds = function(gridDataOrElements) {
+    return Math.max(gridUtil.getWidth(gridDataOrElements), gridDataOrElements.minColumnCount ? gridDataOrElements.minColumnCount : 0);
+};
 
-gridUtil.getHeightWithBounds = function(gridData) {
-    return Math.max(gridUtil.getHeight(gridData), gridData.rowCount);
-}
+gridUtil.getHeightWithBounds = function(gridDataOrElements) {
+    return Math.max(gridUtil.getHeight(gridDataOrElements), gridDataOrElements.rowCount ? gridDataOrElements.rowCount : 0);
+};
 
 /**
  * ensure that all defaults are set within the given GridData object
@@ -598,18 +592,28 @@ gridUtil.duplicateElement = function(gridData, elementId) {
     duplicate.actions = duplicate.actions.filter(
         (action) => action.modelName !== GridActionNavigate.getModelName()
     );
-    duplicate.x = element.x + element.width;
-    // push all others right
-    let movedElements = gridUtil.moveElements(gridData.gridElements, {
-        moveX: element.width,
-        startX: element.x + element.width
-    });
-    gridData.gridElements.push(duplicate);
-    // push those back, which don't collide
-    gridUtil.moveElements(gridData.gridElements, {
-        moveX: -element.width,
-        moveElements: movedElements
-    });
+    if (gridUtil.isFreeSpace(gridData, element.x + element.width, element.y, element.width, element.height)) {
+        // space right?
+        duplicate.x = element.x + element.width;
+        gridData.gridElements.push(duplicate);
+    } else if (gridUtil.isFreeSpace(gridData, element.x, element.y + element.height, element.width, element.height)) {
+        // space below?
+        duplicate.y = element.y + element.height;
+        gridData.gridElements.push(duplicate);
+    } else {
+        duplicate.x = element.x + element.width;
+        // push all others right
+        let movedElements = gridUtil.moveElements(gridData.gridElements, {
+            moveX: element.width,
+            startX: element.x + element.width
+        });
+        gridData.gridElements.push(duplicate);
+        // push those back, which don't collide
+        gridUtil.moveElements(gridData.gridElements, {
+            moveX: -element.width,
+            moveElements: movedElements
+        });
+    }
     return gridData;
 }
 
@@ -654,8 +658,8 @@ gridUtil.moveElements = function(elements, options = {}) {
 }
 
 /**
- * returns true, if the given element size is free space within the given gridElements
- * @param gridElements
+ * returns true, if the given element size is free space within the given gridData / gridElements
+ * @param gridDataOrElements
  * @param x
  * @param y
  * @param width
@@ -663,8 +667,8 @@ gridUtil.moveElements = function(elements, options = {}) {
  * @param freeMatrix
  * @returns {boolean}
  */
-gridUtil.isFreeSpace = function(gridElements, x, y, width, height, freeMatrix = null) {
-    freeMatrix = freeMatrix || getFreeMatrix(gridElements);
+gridUtil.isFreeSpace = function(gridDataOrElements, x, y, width, height, freeMatrix = null) {
+    freeMatrix = freeMatrix || getFreeMatrix(gridDataOrElements);
     for (let i = x; i < x + width; i++) {
         for (let j = y; j < y + height; j++) {
             if (freeMatrix[i] !== undefined && freeMatrix[i][j] !== true) {
@@ -677,11 +681,12 @@ gridUtil.isFreeSpace = function(gridElements, x, y, width, height, freeMatrix = 
 
 /**
  * returns a 2-dimensional array where array[x][y] indidates if this space is free (true) or occupied (false)
- * within the given gridElements
- * @param gridElements
+ * within the given gridData / gridElements
+ * @param gridDataOrElements
  */
-function getFreeMatrix(gridElements) {
-    let freeMatrix = util.getFilled2DimArray(gridUtil.getWidth(gridElements), gridUtil.getHeight(gridElements), true);
+function getFreeMatrix(gridDataOrElements) {
+    let gridElements = getGridElements(gridDataOrElements);
+    let freeMatrix = util.getFilled2DimArray(gridUtil.getWidthWithBounds(gridDataOrElements), gridUtil.getHeightWithBounds(gridDataOrElements), true);
     for (let element of gridElements) {
         for (let i = element.x; i < element.x + element.width; i++) {
             for (let j = element.y; j < element.y + element.height; j++) {
@@ -726,6 +731,14 @@ function getNavigationIds(grid) {
             return a.navType === GridActionNavigate.NAV_TYPES.TO_GRID ? a.toGridId : null;
         })
         .filter((a) => !!a);
+}
+
+function getGridElements(gridDataOrElements) {
+    let gridElements = gridDataOrElements.gridElements ? gridDataOrElements.gridElements : gridDataOrElements;
+    if (!gridElements || gridElements.length === 0) {
+        return [];
+    }
+    return gridElements;
 }
 
 export { gridUtil };
