@@ -18,15 +18,18 @@ export default {
     data() {
         return {
             imageData: this.gridElement.image ? this.gridElement.image.data || this.gridElement.image.url : null,
-            label: '',
             fontUtil: fontUtil
+        }
+    },
+    computed: {
+        label() {
+            let label = stateService.getDisplayText(this.gridElement.id) || i18nService.getTranslation(this.gridElement.label);
+            return  util.convertLowerUppercase(label, this.metadata.textConfig.convertMode);
         }
     },
     methods: {
     },
     mounted() {
-        this.label = stateService.getDisplayText(this.gridElement.id) || i18nService.getTranslation(this.gridElement.label);
-        this.label = util.convertLowerUppercase(this.label, this.metadata.textConfig.convertMode);
     },
 }
 </script>
