@@ -32,5 +32,7 @@ export default {
 .grid-layout {
     display: grid;
     height: 100%;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-rows: minmax(0, 1fr);
 }
 </style>
