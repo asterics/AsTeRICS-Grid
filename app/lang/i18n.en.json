@@ -202,7 +202,7 @@
   "includeGlobalGrid": "Include global grid",
   "downloadPdf": "Download PDF",
   "setGridSize": "Set grid size",
-  "numberOfRows": "Number of rows",
+  "minimumNumberOfRows": "Minimum number of rows",
   "minimumNumberOfColumns": "Minimum number of columns",
   "heightOfFirstGlobalGridRow": "Height of first global grid row [%]",
   "linkGrids": "Link grids",

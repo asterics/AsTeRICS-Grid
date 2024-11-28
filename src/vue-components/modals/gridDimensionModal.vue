@@ -12,7 +12,7 @@
 
                     <div class="modal-body">
                         <div class="srow">
-                            <label for="gridRows" class="seven columns">{{ $t('numberOfRows') }}</label>
+                            <label for="gridRows" class="seven columns">{{ $t('minimumNumberOfRows') }}</label>
                             <input id="gridRows" type="number" class="three columns" v-model.number="gridData.rowCount" min="1" max="100"/>
                         </div>
                         <div class="srow">
