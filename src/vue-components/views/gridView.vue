@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="srow content" v-if="renderGridData && renderGridData.gridElements.length > 0" style="max-width: 100%; min-height: 0">
-            <grid-display id="grid-container" :grid-data="renderGridData" :metadata="metadata"/>
+            <app-grid-display id="grid-container" :grid-data="renderGridData" :metadata="metadata"/>
         </div>
     </div>
 </template>
@@ -82,7 +82,7 @@
     import {MainVue} from "../../js/vue/mainVue.js";
     import {stateService} from "../../js/service/stateService.js";
     import { systemActionService } from '../../js/service/systemActionService';
-    import GridDisplay from '../grid-display/grid-display.vue';
+    import AppGridDisplay from '../grid-display/appGridDisplay.vue';
     import { gridUtil } from '../../js/util/gridUtil';
     import { collectElementService } from '../../js/service/collectElementService';
     import { predictionService } from '../../js/service/predictionService';
@@ -127,7 +127,7 @@
             }
         },
         components: {
-            GridDisplay,
+            AppGridDisplay,
             UnlockModal,
             SequentialInputModal,
             HuffmanInputModal,
