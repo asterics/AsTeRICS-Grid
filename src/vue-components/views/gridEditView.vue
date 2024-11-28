@@ -9,12 +9,12 @@
             <button tabindex="33" id="moreButton" :aria-label="$t('more')" class="spaced"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile">{{ $t('more') }}</span></button>
             <div id="moreButtonMenu"></div>
             <div class="spaced btn-group">
-                <button tabindex="31" @click="undo" :aria-label="$t('undo')" :disabled="!canUndo || doingUndoRedo" class="small"><i class="fas fa-undo"></i> <span class="hide-mobile">{{ $t('undo') }}</span></button>
-                <button tabindex="32" @click="redo"  :aria-label="$t('redo')" :disabled="!canRedo || doingUndoRedo" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span></button>
+                <button tabindex="31" @click="undo" :aria-label="$t('undo')" :disabled="doingUndoRedo|| !undoService.canUndo()" class="small"><i class="fas fa-undo"></i> <span class="hide-mobile">{{ $t('undo') }}</span></button>
+                <button tabindex="32" @click="redo"  :aria-label="$t('redo')" :disabled="doingUndoRedo || !undoService.canRedo()" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span></button>
             </div>
         </header>
         <div>
-            <edit-element v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
+            <edit-element v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :undo-service="undoService" :grid-data-id="gridData.id" @reload="reload" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
         </div>
         <div>
             <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :grid-instance="getGridInstance()" @close="showMultipleModal = false"/>
@@ -35,7 +35,8 @@
             <div v-if="!showGrid" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
             </div>
-            <div id="grid-container" class="grid-container" :style="`background-color: ${backgroundColor}`">
+            <div v-if="metadata && gridData && gridData.gridElements.length > 0" style="max-width: 100%; height: 100%">
+                <app-grid-editable id="grid-container" :grid-data="gridData" :metadata="metadata"/>
             </div>
             <div id="grid-layout-background-wrapper" class="grid-container" style="margin: 10px; display: none">
                 <div id="grid-layout-background-vertical" class="grid-container" style="margin-left: 204px; background-size: 209px 209px;
@@ -51,7 +52,6 @@
 
 <script>
     import $ from '../../js/externals/jquery.js';
-    import {Grid} from "../../js/grid.js";
     import {dataService} from "../../js/service/data/dataService";
     import {Router} from "./../../js/router.js";
     import {i18nService} from "../../js/service/i18nService";
@@ -77,6 +77,8 @@
     import {pouchDbService} from "../../js/service/data/pouchDbService.js";
     import {MainVue} from "../../js/vue/mainVue.js";
     import {stateService} from "../../js/service/stateService.js";
+    import AppGridEditable from '../grid-display/appGridEditable.vue';
+    import { UndoService } from '../../js/service/data/undoService';
 
     let vueApp = null;
     let gridInstance = null;
@@ -89,6 +91,7 @@
                 metadata: null,
                 canUndo: false,
                 canRedo: false,
+                undoService: new UndoService(),
                 doingUndoRedo: false,
                 showMultipleModal: false,
                 showDimensionsModal: false,
@@ -104,6 +107,7 @@
             }
         },
         components: {
+            AppGridEditable,
             SetNavigationModal,
             GridTranslateModal,
             ElementMoveModal,
@@ -119,23 +123,18 @@
             normalizeGrid: function () {
                 gridInstance.normalizeGrid();
             },
-            undo: function () {
+            undo: async function () {
                 this.doingUndoRedo = true;
-                setTimeout(function () {
-                    gridInstance.undo();
-                }, 10);
+                this.gridData = await this.undoService.doUndo();
+                this.doingUndoRedo = false;
             },
-            redo: function () {
+            redo: async function () {
                 this.doingUndoRedo = true;
-                setTimeout(function () {
-                    gridInstance.redo();
-                }, 10);
+                this.gridData = await this.undoService.doRedo();
+                this.doingUndoRedo = false;
             },
             reload(gridData) {
-                gridInstance.reinit(gridData);
-                if (gridData) {
-                    this.gridData = JSON.parse(JSON.stringify(gridData));
-                }
+                this.gridData = JSON.parse(JSON.stringify(gridData));
             },
             back() {
                 if (this.metadata && this.metadata.globalGridId === this.gridData.id) {
@@ -182,7 +181,7 @@
                         newElement.actions = [playText];
                     }
                     this.gridData.gridElements.push(newElement);
-                    gridInstance.updateGridWithUndo(this.gridData);
+                    this.undoService.updateGrid(this.gridData);
                 }
             },
             newElements() {
@@ -191,13 +190,13 @@
             clearElements() {
                 if (confirm(i18nService.t('CONFIRM_DELETE_ALL_ELEMS'))) {
                     this.gridData.gridElements = [];
-                    gridInstance.updateGridWithUndo(this.gridData);
+                    this.undoService.updateGrid(this.gridData);
                 }
             },
             fillElements() {
                 let elements = gridUtil.getFillElements(this.gridData);
                 this.gridData.gridElements = this.gridData.gridElements.concat(elements);
-                gridInstance.updateGridWithUndo(this.gridData);
+                this.undoService.updateGrid(this.gridData);
             },
             reloadFn(event, updatedIds, updatedDocs, deletedIds) {
                 if (vueApp && deletedIds.includes(vueApp.gridId)) {
@@ -282,14 +281,8 @@
                     return dataService.saveMetadata(thiz.metadata);
                 });
             }).then(() => {
-                return initGrid(thiz.gridData);
+                return Promise.resolve();
             }).then(() => {
-                gridInstance.setLayoutChangedEndListener((newGridData) => {
-                    thiz.canUndo = gridInstance.canUndo();
-                    thiz.canRedo = gridInstance.canRedo();
-                    thiz.doingUndoRedo = false;
-                    thiz.gridData = JSON.parse(JSON.stringify(newGridData));
-                });
                 initContextmenu();
                 thiz.showGrid = true;
                 thiz.highlightElement();
@@ -309,15 +302,6 @@
             $.contextMenu('destroy');
         }
     };
-
-    function initGrid(gridData) {
-        gridInstance = new Grid('#grid-container', '.grid-item-content', {
-            enableResizing: true,
-            dragAndDrop: true,
-            gridId: gridData.id
-        });
-        return gridInstance.getInitPromise();
-    }
 
     function initContextmenu() {
         //see https://swisnl.github.io/jQuery-contextMenu/demo.html
@@ -409,9 +393,9 @@
         };
 
         $.contextMenu({
-            selector: '.item',
+            selector: '.element-container',
             callback: function (key, options) {
-                var elementId = $(this).attr('data-id');
+                let elementId = $(this).attr('id');
                 handleContextMenu(key, elementId);
             },
             items: itemsElemNormal,
