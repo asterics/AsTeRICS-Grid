@@ -133,7 +133,8 @@
                 this.gridData = await this.undoService.doRedo();
                 this.doingUndoRedo = false;
             },
-            reload(gridData) {
+            async reload(gridData) {
+                gridData = gridData || (await dataService.getGrid(this.gridData.id));
                 this.gridData = JSON.parse(JSON.stringify(gridData));
             },
             back() {
