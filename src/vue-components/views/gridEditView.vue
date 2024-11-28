@@ -31,12 +31,9 @@
         <div>
             <set-navigation-modal v-if="showNavigateModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showNavigateModal = false" @reload="reload"></set-navigation-modal>
         </div>
-        <div class="srow content" id="contentContainer">
+        <div class="srow content" id="contentContainer" v-if="!(metadata && gridData && gridData.gridElements.length > 0)">
             <div v-if="!showGrid" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
-            </div>
-            <div v-if="metadata && gridData && gridData.gridElements.length > 0" style="max-width: 100%; height: 100%">
-                <app-grid-editable id="grid-container" :grid-data="gridData" :metadata="metadata"/>
             </div>
             <div id="grid-layout-background-wrapper" class="grid-container" style="margin: 10px; display: none">
                 <div id="grid-layout-background-vertical" class="grid-container" style="margin-left: 204px; background-size: 209px 209px;
@@ -46,6 +43,9 @@
     background-image: linear-gradient(to bottom, grey 1px, transparent 1px);">
                 </div>
             </div>
+        </div>
+        <div class="srow content" v-if="metadata && gridData && gridData.gridElements.length > 0" style="max-width: 100%; min-height: 0">
+            <app-grid-editable id="grid-container" :grid-data="gridData" :metadata="metadata"/>
         </div>
     </div>
 </template>
