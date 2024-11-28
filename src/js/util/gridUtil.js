@@ -6,9 +6,10 @@ import { GridActionNavigate } from '../model/GridActionNavigate';
 import { GridActionCollectElement } from '../model/GridActionCollectElement';
 import { GridData } from '../model/GridData';
 import { GridElementCollect } from '../model/GridElementCollect.js';
-import {constants} from "./constants.js";
+import { constants } from './constants.js';
 import { GridActionARE } from '../model/GridActionARE';
 import { encryptionService } from '../service/data/encryptionService';
+import { util } from './util';
 
 let gridUtil = {};
 
@@ -528,23 +529,31 @@ gridUtil.getHash = function(gridData) {
     return encryptionService.getStringHash(string);
 };
 
-gridUtil.getWidth = function(gridData) {
-    if (gridData.gridElements.length === 0) {
+gridUtil.getWidth = function(gridDataOrElements) {
+    let gridElements = gridDataOrElements.gridElements ? gridDataOrElements.gridElements : gridDataOrElements;
+    if (!gridElements || gridElements.length === 0) {
+        return 0;
+    }
+    if (gridElements.length === 0) {
         return 0;
     }
     return Math.max.apply(
         null,
-        gridData.gridElements.map((el) => el.x + el.width)
+        gridElements.map((el) => el.x + el.width)
     );
 };
 
-gridUtil.getHeight = function(gridData) {
-    if (gridData.gridElements.length === 0) {
+gridUtil.getHeight = function(gridDataOrElements) {
+    let gridElements = gridDataOrElements.gridElements ? gridDataOrElements.gridElements : gridDataOrElements;
+    if (!gridElements || gridElements.length === 0) {
+        return 0;
+    }
+    if (gridElements.length === 0) {
         return 0;
     }
     return Math.max.apply(
         null,
-        gridData.gridElements.map((el) => el.y + el.height)
+        gridElements.map((el) => el.y + el.height)
     );
 };
 
@@ -573,6 +582,117 @@ gridUtil.ensureDefaults = function(gridData) {
     }
     return gridData;
 };
+
+/**
+ * Duplicates the element with the given ID. Other elements are moved to the right
+ * in order to make space for the new element.
+ * @param gridData
+ * @param elementId
+ * @returns {*} gridData including the duplicated element
+ */
+gridUtil.duplicateElement = function(gridData, elementId) {
+    let element = gridData.gridElements.find((el) => el.id === elementId)
+    let duplicate = JSON.parse(JSON.stringify(element));
+    duplicate.id = modelUtil.generateId(GridElement.ID_PREFIX);
+    duplicate.actions = duplicate.actions || [];
+    duplicate.actions = duplicate.actions.filter(
+        (action) => action.modelName !== GridActionNavigate.getModelName()
+    );
+    duplicate.x = element.x + element.width;
+    // push all others right
+    let movedElements = gridUtil.moveElements(gridData.gridElements, {
+        moveX: element.width,
+        startX: element.x + element.width
+    });
+    gridData.gridElements.push(duplicate);
+    // push those back, which don't collide
+    gridUtil.moveElements(gridData.gridElements, {
+        moveX: -element.width,
+        moveElements: movedElements
+    });
+    return gridData;
+}
+
+/**
+ * moves elements based on the given options
+ * @param elements all elements of the grid
+ * @param options
+ * @param options.moveX how much to move in x-direction
+ * @param options.moveY how much to move in y-direction
+ * @param options.startX at which x-value moving is started
+ * @param options.startY at which y-value moving is started
+ * @param options.moveElements elements that should be moved, if specified startX / startY have no effect
+ * @returns {*[]} array of moved elements with new x/y values
+ */
+gridUtil.moveElements = function(elements, options = {}) {
+    elements = elements || [];
+    options.moveX = options.moveX || 0;
+    options.moveY = options.moveY || 0;
+    options.startX = options.startX || 0;
+    options.startY = options.startY || 0;
+    options.moveElements = options.moveElements || elements.filter(elem => elem.x >= options.startX && elem.y >= options.startY);
+
+    // start with correct elements to move,
+    // e.g. start with right elements if moving to the right
+    options.moveElements.sort((a, z) => {
+        if (a.x !== z.x) {
+            return options.moveX * (z.x - a.x);
+        }
+        return options.moveY * (z.y - a.y);
+    });
+    for (let moveElement of options.moveElements) {
+        if (gridUtil.isFreeSpace(elements,
+            moveElement.x + options.moveX,
+            moveElement.y + options.moveY,
+            moveElement.width,
+            moveElement.height)) {
+            moveElement.x += options.moveX;
+            moveElement.y += options.moveY;
+        }
+    }
+    return options.moveElements;
+}
+
+/**
+ * returns true, if the given element size is free space within the given gridElements
+ * @param gridElements
+ * @param x
+ * @param y
+ * @param width
+ * @param height
+ * @param freeMatrix
+ * @returns {boolean}
+ */
+gridUtil.isFreeSpace = function(gridElements, x, y, width, height, freeMatrix = null) {
+    freeMatrix = freeMatrix || getFreeMatrix(gridElements);
+    for (let i = x; i < x + width; i++) {
+        for (let j = y; j < y + height; j++) {
+            if (freeMatrix[i] !== undefined && freeMatrix[i][j] !== true) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+/**
+ * returns a 2-dimensional array where array[x][y] indidates if this space is free (true) or occupied (false)
+ * within the given gridElements
+ * @param gridElements
+ */
+function getFreeMatrix(gridElements) {
+    let freeMatrix = util.getFilled2DimArray(gridUtil.getWidth(gridElements), gridUtil.getHeight(gridElements), true);
+    for (let element of gridElements) {
+        for (let i = element.x; i < element.x + element.width; i++) {
+            for (let j = element.y; j < element.y + element.height; j++) {
+                if (freeMatrix[i] !== undefined && freeMatrix[i][j] !== undefined) {
+                    freeMatrix[i][j] = false;
+                }
+            }
+        }
+    }
+    return freeMatrix;
+}
 
 function getAllChildrenRecursive(gridGraphList, gridId) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];

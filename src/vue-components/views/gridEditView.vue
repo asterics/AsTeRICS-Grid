@@ -155,6 +155,10 @@
                 this.gridData.gridElements = this.gridData.gridElements.filter((el) => el.id !== id);
                 this.undoService.updateGrid(this.gridData);
             },
+            duplicateElement(id) {
+                this.gridData = gridUtil.duplicateElement(this.gridData, id);
+                this.undoService.updateGrid(this.gridData);
+            },
             newElement(type) {
                 if (type === GridElement.ELEMENT_TYPE_NORMAL) {
                     this.editElementId = null;
@@ -482,7 +486,7 @@
                     vueApp.markElement(null);
                     break;
                 case CONTEXT_ACTION_DUPLICATE:
-                    gridInstance.duplicateElement(elementId || vueApp.markedElement.id);
+                    vueApp.duplicateElement(elementId || vueApp.markedElement.id);
                     vueApp.markElement(null);
                     break;
                 case CONTEXT_ACTION_DO_ACTION:

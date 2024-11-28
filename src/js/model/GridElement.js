@@ -45,13 +45,7 @@ class GridElement extends Model({
         properties = modelUtil.setDefaults(properties, elementToCopy, GridElement) || {};
         properties.actions = properties.actions || [new GridActionSpeak()];
         super(Object.assign(defaults, properties));
-        this.id = this.id || modelUtil.generateId('grid-element');
-    }
-
-    duplicate() {
-        var newElem = new GridElement(JSON.parse(JSON.stringify(this)));
-        newElem.id = modelUtil.generateId('grid-element');
-        return newElem;
+        this.id = this.id || modelUtil.generateId(GridElement.ID_PREFIX);
     }
 
     toHTML(metadata) {
@@ -129,6 +123,8 @@ GridElement.ELEMENT_TYPE_PREDICTION = 'ELEMENT_TYPE_PREDICTION';
 GridElement.ELEMENT_TYPE_YT_PLAYER = 'ELEMENT_TYPE_YT_PLAYER';
 
 GridElement.PROP_YT_PREVENT_CLICK = 'PROP_YT_PREVENT_CLICK';
+
+GridElement.ID_PREFIX = "grid-element";
 
 GridElement.DEFAULTS = {
     id: '', //will be replaced by constructor
