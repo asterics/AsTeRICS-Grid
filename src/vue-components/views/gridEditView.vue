@@ -152,10 +152,8 @@
                 }
             },
             removeElement(id) {
-                let thiz = this;
-                gridInstance.removeElement(id).then(newGridData => {
-                    thiz.gridData = newGridData;
-                });
+                this.gridData.gridElements = this.gridData.gridElements.filter((el) => el.id !== id);
+                this.undoService.updateGrid(this.gridData);
             },
             newElement(type) {
                 if (type === GridElement.ELEMENT_TYPE_NORMAL) {
