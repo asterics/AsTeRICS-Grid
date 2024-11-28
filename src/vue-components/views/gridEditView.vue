@@ -115,7 +115,9 @@
         },
         methods: {
             setDimensions: function (rows, cols) {
-                gridInstance.setDimensions(rows, cols);
+                this.gridData.rowCount = rows;
+                this.gridData.minColumnCount = cols;
+                this.undoService.updateGrid(this.gridData);
             },
             fillGaps: function () {
                 gridInstance.fillGaps();
