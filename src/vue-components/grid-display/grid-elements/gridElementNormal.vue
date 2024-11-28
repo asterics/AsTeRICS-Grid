@@ -8,10 +8,10 @@
 </template>
 
 <script>
-import { stateService } from '../../js/service/stateService';
-import { i18nService } from '../../js/service/i18nService';
-import { util } from '../../js/util/util';
-import { fontUtil } from '../../js/util/fontUtil';
+import { stateService } from '../../../js/service/stateService';
+import { i18nService } from '../../../js/service/i18nService';
+import { util } from '../../../js/util/util';
+import { fontUtil } from '../../../js/util/fontUtil';
 
 export default {
     props: ["gridElement", "metadata"],

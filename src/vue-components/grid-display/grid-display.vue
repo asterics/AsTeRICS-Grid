@@ -15,7 +15,6 @@
 <script>
 
 import GridLayout from '../grid-layout/grid-layout.vue';
-import GridElementNormal from './gridElementNormal.vue';
 import { gridUtil } from '../../js/util/gridUtil';
 import GridElement from '../grid-layout/grid-element.vue';
 import { fontUtil } from '../../js/util/fontUtil';
@@ -31,10 +30,11 @@ import { GridActionCollectElement } from '../../js/model/GridActionCollectElemen
 import { GridActionNavigate } from '../../js/model/GridActionNavigate';
 import { GridActionWebradio } from '../../js/model/GridActionWebradio';
 import { GridActionYoutube } from '../../js/model/GridActionYoutube';
-import GridElementCollect from './gridElementCollect.vue';
-import GridElementYoutube from './gridElementYoutube.vue';
-import GridElementPredict from './gridElementPredict.vue';
-import GridElementHints from './gridElementHints.vue';
+import GridElementNormal from './grid-elements/gridElementNormal.vue';
+import GridElementCollect from './grid-elements/gridElementCollect.vue';
+import GridElementYoutube from './grid-elements/gridElementYoutube.vue';
+import GridElementPredict from './grid-elements/gridElementPredict.vue';
+import GridElementHints from './grid-elements/gridElementHints.vue';
 
 export default {
     components: { GridElementHints, GridElementPredict, GridElementYoutube, GridElementCollect, GridElement, GridElementNormal, GridLayout },

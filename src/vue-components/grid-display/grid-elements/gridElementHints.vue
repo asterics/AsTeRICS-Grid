@@ -7,7 +7,7 @@
 
 <script>
 
-import { GridActionNavigate } from '../../js/model/GridActionNavigate';
+import { GridActionNavigate } from '../../../js/model/GridActionNavigate';
 
 export default {
     props: ["gridElement"],

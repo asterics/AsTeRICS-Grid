@@ -11,7 +11,7 @@
 
 <script>
 
-import { GridElement } from '../../js/model/GridElement';
+import { GridElement } from '../../../js/model/GridElement';
 
 export default {
     props: ["gridElement"],
