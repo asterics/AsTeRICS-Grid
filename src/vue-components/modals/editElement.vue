@@ -72,7 +72,7 @@
     const TABS = {TAB_GENERAL, TAB_IMAGE, TAB_WORDFORMS,TAB_ACTIONS};
 
     export default {
-        props: ['editElementIdParam', 'gridDataId', 'gridInstance'],
+        props: ['editElementIdParam', 'gridDataId', 'undoService'],
         components: {
             EditElementWordForms,
             EditElementHeader,
@@ -101,6 +101,9 @@
             save(toActions) {
                 this.saveInternal().then((savedSomething) => {
                     this.$emit('close');
+                    if (savedSomething) {
+                        this.$emit('reload', this.gridData);
+                    }
                     if (savedSomething && !this.editElementId) {
                         this.$emit('mark', this.gridElement.id);
                     }
@@ -137,7 +140,7 @@
                 let thiz = this;
                 return new Promise(resolve => {
                     if (thiz.gridData && JSON.stringify(thiz.originalGridData) !== JSON.stringify(thiz.gridData)) {
-                        thiz.gridInstance.updateGridWithUndo(thiz.gridData).then(updated => {
+                        thiz.undoService.updateGrid(thiz.gridData).then(updated => {
                             resolve(updated);
                         });
                     } else {
