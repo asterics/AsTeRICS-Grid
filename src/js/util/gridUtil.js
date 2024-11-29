@@ -659,6 +659,45 @@ gridUtil.moveElements = function(elements, options = {}) {
 }
 
 /**
+ * moves an element in a specific direction as far as possible (without colliding with another element)
+ * @param gridData grid data containing all elements
+ * @param element the element to move
+ * @param direction the direction to move, see constants.DIR_* or 1-4 (UP, RIGHT, DOWN, RIGHT)
+ * @returns {*}
+ */
+gridUtil.moveAsPossible = function(gridData, element, direction) {
+    if (!constants.DIRECTIONS_ALL.includes(direction) || !element || !gridData) {
+        return gridData;
+    }
+    gridData.gridElements = gridData.gridElements.filter(el => el.id !== element.id);
+    let xyDiff = dirToXYDiff(direction);
+    let step;
+
+    for (step = 1; step < constants.MAX_GRID_SIZE; step++) {
+        if(!gridUtil.isFreeSpace(gridData, element.x + xyDiff.x * step, element.y + xyDiff.y * step, element.width, element.height)) {
+            break;
+        }
+    }
+    element.x += (step - 1) * xyDiff.x;
+    element.y += (step - 1) * xyDiff.y;
+    gridData.gridElements.push(element);
+    return gridData;
+};
+
+/**
+ * moves all elements of the grid as far as possible in the given direction
+ * @param gridData gridData, where all elements should be moved
+ * @param direction the direction to move, see constants.DIR_* or 1-4 (UP, RIGHT, DOWN, RIGHT)
+ * @returns {*}
+ */
+gridUtil.moveAllAsPossible = function(gridData, direction) {
+    for (let element of gridData.gridElements) {
+        gridUtil.moveAsPossible(gridData, element, direction);
+    }
+    return gridData;
+};
+
+/**
  * returns true, if the given element size is free space within the given gridData / gridElements
  * @param gridDataOrElements
  * @param x
@@ -749,6 +788,13 @@ function getGridElements(gridDataOrElements) {
         return [];
     }
     return gridElements;
+}
+
+function dirToXYDiff(direction) {
+    return {
+        x: direction === constants.DIR_LEFT ? -1 : (direction === constants.DIR_RIGHT ? 1 : 0),
+        y: direction === constants.DIR_UP ? -1 : (direction === constants.DIR_DOWN ? 1 : 0)
+    }
 }
 
 export { gridUtil };
