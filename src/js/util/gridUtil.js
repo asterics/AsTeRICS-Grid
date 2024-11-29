@@ -600,6 +600,14 @@ gridUtil.duplicateElement = function(gridData, elementId) {
         // space below?
         duplicate.y = element.y + element.height;
         gridData.gridElements.push(duplicate);
+    } else if (gridUtil.isFreeSpace(gridData, element.x - element.width, element.y, element.width, element.height)) {
+        // space left?
+        duplicate.x = element.x - element.width;
+        gridData.gridElements.push(duplicate);
+    } else if (gridUtil.isFreeSpace(gridData, element.x, element.y - element.height, element.width, element.height)) {
+        // space up?
+        duplicate.y = element.y - element.height;
+        gridData.gridElements.push(duplicate);
     } else {
         duplicate.x = element.x + element.width;
         // push all others right
