@@ -60,8 +60,8 @@
         },
         methods: {
             save() {
-                this.gridData.rowCount = Math.min(this.gridData.rowCount, 100);
-                this.gridData.minColumnCount = Math.min(this.gridData.minColumnCount, 100);
+                this.gridData.rowCount = Math.min(this.gridData.rowCount, constants.MAX_GRID_SIZE);
+                this.gridData.minColumnCount = Math.min(this.gridData.minColumnCount, constants.MAX_GRID_SIZE);
                 localStorageService.saveLastGridDimensions({
                     rowCount: this.gridData.rowCount,
                     minColumnCount: this.gridData.minColumnCount
