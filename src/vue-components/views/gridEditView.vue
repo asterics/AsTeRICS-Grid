@@ -81,7 +81,6 @@
     import { UndoService } from '../../js/service/data/undoService';
 
     let vueApp = null;
-    let gridInstance = null;
 
     let vueConfig = {
         props: ['gridId', 'highlightId'],
@@ -209,13 +208,13 @@
                     Router.toManageGrids();
                     return;
                 }
-                if (vueApp && updatedIds.includes(vueApp.gridData.id) && gridInstance && gridInstance.isInitialized()) {
+                if (vueApp && updatedIds.includes(vueApp.gridData.id)) {
                     let gridData = new GridData(updatedDocs.filter(doc => doc.id === vueApp.gridData.id)[0]);
                     if (!gridData.isEqual(vueApp.gridData)) {
                         log.debug('reloading on remote update...');
                         vueApp.reload(gridData);
                     }
-                } else if (updatedIds.includes(vueApp.metadata.id) && gridInstance && gridInstance.isInitialized()) {
+                } else if (updatedIds.includes(vueApp.metadata.id)) {
                     let metadata = updatedDocs.filter(doc => doc.id === vueApp.metadata.id)[0];
                     if (metadata && JSON.stringify(metadata.colorConfig) !== JSON.stringify(vueApp.metadata.colorConfig)) {
                         vueApp.reload();
@@ -235,9 +234,6 @@
                         this.markedElement = null;
                     }
                 }, null, 200, "MARK_ELEMENT");
-            },
-            getGridInstance() {
-                return gridInstance;
             },
             handleClickEvent(event) {
                 if (vueApp) {
@@ -299,10 +295,6 @@
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
             $('#contentContainer').off('click', this.handleClickEvent);
             vueApp = null;
-            if (gridInstance) {
-                gridInstance.destroy();
-                gridInstance = null;
-            }
             $.contextMenu('destroy');
         }
     };
