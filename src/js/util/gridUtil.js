@@ -664,14 +664,21 @@ gridUtil.moveElements = function(elements, options = {}) {
  * @param y
  * @param width
  * @param height
- * @param freeMatrix
+ * @param options
+ * @param options.outOfBounds if false (default) some space out of the current dimensions of the grid is considered to be not free, otherwise not
  * @returns {boolean}
  */
-gridUtil.isFreeSpace = function(gridDataOrElements, x, y, width, height, freeMatrix = null) {
-    freeMatrix = freeMatrix || getFreeMatrix(gridDataOrElements);
-    for (let i = x; i < x + width; i++) {
-        for (let j = y; j < y + height; j++) {
-            if (freeMatrix[i] !== undefined && freeMatrix[i][j] !== true) {
+gridUtil.isFreeSpace = function(gridDataOrElements, x, y, width, height, options = {}) {
+    options.outOfBounds = options.outOfBounds === true;
+    let xMax = gridUtil.getWidthWithBounds(gridDataOrElements);
+    let yMax = gridUtil.getHeightWithBounds(gridDataOrElements);
+    let occupiedMatrix = getOccupiedMatrix(gridDataOrElements);
+    for (let xi = x; xi < x + width; xi++) {
+        for (let yi = y; yi < y + height; yi++) {
+            if (isOccupied(occupiedMatrix, xi, yi)) {
+                return false;
+            }
+            if (!options.outOfBounds && (xi < 0 || yi < 0 || xi >= xMax || yi >= yMax)) {
                 return false;
             }
         }
@@ -680,23 +687,25 @@ gridUtil.isFreeSpace = function(gridDataOrElements, x, y, width, height, freeMat
 }
 
 /**
- * returns a 2-dimensional array where array[x][y] indidates if this space is free (true) or occupied (false)
+ * returns a 2-dimensional array where array[x][y] indicates if this space is occupied (true) or free (false)
  * within the given gridData / gridElements
  * @param gridDataOrElements
  */
-function getFreeMatrix(gridDataOrElements) {
+function getOccupiedMatrix(gridDataOrElements) {
     let gridElements = getGridElements(gridDataOrElements);
-    let freeMatrix = util.getFilled2DimArray(gridUtil.getWidthWithBounds(gridDataOrElements), gridUtil.getHeightWithBounds(gridDataOrElements), true);
+    let occupiedMatrix = util.getFilled2DimArray(gridUtil.getWidthWithBounds(gridDataOrElements), gridUtil.getHeightWithBounds(gridDataOrElements), false);
     for (let element of gridElements) {
         for (let i = element.x; i < element.x + element.width; i++) {
             for (let j = element.y; j < element.y + element.height; j++) {
-                if (freeMatrix[i] !== undefined && freeMatrix[i][j] !== undefined) {
-                    freeMatrix[i][j] = false;
-                }
+                occupiedMatrix[i][j] = true;
             }
         }
     }
-    return freeMatrix;
+    return occupiedMatrix;
+}
+
+function isOccupied(matrix, x, y) {
+    return matrix[x] && matrix[x][y];
 }
 
 function getAllChildrenRecursive(gridGraphList, gridId) {
