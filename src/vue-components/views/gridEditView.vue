@@ -102,8 +102,7 @@
                 editElementId: null,
                 showGrid: false,
                 constants: constants,
-                markedElement: null,
-                backgroundColor: 'white'
+                markedElement: null
             }
         },
         components: {
@@ -219,7 +218,6 @@
                 } else if (updatedIds.includes(vueApp.metadata.id) && gridInstance && gridInstance.isInitialized()) {
                     let metadata = updatedDocs.filter(doc => doc.id === vueApp.metadata.id)[0];
                     if (metadata && JSON.stringify(metadata.colorConfig) !== JSON.stringify(vueApp.metadata.colorConfig)) {
-                        this.backgroundColor = metadata.colorConfig.gridBackgroundColor;
                         vueApp.reload();
                     }
                 }
@@ -280,7 +278,6 @@
             }).then(() => {
                 return dataService.getMetadata().then(savedMetadata => {
                     thiz.metadata = JSON.parse(JSON.stringify(savedMetadata));
-                    thiz.backgroundColor = thiz.metadata.colorConfig.gridBackgroundColor;
                     if (thiz.metadata.globalGridId === thiz.gridData.id) {
                         return Promise.resolve();
                     }
