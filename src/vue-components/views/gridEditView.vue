@@ -124,7 +124,8 @@
                 this.undoService.updateGrid(this.gridData);
             },
             normalizeGrid: function () {
-                gridInstance.normalizeGrid();
+                gridUtil.normalizeGrid(this.gridData);
+                this.undoService.updateGrid(this.gridData);
             },
             undo: async function () {
                 this.doingUndoRedo = true;

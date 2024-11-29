@@ -732,7 +732,27 @@ gridUtil.isFreeSpace = function(gridDataOrElements, x, y, width, height, options
         }
     }
     return true;
-}
+};
+
+/**
+ * normalizes the layout of the grid: (1) all elements are sized to 1/1,
+ * (2) gaps are filled (move all items to the left), (3) duplicated IDs are fixed
+ * @param gridData
+ * @returns {*}
+ */
+gridUtil.normalizeGrid = function(gridData) {
+    let seenIds = [];
+    for (let gridElement of gridData.gridElements) {
+        gridElement.width = 1;
+        gridElement.height = 1;
+        if (seenIds.includes(gridElement.id)) {
+            gridElement.id = new GridElement().id;
+        }
+        seenIds.push(gridElement.id);
+    }
+    gridUtil.moveAllAsPossible(gridData, constants.DIR_LEFT);
+    return gridData;
+};
 
 /**
  * returns a 2-dimensional array where array[x][y] indicates if this space is occupied (true) or free (false)
