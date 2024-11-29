@@ -13,11 +13,11 @@
                     <div class="modal-body">
                         <div class="srow">
                             <label for="gridRows" class="seven columns">{{ $t('minimumNumberOfRows') }}</label>
-                            <input id="gridRows" type="number" class="three columns" v-model.number="gridData.rowCount" min="1" max="100"/>
+                            <input id="gridRows" type="number" class="three columns" v-model.number="gridData.rowCount" min="1" :max="constants.MAX_GRID_SIZE"/>
                         </div>
                         <div class="srow">
                             <label for="gridCols" class="seven columns">{{ $t('minimumNumberOfColumns') }}</label>
-                            <input id="gridCols" type="number" class="three columns" v-model.number="gridData.minColumnCount" min="1" max="100"/>
+                            <input id="gridCols" type="number" class="three columns" v-model.number="gridData.minColumnCount" min="1" :max="constants.MAX_GRID_SIZE"/>
                         </div>
                         <div class="srow" v-if="isGlobalGrid && metadata && gridHeight === 1">
                             <label for="metadataHeight" class="seven columns">{{ $t('heightOfFirstGlobalGridRow') }}</label>
@@ -42,11 +42,11 @@
 </template>
 
 <script>
-    import {i18nService} from "../../js/service/i18nService";
     import './../../css/modal.css';
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {dataService} from "../../js/service/data/dataService";
     import {GridData} from "../../js/model/GridData";
+    import { constants } from '../../js/util/constants';
 
     export default {
         props: ['gridDataParam', 'isGlobalGrid'],
@@ -54,7 +54,8 @@
             return {
                 gridData: JSON.parse(JSON.stringify(this.gridDataParam)),
                 gridHeight: new GridData(this.gridDataParam).getHeight(),
-                metadata: null
+                metadata: null,
+                constants: constants
             }
         },
         methods: {
