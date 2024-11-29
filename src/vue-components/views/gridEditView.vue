@@ -120,7 +120,8 @@
                 this.undoService.updateGrid(this.gridData);
             },
             fillGaps: function () {
-                gridInstance.fillGaps();
+                gridUtil.moveAllAsPossible(this.gridData, constants.DIR_LEFT);
+                this.undoService.updateGrid(this.gridData);
             },
             normalizeGrid: function () {
                 gridInstance.normalizeGrid();
