@@ -649,7 +649,8 @@ gridUtil.moveElements = function(elements, options = {}) {
             moveElement.x + options.moveX,
             moveElement.y + options.moveY,
             moveElement.width,
-            moveElement.height)) {
+            moveElement.height,
+            {outOfBounds: true})) {
             moveElement.x += options.moveX;
             moveElement.y += options.moveY;
         }
