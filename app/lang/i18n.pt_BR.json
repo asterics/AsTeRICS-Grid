@@ -1,11 +1,11 @@
 {
   "GridActionSpeak": "",
-  "GridActionSpeakCustom": "Speak custom text",
+  "GridActionSpeakCustom": "",
   "GridActionAudio": "Play recorded audio",
   "GridActionWordForm": "Change word forms",
   "GridActionNavigate": "Navigate to other grid",
   "GridActionARE": "AsTeRICS action",
-  "GridActionOpenHAB": "OpenHAB action",
+  "GridActionOpenHAB": "",
   "GridActionPredict": "Fill prediction elements",
   "GridActionCollectElement": "Collect element action",
   "GridActionWebradio": "Web radio action",

@@ -20,7 +20,7 @@
                 <span>{{ $t('ifYouEncounterAnErrorHaveSuggestions') }}</span>
                 <ul>
                     <li>
-                        <i18n path="generalSupportSocialMedia" tag="span">
+                        <i18n path="arasaacSupportSocialMedia" tag="span">
                             <template v-slot:instagramLink>
                                 <a href="https://www.instagram.com/asterics_grid/" target="_blank">{{ $t('instagramAstericsGridPage') }}</a>
                             </template>
@@ -28,20 +28,20 @@
                                 <a href="https://www.facebook.com/asterics.grid.y.arasaac" target="_blank">{{ $t('facebookAstericsGridPage') }}</a>
                             </template>
                         </i18n>
-                        <span>({{ $t('lang.en') }}, {{ $t('lang.es') }})</span>
+                        <span>({{ $t('lang.es') }})</span>
                     </li>
                     <li>
-                        <i18n path="foundBugReportGithubIssue" tag="span">
-                            <template v-slot:githubLink>
-                                <a href="https://github.com/asterics/AsTeRICS-Grid/issues/new" target="_blank">{{ $t('createAnIssueOnGithub') }}</a>
+                        <i18n path="communityOnFacebookGroup" tag="span">
+                            <template v-slot:astericsGridFacebookGroup>
+                                <a href="https://www.facebook.com/groups/1550700782223677/" target="_blank">{{ $t('astericsGridFacebookGroup') }}</a>
                             </template>
                         </i18n>
                         <span>({{ $t('lang.en') }})</span>
                     </li>
                     <li>
-                        <i18n path="discussIdeasGithubDiscussions" tag="span">
+                        <i18n path="foundBugReportGithubIssue" tag="span">
                             <template v-slot:githubLink>
-                                <a href="https://github.com/asterics/AsTeRICS-Grid/discussions" target="_blank">{{ $t('postSomethingOnGithubDiscussions') }}</a>
+                                <a href="https://github.com/asterics/AsTeRICS-Grid/issues/new" target="_blank">{{ $t('createAnIssueOnGithub') }}</a>
                             </template>
                         </i18n>
                         <span>({{ $t('lang.en') }})</span>
