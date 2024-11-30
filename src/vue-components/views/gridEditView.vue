@@ -13,9 +13,7 @@
                 <button tabindex="32" @click="redo"  :aria-label="$t('redo')" :disabled="!canRedo || doingUndoRedo" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span></button>
             </div>
         </header>
-        <div>
-            <edit-element v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
-        </div>
+        <edit-element ref="edit" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData?.id" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
         <div>
             <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :grid-instance="getGridInstance()" @close="showMultipleModal = false"/>
         </div>
@@ -95,7 +93,6 @@
                 showNavigateModal: false,
                 showMoveModal: false,
                 showTranslateModal: false,
-                showEditModal: false,
                 editElementId: null,
                 showGrid: false,
                 constants: constants,
@@ -148,7 +145,7 @@
                 this.editElementId = elementId;
                 let editElement = this.gridData.gridElements.filter(e => e.id === elementId)[0];
                 if (editElement) {
-                    this.showEditModal = true;
+                    this.$refs.edit.openModal();
                 }
             },
             removeElement(id) {
@@ -160,7 +157,7 @@
             newElement(type) {
                 if (type === GridElement.ELEMENT_TYPE_NORMAL) {
                     this.editElementId = null;
-                    this.showEditModal = true;
+                    this.$refs.edit.openModal();
                 } else {
                     let newPos = new GridData(this.gridData).getNewXYPos();
                     let constructor = type === GridElement.ELEMENT_TYPE_COLLECT ? GridElementCollect : GridElement;
