@@ -20,9 +20,7 @@
         <div>
             <grid-dimension-modal v-if="showDimensionsModal" v-bind:grid-data-param="gridData" :is-global-grid="metadata.globalGridId === gridData.id" @close="showDimensionsModal = false" @save="setDimensions"/>
         </div>
-        <div>
-            <element-move-modal v-if="showMoveModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showMoveModal = false" @reload="reload"/>
-        </div>
+        <element-move-modal ref="move" :grid-id="gridData?.id" :grid-element-id="editElementId" @reload="reload"/>
         <div>
             <grid-translate-modal v-if="showTranslateModal" :grid-data-id="gridData.id" @close="showTranslateModal = false" @reload="reload"/>
         </div>
@@ -91,7 +89,6 @@
                 showMultipleModal: false,
                 showDimensionsModal: false,
                 showNavigateModal: false,
-                showMoveModal: false,
                 showTranslateModal: false,
                 editElementId: null,
                 showGrid: false,
@@ -508,7 +505,7 @@
                 case CONTEXT_MOVE_TO:
                     vueApp.editElementId = elementId || vueApp.markedElement.id;
                     vueApp.markElement(null);
-                    vueApp.showMoveModal = true;
+                    vueApp.$refs.move.openModal();
                     break;
                 case CONTEXT_EDIT_GLOBAL_GRID:
                     Router.toEditGrid(vueApp.metadata.globalGridId);

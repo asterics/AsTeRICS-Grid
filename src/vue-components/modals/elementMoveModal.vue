@@ -1,44 +1,21 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
-                    <div class="modal-header">
-                        <edit-element-header :grid-element="gridElement" :header="$t('moveGridElement')" :close-fn="close" :open-help-fn="openHelp"></edit-element-header>
-                    </div>
-
-                    <div class="modal-body container-fluid px-0" v-if="gridElement">
+    <base-modal icon="fas fa-file-export" :title="$t('moveGridElement')" @open="init" @keyup.ctrl.enter="save" v-on="$listeners">
+                    <template #header-extra>
+                        <edit-element-header :grid-element="gridElement"></edit-element-header>
+                    </template>
+                    <template #default v-if="gridElement">
                         <grid-selector class="mt-4" v-model="selectedGrid" :exclude-id="gridId" :include-global="true" :select-label="i18nService.t('moveElementToGrid')"></grid-selector>
-
                         <div class="srow">
                             <input id="moveAll" type="checkbox" v-model="moveAllElements"/>
                             <label for="moveAll">{{ $t('moveAllElementsToThisGrid') }}</label>
                         </div>
-                    </div>
-
-                    <div class="modal-footer container-fluid px-0">
-                        <div class="row">
-                            <div class="col-12 col-md-6">
-                                <button class="col-12" @click="$emit('close')" :title="$t('keyboardEsc')">
-                                    <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                                </button>
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <button class="col-12" @click="save()" :disabled="!selectedGrid" :title="$t('keyboardCtrlEnter')">
-                                    <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    </template>
+    </base-modal>
 </template>
 
 <script>
     import {i18nService} from "../../js/service/i18nService";
-    import './../../css/modal.css';
+    import {modalMixin} from "../mixins/modalMixin";
     import {dataService} from "../../js/service/data/dataService";
     import {imageUtil} from "../../js/util/imageUtil";
     import GridSelector from "../components/gridSelector.vue";
@@ -49,6 +26,7 @@
     export default {
         components: {EditElementHeader, GridSelector},
         props: ['gridId', 'gridElementId'],
+        mixins: [modalMixin],
         data: function () {
             return {
                 gridData: null,
@@ -67,6 +45,7 @@
                 this.saveInternal().then(() => {
                     this.$emit('reload');
                     this.$emit('close');
+                    this.closeModal();
                 });
             },
             saveInternal() {
@@ -91,19 +70,14 @@
                     return Promise.all(promises);
                 });
             },
-            openHelp() {
-                helpService.openHelp();
-            },
-            close() {
-                this.$emit('close');
-            }
-        },
-        mounted() {
+        init() {
             dataService.getGrid(this.gridId).then(gridData => {
                 this.gridData = JSON.parse(JSON.stringify(gridData));
                 this.gridElement = this.gridData.gridElements.filter(e => e.id === this.gridElementId)[0];
             });
+            helpService.setHelpLocation('03_appearance_layout', '#editing-grid-elements');
         }
+        },
     }
 </script>
 
