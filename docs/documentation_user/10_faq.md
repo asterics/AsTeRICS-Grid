@@ -40,6 +40,9 @@ Generally, all Android tablets support an offline text-to-speech engine (and it 
 You can read more about the topic in an article by ARASAAC here: https://aulaabierta.arasaac.org/comunicador-dinamico-asterics-grid-voces-sintetizadas-tts-android-ios
 We currently don't recommend iOS devcies (iPads) for AsTeRICS grid because Apple restricted the use of offline voices from web applications (like AsTeRICS Grid). 
 
+A list of the voices currently available for each system can be downloaded here: [Overview Voices AG](https://github.com/user-attachments/files/17969149/Overview.Voices.AG.pdf)
+
+
 Other criteria for selecting a particular tablet model could be:
 * The audio output and quality of the built-in speakers
 * The size and quality of the touchscreen
