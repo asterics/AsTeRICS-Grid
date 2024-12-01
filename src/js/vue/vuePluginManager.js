@@ -16,12 +16,6 @@ function initDirectives() {
                 if (el.focus) el.focus();
                 if (el.select) el.select();
             }
-        },
-        updated: function (el, binding) {
-            if (binding.value) {
-                if (el.focus) el.focus();
-                if (el.select) el.select();
-            }
         }
     });
     Vue.directive('debounce', {
