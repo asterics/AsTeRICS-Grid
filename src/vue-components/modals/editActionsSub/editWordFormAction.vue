@@ -28,7 +28,6 @@
 </template>
 
 <script>
-import './../../../css/modal.css';
 import Multiselect from 'vue-multiselect';
 import {constants} from "../../../js/util/constants.js";
 import {GridActionWordForm} from "../../../js/model/GridActionWordForm.js";

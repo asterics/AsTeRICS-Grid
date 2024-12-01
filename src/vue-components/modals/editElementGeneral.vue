@@ -45,7 +45,6 @@
 
 <script>
     import {i18nService} from "../../js/service/i18nService";
-    import './../../css/modal.css';
     import {helpService} from "../../js/service/helpService";
     import {constants} from "../../js/util/constants.js";
     import {dataService} from "../../js/service/data/dataService.js";

@@ -337,7 +337,6 @@
     import {predictionService} from "../../js/service/predictionService";
     import {i18nService} from "../../js/service/i18nService";
     import {GridActionNavigate} from "../../js/model/GridActionNavigate";
-    import './../../css/modal.css';
     import {GridElement} from "../../js/model/GridElement";
     import {GridData} from "../../js/model/GridData";
     import EditAreAction from "./editActionsSub/editAREAction.vue";

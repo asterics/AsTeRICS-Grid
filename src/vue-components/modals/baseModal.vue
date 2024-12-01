@@ -315,3 +315,66 @@ dialog {
     }
 }
 </style>
+
+<style lang="scss">
+/*
+* The following styles are auto-applied to elements with
+* transition="modal" when their visibility is toggled
+* by Vue.js.
+*
+* You can easily play with the modal transition by editing
+* these styles.
+*/
+.modal-enter {
+    opacity: 0;
+}
+
+.modal-leave-active {
+    opacity: 0;
+}
+
+.modal-enter .modal-container,
+.modal-leave-active .modal-container {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+/* FIXME: Styles from refactoring modal.css
+ * Integrate in components and remove this part
+ */
+/* File input custom style */
+.file-input input[type="file"] {
+    position:absolute;
+    top: -1000px;
+}
+
+.black, .black:focus {
+    color: black;
+}
+
+.blue {
+    color: #2d7bb4;
+}
+
+dialog {
+    h2 {
+        font-size: 1.3em;
+        margin: 0;
+        padding: 0;
+    }
+
+    .srow {
+        margin-top: 1em;
+    }
+
+     .warn {
+        font-weight: bold;
+        color: #c96a00;
+    }
+
+    .success {
+        font-weight: bold;
+        color: darkgreen;
+    }
+}
+</style>

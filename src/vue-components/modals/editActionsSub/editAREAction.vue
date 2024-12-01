@@ -71,7 +71,6 @@
 <script>
     import FileSaver from 'file-saver'
     import {areService} from './../../../js/service/areService'
-    import './../../../css/modal.css';
     import {GridData} from "../../../js/model/GridData";
     import {AdditionalGridFile} from "../../../js/model/AdditionalGridFile";
     import {helpService} from "../../../js/service/helpService";

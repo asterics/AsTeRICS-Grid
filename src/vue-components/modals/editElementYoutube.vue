@@ -10,7 +10,6 @@
 </template>
 
 <script>
-    import './../../css/modal.css';
     import {GridElement} from "../../js/model/GridElement.js";
 
     export default {
