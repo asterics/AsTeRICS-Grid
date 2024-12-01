@@ -18,9 +18,7 @@
         <grid-dimension-modal ref="dimension" v-bind:grid-data-param="gridData" :is-global-grid="metadata?.globalGridId === gridData?.id" @save="setDimensions"/>
         <element-move-modal ref="move" :grid-id="gridData?.id" :grid-element-id="editElementId" @reload="reload"/>
         <grid-translate-modal ref="translate" :grid-data-id="gridData?.id" @reload="reload"/>
-        <div>
-            <set-navigation-modal v-if="showNavigateModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showNavigateModal = false" @reload="reload"></set-navigation-modal>
-        </div>
+        <set-navigation-modal ref="navigation"  :grid-id="gridData?.id" :grid-element-id="editElementId" @reload="reload"></set-navigation-modal>
         <div class="srow content" id="contentContainer">
             <div v-if="!showGrid" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
@@ -80,7 +78,6 @@
                 canUndo: false,
                 canRedo: false,
                 doingUndoRedo: false,
-                showNavigateModal: false,
                 editElementId: null,
                 showGrid: false,
                 constants: constants,
@@ -474,7 +471,7 @@
                 case CONTEXT_GRID_NAVIGATION: {
                     vueApp.editElementId = elementId || vueApp.markedElement.id;
                     vueApp.markElement(null);
-                    vueApp.showNavigateModal = true;
+                    vueApp.$refs.navigation.openModal();
                     break;
                 }
                 case CONTEXT_ACTION_EDIT:
