@@ -14,9 +14,7 @@
             </div>
         </header>
         <edit-element ref="edit" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData?.id" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
-        <div>
-            <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :grid-instance="getGridInstance()" @close="showMultipleModal = false"/>
-        </div>
+        <add-multiple-modal ref="multiple" v-bind:grid-data="gridData" :grid-instance="getGridInstance()"/>
         <grid-dimension-modal ref="dimension" v-bind:grid-data-param="gridData" :is-global-grid="metadata?.globalGridId === gridData?.id" @save="setDimensions"/>
         <element-move-modal ref="move" :grid-id="gridData?.id" :grid-element-id="editElementId" @reload="reload"/>
         <div>
@@ -84,7 +82,6 @@
                 canUndo: false,
                 canRedo: false,
                 doingUndoRedo: false,
-                showMultipleModal: false,
                 showNavigateModal: false,
                 showTranslateModal: false,
                 editElementId: null,
@@ -177,7 +174,7 @@
                 }
             },
             newElements() {
-                this.showMultipleModal = true;
+                this.$refs.multiple.openModal();
             },
             clearElements() {
                 if (confirm(i18nService.t('CONFIRM_DELETE_ALL_ELEMS'))) {
