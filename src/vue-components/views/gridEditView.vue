@@ -17,9 +17,7 @@
         <add-multiple-modal ref="multiple" v-bind:grid-data="gridData" :grid-instance="getGridInstance()"/>
         <grid-dimension-modal ref="dimension" v-bind:grid-data-param="gridData" :is-global-grid="metadata?.globalGridId === gridData?.id" @save="setDimensions"/>
         <element-move-modal ref="move" :grid-id="gridData?.id" :grid-element-id="editElementId" @reload="reload"/>
-        <div>
-            <grid-translate-modal v-if="showTranslateModal" :grid-data-id="gridData.id" @close="showTranslateModal = false" @reload="reload"/>
-        </div>
+        <grid-translate-modal ref="translate" :grid-data-id="gridData?.id" @reload="reload"/>
         <div>
             <set-navigation-modal v-if="showNavigateModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showNavigateModal = false" @reload="reload"></set-navigation-modal>
         </div>
@@ -83,7 +81,6 @@
                 canRedo: false,
                 doingUndoRedo: false,
                 showNavigateModal: false,
-                showTranslateModal: false,
                 editElementId: null,
                 showGrid: false,
                 constants: constants,
@@ -471,7 +468,7 @@
                     break;
                 }
                 case CONTEXT_GRID_TRANSLATION: {
-                    vueApp.showTranslateModal = true;
+                    vueApp.$refs.translate.openModal();
                     break;
                 }
                 case CONTEXT_GRID_NAVIGATION: {
