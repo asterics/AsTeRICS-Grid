@@ -109,11 +109,11 @@
             </div>
         </div>
 
-        <no-grids-page v-if="graphList && graphList.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true" :reset-global-grid="this.resetGlobalGrid"></no-grids-page>
+        <no-grids-page v-if="graphList && graphList.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="() => $refs.import.openModal()" :reset-global-grid="this.resetGlobalGrid"></no-grids-page>
         <grid-link-modal ref="link" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
         <export-pdf-modal ref="pdf" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.printGridId = null;"></export-pdf-modal>
         <export-modal ref="export" :grids-data="grids" :export-options="exportOptions"></export-modal>
-        <import-modal v-if="importModal.show" @close="importModal.show = false" :reload-fn="reload"></import-modal>
+        <import-modal ref="import" :reload-fn="reload"></import-modal>
         <div class="bottom-spacer"></div>
     </div>
 </template>
@@ -179,9 +179,6 @@
                     printGridId: null
                 },
                 exportOptions: {},
-                importModal: {
-                    show: false
-                },
                 i18nService: i18nService,
                 currentLanguage: i18nService.getContentLang(),
                 imageUtil: imageUtil
@@ -668,7 +665,7 @@
                     break;
                 }
                 case CONTEXT_IMPORT: {
-                    vueApp.importModal.show = true;
+                    vueApp.$refs.import.openModal();
                     break;
                 }
                 case CONTEXT_IMPORT_BACKUP: {
