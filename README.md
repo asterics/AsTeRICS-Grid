@@ -46,11 +46,8 @@ After `yarn install` the following commands are available:
 5. `npm run release-latest` -> same as `npm run release` but with destination https://grid.asterics.eu/latest/
 5. `npm run test` -> runs tests of the project using [Jest](https://jestjs.io/).
 
-## History
-The AsTeRICS Grid evolved out of [AsTeRICS Ergo](https://github.com/asterics/AsTeRICS-Ergo), see [AsTeRICS Ergo Master Plan](https://github.com/asterics/AsTeRICS-Ergo/wiki/Master-Plan-AsTeRICS-Ergo) and [AsTeRICS Ergo Architecture](https://github.com/asterics/AsTeRICS-Ergo/wiki/Architecture) and will eventually replace AsTeRICS Ergo.
-
 ## Support us
-If you want to support the development of AsTeRICS Grid or contribute to the costs for running the server/database for syncronization you're very welcome to donate:
+While development is currently funded within research projects (see below), the non-profit [AsTeRICS Foundation](https://www.asterics-foundation.org/) pays for the running server costs. If you want to contribute to these costs, you're very welcome to donate:
 
 <div>
 <a title="Donate with PayPal" href="https://www.paypal.com/donate/?hosted_button_id=38AJJNS427MJ2" target="_blank" style="margin-right:3em">
@@ -104,3 +101,6 @@ Other people and organizations we want to thank:
     * [superlogin-client](https://www.npmjs.com/package/superlogin-client)
     * [Vue.js](https://vuejs.org/)
     * [Workbox](https://github.com/GoogleChrome/workbox)
+
+## History
+The AsTeRICS Grid evolved out of [AsTeRICS Ergo](https://github.com/asterics/AsTeRICS-Ergo), see [AsTeRICS Ergo Master Plan](https://github.com/asterics/AsTeRICS-Ergo/wiki/Master-Plan-AsTeRICS-Ergo) and [AsTeRICS Ergo Architecture](https://github.com/asterics/AsTeRICS-Ergo/wiki/Architecture) and will eventually replace AsTeRICS Ergo.
