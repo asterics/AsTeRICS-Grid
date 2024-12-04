@@ -109,11 +109,11 @@
             </div>
         </div>
 
-        <no-grids-page v-if="graphList && graphList.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="() => importModal.show = true" :reset-global-grid="this.resetGlobalGrid"></no-grids-page>
-        <grid-link-modal v-if="linkModal.show" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @close="linkModal.show = false" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
-        <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.show = false; pdfModal.printGridId = null;"></export-pdf-modal>
-        <export-modal v-if="backupModal.show" :grids-data="grids" :export-options="backupModal.exportOptions" @close="backupModal.show = false"></export-modal>
-        <import-modal v-if="importModal.show" @close="importModal.show = false" :reload-fn="reload"></import-modal>
+        <no-grids-page v-if="graphList && graphList.length === 0 && !showLoading" :restore-backup-handler="importBackup" :import-custom-handler="() => $refs.import.openModal()" :reset-global-grid="this.resetGlobalGrid"></no-grids-page>
+        <grid-link-modal ref="link" :grid-from-prop="linkModal.gridFrom" :grid-to-prop="linkModal.gridTo" @reload="reload(linkModal.gridFrom.id)"></grid-link-modal>
+        <export-pdf-modal ref="pdf" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.printGridId = null;"></export-pdf-modal>
+        <export-modal ref="export" :grids-data="grids" :export-options="exportOptions"></export-modal>
+        <import-modal ref="import" :reload-fn="reload"></import-modal>
         <div class="bottom-spacer"></div>
     </div>
 </template>
@@ -172,21 +172,13 @@
                 selectValue: null,
                 orderValue: localStorageService.get(ORDER_MODE_KEY) || ORDER_VALUES.CONNECTION_COUNT,
                 linkModal: {
-                    show: false,
                     gridFrom: null,
                     gridTo: null
                 },
                 pdfModal: {
-                    show: false,
                     printGridId: null
                 },
-                backupModal: {
-                    show: false,
-                    exportOptions: {}
-                },
-                importModal: {
-                    show: false
-                },
+                exportOptions: {},
                 i18nService: i18nService,
                 currentLanguage: i18nService.getContentLang(),
                 imageUtil: imageUtil
@@ -266,18 +258,18 @@
             },
             exportCustom(gridId) {
                 if (gridId) {
-                    this.backupModal.exportOptions.gridId = gridId;
-                    this.backupModal.exportOptions.exportDictionaries = false;
-                    this.backupModal.exportOptions.exportUserSettings = false;
-                    this.backupModal.exportOptions.exportGlobalGrid = false;
+                    this.exportOptions.gridId = gridId;
+                    this.exportOptions.exportDictionaries = false;
+                    this.exportOptions.exportUserSettings = false;
+                    this.exportOptions.exportGlobalGrid = false;
                 } else {
-                    this.backupModal.exportOptions = {}
+                    this.exportOptions = {}
                 }
-                this.backupModal.show = true;
+                this.$refs.export.openModal();
             },
             exportToPdf(gridId) {
                 this.pdfModal.printGridId = gridId;
-                this.pdfModal.show = true;
+                this.$refs.pdf.openModal();
             },
             importBackupFromFile: async function (event) {
                 let importFile = event && event.target && event.target.files[0] ? event.target.files[0] : null;
@@ -588,7 +580,7 @@
                 case "CONTEXT_CONNECT":
                     vueApp.linkModal.gridFrom = vueApp.selectedGraphElement.grid;
                     vueApp.linkModal.gridTo = vueApp.grids.filter(g => g.id === gridId)[0];
-                    vueApp.linkModal.show = true;
+                    vueApp.$refs.link.openModal();
                     break;
                 case "CONTEXT_SHOW":
                     vueApp.show(gridId);
@@ -673,7 +665,7 @@
                     break;
                 }
                 case CONTEXT_IMPORT: {
-                    vueApp.importModal.show = true;
+                    vueApp.$refs.import.openModal();
                     break;
                 }
                 case CONTEXT_IMPORT_BACKUP: {
@@ -681,7 +673,7 @@
                     break;
                 }
                 case CONTEXT_EXPORT_PDF_MODAL: {
-                    vueApp.pdfModal.show = true;
+                    vueApp.$refs.pdf.openModal();
                     break;
                 }
                 case CONTEXT_EXPORT: {

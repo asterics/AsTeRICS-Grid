@@ -2,7 +2,7 @@
     <div v-if="gridElement">
         <div class="srow">
             <label class="three columns">{{ $t('newAction') }}</label>
-            <select id="selectActionType" v-focus="" class="four columns" v-model="selectedNewAction" style="margin-bottom: 0.5em">
+            <select id="selectActionType" class="four columns" v-model="selectedNewAction" style="margin-bottom: 0.5em">
                 <option v-for="type in actionTypes" :value="type.getModelName()">{{type.getModelName() | translate}}</option>
             </select>
             <button class="four columns" @click="addAction()"><i class="fas fa-plus"/> <span>{{ $t('addAction') }}</span></button>
@@ -337,7 +337,6 @@
     import {predictionService} from "../../js/service/predictionService";
     import {i18nService} from "../../js/service/i18nService";
     import {GridActionNavigate} from "../../js/model/GridActionNavigate";
-    import './../../css/modal.css';
     import {GridElement} from "../../js/model/GridElement";
     import {GridData} from "../../js/model/GridData";
     import EditAreAction from "./editActionsSub/editAREAction.vue";

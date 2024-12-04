@@ -1,16 +1,6 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
-                    <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
-                    <div class="modal-header">
-                        <h1 name="header">
-                            {{ $t('translateGrids') }}
-                        </h1>
-                    </div>
-
-                    <div class="modal-body" v-if="gridData !== undefined">
+    <base-modal icon="fas fa-language" :title="$t('translateGrids')" :help="false" @open="init" @keyup.ctrl.enter="save" v-on="$listeners">
+                    <template #default v-if="gridData !== undefined">
                         <div>
                             <div class="srow">
                                 <label class="four columns" for="gridSelect">{{ $t('gridToTranslate') }}</label>
@@ -121,28 +111,19 @@
                                 </ul>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <div class="button-container srow">
-                            <button class="three columns offset-by-six" @click="$emit('close')" :title="$t('keyboardEsc')">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
+                    </template>
+                        <template #ok>
+                            <button class="btn-primary" @click="save" :title="$t('keyboardCtrlEnter')" :aria-label="$t('save')">
+                                <i class="fas fa-check" aria-hidden="true"></i><span>{{ $t('save') }}</span>
                             </button>
-                            <button class="three columns" @click="save()" :title="$t('keyboardCtrlEnter')">
-                                <i class="fas fa-check"/> <span>{{ $t('save') }}</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                        </template>
+    </base-modal>
 </template>
 
 <script>
     import $ from '../../js/externals/jquery.js';
     import {i18nService} from "../../js/service/i18nService";
-    import './../../css/modal.css';
+    import {modalMixin} from "../mixins/modalMixin";
     import {GridActionSpeakCustom} from "../../js/model/GridActionSpeakCustom";
     import {util} from "../../js/util/util";
     import {dataService} from "../../js/service/data/dataService";
@@ -151,6 +132,7 @@
     window.hideKeyboardTranslations = true;
     export default {
         props: ['gridDataId'],
+        mixins: [modalMixin],
         data: function () {
             return {
                 gridData: undefined,
@@ -196,6 +178,7 @@
                 dataService.saveGrids(JSON.parse(JSON.stringify(thiz.changedGrids))).then(() => {
                     thiz.$emit('reload');
                     thiz.$emit('close');
+                    thiz.closeModal();
                 });
             },
             changedGrid(gridChanged) {
@@ -276,9 +259,8 @@
                 imageData = imageData || '';
                 imageData = imageData.substring(0, 100);
                 return btoa('' + gridData.gridElements.length + gridData.rowCount + gridData.minColumnCount + gridElement.x + gridElement.y + prefix + imageData);
-            }
-        },
-        mounted() {
+            },
+        init() {
             dataService.getGrids(true).then((grids) => {
                 this.allGrids = JSON.parse(JSON.stringify(grids));
                 this.allGrids.sort((g1, g2) => i18nService.getTranslation(g1.label).localeCompare(i18nService.getTranslation(g2.label)));
@@ -292,6 +274,7 @@
                 }
             });
         }
+        },
     }
 </script>
 

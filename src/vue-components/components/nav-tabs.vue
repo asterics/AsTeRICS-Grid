@@ -68,4 +68,13 @@ nav a {
 nav li:hover {
     background-color: lightgray;
 }
+
+nav li:has(a:focus) {
+    outline: 3px solid lightblue;
+    outline-offset: 1px;
+}
+
+nav li a:focus {
+    color: black;
+}
 </style>

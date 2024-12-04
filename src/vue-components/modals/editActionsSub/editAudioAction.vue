@@ -65,7 +65,6 @@
 </template>
 
 <script>
-import './../../../css/modal.css';
 import {audioUtil} from "../../../js/util/audioUtil.js";
 import {i18nService} from "../../../js/service/i18nService.js";
 import {dataService} from "../../../js/service/data/dataService.js";

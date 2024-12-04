@@ -1,59 +1,34 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()" style="max-width: 500px">
-                    <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
-                    <div class="modal-header">
-                        <h1 name="header">
-                            {{ $t('setGridSize') }}
-                        </h1>
-                    </div>
-
-                    <div class="modal-body">
-                        <div class="srow">
-                            <label for="gridRows" class="seven columns">{{ $t('numberOfRows') }}</label>
-                            <input id="gridRows" type="number" class="three columns" v-model.number="gridData.rowCount" min="1" max="100"/>
+    <base-modal icon="fas fa-expand-arrows-alt" :title="$t('setGridSize')" :help="false" @open="init" @keyup.ctrl.enter="save" @ok="save" v-on="$listeners">
+                        <div class="srow" v-if="gridData">
+                            <label for="gridRows">{{ $t('numberOfRows') }}</label>
+                            <input id="gridRows" type="number" v-model.number="gridData.rowCount" min="1" max="100"/>
                         </div>
-                        <div class="srow">
-                            <label for="gridCols" class="seven columns">{{ $t('minimumNumberOfColumns') }}</label>
-                            <input id="gridCols" type="number" class="three columns" v-model.number="gridData.minColumnCount" min="1" max="100"/>
+                        <div class="srow" v-if="gridData">
+                            <label for="gridCols">{{ $t('minimumNumberOfColumns') }}</label>
+                            <input id="gridCols" type="number" v-model.number="gridData.minColumnCount" min="1" max="100"/>
                         </div>
                         <div class="srow" v-if="isGlobalGrid && metadata && gridHeight === 1">
-                            <label for="metadataHeight" class="seven columns">{{ $t('heightOfFirstGlobalGridRow') }}</label>
-                            <input id="metadataHeight" type="number" class="three columns" v-model.number="metadata.globalGridHeightPercentage" min="5" max="50"/>
+                            <label for="metadataHeight">{{ $t('heightOfFirstGlobalGridRow') }}</label>
+                            <input id="metadataHeight" type="number" v-model.number="metadata.globalGridHeightPercentage" min="5" max="50"/>
                         </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <div class="button-container srow">
-                            <button @click="$emit('close')" :title="$t('keyboardEsc')" class="six columns">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                            </button>
-                            <button @click="save()" :title="$t('keyboardCtrlEnter')" class="six columns">
-                                <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </base-modal>
 </template>
 
 <script>
     import {i18nService} from "../../js/service/i18nService";
-    import './../../css/modal.css';
+    import {modalMixin} from "../mixins/modalMixin";
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {dataService} from "../../js/service/data/dataService";
     import {GridData} from "../../js/model/GridData";
 
     export default {
         props: ['gridDataParam', 'isGlobalGrid'],
+        mixins: [modalMixin],
         data: function () {
             return {
-                gridData: JSON.parse(JSON.stringify(this.gridDataParam)),
-                gridHeight: new GridData(this.gridDataParam).getHeight(),
+                gridData: null,
+                gridHeight: null,
                 metadata: null
             }
         },
@@ -72,21 +47,51 @@
                 Promise.all(promises).then(() => {
                     this.$emit('save', this.gridData.rowCount, this.gridData.minColumnCount);
                     this.$emit('close');
+                    this.closeModal();
                 });
-            }
-        },
-        mounted() {
+            },
+        init() {
+            this.gridData = JSON.parse(JSON.stringify(this.gridDataParam));
+            this.gridHeight = new GridData(this.gridDataParam).getHeight()
             if (this.isGlobalGrid) {
                 dataService.getMetadata().then(metadata => {
                     this.metadata = JSON.parse(JSON.stringify(metadata));
                 });
             }
         }
+        },
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
     .srow {
         margin-top: 1em;
+    }
+    dialog {
+        max-width: 500px;
+        
+        .srow {
+            width: 100%;
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: space-between;
+            align-items: center;
+
+            label, input {
+                width: 100%;
+            }
+        }
+    }
+    @media screen and (min-width: 768px) {
+        dialog {
+            .srow {
+                flex-flow: row nowrap;
+                
+                input {
+                    width: unset;
+                    text-align: right;
+                }
+            }
+        }
     }
 </style>
