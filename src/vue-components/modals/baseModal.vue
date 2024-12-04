@@ -80,7 +80,7 @@ export default {
             return this.title ? this.labelledById : undefined;
         },
         ariaLabelModal() {
-            return !this.title ? 'Dialog' : undefined;
+            return this.title || this.$t('dialog');
         },
         ariaLabelHelp() {
             return this.$t('help');
