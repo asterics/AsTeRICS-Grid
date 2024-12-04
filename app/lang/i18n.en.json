@@ -1093,5 +1093,6 @@
   "defaultDeviceVoice": "Default device voice",
   "fundedBy": "funded by",
   "astericsGridWasFundedWithinProjects": "AsTeRICS Grid was developed within several funded projects",
-  "LAST_LANG": "Previously used language"
+  "LAST_LANG": "Previously used language",
+  "dialog": "Dialog"
 }
