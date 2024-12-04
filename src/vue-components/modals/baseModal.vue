@@ -1,5 +1,5 @@
 <template>
-    <dialog ref="modal" @keydown.esc="handleClose" :aria-labelledby="ariaLabelledById" :aria-label="ariaLabelModal">
+    <dialog ref="modal" @keydown.esc="close" :aria-labelledby="ariaLabelledById" :aria-label="ariaLabelModal">
         <div class="modal">
             <div v-if="header" class="header">
                 <slot name="header">
@@ -8,7 +8,7 @@
                     </div>
                     <h1 v-if="title" :id="ariaLabelledById">{{ title }}</h1>
                     <slot name="header-extra"></slot>
-                    <button class="close" v-if="esc" @click="handleClose" :aria-label="$t('close')">
+                    <button class="close" v-if="esc" @click="close" :aria-label="$t('close')">
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
                     <button class="help" v-if="help" @click="handleHelp" :aria-label="$t('help')">
@@ -23,7 +23,7 @@
                 <slot name="footer">
                     <slot name="footer-extra"></slot>
                     <div class="control">
-                        <button @click="handleClose" :title="$t('keyboardEsc')" :aria-label="$t('cancel')">
+                        <button @click="close" :title="$t('keyboardEsc')" :aria-label="$t('cancel')">
                             <i class="fas fa-times" aria-hidden="true"></i>
                             <span>{{ $t('cancel') }}</span>
                         </button>
@@ -86,9 +86,6 @@ export default {
     methods: {
         handleOk() {
             this.$emit('ok');
-        },
-        handleClose() {
-            this.close();
         },
         handleHelp() {
             if (this.help) helpService.openHelp();
