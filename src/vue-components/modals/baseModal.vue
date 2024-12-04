@@ -8,10 +8,10 @@
                     </div>
                     <h1 v-if="title" :id="ariaLabelledById">{{ title }}</h1>
                     <slot name="header-extra"></slot>
-                    <button class="close" v-if="esc" @click="handleClose" :aria-label="ariaLabelEsc">
+                    <button class="close" v-if="esc" @click="handleClose" :aria-label="$t('close')">
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
-                    <button class="help" v-if="help" @click="handleHelp" :aria-label="ariaLabelHelp">
+                    <button class="help" v-if="help" @click="handleHelp" :aria-label="$t('help')">
                         <i class="fas fa-question-circle" aria-hidden="true"></i>
                     </button>
                 </slot>
@@ -23,14 +23,14 @@
                 <slot name="footer">
                     <slot name="footer-extra"></slot>
                     <div class="control">
-                        <button @click="handleClose" :title="keyboardCancel" :aria-label="ariaLabelCancel">
+                        <button @click="handleClose" :title="$t('keyboardEsc')" :aria-label="$t('cancel')">
                             <i class="fas fa-times" aria-hidden="true"></i>
-                            <span>{{ ariaLabelCancel }}</span>
+                            <span>{{ $t('cancel') }}</span>
                         </button>
                         <slot name="ok">
-                            <button class="btn-primary" @click="handleOk" :title="keyboardOk" :aria-label="ariaLabelOk">
+                            <button class="btn-primary" @click="handleOk" :title="$t('keyboardCtrlEnter')" :aria-label="$t('ok')">
                                 <i class="fas fa-check" aria-hidden="true"></i>
-                                <span>{{ ariaLabelOk }}</span>
+                                <span>{{ $t('ok') }}</span>
                             </button>
                         </slot>
                     </div>
@@ -81,24 +81,6 @@ export default {
         },
         ariaLabelModal() {
             return this.title || this.$t('dialog');
-        },
-        ariaLabelHelp() {
-            return this.$t('help');
-        },
-        ariaLabelEsc() {
-            return this.$t('close');
-        },
-        ariaLabelCancel() {
-            return this.$t('cancel');
-        },
-        ariaLabelOk() {
-            return this.$t('ok');
-        },
-        keyboardCancel() {
-            return this.$t('keyboardEsc');
-        },
-        keyboardOk() {
-            return this.$t('keyboardCtrlEnter');
         }
     },
     methods: {
