@@ -903,7 +903,7 @@
   "helloClickRightToEdit": "Привіт - клацніть правою кнопкою миші, щоб редагувати",
   "donateWithPaypal": "Пожертвуйте за допомогою PayPal",
   "donateAtOpencollective": "Пожертвуйте у відкритому колективі",
-  "ifYouWantToSupportTheDevelopmentOfAstericsGrid": "Якщо ви хочете підтримати розробку AsTeRICS Grid або внести свій внесок у витрати на роботу сервера/бази даних для синхронізації, будь ласка, зробіть пожертву Фонду AsTeRICS",
+  "ifYouWantToSupportAstericsGrid": "While development is currently funded within research projects (see above), the non-profit AsTeRICS Foundation pays for the running server costs. If you want to contribute to these costs, you're very welcome to donate",
   "supportUs": "Підтримайте нас",
   "theFollowingRessourcesForHelpOnAstericsGrid": "Наступні джерела для довідки AsTeRICS Grid доступні",
   "userManual": "Посібник користувача",
