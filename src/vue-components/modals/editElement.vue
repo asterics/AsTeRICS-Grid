@@ -1,5 +1,5 @@
 <template>
-    <base-modal :icon="icon" :title="title" @open="init" @keydown.ctrl.enter="save" @keydown.ctrl.right="nextFromKeyboard" @keydown.ctrl.left="editNext(true)" @keydown.ctrl.y="save(true)" @dragenter="preventDefault" @dragover="preventDefault" @drop="preventDefault" v-on="$listeners">
+    <base-modal :icon="icon" :title="title" @ok="save" @keydown.ctrl.enter="save" @keydown.ctrl.right="nextFromKeyboard" @keydown.ctrl.left="editNext(true)" @keydown.ctrl.y="save(true)" @dragenter="preventDefault" @dragover="preventDefault" @drop="preventDefault" v-on="$listeners">
         <template #header-extra>
                         <edit-element-header :grid-element="originalGridElement"></edit-element-header>
         </template>
