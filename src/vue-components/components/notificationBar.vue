@@ -15,10 +15,6 @@
 </template>
 
 <script>
-    import $ from '../../js/externals/jquery.js';
-    import {localStorageService} from "../../js/service/data/localStorageService";
-    import {util} from "../../js/util/util";
-
     let notificationBar = null;
     let _defaultTooltipsOptions = {
         closeOnNavigate: true,
@@ -99,77 +95,9 @@
             },
         },
         mounted() {
-            initNotificationBar();
             notificationBar = this;
         },
         beforeDestroy() {
-        }
-    }
-
-    function initNotificationBar() {
-        let NOTIFICATION_BAR_STYLE_KEY = 'NOTIFICATION_BAR_STYLE_KEY';
-        let NOTIFICATION_BAR_STYLE_IMAGE_KEY = 'NOTIFICATION_BAR_STYLE_IMAGE_KEY';
-        let WINDOW_SIZE_KEY = 'WINDOW_SIZE_KEY';
-        let element = document.getElementById("notificationBar");
-        let imgElement = document.getElementById("notificationBarImg");
-        let currentWindowSize = JSON.stringify({
-            x: window.innerWidth,
-            y: window.innerHeight
-        });
-        let savedWindowSize = localStorageService.get(localStorageService.get(WINDOW_SIZE_KEY));
-        localStorageService.save(WINDOW_SIZE_KEY, currentWindowSize);
-        if (savedWindowSize && currentWindowSize !== savedWindowSize) {
-            resetSavedNotificationBarStyles();
-        }
-        let savedStyle = localStorageService.get(NOTIFICATION_BAR_STYLE_KEY);
-        let savedImgStyle = localStorageService.get(NOTIFICATION_BAR_STYLE_IMAGE_KEY);
-        if (savedStyle) {
-            element.setAttribute('style', savedStyle);
-            element.style.display = 'none';
-        }
-        if (savedImgStyle) {
-            imgElement.setAttribute('style', savedImgStyle);
-        }
-        $("#notificationBar").draggable({
-            containment: "#app",
-            start: function (event, ui) {
-                element.style.bottom = "initial";
-                element.style.right = "initial";
-            },
-            drag: function (event, ui) {
-                util.debounce(() => {
-                    localStorageService.save(NOTIFICATION_BAR_STYLE_KEY, element.getAttribute("style"));
-                }, 300);
-            }
-        });
-        $("#notificationBar").resizable({
-            containment: "#app",
-            start: function (event, ui) {
-                imgElement.style.height = '90%';
-                localStorageService.save(NOTIFICATION_BAR_STYLE_IMAGE_KEY, imgElement.getAttribute("style"));
-                element.style.bottom = "";
-                element.style.right = "";
-            },
-            resize: function (event, ui) {
-                util.debounce(() => {
-                    localStorageService.save(NOTIFICATION_BAR_STYLE_KEY, element.getAttribute("style"));
-                }, 300);
-            }
-        });
-
-        window.addEventListener('resize', () => {
-            util.debounce(function () {
-                resetSavedNotificationBarStyles();
-            }, 300, 'RESIZE_RESET_NOTIFICATIONBAR');
-        });
-
-        function resetSavedNotificationBarStyles() {
-            let displayStyle = element.style.display;
-            element.setAttribute('style', "");
-            imgElement.setAttribute('style', "");
-            localStorageService.save(NOTIFICATION_BAR_STYLE_KEY, "");
-            localStorageService.save(NOTIFICATION_BAR_STYLE_IMAGE_KEY, "");
-            element.style.display = displayStyle;
         }
     }
 </script>
@@ -186,7 +114,6 @@
         color: whitesmoke;
         width: 40vw;
         padding: 10px 50px 10px 10px;
-        cursor: grab;
     }
 
     @media (max-width: 850px) {
