@@ -1,5 +1,5 @@
 <template>
-    <component :is="componentType || defaultComponentType" :style="`display: flex; grid-column-start:${x + 1}; grid-column-end:${x + 1 + width}; grid-row-start:${y + 1}; grid-row-end:${y + 1 + height};`">
+    <component :is="componentType || defaultComponentType" class="grid-layout-element" :style="`display: flex; grid-column-start:${x + 1}; grid-column-end:${x + 1 + width}; grid-row-start:${y + 1}; grid-row-end:${y + 1 + height};`">
         <slot></slot>
     </component>
 </template>

@@ -45,7 +45,7 @@
             </div>
         </div>
         <div class="srow content" v-if="metadata && gridData && gridData.gridElements.length > 0" style="max-width: 100%; min-height: 0">
-            <app-grid-editable id="grid-container" :grid-data="gridData" :metadata="metadata"/>
+            <app-grid-editable id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata"/>
         </div>
     </div>
 </template>
@@ -124,6 +124,10 @@
             normalizeGrid: function () {
                 gridUtil.normalizeGrid(this.gridData);
                 this.undoService.updateGrid(this.gridData);
+            },
+            async handleChange() {
+                await this.undoService.updateGrid(this.gridData);
+                this.reload(this.gridData);
             },
             undo: async function () {
                 this.doingUndoRedo = true;

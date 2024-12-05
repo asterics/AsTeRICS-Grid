@@ -30,11 +30,86 @@ export default {
     },
     data() {
         return {
+            interact: null
+        }
+    },
+    watch: {
+        watchData() {
+            this.initInteract();
+        }
+    },
+    computed: {
+        elementClassSelector() {
+            return `.${this.elementClass}`;
         }
     },
     methods: {
+        getRasterX() {
+            return this.getSizeFromStyle("grid-template-columns");
+        },
+        getRasterY() {
+            return this.getSizeFromStyle("grid-template-rows");
+        },
+        getSizeFromStyle(property) {
+            // see https://stackoverflow.com/a/66186894/9219743
+            let style = getComputedStyle(this.$refs.gridComponent).getPropertyValue(property);
+            let first = style.split(" ")[0];
+            return parseFloat(first);
+        },
+        async initInteract() {
+            if (!this.editable) {
+                return;
+            }
+            let thiz = this;
+            this.destroyInteract();
+            this.interact = this.interact || (await import('interactjs')).default;
+            let snap = this.interact.modifiers.snap({
+                targets: [
+                    this.interact.snappers.grid({ x: this.getRasterX(), y: this.getRasterY() })
+                ],
+                offset: 'parent',
+                range: Infinity,
+                relativePoints: [{ x: 0, y: 0 }]
+            });
+
+            let position = { x: 0, y: 0 };
+            this.interact(this.elementClassSelector).draggable({
+                //modifiers: [snap],
+                listeners: {
+                    start (event) {
+                        console.log(event.type, event.target);
+                    },
+                    move (event) {
+                        position.x += event.dx
+                        position.y += event.dy
+
+                        event.target.style.transform = `translate(${position.x}px, ${position.y}px)`;
+                        event.target.style.zIndex = 100;
+                    },
+                    end(event) {
+                        let movedElement = event.target;
+                        let diff = {
+                            x: Math.round(position.x / thiz.getRasterX()),
+                            y: Math.round(position.y / thiz.getRasterY())
+                        }
+                        thiz.$emit('moved', movedElement, diff);
+                        event.target.style.transform = '';
+                        event.target.style.zIndex = '';
+                    }
+                }
+            })
+        },
+        destroyInteract() {
+            if (this.interact) {
+                this.interact(this.elementClassSelector).unset();
+            }
+        }
     },
-    mounted() {
+    beforeDestroy() {
+        this.destroyInteract();
+    },
+    async mounted() {
+        this.initInteract();
     },
 }
 </script>
