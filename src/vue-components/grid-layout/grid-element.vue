@@ -23,4 +23,9 @@ export default {
 </script>
 
 <style scoped>
+.grid-layout-element * {
+    /* see https://stackoverflow.com/a/47378072/9219743 */
+    -ms-touch-action: none;
+    touch-action: none;
+}
 </style>
