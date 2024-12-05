@@ -63,18 +63,9 @@ export default {
             let thiz = this;
             this.destroyInteract();
             this.interact = this.interact || (await import('interactjs')).default;
-            let snap = this.interact.modifiers.snap({
-                targets: [
-                    this.interact.snappers.grid({ x: this.getRasterX(), y: this.getRasterY() })
-                ],
-                offset: 'parent',
-                range: Infinity,
-                relativePoints: [{ x: 0, y: 0 }]
-            });
 
             let position = { x: 0, y: 0 };
             this.interact(this.elementClassSelector).draggable({
-                //modifiers: [snap],
                 listeners: {
                     move (event) {
                         position.x += event.dx
@@ -94,7 +85,7 @@ export default {
                         event.target.style.zIndex = '';
                     }
                 }
-            })
+            });
         },
         destroyInteract() {
             if (this.interact) {
