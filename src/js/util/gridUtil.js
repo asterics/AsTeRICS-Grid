@@ -609,18 +609,8 @@ gridUtil.duplicateElement = function(gridData, elementId) {
         duplicate.y = element.y - element.height;
         gridData.gridElements.push(duplicate);
     } else {
-        duplicate.x = element.x + element.width;
-        // push all others right
-        let movedElements = gridUtil.moveElements(gridData.gridElements, {
-            moveX: element.width,
-            startX: element.x + element.width
-        });
         gridData.gridElements.push(duplicate);
-        // push those back, which don't collide
-        gridUtil.moveElements(gridData.gridElements, {
-            moveX: -element.width,
-            moveElements: movedElements
-        });
+        gridUtil.resolveCollisions(gridData, element);
     }
     return gridData;
 }
@@ -758,12 +748,12 @@ gridUtil.normalizeGrid = function(gridData) {
  * resolves collisions based on a given grid and a newly added / changed element
  * @param gridData data of the grid
  * @param newElement element changed / added (already at new position)
- * @param diff how much the new element was moved from the original position
+ * @param diff (optional) how much the new element was moved from the original position
  * @param diff.x movement of the new element in x-axis
  * @param diff.y movement of the new element in y-axis
  * @returns {*}
  */
-gridUtil.resolveCollisions = function(gridData, newElement, diff) {
+gridUtil.resolveCollisions = function(gridData, newElement, diff = { x: undefined, y: undefined }) {
     if (!hasCollisions(gridData)) {
         return gridData;
     }
