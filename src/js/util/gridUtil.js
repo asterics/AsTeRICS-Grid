@@ -754,6 +754,15 @@ gridUtil.normalizeGrid = function(gridData) {
     return gridData;
 };
 
+/**
+ * resolves collisions based on a given grid and a newly added / changed element
+ * @param gridData data of the grid
+ * @param newElement element changed / added (already at new position)
+ * @param diff how much the new element was moved from the original position
+ * @param diff.x movement of the new element in x-axis
+ * @param diff.y movement of the new element in y-axis
+ * @returns {*}
+ */
 gridUtil.resolveCollisions = function(gridData, newElement, diff) {
     if (!hasCollisions(gridData)) {
         return gridData;
@@ -769,6 +778,18 @@ gridUtil.resolveCollisions = function(gridData, newElement, diff) {
                 conflict.y += Math.sign(diff.y) * (-1) * newElement.height;
             }
         }
+    } else {
+        // move all elements to the right
+        let otherElements = gridData.gridElements.filter(el => el.id !== newElement.id);
+        let movedElements = gridUtil.moveElements(otherElements, {
+            moveX: newElement.width,
+            startX: newElement.x
+        });
+        // push those back, which don't collide
+        gridUtil.moveElements(gridData.gridElements, {
+            moveX: -newElement.width,
+            moveElements: movedElements
+        });
     }
 }
 
