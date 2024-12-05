@@ -11,6 +11,7 @@
 import GridLayout from '../grid-layout/grid-layout.vue';
 import GridElement from '../grid-layout/grid-element.vue';
 import AppGridElement from './appGridElement.vue';
+import { gridUtil } from '../../js/util/gridUtil';
 
 export default {
     components: { GridElement, GridLayout, AppGridElement },
@@ -30,6 +31,7 @@ export default {
             let element = this.getElement(id);
             element.x += diff.x;
             element.y += diff.y;
+            gridUtil.resolveCollisions(this.gridData, element, diff);
             this.$emit("changed", this.gridData);
         },
         getElement(id) {

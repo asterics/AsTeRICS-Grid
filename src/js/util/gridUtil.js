@@ -754,6 +754,24 @@ gridUtil.normalizeGrid = function(gridData) {
     return gridData;
 };
 
+gridUtil.resolveCollisions = function(gridData, newElement, diff) {
+    if (!hasCollisions(gridData)) {
+        return gridData;
+    }
+
+    if (diff.x <= newElement.width && diff.y <= newElement.height && (diff.x === 0 || diff.y === 0)) {
+        // element moved to a neighbour square only in x- or y-axis
+        let conflictElements = getConflictingElements(gridData.gridElements, newElement);
+        for (let conflict of conflictElements) {
+            if (Math.abs(diff.x) > 0) {
+                conflict.x += Math.sign(diff.x) * (-1) * newElement.width;
+            } else if (Math.abs(diff.y) > 0) {
+                conflict.y += Math.sign(diff.y) * (-1) * newElement.height;
+            }
+        }
+    }
+}
+
 /**
  * returns a 2-dimensional array where array[x][y] indicates how often this space is occupied. Zero (0) means the space is free.
  * within the given gridData / gridElements
@@ -774,6 +792,19 @@ function getOccupiedMatrix(gridDataOrElements) {
 
 function isOccupied(matrix, x, y) {
     return !!(matrix[x] && matrix[x][y]);
+}
+
+function hasCollisions(gridDataOrElements) {
+    let occupiedMatrix = getOccupiedMatrix(gridDataOrElements);
+    let max = 0;
+    for (let i = 0; i < occupiedMatrix.length; i++) {
+        max = Math.max(max, Math.max.apply(null, occupiedMatrix[i]));
+    }
+    return max > 1;
+}
+
+function getConflictingElements(allElements, testElement) {
+    return allElements.filter(el => el.id !== testElement.id && hasCollisions([el, testElement]));
 }
 
 function getAllChildrenRecursive(gridGraphList, gridId) {
