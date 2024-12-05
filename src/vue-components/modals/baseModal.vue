@@ -100,6 +100,9 @@ export default {
         close() {
             this.$refs.modal.close();
             this.$emit('close');
+        },
+        isBaseModal() { // used in modalMixin.js to determine if a component is a base modal
+            return true;
         }
     }
 };

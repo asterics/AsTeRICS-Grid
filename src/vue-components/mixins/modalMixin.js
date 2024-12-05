@@ -2,20 +2,23 @@ import BaseModal from '../modals/baseModal.vue';
 
 export const modalMixin = {
     components: { BaseModal },
+    computed: {
+        baseModal() {
+            return this.$children[0] && this.$children[0].isBaseModal ? this.$children[0] : {}
+        }
+    },
     methods: {
         openModal() {
-            // Test if component using this mixin has the vue component Modal.vue as root element.
-            if (this.$children.length > 0 && this.$children[0].$el.tagName === 'DIALOG') {
-                const modal = this.$children[0];
-                modal.open();
-            }
+            this.baseModal.open();
         },
         closeModal() {
-            // Test if component using this mixin has the vue component Modal.vue as root element.
-            if (this.$children.length > 0 && this.$children[0].$el.tagName === 'DIALOG') {
-                const modal = this.$children[0];
-                modal.close();
-            }
+            this.baseModal.close();
         }
+    },
+    mounted() {
+        this.baseModal.$on('close', () => {
+            // reset component data, see https://stackoverflow.com/a/50854892/9219743
+            Object.assign(this.$data, this.$options.data.apply(this));
+        });
     }
 };
