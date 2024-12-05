@@ -76,9 +76,6 @@ export default {
             this.interact(this.elementClassSelector).draggable({
                 //modifiers: [snap],
                 listeners: {
-                    start (event) {
-                        console.log(event.type, event.target);
-                    },
                     move (event) {
                         position.x += event.dx
                         position.y += event.dy
