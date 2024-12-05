@@ -92,14 +92,13 @@
             },
             save(toActions) {
                 this.saveInternal().then((savedSomething) => {
-                    this.$emit('close');
-                    this.closeModal();
                     if (savedSomething && !this.editElementId) {
                         this.$emit('mark', this.gridElement.id);
                     }
                     if (toActions) {
                         this.$emit('actions', this.gridElement.id);
                     }
+                    this.closeModal();
                 });
             },
             addNext() {
