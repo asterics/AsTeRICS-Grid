@@ -176,12 +176,14 @@
             },
             preventDefault(event) {
                 event.preventDefault();
-            },
-        init() {
-            this.editElementId = this.editElementIdParam;
-            this.initInternal();
-            helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
-        }
+            }
+        },
+        mounted() {
+            this.baseModal.$on('open', () => {
+                this.editElementId = this.editElementIdParam;
+                this.initInternal();
+                helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
+            });
         },
         beforeDestroy() {
             helpService.revertToLastLocation();
