@@ -1,5 +1,5 @@
 <template>
-    <component :is="options.componentType" class="grid-layout" :style="`grid-template-columns: repeat(${columns}, minmax(0, 1fr)); grid-template-rows: repeat(${rows}, minmax(0, 1fr)); background-color: ${options.backgroundColor}`">
+    <component ref="gridComponent" :is="componentType" class="grid-layout" :style="`grid-template-columns: repeat(${columns}, minmax(0, 1fr)); grid-template-rows: repeat(${rows}, minmax(0, 1fr)); background-color: ${backgroundColor}`">
         <slot></slot>
     </component>
 </template>
@@ -10,15 +10,23 @@ export default {
     props: {
         rows: Number,
         columns: Number,
-        options: {
-            type: Object,
-            default: () => {
-                return {
-                    backgroundColor: 'white',
-                    componentType: 'div'
-                }
-            }
-        }
+        backgroundColor: {
+            type: String,
+            default: 'white'
+        },
+        componentType: {
+            type: String,
+            default: 'div'
+        },
+        editable: {
+            type: Boolean,
+            default: false
+        },
+        elementClass: {
+            type: String,
+            default: 'grid-layout-element'
+        },
+        watchData: Object // on changes of this object interact.js is reloaded
     },
     data() {
         return {
