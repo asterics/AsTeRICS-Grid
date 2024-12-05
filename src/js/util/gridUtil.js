@@ -755,17 +755,17 @@ gridUtil.normalizeGrid = function(gridData) {
 };
 
 /**
- * returns a 2-dimensional array where array[x][y] indicates if this space is occupied (true) or free (false)
+ * returns a 2-dimensional array where array[x][y] indicates how often this space is occupied. Zero (0) means the space is free.
  * within the given gridData / gridElements
  * @param gridDataOrElements
  */
 function getOccupiedMatrix(gridDataOrElements) {
     let gridElements = getGridElements(gridDataOrElements);
-    let occupiedMatrix = util.getFilled2DimArray(gridUtil.getWidthWithBounds(gridDataOrElements), gridUtil.getHeightWithBounds(gridDataOrElements), false);
+    let occupiedMatrix = util.getFilled2DimArray(gridUtil.getWidthWithBounds(gridDataOrElements), gridUtil.getHeightWithBounds(gridDataOrElements), 0);
     for (let element of gridElements) {
         for (let i = element.x; i < element.x + element.width; i++) {
             for (let j = element.y; j < element.y + element.height; j++) {
-                occupiedMatrix[i][j] = true;
+                occupiedMatrix[i][j]++;
             }
         }
     }
@@ -773,7 +773,7 @@ function getOccupiedMatrix(gridDataOrElements) {
 }
 
 function isOccupied(matrix, x, y) {
-    return matrix[x] && matrix[x][y];
+    return !!(matrix[x] && matrix[x][y]);
 }
 
 function getAllChildrenRecursive(gridGraphList, gridId) {
