@@ -262,36 +262,30 @@
         created() {
             $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
         },
-        mounted: function () {
+        mounted: async function () {
             pouchDbService.pauseSync();
             let thiz = this;
             vueApp = thiz;
-            dataService.getGrid(this.gridId).then(gridData => {
-                if (!gridData) {
-                    log.warn('grid not found! gridId: ' + this.gridId);
-                    Router.toMain();
-                    return Promise.reject();
-                }
-                thiz.gridData = JSON.parse(JSON.stringify(gridData));
-                stateService.setCurrentGrid(thiz.gridData);
-                return Promise.resolve();
-            }).then(() => {
-                return dataService.getMetadata().then(savedMetadata => {
-                    thiz.metadata = JSON.parse(JSON.stringify(savedMetadata));
-                    if (thiz.metadata.globalGridId === thiz.gridData.id) {
-                        return Promise.resolve();
-                    }
-                    thiz.metadata.lastOpenedGridId = thiz.gridData.id;
-                    return dataService.saveMetadata(thiz.metadata);
-                });
-            }).then(() => {
-                return Promise.resolve();
-            }).then(() => {
-                initContextmenu();
-                thiz.showGrid = true;
-                thiz.highlightElement();
-            });
 
+            let gridData = await dataService.getGrid(this.gridId);
+            if (!gridData) {
+                log.warn('grid not found! gridId: ' + this.gridId);
+                Router.toMain();
+                return Router.toMain();
+            }
+            thiz.gridData = JSON.parse(JSON.stringify(gridData));
+            stateService.setCurrentGrid(thiz.gridData);
+
+            let savedMetadata = await dataService.getMetadata();
+            thiz.metadata = JSON.parse(JSON.stringify(savedMetadata));
+            if (thiz.metadata.globalGridId !== thiz.gridData.id) {
+                thiz.metadata.lastOpenedGridId = thiz.gridData.id;
+                await dataService.saveMetadata(thiz.metadata);
+            }
+
+            initContextmenu();
+            thiz.showGrid = true;
+            thiz.highlightElement();
             $('#contentContainer').on('click', this.handleClickEvent);
         },
         beforeDestroy() {
