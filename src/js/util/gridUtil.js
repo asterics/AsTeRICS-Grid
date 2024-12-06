@@ -652,28 +652,35 @@ gridUtil.moveElements = function(elements, options = {}) {
 }
 
 /**
- * moves an element in a specific direction as far as possible (without colliding with another element)
+ * moves elements in a specific direction as far as possible (without colliding with another element)
  * @param gridData grid data containing all elements
- * @param element the element to move
+ * @param elements the elements to move
  * @param direction the direction to move, see constants.DIR_* or 1-4 (UP, RIGHT, DOWN, RIGHT)
+ * @param options
+ * @param options.outOfBounds if true elements are also moved if they are out of the bounds given by gridData
+ * @param options.maxMove maximum number of steps to move
  * @returns {*}
  */
-gridUtil.moveAsPossible = function(gridData, element, direction) {
-    if (!constants.DIRECTIONS_ALL.includes(direction) || !element || !gridData) {
+gridUtil.moveAsPossible = function(gridData, elements = [], direction, options = {}) {
+    if (!constants.DIRECTIONS_ALL.includes(direction) || !gridData) {
         return gridData;
     }
-    gridData.gridElements = gridData.gridElements.filter(el => el.id !== element.id);
     let xyDiff = dirToXYDiff(direction);
-    let step;
+    sortBeforeMove(elements, xyDiff.x, xyDiff.y);
 
-    for (step = 1; step < constants.MAX_GRID_SIZE; step++) {
-        if(!gridUtil.isFreeSpace(gridData, element.x + xyDiff.x * step, element.y + xyDiff.y * step, element.width, element.height)) {
-            break;
+    for (let element of elements) {
+        gridData.gridElements = gridData.gridElements.filter(el => el.id !== element.id);
+        let step;
+
+        for (step = 1; step < (options.maxMove || constants.MAX_GRID_SIZE); step++) {
+            if (!gridUtil.isFreeSpace(gridData, element.x + xyDiff.x * step, element.y + xyDiff.y * step, element.width, element.height, options)) {
+                break;
+            }
         }
+        element.x += (step - 1) * xyDiff.x;
+        element.y += (step - 1) * xyDiff.y;
+        gridData.gridElements.push(element);
     }
-    element.x += (step - 1) * xyDiff.x;
-    element.y += (step - 1) * xyDiff.y;
-    gridData.gridElements.push(element);
     return gridData;
 };
 
@@ -735,7 +742,7 @@ gridUtil.normalizeGrid = function(gridData) {
         }
         seenIds.push(gridElement.id);
     }
-    gridUtil.moveAllAsPossible(gridData, constants.DIR_LEFT);
+    gridUtil.moveAsPossible(gridData, gridData.gridElements, constants.DIR_LEFT, { outOfBounds: true });
     return gridData;
 };
 

@@ -118,7 +118,7 @@
                 this.undoService.updateGrid(this.gridData);
             },
             fillGaps: function () {
-                gridUtil.moveAllAsPossible(this.gridData, constants.DIR_LEFT);
+                gridUtil.moveAsPossible(this.gridData, this.gridData.gridElements, constants.DIR_LEFT, { outOfBounds: true });
                 this.undoService.updateGrid(this.gridData);
             },
             normalizeGrid: function () {
