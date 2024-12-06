@@ -769,10 +769,7 @@ gridUtil.resolveCollisions = function(gridData, newElement, diff = { x: undefine
             startX: newElement.x
         });
         // push those back, which don't collide
-        gridUtil.moveElements(gridData.gridElements, {
-            moveX: -newElement.width,
-            moveElements: movedElements
-        });
+        gridUtil.moveAsPossible(gridData, movedElements, constants.DIR_LEFT, { outOfBounds: true, maxMove: newElement.width});
     }
 }
 
