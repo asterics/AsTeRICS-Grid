@@ -5,6 +5,7 @@
         <grid-element-youtube v-if="gridElement.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="gridElement" aria-hidden="true"/>
         <grid-element-predict v-if="gridElement.type === GridElement.ELEMENT_TYPE_PREDICTION" aria-hidden="true"/>
         <grid-element-hints :grid-element="gridElement"/>
+        <div v-if="showResizeHandle" class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="position: absolute; z-index: 2; bottom: 0; right: 0; cursor: se-resize;"></div>
     </div>
 </template>
 
@@ -31,7 +32,7 @@ import { GridActionYoutube } from '../../js/model/GridActionYoutube';
 
 export default {
     components: { GridElementNormal, GridElementYoutube, GridElementCollect, GridElementHints, GridElementPredict },
-    props: ["gridElement", "metadata"],
+    props: ["gridElement", "metadata", "showResizeHandle"],
     data() {
         return {
             GridElement: GridElement
