@@ -26,6 +26,10 @@ export default {
             type: String,
             default: '.grid-layout-element'
         },
+        resizeHandleSelector: {
+            type: String,
+            default: '.ui-resizable-handle'
+        },
         watchData: Object // on changes of this object interact.js is reloaded
     },
     data() {
@@ -80,6 +84,31 @@ export default {
                         event.target.style.zIndex = '';
                     }
                 }
+            }).resizable({
+                edges: { left: false, right: true, bottom: this.resizeHandleSelector, top: false },
+                listeners: {
+                    move(event) {
+                        event.target.style.width = event.rect.width + 'px';
+                        event.target.style.height = event.rect.height + 'px';
+                        event.target.style.zIndex = 100;
+                    },
+                    end(event) {
+                        event.target.style.width = '';
+                        event.target.style.height = '';
+                        event.target.style.zIndex = '';
+                        let resizedElement = event.target;
+                        thiz.$emit('resized', resizedElement, {
+                            width: Math.round(event.rect.width / thiz.getRasterX()),
+                            height: Math.round(event.rect.height / thiz.getRasterY())
+                        });
+                    }
+                },
+                modifiers: [
+                    // minimum size
+                    this.interact.modifiers.restrictSize({
+                        min: { width: this.getRasterX(), height: this.getRasterY() }
+                    })
+                ]
             });
         },
         destroyInteract() {

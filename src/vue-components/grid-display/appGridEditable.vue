@@ -1,5 +1,5 @@
 <template>
-    <grid-layout class="grid-display" v-if="gridData" @moved="moveHandler" :editable="true" :rows="gridData.rowCount" :columns="gridData.minColumnCount" :background-color="metadata.colorConfig.gridBackgroundColor" component-type="ol" :watch-data="gridData">
+    <grid-layout class="grid-display" v-if="gridData" @moved="moveHandler" @resized="resizeHandler" :editable="true" :rows="gridData.rowCount" :columns="gridData.minColumnCount" :background-color="metadata.colorConfig.gridBackgroundColor" component-type="ol" :watch-data="gridData">
         <grid-element v-for="elem in gridData.gridElements" :key="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" component-type="li">
             <app-grid-element :grid-element="elem" :metadata="metadata" :show-resize-handle="true"/>
         </grid-element>
@@ -33,6 +33,18 @@ export default {
             element.y += diff.y;
             gridUtil.resolveCollisions(this.gridData, element, diff);
             this.$emit("changed", this.gridData);
+        },
+        resizeHandler(resizedElement, newSize) {
+            let id = resizedElement.children[0].id;
+            let element = this.getElement(id);
+            if (!element || !newSize ||
+                (newSize.width === resizedElement.width && newSize.height === resizedElement.height)) {
+                return;
+            }
+            element.width = newSize.width;
+            element.height = newSize.height;
+            gridUtil.resolveCollisions(this.gridData, element);
+            this.$emit('changed', this.gridData);
         },
         getElement(id) {
             return this.gridData.gridElements.find(el => el.id === id);
