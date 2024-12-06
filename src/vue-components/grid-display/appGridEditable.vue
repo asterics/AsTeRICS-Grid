@@ -29,8 +29,10 @@ export default {
             }
             let id = movedElement.children[0].id;
             let element = this.getElement(id);
-            element.x += diff.x;
-            element.y += diff.y;
+            if (element.x + diff.x >= 0 && element.y + diff.y >= 0) {
+                element.x += diff.x;
+                element.y += diff.y;
+            }
             gridUtil.resolveCollisions(this.gridData, element, diff);
             this.$emit("changed", this.gridData);
         },
