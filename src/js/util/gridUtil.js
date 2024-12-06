@@ -672,7 +672,7 @@ gridUtil.moveAsPossible = function(gridData, elements = [], direction, options =
         gridData.gridElements = gridData.gridElements.filter(el => el.id !== element.id);
         let step;
 
-        for (step = 1; step < (options.maxMove || constants.MAX_GRID_SIZE); step++) {
+        for (step = 1; step <= (options.maxMove || constants.MAX_GRID_SIZE); step++) {
             if (!gridUtil.isFreeSpace(gridData, element.x + xyDiff.x * step, element.y + xyDiff.y * step, element.width, element.height, options)) {
                 break;
             }
