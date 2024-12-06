@@ -692,10 +692,14 @@ gridUtil.moveAsPossible = function(gridData, elements = [], direction, options =
  * @param width
  * @param height
  * @param options
- * @param options.outOfBounds if false (default) some space out of the current dimensions of the grid is considered to be not free, otherwise not
+ * @param options.outOfBounds if false (default) space outside the current dimensions of the grid is considered to be not free,
+ *                            otherwise space more right or below the current bounds is considered to be free
  * @returns {boolean}
  */
 gridUtil.isFreeSpace = function(gridDataOrElements, x, y, width, height, options = {}) {
+    if (x < 0 || y < 0) {
+        return false;
+    }
     options.outOfBounds = options.outOfBounds === true;
     let xMax = gridUtil.getWidthWithBounds(gridDataOrElements);
     let yMax = gridUtil.getHeightWithBounds(gridDataOrElements);
