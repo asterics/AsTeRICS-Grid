@@ -685,19 +685,6 @@ gridUtil.moveAsPossible = function(gridData, elements = [], direction, options =
 };
 
 /**
- * moves all elements of the grid as far as possible in the given direction
- * @param gridData gridData, where all elements should be moved
- * @param direction the direction to move, see constants.DIR_* or 1-4 (UP, RIGHT, DOWN, RIGHT)
- * @returns {*}
- */
-gridUtil.moveAllAsPossible = function(gridData, direction) {
-    for (let element of gridData.gridElements) {
-        gridUtil.moveAsPossible(gridData, element, direction);
-    }
-    return gridData;
-};
-
-/**
  * returns true, if the given element size is free space within the given gridData / gridElements
  * @param gridDataOrElements
  * @param x
