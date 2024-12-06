@@ -765,14 +765,18 @@ gridUtil.resolveCollisions = function(gridData, newElement, diff = { x: undefine
             }
         }
     } else {
-        // move all elements to the right
+        // move right and then back
         let otherElements = gridData.gridElements.filter(el => el.id !== newElement.id);
+        let moveElements = otherElements.filter(el =>
+            el.x >= newElement.x || // elements that are equal or more right on x-axis
+            hasCollisions([el, newElement])); // colliding, but more left
+        let moveX = Math.max.apply(null, moveElements.map(el => el.width + newElement.width));
         let movedElements = gridUtil.moveElements(otherElements, {
-            moveX: newElement.width,
-            startX: newElement.x
+            moveX: moveX,
+            moveElements: moveElements
         });
         // push those back, which don't collide
-        gridUtil.moveAsPossible(gridData, movedElements, constants.DIR_LEFT, { outOfBounds: true, maxMove: newElement.width});
+        gridUtil.moveAsPossible(gridData, movedElements, constants.DIR_LEFT, { outOfBounds: true, maxMove: moveX});
     }
 }
 
