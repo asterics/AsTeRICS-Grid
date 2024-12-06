@@ -636,12 +636,7 @@ gridUtil.moveElements = function(elements, options = {}) {
 
     // start with correct elements to move,
     // e.g. start with right elements if moving to the right
-    options.moveElements.sort((a, z) => {
-        if (a.x !== z.x) {
-            return options.moveX * (z.x - a.x);
-        }
-        return options.moveY * (z.y - a.y);
-    });
+    sortBeforeMove(options.moveElements, options.moveX, options.moveY);
     for (let moveElement of options.moveElements) {
         if (gridUtil.isFreeSpace(elements,
             moveElement.x + options.moveX,
@@ -865,6 +860,22 @@ function dirToXYDiff(direction) {
         x: direction === constants.DIR_LEFT ? -1 : (direction === constants.DIR_RIGHT ? 1 : 0),
         y: direction === constants.DIR_UP ? -1 : (direction === constants.DIR_DOWN ? 1 : 0)
     }
+}
+
+/**
+ * sorts elements before moving xDiff / yDiff in order to start moving with the right elements
+ * (e.g. moving to the left should start with the most left elements)
+ * @param elements
+ * @param xDiff
+ * @param yDiff
+ */
+function sortBeforeMove(elements, xDiff, yDiff) {
+    elements.sort((a, z) => {
+        if (xDiff !== 0) {
+            return xDiff * (z.x - a.x);
+        }
+        return yDiff * (z.y - a.y);
+    });
 }
 
 export { gridUtil };
