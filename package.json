@@ -51,6 +51,7 @@
     "build": "jest && webpack --config webpack.config.js --env production",
     "release": "cp scripts/release.sh scripts/release.tmp.sh && sh scripts/release.tmp.sh && rm scripts/release.tmp.sh",
     "release-latest": "cp scripts/releaseLatest.sh scripts/releaseLatest.tmp.sh && sh scripts/releaseLatest.tmp.sh && rm scripts/releaseLatest.tmp.sh",
+    "release-beta": "sh scripts/releaseBeta.sh",
     "test": "jest",
     "stats": "webpack --config webpack.config.js --env.production --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json app/build",
     "stats-dev": "webpack --config webpack.config.js --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json app/build",
