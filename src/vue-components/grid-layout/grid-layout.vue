@@ -22,9 +22,9 @@ export default {
             type: Boolean,
             default: false
         },
-        elementClass: {
+        elementClassSelector: {
             type: String,
-            default: 'grid-layout-element'
+            default: '.grid-layout-element'
         },
         watchData: Object // on changes of this object interact.js is reloaded
     },
@@ -36,11 +36,6 @@ export default {
     watch: {
         watchData() {
             this.initInteract();
-        }
-    },
-    computed: {
-        elementClassSelector() {
-            return `.${this.elementClass}`;
         }
     },
     methods: {
