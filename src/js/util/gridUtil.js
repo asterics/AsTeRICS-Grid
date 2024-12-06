@@ -751,9 +751,12 @@ gridUtil.resolveCollisions = function(gridData, newElement, diff = { x: undefine
         return gridData;
     }
 
-    if (diff.x <= newElement.width && diff.y <= newElement.height && (diff.x === 0 || diff.y === 0)) {
-        // element moved to a neighbour square only in x- or y-axis
-        let conflictElements = getConflictingElements(gridData.gridElements, newElement);
+    let conflictElements = getConflictingElements(gridData.gridElements, newElement);
+    if (conflictElements.every(conflict => isFullyCovering(newElement, conflict)) &&
+        diff.x <= newElement.width &&
+        diff.y <= newElement.height &&
+        (diff.x === 0 || diff.y === 0)) {
+        // element moved to a neighbour square only in x- or y-axis and fully covers all conflicts
         for (let conflict of conflictElements) {
             if (Math.abs(diff.x) > 0) {
                 conflict.x += Math.sign(diff.x) * (-1) * newElement.width;
@@ -855,6 +858,12 @@ function dirToXYDiff(direction) {
         x: direction === constants.DIR_LEFT ? -1 : (direction === constants.DIR_RIGHT ? 1 : 0),
         y: direction === constants.DIR_UP ? -1 : (direction === constants.DIR_DOWN ? 1 : 0)
     }
+}
+
+function isFullyCovering(element, otherElement) {
+    return element.width >= otherElement.width && element.height >= otherElement.height &&
+        element.x <= otherElement.x && element.x + element.width >= otherElement.x + otherElement.width &&
+        element.y <= otherElement.y && element.y + element.height >= otherElement.y + otherElement.height;
 }
 
 /**
