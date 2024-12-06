@@ -36,7 +36,7 @@
     animation: background 0.5s cubic-bezier(1,0,0,1);
 }
 
-.highlight.grid-item-content {
+.highlight.element-container {
     animation: background 1s steps(20, end) infinite;
     -webkit-animation: background 1s steps(20, end) infinite;
 }
