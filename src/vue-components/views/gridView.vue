@@ -583,7 +583,4 @@
 </script>
 
 <style scoped>
-#grid-container {
-    -webkit-touch-callout: none;
-}
 </style>
