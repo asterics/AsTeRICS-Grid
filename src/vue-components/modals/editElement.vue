@@ -1,14 +1,10 @@
 <template>
-    <div class="modal" @dragenter="preventDefault" @dragover="preventDefault" @drop="preventDefault">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container modal-container-flex" @keydown.esc="$emit('close')" @keydown.ctrl.enter="save()" @keydown.ctrl.right="nextFromKeyboard()" @keydown.ctrl.left="editNext(true)" @keydown.ctrl.y="save(true)">
-                    <div class="modal-header">
-                        <edit-element-header :grid-element="originalGridElement" :header="editElementId ? $t('editGridItem') : $t('newGridItem')" :close-fn="close" :open-help-fn="openHelp"></edit-element-header>
-                    </div>
-
+    <base-modal :icon="icon" :title="title" @open="init" @keydown.ctrl.enter="save" @keydown.ctrl.right="nextFromKeyboard" @keydown.ctrl.left="editNext(true)" @keydown.ctrl.y="save(true)" @dragenter="preventDefault" @dragover="preventDefault" @drop="preventDefault" v-on="$listeners">
+        <template #header-extra>
+                        <edit-element-header :grid-element="originalGridElement"></edit-element-header>
+        </template>
+        <template #default>
                     <nav-tabs class="mb-3" :tab-labels="Object.keys(possibleTabs)" v-model="currentTab" @input="imageSearch = ''"></nav-tabs>
-
                     <div class="modal-body mt-2" v-if="gridElement">
                         <div v-if="currentTab === TABS.TAB_GENERAL">
                             <edit-element-general v-if="gridElement.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="gridElement" @searchImage="toImageSearch"></edit-element-general>
@@ -19,38 +15,25 @@
                         <edit-element-word-forms v-if="currentTab === TABS.TAB_WORDFORMS" :grid-element="gridElement" :grid-data="gridData" @reloadData="initInternal(true)"></edit-element-word-forms>
                         <edit-element-actions v-if="currentTab === TABS.TAB_ACTIONS" :grid-element="gridElement" :grid-data="gridData"></edit-element-actions>
                     </div>
-
-                    <div class="modal-footer modal-footer-flex">
-                        <div class="button-container" v-if="gridElement">
-                            <div class="srow">
-                                <button @click="$emit('close')" :title="$t('keyboardEsc')" class="four columns offset-by-four">
-                                    <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                                </button>
-                                <button @click="save()" :title="$t('keyboardCtrlEnter')" class="four columns">
-                                    <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
-                                </button>
-                            </div>
-                            <div class="hide-mobile srow">
+        </template>
+        <template #footer-extra>
+                            <div class="edit" v-if="gridElement">
                                 <div v-if="editElementId">
-                                    <button @click="editNext(true)" :title="$t('keyboardCtrlLeft')" class="four columns offset-by-four"><i class="fas fa-angle-double-left"/> <span>{{ $t('okEditPrevious') }}</span></button>
-                                    <button @click="editNext()" :title="$t('keyboardCtrlRight')" class="four columns"><span>{{ $t('okEditNext') }}</span> <i class="fas fa-angle-double-right"/></button>
+                                    <button @click="editNext(true)" :title="$t('keyboardCtrlLeft')"><i class="fas fa-angle-double-left" aria-hidden="true"></i><span>{{ $t('okEditPrevious') }}</span></button>
+                                    <button @click="editNext()" :title="$t('keyboardCtrlRight')"><span>{{ $t('okEditNext') }}</span><i class="fas fa-angle-double-right" aria-hidden="true"></i></button>
                                 </div>
                                 <div v-if="!editElementId">
-                                    <button @click="addNext()" :title="$t('keyboardCtrlRight')" class="four columns offset-by-eight"><i class="fas fa-plus"/> <span>{{ $t('okAddAnother') }}</span></button>
+                                    <button @click="addNext()" :title="$t('keyboardCtrlRight')"><i class="fas fa-plus" aria-hidden="true"></i><span>{{ $t('okAddAnother') }}</span></button>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        </template>
+    </base-modal>
 </template>
 
 <script>
     import {dataService} from '../../js/service/data/dataService'
     import {GridImage} from "../../js/model/GridImage";
-    import './../../css/modal.css';
+    import {modalMixin} from "../mixins/modalMixin";
     import {GridElement} from "../../js/model/GridElement";
     import {GridData} from "../../js/model/GridData";
     import {helpService} from "../../js/service/helpService";
@@ -73,6 +56,7 @@
 
     export default {
         props: ['editElementIdParam', 'gridDataId', 'gridInstance'],
+        mixins: [modalMixin],
         components: {
             EditElementWordForms,
             EditElementHeader,
@@ -91,6 +75,14 @@
                 currentTab: TAB_GENERAL,
                 imageSearch: null,
                 GridElement: GridElement
+            };
+        },
+        computed: {
+            title() {
+                return this.editElementId ? this.$t('editGridItem') : this.$t('newGridItem');
+            },
+            icon() {
+                return this.editElementId ? 'fas fa-edit' : 'fas fa-plus';
             }
         },
         methods: {
@@ -101,6 +93,7 @@
             save(toActions) {
                 this.saveInternal().then((savedSomething) => {
                     this.$emit('close');
+                    this.closeModal();
                     if (savedSomething && !this.editElementId) {
                         this.$emit('mark', this.gridElement.id);
                     }
@@ -184,30 +177,47 @@
             preventDefault(event) {
                 event.preventDefault();
             },
-            openHelp() {
-                helpService.openHelp();
-            },
-            close() {
-                this.$emit('close');
-            }
-        },
-        mounted() {
+        init() {
             this.editElementId = this.editElementIdParam;
             this.initInternal();
             helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
+        }
         },
         beforeDestroy() {
             helpService.revertToLastLocation();
         }
-    }
+};
 </script>
 
-<style scoped>
-.modal-container {
-    min-height: 50vh;
+<style lang="scss" scoped>
+.edit {
+    flex-grow: 3;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    width: 100%;
+    
+    div {
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: space-between;
+        width: 100%;
+
+        button {
+            width: 100%;
+            white-space: nowrap;
+        }
+    }
 }
 
-.srow {
-    margin-top: 1em;
+@media screen and (min-width: 992px) {
+    .edit {
+        margin-right: 3rem;
+
+        div {
+            flex-flow: row nowrap;
+
+        }
+    }
 }
 </style>

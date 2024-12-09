@@ -86,7 +86,6 @@
 </template>
 
 <script>
-    import './../../css/modal.css';
     import {helpService} from "../../js/service/helpService";
     import {WordForm} from "../../js/model/WordForm.js";
     import EditWordForm from "../components/editWordForm.vue";

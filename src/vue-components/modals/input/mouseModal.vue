@@ -1,30 +1,21 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keydown.27="cancel()" @keydown.enter="save()">
-                    <a class="inline close-button" href="javascript:void(0);" @click="cancel()"><i class="fas fa-times"/></a>
-                    <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
-                    <div class="modal-header">
-                        <h1 name="header">{{ $t('mousetouchInput') }}</h1>
-                    </div>
-
-                    <div class="modal-body" v-if="inputConfig">
+    <base-modal icon="fas fa-mouse-pointer" :title="$t('mousetouchInput')" @open="init" @keydown.enter="save" @ok="save" v-on="$listeners">
+                    <template #default v-if="inputConfig">
                         <div class="srow">
                             <div class="twelve columns">
-                                <input v-focus type="checkbox" id="enableClick" v-model="inputConfig.mouseclickEnabled"/>
+                                <input type="checkbox" id="enableClick" v-model="inputConfig.mouseclickEnabled"/>
                                 <label class="inline" for="enableClick">{{ $t('selectWithMouseClickOrTap') }}</label>
                             </div>
                         </div>
                         <div class="srow">
                             <div class="twelve columns">
-                                <input v-focus type="checkbox" id="enableDoubleClick" v-model="inputConfig.mouseDoubleClickEnabled"/>
+                                <input type="checkbox" id="enableDoubleClick" v-model="inputConfig.mouseDoubleClickEnabled"/>
                                 <label class="inline" for="enableDoubleClick">{{ $t('selectWithDoubleClickOrDoubleTap') }}</label>
                             </div>
                         </div>
                         <div class="srow" >
                             <div class="twelve columns">
-                                <input v-focus type="checkbox" id="enableHover" v-model="inputConfig.hoverEnabled"/>
+                                <input type="checkbox" id="enableHover" v-model="inputConfig.hoverEnabled"/>
                                 <label class="inline" for="enableHover">{{ $t('enableHovering') }}</label>
                             </div>
                         </div>
@@ -35,7 +26,7 @@
                         </div>
                         <div class="srow" v-show="inputConfig.hoverEnabled">
                             <div class="twelve columns">
-                                <input v-focus type="checkbox" id="hoverHideCursor" v-model="inputConfig.hoverHideCursor"/>
+                                <input type="checkbox" id="hoverHideCursor" v-model="inputConfig.hoverHideCursor"/>
                                 <label class="inline" for="hoverHideCursor">{{ $t('hideCursor') }}</label>
                             </div>
                             <div class="twelve columns">
@@ -47,7 +38,7 @@
                         <accordion :acc-label="$t('ADVANCED_SETTINGS')" acc-label-type="h2" acc-background-color="white">
                             <div class="srow">
                                 <div class="twelve columns">
-                                    <input v-focus type="checkbox" id="mousedown" v-model="inputConfig.mouseDownInsteadClick"/>
+                                    <input type="checkbox" id="mousedown" v-model="inputConfig.mouseDownInsteadClick"/>
                                     <label class="inline" for="mousedown">{{ $t('directlySelectElementOnPressingMouseButton') }}</label>
                                 </div>
                             </div>
@@ -58,22 +49,8 @@
                         <accordion :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
                             <test-area :selected-element="selectedTestElement"></test-area>
                         </accordion>
-                    </div>
-
-                    <div class="modal-footer">
-                        <div class="button-container srow">
-                            <button @click="cancel()" class="four columns offset-by-four">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                            </button>
-                            <button @click="save()" class="four columns">
-                                 <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    </template>
+    </base-modal>
 </template>
 
 <script>
@@ -82,7 +59,7 @@
     import Accordion from "../../components/accordion.vue"
     import InputEventList from "../../components/inputEventList.vue"
     import TestArea from "./testArea.vue"
-    import './../../../css/modal.css';
+    import {modalMixin} from "../../mixins/modalMixin";
     import {InputConfig} from "../../../js/model/InputConfig";
     import {Hover} from "../../../js/input/hovering";
     import {Clicker} from "../../../js/input/clicking";
@@ -90,8 +67,8 @@
     import GlobalInputOptions from "./globalInputOptions.vue";
 
     export default {
-        props: [],
         components: {GlobalInputOptions, Accordion, InputEventList, TestArea},
+        mixins: [modalMixin],
         data: function () {
             return {
                 inputConfig: null,
@@ -118,13 +95,8 @@
                 this.metadata.inputConfig = this.inputConfig;
                 dataService.saveMetadata(this.metadata).then(() => {
                     this.$emit('close');
+                    this.closeModal();
                 });
-            },
-            cancel() {
-                this.$emit('close');
-            },
-            openHelp() {
-                helpService.openHelp();
             },
             initTest() {
                 setTimeout(() => {
@@ -157,9 +129,8 @@
                 if (this.hover) {
                     this.hover.destroy();
                 }
-            }
-        },
-        mounted () {
+            },
+        init() {
             let thiz = this;
             inputEventHandler.pauseAll();
             dataService.getMetadata().then(metadata => {
@@ -168,6 +139,7 @@
             });
             helpService.setHelpLocation('04_input_options', '#mousetouch-input');
         },
+        },
         beforeDestroy() {
             helpService.revertToLastLocation();
             this.stopTest();
@@ -175,6 +147,3 @@
         }
     }
 </script>
-
-<style scoped>
-</style>

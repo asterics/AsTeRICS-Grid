@@ -43,13 +43,13 @@
                         </div>
                     </div>
                     <div class="preview-buttons d-flex justify-content-between">
-                        <button @click="detailPreview = preview"><span class="fa fa-info-circle"/> {{ $t('details') }}</button>
+                        <button @click="handleClickPreview(preview)"><span class="fa fa-info-circle"/> {{ $t('details') }}</button>
                         <button class="btn-primary" @click="importData(preview)"><span class="fa fa-check"/> {{ $t('useIt') }}</button>
                     </div>
                 </li>
             </ul>
         </div>
-        <config-preview-detail v-if="detailPreview" :preview="detailPreview" @close="detailPreview = null" @import="importData(detailPreview)"></config-preview-detail>
+        <config-preview-detail ref="preview" :preview="detailPreview" @import="importData(detailPreview)"></config-preview-detail>
     </div>
 </template>
 
@@ -91,6 +91,10 @@
                 util.debounce(async () => {
                     this.gridPreviews = await boardService.query(this.searchTerm, this.searchOptions);
                 }, 300, "SEARCH_BOARDS");
+            },
+            handleClickPreview(preview) {
+                this.detailPreview = preview;
+                this.$refs.preview.openModal();
             },
             importData(preview) {
                 let thiz = this;

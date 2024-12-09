@@ -13,24 +13,12 @@
                 <button tabindex="32" @click="redo"  :aria-label="$t('redo')" :disabled="!canRedo || doingUndoRedo" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span></button>
             </div>
         </header>
-        <div>
-            <edit-element v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
-        </div>
-        <div>
-            <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :grid-instance="getGridInstance()" @close="showMultipleModal = false"/>
-        </div>
-        <div>
-            <grid-dimension-modal v-if="showDimensionsModal" v-bind:grid-data-param="gridData" :is-global-grid="metadata.globalGridId === gridData.id" @close="showDimensionsModal = false" @save="setDimensions"/>
-        </div>
-        <div>
-            <element-move-modal v-if="showMoveModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showMoveModal = false" @reload="reload"/>
-        </div>
-        <div>
-            <grid-translate-modal v-if="showTranslateModal" :grid-data-id="gridData.id" @close="showTranslateModal = false" @reload="reload"/>
-        </div>
-        <div>
-            <set-navigation-modal v-if="showNavigateModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showNavigateModal = false" @reload="reload"></set-navigation-modal>
-        </div>
+        <edit-element ref="edit" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData?.id" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
+        <add-multiple-modal ref="multiple" v-bind:grid-data="gridData" :grid-instance="getGridInstance()"/>
+        <grid-dimension-modal ref="dimension" v-bind:grid-data-param="gridData" :is-global-grid="metadata?.globalGridId === gridData?.id" @save="setDimensions"/>
+        <element-move-modal ref="move" :grid-id="gridData?.id" :grid-element-id="editElementId" @reload="reload"/>
+        <grid-translate-modal ref="translate" :grid-data-id="gridData?.id" @reload="reload"/>
+        <set-navigation-modal ref="navigation"  :grid-id="gridData?.id" :grid-element-id="editElementId" @reload="reload"></set-navigation-modal>
         <div class="srow content" id="contentContainer">
             <div v-if="!showGrid" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
@@ -90,12 +78,6 @@
                 canUndo: false,
                 canRedo: false,
                 doingUndoRedo: false,
-                showMultipleModal: false,
-                showDimensionsModal: false,
-                showNavigateModal: false,
-                showMoveModal: false,
-                showTranslateModal: false,
-                showEditModal: false,
                 editElementId: null,
                 showGrid: false,
                 constants: constants,
@@ -148,7 +130,7 @@
                 this.editElementId = elementId;
                 let editElement = this.gridData.gridElements.filter(e => e.id === elementId)[0];
                 if (editElement) {
-                    this.showEditModal = true;
+                    this.$refs.edit.openModal();
                 }
             },
             removeElement(id) {
@@ -160,7 +142,7 @@
             newElement(type) {
                 if (type === GridElement.ELEMENT_TYPE_NORMAL) {
                     this.editElementId = null;
-                    this.showEditModal = true;
+                    this.$refs.edit.openModal();
                 } else {
                     let newPos = new GridData(this.gridData).getNewXYPos();
                     let constructor = type === GridElement.ELEMENT_TYPE_COLLECT ? GridElementCollect : GridElement;
@@ -186,7 +168,7 @@
                 }
             },
             newElements() {
-                this.showMultipleModal = true;
+                this.$refs.multiple.openModal();
             },
             clearElements() {
                 if (confirm(i18nService.t('CONFIRM_DELETE_ALL_ELEMS'))) {
@@ -479,17 +461,17 @@
                     break;
                 }
                 case CONTEXT_GRID_DIMENSIONS: {
-                    vueApp.showDimensionsModal = true;
+                    vueApp.$refs.dimension.openModal();
                     break;
                 }
                 case CONTEXT_GRID_TRANSLATION: {
-                    vueApp.showTranslateModal = true;
+                    vueApp.$refs.translate.openModal();
                     break;
                 }
                 case CONTEXT_GRID_NAVIGATION: {
                     vueApp.editElementId = elementId || vueApp.markedElement.id;
                     vueApp.markElement(null);
-                    vueApp.showNavigateModal = true;
+                    vueApp.$refs.navigation.openModal();
                     break;
                 }
                 case CONTEXT_ACTION_EDIT:
@@ -511,7 +493,7 @@
                 case CONTEXT_MOVE_TO:
                     vueApp.editElementId = elementId || vueApp.markedElement.id;
                     vueApp.markElement(null);
-                    vueApp.showMoveModal = true;
+                    vueApp.$refs.move.openModal();
                     break;
                 case CONTEXT_EDIT_GLOBAL_GRID:
                     Router.toEditGrid(vueApp.metadata.globalGridId);

@@ -105,7 +105,6 @@
 
 <script>
     import {imageUtil} from './../../js/util/imageUtil';
-    import './../../css/modal.css';
     import {helpService} from "../../js/service/helpService";
     import {util} from "../../js/util/util";
     import {constants} from "../../js/util/constants.js";

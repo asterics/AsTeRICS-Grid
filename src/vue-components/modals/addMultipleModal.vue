@@ -1,22 +1,12 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
-                    <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
-                    <div class="modal-header">
-                        <h1 name="header">
-                            {{ $t('addMultipleGridItems') }}
-                        </h1>
-                    </div>
-
-                    <div class="modal-body">
+    <base-modal icon="fas fa-clone" :title="$t('addMultipleGridItems')" :help="false" @open="init" @keyup.ctrl.enter="save" v-on="$listeners">
+                    <template #default>
                         <div class="srow">
                             <label class="three columns" for="inputText">{{ $t('input') }}</label>
                             <span class="nine columns">{{ $t('insertLabelsForNewElements') }}</span>
                         </div>
                         <div class="srow">
-                            <textarea v-focus class="twelve columns" id="inputText" v-model="inputText" @input="textChanged" style="resize: vertical;min-height: 70px;" placeholder="Element1;Element2;Element3;..."/>
+                            <textarea class="twelve columns" id="inputText" v-model="inputText" @input="textChanged" style="resize: vertical;min-height: 70px;" placeholder="Element1;Element2;Element3;..."/>
                         </div>
                         <div class="srow">
                             <label class="three columns">{{ $t('recognizedElements') }}</label>
@@ -29,34 +19,26 @@
                                 <span>{{ $t('noElements') }}</span>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <div class="button-container srow">
-                            <button class="four columns offset-by-four" @click="$emit('close')" :title="$t('keyboardEsc')">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
+                    </template>
+                        <template #ok>
+                            <button class="btn-primary" @click="save" :title="$t('keyboardCtrlEnter')" :aria-label="$t('insertElements')" :disabled="parsedElems.length == 0">
+                                <i class="fas fa-check" aria-hidden="true"></i><span>{{ $t('insertElements') }}</span>
                             </button>
-                            <button class="four columns" @click="save()" :title="$t('keyboardCtrlEnter')" :disabled="parsedElems.length == 0">
-                                <i class="fas fa-check"/> <span>{{ $t('insertElements') }}</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                        </template>
+    </base-modal>
 </template>
 
 <script>
     import {dataService} from '../../js/service/data/dataService'
     import {i18nService} from "../../js/service/i18nService";
-    import './../../css/modal.css';
+    import {modalMixin} from "../mixins/modalMixin";
     import {GridElement} from "../../js/model/GridElement";
     import {GridData} from "../../js/model/GridData";
     import {helpService} from "../../js/service/helpService";
 
     export default {
         props: ['gridData', 'gridInstance'],
+        mixins: [modalMixin],
         data: function () {
             return {
                 inputText: "",
@@ -84,10 +66,12 @@
                 });
                 this.gridInstance.updateGridWithUndo(gridDataObject);
                 this.$emit('close');
-            }
-        },
-        mounted() {
+                this.closeModal();
+            },
+        init() {
+            this.inputText = "";
             helpService.setHelpLocation('03_appearance_layout', '#adding-elements-and-layout-options');
+        },
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

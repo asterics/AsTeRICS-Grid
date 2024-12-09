@@ -1,51 +1,27 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" :aria-label="$t('navigateToOtherGrid')" aria-modal="true" role="dialog" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
-                    <div class="modal-header">
-                        <edit-element-header :grid-element="gridElement" :header="$t('navigateToOtherGrid')" :close-fn="close" :open-help-fn="openHelp"></edit-element-header>
-                    </div>
-
-                    <div class="modal-body container-fluid px-0" v-if="gridElement">
-                        <grid-selector class="mt-4" v-model="selectedGrid" :exclude-id="gridId" :select-label="i18nService.t('navigateToGrid')" :additional-select-options="[NAV_CREATE_NEW_GRID]"></grid-selector>
-
-                        <div class="row mt-3" v-if="selectedGrid === NAV_CREATE_NEW_GRID">
-                            <label for="gridName" class="col-12">{{ $t('newGridName') }}</label>
-                            <div class="col-12 col-md-5">
-                                <input id="gridName" v-model="newName" @change="newName = modelUtil.getNewName(newName, existingGridNames)" autocomplete="off" v-focus class="col-12" type="text"/>
+    <base-modal icon="fas fa-arrow-right" :title="$t('navigateToOtherGrid')" @open="init" @keyup.ctrl.enter="save" @ok="save" v-on="$listeners">
+                    <template #header-extra>
+                        <edit-element-header :grid-element="gridElement"></edit-element-header>
+                    </template>
+                    <template #default v-if="gridElement">
+                        <grid-selector v-model="selectedGrid" :exclude-id="gridId" :select-label="i18nService.t('navigateToGrid')" :additional-select-options="[NAV_CREATE_NEW_GRID]"></grid-selector>
+                        <div v-if="selectedGrid === NAV_CREATE_NEW_GRID">
+                            <label for="gridName">{{ $t('newGridName') }}</label>
+                            <div>
+                                <input id="gridName" v-model="newName" @change="newName = modelUtil.getNewName(newName, existingGridNames)" autocomplete="off" class="col-12" type="text"/>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="modal-footer container-fluid px-0">
-                        <div class="row">
-                            <div class="col-12 col-md-6">
-                                <button class="col-12" @click="$emit('close')" :title="$t('keyboardEsc')">
-                                    <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                                </button>
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <button class="col-12" @click="save()" :disabled="selectedGrid === NAV_CREATE_NEW_GRID && !newName" :title="$t('keyboardCtrlEnter')">
-                                    <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    </template>
+    </base-modal>
 </template>
 
 <script>
 import {i18nService} from "../../js/service/i18nService";
-import './../../css/modal.css';
+import {modalMixin} from "../mixins/modalMixin";
 import {dataService} from "../../js/service/data/dataService";
 import {imageUtil} from "../../js/util/imageUtil";
 import GridSelector from "../components/gridSelector.vue";
 import EditElementHeader from "../components/editElementHeader.vue";
-import {helpService} from "../../js/service/helpService.js";
 import {modelUtil} from "../../js/util/modelUtil.js";
 import {GridActionNavigate} from "../../js/model/GridActionNavigate.js";
 import {GridData} from "../../js/model/GridData.js";
@@ -53,6 +29,7 @@ import {GridData} from "../../js/model/GridData.js";
 export default {
     components: {EditElementHeader, GridSelector},
     props: ['gridId', 'gridElementId'],
+    mixins: [modalMixin],
     data: function () {
         return {
             gridData: null,
@@ -69,7 +46,6 @@ export default {
     },
     methods: {
         addGrid() {
-
         },
         save() {
             if (this.selectedGrid === this.NAV_CREATE_NEW_GRID && !this.newName) {
@@ -78,6 +54,7 @@ export default {
             this.saveInternal().then(() => {
                 this.$emit('reload');
                 this.$emit('close');
+                this.closeModal();
             });
         },
         async saveInternal() {
@@ -107,21 +84,16 @@ export default {
             this.gridElement.actions.push(navAction);
             await dataService.saveGrid(this.gridData);
         },
-        openHelp() {
-            helpService.openHelp();
-        },
-        close() {
-            this.$emit('close');
-        }
-    },
-    async mounted() {
+    async init() {
         dataService.getGrid(this.gridId).then(gridData => {
             this.gridData = JSON.parse(JSON.stringify(gridData));
             this.gridElement = this.gridData.gridElements.filter(e => e.id === this.gridElementId)[0];
         });
         let grids = await dataService.getGrids(false);
         this.existingGridNames = grids.map(grid => i18nService.getTranslation(grid.label));
+        helpService.setHelpLocation('03_appearance_layout', '#edit-grid-item-modal');
     }
+    },
 }
 </script>
 
