@@ -940,7 +940,7 @@
   "audioWithLengthOfSeconds": "Аудио длиной {0}с",
   "audioFromFileWithName": "Аудио из файла \"{0}\"",
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Пожалуйста, разрешите доступ к микрофону для записи звука",
-  "selectedAudioFileIsTooBig": "Выбранный аудиофайл слишком большой, разрешены только короткие отрывки продолжительностью до 10 секунд",
+  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to 200kB (about 10 seconds) are allowed",
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Записанный звук воспроизводится только при действиях по сбору элементов в режиме «говорить отдельно»",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Установить действия глобальной сетки в режим «говорить отдельно»",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Проговаривание действий глобальной сетки переведено в режим «говорить отдельно»",
