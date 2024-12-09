@@ -940,7 +940,7 @@
   "audioWithLengthOfSeconds": "Dźwięk o długości {0}s",
   "audioFromFileWithName": "Audio from file \"{0}\"",
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "W celu nagrywania dźwięku należy umożliwić dostęp do mikrofonu",
-  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to about 10 seconds are allowed",
+  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to 200kB (about 10 seconds) are allowed",
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Nagrany dźwięk jest odtwarzany tylko przy akcjach zbierania elementów w trybie \"mów oddzielnie\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Ustaw działania globalnej sieci na tryb \"mów oddzielnie\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Akcje mówienia globalnej sieci zostały ustawione na tryb \"mów oddzielnie\"",
