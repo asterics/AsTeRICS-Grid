@@ -940,7 +940,7 @@
   "audioWithLengthOfSeconds": "Audioaren iraupena: {0}s",
   "audioFromFileWithName": "Audio from file \"{0}\"",
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Mesedez, utzi mikrofonora sartzen audioa grabatzeko",
-  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to about 10 seconds are allowed",
+  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to 200kB (about 10 seconds) are allowed",
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Recorded audio is only played with collect element actions in mode \"speak separately\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Set actions of global grid to mode \"speak separately\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Speak actions of global grid were set to mode mode \"speak separately\"",
