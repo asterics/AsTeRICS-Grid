@@ -940,7 +940,7 @@
   "audioWithLengthOfSeconds": "Audio cunha duración de {0}s",
   "audioFromFileWithName": "Audio from file \"{0}\"",
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Por favor, permite o acceso ao micrófono para gravar audio",
-  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to about 10 seconds are allowed",
+  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to 200kB (about 10 seconds) are allowed",
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "O audio gravado só se reproduce cando a acción pronunciar frase acumulada está configurada no modo \"elemento por elemento\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Configurar as accións de pronunciar frase acumulada do taboleiro global en modo \"elemento por elemento\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Todas as accións de pronunciar frase do taboleiro global configuráronse en modo \"elemento por elemento\"",
