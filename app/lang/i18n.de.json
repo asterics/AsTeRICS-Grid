@@ -940,7 +940,7 @@
   "audioWithLengthOfSeconds": "Audioaufnahme mit Länge von {0}s",
   "audioFromFileWithName": "Audio aus Datei \"{0}\"",
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Bitte erlaube den Zugriff auf das Mikrofon, um Audio aufzunehmen",
-  "selectedAudioFileIsTooBig": "Die ausgewählte Audiodatei ist zu groß, nur kurze Samples bis etwa 10 Sekunden sind erlaubt",
+  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to 200kB (about 10 seconds) are allowed",
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Audioaufnahmen werden nur mit Sammelelement-Aktionen in Modus \"separat sprechen\" wiedergegeben",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Setze Aktionen im globalen Grid in Modus \"separat spechen\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Aktionen im globalen Grid wurden auf Modus \"separat sprechen\" gesetzt",
