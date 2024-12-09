@@ -940,7 +940,7 @@
   "audioWithLengthOfSeconds": "Áudio com duração de {0}s",
   "audioFromFileWithName": "Áudio do ficheiro \"{0}\"",
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Por favor, permita acesso ao microfone para gravar áudio",
-  "selectedAudioFileIsTooBig": "O ficheiro de áudio selecionado é muito grande, apenas são permitidas amostras curtas até 10 segundos",
+  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to 200kB (about 10 seconds) are allowed",
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Áudio gravado só é reproduzido quando a ação de célula acumulada está no modo \"elementos separados\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Definir ações da tabela global para o modo \"elementos separados\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "As ações de pronunciar frase da tabela global estão agora em modo \"elementos separados\"",
