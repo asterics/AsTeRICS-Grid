@@ -940,7 +940,7 @@
   "audioWithLengthOfSeconds": "Audio amb una durada de  {0}s",
   "audioFromFileWithName": "Àudio del fitxer \"{0}\"",
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Si us plau, permet l'accés al micròfon per enregistrar àudio",
-  "selectedAudioFileIsTooBig": "El fitxes d'àudio és molt gran, només estan permesos els audios curts de 10 segons.",
+  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to 200kB (about 10 seconds) are allowed",
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "L' àudio gravat tan sols es reprodueix quan l'acció pronunciar frase acumulada està configurada en mode \"element per element\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Configurar les accions de pronunciar frase acumulada del tauler global en mode \" element per element\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Totes les accions de pronunciar frase del tauler global s'han configurat en mode \"element per element\"",
