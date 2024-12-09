@@ -940,7 +940,7 @@
   "audioWithLengthOfSeconds": "Audio u trajanju od {0}s",
   "audioFromFileWithName": "Audio from file \"{0}\"",
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Dopustite pristup mikrofonu kako biste snimili zvuk",
-  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to about 10 seconds are allowed",
+  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to 200kB (about 10 seconds) are allowed",
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Snimljeni zvuk reproducira se samo radnjama prikupljanja elemenata u načinu \"govori odvojeno\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Postavite radnje globalne ploče na način \"govori odvojeno\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Govorne radnje globalne ploče postavljene su na način \"govori odvojeno\"",
