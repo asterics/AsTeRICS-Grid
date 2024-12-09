@@ -940,7 +940,7 @@
   "audioWithLengthOfSeconds": "Audio cu o lungime de {0}s",
   "audioFromFileWithName": "Audio from file \"{0}\"",
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Vă rugăm să permiteți accesarea microfonului pentru a înregistra audio",
-  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to about 10 seconds are allowed",
+  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to 200kB (about 10 seconds) are allowed",
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Înregistrarea audio este redată numai cu acțiuni de colectare a elementelor în modul \"vorbește separat\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Setează acțiunile din grila globală în modul \"vorbește separat\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Acțiunile de vorbire din grila globală au fost setate la modul \"vorbește separat\"",
