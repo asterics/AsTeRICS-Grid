@@ -940,7 +940,7 @@
   "audioWithLengthOfSeconds": "Zvuk o délce {0}s",
   "audioFromFileWithName": "Audio from file \"{0}\"",
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Pro nahrávání zvuku povolte přístup k mikrofonu",
-  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to about 10 seconds are allowed",
+  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to 200kB (about 10 seconds) are allowed",
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Nahraný zvuk se přehrává pouze při akcích sbírání prvků v režimu \"mluvit samostatně\"",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Nastavení akcí globální tabulky na režim \"mluvit samostatně\"",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Čtení akcí globální tabulky byly nastaveny do režimu \"vyslovovat samostatně\"",
