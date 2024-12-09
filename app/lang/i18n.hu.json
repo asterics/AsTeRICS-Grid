@@ -940,7 +940,7 @@
   "audioWithLengthOfSeconds": "{0} másodpercnyi hangfelvétel",
   "audioFromFileWithName": "Audio from file \"{0}\"",
   "pleaseAllowAccessingMicrophoneInOrderToRecordAudio": "Kérjük engedélyezze a mikrofon használatát a felvételhez",
-  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to about 10 seconds are allowed",
+  "selectedAudioFileIsTooBig": "The selected audio file is too big, only short samples up to 200kB (about 10 seconds) are allowed",
   "recordedAudioIsOnlyPlayedWithCollectElementActions": "Gyűktőkártya műveletek esetén csak akkor kerül hangfelvétel lejátszásra, ha \"egyenkénti felolvasás\" van beállítva",
   "setActionsOfGlobalGridToModeSpeakSeparately": "Az fix kártyákon egyenkénti felvolasási mód beállítása",
   "speakActionsOfGlobalGridWereSetToModeModeSpeak": "Az fix kártyákon egyenkénti felvolasási mód került beállításra",
