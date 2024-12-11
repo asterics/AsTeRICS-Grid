@@ -81,12 +81,13 @@ export default {
             let oldZIndex = 0;
             this.interact(this.elementClassSelector).draggable({
                 listeners: {
+                    start(event) {
+                        oldZIndex = event.target.style.zIndex;
+                    },
                     move (event) {
                         position.x += event.dx
                         position.y += event.dy
-
                         event.target.style.transform = `translate(${position.x}px, ${position.y}px)`;
-                        oldZIndex = event.target.style.zIndex;
                         event.target.style.zIndex = 100;
                     },
                     end(event) {
@@ -103,10 +104,12 @@ export default {
             }).resizable({
                 edges: { left: false, right: true, bottom: this.resizeHandleSelector, top: false },
                 listeners: {
+                    start(event) {
+                        oldZIndex = event.target.style.zIndex;
+                    },
                     move(event) {
                         event.target.style.width = event.rect.width + 'px';
                         event.target.style.height = event.rect.height + 'px';
-                        oldZIndex = event.target.style.zIndex;
                         event.target.style.zIndex = 100;
                     },
                     end(event) {
