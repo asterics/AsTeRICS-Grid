@@ -389,7 +389,7 @@
         });
 
         $.contextMenu({
-            selector: '.grid-container',
+            selector: '#grid-container',
             callback: function (key, options) {
                 handleContextMenu(key);
             },
