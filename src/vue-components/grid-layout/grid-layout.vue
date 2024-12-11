@@ -4,18 +4,31 @@
             <div id="grid-layout-background-vertical" class="grid-container" :style="`margin-left: ${getRasterX()}px; background-size: ${getRasterX()}px ${getRasterX()}px; background-image: linear-gradient(to right, grey 1px, transparent 1px)`"/>
             <div class="grid-bg-lines" :style="`margin-top: ${getRasterY()}px; background-size: ${getRasterY()}px ${getRasterY()}px; background-image: linear-gradient(to bottom, grey 1px, transparent 1px);`"/>
         </div>
-        <component ref="gridComponent" :is="componentType" class="grid-layout" :style="`grid-template-columns: repeat(${columns}, minmax(0, 1fr)); grid-template-rows: repeat(${rows}, minmax(0, 1fr)); background-color: ${backgroundColor}`">
-            <slot></slot>
-        </component>
+        <transition-group ref="gridComponent" :name="editable && enableAnimation ? 'grid-transition' : ''" :tag="componentType" class="grid-layout" :style="`grid-template-columns: repeat(${columns}, minmax(0, 1fr)); grid-template-rows: repeat(${rows}, minmax(0, 1fr)); background-color: ${backgroundColor}`">
+            <grid-element v-for="elem in elements" :key="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" component-type="li">
+                <component :is="renderComponent" :element="elem" v-bind="$attrs"/>
+            </grid-element>
+        </transition-group>
     </div>
 </template>
 
 <script>
 
+import GridElement from './grid-element.vue';
+
 export default {
+    components: { GridElement },
     props: {
         rows: Number,
         columns: Number,
+        elements: {
+            type: Array,
+            default: []
+        },
+        renderComponent: {
+            type: Object,
+            default: null
+        },
         backgroundColor: {
             type: String,
             default: 'white'
@@ -25,6 +38,10 @@ export default {
             default: 'div'
         },
         editable: {
+            type: Boolean,
+            default: false
+        },
+        enableAnimation: {
             type: Boolean,
             default: false
         },
@@ -70,7 +87,7 @@ export default {
             if (!this.$refs.gridComponent) {
                 return 0;
             }
-            let style = getComputedStyle(this.$refs.gridComponent).getPropertyValue(property);
+            let style = getComputedStyle(this.$refs.gridComponent.$el).getPropertyValue(property);
             let first = style.split(" ")[0];
             return parseFloat(first);
         },
@@ -177,5 +194,9 @@ export default {
     bottom: 0;
     right: 0;
     overflow-y: hidden;
+}
+
+.grid-transition-move {
+    transition: transform 1s;
 }
 </style>

@@ -1,11 +1,10 @@
 <template>
     <grid-layout class="grid-display" v-if="gridData" @moved="moveHandler" @resized="resizeHandler"
-                 :editable="true" :rows="gridData.rowCount" :columns="gridData.minColumnCount"
+                 :elements="gridData.gridElements"
+                 :render-component="AppGridElement" :metadata="metadata" :show-resize-handle="true"
+                 :enable-animation="true" :editable="true" :rows="gridData.rowCount" :columns="gridData.minColumnCount"
                  :background-color="metadata.colorConfig.gridBackgroundColor" :background-lines="true"
                  component-type="ol" :watch-data="gridData">
-        <grid-element v-for="elem in gridData.gridElements" :key="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" component-type="li">
-            <app-grid-element :grid-element="elem" :metadata="metadata" :show-resize-handle="true"/>
-        </grid-element>
     </grid-layout>
 </template>
 
@@ -21,6 +20,7 @@ export default {
     props: ["gridData", "metadata"],
     data() {
         return {
+            AppGridElement: AppGridElement
         }
     },
     computed: {

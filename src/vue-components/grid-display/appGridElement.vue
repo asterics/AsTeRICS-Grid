@@ -1,10 +1,10 @@
 <template>
-    <div class="element-container" :id="gridElement.id" tabindex="40" :aria-label="getAriaLabel(gridElement)" :data-empty="isEmpty(gridElement)" :style="`margin: 2px; border-radius: 3px; cursor: pointer; border: 1px solid ${getBorderColor()}; background-color: ${getBackgroundColor(gridElement)};`">
-        <grid-element-normal v-if="gridElement.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="gridElement" :metadata="metadata" aria-hidden="true"/>
-        <grid-element-collect v-if="gridElement.type === GridElement.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
-        <grid-element-youtube v-if="gridElement.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="gridElement" aria-hidden="true"/>
-        <grid-element-predict v-if="gridElement.type === GridElement.ELEMENT_TYPE_PREDICTION" aria-hidden="true"/>
-        <grid-element-hints :grid-element="gridElement"/>
+    <div class="element-container" :id="element.id" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)" :style="`margin: 2px; border-radius: 3px; cursor: pointer; border: 1px solid ${getBorderColor()}; background-color: ${getBackgroundColor(element)};`">
+        <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" aria-hidden="true"/>
+        <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
+        <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
+        <grid-element-predict v-if="element.type === GridElement.ELEMENT_TYPE_PREDICTION" aria-hidden="true"/>
+        <grid-element-hints :grid-element="element"/>
         <div v-if="showResizeHandle" class="ui-resizable-handle ui-icon ui-icon-grip-diagonal-se" style="position: absolute; z-index: 2; bottom: 0; right: 0; cursor: se-resize;"></div>
     </div>
 </template>
@@ -32,7 +32,7 @@ import { GridActionYoutube } from '../../js/model/GridActionYoutube';
 
 export default {
     components: { GridElementNormal, GridElementYoutube, GridElementCollect, GridElementHints, GridElementPredict },
-    props: ["gridElement", "metadata", "showResizeHandle"],
+    props: ["element", "metadata", "showResizeHandle"],
     data() {
         return {
             GridElement: GridElement

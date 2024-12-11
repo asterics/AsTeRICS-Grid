@@ -1,8 +1,7 @@
 <template>
-    <grid-layout class="grid-display" v-if="gridData" :rows="gridData.rowCount" :columns="gridData.minColumnCount" :background-color="metadata.colorConfig.gridBackgroundColor" component-type="ol">
-        <grid-element v-for="elem in gridData.gridElements" :key="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" component-type="li">
-            <app-grid-element v-if="!elem.hidden" :grid-element="elem" :metadata="metadata"/>
-        </grid-element>
+    <grid-layout class="grid-display" v-if="gridData"
+                 :elements="gridData.gridElements" :render-component="AppGridElement" :metadata="metadata"
+                 :rows="gridData.rowCount" :columns="gridData.minColumnCount" :background-color="metadata.colorConfig.gridBackgroundColor" component-type="ol">
     </grid-layout>
 </template>
 
@@ -17,6 +16,7 @@ export default {
     props: ["gridData", "metadata"],
     data() {
         return {
+            AppGridElement: AppGridElement
         }
     },
     computed: {
