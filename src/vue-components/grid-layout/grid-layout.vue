@@ -134,7 +134,9 @@ export default {
                         }
                         thiz.$emit('moved', movedElement, diff);
                         event.target.style.transform = '';
-                        event.target.style.zIndex = oldZIndex;
+                        setTimeout(() => {
+                            event.target.style.zIndex = oldZIndex;
+                        }, thiz.animationDurationMs);
                     }
                 }
             }).resizable({
