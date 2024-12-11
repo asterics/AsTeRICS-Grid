@@ -948,7 +948,7 @@
   "navigateToOtherGrid": "Set navigation",
   "NAV_CREATE_NEW_GRID": "(create new grid)",
   "arasaacSupportSocialMedia": "For general support and questions in Spanish, send us a message at the ARASAAC Social media pages, {instagramLink} or {facebookLink}",
-  "communityOnFacebookGroup": "In order to connect with the AsTeRICS Grid community and share your questions and ideas there, join the open {astericsGridFacebookGroup}",
+  "communityOnFacebookGroup": "In the {astericsGridFacebookGroup} you can connect with other users in order to get support or share your questions and ideas",
   "astericsGridFacebookGroup": "AsTeRICS Grid Facebook Group",
   "foundBugReportGithubIssue": "If you found a bug or have a feature request, please {githubLink}",
   "specialRequestsSendEmail": "For other requests, you can also contact us by email: {foundationEmail}",
