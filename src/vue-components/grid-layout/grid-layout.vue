@@ -50,7 +50,12 @@ export default {
     },
     watch: {
         watchData() {
-            this.initInteract();
+            if (this.editable) {
+                this.initInteract();
+                this.$nextTick(() => {
+                    this.$forceUpdate();
+                });
+            }
         }
     },
     methods: {
