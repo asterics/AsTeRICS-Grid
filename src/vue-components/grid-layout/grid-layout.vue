@@ -1,5 +1,5 @@
 <template>
-    <div style="width: 100%; height: 100%; position: relative;">
+    <div :style="cssProps">
         <div class="grid-bg-lines" v-if="backgroundLines">
             <div id="grid-layout-background-vertical" class="grid-container" :style="`margin-left: ${getRasterX()}px; background-size: ${getRasterX()}px ${getRasterX()}px; background-image: linear-gradient(to right, grey 1px, transparent 1px)`"/>
             <div class="grid-bg-lines" :style="`margin-top: ${getRasterY()}px; background-size: ${getRasterY()}px ${getRasterY()}px; background-image: linear-gradient(to bottom, grey 1px, transparent 1px);`"/>
@@ -57,12 +57,26 @@ export default {
             type: Boolean,
             default: false
         },
+        animationDurationMs: {
+            type: Number,
+            default: 200
+        },
         watchData: Object // on changes of this object interact.js is reloaded
     },
     data() {
         return {
             interact: null,
             timeoutHandler: null
+        }
+    },
+    computed: {
+        cssProps() {
+            return {
+                '--animation-duration': this.animationDurationMs + "ms",
+                width: "100%",
+                height: "100%",
+                position: "relative"
+            }
         }
     },
     watch: {
@@ -196,7 +210,7 @@ export default {
     overflow-y: hidden;
 }
 
-.grid-transition-move {
-    transition: transform 1s;
+.grid-transition-move:not(.nomove) {
+    transition: transform var(--animation-duration);
 }
 </style>
