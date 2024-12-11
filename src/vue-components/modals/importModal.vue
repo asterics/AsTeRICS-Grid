@@ -1,23 +1,10 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container modal-container-flex" @keydown.esc="$emit('close')" @keydown.ctrl.enter="save()">
-                    <div class="container-fluid px-0 mb-5">
-                        <div class="row">
-                            <div class="modal-header col-8 col-sm-10 col-md-10">
-                                <h1 class="inline">{{ $t('importDataFromFile') }}</h1>
-                            </div>
-                            <a class="col-2 col-sm-1 col-md black" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
-                            <a class="col-2 col-sm-1 col-md black" href="javascript:void(0);" :title="$t('close')" @click="$emit('close')"><i class="fas fa-times"/></a>
-                        </div>
-                    </div>
-
-                    <div class="modal-body mt-2">
+    <base-modal icon="fas fa-file-import" :title="$t('importDataFromFile')" @open="init" @keydown.ctrl.enter="save" v-on="$listeners">
+                    <template #default>
                         <div class="row">
                             <div class="col-12 col-md-6 mb-2">
                                 <label class="me-3" for="fileInput">{{ $t('selectFile') }}</label>
-                                <input id="fileInput" type="file" @change="fileChanged" accept=".grd, .txt"/>
+                                <input id="fileInput" type="file" ref="fileInput" @change="fileChanged" accept=".grd, .txt"/>
                             </div>
                             <div class="col-12 col-md-6" v-if="file && !importData">{{ $t('backupFileDoesntContainData') }}</div>
                             <div class="col-12 col-md-6" v-if="importData">
@@ -56,34 +43,25 @@
                                 <label for="resetBeforeImport">{{ $t('deleteExistingDataBeforeImporting') }}</label>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="modal-footer modal-footer-flex">
-                        <div class="button-container srow">
-                            <button class="six columns" @click="$emit('close')" :title="$t('keyboardEsc')">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
+                    </template>
+                    <template #ok>
+                            <button class="btn-primary" @click="save" :title="$t('keyboardCtrlEnter')" :aria-label="$t('importData')" :disabled="!importData">
+                                <i class="fas fa-check" aria-hidden="true"></i><span>{{ $t('importData') }}</span>
                             </button>
-                            <button class="six columns" @click="save()" :disabled="!this.importData" :title="$t('keyboardCtrlEnter')">
-                                <i class="fas fa-check"/> <span>{{ $t('importData') }}</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    </template>
+    </base-modal>
 </template>
 
 <script>
     import {dataService} from '../../js/service/data/dataService'
-    import './../../css/modal.css';
+    import {modalMixin} from "../mixins/modalMixin";
     import {helpService} from "../../js/service/helpService";
     import {i18nService} from "../../js/service/i18nService.js";
     import {MainVue} from "../../js/vue/mainVue.js";
 
-
     export default {
         props: ['gridsData', 'reloadFn'],
+        mixins: [modalMixin],
         data: function () {
             return {
                 data: null,
@@ -125,6 +103,7 @@
                     return;
                 }
                 this.$emit('close');
+                this.closeModal();
                 if (this.options.resetBeforeImport) {
                     MainVue.showProgressBar(0, {
                         header: i18nService.t('importDataFromFile'),
@@ -156,12 +135,11 @@
                 if (this.reloadFn) {
                     this.reloadFn();
                 }
+                this.$refs.fileInput.value = "";
             },
-            openHelp() {
-                helpService.openHelp();
+            init() {
+                helpService.setHelpLocation('07_dictionaries', '#edit-dictionaries');
             }
-        },
-        mounted() {
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

@@ -1,16 +1,6 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
-                    <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
-                    <div class="modal-header">
-                        <h1 name="header">
-                            {{ $t('exportGridsToPdfGrids') }}
-                        </h1>
-                    </div>
-
-                    <div class="modal-body">
+    <base-modal icon="fas fa-file-pdf" :title="$t('exportGridsToPdfGrids')" :help="false" @open="init" @keyup.ctrl.enter="save" @ok="save" v-on="$listeners">
+                    <template #default>
                         <div class="srow">
                             <label class="two columns" for="selectGrid">{{ $t('selectGrid') }}</label>
                             <select class="four columns" id="selectGrid" v-model="selectedGrid" @change="selectedGridChanged">
@@ -44,27 +34,18 @@
                             <input id="includeGlobalGrid" type="checkbox" v-model="options.includeGlobalGrid"/>
                             <label for="includeGlobalGrid">{{ $t('includeGlobalGrid') }}</label>
                         </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <div class="button-container srow">
-                            <button class="six columns" @click="$emit('close')" :title="$t('keyboardEsc')">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
+                    </template>
+                    <template #ok>
+                            <button class="btn-primary" @click="save" :title="$t('keyboardCtrlEnter')" :aria-label="$t('downloadPdf')">
+                                <i class="fas fa-check" aria-hidden="true"></i><span>{{ $t('downloadPdf') }}</span>
                             </button>
-                            <button class="six columns" @click="save()" :title="$t('keyboardCtrlEnter')">
-                                <i class="fas fa-check"/> <span>{{ $t('downloadPdf') }}</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    </template>
+    </base-modal>
 </template>
 
 <script>
     import {i18nService} from "../../js/service/i18nService";
-    import './../../css/modal.css';
+    import {modalMixin} from "../mixins/modalMixin";
     import {dataService} from "../../js/service/data/dataService";
     import {gridUtil} from "../../js/util/gridUtil";
     import {printService} from "../../js/service/printService";
@@ -72,6 +53,7 @@
 
     export default {
         props: ['gridsData', 'printGridId'],
+        mixins: [modalMixin],
         data: function () {
             return {
                 selectedGrid: null,
@@ -124,6 +106,7 @@
                         }
                     });
                     this.$emit('close');
+                    this.closeModal();
                 });
             },
             selectedGridChanged() {
@@ -131,9 +114,8 @@
                     return;
                 }
                 this.allChildren = gridUtil.getAllChildrenRecursive(this.graphList, this.selectedGrid.id);
-            }
-        },
-        mounted() {
+            },
+        init() {
             dataService.getGlobalGrid().then(globalGrid => {
                 this.globalGridId = globalGrid ? globalGrid.id : null;
                 this.graphList = gridUtil.getGraphList(this.gridsData, this.globalGridId);
@@ -145,6 +127,7 @@
                 }
             });
         }
+        },
     }
 </script>
 

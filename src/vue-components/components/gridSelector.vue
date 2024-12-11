@@ -1,32 +1,20 @@
 <template>
-    <div class="container-fluid px-0">
-        <div class="row">
-            <div class="col-12 col-md-5">
-                <div class="row">
+            <div class="selector">
                     <label for="moveGrid">{{ selectLabel }}</label>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <select class="col-12" id="moveGrid" v-model="selectedGrid" @change="selectGrid(selectedGrid)" style="margin-bottom: 1em">
+                <div>
+                        <select id="moveGrid" v-model="selectedGrid" @change="selectGrid(selectedGrid)" style="margin-bottom: 1em">
                             <option v-if="additionalSelectOptions" v-for="option in additionalSelectOptions" :value="option">{{ option | translate}}</option>
                             <option v-for="grid in grids" :value="grid">{{grid.label | extractTranslation}}</option>
                         </select>
-                    </div>
                 </div>
-                <div class="row" v-if="selectedGrid && selectedGrid.thumbnail && selectedGrid.thumbnail.data">
-                    <div class="col-12">
-                        <img :src="selectedGrid.thumbnail.data" style="max-width: 100%; border: 1px solid lightgray"/>
-                    </div>
+                <div v-if="selectedGrid && selectedGrid.thumbnail && selectedGrid.thumbnail.data">
+                        <img :src="selectedGrid.thumbnail.data"/>
                 </div>
-                <div class="row" v-if="selectedGrid && selectedGrid.id">
-                    <div class="col-12">
-                        <button @click="prev" style="width: 49%"><i class="fas fa-arrow-left"></i> <span>{{ $t('back') }}</span></button>
-                        <button @click="next" style="width: 49%"><span>{{ $t('next') }}</span> <i class="fas fa-arrow-right"></i></button>
-                    </div>
+                <div class="controls" v-if="selectedGrid && selectedGrid.id">
+                        <button @click="prev" :aria-label="$t('back')"><i class="fas fa-arrow-left" aria-hidden="true"></i><span>{{ $t('back') }}</span></button>
+                        <button @click="next" :aria-label="$t('next')"><span>{{ $t('next') }}</span><i class="fas fa-arrow-right" aria-hidden="true"></i></button>
                 </div>
             </div>
-        </div>
-    </div>
 </template>
 
 <script>
@@ -79,5 +67,39 @@
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.selector {
+    display: flex;
+    flex-flow: column nowrap;
+
+    .controls {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        margin-top: 1rem;
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    select {
+        width: 100%;
+    }
+
+    button {
+        width: 100%;
+        margin-left: 1rem;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        i + span,
+        span + i {
+            margin-left: 0.5rem;
+        }
+    }
+}
 </style>

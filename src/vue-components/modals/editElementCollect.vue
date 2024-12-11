@@ -48,7 +48,6 @@
 </template>
 
 <script>
-    import './../../css/modal.css';
     import {GridElementCollect} from "../../js/model/GridElementCollect.js";
 
     export default {
