@@ -2,7 +2,7 @@
     <grid-layout class="grid-display" v-if="gridData" @moved="moveHandler" @resized="resizeHandler"
                  :elements="gridData.gridElements"
                  :render-component="AppGridElement" :metadata="metadata" :show-resize-handle="true"
-                 :no-move-id="noMoveId" :editable="true" :rows="gridData.rowCount" :columns="gridData.minColumnCount"
+                 :editable="true" :rows="gridData.rowCount" :columns="gridData.minColumnCount"
                  :background-color="metadata.colorConfig.gridBackgroundColor" :background-lines="true"
                  component-type="ol" :watch-data="gridData">
     </grid-layout>
@@ -20,8 +20,7 @@ export default {
     props: ["gridData", "metadata"],
     data() {
         return {
-            AppGridElement: AppGridElement,
-            noMoveId: null
+            AppGridElement: AppGridElement
         }
     },
     computed: {
@@ -33,7 +32,6 @@ export default {
             }
             let id = movedElement.children[0].id;
             let element = this.getElement(id);
-            this.noMoveId = element.id;
             if (element.x + diff.x >= 0 && element.y + diff.y >= 0) {
                 element.x += diff.x;
                 element.y += diff.y;
@@ -44,7 +42,6 @@ export default {
         resizeHandler(resizedElement, newSize) {
             let id = resizedElement.children[0].id;
             let element = this.getElement(id);
-            this.noMoveId = element.id;
             if (!element || !newSize ||
                 (newSize.width === resizedElement.width && newSize.height === resizedElement.height)) {
                 return;

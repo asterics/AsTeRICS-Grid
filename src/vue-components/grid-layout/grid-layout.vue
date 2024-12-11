@@ -5,7 +5,7 @@
             <div class="grid-bg-lines" :style="`margin-top: ${getRasterY()}px; background-size: ${getRasterY()}px ${getRasterY()}px; background-image: linear-gradient(to bottom, grey 1px, transparent 1px);`"/>
         </div>
         <transition-group ref="gridComponent" :name="editable ? 'grid-transition' : ''" :tag="componentType" class="grid-layout" :style="`grid-template-columns: repeat(${columns}, minmax(0, 1fr)); grid-template-rows: repeat(${rows}, minmax(0, 1fr)); background-color: ${backgroundColor}`">
-            <grid-element v-for="elem in elements" :key="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" component-type="li" :class="elem.id === noMoveId ? 'nomove' : ''">
+            <grid-element v-for="elem in elements" :key="elem.id" :data-id="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" component-type="li" :class="elem.id === noMoveId ? 'nomove' : ''">
                 <component :is="renderComponent" :element="elem" v-bind="$attrs"/>
             </grid-element>
         </transition-group>
@@ -41,10 +41,6 @@ export default {
             type: Boolean,
             default: false
         },
-        noMoveId: {
-            type: String,
-            default: ''
-        },
         elementClassSelector: {
             type: String,
             default: '.grid-layout-element'
@@ -66,7 +62,8 @@ export default {
     data() {
         return {
             interact: null,
-            timeoutHandler: null
+            timeoutHandler: null,
+            noMoveId: null
         }
     },
     computed: {
@@ -134,9 +131,11 @@ export default {
                         }
                         thiz.$emit('moved', movedElement, diff);
                         event.target.style.transform = '';
+                        thiz.noMoveId = event.target.getAttribute("data-id");
                         setTimeout(() => {
                             event.target.style.zIndex = oldZIndex;
-                        }, thiz.animationDurationMs);
+                            thiz.noMoveId = null;
+                        }, thiz.animationDurationMs + 100);
                     }
                 }
             }).resizable({
