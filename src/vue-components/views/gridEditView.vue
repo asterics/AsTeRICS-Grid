@@ -35,14 +35,6 @@
             <div v-if="!showGrid" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
             </div>
-            <div id="grid-layout-background-wrapper" class="grid-container" style="margin: 10px; display: none">
-                <div id="grid-layout-background-vertical" class="grid-container" style="margin-left: 204px; background-size: 209px 209px;
-    background-image: linear-gradient(to right, grey 1px, transparent 1px)">
-                </div>
-                <div id="grid-layout-background-horizontal" class="grid-container" style="margin-top: 204px; background-size: 209px 209px;
-    background-image: linear-gradient(to bottom, grey 1px, transparent 1px);">
-                </div>
-            </div>
         </div>
         <div class="srow content" v-if="metadata && gridData && gridData.gridElements.length > 0" style="max-width: 100%; min-height: 0">
             <app-grid-editable id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata"/>
