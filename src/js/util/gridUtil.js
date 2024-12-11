@@ -753,8 +753,8 @@ gridUtil.resolveCollisions = function(gridData, newElement, diff = { x: undefine
 
     let conflictElements = getConflictingElements(gridData.gridElements, newElement);
     if (conflictElements.every(conflict => isFullyCovering(newElement, conflict)) &&
-        diff.x <= newElement.width &&
-        diff.y <= newElement.height &&
+        Math.abs(diff.x) <= newElement.width &&
+        Math.abs(diff.y) <= newElement.height &&
         (diff.x === 0 || diff.y === 0)) {
         // element moved to a neighbour square only in x- or y-axis and fully covers all conflicts
         for (let conflict of conflictElements) {
