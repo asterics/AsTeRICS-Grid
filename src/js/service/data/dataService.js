@@ -112,6 +112,7 @@ dataService.getLastGridUpdateTime = async function () {
  * @return {Promise} resolves after operation finished successful
  */
 dataService.saveGrid = function (gridData) {
+    gridData = JSON.parse(JSON.stringify(gridData));
     gridData.gridElements = gridUtil.sortGridElements(gridData.gridElements);
     gridData.lastUpdateTime = new Date().getTime();
     return databaseService.saveObject(GridData, gridData);
