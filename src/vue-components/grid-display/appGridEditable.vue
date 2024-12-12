@@ -4,7 +4,7 @@
                  :render-component="AppGridElement" :metadata="metadata" :show-resize-handle="true"
                  :editable="true" :rows="gridData.rowCount" :columns="gridData.minColumnCount"
                  :background-color="metadata.colorConfig.gridBackgroundColor" :background-lines="true"
-                 component-type="ol" :watch-data="gridData">
+                 component-type="ol" :watch-data="watchData">
     </grid-layout>
 </template>
 
@@ -17,7 +17,7 @@ import { gridLayoutUtil } from '../../js/util/gridLayoutUtil';
 
 export default {
     components: { GridElement, GridLayout, AppGridElement },
-    props: ["gridData", "metadata"],
+    props: ["gridData", "metadata", "watchData"],
     data() {
         return {
             AppGridElement: AppGridElement
@@ -36,7 +36,7 @@ export default {
                 element.x += diff.x;
                 element.y += diff.y;
             }
-            gridLayoutUtil.resolveCollisions(this.gridData.gridElements, element, {
+            this.gridData.gridElements = gridLayoutUtil.resolveCollisions(this.gridData.gridElements, element, {
                 diff: diff,
                 gridWidth: this.gridData.minColumnCount,
                 gridHeight: this.gridData.rowCount
@@ -52,7 +52,7 @@ export default {
             }
             element.width = newSize.width;
             element.height = newSize.height;
-            gridLayoutUtil.resolveCollisions(this.gridData.gridElements, element, {
+            this.gridData.gridElements = gridLayoutUtil.resolveCollisions(this.gridData.gridElements, element, {
                 gridWidth: this.gridData.minColumnCount,
                 gridHeight: this.gridData.rowCount
             });

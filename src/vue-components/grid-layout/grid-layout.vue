@@ -57,7 +57,7 @@ export default {
             type: Number,
             default: 200
         },
-        watchData: Object // on changes of this object interact.js is reloaded
+        watchData: null // on changes of this object interact.js is reloaded
     },
     data() {
         return {

@@ -35,36 +35,39 @@ gridLayoutUtil.getHeight = function(gridElements,  gridHeight = 0) {
 /**
  * Inserts a duplicate of an element to given elements. Other elements are moved to the right
  * in order to make space for the new element.
- * @param gridElements
+ * @param elements
  * @param element the original element that was duplicated
  * @param duplicate
  * @param options
  * @param options.gridWidth (optional) standard width of the grid, can be overruled by given grid elements
  * @param options.gridHeight (optional) standard height of the grid, can be overruled by given grid elements
+ * @param options.dontCopy if true, elements aren't copied and the original elements are used (and changed)
  * @returns {*} updated gridElements
  */
-gridLayoutUtil.insertDuplicate = function(gridElements, element, duplicate, options = {}) {
-    if (gridLayoutUtil.isFreeSpace(gridElements, element.x + element.width, element.y, element.width, element.height, options)) {
+gridLayoutUtil.insertDuplicate = function(elements, element, duplicate, options = {}) {
+    elements = getCopy(elements, options.dontCopy);
+    if (gridLayoutUtil.isFreeSpace(elements, element.x + element.width, element.y, element.width, element.height, options)) {
         // space right?
         duplicate.x = element.x + element.width;
-        gridElements.push(duplicate);
-    } else if (gridLayoutUtil.isFreeSpace(gridElements, element.x, element.y + element.height, element.width, element.height, options)) {
+        elements.push(duplicate);
+    } else if (gridLayoutUtil.isFreeSpace(elements, element.x, element.y + element.height, element.width, element.height, options)) {
         // space below?
         duplicate.y = element.y + element.height;
-        gridElements.push(duplicate);
-    } else if (gridLayoutUtil.isFreeSpace(gridElements, element.x - element.width, element.y, element.width, element.height, options)) {
+        elements.push(duplicate);
+    } else if (gridLayoutUtil.isFreeSpace(elements, element.x - element.width, element.y, element.width, element.height, options)) {
         // space left?
         duplicate.x = element.x - element.width;
-        gridElements.push(duplicate);
-    } else if (gridLayoutUtil.isFreeSpace(gridElements, element.x, element.y - element.height, element.width, element.height, options)) {
+        elements.push(duplicate);
+    } else if (gridLayoutUtil.isFreeSpace(elements, element.x, element.y - element.height, element.width, element.height, options)) {
         // space up?
         duplicate.y = element.y - element.height;
-        gridElements.push(duplicate);
+        elements.push(duplicate);
     } else {
-        gridElements.push(duplicate);
-        gridLayoutUtil.resolveCollisions(gridElements, element, options);
+        elements.push(duplicate);
+        options.dontCopy = true;
+        elements = gridLayoutUtil.resolveCollisions(elements, element, options);
     }
-    return gridElements;
+    return elements;
 }
 
 /**
@@ -114,9 +117,15 @@ gridLayoutUtil.moveElements = function(elements, options = {}) {
  * @param options.maxMove maximum number of steps to move
  * @param options.gridWidth (optional) standard width of the grid, can be overruled by given grid elements
  * @param options.gridHeight (optional) standard height of the grid, can be overruled by given grid elements
+ * @param options.dontCopy if true, elements aren't copied and the original elements are used (and changed)
  * @returns {*}
  */
 gridLayoutUtil.moveAsPossible = function(allElements = [], moveElements = [], direction, options = {}) {
+    if(!options.dontCopy) {
+        allElements = getCopy(allElements);
+        // assure moveElements are part of the same (copied) instances from allElements, since they are directly altered below
+        moveElements = moveElements.map(moveElem => allElements.find(e => e.id === moveElem.id));
+    }
     if (!gridLayoutUtil.DIRECTIONS_ALL.includes(direction)) {
         return allElements;
     }
@@ -180,15 +189,18 @@ gridLayoutUtil.isFreeSpace = function(elements, x, y, width, height, options = {
  * @param options
  * @param options.gridWidth (optional) standard width of the grid, can be overruled by given grid elements
  * @param options.gridHeight (optional) standard height of the grid, can be overruled by given grid elements
+ * @param options.dontCopy if true, elements aren't copied and the original elements are used (and changed)
  * @returns {*}
  */
 gridLayoutUtil.normalizeGrid = function(gridElements, options = {}) {
+    gridElements = getCopy(gridElements, options.dontCopy);
     for (let gridElement of gridElements) {
         gridElement.width = 1;
         gridElement.height = 1;
     }
     options.outOfBounds = true;
-    gridLayoutUtil.moveAsPossible(gridElements, gridElements, gridLayoutUtil.DIR_LEFT, options);
+    options.dontCopy = true;
+    gridElements = gridLayoutUtil.moveAsPossible(gridElements, gridElements, gridLayoutUtil.DIR_LEFT, options);
     return gridElements;
 };
 
@@ -202,9 +214,11 @@ gridLayoutUtil.normalizeGrid = function(gridElements, options = {}) {
  * @param options.diff.y movement of the new element in y-axis
  * @param options.gridWidth (optional) standard width of the grid, can be overruled by given grid elements
  * @param options.gridHeight (optional) standard height of the grid, can be overruled by given grid elements
+ * @param options.dontCopy if true, elements aren't copied and the original elements are used (and changed)
  * @returns {*}
  */
 gridLayoutUtil.resolveCollisions = function(gridElements, newElement, options = {}) {
+    gridElements = getCopy(gridElements, options.dontCopy);
     if (!hasCollisions(gridElements)) {
         return gridElements;
     }
@@ -236,8 +250,10 @@ gridLayoutUtil.resolveCollisions = function(gridElements, newElement, options = 
         // push those back, which don't collide
         options.outOfBounds = true;
         options.maxMove = moveX;
-        gridLayoutUtil.moveAsPossible(gridElements, movedElements, gridLayoutUtil.DIR_LEFT, options);
+        options.dontCopy = true;
+        gridElements = gridLayoutUtil.moveAsPossible(gridElements, movedElements, gridLayoutUtil.DIR_LEFT, options);
     }
+    return gridElements;
 }
 
 gridLayoutUtil.getElementById = function(elements = [], id) {
@@ -325,6 +341,20 @@ function getFilled2DimArray(firstCount, secondCount, initValue) {
         array.push(secondArray);
     }
     return array;
+}
+
+function getCopy(gridElementsOrElement, dontCopy) {
+    if (dontCopy) {
+        return gridElementsOrElement;
+    }
+    if (Array.isArray(gridElementsOrElement)) {
+        return gridElementsOrElement.map(elem => getCopyElement(elem));
+    }
+    return getCopyElement(gridElementsOrElement);
+}
+
+function getCopyElement(gridElement = {}) {
+    return Object.assign({}, gridElement);
 }
 
 export { gridLayoutUtil };

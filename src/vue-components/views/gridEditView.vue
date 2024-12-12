@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class="srow content" v-if="metadata && gridData && gridData.gridElements.length > 0" style="max-width: 100%; min-height: 0">
-            <app-grid-editable id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata"/>
+            <app-grid-editable id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata" :watch-data="updateCount"/>
         </div>
     </div>
 </template>
@@ -94,7 +94,8 @@
                 editElementId: null,
                 showGrid: false,
                 constants: constants,
-                markedElement: null
+                markedElement: null,
+                updateCount: 0
             }
         },
         components: {
@@ -108,34 +109,43 @@
             setDimensions: function (rows, cols) {
                 this.gridData.rowCount = rows;
                 this.gridData.minColumnCount = cols;
-                this.undoService.updateGrid(this.gridData);
+                this.updateGridWithUndo();
             },
             fillGaps: function() {
-                gridLayoutUtil.moveAsPossible(this.gridData.gridElements, this.gridData.gridElements, gridLayoutUtil.DIR_LEFT, {
+                this.gridData.gridElements = gridLayoutUtil.moveAsPossible(this.gridData.gridElements, this.gridData.gridElements, gridLayoutUtil.DIR_LEFT, {
                     outOfBounds: true,
                     gridWidth: this.gridData.minColumnCount,
                     gridHeight: this.gridData.rowCount
                 });
-                this.undoService.updateGrid(this.gridData);
+                this.updateGridWithUndo();
             },
             normalizeGrid: function () {
                 gridUtil.ensureUniqueIds(this.gridData.gridElements);
-                gridLayoutUtil.normalizeGrid(this.gridData.gridElements);
-                this.undoService.updateGrid(this.gridData);
+                this.gridData.gridElements = gridLayoutUtil.normalizeGrid(this.gridData.gridElements);
+                this.updateGridWithUndo();
             },
             async handleChange() {
-                await this.undoService.updateGrid(this.gridData);
-                this.reload(this.gridData);
+                await this.updateGridWithUndo();
             },
             undo: async function () {
                 this.doingUndoRedo = true;
                 this.gridData = await this.undoService.doUndo();
                 this.doingUndoRedo = false;
+                this.forceUpdate();
             },
             redo: async function () {
                 this.doingUndoRedo = true;
                 this.gridData = await this.undoService.doRedo();
                 this.doingUndoRedo = false;
+                this.forceUpdate();
+            },
+            async updateGridWithUndo() {
+                await this.undoService.updateGrid(this.gridData);
+                this.forceUpdate();
+            },
+            forceUpdate() {
+                this.updateCount++;
+                this.$forceUpdate();
             },
             async reload(gridData) {
                 gridData = gridData || (await dataService.getGrid(this.gridData.id));
@@ -157,16 +167,16 @@
             },
             removeElement(id) {
                 this.gridData.gridElements = this.gridData.gridElements.filter((el) => el.id !== id);
-                this.undoService.updateGrid(this.gridData);
+                this.updateGridWithUndo();
             },
-            duplicateElement(id) {
+            async duplicateElement(id) {
                 let element = gridLayoutUtil.getElementById(this.gridData.gridElements, id);
                 let duplicate = gridUtil.duplicateElement(element);
                 this.gridData.gridElements = gridLayoutUtil.insertDuplicate(this.gridData.gridElements, element, duplicate, {
                     gridWidth: this.gridData.minColumnCount,
                     gridHeight: this.gridData.rowCount
                 });
-                this.undoService.updateGrid(this.gridData);
+                this.updateGridWithUndo();
             },
             newElement(type) {
                 if (type === GridElement.ELEMENT_TYPE_NORMAL) {
@@ -193,7 +203,7 @@
                         newElement.actions = [playText];
                     }
                     this.gridData.gridElements.push(newElement);
-                    this.undoService.updateGrid(this.gridData);
+                    this.updateGridWithUndo();
                 }
             },
             newElements() {
@@ -202,13 +212,13 @@
             clearElements() {
                 if (confirm(i18nService.t('CONFIRM_DELETE_ALL_ELEMS'))) {
                     this.gridData.gridElements = [];
-                    this.undoService.updateGrid(this.gridData);
+                    this.updateGridWithUndo();
                 }
             },
             fillElements() {
                 let elements = gridUtil.getFillElements(this.gridData);
                 this.gridData.gridElements = this.gridData.gridElements.concat(elements);
-                this.undoService.updateGrid(this.gridData);
+                this.updateGridWithUndo();
             },
             reloadFn(event, updatedIds, updatedDocs, deletedIds) {
                 if (vueApp && deletedIds.includes(vueApp.gridId)) {
