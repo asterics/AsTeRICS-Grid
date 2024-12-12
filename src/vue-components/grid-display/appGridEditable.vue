@@ -32,14 +32,11 @@ export default {
             }
             let id = movedElement.children[0].id;
             let element = this.getElement(id);
-            if (element.x + diff.x >= 0 && element.y + diff.y >= 0) {
-                element.x += diff.x;
-                element.y += diff.y;
-            }
             this.gridData.gridElements = gridLayoutUtil.resolveCollisions(this.gridData.gridElements, element, {
                 diff: diff,
                 gridWidth: this.gridData.minColumnCount,
-                gridHeight: this.gridData.rowCount
+                gridHeight: this.gridData.rowCount,
+                calcNewPos: true
             });
             this.$emit("changed", this.gridData);
         },

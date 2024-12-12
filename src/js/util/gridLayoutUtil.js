@@ -207,28 +207,44 @@ gridLayoutUtil.normalizeGrid = function(gridElements, options = {}) {
 /**
  * resolves collisions based in given grids and a newly added / changed element
  * @param gridElements array of grid elements
- * @param newElement element changed / added (already at new position)
+ * @param newElement element changed / added (already at new position, or set options.calcNewPos to true)
  * @param options
  * @param options.diff (optional) how much the new element was moved from the original position
  * @param options.diff.x movement of the new element in x-axis
  * @param options.diff.y movement of the new element in y-axis
+ * @param options.diff.exact if true newElement was dropped exactly on the x-position, if false between two elements (x-axis)
+ *                           if this property is set:
+ *                              - exact drops lead to exchange of conflicting element
+ *                              - in-between drops lead to moving conflicting elements to the right
  * @param options.gridWidth (optional) standard width of the grid, can be overruled by given grid elements
  * @param options.gridHeight (optional) standard height of the grid, can be overruled by given grid elements
  * @param options.dontCopy if true, elements aren't copied and the original elements are used (and changed)
+ * @param options.calcNewPos if true, newElement is still at the original position and new position should be calculated in this method
  * @returns {*}
  */
 gridLayoutUtil.resolveCollisions = function(gridElements, newElement, options = {}) {
     gridElements = getCopy(gridElements, options.dontCopy);
-    if (!hasCollisions(gridElements)) {
+    newElement = gridElements.find(e => e.id === newElement.id);
+    let diff = options.diff || { x: undefined, y: undefined, exact: undefined, xExact: undefined, yExact: undefined };
+    let newPosSwap = options.calcNewPos ? gridLayoutUtil.getSwapPosition(newElement, diff) : getCopy(newElement);
+    let testElements = gridElements.filter(e => e.id !== newElement.id).concat(newPosSwap);
+    if (!hasCollisions(testElements)) {
+        if (options.calcNewPos) {
+            newElement.x = newPosSwap.x;
+            newElement.y = newPosSwap.y;
+        }
         return gridElements;
     }
-    let diff = options.diff || { x: undefined, y: undefined };
-    let conflictElements = getConflictingElements(gridElements, newElement);
-    if (conflictElements.every(conflict => isFullyCovering(newElement, conflict)) &&
+    if (allConflictsFullyCovered(gridElements, newPosSwap) &&
         Math.abs(diff.x) <= newElement.width &&
         Math.abs(diff.y) <= newElement.height &&
         (diff.x === 0 || diff.y === 0)) {
         // element moved to a neighbour square only in x- or y-axis and fully covers all conflicts
+        if (options.calcNewPos) {
+            newElement.x = newPosSwap.x;
+            newElement.y = newPosSwap.y;
+        }
+        let conflictElements = getConflictingElements(gridElements, newElement);
         for (let conflict of conflictElements) {
             if (Math.abs(diff.x) > 0) {
                 conflict.x += Math.sign(diff.x) * (-1) * newElement.width;
@@ -236,8 +252,26 @@ gridLayoutUtil.resolveCollisions = function(gridElements, newElement, options = 
                 conflict.y += Math.sign(diff.y) * (-1) * newElement.height;
             }
         }
+    } else if (diff.exact &&
+        allConflictsFullyCovered(gridElements, newPosSwap)) {
+        // swap same size elements
+        if (options.calcNewPos) {
+            newElement.x = newPosSwap.x;
+            newElement.y = newPosSwap.y;
+        }
+        let conflictElements = getConflictingElements(gridElements, newElement);
+        for (let conflict of conflictElements) { // can only be one
+            conflict.x = conflict.x - diff.x;
+            conflict.y = conflict.y - diff.y;
+        }
+
     } else {
         // move right and then back
+        if (options.calcNewPos) {
+            let newPosMoveRight = gridLayoutUtil.getMoveRightPosition(newElement, diff);
+            newElement.x = newPosMoveRight.x;
+            newElement.y = newPosMoveRight.y;
+        }
         let otherElements = gridElements.filter(el => el.id !== newElement.id);
         let moveElements = otherElements.filter(el =>
             el.x >= newElement.x || // elements that are equal or more right on x-axis
@@ -254,6 +288,33 @@ gridLayoutUtil.resolveCollisions = function(gridElements, newElement, options = 
         gridElements = gridLayoutUtil.moveAsPossible(gridElements, movedElements, gridLayoutUtil.DIR_LEFT, options);
     }
     return gridElements;
+}
+
+/**
+ * returns the position of the element after applying diff
+ * @param element
+ * @param diff
+ * @returns {*|{}}
+ */
+gridLayoutUtil.getSwapPosition = function(element, diff) {
+    let newPos = getCopy(element);
+    newPos.x = Math.max(0, newPos.x + diff.x);
+    newPos.y = Math.max(0, newPos.y + diff.y);
+    return newPos;
+}
+
+/**
+ * returns the position of the element after applying diff, but
+ * x-values between 2 elements are resulting in x+1
+ * @param element
+ * @param diff
+ * @returns {*|{}}
+ */
+gridLayoutUtil.getMoveRightPosition = function(element, diff) {
+    let newPos = getCopy(element);
+    newPos.x = Math.max(0, newPos.x + Math.round(diff.xExact + 0.5));
+    newPos.y = Math.max(0, newPos.y + diff.y);
+    return newPos;
 }
 
 gridLayoutUtil.getElementById = function(elements = [], id) {
@@ -303,6 +364,17 @@ function hasCollisions(elements) {
 
 function getConflictingElements(allElements, testElement) {
     return allElements.filter(el => el.id !== testElement.id && hasCollisions([el, testElement]));
+}
+
+/**
+ * returns true if all conflicting elements are fully covered by the element
+ * @param elements
+ * @param element
+ * @returns {*}
+ */
+function allConflictsFullyCovered(elements, element) {
+    let conflicts = getConflictingElements(elements, element);
+    return conflicts.every(conflict => isFullyCovering(element, conflict));
 }
 
 function dirToXYDiff(direction) {

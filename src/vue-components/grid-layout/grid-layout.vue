@@ -125,9 +125,16 @@ export default {
                     },
                     end(event) {
                         let movedElement = event.target;
+                        let diffX = position.x / thiz.getRasterX();
+                        let diffY = position.y / thiz.getRasterY();
+                        let diffXRound = Math.round(diffX);
+                        let exact = Math.abs(diffXRound - diffX) < 0.25;
                         let diff = {
-                            x: Math.round(position.x / thiz.getRasterX()),
-                            y: Math.round(position.y / thiz.getRasterY())
+                            x: diffXRound,
+                            y: Math.round(diffY),
+                            exact: exact,
+                            xExact: diffX,
+                            yExact: diffY
                         }
                         thiz.$emit('moved', movedElement, diff);
                         event.target.style.transform = '';
