@@ -567,10 +567,9 @@ gridUtil.ensureDefaults = function(gridData) {
 
 /**
  * returns a duplicate of the given element, same contents, different id, navigation actions removed
- * @param gridData the grid containing all elements
  * @param element the element that should be duplicated
  */
-gridUtil.duplicateElement = function(gridData, element) {
+gridUtil.duplicateElement = function(element) {
     let duplicate = JSON.parse(JSON.stringify(element));
     duplicate.id = modelUtil.generateId(GridElement.ID_PREFIX);
     duplicate.actions = duplicate.actions || [];

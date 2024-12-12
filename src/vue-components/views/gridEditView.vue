@@ -161,7 +161,7 @@
             },
             duplicateElement(id) {
                 let element = gridLayoutUtil.getElementById(this.gridData.gridElements, id);
-                let duplicate = gridUtil.duplicateElement(this.gridData, element);
+                let duplicate = gridUtil.duplicateElement(element);
                 this.gridData.gridElements = gridLayoutUtil.insertDuplicate(this.gridData.gridElements, element, duplicate, {
                     gridWidth: this.gridData.minColumnCount,
                     gridHeight: this.gridData.rowCount
