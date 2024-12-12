@@ -9,7 +9,7 @@ import { GridElementCollect } from '../model/GridElementCollect.js';
 import { constants } from './constants.js';
 import { GridActionARE } from '../model/GridActionARE';
 import { encryptionService } from '../service/data/encryptionService';
-import { util } from './util';
+import { gridLayoutUtil } from './gridLayoutUtil';
 
 let gridUtil = {};
 
@@ -531,24 +531,12 @@ gridUtil.getHash = function(gridData) {
 
 gridUtil.getWidth = function(gridDataOrElements) {
     let gridElements = getGridElements(gridDataOrElements);
-    if (gridElements.length === 0) {
-        return 0;
-    }
-    return Math.max.apply(
-        null,
-        gridElements.map((el) => el.x + el.width)
-    );
+    return gridLayoutUtil.getWidth(gridElements);
 };
 
 gridUtil.getHeight = function(gridDataOrElements) {
     let gridElements = getGridElements(gridDataOrElements);
-    if (gridElements.length === 0) {
-        return 0;
-    }
-    return Math.max.apply(
-        null,
-        gridElements.map((el) => el.y + el.height)
-    );
+    return gridLayoutUtil.getHeight(gridElements);
 };
 
 gridUtil.getWidthWithBounds = function(gridDataOrElements) {
@@ -578,242 +566,29 @@ gridUtil.ensureDefaults = function(gridData) {
 };
 
 /**
- * Duplicates the element with the given ID. Other elements are moved to the right
- * in order to make space for the new element.
- * @param gridData
- * @param elementId
- * @returns {*} gridData including the duplicated element
+ * returns a duplicate of the given element, same contents, different id, navigation actions removed
+ * @param gridData the grid containing all elements
+ * @param element the element that should be duplicated
  */
-gridUtil.duplicateElement = function(gridData, elementId) {
-    let element = gridData.gridElements.find((el) => el.id === elementId)
+gridUtil.duplicateElement = function(gridData, element) {
     let duplicate = JSON.parse(JSON.stringify(element));
     duplicate.id = modelUtil.generateId(GridElement.ID_PREFIX);
     duplicate.actions = duplicate.actions || [];
     duplicate.actions = duplicate.actions.filter(
         (action) => action.modelName !== GridActionNavigate.getModelName()
     );
-    if (gridUtil.isFreeSpace(gridData, element.x + element.width, element.y, element.width, element.height)) {
-        // space right?
-        duplicate.x = element.x + element.width;
-        gridData.gridElements.push(duplicate);
-    } else if (gridUtil.isFreeSpace(gridData, element.x, element.y + element.height, element.width, element.height)) {
-        // space below?
-        duplicate.y = element.y + element.height;
-        gridData.gridElements.push(duplicate);
-    } else if (gridUtil.isFreeSpace(gridData, element.x - element.width, element.y, element.width, element.height)) {
-        // space left?
-        duplicate.x = element.x - element.width;
-        gridData.gridElements.push(duplicate);
-    } else if (gridUtil.isFreeSpace(gridData, element.x, element.y - element.height, element.width, element.height)) {
-        // space up?
-        duplicate.y = element.y - element.height;
-        gridData.gridElements.push(duplicate);
-    } else {
-        gridData.gridElements.push(duplicate);
-        gridUtil.resolveCollisions(gridData, element);
-    }
-    return gridData;
+    return duplicate;
 }
 
-/**
- * moves elements based on the given options
- * @param elements all elements of the grid
- * @param options
- * @param options.moveX how much to move in x-direction
- * @param options.moveY how much to move in y-direction
- * @param options.startX at which x-value moving is started
- * @param options.startY at which y-value moving is started
- * @param options.moveElements elements that should be moved, if specified startX / startY have no effect
- * @returns {*[]} array of moved elements with new x/y values
- */
-gridUtil.moveElements = function(elements, options = {}) {
-    elements = elements || [];
-    options.moveX = options.moveX || 0;
-    options.moveY = options.moveY || 0;
-    options.startX = options.startX || 0;
-    options.startY = options.startY || 0;
-    options.moveElements = options.moveElements || elements.filter(elem => elem.x >= options.startX && elem.y >= options.startY);
-
-    // start with correct elements to move,
-    // e.g. start with right elements if moving to the right
-    sortBeforeMove(options.moveElements, options.moveX, options.moveY);
-    for (let moveElement of options.moveElements) {
-        if (gridUtil.isFreeSpace(elements,
-            moveElement.x + options.moveX,
-            moveElement.y + options.moveY,
-            moveElement.width,
-            moveElement.height,
-            {outOfBounds: true})) {
-            moveElement.x += options.moveX;
-            moveElement.y += options.moveY;
-        }
-    }
-    return options.moveElements;
-}
-
-/**
- * moves elements in a specific direction as far as possible (without colliding with another element)
- * @param gridData grid data containing all elements
- * @param elements the elements to move
- * @param direction the direction to move, see constants.DIR_* or 1-4 (UP, RIGHT, DOWN, RIGHT)
- * @param options
- * @param options.outOfBounds if true elements are also moved if they are out of the bounds given by gridData
- * @param options.maxMove maximum number of steps to move
- * @returns {*}
- */
-gridUtil.moveAsPossible = function(gridData, elements = [], direction, options = {}) {
-    if (!constants.DIRECTIONS_ALL.includes(direction) || !gridData) {
-        return gridData;
-    }
-    let xyDiff = dirToXYDiff(direction);
-    sortBeforeMove(elements, xyDiff.x, xyDiff.y);
-
-    for (let element of elements) {
-        gridData.gridElements = gridData.gridElements.filter(el => el.id !== element.id);
-        let step;
-
-        for (step = 1; step <= (options.maxMove || constants.MAX_GRID_SIZE); step++) {
-            if (!gridUtil.isFreeSpace(gridData, element.x + xyDiff.x * step, element.y + xyDiff.y * step, element.width, element.height, options)) {
-                break;
-            }
-        }
-        element.x += (step - 1) * xyDiff.x;
-        element.y += (step - 1) * xyDiff.y;
-        gridData.gridElements.push(element);
-    }
-    return gridData;
-};
-
-/**
- * returns true, if the given element size is free space within the given gridData / gridElements
- * @param gridDataOrElements
- * @param x
- * @param y
- * @param width
- * @param height
- * @param options
- * @param options.outOfBounds if false (default) space outside the current dimensions of the grid is considered to be not free,
- *                            otherwise space more right or below the current bounds is considered to be free
- * @returns {boolean}
- */
-gridUtil.isFreeSpace = function(gridDataOrElements, x, y, width, height, options = {}) {
-    if (x < 0 || y < 0) {
-        return false;
-    }
-    options.outOfBounds = options.outOfBounds === true;
-    let xMax = gridUtil.getWidthWithBounds(gridDataOrElements);
-    let yMax = gridUtil.getHeightWithBounds(gridDataOrElements);
-    let occupiedMatrix = getOccupiedMatrix(gridDataOrElements);
-    for (let xi = x; xi < x + width; xi++) {
-        for (let yi = y; yi < y + height; yi++) {
-            if (isOccupied(occupiedMatrix, xi, yi)) {
-                return false;
-            }
-            if (!options.outOfBounds && (xi < 0 || yi < 0 || xi >= xMax || yi >= yMax)) {
-                return false;
-            }
-        }
-    }
-    return true;
-};
-
-/**
- * normalizes the layout of the grid: (1) all elements are sized to 1/1,
- * (2) gaps are filled (move all items to the left), (3) duplicated IDs are fixed
- * @param gridData
- * @returns {*}
- */
-gridUtil.normalizeGrid = function(gridData) {
+gridUtil.ensureUniqueIds = function(gridElements) {
     let seenIds = [];
-    for (let gridElement of gridData.gridElements) {
-        gridElement.width = 1;
-        gridElement.height = 1;
+    for (let gridElement of gridElements) {
         if (seenIds.includes(gridElement.id)) {
             gridElement.id = new GridElement().id;
         }
         seenIds.push(gridElement.id);
     }
-    gridUtil.moveAsPossible(gridData, gridData.gridElements, constants.DIR_LEFT, { outOfBounds: true });
-    return gridData;
 };
-
-/**
- * resolves collisions based on a given grid and a newly added / changed element
- * @param gridData data of the grid
- * @param newElement element changed / added (already at new position)
- * @param diff (optional) how much the new element was moved from the original position
- * @param diff.x movement of the new element in x-axis
- * @param diff.y movement of the new element in y-axis
- * @returns {*}
- */
-gridUtil.resolveCollisions = function(gridData, newElement, diff = { x: undefined, y: undefined }) {
-    if (!hasCollisions(gridData)) {
-        return gridData;
-    }
-
-    let conflictElements = getConflictingElements(gridData.gridElements, newElement);
-    if (conflictElements.every(conflict => isFullyCovering(newElement, conflict)) &&
-        Math.abs(diff.x) <= newElement.width &&
-        Math.abs(diff.y) <= newElement.height &&
-        (diff.x === 0 || diff.y === 0)) {
-        // element moved to a neighbour square only in x- or y-axis and fully covers all conflicts
-        for (let conflict of conflictElements) {
-            if (Math.abs(diff.x) > 0) {
-                conflict.x += Math.sign(diff.x) * (-1) * newElement.width;
-            } else if (Math.abs(diff.y) > 0) {
-                conflict.y += Math.sign(diff.y) * (-1) * newElement.height;
-            }
-        }
-    } else {
-        // move right and then back
-        let otherElements = gridData.gridElements.filter(el => el.id !== newElement.id);
-        let moveElements = otherElements.filter(el =>
-            el.x >= newElement.x || // elements that are equal or more right on x-axis
-            hasCollisions([el, newElement])); // colliding, but more left
-        let moveX = Math.max.apply(null, moveElements.map(el => el.width + newElement.width));
-        let movedElements = gridUtil.moveElements(otherElements, {
-            moveX: moveX,
-            moveElements: moveElements
-        });
-        // push those back, which don't collide
-        gridUtil.moveAsPossible(gridData, movedElements, constants.DIR_LEFT, { outOfBounds: true, maxMove: moveX});
-    }
-}
-
-/**
- * returns a 2-dimensional array where array[x][y] indicates how often this space is occupied. Zero (0) means the space is free.
- * within the given gridData / gridElements
- * @param gridDataOrElements
- */
-function getOccupiedMatrix(gridDataOrElements) {
-    let gridElements = getGridElements(gridDataOrElements);
-    let occupiedMatrix = util.getFilled2DimArray(gridUtil.getWidthWithBounds(gridDataOrElements), gridUtil.getHeightWithBounds(gridDataOrElements), 0);
-    for (let element of gridElements) {
-        for (let i = element.x; i < element.x + element.width; i++) {
-            for (let j = element.y; j < element.y + element.height; j++) {
-                occupiedMatrix[i][j]++;
-            }
-        }
-    }
-    return occupiedMatrix;
-}
-
-function isOccupied(matrix, x, y) {
-    return !!(matrix[x] && matrix[x][y]);
-}
-
-function hasCollisions(gridDataOrElements) {
-    let occupiedMatrix = getOccupiedMatrix(gridDataOrElements);
-    let max = 0;
-    for (let i = 0; i < occupiedMatrix.length; i++) {
-        max = Math.max(max, Math.max.apply(null, occupiedMatrix[i]));
-    }
-    return max > 1;
-}
-
-function getConflictingElements(allElements, testElement) {
-    return allElements.filter(el => el.id !== testElement.id && hasCollisions([el, testElement]));
-}
 
 function getAllChildrenRecursive(gridGraphList, gridId) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];
@@ -855,35 +630,6 @@ function getGridElements(gridDataOrElements) {
         return [];
     }
     return gridElements;
-}
-
-function dirToXYDiff(direction) {
-    return {
-        x: direction === constants.DIR_LEFT ? -1 : (direction === constants.DIR_RIGHT ? 1 : 0),
-        y: direction === constants.DIR_UP ? -1 : (direction === constants.DIR_DOWN ? 1 : 0)
-    }
-}
-
-function isFullyCovering(element, otherElement) {
-    return element.width >= otherElement.width && element.height >= otherElement.height &&
-        element.x <= otherElement.x && element.x + element.width >= otherElement.x + otherElement.width &&
-        element.y <= otherElement.y && element.y + element.height >= otherElement.y + otherElement.height;
-}
-
-/**
- * sorts elements before moving xDiff / yDiff in order to start moving with the right elements
- * (e.g. moving to the left should start with the most left elements)
- * @param elements
- * @param xDiff
- * @param yDiff
- */
-function sortBeforeMove(elements, xDiff, yDiff) {
-    elements.sort((a, z) => {
-        if (xDiff !== 0) {
-            return xDiff * (z.x - a.x);
-        }
-        return yDiff * (z.y - a.y);
-    });
 }
 
 export { gridUtil };

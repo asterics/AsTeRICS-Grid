@@ -71,6 +71,7 @@
     import {stateService} from "../../js/service/stateService.js";
     import AppGridEditable from '../grid-display/appGridEditable.vue';
     import { UndoService } from '../../js/service/data/undoService';
+    import { gridLayoutUtil } from '../../js/util/gridLayoutUtil';
 
     let vueApp = null;
 
@@ -109,12 +110,17 @@
                 this.gridData.minColumnCount = cols;
                 this.undoService.updateGrid(this.gridData);
             },
-            fillGaps: function () {
-                gridUtil.moveAsPossible(this.gridData, this.gridData.gridElements, constants.DIR_LEFT, { outOfBounds: true });
+            fillGaps: function() {
+                gridLayoutUtil.moveAsPossible(this.gridData.gridElements, this.gridData.gridElements, gridLayoutUtil.DIR_LEFT, {
+                    outOfBounds: true,
+                    gridWidth: this.gridData.minColumnCount,
+                    gridHeight: this.gridData.rowCount
+                });
                 this.undoService.updateGrid(this.gridData);
             },
             normalizeGrid: function () {
-                gridUtil.normalizeGrid(this.gridData);
+                gridUtil.ensureUniqueIds(this.gridData.gridElements);
+                gridLayoutUtil.normalizeGrid(this.gridData.gridElements);
                 this.undoService.updateGrid(this.gridData);
             },
             async handleChange() {
@@ -154,7 +160,12 @@
                 this.undoService.updateGrid(this.gridData);
             },
             duplicateElement(id) {
-                this.gridData = gridUtil.duplicateElement(this.gridData, id);
+                let element = gridLayoutUtil.getElementById(this.gridData.gridElements, id);
+                let duplicate = gridUtil.duplicateElement(this.gridData, element);
+                this.gridData.gridElements = gridLayoutUtil.insertDuplicate(this.gridData.gridElements, element, duplicate, {
+                    gridWidth: this.gridData.minColumnCount,
+                    gridHeight: this.gridData.rowCount
+                });
                 this.undoService.updateGrid(this.gridData);
             },
             newElement(type) {

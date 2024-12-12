@@ -75,14 +75,6 @@ constants.BOARD_TYPE_SELFCONTAINED = "BOARD_TYPE_SELFCONTAINED";
 constants.BOARD_TYPE_SINGLE = "BOARD_TYPE_SINGLE";
 constants.BOARD_TYPES = [constants.BOARD_TYPE_SELFCONTAINED, constants.BOARD_TYPE_SINGLE];
 
-constants.DIR_UP = 1;
-constants.DIR_RIGHT = 2;
-constants.DIR_DOWN = 3;
-constants.DIR_LEFT = 4;
-constants.DIRECTIONS_ALL = [constants.DIR_UP, constants.DIR_RIGHT, constants.DIR_DOWN, constants.DIR_LEFT];
-
-constants.MAX_GRID_SIZE = 100;
-
 constants.DEFAULT_ELEMENT_BACKGROUND_COLOR = '#ffffff';
 constants.DEFAULT_GRID_BACKGROUND_COLOR = '#e8e8e8';
 constants.DEFAULT_COLOR_SCHEMES = [

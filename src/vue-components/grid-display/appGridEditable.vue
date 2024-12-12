@@ -13,7 +13,7 @@
 import GridLayout from '../grid-layout/grid-layout.vue';
 import GridElement from '../grid-layout/grid-element.vue';
 import AppGridElement from './appGridElement.vue';
-import { gridUtil } from '../../js/util/gridUtil';
+import { gridLayoutUtil } from '../../js/util/gridLayoutUtil';
 
 export default {
     components: { GridElement, GridLayout, AppGridElement },
@@ -36,7 +36,11 @@ export default {
                 element.x += diff.x;
                 element.y += diff.y;
             }
-            gridUtil.resolveCollisions(this.gridData, element, diff);
+            gridLayoutUtil.resolveCollisions(this.gridData.gridElements, element, {
+                diff: diff,
+                gridWidth: this.gridData.minColumnCount,
+                gridHeight: this.gridData.rowCount
+            });
             this.$emit("changed", this.gridData);
         },
         resizeHandler(resizedElement, newSize) {
@@ -48,7 +52,10 @@ export default {
             }
             element.width = newSize.width;
             element.height = newSize.height;
-            gridUtil.resolveCollisions(this.gridData, element);
+            gridLayoutUtil.resolveCollisions(this.gridData.gridElements, element, {
+                gridWidth: this.gridData.minColumnCount,
+                gridHeight: this.gridData.rowCount
+            });
             this.$emit('changed', this.gridData);
         },
         getElement(id) {
