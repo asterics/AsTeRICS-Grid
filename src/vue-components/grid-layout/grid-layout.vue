@@ -1,5 +1,5 @@
 <template>
-    <div :style="cssProps">
+    <div :style="cssProps" :class="myId">
         <div class="grid-bg-lines" v-if="backgroundLines">
             <div id="grid-layout-background-vertical" class="grid-container" :style="`margin-left: ${getRasterX()}px; background-size: ${getRasterX()}px ${getRasterX()}px; background-image: linear-gradient(to right, grey 1px, transparent 1px)`"/>
             <div class="grid-bg-lines" :style="`margin-top: ${getRasterY()}px; background-size: ${getRasterY()}px ${getRasterY()}px; background-image: linear-gradient(to bottom, grey 1px, transparent 1px);`"/>
@@ -63,7 +63,8 @@ export default {
         return {
             interact: null,
             timeoutHandler: null,
-            noMoveId: null
+            noMoveId: null,
+            myId: "grid-parent-" + new Date().getTime()
         }
     },
     computed: {
@@ -185,14 +186,37 @@ export default {
             this.timeoutHandler = setTimeout(() => {
                 this.$forceUpdate();
             }, 50);
+        },
+        pointerEventListener(event) {
+            let element = event.target;
+            let wasWithinMyParent = false;
+            while (element) {
+                if (element.className.includes(this.myId)) {
+                    wasWithinMyParent = true;
+                    break;
+                }
+                element = element.parentElement;
+            }
+            if (wasWithinMyParent) {
+                let gridPos = this.$refs.gridComponent.$el.getBoundingClientRect();
+                let x = event.clientX - gridPos.x;
+                let y = event.clientY - gridPos.y;
+                this.$emit('interacted', Math.floor(x / this.getRasterX()), Math.floor(y / this.getRasterY()), event);
+            }
         }
     },
     created() {
         window.addEventListener("resize", this.onResize);
+        document.addEventListener('click', this.pointerEventListener);
+        document.addEventListener('touchend', this.pointerEventListener);
+        document.addEventListener('contextmenu', this.pointerEventListener);
     },
     beforeDestroy() {
         this.destroyInteract();
         window.removeEventListener("resize", this.onResize);
+        document.removeEventListener('click', this.pointerEventListener);
+        document.removeEventListener('touchend', this.pointerEventListener);
+        document.removeEventListener('contextmenu', this.pointerEventListener);
     },
     async mounted() {
         this.initInteract();
