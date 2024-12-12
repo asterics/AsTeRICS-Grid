@@ -72,7 +72,7 @@
     const TABS = {TAB_GENERAL, TAB_IMAGE, TAB_WORDFORMS,TAB_ACTIONS};
 
     export default {
-        props: ['editElementIdParam', 'gridDataId', 'undoService'],
+        props: ['editElementIdParam', 'gridDataId', 'undoService', 'newPosition'],
         components: {
             EditElementWordForms,
             EditElementHeader,
@@ -161,7 +161,7 @@
                         }
                         thiz.gridElement.label = util.isString(thiz.gridElement.label) ? {} : thiz.gridElement.label;
                     } else {
-                        let newXYPos = gridData.getNewXYPos();
+                        let newXYPos = this.newPosition || gridData.getNewXYPos();
                         log.debug('creating element: x ' + newXYPos.x + ' / y ' + newXYPos.y);
                         thiz.gridElement = JSON.parse(JSON.stringify(new GridElement({
                             x: newXYPos.x,

@@ -14,7 +14,7 @@
             </div>
         </header>
         <div>
-            <edit-element v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :undo-service="undoService" :grid-data-id="gridData.id" @reload="reload" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
+            <edit-element v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :undo-service="undoService" :grid-data-id="gridData.id" :new-position="newPosition" @reload="reload" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
         </div>
         <div>
             <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :undo-service="undoService" @reload="reload" @close="showMultipleModal = false"/>
@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class="srow content" v-if="metadata && gridData" style="max-width: 100%; min-height: 0">
-            <app-grid-editable id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata" :watch-data="updateCount"/>
+            <app-grid-editable id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata" :watch-data="updateCount" @interacted="onInteracted"/>
         </div>
     </div>
 </template>
@@ -95,7 +95,9 @@
                 showGrid: false,
                 constants: constants,
                 markedElement: null,
-                updateCount: 0
+                updateCount: 0,
+                lastInteraction: {},
+                newPosition: null
             }
         },
         components: {
@@ -178,9 +180,10 @@
                 });
                 this.updateGridWithUndo();
             },
-            newElement(type) {
+            newElement(type, useInteractionPos) {
                 if (type === GridElement.ELEMENT_TYPE_NORMAL) {
                     this.editElementId = null;
+                    this.newPosition = useInteractionPos ? this.lastInteraction : null;
                     this.showEditModal = true;
                 } else {
                     let newPos = new GridData(this.gridData).getNewXYPos();
@@ -271,6 +274,10 @@
                     }, 4000);
                 }
             },
+            onInteracted(x, y) {
+                this.lastInteraction.x = x;
+                this.lastInteraction.y = y;
+            }
         },
         created() {
             $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
@@ -399,6 +406,8 @@
             'CONTEXT_SEARCH': {name: i18nService.t('searchBtnTitle'), icon: "fas fa-search"},
         };
 
+        let ORIGIN_MORE_BTN = "ORIGIN_MORE_BTN";
+
         $.contextMenu({
             selector: '.element-container',
             callback: function (key, options) {
@@ -422,17 +431,17 @@
             selector: '#moreButton',
             appendTo: '#moreButtonMenu',
             callback: function (key, options) {
-                handleContextMenu(key);
+                handleContextMenu(key, null, ORIGIN_MORE_BTN);
             },
             trigger: 'left',
             items: itemsMoreMenuButton,
             zIndex: 10
         });
 
-        function handleContextMenu(key, elementId) {
+        function handleContextMenu(key, elementId, origin) {
             switch (key) {
                 case CONTEXT_NEW_SINGLE: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_NORMAL);
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_NORMAL, origin !== ORIGIN_MORE_BTN);
                     break;
                 }
                 case CONTEXT_NEW_MASS: {
