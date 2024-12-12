@@ -31,12 +31,12 @@
         <div>
             <set-navigation-modal v-if="showNavigateModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showNavigateModal = false" @reload="reload"></set-navigation-modal>
         </div>
-        <div class="srow content" id="contentContainer" v-if="!(metadata && gridData && gridData.gridElements.length > 0)">
+        <div class="srow content" id="contentContainer" v-if="!(metadata && gridData)">
             <div v-if="!showGrid" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
             </div>
         </div>
-        <div class="srow content" v-if="metadata && gridData && gridData.gridElements.length > 0" style="max-width: 100%; min-height: 0">
+        <div class="srow content" v-if="metadata && gridData" style="max-width: 100%; min-height: 0">
             <app-grid-editable id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata" :watch-data="updateCount"/>
         </div>
     </div>
