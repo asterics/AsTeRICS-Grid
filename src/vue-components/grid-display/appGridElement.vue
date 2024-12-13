@@ -1,5 +1,5 @@
 <template>
-    <div class="element-container" :id="element.id" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)" :style="`margin: 2px; border-radius: 3px; cursor: pointer; border: 1px solid ${getBorderColor()}; background-color: ${getBackgroundColor(element)};`">
+    <div class="element-container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)" :style="`margin: 2px; border-radius: 3px; cursor: pointer; border: 1px solid ${getBorderColor()}; background-color: ${getBackgroundColor(element)};`">
         <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" aria-hidden="true"/>
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
