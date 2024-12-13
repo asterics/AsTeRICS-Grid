@@ -65,6 +65,11 @@ export default {
             elementClassSelector: '.grid-layout-element'
         }
     },
+    watch: {
+        editable() {
+            this.reinit();
+        }
+    },
     computed: {
         cssProps() {
             return {
@@ -128,6 +133,7 @@ export default {
             });
         },
         async initInteract() {
+            this.destroyInteract();
             if (!this.editable) {
                 return;
             }
