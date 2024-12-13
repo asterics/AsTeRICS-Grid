@@ -3,8 +3,7 @@
                  :elements="gridData.gridElements"
                  :render-component="AppGridElement" :metadata="metadata" :show-resize-handle="true"
                  :editable="true" :rows="gridData.rowCount" :columns="gridData.minColumnCount"
-                 :background-color="metadata.colorConfig.gridBackgroundColor" :background-lines="true"
-                 component-type="ol" :watch-data="watchData">
+                 :background-color="metadata.colorConfig.gridBackgroundColor" :background-lines="true">
     </grid-layout>
 </template>
 
@@ -13,11 +12,10 @@
 import GridLayout from '../grid-layout/grid-layout.vue';
 import GridElement from '../grid-layout/grid-element.vue';
 import AppGridElement from './appGridElement.vue';
-import { gridLayoutUtil } from '../../js/util/gridLayoutUtil';
 
 export default {
     components: { GridElement, GridLayout, AppGridElement },
-    props: ["gridData", "metadata", "watchData"],
+    props: ["gridData", "metadata"],
     data() {
         return {
             AppGridElement: AppGridElement

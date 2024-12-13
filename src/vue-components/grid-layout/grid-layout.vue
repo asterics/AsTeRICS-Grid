@@ -14,6 +14,7 @@
 <script>
 
 import GridElement from './grid-element.vue';
+import { gridLayoutUtil } from '../../js/util/gridLayoutUtil';
 
 export default {
     components: { GridElement },
@@ -55,8 +56,7 @@ export default {
         animationDurationMs: {
             type: Number,
             default: 200
-        },
-        watchData: null // on changes of this object interact.js is reloaded
+        }
     },
     data() {
         return {
@@ -74,16 +74,6 @@ export default {
                 width: "100%",
                 height: "100%",
                 position: "relative"
-            }
-        }
-    },
-    watch: {
-        watchData() {
-            if (this.editable) {
-                this.initInteract();
-                this.$nextTick(() => {
-                    this.$forceUpdate();
-                });
             }
         }
     },
@@ -176,7 +166,7 @@ export default {
                             xExact: diffX,
                             yExact: diffY
                         }
-                        thiz.$emit('moved', movedElement, diff);
+                        thiz.handleMove(movedElement, diff);
                         event.target.style.transform = '';
                         thiz.noMoveId = event.target.getAttribute("data-id");
                         setTimeout(() => {
@@ -201,7 +191,7 @@ export default {
                         event.target.style.height = '';
                         event.target.style.zIndex = oldZIndex;
                         let resizedElement = event.target;
-                        thiz.$emit('resized', resizedElement, {
+                        thiz.handleResize(resizedElement, {
                             width: Math.round(event.rect.width / thiz.getRasterX()),
                             height: Math.round(event.rect.height / thiz.getRasterY())
                         });

@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class="srow content" v-if="metadata && gridData" style="max-width: 100%; min-height: 0">
-            <app-grid-editable id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata" :watch-data="updateCount" @interacted="onInteracted"/>
+            <app-grid-editable id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata" @interacted="onInteracted"/>
         </div>
     </div>
 </template>
@@ -95,7 +95,6 @@
                 showGrid: false,
                 constants: constants,
                 markedElement: null,
-                updateCount: 0,
                 lastInteraction: {},
                 newPosition: null
             }
@@ -134,20 +133,16 @@
                 this.doingUndoRedo = true;
                 this.gridData = await this.undoService.doUndo();
                 this.doingUndoRedo = false;
-                this.forceUpdate();
+                this.$forceUpdate();
             },
             redo: async function () {
                 this.doingUndoRedo = true;
                 this.gridData = await this.undoService.doRedo();
                 this.doingUndoRedo = false;
-                this.forceUpdate();
+                this.$forceUpdate();
             },
             async updateGridWithUndo() {
                 await this.undoService.updateGrid(this.gridData);
-                this.forceUpdate();
-            },
-            forceUpdate() {
-                this.updateCount++;
                 this.$forceUpdate();
             },
             async reload(gridData) {
