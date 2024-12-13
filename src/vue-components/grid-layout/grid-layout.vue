@@ -4,9 +4,6 @@
             <div class="grid-bg-lines" :style="`margin-left: ${getRasterX()}px; background-size: ${getRasterX()}px ${getRasterX()}px; background-image: linear-gradient(to right, grey 1px, transparent 1px)`"/>
             <div class="grid-bg-lines" :style="`margin-top: ${getRasterY()}px; background-size: ${getRasterY()}px ${getRasterY()}px; background-image: linear-gradient(to bottom, grey 1px, transparent 1px);`"/>
         </div>
-        <transition-group ref="gridComponent" :name="editable ? 'grid-transition' : ''" :tag="componentType" class="grid-layout" :style="`grid-template-columns: repeat(${columns}, minmax(0, 1fr)); grid-template-rows: repeat(${rows}, minmax(0, 1fr)); background-color: ${backgroundColor}`">
-            <grid-element v-for="elem in elements" :key="elem.id" :data-id="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" component-type="li" :class="elem.id === noMoveId ? 'nomove' : ''">
-                <component :is="renderComponent" :element="elem" v-bind="$attrs"/>
         <transition-group ref="gridComponent" :name="editable ? 'grid-transition' : ''" :tag="baseTag" class="grid-layout" :style="`grid-template-columns: repeat(${columns}, minmax(0, 1fr)); grid-template-rows: repeat(${rows}, minmax(0, 1fr)); background-color: ${backgroundColor}`">
             <grid-element v-for="elem in elements" :key="elem.id" :data-id="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" :tag="elementTag" :class="elem.id === noMoveId ? 'nomove' : ''">
             </grid-element>
@@ -47,10 +44,6 @@ export default {
             type: Boolean,
             default: false
         },
-        elementClassSelector: {
-            type: String,
-            default: '.grid-layout-element'
-        },
         resizeHandleSelector: {
             type: String,
             default: '.ui-resizable-handle'
@@ -70,7 +63,8 @@ export default {
             interact: null,
             timeoutHandler: null,
             noMoveId: null,
-            myId: "grid-parent-" + new Date().getTime()
+            myId: "grid-parent-" + new Date().getTime(),
+            elementClassSelector: '.grid-layout-element'
         }
     },
     computed: {
