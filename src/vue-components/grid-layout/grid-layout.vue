@@ -1,7 +1,7 @@
 <template>
     <div :style="cssProps" :class="myId">
-        <div class="grid-bg-lines" v-if="backgroundLines">
-            <div id="grid-layout-background-vertical" class="grid-container" :style="`margin-left: ${getRasterX()}px; background-size: ${getRasterX()}px ${getRasterX()}px; background-image: linear-gradient(to right, grey 1px, transparent 1px)`"/>
+        <div v-if="backgroundLines">
+            <div class="grid-bg-lines" :style="`margin-left: ${getRasterX()}px; background-size: ${getRasterX()}px ${getRasterX()}px; background-image: linear-gradient(to right, grey 1px, transparent 1px)`"/>
             <div class="grid-bg-lines" :style="`margin-top: ${getRasterY()}px; background-size: ${getRasterY()}px ${getRasterY()}px; background-image: linear-gradient(to bottom, grey 1px, transparent 1px);`"/>
         </div>
         <transition-group ref="gridComponent" :name="editable ? 'grid-transition' : ''" :tag="componentType" class="grid-layout" :style="`grid-template-columns: repeat(${columns}, minmax(0, 1fr)); grid-template-rows: repeat(${rows}, minmax(0, 1fr)); background-color: ${backgroundColor}`">
