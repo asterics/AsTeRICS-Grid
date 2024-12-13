@@ -1,5 +1,5 @@
 <template>
-    <grid-layout class="grid-display" v-if="gridData" @moved="moveHandler" @resized="resizeHandler" v-on="$listeners"
+    <grid-layout v-if="gridData" v-on="$listeners"
                  :elements="gridData.gridElements"
                  :render-component="AppGridElement" :metadata="metadata" :show-resize-handle="true"
                  :editable="true" :rows="gridData.rowCount" :columns="gridData.minColumnCount"
@@ -22,45 +22,7 @@ export default {
         return {
             AppGridElement: AppGridElement
         }
-    },
-    computed: {
-    },
-    methods: {
-        moveHandler(movedElement, diff) {
-            if (diff.x === 0 && diff.y === 0) {
-                return;
-            }
-            let id = movedElement.children[0].id;
-            let element = this.getElement(id);
-            this.gridData.gridElements = gridLayoutUtil.resolveCollisions(this.gridData.gridElements, element, {
-                diff: diff,
-                gridWidth: this.gridData.minColumnCount,
-                gridHeight: this.gridData.rowCount,
-                calcNewPos: true
-            });
-            this.$emit("changed", this.gridData);
-        },
-        resizeHandler(resizedElement, newSize) {
-            let id = resizedElement.children[0].id;
-            let element = this.getElement(id);
-            if (!element || !newSize ||
-                (newSize.width === resizedElement.width && newSize.height === resizedElement.height)) {
-                return;
-            }
-            element.width = newSize.width;
-            element.height = newSize.height;
-            this.gridData.gridElements = gridLayoutUtil.resolveCollisions(this.gridData.gridElements, element, {
-                gridWidth: this.gridData.minColumnCount,
-                gridHeight: this.gridData.rowCount
-            });
-            this.$emit('changed', this.gridData);
-        },
-        getElement(id) {
-            return this.gridData.gridElements.find(el => el.id === id);
-        }
-    },
-    mounted() {
-    },
+    }
 }
 </script>
 

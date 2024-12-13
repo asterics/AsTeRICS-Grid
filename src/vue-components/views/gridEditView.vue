@@ -126,7 +126,8 @@
                 this.gridData.gridElements = gridLayoutUtil.normalizeGrid(this.gridData.gridElements);
                 this.updateGridWithUndo();
             },
-            async handleChange() {
+            async handleChange(newElements) {
+                this.gridData.gridElements = newElements;
                 await this.updateGridWithUndo();
             },
             undo: async function () {

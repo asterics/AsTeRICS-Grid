@@ -103,6 +103,45 @@ export default {
             let first = style.split(" ")[0];
             return parseFloat(first);
         },
+        handleMove(movedElement, diff) {
+            if (diff.x === 0 && diff.y === 0) {
+                return;
+            }
+            let id = movedElement.children[0].id;
+            let element = this.getElement(id);
+            let updatedElements = gridLayoutUtil.resolveCollisions(this.elements, element, {
+                diff: diff,
+                gridWidth: this.columns,
+                gridHeight: this.rows,
+                calcNewPos: true
+            });
+            this.$emit("changed", updatedElements);
+            this.reinit();
+        },
+        handleResize(resizedElement, newSize) {
+            let id = resizedElement.children[0].id;
+            let element = this.getElement(id);
+            if (!element || !newSize ||
+                (newSize.width === resizedElement.width && newSize.height === resizedElement.height)) {
+                return;
+            }
+            element.width = newSize.width;
+            element.height = newSize.height;
+            let updatedElements = gridLayoutUtil.resolveCollisions(this.elements, element, {
+                gridWidth: this.columns,
+                gridHeight: this.rows,
+            });
+            this.$emit('changed', updatedElements);
+            this.reinit();
+        },
+        getElement(id) {
+            return this.elements.find(el => el.id === id);
+        },
+        reinit() {
+            this.$nextTick(() => {
+                this.initInteract();
+            });
+        },
         async initInteract() {
             if (!this.editable) {
                 return;
