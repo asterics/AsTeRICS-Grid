@@ -1,5 +1,5 @@
 <template>
-    <div :style="cssProps" :class="myId">
+    <div :style="cssProps" :class="'grid-parent ' + myId">
         <div v-if="backgroundLines">
             <div class="grid-bg-lines" :style="`margin-left: ${getRasterX()}px; background-size: ${getRasterX()}px ${getRasterX()}px; background-image: linear-gradient(to right, grey 1px, transparent 1px)`"/>
             <div class="grid-bg-lines" :style="`margin-top: ${getRasterY()}px; background-size: ${getRasterY()}px ${getRasterY()}px; background-image: linear-gradient(to bottom, grey 1px, transparent 1px);`"/>
@@ -71,10 +71,7 @@ export default {
     computed: {
         cssProps() {
             return {
-                '--animation-duration': this.animationDurationMs + "ms",
-                width: "100%",
-                height: "100%",
-                position: "relative"
+                '--animation-duration': this.animationDurationMs + "ms"
             }
         }
     },
@@ -256,6 +253,12 @@ export default {
 </script>
 
 <style scoped>
+.grid-parent {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
 .grid-layout {
     display: grid;
     height: 100%;
