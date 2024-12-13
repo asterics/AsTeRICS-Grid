@@ -1,7 +1,7 @@
 <template>
-    <grid-layout class="grid-display" v-if="gridData"
+    <grid-layout v-if="gridData"
                  :elements="gridData.gridElements" :render-component="AppGridElement" :metadata="metadata"
-                 :rows="gridData.rowCount" :columns="gridData.minColumnCount" :background-color="metadata.colorConfig.gridBackgroundColor" component-type="ol">
+                 :rows="gridData.rowCount" :columns="gridData.minColumnCount" :background-color="metadata.colorConfig.gridBackgroundColor">
     </grid-layout>
 </template>
 
@@ -29,10 +29,4 @@ export default {
 </script>
 
 <style scoped>
-.grid-display {
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none; /* IE 10 and IE 11 */
-    user-select: none; /* Standard syntax */
-    -webkit-touch-callout: none;
-}
 </style>
