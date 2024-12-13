@@ -9,7 +9,7 @@ import { GridElementCollect } from '../model/GridElementCollect.js';
 import { constants } from './constants.js';
 import { GridActionARE } from '../model/GridActionARE';
 import { encryptionService } from '../service/data/encryptionService';
-import { gridLayoutUtil } from './gridLayoutUtil';
+import { gridLayoutUtil } from '../../vue-components/grid-layout/utils/gridLayoutUtil';
 
 let gridUtil = {};
 

@@ -46,7 +46,7 @@
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {dataService} from "../../js/service/data/dataService";
     import {GridData} from "../../js/model/GridData";
-    import { gridLayoutUtil } from '../../js/util/gridLayoutUtil';
+    import { gridLayoutUtil } from '../grid-layout/utils/gridLayoutUtil';
 
     export default {
         props: ['gridDataParam', 'isGlobalGrid'],

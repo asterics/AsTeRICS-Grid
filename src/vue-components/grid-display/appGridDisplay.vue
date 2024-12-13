@@ -7,8 +7,8 @@
 
 <script>
 
-import GridLayout from '../grid-layout/grid-layout.vue';
-import GridElement from '../grid-layout/grid-element.vue';
+import GridLayout from '../grid-layout/components/grid-layout.vue';
+import GridElement from '../grid-layout/components/grid-element.vue';
 import AppGridElement from './appGridElement.vue';
 
 export default {

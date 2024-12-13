@@ -71,7 +71,7 @@
     import {stateService} from "../../js/service/stateService.js";
     import AppGridEditable from '../grid-display/appGridEditable.vue';
     import { UndoService } from '../../js/service/data/undoService';
-    import { gridLayoutUtil } from '../../js/util/gridLayoutUtil';
+    import { gridLayoutUtil } from '../grid-layout/utils/gridLayoutUtil';
 
     let vueApp = null;
 
