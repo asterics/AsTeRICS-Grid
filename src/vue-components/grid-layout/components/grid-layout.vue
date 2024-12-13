@@ -138,7 +138,6 @@ export default {
                 return;
             }
             let thiz = this;
-            this.destroyInteract();
             this.interact = this.interact || (await import('interactjs')).default;
 
             let position = { x: 0, y: 0 };
@@ -148,9 +147,9 @@ export default {
                     start(event) {
                         oldZIndex = event.target.style.zIndex;
                     },
-                    move (event) {
-                        position.x += event.dx
-                        position.y += event.dy
+                    move(event) {
+                        position.x += event.dx;
+                        position.y += event.dy;
                         event.target.style.transform = `translate(${position.x}px, ${position.y}px)`;
                         event.target.style.zIndex = 100;
                     },
