@@ -264,6 +264,8 @@ export default {
     height: 100%;
     grid-auto-columns: minmax(0, 1fr);
     grid-auto-rows: minmax(0, 1fr);
+    margin: 0;
+    padding: 0;
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */
     user-select: none; /* Standard syntax */
