@@ -7,6 +7,8 @@
         <transition-group ref="gridComponent" :name="editable ? 'grid-transition' : ''" :tag="componentType" class="grid-layout" :style="`grid-template-columns: repeat(${columns}, minmax(0, 1fr)); grid-template-rows: repeat(${rows}, minmax(0, 1fr)); background-color: ${backgroundColor}`">
             <grid-element v-for="elem in elements" :key="elem.id" :data-id="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" component-type="li" :class="elem.id === noMoveId ? 'nomove' : ''">
                 <component :is="renderComponent" :element="elem" v-bind="$attrs"/>
+        <transition-group ref="gridComponent" :name="editable ? 'grid-transition' : ''" :tag="baseTag" class="grid-layout" :style="`grid-template-columns: repeat(${columns}, minmax(0, 1fr)); grid-template-rows: repeat(${rows}, minmax(0, 1fr)); background-color: ${backgroundColor}`">
+            <grid-element v-for="elem in elements" :key="elem.id" :data-id="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" :tag="elementTag" :class="elem.id === noMoveId ? 'nomove' : ''">
             </grid-element>
         </transition-group>
     </div>
@@ -33,9 +35,13 @@ export default {
             type: String,
             default: 'white'
         },
-        componentType: {
+        baseTag: {
             type: String,
-            default: 'div'
+            default: 'ol'
+        },
+        elementTag: {
+            type: String,
+            default: 'li'
         },
         editable: {
             type: Boolean,
