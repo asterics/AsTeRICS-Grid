@@ -15,19 +15,16 @@
 <script>
 
 import GridElement from './grid-element.vue';
-import { gridLayoutUtil } from '../../js/util/gridLayoutUtil';
+import { gridLayoutUtil } from '../utils/gridLayoutUtil';
 
 export default {
     components: { GridElement },
     props: {
         rows: Number,
         columns: Number,
-        elements: {
-            type: Array,
-            default: []
-        },
+        elements: Array,
         renderComponent: {
-            type: Object,
+            type: [Object, String],
             default: null
         },
         backgroundColor: {
