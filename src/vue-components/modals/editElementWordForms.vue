@@ -7,6 +7,11 @@
             </div>
         </accordion>
         <accordion :acc-label="$t('importExport')" acc-label-type="h2" acc-background-color="white">
+            <div class="tooltip srow" >
+                <span class="fa fa-info-circle"></span>
+                <span>{{ $t('importFromApiTooltip') }}</span>
+            </div>
+
             <div class="srow">
                 <input id="importExportGlobally" type="checkbox" v-model="importExportGlobally" @change="overrideAtImport = importExportGlobally ? true : overrideAtImport"/>
                 <label for="importExportGlobally">{{ $t('importexportDataTofromAllGrids') }}</label>
@@ -20,15 +25,8 @@
             <div class="srow">
                 <button class="two columns four columns" @click="importFromClipboard()"><i class="fas fa-file-import"/> {{ $t('importFromClipboard') }}</button>
                 <button class="two columns four columns" @click="copyToClipboard()"><i class="fas fa-file-export"/> {{ $t('copyToClipboard') }}</button>
-                <button class="two columns four columns" @mouseover="showToolTip = true" @mouseleave="showToolTip = false" @click="importFromApi()"><i class="fas fa-file-export"/> {{ $t('importFromApi') }}</button>
+                <button class="two columns four columns" @click="importFromApi()"><i class="fas fa-file-export"/> {{ $t('importFromApi') }}</button>
             </div>
-			
-			<div v-if="showToolTip" class="tooltip srow" >
-                Info: Drückt man auf diesen Button wird das aktuelle Wort auf einer Wiktionary Seite gesucht
-                 und die zugehörigen Konjugationen extrahiert. Im Anschluss wird alles an AstericsGrid angpasst und eingefügt.
-                Welches das "aktuelle Wort" ist sieht man unter "Allgemein -> Text"
-            </div>
-
 
             <div class="srow" v-if="currentMsg === msgTypes.WAIT">
                 <i class="fas fa-spinner fa-spin"></i>
@@ -135,7 +133,6 @@
                 currentMsg: null,
                 msgCount: 0,
                 gridPasteCount: 0,
-				showToolTip: false //-- new --
             }
         },
         methods: {
