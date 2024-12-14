@@ -7,7 +7,7 @@
             </div>
         </accordion>
         <accordion :acc-label="$t('importExport')" acc-label-type="h2" acc-background-color="white">
-            <div class="tooltip srow" >
+            <div class="tooltip srow">
                 <span class="fa fa-info-circle"></span>
                 <span>{{ $t('importFromApiTooltip') }}</span>
             </div>
@@ -36,9 +36,20 @@
                 <span>{{ $t('clipboardContainsNoWordFormsPleaseCopyFrom') }}</span>
             </div>
             <!-- warning for import exception -->
-            <div class="srow warn" v-if="currentMsg === msgTypes.ERROR_IMPORT">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span>{{ $t('serviceCouldNotProcessTheWord') }}</span>
+            <div v-if="currentMsg === msgTypes.ERROR_IMPORT">
+                <div class="srow warn">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>{{ $t('serviceCouldNotProcessTheWord') }}</span>
+                </div>
+                <div class="row mt-5">
+                    <label class="col-sm-2" for="inputLabel">{{ $t('label') }}</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="col-12" id="inputLabel" v-focus v-if="gridElement" v-model="gridElement.label[currentLang]"/>
+                    </div>
+                    <div class="col-sm-3">
+                        <button @click="importFromApi()"><i class="fas fa-check"/> {{ $t('retry') }}</button>
+                    </div> 
+                </div>
             </div>
             <!-- warning for import exception -->
             <div class="srow success" v-if="currentMsg === msgTypes.SUCCESS_PASTE">
@@ -122,6 +133,7 @@
                 overrideAtImport: false,
                 allGrids: null,
                 langs: i18nService.getAllLanguages(),
+                currentLang: i18nService.getContentLang(),
                 filterLang: null,
                 msgTypes: {
                     WAIT: 'WAIT',
@@ -297,24 +309,13 @@
                     // Make an HTTP GET request to the REST server
                     let response = await fetch('https://wordforms.asterics-foundation.org/wordforms_ndep/scraper.php?verb=' + word + '&type=json');
 
-                    console.log("reach1: after fetch");
-
-                    // Check if the response is successful
                     if (!response.ok) {
                     throw new Error('Network response was not ok');
                     }
 
-                    console.log("reach3: network response ok");
-
                     // Parse the response body from text to JSON
                     let data = await response.text();
-
-                    console.log("reach4: await response and store in data");
-                    console.log(data);
-                    
                     let parsedData = JSON.parse(data);
-
-                    console.log("reach5: parse data as json");
 
                     // Convert each JSON object into a WordForm instance
                     let wordForms = parsedData.map(data => {
@@ -332,10 +333,6 @@
                 } catch (error) {
                     // Handle any errors that occurred during the fetch
                     console.error('There was a problem with the fetch operation:', error);
-
-                    // debug
-                    console.log(i18nService.t('serviceCouldNotProcessTheWord'));
-                    console.log(i18nService.t('clipboardContainsNoWordFormsPleaseCopyFrom'));
 
                     // set currentMsg to error
                     this.currentMsg = this.msgTypes.ERROR_IMPORT;
