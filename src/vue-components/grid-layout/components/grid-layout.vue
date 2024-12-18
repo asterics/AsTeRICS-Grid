@@ -68,6 +68,12 @@ export default {
     watch: {
         editable() {
             this.reinit();
+        },
+        rows() {
+            this.reinit();
+        },
+        columns() {
+            this.reinit();
         }
     },
     computed: {
@@ -130,6 +136,7 @@ export default {
         reinit() {
             this.$nextTick(() => {
                 this.initInteract();
+                this.$forceUpdate();
             });
         },
         async initInteract() {
