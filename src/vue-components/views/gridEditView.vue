@@ -96,7 +96,8 @@
                 constants: constants,
                 markedElement: null,
                 lastInteraction: {},
-                newPosition: null
+                newPosition: null,
+                touchstartTimeoutHandler: null
             }
         },
         components: {
@@ -273,6 +274,30 @@
             onInteracted(x, y) {
                 this.lastInteraction.x = x;
                 this.lastInteraction.y = y;
+            },
+            onTouchstart(event) {
+                if (!constants.IS_SAFARI) {
+                    return;
+                }
+                this.touchstartTimeoutHandler = setTimeout(() => {
+                    let element = event.target;
+                    const position = { pageX: event.pageX, pageY: event.pageY };
+                    const newEvent = $.Event('contextmenu', position);
+                    while (element) {
+                        if (element.className.includes('element-container')) {
+                            $(element).trigger(newEvent);
+                            break;
+                        }
+                        if (element.id === 'grid-container') {
+                            $(element).trigger(newEvent);
+                            break;
+                        }
+                        element = element.parentElement;
+                    }
+                }, 600)
+            },
+            onTouchEnd() {
+                clearTimeout(this.touchstartTimeoutHandler);
             }
         },
         created() {
@@ -303,11 +328,19 @@
             thiz.showGrid = true;
             thiz.highlightElement();
             $('#contentContainer').on('click', this.handleClickEvent);
+            document.getElementById('grid-container').addEventListener('touchstart', this.onTouchstart);
+            document.getElementById('grid-container').addEventListener('touchmove', this.onTouchEnd);
+            document.getElementById('grid-container').addEventListener('touchcancel', this.onTouchEnd);
+            document.getElementById('grid-container').addEventListener('touchend', this.onTouchEnd);
         },
         beforeDestroy() {
             pouchDbService.resumeSync();
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
             $('#contentContainer').off('click', this.handleClickEvent);
+            document.getElementById('grid-container').removeEventListener('touchstart', this.onTouchstart);
+            document.getElementById('grid-container').removeEventListener('touchmove', this.onTouchEnd);
+            document.getElementById('grid-container').removeEventListener('touchcancel', this.onTouchEnd);
+            document.getElementById('grid-container').removeEventListener('touchend', this.onTouchEnd);
             vueApp = null;
             $.contextMenu('destroy');
         }
