@@ -1,5 +1,4 @@
 import { modelUtil } from '../util/modelUtil';
-import { templates } from '../templates';
 import { GridImage } from './GridImage';
 import { GridActionSpeak } from './GridActionSpeak';
 import { GridActionSpeakCustom } from './GridActionSpeakCustom';
@@ -46,10 +45,6 @@ class GridElement extends Model({
         properties.actions = properties.actions || [new GridActionSpeak()];
         super(Object.assign(defaults, properties));
         this.id = this.id || modelUtil.generateId(GridElement.ID_PREFIX);
-    }
-
-    toHTML(metadata) {
-        return templates.getGridItem(this, metadata);
     }
 
     hasSetPosition() {
