@@ -111,11 +111,11 @@ export default {
     methods: {
         changedFile() {
             let thiz = this;
+            if ($('#inputFile')[0].files[0].size > 200 * 1024) {
+                this.showError2 = true;
+                return;
+            }
             imageUtil.getBase64FromInput($('#inputFile')[0]).then(base64 => {
-                if (base64.length > 250000) {
-                    this.showError2 = true;
-                    return;
-                }
                 this.clearAll();
                 thiz.action.dataBase64 = imageUtil.dataStringToBase64(base64)
                 thiz.action.filename = $('#inputFile')[0].files[0].name;
