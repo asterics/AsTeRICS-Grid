@@ -235,8 +235,11 @@ export default {
             }
             if (wasWithinMyParent) {
                 let gridPos = this.$refs.gridComponent.$el.getBoundingClientRect();
-                let x = event.clientX - gridPos.x;
-                let y = event.clientY - gridPos.y;
+                let touch = event.changedTouches ? event.changedTouches[0] : null;
+                let clientX = touch ? touch.clientX : event.clientX;
+                let clientY = touch ? touch.clientY : event.clientY;
+                let x = clientX - gridPos.x;
+                let y = clientY - gridPos.y;
                 this.$emit('interacted', Math.floor(x / this.getRasterX()), Math.floor(y / this.getRasterY()), event);
             }
         }
