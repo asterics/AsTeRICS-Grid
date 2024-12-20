@@ -239,11 +239,12 @@
                 }
             },
             markElement(id) {
+                $('.element-container').removeClass('marked');
                 if (!id) {
+                    this.markedElement = null;
                     return;
                 }
                 util.throttle(() => {
-                    $('.grid-item-content').removeClass('marked');
                     if (!this.markedElement || this.markedElement.id !== id) {
                         this.markedElement = !id ? null : this.gridData.gridElements.filter(el => el.id === id)[0];
                         $('#' + id).addClass('marked');
@@ -257,7 +258,9 @@
                     let id = null;
                     let element = event.target;
                     while (!id && element.parentNode) {
-                        id = $(element).attr('data-id');
+                        if (element.className.includes('element-container')) {
+                            id = element.id;
+                        }
                         element = element.parentNode;
                     }
                     vueApp.markElement(id);
@@ -327,7 +330,7 @@
             initContextmenu();
             thiz.showGrid = true;
             thiz.highlightElement();
-            $('#contentContainer').on('click', this.handleClickEvent);
+            document.getElementById('grid-container').addEventListener('click', this.handleClickEvent);
             document.getElementById('grid-container').addEventListener('touchstart', this.onTouchstart);
             document.getElementById('grid-container').addEventListener('touchmove', this.onTouchEnd);
             document.getElementById('grid-container').addEventListener('touchcancel', this.onTouchEnd);
@@ -336,7 +339,7 @@
         beforeDestroy() {
             pouchDbService.resumeSync();
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
-            $('#contentContainer').off('click', this.handleClickEvent);
+            document.getElementById('grid-container').removeEventListener('click', this.handleClickEvent);
             document.getElementById('grid-container').removeEventListener('touchstart', this.onTouchstart);
             document.getElementById('grid-container').removeEventListener('touchmove', this.onTouchEnd);
             document.getElementById('grid-container').removeEventListener('touchcancel', this.onTouchEnd);

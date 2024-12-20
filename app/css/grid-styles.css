@@ -59,7 +59,7 @@
     background: lightgreen;
 }
 
-.grid-item-content.marked {
+.marked.element-container {
     outline: 5px solid green !important;
 }
 
