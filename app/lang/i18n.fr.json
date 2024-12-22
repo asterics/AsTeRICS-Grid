@@ -790,7 +790,7 @@
   "sortGridsBy": "Trier les grilles par",
   "labelAlphabetically": "(Par ordre alphabétique)",
   "numberOfConnections": "Nombre de connexions",
-  "factorForFontSizeOfOnlytextElements": "Factor for font size of only-text elements in separated mode",
+  "factorForFontSizeOfOnlytextElements": "",
   "convertUppercaseKeyboardLettersToLowercase": "Convertir les lettres majuscules en minuscules",
   "TAB_GENERAL": "Général",
   "TAB_IMAGE": "Image",
