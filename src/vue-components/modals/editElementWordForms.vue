@@ -7,7 +7,7 @@
             </div>
         </accordion>
         <accordion :acc-label="$t('importExport')" acc-label-type="h2" acc-background-color="white">
-            <div class="tooltip srow" >
+            <div class="tooltip srow">
                 <span class="fa fa-info-circle"></span>
                 <span>{{ $t('importFromApiTooltip') }}</span>
             </div>
@@ -36,9 +36,20 @@
                 <span>{{ $t('clipboardContainsNoWordFormsPleaseCopyFrom') }}</span>
             </div>
             <!-- warning for import exception -->
-            <div class="srow warn" v-if="currentMsg === msgTypes.ERROR_IMPORT">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span>{{ $t('serviceCouldNotProcessTheWord') }}</span>
+            <div v-if="currentMsg === msgTypes.ERROR_IMPORT">
+                <div class="srow warn">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>{{ $t('serviceCouldNotProcessTheWord') }}</span>
+                </div>
+                <div class="row mt-5">
+                    <label class="col-sm-2" for="inputLabel">{{ $t('label') }}</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="col-12" id="inputLabel" v-focus v-if="gridElement" v-model="gridElement.label[currentLang]"/>
+                    </div>
+                    <div class="col-sm-3">
+                        <button @click="importFromApi()"><i class="fas fa-check"/> {{ $t('retry') }}</button>
+                    </div> 
+                </div>
             </div>
             <!-- warning for import exception -->
             <div class="srow success" v-if="currentMsg === msgTypes.SUCCESS_PASTE">
@@ -122,6 +133,7 @@
                 overrideAtImport: false,
                 allGrids: null,
                 langs: i18nService.getAllLanguages(),
+                currentLang: i18nService.getContentLang(),
                 filterLang: null,
                 msgTypes: {
                     WAIT: 'WAIT',

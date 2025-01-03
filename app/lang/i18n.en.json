@@ -1021,6 +1021,6 @@
   "BOARD_TYPE_SINGLE": "Single boards",
   "moreSearchOptions": "More search options",
   "importFromApi": "Import from Web",
-  "serviceCouldNotProcessTheWord": "The service couldn't process the word. Possible solution: put the word into its base form or remove special characters (z.B. \"zuhören\" or \"hören\" instead of \"(zu)hören\")",
+  "serviceCouldNotProcessTheWord": "The service couldn't process the word. Try changing the word into its base form and remove special characters.",
   "importFromApiTooltip": "By clicking on 'Import from Web' different wordforms will be automatically imported by a web-API"
 }
