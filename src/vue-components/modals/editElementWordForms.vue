@@ -289,34 +289,13 @@
             },
             async importFromApi(){
                 try {
-                    // Retreive base-form of gridElement (current word)
                     const word = i18nService.getTranslation(this.gridElement.label);
-
-                    console.log("reach1: before fetch");
-
-                    // Make an HTTP GET request to the REST server
                     let response = await fetch('https://wordforms.asterics-foundation.org/wordforms_ndep/scraper.php?verb=' + word + '&type=json');
-
-                    console.log("reach1: after fetch");
-
-                    // Check if the response is successful
                     if (!response.ok) {
                     throw new Error('Network response was not ok');
                     }
-
-                    console.log("reach3: network response ok");
-
-                    // Parse the response body from text to JSON
                     let data = await response.text();
-
-                    console.log("reach4: await response and store in data");
-                    console.log(data);
-                    
                     let parsedData = JSON.parse(data);
-
-                    console.log("reach5: parse data as json");
-
-                    // Convert each JSON object into a WordForm instance
                     let wordForms = parsedData.map(data => {
                         let wordForm = new WordForm({
                             lang: data.lang,
@@ -326,26 +305,11 @@
                         });
                         return wordForm;
                     });
-
-                    // Map the resulting wordForms to the gridElements wordForms 
                     this.gridElement.wordForms = wordForms;
                 } catch (error) {
-                    // Handle any errors that occurred during the fetch
-                    console.error('There was a problem with the fetch operation:', error);
-
-                    // debug
-                    console.log(i18nService.t('serviceCouldNotProcessTheWord'));
-                    console.log(i18nService.t('clipboardContainsNoWordFormsPleaseCopyFrom'));
-
-                    // set currentMsg to error
                     this.currentMsg = this.msgTypes.ERROR_IMPORT;
                 }
             },
-            /**
-             * returns a list of base form strings in form of "<baseForm>:<lang>" from a given list of word forms.
-             * @param wordForms
-             * @return list of base form strings, e.g. ["sein:de", "be:en", "ser:es", ...]
-             */
             getBaseStringsFromWordForms (forms) {
                 forms = forms || [];
                 let baseForms = forms.filter(form => form.tags.includes(constants.WORDFORM_TAG_BASE));
