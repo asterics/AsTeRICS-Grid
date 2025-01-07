@@ -340,20 +340,24 @@
             initContextmenu();
             thiz.showGrid = true;
             thiz.highlightElement();
-            document.getElementById('grid-container').addEventListener('click', this.handleClickEvent);
-            document.getElementById('grid-container').addEventListener('touchstart', this.onTouchstart);
-            document.getElementById('grid-container').addEventListener('touchmove', this.onTouchEnd);
-            document.getElementById('grid-container').addEventListener('touchcancel', this.onTouchEnd);
-            document.getElementById('grid-container').addEventListener('touchend', this.onTouchEnd);
+            let container = document.getElementById('grid-container');
+            container.addEventListener('click', this.handleClickEvent);
+            container.addEventListener('touchstart', this.onTouchstart);
+            container.addEventListener('touchmove', this.onTouchEnd);
+            container.addEventListener('touchcancel', this.onTouchEnd);
+            container.addEventListener('touchend', this.onTouchEnd);
         },
         beforeDestroy() {
             pouchDbService.resumeSync();
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
-            document.getElementById('grid-container').removeEventListener('click', this.handleClickEvent);
-            document.getElementById('grid-container').removeEventListener('touchstart', this.onTouchstart);
-            document.getElementById('grid-container').removeEventListener('touchmove', this.onTouchEnd);
-            document.getElementById('grid-container').removeEventListener('touchcancel', this.onTouchEnd);
-            document.getElementById('grid-container').removeEventListener('touchend', this.onTouchEnd);
+            let container = document.getElementById('grid-container');
+            if (container) {
+                container.removeEventListener('click', this.handleClickEvent);
+                container.removeEventListener('touchstart', this.onTouchstart);
+                container.removeEventListener('touchmove', this.onTouchEnd);
+                container.removeEventListener('touchcancel', this.onTouchEnd);
+                container.removeEventListener('touchend', this.onTouchEnd);
+            }
             vueApp = null;
             $.contextMenu('destroy');
         }
