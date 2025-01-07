@@ -148,11 +148,9 @@ export default {
             this.interact = this.interact || (await import('interactjs')).default;
 
             let position = { x: 0, y: 0 };
-            let oldZIndex = 0;
             this.interact(this.elementClassSelector).draggable({
                 listeners: {
                     start(event) {
-                        oldZIndex = event.target.style.zIndex;
                     },
                     move(event) {
                         position.x += event.dx;
@@ -177,7 +175,7 @@ export default {
                         event.target.style.transform = '';
                         thiz.noMoveId = event.target.getAttribute("data-id");
                         setTimeout(() => {
-                            event.target.style.zIndex = oldZIndex;
+                            event.target.style.zIndex = 0;
                             thiz.noMoveId = null;
                         }, thiz.animationDurationMs + 100);
                     }
@@ -186,7 +184,6 @@ export default {
                 edges: { left: false, right: true, bottom: this.resizeHandleSelector, top: false },
                 listeners: {
                     start(event) {
-                        oldZIndex = event.target.style.zIndex;
                     },
                     move(event) {
                         event.target.style.width = event.rect.width + 'px';
@@ -196,7 +193,7 @@ export default {
                     end(event) {
                         event.target.style.width = '';
                         event.target.style.height = '';
-                        event.target.style.zIndex = oldZIndex;
+                        event.target.style.zIndex = 0;
                         let resizedElement = event.target;
                         thiz.handleResize(resizedElement, {
                             width: Math.round(event.rect.width / thiz.getRasterX()),
