@@ -40,32 +40,38 @@
 </script>
 
 <style scoped>
-
-nav li {
-    flex: 1;
-    text-align: center;
-    background-color: whitesmoke;
-    border: 1px solid black;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    line-height: 2em;
-    cursor: pointer;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
+ul {
+    flex-wrap: wrap;
 }
 
-nav li.selected, nav li.selected:hover {
-    border-bottom: none;
-    background-color: white;
+nav li {
+    flex: 1 1 content;
+    text-align: center;
+    background-color: whitesmoke;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    line-height: 2em;
+    cursor: pointer;
+    white-space: nowrap;
+    max-height: 4em;
+    padding: 5px 10px;
     font-weight: bold;
 }
 
-nav a {
-    //display: flex;
-    //justify-content: center;
+nav li.selected, nav li.selected:hover {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    text-decoration-color: #2d7bb4;
+    text-decoration-thickness: 4px;
+    background-color: #DBF4FF;
+    border: 2px solid lightblue;
+    color: black;
+}
+
+nav a, nav a:focus, nav a:hover {
     text-decoration: none;
     color: black;
+    outline: none;
 }
 
 nav li:hover {
