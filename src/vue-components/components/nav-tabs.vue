@@ -50,6 +50,9 @@ nav li {
     border-top-right-radius: 10px;
     line-height: 2em;
     cursor: pointer;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 nav li.selected, nav li.selected:hover {

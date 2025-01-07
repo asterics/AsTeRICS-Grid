@@ -11,6 +11,7 @@ body {
 
 * {
     touch-action: manipulation;
+    min-width: 0;
 }
 
 .grid-container {
