@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class="srow content" v-if="metadata && gridData" style="max-width: 100%; min-height: 0">
-            <app-grid-editable id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata" @interacted="onInteracted"/>
+            <app-grid-editable id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata" @interacted="onInteracted" @interactstart="onInteractStart" @interactend="onInteractEnd"/>
         </div>
     </div>
 </template>
@@ -55,7 +55,6 @@
     import {GridData} from "../../js/model/GridData";
     import {constants} from "../../js/util/constants";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
-    import {inputEventHandler} from "../../js/input/inputEventHandler";
     import {util} from "../../js/util/util";
     import GridDimensionModal from "../modals/gridDimensionModal.vue";
     import {gridUtil} from "../../js/util/gridUtil";
@@ -63,7 +62,6 @@
     import GridTranslateModal from "../modals/gridTranslateModal.vue";
     import SetNavigationModal from "../modals/setNavigationModal.vue";
     import {GridActionYoutube} from "../../js/model/GridActionYoutube";
-    import {printService} from "../../js/service/printService";
     import {GridElementCollect} from "../../js/model/GridElementCollect.js";
     import {GridActionCollectElement} from "../../js/model/GridActionCollectElement.js";
     import {pouchDbService} from "../../js/service/data/pouchDbService.js";
@@ -97,7 +95,8 @@
                 markedElement: null,
                 lastInteraction: {},
                 newPosition: null,
-                touchstartTimeoutHandler: null
+                touchstartTimeoutHandler: null,
+                isInteracting: false
             }
         },
         components: {
@@ -254,6 +253,9 @@
                 }, null, 200, "MARK_ELEMENT");
             },
             handleClickEvent(event) {
+                if (this.isInteracting) {
+                    return;
+                }
                 if (vueApp) {
                     let id = null;
                     let element = event.target;
@@ -301,6 +303,14 @@
             },
             onTouchEnd() {
                 clearTimeout(this.touchstartTimeoutHandler);
+            },
+            onInteractStart() {
+                this.isInteracting = true;
+            },
+            onInteractEnd() {
+                setTimeout(() => {
+                    this.isInteracting = false; // reset after click event is fired
+                }, 100)
             }
         },
         created() {

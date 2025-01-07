@@ -151,6 +151,8 @@ export default {
             this.interact(this.elementClassSelector).draggable({
                 listeners: {
                     start(event) {
+                        thiz.$emit('movestart');
+                        thiz.$emit('interactstart');
                     },
                     move(event) {
                         position.x += event.dx;
@@ -174,6 +176,8 @@ export default {
                         thiz.handleMove(movedElement, diff);
                         event.target.style.transform = '';
                         thiz.noMoveId = event.target.getAttribute("data-id");
+                        thiz.$emit('moveend');
+                        thiz.$emit('interactend');
                         setTimeout(() => {
                             event.target.style.zIndex = 0;
                             thiz.noMoveId = null;
@@ -184,6 +188,8 @@ export default {
                 edges: { left: false, right: true, bottom: this.resizeHandleSelector, top: false },
                 listeners: {
                     start(event) {
+                        thiz.$emit('resizestart');
+                        thiz.$emit('interactstart');
                     },
                     move(event) {
                         event.target.style.width = event.rect.width + 'px';
@@ -199,6 +205,8 @@ export default {
                             width: Math.round(event.rect.width / thiz.getRasterX()),
                             height: Math.round(event.rect.height / thiz.getRasterY())
                         });
+                        thiz.$emit('resizeend');
+                        thiz.$emit('interactend');
                     }
                 },
                 modifiers: [
