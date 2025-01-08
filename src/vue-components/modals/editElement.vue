@@ -7,7 +7,7 @@
                         <edit-element-header :grid-element="originalGridElement" :header="editElementId ? $t('editGridItem') : $t('newGridItem')" :close-fn="close" :open-help-fn="openHelp"></edit-element-header>
                     </div>
 
-                    <nav-tabs class="mb-3" :tab-labels="Object.keys(possibleTabs)" v-model="currentTab" @input="imageSearch = ''"></nav-tabs>
+                    <nav-tabs class="mb-5" :tab-labels="Object.keys(possibleTabs)" v-model="currentTab" @input="imageSearch = ''"></nav-tabs>
 
                     <div class="modal-body mt-2" v-if="gridElement">
                         <div v-if="currentTab === TABS.TAB_GENERAL">

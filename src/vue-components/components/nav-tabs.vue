@@ -42,6 +42,7 @@
 <style scoped>
 ul {
     flex-wrap: wrap;
+    margin-bottom: 0;
 }
 
 nav li {
@@ -53,7 +54,7 @@ nav li {
     cursor: pointer;
     white-space: nowrap;
     max-height: 4em;
-    padding: 5px 10px;
+    padding: 3px 10px 5px 10px;
     font-weight: bold;
 }
 
