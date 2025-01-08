@@ -53,13 +53,12 @@
 
 <script>
     import {i18nService} from "../../../js/service/i18nService";
-    import HeaderIcon from '../../../vue-components/components/headerIcon.vue'
     import Accordion from "../../components/accordion.vue";
     import SliderInput from '../../modals/input/sliderInput.vue';
     import { settingsSaveMixin } from './settingsSaveMixin';
 
     export default {
-        components: { SliderInput, Accordion, HeaderIcon},
+        components: { SliderInput, Accordion},
         props: ["metadata", "appSettings", "userSettingsLocal"],
         mixins: [settingsSaveMixin],
         data() {
