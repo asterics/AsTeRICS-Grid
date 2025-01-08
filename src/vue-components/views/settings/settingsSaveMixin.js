@@ -29,18 +29,14 @@ let settingsSaveMixin = {
                 }, SAVE_TIMEOUT_MS + 100);
             });
         },
-        async saveUserSettingsLocal(userSettingsLocal, dontSaveSettings) {
+        async saveUserSettingsLocal(userSettingsLocal, timeout) {
+            timeout = timeout === undefined ? SAVE_TIMEOUT_MS : timeout;
             this.$emit("changing");
             await i18nService.setContentLanguage(userSettingsLocal.contentLang, true);
-            this.selectVoices = this.getSelectVoices();
-            this.fixCurrentVoice(true);
-            this.setVoiceTestText();
-            if (!dontSaveSettings) {
-                localStorageService.saveUserSettings(userSettingsLocal);
-            }
+            localStorageService.saveUserSettings(userSettingsLocal);
             setTimeout(() => {
                 this.$emit("changed");
-            }, SAVE_TIMEOUT_MS);
+            }, timeout);
         }
     }
 };
