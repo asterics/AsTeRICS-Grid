@@ -49,6 +49,7 @@ nav li {
     flex: 1 1 content;
     text-align: center;
     background-color: whitesmoke;
+    border-radius: 5px 5px 0 0;
     border: 1px solid lightgray;
     line-height: 2em;
     cursor: pointer;
@@ -63,9 +64,11 @@ nav li.selected, nav li.selected:hover {
     text-underline-offset: 5px;
     text-decoration-color: #2d7bb4;
     text-decoration-thickness: 4px;
-    background-color: #DBF4FF;
-    border: 2px solid lightblue;
+    /*background-color: #DBF4FF;*/
+    background-color: white;
+    border: 3px solid lightblue;
     color: black;
+    border-bottom: none;
 }
 
 nav a, nav a:focus, nav a:hover {
