@@ -10,6 +10,8 @@ let speechServiceExternal = {};
 let externalSpeechServiceUrl = localStorageService.getAppSettings().externalSpeechServiceUrl;
 let lastSpeakingResult = false;
 let lastSpeakingRequestTime = 0;
+let lastGetVoicesTime = 0;
+let lastGetVoicesResult = null;
 let playingInternal = false;
 let spokeAtAnyTime = false;
 let _caching = false;
@@ -61,10 +63,15 @@ speechServiceExternal.getVoices = async function (url) {
     if (!url) {
         return [];
     }
+    if (new Date().getTime() - lastGetVoicesTime < 1000) {
+        return lastGetVoicesResult;
+    }
     let result = await fetchErrorHandling(`${url}/voices`, {
         timeout: 3000
     });
-    return result ? (await result.json()) : [];
+    lastGetVoicesResult = result ? (await result.json()) : [];
+    lastGetVoicesTime = new Date().getTime();
+    return lastGetVoicesResult
 };
 
 speechServiceExternal.stop = function () {
