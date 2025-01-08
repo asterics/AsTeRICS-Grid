@@ -49,7 +49,6 @@ nav li {
     text-align: center;
     background-color: whitesmoke;
     border: 1px solid lightgray;
-    border-radius: 5px;
     line-height: 2em;
     cursor: pointer;
     white-space: nowrap;
