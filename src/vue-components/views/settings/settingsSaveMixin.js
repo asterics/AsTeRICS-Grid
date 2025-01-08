@@ -33,7 +33,9 @@ let settingsSaveMixin = {
             if (!dontSaveSettings) {
                 localStorageService.saveUserSettings(userSettingsLocal);
             }
-            this.$emit("changed");
+            setTimeout(() => {
+                this.$emit("changed");
+            }, SAVE_TIMEOUT_MS);
         }
     }
 };
