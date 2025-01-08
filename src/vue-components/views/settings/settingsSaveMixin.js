@@ -3,6 +3,8 @@ import { dataService } from '../../../js/service/data/dataService';
 import { localStorageService } from '../../../js/service/data/localStorageService';
 import { i18nService } from '../../../js/service/i18nService';
 
+let SAVE_TIMEOUT_MS = 300;
+
 let settingsSaveMixin = {
     methods: {
         saveMetadata(metadata) {
@@ -11,18 +13,21 @@ let settingsSaveMixin = {
                 log.warn("save!")
                 await dataService.saveMetadata(metadata);
                 this.$emit("changed");
-            }, 300, 'SAVE_METADATA');
+            }, SAVE_TIMEOUT_MS, 'SAVE_METADATA');
         },
-        saveAppSettings(appSettings, postFn) {
+        saveAppSettings(appSettings) {
             this.$emit("changing");
-            util.debounce(async () => {
-                await i18nService.setAppLanguage(appSettings.appLang, true);
-                localStorageService.saveAppSettings(appSettings);
-                if (postFn) {
-                    postFn();
-                }
-                this.$emit("changed");
-            }, 300, 'SAVE_APP_SETTINGS');
+            return new Promise(resolve => {
+                util.debounce(async () => {
+                    await i18nService.setAppLanguage(appSettings.appLang, true);
+                    localStorageService.saveAppSettings(appSettings);
+                    this.$emit('changed');
+                    resolve(true);
+                }, SAVE_TIMEOUT_MS, 'SAVE_APP_SETTINGS');
+                setTimeout(() => {
+                    resolve(false);
+                }, SAVE_TIMEOUT_MS + 100);
+            });
         },
         async saveUserSettingsLocal(userSettingsLocal, dontSaveSettings) {
             this.$emit("changing");
