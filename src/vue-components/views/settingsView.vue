@@ -10,7 +10,7 @@
         </div>
         <div class="srow content spaced mt-4" v-if="metadata">
             <settings-general v-if="currentTab === TABS.TAB_GENERAL" :metadata="metadata" :user-settings-local="userSettingsLocal" :app-settings="appSettings" @changing="onChanging" @changed="onChanged"/>
-            <settings-language v-if="currentTab === TABS.TAB_LANGUAGE" :metadata="metadata" :user-settings-local="userSettingsLocal" @changing="onChanging" @changed="onChanged"/>
+            <settings-language v-if="currentTab === TABS.TAB_LANGUAGE" :user-settings-local="userSettingsLocal" @changing="onChanging" @changed="onChanged"/>
             <settings-appearance v-if="currentTab === TABS.TAB_APPEARANCE" :metadata="metadata" :user-settings-local="userSettingsLocal" @changing="onChanging" @changed="onChanged"/>
             <settings-input-methods v-if="currentTab === TABS.TAB_INPUTMETHODS" :metadata="metadata" :user-settings-local="userSettingsLocal" @changing="onChanging" @changed="onChanged"/>
             <settings-integrations v-if="currentTab === TABS.TAB_INTEGRATIONS" :metadata="metadata" :user-settings-local="userSettingsLocal" :app-settings="appSettings" @changing="onChanging" @changed="onChanged"/>
