@@ -8,7 +8,7 @@ class TextConfig extends Model({
     fontFamily: [String],
     fontSizePct: [Number],
     lineHeight: [Number],
-    allowMultipleLines: [Boolean],
+    maxLines: [Number],
     textPosition: [String],
     onlyTextFontSizePct: [Number],
     onlyTextLineHeight: [Number]
@@ -37,7 +37,7 @@ TextConfig.defaults({
     fontFamily: "Arial",
     fontSizePct: 15,
     lineHeight: 1.5,
-    allowMultipleLines: true,
+    maxLines: 1,
     textPosition: TextConfig.TEXT_POS_ABOVE,
     onlyTextFontSizePct: 15,
     onlyTextLineHeight: 1

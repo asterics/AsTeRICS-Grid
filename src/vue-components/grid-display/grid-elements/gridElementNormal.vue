@@ -6,9 +6,9 @@
         <div :class="`text-container ${metadata.textConfig.fontFamily}`" v-if="label"
              :style="`order: ${metadata.textConfig.textPosition === TextConfig.TEXT_POS_BELOW ? 1 : 0};
                       text-align: center; font-size: ${fontSizePx}px; line-height: ${lineHeight};
-                      flex-grow: ${imageData ? '0' : '1'}; white-space: ${allowMultipleLines ? 'wrap' : 'nowrap'};
+                      flex-grow: ${imageData ? '0' : '1'};
                       font-family: ${metadata.textConfig.fontFamily};`">
-            <span>{{label}}</span>
+            <span :style="`max-height: ${maxTextContainerHeight};`">{{label}}</span>
         </div>
     </div>
 </template>
@@ -17,7 +17,6 @@
 import { stateService } from '../../../js/service/stateService';
 import { i18nService } from '../../../js/service/i18nService';
 import { util } from '../../../js/util/util';
-import { fontUtil } from '../../../js/util/fontUtil';
 import { TextConfig } from '../../../js/model/TextConfig';
 
 export default {
@@ -25,12 +24,12 @@ export default {
     data() {
         return {
             imageData: this.gridElement.image ? this.gridElement.image.data || this.gridElement.image.url : null,
-            fontUtil: fontUtil,
             fontSizePx: 14,
             fontSizePct: null,
             lineHeight: null,
-            allowMultipleLines: null,
-            TextConfig: TextConfig
+            maxTextContainerHeight: null,
+            TextConfig: TextConfig,
+            resizeObserver: null
         }
     },
     computed: {
@@ -49,8 +48,8 @@ export default {
         calcFontSize() {
             let size = this.$refs.container.getBoundingClientRect();
             let pct = this.imageData ? this.metadata.textConfig.fontSizePct : this.metadata.textConfig.onlyTextFontSizePct;
-            this.fontSizePx = size.height * pct / 100;
-            this.allowMultipleLines = this.imageData ? this.metadata.textConfig.allowMultipleLines : true;
+            this.fontSizePx = Math.min(size.height, size.width) * pct / 100;
+            this.maxTextContainerHeight = this.imageData ? (this.fontSizePx * this.metadata.textConfig.lineHeight * this.metadata.textConfig.maxLines) + 'px' : '100%';
             this.lineHeight = this.imageData ? this.metadata.textConfig.lineHeight : this.metadata.textConfig.onlyTextLineHeight;
         }
     },
