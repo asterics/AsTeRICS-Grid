@@ -18,6 +18,9 @@ class TextConfig extends Model({
 TextConfig.CONVERT_MODE_UPPERCASE = 'CONVERT_MODE_UPPERCASE';
 TextConfig.CONVERT_MODE_LOWERCASE = 'CONVERT_MODE_LOWERCASE';
 
+TextConfig.TEXT_POS_ABOVE = 'ABOVE';
+TextConfig.TEXT_POS_BELOW = 'BELOW';
+
 TextConfig.defaults({
     modelName: TextConfig.getModelName(),
     modelVersion: constants.MODEL_VERSION,
