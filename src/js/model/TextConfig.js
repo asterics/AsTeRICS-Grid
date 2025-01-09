@@ -4,7 +4,14 @@ import { constants } from '../util/constants';
 class TextConfig extends Model({
     modelName: String,
     modelVersion: String,
-    convertMode: [String]
+    convertMode: [String],
+    fontFamily: [String],
+    fontSizePct: [Number],
+    lineHeight: [Number],
+    allowMultipleLines: [Boolean],
+    textPosition: [String],
+    onlyTextFontSizePct: [Number],
+    onlyTextLineHeight: [Number]
 }) {
     constructor(properties) {
         super(properties);
@@ -21,10 +28,19 @@ TextConfig.CONVERT_MODE_LOWERCASE = 'CONVERT_MODE_LOWERCASE';
 TextConfig.TEXT_POS_ABOVE = 'ABOVE';
 TextConfig.TEXT_POS_BELOW = 'BELOW';
 
+TextConfig.FONTS = ["Arial", "Roboto-Regular", "OpenDyslexic-Regular", "Jost-500-Medium", "Times"]
+
 TextConfig.defaults({
     modelName: TextConfig.getModelName(),
     modelVersion: constants.MODEL_VERSION,
-    convertMode: null
+    convertMode: null,
+    fontFamily: "Arial",
+    fontSizePct: 15,
+    lineHeight: 1.5,
+    allowMultipleLines: true,
+    textPosition: TextConfig.TEXT_POS_ABOVE,
+    onlyTextFontSizePct: 15,
+    onlyTextLineHeight: 1
 });
 
 export { TextConfig };

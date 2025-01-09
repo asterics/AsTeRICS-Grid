@@ -1,12 +1,13 @@
 <template>
     <div class="grid-item-content" ref="container">
-        <div class="img-container" v-if="imageData" :style="`order: ${textPosition === TextConfig.TEXT_POS_BELOW ? 0 : 1}`">
+        <div class="img-container" v-if="imageData" :style="`order: ${metadata.textConfig.textPosition === TextConfig.TEXT_POS_BELOW ? 0 : 1}`">
             <img :src="imageData" draggable="false" style="box-sizing: border-box; max-width: 100%; max-height: 100%; object-fit: contain; padding: 2%;" crossorigin="anonymous"/>
         </div>
-        <div class="text-container" v-if="label"
-             :style="`order: ${textPosition === TextConfig.TEXT_POS_BELOW ? 1 : 0}
+        <div :class="`text-container ${metadata.textConfig.fontFamily}`" v-if="label"
+             :style="`order: ${metadata.textConfig.textPosition === TextConfig.TEXT_POS_BELOW ? 1 : 0};
                       text-align: center; font-size: ${fontSizePx}px; line-height: ${lineHeight};
-                      flex-grow: ${imageData ? '0' : '1'}; white-space: ${allowMultipleLines ? 'wrap' : 'nowrap'}`">
+                      flex-grow: ${imageData ? '0' : '1'}; white-space: ${allowMultipleLines ? 'wrap' : 'nowrap'};
+                      font-family: ${metadata.textConfig.fontFamily};`">
             <span>{{label}}</span>
         </div>
     </div>
@@ -27,9 +28,8 @@ export default {
             fontUtil: fontUtil,
             fontSizePx: 14,
             fontSizePct: null,
-            lineHeight: 1.5,
-            allowMultipleLines: false,
-            textPosition: TextConfig.TEXT_POS_BELOW,
+            lineHeight: null,
+            allowMultipleLines: null,
             TextConfig: TextConfig
         }
     },
@@ -48,8 +48,10 @@ export default {
         },
         calcFontSize() {
             let size = this.$refs.container.getBoundingClientRect();
-            this.fontSizePct = this.imageData ? 15 : 40;
-            this.fontSizePx = size.height * this.fontSizePct / 100;
+            let pct = this.imageData ? this.metadata.textConfig.fontSizePct : this.metadata.textConfig.onlyTextFontSizePct;
+            this.fontSizePx = size.height * pct / 100;
+            this.allowMultipleLines = this.imageData ? this.metadata.textConfig.allowMultipleLines : true;
+            this.lineHeight = this.imageData ? this.metadata.textConfig.lineHeight : this.metadata.textConfig.onlyTextLineHeight;
         }
     },
     mounted() {

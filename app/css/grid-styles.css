@@ -85,3 +85,21 @@
     filter: grayscale(100%);
     filter: grayscale(1); /* Microsoft Edge and Firefox 35+ */
 }
+
+@font-face {
+    font-family: "OpenDyslexic-Regular";
+    src: url("../fonts/OpenDyslexic-Regular.woff2");
+}
+
+@font-face {
+    font-family: "Roboto-Regular";
+    src: url("../fonts/roboto-regular.woff2");
+}
+
+@font-face {
+    font-family: "Jost-500-Medium";
+    src: url("../fonts/Jost-500-Medium.woff2");
+}
+.text-container.Jost-500-Medium {
+    font-feature-settings: 'ss01' on;
+}
