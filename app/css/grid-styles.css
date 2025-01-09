@@ -25,6 +25,9 @@
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* IE10+/Edge */
     user-select: none; /* Standard */
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: clip;
 }
 
 .grid-layout li {
