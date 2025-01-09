@@ -48,15 +48,18 @@ ul {
 nav li {
     flex: 1 1 content;
     text-align: center;
-    background-color: whitesmoke;
+    background-color: #eaeaea;
     border-radius: 5px 5px 0 0;
-    border: 1px solid lightgray;
+    border: 1px solid #c8c8c8;
     line-height: 2em;
     cursor: pointer;
     white-space: nowrap;
     max-height: 4em;
     padding: 3px 10px 5px 10px;
-    font-weight: bold;
+}
+
+nav li:hover {
+    background-color: lightgray;
 }
 
 nav li.selected, nav li.selected:hover {
@@ -65,19 +68,17 @@ nav li.selected, nav li.selected:hover {
     text-decoration-color: #2d7bb4;
     text-decoration-thickness: 4px;
     /*background-color: #DBF4FF;*/
+    /*background-image: linear-gradient(#DBF4FF, white);*/
     background-color: white;
     border: 3px solid lightblue;
     color: black;
     border-bottom: none;
+    font-weight: bold;
 }
 
 nav a, nav a:focus, nav a:hover {
     text-decoration: none;
     color: black;
     outline: none;
-}
-
-nav li:hover {
-    background-color: lightgray;
 }
 </style>
