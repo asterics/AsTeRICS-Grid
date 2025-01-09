@@ -42,8 +42,7 @@ export default {
         resizeListener() {
             util.debounce(() => {
                 this.calcFontSize();
-                this.$forceUpdate();
-            }, 200, "WINDOW_RESIZE_ELEM" + this.gridElement.id);
+            }, 50, "WINDOW_RESIZE_ELEM" + this.gridElement.id);
         },
         calcFontSize() {
             let size = this.$refs.container.getBoundingClientRect();
@@ -54,11 +53,22 @@ export default {
         }
     },
     mounted() {
-        window.addEventListener("resize", this.resizeListener);
         this.calcFontSize();
+        if (window.ResizeObserver) {
+            this.resizeObserver = new ResizeObserver(() => {
+                this.resizeListener();
+            });
+            this.resizeObserver.observe(this.$refs.container);
+        } else {
+            window.addEventListener("resize", this.resizeListener);
+        }
     },
     beforeDestroy() {
-        window.removeEventListener("resize", this.resizeListener);
+        if (this.resizeObserver) {
+            this.resizeObserver.disconnect();
+        } else {
+            window.removeEventListener("resize", this.resizeListener);
+        }
     }
 }
 </script>
