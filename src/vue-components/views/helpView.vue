@@ -28,7 +28,7 @@
                                 <a href="https://www.facebook.com/asterics.grid.y.arasaac" target="_blank">{{ $t('facebookAstericsGridPage') }}</a>
                             </template>
                         </i18n>
-                        <span>({{ $t('lang.es') }})</span>
+                        <span>({{ $t('lang.es') }}, {{ $t('lang.en') }}, {{ $t('lang.pt') }})</span>
                     </li>
                     <li>
                         <i18n path="communityOnFacebookGroup" tag="span">
