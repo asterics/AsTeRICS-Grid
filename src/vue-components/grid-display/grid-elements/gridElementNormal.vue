@@ -24,7 +24,7 @@ export default {
     data() {
         return {
             imageData: this.gridElement.image ? this.gridElement.image.data || this.gridElement.image.url : null,
-            fontSizePx: 14,
+            fontSizePx: null,
             fontSizePct: null,
             lineHeight: null,
             maxTextContainerHeight: null,
@@ -42,14 +42,17 @@ export default {
         resizeListener() {
             util.debounce(() => {
                 this.calcFontSize();
-            }, 50, "WINDOW_RESIZE_ELEM" + this.gridElement.id);
+            }, 100, "WINDOW_RESIZE_ELEM" + this.gridElement.id);
         },
         calcFontSize() {
             let size = this.$refs.container.getBoundingClientRect();
-            let pct = this.imageData ? this.metadata.textConfig.fontSizePct : this.metadata.textConfig.onlyTextFontSizePct;
-            this.fontSizePx = Math.min(size.height, size.width) * pct / 100;
+            this.fontSizePx = this.getFontSizePx(size);
             this.maxTextContainerHeight = this.imageData ? (this.fontSizePx * this.metadata.textConfig.lineHeight * this.metadata.textConfig.maxLines) + 'px' : '100%';
             this.lineHeight = this.imageData ? this.metadata.textConfig.lineHeight : this.metadata.textConfig.onlyTextLineHeight;
+        },
+        getFontSizePx(size) {
+            let pct = this.imageData ? this.metadata.textConfig.fontSizePct : this.metadata.textConfig.onlyTextFontSizePct;
+            return (size.height * (pct / 100) + size.width * (pct / 100)) / 2;
         }
     },
     mounted() {
