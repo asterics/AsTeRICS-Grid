@@ -72,21 +72,67 @@ fontUtil.getLastFontSize = function () {
  *
  * @param {String} text The text to be rendered.
  * @param {DOMElement} containerElem the element containing the text, default document.body
- * @param {String} targetSize the optional targetSize of the text, e.g. "16px"
- * @param {String} fontWeight the font weight, e.g. "bold" or 700, default: "bold"
+ * @param {String | Number} targetSize the optional targetSize of the text, e.g. "16px", if a number is passed it's interpreted as "px"
+ * @param {Object} options
+ * @param {String} options.fontWeight the font weight, e.g. "bold" or 700, default: "bold"
  *
  * @see https://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
  */
-fontUtil.getTextWidth = function (text, containerElem, targetSize, fontWeight = "bold") {
+fontUtil.getTextWidth = function(text, containerElem, targetSize, options = {}) {
+    options.fontWeight = options.fontWeight || 'bold';
     containerElem = document.body || containerElem;
-    let font = getCanvasFontSize(containerElem, targetSize, fontWeight);
+    targetSize = typeof targetSize === 'number' ? targetSize + 'px' : targetSize;
+    let font = getCanvasFontSize(containerElem, targetSize, options.fontWeight);
     // re-use canvas object for better performance
     const canvas = fontUtil.getTextWidth.canvas || (fontUtil.getTextWidth.canvas = document.createElement('canvas'));
     const context = canvas.getContext('2d');
     context.font = font;
-    const metrics = context.measureText(text);
-    return metrics.width;
+    return context.measureText(text).width;
 };
+
+/**
+ * returns a fitting font size for the given text and container in px
+ * @param text
+ * @param container
+ * @param options
+ * @param options.padding padding on left and right of the text in px, defaults to 5
+ * @param options.maxLines maximum number of lines allowed, defaults to 1
+ * @param options.containerPct percentage of the container width to be filled, range from 0..100, defaults to 100
+ * @param options.maxSize maximum size allowed
+ * @returns {number} font size in px
+ */
+fontUtil.getFittingFontSize = function(text, container, options = {}) {
+    if(!container || !text) {
+        return 0;
+    }
+    options.padding = options.padding === undefined ? 5 : options.padding;
+    options.maxLines = options.maxLines || 1;
+    options.containerPct = options.containerPct || 100;
+    options.maxSize = options.maxSize || Number.MAX_SAFE_INTEGER;
+    let tryPx = 14;
+    let width = fontUtil.getTextWidth(text, container, tryPx);
+    let maxWH = Math.max(width, tryPx);
+    let containerWidth = Math.max(0, container.getBoundingClientRect().width * (options.containerPct / 100) - 2 * options.padding) * options.maxLines;
+
+    if (options.maxLines > 1) {
+        // ensure fontSize small enough that longest word fits in one line
+        let words = text.split(' ');
+        let lengths = words.map(word => word.length);
+        let maxLength = Math.max.apply(null, lengths);
+        let longestWord = words.find(word => word.length === maxLength);
+        let newOptions = JSON.parse(JSON.stringify(options));
+        newOptions.maxLines = 1;
+        options.maxSize = Math.min(options.maxSize, fontUtil.getFittingFontSize(longestWord, container, newOptions));
+    }
+
+    for (let count = 0; count < 10 && Math.abs(maxWH - containerWidth) > 10; count++) {
+        let factor = maxWH / containerWidth;
+        tryPx = tryPx / factor;
+        width = fontUtil.getTextWidth(text, container, tryPx);
+        maxWH = Math.max(width, tryPx);
+    }
+    return Math.min(options.maxSize, tryPx);
+}
 
 fontUtil.getHighContrastColor = function (hexBackground, lightColor, darkColor) {
     if (!hexBackground || !hexBackground.startsWith('#')) {
