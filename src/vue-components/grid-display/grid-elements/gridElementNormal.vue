@@ -49,9 +49,9 @@ export default {
         },
         calcFontSize() {
             let size = this.$refs.container.getBoundingClientRect();
+            this.lineHeight = this.imageData ? this.metadata.textConfig.lineHeight : this.metadata.textConfig.onlyTextLineHeight;
             this.fontSizePx = this.getFontSizePx(size);
             this.maxTextContainerHeight = this.imageData ? (this.fontSizePx * this.metadata.textConfig.lineHeight * this.metadata.textConfig.maxLines) + 'px' : '100%';
-            this.lineHeight = this.imageData ? this.metadata.textConfig.lineHeight : this.metadata.textConfig.onlyTextLineHeight;
             this.maxLines = this.imageData ? this.metadata.textConfig.maxLines : 100;
             this.whiteSpaceWrap = this.maxLines === 1 ? 'nowrap' : 'normal';
         },
@@ -61,10 +61,10 @@ export default {
             let realWidth = fontUtil.getTextWidth(this.label, this.$refs.container, fontSize);
             let padding = 5;
             if (this.metadata.textConfig.fittingMode === TextConfig.TOO_LONG_AUTO && realWidth > size.width - 2 * padding) {
-                fontSize = fontUtil.getFittingFontSize(this.label, this.$refs.container, { maxLines: this.maxLines, padding: padding, maxSize: fontSize });
+                fontSize = fontUtil.getFittingFontSize(this.label, this.$refs.container, { maxLines: this.maxLines, padding: padding, maxSize: fontSize, lineHeight: this.lineHeight });
             }
             if (this.metadata.textConfig.autoSizeKeyboardLetters && !this.imageData && this.label.length === 1) { // keyboard letters
-                fontSize = fontUtil.getFittingFontSize(this.label, this.$refs.container, { containerPct: 90 });
+                fontSize = fontUtil.getFittingFontSize(this.label, this.$refs.container, { containerPct: 90, lineHeight: this.lineHeight });
             }
             return fontSize;
         }
