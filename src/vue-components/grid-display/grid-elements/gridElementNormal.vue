@@ -31,8 +31,16 @@ export default {
             maxTextContainerHeight: null,
             TextConfig: TextConfig,
             resizeObserver: null,
-            textOverflow: this.metadata.textConfig.fittingMode === TextConfig.TOO_LONG_ELLIPSIS ? 'ellipsis' : 'clip',
+            textOverflow: null,
             whiteSpaceWrap: null
+        }
+    },
+    watch: {
+        metadata: {
+            handler() {
+                this.calcFontSize();
+            },
+            deep: true
         }
     },
     computed: {
@@ -53,6 +61,7 @@ export default {
             this.fontSizePx = this.getFontSizePx(size);
             this.maxTextContainerHeight = this.imageData ? (this.fontSizePx * this.metadata.textConfig.lineHeight * this.metadata.textConfig.maxLines) + 'px' : '100%';
             this.maxLines = this.imageData ? this.metadata.textConfig.maxLines : 100;
+            this.textOverflow = this.metadata.textConfig.fittingMode === TextConfig.TOO_LONG_ELLIPSIS ? 'ellipsis' : 'clip';
             this.whiteSpaceWrap = this.maxLines === 1 ? 'nowrap' : 'normal';
         },
         getFontSizePx(size) {
