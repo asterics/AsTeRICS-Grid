@@ -18,6 +18,7 @@ import { stateService } from '../../../js/service/stateService';
 import { i18nService } from '../../../js/service/i18nService';
 import { util } from '../../../js/util/util';
 import { TextConfig } from '../../../js/model/TextConfig';
+import { fontUtil } from '../../../js/util/fontUtil';
 
 export default {
     props: ["gridElement", "metadata"],
@@ -27,6 +28,7 @@ export default {
             fontSizePx: null,
             fontSizePct: null,
             lineHeight: null,
+            maxLines: null,
             maxTextContainerHeight: null,
             TextConfig: TextConfig,
             resizeObserver: null
@@ -49,10 +51,20 @@ export default {
             this.fontSizePx = this.getFontSizePx(size);
             this.maxTextContainerHeight = this.imageData ? (this.fontSizePx * this.metadata.textConfig.lineHeight * this.metadata.textConfig.maxLines) + 'px' : '100%';
             this.lineHeight = this.imageData ? this.metadata.textConfig.lineHeight : this.metadata.textConfig.onlyTextLineHeight;
+            this.maxLines = this.imageData ? this.metadata.textConfig.maxLines : 100;
         },
         getFontSizePx(size) {
             let pct = this.imageData ? this.metadata.textConfig.fontSizePct : this.metadata.textConfig.onlyTextFontSizePct;
-            return (size.height * (pct / 100) + size.width * (pct / 100)) / 2;
+            let fontSize = (size.height * (pct / 100) + size.width * (pct / 100)) / 2;
+            let realWidth = fontUtil.getTextWidth(this.label, this.$refs.container, fontSize);
+            let padding = 5;
+            if (realWidth > size.width - 2 * padding) {
+                fontSize = fontUtil.getFittingFontSize(this.label, this.$refs.container, { maxLines: this.maxLines, padding: padding, maxSize: fontSize });
+            }
+            if (!this.imageData && this.label.length === 1) { // keyboard letters
+                fontSize = fontUtil.getFittingFontSize(this.label, this.$refs.container, { containerPct: 90 });
+            }
+            return fontSize;
         }
     },
     mounted() {
