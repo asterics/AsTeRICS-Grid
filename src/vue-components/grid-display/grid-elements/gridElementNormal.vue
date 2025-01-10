@@ -1,13 +1,12 @@
 <template>
-    <div class="grid-item-content" ref="container">
+    <div class="grid-item-content" ref="container" :style="`font-family: ${metadata.textConfig.fontFamily};`">
         <div class="img-container" v-if="imageData" :style="`order: ${metadata.textConfig.textPosition === TextConfig.TEXT_POS_BELOW ? 0 : 1}`">
             <img :src="imageData" draggable="false" style="box-sizing: border-box; max-width: 100%; max-height: 100%; object-fit: contain; padding: 2%;" crossorigin="anonymous"/>
         </div>
         <div :class="`text-container ${metadata.textConfig.fontFamily}`" v-if="label"
              :style="`order: ${metadata.textConfig.textPosition === TextConfig.TEXT_POS_BELOW ? 1 : 0};
                       text-align: center; font-size: ${fontSizePx}px; line-height: ${lineHeight};
-                      flex-grow: ${imageData ? '0' : '1'};
-                      font-family: ${metadata.textConfig.fontFamily};`">
+                      flex-grow: ${imageData ? '0' : '1'};`">
             <span :style="`max-height: ${maxTextContainerHeight}; text-overflow: ${textOverflow}; white-space: ${whiteSpaceWrap}; margin: 0 5px;`">{{label}}</span>
         </div>
     </div>
