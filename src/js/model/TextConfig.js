@@ -46,7 +46,7 @@ TextConfig.defaults({
     maxLines: 2,
     textPosition: TextConfig.TEXT_POS_BELOW,
     onlyTextFontSizePct: 12,
-    onlyTextLineHeight: 1,
+    onlyTextLineHeight: 1.5,
     fittingMode: TextConfig.TOO_LONG_AUTO,
     autoSizeKeyboardLetters: true
 });
