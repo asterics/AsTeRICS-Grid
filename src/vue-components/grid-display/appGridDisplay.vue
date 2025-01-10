@@ -1,5 +1,5 @@
 <template>
-    <grid-layout v-if="gridData"
+    <grid-layout v-if="gridData" :key="gridData.id"
                  :elements="gridData.gridElements" :render-component="AppGridElement" :metadata="metadata"
                  :rows="gridData.rowCount" :columns="gridData.minColumnCount" :background-color="metadata.colorConfig.gridBackgroundColor">
     </grid-layout>

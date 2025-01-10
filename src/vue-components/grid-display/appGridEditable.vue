@@ -1,5 +1,5 @@
 <template>
-    <grid-layout v-if="gridData" v-on="$listeners"
+    <grid-layout v-if="gridData" :key="gridData.id" v-on="$listeners"
                  :elements="gridData.gridElements"
                  :render-component="AppGridElement" :metadata="metadata" :show-resize-handle="true"
                  :editable="true" :rows="gridData.rowCount" :columns="gridData.minColumnCount"
