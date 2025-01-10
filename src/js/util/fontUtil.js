@@ -80,7 +80,7 @@ fontUtil.getLastFontSize = function () {
  */
 fontUtil.getTextWidth = function(text, containerElem, targetSize, options = {}) {
     options.fontWeight = options.fontWeight || 'bold';
-    containerElem = document.body || containerElem;
+    containerElem = containerElem || document.body;
     targetSize = typeof targetSize === 'number' ? targetSize + 'px' : targetSize;
     let font = getCanvasFontSize(containerElem, targetSize, options.fontWeight);
     // re-use canvas object for better performance
