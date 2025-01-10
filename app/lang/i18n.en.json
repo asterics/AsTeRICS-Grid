@@ -1096,5 +1096,22 @@
   "defaultDeviceVoice": "Default device voice",
   "fundedBy": "funded by",
   "astericsGridWasFundedWithinProjects": "AsTeRICS Grid was developed within several funded projects",
-  "LAST_LANG": "Previously used language"
+  "LAST_LANG": "Previously used language",
+  "textHeading": "Text",
+  "textPosition": "Text position",
+  "top": "Top",
+  "bottom": "Bottom",
+  "fontFamily": "Font family",
+  "fontSize": "Font size",
+  "modeForHandlingTooLongTexts": "Mode for handling too long texts",
+  "adaptAutomatically": "Adapt automatically",
+  "truncate": "Truncate",
+  "ellipsisDotDotDot": "Ellipsis (\"...\")",
+  "maximumNumberOfLines": "Maximum number of lines",
+  "lineHeight": "Line height",
+  "onlyTextFontSize": "Font size (text-only elements)",
+  "onlyTextLineHeight": "Line height (text-only elements)",
+  "autoSizeKeyboardLetters": "Auto-size keyboard letters",
+  "appearanceDemo": "Appearance demo",
+  "testElementLabel": "Test element label"
 }
