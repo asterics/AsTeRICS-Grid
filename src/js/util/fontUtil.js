@@ -99,6 +99,7 @@ fontUtil.getTextWidth = function(text, containerElem, targetSize, options = {}) 
  * @param options.maxLines maximum number of lines allowed, defaults to 1
  * @param options.containerPct percentage of the container width to be filled, range from 0..100, defaults to 100
  * @param options.maxSize maximum size allowed
+ * @param options.lineHeight the used line height
  * @returns {number} font size in px
  */
 fontUtil.getFittingFontSize = function(text, container, options = {}) {
@@ -109,10 +110,12 @@ fontUtil.getFittingFontSize = function(text, container, options = {}) {
     options.maxLines = options.maxLines || 1;
     options.containerPct = options.containerPct || 100;
     options.maxSize = options.maxSize || Number.MAX_SAFE_INTEGER;
+    options.lineHeight = options.lineHeight || 1;
     let tryPx = 14;
     let width = fontUtil.getTextWidth(text, container, tryPx);
     let maxWH = Math.max(width, tryPx);
-    let containerWidth = Math.max(0, container.getBoundingClientRect().width * (options.containerPct / 100) - 2 * options.padding) * options.maxLines;
+    let containerSize = container.getBoundingClientRect();
+    let containerWidth = Math.max(0, containerSize.width * (options.containerPct / 100) - 2 * options.padding) * options.maxLines;
 
     if (options.maxLines > 1) {
         // ensure fontSize small enough that longest word fits in one line
@@ -131,7 +134,7 @@ fontUtil.getFittingFontSize = function(text, container, options = {}) {
         width = fontUtil.getTextWidth(text, container, tryPx);
         maxWH = Math.max(width, tryPx);
     }
-    return Math.min(options.maxSize, tryPx);
+    return Math.min(options.maxSize, tryPx, (containerSize.height * options.containerPct / 100) / options.lineHeight);
 }
 
 fontUtil.getHighContrastColor = function (hexBackground, lightColor, darkColor) {
