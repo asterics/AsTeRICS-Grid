@@ -27,7 +27,6 @@
     user-select: none; /* Standard */
     max-width: 100%;
     overflow: hidden;
-    text-overflow: clip;
 }
 
 .grid-layout li {

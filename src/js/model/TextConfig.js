@@ -11,7 +11,9 @@ class TextConfig extends Model({
     maxLines: [Number],
     textPosition: [String],
     onlyTextFontSizePct: [Number],
-    onlyTextLineHeight: [Number]
+    onlyTextLineHeight: [Number],
+    fittingMode: [String],
+    autoSizeKeyboardLetters: [Boolean]
 }) {
     constructor(properties) {
         super(properties);
@@ -28,6 +30,10 @@ TextConfig.CONVERT_MODE_LOWERCASE = 'CONVERT_MODE_LOWERCASE';
 TextConfig.TEXT_POS_ABOVE = 'ABOVE';
 TextConfig.TEXT_POS_BELOW = 'BELOW';
 
+TextConfig.TOO_LONG_AUTO= 'AUTO';
+TextConfig.TOO_LONG_TRUNCATE = 'TRUNCATE';
+TextConfig.TOO_LONG_ELLIPSIS = 'ELLIPSIS';
+
 TextConfig.FONTS = ["Arial", "Roboto-Regular", "OpenDyslexic-Regular", "Jost-500-Medium", "Times"]
 
 TextConfig.defaults({
@@ -40,7 +46,9 @@ TextConfig.defaults({
     maxLines: 2,
     textPosition: TextConfig.TEXT_POS_BELOW,
     onlyTextFontSizePct: 12,
-    onlyTextLineHeight: 1
+    onlyTextLineHeight: 1,
+    fittingMode: TextConfig.TOO_LONG_AUTO,
+    autoSizeKeyboardLetters: true
 });
 
 export { TextConfig };

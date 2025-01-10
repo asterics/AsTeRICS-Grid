@@ -8,7 +8,7 @@
                       text-align: center; font-size: ${fontSizePx}px; line-height: ${lineHeight};
                       flex-grow: ${imageData ? '0' : '1'};
                       font-family: ${metadata.textConfig.fontFamily};`">
-            <span :style="`max-height: ${maxTextContainerHeight};`">{{label}}</span>
+            <span :style="`max-height: ${maxTextContainerHeight}; text-overflow: ${textOverflow}; white-space: ${whiteSpaceWrap}; margin: 0 5px;`">{{label}}</span>
         </div>
     </div>
 </template>
@@ -31,7 +31,9 @@ export default {
             maxLines: null,
             maxTextContainerHeight: null,
             TextConfig: TextConfig,
-            resizeObserver: null
+            resizeObserver: null,
+            textOverflow: this.metadata.textConfig.fittingMode === TextConfig.TOO_LONG_ELLIPSIS ? 'ellipsis' : 'clip',
+            whiteSpaceWrap: null
         }
     },
     computed: {
@@ -52,16 +54,17 @@ export default {
             this.maxTextContainerHeight = this.imageData ? (this.fontSizePx * this.metadata.textConfig.lineHeight * this.metadata.textConfig.maxLines) + 'px' : '100%';
             this.lineHeight = this.imageData ? this.metadata.textConfig.lineHeight : this.metadata.textConfig.onlyTextLineHeight;
             this.maxLines = this.imageData ? this.metadata.textConfig.maxLines : 100;
+            this.whiteSpaceWrap = this.maxLines === 1 ? 'nowrap' : 'normal';
         },
         getFontSizePx(size) {
             let pct = this.imageData ? this.metadata.textConfig.fontSizePct : this.metadata.textConfig.onlyTextFontSizePct;
             let fontSize = (size.height * (pct / 100) + size.width * (pct / 100)) / 2;
             let realWidth = fontUtil.getTextWidth(this.label, this.$refs.container, fontSize);
             let padding = 5;
-            if (realWidth > size.width - 2 * padding) {
+            if (this.metadata.textConfig.fittingMode === TextConfig.TOO_LONG_AUTO && realWidth > size.width - 2 * padding) {
                 fontSize = fontUtil.getFittingFontSize(this.label, this.$refs.container, { maxLines: this.maxLines, padding: padding, maxSize: fontSize });
             }
-            if (!this.imageData && this.label.length === 1) { // keyboard letters
+            if (this.metadata.textConfig.autoSizeKeyboardLetters && !this.imageData && this.label.length === 1) { // keyboard letters
                 fontSize = fontUtil.getFittingFontSize(this.label, this.$refs.container, { containerPct: 90 });
             }
             return fontSize;
