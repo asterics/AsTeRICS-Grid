@@ -35,11 +35,11 @@ TextConfig.defaults({
     modelVersion: constants.MODEL_VERSION,
     convertMode: null,
     fontFamily: "Arial",
-    fontSizePct: 15,
+    fontSizePct: 12,
     lineHeight: 1.5,
-    maxLines: 1,
-    textPosition: TextConfig.TEXT_POS_ABOVE,
-    onlyTextFontSizePct: 15,
+    maxLines: 2,
+    textPosition: TextConfig.TEXT_POS_BELOW,
+    onlyTextFontSizePct: 12,
     onlyTextLineHeight: 1
 });
 
