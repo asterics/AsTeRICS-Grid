@@ -125,7 +125,7 @@ fontUtil.getFittingFontSize = function(text, container, options = {}) {
         options.maxSize = Math.min(options.maxSize, fontUtil.getFittingFontSize(longestWord, container, newOptions));
     }
 
-    for (let count = 0; count < 10 && Math.abs(maxWH - containerWidth) > 10; count++) {
+    for (let count = 0; count < 10 && Math.abs(maxWH - containerWidth) > 1; count++) {
         let factor = maxWH / containerWidth;
         tryPx = tryPx / factor;
         width = fontUtil.getTextWidth(text, container, tryPx);
