@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="srow">
-            <div class="eleven columns">
+            <div class="nine columns">
                 <h3 class="mt-2">{{ $t('textHeading') }}</h3>
                 <div class="srow">
                     <label class="three columns" for="textPos">{{ $t('textPosition') }}</label>
@@ -60,10 +60,6 @@
                         </div>
                     </accordion>
                 </div>
-            </div>
-        </div>
-        <div class="srow">
-            <div class="eleven columns">
                 <h3 class="mt-2">{{ $t('colors') }}</h3>
                 <div class="srow">
                     <label class="three columns" for="elemColor">
@@ -99,16 +95,17 @@
                     </label>
                 </div>
             </div>
-        </div>
-        <div class="srow">
-            <div class="eleven columns" style="height: 400px; max-width: 600px;">
+            <div class="three columns" style="height: 500px;">
                 <h3 class="mt-2">{{ $t('appearanceDemo') }}</h3>
                 <div class="srow">
                     <label for="testElementLabel" class="me-2">{{ $t('testElementLabel') }}</label>
                     <input id="testElementLabel" type="text" v-model="testElementLabel" @input="resetTestGrid"/>
                 </div>
-                <app-grid-display id="grid-container" :grid-data="testGridData" :metadata="metadata"/>
+                <app-grid-display style="max-width: 200px" id="grid-container" :grid-data="testGridData" :metadata="metadata"/>
             </div>
+        </div>
+        <div class="srow">
+
         </div>
     </div>
 </template>
@@ -156,9 +153,9 @@
                     this.testGridData = new GridData({
                         gridElements: [
                             this.getElement(0, 0, this.testElementLabel, "https://api.arasaac.org/api/pictograms/2648?download=false&plural=false&color=true"),
-                            this.getElement(1, 0, "Test", "https://api.arasaac.org/api/pictograms/4887?download=false&plural=false&color=true"),
-                            this.getElement(0, 1, "Test", "https://api.arasaac.org/api/pictograms/2808?download=false&plural=false&color=true"),
-                            this.getElement(1, 1, this.testElementLabel),
+                            this.getElement(0, 1, "Test", "https://api.arasaac.org/api/pictograms/4887?download=false&plural=false&color=true"),
+                            this.getElement(0, 2, "Test", "https://api.arasaac.org/api/pictograms/2808?download=false&plural=false&color=true"),
+                            this.getElement(0, 3, this.testElementLabel),
                         ]
                     });
                 }, 200, "RESET_TEST_GRD");
