@@ -43,7 +43,7 @@ TextConfig.defaults({
     fontFamily: "Arial",
     fontSizePct: 12,
     lineHeight: 1.5,
-    maxLines: 2,
+    maxLines: 1,
     textPosition: TextConfig.TEXT_POS_BELOW,
     onlyTextFontSizePct: 12,
     onlyTextLineHeight: 1.5,
