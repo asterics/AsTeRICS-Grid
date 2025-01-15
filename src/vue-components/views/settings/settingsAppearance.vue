@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="srow">
-            <div class="nine columns">
+            <div class="nine columns settings-area">
                 <h3 class="mt-2">{{ $t('textHeading') }}</h3>
                 <div class="srow">
                     <label class="three columns" for="textPos">{{ $t('textPosition') }}</label>
@@ -60,7 +60,7 @@
                         </div>
                     </accordion>
                 </div>
-                <h3 class="mt-2">{{ $t('colors') }}</h3>
+                <h3 class="mt-5">{{ $t('colors') }}</h3>
                 <div class="srow">
                     <label class="three columns" for="elemColor">
                         <span>{{ $t('defaultGridElementColor') }}</span>
@@ -96,7 +96,7 @@
                 </div>
             </div>
             <div class="three columns" style="height: 500px;">
-                <h3 class="mt-2">{{ $t('appearanceDemo') }}</h3>
+                <h3 class="mt-3">{{ $t('appearanceDemo') }}</h3>
                 <div class="srow">
                     <label for="testElementLabel" class="me-2">{{ $t('testElementLabel') }}</label>
                     <input id="testElementLabel" type="text" v-model="testElementLabel" @input="resetTestGrid"/>
@@ -134,7 +134,7 @@
                 MetaData: MetaData,
                 constants: constants,
                 testGridData: null,
-                testElementLabel: "Test Element",
+                testElementLabel: i18nService.t("testElement"),
             }
         },
         methods: {
@@ -177,5 +177,13 @@
     }
     .srow {
         margin-bottom: 1.5em;
+    }
+    .settings-area {
+        border-right: 1px solid lightgray;
+    }
+    @media (max-width: 849px) {
+        .settings-area {
+            border-right: 0;
+        }
     }
 </style>

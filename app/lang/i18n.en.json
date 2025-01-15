@@ -1113,5 +1113,6 @@
   "onlyTextLineHeight": "Line height (text-only elements)",
   "autoSizeKeyboardLetters": "Auto-size keyboard letters",
   "appearanceDemo": "Appearance demo",
-  "testElementLabel": "Test element label"
+  "testElementLabel": "Test element label",
+  "testElement": "Test Element"
 }
