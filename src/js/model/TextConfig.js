@@ -13,7 +13,8 @@ class TextConfig extends Model({
     onlyTextFontSizePct: [Number],
     onlyTextLineHeight: [Number],
     fittingMode: [String],
-    autoSizeKeyboardLetters: [Boolean]
+    autoSizeKeyboardLetters: [Boolean],
+    fontColor: [String]
 }) {
     constructor(properties) {
         super(properties);
@@ -48,7 +49,8 @@ TextConfig.defaults({
     onlyTextFontSizePct: 12,
     onlyTextLineHeight: 1.5,
     fittingMode: TextConfig.TOO_LONG_AUTO,
-    autoSizeKeyboardLetters: true
+    autoSizeKeyboardLetters: true,
+    fontColor: constants.DEFAULT_ELEMENT_FONT_COLOR
 });
 
 export { TextConfig };

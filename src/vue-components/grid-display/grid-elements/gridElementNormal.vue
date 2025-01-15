@@ -5,7 +5,7 @@
         </div>
         <div :class="`text-container ${metadata.textConfig.fontFamily}`" v-if="label"
              :style="`order: ${metadata.textConfig.textPosition === TextConfig.TEXT_POS_BELOW ? 1 : 0};
-                      text-align: center; font-size: ${fontSizePx}px; line-height: ${lineHeight};
+                      text-align: center; font-size: ${fontSizePx}px; line-height: ${lineHeight}; color: ${metadata.textConfig.fontColor};
                       flex-grow: ${imageData ? '0' : '1'};`">
             <span :style="`max-height: ${maxTextContainerHeight}; text-overflow: ${textOverflow}; white-space: ${whiteSpaceWrap}; margin: 0 ${margin}px;`">{{label}}</span>
         </div>

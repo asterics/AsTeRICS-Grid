@@ -1126,5 +1126,6 @@
   "colorModeBackground": "Color background",
   "borderWidth": "Border width",
   "borderRadius": "Border radius",
-  "elementMargin": "Element margin"
+  "elementMargin": "Element margin",
+  "fontColor": "Font color"
 }
