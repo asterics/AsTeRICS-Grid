@@ -7,7 +7,7 @@
              :style="`order: ${metadata.textConfig.textPosition === TextConfig.TEXT_POS_BELOW ? 1 : 0};
                       text-align: center; font-size: ${fontSizePx}px; line-height: ${lineHeight};
                       flex-grow: ${imageData ? '0' : '1'};`">
-            <span :style="`max-height: ${maxTextContainerHeight}; text-overflow: ${textOverflow}; white-space: ${whiteSpaceWrap}; margin: 0 5px;`">{{label}}</span>
+            <span :style="`max-height: ${maxTextContainerHeight}; text-overflow: ${textOverflow}; white-space: ${whiteSpaceWrap}; margin: 0 ${margin}px;`">{{label}}</span>
         </div>
     </div>
 </template>
@@ -18,6 +18,9 @@ import { i18nService } from '../../../js/service/i18nService';
 import { util } from '../../../js/util/util';
 import { TextConfig } from '../../../js/model/TextConfig';
 import { fontUtil } from '../../../js/util/fontUtil';
+
+let MOBILE_MAX_WIDTH = 480;
+let MARGIN = 5;
 
 export default {
     props: ["gridElement", "metadata"],
@@ -32,7 +35,8 @@ export default {
             TextConfig: TextConfig,
             resizeObserver: null,
             textOverflow: null,
-            whiteSpaceWrap: null
+            whiteSpaceWrap: null,
+            margin: MARGIN
         }
     },
     watch: {
@@ -73,7 +77,13 @@ export default {
                 fontSize = fontUtil.getFittingFontSize(this.label, this.$refs.container, { maxLines: this.maxLines, padding: padding, maxSize: fontSize, lineHeight: this.lineHeight });
             }
             if (this.metadata.textConfig.autoSizeKeyboardLetters && !this.imageData && this.label.length === 1) { // keyboard letters
-                fontSize = fontUtil.getFittingFontSize(this.label, this.$refs.container, { containerPct: 90, lineHeight: this.lineHeight });
+                let containerPct = 90;
+                this.margin = MARGIN;
+                if (document.documentElement.clientWidth < MOBILE_MAX_WIDTH) {
+                    this.margin = 0;
+                    containerPct = 100;
+                }
+                fontSize = fontUtil.getFittingFontSize(this.label, this.$refs.container, { containerPct: containerPct, lineHeight: this.lineHeight, padding: this.margin});
             }
             return fontSize;
         }
