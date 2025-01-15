@@ -555,11 +555,11 @@ gridUtil.getHeightWithBounds = function(gridDataOrElements) {
  */
 gridUtil.ensureDefaults = function(gridData) {
     for (let key of Object.keys(GridData.DEFAULTS)) {
-        gridData[key] = gridData[key] || GridData.DEFAULTS[key];
+        gridData[key] = gridData[key] === undefined ? GridData.DEFAULTS[key] : gridData[key];
     }
     for (let key of Object.keys(GridElement.DEFAULTS)) {
         for (let element of gridData.gridElements) {
-            element[key] = element[key] || GridElement.DEFAULTS[key];
+            element[key] = element[key] === undefined ? GridElement.DEFAULTS[key] : element[key];
         }
     }
     return gridData;
