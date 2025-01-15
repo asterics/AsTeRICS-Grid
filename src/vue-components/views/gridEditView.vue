@@ -70,6 +70,7 @@
     import AppGridEditable from '../grid-display/appGridEditable.vue';
     import { UndoService } from '../../js/service/data/undoService';
     import { gridLayoutUtil } from '../grid-layout/utils/gridLayoutUtil';
+    import { collectElementService } from '../../js/service/collectElementService';
 
     let vueApp = null;
 
@@ -335,12 +336,15 @@
             initContextmenu();
             thiz.showGrid = true;
             thiz.highlightElement();
-            let container = document.getElementById('grid-container');
-            container.addEventListener('click', this.handleClickEvent);
-            container.addEventListener('touchstart', this.onTouchstart);
-            container.addEventListener('touchmove', this.onTouchEnd);
-            container.addEventListener('touchcancel', this.onTouchEnd);
-            container.addEventListener('touchend', this.onTouchEnd);
+            collectElementService.initWithElements(this.gridData.gridElements);
+            this.$nextTick(() => {
+                let container = document.getElementById('grid-container');
+                container.addEventListener('click', this.handleClickEvent);
+                container.addEventListener('touchstart', this.onTouchstart);
+                container.addEventListener('touchmove', this.onTouchEnd);
+                container.addEventListener('touchcancel', this.onTouchEnd);
+                container.addEventListener('touchend', this.onTouchEnd);
+            });
         },
         beforeDestroy() {
             pouchDbService.resumeSync();
