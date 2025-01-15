@@ -10,7 +10,6 @@ let settingsSaveMixin = {
         saveMetadata(metadata) {
             this.$emit("changing");
             util.debounce(async () => {
-                log.warn("save!")
                 await dataService.saveMetadata(metadata);
                 this.$emit("changed");
             }, SAVE_TIMEOUT_MS, 'SAVE_METADATA');
