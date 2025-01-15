@@ -293,7 +293,7 @@
                     let updateThumbnail = gridUtil.hasOutdatedThumbnail(gridData) && !this.skipThumbnailCheck;
                     let newHash = updateThumbnail ? gridUtil.getHash(gridData) : null;
 
-                    this.recalculateRenderGrid(gridData);
+                    await this.recalculateRenderGrid(gridData);
                     Router.addToGridHistory(this.renderGridData.id);
 
                     if (updateThumbnail) {
@@ -396,13 +396,22 @@
                 }
                 this.metadata = this.updatedMetadataDoc || this.metadata;
             },
-            recalculateRenderGrid(gridData) {
+            async recalculateRenderGrid(gridData) {
                 // attention: gridData also changes because of "noDeepCopy: true"
                 // just using this.renderGridData for clarity
-                this.renderGridData = gridUtil.mergeGrids(gridData, this.globalGridData, {
-                    globalGridHeightPercentage: this.metadata.globalGridHeightPercentage,
-                    noDeepCopy: true
-                });
+                if (gridData.showGlobalGrid) {
+                    let globalGrid = this.globalGridData;
+                    if (gridData.globalGridId) {
+                        globalGrid = await dataService.getGrid(gridData.globalGridId, false, true);
+                    }
+                    this.renderGridData = gridUtil.mergeGrids(gridData, globalGrid, {
+                        globalGridHeightPercentage: this.metadata.globalGridHeightPercentage,
+                        noDeepCopy: true
+                    });
+                } else {
+                    this.renderGridData = gridData;
+                }
+
                 stateService.setCurrentGrid(this.renderGridData);
             },
             onSidebarOpen() {

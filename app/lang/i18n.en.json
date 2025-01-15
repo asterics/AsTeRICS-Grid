@@ -201,7 +201,7 @@
   "printIndexAtSideEdge": "Print index at side edge",
   "includeGlobalGrid": "Include global grid",
   "downloadPdf": "Download PDF",
-  "setGridSize": "Set grid size",
+  "size": "Size",
   "minimumNumberOfRows": "Minimum number of rows",
   "minimumNumberOfColumns": "Minimum number of columns",
   "heightOfFirstGlobalGridRow": "Height of first global grid row [%]",
@@ -478,7 +478,7 @@
   "moveElementToOtherGrid": "Move element to other grid",
   "fillWithEmptyElements": "Fill with empty elements",
   "deleteAllElements": "Delete all elements",
-  "changeGridDimensions": "Change grid dimensions",
+  "gridSettings": "Grid settings",
   "translateGrid": "Translate grid",
   "fillGaps": "Fill gaps",
   "normalizeGridLayout": "Normalize grid layout",
@@ -1131,5 +1131,8 @@
   "borderWidth": "Border width",
   "borderRadius": "Border radius",
   "elementMargin": "Space between elements",
-  "fontColor": "Font color"
+  "fontColor": "Font color",
+  "showGlobalGrid": "Show global grid",
+  "selectGlobalGrid": "Select global grid",
+  "defaultGlobalGrid": "Default global grid"
 }

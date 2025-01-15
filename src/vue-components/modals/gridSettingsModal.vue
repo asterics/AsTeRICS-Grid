@@ -6,11 +6,12 @@
                     <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
                     <div class="modal-header">
                         <h1 name="header">
-                            {{ $t('setGridSize') }}
+                            {{ $t('gridSettings') }}
                         </h1>
                     </div>
 
                     <div class="modal-body">
+                        <h2>{{ $t('size') }}</h2>
                         <div class="srow">
                             <label for="gridRows" class="seven columns">{{ $t('minimumNumberOfRows') }}</label>
                             <input id="gridRows" type="number" class="three columns" v-model.number="gridData.rowCount" min="1" :max="gridLayoutUtil.MAX_GRID_SIZE"/>
@@ -22,6 +23,20 @@
                         <div class="srow" v-if="isGlobalGrid && metadata && gridHeight === 1">
                             <label for="metadataHeight" class="seven columns">{{ $t('heightOfFirstGlobalGridRow') }}</label>
                             <input id="metadataHeight" type="number" class="three columns" v-model.number="metadata.globalGridHeightPercentage" min="5" max="50"/>
+                        </div>
+                        <div v-if="!isGlobalGrid">
+                            <h2>{{ $t('globalGrid') }}</h2>
+                            <div class="srow">
+                                <input id="showGlobalGrid" type="checkbox" v-model="gridData.showGlobalGrid"/>
+                                <label for="showGlobalGrid">{{ $t('showGlobalGrid') }}</label>
+                            </div>
+                            <div class="srow">
+                                <label class="three columns" for="selectGlobalGrid">{{ $t('selectGlobalGrid') }}</label>
+                                <select class="seven columns" id="selectGlobalGrid" v-model="gridData.globalGridId">
+                                    <option :value="null">({{ $t('defaultGlobalGrid') }})</option>
+                                    <option v-for="grid in allGrids" :value="grid.id">{{grid.label | extractTranslation}}</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
@@ -45,16 +60,18 @@
     import './../../css/modal.css';
     import {localStorageService} from "../../js/service/data/localStorageService";
     import {dataService} from "../../js/service/data/dataService";
-    import {GridData} from "../../js/model/GridData";
     import { gridLayoutUtil } from '../grid-layout/utils/gridLayoutUtil';
+    import { gridUtil } from '../../js/util/gridUtil';
+    import { i18nService } from '../../js/service/i18nService';
 
     export default {
-        props: ['gridDataParam', 'isGlobalGrid'],
+        props: ['gridDataParam', 'isGlobalGrid', 'undoService'],
         data: function () {
             return {
                 gridData: JSON.parse(JSON.stringify(this.gridDataParam)),
-                gridHeight: new GridData(this.gridDataParam).getHeight(),
+                gridHeight: gridUtil.getHeight(this.gridDataParam),
                 metadata: null,
+                allGrids: [],
                 gridLayoutUtil: gridLayoutUtil
             }
         },
@@ -70,18 +87,21 @@
                 if (this.metadata) {
                     promises.push(dataService.saveMetadata(this.metadata));
                 }
+                promises.push(this.undoService.updateGrid(this.gridData));
                 Promise.all(promises).then(() => {
-                    this.$emit('save', this.gridData.rowCount, this.gridData.minColumnCount);
+                    this.$emit('reload');
                     this.$emit('close');
                 });
             }
         },
-        mounted() {
+        async mounted() {
             if (this.isGlobalGrid) {
                 dataService.getMetadata().then(metadata => {
                     this.metadata = JSON.parse(JSON.stringify(metadata));
                 });
             }
+            this.allGrids = (await dataService.getGrids(false))
+                .sort((a, b) => i18nService.getTranslation(a.label).localeCompare(i18nService.getTranslation(b.label)));
         }
     }
 </script>
@@ -89,5 +109,9 @@
 <style scoped>
     .srow {
         margin-top: 1em;
+    }
+
+    h2 {
+        margin-top: 2em;
     }
 </style>

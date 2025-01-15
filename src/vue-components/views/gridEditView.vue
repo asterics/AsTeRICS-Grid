@@ -20,7 +20,7 @@
             <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :undo-service="undoService" @reload="reload" @close="showMultipleModal = false"/>
         </div>
         <div>
-            <grid-dimension-modal v-if="showDimensionsModal" v-bind:grid-data-param="gridData" :is-global-grid="metadata.globalGridId === gridData.id" @close="showDimensionsModal = false" @save="setDimensions"/>
+            <grid-settings-modal v-if="showGridSettingsModal" :grid-data-param="gridData" :is-global-grid="metadata.globalGridId === gridData.id" @reload="reload" @close="showGridSettingsModal = false;" :undo-service="undoService"/>
         </div>
         <div>
             <element-move-modal v-if="showMoveModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showMoveModal = false" @reload="reload"/>
@@ -56,7 +56,7 @@
     import {constants} from "../../js/util/constants";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {util} from "../../js/util/util";
-    import GridDimensionModal from "../modals/gridDimensionModal.vue";
+    import GridSettingsModal from "../modals/gridSettingsModal.vue";
     import {gridUtil} from "../../js/util/gridUtil";
     import ElementMoveModal from "../modals/elementMoveModal.vue";
     import GridTranslateModal from "../modals/gridTranslateModal.vue";
@@ -84,7 +84,7 @@
                 undoService: new UndoService(),
                 doingUndoRedo: false,
                 showMultipleModal: false,
-                showDimensionsModal: false,
+                showGridSettingsModal: false,
                 showNavigateModal: false,
                 showMoveModal: false,
                 showTranslateModal: false,
@@ -104,14 +104,9 @@
             SetNavigationModal,
             GridTranslateModal,
             ElementMoveModal,
-            GridDimensionModal, EditElement, AddMultipleModal, HeaderIcon
+            GridSettingsModal, EditElement, AddMultipleModal, HeaderIcon
         },
         methods: {
-            setDimensions: function (rows, cols) {
-                this.gridData.rowCount = rows;
-                this.gridData.minColumnCount = cols;
-                this.updateGridWithUndo();
-            },
             fillGaps: function() {
                 this.gridData.gridElements = gridLayoutUtil.moveAsPossible(this.gridData.gridElements, this.gridData.gridElements, gridLayoutUtil.DIR_LEFT, {
                     outOfBounds: true,
@@ -384,7 +379,7 @@
 
         var CONTEXT_LAYOUT_FILL = "CONTEXT_LAYOUT_FILL";
         var CONTEXT_LAYOUT_NORMALIZE = "CONTEXT_LAYOUT_NORMALIZE";
-        var CONTEXT_GRID_DIMENSIONS = "CONTEXT_GRID_DIMENSIONS";
+        var CONTEXT_GRID_SETTINGS = "CONTEXT_GRID_SETTINGS";
         var CONTEXT_GRID_NAVIGATION = "CONTEXT_GRID_NAVIGATION";
         var CONTEXT_GRID_TRANSLATION = "CONTEXT_GRID_TRANSLATION";
         var CONTEXT_EDIT_GLOBAL_GRID = "CONTEXT_EDIT_GLOBAL_GRID";
@@ -436,8 +431,8 @@
             'CONTEXT_FILL_EMPTY': {name: i18nService.t('fillWithEmptyElements'), icon: "fas fa-fill", visible: visibleFnFill},
             'CONTEXT_DELETE_ALL': {name: i18nService.t('deleteAllElements'), icon: "fas fa-minus-circle"},
             SEP1: "---------",
-            'CONTEXT_GRID_DIMENSIONS': {
-                name: i18nService.t('changeGridDimensions'),
+            'CONTEXT_GRID_SETTINGS': {
+                name: i18nService.t('gridSettings'),
                 icon: "fas fa-expand-arrows-alt"
             },
             'CONTEXT_GRID_TRANSLATION': {
@@ -522,8 +517,8 @@
                     vueApp.normalizeGrid();
                     break;
                 }
-                case CONTEXT_GRID_DIMENSIONS: {
-                    vueApp.showDimensionsModal = true;
+                case CONTEXT_GRID_SETTINGS: {
+                    vueApp.showGridSettingsModal = true;
                     break;
                 }
                 case CONTEXT_GRID_TRANSLATION: {
@@ -558,7 +553,7 @@
                     vueApp.showMoveModal = true;
                     break;
                 case CONTEXT_EDIT_GLOBAL_GRID:
-                    Router.toEditGrid(vueApp.metadata.globalGridId);
+                    Router.toEditGrid(vueApp.gridData.globalGridId || vueApp.metadata.globalGridId);
                     break;
                 case CONTEXT_END_EDIT_GLOBAL_GRID:
                     Router.toEditGrid(vueApp.metadata.lastOpenedGridId);

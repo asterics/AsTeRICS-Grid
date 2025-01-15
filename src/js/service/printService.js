@@ -58,9 +58,9 @@ printService.gridsToPdf = async function (gridsData, options) {
     let jsPDF = await import(/* webpackChunkName: "jspdf" */ 'jspdf');
     options = options || {};
     let metadata = await dataService.getMetadata();
-    let globalGrid = null;
+    let defaultGlobalGrid = null;
     if (options.includeGlobalGrid) {
-        globalGrid = await dataService.getGlobalGrid();
+        defaultGlobalGrid = await dataService.getGlobalGrid();
     }
     options.idPageMap = {};
     options.idParentsMap = {};
@@ -105,6 +105,11 @@ printService.gridsToPdf = async function (gridsData, options) {
                 }
             );
         }
+        let globalGrid = defaultGlobalGrid;
+        if (options.includeGlobalGrid && gridsData[i].showGlobalGrid && gridsData[i].globalGridId) {
+            globalGrid = await dataService.getGrid(gridsData[i].globalGridId, false);
+        }
+        globalGrid = gridsData[i].showGlobalGrid !== false ? globalGrid : null;
         options.page = i + 1;
         await addGridToPdf(doc, gridsData[i], options, metadata, globalGrid);
         if (i < gridsData.length - 1) {
@@ -120,7 +125,7 @@ printService.gridsToPdf = async function (gridsData, options) {
     }
 };
 
-function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
+async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
     let promises = [];
     let DOC_WIDTH = 297;
     let DOC_HEIGHT = 210;
@@ -134,9 +139,9 @@ function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
     );
     let registerHeight = options.showRegister && options.pages > 1 ? 10 : 0;
     let footerHeight = hasARASAACImages ? 2 * pdfOptions.footerHeight : pdfOptions.footerHeight;
-    let elementTotalWidth = (DOC_WIDTH - 2 * pdfOptions.docPadding) / gridData.getWidthWithBounds();
+    let elementTotalWidth = (DOC_WIDTH - 2 * pdfOptions.docPadding) / gridUtil.getWidthWithBounds(gridData);
     let elementTotalHeight =
-        (DOC_HEIGHT - 2 * pdfOptions.docPadding - footerHeight - registerHeight) / gridData.getHeightWithBounds();
+        (DOC_HEIGHT - 2 * pdfOptions.docPadding - footerHeight - registerHeight) / gridUtil.getHeightWithBounds(gridData);
     if (footerHeight > 0) {
         let yBaseFooter = DOC_HEIGHT - pdfOptions.docPadding - registerHeight;
         let fontSizePt = (pdfOptions.footerHeight * 0.4) / 0.352778;
@@ -217,7 +222,7 @@ function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
             }
         }
     }
-    gridData.gridElements.forEach((element) => {
+    for (let element of gridData.gridElements) {
         if (element.hidden) {
             return;
         }
@@ -236,37 +241,34 @@ function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         if (i18nService.getTranslation(element.label)) {
             addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos);
         }
-        promises.push(
-            addImageToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos).then(() => {
-                if (options.showLinks && options.idPageMap[element.getNavigateGridId()]) {
-                    let targetPage = options.idPageMap[element.getNavigateGridId()];
-                    let iconWidth = Math.max(currentWidth / 10, 7);
-                    let offsetX = currentWidth - iconWidth - 1;
-                    let offsetY = 1;
-                    doc.setDrawColor(255);
-                    doc.setFillColor(90, 113, 122);
-                    doc.roundedRect(xStartPos + offsetX, yStartPos + offsetY, iconWidth, iconWidth, 1, 1, 'FD');
-                    doc.link(xStartPos, yStartPos, currentWidth, currentHeight, { pageNumber: targetPage });
-                    if (targetPage) {
-                        let fontSizePt = (iconWidth * 0.6) / 0.352778;
-                        doc.setTextColor(255, 255, 255);
-                        doc.setFontSize(fontSizePt);
-                        doc.text(
-                            targetPage + '',
-                            xStartPos + offsetX + iconWidth / 2,
-                            yStartPos + offsetY + iconWidth / 2,
-                            {
-                                baseline: 'middle',
-                                align: 'center',
-                                maxWidth: iconWidth
-                            }
-                        );
+        await addImageToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos)
+        element = new GridElement(element);
+        if (options.showLinks && options.idPageMap[element.getNavigateGridId()]) {
+            let targetPage = options.idPageMap[element.getNavigateGridId()];
+            let iconWidth = Math.max(currentWidth / 10, 7);
+            let offsetX = currentWidth - iconWidth - 1;
+            let offsetY = 1;
+            doc.setDrawColor(255);
+            doc.setFillColor(90, 113, 122);
+            doc.roundedRect(xStartPos + offsetX, yStartPos + offsetY, iconWidth, iconWidth, 1, 1, 'FD');
+            doc.link(xStartPos, yStartPos, currentWidth, currentHeight, { pageNumber: targetPage });
+            if (targetPage) {
+                let fontSizePt = (iconWidth * 0.6) / 0.352778;
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(fontSizePt);
+                doc.text(
+                    targetPage + '',
+                    xStartPos + offsetX + iconWidth / 2,
+                    yStartPos + offsetY + iconWidth / 2,
+                    {
+                        baseline: 'middle',
+                        align: 'center',
+                        maxWidth: iconWidth
                     }
-                }
-                return Promise.resolve();
-            })
-        );
-    });
+                );
+            }
+        }
+    }
     return Promise.all(promises);
 }
 
@@ -333,7 +335,7 @@ async function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, yp
     if (!hasImage) {
         return Promise.resolve();
     }
-    let type = element.image.getImageType();
+    let type = new GridImage(element.image).getImageType();
     let imageData = element.image.data;
     let dim = null;
     if (!imageData) {
