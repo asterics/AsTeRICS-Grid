@@ -54,14 +54,14 @@ class MetaData extends Model({
         );
     }
 
-    static getElementColor(gridElement, metadata) {
+    static getElementColor(gridElement, metadata, defaultColor) {
         if (!metadata || !metadata.colorConfig) {
             return constants.DEFAULT_ELEMENT_BACKGROUND_COLOR;
         }
         let colorScheme = MetaData.getActiveColorScheme(metadata);
         let index = colorScheme.categories.indexOf(gridElement.colorCategory);
         if (!metadata.colorConfig.colorSchemesActivated || !gridElement.colorCategory || index === -1) {
-            return gridElement.backgroundColor || metadata.colorConfig.elementBackgroundColor;
+            return defaultColor || gridElement.backgroundColor || metadata.colorConfig.elementBackgroundColor;
         }
         return colorScheme.colors[index];
     }

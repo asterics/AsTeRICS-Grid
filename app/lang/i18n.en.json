@@ -803,6 +803,7 @@
   "colors": "Colors",
   "defaultGridBackgroundColor": "Default grid background color",
   "defaultGridElementColor": "Default element background color",
+  "defaultGridElementBorderColor": "Default element border color",
   "CC_PRONOUN_PERSON_NAME": "Pronoun, Person, Name",
   "CC_NOUN": "Noun",
   "CC_VERB": "Verb",
@@ -1114,5 +1115,16 @@
   "autoSizeKeyboardLetters": "Auto-size keyboard letters",
   "appearanceDemo": "Appearance demo",
   "testElementLabel": "Test element label",
-  "testElement": "Test Element"
+  "testElement": "Test Element",
+  "gridElement": "Grid element",
+  "quickSettings": "Quick settings",
+  "setToDefaultSettings": "Set to default settings",
+  "setToDefaultSettingsBgColored": "Set to background colored",
+  "setToDefaultSettingsBorderColored": "Set to border colored",
+  "colorMode": "Color Mode",
+  "colorModeBorder": "Color border",
+  "colorModeBackground": "Color background",
+  "borderWidth": "Border width",
+  "borderRadius": "Border radius",
+  "elementMargin": "Element margin"
 }

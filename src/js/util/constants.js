@@ -76,10 +76,17 @@ constants.BOARD_TYPE_SINGLE = "BOARD_TYPE_SINGLE";
 constants.BOARD_TYPES = [constants.BOARD_TYPE_SELFCONTAINED, constants.BOARD_TYPE_SINGLE];
 
 constants.DEFAULT_ELEMENT_BACKGROUND_COLOR = '#ffffff';
+constants.DEFAULT_ELEMENT_BORDER_COLOR = '#808080';
 constants.DEFAULT_GRID_BACKGROUND_COLOR = '#e8e8e8';
+constants.COLOR_SCHEME_FITZGERALD_PREFIX = 'CS_MODIFIED_FITZGERALD_KEY';
+constants.COLOR_SCHEME_GOOSENS_PREFIX = 'CS_GOOSENS';
+constants.COLOR_SCHEME_FITZGERALD_LIGHT = 'CS_MODIFIED_FITZGERALD_KEY_LIGHT';
+constants.COLOR_SCHEME_FITZGERALD_MEDIUM = 'CS_MODIFIED_FITZGERALD_KEY_MEDIUM';
+constants.COLOR_SCHEME_GOOSENS_LIGHT = 'CS_GOOSENS_LIGHT';
+constants.COLOR_SCHEME_GOOSENS_MEDIUM = 'CS_GOOSENS_MEDIUM';
 constants.DEFAULT_COLOR_SCHEMES = [
     {
-        name: 'CS_MODIFIED_FITZGERALD_KEY_LIGHT',
+        name: constants.COLOR_SCHEME_FITZGERALD_LIGHT,
         categories: [
             'CC_PRONOUN_PERSON_NAME',
             'CC_NOUN',
@@ -106,7 +113,7 @@ constants.DEFAULT_COLOR_SCHEMES = [
         ]
     },
     {
-        name: 'CS_MODIFIED_FITZGERALD_KEY_MEDIUM',
+        name: constants.COLOR_SCHEME_FITZGERALD_MEDIUM,
         categories: [
             'CC_PRONOUN_PERSON_NAME',
             'CC_NOUN',
@@ -133,12 +140,12 @@ constants.DEFAULT_COLOR_SCHEMES = [
         ]
     },
     {
-        name: 'CS_GOOSENS_LIGHT',
+        name: constants.COLOR_SCHEME_GOOSENS_LIGHT,
         categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
         colors: ['#fdcae1', '#84b6f4', '#c7f3c7', '#fdfd96', '#ffda89']
     },
     {
-        name: 'CS_GOOSENS_MEDIUM',
+        name: constants.COLOR_SCHEME_GOOSENS_MEDIUM,
         categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
         colors: ['#ff6bff', '#6bb5ff', '#b5ff6b', '#ffff6b', '#ffb56b']
     }

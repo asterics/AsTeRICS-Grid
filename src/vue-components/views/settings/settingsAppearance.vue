@@ -2,6 +2,12 @@
     <div>
         <div class="srow">
             <div class="nine columns settings-area">
+                <h3 class="mt-2">{{ $t('quickSettings') }}</h3>
+                <div class="srow">
+                    <button @click="toDefault">{{ $t('setToDefaultSettings') }}</button>
+                    <button @click="toDefaultBgColored">{{ $t('setToDefaultSettingsBgColored') }}</button>
+                    <button @click="toDefaultBorderColored">{{ $t('setToDefaultSettingsBorderColored') }}</button>
+                </div>
                 <h3 class="mt-2">{{ $t('textHeading') }}</h3>
                 <div class="srow">
                     <label class="three columns" for="textPos">{{ $t('textPosition') }}</label>
@@ -24,10 +30,10 @@
                         <option :value="TextConfig.CONVERT_MODE_LOWERCASE">{{ $t('convertToLowercase') }}</option>
                     </select>
                 </div>
-                <div class="srow">
+                <div class="srow mb-0">
                     <slider-input label="fontSize" unit="%" id="fontSize" min="0" max="100" step="1" v-model.number="metadata.textConfig.fontSizePct" @change="saveMetadata(metadata)"/>
                 </div>
-                <div class="srow">
+                <div class="srow mb-5">
                     <accordion :acc-label="$t('advancedOptions')" class="eleven columns">
                         <div class="srow">
                             <label class="three columns" for="fittingMode">{{ $t('modeForHandlingTooLongTexts') }}</label>
@@ -60,7 +66,7 @@
                         </div>
                     </accordion>
                 </div>
-                <h3 class="mt-5">{{ $t('colors') }}</h3>
+                <h3 class="mt-5">{{ $t('gridElement') }}</h3>
                 <div class="srow">
                     <label class="three columns" for="elemColor">
                         <span>{{ $t('defaultGridElementColor') }}</span>
@@ -89,10 +95,37 @@
                     </div>
                 </div>
                 <div class="srow">
-                    <input id="colorSchemeActive" type="checkbox" v-model="metadata.colorConfig.colorSchemesActivated" @change="saveMetadata(metadata)"/>
-                    <label for="colorSchemeActive">
-                        <span>{{ $t('activateColorCategoriesOfGridElements') }}</span>
-                    </label>
+                    <label class="three columns" for="colorMode">{{ $t('colorMode') }}</label>
+                    <select id="colorMode" v-model="metadata.colorConfig.colorMode" class="five columns" @change="saveMetadata(metadata)">
+                        <option :value="ColorConfig.COLOR_MODE_BACKGROUND">{{ $t('colorModeBackground') }}</option>
+                        <option :value="ColorConfig.COLOR_MODE_BORDER">{{ $t('colorModeBorder') }}</option>
+                    </select>
+                </div>
+                <div class="srow mt-5">
+                    <accordion :acc-label="$t('advancedOptions')" class="eleven columns">
+                        <div class="srow">
+                            <label class="three columns" for="borderColor">
+                                <span>{{ $t('defaultGridElementBorderColor') }}</span>
+                            </label>
+                            <input id="borderColor" v-model="metadata.colorConfig.elementBorderColor" class="five columns" type="color" @change="saveMetadata(metadata)">
+                            <button class="three columns" @click="metadata.colorConfig.elementBackgroundColor = constants.DEFAULT_ELEMENT_BORDER_COLOR; saveMetadata(metadata)">{{ $t('reset') }}</button>
+                        </div>
+                        <div class="srow">
+                            <slider-input label="borderWidth" unit="px" id="borderWidth" min="0" max="10" step="1" v-model.number="metadata.colorConfig.borderWidth" @change="saveMetadata(metadata)"/>
+                        </div>
+                        <div class="srow">
+                            <slider-input label="elementMargin" unit="px" id="elementMargin" min="0" max="20" step="1" v-model.number="metadata.colorConfig.elementMargin" @change="saveMetadata(metadata)"/>
+                        </div>
+                        <div class="srow">
+                            <slider-input label="borderRadius" unit="px" id="borderRadius" min="0" max="20" step="1" v-model.number="metadata.colorConfig.borderRadius" @change="saveMetadata(metadata)"/>
+                        </div>
+                        <div class="srow">
+                            <input id="colorSchemeActive" type="checkbox" v-model="metadata.colorConfig.colorSchemesActivated" @change="saveMetadata(metadata)"/>
+                            <label for="colorSchemeActive">
+                                <span>{{ $t('activateColorCategoriesOfGridElements') }}</span>
+                            </label>
+                        </div>
+                    </accordion>
                 </div>
             </div>
             <div class="three columns" style="height: 500px;">
@@ -103,9 +136,6 @@
                 </div>
                 <app-grid-display style="max-width: 200px" id="grid-container" :grid-data="testGridData" :metadata="metadata"/>
             </div>
-        </div>
-        <div class="srow">
-
         </div>
     </div>
 </template>
@@ -123,6 +153,7 @@
     import { GridImage } from '../../../js/model/GridImage';
     import { GridData } from '../../../js/model/GridData';
     import { util } from '../../../js/util/util';
+    import { ColorConfig } from '../../../js/model/ColorConfig';
 
     export default {
         components: { AppGridDisplay, Accordion, SliderInput },
@@ -131,6 +162,7 @@
         data() {
             return {
                 TextConfig: TextConfig,
+                ColorConfig: ColorConfig,
                 MetaData: MetaData,
                 constants: constants,
                 testGridData: null,
@@ -138,14 +170,43 @@
             }
         },
         methods: {
-            getElement(x, y, label, imgUrl) {
+            toDefault() {
+                this.metadata.textConfig = new TextConfig();
+                this.metadata.colorConfig = new ColorConfig();
+                this.saveMetadata(this.metadata);
+                this.resetTestGrid();
+            },
+            toDefaultBgColored() {
+                this.metadata.colorConfig.colorMode = ColorConfig.COLOR_MODE_BACKGROUND;
+                this.metadata.colorConfig.borderWidth = ColorConfig.BORDER_WIDTH_BG_COLORED
+                if (this.metadata.colorConfig.activeColorScheme.startsWith(constants.COLOR_SCHEME_FITZGERALD_PREFIX)) {
+                    this.metadata.colorConfig.activeColorScheme = constants.COLOR_SCHEME_FITZGERALD_LIGHT;
+                } else {
+                    this.metadata.colorConfig.activeColorScheme = constants.COLOR_SCHEME_GOOSENS_LIGHT;
+                }
+                this.saveMetadata(this.metadata);
+                this.resetTestGrid();
+            },
+            toDefaultBorderColored() {
+                this.metadata.colorConfig.colorMode = ColorConfig.COLOR_MODE_BORDER;
+                this.metadata.colorConfig.borderWidth = ColorConfig.BORDER_WIDTH_BORDER_COLORED;
+                if (this.metadata.colorConfig.activeColorScheme.startsWith(constants.COLOR_SCHEME_FITZGERALD_PREFIX)) {
+                    this.metadata.colorConfig.activeColorScheme = constants.COLOR_SCHEME_FITZGERALD_MEDIUM;
+                } else {
+                    this.metadata.colorConfig.activeColorScheme = constants.COLOR_SCHEME_GOOSENS_MEDIUM;
+                }
+                this.saveMetadata(this.metadata);
+                this.resetTestGrid();
+            },
+            getElement(x, y, label, imgUrl, colorCategory) {
                 return new GridElement({
                     x: x,
                     y: y,
                     label: i18nService.getTranslationObject(label),
                     image: new GridImage({
                         url: imgUrl
-                    })
+                    }),
+                    colorCategory: colorCategory
                 });
             },
             resetTestGrid() {
@@ -153,8 +214,8 @@
                     this.testGridData = new GridData({
                         gridElements: [
                             this.getElement(0, 0, this.testElementLabel, "https://api.arasaac.org/api/pictograms/2648?download=false&plural=false&color=true"),
-                            this.getElement(0, 1, "Test", "https://api.arasaac.org/api/pictograms/4887?download=false&plural=false&color=true"),
-                            this.getElement(0, 2, "Test", "https://api.arasaac.org/api/pictograms/2808?download=false&plural=false&color=true"),
+                            this.getElement(0, 1, i18nService.t("CC_VERB"), "https://api.arasaac.org/api/pictograms/4887?download=false&plural=false&color=true", "CC_VERB"),
+                            this.getElement(0, 2, i18nService.t("CC_NOUN"), "https://api.arasaac.org/api/pictograms/2808?download=false&plural=false&color=true", "CC_NOUN"),
                             this.getElement(0, 3, this.testElementLabel),
                         ]
                     });

@@ -1,5 +1,7 @@
 <template>
-    <div class="element-container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)" :style="`margin: 2px; border-radius: 3px; cursor: pointer; border: 1px solid ${getBorderColor()}; background-color: ${getBackgroundColor(element)};`">
+    <div class="element-container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
+         :style="`margin: ${metadata.colorConfig.elementMargin}px; border-radius: ${metadata.colorConfig.borderRadius}px; cursor: pointer;
+         border: ${metadata.colorConfig.borderWidth}px solid ${getBorderColor(element)}; background-color: ${getBackgroundColor(element)};`">
         <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" aria-hidden="true"/>
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
@@ -17,6 +19,7 @@ import GridElementHints from './grid-elements/gridElementHints.vue';
 import GridElementCollect from './grid-elements/gridElementCollect.vue';
 import GridElementYoutube from './grid-elements/gridElementYoutube.vue';
 import GridElementNormal from './grid-elements/gridElementNormal.vue';
+import { constants } from '../../js/util/constants';
 import { fontUtil } from '../../js/util/fontUtil';
 import { MetaData } from '../../js/model/MetaData';
 import { stateService } from '../../js/service/stateService';
@@ -29,6 +32,7 @@ import { GridActionCollectElement } from '../../js/model/GridActionCollectElemen
 import { GridActionNavigate } from '../../js/model/GridActionNavigate';
 import { GridActionWebradio } from '../../js/model/GridActionWebradio';
 import { GridActionYoutube } from '../../js/model/GridActionYoutube';
+import { ColorConfig } from '../../js/model/ColorConfig';
 
 export default {
     components: { GridElementNormal, GridElementYoutube, GridElementCollect, GridElementHints, GridElementPredict },
@@ -39,12 +43,25 @@ export default {
         }
     },
     methods: {
-        getBorderColor() {
-            let backgroundColor = this.metadata && this.metadata.colorConfig ? this.metadata.colorConfig.gridBackgroundColor : '#ffffff';
-            return fontUtil.getHighContrastColor(backgroundColor, 'whitesmoke', 'gray');
+        getBorderColor(element) {
+            if (!this.metadata || !this.metadata.colorConfig) {
+                return 'gray';
+            }
+            let color = this.metadata.colorConfig.elementBorderColor;
+            if (this.metadata.colorConfig.elementBorderColor === constants.DEFAULT_ELEMENT_BORDER_COLOR) {
+                let backgroundColor = this.metadata.colorConfig.gridBackgroundColor || '#ffffff';
+                color = fontUtil.getHighContrastColor(backgroundColor, 'whitesmoke', 'gray');
+            }
+            if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BORDER) {
+                return MetaData.getElementColor(element, this.metadata, color);
+            }
+            return color;
         },
         getBackgroundColor(element) {
-            return MetaData.getElementColor(element, this.metadata);
+            if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BACKGROUND) {
+                return MetaData.getElementColor(element, this.metadata);
+            }
+            return this.metadata.colorConfig.elementBackgroundColor;
         },
         isEmpty(element) {
             if (element.type === GridElementModel.ELEMENT_TYPE_NORMAL) {
