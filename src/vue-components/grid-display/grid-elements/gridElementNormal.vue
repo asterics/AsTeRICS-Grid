@@ -76,7 +76,8 @@ export default {
             if (this.metadata.textConfig.fittingMode === TextConfig.TOO_LONG_AUTO && realWidth > size.width - 2 * padding) {
                 fontSize = fontUtil.getFittingFontSize(this.label, this.$refs.container, { maxLines: this.maxLines, padding: padding, maxSize: fontSize, lineHeight: this.lineHeight });
             }
-            if (this.metadata.textConfig.autoSizeKeyboardLetters && !this.imageData && this.label.length === 1) { // keyboard letters
+            if (this.metadata.textConfig.autoSizeKeyboardLetters && !this.imageData &&
+                (this.label.length === 1 || (this.label.length === 2 && /\p{Emoji}/u.test(this.label)))) { // keyboard letters
                 let containerPct = 90;
                 this.margin = MARGIN;
                 if (document.documentElement.clientWidth < MOBILE_MAX_WIDTH) {
