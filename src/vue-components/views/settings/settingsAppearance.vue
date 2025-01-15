@@ -4,11 +4,11 @@
             <div class="nine columns settings-area">
                 <h3 class="mt-2">{{ $t('quickSettings') }}</h3>
                 <div class="srow">
-                    <button @click="toDefault">{{ $t('setToDefaultSettings') }}</button>
-                    <button @click="toDefaultBgColored">{{ $t('setToDefaultSettingsBgColored') }}</button>
-                    <button @click="toDefaultBorderColored">{{ $t('setToDefaultSettingsBorderColored') }}</button>
-                    <button @click="toDarkMode">{{ $t('setToDarkMode') }}</button>
-                    <button @click="toLightMode">{{ $t('setToLightMode') }}</button>
+                    <button @click="toDefault"><span class="fas fa-undo"/> {{ $t('setToDefaultSettings') }}</button>
+                    <button @click="toDefaultBgColored"><span class="fas fa-square"/> {{ $t('setToDefaultSettingsBgColored') }}</button>
+                    <button @click="toDefaultBorderColored"><span class="far fa-square"/> {{ $t('setToDefaultSettingsBorderColored') }}</button>
+                    <button @click="toDarkMode"><span class="fas fa-moon"/> {{ $t('setToDarkMode') }}</button>
+                    <button @click="toLightMode"><span class="fas fa-sun"/> {{ $t('setToLightMode') }}</button>
                 </div>
                 <h3 class="mt-2">{{ $t('textHeading') }}</h3>
                 <div class="srow">
