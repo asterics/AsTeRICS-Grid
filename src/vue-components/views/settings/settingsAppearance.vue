@@ -180,8 +180,8 @@
         },
         methods: {
             toDefault() {
-                this.metadata.textConfig = new TextConfig();
-                this.metadata.colorConfig = new ColorConfig();
+                this.metadata.textConfig = JSON.parse(JSON.stringify(new TextConfig()));
+                this.metadata.colorConfig = JSON.parse(JSON.stringify(new ColorConfig()));
                 this.saveMetadata(this.metadata);
                 this.resetTestGrid();
             },
