@@ -209,6 +209,13 @@ nav #helpButton:focus {
     z-index: 1;
 }
 
+@media (max-width: 850px) {
+    .scanFocus {
+        outline: 7px solid rgba(239, 0, 0, 0.5) !important;
+    }
+}
+
+
 .text-content {
     margin-left: 1em;
 }
