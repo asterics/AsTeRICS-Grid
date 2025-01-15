@@ -297,6 +297,9 @@ async function updateCollectElements(isSecondTry) {
         let txtBackgroundColor = metadata.colorConfig.gridBackgroundColor || '#ffffff';
         let imageMode = isSeparateMode(collectElement.mode);
         let outerContainerJqueryElem = $(`#${collectElement.id} .collect-outer-container`);
+        let darkMode = metadata.colorConfig.elementBackgroundColor === constants.DEFAULT_ELEMENT_BACKGROUND_COLOR_DARK;
+        let backgroundColor = darkMode ? constants.DEFAULT_COLLECT_ELEMENT_BACKGROUND_COLOR_DARK : constants.DEFAULT_COLLECT_ELEMENT_BACKGROUND_COLOR;
+        let textColor = darkMode ? constants.DEFAULT_ELEMENT_FONT_COLOR_DARK : constants.DEFAULT_ELEMENT_FONT_COLOR;
         if (!imageMode) {
             let text = getPrintText();
             $(`#${collectElement.id}`).attr('aria-label', `${text}, ${i18nService.t('ELEMENT_TYPE_COLLECT')}`);
@@ -305,7 +308,7 @@ async function updateCollectElements(isSecondTry) {
                             ${text}
                         </span>`;
             outerContainerJqueryElem.html(
-                (html = `<div class="collect-container" dir="auto" style="height: 100%; flex: 1; background-color: #e8e8e8; text-align: justify;">${html}</div>`)
+                (html = `<div class="collect-container" dir="auto" style="height: 100%; flex: 1; background-color: ${backgroundColor}; text-align: justify;">${html}</div>`)
             );
             fontUtil.adaptFontSize($(`#${collectElement.id}`));
         } else {
@@ -374,8 +377,8 @@ async function updateCollectElements(isSecondTry) {
                     totalWidth += elemWidth + 4 * imgMargin;
                     imgHTML = `<div style="padding: ${imgMargin}px; font-size: ${fontSize}px; width: ${elemWidth}px; height: ${imgHeight}px; display: flex; justify-content: center; align-items: center; text-align: center;"><span>${label}</span></div>`;
                 }
-                html += `<div id="collect${index}" style="display: flex; flex:0; justify-content: center; flex-direction: column; padding: ${imgMargin}px; ${
-                    marked ? 'background-color: lightgreen;' : ''
+                html += `<div id="collect${index}" style="display: flex; flex:0; justify-content: center; flex-direction: column; padding: ${imgMargin}px; color: ${textColor}; ${
+                    marked ? `background-color: ${darkMode ? 'darkgreen' : 'lightgreen'};` : ''
                 }" title="${label}">
                                 <div style="display:flex; justify-content: center">
                                         ${imgHTML}
@@ -388,7 +391,7 @@ async function updateCollectElements(isSecondTry) {
                              </div>`;
             }
             let additionalCSS = useSingleLine ? 'overflow-x: auto; overflow-y: hidden;' : 'flex-wrap: wrap;';
-            html = `<div class="collect-container" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: #e8e8e8; text-align: justify; ${additionalCSS}">${html}</div>`;
+            html = `<div class="collect-container" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: ${backgroundColor}; text-align: justify; ${additionalCSS}">${html}</div>`;
             outerContainerJqueryElem.html(html);
             if (useSingleLine) {
                 let scroll =

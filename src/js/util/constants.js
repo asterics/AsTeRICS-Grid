@@ -76,15 +76,22 @@ constants.BOARD_TYPE_SINGLE = "BOARD_TYPE_SINGLE";
 constants.BOARD_TYPES = [constants.BOARD_TYPE_SELFCONTAINED, constants.BOARD_TYPE_SINGLE];
 
 constants.DEFAULT_ELEMENT_BACKGROUND_COLOR = '#ffffff';
+constants.DEFAULT_ELEMENT_BACKGROUND_COLOR_DARK = '#555555';
+constants.DEFAULT_COLLECT_ELEMENT_BACKGROUND_COLOR = '#E8E8E8';
+constants.DEFAULT_COLLECT_ELEMENT_BACKGROUND_COLOR_DARK = '#757575';
 constants.DEFAULT_ELEMENT_BORDER_COLOR = '#808080';
 constants.DEFAULT_ELEMENT_FONT_COLOR = '#000000';
+constants.DEFAULT_ELEMENT_FONT_COLOR_DARK = '#ffffff';
 constants.DEFAULT_GRID_BACKGROUND_COLOR = '#e8e8e8';
+constants.DEFAULT_GRID_BACKGROUND_COLOR_DARK = '#000000';
 constants.COLOR_SCHEME_FITZGERALD_PREFIX = 'CS_MODIFIED_FITZGERALD_KEY';
 constants.COLOR_SCHEME_GOOSENS_PREFIX = 'CS_GOOSENS';
 constants.COLOR_SCHEME_FITZGERALD_LIGHT = 'CS_MODIFIED_FITZGERALD_KEY_LIGHT';
 constants.COLOR_SCHEME_FITZGERALD_MEDIUM = 'CS_MODIFIED_FITZGERALD_KEY_MEDIUM';
+constants.COLOR_SCHEME_FITZGERALD_DARK = 'CS_MODIFIED_FITZGERALD_KEY_DARK';
 constants.COLOR_SCHEME_GOOSENS_LIGHT = 'CS_GOOSENS_LIGHT';
 constants.COLOR_SCHEME_GOOSENS_MEDIUM = 'CS_GOOSENS_MEDIUM';
+constants.COLOR_SCHEME_GOOSENS_DARK = 'CS_GOOSENS_DARK';
 constants.DEFAULT_COLOR_SCHEMES = [
     {
         name: constants.COLOR_SCHEME_FITZGERALD_LIGHT,
@@ -141,6 +148,33 @@ constants.DEFAULT_COLOR_SCHEMES = [
         ]
     },
     {
+        name: constants.COLOR_SCHEME_FITZGERALD_DARK,
+        categories: [
+            'CC_PRONOUN_PERSON_NAME',
+            'CC_NOUN',
+            'CC_VERB',
+            'CC_DESCRIPTOR',
+            'CC_SOCIAL_EXPRESSIONS',
+            'CC_MISC',
+            'CC_PLACE',
+            'CC_CATEGORY',
+            'CC_IMPORTANT',
+            'CC_OTHERS'
+        ],
+        colors: [
+            '#79791F',
+            '#804c26',
+            '#4c8026',
+            '#264c80',
+            '#802680',
+            '#808080',
+            '#602680',
+            '#52331f',
+            '#80261a',
+            '#4d4d4d'
+        ]
+    },
+    {
         name: constants.COLOR_SCHEME_GOOSENS_LIGHT,
         categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
         colors: ['#fdcae1', '#84b6f4', '#c7f3c7', '#fdfd96', '#ffda89']
@@ -149,6 +183,16 @@ constants.DEFAULT_COLOR_SCHEMES = [
         name: constants.COLOR_SCHEME_GOOSENS_MEDIUM,
         categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
         colors: ['#ff6bff', '#6bb5ff', '#b5ff6b', '#ffff6b', '#ffb56b']
+    },
+    {
+        name: constants.COLOR_SCHEME_GOOSENS_DARK,
+        categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
+        colors: [
+            '#802680',
+            '#264c80',
+            '#4c8026',
+            '#79791F',
+            '#804c26']
     }
 ];
 

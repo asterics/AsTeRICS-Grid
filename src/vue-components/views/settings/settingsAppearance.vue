@@ -7,6 +7,8 @@
                     <button @click="toDefault">{{ $t('setToDefaultSettings') }}</button>
                     <button @click="toDefaultBgColored">{{ $t('setToDefaultSettingsBgColored') }}</button>
                     <button @click="toDefaultBorderColored">{{ $t('setToDefaultSettingsBorderColored') }}</button>
+                    <button @click="toDarkMode">{{ $t('setToDarkMode') }}</button>
+                    <button @click="toLightMode">{{ $t('setToLightMode') }}</button>
                 </div>
                 <h3 class="mt-2">{{ $t('textHeading') }}</h3>
                 <div class="srow">
@@ -186,24 +188,46 @@
             toDefaultBgColored() {
                 this.metadata.colorConfig.colorMode = ColorConfig.COLOR_MODE_BACKGROUND;
                 this.metadata.colorConfig.borderWidth = ColorConfig.BORDER_WIDTH_BG_COLORED
-                if (this.metadata.colorConfig.activeColorScheme.startsWith(constants.COLOR_SCHEME_FITZGERALD_PREFIX)) {
-                    this.metadata.colorConfig.activeColorScheme = constants.COLOR_SCHEME_FITZGERALD_LIGHT;
-                } else {
-                    this.metadata.colorConfig.activeColorScheme = constants.COLOR_SCHEME_GOOSENS_LIGHT;
-                }
+                this.metadata.colorConfig.activeColorScheme = this.getColorScheme();
                 this.saveMetadata(this.metadata);
                 this.resetTestGrid();
             },
             toDefaultBorderColored() {
                 this.metadata.colorConfig.colorMode = ColorConfig.COLOR_MODE_BORDER;
                 this.metadata.colorConfig.borderWidth = ColorConfig.BORDER_WIDTH_BORDER_COLORED;
-                if (this.metadata.colorConfig.activeColorScheme.startsWith(constants.COLOR_SCHEME_FITZGERALD_PREFIX)) {
-                    this.metadata.colorConfig.activeColorScheme = constants.COLOR_SCHEME_FITZGERALD_MEDIUM;
-                } else {
-                    this.metadata.colorConfig.activeColorScheme = constants.COLOR_SCHEME_GOOSENS_MEDIUM;
-                }
+                this.metadata.colorConfig.activeColorScheme = this.getColorScheme();
                 this.saveMetadata(this.metadata);
                 this.resetTestGrid();
+            },
+            toDarkMode() {
+                this.metadata.colorConfig.gridBackgroundColor = constants.DEFAULT_GRID_BACKGROUND_COLOR_DARK;
+                this.metadata.colorConfig.elementBackgroundColor = constants.DEFAULT_ELEMENT_BACKGROUND_COLOR_DARK;
+                this.metadata.textConfig.fontColor = constants.DEFAULT_ELEMENT_FONT_COLOR_DARK;
+                this.metadata.colorConfig.activeColorScheme = this.getColorScheme();
+                this.saveMetadata(this.metadata);
+                this.resetTestGrid();
+            },
+            toLightMode() {
+                this.metadata.colorConfig.gridBackgroundColor = constants.DEFAULT_GRID_BACKGROUND_COLOR;
+                this.metadata.colorConfig.elementBackgroundColor = constants.DEFAULT_ELEMENT_BACKGROUND_COLOR;
+                this.metadata.textConfig.fontColor = constants.DEFAULT_ELEMENT_FONT_COLOR;
+                this.metadata.colorConfig.activeColorScheme = this.getColorScheme();
+                this.saveMetadata(this.metadata);
+                this.resetTestGrid();
+            },
+            getColorScheme() {
+                let originalScheme = this.metadata.colorConfig.activeColorScheme;
+                let backgroundColored = this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BACKGROUND;
+                let darkMode = this.metadata.colorConfig.elementBackgroundColor === constants.DEFAULT_ELEMENT_BACKGROUND_COLOR_DARK;
+                if (originalScheme.startsWith(constants.COLOR_SCHEME_FITZGERALD_PREFIX)) {
+                    return backgroundColored ?
+                        (darkMode ? constants.COLOR_SCHEME_FITZGERALD_DARK : constants.COLOR_SCHEME_FITZGERALD_LIGHT) :
+                        constants.COLOR_SCHEME_FITZGERALD_MEDIUM;
+                } else {
+                    return backgroundColored ?
+                        (darkMode ? constants.COLOR_SCHEME_GOOSENS_DARK : constants.COLOR_SCHEME_GOOSENS_LIGHT) :
+                        constants.COLOR_SCHEME_GOOSENS_MEDIUM;
+                }
             },
             getElement(x, y, label, imgUrl, colorCategory) {
                 return new GridElement({
