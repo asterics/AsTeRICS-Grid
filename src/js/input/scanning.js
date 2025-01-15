@@ -116,8 +116,8 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
         var compareElements = allowDuplicated ? allElements : remainingElements;
         var group = compareElements.filter(
             (item) =>
-                (firstMinPos >= minPosFn(item) && firstMinPos <= maxPosFn(item)) || //minimum of first value is inbetween the size of the item
-                (minPosFn(item) <= firstMaxPos && maxPosFn(item) >= firstMaxPos) || //maximum of first value is inbetween the size of the item
+                (firstMinPos > minPosFn(item) && firstMinPos < maxPosFn(item)) || //minimum of first value is inbetween the size of the item
+                (minPosFn(item) < firstMaxPos && maxPosFn(item) > firstMaxPos) || //maximum of first value is inbetween the size of the item
                 (minPosFn(item) >= firstMinPos && maxPosFn(item) <= firstMaxPos) //item is completely wrapped by first item
         );
         return group;
