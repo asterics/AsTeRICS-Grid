@@ -205,7 +205,8 @@ nav #helpButton:focus {
 }
 
 .scanFocus {
-    outline: 10px solid red !important;
+    outline: 10px solid rgba(239, 0, 0, 0.5) !important;
+    z-index: 1;
 }
 
 .text-content {
