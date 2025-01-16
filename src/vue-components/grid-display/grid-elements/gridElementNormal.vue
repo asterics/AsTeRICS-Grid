@@ -23,28 +23,23 @@ let MOBILE_MAX_WIDTH = 480;
 let TEXT_MARGIN = 5;
 
 export default {
-    props: ["gridElement", "metadata"],
+    props: ["gridElement", "metadata", "containerSize"],
     data() {
         return {
             imageData: this.gridElement.image ? this.gridElement.image.data || this.gridElement.image.url : null,
             fontSizePx: null,
-            fontSizePct: null,
             lineHeight: null,
             maxLines: null,
             maxTextContainerHeight: null,
             TextConfig: TextConfig,
-            resizeObserver: null,
             textOverflow: null,
             whiteSpaceWrap: null,
             txtMargin: TEXT_MARGIN
         }
     },
     watch: {
-        metadata: {
-            handler() {
-                this.calcFontSize();
-            },
-            deep: true
+        containerSize() {
+            this.calcFontSize();
         }
     },
     computed: {
@@ -54,11 +49,6 @@ export default {
         }
     },
     methods: {
-        resizeListener() {
-            util.debounce(() => {
-                this.calcFontSize();
-            }, 100, "WINDOW_RESIZE_ELEM" + this.gridElement.id);
-        },
         calcFontSize() {
             let size = this.$refs.container.getBoundingClientRect();
             this.lineHeight = this.imageData ? this.metadata.textConfig.lineHeight : this.metadata.textConfig.onlyTextLineHeight;
@@ -70,7 +60,7 @@ export default {
         },
         getFontSizePx(size) {
             let pct = this.imageData ? this.metadata.textConfig.fontSizePct : this.metadata.textConfig.onlyTextFontSizePct;
-            let fontSize = (size.height * (pct / 100) + size.width * (pct / 100)) / 2;
+            let fontSize = fontUtil.pctToPx(pct, size);
             let realWidth = fontUtil.getTextWidth(this.label, this.$refs.container, fontSize);
             let kbdContainerPct = 90;
             this.txtMargin = TEXT_MARGIN;
@@ -90,21 +80,6 @@ export default {
     },
     mounted() {
         this.calcFontSize();
-        if (window.ResizeObserver) {
-            this.resizeObserver = new ResizeObserver(() => {
-                this.resizeListener();
-            });
-            this.resizeObserver.observe(this.$refs.container);
-        } else {
-            window.addEventListener("resize", this.resizeListener);
-        }
-    },
-    beforeDestroy() {
-        if (this.resizeObserver) {
-            this.resizeObserver.disconnect();
-        } else {
-            window.removeEventListener("resize", this.resizeListener);
-        }
     }
 }
 </script>

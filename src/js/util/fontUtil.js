@@ -137,6 +137,19 @@ fontUtil.getFittingFontSize = function(text, container, options = {}) {
     return Math.min(options.maxSize, tryPx, (containerSize.height * options.containerPct / 100) / options.lineHeight);
 }
 
+/**
+ * converts a percent value to px. percent value is in relation to the given size parameter (mean of width and height).
+ * @param pct
+ * @param size the size of the container the percent value refers to, default: current viewport size
+ */
+fontUtil.pctToPx = function(pct, size) {
+    size = size || {
+        width: document.documentElement.clientWidth,
+        height: document.documentElement.clientHeight
+    }
+    return (size.width + size.height) * pct / 200;
+}
+
 fontUtil.getHighContrastColor = function (hexBackground, lightColor, darkColor) {
     if (!hexBackground || !hexBackground.startsWith('#')) {
         return '';

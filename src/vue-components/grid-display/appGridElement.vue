@@ -1,8 +1,8 @@
 <template>
-    <div class="element-container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
-         :style="`margin: ${metadata.colorConfig.elementMargin}px; border-radius: ${metadata.colorConfig.borderRadius}px; cursor: pointer;
-         border: ${metadata.colorConfig.borderWidth}px solid ${getBorderColor(element)}; background-color: ${getBackgroundColor(element)};`">
-        <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" aria-hidden="true"/>
+    <div class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
+         :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: pointer;
+         border: ${borderWidthPx}px solid ${getBorderColor(element)}; background-color: ${getBackgroundColor(element)};`">
+        <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="containerSize" aria-hidden="true"/>
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
         <grid-element-predict v-if="element.type === GridElement.ELEMENT_TYPE_PREDICTION" aria-hidden="true"/>
@@ -33,14 +33,28 @@ import { GridActionNavigate } from '../../js/model/GridActionNavigate';
 import { GridActionWebradio } from '../../js/model/GridActionWebradio';
 import { GridActionYoutube } from '../../js/model/GridActionYoutube';
 import { ColorConfig } from '../../js/model/ColorConfig';
+import { util } from '../../js/util/util';
 
 export default {
     components: { GridElementNormal, GridElementYoutube, GridElementCollect, GridElementHints, GridElementPredict },
     props: ["element", "metadata", "showResizeHandle"],
     data() {
         return {
-            GridElement: GridElement
+            GridElement: GridElement,
+            containerSize: null,
+            resizeObserver: null,
+            elementMarginPx: fontUtil.pctToPx(this.metadata.colorConfig.elementMargin),
+            borderRadiusPx: fontUtil.pctToPx(this.metadata.colorConfig.borderRadius),
+            borderWidthPx: fontUtil.pctToPx(this.metadata.colorConfig.borderWidth)
         }
+    },
+    watch: {
+        metadata: {
+            handler() {
+                this.recalculate();
+            },
+            deep: true
+        },
     },
     methods: {
         getBorderColor(element) {
@@ -140,10 +154,37 @@ export default {
                 ariaLabel = ariaLabel.slice(0, -2);
             }
             return ariaLabel;
-        }
+        },
+        resizeListener() {
+            util.debounce(() => {
+                this.recalculate();
+            }, 100, "WINDOW_RESIZE_ELEM" + this.element.id);
+        },
+        recalculate() {
+            this.containerSize = this.$refs.container.getBoundingClientRect();
+            this.elementMarginPx = fontUtil.pctToPx(this.metadata.colorConfig.elementMargin);
+            this.borderWidthPx = fontUtil.pctToPx(this.metadata.colorConfig.borderWidth);
+            this.borderRadiusPx = fontUtil.pctToPx(this.metadata.colorConfig.borderRadius);
+        },
     },
     mounted() {
+        this.recalculate();
+        if (window.ResizeObserver) {
+            this.resizeObserver = new ResizeObserver(() => {
+                this.resizeListener();
+            });
+            this.resizeObserver.observe(this.$refs.container);
+        } else {
+            window.addEventListener('resize', this.resizeListener);
+        }
     },
+    beforeDestroy() {
+        if (this.resizeObserver) {
+            this.resizeObserver.disconnect();
+        } else {
+            window.removeEventListener('resize', this.resizeListener);
+        }
+    }
 }
 </script>
 

@@ -27,8 +27,8 @@ class ColorConfig extends Model({
 ColorConfig.COLOR_MODE_BACKGROUND = 'COLOR_MODE_BACKGROUND';
 ColorConfig.COLOR_MODE_BORDER = 'COLOR_MODE_BORDER';
 
-ColorConfig.BORDER_WIDTH_BORDER_COLORED = 5;
-ColorConfig.BORDER_WIDTH_BG_COLORED = 1;
+ColorConfig.BORDER_WIDTH_BORDER_COLORED = 0.45;
+ColorConfig.BORDER_WIDTH_BG_COLORED = 0.1;
 
 ColorConfig.defaults({
     modelName: ColorConfig.getModelName(),
@@ -40,8 +40,8 @@ ColorConfig.defaults({
     elementBorderColor: constants.DEFAULT_ELEMENT_BORDER_COLOR,
     gridBackgroundColor: constants.DEFAULT_GRID_BACKGROUND_COLOR,
     borderWidth: ColorConfig.BORDER_WIDTH_BG_COLORED,
-    elementMargin: 2,
-    borderRadius: 3,
+    elementMargin: 0.15,
+    borderRadius: 0.4,
     colorMode: ColorConfig.COLOR_MODE_BACKGROUND
 });
 
