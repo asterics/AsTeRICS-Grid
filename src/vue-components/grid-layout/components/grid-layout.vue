@@ -81,6 +81,9 @@ export default {
             return {
                 '--animation-duration': this.animationDurationMs + "ms"
             }
+        },
+        totalElementClassSelector() {
+            return `.${this.myId} ${this.elementClassSelector}`;
         }
     },
     methods: {
@@ -148,7 +151,7 @@ export default {
             this.interact = this.interact || (await import('interactjs')).default;
 
             let position = { x: 0, y: 0 };
-            this.interact(this.elementClassSelector).draggable({
+            this.interact(this.totalElementClassSelector).draggable({
                 listeners: {
                     start(event) {
                         thiz.$emit('movestart');
@@ -219,7 +222,7 @@ export default {
         },
         destroyInteract() {
             if (this.interact) {
-                this.interact(this.elementClassSelector).unset();
+                this.interact(this.totalElementClassSelector).unset();
             }
         },
         onResize() {
