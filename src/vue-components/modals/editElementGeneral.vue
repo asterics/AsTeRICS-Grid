@@ -18,20 +18,20 @@
                 </select>
             </div>
         </div>
-        <div class="srow">
+        <div class="srow mb-5">
             <input type="checkbox" id="inputHidden" v-if="gridElement" v-model="gridElement.hidden"/>
             <label for="inputHidden">{{ $t('hideElement') }}</label>
         </div>
         <div class="srow">
-            <input type="checkbox" id="inputDontCollect" v-if="gridElement" v-model="gridElement.dontCollect"/>
-            <label for="inputDontCollect">{{ $t('dontAddElementToCollectElement') }}</label>
-        </div>
-        <div class="srow">
-            <input type="checkbox" id="toggleInBar" v-if="gridElement" v-model="gridElement.toggleInBar"/>
-            <label for="toggleInBar">{{ $t('toggleInCollectionElementIfAddedMultipleTimes') }}</label>
-        </div>
-        <div class="srow">
             <accordion :acc-label="$t('advancedOptions')">
+                <div class="srow">
+                    <input type="checkbox" id="inputDontCollect" v-if="gridElement" v-model="gridElement.dontCollect"/>
+                    <label for="inputDontCollect">{{ $t('dontAddElementToCollectElement') }}</label>
+                </div>
+                <div class="srow mb-5">
+                    <input type="checkbox" id="toggleInBar" v-if="gridElement" v-model="gridElement.toggleInBar"/>
+                    <label for="toggleInBar">{{ $t('toggleInCollectionElementIfAddedMultipleTimes') }}</label>
+                </div>
                 <slider-input label="fontSize" unit="%" id="fontSize" :show-clear-button="true" min="0" max="100" step="1" v-model.number="gridElement.fontSizePct" @input="resetTestGrid"/>
                 <div class="srow">
                     <label class="four columns" for="backgroundColor">{{ $t('customElementColor') }}</label>
