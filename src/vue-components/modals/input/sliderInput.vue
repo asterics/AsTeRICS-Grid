@@ -1,13 +1,14 @@
 <template>
     <div class="srow">
-        <label class="three columns" :for="id">
+        <label :class="showClearButton ? 'two columns' : 'three columns'" :for="id">
             <span>{{ label | translate }}</span>
         </label>
-        <input :id="id" class="five columns" type="range" :min="min" :max="max" :step="step" :value="value" @input="changed">
+        <input :id="id" :class="showClearButton ? 'four columns' : 'five columns'" type="range" :min="min" :max="max" :step="step" :value="value" @input="changed">
         <div class="three columns">
             <span>{{ $t('currentValue') }}</span>:
             <span>{{ showValue }}{{unit ? (' ' + i18nService.t(unit)) : ''}}</span>
         </div>
+        <button v-if="showClearButton" class="two columns" :disabled="!value" @click="emitChange(null)">{{ $t('clear') }}</button>
     </div>
 </template>
 
@@ -15,7 +16,7 @@
     import {i18nService} from "../../../js/service/i18nService.js";
 
     export default {
-        props: ['id', 'label', 'value', 'min', 'max', 'step', 'decimals', 'unit', 'displayFactor', 'default'],
+        props: ['id', 'label', 'value', 'min', 'max', 'step', 'decimals', 'unit', 'displayFactor', 'default', 'showClearButton'],
         data() {
             return {
                 i18nService: i18nService
