@@ -1,0 +1,96 @@
+<template>
+    <div :class="`text-container ${metadata.textConfig.fontFamily}`"
+         :style="`order: ${metadata.textConfig.textPosition === TextConfig.TEXT_POS_BELOW ? 1 : 0};
+                  text-align: center; font-size: ${fontSizePx}px; line-height: ${lineHeight}; color: ${metadata.textConfig.fontColor};
+                  flex-grow: ${withImage ? '0' : '1'};`">
+        <span :style="`max-height: ${maxTextContainerHeight}; text-overflow: ${textOverflow}; white-space: ${whiteSpaceWrap}; margin: 0 ${txtMargin}px;`">{{externalSetLabel || label}}</span>
+    </div>
+</template>
+
+<script>
+import { TextConfig } from '../../../js/model/TextConfig';
+import { fontUtil } from '../../../js/util/fontUtil';
+import $ from '../../../js/externals/jquery';
+import { constants } from '../../../js/util/constants';
+
+let MOBILE_MAX_WIDTH = 480;
+let TEXT_MARGIN = 5;
+
+export default {
+    props: ["label", "withImage", "metadata", "containerSize", "container", "watchId"],
+    data() {
+        return {
+            fontSizePx: null,
+            lineHeight: null,
+            maxLines: null,
+            maxTextContainerHeight: null,
+            TextConfig: TextConfig,
+            textOverflow: null,
+            whiteSpaceWrap: null,
+            txtMargin: TEXT_MARGIN,
+            externalSetLabel: null,
+            intervalHandler: null
+        }
+    },
+    watch: {
+        containerSize() {
+            this.calcFontSize();
+        }
+    },
+    methods: {
+        calcFontSize() {
+            if (!this.container) {
+                return;
+            }
+            let size = this.container.getBoundingClientRect();
+            this.lineHeight = this.withImage ? this.metadata.textConfig.lineHeight : this.metadata.textConfig.onlyTextLineHeight;
+            this.fontSizePx = this.getFontSizePx(size);
+            this.maxTextContainerHeight = this.withImage ? (this.fontSizePx * this.metadata.textConfig.lineHeight * this.metadata.textConfig.maxLines) + 'px' : '100%';
+            this.maxLines = this.withImage ? this.metadata.textConfig.maxLines : 100;
+            this.textOverflow = this.metadata.textConfig.fittingMode === TextConfig.TOO_LONG_ELLIPSIS ? 'ellipsis' : 'clip';
+            this.whiteSpaceWrap = this.maxLines === 1 ? 'nowrap' : 'normal';
+        },
+        getFontSizePx(size) {
+            let label = this.externalSetLabel || this.label || '';
+            let pct = this.withImage ? this.metadata.textConfig.fontSizePct : this.metadata.textConfig.onlyTextFontSizePct;
+            let fontSize = fontUtil.pctToPx(pct, size);
+            let realWidth = fontUtil.getTextWidth(label, this.container, fontSize);
+            let kbdContainerPct = 90;
+            this.txtMargin = TEXT_MARGIN;
+            if (document.documentElement.clientWidth < MOBILE_MAX_WIDTH) {
+                this.txtMargin = 0;
+                kbdContainerPct = 100;
+            }
+            if (this.metadata.textConfig.fittingMode === TextConfig.TOO_LONG_AUTO && realWidth > size.width - 2 * this.txtMargin) {
+                fontSize = fontUtil.getFittingFontSize(label, this.container, { maxLines: this.maxLines, padding: this.txtMargin, maxSize: fontSize, lineHeight: this.lineHeight });
+            }
+            if (this.metadata.textConfig.autoSizeKeyboardLetters && !this.withImage &&
+                (label.length === 1 || (label.length === 2 && /\p{Emoji}/u.test(label)))) { // keyboard letters
+                fontSize = fontUtil.getFittingFontSize(label, this.container, { containerPct: kbdContainerPct, lineHeight: this.lineHeight, padding: this.txtMargin});
+            }
+            return fontSize;
+        },
+        externalWatchFn() {
+            this.externalSetLabel = $(`#${this.watchId} .text-container span`).text();
+            log.warn(this.externalSetLabel);
+            this.calcFontSize();
+        }
+    },
+    mounted() {
+        this.$nextTick(() => {
+            this.calcFontSize();
+        });
+        if (this.watchId) {
+            $(document).on(constants.EVENT_PREDICTIONS_CHANGED, this.externalWatchFn);
+        }
+    },
+    beforeDestroy() {
+        if (this.watchId) {
+            $(document).off(constants.EVENT_PREDICTIONS_CHANGED, this.externalWatchFn);
+        }
+    }
+}
+</script>
+
+<style scoped>
+</style>
