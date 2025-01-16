@@ -55,6 +55,12 @@ export default {
             },
             deep: true
         },
+        element: {
+            handler() {
+                this.recalculate();
+            },
+            deep: true
+        },
     },
     methods: {
         getBorderColor(element) {
