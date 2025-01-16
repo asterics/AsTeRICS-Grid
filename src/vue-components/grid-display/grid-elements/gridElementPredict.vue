@@ -1,15 +1,16 @@
 <template>
-    <div class="grid-item-content" style="background-color: rgb(255,228,178);">
-        <div class="text-container" style="display: table; height: 100%; text-align: center; width: 100%">
-            <span style="display: table-cell; vertical-align: middle;"></span>
-        </div>
+    <div ref="container" class="grid-item-content" style="background-color: rgb(255,228,178);">
+        <grid-element-text-container :with-image="false" :metadata="metadata" :container-size="containerSize" :container="$refs.container" :watch-id="watchId"/>
     </div>
 </template>
 
 <script>
 
+import GridElementTextContainer from './gridElementTextContainer.vue';
+
 export default {
-    props: [],
+    components: { GridElementTextContainer },
+    props: ["metadata", "containerSize", "watchId"],
     data() {
         return {
         }

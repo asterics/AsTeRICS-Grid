@@ -72,7 +72,6 @@ export default {
         },
         externalWatchFn() {
             this.externalSetLabel = $(`#${this.watchId} .text-container span`).text();
-            log.warn(this.externalSetLabel);
             this.calcFontSize();
         }
     },

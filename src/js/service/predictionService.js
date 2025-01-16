@@ -53,7 +53,7 @@ predictionService.predict = function (input, dictionaryKey) {
             `${text}, ${i18nService.t('ELEMENT_TYPE_PREDICTION')}`
         );
     }
-    fontUtil.adaptFontSize($('.item[data-type="ELEMENT_TYPE_PREDICTION"]'));
+    $(document).trigger(constants.EVENT_PREDICTIONS_CHANGED);
 };
 
 predictionService.learnFromInput = function (input, dictionaryKey) {

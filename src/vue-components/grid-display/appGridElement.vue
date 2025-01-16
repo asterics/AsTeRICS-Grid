@@ -5,7 +5,7 @@
         <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="containerSize" aria-hidden="true"/>
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
-        <grid-element-predict v-if="element.type === GridElement.ELEMENT_TYPE_PREDICTION" aria-hidden="true"/>
+        <grid-element-predict v-if="element.type === GridElement.ELEMENT_TYPE_PREDICTION" :metadata="metadata" :container-size="containerSize" :watch-id="element.id" aria-hidden="true"/>
         <grid-element-hints :grid-element="element" :metadata="metadata"/>
         <div v-if="showResizeHandle" class="ui-resizable-handle ui-icon ui-icon-grip-diagonal-se" style="position: absolute; z-index: 2; bottom: 0; right: 0; cursor: se-resize;"></div>
     </div>
