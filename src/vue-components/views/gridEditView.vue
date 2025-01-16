@@ -143,7 +143,7 @@
             },
             async reload(gridData) {
                 gridData = gridData || (await dataService.getGrid(this.gridData.id));
-                this.gridData = JSON.parse(JSON.stringify(gridData));
+                this.gridData = gridData;
             },
             back() {
                 if (this.metadata && this.metadata.globalGridId === this.gridData.id) {
