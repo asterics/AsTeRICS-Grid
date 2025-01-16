@@ -7,7 +7,7 @@
              :style="`order: ${metadata.textConfig.textPosition === TextConfig.TEXT_POS_BELOW ? 1 : 0};
                       text-align: center; font-size: ${fontSizePx}px; line-height: ${lineHeight}; color: ${metadata.textConfig.fontColor};
                       flex-grow: ${imageData ? '0' : '1'};`">
-            <span :style="`max-height: ${maxTextContainerHeight}; text-overflow: ${textOverflow}; white-space: ${whiteSpaceWrap}; margin: 0 ${margin}px;`">{{label}}</span>
+            <span :style="`max-height: ${maxTextContainerHeight}; text-overflow: ${textOverflow}; white-space: ${whiteSpaceWrap}; margin: 0 ${txtMargin}px;`">{{label}}</span>
         </div>
     </div>
 </template>
@@ -20,7 +20,7 @@ import { TextConfig } from '../../../js/model/TextConfig';
 import { fontUtil } from '../../../js/util/fontUtil';
 
 let MOBILE_MAX_WIDTH = 480;
-let MARGIN = 5;
+let TEXT_MARGIN = 5;
 
 export default {
     props: ["gridElement", "metadata"],
@@ -36,7 +36,7 @@ export default {
             resizeObserver: null,
             textOverflow: null,
             whiteSpaceWrap: null,
-            margin: MARGIN
+            txtMargin: TEXT_MARGIN
         }
     },
     watch: {
@@ -72,19 +72,18 @@ export default {
             let pct = this.imageData ? this.metadata.textConfig.fontSizePct : this.metadata.textConfig.onlyTextFontSizePct;
             let fontSize = (size.height * (pct / 100) + size.width * (pct / 100)) / 2;
             let realWidth = fontUtil.getTextWidth(this.label, this.$refs.container, fontSize);
-            let padding = 5;
-            if (this.metadata.textConfig.fittingMode === TextConfig.TOO_LONG_AUTO && realWidth > size.width - 2 * padding) {
-                fontSize = fontUtil.getFittingFontSize(this.label, this.$refs.container, { maxLines: this.maxLines, padding: padding, maxSize: fontSize, lineHeight: this.lineHeight });
+            let kbdContainerPct = 90;
+            this.txtMargin = TEXT_MARGIN;
+            if (document.documentElement.clientWidth < MOBILE_MAX_WIDTH) {
+                this.txtMargin = 0;
+                kbdContainerPct = 100;
+            }
+            if (this.metadata.textConfig.fittingMode === TextConfig.TOO_LONG_AUTO && realWidth > size.width - 2 * this.txtMargin) {
+                fontSize = fontUtil.getFittingFontSize(this.label, this.$refs.container, { maxLines: this.maxLines, padding: this.txtMargin, maxSize: fontSize, lineHeight: this.lineHeight });
             }
             if (this.metadata.textConfig.autoSizeKeyboardLetters && !this.imageData &&
                 (this.label.length === 1 || (this.label.length === 2 && /\p{Emoji}/u.test(this.label)))) { // keyboard letters
-                let containerPct = 90;
-                this.margin = MARGIN;
-                if (document.documentElement.clientWidth < MOBILE_MAX_WIDTH) {
-                    this.margin = 0;
-                    containerPct = 100;
-                }
-                fontSize = fontUtil.getFittingFontSize(this.label, this.$refs.container, { containerPct: containerPct, lineHeight: this.lineHeight, padding: this.margin});
+                fontSize = fontUtil.getFittingFontSize(this.label, this.$refs.container, { containerPct: kbdContainerPct, lineHeight: this.lineHeight, padding: this.txtMargin});
             }
             return fontSize;
         }
