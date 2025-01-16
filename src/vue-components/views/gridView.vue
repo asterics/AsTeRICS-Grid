@@ -411,7 +411,7 @@
                 } else {
                     this.renderGridData = gridData;
                 }
-
+                this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.hidden);
                 stateService.setCurrentGrid(this.renderGridData);
             },
             onSidebarOpen() {
