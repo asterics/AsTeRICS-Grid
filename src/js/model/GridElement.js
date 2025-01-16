@@ -29,7 +29,9 @@ class GridElement extends Model({
     y: [Number],
     label: [Object, String, undefined], //map locale -> translation, e.g. "de" => LabelDE
     wordForms: [Model.Array(Object)], //Array of WordForm, removed for performance reasons
-    backgroundColor: [String],
+    fontSizePct: [Number],
+    fontColor: [String],
+    backgroundColor: [String], // could be renamed to "customColor" since it can be custom border or background color
     colorCategory: [String],
     hidden: [Boolean],
     dontCollect: [Boolean],

@@ -1,7 +1,7 @@
 <template>
     <div :class="`text-container ${metadata.textConfig.fontFamily}`"
          :style="`order: ${metadata.textConfig.textPosition === TextConfig.TEXT_POS_BELOW ? 1 : 0};
-                  text-align: center; font-size: ${fontSizePx}px; line-height: ${lineHeight}; color: ${metadata.textConfig.fontColor};
+                  text-align: center; font-size: ${fontSizePx}px; line-height: ${lineHeight}; color: ${gridElement && gridElement.fontColor ? gridElement.fontColor : metadata.textConfig.fontColor};
                   flex-grow: ${withImage ? '0' : '1'};`">
         <span :style="`max-height: ${maxTextContainerHeight}; text-overflow: ${textOverflow}; white-space: ${whiteSpaceWrap}; margin: 0 ${txtMargin}px;`">{{externalSetLabel || label}}</span>
     </div>
@@ -17,7 +17,7 @@ let MOBILE_MAX_WIDTH = 480;
 let TEXT_MARGIN = 5;
 
 export default {
-    props: ["label", "withImage", "metadata", "containerSize", "container", "watchId"],
+    props: ["label", "withImage", "metadata", "gridElement", "containerSize", "container", "watchId"],
     data() {
         return {
             fontSizePx: null,
@@ -53,6 +53,9 @@ export default {
         getFontSizePx(size) {
             let label = this.externalSetLabel || this.label || '';
             let pct = this.withImage ? this.metadata.textConfig.fontSizePct : this.metadata.textConfig.onlyTextFontSizePct;
+            if (this.gridElement) {
+                pct = this.gridElement.fontSizePct || pct;
+            }
             let fontSize = fontUtil.pctToPx(pct, size);
             let realWidth = fontUtil.getTextWidth(label, this.container, fontSize);
             let kbdContainerPct = 90;

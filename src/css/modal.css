@@ -67,7 +67,11 @@ margin-top: 2.5em;
 }
 
 .modal-body img {
-outline: 1px solid lightgray;
+    outline: 1px solid lightgray;
+}
+
+.testGrid img {
+    outline: 0;
 }
 
 .modal-body label {
