@@ -91,19 +91,6 @@
                     <button class="three columns" @click="metadata.colorConfig.gridBackgroundColor = constants.DEFAULT_GRID_BACKGROUND_COLOR; saveMetadata(metadata)">{{ $t('reset') }}</button>
                 </div>
                 <div class="srow">
-                    <label class="three columns" for="colorScheme">
-                        <span>{{ $t('colorSchemeForCategories') }}</span>
-                    </label>
-                    <select id="colorScheme" class="five columns" v-model="metadata.colorConfig.activeColorScheme" @change="saveMetadata(metadata)">
-                        <option v-for="scheme in constants.DEFAULT_COLOR_SCHEMES" :value="scheme.name">{{scheme.name | translate}}</option>
-                    </select>
-                </div>
-                <div class="srow">
-                    <div class="five columns offset-by-three d-flex" style="height: 1.5em">
-                        <div class="flex-grow-1" v-for="(color, index) in MetaData.getActiveColorScheme(metadata).colors" :title="$t(MetaData.getActiveColorScheme(metadata).categories[index])" :style="`background-color: ${color};`"></div>
-                    </div>
-                </div>
-                <div class="srow">
                     <label class="three columns" for="colorMode">{{ $t('colorMode') }}</label>
                     <select id="colorMode" v-model="metadata.colorConfig.colorMode" class="five columns" @change="saveMetadata(metadata)">
                         <option :value="ColorConfig.COLOR_MODE_BACKGROUND">{{ $t('colorModeBackground') }}</option>
@@ -127,6 +114,19 @@
                         </div>
                         <div class="srow">
                             <slider-input label="borderRadius" unit="%" id="borderRadius" min="0" max="4" step="0.05" v-model.number="metadata.colorConfig.borderRadius" @change="saveMetadata(metadata)"/>
+                        </div>
+                        <div class="srow">
+                            <label class="three columns" for="colorScheme">
+                                <span>{{ $t('colorSchemeForCategories') }}</span>
+                            </label>
+                            <select id="colorScheme" class="five columns" v-model="metadata.colorConfig.activeColorScheme" @change="saveMetadata(metadata)">
+                                <option v-for="scheme in constants.DEFAULT_COLOR_SCHEMES" :value="scheme.name">{{scheme.name | translate}}</option>
+                            </select>
+                        </div>
+                        <div class="srow">
+                            <div class="five columns offset-by-three d-flex" style="height: 1.5em">
+                                <div class="flex-grow-1" v-for="(color, index) in MetaData.getActiveColorScheme(metadata).colors" :title="$t(MetaData.getActiveColorScheme(metadata).categories[index])" :style="`background-color: ${color};`"></div>
+                            </div>
                         </div>
                         <div class="srow">
                             <input id="colorSchemeActive" type="checkbox" v-model="metadata.colorConfig.colorSchemesActivated" @change="saveMetadata(metadata)"/>
