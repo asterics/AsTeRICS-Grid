@@ -45,7 +45,7 @@ export default {
             let size = this.container.getBoundingClientRect();
             this.lineHeight = this.withImage ? this.metadata.textConfig.lineHeight : this.metadata.textConfig.onlyTextLineHeight;
             this.fontSizePx = this.getFontSizePx(size);
-            this.maxTextContainerHeight = this.withImage ? (this.fontSizePx * this.metadata.textConfig.lineHeight * this.metadata.textConfig.maxLines) + 'px' : '100%';
+            this.maxTextContainerHeight = this.withImage ? (this.fontSizePx * this.lineHeight * this.metadata.textConfig.maxLines) + 'px' : '100%';
             this.maxLines = this.withImage ? this.metadata.textConfig.maxLines : 100;
             this.textOverflow = this.metadata.textConfig.fittingMode === TextConfig.TOO_LONG_ELLIPSIS ? 'ellipsis' : 'clip';
             this.whiteSpaceWrap = this.maxLines === 1 ? 'nowrap' : 'normal';
@@ -62,7 +62,12 @@ export default {
                 kbdContainerPct = 100;
             }
             if (this.metadata.textConfig.fittingMode === TextConfig.TOO_LONG_AUTO && realWidth > size.width - 2 * this.txtMargin) {
-                fontSize = fontUtil.getFittingFontSize(label, this.container, { maxLines: this.maxLines, padding: this.txtMargin, maxSize: fontSize, lineHeight: this.lineHeight });
+                let newFontSize = fontUtil.getFittingFontSize(label, this.container, { maxLines: this.maxLines, padding: this.txtMargin, maxSize: fontSize, lineHeight: this.lineHeight });
+                if (this.withImage) {
+                    let factor = newFontSize / fontSize;
+                    this.lineHeight /= factor;
+                }
+                fontSize = newFontSize;
             }
             if (this.metadata.textConfig.autoSizeKeyboardLetters && !this.withImage &&
                 (label.length === 1 || (label.length === 2 && /\p{Emoji}/u.test(label)))) { // keyboard letters
