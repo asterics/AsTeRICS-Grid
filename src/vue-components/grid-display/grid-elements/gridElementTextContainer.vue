@@ -54,7 +54,7 @@ export default {
             let label = this.externalSetLabel || this.label || '';
             let pct = this.withImage ? this.metadata.textConfig.fontSizePct : this.metadata.textConfig.onlyTextFontSizePct;
             if (this.gridElement) {
-                pct = this.gridElement.fontSizePct || pct;
+                pct = this.gridElement.fontSizePct !== undefined ? this.gridElement.fontSizePct : pct;
             }
             let fontSize = fontUtil.pctToPx(pct, size);
             let realWidth = fontUtil.getTextWidth(label, this.container, fontSize);
