@@ -107,13 +107,13 @@
                             <button class="three columns" @click="metadata.colorConfig.elementBackgroundColor = constants.DEFAULT_ELEMENT_BORDER_COLOR; saveMetadata(metadata)">{{ $t('reset') }}</button>
                         </div>
                         <div class="srow">
-                            <slider-input label="borderWidth" unit="%" id="borderWidth" min="0" max="2" step="0.05" v-model.number="metadata.colorConfig.borderWidth" @change="saveMetadata(metadata)"/>
+                            <slider-input label="borderWidth" unit="%" id="borderWidth" min="0" max="2" step="0.05" :decimals="2" e v-model.number="metadata.colorConfig.borderWidth" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
-                            <slider-input label="elementMargin" unit="%" id="elementMargin" min="0" max="2" step="0.05" v-model.number="metadata.colorConfig.elementMargin" @change="saveMetadata(metadata)"/>
+                            <slider-input label="elementMargin" unit="%" id="elementMargin" min="0" max="2" step="0.05" :decimals="2" v-model.number="metadata.colorConfig.elementMargin" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
-                            <slider-input label="borderRadius" unit="%" id="borderRadius" min="0" max="4" step="0.05" v-model.number="metadata.colorConfig.borderRadius" @change="saveMetadata(metadata)"/>
+                            <slider-input label="borderRadius" unit="%" id="borderRadius" min="0" max="4" step="0.05" :decimals="2" v-model.number="metadata.colorConfig.borderRadius" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
                             <label class="three columns" for="colorScheme">
