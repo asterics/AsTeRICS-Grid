@@ -167,6 +167,9 @@ export default {
             }, 100, "WINDOW_RESIZE_ELEM" + this.element.id);
         },
         recalculate() {
+            if (!this.$refs.container) {
+                return;
+            }
             this.containerSize = this.$refs.container.getBoundingClientRect();
             this.elementMarginPx = fontUtil.pctToPx(this.metadata.colorConfig.elementMargin);
             this.borderWidthPx = fontUtil.pctToPx(this.metadata.colorConfig.borderWidth);
