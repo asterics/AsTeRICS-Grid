@@ -6,7 +6,7 @@
         <input :id="id" :class="showClearButton ? 'four columns' : 'five columns'" type="range" :min="min" :max="max" :step="step" :value="value" @input="changed">
         <div class="three columns">
             <span>{{ $t('currentValue') }}</span>:
-            <span>{{ showValue }}{{unit ? (' ' + i18nService.t(unit)) : ''}}</span>
+            <span>{{ showValue }}<span v-if="value || value === 0">{{unit ? (' ' + i18nService.t(unit)) : ''}}</span></span>
         </div>
         <button v-if="showClearButton" class="two columns" :disabled="!value" @click="emitChange(null)">{{ $t('clear') }}</button>
     </div>
@@ -24,6 +24,9 @@
         },
         computed: {
             showValue() {
+                if (!this.value && this.value !== 0) {
+                    return i18nService.t('noneSelected');
+                }
                 let displayFactor = this.displayFactor ? parseFloat(this.displayFactor) : 1;
                 let val = parseFloat(this.value) * displayFactor;
                 return this.decimals ? val.toFixed(parseInt(this.decimals)) : val;
