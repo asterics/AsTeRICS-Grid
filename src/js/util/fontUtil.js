@@ -100,6 +100,7 @@ fontUtil.getTextWidth = function(text, containerElem, targetSize, options = {}) 
  * @param options.containerPct percentage of the container width to be filled, range from 0..100, defaults to 100
  * @param options.maxSize maximum size allowed
  * @param options.lineHeight the used line height
+ * @param options.containerSize pass container size in order to prevent re-calculation (performance)
  * @returns {number} font size in px
  */
 fontUtil.getFittingFontSize = function(text, container, options = {}) {
@@ -114,7 +115,7 @@ fontUtil.getFittingFontSize = function(text, container, options = {}) {
     let tryPx = 14;
     let width = fontUtil.getTextWidth(text, container, tryPx);
     let maxWH = Math.max(width, tryPx);
-    let containerSize = container.getBoundingClientRect();
+    let containerSize = options.containerSize || container.getBoundingClientRect();
     let containerWidth = Math.max(0, containerSize.width * (options.containerPct / 100) - 2 * options.padding) * options.maxLines;
 
     if (options.maxLines > 1) {
@@ -140,14 +141,14 @@ fontUtil.getFittingFontSize = function(text, container, options = {}) {
 /**
  * converts a percent value to px. percent value is in relation to the given size parameter (mean of width and height).
  * @param pct
- * @param size the size of the container the percent value refers to, default: current viewport size
+ * @param containerSize the size of the container the percent value refers to, default: current viewport size
  */
-fontUtil.pctToPx = function(pct, size) {
-    size = size || {
+fontUtil.pctToPx = function(pct, containerSize) {
+    containerSize = containerSize || {
         width: document.documentElement.clientWidth,
         height: document.documentElement.clientHeight
     }
-    return (size.width + size.height) * pct / 200;
+    return (containerSize.width + containerSize.height) * pct / 200;
 }
 
 fontUtil.getHighContrastColor = function (hexBackground, lightColor, darkColor) {
