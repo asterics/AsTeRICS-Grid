@@ -17,7 +17,7 @@ let MOBILE_MAX_WIDTH = 480;
 let TEXT_MARGIN = 5;
 
 export default {
-    props: ["label", "withImage", "metadata", "gridElement", "containerSize", "container", "watchId"],
+    props: ["label", "withImage", "metadata", "gridElement", "containerSize", "watchId", "disableAutoSizeKeyboard"],
     data() {
         return {
             fontSizePx: null,
@@ -72,7 +72,7 @@ export default {
                 }
                 fontSize = newFontSize;
             }
-            if (this.metadata.textConfig.autoSizeKeyboardLetters && !this.withImage &&
+            if (!this.disableAutoSizeKeyboard && this.metadata.textConfig.autoSizeKeyboardLetters && !this.withImage &&
                 (label.length === 1 || (label.length === 2 && /\p{Emoji}/u.test(label)))) { // keyboard letters
                 fontSize = fontUtil.getFittingFontSize(label, this.container, { containerPct: kbdContainerPct, lineHeight: this.lineHeight, padding: this.txtMargin});
             }
