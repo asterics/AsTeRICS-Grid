@@ -6,7 +6,7 @@
         </div>
         <transition-group ref="gridComponent" :name="editable ? 'grid-transition' : ''" :tag="baseTag" class="grid-layout" :style="`grid-template-columns: repeat(${columns}, minmax(0, 1fr)); grid-template-rows: repeat(${rows}, minmax(0, 1fr)); background-color: ${backgroundColor}`">
             <grid-element v-for="elem in elements" :key="elem.id" :data-id="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" :tag="elementTag" :class="elem.id + '' === noMoveId ? 'nomove' : ''">
-                <component :id="elem.id" :is="renderComponent" :element="elem" v-bind="$attrs"/>
+                <component :id="elem.id" :is="renderComponent" :element="elem" :editable="editable" v-bind="$attrs"/>
             </grid-element>
         </transition-group>
     </div>

@@ -37,7 +37,7 @@ import { util } from '../../js/util/util';
 
 export default {
     components: { GridElementNormal, GridElementYoutube, GridElementCollect, GridElementHints, GridElementPredict },
-    props: ["element", "metadata", "showResizeHandle"],
+    props: ["element", "metadata", "showResizeHandle", "editable"],
     data() {
         return {
             GridElement: GridElement,
@@ -47,20 +47,6 @@ export default {
             borderRadiusPx: fontUtil.pctToPx(this.metadata.colorConfig.borderRadius),
             borderWidthPx: fontUtil.pctToPx(this.metadata.colorConfig.borderWidth)
         }
-    },
-    watch: {
-        metadata: {
-            handler() {
-                this.recalculate();
-            },
-            deep: true
-        },
-        element: {
-            handler() {
-                this.recalculate();
-            },
-            deep: true
-        },
     },
     methods: {
         getBorderColor(element) {
@@ -185,6 +171,14 @@ export default {
             this.resizeObserver.observe(this.$refs.container);
         } else {
             window.addEventListener('resize', this.resizeListener);
+        }
+        if (this.editable) {
+            this.$watch("metadata", () => {
+                this.recalculate();
+            }, { deep: true });
+            this.$watch("element", () => {
+                this.recalculate();
+            }, { deep: true });
         }
     },
     beforeDestroy() {
