@@ -1,8 +1,8 @@
 <template>
     <div class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
          :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: pointer;
-         border: ${borderWidthPx}px solid ${getBorderColor(element)}; background-color: ${getBackgroundColor(element)};`">
-        <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="containerSize" aria-hidden="true"/>
+         border: ${borderWidthPx}px solid ${getBorderColor(element)}; background-color: ${getBackgroundColor(element)}; font-family: ${metadata.textConfig.fontFamily};`">
+        <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL && containerSize" :grid-element="element" :metadata="metadata" :container-size="containerSize" aria-hidden="true"/>
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
         <grid-element-predict v-if="element.type === GridElement.ELEMENT_TYPE_PREDICTION" :metadata="metadata" :container-size="containerSize" :watch-id="element.id" aria-hidden="true"/>
@@ -152,24 +152,24 @@ export default {
                 this.recalculate();
             }, 100, "WINDOW_RESIZE_ELEM" + this.element.id);
         },
-        recalculate() {
+        async recalculate() {
             if (!this.$refs.container) {
                 return;
             }
-            this.containerSize = this.$refs.container.getBoundingClientRect();
+            this.containerSize = await util.getElementSize(this.$refs.container);
             this.elementMarginPx = fontUtil.pctToPx(this.metadata.colorConfig.elementMargin);
             this.borderWidthPx = fontUtil.pctToPx(this.metadata.colorConfig.borderWidth);
             this.borderRadiusPx = fontUtil.pctToPx(this.metadata.colorConfig.borderRadius);
         },
     },
-    mounted() {
-        this.recalculate();
+    async mounted() {
         if (window.ResizeObserver) {
             this.resizeObserver = new ResizeObserver(() => {
                 this.resizeListener();
             });
             this.resizeObserver.observe(this.$refs.container);
         } else {
+            this.recalculate();
             window.addEventListener('resize', this.resizeListener);
         }
         if (this.editable) {

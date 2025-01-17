@@ -1,9 +1,9 @@
 <template>
-    <div class="grid-item-content" ref="container" :style="`font-family: ${metadata.textConfig.fontFamily};`">
+    <div class="grid-item-content">
         <div class="img-container" v-if="imageData" :style="`order: ${metadata.textConfig.textPosition === TextConfig.TEXT_POS_BELOW ? 0 : 1}`">
             <img :src="imageData" draggable="false" style="box-sizing: border-box; max-width: 100%; max-height: 100%; object-fit: contain; padding: 2%;" crossorigin="anonymous"/>
         </div>
-        <grid-element-text-container v-if="label" :label="label" :with-image="!!imageData" :metadata="metadata" :container-size="containerSize" :container="$refs.container" :grid-element="gridElement"/>
+        <grid-element-text-container v-show="label" :label="label" :with-image="!!imageData" :metadata="metadata" :container-size="containerSize" :grid-element="gridElement"/>
     </div>
 </template>
 
