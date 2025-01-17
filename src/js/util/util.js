@@ -350,4 +350,25 @@ util.shuffleArray = function (array) {
     return array;
 }
 
+/**
+ * returns the current screen size of the element. Uses IntersectionObserver if available (better performance), falls
+ * back to getBoundingClientRect().
+ * @param element
+ * @returns {Promise<unknown>}
+ */
+util.getElementSize = async function(element) {
+    if (!window.IntersectionObserver) {
+        return element.getBoundingClientRect();
+    }
+    return new Promise(resolve => {
+        const observer = new IntersectionObserver((entries) => {
+            for (const entry of entries) {
+                resolve(entry.boundingClientRect);
+            }
+            observer.disconnect();
+        });
+        observer.observe(element);
+    });
+};
+
 export { util };
