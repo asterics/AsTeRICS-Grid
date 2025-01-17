@@ -32,7 +32,7 @@
                     <input type="checkbox" id="toggleInBar" v-if="gridElement" v-model="gridElement.toggleInBar"/>
                     <label for="toggleInBar">{{ $t('toggleInCollectionElementIfAddedMultipleTimes') }}</label>
                 </div>
-                <slider-input label="fontSize" unit="%" id="fontSize" :show-clear-button="true" min="0" max="100" step="1" v-model.number="gridElement.fontSizePct" @input="resetTestGrid"/>
+                <slider-input label="fontSize" unit="%" id="fontSize" :show-clear-button="true" min="0" max="50" step="1" v-model.number="gridElement.fontSizePct" @input="resetTestGrid"/>
                 <div class="srow">
                     <label class="four columns" for="backgroundColor">{{ $t('customElementColor') }}</label>
                     <input class="five columns" type="color" id="backgroundColor" v-if="gridElement" v-model="gridElement.backgroundColor" @input="resetTestGrid"/>
