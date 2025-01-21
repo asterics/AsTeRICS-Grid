@@ -947,7 +947,7 @@
   "changeVoiceTo": "Canviar veu a ",
   "navigateToOtherGrid": "Navegar a un altre tauler",
   "NAV_CREATE_NEW_GRID": "(crear nou tauler)",
-  "arasaacSupportSocialMedia": "For general support and questions in Spanish, send us a message at the ARASAAC Social media pages, {instagramLink} or {facebookLink}",
+  "arasaacSupportSocialMedia": "For general support and questions, please send us a private message at the {instagramLink} or {facebookLink}",
   "communityOnFacebookGroup": "In the {astericsGridFacebookGroup} you can connect with other users in order to get support or share your questions and ideas",
   "astericsGridFacebookGroup": "AsTeRICS Grid Facebook Group",
   "foundBugReportGithubIssue": "Si trobes una errada o vols fer un suggeriment sobre alguna nova funcionalitat, si us plau  {githubLink}",
