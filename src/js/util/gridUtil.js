@@ -589,6 +589,21 @@ gridUtil.ensureUniqueIds = function(gridElements) {
     }
 };
 
+/**
+ * returns the actual screen size of a single 1x1 element given the actual container size of the whole grid
+ * @param containerSize the actual screen size of the container of the whole grid
+ * @param gridData
+ * @returns {{width: number, height: number}}
+ */
+gridUtil.getOneElementSize = function(containerSize, gridData) {
+    let width = gridUtil.getWidthWithBounds(gridData);
+    let height = gridUtil.getHeightWithBounds(gridData);
+    return {
+        width: containerSize.width / width,
+        height: containerSize.height / height
+    };
+};
+
 function getAllChildrenRecursive(gridGraphList, gridId) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];
     return getAllChildrenRecursiveGraphElement(graphElem).map(graphElem => graphElem.grid);

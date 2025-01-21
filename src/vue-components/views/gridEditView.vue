@@ -36,8 +36,8 @@
                 <i class="fas fa-4x fa-spinner fa-spin"/>
             </div>
         </div>
-        <div class="srow content" v-if="metadata && gridData" style="max-width: 100%; min-height: 0">
-            <app-grid-editable id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata" @interacted="onInteracted" @interactstart="onInteractStart" @interactend="onInteractEnd"/>
+        <div class="srow content d-flex" v-if="metadata && gridData" style="min-height: 0">
+            <app-grid-display id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata" :editable="true" @interacted="onInteracted" @interactstart="onInteractStart" @interactend="onInteractEnd"/>
         </div>
     </div>
 </template>
@@ -67,10 +67,10 @@
     import {pouchDbService} from "../../js/service/data/pouchDbService.js";
     import {MainVue} from "../../js/vue/mainVue.js";
     import {stateService} from "../../js/service/stateService.js";
-    import AppGridEditable from '../grid-display/appGridEditable.vue';
     import { UndoService } from '../../js/service/data/undoService';
     import { gridLayoutUtil } from '../grid-layout/utils/gridLayoutUtil';
     import { collectElementService } from '../../js/service/collectElementService';
+    import AppGridDisplay from '../grid-display/appGridDisplay.vue';
 
     let vueApp = null;
 
@@ -101,7 +101,7 @@
             }
         },
         components: {
-            AppGridEditable,
+            AppGridDisplay,
             SetNavigationModal,
             GridTranslateModal,
             ElementMoveModal,

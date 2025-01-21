@@ -38,18 +38,15 @@ export default {
     },
     watch: {
         containerSize() {
-            if (!this.ready) {
-                return;
-            }
             this.calcFontSize();
         }
     },
     methods: {
-        async calcFontSize() {
+        calcFontSize() {
             if (!this.$refs.txtContainer.parentElement) {
                 return;
             }
-            let size = await util.getElementSize(this.$refs.txtContainer.parentElement);
+            let size = this.containerSize;
             this.lineHeight = this.withImage ? this.metadata.textConfig.lineHeight : this.metadata.textConfig.onlyTextLineHeight;
             this.fontSizePx = this.getFontSizePx(size);
             this.maxTextContainerHeight = this.withImage ? (this.fontSizePx * this.lineHeight * this.metadata.textConfig.maxLines) + 'px' : '100%';

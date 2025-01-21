@@ -42,7 +42,7 @@
                 </i18n>
             </div>
         </div>
-        <div class="srow content" v-if="renderGridData && renderGridData.gridElements.length > 0" style="max-width: 100%; min-height: 0">
+        <div class="srow content d-flex" v-if="renderGridData && renderGridData.gridElements.length > 0">
             <app-grid-display id="grid-container" :grid-data="renderGridData" :metadata="metadata"/>
         </div>
     </div>
