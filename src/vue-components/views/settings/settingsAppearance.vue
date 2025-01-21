@@ -137,13 +137,13 @@
                     </accordion>
                 </div>
             </div>
-            <div class="three columns" style="height: 500px;">
+            <div class="three columns">
                 <h3 class="mt-3">{{ $t('appearanceDemo') }}</h3>
                 <div class="srow">
                     <label for="testElementLabel" class="me-2">{{ $t('testElementLabel') }}</label>
                     <input id="testElementLabel" type="text" v-model="testElementLabel" @input="resetTestGrid"/>
                 </div>
-                <app-grid-display style="max-width: 200px" id="grid-container" :grid-data="testGridData" :metadata="metadata"/>
+                <app-grid-display v-if="testGridData" style="max-width: 200px; height: 500px;" id="grid-container" :grid-data="testGridData" :metadata="metadata" :watch-for-changes="true"/>
             </div>
         </div>
     </div>
