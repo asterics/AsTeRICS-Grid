@@ -2,10 +2,10 @@
     <div class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
          :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: pointer;
          border: ${borderWidthPx}px solid ${getBorderColor(element)}; background-color: ${getBackgroundColor(element)}; font-family: ${metadata.textConfig.fontFamily};`">
-        <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" aria-hidden="true"/>
+        <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" v-bind="$attrs" aria-hidden="true"/>
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
-        <grid-element-predict v-if="element.type === GridElement.ELEMENT_TYPE_PREDICTION" :metadata="metadata" :container-size="calculatedSize" :watch-id="element.id" aria-hidden="true"/>
+        <grid-element-predict v-if="element.type === GridElement.ELEMENT_TYPE_PREDICTION" :metadata="metadata" :container-size="calculatedSize" :watch-id="element.id" v-bind="$props" v-bind="$attrs" aria-hidden="true"/>
         <grid-element-hints :grid-element="element" :metadata="metadata"/>
         <div v-if="showResizeHandle" class="ui-resizable-handle ui-icon ui-icon-grip-diagonal-se" style="position: absolute; z-index: 2; bottom: 0; right: 0; cursor: se-resize;"></div>
     </div>
@@ -37,7 +37,7 @@ import { util } from '../../js/util/util';
 
 export default {
     components: { GridElementNormal, GridElementYoutube, GridElementCollect, GridElementHints, GridElementPredict },
-    props: ["element", "metadata", "showResizeHandle", "editable", "oneElementSize"],
+    props: ["element", "metadata", "showResizeHandle", "editable", "oneElementSize", "watchForChanges"],
     data() {
         return {
             GridElement: GridElement,
@@ -170,7 +170,7 @@ export default {
         }
     },
     async mounted() {
-        if (this.editable) {
+        if (this.editable || this.watchForChanges) {
             this.$watch("metadata", () => {
                 this.recalculate();
             }, { deep: true });

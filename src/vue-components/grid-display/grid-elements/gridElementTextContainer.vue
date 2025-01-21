@@ -20,7 +20,7 @@ let MOBILE_MAX_WIDTH = 480;
 let TEXT_MARGIN = 5;
 
 export default {
-    props: ["label", "withImage", "metadata", "gridElement", "containerSize", "watchId", "disableAutoSizeKeyboard"],
+    props: ["label", "withImage", "metadata", "gridElement", "containerSize", "watchId", "disableAutoSizeKeyboard", "watchForChanges", "editable"],
     data() {
         return {
             ready: false,
@@ -110,6 +110,14 @@ export default {
         this.calcFontSize();
         if (this.watchId) {
             $(document).on(constants.EVENT_PREDICTIONS_CHANGED, this.externalWatchFn);
+        }
+        if (this.editable || this.watchForChanges) {
+            this.$watch("metadata", () => {
+                this.calcFontSize();
+            }, { deep: true });
+            this.$watch("gridElement", () => {
+                this.calcFontSize();
+            }, { deep: true });
         }
     },
     beforeDestroy() {
