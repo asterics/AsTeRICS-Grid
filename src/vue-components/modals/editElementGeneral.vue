@@ -35,14 +35,8 @@
                 <slider-input label="fontSize" unit="%" id="fontSize" :show-clear-button="true" min="0" max="50" step="1" v-model.number="gridElement.fontSizePct" @input="resetTestGrid"/>
                 <div class="srow">
                     <label class="four columns" for="backgroundColor">{{ $t('customElementColor') }}</label>
-                    <input class="five columns" type="color" id="backgroundColor" v-if="gridElement" v-model="gridElement.backgroundColor" @input="resetTestGrid"/>
+                    <input class="five columns" type="color" id="backgroundColor" v-if="gridElement" v-model="gridElement.backgroundColor" @input="gridElement.colorCategory = undefined; resetTestGrid()"/>
                     <button class="two columns" :disabled="!gridElement.backgroundColor" @click="gridElement.backgroundColor = null; resetTestGrid();">{{ $t('clear') }}</button>
-                    <div class="twelve columns mb-4" v-show="gridElement.colorCategory && gridElement.backgroundColor">
-                        <a href="javascript:;" @click="gridElement.colorCategory = undefined; $forceUpdate(); resetTestGrid();">
-                            <span class="fas fa-exclamation-triangle"/>
-                            {{ $t('disableColorCategoryToEnableCustomColor') }}
-                        </a>
-                    </div>
                 </div>
                 <div class="srow mb-4">
                     <label class="four columns" for="fontColor">
@@ -52,7 +46,7 @@
                     <button class="two columns" :disabled="!gridElement.fontColor" @click="gridElement.fontColor = null; resetTestGrid();">{{ $t('clear') }}</button>
                 </div>
 
-                <app-grid-display class="testGrid" v-if="metadata" style="max-width: 200px; height: 200px;" :grid-data="testGridData" :metadata="metadata"/>
+                <app-grid-display class="testGrid" v-if="metadata" style="max-width: 200px; height: 200px;" :grid-data="testGridData" :metadata="metadata" :watch-for-changes="true"/>
             </accordion>
         </div>
     </div>
