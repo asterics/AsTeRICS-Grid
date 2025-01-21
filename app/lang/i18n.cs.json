@@ -947,7 +947,7 @@
   "changeVoiceTo": "Změnit hlas na",
   "navigateToOtherGrid": "Nastavení navigace",
   "NAV_CREATE_NEW_GRID": "(vytvořit novou tabulku)",
-  "arasaacSupportSocialMedia": "For general support and questions in Spanish, send us a message at the ARASAAC Social media pages, {instagramLink} or {facebookLink}",
+  "arasaacSupportSocialMedia": "For general support and questions, please send us a private message at the {instagramLink} or {facebookLink}",
   "communityOnFacebookGroup": "In the {astericsGridFacebookGroup} you can connect with other users in order to get support or share your questions and ideas",
   "astericsGridFacebookGroup": "AsTeRICS Grid Facebook Group",
   "foundBugReportGithubIssue": "Pokud jste nalezli chybu nebo máte požadavek na funkci, prosím {githubLink}",
