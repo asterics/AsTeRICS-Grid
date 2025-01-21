@@ -488,8 +488,7 @@
                 if (grids && grids[0]) {
                     gridData = await dataService.getGrid(grids[0].id);
                 } else {
-                    Router.toManageGrids();
-                    return Promise.reject();
+                    return Router.toManageGrids();
                 }
             }
             this.loadGrid(gridData);
