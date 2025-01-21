@@ -4,7 +4,7 @@
                      :elements="gridData.gridElements" :render-component="AppGridElement"
                      :background-color="metadata.colorConfig.gridBackgroundColor"
                      :rows="gridData.rowCount" :columns="gridData.minColumnCount"
-                     :metadata="metadata" :one-element-size="oneElementSize" v-on="$listeners"
+                     :metadata="metadata" :one-element-size="oneElementSize" v-on="$listeners" v-bind="$attrs"
                      :show-resize-handle="editable" :editable="editable" :background-lines="editable"
         >
         </grid-layout>
@@ -29,7 +29,11 @@ export default {
             resizeObserver: null
         }
     },
-    computed: {
+    watch: {
+        gridData() {
+            this.oneElementSize = null;
+            this.recalculate();
+        }
     },
     methods: {
         recalculate() {
