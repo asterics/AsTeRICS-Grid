@@ -477,6 +477,8 @@
                     $(document).trigger(constants.EVENT_UI_LOCKED);
                 }
                 metadata.fullscreen = metadata.fullscreen === undefined ? urlParamService.isDemoMode() && dataService.getCurrentUser() === constants.LOCAL_DEMO_USERNAME : metadata.fullscreen;
+                metadata.fullscreen = urlParamService.isFullscreen(true) ? true : metadata.fullscreen;
+                metadata.locked = urlParamService.isLocked(true) ? true : metadata.locked;
                 metadata.inputConfig.scanEnabled = urlParamService.isScanningEnabled() ? true : metadata.inputConfig.scanEnabled;
                 metadata.inputConfig.dirEnabled = urlParamService.isDirectionEnabled() ? true : metadata.inputConfig.dirEnabled;
                 metadata.inputConfig.huffEnabled = urlParamService.isHuffmanEnabled() ? true : metadata.inputConfig.huffEnabled;

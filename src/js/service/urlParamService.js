@@ -8,7 +8,9 @@ urlParamService.params = {
     PARAM_RESET_DATABASE: 'reset',
     PARAM_USE_GRIDSET_FILENAME: 'gridset_filename',
     PARAM_USE_GRIDSET_URL: 'gridset_url',
-    PARAM_ELEMENT_HIGHLIGHT_IDS: "highlightIds"
+    PARAM_ELEMENT_HIGHLIGHT_IDS: "highlightIds",
+    PARAM_LOCKED: "locked",
+    PARAM_FULLSCREEN: "fullscreen"
 };
 
 let _demoMode = false;
@@ -60,6 +62,14 @@ urlParamService.isDemoMode = function () {
     _demoMode = _demoMode || hasParam(urlParamService.params.PARAM_DEMO_MODE);
     removeParam(urlParamService.params.PARAM_DEMO_MODE);
     return _demoMode;
+};
+
+urlParamService.isFullscreen = function(remove) {
+    return isSetAndNotFalse(urlParamService.params.PARAM_FULLSCREEN, remove);
+};
+
+urlParamService.isLocked = function(remove) {
+    return isSetAndNotFalse(urlParamService.params.PARAM_LOCKED, remove);
 };
 
 urlParamService.isScanningEnabled = function () {
@@ -132,6 +142,15 @@ function removeParam(paramName) {
             window.location.hash;
         history.replaceState(null, '', newUrl);
     }
+}
+
+function isSetAndNotFalse(param, remove) {
+    let paramExists = hasParam(param);
+    let value = paramExists && !isParamFalse(param);
+    if (remove && paramExists) {
+        urlParamService.removeParam(param);
+    }
+    return value;
 }
 
 export { urlParamService };
