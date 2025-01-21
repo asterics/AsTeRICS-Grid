@@ -947,7 +947,7 @@
   "changeVoiceTo": "Beszédhang megváltoztatása erre",
   "navigateToOtherGrid": "Ugrás másik táblára",
   "NAV_CREATE_NEW_GRID": "(új tábla létrehozás)",
-  "arasaacSupportSocialMedia": "For general support and questions in Spanish, send us a message at the ARASAAC Social media pages, {instagramLink} or {facebookLink}",
+  "arasaacSupportSocialMedia": "For general support and questions, please send us a private message at the {instagramLink} or {facebookLink}",
   "communityOnFacebookGroup": "In the {astericsGridFacebookGroup} you can connect with other users in order to get support or share your questions and ideas",
   "astericsGridFacebookGroup": "AsTeRICS Grid Facebook Group",
   "foundBugReportGithubIssue": "Amennyiben hibát talált vagy új funkcióra lenne szüksége, kérjük {githubLink}",
