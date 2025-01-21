@@ -140,10 +140,10 @@
             <div class="three columns">
                 <h3 class="mt-3">{{ $t('appearanceDemo') }}</h3>
                 <div class="srow">
-                    <label for="testElementLabel" class="me-2">{{ $t('testElementLabel') }}</label>
-                    <input id="testElementLabel" type="text" v-model="testElementLabel" @input="resetTestGrid"/>
+                    <label for="testElementLabel" class="me-2 u-full-width">{{ $t('testElementLabel') }}</label>
+                    <input id="testElementLabel" class="u-full-width" type="text" v-model="testElementLabel" @input="resetTestGrid"/>
                 </div>
-                <app-grid-display v-if="testGridData" style="max-width: 200px; height: 500px;" id="grid-container" :grid-data="testGridData" :metadata="metadata" :watch-for-changes="true"/>
+                <app-grid-display v-if="testGridData" style="max-width: 200px; height: 500px;" :grid-data="testGridData" :metadata="metadata" :watch-for-changes="true"/>
             </div>
         </div>
     </div>
@@ -183,21 +183,18 @@
                 this.metadata.textConfig = JSON.parse(JSON.stringify(new TextConfig()));
                 this.metadata.colorConfig = JSON.parse(JSON.stringify(new ColorConfig()));
                 this.saveMetadata(this.metadata);
-                this.resetTestGrid();
             },
             toDefaultBgColored() {
                 this.metadata.colorConfig.colorMode = ColorConfig.COLOR_MODE_BACKGROUND;
                 this.metadata.colorConfig.borderWidth = ColorConfig.BORDER_WIDTH_BG_COLORED
                 this.metadata.colorConfig.activeColorScheme = this.getColorScheme();
                 this.saveMetadata(this.metadata);
-                this.resetTestGrid();
             },
             toDefaultBorderColored() {
                 this.metadata.colorConfig.colorMode = ColorConfig.COLOR_MODE_BORDER;
                 this.metadata.colorConfig.borderWidth = ColorConfig.BORDER_WIDTH_BORDER_COLORED;
                 this.metadata.colorConfig.activeColorScheme = this.getColorScheme();
                 this.saveMetadata(this.metadata);
-                this.resetTestGrid();
             },
             toDarkMode() {
                 this.metadata.colorConfig.gridBackgroundColor = constants.DEFAULT_GRID_BACKGROUND_COLOR_DARK;
@@ -205,7 +202,6 @@
                 this.metadata.textConfig.fontColor = constants.DEFAULT_ELEMENT_FONT_COLOR_DARK;
                 this.metadata.colorConfig.activeColorScheme = this.getColorScheme();
                 this.saveMetadata(this.metadata);
-                this.resetTestGrid();
             },
             toLightMode() {
                 this.metadata.colorConfig.gridBackgroundColor = constants.DEFAULT_GRID_BACKGROUND_COLOR;
@@ -213,7 +209,6 @@
                 this.metadata.textConfig.fontColor = constants.DEFAULT_ELEMENT_FONT_COLOR;
                 this.metadata.colorConfig.activeColorScheme = this.getColorScheme();
                 this.saveMetadata(this.metadata);
-                this.resetTestGrid();
             },
             getColorScheme() {
                 let originalScheme = this.metadata.colorConfig.activeColorScheme;
