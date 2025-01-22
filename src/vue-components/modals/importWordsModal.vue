@@ -1,17 +1,6 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
-                    <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
-                    <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
-                    <div class="modal-header">
-                        <h1 name="header">
-                            {{ $t('importWordsToDictionary') }}
-                        </h1>
-                    </div>
-
-                    <div class="modal-body container">
+    <base-modal icon="fas fa-file-import" :title="$t('importWordsToDictionary')" @open="init" @keyup.ctrl.enter="save" v-on="$listeners">
+                    <template #default>
                         <div class="srow">
                             <label class="three columns" for="inputText">{{ $t('input') }}</label>
                             <span class="nine columns">{{ $t('insertWordsSeparatedBySpaceEnter') }}</span>
@@ -44,7 +33,7 @@
                             </div>
                         </div>
                         <div class="srow">
-                            <textarea v-focus class="twelve columns" id="inputText" v-model="inputText" @input="textChanged" style="resize: vertical;min-height: 70px;" :placeholder="$t('word1Word2Word3')"/>
+                            <textarea class="twelve columns" id="inputText" v-model="inputText" @input="textChanged" style="resize: vertical;min-height: 70px;" :placeholder="$t('word1Word2Word3')"/>
                         </div>
                         <div class="srow">
                             <label class="three columns">{{ $t('recognizedWords') }}</label>
@@ -58,28 +47,19 @@
                                 <span>{{ $t('noWords') }}</span>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <div class="button-container">
-                            <button @click="$emit('close')" :title="$t('keyboardEsc')">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
+                    </template>
+                    <template #ok>
+                            <button class="btn-primary" @click="save" :title="$t('keyboardCtrlEnter')" :aria-label="$t('insertWords')" :disabled="parsedElems.length == 0">
+                                <i class="fas fa-check" aria-hidden="true"></i><span>{{ $t('insertWords') }}</span>
                             </button>
-                            <button @click="save()" :title="$t('keyboardCtrlEnter')" :disabled="parsedElems.length == 0">
-                                <i class="fas fa-check"/> <span>{{ $t('insertWords') }}</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    </template>
+    </base-modal>
 </template>
 
 <script>
     import {dataService} from '../../js/service/data/dataService'
     import {i18nService} from "../../js/service/i18nService";
-    import './../../css/modal.css';
+    import {modalMixin} from "../mixins/modalMixin";
     import Predictionary from 'predictionary'
     import {helpService} from "../../js/service/helpService";
 
@@ -87,6 +67,7 @@
 
     export default {
         props: ['dictData'],
+        mixins: [modalMixin],
         data: function () {
             return {
                 inputText: "",
@@ -114,6 +95,7 @@
                 dataService.saveDictionary(thiz.dictData).then(() => {
                     thiz.$emit('reload', thiz.dictData);
                     thiz.$emit('close');
+                    thiz.closeModal();
                 });
             },
             parseInternal(predictionaryInstance) {
@@ -129,14 +111,11 @@
                     log.warn('error parsing words: ' + e);
                 }
             },
-            openHelp() {
-                helpService.openHelp();
-            }
-        },
-        mounted() {
+        init() {
             this.originalPredictionary = Predictionary.instance();
             this.originalPredictionary.loadDictionary(this.dictData.data, this.dictData.dictionaryKey);
             helpService.setHelpLocation('07_dictionaries', '#add-words');
+        },
         },
         beforeDestroy() {
             helpService.revertToLastLocation();
@@ -160,5 +139,8 @@
     }
     .btn-accordion:hover span {
         color: cornflowerblue;
+    }
+    .btn-accordion:focus {
+        outline: 3px solid lightblue;
     }
 </style>

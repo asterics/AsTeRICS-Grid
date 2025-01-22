@@ -26,12 +26,12 @@
             </div>
         </div>
 
-        <huffman-input-modal v-if="showModal === modalTypes.MODAL_HUFFMAN" @close="showModal = null; reinitInputMethods();"/>
-        <direction-input-modal v-if="showModal === modalTypes.MODAL_DIRECTION" @close="showModal = null; reinitInputMethods();"/>
-        <mouse-modal v-if="showModal === modalTypes.MODAL_MOUSE" @close="showModal = null; reinitInputMethods();"/>
-        <scanning-modal v-if="showModal === modalTypes.MODAL_SCANNING" @close="showModal = null; reinitInputMethods();"/>
-        <sequential-input-modal v-if="showModal === modalTypes.MODAL_SEQUENTIAL" @close="showModal = null; reinitInputMethods();"/>
-        <unlock-modal v-if="showModal === modalTypes.MODAL_UNLOCK" @unlock="unlock(true)" @close="showModal = null;"/>
+        <huffman-input-modal ref="huffman" @close="reinitInputMethods"/>
+        <direction-input-modal ref="direction" @close="reinitInputMethods"/>
+        <mouse-modal ref="mouse" @close="reinitInputMethods"/>
+        <scanning-modal ref="scanning" @close="reinitInputMethods"/>
+        <sequential-input-modal ref="sequential" @close="reinitInputMethods"/>
+        <unlock-modal ref="unlock" @unlock="unlock(true)"/>
 
         <div class="srow content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0 && (!globalGridData || globalGridData.gridElements.length === 0)">
             <div style="margin-top: 2em">
@@ -93,14 +93,6 @@
     let vueApp = null;
     let gridInstance = null;
     let UNLOCK_COUNT = 8;
-    let modalTypes = {
-        MODAL_SCANNING: 'MODAL_SCANNING',
-        MODAL_MOUSE: 'MODAL_MOUSE',
-        MODAL_DIRECTION: 'MODAL_DIRECTION',
-        MODAL_HUFFMAN: 'MODAL_HUFFMAN',
-        MODAL_SEQUENTIAL: 'MODAL_SEQUENTIAL',
-        MODAL_UNLOCK: 'MODAL_UNLOCK'
-    };
 
     let vueConfig = {
         props: {
@@ -120,7 +112,6 @@
                 seqInput: null,
                 huffmanInput: null,
                 showModal: null,
-                modalTypes: modalTypes,
                 viewInitialized: false,
                 unlockCount: UNLOCK_COUNT,
                 unlockCounter: UNLOCK_COUNT,
@@ -140,8 +131,8 @@
             ScanningModal, HeaderIcon
         },
         methods: {
-            openModal(modalType) {
-                this.showModal = modalType;
+            openModal(modal) {
+                modal.openModal();
                 stopInputMethods();
             },
             lock() {
@@ -155,7 +146,7 @@
             unlock(force) {
                 let thiz = this;
                 if (!force && localStorageService.getAppSettings().unlockPasscode) {
-                    thiz.showModal = modalTypes.MODAL_UNLOCK;
+                    thiz.$refs.unlock.openModal();
                     return;
                 }
                 thiz.unlockCounter--;
@@ -597,23 +588,23 @@
         function handleContextMenu(key, elementId) {
             switch (key) {
                 case CONTEXT_MOUSE: {
-                    vueApp.openModal(modalTypes.MODAL_MOUSE);
+                    vueApp.openModal(vueApp.$refs.mouse);
                     break;
                 }
                 case CONTEXT_SCANNING: {
-                    vueApp.openModal(modalTypes.MODAL_SCANNING);
+                    vueApp.openModal(vueApp.$refs.scanning);
                     break;
                 }
                 case CONTEXT_DIRECTION: {
-                    vueApp.openModal(modalTypes.MODAL_DIRECTION);
+                    vueApp.openModal(vueApp.$refs.direction);
                     break;
                 }
                 case CONTEXT_HUFFMAN: {
-                    vueApp.openModal(modalTypes.MODAL_HUFFMAN);
+                    vueApp.openModal(vueApp.$refs.huffman);
                     break;
                 }
                 case CONTEXT_SEQUENTIAL: {
-                    vueApp.openModal(modalTypes.MODAL_SEQUENTIAL);
+                    vueApp.openModal(vueApp.$refs.sequential);
                     break;
                 }
             }

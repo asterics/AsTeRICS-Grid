@@ -1,22 +1,15 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
-                    <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
-                    <div class="modal-header">
-                        <h1>{{ preview.name | extractTranslation }}</h1>
-                    </div>
-
-                    <div class="modal-body">
-                        <div v-if="preview.images.length > 1" aria-hidden="true" class="mb-5" style="overflow-x: auto">
+    <!-- FIXME: `extractTranslation`: where does this variable come from?  -->
+    <base-modal icon="fas fa-info-circle" :title="preview?.name | extractTranslation" :help="false" @open="init" @keyup.ctrl.enter="save" v-on="$listeners">
+                    <template #default>
+                        <div v-if="preview?.images?.length > 1" aria-hidden="true" class="mb-5" style="overflow-x: auto">
                             <ul class="d-flex mb-0">
                                 <li v-for="url of preview.images" class="me-3 mb-0">
                                     <img :src="url" @click="selectedImage = url" width="200" style="cursor: pointer"/>
                                 </li>
                             </ul>
                         </div>
-                        <div class="container-fluid p-0">
+                        <div v-if="preview" class="container-fluid p-0">
                             <div class="row" aria-hidden="true">
                                 <div class="col-12 col-md-7" v-if="selectedImage">
                                     <img :src="selectedImage" class="col-12"/>
@@ -48,39 +41,27 @@
                                 <span v-if="linkCopied" class="fas fa-check"/>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="modal-footer container-fluid p-0">
-                        <div class="row">
-                            <div class="col-12 col-md-6">
-                                <button id="cancelButton" v-focus class="col-12" @click="$emit('close')" :title="$t('keyboardEsc')">
-                                    <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
+                    </template>
+                    <template #ok>
+                                <button class="btn-primary" @click="save" :title="$t('keyboardCtrlEnter')" :aria-label="$t('useIt')">
+                                    <i class="fas fa-check" aria-hidden="true"></i><span>{{ $t('useIt') }}</span>
                                 </button>
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <button class="col-12 btn-primary" @click="save()" :title="$t('keyboardCtrlEnter')">
-                                    <i class="fas fa-check"/> <span>{{ $t('useIt') }}</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    </template>
+    </base-modal>
 </template>
 
 <script>
-    import './../../css/modal.css';
+    import {modalMixin} from "../mixins/modalMixin";
     import { i18nService } from '../../js/service/i18nService';
     import { urlParamService } from '../../js/service/urlParamService';
     import { util } from '../../js/util/util';
 
     export default {
         props: ['preview'],
+        mixins: [modalMixin],
         data: function () {
             return {
-                selectedImage: this.preview.images[0],
+                selectedImage: null,
                 i18nService: i18nService,
                 linkCopied: false
             }
@@ -89,14 +70,16 @@
             save() {
                 this.$emit('import');
                 this.$emit('close');
+                this.closeModal();
             },
             copyLink() {
                 let link = location.origin + location.pathname + `?${urlParamService.params.PARAM_USE_GRIDSET_FILENAME}=${this.preview.filename}`;
                 util.copyToClipboard(link);
                 this.linkCopied = true;
+            },
+            init() {
+                this.selectedImage = this.preview.images[0];
             }
-        },
-        mounted() {
         }
     }
 </script>

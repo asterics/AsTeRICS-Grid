@@ -1,22 +1,13 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keydown.27="cancel()" @keydown.enter="save()">
-                    <a class="inline close-button" href="javascript:void(0);" @click="cancel()"><i class="fas fa-times"/></a>
-                    <a class="close-button" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
-                    <div class="modal-header">
-                        <h1 name="header">{{ $t('huffmanInput') }}</h1>
-                    </div>
-
-                    <div class="modal-body" v-if="inputConfig">
+    <base-modal icon="fas fa-ellipsis-h" :title="$t('huffmanInput')" @open="init" @keydown.enter="save" @ok="save" v-on="$listeners">
+                    <template #default v-if="inputConfig">
                         <div class="srow">
                             <span>{{ $t('huffmanInputMethod2OrMoreInputEvents') }}</span>
                             <a :aria-label="$t('help')" href="javascript:;" @click="openHelp()"><i class="fas blue fa-question-circle"></i></a>
                         </div>
                         <div class="srow" >
                             <div class="twelve columns">
-                                <input v-focus type="checkbox" id="enableHuffinput" v-model="inputConfig.huffEnabled"/>
+                                <input type="checkbox" id="enableHuffinput" v-model="inputConfig.huffEnabled"/>
                                 <label class="inline" for="enableHuffinput">{{ $t('enableHuffmanInput') }}</label>
                             </div>
                         </div>
@@ -75,27 +66,12 @@
                             <accordion :acc-label="$t('TEST_CONFIGURATION')" acc-label-type="h2" acc-background-color="white" @open="testOpen = true; initTest()" @close="testOpen = false; stopTest()">
                                 <test-area :selected-element="selectedTestElement"></test-area>
                             </accordion>
-
                             <div class="warn" v-show="error">
                                 <i class="fas fa-exclamation-triangle"></i> {{error}}
                             </div>
                         </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <div class="button-container srow">
-                            <button @click="cancel()" class="four columns offset-by-four">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                            </button>
-                            <button @click="save()" class="four columns">
-                                <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    </template>
+    </base-modal>
 </template>
 
 <script>
@@ -105,14 +81,14 @@
     import Accordion from "../../components/accordion.vue"
     import InputEventList from "../../components/inputEventList.vue"
     import TestArea from "./testArea.vue"
-    import './../../../css/modal.css';
+    import {modalMixin} from "../../mixins/modalMixin";
     import {InputConfig} from "../../../js/model/InputConfig";
     import {HuffmanInput} from "../../../js/input/huffmanInput";
     import {inputEventHandler} from "../../../js/input/inputEventHandler";
 
     export default {
-        props: [],
         components: {Accordion, InputEventList, TestArea},
+        mixins: [modalMixin],
         data: function () {
             return {
                 inputConfig: null,
@@ -144,10 +120,8 @@
                 this.metadata.inputConfig = this.inputConfig;
                 dataService.saveMetadata(this.metadata).then(() => {
                     this.$emit('close');
+                    this.closeModal();
                 });
-            },
-            cancel() {
-                this.$emit('close');
             },
             openHelp() {
                 helpService.openHelp();
@@ -192,9 +166,8 @@
                 if (this.huffInput) {
                     this.huffInput.destroy();
                 }
-            }
-        },
-        mounted () {
+            },
+        init() {
             let thiz = this;
             inputEventHandler.pauseAll();
             dataService.getMetadata().then(metadata => {
@@ -202,6 +175,7 @@
                 thiz.inputConfig = JSON.parse(JSON.stringify(metadata.inputConfig));
             });
             helpService.setHelpLocation('04_input_options', '#huffman-input');
+        },
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

@@ -1,37 +1,25 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="close()">
-                    <a v-if="options.closable" class="inline close-button" href="javascript:void(0);" @click="close()"><i class="fas fa-times"/></a>
-                    <div class="modal-header">
-                        <h1 name="header">{{options.header}}</h1>
-                    </div>
-
-                    <div class="modal-body">
+    <base-modal icon="fas fa-spinner fa-spin" :title="options.header" :footer="options.closable" :help="false" :esc="options.closable" v-on="$listeners">
+                    <template #default>
                         <div class="biggerFont">{{options.text}} ...</div>
                         <div id="progressWrapper" style="border: 1px solid; border-radius: 3px; width: 100%; height: 50px; margin: 0.5em 0">
                             <div id="progressBar" :style="`width: ${progressPercentage}%; height: 100%; background-color: green`"></div>
                         </div>
-                        <div class="biggerFont" style="text-align: right; width: 100%">{{Math.round(progressPercentage)}}%</div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <div v-if="options.closable" class="button-container srow">
-                            <button class="four columns offset-by-eight" @click="close()" :title="$t('keyboardEsc')">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
+                        <div class="biggerFont" style="text-align: right; width: 100%; margin-bottom: 2rem;">{{Math.round(progressPercentage)}}%</div>
+                    </template>
+                    <template #footer>
+                        <div v-if="options.closable">
+                            <button @click="close" :title="$t('keyboardEsc')" :aria-label="$t('cancel')">
+                                <i class="fas fa-times" aria-hidden="true"></i><span>{{ $t('cancel') }}</span>
                             </button>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    </template>
+    </base-modal>
 </template>
 
 <script>
     import {i18nService} from "../../js/service/i18nService";
-    import './../../css/modal.css';
+    import {modalMixin} from "../mixins/modalMixin";
 
     let defaultOptions = {
         header: '',
@@ -41,7 +29,7 @@
     }
 
     export default {
-        props: [],
+        mixins: [modalMixin],
         data: function () {
             return {
                 progressPercentage: 0,
@@ -60,20 +48,21 @@
                     setTimeout(() => {
                         this.options = JSON.parse(JSON.stringify(defaultOptions));
                         this.$emit('close');
+                        this.closeModal();
                     }, 200)
                 }
             },
             close() {
+                // FIXME: close() can only be called if the modal is closable
                 if (this.options.closable) {
                     this.$emit('close');
+                    this.closeModal();
                     if (this.options.cancelFn) {
                         this.options.cancelFn();
                     }
                     this.options = JSON.parse(JSON.stringify(defaultOptions));
                 }
             }
-        },
-        mounted() {
         }
     }
 </script>

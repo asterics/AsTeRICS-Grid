@@ -3,7 +3,7 @@
         <div class="row">
             <label class="col-sm-2" for="inputLabel">{{ $t('label') }}</label>
             <div class="col-sm-7">
-                <input type="text" class="col-12" id="inputLabel" v-focus v-if="gridElement" v-model="gridElement.label[currentLang]"/>
+                <input type="text" class="col-12" id="inputLabel" v-if="gridElement" v-model="gridElement.label[currentLang]"/>
             </div>
             <div class="col-sm-3">
                 <button @click="$emit('searchImage')" class="col-12" :title="$t('searchForImages')"><i class="fas fa-search"/> {{$t('searchForImages')}}</button>
@@ -45,7 +45,6 @@
 
 <script>
     import {i18nService} from "../../js/service/i18nService";
-    import './../../css/modal.css';
     import {helpService} from "../../js/service/helpService";
     import {constants} from "../../js/util/constants.js";
     import {dataService} from "../../js/service/data/dataService.js";

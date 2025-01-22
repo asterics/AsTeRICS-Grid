@@ -1,16 +1,6 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container" @keyup.27="$emit('close')" @keyup.ctrl.enter="save()">
-                    <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
-                    <div class="modal-header">
-                        <h1 name="header">
-                            {{ $t('linkGrids') }}
-                        </h1>
-                    </div>
-
-                    <div class="modal-body" v-if="gridFrom">
+    <base-modal icon="fas fa-link" :title="$t('linkGrids')" :help="false" @open="init" @keyup.ctrl.enter="save" @ok="save" v-on="$listeners">
+                    <template #default v-if="gridFrom">
                         <div class="srow">
                             <div class="four columns">
                                 <div>
@@ -42,27 +32,13 @@
                                 <b>{{ $t('hint') }} </b> {{ $t('thisElementAlreadyNavigatesToAnotherGrid') }}
                             </span>
                         </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <div class="button-container srow">
-                            <button class="six columns" @click="$emit('close')" :title="$t('keyboardEsc')">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                            </button>
-                            <button class="six columns" @click="save()" :title="$t('keyboardCtrlEnter')">
-                                <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    </template>
+    </base-modal>
 </template>
 
 <script>
     import {i18nService} from "../../js/service/i18nService";
-    import './../../css/modal.css';
+    import {modalMixin} from "../mixins/modalMixin";
     import {imageUtil} from "../../js/util/imageUtil";
     import {GridActionNavigate} from "../../js/model/GridActionNavigate";
     import {GridElement} from "../../js/model/GridElement";
@@ -71,10 +47,11 @@
 
     export default {
         props: ['gridFromProp', 'gridToProp'],
+        mixins: [modalMixin],
         data: function () {
             return {
                 gridFrom: null,
-                gridTo: JSON.parse(JSON.stringify(this.gridToProp)),
+                gridTo: null,
                 inputText: "",
                 selectedElement: null,
                 newElementLabel: null,
@@ -88,6 +65,7 @@
                 this.saveInternal().then(() => {
                     this.$emit('reload');
                     this.$emit('close');
+                    this.closeModal();
                 });
             },
             saveInternal() {
@@ -108,14 +86,15 @@
                     navType: GridActionNavigate.NAV_TYPES.TO_GRID
                 }));
                 return dataService.saveGrid(this.gridFrom);
-            }
-        },
-        mounted() {
+            },
+        init() {
+            this.gridTo = JSON.parse(JSON.stringify(this.gridToProp))
             this.newElementLabel = JSON.parse(JSON.stringify(this.gridTo.label));
             dataService.getGrid(this.gridFromProp.id).then(gridFrom => {
                 this.gridFrom = JSON.parse(JSON.stringify(gridFrom));
             });
         }
+        },
     }
 </script>
 

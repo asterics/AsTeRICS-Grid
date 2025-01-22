@@ -1,19 +1,6 @@
 <template>
-    <div class="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container modal-container-flex" @keydown.esc="$emit('close')" @keydown.ctrl.enter="save()">
-                    <div class="container-fluid px-0 mb-5">
-                        <div class="row">
-                            <div class="modal-header col-8 col-sm-10 col-md-10">
-                                <h1 class="inline">{{ $t('exportToFile') }}</h1>
-                            </div>
-                            <a class="col-2 col-sm-1 col-md black" href="javascript:;" @click="openHelp()"><i class="fas fa-question-circle"></i></a>
-                            <a class="col-2 col-sm-1 col-md black" href="javascript:void(0);" :title="$t('close')" @click="$emit('close')"><i class="fas fa-times"/></a>
-                        </div>
-                    </div>
-
-                    <div class="modal-body mt-2">
+    <base-modal icon="fas fa-file-export" :title="$t('exportToFile')" @open="init" @keydown.ctrl.enter="save" v-on="$listeners">
+                    <template #default>
                         <div class="row mb-4">
                             <label class="col-12 col-md-2" for="selectGrid">{{ $t('selectGrid') }}</label>
                             <div class="col-12 col-md-4 mb-4">
@@ -36,7 +23,7 @@
                             <div class="col-12 col-md-4">
                                 <span v-if="options.exportLang === constants.LANG_EXPORT_CURRENT">{{ $t('currentLanguage', {contentLangReadable: i18nService.getContentLangReadable(), contentLangCode: i18nService.getContentLang()}) }}</span>
                                 <span v-if="options.exportLang === constants.LANG_EXPORT_ALL">
-                                    <span>{{ $t('currentLanguages', {length: currentLanguages.length}) }} </span>
+                                    <span>{{ $t('currentLanguages', {length: currentLanguages?.length}) }} </span>
                                     <span v-for="(lang, index) in currentLanguages" :title="i18nService.getLangReadable(lang)">{{lang + (index < currentLanguages.length -1 ? ', ' : '')}}</span>
                                 </span>
                             </div>
@@ -74,27 +61,18 @@
                                 </label>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="modal-footer modal-footer-flex">
-                        <div class="button-container srow">
-                            <button class="six columns" @click="$emit('close')" :title="$t('keyboardEsc')">
-                                <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
+                    </template>
+                    <template #ok>
+                            <button class="btn-primary" @click="save" :title="$t('keyboardCtrlEnter')" :aria-label="$t('downloadBackup')">
+                                <i class="fas fa-check" aria-hidden="true"></i><span>{{ $t('downloadBackup') }}</span>
                             </button>
-                            <button class="six columns" @click="save()" :title="$t('keyboardCtrlEnter')">
-                                <i class="fas fa-check"/> <span>{{ $t('downloadBackup') }}</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    </template>
+    </base-modal>
 </template>
 
 <script>
     import {dataService} from '../../js/service/data/dataService'
-    import './../../css/modal.css';
+    import {modalMixin} from "../mixins/modalMixin";
     import {helpService} from "../../js/service/helpService";
     import {gridUtil} from "../../js/util/gridUtil.js";
     import {i18nService} from "../../js/service/i18nService.js";
@@ -110,6 +88,7 @@
 
     export default {
         props: ['gridsData', 'exportOptions'],
+        mixins: [modalMixin],
         data: function () {
             return {
                 selectedGrid: null,
@@ -132,6 +111,7 @@
         computed: {
             currentLanguages: function () {
                 let grids = this.selectedGrid ? [this.selectedGrid] : this.gridsData;
+                if (!grids) return;
                 let langs = [];
                 for (let grid of grids) {
                     for (let element of grid.gridElements) {
@@ -176,12 +156,9 @@
                     }
                 });
                 this.$emit('close');
+                this.closeModal();
             },
-            openHelp() {
-                helpService.openHelp();
-            }
-        },
-        mounted() {
+        init() {
             dataService.getGlobalGrid().then(globalGrid => {
                 this.globalGridId = globalGrid ? globalGrid.id : null;
                 this.graphList = gridUtil.getGraphList(this.gridsData, this.globalGridId, true);
@@ -197,6 +174,8 @@
                     this.options = Object.assign(this.options, this.exportOptions);
                 }
             });
+            helpService.setHelpLocation('02_navigation', '#manage-grids-view');
+        },
         },
         beforeDestroy() {
             helpService.revertToLastLocation();
