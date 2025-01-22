@@ -1,6 +1,8 @@
 var fontUtil = {};
 var lastSize = '20px';
 
+let FONT_ADAPT_MAX_ROUNDS = 5;
+
 /**
  * returns the optimal font size in px for a given grid element
  * @param elem
@@ -128,12 +130,18 @@ fontUtil.getFittingFontSize = function(text, container, options = {}) {
         newOptions.maxLines = 1;
         options.maxSize = Math.min(options.maxSize, fontUtil.getFittingFontSize(longestWord, container, newOptions));
     }
-
-    for (let count = 0; count < 10 && Math.abs(maxWH - containerWidth) > 1; count++) {
+    let count;
+    for (count = 0; count < FONT_ADAPT_MAX_ROUNDS && Math.abs(maxWH - containerWidth) > 1; count++) {
         let factor = maxWH / containerWidth;
         tryPx = tryPx / factor;
         width = fontUtil.getTextWidth(text, container, tryPx);
         maxWH = Math.max(width, tryPx);
+    }
+    if (count === FONT_ADAPT_MAX_ROUNDS) {
+        if (maxWH > containerWidth) {
+            tryPx -= 0.5;
+        }
+        tryPx = Math.floor(tryPx);
     }
     return Math.min(options.maxSize, tryPx, (containerSize.height * options.containerPct / 100) / options.lineHeight);
 }
