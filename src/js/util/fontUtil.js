@@ -157,7 +157,8 @@ fontUtil.pctToPx = function(pct, containerSize) {
         width: document.documentElement.clientWidth,
         height: document.documentElement.clientHeight
     }
-    return (containerSize.width + containerSize.height) * pct / 200;
+    //return (containerSize.width + containerSize.height) * pct / 200;
+    return containerSize.height * pct / 100;
 }
 
 fontUtil.getHighContrastColor = function (hexBackground, lightColor, darkColor) {
