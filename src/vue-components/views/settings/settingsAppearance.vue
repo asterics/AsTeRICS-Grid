@@ -33,7 +33,7 @@
                     </select>
                 </div>
                 <div class="srow mb-0">
-                    <slider-input label="fontSize" unit="%" id="fontSize" min="0" max="100" step="1" v-model.number="metadata.textConfig.fontSizePct" @change="saveMetadata(metadata)"/>
+                    <slider-input label="fontSizeTextAndImage" unit="%" id="fontSizeTextAndImage" min="0" max="100" step="1" v-model.number="metadata.textConfig.fontSizePct" @change="saveMetadata(metadata)"/>
                 </div>
                 <div class="srow">
                     <slider-input label="onlyTextFontSize" unit="%" id="onlyTextFontSize" min="0" max="100" step="1" v-model.number="metadata.textConfig.onlyTextFontSizePct" @change="saveMetadata(metadata)"/>
