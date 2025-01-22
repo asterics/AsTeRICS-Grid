@@ -35,6 +35,9 @@
                 <div class="srow mb-0">
                     <slider-input label="fontSize" unit="%" id="fontSize" min="0" max="100" step="1" v-model.number="metadata.textConfig.fontSizePct" @change="saveMetadata(metadata)"/>
                 </div>
+                <div class="srow">
+                    <slider-input label="onlyTextFontSize" unit="%" id="onlyTextFontSize" min="0" max="100" step="1" v-model.number="metadata.textConfig.onlyTextFontSizePct" @change="saveMetadata(metadata)"/>
+                </div>
                 <div class="srow mb-5">
                     <accordion :acc-label="$t('advancedOptions')" class="eleven columns">
                         <div class="srow">
@@ -44,6 +47,13 @@
                                 <option :value="TextConfig.TOO_LONG_TRUNCATE">{{ $t('truncate') }}</option>
                                 <option :value="TextConfig.TOO_LONG_ELLIPSIS">{{ $t('ellipsisDotDotDot') }}</option>
                             </select>
+                        </div>
+                        <div class="srow">
+                            <label class="three columns" for="fontColor">
+                                <span>{{ $t('fontColor') }}</span>
+                            </label>
+                            <input id="fontColor" v-model="metadata.textConfig.fontColor" class="five columns" type="color" @change="saveMetadata(metadata)">
+                            <button class="three columns" @click="metadata.textConfig.fontColor = constants.DEFAULT_ELEMENT_FONT_COLOR; saveMetadata(metadata)">{{ $t('reset') }}</button>
                         </div>
                         <div class="srow">
                             <label class="three columns" for="maxLines">{{ $t('maximumNumberOfLines') }}</label>
@@ -56,18 +66,8 @@
                         <div class="srow mt-3">
                             <slider-input label="lineHeight" id="lineHeight" min="1" max="3" step="0.1" v-model.number="metadata.textConfig.lineHeight" @change="saveMetadata(metadata)"/>
                         </div>
-                        <div class="srow">
-                            <slider-input label="onlyTextFontSize" unit="%" id="onlyTextFontSize" min="0" max="100" step="1" v-model.number="metadata.textConfig.onlyTextFontSizePct" @change="saveMetadata(metadata)"/>
-                        </div>
                         <div class="srow mb-2">
                             <slider-input label="onlyTextLineHeight" id="onlyTextLineHeight" min="1" max="3" step="0.1" v-model.number="metadata.textConfig.onlyTextLineHeight" @change="saveMetadata(metadata)"/>
-                        </div>
-                        <div class="srow">
-                            <label class="three columns" for="fontColor">
-                                <span>{{ $t('fontColor') }}</span>
-                            </label>
-                            <input id="fontColor" v-model="metadata.textConfig.fontColor" class="five columns" type="color" @change="saveMetadata(metadata)">
-                            <button class="three columns" @click="metadata.textConfig.fontColor = constants.DEFAULT_ELEMENT_FONT_COLOR; saveMetadata(metadata)">{{ $t('reset') }}</button>
                         </div>
                         <div class="srow">
                             <input id="autoSizeKeyboardLetters" type="checkbox" v-model="metadata.textConfig.autoSizeKeyboardLetters" @change="saveMetadata(metadata)"/>
