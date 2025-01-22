@@ -48,9 +48,9 @@ export default {
             }
             let size = this.containerSize;
             this.lineHeight = this.withImage ? this.metadata.textConfig.lineHeight : this.metadata.textConfig.onlyTextLineHeight;
+            this.maxLines = this.withImage ? this.metadata.textConfig.maxLines : 100;
             this.fontSizePx = this.getFontSizePx(size);
             this.maxTextContainerHeight = this.withImage ? (this.fontSizePx * this.lineHeight * this.metadata.textConfig.maxLines) + 'px' : '100%';
-            this.maxLines = this.withImage ? this.metadata.textConfig.maxLines : 100;
             this.textOverflow = this.metadata.textConfig.fittingMode === TextConfig.TOO_LONG_ELLIPSIS ? 'ellipsis' : 'clip';
             this.whiteSpaceWrap = this.maxLines === 1 ? 'nowrap' : 'normal';
             this.ready = true;
