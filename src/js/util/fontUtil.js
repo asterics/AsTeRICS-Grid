@@ -138,10 +138,8 @@ fontUtil.getFittingFontSize = function(text, container, options = {}) {
         width = fontUtil.getTextWidth(text, container, tryPx);
         maxWH = Math.max(width, tryPx);
     }
-    if (count === FONT_ADAPT_MAX_ROUNDS) {
-        if (maxWH > containerWidth) {
-            tryPx -= 0.5;
-        }
+    if (maxWH > containerWidth) {
+        tryPx -= 0.5;
         tryPx = Math.floor(tryPx);
     }
     return Math.min(options.maxSize, tryPx, (containerSize.height * options.containerPct / 100) / options.lineHeight);
