@@ -129,6 +129,7 @@ fontUtil.getFittingFontSize = function(text, container, options = {}) {
         let newOptions = JSON.parse(JSON.stringify(options));
         newOptions.maxLines = 1;
         options.maxSize = Math.min(options.maxSize, fontUtil.getFittingFontSize(longestWord, container, newOptions));
+        containerWidth = containerWidth * 0.9;
     }
     let count;
     for (count = 0; count < FONT_ADAPT_MAX_ROUNDS && Math.abs(maxWH - containerWidth) > 1; count++) {
