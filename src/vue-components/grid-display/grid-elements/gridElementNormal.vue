@@ -19,7 +19,6 @@ export default {
     props: ["gridElement", "metadata"],
     data() {
         return {
-            imageData: this.gridElement.image ? this.gridElement.image.data || this.gridElement.image.url : null,
             TextConfig: TextConfig
         }
     },
@@ -27,6 +26,9 @@ export default {
         label() {
             let label = stateService.getDisplayText(this.gridElement.id) || i18nService.getTranslation(this.gridElement.label);
             return  util.convertLowerUppercase(label, this.metadata.textConfig.convertMode);
+        },
+        imageData() {
+            return this.gridElement.image ? this.gridElement.image.data || this.gridElement.image.url : null;
         }
     },
     methods: {
