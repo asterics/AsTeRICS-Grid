@@ -73,7 +73,7 @@ export default {
                     lineHeight: this.lineHeight,
                     containerSize: size
                 });
-                if (this.withImage) {
+                if (this.withImage && this.maxLines === 1) {
                     let factor = newFontSize / fontSize;
                     this.lineHeight /= factor;
                 }
