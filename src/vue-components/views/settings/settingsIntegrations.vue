@@ -4,7 +4,7 @@
             <div class="eleven columns">
                 <h3 class="mt-2">ARASAAC</h3>
                 <div>
-                    <input id="activateARASAACGrammarAPI" type="checkbox" v-model="metadata.activateARASAACGrammarAPI" @change="saveMetadata()"/>
+                    <input id="activateARASAACGrammarAPI" type="checkbox" v-model="metadata.activateARASAACGrammarAPI" @change="saveMetadata(metadata)"/>
                     <label for="activateARASAACGrammarAPI">
                         <i18n path="activateAutomaticGrammarCorrectionARASAACAPI" tag="span">
                             <template v-slot:availableLangs>
