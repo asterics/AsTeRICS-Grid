@@ -58,15 +58,19 @@ nav li {
     padding: 3px 10px 5px 10px;
 }
 
+nav li a {
+    padding-bottom: 3px;
+}
+
 nav li:hover {
     background-color: lightgray;
 }
 
 nav li.selected, nav li.selected:hover {
-    text-decoration: underline;
+    /*text-decoration: underline;
     text-underline-offset: 5px;
     text-decoration-color: #2d7bb4;
-    text-decoration-thickness: 4px;
+    text-decoration-thickness: 4px;*/
     /*background-color: #DBF4FF;*/
     /*background-image: linear-gradient(#DBF4FF, white);*/
     background-color: white;
@@ -74,6 +78,10 @@ nav li.selected, nav li.selected:hover {
     color: black;
     border-bottom: none;
     font-weight: bold;
+}
+
+nav li.selected a {
+    border-bottom: 4px solid #2d7bb4;
 }
 
 nav a, nav a:focus, nav a:hover {
