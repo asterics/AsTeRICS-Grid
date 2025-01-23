@@ -108,11 +108,11 @@
             GridSettingsModal, EditElement, AddMultipleModal, HeaderIcon
         },
         methods: {
-            fillGaps: function() {
-                this.gridData.gridElements = gridLayoutUtil.moveAsPossible(this.gridData.gridElements, this.gridData.gridElements, gridLayoutUtil.DIR_LEFT, {
-                    outOfBounds: true,
-                    gridWidth: this.gridData.minColumnCount,
-                    gridHeight: this.gridData.rowCount
+            moveAll: function(dir) {
+                this.gridData.gridElements = gridLayoutUtil.moveAsPossible(this.gridData.gridElements, this.gridData.gridElements, dir, {
+                    outOfBounds: false,
+                    gridWidth: gridUtil.getWidthWithBounds(this.gridData),
+                    gridHeight: gridUtil.getHeightWithBounds(this.gridData)
                 });
                 this.updateGridWithUndo();
             },
@@ -381,7 +381,10 @@
         var CONTEXT_NEW_PREDICT = "CONTEXT_NEW_PREDICT";
         var CONTEXT_NEW_YT_PLAYER = "CONTEXT_NEW_YT_PLAYER";
 
-        var CONTEXT_LAYOUT_FILL = "CONTEXT_LAYOUT_FILL";
+        var CONTEXT_LAYOUT_ALL_UP = "CONTEXT_LAYOUT_ALL_UP";
+        var CONTEXT_LAYOUT_ALL_RIGHT = "CONTEXT_LAYOUT_ALL_RIGHT";
+        var CONTEXT_LAYOUT_ALL_DOWN = "CONTEXT_LAYOUT_ALL_DOWN";
+        var CONTEXT_LAYOUT_ALL_LEFT = "CONTEXT_LAYOUT_ALL_LEFT";
         var CONTEXT_LAYOUT_NORMALIZE = "CONTEXT_LAYOUT_NORMALIZE";
         var CONTEXT_GRID_SETTINGS = "CONTEXT_GRID_SETTINGS";
         var CONTEXT_GRID_NAVIGATION = "CONTEXT_GRID_NAVIGATION";
@@ -421,6 +424,16 @@
             CONTEXT_ACTION_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt"},
         };
 
+        let itemsLayout = {
+            name: i18nService.t('layout'), icon: 'fas fa-th-large', items: {
+                'CONTEXT_LAYOUT_ALL_UP': { name: i18nService.t('moveAllUp'), icon: 'fas fa-angle-double-up' },
+                'CONTEXT_LAYOUT_ALL_RIGHT': { name: i18nService.t('moveAllRight'), icon: 'fas fa-angle-double-right' },
+                'CONTEXT_LAYOUT_ALL_DOWN': { name: i18nService.t('moveAllDown'), icon: 'fas fa-angle-double-down' },
+                'CONTEXT_LAYOUT_ALL_LEFT': { name: i18nService.t('moveAllLeft'), icon: 'fas fa-angle-double-left' },
+                'CONTEXT_LAYOUT_NORMALIZE': { name: i18nService.t('normalizeGridLayout'), icon: 'fas fa-th' }
+            }
+        };
+
         let visibleFn = () => !!vueApp.markedElement;
         let visibleFnFill = () => !new GridData({}, vueApp.gridData).isFull();
         var itemsMoreMenuButton = {
@@ -435,6 +448,7 @@
             'CONTEXT_FILL_EMPTY': {name: i18nService.t('fillWithEmptyElements'), icon: "fas fa-fill", visible: visibleFnFill},
             'CONTEXT_DELETE_ALL': {name: i18nService.t('deleteAllElements'), icon: "fas fa-minus-circle"},
             SEP1: "---------",
+            CONTEXT_GROUP_LAYOUT: itemsLayout,
             'CONTEXT_GRID_SETTINGS': {
                 name: i18nService.t('gridSettings'),
                 icon: "fas fa-expand-arrows-alt"
@@ -443,8 +457,6 @@
                 name: i18nService.t('translateGrid'),
                 icon: "fas fa-language"
             },
-            'CONTEXT_LAYOUT_FILL': {name: i18nService.t('fillGaps'), icon: "fas fa-angle-double-left"},
-            'CONTEXT_LAYOUT_NORMALIZE': {name: i18nService.t('normalizeGridLayout'), icon: "fas fa-th"},
             'CONTEXT_EDIT_GLOBAL_GRID': {name: i18nService.t('editGlobalGrid'), icon: "fas fa-globe", visible: !!vueApp.metadata.globalGridId && vueApp.metadata.globalGridActive && vueApp.metadata.globalGridId !== vueApp.gridData.id},
             'CONTEXT_END_EDIT_GLOBAL_GRID': {name: i18nService.t('endEditGlobalGrid'), icon: "fas fa-globe", visible: vueApp.metadata.globalGridId === vueApp.gridData.id},
             SEP2: "---------",
@@ -513,8 +525,20 @@
                     vueApp.fillElements();
                     break;
                 }
-                case CONTEXT_LAYOUT_FILL: {
-                    vueApp.fillGaps();
+                case CONTEXT_LAYOUT_ALL_UP: {
+                    vueApp.moveAll(gridLayoutUtil.DIR_UP);
+                    break;
+                }
+                case CONTEXT_LAYOUT_ALL_RIGHT: {
+                    vueApp.moveAll(gridLayoutUtil.DIR_RIGHT);
+                    break;
+                }
+                case CONTEXT_LAYOUT_ALL_DOWN: {
+                    vueApp.moveAll(gridLayoutUtil.DIR_DOWN);
+                    break;
+                }
+                case CONTEXT_LAYOUT_ALL_LEFT: {
+                    vueApp.moveAll(gridLayoutUtil.DIR_LEFT);
                     break;
                 }
                 case CONTEXT_LAYOUT_NORMALIZE: {
