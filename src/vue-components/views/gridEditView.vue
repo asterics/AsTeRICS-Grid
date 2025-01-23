@@ -126,12 +126,18 @@
                 await this.updateGridWithUndo();
             },
             undo: async function () {
+                if (!this.undoService.canUndo()) {
+                    return;
+                }
                 this.doingUndoRedo = true;
                 this.gridData = await this.undoService.doUndo();
                 this.doingUndoRedo = false;
                 this.$forceUpdate();
             },
             redo: async function () {
+                if (!this.undoService.canRedo()) {
+                    return;
+                }
                 this.doingUndoRedo = true;
                 this.gridData = await this.undoService.doRedo();
                 this.doingUndoRedo = false;
@@ -160,7 +166,11 @@
                 }
             },
             removeElement(id) {
-                this.gridData.gridElements = this.gridData.gridElements.filter((el) => el.id !== id);
+                let element = this.getElement(id);
+                if (!element) {
+                    return;
+                }
+                this.gridData.gridElements = this.gridData.gridElements.filter((el) => el.id !== element.id);
                 this.updateGridWithUndo();
             },
             async duplicateElement(id) {
@@ -242,7 +252,7 @@
                 }
                 util.throttle(() => {
                     if (!this.markedElement || this.markedElement.id !== id) {
-                        this.markedElement = !id ? null : this.gridData.gridElements.filter(el => el.id === id)[0];
+                        this.markedElement = this.getElement(id);
                         $('#' + id).addClass('marked');
                         $('#' + id).css('z-index', 1);
                     } else {
@@ -273,6 +283,51 @@
                         $(`#${this.highlightId}`).removeClass('highlight');
                     }, 4000);
                 }
+            },
+            copyElement(elementId) {
+                let element = this.getElement(elementId);
+                if (!element) {
+                    return;
+                }
+                util.gridElementToClipboard(element);
+            },
+            copyAllElements() {
+                util.gridElementsToClipboard(this.gridData.gridElements);
+            },
+            cutElement(elementId) {
+                let element = this.getElement(elementId);
+                if (!element) {
+                    return;
+                }
+                util.gridElementToClipboard(element);
+                this.removeElement(elementId);
+            },
+            async pasteElements() {
+                let elements = await util.getGridElementsFromClipboard();
+                if (!elements.length) {
+                    return;
+                } else if (elements.length === 1) {
+                    let element = elements[0];
+                    element.width = 1;
+                    element.height = 1;
+                    element.x = this.lastInteraction.x !== undefined ? this.lastInteraction.x : gridUtil.getHeightWithBounds(this.gridData);
+                    element.y = this.lastInteraction.y !== undefined ? this.lastInteraction.y : 0;
+                    this.gridData.gridElements.push(element);
+                    this.gridData.gridElements = gridLayoutUtil.resolveCollisions(this.gridData.gridElements, element);
+                    this.updateGridWithUndo();
+                } else {
+                    let firstEmptyRow = gridUtil.getHeightWithBounds(this.gridData);
+                    elements = elements.map(el => {
+                        el.y += firstEmptyRow;
+                        return el;
+                    });
+                    this.gridData.gridElements = this.gridData.gridElements.concat(elements);
+                    this.updateGridWithUndo();
+                }
+            },
+            getElement(elementId) {
+                elementId = elementId || (this.markedElement ? this.markedElement.id : null);
+                return !elementId ? null : this.gridData.gridElements.filter(el => el.id === elementId)[0];
             },
             onInteracted(x, y) {
                 this.lastInteraction.x = x;
@@ -309,10 +364,47 @@
                 setTimeout(() => {
                     this.isInteracting = false; // reset after click event is fired
                 }, 100)
+            },
+            onKeyDown(event) {
+                const ctrlOrMeta = constants.IS_MAC ? event.metaKey : event.ctrlKey;
+                const isUndoRedo = event.key.toLocaleUpperCase() === 'Z' || event.code === 'KeyZ';
+                if (!event.repeat) {
+                    if (event.code === 'Delete') {
+                        event.preventDefault();
+                        this.removeElement();
+                    }
+                    if (ctrlOrMeta) {
+                        if (event.code === 'KeyC' && !event.shiftKey) {
+                            event.preventDefault();
+                            this.copyElement();
+                        }
+                        if (event.code === 'KeyC' && event.shiftKey) {
+                            event.preventDefault();
+                            this.copyAllElements();
+                        }
+                        if (event.code === 'KeyX') {
+                            event.preventDefault();
+                            this.cutElement();
+                        }
+                        if (event.code === 'KeyV') {
+                            event.preventDefault();
+                            this.pasteElements();
+                        }
+                        if (isUndoRedo && !event.shiftKey) {
+                            event.preventDefault();
+                            this.undo();
+                        }
+                        if (isUndoRedo && event.shiftKey) {
+                            event.preventDefault();
+                            this.redo();
+                        }
+                    }
+                }
             }
         },
         created() {
             $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
+            document.addEventListener("keydown", this.onKeyDown);
         },
         mounted: async function () {
             pouchDbService.pauseSync();
@@ -351,6 +443,7 @@
         beforeDestroy() {
             pouchDbService.resumeSync();
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
+            document.removeEventListener("keydown", this.onKeyDown);
             let container = document.getElementById('grid-container');
             if (container) {
                 container.removeEventListener('click', this.handleClickEvent);
@@ -368,11 +461,15 @@
         //see https://swisnl.github.io/jQuery-contextMenu/demo.html
 
         var CONTEXT_FILL_EMPTY = "CONTEXT_FILL_EMPTY";
+        var CONTEXT_COPY_ALL = "CONTEXT_COPY_ALL";
         var CONTEXT_DELETE_ALL = "CONTEXT_DELETE_ALL";
 
         let CONTEXT_ACTION_EDIT = 'CONTEXT_ACTION_EDIT';
         let CONTEXT_ACTION_DELETE = 'CONTEXT_ACTION_DELETE';
         let CONTEXT_ACTION_DUPLICATE = 'CONTEXT_ACTION_DUPLICATE';
+        let CONTEXT_ACTION_COPY = 'CONTEXT_ACTION_COPY';
+        let CONTEXT_ACTION_CUT = 'CONTEXT_ACTION_CUT';
+        let CONTEXT_ACTION_PASTE = 'CONTEXT_ACTION_PASTE';
         let CONTEXT_ACTION_DO_ACTION = 'CONTEXT_ACTION_DO_ACTION';
         let CONTEXT_MOVE_TO = 'CONTEXT_MOVE_TO';
 
@@ -413,7 +510,8 @@
                         icon: "fab fa-youtube"
                     }
                 }
-            }
+            },
+            CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
         };
 
         var itemsElemNormal = {
@@ -421,6 +519,10 @@
             CONTEXT_ACTION_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt"},
             CONTEXT_ACTION_DUPLICATE: {name: i18nService.t('clone'), icon: "far fa-clone"},
             SEP1: "---------",
+            CONTEXT_ACTION_COPY: {name: i18nService.t('copy'), icon: "far fa-copy"},
+            CONTEXT_ACTION_CUT: {name: i18nService.t('cut'), icon: "fas fa-cut"},
+            CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
+            SEP2: "---------",
             CONTEXT_GRID_NAVIGATION: {name: i18nService.t('navigateToOtherGrid'), icon: "fas fa-arrow-right"},
             CONTEXT_MOVE_TO: {name: i18nService.t('moveElementToOtherGrid'), icon: "fas fa-file-export"},
             CONTEXT_ACTION_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt"},
@@ -439,15 +541,11 @@
         let visibleFn = () => !!vueApp.markedElement;
         let visibleFnFill = () => !new GridData({}, vueApp.gridData).isFull();
         var itemsMoreMenuButton = {
-            CONTEXT_ACTION_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit", visible: visibleFn},
-            CONTEXT_ACTION_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt", visible: visibleFn},
-            CONTEXT_ACTION_DUPLICATE: {name: i18nService.t('clone'), icon: "far fa-clone", visible: visibleFn},
-            CONTEXT_GRID_NAVIGATION: {name: i18nService.t('navigateToOtherGrid'), icon: "fas fa-arrow-right", visible: visibleFn},
-            CONTEXT_MOVE_TO: {name: i18nService.t('moveElementToOtherGrid'), icon: "fas fa-file-export", visible: visibleFn},
-            CONTEXT_ACTION_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt", visible: visibleFn},
+            "SELECTED_ELEM_ACTIONS": {name: i18nService.t('selectedElementContextMenu'), icon: "far fa-square", visible: visibleFn, items: itemsElemNormal},
             separator: { "type": "cm_separator", visible: () => (vueApp.markedElement)},
             CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP],
             'CONTEXT_FILL_EMPTY': {name: i18nService.t('fillWithEmptyElements'), icon: "fas fa-fill", visible: visibleFnFill},
+            'CONTEXT_COPY_ALL': {name: i18nService.t('copyAllElements'), icon: "fas fa-copy"},
             'CONTEXT_DELETE_ALL': {name: i18nService.t('deleteAllElements'), icon: "fas fa-minus-circle"},
             SEP1: "---------",
             CONTEXT_GROUP_LAYOUT: itemsLayout,
@@ -519,6 +617,10 @@
                     vueApp.newElement(GridElement.ELEMENT_TYPE_YT_PLAYER);
                     break;
                 }
+                case CONTEXT_COPY_ALL: {
+                    vueApp.copyAllElements();
+                    break;
+                }
                 case CONTEXT_DELETE_ALL: {
                     vueApp.clearElements();
                     break;
@@ -571,6 +673,18 @@
                     break;
                 case CONTEXT_ACTION_DUPLICATE:
                     vueApp.duplicateElement(elementId || vueApp.markedElement.id);
+                    vueApp.markElement(null);
+                    break;
+                case CONTEXT_ACTION_COPY:
+                    vueApp.copyElement(elementId);
+                    vueApp.markElement(null);
+                    break;
+                case CONTEXT_ACTION_CUT:
+                    vueApp.cutElement(elementId);
+                    vueApp.markElement(null);
+                    break;
+                case CONTEXT_ACTION_PASTE:
+                    vueApp.pasteElements();
                     vueApp.markElement(null);
                     break;
                 case CONTEXT_ACTION_DO_ACTION:

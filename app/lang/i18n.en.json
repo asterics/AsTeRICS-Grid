@@ -477,6 +477,7 @@
   "doElementAction": "Do element action",
   "moveElementToOtherGrid": "Move element to other grid",
   "fillWithEmptyElements": "Fill with empty elements",
+  "copyAllElements": "Copy all elements",
   "deleteAllElements": "Delete all elements",
   "gridSettings": "Grid settings",
   "translateGrid": "Translate grid",
@@ -1138,5 +1139,9 @@
   "fontColor": "Font color",
   "showGlobalGrid": "Show global grid",
   "selectGlobalGrid": "Select global grid",
-  "defaultGlobalGrid": "Default global grid"
+  "defaultGlobalGrid": "Default global grid",
+  "selectedElementContextMenu": "Selected element",
+  "copy": "Copy",
+  "cut": "Cut",
+  "paste": "Paste"
 }
