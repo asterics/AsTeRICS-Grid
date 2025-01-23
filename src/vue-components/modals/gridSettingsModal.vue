@@ -30,7 +30,7 @@
                                 <input id="showGlobalGrid" type="checkbox" v-model="gridData.showGlobalGrid"/>
                                 <label for="showGlobalGrid">{{ $t('showGlobalGrid') }}</label>
                             </div>
-                            <div class="srow">
+                            <div class="srow" v-if="false">
                                 <label class="three columns" for="selectGlobalGrid">{{ $t('selectGlobalGrid') }}</label>
                                 <select class="seven columns" id="selectGlobalGrid" v-model="gridData.globalGridId">
                                     <option :value="null">({{ $t('defaultGlobalGrid') }})</option>
