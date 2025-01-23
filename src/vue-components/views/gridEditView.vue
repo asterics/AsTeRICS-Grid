@@ -244,6 +244,7 @@
                 }
             },
             markElement(id) {
+                log.warn("mark element", id);
                 $('.element-container').removeClass('marked');
                 $('.element-container').css('z-index', 0);
                 if (!id) {
@@ -255,6 +256,7 @@
                         this.markedElement = this.getElement(id);
                         $('#' + id).addClass('marked');
                         $('#' + id).css('z-index', 1);
+                        log.warn("set to marked", id);
                     } else {
                         this.markedElement = null;
                     }
