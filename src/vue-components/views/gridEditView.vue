@@ -263,6 +263,7 @@
                 }, null, 200, "MARK_ELEMENT");
             },
             handleClickEvent(event) {
+                log.warn("click event", this.isInteracting)
                 if (this.isInteracting) {
                     return;
                 }
