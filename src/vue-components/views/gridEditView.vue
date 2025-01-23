@@ -245,7 +245,7 @@
             },
             markElement(id) {
                 $('.element-container').removeClass('marked');
-                $('.element-container').css('z-index', 'unset');
+                $('.element-container').css('z-index', 0);
                 if (!id) {
                     this.markedElement = null;
                     return;
