@@ -235,6 +235,7 @@
             },
             markElement(id) {
                 $('.element-container').removeClass('marked');
+                $('.element-container').css('z-index', 'unset');
                 if (!id) {
                     this.markedElement = null;
                     return;
@@ -243,6 +244,7 @@
                     if (!this.markedElement || this.markedElement.id !== id) {
                         this.markedElement = !id ? null : this.gridData.gridElements.filter(el => el.id === id)[0];
                         $('#' + id).addClass('marked');
+                        $('#' + id).css('z-index', 1);
                     } else {
                         this.markedElement = null;
                     }
