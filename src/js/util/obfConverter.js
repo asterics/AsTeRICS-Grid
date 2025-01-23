@@ -154,18 +154,16 @@ obfConverter.OBFToGridData = function(obfObject, obfObjects) {
         gridElements: []
     });
     obfObject.buttons.forEach((button) => {
-        if (!button.hidden) {
-            let xy = orderToXY(button.id, obfObject);
-            if (!xy) {
-                xy = gridData.getNewXYPos();
-            }
+        let xy = orderToXY(button.id, obfObject);
+        if (xy) {
             let gridElement = new GridElement({
                 width: 1,
                 height: 1,
                 label: i18nService.getTranslationObject(button.label, locale),
                 x: xy.x || 0,
                 y: xy.y || 0,
-                backgroundColor: button.background_color
+                backgroundColor: button.background_color,
+                hidden: button.hidden
             });
             gridElement = addActions(gridElement, button, obfObject, obfObjects);
             let speakActions = gridElement.actions.filter((a) => a.modelName === GridActionSpeak.getModelName());
