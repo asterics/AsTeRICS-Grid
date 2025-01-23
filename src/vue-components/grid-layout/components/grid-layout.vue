@@ -182,7 +182,7 @@ export default {
                         thiz.$emit('moveend');
                         thiz.$emit('interactend');
                         setTimeout(() => {
-                            event.target.style.zIndex = 0;
+                            event.target.style.zIndex = 'unset';
                             thiz.noMoveId = null;
                         }, thiz.animationDurationMs + 100);
                     }

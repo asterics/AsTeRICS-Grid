@@ -63,6 +63,7 @@
 
 .marked.element-container {
     outline: 5px solid green !important;
+    z-index: 1;
 }
 
 .scanInactive.element-container, .scanInactive.element-container span {

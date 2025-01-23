@@ -244,9 +244,7 @@
                 }
             },
             markElement(id) {
-                log.warn("mark element", id);
                 $('.element-container').removeClass('marked');
-                $('.element-container').css('z-index', 0);
                 if (!id) {
                     this.markedElement = null;
                     return;
@@ -255,18 +253,12 @@
                     if (!this.markedElement || this.markedElement.id !== id) {
                         this.markedElement = this.getElement(id);
                         $('#' + id).addClass('marked');
-                        $('#' + id).css('z-index', 1);
-                        log.warn("set to marked", id);
                     } else {
                         this.markedElement = null;
                     }
                 }, null, 200, "MARK_ELEMENT");
             },
             handleClickEvent(event) {
-                log.warn("click event", this.isInteracting)
-                if (this.isInteracting) {
-                    return;
-                }
                 if (vueApp) {
                     let id = null;
                     let element = event.target;
@@ -275,6 +267,9 @@
                             id = element.id;
                         }
                         element = element.parentNode;
+                    }
+                    if (this.isInteracting && this.markedElement && this.markedElement.id === id) {
+                        return;
                     }
                     vueApp.markElement(id);
                 }
