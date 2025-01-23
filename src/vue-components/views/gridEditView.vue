@@ -398,6 +398,22 @@
                             event.preventDefault();
                             this.redo();
                         }
+                        if (event.code === 'ArrowUp') {
+                            event.preventDefault();
+                            this.moveAll(gridLayoutUtil.DIR_UP);
+                        }
+                        if (event.code === 'ArrowRight') {
+                            event.preventDefault();
+                            this.moveAll(gridLayoutUtil.DIR_RIGHT);
+                        }
+                        if (event.code === 'ArrowDown') {
+                            event.preventDefault();
+                            this.moveAll(gridLayoutUtil.DIR_DOWN);
+                        }
+                        if (event.code === 'ArrowLeft') {
+                            event.preventDefault();
+                            this.moveAll(gridLayoutUtil.DIR_LEFT);
+                        }
                     }
                 }
             }
