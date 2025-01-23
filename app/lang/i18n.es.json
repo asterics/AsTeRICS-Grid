@@ -202,7 +202,7 @@
   "includeGlobalGrid": "Imprimir el Tablero Global",
   "downloadPdf": "Descargar PDF",
   "size": "Size",
-  "minimumNumberOfRows": "Minimum number of rows",
+  "minimumNumberOfRows": "Número mínimo de filas",
   "minimumNumberOfColumns": "Número mínimo de columnas",
   "heightOfFirstGlobalGridRow": "Altura de la primera fila del tablero global [%]",
   "linkGrids": "Enlazar tableros",
