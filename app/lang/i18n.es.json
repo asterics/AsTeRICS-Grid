@@ -354,7 +354,7 @@
   "testText": "Texto de prueba",
   "miscellaneous": "Miscelánea",
   "synchronizeNavigationAndLockedState": "Sincronizar el estado de navegación y el bloqueo/pantalla completa para usuarios online",
-  "lockUserInterface": "Bloquear interfaz de usuario",
+  "lockUserInterface": "Bloqueo de la interfaz de usuario",
   "passcodeForUnlockingUserInterface": "Contraseña para desbloquear la interfaz de usuario (sólo números)",
   "reset": "Restablecer",
   "allGridsAreSavedOffline": "todas los tableros se guardan offline",
