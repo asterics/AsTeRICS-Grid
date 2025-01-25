@@ -144,7 +144,7 @@
                 },
                 currentMsg: null,
                 msgCount: 0,
-                gridPasteCount: 0,
+                gridPasteCount: 0
             }
         },
         methods: {
