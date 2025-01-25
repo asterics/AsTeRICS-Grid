@@ -102,7 +102,10 @@ i18nService.isCurrentContentLangEN = function() {
  * @param lang two-letter language code to use
  * @param dontSave if true, passed lang is not saved to local storage
  */
-i18nService.setAppLanguage = function (lang, dontSave) {
+i18nService.setAppLanguage = async function (lang, dontSave) {
+    if (currentAppLang === lang) {
+        return;
+    }
     if (!dontSave) {
         localStorageService.saveAppSettings({appLang: lang});
     }

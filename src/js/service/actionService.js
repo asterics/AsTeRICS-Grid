@@ -32,20 +32,21 @@ let actionService = {};
 let minPauseSpeak = 0;
 let metadata = null;
 
-actionService.doAction = function (gridId, gridElementId) {
-    if (!gridId || !gridElementId) {
+actionService.doAction = async function (gridIdOrObject, gridElementId) {
+    if (!gridIdOrObject || !gridElementId) {
         return;
     }
-    dataService.getGridElement(gridId, gridElementId).then((gridElement) => {
-        log.debug('do actions for: ' + i18nService.getTranslation(gridElement.label) + ', ' + gridElementId);
-        switch (gridElement.type) {
-            case GridElement.ELEMENT_TYPE_PREDICTION: {
-                predictionService.doAction(gridElement.id);
-                break;
-            }
+    let gridData = gridIdOrObject.gridElements ? gridIdOrObject : (await dataService.getGrid(gridIdOrObject, false, true));
+    let gridElement = JSON.parse(JSON.stringify(gridData.gridElements.find(e => e.id === gridElementId)));
+
+    log.debug('do actions for: ' + i18nService.getTranslation(gridElement.label) + ', ' + gridElementId);
+    switch (gridElement.type) {
+        case GridElement.ELEMENT_TYPE_PREDICTION: {
+            predictionService.doAction(gridElement.id);
+            break;
         }
-        doActions(gridElement, gridId);
-    });
+    }
+    doActions(gridElement, gridData.id);
 };
 
 actionService.testAction = function (gridElement, action, gridData) {
@@ -228,12 +229,6 @@ async function doAction(gridElement, action, options) {
                 language = localStorageService.getUserSettings().lastContentLang || i18nService.getContentLang();
             }
             await i18nService.setContentLanguage(language);
-            if (
-                options.actions.length === 0 ||
-                !options.actions.map((a) => a.modelName).includes(GridActionNavigate.getModelName())
-            ) {
-                $(document).trigger(constants.EVENT_RELOAD_CURRENT_GRID);
-            }
             let voiceConfig = localStorageService.getUserSettings().voiceConfig;
             voiceConfig.preferredVoice = action.voice;
             localStorageService.saveUserSettings({voiceConfig: voiceConfig});

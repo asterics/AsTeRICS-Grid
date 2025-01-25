@@ -20,34 +20,30 @@
             <button tabindex="32" @click="systemActionService.enterFullscreen()" class="spaced small" :aria-label="$t('fullscreen')"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
 
         </header>
-        <div class="srow content text-content" v-show="!gridData.gridElements">
+        <div class="srow content text-content" v-show="!renderGridData">
             <div class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin" style="position: relative;"/>
             </div>
         </div>
 
-        <huffman-input-modal v-if="showModal === modalTypes.MODAL_HUFFMAN" @close="showModal = null; reinitInputMethods();"/>
-        <direction-input-modal v-if="showModal === modalTypes.MODAL_DIRECTION" @close="showModal = null; reinitInputMethods();"/>
-        <mouse-modal v-if="showModal === modalTypes.MODAL_MOUSE" @close="showModal = null; reinitInputMethods();"/>
-        <scanning-modal v-if="showModal === modalTypes.MODAL_SCANNING" @close="showModal = null; reinitInputMethods();"/>
-        <sequential-input-modal v-if="showModal === modalTypes.MODAL_SEQUENTIAL" @close="showModal = null; reinitInputMethods();"/>
+        <huffman-input-modal v-if="showModal === modalTypes.MODAL_HUFFMAN" @close="showModal = null; reloadInputMethods();" />
+        <direction-input-modal v-if="showModal === modalTypes.MODAL_DIRECTION" @close="showModal = null; reloadInputMethods();"/>
+        <mouse-modal v-if="showModal === modalTypes.MODAL_MOUSE" @close="showModal = null; reloadInputMethods();"/>
+        <scanning-modal v-if="showModal === modalTypes.MODAL_SCANNING" @close="showModal = null; reloadInputMethods();"/>
+        <sequential-input-modal v-if="showModal === modalTypes.MODAL_SEQUENTIAL" @close="showModal = null; reloadInputMethods();"/>
         <unlock-modal v-if="showModal === modalTypes.MODAL_UNLOCK" @unlock="unlock(true)" @close="showModal = null;"/>
 
-        <div class="srow content spaced" v-show="viewInitialized && gridData.gridElements && gridData.gridElements.length === 0 && (!globalGridData || globalGridData.gridElements.length === 0)">
+        <div class="srow content spaced" v-if="renderGridData && renderGridData.gridElements.length === 0">
             <div style="margin-top: 2em">
                 <i18n path="noElementsClickToEnterEdit" tag="span">
                     <template v-slot:link>
-                        <a :href="'#grid/edit/' + gridData.id">{{ $t('editingOn') }}</a>
+                        <a :href="'#grid/edit/' + renderGridData.id">{{ $t('editingOn') }}</a>
                     </template>
                 </i18n>
             </div>
         </div>
-        <div class="srow content" v-show="gridData.gridElements && (gridData.gridElements.length > 0 || (globalGridData && globalGridData.gridElements.length > 0))">
-            <div v-if="!viewInitialized" class="grid-container grid-mask">
-                <i class="fas fa-4x fa-spinner fa-spin" style="position: relative"/>
-            </div>
-            <div id="grid-container" class="grid-container" :style="`background-color: ${backgroundColor}`">
-            </div>
+        <div class="srow content d-flex" v-if="renderGridData && renderGridData.gridElements.length > 0" style="min-height: 0">
+            <app-grid-display id="grid-container" :grid-data="renderGridData" :metadata="metadata"/>
         </div>
     </div>
 </template>
@@ -55,7 +51,6 @@
 <script>
     import $ from '../../js/externals/jquery.js';
     import {L} from "../../js/util/lquery.js";
-    import {Grid} from "../../js/grid.js";
     import {actionService} from "../../js/service/actionService";
     import {dataService} from "../../js/service/data/dataService";
     import {areService} from "../../js/service/areService";
@@ -72,7 +67,6 @@
 
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {constants} from "../../js/util/constants";
-    import {GridData} from "../../js/model/GridData";
     import {i18nService} from "../../js/service/i18nService";
     import {util} from "../../js/util/util";
     import ScanningModal from '../../vue-components/modals/input/scanningModal.vue'
@@ -85,13 +79,15 @@
     import {imageUtil} from "../../js/util/imageUtil";
     import {audioUtil} from "../../js/util/audioUtil.js";
     import UnlockModal from "../modals/unlockModal.vue";
-    import {printService} from "../../js/service/printService";
     import {MainVue} from "../../js/vue/mainVue.js";
     import {stateService} from "../../js/service/stateService.js";
     import { systemActionService } from '../../js/service/systemActionService';
+    import AppGridDisplay from '../grid-display/appGridDisplay.vue';
+    import { gridUtil } from '../../js/util/gridUtil';
+    import { collectElementService } from '../../js/service/collectElementService';
+    import { predictionService } from '../../js/service/predictionService';
 
     let vueApp = null;
-    let gridInstance = null;
     let UNLOCK_COUNT = 8;
     let modalTypes = {
         MODAL_SCANNING: 'MODAL_SCANNING',
@@ -109,8 +105,8 @@
         },
         data() {
             return {
-                gridData: {},
                 globalGridData: null,
+                renderGridData: null,
                 metadata: null,
                 updatedMetadataDoc: null,
                 scanner: null,
@@ -119,12 +115,11 @@
                 directionInput: null,
                 seqInput: null,
                 huffmanInput: null,
+                inputMethodsInitialized: false,
                 showModal: null,
                 modalTypes: modalTypes,
-                viewInitialized: false,
                 unlockCount: UNLOCK_COUNT,
                 unlockCounter: UNLOCK_COUNT,
-                backgroundColor: 'white',
                 MainVue: MainVue,
                 highlightTimeoutHandler: null,
                 highlightedElementId: null,
@@ -132,6 +127,7 @@
             }
         },
         components: {
+            AppGridDisplay,
             UnlockModal,
             SequentialInputModal,
             HuffmanInputModal,
@@ -189,17 +185,26 @@
             preventZoomHandler(event) {
                 event.preventDefault();
             },
-            initInputMethods(continueRunningMethods) {
-                let thiz = this;
-                if (!gridInstance) {
-                    return;
+            reloadInputMethods() {
+                this.initInputMethods({reload: true});
+            },
+            async initInputMethods(options = {}) {
+                options.continueInputMethods = options.continueInputMethods || false;
+                options.reload = options.reload || false;
+                if (this.inputMethodsInitialized) {
+                    stopInputMethods();
                 }
-
+                if (options.reload) {
+                    let metadata = await dataService.getMetadata();
+                    this.metadata = JSON.parse(JSON.stringify(metadata));
+                    initContextmenu(); //in order to update visualization of active input methods in context menu
+                }
+                let thiz = this;
                 let inputConfig = thiz.metadata.inputConfig;
                 let selectionListener = (item) => {
                     this.stopHighlightElements();
                     L.removeAddClass(item, 'selected');
-                    actionService.doAction(thiz.gridData.id, item.id);
+                    actionService.doAction(thiz.renderGridData, item.id);
                 };
                 let activeListener = (items, wrap, restarted) => {
                     if (!Array.isArray(items)) {
@@ -229,40 +234,32 @@
 
                 if (inputConfig.seqEnabled) {
                     thiz.seqInput = SequentialInput.getInstanceFromConfig(inputConfig, {
-                        itemSelector: '.grid-item-content:not([data-empty="true"])',
+                        itemSelector: '.element-container:not([data-empty="true"])',
                         selectionListener: selectionListener,
                         activeListener: activeListener
                     });
-                    thiz.seqInput.start(continueRunningMethods);
+                    thiz.seqInput.start(options.continueInputMethods);
                 }
 
                 if (inputConfig.dirEnabled) {
-                    thiz.directionInput = DirectionInput.getInstanceFromConfig(inputConfig, '.grid-item-content:not([data-empty="true"])', 'scanFocus', selectionListener);
+                    thiz.directionInput = DirectionInput.getInstanceFromConfig(inputConfig, '.element-container:not([data-empty="true"])', 'scanFocus', selectionListener);
                     thiz.directionInput.start();
                 }
 
                 if (inputConfig.huffEnabled) {
-                    this.huffmanInput = HuffmanInput.getInstanceFromConfig(inputConfig, '.grid-item-content', 'scanFocus', 'scanInactive', selectionListener);
+                    this.huffmanInput = HuffmanInput.getInstanceFromConfig(inputConfig, '.element-container', 'scanFocus', 'scanInactive', selectionListener);
                     this.huffmanInput.start();
                 }
 
                 if (inputConfig.scanEnabled) {
-                    thiz.scanner = Scanner.getInstanceFromConfig(inputConfig, '.grid-item-content:not([data-empty="true"])', 'scanFocus', 'scanInactive');
+                    thiz.scanner = Scanner.getInstanceFromConfig(inputConfig, '.element-container:not([data-empty="true"])', 'scanFocus', 'scanInactive');
                     thiz.scanner.setSelectionListener(selectionListener);
                     thiz.scanner.setActiveListener(activeListener);
-
-                    gridInstance.setLayoutChangedStartListener(function () {
-                        thiz.scanner.pauseScanning();
-                    });
-                    gridInstance.setLayoutChangedEndListener(function () {
-                        thiz.scanner.resumeScanning();
-                    });
-
-                    thiz.scanner.startScanning(continueRunningMethods);
+                    thiz.scanner.startScanning(options.continueInputMethods);
                 }
 
                 if (inputConfig.hoverEnabled) {
-                    thiz.hover = Hover.getInstanceFromConfig(inputConfig, '.grid-item-content', {
+                    thiz.hover = Hover.getInstanceFromConfig(inputConfig, '.element-container', {
                         activeListener: activeListener,
                         containerClass: '.grid-container li'
                     });
@@ -273,29 +270,56 @@
                 }
 
                 if (inputConfig.mouseclickEnabled || inputConfig.mouseDoubleClickEnabled) {
-                    thiz.clicker = Clicker.getInstanceFromConfig(inputConfig, '.grid-item-content');
+                    thiz.clicker = Clicker.getInstanceFromConfig(inputConfig, '.element-container');
                     thiz.clicker.setSelectionListener(selectionListener);
                     thiz.clicker.startClickcontrol();
                 }
+                this.inputMethodsInitialized = true;
             },
-            reinitInputMethods(continueRunningMethods) {
-                let thiz = this;
-                stopInputMethods();
-                dataService.getMetadata().then(newMetadata => {
-                    thiz.metadata = JSON.parse(JSON.stringify(newMetadata));
-                    initContextmenu(); //in order to update visualization of active input methods in context menu
-                    thiz.initInputMethods(continueRunningMethods);
-                });
+            async onNavigateEvent(event, gridData, params) {
+                await this.loadGrid(gridData, { continueInputMethods: true });
             },
-            reload(gridData) {
-                if (gridData) {
-                    this.gridData = JSON.parse(JSON.stringify(gridData));
-                    stateService.setCurrentGrid(this.gridData);
+            async loadGrid(gridData, options = {}) {
+                options.continueInputMethods = options.continueInputMethods || false;
+                options.forceReload = options.forceReload || false;
+                collectElementService.clearCollectElements();
+                if (gridData && (options.forceReload || !this.renderGridData || this.renderGridData.id !== gridData.id)) {
+                    if (gridUtil.hasAREModel(gridData)) {
+                        let areModel = gridUtil.getAREModel(gridData);
+                        areService.uploadAndStartModel(areModel.dataBase64, gridUtil.getAREURL(gridData), areModel.fileName);
+                    }
+
+                    // these two lines before recalculateRenderGrid since it changes gridData!
+                    let updateThumbnail = gridUtil.hasOutdatedThumbnail(gridData) && !this.skipThumbnailCheck;
+                    let newHash = updateThumbnail ? gridUtil.getHash(gridData) : null;
+
+                    await this.recalculateRenderGrid(gridData);
+                    Router.addToGridHistory(this.renderGridData.id);
+
+                    if (updateThumbnail) {
+                        imageUtil.allImagesLoaded().then(async () => {
+                            let screenshot = await imageUtil.getScreenshot("#grid-container");
+                            let thumbnail = {
+                                data: screenshot,
+                                hash: newHash
+                            };
+                            dataService.saveThumbnail(this.renderGridData.id, thumbnail);
+                        })
+                    }
+
+                    if (this.metadata.lastOpenedGridId !== gridData.id) {
+                        this.metadata.lastOpenedGridId = gridData.id;
+                        await dataService.saveMetadata(this.metadata);
+                    }
                 }
-                return gridInstance.reinit(gridData).then(() => {
-                    this.reinitInputMethods(true);
-                    return Promise.resolve();
-                });
+
+                await this.$nextTick();
+                initContextmenu();
+                this.initInputMethods(options);
+                this.highlightElements();
+                await predictionService.initWithElements(this.renderGridData.gridElements);
+                collectElementService.initWithElements(this.renderGridData.gridElements);
+                $(document).trigger(constants.EVENT_GRID_LOADED);
             },
             highlightElements() {
                 clearTimeout(this.highlightTimeoutHandler);
@@ -317,34 +341,17 @@
                     this.highlightedElementId = null;
                 }
             },
-            async onNavigateEvent(event, gridData, params) {
-                if (gridData && this.gridData.id === gridData.id) {
-                    this.highlightElements();
-                    return; //prevent duplicated navigation to same grid
-                }
-                this.metadata.lastOpenedGridId = gridData.id;
-                await this.reload(gridData);
-                this.highlightElements();
-                await dataService.saveMetadata(this.metadata);
-                $(document).trigger(constants.EVENT_GRID_LOADED);
-            },
-            onReloadGrid() {
-                this.reload();
-            },
             toEditGrid() {
-                Router.toEditGrid(this.gridData.id);
-            },
-            toManageGrids() {
-                Router.toManageGrids();
+                Router.toEditGrid(this.renderGridData.id);
             },
             toLogin() {
                 Router.toLogin();
             },
-            reloadFn(event, updatedIds, updatedDocs, deletedIds) {
+            async onExternalUpdate(event, updatedIds, updatedDocs, deletedIds) {
                 let thiz = this;
-                if (!vueApp || !gridInstance || !gridInstance.isInitialized()) {
+                if (!vueApp) {
                     setTimeout(() => {
-                        thiz.reloadFn(event, updatedIds, updatedDocs);
+                        thiz.onExternalUpdate(event, updatedIds, updatedDocs);
                     }, 500);
                     return;
                 }
@@ -353,43 +360,59 @@
                     return;
                 }
                 log.debug('got update event, ids updated:' + updatedIds);
-                let updatedGridDoc = updatedDocs.filter(doc => (vueApp.gridData && doc.id === vueApp.gridData.id))[0];
+                let updatedGridDoc = updatedDocs.filter(doc => (vueApp.renderGridData && doc.id === vueApp.renderGridData.id))[0];
                 let hasUpdatedGlobalGrid = updatedDocs.filter(doc => (this.metadata && doc.id === this.metadata.globalGridId)).length > 0;
                 this.updatedMetadataDoc = updatedDocs.filter(doc => (vueApp.metadata && doc.id === vueApp.metadata.id))[0] || this.updatedMetadataDoc;
                 if (updatedGridDoc) {
-                    vueApp.reload(new GridData(updatedGridDoc));
+                    vueApp.loadGrid(updatedGridDoc, { continueInputMethods: true, forceReload: true });
                 } else if (hasUpdatedGlobalGrid) {
-                    vueApp.reload();
+                    let gridData = await dataService.getGrid(vueApp.renderGridData.id, false, true);
+                    this.globalGridData = await dataService.getGlobalGrid();
+                    vueApp.loadGrid(gridData, { continueInputMethods: true, forceReload: true });
                 }
-                if (this.updatedMetadataDoc && JSON.stringify(this.metadata.colorConfig) !== JSON.stringify(this.updatedMetadataDoc.colorConfig)) {
-                    this.backgroundColor = this.updatedMetadataDoc.colorConfig.gridBackgroundColor;
-                    vueApp.reload();
-                }
-                if (!localStorageService.getAppSettings().syncNavigation) {
-                    return;
-                }
-                if (this.updatedMetadataDoc && this.updatedMetadataDoc.lastOpenedGridId !== vueApp.gridData.id) {
-                    dataService.getGrid(this.updatedMetadataDoc.lastOpenedGridId).then(toGrid => {
-                        if (!toGrid.hasOutdatedThumbnail()) {
-                            Router.toLastOpenedGrid();
+                if (localStorageService.getAppSettings().syncNavigation) {
+                    if (this.updatedMetadataDoc && this.updatedMetadataDoc.lastOpenedGridId !== vueApp.renderGridData.id) {
+                        dataService.getGrid(this.updatedMetadataDoc.lastOpenedGridId).then(toGrid => {
+                            if (!gridUtil.hasOutdatedThumbnail(toGrid)) {
+                                Router.toLastOpenedGrid();
+                            }
+                        });
+                        return;
+                    }
+                    if (this.updatedMetadataDoc && this.updatedMetadataDoc.fullscreen !== vueApp.metadata.fullscreen) {
+                        if (this.updatedMetadataDoc.fullscreen) {
+                            systemActionService.enterFullscreen(true);
+                        } else {
+                            $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
                         }
+                    }
+                    if (this.updatedMetadataDoc && this.updatedMetadataDoc.locked !== vueApp.metadata.locked) {
+                        if (this.updatedMetadataDoc.locked) {
+                            vueApp.lock();
+                        } else {
+                            vueApp.unlock(true);
+                        }
+                    }
+                }
+                this.metadata = this.updatedMetadataDoc || this.metadata;
+            },
+            async recalculateRenderGrid(gridData) {
+                // attention: gridData also changes because of "noDeepCopy: true"
+                // just using this.renderGridData for clarity
+                if (gridData.showGlobalGrid) {
+                    let globalGrid = this.globalGridData;
+                    if (gridData.globalGridId) {
+                        globalGrid = await dataService.getGrid(gridData.globalGridId, false, true);
+                    }
+                    this.renderGridData = gridUtil.mergeGrids(gridData, globalGrid, {
+                        globalGridHeightPercentage: this.metadata.globalGridHeightPercentage,
+                        noDeepCopy: true
                     });
-                    return;
+                } else {
+                    this.renderGridData = gridData;
                 }
-                if (this.updatedMetadataDoc && this.updatedMetadataDoc.fullscreen !== vueApp.metadata.fullscreen) {
-                    if (this.updatedMetadataDoc.fullscreen) {
-                        systemActionService.enterFullscreen(true);
-                    } else {
-                        $(document).trigger(constants.EVENT_SIDEBAR_OPEN);
-                    }
-                }
-                if (this.updatedMetadataDoc && this.updatedMetadataDoc.locked !== vueApp.metadata.locked) {
-                    if (this.updatedMetadataDoc.locked) {
-                        vueApp.lock();
-                    } else {
-                        vueApp.unlock(true);
-                    }
-                }
+                this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.hidden);
+                stateService.setCurrentGrid(this.renderGridData);
             },
             onSidebarOpen() {
                 if (!vueApp || !vueApp.metadata) {
@@ -414,8 +437,7 @@
             }
         },
         created() {
-            $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
-            $(document).on(constants.EVENT_RELOAD_CURRENT_GRID, this.onReloadGrid);
+            $(document).on(constants.EVENT_DB_PULL_UPDATED, this.onExternalUpdate);
             $(document).on(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
             $(document).on(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, this.onNavigateEvent);
             document.addEventListener('contextmenu', this.contextMenuListener);
@@ -424,8 +446,7 @@
             $(document).on(constants.EVENT_METADATA_UPDATED, this.metadataUpdated);
         },
         beforeDestroy() {
-            $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
-            $(document).off(constants.EVENT_RELOAD_CURRENT_GRID, this.onReloadGrid);
+            $(document).off(constants.EVENT_DB_PULL_UPDATED, this.onExternalUpdate);
             $(document).off(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
             $(document).off(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, this.onNavigateEvent);
             document.removeEventListener('contextmenu', this.contextMenuListener);
@@ -436,105 +457,55 @@
             this.setViewPropsUnlocked();
             $.contextMenu('destroy');
             vueApp = null;
-            if (gridInstance) {
-                gridInstance.destroy();
-                gridInstance = null;
-                printService.setGridInstance(null);
-            }
         },
-        mounted: function () {
-            let thiz = this;
-            vueApp = thiz;
-            dataService.getGlobalGrid().then(globalGrid => {
-                thiz.globalGridData = globalGrid;
-                return dataService.getGrid(thiz.gridId);
-            }).then(async gridData => {
-                if (!gridData) {
-                    log.warn('grid not found! gridId: ' + this.gridId);
-                    let grids = await dataService.getGrids(false, true);
-                    if (grids && grids[0]) {
-                        gridData = await dataService.getGrid(grids[0].id);
-                    } else {
-                        Router.toManageGrids();
-                        return Promise.reject();
-                    }
-                }
-                if (gridData.hasAREModel()) {
-                    let areModel = gridData.getAREModel();
-                    areService.uploadAndStartModel(areModel.dataBase64, gridData.getAREURL(), areModel.fileName);
-                }
-                thiz.gridData = JSON.parse(JSON.stringify(gridData));
-                Router.addToGridHistory(thiz.gridData.id);
-                return Promise.resolve();
-            }).then(() => {
-                return dataService.getMetadata();
-            }).then((savedMetadata) => {
-                let metadata = JSON.parse(JSON.stringify(savedMetadata || new MetaData()));
-                this.backgroundColor = metadata.colorConfig.gridBackgroundColor;
-                metadata.lastOpenedGridId = this.gridId;
-                metadata.locked = metadata.locked === undefined ? urlParamService.isDemoMode() && dataService.getCurrentUser() === constants.LOCAL_DEMO_USERNAME : metadata.locked;
+        mounted: async function () {
+            vueApp = this;
+
+            let savedMetadata = await dataService.getMetadata();
+            let metadata = JSON.parse(JSON.stringify(savedMetadata || new MetaData()));
+            metadata.lastOpenedGridId = this.gridId;
+            metadata.locked = metadata.locked === undefined ? urlParamService.isDemoMode() && dataService.getCurrentUser() === constants.LOCAL_DEMO_USERNAME : metadata.locked;
+            if (metadata.locked) {
+                $(document).trigger(constants.EVENT_UI_LOCKED);
+            }
+            metadata.fullscreen = metadata.fullscreen === undefined ? urlParamService.isDemoMode() && dataService.getCurrentUser() === constants.LOCAL_DEMO_USERNAME : metadata.fullscreen;
+            metadata.fullscreen = urlParamService.isFullscreen(true) ? true : metadata.fullscreen;
+            metadata.locked = urlParamService.isLocked(true) ? true : metadata.locked;
+            metadata.inputConfig.scanEnabled = urlParamService.isScanningEnabled() ? true : metadata.inputConfig.scanEnabled;
+            metadata.inputConfig.dirEnabled = urlParamService.isDirectionEnabled() ? true : metadata.inputConfig.dirEnabled;
+            metadata.inputConfig.huffEnabled = urlParamService.isHuffmanEnabled() ? true : metadata.inputConfig.huffEnabled;
+            dataService.saveMetadata(metadata).then(() => {
                 if (metadata.locked) {
-                    $(document).trigger(constants.EVENT_UI_LOCKED);
-                }
-                metadata.fullscreen = metadata.fullscreen === undefined ? urlParamService.isDemoMode() && dataService.getCurrentUser() === constants.LOCAL_DEMO_USERNAME : metadata.fullscreen;
-                metadata.inputConfig.scanEnabled = urlParamService.isScanningEnabled() ? true : metadata.inputConfig.scanEnabled;
-                metadata.inputConfig.dirEnabled = urlParamService.isDirectionEnabled() ? true : metadata.inputConfig.dirEnabled;
-                metadata.inputConfig.huffEnabled = urlParamService.isHuffmanEnabled() ? true : metadata.inputConfig.huffEnabled;
-                dataService.saveMetadata(metadata).then(() => {
-                    if (metadata.locked) {
-                        this.setViewPropsLocked();
-                    }
-                });
-                thiz.metadata = metadata;
-                return Promise.resolve();
-            }).then(() => {
-                stateService.setCurrentGrid(thiz.gridData);
-                return initGrid(thiz.gridData.id);
-            }).then(() => {
-                initContextmenu();
-                thiz.viewInitialized = true;
-                $(document).trigger(constants.EVENT_GRID_LOADED);
-                let gridDataObject = new GridData(thiz.gridData);
-                if (gridDataObject.hasOutdatedThumbnail() && !thiz.skipThumbnailCheck) {
-                    imageUtil.allImagesLoaded().then(() => {
-                        imageUtil.getScreenshot("#grid-container").then(screenshot => {
-                            let thumbnail = {
-                                data: screenshot,
-                                hash: gridDataObject.getHash()
-                            };
-                            thiz.gridData.thumbnail = thumbnail;
-                            dataService.saveGrid(thiz.gridData);
-                        });
-                    })
-                }
-                thiz.initInputMethods();
-                thiz.highlightElements();
-            }).catch((e) => {
-                if (e) {
-                    log.warn(e);
+                    this.setViewPropsLocked();
                 }
             });
+            this.metadata = metadata;
+            this.globalGridData = await dataService.getGlobalGrid();
+            let gridData = await dataService.getGrid(this.gridId, false, true);
+            if (!gridData) {
+                log.warn('grid not found! gridId: ' + this.gridId);
+                let grids = await dataService.getGrids(false, true);
+                if (grids && grids[0]) {
+                    gridData = await dataService.getGrid(grids[0].id);
+                } else {
+                    return Router.toManageGrids();
+                }
+            }
+            this.loadGrid(gridData);
         }
     };
 
     function stopInputMethods() {
-        if (vueApp && vueApp.scanner) vueApp.scanner.destroy();
-        if (vueApp && vueApp.hover) vueApp.hover.destroy();
-        if (vueApp && vueApp.clicker) vueApp.clicker.destroy();
-        if (vueApp && vueApp.directionInput) vueApp.directionInput.destroy();
-        if (vueApp && vueApp.huffmanInput) vueApp.huffmanInput.destroy();
-        if (vueApp && vueApp.seqInput) vueApp.seqInput.destroy();
-    }
-
-    function initGrid(gridId) {
-        gridInstance = new Grid('#grid-container', '.grid-item-content', {
-            enableResizing: false,
-            dragAndDrop: false,
-            gridId: gridId,
-            globalGridHeightPercentage: vueApp.metadata.globalGridHeightPercentage
-        });
-        printService.setGridInstance(gridInstance);
-        return gridInstance.getInitPromise();
+        if (!vueApp) {
+            return;
+        }
+        if (vueApp.scanner) vueApp.scanner.destroy();
+        if (vueApp.hover) vueApp.hover.destroy();
+        if (vueApp.clicker) vueApp.clicker.destroy();
+        if (vueApp.directionInput) vueApp.directionInput.destroy();
+        if (vueApp.huffmanInput) vueApp.huffmanInput.destroy();
+        if (vueApp.seqInput) vueApp.seqInput.destroy();
+        vueApp.inputMethodsInitialized = false;
     }
 
     function initContextmenu() {
@@ -622,7 +593,4 @@
 </script>
 
 <style scoped>
-#grid-container {
-    -webkit-touch-callout: none;
-}
 </style>

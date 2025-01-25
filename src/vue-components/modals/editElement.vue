@@ -7,7 +7,7 @@
                         <edit-element-header :grid-element="originalGridElement" :header="editElementId ? $t('editGridItem') : $t('newGridItem')" :close-fn="close" :open-help-fn="openHelp"></edit-element-header>
                     </div>
 
-                    <nav-tabs class="mb-3" :tab-labels="Object.keys(possibleTabs)" v-model="currentTab" @input="imageSearch = ''"></nav-tabs>
+                    <nav-tabs class="mb-5" :tab-labels="Object.keys(possibleTabs)" v-model="currentTab" @input="imageSearch = ''"></nav-tabs>
 
                     <div class="modal-body mt-2" v-if="gridElement">
                         <div v-if="currentTab === TABS.TAB_GENERAL">
@@ -72,7 +72,7 @@
     const TABS = {TAB_GENERAL, TAB_IMAGE, TAB_WORDFORMS,TAB_ACTIONS};
 
     export default {
-        props: ['editElementIdParam', 'gridDataId', 'gridInstance'],
+        props: ['editElementIdParam', 'gridDataId', 'undoService', 'newPosition'],
         components: {
             EditElementWordForms,
             EditElementHeader,
@@ -101,6 +101,9 @@
             save(toActions) {
                 this.saveInternal().then((savedSomething) => {
                     this.$emit('close');
+                    if (savedSomething) {
+                        this.$emit('reload', this.gridData);
+                    }
                     if (savedSomething && !this.editElementId) {
                         this.$emit('mark', this.gridElement.id);
                     }
@@ -137,7 +140,7 @@
                 let thiz = this;
                 return new Promise(resolve => {
                     if (thiz.gridData && JSON.stringify(thiz.originalGridData) !== JSON.stringify(thiz.gridData)) {
-                        thiz.gridInstance.updateGridWithUndo(thiz.gridData).then(updated => {
+                        thiz.undoService.updateGrid(thiz.gridData).then(updated => {
                             resolve(updated);
                         });
                     } else {
@@ -158,7 +161,7 @@
                         }
                         thiz.gridElement.label = util.isString(thiz.gridElement.label) ? {} : thiz.gridElement.label;
                     } else {
-                        let newXYPos = gridData.getNewXYPos();
+                        let newXYPos = this.newPosition || gridData.getNewXYPos();
                         log.debug('creating element: x ' + newXYPos.x + ' / y ' + newXYPos.y);
                         thiz.gridElement = JSON.parse(JSON.stringify(new GridElement({
                             x: newXYPos.x,

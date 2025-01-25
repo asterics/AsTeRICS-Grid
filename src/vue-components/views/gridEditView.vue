@@ -9,18 +9,18 @@
             <button tabindex="33" id="moreButton" :aria-label="$t('more')" class="spaced"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile">{{ $t('more') }}</span></button>
             <div id="moreButtonMenu"></div>
             <div class="spaced btn-group">
-                <button tabindex="31" @click="undo" :aria-label="$t('undo')" :disabled="!canUndo || doingUndoRedo" class="small"><i class="fas fa-undo"></i> <span class="hide-mobile">{{ $t('undo') }}</span></button>
-                <button tabindex="32" @click="redo"  :aria-label="$t('redo')" :disabled="!canRedo || doingUndoRedo" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span></button>
+                <button tabindex="31" @click="undo" :aria-label="$t('undo')" :disabled="doingUndoRedo|| !undoService.canUndo()" class="small"><i class="fas fa-undo"></i> <span class="hide-mobile">{{ $t('undo') }}</span></button>
+                <button tabindex="32" @click="redo"  :aria-label="$t('redo')" :disabled="doingUndoRedo || !undoService.canRedo()" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span></button>
             </div>
         </header>
         <div>
-            <edit-element v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :grid-instance="getGridInstance()" :grid-data-id="gridData.id" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
+            <edit-element v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :undo-service="undoService" :grid-data-id="gridData.id" :new-position="newPosition" @reload="reload" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
         </div>
         <div>
-            <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :grid-instance="getGridInstance()" @close="showMultipleModal = false"/>
+            <add-multiple-modal v-if="showMultipleModal" v-bind:grid-data="gridData" :undo-service="undoService" @reload="reload" @close="showMultipleModal = false"/>
         </div>
         <div>
-            <grid-dimension-modal v-if="showDimensionsModal" v-bind:grid-data-param="gridData" :is-global-grid="metadata.globalGridId === gridData.id" @close="showDimensionsModal = false" @save="setDimensions"/>
+            <grid-settings-modal v-if="showGridSettingsModal" :grid-data-param="gridData" :is-global-grid="metadata.globalGridId === gridData.id" @reload="reload" @close="showGridSettingsModal = false;" :undo-service="undoService"/>
         </div>
         <div>
             <element-move-modal v-if="showMoveModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showMoveModal = false" @reload="reload"/>
@@ -31,27 +31,19 @@
         <div>
             <set-navigation-modal v-if="showNavigateModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showNavigateModal = false" @reload="reload"></set-navigation-modal>
         </div>
-        <div class="srow content" id="contentContainer">
+        <div class="srow content" id="contentContainer" v-if="!(metadata && gridData)">
             <div v-if="!showGrid" class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin"/>
             </div>
-            <div id="grid-container" class="grid-container" :style="`background-color: ${backgroundColor}`">
-            </div>
-            <div id="grid-layout-background-wrapper" class="grid-container" style="margin: 10px; display: none">
-                <div id="grid-layout-background-vertical" class="grid-container" style="margin-left: 204px; background-size: 209px 209px;
-    background-image: linear-gradient(to right, grey 1px, transparent 1px)">
-                </div>
-                <div id="grid-layout-background-horizontal" class="grid-container" style="margin-top: 204px; background-size: 209px 209px;
-    background-image: linear-gradient(to bottom, grey 1px, transparent 1px);">
-                </div>
-            </div>
+        </div>
+        <div class="srow content d-flex" v-if="metadata && gridData" style="min-height: 0">
+            <app-grid-display id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata" :editable="true" @interacted="onInteracted" @interactstart="onInteractStart" @interactend="onInteractEnd"/>
         </div>
     </div>
 </template>
 
 <script>
     import $ from '../../js/externals/jquery.js';
-    import {Grid} from "../../js/grid.js";
     import {dataService} from "../../js/service/data/dataService";
     import {Router} from "./../../js/router.js";
     import {i18nService} from "../../js/service/i18nService";
@@ -63,23 +55,24 @@
     import {GridData} from "../../js/model/GridData";
     import {constants} from "../../js/util/constants";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
-    import {inputEventHandler} from "../../js/input/inputEventHandler";
     import {util} from "../../js/util/util";
-    import GridDimensionModal from "../modals/gridDimensionModal.vue";
+    import GridSettingsModal from "../modals/gridSettingsModal.vue";
     import {gridUtil} from "../../js/util/gridUtil";
     import ElementMoveModal from "../modals/elementMoveModal.vue";
     import GridTranslateModal from "../modals/gridTranslateModal.vue";
     import SetNavigationModal from "../modals/setNavigationModal.vue";
     import {GridActionYoutube} from "../../js/model/GridActionYoutube";
-    import {printService} from "../../js/service/printService";
     import {GridElementCollect} from "../../js/model/GridElementCollect.js";
     import {GridActionCollectElement} from "../../js/model/GridActionCollectElement.js";
     import {pouchDbService} from "../../js/service/data/pouchDbService.js";
     import {MainVue} from "../../js/vue/mainVue.js";
     import {stateService} from "../../js/service/stateService.js";
+    import { UndoService } from '../../js/service/data/undoService';
+    import { gridLayoutUtil } from '../grid-layout/utils/gridLayoutUtil';
+    import { collectElementService } from '../../js/service/collectElementService';
+    import AppGridDisplay from '../grid-display/appGridDisplay.vue';
 
     let vueApp = null;
-    let gridInstance = null;
 
     let vueConfig = {
         props: ['gridId', 'highlightId'],
@@ -89,9 +82,10 @@
                 metadata: null,
                 canUndo: false,
                 canRedo: false,
+                undoService: new UndoService(),
                 doingUndoRedo: false,
                 showMultipleModal: false,
-                showDimensionsModal: false,
+                showGridSettingsModal: false,
                 showNavigateModal: false,
                 showMoveModal: false,
                 showTranslateModal: false,
@@ -100,42 +94,62 @@
                 showGrid: false,
                 constants: constants,
                 markedElement: null,
-                backgroundColor: 'white'
+                lastInteraction: {},
+                newPosition: null,
+                touchstartTimeoutHandler: null,
+                isInteracting: false
             }
         },
         components: {
+            AppGridDisplay,
             SetNavigationModal,
             GridTranslateModal,
             ElementMoveModal,
-            GridDimensionModal, EditElement, AddMultipleModal, HeaderIcon
+            GridSettingsModal, EditElement, AddMultipleModal, HeaderIcon
         },
         methods: {
-            setDimensions: function (rows, cols) {
-                gridInstance.setDimensions(rows, cols);
-            },
-            fillGaps: function () {
-                gridInstance.fillGaps();
+            moveAll: function(dir) {
+                this.gridData.gridElements = gridLayoutUtil.moveAsPossible(this.gridData.gridElements, this.gridData.gridElements, dir, {
+                    outOfBounds: false,
+                    gridWidth: gridUtil.getWidthWithBounds(this.gridData),
+                    gridHeight: gridUtil.getHeightWithBounds(this.gridData)
+                });
+                this.updateGridWithUndo();
             },
             normalizeGrid: function () {
-                gridInstance.normalizeGrid();
+                gridUtil.ensureUniqueIds(this.gridData.gridElements);
+                this.gridData.gridElements = gridLayoutUtil.normalizeGrid(this.gridData.gridElements);
+                this.updateGridWithUndo();
             },
-            undo: function () {
-                this.doingUndoRedo = true;
-                setTimeout(function () {
-                    gridInstance.undo();
-                }, 10);
+            async handleChange(newElements) {
+                this.gridData.gridElements = newElements;
+                await this.updateGridWithUndo();
             },
-            redo: function () {
-                this.doingUndoRedo = true;
-                setTimeout(function () {
-                    gridInstance.redo();
-                }, 10);
-            },
-            reload(gridData) {
-                gridInstance.reinit(gridData);
-                if (gridData) {
-                    this.gridData = JSON.parse(JSON.stringify(gridData));
+            undo: async function () {
+                if (!this.undoService.canUndo()) {
+                    return;
                 }
+                this.doingUndoRedo = true;
+                this.gridData = await this.undoService.doUndo();
+                this.doingUndoRedo = false;
+                this.$forceUpdate();
+            },
+            redo: async function () {
+                if (!this.undoService.canRedo()) {
+                    return;
+                }
+                this.doingUndoRedo = true;
+                this.gridData = await this.undoService.doRedo();
+                this.doingUndoRedo = false;
+                this.$forceUpdate();
+            },
+            async updateGridWithUndo() {
+                await this.undoService.updateGrid(this.gridData);
+                this.$forceUpdate();
+            },
+            async reload(gridData) {
+                gridData = gridData || (await dataService.getGrid(this.gridData.id));
+                this.gridData = gridData;
             },
             back() {
                 if (this.metadata && this.metadata.globalGridId === this.gridData.id) {
@@ -152,14 +166,26 @@
                 }
             },
             removeElement(id) {
-                let thiz = this;
-                gridInstance.removeElement(id).then(newGridData => {
-                    thiz.gridData = newGridData;
-                });
+                let element = this.getElement(id);
+                if (!element) {
+                    return;
+                }
+                this.gridData.gridElements = this.gridData.gridElements.filter((el) => el.id !== element.id);
+                this.updateGridWithUndo();
             },
-            newElement(type) {
+            async duplicateElement(id) {
+                let element = gridLayoutUtil.getElementById(this.gridData.gridElements, id);
+                let duplicate = gridUtil.duplicateElement(element);
+                this.gridData.gridElements = gridLayoutUtil.insertDuplicate(this.gridData.gridElements, element, duplicate, {
+                    gridWidth: this.gridData.minColumnCount,
+                    gridHeight: this.gridData.rowCount
+                });
+                this.updateGridWithUndo();
+            },
+            newElement(type, useInteractionPos) {
                 if (type === GridElement.ELEMENT_TYPE_NORMAL) {
                     this.editElementId = null;
+                    this.newPosition = useInteractionPos ? this.lastInteraction : null;
                     this.showEditModal = true;
                 } else {
                     let newPos = new GridData(this.gridData).getNewXYPos();
@@ -182,7 +208,7 @@
                         newElement.actions = [playText];
                     }
                     this.gridData.gridElements.push(newElement);
-                    gridInstance.updateGridWithUndo(this.gridData);
+                    this.updateGridWithUndo();
                 }
             },
             newElements() {
@@ -191,57 +217,59 @@
             clearElements() {
                 if (confirm(i18nService.t('CONFIRM_DELETE_ALL_ELEMS'))) {
                     this.gridData.gridElements = [];
-                    gridInstance.updateGridWithUndo(this.gridData);
+                    this.updateGridWithUndo();
                 }
             },
             fillElements() {
                 let elements = gridUtil.getFillElements(this.gridData);
                 this.gridData.gridElements = this.gridData.gridElements.concat(elements);
-                gridInstance.updateGridWithUndo(this.gridData);
+                this.updateGridWithUndo();
             },
             reloadFn(event, updatedIds, updatedDocs, deletedIds) {
                 if (vueApp && deletedIds.includes(vueApp.gridId)) {
                     Router.toManageGrids();
                     return;
                 }
-                if (vueApp && updatedIds.includes(vueApp.gridData.id) && gridInstance && gridInstance.isInitialized()) {
+                if (vueApp && updatedIds.includes(vueApp.gridData.id)) {
                     let gridData = new GridData(updatedDocs.filter(doc => doc.id === vueApp.gridData.id)[0]);
                     if (!gridData.isEqual(vueApp.gridData)) {
                         log.debug('reloading on remote update...');
                         vueApp.reload(gridData);
                     }
-                } else if (updatedIds.includes(vueApp.metadata.id) && gridInstance && gridInstance.isInitialized()) {
+                } else if (updatedIds.includes(vueApp.metadata.id)) {
                     let metadata = updatedDocs.filter(doc => doc.id === vueApp.metadata.id)[0];
                     if (metadata && JSON.stringify(metadata.colorConfig) !== JSON.stringify(vueApp.metadata.colorConfig)) {
-                        this.backgroundColor = metadata.colorConfig.gridBackgroundColor;
                         vueApp.reload();
                     }
                 }
             },
             markElement(id) {
+                $('.element-container').removeClass('marked');
                 if (!id) {
+                    this.markedElement = null;
                     return;
                 }
                 util.throttle(() => {
-                    $('.grid-item-content').removeClass('marked');
                     if (!this.markedElement || this.markedElement.id !== id) {
-                        this.markedElement = !id ? null : this.gridData.gridElements.filter(el => el.id === id)[0];
+                        this.markedElement = this.getElement(id);
                         $('#' + id).addClass('marked');
                     } else {
                         this.markedElement = null;
                     }
                 }, null, 200, "MARK_ELEMENT");
             },
-            getGridInstance() {
-                return gridInstance;
-            },
             handleClickEvent(event) {
                 if (vueApp) {
                     let id = null;
                     let element = event.target;
                     while (!id && element.parentNode) {
-                        id = $(element).attr('data-id');
+                        if (element.className.includes('element-container')) {
+                            id = element.id;
+                        }
                         element = element.parentNode;
+                    }
+                    if (this.isInteracting && this.markedElement && this.markedElement.id === id) {
+                        return;
                     }
                     vueApp.markElement(id);
                 }
@@ -254,82 +282,208 @@
                     }, 4000);
                 }
             },
+            copyElement(elementId) {
+                let element = this.getElement(elementId);
+                if (!element) {
+                    return;
+                }
+                util.gridElementToClipboard(element);
+            },
+            copyAllElements() {
+                util.gridElementsToClipboard(this.gridData.gridElements);
+            },
+            cutElement(elementId) {
+                let element = this.getElement(elementId);
+                if (!element) {
+                    return;
+                }
+                util.gridElementToClipboard(element);
+                this.removeElement(elementId);
+            },
+            async pasteElements() {
+                let elements = await util.getGridElementsFromClipboard();
+                if (!elements.length) {
+                    return;
+                } else if (elements.length === 1) {
+                    let element = elements[0];
+                    element.width = 1;
+                    element.height = 1;
+                    element.x = this.lastInteraction.x !== undefined ? this.lastInteraction.x : gridUtil.getHeightWithBounds(this.gridData);
+                    element.y = this.lastInteraction.y !== undefined ? this.lastInteraction.y : 0;
+                    this.gridData.gridElements.push(element);
+                    this.gridData.gridElements = gridLayoutUtil.resolveCollisions(this.gridData.gridElements, element);
+                    this.updateGridWithUndo();
+                } else {
+                    let firstEmptyRow = gridUtil.getHeightWithBounds(this.gridData);
+                    elements = elements.map(el => {
+                        el.y += firstEmptyRow;
+                        return el;
+                    });
+                    this.gridData.gridElements = this.gridData.gridElements.concat(elements);
+                    this.updateGridWithUndo();
+                }
+            },
+            getElement(elementId) {
+                elementId = elementId || (this.markedElement ? this.markedElement.id : null);
+                return !elementId ? null : this.gridData.gridElements.filter(el => el.id === elementId)[0];
+            },
+            onInteracted(x, y) {
+                this.lastInteraction.x = x;
+                this.lastInteraction.y = y;
+            },
+            onTouchstart(event) {
+                if (!constants.IS_SAFARI) {
+                    return;
+                }
+                this.touchstartTimeoutHandler = setTimeout(() => {
+                    let element = event.target;
+                    const position = { pageX: event.pageX, pageY: event.pageY };
+                    const newEvent = $.Event('contextmenu', position);
+                    while (element) {
+                        if (element.className.includes('element-container')) {
+                            $(element).trigger(newEvent);
+                            break;
+                        }
+                        if (element.id === 'grid-container') {
+                            $(element).trigger(newEvent);
+                            break;
+                        }
+                        element = element.parentElement;
+                    }
+                }, 600)
+            },
+            onTouchEnd() {
+                clearTimeout(this.touchstartTimeoutHandler);
+            },
+            onInteractStart() {
+                this.isInteracting = true;
+            },
+            onInteractEnd() {
+                setTimeout(() => {
+                    this.isInteracting = false; // reset after click event is fired
+                }, 100)
+            },
+            onKeyDown(event) {
+                const ctrlOrMeta = constants.IS_MAC ? event.metaKey : event.ctrlKey;
+                const isUndoRedo = event.key.toLocaleUpperCase() === 'Z' || event.code === 'KeyZ';
+                if (!event.repeat) {
+                    if (event.code === 'Delete') {
+                        event.preventDefault();
+                        this.removeElement();
+                    }
+                    if (ctrlOrMeta) {
+                        if (event.code === 'KeyC' && !event.shiftKey) {
+                            event.preventDefault();
+                            this.copyElement();
+                        }
+                        if (event.code === 'KeyC' && event.shiftKey) {
+                            event.preventDefault();
+                            this.copyAllElements();
+                        }
+                        if (event.code === 'KeyX') {
+                            event.preventDefault();
+                            this.cutElement();
+                        }
+                        if (event.code === 'KeyV') {
+                            event.preventDefault();
+                            this.pasteElements();
+                        }
+                        if (isUndoRedo && !event.shiftKey) {
+                            event.preventDefault();
+                            this.undo();
+                        }
+                        if (isUndoRedo && event.shiftKey) {
+                            event.preventDefault();
+                            this.redo();
+                        }
+                        if (event.code === 'ArrowUp') {
+                            event.preventDefault();
+                            this.moveAll(gridLayoutUtil.DIR_UP);
+                        }
+                        if (event.code === 'ArrowRight') {
+                            event.preventDefault();
+                            this.moveAll(gridLayoutUtil.DIR_RIGHT);
+                        }
+                        if (event.code === 'ArrowDown') {
+                            event.preventDefault();
+                            this.moveAll(gridLayoutUtil.DIR_DOWN);
+                        }
+                        if (event.code === 'ArrowLeft') {
+                            event.preventDefault();
+                            this.moveAll(gridLayoutUtil.DIR_LEFT);
+                        }
+                    }
+                }
+            }
         },
         created() {
             $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
+            document.addEventListener("keydown", this.onKeyDown);
         },
-        mounted: function () {
+        mounted: async function () {
             pouchDbService.pauseSync();
             let thiz = this;
             vueApp = thiz;
-            dataService.getGrid(this.gridId).then(gridData => {
-                if (!gridData) {
-                    log.warn('grid not found! gridId: ' + this.gridId);
-                    Router.toMain();
-                    return Promise.reject();
-                }
-                thiz.gridData = JSON.parse(JSON.stringify(gridData));
-                stateService.setCurrentGrid(thiz.gridData);
-                return Promise.resolve();
-            }).then(() => {
-                return dataService.getMetadata().then(savedMetadata => {
-                    thiz.metadata = JSON.parse(JSON.stringify(savedMetadata));
-                    thiz.backgroundColor = thiz.metadata.colorConfig.gridBackgroundColor;
-                    if (thiz.metadata.globalGridId === thiz.gridData.id) {
-                        return Promise.resolve();
-                    }
-                    thiz.metadata.lastOpenedGridId = thiz.gridData.id;
-                    return dataService.saveMetadata(thiz.metadata);
-                });
-            }).then(() => {
-                return initGrid(thiz.gridData);
-            }).then(() => {
-                gridInstance.setLayoutChangedEndListener((newGridData) => {
-                    thiz.canUndo = gridInstance.canUndo();
-                    thiz.canRedo = gridInstance.canRedo();
-                    thiz.doingUndoRedo = false;
-                    thiz.gridData = JSON.parse(JSON.stringify(newGridData));
-                });
-                initContextmenu();
-                thiz.showGrid = true;
-                thiz.highlightElement();
-            });
 
-            $('#contentContainer').on('click', this.handleClickEvent);
+            let gridData = await dataService.getGrid(this.gridId);
+            if (!gridData) {
+                log.warn('grid not found! gridId: ' + this.gridId);
+                Router.toMain();
+                return Router.toMain();
+            }
+            thiz.gridData = JSON.parse(JSON.stringify(gridData));
+            stateService.setCurrentGrid(thiz.gridData);
+
+            let savedMetadata = await dataService.getMetadata();
+            thiz.metadata = JSON.parse(JSON.stringify(savedMetadata));
+            if (thiz.metadata.globalGridId !== thiz.gridData.id) {
+                thiz.metadata.lastOpenedGridId = thiz.gridData.id;
+                await dataService.saveMetadata(thiz.metadata);
+            }
+
+            initContextmenu();
+            thiz.showGrid = true;
+            thiz.highlightElement();
+            collectElementService.initWithElements(this.gridData.gridElements);
+            this.$nextTick(() => {
+                let container = document.getElementById('grid-container');
+                container.addEventListener('click', this.handleClickEvent);
+                container.addEventListener('touchstart', this.onTouchstart);
+                container.addEventListener('touchmove', this.onTouchEnd);
+                container.addEventListener('touchcancel', this.onTouchEnd);
+                container.addEventListener('touchend', this.onTouchEnd);
+            });
         },
         beforeDestroy() {
             pouchDbService.resumeSync();
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
-            $('#contentContainer').off('click', this.handleClickEvent);
-            vueApp = null;
-            if (gridInstance) {
-                gridInstance.destroy();
-                gridInstance = null;
-                printService.setGridInstance(null);
+            document.removeEventListener("keydown", this.onKeyDown);
+            let container = document.getElementById('grid-container');
+            if (container) {
+                container.removeEventListener('click', this.handleClickEvent);
+                container.removeEventListener('touchstart', this.onTouchstart);
+                container.removeEventListener('touchmove', this.onTouchEnd);
+                container.removeEventListener('touchcancel', this.onTouchEnd);
+                container.removeEventListener('touchend', this.onTouchEnd);
             }
+            vueApp = null;
             $.contextMenu('destroy');
         }
     };
-
-    function initGrid(gridData) {
-        gridInstance = new Grid('#grid-container', '.grid-item-content', {
-            enableResizing: true,
-            dragAndDrop: true,
-            gridId: gridData.id
-        });
-        printService.setGridInstance(gridInstance);
-        return gridInstance.getInitPromise();
-    }
 
     function initContextmenu() {
         //see https://swisnl.github.io/jQuery-contextMenu/demo.html
 
         var CONTEXT_FILL_EMPTY = "CONTEXT_FILL_EMPTY";
+        var CONTEXT_COPY_ALL = "CONTEXT_COPY_ALL";
         var CONTEXT_DELETE_ALL = "CONTEXT_DELETE_ALL";
 
         let CONTEXT_ACTION_EDIT = 'CONTEXT_ACTION_EDIT';
         let CONTEXT_ACTION_DELETE = 'CONTEXT_ACTION_DELETE';
         let CONTEXT_ACTION_DUPLICATE = 'CONTEXT_ACTION_DUPLICATE';
+        let CONTEXT_ACTION_COPY = 'CONTEXT_ACTION_COPY';
+        let CONTEXT_ACTION_CUT = 'CONTEXT_ACTION_CUT';
+        let CONTEXT_ACTION_PASTE = 'CONTEXT_ACTION_PASTE';
         let CONTEXT_ACTION_DO_ACTION = 'CONTEXT_ACTION_DO_ACTION';
         let CONTEXT_MOVE_TO = 'CONTEXT_MOVE_TO';
 
@@ -340,9 +494,12 @@
         var CONTEXT_NEW_PREDICT = "CONTEXT_NEW_PREDICT";
         var CONTEXT_NEW_YT_PLAYER = "CONTEXT_NEW_YT_PLAYER";
 
-        var CONTEXT_LAYOUT_FILL = "CONTEXT_LAYOUT_FILL";
+        var CONTEXT_LAYOUT_ALL_UP = "CONTEXT_LAYOUT_ALL_UP";
+        var CONTEXT_LAYOUT_ALL_RIGHT = "CONTEXT_LAYOUT_ALL_RIGHT";
+        var CONTEXT_LAYOUT_ALL_DOWN = "CONTEXT_LAYOUT_ALL_DOWN";
+        var CONTEXT_LAYOUT_ALL_LEFT = "CONTEXT_LAYOUT_ALL_LEFT";
         var CONTEXT_LAYOUT_NORMALIZE = "CONTEXT_LAYOUT_NORMALIZE";
-        var CONTEXT_GRID_DIMENSIONS = "CONTEXT_GRID_DIMENSIONS";
+        var CONTEXT_GRID_SETTINGS = "CONTEXT_GRID_SETTINGS";
         var CONTEXT_GRID_NAVIGATION = "CONTEXT_GRID_NAVIGATION";
         var CONTEXT_GRID_TRANSLATION = "CONTEXT_GRID_TRANSLATION";
         var CONTEXT_EDIT_GLOBAL_GRID = "CONTEXT_EDIT_GLOBAL_GRID";
@@ -367,7 +524,8 @@
                         icon: "fab fa-youtube"
                     }
                 }
-            }
+            },
+            CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
         };
 
         var itemsElemNormal = {
@@ -375,45 +533,56 @@
             CONTEXT_ACTION_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt"},
             CONTEXT_ACTION_DUPLICATE: {name: i18nService.t('clone'), icon: "far fa-clone"},
             SEP1: "---------",
+            CONTEXT_ACTION_COPY: {name: i18nService.t('copy'), icon: "far fa-copy"},
+            CONTEXT_ACTION_CUT: {name: i18nService.t('cut'), icon: "fas fa-cut"},
+            CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
+            SEP2: "---------",
             CONTEXT_GRID_NAVIGATION: {name: i18nService.t('navigateToOtherGrid'), icon: "fas fa-arrow-right"},
             CONTEXT_MOVE_TO: {name: i18nService.t('moveElementToOtherGrid'), icon: "fas fa-file-export"},
             CONTEXT_ACTION_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt"},
         };
 
+        let itemsLayout = {
+            name: i18nService.t('layout'), icon: 'fas fa-th-large', items: {
+                'CONTEXT_LAYOUT_ALL_UP': { name: i18nService.t('moveAllUp'), icon: 'fas fa-angle-double-up' },
+                'CONTEXT_LAYOUT_ALL_RIGHT': { name: i18nService.t('moveAllRight'), icon: 'fas fa-angle-double-right' },
+                'CONTEXT_LAYOUT_ALL_DOWN': { name: i18nService.t('moveAllDown'), icon: 'fas fa-angle-double-down' },
+                'CONTEXT_LAYOUT_ALL_LEFT': { name: i18nService.t('moveAllLeft'), icon: 'fas fa-angle-double-left' },
+                'CONTEXT_LAYOUT_NORMALIZE': { name: i18nService.t('normalizeGridLayout'), icon: 'fas fa-th' }
+            }
+        };
+
         let visibleFn = () => !!vueApp.markedElement;
         let visibleFnFill = () => !new GridData({}, vueApp.gridData).isFull();
         var itemsMoreMenuButton = {
-            CONTEXT_ACTION_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit", visible: visibleFn},
-            CONTEXT_ACTION_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt", visible: visibleFn},
-            CONTEXT_ACTION_DUPLICATE: {name: i18nService.t('clone'), icon: "far fa-clone", visible: visibleFn},
-            CONTEXT_GRID_NAVIGATION: {name: i18nService.t('navigateToOtherGrid'), icon: "fas fa-arrow-right", visible: visibleFn},
-            CONTEXT_MOVE_TO: {name: i18nService.t('moveElementToOtherGrid'), icon: "fas fa-file-export", visible: visibleFn},
-            CONTEXT_ACTION_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt", visible: visibleFn},
+            "SELECTED_ELEM_ACTIONS": {name: i18nService.t('selectedElementContextMenu'), icon: "far fa-square", visible: visibleFn, items: itemsElemNormal},
             separator: { "type": "cm_separator", visible: () => (vueApp.markedElement)},
             CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP],
             'CONTEXT_FILL_EMPTY': {name: i18nService.t('fillWithEmptyElements'), icon: "fas fa-fill", visible: visibleFnFill},
+            'CONTEXT_COPY_ALL': {name: i18nService.t('copyAllElements'), icon: "fas fa-copy"},
             'CONTEXT_DELETE_ALL': {name: i18nService.t('deleteAllElements'), icon: "fas fa-minus-circle"},
             SEP1: "---------",
-            'CONTEXT_GRID_DIMENSIONS': {
-                name: i18nService.t('changeGridDimensions'),
+            CONTEXT_GROUP_LAYOUT: itemsLayout,
+            'CONTEXT_GRID_SETTINGS': {
+                name: i18nService.t('gridSettings'),
                 icon: "fas fa-expand-arrows-alt"
             },
             'CONTEXT_GRID_TRANSLATION': {
                 name: i18nService.t('translateGrid'),
                 icon: "fas fa-language"
             },
-            'CONTEXT_LAYOUT_FILL': {name: i18nService.t('fillGaps'), icon: "fas fa-angle-double-left"},
-            'CONTEXT_LAYOUT_NORMALIZE': {name: i18nService.t('normalizeGridLayout'), icon: "fas fa-th"},
             'CONTEXT_EDIT_GLOBAL_GRID': {name: i18nService.t('editGlobalGrid'), icon: "fas fa-globe", visible: !!vueApp.metadata.globalGridId && vueApp.metadata.globalGridActive && vueApp.metadata.globalGridId !== vueApp.gridData.id},
             'CONTEXT_END_EDIT_GLOBAL_GRID': {name: i18nService.t('endEditGlobalGrid'), icon: "fas fa-globe", visible: vueApp.metadata.globalGridId === vueApp.gridData.id},
             SEP2: "---------",
             'CONTEXT_SEARCH': {name: i18nService.t('searchBtnTitle'), icon: "fas fa-search"},
         };
 
+        let ORIGIN_MORE_BTN = "ORIGIN_MORE_BTN";
+
         $.contextMenu({
-            selector: '.item',
+            selector: '.element-container',
             callback: function (key, options) {
-                var elementId = $(this).attr('data-id');
+                let elementId = $(this).attr('id');
                 handleContextMenu(key, elementId);
             },
             items: itemsElemNormal,
@@ -421,7 +590,7 @@
         });
 
         $.contextMenu({
-            selector: '.grid-container',
+            selector: '#grid-container',
             callback: function (key, options) {
                 handleContextMenu(key);
             },
@@ -433,17 +602,17 @@
             selector: '#moreButton',
             appendTo: '#moreButtonMenu',
             callback: function (key, options) {
-                handleContextMenu(key);
+                handleContextMenu(key, null, ORIGIN_MORE_BTN);
             },
             trigger: 'left',
             items: itemsMoreMenuButton,
             zIndex: 10
         });
 
-        function handleContextMenu(key, elementId) {
+        function handleContextMenu(key, elementId, origin) {
             switch (key) {
                 case CONTEXT_NEW_SINGLE: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_NORMAL);
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_NORMAL, origin !== ORIGIN_MORE_BTN);
                     break;
                 }
                 case CONTEXT_NEW_MASS: {
@@ -462,6 +631,10 @@
                     vueApp.newElement(GridElement.ELEMENT_TYPE_YT_PLAYER);
                     break;
                 }
+                case CONTEXT_COPY_ALL: {
+                    vueApp.copyAllElements();
+                    break;
+                }
                 case CONTEXT_DELETE_ALL: {
                     vueApp.clearElements();
                     break;
@@ -470,16 +643,28 @@
                     vueApp.fillElements();
                     break;
                 }
-                case CONTEXT_LAYOUT_FILL: {
-                    vueApp.fillGaps();
+                case CONTEXT_LAYOUT_ALL_UP: {
+                    vueApp.moveAll(gridLayoutUtil.DIR_UP);
+                    break;
+                }
+                case CONTEXT_LAYOUT_ALL_RIGHT: {
+                    vueApp.moveAll(gridLayoutUtil.DIR_RIGHT);
+                    break;
+                }
+                case CONTEXT_LAYOUT_ALL_DOWN: {
+                    vueApp.moveAll(gridLayoutUtil.DIR_DOWN);
+                    break;
+                }
+                case CONTEXT_LAYOUT_ALL_LEFT: {
+                    vueApp.moveAll(gridLayoutUtil.DIR_LEFT);
                     break;
                 }
                 case CONTEXT_LAYOUT_NORMALIZE: {
                     vueApp.normalizeGrid();
                     break;
                 }
-                case CONTEXT_GRID_DIMENSIONS: {
-                    vueApp.showDimensionsModal = true;
+                case CONTEXT_GRID_SETTINGS: {
+                    vueApp.showGridSettingsModal = true;
                     break;
                 }
                 case CONTEXT_GRID_TRANSLATION: {
@@ -501,7 +686,19 @@
                     vueApp.markElement(null);
                     break;
                 case CONTEXT_ACTION_DUPLICATE:
-                    gridInstance.duplicateElement(elementId || vueApp.markedElement.id);
+                    vueApp.duplicateElement(elementId || vueApp.markedElement.id);
+                    vueApp.markElement(null);
+                    break;
+                case CONTEXT_ACTION_COPY:
+                    vueApp.copyElement(elementId);
+                    vueApp.markElement(null);
+                    break;
+                case CONTEXT_ACTION_CUT:
+                    vueApp.cutElement(elementId);
+                    vueApp.markElement(null);
+                    break;
+                case CONTEXT_ACTION_PASTE:
+                    vueApp.pasteElements();
                     vueApp.markElement(null);
                     break;
                 case CONTEXT_ACTION_DO_ACTION:
@@ -514,7 +711,7 @@
                     vueApp.showMoveModal = true;
                     break;
                 case CONTEXT_EDIT_GLOBAL_GRID:
-                    Router.toEditGrid(vueApp.metadata.globalGridId);
+                    Router.toEditGrid(vueApp.gridData.globalGridId || vueApp.metadata.globalGridId);
                     break;
                 case CONTEXT_END_EDIT_GLOBAL_GRID:
                     Router.toEditGrid(vueApp.metadata.lastOpenedGridId);

@@ -76,7 +76,7 @@ export default {
                 return;
             }
             this.saveInternal().then(() => {
-                this.$emit('reload');
+                this.$emit('reload', this.gridData);
                 this.$emit('close');
             });
         },

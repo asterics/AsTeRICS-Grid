@@ -6,7 +6,10 @@ import { GridActionNavigate } from '../model/GridActionNavigate';
 import { GridActionCollectElement } from '../model/GridActionCollectElement';
 import { GridData } from '../model/GridData';
 import { GridElementCollect } from '../model/GridElementCollect.js';
-import {constants} from "./constants.js";
+import { constants } from './constants.js';
+import { GridActionARE } from '../model/GridActionARE';
+import { encryptionService } from '../service/data/encryptionService';
+import { gridLayoutUtil } from '../../vue-components/grid-layout/utils/gridLayoutUtil';
 
 let gridUtil = {};
 
@@ -439,26 +442,30 @@ gridUtil.getActionsOfType = function (gridElement, modelName) {
  * @param grid
  * @param globalGrid
  * @param options.globalGridHeightPercentage the height of the global grid in percentage
+ * @param options.noDeepCopy if set to true, not deep copy of the input grids will be done before merging. This is better
+ *                           for performance, but will change the original object. Make sure that it's not saved to
+ *                           database afterwards, if setting noDeepCopy to true
  * @returns {*} grid data of the merged grid
  */
 gridUtil.mergeGrids = function(grid, globalGrid, options = {}) {
     if (grid && globalGrid && globalGrid.gridElements && globalGrid.gridElements.length > 0) {
-        globalGrid = new GridData(JSON.parse(JSON.stringify(globalGrid)));
+        globalGrid = JSON.parse(JSON.stringify(globalGrid));
+        grid = options.noDeepCopy ? grid : JSON.parse(JSON.stringify(grid));
         let autowidth = true;
         let heightPercentage = options.globalGridHeightPercentage
             ? options.globalGridHeightPercentage / 100
             : 0.15;
         let heightFactorNormal = 1;
         let heightFactorGlobal = 1;
-        if (globalGrid.getHeight() === 1) {
+        if (gridUtil.getHeight(globalGrid) === 1) {
             heightFactorGlobal = (heightPercentage * grid.rowCount) / (1 - heightPercentage);
             heightFactorNormal = 1 / (grid.rowCount * heightPercentage) - 1 / grid.rowCount;
             heightFactorGlobal = Math.round(heightPercentage * 100);
             heightFactorNormal = Math.round(((1 - heightPercentage) / grid.rowCount) * 100);
         }
         let offset = gridUtil.getOffset(globalGrid);
-        let factorGrid = autowidth ? globalGrid.getWidth() - offset.x : 1;
-        let factorGlobal = autowidth ? grid.getWidthWithBounds() : 1;
+        let factorGrid = autowidth ? gridUtil.getWidth(globalGrid) - offset.x : 1;
+        let factorGlobal = autowidth ? gridUtil.getWidthWithBounds(grid) : 1;
         globalGrid.gridElements.forEach((gridElement) => {
             gridElement.width *= factorGlobal;
             gridElement.x *= factorGlobal;
@@ -479,6 +486,123 @@ gridUtil.mergeGrids = function(grid, globalGrid, options = {}) {
     }
     return grid;
 }
+
+gridUtil.getAREFirstAction = function(gridData) {
+    let allActions = [];
+    gridData.gridElements.forEach((element) => {
+        allActions = allActions.concat(element.actions);
+    });
+    return allActions.filter((a) => a.modelName === GridActionARE.getModelName())[0];
+};
+
+gridUtil.getAREModel = function(gridData) {
+    let areAction = gridUtil.getAREFirstAction(gridData);
+    if (areAction) {
+        let filteredFiles = gridData.additionalFiles.filter((f) => f.fileName === areAction.areModelGridFileName);
+        return filteredFiles[0];
+    }
+    return null;
+};
+
+gridUtil.getAREURL = function(gridData) {
+    let areAction = gridUtil.getAREFirstAction(gridData);
+    return areAction ? areAction.areURL : null;
+};
+
+gridUtil.hasAREModel = function(gridData) {
+    return !!gridUtil.getAREModel(gridData);
+};
+
+gridUtil.hasOutdatedThumbnail = function(gridData) {
+    return !gridData.thumbnail || !gridData.thumbnail.data || gridData.thumbnail.hash !== gridUtil.getHash(gridData);
+};
+
+gridUtil.getHash = function(gridData) {
+    let string = '';
+    gridData.gridElements.forEach((e) => {
+        string += JSON.stringify(e.label) + e.x + e.y;
+        if (e.image && (e.image.data || e.image.url)) {
+            let temp = e.image.data || e.image.url;
+            string += temp.substring(temp.length > 30 ? temp.length - 30 : 0);
+        }
+    });
+    return encryptionService.getStringHash(string);
+};
+
+gridUtil.getWidth = function(gridDataOrElements) {
+    let gridElements = getGridElements(gridDataOrElements);
+    return gridLayoutUtil.getWidth(gridElements);
+};
+
+gridUtil.getHeight = function(gridDataOrElements) {
+    let gridElements = getGridElements(gridDataOrElements);
+    return gridLayoutUtil.getHeight(gridElements);
+};
+
+gridUtil.getWidthWithBounds = function(gridDataOrElements) {
+    return Math.max(gridUtil.getWidth(gridDataOrElements), gridDataOrElements.minColumnCount ? gridDataOrElements.minColumnCount : 0);
+};
+
+gridUtil.getHeightWithBounds = function(gridDataOrElements) {
+    return Math.max(gridUtil.getHeight(gridDataOrElements), gridDataOrElements.rowCount ? gridDataOrElements.rowCount : 0);
+};
+
+/**
+ * ensure that all defaults are set within the given GridData object
+ * and all contained GridElement objects
+ * @param gridData
+ * @returns {*}
+ */
+gridUtil.ensureDefaults = function(gridData) {
+    for (let key of Object.keys(GridData.DEFAULTS)) {
+        gridData[key] = gridData[key] === undefined ? GridData.DEFAULTS[key] : gridData[key];
+    }
+    for (let key of Object.keys(GridElement.DEFAULTS)) {
+        for (let element of gridData.gridElements) {
+            element[key] = element[key] === undefined ? GridElement.DEFAULTS[key] : element[key];
+        }
+    }
+    return gridData;
+};
+
+/**
+ * returns a duplicate of the given element, same contents, different id, navigation actions removed
+ * @param element the element that should be duplicated
+ */
+gridUtil.duplicateElement = function(element) {
+    let duplicate = JSON.parse(JSON.stringify(element));
+    duplicate.id = modelUtil.generateId(GridElement.ID_PREFIX);
+    duplicate.actions = duplicate.actions || [];
+    duplicate.actions = duplicate.actions.filter(
+        (action) => action.modelName !== GridActionNavigate.getModelName()
+    );
+    return duplicate;
+}
+
+gridUtil.ensureUniqueIds = function(gridElements) {
+    let seenIds = [];
+    for (let gridElement of gridElements) {
+        if (seenIds.includes(gridElement.id)) {
+            gridElement.id = new GridElement().id;
+        }
+        seenIds.push(gridElement.id);
+    }
+};
+
+/**
+ * returns the actual screen size of a single 1x1 element given the actual container size of the whole grid
+ * @param containerSize the actual screen size of the container of the whole grid
+ * @param gridData
+ * @returns {{width: number, height: number}}
+ */
+gridUtil.getOneElementSize = function(containerSize, gridData) {
+    let width = gridUtil.getWidthWithBounds(gridData);
+    let height = gridUtil.getHeightWithBounds(gridData);
+    return {
+        width: containerSize.width / width,
+        height: containerSize.height / height
+    };
+};
 
 function getAllChildrenRecursive(gridGraphList, gridId) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];
@@ -512,6 +636,14 @@ function getNavigationIds(grid) {
             return a.navType === GridActionNavigate.NAV_TYPES.TO_GRID ? a.toGridId : null;
         })
         .filter((a) => !!a);
+}
+
+function getGridElements(gridDataOrElements) {
+    let gridElements = gridDataOrElements.gridElements ? gridDataOrElements.gridElements : gridDataOrElements;
+    if (!gridElements || gridElements.length === 0) {
+        return [];
+    }
+    return gridElements;
 }
 
 export { gridUtil };

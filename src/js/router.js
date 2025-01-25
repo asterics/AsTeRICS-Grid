@@ -5,7 +5,7 @@ import { i18nService } from './service/i18nService';
 import { dataService } from './service/data/dataService.js';
 import { helpService } from './service/helpService';
 
-import AllGridsView from '../vue-components/views/allGridsView.vue';
+import ManageGridsView from '../vue-components/views/manageGridsView.vue';
 import GridEditView from '../vue-components/views/gridEditView.vue';
 import GridView from '../vue-components/views/gridView.vue';
 import LoginView from '../vue-components/views/loginView.vue';
@@ -36,7 +36,7 @@ let _gridHistory = [];
 let _locked = false;
 
 Router.VIEWS = {
-    AllGridsView: AllGridsView,
+    ManageGridsView: ManageGridsView,
     GridView: GridView,
     GridEditView: GridEditView
 }
@@ -55,7 +55,7 @@ Router.init = function (injectIdParam, initialHash) {
         },
         'grids/': function () {
             helpService.setHelpLocation('02_navigation', '#manage-grids-view');
-            loadVueView(AllGridsView);
+            loadVueView(ManageGridsView);
         },
         'grid/:gridId': function (params, query) {
             log.debug('route grid with ID: ' + params.gridId);
@@ -229,7 +229,7 @@ Router.toGrid = function (id, props) {
         let hash = `#grid/${id}`;
 
         if (_currentView === GridView) {
-            dataService.getGrid(id).then((gridData) => {
+            dataService.getGrid(id, false, true).then((gridData) => {
                 if (!gridData) {
                     return;
                 }

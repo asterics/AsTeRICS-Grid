@@ -77,6 +77,7 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
             $(_elements).removeClass('noanimation');
             $(_elements).css('background', '');
         }
+        _elements.removeClass(scanActiveClass);
         _inputEventHandler.stopListening();
     };
 
@@ -185,12 +186,12 @@ function HuffmanInputConstructor(paramItemSelector, paramScanActiveClass, paramS
                     let textColor = fontUtil.getHighContrastColor(color);
                     let width = (100 - 5 * longestCodeLength) / longestCodeLength + '%';
                     let char = printCodes ? c : '&nbsp;';
-                    spans += `<span style="background-color: ${color}; color: ${textColor}; width: ${width}; display: inline-block; margin: 0 1%; border-radius: 5px; border: 1px solid whitesmoke;">${char}</span>`;
+                    spans += `<span style="background-color: ${color}; color: ${textColor}; width: ${width}; display: inline-block; margin: 0 1%; border-radius: 5px; border: 1px solid whitesmoke; text-align: center">${char}</span>`;
                 });
                 let fontSize = printCodes ? '10px' : '3px';
                 let elementWidth = $(item.element).width() + 'px';
                 let element = htmlToElement(
-                    `<div class="huffman-code-visualization" style="font-size:${fontSize}; display:block; position: absolute; bottom: 0; width: ${elementWidth}">${spans}</div>`
+                    `<div class="huffman-code-visualization" style="font-size:${fontSize}; display:flex; align-items: center; justify-content: center; position: absolute; bottom: 0; width: ${elementWidth}">${spans}</div>`
                 );
                 $(item.element).append(element);
                 _appendedElements.push(element);

@@ -33,6 +33,7 @@ constants.EVENT_UI_UNLOCKED = 'EVENT_UI_UNLOCKED';
 
 constants.EVENT_GRID_RESIZE = 'EVENT_GRID_RESIZE';
 constants.EVENT_GRID_LOADED = 'EVENT_GRID_LOADED';
+constants.EVENT_PREDICTIONS_CHANGED = 'EVENT_PREDICTIONS_CHANGED';
 constants.EVENT_USER_CHANGING = 'EVENT_USER_CHANGING';
 constants.EVENT_USER_CHANGED = 'EVENT_USER_CHANGED';
 constants.EVENT_METADATA_UPDATED = 'EVENT_METADATA_UPDATED';
@@ -41,7 +42,6 @@ constants.EVENT_USERSETTINGS_UPDATED = 'EVENT_USERSETTINGS_UPDATED';
 constants.EVENT_CONFIG_RESET = 'EVENT_CONFIG_RESET';
 constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE = 'EVENT_NAVIGATE_GRID_IN_VIEWMODE';
 constants.EVENT_NAVIGATE = 'EVENT_NAVIGATE';
-constants.EVENT_RELOAD_CURRENT_GRID = 'EVENT_RELOAD_CURRENT_GRID';
 
 constants.SW_EVENT_ACTIVATED = 'SW_EVENT_ACTIVATED';
 constants.SW_EVENT_URL_CACHED = 'SW_EVENT_URL_CACHED';
@@ -61,6 +61,7 @@ constants.IS_ENVIRONMENT_PROD = !constants.IS_ENVIRONMENT_DEV;
 constants.CURRENT_VERSION = '#ASTERICS_GRID_VERSION#';
 constants.IS_FIREFOX = navigator.userAgent.indexOf('Firefox') !== -1;
 constants.IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+constants.IS_MAC = (navigator.platform || ((navigator.userAgentData || {}).platform) || "").toUpperCase().includes('MAC');
 
 constants.STATE_ACTIVATED_TTS = 'STATE_ACTIVATED_TTS';
 
@@ -77,10 +78,25 @@ constants.BOARD_TYPE_SINGLE = "BOARD_TYPE_SINGLE";
 constants.BOARD_TYPES = [constants.BOARD_TYPE_SELFCONTAINED, constants.BOARD_TYPE_SINGLE];
 
 constants.DEFAULT_ELEMENT_BACKGROUND_COLOR = '#ffffff';
+constants.DEFAULT_ELEMENT_BACKGROUND_COLOR_DARK = '#555555';
+constants.DEFAULT_COLLECT_ELEMENT_BACKGROUND_COLOR = '#E8E8E8';
+constants.DEFAULT_COLLECT_ELEMENT_BACKGROUND_COLOR_DARK = '#757575';
+constants.DEFAULT_ELEMENT_BORDER_COLOR = '#808080';
+constants.DEFAULT_ELEMENT_FONT_COLOR = '#000000';
+constants.DEFAULT_ELEMENT_FONT_COLOR_DARK = '#ffffff';
 constants.DEFAULT_GRID_BACKGROUND_COLOR = '#e8e8e8';
+constants.DEFAULT_GRID_BACKGROUND_COLOR_DARK = '#000000';
+constants.COLOR_SCHEME_FITZGERALD_PREFIX = 'CS_MODIFIED_FITZGERALD_KEY';
+constants.COLOR_SCHEME_GOOSENS_PREFIX = 'CS_GOOSENS';
+constants.COLOR_SCHEME_FITZGERALD_LIGHT = 'CS_MODIFIED_FITZGERALD_KEY_LIGHT';
+constants.COLOR_SCHEME_FITZGERALD_MEDIUM = 'CS_MODIFIED_FITZGERALD_KEY_MEDIUM';
+constants.COLOR_SCHEME_FITZGERALD_DARK = 'CS_MODIFIED_FITZGERALD_KEY_DARK';
+constants.COLOR_SCHEME_GOOSENS_LIGHT = 'CS_GOOSENS_LIGHT';
+constants.COLOR_SCHEME_GOOSENS_MEDIUM = 'CS_GOOSENS_MEDIUM';
+constants.COLOR_SCHEME_GOOSENS_DARK = 'CS_GOOSENS_DARK';
 constants.DEFAULT_COLOR_SCHEMES = [
     {
-        name: 'CS_MODIFIED_FITZGERALD_KEY_LIGHT',
+        name: constants.COLOR_SCHEME_FITZGERALD_LIGHT,
         categories: [
             'CC_PRONOUN_PERSON_NAME',
             'CC_NOUN',
@@ -107,7 +123,7 @@ constants.DEFAULT_COLOR_SCHEMES = [
         ]
     },
     {
-        name: 'CS_MODIFIED_FITZGERALD_KEY_MEDIUM',
+        name: constants.COLOR_SCHEME_FITZGERALD_MEDIUM,
         categories: [
             'CC_PRONOUN_PERSON_NAME',
             'CC_NOUN',
@@ -134,14 +150,51 @@ constants.DEFAULT_COLOR_SCHEMES = [
         ]
     },
     {
-        name: 'CS_GOOSENS_LIGHT',
+        name: constants.COLOR_SCHEME_FITZGERALD_DARK,
+        categories: [
+            'CC_PRONOUN_PERSON_NAME',
+            'CC_NOUN',
+            'CC_VERB',
+            'CC_DESCRIPTOR',
+            'CC_SOCIAL_EXPRESSIONS',
+            'CC_MISC',
+            'CC_PLACE',
+            'CC_CATEGORY',
+            'CC_IMPORTANT',
+            'CC_OTHERS'
+        ],
+        colors: [
+            '#79791F',
+            '#804c26',
+            '#4c8026',
+            '#264c80',
+            '#802680',
+            '#808080',
+            '#602680',
+            '#52331f',
+            '#80261a',
+            '#4d4d4d'
+        ]
+    },
+    {
+        name: constants.COLOR_SCHEME_GOOSENS_LIGHT,
         categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
         colors: ['#fdcae1', '#84b6f4', '#c7f3c7', '#fdfd96', '#ffda89']
     },
     {
-        name: 'CS_GOOSENS_MEDIUM',
+        name: constants.COLOR_SCHEME_GOOSENS_MEDIUM,
         categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
         colors: ['#ff6bff', '#6bb5ff', '#b5ff6b', '#ffff6b', '#ffb56b']
+    },
+    {
+        name: constants.COLOR_SCHEME_GOOSENS_DARK,
+        categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
+        colors: [
+            '#802680',
+            '#264c80',
+            '#4c8026',
+            '#79791F',
+            '#804c26']
     }
 ];
 

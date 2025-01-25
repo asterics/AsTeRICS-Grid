@@ -103,7 +103,7 @@
                                     <li v-for="item in allElements">
                                         <div v-if="showGridElements(item.grid) && shouldShowMap[item.element.id]" class="srow">
                                             <div class="one columns">
-                                                <img height="25" style="max-width: 100%;" :src="item.element.image.url || item.element.image.data">
+                                                <img height="25" style="max-width: 100%;" :src="item.element.image ? item.element.image.url || item.element.image.data : ''">
                                             </div>
                                             <input type="text" :placeholder="`(${currentLangTranslated})`" class="five columns" :lang="currentLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[currentLocale]" @change="changedGrid(item.grid)"/>
                                             <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[chosenLocale]" @change="changedGrid(item.grid)"/>
