@@ -304,7 +304,7 @@
                     const word = i18nService.getTranslation(this.gridElement.label);
                     let response = await fetch('https://wordforms.asterics-foundation.org/wordforms_ndep/scraper.php?verb=' + word + '&type=json');
                     if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                        throw new Error('Network response was not ok');
                     }
                     let data = await response.text();
                     let parsedData = JSON.parse(data);
