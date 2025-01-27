@@ -21,7 +21,7 @@ echo "building..."
 tagname="release-beta-$(date +%Y-%m-%d-%H.%M/%z)"
 tagnameSed="release-beta-$(date +%Y-%m-%d-%H.%M\\/%z)"
 sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" src/js/util/constants.js
-sed -i -e "s/#ASTERICS_GRID_ENV#/PROD/g" src/js/util/constants.js
+sed -i -e "s/#ASTERICS_GRID_ENV#/BETA/g" src/js/util/constants.js
 sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" src/vue-components/views/aboutView.vue
 sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" serviceWorker.js
 npm run build

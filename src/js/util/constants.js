@@ -57,7 +57,8 @@ constants.DB_SYNC_STATE_ONLINEONLY = 'DB_SYNC_STATE_ONLINEONLY';
 
 constants.ENVIRONMENT = '#ASTERICS_GRID_ENV#';
 constants.IS_ENVIRONMENT_DEV = constants.ENVIRONMENT === '#ASTERICS_' + 'GRID_ENV#';
-constants.IS_ENVIRONMENT_PROD = !constants.IS_ENVIRONMENT_DEV;
+constants.IS_ENVIRONMENT_BETA = constants.ENVIRONMENT === 'BETA';
+constants.IS_ENVIRONMENT_PROD = !constants.IS_ENVIRONMENT_DEV && !constants.IS_ENVIRONMENT_BETA;
 constants.CURRENT_VERSION = '#ASTERICS_GRID_VERSION#';
 constants.IS_FIREFOX = navigator.userAgent.indexOf('Firefox') !== -1;
 constants.IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
