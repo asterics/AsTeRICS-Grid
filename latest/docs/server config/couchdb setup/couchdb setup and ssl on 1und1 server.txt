@@ -1,0 +1,53 @@
+# Introduction
+CouchDb is used in combination with PouchDb in order to save user configuration and default grids offline (pouchDb) and online in a auto-sync storage (couchDb).
+
+see: http://couchdb.apache.org/
+see: https://pouchdb.com/
+
+# 1 und 1 Ionos Cloud Server
+CouchDb currently runs on:
+https://couchdb.asterics-foundation.org:6984/
+The server behind the asterics-foundation domain is from Ionos 1&1 Cloud solution:
+1ce28d.online-server.cloud
+or
+82.165.247.108
+
+For configuration of the Ionos Cloud server:
+1) go to: https://login.ionos.de/ and login
+2) Choose "Server and Cloud" -> Cloud panel opens
+3) Here root ssh password for the server can be found
+4) Go to Network -> Firewall Rules on the left side to open/close ports that are accessible (CouchDb SSL runs on port 6984)
+
+# Installation of couchdb
+CouchDB was installed on the Ionos Cloud Server following this manual: http://docs.couchdb.org/en/stable/install/unix.html
+
+## Subdomain Configuration
+We are using the subdomain couchdb.asterics-foundation.org. For configuration of this domain follow these stepts:
+1) go to: https://login.ionos.de/ and login
+2) Choose "Domains and SSL" -> "asterics-foundation.org" -> "manage subdomains" -> Here the subdomains can be configured
+3) In order to let point "couchdb.asterics-foundation.org" to the cloud server (82.165.247.108) do:
+3.1) subdomain "couchdb.asterics-foundation.org" -> Manage DNS
+3.2) Add two "A" rules: "couchdb -> 82.165.247.108" and "www.couchdb -> 82.165.247.108"
+
+## SSL Configuration
+We are using the SSL certificate provided by 1 und 1 Ionos. To see/download/manage it:
+1) go to: https://login.ionos.de/ and login
+2) Choose "Domains and SSL" -> "SSL Certificates" on the right side
+3) Choose "Cloud" product in combo on the right side and open the certificate for "*.asterics-foundation.org"
+3.1) IMPORTANT: The products "Cloud" and "1 & 1 Basic" have different SSL certificates and both can only be used once (for couchdb or for asterics-foundation.org)!
+4) Here you can renew/download the certificate which consists of 3 files:
+4.1) asterics-foundation.org_private_key.key
+4.2) asterics-foundation.org_ssl_certificate.cer
+4.3) asterics-foundation.org_ssl_certificate_INTERMEDIATE.cer
+5) These 3 files are copied into /opt/couchdb/ssl/ folder on the cloud server
+6) The couchdb configuration files "default.ini" and "local.ini" have to be adapted to use the correct ports and certificates -> see "default.ini" and "local.ini" in this folder next to this text file.
+7) to reload the certificate stop and start couchdb on the server using the commands "sudo service couchdb stop" and "sudo service couchdb start" afterwards.
+8) run "sh /home/superlogin/AsTeRICS-Grid/scripts/start.sh" to restart superlogin
+9) do "sudo reboot" in order to also re-init apache tomcat (https://couchdb.asterics-foundation.org/report.html)
+
+Couchdb should now be accessible with SSL enabled under the link:
+https://couchdb.asterics-foundation.org:6984/_utils/#login
+
+Used method in order to setup start of superlogin and goaccess:
+crontab -e
+@reboot /bin/sh /home/superlogin/AsTeRICS-Grid/scripts/start.sh
