@@ -587,8 +587,17 @@ dataService.importBackupFromPreview = async function(preview, options = {}) {
     options.filename = options.filename || preview.filename;
     options.skipDelete = true;
     options.progressFn(10, i18nService.t('downloadingConfig'));
-    let result = await $.get(preview.url);
+    options.generateGlobalGrid = preview.generateGlobalGrid || false;
+    let isOBZ = fileUtil.isObzFile(preview.url);
+    let result = await fileUtil.downloadFile(preview.url, { isBytes: isOBZ });
     options.progressFn(50, i18nService.t('importingData'));
+    if (isOBZ) {
+        let obzFileMap = await fileUtil.readZip(result, {
+            jsonFileExtensions: ['json', 'obf'],
+            defaultEncoding: 'base64'
+        });
+        result = await obfConverter.OBZToImportData(obzFileMap);
+    }
     if (preview.translate && result.grids) {
         for (let grid of result.grids) {
             grid.label[i18nService.getContentLang()] = i18nService.t(i18nService.getTranslation(grid.label));
