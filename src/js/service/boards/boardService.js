@@ -7,7 +7,7 @@ let boardService = {};
 
 let BASE_URL = "https://asterics.github.io/AsTeRICS-Grid-Boards/";
 let GITHUB_BASE_URL = "https://github.com/asterics/AsTeRICS-Grid-Boards/tree/main/";
-let METADATA_URL = BASE_URL + "live_metadata.json";
+let METADATA_URL = constants.IS_ENVIRONMENT_PROD ? BASE_URL + "live_metadata.json" : BASE_URL + "live_metadata_beta.json";
 let ownResults = [];
 let searchTermsMap = new Map();
 let translationMap = {};
