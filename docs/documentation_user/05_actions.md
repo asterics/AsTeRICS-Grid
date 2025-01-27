@@ -14,9 +14,9 @@ This chapter is about actions that can be performed if a grid element is selecte
    * [Collect element action](05_actions.md#collect-element-action): performs actions on [collect elements](01_terms.md#grid-element) in the current grid, e.g. clearing it or copying it's text to clipboard
    * [AsTeRICS Action](05_actions.md#asterics-action): does an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework)
    * [Web radio action](05_actions.md#web-radio-action): plays a web radio station
-   * [YouTube Action](05_actions.md#YouTube-Action): links to a YouTube video and shows it without leaving the communicator
-   * [Change Content Language](05_actions.md#Change-Content-Language): changes the content language (description of grid elements / language of the communicator grid(s))
-   * [Open webpage in new tab](05_actions.md#Open-webpage-in-new-tab): allows to assign an external web page to a cell and opens it in a new tab
+   * [YouTube Action](05_actions.md#yoube-action): links to a YouTube video and shows it without leaving the communicator
+   * [Change Content Language](05_actions.md#change-content-language): changes the content language (description of grid elements / language of the communicator grid(s))
+   * [Open webpage in new tab](05_actions.md#open-webpage-in-new-tab): allows to assign an external web page to a cell and opens it in a new tab
    * [openHAB Action](05_actions.md#openhab-action): allows to do environmental control using devices interfaced by the OpenHAB framework
    * [HTTP action](05_actions.md#http-action): allows to execute commands on programs and devices providing a REST API through HTTP.
    * [UART action](05_actions.md#uart-action): allows to execute commands on microcontrollers providing a UART (Serial) interface (wired or Bluetooth).
