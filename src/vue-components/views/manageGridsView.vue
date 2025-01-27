@@ -102,10 +102,6 @@
                     <input id="toHomeAfterSelect" type="checkbox" v-model="metadata.toHomeAfterSelect" @change="homeGridChanged"/>
                     <label for="toHomeAfterSelect">{{ $t('navigateToHomeGridAfterSelectingAnElement') }}</label>
                 </div>
-                <h1>{{ $t('advancedOptions') }}</h1>
-                <div class="srow">
-                    <button @click="deleteImages()"><i class="fas fa-times"/> {{ $t('deleteAllImages') }}</button>
-                </div>
             </div>
         </div>
 
@@ -529,6 +525,7 @@
             thiz.reload().then(() => {
                 this.reinitContextMenu();
             });
+            window.deleteImages = this.deleteImages;
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.onPullUpdate);
