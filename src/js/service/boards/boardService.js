@@ -98,7 +98,7 @@ function sortResults(results, options) {
         }
         let nameA = util.isString(a.name) ? a.name : i18nService.getTranslation(a.name);
         let nameB = util.isString(b.name) ? b.name : i18nService.getTranslation(b.name);
-        return nameB.localeCompare(nameA);
+        return nameA.localeCompare(nameB);
     });
     return results;
 }
