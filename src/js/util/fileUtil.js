@@ -110,4 +110,29 @@ fileUtil.isObzFile = function (file) {
     return fileUtil.getFileExtension(file) === '.obz' || fileUtil.getFileExtension(file) === '.zip';
 };
 
+/**
+ * downloads JSON or binary data from a given URL
+ * @param url
+ * @param options
+ * @param options.isBytes if true, bytes should be downloaded, otherwise json
+ * @returns {Promise<unknown>}
+ */
+fileUtil.downloadFile = function(url, options = {}) {
+    return new Promise((resolve) => {
+        $.ajax({
+            url: url,
+            method: 'GET',
+            xhrFields: options.isBytes ? { responseType: 'blob' } : {}, // Binary response if required
+            dataType: !options.isBytes ? 'json' : undefined // JSON type for non-binary
+        })
+            .done((data) => {
+                resolve(data);
+            })
+            .fail((xhr, status, error) => {
+                console.warn(`Download failed: ${error}`);
+                resolve(null);
+            });
+    });
+}
+
 export { fileUtil };
