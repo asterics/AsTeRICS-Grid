@@ -89,7 +89,7 @@ fileUtil.readFileContent = function (file) {
 };
 
 fileUtil.getFilename = function(file) {
-    return file ? file.name || '' : '';
+    return file && file.name ? (file.name || '') : (file || '');
 }
 
 fileUtil.getFileExtension = function (file) {
