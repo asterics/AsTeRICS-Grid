@@ -112,14 +112,17 @@
                             <label for="addToCollectChk" class="normal-text">{{ $t('addThisElementToCollectionElementsDespiteNav') }}</label>
                         </div>
                     </div>
-                    <div v-if="action.modelName == 'GridActionARE'">
+                    <div v-if="action.modelName === 'GridActionARE'">
                         <edit-are-action :action="action" :grid-data="gridData"/>
                     </div>
-                    <div v-if="action.modelName == 'GridActionOpenHAB'">
+                    <div v-if="action.modelName === 'GridActionOpenHAB'">
                         <edit-open-hab-action :action="action" :grid-data="gridData"/>
                     </div>
-                    <div v-if="action.modelName == 'GridActionHTTP'">
+                    <div v-if="action.modelName === 'GridActionHTTP'">
                       <edit-http-action :action="action" :grid-data="gridData"/>
+                    </div>
+                    <div v-if="action.modelName === 'GridActionPredefined'">
+                        <edit-predefined-action :action="action" :grid-data="gridData"/>
                     </div>
                     <div v-if="action.modelName == 'GridActionPredict'">
                         <div class="srow" v-show="gridElement.type === GridElementClass.ELEMENT_TYPE_COLLECT">
@@ -358,6 +361,7 @@
     import { gridUtil } from '../../js/util/gridUtil';
     import { GridActionSystem } from '../../js/model/GridActionSystem';
     import { GridActionChangeLang } from '../../js/model/GridActionChangeLang';
+    import EditPredefinedAction from './editActionsSub/editPredefinedAction.vue';
 
     export default {
         props: ['gridElement', 'gridData'],
@@ -389,6 +393,7 @@
             }
         },
         components: {
+            EditPredefinedAction,
             EditWordFormAction,
             EditAudioAction,
             RadioListSelector,

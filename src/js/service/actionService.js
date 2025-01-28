@@ -26,6 +26,7 @@ import {localStorageService} from "./data/localStorageService.js";
 import {uartService} from './uartService.js';
 import { systemActionService } from './systemActionService';
 import { GridActionSystem } from '../model/GridActionSystem';
+import { util } from '../util/util';
 
 let actionService = {};
 
@@ -247,6 +248,28 @@ async function doAction(gridElement, action, options) {
         case 'GridActionSystem':
             systemActionService.doAction(action);
             break;
+        case 'GridActionPredefined':
+            doPredefinedAction(gridElement, action);
+            break;
+    }
+}
+
+function doPredefinedAction(gridElement, action) {
+    action = JSON.parse(JSON.stringify(action));
+    for (let presetKey of Object.keys(action.actionInfo.presets || {})) {
+        for(let customValue of action.actionInfo.customValues) {
+            if (util.isString(action.actionInfo.presets[presetKey])) {
+                let valueName = customValue.name;
+                let replaceValue = action.customValues[valueName] !== undefined ? action.customValues[valueName] : '';
+                let search = new RegExp(`\\$\\{${valueName}\\}`, 'g');
+                action.actionInfo.presets[presetKey] = action.actionInfo.presets[presetKey].replace(search, replaceValue);
+            }
+        }
+    }
+    let newAction = GridElement.getActionInstance(action.actionInfo.actionModelName);
+    if (newAction) {
+        Object.assign(newAction, action.actionInfo.presets);
+        doAction(gridElement, newAction);
     }
 }
 
