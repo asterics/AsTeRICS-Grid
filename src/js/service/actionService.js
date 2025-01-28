@@ -30,6 +30,10 @@ import { util } from '../util/util';
 
 let actionService = {};
 
+let BASE_URL = "https://asterics.github.io/AsTeRICS-Grid-Boards/";
+let METADATA_URL = constants.IS_ENVIRONMENT_PROD ? BASE_URL + "live_predefined_actions.json" : BASE_URL + "live_predefined_actions_beta.json";
+let predefinedActionsData = null;
+
 let minPauseSpeak = 0;
 let metadata = null;
 
@@ -55,6 +59,16 @@ actionService.testAction = function (gridElement, action, gridData) {
         gridId: gridData.id,
         gridData: gridData
     });
+};
+
+actionService.getPredefinedActionInfos = async function() {
+    if (predefinedActionsData) {
+        return predefinedActionsData;
+    }
+    let response = await fetch(METADATA_URL);
+    predefinedActionsData = await response.json();
+    predefinedActionsData.sort((a,b) => a.name.localeCompare(b.name));
+    return predefinedActionsData;
 };
 
 async function doActions(gridElement, gridId) {

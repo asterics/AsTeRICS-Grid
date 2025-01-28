@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid px-0">
-        <div class="row">
+        <div class="row" v-if="actionGroups">
             <label class="col-12 col-md-4 normal-text" for="actionGroup-123">{{ $t('actionGroup') }}</label>
             <div class="col-12 col-md-7">
                 <select id="actionGroup-123" v-model="action.groupId" class="col-12" @change="groupChanged">
@@ -49,9 +49,15 @@
 <script>
 
 import { util } from '../../../js/util/util';
+import { actionService } from '../../../js/service/actionService';
 
 export default {
     props: ['action', 'gridData'],
+    data: function() {
+        return {
+            actionGroups: null
+        };
+    },
     computed: {
         customValues() {
             log.warn("HIER")
@@ -126,158 +132,8 @@ export default {
             this.$set(this.action, "customValues", {});
         }
     },
-    data: function() {
-        return {
-            actionGroups: [
-                {
-                    'id': 'Shelly_Plus_Plug_S_Gen1_HTTP_API',
-                    'name': 'Shelly Plug S',
-                    'actions': [
-                        {
-                            'name': 'TURN',
-                            'actionModelName': 'GridActionHTTP',
-                            'customValues': [
-                                {
-                                    'name': 'actionType',
-                                    'type': 'select',
-                                    'values': ['on', 'off', 'toggle']
-                                },
-                                {
-                                    'name': 'deviceAddress',
-                                    'type': 'text',
-                                    'placeholder': 'like <192.168.0.50> or <https://192.168.0.50>',
-                                    'autoStartWith': ['http://', 'https://'],
-                                    'mustMatch': "^(https?:\\/\\/)?(\\d{1,3}\\.){3}\\d{1,3}$"
-                                },
-                                {
-                                    'name': 'timerSeconds',
-                                    'type': 'number',
-                                    'min': 0
-                                }
-                            ],
-                            'presets': {
-                                'method': 'GET',
-                                'restUrl': '${deviceAddress}/relay/0?turn=${actionType}&timer=${timerSeconds}',
-                                'noCorsMode': true
-                            }
-                        }
-                    ]
-                },
-                {
-                    'id': 'Shelly_1PM_Gen1_HTTP_API',
-                    'name': 'Shelly 1PM',
-                    'actions': [
-                        {
-                            'name': 'TURN',
-                            'actionModelName': 'GridActionHTTP',
-                            'customValues': [
-                                {
-                                    'name': 'actionType',
-                                    'type': 'select',
-                                    'values': ['on', 'off', 'toggle']
-                                },
-                                {
-                                    'name': 'deviceAddress',
-                                    'type': 'text',
-                                    'placeholder': 'like <192.168.0.50> or <https://192.168.0.50>',
-                                    'autoStartWith': ['http://', 'https://'],
-                                    'mustMatch': "^(https?:\\/\\/)?(\\d{1,3}\\.){3}\\d{1,3}$"
-                                },
-                                {
-                                    'name': 'timerSeconds',
-                                    'type': 'number',
-                                    'min': 0
-                                }
-                            ],
-                            'presets': {
-                                'method': 'GET',
-                                'restUrl': '${deviceAddress}/relay/0?turn=${actionType}&timer=${timerSeconds}',
-                                'noCorsMode': true
-                            }
-                        }
-                    ]
-                },
-                {
-                    'id': 'Valetudo_Cleaning_Robot_API_v2',
-                    'name': 'Valetudo Cleaning Robot',
-                    'actions': [
-                        {
-                            'name': 'basicControl',
-                            'actionModelName': 'GridActionHTTP',
-                            'customValues': [
-                                {
-                                    'name': 'actionType',
-                                    'type': 'select',
-                                    'values': ['start', 'stop', 'pause', 'home']
-                                },
-                                {
-                                    'name': 'deviceAddress',
-                                    'type': 'text',
-                                    'placeholder': 'like <192.168.0.50> or <https://192.168.0.50>',
-                                    'autoStartWith': ['http://', 'https://'],
-                                    'mustMatch': "^(https?:\\/\\/)?(\\d{1,3}\\.){3}\\d{1,3}$"
-                                }
-                            ],
-                            'presets': {
-                                'method': 'PUT',
-                                'restUrl': '${deviceAddress}/api/v2/robot/capabilities/BasicControlCapability',
-                                'body': '{"action": "${actionType}"}'
-                            }
-                        },
-                        {
-                            'name': 'manualControl',
-                            'actionModelName': 'GridActionHTTP',
-                            'customValues': [
-                                {
-                                    'name': 'actionType',
-                                    'type': 'select',
-                                    'values': [
-                                        {'label': 'enableManualControl', 'value': '{"action":"enable"}'},
-                                        {'label': 'moveForwards', 'value': '{"action":"move","movementCommand":"forward"}'},
-                                        {'label': 'moveBackwards', 'value': '{"action":"move","movementCommand":"backward"}'},
-                                        {'label': 'rotateClockwise', 'value': '{"action":"move","movementCommand":"rotate_clockwise"}'},
-                                        {'label': 'rotateCounterclockwise', 'value': '{"action":"move","movementCommand":"rotate_counterclockwise"}'},
-                                        {'label': 'disableManualControl', 'value': '{"action":"disable"}'},
-                                    ]
-                                },
-                                {
-                                    'name': 'deviceAddress',
-                                    'type': 'text',
-                                    'placeholder': 'like <192.168.0.50> or <https://192.168.0.50>',
-                                    'autoStartWith': ['http://', 'https://'],
-                                    'mustMatch': "^(https?:\\/\\/)?(\\d{1,3}\\.){3}\\d{1,3}$"
-                                }
-                            ],
-                            'presets': {
-                                'method': 'PUT',
-                                'restUrl': '${deviceAddress}/api/v2/robot/capabilities/ManualControlCapability',
-                                'body': '${actionType}'
-                            }
-                        },
-                        {
-                            'name': 'locateRobot',
-                            'actionModelName': 'GridActionHTTP',
-                            'customValues': [
-                                {
-                                    'name': 'deviceAddress',
-                                    'type': 'text',
-                                    'placeholder': 'like <192.168.0.50> or <https://192.168.0.50>',
-                                    'autoStartWith': ['http://', 'https://'],
-                                    'mustMatch': "^(https?:\\/\\/)?(\\d{1,3}\\.){3}\\d{1,3}$"
-                                }
-                            ],
-                            'presets': {
-                                'method': 'PUT',
-                                'restUrl': '${deviceAddress}/api/v2/robot/capabilities/LocateCapability',
-                                'body': '{"action":"locate"}'
-                            }
-                        }
-                    ]
-                }
-            ]
-        };
-    },
-    mounted() {
+    async mounted() {
+        this.actionGroups = await actionService.getPredefinedActionInfos();
     }
 }
 </script>
