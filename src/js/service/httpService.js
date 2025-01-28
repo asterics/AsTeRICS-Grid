@@ -23,9 +23,9 @@ httpService.doAction = async function (action) {
             let authStringBase64 = util.stringToBase64(`${action.authUser}:${action.authPw}`);
             requestOptions.headers["Authorization"] = `Basic ${authStringBase64}`;
         }
-
+        requestOptions.mode = action.noCorsMode ? 'no-cors' : undefined;
         const response = await fetch(action.restUrl, requestOptions);
-        if (!response.ok) {
+        if (!response.ok && !action.noCorsMode) {
             MainVue.setTooltip(i18nService.t("restActionFailed", `${response.statusText} (${response.status})`), {
                 revertOnClose: true,
                 timeout: 5000
