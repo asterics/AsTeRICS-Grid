@@ -364,6 +364,9 @@
                 }, 100)
             },
             onKeyDown(event) {
+                if (this.showMultipleModal || this.showGridSettingsModal || this.showNavigateModal || this.showMoveModal || this.showTranslateModal || this.showEditModal) {
+                    return;
+                }
                 const ctrlOrMeta = constants.IS_MAC ? event.metaKey : event.ctrlKey;
                 const isUndoRedo = event.key.toLocaleUpperCase() === 'Z' || event.code === 'KeyZ';
                 if (!event.repeat) {
