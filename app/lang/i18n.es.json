@@ -808,7 +808,7 @@
   "colors": "Colores",
   "defaultGridBackgroundColor": "Color de fondo por defecto del tablero",
   "defaultGridElementColor": "Color de fondo de la celda por defecto",
-  "defaultGridElementBorderColor": "Color de fondo de la celda por defecto",
+  "defaultGridElementBorderColor": "Color del borde por defecto",
   "CC_PRONOUN_PERSON_NAME": "Pronombres, Personas, Nombres propios",
   "CC_NOUN": "Sustantivo",
   "CC_VERB": "Verbo",
