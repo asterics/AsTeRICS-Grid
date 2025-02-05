@@ -224,7 +224,7 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
     }
     for (let element of gridData.gridElements) {
         if (element.hidden) {
-            return;
+            continue;
         }
         let currentWidth = elementTotalWidth * element.width - 2 * pdfOptions.elementMargin;
         let currentHeight = elementTotalHeight * element.height - 2 * pdfOptions.elementMargin;
