@@ -32,7 +32,9 @@ let actionService = {};
 
 let BASE_URL = "https://asterics.github.io/AsTeRICS-Grid-Boards/";
 let METADATA_URL = constants.IS_ENVIRONMENT_PROD ? BASE_URL + "live_predefined_actions.json" : BASE_URL + "live_predefined_actions_beta.json";
+let TRANSLATION_BASE_URL = BASE_URL + "predefined_actions/i18n/";
 let predefinedActionsData = null;
+let predefActionsI18nData = {};
 
 let minPauseSpeak = 0;
 let metadata = null;
@@ -65,10 +67,36 @@ actionService.getPredefinedActionInfos = async function() {
     if (predefinedActionsData) {
         return predefinedActionsData;
     }
-    let response = await fetch(METADATA_URL);
-    predefinedActionsData = await response.json();
-    predefinedActionsData.sort((a,b) => a.name.localeCompare(b.name));
-    return predefinedActionsData;
+    try {
+        let response = await fetch(METADATA_URL);
+        predefinedActionsData = await response.json();
+        predefinedActionsData.sort((a,b) => a.name.localeCompare(b.name));
+        return predefinedActionsData;
+    } catch (e) {
+        log.warn(`failed to fetch predefined actions infos.`);
+        return [];
+    }
+};
+
+actionService.getPredefinedActionTranslations = async function(lang) {
+    lang = lang || i18nService.getAppLang();
+    if (predefActionsI18nData[lang]) {
+        return predefActionsI18nData[lang];
+    }
+    let translationFileName = `i18n.${lang}.json`;
+    try {
+        let translationResponse = await fetch(TRANSLATION_BASE_URL + translationFileName);
+        let data = await translationResponse.json();
+        predefActionsI18nData[lang] = data;
+        return data;
+    } catch (e) {
+        log.warn(`translation file ${translationFileName} not found.`);
+        if (lang !== 'en') {
+            log.warn(`trying "en" translation file.`);
+            return actionService.getPredefinedActionTranslations('en');
+        }
+        return {};
+    }
 };
 
 async function doActions(gridElement, gridId) {
