@@ -133,7 +133,9 @@ GridElement.DEFAULTS = {
     image: new GridImage(),
     type: GridElement.ELEMENT_TYPE_NORMAL,
     additionalProps: {},
-    wordForms: []
+    wordForms: [],
+    x: 0,
+    y: 0
 }
 
 export { GridElement };

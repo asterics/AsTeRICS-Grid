@@ -178,8 +178,8 @@ gridUtil.getOffset = function (globalGrid) {
         };
     } else {
         return {
-            x: globalGrid.getWidth(),
-            y: globalGrid.getHeight()
+            x: gridUtil.getWidth(globalGrid),
+            y: gridUtil.getHeight(globalGrid)
         };
     }
 };
