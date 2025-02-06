@@ -31,7 +31,7 @@
                     <label class="col-12 col-md-4 normal-text" :for="customValue.name">{{ ti(customValue.name) }}</label>
                     <div class="col-12 col-md-7">
                         <input class="col-12" :id="customValue.name" v-model.number="action.customValues[customValue.name]"
-                               type="number" :min="customValue.min" :max="customValue.max" :step="customValue.step"/>
+                               type="number" :min="customValue.min" :max="customValue.max" :step="customValue.step" :placeholder="customValue.placeholder"/>
                     </div>
                 </div>
                 <div class="row" v-if="customValue.type === 'select'">
