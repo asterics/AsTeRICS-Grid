@@ -20,6 +20,7 @@ This chapter is about actions that can be performed if a grid element is selecte
    * [openHAB Action](05_actions.md#openhab-action): allows to do environmental control using devices interfaced by the OpenHAB framework
    * [HTTP action](05_actions.md#http-action): allows to execute commands on programs and devices providing a REST API through HTTP.
    * [UART action](05_actions.md#uart-action): allows to execute commands on microcontrollers providing a UART (Serial) interface (wired or Bluetooth).
+   * [Predefined actions](05_actions.md#predefined-actions): sets up actions which wrap other actions in a more user-friendly way (e.g. easy setup for [Shelly](https://www.shelly.com) devices, using the HTTP action in the background).
 
 [Back to Overview](README.md)
 
@@ -454,6 +455,32 @@ For hands-on tutorials, have a look at the [UART action tutorials](514_uart-acti
 The action supports the following input fields:
 1. **UART Type**: Choose between ```Bluetooth``` and ```Serial```(wired)
 2. **Data**: A string to be executed on the microcontroller (e.g. Javascript code (Espruino devices) or AT commands (FABI, FLipMouse)).
+
+### Predefined actions
+
+Predefined actions are a special category of actions. They wrap other actions for being able to set them up in a more user-friendly way. The most common use-case is wrapping HTTP actions for devices with a REST API, but also all other actions could be wrapped. The possible predefined actions are defined within the external repository [AsTeRICS Grid Boards](https://github.com/asterics/AsTeRICS-Grid-Boards?tab=readme-ov-file#predefined-actions).
+
+#### Example
+
+To understand the concept, this example shows a comparison between the same action performed for a [Shelly Plug S](https://shelly-api-docs.shelly.cloud/gen2/Devices/Gen3/ShellyPlugSG3) device using a HTTP action and a Predefined action:
+
+![HTTP action vs. predefined action](img/action-predef-comparison.png)
+
+*Fig. 24: Comparison of a HTTP action vs. a Predefined action for turning on a Shelly Plug S via its cloud API. The Predefined action is much easier to configure, because it doesn't need any specific knowledge about the API endpoint (address path, HTTP method, parameter names).*
+
+#### Special parameters needed for Shelly devices
+
+For using `Cloud control` of Shelly devices these special parameters are needed which can be found in the Shelly App:
+* `Cloud address` and `Authorization cloud key`: navigate to `Settings -> User settings -> Access And Permissions -> Authorization cloud key`. There you'll find a button `Get key` which reveals the needed information after clicking:
+![HTTP action vs. predefined action](img/action-predef-shelly-keys.png)
+
+* `Device ID`: can be found navigating to `My home -> [Room] -> [Device to control] -> Settings icon -> Device information`. This section also shows the local `Device address` needed for `Local control`:
+![HTTP action vs. predefined action](img/action-predef-shelly-deviceid.png)
+
+#### Browser support
+
+Accessing local APIs at local IP addresses like `192.168.0.10` is not allowed by all browsers. Some allow it only in a secure context (`https`, so using the [main https version of AsTeRICS Grid](https://grid.asterics.eu/)), some allow it only in a insecure context (`http`, so using the [main http version of AsTeRICS Grid](http://grid.asterics-foundation.org/)) and some only if a special setting for allowing `mixed-content` is set. If you want to use local APIs within AsTeRICS Grid, please do your own research about the current situation with internet searches like `<your-browser> <your-operating-system> allow mixed content`, e.g. "Chrome Android allow mixed content".
+
 
 [&#x2190; Previous Chapter](04_input_options.md) [Next Chapter &#x2192;](06_users.md)
 
