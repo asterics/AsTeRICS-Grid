@@ -1,12 +1,12 @@
 # Input Options
 
-**Video on YouTube:** [Overview input options](https://www.youtube.com/watch?v=Y0itTyz-D5Y&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=5&t=0s) (German, but auto-translated subtitles available)
+[Back to Overview](README.md)
 
 This chapter is about how grid elements can be selected with different input modalities.
 
 [Back to Overview](README.md)
 
-Clicking on Button "Input Options" in [Main view](02_navigation.md#main---view) opens a menu with the following entries:
+Clicking on Button "Input Options" in [Main view](04_navigation-overview.md) opens a menu with the following entries:
 
 * **Mouse/Touch input:** options for input types like normal mouse click, tap or hovering
 * **Scanning:** Input method for 1-2 input events, subsequently select groups of elements until one element is chosen
@@ -32,7 +32,7 @@ Figure 1 shows the configuration possibilities of a "keypress, mouseclick, tap" 
 
 ![input event keypress options](./img/input_channel_keyboard_en1.jpg)
 
-*Fig. 1: Configuration of a "keypress, mouseclick, tap" input event*
+*Figure 1: Configuration of a "keypress, mouseclick, tap" input event*
 
 These are the shown elements and options:
 
@@ -69,7 +69,7 @@ Figure 2 shows the configuration possibilities of a microphone input event:
 
 ![input event keypress options](./img/input_channel_mic_en.png)
 
-*Fig. 2: Configuration of a microphone input event*
+*Figure 2: Configuration of a microphone input event*
 
 These are the shown elements and options:
 
@@ -89,7 +89,7 @@ AsTeRICS ARE input events are triggered by external events of a running [model](
 
 ![input event asterics are options](./img/input_channel_are_en.jpg)
 
-*Fig. 3: Configuration of an AsTeRICS ARE input event*
+*Figure 3: Configuration of an AsTeRICS ARE input event*
 
 Figure 3 shows the configuration of an AsTeRICS ARE input event (AsTeRICS ARE Event is selected as select element in Figure 1, (1)):
 
@@ -114,16 +114,16 @@ Follow these steps in order to set up an AsTeRICS Grid input method while using 
 
 ## Input options modals
 
-Each input option dialog opened by "[Main view](02_navigation.md#main---view) - Input options" has about the same structure, see Figure 4 (can be seen as shown below when input option (here: Scanning) is enabled):
+Each input option dialog opened by "[Main view](04_navigation-overview.md) - Input options" has about the same structure, see Figure 4 (can be seen as shown below when input option (here: Scanning) is enabled):
 
 ![general structure of an input option dialog](./img/input_options_general_en.jpg)
 
-*Fig. 4: General structure of an input option dialog, when input option is enabled*
+*Figure 4: General structure of an input option dialog, when input option is enabled*
 
 These are the basic elements of an input option dialog as in figure 4:
 
 1. **Enable checkbox**: Generally enable or disable this input method. The subsequent sections are only visible if the input method is enabled.
-2. **Input section**: configure input actions like described in section [Introduction to input events](04_input_options.md#introduction-to-input-events)
+2. **Input section**: configure input actions like described in section [Introduction to input events](09_input_options.md#introduction-to-input-events)
 3. **Advanced settings**: configure advanced settings for this input method
 4. **Test configuration**: opens a 10x10 test grid where the current input configuration can be tested 
 5. **Cancel**: close the dialog discarding changes 
@@ -163,7 +163,7 @@ The input method *Scanning* is suited to be used with 1-2 input events. It works
 
 #### Input events
 
-These are the possible [input events](04_input_options.md#introduction-to-input-events) for *Scanning*:
+These are the possible [input events](09_input_options.md#introduction-to-input-events) for *Scanning*:
 
 * **Select element**: The select element selects the current group or element, it can be chosen by clicking on *Record key* and afterwards clicking on the desired key.
 * **Next scanning group**: Here, the key for moveing the focus to the next group or element can be chosen. This input event is optional and can be omitted if timed scanning is activated (see Advanced settings). As above, the desired key shall be tapped after clicking on *Record key*.
@@ -188,7 +188,7 @@ These are the advanced settings for *Scanning*:
 
 **Video on YouTube:** [Input method direction input](https://www.youtube.com/watch?v=Ui27d_ZlFz8&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=9&t=0s) (German, but auto-translated subtitles available)
 
-The input method *Direction Input* is suited to be used with 2-5 [input events](04_input_options.md#introduction-to-input-events). It gives the possibility to simply navigate through elements in up to 4 directions.
+The input method *Direction Input* is suited to be used with 2-5 [input events](09_input_options.md#introduction-to-input-events). It gives the possibility to simply navigate through elements in up to 4 directions.
 
 #### Input events
 
@@ -213,7 +213,7 @@ These are the Advanced settings for *Direction Input*:
 
 **Video on YouTube:** [Input method huffman input](https://www.youtube.com/watch?v=2EEmOdOQk98&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=10&t=0s) (German, but auto-translated subtitles available)
 
-The input method *huffman input* is suited to be used with 2-9 [input events](04_input_options.md#introduction-to-input-events). It assigns an unique code of input event sequences to each element. Triggering the respective input event sequence directly selects an element.
+The input method *huffman input* is suited to be used with 2-9 [input events](09_input_options.md#introduction-to-input-events). It assigns an unique code of input event sequences to each element. Triggering the respective input event sequence directly selects an element.
 
 This is an example for 2 input events and 4 elements:
 
@@ -248,7 +248,7 @@ These are the Advanced settings for *Huffman Input*:
 
 **Video on YouTube:** [Input method sequential input](https://www.youtube.com/watch?v=plpOzwMUahw&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=11&t=0s) (German, but auto-translated subtitles available)
 
-The sequential input method can be used with 2-3 [input events](04_input_options.md#introduction-to-input-events). 2 input events are necessary, one (Previous element) is optional. The sequential input sequentially focuses all elements and afterwards restarts at the first element.
+The sequential input method can be used with 2-3 [input events](09_input_options.md#introduction-to-input-events). 2 input events are necessary, one (Previous element) is optional. The sequential input sequentially focuses all elements and afterwards restarts at the first element.
 
 #### Input events
 
@@ -270,7 +270,5 @@ These are the Advanced settings for *Sequential Input*:
 * **Automatic (timed) sequential input**: if checked the active element is automatically changed after a specific time, making it possible to use this input just with a single input event
     * **Scanning time**: time to wait before highlighting the next element (in milliseconds)
     * **Time factor first element**: the time to keep the first element highlighted is "Scanning Time" multiplied with this factor. Increasing the time for the first element often improves usability.
-
-[&#x2190; Previous Chapter](03_appearance_layout.md) [Next Chapter &#x2192;](05_actions.md)
 
 [Back to Overview](README.md)
