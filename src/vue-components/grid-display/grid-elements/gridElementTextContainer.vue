@@ -59,7 +59,7 @@ export default {
             let label = this.externalSetLabel || this.label || '';
             let fontSize = this.getBaseFontSize(size);
             let realWidth = fontUtil.getTextWidth(label, this.$refs.txtContainer.parentElement, fontSize);
-            let kbdContainerPct = 90;
+            let kbdContainerPct = 80;
             this.txtMargin = TEXT_MARGIN;
             if (document.documentElement.clientWidth < MOBILE_MAX_WIDTH) {
                 this.txtMargin = 0;
