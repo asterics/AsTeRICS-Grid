@@ -1,5 +1,5 @@
 <template>
-    <div id="notificationBar" v-cloak v-show="tooltipHTML" style="display: flex">
+    <div id="notificationBar" v-if="tooltipHTML" style="display: flex">
         <img id="notificationBarImg" v-show="tooltipImageUrl" :src="tooltipImageUrl" alt="">
         <i v-if="tooltipOptions.faIcon" :class="tooltipOptions.faIcon"></i>
         <div style="padding-left: 0.5em">
