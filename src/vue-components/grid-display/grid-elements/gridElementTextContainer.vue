@@ -101,15 +101,18 @@ export default {
             }
             return pct;
         },
-        externalWatchFn() {
-            this.externalSetLabel = $(`#${this.watchId} .text-container span`).text();
-            this.calcFontSize();
+        externalUpdateFn(event, id, text) {
+            if (id === this.watchId) {
+                this.externalSetLabel = text;
+                this.calcFontSize();
+            }
         }
     },
     mounted() {
         this.calcFontSize();
         if (this.watchId) {
-            $(document).on(constants.EVENT_PREDICTIONS_CHANGED, this.externalWatchFn);
+            $(document).on(constants.EVENT_PREDICTION_CHANGED, this.externalUpdateFn);
+            $(document).on(constants.EVENT_DISPLAY_ELEM_CHANGED, this.externalUpdateFn);
         }
         if (this.editable || this.watchForChanges) {
             this.$watch("metadata", () => {
@@ -122,7 +125,8 @@ export default {
     },
     beforeDestroy() {
         if (this.watchId) {
-            $(document).off(constants.EVENT_PREDICTIONS_CHANGED, this.externalWatchFn);
+            $(document).off(constants.EVENT_PREDICTION_CHANGED, this.externalUpdateFn);
+            $(document).off(constants.EVENT_DISPLAY_ELEM_CHANGED, this.externalUpdateFn);
         }
     }
 }

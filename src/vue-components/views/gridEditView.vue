@@ -71,6 +71,8 @@
     import { gridLayoutUtil } from '../grid-layout/utils/gridLayoutUtil';
     import { collectElementService } from '../../js/service/collectElementService';
     import AppGridDisplay from '../grid-display/appGridDisplay.vue';
+    import { GridElementDisplay } from '../../js/model/GridElementDisplay';
+    import { displayElementService } from '../../js/service/displayElementService';
 
     let vueApp = null;
 
@@ -150,6 +152,7 @@
             async reload(gridData) {
                 gridData = gridData || (await dataService.getGrid(this.gridData.id));
                 this.gridData = gridData;
+                displayElementService.updateOnce(this.gridData.gridElements);
             },
             back() {
                 if (this.metadata && this.metadata.globalGridId === this.gridData.id) {
@@ -189,23 +192,25 @@
                     this.showEditModal = true;
                 } else {
                     let newPos = new GridData(this.gridData).getNewXYPos();
-                    let constructor = type === GridElement.ELEMENT_TYPE_COLLECT ? GridElementCollect : GridElement;
-                    let newElement = new constructor({
+                    let baseProperties = {
                         type: type,
                         x: newPos.x,
                         y: newPos.y
-                    });
+                    };
+                    let newElement = new GridElement(baseProperties);
                     if (type === GridElement.ELEMENT_TYPE_YT_PLAYER) {
                         let playPause = new GridActionYoutube({
                             action: GridActionYoutube.actions.YT_TOGGLE
                         });
                         newElement.actions = [playPause];
-                    }
-                    if (type === GridElement.ELEMENT_TYPE_COLLECT) {
+                    } else if (type === GridElement.ELEMENT_TYPE_COLLECT) {
+                        newElement = new GridElementCollect(baseProperties);
                         let playText = new GridActionCollectElement({
                             action: GridActionCollectElement.COLLECT_ACTION_SPEAK
                         });
                         newElement.actions = [playText];
+                    } else if (type === GridElement.ELEMENT_TYPE_DISPLAY) {
+                        newElement = new GridElementDisplay(baseProperties);
                     }
                     this.gridData.gridElements.push(newElement);
                     this.updateGridWithUndo();
@@ -447,7 +452,6 @@
             initContextmenu();
             thiz.showGrid = true;
             thiz.highlightElement();
-            collectElementService.initWithElements(this.gridData.gridElements);
             this.$nextTick(() => {
                 let container = document.getElementById('grid-container');
                 container.addEventListener('click', this.handleClickEvent);
@@ -455,6 +459,8 @@
                 container.addEventListener('touchmove', this.onTouchEnd);
                 container.addEventListener('touchcancel', this.onTouchEnd);
                 container.addEventListener('touchend', this.onTouchEnd);
+                collectElementService.initWithElements(this.gridData.gridElements);
+                displayElementService.updateOnce(this.gridData.gridElements);
             });
         },
         beforeDestroy() {
@@ -496,6 +502,7 @@
         var CONTEXT_NEW_COLLECT = "CONTEXT_NEW_COLLECT";
         var CONTEXT_NEW_PREDICT = "CONTEXT_NEW_PREDICT";
         var CONTEXT_NEW_YT_PLAYER = "CONTEXT_NEW_YT_PLAYER";
+        var CONTEXT_NEW_DISPLAY = "CONTEXT_NEW_DISPLAY";
 
         var CONTEXT_LAYOUT_ALL_UP = "CONTEXT_LAYOUT_ALL_UP";
         var CONTEXT_LAYOUT_ALL_RIGHT = "CONTEXT_LAYOUT_ALL_RIGHT";
@@ -525,6 +532,10 @@
                     'CONTEXT_NEW_YT_PLAYER': {
                         name: i18nService.t('newYouTubePlayer'),
                         icon: "fab fa-youtube"
+                    },
+                    'CONTEXT_NEW_DISPLAY': {
+                        name: i18nService.t('newDisplayElement'),
+                        icon: "fas fa-tv"
                     }
                 }
             },
@@ -632,6 +643,10 @@
                 }
                 case CONTEXT_NEW_YT_PLAYER: {
                     vueApp.newElement(GridElement.ELEMENT_TYPE_YT_PLAYER);
+                    break;
+                }
+                case CONTEXT_NEW_DISPLAY: {
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_DISPLAY);
                     break;
                 }
                 case CONTEXT_COPY_ALL: {

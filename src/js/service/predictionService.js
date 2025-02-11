@@ -48,12 +48,12 @@ predictionService.predict = function (input, dictionaryKey) {
         let text = suggestions[i] ? suggestions[i] : '';
         text = util.convertLowerUppercase(text, _textConvertMode);
         $(`#${registeredPredictElements[i].id} .text-container span`).text(text);
+        $(document).trigger(constants.EVENT_PREDICTION_CHANGED, [registeredPredictElements[i].id, text]);
         $(`#${registeredPredictElements[i].id}`).attr(
             'aria-label',
             `${text}, ${i18nService.t('ELEMENT_TYPE_PREDICTION')}`
         );
     }
-    $(document).trigger(constants.EVENT_PREDICTIONS_CHANGED);
 };
 
 predictionService.learnFromInput = function (input, dictionaryKey) {

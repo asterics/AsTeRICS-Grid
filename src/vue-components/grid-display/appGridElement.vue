@@ -6,6 +6,7 @@
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
         <grid-element-predict v-if="element.type === GridElement.ELEMENT_TYPE_PREDICTION" :metadata="metadata" :container-size="calculatedSize" :watch-id="element.id" v-bind="$props" aria-hidden="true"/>
+        <grid-element-display v-if="element.type === GridElement.ELEMENT_TYPE_DISPLAY" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" :watch-id="element.id" v-bind="$props" aria-hidden="true"/>
         <grid-element-hints :grid-element="element" :metadata="metadata"/>
         <div v-if="showResizeHandle" class="ui-resizable-handle ui-icon ui-icon-grip-diagonal-se" style="position: absolute; z-index: 2; bottom: 0; right: 0; cursor: se-resize;"></div>
     </div>
@@ -33,10 +34,10 @@ import { GridActionNavigate } from '../../js/model/GridActionNavigate';
 import { GridActionWebradio } from '../../js/model/GridActionWebradio';
 import { GridActionYoutube } from '../../js/model/GridActionYoutube';
 import { ColorConfig } from '../../js/model/ColorConfig';
-import { util } from '../../js/util/util';
+import GridElementDisplay from './grid-elements/gridElementDisplay.vue';
 
 export default {
-    components: { GridElementNormal, GridElementYoutube, GridElementCollect, GridElementHints, GridElementPredict },
+    components: { GridElementDisplay, GridElementNormal, GridElementYoutube, GridElementCollect, GridElementHints, GridElementPredict },
     props: ["element", "metadata", "showResizeHandle", "editable", "oneElementSize", "watchForChanges"],
     data() {
         return {
