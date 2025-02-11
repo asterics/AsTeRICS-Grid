@@ -185,7 +185,7 @@
             newElement(type, useInteractionPos) {
                 if (type === GridElement.ELEMENT_TYPE_NORMAL) {
                     this.editElementId = null;
-                    this.newPosition = useInteractionPos ? this.lastInteraction : null;
+                    this.newPosition = useInteractionPos && this.lastInteraction.x !== undefined ? this.lastInteraction : null;
                     this.showEditModal = true;
                 } else {
                     let newPos = new GridData(this.gridData).getNewXYPos();

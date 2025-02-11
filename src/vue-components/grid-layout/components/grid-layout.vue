@@ -257,6 +257,7 @@ export default {
         document.addEventListener('click', this.pointerEventListener);
         document.addEventListener('touchend', this.pointerEventListener);
         document.addEventListener('contextmenu', this.pointerEventListener);
+        document.addEventListener('mousedown', this.pointerEventListener);
     },
     beforeDestroy() {
         this.destroyInteract();
@@ -264,6 +265,7 @@ export default {
         document.removeEventListener('click', this.pointerEventListener);
         document.removeEventListener('touchend', this.pointerEventListener);
         document.removeEventListener('contextmenu', this.pointerEventListener);
+        document.removeEventListener('mousedown', this.pointerEventListener);
     },
     async mounted() {
         this.initInteract();
