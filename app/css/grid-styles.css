@@ -97,9 +97,14 @@
 }
 
 @font-face {
+    font-family: "Jost-400-Book";
+    src: url("../fonts/Jost-400-Book.woff2");
+}
+
+@font-face {
     font-family: "Jost-500-Medium";
     src: url("../fonts/Jost-500-Medium.woff2");
 }
-.text-container.Jost-500-Medium {
+.text-container.Jost-500-Medium,  .text-container.Jost-400-Book {
     font-feature-settings: 'ss01' on;
 }
