@@ -27,6 +27,8 @@ import {uartService} from './uartService.js';
 import { systemActionService } from './systemActionService';
 import { GridActionSystem } from '../model/GridActionSystem';
 import { util } from '../util/util';
+import { displayElementService } from './displayElementService';
+import { GridElementDisplay } from '../model/GridElementDisplay';
 
 let actionService = {};
 
@@ -265,6 +267,7 @@ async function doAction(gridElement, action, options) {
             break;
         case 'GridActionYoutube':
             youtubeService.doAction(action);
+            displayElementService.updateOnce({updateModes: [GridElementDisplay.MODE_APP_STATE]});
             break;
         case 'GridActionChangeLang':
             let language = action.language;
@@ -289,6 +292,7 @@ async function doAction(gridElement, action, options) {
             break;
         case 'GridActionSystem':
             systemActionService.doAction(action);
+            displayElementService.updateOnce({updateModes: [GridElementDisplay.MODE_APP_STATE]});
             break;
         case 'GridActionPredefined':
             doPredefinedAction(gridElement, action);
