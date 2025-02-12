@@ -29,6 +29,8 @@ import { GridActionSystem } from '../model/GridActionSystem';
 import { util } from '../util/util';
 import { displayElementService } from './displayElementService';
 import { GridElementDisplay } from '../model/GridElementDisplay';
+import { GridActionYoutube } from '../model/GridActionYoutube';
+import { GridActionWebradio } from '../model/GridActionWebradio';
 
 let actionService = {};
 
@@ -144,6 +146,10 @@ async function doActions(gridElement, gridId) {
     }
     if (!actionTypes.includes(GridActionWordForm.getModelName())) {
         stateService.resetWordForms();
+    }
+    let displayUpdateActions = [GridActionYoutube.getModelName(), GridActionWebradio.getModelName(), GridActionSystem.getModelName()];
+    if (actionTypes.some(type => displayUpdateActions.includes(type))) {
+        displayElementService.updateOnce({ updateModes: [GridElementDisplay.MODE_APP_STATE] });
     }
 }
 
@@ -270,7 +276,6 @@ async function doAction(gridElement, action, options) {
             break;
         case 'GridActionYoutube':
             youtubeService.doAction(action);
-            displayElementService.updateOnce({updateModes: [GridElementDisplay.MODE_APP_STATE]});
             break;
         case 'GridActionChangeLang':
             let language = action.language;
@@ -295,7 +300,6 @@ async function doAction(gridElement, action, options) {
             break;
         case 'GridActionSystem':
             systemActionService.doAction(action);
-            displayElementService.updateOnce({updateModes: [GridElementDisplay.MODE_APP_STATE]});
             break;
         case 'GridActionPredefined':
             doPredefinedAction(gridElement, action);
