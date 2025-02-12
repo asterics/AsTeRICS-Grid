@@ -185,12 +185,13 @@
                 });
                 this.updateGridWithUndo();
             },
-            newElement(type, useInteractionPos) {
+            async newElement(type, useInteractionPos) {
                 if (type === GridElement.ELEMENT_TYPE_NORMAL) {
                     this.editElementId = null;
                     this.newPosition = useInteractionPos && this.lastInteraction.x !== undefined ? this.lastInteraction : null;
                     this.showEditModal = true;
                 } else {
+                    let showEdit = false;
                     let newPos = new GridData(this.gridData).getNewXYPos();
                     let baseProperties = {
                         type: type,
@@ -211,9 +212,14 @@
                         newElement.actions = [playText];
                     } else if (type === GridElement.ELEMENT_TYPE_DISPLAY) {
                         newElement = new GridElementDisplay(baseProperties);
+                        showEdit = true;
                     }
                     this.gridData.gridElements.push(newElement);
-                    this.updateGridWithUndo();
+                    await this.updateGridWithUndo();
+                    if (showEdit) {
+                        this.editElementId = newElement.id;
+                        this.showEditModal = true;
+                    }
                 }
             },
             newElements() {
