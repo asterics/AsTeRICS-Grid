@@ -152,7 +152,7 @@
             async reload(gridData) {
                 gridData = gridData || (await dataService.getGrid(this.gridData.id));
                 this.gridData = gridData;
-                displayElementService.updateOnce(this.gridData.gridElements);
+                displayElementService.updateOnce({ elements: this.gridData.gridElements });
             },
             back() {
                 if (this.metadata && this.metadata.globalGridId === this.gridData.id) {
@@ -460,7 +460,7 @@
                 container.addEventListener('touchcancel', this.onTouchEnd);
                 container.addEventListener('touchend', this.onTouchEnd);
                 collectElementService.initWithElements(this.gridData.gridElements);
-                displayElementService.updateOnce(this.gridData.gridElements);
+                displayElementService.updateOnce({ elements: this.gridData.gridElements });
             });
         },
         beforeDestroy() {
