@@ -302,16 +302,10 @@ youtubeService.exitFullscreen = function () {
 };
 
 youtubeService.volumeUp = function (diffPercentage) {
-    if (!player) {
-        return;
-    }
     youtubeService.setVolume(Math.min(userSettings.ytState.volume + +diffPercentage, 100));
 };
 
 youtubeService.volumeDown = function (diffPercentage) {
-    if (!player) {
-        return;
-    }
     youtubeService.setVolume(Math.max(userSettings.ytState.volume - +diffPercentage, 0));
 };
 
@@ -319,7 +313,7 @@ youtubeService.setVolume = function (volume, initSet) {
     if (player) {
         volume = volume !== null ? volume : userSettings.ytState.volume;
         let playerVolume = volume * (userSettings.systemVolume / 100.0);
-        if (userSettings.systemVolumeMuted) {
+        if (userSettings.systemVolumeMuted || userSettings.ytState.muted) {
             playerVolume = 0;
         }
         player.setVolume(playerVolume);
@@ -330,23 +324,29 @@ youtubeService.setVolume = function (volume, initSet) {
             player.mute();
         }
         log.debug("yt volumes (system, yt, result)", userSettings.systemVolume, volume, playerVolume);
-        if (!initSet) {
-            MainVue.setTooltip(i18nService.t('youTubeVolume', volume), {
-                revertOnClose: true,
-                timeout: 5000
-            });
-            userSettings.ytState.volume = volume;
-            saveState();
-        }
+    }
+    if (!initSet) {
+        MainVue.setTooltip(i18nService.t('youTubeVolume', volume), {
+            revertOnClose: true,
+            timeout: 5000
+        });
+        userSettings.ytState.volume = volume;
+        saveState();
     }
 };
 
 youtubeService.volumeToggleMute = function () {
+    let isMuted = userSettings.ytState.muted;
+    userSettings.ytState.muted = !isMuted;
+    saveState();
     if (player) {
-        let isMuted = player.isMuted();
-        isMuted ? player.unMute() : player.mute();
-        userSettings.ytState.muted = !isMuted;
-        saveState();
+        if (isMuted) {
+            youtubeService.setVolume(null, true);
+            player.unMute();
+        } else {
+            youtubeService.setVolume(0, true);
+            player.mute();
+        }
     }
 };
 
