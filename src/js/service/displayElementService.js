@@ -50,6 +50,10 @@ displayElementService.stop = function() {
     lastUpdateTimes = {};
 }
 
+displayElementService.getLastValue = function(elementId) {
+    return lastValues[elementId] || '';
+};
+
 /**
  *
  * @param options

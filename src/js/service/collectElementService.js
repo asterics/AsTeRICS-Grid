@@ -21,6 +21,7 @@ import {arasaacService} from "./pictograms/arasaacService.js";
 import {GridActionWordForm} from "../model/GridActionWordForm.js";
 import {stateService} from "./stateService.js";
 import {MapCache} from "../util/MapCache.js";
+import { displayElementService } from './displayElementService';
 
 let collectElementService = {};
 
@@ -599,6 +600,8 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
             }
             triggerPredict();
         }
+    } else if (element.type === GridElement.ELEMENT_TYPE_DISPLAY) {
+        addTextElem(displayElementService.getLastValue(element.id) + ' ');
     }
     updateCollectElements();
 });
