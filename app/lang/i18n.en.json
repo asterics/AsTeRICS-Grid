@@ -1147,5 +1147,20 @@
   "copy": "Copy",
   "cut": "Cut",
   "paste": "Paste",
-  "mutedBracket": "(muted)"
+  "mutedBracket": "(muted)",
+  "displayMode": "Display mode",
+  "dateTimeFormat": "Date / time format",
+  "MODE_DATETIME": "Date / time",
+  "MODE_APP_STATE": "Application state",
+  "MODE_HTTP_REQUEST": "HTTP request",
+  "DT_FORMAT_DATE": "Date",
+  "DT_FORMAT_DATE_LONG": "Date (long)",
+  "DT_FORMAT_TIME": "Time",
+  "DT_FORMAT_TIME_LONG": "Time (long)",
+  "DT_FORMAT_DATETIME": "Date and time",
+  "DT_FORMAT_WEEKDAY": "Weekday",
+  "DT_FORMAT_MONTH": "Month",
+  "APP_STATE_VOLUME_GLOBAL": "System volume",
+  "APP_STATE_VOLUME_YT": "YouTube volume",
+  "APP_STATE_VOLUME_RADIO": "Radio volume"
 }

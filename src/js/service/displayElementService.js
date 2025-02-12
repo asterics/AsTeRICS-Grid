@@ -54,6 +54,17 @@ displayElementService.getLastValue = function(elementId) {
     return lastValues[elementId] || '';
 };
 
+displayElementService.getCurrentValue = function(element) {
+    switch (element.mode) {
+        case GridElementDisplay.MODE_DATETIME:
+            return getElementDateTime(element);
+        case GridElementDisplay.MODE_APP_STATE:
+            return getElementAppState(element);
+        case GridElementDisplay.MODE_HTTP_REQUEST:
+            return getElementHTTP(element);
+    }
+};
+
 /**
  *
  * @param options
@@ -66,78 +77,61 @@ function updateElements(options = {}) {
         clearTimeout(timeoutHandler);
     }
     let allElements = options.elements || registeredElements;
-    let elementsToUpdate = allElements.filter(e => !options.updateModes || options.updateModes.includes(e.mode));
+    let elementsToUpdate = allElements.filter(e => e.type === GridElement.ELEMENT_TYPE_DISPLAY && (!options.updateModes || options.updateModes.includes(e.mode)));
     for (let element of elementsToUpdate) {
-        switch (element.mode) {
-            case GridElementDisplay.MODE_DATETIME:
-                updateElementDateTime(element);
-                break;
-            case GridElementDisplay.MODE_APP_STATE:
-                updateElementAppState(element);
-                break;
-            case GridElementDisplay.MODE_HTTP_REQUEST:
-                updateElementHTTP(element);
-                break;
-        }
+        let value = displayElementService.getCurrentValue(element);
+        triggerTextEvent(element, value);
     }
     if (!options.once) {
         timeoutHandler = setTimeout(updateElements, CHECK_INTERVAL);
     }
 }
 
-function updateElementDateTime(element) {
+function getElementDateTime(element) {
     switch (element.dateTimeFormat) {
         case GridElementDisplay.DT_FORMAT_DATE:
-            triggerDateEvent(element);
-            break;
+            return getDateText(element);
         case GridElementDisplay.DT_FORMAT_DATE_LONG:
-            triggerDateEvent(element, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-            break;
+            return getDateText(element, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
         case GridElementDisplay.DT_FORMAT_TIME:
-            triggerTimeEvent(element, { hour: 'numeric', minute: 'numeric' });
-            break;
+            return getTimeText(element, { hour: 'numeric', minute: 'numeric' });
         case GridElementDisplay.DT_FORMAT_TIME_LONG:
-            triggerTimeEvent(element, { hour: 'numeric', minute: 'numeric', second: 'numeric' });
-            break;
+            return getTimeText(element, { hour: 'numeric', minute: 'numeric', second: 'numeric' });
         case GridElementDisplay.DT_FORMAT_DATETIME:
-            triggerDateEvent(element, { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' });
-            break;
+            return getDateText(element, { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' });
         case GridElementDisplay.DT_FORMAT_WEEKDAY:
-            triggerDateEvent(element, { weekday: 'long' });
-            break;
+            return getDateText(element, { weekday: 'long' });
         case GridElementDisplay.DT_FORMAT_MONTH:
-            triggerDateEvent(element, { month: 'long' });
-            break;
+            return getDateText(element, { month: 'long' });
     }
 }
 
-function updateElementAppState(element) {
+function getElementAppState(element) {
     let userSettings = localStorageService.getUserSettings();
     switch (element.appState) {
         case GridElementDisplay.APP_STATE_VOLUME_GLOBAL:
-            triggerTextEvent(element, userSettings.systemVolumeMuted ? i18nService.t("mutedBracket") : userSettings.systemVolume);
-            break;
+            return userSettings.systemVolumeMuted ? i18nService.t("mutedBracket") : userSettings.systemVolume;
         case GridElementDisplay.APP_STATE_VOLUME_YT:
-            triggerTextEvent(element, userSettings.ytState.muted ? i18nService.t("mutedBracket") : userSettings.ytState.volume);
-            break;
+            return userSettings.ytState.muted ? i18nService.t("mutedBracket") : userSettings.ytState.volume;
     }
 }
 
-function updateElementHTTP(element) {
+function getElementHTTP(element) {
     let updateMs = (element.updateSeconds || 10) * 1000;
     if (lastUpdateTimes[element.id] && new Date().getTime() - lastUpdateTimes[element.id] < updateMs) {
         return;
     }
     lastUpdateTimes[element.id] = new Date().getTime();
     log.warn('updating HTTP display element');
+    return '';
 }
 
-function triggerDateEvent(element, options) {
-    triggerTextEvent(element, new Date().toLocaleDateString(i18nService.getContentLang(), options));
+function getDateText(element, options) {
+    return new Date().toLocaleDateString(i18nService.getContentLang(), options);
 }
 
-function triggerTimeEvent(element, options) {
-    triggerTextEvent(element, new Date().toLocaleTimeString(i18nService.getContentLang(), options));
+function getTimeText(element, options) {
+    return new Date().toLocaleTimeString(i18nService.getContentLang(), options);
 }
 
 function triggerTextEvent(element, text) {
