@@ -168,6 +168,9 @@ async function doAction(gridElement, action, options) {
             if (gridElement.type === GridElement.ELEMENT_TYPE_PREDICTION) {
                 labelCopy[i18nService.getContentLang()] = predictionService.getLastAppliedPrediction();
             }
+            if (gridElement.type === GridElement.ELEMENT_TYPE_DISPLAY) {
+                labelCopy[i18nService.getContentLang()] = displayElementService.getLastValue(gridElement.id);
+            }
             speechService.speak(labelCopy, {
                 lang: action.speakLanguage,
                 speakSecondary: true,
