@@ -2,7 +2,6 @@ import $ from '../externals/jquery.js';
 import Predictionary from 'predictionary';
 import { GridElement } from '../model/GridElement';
 import { Dictionary } from '../model/Dictionary';
-import { fontUtil } from '../util/fontUtil';
 import { dataService } from './data/dataService';
 import { constants } from '../util/constants';
 import { localStorageService } from './data/localStorageService.js';
