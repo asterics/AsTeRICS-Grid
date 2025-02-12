@@ -1146,5 +1146,6 @@
   "selectedElementContextMenu": "Selected element",
   "copy": "Copy",
   "cut": "Cut",
-  "paste": "Paste"
+  "paste": "Paste",
+  "mutedBracket": "(muted)"
 }
