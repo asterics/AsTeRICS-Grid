@@ -104,6 +104,7 @@ function getElementDateTime(element) {
         case GridElementDisplay.DT_FORMAT_MONTH:
             return getDateText(element, { month: 'long' });
     }
+    return '';
 }
 
 function getElementAppState(element) {
@@ -113,7 +114,10 @@ function getElementAppState(element) {
             return userSettings.systemVolumeMuted ? i18nService.t("mutedBracket") : userSettings.systemVolume;
         case GridElementDisplay.APP_STATE_VOLUME_YT:
             return userSettings.ytState.muted ? i18nService.t("mutedBracket") : userSettings.ytState.volume;
+        case GridElementDisplay.APP_STATE_VOLUME_RADIO:
+            return Math.round(parseFloat(localStorageService.get(constants.WEBRADIO_LAST_VOLUME_KEY) || 1.0) * 100);
     }
+    return '';
 }
 
 function getElementHTTP(element) {
