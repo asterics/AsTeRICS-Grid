@@ -179,8 +179,8 @@ function getValueRandom(element) {
 }
 
 function extractFromJson(element, text) {
-    let info = element.extractInfo || '';
-    let path = info.split('.');
+    let selector = element.extractSelector || '';
+    let path = selector.split('.');
     let jsonObject = null;
     try {
         jsonObject = JSON.parse(text);
@@ -195,8 +195,8 @@ function extractFromJson(element, text) {
 }
 
 function extractFromHTML(element, text) {
-    let selector = element.extractInfo || '';
-    let index = !isNaN(parseInt(element.extractInfo2)) ? parseInt(element.extractInfo2) : null;
+    let selector = element.extractSelector || '';
+    let index = !isNaN(parseInt(element.extractIndex)) ? parseInt(element.extractIndex) : null;
     if (!selector) {
         return text;
     }

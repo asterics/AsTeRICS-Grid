@@ -68,19 +68,19 @@
                 <div class="row" v-if="gridElement.extractMode === GridElementDisplay.EXTRACT_JSON">
                     <label class="col-sm-4" for="extractMode">{{ $t('jsonPath') }}</label>
                     <div class="col-sm-7">
-                        <input type="text" class="col-12" v-model="gridElement.extractInfo" :placeholder="$t('egJsonPath')">
+                        <input type="text" class="col-12" v-model="gridElement.extractSelector" :placeholder="$t('egJsonPath')">
                     </div>
                 </div>
                 <div class="row" v-if="gridElement.extractMode === GridElementDisplay.EXTRACT_HTML_SELECTOR">
                     <label class="col-sm-4" for="extractMode">{{ $t('cssSelector') }}</label>
                     <div class="col-sm-7">
-                        <input type="text" class="col-12" v-model="gridElement.extractInfo" :placeholder="$t('egCssSelector')">
+                        <input type="text" class="col-12" v-model="gridElement.extractSelector" :placeholder="$t('egCssSelector')">
                     </div>
                 </div>
                 <div class="row" v-if="gridElement.extractMode === GridElementDisplay.EXTRACT_HTML_SELECTOR">
                     <label class="col-sm-4" for="elementIndex">{{ $t('elementIndex') }}</label>
                     <div class="col-sm-7">
-                        <input id="elementIndex" type="number" class="col-12" v-model.number="gridElement.extractInfo2" :placeholder="$t('egElementIndex')">
+                        <input id="elementIndex" type="number" class="col-12" v-model.number="gridElement.extractIndex" :placeholder="$t('egElementIndex')">
                     </div>
                 </div>
                 <div class="row">
