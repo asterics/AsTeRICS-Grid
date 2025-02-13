@@ -11,11 +11,11 @@
 
                     <div class="modal-body mt-2" v-if="gridElement">
                         <div v-if="currentTab === TABS.TAB_GENERAL">
-                            <edit-element-general v-if="gridElement.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="gridElement" @searchImage="toImageSearch"></edit-element-general>
+                            <edit-element-general v-if="gridElement.type === GridElement.ELEMENT_TYPE_NORMAL || gridElement.type === GridElement.ELEMENT_TYPE_DISPLAY" :grid-element="gridElement" @searchImage="toImageSearch"></edit-element-general>
                             <edit-element-youtube v-if="gridElement.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="gridElement"></edit-element-youtube>
                             <edit-element-collect v-if="gridElement.type === GridElement.ELEMENT_TYPE_COLLECT" :grid-element="gridElement"></edit-element-collect>
-                            <edit-element-display v-if="gridElement.type === GridElement.ELEMENT_TYPE_DISPLAY" :grid-element="gridElement"></edit-element-display>
                         </div>
+                        <edit-element-display v-if="currentTab === TABS.TAB_DISPLAY_DATA" :grid-element="gridElement"></edit-element-display>
                         <edit-element-image v-if="currentTab === TABS.TAB_IMAGE" :grid-element="gridElement" :grid-data="gridData" :image-search="imageSearch"></edit-element-image>
                         <edit-element-word-forms v-if="currentTab === TABS.TAB_WORDFORMS" :grid-element="gridElement" :grid-data="gridData" @reloadData="initInternal(true)"></edit-element-word-forms>
                         <edit-element-actions v-if="currentTab === TABS.TAB_ACTIONS" :grid-element="gridElement" :grid-data="gridData"></edit-element-actions>
@@ -71,7 +71,8 @@
     const TAB_IMAGE = 'TAB_IMAGE';
     const TAB_WORDFORMS = 'TAB_WORDFORMS';
     const TAB_ACTIONS = 'TAB_ACTIONS';
-    const TABS = {TAB_GENERAL, TAB_IMAGE, TAB_WORDFORMS,TAB_ACTIONS};
+    const TAB_DISPLAY_DATA = 'TAB_DISPLAY_DATA';
+    const TABS = {TAB_GENERAL, TAB_IMAGE, TAB_WORDFORMS, TAB_ACTIONS, TAB_DISPLAY_DATA};
 
     export default {
         props: ['editElementIdParam', 'gridDataId', 'undoService', 'newPosition'],
@@ -173,7 +174,7 @@
                         thiz.gridData.gridElements.push(thiz.gridElement);
                     }
                     if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_NORMAL) {
-                        this.possibleTabs = this.TABS;
+                        this.possibleTabs = { TAB_GENERAL, TAB_IMAGE, TAB_WORDFORMS, TAB_ACTIONS };
                     } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_YT_PLAYER) {
                         this.possibleTabs = { TAB_GENERAL, TAB_ACTIONS };
                     } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_COLLECT) {
@@ -181,7 +182,7 @@
                     } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_PREDICTION) {
                         this.possibleTabs = { TAB_ACTIONS };
                     } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_DISPLAY) {
-                        this.possibleTabs = { TAB_GENERAL, TAB_IMAGE, TAB_ACTIONS };
+                        this.possibleTabs = { TAB_GENERAL, TAB_DISPLAY_DATA, TAB_IMAGE, TAB_ACTIONS };
                     }
                     thiz.originalGridElement = JSON.parse(JSON.stringify(thiz.gridElement));
                 });
