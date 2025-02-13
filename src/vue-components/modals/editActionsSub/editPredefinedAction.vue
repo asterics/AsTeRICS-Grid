@@ -57,11 +57,14 @@ export default {
     data: function() {
         return {
             actionGroups: null,
-            translations: {}
+            translations: {},
+            updateCounter1: 0,
+            updateCounter2: 0
         };
     },
     computed: {
         customValues() {
+            this.updateCounter1--;
             if (!this.action.groupId || !this.action.actionInfo || !this.actionGroups) {
                 return [];
             }
@@ -70,6 +73,7 @@ export default {
             return action.customValues || [];
         },
         actionInfos() {
+            this.updateCounter2--;
             if(!this.action.groupId || !this.actionGroups) {
                 return [];
             }
@@ -120,6 +124,7 @@ export default {
         groupChanged() {
             this.$set(this.action, "actionInfo", {});
             this.$set(this.action, "customValues", {});
+            this.updateCounter2++;
             if (!this.currentGroup || !this.currentGroup.actions) {
                 return;
             }
@@ -129,6 +134,7 @@ export default {
         },
         actionInfoChanged() {
             this.$set(this.action, "customValues", {});
+            this.updateCounter1++;
         },
         ti(translationValue) {
             return this.translations[translationValue] ? this.translations[translationValue] : translationValue;
