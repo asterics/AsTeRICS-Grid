@@ -11,10 +11,14 @@ httpService.doAction = async function (action) {
 
         let requestOptions = {
             method: (action.method || GridActionHTTP.defaults.method),
-            headers: {
-                'Content-Type': (action.contentType || GridActionHTTP.defaults.contentType)
-            }
+            headers: {}
         };
+        if (action.acceptHeader) {
+            requestOptions.headers['Accept'] = action.acceptHeader;
+        }
+        if (action.contentType) {
+            requestOptions.headers['Content-Type'] = action.contentType;
+        }
         if (!['GET', 'HEAD'].includes(requestOptions.method)) {
             requestOptions.body = action.body;
         }
@@ -31,7 +35,8 @@ httpService.doAction = async function (action) {
                 timeout: 5000
             });
         } else {
-            log.debug(`REST call ok, url: ${action.restUrl}, body ${action.body}`)
+            log.debug(`REST call ok, url: ${action.restUrl}, body ${action.body}`);
+            return !action.noCorsMode ? response.text() : '';
         }
     } catch (error) {
         log.error(error);
@@ -40,6 +45,7 @@ httpService.doAction = async function (action) {
             timeout: 5000
         });
     }
+    return '';
 };
 
 export { httpService };
