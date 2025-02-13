@@ -173,7 +173,7 @@ function extractFromJson(element, text) {
 
 function extractFromHTML(element, text) {
     let selector = element.extractInfo || '';
-    let index = element.extractInfo2 ? parseInt(element.extractInfo2) : 0;
+    let index = !isNaN(parseInt(element.extractInfo2)) ? parseInt(element.extractInfo2) : null;
     if (!selector) {
         return text;
     }
@@ -181,7 +181,13 @@ function extractFromHTML(element, text) {
     try {
         const doc = parser.parseFromString(text, 'text/html');
         const elements = doc.querySelectorAll(selector);
-        return elements[index] ? elements[index].textContent : '';
+        let result = '';
+        for (let i = 0; i < elements.length; i++) {
+            if (index === null || i === index) {
+                result += elements[i].textContent.replace(/\s+/g, ' ').trim() + '\n';
+            }
+        }
+        return result;
     } catch (e) {
         log.warn("failed to parse HTML", e);
     }
