@@ -60,8 +60,8 @@ actionService.doAction = async function (gridIdOrObject, gridElementId) {
     doActions(gridElement, gridData.id);
 };
 
-actionService.testAction = function (gridElement, action, gridData) {
-    doAction(gridElement, action, {
+actionService.testAction = function (gridElement, action, gridData = {}) {
+    return doAction(gridElement, action, {
         gridId: gridData.id,
         gridData: gridData
     });
@@ -157,11 +157,12 @@ async function doActions(gridElement, gridId) {
  *
  * @param gridElement
  * @param action
+ * @param options
  * @param options.gridId the id of the grid the action is contained in (only needed for GridActionWebradio and GridActionARE)
  * @param options.gridData the gridData object the action is contained in (optional)
  * @param options.actions all actions that are currently executed
  */
-async function doAction(gridElement, action, options) {
+async function doAction(gridElement, action, options = {}) {
     options = options || {};
     options.actions = options.actions || [];
 
@@ -261,7 +262,7 @@ async function doAction(gridElement, action, options) {
             break;
         case 'GridActionHTTP':
             log.debug('action HTTP');
-            httpService.doAction(action);
+            return httpService.doAction(action);
             break;
         case 'GridActionPredict':
             log.debug('action predict');
@@ -302,7 +303,7 @@ async function doAction(gridElement, action, options) {
             systemActionService.doAction(action);
             break;
         case 'GridActionPredefined':
-            doPredefinedAction(gridElement, action);
+            return doPredefinedAction(gridElement, action);
             break;
     }
 }
