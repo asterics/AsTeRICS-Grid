@@ -197,13 +197,10 @@ function extractFromJson(element, text) {
 function extractFromHTML(element, text) {
     let selector = element.extractSelector || '';
     let index = !isNaN(parseInt(element.extractIndex)) ? parseInt(element.extractIndex) : null;
-    if (!selector) {
-        return text;
-    }
     const parser = new DOMParser();
     try {
         const doc = parser.parseFromString(text, 'text/html');
-        const elements = doc.querySelectorAll(selector);
+        const elements = selector ? doc.querySelectorAll(selector) : [doc.documentElement];
         let result = '';
         for (let i = 0; i < elements.length; i++) {
             if (index === null || i === index) {
