@@ -1152,7 +1152,7 @@
   "dateTimeFormat": "Date / time format",
   "MODE_DATETIME": "Date / time",
   "MODE_APP_STATE": "Application state",
-  "MODE_HTTP_REQUEST": "HTTP request",
+  "MODE_ACTION_RESULT": "Action result",
   "DT_FORMAT_DATE": "Date",
   "DT_FORMAT_DATE_LONG": "Date (long)",
   "DT_FORMAT_TIME": "Time",
