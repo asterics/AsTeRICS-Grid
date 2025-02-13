@@ -46,7 +46,8 @@ export default {
             return ((this.externalSetLabel + '') || this.label || '') + '';
         },
         displayLabel() {
-            return util.replaceAll(this.calculateLabel, '\n', '<br>');
+            let label = util.replaceAll(this.calculateLabel, '\n', '<br>');
+            return util.replaceAll(label, '\\\\n', '<br>');
         },
     },
     methods: {
