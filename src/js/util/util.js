@@ -399,4 +399,8 @@ util.getElementSize = async function(element) {
     });
 };
 
+util.replaceAll = function(string, search, replace) {
+    return string.replace(new RegExp(search, 'g'), replace);
+}
+
 export { util };

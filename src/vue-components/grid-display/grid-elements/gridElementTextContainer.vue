@@ -4,7 +4,7 @@
                   text-align: center; font-size: ${fontSizePx}px; line-height: ${lineHeight}; color: ${gridElement && gridElement.fontColor ? gridElement.fontColor : metadata.textConfig.fontColor};
                   flex-grow: ${withImage ? '0' : '1'};`">
         <span :style="`max-height: ${maxTextContainerHeight}; text-overflow: ${textOverflow}; white-space: ${whiteSpaceWrap}; margin: 0 ${txtMargin}px;`">
-            <span>{{displayLabel}}</span>
+            <span v-html="displayLabel"/>
         </span>
     </div>
 </template>
@@ -14,6 +14,7 @@ import { TextConfig } from '../../../js/model/TextConfig';
 import { fontUtil } from '../../../js/util/fontUtil';
 import $ from '../../../js/externals/jquery';
 import { constants } from '../../../js/util/constants';
+import { util } from '../../../js/util/util';
 
 let MOBILE_MAX_WIDTH = 480;
 let TEXT_MARGIN = 5;
@@ -41,9 +42,12 @@ export default {
         }
     },
     computed: {
-        displayLabel() {
+        calculateLabel() {
             return ((this.externalSetLabel + '') || this.label || '') + '';
-        }
+        },
+        displayLabel() {
+            return util.replaceAll(this.calculateLabel, '\n', '<br>');
+        },
     },
     methods: {
         calcFontSize() {
@@ -60,7 +64,7 @@ export default {
             this.ready = true;
         },
         getFontSizePx(size) {
-            let label = this.displayLabel;
+            let label = this.calculateLabel;
             let fontSize = this.getBaseFontSize(size);
             let realWidth = fontUtil.getTextWidth(label, this.$refs.txtContainer.parentElement, fontSize);
             let kbdContainerPct = 80;
