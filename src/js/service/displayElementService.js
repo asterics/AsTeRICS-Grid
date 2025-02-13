@@ -70,7 +70,7 @@ displayElementService.getCurrentValue = async function(element, options = {}) {
     let updateMs = (element.updateSeconds || 0) * 1000;
     let cacheBecauseTime = !options.forceUpdate && lastUpdateTimes[element.id] && new Date().getTime() - lastUpdateTimes[element.id] < updateMs;
     let cacheBecauseUpdateSeconds0 = !options.forceUpdate && !element.updateSeconds;
-    if (lastValues[element.id] && (cacheBecauseTime || cacheBecauseUpdateSeconds0)) {
+    if (lastValues[element.id] !== undefined && (cacheBecauseTime || cacheBecauseUpdateSeconds0)) {
         return lastValues[element.id];
     }
     lastUpdateTimes[element.id] = new Date().getTime();
