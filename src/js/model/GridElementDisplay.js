@@ -7,8 +7,9 @@ class GridElementDisplay extends GridElement.extend({
     dateTimeFormat: [String],
     appState: [String],
     extractMode: [String],
-    extractInfo: [String, Number], //e.g. path like "info.name" for JSON; a querySelector like #id for HTML mode; startIndex for substring
-    extractInfo2: [String, Number] //e.g. endIndex for substring; index for HTML selector
+    extractInfo: [String, Number, undefined], //e.g. path like "info.name" for JSON; a querySelector like #id for HTML mode; startIndex for substring
+    extractInfo2: [String, Number, undefined], //e.g. endIndex for substring; index for HTML selector
+    chooseValues: [String] // array of values to choose from, semicolon separated
 }) {
     constructor(props) {
         props = props || {};
@@ -20,7 +21,8 @@ class GridElementDisplay extends GridElement.extend({
 GridElementDisplay.MODE_ACTION_RESULT = 'MODE_ACTION_RESULT';
 GridElementDisplay.MODE_DATETIME = 'MODE_DATETIME';
 GridElementDisplay.MODE_APP_STATE = 'MODE_APP_STATE';
-GridElementDisplay.MODES = [GridElementDisplay.MODE_DATETIME, GridElementDisplay.MODE_APP_STATE, GridElementDisplay.MODE_ACTION_RESULT];
+GridElementDisplay.MODE_RANDOM = 'MODE_RANDOM';
+GridElementDisplay.MODES = [GridElementDisplay.MODE_DATETIME, GridElementDisplay.MODE_APP_STATE, GridElementDisplay.MODE_ACTION_RESULT, GridElementDisplay.MODE_RANDOM];
 
 GridElementDisplay.DT_FORMAT_DATE = 'DT_FORMAT_DATE';
 GridElementDisplay.DT_FORMAT_DATE_LONG = 'DT_FORMAT_DATE_LONG';

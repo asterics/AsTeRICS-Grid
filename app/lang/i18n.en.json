@@ -1103,6 +1103,7 @@
   "SYS_VOLUME_TOGGLE_MUTE": "Toggle system volume mute",
   "SYS_ENTER_FULLSCREEN": "Enter fullscreen",
   "SYS_LEAVE_FULLSCREEN": "Exit fullscreen",
+  "SYS_UPDATE_DISPLAY_ELEMENTS": "Update display elements",
   "defaultDeviceVoice": "Default device voice",
   "fundedBy": "funded by",
   "astericsGridWasFundedWithinProjects": "AsTeRICS Grid was developed within several funded projects",
@@ -1164,5 +1165,17 @@
   "APP_STATE_VOLUME_YT": "YouTube volume",
   "APP_STATE_VOLUME_RADIO": "Radio volume",
   "useCorsProxy": "Use CORS proxy",
-  "canIncludePlaceholderLike": "can include placeholder {0}, e.g. \"Data: {0}\""
+  "canIncludePlaceholderLike": "can include placeholder {0}, e.g. \"Data: {0}\"",
+  "valuesToChooseFrom": "Values to choose from",
+  "egChooseValues": "semicolon-separated, e.g. \"1;2;3;4;5;6\"",
+  "updateIntervalSeconds": "Update interval (seconds)",
+  "updateIntervalPlaceholder": "automatic update interval (optional)",
+  "extractMode": "Extract mode",
+  "jsonPath": "JSON path",
+  "egJsonPath": "e.g. \"data.name\" if JSON includes a property \"data\" with sub-property \"name\"",
+  "cssSelector": "CSS selector",
+  "egCssSelector": "e.g. \"#element-id\" or \"main h1\"",
+  "elementIndex": "Element index",
+  "egElementIndex": "(optional) index of element of CSS selector result",
+  "extractData": "Extract data"
 }

@@ -356,6 +356,16 @@ util.getRandom = function (min, max) {
     return Math.random() * (max - min) + min;
 }
 
+/**
+ * gets random in from min to max (inclusive)
+ * @param min
+ * @param max
+ * @returns {*}
+ */
+util.getRandomInt = function(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 util.deduplicateArray = function (array) {
     return [...new Set(array)];
 }

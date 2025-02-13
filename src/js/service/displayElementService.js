@@ -5,6 +5,7 @@ import { constants } from '../util/constants';
 import { i18nService } from './i18nService';
 import { localStorageService } from './data/localStorageService';
 import { actionService } from './actionService';
+import { util } from '../util/util';
 
 let displayElementService = {};
 
@@ -65,13 +66,23 @@ displayElementService.getLastValue = function(elementId) {
  * @returns {Promise<string>}
  */
 displayElementService.getCurrentValue = async function(element, options = {}) {
+    options.forceUpdate = options.forceUpdate || [GridElementDisplay.MODE_DATETIME, GridElementDisplay.MODE_APP_STATE].includes(element.mode);
+    let updateMs = (element.updateSeconds || 0) * 1000;
+    let cacheBecauseTime = !options.forceUpdate && lastUpdateTimes[element.id] && new Date().getTime() - lastUpdateTimes[element.id] < updateMs;
+    let cacheBecauseUpdateSeconds0 = !options.forceUpdate && !element.updateSeconds;
+    if (lastValues[element.id] && (cacheBecauseTime || cacheBecauseUpdateSeconds0)) {
+        return lastValues[element.id];
+    }
+    lastUpdateTimes[element.id] = new Date().getTime();
     switch (element.mode) {
         case GridElementDisplay.MODE_DATETIME:
-            return getElementDateTime(element);
+            return getValueDateTime(element);
         case GridElementDisplay.MODE_APP_STATE:
-            return getElementAppState(element);
+            return getValueAppState(element);
         case GridElementDisplay.MODE_ACTION_RESULT:
-            return await getElementActionResult(element, options);
+            return await getValueActionResult(element, options);
+        case GridElementDisplay.MODE_RANDOM:
+            return getValueRandom(element, options);
     }
 };
 
@@ -99,7 +110,7 @@ function updateElements(options = {}) {
     let allElements = options.elements || registeredElements;
     let elementsToUpdate = allElements.filter(e => e.type === GridElement.ELEMENT_TYPE_DISPLAY && (!options.updateModes || options.updateModes.includes(e.mode)));
     for (let element of elementsToUpdate) {
-        let valuePromise = displayElementService.getCurrentValue(element);
+        let valuePromise = displayElementService.getCurrentValue(element, options);
         valuePromise.then(value => {
             triggerTextEvent(element, value);
         });
@@ -109,7 +120,7 @@ function updateElements(options = {}) {
     }
 }
 
-function getElementDateTime(element) {
+function getValueDateTime(element) {
     switch (element.dateTimeFormat) {
         case GridElementDisplay.DT_FORMAT_DATE:
             return getDateText(element);
@@ -129,7 +140,7 @@ function getElementDateTime(element) {
     return '';
 }
 
-function getElementAppState(element) {
+function getValueAppState(element) {
     let userSettings = localStorageService.getUserSettings();
     switch (element.appState) {
         case GridElementDisplay.APP_STATE_VOLUME_GLOBAL:
@@ -149,12 +160,7 @@ function getElementAppState(element) {
  * @param options.forceUpdate if set to true, getting the current value is forced and element.updateSeconds are ignored
  * @returns {Promise<string|*>}
  */
-async function getElementActionResult (element, options = {}) {
-    let updateMs = (element.updateSeconds || 10) * 1000;
-    if (!options.forceUpdate && lastUpdateTimes[element.id] && new Date().getTime() - lastUpdateTimes[element.id] < updateMs) {
-        return lastValues[element.id];
-    }
-    lastUpdateTimes[element.id] = new Date().getTime();
+async function getValueActionResult (element, options = {}) {
     let result = await actionService.testAction(element, element.displayAction);
     switch (element.extractMode) {
         case GridElementDisplay.EXTRACT_JSON:
@@ -163,6 +169,13 @@ async function getElementActionResult (element, options = {}) {
             return extractFromHTML(element, result);
     }
     return '';
+}
+
+function getValueRandom(element) {
+    let valuesString = element.chooseValues || '';
+    let values = valuesString.split(";");
+    let index = util.getRandomInt(0, values.length - 1);
+    return values[index];
 }
 
 function extractFromJson(element, text) {

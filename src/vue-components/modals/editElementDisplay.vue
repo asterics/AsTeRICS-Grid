@@ -29,6 +29,18 @@
                 </select>
             </div>
         </div>
+        <div class="row" v-if="gridElement.mode === GridElementDisplay.MODE_RANDOM">
+            <label class="col-sm-4" for="valuesToChooseFrom">{{ $t('valuesToChooseFrom') }}</label>
+            <div class="col-sm-7">
+                <input id="valuesToChooseFrom" type="text" class="col-12" v-model="gridElement.chooseValues" :placeholder="$t('egChooseValues')">
+            </div>
+        </div>
+        <div class="row" v-if="[GridElementDisplay.MODE_ACTION_RESULT, GridElementDisplay.MODE_RANDOM].includes(gridElement.mode)">
+            <label class="col-sm-4" for="updateInterval">{{ $t('updateIntervalSeconds') }}</label>
+            <div class="col-sm-7">
+                <input id="updateInterval" type="number" class="col-12" v-model.number="gridElement.updateSeconds" :placeholder="$t('updateIntervalPlaceholder')">
+            </div>
+        </div>
         <div v-if="gridElement.mode === GridElementDisplay.MODE_ACTION_RESULT">
             <div class="row">
                 <label class="col-sm-4" for="actionType">{{ $t('actionType') }}</label>
@@ -44,7 +56,7 @@
                 <edit-action :action="gridElement.displayAction"/>
             </div>
             <div v-if="gridElement.displayAction">
-                <h2>Extract information</h2>
+                <h2>{{$t('extractData')}}</h2>
                 <div class="row">
                     <label class="col-sm-4" for="extractMode">{{ $t('extractMode') }}</label>
                     <div class="col-sm-7">
@@ -60,15 +72,15 @@
                     </div>
                 </div>
                 <div class="row" v-if="gridElement.extractMode === GridElementDisplay.EXTRACT_HTML_SELECTOR">
-                    <label class="col-sm-4" for="extractMode">{{ $t('htmlSelector') }}</label>
+                    <label class="col-sm-4" for="extractMode">{{ $t('cssSelector') }}</label>
                     <div class="col-sm-7">
-                        <input type="text" class="col-12" v-model="gridElement.extractInfo" :placeholder="$t('egHtmlSelector')">
+                        <input type="text" class="col-12" v-model="gridElement.extractInfo" :placeholder="$t('egCssSelector')">
                     </div>
                 </div>
                 <div class="row" v-if="gridElement.extractMode === GridElementDisplay.EXTRACT_HTML_SELECTOR">
                     <label class="col-sm-4" for="elementIndex">{{ $t('elementIndex') }}</label>
                     <div class="col-sm-7">
-                        <input id="elementIndex" type="number" class="col-12" v-model.number="gridElement.extractInfo2">
+                        <input id="elementIndex" type="number" class="col-12" v-model.number="gridElement.extractInfo2" :placeholder="$t('egElementIndex')">
                     </div>
                 </div>
                 <div class="row">
@@ -112,6 +124,7 @@
         },
         mounted() {
             this.gridElement.additionalProps[GridElement.PROP_YT_PREVENT_CLICK] = this.gridElement.additionalProps[GridElement.PROP_YT_PREVENT_CLICK] || false;
+            this.actionType = this.gridElement.displayAction ? this.gridElement.displayAction.modelName : undefined;
         },
         beforeDestroy() {
         }
