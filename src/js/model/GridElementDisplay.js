@@ -3,9 +3,12 @@ import { GridElement } from './GridElement.js';
 class GridElementDisplay extends GridElement.extend({
     mode: [String],
     updateSeconds: [Number],
-    httpAction: [Object],
+    displayAction: [Object],
     dateTimeFormat: [String],
-    appState: [String]
+    appState: [String],
+    extractMode: [String],
+    extractInfo: [String, Number], //e.g. path like "info.name" for JSON; a querySelector like #id for HTML mode; startIndex for substring
+    extractInfo2: [String, Number] //e.g. endIndex for substring; index for HTML selector
 }) {
     constructor(props) {
         props = props || {};
@@ -14,10 +17,10 @@ class GridElementDisplay extends GridElement.extend({
     }
 }
 
-GridElementDisplay.MODE_HTTP_REQUEST = 'MODE_HTTP_REQUEST';
+GridElementDisplay.MODE_ACTION_RESULT = 'MODE_ACTION_RESULT';
 GridElementDisplay.MODE_DATETIME = 'MODE_DATETIME';
 GridElementDisplay.MODE_APP_STATE = 'MODE_APP_STATE';
-GridElementDisplay.MODES = [GridElementDisplay.MODE_DATETIME, GridElementDisplay.MODE_APP_STATE, GridElementDisplay.MODE_HTTP_REQUEST];
+GridElementDisplay.MODES = [GridElementDisplay.MODE_DATETIME, GridElementDisplay.MODE_APP_STATE, GridElementDisplay.MODE_ACTION_RESULT];
 
 GridElementDisplay.DT_FORMAT_DATE = 'DT_FORMAT_DATE';
 GridElementDisplay.DT_FORMAT_DATE_LONG = 'DT_FORMAT_DATE_LONG';
@@ -33,6 +36,13 @@ GridElementDisplay.APP_STATE_VOLUME_YT = 'APP_STATE_VOLUME_YT';
 GridElementDisplay.APP_STATE_VOLUME_RADIO = 'APP_STATE_VOLUME_RADIO';
 GridElementDisplay.APP_STATES = [GridElementDisplay.APP_STATE_VOLUME_GLOBAL, GridElementDisplay.APP_STATE_VOLUME_RADIO, GridElementDisplay.APP_STATE_VOLUME_YT]
 
-GridElementDisplay.DEFAULTS = {};
+GridElementDisplay.EXTRACT_JSON = "EXTRACT_JSON";
+GridElementDisplay.EXTRACT_SUBSTRING = "EXTRACT_SUBSTRING";
+GridElementDisplay.EXTRACT_HTML_SELECTOR = "EXTRACT_HTML_SELECTOR";
+GridElementDisplay.EXTRACT_MODES = [GridElementDisplay.EXTRACT_JSON, GridElementDisplay.EXTRACT_SUBSTRING, GridElementDisplay.EXTRACT_HTML_SELECTOR];
+
+GridElementDisplay.DEFAULTS = {
+    extractMode: GridElementDisplay.EXTRACT_JSON
+};
 
 export { GridElementDisplay };
