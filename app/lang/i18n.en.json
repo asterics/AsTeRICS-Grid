@@ -1162,5 +1162,6 @@
   "DT_FORMAT_MONTH": "Month",
   "APP_STATE_VOLUME_GLOBAL": "System volume",
   "APP_STATE_VOLUME_YT": "YouTube volume",
-  "APP_STATE_VOLUME_RADIO": "Radio volume"
+  "APP_STATE_VOLUME_RADIO": "Radio volume",
+  "useCorsProxy": "Use CORS proxy"
 }

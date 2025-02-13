@@ -82,7 +82,7 @@
         <edit-open-hab-action :action="action" :grid-data="gridData"/>
     </div>
     <div v-if="action.modelName === 'GridActionHTTP'">
-      <edit-http-action :action="action" :grid-element="gridElement"/>
+      <edit-http-action :action="action"/>
     </div>
     <div v-if="action.modelName === 'GridActionPredefined'">
         <edit-predefined-action :action="action" :grid-data="gridData"/>

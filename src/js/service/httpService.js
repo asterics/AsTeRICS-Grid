@@ -28,7 +28,12 @@ httpService.doAction = async function (action) {
             requestOptions.headers["Authorization"] = `Basic ${authStringBase64}`;
         }
         requestOptions.mode = action.noCorsMode ? 'no-cors' : undefined;
-        const response = await fetch(action.restUrl, requestOptions);
+        let url = new URL(action.restUrl);
+        if (action.useCorsProxy) {
+            url = new URL('https://proxy.asterics-foundation.org/proxy.php');
+            url.searchParams.append('csurl', action.restUrl);
+        }
+        const response = await fetch(url, requestOptions);
         if (!response.ok && !action.noCorsMode) {
             MainVue.setTooltip(i18nService.t("restActionFailed", `${response.statusText} (${response.status})`), {
                 revertOnClose: true,

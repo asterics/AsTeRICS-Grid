@@ -40,8 +40,8 @@
                 </div>
             </div>
             <div v-if="gridElement.displayAction">
-                <h2>Edit {{gridElement.displayAction.modelName | translate}}</h2>
-                <edit-action :action="gridElement.displayAction" :grid-element="gridElement"/>
+                <h2>$t('edit') {{gridElement.displayAction.modelName | translate}}</h2>
+                <edit-action :action="gridElement.displayAction"/>
             </div>
             <div v-if="gridElement.displayAction">
                 <h2>Extract information</h2>
@@ -84,7 +84,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <button @click="test">Test</button>
+                    <button @click="test">{{$t('test')}}</button>
                     <span>{{result}}</span>
                 </div>
             </div>
@@ -116,6 +116,7 @@
         methods: {
             actionTypeChanged() {
                 this.gridElement.displayAction = GridElement.getActionInstance(this.actionType);
+                this.gridElement.displayAction.isDisplayAction = true;
             },
             async test() {
                 this.result = await displayElementService.getCurrentValue(this.gridElement, {forceUpdate: true});
