@@ -174,7 +174,6 @@ function extractFromJson(element, text) {
 function extractFromHTML(element, text) {
     let selector = element.extractInfo || '';
     let index = element.extractInfo2 ? parseInt(element.extractInfo2) : 0;
-    log.warn("selector", selector);
     if (!selector) {
         return text;
     }
