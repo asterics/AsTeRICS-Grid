@@ -187,7 +187,11 @@ async function doAction(gridElement, action, options = {}) {
         case 'GridActionSpeakCustom':
             log.debug('action speak custom');
             if (action.speakText) {
-                speechService.speak(action.speakText, {
+                let text = action.speakText;
+                if (gridElement.type === GridElement.ELEMENT_TYPE_DISPLAY) {
+                    text[i18nService.getContentLang()] = displayElementService.replacePlaceholder(gridElement, text[i18nService.getContentLang()]);
+                }
+                speechService.speak(text, {
                     lang: action.speakLanguage,
                     speakSecondary: true,
                     minEqualPause: minPauseSpeak

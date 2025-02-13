@@ -3,7 +3,7 @@
         <div class="row">
             <label class="col-sm-2" for="inputLabel">{{ $t('label') }}</label>
             <div class="col-sm-7">
-                <input type="text" class="col-12" id="inputLabel" v-focus v-if="gridElement" v-model="gridElement.label[currentLang]"/>
+                <input type="text" class="col-12" id="inputLabel" v-focus v-if="gridElement" v-model="gridElement.label[currentLang]" :placeholder="gridElement.type === GridElement.ELEMENT_TYPE_DISPLAY ? $t('canIncludePlaceholderLike') : ''"/>
             </div>
             <div class="col-sm-3">
                 <button @click="$emit('searchImage')" class="col-12" :title="$t('searchForImages')"><i class="fas fa-search"/> {{$t('searchForImages')}}</button>
@@ -63,6 +63,7 @@
     import SliderInput from './input/sliderInput.vue';
     import AppGridDisplay from '../grid-display/appGridDisplay.vue';
     import { GridData } from '../../js/model/GridData';
+    import { GridElement } from '../../js/model/GridElement';
 
     export default {
         components: { AppGridDisplay, SliderInput, Accordion },
@@ -73,7 +74,8 @@
                 currentLang: i18nService.getContentLang(),
                 colorCategories: [],
                 constants: constants,
-                testGridData: null
+                testGridData: null,
+                GridElement: GridElement
             }
         },
         methods: {

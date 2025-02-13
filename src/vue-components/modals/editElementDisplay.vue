@@ -40,7 +40,7 @@
                 </div>
             </div>
             <div v-if="gridElement.displayAction">
-                <h2>$t('edit') {{gridElement.displayAction.modelName | translate}}</h2>
+                <h2>{{$t('edit')}} {{gridElement.displayAction.modelName | translate}}</h2>
                 <edit-action :action="gridElement.displayAction"/>
             </div>
             <div v-if="gridElement.displayAction">
@@ -69,18 +69,6 @@
                     <label class="col-sm-4" for="elementIndex">{{ $t('elementIndex') }}</label>
                     <div class="col-sm-7">
                         <input id="elementIndex" type="number" class="col-12" v-model.number="gridElement.extractInfo2">
-                    </div>
-                </div>
-                <div class="row" v-if="gridElement.extractMode === GridElementDisplay.EXTRACT_SUBSTRING">
-                    <label class="col-sm-4" for="startIndex">{{ $t('startIndex') }}</label>
-                    <div class="col-sm-7">
-                        <input id="startIndex" type="number" class="col-12" v-model.number="gridElement.extractInfo">
-                    </div>
-                </div>
-                <div class="row" v-if="gridElement.extractMode === GridElementDisplay.EXTRACT_SUBSTRING">
-                    <label class="col-sm-4" for="endIndex">{{ $t('endIndex') }}</label>
-                    <div class="col-sm-7">
-                        <input id="endIndex" type="number" class="col-12" v-model.number="gridElement.extractInfo2">
                     </div>
                 </div>
                 <div class="row">

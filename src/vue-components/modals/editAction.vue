@@ -34,7 +34,7 @@
             <div class="four columns">
                 <label for="inCustomText" class="normal-text">{{ $t('textToSpeak') }}</label>
             </div>
-            <input class="eight columns" id="inCustomText" type="text" v-model="action.speakText[getCurrentSpeakLang(action)]"/>
+            <input class="eight columns" id="inCustomText" type="text" v-model="action.speakText[getCurrentSpeakLang(action)]" :placeholder="gridElement.type === GridElement.ELEMENT_TYPE_DISPLAY ? $t('canIncludePlaceholderLike') : ''"/>
         </div>
     </div>
     <div v-if="action.modelName == 'GridActionAudio'">

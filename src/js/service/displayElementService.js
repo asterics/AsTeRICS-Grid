@@ -9,6 +9,8 @@ import { actionService } from './actionService';
 let displayElementService = {};
 
 let CHECK_INTERVAL = 1000;
+let DATA_PLACEHOLDER = '{0}';
+
 let registeredElements = [];
 let timeoutHandler = null;
 let lastUpdateTimes = {}; // ID -> update time
@@ -72,6 +74,16 @@ displayElementService.getCurrentValue = async function(element, options = {}) {
             return await getElementActionResult(element, options);
     }
 };
+
+displayElementService.replacePlaceholder = function(element, text = '', dataText) {
+    dataText = dataText || displayElementService.getLastValue(element.id);
+    if (text.includes(DATA_PLACEHOLDER)) {
+        text = text.replace(DATA_PLACEHOLDER, dataText);
+    } else {
+        text = text + dataText;
+    }
+    return text;
+}
 
 /**
  *
@@ -149,8 +161,6 @@ async function getElementActionResult (element, options = {}) {
             return extractFromJson(element, result);
         case GridElementDisplay.EXTRACT_HTML_SELECTOR:
             return extractFromHTML(element, result);
-        case GridElementDisplay.EXTRACT_SUBSTRING:
-            return extractSubstring(element, result);
     }
     return '';
 }
@@ -194,10 +204,6 @@ function extractFromHTML(element, text) {
     return '';
 }
 
-function extractSubstring(element, text) {
-    return '';
-}
-
 function getDateText(element, options) {
     return new Date().toLocaleDateString(i18nService.getContentLang(), options);
 }
@@ -206,9 +212,11 @@ function getTimeText(element, options) {
     return new Date().toLocaleTimeString(i18nService.getContentLang(), options);
 }
 
-function triggerTextEvent(element, text) {
-    text = text + '';
+function triggerTextEvent(element, dataText) {
+    dataText = dataText + '';
     let prevValue = lastValues[element.id];
+    let currentLabel = i18nService.getTranslation(element.label) || '';
+    let text = displayElementService.replacePlaceholder(element, currentLabel, dataText);
     if (prevValue !== text) {
         $(document).trigger(constants.EVENT_DISPLAY_ELEM_CHANGED, [element.id, text]);
         lastValues[element.id] = text;

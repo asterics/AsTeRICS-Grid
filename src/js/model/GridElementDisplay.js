@@ -37,9 +37,8 @@ GridElementDisplay.APP_STATE_VOLUME_RADIO = 'APP_STATE_VOLUME_RADIO';
 GridElementDisplay.APP_STATES = [GridElementDisplay.APP_STATE_VOLUME_GLOBAL, GridElementDisplay.APP_STATE_VOLUME_RADIO, GridElementDisplay.APP_STATE_VOLUME_YT]
 
 GridElementDisplay.EXTRACT_JSON = "EXTRACT_JSON";
-GridElementDisplay.EXTRACT_SUBSTRING = "EXTRACT_SUBSTRING";
 GridElementDisplay.EXTRACT_HTML_SELECTOR = "EXTRACT_HTML_SELECTOR";
-GridElementDisplay.EXTRACT_MODES = [GridElementDisplay.EXTRACT_JSON, GridElementDisplay.EXTRACT_SUBSTRING, GridElementDisplay.EXTRACT_HTML_SELECTOR];
+GridElementDisplay.EXTRACT_MODES = [GridElementDisplay.EXTRACT_JSON, GridElementDisplay.EXTRACT_HTML_SELECTOR];
 
 GridElementDisplay.DEFAULTS = {
     extractMode: GridElementDisplay.EXTRACT_JSON
