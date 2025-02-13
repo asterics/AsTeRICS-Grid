@@ -4,6 +4,7 @@ import $ from '../externals/jquery';
 import { constants } from '../util/constants';
 import { i18nService } from './i18nService';
 import { localStorageService } from './data/localStorageService';
+import { actionService } from './actionService';
 
 let displayElementService = {};
 
@@ -54,14 +55,21 @@ displayElementService.getLastValue = function(elementId) {
     return lastValues[elementId] || '';
 };
 
-displayElementService.getCurrentValue = function(element) {
+/**
+ *
+ * @param element
+ * @param options
+ * @param options.forceUpdate if set to true, getting the current value is forced and element.updateSeconds are ignored
+ * @returns {Promise<string>}
+ */
+displayElementService.getCurrentValue = async function(element, options = {}) {
     switch (element.mode) {
         case GridElementDisplay.MODE_DATETIME:
             return getElementDateTime(element);
         case GridElementDisplay.MODE_APP_STATE:
             return getElementAppState(element);
-        case GridElementDisplay.MODE_HTTP_REQUEST:
-            return getElementHTTP(element);
+        case GridElementDisplay.MODE_ACTION_RESULT:
+            return await getElementActionResult(element, options);
     }
 };
 
@@ -79,8 +87,10 @@ function updateElements(options = {}) {
     let allElements = options.elements || registeredElements;
     let elementsToUpdate = allElements.filter(e => e.type === GridElement.ELEMENT_TYPE_DISPLAY && (!options.updateModes || options.updateModes.includes(e.mode)));
     for (let element of elementsToUpdate) {
-        let value = displayElementService.getCurrentValue(element);
-        triggerTextEvent(element, value);
+        let valuePromise = displayElementService.getCurrentValue(element);
+        valuePromise.then(value => {
+            triggerTextEvent(element, value);
+        });
     }
     if (!options.once) {
         timeoutHandler = setTimeout(updateElements, CHECK_INTERVAL);
@@ -120,13 +130,66 @@ function getElementAppState(element) {
     return '';
 }
 
-function getElementHTTP(element) {
+/**
+ *
+ * @param element
+ * @param options
+ * @param options.forceUpdate if set to true, getting the current value is forced and element.updateSeconds are ignored
+ * @returns {Promise<string|*>}
+ */
+async function getElementActionResult (element, options = {}) {
     let updateMs = (element.updateSeconds || 10) * 1000;
-    if (lastUpdateTimes[element.id] && new Date().getTime() - lastUpdateTimes[element.id] < updateMs) {
-        return;
+    if (!options.forceUpdate && lastUpdateTimes[element.id] && new Date().getTime() - lastUpdateTimes[element.id] < updateMs) {
+        return lastValues[element.id];
     }
     lastUpdateTimes[element.id] = new Date().getTime();
-    log.warn('updating HTTP display element');
+    let result = await actionService.testAction(element, element.displayAction);
+    switch (element.extractMode) {
+        case GridElementDisplay.EXTRACT_JSON:
+            return extractFromJson(element, result);
+        case GridElementDisplay.EXTRACT_HTML_SELECTOR:
+            return extractFromHTML(element, result);
+        case GridElementDisplay.EXTRACT_SUBSTRING:
+            return extractSubstring(element, result);
+    }
+    return '';
+}
+
+function extractFromJson(element, text) {
+    let info = element.extractInfo || '';
+    let path = info.split('.');
+    let jsonObject = null;
+    try {
+        jsonObject = JSON.parse(text);
+    } catch (e) {
+        return '';
+    }
+    while (path.length > 0) {
+        let part = path.shift();
+        jsonObject = jsonObject[part] ? jsonObject[part] : jsonObject;
+    }
+    return jsonObject || '';
+}
+
+function extractFromHTML(element, text) {
+    let selector = element.extractInfo || '';
+    let index = element.extractInfo2 ? parseInt(element.extractInfo2) : 0;
+    log.warn("selector", selector);
+    if (!selector) {
+        return text;
+    }
+    const parser = new DOMParser();
+    try {
+        const doc = parser.parseFromString(text, 'text/html');
+        const elements = doc.querySelectorAll(selector);
+        return elements[index] ? elements[index].textContent : '';
+    } catch (e) {
+        log.warn("failed to parse HTML", e);
+    }
+    return '';
+}
+
+function extractSubstring(element, text) {
     return '';
 }
 
