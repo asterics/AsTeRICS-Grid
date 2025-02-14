@@ -540,8 +540,8 @@
                         icon: "fab fa-youtube"
                     },
                     'CONTEXT_NEW_LIVE': {
-                        name: i18nService.t('newDisplayElement'),
-                        icon: "fas fa-tv"
+                        name: i18nService.t('newLiveElement'),
+                        icon: "fas fa-star-of-life"
                     }
                 }
             },

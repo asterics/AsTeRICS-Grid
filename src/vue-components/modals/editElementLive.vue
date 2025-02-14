@@ -96,9 +96,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <button @click="test">{{$t('test')}}</button>
-                    <span>{{result}}</span>
+                <div class="row mt-5">
+                    <button class="col-sm-4" @click="test">{{$t('test')}}</button>
+                    <span class="col-sm-7">{{result}}</span>
                 </div>
             </div>
         </div>
@@ -122,7 +122,7 @@
             return {
                 GridElementLive: GridElementLive,
                 liveElementService: liveElementService,
-                possibleActionTypes: [GridActionHTTP.getModelName(), GridActionPredefined.getModelName()],
+                possibleActionTypes: [GridActionPredefined.getModelName(), GridActionHTTP.getModelName()],
                 actionType: undefined,
                 result: '',
                 extractInfo: undefined,
