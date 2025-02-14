@@ -5,11 +5,14 @@ import { constants } from '../util/constants';
 
 let i18nService = {};
 
+let PREDEFINED_TRANSLATION_BASE_URL = constants.BOARDS_REPO_BASE_URL + "predefined_mappings/i18n/";
+
 let vueI18n = null;
 let loadedLanguages = [];
 let fallbackLang = 'en';
 let currentContentLang = null;
 let currentAppLang = localStorageService.getAppSettings().appLang;
+let predefActionsI18nData = {};
 
 let appLanguages = [
     'cs',
@@ -51,6 +54,7 @@ i18nService.getVueI18n = async function () {
         messages: {}
     });
     await loadLanguage(fallbackLang);
+    await getPredefinedActionTranslations();
     getUserSettings();
     return i18nService.setAppLanguage(i18nService.getAppLang(), true).then(() => {
         return Promise.resolve(vueI18n);
@@ -111,6 +115,7 @@ i18nService.setAppLanguage = async function (lang, dontSave) {
     }
     currentAppLang = lang || i18nService.getBrowserLang();
     $('html').prop('lang', currentAppLang);
+    await getPredefinedActionTranslations();
     return loadLanguage(currentAppLang).then(() => {
         vueI18n.locale = currentAppLang;
         allLanguages.sort((a, b) => a[currentAppLang].toLowerCase().localeCompare(b[currentAppLang].toLowerCase()));
@@ -214,6 +219,16 @@ i18nService.tLoad = async function(key) {
     await loadLanguage(i18nService.getAppLang());
     return i18nService.t(key);
 };
+
+/**
+ * gets translation for predefined actions / requests
+ * @param key
+ * @returns {*}
+ */
+i18nService.tPredefined = function(key) {
+    let translations = predefActionsI18nData[i18nService.getAppLang()] || {};
+    return translations[key] ? translations[key] : key;
+}
 
 /**
  * get plain translation string from an translation object
@@ -342,6 +357,27 @@ async function getUserSettings() {
     currentContentLang = userSettings.contentLang;
     loadLanguage(i18nService.getContentLangBase());
 }
+
+async function getPredefinedActionTranslations(lang) {
+    lang = lang || i18nService.getAppLang();
+    if (predefActionsI18nData[lang]) {
+        return predefActionsI18nData[lang];
+    }
+    let translationFileName = `i18n.${lang}.json`;
+    try {
+        let translationResponse = await fetch(PREDEFINED_TRANSLATION_BASE_URL + translationFileName);
+        let data = await translationResponse.json();
+        predefActionsI18nData[lang] = data;
+        return data;
+    } catch (e) {
+        log.warn(`translation file ${translationFileName} not found.`);
+        if (lang !== 'en') {
+            log.warn(`trying "en" translation file.`);
+            return getPredefinedActionTranslations('en');
+        }
+        return {};
+    }
+};
 
 $(document).on(constants.EVENT_USER_CHANGED, getUserSettings);
 

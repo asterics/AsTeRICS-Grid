@@ -76,6 +76,7 @@ constants.VOICE_DEVICE_DEFAULT = 'VOICE_DEVICE_DEFAULT';
 constants.WEBRADIO_LAST_VOLUME_KEY = 'WEBRADIO_LAST_VOLUME_KEY';
 
 constants.GRIDSET_FOLDER = 'app/gridsets/';
+constants.BOARDS_REPO_BASE_URL = "https://asterics.github.io/AsTeRICS-Grid-Boards/";
 
 constants.BOARD_TYPE_SELFCONTAINED = "BOARD_TYPE_SELFCONTAINED";
 constants.BOARD_TYPE_SINGLE = "BOARD_TYPE_SINGLE";

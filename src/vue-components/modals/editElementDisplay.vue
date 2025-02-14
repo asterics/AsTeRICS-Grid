@@ -91,7 +91,7 @@
                         <div class="col-sm-7">
                             <select class="col-12" id="extractInfo" v-model="extractInfo" @change="extractInfoChanged">
                                 <option :value="undefined" disabled selected hidden="">{{ $t('pleaseSelect') }}</option>
-                                <option v-for="info in extractInfos" :value="info">{{ info.name | translate }}</option>
+                                <option v-for="info in extractInfos" :value="info">{{i18nService.tPredefined(info.name)}}</option>
                             </select>
                         </div>
                     </div>
@@ -113,6 +113,7 @@
     import { GridActionHTTP } from '../../js/model/GridActionHTTP';
     import { GridActionPredefined } from '../../js/model/GridActionPredefined';
     import EditAction from './editAction.vue';
+    import { i18nService } from '../../js/service/i18nService';
 
     export default {
         components: { EditAction },
@@ -126,7 +127,8 @@
                 result: '',
                 extractInfo: undefined,
                 GridActionHTTP: GridActionHTTP,
-                GridActionPredefined: GridActionPredefined
+                GridActionPredefined: GridActionPredefined,
+                i18nService: i18nService
             }
         },
         computed: {

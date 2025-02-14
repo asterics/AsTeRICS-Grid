@@ -34,12 +34,9 @@ import { GridActionWebradio } from '../model/GridActionWebradio';
 
 let actionService = {};
 
-let BASE_URL = "https://asterics.github.io/AsTeRICS-Grid-Boards/";
-let METADATA_URL_ACTIONS = constants.IS_ENVIRONMENT_PROD ? BASE_URL + "live_predefined_actions.json" : BASE_URL + "live_predefined_actions_beta.json";
-let METADATA_URL_REQUESTS = constants.IS_ENVIRONMENT_PROD ? BASE_URL + "live_predefined_requests.json" : BASE_URL + "live_predefined_requests_beta.json";
-let TRANSLATION_BASE_URL = BASE_URL + "predefined_mappings/i18n/";
+let METADATA_URL_ACTIONS = constants.IS_ENVIRONMENT_PROD ? constants.BOARDS_REPO_BASE_URL + "live_predefined_actions.json" : constants.BOARDS_REPO_BASE_URL + "live_predefined_actions_beta.json";
+let METADATA_URL_REQUESTS = constants.IS_ENVIRONMENT_PROD ? constants.BOARDS_REPO_BASE_URL + "live_predefined_requests.json" : constants.BOARDS_REPO_BASE_URL + "live_predefined_requests_beta.json";
 let predefinedActionsData = {};
-let predefActionsI18nData = {};
 
 let minPauseSpeak = 0;
 let metadata = null;
@@ -74,27 +71,6 @@ actionService.getPredefinedActionInfos = async function() {
 
 actionService.getPredefinedRequestInfos = async function() {
     return getPredefinedInfos(METADATA_URL_REQUESTS);
-};
-
-actionService.getPredefinedActionTranslations = async function(lang) {
-    lang = lang || i18nService.getAppLang();
-    if (predefActionsI18nData[lang]) {
-        return predefActionsI18nData[lang];
-    }
-    let translationFileName = `i18n.${lang}.json`;
-    try {
-        let translationResponse = await fetch(TRANSLATION_BASE_URL + translationFileName);
-        let data = await translationResponse.json();
-        predefActionsI18nData[lang] = data;
-        return data;
-    } catch (e) {
-        log.warn(`translation file ${translationFileName} not found.`);
-        if (lang !== 'en') {
-            log.warn(`trying "en" translation file.`);
-            return actionService.getPredefinedActionTranslations('en');
-        }
-        return {};
-    }
 };
 
 async function doActions(gridElement, gridId) {

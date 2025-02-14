@@ -14,31 +14,31 @@
             <div class="col-12 col-md-7">
                 <select id="actionInfo-123" v-model="action.actionInfo" class="col-12" @change="actionInfoChanged">
                     <option :value="{}" disabled selected hidden>{{ $t("pleaseSelect") }}</option>
-                    <option v-for="info in actionGroups.find(d => d.id === action.groupId).actions" :value="info">{{ ti(info.name) }}</option>
+                    <option v-for="info in actionGroups.find(d => d.id === action.groupId).actions" :value="info">{{ i18nService.tPredefined(info.name) }}</option>
                 </select>
             </div>
         </div>
         <div v-if="customValues.length">
             <div v-for="customValue in customValues">
                 <div class="row" v-if="customValue.type === 'text'">
-                    <label class="col-12 col-md-4 normal-text" :for="customValue.name">{{ ti(customValue.name) }}</label>
+                    <label class="col-12 col-md-4 normal-text" :for="customValue.name">{{ i18nService.tPredefined(customValue.name) }}</label>
                     <div class="col-12 col-md-7">
                         <input class="col-12" :id="customValue.name" v-model="action.customValues[customValue.name]" @input="textChanged(customValue)" spellcheck="false"
-                               type="text" :placeholder="customValue.placeholder"/>
+                               type="text" :placeholder="i18nService.tPredefined(customValue.placeholder)"/>
                     </div>
                 </div>
                 <div class="row" v-if="customValue.type === 'number'">
-                    <label class="col-12 col-md-4 normal-text" :for="customValue.name">{{ ti(customValue.name) }}</label>
+                    <label class="col-12 col-md-4 normal-text" :for="customValue.name">{{ i18nService.tPredefined(customValue.name) }}</label>
                     <div class="col-12 col-md-7">
                         <input class="col-12" :id="customValue.name" v-model.number="action.customValues[customValue.name]"
-                               type="number" :min="customValue.min" :max="customValue.max" :step="customValue.step" :placeholder="customValue.placeholder"/>
+                               type="number" :min="customValue.min" :max="customValue.max" :step="customValue.step" :placeholder="i18nService.tPredefined(customValue.placeholder)"/>
                     </div>
                 </div>
                 <div class="row" v-if="customValue.type === 'select'">
-                    <label class="col-12 col-md-4 normal-text" :for="customValue.name">{{ ti(customValue.name) }}</label>
+                    <label class="col-12 col-md-4 normal-text" :for="customValue.name">{{ i18nService.tPredefined(customValue.name) }}</label>
                     <div class="col-12 col-md-7">
                         <select class="col-12" :id="customValue.name" v-model="action.customValues[customValue.name]">
-                            <option v-for="value in customValue.values" :value="value.value ? value.value : value">{{ ti(value.label ? value.label : value) }}</option>
+                            <option v-for="value in customValue.values" :value="value.value ? value.value : value">{{ i18nService.tPredefined(value.label ? value.label : value) }}</option>
                         </select>
                     </div>
                 </div>
@@ -51,15 +51,16 @@
 
 import { util } from '../../../js/util/util';
 import { actionService } from '../../../js/service/actionService';
+import { i18nService } from '../../../js/service/i18nService';
 
 export default {
     props: ['action', 'gridData'],
     data: function() {
         return {
             actionGroups: null,
-            translations: {},
             updateCounter1: 0,
-            updateCounter2: 0
+            updateCounter2: 0,
+            i18nService: i18nService
         };
     },
     computed: {
@@ -137,13 +138,9 @@ export default {
         actionInfoChanged() {
             this.$set(this.action, "customValues", {});
             this.updateCounter1++;
-        },
-        ti(translationValue) {
-            return this.translations[translationValue] ? this.translations[translationValue] : translationValue;
         }
     },
     async mounted() {
-        this.translations = await actionService.getPredefinedActionTranslations();
         if (this.action.isDisplayAction) {
             this.actionGroups = await actionService.getPredefinedRequestInfos();
         } else {
