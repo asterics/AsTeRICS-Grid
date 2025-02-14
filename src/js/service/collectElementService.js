@@ -631,5 +631,8 @@ $(document).on(constants.EVENT_CONFIG_RESET, clearAll);
 
 $(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
 $(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
+$(document).on(constants.EVENT_USERSETTINGS_UPDATED, () => {
+    updateCollectElements();
+});
 
 export { collectElementService };
