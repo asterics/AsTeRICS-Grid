@@ -278,7 +278,7 @@
         <div class="srow">
             <div class="twelve columns">
                 <label for="systemActionType" class="four columns normal-text">{{ $t('actionType') }}</label>
-                <select id="systemActionType" class="eight columns" v-model="action.action">
+                <select id="systemActionType" class="eight columns" v-model="action.action" @change="action.actionValue = action.action === GridActionSystem.actions.SYS_UPDATE_DISPLAY_ELEMENTS ? 0 : 10">
                     <option v-for="action in GridActionSystem.actions" :value="action">{{ action | translate}}</option>
                 </select>
             </div>
