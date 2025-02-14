@@ -68,7 +68,8 @@ export default {
             if (!this.action.groupId || !this.action.actionInfo || !this.actionGroups) {
                 return [];
             }
-            let actions = this.actionGroups.find(g => g.id === this.action.groupId).actions || [];
+            let group = this.actionGroups.find(d => d.id === this.action.groupId) || {};
+            let actions = group.actions || [];
             let action = actions.find(a => a.name === this.action.actionInfo.name) || {};
             return action.customValues || [];
         },
@@ -77,7 +78,8 @@ export default {
             if(!this.action.groupId || !this.actionGroups) {
                 return [];
             }
-            return this.actionGroups.find(d => d.id === this.action.groupId).actions || [];
+            let group = this.actionGroups.find(d => d.id === this.action.groupId) || {};
+            return group.actions || [];
         },
         currentGroup() {
             if (!this.action.groupId || !this.actionGroups) {
@@ -142,7 +144,11 @@ export default {
     },
     async mounted() {
         this.translations = await actionService.getPredefinedActionTranslations();
-        this.actionGroups = await actionService.getPredefinedActionInfos();
+        if (this.action.isDisplayAction) {
+            this.actionGroups = await actionService.getPredefinedRequestInfos();
+        } else {
+            this.actionGroups = await actionService.getPredefinedActionInfos();
+        }
 
         // set action info to current value got from API in order to pre-select the correct item for "actionName"
         let currentGroup = this.actionGroups.find(group => group.id === this.action.groupId) || {};

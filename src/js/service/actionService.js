@@ -35,9 +35,10 @@ import { GridActionWebradio } from '../model/GridActionWebradio';
 let actionService = {};
 
 let BASE_URL = "https://asterics.github.io/AsTeRICS-Grid-Boards/";
-let METADATA_URL = constants.IS_ENVIRONMENT_PROD ? BASE_URL + "live_predefined_actions.json" : BASE_URL + "live_predefined_actions_beta.json";
-let TRANSLATION_BASE_URL = BASE_URL + "predefined_actions/i18n/";
-let predefinedActionsData = null;
+let METADATA_URL_ACTIONS = constants.IS_ENVIRONMENT_PROD ? BASE_URL + "live_predefined_actions.json" : BASE_URL + "live_predefined_actions_beta.json";
+let METADATA_URL_REQUESTS = constants.IS_ENVIRONMENT_PROD ? BASE_URL + "live_predefined_requests.json" : BASE_URL + "live_predefined_requests_beta.json";
+let TRANSLATION_BASE_URL = BASE_URL + "predefined_mappings/i18n/";
+let predefinedActionsData = {};
 let predefActionsI18nData = {};
 
 let minPauseSpeak = 0;
@@ -68,18 +69,11 @@ actionService.testAction = function (gridElement, action, gridData = {}) {
 };
 
 actionService.getPredefinedActionInfos = async function() {
-    if (predefinedActionsData) {
-        return predefinedActionsData;
-    }
-    try {
-        let response = await fetch(METADATA_URL);
-        predefinedActionsData = await response.json();
-        predefinedActionsData.sort((a,b) => a.name.localeCompare(b.name));
-        return predefinedActionsData;
-    } catch (e) {
-        log.warn(`failed to fetch predefined actions infos.`);
-        return [];
-    }
+    return getPredefinedInfos(METADATA_URL_ACTIONS);
+};
+
+actionService.getPredefinedRequestInfos = async function() {
+    return getPredefinedInfos(METADATA_URL_REQUESTS);
 };
 
 actionService.getPredefinedActionTranslations = async function(lang) {
@@ -327,7 +321,7 @@ function doPredefinedAction(gridElement, action) {
     let newAction = GridElement.getActionInstance(action.actionInfo.actionModelName);
     if (newAction) {
         Object.assign(newAction, action.actionInfo.presets);
-        doAction(gridElement, newAction);
+        return doAction(gridElement, newAction);
     }
 }
 
@@ -354,6 +348,21 @@ function doAREAction(action, gridData) {
 async function getMetadataConfig() {
     metadata = await dataService.getMetadata();
     minPauseSpeak = metadata.inputConfig.globalMinPauseCollectSpeak || 0;
+}
+
+async function getPredefinedInfos(url) {
+    if (predefinedActionsData[url]) {
+        return predefinedActionsData[url];
+    }
+    try {
+        let response = await fetch(url);
+        predefinedActionsData[url] = await response.json();
+        predefinedActionsData[url].sort((a, b) => a.name.localeCompare(b.name));
+        return predefinedActionsData[url];
+    } catch (e) {
+        log.warn(`failed to fetch predefined action/request infos.`);
+        return [];
+    }
 }
 
 $(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
