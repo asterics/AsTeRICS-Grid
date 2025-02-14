@@ -1177,5 +1177,6 @@
   "egCssSelector": "e.g. \"#element-id\" or \"main h1\"",
   "elementIndex": "Element index",
   "egElementIndex": "(optional) index of element of CSS selector result",
-  "extractData": "Extract data"
+  "extractData": "Extract data",
+  "delayMs": "Delay (ms)"
 }

@@ -286,7 +286,13 @@
         <div class="srow" v-if="[GridActionSystem.actions.SYS_VOLUME_UP, GridActionSystem.actions.SYS_VOLUME_DOWN].includes(action.action)">
             <div class="twelve columns">
                 <label for="systemActionValue" class="four columns normal-text">{{ $t(action.action) }} {{ $t('percentBracket') }}</label>
-                <input type="number" class="eight columns" min="0" max="100" v-model.number="action.actionValue">
+                <input id="systemActionValue" type="number" class="eight columns" min="0" max="100" v-model.number="action.actionValue">
+            </div>
+        </div>
+        <div class="srow" v-if="[GridActionSystem.actions.SYS_UPDATE_DISPLAY_ELEMENTS].includes(action.action)">
+            <div class="twelve columns">
+                <label for="systemActionDelay" class="four columns normal-text">{{ $t('delayMs') }}</label>
+                <input id="systemActionDelay" type="number" class="eight columns" min="0" v-model.number="action.actionValue">
             </div>
         </div>
     </div>

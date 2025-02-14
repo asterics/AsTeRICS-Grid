@@ -39,7 +39,10 @@ systemActionService.doAction = async function(action) {
             await systemActionService.exitFullscreen();
             break;
         case GridActionSystem.actions.SYS_UPDATE_DISPLAY_ELEMENTS:
-            await displayElementService.updateOnce({ forceUpdate: true });
+            let delay = action.actionValue || 0;
+            setTimeout(() => {
+                displayElementService.updateOnce({ forceUpdate: true });
+            }, delay);
             break;
     }
 };
