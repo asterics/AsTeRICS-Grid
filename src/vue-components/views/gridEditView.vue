@@ -152,7 +152,7 @@
             async reload(gridData) {
                 gridData = gridData || (await dataService.getGrid(this.gridData.id));
                 this.gridData = gridData;
-                displayElementService.updateOnce({ elements: this.gridData.gridElements });
+                displayElementService.updateOnce({ elements: this.gridData.gridElements, forceUpdate: true });
             },
             back() {
                 if (this.metadata && this.metadata.globalGridId === this.gridData.id) {
