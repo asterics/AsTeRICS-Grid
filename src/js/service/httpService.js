@@ -4,8 +4,23 @@ import { MainVue } from "../vue/mainVue";
 import { i18nService } from "./i18nService";
 
 let httpService = {};
+let MIN_PAUSE_TIME_MS = 500;
+let cachePromises = {};
+let lastTimes = {};
 
-httpService.doAction = async function (action) {
+httpService.doAction = async function(action) {
+    action = JSON.parse(JSON.stringify(action));
+    action.id = '';
+    let actionString = JSON.stringify(action);
+    if (cachePromises[actionString] && new Date().getTime() - lastTimes[actionString] < MIN_PAUSE_TIME_MS) {
+        return cachePromises[actionString];
+    }
+    cachePromises[actionString] = doActionInternal(action);
+    lastTimes[actionString] = new Date().getTime();
+    return cachePromises[actionString];
+};
+
+async function doActionInternal(action) {
     try {
         log.debug(`url: ${action.restUrl}, body: ${action.body}, method: ${action.method}, contenttype: ${action.contentType}`);
 
@@ -41,7 +56,7 @@ httpService.doAction = async function (action) {
             });
         } else {
             log.debug(`REST call ok, url: ${action.restUrl}, body ${action.body}`);
-            return !action.noCorsMode ? response.text() : '';
+            return !action.noCorsMode ? await response.text() : '';
         }
     } catch (error) {
         log.error(error);
@@ -51,6 +66,6 @@ httpService.doAction = async function (action) {
         });
     }
     return '';
-};
+}
 
 export { httpService };
