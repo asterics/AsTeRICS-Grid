@@ -138,6 +138,7 @@ export default {
         actionInfoChanged() {
             this.$set(this.action, "customValues", {});
             this.updateCounter1++;
+            this.$emit("change");
         }
     },
     async mounted() {

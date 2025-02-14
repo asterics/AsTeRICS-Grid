@@ -53,7 +53,7 @@
             </div>
             <div v-if="gridElement.liveAction">
                 <h2>{{$t('edit')}} {{gridElement.liveAction.modelName | translate}}</h2>
-                <edit-action :action="gridElement.liveAction"/>
+                <edit-action :action="gridElement.liveAction" @change="updateCounter++"/>
             </div>
             <div v-if="gridElement.liveAction">
                 <h2>{{$t('extractData')}}</h2>
@@ -128,11 +128,13 @@
                 extractInfo: undefined,
                 GridActionHTTP: GridActionHTTP,
                 GridActionPredefined: GridActionPredefined,
+                updateCounter: 0,
                 i18nService: i18nService
             }
         },
         computed: {
             extractInfos() {
+                this.updateCounter--;
                 let action = this.gridElement.liveAction;
                 if(!action || !action.actionInfo || !action.actionInfo.extract) {
                     return [];

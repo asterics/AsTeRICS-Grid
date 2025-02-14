@@ -85,7 +85,7 @@
       <edit-http-action :action="action"/>
     </div>
     <div v-if="action.modelName === 'GridActionPredefined'">
-        <edit-predefined-action :action="action" :grid-data="gridData"/>
+        <edit-predefined-action :action="action" :grid-data="gridData" v-on="$listeners"/>
     </div>
     <div v-if="action.modelName == 'GridActionPredict'">
         <div class="srow" v-show="gridElement.type === GridElement.ELEMENT_TYPE_COLLECT">
