@@ -57,30 +57,43 @@
             </div>
             <div v-if="gridElement.displayAction">
                 <h2>{{$t('extractData')}}</h2>
-                <div class="row">
-                    <label class="col-sm-4" for="extractMode">{{ $t('extractMode') }}</label>
-                    <div class="col-sm-7">
-                        <select class="col-12" id="extractMode" v-model="gridElement.extractMode">
-                            <option v-for="mode in GridElementDisplay.EXTRACT_MODES" :value="mode">{{ mode | translate }}</option>
-                        </select>
+                <div v-if="gridElement.displayAction.modelName === GridActionHTTP.getModelName()">
+                    <div class="row">
+                        <label class="col-sm-4" for="extractMode">{{ $t('extractMode') }}</label>
+                        <div class="col-sm-7">
+                            <select class="col-12" id="extractMode" v-model="gridElement.extractMode">
+                                <option v-for="mode in GridElementDisplay.EXTRACT_MODES" :value="mode">{{ mode | translate }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" v-if="gridElement.extractMode === GridElementDisplay.EXTRACT_JSON">
+                        <label class="col-sm-4" for="extractMode">{{ $t('jsonPath') }}</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="col-12" v-model="gridElement.extractSelector" :placeholder="$t('egJsonPath')">
+                        </div>
+                    </div>
+                    <div class="row" v-if="gridElement.extractMode === GridElementDisplay.EXTRACT_HTML_SELECTOR">
+                        <label class="col-sm-4" for="extractMode">{{ $t('cssSelector') }}</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="col-12" v-model="gridElement.extractSelector" :placeholder="$t('egCssSelector')">
+                        </div>
+                    </div>
+                    <div class="row" v-if="gridElement.extractMode === GridElementDisplay.EXTRACT_HTML_SELECTOR">
+                        <label class="col-sm-4" for="elementIndex">{{ $t('elementIndex') }}</label>
+                        <div class="col-sm-7">
+                            <input id="elementIndex" type="number" class="col-12" v-model.number="gridElement.extractIndex" :placeholder="$t('egElementIndex')">
+                        </div>
                     </div>
                 </div>
-                <div class="row" v-if="gridElement.extractMode === GridElementDisplay.EXTRACT_JSON">
-                    <label class="col-sm-4" for="extractMode">{{ $t('jsonPath') }}</label>
-                    <div class="col-sm-7">
-                        <input type="text" class="col-12" v-model="gridElement.extractSelector" :placeholder="$t('egJsonPath')">
-                    </div>
-                </div>
-                <div class="row" v-if="gridElement.extractMode === GridElementDisplay.EXTRACT_HTML_SELECTOR">
-                    <label class="col-sm-4" for="extractMode">{{ $t('cssSelector') }}</label>
-                    <div class="col-sm-7">
-                        <input type="text" class="col-12" v-model="gridElement.extractSelector" :placeholder="$t('egCssSelector')">
-                    </div>
-                </div>
-                <div class="row" v-if="gridElement.extractMode === GridElementDisplay.EXTRACT_HTML_SELECTOR">
-                    <label class="col-sm-4" for="elementIndex">{{ $t('elementIndex') }}</label>
-                    <div class="col-sm-7">
-                        <input id="elementIndex" type="number" class="col-12" v-model.number="gridElement.extractIndex" :placeholder="$t('egElementIndex')">
+                <div v-if="gridElement.displayAction.modelName === GridActionPredefined.getModelName()">
+                    <div class="row">
+                        <label class="col-sm-4" for="extractInfo">{{ $t('valueToDisplay') }}</label>
+                        <div class="col-sm-7">
+                            <select class="col-12" id="extractInfo" v-model="extractInfo" @change="extractInfoChanged">
+                                <option :value="undefined" disabled selected hidden="">{{ $t('pleaseSelect') }}</option>
+                                <option v-for="info in extractInfos" :value="info">{{ info.name | translate }}</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -110,7 +123,35 @@
                 displayElementService: displayElementService,
                 possibleActionTypes: [GridActionHTTP.getModelName(), GridActionPredefined.getModelName()],
                 actionType: undefined,
-                result: ''
+                result: '',
+                extractInfo: undefined,
+                GridActionHTTP: GridActionHTTP,
+                GridActionPredefined: GridActionPredefined
+            }
+        },
+        computed: {
+            extractInfos() {
+                let action = this.gridElement.displayAction;
+                if(!action || !action.actionInfo || !action.actionInfo.extract) {
+                    return [];
+                }
+                return action.actionInfo.extract.extractInfos || [];
+            },
+            extractMode() {
+                let action = this.gridElement.displayAction;
+                if(!action || !action.actionInfo || !action.actionInfo.extract) {
+                    return undefined;
+                }
+                return action.actionInfo.extract.mode || undefined;
+            },
+            extractInfoBasedOnCurrent() {
+                if (!this.gridElement || !this.gridElement.displayAction || !this.gridElement.displayAction.actionInfo ||
+                    !this.gridElement.displayAction.actionInfo.extract ||
+                    !this.gridElement.displayAction.modelName === GridActionPredefined.getModelName()) {
+                    return undefined;
+                }
+                let infos = this.gridElement.displayAction.actionInfo.extract.extractInfos;
+                return infos.find(i => i.selector === this.gridElement.extractSelector) || undefined;
             }
         },
         methods: {
@@ -120,11 +161,17 @@
             },
             async test() {
                 this.result = await displayElementService.getCurrentValue(this.gridElement, {forceUpdate: true});
+            },
+            extractInfoChanged() {
+                this.gridElement.extractMode = this.extractMode;
+                this.gridElement.extractSelector = this.extractInfo.selector;
+                this.gridElement.extractMappings = this.extractInfo.mappings;
             }
         },
         mounted() {
             this.gridElement.additionalProps[GridElement.PROP_YT_PREVENT_CLICK] = this.gridElement.additionalProps[GridElement.PROP_YT_PREVENT_CLICK] || false;
             this.actionType = this.gridElement.displayAction ? this.gridElement.displayAction.modelName : undefined;
+            this.extractInfo = this.extractInfoBasedOnCurrent;
         },
         beforeDestroy() {
         }

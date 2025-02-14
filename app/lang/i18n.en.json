@@ -1178,5 +1178,6 @@
   "elementIndex": "Element index",
   "egElementIndex": "(optional) index of element of CSS selector result",
   "extractData": "Extract data",
-  "delayMs": "Delay (ms)"
+  "delayMs": "Delay (ms)",
+  "valueToDisplay": "Value to display"
 }
