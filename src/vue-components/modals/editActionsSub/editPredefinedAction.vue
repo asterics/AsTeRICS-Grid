@@ -141,7 +141,7 @@ export default {
         }
     },
     async mounted() {
-        if (this.action.isDisplayAction) {
+        if (this.action.isLiveAction) {
             this.actionGroups = await actionService.getPredefinedRequestInfos();
         } else {
             this.actionGroups = await actionService.getPredefinedActionInfos();

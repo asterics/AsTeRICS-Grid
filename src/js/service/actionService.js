@@ -27,8 +27,8 @@ import {uartService} from './uartService.js';
 import { systemActionService } from './systemActionService';
 import { GridActionSystem } from '../model/GridActionSystem';
 import { util } from '../util/util';
-import { displayElementService } from './displayElementService';
-import { GridElementDisplay } from '../model/GridElementDisplay';
+import { liveElementService } from './liveElementService';
+import { GridElementLive } from '../model/GridElementLive';
 import { GridActionYoutube } from '../model/GridActionYoutube';
 import { GridActionWebradio } from '../model/GridActionWebradio';
 
@@ -119,7 +119,7 @@ async function doActions(gridElement, gridId) {
     }
     let displayUpdateActions = [GridActionYoutube.getModelName(), GridActionWebradio.getModelName(), GridActionSystem.getModelName()];
     if (actionTypes.some(type => displayUpdateActions.includes(type))) {
-        displayElementService.updateOnce({ updateModes: [GridElementDisplay.MODE_APP_STATE] });
+        liveElementService.updateOnce({ updateModes: [GridElementLive.MODE_APP_STATE] });
     }
 }
 
@@ -145,8 +145,8 @@ async function doAction(gridElement, action, options = {}) {
             if (gridElement.type === GridElement.ELEMENT_TYPE_PREDICTION) {
                 labelCopy[i18nService.getContentLang()] = predictionService.getLastAppliedPrediction();
             }
-            if (gridElement.type === GridElement.ELEMENT_TYPE_DISPLAY) {
-                labelCopy[i18nService.getContentLang()] = displayElementService.getLastValue(gridElement.id);
+            if (gridElement.type === GridElement.ELEMENT_TYPE_LIVE) {
+                labelCopy[i18nService.getContentLang()] = liveElementService.getLastValue(gridElement.id);
             }
             speechService.speak(labelCopy, {
                 lang: action.speakLanguage,
@@ -158,8 +158,8 @@ async function doAction(gridElement, action, options = {}) {
             log.debug('action speak custom');
             if (action.speakText) {
                 let text = action.speakText;
-                if (gridElement.type === GridElement.ELEMENT_TYPE_DISPLAY) {
-                    text[i18nService.getContentLang()] = displayElementService.replacePlaceholder(gridElement, text[i18nService.getContentLang()]);
+                if (gridElement.type === GridElement.ELEMENT_TYPE_LIVE) {
+                    text[i18nService.getContentLang()] = liveElementService.replacePlaceholder(gridElement, text[i18nService.getContentLang()]);
                 }
                 speechService.speak(text, {
                     lang: action.speakLanguage,

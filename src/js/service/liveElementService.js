@@ -1,5 +1,5 @@
 import { GridElement } from '../model/GridElement';
-import { GridElementDisplay } from '../model/GridElementDisplay';
+import { GridElementLive } from '../model/GridElementLive';
 import $ from '../externals/jquery';
 import { constants } from '../util/constants';
 import { i18nService } from './i18nService';
@@ -7,7 +7,7 @@ import { localStorageService } from './data/localStorageService';
 import { actionService } from './actionService';
 import { util } from '../util/util';
 
-let displayElementService = {};
+let liveElementService = {};
 
 let CHECK_INTERVAL = 1000;
 let DATA_PLACEHOLDER = '{0}';
@@ -22,10 +22,10 @@ let lastValues = {}; // ID -> value
  * @param options
  * @param options.once only update once, no automatic interval
  */
-displayElementService.initWithElements = function(elements, options = {}) {
-    displayElementService.stop();
+liveElementService.initWithElements = function(elements, options = {}) {
+    liveElementService.stop();
     elements.forEach((element) => {
-        if (element && element.type === GridElement.ELEMENT_TYPE_DISPLAY) {
+        if (element && element.type === GridElement.ELEMENT_TYPE_LIVE) {
             registeredElements.push(JSON.parse(JSON.stringify(element)));
         }
     });
@@ -39,22 +39,22 @@ displayElementService.initWithElements = function(elements, options = {}) {
  * @param options
  * @param options.elements optional elements to use for updating, otherwise currently registered elements are used
  * @param options.once only updates once, independent of automatic interval
- * @param options.updateModes optional array of strings defining the display element modes to be updated, e.g. [GridElementDisplay.MODE_DATETIME]
+ * @param options.updateModes optional array of strings defining the display element modes to be updated, e.g. [GridElementLive.MODE_DATETIME]
  * @param options.forceUpdate if set to true, getting the current value is forced and element.updateSeconds are ignored
  */
-displayElementService.updateOnce = function(options = {}) {
+liveElementService.updateOnce = function(options = {}) {
     options.once = options.once !== undefined ? options.once : true;
     updateElements(options);
 };
 
-displayElementService.stop = function() {
+liveElementService.stop = function() {
     clearTimeout(timeoutHandler);
     registeredElements = [];
     lastValues = {};
     lastUpdateTimes = {};
 }
 
-displayElementService.getLastValue = function(elementId) {
+liveElementService.getLastValue = function(elementId) {
     return lastValues[elementId] || '';
 };
 
@@ -65,8 +65,8 @@ displayElementService.getLastValue = function(elementId) {
  * @param options.forceUpdate if set to true, getting the current value is forced and element.updateSeconds are ignored
  * @returns {Promise<string>}
  */
-displayElementService.getCurrentValue = async function(element, options = {}) {
-    options.forceUpdate = options.forceUpdate || [GridElementDisplay.MODE_DATETIME, GridElementDisplay.MODE_APP_STATE].includes(element.mode);
+liveElementService.getCurrentValue = async function(element, options = {}) {
+    options.forceUpdate = options.forceUpdate || [GridElementLive.MODE_DATETIME, GridElementLive.MODE_APP_STATE].includes(element.mode);
     let updateMs = (element.updateSeconds || 0) * 1000;
     let cacheBecauseTime = !options.forceUpdate && lastUpdateTimes[element.id] && new Date().getTime() - lastUpdateTimes[element.id] < updateMs;
     let cacheBecauseUpdateSeconds0 = !options.forceUpdate && !element.updateSeconds;
@@ -76,16 +76,16 @@ displayElementService.getCurrentValue = async function(element, options = {}) {
     lastUpdateTimes[element.id] = new Date().getTime();
     let value = '';
     switch (element.mode) {
-        case GridElementDisplay.MODE_DATETIME:
+        case GridElementLive.MODE_DATETIME:
             value = getValueDateTime(element);
             break;
-        case GridElementDisplay.MODE_APP_STATE:
+        case GridElementLive.MODE_APP_STATE:
             value = getValueAppState(element);
             break;
-        case GridElementDisplay.MODE_ACTION_RESULT:
+        case GridElementLive.MODE_ACTION_RESULT:
             value = await getValueActionResult(element, options);
             break;
-        case GridElementDisplay.MODE_RANDOM:
+        case GridElementLive.MODE_RANDOM:
             value = getValueRandom(element, options);
             break;
     }
@@ -94,11 +94,11 @@ displayElementService.getCurrentValue = async function(element, options = {}) {
     }
     value = i18nService.tPredefined(value);
     let currentLabel = i18nService.getTranslation(element.label) || '';
-    return displayElementService.replacePlaceholder(element, currentLabel, value);
+    return liveElementService.replacePlaceholder(element, currentLabel, value);
 };
 
-displayElementService.replacePlaceholder = function(element, text = '', dataText) {
-    dataText = dataText !== undefined ? dataText : displayElementService.getLastValue(element.id);
+liveElementService.replacePlaceholder = function(element, text = '', dataText) {
+    dataText = dataText !== undefined ? dataText : liveElementService.getLastValue(element.id);
     if (text.includes(DATA_PLACEHOLDER)) {
         text = text.replace(DATA_PLACEHOLDER, dataText);
     } else {
@@ -113,16 +113,16 @@ displayElementService.replacePlaceholder = function(element, text = '', dataText
  * @param options.elements optional elements to use for updating, otherwise currently registered elements are used
  * @param options.once only updates once, independent of automatic interval
  * @param options.forceUpdate if set to true, getting the current value is forced and element.updateSeconds are ignored
- * @param options.updateModes optional array of strings defining the display element modes to be updated, e.g. [GridElementDisplay.MODE_DATETIME]
+ * @param options.updateModes optional array of strings defining the display element modes to be updated, e.g. [GridElementLive.MODE_DATETIME]
  */
 function updateElements(options = {}) {
     if (!options.once) {
         clearTimeout(timeoutHandler);
     }
     let allElements = options.elements || registeredElements;
-    let elementsToUpdate = allElements.filter(e => e.type === GridElement.ELEMENT_TYPE_DISPLAY && (!options.updateModes || options.updateModes.includes(e.mode)));
+    let elementsToUpdate = allElements.filter(e => e.type === GridElement.ELEMENT_TYPE_LIVE && (!options.updateModes || options.updateModes.includes(e.mode)));
     for (let element of elementsToUpdate) {
-        let valuePromise = displayElementService.getCurrentValue(element, options);
+        let valuePromise = liveElementService.getCurrentValue(element, options);
         valuePromise.then(value => {
             triggerTextEvent(element, value);
         });
@@ -134,19 +134,19 @@ function updateElements(options = {}) {
 
 function getValueDateTime(element) {
     switch (element.dateTimeFormat) {
-        case GridElementDisplay.DT_FORMAT_DATE:
+        case GridElementLive.DT_FORMAT_DATE:
             return getDateText(element);
-        case GridElementDisplay.DT_FORMAT_DATE_LONG:
+        case GridElementLive.DT_FORMAT_DATE_LONG:
             return getDateText(element, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-        case GridElementDisplay.DT_FORMAT_TIME:
+        case GridElementLive.DT_FORMAT_TIME:
             return getTimeText(element, { hour: 'numeric', minute: 'numeric' });
-        case GridElementDisplay.DT_FORMAT_TIME_LONG:
+        case GridElementLive.DT_FORMAT_TIME_LONG:
             return getTimeText(element, { hour: 'numeric', minute: 'numeric', second: 'numeric' });
-        case GridElementDisplay.DT_FORMAT_DATETIME:
+        case GridElementLive.DT_FORMAT_DATETIME:
             return getDateText(element, { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' });
-        case GridElementDisplay.DT_FORMAT_WEEKDAY:
+        case GridElementLive.DT_FORMAT_WEEKDAY:
             return getDateText(element, { weekday: 'long' });
-        case GridElementDisplay.DT_FORMAT_MONTH:
+        case GridElementLive.DT_FORMAT_MONTH:
             return getDateText(element, { month: 'long' });
     }
     return '';
@@ -155,11 +155,11 @@ function getValueDateTime(element) {
 function getValueAppState(element) {
     let userSettings = localStorageService.getUserSettings();
     switch (element.appState) {
-        case GridElementDisplay.APP_STATE_VOLUME_GLOBAL:
+        case GridElementLive.APP_STATE_VOLUME_GLOBAL:
             return userSettings.systemVolumeMuted ? i18nService.t("mutedBracket") : userSettings.systemVolume;
-        case GridElementDisplay.APP_STATE_VOLUME_YT:
+        case GridElementLive.APP_STATE_VOLUME_YT:
             return userSettings.ytState.muted ? i18nService.t("mutedBracket") : userSettings.ytState.volume;
-        case GridElementDisplay.APP_STATE_VOLUME_RADIO:
+        case GridElementLive.APP_STATE_VOLUME_RADIO:
             return Math.round(parseFloat(localStorageService.get(constants.WEBRADIO_LAST_VOLUME_KEY) || 1.0) * 100);
     }
     return '';
@@ -173,11 +173,11 @@ function getValueAppState(element) {
  * @returns {Promise<string|*>}
  */
 async function getValueActionResult (element, options = {}) {
-    let result = await actionService.testAction(element, element.displayAction);
+    let result = await actionService.testAction(element, element.liveAction);
     switch (element.extractMode) {
-        case GridElementDisplay.EXTRACT_JSON:
+        case GridElementLive.EXTRACT_JSON:
             return extractFromJson(element, result);
-        case GridElementDisplay.EXTRACT_HTML_SELECTOR:
+        case GridElementLive.EXTRACT_HTML_SELECTOR:
             return extractFromHTML(element, result);
     }
     return '';
@@ -245,4 +245,4 @@ function triggerTextEvent(element, text) {
     }
 }
 
-export { displayElementService };
+export { liveElementService };

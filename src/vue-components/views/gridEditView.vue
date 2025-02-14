@@ -71,8 +71,8 @@
     import { gridLayoutUtil } from '../grid-layout/utils/gridLayoutUtil';
     import { collectElementService } from '../../js/service/collectElementService';
     import AppGridDisplay from '../grid-display/appGridDisplay.vue';
-    import { GridElementDisplay } from '../../js/model/GridElementDisplay';
-    import { displayElementService } from '../../js/service/displayElementService';
+    import { GridElementLive } from '../../js/model/GridElementLive';
+    import { liveElementService } from '../../js/service/liveElementService';
 
     let vueApp = null;
 
@@ -152,7 +152,7 @@
             async reload(gridData) {
                 gridData = gridData || (await dataService.getGrid(this.gridData.id));
                 this.gridData = gridData;
-                displayElementService.updateOnce({ elements: this.gridData.gridElements, forceUpdate: true });
+                liveElementService.updateOnce({ elements: this.gridData.gridElements, forceUpdate: true });
             },
             back() {
                 if (this.metadata && this.metadata.globalGridId === this.gridData.id) {
@@ -210,8 +210,8 @@
                             action: GridActionCollectElement.COLLECT_ACTION_SPEAK
                         });
                         newElement.actions = [playText];
-                    } else if (type === GridElement.ELEMENT_TYPE_DISPLAY) {
-                        newElement = new GridElementDisplay(baseProperties);
+                    } else if (type === GridElement.ELEMENT_TYPE_LIVE) {
+                        newElement = new GridElementLive(baseProperties);
                         showEdit = true;
                     }
                     this.gridData.gridElements.push(newElement);
@@ -466,7 +466,7 @@
                 container.addEventListener('touchcancel', this.onTouchEnd);
                 container.addEventListener('touchend', this.onTouchEnd);
                 collectElementService.initWithElements(this.gridData.gridElements);
-                displayElementService.updateOnce({ elements: this.gridData.gridElements });
+                liveElementService.updateOnce({ elements: this.gridData.gridElements });
             });
         },
         beforeDestroy() {
@@ -508,7 +508,7 @@
         var CONTEXT_NEW_COLLECT = "CONTEXT_NEW_COLLECT";
         var CONTEXT_NEW_PREDICT = "CONTEXT_NEW_PREDICT";
         var CONTEXT_NEW_YT_PLAYER = "CONTEXT_NEW_YT_PLAYER";
-        var CONTEXT_NEW_DISPLAY = "CONTEXT_NEW_DISPLAY";
+        var CONTEXT_NEW_LIVE = "CONTEXT_NEW_LIVE";
 
         var CONTEXT_LAYOUT_ALL_UP = "CONTEXT_LAYOUT_ALL_UP";
         var CONTEXT_LAYOUT_ALL_RIGHT = "CONTEXT_LAYOUT_ALL_RIGHT";
@@ -539,7 +539,7 @@
                         name: i18nService.t('newYouTubePlayer'),
                         icon: "fab fa-youtube"
                     },
-                    'CONTEXT_NEW_DISPLAY': {
+                    'CONTEXT_NEW_LIVE': {
                         name: i18nService.t('newDisplayElement'),
                         icon: "fas fa-tv"
                     }
@@ -651,8 +651,8 @@
                     vueApp.newElement(GridElement.ELEMENT_TYPE_YT_PLAYER);
                     break;
                 }
-                case CONTEXT_NEW_DISPLAY: {
-                    vueApp.newElement(GridElement.ELEMENT_TYPE_DISPLAY);
+                case CONTEXT_NEW_LIVE: {
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_LIVE);
                     break;
                 }
                 case CONTEXT_COPY_ALL: {

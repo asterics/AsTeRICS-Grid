@@ -1103,7 +1103,7 @@
   "SYS_VOLUME_TOGGLE_MUTE": "Toggle system volume mute",
   "SYS_ENTER_FULLSCREEN": "Enter fullscreen",
   "SYS_LEAVE_FULLSCREEN": "Exit fullscreen",
-  "SYS_UPDATE_DISPLAY_ELEMENTS": "Update display elements",
+  "SYS_UPDATE_LIVE_ELEMENTS": "Update live elements",
   "defaultDeviceVoice": "Default device voice",
   "fundedBy": "funded by",
   "astericsGridWasFundedWithinProjects": "AsTeRICS Grid was developed within several funded projects",

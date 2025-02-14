@@ -5,43 +5,43 @@
             <div class="col-sm-7">
                 <select class="col-12" id="mode" v-model="gridElement.mode">
                     <option :value="undefined" disabled selected hidden="">{{ $t('pleaseSelect') }}</option>
-                    <option v-for="mode in GridElementDisplay.MODES" :value="mode">{{ mode | translate }}</option>
+                    <option v-for="mode in GridElementLive.MODES" :value="mode">{{ mode | translate }}</option>
                 </select>
             </div>
         </div>
-        <div class="row" v-if="gridElement.mode === GridElementDisplay.MODE_DATETIME">
+        <div class="row" v-if="gridElement.mode === GridElementLive.MODE_DATETIME">
             <label class="col-sm-4" for="dt_format">{{ $t('dateTimeFormat') }}</label>
             <div class="col-sm-7">
                 <select class="col-12" id="dt_format" v-model="gridElement.dateTimeFormat">
                     <option :value="undefined" disabled selected hidden="">{{ $t('pleaseSelect') }}</option>
-                    <option v-for="format in GridElementDisplay.DT_FORMATS" :value="format">
-                        {{ format | translate }} - [{{displayElementService.getCurrentValue({ mode: GridElementDisplay.MODE_DATETIME, dateTimeFormat: format})}}]
+                    <option v-for="format in GridElementLive.DT_FORMATS" :value="format">
+                        {{ format | translate }} - [{{liveElementService.getCurrentValue({ mode: GridElementLive.MODE_DATETIME, dateTimeFormat: format})}}]
                     </option>
                 </select>
             </div>
         </div>
-        <div class="row" v-if="gridElement.mode === GridElementDisplay.MODE_APP_STATE">
+        <div class="row" v-if="gridElement.mode === GridElementLive.MODE_APP_STATE">
             <label class="col-sm-4" for="appState">{{ $t('MODE_APP_STATE') }}</label>
             <div class="col-sm-7">
                 <select class="col-12" id="appState" v-model="gridElement.appState">
                     <option :value="undefined" disabled selected hidden="">{{ $t('pleaseSelect') }}</option>
-                    <option v-for="state in GridElementDisplay.APP_STATES" :value="state">{{ state | translate }}</option>
+                    <option v-for="state in GridElementLive.APP_STATES" :value="state">{{ state | translate }}</option>
                 </select>
             </div>
         </div>
-        <div class="row" v-if="gridElement.mode === GridElementDisplay.MODE_RANDOM">
+        <div class="row" v-if="gridElement.mode === GridElementLive.MODE_RANDOM">
             <label class="col-sm-4" for="valuesToChooseFrom">{{ $t('valuesToChooseFrom') }}</label>
             <div class="col-sm-7">
                 <input id="valuesToChooseFrom" type="text" class="col-12" v-model="gridElement.chooseValues" :placeholder="$t('egChooseValues')">
             </div>
         </div>
-        <div class="row" v-if="[GridElementDisplay.MODE_ACTION_RESULT, GridElementDisplay.MODE_RANDOM].includes(gridElement.mode)">
+        <div class="row" v-if="[GridElementLive.MODE_ACTION_RESULT, GridElementLive.MODE_RANDOM].includes(gridElement.mode)">
             <label class="col-sm-4" for="updateInterval">{{ $t('updateIntervalSeconds') }}</label>
             <div class="col-sm-7">
                 <input id="updateInterval" type="number" class="col-12" v-model.number="gridElement.updateSeconds" :placeholder="$t('updateIntervalPlaceholder')">
             </div>
         </div>
-        <div v-if="gridElement.mode === GridElementDisplay.MODE_ACTION_RESULT">
+        <div v-if="gridElement.mode === GridElementLive.MODE_ACTION_RESULT">
             <div class="row">
                 <label class="col-sm-4" for="actionType">{{ $t('actionType') }}</label>
                 <div class="col-sm-7">
@@ -51,41 +51,41 @@
                     </select>
                 </div>
             </div>
-            <div v-if="gridElement.displayAction">
-                <h2>{{$t('edit')}} {{gridElement.displayAction.modelName | translate}}</h2>
-                <edit-action :action="gridElement.displayAction"/>
+            <div v-if="gridElement.liveAction">
+                <h2>{{$t('edit')}} {{gridElement.liveAction.modelName | translate}}</h2>
+                <edit-action :action="gridElement.liveAction"/>
             </div>
-            <div v-if="gridElement.displayAction">
+            <div v-if="gridElement.liveAction">
                 <h2>{{$t('extractData')}}</h2>
-                <div v-if="gridElement.displayAction.modelName === GridActionHTTP.getModelName()">
+                <div v-if="gridElement.liveAction.modelName === GridActionHTTP.getModelName()">
                     <div class="row">
                         <label class="col-sm-4" for="extractMode">{{ $t('extractMode') }}</label>
                         <div class="col-sm-7">
                             <select class="col-12" id="extractMode" v-model="gridElement.extractMode">
-                                <option v-for="mode in GridElementDisplay.EXTRACT_MODES" :value="mode">{{ mode | translate }}</option>
+                                <option v-for="mode in GridElementLive.EXTRACT_MODES" :value="mode">{{ mode | translate }}</option>
                             </select>
                         </div>
                     </div>
-                    <div class="row" v-if="gridElement.extractMode === GridElementDisplay.EXTRACT_JSON">
+                    <div class="row" v-if="gridElement.extractMode === GridElementLive.EXTRACT_JSON">
                         <label class="col-sm-4" for="extractMode">{{ $t('jsonPath') }}</label>
                         <div class="col-sm-7">
                             <input type="text" class="col-12" v-model="gridElement.extractSelector" :placeholder="$t('egJsonPath')">
                         </div>
                     </div>
-                    <div class="row" v-if="gridElement.extractMode === GridElementDisplay.EXTRACT_HTML_SELECTOR">
+                    <div class="row" v-if="gridElement.extractMode === GridElementLive.EXTRACT_HTML_SELECTOR">
                         <label class="col-sm-4" for="extractMode">{{ $t('cssSelector') }}</label>
                         <div class="col-sm-7">
                             <input type="text" class="col-12" v-model="gridElement.extractSelector" :placeholder="$t('egCssSelector')">
                         </div>
                     </div>
-                    <div class="row" v-if="gridElement.extractMode === GridElementDisplay.EXTRACT_HTML_SELECTOR">
+                    <div class="row" v-if="gridElement.extractMode === GridElementLive.EXTRACT_HTML_SELECTOR">
                         <label class="col-sm-4" for="elementIndex">{{ $t('elementIndex') }}</label>
                         <div class="col-sm-7">
                             <input id="elementIndex" type="number" class="col-12" v-model.number="gridElement.extractIndex" :placeholder="$t('egElementIndex')">
                         </div>
                     </div>
                 </div>
-                <div v-if="gridElement.displayAction.modelName === GridActionPredefined.getModelName()">
+                <div v-if="gridElement.liveAction.modelName === GridActionPredefined.getModelName()">
                     <div class="row">
                         <label class="col-sm-4" for="extractInfo">{{ $t('valueToDisplay') }}</label>
                         <div class="col-sm-7">
@@ -108,8 +108,8 @@
 <script>
     import './../../css/modal.css';
     import {GridElement} from "../../js/model/GridElement.js";
-    import { GridElementDisplay } from '../../js/model/GridElementDisplay';
-    import { displayElementService } from '../../js/service/displayElementService';
+    import { GridElementLive } from '../../js/model/GridElementLive';
+    import { liveElementService } from '../../js/service/liveElementService';
     import { GridActionHTTP } from '../../js/model/GridActionHTTP';
     import { GridActionPredefined } from '../../js/model/GridActionPredefined';
     import EditAction from './editAction.vue';
@@ -120,8 +120,8 @@
         props: ['gridElement'],
         data: function () {
             return {
-                GridElementDisplay: GridElementDisplay,
-                displayElementService: displayElementService,
+                GridElementLive: GridElementLive,
+                liveElementService: liveElementService,
                 possibleActionTypes: [GridActionHTTP.getModelName(), GridActionPredefined.getModelName()],
                 actionType: undefined,
                 result: '',
@@ -133,36 +133,36 @@
         },
         computed: {
             extractInfos() {
-                let action = this.gridElement.displayAction;
+                let action = this.gridElement.liveAction;
                 if(!action || !action.actionInfo || !action.actionInfo.extract) {
                     return [];
                 }
                 return action.actionInfo.extract.extractInfos || [];
             },
             extractMode() {
-                let action = this.gridElement.displayAction;
+                let action = this.gridElement.liveAction;
                 if(!action || !action.actionInfo || !action.actionInfo.extract) {
                     return undefined;
                 }
                 return action.actionInfo.extract.mode || undefined;
             },
             extractInfoBasedOnCurrent() {
-                if (!this.gridElement || !this.gridElement.displayAction || !this.gridElement.displayAction.actionInfo ||
-                    !this.gridElement.displayAction.actionInfo.extract ||
-                    !this.gridElement.displayAction.modelName === GridActionPredefined.getModelName()) {
+                if (!this.gridElement || !this.gridElement.liveAction || !this.gridElement.liveAction.actionInfo ||
+                    !this.gridElement.liveAction.actionInfo.extract ||
+                    !this.gridElement.liveAction.modelName === GridActionPredefined.getModelName()) {
                     return undefined;
                 }
-                let infos = this.gridElement.displayAction.actionInfo.extract.extractInfos;
+                let infos = this.gridElement.liveAction.actionInfo.extract.extractInfos;
                 return infos.find(i => i.selector === this.gridElement.extractSelector) || undefined;
             }
         },
         methods: {
             actionTypeChanged() {
-                this.gridElement.displayAction = GridElement.getActionInstance(this.actionType);
-                this.gridElement.displayAction.isDisplayAction = true;
+                this.gridElement.liveAction = GridElement.getActionInstance(this.actionType);
+                this.gridElement.liveAction.isLiveAction = true;
             },
             async test() {
-                this.result = await displayElementService.getCurrentValue(this.gridElement, {forceUpdate: true});
+                this.result = await liveElementService.getCurrentValue(this.gridElement, {forceUpdate: true});
             },
             extractInfoChanged() {
                 this.gridElement.extractMode = this.extractMode;
@@ -172,7 +172,7 @@
         },
         mounted() {
             this.gridElement.additionalProps[GridElement.PROP_YT_PREVENT_CLICK] = this.gridElement.additionalProps[GridElement.PROP_YT_PREVENT_CLICK] || false;
-            this.actionType = this.gridElement.displayAction ? this.gridElement.displayAction.modelName : undefined;
+            this.actionType = this.gridElement.liveAction ? this.gridElement.liveAction.modelName : undefined;
             this.extractInfo = this.extractInfoBasedOnCurrent;
         },
         beforeDestroy() {

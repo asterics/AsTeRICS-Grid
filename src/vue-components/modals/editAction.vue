@@ -34,7 +34,7 @@
             <div class="four columns">
                 <label for="inCustomText" class="normal-text">{{ $t('textToSpeak') }}</label>
             </div>
-            <input class="eight columns" id="inCustomText" type="text" v-model="action.speakText[getCurrentSpeakLang(action)]" :placeholder="gridElement.type === GridElement.ELEMENT_TYPE_DISPLAY ? $t('canIncludePlaceholderLike') : ''"/>
+            <input class="eight columns" id="inCustomText" type="text" v-model="action.speakText[getCurrentSpeakLang(action)]" :placeholder="gridElement.type === GridElement.ELEMENT_TYPE_LIVE ? $t('canIncludePlaceholderLike') : ''"/>
         </div>
     </div>
     <div v-if="action.modelName == 'GridActionAudio'">
@@ -278,7 +278,7 @@
         <div class="srow">
             <div class="twelve columns">
                 <label for="systemActionType" class="four columns normal-text">{{ $t('actionType') }}</label>
-                <select id="systemActionType" class="eight columns" v-model="action.action" @change="action.actionValue = action.action === GridActionSystem.actions.SYS_UPDATE_DISPLAY_ELEMENTS ? 0 : 10">
+                <select id="systemActionType" class="eight columns" v-model="action.action" @change="action.actionValue = action.action === GridActionSystem.actions.SYS_UPDATE_LIVE_ELEMENTS ? 0 : 10">
                     <option v-for="action in GridActionSystem.actions" :value="action">{{ action | translate}}</option>
                 </select>
             </div>
@@ -289,7 +289,7 @@
                 <input id="systemActionValue" type="number" class="eight columns" min="0" max="100" v-model.number="action.actionValue">
             </div>
         </div>
-        <div class="srow" v-if="[GridActionSystem.actions.SYS_UPDATE_DISPLAY_ELEMENTS].includes(action.action)">
+        <div class="srow" v-if="[GridActionSystem.actions.SYS_UPDATE_LIVE_ELEMENTS].includes(action.action)">
             <div class="twelve columns">
                 <label for="systemActionDelay" class="four columns normal-text">{{ $t('delayMs') }}</label>
                 <input id="systemActionDelay" type="number" class="eight columns" min="0" v-model.number="action.actionValue">
