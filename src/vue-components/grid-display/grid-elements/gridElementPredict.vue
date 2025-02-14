@@ -1,6 +1,6 @@
 <template>
     <div ref="container" class="grid-item-content" style="background-color: rgb(255,228,178);">
-        <grid-element-text-container :with-image="false" :metadata="metadata" :watch-id="watchId" :disable-auto-size-keyboard="true" v-bind="$attrs"/>
+        <grid-element-text-container :with-image="false" :metadata="metadata" :disable-auto-size-keyboard="true" v-bind="$attrs"/>
     </div>
 </template>
 
@@ -10,7 +10,7 @@ import GridElementTextContainer from './gridElementTextContainer.vue';
 
 export default {
     components: { GridElementTextContainer },
-    props: ["metadata", "watchId"],
+    props: ["metadata"],
     data() {
         return {
         }

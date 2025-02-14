@@ -20,7 +20,7 @@ let MOBILE_MAX_WIDTH = 480;
 let TEXT_MARGIN = 5;
 
 export default {
-    props: ["label", "withImage", "metadata", "gridElement", "containerSize", "watchId", "disableAutoSizeKeyboard", "watchForChanges", "editable"],
+    props: ["label", "withImage", "metadata", "gridElement", "containerSize", "disableAutoSizeKeyboard", "watchForChanges", "editable"],
     data() {
         return {
             ready: false,
@@ -32,8 +32,7 @@ export default {
             textOverflow: null,
             whiteSpaceWrap: null,
             txtMargin: TEXT_MARGIN,
-            externalSetLabel: '',
-            intervalHandler: null
+            externalSetLabel: ''
         }
     },
     watch: {
@@ -52,7 +51,7 @@ export default {
     },
     methods: {
         calcFontSize() {
-            if (!this.$refs.txtContainer.parentElement) {
+            if (!this.$refs.txtContainer || !this.$refs.txtContainer.parentElement) {
                 return;
             }
             let size = this.containerSize;
@@ -111,7 +110,7 @@ export default {
             return pct;
         },
         externalUpdateFn(event, id, text) {
-            if (id === this.watchId) {
+            if (this.gridElement && id === this.gridElement.id) {
                 this.externalSetLabel = text;
                 this.calcFontSize();
             }
@@ -119,10 +118,7 @@ export default {
     },
     mounted() {
         this.calcFontSize();
-        if (this.watchId) {
-            $(document).on(constants.EVENT_PREDICTION_CHANGED, this.externalUpdateFn);
-            $(document).on(constants.EVENT_DISPLAY_ELEM_CHANGED, this.externalUpdateFn);
-        }
+        $(document).on(constants.EVENT_ELEM_TEXT_CHANGED, this.externalUpdateFn);
         if (this.editable || this.watchForChanges) {
             this.$watch("metadata", () => {
                 this.calcFontSize();
@@ -133,10 +129,7 @@ export default {
         }
     },
     beforeDestroy() {
-        if (this.watchId) {
-            $(document).off(constants.EVENT_PREDICTION_CHANGED, this.externalUpdateFn);
-            $(document).off(constants.EVENT_DISPLAY_ELEM_CHANGED, this.externalUpdateFn);
-        }
+        $(document).off(constants.EVENT_ELEM_TEXT_CHANGED, this.externalUpdateFn);
     }
 }
 </script>

@@ -581,7 +581,7 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         }
         triggerPredict();
     } else if (element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
-        let word = $(`#${element.id} .text-container span`).text();
+        let word = predictionService.getCurrentValue(element.id);
         if (word) {
             predictionService.applyPrediction(getPrintText(), word, dictionaryKey);
             let lastElem = getLastElement();

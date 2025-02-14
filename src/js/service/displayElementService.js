@@ -240,7 +240,7 @@ function triggerTextEvent(element, text) {
     text = text + '';
     let prevValue = lastValues[element.id];
     if (prevValue !== text) {
-        $(document).trigger(constants.EVENT_DISPLAY_ELEM_CHANGED, [element.id, text]);
+        $(document).trigger(constants.EVENT_ELEM_TEXT_CHANGED, [element.id, text]);
         lastValues[element.id] = text;
     }
 }
