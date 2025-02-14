@@ -9,6 +9,7 @@ class GridElementDisplay extends GridElement.extend({
     extractMode: [String],
     extractSelector: [String, Number, undefined], //e.g. path like "info.name" for JSON; a querySelector like #id for HTML mode; startIndex for substring
     extractIndex: [String, Number, undefined], //e.g. endIndex for substring; index for HTML selector
+    extractMappings: [Object], // extracted values -> replacement values, e.g. "true" -> "on"
     chooseValues: [String] // array of values to choose from, semicolon separated
 }) {
     constructor(props) {

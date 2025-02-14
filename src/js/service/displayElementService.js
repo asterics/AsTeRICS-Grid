@@ -40,7 +40,7 @@ displayElementService.initWithElements = function(elements, options = {}) {
  * @param options.elements optional elements to use for updating, otherwise currently registered elements are used
  * @param options.once only updates once, independent of automatic interval
  * @param options.updateModes optional array of strings defining the display element modes to be updated, e.g. [GridElementDisplay.MODE_DATETIME]
- *
+ * @param options.forceUpdate if set to true, getting the current value is forced and element.updateSeconds are ignored
  */
 displayElementService.updateOnce = function(options = {}) {
     options.once = options.once !== undefined ? options.once : true;
@@ -74,16 +74,26 @@ displayElementService.getCurrentValue = async function(element, options = {}) {
         return lastValues[element.id];
     }
     lastUpdateTimes[element.id] = new Date().getTime();
+    let value = '';
     switch (element.mode) {
         case GridElementDisplay.MODE_DATETIME:
-            return getValueDateTime(element);
+            value = getValueDateTime(element);
+            break;
         case GridElementDisplay.MODE_APP_STATE:
-            return getValueAppState(element);
+            value = getValueAppState(element);
+            break;
         case GridElementDisplay.MODE_ACTION_RESULT:
-            return await getValueActionResult(element, options);
+            value = await getValueActionResult(element, options);
+            break;
         case GridElementDisplay.MODE_RANDOM:
-            return getValueRandom(element, options);
+            value = getValueRandom(element, options);
+            break;
     }
+    if (element.extractMappings && element.extractMappings[value]) {
+        value = element.extractMappings[value];
+    }
+    let currentLabel = i18nService.getTranslation(element.label) || '';
+    return displayElementService.replacePlaceholder(element, currentLabel, value);
 };
 
 displayElementService.replacePlaceholder = function(element, text = '', dataText) {
@@ -101,6 +111,7 @@ displayElementService.replacePlaceholder = function(element, text = '', dataText
  * @param options
  * @param options.elements optional elements to use for updating, otherwise currently registered elements are used
  * @param options.once only updates once, independent of automatic interval
+ * @param options.forceUpdate if set to true, getting the current value is forced and element.updateSeconds are ignored
  * @param options.updateModes optional array of strings defining the display element modes to be updated, e.g. [GridElementDisplay.MODE_DATETIME]
  */
 function updateElements(options = {}) {
@@ -224,11 +235,9 @@ function getTimeText(element, options) {
     return new Date().toLocaleTimeString(i18nService.getContentLang(), options);
 }
 
-function triggerTextEvent(element, dataText) {
-    dataText = dataText + '';
+function triggerTextEvent(element, text) {
+    text = text + '';
     let prevValue = lastValues[element.id];
-    let currentLabel = i18nService.getTranslation(element.label) || '';
-    let text = displayElementService.replacePlaceholder(element, currentLabel, dataText);
     if (prevValue !== text) {
         $(document).trigger(constants.EVENT_DISPLAY_ELEM_CHANGED, [element.id, text]);
         lastValues[element.id] = text;
