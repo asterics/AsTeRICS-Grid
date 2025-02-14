@@ -92,12 +92,13 @@ displayElementService.getCurrentValue = async function(element, options = {}) {
     if (element.extractMappings && element.extractMappings[value]) {
         value = element.extractMappings[value];
     }
+    value = i18nService.tPredefined(value);
     let currentLabel = i18nService.getTranslation(element.label) || '';
     return displayElementService.replacePlaceholder(element, currentLabel, value);
 };
 
 displayElementService.replacePlaceholder = function(element, text = '', dataText) {
-    dataText = dataText || displayElementService.getLastValue(element.id);
+    dataText = dataText !== undefined ? dataText : displayElementService.getLastValue(element.id);
     if (text.includes(DATA_PLACEHOLDER)) {
         text = text.replace(DATA_PLACEHOLDER, dataText);
     } else {
