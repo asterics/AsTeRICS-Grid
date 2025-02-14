@@ -189,9 +189,11 @@ function extractFromJson(element, text) {
     }
     while (path.length > 0) {
         let part = path.shift();
-        jsonObject = jsonObject[part] ? jsonObject[part] : jsonObject;
+        jsonObject = jsonObject[part] !== undefined ? jsonObject[part] : jsonObject;
     }
-    return jsonObject || '';
+    let returnValue = jsonObject === undefined ? '' : jsonObject;
+    returnValue = returnValue !== Object(returnValue) ? returnValue : JSON.stringify(returnValue); // stringify if not a primitive value
+    return returnValue + '';
 }
 
 function extractFromHTML(element, text) {
