@@ -332,7 +332,14 @@ function getGridImage(imageId, obfObject, obfObjects) {
         return Promise.resolve(null);
     }
     let gridImage = new GridImage();
-    if (obfImage.data) {
+    if (obfImage.license) {
+        gridImage.author = obfImage.license.author_name;
+        gridImage.authorURL = obfImage.license.author_url;
+    }
+    if (obfImage.url) {
+        gridImage.url = obfImage.url;
+        return Promise.resolve(gridImage);
+    } else if (obfImage.data) {
         gridImage.data = obfImage.data;
         return Promise.resolve(gridImage);
     } else if (obfImage.path) {
@@ -342,9 +349,6 @@ function getGridImage(imageId, obfObject, obfObjects) {
         let preString = `data:${contentType};base64,`;
         let fileContent = obfObjects[obfImage.path];
         gridImage.data = preString + fileContent;
-        return Promise.resolve(gridImage);
-    } else if (obfImage.url) {
-        gridImage.url = obfImage.url;
         return Promise.resolve(gridImage);
     }
     return Promise.resolve(null);
