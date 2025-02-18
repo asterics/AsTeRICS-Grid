@@ -159,13 +159,29 @@ fontUtil.pctToPx = function(pct, containerSize) {
     return containerSize.height * pct / 100;
 }
 
-fontUtil.getHighContrastColor = function (hexBackground, lightColor, darkColor) {
+fontUtil.getHighContrastColor = function(hexBackground, lightColor, darkColor) {
     if (!hexBackground || !hexBackground.startsWith('#')) {
         return '';
     }
     lightColor = lightColor || '#ffffff';
     darkColor = darkColor || '#000000';
     let rgb = hexToRgb(hexBackground);
+    return fontUtil.getHighContrastColorRgb(rgb, lightColor, darkColor);
+};
+
+fontUtil.getHighContrastColorRgb = function(rgb, lightColor, darkColor) {
+    lightColor = lightColor || [255, 255, 255];
+    darkColor = darkColor || [0, 0, 0];
+    if(!rgb){
+        return lightColor;
+    }
+    if (rgb.r === undefined && rgb.length) {
+        rgb = {
+            r: rgb[0],
+            g: rgb[1],
+            b: rgb[2]
+        };
+    }
     let val = rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114;
     if (val > 149) {
         return darkColor;

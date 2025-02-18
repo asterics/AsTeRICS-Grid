@@ -11,6 +11,7 @@ import $ from "../externals/jquery.js";
 import {constants} from "../util/constants.js";
 import {TextConfig} from "../model/TextConfig.js";
 import { gridUtil } from '../util/gridUtil';
+import { fontUtil } from '../util/fontUtil';
 
 let printService = {};
 let pdfOptions = {
@@ -230,18 +231,14 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         let currentHeight = elementTotalHeight * element.height - 2 * pdfOptions.elementMargin;
         let xStartPos = pdfOptions.docPadding + elementTotalWidth * element.x + pdfOptions.elementMargin;
         let yStartPos = pdfOptions.docPadding + elementTotalHeight * element.y + pdfOptions.elementMargin;
+        let bgColor = options.printBackground ? util.getRGB(MetaData.getElementColor(element, metadata)) : [255, 255, 255];
         doc.setDrawColor(0);
-        if (!options.printBackground) {
-            doc.setFillColor(255, 255, 255);
-        } else {
-            let colorRGB = util.getRGB(MetaData.getElementColor(element, metadata));
-            doc.setFillColor(colorRGB[0], colorRGB[1], colorRGB[2]);
-        }
+        doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
         doc.roundedRect(xStartPos, yStartPos, currentWidth, currentHeight, 3, 3, 'FD');
         if (i18nService.getTranslation(element.label)) {
-            addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos);
+            addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, bgColor);
         }
-        await addImageToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos)
+        await addImageToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos);
         element = new GridElement(element);
         if (options.showLinks && options.idPageMap[element.getNavigateGridId()]) {
             let targetPage = options.idPageMap[element.getNavigateGridId()];
@@ -272,7 +269,7 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
     return Promise.all(promises);
 }
 
-function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos) {
+function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, bgColor) {
     let label = i18nService.getTranslation(element.label);
     let hasImg = element.image && (element.image.data || element.image.url);
     let fontSizeMM = hasImg ? currentHeight * (1 - pdfOptions.imgHeightPercentage) : currentHeight / 2;
@@ -291,7 +288,8 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
         currentHeight - 2 * pdfOptions.textPadding,
         !hasImg
     );
-    doc.setTextColor(0, 0, 0);
+    let textColor = fontUtil.getHighContrastColorRgb(bgColor);
+    doc.setTextColor(textColor[0], textColor[1], textColor[2]);
     doc.setFontSize(optimalFontSize);
     let dim = doc.getTextDimensions(label);
     let lines = Math.ceil(dim.w / maxWidth);
