@@ -99,6 +99,9 @@ liveElementService.getCurrentValue = async function(element, options = {}) {
 
 liveElementService.replacePlaceholder = function(element, text = '', dataText) {
     dataText = dataText !== undefined ? dataText : liveElementService.getLastValue(element.id);
+    if (!dataText) {
+        return text;
+    }
     if (text.includes(DATA_PLACEHOLDER)) {
         text = text.replace(DATA_PLACEHOLDER, dataText);
     } else {
