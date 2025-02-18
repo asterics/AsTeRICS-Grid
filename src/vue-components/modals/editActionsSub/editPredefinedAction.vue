@@ -5,7 +5,7 @@
             <div class="col-12 col-md-7">
                 <select id="actionGroup-123" v-model="action.groupId" class="col-12" @change="groupChanged">
                     <option :value="undefined" disabled selected hidden>{{ $t("pleaseSelect") }}</option>
-                    <option v-for="group in actionGroups" :value="group.id">{{ group.name }}</option>
+                    <option v-for="group in actionGroups" :value="group.id">{{ i18nService.tPredefined(group.name) }}</option>
                 </select>
             </div>
         </div>
