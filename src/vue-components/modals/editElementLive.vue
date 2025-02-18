@@ -53,7 +53,7 @@
             </div>
             <div v-if="gridElement.liveAction">
                 <h2>{{$t('edit')}} {{gridElement.liveAction.modelName | translate}}</h2>
-                <edit-action :action="gridElement.liveAction" @change="updateCounter++"/>
+                <edit-action :action="gridElement.liveAction" @change="liveActionChanged"/>
             </div>
             <div v-if="gridElement.liveAction">
                 <h2>{{$t('extractData')}}</h2>
@@ -170,6 +170,16 @@
                 this.gridElement.extractMode = this.extractMode;
                 this.gridElement.extractSelector = this.extractInfo.selector;
                 this.gridElement.extractMappings = this.extractInfo.mappings;
+            },
+            liveActionChanged() {
+                this.updateCounter++;
+                this.extractInfo = undefined;
+                this.$nextTick(() => {
+                    if (this.extractInfos.length === 1) {
+                        this.extractInfo = this.extractInfos[0];
+                        this.extractInfoChanged();
+                    }
+                });
             }
         },
         mounted() {

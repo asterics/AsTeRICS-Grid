@@ -9,12 +9,12 @@
                 </select>
             </div>
         </div>
-        <div class="row" v-if="actionInfos.length > 1">
+        <div class="row" v-if="actionInfos.length > 0">
             <label class="col-12 col-md-4 normal-text" for="actionInfo-123">{{ $t('actionName') }}</label>
             <div class="col-12 col-md-7">
                 <select id="actionInfo-123" v-model="action.actionInfo" class="col-12" @change="actionInfoChanged">
                     <option :value="{}" disabled selected hidden>{{ $t("pleaseSelect") }}</option>
-                    <option v-for="info in actionGroups.find(d => d.id === action.groupId).actions" :value="info">{{ i18nService.tPredefined(info.name) }}</option>
+                    <option v-for="info in actionInfos" :value="info">{{ i18nService.tPredefined(info.name) }}</option>
                 </select>
             </div>
         </div>
@@ -60,6 +60,7 @@ export default {
             actionGroups: null,
             updateCounter1: 0,
             updateCounter2: 0,
+            updateCounter3: 0,
             i18nService: i18nService
         };
     },
@@ -83,6 +84,7 @@ export default {
             return group.actions || [];
         },
         currentGroup() {
+            this.updateCounter3--;
             if (!this.action.groupId || !this.actionGroups) {
                 return null;
             }
@@ -127,18 +129,26 @@ export default {
         groupChanged() {
             this.$set(this.action, "actionInfo", {});
             this.$set(this.action, "customValues", {});
+            this.updateCounter1++;
             this.updateCounter2++;
-            if (!this.currentGroup || !this.currentGroup.actions) {
-                return;
-            }
-            if (this.currentGroup.actions.length === 1) {
-                this.action.actionInfo = this.currentGroup.actions[0];
-            }
+            this.updateCounter3++;
+            this.$nextTick(() => {
+                this.$emit("change");
+                if (!this.currentGroup || !this.currentGroup.actions) {
+                    return;
+                }
+                if (this.currentGroup.actions.length === 1) {
+                    this.action.actionInfo = this.currentGroup.actions[0];
+                    this.actionInfoChanged();
+                }
+            });
         },
         actionInfoChanged() {
             this.$set(this.action, "customValues", {});
             this.updateCounter1++;
-            this.$emit("change");
+            this.$nextTick(() => {
+                this.$emit("change");
+            })
         }
     },
     async mounted() {
