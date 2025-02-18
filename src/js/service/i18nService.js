@@ -54,6 +54,7 @@ i18nService.getVueI18n = async function () {
         messages: {}
     });
     await loadLanguage(fallbackLang);
+    await getPredefinedActionTranslations(fallbackLang);
     await getPredefinedActionTranslations();
     getUserSettings();
     return i18nService.setAppLanguage(i18nService.getAppLang(), true).then(() => {
@@ -227,7 +228,8 @@ i18nService.tLoad = async function(key) {
  */
 i18nService.tPredefined = function(key) {
     let translations = predefActionsI18nData[i18nService.getAppLang()] || {};
-    return translations[key] ? translations[key] : key;
+    let fallbackTranslations = predefActionsI18nData[fallbackLang] || {};
+    return translations[key] ? translations[key] : (fallbackTranslations[key] ? fallbackTranslations[key] : key);
 }
 
 /**
