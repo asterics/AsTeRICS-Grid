@@ -1144,4 +1144,7 @@
   "copy": "Copy",
   "cut": "Cut",
   "paste": "Paste"
+  "importFromApi": "Import from Web",
+  "serviceCouldNotProcessTheWord": "The service couldn't process the word. Try changing the word into its base form and remove special characters.",
+  "importFromApiTooltip": "By clicking on 'Import from Web' different wordforms will be automatically imported by a web-API"
 }

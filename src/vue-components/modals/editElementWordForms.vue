@@ -7,6 +7,11 @@
             </div>
         </accordion>
         <accordion :acc-label="$t('importExport')" acc-label-type="h2" acc-background-color="white">
+            <div class="tooltip srow">
+                <span class="fa fa-info-circle"></span>
+                <span>{{ $t('importFromApiTooltip') }}</span>
+            </div>
+
             <div class="srow">
                 <input id="importExportGlobally" type="checkbox" v-model="importExportGlobally" @change="overrideAtImport = importExportGlobally ? true : overrideAtImport"/>
                 <label for="importExportGlobally">{{ $t('importexportDataTofromAllGrids') }}</label>
@@ -15,10 +20,14 @@
                 <input id="overrideAtImport" type="checkbox" :disabled="importExportGlobally" v-model="overrideAtImport"/>
                 <label for="overrideAtImport">{{ $t('overrideExistingWordForms') }}</label>
             </div>
+
+
             <div class="srow">
-                <button class="three columns six columns" @click="importFromClipboard()"><i class="fas fa-file-import"/> {{ $t('importFromClipboard') }}</button>
-                <button class="three columns six columns" @click="copyToClipboard()"><i class="fas fa-file-export"/> {{ $t('copyToClipboard') }}</button>
+                <button class="two columns four columns" @click="importFromClipboard()"><i class="fas fa-file-import"/> {{ $t('importFromClipboard') }}</button>
+                <button class="two columns four columns" @click="copyToClipboard()"><i class="fas fa-file-export"/> {{ $t('copyToClipboard') }}</button>
+                <button class="two columns four columns" @click="importFromApi()"><i class="fas fa-file-export"/> {{ $t('importFromApi') }}</button>
             </div>
+
             <div class="srow" v-if="currentMsg === msgTypes.WAIT">
                 <i class="fas fa-spinner fa-spin"></i>
             </div>
@@ -26,6 +35,23 @@
                 <i class="fas fa-exclamation-triangle"></i>
                 <span>{{ $t('clipboardContainsNoWordFormsPleaseCopyFrom') }}</span>
             </div>
+            <!-- warning for import exception -->
+            <div v-if="currentMsg === msgTypes.ERROR_IMPORT">
+                <div class="srow warn">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>{{ $t('serviceCouldNotProcessTheWord') }}</span>
+                </div>
+                <div class="row mt-5">
+                    <label class="col-sm-2" for="inputLabel">{{ $t('label') }}</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="col-12" id="inputLabel" v-focus v-if="gridElement" v-model="gridElement.label[currentLang]"/>
+                    </div>
+                    <div class="col-sm-3">
+                        <button @click="importFromApi()"><i class="fas fa-check"/> {{ $t('retry') }}</button>
+                    </div> 
+                </div>
+            </div>
+            <!-- warning for import exception -->
             <div class="srow success" v-if="currentMsg === msgTypes.SUCCESS_PASTE">
                 <i class="fas fa-check"></i>
                 <span v-if="gridPasteCount === 0">{{ $t('importedWordForms', {count: msgCount}) }}</span>
@@ -59,16 +85,16 @@
                 <div class="row">
                     <div class="col-12 col-sm-8 my-2 my-sm-0 d-flex">
                         <div class="row d-flex align-items-center flex-grow-1">
-                            <span v-if="form.lang" class="col-3 col-md-2">
+                            <span v-if="form.lang" class="col-2 col-md-2">
                                 <span class="lang-tag p-2 m-1">{{ form.lang }}</span>
                             </span>
-                            <span class="col-3 col-md-3 value"><strong>{{ form.value }}</strong></span>
-                            <div v-if="form.tags.length" class="col-6 col-md-7">
+                            <span class="col-2 col-md-2 value"><strong>{{ form.value }}</strong></span>
+                            <div v-if="form.tags.length" class="col-8 col-md-8">
                                 <div class="row">
                                     <span v-for="tag in form.tags" class="tag">{{ tag }}</span>
                                 </div>
                             </div>
-                            <span v-if="!form.tags.length" class="col-6 col-md-7">(no tags)</span>
+                            <span v-if="!form.tags.length" class="col-7 col-md-8">(no tags)</span>
                         </div>
                     </div>
                     <div class="col-12 col-sm-4 mb-2 mb-sm-0 d-flex">
@@ -107,12 +133,14 @@
                 overrideAtImport: false,
                 allGrids: null,
                 langs: i18nService.getAllLanguages(),
+                currentLang: i18nService.getContentLang(),
                 filterLang: null,
                 msgTypes: {
                     WAIT: 'WAIT',
                     SUCCESS_COPY: 'SUCCESS_COPY',
                     SUCCESS_PASTE: 'SUCCESS_PASTE',
                     ERROR_PASTE: 'ERROR_PASTE',
+                    ERROR_IMPORT: 'ERROR_IMPORT',
                 },
                 currentMsg: null,
                 msgCount: 0,
@@ -167,12 +195,9 @@
                 rows = rows.map(row => row.split('\t'));
                 rows = rows.map(row => {
                     row[colNrTags] = row[colNrTags] ? row[colNrTags].split(",").map(tag => tag.trim().toLocaleUpperCase()).filter(tag => !!tag) : null;
-                    row[colNrLang] = row[colNrLang] ? row[colNrLang].trim().toLocaleLowerCase() : null;
-                    row[colNrPronunciation] = row[colNrPronunciation] ? row[colNrPronunciation].trim() : null;
                     return row;
                 });
-                let validLangCodes = i18nService.getAllLangCodes();
-                rows = rows.filter(row => (!row[colNrLang] || validLangCodes.includes(row[colNrLang])) && row[colNrValue]);
+                rows = rows.filter(row => (!row[colNrLang] || row[colNrLang].length === 2) && row[colNrValue]);
                 if (!rows.length) {
                     this.currentMsg = this.msgTypes.ERROR_PASTE;
                     return;
@@ -274,11 +299,29 @@
                 util.copyToClipboard(copyString);
                 this.currentMsg = this.msgTypes.SUCCESS_COPY;
             },
-            /**
-             * returns a list of base form strings in form of "<baseForm>:<lang>" from a given list of word forms.
-             * @param wordForms
-             * @return list of base form strings, e.g. ["sein:de", "be:en", "ser:es", ...]
-             */
+            async importFromApi(){
+                try {
+                    const word = i18nService.getTranslation(this.gridElement.label);
+                    let response = await fetch('https://wordforms.asterics-foundation.org/wordforms_ndep/scraper.php?verb=' + word + '&type=json');
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    let data = await response.text();
+                    let parsedData = JSON.parse(data);
+                    let wordForms = parsedData.map(data => {
+                        let wordForm = new WordForm({
+                            lang: data.lang,
+                            tags: data.tags,
+                            value: data.value,
+                            pronunciation: data.value
+                        });
+                        return wordForm;
+                    });
+                    this.gridElement.wordForms = wordForms;
+                } catch (error) {
+                    this.currentMsg = this.msgTypes.ERROR_IMPORT;
+                }
+            },
             getBaseStringsFromWordForms (forms) {
                 forms = forms || [];
                 let baseForms = forms.filter(form => form.tags.includes(constants.WORDFORM_TAG_BASE));
@@ -331,6 +374,17 @@ button {
 .lang-tag {
     background-color: lightblue;
     border-radius: 5px;
+}
+
+.tooltip {
+    top: -40px;
+    left: 50%;
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 575px) {
