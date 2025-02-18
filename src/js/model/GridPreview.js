@@ -31,7 +31,7 @@ class GridPreview {
         this.selfContained = data.selfContained;
         this.author = data.author;
         this.website = data.website;
-        this.languages = data.languages;
+        this.languages = data.languages || [];
         this.description = data.description;
         this.wordPrediction = data.wordPrediction;
         this.translate = data.translate;
