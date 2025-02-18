@@ -285,7 +285,7 @@ async function doAction(gridElement, action, options = {}) {
 function doPredefinedAction(gridElement, action) {
     action = JSON.parse(JSON.stringify(action));
     for (let presetKey of Object.keys(action.actionInfo.presets || {})) {
-        for(let customValue of action.actionInfo.customValues) {
+        for(let customValue of action.actionInfo.customValues || []) {
             if (util.isString(action.actionInfo.presets[presetKey])) {
                 let valueName = customValue.name;
                 let replaceValue = action.customValues[valueName] !== undefined ? action.customValues[valueName] : '';
