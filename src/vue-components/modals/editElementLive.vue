@@ -96,9 +96,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mt-5">
-                    <button class="col-sm-4" @click="test">{{$t('test')}}</button>
-                    <span class="col-sm-7">{{result}}</span>
+                <div class="row" style="margin-top: 3em">
+                    <button class="col-sm-4" @click="test"><i class="fas fa-bolt"></i> {{$t('test')}}</button>
+                </div>
+                <div class="row">
+                    {{result}}
                 </div>
             </div>
         </div>
