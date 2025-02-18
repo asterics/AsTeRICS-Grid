@@ -315,6 +315,34 @@
                         }
                     }*/
 
+                    /*
+                    // reduce image file sizes of all grids
+                    // remove 150px default maxWidth in imageUtil before and use image/jpg as default mimeType to convert in imageUtil.getBase64FromImg:
+                    // let data = canvas.toDataURL('image/jpeg', quality);
+                    // use dataService.getGrids(true); above to get all image data
+
+                    let imageList = [];
+                    let reduced = [];
+                    let diffs = [];
+                    for (let grid of grids) {
+                        for (let element of grid.gridElements) {
+                            if (element.image && element.image.data) {
+                                imageList.push(element.image.data);
+                                let reducedImg = await imageUtil.convertBase64(element.image.data);
+                                reduced.push(reducedImg);
+                                diffs.push((element.image.data.length - reducedImg.length) / 1024);
+                                element.image.data = reducedImg;
+                            }
+                        }
+                        // await dataService.saveGrid(grid);
+                    }
+                    imageList.sort((a,z) => z.length - a.length);
+                    log.warn(imageList);
+                    log.warn(reduced);
+                    log.warn(diffs);
+                    log.warn("totally reduced kBytes: ", diffs.reduce((partialSum, a) => partialSum + a, 0));
+                    */
+
                     thiz.selectedGraphElement = null;
                     thiz.grids = JSON.parse(JSON.stringify(grids)); //hack because otherwise vueJS databinding sometimes does not work;
                     thiz.showLoading = false;
