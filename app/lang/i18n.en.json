@@ -1168,6 +1168,7 @@
   "APP_STATE_VOLUME_GLOBAL": "System volume",
   "APP_STATE_VOLUME_YT": "YouTube volume",
   "APP_STATE_VOLUME_RADIO": "Radio volume",
+  "APP_STATE_BATTERY_LEVEL": "Battery level",
   "useCorsProxy": "Use CORS proxy",
   "canIncludePlaceholderLike": "can include placeholder {0}, e.g. \"Data: {0}\"",
   "valuesToChooseFrom": "Values to choose from",

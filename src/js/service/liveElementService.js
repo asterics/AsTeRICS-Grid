@@ -80,7 +80,7 @@ liveElementService.getCurrentValue = async function(element, options = {}) {
             value = getValueDateTime(element);
             break;
         case GridElementLive.MODE_APP_STATE:
-            value = getValueAppState(element);
+            value = await getValueAppState(element);
             break;
         case GridElementLive.MODE_ACTION_RESULT:
             value = await getValueActionResult(element, options);
@@ -155,7 +155,7 @@ function getValueDateTime(element) {
     return '';
 }
 
-function getValueAppState(element) {
+async function getValueAppState(element) {
     let userSettings = localStorageService.getUserSettings();
     switch (element.appState) {
         case GridElementLive.APP_STATE_VOLUME_GLOBAL:
@@ -164,6 +164,13 @@ function getValueAppState(element) {
             return userSettings.ytState.muted ? i18nService.t("mutedBracket") : userSettings.ytState.volume;
         case GridElementLive.APP_STATE_VOLUME_RADIO:
             return Math.round(parseFloat(localStorageService.get(constants.WEBRADIO_LAST_VOLUME_KEY) || 1.0) * 100);
+        case GridElementLive.APP_STATE_BATTERY_LEVEL:
+            if(!navigator.getBattery) {
+                log.warn("navigator.getBattery not supported!");
+                return "?";
+            }
+            let batteryManager = await navigator.getBattery();
+            return batteryManager.level * 100;
     }
     return '';
 }
