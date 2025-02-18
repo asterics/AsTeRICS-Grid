@@ -128,7 +128,7 @@
                 if (!thiz.editElementId) return;
 
                 thiz.saveInternal().then(() => {
-                    thiz.editElementId = new GridData(thiz.gridData).getNextElementId(thiz.editElementId, invertDirection);
+                    thiz.editElementId = new GridData(thiz.gridData).getNextElementId(thiz.editElementId, invertDirection, thiz.gridElement.type);
                     thiz.initInternal();
                     $('#inputLabel').focus();
                 });
