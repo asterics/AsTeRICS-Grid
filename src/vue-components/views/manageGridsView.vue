@@ -63,10 +63,10 @@
                 </div>
                 <div class="srow">
                     <ul>
-                        <li v-for="elem in graphElemsToShow" style="display: inline-block; margin-right: 2em; margin-bottom: 1.5em; position: relative">
+                        <li v-for="elem in graphElemsToShow" style="display: inline-block; margin-right: 2em; margin-bottom: 1.5em; position: relative; max-width: 290px;">
                             <a href="javascript:;" @click="setSelectedGraphElement(elem)" style="text-decoration: none;">
-                                <div style="width: 100%; border: 1px solid lightgray">
-                                    <div>{{elem.grid.label | extractTranslation}}</div>
+                                <div style="width: 100%; border: 1px solid lightgray" :title="i18nService.getTranslation(elem.grid.label)">
+                                    <div style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden; padding-left: 0.25em;">{{elem.grid.label | extractTranslation}}</div>
                                     <img :src="elem.grid.thumbnail ? elem.grid.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; max-width: 100%;"/>
                                 </div>
                             </a>
