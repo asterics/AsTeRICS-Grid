@@ -15,7 +15,8 @@
                 <select class="col-12" id="dt_format" v-model="gridElement.dateTimeFormat">
                     <option :value="undefined" disabled selected hidden="">{{ $t('pleaseSelect') }}</option>
                     <option v-for="format in GridElementLive.DT_FORMATS" :value="format">
-                        {{ format | translate }} - [{{liveElementService.getCurrentValue({ mode: GridElementLive.MODE_DATETIME, dateTimeFormat: format})}}]
+                        <span>{{ format | translate }} - </span>
+                        <span>[{{ currentDtValues[format] }}]</span>
                     </option>
                 </select>
             </div>
@@ -131,7 +132,8 @@
                 GridActionHTTP: GridActionHTTP,
                 GridActionPredefined: GridActionPredefined,
                 updateCounter: 0,
-                i18nService: i18nService
+                i18nService: i18nService,
+                currentDtValues: {}
             }
         },
         computed: {
@@ -184,10 +186,16 @@
                 });
             }
         },
-        mounted() {
+        async mounted() {
             this.gridElement.additionalProps[GridElement.PROP_YT_PREVENT_CLICK] = this.gridElement.additionalProps[GridElement.PROP_YT_PREVENT_CLICK] || false;
             this.actionType = this.gridElement.liveAction ? this.gridElement.liveAction.modelName : undefined;
             this.extractInfo = this.extractInfoBasedOnCurrent;
+            for (let format of GridElementLive.DT_FORMATS) {
+                this.$set(this.currentDtValues, format, await liveElementService.getCurrentValue( {
+                    mode: GridElementLive.MODE_DATETIME,
+                    dateTimeFormat: format
+                }));
+            }
         },
         beforeDestroy() {
         }
