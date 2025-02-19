@@ -22,6 +22,7 @@ import {GridActionWordForm} from "../model/GridActionWordForm.js";
 import {stateService} from "./stateService.js";
 import {MapCache} from "../util/MapCache.js";
 import { liveElementService } from './liveElementService';
+import { MetaData } from '../model/MetaData';
 
 let collectElementService = {};
 
@@ -41,6 +42,7 @@ let lastCollectId = null;
 let lastCollectTime = 0;
 
 let imgDimensionsCache = new MapCache();
+let _localMetadata = null;
 
 collectElementService.getText = function () {
     return getPrintText();
@@ -290,10 +292,7 @@ function getActionTypes(elem) {
 
 async function updateCollectElements(isSecondTry) {
     autoCollectImage = collectedElements.some((e) => !!getImageData(e));
-    let metadata = null;
-    if (registeredCollectElements.length > 0) {
-        metadata = await dataService.getMetadata();
-    }
+    let metadata = _localMetadata || new MetaData();
     for (let collectElement of registeredCollectElements) {
         let txtBackgroundColor = metadata.colorConfig.gridBackgroundColor || '#ffffff';
         let imageMode = isSeparateMode(collectElement.mode);
@@ -616,10 +615,10 @@ function triggerPredict() {
 }
 
 async function getMetadataConfig() {
-    let metadata = await dataService.getMetadata();
-    duplicatedCollectPause = metadata.inputConfig.globalMinPauseCollectSpeak || 0;
-    convertMode = metadata.textConfig.convertMode;
-    activateARASAACGrammarAPI = metadata.activateARASAACGrammarAPI;
+    _localMetadata = await dataService.getMetadata();
+    duplicatedCollectPause = _localMetadata.inputConfig.globalMinPauseCollectSpeak || 0;
+    convertMode = _localMetadata.textConfig.convertMode;
+    activateARASAACGrammarAPI = _localMetadata.activateARASAACGrammarAPI;
 }
 
 $(window).on(constants.EVENT_GRID_RESIZE, function () {
