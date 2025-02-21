@@ -15,13 +15,13 @@ let currentAppLang = localStorageService.getAppSettings().appLang;
 let predefActionsI18nData = {};
 
 let appLanguages = [
-    'cs',
     'en',
     'de',
     'eu',
     'bg',
     'ca',
     'hr',
+    'cs',
     'nl',
     'fr',
     'gl',
@@ -35,6 +35,7 @@ let appLanguages = [
     'ru',
     'sl',
     'es',
+    'tr',
     'uk',
     'val'
 ];
