@@ -999,7 +999,7 @@
   "createGridElements": "Stvori elemente ploče",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Poveži jezik glasa sa jezikom prijevoda izgovorenog teksta",
   "testVoice": "Iprobaj glas",
-  "pleaseConsiderToDownloadABackup": "Preporučeno je da spremite sigurnosnu kopiju vaše konfiguracije kako ne biste izgubili svoj rad.",
+  "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not loosing your work.",
   "downloadNow": "Preuzeti sada",
   "stopRemembering": "Prestani pamtiti",
   "intervalForRemindingMakeBackups": "Interval za podsjetnik o sigurnosnoj kopiji",
