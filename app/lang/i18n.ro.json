@@ -999,7 +999,7 @@
   "createGridElements": "Creați elemente de grilă",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Corelarea limbii vocale cu limba de traducere a textului vorbit",
   "testVoice": "Vocea de test",
-  "pleaseConsiderToDownloadABackup": "Vă rugăm să vă gândiți să descărcați o copie de rezervă a configurației dvs. pentru a fi siguri că nu vă pierdeți munca.",
+  "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not loosing your work.",
   "downloadNow": "Descarcă acum",
   "stopRemembering": "Nu vă mai amintiți",
   "intervalForRemindingMakeBackups": "Interval pentru reamintirea de a face copii de rezervă",
