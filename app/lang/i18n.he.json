@@ -999,7 +999,7 @@
   "createGridElements": "צור את רכיבי הלוח",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "קשר בין שפת הקול לשפת התרגום של הטקסט הדבור",
   "testVoice": "בדיקת קול",
-  "pleaseConsiderToDownloadABackup": "כדאי לשקול הורדת גיבוי כדי לא לאבד חומר.",
+  "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not loosing your work.",
   "downloadNow": "הורד עכשיו",
   "stopRemembering": "הפסק זכירה",
   "intervalForRemindingMakeBackups": "מרווחים לתזכורת ליצירת גיבוי",
