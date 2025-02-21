@@ -999,7 +999,7 @@
   "createGridElements": "Crear celdas",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Vincular idioma de la voz a la traducción del texto locutado",
   "testVoice": "Probar voz",
-  "pleaseConsiderToDownloadABackup": "Por favor, considere la posibilidad de descargar una copia de seguridad de su comunicador para no perder su trabajo.",
+  "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not loosing your work.",
   "downloadNow": "Descargar ahora",
   "stopRemembering": "No volver a recordar",
   "intervalForRemindingMakeBackups": "Recordar la realización de copias de seguridad cada",

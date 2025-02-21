@@ -999,7 +999,7 @@
   "createGridElements": "Kártyák létrehozása",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "A felolvasás nyelve legyen a fordítás nyelvével azonos",
   "testVoice": "Hang tesztelése",
-  "pleaseConsiderToDownloadABackup": "Javasoljuk, hogy egy esetleges adatvesztés elkerülése érdekében, töltsön le biztonsági másolatot. ",
+  "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not loosing your work.",
   "downloadNow": "Letöltés most",
   "stopRemembering": "Felejts el",
   "intervalForRemindingMakeBackups": "Biztonsági mentés emlékeztető gyakorisága",

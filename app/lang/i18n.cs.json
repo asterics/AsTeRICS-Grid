@@ -999,7 +999,7 @@
   "createGridElements": "Vytvořit nové prvky tabulky",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Propojení hlasového jazyka s jazykem překladu mluveného textu",
   "testVoice": "Test hlasu",
-  "pleaseConsiderToDownloadABackup": "Pro jistotu si stáhněte zálohu své konfigurace, abyste neztratili svou práci.",
+  "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not loosing your work.",
   "downloadNow": "Stáhnout nyní",
   "stopRemembering": "Zastavit zapamatování",
   "intervalForRemindingMakeBackups": "Interval pro připomenutí vytvoření zálohy",
