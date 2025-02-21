@@ -999,7 +999,7 @@
   "createGridElements": "Створення елементів сітки",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Пов’яжіть мову голосу з мовою перекладу розмовного тексту",
   "testVoice": "Тест голосу",
-  "pleaseConsiderToDownloadABackup": "Завантажте резервну копію конфігурації, щоб не втратити свою роботу.",
+  "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not loosing your work.",
   "downloadNow": "Завантажити зараз",
   "stopRemembering": "Припинити нагадувати",
   "intervalForRemindingMakeBackups": "Інтервал нагадування про створення резервних копій",
