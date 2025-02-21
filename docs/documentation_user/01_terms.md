@@ -24,6 +24,8 @@ There are 3 types of grid elements:
 1. **Normal**: an element consisting of a label and/or an image
 1. **Collect element**: an element that collects the labels of previously selected elements and therefore makes it possible to construct e.g. sentences out of single word elements.
 1. **Prediction element**: an element that is dynamically filled up with word predictions based on previously selected normal elements.
+1. **YouTube player**: an element that can play videos from YouTube
+1. **Live elements**: elements that can display some dynamic information like live status from some external source, time or random values.
 
 ## Action
 An action that is performed if a grid element is selected, e.g. navigate to another grid, speak some text or some external action like turning on a light. See [Grid element actions](05_actions.md).
