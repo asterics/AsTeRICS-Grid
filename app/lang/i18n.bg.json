@@ -999,7 +999,7 @@
   "createGridElements": "Създаване на елементи",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Свързване на гласовия език с езика на прочетения текст",
   "testVoice": "Тестов глас",
-  "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not loosing your work.",
+  "pleaseConsiderToDownloadABackup": "Please consider to download a backup of your configuration in order to be safe of not loosing your work.",
   "downloadNow": "Изтегли сега",
   "stopRemembering": "Спри запомнянето",
   "intervalForRemindingMakeBackups": "Интервал за напомняне на създаване на резервни копия",
