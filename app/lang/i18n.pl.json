@@ -999,7 +999,7 @@
   "createGridElements": "Utwórz nowy element",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Połącz język głosowy z językiem tłumaczenia tekstu mówionego",
   "testVoice": "Test głosu",
-  "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not loosing your work.",
+  "pleaseConsiderToDownloadABackup": "Please consider to download a backup of your configuration in order to be safe of not loosing your work.",
   "downloadNow": "Pobierz teraz",
   "stopRemembering": "Przestań zapamiętywać",
   "intervalForRemindingMakeBackups": "Częstotliwość przypominania o tworzeniu kopii zapasowych",

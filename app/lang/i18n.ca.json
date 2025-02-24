@@ -999,7 +999,7 @@
   "createGridElements": "Crear cel·les",
   "linkVoiceLanguageToTranslationLanguageOfSpokenText": "Vincular l'idioma de veu a la traducció del text parlat",
   "testVoice": "Provar veu",
-  "pleaseConsiderToDownloadABackup": "Please consider downloading a backup of your configuration in order to be safe of not loosing your work.",
+  "pleaseConsiderToDownloadABackup": "Please consider to download a backup of your configuration in order to be safe of not loosing your work.",
   "downloadNow": "Descarregar ara",
   "stopRemembering": "No tornar a recordar-m'ho",
   "intervalForRemindingMakeBackups": "Recordar fer còpies de seguretat cada",
