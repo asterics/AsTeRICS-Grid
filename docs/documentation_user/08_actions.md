@@ -1,6 +1,6 @@
 # Grid element actions
 
-This chapter is about actions that can be performed if a grid element is selected and how to configure them. A basic overview was provided in the ["Edit Grid Element" chapter](07_editing-grid-element.md).
+This chapter is about actions that can be performed if a grid element is selected and how to configure them. The basic configuration of actions (adding and removing them) is described in [tab actions of chapter "grid elements"](07_grid-elements.md#tab-actions).
 
 [Back to Overview](README.md)
 
@@ -21,17 +21,10 @@ This chapter is about actions that can be performed if a grid element is selecte
    * [Open webpage in new tab](08_actions.md#open-webpage-in-new-tab): allows to assign an external web page to a cell and opens it in a new tab
    * [HTTP action](08_actions.md#http-action): allows to execute commands on programs and devices providing a REST API through HTTP.
    * [UART action](08_actions.md#uart-action): allows to execute commands on microcontrollers providing a UART (Serial) interface (wired or Bluetooth).
+   * [System action](08_actions.md#system-action): actions related to the application, e.g. setting the system volume
    * [Predefined actions](08_actions.md#predefined-actions): a way to implement other actions, e.g. http actions, with less programming knowledge
 
-![edit grid element actions](./img/edit_grid_element_actions_en.jpg)
-
-*Figure 1: Edit Actions modal*
-
-## Action types
-
-These are the types of actions that are selectable (Figure 1, number 1).
-
-### Speak label
+## Speak label
 
 Clicking on "Edit" of a "speak label" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Figure 2):
 
@@ -41,7 +34,7 @@ Clicking on "Edit" of a "speak label" action (or creating a new one by clicking 
 
 Clicking on the "Test" button speaks the label in the selected language.  
 
-### Navigate to other grid
+## Navigate to other grid
 
 ![action navigate to other grid](./img/action_navigate_en1.jpg)
 
@@ -59,7 +52,7 @@ Clicking on "Edit" of a "navigate to other grid" action (or creating a new one) 
        * *Search for collected text*: if checked the currently collected text of the collect element is used to pre-fill the search bar
 * **Add this element to collection elements despite navigating**: if checked, this element is added to the collect element, despite the fact that it navigates to another grid.
 
-### Speak custom text
+## Speak custom text
 
 Clicking on "Edit" of a "speak custom text" action (or creating a new one) shows the following configuration possibilities:
 
@@ -69,7 +62,7 @@ Clicking on "Edit" of a "speak custom text" action (or creating a new one) shows
 
 "Text to speak" is the custom text that should be spoken. The button "Test" tests the configuration and speaks the current text.
 
-### Play recorded audio
+## Play recorded audio
 
 ![Play recorded audio](./img/action_play_recorded_audio.png)
 
@@ -83,11 +76,11 @@ With the button **Play** an existing recording can be played.
 * an existing action containing recorded audio has priority over actions *Speak label* and *Speak custom text*. So if an action with recorded audio is present, these types of actions won't be performed.
 * if items are collected in collect elements, recorded audio is only played for collect element actions in mode "speak separately", see [Collect element action](08_actions.md#collect-element-action).
 
-### Change word forms
+## Change word forms
 
-The action allows you to change the text in other elements by clicking on this element. This is useful for setting up the grammar. Read [chapter 12](12_word-forms.md) for a detailed description.
+The action allows you to change shown word forms in other elements. This is useful for setting up grammar-related functions. Read [word forms](07a_word-forms.md) for a detailed description.
 
-### Fill prediction elements
+## Fill prediction elements
 
 **Video on YouTube:** [Prediction elements](https://www.youtube.com/watch?v=t0FWZcM9TMg&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=22&t=0s) (German, but auto-translated subtitles available)
 
@@ -103,7 +96,9 @@ Clicking on "Edit" on a "fill prediction elements" action (or creating a new one
 
 **Dictionary to use**: select the dictionary you want to use (see [manage dictionaries](10_dictionaries.md). If nothing selected words from all available dictionaries will be suggested.
 
-### Collect element action
+If a `fill prediction elements` action is added to a [collect element](07_grid-elements.md#collect-elements), there is an additional option `Refresh suggestions on change`. If this option is activated, predictions (suggestions) are always updated, after the content of the collect element changes. In this way it's easy to set up a keyboard with word predictions without having to set a "fill prediction elements" action on each letter of the keyboard.
+
+## Collect element action
 
 **Video on YouTube:** [Collect elements](https://www.youtube.com/watch?v=X6YrWJW2ZoM&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=21&t=0s) (German, but auto-translated subtitles available)
 
@@ -129,7 +124,7 @@ The possible actions to choose are (when opening the combo box):
 8. **Clear clipboard**: empties the clipboard
 9. **Search text on YouTube**: searches the currently collected text on YouTube and loads the first video of the result in a YouTube player element. The YouTube player element can be located within the current grid or within another one to which is concurrently navigated to. 
 
-### AsTeRICS Action
+## AsTeRICS Action
 
 **Video on YouTube:** [AsTeRICS actions](https://www.youtube.com/watch?v=geLtm07HRKc&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=24&t=0s) (German, but auto-translated subtitles available)
 
@@ -177,7 +172,7 @@ These are the possibilities while configuring an AsTeRICS action:
 **Trigger event**: selects an event that should be triggered on the selected component (optional, either "send data", "trigger event" or both can be used)
 
 
-### openHAB Action
+## openHAB Action
 
 AsTeRICS Grid is capable of controlling a local openHAB installation through the browser. This action utilizes the REST
 API of openHAB (see [openHAB API documentation](https://www.openhab.org/docs/configuration/restdocs.html)).
@@ -203,7 +198,7 @@ When editing an already created action, selecting a new item will be disabled an
 If the item should be changed, it is required to fetch the items again.
 After the items are fetched, the action can be configured as if it was created new.
 
-#### Controllable items
+### Controllable items
 
 Following items are implemented and controllable via the action:
 
@@ -222,14 +217,14 @@ Following items are implemented and controllable via the action:
 
 An item must be implemented in openHAB in order to be accessible via the action.
 
-#### Notes:
+### Notes:
 
 - In order to use this action, CORS must be enabled by your openHAB installation. Otherwise, openHAB will deny the
   action calls.
 - You must be in the same network as your openHAB installation.
 - Basic Authentication is not supported.
 
-#### Accessing openHAB via http/https
+### Accessing openHAB via http/https
 
 By default, the action searches for a local openHAB instance on port 8080.
 If the openHAB installation is hosted in the local network, there are two possible ways to access it via the browser:
@@ -252,7 +247,7 @@ If the openHAB installation is hosted in the local network, there are two possib
 
 *Figure 11: Example of a security prompt by Firefox*
 
-### Web radio action
+## Web radio action
 
 **Video on YouTube:** [Web radio](https://www.youtube.com/watch?v=dKZwan9dZV4&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=23&t=0s) (German, but auto-translated subtitles available)
 
@@ -292,7 +287,7 @@ These are the elements in this configuration dialog:
 16. **Previous page**: navigates to the previous page of search results (if available)
 17. **Next page**: navigates to the next page of search results (if available)
 
-### YouTube Action
+## YouTube Action
 
 The YouTube Action allows you to link videos from this web page to the communicator and view them without leavting the communicator. Different control functions can be assigned to the cells for the display of the videos.
 
@@ -334,12 +329,12 @@ To add a "YouTube Grid", one grid element hast to be a "YouTube Player", which c
 
 Other ("normal") grid elements can be assigned with the functions listed above and a corresponding image can be chosen in the *Image Tab*. In ARASAAC, a collection of multimedia buttons is prepared, just type the word *button* in the *Image search* field of the *Image Tab*. If different grid elements are assigned with the *Play video* functions and are linked to different YouTube videos, the selected video will be played in the "YouTube Player" element, which has been created as shown in Figure 14.
 
-### Change Content Language / Voice
+## Change Content Language / Voice
 
 This action is used to change the language and/or the voice of the communicator grid(s). 
-For a detailed explanation go to [chapter 11](11_voices.md) on voices and [chapter 13](13_multilingual-grid-sets.md) on multilingual grid sets.
+For more information see [multilingual grid sets](12_multilingual-grid-sets.md#switching-languages) and [chapter voices](11_voices.md).
 
-### Open webpage in new tab
+## Open webpage in new tab
 
 This action allows to assign an external web page to a grid element and, by clicking on it, to access the information contained therein.
 
@@ -354,7 +349,7 @@ Clicking on "Edit" of a "Open webpage in new tab" action (or creating a new one 
 
 By clicking on the grid elemnt this action is assigned to, the chosen webpage is accessed and the user can navigate in it for the time which was set. After this time, the webpage will be closed and the user will return to the communicator. 
 
-### HTTP action
+## HTTP action
 
 This action can send arbitrary HTTP requests, e.g. for accessing any REST API.
 
@@ -372,25 +367,25 @@ Figure 16 shows the configuration of a HTTP action, which has these properties:
 
 Any errors from requests will be shown in a popup in the lower right corner of the application.
 
-For tutorials, see [chapter 15](15_tutorials.md)
+For tutorials, see [HTTP action tutorials](tutorials/01_http-action-tutorials.md).
 
-### UART action
+## UART action
 
 This action allows sending commands to microcontrollers using the UART (Serial) interface. The connections can be wired (using [Web Serial](https://developer.mozilla.org/en-US/docs/Web/API/Web_Serial_API), Chrome/Edge-Desktop) or wireless (using [Web Bluetooth](https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API), Chrome/Edge-Desktop/Mobile). 
 
-#### Example use cases
+### Example use cases
 
 * Creating a remote control for a TV by sending Infrared commands to the Open Source microcontroller [Puck.js](https://www.puck-js.com/). The commands can be directly copied from the [puckmote](https://asterics.github.io/puckmote/) online remote control database.
 * Creating accessible battery-powered toys (e.g. soap bubble machine, disco light or duplo train)
 * Creating a mouse click or keyboard input using the button interface FABI or the mouth mouse FLipMouse.
 
-#### Supported devices
+### Supported devices
 
 * [Devices supported by Espruino](https://www.espruino.com/Other+Boards#boards-that-espruino-works-on), e.g. [Puck.js](https://www.puck-js.com/)
 * [Flexible Assistive Button Interface (FABI)](https://www.asterics-foundation.org/projects/fabi/)
 * [Finger and Lip mouse (FLipMouse)](https://www.asterics-foundation.org/projects/the-flipmouse/)
 
-#### Supported commands
+### Supported commands
 
 ![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/a1f3d53c-0237-4342-a85d-90d745d2f0d9)
 
@@ -400,13 +395,19 @@ The action supports the following input fields:
 1. **UART Type**: Choose between ```Bluetooth``` and ```Serial```(wired)
 2. **Data**: A string to be executed on the microcontroller (e.g. Javascript code (Espruino devices) or AT commands (FABI, FLipMouse)).
 
-For tutorials, see [chapter 15](15_tutorials.md)
+For tutorials, see [UART action tutorials](tutorials/02_uart-action-tutorials.md).
 
-### Predefined actions
+## System action
+A system action allows to do some action related to the current application state. These are the possible system actions:
+* **System volume up/down/toggle**: allows to increase, decrease or mute the system volume. It affects the volume of all other sounds within AsTeRICS Grid, which are voice volume for speaking elements, webradio volume and YouTube volume.
+* **Enter/leave fullscreen**: allows to enter or leave fullscreen
+* **Update live elements**: updates the values of all currently visible live elements
+
+## Predefined actions
 
 Predefined actions are a special category of actions. They wrap other actions for being able to set them up in a more user-friendly way. The most common use-case is wrapping HTTP actions for devices with a REST API, but also all other actions could be wrapped. The possible predefined actions are defined within the external repository [AsTeRICS Grid Boards](https://github.com/asterics/AsTeRICS-Grid-Boards?tab=readme-ov-file#predefined-actions).
 
-#### Example
+### Example
 
 To understand the concept, this example shows a comparison between the same action performed for a [Shelly Plug S](https://shelly-api-docs.shelly.cloud/gen2/Devices/Gen3/ShellyPlugSG3) device using a HTTP action and a Predefined action:
 
@@ -415,10 +416,10 @@ To understand the concept, this example shows a comparison between the same acti
 *Fig. 24: Comparison of a HTTP action vs. a Predefined action for turning on a Shelly Plug S via its cloud API. The Predefined action is much easier to configure, because it doesn't need any specific knowledge about the API endpoint (address path, HTTP method, parameter names).*
 
 
-#### Browser support
+### Browser support
 
-Accessing local APIs at local IP addresses like `192.168.0.10` is not allowed by all browsers. Some allow it only in a secure context (`https`, so using the [main https version of AsTeRICS Grid](https://grid.asterics.eu/)), some allow it only in a insecure context (`http`, so using the [main http version of AsTeRICS Grid](http://grid.asterics-foundation.org/)) and some only if a special setting for allowing `mixed-content` is set. If you want to use local APIs within AsTeRICS Grid, please do your own research about the current situation with internet searches like `<your-browser> <your-operating-system> allow mixed content`, e.g. "Chrome Android allow mixed content". There is also further info in the [FAQ](14_faq.md).
+Accessing local APIs at local IP addresses like `192.168.0.10` is not allowed by all browsers. Some allow it only in a secure context (`https`, so using the [main https version of AsTeRICS Grid](https://grid.asterics.eu/)), some allow it only in a insecure context (`http`, so using the [main http version of AsTeRICS Grid](http://grid.asterics-foundation.org/)) and some only if a special setting for allowing `mixed-content` is set. If you want to use local APIs within AsTeRICS Grid, please do your own research about the current situation with internet searches like `<your-browser> <your-operating-system> allow mixed content`, e.g. "Chrome Android allow mixed content". There is also further info in the [FAQ](faq.md#allow-mixed-content-httphttps).
 
-For tutorials, see [chapter 15](15_tutorials.md)
+For tutorials, see [tutorials for predefined actions](tutorials/03_predefined-action-tutorials.md).
 
 [Back to Overview](README.md)

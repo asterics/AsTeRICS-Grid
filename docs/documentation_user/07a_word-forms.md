@@ -5,7 +5,7 @@
 For simple communication boards it's sufficient to use static labels (in different languages) for grid elements. However, for more advanced communicators "word forms" can be used in order to allow grammatically correct communication. 
 
 ## General
-Word forms can be defined for each element in the [dialogue for editing grid elements](07_editing-grid-element.md). The tab `Word forms` allows to define and edit word forms (see Figure 1).
+Word forms can be defined for each element in the [dialogue for editing grid elements](07_grid-elements.md). The tab `Word forms` allows to define and edit word forms (see Figure 1).
 
 ![edit view](./img/word-forms-modal.png)
 

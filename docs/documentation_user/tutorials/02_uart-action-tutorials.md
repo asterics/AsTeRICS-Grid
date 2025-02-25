@@ -1,48 +1,8 @@
-# Tutorials
+# UART action tutorials
 
-[Back to Overview](README.md)
+These tutorials show specific use cases for [UART actions](../08_actions.md#uart-action).
 
-This page contains tutorials for specific use cases.
-
-
-## HTTP action tutorials
-
-### Turn on/off shelly plug
-
-The shelly plug has a built-in wifi access point or can connect itself to a wifi access point. Furthermore, it runs a webserver and provides a REST API that can be used to turn the plug (electricity) on or off.
-
-![Shelly Plus Plug UK](https://www.shelly.com/_Resources/Persistent/8/2/b/e/82beea31e4b257307de29a5671e3738113348abb/Shelly_Plus_PlugUK_x1-625x625.png)
-
-1. Get a shelly plus plug (see [UK model](https://www.shelly.com/en-de/products/product-overview/shelly-plus-plug-uk) or [Shelly Plug S](https://www.amazon.de/s?k=shelly+s+plug&adgrpid=71094184076&hvadid=352674859116&hvdev=c&hvlocphy=1000739&hvnetw=g&hvqmt=e&hvrand=3009423075800256500&hvtargid=kwd-910071249511&hydadcr=1608_1721139&tag=googhydr08-21&ref=pd_sl_2xiktl7icw_e)).
-2. Plug it in and enable the shelly wifi access point according to the shelly plug manual.
-3. Connect to the wifi access point of the shelly plug. 
-4. Now the shally plug should be reachable through an ip address, e.g ```http://192.168.33.1```.
-5. Turn on ```Editing mode```
-6. Edit cell and got to ```Actions``` tab
-7. Select ```HTTP action```
-8. Enter ```http://192.168.33.1/relay/0?turn=toggle``` command into the field ```HTTP URL``` (see Fig 1).
-9. Enter ```GET``` into the field ```HTTP method```.
-10. Enter ```text/plain``` into the field ```HTTP Content-Type```.
-9. Click on ```OK``` to save the action.
-10. Turn off ```Editing mode```
-
-![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/56792e15-1162-43ff-a112-f95d0a29d0c0)
-
-Fig 1: HTTP action to toggle Shelly plug.
- 
-::: tip
-You can also use dedicated on/off commands (see [Shelly 2 HTTP manual](https://shelly-api-docs.shelly.cloud/gen1/#shelly2)):
-```
-http://192.168.33.1/relay/0?turn=on
-```
-```
-http://192.168.33.1/relay/0?turn=on
-```
-:::
-
-## UART action tutorials
-
-### Remote control (Infrared)
+## Remote control (Infrared)
 
 The following tutorial explains, how to create a remote control for a TV by sending Infrared commands to the Open Source microcontroller [Puck.js](https://www.puck-js.com/), which supports emitting infrared light codes out of the box. The commands can be directly copied from the [puckmote](https://asterics.github.io/puckmote/) online remote control database (modified version for AsTeRICS Grid).
 
@@ -68,7 +28,7 @@ The following tutorial explains, how to create a remote control for a TV by send
 You can actually send any Javascript command supported by the Puck.js device, see [Puck.js API Documentation](https://www.espruino.com/Puck.js).
 :::
 
-### Accessible toy
+## Accessible toy
 
 The following tutorial explains, how to create an accessible battery-powered toy (e.g. disco light, soap bubble machine or duplo train). The [Puck.js](https://www.puck-js.com/) device contains an on-board FET (transistor) and allows you to control medium current devices (up to 200mA) directly from Puck.js, without external components (see [Puck.js+FET tutorial](https://www.espruino.com/Puck.js+FET)).
 
@@ -113,7 +73,7 @@ In such a case the Puck.js pins must be soldered to an audio jack plug.
 Electromagnetic devices (motors, solenoids, speakers, etc) let out big spikes of electricity when they are disconnected from power. While Puck.js's FET provides a certain level of protection (350mA) for this Back-EMF, if you're trying to power anything of any size with the FET pin we'd suggest you add your own diode across the pins of device that you're powering to help to protect your Puck.js.
 :::
 
-### FABI / FLipMouse
+## FABI / FLipMouse
 
 This tutorial explains, how to create a mouse movement using the button interface FABI or the mouth mouse FLipMouse. This currently only supports a wired serial connection to the device.
 
@@ -131,16 +91,3 @@ This tutorial explains, how to create a mouse movement using the button interfac
 ::: tip
 You can send any [FABI AT command](https://github.com/asterics/FABI/blob/master/FabiWare/commands.h) or [FLipMouse AT](https://github.com/asterics/FLipMouse/blob/master/FLipWare/commands.h) command (e.g. mouse click, keyboard input, slot change to remote control a Smartphone via Bluetooth HID, ...) that is supported.
 :::
-
-## Predefined actions
-
-### Special parameters needed for Shelly devices
-
-For using `Cloud control` of Shelly devices these special parameters are needed which can be found in the Shelly App:
-* `Cloud address` and `Authorization cloud key`: navigate to `Settings -> User settings -> Access And Permissions -> Authorization cloud key`. There you'll find a button `Get key` which reveals the needed information after clicking:
-![HTTP action vs. predefined action](img/action-predef-shelly-keys.png)
-
-* `Device ID`: can be found navigating to `My home -> [Room] -> [Device to control] -> Settings icon -> Device information`. This section also shows the local `Device address` needed for `Local control`:
-![HTTP action vs. predefined action](img/action-predef-shelly-deviceid.png)
-
-[Back to Overview](README.md)

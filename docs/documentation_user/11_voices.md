@@ -8,14 +8,14 @@ AsTeRICS Grid uses voices from these sources:
 
 In general, **offline voices should be preferred**, because they are most reliable and not depending on an internet connection. Most **problems occur with voices from [responsivevoice.org](https://responsivevoice.org/)**, which is why they only should be used if no alternatives are available. Android tablets offer the best options for a lot of languages.
 
-*Note: Some browsers like Internet Explorer (old default Windows browser) do not support text-to-speech. In these browsers, speak actions will do nothing.*
+*Note: Some browsers like Internet Explorer do not support text-to-speech. In these browsers, speak actions will do nothing.*
 
 Here is a breakdown of the options depending on devices:
 
 1. [iPad](11_voices.md#iPad)
-2. [Windows Tablets](11_voices.md#windows-tablets)
-3. [Android Tablets](11_voices.md#android-tablets)
-4. [Amazon Fire Tablets](11_voices.md#amazon-fire-tablets)
+2. [Windows Tablets](11_voices.md#windows-tablet)
+3. [Android Tablets](11_voices.md#android-tablet)
+4. [Amazon Fire Tablets](11_voices.md#amazon-fire-tablet)
 5. [Offline Voices per System](11_voices.md#offline-voices-per-system)
 
 ## iPad
@@ -29,7 +29,7 @@ Here is a breakdown of the options depending on devices:
 
 **System Voice**
 - The current system voice (`Accessibility > Spoken Content > Voice`) is available offline and is generally high quality.
-- This voice does not appear in the dropdown but activates when set to default.
+- This voice does not appear in the dropdown but activates when set to `Default device voice, offline`.
 - The iPad language must match the system voice language (`General > Language & Region`) for it to function.
 - If multiple voices for the language are downloaded, the first voice listed in system settings will be used. Reordering is not possible, so only download the desired voice.
 
@@ -430,6 +430,7 @@ Due to Apple's ongoing changes to voice availability and the uncertainty surroun
 ## Android Tablet
 
 **Recommended browser:** Firefox.
+
 **General Information**
 - Android’s online and offline voices are listed in the drop-down list of voices in AsTeRICS GRID. 
 - No voices are listed as offline, although some voices do appear to work offline.

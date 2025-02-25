@@ -4,8 +4,6 @@
 
 This chapter is about how grid elements can be selected with different input modalities.
 
-[Back to Overview](README.md)
-
 Clicking on Button "Input Options" in [Main view](04_navigation-overview.md) opens a menu with the following entries:
 
 * **Mouse/Touch input:** options for input types like normal mouse click, tap or hovering

@@ -2,42 +2,42 @@
 
 [Back to Overview](README.md)
 
-## Influence the Development of the App
-
 You can help shape the future of AsTeRICS Grid and ensure it meets the needs of its users. Contribute actively to the development of AsTeRICS Grid by suggesting new features, discussing ideas, and reporting bugs directly on GitHub.
 
-### Terms for GitHub:
-**Repository**: A repository is the place where all the files for a specific project are stored and where discussion about that specific project takes place.
+## GitHub
+AsTeRICS Grid is free and Open Source and the [source code can be found on GitHub](https://github.com/asterics/AsTeRICS-Grid/).
 
-**Issue**: An issue is the name for the threads people can create. This can be done to request a feature, report a bug or other "issues".
+Terms related to GitHub:
+* **Repository**: A repository is the place where all the files for a specific project are stored and where discussion about that specific project takes place.
+* **Issue**: An issue is the name for the threads people can create. This can be done to request a feature, report a bug or other "issues".
 
 ### Joining GitHub
-- **Sign Up on GitHub**: If you don’t already have a GitHub account, [sign up here](https://github.com/signup). Provide your email address, choose a username, and create a password. Verify your email address by entering the confirmation code sent to your inbox.  
-- **Access the AsTeRICS Grid Repository**: Once logged in, search for the AsTeRICS Grid repository or simply click [here](https://github.com/asterics/AsTeRICS-Grid) to go directly to the repository.  
-- **Engage with the Repository**: If you’re not a developer, there are only two key features relevant to you:  
+- **Sign Up on GitHub**: If you don’t already have an account, [sign up for GitHub here](https://github.com/signup). Provide your email address, choose a username, and create a password. Verify your email address by entering the confirmation code sent to your inbox.  
+- **Access the AsTeRICS Grid Repository**: Once logged in, open the [AsTeRICS Grid repository](https://github.com/asterics/AsTeRICS-Grid/)
+- **Engage with the Repository**: If you’re not a developer, there are two key features relevant to you:  
      - *Stay updated*: Click the *Watch* button (next to the repository name) and select *Custom*. Then, choose *Issues* and *Releases* to receive notifications about new discussions, bug reports, and updates. This way, you’ll stay informed about the latest developments, which are typically released in monthly updates.  
-     - *The issues tab*: Click on the *Issues* tab to view existing feature requests, bug reports, and discussions. You can join ongoing conversations, share your thoughts, or create a new issue to suggest features or report problems.
+     - *The issues tab*: Click on the [Issues tab](https://github.com/asterics/AsTeRICS-Grid/issues) to view existing feature requests, bug reports, and discussions. You can join ongoing conversations, share your thoughts, or create new issues to suggest features or report problems.
 
-### Participating in GitHub
-- Create a new issue for each suggestion that is not related to another suggestion you have. This allows to keep better track of the individual requests and makes it easier to adress them one by one.
-- If an issue already exists for the feature you want, contribute to the existing discussion. Add a comment expressing your interest in the feature, explaining why it would be valuable to you, or participating in the conversation about how it could be implemented in the app.
-- As there are a lot of open issues, if you don't have time to review all open issues, create a new issue for your request and the developer or someone else from the community can then guide you to any related open issues so you can join the discussion there.
+### Participating on GitHub
+- **One issue per topic**: Create a separate issue for each suggestion you have. This makes it much easier to keep discussions separated and the organization of the issues clear.
+- **Search for open issues**: before creating a new issue, please search for existing open issues about the same topic.
+- **Join existing discussions**: If an issue already exists for the feature you want, contribute to the existing discussion. Add a comment expressing your interest in the feature, explaining why it would be valuable to you, or participating in the conversation about how it could be implemented in the app.
 
-### Other options
-Alternatively you can share ideas in the [AsTeRICS Grid Community](https://www.facebook.com/groups/1550700782223677) on Facebook.
+## AsTeRICS Grid Community
 
+While GitHub is the place for discussing bugs and new features in detail, the [AsTeRICS Grid Community on Facebook](https://www.facebook.com/groups/1550700782223677) is an open place for discussing anything related to AsTeRICS Grid and sharing your experiences.
 Your input is valuable!
 
 ## Join As a Programmer
 
-Issues labelled with [good first issue](https://github.com/asterics/AsTeRICS-Grid/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22) are a good way to get to know the programming.
+Issues labelled with [good first issue](https://github.com/asterics/AsTeRICS-Grid/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22) are a good way to get to know the programming. Please also read the [Collaboration guide](../documentation_dev/collaboration.md).
 
 ## Translate the Application
 
 **Application language:** the language of the user interface, e.g. labels of buttons or texts within the menus.
 
 The application can be translated via the online service crowdin, see: [AsTeRICS Grid on crowdin](https://crowdin.com/project/asterics-grid). In order to contribute translations on this platform, follow these steps:
-* Create a user/log in at crowdin
+* Create a user and log in at crowdin
 * Select the language where you want to contribute and click on "Translate all":
   <img src="https://user-images.githubusercontent.com/328325/188637877-e8dce701-189f-4434-a1ae-fefd210cbb36.png" width="650"/>
 * In a stepwise process, translate all the captions, messages and menu items (you may use suggested words and phrases by crowdin which makes the job much easier)
@@ -60,7 +60,7 @@ You can translate an existing grid and then either export it as
 Follow these steps to publish a translation of an multilingual grid set:
 * Create a new offline user with any username
 * Import the grid set you want to translate or start with an empty configuration if you want to build something new
-* Translate the grid set (see [chapter 13](13_multilingual-grid-sets.md))
+* Translate the grid set (see [chapter 13](12_multilingual-grid-sets.md))
 * Create a backup with the new language via `Manage grids -> More (right top corner) -> Save backup to file`
 * Send the file to [office@asterics-foundation.org](mailto:office@asterics-foundation.org) and we can add this translation to the default grid set! Alternatively you can also [directly create a Pull Request at AsTeRICS Grid Boards](https://github.com/asterics/AsTeRICS-Grid-Boards?tab=readme-ov-file#update-the-contents-of-the-boards-of-existing-configuration).
 

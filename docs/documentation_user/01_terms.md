@@ -25,17 +25,19 @@ A global grid is a grid that is visible on every grid page. It may contain gener
 ## Grid element
 A grid element is part of a grid and normally consists of a label and/or an image. Selecting a grid element normally triggers an action, e.g. navigating to another grid.
 
-There are 3 types of grid elements:
+There are 5 types of grid elements:
 
 1. **Normal**: an element consisting of a label and/or an image
 1. **Collect element**: an element that collects the labels of previously selected elements and therefore makes it possible to construct e.g. sentences out of single word elements.
-1. **Prediction element**: an element that is dynamically filled up with word predictions based on previously selected normal elements and the dictionary.
+1. **Prediction element**: an element that is dynamically filled up with word predictions based on previously selected normal elements.
+1. **YouTube player**: an element that can play videos from YouTube
+1. **Live elements**: elements that can display some dynamic information like live status from some external source, time or random values.
 
 ## Action
 An action that is performed if a grid element is selected, e.g. navigate to another grid, speak some text or some external action like turning on a light. See [Grid Element Actions](08_actions.md).
 
-## Input
-In the context of AsTeRICS Grid "input" refers to the mean of selecting a grid element. This can be e.g. a normal mouse click, hovering or scanning. See [Input Options](09_input-options.md).
+## Input options
+In the context of AsTeRICS Grid "input options" refer to the mean of selecting a grid element. This can be e.g. a normal mouse click, hovering or scanning. See [Input Options](09_input-options.md).
 
 ## Dictionary
 A dictionary is a set of words that is used to fill up prediction grid elements. By default a dictionary including the most frequent english/german words is used, but also custom dictionaries can be used. See [Dictionaries](10_dictionaries.md).

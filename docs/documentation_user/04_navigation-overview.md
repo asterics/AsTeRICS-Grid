@@ -2,21 +2,21 @@
 
 [Back to Overview](README.md)
 
-Once taken a decision in the welcome view, AsTeRICS Grid subsequently starts in the "main view" which looks like Figure 1 (desktop view on the left, mobile view on the right):
+Once a user has been created and some grid set has been imported, AsTeRICS Grid always opens the last used user in the "main view", which looks like Figure 1:
 
 ![main view](./img/main_en.jpg)
-*Figure 1: "Main" - view (desktop view on the left, mobile view on the right)*
+*Figure 1: Main view (desktop view on the left, mobile view on the right)*
 
 The elements have this functionality:
 
 1. Open or close the left navigation sidebar
 2. **Main**: navigate to the main view (currently shown)
-3. **Manage grids**: show all grids of the current user, add new ones or backup them to a file, manage the global grid. (See chapters [05](05_editing-grid-set) and [06](06_editing-grid.md).)
+3. **Manage grids**: show all grids of the current user, add new ones or backup them to a file, manage the global grid. (See chapters [editing grid set](05_editing-grid-set) and [editing grid](06_editing-grid.md))
 4. [**Manage Dictionaries**](10_dictionaries.md): show all saved dictionaries, edit them or add new empty ones or import existing dictionaries
 5. [**Change User**](04_navigation-overview.md#change-user): switch between saved users or log in an existing online user
 6. [**Add online user**](04_navigation-overview.md#add-online-user): register a new online user (synchronized across devices)
-7. [**Add offline users**](04_navigation-overview.md#add-offline-user): add a new offline user (only for this device)
-8. **Settings**: select between general settings like application language and user settings like grid content language, voice or colors. (See chapters [03](03_basic_setup.md) and [05](05_editing-grid-set.md).)
+7. [**Add offline user**](04_navigation-overview.md#add-offline-user): add a new offline user (only for this device)
+8. **Settings**: select between general settings like application language and user settings like grid content language, voice or colors. (See chapters [basic setup](03_basic_setup.md) and [editing grid set](05_editing-grid-set.md))
 9. **About AsTeRICS Grid**: Show general information, links, contact address
 10. **Help**: find the AsTeRICS Grid user manuel, the ARASAAC tutorial or video tutorials
 11. [**Editing on**](04_navigation-overview.md#editing-on): edit the layout of the grid, add new elements, actions for grid elements
@@ -24,14 +24,15 @@ The elements have this functionality:
 13. **Fullscreen**: hide the sidebar and the bar on the top, only showing the current grid 
 14. **Lock**: lock the screen in order to prevent unintended input or changes beside using and navigating the grid 
 15. **Grid**: demo grid consisting of some grid elements which are navigating to other grids if selected (possible for those which show the grey symbol in the upper right corner)
-16. [**Search function**](04_navigation-overview.md#search-function) (not shown in the Figure): Search for elements in the grid set. You can also use `Ctrl + F` on the keyboard.  The search can also be done in fullscreen mode with an element (see: [Actions](08_actions.md) -> Open search dialog). 
+16. [**Search function**](04_navigation-overview.md#search-function) (not shown in the Figure): Search for elements in the grid set. You can also use `Ctrl + F` on the keyboard.
 
 ## Search function
+Clicking on "Search" in the main view or pressing `Ctrl + F` opens a search dialog. It can also be opened in fullscreen mode by an [element navigation action](08_actions.md#navigate-to-other-grid):
 
 ![change user view](./img/search-dialog.png)
-*Figure 4: Search dialog and search results*
+*Search dialog and search results*
 
-Figure 4 shows the search dialog:
+These are the parts of the search dialog:
 1. **search term**: text input field for the search term
 2. **result image**: directly navigates to the selected element and highlights it. Keyboard shortcut for first search result: `[Enter]`
 3. **result path**: navigates to the selected element step-by-step by highlighting the path beginning from the home grid. Keyboard shortcut for first search result: `[Ctrl + Enter]`
@@ -39,10 +40,10 @@ Figure 4 shows the search dialog:
 
 ## Editing on
 
-Clicking on Button "Editing on" (Figure 1, number 11) opens the edit view where a grid can be adapted, see Figure 2:
+Clicking on Button "Editing on" (Figure 1.11) opens the edit view where a grid can be adapted, see Figure 2:
 
 ![edit view](./img/edit_en.jpg)
-*Figure 2: "Editing on" - view (desktop view on the left, mobile view on the right)*
+*Figure 2: Edit view (desktop view on the left, mobile view on the right)*
 
 The following elements are available in the edit view:
 
@@ -51,22 +52,22 @@ The following elements are available in the edit view:
 3. **Undo**: reverts the last action
 4. **Redo**: redoes the last action after reverting it
 5. **More**: opens a menu with additional actions, e.g adding new elements
-6. **Right click on a grid element**: opens a menu for editing / deleting / etc.  the element (open it with long tap on a mobile device/touchscreen)
+6. **Right-click on a grid element**: opens a menu for configuring this element (e.g. edit, delete, copy). On touchscreens open the menu with long tap on the element.
 
 ## Change User
 
-In the "Change User" - view it's possible to switch between users or login an existing one (Figure 5):
+In the "Change User" view it's possible to switch between users or login an existing online user (Figure 5):
 
 ![change user view](./img/login_en.jpg)
 
-*Figure 5: "Change user" - view (desktop view on the left, mobile view on the right)*
+*Figure 5: "Change user" view (desktop view on the left, mobile view on the right)*
 
 The following elements are available in the change users view:
 
 1. Open or close the navigation sidebar
 2. **Active offline user**: the currently active user is recognizable by a black user symbol and the word "active" next to the username. The active user is the user whose grids and configuration are currently used and shown in all other views. 
-3. **Inactive online user**: The little cloud symbol indicates an online user (see [Terms](01_terms.md#user)) and the gray user symbol that he is currently inactive, meaning that the user's grids are currently not used.
-4. **Inactive offline user**: The gray user symbol without a cloud indicates an inactive offline user (see [Terms](01_terms.md#user))
+3. **Inactive online user**: The little cloud symbol indicates an [online user](01_terms.md#user) and the gray user symbol that he is currently inactive, meaning that the user's grids are currently not used.
+4. **Inactive offline user**: The gray user symbol without a cloud indicates an inactive [offline user](01_terms.md#user)
 5. **Open**: sets the user "active" and opens the main view, showing the user's grid(s). Sets all other users inactive, there is always only one active user.
 6. **Delete**: deletes the user and all of his grids and configuration. Use with caution, this action cannot be undone. This option is only available for offline users.
 7. **Logout**: deletes the user and all of his grids and configuration, but only on the current device. Data in the cloud and on other devices that are logged in with the same user will not be deleted. This option is only available for online users.
@@ -97,7 +98,7 @@ Online users can have the following synchronization states which are shown at th
 
 ## Add offline user
 
-In view "add offline user" it's possible to add a new offline user (see [Terms](01_terms.md#user)), Figure 7:
+In view "add offline user" it's possible to add a new [offline user](01_terms.md#user), Figure 7:
 
 ![add offline user view](./img/add_offline_en.jpg)
 
@@ -105,16 +106,18 @@ In view "add offline user" it's possible to add a new offline user (see [Terms](
 
 ## Shortcuts
 
-These are the global keyboard shortcuts available in AsTeRICS Grid:
-* **Ctrl + Alt + Arrow Right**: Change to the next stored user
-* **Ctrl + Backspace**: Navigate to the last grid
-* **Ctrl + Pos1**: Navigate to the main/home grid. Only works if a global grid with an element navigating to home/main is defined.
+These are these global keyboard shortcuts available in AsTeRICS Grid:
+* `Ctrl + Alt + Arrow Right`: Change to the next stored user
+* `Ctrl + Backspace`: Navigate to the last grid
+* `Ctrl + Pos1`: Navigate to the main/home grid
 
-Shortcuts in edit mode:
-   - Ctrl + X / C / V -> cut / copy / paste elements - single elements are pasted at the location of the last interaction, multiple elements are pasted below the existing elements
-   - Delete -> deletes marked element
-   - Ctrl + Shift + C -> Copy all elements
-   - Ctrl + Z -> Undo
-   - Ctrl + Shift + Z -> Redo
+### Shortcuts in edit mode
+These shortcuts are available in edit mode:
+
+- `Ctrl + X / C / V`: cut / copy / paste elements - single elements are pasted at the location of the last interaction (you can click/tap to a free space before pasting), multiple elements are pasted below the existing elements
+- `Delete`: deletes marked element
+- `Ctrl + Shift + C`: Copy all elements
+- `Ctrl + Z`: Undo
+- `Ctrl + Shift + Z`: Redo
 
 [Back to Overview](README.md)
