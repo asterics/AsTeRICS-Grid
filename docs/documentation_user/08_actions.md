@@ -4,25 +4,23 @@ This chapter is about actions that can be performed if a grid element is selecte
 
 [Back to Overview](README.md)
 
-1. [Edit actions modal](08_actions.md#edit-actions-modal)
-2. [Action Types](08_actions.md#action-types)
-   * [Speak label](08_actions.md#speak-label): speaks the label of the element using a computer voice (text-to-speech)
-   * [Navigate to other grid](08_actions.md#navigate-to-other-grid): navigates to another grid
-   * [Speak custom text](08_actions.md#speak-custom-text): speaks a customizeable text using a computer voice (text-to-speech)
-   * [Play recorded audio](08_actions.md#play-recorded-audio): plays custom audio, previously recorded via the microphone of the device
-   * [Change word forms](08_actions.md#change-word-forms): change the word forms of elements
-   * [Fill prediction elements](08_actions.md#fill-prediction-elements): fills all [prediction elements](01_terms.md#grid-element) in the current grid with word suggestions
-   * [Collect element action](08_actions.md#collect-element-action): performs actions on [collect elements](01_terms.md#grid-element) in the current grid, e.g. clearing it or copying it's text to clipboard
-   * [AsTeRICS Action](08_actions.md#asterics-action): does an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework)
-   * [openHAB Action](08_actions.md#openhab-action): allows to do environmental control using devices interfaced by the OpenHAB framework
-   * [Web radio action](08_actions.md#web-radio-action): plays a web radio station
-   * [YouTube Action](08_actions.md#youtube-action): links to a YouTube video and shows it without leaving the communicator
-   * [Change Content Language](08_actions.md#change-content-language): changes the content language (description of grid elements / language of the communicator grid(s)) and the voice
-   * [Open webpage in new tab](08_actions.md#open-webpage-in-new-tab): allows to assign an external web page to a cell and opens it in a new tab
-   * [HTTP action](08_actions.md#http-action): allows to execute commands on programs and devices providing a REST API through HTTP.
-   * [UART action](08_actions.md#uart-action): allows to execute commands on microcontrollers providing a UART (Serial) interface (wired or Bluetooth).
-   * [System action](08_actions.md#system-action): actions related to the application, e.g. setting the system volume
-   * [Predefined actions](08_actions.md#predefined-actions): a way to implement other actions, e.g. http actions, with less programming knowledge
+* [Speak label](08_actions.md#speak-label): speaks the label of the element using a computer voice (text-to-speech)
+* [Navigate to other grid](08_actions.md#navigate-to-other-grid): navigates to another grid
+* [Speak custom text](08_actions.md#speak-custom-text): speaks a customizeable text using a computer voice (text-to-speech)
+* [Play recorded audio](08_actions.md#play-recorded-audio): plays custom audio, previously recorded via the microphone of the device
+* [Change word forms](08_actions.md#change-word-forms): change the word forms of elements
+* [Fill prediction elements](08_actions.md#fill-prediction-elements): fills all [prediction elements](01_terms.md#grid-element) in the current grid with word suggestions
+* [Collect element action](08_actions.md#collect-element-action): performs actions on [collect elements](01_terms.md#grid-element) in the current grid, e.g. clearing it or copying it's text to clipboard
+* [AsTeRICS Action](08_actions.md#asterics-action): does an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework)
+* [openHAB Action](08_actions.md#openhab-action): allows to do environmental control using devices interfaced by the OpenHAB framework
+* [Web radio action](08_actions.md#web-radio-action): plays a web radio station
+* [YouTube Action](08_actions.md#youtube-action): links to a YouTube video and shows it without leaving the communicator
+* [Change Content Language](08_actions.md#change-content-language): changes the content language (description of grid elements / language of the communicator grid(s)) and the voice
+* [Open webpage in new tab](08_actions.md#open-webpage-in-new-tab): allows to assign an external web page to a cell and opens it in a new tab
+* [HTTP action](08_actions.md#http-action): allows to execute commands on programs and devices providing a REST API through HTTP.
+* [UART action](08_actions.md#uart-action): allows to execute commands on microcontrollers providing a UART (Serial) interface (wired or Bluetooth).
+* [System action](08_actions.md#system-action): actions related to the application, e.g. setting the system volume
+* [Predefined actions](08_actions.md#predefined-actions): a way to implement other actions, e.g. http actions, with less programming knowledge
 
 ## Speak label
 
