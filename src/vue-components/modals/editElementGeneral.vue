@@ -3,7 +3,7 @@
         <div class="row">
             <label class="col-sm-2" for="inputLabel">{{ $t('label') }}</label>
             <div class="col-sm-7">
-                <input type="text" class="col-12" id="inputLabel" v-focus v-if="gridElement" v-model="gridElement.label[currentLang]"/>
+                <input type="text" class="col-12" id="inputLabel" v-focus v-if="gridElement" v-model="gridElement.label[currentLang]" :placeholder="gridElement.type === GridElement.ELEMENT_TYPE_LIVE ? $t('canIncludePlaceholderLike') : ''"/>
             </div>
             <div class="col-sm-3">
                 <button @click="$emit('searchImage')" class="col-12" :title="$t('searchForImages')"><i class="fas fa-search"/> {{$t('searchForImages')}}</button>
@@ -32,7 +32,7 @@
                     <input type="checkbox" id="toggleInBar" v-if="gridElement" v-model="gridElement.toggleInBar"/>
                     <label for="toggleInBar">{{ $t('toggleInCollectionElementIfAddedMultipleTimes') }}</label>
                 </div>
-                <slider-input label="fontSize" unit="%" id="fontSize" :show-clear-button="true" min="0" max="50" step="1" v-model.number="gridElement.fontSizePct" @input="resetTestGrid"/>
+                <slider-input label="fontSize" unit="%" id="fontSize" :show-clear-button="true" min="0" max="70" step="1" v-model.number="gridElement.fontSizePct" @input="resetTestGrid"/>
                 <div class="srow">
                     <label class="four columns" for="backgroundColor">{{ $t('customElementColor') }}</label>
                     <input class="five columns" type="color" id="backgroundColor" v-if="gridElement" v-model="gridElement.backgroundColor" @input="gridElement.colorCategory = undefined; resetTestGrid()"/>
@@ -63,6 +63,7 @@
     import SliderInput from './input/sliderInput.vue';
     import AppGridDisplay from '../grid-display/appGridDisplay.vue';
     import { GridData } from '../../js/model/GridData';
+    import { GridElement } from '../../js/model/GridElement';
 
     export default {
         components: { AppGridDisplay, SliderInput, Accordion },
@@ -73,7 +74,8 @@
                 currentLang: i18nService.getContentLang(),
                 colorCategories: [],
                 constants: constants,
-                testGridData: null
+                testGridData: null,
+                GridElement: GridElement
             }
         },
         methods: {

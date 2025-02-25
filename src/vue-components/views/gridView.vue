@@ -86,6 +86,7 @@
     import { gridUtil } from '../../js/util/gridUtil';
     import { collectElementService } from '../../js/service/collectElementService';
     import { predictionService } from '../../js/service/predictionService';
+    import { liveElementService } from '../../js/service/liveElementService';
 
     let vueApp = null;
     let UNLOCK_COUNT = 8;
@@ -319,6 +320,7 @@
                 this.highlightElements();
                 await predictionService.initWithElements(this.renderGridData.gridElements);
                 collectElementService.initWithElements(this.renderGridData.gridElements);
+                liveElementService.initWithElements(this.renderGridData.gridElements);
                 $(document).trigger(constants.EVENT_GRID_LOADED);
             },
             highlightElements() {
@@ -456,6 +458,7 @@
             stopInputMethods();
             this.setViewPropsUnlocked();
             $.contextMenu('destroy');
+            liveElementService.stop();
             vueApp = null;
         },
         mounted: async function () {

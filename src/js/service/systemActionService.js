@@ -7,6 +7,7 @@ import { constants } from '../util/constants';
 import { MainVue } from '../vue/mainVue';
 import { i18nService } from './i18nService';
 import { speechService } from './speechService';
+import { liveElementService } from './liveElementService';
 
 let systemActionService = {};
 
@@ -36,6 +37,12 @@ systemActionService.doAction = async function(action) {
             break;
         case GridActionSystem.actions.SYS_LEAVE_FULLSCREEN:
             await systemActionService.exitFullscreen();
+            break;
+        case GridActionSystem.actions.SYS_UPDATE_LIVE_ELEMENTS:
+            let delay = action.actionValue || 0;
+            setTimeout(() => {
+                liveElementService.updateOnce({ forceUpdate: true });
+            }, delay);
             break;
     }
 };

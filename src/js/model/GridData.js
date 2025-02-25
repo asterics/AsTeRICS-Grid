@@ -129,9 +129,11 @@ class GridData extends Model({
      * returns the next/previous elementId of element of type GridElement.ELEMENT_TYPE_NORMAL this grid contains, based on a given elementId
      * @param elementId the given elementId
      * @param invertDirection if false, the next id is returned, if true the previous id
+     * @param elementType the type of the element
      * @return the next / previous elementId this grid contains, the given elementId if the grid has no elements
      */
-    getNextElementId(elementId, invertDirection) {
+    getNextElementId(elementId, invertDirection, elementType) {
+        elementType = elementType || GridElement.ELEMENT_TYPE_NORMAL;
         if (!this.gridElements || this.gridElements.length === 0) {
             return elementId;
         }
@@ -143,7 +145,7 @@ class GridData extends Model({
             if (a.y !== b.y) return a.y - b.y;
             return a.x - b.x;
         });
-        sortedElements = sortedElements.filter((el) => el.type === GridElement.ELEMENT_TYPE_NORMAL);
+        sortedElements = sortedElements.filter((el) => el.type === elementType);
         var ids = sortedElements.map((el) => el.id);
         var index = ids.indexOf(elementId);
         if (index === -1) {

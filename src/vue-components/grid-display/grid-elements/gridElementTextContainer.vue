@@ -4,7 +4,7 @@
                   text-align: center; font-size: ${fontSizePx}px; line-height: ${lineHeight}; color: ${gridElement && gridElement.fontColor ? gridElement.fontColor : metadata.textConfig.fontColor};
                   flex-grow: ${withImage ? '0' : '1'};`">
         <span :style="`max-height: ${maxTextContainerHeight}; text-overflow: ${textOverflow}; white-space: ${whiteSpaceWrap}; margin: 0 ${txtMargin}px;`">
-            <span>{{externalSetLabel || label}}</span>
+            <span v-html="displayLabel"/>
         </span>
     </div>
 </template>
@@ -20,7 +20,7 @@ let MOBILE_MAX_WIDTH = 480;
 let TEXT_MARGIN = 5;
 
 export default {
-    props: ["label", "withImage", "metadata", "gridElement", "containerSize", "watchId", "disableAutoSizeKeyboard", "watchForChanges", "editable"],
+    props: ["label", "withImage", "metadata", "gridElement", "containerSize", "disableAutoSizeKeyboard", "watchForChanges", "editable"],
     data() {
         return {
             ready: false,
@@ -32,8 +32,7 @@ export default {
             textOverflow: null,
             whiteSpaceWrap: null,
             txtMargin: TEXT_MARGIN,
-            externalSetLabel: null,
-            intervalHandler: null
+            externalSetLabel: ''
         }
     },
     watch: {
@@ -41,9 +40,18 @@ export default {
             this.calcFontSize();
         }
     },
+    computed: {
+        calculateLabel() {
+            return ((this.externalSetLabel + '') || this.label || '') + '';
+        },
+        displayLabel() {
+            let label = util.replaceAll(this.calculateLabel, '\n', '<br>');
+            return util.replaceAll(label, '\\\\n', '<br>');
+        },
+    },
     methods: {
         calcFontSize() {
-            if (!this.$refs.txtContainer.parentElement) {
+            if (!this.$refs.txtContainer || !this.$refs.txtContainer.parentElement) {
                 return;
             }
             let size = this.containerSize;
@@ -56,10 +64,10 @@ export default {
             this.ready = true;
         },
         getFontSizePx(size) {
-            let label = this.externalSetLabel || this.label || '';
+            let label = this.calculateLabel;
             let fontSize = this.getBaseFontSize(size);
             let realWidth = fontUtil.getTextWidth(label, this.$refs.txtContainer.parentElement, fontSize);
-            let kbdContainerPct = 90;
+            let kbdContainerPct = 80;
             this.txtMargin = TEXT_MARGIN;
             if (document.documentElement.clientWidth < MOBILE_MAX_WIDTH) {
                 this.txtMargin = 0;
@@ -101,16 +109,16 @@ export default {
             }
             return pct;
         },
-        externalWatchFn() {
-            this.externalSetLabel = $(`#${this.watchId} .text-container span`).text();
-            this.calcFontSize();
+        externalUpdateFn(event, id, text) {
+            if (this.gridElement && id === this.gridElement.id) {
+                this.externalSetLabel = text;
+                this.calcFontSize();
+            }
         }
     },
     mounted() {
         this.calcFontSize();
-        if (this.watchId) {
-            $(document).on(constants.EVENT_PREDICTIONS_CHANGED, this.externalWatchFn);
-        }
+        $(document).on(constants.EVENT_ELEM_TEXT_CHANGED, this.externalUpdateFn);
         if (this.editable || this.watchForChanges) {
             this.$watch("metadata", () => {
                 this.calcFontSize();
@@ -121,9 +129,7 @@ export default {
         }
     },
     beforeDestroy() {
-        if (this.watchId) {
-            $(document).off(constants.EVENT_PREDICTIONS_CHANGED, this.externalWatchFn);
-        }
+        $(document).off(constants.EVENT_ELEM_TEXT_CHANGED, this.externalUpdateFn);
     }
 }
 </script>

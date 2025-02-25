@@ -63,10 +63,10 @@
                 </div>
                 <div class="srow">
                     <ul>
-                        <li v-for="elem in graphElemsToShow" style="display: inline-block; margin-right: 2em; margin-bottom: 1.5em; position: relative">
+                        <li v-for="elem in graphElemsToShow" style="display: inline-block; margin-right: 2em; margin-bottom: 1.5em; position: relative; max-width: 290px;">
                             <a href="javascript:;" @click="setSelectedGraphElement(elem)" style="text-decoration: none;">
-                                <div style="width: 100%; border: 1px solid lightgray">
-                                    <div>{{elem.grid.label | extractTranslation}}</div>
+                                <div style="width: 100%; border: 1px solid lightgray" :title="i18nService.getTranslation(elem.grid.label)">
+                                    <div style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden; padding-left: 0.25em;">{{elem.grid.label | extractTranslation}}</div>
                                     <img :src="elem.grid.thumbnail ? elem.grid.thumbnail.data : imageUtil.getEmptyImage()" style="height: 150px; max-width: 100%;"/>
                                 </div>
                             </a>
@@ -314,6 +314,34 @@
                             }
                         }
                     }*/
+
+                    /*
+                    // reduce image file sizes of all grids
+                    // remove 150px default maxWidth in imageUtil before and use image/jpg as default mimeType to convert in imageUtil.getBase64FromImg:
+                    // let data = canvas.toDataURL('image/jpeg', quality);
+                    // use dataService.getGrids(true); above to get all image data
+
+                    let imageList = [];
+                    let reduced = [];
+                    let diffs = [];
+                    for (let grid of grids) {
+                        for (let element of grid.gridElements) {
+                            if (element.image && element.image.data) {
+                                imageList.push(element.image.data);
+                                let reducedImg = await imageUtil.convertBase64(element.image.data);
+                                reduced.push(reducedImg);
+                                diffs.push((element.image.data.length - reducedImg.length) / 1024);
+                                element.image.data = reducedImg;
+                            }
+                        }
+                        // await dataService.saveGrid(grid);
+                    }
+                    imageList.sort((a,z) => z.length - a.length);
+                    log.warn(imageList);
+                    log.warn(reduced);
+                    log.warn(diffs);
+                    log.warn("totally reduced kBytes: ", diffs.reduce((partialSum, a) => partialSum + a, 0));
+                    */
 
                     thiz.selectedGraphElement = null;
                     thiz.grids = JSON.parse(JSON.stringify(grids)); //hack because otherwise vueJS databinding sometimes does not work;

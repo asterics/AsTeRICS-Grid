@@ -8,7 +8,8 @@ class GridActionPredefined extends Model({
     modelVersion: String,
     groupId: [String], // e.g. Shelly Plus Plug S, Valetudo etc.
     actionInfo: [Object], // infos about types, default values etc. of custom values
-    customValues: [Object] // key -> value pairs
+    customValues: [Object], // key -> value pairs,
+    isLiveAction: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionPredefined);

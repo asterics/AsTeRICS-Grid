@@ -7,7 +7,6 @@ import { i18nService } from './i18nService';
 import { constants } from '../util/constants';
 
 let WEBRADIO_LAST_PLAYED_ID_KEY = 'WEBRADIO_LAST_PLAYED_ID_KEY';
-let WEBRADIO_LAST_VOLUME_KEY = 'WEBRADIO_LAST_VOLUME_KEY';
 let API_URL = 'https://de1.api.radio-browser.info/json/';
 let API_ACTION_SEARCH = 'stations/search';
 let API_ACTION_GETURL = 'url';
@@ -20,12 +19,20 @@ let webradioService = {};
 let player = document.getElementById('audioPlayer');
 let videoPlayer = document.getElementById('videoPlayer');
 let lastPlayedId = localStorageService.get(WEBRADIO_LAST_PLAYED_ID_KEY);
-let volume = parseFloat(localStorageService.get(WEBRADIO_LAST_VOLUME_KEY) || 1.0);
+let volume = parseFloat(localStorageService.get(constants.WEBRADIO_LAST_VOLUME_KEY) || 1.0);
 let hasMoreSearchResults = false;
 let playingVideo = false;
 let userSettings = localStorageService.getUserSettings();
 
 webradioService.doAction = function (gridId, action) {
+    switch (action.action) {
+        case GridActionWebradio.WEBRADIO_ACTION_VOLUP:
+            webradioService.volumeUp();
+            return;
+        case GridActionWebradio.WEBRADIO_ACTION_VOLDOWN:
+            webradioService.volumeDown();
+            return;
+    }
     dataService.getGrid(gridId).then((grid) => {
         let radios = grid.webRadios || [];
         let radioId = action.radioId || lastPlayedId;
@@ -69,12 +76,6 @@ webradioService.doAction = function (gridId, action) {
                 fillUrl(radios[index], gridId).then((webradioWithUrl) => {
                     webradioService.play(webradioWithUrl);
                 });
-                break;
-            case GridActionWebradio.WEBRADIO_ACTION_VOLUP:
-                webradioService.volumeUp();
-                break;
-            case GridActionWebradio.WEBRADIO_ACTION_VOLDOWN:
-                webradioService.volumeDown();
                 break;
         }
     });
@@ -170,7 +171,7 @@ webradioService.volumeDown = function () {
 webradioService.setVolume = function(volumeParam) {
     volume = volumeParam !== undefined ? volumeParam : volume;
     volume = Math.round(volume * 100) / 100;
-    localStorageService.save(WEBRADIO_LAST_VOLUME_KEY, volume);
+    localStorageService.save(constants.WEBRADIO_LAST_VOLUME_KEY, volume);
     let playerVolume = volume * (userSettings.systemVolume / 100.0);
     if (userSettings.systemVolumeMuted) {
         playerVolume = 0;

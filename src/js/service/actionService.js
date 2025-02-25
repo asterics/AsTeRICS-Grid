@@ -27,14 +27,16 @@ import {uartService} from './uartService.js';
 import { systemActionService } from './systemActionService';
 import { GridActionSystem } from '../model/GridActionSystem';
 import { util } from '../util/util';
+import { liveElementService } from './liveElementService';
+import { GridElementLive } from '../model/GridElementLive';
+import { GridActionYoutube } from '../model/GridActionYoutube';
+import { GridActionWebradio } from '../model/GridActionWebradio';
 
 let actionService = {};
 
-let BASE_URL = "https://asterics.github.io/AsTeRICS-Grid-Boards/";
-let METADATA_URL = constants.IS_ENVIRONMENT_PROD ? BASE_URL + "live_predefined_actions.json" : BASE_URL + "live_predefined_actions_beta.json";
-let TRANSLATION_BASE_URL = BASE_URL + "predefined_actions/i18n/";
-let predefinedActionsData = null;
-let predefActionsI18nData = {};
+let METADATA_URL_ACTIONS = constants.IS_ENVIRONMENT_PROD ? constants.BOARDS_REPO_BASE_URL + "live_predefined_actions.json" : constants.BOARDS_REPO_BASE_URL + "live_predefined_actions_beta.json";
+let METADATA_URL_REQUESTS = constants.IS_ENVIRONMENT_PROD ? constants.BOARDS_REPO_BASE_URL + "live_predefined_requests.json" : constants.BOARDS_REPO_BASE_URL + "live_predefined_requests_beta.json";
+let predefinedActionsData = {};
 
 let minPauseSpeak = 0;
 let metadata = null;
@@ -56,47 +58,19 @@ actionService.doAction = async function (gridIdOrObject, gridElementId) {
     doActions(gridElement, gridData.id);
 };
 
-actionService.testAction = function (gridElement, action, gridData) {
-    doAction(gridElement, action, {
+actionService.testAction = function (gridElement, action, gridData = {}) {
+    return doAction(gridElement, action, {
         gridId: gridData.id,
         gridData: gridData
     });
 };
 
 actionService.getPredefinedActionInfos = async function() {
-    if (predefinedActionsData) {
-        return predefinedActionsData;
-    }
-    try {
-        let response = await fetch(METADATA_URL);
-        predefinedActionsData = await response.json();
-        predefinedActionsData.sort((a,b) => a.name.localeCompare(b.name));
-        return predefinedActionsData;
-    } catch (e) {
-        log.warn(`failed to fetch predefined actions infos.`);
-        return [];
-    }
+    return getPredefinedInfos(METADATA_URL_ACTIONS);
 };
 
-actionService.getPredefinedActionTranslations = async function(lang) {
-    lang = lang || i18nService.getAppLang();
-    if (predefActionsI18nData[lang]) {
-        return predefActionsI18nData[lang];
-    }
-    let translationFileName = `i18n.${lang}.json`;
-    try {
-        let translationResponse = await fetch(TRANSLATION_BASE_URL + translationFileName);
-        let data = await translationResponse.json();
-        predefActionsI18nData[lang] = data;
-        return data;
-    } catch (e) {
-        log.warn(`translation file ${translationFileName} not found.`);
-        if (lang !== 'en') {
-            log.warn(`trying "en" translation file.`);
-            return actionService.getPredefinedActionTranslations('en');
-        }
-        return {};
-    }
+actionService.getPredefinedRequestInfos = async function() {
+    return getPredefinedInfos(METADATA_URL_REQUESTS);
 };
 
 async function doActions(gridElement, gridId) {
@@ -143,17 +117,22 @@ async function doActions(gridElement, gridId) {
     if (!actionTypes.includes(GridActionWordForm.getModelName())) {
         stateService.resetWordForms();
     }
+    let displayUpdateActions = [GridActionYoutube.getModelName(), GridActionWebradio.getModelName(), GridActionSystem.getModelName()];
+    if (actionTypes.some(type => displayUpdateActions.includes(type))) {
+        liveElementService.updateOnce({ updateModes: [GridElementLive.MODE_APP_STATE] });
+    }
 }
 
 /**
  *
  * @param gridElement
  * @param action
+ * @param options
  * @param options.gridId the id of the grid the action is contained in (only needed for GridActionWebradio and GridActionARE)
  * @param options.gridData the gridData object the action is contained in (optional)
  * @param options.actions all actions that are currently executed
  */
-async function doAction(gridElement, action, options) {
+async function doAction(gridElement, action, options = {}) {
     options = options || {};
     options.actions = options.actions || [];
 
@@ -166,6 +145,9 @@ async function doAction(gridElement, action, options) {
             if (gridElement.type === GridElement.ELEMENT_TYPE_PREDICTION) {
                 labelCopy[i18nService.getContentLang()] = predictionService.getLastAppliedPrediction();
             }
+            if (gridElement.type === GridElement.ELEMENT_TYPE_LIVE) {
+                labelCopy[i18nService.getContentLang()] = liveElementService.getLastValue(gridElement.id);
+            }
             speechService.speak(labelCopy, {
                 lang: action.speakLanguage,
                 speakSecondary: true,
@@ -175,7 +157,11 @@ async function doAction(gridElement, action, options) {
         case 'GridActionSpeakCustom':
             log.debug('action speak custom');
             if (action.speakText) {
-                speechService.speak(action.speakText, {
+                let text = action.speakText;
+                if (gridElement.type === GridElement.ELEMENT_TYPE_LIVE) {
+                    text[i18nService.getContentLang()] = liveElementService.replacePlaceholder(gridElement, text[i18nService.getContentLang()]);
+                }
+                speechService.speak(text, {
                     lang: action.speakLanguage,
                     speakSecondary: true,
                     minEqualPause: minPauseSpeak
@@ -250,7 +236,7 @@ async function doAction(gridElement, action, options) {
             break;
         case 'GridActionHTTP':
             log.debug('action HTTP');
-            httpService.doAction(action);
+            return httpService.doAction(action);
             break;
         case 'GridActionPredict':
             log.debug('action predict');
@@ -291,7 +277,7 @@ async function doAction(gridElement, action, options) {
             systemActionService.doAction(action);
             break;
         case 'GridActionPredefined':
-            doPredefinedAction(gridElement, action);
+            return doPredefinedAction(gridElement, action);
             break;
     }
 }
@@ -299,7 +285,7 @@ async function doAction(gridElement, action, options) {
 function doPredefinedAction(gridElement, action) {
     action = JSON.parse(JSON.stringify(action));
     for (let presetKey of Object.keys(action.actionInfo.presets || {})) {
-        for(let customValue of action.actionInfo.customValues) {
+        for(let customValue of action.actionInfo.customValues || []) {
             if (util.isString(action.actionInfo.presets[presetKey])) {
                 let valueName = customValue.name;
                 let replaceValue = action.customValues[valueName] !== undefined ? action.customValues[valueName] : '';
@@ -311,7 +297,7 @@ function doPredefinedAction(gridElement, action) {
     let newAction = GridElement.getActionInstance(action.actionInfo.actionModelName);
     if (newAction) {
         Object.assign(newAction, action.actionInfo.presets);
-        doAction(gridElement, newAction);
+        return doAction(gridElement, newAction);
     }
 }
 
@@ -338,6 +324,21 @@ function doAREAction(action, gridData) {
 async function getMetadataConfig() {
     metadata = await dataService.getMetadata();
     minPauseSpeak = metadata.inputConfig.globalMinPauseCollectSpeak || 0;
+}
+
+async function getPredefinedInfos(url) {
+    if (predefinedActionsData[url]) {
+        return predefinedActionsData[url];
+    }
+    try {
+        let response = await fetch(url);
+        predefinedActionsData[url] = await response.json();
+        predefinedActionsData[url].sort((a, b) => a.name.localeCompare(b.name));
+        return predefinedActionsData[url];
+    } catch (e) {
+        log.warn(`failed to fetch predefined action/request infos.`);
+        return [];
+    }
 }
 
 $(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
