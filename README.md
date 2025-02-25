@@ -78,6 +78,7 @@ Other people and organizations we want to thank:
 * Thanks to Alex Segler for the great Webradio API [radio-browser.info](http://www.radio-browser.info/) which makes it possible to search and play webradios within AsTeRICS Grid
 * Thanks to the makers of the API from [opensymbols.org](https://www.opensymbols.org/) which makes it possible to search for open AAC symbols within AsTeRICS Grid
 * Thanks to ResponsiveVoice for providing an free non-commercial version, <a href="https://responsivevoice.org">ResponsiveVoice-NonCommercial</a> licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img title="ResponsiveVoice Text To Speech" src="https://responsivevoice.org/wp-content/uploads/2014/08/95x15.png" alt="95x15" width="95" height="15" /></a>
+* Thanks to [open-meteo.com](https://open-meteo.com/), which provides free weather data, which can be displayed within AsTeRICS Grid
 * Thanks to all the developers of these projects, which are all used by AsTeRICS Grid in production:
     * [core-js](https://github.com/zloirock/core-js)
     * [couch-auth](https://github.com/perfood/couch-auth)
