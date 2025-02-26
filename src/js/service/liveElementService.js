@@ -66,6 +66,7 @@ liveElementService.getLastValue = function(elementId) {
  * @returns {Promise<string>}
  */
 liveElementService.getCurrentValue = async function(element, options = {}) {
+    options = JSON.parse(JSON.stringify(options));
     options.forceUpdate = options.forceUpdate || [GridElementLive.MODE_DATETIME, GridElementLive.MODE_APP_STATE].includes(element.mode);
     let updateMs = (element.updateSeconds || 0) * 1000;
     let cacheBecauseTime = !options.forceUpdate && lastUpdateTimes[element.id] && new Date().getTime() - lastUpdateTimes[element.id] < updateMs;
