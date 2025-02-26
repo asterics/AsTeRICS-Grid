@@ -418,9 +418,8 @@
                 stateService.setCurrentGrid(this.renderGridData);
             },
             checkThumbnail() {
-                let gridDataObject = new GridData(this.gridData);
                 let isHomeGrid = this.metadata.homeGridId === this.gridData.id;
-                if (gridDataObject.hasOutdatedThumbnail(isHomeGrid) && !this.skipThumbnailCheck) {
+                if (gridUtil.hasOutdatedThumbnail(this.gridData, isHomeGrid) && !this.skipThumbnailCheck) {
                     imageUtil.allImagesLoaded().then(() => {
                         let options = {};
                         if (this.metadata.homeGridId === this.gridData.id) {
@@ -430,11 +429,10 @@
                             options.quality = 0.75;
                         }
                         imageUtil.getScreenshot('#grid-container', options).then(async screenshot => {
-                            let thumbnail = {
+                            this.gridData.thumbnail = {
                                 data: screenshot,
-                                hash: gridUtil.getHash(gridDataObject)
+                                hash: gridUtil.getHash(this.gridData)
                             };
-                            this.gridData.thumbnail = thumbnail;
                             dataService.saveGrid(this.gridData);
                         });
                     });

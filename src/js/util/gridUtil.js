@@ -537,8 +537,8 @@ gridUtil.hasAREModel = function(gridData) {
     return !!gridUtil.getAREModel(gridData);
 };
 
-gridUtil.hasOutdatedThumbnail = function(gridData) {
-    return !gridData.thumbnail || !gridData.thumbnail.data || gridData.thumbnail.hash !== gridUtil.getHash(gridData);
+gridUtil.hasOutdatedThumbnail = function(gridData, isHomeGrid) {
+    return !gridData.thumbnail || !gridData.thumbnail.data || (isHomeGrid && gridData.thumbnail.data.length < 20000) || gridData.thumbnail.hash !== gridUtil.getHash(gridData);
 };
 
 gridUtil.getHash = function(gridData) {
