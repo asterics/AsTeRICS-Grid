@@ -432,7 +432,7 @@
                         imageUtil.getScreenshot('#grid-container', options).then(async screenshot => {
                             let thumbnail = {
                                 data: screenshot,
-                                hash: gridDataObject.getHash()
+                                hash: gridUtil.getHash(gridDataObject)
                             };
                             this.gridData.thumbnail = thumbnail;
                             dataService.saveGrid(this.gridData);

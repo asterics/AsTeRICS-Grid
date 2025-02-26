@@ -113,7 +113,7 @@ export default {
     computed: {
         currentLanguages: function () {
             let grids = this.selectedGrid ? [this.selectedGrid] : this.grids;
-            return gridUtil.getLanguages(grids);
+            return gridUtil.getGridsLangs(grids);
         }
     },
     methods: {
