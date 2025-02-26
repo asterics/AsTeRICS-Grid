@@ -1,4 +1,5 @@
 import { TextConfig } from '../model/TextConfig.js';
+import { GridElement } from '../model/GridElement';
 
 let util = {};
 
@@ -76,11 +77,11 @@ util.copyToClipboard = function copyTextToClipboard(text) {
     try {
         var successful = document.execCommand('copy');
         var msg = successful ? 'successful' : 'unsuccessful';
-        lastClipboardData = text;
         log.debug('Copying text command was ' + msg);
     } catch (err) {
         log.warn('Unable to copy to clipboard.');
     }
+    lastClipboardData = text;
     document.body.removeChild(textArea);
 };
 
@@ -101,7 +102,10 @@ util.appendToClipboard = function (text) {
  * returns null if failed or permission was not granted.
  * @return Promise
  */
-util.getClipboardContent = function () {
+util.getClipboardContent = async function () {
+    if (!navigator.clipboard) {
+        return lastClipboardData;
+    }
     return navigator.clipboard
         .readText()
         .then((text) => {
@@ -111,6 +115,30 @@ util.getClipboardContent = function () {
             log.warn('failed to read clipboard.');
             return Promise.resolve(null);
         });
+};
+
+util.gridElementsToClipboard = function(elements) {
+    util.copyToClipboard(JSON.stringify(elements));
+};
+
+util.gridElementToClipboard = function(element) {
+    util.gridElementsToClipboard([element]);
+};
+
+util.getGridElementsFromClipboard = async function() {
+    let text = await util.getClipboardContent();
+    let elements = [];
+    try {
+        elements = JSON.parse(text);
+        elements = elements instanceof Array ? elements : [];
+        elements = elements.filter(el => el.id && el.modelName === GridElement.getModelName());
+    } catch (e) {
+    }
+    elements = elements.map(el => {
+        el.id = new GridElement().id;
+        return el;
+    });
+    return elements;
 };
 
 /**
@@ -328,6 +356,16 @@ util.getRandom = function (min, max) {
     return Math.random() * (max - min) + min;
 }
 
+/**
+ * gets random in from min to max (inclusive)
+ * @param min
+ * @param max
+ * @returns {*}
+ */
+util.getRandomInt = function(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 util.deduplicateArray = function (array) {
     return [...new Set(array)];
 }
@@ -357,5 +395,30 @@ util.getFilledArray = function(sizeX, sizeY, value) {
     }
     return baseArray;
 };
+
+/**
+ * returns the current screen size of the element. Uses IntersectionObserver if available (better performance), falls
+ * back to getBoundingClientRect().
+ * @param element
+ * @returns {Promise<unknown>}
+ */
+util.getElementSize = async function(element) {
+    if (!window.IntersectionObserver) {
+        return element.getBoundingClientRect();
+    }
+    return new Promise(resolve => {
+        const observer = new IntersectionObserver((entries) => {
+            for (const entry of entries) {
+                resolve(entry.boundingClientRect);
+            }
+            observer.disconnect();
+        });
+        observer.observe(element);
+    });
+};
+
+util.replaceAll = function(string, search, replace) {
+    return string.replace(new RegExp(search, 'g'), replace);
+}
 
 export { util };

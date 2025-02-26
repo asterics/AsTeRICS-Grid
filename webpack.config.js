@@ -14,12 +14,14 @@ module.exports = env => {
 
     let vueRule = {
         test: /\.vue$/,
-        loader: 'vue-loader'
+        loader: 'vue-loader',
+        options: { sourceMap: mode !== "production" }
     };
 
     let publicPath = env.production ? buildDir : `/${buildDir}`
     return {
         mode: mode,
+        devtool: mode === 'production' ? false : 'eval-source-map', // Enable source maps in development
         entry: entryScript,
         plugins: [new VueLoaderPlugin()],
         output: {

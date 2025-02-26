@@ -36,10 +36,8 @@ All custom sources are located in the `src` folder which has the following struc
     * **service/**: all kind of modules providing a functionality that is related to AsTeRICS Grid's functionality, access the database or performing actions
     * **util/**: all modules providing any general functionality that is needed by other modules or services 
     * **vue/**: all [Vue.js](https://vuejs.org/) related modules, not including vue components
-    * **grid.js**: module that creates dynamic grids (UI) out of the saved data in the database and provides interaction possibilities with the grid
     * **mainScript.js**: starting point of the whole application 
     * **router.js**: module that does routing to different views based on the current hash of the URL, e.g. `#main`, `#login` or `#grids`. Uses the [Navigo](https://github.com/krasimir/navigo) library.
-    * **templates.js**: module that holds HTML templates which are used for generating the HTML sources for various grid elements
 * **vue-components/**: folder containing all [Vue.js](https://vuejs.org/) components
     * **components/**: folder for general purpose components
     * **modals/**: folder for modal (popup) components

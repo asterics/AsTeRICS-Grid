@@ -1,10 +1,10 @@
 set -e
 
 # ------------------------------------------------------------------
-# AsTeRICS Grid beta-release script
+# AsTeRICS Grid latest-release script
 # ------------------------------------------------------------------
 # releases the committed version on the current branch to gh-pages
-# as beta-release by performing the following steps:
+# as latest-release by performing the following steps:
 # 1) a new tag named after the current date/time is created an published
 # 2) the version of the new tag is pushed to the gh-pages branch in the
 #    folder/subpath "latest". The main release remains the same.
@@ -13,7 +13,7 @@ set -e
 #    before and popped after the release
 
 do_gh_pages_update () {
-   echo "apply beta-release to gh-pages..."
+   echo "apply latest-release to gh-pages..."
    git checkout gh-pages
    echo "git update gh-pages..."
    git fetch origin gh-pages
@@ -22,7 +22,7 @@ do_gh_pages_update () {
    git clone --depth=1 --branch $tagname https://github.com/asterics/AsTeRICS-Grid.git latest
    rm -rf latest/.git/
    git add latest
-   git commit -m "added tag '$tagname' for beta version in folder beta."
+   git commit -m "added tag '$tagname' for latest version in folder latest."
    git push origin gh-pages -f
    git checkout $branch
 }
@@ -48,8 +48,8 @@ npm run test
 
 echo "git pull..."
 git pull
-tagname="release-beta-$(date +%Y-%m-%d-%H.%M/%z)"
-tagnameSed="release-beta-$(date +%Y-%m-%d-%H.%M\\/%z)"
+tagname="release-latest-$(date +%Y-%m-%d-%H.%M/%z)"
+tagnameSed="release-latest-$(date +%Y-%m-%d-%H.%M\\/%z)"
 echo $tagnameSed
 sed -i -e "s/#ASTERICS_GRID_VERSION#/$tagnameSed/g" src/js/util/constants.js
 sed -i -e "s/#ASTERICS_GRID_ENV#/PROD/g" src/js/util/constants.js
@@ -61,7 +61,7 @@ npm run build
 echo "commiting bundles..."
 git add app/build
 git add serviceWorker.js
-git commit -m "added bundles and appcache for beta-release $tagname"
+git commit -m "added bundles and appcache for latest-release $tagname"
 git push origin HEAD
 git checkout src/vue-components/views/aboutView.vue
 git checkout src/js/util/constants.js
@@ -77,6 +77,6 @@ if $doStash; then
     echo "pop stashed changes..."
     git stash pop
 fi
-echo "beta-release $tagname successfully released!"
+echo "latest-release $tagname successfully released!"
 
 

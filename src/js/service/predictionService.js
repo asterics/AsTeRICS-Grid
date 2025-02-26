@@ -2,7 +2,6 @@ import $ from '../externals/jquery.js';
 import Predictionary from 'predictionary';
 import { GridElement } from '../model/GridElement';
 import { Dictionary } from '../model/Dictionary';
-import { fontUtil } from '../util/fontUtil';
 import { dataService } from './data/dataService';
 import { constants } from '../util/constants';
 import { localStorageService } from './data/localStorageService.js';
@@ -21,6 +20,7 @@ let _intervalHandler = null;
 let _currentInitUser = null;
 let _textConvertMode = null;
 let _lastAppliedPrediction = null;
+let _currentValues = {}; // id => prediction
 
 predictionService.predict = function (input, dictionaryKey) {
     if (input === undefined || registeredPredictElements.length === 0 || !predictionary) {
@@ -47,13 +47,13 @@ predictionService.predict = function (input, dictionaryKey) {
     for (let i = 0; i < registeredPredictElements.length; i++) {
         let text = suggestions[i] ? suggestions[i] : '';
         text = util.convertLowerUppercase(text, _textConvertMode);
-        $(`#${registeredPredictElements[i].id} .text-container span`).text(text);
+        $(document).trigger(constants.EVENT_ELEM_TEXT_CHANGED, [registeredPredictElements[i].id, text]);
+        _currentValues[registeredPredictElements[i].id] = text;
         $(`#${registeredPredictElements[i].id}`).attr(
             'aria-label',
             `${text}, ${i18nService.t('ELEMENT_TYPE_PREDICTION')}`
         );
     }
-    fontUtil.adaptFontSize($('.item[data-type="ELEMENT_TYPE_PREDICTION"]'));
 };
 
 predictionService.learnFromInput = function (input, dictionaryKey) {
@@ -65,6 +65,7 @@ predictionService.learnFromInput = function (input, dictionaryKey) {
 
 predictionService.initWithElements = async function (elements) {
     registeredPredictElements = [];
+    _currentValues = {};
     elements.forEach((element) => {
         if (element && element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
             registeredPredictElements.push(JSON.parse(JSON.stringify(element)));
@@ -138,6 +139,10 @@ predictionService.initIfNewUser = async function () {
 predictionService.stopAutosave = function () {
     clearInterval(_intervalHandler);
 };
+
+predictionService.getCurrentValue = function(elementId) {
+    return _currentValues[elementId];
+}
 
 function saveDictionaries() {
     if (!_unsavedChanges || !predictionary) {

@@ -48,7 +48,6 @@
 </template>
 
 <script>
-    import {dataService} from '../../js/service/data/dataService'
     import {i18nService} from "../../js/service/i18nService";
     import './../../css/modal.css';
     import {GridElement} from "../../js/model/GridElement";
@@ -56,7 +55,7 @@
     import {helpService} from "../../js/service/helpService";
 
     export default {
-        props: ['gridData', 'gridInstance'],
+        props: ['gridData', 'undoService'],
         data: function () {
             return {
                 inputText: "",
@@ -69,7 +68,7 @@
                 var text = text.replace(/\n/gi, ';').replace(/;;/gi, ';');
                 this.parsedElems = text.split(';').map(el => el.trim()).filter(el => el.length > 0);
             },
-            save () {
+            async save () {
                 var thiz = this;
                 if(thiz.parsedElems.length === 0) return;
 
@@ -82,7 +81,8 @@
                     });
                     gridDataObject.gridElements.push(newElem);
                 });
-                this.gridInstance.updateGridWithUndo(gridDataObject);
+                await this.undoService.updateGrid(gridDataObject);
+                this.$emit('reload', gridDataObject);
                 this.$emit('close');
             }
         },

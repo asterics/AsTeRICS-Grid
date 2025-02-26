@@ -49,14 +49,13 @@ function UndoService() {
      * undoes to last state
      * @return {*} last gridData which was used for undo
      */
-    thiz.doUndo = function () {
+    thiz.doUndo = async function () {
         if (this.canUndo()) {
-            var undoData = _undoGridDataStack.pop();
+            let undoData = _undoGridDataStack.pop();
             stateService.setCurrentGrid(undoData);
-            dataService.getGrid(undoData.id).then((savedGrid) => {
-                _redoGridDataStack.push(JSON.parse(JSON.stringify(savedGrid)));
-                dataService.saveGrid(undoData);
-            });
+            let savedGrid = await dataService.getGrid(undoData.id);
+            _redoGridDataStack.push(JSON.parse(JSON.stringify(savedGrid)));
+            await dataService.saveGrid(undoData);
             return undoData;
         }
     };
@@ -65,14 +64,13 @@ function UndoService() {
      * redoes to last state
      * @return {*} last gridData which was used for redo
      */
-    thiz.doRedo = function () {
+    thiz.doRedo = async function () {
         if (this.canRedo()) {
-            var redoData = _redoGridDataStack.pop();
+            let redoData = _redoGridDataStack.pop();
             stateService.setCurrentGrid(redoData);
-            dataService.getGrid(redoData.id).then((savedGrid) => {
-                _undoGridDataStack.push(JSON.parse(JSON.stringify(savedGrid)));
-                dataService.saveGrid(redoData);
-            });
+            let savedGrid = await dataService.getGrid(redoData.id);
+            _undoGridDataStack.push(JSON.parse(JSON.stringify(savedGrid)));
+            await dataService.saveGrid(redoData);
             return redoData;
         }
     };

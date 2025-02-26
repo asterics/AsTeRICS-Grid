@@ -11,9 +11,9 @@ import $ from "../externals/jquery.js";
 import {constants} from "../util/constants.js";
 import {TextConfig} from "../model/TextConfig.js";
 import { gridUtil } from '../util/gridUtil';
+import { fontUtil } from '../util/fontUtil';
 
 let printService = {};
-let gridInstance = null;
 let pdfOptions = {
     docPadding: 5,
     footerHeight: 8,
@@ -33,23 +33,13 @@ let patternFontMappings = [
 
 printService.initPrintHandlers = function () {
     window.addEventListener('beforeprint', () => {
-        if (gridInstance) {
-            $('#grid-container').width('27.7cm');
-            $('#grid-container').height('19cm');
-            gridInstance.autosize();
-        }
+        $('#grid-container').width('27.7cm');
+        $('#grid-container').height('19cm');
     });
     window.addEventListener('afterprint', () => {
-        if (gridInstance) {
-            $('#grid-container').width('');
-            $('#grid-container').height('');
-            gridInstance.autosize();
-        }
+        $('#grid-container').width('');
+        $('#grid-container').height('');
     });
-};
-
-printService.setGridInstance = function (instance) {
-    gridInstance = instance;
 };
 
 /**
@@ -69,9 +59,9 @@ printService.gridsToPdf = async function (gridsData, options) {
     let jsPDF = await import(/* webpackChunkName: "jspdf" */ 'jspdf');
     options = options || {};
     let metadata = await dataService.getMetadata();
-    let globalGrid = null;
+    let defaultGlobalGrid = null;
     if (options.includeGlobalGrid) {
-        globalGrid = await dataService.getGlobalGrid();
+        defaultGlobalGrid = await dataService.getGlobalGrid();
     }
     options.idPageMap = {};
     options.idParentsMap = {};
@@ -116,6 +106,11 @@ printService.gridsToPdf = async function (gridsData, options) {
                 }
             );
         }
+        let globalGrid = defaultGlobalGrid;
+        if (options.includeGlobalGrid && gridsData[i].showGlobalGrid && gridsData[i].globalGridId) {
+            globalGrid = await dataService.getGrid(gridsData[i].globalGridId, false);
+        }
+        globalGrid = gridsData[i].showGlobalGrid !== false ? globalGrid : null;
         options.page = i + 1;
         await addGridToPdf(doc, gridsData[i], options, metadata, globalGrid);
         if (i < gridsData.length - 1) {
@@ -131,7 +126,7 @@ printService.gridsToPdf = async function (gridsData, options) {
     }
 };
 
-function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
+async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
     let promises = [];
     let DOC_WIDTH = 297;
     let DOC_HEIGHT = 210;
@@ -145,9 +140,9 @@ function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
     );
     let registerHeight = options.showRegister && options.pages > 1 ? 10 : 0;
     let footerHeight = hasARASAACImages ? 2 * pdfOptions.footerHeight : pdfOptions.footerHeight;
-    let elementTotalWidth = (DOC_WIDTH - 2 * pdfOptions.docPadding) / gridData.getWidthWithBounds();
+    let elementTotalWidth = (DOC_WIDTH - 2 * pdfOptions.docPadding) / gridUtil.getWidthWithBounds(gridData);
     let elementTotalHeight =
-        (DOC_HEIGHT - 2 * pdfOptions.docPadding - footerHeight - registerHeight) / gridData.getHeightWithBounds();
+        (DOC_HEIGHT - 2 * pdfOptions.docPadding - footerHeight - registerHeight) / gridUtil.getHeightWithBounds(gridData);
     if (footerHeight > 0) {
         let yBaseFooter = DOC_HEIGHT - pdfOptions.docPadding - registerHeight;
         let fontSizePt = (pdfOptions.footerHeight * 0.4) / 0.352778;
@@ -228,60 +223,53 @@ function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
             }
         }
     }
-    gridData.gridElements.forEach((element) => {
+    for (let element of gridData.gridElements) {
         if (element.hidden) {
-            return;
+            continue;
         }
         let currentWidth = elementTotalWidth * element.width - 2 * pdfOptions.elementMargin;
         let currentHeight = elementTotalHeight * element.height - 2 * pdfOptions.elementMargin;
         let xStartPos = pdfOptions.docPadding + elementTotalWidth * element.x + pdfOptions.elementMargin;
         let yStartPos = pdfOptions.docPadding + elementTotalHeight * element.y + pdfOptions.elementMargin;
+        let bgColor = options.printBackground ? util.getRGB(MetaData.getElementColor(element, metadata)) : [255, 255, 255];
         doc.setDrawColor(0);
-        if (!options.printBackground) {
-            doc.setFillColor(255, 255, 255);
-        } else {
-            let colorRGB = util.getRGB(MetaData.getElementColor(element, metadata));
-            doc.setFillColor(colorRGB[0], colorRGB[1], colorRGB[2]);
-        }
+        doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
         doc.roundedRect(xStartPos, yStartPos, currentWidth, currentHeight, 3, 3, 'FD');
         if (i18nService.getTranslation(element.label)) {
-            addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos);
+            addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, bgColor);
         }
-        promises.push(
-            addImageToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos).then(() => {
-                if (options.showLinks && options.idPageMap[element.getNavigateGridId()]) {
-                    let targetPage = options.idPageMap[element.getNavigateGridId()];
-                    let iconWidth = Math.max(currentWidth / 10, 7);
-                    let offsetX = currentWidth - iconWidth - 1;
-                    let offsetY = 1;
-                    doc.setDrawColor(255);
-                    doc.setFillColor(90, 113, 122);
-                    doc.roundedRect(xStartPos + offsetX, yStartPos + offsetY, iconWidth, iconWidth, 1, 1, 'FD');
-                    doc.link(xStartPos, yStartPos, currentWidth, currentHeight, { pageNumber: targetPage });
-                    if (targetPage) {
-                        let fontSizePt = (iconWidth * 0.6) / 0.352778;
-                        doc.setTextColor(255, 255, 255);
-                        doc.setFontSize(fontSizePt);
-                        doc.text(
-                            targetPage + '',
-                            xStartPos + offsetX + iconWidth / 2,
-                            yStartPos + offsetY + iconWidth / 2,
-                            {
-                                baseline: 'middle',
-                                align: 'center',
-                                maxWidth: iconWidth
-                            }
-                        );
+        await addImageToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos);
+        element = new GridElement(element);
+        if (options.showLinks && options.idPageMap[element.getNavigateGridId()]) {
+            let targetPage = options.idPageMap[element.getNavigateGridId()];
+            let iconWidth = Math.max(currentWidth / 10, 7);
+            let offsetX = currentWidth - iconWidth - 1;
+            let offsetY = 1;
+            doc.setDrawColor(255);
+            doc.setFillColor(90, 113, 122);
+            doc.roundedRect(xStartPos + offsetX, yStartPos + offsetY, iconWidth, iconWidth, 1, 1, 'FD');
+            doc.link(xStartPos, yStartPos, currentWidth, currentHeight, { pageNumber: targetPage });
+            if (targetPage) {
+                let fontSizePt = (iconWidth * 0.6) / 0.352778;
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(fontSizePt);
+                doc.text(
+                    targetPage + '',
+                    xStartPos + offsetX + iconWidth / 2,
+                    yStartPos + offsetY + iconWidth / 2,
+                    {
+                        baseline: 'middle',
+                        align: 'center',
+                        maxWidth: iconWidth
                     }
-                }
-                return Promise.resolve();
-            })
-        );
-    });
+                );
+            }
+        }
+    }
     return Promise.all(promises);
 }
 
-function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos) {
+function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, bgColor) {
     let label = i18nService.getTranslation(element.label);
     let hasImg = element.image && (element.image.data || element.image.url);
     let fontSizeMM = hasImg ? currentHeight * (1 - pdfOptions.imgHeightPercentage) : currentHeight / 2;
@@ -300,7 +288,8 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
         currentHeight - 2 * pdfOptions.textPadding,
         !hasImg
     );
-    doc.setTextColor(0, 0, 0);
+    let textColor = fontUtil.getHighContrastColorRgb(bgColor);
+    doc.setTextColor(textColor[0], textColor[1], textColor[2]);
     doc.setFontSize(optimalFontSize);
     let dim = doc.getTextDimensions(label);
     let lines = Math.ceil(dim.w / maxWidth);
@@ -344,7 +333,7 @@ async function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, yp
     if (!hasImage) {
         return Promise.resolve();
     }
-    let type = element.image.getImageType();
+    let type = new GridImage(element.image).getImageType();
     let imageData = element.image.data;
     let dim = null;
     if (!imageData) {

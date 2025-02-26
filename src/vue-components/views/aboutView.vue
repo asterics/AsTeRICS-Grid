@@ -80,7 +80,7 @@
                 </div>
                 <div class="srow">
                     <h3>{{ $t('supportUs') }}</h3>
-                    <span>{{ $t('ifYouWantToSupportTheDevelopmentOfAstericsGrid') }}</span>:
+                    <span>{{ $t('ifYouWantToSupportAstericsGrid') }}</span>:
                     <div>
                         <a :title="$t('donateWithPaypal')" target="_blank" href="https://www.paypal.com/donate/?hosted_button_id=38AJJNS427MJ2" class="me-3">
                             <img class="mt-4" style="border:0px; max-width: 75vw" alt="" src="app/img/donate-paypal.png" width="250">

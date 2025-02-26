@@ -8,7 +8,12 @@ class ColorConfig extends Model({
     activeColorScheme: [String],
     additionalColorSchemes: [Array],
     elementBackgroundColor: [String],
-    gridBackgroundColor: [String]
+    elementBorderColor: [String],
+    gridBackgroundColor: [String],
+    borderWidth: [Number],
+    elementMargin: [Number],
+    borderRadius: [Number],
+    colorMode: [String]
 }) {
     constructor(properties) {
         super(properties);
@@ -19,6 +24,12 @@ class ColorConfig extends Model({
     }
 }
 
+ColorConfig.COLOR_MODE_BACKGROUND = 'COLOR_MODE_BACKGROUND';
+ColorConfig.COLOR_MODE_BORDER = 'COLOR_MODE_BORDER';
+
+ColorConfig.BORDER_WIDTH_BORDER_COLORED = 0.45;
+ColorConfig.BORDER_WIDTH_BG_COLORED = 0.1;
+
 ColorConfig.defaults({
     modelName: ColorConfig.getModelName(),
     modelVersion: constants.MODEL_VERSION,
@@ -26,7 +37,12 @@ ColorConfig.defaults({
     activeColorScheme: constants.DEFAULT_COLOR_SCHEMES[0].name,
     additionalColorSchemes: [],
     elementBackgroundColor: constants.DEFAULT_ELEMENT_BACKGROUND_COLOR,
-    gridBackgroundColor: constants.DEFAULT_GRID_BACKGROUND_COLOR
+    elementBorderColor: constants.DEFAULT_ELEMENT_BORDER_COLOR,
+    gridBackgroundColor: constants.DEFAULT_GRID_BACKGROUND_COLOR,
+    borderWidth: ColorConfig.BORDER_WIDTH_BG_COLORED,
+    elementMargin: 0.15,
+    borderRadius: 0.4,
+    colorMode: ColorConfig.COLOR_MODE_BACKGROUND
 });
 
 export { ColorConfig };

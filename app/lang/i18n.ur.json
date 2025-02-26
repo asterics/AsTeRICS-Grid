@@ -1092,5 +1092,6 @@
   "SYS_LEAVE_FULLSCREEN": "Exit fullscreen",
   "defaultDeviceVoice": "Default device voice",
   "fundedBy": "funded by",
-  "astericsGridWasFundedWithinProjects": "AsTeRICS Grid was developed within several funded projects"
+  "astericsGridWasFundedWithinProjects": "AsTeRICS Grid was developed within several funded projects",
+  "LAST_LANG": "Previously used language"
 }

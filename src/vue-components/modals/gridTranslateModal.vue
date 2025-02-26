@@ -103,7 +103,7 @@
                                     <li v-for="item in allElements">
                                         <div v-if="showGridElements(item.grid) && shouldShowMap[item.element.id]" class="srow">
                                             <div class="one columns">
-                                                <img height="25" style="max-width: 100%;" :src="item.element.image.url || item.element.image.data">
+                                                <img height="25" style="max-width: 100%;" :src="item.element.image ? item.element.image.url || item.element.image.data : ''">
                                             </div>
                                             <input type="text" :placeholder="`(${currentLangTranslated})`" class="five columns" :lang="currentLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[currentLocale]" @change="changedGrid(item.grid)"/>
                                             <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[chosenLocale]" @change="changedGrid(item.grid)"/>
@@ -159,7 +159,7 @@
                 chosenLocale: i18nService.isCurrentContentLangEN() ? 'de' : 'en',
                 GridActionSpeakCustom: GridActionSpeakCustom,
                 allLanguages: i18nService.getAllLanguages(),
-                usedLocales: localStorageService.getUsedLocales(),
+                usedLocales: [],
                 changedGrids: [],
                 shouldShowMap: {} // element-id or action-id => boolean, tells if element should be shown in translate view
             }
@@ -191,8 +191,6 @@
         methods: {
             save() {
                 let thiz = this;
-                let data = thiz.gridData || thiz.allGrids[0];
-                localStorageService.addUsedLocales(Object.keys(data.label));
                 dataService.saveGrids(JSON.parse(JSON.stringify(thiz.changedGrids))).then(() => {
                     thiz.$emit('reload');
                     thiz.$emit('close');
@@ -288,8 +286,14 @@
                         let anyLabel = Object.keys(element.label).some(lang => !!element.label[lang]);
                         let hasImage = element.image && (element.image.url || element.image.data);
                         this.shouldShowMap[element.id] = anyLabel || hasImage;
+                        for (let lang of Object.keys(element.label)) {
+                            if (!this.usedLocales.includes(lang) && !!element.label[lang]) {
+                                this.usedLocales.push(lang);
+                            }
+                        }
                     }
                 }
+                this.usedLocales.sort((a, b) => this.getLocaleTranslation(a).localeCompare(this.getLocaleTranslation(b)));
             });
         }
     }

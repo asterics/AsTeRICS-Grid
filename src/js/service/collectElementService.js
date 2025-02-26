@@ -21,6 +21,8 @@ import {arasaacService} from "./pictograms/arasaacService.js";
 import {GridActionWordForm} from "../model/GridActionWordForm.js";
 import {stateService} from "./stateService.js";
 import {MapCache} from "../util/MapCache.js";
+import { liveElementService } from './liveElementService';
+import { MetaData } from '../model/MetaData';
 
 let collectElementService = {};
 
@@ -40,6 +42,7 @@ let lastCollectId = null;
 let lastCollectTime = 0;
 
 let imgDimensionsCache = new MapCache();
+let _localMetadata = null;
 
 collectElementService.getText = function () {
     return getPrintText();
@@ -73,17 +76,16 @@ collectElementService.initWithElements = function (elements, dontAutoPredict) {
     });
     keyboardLikeFactor = oneCharacterElements / normalElements;
     if (registeredCollectElements.length > 0) {
-        let intervalHandler = setInterval(() => {
-            if ($('.item[data-type="ELEMENT_TYPE_COLLECT"]').length > 0) {
-                clearInterval(intervalHandler);
-                updateCollectElements();
-                if (!dontAutoPredict) {
-                    predictionService.predict(getPredictText(), dictionaryKey);
-                }
-            }
-        }, 100);
+        updateCollectElements();
+        if (!dontAutoPredict) {
+            predictionService.predict(getPredictText(), dictionaryKey);
+        }
     }
 };
+
+collectElementService.clearCollectElements = function() {
+    $('.collect-container').empty();
+}
 
 collectElementService.doCollectElementActions = async function (action) {
     if (!action) {
@@ -290,23 +292,23 @@ function getActionTypes(elem) {
 
 async function updateCollectElements(isSecondTry) {
     autoCollectImage = collectedElements.some((e) => !!getImageData(e));
-    let metadata = null;
-    if (registeredCollectElements.length > 0) {
-        metadata = await dataService.getMetadata();
-    }
+    let metadata = _localMetadata || new MetaData();
     for (let collectElement of registeredCollectElements) {
         let txtBackgroundColor = metadata.colorConfig.gridBackgroundColor || '#ffffff';
         let imageMode = isSeparateMode(collectElement.mode);
         let outerContainerJqueryElem = $(`#${collectElement.id} .collect-outer-container`);
+        let darkMode = metadata.colorConfig.elementBackgroundColor === constants.DEFAULT_ELEMENT_BACKGROUND_COLOR_DARK;
+        let backgroundColor = darkMode ? constants.DEFAULT_COLLECT_ELEMENT_BACKGROUND_COLOR_DARK : constants.DEFAULT_COLLECT_ELEMENT_BACKGROUND_COLOR;
+        let textColor = darkMode ? constants.DEFAULT_ELEMENT_FONT_COLOR_DARK : constants.DEFAULT_ELEMENT_FONT_COLOR;
         if (!imageMode) {
             let text = getPrintText();
             $(`#${collectElement.id}`).attr('aria-label', `${text}, ${i18nService.t('ELEMENT_TYPE_COLLECT')}`);
             predictionService.learnFromInput(text, dictionaryKey);
-            let html = `<span style="padding: 5px; display: flex; align-items: center; flex: 1; text-align: left;">
+            let html = `<span style="padding: 5px; display: flex; align-items: center; flex: 1; text-align: left; font-weight: bold;">
                             ${text}
                         </span>`;
             outerContainerJqueryElem.html(
-                (html = `<div class="collect-container" dir="auto" style="flex: 1; background-color: #e8e8e8; text-align: justify;">${html}</div>`)
+                (html = `<div class="collect-container" dir="auto" style="height: 100%; flex: 1; background-color: ${backgroundColor}; text-align: justify;">${html}</div>`)
             );
             fontUtil.adaptFontSize($(`#${collectElement.id}`));
         } else {
@@ -375,13 +377,13 @@ async function updateCollectElements(isSecondTry) {
                     totalWidth += elemWidth + 4 * imgMargin;
                     imgHTML = `<div style="padding: ${imgMargin}px; font-size: ${fontSize}px; width: ${elemWidth}px; height: ${imgHeight}px; display: flex; justify-content: center; align-items: center; text-align: center;"><span>${label}</span></div>`;
                 }
-                html += `<div id="collect${index}" style="display: flex; flex:0; justify-content: center; flex-direction: column; padding: ${imgMargin}px; ${
-                    marked ? 'background-color: lightgreen;' : ''
+                html += `<div id="collect${index}" style="display: flex; flex:0; justify-content: center; flex-direction: column; padding: ${imgMargin}px; color: ${textColor}; ${
+                    marked ? `background-color: ${darkMode ? 'darkgreen' : 'lightgreen'};` : ''
                 }" title="${label}">
                                 <div style="display:flex; justify-content: center">
                                         ${imgHTML}
                                 </div>
-                                <div style="text-align: center; font-size: ${textHeight}px; line-height: ${lineHeight}px; height: ${lineHeight}px; width: ${elemWidth}px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; ${
+                                <div style="text-align: center; font-weight: bold; font-size: ${textHeight}px; line-height: ${lineHeight}px; height: ${lineHeight}px; width: ${elemWidth}px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; ${
                     !showLabel ? 'display: none' : ''
                 }">
                                     ${image ? label : ''}
@@ -389,7 +391,7 @@ async function updateCollectElements(isSecondTry) {
                              </div>`;
             }
             let additionalCSS = useSingleLine ? 'overflow-x: auto; overflow-y: hidden;' : 'flex-wrap: wrap;';
-            html = `<div class="collect-container" dir="auto" style="flex: 1; display: flex; flex-direction: row; background-color: #e8e8e8; text-align: justify; ${additionalCSS}">${html}</div>`;
+            html = `<div class="collect-container" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: ${backgroundColor}; text-align: justify; ${additionalCSS}">${html}</div>`;
             outerContainerJqueryElem.html(html);
             if (useSingleLine) {
                 let scroll =
@@ -578,7 +580,7 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         }
         triggerPredict();
     } else if (element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
-        let word = $(`#${element.id} .text-container span`).text();
+        let word = predictionService.getCurrentValue(element.id);
         if (word) {
             predictionService.applyPrediction(getPrintText(), word, dictionaryKey);
             let lastElem = getLastElement();
@@ -597,6 +599,8 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
             }
             triggerPredict();
         }
+    } else if (element.type === GridElement.ELEMENT_TYPE_LIVE) {
+        addTextElem(liveElementService.getLastValue(element.id) + ' ');
     }
     updateCollectElements();
 });
@@ -611,10 +615,10 @@ function triggerPredict() {
 }
 
 async function getMetadataConfig() {
-    let metadata = await dataService.getMetadata();
-    duplicatedCollectPause = metadata.inputConfig.globalMinPauseCollectSpeak || 0;
-    convertMode = metadata.textConfig.convertMode;
-    activateARASAACGrammarAPI = metadata.activateARASAACGrammarAPI;
+    _localMetadata = await dataService.getMetadata();
+    duplicatedCollectPause = _localMetadata.inputConfig.globalMinPauseCollectSpeak || 0;
+    convertMode = _localMetadata.textConfig.convertMode;
+    activateARASAACGrammarAPI = _localMetadata.activateARASAACGrammarAPI;
 }
 
 $(window).on(constants.EVENT_GRID_RESIZE, function () {
@@ -626,5 +630,8 @@ $(document).on(constants.EVENT_CONFIG_RESET, clearAll);
 
 $(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
 $(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
+$(document).on(constants.EVENT_USERSETTINGS_UPDATED, () => {
+    updateCollectElements();
+});
 
 export { collectElementService };

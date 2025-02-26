@@ -12,7 +12,9 @@ urlParamService.params = {
     PARAM_USE_GRIDSET_PROVIDER: 'gridset_provider',
     PARAM_USE_GRIDSET_ID: 'gridset_id',
     PARAM_USE_GRIDSET_SINGLE_BOARDS: 'single_boards',
-    PARAM_ELEMENT_HIGHLIGHT_IDS: "highlightIds"
+    PARAM_ELEMENT_HIGHLIGHT_IDS: "highlightIds",
+    PARAM_LOCKED: "locked",
+    PARAM_FULLSCREEN: "fullscreen"
 };
 
 let _demoMode = false;
@@ -40,6 +42,16 @@ urlParamService.setParamsToSearchQuery = function(params = {}) {
  */
 urlParamService.getSearchQueryParams = function(additionalParams = {}) {
     let params = new URLSearchParams(location.search);
+
+    // Object.fromEntries polyfill https://stackoverflow.com/a/68655198/9219743
+    function fromEntries(entries) {
+        var res = {};
+        for (var i = 0; i < entries.length; i++) res[entries[i][0]] = entries[i][1];
+        return res;
+    }
+
+    if (!Object.fromEntries) Object.fromEntries = fromEntries;
+
     let paramObject = Object.fromEntries(params);
     for (let key of Object.keys(paramObject)) {
         try {
@@ -54,6 +66,14 @@ urlParamService.isDemoMode = function () {
     _demoMode = _demoMode || hasParam(urlParamService.params.PARAM_DEMO_MODE);
     removeParam(urlParamService.params.PARAM_DEMO_MODE);
     return _demoMode;
+};
+
+urlParamService.isFullscreen = function(remove) {
+    return isSetAndNotFalse(urlParamService.params.PARAM_FULLSCREEN, remove);
+};
+
+urlParamService.isLocked = function(remove) {
+    return isSetAndNotFalse(urlParamService.params.PARAM_LOCKED, remove);
 };
 
 urlParamService.isScanningEnabled = function () {
@@ -147,6 +167,15 @@ function removeParam(paramName) {
             window.location.hash;
         history.replaceState(null, '', newUrl);
     }
+}
+
+function isSetAndNotFalse(param, remove) {
+    let paramExists = hasParam(param);
+    let value = paramExists && !isParamFalse(param);
+    if (remove && paramExists) {
+        urlParamService.removeParam(param);
+    }
+    return value;
 }
 
 export { urlParamService };

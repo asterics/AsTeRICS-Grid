@@ -209,6 +209,9 @@ function gridImageToObfImage(gridImage) {
  *                    with the actual IDs of the GridData objects.
  */
 obfConverter.OBFToGridData = function(obfObject, obfObjects) {
+    if (!obfObject) {
+        return Promise.resolve(null);
+    }
     let promises = [];
     let locale = obfObject.locale ? obfObject.locale.toLowerCase() : i18nService.getContentLang();
     let baseLocale = i18nService.getBaseLang(locale);
@@ -223,18 +226,16 @@ obfConverter.OBFToGridData = function(obfObject, obfObjects) {
         gridElements: []
     });
     obfObject.buttons.forEach((button) => {
-        if (!button.hidden) {
-            let xy = orderToXY(button.id, obfObject);
-            if (!xy) {
-                xy = gridData.getNewXYPos();
-            }
+        let xy = orderToXY(button.id, obfObject);
+        if (xy) {
             let gridElement = new GridElement({
                 width: 1,
                 height: 1,
                 label: i18nService.getTranslationObject(button.label, locale),
                 x: xy.x || 0,
                 y: xy.y || 0,
-                backgroundColor: button.background_color
+                backgroundColor: button.background_color,
+                hidden: button.hidden
             });
             gridElement = addActions(gridElement, button, obfObject, obfObjects);
             let speakActions = gridElement.actions.filter((a) => a.modelName === GridActionSpeak.getModelName());
@@ -268,7 +269,9 @@ obfConverter.OBZToImportData = async function(obzFileMap) {
     for (let filename of Object.keys(obzFileMap)) {
         if (filename.indexOf('.obf') !== -1) {
             let grid = await obfConverter.OBFToGridData(obzFileMap[filename], obzFileMap);
-            grids.push(grid);
+            if (grid) {
+                grids.push(grid);
+            }
         }
     }
 
@@ -401,7 +404,14 @@ function getGridImage(imageId, obfObject, obfObjects) {
         return Promise.resolve(null);
     }
     let gridImage = new GridImage();
-    if (obfImage.data) {
+    if (obfImage.license) {
+        gridImage.author = obfImage.license.author_name;
+        gridImage.authorURL = obfImage.license.author_url;
+    }
+    if (obfImage.url) {
+        gridImage.url = obfImage.url;
+        return Promise.resolve(gridImage);
+    } else if (obfImage.data) {
         gridImage.data = obfImage.data;
         return Promise.resolve(gridImage);
     } else if (obfImage.path) {
@@ -411,9 +421,6 @@ function getGridImage(imageId, obfObject, obfObjects) {
         let preString = `data:${contentType};base64,`;
         let fileContent = obfObjects[obfImage.path];
         gridImage.data = preString + fileContent;
-        return Promise.resolve(gridImage);
-    } else if (obfImage.url) {
-        gridImage.url = obfImage.url;
         return Promise.resolve(gridImage);
     }
     return Promise.resolve(null);

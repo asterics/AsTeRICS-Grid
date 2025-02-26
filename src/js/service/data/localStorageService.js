@@ -9,7 +9,6 @@ let SYNCED_DBS_LIST_KEY = 'SYNCED_DBS_LIST_KEY';
 let LAST_ACTIVEUSER_KEY = 'LAST_ACTIVEUSER_KEY';
 let AUTOLOGIN_USER_KEY = 'AUTOLOGIN_USER_KEY';
 let GRID_DIMENSIONS_KEY = 'AG_GRID_DIMENSIONS_KEY';
-let USED_LOCALES_KEY = 'AG_USED_LOCALES_KEY';
 let CURRENT_VERSION_KEY = 'AG_CURRENT_VERSION_KEY';
 let APP_SETTINGS = 'AG_APP_SETTINGS';
 let USER_SETTINGS = 'AG_USER_SETTINGS';
@@ -314,18 +313,6 @@ localStorageService.saveLastGridDimensions = function (dimensions) {
 localStorageService.getLastGridDimensions = function () {
     let json = localStorageService.get(GRID_DIMENSIONS_KEY);
     return json ? JSON.parse(json) : {};
-};
-
-localStorageService.addUsedLocales = function (toAddArray) {
-    let json = localStorageService.get(USED_LOCALES_KEY);
-    let array = json ? JSON.parse(json) : [];
-    array = [...new Set(array.concat(toAddArray))];
-    localStorageService.save(USED_LOCALES_KEY, JSON.stringify(array));
-};
-
-localStorageService.getUsedLocales = function () {
-    let json = localStorageService.get(USED_LOCALES_KEY);
-    return json ? JSON.parse(json) : [];
 };
 
 localStorageService.getCurrentAppVersion = function () {

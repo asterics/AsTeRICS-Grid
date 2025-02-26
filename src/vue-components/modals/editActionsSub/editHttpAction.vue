@@ -35,6 +35,13 @@
                        placeholder="text/plain | application/json | ..." spellcheck="false" autocomplete="true" type="text"/>
             </div>
         </div>
+        <div class="row" v-if="action.isLiveAction">
+            <label class="col-12 col-md-4 normal-text" for="acceptHeader">HTTP Accept Header</label>
+            <div class="col-12 col-md-7">
+                <input id="acceptHeader" v-model="action.acceptHeader" class="col-12"
+                       placeholder="text/plain | application/json | ..." spellcheck="false" autocomplete="true" type="text"/>
+            </div>
+        </div>
         <div class="row">
             <label class="col-12 col-md-4 normal-text" for="auth-user">{{ $t('httpAuthUser') }}</label>
             <div class="col-12 col-md-7">
@@ -47,13 +54,19 @@
                 <input id="auth-pw" v-model="action.authPw" class="col-12" type="password" :placeholder="$t('optionalBracket')"/>
             </div>
         </div>
+        <div class="row" v-if="action.isLiveAction">
+            <div class="col-12">
+                <input id="useCorsProxy" v-model="action.useCorsProxy" type="checkbox"/>
+                <label class="normal-text" for="useCorsProxy">{{ $t('useCorsProxy') }}</label>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 
 export default {
-    props: ['action', 'gridData'],
+    props: ['action'],
     computed: {
     },
     methods: {

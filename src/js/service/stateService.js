@@ -327,7 +327,7 @@ function getElement(id) {
 
 function setTextInUI (elementId, text) {
     text = util.convertLowerUppercase(text, _convertMode);
-    $(`#${elementId} .text-container span`).text(text);
+    $(document).trigger(constants.EVENT_ELEM_TEXT_CHANGED, [elementId, text]);
 }
 
 async function getMetadataConfig() {

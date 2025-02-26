@@ -1,13 +1,11 @@
 import { modelUtil } from '../util/modelUtil';
 import { GridElement } from './GridElement';
 import { AdditionalGridFile } from './AdditionalGridFile';
-import { GridActionARE } from './GridActionARE';
 import { constants } from '../util/constants';
 import { Model } from '../externals/objectmodel';
 import { Webradio } from './Webradio';
 import { gridUtil } from '../util/gridUtil';
 import { localStorageService } from '../service/data/localStorageService';
-import { encryptionService } from '../service/data/encryptionService';
 
 class GridData extends Model({
     id: String,
@@ -21,7 +19,9 @@ class GridData extends Model({
     gridElements: Model.Array(GridElement),
     additionalFiles: [Model.Array(AdditionalGridFile)],
     webRadios: [Model.Array(Webradio)],
-    thumbnail: [Object] // map with 2 properties: [data, hash], where "data" is base64 Screenshot data and "hash" is the hash of the grid when the screenshot was made
+    thumbnail: [Object], // map with 2 properties: [data, hash], where "data" is base64 Screenshot data and "hash" is the hash of the grid when the screenshot was made,
+    showGlobalGrid: [Boolean],
+    globalGridId: [String]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridData);
@@ -43,52 +43,20 @@ class GridData extends Model({
         return this.gridElements.every((elm) => elm.hasSetPosition());
     }
 
-    getHash() {
-        let string = '';
-        this.gridElements.forEach((e) => {
-            string += JSON.stringify(e.label) + e.x + e.y;
-            if (e.image && (e.image.data || e.image.url)) {
-                if (e.image.data) {
-                    string += e.image.data.substring(e.image.data.length > 30 ? e.image.data.length - 30 : 0);
-                }
-                if (e.image.url) {
-                    string += e.image.url;
-                }
-            }
-        });
-        return encryptionService.getStringHash(string);
-    }
-
-    hasOutdatedThumbnail(isHomeGrid) {
-        return !this.thumbnail || !this.thumbnail.data || (isHomeGrid && this.thumbnail.data.length < 20000) || this.thumbnail.hash !== this.getHash();
-    }
-
     getWidth() {
-        if (this.gridElements.length === 0) {
-            return 0;
-        }
-        return Math.max.apply(
-            null,
-            this.gridElements.map((el) => el.x + el.width)
-        );
+        return gridUtil.getWidth(this);
     }
 
     getHeight() {
-        if (this.gridElements.length === 0) {
-            return 0;
-        }
-        return Math.max.apply(
-            null,
-            this.gridElements.map((el) => el.y + el.height)
-        );
+        return gridUtil.getHeight(this);
     }
 
     getWidthWithBounds() {
-        return Math.max(this.getWidth(), this.minColumnCount);
+        return gridUtil.getWidthWithBounds(this);
     }
 
     getHeightWithBounds() {
-        return Math.max(this.getHeight(), this.rowCount);
+        return gridUtil.getHeightWithBounds(this);
     }
 
     isFull() {
@@ -161,9 +129,11 @@ class GridData extends Model({
      * returns the next/previous elementId of element of type GridElement.ELEMENT_TYPE_NORMAL this grid contains, based on a given elementId
      * @param elementId the given elementId
      * @param invertDirection if false, the next id is returned, if true the previous id
+     * @param elementType the type of the element
      * @return the next / previous elementId this grid contains, the given elementId if the grid has no elements
      */
-    getNextElementId(elementId, invertDirection) {
+    getNextElementId(elementId, invertDirection, elementType) {
+        elementType = elementType || GridElement.ELEMENT_TYPE_NORMAL;
         if (!this.gridElements || this.gridElements.length === 0) {
             return elementId;
         }
@@ -175,7 +145,7 @@ class GridData extends Model({
             if (a.y !== b.y) return a.y - b.y;
             return a.x - b.x;
         });
-        sortedElements = sortedElements.filter((el) => el.type === GridElement.ELEMENT_TYPE_NORMAL);
+        sortedElements = sortedElements.filter((el) => el.type === elementType);
         var ids = sortedElements.map((el) => el.id);
         var index = ids.indexOf(elementId);
         if (index === -1) {
@@ -202,24 +172,6 @@ class GridData extends Model({
         return filteredFiles.length > 0 ? filteredFiles[0] : null;
     }
 
-    /**
-     * returns any ARE model (=AdditionalGridFile) that is used in any areAction of this grid. If there is no
-     * areAction in any gridElement, null is returned.
-     * @return {*}
-     */
-    getAREModel() {
-        let areAction = this.getAREFirstAction();
-        if (areAction) {
-            let filteredFiles = this.additionalFiles.filter((f) => f.fileName === areAction.areModelGridFileName);
-            return filteredFiles[0];
-        }
-        return null;
-    }
-
-    hasAREModel() {
-        return !!this.getAREModel();
-    }
-
     hasPredictionElements() {
         for (let element of this.gridElements) {
             if (element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
@@ -227,23 +179,6 @@ class GridData extends Model({
             }
         }
         return false;
-    }
-
-    /**
-     * returns the first GridActionARE that is found in any gridElement of this grid
-     * @return {*}
-     */
-    getAREFirstAction() {
-        let allActions = [];
-        this.gridElements.forEach((element) => {
-            allActions = allActions.concat(element.actions);
-        });
-        return allActions.filter((a) => a.modelName === GridActionARE.getModelName())[0];
-    }
-
-    getAREURL() {
-        let areAction = this.getAREFirstAction();
-        return areAction ? areAction.areURL : null;
     }
 
     clone() {
@@ -269,7 +204,7 @@ class GridData extends Model({
     }
 }
 
-GridData.defaults({
+GridData.DEFAULTS = {
     id: '', //will be replaced by constructor
     modelName: GridData.getModelName(),
     modelVersion: constants.MODEL_VERSION,
@@ -277,7 +212,11 @@ GridData.defaults({
     additionalFiles: [],
     webRadios: [],
     label: {},
-    lastUpdateTime: new Date().getTime()
-});
+    lastUpdateTime: new Date().getTime(),
+    showGlobalGrid: true,
+    globalGridId: null
+};
+
+GridData.defaults(GridData.DEFAULTS);
 
 export { GridData };

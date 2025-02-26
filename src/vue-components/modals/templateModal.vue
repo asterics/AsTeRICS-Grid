@@ -12,7 +12,7 @@
 
                     <div class="modal-body container">
                         <div class="srow">
-                            <label for="gridRows">{{ $t('numberOfRows') }}</label>
+                            <label for="gridRows">{{ $t('minimumNumberOfRows') }}</label>
                             <input id="gridRows" type="number"/>
                         </div>
                     </div>

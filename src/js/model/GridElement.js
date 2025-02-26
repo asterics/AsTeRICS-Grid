@@ -1,5 +1,4 @@
 import { modelUtil } from '../util/modelUtil';
-import { templates } from '../templates';
 import { GridImage } from './GridImage';
 import { GridActionSpeak } from './GridActionSpeak';
 import { GridActionSpeakCustom } from './GridActionSpeakCustom';
@@ -19,6 +18,7 @@ import { GridActionHTTP } from "./GridActionHTTP.js";
 import {GridActionWordForm} from "./GridActionWordForm.js";
 import { GridActionUART } from './GridActionUART.js';
 import { GridActionSystem } from './GridActionSystem';
+import { GridActionPredefined } from './GridActionPredefined';
 
 class GridElement extends Model({
     id: String,
@@ -30,7 +30,9 @@ class GridElement extends Model({
     y: [Number],
     label: [Object, String, undefined], //map locale -> translation, e.g. "de" => LabelDE
     wordForms: [Model.Array(Object)], //Array of WordForm, removed for performance reasons
-    backgroundColor: [String],
+    fontSizePct: [Number],
+    fontColor: [String],
+    backgroundColor: [String], // could be renamed to "customColor" since it can be custom border or background color
     colorCategory: [String],
     hidden: [Boolean],
     dontCollect: [Boolean],
@@ -41,32 +43,11 @@ class GridElement extends Model({
     additionalProps: [Object]
 }) {
     constructor(properties, elementToCopy) {
-        let defaults = {
-            id: '', //will be replaced by constructor
-            modelName: GridElement.getModelName(),
-            modelVersion: constants.MODEL_VERSION,
-            label: {},
-            width: 1,
-            height: 1,
-            image: new GridImage(),
-            type: GridElement.ELEMENT_TYPE_NORMAL,
-            additionalProps: {}
-        };
+        let defaults = JSON.parse(JSON.stringify(GridElement.DEFAULTS));
         properties = modelUtil.setDefaults(properties, elementToCopy, GridElement) || {};
         properties.actions = properties.actions || [new GridActionSpeak()];
-        properties.wordForms = properties.wordForms || [];
         super(Object.assign(defaults, properties));
-        this.id = this.id || modelUtil.generateId('grid-element');
-    }
-
-    duplicate() {
-        var newElem = new GridElement(JSON.parse(JSON.stringify(this)));
-        newElem.id = modelUtil.generateId('grid-element');
-        return newElem;
-    }
-
-    toHTML(metadata) {
-        return templates.getGridItem(this, metadata);
+        this.id = this.id || modelUtil.generateId(GridElement.ID_PREFIX);
     }
 
     hasSetPosition() {
@@ -99,7 +80,8 @@ class GridElement extends Model({
             GridActionOpenWebpage,
             GridActionHTTP,
             GridActionUART,
-            GridActionSystem
+            GridActionSystem,
+            GridActionPredefined
         ];
     }
 
@@ -138,7 +120,25 @@ GridElement.ELEMENT_TYPE_NORMAL = 'ELEMENT_TYPE_NORMAL';
 GridElement.ELEMENT_TYPE_COLLECT = 'ELEMENT_TYPE_COLLECT';
 GridElement.ELEMENT_TYPE_PREDICTION = 'ELEMENT_TYPE_PREDICTION';
 GridElement.ELEMENT_TYPE_YT_PLAYER = 'ELEMENT_TYPE_YT_PLAYER';
+GridElement.ELEMENT_TYPE_LIVE = 'ELEMENT_TYPE_LIVE';
 
 GridElement.PROP_YT_PREVENT_CLICK = 'PROP_YT_PREVENT_CLICK';
+
+GridElement.ID_PREFIX = "grid-element";
+
+GridElement.DEFAULTS = {
+    id: '', //will be replaced by constructor
+    modelName: GridElement.getModelName(),
+    modelVersion: constants.MODEL_VERSION,
+    label: {},
+    width: 1,
+    height: 1,
+    image: new GridImage(),
+    type: GridElement.ELEMENT_TYPE_NORMAL,
+    additionalProps: {},
+    wordForms: [],
+    x: 0,
+    y: 0
+}
 
 export { GridElement };

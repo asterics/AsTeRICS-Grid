@@ -29,14 +29,20 @@ let dataService = {};
  *
  * @param id the ID of the grid
  * @param onlyShortVersion if true only the short version (with stripped binary data) is returned (optional)
+ * @param noObjectModel if true, result is not converted to object model instance (performance)
  * @return {Promise} resolves to a grid object that was found
  */
-dataService.getGrid = async function (id, onlyShortVersion = false) {
+dataService.getGrid = async function (id, onlyShortVersion = false, noObjectModel) {
     if (!id) {
         return Promise.resolve(null);
     }
     return databaseService.getSingleObject(GridData, id, onlyShortVersion).then((result) => {
-        return Promise.resolve(result ? new GridData(result) : null);
+        if (!noObjectModel) {
+            result = result ? new GridData(result) : null;
+        } else {
+            result = result ? gridUtil.ensureDefaults(result) : null;
+        }
+        return Promise.resolve(result);
     });
 };
 
@@ -117,6 +123,7 @@ dataService.getLastGridUpdateTime = async function () {
  * @return {Promise} resolves after operation finished successful
  */
 dataService.saveGrid = function (gridData) {
+    gridData = JSON.parse(JSON.stringify(gridData));
     gridData.gridElements = gridUtil.sortGridElements(gridData.gridElements);
     gridData.lastUpdateTime = new Date().getTime();
     return databaseService.saveObject(GridData, gridData);
@@ -372,6 +379,12 @@ dataService.deleteObject = function (id) {
     return databaseService.removeObject(id);
 };
 
+dataService.saveThumbnail = async function(gridId, thumbnailData) {
+    let gridData = await dataService.getGrid(gridId, false, true);
+    gridData.thumbnail = thumbnailData;
+    return dataService.saveGrid(gridData);
+}
+
 /**
  * Downloads a complete backup of the current user config to file
  * @return {Promise<void>}
@@ -609,14 +622,22 @@ dataService.importBackupFromPreview = async function(preview, options = {}) {
     options.filename = options.filename || (preview.providerName + preview.id);
     options.skipDelete = true;
     options.progressFn(10, i18nService.t('downloadingConfig'));
-    options.generateGlobalGrid = !preview.hasGlobalGrid;
-    options.resetHomeBoard = !preview.hasGlobalGrid;
-    let result = await externalBoardsService.getImportData(preview);
+    options.generateGlobalGrid = preview.generateGlobalGrid || false;
+    options.resetHomeBoard = options.generateGlobalGrid;
+    let isOBZ = fileUtil.isObzFile(preview.url);
+    let result = await fileUtil.downloadFile(preview.url, { isBytes: isOBZ });
     if (!result) {
         showErrorTooltip('failedToGetBoardData');
         return false;
     }
     options.progressFn(50, i18nService.t('importingData'));
+    if (isOBZ) {
+        let obzFileMap = await fileUtil.readZip(result, {
+            jsonFileExtensions: ['json', 'obf'],
+            defaultEncoding: 'base64'
+        });
+        result = await obfConverter.OBZToImportData(obzFileMap);
+    }
     if (preview.translate && result.grids) {
         for (let grid of result.grids) {
             grid.label[i18nService.getContentLang()] = i18nService.t(i18nService.getTranslation(grid.label));
@@ -815,8 +836,8 @@ window.setGlobalGridId = saveGlobalGridId;
  * @param fallbackLangCode
  * @returns {Promise<void>}
  */
-async function fillEmptyTranslations(langCode, fallbackLangCode) {
-    if (langCode?.length !== 2 && fallbackLangCode?.length !== 2) {
+async function fillEmptyTranslations(langCode = '', fallbackLangCode = '') {
+    if (langCode.length !== 2 || fallbackLangCode.length !== 2) {
         console.log('invalid params');
         return;
     }

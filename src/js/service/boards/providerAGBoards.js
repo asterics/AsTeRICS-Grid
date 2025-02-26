@@ -9,7 +9,7 @@ let providerAGBoards = {};
 let BASE_URL = "https://asterics.github.io/AsTeRICS-Grid-Boards/";
 let GITHUB_BASE_URL = "https://github.com/asterics/AsTeRICS-Grid-Boards/";
 let GITHUB_TREE_URL = `${GITHUB_BASE_URL}tree/main/`;
-let METADATA_URL = BASE_URL + "live_metadata.json";
+let METADATA_URL = constants.IS_ENVIRONMENT_PROD ? BASE_URL + "live_metadata.json" : BASE_URL + "live_metadata_beta.json";
 let PROVIDER_NAME_OWN = "AsTeRICS Grid Boards";
 let ownResults = [];
 let searchTermsMap = new Map();
@@ -20,7 +20,7 @@ let initPromise = new Promise(resolve => {
 });
 
 providerAGBoards.getName = function() {
-    return "AsTeRICS Grid Boards";
+    return PROVIDER_NAME_OWN;
 }
 
 providerAGBoards.getURL = function() {
@@ -48,14 +48,14 @@ providerAGBoards.query = async function (searchTerm = '', options = {}) {
         results = results.filter(preview => !preview.selfContained);
     }
     if (!searchTerm) {
-        return results;
+        return sortResults(results, options);
     }
     searchTerm = searchTerm.replace(/\s+/g, ' '); // replace multiple spaces
     let searchWords = searchTerm.toLocaleLowerCase().split(' ');
     for (let word of searchWords) {
         results = results.filter(preview => searchTermsMap.get(preview).some(term => term.includes(word)));
     }
-    return results;
+    return sortResults(results, options);
 }
 
 providerAGBoards.getImportData = async function(preview) {
@@ -86,6 +86,20 @@ async function fetchData() {
         }
         searchTermsMap.set(preview, searchTerms);
     }
+}
+
+function sortResults(results, options) {
+    results.sort((a, b) => {
+        let prioA = Number.isInteger(a.priority) ? a.priority : (a.priority[options.lang] || 0);
+        let prioB = Number.isInteger(b.priority) ? b.priority : (b.priority[options.lang] || 0);
+        if (prioA !== prioB) {
+            return prioB - prioA;
+        }
+        let nameA = util.isString(a.name) ? a.name : i18nService.getTranslation(a.name);
+        let nameB = util.isString(b.name) ? b.name : i18nService.getTranslation(b.name);
+        return nameA.localeCompare(nameB);
+    });
+    return results;
 }
 
 function translate(key) {

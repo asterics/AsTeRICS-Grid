@@ -40,32 +40,53 @@
 </script>
 
 <style scoped>
+ul {
+    flex-wrap: wrap;
+    margin-bottom: 0;
+}
 
 nav li {
-    flex: 1;
+    flex: 1 1 content;
     text-align: center;
-    background-color: whitesmoke;
-    border: 1px solid black;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    background-color: #eaeaea;
+    border-radius: 5px 5px 0 0;
+    border: 1px solid #c8c8c8;
     line-height: 2em;
     cursor: pointer;
+    white-space: nowrap;
+    max-height: 4em;
+    padding: 3px 10px 5px 10px;
 }
 
-nav li.selected, nav li.selected:hover {
-    border-bottom: none;
-    background-color: white;
-    font-weight: bold;
-}
-
-nav a {
-    //display: flex;
-    //justify-content: center;
-    text-decoration: none;
-    color: black;
+nav li a {
+    padding-bottom: 3px;
 }
 
 nav li:hover {
     background-color: lightgray;
+}
+
+nav li.selected, nav li.selected:hover {
+    /*text-decoration: underline;
+    text-underline-offset: 5px;
+    text-decoration-color: #2d7bb4;
+    text-decoration-thickness: 4px;*/
+    /*background-color: #DBF4FF;*/
+    /*background-image: linear-gradient(#DBF4FF, white);*/
+    background-color: white;
+    border: 3px solid lightblue;
+    color: black;
+    border-bottom: none;
+    font-weight: bold;
+}
+
+nav li.selected a {
+    border-bottom: 4px solid #2d7bb4;
+}
+
+nav a, nav a:focus, nav a:hover {
+    text-decoration: none;
+    color: black;
+    outline: none;
 }
 </style>

@@ -285,6 +285,9 @@ imageUtil.allImagesLoaded = function () {
             return new Promise((resolve) => {
                 img.addEventListener('load', () => resolve(true));
                 img.addEventListener('error', (error) => resolve(false));
+                setTimeout(() => {
+                    resolve(false);
+                }, 2000);
             });
         })
     ).then((results) => {

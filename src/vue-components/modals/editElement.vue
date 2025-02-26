@@ -7,14 +7,15 @@
                         <edit-element-header :grid-element="originalGridElement" :header="editElementId ? $t('editGridItem') : $t('newGridItem')" :close-fn="close" :open-help-fn="openHelp"></edit-element-header>
                     </div>
 
-                    <nav-tabs class="mb-3" :tab-labels="Object.keys(possibleTabs)" v-model="currentTab" @input="imageSearch = ''"></nav-tabs>
+                    <nav-tabs class="mb-5" :tab-labels="Object.keys(possibleTabs)" v-model="currentTab" @input="imageSearch = ''"></nav-tabs>
 
                     <div class="modal-body mt-2" v-if="gridElement">
                         <div v-if="currentTab === TABS.TAB_GENERAL">
-                            <edit-element-general v-if="gridElement.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="gridElement" @searchImage="toImageSearch"></edit-element-general>
+                            <edit-element-general v-if="gridElement.type === GridElement.ELEMENT_TYPE_NORMAL || gridElement.type === GridElement.ELEMENT_TYPE_LIVE" :grid-element="gridElement" @searchImage="toImageSearch"></edit-element-general>
                             <edit-element-youtube v-if="gridElement.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="gridElement"></edit-element-youtube>
                             <edit-element-collect v-if="gridElement.type === GridElement.ELEMENT_TYPE_COLLECT" :grid-element="gridElement"></edit-element-collect>
                         </div>
+                        <edit-element-live v-if="currentTab === TABS.TAB_LIVE_DATA" :grid-element="gridElement"></edit-element-live>
                         <edit-element-image v-if="currentTab === TABS.TAB_IMAGE" :grid-element="gridElement" :grid-data="gridData" :image-search="imageSearch"></edit-element-image>
                         <edit-element-word-forms v-if="currentTab === TABS.TAB_WORDFORMS" :grid-element="gridElement" :grid-data="gridData" @reloadData="initInternal(true)"></edit-element-word-forms>
                         <edit-element-actions v-if="currentTab === TABS.TAB_ACTIONS" :grid-element="gridElement" :grid-data="gridData"></edit-element-actions>
@@ -64,16 +65,19 @@
     import EditElementCollect from "./editElementCollect.vue";
     import EditElementHeader from "../components/editElementHeader.vue";
     import EditElementWordForms from "./editElementWordForms.vue";
+    import EditElementLive from './editElementLive.vue';
 
     const TAB_GENERAL = 'TAB_GENERAL';
     const TAB_IMAGE = 'TAB_IMAGE';
     const TAB_WORDFORMS = 'TAB_WORDFORMS';
     const TAB_ACTIONS = 'TAB_ACTIONS';
-    const TABS = {TAB_GENERAL, TAB_IMAGE, TAB_WORDFORMS,TAB_ACTIONS};
+    const TAB_LIVE_DATA = 'TAB_LIVE_DATA';
+    const TABS = {TAB_GENERAL, TAB_IMAGE, TAB_WORDFORMS, TAB_ACTIONS, TAB_LIVE_DATA};
 
     export default {
-        props: ['editElementIdParam', 'gridDataId', 'gridInstance'],
+        props: ['editElementIdParam', 'gridDataId', 'undoService', 'newPosition'],
         components: {
+            EditElementLive,
             EditElementWordForms,
             EditElementHeader,
             EditElementCollect,
@@ -101,6 +105,9 @@
             save(toActions) {
                 this.saveInternal().then((savedSomething) => {
                     this.$emit('close');
+                    if (savedSomething) {
+                        this.$emit('reload', this.gridData);
+                    }
                     if (savedSomething && !this.editElementId) {
                         this.$emit('mark', this.gridElement.id);
                     }
@@ -121,7 +128,7 @@
                 if (!thiz.editElementId) return;
 
                 thiz.saveInternal().then(() => {
-                    thiz.editElementId = new GridData(thiz.gridData).getNextElementId(thiz.editElementId, invertDirection);
+                    thiz.editElementId = new GridData(thiz.gridData).getNextElementId(thiz.editElementId, invertDirection, thiz.gridElement.type);
                     thiz.initInternal();
                     $('#inputLabel').focus();
                 });
@@ -137,7 +144,7 @@
                 let thiz = this;
                 return new Promise(resolve => {
                     if (thiz.gridData && JSON.stringify(thiz.originalGridData) !== JSON.stringify(thiz.gridData)) {
-                        thiz.gridInstance.updateGridWithUndo(thiz.gridData).then(updated => {
+                        thiz.undoService.updateGrid(thiz.gridData).then(updated => {
                             resolve(updated);
                         });
                     } else {
@@ -158,7 +165,7 @@
                         }
                         thiz.gridElement.label = util.isString(thiz.gridElement.label) ? {} : thiz.gridElement.label;
                     } else {
-                        let newXYPos = gridData.getNewXYPos();
+                        let newXYPos = this.newPosition && this.newPosition.x !== undefined ? this.newPosition : gridData.getNewXYPos();
                         log.debug('creating element: x ' + newXYPos.x + ' / y ' + newXYPos.y);
                         thiz.gridElement = JSON.parse(JSON.stringify(new GridElement({
                             x: newXYPos.x,
@@ -167,13 +174,15 @@
                         thiz.gridData.gridElements.push(thiz.gridElement);
                     }
                     if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_NORMAL) {
-                        this.possibleTabs = this.TABS;
+                        this.possibleTabs = { TAB_GENERAL, TAB_IMAGE, TAB_WORDFORMS, TAB_ACTIONS };
                     } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_YT_PLAYER) {
-                        this.possibleTabs = {TAB_GENERAL, TAB_ACTIONS};
+                        this.possibleTabs = { TAB_GENERAL, TAB_ACTIONS };
                     } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_COLLECT) {
-                        this.possibleTabs = {TAB_GENERAL, TAB_ACTIONS};
+                        this.possibleTabs = { TAB_GENERAL, TAB_ACTIONS };
                     } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_PREDICTION) {
-                        this.possibleTabs = {TAB_ACTIONS};
+                        this.possibleTabs = { TAB_ACTIONS };
+                    } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_LIVE) {
+                        this.possibleTabs = { TAB_GENERAL, TAB_LIVE_DATA, TAB_IMAGE, TAB_ACTIONS };
                     }
                     thiz.originalGridElement = JSON.parse(JSON.stringify(thiz.gridElement));
                 });
