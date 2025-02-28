@@ -754,38 +754,81 @@ The following languages don’t seem to function: Assamese (India), Bodo (India)
 
 ## Offline Voices Per System
 
-| iOS, Windows, Android | iOS, Android | Android | iOS        |
-|-----------------------|--------------|---------|------------|
-| Cantonese             | Arabic       | Albanian| Kazakh     |
-| Catalan               | Bangla       | Bengali |            |
-| Chinese               | Basque       | Bosnian |            |
-| Croatian              | Bhojpuri     | Central Khmer |        |
-| Czech                 | Bulgarian    | Estonian|            |
-| Danish                | Galician     | Filipino|            |
-| Dutch                 | Kannada      | Flemish |            |
-| English               | Korean       | Georgian|            |
-| Finnish               | Lithuanian   | Gujarati|            |
-| French                | Marathi      | Icelandic|           |
-| German                | Persian/Farsi| Kirgizh |            |
-| Greek                 | Tamil        | Latvian |            |
-| Hebrew                | Telugu       | Macedonian |          |
-| Hindi                 | Ukrainian    | Malayalam|            |
-| Hungarian             |              | Nepali  |            |
-| Indonesian            |              | Punjabi |            |
-| Italian               |              | Scottish|            |
-| Japanese              |              | Serbian |            |
-| Malay                 |              | Sichuanese |          |
-| Norwegian, Bokmål     |              | Sindhi  |            |
-| Polish                |              | Sinhala |            |
-| Portuguese            |              | Slovak  |            |
-| Romanian              |              | Sundanese |           |
-| Russian               |              | Swahili |            |
-| Slovak                |              | Tatar   |            |
-| Slovenian             |              | Tswana  |            |
-| Spanish               |              | Turkmenish |          |
-| Swedish               |              | Urdu    |            |
-| Thai                  |              | Uzbek   |            |
-| Turkish               |              | Welsh   |            |
-| Vietnamese            |              |         |            |
+| Voice       | Android | iOS | Windows |
+|----------------|---------|-----|---------|
+| Albanian       | x       |     |         |
+| Arabic         | x       | x   |         |
+| Bangla         | x       | x   |         |
+| Basque         | x       | x   |         |
+| Bhojpuri       | x       | x   |         |
+| Bosnian        | x       |     |         |
+| Bulgarian      | x       | x   |         |
+| Cantonese      | x       | x   | x       |
+| Catalan        | x       | x   | x       |
+| Central Khmer  | x       |     |         |
+| Chinese        | x       | x   | x       |
+| Croatian       | x       | x   | x       |
+| Czech          | x       | x   | x       |
+| Danish         | x       | x   | x       |
+| Dutch          | x       | x   | x       |
+| English        | x       | x   | x       |
+| Estonian       | x       |     |         |
+| Filipino       | x       |     |         |
+| Finnish        | x       | x   | x       |
+| Flemish        | x       |     |         |
+| French         | x       | x   | x       |
+| Galician       | x       | x   |         |
+| Georgian       | x       |     |         |
+| German         | x       | x   | x       |
+| Greek          | x       | x   | x       |
+| Gujarati       | x       |     |         |
+| Hebrew         | x       | x   | x       |
+| Hindi          | x       | x   | x       |
+| Hungarian      | x       | x   | x       |
+| Icelandic      | x       |     |         |
+| Indonesian     | x       | x   | x       |
+| Italian        | x       | x   | x       |
+| Japanese       | x       | x   | x       |
+| Kannada        | x       | x   |         |
+| Kazakh         |         | x   |         |
+| Kirgizh        | x       |     |         |
+| Korean         | x       | x   |         |
+| Latvian        | x       |     |         |
+| Lithuanian     | x       | x   |         |
+| Macedonian     | x       |     |         |
+| Malay          | x       | x   | x       |
+| Malayalam      | x       |     |         |
+| Marathi        | x       | x   |         |
+| Nepali         | x       |     |         |
+| Norwegian, Bokmål | x    | x   | x       |
+| Persian/Farsi  | x       | x   |         |
+| Polish         | x       | x   | x       |
+| Portuguese     | x       | x   | x       |
+| Punjabi        | x       |     |         |
+| Romanian       | x       | x   | x       |
+| Russian        | x       | x   | x       |
+| Scottish       | x       |     |         |
+| Serbian        | x       |     |         |
+| Sichuanese     | x       |     |         |
+| Sindhi         | x       |     |         |
+| Sinhala        | x       |     |         |
+| Slovak         | x       | x   | x       |
+| Slovenian      | x       | x   | x       |
+| Spanish        | x       | x   | x       |
+| Sundanese      | x       |     |         |
+| Swahili        | x       |     |         |
+| Swedish        | x       | x   | x       |
+| Tamil          | x       | x   |         |
+| Tatar          | x       |     |         |
+| Telugu         | x       | x   |         |
+| Thai           | x       | x   | x       |
+| Tswana         | x       |     |         |
+| Turkish        | x       | x   | x       |
+| Turkmenish     | x       |     |         |
+| Ukrainian      | x       | x   |         |
+| Urdu           | x       |     |         |
+| Uzbek          | x       |     |         |
+| Vietnamese     | x       | x   | x       |
+| Welsh          | x       |     |         |
 
 [Back to Overview](README.md)
