@@ -12,22 +12,22 @@ The documentation is divided in the following parts:
 6. [Editing a Grid](06_editing-grid.md)
 7. [Grid Elements](07_grid-elements.md)
    * [Word Forms](07a_word-forms.md)
-   * [Live elements](07b_live-elements.md)
+   * [Live Elements](07b_live-elements.md)
 8. [Grid Element Actions](08_actions.md)
-9. [Input options](09_input-options.md)
+9. [Input Options](09_input-options.md)
 10. [Dictionaries](10_dictionaries.md)
 11. [Voices](11_voices.md)
 12. [Multilingual Grid Sets](12_multilingual-grid-sets.md)
 
-## Special sections
-Special sections, not directly related to specific features of AsTeRICS Grid:
+## Additional Resources
+Additional resources, not directly related to specific features of AsTeRICS Grid:
 * [FAQ - frequently asked questions](faq.md)
 * [Contributing to AsTeRICS Grid](contributing-to-ag.md)
 
 ## Tutorials
 Step-by-step tutorials for specific use cases are available
-* [HTTP action tutorials](tutorials/01_http-action-tutorials.md)
-* [UART action tutorials](tutorials/02_uart-action-tutorials.md)
-* [Predefined action tutorials](tutorials/03_predefined-action-tutorials.md)
+* [HTTP Action](tutorials/01_http-action-tutorials.md)
+* [UART Action](tutorials/02_uart-action-tutorials.md)
+* [Predefined Action](tutorials/03_predefined-action-tutorials.md)
 
 *A [video playlist](https://www.youtube.com/playlist?list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz) covering part of this documentation is available on YouTube in German with auto-translated subtitles. However, part of the content is outdated.*
