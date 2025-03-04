@@ -1,6 +1,7 @@
 import { convertServiceLocal } from '../service/data/convertServiceLocal.js';
 import {VoiceConfig} from "./VoiceConfig.js";
 import { GridActionYoutube } from './GridActionYoutube';
+import { IntegrationConfigLocal } from './IntegrationConfigLocal';
 
 let initYtState = {
     lastPlayType: GridActionYoutube.playTypes.YT_PLAY_PLAYLIST,
@@ -29,6 +30,7 @@ class SettingsUserLocal {
      * @param settings.isEmpty true if this user configuration is empty
      * @param settings.systemVolume
      * @param settings.systemVolumeMuted
+     * @param settings.integrations
      */
     constructor(settings) {
         settings = settings || {};
@@ -46,6 +48,7 @@ class SettingsUserLocal {
         this.isEmpty = settings.isEmpty !== undefined ? settings.isEmpty : true;
         this.systemVolume = settings.systemVolume !== undefined ? settings.systemVolume : 100;
         this.systemVolumeMuted = settings.systemVolumeMuted || false;
+        this.integrations = settings.integrations || new IntegrationConfigLocal();
 
         convertServiceLocal.updateDataModel(this);
     }
