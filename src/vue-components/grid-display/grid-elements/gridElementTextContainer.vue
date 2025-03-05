@@ -15,12 +15,14 @@ import { fontUtil } from '../../../js/util/fontUtil';
 import $ from '../../../js/externals/jquery';
 import { constants } from '../../../js/util/constants';
 import { util } from '../../../js/util/util';
+import { stateService } from '../../../js/service/stateService';
+import { i18nService } from '../../../js/service/i18nService';
 
 let MOBILE_MAX_WIDTH = 480;
 let TEXT_MARGIN = 5;
 
 export default {
-    props: ["label", "withImage", "metadata", "gridElement", "containerSize", "disableAutoSizeKeyboard", "watchForChanges", "editable"],
+    props: ["withImage", "metadata", "gridElement", "containerSize", "disableAutoSizeKeyboard", "watchForChanges", "editable"],
     data() {
         return {
             ready: false,
@@ -42,11 +44,17 @@ export default {
     },
     computed: {
         calculateLabel() {
-            return ((this.externalSetLabel + '') || this.label || '') + '';
+            let label = '';
+            if(this.gridElement) {
+                label = stateService.getDisplayText(this.gridElement.id) || i18nService.getTranslation(this.gridElement.label);
+            }
+            label = ((this.externalSetLabel + '') || label || '') + '';
+            return util.convertLowerUppercase(label, this.metadata.textConfig.convertMode);
         },
         displayLabel() {
             let label = util.replaceAll(this.calculateLabel, '\n', '<br>');
-            return util.replaceAll(label, '\\\\n', '<br>');
+            label = util.replaceAll(label, '\\\\n', '<br>');
+            return util.replaceAll(label, '\\\\N', '<br>');
         },
     },
     methods: {
