@@ -116,6 +116,21 @@ localStorageService.saveUserSettings = function (settings, username) {
     $(document).trigger(constants.EVENT_USERSETTINGS_UPDATED, existingSettings);
 }
 
+/**
+ * checks if any matrix messenger user logged in on this device already uses crypto
+ * @returns {boolean} true, if any matrix user uses crypto
+ */
+localStorageService.anyMatrixUserUsingCrypto = function() {
+    let allUserSettings = localStorageService.getJSON(USER_SETTINGS) || {};
+    let anyCrypto = false;
+    for (let settings of Object.values(allUserSettings)) {
+        if (settings.integrations && settings.integrations.matrixConfig) {
+            anyCrypto = anyCrypto || settings.integrations.matrixConfig.useCrypto;
+        }
+    }
+    return anyCrypto;
+};
+
 localStorageService.getAutoImportedUserSettings = function() {
     let allSettings = localStorageService.getJSON(USER_SETTINGS) || {};
     let autoUsers = Object.keys(allSettings).filter(key => key.startsWith(constants.LOCAL_DEFAULT_USER_PREFIX));
