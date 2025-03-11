@@ -32,11 +32,11 @@ matrixAdapter.login = async function() {
     if (_loginPromise) {
         await _loginPromise;
     }
+    await readConfig();
     if (_matrixClient && _loggedInUser === _localConfig.user && _loggedInDevice === _localConfig.deviceId) {
         return log.info('matrix: already logged in');
     }
     await matrixAdapter.reset();
-    await readConfig();
 
     _loginPromise = Promise.resolve().then(async () => {
         if (!_syncConfig || !(_syncConfig.user && _syncConfig.password)) {
@@ -94,6 +94,7 @@ matrixAdapter.login = async function() {
             return new Promise(resolve => {
                 _matrixClient.once('sync', async function(state) {
                     if (state === SYNC_STATE_PREPARED) {
+                        log.info("matrix: client ready for", getFullUser(_localConfig));
                         _loggedInUser = _localConfig.user;
                         _loggedInDevice = _localConfig.deviceId;
                         _matrixClient.on('Room.timeline', async (event, room, toStartOfTimeline) => {
@@ -145,8 +146,6 @@ matrixAdapter.reset = async function() {
         _matrixClient = null;
     }
     _loginPromise = null;
-    _localConfig = null;
-    _syncConfig = null;
 }
 
 /**
