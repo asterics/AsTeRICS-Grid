@@ -19,10 +19,10 @@ const CRYPTO_DB_NAME = ":matrix-sdk-crypto";
 let _syncConfig = null;
 let _localConfig = null;
 let _matrixClient = null;
-let _messageCallback = null;
 let _loginPromise = null;
 let _loggedInUser = null;
 let _loggedInDevice = null;
+let _timelineCallback = null;
 
 matrixAdapter.getUserId = function() {
     return getFullUser(_localConfig);
@@ -96,37 +96,30 @@ matrixAdapter.login = async function() {
                     if (state === SYNC_STATE_PREPARED) {
                         _loggedInUser = _localConfig.user;
                         _loggedInDevice = _localConfig.deviceId;
-                        _matrixClient.on("Room.timeline", timelineCallback);
+                        _matrixClient.on('Room.timeline', async (event, room, toStartOfTimeline) => {
+                            if (_timelineCallback) {
+                                if(event.getType() === Matrix.EventType.RoomMessageEncrypted) {
+                                    await _matrixClient.decryptEventIfNeeded(event);
+                                }
+                                _timelineCallback(event);
+                            }
+                        });
+                        _matrixClient.on('Room.myMembership', async (room) => {
+                            if (room.getMyMembership() === 'invite') {
+                                await joinRoom(room.roomId);
+                            }
+                            if (room.getMyMembership() === 'leave') {
+                                log.info("matrix: was removed from room", room.roomId);
+                                await _matrixClient.forget(room.roomId);
+                            }
+                        });
                         resolve(true);
-                    }
-                });
-                _matrixClient.on("event", (event) => {
-                    console.log("Received event:", event.getType(), event);
-                });
-
-                _matrixClient.on("crypto.verificationRequestReceived", async (request) => {
-                    console.log(`Verification requested by: ${request.otherUserId}`);
-
-                    request.accept(); // Accept the request
-                });
-                _matrixClient.on(ClientEvent.ToDeviceEvent, (event) => {
-                    console.log("got client event", event, event.getType())
-                    if (event.getType() === 'm.key.verification.start') {
-                        log.warn("verification start", event.getContent())
-                        const transactionId = event.getContent().transaction_id;
-                        const verification = _matrixClient.getCrypto().getVerification(event.getSender(), transactionId);
-                        log.warn("verification", verification)
-                        if (verification) {
-                            console.log("Found verification transaction, accepting...", verification);
-                            verification.accept();
-                        }
                     }
                 });
             });
         } catch (e) {
             log.warn("login to matrix failed (access token), logging out...", e);
             await matrixAdapter.logout();
-            return false;
         }
         return false;
     });
@@ -200,6 +193,31 @@ matrixAdapter.logout = async function(localConfig = _localConfig, userWasDeleted
     await deleteIndexedDB(userDbName);
 };
 
+matrixAdapter.setTimelineCallback = function(callback) {
+    if (!callback) {
+        return;
+    }
+    _timelineCallback = callback;
+};
+
+async function joinRoom(roomId) {
+    console.log(`Accepting invite for room: ${roomId}`);
+    try {
+        await _matrixClient.joinRoom(roomId);
+        log.info(`Successfully joined room: ${roomId}`);
+    } catch (error) {
+        log.warn(`Failed to join room ${roomId}:`, error);
+    }
+}
+
+async function getRoom(roomId) {
+    if (_loginPromise) {
+        await _loginPromise;
+    }
+    let rooms = await _matrixClient.getRooms() || [];
+    return rooms.find(r => r.roomId === roomId);
+}
+
 async function getAccessTokenClient(localConfig) {
     if (!localConfig || !localConfig.accessToken || !localConfig.deviceId || !localConfig.user) {
         return null;
@@ -238,41 +256,6 @@ function deleteIndexedDB(dbName) {
         await util.sleep(1000);
         resolve(false);
     });
-}
-
-async function timelineCallback(event, room, toStartOfTimeline) {
-    console.log(event.event);
-    switch (event.getType()) {
-        case Matrix.EventType.RoomMessage:
-            console.log(`📩 New message: ${event.getContent().body}`);
-            if (_messageCallback) {
-                _messageCallback(event);
-            }
-            break;
-
-        case Matrix.EventType.RoomMessageEncrypted:
-            try {
-                await _matrixClient.decryptEventIfNeeded(event);
-                console.log(`Decrypted message: ${event.getContent().body}`);
-                if (_messageCallback) {
-                    _messageCallback(event);
-                }
-            } catch (err) {
-                console.error('❌ Failed to decrypt:', err);
-            }
-            break;
-
-        case 'm.reaction':
-            console.log(`Reaction added: ${event.getContent().m_relates_to.key}`);
-            break;
-
-        case 'm.room.member':
-            console.log(`User membership changed: ${event.getSender()} is now ${event.getContent().membership}`);
-            break;
-
-        default:
-            console.log(`Received event: ${event.getType()}`);
-    }
 }
 
 function saveLocalConfig() {
@@ -321,7 +304,6 @@ async function onUserDeleted(event, username, localSettings) {
     }
 }
 
-$(document).on(constants.EVENT_USER_CHANGED, matrixAdapter.login);
 $(document).on(constants.EVENT_METADATA_UPDATED, readSyncConfig);
 $(document).on(constants.EVENT_USER_DELETED, onUserDeleted);
 

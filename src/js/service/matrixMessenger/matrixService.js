@@ -1,13 +1,18 @@
 import { matrixAdapter } from './matrixAdapter';
 import * as Matrix from 'matrix-js-sdk';
+import $ from '../../externals/jquery';
+import { constants } from '../../util/constants';
 
 let matrixService = {};
+
+let _messageCallback = null;
 
 matrixService.getUserId = function() {
     return matrixAdapter.getUserId();
 }
 
 matrixService.login = function() {
+    matrixAdapter.setTimelineCallback(timelineCallback);
     return matrixAdapter.login();
 }
 
@@ -20,7 +25,7 @@ matrixService.onMessage = function(callback) {
 }
 
 matrixService.sendMessage = async function(roomId, message) {
-    return await matrixAdapter.doWithClient(client => {
+    return await matrixAdapter.doWithClient(async client => {
         const messageContent = {
             body: message,
             msgtype: 'm.text'
@@ -77,41 +82,29 @@ matrixService.existsUser = async function(config) {
 
 }
 
-matrixService.addPrivateRoom = async function createRoomWithUser(username) {
-    try {
-        // Step 1: Create a room with basic settings
-        let fullUser = getFullUser(username); // TODO: fix
-        const roomOptions = {
-            visibility: 'private',  // Set visibility (private or public)
-            invite: [fullUser],      // Invite a single user to the room
-            enable_encryption: true
-        };
-
-        const roomResponse = await _matrixClient.createRoom(roomOptions);
-        return roomResponse.room_id;  // Return room ID for further use
-    } catch (error) {
-        console.error('Error creating room or inviting user:', error);
-    }
-    return null;
-}
-
-matrixService.acceptAllInvites = async function() {
-    if (!_loginPromise) {
-        return;
-    }
-    await _loginPromise;
-    const rooms = _matrixClient.getRooms();
-    for (const room of rooms) {
-        if (room.getMyMembership() === "invite") {
-            console.log(`Accepting invite for room: ${room.roomId}`);
-            try {
-                await _matrixClient.joinRoom(room.roomId);
-                console.log(`Successfully joined room: ${room.name}, ${room.roomId}`);
-            } catch (error) {
-                console.error(`Failed to join room ${room.name}, ${room.roomId}:`, error);
+async function timelineCallback(event, room, toStartOfTimeline) {
+    console.log(event.event);
+    switch (event.getType()) {
+        case Matrix.EventType.RoomMessage:
+            console.log(`📩 New message: ${event.getContent().body}`);
+            if (_messageCallback) {
+                _messageCallback(event);
             }
-        }
+            break;
+
+        case 'm.reaction':
+            console.log(`Reaction added: ${event.getContent().m_relates_to.key}`);
+            break;
+
+        case 'm.room.member':
+            console.log(`User membership changed: ${event.getSender()} is now ${event.getContent().membership}`);
+            break;
+
+        default:
+            console.log(`Received event: ${event.getType()}`);
     }
 }
+
+$(document).on(constants.EVENT_USER_CHANGED, matrixService.login);
 
 export { matrixService };
