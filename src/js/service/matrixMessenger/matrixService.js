@@ -2,16 +2,20 @@ import { matrixAdapter } from './matrixAdapter';
 import * as Matrix from 'matrix-js-sdk';
 import $ from '../../externals/jquery';
 import { constants } from '../../util/constants';
+import { MatrixMessage } from '../../model/MatrixMessage';
+import { serviceWorkerService } from '../serviceWorkerService';
 
 let matrixService = {};
 
 let _messageCallback = null;
+let _expectedAccessTokenRequestUrls = [];
 
 matrixService.getUserId = function() {
     return matrixAdapter.getUserId();
 }
 
 matrixService.login = function() {
+    serviceWorkerService.addMessageEventListener(onServiceWorkerMessage);
     matrixAdapter.setTimelineCallback(timelineCallback);
     return matrixAdapter.login();
 }
@@ -30,7 +34,6 @@ matrixService.sendMessage = async function(roomId, message) {
             body: message,
             msgtype: 'm.text'
         };
-        log.warn("send to roomId", roomId);
         client.sendEvent(roomId, Matrix.EventType.RoomMessage, messageContent, '', (err, res) => {
             console.log(err);
         });
@@ -38,9 +41,7 @@ matrixService.sendMessage = async function(roomId, message) {
 }
 
 matrixService.getRooms = async function() {
-    log.warn("GET ROOMS1");
     return await matrixAdapter.doWithClient(client => {
-        log.warn("GET ROOMS");
         return client.getRooms();
     });
 };
@@ -66,7 +67,8 @@ matrixService.getMessageEvents = async function(roomId, pastMessages = 10) {
             }
         }
 
-        return timeline.getEvents().filter(e => e.getType() === Matrix.EventType.RoomMessage && !e.isDecryptionFailure());
+        let events = timeline.getEvents().filter(e => e.getType() === Matrix.EventType.RoomMessage && !e.isDecryptionFailure());
+        return await matrixEventsToMessage(events);
     });
 }
 
@@ -79,7 +81,6 @@ matrixService.existsUser = async function(config) {
         }
         return false;
     });
-
 }
 
 async function timelineCallback(event, room, toStartOfTimeline) {
@@ -88,7 +89,7 @@ async function timelineCallback(event, room, toStartOfTimeline) {
         case Matrix.EventType.RoomMessage:
             console.log(`📩 New message: ${event.getContent().body}`);
             if (_messageCallback) {
-                _messageCallback(event);
+                _messageCallback(await matrixEventToMessage(event));
             }
             break;
 
@@ -102,6 +103,44 @@ async function timelineCallback(event, room, toStartOfTimeline) {
 
         default:
             console.log(`Received event: ${event.getType()}`);
+    }
+}
+
+async function matrixEventsToMessage(events = []) {
+    return await Promise.all(events.map(async event => matrixEventToMessage(event)));
+}
+
+function matrixEventToMessage(event) {
+    return matrixAdapter.doWithClient(client => {
+        let message = new MatrixMessage({
+            msgType: event.getContent().msgtype,
+            sender: event.getSender(),
+            isDeleted: event.isRedacted(),
+            textContent: event.getContent().body,
+            roomId: event.getRoomId()
+        });
+        if (event.getContent().msgtype === 'm.image') {
+            let url = event.getContent().url || event.getContent().file.url;
+            url = client.mxcUrlToHttp(url, undefined, undefined, undefined, false, true, true);
+            message.imageUrl = url;
+            _expectedAccessTokenRequestUrls.push(url);
+        }
+        return message;
+    });
+}
+
+function onServiceWorkerMessage(event) {
+    let msg = event.data;
+    if (msg.type === constants.SW_MATRIX_REQ_DATA && _expectedAccessTokenRequestUrls.includes(msg.requestUrl)) {
+        _expectedAccessTokenRequestUrls = _expectedAccessTokenRequestUrls.filter(url => url !== msg.requestUrl);
+        matrixAdapter.doWithClient(async client => {
+            event.source.postMessage({
+                type: constants.SW_MATRIX_REQ_DATA,
+                requestUrl: msg.requestUrl,
+                homeserverUrl: client.getHomeserverUrl(),
+                accessToken: await matrixAdapter.getCurrentAccessToken()
+            });
+        });
     }
 }
 

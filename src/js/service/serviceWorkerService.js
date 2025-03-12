@@ -10,6 +10,7 @@ let KEY_SHOULD_CACHE_ELEMS = 'KEY_SHOULD_CACHE_ELEMS';
 let shouldCacheElements = localStorageService.getJSON(KEY_SHOULD_CACHE_ELEMS) || [];
 let isCaching = false;
 let _retryCount = 0;
+let _messageEventListeners = [];
 
 serviceWorkerService.cacheUrl = function (url) {
     addCacheElem(url, constants.SW_CACHE_TYPE_GENERIC);
@@ -35,11 +36,21 @@ serviceWorkerService.cacheImagesOfGrids = function (array) {
     cacheNext();
 };
 
+serviceWorkerService.addMessageEventListener = function(listener) {
+    if (_messageEventListeners.includes(listener)) {
+        return;
+    }
+    _messageEventListeners.push(listener);
+};
+
 window.serviceWorkerService = serviceWorkerService;
 
 function init() {
     if (navigator.serviceWorker) {
         navigator.serviceWorker.addEventListener('message', (evt) => {
+            for (let listener of _messageEventListeners) {
+                listener(evt);
+            }
             let msg = evt.data;
             if (msg.type === constants.SW_EVENT_URL_CACHED) {
                 isCaching = false;

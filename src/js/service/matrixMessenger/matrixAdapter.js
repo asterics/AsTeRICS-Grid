@@ -199,6 +199,15 @@ matrixAdapter.setTimelineCallback = function(callback) {
     _timelineCallback = callback;
 };
 
+matrixAdapter.getCurrentAccessToken = async function() {
+    if (_loginPromise) {
+        await _loginPromise;
+    }
+    if (_matrixClient && _loggedInUser) {
+        return _localConfig.accessToken;
+    }
+};
+
 async function joinRoom(roomId) {
     console.log(`Accepting invite for room: ${roomId}`);
     try {
