@@ -16,7 +16,6 @@ matrixService.getUserId = function() {
 }
 
 matrixService.login = function() {
-    serviceWorkerService.addMessageEventListener(onServiceWorkerMessage);
     matrixAdapter.setTimelineCallback(timelineCallback);
     return matrixAdapter.login();
 }
@@ -121,32 +120,10 @@ async function matrixEventToMessage(event) {
             roomId: event.getRoomId()
         });
         if (event.getContent().msgtype === 'm.image') {
-            let url = event.getContent().url || event.getContent().file.url;
-            url = client.mxcUrlToHttp(url, undefined, undefined, undefined, false, true, true);
-            _expectedAccessTokenRequestUrls.push(url);
-            if(event.getContent().file) { // image is encrypted
-                message.imageUrl = await matrixUtil.decryptMatrixImage(event, url);
-            } else {
-                message.imageUrl = url;
-            }
+            message.imageUrl = await matrixUtil.imageMessageEventToBlobUrl(event, await matrixAdapter.getCurrentAccessToken(), client);
         }
         return message;
     });
-}
-
-function onServiceWorkerMessage(event) {
-    let msg = event.data;
-    if (msg.type === constants.SW_MATRIX_REQ_DATA && _expectedAccessTokenRequestUrls.includes(msg.requestUrl)) {
-        _expectedAccessTokenRequestUrls = _expectedAccessTokenRequestUrls.filter(url => url !== msg.requestUrl);
-        matrixAdapter.doWithClient(async client => {
-            event.source.postMessage({
-                type: constants.SW_MATRIX_REQ_DATA,
-                requestUrl: msg.requestUrl,
-                homeserverUrl: client.getHomeserverUrl(),
-                accessToken: await matrixAdapter.getCurrentAccessToken()
-            });
-        });
-    }
 }
 
 $(document).on(constants.EVENT_USER_CHANGED, matrixService.login);

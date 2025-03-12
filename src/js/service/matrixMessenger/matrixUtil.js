@@ -28,31 +28,53 @@ const ALLOWED_BLOB_MIMETYPES = [
 ];
 
 /**
- * decrypts an encrypted image event and returns a blob URL that can be used for displaying the image.
- * the blob URL should be revoked using URL.revokeObjectURL(url) after the image is displayed / loaded.
+ * converts a message event containing an image to a blob url that can be used within an img tag.
+ * encrypted images are decrypted.
+ * the blob url should be revoked using URL.revokeObjectURL(url) after img loaded (otherwise memory leak)
  * @param event
- * @param encryptedUrl
- * @returns {Promise<string>} the blob URL, can be directly used within an img tag
+ * @param accessToken
+ * @param matrixClient
+ * @returns {Promise<string>} a blob url that can be used within an img tag
  */
-matrixUtil.decryptMatrixImage = async function(event, encryptedUrl) {
+matrixUtil.imageMessageEventToBlobUrl = async function(event, accessToken, matrixClient) {
+    let url = event.getContent().url || event.getContent().file.url;
+    url = matrixClient.mxcUrlToHttp(url, undefined, undefined, undefined, false, true, true);
+
     try {
-        const matrixEncryptAttachment = await import('matrix-encrypt-attachment');
+        let rawData = await matrixUtil.fetchUrl(url, accessToken);
+        let rawImageData = rawData;
         const content = event.getContent();
-        const response = await fetch(encryptedUrl);
-        if (!response.ok) {
-            log.error("matrix: error fetching encrypted media data.");
-            return;
+
+        if (event.getContent().file) { // image is encrypted
+            const matrixEncryptAttachment = await import('matrix-encrypt-attachment');
+            rawImageData = await matrixEncryptAttachment.decryptAttachment(rawData, content.file);
         }
 
-        const encryptedData = await response.arrayBuffer();
-        const decryptedData =  await matrixEncryptAttachment.decryptAttachment(encryptedData, content.file);
-
-        let mimetype = content.info.mimetype ? content.info.mimetype.split(";")[0].trim() : "";
-        mimetype = getBlobSafeMimeType(mimetype)
-        const blob = new Blob([decryptedData], { type: mimetype });
+        let mimetype = content.info.mimetype ? content.info.mimetype.split(';')[0].trim() : '';
+        mimetype = getBlobSafeMimeType(mimetype);
+        const blob = new Blob([rawImageData], { type: mimetype });
         return URL.createObjectURL(blob);
-    } catch (error) {
-        console.error("matrix: error decrypting image:", error);
+    } catch (e) {
+        console.error('matrix: error getting blob image:', e);
+    }
+
+}
+
+matrixUtil.fetchUrl = async function(url, accessToken) {
+    try {
+        let response = await fetch(url, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+        if (!response.ok) {
+            log.error("matrix: error fetching media data.", response.statusCode);
+            return;
+        }
+        return await response.arrayBuffer();
+
+    } catch (e) {
+        log.error("matrix: error fetching media data.", e);
     }
 }
 
