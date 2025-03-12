@@ -4,6 +4,7 @@ import $ from '../../externals/jquery';
 import { constants } from '../../util/constants';
 import { MatrixMessage } from '../../model/MatrixMessage';
 import { serviceWorkerService } from '../serviceWorkerService';
+import { matrixUtil } from './matrixUtil';
 
 let matrixService = {};
 
@@ -110,8 +111,8 @@ async function matrixEventsToMessage(events = []) {
     return await Promise.all(events.map(async event => matrixEventToMessage(event)));
 }
 
-function matrixEventToMessage(event) {
-    return matrixAdapter.doWithClient(client => {
+async function matrixEventToMessage(event) {
+    return matrixAdapter.doWithClient(async client => {
         let message = new MatrixMessage({
             msgType: event.getContent().msgtype,
             sender: event.getSender(),
@@ -122,8 +123,12 @@ function matrixEventToMessage(event) {
         if (event.getContent().msgtype === 'm.image') {
             let url = event.getContent().url || event.getContent().file.url;
             url = client.mxcUrlToHttp(url, undefined, undefined, undefined, false, true, true);
-            message.imageUrl = url;
             _expectedAccessTokenRequestUrls.push(url);
+            if(event.getContent().file) { // image is encrypted
+                message.imageUrl = await matrixUtil.decryptMatrixImage(event, url);
+            } else {
+                message.imageUrl = url;
+            }
         }
         return message;
     });
