@@ -131,6 +131,9 @@ MainVue.init = function () {
                     $.contextMenu('destroy');
                     setupContextMenu();
                     $('#moreNavigation').contextMenu();
+                },
+                toMain() {
+                    Router.toMain();
                 }
             },
             mounted() {
