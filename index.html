@@ -43,7 +43,7 @@
                 </div>
                 <div class="hide-mobile" style="display: inline-flex">
                     <a tabindex="1" href="javascript:void(0)" :aria-label="$t('closeSidebar')" @click="closeSidebar()" style="margin: 0.2em 0.5em 0 1.2em"><i class="fas fa-2x fa-bars inline"></i></a>
-                    <a tabindex="-1" aria-hidden="true" href="#main"><h1 class="inline hide-mobile"><img id="astericsIcon" src="app/img/asterics-grid-icon-raw.svg" height="40" width="121" alt="AsTeRICS Grid"/></h1></a>
+                    <a tabindex="-1" aria-hidden="true" href="javascript:void(0)" @click="toMain"><h1 class="inline hide-mobile"><img id="astericsIcon" src="app/img/asterics-grid-icon-raw.svg" height="40" width="121" alt="AsTeRICS Grid"/></h1></a>
                 </div>
             </div>
 
@@ -52,7 +52,7 @@
                     <h2 class="hide-mobile" style="margin-top: 1.5em;">{{ $t('navigation') }}</h2>
                     <br class="show-mobile" aria-hidden="true"/>
                     <ul>
-                        <li><a tabindex="2" href="#main" :aria-label="$t('mainView')"><button tabindex="-1"><i class="fas fa-2x fa-home"></i><span class="hide-mobile">{{ $t('mainView') }}</span></button></a></li>
+                        <li><a tabindex="2" href="javascript:void(0)" @click="toMain" :aria-label="$t('mainView')"><button tabindex="-1"><i class="fas fa-2x fa-home"></i><span class="hide-mobile">{{ $t('mainView') }}</span></button></a></li>
                         <li><a tabindex="3" href="#grids" :aria-label="$t('manageGrids')"><button tabindex="-1"><i class="fas fa-2x fa-list-ul"></i><span class="hide-mobile">{{ $t('manageGrids') }}</span></button></a></li>
                         <li><a tabindex="4" href="#dictionaries" :aria-label="$t('manageDictionaries')"><button tabindex="-1"><i class="fas fa-2x fa-book"></i><span class="hide-mobile">{{ $t('manageDictionaries') }}</span></button></a></li>
                     </ul>
