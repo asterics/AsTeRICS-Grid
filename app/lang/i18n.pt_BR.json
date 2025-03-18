@@ -449,7 +449,7 @@
   "pleaseSpecifyInputModalities": "Please specify input modalities",
   "searchForImages": "Search for images",
   "creatingPDFFile": "Creating PDF file",
-  "astericsGridGermanDefault": "AsTeRICS Grid German default",
+  "astericsGridGermanDefault": "",
   "astericsGridEnglishDefault": "AsTeRICS Grid English default",
   "theSelectedFileDoesNotContainDict": "The selected file does not contain dictionary data.",
   "couldNotDownloadDictCheckInternet": "Could not download dictionary, please check internet connection.",
