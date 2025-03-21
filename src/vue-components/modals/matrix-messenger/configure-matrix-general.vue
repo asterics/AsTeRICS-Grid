@@ -1,0 +1,104 @@
+<template>
+    <div class="container-fluid px-0" v-if="metadata">
+        <div v-if="loggedInUser">
+            <span>You're logged in as user <strong>"{{loggedInUser}}"</strong>.</span>
+            <div class="mt-4">
+                <button @click="logout">
+                    <i v-if="logoutLoading" class="fas fa-spinner fa-spin"></i>
+                    <i v-if="!logoutLoading" class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+        <div v-if="!loggedInUser">
+            <div class="row">
+                <label class="col-sm-3" for="matrixUser">{{ $t('matrixUser') }}</label>
+                <div class="col-sm-7">
+                    <input type="text" class="col-12" id="matrixUser" v-model="syncConfig.user"/>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-sm-3" for="matrixPassword">{{ $t('matrixPassword') }}</label>
+                <div class="col-sm-7">
+                    <input type="password" class="col-12" id="matrixPassword" v-model="syncConfig.password"/>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-sm-3" for="homeserver">{{ $t('matrixHomeserver') }}</label>
+                <div class="col-sm-7">
+                    <input type="text" class="col-12" id="homeserver" v-model="syncConfig.homeserver" placeholder="https://matrix.org"/>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button class="me-4" @click="login" :disabled="!loginEnabled">
+                    <i v-if="loginLoading" class="fas fa-spinner fa-spin"></i>
+                    <i v-if="!loginLoading" class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </button>
+                <span v-if="loginResult === LOGIN_RESULTS.UNAUTHORIZED" style="color: red"><i class="fas fa-times"></i> wrong username or password!</span>
+                <span v-if="loginResult === LOGIN_RESULTS.NETWORK_ERROR" style="color: red"><i class="fas fa-times"></i> network error!</span>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    import '../../../css/modal.css';
+    import { matrixService } from '../../../js/service/matrixMessenger/matrixService';
+    import { dataService } from '../../../js/service/data/dataService';
+    import { MatrixConfigSync } from '../../../js/model/MatrixConfigSync';
+
+    export default {
+        components: { },
+        props: ["loggedInUser"],
+        data: function () {
+            return {
+                metadata: null,
+                logoutLoading: false,
+                loginLoading: false,
+                syncConfig: new MatrixConfigSync(),
+                loginResult: null,
+                LOGIN_RESULTS: matrixService.LOGIN_RESULTS
+            }
+        },
+        computed: {
+            loginEnabled() {
+                return this.syncConfig.user && this.syncConfig.password && this.syncConfig.homeserver;
+            }
+        },
+        methods: {
+            async logout() {
+                this.loginResult = null;
+                this.logoutLoading = true;
+                this.syncConfig = new MatrixConfigSync();
+                await matrixService.logout();
+                this.metadata.integrations.matrixConfig = new MatrixConfigSync();
+                await dataService.saveMetadata(this.metadata);
+                this.$emit("user", (await matrixService.getLoggedInUsername()));
+                this.logoutLoading = false;
+            },
+            async login() {
+                this.loginResult = null;
+                this.loginLoading = true;
+                this.loginResult = await matrixService.login(this.syncConfig);
+                if (this.loginResult === this.LOGIN_RESULTS.SUCCESS) {
+                    this.metadata.integrations.matrixConfig = this.syncConfig;
+                    await dataService.saveMetadata(this.metadata);
+                }
+                this.$emit("user", (await matrixService.getLoggedInUsername()));
+                this.loginLoading = false;
+            }
+        },
+        async mounted() {
+            this.metadata = await dataService.getMetadata();
+        },
+        beforeDestroy() {
+        }
+    }
+</script>
+
+<style scoped>
+.row {
+    margin-bottom: 1em;
+}
+</style>
