@@ -41,6 +41,11 @@
                 </template>
             </i18n>
         </div>
+        <h3>{{ $t('Matrix messenger') }}</h3>
+        <div class="srow">
+            <button @click="currentModal = MODALS.MODAL_MATRIX"><i class="fas fa-cog"></i> Configure matrix messenger</button>
+        </div>
+        <configure-matrix v-if="currentModal === MODALS.MODAL_MATRIX" @close="currentModal = null"></configure-matrix>
     </div>
 </template>
 
@@ -51,9 +56,13 @@
     import { speechServiceExternal } from '../../../js/service/speechServiceExternal';
     import { speechService } from '../../../js/service/speechService';
     import { settingsSaveMixin } from './settingsSaveMixin';
+    import ConfigureMatrix from '../../modals/matrix-messenger/configure-matrix.vue';
+
+    const MODAL_MATRIX = 'MODAL_MATRIX';
+    const MODALS = { MODAL_MATRIX };
 
     export default {
-        components: {},
+        components: { ConfigureMatrix },
         props: ["metadata", "userSettingsLocal", "appSettings"],
         mixins: [settingsSaveMixin],
         data() {
@@ -61,7 +70,9 @@
                 i18nService: i18nService,
                 util: util,
                 arasaacService: arasaacService,
-                urlValid: null
+                urlValid: null,
+                MODALS: MODALS,
+                currentModal: null
             }
         },
         methods: {

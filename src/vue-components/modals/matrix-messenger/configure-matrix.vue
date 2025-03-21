@@ -15,6 +15,7 @@
                         <div v-if="initialLoading">Loading ... <i class="fas fa-spinner fa-spin"></i></div>
                         <div v-if="!initialLoading">
                             <configure-matrix-general :logged-in-user="loggedInUser" @user="loggedInUserChanged" v-if="currentTab === TABS.TAB_GENERAL"></configure-matrix-general>
+                            <configure-matrix-messages :logged-in-user="loggedInUser" v-if="currentTab === TABS.TAB_MESSAGES"></configure-matrix-messages>
                         </div>
                     </div>
 
@@ -39,16 +40,19 @@
 <script>
     import './../../../css/modal.css';
     import NavTabs from "../../components/nav-tabs.vue";
-    import ConfigureMatrixGeneral from './configure-matrix-general.vue';
     import { matrixService } from '../../../js/service/matrixMessenger/matrixService';
+    import ConfigureMatrixGeneral from './configure-matrix-general.vue';
+    import ConfigureMatrixMessages from './configure-matrix-messages.vue';
 
     const TAB_GENERAL = 'TAB_GENERAL';
     const TAB_ROOMS = 'TAB_ROOMS';
-    const TABS = {TAB_GENERAL, TAB_ROOMS};
+    const TAB_MESSAGES = 'TAB_MESSAGES';
+    const TABS = {TAB_GENERAL, TAB_ROOMS, TAB_MESSAGES};
 
     export default {
         props: ['editElementIdParam', 'gridDataId', 'undoService', 'newPosition'],
         components: {
+            ConfigureMatrixMessages,
             ConfigureMatrixGeneral,
             NavTabs
         },
