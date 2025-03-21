@@ -3,21 +3,31 @@ import * as Matrix from 'matrix-js-sdk';
 import $ from '../../externals/jquery';
 import { constants } from '../../util/constants';
 import { MatrixMessage } from '../../model/MatrixMessage';
-import { serviceWorkerService } from '../serviceWorkerService';
 import { matrixUtil } from './matrixUtil';
 
 let matrixService = {};
 
+matrixService.LOGIN_RESULTS = matrixAdapter.LOGIN_RESULTS;
+
 let _messageCallback = null;
-let _expectedAccessTokenRequestUrls = [];
 
 matrixService.getUserId = function() {
     return matrixAdapter.getUserId();
 }
 
-matrixService.login = function() {
+matrixService.getLoggedInUsername = async function() {
+    return matrixAdapter.getLoggedInUsername();
+}
+
+/**
+ * logs in to matrix with given credentials. If no credentials given, saved credentials are used.
+ * @param syncConfig {MatrixConfigSync} the config to login (username, password, homeserver), optional
+ *                                      if not specified, saved data from metadata is used
+ * @returns {Promise<matrixService.LOGIN_RESULTS>}
+ */
+matrixService.login = function(syncConfig = null) {
     matrixAdapter.setTimelineCallback(timelineCallback);
-    return matrixAdapter.login();
+    return matrixAdapter.login(syncConfig);
 }
 
 matrixService.logout = function() {
@@ -126,6 +136,8 @@ async function matrixEventToMessage(event) {
     });
 }
 
-$(document).on(constants.EVENT_USER_CHANGED, matrixService.login);
+$(document).on(constants.EVENT_USER_CHANGED, () => {
+    matrixService.login();
+});
 
 export { matrixService };

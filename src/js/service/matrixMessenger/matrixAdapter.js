@@ -5,8 +5,6 @@ import { localStorageService } from '../data/localStorageService';
 import * as Matrix from 'matrix-js-sdk';
 import { MatrixConfigLocal } from '../../model/MatrixConfigLocal';
 import { logger } from 'matrix-js-sdk/lib/logger';
-import { DeviceVerification } from 'matrix-js-sdk/lib/models/device';
-import { ClientEvent } from 'matrix-js-sdk/lib/client';
 import { util } from '../../util/util';
 
 let matrixAdapter = {};
@@ -15,6 +13,14 @@ const USERNAME_PREFIX = "@";
 const SYNC_STATE_PREPARED = "PREPARED";
 const MATRIX_INDEXED_DB_PREFIX = "matrix-js-sdk:";
 const CRYPTO_DB_NAME = ":matrix-sdk-crypto";
+
+matrixAdapter.LOGIN_RESULTS = {
+    SUCCESS: "SUCCESS",
+    MISSING_DATA: "MISSING_DATA",
+    UNAUTHORIZED: "UNAUTHORIZED",
+    NETWORK_ERROR: "NETWORK_ERROR",
+    UNKNOWN_ERROR: "UNKNOWN_ERROR"
+}
 
 let _syncConfig = null;
 let _localConfig = null;
@@ -28,19 +34,29 @@ matrixAdapter.getUserId = function() {
     return getFullUser(_localConfig);
 };
 
-matrixAdapter.login = async function() {
+matrixAdapter.getLoggedInUsername = async function() {
     if (_loginPromise) {
         await _loginPromise;
     }
-    await readConfig();
+    return _loggedInUser;
+}
+
+matrixAdapter.login = async function(syncConfig = null) {
+    if (_loginPromise) {
+        await _loginPromise;
+    }
+    _localConfig = await getConfigLocal();
+    _syncConfig = syncConfig || (await getSyncConfig());
     if (_matrixClient && _loggedInUser === _localConfig.user && _loggedInDevice === _localConfig.deviceId) {
-        return log.info('matrix: already logged in');
+        log.info('matrix: already logged in');
+        return matrixAdapter.LOGIN_RESULTS.SUCCESS;
     }
     await matrixAdapter.reset();
 
     _loginPromise = Promise.resolve().then(async () => {
         if (!_syncConfig || !(_syncConfig.user && _syncConfig.password)) {
-            return log.warn('cannot login to matrix, no credentials configured!');
+            log.warn('cannot login to matrix, no credentials configured!');
+            return matrixAdapter.LOGIN_RESULTS.MISSING_DATA;
         }
         if (_localConfig.homeserver && _localConfig.user &&
             (_localConfig.homeserver !== _syncConfig.homeserver || _localConfig.user !== _syncConfig.user)) {
@@ -68,11 +84,15 @@ matrixAdapter.login = async function() {
                 saveLocalConfig();
             } catch (e) {
                 log.warn("login to matrix failed (user and password)", e);
-                await matrixAdapter.reset();
-                return false;
+                if (e.name === 'ConnectionError') {
+                    return matrixAdapter.LOGIN_RESULTS.NETWORK_ERROR;
+                } else if (e.name === 'M_FORBIDDEN') {
+                    return matrixAdapter.LOGIN_RESULTS.UNAUTHORIZED;
+                }
+                return matrixAdapter.LOGIN_RESULTS.UNKNOWN_ERROR;
             }
         }
-        log.info("matrix: login using access token");
+        log.info("matrix: login using access token, deviceId:", _localConfig.deviceId);
         try {
             _matrixClient = await getAccessTokenClient(_localConfig);
             if (!_matrixClient) {
@@ -114,15 +134,14 @@ matrixAdapter.login = async function() {
                                 await _matrixClient.forget(room.roomId);
                             }
                         });
-                        resolve(true);
+                        resolve(matrixAdapter.LOGIN_RESULTS.SUCCESS);
                     }
                 });
             });
         } catch (e) {
-            log.warn("login to matrix failed (access token), logging out...", e);
-            await matrixAdapter.logout();
+            log.warn("login to matrix failed (access token).", e);
         }
-        return false;
+        return matrixAdapter.LOGIN_RESULTS.UNKNOWN_ERROR;
     });
     return _loginPromise;
 };
@@ -146,6 +165,8 @@ matrixAdapter.reset = async function() {
         _matrixClient = null;
     }
     _loginPromise = null;
+    _loggedInUser = null;
+    _loggedInDevice = null;
 }
 
 /**
@@ -178,6 +199,7 @@ matrixAdapter.logout = async function(localConfig = _localConfig, userWasDeleted
     }
 
     if (logoutCurrentClient && !userWasDeleted) {
+        log.info("matrix: reset local config...", "deviceId:", _localConfig.deviceId)
         _localConfig = new MatrixConfigLocal();
         saveLocalConfig();
         await matrixAdapter.reset();
@@ -290,20 +312,19 @@ function getFullUser(config) {
     return user;
 }
 
-async function readConfig() {
-    await readSyncConfig();
-    let userSettings = localStorageService.getUserSettings();
-    _localConfig = userSettings && userSettings.integrations ? userSettings.integrations.matrixConfig : null;
-}
-
 function getDBName(localConfig, withPrefix = false) {
     let name = `matrix-store-${getFullUser(localConfig)}-${localConfig.deviceId}`;
     return withPrefix ? MATRIX_INDEXED_DB_PREFIX + name : name;
 }
 
-async function readSyncConfig() {
+async function getConfigLocal() {
+    let userSettings = localStorageService.getUserSettings();
+    return userSettings && userSettings.integrations ? userSettings.integrations.matrixConfig : null;
+}
+
+async function getSyncConfig() {
     let metadata = await dataService.getMetadata();
-    _syncConfig = metadata.integrations.matrixConfig;
+    return metadata.integrations.matrixConfig;
 }
 
 async function onUserDeleted(event, username, localSettings) {
@@ -312,7 +333,6 @@ async function onUserDeleted(event, username, localSettings) {
     }
 }
 
-$(document).on(constants.EVENT_METADATA_UPDATED, readSyncConfig);
 $(document).on(constants.EVENT_USER_DELETED, onUserDeleted);
 
 export { matrixAdapter };
