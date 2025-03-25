@@ -1,30 +1,30 @@
 <template>
     <div class="container-fluid px-0">
         <div class="row">
-            <label class="col-sm-3" for="matrixRoom">{{ $t('matrixRoom') }}</label>
+            <label class="col-sm-3" for="matrixRoom">{{ $t('selectRoom') }}</label>
             <div class="col-sm-7">
-                <select class="col-12" id="matrixUser" v-model="matrixRoom" @change="updateRoom">
+                <select class="col-12" id="matrixRoom" v-model="matrixRoom" @change="updateRoom">
                     <option v-for="room in matrixRooms" :value="room">{{ room.name }}</option>
                 </select>
             </div>
         </div>
         <div class="row mb-4">
             <div class="col d-inline-block">
-                <h2 class="d-inline-block me-3">{{ $t('Messages') }}</h2>
-                <span><i v-if="matrixRoom && matrixRoom.hasEncryptionStateEvent()" class="fas fa-lock" style="color: darkgreen" :title="$t('roomIsEncrypted')"></i></span>
-                <span><i v-if="matrixRoom && !matrixRoom.hasEncryptionStateEvent()" class="fas fa-lock-open" style="color: darkred" :title="$t('roomIsNotEncrypted')"></i></span>
+                <h2 class="d-inline-block me-3">{{ $t('TAB_MESSAGES') }}</h2>
+                <span><i v-if="matrixRoom && matrixRoom.hasEncryptionStateEvent()" class="fas fa-lock" style="color: darkgreen" :title="$t('endToEndEncrypted')"></i></span>
+                <span><i v-if="matrixRoom && !matrixRoom.hasEncryptionStateEvent()" class="fas fa-lock-open" style="color: darkred" :title="$t('notEndToEndEncrypted')"></i></span>
             </div>
         </div>
         <div class="row" v-if="!matrixMessages.length">
-            <span class="col">No messages in this room.</span>
+            <span class="col">{{ $t('noMessagesInRoom') }}.</span>
         </div>
         <div class="row" style="max-height: 20em; overflow-y: scroll" ref="messenger">
             <div class="col">
                 <div v-for="message in matrixMessages" :style="`background-color: ${message.sender === currentUser ? 'lightgray' : 'lightblue'}; padding: 1em; border-radius: 0.5em;
         margin-left: ${message.sender === currentUser ? '4em' : '0'}; margin-right: ${message.sender === currentUser ? '0' : '4em'}; margin-bottom: 1em;`">
                     <strong>{{message.sender}}</strong>
-                    <div v-if="message.isDeleted">... message was deleted ...</div>
-                    <div v-if="message.msgType === 'm.text'">{{message.textContent}}</div>
+                    <div v-if="message.isDeleted">... {{ $t('messageWasDeleted') }} ...</div>
+                    <div v-if="message.msgType === 'm.text'">{{ message.textContent }}</div>
                     <div v-if="message.msgType === 'm.image'">
                         <img height="100" :src="message.imageUrl" @load="revokeBlob(message.imageUrl)">
                     </div>
@@ -34,9 +34,11 @@
         <div class="row">
             <search-bar v-model="matrixText" :placeholder="$t('typeMessagePlaceholder')" fa-symbol="fa-paper-plane" @submit="sendMatrixMessage" :disabled="sendDisabled" label="sendMessage"></search-bar>
         </div>
-        <div class="row d-inline" v-if="sendDisabled">
-            <span><i class="fas fa-info-circle"></i></span>
-            <span>{{ $t('cannotSendToEncryptedRoom') }}</span>
+        <div class="row" v-if="sendDisabled">
+            <div class="col">
+                <span><i class="fas fa-info-circle"></i></span>
+                <span>{{ $t('cannotSendToEncryptedRoom') }}.</span>
+            </div>
         </div>
     </div>
 </template>

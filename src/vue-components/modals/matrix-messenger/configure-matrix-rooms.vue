@@ -1,34 +1,34 @@
 <template>
     <div class="container-fluid px-0">
-        <h2 class="mb-4">Rooms</h2>
+        <h2 class="mb-4">{{ $t('TAB_ROOMS') }}</h2>
         <div class="row d-sm-flex d-none">
-            <strong class="col-4">Room name</strong>
-            <strong class="col-5">Members</strong>
-            <strong class="col-3">Actions</strong>
+            <strong class="col-4">{{ $t('roomName') }}</strong>
+            <strong class="col-5">{{ $t('members') }}</strong>
+            <strong class="col-3">{{ $t('actions') }}</strong>
         </div>
         <ul>
             <li class="row mb-sm-2 mb-5" v-for="room in rooms">
                 <div class="col-sm-4">
-                    <i v-if="room.hasEncryptionStateEvent()" class="fas fa-lock" style="color: darkgreen" :title="$t('roomIsEncrypted')"></i>
-                    <i v-if="!room.hasEncryptionStateEvent()" class="fas fa-lock-open" style="color: darkred" :title="$t('roomIsNotEncrypted')"></i>
+                    <i v-if="room.hasEncryptionStateEvent()" class="fas fa-lock" style="color: darkgreen" :title="$t('endToEndEncrypted')"></i>
+                    <i v-if="!room.hasEncryptionStateEvent()" class="fas fa-lock-open" style="color: darkred" :title="$t('notEndToEndEncrypted')"></i>
                     <span class="ms-2 d-sm-inline d-none">{{ room.name }}</span>
                     <strong class="ms-2 d-sm-none d-inline">{{ room.name }}</strong>
                 </div>
                 <div class="col-sm-5">
-                    <strong class="d-sm-none d-inline" v-if="!isPrivateRoom(room)">Members:</strong>
-                    <span v-if="isPrivateRoom(room)">Private room with "{{ getPrivateRoomPartner(room) }}"</span>
+                    <strong class="d-sm-none d-inline" v-if="!isPrivateRoom(room)">{{ $t('members') }}:</strong>
+                    <span v-if="isPrivateRoom(room)">{{ $t('privateRoomWith', { user: getPrivateRoomPartner(room) }) }}</span>
                     <span v-if="!isPrivateRoom(room)">{{ getAllMembersString(room) }}</span>
                 </div>
                 <div class="col-sm-3 mt-sm-0 mt-2">
                     <button class="actionBtn" @click="leaveRoom(room)">
                         <i v-if="leavingRoom.roomId === room.roomId" class="fas fa-spinner fa-spin"/>
                         <i v-if="leavingRoom.roomId !== room.roomId" class="fas fa-sign-out-alt"/>
-                        <span>Leave</span>
+                        <span>{{ $t('leave') }}</span>
                     </button>
                 </div>
             </li>
         </ul>
-        <h2>New Room</h2>
+        <h2>{{ $t('newRoom') }}</h2>
         <div class="row my-4">
             <label class="col-sm-3" for="newRoomUser">{{ $t('newRoomUser') }}</label>
             <div class="col-sm-4">
@@ -36,22 +36,31 @@
             </div>
             <div class="col-sm-5">
                 <div v-if="checking">
-                    <span>checking ...</span>
+                    <span>{{ $t("searching") }}</span>
                     <i class="fas fa-spinner fa-spin"></i>
                 </div>
                 <div v-if="userExists !== undefined">
                     <i v-if="userExists" class="fas fa-check"></i>
                     <i v-if="!userExists" class="fas fa-times"></i>
-                    <span>User <strong>"{{fullUsername}}" </strong></span>
-                    <span v-if="userExists">exists!</span>
-                    <span v-if="!userExists">not found!</span>
+                    <i18n v-if="userExists" path="valueExists" tag="span">
+                        <template v-slot:value>
+                            <span>{{ $t('username') }}</span>
+                            "<strong>{{ fullUsername }}</strong>"
+                        </template>
+                    </i18n>
+                    <i18n v-if="!userExists" path="valueNotFound" tag="span">
+                        <template v-slot:value>
+                            <span>{{ $t('username') }}</span>
+                            "<strong>{{ fullUsername }}</strong>"
+                        </template>
+                    </i18n>
                 </div>
             </div>
         </div>
         <div class="row">
             <label class="col-sm-3" for="roomName">{{ $t('roomName') }}</label>
             <div class="col-sm-4">
-                <input type="text" class="col-12" id="roomName" v-model="newRoomName" :placeholder="$t('(optional)')"/>
+                <input type="text" class="col-12" id="roomName" v-model="newRoomName" :placeholder="$t('optionalBracket')"/>
             </div>
         </div>
         <div class="row" v-if="canUseEncryption">
@@ -64,10 +73,10 @@
             <button class="me-4" @click="createRoom" :disabled="createRoomDisabled">
                 <i v-if="createRoomState === CREATE_ROOM_STATES.LOADING" class="fas fa-spinner fa-spin"></i>
                 <i v-if="createRoomState !== CREATE_ROOM_STATES.LOADING" class="fas fa-plus"></i>
-                <span>Create room</span>
+                <span>{{ $t('createRoom') }}</span>
             </button>
-            <span v-if="createRoomState === CREATE_ROOM_STATES.ERROR" style="color: red"><i class="fas fa-times"></i> could not create room!</span>
-            <span v-if="createRoomState === CREATE_ROOM_STATES.SUCCESS" style="color: green"><i class="fas fa-check"></i> successfully created room!</span>
+            <span v-if="createRoomState === CREATE_ROOM_STATES.ERROR" style="color: red"><i class="fas fa-times"></i> {{ $t('couldNotCreateRoom') }}!</span>
+            <span v-if="createRoomState === CREATE_ROOM_STATES.SUCCESS" style="color: green"><i class="fas fa-check"></i> {{ $t('successfullyCreatedRoom') }}!</span>
         </div>
     </div>
 </template>
@@ -76,6 +85,7 @@
     import '../../../css/modal.css';
     import { matrixService } from '../../../js/service/matrixMessenger/matrixService';
     import { util } from '../../../js/util/util';
+    import { i18nService } from '../../../js/service/i18nService';
 
     const CREATE_ROOM_STATES = {
         INITIAL: "INITIAL",
@@ -135,7 +145,7 @@
                 this.createRoomState = result ? CREATE_ROOM_STATES.SUCCESS : CREATE_ROOM_STATES.ERROR;
             },
             async leaveRoom(room) {
-                if(!confirm("Do you really want to leave room " + room.name)) {
+                if(!confirm(i18nService.t("doYouReallyWantToLeaveRoom", room.name))) {
                     return;
                 }
                 this.leavingRoom = room;

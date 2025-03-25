@@ -14,25 +14,25 @@
                 <button @click="logout">
                     <i v-if="logoutLoading" class="fas fa-spinner fa-spin"></i>
                     <i v-if="!logoutLoading" class="fas fa-sign-out-alt"></i>
-                    <span>Logout</span>
+                    <span>{{ $t('logout') }}</span>
                 </button>
             </div>
         </div>
         <div v-if="!loggedInUser">
             <div class="row">
-                <label class="col-sm-3" for="matrixUser">{{ $t('matrixUser') }}</label>
+                <label class="col-sm-3" for="matrixUser">{{ $t('username') }}</label>
                 <div class="col-sm-7">
                     <input type="text" class="col-12" id="matrixUser" v-model="syncConfig.user"/>
                 </div>
             </div>
             <div class="row">
-                <label class="col-sm-3" for="matrixPassword">{{ $t('matrixPassword') }}</label>
+                <label class="col-sm-3" for="matrixPassword">{{ $t('password') }}</label>
                 <div class="col-sm-7">
                     <input type="password" class="col-12" id="matrixPassword" v-model="syncConfig.password"/>
                 </div>
             </div>
             <div class="row">
-                <label class="col-sm-3" for="homeserver">{{ $t('matrixHomeserver') }}</label>
+                <label class="col-sm-3" for="homeserver">{{ $t('homeserver') }}</label>
                 <div class="col-sm-7">
                     <input type="text" class="col-12" id="homeserver" v-model="syncConfig.homeserver" placeholder="https://matrix.org"/>
                 </div>
@@ -41,7 +41,7 @@
                 <button class="me-4" @click="login" :disabled="!loginEnabled">
                     <i v-if="loginLoading" class="fas fa-spinner fa-spin"></i>
                     <i v-if="!loginLoading" class="fas fa-sign-in-alt"></i>
-                    <span>Login</span>
+                    <span>{{ $t('login') }}</span>
                 </button>
                 <span v-if="loginResult === LOGIN_RESULTS.UNAUTHORIZED" style="color: red"><i class="fas fa-times"></i> wrong username or password!</span>
                 <span v-if="loginResult === LOGIN_RESULTS.NETWORK_ERROR" style="color: red"><i class="fas fa-times"></i> network error!</span>
