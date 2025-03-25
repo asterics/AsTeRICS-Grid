@@ -1,17 +1,17 @@
 <template>
-    <div class="searchContainer" style="position: relative; width: 100%">
-        <label class="sr-only" for="searchBar">{{ $t('search') }}</label>
-        <input v-focus id="searchBar" type="search" v-model="currentValue" autocomplete="off" :placeholder="$t(placeholder || 'search') + '...'" @input="changed" @change="changed" @keydown.enter.exact="keydownEnter" @keydown.ctrl.enter.exact="keydownCtrlEnter" style="width: 100%;">
+    <div class="searchContainer p-0" style="position: relative; width: 100%">
+        <label class="sr-only" for="searchBar">{{ $t(label || 'search') }}</label>
+        <input v-focus id="searchBar" type="search" v-model="currentValue" autocomplete="off" :placeholder="$t(placeholder || 'search') + '...'" @input="changed" @change="changed" @keydown.enter.exact="keydownEnter" @keydown.ctrl.enter.exact="keydownCtrlEnter" :disabled="disabled" style="width: 100%;">
         <div class="barButtons">
-            <button :title="$t('clear')" @click="clear" style="background-color: transparent; outline: none;"><i class="fas fa-times"></i></button>
-            <button :title="$t('search')" @click="changed"><i class="fas fa-search"></i></button>
+            <button :title="$t('clear')" @click="clear" :disabled="disabled" style="background-color: transparent; outline: none;"><i class="fas fa-times"></i></button>
+            <button :title="$t(label || 'search')" @click="search" :disabled="disabled"><i :class="faSymbol ? `fas ${faSymbol}` : 'fas fa-search'"></i></button>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    props: ["value", "placeholder", "keydownEnterFn", "keydownCtrlEnterFn"],
+    props: ["value", "placeholder", "keydownEnterFn", "keydownCtrlEnterFn", "faSymbol", "disabled", "label"],
     data() {
         return {
             currentValue: this.value
@@ -27,11 +27,17 @@ export default {
             this.$emit('input', this.currentValue);
             this.$emit('change', this.currentValue);
         },
+        search() {
+            this.changed();
+            this.$emit('search', this.currentValue);
+            this.$emit('submit', this.currentValue);
+        },
         clear() {
             this.currentValue = '';
             this.changed();
         },
         keydownEnter() {
+            this.search();
             if (this.keydownEnterFn) this.keydownEnterFn();
         },
         keydownCtrlEnter() {

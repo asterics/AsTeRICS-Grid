@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="row">
-            <search-bar v-model="matrixText" :placeholder="$t('typeMessagePlaceholder')" fa-symbol="fa-paper-plane" @submit="sendMatrixMessage" :disabled="sendDisabled"></search-bar>
+            <search-bar v-model="matrixText" :placeholder="$t('typeMessagePlaceholder')" fa-symbol="fa-paper-plane" @submit="sendMatrixMessage" :disabled="sendDisabled" label="sendMessage"></search-bar>
         </div>
         <div class="row d-inline" v-if="sendDisabled">
             <span><i class="fas fa-info-circle"></i></span>
