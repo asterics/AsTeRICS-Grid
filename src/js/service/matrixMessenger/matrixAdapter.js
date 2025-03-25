@@ -6,6 +6,7 @@ import * as Matrix from 'matrix-js-sdk';
 import { MatrixConfigLocal } from '../../model/MatrixConfigLocal';
 import { logger } from 'matrix-js-sdk/lib/logger';
 import { util } from '../../util/util';
+import { MatrixConfigSync } from '../../model/MatrixConfigSync';
 
 let matrixAdapter = {};
 
@@ -30,15 +31,18 @@ let _loggedInUser = null;
 let _loggedInDevice = null;
 let _timelineCallback = null;
 
-matrixAdapter.getUserId = function() {
-    return getFullUser(_localConfig);
-};
-
-matrixAdapter.getLoggedInUsername = async function() {
+matrixAdapter.getUsername = async function(full = false) {
     if (_loginPromise) {
         await _loginPromise;
     }
-    return _loggedInUser;
+    if (!_matrixClient) {
+        return null;
+    }
+    return full ? _matrixClient.getUserId() : _matrixClient.getUserIdLocalpart();
+}
+
+matrixAdapter.isEncryptionEnabled = function() {
+    return _localConfig.useCrypto;
 }
 
 matrixAdapter.login = async function(syncConfig = null) {
@@ -55,7 +59,7 @@ matrixAdapter.login = async function(syncConfig = null) {
 
     _loginPromise = Promise.resolve().then(async () => {
         if (!_syncConfig || !(_syncConfig.user && _syncConfig.password)) {
-            log.warn('cannot login to matrix, no credentials configured!');
+            log.info('no login to matrix, no credentials configured!');
             return matrixAdapter.LOGIN_RESULTS.MISSING_DATA;
         }
         if (_localConfig.homeserver && _localConfig.user &&
@@ -73,7 +77,7 @@ matrixAdapter.login = async function(syncConfig = null) {
             try {
                 let response = await tempClient.loginRequest({
                     type: 'm.login.password',
-                    user: getFullUser(_syncConfig),
+                    user: getFullUserByConfig(_syncConfig),
                     password: _syncConfig.password
                 }); // returns access_token and device_id*/
                 await tempClient.stopClient();
@@ -114,8 +118,8 @@ matrixAdapter.login = async function(syncConfig = null) {
             return new Promise(resolve => {
                 _matrixClient.once('sync', async function(state) {
                     if (state === SYNC_STATE_PREPARED) {
-                        log.info("matrix: client ready for", getFullUser(_localConfig));
-                        _loggedInUser = _localConfig.user;
+                        log.info("matrix: client ready for", getFullUserByConfig(_localConfig));
+                        _loggedInUser = matrixAdapter.getFullUserByName(_localConfig.user);
                         _loggedInDevice = _localConfig.deviceId;
                         _matrixClient.on('Room.timeline', async (event, room, toStartOfTimeline) => {
                             if (_timelineCallback) {
@@ -230,6 +234,39 @@ matrixAdapter.getCurrentAccessToken = async function() {
     }
 };
 
+matrixAdapter.existsUser = async function(username) {
+    if (_loginPromise) {
+        await _loginPromise;
+    }
+    if (!_matrixClient) {
+        return false;
+    }
+    try {
+        await _matrixClient.getProfileInfo(matrixAdapter.getFullUserByName(username));
+        return true;
+    } catch (error) {
+    }
+    return false;
+}
+
+matrixAdapter.getFullUserByName = function(username, homeserver = null) {
+    if (!username) {
+        return '';
+    }
+    homeserver = homeserver || new MatrixConfigSync().homeserver;
+    let homeserverPostifx = '';
+    try {
+        let parsedHomeserverUrl = new URL(homeserver);
+        homeserverPostifx = `:${parsedHomeserverUrl.host}`;
+    } catch (e) {
+        log.warn('matrix: error parsing homeserver url');
+        return '';
+    }
+    username = !username.startsWith(USERNAME_PREFIX) ? USERNAME_PREFIX + username : username;
+    username = !username.includes(':') ? username + homeserverPostifx : username;
+    return username;
+};
+
 async function joinRoom(roomId) {
     console.log(`Accepting invite for room: ${roomId}`);
     try {
@@ -261,7 +298,7 @@ async function getAccessTokenClient(localConfig) {
     return Matrix.createClient({
         baseUrl: localConfig.homeserver,
         accessToken: localConfig.accessToken,
-        userId: getFullUser(localConfig),
+        userId: getFullUserByConfig(localConfig),
         deviceId: localConfig.deviceId,
         store: store
     });
@@ -294,26 +331,15 @@ function saveLocalConfig() {
     localStorageService.saveUserSettings(userSettings);
 }
 
-function getFullUser(config) {
+function getFullUserByConfig(config) {
     if (!config || !config.user || !config.homeserver) {
         return '';
     }
-    let user = config.user;
-    let homeserverPostifx = '';
-    try {
-        let parsedHomeserverUrl = new URL(config.homeserver);
-        homeserverPostifx = `:${parsedHomeserverUrl.host}`;
-    } catch (e) {
-        log.warn("matrix: error parsing homeserver url");
-        return '';
-    }
-    user = !user.startsWith(USERNAME_PREFIX) ? USERNAME_PREFIX + user : user;
-    user = !user.endsWith(homeserverPostifx) ? user + homeserverPostifx : user;
-    return user;
+    return matrixAdapter.getFullUserByName(config.user, config.homeserver);
 }
 
 function getDBName(localConfig, withPrefix = false) {
-    let name = `matrix-store-${getFullUser(localConfig)}-${localConfig.deviceId}`;
+    let name = `matrix-store-${getFullUserByConfig(localConfig)}-${localConfig.deviceId}`;
     return withPrefix ? MATRIX_INDEXED_DB_PREFIX + name : name;
 }
 

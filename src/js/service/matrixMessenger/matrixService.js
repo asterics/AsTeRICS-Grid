@@ -8,15 +8,17 @@ import { matrixUtil } from './matrixUtil';
 let matrixService = {};
 
 matrixService.LOGIN_RESULTS = matrixAdapter.LOGIN_RESULTS;
+const MEGOLM_ENCRYPTION_ALGORITHM = "m.megolm.v1.aes-sha2";
 
 let _messageCallback = null;
+let _roomChangeCallback = null;
 
-matrixService.getUserId = function() {
-    return matrixAdapter.getUserId();
+matrixService.getUsername = async function(full = false) {
+    return matrixAdapter.getUsername(full);
 }
 
-matrixService.getLoggedInUsername = async function() {
-    return matrixAdapter.getLoggedInUsername();
+matrixService.isEncryptionEnabled = function() {
+    return matrixAdapter.isEncryptionEnabled();
 }
 
 /**
@@ -38,6 +40,10 @@ matrixService.onMessage = function(callback) {
     _messageCallback = callback;
 }
 
+matrixService.onRoomChange = function(callback) {
+    _roomChangeCallback = callback;
+}
+
 matrixService.sendMessage = async function(roomId, message) {
     return await matrixAdapter.doWithClient(async client => {
         const messageContent = {
@@ -52,7 +58,42 @@ matrixService.sendMessage = async function(roomId, message) {
 
 matrixService.getRooms = async function() {
     return await matrixAdapter.doWithClient(client => {
-        return client.getRooms();
+        let rooms = client.getRooms();
+        return rooms.filter(room => ['join', 'invite'].includes(room.getMyMembership()));
+    });
+};
+
+matrixService.createPrivateRoom = async function (username, enableEncryption = false, roomName = undefined) {
+    return matrixAdapter.doWithClient(async client => {
+        try {
+            let fullUser = matrixAdapter.getFullUserByName(username);
+            const roomOptions = {
+                visibility: 'private',
+                invite: [fullUser],
+                name: roomName || undefined,
+                room_version: "9", // RestrictedRoom
+                preset: "private_chat"
+            };
+            if (enableEncryption) {
+                roomOptions.initial_state = [{
+                    type: 'm.room.encryption', state_key: '', content: {
+                        algorithm: MEGOLM_ENCRYPTION_ALGORITHM
+                    }
+                }];
+            }
+
+            const roomResponse = await client.createRoom(roomOptions);
+            return roomResponse.room_id;
+        } catch (error) {
+            log.warn('matrix: error creating room or inviting user:', error);
+        }
+        return null;
+    });
+}
+
+matrixService.leaveRoom = function(roomId) {
+    return matrixAdapter.doWithClient(async client => {
+        client.leave(roomId);
     });
 };
 
@@ -82,15 +123,12 @@ matrixService.getMessageEvents = async function(roomId, pastMessages = 10) {
     });
 }
 
-matrixService.existsUser = async function(config) {
-    return await matrixAdapter.doWithClient(async client => {
-        try {
-            await client.getProfileInfo(getFullUser(config)); // TODO: fix
-            return true;
-        } catch (error) {
-        }
-        return false;
-    });
+matrixService.existsUser = async function(username) {
+    return matrixAdapter.existsUser(username);
+}
+
+matrixService.getFullUsername = function(username) {
+    return matrixAdapter.getFullUserByName(username);
 }
 
 async function timelineCallback(event, room, toStartOfTimeline) {
@@ -109,6 +147,12 @@ async function timelineCallback(event, room, toStartOfTimeline) {
 
         case 'm.room.member':
             console.log(`User membership changed: ${event.getSender()} is now ${event.getContent().membership}`);
+            if (_roomChangeCallback) {
+                setTimeout(async () => {
+                    let rooms = await matrixService.getRooms();
+                    _roomChangeCallback(rooms);
+                }, 500);
+            }
             break;
 
         default:
@@ -124,7 +168,8 @@ async function matrixEventToMessage(event) {
     return matrixAdapter.doWithClient(async client => {
         let message = new MatrixMessage({
             msgType: event.getContent().msgtype,
-            sender: event.getSender(),
+            sender: event.sender.name,
+            senderId: event.getSender(),
             isDeleted: event.isRedacted(),
             textContent: event.getContent().body,
             roomId: event.getRoomId()
