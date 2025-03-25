@@ -1,7 +1,15 @@
 <template>
     <div class="container-fluid px-0" v-if="metadata">
         <div v-if="loggedInUser">
-            <span>You're logged in as user <strong>"{{loggedInUser}}"</strong>.</span>
+            <div>You're logged in as user <strong>"{{loggedInUser}}"</strong>.</div>
+            <div v-if="e2eeSupported">
+                <i class="fas fa-lock"></i>
+                <span>End-to-end-encryption supported.</span>
+            </div>
+            <div v-if="!e2eeSupported">
+                <i class="fas fa-lock-open"></i>
+                <span>End-to-end-encryption not enabled (not possible for multiple AsTeRICS Grid users on the same device).</span>
+            </div>
             <div class="mt-4">
                 <button @click="logout">
                     <i v-if="logoutLoading" class="fas fa-spinner fa-spin"></i>
@@ -58,7 +66,8 @@
                 loginLoading: false,
                 syncConfig: new MatrixConfigSync(),
                 loginResult: null,
-                LOGIN_RESULTS: matrixService.LOGIN_RESULTS
+                LOGIN_RESULTS: matrixService.LOGIN_RESULTS,
+                e2eeSupported: undefined
             }
         },
         computed: {
@@ -74,7 +83,7 @@
                 await matrixService.logout();
                 this.metadata.integrations.matrixConfig = new MatrixConfigSync();
                 await dataService.saveMetadata(this.metadata);
-                this.$emit("user", (await matrixService.getLoggedInUsername()));
+                this.$emit("user", (await matrixService.getUsername()));
                 this.logoutLoading = false;
             },
             async login() {
@@ -85,12 +94,13 @@
                     this.metadata.integrations.matrixConfig = this.syncConfig;
                     await dataService.saveMetadata(this.metadata);
                 }
-                this.$emit("user", (await matrixService.getLoggedInUsername()));
+                this.$emit("user", (await matrixService.getUsername()));
                 this.loginLoading = false;
             }
         },
         async mounted() {
             this.metadata = await dataService.getMetadata();
+            this.e2eeSupported = matrixService.isEncryptionEnabled();
         },
         beforeDestroy() {
         }

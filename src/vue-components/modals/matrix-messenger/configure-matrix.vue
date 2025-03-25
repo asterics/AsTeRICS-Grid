@@ -5,7 +5,10 @@
                 <div class="modal-container modal-container-flex" @keydown.esc="$emit('close')">
                     <div class="modal-header">
                         <div class="row">
-                            <h1>Matrix messenger</h1>
+                            <h1 class="col">Matrix messenger</h1>
+                            <div class="col-auto d-flex">
+                                <a class="inline close-button" href="javascript:void(0);" @click="$emit('close')"><i class="fas fa-times"/></a>
+                            </div>
                         </div>
                     </div>
 
@@ -13,20 +16,21 @@
 
                     <div class="modal-body mt-2">
                         <div v-if="initialLoading">Loading ... <i class="fas fa-spinner fa-spin"></i></div>
-                        <div v-if="!initialLoading">
-                            <configure-matrix-general :logged-in-user="loggedInUser" @user="loggedInUserChanged" v-if="currentTab === TABS.TAB_GENERAL"></configure-matrix-general>
-                            <configure-matrix-messages :logged-in-user="loggedInUser" v-if="currentTab === TABS.TAB_MESSAGES"></configure-matrix-messages>
+                        <div v-if="!initialLoading && !loggedInUser && currentTab !== TABS.TAB_GENERAL">
+                            <span>Please login in tab <a href="javascript:;" @click="currentTab = TABS.TAB_GENERAL">General</a>.</span>
+                        </div>
+                        <configure-matrix-general v-if="!initialLoading && currentTab === TABS.TAB_GENERAL" :logged-in-user="loggedInUser" @user="loggedInUserChanged"></configure-matrix-general>
+                        <div v-if="!initialLoading && loggedInUser">
+                            <configure-matrix-messages v-if="currentTab === TABS.TAB_MESSAGES"></configure-matrix-messages>
+                            <configure-matrix-rooms v-if="currentTab === TABS.TAB_ROOMS"></configure-matrix-rooms>
                         </div>
                     </div>
 
                     <div class="modal-footer modal-footer-flex">
                         <div class="button-container">
                             <div class="srow">
-                                <button @click="close()" class="four columns offset-by-four">
-                                    <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
-                                </button>
-                                <button @click="save()" class="four columns">
-                                    <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
+                                <button @click="save()" class="six columns offset-by-six">
+                                    <i class="fas fa-check"/> <span>{{ $t('closeModal') }}</span>
                                 </button>
                             </div>
                         </div>
@@ -43,6 +47,7 @@
     import { matrixService } from '../../../js/service/matrixMessenger/matrixService';
     import ConfigureMatrixGeneral from './configure-matrix-general.vue';
     import ConfigureMatrixMessages from './configure-matrix-messages.vue';
+    import ConfigureMatrixRooms from './configure-matrix-rooms.vue';
 
     const TAB_GENERAL = 'TAB_GENERAL';
     const TAB_ROOMS = 'TAB_ROOMS';
@@ -52,6 +57,7 @@
     export default {
         props: ['editElementIdParam', 'gridDataId', 'undoService', 'newPosition'],
         components: {
+            ConfigureMatrixRooms,
             ConfigureMatrixMessages,
             ConfigureMatrixGeneral,
             NavTabs
@@ -81,7 +87,7 @@
             }
         },
         async mounted() {
-            this.loggedInUser = await matrixService.getLoggedInUsername();
+            this.loggedInUser = await matrixService.getUsername();
         },
         beforeDestroy() {
         }
