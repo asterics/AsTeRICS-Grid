@@ -37,7 +37,9 @@
                                 <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
                             </button>
                             <button class="four columns" @click="save()" :title="$t('keyboardCtrlEnter')" :disabled="parsedElems.length == 0">
-                                <i class="fas fa-check"/> <span>{{ $t('insertElements') }}</span>
+                                <i v-if="!loading" class="fas fa-check"/>
+                                <i v-if="loading" class="fas fa-spinner fa-spin"/>
+                                <span>{{ $t('insertElements') }}</span>
                             </button>
                         </div>
                     </div>
@@ -53,37 +55,66 @@
     import {GridElement} from "../../js/model/GridElement";
     import {GridData} from "../../js/model/GridData";
     import {helpService} from "../../js/service/helpService";
+    import { gridUtil } from '../../js/util/gridUtil';
+    import { constants } from '../../js/util/constants';
 
     export default {
         props: ['gridData', 'undoService'],
         data: function () {
             return {
                 inputText: "",
-                parsedElems: []
+                parsedElems: [],
+                loading: false
             }
         },
         methods: {
             textChanged() {
-                var text = this.inputText || "";
-                var text = text.replace(/\n/gi, ';').replace(/;;/gi, ';');
-                this.parsedElems = text.split(';').map(el => el.trim()).filter(el => el.length > 0);
+                let text = this.inputText || '';
+                if (this.isOnlyEmojis(text)) {
+                    this.parsedElems = this.getEmojis(text);
+                } else {
+                    text = text.replace(/\n/gi, ';').replace(/;;/gi, ';');
+                    this.parsedElems = text.split(';').map(el => el.trim()).filter(el => el.length > 0);
+                }
+            },
+            isOnlyEmojis(str) {
+                const matches = this.getEmojis(str);
+                return matches.join('') === str; // If the matched emojis fully cover the input string, return true
+            },
+            getEmojis(str) {
+                // Match emojis, including ZWJ sequences & variation selectors
+                return str.match(new RegExp(constants.EMOJI_REGEX)) || [];
             },
             async save () {
                 var thiz = this;
-                if(thiz.parsedElems.length === 0) return;
-
-                var gridDataObject = new GridData(this.gridData);
-                this.parsedElems.forEach(label => {
-                    var newElem = new GridElement({
-                        label: i18nService.getTranslationObject(label),
-                        x: gridDataObject.getNewXYPos().x,
-                        y: gridDataObject.getNewXYPos().y,
+                this.loading = true;
+                this.$nextTick(async () => {
+                    if (thiz.parsedElems.length === 0) return;
+                    let gridDataObject = new GridData(this.gridData);
+                    let freeCoordinates = gridUtil.getFreeCoordinates(this.gridData);
+                    this.parsedElems.forEach(label => {
+                        if (freeCoordinates.length === 0) {
+                            freeCoordinates = gridUtil.getFreeCoordinates(gridDataObject);
+                        }
+                        let position = freeCoordinates.shift();
+                        if (!position) {
+                            position = {
+                                x: 0,
+                                y: gridUtil.getHeightWithBounds(this.gridData)
+                            };
+                        }
+                        var newElem = new GridElement({
+                            label: i18nService.getTranslationObject(label),
+                            x: position.x,
+                            y: position.y,
+                        });
+                        gridDataObject.gridElements.push(newElem);
                     });
-                    gridDataObject.gridElements.push(newElem);
+                    await this.undoService.updateGrid(gridDataObject);
+                    this.loading = false;
+                    this.$emit('reload', gridDataObject);
+                    this.$emit('close');
                 });
-                await this.undoService.updateGrid(gridDataObject);
-                this.$emit('reload', gridDataObject);
-                this.$emit('close');
             }
         },
         mounted() {
