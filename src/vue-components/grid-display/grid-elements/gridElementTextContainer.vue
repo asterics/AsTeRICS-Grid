@@ -96,7 +96,7 @@ export default {
                 fontSize = newFontSize;
             }
             if (!this.disableAutoSizeKeyboard && this.metadata.textConfig.autoSizeKeyboardLetters && !this.withImage &&
-                (label.length === 1 || (label.length === 2 && /\p{Emoji}/u.test(label)))) { // keyboard letters
+                (label.length === 1 || (label.length === 2 && new RegExp(constants.EMOJI_REGEX, "").test(label)))) { // keyboard letters
                 fontSize = fontUtil.getFittingFontSize(label, this.$refs.txtContainer.parentElement, {
                     containerPct: kbdContainerPct,
                     lineHeight: this.lineHeight,
