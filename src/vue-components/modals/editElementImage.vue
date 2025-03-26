@@ -274,7 +274,7 @@
             this.searchLang = localStorageService.getJSON(EDIT_ELEM_SEARCH_LANG_PREFIX + this.searchProvider.name);
             helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
             let maxElementX = Math.max(...this.gridData.gridElements.map(e => e.x + 1));
-            this.elementW = Math.round($('#grid-container')[0].getBoundingClientRect().width / maxElementX);
+            this.elementW = Math.round($('#grid-container')[0].getBoundingClientRect().width / maxElementX) * (this.gridElement.width || 1);
             if (this.imageSearch) {
                 this.search(this.imageSearch);
             }
