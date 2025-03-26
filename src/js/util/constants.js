@@ -8,6 +8,7 @@ constants.LOCAL_NOLOGIN_USERNAME = 'default-user';
 constants.LOCAL_DEMO_USERNAME = 'local-demo-user';
 constants.LOCAL_DEFAULT_USER_PREFIX = 'default-';
 constants.USERNAME_REGEX = /^[a-z0-9][a-z0-9_-]{2,15}$/;
+constants.EMOJI_REGEX = /((\p{Regional_Indicator}{2})|((\p{Emoji}(?:\uFE0F|\u200D\p{Emoji})*)\u20E3?))/gu;
 
 constants.VALIDATION_ERROR_REGEX = 'VALIDATION_ERROR_REGEX';
 constants.VALIDATION_ERROR_EXISTING = 'VALIDATION_ERROR_EXISTING';
@@ -82,6 +83,8 @@ constants.BOARDS_REPO_BASE_URL = "https://asterics.github.io/AsTeRICS-Grid-Board
 constants.BOARD_TYPE_SELFCONTAINED = "BOARD_TYPE_SELFCONTAINED";
 constants.BOARD_TYPE_SINGLE = "BOARD_TYPE_SINGLE";
 constants.BOARD_TYPES = [constants.BOARD_TYPE_SELFCONTAINED, constants.BOARD_TYPE_SINGLE];
+
+
 
 constants.DEFAULT_ELEMENT_BACKGROUND_COLOR = '#ffffff';
 constants.DEFAULT_ELEMENT_BACKGROUND_COLOR_DARK = '#555555';
