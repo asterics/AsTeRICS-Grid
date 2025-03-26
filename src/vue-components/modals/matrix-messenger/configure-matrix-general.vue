@@ -1,14 +1,18 @@
 <template>
     <div class="container-fluid px-0" v-if="metadata">
         <div v-if="loggedInUser">
-            <div>You're logged in as user <strong>"{{loggedInUser}}"</strong>.</div>
+            <div class="mb-3">
+                <i18n path="LoggedInAsSentence" tag="span">
+                    <template v-slot:user>"<strong>{{loggedInUser}}</strong>"</template>
+                </i18n>
+            </div>
             <div v-if="e2eeSupported">
                 <i class="fas fa-lock"></i>
-                <span>End-to-end-encryption supported.</span>
+                <span>{{ $t('matrixE2eeSupported') }}.</span>
             </div>
             <div v-if="!e2eeSupported">
                 <i class="fas fa-lock-open"></i>
-                <span>End-to-end-encryption not enabled (not possible for multiple AsTeRICS Grid users on the same device).</span>
+                <span>{{ $t('matrixE2eeNotSupported') }}.</span>
             </div>
             <div class="mt-4">
                 <button @click="logout">
@@ -19,6 +23,14 @@
             </div>
         </div>
         <div v-if="!loggedInUser">
+            <div class="row mb-5">
+                <div class="col">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <i18n path="ifNoUserCreateMatrixAccount" tag="span">
+                        <template v-slot:link><a href="https://app.element.io/#/register" target="_blank">app.element.io</a></template>
+                    </i18n>
+                </div>
+            </div>
             <div class="row">
                 <label class="col-sm-3" for="matrixUser">{{ $t('username') }}</label>
                 <div class="col-sm-7">
@@ -43,8 +55,8 @@
                     <i v-if="!loginLoading" class="fas fa-sign-in-alt"></i>
                     <span>{{ $t('login') }}</span>
                 </button>
-                <span v-if="loginResult === LOGIN_RESULTS.UNAUTHORIZED" style="color: red"><i class="fas fa-times"></i> wrong username or password!</span>
-                <span v-if="loginResult === LOGIN_RESULTS.NETWORK_ERROR" style="color: red"><i class="fas fa-times"></i> network error!</span>
+                <span v-if="loginResult === LOGIN_RESULTS.UNAUTHORIZED" style="color: red"><i class="fas fa-times"></i> {{ $t('ERROR_CODE_UNAUTHORIZED') }}</span>
+                <span v-if="loginResult === LOGIN_RESULTS.NETWORK_ERROR" style="color: red"><i class="fas fa-times"></i> {{ $t('ERROR_CODE_NETWORK_ERROR') }}</span>
             </div>
         </div>
     </div>

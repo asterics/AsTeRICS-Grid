@@ -59,7 +59,7 @@ matrixAdapter.login = async function(syncConfig = null) {
 
     _loginPromise = Promise.resolve().then(async () => {
         if (!_syncConfig || !(_syncConfig.user && _syncConfig.password)) {
-            log.info('no login to matrix, no credentials configured!');
+            log.debug('matrix: not logging in, no credentials configured!');
             return matrixAdapter.LOGIN_RESULTS.MISSING_DATA;
         }
         if (_localConfig.homeserver && _localConfig.user &&

@@ -436,6 +436,7 @@
   "addOfflineUser": "Add offline user",
   "aboutAstericsGrid": "About AsTeRICS Grid",
   "loggedInAs": "logged in as",
+  "LoggedInAsSentence": "Logged in as {user}.",
   "usingOfflineUser": "offline user:",
   "notLoggedIn": "not logged in.",
   "accessKey1NavigationAccessKey2Main": "Access key 1: Navigation, Access key 2: Main",
@@ -1211,5 +1212,11 @@
   "sendMessage": "Send message",
   "closeModal": "Close",
   "cannotSendToEncryptedRoom": "Cannot send message to encrypted room, because encryption is currently not enabled",
-  "homeserver": "Homeserver"
+  "homeserver": "Homeserver",
+  "matrixE2eeSupported": "End-to-end encryption supported",
+  "matrixE2eeNotSupported": "End-to-end encryption disabled (not possible for multiple AsTeRICS Grid users on the same device)",
+  "loading": "Loading",
+  "pleaseLoginInTab": "Please login in tab {tab}",
+  "configureMatrixMessenger": "Configure matrix messenger",
+  "ifNoUserCreateMatrixAccount": "If you don't have a matrix account, you can register at {link}. You have to register using a username and a password."
 }

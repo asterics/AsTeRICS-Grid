@@ -15,9 +15,11 @@
                     <nav-tabs class="mb-5" :tab-labels="Object.keys(TABS)" v-model="currentTab"></nav-tabs>
 
                     <div class="modal-body mt-2">
-                        <div v-if="initialLoading">Loading ... <i class="fas fa-spinner fa-spin"></i></div>
+                        <div v-if="initialLoading">{{ $t("loading") }} ... <i class="fas fa-spinner fa-spin"></i></div>
                         <div v-if="!initialLoading && !loggedInUser && currentTab !== TABS.TAB_GENERAL">
-                            <span>Please login in tab <a href="javascript:;" @click="currentTab = TABS.TAB_GENERAL">General</a>.</span>
+                            <i18n path="pleaseLoginInTab" tag="span">
+                                <template v-slot:tab><a href="javascript:;" @click="currentTab = TABS.TAB_GENERAL">{{ $t('TAB_GENERAL') }}</a></template>
+                            </i18n>
                         </div>
                         <configure-matrix-general v-if="!initialLoading && currentTab === TABS.TAB_GENERAL" :logged-in-user="loggedInUser" @user="loggedInUserChanged"></configure-matrix-general>
                         <div v-if="!initialLoading && loggedInUser">
