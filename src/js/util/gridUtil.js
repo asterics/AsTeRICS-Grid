@@ -184,11 +184,16 @@ gridUtil.getOffset = function (globalGrid) {
     }
 };
 
+/**
+ * returns a list of free coordinates in the given grid
+ * @param gridData
+ * @returns {{x: *, y: *}[]}
+ */
 gridUtil.getFreeCoordinates = function (gridData) {
     let tempGridData = new GridData({}, gridData);
     let xyMap = {};
-    for (let x = 0; x < tempGridData.getWidthWithBounds(); x++) {
-        for (let y = 0; y < tempGridData.rowCount; y++) {
+    for (let y = 0; y < tempGridData.getHeightWithBounds(); y++) {
+        for (let x = 0; x < tempGridData.getWidthWithBounds(); x++) {
             xyMap[x + ' ' + y] = {
                 x: x,
                 y: y
