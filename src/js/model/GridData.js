@@ -95,8 +95,8 @@ class GridData extends Model({
             return freeCoordinates[0];
         }
         return {
-            x: maxX,
-            y: 0
+            x: 0,
+            y: gridUtil.getHeightWithBounds(this),
         };
     }
 
