@@ -51,7 +51,7 @@ matrixAdapter.login = async function(syncConfig = null) {
     }
     _localConfig = await getConfigLocal();
     _syncConfig = syncConfig || (await getSyncConfig());
-    if (_matrixClient && _loggedInUser === _localConfig.user && _loggedInDevice === _localConfig.deviceId) {
+    if (_matrixClient && _loggedInUser === matrixAdapter.getFullUserByName(_localConfig.user) && _loggedInDevice === _localConfig.deviceId) {
         log.info('matrix: already logged in');
         return matrixAdapter.LOGIN_RESULTS.SUCCESS;
     }
