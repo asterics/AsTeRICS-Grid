@@ -87,7 +87,17 @@
             }
         },
         async mounted() {
-            this.loggedInUser = await matrixService.getUsername();
+            let result = await matrixService.login();
+            switch (result) {
+                case matrixService.LOGIN_RESULTS.SUCCESS:
+                    this.loggedInUser = await matrixService.getUsername();
+                    break;
+                case matrixService.LOGIN_RESULTS.MISSING_DATA:
+                    this.loggedInUser = null;
+                    break;
+                default:
+                    log.warn("matrix: unknown error at login");
+            }
         },
         beforeDestroy() {
         }
