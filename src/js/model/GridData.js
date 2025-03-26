@@ -76,14 +76,14 @@ class GridData extends Model({
      * @return {*}
      */
     getNewXYPos(forBigElement) {
-        let maxX = this.gridElements.reduce((total, elem) => {
-            let totalX = elem.x + elem.width;
-            if (elem.y === 0 && totalX > total) {
-                total = totalX;
-            }
-            return total;
-        }, 0);
         if (forBigElement) {
+            let maxX = this.gridElements.reduce((total, elem) => {
+                let totalX = elem.x + elem.width;
+                if (elem.y === 0 && totalX > total) {
+                    total = totalX;
+                }
+                return total;
+            }, 0);
             return {
                 x: maxX,
                 y: 0
