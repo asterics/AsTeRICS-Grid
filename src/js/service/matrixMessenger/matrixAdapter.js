@@ -103,15 +103,26 @@ matrixAdapter.login = async function(syncConfig = null) {
                 return log.warn('matrix: init with access token failed, missing some data.');
             }
 
-            if(!localStorageService.anyMatrixUserUsingCrypto() || _localConfig.useCrypto) {
-                log.info(`init crypto for matrix user "${_localConfig.user}"...`);
-                await _matrixClient.initRustCrypto();
-                let cryptoLogger = _matrixClient.getCrypto().logger;
-                cryptoLogger.disableAll();
-                _localConfig.useCrypto = true;
-                saveLocalConfig();
-            } else {
-                log.info(`Not using crypto for matrix user "${_localConfig.user}" because another user already uses crypto on this device. Multiple users using crypto is currently not supported by matrix-js-sdk.`);
+            try {
+                if (!localStorageService.anyMatrixUserUsingCrypto() || _localConfig.useCrypto) {
+                    log.info(`init crypto for matrix user "${_localConfig.user}"...`);
+                    await _matrixClient.initRustCrypto();
+                    let cryptoLogger = _matrixClient.getCrypto().logger;
+                    cryptoLogger.disableAll();
+                    _localConfig.useCrypto = true;
+                    saveLocalConfig();
+                } else {
+                    log.info(`Not using crypto for matrix user "${_localConfig.user}" because another user already uses crypto on this device. Multiple users using crypto is currently not supported by matrix-js-sdk.`);
+                }
+            } catch (e) {
+                log.info('matrix: failed to init crypto, can be normal if not connected to internet', e);
+                const reLoginIfOnline = async () => {
+                    log.info('matrix: re-login after being online now.');
+                    window.removeEventListener('online', reLoginIfOnline);
+                    await matrixAdapter.reset();
+                    await matrixAdapter.login();
+                };
+                window.addEventListener('online', reLoginIfOnline);
             }
 
             _matrixClient.startClient();
