@@ -118,6 +118,9 @@ util.getClipboardContent = async function () {
 };
 
 util.gridElementsToClipboard = function(elements) {
+    if (!elements || !elements.length) {
+        return;
+    }
     util.copyToClipboard(JSON.stringify(elements));
 };
 

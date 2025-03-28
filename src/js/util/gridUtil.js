@@ -579,6 +579,10 @@ gridUtil.duplicateElement = function(element) {
     return duplicate;
 }
 
+gridUtil.duplicateElements = function(elements = []) {
+    return elements.map(e => gridUtil.duplicateElement(e));
+};
+
 gridUtil.ensureUniqueIds = function(gridElements) {
     let seenIds = [];
     for (let gridElement of gridElements) {
@@ -602,6 +606,24 @@ gridUtil.getOneElementSize = function(containerSize, gridData) {
         width: containerSize.width / width,
         height: containerSize.height / height
     };
+};
+
+/**
+ * returns true if elem3 is within the rectangle defined by elem1 and elem2
+ * @param elem1
+ * @param elem2
+ * @param elem3
+ * @returns {boolean}
+ */
+gridUtil.isWithinElements = function(elem1, elem2, elem3) {
+    if (!elem1 || !elem2 || !elem3) {
+        return false;
+    }
+    const left = Math.min(elem1.x, elem2.x);
+    const right = Math.max(elem1.x, elem2.x);
+    const top = Math.min(elem1.y, elem2.y);
+    const bottom = Math.max(elem1.y, elem2.y);
+    return elem3.x >= left && elem3.x <= right && elem3.y >= top && elem3.y <= bottom;
 };
 
 function getAllChildrenRecursive(gridGraphList, gridId) {
