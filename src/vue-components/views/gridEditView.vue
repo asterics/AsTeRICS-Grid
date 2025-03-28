@@ -95,11 +95,15 @@
                 editElementId: null,
                 showGrid: false,
                 constants: constants,
-                markedElement: null,
+                markedElementIds: [],
                 lastInteraction: {},
                 newPosition: null,
                 touchstartTimeoutHandler: null,
-                isInteracting: false
+                isInteracting: false,
+                unmarkTimeoutHandler: null,
+                shiftKeyHold: false,
+                ctrlKeyHold: false,
+                usingTouchscreen: false
             }
         },
         components: {
@@ -168,22 +172,44 @@
                     this.showEditModal = true;
                 }
             },
-            removeElement(id) {
-                let element = this.getElement(id);
-                if (!element) {
+            removeElements(shouldIncludeId = null) {
+                let removeIds = this.getElementIdsForAction(shouldIncludeId);
+                if (!removeIds.length) {
                     return;
                 }
-                this.gridData.gridElements = this.gridData.gridElements.filter((el) => el.id !== element.id);
+                this.gridData.gridElements = this.gridData.gridElements.filter((el) => !removeIds.includes(el.id));
                 this.updateGridWithUndo();
             },
-            async duplicateElement(id) {
-                let element = gridLayoutUtil.getElementById(this.gridData.gridElements, id);
-                let duplicate = gridUtil.duplicateElement(element);
-                this.gridData.gridElements = gridLayoutUtil.insertDuplicate(this.gridData.gridElements, element, duplicate, {
-                    gridWidth: this.gridData.minColumnCount,
-                    gridHeight: this.gridData.rowCount
-                });
-                this.updateGridWithUndo();
+            copyElements(shouldIncludeId = null) {
+                let elements = this.getElementsForAction(shouldIncludeId);
+                util.gridElementsToClipboard(elements);
+            },
+            copyAllElements() {
+                util.gridElementsToClipboard(this.gridData.gridElements);
+            },
+            cutElements(shouldIncludeId = null) {
+                let elements = this.getElementsForAction(shouldIncludeId);
+                if (!elements.length) {
+                    return;
+                }
+                util.gridElementsToClipboard(elements);
+                this.removeElements(shouldIncludeId);
+            },
+            async duplicateElements(shouldIncludeId = null) {
+                let elements = this.getElementsForAction(shouldIncludeId);
+                if (!elements.length) {
+                    return;
+                }
+                let duplicates = gridUtil.duplicateElements(elements);
+                if (duplicates.length === 1) {
+                    this.gridData.gridElements = gridLayoutUtil.insertDuplicate(this.gridData.gridElements, elements[0], duplicates[0], {
+                        gridWidth: this.gridData.minColumnCount,
+                        gridHeight: this.gridData.rowCount
+                    });
+                    return this.updateGridWithUndo();
+                } else {
+                    return this.pasteElements(duplicates);
+                }
             },
             async newElement(type, useInteractionPos) {
                 if (type === GridElement.ELEMENT_TYPE_NORMAL) {
@@ -254,36 +280,43 @@
                     }
                 }
             },
-            markElement(id) {
+            unmarkAll() {
                 $('.element-container').removeClass('marked');
+                this.markedElementIds = [];
+            },
+            markAll() {
+                $('.element-container').addClass('marked');
+                this.markedElementIds = this.gridData.gridElements.map(e => e.id);
+            },
+            markElement(id) {
                 if (!id) {
-                    this.markedElement = null;
                     return;
                 }
                 util.throttle(() => {
-                    if (!this.markedElement || this.markedElement.id !== id) {
-                        this.markedElement = this.getElement(id);
-                        $('#' + id).addClass('marked');
-                    } else {
-                        this.markedElement = null;
-                    }
-                }, null, 200, "MARK_ELEMENT");
-            },
-            handleClickEvent(event) {
-                if (vueApp) {
-                    let id = null;
-                    let element = event.target;
-                    while (!id && element.parentNode) {
-                        if (element.className.includes('element-container')) {
-                            id = element.id;
+                    if (this.shiftKeyHold && this.markedElementIds.length) {
+                        let allElems = this.gridData.gridElements;
+                        let clickedElem = allElems.find(e => e.id === id);
+                        let markedElems = this.markedElementIds.map(elId => allElems.find(e => e.id === elId));
+                        gridUtil.sortGridElements(markedElems);
+                        let addElems = allElems.filter(e => gridUtil.isWithinElements(clickedElem, markedElems[0], e));
+                        this.unmarkAll();
+                        for (let addElem of addElems) {
+                            this.markedElementIds.push(addElem.id);
+                            $('#' + addElem.id).addClass('marked');
                         }
-                        element = element.parentNode;
-                    }
-                    if (this.isInteracting && this.markedElement && this.markedElement.id === id) {
                         return;
                     }
-                    vueApp.markElement(id);
-                }
+                    if (!this.usingTouchscreen && !this.ctrlKeyHold) { // no multi-select mode
+                        this.unmarkAll();
+                    }
+                    if (!this.markedElementIds.includes(id)) {
+                        this.markedElementIds.push(id);
+                        $('#' + id).addClass('marked');
+                    } else {
+                        this.markedElementIds = this.markedElementIds.filter(elId => elId !== id);
+                        $('#' + id).removeClass('marked');
+                    }
+                }, null, 200, "MARK_ELEMENT");
             },
             highlightElement() {
                 if (this.highlightId) {
@@ -293,26 +326,9 @@
                     }, 4000);
                 }
             },
-            copyElement(elementId) {
-                let element = this.getElement(elementId);
-                if (!element) {
-                    return;
-                }
-                util.gridElementToClipboard(element);
-            },
-            copyAllElements() {
-                util.gridElementsToClipboard(this.gridData.gridElements);
-            },
-            cutElement(elementId) {
-                let element = this.getElement(elementId);
-                if (!element) {
-                    return;
-                }
-                util.gridElementToClipboard(element);
-                this.removeElement(elementId);
-            },
-            async pasteElements() {
-                let elements = await util.getGridElementsFromClipboard();
+            async pasteElements(elements = null) {
+                this.unmarkAll();
+                elements = elements || await util.getGridElementsFromClipboard();
                 if (!elements.length) {
                     return;
                 } else if (elements.length === 1) {
@@ -325,41 +341,65 @@
                     this.gridData.gridElements = gridLayoutUtil.resolveCollisions(this.gridData.gridElements, element);
                     this.updateGridWithUndo();
                 } else {
-                    let firstEmptyRow = gridUtil.getHeightWithBounds(this.gridData);
+                    let firstEmptyRow = gridUtil.getHeight(this.gridData);
+                    let minY = Math.min(...elements.map(e => e.y));
                     elements = elements.map(el => {
-                        el.y += firstEmptyRow;
+                        el.y += firstEmptyRow - minY;
                         return el;
                     });
                     this.gridData.gridElements = this.gridData.gridElements.concat(elements);
                     this.updateGridWithUndo();
                 }
             },
-            getElement(elementId) {
-                elementId = elementId || (this.markedElement ? this.markedElement.id : null);
-                return !elementId ? null : this.gridData.gridElements.filter(el => el.id === elementId)[0];
+            getElements(ids = []) {
+                return this.gridData.gridElements.filter(el => ids.includes(el.id));
+            },
+            getElementIdsForAction(shouldIncludeId = null) {
+                let ids = this.markedElementIds;
+                if (shouldIncludeId && !this.markedElementIds.includes(shouldIncludeId)) {
+                    this.unmarkAll();
+                    ids = [shouldIncludeId];
+                }
+                return ids;
+            },
+            getElementsForAction(shouldIncludeId = null) {
+                return this.getElements(this.getElementIdsForAction(shouldIncludeId));
             },
             onInteracted(x, y) {
                 this.lastInteraction.x = x;
                 this.lastInteraction.y = y;
             },
+            onClick(event) {
+                if (vueApp && !this.isInteracting) {
+                    let elementId = $(event.target).closest('.element-container').attr('id');
+                    if (elementId) {
+                        vueApp.markElement(elementId);
+                    } else {
+                        this.unmarkAll();
+                    }
+                }
+            },
             onTouchstart(event) {
+                this.usingTouchscreen = true;
                 if (!constants.IS_SAFARI) {
                     return;
                 }
                 this.touchstartTimeoutHandler = setTimeout(() => {
-                    let element = event.target;
-                    const position = { pageX: event.pageX, pageY: event.pageY };
-                    const newEvent = $.Event('contextmenu', position);
-                    while (element) {
-                        if (element.className.includes('element-container')) {
-                            $(element).trigger(newEvent);
-                            break;
-                        }
-                        if (element.id === 'grid-container') {
-                            $(element).trigger(newEvent);
-                            break;
-                        }
-                        element = element.parentElement;
+                    const newEvent = new MouseEvent("contextmenu", {
+                        bubbles: true,
+                        cancelable: true,
+                        clientX: event.touches[0].clientX,
+                        clientY: event.touches[0].clientY,
+                        pageX: event.touches[0].pageX,
+                        pageY: event.touches[0].pageY,
+                        screenX: event.touches[0].screenX,
+                        screenY: event.touches[0].screenY
+                    });
+                    let closestElement = $(event.target).closest('.element-container')[0];
+                    let containerElement = $(event.target).closest('#grid-container')[0];
+                    let dispatchElement = closestElement || containerElement;
+                    if (dispatchElement) {
+                        dispatchElement.dispatchEvent(newEvent);
                     }
                 }, 600)
             },
@@ -368,27 +408,56 @@
             },
             onInteractStart() {
                 this.isInteracting = true;
+                this.unmarkTimeoutHandler = setTimeout(() => {
+                    this.unmarkAll();
+                }, 100);
             },
             onInteractEnd() {
                 setTimeout(() => {
                     this.isInteracting = false; // reset after click event is fired
-                }, 100)
+                }, 100);
+                clearTimeout(this.unmarkTimeoutHandler);
+            },
+            onContextMenu(event) {
+                let clickedId = $(event.target).closest('.element-container').attr('id');
+                if (!clickedId || !this.markedElementIds.includes(clickedId)) {
+                    this.unmarkAll();
+                }
+            },
+            onKeyUp() {
+                this.shiftKeyHold = false;
+                this.ctrlKeyHold = false;
             },
             onKeyDown(event) {
                 if (this.showMultipleModal || this.showGridSettingsModal || this.showNavigateModal || this.showMoveModal || this.showTranslateModal || this.showEditModal) {
                     return;
                 }
                 const ctrlOrMeta = constants.IS_MAC ? event.metaKey : event.ctrlKey;
+                this.ctrlKeyHold = ctrlOrMeta;
                 const isUndoRedo = event.key.toLocaleUpperCase() === 'Z' || event.code === 'KeyZ';
                 if (!event.repeat) {
                     if (event.code === 'Delete') {
                         event.preventDefault();
-                        this.removeElement();
+                        this.removeElements();
+                    }
+                    if (event.code === 'Escape') {
+                        this.unmarkAll();
+                    }
+                    if (event.shiftKey) {
+                        this.shiftKeyHold = true;
                     }
                     if (ctrlOrMeta) {
+                        if (event.code === 'KeyA') {
+                            event.preventDefault();
+                            this.markAll();
+                        }
+                        if (event.code === 'KeyD') {
+                            event.preventDefault();
+                            this.duplicateElements();
+                        }
                         if (event.code === 'KeyC' && !event.shiftKey) {
                             event.preventDefault();
-                            this.copyElement();
+                            this.copyElements();
                         }
                         if (event.code === 'KeyC' && event.shiftKey) {
                             event.preventDefault();
@@ -396,7 +465,7 @@
                         }
                         if (event.code === 'KeyX') {
                             event.preventDefault();
-                            this.cutElement();
+                            this.cutElements();
                         }
                         if (event.code === 'KeyV') {
                             event.preventDefault();
@@ -433,6 +502,7 @@
         created() {
             $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
             document.addEventListener("keydown", this.onKeyDown);
+            document.addEventListener("keyup", this.onKeyUp);
         },
         mounted: async function () {
             pouchDbService.pauseSync();
@@ -460,11 +530,12 @@
             thiz.highlightElement();
             this.$nextTick(() => {
                 let container = document.getElementById('grid-container');
-                container.addEventListener('click', this.handleClickEvent);
+                container.addEventListener('click', this.onClick);
                 container.addEventListener('touchstart', this.onTouchstart);
                 container.addEventListener('touchmove', this.onTouchEnd);
                 container.addEventListener('touchcancel', this.onTouchEnd);
                 container.addEventListener('touchend', this.onTouchEnd);
+                container.addEventListener("contextmenu", this.onContextMenu);
                 collectElementService.initWithElements(this.gridData.gridElements);
                 liveElementService.updateOnce({ elements: this.gridData.gridElements });
             });
@@ -473,13 +544,15 @@
             pouchDbService.resumeSync();
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
             document.removeEventListener("keydown", this.onKeyDown);
+            document.removeEventListener("keyup", this.onKeyUp);
             let container = document.getElementById('grid-container');
             if (container) {
-                container.removeEventListener('click', this.handleClickEvent);
+                container.removeEventListener('click', this.onClick);
                 container.removeEventListener('touchstart', this.onTouchstart);
                 container.removeEventListener('touchmove', this.onTouchEnd);
                 container.removeEventListener('touchcancel', this.onTouchEnd);
                 container.removeEventListener('touchend', this.onTouchEnd);
+                container.removeEventListener("contextmenu", this.onContextMenu);
             }
             vueApp = null;
             $.contextMenu('destroy');
@@ -548,18 +621,19 @@
             CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
         };
 
+        let visibleNormalFn = () => vueApp && vueApp.markedElementIds.length <= 1;
         var itemsElemNormal = {
-            CONTEXT_ACTION_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit"},
+            CONTEXT_ACTION_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit", visible: visibleNormalFn},
             CONTEXT_ACTION_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt"},
             CONTEXT_ACTION_DUPLICATE: {name: i18nService.t('clone'), icon: "far fa-clone"},
             SEP1: "---------",
             CONTEXT_ACTION_COPY: {name: i18nService.t('copy'), icon: "far fa-copy"},
             CONTEXT_ACTION_CUT: {name: i18nService.t('cut'), icon: "fas fa-cut"},
             CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
-            SEP2: "---------",
-            CONTEXT_GRID_NAVIGATION: {name: i18nService.t('navigateToOtherGrid'), icon: "fas fa-arrow-right"},
-            CONTEXT_MOVE_TO: {name: i18nService.t('moveElementToOtherGrid'), icon: "fas fa-file-export"},
-            CONTEXT_ACTION_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt"},
+            separator: { "type": "cm_separator", visible: visibleNormalFn},
+            CONTEXT_GRID_NAVIGATION: {name: i18nService.t('navigateToOtherGrid'), icon: "fas fa-arrow-right", visible: visibleNormalFn},
+            CONTEXT_MOVE_TO: {name: i18nService.t('moveElementToOtherGrid'), icon: "fas fa-file-export", visible: visibleNormalFn},
+            CONTEXT_ACTION_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt", visible: visibleNormalFn},
         };
 
         let itemsLayout = {
@@ -572,13 +646,13 @@
             }
         };
 
-        let visibleFn = () => !!vueApp.markedElement;
-        let visibleFnFill = () => !new GridData({}, vueApp.gridData).isFull();
+        let visibleFn = () => vueApp.markedElementIds.length === 1;
+        let disabledFnFill = () => new GridData({}, vueApp.gridData).isFull();
         var itemsMoreMenuButton = {
             "SELECTED_ELEM_ACTIONS": {name: i18nService.t('selectedElementContextMenu'), icon: "far fa-square", visible: visibleFn, items: itemsElemNormal},
-            separator: { "type": "cm_separator", visible: () => (vueApp.markedElement)},
+            separator: { "type": "cm_separator", visible: visibleFn},
             CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP],
-            'CONTEXT_FILL_EMPTY': {name: i18nService.t('fillWithEmptyElements'), icon: "fas fa-fill", visible: visibleFnFill},
+            'CONTEXT_FILL_EMPTY': {name: i18nService.t('fillWithEmptyElements'), icon: "fas fa-fill", disabled: disabledFnFill},
             'CONTEXT_COPY_ALL': {name: i18nService.t('copyAllElements'), icon: "fas fa-copy"},
             'CONTEXT_DELETE_ALL': {name: i18nService.t('deleteAllElements'), icon: "fas fa-minus-circle"},
             SEP1: "---------",
@@ -696,42 +770,42 @@
                     break;
                 }
                 case CONTEXT_GRID_NAVIGATION: {
-                    vueApp.editElementId = elementId || vueApp.markedElement.id;
-                    vueApp.markElement(null);
+                    vueApp.editElementId = elementId;
+                    vueApp.unmarkAll();
                     vueApp.showNavigateModal = true;
                     break;
                 }
                 case CONTEXT_ACTION_EDIT:
-                    vueApp.editElement(elementId || vueApp.markedElement.id);
-                    vueApp.markElement(null);
+                    vueApp.editElement(elementId);
+                    vueApp.unmarkAll();
                     break;
                 case CONTEXT_ACTION_DELETE:
-                    vueApp.removeElement(elementId || vueApp.markedElement.id);
-                    vueApp.markElement(null);
+                    vueApp.removeElements(elementId);
+                    vueApp.unmarkAll();
                     break;
                 case CONTEXT_ACTION_DUPLICATE:
-                    vueApp.duplicateElement(elementId || vueApp.markedElement.id);
-                    vueApp.markElement(null);
+                    vueApp.duplicateElements(elementId);
+                    vueApp.unmarkAll();
                     break;
                 case CONTEXT_ACTION_COPY:
-                    vueApp.copyElement(elementId);
-                    vueApp.markElement(null);
+                    vueApp.copyElements(elementId);
+                    vueApp.unmarkAll();
                     break;
                 case CONTEXT_ACTION_CUT:
-                    vueApp.cutElement(elementId);
-                    vueApp.markElement(null);
+                    vueApp.cutElements(elementId);
+                    vueApp.unmarkAll();
                     break;
                 case CONTEXT_ACTION_PASTE:
                     vueApp.pasteElements();
-                    vueApp.markElement(null);
+                    vueApp.unmarkAll();
                     break;
                 case CONTEXT_ACTION_DO_ACTION:
-                    actionService.doAction(vueApp.gridData.id, elementId || vueApp.markedElement.id);
-                    vueApp.markElement(null);
+                    actionService.doAction(vueApp.gridData.id, elementId);
+                    vueApp.unmarkAll();
                     break;
                 case CONTEXT_MOVE_TO:
-                    vueApp.editElementId = elementId || vueApp.markedElement.id;
-                    vueApp.markElement(null);
+                    vueApp.editElementId = elementId;
+                    vueApp.unmarkAll();
                     vueApp.showMoveModal = true;
                     break;
                 case CONTEXT_EDIT_GLOBAL_GRID:
