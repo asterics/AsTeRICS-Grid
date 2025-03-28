@@ -339,7 +339,13 @@
                     element.y = this.lastInteraction.y !== undefined ? this.lastInteraction.y : 0;
                     this.gridData.gridElements.push(element);
                     this.gridData.gridElements = gridLayoutUtil.resolveCollisions(this.gridData.gridElements, element);
-                    this.updateGridWithUndo();
+                } else if (gridLayoutUtil.elementsCanBeInsertedAt(this.gridData, elements, this.lastInteraction)) {
+                    let normalized = gridLayoutUtil.normalizePositions(elements);
+                    for (let element of normalized) {
+                        element.x += this.lastInteraction.x;
+                        element.y += this.lastInteraction.y;
+                    }
+                    this.gridData.gridElements = this.gridData.gridElements.concat(normalized);
                 } else {
                     let firstEmptyRow = gridUtil.getHeight(this.gridData);
                     let minY = Math.min(...elements.map(e => e.y));
@@ -348,8 +354,8 @@
                         return el;
                     });
                     this.gridData.gridElements = this.gridData.gridElements.concat(elements);
-                    this.updateGridWithUndo();
                 }
+                this.updateGridWithUndo();
             },
             getElements(ids = []) {
                 return this.gridData.gridElements.filter(el => ids.includes(el.id));
