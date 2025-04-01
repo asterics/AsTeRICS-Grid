@@ -672,10 +672,10 @@
             }
         };
 
-        let visibleFn = () => vueApp.markedElementIds.length === 1;
+        let visibleFn = () => vueApp.markedElementIds.length >= 1;
         let disabledFnFill = () => new GridData({}, vueApp.gridData).isFull();
         var itemsMoreMenuButton = {
-            "SELECTED_ELEM_ACTIONS": {name: i18nService.t('selectedElementContextMenu'), icon: "far fa-square", visible: visibleFn, items: itemsElemNormal},
+            "SELECTED_ELEM_ACTIONS": {name: i18nService.t('selectedElementsContextMenu'), icon: "far fa-square", visible: visibleFn, items: itemsElemNormal},
             separator: { "type": "cm_separator", visible: visibleFn},
             CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP],
             'CONTEXT_FILL_EMPTY': {name: i18nService.t('fillWithEmptyElements'), icon: "fas fa-fill", disabled: disabledFnFill},
