@@ -531,13 +531,31 @@
                         event.preventDefault();
                         this.removeElements();
                     }
+                    if (event.key === 'Enter') {
+                        if (this.brushObject) {
+                            this.applyPropertyBrush();
+                        }
+                    }
                     if (event.code === 'Escape') {
                         this.unmarkAll();
+                        if (this.brushObject) {
+                            this.stopPropertyBrush();
+                        }
                     }
                     if (event.shiftKey) {
                         this.shiftKeyHold = true;
                     }
                     if (ctrlOrMeta) {
+                        if (event.shiftKey && event.code === 'KeyA') {
+                            event.preventDefault();
+                            this.configPropertyBrushAll();
+                            return;
+                        }
+                        if (event.shiftKey && event.code === 'KeyC') {
+                            event.preventDefault();
+                            this.configPropertyBrushAppearance();
+                            return;
+                        }
                         if (event.code === 'KeyA') {
                             event.preventDefault();
                             this.markAll();
