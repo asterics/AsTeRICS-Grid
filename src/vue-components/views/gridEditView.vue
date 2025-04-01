@@ -149,6 +149,7 @@
                 this.startPropertyBrush(brushObject);
             },
             startPropertyBrush(brushObject) {
+                $.contextMenu('destroy');
                 this.unmarkAll();
                 $('.element-container').removeClass('brush-source');
                 $('#' + this.editElementId).addClass('brush-source');
@@ -169,6 +170,7 @@
                 this.stopPropertyBrush();
             },
             stopPropertyBrush() {
+                initContextmenu();
                 this.brushObject = null;
                 $('#' + this.editElementId).removeClass('brush-source');
                 this.unmarkAll();
