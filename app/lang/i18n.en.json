@@ -1199,5 +1199,6 @@
   "propertyName": "Property name",
   "checked": "checked",
   "unchecked": "unchecked",
-  "othersHeading": "Others"
+  "othersHeading": "Others",
+  "languageLevel": "Language level"
 }

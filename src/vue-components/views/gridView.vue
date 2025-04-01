@@ -414,6 +414,9 @@
                     this.renderGridData = gridData;
                 }
                 this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.hidden);
+                if (this.metadata.languageLevel) {
+                    this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.languageLevel || e.languageLevel <= this.metadata.languageLevel);
+                }
                 stateService.setCurrentGrid(this.renderGridData);
             },
             onSidebarOpen() {

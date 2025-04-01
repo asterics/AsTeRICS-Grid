@@ -23,7 +23,8 @@ class MetaData extends Model({
     colorConfig: [ColorConfig],
     textConfig: [TextConfig],
     notificationConfig: [NotificationConfig],
-    activateARASAACGrammarAPI: [Boolean]
+    activateARASAACGrammarAPI: [Boolean],
+    languageLevel: [Number, null]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, MetaData) || {};
@@ -84,7 +85,8 @@ MetaData.defaults({
     hashCodes: {},
     inputConfig: new InputConfig(),
     globalGridActive: false,
-    globalGridHeightPercentage: 17
+    globalGridHeightPercentage: 17,
+    languageLevel: null
 });
 
 export { MetaData };
