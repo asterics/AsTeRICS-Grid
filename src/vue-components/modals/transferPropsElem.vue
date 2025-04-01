@@ -17,7 +17,8 @@
                         <span v-if="gridElement[propObject.path]"><i class="far fa-check-square"/> {{ $t('checked') }}</span>
                         <span v-if="!gridElement[propObject.path]"><i class="far fa-square"/> {{ $t('unchecked') }}</span>
                     </div>
-                    <span v-if="propObject.type === TYPES.PERCENTAGE">{{ JSON.stringify(gridElement[propObject.path]) }}%</span>
+                    <span v-if="propObject.type === TYPES.PERCENTAGE">{{ gridElement[propObject.path] }}%</span>
+                    <span v-if="propObject.type === TYPES.NUMBER">{{ gridElement[propObject.path] }}</span>
                     <span v-if="propObject.type === TYPES.TEXT">{{ $t(gridElement[propObject.path]) }}</span>
                     <div class="p-1" v-if="propObject.type === TYPES.COLOR" :style="`background-color: ${gridElement[propObject.path]}; color: ${fontUtil.getHighContrastColor(gridElement[propObject.path])}; text-align: center`">{{ gridElement[propObject.path] }}</div>
                 </div>

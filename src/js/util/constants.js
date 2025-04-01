@@ -86,7 +86,8 @@ constants.PROP_TRANSFER_TYPES = {
     BOOLEAN: "BOOLEAN",
     COLOR: "COLOR",
     PERCENTAGE: "PERCENTAGE",
-    TEXT: "TEXT"
+    TEXT: "TEXT",
+    NUMBER: "NUMBER"
 };
 constants.PROP_TRANSFER_CATEGORIES = {
     APPEARANCE: "APPEARANCE",
@@ -121,6 +122,12 @@ constants.TRANSFER_PROPS = {
         path: 'hidden',
         label: 'hideElement',
         type: constants.PROP_TRANSFER_TYPES.BOOLEAN,
+        category: constants.PROP_TRANSFER_CATEGORIES.OTHERS
+    },
+    LANGUAGE_LEVEL: {
+        path: 'languageLevel',
+        label: 'languageLevel',
+        type: constants.PROP_TRANSFER_CATEGORIES.NUMBER,
         category: constants.PROP_TRANSFER_CATEGORIES.OTHERS
     },
     DONT_COLLECT: {
