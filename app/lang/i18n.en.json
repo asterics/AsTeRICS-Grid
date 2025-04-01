@@ -1188,5 +1188,12 @@
   "EXTRACT_JSON": "Extract from JSON",
   "EXTRACT_HTML_SELECTOR": "Extract from HTML",
   "quickEdit": "Quick edit",
-  "hideUnhide": "Hide / Unhide"
+  "hideUnhide": "Hide / Unhide",
+  "propertyBrush": "Property brush",
+  "appearanceBracket": "(appearance)",
+  "selectPropsToTransfer": "Select properties to transfer",
+  "transferQuestionmark": "Transfer?",
+  "propertyName": "Property name",
+  "checked": "checked",
+  "unchecked": "unchecked"
 }

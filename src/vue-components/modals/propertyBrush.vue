@@ -8,11 +8,11 @@
                     </div>
 
                     <div class="modal-body container-fluid px-0" v-if="gridElement">
-                        <span>Select properties to transfer.</span>
+                        <span>{{ $t('selectPropsToTransfer') }}.</span>
                         <div class="d-none d-sm-flex row mt-4" aria-hidden="true">
-                            <strong class="col-sm-2">Transfer?</strong>
-                            <strong class="col-sm-5">Property name</strong>
-                            <strong class="col-sm-3">Current value</strong>
+                            <strong class="col-sm-2">{{ $t('transferQuestionmark') }}</strong>
+                            <strong class="col-sm-5">{{ $t('propertyName') }}</strong>
+                            <strong class="col-sm-3">{{ $t('currentValue') }}</strong>
                         </div>
                         <div class="mt-5 mt-sm-3" v-for="key in Object.keys(PROPS)">
                             <property-brush-elem :prop-object="PROPS[key]" :grid-element="gridElement" @change="(transfer) => selectProp(transfer, PROPS[key])"/>
@@ -54,7 +54,7 @@ export default {
         return {
             gridData: null,
             gridElement: null,
-            brushObject: {},
+            brushObject: gridUtil.getBrushObjectBase(),
             PROPS: constants.BRUSH_PROPS
         }
     },
@@ -82,9 +82,6 @@ export default {
         }
     },
     async mounted() {
-        for (let path of gridUtil.getPossibleBrushPaths()) {
-            this.$set(this.brushObject, path, constants.BRUSH_DONT_CHANGE_VALUE);
-        }
         dataService.getGrid(this.gridId).then(gridData => {
             this.gridData = JSON.parse(JSON.stringify(gridData));
             this.gridElement = this.gridData.gridElements.find(e => e.id === this.gridElementId);

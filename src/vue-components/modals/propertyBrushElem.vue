@@ -9,7 +9,7 @@
             <label class="d-inline-block d-sm-none" :for="'transfer2' + propObject.path">{{ $t(propObject.label) }}</label>
         </div>
         <div class="col-sm-3">
-            <span class="d-inline-block d-sm-none">Current value:</span>
+            <span class="d-inline-block d-sm-none">{{ $t('currentValue') }}:</span>
             <div class="d-inline-block">
                 <span v-if="gridElement[propObject.path] === undefined && propObject.type !== TYPES.BOOLEAN">{{ $t('noneSelected') }}</span>
                 <div v-if="gridElement[propObject.path] !== undefined || propObject.type === TYPES.BOOLEAN">
@@ -19,7 +19,7 @@
                     </div>
                     <span v-if="propObject.type === TYPES.PERCENTAGE">{{ JSON.stringify(gridElement[propObject.path]) }}%</span>
                     <span v-if="propObject.type === TYPES.TEXT">{{ $t(gridElement[propObject.path]) }}</span>
-                    <div v-if="propObject.type === TYPES.COLOR" :style="`background-color: ${gridElement[propObject.path]}; color: ${fontUtil.getHighContrastColor(gridElement[propObject.path])}; text-align: center`">{{ gridElement[propObject.path] }}</div>
+                    <div class="p-1" v-if="propObject.type === TYPES.COLOR" :style="`background-color: ${gridElement[propObject.path]}; color: ${fontUtil.getHighContrastColor(gridElement[propObject.path])}; text-align: center`">{{ gridElement[propObject.path] }}</div>
                 </div>
             </div>
         </div>

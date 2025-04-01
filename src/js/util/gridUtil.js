@@ -632,8 +632,34 @@ gridUtil.isWithinElements = function(elem1, elem2, elem3) {
  */
 gridUtil.getPossibleBrushPaths = function() {
     let brushKeys = Object.keys(constants.BRUSH_PROPS);
-    return  brushKeys.map(key => constants.BRUSH_PROPS[key].path);
+    return brushKeys.map(key => constants.BRUSH_PROPS[key].path);
 }
+
+gridUtil.getBrushObjectBase = function() {
+    let brushObject = {};
+    for (let path of gridUtil.getPossibleBrushPaths()) {
+        brushObject[path] = constants.BRUSH_DONT_CHANGE_VALUE;
+    }
+    return brushObject;
+}
+
+gridUtil.getBrushObjectAll = function(sourceElement) {
+    let brushObject = {};
+    for (let path of gridUtil.getPossibleBrushPaths()) {
+        brushObject[path] = sourceElement[path];
+    }
+    return brushObject;
+}
+
+gridUtil.getBrushObjectAppearance = function(sourceElement) {
+    let props = constants.BRUSH_PROPS;
+    let appearanceProps = [props.COLOR_CATEGORY, props.BACKGROUND_COLOR, props.FONT_COLOR, props.FONT_SIZE];
+    let brushObject = gridUtil.getBrushObjectBase();
+    for (let prop of appearanceProps) {
+        brushObject[prop.path] = sourceElement[prop.path];
+    }
+    return brushObject;
+};
 
 function getAllChildrenRecursive(gridGraphList, gridId) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];

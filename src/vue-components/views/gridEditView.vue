@@ -132,6 +132,22 @@
                 this.editElementId = id || this.markedElementIds[0];
                 this.showPropertyBrushModal = true;
             },
+            configPropertyBrushAll(id) {
+                if (!id && this.markedElementIds.length !== 1) {
+                    return;
+                }
+                this.editElementId = id || this.markedElementIds[0];
+                let brushObject = gridUtil.getBrushObjectAll(this.getElement(this.editElementId));
+                this.startPropertyBrush(brushObject);
+            },
+            configPropertyBrushAppearance(id) {
+                if (!id && this.markedElementIds.length !== 1) {
+                    return;
+                }
+                this.editElementId = id || this.markedElementIds[0];
+                let brushObject = gridUtil.getBrushObjectAppearance(this.getElement(this.editElementId));
+                this.startPropertyBrush(brushObject);
+            },
             startPropertyBrush(brushObject) {
                 this.unmarkAll();
                 $('.element-container').removeClass('brush-source');
@@ -419,6 +435,9 @@
             getElements(ids = []) {
                 return this.gridData.gridElements.filter(el => ids.includes(el.id));
             },
+            getElement(id) {
+                return this.gridData.gridElements.find(el => el.id === id);
+            },
             getElementIdsForAction(shouldIncludeId = null) {
                 let ids = this.markedElementIds;
                 if (shouldIncludeId && !this.markedElementIds.includes(shouldIncludeId)) {
@@ -484,6 +503,10 @@
                 clearTimeout(this.unmarkTimeoutHandler);
             },
             onContextMenu(event) {
+                if (this.brushObject) {
+                    event.preventDefault();
+                    return;
+                }
                 let clickedId = $(event.target).closest('.element-container').attr('id');
                 if (!clickedId || !this.markedElementIds.includes(clickedId)) {
                     this.unmarkAll();
@@ -670,6 +693,8 @@
 
         let CONTEXT_QUICK_HIDE = "CONTEXT_QUICK_HIDE";
         let CONTEXT_PROPERTY_BRUSH = "CONTEXT_PROPERTY_BRUSH";
+        let CONTEXT_PROPERTY_BRUSH_APPEARANCE = "CONTEXT_PROPERTY_BRUSH_APPEARANCE";
+        let CONTEXT_PROPERTY_BRUSH_ALL = "CONTEXT_PROPERTY_BRUSH_ALL";
 
         var itemsGlobal = {
             CONTEXT_NEW_GROUP: {
@@ -700,7 +725,9 @@
         let itemsQuickEdit = {
             'CONTEXT_QUICK_HIDE': { name: i18nService.t('hideUnhide'), icon: 'fas fa-eye-slash' },
             SEP1: "---------",
-            'CONTEXT_PROPERTY_BRUSH': { name: i18nService.t('propertyBrush'), icon: 'fas fa-paint-brush' }
+            'CONTEXT_PROPERTY_BRUSH_ALL': { name: `${i18nService.t('propertyBrush')} ${i18nService.t('allSelected')}`, icon: 'fas fa-paint-brush' },
+            'CONTEXT_PROPERTY_BRUSH_APPEARANCE': { name: `${i18nService.t('propertyBrush')} ${i18nService.t('appearanceBracket')}`, icon: 'fas fa-paint-brush' },
+            'CONTEXT_PROPERTY_BRUSH': { name: i18nService.t('propertyBrush') + "...", icon: 'fas fa-paint-brush' }
         };
 
         let visibleNormalFn = () => vueApp && vueApp.markedElementIds.length <= 1;
@@ -853,6 +880,14 @@
                 }
                 case CONTEXT_PROPERTY_BRUSH: {
                     vueApp.configPropertyBrush(elementId);
+                    break;
+                }
+                case CONTEXT_PROPERTY_BRUSH_APPEARANCE: {
+                    vueApp.configPropertyBrushAppearance(elementId);
+                    break;
+                }
+                case CONTEXT_PROPERTY_BRUSH_ALL: {
+                    vueApp.configPropertyBrushAll(elementId);
                     break;
                 }
                 case CONTEXT_GRID_NAVIGATION: {
