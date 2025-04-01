@@ -23,9 +23,6 @@
             <grid-settings-modal v-if="showGridSettingsModal" :grid-data-param="gridData" :is-global-grid="metadata.globalGridId === gridData.id" @reload="reload" @close="showGridSettingsModal = false;" :undo-service="undoService"/>
         </div>
         <div>
-            <element-move-modal v-if="showMoveModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showMoveModal = false" @reload="reload"/>
-        </div>
-        <div>
             <grid-translate-modal v-if="showTranslateModal" :grid-data-id="gridData.id" @close="showTranslateModal = false" @reload="reload"/>
         </div>
         <div>
@@ -58,7 +55,6 @@
     import {util} from "../../js/util/util";
     import GridSettingsModal from "../modals/gridSettingsModal.vue";
     import {gridUtil} from "../../js/util/gridUtil";
-    import ElementMoveModal from "../modals/elementMoveModal.vue";
     import GridTranslateModal from "../modals/gridTranslateModal.vue";
     import SetNavigationModal from "../modals/setNavigationModal.vue";
     import {GridActionYoutube} from "../../js/model/GridActionYoutube";
@@ -89,7 +85,6 @@
                 showMultipleModal: false,
                 showGridSettingsModal: false,
                 showNavigateModal: false,
-                showMoveModal: false,
                 showTranslateModal: false,
                 showEditModal: false,
                 editElementId: null,
@@ -110,7 +105,6 @@
             AppGridDisplay,
             SetNavigationModal,
             GridTranslateModal,
-            ElementMoveModal,
             GridSettingsModal, EditElement, AddMultipleModal, HeaderIcon
         },
         methods: {
@@ -440,7 +434,7 @@
                 this.ctrlKeyHold = false;
             },
             onKeyDown(event) {
-                if (this.showMultipleModal || this.showGridSettingsModal || this.showNavigateModal || this.showMoveModal || this.showTranslateModal || this.showEditModal) {
+                if (this.showMultipleModal || this.showGridSettingsModal || this.showNavigateModal || this.showTranslateModal || this.showEditModal) {
                     return;
                 }
                 const ctrlOrMeta = constants.IS_MAC ? event.metaKey : event.ctrlKey;
@@ -584,7 +578,6 @@
         let CONTEXT_ACTION_CUT = 'CONTEXT_ACTION_CUT';
         let CONTEXT_ACTION_PASTE = 'CONTEXT_ACTION_PASTE';
         let CONTEXT_ACTION_DO_ACTION = 'CONTEXT_ACTION_DO_ACTION';
-        let CONTEXT_MOVE_TO = 'CONTEXT_MOVE_TO';
 
         var CONTEXT_NEW_GROUP = "CONTEXT_NEW_GROUP";
         var CONTEXT_NEW_SINGLE = "CONTEXT_NEW_SINGLE";
@@ -643,7 +636,6 @@
             CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
             separator: { "type": "cm_separator", visible: visibleNormalFn},
             CONTEXT_GRID_NAVIGATION: {name: i18nService.t('navigateToOtherGrid'), icon: "fas fa-arrow-right", visible: visibleNormalFn},
-            CONTEXT_MOVE_TO: {name: i18nService.t('moveElementToOtherGrid'), icon: "fas fa-file-export", visible: visibleNormalFn},
             CONTEXT_ACTION_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt", visible: visibleNormalFn},
         };
 
@@ -813,11 +805,6 @@
                 case CONTEXT_ACTION_DO_ACTION:
                     actionService.doAction(vueApp.gridData.id, elementId);
                     vueApp.unmarkAll();
-                    break;
-                case CONTEXT_MOVE_TO:
-                    vueApp.editElementId = elementId;
-                    vueApp.unmarkAll();
-                    vueApp.showMoveModal = true;
                     break;
                 case CONTEXT_EDIT_GLOBAL_GRID:
                     Router.toEditGrid(vueApp.gridData.globalGridId || vueApp.metadata.globalGridId);
