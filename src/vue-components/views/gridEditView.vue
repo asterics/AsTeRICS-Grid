@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <header class="srow header" role="toolbar" v-if="!brushObject">
+        <header class="srow header" role="toolbar" v-show="!brushObject">
             <header-icon class="left"></header-icon>
             <button tabindex="30" @click="back" :aria-label="$t('editingOff')" class="spaced small left">
                 <i class="fas fa-eye"></i>
@@ -13,7 +13,7 @@
                 <button tabindex="32" @click="redo"  :aria-label="$t('redo')" :disabled="doingUndoRedo || !undoService.canRedo()" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span></button>
             </div>
         </header>
-        <header class="d-flex align-items-center brush-header" role="toolbar" v-if="brushObject" style="font-size: 1em !important;">
+        <header class="d-flex align-items-center brush-header" role="toolbar" v-if="brushObject">
             <div class="me-5">
                 <strong class="me-2">
                     <i class="fas fa-paint-brush"></i>&nbsp;<span class="d-none d-sm-inline-block">Property brush:</span>
