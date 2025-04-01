@@ -138,7 +138,8 @@ GridElement.DEFAULTS = {
     additionalProps: {},
     wordForms: [],
     x: 0,
-    y: 0
+    y: 0,
+    hidden: false
 }
 
 export { GridElement };

@@ -205,6 +205,17 @@
                     return this.pasteElements(duplicates);
                 }
             },
+            hideUnhideElements(shouldIncludeId = null) {
+                let elements = this.getElementsForAction(shouldIncludeId);
+                if (!elements.length) {
+                    return;
+                }
+                let allHidden = elements.every(e => e.hidden);
+                for (let element of elements) {
+                    element.hidden = !allHidden;
+                }
+                this.updateGridWithUndo();
+            },
             async newElement(type, useInteractionPos) {
                 if (type === GridElement.ELEMENT_TYPE_NORMAL) {
                     this.editElementId = null;
@@ -477,6 +488,10 @@
                             event.preventDefault();
                             this.pasteElements();
                         }
+                        if (event.code === 'KeyH') {
+                            event.preventDefault();
+                            this.hideUnhideElements();
+                        }
                         if (isUndoRedo && !event.shiftKey) {
                             event.preventDefault();
                             this.undo();
@@ -600,6 +615,8 @@
         var CONTEXT_END_EDIT_GLOBAL_GRID = "CONTEXT_END_EDIT_GLOBAL_GRID";
         var CONTEXT_SEARCH = "CONTEXT_SEARCH";
 
+        let CONTEXT_QUICK_HIDE = "CONTEXT_QUICK_HIDE";
+
         var itemsGlobal = {
             CONTEXT_NEW_GROUP: {
                 name: i18nService.t('new'), icon: "fas fa-plus-circle", items: {
@@ -626,11 +643,16 @@
             CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
         };
 
+        let itemsQuickEdit = {
+            'CONTEXT_QUICK_HIDE': { name: i18nService.t('hideUnhide'), icon: 'fas fa-eye-slash' }
+        };
+
         let visibleNormalFn = () => vueApp && vueApp.markedElementIds.length <= 1;
         var itemsElemNormal = {
             CONTEXT_ACTION_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit", visible: visibleNormalFn},
             CONTEXT_ACTION_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt"},
             CONTEXT_ACTION_DUPLICATE: {name: i18nService.t('clone'), icon: "far fa-clone"},
+            "QUICK_EDIT": {name: i18nService.t('quickEdit'), icon: "fas fa-stopwatch", items: itemsQuickEdit},
             SEP1: "---------",
             CONTEXT_ACTION_COPY: {name: i18nService.t('copy'), icon: "far fa-copy"},
             CONTEXT_ACTION_CUT: {name: i18nService.t('cut'), icon: "fas fa-cut"},
@@ -789,6 +811,10 @@
                     break;
                 case CONTEXT_ACTION_DUPLICATE:
                     vueApp.duplicateElements(elementId);
+                    vueApp.unmarkAll();
+                    break;
+                case CONTEXT_QUICK_HIDE:
+                    vueApp.hideUnhideElements(elementId);
                     vueApp.unmarkAll();
                     break;
                 case CONTEXT_ACTION_COPY:
