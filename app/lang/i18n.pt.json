@@ -1147,7 +1147,7 @@
   "showGlobalGrid": "Mostrar tabela global",
   "selectGlobalGrid": "Selecionar tabela global",
   "defaultGlobalGrid": "Tabela global predefinida",
-  "selectedElementContextMenu": "Célula selecionada",
+  "selectedElementsContextMenu": "Selected element(s)",
   "copy": "Copiar",
   "cut": "Cortar",
   "paste": "Colar",
@@ -1186,5 +1186,14 @@
   "delayMs": "Atraso (ms)",
   "valueToDisplay": "Valor a mostrar",
   "EXTRACT_JSON": "Extrair de JSON",
-  "EXTRACT_HTML_SELECTOR": "Extrair de HTML"
+  "EXTRACT_HTML_SELECTOR": "Extrair de HTML",
+  "quickEdit": "Quick edit",
+  "hideUnhide": "Hide / Unhide",
+  "propertyBrush": "Property brush",
+  "appearanceBracket": "(appearance)",
+  "selectPropsToTransfer": "Select properties to transfer",
+  "transferQuestionmark": "Transfer?",
+  "propertyName": "Property name",
+  "checked": "checked",
+  "unchecked": "unchecked"
 }
