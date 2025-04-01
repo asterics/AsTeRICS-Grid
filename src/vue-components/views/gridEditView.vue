@@ -428,6 +428,7 @@
                 if (!clickedId || !this.markedElementIds.includes(clickedId)) {
                     this.unmarkAll();
                 }
+                this.addToMarkedInternal(clickedId);
             },
             onKeyUp() {
                 this.shiftKeyHold = false;
