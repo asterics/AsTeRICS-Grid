@@ -568,13 +568,9 @@
                             event.preventDefault();
                             this.duplicateElements();
                         }
-                        if (event.code === 'KeyC' && !event.shiftKey) {
+                        if (event.code === 'KeyC') {
                             event.preventDefault();
                             this.copyElements();
-                        }
-                        if (event.code === 'KeyC' && event.shiftKey) {
-                            event.preventDefault();
-                            this.copyAllElements();
                         }
                         if (event.code === 'KeyX') {
                             event.preventDefault();
