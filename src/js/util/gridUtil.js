@@ -626,6 +626,15 @@ gridUtil.isWithinElements = function(elem1, elem2, elem3) {
     return elem3.x >= left && elem3.x <= right && elem3.y >= top && elem3.y <= bottom;
 };
 
+/**
+ * returns a list of possible property paths for property brush mode, e.g. ["hidden", "colorCategory", ...]
+ * @returns {any[]}
+ */
+gridUtil.getPossibleBrushPaths = function() {
+    let brushKeys = Object.keys(constants.BRUSH_PROPS);
+    return  brushKeys.map(key => constants.BRUSH_PROPS[key].path);
+}
+
 function getAllChildrenRecursive(gridGraphList, gridId) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];
     return getAllChildrenRecursiveGraphElement(graphElem).map(graphElem => graphElem.grid);

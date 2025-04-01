@@ -63,7 +63,13 @@
 
 .marked.element-container {
     outline: 5px solid green !important;
-    z-index: 1;
+    z-index: 20;
+    filter: brightness(80%);
+}
+
+.brush-source.element-container {
+    outline: 5px solid red !important;
+    z-index: 21;
     filter: brightness(80%);
 }
 

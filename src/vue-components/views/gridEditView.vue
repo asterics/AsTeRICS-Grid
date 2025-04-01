@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <header class="srow header" role="toolbar">
+        <header class="srow header" role="toolbar" v-if="!brushObject">
             <header-icon class="left"></header-icon>
             <button tabindex="30" @click="back" :aria-label="$t('editingOff')" class="spaced small left">
                 <i class="fas fa-eye"></i>
@@ -12,6 +12,16 @@
                 <button tabindex="31" @click="undo" :aria-label="$t('undo')" :disabled="doingUndoRedo|| !undoService.canUndo()" class="small"><i class="fas fa-undo"></i> <span class="hide-mobile">{{ $t('undo') }}</span></button>
                 <button tabindex="32" @click="redo"  :aria-label="$t('redo')" :disabled="doingUndoRedo || !undoService.canRedo()" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span></button>
             </div>
+        </header>
+        <header class="d-flex align-items-center brush-header" role="toolbar" v-if="brushObject" style="font-size: 1em !important;">
+            <div class="me-5">
+                <strong class="me-2">
+                    <i class="fas fa-paint-brush"></i>&nbsp;<span class="d-none d-sm-inline-block">Property brush:</span>
+                </strong>
+                <span>select target elements ...</span>
+            </div>
+            <button class="mb-0 me-2" @click="stopPropertyBrush" :title="$t('cancel')"><i class="fas fa-times"/> <span class="d-none d-lg-inline-block">{{ $t('cancel') }}</span></button>
+            <button class="mb-0" @click="applyPropertyBrush" :title="$t('ok')"><i class="fas fa-check"/> <span class="d-none d-lg-inline-block">{{ $t('ok') }}</span></button>
         </header>
         <div>
             <edit-element v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :undo-service="undoService" :grid-data-id="gridData.id" :new-position="newPosition" @reload="reload" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
@@ -27,6 +37,9 @@
         </div>
         <div>
             <set-navigation-modal v-if="showNavigateModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showNavigateModal = false" @reload="reload"></set-navigation-modal>
+        </div>
+        <div>
+            <property-brush v-if="showPropertyBrushModal" :grid-id="gridData.id" :grid-element-id="editElementId" @start="(brushObject) => startPropertyBrush(brushObject)" @close="showPropertyBrushModal = false"></property-brush>
         </div>
         <div class="srow content" id="contentContainer" v-if="!(metadata && gridData)">
             <div v-if="!showGrid" class="grid-container grid-mask">
@@ -69,6 +82,7 @@
     import AppGridDisplay from '../grid-display/appGridDisplay.vue';
     import { GridElementLive } from '../../js/model/GridElementLive';
     import { liveElementService } from '../../js/service/liveElementService';
+    import PropertyBrush from '../modals/propertyBrush.vue';
 
     let vueApp = null;
 
@@ -86,6 +100,7 @@
                 showGridSettingsModal: false,
                 showNavigateModal: false,
                 showTranslateModal: false,
+                showPropertyBrushModal: false,
                 showEditModal: false,
                 editElementId: null,
                 showGrid: false,
@@ -98,16 +113,50 @@
                 unmarkTimeoutHandler: null,
                 shiftKeyHold: false,
                 ctrlKeyHold: false,
-                usingTouchscreen: false
+                usingTouchscreen: false,
+                brushObject: null
             }
         },
         components: {
+            PropertyBrush,
             AppGridDisplay,
             SetNavigationModal,
             GridTranslateModal,
             GridSettingsModal, EditElement, AddMultipleModal, HeaderIcon
         },
         methods: {
+            configPropertyBrush(id) {
+                if (!id && this.markedElementIds.length !== 1) {
+                    return;
+                }
+                this.editElementId = id || this.markedElementIds[0];
+                this.showPropertyBrushModal = true;
+            },
+            startPropertyBrush(brushObject) {
+                this.unmarkAll();
+                $('.element-container').removeClass('brush-source');
+                $('#' + this.editElementId).addClass('brush-source');
+                this.brushObject = brushObject;
+            },
+            applyPropertyBrush() {
+                let actionElements = this.getElementsForAction();
+                let changed = false;
+                for (let element of actionElements) {
+                    for (let path of gridUtil.getPossibleBrushPaths()) {
+                        if (this.brushObject[path] !== constants.BRUSH_DONT_CHANGE_VALUE) {
+                            changed = true;
+                            element[path] = this.brushObject[path];
+                        }
+                    }
+                }
+                this.updateGridWithUndo();
+                this.stopPropertyBrush();
+            },
+            stopPropertyBrush() {
+                this.brushObject = null;
+                $('#' + this.editElementId).removeClass('brush-source');
+                this.unmarkAll();
+            },
             moveAll: function(dir) {
                 this.gridData.gridElements = gridLayoutUtil.moveAsPossible(this.gridData.gridElements, this.gridData.gridElements, dir, {
                     outOfBounds: false,
@@ -446,7 +495,7 @@
                 this.ctrlKeyHold = false;
             },
             onKeyDown(event) {
-                if (this.showMultipleModal || this.showGridSettingsModal || this.showNavigateModal || this.showTranslateModal || this.showEditModal) {
+                if (this.showMultipleModal || this.showGridSettingsModal || this.showNavigateModal || this.showTranslateModal || this.showPropertyBrushModal || this.showEditModal) {
                     return;
                 }
                 const ctrlOrMeta = constants.IS_MAC ? event.metaKey : event.ctrlKey;
@@ -467,6 +516,10 @@
                         if (event.code === 'KeyA') {
                             event.preventDefault();
                             this.markAll();
+                        }
+                        if (event.code === 'KeyB') {
+                            event.preventDefault();
+                            this.configPropertyBrush();
                         }
                         if (event.code === 'KeyD') {
                             event.preventDefault();
@@ -616,6 +669,7 @@
         var CONTEXT_SEARCH = "CONTEXT_SEARCH";
 
         let CONTEXT_QUICK_HIDE = "CONTEXT_QUICK_HIDE";
+        let CONTEXT_PROPERTY_BRUSH = "CONTEXT_PROPERTY_BRUSH";
 
         var itemsGlobal = {
             CONTEXT_NEW_GROUP: {
@@ -644,7 +698,9 @@
         };
 
         let itemsQuickEdit = {
-            'CONTEXT_QUICK_HIDE': { name: i18nService.t('hideUnhide'), icon: 'fas fa-eye-slash' }
+            'CONTEXT_QUICK_HIDE': { name: i18nService.t('hideUnhide'), icon: 'fas fa-eye-slash' },
+            SEP1: "---------",
+            'CONTEXT_PROPERTY_BRUSH': { name: i18nService.t('propertyBrush'), icon: 'fas fa-paint-brush' }
         };
 
         let visibleNormalFn = () => vueApp && vueApp.markedElementIds.length <= 1;
@@ -652,7 +708,7 @@
             CONTEXT_ACTION_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit", visible: visibleNormalFn},
             CONTEXT_ACTION_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt"},
             CONTEXT_ACTION_DUPLICATE: {name: i18nService.t('clone'), icon: "far fa-clone"},
-            "QUICK_EDIT": {name: i18nService.t('quickEdit'), icon: "fas fa-stopwatch", items: itemsQuickEdit},
+            "QUICK_EDIT": {name: i18nService.t('quickEdit'), icon: "fas fa-angle-double-right", items: itemsQuickEdit},
             SEP1: "---------",
             CONTEXT_ACTION_COPY: {name: i18nService.t('copy'), icon: "far fa-copy"},
             CONTEXT_ACTION_CUT: {name: i18nService.t('cut'), icon: "fas fa-cut"},
@@ -793,6 +849,10 @@
                 }
                 case CONTEXT_GRID_TRANSLATION: {
                     vueApp.showTranslateModal = true;
+                    break;
+                }
+                case CONTEXT_PROPERTY_BRUSH: {
+                    vueApp.configPropertyBrush(elementId);
                     break;
                 }
                 case CONTEXT_GRID_NAVIGATION: {
