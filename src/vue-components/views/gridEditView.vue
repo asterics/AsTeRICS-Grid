@@ -297,12 +297,12 @@
                         let allElems = this.gridData.gridElements;
                         let clickedElem = allElems.find(e => e.id === id);
                         let markedElems = this.markedElementIds.map(elId => allElems.find(e => e.id === elId));
-                        gridUtil.sortGridElements(markedElems);
-                        let addElems = allElems.filter(e => gridUtil.isWithinElements(clickedElem, markedElems[0], e));
+                        let firstMarked = markedElems[0];
+                        let addElems = allElems.filter(e => gridUtil.isWithinElements(clickedElem, firstMarked, e));
                         this.unmarkAll();
+                        this.addToMarkedInternal(firstMarked.id); // keep firstMarked first for consistent behaviour
                         for (let addElem of addElems) {
-                            this.markedElementIds.push(addElem.id);
-                            $('#' + addElem.id).addClass('marked');
+                            this.addToMarkedInternal(addElem.id);
                         }
                         return;
                     }
@@ -310,13 +310,18 @@
                         this.unmarkAll();
                     }
                     if (!this.markedElementIds.includes(id)) {
-                        this.markedElementIds.push(id);
-                        $('#' + id).addClass('marked');
+                        this.addToMarkedInternal(id);
                     } else {
                         this.markedElementIds = this.markedElementIds.filter(elId => elId !== id);
                         $('#' + id).removeClass('marked');
                     }
                 }, null, 200, "MARK_ELEMENT");
+            },
+            addToMarkedInternal(id) {
+                if (id && !this.markedElementIds.includes(id)) {
+                    this.markedElementIds.push(id);
+                    $('#' + id).addClass('marked');
+                }
             },
             highlightElement() {
                 if (this.highlightId) {
