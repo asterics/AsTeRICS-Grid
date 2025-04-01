@@ -805,7 +805,7 @@
                 handleContextMenu(key, elementId);
             },
             items: itemsElemNormal,
-            zIndex: 10
+            zIndex: 100
         });
 
         $.contextMenu({
@@ -814,7 +814,7 @@
                 handleContextMenu(key);
             },
             items: itemsGlobal,
-            zIndex: 10
+            zIndex: 100
         });
 
         $.contextMenu({
@@ -825,7 +825,7 @@
             },
             trigger: 'left',
             items: itemsMoreMenuButton,
-            zIndex: 10
+            zIndex: 100
         });
 
         function handleContextMenu(key, elementId, origin) {
@@ -961,4 +961,10 @@
 </script>
 
 <style scoped>
+header {
+    border: 0;
+}
+.content {
+    outline: 2px solid lightgray;
+}
 </style>
