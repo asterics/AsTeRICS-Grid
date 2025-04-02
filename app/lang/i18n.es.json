@@ -1188,12 +1188,16 @@
   "EXTRACT_JSON": "Recuperar de JSON",
   "EXTRACT_HTML_SELECTOR": "Recuperar de HTML",
   "quickEdit": "Quick edit",
-  "hideUnhide": "Hide / Unhide",
-  "propertyBrush": "Property brush",
-  "appearanceBracket": "(aspecto)",
+  "hideUnhide": "Ocultar / Mostrar",
+  "transferProperties": "Transfer properties",
+  "transferAll": "Transfer all",
+  "transferAppearance": "Transfer appearance",
+  "transferCustom": "Transfer custom",
+  "selectTargetElements": "select target elements",
   "selectPropsToTransfer": "Select properties to transfer",
   "transferQuestionmark": "Transfer?",
-  "propertyName": "Property name",
-  "checked": "checked",
-  "unchecked": "unchecked"
+  "propertyName": "Propiedad",
+  "checked": "seleccionado",
+  "unchecked": "no seleccionado",
+  "othersHeading": "Others"
 }
