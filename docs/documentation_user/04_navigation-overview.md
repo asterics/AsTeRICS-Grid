@@ -119,6 +119,7 @@ The shortcuts available in edit mode are listed below.
 
 - `Ctrl + left mouse clicks`: select multiple elements, one after the other
 - `Shift + left mouse clicks`: select multiple connected elements
+- `Ctrl + E`: edit selected element
 - `Ctrl + C`: copy selected elements to clipboard
 - `Ctrl + X`: cut selected elements (copy to clipboard and delete from current grid)
 - `Ctrl + V`: paste elements from clipboard. Elements are pasted at the location of the last interaction (you can click/tap to a free space before pasting). If multiple pasted elements aren't fitting at the current location, they are pasted below the existing elements.

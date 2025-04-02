@@ -228,9 +228,12 @@
                     Router.toGrid(this.gridData.id);
                 }
             },
-            editElement(elementId) {
-                this.editElementId = elementId;
-                let editElement = this.gridData.gridElements.filter(e => e.id === elementId)[0];
+            editElement(elementId = null) {
+                if (!elementId && this.markedElementIds.length !== 1) {
+                    return;
+                }
+                this.editElementId = elementId || this.markedElementIds[0];
+                let editElement = this.gridData.gridElements.filter(e => e.id === this.editElementId)[0];
                 if (editElement) {
                     this.showEditModal = true;
                 }
@@ -569,6 +572,10 @@
                         if (event.code === 'KeyD') {
                             event.preventDefault();
                             this.duplicateElements();
+                        }
+                        if (event.code === 'KeyE') {
+                            event.preventDefault();
+                            this.editElement();
                         }
                         if (event.code === 'KeyC') {
                             event.preventDefault();
