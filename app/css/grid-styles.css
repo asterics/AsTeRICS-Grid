@@ -67,7 +67,7 @@
     filter: brightness(80%);
 }
 
-.brush-source.element-container {
+.transfer-prop-source.element-container {
     outline: 5px solid red !important;
     z-index: 11;
     filter: brightness(80%);

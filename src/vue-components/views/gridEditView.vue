@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <header class="srow header" role="toolbar" v-show="!brushObject">
+        <header class="srow header" role="toolbar" v-show="!propTransferObject">
             <header-icon class="left"></header-icon>
             <button tabindex="30" @click="back" :aria-label="$t('editingOff')" class="spaced small left">
                 <i class="fas fa-eye"></i>
@@ -13,15 +13,15 @@
                 <button tabindex="32" @click="redo"  :aria-label="$t('redo')" :disabled="doingUndoRedo || !undoService.canRedo()" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span></button>
             </div>
         </header>
-        <header class="d-flex align-items-center brush-header" role="toolbar" v-if="brushObject">
+        <header class="d-flex align-items-center transfer-props-header" role="toolbar" v-if="propTransferObject">
             <div class="me-5">
                 <strong class="me-2">
-                    <i class="fas fa-paint-brush"></i>&nbsp;<span class="d-none d-sm-inline-block">Property brush:</span>
+                    <i class="fas fa-angle-double-right"></i>&nbsp;<span class="d-none d-sm-inline-block"><span>{{ $t('transferProperties') }}</span>:</span>
                 </strong>
-                <span>select target elements ...</span>
+                <span><span>{{ $t('selectTargetElements') }}</span>...</span>
             </div>
-            <button class="mb-0 me-2" @click="stopPropertyBrush" :title="$t('cancel')"><i class="fas fa-times"/> <span class="d-none d-lg-inline-block">{{ $t('cancel') }}</span></button>
-            <button class="mb-0" @click="applyPropertyBrush" :title="$t('ok')"><i class="fas fa-check"/> <span class="d-none d-lg-inline-block">{{ $t('ok') }}</span></button>
+            <button class="mb-0 me-2" @click="stopPropTransfer" :title="$t('cancel')"><i class="fas fa-times"/> <span class="d-none d-lg-inline-block">{{ $t('cancel') }}</span></button>
+            <button class="mb-0" @click="applyPropTransfer" :title="$t('ok')"><i class="fas fa-check"/> <span class="d-none d-lg-inline-block">{{ $t('ok') }}</span></button>
         </header>
         <div>
             <edit-element v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :undo-service="undoService" :grid-data-id="gridData.id" :new-position="newPosition" @reload="reload" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
@@ -39,7 +39,7 @@
             <set-navigation-modal v-if="showNavigateModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showNavigateModal = false" @reload="reload"></set-navigation-modal>
         </div>
         <div>
-            <property-brush v-if="showPropertyBrushModal" :grid-id="gridData.id" :grid-element-id="editElementId" @start="(brushObject) => startPropertyBrush(brushObject)" @close="showPropertyBrushModal = false"></property-brush>
+            <transfer-props-modal v-if="showPropTransferModal" :grid-id="gridData.id" :grid-element-id="editElementId" @start="(propTransferObject) => startPropTransfer(propTransferObject)" @close="showPropTransferModal = false"></transfer-props-modal>
         </div>
         <div class="srow content" id="contentContainer" v-if="!(metadata && gridData)">
             <div v-if="!showGrid" class="grid-container grid-mask">
@@ -82,7 +82,7 @@
     import AppGridDisplay from '../grid-display/appGridDisplay.vue';
     import { GridElementLive } from '../../js/model/GridElementLive';
     import { liveElementService } from '../../js/service/liveElementService';
-    import PropertyBrush from '../modals/propertyBrush.vue';
+    import TransferPropsModal from '../modals/transferPropsModal.vue';
 
     let vueApp = null;
 
@@ -100,7 +100,7 @@
                 showGridSettingsModal: false,
                 showNavigateModal: false,
                 showTranslateModal: false,
-                showPropertyBrushModal: false,
+                showPropTransferModal: false,
                 showEditModal: false,
                 editElementId: null,
                 showGrid: false,
@@ -114,65 +114,65 @@
                 shiftKeyHold: false,
                 ctrlKeyHold: false,
                 usingTouchscreen: false,
-                brushObject: null
+                propTransferObject: null
             }
         },
         components: {
-            PropertyBrush,
+            TransferPropsModal,
             AppGridDisplay,
             SetNavigationModal,
             GridTranslateModal,
             GridSettingsModal, EditElement, AddMultipleModal, HeaderIcon
         },
         methods: {
-            configPropertyBrush(id) {
+            configPropTransfer(id) {
                 if (!id && this.markedElementIds.length !== 1) {
                     return;
                 }
                 this.editElementId = id || this.markedElementIds[0];
-                this.showPropertyBrushModal = true;
+                this.showPropTransferModal = true;
             },
-            configPropertyBrushAll(id) {
+            configPropTransferAll(id) {
                 if (!id && this.markedElementIds.length !== 1) {
                     return;
                 }
                 this.editElementId = id || this.markedElementIds[0];
-                let brushObject = gridUtil.getBrushObjectAll(this.getElement(this.editElementId));
-                this.startPropertyBrush(brushObject);
+                let propTransferObject = gridUtil.getPropTransferObjectAll(this.getElement(this.editElementId));
+                this.startPropTransfer(propTransferObject);
             },
-            configPropertyBrushAppearance(id) {
+            configPropTransferAppearance(id) {
                 if (!id && this.markedElementIds.length !== 1) {
                     return;
                 }
                 this.editElementId = id || this.markedElementIds[0];
-                let brushObject = gridUtil.getBrushObjectAppearance(this.getElement(this.editElementId));
-                this.startPropertyBrush(brushObject);
+                let propTransferObject = gridUtil.getPropTransferObjectAppearance(this.getElement(this.editElementId));
+                this.startPropTransfer(propTransferObject);
             },
-            startPropertyBrush(brushObject) {
+            startPropTransfer(propTransferObject) {
                 $.contextMenu('destroy');
                 this.unmarkAll();
-                $('.element-container').removeClass('brush-source');
-                $('#' + this.editElementId).addClass('brush-source');
-                this.brushObject = brushObject;
+                $('.element-container').removeClass('transfer-prop-source');
+                $('#' + this.editElementId).addClass('transfer-prop-source');
+                this.propTransferObject = propTransferObject;
             },
-            applyPropertyBrush() {
+            applyPropTransfer() {
                 let actionElements = this.getElementsForAction();
                 let changed = false;
                 for (let element of actionElements) {
-                    for (let path of gridUtil.getPossibleBrushPaths()) {
-                        if (this.brushObject[path] !== constants.BRUSH_DONT_CHANGE_VALUE) {
+                    for (let path of gridUtil.getAllPropTransferPaths()) {
+                        if (this.propTransferObject[path] !== constants.PROP_TRANSFER_DONT_CHANGE) {
                             changed = true;
-                            element[path] = this.brushObject[path];
+                            element[path] = this.propTransferObject[path];
                         }
                     }
                 }
                 this.updateGridWithUndo();
-                this.stopPropertyBrush();
+                this.stopPropTransfer();
             },
-            stopPropertyBrush() {
+            stopPropTransfer() {
                 initContextmenu();
-                this.brushObject = null;
-                $('#' + this.editElementId).removeClass('brush-source');
+                this.propTransferObject = null;
+                $('#' + this.editElementId).removeClass('transfer-prop-source');
                 this.unmarkAll();
             },
             moveAll: function(dir) {
@@ -505,7 +505,7 @@
                 clearTimeout(this.unmarkTimeoutHandler);
             },
             onContextMenu(event) {
-                if (this.brushObject) {
+                if (this.propTransferObject) {
                     event.preventDefault();
                     return;
                 }
@@ -520,7 +520,7 @@
                 this.ctrlKeyHold = false;
             },
             onKeyDown(event) {
-                if (this.showMultipleModal || this.showGridSettingsModal || this.showNavigateModal || this.showTranslateModal || this.showPropertyBrushModal || this.showEditModal) {
+                if (this.showMultipleModal || this.showGridSettingsModal || this.showNavigateModal || this.showTranslateModal || this.showPropTransferModal || this.showEditModal) {
                     return;
                 }
                 const ctrlOrMeta = constants.IS_MAC ? event.metaKey : event.ctrlKey;
@@ -532,14 +532,14 @@
                         this.removeElements();
                     }
                     if (event.key === 'Enter') {
-                        if (this.brushObject) {
-                            this.applyPropertyBrush();
+                        if (this.propTransferObject) {
+                            this.applyPropTransfer();
                         }
                     }
                     if (event.code === 'Escape') {
                         this.unmarkAll();
-                        if (this.brushObject) {
-                            this.stopPropertyBrush();
+                        if (this.propTransferObject) {
+                            this.stopPropTransfer();
                         }
                     }
                     if (event.shiftKey) {
@@ -548,12 +548,12 @@
                     if (ctrlOrMeta) {
                         if (event.shiftKey && event.code === 'KeyA') {
                             event.preventDefault();
-                            this.configPropertyBrushAll();
+                            this.configPropTransferAll();
                             return;
                         }
                         if (event.shiftKey && event.code === 'KeyC') {
                             event.preventDefault();
-                            this.configPropertyBrushAppearance();
+                            this.configPropTransferAppearance();
                             return;
                         }
                         if (event.code === 'KeyA') {
@@ -562,7 +562,7 @@
                         }
                         if (event.code === 'KeyB') {
                             event.preventDefault();
-                            this.configPropertyBrush();
+                            this.configPropTransfer();
                         }
                         if (event.code === 'KeyD') {
                             event.preventDefault();
@@ -708,9 +708,9 @@
         var CONTEXT_SEARCH = "CONTEXT_SEARCH";
 
         let CONTEXT_QUICK_HIDE = "CONTEXT_QUICK_HIDE";
-        let CONTEXT_PROPERTY_BRUSH = "CONTEXT_PROPERTY_BRUSH";
-        let CONTEXT_PROPERTY_BRUSH_APPEARANCE = "CONTEXT_PROPERTY_BRUSH_APPEARANCE";
-        let CONTEXT_PROPERTY_BRUSH_ALL = "CONTEXT_PROPERTY_BRUSH_ALL";
+        let CONTEXT_PROPERTY_TRANSFER = "CONTEXT_PROPERTY_TRANSFER";
+        let CONTEXT_PROPERTY_TRANSFER_APPEARANCE = "CONTEXT_PROPERTY_TRANSFER_APPEARANCE";
+        let CONTEXT_PROPERTY_TRANSFER_ALL = "CONTEXT_PROPERTY_TRANSFER_ALL";
 
         var itemsGlobal = {
             CONTEXT_NEW_GROUP: {
@@ -739,19 +739,19 @@
         };
 
         let itemsQuickEdit = {
-            'CONTEXT_QUICK_HIDE': { name: i18nService.t('hideUnhide'), icon: 'fas fa-eye-slash' },
-            SEP1: "---------",
-            'CONTEXT_PROPERTY_BRUSH_ALL': { name: `${i18nService.t('propertyBrush')} ${i18nService.t('allSelected')}`, icon: 'fas fa-paint-brush' },
-            'CONTEXT_PROPERTY_BRUSH_APPEARANCE': { name: `${i18nService.t('propertyBrush')} ${i18nService.t('appearanceBracket')}`, icon: 'fas fa-paint-brush' },
-            'CONTEXT_PROPERTY_BRUSH': { name: i18nService.t('propertyBrush') + "...", icon: 'fas fa-paint-brush' }
+            'CONTEXT_PROPERTY_TRANSFER_ALL': { name: i18nService.t('transferAll'), icon: 'fas fa-angle-double-right' },
+            'CONTEXT_PROPERTY_TRANSFER_APPEARANCE': { name: i18nService.t('transferAppearance'), icon: 'fas fa-angle-double-right' },
+            'CONTEXT_PROPERTY_TRANSFER': { name: i18nService.t('transferCustom'), icon: 'fas fa-angle-double-right' }
         };
 
         let visibleNormalFn = () => vueApp && vueApp.markedElementIds.length <= 1;
-        var itemsElemNormal = {
+        let visibleTransferPropsFn = () => vueApp && vueApp.markedElementIds.length === 1;
+        let itemsElemNormal = {
             CONTEXT_ACTION_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit", visible: visibleNormalFn},
             CONTEXT_ACTION_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt"},
             CONTEXT_ACTION_DUPLICATE: {name: i18nService.t('clone'), icon: "far fa-clone"},
-            "QUICK_EDIT": {name: i18nService.t('quickEdit'), icon: "fas fa-angle-double-right", items: itemsQuickEdit},
+            CONTEXT_QUICK_HIDE: { name: i18nService.t('hideUnhide'), icon: 'fas fa-eye-slash' },
+            "QUICK_EDIT": {name: i18nService.t('transferProperties'), icon: "fas fa-angle-double-right", items: itemsQuickEdit, visible: visibleTransferPropsFn},
             SEP1: "---------",
             CONTEXT_ACTION_COPY: {name: i18nService.t('copy'), icon: "far fa-copy"},
             CONTEXT_ACTION_CUT: {name: i18nService.t('cut'), icon: "fas fa-cut"},
@@ -894,16 +894,16 @@
                     vueApp.showTranslateModal = true;
                     break;
                 }
-                case CONTEXT_PROPERTY_BRUSH: {
-                    vueApp.configPropertyBrush(elementId);
+                case CONTEXT_PROPERTY_TRANSFER: {
+                    vueApp.configPropTransfer(elementId);
                     break;
                 }
-                case CONTEXT_PROPERTY_BRUSH_APPEARANCE: {
-                    vueApp.configPropertyBrushAppearance(elementId);
+                case CONTEXT_PROPERTY_TRANSFER_APPEARANCE: {
+                    vueApp.configPropTransferAppearance(elementId);
                     break;
                 }
-                case CONTEXT_PROPERTY_BRUSH_ALL: {
-                    vueApp.configPropertyBrushAll(elementId);
+                case CONTEXT_PROPERTY_TRANSFER_ALL: {
+                    vueApp.configPropTransferAll(elementId);
                     break;
                 }
                 case CONTEXT_GRID_NAVIGATION: {

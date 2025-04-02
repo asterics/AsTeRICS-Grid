@@ -36,7 +36,7 @@ export default {
     props: ['propObject', 'gridElement'],
     data: function () {
         return {
-            TYPES: constants.BRUSH_TYPES,
+            TYPES: constants.PROP_TRANSFER_TYPES,
             fontUtil: fontUtil
         }
     },

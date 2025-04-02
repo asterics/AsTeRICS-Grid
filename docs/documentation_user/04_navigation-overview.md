@@ -135,11 +135,11 @@ The shortcuts available in edit mode are listed below.
 - `Ctrl + ArrowDown`: move all elements down
 - `Ctrl + ArrowLeft`: move all elements left
 
-#### Property brush
-- `Ctrl + B`: configure property brush for current selected element
-- `Ctrl + Shift + A`: use property brush, transfer all properties of selected element (`A` like all)
-- `Ctrl + Shift + C`: use property brush, transfer appearance properties of selected element (`C` like color)
-- `Escape`: cancel property brush mode
-- `Enter`: apply property brush to selected elements
+#### Transfer properties
+- `Ctrl + B`: configure property transfer for current selected element
+- `Ctrl + Shift + A`: directly transfer all properties of selected element (`A` like all)
+- `Ctrl + Shift + C`: directly transfer appearance properties of selected element (`C` like color)
+- `Escape`: cancel property transfer mode
+- `Enter`: apply property transfer to selected elements
 
 [Back to Overview](README.md)

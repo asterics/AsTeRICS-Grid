@@ -627,38 +627,38 @@ gridUtil.isWithinElements = function(elem1, elem2, elem3) {
 };
 
 /**
- * returns a list of possible property paths for property brush mode, e.g. ["hidden", "colorCategory", ...]
+ * returns a list of possible property paths for property transfer mode, e.g. ["hidden", "colorCategory", ...]
  * @returns {any[]}
  */
-gridUtil.getPossibleBrushPaths = function() {
-    let brushKeys = Object.keys(constants.BRUSH_PROPS);
-    return brushKeys.map(key => constants.BRUSH_PROPS[key].path);
+gridUtil.getAllPropTransferPaths = function() {
+    let propKeys = Object.keys(constants.TRANSFER_PROPS);
+    return propKeys.map(key => constants.TRANSFER_PROPS[key].path);
 }
 
-gridUtil.getBrushObjectBase = function() {
-    let brushObject = {};
-    for (let path of gridUtil.getPossibleBrushPaths()) {
-        brushObject[path] = constants.BRUSH_DONT_CHANGE_VALUE;
+gridUtil.getPropTransferObjectBase = function() {
+    let transferObject = {};
+    for (let path of gridUtil.getAllPropTransferPaths()) {
+        transferObject[path] = constants.PROP_TRANSFER_DONT_CHANGE;
     }
-    return brushObject;
+    return transferObject;
 }
 
-gridUtil.getBrushObjectAll = function(sourceElement) {
-    let brushObject = {};
-    for (let path of gridUtil.getPossibleBrushPaths()) {
-        brushObject[path] = sourceElement[path];
+gridUtil.getPropTransferObjectAll = function(sourceElement) {
+    let transferObject = {};
+    for (let path of gridUtil.getAllPropTransferPaths()) {
+        transferObject[path] = sourceElement[path];
     }
-    return brushObject;
+    return transferObject;
 }
 
-gridUtil.getBrushObjectAppearance = function(sourceElement) {
-    let props = constants.BRUSH_PROPS;
+gridUtil.getPropTransferObjectAppearance = function(sourceElement) {
+    let props = constants.TRANSFER_PROPS;
     let appearanceProps = [props.COLOR_CATEGORY, props.BACKGROUND_COLOR, props.FONT_COLOR, props.FONT_SIZE];
-    let brushObject = gridUtil.getBrushObjectBase();
+    let transferObject = gridUtil.getPropTransferObjectBase();
     for (let prop of appearanceProps) {
-        brushObject[prop.path] = sourceElement[prop.path];
+        transferObject[prop.path] = sourceElement[prop.path];
     }
-    return brushObject;
+    return transferObject;
 };
 
 function getAllChildrenRecursive(gridGraphList, gridId) {

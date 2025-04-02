@@ -81,48 +81,48 @@ constants.BOARD_TYPE_SELFCONTAINED = "BOARD_TYPE_SELFCONTAINED";
 constants.BOARD_TYPE_SINGLE = "BOARD_TYPE_SINGLE";
 constants.BOARD_TYPES = [constants.BOARD_TYPE_SELFCONTAINED, constants.BOARD_TYPE_SINGLE];
 
-constants.BRUSH_DONT_CHANGE_VALUE = "BRUSH_DONT_CHANGE_VALUE";
-constants.BRUSH_TYPES = {
+constants.PROP_TRANSFER_DONT_CHANGE = "PROP_TRANSFER_DONT_CHANGE";
+constants.PROP_TRANSFER_TYPES = {
     BOOLEAN: "BOOLEAN",
     COLOR: "COLOR",
     PERCENTAGE: "PERCENTAGE",
     TEXT: "TEXT"
 };
-constants.BRUSH_PROPS = {
+constants.TRANSFER_PROPS = {
     COLOR_CATEGORY: {
         path: 'colorCategory',
         label: 'colorCategory',
-        type: constants.BRUSH_TYPES.TEXT
+        type: constants.PROP_TRANSFER_TYPES.TEXT
     },
     BACKGROUND_COLOR: {
         path: 'backgroundColor',
         label: 'customElementColor',
-        type: constants.BRUSH_TYPES.COLOR
+        type: constants.PROP_TRANSFER_TYPES.COLOR
     },
     FONT_COLOR: {
         path: 'fontColor',
         label: 'fontColor',
-        type: constants.BRUSH_TYPES.COLOR
+        type: constants.PROP_TRANSFER_TYPES.COLOR
     },
     FONT_SIZE: {
         path: 'fontSizePct',
         label: 'fontSize',
-        type: constants.BRUSH_TYPES.PERCENTAGE
+        type: constants.PROP_TRANSFER_TYPES.PERCENTAGE
     },
     HIDDEN: {
         path: 'hidden',
         label: 'hideElement',
-        type: constants.BRUSH_TYPES.BOOLEAN
+        type: constants.PROP_TRANSFER_TYPES.BOOLEAN
     },
     DONT_COLLECT: {
         path: 'dontCollect',
         label: 'dontAddElementToCollectElement',
-        type: constants.BRUSH_TYPES.BOOLEAN
+        type: constants.PROP_TRANSFER_TYPES.BOOLEAN
     },
     TOGGLE_IN_BAR: {
         path: 'toggleInBar',
         label: 'toggleInCollectionElementIfAddedMultipleTimes',
-        type: constants.BRUSH_TYPES.BOOLEAN
+        type: constants.PROP_TRANSFER_TYPES.BOOLEAN
     }
 }
 
