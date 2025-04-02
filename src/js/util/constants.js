@@ -88,41 +88,52 @@ constants.PROP_TRANSFER_TYPES = {
     PERCENTAGE: "PERCENTAGE",
     TEXT: "TEXT"
 };
+constants.PROP_TRANSFER_CATEGORIES = {
+    APPEARANCE: "APPEARANCE",
+    OTHERS: "OTHERS"
+};
 constants.TRANSFER_PROPS = {
     COLOR_CATEGORY: {
         path: 'colorCategory',
         label: 'colorCategory',
-        type: constants.PROP_TRANSFER_TYPES.TEXT
+        type: constants.PROP_TRANSFER_TYPES.TEXT,
+        category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE
     },
     BACKGROUND_COLOR: {
         path: 'backgroundColor',
         label: 'customElementColor',
-        type: constants.PROP_TRANSFER_TYPES.COLOR
+        type: constants.PROP_TRANSFER_TYPES.COLOR,
+        category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE
     },
     FONT_COLOR: {
         path: 'fontColor',
         label: 'fontColor',
-        type: constants.PROP_TRANSFER_TYPES.COLOR
+        type: constants.PROP_TRANSFER_TYPES.COLOR,
+        category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE
     },
     FONT_SIZE: {
         path: 'fontSizePct',
         label: 'fontSize',
-        type: constants.PROP_TRANSFER_TYPES.PERCENTAGE
+        type: constants.PROP_TRANSFER_TYPES.PERCENTAGE,
+        category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE
     },
     HIDDEN: {
         path: 'hidden',
         label: 'hideElement',
-        type: constants.PROP_TRANSFER_TYPES.BOOLEAN
+        type: constants.PROP_TRANSFER_TYPES.BOOLEAN,
+        category: constants.PROP_TRANSFER_CATEGORIES.OTHERS
     },
     DONT_COLLECT: {
         path: 'dontCollect',
         label: 'dontAddElementToCollectElement',
-        type: constants.PROP_TRANSFER_TYPES.BOOLEAN
+        type: constants.PROP_TRANSFER_TYPES.BOOLEAN,
+        category: constants.PROP_TRANSFER_CATEGORIES.OTHERS
     },
     TOGGLE_IN_BAR: {
         path: 'toggleInBar',
         label: 'toggleInCollectionElementIfAddedMultipleTimes',
-        type: constants.PROP_TRANSFER_TYPES.BOOLEAN
+        type: constants.PROP_TRANSFER_TYPES.BOOLEAN,
+        category: constants.PROP_TRANSFER_CATEGORIES.OTHERS
     }
 }
 

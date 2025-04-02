@@ -652,8 +652,8 @@ gridUtil.getPropTransferObjectAll = function(sourceElement) {
 }
 
 gridUtil.getPropTransferObjectAppearance = function(sourceElement) {
-    let props = constants.TRANSFER_PROPS;
-    let appearanceProps = [props.COLOR_CATEGORY, props.BACKGROUND_COLOR, props.FONT_COLOR, props.FONT_SIZE];
+    let props = Object.keys(constants.TRANSFER_PROPS).map(key => constants.TRANSFER_PROPS[key]);
+    let appearanceProps = props.filter(prop => prop.category === constants.PROP_TRANSFER_CATEGORIES.APPEARANCE);
     let transferObject = gridUtil.getPropTransferObjectBase();
     for (let prop of appearanceProps) {
         transferObject[prop.path] = sourceElement[prop.path];

@@ -1198,5 +1198,6 @@
   "transferQuestionmark": "Transfer?",
   "propertyName": "Property name",
   "checked": "checked",
-  "unchecked": "unchecked"
+  "unchecked": "unchecked",
+  "othersHeading": "Others"
 }

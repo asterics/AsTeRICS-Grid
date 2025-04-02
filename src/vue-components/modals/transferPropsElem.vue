@@ -1,5 +1,5 @@
 <template>
-    <div class="row">
+    <li class="row">
         <div class="d-none d-sm-flex col-sm-2">
             <input :id="'transfer1' + propObject.path" type="checkbox" @change="changed($event)"/>
         </div>
@@ -23,7 +23,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </li>
 </template>
 
 <script>

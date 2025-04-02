@@ -9,14 +9,28 @@
 
                     <div class="modal-body container-fluid px-0" v-if="gridElement">
                         <span>{{ $t('selectPropsToTransfer') }}.</span>
-                        <div class="d-none d-sm-flex row mt-4" aria-hidden="true">
+                        <h2 class="mt-4 mb-2">{{ $t('TAB_APPEARANCE') }}</h2>
+                        <div class="d-none d-sm-flex row mb-2" aria-hidden="true">
                             <strong class="col-sm-2">{{ $t('transferQuestionmark') }}</strong>
                             <strong class="col-sm-5">{{ $t('propertyName') }}</strong>
                             <strong class="col-sm-3">{{ $t('currentValue') }}</strong>
                         </div>
-                        <div class="mt-5 mt-sm-3" v-for="key in Object.keys(PROPS)">
-                            <transfer-props-elem :prop-object="PROPS[key]" :grid-element="gridElement" @change="(transfer) => selectProp(transfer, PROPS[key])"/>
+                        <ul>
+                            <transfer-props-elem class="mb-5 mb-sm-3"
+                                                 v-for="key in Object.keys(PROPS).filter(k => PROPS[k].category === CATEGORIES.APPEARANCE)" :key="key"
+                                                 :prop-object="PROPS[key]" :grid-element="gridElement" @change="(transfer) => selectProp(transfer, PROPS[key])"/>
+                        </ul>
+                        <h2 class="mt-4 mb-2">{{ $t('othersHeading') }}</h2>
+                        <div class="d-none d-sm-flex row mb-2" aria-hidden="true">
+                            <strong class="col-sm-2">{{ $t('transferQuestionmark') }}</strong>
+                            <strong class="col-sm-5">{{ $t('propertyName') }}</strong>
+                            <strong class="col-sm-3">{{ $t('currentValue') }}</strong>
                         </div>
+                        <ul>
+                            <transfer-props-elem class="mb-5 mb-sm-3"
+                                                 v-for="key in Object.keys(PROPS).filter(k => PROPS[k].category === CATEGORIES.OTHERS)" :key="key"
+                                                 :prop-object="PROPS[key]" :grid-element="gridElement" @change="(transfer) => selectProp(transfer, PROPS[key])"/>
+                        </ul>
                     </div>
 
                     <div class="modal-footer container-fluid px-0">
@@ -55,7 +69,8 @@ export default {
             gridData: null,
             gridElement: null,
             transferObject: gridUtil.getPropTransferObjectBase(),
-            PROPS: constants.TRANSFER_PROPS
+            PROPS: constants.TRANSFER_PROPS,
+            CATEGORIES: constants.PROP_TRANSFER_CATEGORIES
         }
     },
     computed: {
