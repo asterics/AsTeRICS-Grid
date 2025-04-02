@@ -10,22 +10,14 @@
                     <div class="modal-body container-fluid px-0" v-if="gridElement">
                         <span>{{ $t('selectPropsToTransfer') }}.</span>
                         <h2 class="mt-4 mb-2">{{ $t('TAB_APPEARANCE') }}</h2>
-                        <div class="d-none d-sm-flex row mb-2" aria-hidden="true">
-                            <strong class="col-sm-2">{{ $t('transferQuestionmark') }}</strong>
-                            <strong class="col-sm-5">{{ $t('propertyName') }}</strong>
-                            <strong class="col-sm-3">{{ $t('currentValue') }}</strong>
-                        </div>
+                        <transfer-props-list-header/>
                         <ul>
                             <transfer-props-elem class="mb-5 mb-sm-3"
                                                  v-for="key in Object.keys(PROPS).filter(k => PROPS[k].category === CATEGORIES.APPEARANCE)" :key="key"
                                                  :prop-object="PROPS[key]" :grid-element="gridElement" @change="(transfer) => selectProp(transfer, PROPS[key])"/>
                         </ul>
                         <h2 class="mt-4 mb-2">{{ $t('othersHeading') }}</h2>
-                        <div class="d-none d-sm-flex row mb-2" aria-hidden="true">
-                            <strong class="col-sm-2">{{ $t('transferQuestionmark') }}</strong>
-                            <strong class="col-sm-5">{{ $t('propertyName') }}</strong>
-                            <strong class="col-sm-3">{{ $t('currentValue') }}</strong>
-                        </div>
+                        <transfer-props-list-header/>
                         <ul>
                             <transfer-props-elem class="mb-5 mb-sm-3"
                                                  v-for="key in Object.keys(PROPS).filter(k => PROPS[k].category === CATEGORIES.OTHERS)" :key="key"
@@ -60,9 +52,10 @@ import EditElementHeader from "../components/editElementHeader.vue";
 import TransferPropsElem from './transferPropsElem.vue';
 import { constants } from '../../js/util/constants';
 import { gridUtil } from '../../js/util/gridUtil';
+import TransferPropsListHeader from './transferPropsListHeader.vue';
 
 export default {
-    components: { TransferPropsElem, EditElementHeader},
+    components: { TransferPropsListHeader, TransferPropsElem, EditElementHeader},
     props: ['gridId', 'gridElementId'],
     data: function () {
         return {
