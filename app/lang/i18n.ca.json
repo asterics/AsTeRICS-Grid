@@ -1189,11 +1189,15 @@
   "EXTRACT_HTML_SELECTOR": "Recuperar d' HTML",
   "quickEdit": "Quick edit",
   "hideUnhide": "Hide / Unhide",
-  "propertyBrush": "Property brush",
-  "appearanceBracket": "(appearance)",
+  "transferProperties": "Transfer properties",
+  "transferAll": "Transfer all",
+  "transferAppearance": "Transfer appearance",
+  "transferCustom": "Transfer custom",
+  "selectTargetElements": "select target elements",
   "selectPropsToTransfer": "Select properties to transfer",
   "transferQuestionmark": "Transfer?",
   "propertyName": "Property name",
   "checked": "checked",
-  "unchecked": "unchecked"
+  "unchecked": "unchecked",
+  "othersHeading": "Others"
 }
