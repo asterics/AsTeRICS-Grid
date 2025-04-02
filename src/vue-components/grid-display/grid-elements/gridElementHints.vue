@@ -10,11 +10,11 @@
 
 import { GridActionNavigate } from '../../../js/model/GridActionNavigate';
 import { TextConfig } from '../../../js/model/TextConfig';
-import { constants } from '../../../js/util/constants';
 import { Router } from '../../../js/router';
+import { fontUtil } from '../../../js/util/fontUtil';
 
 export default {
-    props: ["gridElement", "metadata"],
+    props: ["gridElement", "metadata", "backgroundColor"],
     data() {
         return {
             isOnEdit: Router.isOnEditPage()
@@ -31,8 +31,7 @@ export default {
             return this.metadata.textConfig.textPosition === TextConfig.TEXT_POS_ABOVE ? 0 : "unset";
         },
         hintsColor() {
-            let darkMode = this.metadata.colorConfig.elementBackgroundColor === constants.DEFAULT_ELEMENT_BACKGROUND_COLOR_DARK;
-            return darkMode ? "#e8e8e8" : "#7c7c7c";
+            return fontUtil.getHighContrastColor(this.backgroundColor, "#e8e8e8", "#686868");
         }
     },
     methods: {
