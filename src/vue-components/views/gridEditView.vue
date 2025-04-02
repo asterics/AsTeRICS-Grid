@@ -149,11 +149,13 @@
                 this.startPropTransfer(propTransferObject);
             },
             startPropTransfer(propTransferObject) {
-                $.contextMenu('destroy');
                 this.unmarkAll();
                 $('.element-container').removeClass('transfer-prop-source');
                 $('#' + this.editElementId).addClass('transfer-prop-source');
                 this.propTransferObject = propTransferObject;
+                this.$nextTick(() => {
+                    $.contextMenu('destroy'); // if executed in same context, re-adding context menu after prop transfer does not work anymore for the transfer source element
+                })
             },
             applyPropTransfer() {
                 let actionElements = this.getElementsForAction();
@@ -170,10 +172,10 @@
                 this.stopPropTransfer();
             },
             stopPropTransfer() {
-                initContextmenu();
                 this.propTransferObject = null;
                 $('#' + this.editElementId).removeClass('transfer-prop-source');
                 this.unmarkAll();
+                initContextmenu();
             },
             moveAll: function(dir) {
                 this.gridData.gridElements = gridLayoutUtil.moveAsPossible(this.gridData.gridElements, this.gridData.gridElements, dir, {
