@@ -1187,7 +1187,6 @@
   "valueToDisplay": "Valor a mostrar",
   "EXTRACT_JSON": "Extrair de JSON",
   "EXTRACT_HTML_SELECTOR": "Extrair de HTML",
-  "quickEdit": "Quick edit",
   "hideUnhide": "Hide / Unhide",
   "transferProperties": "Transfer properties",
   "transferAll": "Transfer all",
@@ -1199,5 +1198,6 @@
   "propertyName": "Property name",
   "checked": "checked",
   "unchecked": "unchecked",
-  "othersHeading": "Others"
+  "othersHeading": "Others",
+  "languageLevel": "Language level"
 }
