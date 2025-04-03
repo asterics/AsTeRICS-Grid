@@ -747,7 +747,7 @@
             CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
         };
 
-        let itemsQuickEdit = {
+        let itemsTransferProps = {
             'CONTEXT_PROPERTY_TRANSFER_ALL': { name: i18nService.t('transferAll'), icon: 'fas fa-angle-double-right' },
             'CONTEXT_PROPERTY_TRANSFER_APPEARANCE': { name: i18nService.t('transferAppearance'), icon: 'fas fa-angle-double-right' },
             'CONTEXT_PROPERTY_TRANSFER': { name: i18nService.t('transferCustom'), icon: 'fas fa-angle-double-right' }
@@ -760,7 +760,7 @@
             CONTEXT_ACTION_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt"},
             CONTEXT_ACTION_DUPLICATE: {name: i18nService.t('clone'), icon: "far fa-clone"},
             CONTEXT_QUICK_HIDE: { name: i18nService.t('hideUnhide'), icon: 'fas fa-eye-slash' },
-            "QUICK_EDIT": {name: i18nService.t('transferProperties'), icon: "fas fa-angle-double-right", items: itemsQuickEdit, visible: visibleTransferPropsFn},
+            TRANSFER_PROPS: {name: i18nService.t('transferProperties'), icon: "fas fa-angle-double-right", items: itemsTransferProps, visible: visibleTransferPropsFn},
             SEP1: "---------",
             CONTEXT_ACTION_COPY: {name: i18nService.t('copy'), icon: "far fa-copy"},
             CONTEXT_ACTION_CUT: {name: i18nService.t('cut'), icon: "fas fa-cut"},
