@@ -1147,7 +1147,7 @@
   "showGlobalGrid": "Globales Grid anzeigen",
   "selectGlobalGrid": "Globales Grid wählen",
   "defaultGlobalGrid": "Standard globales Grid",
-  "selectedElementContextMenu": "Ausgewähltes Element",
+  "selectedElementsContextMenu": "Ausgewählte Element(e)",
   "copy": "Kopieren",
   "cut": "Ausschneiden",
   "paste": "Einfügen",
@@ -1186,5 +1186,18 @@
   "delayMs": "Verzögerung (ms)",
   "valueToDisplay": "Anzuzeigender Wert",
   "EXTRACT_JSON": "Aus JSON extrahieren",
-  "EXTRACT_HTML_SELECTOR": "Aus HTML extrahieren"
+  "EXTRACT_HTML_SELECTOR": "Aus HTML extrahieren",
+  "hideUnhide": "Ausblenden / Einblenden",
+  "transferProperties": "Eigenschaften übertragen",
+  "transferAll": "Alle übertragen",
+  "transferAppearance": "Darstellung übertragen",
+  "transferCustom": "Benutzerdefiniert übertragen",
+  "selectTargetElements": "Zielelemente auswählen",
+  "selectPropsToTransfer": "Wähle zu übertragende Eigenschaften",
+  "transferQuestionmark": "Übertragen?",
+  "propertyName": "Eigenschaft",
+  "checked": "ausgewählt",
+  "unchecked": "nicht ausgewählt",
+  "othersHeading": "Andere",
+  "languageLevel": "Sprachlevel"
 }

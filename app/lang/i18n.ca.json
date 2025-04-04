@@ -1147,7 +1147,7 @@
   "showGlobalGrid": "Exportar tauler global",
   "selectGlobalGrid": "Seleccionar tauler global",
   "defaultGlobalGrid": "",
-  "selectedElementContextMenu": "Seleccionar cel·la ",
+  "selectedElementsContextMenu": "Selected element(s)",
   "copy": "Copia",
   "cut": "Tallar",
   "paste": "Enganxar",
@@ -1186,5 +1186,18 @@
   "delayMs": "Retard (ms)",
   "valueToDisplay": "Valor a mostrar",
   "EXTRACT_JSON": "Recuperar de JSON",
-  "EXTRACT_HTML_SELECTOR": "Recuperar d' HTML"
+  "EXTRACT_HTML_SELECTOR": "Recuperar d' HTML",
+  "hideUnhide": "Hide / Unhide",
+  "transferProperties": "Transfer properties",
+  "transferAll": "Transfer all",
+  "transferAppearance": "Transfer appearance",
+  "transferCustom": "Transfer custom",
+  "selectTargetElements": "select target elements",
+  "selectPropsToTransfer": "Select properties to transfer",
+  "transferQuestionmark": "Transfer?",
+  "propertyName": "Property name",
+  "checked": "checked",
+  "unchecked": "unchecked",
+  "othersHeading": "Others",
+  "languageLevel": "Language level"
 }
