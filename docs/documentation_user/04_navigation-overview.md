@@ -119,6 +119,7 @@ The shortcuts available in edit mode are listed below.
 
 - `Ctrl + left mouse clicks`: select multiple elements, one after the other
 - `Shift + left mouse clicks`: select multiple connected elements
+- `Escape`: unselect all elements
 - `Ctrl + E`: edit selected element
 - `Ctrl + C`: copy selected elements to clipboard
 - `Ctrl + X`: cut selected elements (copy to clipboard and delete from current grid)
@@ -140,6 +141,7 @@ The shortcuts available in edit mode are listed below.
 - `Ctrl + B`: configure property transfer for current selected element
 - `Ctrl + Shift + A`: directly transfer all properties of selected element (`A` like all)
 - `Ctrl + Shift + C`: directly transfer appearance properties of selected element (`C` like color)
+- `Ctrl + Shift + P`: transfer custom properties of selected element (`P` like properties)
 - `Escape`: cancel property transfer mode
 - `Enter`: apply property transfer to selected elements
 

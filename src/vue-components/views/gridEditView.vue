@@ -571,6 +571,11 @@
                             this.configPropTransferAppearance();
                             return;
                         }
+                        if (event.shiftKey && event.code === 'KeyP') {
+                            event.preventDefault();
+                            this.configPropTransfer();
+                            return;
+                        }
                         if (event.code === 'KeyA') {
                             event.preventDefault();
                             this.markAll();
