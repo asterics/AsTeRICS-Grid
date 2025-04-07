@@ -414,8 +414,8 @@
                     this.renderGridData = gridData;
                 }
                 this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.hidden);
-                if (this.metadata.languageLevel) {
-                    this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.languageLevel || e.languageLevel <= this.metadata.languageLevel);
+                if (this.metadata.vocabularyLevel) {
+                    this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.vocabularyLevel || e.vocabularyLevel <= this.metadata.vocabularyLevel);
                 }
                 stateService.setCurrentGrid(this.renderGridData);
             },

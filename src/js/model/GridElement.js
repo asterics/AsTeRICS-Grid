@@ -40,7 +40,7 @@ class GridElement extends Model({
     image: [GridImage],
     actions: [Object],
     type: String,
-    languageLevel: [Number, null],
+    vocabularyLevel: [Number, null],
     additionalProps: [Object]
 }) {
     constructor(properties, elementToCopy) {
@@ -141,7 +141,7 @@ GridElement.DEFAULTS = {
     x: 0,
     y: 0,
     hidden: false,
-    languageLevel: null
+    vocabularyLevel: null
 }
 
 export { GridElement };

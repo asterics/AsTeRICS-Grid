@@ -125,8 +125,8 @@ constants.TRANSFER_PROPS = {
         category: constants.PROP_TRANSFER_CATEGORIES.OTHERS
     },
     LANGUAGE_LEVEL: {
-        path: 'languageLevel',
-        label: 'languageLevel',
+        path: 'vocabularyLevel',
+        label: 'vocabularyLevel',
         type: constants.PROP_TRANSFER_TYPES.NUMBER,
         category: constants.PROP_TRANSFER_CATEGORIES.OTHERS
     },
