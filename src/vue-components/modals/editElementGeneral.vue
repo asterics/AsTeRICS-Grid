@@ -18,21 +18,21 @@
                 </select>
             </div>
         </div>
-        <div class="row">
-            <label class="col-sm-2" for="vocabularyLevel">{{ $t('vocabularyLevel') }}</label>
-            <div class="col-sm-7">
-                <select class="col-12" id="vocabularyLevel" v-model.number="gridElement.vocabularyLevel">
-                    <option :value="null">{{ $t('noneSelected') }}</option>
-                    <option v-for="level in [...Array(10).keys()].map(i => i + 1)" :value="level">{{ level }}</option>
-                </select>
-            </div>
-        </div>
         <div class="srow mb-5">
             <input type="checkbox" id="inputHidden" v-if="gridElement" v-model="gridElement.hidden"/>
             <label for="inputHidden">{{ $t('hideElement') }}</label>
         </div>
         <div class="srow">
             <accordion :acc-label="$t('advancedOptions')">
+                <div class="row">
+                    <label class="col-sm-2" for="vocabularyLevel">{{ $t('vocabularyLevel') }}</label>
+                    <div class="col-sm-7">
+                        <select class="col-12" id="vocabularyLevel" v-model.number="gridElement.vocabularyLevel">
+                            <option :value="null">{{ $t('noneSelected') }}</option>
+                            <option v-for="level in [...Array(10).keys()].map(i => i + 1)" :value="level">{{ level }}</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="srow">
                     <input type="checkbox" id="inputDontCollect" v-if="gridElement" v-model="gridElement.dontCollect"/>
                     <label for="inputDontCollect">{{ $t('dontAddElementToCollectElement') }}</label>
