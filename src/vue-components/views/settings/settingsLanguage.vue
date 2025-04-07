@@ -79,14 +79,14 @@
         </div>
         <div class="srow">
             <div class="eleven columns">
-                <h3 class="mt-2">{{ $t('vocabularyLevel') }}</h3>
+                <h3 class="mt-2">{{ $t('progressiveLanguage') }}</h3>
                 <div class="srow">
                     <label class="three columns" for="langLevel">
-                        <span>{{ $t('vocabularyLevel') }}</span>
+                        <span>{{ $t('shownVocabularyLevel') }}</span>
                     </label>
                     <select id="langLevel" class="five columns mb-2" v-model="metadata.vocabularyLevel" @change="saveMetadata(metadata)">
-                        <option :value="null">{{ $t('noneSelected') }}</option>
-                        <option v-for="level in [...Array(10).keys()].map(i => i + 1)" :value="level">{{ level }}</option>
+                        <option :value="null">{{ $t('allSelected') }}</option>
+                        <option v-for="level in [...Array(10).keys()].map(i => i + 1)" :value="level">{{ $t('untilLevel', { level: level}) }}</option>
                     </select>
                 </div>
             </div>

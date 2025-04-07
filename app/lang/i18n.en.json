@@ -1199,5 +1199,8 @@
   "checked": "checked",
   "unchecked": "unchecked",
   "othersHeading": "Others",
-  "vocabularyLevel": "Vocabulary level"
+  "vocabularyLevel": "Vocabulary level",
+  "shownVocabularyLevel": "Shown vocabulary level",
+  "progressiveLanguage": "Progressive language",
+  "untilLevel": "up to level {level}"
 }
