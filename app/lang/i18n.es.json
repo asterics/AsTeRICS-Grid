@@ -1199,8 +1199,8 @@
   "checked": "seleccionado",
   "unchecked": "no seleccionado",
   "othersHeading": "Otras",
-  "vocabularyLevel": "Vocabulary level",
-  "shownVocabularyLevel": "Shown vocabulary level",
-  "progressiveLanguage": "Progressive language",
-  "untilLevel": "up to level {level}"
+  "vocabularyLevel": "Nivel del vocabulario",
+  "shownVocabularyLevel": "Mostrar nivel del vocabulario",
+  "progressiveLanguage": "Lenguaje progresivo",
+  "untilLevel": "subir al nivel {level}"
 }
