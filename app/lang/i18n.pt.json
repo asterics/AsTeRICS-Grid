@@ -1199,5 +1199,8 @@
   "checked": "selecionado",
   "unchecked": "não selecionado",
   "othersHeading": "Outros",
-  "languageLevel": "Nível de fala"
+  "vocabularyLevel": "Vocabulary level",
+  "shownVocabularyLevel": "Shown vocabulary level",
+  "progressiveLanguage": "Progressive language",
+  "untilLevel": "up to level {level}"
 }
