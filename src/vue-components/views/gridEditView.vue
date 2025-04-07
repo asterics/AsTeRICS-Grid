@@ -381,7 +381,13 @@
                         }
                         return;
                     }
-                    if (!this.usingTouchscreen && !this.ctrlKeyHold) { // no multi-select mode
+                    if (this.markedElementIds.length === 1 && this.markedElementIds.includes(id)) {
+                        // unselect single marked element on second click
+                        this.unmarkAll();
+                        return;
+                    }
+                    if (!this.usingTouchscreen && !this.ctrlKeyHold) {
+                        // no multi-select mode on desktop without Ctrl
                         this.unmarkAll();
                     }
                     if (!this.markedElementIds.includes(id)) {
