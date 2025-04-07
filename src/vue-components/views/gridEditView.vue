@@ -235,6 +235,7 @@
                 if (editElement) {
                     this.showEditModal = true;
                 }
+                this.unmarkAll();
             },
             removeElements(shouldIncludeId = null) {
                 let removeIds = this.getElementIdsForAction(shouldIncludeId);
@@ -243,10 +244,12 @@
                 }
                 this.gridData.gridElements = this.gridData.gridElements.filter((el) => !removeIds.includes(el.id));
                 this.updateGridWithUndo();
+                this.unmarkAll();
             },
             copyElements(shouldIncludeId = null) {
                 let elements = this.getElementsForAction(shouldIncludeId);
                 util.gridElementsToClipboard(elements);
+                this.unmarkAll();
             },
             copyAllElements() {
                 util.gridElementsToClipboard(this.gridData.gridElements);
@@ -258,6 +261,7 @@
                 }
                 util.gridElementsToClipboard(elements);
                 this.removeElements(shouldIncludeId);
+                this.unmarkAll();
             },
             async duplicateElements(shouldIncludeId = null) {
                 let elements = this.getElementsForAction(shouldIncludeId);
@@ -265,6 +269,7 @@
                     return;
                 }
                 let duplicates = gridUtil.duplicateElements(elements);
+                this.unmarkAll();
                 if (duplicates.length === 1) {
                     this.gridData.gridElements = gridLayoutUtil.insertDuplicate(this.gridData.gridElements, elements[0], duplicates[0], {
                         gridWidth: this.gridData.minColumnCount,
@@ -285,6 +290,7 @@
                     element.hidden = !allHidden;
                 }
                 this.updateGridWithUndo();
+                this.unmarkAll();
             },
             async newElement(type, useInteractionPos) {
                 if (type === GridElement.ELEMENT_TYPE_NORMAL) {
@@ -927,31 +933,24 @@
                 }
                 case CONTEXT_ACTION_EDIT:
                     vueApp.editElement(elementId);
-                    vueApp.unmarkAll();
                     break;
                 case CONTEXT_ACTION_DELETE:
                     vueApp.removeElements(elementId);
-                    vueApp.unmarkAll();
                     break;
                 case CONTEXT_ACTION_DUPLICATE:
                     vueApp.duplicateElements(elementId);
-                    vueApp.unmarkAll();
                     break;
                 case CONTEXT_QUICK_HIDE:
                     vueApp.hideUnhideElements(elementId);
-                    vueApp.unmarkAll();
                     break;
                 case CONTEXT_ACTION_COPY:
                     vueApp.copyElements(elementId);
-                    vueApp.unmarkAll();
                     break;
                 case CONTEXT_ACTION_CUT:
                     vueApp.cutElements(elementId);
-                    vueApp.unmarkAll();
                     break;
                 case CONTEXT_ACTION_PASTE:
                     vueApp.pasteElements();
-                    vueApp.unmarkAll();
                     break;
                 case CONTEXT_ACTION_DO_ACTION:
                     actionService.doAction(vueApp.gridData.id, elementId);
