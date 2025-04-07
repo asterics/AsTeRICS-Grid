@@ -157,18 +157,16 @@
                     $.contextMenu('destroy'); // if executed in same context, re-adding context menu after prop transfer does not work anymore for the transfer source element
                 })
             },
-            applyPropTransfer() {
+            async applyPropTransfer() {
                 let actionElements = this.getElementsForAction();
-                let changed = false;
                 for (let element of actionElements) {
                     for (let path of gridUtil.getAllPropTransferPaths()) {
                         if (this.propTransferObject[path] !== constants.PROP_TRANSFER_DONT_CHANGE) {
-                            changed = true;
-                            element[path] = this.propTransferObject[path];
+                            this.$set(element, path, this.propTransferObject[path]);
                         }
                     }
                 }
-                this.updateGridWithUndo();
+                await this.updateGridWithUndo();
                 this.stopPropTransfer();
             },
             stopPropTransfer() {
