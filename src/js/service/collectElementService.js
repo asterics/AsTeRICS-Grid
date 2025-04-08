@@ -23,6 +23,7 @@ import {stateService} from "./stateService.js";
 import {MapCache} from "../util/MapCache.js";
 import { liveElementService } from './liveElementService';
 import { MetaData } from '../model/MetaData';
+import { GridData } from '../model/GridData';
 
 let collectElementService = {};
 
@@ -74,7 +75,11 @@ collectElementService.initWithGrid = function (gridData, dontAutoPredict) {
             registeredCollectElements.push(copy);
         }
     });
-    keyboardLikeFactor = gridData.isKeyboard ? 1 : oneCharacterElements / normalElements;
+    if (gridData.keyboardMode) {
+        keyboardLikeFactor = gridData.keyboardMode === GridData.KEYBOARD_DISABLED ? 0 : 1;
+    } else {
+        keyboardLikeFactor = oneCharacterElements / normalElements;
+    }
     if (registeredCollectElements.length > 0) {
         updateCollectElements();
         if (!dontAutoPredict) {

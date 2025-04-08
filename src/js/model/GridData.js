@@ -22,7 +22,7 @@ class GridData extends Model({
     thumbnail: [Object], // map with 2 properties: [data, hash], where "data" is base64 Screenshot data and "hash" is the hash of the grid when the screenshot was made,
     showGlobalGrid: [Boolean],
     globalGridId: [String],
-    isKeyboard: [Boolean]
+    keyboardMode: [String]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridData);
@@ -205,6 +205,10 @@ class GridData extends Model({
     }
 }
 
+GridData.KEYBOARD_ENABLED = "KEYBOARD_ENABLED";
+GridData.KEYBOARD_DISABLED = "KEYBOARD_DISABLED";
+GridData.KEYBOARD_MODES = [GridData.KEYBOARD_ENABLED, GridData.KEYBOARD_DISABLED];
+
 GridData.DEFAULTS = {
     id: '', //will be replaced by constructor
     modelName: GridData.getModelName(),
@@ -215,7 +219,8 @@ GridData.DEFAULTS = {
     label: {},
     lastUpdateTime: new Date().getTime(),
     showGlobalGrid: true,
-    globalGridId: null
+    globalGridId: null,
+    keyboardMode: null
 };
 
 GridData.defaults(GridData.DEFAULTS);
