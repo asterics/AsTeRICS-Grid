@@ -1202,7 +1202,7 @@
   "vocabularyLevel": "Nivel del vocabulario",
   "shownVocabularyLevel": "Mostrar nivel del vocabulario",
   "progressiveLanguage": "Lenguaje progresivo",
-  "untilLevel": "subir al nivel {level}",
+  "untilLevel": "hasta el nivel {level}",
   "keyboard": "Teclado",
   "keyboardMode": "Modo teclado",
   "KEYBOARD_ENABLED": "El tablero ES un teclado",
