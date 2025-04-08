@@ -1204,5 +1204,7 @@
   "progressiveLanguage": "Lenguaje progresivo",
   "untilLevel": "subir al nivel {level}",
   "keyboard": "Keyboard",
-  "gridIsKeyboard": "Grid is a keyboard"
+  "keyboardMode": "Keyboard mode",
+  "KEYBOARD_ENABLED": "Grid is a keyboard",
+  "KEYBOARD_DISABLED": "Grid is not a keyboard"
 }
