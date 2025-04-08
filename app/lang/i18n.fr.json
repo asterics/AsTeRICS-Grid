@@ -1202,5 +1202,7 @@
   "vocabularyLevel": "Vocabulary level",
   "shownVocabularyLevel": "Shown vocabulary level",
   "progressiveLanguage": "Progressive language",
-  "untilLevel": "up to level {level}"
+  "untilLevel": "up to level {level}",
+  "keyboard": "Keyboard",
+  "gridIsKeyboard": "Grid is a keyboard"
 }
