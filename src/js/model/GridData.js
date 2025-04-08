@@ -21,7 +21,8 @@ class GridData extends Model({
     webRadios: [Model.Array(Webradio)],
     thumbnail: [Object], // map with 2 properties: [data, hash], where "data" is base64 Screenshot data and "hash" is the hash of the grid when the screenshot was made,
     showGlobalGrid: [Boolean],
-    globalGridId: [String]
+    globalGridId: [String],
+    isKeyboard: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridData);

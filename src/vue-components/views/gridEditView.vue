@@ -673,7 +673,7 @@
                 container.addEventListener('touchcancel', this.onTouchEnd);
                 container.addEventListener('touchend', this.onTouchEnd);
                 container.addEventListener("contextmenu", this.onContextMenu);
-                collectElementService.initWithElements(this.gridData.gridElements);
+                collectElementService.initWithGrid(this.gridData);
                 liveElementService.updateOnce({ elements: this.gridData.gridElements });
             });
         },

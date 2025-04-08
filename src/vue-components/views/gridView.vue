@@ -319,7 +319,7 @@
                 this.initInputMethods(options);
                 this.highlightElements();
                 await predictionService.initWithElements(this.renderGridData.gridElements);
-                collectElementService.initWithElements(this.renderGridData.gridElements);
+                collectElementService.initWithGrid(this.renderGridData);
                 liveElementService.initWithElements(this.renderGridData.gridElements);
                 $(document).trigger(constants.EVENT_GRID_LOADED);
             },

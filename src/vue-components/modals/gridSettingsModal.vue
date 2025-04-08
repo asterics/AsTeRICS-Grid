@@ -38,6 +38,11 @@
                                 </select>
                             </div>
                         </div>
+                        <h2>{{ $t('keyboard') }}</h2>
+                        <div class="srow mb-5">
+                            <input id="isKeyboard" type="checkbox" v-model="gridData.isKeyboard"/>
+                            <label for="isKeyboard">{{ $t('gridIsKeyboard') }}</label>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
