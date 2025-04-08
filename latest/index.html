@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="notranslate" translate="no">
+<head>
+    <title>AsTeRICS Grid</title>
+    <meta id="viewPortMeta" name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-site-verification" content="UWnxfeRniUm-l7GAbNdqfZQmCCaAU3HB6jGOuEHZ26k" />
+
+    <link rel="shortcut icon" href="app/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="app/img/favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="app/manifest.webmanifest">
+
+    <link rel="stylesheet" href="app/css/fontawesome/css/all.css">
+    <link rel="stylesheet" href="app/css/custom.css">
+    <link rel="stylesheet" href="app/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="app/css/skeleton.css">
+    <link rel="stylesheet" href="app/css/bootstrap-grid.css">
+    <link rel="stylesheet" href="app/css/grid-styles.css">
+</head>
+<body onload="window.loaded = true;">
+<div style="display: none" aria-hidden="false">
+    {{ $t('accessKey1NavigationAccessKey2Main') }}
+</div>
+<div id="app" class="holy-grail">
+    <h1 class="sr-only">AsTeRICS Grid</h1>
+    <div id="touchElement" class="grid-container" style="z-index: 2; display: none; -webkit-touch-callout: none; -webkit-user-select: none;">
+    </div>
+    <audio style="display: none" id="audioPlayer" src="" preload="none"></audio>
+    <video style="display: none" id="videoPlayer" src="" preload="none"></video>
+    <notification-bar ref="notificationBar"></notification-bar>
+    <progress-bar-modal v-show="showModal === modalTypes.MODAL_PROGRESSBAR" ref="progressBar" @close="showModal = null"></progress-bar-modal>
+    <search-modal v-if="showModal === modalTypes.MODAL_SEARCH" @close="showModal = null;" :route-to-edit="Router.getCurrentView() === Router.VIEWS.GridEditView" :options="modalOptions"></search-modal>
+    <div class="grid-container grid-mask" v-if="false">
+        <i class="fas fa-4x fa-spinner fa-spin" style="top: 40%;"></i>
+        <div style="position: fixed; top: 50%; width: 100%; text-align: center; font-size: 2em;">
+            <span>loading...</span>
+        </div>
+    </div>
+    <div class="holy-grail-body" v-cloak>
+        <div class="holy-grail-sidebar-1 hg-sidebar no-print" v-show="showSidebar">
+            <div style="flex: 0 0 auto;">
+                <div class="show-mobile">
+                    <a tabindex="1" href="javascript:void(0)" :aria-label="$t('closeSidebar')" @click="closeSidebar()"><button tabindex="-1"><i class="fas fa-2x fa-bars inline"></i></button></a>
+                </div>
+                <div class="hide-mobile" style="display: inline-flex">
+                    <a tabindex="1" href="javascript:void(0)" :aria-label="$t('closeSidebar')" @click="closeSidebar()" style="margin: 0.2em 0.5em 0 1.2em"><i class="fas fa-2x fa-bars inline"></i></a>
+                    <a tabindex="-1" aria-hidden="true" href="javascript:void(0)" @click="toMain"><h1 class="inline hide-mobile"><img id="astericsIcon" src="app/img/asterics-grid-icon-raw.svg" height="40" width="121" alt="AsTeRICS Grid"/></h1></a>
+                </div>
+            </div>
+
+            <nav role="navigation" class="srow content" style="flex: 1 1 auto" accesskey="1">
+                <div v-if="currentUser">
+                    <h2 class="hide-mobile" style="margin-top: 1.5em;">{{ $t('navigation') }}</h2>
+                    <br class="show-mobile" aria-hidden="true"/>
+                    <ul>
+                        <li><a tabindex="2" href="javascript:void(0)" @click="toMain" :aria-label="$t('mainView')"><button tabindex="-1"><i class="fas fa-2x fa-home"></i><span class="hide-mobile">{{ $t('mainView') }}</span></button></a></li>
+                        <li><a tabindex="3" href="#grids" :aria-label="$t('manageGrids')"><button tabindex="-1"><i class="fas fa-2x fa-list-ul"></i><span class="hide-mobile">{{ $t('manageGrids') }}</span></button></a></li>
+                        <li><a tabindex="4" href="#dictionaries" :aria-label="$t('manageDictionaries')"><button tabindex="-1"><i class="fas fa-2x fa-book"></i><span class="hide-mobile">{{ $t('manageDictionaries') }}</span></button></a></li>
+                    </ul>
+                </div>
+
+                <h2 class="hide-mobile">{{ $t('users') }}</h2>
+                <ul>
+                    <li><a tabindex="5" href="#login" :aria-label="$t('changeUser')">
+                        <button tabindex="-1">
+                            <i class="fas fa-2x fa-users"></i><span v-show="!currentUser" class="hide-mobile">{{ $t('login') }}</span><span v-show="currentUser" class="hide-mobile">{{ $t('changeUser') }}</span>
+                        </button></a>
+                    </li>
+                    <li class="hide-mobile"><a tabindex="6" href="#register" :aria-label="$t('addOnlineUser')"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span class="hide-mobile">{{ $t('addOnlineUser') }}</span></button></a></li>
+                    <li class="hide-mobile"><a tabindex="7" href="#add" :aria-label="$t('addOfflineUser')"><button tabindex="-1"><i class="fas fa-2x fa-user-plus"></i><span>{{ $t('addOfflineUser') }}</span></button></a></li>
+                </ul>
+
+                <br class="hide-mobile" aria-hidden="true"/>
+                <ul style="margin-bottom: 0;">
+                    <li v-show="currentUser"><a tabindex="8" href="#settings" :aria-label="$t('settings')"><button tabindex="-1"><i class="fas fa-2x fa-cog"></i><span class="hide-mobile">{{ $t('settings') }}</span></button></a></li>
+                    <li class="hide-mobile"><a tabindex="9" href="#about" :aria-label="$t('aboutAstericsGrid')"><button tabindex="-1"><i class="fas fa-2x fa-info-circle"></i><span class="hide-mobile">{{ $t('aboutAstericsGrid') }}</span></button></a></li>
+                    <li><a tabindex="10" href="#help" :aria-label="$t('help')"><button tabindex="-1" id="helpButton"><i class="fas fa-2x fa-question-circle"></i><span class="hide-mobile">{{ $t('help') }}</span></button></a></li>
+                    <li class="show-mobile"><a tabindex="11" href="javascript:;" :aria-label="$t('more')" @click="moreNavigation()" id="moreNavigation"><button tabindex="-1"><i class="fas fa-2x fa-ellipsis-v"></i></button></a></li>
+                </ul>
+            </nav>
+            <div style="flex: 0 0 auto;" id="syncVisualizationWrapper">
+                <span v-show="currentUser && !isLocalUser" class="hide-mobile"><span>{{ $t('loggedInAs') }}</span> <i>{{currentUser}}</i></span>
+                <span v-show="currentUser && isLocalUser" class="hide-mobile"><span>{{ $t('usingOfflineUser') }}</span> <i>{{currentUser}}</i></span>
+                <span v-show="!currentUser" class="hide-mobile">{{ $t('notLoggedIn') }}</span>
+                <span id="syncVisualization" v-if="currentUser && !isLocalUser" class="fa-stack fa-1x right" :title="syncState | translate">
+                    <i class="fas fa-cloud fa-stack-2x" style="color: lightblue"></i>
+                    <i v-show="syncState === constants.DB_SYNC_STATE_SYNCINC" class="fas fa-sync-alt fa-stack-1x fa-spin"></i>
+                    <i v-show="syncState === constants.DB_SYNC_STATE_SYNCED" class="fas fa-check fa-stack-1x"></i>
+                    <i v-show="syncState === constants.DB_SYNC_STATE_STOPPED" class="fas fa-pause fa-stack-1x"></i>
+                    <i v-show="syncState === constants.DB_SYNC_STATE_ONLINEONLY" class="fas fa-globe fa-stack-1x"></i>
+                    <i v-show="!syncState || syncState === constants.DB_SYNC_STATE_FAIL" class="fas fa-times fa-stack-1x"></i>
+                </span>
+                <span id="syncVisualization2" v-if="currentUser && isLocalUser && syncState === constants.DB_SYNC_STATE_SYNCINC" class="fa-stack fa-1x right" :title="$t('cachingImages')">
+                    <i class="fas fa-sync-alt fa-stack-1x fa-spin"></i>
+                </span>
+            </div>
+        </div>
+        <main role="main" class="holy-grail-content" accesskey="2">
+            <!-- Main page content -->
+            <div class="srow content text-content" v-if="!component">
+                <div class="grid-container grid-mask">
+                    <i class="fas fa-4x fa-spinner fa-spin"></i>
+                </div>
+            </div>
+            <component v-if="component" v-bind:is="component" v-bind="properties" :key="componentKey"></component>
+        </main>
+    </div>
+</div>
+
+<!-- browser compatibility checks and polyfills -->
+<script type="text/javascript" src='app/lib/modernizr-custom.js'></script>
+<script type="text/javascript">
+    // polyfill for String.replaceAll, https://stackoverflow.com/questions/1144783/how-do-i-replace-all-occurrences-of-a-string-in-javascript
+    if(!String.prototype.replaceAll){Object.defineProperty(String.prototype,'replaceAll',{configurable:!0,writable:!0,enumerable:!1,value:function(search,replace){return this.replace(Object.prototype.toString.call(search)==='[object RegExp]'?search.global?search:RegExp(search.source,/\/([a-z]*)$/.exec(search.toString())[1]+'g'):RegExp(String(search).replace(/[.^$*+?()[{|\\]/g,"\\$&"),"g"),replace)}})}
+
+    testEval("function x(a = 1){}", "default parameters")
+    if(![].fill) {
+        logAndRedirect("Browser doesn't support Array.fill");
+    }
+
+    checkModernizr('promises');
+    checkModernizr('indexeddb');
+
+    function checkModernizr(modernizrFeature) {
+        Modernizr.on(modernizrFeature, function (result) {
+            if (!result) {
+                logAndRedirect(modernizrFeature)
+            }
+        });
+    }
+
+    function logAndRedirect(missingFeature) {
+        console.warn("Browser doesn't support " + missingFeature + ".");
+        window.location.replace("unsupported.html");
+    }
+
+    function testEval(evalString, msg) {
+        try {
+            eval(evalString);
+        } catch (e) {
+            console.log(e);
+            logAndRedirect(msg);
+        }
+    }
+</script>
+
+<!-- libraries, not provided by npm -->
+<script src="app/lib/jquery.min.js"></script>
+<script src="app/lib/jquery-ui.min.js"></script>
+<script type="text/javascript" src='app/lib/jquery.contextMenu.min.js'></script>
+<script type="text/javascript" src='app/lib/object-model.min.js'></script>
+<script type="text/javascript" src='app/lib/pouchdb-8.0.1.min.js'></script>
+<script type="text/javascript" src='app/lib/loglevel.min.js'></script>
+<script type="text/javascript" src='app/lib/sjcl.min.js'></script>
+
+<script type="text/javascript">
+    if (Function.bind) {
+        //remove RV log messages without altering RV source (forbidden by license)
+        window.originalLog = console.log.bind(console);
+        console.log = function () {
+            if (['ResponsiveVoice r1.6.5', 'isHidden: false', 'Prerender: false', 'Configuring'].indexOf(arguments[0]) !== -1) {
+                return;
+            } else if (arguments[0] === 'RV: Voice support ready') {
+                console.log = window.originalLog;
+            } else {
+                window.originalLog.apply(null, arguments);
+            }
+        }
+
+        //determine time needed for JSON.parse/stringify
+        /**window.originalJSONParse = JSON.parse;
+        window.originalJSONStringify = JSON.stringify;
+        window.parseTime = 0;
+
+        JSON.parse = function (arguments) {
+            let start = new Date().getTime();
+            let result = window.originalJSONParse(arguments);
+            window.parseTime += (new Date().getTime() - start);
+            console.warn(window.parseTime / 1000);
+            return result;
+        }
+
+        JSON.stringify = function (arguments) {
+            let start = new Date().getTime();
+            let result = window.originalJSONStringify(arguments);
+            window.parseTime += (new Date().getTime() - start);
+            console.warn(window.parseTime / 1000);
+            return result;
+        }*/
+    }
+</script>
+
+<script>
+    var rvApiKey="zGuJFLIV";
+    var rvApiEndpoint = "https://texttospeech.responsivevoice.org/v1/text:synthesize";
+</script>
+<!--script src="https://code.responsivevoice.org/responsivevoice.js"></script-->
+<script type="text/javascript" src='app/lib/responsive-voice.js'></script>
+
+<script type="module" src="app/build/asterics-grid.bundle.js"></script>
+</body>
+</html>
