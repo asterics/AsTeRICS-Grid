@@ -1199,12 +1199,12 @@
   "checked": "selecionado",
   "unchecked": "não selecionado",
   "othersHeading": "Outros",
-  "vocabularyLevel": "Vocabulary level",
-  "shownVocabularyLevel": "Shown vocabulary level",
-  "progressiveLanguage": "Progressive language",
-  "untilLevel": "up to level {level}",
-  "keyboard": "Keyboard",
-  "keyboardMode": "Keyboard mode",
-  "KEYBOARD_ENABLED": "Grid is a keyboard",
-  "KEYBOARD_DISABLED": "Grid is not a keyboard"
+  "vocabularyLevel": "Nível de vocabulário",
+  "shownVocabularyLevel": "Mostrar nível de vocabulário",
+  "progressiveLanguage": "Linguagem progressiva",
+  "untilLevel": "até ao nível {level}",
+  "keyboard": "Teclado",
+  "keyboardMode": "Modo teclado",
+  "KEYBOARD_ENABLED": "A tabela é um teclado",
+  "KEYBOARD_DISABLED": "A tabela não é um teclado"
 }
