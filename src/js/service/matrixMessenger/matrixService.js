@@ -59,6 +59,7 @@ matrixService.sendMessage = async function(roomId, message) {
 matrixService.getRooms = async function() {
     return await matrixAdapter.doWithClient(client => {
         let rooms = client.getRooms();
+        rooms.sort((a, b) => a.name.localeCompare(b.name));
         return rooms.filter(room => ['join', 'invite'].includes(room.getMyMembership()));
     });
 };
