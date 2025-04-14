@@ -20,7 +20,10 @@ matrixAppService.doAction = async function (action) {
             }
             break;
         case GridActionMatrix.actions.MATRIX_SEND_CUSTOM:
-
+            let useRoom = await getCurrentRoom();
+            if (action.sendText && useRoom) {
+                await matrixService.sendMessage(useRoom.roomId, action.sendText);
+            }
             break;
         case GridActionMatrix.actions.MATRIX_NEXT_CONVERSATION:
             await setNextRoom();
@@ -31,6 +34,8 @@ matrixAppService.doAction = async function (action) {
             $(document).trigger(constants.EVENT_MATRIX_SET_ROOM, [currentRoom.roomId]);
             break;
         case GridActionMatrix.actions.MATRIX_SET_CONVERSATION:
+            let rooms = await matrixService.getRooms() || [];
+            currentRoom = rooms.find(r => r.roomId === action.selectRoomId);
             $(document).trigger(constants.EVENT_MATRIX_SET_ROOM, [action.selectRoomId]);
             break;
         case GridActionMatrix.actions.MATRIX_SCROLL_UP:
@@ -40,6 +45,10 @@ matrixAppService.doAction = async function (action) {
             $(document).trigger(constants.EVENT_MATRIX_SCROLL_DOWN, [action.scrollPx]);
             break;
     }
+};
+
+matrixAppService.getCurrentRoom = function() {
+    return currentRoom;
 };
 
 async function getCurrentRoom() {

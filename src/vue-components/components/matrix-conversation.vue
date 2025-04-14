@@ -46,6 +46,7 @@ import { matrixService } from '../../js/service/matrixMessenger/matrixService';
 import $ from '../../js/externals/jquery';
 import { constants } from '../../js/util/constants';
 import MatrixRoomDescription from './matrix-room-description.vue';
+import { matrixAppService } from '../../js/service/matrixMessenger/matrixAppService';
 
 export default {
     components: { MatrixRoomDescription },
@@ -120,7 +121,7 @@ export default {
     async mounted() {
         this.loading = true;
         this.matrixRooms = await matrixService.getRooms() || [];
-        this.matrixRoom = this.matrixRooms[0];
+        this.matrixRoom = matrixAppService.getCurrentRoom() || this.matrixRooms[0];
         await this.init();
         this.loading = false;
         $(document).on(constants.EVENT_MATRIX_SCROLL_UP, this.onScrollUpEvent);
