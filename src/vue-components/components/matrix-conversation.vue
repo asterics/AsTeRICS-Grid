@@ -1,5 +1,5 @@
 <template>
-    <div class="row" style="max-height: 100%" ref="messenger">
+    <div class="row" style="max-height: 100%; overflow-y: scroll" ref="messenger">
         <div class="col">
             <div class="row" v-if="!matrixMessages.length">
                 <span class="col">{{ $t('noMessagesInRoom') }}.</span>
@@ -58,7 +58,6 @@ export default {
         },
         scrollDown() {
             this.$nextTick(() => {
-                log.warn(this.$refs.messenger)
                 this.$refs.messenger.scrollTop = this.$refs.messenger.scrollHeight;
             })
         },

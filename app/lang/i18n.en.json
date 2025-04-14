@@ -1238,5 +1238,6 @@
   "loading": "Loading",
   "pleaseLoginInTab": "Please login in tab {tab}",
   "configureMatrixMessenger": "Configure matrix messenger",
-  "ifNoUserCreateMatrixAccount": "If you don't have a matrix account, you can register at {link}. You have to register using a username and a password."
+  "ifNoUserCreateMatrixAccount": "If you don't have a matrix account, you can register at {link}. You have to register using a username and a password.",
+  "newMatrixConversation": "New matrix messenger"
 }

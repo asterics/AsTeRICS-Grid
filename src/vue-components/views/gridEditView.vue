@@ -83,6 +83,7 @@
     import { GridElementLive } from '../../js/model/GridElementLive';
     import { liveElementService } from '../../js/service/liveElementService';
     import TransferPropsModal from '../modals/transferPropsModal.vue';
+    import { GridElementMatrixConversation } from '../../js/model/GridElementMatrixConversation';
 
     let vueApp = null;
 
@@ -320,6 +321,8 @@
                     } else if (type === GridElement.ELEMENT_TYPE_LIVE) {
                         newElement = new GridElementLive(baseProperties);
                         showEdit = true;
+                    } else if (type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION) {
+                        newElement = new GridElementMatrixConversation(baseProperties);
                     }
                     this.gridData.gridElements.push(newElement);
                     await this.updateGridWithUndo();
@@ -718,6 +721,7 @@
         var CONTEXT_NEW_PREDICT = "CONTEXT_NEW_PREDICT";
         var CONTEXT_NEW_YT_PLAYER = "CONTEXT_NEW_YT_PLAYER";
         var CONTEXT_NEW_LIVE = "CONTEXT_NEW_LIVE";
+        var CONTEXT_NEW_MATRIX_CONVERSATION = "CONTEXT_NEW_MATRIX_CONVERSATION";
 
         var CONTEXT_LAYOUT_ALL_UP = "CONTEXT_LAYOUT_ALL_UP";
         var CONTEXT_LAYOUT_ALL_RIGHT = "CONTEXT_LAYOUT_ALL_RIGHT";
@@ -756,6 +760,10 @@
                     'CONTEXT_NEW_LIVE': {
                         name: i18nService.t('newLiveElement'),
                         icon: "fas fa-star-of-life"
+                    },
+                    'CONTEXT_NEW_MATRIX_CONVERSATION': {
+                        name: i18nService.t('newMatrixConversation'),
+                        icon: "fas fa-comments"
                     }
                 }
             },
@@ -879,6 +887,10 @@
                 }
                 case CONTEXT_NEW_LIVE: {
                     vueApp.newElement(GridElement.ELEMENT_TYPE_LIVE);
+                    break;
+                }
+                case CONTEXT_NEW_MATRIX_CONVERSATION: {
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION);
                     break;
                 }
                 case CONTEXT_COPY_ALL: {
