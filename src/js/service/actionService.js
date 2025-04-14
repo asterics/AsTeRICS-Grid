@@ -31,6 +31,7 @@ import { liveElementService } from './liveElementService';
 import { GridElementLive } from '../model/GridElementLive';
 import { GridActionYoutube } from '../model/GridActionYoutube';
 import { GridActionWebradio } from '../model/GridActionWebradio';
+import { matrixAppService } from './matrixMessenger/matrixAppService';
 
 let actionService = {};
 
@@ -278,6 +279,9 @@ async function doAction(gridElement, action, options = {}) {
             break;
         case 'GridActionPredefined':
             return doPredefinedAction(gridElement, action);
+            break;
+        case 'GridActionMatrix':
+            matrixAppService.doAction(action);
             break;
     }
 }

@@ -69,15 +69,40 @@ export default {
             this.currentUser = await matrixService.getUsername();
             this.matrixMessages = await matrixService.getMessageEvents(this.matrixRoom.roomId, 0);
             this.scrollDown();
+        },
+        scroll(diff) {
+            this.$nextTick(() => {
+                let newScroll = this.$refs.messenger.scrollTop + diff;
+                newScroll = Math.min(newScroll, this.$refs.messenger.scrollHeight);
+                newScroll = Math.max(0, newScroll);
+                this.$refs.messenger.scrollTop = newScroll;
+            });
+        },
+        onScrollUpEvent(event, diff = 50) {
+            this.scroll(diff * (-1));
+        },
+        onScrollDownEvent(event, diff = 50)  {
+            this.scroll(diff);
+        },
+        async onRoomChangeEvent(event, roomId) {
+            this.matrixRoom = this.matrixRooms.find(r => r.roomId === roomId);
+            await this.init();
         }
     },
     async mounted() {
         let rooms = await matrixService.getRooms();
         this.matrixRoom = rooms[0];
         await this.init();
+        this.loading = false;
+        $(document).on(constants.EVENT_MATRIX_SCROLL_UP, this.onScrollUpEvent);
+        $(document).on(constants.EVENT_MATRIX_SCROLL_DOWN, this.onScrollDownEvent);
+        $(document).on(constants.EVENT_MATRIX_SET_ROOM, this.onRoomChangeEvent);
     },
     beforeDestroy() {
         matrixService.onMessage(null);
+        $(document).off(constants.EVENT_MATRIX_SCROLL_UP, this.onScrollUpEvent);
+        $(document).off(constants.EVENT_MATRIX_SCROLL_DOWN, this.onScrollDownEvent);
+        $(document).off(constants.EVENT_MATRIX_SET_ROOM, this.onRoomChangeEvent);
     }
 }
 </script>

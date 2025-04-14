@@ -1251,5 +1251,7 @@
   "MATRIX_SCROLL_DOWN": "Scroll conversation down",
   "textToSend": "Text to send",
   "scrollPx": "Scroll pixel up/down",
-  "changeToMatrixRoom": "Change to matrix room"
+  "changeToMatrixRoom": "Change to matrix room",
+  "goToMatrixSettingsToConfigure": "Go to \"Settings → Integrations → Matrix messenger\" to set up matrix.",
+  "matrixMessengerNotLoggedInOrNoRoom": "Matrix messenger not logged in or no rooms configured."
 }

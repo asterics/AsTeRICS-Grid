@@ -19,8 +19,7 @@
         <div class="row" v-if="action.action === GridActionMatrix.actions.MATRIX_SCROLL_UP || action.action === GridActionMatrix.actions.MATRIX_SCROLL_DOWN">
             <label class="col-12 col-md-4 normal-text" for="scrollPx">{{ $t("scrollPx") }}</label>
             <div class="col-12 col-md-7">
-                <input class="col-12" id="scrollPx" v-model="action.scrollPx" spellcheck="false"
-                       type="number" min="1"/>
+                <input class="col-12" id="scrollPx" v-model.number="action.scrollPx" type="number" min="1"/>
             </div>
         </div>
         <div class="row" v-if="action.action === GridActionMatrix.actions.MATRIX_SET_CONVERSATION">
@@ -54,7 +53,7 @@ export default {
         actionTypeChanged() {
             if (this.action.action === GridActionMatrix.actions.MATRIX_SCROLL_UP || this.action.action === GridActionMatrix.actions.MATRIX_SCROLL_DOWN) {
                 if (!this.action.scrollPx) {
-                    this.action.scrollPx = 50;
+                    this.action.scrollPx = 200;
                 }
             } else {
                 this.action.scrollPx = undefined;
