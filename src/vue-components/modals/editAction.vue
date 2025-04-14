@@ -87,6 +87,9 @@
     <div v-if="action.modelName === 'GridActionPredefined'">
         <edit-predefined-action :action="action" :grid-data="gridData" v-on="$listeners"/>
     </div>
+    <div v-if="action.modelName === 'GridActionMatrix'">
+        <edit-matrix-action :action="action"/>
+    </div>
     <div v-if="action.modelName == 'GridActionPredict'">
         <div class="srow" v-show="gridElement.type === GridElement.ELEMENT_TYPE_COLLECT">
             <div class="eight columns">
@@ -325,6 +328,7 @@
     import { GridActionChangeLang } from '../../js/model/GridActionChangeLang';
     import EditPredefinedAction from './editActionsSub/editPredefinedAction.vue';
     import { GridData } from '../../js/model/GridData';
+    import EditMatrixAction from './editActionsSub/editMatrixAction.vue';
 
     export default {
         props: ['action', 'grids', 'gridData', 'gridElement'],
@@ -351,6 +355,7 @@
             }
         },
         components: {
+            EditMatrixAction,
             EditPredefinedAction,
             EditWordFormAction,
             EditAudioAction,

@@ -1239,5 +1239,17 @@
   "pleaseLoginInTab": "Please login in tab {tab}",
   "configureMatrixMessenger": "Configure matrix messenger",
   "ifNoUserCreateMatrixAccount": "If you don't have a matrix account, you can register at {link}. You have to register using a username and a password.",
-  "newMatrixConversation": "New matrix messenger"
+  "newMatrixConversation": "New matrix messenger",
+  "GridActionMatrix": "Matrix messenger action",
+  "MATRIX_SEND_COLLECTED": "Send collected phrase (text + image)",
+  "MATRIX_SEND_COLLECTED_TEXT": "Send collected phrase (text only)",
+  "MATRIX_SEND_CUSTOM": "Send custom text",
+  "MATRIX_NEXT_CONVERSATION": "Switch to next conversation",
+  "MATRIX_PREV_CONVERSATION": "Switch to previous conversation",
+  "MATRIX_SET_CONVERSATION": "Set active conversation",
+  "MATRIX_SCROLL_UP": "Scroll conversation up",
+  "MATRIX_SCROLL_DOWN": "Scroll conversation down",
+  "textToSend": "Text to send",
+  "scrollPx": "Scroll pixel up/down",
+  "changeToMatrixRoom": "Change to matrix room"
 }

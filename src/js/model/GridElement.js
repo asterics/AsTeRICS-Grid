@@ -19,6 +19,7 @@ import {GridActionWordForm} from "./GridActionWordForm.js";
 import { GridActionUART } from './GridActionUART.js';
 import { GridActionSystem } from './GridActionSystem';
 import { GridActionPredefined } from './GridActionPredefined';
+import { GridActionMatrix } from './GridActionMatrix';
 
 class GridElement extends Model({
     id: String,
@@ -82,7 +83,8 @@ class GridElement extends Model({
             GridActionHTTP,
             GridActionUART,
             GridActionSystem,
-            GridActionPredefined
+            GridActionPredefined,
+            GridActionMatrix
         ];
     }
 
