@@ -38,6 +38,14 @@
                                 </select>
                             </div>
                         </div>
+                        <h2>{{ $t('keyboard') }}</h2>
+                        <div class="srow mb-5">
+                            <label class="four columns" for="keyboardMode">{{ $t('keyboardMode') }}</label>
+                            <select class="six columns" id="keyboardMode" v-model="gridData.keyboardMode">
+                                <option :value="null">({{ $t('automatic') }})</option>
+                                <option v-for="mode in GridData.KEYBOARD_MODES" :value="mode">{{ $t(mode) }}</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -63,6 +71,7 @@
     import { gridLayoutUtil } from '../grid-layout/utils/gridLayoutUtil';
     import { gridUtil } from '../../js/util/gridUtil';
     import { i18nService } from '../../js/service/i18nService';
+    import { GridData } from '../../js/model/GridData';
 
     export default {
         props: ['gridDataParam', 'isGlobalGrid', 'undoService'],
@@ -72,7 +81,8 @@
                 gridHeight: gridUtil.getHeight(this.gridDataParam),
                 metadata: null,
                 allGrids: [],
-                gridLayoutUtil: gridLayoutUtil
+                gridLayoutUtil: gridLayoutUtil,
+                GridData: GridData
             }
         },
         methods: {

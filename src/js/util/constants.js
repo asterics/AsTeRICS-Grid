@@ -84,7 +84,68 @@ constants.BOARD_TYPE_SELFCONTAINED = "BOARD_TYPE_SELFCONTAINED";
 constants.BOARD_TYPE_SINGLE = "BOARD_TYPE_SINGLE";
 constants.BOARD_TYPES = [constants.BOARD_TYPE_SELFCONTAINED, constants.BOARD_TYPE_SINGLE];
 
-
+constants.PROP_TRANSFER_DONT_CHANGE = "PROP_TRANSFER_DONT_CHANGE";
+constants.PROP_TRANSFER_TYPES = {
+    BOOLEAN: "BOOLEAN",
+    COLOR: "COLOR",
+    PERCENTAGE: "PERCENTAGE",
+    TEXT: "TEXT",
+    NUMBER: "NUMBER"
+};
+constants.PROP_TRANSFER_CATEGORIES = {
+    APPEARANCE: "APPEARANCE",
+    OTHERS: "OTHERS"
+};
+constants.TRANSFER_PROPS = {
+    COLOR_CATEGORY: {
+        path: 'colorCategory',
+        label: 'colorCategory',
+        type: constants.PROP_TRANSFER_TYPES.TEXT,
+        category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE
+    },
+    BACKGROUND_COLOR: {
+        path: 'backgroundColor',
+        label: 'customElementColor',
+        type: constants.PROP_TRANSFER_TYPES.COLOR,
+        category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE
+    },
+    FONT_COLOR: {
+        path: 'fontColor',
+        label: 'fontColor',
+        type: constants.PROP_TRANSFER_TYPES.COLOR,
+        category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE
+    },
+    FONT_SIZE: {
+        path: 'fontSizePct',
+        label: 'fontSize',
+        type: constants.PROP_TRANSFER_TYPES.PERCENTAGE,
+        category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE
+    },
+    HIDDEN: {
+        path: 'hidden',
+        label: 'hideElement',
+        type: constants.PROP_TRANSFER_TYPES.BOOLEAN,
+        category: constants.PROP_TRANSFER_CATEGORIES.OTHERS
+    },
+    LANGUAGE_LEVEL: {
+        path: 'vocabularyLevel',
+        label: 'vocabularyLevel',
+        type: constants.PROP_TRANSFER_TYPES.NUMBER,
+        category: constants.PROP_TRANSFER_CATEGORIES.OTHERS
+    },
+    DONT_COLLECT: {
+        path: 'dontCollect',
+        label: 'dontAddElementToCollectElement',
+        type: constants.PROP_TRANSFER_TYPES.BOOLEAN,
+        category: constants.PROP_TRANSFER_CATEGORIES.OTHERS
+    },
+    TOGGLE_IN_BAR: {
+        path: 'toggleInBar',
+        label: 'toggleInCollectionElementIfAddedMultipleTimes',
+        type: constants.PROP_TRANSFER_TYPES.BOOLEAN,
+        category: constants.PROP_TRANSFER_CATEGORIES.OTHERS
+    }
+}
 
 constants.DEFAULT_ELEMENT_BACKGROUND_COLOR = '#ffffff';
 constants.DEFAULT_ELEMENT_BACKGROUND_COLOR_DARK = '#555555';

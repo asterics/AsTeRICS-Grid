@@ -319,7 +319,7 @@
                 this.initInputMethods(options);
                 this.highlightElements();
                 await predictionService.initWithElements(this.renderGridData.gridElements);
-                collectElementService.initWithElements(this.renderGridData.gridElements);
+                collectElementService.initWithGrid(this.renderGridData);
                 liveElementService.initWithElements(this.renderGridData.gridElements);
                 $(document).trigger(constants.EVENT_GRID_LOADED);
             },
@@ -414,6 +414,9 @@
                     this.renderGridData = gridData;
                 }
                 this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.hidden);
+                if (this.metadata.vocabularyLevel) {
+                    this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.vocabularyLevel || e.vocabularyLevel <= this.metadata.vocabularyLevel);
+                }
                 stateService.setCurrentGrid(this.renderGridData);
             },
             onSidebarOpen() {

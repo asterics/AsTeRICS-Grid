@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <header class="srow header" role="toolbar">
+        <header class="srow header" role="toolbar" v-show="!propTransferObject">
             <header-icon class="left"></header-icon>
             <button tabindex="30" @click="back" :aria-label="$t('editingOff')" class="spaced small left">
                 <i class="fas fa-eye"></i>
@@ -13,6 +13,16 @@
                 <button tabindex="32" @click="redo"  :aria-label="$t('redo')" :disabled="doingUndoRedo || !undoService.canRedo()" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span></button>
             </div>
         </header>
+        <header class="d-flex align-items-center transfer-props-header" role="toolbar" v-if="propTransferObject">
+            <div class="me-5">
+                <strong class="me-2">
+                    <i class="fas fa-angle-double-right"></i>&nbsp;<span class="d-none d-sm-inline-block"><span>{{ $t('transferProperties') }}</span>:</span>
+                </strong>
+                <span><span>{{ $t('selectTargetElements') }}</span>...</span>
+            </div>
+            <button class="mb-0 me-2" @click="stopPropTransfer" :title="$t('cancel')"><i class="fas fa-times"/> <span class="d-none d-lg-inline-block">{{ $t('cancel') }}</span></button>
+            <button class="mb-0" @click="applyPropTransfer" :title="$t('ok')"><i class="fas fa-check"/> <span class="d-none d-lg-inline-block">{{ $t('ok') }}</span></button>
+        </header>
         <div>
             <edit-element v-if="showEditModal" v-bind:edit-element-id-param="editElementId" :undo-service="undoService" :grid-data-id="gridData.id" :new-position="newPosition" @reload="reload" @close="showEditModal = false" @mark="markElement" @actions="(id) => {editElementId = id; showActionsModal = true}"/>
         </div>
@@ -23,13 +33,13 @@
             <grid-settings-modal v-if="showGridSettingsModal" :grid-data-param="gridData" :is-global-grid="metadata.globalGridId === gridData.id" @reload="reload" @close="showGridSettingsModal = false;" :undo-service="undoService"/>
         </div>
         <div>
-            <element-move-modal v-if="showMoveModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showMoveModal = false" @reload="reload"/>
-        </div>
-        <div>
             <grid-translate-modal v-if="showTranslateModal" :grid-data-id="gridData.id" @close="showTranslateModal = false" @reload="reload"/>
         </div>
         <div>
             <set-navigation-modal v-if="showNavigateModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showNavigateModal = false" @reload="reload"></set-navigation-modal>
+        </div>
+        <div>
+            <transfer-props-modal v-if="showPropTransferModal" :grid-id="gridData.id" :grid-element-id="editElementId" @start="(propTransferObject) => startPropTransfer(propTransferObject)" @close="showPropTransferModal = false"></transfer-props-modal>
         </div>
         <div class="srow content" id="contentContainer" v-if="!(metadata && gridData)">
             <div v-if="!showGrid" class="grid-container grid-mask">
@@ -58,7 +68,6 @@
     import {util} from "../../js/util/util";
     import GridSettingsModal from "../modals/gridSettingsModal.vue";
     import {gridUtil} from "../../js/util/gridUtil";
-    import ElementMoveModal from "../modals/elementMoveModal.vue";
     import GridTranslateModal from "../modals/gridTranslateModal.vue";
     import SetNavigationModal from "../modals/setNavigationModal.vue";
     import {GridActionYoutube} from "../../js/model/GridActionYoutube";
@@ -73,6 +82,7 @@
     import AppGridDisplay from '../grid-display/appGridDisplay.vue';
     import { GridElementLive } from '../../js/model/GridElementLive';
     import { liveElementService } from '../../js/service/liveElementService';
+    import TransferPropsModal from '../modals/transferPropsModal.vue';
 
     let vueApp = null;
 
@@ -89,27 +99,82 @@
                 showMultipleModal: false,
                 showGridSettingsModal: false,
                 showNavigateModal: false,
-                showMoveModal: false,
                 showTranslateModal: false,
+                showPropTransferModal: false,
                 showEditModal: false,
                 editElementId: null,
                 showGrid: false,
                 constants: constants,
-                markedElement: null,
+                markedElementIds: [],
                 lastInteraction: {},
                 newPosition: null,
                 touchstartTimeoutHandler: null,
-                isInteracting: false
+                isInteracting: false,
+                unmarkTimeoutHandler: null,
+                shiftKeyHold: false,
+                ctrlKeyHold: false,
+                usingTouchscreen: false,
+                propTransferObject: null
             }
         },
         components: {
+            TransferPropsModal,
             AppGridDisplay,
             SetNavigationModal,
             GridTranslateModal,
-            ElementMoveModal,
             GridSettingsModal, EditElement, AddMultipleModal, HeaderIcon
         },
         methods: {
+            configPropTransfer(id) {
+                if (!id && this.markedElementIds.length !== 1) {
+                    return;
+                }
+                this.editElementId = id || this.markedElementIds[0];
+                this.showPropTransferModal = true;
+            },
+            configPropTransferAll(id) {
+                if (!id && this.markedElementIds.length !== 1) {
+                    return;
+                }
+                this.editElementId = id || this.markedElementIds[0];
+                let propTransferObject = gridUtil.getPropTransferObjectAll(this.getElement(this.editElementId));
+                this.startPropTransfer(propTransferObject);
+            },
+            configPropTransferAppearance(id) {
+                if (!id && this.markedElementIds.length !== 1) {
+                    return;
+                }
+                this.editElementId = id || this.markedElementIds[0];
+                let propTransferObject = gridUtil.getPropTransferObjectAppearance(this.getElement(this.editElementId));
+                this.startPropTransfer(propTransferObject);
+            },
+            startPropTransfer(propTransferObject) {
+                this.unmarkAll();
+                $('.element-container').removeClass('transfer-prop-source');
+                $('#' + this.editElementId).addClass('transfer-prop-source');
+                this.propTransferObject = propTransferObject;
+                this.$nextTick(() => {
+                    $.contextMenu('destroy'); // if executed in same context, re-adding context menu after prop transfer does not work anymore for the transfer source element
+                })
+            },
+            async applyPropTransfer() {
+                let actionElements = this.getElementsForAction();
+                for (let element of actionElements) {
+                    for (let path of gridUtil.getAllPropTransferPaths()) {
+                        if (this.propTransferObject[path] !== constants.PROP_TRANSFER_DONT_CHANGE) {
+                            this.$set(element, path, this.propTransferObject[path]);
+                        }
+                    }
+                }
+                await this.updateGridWithUndo();
+                this.stopPropTransfer();
+            },
+            stopPropTransfer() {
+                this.propTransferObject = null;
+                $('#' + this.editElementId).removeClass('transfer-prop-source');
+                this.unmarkAll();
+                initContextmenu();
+            },
             moveAll: function(dir) {
                 this.gridData.gridElements = gridLayoutUtil.moveAsPossible(this.gridData.gridElements, this.gridData.gridElements, dir, {
                     outOfBounds: false,
@@ -161,29 +226,71 @@
                     Router.toGrid(this.gridData.id);
                 }
             },
-            editElement(elementId) {
-                this.editElementId = elementId;
-                let editElement = this.gridData.gridElements.filter(e => e.id === elementId)[0];
+            editElement(elementId = null) {
+                if (!elementId && this.markedElementIds.length !== 1) {
+                    return;
+                }
+                this.editElementId = elementId || this.markedElementIds[0];
+                let editElement = this.gridData.gridElements.filter(e => e.id === this.editElementId)[0];
                 if (editElement) {
                     this.showEditModal = true;
                 }
+                this.unmarkAll();
             },
-            removeElement(id) {
-                let element = this.getElement(id);
-                if (!element) {
+            removeElements(shouldIncludeId = null) {
+                let removeIds = this.getElementIdsForAction(shouldIncludeId);
+                if (!removeIds.length) {
                     return;
                 }
-                this.gridData.gridElements = this.gridData.gridElements.filter((el) => el.id !== element.id);
+                this.gridData.gridElements = this.gridData.gridElements.filter((el) => !removeIds.includes(el.id));
                 this.updateGridWithUndo();
+                this.unmarkAll();
             },
-            async duplicateElement(id) {
-                let element = gridLayoutUtil.getElementById(this.gridData.gridElements, id);
-                let duplicate = gridUtil.duplicateElement(element);
-                this.gridData.gridElements = gridLayoutUtil.insertDuplicate(this.gridData.gridElements, element, duplicate, {
-                    gridWidth: this.gridData.minColumnCount,
-                    gridHeight: this.gridData.rowCount
-                });
+            copyElements(shouldIncludeId = null) {
+                let elements = this.getElementsForAction(shouldIncludeId);
+                util.gridElementsToClipboard(elements);
+                this.unmarkAll();
+            },
+            copyAllElements() {
+                util.gridElementsToClipboard(this.gridData.gridElements);
+            },
+            cutElements(shouldIncludeId = null) {
+                let elements = this.getElementsForAction(shouldIncludeId);
+                if (!elements.length) {
+                    return;
+                }
+                util.gridElementsToClipboard(elements);
+                this.removeElements(shouldIncludeId);
+                this.unmarkAll();
+            },
+            async duplicateElements(shouldIncludeId = null) {
+                let elements = this.getElementsForAction(shouldIncludeId);
+                if (!elements.length) {
+                    return;
+                }
+                let duplicates = gridUtil.duplicateElements(elements);
+                this.unmarkAll();
+                if (duplicates.length === 1) {
+                    this.gridData.gridElements = gridLayoutUtil.insertDuplicate(this.gridData.gridElements, elements[0], duplicates[0], {
+                        gridWidth: this.gridData.minColumnCount,
+                        gridHeight: this.gridData.rowCount
+                    });
+                    return this.updateGridWithUndo();
+                } else {
+                    return this.pasteElements(duplicates);
+                }
+            },
+            hideUnhideElements(shouldIncludeId = null) {
+                let elements = this.getElementsForAction(shouldIncludeId);
+                if (!elements.length) {
+                    return;
+                }
+                let allHidden = elements.every(e => e.hidden);
+                for (let element of elements) {
+                    element.hidden = !allHidden;
+                }
                 this.updateGridWithUndo();
+                this.unmarkAll();
             },
             async newElement(type, useInteractionPos) {
                 if (type === GridElement.ELEMENT_TYPE_NORMAL) {
@@ -254,35 +361,53 @@
                     }
                 }
             },
-            markElement(id) {
+            unmarkAll() {
                 $('.element-container').removeClass('marked');
+                this.markedElementIds = [];
+            },
+            markAll() {
+                $('.element-container').addClass('marked');
+                this.markedElementIds = this.gridData.gridElements.map(e => e.id);
+            },
+            markElement(id) {
                 if (!id) {
-                    this.markedElement = null;
                     return;
                 }
                 util.throttle(() => {
-                    if (!this.markedElement || this.markedElement.id !== id) {
-                        this.markedElement = this.getElement(id);
-                        $('#' + id).addClass('marked');
+                    if (this.shiftKeyHold && this.markedElementIds.length) {
+                        let allElems = this.gridData.gridElements;
+                        let clickedElem = allElems.find(e => e.id === id);
+                        let markedElems = this.markedElementIds.map(elId => allElems.find(e => e.id === elId));
+                        let firstMarked = markedElems[0];
+                        let addElems = allElems.filter(e => gridUtil.isWithinElements(clickedElem, firstMarked, e));
+                        this.unmarkAll();
+                        this.addToMarkedInternal(firstMarked.id); // keep firstMarked first for consistent behaviour
+                        for (let addElem of addElems) {
+                            this.addToMarkedInternal(addElem.id);
+                        }
+                        return;
+                    }
+                    if (this.markedElementIds.length === 1 && this.markedElementIds.includes(id)) {
+                        // unselect single marked element on second click
+                        this.unmarkAll();
+                        return;
+                    }
+                    if (!this.usingTouchscreen && !this.ctrlKeyHold) {
+                        // no multi-select mode on desktop without Ctrl
+                        this.unmarkAll();
+                    }
+                    if (!this.markedElementIds.includes(id)) {
+                        this.addToMarkedInternal(id);
                     } else {
-                        this.markedElement = null;
+                        this.markedElementIds = this.markedElementIds.filter(elId => elId !== id);
+                        $('#' + id).removeClass('marked');
                     }
                 }, null, 200, "MARK_ELEMENT");
             },
-            handleClickEvent(event) {
-                if (vueApp) {
-                    let id = null;
-                    let element = event.target;
-                    while (!id && element.parentNode) {
-                        if (element.className.includes('element-container')) {
-                            id = element.id;
-                        }
-                        element = element.parentNode;
-                    }
-                    if (this.isInteracting && this.markedElement && this.markedElement.id === id) {
-                        return;
-                    }
-                    vueApp.markElement(id);
+            addToMarkedInternal(id) {
+                if (id && !this.markedElementIds.includes(id)) {
+                    this.markedElementIds.push(id);
+                    $('#' + id).addClass('marked');
                 }
             },
             highlightElement() {
@@ -293,26 +418,9 @@
                     }, 4000);
                 }
             },
-            copyElement(elementId) {
-                let element = this.getElement(elementId);
-                if (!element) {
-                    return;
-                }
-                util.gridElementToClipboard(element);
-            },
-            copyAllElements() {
-                util.gridElementsToClipboard(this.gridData.gridElements);
-            },
-            cutElement(elementId) {
-                let element = this.getElement(elementId);
-                if (!element) {
-                    return;
-                }
-                util.gridElementToClipboard(element);
-                this.removeElement(elementId);
-            },
-            async pasteElements() {
-                let elements = await util.getGridElementsFromClipboard();
+            async pasteElements(elements = null) {
+                this.unmarkAll();
+                elements = elements || await util.getGridElementsFromClipboard();
                 if (!elements.length) {
                     return;
                 } else if (elements.length === 1) {
@@ -323,43 +431,76 @@
                     element.y = this.lastInteraction.y !== undefined ? this.lastInteraction.y : 0;
                     this.gridData.gridElements.push(element);
                     this.gridData.gridElements = gridLayoutUtil.resolveCollisions(this.gridData.gridElements, element);
-                    this.updateGridWithUndo();
+                } else if (gridLayoutUtil.elementsCanBeInsertedAt(this.gridData, elements, this.lastInteraction)) {
+                    let normalized = gridLayoutUtil.normalizePositions(elements);
+                    for (let element of normalized) {
+                        element.x += this.lastInteraction.x;
+                        element.y += this.lastInteraction.y;
+                    }
+                    this.gridData.gridElements = this.gridData.gridElements.concat(normalized);
                 } else {
-                    let firstEmptyRow = gridUtil.getHeightWithBounds(this.gridData);
+                    let firstEmptyRow = gridUtil.getHeight(this.gridData);
+                    let minY = Math.min(...elements.map(e => e.y));
                     elements = elements.map(el => {
-                        el.y += firstEmptyRow;
+                        el.y += firstEmptyRow - minY;
                         return el;
                     });
                     this.gridData.gridElements = this.gridData.gridElements.concat(elements);
-                    this.updateGridWithUndo();
                 }
+                this.updateGridWithUndo();
             },
-            getElement(elementId) {
-                elementId = elementId || (this.markedElement ? this.markedElement.id : null);
-                return !elementId ? null : this.gridData.gridElements.filter(el => el.id === elementId)[0];
+            getElements(ids = []) {
+                return this.gridData.gridElements.filter(el => ids.includes(el.id));
+            },
+            getElement(id) {
+                return this.gridData.gridElements.find(el => el.id === id);
+            },
+            getElementIdsForAction(shouldIncludeId = null) {
+                let ids = this.markedElementIds;
+                if (shouldIncludeId && !this.markedElementIds.includes(shouldIncludeId)) {
+                    this.unmarkAll();
+                    ids = [shouldIncludeId];
+                }
+                return ids;
+            },
+            getElementsForAction(shouldIncludeId = null) {
+                return this.getElements(this.getElementIdsForAction(shouldIncludeId));
             },
             onInteracted(x, y) {
                 this.lastInteraction.x = x;
                 this.lastInteraction.y = y;
             },
+            onClick(event) {
+                if (vueApp && !this.isInteracting) {
+                    let elementId = $(event.target).closest('.element-container').attr('id');
+                    if (elementId) {
+                        vueApp.markElement(elementId);
+                    } else {
+                        this.unmarkAll();
+                    }
+                }
+            },
             onTouchstart(event) {
+                this.usingTouchscreen = true;
                 if (!constants.IS_SAFARI) {
                     return;
                 }
                 this.touchstartTimeoutHandler = setTimeout(() => {
-                    let element = event.target;
-                    const position = { pageX: event.pageX, pageY: event.pageY };
-                    const newEvent = $.Event('contextmenu', position);
-                    while (element) {
-                        if (element.className.includes('element-container')) {
-                            $(element).trigger(newEvent);
-                            break;
-                        }
-                        if (element.id === 'grid-container') {
-                            $(element).trigger(newEvent);
-                            break;
-                        }
-                        element = element.parentElement;
+                    const newEvent = new MouseEvent("contextmenu", {
+                        bubbles: true,
+                        cancelable: true,
+                        clientX: event.touches[0].clientX,
+                        clientY: event.touches[0].clientY,
+                        pageX: event.touches[0].pageX,
+                        pageY: event.touches[0].pageY,
+                        screenX: event.touches[0].screenX,
+                        screenY: event.touches[0].screenY
+                    });
+                    let closestElement = $(event.target).closest('.element-container')[0];
+                    let containerElement = $(event.target).closest('#grid-container')[0];
+                    let dispatchElement = closestElement || containerElement;
+                    if (dispatchElement) {
+                        dispatchElement.dispatchEvent(newEvent);
                     }
                 }, 600)
             },
@@ -368,39 +509,104 @@
             },
             onInteractStart() {
                 this.isInteracting = true;
+                this.unmarkTimeoutHandler = setTimeout(() => {
+                    this.unmarkAll();
+                }, 100);
             },
             onInteractEnd() {
                 setTimeout(() => {
                     this.isInteracting = false; // reset after click event is fired
-                }, 100)
+                }, 100);
+                clearTimeout(this.unmarkTimeoutHandler);
+            },
+            onContextMenu(event) {
+                if (this.propTransferObject) {
+                    event.preventDefault();
+                    return;
+                }
+                let clickedId = $(event.target).closest('.element-container').attr('id');
+                if (!clickedId || !this.markedElementIds.includes(clickedId)) {
+                    this.unmarkAll();
+                }
+                this.addToMarkedInternal(clickedId);
+            },
+            onKeyUp() {
+                this.shiftKeyHold = false;
+                this.ctrlKeyHold = false;
             },
             onKeyDown(event) {
-                if (this.showMultipleModal || this.showGridSettingsModal || this.showNavigateModal || this.showMoveModal || this.showTranslateModal || this.showEditModal) {
+                if (this.showMultipleModal || this.showGridSettingsModal || this.showNavigateModal || this.showTranslateModal || this.showPropTransferModal || this.showEditModal) {
                     return;
                 }
                 const ctrlOrMeta = constants.IS_MAC ? event.metaKey : event.ctrlKey;
+                this.ctrlKeyHold = ctrlOrMeta;
                 const isUndoRedo = event.key.toLocaleUpperCase() === 'Z' || event.code === 'KeyZ';
                 if (!event.repeat) {
                     if (event.code === 'Delete') {
                         event.preventDefault();
-                        this.removeElement();
+                        this.removeElements();
+                    }
+                    if (event.key === 'Enter') {
+                        if (this.propTransferObject) {
+                            this.applyPropTransfer();
+                        }
+                    }
+                    if (event.code === 'Escape') {
+                        this.unmarkAll();
+                        if (this.propTransferObject) {
+                            this.stopPropTransfer();
+                        }
+                    }
+                    if (event.shiftKey) {
+                        this.shiftKeyHold = true;
                     }
                     if (ctrlOrMeta) {
-                        if (event.code === 'KeyC' && !event.shiftKey) {
+                        if (event.shiftKey && event.code === 'KeyA') {
                             event.preventDefault();
-                            this.copyElement();
+                            this.configPropTransferAll();
+                            return;
                         }
-                        if (event.code === 'KeyC' && event.shiftKey) {
+                        if (event.shiftKey && event.code === 'KeyC') {
                             event.preventDefault();
-                            this.copyAllElements();
+                            this.configPropTransferAppearance();
+                            return;
+                        }
+                        if (event.shiftKey && event.code === 'KeyP') {
+                            event.preventDefault();
+                            this.configPropTransfer();
+                            return;
+                        }
+                        if (event.code === 'KeyA') {
+                            event.preventDefault();
+                            this.markAll();
+                        }
+                        if (event.code === 'KeyB') {
+                            event.preventDefault();
+                            this.configPropTransfer();
+                        }
+                        if (event.code === 'KeyD') {
+                            event.preventDefault();
+                            this.duplicateElements();
+                        }
+                        if (event.code === 'KeyE') {
+                            event.preventDefault();
+                            this.editElement();
+                        }
+                        if (event.code === 'KeyC') {
+                            event.preventDefault();
+                            this.copyElements();
                         }
                         if (event.code === 'KeyX') {
                             event.preventDefault();
-                            this.cutElement();
+                            this.cutElements();
                         }
                         if (event.code === 'KeyV') {
                             event.preventDefault();
                             this.pasteElements();
+                        }
+                        if (event.code === 'KeyH') {
+                            event.preventDefault();
+                            this.hideUnhideElements();
                         }
                         if (isUndoRedo && !event.shiftKey) {
                             event.preventDefault();
@@ -433,6 +639,7 @@
         created() {
             $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
             document.addEventListener("keydown", this.onKeyDown);
+            document.addEventListener("keyup", this.onKeyUp);
         },
         mounted: async function () {
             pouchDbService.pauseSync();
@@ -460,12 +667,13 @@
             thiz.highlightElement();
             this.$nextTick(() => {
                 let container = document.getElementById('grid-container');
-                container.addEventListener('click', this.handleClickEvent);
+                container.addEventListener('click', this.onClick);
                 container.addEventListener('touchstart', this.onTouchstart);
                 container.addEventListener('touchmove', this.onTouchEnd);
                 container.addEventListener('touchcancel', this.onTouchEnd);
                 container.addEventListener('touchend', this.onTouchEnd);
-                collectElementService.initWithElements(this.gridData.gridElements);
+                container.addEventListener("contextmenu", this.onContextMenu);
+                collectElementService.initWithGrid(this.gridData);
                 liveElementService.updateOnce({ elements: this.gridData.gridElements });
             });
         },
@@ -473,13 +681,15 @@
             pouchDbService.resumeSync();
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
             document.removeEventListener("keydown", this.onKeyDown);
+            document.removeEventListener("keyup", this.onKeyUp);
             let container = document.getElementById('grid-container');
             if (container) {
-                container.removeEventListener('click', this.handleClickEvent);
+                container.removeEventListener('click', this.onClick);
                 container.removeEventListener('touchstart', this.onTouchstart);
                 container.removeEventListener('touchmove', this.onTouchEnd);
                 container.removeEventListener('touchcancel', this.onTouchEnd);
                 container.removeEventListener('touchend', this.onTouchEnd);
+                container.removeEventListener("contextmenu", this.onContextMenu);
             }
             vueApp = null;
             $.contextMenu('destroy');
@@ -500,7 +710,6 @@
         let CONTEXT_ACTION_CUT = 'CONTEXT_ACTION_CUT';
         let CONTEXT_ACTION_PASTE = 'CONTEXT_ACTION_PASTE';
         let CONTEXT_ACTION_DO_ACTION = 'CONTEXT_ACTION_DO_ACTION';
-        let CONTEXT_MOVE_TO = 'CONTEXT_MOVE_TO';
 
         var CONTEXT_NEW_GROUP = "CONTEXT_NEW_GROUP";
         var CONTEXT_NEW_SINGLE = "CONTEXT_NEW_SINGLE";
@@ -521,6 +730,11 @@
         var CONTEXT_EDIT_GLOBAL_GRID = "CONTEXT_EDIT_GLOBAL_GRID";
         var CONTEXT_END_EDIT_GLOBAL_GRID = "CONTEXT_END_EDIT_GLOBAL_GRID";
         var CONTEXT_SEARCH = "CONTEXT_SEARCH";
+
+        let CONTEXT_QUICK_HIDE = "CONTEXT_QUICK_HIDE";
+        let CONTEXT_PROPERTY_TRANSFER = "CONTEXT_PROPERTY_TRANSFER";
+        let CONTEXT_PROPERTY_TRANSFER_APPEARANCE = "CONTEXT_PROPERTY_TRANSFER_APPEARANCE";
+        let CONTEXT_PROPERTY_TRANSFER_ALL = "CONTEXT_PROPERTY_TRANSFER_ALL";
 
         var itemsGlobal = {
             CONTEXT_NEW_GROUP: {
@@ -548,39 +762,51 @@
             CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
         };
 
-        var itemsElemNormal = {
-            CONTEXT_ACTION_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit"},
+        let itemsTransferProps = {
+            'CONTEXT_PROPERTY_TRANSFER_ALL': { name: i18nService.t('transferAll'), icon: 'fas fa-angle-double-right' },
+            'CONTEXT_PROPERTY_TRANSFER_APPEARANCE': { name: i18nService.t('transferAppearance'), icon: 'fas fa-angle-double-right' },
+            'CONTEXT_PROPERTY_TRANSFER': { name: i18nService.t('transferCustom'), icon: 'fas fa-angle-double-right' }
+        };
+
+        let visibleNormalFn = () => vueApp && vueApp.markedElementIds.length <= 1;
+        let visibleTransferPropsFn = () => vueApp && vueApp.markedElementIds.length === 1;
+        let itemsElemNormal = {
+            CONTEXT_ACTION_EDIT: {name: i18nService.t('edit'), icon: "fas fa-edit", visible: visibleNormalFn},
             CONTEXT_ACTION_DELETE: {name: i18nService.t('delete'), icon: "far fa-trash-alt"},
             CONTEXT_ACTION_DUPLICATE: {name: i18nService.t('clone'), icon: "far fa-clone"},
+            CONTEXT_QUICK_HIDE: { name: i18nService.t('hideUnhide'), icon: 'fas fa-eye-slash' },
+            TRANSFER_PROPS: {name: i18nService.t('transferProperties'), icon: "fas fa-angle-double-right", items: itemsTransferProps, visible: visibleTransferPropsFn},
             SEP1: "---------",
             CONTEXT_ACTION_COPY: {name: i18nService.t('copy'), icon: "far fa-copy"},
             CONTEXT_ACTION_CUT: {name: i18nService.t('cut'), icon: "fas fa-cut"},
             CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
-            SEP2: "---------",
-            CONTEXT_GRID_NAVIGATION: {name: i18nService.t('navigateToOtherGrid'), icon: "fas fa-arrow-right"},
-            CONTEXT_MOVE_TO: {name: i18nService.t('moveElementToOtherGrid'), icon: "fas fa-file-export"},
-            CONTEXT_ACTION_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt"},
+            separator: { "type": "cm_separator", visible: visibleNormalFn},
+            CONTEXT_GRID_NAVIGATION: {name: i18nService.t('navigateToOtherGrid'), icon: "fas fa-arrow-right", visible: visibleNormalFn},
+            CONTEXT_ACTION_DO_ACTION: {name: i18nService.t('doElementAction'), icon: "fas fa-bolt", visible: visibleNormalFn},
         };
 
+        let disabledFnFill = () => new GridData({}, vueApp.gridData).isFull();
         let itemsLayout = {
             name: i18nService.t('layout'), icon: 'fas fa-th-large', items: {
                 'CONTEXT_LAYOUT_ALL_UP': { name: i18nService.t('moveAllUp'), icon: 'fas fa-angle-double-up' },
                 'CONTEXT_LAYOUT_ALL_RIGHT': { name: i18nService.t('moveAllRight'), icon: 'fas fa-angle-double-right' },
                 'CONTEXT_LAYOUT_ALL_DOWN': { name: i18nService.t('moveAllDown'), icon: 'fas fa-angle-double-down' },
                 'CONTEXT_LAYOUT_ALL_LEFT': { name: i18nService.t('moveAllLeft'), icon: 'fas fa-angle-double-left' },
+                SEP1: "---------",
+                'CONTEXT_FILL_EMPTY': {name: i18nService.t('fillWithEmptyElements'), icon: "fas fa-fill", disabled: disabledFnFill},
+                'CONTEXT_DELETE_ALL': {name: i18nService.t('deleteAllElements'), icon: "fas fa-minus-circle"},
                 'CONTEXT_LAYOUT_NORMALIZE': { name: i18nService.t('normalizeGridLayout'), icon: 'fas fa-th' }
             }
         };
 
-        let visibleFn = () => !!vueApp.markedElement;
-        let visibleFnFill = () => !new GridData({}, vueApp.gridData).isFull();
+        let visibleFn = () => vueApp.markedElementIds.length >= 1;
         var itemsMoreMenuButton = {
-            "SELECTED_ELEM_ACTIONS": {name: i18nService.t('selectedElementContextMenu'), icon: "far fa-square", visible: visibleFn, items: itemsElemNormal},
-            separator: { "type": "cm_separator", visible: () => (vueApp.markedElement)},
+            "SELECTED_ELEM_ACTIONS": {name: i18nService.t('selectedElementsContextMenu'), icon: "far fa-square", visible: visibleFn, items: itemsElemNormal},
+            separator: { "type": "cm_separator", visible: visibleFn},
             CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP],
-            'CONTEXT_FILL_EMPTY': {name: i18nService.t('fillWithEmptyElements'), icon: "fas fa-fill", visible: visibleFnFill},
+            SEP0: "---------",
             'CONTEXT_COPY_ALL': {name: i18nService.t('copyAllElements'), icon: "fas fa-copy"},
-            'CONTEXT_DELETE_ALL': {name: i18nService.t('deleteAllElements'), icon: "fas fa-minus-circle"},
+            CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
             SEP1: "---------",
             CONTEXT_GROUP_LAYOUT: itemsLayout,
             'CONTEXT_GRID_SETTINGS': {
@@ -606,7 +832,7 @@
                 handleContextMenu(key, elementId);
             },
             items: itemsElemNormal,
-            zIndex: 10
+            zIndex: 100
         });
 
         $.contextMenu({
@@ -615,7 +841,7 @@
                 handleContextMenu(key);
             },
             items: itemsGlobal,
-            zIndex: 10
+            zIndex: 100
         });
 
         $.contextMenu({
@@ -626,7 +852,7 @@
             },
             trigger: 'left',
             items: itemsMoreMenuButton,
-            zIndex: 10
+            zIndex: 100
         });
 
         function handleContextMenu(key, elementId, origin) {
@@ -695,44 +921,48 @@
                     vueApp.showTranslateModal = true;
                     break;
                 }
+                case CONTEXT_PROPERTY_TRANSFER: {
+                    vueApp.configPropTransfer(elementId);
+                    break;
+                }
+                case CONTEXT_PROPERTY_TRANSFER_APPEARANCE: {
+                    vueApp.configPropTransferAppearance(elementId);
+                    break;
+                }
+                case CONTEXT_PROPERTY_TRANSFER_ALL: {
+                    vueApp.configPropTransferAll(elementId);
+                    break;
+                }
                 case CONTEXT_GRID_NAVIGATION: {
-                    vueApp.editElementId = elementId || vueApp.markedElement.id;
-                    vueApp.markElement(null);
+                    vueApp.editElementId = elementId;
+                    vueApp.unmarkAll();
                     vueApp.showNavigateModal = true;
                     break;
                 }
                 case CONTEXT_ACTION_EDIT:
-                    vueApp.editElement(elementId || vueApp.markedElement.id);
-                    vueApp.markElement(null);
+                    vueApp.editElement(elementId);
                     break;
                 case CONTEXT_ACTION_DELETE:
-                    vueApp.removeElement(elementId || vueApp.markedElement.id);
-                    vueApp.markElement(null);
+                    vueApp.removeElements(elementId);
                     break;
                 case CONTEXT_ACTION_DUPLICATE:
-                    vueApp.duplicateElement(elementId || vueApp.markedElement.id);
-                    vueApp.markElement(null);
+                    vueApp.duplicateElements(elementId);
+                    break;
+                case CONTEXT_QUICK_HIDE:
+                    vueApp.hideUnhideElements(elementId);
                     break;
                 case CONTEXT_ACTION_COPY:
-                    vueApp.copyElement(elementId);
-                    vueApp.markElement(null);
+                    vueApp.copyElements(elementId);
                     break;
                 case CONTEXT_ACTION_CUT:
-                    vueApp.cutElement(elementId);
-                    vueApp.markElement(null);
+                    vueApp.cutElements(elementId);
                     break;
                 case CONTEXT_ACTION_PASTE:
                     vueApp.pasteElements();
-                    vueApp.markElement(null);
                     break;
                 case CONTEXT_ACTION_DO_ACTION:
-                    actionService.doAction(vueApp.gridData.id, elementId || vueApp.markedElement.id);
-                    vueApp.markElement(null);
-                    break;
-                case CONTEXT_MOVE_TO:
-                    vueApp.editElementId = elementId || vueApp.markedElement.id;
-                    vueApp.markElement(null);
-                    vueApp.showMoveModal = true;
+                    actionService.doAction(vueApp.gridData.id, elementId);
+                    vueApp.unmarkAll();
                     break;
                 case CONTEXT_EDIT_GLOBAL_GRID:
                     Router.toEditGrid(vueApp.gridData.globalGridId || vueApp.metadata.globalGridId);
@@ -751,4 +981,10 @@
 </script>
 
 <style scoped>
+header {
+    border: 0;
+}
+.content {
+    outline: 2px solid lightgray;
+}
 </style>

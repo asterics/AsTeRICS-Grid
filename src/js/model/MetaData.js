@@ -25,6 +25,7 @@ class MetaData extends Model({
     textConfig: [TextConfig],
     notificationConfig: [NotificationConfig],
     activateARASAACGrammarAPI: [Boolean],
+    vocabularyLevel: [Number, null],
     integrations: [Object] // IntegrationConfigSync
 }) {
     constructor(properties, elementToCopy) {
@@ -87,6 +88,7 @@ MetaData.defaults({
     inputConfig: new InputConfig(),
     globalGridActive: false,
     globalGridHeightPercentage: 17,
+    vocabularyLevel: null,
     integrations: new IntegrationConfigSync()
 });
 

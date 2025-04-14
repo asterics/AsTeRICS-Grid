@@ -584,6 +584,10 @@ gridUtil.duplicateElement = function(element) {
     return duplicate;
 }
 
+gridUtil.duplicateElements = function(elements = []) {
+    return elements.map(e => gridUtil.duplicateElement(e));
+};
+
 gridUtil.ensureUniqueIds = function(gridElements) {
     let seenIds = [];
     for (let gridElement of gridElements) {
@@ -607,6 +611,59 @@ gridUtil.getOneElementSize = function(containerSize, gridData) {
         width: containerSize.width / width,
         height: containerSize.height / height
     };
+};
+
+/**
+ * returns true if elem3 is within the rectangle defined by elem1 and elem2
+ * @param elem1
+ * @param elem2
+ * @param elem3
+ * @returns {boolean}
+ */
+gridUtil.isWithinElements = function(elem1, elem2, elem3) {
+    if (!elem1 || !elem2 || !elem3) {
+        return false;
+    }
+    const left = Math.min(elem1.x, elem2.x);
+    const right = Math.max(elem1.x, elem2.x);
+    const top = Math.min(elem1.y, elem2.y);
+    const bottom = Math.max(elem1.y, elem2.y);
+    return elem3.x >= left && elem3.x <= right && elem3.y >= top && elem3.y <= bottom;
+};
+
+/**
+ * returns a list of possible property paths for property transfer mode, e.g. ["hidden", "colorCategory", ...]
+ * @returns {any[]}
+ */
+gridUtil.getAllPropTransferPaths = function() {
+    let propKeys = Object.keys(constants.TRANSFER_PROPS);
+    return propKeys.map(key => constants.TRANSFER_PROPS[key].path);
+}
+
+gridUtil.getPropTransferObjectBase = function() {
+    let transferObject = {};
+    for (let path of gridUtil.getAllPropTransferPaths()) {
+        transferObject[path] = constants.PROP_TRANSFER_DONT_CHANGE;
+    }
+    return transferObject;
+}
+
+gridUtil.getPropTransferObjectAll = function(sourceElement) {
+    let transferObject = {};
+    for (let path of gridUtil.getAllPropTransferPaths()) {
+        transferObject[path] = sourceElement[path];
+    }
+    return transferObject;
+}
+
+gridUtil.getPropTransferObjectAppearance = function(sourceElement) {
+    let props = Object.keys(constants.TRANSFER_PROPS).map(key => constants.TRANSFER_PROPS[key]);
+    let appearanceProps = props.filter(prop => prop.category === constants.PROP_TRANSFER_CATEGORIES.APPEARANCE);
+    let transferObject = gridUtil.getPropTransferObjectBase();
+    for (let prop of appearanceProps) {
+        transferObject[prop.path] = sourceElement[prop.path];
+    }
+    return transferObject;
 };
 
 function getAllChildrenRecursive(gridGraphList, gridId) {

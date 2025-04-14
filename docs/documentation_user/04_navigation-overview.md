@@ -106,18 +106,43 @@ In view "add offline user" it's possible to add a new [offline user](01_terms.md
 
 ## Shortcuts
 
-These are these global keyboard shortcuts available in AsTeRICS Grid:
-* `Ctrl + Alt + Arrow Right`: Change to the next stored user
-* `Ctrl + Backspace`: Navigate to the last grid
-* `Ctrl + Pos1`: Navigate to the main/home grid
+Note that for macOs `⌘` (command key) can be used instead of `Ctrl`.
+
+These are the global keyboard shortcuts available in AsTeRICS Grid:
+* `Ctrl + Alt + Arrow Right`: change to the next stored user
+* `Ctrl + Backspace`: navigate to the last grid
+* `Ctrl + Pos1`: navigate to the main/home grid
+* `Ctrl + F`: open dialog for searching elements
 
 ### Shortcuts in edit mode
-These shortcuts are available in edit mode:
+The shortcuts available in edit mode are listed below.
 
-- `Ctrl + X / C / V`: cut / copy / paste elements - single elements are pasted at the location of the last interaction (you can click/tap to a free space before pasting), multiple elements are pasted below the existing elements
-- `Delete`: deletes marked element
-- `Ctrl + Shift + C`: Copy all elements
+- `Ctrl + left mouse clicks`: select multiple elements, one after the other
+- `Shift + left mouse clicks`: select multiple connected elements
+- `Escape`: unselect all elements
+- `Ctrl + E`: edit selected element
+- `Ctrl + C`: copy selected elements to clipboard
+- `Ctrl + X`: cut selected elements (copy to clipboard and delete from current grid)
+- `Ctrl + V`: paste elements from clipboard. Elements are pasted at the location of the last interaction (you can click/tap to a free space before pasting). If multiple pasted elements aren't fitting at the current location, they are pasted below the existing elements.
+- `Ctrl + A`: selects all elements
+- `Ctrl + D`: duplicates selected elements
+- `Ctrl + H`: hide / unhide selected elements
+- `Delete`: deletes selected elements
 - `Ctrl + Z`: Undo
 - `Ctrl + Shift + Z`: Redo
+
+#### Layout shortcuts
+- `Ctrl + ArrowUp`: move all elements up
+- `Ctrl + ArrowRight`: move all elements right
+- `Ctrl + ArrowDown`: move all elements down
+- `Ctrl + ArrowLeft`: move all elements left
+
+#### Transfer properties
+- `Ctrl + B`: configure property transfer for current selected element
+- `Ctrl + Shift + A`: directly transfer all properties of selected element (`A` like all)
+- `Ctrl + Shift + C`: directly transfer appearance properties of selected element (`C` like color)
+- `Ctrl + Shift + P`: transfer custom properties of selected element (`P` like properties)
+- `Escape`: cancel property transfer mode
+- `Enter`: apply property transfer to selected elements
 
 [Back to Overview](README.md)

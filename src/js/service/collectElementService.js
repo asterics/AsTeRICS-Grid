@@ -23,6 +23,7 @@ import {stateService} from "./stateService.js";
 import {MapCache} from "../util/MapCache.js";
 import { liveElementService } from './liveElementService';
 import { MetaData } from '../model/MetaData';
+import { GridData } from '../model/GridData';
 
 let collectElementService = {};
 
@@ -48,12 +49,12 @@ collectElementService.getText = function () {
     return getPrintText();
 };
 
-collectElementService.initWithElements = function (elements, dontAutoPredict) {
+collectElementService.initWithGrid = function (gridData, dontAutoPredict) {
     registeredCollectElements = [];
     let oneCharacterElements = 0;
     let normalElements = 0;
     dictionaryKey = null;
-    elements.forEach((element) => {
+    gridData.gridElements.forEach((element) => {
         if (element && element.type === GridElement.ELEMENT_TYPE_NORMAL) {
             normalElements++;
             let label = i18nService.getTranslation(element.label);
@@ -74,7 +75,11 @@ collectElementService.initWithElements = function (elements, dontAutoPredict) {
             registeredCollectElements.push(copy);
         }
     });
-    keyboardLikeFactor = oneCharacterElements / normalElements;
+    if (gridData.keyboardMode) {
+        keyboardLikeFactor = gridData.keyboardMode === GridData.KEYBOARD_DISABLED ? 0 : 1;
+    } else {
+        keyboardLikeFactor = oneCharacterElements / normalElements;
+    }
     if (registeredCollectElements.length > 0) {
         updateCollectElements();
         if (!dontAutoPredict) {
@@ -565,7 +570,7 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         let label = getLabel(element);
         let printText = getPrintTextOfElement(element);
         let image = getImageData(element);
-        if (label && label.length === 1 && collectElementService.isCurrentGridKeyboard()) {
+        if (label && collectElementService.isCurrentGridKeyboard()) {
             if (convertToLowercaseIfKeyboard) {
                 label = label.toLowerCase();
             }

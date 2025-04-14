@@ -32,7 +32,7 @@ let dataService = {};
  * @param noObjectModel if true, result is not converted to object model instance (performance)
  * @return {Promise} resolves to a grid object that was found
  */
-dataService.getGrid = async function (id, onlyShortVersion, noObjectModel) {
+dataService.getGrid = async function (id, onlyShortVersion = false, noObjectModel = false) {
     if (!id) {
         return Promise.resolve(null);
     }

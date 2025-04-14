@@ -6,7 +6,7 @@
                 <input type="text" class="col-12" id="inputLabel" v-focus v-if="gridElement" v-model="gridElement.label[currentLang]" :placeholder="gridElement.type === GridElement.ELEMENT_TYPE_LIVE ? $t('canIncludePlaceholderLike') : ''"/>
             </div>
             <div class="col-sm-3">
-                <button @click="$emit('searchImage')" class="col-12" :title="$t('searchForImages')"><i class="fas fa-search"/> {{$t('searchForImages')}}</button>
+                <button @click="$emit('searchImage')" class="col-12 m-0" :title="$t('searchForImages')" style="line-height: 1.5"><i class="fas fa-search"/> {{$t('searchForImages')}}</button>
             </div>
         </div>
         <div class="row">
@@ -24,6 +24,15 @@
         </div>
         <div class="srow">
             <accordion :acc-label="$t('advancedOptions')">
+                <div class="row">
+                    <label class="col-sm-2" for="vocabularyLevel">{{ $t('vocabularyLevel') }}</label>
+                    <div class="col-sm-7">
+                        <select class="col-12" id="vocabularyLevel" v-model.number="gridElement.vocabularyLevel">
+                            <option :value="null">{{ $t('noneSelected') }}</option>
+                            <option v-for="level in [...Array(10).keys()].map(i => i + 1)" :value="level">{{ level }}</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="srow">
                     <input type="checkbox" id="inputDontCollect" v-if="gridElement" v-model="gridElement.dontCollect"/>
                     <label for="inputDontCollect">{{ $t('dontAddElementToCollectElement') }}</label>
@@ -106,7 +115,7 @@
 </script>
 
 <style scoped>
-    .srow {
+    .row, .srow {
         margin-top: 1em;
     }
 </style>
