@@ -14,6 +14,7 @@
                             <edit-element-general v-if="gridElement.type === GridElement.ELEMENT_TYPE_NORMAL || gridElement.type === GridElement.ELEMENT_TYPE_LIVE" :grid-element="gridElement" @searchImage="toImageSearch"></edit-element-general>
                             <edit-element-youtube v-if="gridElement.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="gridElement"></edit-element-youtube>
                             <edit-element-collect v-if="gridElement.type === GridElement.ELEMENT_TYPE_COLLECT" :grid-element="gridElement"></edit-element-collect>
+                            <edit-element-matrix v-if="gridElement.type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION" :grid-element="gridElement"></edit-element-matrix>
                         </div>
                         <edit-element-live v-if="currentTab === TABS.TAB_LIVE_DATA" :grid-element="gridElement"></edit-element-live>
                         <edit-element-image v-if="currentTab === TABS.TAB_IMAGE" :grid-element="gridElement" :grid-data="gridData" :image-search="imageSearch"></edit-element-image>
@@ -66,6 +67,7 @@
     import EditElementHeader from "../components/editElementHeader.vue";
     import EditElementWordForms from "./editElementWordForms.vue";
     import EditElementLive from './editElementLive.vue';
+    import EditElementMatrix from './editElementMatrix.vue';
 
     const TAB_GENERAL = 'TAB_GENERAL';
     const TAB_IMAGE = 'TAB_IMAGE';
@@ -77,6 +79,7 @@
     export default {
         props: ['editElementIdParam', 'gridDataId', 'undoService', 'newPosition'],
         components: {
+            EditElementMatrix,
             EditElementLive,
             EditElementWordForms,
             EditElementHeader,
@@ -183,6 +186,8 @@
                         this.possibleTabs = { TAB_ACTIONS };
                     } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_LIVE) {
                         this.possibleTabs = { TAB_GENERAL, TAB_LIVE_DATA, TAB_IMAGE, TAB_ACTIONS };
+                    } else if (thiz.gridElement.type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION) {
+                        this.possibleTabs = { TAB_GENERAL, TAB_ACTIONS };
                     }
                     thiz.originalGridElement = JSON.parse(JSON.stringify(thiz.gridElement));
                 });

@@ -44,6 +44,7 @@ let _waitingSpeakOptions = {};
  * preferred voice is "Google German" the german translation of the translation object "textOrObject" will be spoken.
  *
  * @param textOrOject string to speak, or translation object containing all translations
+ * @param options (optional) options
  * @param options.lang (optional) language code of preferred voice to use to speak
  * @param options.preferredVoice (optional) voice id that should be used for speaking
  * @param options.voiceLangIsTextLang (optional) if true and a preferred voice is set, the language of this voice is
@@ -55,7 +56,7 @@ let _waitingSpeakOptions = {};
  * @param options.minEqualPause (optional) minimum pause between 2 times speaking the same text
  * @param options.progressFn (optional) function where boundary events of the spoken phrase are sent to
  */
-speechService.speak = function (textOrOject, options) {
+speechService.speak = function (textOrOject, options = {}) {
     options = options || {};
     options.voiceLangIsTextLang = options.voiceLangIsTextLang || _voiceLangIsTextLang;
     let userSettings = localStorageService.getUserSettings();

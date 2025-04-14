@@ -1253,5 +1253,6 @@
   "scrollPx": "Scroll pixel up/down",
   "changeToMatrixRoom": "Change to matrix room",
   "goToMatrixSettingsToConfigure": "Go to \"Settings → Integrations → Matrix messenger\" to set up matrix.",
-  "matrixMessengerNotLoggedInOrNoRoom": "Matrix messenger not logged in or no rooms configured."
+  "matrixMessengerNotLoggedInOrNoRoom": "Matrix messenger not logged in or no rooms configured.",
+  "autoSpeakIncomingMessages": "Automatically speak incoming messages"
 }

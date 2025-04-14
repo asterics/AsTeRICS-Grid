@@ -47,10 +47,11 @@ import $ from '../../js/externals/jquery';
 import { constants } from '../../js/util/constants';
 import MatrixRoomDescription from './matrix-room-description.vue';
 import { matrixAppService } from '../../js/service/matrixMessenger/matrixAppService';
+import { speechService } from '../../js/service/speechService';
 
 export default {
     components: { MatrixRoomDescription },
-    props: ["matrixRoomProp"],
+    props: ["matrixRoomProp", "gridElement"],
     data: function () {
         return {
             matrixRooms: null,
@@ -69,13 +70,16 @@ export default {
         }
     },
     methods: {
-        addMessage(event) {
-            this.matrixMessages.push(event);
+        addMessage(msg) {
+            this.matrixMessages.push(msg);
             this.scrollDown();
+            if (this.gridElement.autoSpeak && msg.sender !== this.currentUser) {
+                speechService.speak(msg.textContent);
+            }
         },
-        onMessageHandler(event) {
-            if (event.roomId === this.matrixRoom.roomId) {
-                this.addMessage(event);
+        onMessageHandler(msg) {
+            if (msg.roomId === this.matrixRoom.roomId) {
+                this.addMessage(msg);
             }
         },
         revokeBlob(url) {

@@ -1,6 +1,7 @@
 import { GridElement } from './GridElement.js';
 
 class GridElementMatrixConversation extends GridElement.extend({
+    autoSpeak: [Boolean]
 }) {
     constructor(props) {
         props = props || {};

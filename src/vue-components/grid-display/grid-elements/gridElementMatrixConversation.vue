@@ -1,6 +1,6 @@
 <template>
     <div class="grid-item-content p-3">
-        <matrix-conversation/>
+        <matrix-conversation :grid-element="gridElement"/>
     </div>
 </template>
 
