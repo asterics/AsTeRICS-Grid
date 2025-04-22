@@ -13,16 +13,20 @@ matrixAppService.doAction = async function (action) {
     let text, room;
     switch (action.action) {
         case GridActionMatrix.actions.MATRIX_SEND_COLLECTED:
+            text = collectElementService.getText();
+            room = await getCurrentRoom();
+            if (!collectElementService.hasCollectedImage()) {
+                if (text && room) {
+                    await matrixService.sendMessage(room.roomId, text);
+                }
+                return;
+            }
             let imageCanvas = await imageUtil.getScreenshot(".collect-container", {
                 scale: 1,
                 returnCanvas: true
             });
-            text = collectElementService.getText();
-            room = await getCurrentRoom();
             if (imageCanvas && room) {
                 await matrixService.sendImage(room.roomId, imageCanvas, text);
-            } else if (text && room) {
-                await matrixService.sendMessage(room.roomId, text);
             }
             break;
         case GridActionMatrix.actions.MATRIX_SEND_COLLECTED_TEXT:

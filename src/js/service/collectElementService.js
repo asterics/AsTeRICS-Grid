@@ -244,6 +244,10 @@ collectElementService.isCurrentGridKeyboard = function () {
     return keyboardLikeFactor > 0.4;
 }
 
+collectElementService.hasCollectedImage = function() {
+    return collectedElements.some((e) => !!getImageData(e));
+};
+
 async function applyGrammarCorrection(newText) {
     let changedSomething = false;
     let originalText = getPrintText({ inlcudeCorrectedGrammar: false });
