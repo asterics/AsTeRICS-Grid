@@ -1249,6 +1249,7 @@
   "MATRIX_SET_CONVERSATION": "Set active conversation",
   "MATRIX_SCROLL_UP": "Scroll conversation up",
   "MATRIX_SCROLL_DOWN": "Scroll conversation down",
+  "MATRIX_SPEAK_LAST_MSG": "Speak last message of current conversation",
   "textToSend": "Text to send",
   "scrollPx": "Scroll pixel up/down",
   "changeToMatrixRoom": "Change to matrix room",

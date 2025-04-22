@@ -44,6 +44,12 @@ matrixAppService.doAction = async function (action) {
         case GridActionMatrix.actions.MATRIX_SCROLL_DOWN:
             $(document).trigger(constants.EVENT_MATRIX_SCROLL_DOWN, [action.scrollPx]);
             break;
+        case GridActionMatrix.actions.MATRIX_SPEAK_LAST_MSG:
+            room = await getCurrentRoom();
+            let messages = await matrixService.getMessageEvents(room.roomId, 0);
+            let last = messages.pop();
+            speechService.speak(last.textContent);
+            break;
     }
 };
 
