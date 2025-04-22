@@ -25,8 +25,7 @@
             </div>
             <div class="row" v-for="message in matrixMessages">
                 <div class="col">
-                    <div :style="`background-color: ${message.sender === currentUser ? 'lightgray' : 'lightblue'}; padding: 1em; border-radius: 0.5em;
-        margin-left: ${message.sender === currentUser ? '4em' : '0'}; margin-right: ${message.sender === currentUser ? '0' : '4em'}; margin-bottom: 1em;`">
+                    <div :class="`message ${message.sender === currentUser ? 'message-own' : 'message-other'}`">
                         <div>
                             <strong>{{ message.sender }}</strong>
                         </div>
@@ -40,6 +39,16 @@
                         <div class="d-flex" style="justify-content: flex-end; font-size: 0.8em">
                             <span>{{ message.dateTimeReadable }}</span>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" v-if="sending">
+                <div class="col">
+                    <div class="message message-own">
+                        <div>
+                            <strong>{{ currentUser }}</strong>
+                        </div>
+                        <i class="fas fa-spinner fa-spin"></i>
                     </div>
                 </div>
             </div>
@@ -67,7 +76,8 @@ export default {
             matrixMessages: [],
             currentUser: undefined,
             matrixText: '',
-            loading: true
+            loading: true,
+            sending: false
         }
     },
     watch: {
@@ -79,6 +89,7 @@ export default {
     },
     methods: {
         addMessage(msg) {
+            this.sending = false;
             this.matrixMessages.push(msg);
             this.scrollDown();
             if (this.gridElement.autoSpeak && msg.sender !== this.currentUser) {
@@ -138,6 +149,10 @@ export default {
         async onRoomChangeEvent(event, roomId) {
             this.matrixRoom = this.matrixRooms.find(r => r.roomId === roomId);
             await this.init();
+        },
+        onSendingStart() {
+            this.sending = true;
+            this.scrollDown();
         }
     },
     async mounted() {
@@ -149,15 +164,34 @@ export default {
         $(document).on(constants.EVENT_MATRIX_SCROLL_UP, this.onScrollUpEvent);
         $(document).on(constants.EVENT_MATRIX_SCROLL_DOWN, this.onScrollDownEvent);
         $(document).on(constants.EVENT_MATRIX_SET_ROOM, this.onRoomChangeEvent);
+        $(document).on(constants.EVENT_MATRIX_SENDING_START, this.onSendingStart);
     },
     beforeDestroy() {
         matrixService.onMessage(null);
         $(document).off(constants.EVENT_MATRIX_SCROLL_UP, this.onScrollUpEvent);
         $(document).off(constants.EVENT_MATRIX_SCROLL_DOWN, this.onScrollDownEvent);
         $(document).off(constants.EVENT_MATRIX_SET_ROOM, this.onRoomChangeEvent);
+        $(document).off(constants.EVENT_MATRIX_SENDING_START, this.onSendingStart);
     }
 }
 </script>
 
 <style scoped>
+.message {
+    padding: 1em;
+    border-radius: 0.5em;
+    margin-bottom: 1em;
+}
+
+.message-own {
+    background-color: lightgray;
+    margin-left: 4em;
+    margin-right: 0;
+}
+
+.message-other {
+    background-color: lightblue;
+    margin-left: 0;
+    margin-right: 4em;
+}
 </style>

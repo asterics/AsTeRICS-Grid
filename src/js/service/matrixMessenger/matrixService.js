@@ -48,6 +48,7 @@ matrixService.onRoomChange = function(callback) {
 }
 
 matrixService.sendMessage = async function(roomId, message) {
+    $(document).trigger(constants.EVENT_MATRIX_SENDING_START);
     return await matrixAdapter.doWithClient(async client => {
         const messageContent = {
             body: message,
@@ -60,6 +61,7 @@ matrixService.sendMessage = async function(roomId, message) {
 }
 
 matrixService.sendImage = async function(roomId, imageCanvas, imageName = 'image') {
+    $(document).trigger(constants.EVENT_MATRIX_SENDING_START);
     return await matrixAdapter.doWithClient(async client => {
         let imageBlob = await imageUtil.canvasToBlob(imageCanvas);
         let uploadResponse = await client.uploadContent(imageBlob, {
