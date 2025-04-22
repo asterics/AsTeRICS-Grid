@@ -177,15 +177,26 @@ imageUtil.urlToBase64 = function (url, maxWidth, mimeType) {
     });
 };
 
-imageUtil.getScreenshot = function (selector, ignoreSVG) {
+/**
+ *
+ * @param selector
+ * @param options
+ * @param options.ignoreSVG if true, SVG images are ignored and not within the screenshot
+ * @param options.scale scale of the image, defaults to 0.2
+ * @param options.quality scale of the image, defaults to 0.6
+ * @param options.mimeType mimeType of the image, defaults to "image/webp", can also be "image/png"
+ * @param options.returnCanvas if true, the canvas is returned, otherwise a base64 encoded image url
+ * @returns {Promise<*>} the screenshot data
+ */
+imageUtil.getScreenshot = function (selector, options = {}) {
     return import(/* webpackChunkName: "html2canvas" */ 'html2canvas').then((html2canvas) => {
         return html2canvas
             .default(document.querySelector(selector), {
-                scale: 0.2,
+                scale: options.scale || 0.2,
                 logging: false,
                 useCORS: true,
                 ignoreElements: (node) => {
-                    return ignoreSVG && (
+                    return options.ignoreSVG && (
                         node.style['background-image'].indexOf('image/svg') !== -1 ||
                         (node.src && node.src.endsWith('.svg'))
                     );
@@ -193,17 +204,28 @@ imageUtil.getScreenshot = function (selector, ignoreSVG) {
             })
             .then((canvas) => {
                 try {
-                    return Promise.resolve(canvas.toDataURL('image/webp', 0.6));
+                    let type = options.mimeType || 'image/webp';
+                    if (options.returnCanvas) {
+                        return canvas;
+                    } else {
+                        return canvas.toDataURL(type, options.quality || 0.6);
+                    }
                 } catch (e) {
                     log.warn('error while creating screenshot');
                     log.warn(e);
-                    if (ignoreSVG) {
+                    if (options.ignoreSVG) {
                         return Promise.resolve(imageUtil.getEmptyImage());
                     } else {
-                        return imageUtil.getScreenshot(selector, true);
+                        return imageUtil.getScreenshot(selector, { ignoreSVG: true });
                     }
                 }
             });
+    });
+};
+
+imageUtil.canvasToBlob = function(canvas) {
+    return new Promise(resolve => {
+        canvas.toBlob(blob => resolve(blob));
     });
 };
 
