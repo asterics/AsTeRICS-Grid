@@ -1,8 +1,14 @@
 <template>
     <div>
         <span v-if="isPrivateRoom(room)">{{ $t('privateRoomWith', { user: getPrivateRoomPartner(room) }) }}</span>
-        <strong :class="full ? 'd-inline' : 'd-sm-none d-inline'" v-if="!isPrivateRoom(room)">{{ $t('members') }}:</strong>
-        <span v-if="!isPrivateRoom(room)">{{ getAllMembersString(room) }}</span>
+        <span v-if="!isPrivateRoom(room) && room.getMembers().length < 10">
+            <strong :class="full ? 'd-inline' : 'd-sm-none d-inline'">{{ $t('members') }}:</strong>
+            <span>{{ getAllMembersString(room) }}</span>
+        </span>
+        <span v-if="!isPrivateRoom(room) && room.getMembers().length >= 10">
+            <span>{{ room.getMembers().length }}</span>
+            <span>{{ $t('members') }}</span>
+        </span>
     </div>
 </template>
 
@@ -11,7 +17,7 @@ import '../../css/modal.css';
 
 export default {
     components: {},
-    props: ["room", "full"],
+    props: ["room", "full", "loggedInUser"],
     data: function () {
         return {
         }

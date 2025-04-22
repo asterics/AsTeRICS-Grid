@@ -12,7 +12,7 @@
         <div class="col" v-if="matrixRoom && !loading">
             <div class="mb-5">
                 <h2 class="mb-2">{{ matrixRoom.name }}</h2>
-                <matrix-room-description :room="matrixRoom" :full="true"/>
+                <matrix-room-description :room="matrixRoom" :full="true" :logged-in-user="currentUser"/>
                 <div v-if="matrixRoom.hasEncryptionStateEvent()">
                     <i class="fas fa-lock" style="color: darkgreen"></i> <span>{{ $t('endToEndEncrypted') }}</span>
                 </div>

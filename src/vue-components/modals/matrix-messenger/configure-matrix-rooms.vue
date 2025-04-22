@@ -15,7 +15,7 @@
                     <strong class="ms-2 d-sm-none d-inline">{{ room.name }}</strong>
                 </div>
                 <div class="col-sm-5">
-                    <matrix-room-description :room="room"/>
+                    <matrix-room-description :room="room" :logged-in-user="loggedInUser"/>
                 </div>
                 <div class="col-sm-3 mt-sm-0 mt-2">
                     <button class="actionBtn" @click="leaveRoom(room)">
