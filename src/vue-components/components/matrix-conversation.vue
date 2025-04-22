@@ -31,7 +31,8 @@
                             <strong>{{ message.sender }}</strong>
                         </div>
                         <div v-if="message.isDeleted">... {{ $t('messageWasDeleted') }} ...</div>
-                        <div v-if="message.msgType === 'm.text'">{{ message.textContent }}</div>
+                        <div v-if="message.msgType === 'm.text' && isOnlyEmojis(message.textContent)" style="font-size: 4em">{{ message.textContent }}</div>
+                        <div v-if="message.msgType === 'm.text' && !isOnlyEmojis(message.textContent)">{{ message.textContent }}</div>
                         <div v-if="message.msgType === 'm.image'">
                             <img :src="message.imageUrl" @load="revokeBlob(message.imageUrl)" style="max-width: 100%">
                             <div>{{ message.textContent }}</div>
@@ -54,6 +55,7 @@ import { constants } from '../../js/util/constants';
 import MatrixRoomDescription from './matrix-room-description.vue';
 import { matrixAppService } from '../../js/service/matrixMessenger/matrixAppService';
 import { speechService } from '../../js/service/speechService';
+import { util } from '../../js/util/util';
 
 export default {
     components: { MatrixRoomDescription },
@@ -91,6 +93,10 @@ export default {
             if (msg.roomId === this.matrixRoom.roomId) {
                 this.addMessage(msg);
             }
+        },
+        isOnlyEmojis(msg) {
+            msg = util.replaceAll(msg, " ", "");
+            return util.isOnlyEmojis(msg);
         },
         revokeBlob(url) {
             if (url.startsWith('blob:')) {
