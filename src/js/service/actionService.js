@@ -97,12 +97,12 @@ async function doActions(gridElement, gridId) {
         );
     }
     $(window).trigger(constants.ELEMENT_EVENT_ID, [gridElement]);
-    actions.forEach((action) => {
-        doAction(gridElement, action, {
+    for (let action of actions) {
+        await doAction(gridElement, action, {
             gridId: gridId,
             actions: actions
         });
-    });
+    }
     metadata = metadata || (await dataService.getMetadata());
     let actionTypes = actions.map((a) => a.modelName);
     let navBackActions = [GridActionAudio.getModelName(), GridActionChangeLang.getModelName(), GridActionSpeak.getModelName(), GridActionSpeakCustom.getModelName()];
@@ -281,7 +281,7 @@ async function doAction(gridElement, action, options = {}) {
             return doPredefinedAction(gridElement, action);
             break;
         case 'GridActionMatrix':
-            matrixAppService.doAction(action);
+            await matrixAppService.doAction(action);
             break;
     }
 }
