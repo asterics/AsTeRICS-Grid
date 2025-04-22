@@ -1,5 +1,6 @@
 import { TextConfig } from '../model/TextConfig.js';
 import { GridElement } from '../model/GridElement';
+import { constants } from './constants';
 
 let util = {};
 
@@ -429,5 +430,15 @@ util.isSameDate = function(d1, d2) {
         d1.getDate() === d2.getDate()
     );
 };
+
+util.getEmojis = function(str) {
+    // Match emojis, including ZWJ sequences & variation selectors
+    return str.match(new RegExp(constants.EMOJI_REGEX)) || [];
+}
+
+util.isOnlyEmojis = function(str) {
+    const matches = util.getEmojis(str);
+    return matches.join('') === str; // If the matched emojis fully cover the input string, return true
+}
 
 export { util };

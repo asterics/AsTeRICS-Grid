@@ -56,7 +56,7 @@
     import {GridData} from "../../js/model/GridData";
     import {helpService} from "../../js/service/helpService";
     import { gridUtil } from '../../js/util/gridUtil';
-    import { constants } from '../../js/util/constants';
+    import { util } from '../../js/util/util';
 
     export default {
         props: ['gridData', 'undoService'],
@@ -70,20 +70,12 @@
         methods: {
             textChanged() {
                 let text = this.inputText || '';
-                if (this.isOnlyEmojis(text)) {
-                    this.parsedElems = this.getEmojis(text);
+                if (util.isOnlyEmojis(text)) {
+                    this.parsedElems = util.getEmojis(text);
                 } else {
                     text = text.replace(/\n/gi, ';').replace(/;;/gi, ';');
                     this.parsedElems = text.split(';').map(el => el.trim()).filter(el => el.length > 0);
                 }
-            },
-            isOnlyEmojis(str) {
-                const matches = this.getEmojis(str);
-                return matches.join('') === str; // If the matched emojis fully cover the input string, return true
-            },
-            getEmojis(str) {
-                // Match emojis, including ZWJ sequences & variation selectors
-                return str.match(new RegExp(constants.EMOJI_REGEX)) || [];
             },
             async save () {
                 var thiz = this;
