@@ -4,6 +4,9 @@ import $ from '../../externals/jquery';
 import { constants } from '../../util/constants';
 import { MatrixMessage } from '../../model/MatrixMessage';
 import { matrixUtil } from './matrixUtil';
+import { imageUtil } from '../../util/imageUtil';
+import { util } from '../../util/util';
+import { i18nService } from '../i18nService';
 
 let matrixService = {};
 
@@ -51,6 +54,30 @@ matrixService.sendMessage = async function(roomId, message) {
             msgtype: 'm.text'
         };
         client.sendEvent(roomId, Matrix.EventType.RoomMessage, messageContent, '', (err, res) => {
+            console.log(err);
+        });
+    });
+}
+
+matrixService.sendImage = async function(roomId, imageCanvas, imageName = 'image') {
+    return await matrixAdapter.doWithClient(async client => {
+        let imageBlob = await imageUtil.canvasToBlob(imageCanvas);
+        let uploadResponse = await client.uploadContent(imageBlob, {
+            name: imageName,
+            type: imageBlob.type
+        });
+        const imageMessage = {
+            body: imageName + ".png",
+            msgtype: 'm.image',
+            url: uploadResponse.content_uri,
+            info: {
+                mimetype: imageBlob.type,
+                size: imageBlob.size,
+                w: imageCanvas.width,
+                h: imageCanvas.height
+            }
+        };
+        client.sendEvent(roomId, Matrix.EventType.RoomMessage, imageMessage, '', (err, res) => {
             console.log(err);
         });
     });

@@ -3,18 +3,31 @@ import { collectElementService } from '../collectElementService';
 import { matrixService } from './matrixService';
 import $ from '../../externals/jquery';
 import { constants } from '../../util/constants';
+import { imageUtil } from '../../util/imageUtil';
+import { speechService } from '../speechService';
 
 let matrixAppService = {};
 let currentRoom = null;
 
 matrixAppService.doAction = async function (action) {
+    let text, room;
     switch (action.action) {
         case GridActionMatrix.actions.MATRIX_SEND_COLLECTED:
-
+            let imageCanvas = await imageUtil.getScreenshot(".collect-container", {
+                scale: 1,
+                returnCanvas: true
+            });
+            text = collectElementService.getText();
+            room = await getCurrentRoom();
+            if (imageCanvas && room) {
+                await matrixService.sendImage(room.roomId, imageCanvas, text);
+            } else if (text && room) {
+                await matrixService.sendMessage(room.roomId, text);
+            }
             break;
         case GridActionMatrix.actions.MATRIX_SEND_COLLECTED_TEXT:
-            let text = collectElementService.getText();
-            let room = await getCurrentRoom();
+            text = collectElementService.getText();
+            room = await getCurrentRoom();
             if (text && room) {
                 await matrixService.sendMessage(room.roomId, text);
             }
