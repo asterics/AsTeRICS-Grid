@@ -194,16 +194,28 @@ async function matrixEventsToMessage(events = []) {
 
 async function matrixEventToMessage(event) {
     return matrixAdapter.doWithClient(async client => {
+        let timestamp = event.getTs();
+        let date = new Date(timestamp);
+        let dateReadable;
+        if (util.isSameDate(date, new Date())) {
+            dateReadable = date.toLocaleTimeString(i18nService.getContentLang(), { hour: 'numeric', minute: 'numeric' });
+        } else {
+            dateReadable = date.toLocaleTimeString(i18nService.getContentLang(), { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' });
+        }
         let message = new MatrixMessage({
             msgType: event.getContent().msgtype,
             sender: event.sender.name,
             senderId: event.getSender(),
             isDeleted: event.isRedacted(),
             textContent: event.getContent().body,
-            roomId: event.getRoomId()
+            roomId: event.getRoomId(),
+            timestamp: timestamp,
+            dateTimeReadable: dateReadable
         });
         if (event.getContent().msgtype === 'm.image') {
             message.imageUrl = await matrixUtil.imageMessageEventToBlobUrl(event, await matrixAdapter.getCurrentAccessToken(), client);
+            message.imageName = message.textContent;
+            message.textContent = message.textContent.replace(/\.(svg|jpe?g|png|gif|webp)$/i, '');
         }
         return message;
     });

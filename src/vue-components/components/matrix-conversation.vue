@@ -27,11 +27,17 @@
                 <div class="col">
                     <div :style="`background-color: ${message.sender === currentUser ? 'lightgray' : 'lightblue'}; padding: 1em; border-radius: 0.5em;
         margin-left: ${message.sender === currentUser ? '4em' : '0'}; margin-right: ${message.sender === currentUser ? '0' : '4em'}; margin-bottom: 1em;`">
-                        <strong>{{message.sender}}</strong>
+                        <div>
+                            <strong>{{ message.sender }}</strong>
+                        </div>
                         <div v-if="message.isDeleted">... {{ $t('messageWasDeleted') }} ...</div>
                         <div v-if="message.msgType === 'm.text'">{{ message.textContent }}</div>
                         <div v-if="message.msgType === 'm.image'">
-                            <img height="100" :src="message.imageUrl" @load="revokeBlob(message.imageUrl)">
+                            <img :src="message.imageUrl" @load="revokeBlob(message.imageUrl)" style="max-width: 100%">
+                            <div>{{ message.textContent }}</div>
+                        </div>
+                        <div class="d-flex" style="justify-content: flex-end; font-size: 0.8em">
+                            <span>{{ message.dateTimeReadable }}</span>
                         </div>
                     </div>
                 </div>
@@ -74,6 +80,10 @@ export default {
             this.matrixMessages.push(msg);
             this.scrollDown();
             if (this.gridElement.autoSpeak && msg.sender !== this.currentUser) {
+                let text = msg.textContent;
+                if (msg.msgType === 'm.image' && text.length) {
+
+                }
                 speechService.speak(msg.textContent);
             }
         },
@@ -88,9 +98,11 @@ export default {
             }
         },
         scrollDown() {
-            this.$nextTick(() => {
-                this.$refs.messenger.scrollTop = this.$refs.messenger.scrollHeight;
-            });
+            setTimeout(() => {
+                this.$nextTick(() => {
+                    this.$refs.messenger.scrollTop = this.$refs.messenger.scrollHeight;
+                });
+            }, 100);
         },
         async init() {
             if (!this.matrixRoom) {

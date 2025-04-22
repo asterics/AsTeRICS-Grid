@@ -416,4 +416,18 @@ util.replaceAll = function(string, search, replace) {
     return string.replace(new RegExp(search, 'g'), replace);
 }
 
+/**
+ * returns true if both dates are on the same calendar day
+ * @param d1
+ * @param d2
+ * @returns {boolean}
+ */
+util.isSameDate = function(d1, d2) {
+    return (
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate()
+    );
+};
+
 export { util };
