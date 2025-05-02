@@ -114,6 +114,11 @@ These are the global keyboard shortcuts available in AsTeRICS Grid:
 * `Ctrl + Pos1`: navigate to the main/home grid
 * `Ctrl + F`: open dialog for searching elements
 
+### Shortcuts in user mode
+The shortcuts available in user mode (normal grid view) are listed below.
+
+* `Ctrl + C`: copy current sentence from collection element to clipboard (as image).
+
 ### Shortcuts in edit mode
 The shortcuts available in edit mode are listed below.
 

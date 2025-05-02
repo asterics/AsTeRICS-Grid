@@ -21,6 +21,7 @@ This chapter is about actions that can be performed if a grid element is selecte
 * [UART action](08_actions.md#uart-action): allows to execute commands on microcontrollers providing a UART (Serial) interface (wired or Bluetooth).
 * [System action](08_actions.md#system-action): actions related to the application, e.g. setting the system volume
 * [Predefined actions](08_actions.md#predefined-actions): a way to implement other actions, e.g. http actions, with less programming knowledge
+* [Matrix messenger actions](13_matrix-messenger-integration.md#matrix-messenger-actions) in docs about Matrix messenger integration
 
 ## Speak label
 
@@ -112,15 +113,17 @@ The possible actions to choose are (when opening the combo box):
 
 1. **Speak collect element content (separately)**: speaks out the content of the collect element, where each collected element is spoken one by one, highlighting the currently spoken element.
 1. **Speak collect element content (continuously)**: speaks out the content of the collect element as continuous text, not highlighting the currently spoken element.
-2. **Speak collect element content (separately) and clear afterwards**: see above, clears collect element content after speaking
-2. **Speak collect element content (continuously) and clear afterwards**: see above, clears collect element content after speaking
-3. **Clear collect element** empties the collect element
-4. **Delete last word/image** deletes the last word/image of the collection elements: <div style="margin-left: 2em"><img src="./img/collect_delete.gif" alt="Delete last word animation" width="350"/></div>
-5. **Delete last character**: <div style="margin-left: 2em"><img src="./img/collect_delete_c.gif" alt="Delete last character animation" width="350"/></div>
-6. **Copy text to clipboard**: copies the current text of the collect element to clipboard in order to be available for paste in other programs
-7. **Append text to clipboard**: appends the current text of the collect element to clipboard making it possible to collect longer texts in the clipboard which can be used in another program afterwards
-8. **Clear clipboard**: empties the clipboard
-9. **Search text on YouTube**: searches the currently collected text on YouTube and loads the first video of the result in a YouTube player element. The YouTube player element can be located within the current grid or within another one to which is concurrently navigated to. 
+1. **Speak collect element content (separately) and clear afterwards**: see above, clears collect element content after speaking
+1. **Speak collect element content (continuously) and clear afterwards**: see above, clears collect element content after speaking
+1. **Clear collect element** empties the collect element
+1. **Delete last word/image** deletes the last word/image of the collection elements: <div style="margin-left: 2em"><img src="./img/collect_delete.gif" alt="Delete last word animation" width="350"/></div>
+1. **Delete last character**: <div style="margin-left: 2em"><img src="./img/collect_delete_c.gif" alt="Delete last character animation" width="350"/></div>
+1. **Share as image**: share the current content of the collect element as image using the native "share" functionality of the browser.
+1. **Copy image to clipboard**: copies the current image of the collect element to clipboard in order to be available for paste in other programs
+1. **Copy text to clipboard**: copies the current text of the collect element to clipboard in order to be available for paste in other programs
+1. **Append text to clipboard**: appends the current text of the collect element to clipboard making it possible to collect longer texts in the clipboard which can be used in another program afterwards
+1. **Clear clipboard**: empties the clipboard
+1. **Search text on YouTube**: searches the currently collected text on YouTube and loads the first video of the result in a YouTube player element. The YouTube player element can be located within the current grid or within another one to which is concurrently navigated to. 
 
 ## AsTeRICS Action
 

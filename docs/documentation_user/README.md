@@ -5,19 +5,21 @@ This is the user documentation for AsTeRICS Grid, a web-based tool for augmented
 The documentation is divided in the following parts:
 
 1. [Terms](01_terms.md)
-2. [Installation](02_installation.md)
-3. [Basic Setup](03_basic_setup.md)
-4. [Navigation Overview](04_navigation-overview.md)
-5. [Editing a Grid Set](05_editing-grid-set.md)
-6. [Editing a Grid](06_editing-grid.md)
-7. [Grid Elements](07_grid-elements.md)
+1. [Installation](02_installation.md)
+1. [Basic Setup](03_basic_setup.md)
+1. [Navigation Overview](04_navigation-overview.md)
+1. [Editing a Grid Set](05_editing-grid-set.md)
+1. [Editing a Grid](06_editing-grid.md)
+1. [Grid Elements](07_grid-elements.md)
    * [Word Forms](07a_word-forms.md)
    * [Live Elements](07b_live-elements.md)
-8. [Grid Element Actions](08_actions.md)
-9. [Input Options](09_input-options.md)
-10. [Dictionaries](10_dictionaries.md)
-11. [Voices](11_voices.md)
-12. [Multilingual Grid Sets](12_multilingual-grid-sets.md)
+1. [Grid Element Actions](08_actions.md)
+1. [Input Options](09_input-options.md)
+1. [Dictionaries](10_dictionaries.md)
+1. [Live elements](11_live_elements.md)
+1. [Voices](11_voices.md)
+1. [Multilingual Grid Sets](12_multilingual-grid-sets.md)
+1. [Matrix messenger integration](13_matrix-messenger-integration.md)
 
 ## Additional Resources
 Additional resources, not directly related to specific features of AsTeRICS Grid:
