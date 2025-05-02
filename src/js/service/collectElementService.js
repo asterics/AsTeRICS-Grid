@@ -183,27 +183,12 @@ collectElementService.doCollectElementActions = async function (action) {
             updateCollectElements();
             break;
         case GridActionCollectElement.COLLECT_ACTION_SHARE: {
-            let imageCanvas = await imageUtil.getScreenshot(".collect-items-container", {
-                scale: 2,
-                returnCanvas: true
-            });
-            if (!imageCanvas) {
-                return;
-            }
-            let blob = await imageUtil.canvasToBlob(imageCanvas);
+            let blob = await util.getCollectContentBlob();
             await util.shareImageBlob(blob, collectElementService.getText());
             break;
         }
         case GridActionCollectElement.COLLECT_ACTION_COPY_IMAGE_CLIPBOARD:
-            let imageCanvas = await imageUtil.getScreenshot(".collect-items-container", {
-                scale: 5,
-                returnCanvas: true
-            });
-            if (!imageCanvas) {
-                return;
-            }
-            let blob = await imageUtil.canvasToBlob(imageCanvas);
-            await util.copyBlobToClipboard(blob);
+            await util.copyCollectContentToClipboard();
             break;
         case GridActionCollectElement.COLLECT_ACTION_COPY_CLIPBOARD:
             util.copyToClipboard(getPrintText());

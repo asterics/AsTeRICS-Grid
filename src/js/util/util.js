@@ -112,6 +112,9 @@ util.copyBlobToClipboard = async function(blob) {
         log.warn('copy blob to clipboard is not supported');
         return;
     }
+    if (!blob) {
+        return;
+    }
     const clipboardItem = new ClipboardItem({ [blob.type]: blob });
     try {
         await navigator.clipboard.write([clipboardItem]);
@@ -120,9 +123,28 @@ util.copyBlobToClipboard = async function(blob) {
     }
 };
 
+util.copyCollectContentToClipboard = async function() {
+    let blob = await util.getCollectContentBlob(5);
+    await util.copyBlobToClipboard(blob);
+}
+
+util.getCollectContentBlob = async function(scale = 2) {
+    let imageCanvas = await imageUtil.getScreenshot(".collect-items-container", {
+        scale: scale,
+        returnCanvas: true
+    });
+    if (!imageCanvas) {
+        return null;
+    }
+    return await imageUtil.canvasToBlob(imageCanvas);
+}
+
 util.shareImageBlob = async function(blob, filename = 'image') {
     if (!navigator.share || !navigator.canShare) {
         log.warn('sharing not supported!');
+        return;
+    }
+    if (!blob) {
         return;
     }
     let file = new File([blob], `${filename}.${imageUtil.mimeTypeToFileSuffix(blob.type)}`, { type: blob.type });

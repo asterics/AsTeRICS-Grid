@@ -4,6 +4,7 @@ import { dataService } from './data/dataService';
 import { loginService } from './loginService';
 import { Router } from '../router.js';
 import {MainVue} from "../vue/mainVue.js";
+import { util } from '../util/util';
 
 let keyboardShortcuts = {};
 
@@ -11,7 +12,7 @@ let keyboardShortcuts = {};
  * inits global keyboard shortcuts
  */
 keyboardShortcuts.init = function () {
-    inputEventHandler.global.onAnyKey((keycode, code, event) => {
+    inputEventHandler.global.onAnyKey(async (keycode, code, event) => {
         if (event.ctrlKey && event.shiftKey && keycode === 39) {
             //Ctrl + Shift + Arrow Right
             let users = localStorageService.getSavedUsers();
@@ -37,6 +38,10 @@ keyboardShortcuts.init = function () {
             if (validViews.includes(Router.getCurrentView())) {
                 MainVue.showSearchModal();
             }
+        }
+        if (Router.isOnGridView() && event.ctrlKey && keycode === 67) {
+            // Ctrl + C
+            await util.copyCollectContentToClipboard();
         }
     });
 };

@@ -271,6 +271,10 @@ Router.isOnEditPage = function () {
     return window.location.hash.indexOf('#grid/edit') !== -1;
 };
 
+Router.isOnGridView = function () {
+    return !Router.isOnEditPage() && window.location.hash.indexOf('#grid/') !== -1;
+};
+
 Router.getCurrentView = function () {
     return _currentView;
 };
