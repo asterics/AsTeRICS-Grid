@@ -13,6 +13,7 @@ matrixAppService.doAction = async function (action) {
     let text, room;
     switch (action.action) {
         case GridActionMatrix.actions.MATRIX_SEND_COLLECTED:
+            await collectElementService.doARASAACGrammarCorrection();
             text = collectElementService.getText();
             room = await getCurrentRoom();
             if (!collectElementService.hasCollectedImage()) {
@@ -31,6 +32,7 @@ matrixAppService.doAction = async function (action) {
             }
             break;
         case GridActionMatrix.actions.MATRIX_SEND_COLLECTED_TEXT:
+            await collectElementService.doARASAACGrammarCorrection();
             text = collectElementService.getText();
             room = await getCurrentRoom();
             if (text && room) {

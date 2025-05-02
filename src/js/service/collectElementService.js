@@ -92,17 +92,27 @@ collectElementService.clearCollectElements = function() {
     $('.collect-container').empty();
 }
 
-collectElementService.doCollectElementActions = async function (action) {
-    if (!action) {
-        return;
-    }
-    if (activateARASAACGrammarAPI && GridActionCollectElement.isSpeakAction(action)) {
+/**
+ * does ARASAAC grammar correction for the current collected sentence (if enabled in settings)
+ * @returns {Promise<void>}
+ */
+collectElementService.doARASAACGrammarCorrection = async function() {
+    if (activateARASAACGrammarAPI) {
         let speakText = getPrintText({ inlcudeCorrectedGrammar: false });
         speakText = await arasaacService.getCorrectGrammar(speakText);
         let changed = applyGrammarCorrection(speakText);
         if (changed) {
-            updateCollectElements();
+            await updateCollectElements();
         }
+    }
+}
+
+collectElementService.doCollectElementActions = async function (action) {
+    if (!action) {
+        return;
+    }
+    if (GridActionCollectElement.isSpeakAction(action)) {
+        await collectElementService.doARASAACGrammarCorrection();
     }
     let speakText = getPrintText({ dontIncludePronunciation: false });
     let speakArray = getSpeakArray();
