@@ -1,5 +1,3 @@
-import { constants } from './constants';
-
 var imageUtil = {};
 
 /**
@@ -53,6 +51,20 @@ imageUtil.dataStringToFileSuffix = function(dataString = '') {
     }
     return '';
 };
+
+imageUtil.mimeTypeToFileSuffix = function getImageExtension(mimeType) {
+    const mimeMap = {
+        'image/jpeg': 'jpg',
+        'image/png': 'png',
+        'image/gif': 'gif',
+        'image/webp': 'webp',
+        'image/bmp': 'bmp',
+        'image/svg+xml': 'svg',
+        'image/svg': 'svg'
+    };
+
+    return mimeMap[mimeType] || '';
+}
 
 /**
  * returns promise that resolves to a base64 string that represents the content of the file

@@ -182,6 +182,29 @@ collectElementService.doCollectElementActions = async function (action) {
             }
             updateCollectElements();
             break;
+        case GridActionCollectElement.COLLECT_ACTION_SHARE: {
+            let imageCanvas = await imageUtil.getScreenshot(".collect-items-container", {
+                scale: 2,
+                returnCanvas: true
+            });
+            if (!imageCanvas) {
+                return;
+            }
+            let blob = await imageUtil.canvasToBlob(imageCanvas);
+            await util.share(collectElementService.getText(), blob);
+            break;
+        }
+        case GridActionCollectElement.COLLECT_ACTION_COPY_IMAGE_CLIPBOARD:
+            let imageCanvas = await imageUtil.getScreenshot(".collect-items-container", {
+                scale: 5,
+                returnCanvas: true
+            });
+            if (!imageCanvas) {
+                return;
+            }
+            let blob = await imageUtil.canvasToBlob(imageCanvas);
+            await util.copyBlobToClipboard(blob);
+            break;
         case GridActionCollectElement.COLLECT_ACTION_COPY_CLIPBOARD:
             util.copyToClipboard(getPrintText());
             break;

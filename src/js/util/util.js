@@ -1,6 +1,7 @@
 import { TextConfig } from '../model/TextConfig.js';
 import { GridElement } from '../model/GridElement';
 import { constants } from './constants';
+import { imageUtil } from './imageUtil';
 
 let util = {};
 
@@ -96,6 +97,45 @@ util.copyToClipboard = function copyTextToClipboard(text) {
  */
 util.appendToClipboard = function (text) {
     util.copyToClipboard(lastClipboardData + text);
+};
+
+/**
+ * copies a blob to clipboard (if supported)
+ * @param blob
+ * @returns {Promise<void>}
+ */
+util.copyBlobToClipboard = async function(blob) {
+    const supported = typeof ClipboardItem !== 'undefined' &&
+        navigator.clipboard &&
+        typeof navigator.clipboard.write === 'function';
+    if (!supported) {
+        log.warn('copy blob to clipboard is not supported');
+        return;
+    }
+    const clipboardItem = new ClipboardItem({ [blob.type]: blob });
+    try {
+        await navigator.clipboard.write([clipboardItem]);
+    } catch (err) {
+        log.warn('failed to copy blob to clipboard:', err);
+    }
+};
+
+util.share = async function(text, blob = null) {
+    if (!navigator.share || !navigator.canShare) {
+        log.warn('sharing not supported!');
+        return;
+    }
+    let file = null;
+    if (blob) {
+        file = new File([blob], `${text}.${imageUtil.mimeTypeToFileSuffix(blob.type)}`, { type: blob.type });
+    }
+    let shareObject = {
+        text: text
+    };
+    if (file && navigator.canShare({ files: [file] })) {
+        shareObject['files'] = [file];
+    }
+    await navigator.share(shareObject);
 };
 
 /**
