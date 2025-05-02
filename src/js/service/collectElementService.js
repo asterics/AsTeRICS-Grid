@@ -400,7 +400,9 @@ async function updateCollectElements(isSecondTry) {
                              </div>`;
             }
             let additionalCSS = useSingleLine ? 'overflow-x: auto; overflow-y: hidden;' : 'flex-wrap: wrap;';
-            html = `<div class="collect-container" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: ${backgroundColor}; text-align: justify; ${additionalCSS}">${html}</div>`;
+            html = `<div class="collect-container" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: ${backgroundColor}; text-align: justify; ${additionalCSS}">
+                        <div class="collect-items-container" style="display: flex; flex-direction: row; ">${html}</div>
+                    </div>`;
             outerContainerJqueryElem.html(html);
             if (useSingleLine) {
                 let scroll =

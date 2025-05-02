@@ -22,7 +22,7 @@ matrixAppService.doAction = async function (action) {
                 return;
             }
             $(document).trigger(constants.EVENT_MATRIX_SENDING_START);
-            let imageCanvas = await imageUtil.getScreenshot(".collect-container", {
+            let imageCanvas = await imageUtil.getScreenshot(".collect-items-container", {
                 scale: 1,
                 returnCanvas: true
             });
