@@ -191,7 +191,7 @@ collectElementService.doCollectElementActions = async function (action) {
                 return;
             }
             let blob = await imageUtil.canvasToBlob(imageCanvas);
-            await util.share(collectElementService.getText(), blob);
+            await util.shareImageBlob(blob, collectElementService.getText());
             break;
         }
         case GridActionCollectElement.COLLECT_ACTION_COPY_IMAGE_CLIPBOARD:

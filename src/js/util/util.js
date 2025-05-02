@@ -120,22 +120,19 @@ util.copyBlobToClipboard = async function(blob) {
     }
 };
 
-util.share = async function(text, blob = null) {
+util.shareImageBlob = async function(blob, filename = 'image') {
     if (!navigator.share || !navigator.canShare) {
         log.warn('sharing not supported!');
         return;
     }
-    let file = null;
-    if (blob) {
-        file = new File([blob], `${text}.${imageUtil.mimeTypeToFileSuffix(blob.type)}`, { type: blob.type });
+    let file = new File([blob], `${filename}.${imageUtil.mimeTypeToFileSuffix(blob.type)}`, { type: blob.type });
+    if (!navigator.canShare({ files: [file] })) {
+        log.warn('sharing files not supported!');
+        return;
     }
-    let shareObject = {
-        text: text
-    };
-    if (file && navigator.canShare({ files: [file] })) {
-        shareObject['files'] = [file];
-    }
-    await navigator.share(shareObject);
+    await navigator.share({
+        files: [file]
+    });
 };
 
 /**
