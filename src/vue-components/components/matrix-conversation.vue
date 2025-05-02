@@ -93,7 +93,7 @@ export default {
             this.matrixMessages.push(msg);
             this.matrixMessages.sort((a, b) => a.timestamp - b.timestamp);
             this.scrollDown();
-            if (this.gridElement.autoSpeak && msg.sender !== this.currentUser) {
+            if (this.gridElement && this.gridElement.autoSpeak && msg.sender !== this.currentUser) {
                 let text = msg.textContent;
                 if (msg.msgType === 'm.image' && text.length) {
 
