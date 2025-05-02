@@ -51,7 +51,7 @@ These are the contents of tab "Rooms":
 
 ## Use AsTeRICS Grid as Matrix messenger
 
-There is this [demo configuration for matrix messenger](https://gridbeta.asterics-foundation.org/?gridset_filename=matrix_messenger_demo.grd.json) which shows some common use-cases for Matrix messenger integration in AsTeRICS Grid.
+There is this [demo configuration for matrix messenger](https://grid.asterics.eu/?gridset_filename=matrix_messenger_demo.grd.json) which shows some common use-cases for Matrix messenger integration in AsTeRICS Grid.
 
 ### Matrix messenger element
 
