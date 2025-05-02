@@ -5,6 +5,7 @@ import { loginService } from './loginService';
 import { Router } from '../router.js';
 import {MainVue} from "../vue/mainVue.js";
 import { util } from '../util/util';
+import { constants } from '../util/constants';
 
 let keyboardShortcuts = {};
 
@@ -13,8 +14,9 @@ let keyboardShortcuts = {};
  */
 keyboardShortcuts.init = function () {
     inputEventHandler.global.onAnyKey(async (keycode, code, event) => {
-        if (event.ctrlKey && event.shiftKey && keycode === 39) {
-            //Ctrl + Shift + Arrow Right
+        const ctrlOrMeta = constants.IS_MAC ? event.metaKey : event.ctrlKey;
+        if (ctrlOrMeta && event.shiftKey && keycode === 39) {
+            // Ctrl + Shift + Arrow Right
             let users = localStorageService.getSavedUsers();
             let currentUser = dataService.getCurrentUser();
             let index = users.indexOf(currentUser);
@@ -23,23 +25,23 @@ keyboardShortcuts.init = function () {
             log.info('changing user via keyboard shortcut to: ' + newUser);
             loginService.loginStoredUser(newUser);
         }
-        if (event.ctrlKey && keycode === 8) {
-            //Ctrl + Backspace
+        if (ctrlOrMeta && keycode === 8) {
+            // Ctrl + Backspace
             Router.toLastGrid();
         }
-        if (event.ctrlKey && keycode === 36) {
-            //Ctrl + Pos1
+        if (ctrlOrMeta && keycode === 36) {
+            // Ctrl + Pos1
             Router.toMain();
         }
-        if (event.ctrlKey && keycode === 70) {
-            //Ctrl + F
+        if (ctrlOrMeta && keycode === 70) {
+            // Ctrl + F
             event.preventDefault();
             let validViews = [Router.VIEWS.AllGridsView, Router.VIEWS.GridView, Router.VIEWS.GridEditView];
             if (validViews.includes(Router.getCurrentView())) {
                 MainVue.showSearchModal();
             }
         }
-        if (Router.isOnGridView() && event.ctrlKey && keycode === 67) {
+        if (Router.isOnGridView() && ctrlOrMeta && keycode === 67) {
             // Ctrl + C
             await util.copyCollectContentToClipboard();
         }
