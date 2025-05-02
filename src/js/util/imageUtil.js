@@ -198,12 +198,16 @@ imageUtil.urlToBase64 = function (url, maxWidth, mimeType) {
  * @param options.quality scale of the image, defaults to 0.6
  * @param options.mimeType mimeType of the image, defaults to "image/webp", can also be "image/png"
  * @param options.returnCanvas if true, the canvas is returned, otherwise a base64 encoded image url
- * @returns {Promise<*>} the screenshot data
+ * @returns {Promise<*>} the screenshot data, null if there was no element for the given selector
  */
 imageUtil.getScreenshot = function (selector, options = {}) {
+    let element = document.querySelector(selector);
+    if (!element) {
+        return null;
+    }
     return import(/* webpackChunkName: "html2canvas" */ 'html2canvas').then((html2canvas) => {
         return html2canvas
-            .default(document.querySelector(selector), {
+            .default(element, {
                 scale: options.scale || 0.2,
                 logging: false,
                 useCORS: true,
