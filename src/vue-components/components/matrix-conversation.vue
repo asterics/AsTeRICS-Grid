@@ -1,5 +1,5 @@
 <template>
-    <div class="row" style="max-height: 100%; overflow-y: scroll" ref="messenger">
+    <div class="row" :style="`max-height: 100%; overflow-y: scroll; font-size: ${fontSize}`" ref="messenger">
         <div v-if="loading">
             <span class="col">{{ $t('loading') }}...</span>
             <i class="fas fa-spinner fa-spin"></i>
@@ -65,10 +65,11 @@ import MatrixRoomDescription from './matrix-room-description.vue';
 import { matrixAppService } from '../../js/service/matrixMessenger/matrixAppService';
 import { speechService } from '../../js/service/speechService';
 import { util } from '../../js/util/util';
+import { fontUtil } from '../../js/util/fontUtil';
 
 export default {
     components: { MatrixRoomDescription },
-    props: ["matrixRoomProp", "gridElement"],
+    props: ["matrixRoomProp", "gridElement", "metadata", "containerSize"],
     data: function () {
         return {
             matrixRooms: null,
@@ -77,7 +78,8 @@ export default {
             currentUser: undefined,
             matrixText: '',
             loading: true,
-            sending: false
+            sending: false,
+            fontSize: "unset"
         }
     },
     watch: {
@@ -85,9 +87,19 @@ export default {
             this.matrixRooms = [];
             this.matrixRoom = this.matrixRoomProp;
             this.init();
+        },
+        containerSize() {
+            this.calcFontSize();
         }
     },
     methods: {
+        calcFontSize() {
+            if (!this.metadata) {
+                this.fontSize = "unset";
+            }
+            let pxSize = fontUtil.pctToPx(this.metadata.textConfig.fontSizePct) / 9; // normally fontSizePct is relative to element size, use some value found experimentally based on app container size instead
+            this.fontSize = pxSize + "px";
+        },
         addMessage(msg) {
             this.sending = false;
             this.matrixMessages.push(msg);

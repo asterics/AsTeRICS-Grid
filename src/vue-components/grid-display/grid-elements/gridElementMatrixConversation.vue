@@ -1,6 +1,6 @@
 <template>
     <div class="grid-item-content p-3">
-        <matrix-conversation :grid-element="gridElement"/>
+        <matrix-conversation :grid-element="gridElement" v-bind="$attrs"/>
     </div>
 </template>
 
