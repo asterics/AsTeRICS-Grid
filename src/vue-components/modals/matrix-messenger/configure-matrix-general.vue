@@ -106,6 +106,7 @@
                     this.metadata.integrations.matrixConfig = this.syncConfig;
                     await dataService.saveMetadata(this.metadata);
                 }
+                this.e2eeSupported = matrixService.isEncryptionEnabled();
                 this.$emit("user", (await matrixService.getUsername()));
                 this.loginLoading = false;
             }
