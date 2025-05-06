@@ -287,12 +287,16 @@ gridUtil.getGraphList = function (grids, removeGridId, orderByName) {
  * @param startGraphElem the graph element to start
  * @param paths internal, used for recursion
  * @param currentPath internal, used for recursion
+ * @param existingPathEndsMap internal, used for recursion, a map for counting how often a specific grid was the
+ *                            last grid of an existing path. So map[gridId] === 3 means that in the current calculated
+ *                            paths there are 3 paths that have grid with "gridId" as last element
  * @return {*[]|number} an array containing all possible paths through the graph with the given
  *                      start element.
  *                      e.g. [[startElem.grid, childGrid, childOfChild, ...],
  *                            [startElem.grid, otherChild, ...], ...]
  */
-gridUtil.getAllPaths = function (startGraphElem, paths, currentPath) {
+gridUtil.getAllPaths = function (startGraphElem, paths, currentPath, existingPathEndsMap = {}) {
+    let MAX_PATHS_TO_SAME_GRID = 3;
     if (!startGraphElem) {
         return [];
     }
@@ -300,15 +304,23 @@ gridUtil.getAllPaths = function (startGraphElem, paths, currentPath) {
     currentPath = currentPath || [];
     if (currentPath.includes(startGraphElem)) {
         paths.push(currentPath);
+        let lastId = currentPath[currentPath.length - 1].grid.id;
+        existingPathEndsMap[lastId] = existingPathEndsMap[lastId] ? existingPathEndsMap[lastId] + 1 : 1;
         return paths;
     }
     currentPath.push(startGraphElem);
     if (startGraphElem.children.length === 0) {
         paths.push(currentPath);
+        let lastId = currentPath[currentPath.length - 1].grid.id;
+        existingPathEndsMap[lastId] = existingPathEndsMap[lastId] ? existingPathEndsMap[lastId] + 1 : 1;
+        return paths;
+    }
+    let lastId = currentPath[currentPath.length - 1].grid.id;
+    if (existingPathEndsMap[lastId] > MAX_PATHS_TO_SAME_GRID) {
         return paths;
     }
     for (let child of startGraphElem.children) {
-        gridUtil.getAllPaths(child, paths, currentPath.concat([]));
+        gridUtil.getAllPaths(child, paths, currentPath.concat([]), existingPathEndsMap);
     }
     return paths;
 }
