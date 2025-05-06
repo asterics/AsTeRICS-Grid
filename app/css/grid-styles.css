@@ -59,6 +59,7 @@
 .mouseentered.element-container {
     outline: thick solid green !important;
     background: lightgreen;
+    z-index: 10;
 }
 
 .marked.element-container {

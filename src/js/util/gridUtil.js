@@ -666,6 +666,13 @@ gridUtil.getPropTransferObjectAppearance = function(sourceElement) {
     return transferObject;
 };
 
+gridUtil.getCursorType = function(metadata, defaultCursorType = "default") {
+    if (!metadata || !metadata.inputConfig || !metadata.inputConfig.hoverEnabled || !metadata.inputConfig.hoverHideCursor) {
+        return defaultCursorType;
+    }
+    return 'none';
+};
+
 function getAllChildrenRecursive(gridGraphList, gridId) {
     let graphElem = gridGraphList.filter((elem) => elem.grid.id === gridId)[0];
     return getAllChildrenRecursiveGraphElement(graphElem).map(graphElem => graphElem.grid);

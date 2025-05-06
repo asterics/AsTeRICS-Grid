@@ -1,6 +1,6 @@
 <template>
     <div class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
-         :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: pointer;
+         :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: ${cursorType};
          border: ${borderWidthPx}px solid ${getBorderColor(element)}; background-color: ${backgroundColor}; font-family: ${metadata.textConfig.fontFamily};`">
         <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
@@ -37,6 +37,7 @@ import { GridActionYoutube } from '../../js/model/GridActionYoutube';
 import { ColorConfig } from '../../js/model/ColorConfig';
 import GridElementLive from './grid-elements/GridElementLive.vue';
 import GridElementMatrixConversation from './grid-elements/gridElementMatrixConversation.vue';
+import { gridUtil } from '../../js/util/gridUtil';
 
 export default {
     components: { GridElementMatrixConversation, GridElementLive, GridElementNormal, GridElementYoutube, GridElementCollect, GridElementHints, GridElementPredict },
@@ -65,6 +66,9 @@ export default {
                 return MetaData.getElementColor(this.element, this.metadata);
             }
             return this.metadata.colorConfig.elementBackgroundColor;
+        },
+        cursorType() {
+            return gridUtil.getCursorType(this.metadata, "pointer");
         }
     },
     methods: {
