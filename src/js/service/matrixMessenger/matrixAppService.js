@@ -66,9 +66,14 @@ matrixAppService.doAction = async function (action) {
             break;
         case GridActionMatrix.actions.MATRIX_SPEAK_LAST_MSG:
             room = await getCurrentRoom();
+            if (!room) {
+                return;
+            }
             let messages = await matrixService.getMessageEvents(room.roomId, 0);
             let last = messages.pop();
-            speechService.speak(last.textContent);
+            if (last) {
+                speechService.speak(last.textContent);
+            }
             break;
     }
 };
