@@ -36,6 +36,7 @@ class MetaData extends Model({
         this.textConfig = properties.textConfig || new TextConfig();
         this.notificationConfig = properties.notificationConfig || new NotificationConfig();
         this.homeGridId = properties.homeGridId || null;
+        this.integrations = Object.assign(new IntegrationConfigSync(), this.integrations);
     }
 
     isEqual(otherMetadata) {

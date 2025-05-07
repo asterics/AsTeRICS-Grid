@@ -20,6 +20,7 @@ import { GridActionUART } from './GridActionUART.js';
 import { GridActionSystem } from './GridActionSystem';
 import { GridActionPredefined } from './GridActionPredefined';
 import { GridActionMatrix } from './GridActionMatrix';
+import { GridActionPodcast } from './GridActionPodcast';
 
 class GridElement extends Model({
     id: String,
@@ -78,6 +79,7 @@ class GridElement extends Model({
             GridActionOpenHAB,
             GridActionWebradio,
             GridActionYoutube,
+            GridActionPodcast,
             GridActionChangeLang,
             GridActionOpenWebpage,
             GridActionHTTP,
