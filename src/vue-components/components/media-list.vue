@@ -1,7 +1,7 @@
 <template>
     <div>
         <ul class="mediaList">
-            <li v-for="(mediaElem, index) in listElems">
+            <li v-for="(mediaElem, index) in paginatedElems">
                 <div class="mediaListItem">
                     <img :src="mediaElem[imgProp]" alt=""/>
                     <div class="mediaElemLabel">{{mediaElem.radioName}}</div>
@@ -33,9 +33,9 @@
                 </div>
             </li>
         </ul>
-        <div style="display: flex; margin-top: 0.5em" v-show="listElems.length > 0">
-            <button @click="" disabled="" style="flex-grow: 1;"><i class="fas fa-arrow-left"></i> <span class="hide-mobile">{{ $t('previousPage') }}</span></button>
-            <button @click="" disabled="" style="flex-grow: 1;"><span class="hide-mobile">{{ $t('nextPage') }}</span> <i class="fas fa-arrow-right"></i></button>
+        <div style="display: flex; margin-top: 1em" v-if="!disableNext || !disablePrev">
+            <button @click="prev" :disabled="disablePrev" style="flex-grow: 1;"><i class="fas fa-arrow-left"></i> <span class="hide-mobile">{{ $t('previousPage') }}</span></button>
+            <button @click="next" :disabled="disableNext" style="flex-grow: 1;"><span class="hide-mobile">{{ $t('nextPage') }}</span> <i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
 </template>
@@ -47,11 +47,23 @@
             mediaElems: Array, // search result list
             actionConfigProp: Object,
             imgProp: String,
+            idProp: {
+                type: String,
+                default: "id"
+            },
             value: Array, // selected list or editable list
-            playingMedia: null
+            playingMedia: Object,
+            enableNext: Boolean,
+            enablePrev: Boolean,
+            internalPagination: Boolean,
+            itemsPerPage: {
+                type: Number,
+                default: 3
+            }
         },
         data() {
             return {
+                paginationPage: 1
             }
         },
         computed: {
@@ -60,16 +72,61 @@
                     canSelect: true,
                     canPlay: true,
                     canMoveUp: false,
-                    canRemove: false,
+                    canRemove: false
                 }, this.actionConfigProp || {});
             },
             listElems() {
                 return this.mediaElems || this.value || [];
+            },
+            paginatedElems() {
+                let elems = this.listElems;
+                if (!this.internalPagination) {
+                    return elems;
+                } else {
+                    const start = (this.paginationPage - 1) * this.itemsPerPage;
+                    const end = start + this.itemsPerPage;
+                    return elems.slice(start, end);
+                }
+            },
+            disableNext() {
+                if (this.listElems.length === 0) {
+                    return true;
+                }
+                if (this.internalPagination) {
+                    let lastElem = this.listElems[this.listElems.length - 1];
+                    return this.paginatedElems.includes(lastElem);
+                } else {
+                    return !this.enableNext;
+                }
+            },
+            disablePrev() {
+                if (this.listElems.length === 0) {
+                    return true;
+                }
+                if (this.internalPagination) {
+                    return this.paginationPage === 1;
+                } else {
+                    return !this.enablePrev;
+                }
             }
         },
         methods: {
             emitTogglePlay(mediaElem) {
                 this.$emit('togglePlay', mediaElem);
+            },
+            prev() {
+                if (this.internalPagination) {
+                    this.paginationPage = this.disablePrev ? this.paginationPage : this.paginationPage - 1;
+                } else {
+                    this.$emit('paginatePrev');
+                }
+            },
+            next() {
+                if (this.internalPagination) {
+                    this.paginationPage = this.disableNext ? this.paginationPage : this.paginationPage + 1;
+                } else {
+                    this.$emit('paginateNext');
+                }
             },
             emitChange(newValue) {
                 this.$emit("input", newValue);
@@ -94,8 +151,8 @@
                 if (!this.value) {
                     return;
                 }
-                this.value = this.value.filter(elem => elem !== mediaElem);
-                this.emitChange(this.value);
+                let newElems = this.value.filter(elem => elem !== mediaElem);
+                this.emitChange(newElems);
             }
         },
         mounted() {
