@@ -148,11 +148,18 @@ webradioService.stop = function (radioId) {
     }
 };
 
+/**
+ * toggles play/pause of the given webradio
+ * @param webradio
+ * @return the given webradio config if it's now playing, otherwise null
+ */
 webradioService.toggle = function (webradio) {
     if ((!playingVideo && player.paused) || (playingVideo && videoPlayer.paused)) {
         webradioService.play(webradio);
+        return webradio;
     } else {
         webradioService.stop();
+        return null;
     }
 };
 
