@@ -150,6 +150,9 @@
             </accordion>
         </div>
     </div>
+    <div v-if="action.modelName == 'GridActionPodcast'">
+        <edit-podcast-action :action="action"></edit-podcast-action>
+    </div>
     <div v-if="action.modelName === 'GridActionYoutube'">
         <div class="srow">
             <div class="twelve columns">
@@ -327,8 +330,8 @@
     import { GridActionSystem } from '../../js/model/GridActionSystem';
     import { GridActionChangeLang } from '../../js/model/GridActionChangeLang';
     import EditPredefinedAction from './editActionsSub/editPredefinedAction.vue';
-    import { GridData } from '../../js/model/GridData';
     import EditMatrixAction from './editActionsSub/editMatrixAction.vue';
+    import EditPodcastAction from './editActionsSub/editPodcastAction.vue';
 
     export default {
         props: ['action', 'grids', 'gridData', 'gridElement'],
@@ -355,6 +358,7 @@
             }
         },
         components: {
+            EditPodcastAction,
             EditMatrixAction,
             EditPredefinedAction,
             EditWordFormAction,
