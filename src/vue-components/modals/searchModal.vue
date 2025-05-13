@@ -9,10 +9,7 @@
                     </div>
 
                     <div class="modal-body mt-5 row">
-                        <input type="text" v-model="searchTerm" @input="search()" v-focus :placeholder="$t('searchElement') + '...'" class="col-8 col-sm-10" @keydown.enter.exact="goToFirstResult()" @keydown.ctrl.enter.exact="goToFirstResult(true)"/>
-                        <div class="col-sm-2 col-4">
-                            <button class="col-12 mb-0" :title="$t('search')"><i class="fas fa-search"/></button>
-                        </div>
+                        <search-bar :placeholder="$t('searchElement')" v-model="searchTerm" :keydown-enter-fn="() => goToFirstResult()" :keydown-ctrl-enter-fn="() => goToFirstResult(true)" @input="search()" :debounce-time="300"></search-bar>
                     </div>
                     <div>
                         <div class="warn mt-5" v-if="results && !homeGridId">
@@ -65,15 +62,16 @@
 <script>
     import './../../css/modal.css';
     import {dataService} from "../../js/service/data/dataService.js";
-    import {util} from "../../js/util/util.js";
     import {i18nService} from "../../js/service/i18nService.js";
     import {Router} from "../../js/router.js";
     import {gridUtil} from "../../js/util/gridUtil.js";
     import {collectElementService} from "../../js/service/collectElementService.js";
+    import SearchBar from '../components/searchBar.vue';
 
     export default {
         props: ['routeToEdit', 'options'],
         components: {
+            SearchBar
         },
         data: function () {
             return {
@@ -119,85 +117,83 @@
             },
             async search(force) {
                 let thiz = this;
-                util.debounce(async () => {
-                    thiz.overflow = false;
-                    if (!force && thiz.searchTerm.length < 2) {
-                        thiz.results = undefined;
-                        return;
-                    }
-                    thiz.results = null;
-                    thiz.$forceUpdate();
-                    await new Promise(resolve => setTimeout(resolve, 10)); // to repaint and render "searching ..."
-                    await thiz.initPromise;
-                    if (!thiz.searchTerm) {
-                        thiz.results = [];
-                        return;
-                    }
-                    let results = [];
-                    let homeGridId = thiz.homeGridId || thiz.graphList[0].grid.id;
-                    let homeGridGraphElem = thiz.graphList.filter(elem => elem.grid.id === homeGridId)[0];
-                    if (!thiz.idPathMap) {
-                        thiz.idPathMap = gridUtil.getIdPathMap(homeGridGraphElem);
-                    }
-                    let count = 0;
-                    for (let grid of thiz.grids) {
-                        for (let elem of grid.gridElements) {
-                            count++;
-                            let labels = Object.entries(elem.label).filter(([lang, label]) => !!label);
-                            let hadMatch = false;
-                            for (let [lang, label] of labels) {
-                                let priority = getMatchPriority(label);
-                                if (!hadMatch && priority > 0) {
-                                    hadMatch = true;
-                                    addResult(grid, elem, label, lang, priority);
-                                }
+                thiz.overflow = false;
+                if (!force && thiz.searchTerm.length < 2) {
+                    thiz.results = undefined;
+                    return;
+                }
+                thiz.results = null;
+                thiz.$forceUpdate();
+                await new Promise(resolve => setTimeout(resolve, 10)); // to repaint and render "searching ..."
+                await thiz.initPromise;
+                if (!thiz.searchTerm) {
+                    thiz.results = [];
+                    return;
+                }
+                let results = [];
+                let homeGridId = thiz.homeGridId || thiz.graphList[0].grid.id;
+                let homeGridGraphElem = thiz.graphList.filter(elem => elem.grid.id === homeGridId)[0];
+                if (!thiz.idPathMap) {
+                    thiz.idPathMap = gridUtil.getIdPathMap(homeGridGraphElem);
+                }
+                let count = 0;
+                for (let grid of thiz.grids) {
+                    for (let elem of grid.gridElements) {
+                        count++;
+                        let labels = Object.entries(elem.label).filter(([lang, label]) => !!label);
+                        let hadMatch = false;
+                        for (let [lang, label] of labels) {
+                            let priority = getMatchPriority(label);
+                            if (!hadMatch && priority > 0) {
+                                hadMatch = true;
+                                addResult(grid, elem, label, lang, priority);
                             }
                         }
                     }
-                    results.sort((a, b) => {
-                        if (a.matchLang !== b.matchLang) {
-                            if (a.matchLang === i18nService.getContentLang()) {
-                                return -1;
-                            }
-                            if (b.matchLang === i18nService.getContentLang()) {
-                                return 1;
-                            }
+                }
+                results.sort((a, b) => {
+                    if (a.matchLang !== b.matchLang) {
+                        if (a.matchLang === i18nService.getContentLang()) {
+                            return -1;
                         }
-                        if (a.path.length !== b.path.length) {
-                            if (a.path.length === 0) return 1;
-                            if (b.path.length === 0) return -1;
-                            return a.path.length - b.path.length;
-                        }
-                        return a.priority - b.priority
-                    });
-                    if (results.length > thiz.MAX_RESULTS) {
-                        results = results.slice(0, thiz.MAX_RESULTS - 1);
-                        thiz.overflow = true;
-                    }
-                    thiz.results = results;
-
-                    function getMatchPriority(label) {
-                        label = label.toLocaleLowerCase();
-                        if (label.startsWith(thiz.searchTerm.toLocaleLowerCase())) {
+                        if (b.matchLang === i18nService.getContentLang()) {
                             return 1;
                         }
-                        if (label.includes(thiz.searchTerm.toLocaleLowerCase())) {
-                            return 2;
-                        }
-                        return -1;
                     }
+                    if (a.path.length !== b.path.length) {
+                        if (a.path.length === 0) return 1;
+                        if (b.path.length === 0) return -1;
+                        return a.path.length - b.path.length;
+                    }
+                    return a.priority - b.priority
+                });
+                if (results.length > thiz.MAX_RESULTS) {
+                    results = results.slice(0, thiz.MAX_RESULTS - 1);
+                    thiz.overflow = true;
+                }
+                thiz.results = results;
 
-                    function addResult(grid, elem, matchLabel, matchLang, priority) {
-                        results.push({
-                            grid: grid,
-                            elem: elem,
-                            matchLabel: matchLabel,
-                            matchLang: matchLang,
-                            priority: priority,
-                            path: gridUtil.getGridPath(thiz.graphList, homeGridId, grid.id, thiz.idPathMap)
-                        })
+                function getMatchPriority(label) {
+                    label = label.toLocaleLowerCase();
+                    if (label.startsWith(thiz.searchTerm.toLocaleLowerCase())) {
+                        return 1;
                     }
-                }, 300, "SEARCH_ELEMENTS");
+                    if (label.includes(thiz.searchTerm.toLocaleLowerCase())) {
+                        return 2;
+                    }
+                    return -1;
+                }
+
+                function addResult(grid, elem, matchLabel, matchLang, priority) {
+                    results.push({
+                        grid: grid,
+                        elem: elem,
+                        matchLabel: matchLabel,
+                        matchLang: matchLang,
+                        priority: priority,
+                        path: gridUtil.getGridPath(thiz.graphList, homeGridId, grid.id, thiz.idPathMap)
+                    })
+                }
             },
             close() {
                 this.$emit('close');
