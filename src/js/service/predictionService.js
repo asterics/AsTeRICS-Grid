@@ -145,7 +145,6 @@ predictionService.getCurrentValue = function(elementId) {
 }
 
 function saveDictionaries() {
-    log.warn("save!")
     if (!_unsavedChanges || !predictionary) {
         return;
     }
