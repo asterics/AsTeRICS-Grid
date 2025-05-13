@@ -13,10 +13,10 @@
                         </button>
                         <button v-if="actionConfig.canPlay"
                                 @click="emitTogglePlay(mediaElem)">
-                            <span v-if="playingMedia !== mediaElem">
+                            <span v-if="playingMedia && playingMedia[idProp] ? playingMedia[idProp] !== mediaElem[idProp] : playingMedia !== mediaElem">
                                 <span class="hide-mobile">{{ $t('play') }} </span><i class="fas fa-play"></i>
                             </span>
-                            <span v-if="playingMedia === mediaElem">
+                            <span v-if="playingMedia && playingMedia[idProp] ? playingMedia[idProp] === mediaElem[idProp] : playingMedia === mediaElem">
                                 <span class="hide-mobile">{{ $t('stop') }} </span><i class="fas fa-pause"></i>
                             </span>
                         </button>
