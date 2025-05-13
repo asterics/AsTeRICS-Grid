@@ -26,7 +26,7 @@
                         </button>
                         <button v-if="actionConfig.canSelect"
                                 @click="addMediaElem(mediaElem)"
-                                :disabled="value && Array.isArray(value) ? value.includes(mediaElem) : false">
+                                :disabled="value && Array.isArray(value) ? value.includes(mediaElem) || value.find(elem => elem[idProp] && elem[idProp] === mediaElem[idProp]) : false">
                             <span class="hide-mobile">{{ $t('select') }}</span> <i class="fas fa-plus"></i>
                         </button>
                     </div>
