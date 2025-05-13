@@ -448,7 +448,6 @@
   "newVersionAvailableTheNextTimeYoullUseUpdated": "New version available! The next time you re-open AsTeRICS Grid you'll automatically use the updated version.",
   "youreNowUsingVersion": "You're now using new Version '{0}'.",
   "emptyIsAutomatic": "empty = automatic",
-  "byDefaultSearchesForRadioStationNameAdvanced": "by default searches for radio station name, advanced search possible like e.g. tag:jazz, language:english or country:austria",
   "thisActionAddsXNewElements": "This action adds {0} new elements to the grid. Continue?",
   "pleaseSpecifyInputModalities": "Please specify input modalities",
   "searchForImages": "Search for images",
