@@ -8,7 +8,7 @@ class GridActionPodcast extends Model({
     modelVersion: String,
     action: [String],
     podcastGuid: [String],
-    stepSeconds: [Number]
+    step: [Number]
 }) {
     constructor(properties, elementToCopy) {
         let defaults = JSON.parse(JSON.stringify(GridActionPodcast.DEFAULTS));
@@ -35,11 +35,20 @@ GridActionPodcast.actions = {
     VOLUME_MUTE: 'VOLUME_MUTE'
 };
 
+GridActionPodcast.actionsWithPodcastSelect = [
+    GridActionPodcast.actions.PLAY, GridActionPodcast.actions.PAUSE, GridActionPodcast.actions.TOGGLE
+]
+
+GridActionPodcast.actionsWithStepSeconds = [
+    GridActionPodcast.actions.STEP_FORWARD, GridActionPodcast.actions.STEP_BACKWARD
+]
+
 GridActionPodcast.DEFAULTS = {
     id: '', //will be replaced by constructor
     modelName: GridActionPodcast.getModelName(),
     modelVersion: constants.MODEL_VERSION,
-    stepSeconds: 30
+    stepSeconds: 30,
+    action: GridActionPodcast.actions.PLAY
 };
 
 export { GridActionPodcast };
