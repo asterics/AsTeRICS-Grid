@@ -10,6 +10,7 @@
   "GridActionCollectElement": "Collect element action",
   "GridActionWebradio": "Web radio action",
   "GridActionYoutube": "YouTube action",
+  "GridActionPodcast": "Podcast action",
   "GridActionChangeLang": "Change content language / voice",
   "GridActionOpenWebpage": "Open webpage in new tab",
   "COLLECT_ACTION_SPEAK": "Speak collect element content (separately)",
@@ -1257,5 +1258,6 @@
   "changeToMatrixRoom": "Change to matrix room",
   "goToMatrixSettingsToConfigure": "Go to \"Settings → Integrations → Matrix messenger\" to set up matrix.",
   "matrixMessengerNotLoggedInOrNoRoom": "Matrix messenger not logged in or no rooms configured.",
-  "autoSpeakIncomingMessages": "Automatically speak incoming messages"
+  "autoSpeakIncomingMessages": "Automatically speak incoming messages",
+  "podcastToPlay": "Podcast to play"
 }
