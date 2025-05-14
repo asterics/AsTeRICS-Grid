@@ -72,6 +72,14 @@ webAudioUtil.seek = function(seconds = 30) {
     }
 };
 
+webAudioUtil.setCurrentTime = function(seconds) {
+    if (playingVideo) {
+        videoPlayer.currentTime = seconds;
+    } else {
+        player.currentTime = seconds;
+    }
+}
+
 webAudioUtil.getPlayPosition = function() {
     if (playingVideo) {
         return videoPlayer.currentTime;
