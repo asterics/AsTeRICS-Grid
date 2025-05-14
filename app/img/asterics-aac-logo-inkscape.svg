@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="297mm"
+   height="210mm"
+   viewBox="0 0 297 210"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="asterics-aac-logo-inkscape.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35001786"
+     inkscape:cx="1348.5026"
+     inkscape:cy="101.4234"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="340"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4515"
+       units="mm"
+       spacingx="1"
+       spacingy="1"
+       empspacing="10"
+       originx="-41.999996"
+       originy="-191.87672"
+       visible="false" />
+    <sodipodi:guide
+       position="150,160"
+       orientation="-1,0"
+       id="guide1"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+    <sodipodi:guide
+       position="250,98.880669"
+       orientation="-1,0"
+       id="guide2"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+    <sodipodi:guide
+       position="50,144.23549"
+       orientation="-1,0"
+       id="guide3"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-42,-78.959563)">
+    <rect
+       style="fill:#ffffff;fill-opacity:0.941176;stroke:#2d7bbf;stroke-width:2.228;stroke-opacity:0.941176"
+       id="rect1"
+       width="808.18182"
+       height="225.56398"
+       x="37.723907"
+       y="75.752495"
+       inkscape:export-filename="rect1.png"
+       inkscape:export-xdpi="200.09999"
+       inkscape:export-ydpi="200.09999" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:41.9542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#2d7bbf;fill-opacity:0.941176;stroke:none;stroke-width:1.04886"
+       x="90.562836"
+       y="255.41165"
+       id="text4532"
+       transform="scale(1.009392,0.99069539)"
+       inkscape:export-xdpi="200.09999"
+       inkscape:export-ydpi="200.09999"
+       inkscape:export-filename="text4532.png"><tspan
+         sodipodi:role="line"
+         id="tspan4530"
+         x="90.562836"
+         y="255.41165"
+         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-family:'Source Code Pro';-inkscape-font-specification:'Source Code Pro Semi-Bold';fill:#2d7bbf;fill-opacity:0.941176;stroke-width:1.04886">ASTERICS</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:21.2064px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#2d7bbf;fill-opacity:0.941176;stroke:none;stroke-width:0.530159"
+       x="169.526"
+       y="282.43881"
+       id="text4532-4"
+       transform="scale(1.0180516,0.98226849)"
+       inkscape:export-xdpi="200.09999"
+       inkscape:export-ydpi="200.09999"><tspan
+         sodipodi:role="line"
+         id="tspan4530-9"
+         x="169.526"
+         y="282.43881"
+         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-family:'Source Code Pro';-inkscape-font-specification:'Source Code Pro Semi-Bold';fill:#2d7bbf;fill-opacity:0.941176;stroke-width:0.530159">AAC</tspan></text>
+    <path
+       style="fill:#000000;stroke:#000000;stroke-width:0.795873"
+       d="m 249.06528,177.97493 c -42.11393,3.25706 -79.4267,-175.8956265 -96.56676,8.82713 27.62505,-175.029875 41.08047,-2.2447 96.56676,-8.82713 z"
+       id="path3"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:#2d7bbf;fill-opacity:0.941176;stroke:#2d7bbf;stroke-width:0.795873;stroke-opacity:0.941176"
+       d="m 205.23075,126.30577 c 50.08736,-34.239845 1.72671,38.2791 -67.51502,85.91419 80.78559,-41.17569 119.86598,-128.424498 67.51502,-85.91419 z"
+       id="path4"
+       sodipodi:nodetypes="ccc" />
+    <circle
+       style="fill:none;fill-opacity:0.941176;stroke:#000000;stroke-width:2.228;stroke-dasharray:none;stroke-opacity:0.941176"
+       id="path5"
+       cx="190.70036"
+       cy="153.09979"
+       r="59.33831" />
+    <path
+       style="fill:none;fill-opacity:0.941176;stroke:#2d7bbf;stroke-width:1.95061;stroke-dasharray:none;stroke-opacity:0.941176"
+       d="m 219.82502,270.88045 h 20.1078"
+       id="path6" />
+    <path
+       style="fill:none;fill-opacity:0.941176;stroke:#2d7bbf;stroke-width:1.95061;stroke-dasharray:none;stroke-opacity:0.941176"
+       d="m 143.57175,270.55619 h 20.1078"
+       id="path6-0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:61.453px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#2d7bbf;fill-opacity:0.941176;stroke:none;stroke-width:1.53633"
+       x="533.53143"
+       y="193.35754"
+       id="text4532-8"
+       transform="scale(1.009392,0.99069539)"
+       inkscape:export-xdpi="200.09999"
+       inkscape:export-ydpi="200.09999"><tspan
+         sodipodi:role="line"
+         id="tspan4530-2"
+         x="533.53143"
+         y="193.35754"
+         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-family:'Source Code Pro';-inkscape-font-specification:'Source Code Pro Semi-Bold';fill:#2d7bbf;fill-opacity:0.941176;stroke-width:1.53633">ASTERICS</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:31.0624px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#2d7bbf;fill-opacity:0.941176;stroke:none;stroke-width:0.776558"
+       x="645.78381"
+       y="231.39517"
+       id="text4532-4-8"
+       transform="scale(1.0180516,0.98226849)"
+       inkscape:export-xdpi="200.09999"
+       inkscape:export-ydpi="200.09999"><tspan
+         sodipodi:role="line"
+         id="tspan4530-9-6"
+         x="645.78381"
+         y="231.39517"
+         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-family:'Source Code Pro';-inkscape-font-specification:'Source Code Pro Semi-Bold';fill:#2d7bbf;fill-opacity:0.941176;stroke-width:0.776558">AAC</tspan></text>
+    <path
+       style="fill:#000000;stroke:#000000;stroke-width:0.795873"
+       d="m 518.19214,210.21667 c -42.11393,3.25706 -79.4267,-175.89563 -96.56676,8.82713 27.62505,-175.02987 41.08047,-2.2447 96.56676,-8.82713 z"
+       id="path3-4"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:#2d7bbf;fill-opacity:0.941176;stroke:#2d7bbf;stroke-width:0.795873;stroke-opacity:0.941176"
+       d="m 474.35761,158.54751 c 50.08736,-34.23985 1.72671,38.2791 -67.51502,85.91419 80.78559,-41.17569 119.86598,-128.4245 67.51502,-85.91419 z"
+       id="path4-8"
+       sodipodi:nodetypes="ccc" />
+    <circle
+       style="fill:none;fill-opacity:0.941176;stroke:#000000;stroke-width:2.228;stroke-dasharray:none;stroke-opacity:0.941176"
+       id="path5-2"
+       cx="459.82724"
+       cy="185.34152"
+       r="59.33831" />
+    <path
+       style="fill:none;fill-opacity:0.941176;stroke:#2d7bbf;stroke-width:2.85718;stroke-dasharray:none;stroke-opacity:0.941176"
+       d="m 727.05222,217.69753 h 29.45317"
+       id="path6-7" />
+    <path
+       style="fill:none;fill-opacity:0.941176;stroke:#2d7bbf;stroke-width:2.85718;stroke-dasharray:none;stroke-opacity:0.941176"
+       d="m 615.35922,217.22257 h 29.45317"
+       id="path6-0-0" />
+    <rect
+       style="fill:#ffffff;fill-opacity:0.941176;stroke:#2d7bbf;stroke-width:2.228;stroke-opacity:0.941176"
+       id="rect1-8"
+       width="808.18182"
+       height="225.56398"
+       x="40.497559"
+       y="-159.44919"
+       inkscape:export-filename="rect1.png"
+       inkscape:export-xdpi="200.09999"
+       inkscape:export-ydpi="200.09999" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:41.9542px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';letter-spacing:0px;word-spacing:0px;fill:#2d7bbf;fill-opacity:0.941176;stroke:none;stroke-width:1.04886"
+       x="107.98964"
+       y="18.000967"
+       id="text4532-1"
+       transform="scale(1.009392,0.99069539)"
+       inkscape:export-xdpi="200.09999"
+       inkscape:export-ydpi="200.09999"
+       inkscape:export-filename="text4532.png"><tspan
+         sodipodi:role="line"
+         id="tspan4530-6"
+         x="107.98964"
+         y="18.000967"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';fill:#2d7bbf;fill-opacity:0.941176;stroke-width:1.04886">ASTERICS</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:21.2064px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';letter-spacing:0px;word-spacing:0px;fill:#2d7bbf;fill-opacity:0.941176;stroke:none;stroke-width:0.530159"
+       x="169.65152"
+       y="42.991356"
+       id="text4532-4-1"
+       transform="scale(1.0180516,0.98226849)"
+       inkscape:export-xdpi="200.09999"
+       inkscape:export-ydpi="200.09999"><tspan
+         sodipodi:role="line"
+         id="tspan4530-9-1"
+         x="169.65152"
+         y="42.991356"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';fill:#2d7bbf;fill-opacity:0.941176;stroke-width:0.530159">AAC</tspan></text>
+    <path
+       style="fill:#000000;stroke:#000000;stroke-width:0.795873"
+       d="m 251.83894,-57.226746 c -42.11393,3.25706 -79.4267,-175.895624 -96.56676,8.82713 27.62505,-175.029874 41.08047,-2.2447 96.56676,-8.82713 z"
+       id="path3-8"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:#2d7bbf;fill-opacity:0.941176;stroke:#2d7bbf;stroke-width:0.795873;stroke-opacity:0.941176"
+       d="m 208.00441,-108.89591 c 50.08736,-34.23985 1.72671,38.279104 -67.51502,85.914194 80.78559,-41.17569 119.86598,-128.424504 67.51502,-85.914194 z"
+       id="path4-2"
+       sodipodi:nodetypes="ccc" />
+    <circle
+       style="fill:none;fill-opacity:0.941176;stroke:#000000;stroke-width:2.228;stroke-dasharray:none;stroke-opacity:0.941176"
+       id="path5-0"
+       cx="193.47401"
+       cy="-82.101883"
+       r="59.33831" />
+    <path
+       style="fill:none;fill-opacity:0.941176;stroke:#2d7bbf;stroke-width:1.95061;stroke-dasharray:none;stroke-opacity:0.941176"
+       d="m 219.95283,35.678774 h 20.1078"
+       id="path6-5" />
+    <path
+       style="fill:none;fill-opacity:0.941176;stroke:#2d7bbf;stroke-width:1.95061;stroke-dasharray:none;stroke-opacity:0.941176"
+       d="m 143.69956,35.354514 h 20.1078"
+       id="path6-0-5" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:bold;font-size:61.453px;line-height:1.25;font-family:Calibri;letter-spacing:0px;word-spacing:0px;fill:#2d7bbf;fill-opacity:0.941176;stroke:none;stroke-width:1.53633;-inkscape-font-specification:'Calibri Bold';font-stretch:normal;font-variant:normal"
+       x="536.2793"
+       y="-44.053139"
+       id="text4532-8-2"
+       transform="scale(1.009392,0.99069539)"
+       inkscape:export-xdpi="200.09999"
+       inkscape:export-ydpi="200.09999"><tspan
+         sodipodi:role="line"
+         id="tspan4530-2-2"
+         x="536.2793"
+         y="-44.053139"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';fill:#2d7bbf;fill-opacity:0.941176;stroke-width:1.53633">ASTERICS</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:31.0624px;line-height:1.25;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';letter-spacing:0px;word-spacing:0px;fill:#2d7bbf;fill-opacity:0.941176;stroke:none;stroke-width:0.776558"
+       x="625.63818"
+       y="-8.0522833"
+       id="text4532-4-8-1"
+       transform="scale(1.0180516,0.98226849)"
+       inkscape:export-xdpi="200.09999"
+       inkscape:export-ydpi="200.09999"><tspan
+         sodipodi:role="line"
+         id="tspan4530-9-6-6"
+         x="625.63818"
+         y="-8.0522833"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';fill:#2d7bbf;fill-opacity:0.941176;stroke-width:0.776558">AAC</tspan></text>
+    <path
+       style="fill:#000000;stroke:#000000;stroke-width:0.795873"
+       d="m 520.9658,-24.985006 c -42.11393,3.25706 -79.4267,-175.895634 -96.56676,8.82713 27.62505,-175.029874 41.08047,-2.2447 96.56676,-8.82713 z"
+       id="path3-4-3"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:#2d7bbf;fill-opacity:0.941176;stroke:#2d7bbf;stroke-width:0.795873;stroke-opacity:0.941176"
+       d="m 477.13127,-76.654166 c 50.08736,-34.239854 1.72671,38.2791 -67.51502,85.9141902 80.78559,-41.1756902 119.86598,-128.4245042 67.51502,-85.9141902 z"
+       id="path4-8-4"
+       sodipodi:nodetypes="ccc" />
+    <circle
+       style="fill:none;fill-opacity:0.941176;stroke:#000000;stroke-width:2.228;stroke-dasharray:none;stroke-opacity:0.941176"
+       id="path5-2-1"
+       cx="462.60092"
+       cy="-49.860149"
+       r="59.33831" />
+    <path
+       style="fill:none;fill-opacity:0.941176;stroke:#2d7bbf;stroke-width:2.85718;stroke-dasharray:none;stroke-opacity:0.941176"
+       d="m 706.5424,-17.504146 h 29.45317"
+       id="path6-7-0" />
+    <path
+       style="fill:none;fill-opacity:0.941176;stroke:#2d7bbf;stroke-width:2.85718;stroke-dasharray:none;stroke-opacity:0.941176"
+       d="m 594.8494,-17.979106 h 29.45317"
+       id="path6-0-0-8" />
+  </g>
+</svg>
