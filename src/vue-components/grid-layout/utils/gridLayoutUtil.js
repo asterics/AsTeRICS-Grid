@@ -328,6 +328,9 @@ gridLayoutUtil.getElementById = function(elements = [], id) {
  * @param position object with .x and .y values
  */
 gridLayoutUtil.elementsCanBeInsertedAt = function(gridData, elements = [], position) {
+    if (!position || position.x === undefined || position.y === undefined) {
+        return false;
+    }
     elements = JSON.parse(JSON.stringify(elements));
     elements = gridLayoutUtil.normalizePositions(elements);
     let occupiedMatrix = getOccupiedMatrix(gridData.gridElements);
@@ -369,8 +372,11 @@ function getOccupiedMatrix(gridElements, options = {}) {
         gridLayoutUtil.getHeight(gridElements, options.gridHeight),
         0);
     for (let element of gridElements) {
-        for (let i = element.x; i < element.x + element.width; i++) {
-            for (let j = element.y; j < element.y + element.height; j++) {
+        let startX = Math.max(0, element.x || 0);
+        let startY = Math.max(0, element.y || 0);
+        for (let i = startX; i < element.x + element.width; i++) {
+            for (let j = startY; j < element.y + element.height; j++) {
+                log.warn(i,j)
                 occupiedMatrix[i][j]++;
             }
         }
