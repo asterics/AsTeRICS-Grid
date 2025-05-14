@@ -145,7 +145,7 @@
             </div>
         </div>
         <div class="srow">
-            <accordion :acc-label="$t('manageWebradioList')" :acc-open="gridData.webRadios.length === 0 ? 'true' : 'false'" class="twelve columns">
+            <accordion :acc-label="$t('manageWebradioList')" :acc-open="gridData.webRadios.length === 0" class="twelve columns">
                 <radio-list-selector :grid-data="gridData"></radio-list-selector>
             </accordion>
         </div>
