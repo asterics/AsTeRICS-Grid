@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid px-0">
+    <div class="container-fluid px-0" v-if="metadata">
         <div class="row">
             <label class="col-12 col-md-4 normal-text" for="podcastAction">{{ $t(GridActionPodcast.getModelName()) }}</label>
             <div class="col-12 col-md-7">
@@ -13,7 +13,7 @@
             <div class="col-12 col-md-7">
                 <select id="podcastToPlay" v-model="action.podcastGuid" class="col-12">
                     <option :value="undefined">{{ $t('automaticLastPlayed') }}</option>
-                    <option v-for="podcast in podcasts" :value="podcast.guid">{{ podcast.title }}</option>
+                    <option v-for="podcast in metadata.integrations.podcasts" :value="podcast.guid">{{ podcast.title }}</option>
                 </select>
             </div>
         </div>
@@ -23,6 +23,11 @@
                 <input class="col-12" id="stepSeconds" type="number" v-model.number="action.stepSeconds">
             </div>
         </div>
+        <div class="row">
+            <accordion :acc-label="$t('managePodcasts')" :acc-open="metadata.integrations.podcasts.length === 0" class="col-12">
+                <podcast-list-selector @input="selectedPodcastsChanged()" v-model="metadata.integrations.podcasts"></podcast-list-selector>
+            </accordion>
+        </div>
     </div>
 </template>
 
@@ -30,8 +35,11 @@
 
 import { GridActionPodcast } from '../../../js/model/GridActionPodcast';
 import { dataService } from '../../../js/service/data/dataService';
+import PodcastListSelector from '../../components/podcastListSelector.vue';
+import Accordion from '../../components/accordion.vue';
 
 export default {
+    components: { Accordion, PodcastListSelector },
     props: ['action'],
     data: function () {
         return {
@@ -39,15 +47,11 @@ export default {
             metadata: null
         }
     },
-    computed: {
-        podcasts() {
-            if(!this.metadata) {
-                return [];
-            }
-            return this.metadata.integrations.podcasts;
-        }
-    },
     methods: {
+        selectedPodcastsChanged() {
+            this.$forceUpdate();
+            dataService.saveMetadata(this.metadata);
+        }
     },
     async mounted() {
         this.metadata = await dataService.getMetadata();
