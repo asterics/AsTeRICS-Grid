@@ -25,7 +25,7 @@
         </div>
         <div class="row">
             <accordion :acc-label="$t('managePodcasts')" :acc-open="metadata.integrations.podcasts.length === 0" class="col-12">
-                <podcast-list-selector @input="selectedPodcastsChanged()" v-model="metadata.integrations.podcasts"></podcast-list-selector>
+                <podcast-list-selector @input="selectedPodcastsChanged()" v-model="metadata.integrations.podcasts" :grid-data="gridData"></podcast-list-selector>
             </accordion>
         </div>
     </div>
@@ -40,7 +40,7 @@ import Accordion from '../../components/accordion.vue';
 
 export default {
     components: { Accordion, PodcastListSelector },
-    props: ['action'],
+    props: ['action', 'gridData'],
     data: function () {
         return {
             GridActionPodcast: GridActionPodcast,

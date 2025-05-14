@@ -151,7 +151,7 @@
         </div>
     </div>
     <div v-if="action.modelName == 'GridActionPodcast'">
-        <edit-podcast-action :action="action"></edit-podcast-action>
+        <edit-podcast-action :action="action" :grid-data="gridData"></edit-podcast-action>
     </div>
     <div v-if="action.modelName === 'GridActionYoutube'">
         <div class="srow">
