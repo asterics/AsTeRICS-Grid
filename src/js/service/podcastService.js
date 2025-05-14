@@ -17,28 +17,23 @@ podcastService.doAction = async function (action) {
     switch (action.action) {
         case GridActionPodcast.actions.PLAY:
             await podcastService.playPodcast(action.podcastGuid);
+            await savePlayingData();
             break;
         case GridActionPodcast.actions.PAUSE:
-            webAudioUtil.pause();
+            await podcastService.pause();
+            await savePlayingData();
             break;
         case GridActionPodcast.actions.TOGGLE:
-            if (!nowPlayingEpisode || (action.podcastGuid && nowPlayingEpisode.podcastGuid !== action.podcastGuid)) {
-                await podcastService.playPodcast(action.podcastGuid);
-                return;
-            }
-            if (webAudioUtil.isPlaying()) {
-                webAudioUtil.pause();
-            } else if (webAudioUtil.isPaused()) {
-                webAudioUtil.resume();
-            } else {
-                await podcastService.playPodcast(action.podcastGuid);
-            }
+            await podcastService.toggle(action.podcastGuid);
+            await savePlayingData();
             break;
         case GridActionPodcast.actions.STEP_FORWARD:
             webAudioUtil.seek(action.stepSeconds);
+            await savePlayingData();
             break;
         case GridActionPodcast.actions.STEP_BACKWARD:
             webAudioUtil.seek(action.stepSeconds * (-1));
+            await savePlayingData();
             break;
         case GridActionPodcast.actions.NEXT_EPISODE:
             break;
@@ -51,27 +46,57 @@ podcastService.doAction = async function (action) {
         case GridActionPodcast.actions.VOLUME_MUTE:
             break;
     }
-    await savePlayingData();
 };
 
 podcastService.playPodcast = async function(podcastGuid) {
+    if (webAudioUtil.isPlaying()) {
+        await savePlayingData();
+    }
     let episode = getLastPlayedEpisode(podcastGuid);
     if (!episode) {
         let episodes = await fetchEpisodes(podcastGuid);
         episode = episodes[0];
     }
-    podcastService.playEpisode(episode);
+    await podcastService.playEpisode(episode);
 };
 
-podcastService.playEpisode = function(podcastEpisode) {
+podcastService.playEpisode = async function(podcastEpisode) {
     if (!podcastEpisode) {
         return;
     }
     nowPlayingEpisode = podcastEpisode;
-    webAudioUtil.playUrl(podcastEpisode.enclosureUrl);
+    await webAudioUtil.playUrl(podcastEpisode.enclosureUrl);
+    webAudioUtil.setCurrentTime(podcastEpisode.lastPlayPosition);
 };
 
-podcastService.getPodcasts = async function(searchTerm) {
+/**
+ * starts or stops a podcast by given guid. if a podcast episode from the given guid is currently played, this
+ * episode is started / stopped, otherwise the latest episode is used.
+ * @param podcastGuid
+ * @returns {*|null} null, if now paused, the playing podcast guid, if now playing
+ */
+podcastService.toggle = async function(podcastGuid) {
+    if (!nowPlayingEpisode || (podcastGuid && nowPlayingEpisode.podcastGuid !== podcastGuid)) {
+        await podcastService.playPodcast(podcastGuid);
+        return podcastGuid;
+    }
+    if (webAudioUtil.isPlaying()) {
+        await podcastService.pause();
+        return null;
+    } else if (webAudioUtil.isPaused()) {
+        webAudioUtil.resume();
+        return podcastGuid;
+    } else {
+        await podcastService.playPodcast(podcastGuid);
+        return podcastGuid;
+    }
+};
+
+podcastService.pause = async function() {
+    webAudioUtil.pause();
+};
+
+podcastService.search = async function(searchTerm) {
     if (!searchTerm) {
         return [];
     }
@@ -83,7 +108,6 @@ podcastService.getPodcasts = async function(searchTerm) {
         return [];
     }
     let returnObject = await response.json() || {};
-    log.warn(returnObject);
     return PodcastInfo.parseListFromApi(returnObject.feeds);
 };
 
@@ -109,7 +133,7 @@ async function savePlayingData() {
     if (!nowPlayingEpisode) {
         return;
     }
-    let currentPodcast = metadata.integrations.podcasts.filter(p => p.guid === nowPlayingEpisode.podcastGuid);
+    let currentPodcast = metadata.integrations.podcasts.find(p => p.guid === nowPlayingEpisode.podcastGuid) || {};
     currentPodcast.lastPlayedEpisode = nowPlayingEpisode;
     currentPodcast.lastPlayedEpisode.lastPlayedTime = new Date().getTime();
     currentPodcast.lastPlayedEpisode.lastPlayPosition = webAudioUtil.getPlayPosition();
@@ -143,9 +167,10 @@ async function fetchEpisodes(podcastGuid, options = {}) {
 
 function getLastPlayedEpisode(podcastGuid = '') {
     let podcastInfo = getPodcastInfo(podcastGuid);
-    if (podcastInfo) {
+    if (podcastInfo && podcastInfo.lastPlayedEpisode && podcastInfo.lastPlayedEpisode.guid) {
         return podcastInfo.lastPlayedEpisode;
     }
+    return null;
 }
 
 /**
@@ -157,7 +182,6 @@ function getPodcastInfo(podcastGuid) {
     if (podcastGuid) {
         return metadata.integrations.podcasts.find(p => p.guid === podcastGuid);
     } else {
-        log.warn("get latest", metadata.integrations.podcasts)
         let sorted = metadata.integrations.podcasts.sort((a, b) => b.currentEpisode.lastPlayedTime - a.currentEpisode.lastPlayedTime);
         return sorted[0];
     }
