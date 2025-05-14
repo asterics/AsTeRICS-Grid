@@ -1,5 +1,4 @@
 import { matrixAdapter } from './matrixAdapter';
-import * as Matrix from 'matrix-js-sdk';
 import $ from '../../externals/jquery';
 import { constants } from '../../util/constants';
 import { MatrixMessage } from '../../model/MatrixMessage';
@@ -12,6 +11,8 @@ let matrixService = {};
 
 matrixService.LOGIN_RESULTS = matrixAdapter.LOGIN_RESULTS;
 const MEGOLM_ENCRYPTION_ALGORITHM = "m.megolm.v1.aes-sha2";
+
+let MatrixLib = null;
 
 let _messageCallback = null;
 let _roomChangeCallback = null;
@@ -54,7 +55,7 @@ matrixService.sendMessage = async function(roomId, message) {
             body: message,
             msgtype: 'm.text'
         };
-        client.sendEvent(roomId, Matrix.EventType.RoomMessage, messageContent, '', (err, res) => {
+        client.sendEvent(roomId, (await Matrix()).EventType.RoomMessage, messageContent, '', (err, res) => {
             console.log(err);
         });
     });
@@ -79,7 +80,7 @@ matrixService.sendImage = async function(roomId, imageCanvas, imageName = 'image
                 h: imageCanvas.height
             }
         };
-        client.sendEvent(roomId, Matrix.EventType.RoomMessage, imageMessage, '', (err, res) => {
+        client.sendEvent(roomId, (await Matrix()).EventType.RoomMessage, imageMessage, '', (err, res) => {
             console.log(err);
         });
     });
@@ -143,12 +144,13 @@ matrixService.getMessageEvents = async function(roomId, pastMessages = 10) {
 
         // decrypt
         for (const event of timeline.getEvents()) {
-            if (event.getType() === Matrix.EventType.RoomMessageEncrypted) {
+            if (event.getType() === (await Matrix()).EventType.RoomMessageEncrypted) {
                 await client.decryptEventIfNeeded(event);
             }
         }
 
-        let events = timeline.getEvents().filter(e => e.getType() === Matrix.EventType.RoomMessage && !e.isDecryptionFailure());
+        let MatrixLib = (await Matrix());
+        let events = timeline.getEvents().filter(e => e.getType() === MatrixLib.EventType.RoomMessage && !e.isDecryptionFailure());
         return await matrixEventsToMessage(events);
     });
 }
@@ -164,7 +166,7 @@ matrixService.getFullUsername = function(username) {
 async function timelineCallback(event, room, toStartOfTimeline) {
     console.log(event.event);
     switch (event.getType()) {
-        case Matrix.EventType.RoomMessage:
+        case (await Matrix()).EventType.RoomMessage:
             console.log(`📩 New message: ${event.getContent().body}`);
             if (_messageCallback) {
                 _messageCallback(await matrixEventToMessage(event));
@@ -221,6 +223,20 @@ async function matrixEventToMessage(event) {
         }
         return message;
     });
+}
+
+/**
+ * loads matrix library async - only load if needed.
+ * Contains some operators like ?. and ?? which causes app failing to load at iOS 12 devices
+ * @returns {Promise<{readonly default: any}|*>}
+ * @constructor
+ */
+async function Matrix() {
+    if (MatrixLib) {
+        return MatrixLib;
+    }
+    MatrixLib = await import('matrix-js-sdk');
+    return MatrixLib;
 }
 
 $(document).on(constants.EVENT_USER_CHANGED, () => {

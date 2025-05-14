@@ -2,7 +2,6 @@ import { dataService } from '../data/dataService';
 import $ from '../../externals/jquery';
 import { constants } from '../../util/constants';
 import { localStorageService } from '../data/localStorageService';
-import * as Matrix from 'matrix-js-sdk';
 import { MatrixConfigLocal } from '../../model/MatrixConfigLocal';
 import { logger } from 'matrix-js-sdk/lib/logger';
 import { util } from '../../util/util';
@@ -22,6 +21,8 @@ matrixAdapter.LOGIN_RESULTS = {
     NETWORK_ERROR: "NETWORK_ERROR",
     UNKNOWN_ERROR: "UNKNOWN_ERROR"
 }
+
+let MatrixLib = null;
 
 let _syncConfig = null;
 let _localConfig = null;
@@ -71,7 +72,7 @@ matrixAdapter.login = async function(syncConfig = null) {
         logger.disableAll(true);
         if (!_localConfig.accessToken || !_localConfig.deviceId) {
             log.info('matrix: initial login using username and password');
-            let tempClient = Matrix.createClient({
+            let tempClient = (await Matrix()).createClient({
                 baseUrl: _syncConfig.homeserver
             });
             try {
@@ -134,7 +135,7 @@ matrixAdapter.login = async function(syncConfig = null) {
                         _loggedInDevice = _localConfig.deviceId;
                         _matrixClient.on('Room.timeline', async (event, room, toStartOfTimeline) => {
                             if (_timelineCallback) {
-                                if(event.getType() === Matrix.EventType.RoomMessageEncrypted) {
+                                if(event.getType() === (await Matrix()).EventType.RoomMessageEncrypted) {
                                     await _matrixClient.decryptEventIfNeeded(event);
                                 }
                                 _timelineCallback(event);
@@ -300,13 +301,13 @@ async function getAccessTokenClient(localConfig) {
     if (!localConfig || !localConfig.accessToken || !localConfig.deviceId || !localConfig.user) {
         return null;
     }
-    const store = new Matrix.IndexedDBStore({
+    const store = new (await Matrix()).IndexedDBStore({
         indexedDB: window.indexedDB,
         dbName: getDBName(localConfig)
     });
     await store.startup();
 
-    return Matrix.createClient({
+    return (await Matrix()).createClient({
         baseUrl: localConfig.homeserver,
         accessToken: localConfig.accessToken,
         userId: getFullUserByConfig(localConfig),
@@ -368,6 +369,20 @@ async function onUserDeleted(event, username, localSettings) {
     if (localSettings && localSettings.integrations && localSettings.integrations.matrixConfig) {
         await matrixAdapter.logout(localSettings.integrations.matrixConfig, true);
     }
+}
+
+/**
+ * loads matrix library async - only load if needed.
+ * Contains some operators like ?. and ?? which causes app failing to load at iOS 12 devices
+ * @returns {Promise<{readonly default: any}|*>}
+ * @constructor
+ */
+async function Matrix() {
+    if (MatrixLib) {
+        return MatrixLib;
+    }
+    MatrixLib = await import('matrix-js-sdk');
+    return MatrixLib;
 }
 
 $(document).on(constants.EVENT_USER_DELETED, onUserDeleted);
