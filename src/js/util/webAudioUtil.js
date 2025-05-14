@@ -5,29 +5,35 @@ let videoPlayer = document.getElementById('videoPlayer');
 
 let playingVideo = false;
 
-webAudioUtil.playUrl = function (url) {
+webAudioUtil.playUrl = async function (url) {
     if (!url) {
         return;
     }
-    if (url.indexOf('.m3u8') !== -1) {
-        playingVideo = true;
-        videoPlayer.src = url;
-        import(/* webpackChunkName: "hls.js" */ 'hls.js').then((Hls) => {
-            Hls = Hls.default;
-            if (Hls.isSupported()) {
-                let hls = new Hls();
-                hls.loadSource(radioWithUrl.radioUrl);
-                hls.attachMedia(videoPlayer);
-                hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                    videoPlayer.play();
-                });
-            }
-        });
-    } else {
-        playingVideo = false;
-        player.src = url;
-        player.play();
-    }
+    return new Promise(resolve => {
+        if (url.indexOf('.m3u8') !== -1) {
+            playingVideo = true;
+            videoPlayer.src = url;
+            import(/* webpackChunkName: "hls.js" */ 'hls.js').then((Hls) => {
+                Hls = Hls.default;
+                if (Hls.isSupported()) {
+                    let hls = new Hls();
+                    hls.loadSource(radioWithUrl.radioUrl);
+                    hls.attachMedia(videoPlayer);
+                    hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                        videoPlayer.play();
+                        resolve();
+                    });
+                } else {
+                    resolve();
+                }
+            });
+        } else {
+            playingVideo = false;
+            player.src = url;
+            player.play();
+            resolve();
+        }
+    })
 };
 
 webAudioUtil.pause = function() {
