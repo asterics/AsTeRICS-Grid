@@ -5,7 +5,7 @@
             <button class="six columns" :disabled="gridData.webRadios.length === 0" @click="addAllRadioElements">{{ $t('createGridElementsForWebradios') }}</button>
         </div>
         <media-list v-model="gridData.webRadios"
-                    img-prop="faviconUrl" id-prop="radioId"
+                    img-prop="faviconUrl" id-prop="radioId" :label-fn="radio => radio.radioName"
                     :action-config-prop="{canSelect: false, canMoveUp: true, canRemove: true}"
                     :playingMedia="playingRadio"
                     @togglePlay="togglePlay">
@@ -14,7 +14,7 @@
         <div v-if="gridData.webRadios.length === 0">{{ $t('noSelectedRadioStationsUseSearchBar') }}</div>
 
         <div class="srow">
-            <h3 class="four columns">{{ $t('webradioSearch') }}</h3>
+            <h3 class="four columns mb-0">{{ $t('webradioSearch') }}</h3>
             <span id="poweredby" class="eight columns">
                 <i18n path="radioSearchPoweredBy" tag="span">
                     <template v-slot:radioLink>
@@ -23,11 +23,13 @@
                 </i18n>
             </span>
         </div>
-        <search-bar v-model="webradioSearch" @input="searchRadios" :debounce-time="500"></search-bar>
+        <div class="srow">
+            <search-bar v-model="webradioSearch" @input="searchRadios" :debounce-time="500"></search-bar>
+        </div>
         <div class="srow">
             <media-list :media-elems="webradioSearchResults"
                         v-model="gridData.webRadios"
-                        img-prop="faviconUrl" id-prop="radioId"
+                        img-prop="faviconUrl" id-prop="radioId" :label-fn="radio => radio.radioName"
                         @togglePlay="togglePlay"
                         :playingMedia="playingRadio"
                         :enableNext="hasMoreWebradios"
@@ -37,6 +39,7 @@
             </media-list>
             <div v-show="webradioSearchResults.length === 0 && webradioSearch && !webradioSearching && !webradioSearchError">{{ $t('noRadioStationsFoundTryAnOtherSearchTerm') }}</div>
             <div v-show="webradioSearchError"><span>{{ $t('searchingFailedNoConnectionToInternet') }}</span> <a href="javascript:;" @click="searchRadios">{{ $t('retry') }}</a></div>
+            <div v-show="webradioSearching">{{ $t('searching') }} <i class="fas fa-spinner fa-spin"></i></div>
         </div>
     </div>
 </template>
@@ -62,7 +65,6 @@
             return {
                 webradioSearchResults: [],
                 webradioSearch: null,
-                webradioService: webradioService,
                 webradioStartIndex: 0,
                 webradioSearching: false,
                 webradioSearchError: false,
