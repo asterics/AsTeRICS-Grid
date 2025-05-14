@@ -1,10 +1,10 @@
 <template>
     <div>
         <ul class="mediaList">
-            <li v-for="(mediaElem, index) in paginatedElems">
+            <li v-for="(mediaElem, index) in paginatedElems" :title="titleProp ? mediaElem[titleProp] : ''">
                 <div class="mediaListItem">
                     <img :src="mediaElem[imgProp]" alt=""/>
-                    <div class="mediaElemLabel">{{mediaElem.radioName}}</div>
+                    <div class="mediaElemLabel">{{ labelFn ? labelFn(mediaElem) : '' }}</div>
                     <div class="mediaElemButtons">
                         <button v-if="actionConfig.canMoveUp"
                                 @click="elemUp(mediaElem)"
@@ -47,6 +47,8 @@
             mediaElems: Array, // search result list
             actionConfigProp: Object,
             imgProp: String,
+            titleProp: String,
+            labelFn: Function,
             idProp: {
                 type: String,
                 default: "id"
