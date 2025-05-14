@@ -394,7 +394,9 @@
   "stop": "Stop",
   "up": "Up",
   "noSelectedRadioStationsUseSearchBar": "No selected radio stations, use search bar below to add radio stations.",
+  "noSelectedPodcastsUseSearchBar": "No selected podcasts, use search bar below to add podcasts.",
   "webradioSearch": "Webradio search",
+  "podcastSearch": "Podcast search",
   "searchTerm": "Search term",
   "select": "Select",
   "noRadioStationsFoundTryAnOtherSearchTerm": "No radio stations found, try an other search term.",
@@ -1258,5 +1260,7 @@
   "goToMatrixSettingsToConfigure": "Go to \"Settings → Integrations → Matrix messenger\" to set up matrix.",
   "matrixMessengerNotLoggedInOrNoRoom": "Matrix messenger not logged in or no rooms configured.",
   "autoSpeakIncomingMessages": "Automatically speak incoming messages",
-  "podcastToPlay": "Podcast to play"
+  "podcastToPlay": "Podcast to play",
+  "managePodcasts": "Manage podcasts",
+  "selectedPodcasts": "Selected podcasts"
 }
