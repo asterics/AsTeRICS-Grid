@@ -32,6 +32,7 @@ import { GridElementLive } from '../model/GridElementLive';
 import { GridActionYoutube } from '../model/GridActionYoutube';
 import { GridActionWebradio } from '../model/GridActionWebradio';
 import { matrixAppService } from './matrixMessenger/matrixAppService';
+import { podcastService } from './podcastService';
 
 let actionService = {};
 
@@ -252,6 +253,9 @@ async function doAction(gridElement, action, options = {}) {
             break;
         case 'GridActionYoutube':
             youtubeService.doAction(action);
+            break;
+        case 'GridActionPodcast':
+            await podcastService.doAction(action);
             break;
         case 'GridActionChangeLang':
             let language = action.language;
