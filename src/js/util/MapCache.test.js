@@ -91,3 +91,20 @@ test('MapCache - Test 9', () => {
     expect(cache.get(KEY) instanceof Constructor).toBeFalsy();
     expect(cache.get(KEY)).toBe(VALUE);
 });
+
+test('MapCache - Test 10', async () => {
+    let cache = new MapCache({
+        ttlMs: 500
+    });
+    cache.set(KEY, VALUE);
+    expect(cache.has(KEY)).toBeTruthy();
+    expect(cache.get(KEY)).toBe(VALUE);
+    await sleep(550);
+    expect(cache.has(KEY)).toBeFalsy();
+    expect(cache.get(KEY)).toBe(null);
+});
+
+
+async function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

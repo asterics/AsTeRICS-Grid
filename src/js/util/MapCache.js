@@ -4,12 +4,15 @@ import { log } from './log';
  * simple cache, storing key-value pairs while ensuring that
  * 1) stored values cannot be changed from any other point of execution -> stored as JSON string
  * 2) each returned value is a deep copy of the original value -> also prevents errors of remotely changed objects
+ * @param options
+ * @param options.ttlMs optional time to live in milliseconds for cached elements, cache entries older are not returned and deleted
  * @constructor
  */
-function MapCache() {
+function MapCache(options = {}) {
     let thiz = this;
     let _cache = {};
     let _objectTypeMap = {};
+    let _setTimes = {};
 
     /**
      * stores a key-value pair
@@ -17,7 +20,7 @@ function MapCache() {
      * @param value the value, any JSON-serializable object
      * @param objectType optional constructor function, if defined the MapCache.get() will return new constructor(value)
      */
-    thiz.set = function (key, value, objectType) {
+    thiz.set = function (key, value, objectType = null) {
         let firstValue = value instanceof Array && value.length > 1 ? value[0] : value;
         if (typeof key !== 'string') {
             log.warn('cache-key has to be a string, aborting.');
@@ -36,6 +39,7 @@ function MapCache() {
             return;
         }
         _cache[key] = JSON.stringify(value);
+        _setTimes[key] = new Date().getTime();
         delete _objectTypeMap[key];
         if (objectType) {
             _objectTypeMap[key] = objectType;
@@ -56,6 +60,10 @@ function MapCache() {
             return;
         }
         if (!_cache[key]) {
+            return null;
+        }
+        if (isOutdated(key)) {
+            thiz.clear(key);
             return null;
         }
         let value = JSON.parse(_cache[key]);
@@ -89,6 +97,9 @@ function MapCache() {
             log.warn('cache-key has to be a string, aborting.');
             return false;
         }
+        if (isOutdated(key)) {
+            thiz.clear(key);
+        }
         return !!_cache[key];
     };
 
@@ -100,6 +111,7 @@ function MapCache() {
         if (key) {
             delete _cache[key];
             delete _objectTypeMap[key];
+            delete _setTimes[key];
         }
     };
 
@@ -113,6 +125,10 @@ function MapCache() {
 
     function instantiate(constructor, param) {
         return constructor ? new constructor(param) : param;
+    }
+
+    function isOutdated(key) {
+        return options.ttlMs && _setTimes[key] && new Date().getTime() - _setTimes[key] > options.ttlMs;
     }
 }
 
