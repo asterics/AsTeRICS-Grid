@@ -3,11 +3,15 @@ import { GridActionPodcast } from '../model/GridActionPodcast';
 import { PodcastEpisode, PodcastInfo } from '../model/PodcastInfo';
 import { webAudioUtil } from '../util/webAudioUtil';
 import { constants } from '../util/constants';
+import { MapCache } from '../util/MapCache';
 
 let podcastService = {};
 
 let metadata = null;
 let nowPlayingEpisode = null;
+let cache = new MapCache({
+    ttlMs: 30 * 60 * 1000 // 30 minutes
+});
 
 podcastService.doAction = async function (action) {
     if (action.performAfterNav) {
@@ -100,6 +104,9 @@ podcastService.search = async function(searchTerm) {
     if (!searchTerm) {
         return [];
     }
+    if (cache.has(searchTerm)) {
+        return cache.get(searchTerm);
+    }
     let params = new URLSearchParams();
     params.set('endpoint', 'search;byterm');
     params.set('q', searchTerm);
@@ -108,6 +115,7 @@ podcastService.search = async function(searchTerm) {
         return [];
     }
     let returnObject = await response.json() || {};
+    cache.set(searchTerm, returnObject.feeds);
     return PodcastInfo.parseListFromApi(returnObject.feeds);
 };
 
@@ -151,7 +159,9 @@ async function fetchEpisodes(podcastGuid, options = {}) {
     if (!podcastGuid) {
         return [];
     }
-    options.max = options.max || 10;
+    if (cache.has(podcastGuid)) {
+        return cache.get(podcastGuid);
+    }
     let params = new URLSearchParams();
     params.set('endpoint', 'episodes;bypodcastguid');
     params.set('guid', podcastGuid);
@@ -161,6 +171,7 @@ async function fetchEpisodes(podcastGuid, options = {}) {
         return [];
     }
     let returnObject = await response.json() || {};
+    cache.set(podcastGuid, returnObject.items);
     return PodcastEpisode.parseListFromApi(returnObject.items);
 }
 
