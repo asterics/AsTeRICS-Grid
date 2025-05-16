@@ -50,6 +50,7 @@ export class PodcastEpisode {
      * @param {string} data.guid
      * @param {string} data.podcastGuid
      * @param {string} data.datePublished
+     * @param {string} data.title
      * @param {string} data.description
      * @param {string} data.enclosureUrl url containing the audio data
      * @param {string} data.duration
@@ -60,6 +61,7 @@ export class PodcastEpisode {
         this.guid = data.guid;
         this.podcastGuid = data.podcastGuid;
         this.datePublished = data.datePublished;
+        this.title = data.title;
         this.description = data.description;
         this.enclosureUrl = data.enclosureUrl;
         this.duration = data.duration;
@@ -77,6 +79,7 @@ export class PodcastEpisode {
                 guid: item.guid,
                 podcastGuid: item.podcastGuid,
                 datePublished: item.datePublished,
+                title: item.title,
                 description: item.description,
                 enclosureUrl: item.enclosureUrl,
                 duration: item.duration
