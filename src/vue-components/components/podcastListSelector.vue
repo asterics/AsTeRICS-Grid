@@ -106,7 +106,7 @@
                         })],
                         image: image
                     });
-                    this.gridData.gridElements.push(newElement);
+                    this.gridData.gridElements.push(JSON.parse(JSON.stringify(newElement)));
                 }
             },
         },
