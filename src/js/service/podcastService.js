@@ -60,6 +60,21 @@ podcastService.doAction = async function (action) {
     }
 };
 
+podcastService.getState = function() {
+    let currentPodcast = getCurrentPodcast() || {};
+    let currentEpisode = nowPlayingEpisode || {};
+    let duration = currentEpisode.duration || 0;
+    let playPosition = webAudioUtil.getPlayPosition() || 0;
+    return {
+        podcastTitle: currentPodcast.title,
+        episodeTitle: currentEpisode.title,
+        currentSeconds: playPosition,
+        remainingSeconds: Math.max(0, duration - playPosition),
+        podcastDescription: currentPodcast.description,
+        episodeDescription: currentEpisode.description
+    }
+}
+
 podcastService.playPodcast = async function(podcastGuid) {
     if (webAudioUtil.isPlaying()) {
         await savePlayingData();

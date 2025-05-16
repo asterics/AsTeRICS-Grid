@@ -36,6 +36,15 @@
                 <input id="valuesToChooseFrom" type="text" class="col-12" v-model="gridElement.chooseValues" :placeholder="$t('egChooseValues')">
             </div>
         </div>
+        <div class="row" v-if="gridElement.mode === GridElementLive.MODE_PODCAST_STATE">
+            <label class="col-sm-4" for="appState">{{ $t('MODE_PODCAST_STATE') }}</label>
+            <div class="col-sm-7">
+                <select class="col-12" id="appState" v-model="gridElement.state">
+                    <option :value="undefined" disabled selected hidden="">{{ $t('pleaseSelect') }}</option>
+                    <option v-for="state in GridElementLive.PODCAST_STATES" :value="state">{{ state | translate }}</option>
+                </select>
+            </div>
+        </div>
         <div class="row" v-if="[GridElementLive.MODE_ACTION_RESULT, GridElementLive.MODE_RANDOM].includes(gridElement.mode)">
             <label class="col-sm-4" for="updateInterval">{{ $t('updateIntervalSeconds') }}</label>
             <div class="col-sm-7">
