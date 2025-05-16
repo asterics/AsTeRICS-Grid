@@ -28,6 +28,7 @@ GridActionPodcast.actions = {
     TOGGLE: 'TOGGLE',
     STEP_FORWARD: 'STEP_FORWARD',
     STEP_BACKWARD: 'STEP_BACKWARD',
+    LATEST_EPISODE: 'LATEST_EPISODE',
     NEXT_EPISODE: 'NEXT_EPISODE',
     PREV_EPISODE: 'PREV_EPISODE',
     VOLUME_UP: 'VOLUME_UP',
@@ -36,7 +37,7 @@ GridActionPodcast.actions = {
 };
 
 GridActionPodcast.actionsWithPodcastSelect = [
-    GridActionPodcast.actions.PLAY, GridActionPodcast.actions.PAUSE, GridActionPodcast.actions.TOGGLE
+    GridActionPodcast.actions.PLAY, GridActionPodcast.actions.PAUSE, GridActionPodcast.actions.TOGGLE, GridActionPodcast.actions.LATEST_EPISODE
 ]
 
 GridActionPodcast.actionsWithStepSeconds = [
