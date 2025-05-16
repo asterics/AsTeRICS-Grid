@@ -72,7 +72,7 @@ webAudioUtil.seek = function(seconds = 30) {
     }
 };
 
-webAudioUtil.setCurrentTime = function(seconds) {
+webAudioUtil.setCurrentTime = function(seconds = 0) {
     if (playingVideo) {
         videoPlayer.currentTime = seconds;
     } else {
