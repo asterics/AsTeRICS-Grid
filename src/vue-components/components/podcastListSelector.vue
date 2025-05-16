@@ -10,8 +10,8 @@
                     :label-fn="podcast => `${podcast.title} (${podcast.author})`"
                     :action-config-prop="{canSelect: false, canMoveUp: true, canRemove: true}"
                     :playingMedia="playingPodcast"
-                    @togglePlay="togglePlay">
-
+                    @togglePlay="togglePlay"
+                    :internal-pagination="true" :items-per-page="15">
         </media-list>
         <div v-if="selectedPodcasts.length === 0">{{ $t('noSelectedPodcastsUseSearchBar') }}</div>
 
@@ -36,7 +36,8 @@
                         img-prop="image" id-prop="guid" title-prop="description"
                         :label-fn="podcast => `${podcast.title} (${podcast.author})`"
                         @togglePlay="togglePlay"
-                        :playingMedia="playingPodcast">
+                        :playingMedia="playingPodcast"
+                        :internal-pagination="true">
             </media-list>
             <div v-show="searchResults.length === 0 && searchTerm && !isSearching && !searchError">{{ $t('noRadioStationsFoundTryAnOtherSearchTerm') }}</div>
             <div v-show="searchError"><span>{{ $t('searchingFailedNoConnectionToInternet') }}</span> <a href="javascript:;" @click="searchPodcasts">{{ $t('retry') }}</a></div>
