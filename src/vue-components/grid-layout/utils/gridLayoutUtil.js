@@ -376,7 +376,6 @@ function getOccupiedMatrix(gridElements, options = {}) {
         let startY = Math.max(0, element.y || 0);
         for (let i = startX; i < element.x + element.width; i++) {
             for (let j = startY; j < element.y + element.height; j++) {
-                log.warn(i,j)
                 occupiedMatrix[i][j]++;
             }
         }
