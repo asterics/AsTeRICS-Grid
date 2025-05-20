@@ -400,9 +400,18 @@ util.arrayToPrintable = function (array) {
     return JSON.stringify(array).replaceAll('[', '').replaceAll(']', '').replaceAll('"', '');
 };
 
-util.mapRange = function (number, inMin, inMax, outMin, outMax) {
-    return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
-}
+util.mapRange = function(value, fromMin, fromMax, toMin, toMax) {
+    const fromSpan = fromMax - fromMin;
+    const toSpan = toMax - toMin;
+
+    if (fromSpan === 0) {
+        console.warn('Invalid input range: fromMin and fromMax cannot be the same');
+        return 0;
+    }
+
+    const scaled = (value - fromMin) / fromSpan;
+    return toMin + (scaled * toSpan);
+};
 
 util.fetchWithTimeout = function (url, timeoutMs) {
     // see https://stackoverflow.com/a/50101022/9219743
