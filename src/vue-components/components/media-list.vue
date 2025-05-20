@@ -3,7 +3,7 @@
         <ul class="mediaList">
             <li v-for="(mediaElem, index) in paginatedElems" :title="titleProp ? mediaElem[titleProp] : ''">
                 <div class="mediaListItem">
-                    <img :src="mediaElem[imgProp]" alt=""/>
+                    <img :src="mediaElem[imgProp]" :key="mediaElem[imgProp]" alt=""/>
                     <div class="mediaElemLabel">{{ labelFn ? labelFn(mediaElem) : '' }}</div>
                     <div class="mediaElemButtons">
                         <button v-if="actionConfig.canMoveUp"
