@@ -8,15 +8,15 @@
                     <div class="mediaElemButtons">
                         <button v-if="actionConfig.canMoveUp"
                                 @click="elemUp(mediaElem)"
-                                :disabled="index === 0">
+                                :disabled="isFirstElem(mediaElem)">
                             <span class="hide-mobile">{{ $t('up') }}</span> <i class="fas fa-arrow-up"></i>
                         </button>
                         <button v-if="actionConfig.canPlay"
                                 @click="emitTogglePlay(mediaElem)">
-                            <span v-if="(playingMedia && playingMedia[idProp]) ? (playingMedia[idProp] !== mediaElem[idProp]) : (playingMedia !== mediaElem)">
+                            <span v-if="!elemsEqual(playingMedia, mediaElem)">
                                 <span class="hide-mobile">{{ $t('play') }} </span><i class="fas fa-play"></i>
                             </span>
-                            <span v-if="(playingMedia && playingMedia[idProp]) ? (playingMedia[idProp] === mediaElem[idProp]) : (playingMedia === mediaElem)">
+                            <span v-if="elemsEqual(playingMedia, mediaElem)">
                                 <span class="hide-mobile">{{ $t('stop') }} </span><i class="fas fa-pause"></i>
                             </span>
                         </button>
@@ -26,7 +26,7 @@
                         </button>
                         <button v-if="actionConfig.canSelect"
                                 @click="addMediaElem(mediaElem)"
-                                :disabled="value && Array.isArray(value) ? value.includes(mediaElem) || value.find(elem => elem[idProp] && elem[idProp] === mediaElem[idProp]) : false">
+                                :disabled="value && Array.isArray(value) ? !!value.find(elem => elemsEqual(elem, mediaElem)) : false">
                             <span class="hide-mobile">{{ $t('select') }}</span> <i class="fas fa-plus"></i>
                         </button>
                     </div>
@@ -113,6 +113,16 @@
             }
         },
         methods: {
+            isFirstElem(elem) {
+                let first = this.listElems[0] || {};
+                return this.elemsEqual(elem, first);
+            },
+            elemsEqual(elem1, elem2) {
+                if (!elem1 || !elem2) {
+                    return false;
+                }
+                return this.idProp ? elem1[this.idProp] === elem2[this.idProp] : elem1 === elem2;
+            },
             emitTogglePlay(mediaElem) {
                 this.$emit('togglePlay', mediaElem);
             },
@@ -153,7 +163,7 @@
                 if (!this.value) {
                     return;
                 }
-                let newElems = this.value.filter(elem => elem !== mediaElem);
+                let newElems = this.value.filter(elem => !this.elemsEqual(elem, mediaElem));
                 this.emitChange(newElems);
             }
         },
