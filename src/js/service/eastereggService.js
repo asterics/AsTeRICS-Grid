@@ -2,16 +2,15 @@ import { MainVue } from '../vue/mainVue.js';
 import { util } from '../util/util';
 import { audioUtil } from '../util/audioUtil';
 import { Router } from '../router';
+import $ from '../externals/jquery';
+import { constants } from '../util/constants';
 
 let eastereggService = {};
+let speakCount = 0;
 let stop = false;
+const keyword10000 = 'asterics';
 
 eastereggService.checkTypedWord = function(lastTyped) {
-    if (!Router.isOnGridView()) {
-        return '';
-    }
-    stop = false;
-    const keyword10000 = 'asterics';
     if (keyword10000.startsWith(lastTyped.toLowerCase())) {
         if (keyword10000 === lastTyped.toLowerCase()) {
             lastTyped = '';
@@ -23,7 +22,23 @@ eastereggService.checkTypedWord = function(lastTyped) {
     return lastTyped;
 };
 
+function onSpeeakingText(event, text = '') {
+    if (text.toLowerCase().trim() === keyword10000) {
+        speakCount++;
+    } else {
+        speakCount = 0;
+    }
+    if (speakCount === 3) {
+        startEasteregg10000();
+        speakCount = 0;
+    }
+}
+
 async function startEasteregg10000() {
+    if (!Router.isOnGridView() || MainVue.searchModalOpened()) {
+        return;
+    }
+    stop = false;
     let gridElements = Array.from(document.getElementsByClassName('grid-item-content'));
     let colors = generateRainbowHslColors(gridElements.length);
     let originals = gridElements.map(e => e.style.backgroundColor);
@@ -93,5 +108,7 @@ async function colorElements(elements, colors, originals, options = {}) {
         }
     }
 }
+
+$(document).on(constants.EVENT_SPEAKING_TEXT, onSpeeakingText);
 
 export { eastereggService };

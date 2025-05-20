@@ -96,6 +96,7 @@ speechService.speak = function (textOrOject, options = {}) {
     if (text === lastSpeakText && new Date().getTime() - lastSpeakTime < options.minEqualPause) {
         return;
     }
+    $(document).trigger(constants.EVENT_SPEAKING_TEXT, [text]);
     lastSpeakText = text;
     lastSpeakTime = new Date().getTime();
     if (!options.dontStop) {

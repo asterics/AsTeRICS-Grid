@@ -85,6 +85,10 @@ MainVue.showSearchModal = function (options) {
     app.modalOptions = options || {};
 };
 
+MainVue.searchModalOpened = function() {
+    return app.showModal === modalTypes.MODAL_SEARCH;
+};
+
 MainVue.init = function () {
     Vue.use(VueI18n);
     return i18nService.getVueI18n().then((i18n) => {
