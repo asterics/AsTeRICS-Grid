@@ -340,9 +340,6 @@ gridUtil.getIdPathMap = function (startGraphElem) {
     for (let path of allPaths) {
         for (let i = 0; i < path.length; i++) {
             let elem = path[i];
-            if(elem.grid.label.es === "CASA - COCINA") {
-                log.warn(path.map(elem => elem.grid.label.es));
-            }
             if (!idPathMap[elem.grid.id] || idPathMap[elem.grid.id].length > i + 1) {
                 idPathMap[elem.grid.id] = path.slice(0, i + 1);
             }
