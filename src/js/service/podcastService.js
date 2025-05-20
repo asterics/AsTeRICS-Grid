@@ -210,10 +210,10 @@ podcastService.removePodcast = async function(podcastGuid) {
 }
 
 async function savePlayingData() {
-    if (!nowPlayingEpisode) {
+    let currentPodcast = getCurrentPodcast();
+    if (!currentPodcast) {
         return;
     }
-    let currentPodcast = getCurrentPodcast();
     currentPodcast.lastPlayedEpisode = nowPlayingEpisode;
     currentPodcast.lastPlayedEpisode.lastPlayedTime = new Date().getTime();
     currentPodcast.lastPlayedEpisode.lastPlayPosition = webAudioUtil.getPlayPosition();
