@@ -296,33 +296,36 @@ gridUtil.getGraphList = function (grids, removeGridId, orderByName) {
  *                            [startElem.grid, otherChild, ...], ...]
  */
 gridUtil.getAllPaths = function (startGraphElem, paths, currentPath, existingPathEndsMap = {}) {
-    let MAX_PATHS_TO_SAME_GRID = 3;
+    let MAX_PATHS_TO_SAME_GRID = 1;
     if (!startGraphElem) {
         return [];
     }
     paths = paths || [];
     currentPath = currentPath || [];
     if (currentPath.includes(startGraphElem)) {
-        paths.push(currentPath);
-        let lastId = currentPath[currentPath.length - 1].grid.id;
-        existingPathEndsMap[lastId] = existingPathEndsMap[lastId] ? existingPathEndsMap[lastId] + 1 : 1;
+        addPath();
         return paths;
     }
     currentPath.push(startGraphElem);
     if (startGraphElem.children.length === 0) {
-        paths.push(currentPath);
-        let lastId = currentPath[currentPath.length - 1].grid.id;
-        existingPathEndsMap[lastId] = existingPathEndsMap[lastId] ? existingPathEndsMap[lastId] + 1 : 1;
+        addPath();
         return paths;
     }
     let lastId = currentPath[currentPath.length - 1].grid.id;
-    if (existingPathEndsMap[lastId] > MAX_PATHS_TO_SAME_GRID) {
+    if (existingPathEndsMap[lastId] >= MAX_PATHS_TO_SAME_GRID) {
+        addPath();
         return paths;
     }
     for (let child of startGraphElem.children) {
         gridUtil.getAllPaths(child, paths, currentPath.concat([]), existingPathEndsMap);
     }
     return paths;
+
+    function addPath() {
+        paths.push(currentPath);
+        let lastId = currentPath[currentPath.length - 1].grid.id;
+        existingPathEndsMap[lastId] = existingPathEndsMap[lastId] ? existingPathEndsMap[lastId] + 1 : 1;
+    }
 }
 
 /**
@@ -337,6 +340,9 @@ gridUtil.getIdPathMap = function (startGraphElem) {
     for (let path of allPaths) {
         for (let i = 0; i < path.length; i++) {
             let elem = path[i];
+            if(elem.grid.label.es === "CASA - COCINA") {
+                log.warn(path.map(elem => elem.grid.label.es));
+            }
             if (!idPathMap[elem.grid.id] || idPathMap[elem.grid.id].length > i + 1) {
                 idPathMap[elem.grid.id] = path.slice(0, i + 1);
             }
