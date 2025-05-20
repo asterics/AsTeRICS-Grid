@@ -6,8 +6,10 @@ import { Router } from '../router.js';
 import {MainVue} from "../vue/mainVue.js";
 import { util } from '../util/util';
 import { constants } from '../util/constants';
+import { eastereggService } from './eastereggService';
 
 let keyboardShortcuts = {};
+let lastTyped = '';
 
 /**
  * inits global keyboard shortcuts
@@ -45,6 +47,11 @@ keyboardShortcuts.init = function () {
             // Ctrl + C
             await util.copyCollectContentToClipboard();
         }
+
+        if (!event.key) {
+            return;
+        }
+        lastTyped = eastereggService.checkTypedWord(lastTyped + event.key);
     });
 };
 

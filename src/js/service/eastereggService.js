@@ -1,0 +1,97 @@
+import { MainVue } from '../vue/mainVue.js';
+import { util } from '../util/util';
+import { audioUtil } from '../util/audioUtil';
+import { Router } from '../router';
+
+let eastereggService = {};
+let stop = false;
+
+eastereggService.checkTypedWord = function(lastTyped) {
+    if (!Router.isOnGridView()) {
+        return '';
+    }
+    stop = false;
+    const keyword10000 = 'asterics';
+    if (keyword10000.startsWith(lastTyped.toLowerCase())) {
+        if (keyword10000 === lastTyped.toLowerCase()) {
+            lastTyped = '';
+            startEasteregg10000();
+        }
+    } else {
+        lastTyped = '';
+    }
+    return lastTyped;
+};
+
+async function startEasteregg10000() {
+    let gridElements = Array.from(document.getElementsByClassName('grid-item-content'));
+    let colors = generateRainbowHslColors(gridElements.length);
+    let originals = gridElements.map(e => e.style.backgroundColor);
+    MainVue.setTooltip('🥳 Happy Birthday AsTeRICS Grid! On 24.05.2025 it turned 7 years and this easter egg was created with commit 10 000! 🥳', {
+        timeout: 20000,
+        actionLink: 'Stop',
+        actionLinkFn: () => {
+            stop = true;
+            MainVue.clearTooltip();
+        }
+    });
+    playMelody(melodyHappyBirthday);
+    for (let i = 0; i < 5; i++) {
+        await colorElements(gridElements, colors, originals);
+        await colorElements(gridElements, colors, originals, { revertColors: true });
+    }
+    await colorElements(gridElements, colors, originals, { revertColors: true, reset: true, force: true });
+}
+
+async function playMelody(melody) {
+    for (const [note, duration] of melody) {
+        if (stop) {
+            return;
+        }
+        await audioUtil.beep(notes[note], duration, 0.1);
+        await util.sleep(50);
+    }
+
+}
+
+const melodyHappyBirthday = [
+    ['C5', 300], ['C5', 300], ['D5', 600], ['C5', 600], ['F5', 600], ['E5', 1200],
+    ['C5', 300], ['C5', 300], ['D5', 600], ['C5', 600], ['G5', 600], ['F5', 1200],
+    ['C5', 300], ['C5', 300], ['C6', 600], ['A5', 600], ['F5', 600], ['E5', 600], ['D5', 1200],
+    ['Bb5', 300], ['Bb5', 300], ['A5', 600], ['F5', 600], ['G5', 600], ['F5', 1200]
+];
+
+const notes = {
+    C5: 523.25,
+    C6: 1046.50, // Added C6
+    D5: 587.33,
+    E5: 659.25,
+    F5: 698.46,
+    G5: 783.99,
+    A5: 880.00,
+    Bb5: 932.33
+};
+
+function generateRainbowHslColors(count) {
+    const colors = [];
+    for (let i = 0; i < count; i++) {
+        const hue = Math.round((i * 360) / count);
+        colors.push(`hsl(${hue}, 100%, 50%)`);
+    }
+    return colors;
+}
+
+async function colorElements(elements, colors, originals, options = {}) {
+    for (let [index, element] of elements.entries()) {
+        if (!options.force && stop) {
+            return;
+        }
+        element.style.backgroundColor = colors[options.revertColors ? (elements.length - 1 - index) : index];
+        await util.sleep(25);
+        if (options.reset) {
+            element.style.backgroundColor = originals[index];
+        }
+    }
+}
+
+export { eastereggService };
