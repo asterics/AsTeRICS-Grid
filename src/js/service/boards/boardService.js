@@ -28,7 +28,7 @@ boardService.query = async function (searchTerm = '', options = {}) {
     await initPromise;
     let results = ownResults;
     if (options.lang) {
-        results = results.filter(preview => preview.languages.includes(options.lang) || preview.translate);
+        results = results.filter(preview => preview.languages.includes(options.lang) || preview.translate || preview.tags.includes('DEMO'));
     }
     if (options.type === constants.BOARD_TYPE_SELFCONTAINED) {
         results = results.filter(preview => preview.selfContained);
