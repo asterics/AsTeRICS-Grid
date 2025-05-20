@@ -1,8 +1,17 @@
+import $ from '../externals/jquery';
+import { constants } from './constants';
+import { localStorageService } from '../service/data/localStorageService';
+import { MainVue } from '../vue/mainVue';
+import { i18nService } from '../service/i18nService';
+
 let webAudioUtil = {};
+
+const VOLUME_STEP = 0.15;
 
 let player = document.getElementById('audioPlayer');
 let videoPlayer = document.getElementById('videoPlayer');
-
+let volume = 1.0;
+let userSettings = localStorageService.getUserSettings();
 let playingVideo = false;
 
 webAudioUtil.playUrl = async function (url) {
@@ -88,6 +97,41 @@ webAudioUtil.getPlayPosition = function() {
     }
 };
 
+webAudioUtil.volumeUp = function (tooltipKey) {
+    volume = volume + VOLUME_STEP <= 1.0 ? volume + VOLUME_STEP : 1;
+    return webAudioUtil.setVolume(volume, tooltipKey);
+};
+
+webAudioUtil.volumeDown = function (tooltipKey) {
+    volume = volume - VOLUME_STEP >= 0 ? volume - VOLUME_STEP : 0;
+    return webAudioUtil.setVolume(volume, tooltipKey);
+};
+
+webAudioUtil.setVolume = function(volumeParam = undefined, tooltipKey) {
+    volume = volumeParam !== undefined ? volumeParam : volume;
+    volume = Math.round(volume * 100) / 100;
+
+    let playerVolume = volume * (userSettings.systemVolume / 100.0);
+    if (userSettings.systemVolumeMuted) {
+        playerVolume = 0;
+    }
+    player.volume = playerVolume;
+    videoPlayer.volume = playerVolume;
+    log.debug('set volumes (system, webaudio, player)', userSettings.systemVolume, volume * 100, playerVolume * 100);
+    setVolumeTooltip(tooltipKey);
+    return volume;
+};
+
+function setVolumeTooltip(tooltipKey) {
+    if (!tooltipKey) {
+        return;
+    }
+    MainVue.setTooltip(i18nService.t(tooltipKey, Math.round(volume * 100)), {
+        revertOnClose: true,
+        timeout: 5000
+    });
+}
+
 function isPlaying(mediaElement) {
     return (
         mediaElement.currentTime > 0 &&
@@ -106,5 +150,13 @@ function seek(media, seconds) {
     newTime = Math.max(0, Math.min(newTime, media.duration));
     media.currentTime = newTime;
 }
+
+function updateUserSettings() {
+    userSettings = localStorageService.getUserSettings();
+    webAudioUtil.setVolume();
+}
+
+$(document).on(constants.EVENT_USERSETTINGS_UPDATED, updateUserSettings);
+$(document).on(constants.EVENT_USER_CHANGED, updateUserSettings);
 
 export { webAudioUtil };

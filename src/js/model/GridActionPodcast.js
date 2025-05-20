@@ -32,8 +32,7 @@ GridActionPodcast.actions = {
     NEXT_EPISODE: 'NEXT_EPISODE',
     PREV_EPISODE: 'PREV_EPISODE',
     VOLUME_UP: 'VOLUME_UP',
-    VOLUME_DOWN: 'VOLUME_DOWN',
-    VOLUME_MUTE: 'VOLUME_MUTE'
+    VOLUME_DOWN: 'VOLUME_DOWN'
 };
 
 GridActionPodcast.actionsWithPodcastSelect = [

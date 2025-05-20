@@ -4,11 +4,13 @@ import { PodcastEpisode, PodcastInfo } from '../model/PodcastInfo';
 import { webAudioUtil } from '../util/webAudioUtil';
 import { constants } from '../util/constants';
 import { MapCache } from '../util/MapCache';
+import { localStorageService } from './data/localStorageService';
 
 let podcastService = {};
 
 let metadata = null;
 let nowPlayingEpisode = null;
+let volume = localStorageService.getJSON(constants.PODCAST_LAST_VOLUME_KEY) || 1.0;
 let cache = new MapCache({
     ttlMs: 30 * 60 * 1000 // 30 minutes
 });
@@ -52,10 +54,10 @@ podcastService.doAction = async function (action) {
             await savePlayingData();
             break;
         case GridActionPodcast.actions.VOLUME_UP:
+            podcastService.volumeUp();
             break;
         case GridActionPodcast.actions.VOLUME_DOWN:
-            break;
-        case GridActionPodcast.actions.VOLUME_MUTE:
+            podcastService.volumeDown();
             break;
     }
 };
@@ -141,6 +143,7 @@ podcastService.playEpisode = async function(podcastEpisode) {
     }
     nowPlayingEpisode = podcastEpisode;
     await webAudioUtil.playUrl(podcastEpisode.enclosureUrl);
+    webAudioUtil.setVolume(volume);
     webAudioUtil.setCurrentTime(podcastEpisode.lastPlayPosition);
 };
 
@@ -169,6 +172,16 @@ podcastService.toggle = async function(podcastGuid) {
 
 podcastService.pause = async function() {
     webAudioUtil.pause();
+};
+
+podcastService.volumeUp = function () {
+    volume = webAudioUtil.volumeUp('podcastVolume');
+    localStorageService.saveJSON(constants.PODCAST_LAST_VOLUME_KEY, volume);
+};
+
+podcastService.volumeDown = function () {
+    volume = webAudioUtil.volumeDown('podcastVolume');
+    localStorageService.saveJSON(constants.PODCAST_LAST_VOLUME_KEY, volume);
 };
 
 podcastService.search = async function(searchTerm) {
