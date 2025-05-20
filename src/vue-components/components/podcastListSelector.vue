@@ -2,7 +2,7 @@
     <div>
         <div class="srow">
             <h3 class="six columns">{{ $t('selectedPodcasts') }}</h3>
-            <button class="six columns" :disabled="selectedPodcasts.length === 0" @click="addAllPodcastElements">{{ $t('createGridElementsForWebradios') }}</button>
+            <button class="six columns" :disabled="selectedPodcasts.length === 0" @click="addAllPodcastElements">{{ $t('createGridElementsForPodcasts') }}</button>
         </div>
         <media-list v-model="selectedPodcasts"
                     @input="$emit('input', selectedPodcasts)"
@@ -39,7 +39,7 @@
                         :playingMedia="playingPodcast"
                         :internal-pagination="true">
             </media-list>
-            <div v-show="searchResults.length === 0 && searchTerm && !isSearching && !searchError">{{ $t('noRadioStationsFoundTryAnOtherSearchTerm') }}</div>
+            <div v-show="searchResults.length === 0 && searchTerm && !isSearching && !searchError">{{ $t('noPodcastsFoundTryAnOtherSearchTerm') }}</div>
             <div v-show="searchError"><span>{{ $t('searchingFailedNoConnectionToInternet') }}</span> <a href="javascript:;" @click="searchPodcasts">{{ $t('retry') }}</a></div>
             <div v-show="isSearching">{{ $t('searching') }} <i class="fas fa-spinner fa-spin"></i></div>
         </div>
