@@ -51,11 +51,15 @@ async function startEasteregg10000() {
         }
     });
     playMelody(melodyHappyBirthday);
-    for (let i = 0; i < 5; i++) {
-        await colorElements(gridElements, colors, originals);
-        await colorElements(gridElements, colors, originals, { revertColors: true });
+    await colorElements(gridElements, colors, originals);
+    let setupTime = gridElements.length * 25;
+    let sleepMs = util.mapRange(gridElements.length, 10, 100, 300, 50);
+    let loopCount = Math.max(0, ((16750 - 2 * setupTime) / sleepMs));
+    for (let i = 0; i < loopCount && !stop; i++) {
+        await colorElements(gridElements, colors, originals, { shift: i + 1, sleep: 0});
+        await util.sleep(sleepMs);
     }
-    await colorElements(gridElements, colors, originals, { revertColors: true, reset: true, force: true });
+    await colorElements(gridElements, colors, originals, { flipColors: true, reset: true, force: true });
 }
 
 async function playMelody(melody) {
@@ -97,12 +101,17 @@ function generateRainbowHslColors(count) {
 }
 
 async function colorElements(elements, colors, originals, options = {}) {
+    options.sleep = options.sleep === undefined ? 25 : options.sleep;
+    options.shift = options.shift || 0;
     for (let [index, element] of elements.entries()) {
         if (!options.force && stop) {
             return;
         }
-        element.style.backgroundColor = colors[options.revertColors ? (elements.length - 1 - index) : index];
-        await util.sleep(25);
+        let colorIndex = (index + options.shift) % elements.length;
+        element.style.backgroundColor = colors[options.flipColors ? (elements.length - 1 - colorIndex) : colorIndex];
+        if (options.sleep) {
+            await util.sleep(options.sleep);
+        }
         if (options.reset) {
             element.style.backgroundColor = originals[index];
         }
