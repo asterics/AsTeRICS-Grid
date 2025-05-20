@@ -186,8 +186,9 @@ podcastService.search = async function(searchTerm) {
         return [];
     }
     let returnObject = await response.json() || {};
-    cache.set(searchTerm, returnObject.feeds);
-    return PodcastInfo.parseListFromApi(returnObject.feeds);
+    let returnValue = PodcastInfo.parseListFromApi(returnObject.feeds);
+    cache.set(searchTerm, returnValue);
+    return returnValue;
 };
 
 /**
@@ -259,8 +260,9 @@ async function fetchEpisodes(podcastGuid, options = {}) {
         return [];
     }
     let returnObject = await response.json() || {};
-    cache.set(podcastGuid, returnObject.items);
-    return PodcastEpisode.parseListFromApi(returnObject.items);
+    let returnValue = PodcastEpisode.parseListFromApi(returnObject.items);
+    cache.set(podcastGuid, returnValue);
+    return PodcastEpisode.parseListFromApi(returnValue);
 }
 
 
