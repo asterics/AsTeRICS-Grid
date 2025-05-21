@@ -14,10 +14,14 @@
                         <div>
                             <div class="srow">
                                 <label class="four columns" for="gridSelect">{{ $t('gridToTranslate') }}</label>
-                                <select class="four columns" id="gridSelect" v-model="gridData">
+                                <select class="four columns mb-2" id="gridSelect" v-model="gridData">
                                     <option :value="null">{{ $t('showAllGrids') }}</option>
                                     <option v-for="grid in allGrids" :value="grid">{{grid.label | extractTranslation}}</option>
                                 </select>
+                                <div class="four columns" v-if="!gridData">
+                                    <input id="hideKeyboards" type="checkbox" v-model="hideKeyboards">
+                                    <label for="hideKeyboards">{{ $t('hideKeyboards') }}</label>
+                                </div>
                             </div>
                             <div class="srow mt-4" v-if="usedLocales.length > 0">
                                 <label class="four columns">{{ $t('selectAlreadyUsedLanguages') }}</label>
@@ -107,21 +111,12 @@
                                         </div>
                                     </li>
                                 </ul>
-                                <h2 v-if="firstElements.length || lastElements.length">{{ $t('elementLabels') }}</h2>
-                                <ul v-if="firstElements.length || lastElements.length">
-                                    <li v-for="item in firstElements">
+                                <h2 v-if="translateElements.length">{{ $t('elementLabels') }}</h2>
+                                <ul v-if="translateElements.length">
+                                    <li v-for="item in translateElements">
                                         <div class="srow">
                                             <div class="one columns">
                                                 <img height="25" style="max-width: 100%;" :src="item.element.image ? (item.element.image.url || item.element.image.data) : ''">
-                                            </div>
-                                            <input type="text" :placeholder="`(${currentLangTranslated})`" class="five columns" :lang="currentLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[currentLocale]" @change="changedGrid(item.grid)"/>
-                                            <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[chosenLocale]" @change="changedGrid(item.grid)"/>
-                                        </div>
-                                    </li>
-                                    <li v-for="item in lastElements">
-                                        <div class="srow">
-                                            <div class="one columns">
-                                                <img height="25" style="max-width: 100%;" :src="item.element.image ? item.element.image.url || item.element.image.data : ''">
                                             </div>
                                             <input type="text" :placeholder="`(${currentLangTranslated})`" class="five columns" :lang="currentLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[currentLocale]" @change="changedGrid(item.grid)"/>
                                             <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[chosenLocale]" @change="changedGrid(item.grid)"/>
@@ -155,6 +150,7 @@
     import {GridActionSpeakCustom} from "../../js/model/GridActionSpeakCustom";
     import {util} from "../../js/util/util";
     import {dataService} from "../../js/service/data/dataService";
+    import { GridData } from '../../js/model/GridData';
 
     window.hideKeyboardTranslations = true;
     export default {
@@ -169,6 +165,7 @@
                 allLanguages: i18nService.getAllLanguages(),
                 usedLocales: [],
                 changedGrids: [],
+                hideKeyboards: true,
                 originalElementInfo: {} // grid-id + element-id => {label: originalLabelObject, hasImage: true/false}, tells if element should be shown in translate view
             }
         },
@@ -188,17 +185,30 @@
             allElements() {
                 let result = [];
                 for (let grid of this.selectedGrids) {
-                    if (this.showGridElements(grid)) {
-                        result = result.concat(grid.gridElements.map(el => ({ element: el, grid: grid })));
-                    }
+                    result = result.concat(grid.gridElements.map(el => ({ element: el, grid: grid })));
                 }
+                if (!this.gridData && this.hideKeyboards) {
+                    result = result.filter(data => data.grid.keyboardMode !== GridData.KEYBOARD_ENABLED);
+                }
+                result.sort((a, b) => {
+                    if (this.originalHasLabel(a) && !this.originalHasLabel(b)) {
+                        return -1;
+                    }
+                    if (!this.originalHasLabel(a) && this.originalHasLabel(b)) {
+                        return 1;
+                    }
+                    if (a.grid.keyboardMode === GridData.KEYBOARD_ENABLED && b.grid.keyboardMode !== GridData.KEYBOARD_ENABLED) {
+                        return 1;
+                    }
+                    if (a.grid.keyboardMode !== GridData.KEYBOARD_ENABLED && b.grid.keyboardMode === GridData.KEYBOARD_ENABLED) {
+                        return -1;
+                    }
+                    return 0;
+                });
                 return result;
             },
-            firstElements() {
-                return this.allElements.filter(data => this.originalElementInfo[data.grid.id + data.element.id].label[this.currentLocale]);
-            },
-            lastElements() {
-                return this.allElements.filter(data => !this.originalElementInfo[data.grid.id + data.element.id].label[this.currentLocale] && this.originalElementInfo[data.grid.id + data.element.id].hasImage);
+            translateElements() {
+                return this.allElements.filter(data => this.originalHasLabel(data) || this.originalHasImage(data));
             },
             actionElems() {
                 return this.allElements.filter(data => data.element.actions.some(action => action.modelName === GridActionSpeakCustom.getModelName() && action.speakText[this.currentLocale]));
@@ -221,6 +231,12 @@
                 } else if (this.changedGrids.indexOf(gridChanged) === -1) {
                     this.changedGrids.push(gridChanged);
                 }
+            },
+            originalHasLabel(data) {
+                return !!this.originalElementInfo[data.grid.id + data.element.id].label[this.currentLocale];
+            },
+            originalHasImage(data) {
+                return this.originalElementInfo[data.grid.id + data.element.id].hasImage;
             },
             getLocaleTranslation(locale) {
                 return i18nService.getTranslationAppLang(this.allLanguages.filter(lang => lang.code === locale)[0]);
@@ -278,14 +294,6 @@
                         }
                     }
                 })
-            },
-            showGridElements(data) {
-                let label = data.label[this.currentLocale] || data.label[Object.keys(data.label)[0]];
-                if (!window.hideKeyboardTranslations || this.gridData !== null || !label) {
-                    return true;
-                }
-                label = label.toLowerCase();
-                return !label.includes('keyboard') && !label.includes('tastatur') && !label.includes('zahlen') && !label.includes('numbers');
             },
             getI18nId(gridData, gridElement, prefix) {
                 prefix = prefix || '';
