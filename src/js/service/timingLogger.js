@@ -92,11 +92,11 @@ timingLogger.setupTimingInterceptor = function (module) {
 };
 
 function startTime(key, fnName) {
-    startTimes[key + fnName] = new Date().getTime();
+    startTimes[key + fnName] = performance.now();
 }
 
 function finishTime(key, fnName) {
-    let operationTime = new Date().getTime() - startTimes[key + fnName];
+    let operationTime = performance.now() - startTimes[key + fnName];
     if (!totalTimes[key + fnName]) {
         totalTimes[key + fnName] = operationTime;
     } else {

@@ -6,6 +6,7 @@ import { i18nService } from './i18nService';
 import { localStorageService } from './data/localStorageService';
 import { actionService } from './actionService';
 import { util } from '../util/util';
+import { podcastService } from './podcastService';
 
 let liveElementService = {};
 
@@ -67,7 +68,7 @@ liveElementService.getLastValue = function(elementId) {
  */
 liveElementService.getCurrentValue = async function(element, options = {}) {
     options = JSON.parse(JSON.stringify(options));
-    options.forceUpdate = options.forceUpdate || [GridElementLive.MODE_DATETIME, GridElementLive.MODE_APP_STATE].includes(element.mode);
+    options.forceUpdate = options.forceUpdate || [GridElementLive.MODE_DATETIME, GridElementLive.MODE_APP_STATE, GridElementLive.MODE_PODCAST_STATE].includes(element.mode);
     let updateMs = (element.updateSeconds || 0) * 1000;
     let cacheBecauseTime = !options.forceUpdate && lastUpdateTimes[element.id] && new Date().getTime() - lastUpdateTimes[element.id] < updateMs;
     let cacheBecauseUpdateSeconds0 = !options.forceUpdate && !element.updateSeconds;
@@ -88,6 +89,9 @@ liveElementService.getCurrentValue = async function(element, options = {}) {
             break;
         case GridElementLive.MODE_RANDOM:
             value = getValueRandom(element, options);
+            break;
+        case GridElementLive.MODE_PODCAST_STATE:
+            value = getValuePodcast(element);
             break;
     }
     if (element.extractMappings && element.extractMappings[value]) {
@@ -201,6 +205,20 @@ function getValueRandom(element) {
     return values[index];
 }
 
+function getValuePodcast(element) {
+    let state = podcastService.getState();
+    switch (element.state) {
+        case GridElementLive.PODCAST_CURRENT_PODCAST:
+            return state.podcastTitle;
+        case GridElementLive.PODCAST_CURRENT_EPISODE:
+            return state.episodeTitle;
+        case GridElementLive.PODCAST_PLAY_TIME:
+            return formatDuration(state.currentSeconds);
+        case GridElementLive.PODCAST_REMAINING_TIME:
+            return formatDuration(state.remainingSeconds);
+    }
+}
+
 function extractFromJson(element, text) {
     let selector = element.extractSelector || '';
     let path = selector.split('.');
@@ -245,6 +263,22 @@ function getDateText(element, options) {
 
 function getTimeText(element, options) {
     return new Date().toLocaleTimeString(i18nService.getContentLang(), options);
+}
+
+function formatDuration(seconds) {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+
+    const paddedMins = String(mins).padStart(2, '0');
+    const paddedSecs = String(secs).padStart(2, '0');
+
+    if (hrs > 0) {
+        const paddedHrs = String(hrs).padStart(2, '0');
+        return `${paddedHrs}:${paddedMins}:${paddedSecs}`;
+    }
+
+    return `${paddedMins}:${paddedSecs}`;
 }
 
 function triggerTextEvent(element, text) {

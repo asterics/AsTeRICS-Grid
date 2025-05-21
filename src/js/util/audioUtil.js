@@ -198,33 +198,36 @@ audioUtil.stopAudio = function () {
  * @param type of tone. Possible values are sine, square, sawtooth, triangle, and custom. Default is sine.
  * @param callback to use on end of tone
  */
-audioUtil.beep = function (frequency, duration, volume, type, callback) {
+audioUtil.beep = async function (frequency, duration, volume, type, callback) {
     if (_beeping) {
         return;
     }
-    _beeping = true;
-    let audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext)();
+    return new Promise(resolve => {
+        _beeping = true;
+        let audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext)();
 
-    let oscillator = audioCtx.createOscillator();
-    let gainNode = audioCtx.createGain();
+        let oscillator = audioCtx.createOscillator();
+        let gainNode = audioCtx.createGain();
 
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
 
-    gainNode.gain.value = volume || gainNode.gain.value;
-    oscillator.frequency.value = frequency || 800;
-    oscillator.type = type || oscillator.type;
-    oscillator.onended = function () {
-        _beeping = false;
-        if (callback) {
-            callback();
-        }
-    };
-    oscillator.start(audioCtx.currentTime);
-    oscillator.stop(audioCtx.currentTime + (duration || 50) / 1000);
-    setTimeout(() => {
-        _beeping = false;
-    }, 1000);
+        gainNode.gain.value = volume || gainNode.gain.value;
+        oscillator.frequency.value = frequency || 800;
+        oscillator.type = type || oscillator.type;
+        oscillator.onended = function () {
+            _beeping = false;
+            if (callback) {
+                callback();
+            }
+            resolve();
+        };
+        oscillator.start(audioCtx.currentTime);
+        oscillator.stop(audioCtx.currentTime + (duration || 50) / 1000);
+        setTimeout(() => {
+            _beeping = false;
+        }, 1000);
+    })
 };
 
 audioUtil.beepHigh = function () {

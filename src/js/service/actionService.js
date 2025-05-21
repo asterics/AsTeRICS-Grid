@@ -31,6 +31,8 @@ import { liveElementService } from './liveElementService';
 import { GridElementLive } from '../model/GridElementLive';
 import { GridActionYoutube } from '../model/GridActionYoutube';
 import { GridActionWebradio } from '../model/GridActionWebradio';
+import { matrixAppService } from './matrixMessenger/matrixAppService';
+import { podcastService } from './podcastService';
 
 let actionService = {};
 
@@ -96,12 +98,12 @@ async function doActions(gridElement, gridId) {
         );
     }
     $(window).trigger(constants.ELEMENT_EVENT_ID, [gridElement]);
-    actions.forEach((action) => {
-        doAction(gridElement, action, {
+    for (let action of actions) {
+        await doAction(gridElement, action, {
             gridId: gridId,
             actions: actions
         });
-    });
+    }
     metadata = metadata || (await dataService.getMetadata());
     let actionTypes = actions.map((a) => a.modelName);
     let navBackActions = [GridActionAudio.getModelName(), GridActionChangeLang.getModelName(), GridActionSpeak.getModelName(), GridActionSpeakCustom.getModelName()];
@@ -252,6 +254,9 @@ async function doAction(gridElement, action, options = {}) {
         case 'GridActionYoutube':
             youtubeService.doAction(action);
             break;
+        case 'GridActionPodcast':
+            await podcastService.doAction(action);
+            break;
         case 'GridActionChangeLang':
             let language = action.language;
             if (action.language === GridActionChangeLang.LAST_LANG) {
@@ -278,6 +283,9 @@ async function doAction(gridElement, action, options = {}) {
             break;
         case 'GridActionPredefined':
             return doPredefinedAction(gridElement, action);
+            break;
+        case 'GridActionMatrix':
+            await matrixAppService.doAction(action);
             break;
     }
 }

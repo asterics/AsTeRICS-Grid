@@ -213,13 +213,17 @@
                         for (let element of grid.gridElements) {
                             let allNewWordForms = new Set();
                             let baseStrings = this.getBaseStringsFromWordForms(element.wordForms);
+                            if (!baseStrings.length) {
+                                baseStrings = [`${i18nService.getTranslation(element.label)}:${i18nService.getContentLangBase()}`];
+                            }
                             for (let baseString of baseStrings) {
                                 if (baseMap[baseString]) {
                                     allNewWordForms = new Set([...allNewWordForms, ...baseMap[baseString]]);
                                 }
                             }
                             let newArray = Array.from(allNewWordForms);
-                            let changeCurrentElement = newArray.length > 0 && (element.wordForms.length !== newArray.length || JSON.stringify(element.wordForms) !== JSON.stringify(newArray));
+                            let existingWordForms = element.wordForms || [];
+                            let changeCurrentElement = newArray.length > 0 && (existingWordForms.length !== newArray.length || JSON.stringify(existingWordForms) !== JSON.stringify(newArray));
                             changedGrid = changedGrid || changeCurrentElement;
                             if (changeCurrentElement) {
                                 element.wordForms = newArray;

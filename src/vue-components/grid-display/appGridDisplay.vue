@@ -1,5 +1,5 @@
 <template>
-    <div ref="mainContainer" style="flex: 1 1 auto; max-width: 100%; min-height: 0">
+    <div ref="mainContainer" :style="`flex: 1 1 auto; max-width: 100%; min-height: 0; cursor: ${cursorType}`">
         <grid-layout ref="gridLayout" v-if="gridData && oneElementSize" :key="gridData.id"
                      :elements="gridData.gridElements" :render-component="AppGridElement"
                      :background-color="metadata.colorConfig.gridBackgroundColor"
@@ -33,6 +33,11 @@ export default {
         gridData() {
             this.oneElementSize = null;
             this.recalculate();
+        }
+    },
+    computed: {
+        cursorType() {
+            return gridUtil.getCursorType(this.metadata);
         }
     },
     methods: {

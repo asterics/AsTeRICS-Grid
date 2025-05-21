@@ -19,6 +19,8 @@ import {GridActionWordForm} from "./GridActionWordForm.js";
 import { GridActionUART } from './GridActionUART.js';
 import { GridActionSystem } from './GridActionSystem';
 import { GridActionPredefined } from './GridActionPredefined';
+import { GridActionMatrix } from './GridActionMatrix';
+import { GridActionPodcast } from './GridActionPodcast';
 
 class GridElement extends Model({
     id: String,
@@ -40,6 +42,7 @@ class GridElement extends Model({
     image: [GridImage],
     actions: [Object],
     type: String,
+    vocabularyLevel: [Number, null],
     additionalProps: [Object]
 }) {
     constructor(properties, elementToCopy) {
@@ -76,12 +79,14 @@ class GridElement extends Model({
             GridActionOpenHAB,
             GridActionWebradio,
             GridActionYoutube,
+            GridActionPodcast,
             GridActionChangeLang,
             GridActionOpenWebpage,
             GridActionHTTP,
             GridActionUART,
             GridActionSystem,
-            GridActionPredefined
+            GridActionPredefined,
+            GridActionMatrix
         ];
     }
 
@@ -121,6 +126,7 @@ GridElement.ELEMENT_TYPE_COLLECT = 'ELEMENT_TYPE_COLLECT';
 GridElement.ELEMENT_TYPE_PREDICTION = 'ELEMENT_TYPE_PREDICTION';
 GridElement.ELEMENT_TYPE_YT_PLAYER = 'ELEMENT_TYPE_YT_PLAYER';
 GridElement.ELEMENT_TYPE_LIVE = 'ELEMENT_TYPE_LIVE';
+GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION = 'ELEMENT_TYPE_MATRIX_CONVERSATION';
 
 GridElement.PROP_YT_PREVENT_CLICK = 'PROP_YT_PREVENT_CLICK';
 
@@ -138,7 +144,9 @@ GridElement.DEFAULTS = {
     additionalProps: {},
     wordForms: [],
     x: 0,
-    y: 0
+    y: 0,
+    hidden: false,
+    vocabularyLevel: null
 }
 
 export { GridElement };

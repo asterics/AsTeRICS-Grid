@@ -5,6 +5,7 @@ import { Model } from '../externals/objectmodel';
 import { ColorConfig } from './ColorConfig.js';
 import { TextConfig } from './TextConfig.js';
 import { NotificationConfig } from './NotificationConfig.js';
+import { IntegrationConfigSync } from './IntegrationConfigSync.js';
 
 class MetaData extends Model({
     id: String,
@@ -23,7 +24,9 @@ class MetaData extends Model({
     colorConfig: [ColorConfig],
     textConfig: [TextConfig],
     notificationConfig: [NotificationConfig],
-    activateARASAACGrammarAPI: [Boolean]
+    activateARASAACGrammarAPI: [Boolean],
+    vocabularyLevel: [Number, null],
+    integrations: [Object] // IntegrationConfigSync
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, MetaData) || {};
@@ -33,6 +36,7 @@ class MetaData extends Model({
         this.textConfig = properties.textConfig || new TextConfig();
         this.notificationConfig = properties.notificationConfig || new NotificationConfig();
         this.homeGridId = properties.homeGridId || null;
+        this.integrations = Object.assign(new IntegrationConfigSync(), this.integrations);
     }
 
     isEqual(otherMetadata) {
@@ -84,7 +88,9 @@ MetaData.defaults({
     hashCodes: {},
     inputConfig: new InputConfig(),
     globalGridActive: false,
-    globalGridHeightPercentage: 17
+    globalGridHeightPercentage: 17,
+    vocabularyLevel: null,
+    integrations: new IntegrationConfigSync()
 });
 
 export { MetaData };

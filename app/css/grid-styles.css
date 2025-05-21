@@ -59,11 +59,19 @@
 .mouseentered.element-container {
     outline: thick solid green !important;
     background: lightgreen;
+    z-index: 10;
 }
 
 .marked.element-container {
     outline: 5px solid green !important;
-    z-index: 1;
+    z-index: 11;
+    filter: brightness(80%);
+}
+
+.transfer-prop-source.element-container {
+    outline: 5px solid red !important;
+    z-index: 11;
+    filter: brightness(80%);
 }
 
 .scanInactive.element-container, .scanInactive.element-container span {

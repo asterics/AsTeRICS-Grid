@@ -8,6 +8,7 @@ constants.LOCAL_NOLOGIN_USERNAME = 'default-user';
 constants.LOCAL_DEMO_USERNAME = 'local-demo-user';
 constants.LOCAL_DEFAULT_USER_PREFIX = 'default-';
 constants.USERNAME_REGEX = /^[a-z0-9][a-z0-9_-]{2,15}$/;
+constants.EMOJI_REGEX = /((\p{Regional_Indicator}{2})|((\p{Emoji}(?:\uFE0F|\u200D\p{Emoji})*)\u20E3?))/gu;
 
 constants.VALIDATION_ERROR_REGEX = 'VALIDATION_ERROR_REGEX';
 constants.VALIDATION_ERROR_EXISTING = 'VALIDATION_ERROR_EXISTING';
@@ -36,16 +37,24 @@ constants.EVENT_GRID_LOADED = 'EVENT_GRID_LOADED';
 constants.EVENT_ELEM_TEXT_CHANGED = 'EVENT_ELEM_TEXT_CHANGED';
 constants.EVENT_USER_CHANGING = 'EVENT_USER_CHANGING';
 constants.EVENT_USER_CHANGED = 'EVENT_USER_CHANGED';
+constants.EVENT_USER_DELETED = 'EVENT_USER_DELETED';
 constants.EVENT_METADATA_UPDATED = 'EVENT_METADATA_UPDATED';
 constants.EVENT_APPSETTINGS_UPDATED = 'EVENT_APPSETTINGS_UPDATED';
 constants.EVENT_USERSETTINGS_UPDATED = 'EVENT_USERSETTINGS_UPDATED';
 constants.EVENT_CONFIG_RESET = 'EVENT_CONFIG_RESET';
 constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE = 'EVENT_NAVIGATE_GRID_IN_VIEWMODE';
 constants.EVENT_NAVIGATE = 'EVENT_NAVIGATE';
+constants.EVENT_SPEAKING_TEXT = 'EVENT_SPEAKING_TEXT';
+
+constants.EVENT_MATRIX_SCROLL_UP = 'EVENT_MATRIX_SCROLL_UP';
+constants.EVENT_MATRIX_SCROLL_DOWN = 'EVENT_MATRIX_SCROLL_DOWN';
+constants.EVENT_MATRIX_SET_ROOM = 'EVENT_MATRIX_SET_ROOM';
+constants.EVENT_MATRIX_SENDING_START = 'EVENT_MATRIX_SENDING_START';
 
 constants.SW_EVENT_ACTIVATED = 'SW_EVENT_ACTIVATED';
 constants.SW_EVENT_URL_CACHED = 'SW_EVENT_URL_CACHED';
 constants.SW_EVENT_REQ_CACHE = 'SW_EVENT_REQ_CACHE';
+constants.SW_MATRIX_REQ_DATA = 'SW_MATRIX_REQ_DATA';
 constants.SW_CACHE_TYPE_IMG = 'CACHE_TYPE_IMG';
 constants.SW_CACHE_TYPE_GENERIC = 'CACHE_TYPE_GENERIC';
 
@@ -73,6 +82,7 @@ constants.VOICE_TYPE_EXTERNAL_DATA = 'VOICE_TYPE_EXTERNAL_DATA';
 constants.VOICE_DEVICE_DEFAULT = 'VOICE_DEVICE_DEFAULT';
 
 constants.WEBRADIO_LAST_VOLUME_KEY = 'WEBRADIO_LAST_VOLUME_KEY';
+constants.PODCAST_LAST_VOLUME_KEY = 'PODCAST_LAST_VOLUME_KEY';
 
 constants.GRIDSET_FOLDER = 'app/gridsets/';
 constants.BOARDS_REPO_BASE_URL = "https://asterics.github.io/AsTeRICS-Grid-Boards/";
@@ -80,6 +90,69 @@ constants.BOARDS_REPO_BASE_URL = "https://asterics.github.io/AsTeRICS-Grid-Board
 constants.BOARD_TYPE_SELFCONTAINED = "BOARD_TYPE_SELFCONTAINED";
 constants.BOARD_TYPE_SINGLE = "BOARD_TYPE_SINGLE";
 constants.BOARD_TYPES = [constants.BOARD_TYPE_SELFCONTAINED, constants.BOARD_TYPE_SINGLE];
+
+constants.PROP_TRANSFER_DONT_CHANGE = "PROP_TRANSFER_DONT_CHANGE";
+constants.PROP_TRANSFER_TYPES = {
+    BOOLEAN: "BOOLEAN",
+    COLOR: "COLOR",
+    PERCENTAGE: "PERCENTAGE",
+    TEXT: "TEXT",
+    NUMBER: "NUMBER"
+};
+constants.PROP_TRANSFER_CATEGORIES = {
+    APPEARANCE: "APPEARANCE",
+    OTHERS: "OTHERS"
+};
+constants.TRANSFER_PROPS = {
+    COLOR_CATEGORY: {
+        path: 'colorCategory',
+        label: 'colorCategory',
+        type: constants.PROP_TRANSFER_TYPES.TEXT,
+        category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE
+    },
+    BACKGROUND_COLOR: {
+        path: 'backgroundColor',
+        label: 'customElementColor',
+        type: constants.PROP_TRANSFER_TYPES.COLOR,
+        category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE
+    },
+    FONT_COLOR: {
+        path: 'fontColor',
+        label: 'fontColor',
+        type: constants.PROP_TRANSFER_TYPES.COLOR,
+        category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE
+    },
+    FONT_SIZE: {
+        path: 'fontSizePct',
+        label: 'fontSize',
+        type: constants.PROP_TRANSFER_TYPES.PERCENTAGE,
+        category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE
+    },
+    HIDDEN: {
+        path: 'hidden',
+        label: 'hideElement',
+        type: constants.PROP_TRANSFER_TYPES.BOOLEAN,
+        category: constants.PROP_TRANSFER_CATEGORIES.OTHERS
+    },
+    LANGUAGE_LEVEL: {
+        path: 'vocabularyLevel',
+        label: 'vocabularyLevel',
+        type: constants.PROP_TRANSFER_TYPES.NUMBER,
+        category: constants.PROP_TRANSFER_CATEGORIES.OTHERS
+    },
+    DONT_COLLECT: {
+        path: 'dontCollect',
+        label: 'dontAddElementToCollectElement',
+        type: constants.PROP_TRANSFER_TYPES.BOOLEAN,
+        category: constants.PROP_TRANSFER_CATEGORIES.OTHERS
+    },
+    TOGGLE_IN_BAR: {
+        path: 'toggleInBar',
+        label: 'toggleInCollectionElementIfAddedMultipleTimes',
+        type: constants.PROP_TRANSFER_TYPES.BOOLEAN,
+        category: constants.PROP_TRANSFER_CATEGORIES.OTHERS
+    }
+}
 
 constants.DEFAULT_ELEMENT_BACKGROUND_COLOR = '#ffffff';
 constants.DEFAULT_ELEMENT_BACKGROUND_COLOR_DARK = '#555555';

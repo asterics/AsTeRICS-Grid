@@ -1,5 +1,3 @@
-import { constants } from './constants';
-
 var imageUtil = {};
 
 /**
@@ -59,6 +57,20 @@ imageUtil.dataStringToFileSuffix = function(dataString = '') {
     }
     return '';
 };
+
+imageUtil.mimeTypeToFileSuffix = function getImageExtension(mimeType) {
+    const mimeMap = {
+        'image/jpeg': 'jpg',
+        'image/png': 'png',
+        'image/gif': 'gif',
+        'image/webp': 'webp',
+        'image/bmp': 'bmp',
+        'image/svg+xml': 'svg',
+        'image/svg': 'svg'
+    };
+
+    return mimeMap[mimeType] || '';
+}
 
 /**
  * returns promise that resolves to a base64 string that represents the content of the file
@@ -184,26 +196,36 @@ imageUtil.urlToBase64 = function (url, maxWidth, mimeType) {
 };
 
 /**
- * gets a screenshot in base64 format
+ * gets a screenshot in base64 format (or canvas, if options.returnCanvas is true)
  * @param selector the element selector which defines the container of the area of the screenshot
  * @param options
  * @param options.ignoreSVG if true, a screenshot without svg images is returned
  * @param options.quality quality to use for the screenshot, defaults to 0.6
+ * @param options.mimeType mimeType of the image, defaults to "image/webp", can also be "image/png"
  * @param options.targetWidth max width of the resulting image
  * @param options.targetHeight max height of the resulting image
- * @return {Promise<*>}
+ * @param options.scale scale of the image, only applies if targetWidth/targetHeight are not specified, defaults to 0.2
+ * @param options.returnCanvas if true, the canvas is returned, otherwise a base64 encoded image url
+ * @return {Promise<*>} the screenshot data, null if there was no element for the given selector
  */
 imageUtil.getScreenshot = function (selector, options = {}) {
+    let element = document.querySelector(selector);
+    if (!element) {
+        return null;
+    }
     return import(/* webpackChunkName: "html2canvas" */ 'html2canvas').then((html2canvas) => {
-        let element = document.querySelector(selector);
-        let domSize = element.getBoundingClientRect();
-        options.targetWidth = options.targetWidth || 300;
-        options.targetHeight = options.targetHeight || 300;
-        let scaleX = options.targetWidth / domSize.width;
-        let scaleY = options.targetHeight / domSize.height;
+        let calculatedScale;
+        if (options.targetWidth || options.targetHeight) {
+            let domSize = element.getBoundingClientRect();
+            options.targetWidth = options.targetWidth || 300;
+            options.targetHeight = options.targetHeight || 300;
+            let scaleX = options.targetWidth / domSize.width;
+            let scaleY = options.targetHeight / domSize.height;
+            calculatedScale = Math.min(scaleX, scaleY, 1);
+        }
         return html2canvas
             .default(element, {
-                scale: Math.min(scaleX, scaleY, 1),
+                scale: calculatedScale || options.scale || 0.2,
                 logging: false,
                 useCORS: true,
                 ignoreElements: (node) => {
@@ -215,11 +237,16 @@ imageUtil.getScreenshot = function (selector, options = {}) {
             })
             .then((canvas) => {
                 try {
-                    return Promise.resolve(canvas.toDataURL('image/webp', options.quality || 0.6));
+                    let type = options.mimeType || 'image/webp';
+                    if (options.returnCanvas) {
+                        return canvas;
+                    } else {
+                        return canvas.toDataURL(type, options.quality || 0.6);
+                    }
                 } catch (e) {
                     log.warn('error while creating screenshot');
                     log.warn(e);
-                    if (ignoreSVG) {
+                    if (options.ignoreSVG) {
                         return Promise.resolve(imageUtil.getEmptyImage());
                     } else {
                         return imageUtil.getScreenshot(selector, {
@@ -228,6 +255,12 @@ imageUtil.getScreenshot = function (selector, options = {}) {
                     }
                 }
             });
+    });
+};
+
+imageUtil.canvasToBlob = function(canvas) {
+    return new Promise(resolve => {
+        canvas.toBlob(blob => resolve(blob));
     });
 };
 

@@ -166,11 +166,11 @@ function HoverConstructor(itemSelector, options) {
 
     thiz.startHovering = function () {
         if (options.hideCursor) {
-            $(_itemSelector).css('cursor', 'none');
-            $('#touchElement').css('cursor', 'none');
+            /* $(_itemSelector).css('cursor', 'none'); // not needed anymore - done in appGridElement and appGridDisplay
             if (options.containerClass) {
                 $(options.containerClass).css('cursor', 'none');
-            }
+            } */
+            $('#touchElement').css('cursor', 'none');
         }
         _elements = L.selectAsList(_itemSelector);
         let alreadyActivatedTTS = stateService.getState(constants.STATE_ACTIVATED_TTS);
@@ -202,11 +202,11 @@ function HoverConstructor(itemSelector, options) {
 
     thiz.destroy = function () {
         if (options.hideCursor) {
-            $(_itemSelector).css('cursor', 'default');
-            $('#touchElement').css('cursor', 'default');
+            /* $(_itemSelector).css('cursor', 'default'); // // not needed anymore - done in appGridElement and appGridDisplay
             if (options.containerClass) {
                 $(options.containerClass).css('cursor', 'default');
-            }
+            }*/
+            $('#touchElement').css('cursor', 'default');
         }
         util.clearDebounce('hovering-mouseMove');
         _elements.forEach(function (item) {

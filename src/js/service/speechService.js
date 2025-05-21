@@ -24,6 +24,8 @@ let lastSpeakTime = 0;
 let voiceIgnoreList = ['com.apple.speech.synthesis.voice']; //joke voices by Apple
 let voiceSortBackList = ['com.apple.eloquence'];
 let hasSpoken = false;
+let isSpeakingNative = false;
+let startedSpeakingRV = false;
 let _initPromiseResolveFn;
 let initPromise = new Promise(resolve => {
     _initPromiseResolveFn = resolve;
@@ -44,6 +46,7 @@ let _waitingSpeakOptions = {};
  * preferred voice is "Google German" the german translation of the translation object "textOrObject" will be spoken.
  *
  * @param textOrOject string to speak, or translation object containing all translations
+ * @param options (optional) options
  * @param options.lang (optional) language code of preferred voice to use to speak
  * @param options.preferredVoice (optional) voice id that should be used for speaking
  * @param options.voiceLangIsTextLang (optional) if true and a preferred voice is set, the language of this voice is
@@ -55,7 +58,7 @@ let _waitingSpeakOptions = {};
  * @param options.minEqualPause (optional) minimum pause between 2 times speaking the same text
  * @param options.progressFn (optional) function where boundary events of the spoken phrase are sent to
  */
-speechService.speak = function (textOrOject, options) {
+speechService.speak = function (textOrOject, options = {}) {
     options = options || {};
     options.voiceLangIsTextLang = options.voiceLangIsTextLang || _voiceLangIsTextLang;
     let userSettings = localStorageService.getUserSettings();
@@ -93,6 +96,7 @@ speechService.speak = function (textOrOject, options) {
     if (text === lastSpeakText && new Date().getTime() - lastSpeakTime < options.minEqualPause) {
         return;
     }
+    $(document).trigger(constants.EVENT_SPEAKING_TEXT, [text]);
     lastSpeakText = text;
     lastSpeakTime = new Date().getTime();
     if (!options.dontStop) {
@@ -117,13 +121,18 @@ speechService.speak = function (textOrOject, options) {
         window.speechSynthesis.speak(msg);
         msg.addEventListener('start', () => {
             hasSpoken = true;
+            isSpeakingNative = true;
         });
+        msg.addEventListener('end', () => {
+            isSpeakingNative = false;
+        })
     } else if (responsiveVoices.length > 0) {
         let isSelectedVoice = responsiveVoices[0].id === preferredVoiceId;
         responsiveVoice.speak(text, responsiveVoices[0].name, {
             rate: options.rate || (isSelectedVoice && !options.useStandardRatePitch ? _voiceRate : 1),
             pitch: isSelectedVoice && !options.useStandardRatePitch ? _voicePitch : 1
         });
+        startedSpeakingRV = true;
         hasSpoken = true;
     } else if (externalVoices.length > 0) {
         speechServiceExternal.speak(text, externalVoices[0].ref.providerId, externalVoices[0]);
@@ -201,6 +210,8 @@ speechService.speakArray = async function (array, progressFn, index) {
 
 speechService.stopSpeaking = function () {
     currentSpeakArray = [];
+    isSpeakingNative = false;
+    startedSpeakingRV = false;
     if (speechService.nativeSpeechSupported()) {
         window.speechSynthesis.cancel();
     }
@@ -209,8 +220,8 @@ speechService.stopSpeaking = function () {
 };
 
 speechService.isSpeaking = async function () {
-    let locallySpeaking = (speechService.nativeSpeechSupported() && window.speechSynthesis.speaking) || responsiveVoice.isPlaying();
-    if (locallySpeaking) {
+    let isSpeakingRV = startedSpeakingRV && responsiveVoice.isPlaying();
+    if (isSpeakingNative || isSpeakingRV) {
         return true;
     }
     return await speechServiceExternal.isSpeaking();
@@ -230,8 +241,13 @@ speechService.waitForFinishedSpeaking = async function () {
         wait += 100;
         await util.sleep(100);
     }
+    wait = 0;
     let promise = new Promise((resolve) => {
         let intervalHandler = setInterval(async () => {
+            wait += 50;
+            if (wait > maxWait) {
+                return resolve();
+            }
             let speaking = await speechService.isSpeaking();
             if (!speaking) {
                 clearInterval(intervalHandler);
@@ -364,7 +380,7 @@ speechService.reinit = async function () {
 };
 
 function getVoicesByLang(lang) {
-    let fullLangVoices = allVoices.filter((voice) => voice.langFull === lang);
+    let fullLangVoices = allVoices.filter((voice) => voice.langFull !== voice.lang && voice.langFull === lang);
     let langVoices = allVoices.filter((voice) => voice.lang === i18nService.getBaseLang(lang));
     return fullLangVoices.length > 0 ? fullLangVoices : langVoices;
 }

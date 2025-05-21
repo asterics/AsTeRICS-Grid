@@ -101,7 +101,7 @@ predictionService.doAction = function (elementId) {
     }
     let element = registeredPredictElements.filter((element) => element.id === elementId)[0];
     if (element) {
-        let word = $(`#${element.id} .text-container span`).text();
+        let word = $(`#${element.id} .text-container > span`).text();
         predictionary.learn(word);
         _unsavedChanges = true;
     }

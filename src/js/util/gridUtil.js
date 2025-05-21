@@ -185,11 +185,16 @@ gridUtil.getOffset = function (globalGrid) {
     }
 };
 
+/**
+ * returns a list of free coordinates in the given grid
+ * @param gridData
+ * @returns {{x: *, y: *}[]}
+ */
 gridUtil.getFreeCoordinates = function (gridData) {
     let tempGridData = new GridData({}, gridData);
     let xyMap = {};
-    for (let x = 0; x < tempGridData.getWidthWithBounds(); x++) {
-        for (let y = 0; y < tempGridData.rowCount; y++) {
+    for (let y = 0; y < tempGridData.getHeightWithBounds(); y++) {
+        for (let x = 0; x < tempGridData.getWidthWithBounds(); x++) {
             xyMap[x + ' ' + y] = {
                 x: x,
                 y: y
@@ -306,30 +311,45 @@ gridUtil.getIndependentGraphs = function(graphList) {
  * @param startGraphElem the graph element to start
  * @param paths internal, used for recursion
  * @param currentPath internal, used for recursion
+ * @param existingPathEndsMap internal, used for recursion, a map for counting how often a specific grid was the
+ *                            last grid of an existing path. So map[gridId] === 3 means that in the current calculated
+ *                            paths there are 3 paths that have grid with "gridId" as last element
  * @return {*[]|number} an array containing all possible paths through the graph with the given
  *                      start element.
  *                      e.g. [[startElem.grid, childGrid, childOfChild, ...],
  *                            [startElem.grid, otherChild, ...], ...]
  */
-gridUtil.getAllPaths = function (startGraphElem, paths, currentPath) {
+gridUtil.getAllPaths = function (startGraphElem, paths, currentPath, existingPathEndsMap = {}) {
+    let MAX_PATHS_TO_SAME_GRID = 1;
     if (!startGraphElem) {
         return [];
     }
     paths = paths || [];
     currentPath = currentPath || [];
     if (currentPath.includes(startGraphElem)) {
-        paths.push(currentPath);
+        addPath();
         return paths;
     }
     currentPath.push(startGraphElem);
     if (startGraphElem.children.length === 0) {
-        paths.push(currentPath);
+        addPath();
+        return paths;
+    }
+    let lastId = currentPath[currentPath.length - 1].grid.id;
+    if (existingPathEndsMap[lastId] >= MAX_PATHS_TO_SAME_GRID) {
+        addPath();
         return paths;
     }
     for (let child of startGraphElem.children) {
-        gridUtil.getAllPaths(child, paths, currentPath.concat([]));
+        gridUtil.getAllPaths(child, paths, currentPath.concat([]), existingPathEndsMap);
     }
     return paths;
+
+    function addPath() {
+        paths.push(currentPath);
+        let lastId = currentPath[currentPath.length - 1].grid.id;
+        existingPathEndsMap[lastId] = existingPathEndsMap[lastId] ? existingPathEndsMap[lastId] + 1 : 1;
+    }
 }
 
 /**
@@ -607,6 +627,10 @@ gridUtil.duplicateElement = function(element) {
     return duplicate;
 }
 
+gridUtil.duplicateElements = function(elements = []) {
+    return elements.map(e => gridUtil.duplicateElement(e));
+};
+
 gridUtil.ensureUniqueIds = function(gridElements) {
     let seenIds = [];
     for (let gridElement of gridElements) {
@@ -630,6 +654,66 @@ gridUtil.getOneElementSize = function(containerSize, gridData) {
         width: containerSize.width / width,
         height: containerSize.height / height
     };
+};
+
+/**
+ * returns true if elem3 is within the rectangle defined by elem1 and elem2
+ * @param elem1
+ * @param elem2
+ * @param elem3
+ * @returns {boolean}
+ */
+gridUtil.isWithinElements = function(elem1, elem2, elem3) {
+    if (!elem1 || !elem2 || !elem3) {
+        return false;
+    }
+    const left = Math.min(elem1.x, elem2.x);
+    const right = Math.max(elem1.x, elem2.x);
+    const top = Math.min(elem1.y, elem2.y);
+    const bottom = Math.max(elem1.y, elem2.y);
+    return elem3.x >= left && elem3.x <= right && elem3.y >= top && elem3.y <= bottom;
+};
+
+/**
+ * returns a list of possible property paths for property transfer mode, e.g. ["hidden", "colorCategory", ...]
+ * @returns {any[]}
+ */
+gridUtil.getAllPropTransferPaths = function() {
+    let propKeys = Object.keys(constants.TRANSFER_PROPS);
+    return propKeys.map(key => constants.TRANSFER_PROPS[key].path);
+}
+
+gridUtil.getPropTransferObjectBase = function() {
+    let transferObject = {};
+    for (let path of gridUtil.getAllPropTransferPaths()) {
+        transferObject[path] = constants.PROP_TRANSFER_DONT_CHANGE;
+    }
+    return transferObject;
+}
+
+gridUtil.getPropTransferObjectAll = function(sourceElement) {
+    let transferObject = {};
+    for (let path of gridUtil.getAllPropTransferPaths()) {
+        transferObject[path] = sourceElement[path];
+    }
+    return transferObject;
+}
+
+gridUtil.getPropTransferObjectAppearance = function(sourceElement) {
+    let props = Object.keys(constants.TRANSFER_PROPS).map(key => constants.TRANSFER_PROPS[key]);
+    let appearanceProps = props.filter(prop => prop.category === constants.PROP_TRANSFER_CATEGORIES.APPEARANCE);
+    let transferObject = gridUtil.getPropTransferObjectBase();
+    for (let prop of appearanceProps) {
+        transferObject[prop.path] = sourceElement[prop.path];
+    }
+    return transferObject;
+};
+
+gridUtil.getCursorType = function(metadata, defaultCursorType = "default") {
+    if (!metadata || !metadata.inputConfig || !metadata.inputConfig.hoverEnabled || !metadata.inputConfig.hoverHideCursor) {
+        return defaultCursorType;
+    }
+    return 'none';
 };
 
 function getAllChildrenRecursive(gridGraphList, gridId) {

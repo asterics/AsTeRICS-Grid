@@ -157,6 +157,8 @@
     import {Router} from "../../js/router";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {modelUtil} from "../../js/util/modelUtil";
+    import $ from '../../js/externals/jquery';
+    import { constants } from '../../js/util/constants';
 
     export default {
         components: {HeaderIcon},
@@ -216,6 +218,7 @@
                 });
             },
             removeStoredUser(user) {
+                let localSettings = localStorageService.getUserSettings(user);
                 if (!(this.savedOnlineUsers.includes(user) || this.savedLocalUsers.includes(user))) {
                     loginService.logout();
                 } else {
@@ -233,6 +236,7 @@
                 this.savedUsers = localStorageService.getSavedUsers(this.activeUser);
                 this.savedOnlineUsers = localStorageService.getSavedOnlineUsers();
                 this.savedLocalUsers = localStorageService.getSavedLocalUsers();
+                $(document).trigger(constants.EVENT_USER_DELETED, [user, localSettings]);
             },
             hasValidMajorModelVersion(user) {
                 return localStorageService.getUserMajorModelVersion(user) <= modelUtil.getLatestModelVersion().major;

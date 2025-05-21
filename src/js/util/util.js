@@ -1,5 +1,7 @@
 import { TextConfig } from '../model/TextConfig.js';
 import { GridElement } from '../model/GridElement';
+import { constants } from './constants';
+import { imageUtil } from './imageUtil';
 
 let util = {};
 
@@ -98,6 +100,64 @@ util.appendToClipboard = function (text) {
 };
 
 /**
+ * copies a blob to clipboard (if supported)
+ * @param blob
+ * @returns {Promise<void>}
+ */
+util.copyBlobToClipboard = async function(blob) {
+    const supported = typeof ClipboardItem !== 'undefined' &&
+        navigator.clipboard &&
+        typeof navigator.clipboard.write === 'function';
+    if (!supported) {
+        log.warn('copy blob to clipboard is not supported');
+        return;
+    }
+    if (!blob) {
+        return;
+    }
+    const clipboardItem = new ClipboardItem({ [blob.type]: blob });
+    try {
+        await navigator.clipboard.write([clipboardItem]);
+    } catch (err) {
+        log.warn('failed to copy blob to clipboard:', err);
+    }
+};
+
+util.copyCollectContentToClipboard = async function() {
+    let blob = await util.getCollectContentBlob(5);
+    await util.copyBlobToClipboard(blob);
+}
+
+util.getCollectContentBlob = async function(scale = 2) {
+    let imageCanvas = await imageUtil.getScreenshot(".collect-items-container", {
+        scale: scale,
+        returnCanvas: true
+    });
+    if (!imageCanvas) {
+        return null;
+    }
+    return await imageUtil.canvasToBlob(imageCanvas);
+}
+
+util.shareImageBlob = async function(blob, filename = 'image') {
+    if (!navigator.share || !navigator.canShare) {
+        log.warn('sharing not supported!');
+        return;
+    }
+    if (!blob) {
+        return;
+    }
+    let file = new File([blob], `${filename}.${imageUtil.mimeTypeToFileSuffix(blob.type)}`, { type: blob.type });
+    if (!navigator.canShare({ files: [file] })) {
+        log.warn('sharing files not supported!');
+        return;
+    }
+    await navigator.share({
+        files: [file]
+    });
+};
+
+/**
  * reads the clipboard content using navigator API
  * returns null if failed or permission was not granted.
  * @return Promise
@@ -118,6 +178,9 @@ util.getClipboardContent = async function () {
 };
 
 util.gridElementsToClipboard = function(elements) {
+    if (!elements || !elements.length) {
+        return;
+    }
     util.copyToClipboard(JSON.stringify(elements));
 };
 
@@ -337,9 +400,18 @@ util.arrayToPrintable = function (array) {
     return JSON.stringify(array).replaceAll('[', '').replaceAll(']', '').replaceAll('"', '');
 };
 
-util.mapRange = function (number, inMin, inMax, outMin, outMax) {
-    return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
-}
+util.mapRange = function(value, fromMin, fromMax, toMin, toMax) {
+    const fromSpan = fromMax - fromMin;
+    const toSpan = toMax - toMin;
+
+    if (fromSpan === 0) {
+        console.warn('Invalid input range: fromMin and fromMax cannot be the same');
+        return 0;
+    }
+
+    const scaled = (value - fromMin) / fromSpan;
+    return toMin + (scaled * toSpan);
+};
 
 util.fetchWithTimeout = function (url, timeoutMs) {
     // see https://stackoverflow.com/a/50101022/9219743
@@ -419,6 +491,30 @@ util.getElementSize = async function(element) {
 
 util.replaceAll = function(string, search, replace) {
     return string.replace(new RegExp(search, 'g'), replace);
+}
+
+/**
+ * returns true if both dates are on the same calendar day
+ * @param d1
+ * @param d2
+ * @returns {boolean}
+ */
+util.isSameDate = function(d1, d2) {
+    return (
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate()
+    );
+};
+
+util.getEmojis = function(str) {
+    // Match emojis, including ZWJ sequences & variation selectors
+    return str.match(new RegExp(constants.EMOJI_REGEX)) || [];
+}
+
+util.isOnlyEmojis = function(str) {
+    const matches = util.getEmojis(str);
+    return matches.join('') === str; // If the matched emojis fully cover the input string, return true
 }
 
 export { util };

@@ -17,6 +17,7 @@ let predefActionsI18nData = {};
 let appLanguages = [
     'en',
     'de',
+    'ar',
     'eu',
     'bg',
     'ca',

@@ -5,24 +5,20 @@ import { localStorageService } from './data/localStorageService';
 import { MainVue } from '../vue/mainVue';
 import { i18nService } from './i18nService';
 import { constants } from '../util/constants';
+import { webAudioUtil } from '../util/webAudioUtil';
 
 let WEBRADIO_LAST_PLAYED_ID_KEY = 'WEBRADIO_LAST_PLAYED_ID_KEY';
 let API_URL = 'https://de1.api.radio-browser.info/json/';
 let API_ACTION_SEARCH = 'stations/search';
 let API_ACTION_GETURL = 'url';
 let API_ACTION_STATIONS_UUID = 'stations/byuuid';
-let VOLUME_STEP = 0.15;
 let searchParameters = ['name', 'country', 'state', 'language', 'tag', 'tagList', 'order'];
 let standardSearchParameter = 'name';
 
 let webradioService = {};
-let player = document.getElementById('audioPlayer');
-let videoPlayer = document.getElementById('videoPlayer');
 let lastPlayedId = localStorageService.get(WEBRADIO_LAST_PLAYED_ID_KEY);
-let volume = parseFloat(localStorageService.get(constants.WEBRADIO_LAST_VOLUME_KEY) || 1.0);
+let volume = localStorageService.getJSON(constants.WEBRADIO_LAST_VOLUME_KEY) || 1.0;
 let hasMoreSearchResults = false;
-let playingVideo = false;
-let userSettings = localStorageService.getUserSettings();
 
 webradioService.doAction = function (gridId, action) {
     switch (action.action) {
@@ -81,38 +77,20 @@ webradioService.doAction = function (gridId, action) {
     });
 };
 
-webradioService.play = function (webradio) {
-    if (!webradio || (!player.paused && lastPlayedId === webradio.radioId)) {
+webradioService.play = async function(webradio) {
+    if (!webradio || (webAudioUtil.isPlaying() && lastPlayedId === webradio.radioId)) {
         return;
     }
-    if (!player.paused || !videoPlayer.paused) {
-        webradioService.stop();
+    if (webAudioUtil.isPlaying()) {
+        webAudioUtil.pause();
     }
     lastPlayedId = webradio.radioId || lastPlayedId;
     localStorageService.save(WEBRADIO_LAST_PLAYED_ID_KEY, lastPlayedId);
-    fillUrl(webradio).then((radioWithUrl) => {
-        log.debug('playing: ' + radioWithUrl.radioUrl);
-        let promise = Promise.resolve();
-        if (webradio.radioUrl.indexOf('.m3u8') !== -1) {
-            playingVideo = true;
-            videoPlayer.src = radioWithUrl.radioUrl;
-            import(/* webpackChunkName: "hls.js" */ 'hls.js').then((Hls) => {
-                Hls = Hls.default;
-                if (Hls.isSupported()) {
-                    let hls = new Hls();
-                    hls.loadSource(radioWithUrl.radioUrl);
-                    hls.attachMedia(videoPlayer);
-                    hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                        videoPlayer.play();
-                    });
-                }
-            });
-        } else {
-            playingVideo = false;
-            player.src = radioWithUrl.radioUrl;
-            webradioService.setVolume();
-            promise = player.play();
-        }
+    let radioWithUrl = await fillUrl(webradio);
+    log.debug('playing: ' + radioWithUrl.radioUrl);
+    try {
+        await webAudioUtil.playUrl(radioWithUrl.radioUrl);
+        webAudioUtil.setVolume(volume);
         let tooltipText = i18nService.t('playingWebradio', radioWithUrl.radioName);
         MainVue.setTooltip(tooltipText, {
             closeOnNavigate: false,
@@ -120,65 +98,52 @@ webradioService.play = function (webradio) {
             actionLinkFn: webradioService.stop,
             imageUrl: radioWithUrl.faviconUrl
         });
-        if (promise && promise.then) {
-            //IE does not return promise on play
-            promise.catch((e) => {
-                let error = e + '';
-                if (error.includes('NotAllowedError')) {
-                    MainVue.setTooltip(i18nService.t('couldntPlayWebradioBecauseTheBrowserDidntAllow'), {
-                        msgType: 'warn',
-                        actionLink: i18nService.t('allowPlayingRadio'),
-                        actionLinkFn: () => {
-                            webradioService.play(webradio);
-                        }
-                    });
-                } else if (lastPlayedId === webradio.radioId) {
-                    showErrorMsg(webradio);
+    } catch (e) {
+        let error = e + '';
+        if (error.includes('NotAllowedError')) {
+            MainVue.setTooltip(i18nService.t('couldntPlayWebradioBecauseTheBrowserDidntAllow'), {
+                msgType: 'warn',
+                actionLink: i18nService.t('allowPlayingRadio'),
+                actionLinkFn: () => {
+                    webradioService.play(webradio);
                 }
             });
+        } else if (lastPlayedId === webradio.radioId) {
+            showErrorMsg(webradio);
         }
-    });
+    }
 };
 
 webradioService.stop = function (radioId) {
     if (!radioId || radioId === lastPlayedId) {
-        player.pause();
-        videoPlayer.pause();
+        webAudioUtil.pause();
         MainVue.clearTooltip();
     }
 };
 
+/**
+ * toggles play/pause of the given webradio
+ * @param webradio
+ * @return the given webradio config if it's now playing, otherwise null
+ */
 webradioService.toggle = function (webradio) {
-    if ((!playingVideo && player.paused) || (playingVideo && videoPlayer.paused)) {
+    if (!webAudioUtil.isPlaying()) {
         webradioService.play(webradio);
+        return webradio;
     } else {
         webradioService.stop();
+        return null;
     }
 };
 
 webradioService.volumeUp = function () {
-    volume = volume + VOLUME_STEP <= 1.0 ? volume + VOLUME_STEP : 1;
-    webradioService.setVolume(volume);
-    setVolumeTooltip();
+    volume = webAudioUtil.volumeUp('webradioVolume');
+    localStorageService.saveJSON(constants.WEBRADIO_LAST_VOLUME_KEY, volume);
 };
 
 webradioService.volumeDown = function () {
-    volume = volume - VOLUME_STEP >= 0 ? volume - VOLUME_STEP : 0;
-    webradioService.setVolume(volume);
-    setVolumeTooltip();
-};
-
-webradioService.setVolume = function(volumeParam) {
-    volume = volumeParam !== undefined ? volumeParam : volume;
-    volume = Math.round(volume * 100) / 100;
-    localStorageService.save(constants.WEBRADIO_LAST_VOLUME_KEY, volume);
-    let playerVolume = volume * (userSettings.systemVolume / 100.0);
-    if (userSettings.systemVolumeMuted) {
-        playerVolume = 0;
-    }
-    player.volume = playerVolume;
-    videoPlayer.volume = playerVolume;
-    log.debug("radio volumes (system, radio, result)", userSettings.systemVolume, volume * 100, playerVolume * 100);
+    volume = webAudioUtil.volumeDown('webradioVolume');
+    localStorageService.saveJSON(constants.WEBRADIO_LAST_VOLUME_KEY, volume);
 };
 
 /**
@@ -269,13 +234,6 @@ function showErrorMsg(webradio) {
     });
 }
 
-function setVolumeTooltip() {
-    MainVue.setTooltip(i18nService.t('webradioVolume', Math.round(volume * 100)), {
-        revertOnClose: true,
-        timeout: 5000
-    });
-}
-
 function fillUrl(webradio, gridId) {
     return new Promise((resolve, reject) => {
         if (webradio.radioUrl) {
@@ -319,13 +277,5 @@ function fillUrl(webradio, gridId) {
         });
     });
 }
-
-function updateUserSettings() {
-    userSettings = localStorageService.getUserSettings();
-    webradioService.setVolume();
-}
-
-$(document).on(constants.EVENT_USER_CHANGED, updateUserSettings);
-$(document).on(constants.EVENT_USERSETTINGS_UPDATED, updateUserSettings);
 
 export { webradioService };

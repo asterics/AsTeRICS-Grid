@@ -23,6 +23,7 @@ import {stateService} from "./stateService.js";
 import {MapCache} from "../util/MapCache.js";
 import { liveElementService } from './liveElementService';
 import { MetaData } from '../model/MetaData';
+import { GridData } from '../model/GridData';
 
 let collectElementService = {};
 
@@ -48,12 +49,12 @@ collectElementService.getText = function () {
     return getPrintText();
 };
 
-collectElementService.initWithElements = function (elements, dontAutoPredict) {
+collectElementService.initWithGrid = function (gridData, dontAutoPredict) {
     registeredCollectElements = [];
     let oneCharacterElements = 0;
     let normalElements = 0;
     dictionaryKey = null;
-    elements.forEach((element) => {
+    gridData.gridElements.forEach((element) => {
         if (element && element.type === GridElement.ELEMENT_TYPE_NORMAL) {
             normalElements++;
             let label = i18nService.getTranslation(element.label);
@@ -74,7 +75,11 @@ collectElementService.initWithElements = function (elements, dontAutoPredict) {
             registeredCollectElements.push(copy);
         }
     });
-    keyboardLikeFactor = oneCharacterElements / normalElements;
+    if (gridData.keyboardMode) {
+        keyboardLikeFactor = gridData.keyboardMode === GridData.KEYBOARD_DISABLED ? 0 : 1;
+    } else {
+        keyboardLikeFactor = oneCharacterElements / normalElements;
+    }
     if (registeredCollectElements.length > 0) {
         updateCollectElements();
         if (!dontAutoPredict) {
@@ -87,17 +92,27 @@ collectElementService.clearCollectElements = function() {
     $('.collect-container').empty();
 }
 
-collectElementService.doCollectElementActions = async function (action) {
-    if (!action) {
-        return;
-    }
-    if (activateARASAACGrammarAPI && GridActionCollectElement.isSpeakAction(action)) {
+/**
+ * does ARASAAC grammar correction for the current collected sentence (if enabled in settings)
+ * @returns {Promise<void>}
+ */
+collectElementService.doARASAACGrammarCorrection = async function() {
+    if (activateARASAACGrammarAPI) {
         let speakText = getPrintText({ inlcudeCorrectedGrammar: false });
         speakText = await arasaacService.getCorrectGrammar(speakText);
         let changed = applyGrammarCorrection(speakText);
         if (changed) {
-            updateCollectElements();
+            await updateCollectElements();
         }
+    }
+}
+
+collectElementService.doCollectElementActions = async function (action) {
+    if (!action) {
+        return;
+    }
+    if (GridActionCollectElement.isSpeakAction(action)) {
+        await collectElementService.doARASAACGrammarCorrection();
     }
     let speakText = getPrintText({ dontIncludePronunciation: false });
     let speakArray = getSpeakArray();
@@ -177,6 +192,14 @@ collectElementService.doCollectElementActions = async function (action) {
             }
             updateCollectElements();
             break;
+        case GridActionCollectElement.COLLECT_ACTION_SHARE: {
+            let blob = await util.getCollectContentBlob();
+            await util.shareImageBlob(blob, collectElementService.getText());
+            break;
+        }
+        case GridActionCollectElement.COLLECT_ACTION_COPY_IMAGE_CLIPBOARD:
+            await util.copyCollectContentToClipboard();
+            break;
         case GridActionCollectElement.COLLECT_ACTION_COPY_CLIPBOARD:
             util.copyToClipboard(getPrintText());
             break;
@@ -238,6 +261,10 @@ collectElementService.fixateLastWordForm = function () {
 collectElementService.isCurrentGridKeyboard = function () {
     return keyboardLikeFactor > 0.4;
 }
+
+collectElementService.hasCollectedImage = function() {
+    return collectedElements.some((e) => !!getImageData(e));
+};
 
 async function applyGrammarCorrection(newText) {
     let changedSomething = false;
@@ -391,7 +418,9 @@ async function updateCollectElements(isSecondTry) {
                              </div>`;
             }
             let additionalCSS = useSingleLine ? 'overflow-x: auto; overflow-y: hidden;' : 'flex-wrap: wrap;';
-            html = `<div class="collect-container" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: ${backgroundColor}; text-align: justify; ${additionalCSS}">${html}</div>`;
+            html = `<div class="collect-container" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: ${backgroundColor}; text-align: justify; ${additionalCSS}">
+                        <div class="collect-items-container" style="display: flex; flex-direction: row; ">${html}</div>
+                    </div>`;
             outerContainerJqueryElem.html(html);
             if (useSingleLine) {
                 let scroll =
@@ -565,7 +594,7 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         let label = getLabel(element);
         let printText = getPrintTextOfElement(element);
         let image = getImageData(element);
-        if (label && label.length === 1 && collectElementService.isCurrentGridKeyboard()) {
+        if (label && collectElementService.isCurrentGridKeyboard()) {
             if (convertToLowercaseIfKeyboard) {
                 label = label.toLowerCase();
             }

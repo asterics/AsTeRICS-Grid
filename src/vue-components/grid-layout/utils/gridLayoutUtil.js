@@ -322,6 +322,43 @@ gridLayoutUtil.getElementById = function(elements = [], id) {
 }
 
 /**
+ * returns true if the given elements can be inserted at position to the given gridData without collision
+ * @param gridData
+ * @param elements
+ * @param position object with .x and .y values
+ */
+gridLayoutUtil.elementsCanBeInsertedAt = function(gridData, elements = [], position) {
+    if (!position || position.x === undefined || position.y === undefined) {
+        return false;
+    }
+    elements = JSON.parse(JSON.stringify(elements));
+    elements = gridLayoutUtil.normalizePositions(elements);
+    let occupiedMatrix = getOccupiedMatrix(gridData.gridElements);
+    for (let e of elements) {
+        e.x += position.x;
+        e.y += position.y;
+    }
+    return !elements.some(e => isOccupied(occupiedMatrix, e.x, e.y));
+};
+
+/**
+ * moves all elements, so that the most top-left element is at 0 / 0 afterwards
+ * @param elements
+ * @returns {*[]}
+ */
+gridLayoutUtil.normalizePositions = function(elements = []) {
+    let minX = Math.min(...elements.map(e => e.x));
+    let minXElems = elements.filter(e => e.x === minX);
+    let minY = Math.min(...minXElems.map(e => e.y));
+    let minElem = JSON.parse(JSON.stringify(minXElems.find(e => e.y === minY)));
+    for (let e of elements) {
+        e.x -= minElem.x;
+        e.y -= minElem.y;
+    }
+    return elements;
+};
+
+/**
  * returns a 2-dimensional array where array[x][y] indicates how often this space is occupied. Zero (0) means the space is free.
  * within the given gridElements
  * @param gridElements
@@ -335,8 +372,10 @@ function getOccupiedMatrix(gridElements, options = {}) {
         gridLayoutUtil.getHeight(gridElements, options.gridHeight),
         0);
     for (let element of gridElements) {
-        for (let i = element.x; i < element.x + element.width; i++) {
-            for (let j = element.y; j < element.y + element.height; j++) {
+        let startX = Math.max(0, element.x || 0);
+        let startY = Math.max(0, element.y || 0);
+        for (let i = startX; i < element.x + element.width; i++) {
+            for (let j = startY; j < element.y + element.height; j++) {
                 occupiedMatrix[i][j]++;
             }
         }

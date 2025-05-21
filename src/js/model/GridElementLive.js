@@ -5,6 +5,7 @@ class GridElementLive extends GridElement.extend({
     updateSeconds: [Number],
     liveAction: [Object],
     dateTimeFormat: [String],
+    state: [String],
     appState: [String],
     extractMode: [String],
     extractSelector: [String, Number, undefined], //e.g. path like "info.name" for JSON; a querySelector like #id for HTML mode; startIndex for substring
@@ -23,7 +24,8 @@ GridElementLive.MODE_ACTION_RESULT = 'MODE_ACTION_RESULT';
 GridElementLive.MODE_DATETIME = 'MODE_DATETIME';
 GridElementLive.MODE_APP_STATE = 'MODE_APP_STATE';
 GridElementLive.MODE_RANDOM = 'MODE_RANDOM';
-GridElementLive.MODES = [GridElementLive.MODE_DATETIME, GridElementLive.MODE_APP_STATE, GridElementLive.MODE_ACTION_RESULT, GridElementLive.MODE_RANDOM];
+GridElementLive.MODE_PODCAST_STATE = 'MODE_PODCAST_STATE';
+GridElementLive.MODES = [GridElementLive.MODE_DATETIME, GridElementLive.MODE_APP_STATE, GridElementLive.MODE_ACTION_RESULT, GridElementLive.MODE_RANDOM, GridElementLive.MODE_PODCAST_STATE];
 
 GridElementLive.DT_FORMAT_DATE = 'DT_FORMAT_DATE';
 GridElementLive.DT_FORMAT_DATE_LONG = 'DT_FORMAT_DATE_LONG';
@@ -38,7 +40,13 @@ GridElementLive.APP_STATE_VOLUME_GLOBAL = 'APP_STATE_VOLUME_GLOBAL';
 GridElementLive.APP_STATE_VOLUME_YT = 'APP_STATE_VOLUME_YT';
 GridElementLive.APP_STATE_VOLUME_RADIO = 'APP_STATE_VOLUME_RADIO';
 GridElementLive.APP_STATE_BATTERY_LEVEL = 'APP_STATE_BATTERY_LEVEL';
-GridElementLive.APP_STATES = [GridElementLive.APP_STATE_VOLUME_GLOBAL, GridElementLive.APP_STATE_VOLUME_RADIO, GridElementLive.APP_STATE_VOLUME_YT, GridElementLive.APP_STATE_BATTERY_LEVEL]
+GridElementLive.APP_STATES = [GridElementLive.APP_STATE_VOLUME_GLOBAL, GridElementLive.APP_STATE_VOLUME_RADIO, GridElementLive.APP_STATE_VOLUME_YT, GridElementLive.APP_STATE_BATTERY_LEVEL];
+
+GridElementLive.PODCAST_CURRENT_PODCAST = 'PODCAST_CURRENT_PODCAST';
+GridElementLive.PODCAST_CURRENT_EPISODE = 'PODCAST_CURRENT_EPISODE';
+GridElementLive.PODCAST_PLAY_TIME = 'PODCAST_PLAY_TIME';
+GridElementLive.PODCAST_REMAINING_TIME = 'PODCAST_REMAINING_TIME';
+GridElementLive.PODCAST_STATES = [GridElementLive.PODCAST_CURRENT_PODCAST, GridElementLive.PODCAST_CURRENT_EPISODE, GridElementLive.PODCAST_PLAY_TIME, GridElementLive.PODCAST_REMAINING_TIME];
 
 GridElementLive.EXTRACT_JSON = "EXTRACT_JSON";
 GridElementLive.EXTRACT_HTML_SELECTOR = "EXTRACT_HTML_SELECTOR";

@@ -1,13 +1,14 @@
 <template>
     <div class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
-         :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: pointer;
-         border: ${borderWidthPx}px solid ${getBorderColor(element)}; background-color: ${getBackgroundColor(element)}; font-family: ${metadata.textConfig.fontFamily};`">
+         :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: ${cursorType};
+         border: ${borderWidthPx}px solid ${getBorderColor(element)}; background-color: ${backgroundColor}; font-family: ${metadata.textConfig.fontFamily};`">
         <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
         <grid-element-predict v-if="element.type === GridElement.ELEMENT_TYPE_PREDICTION" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-live v-if="element.type === GridElement.ELEMENT_TYPE_LIVE" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
-        <grid-element-hints :grid-element="element" :metadata="metadata"/>
+        <grid-element-matrix-conversation v-if="element.type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" aria-hidden="true"/>
+        <grid-element-hints :grid-element="element" :metadata="metadata" :background-color="backgroundColor"/>
         <div v-if="showResizeHandle" class="ui-resizable-handle ui-icon ui-icon-grip-diagonal-se" style="position: absolute; z-index: 2; bottom: 0; right: 0; cursor: se-resize;"></div>
     </div>
 </template>
@@ -35,9 +36,11 @@ import { GridActionWebradio } from '../../js/model/GridActionWebradio';
 import { GridActionYoutube } from '../../js/model/GridActionYoutube';
 import { ColorConfig } from '../../js/model/ColorConfig';
 import GridElementLive from './grid-elements/GridElementLive.vue';
+import GridElementMatrixConversation from './grid-elements/gridElementMatrixConversation.vue';
+import { gridUtil } from '../../js/util/gridUtil';
 
 export default {
-    components: { GridElementLive, GridElementNormal, GridElementYoutube, GridElementCollect, GridElementHints, GridElementPredict },
+    components: { GridElementMatrixConversation, GridElementLive, GridElementNormal, GridElementYoutube, GridElementCollect, GridElementHints, GridElementPredict },
     props: ["element", "metadata", "showResizeHandle", "editable", "oneElementSize", "watchForChanges"],
     data() {
         return {
@@ -55,6 +58,18 @@ export default {
                 height: this.oneElementSize.height * this.element.height - 2 * this.getElementMargin() - 2 * this.getBorderWidth()
             }
         },
+        backgroundColor() {
+            if (!this.metadata || !this.element) {
+                return '';
+            }
+            if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BACKGROUND) {
+                return MetaData.getElementColor(this.element, this.metadata);
+            }
+            return this.metadata.colorConfig.elementBackgroundColor;
+        },
+        cursorType() {
+            return gridUtil.getCursorType(this.metadata, "pointer");
+        }
     },
     methods: {
         getBorderColor(element) {
@@ -70,12 +85,6 @@ export default {
                 return MetaData.getElementColor(element, this.metadata, color);
             }
             return color;
-        },
-        getBackgroundColor(element) {
-            if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BACKGROUND) {
-                return MetaData.getElementColor(element, this.metadata);
-            }
-            return this.metadata.colorConfig.elementBackgroundColor;
         },
         isEmpty(element) {
             if (element.type === GridElementModel.ELEMENT_TYPE_NORMAL) {
