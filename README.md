@@ -20,7 +20,7 @@ Use it for:
 * **Customizable grid system**: flexible layouts tailored to any use case
 * **Wide range of input methods**:  click, touch, hover, scanning, keyboard, switches — or advanced methods like eye tracking, head tracking, or EMG muscle sensors (via the [AsTeRICS Framework](https://www.asterics.eu/get-started/Overview.html))
 
-### AAC related features
+### AAC-related features
 
 * **Text-to-speech** in multiple languages (depending on the device)
 * **Multilingual support**: build communicators that support different languages
