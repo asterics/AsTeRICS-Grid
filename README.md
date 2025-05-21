@@ -1,4 +1,7 @@
 # AsTeRICS Grid
+
+![AsTeRICS Grid use cases](docs/ag-use-cases.png)
+
 Create **grid-based user interfaces** that are **flexible, inclusive and fully accessible**.
 
 Use it for: 
@@ -7,8 +10,6 @@ Use it for:
 * **Smart Home control**: operate devices directly or integrate with platforms like [openHAB](https://www.openhab.org/) or [HomeAssistant](https://www.home-assistant.io/)
 
 **Accessible to everyone**: can be operated via **mouse click, touch, keyboard, single switch, or eye gaze** — adaptable to any user's abilities.
-
-![AsTeRICS Grid use cases](docs/ag-use-cases.png)
 
 ## Features
 
