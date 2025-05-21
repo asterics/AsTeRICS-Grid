@@ -1,24 +1,48 @@
 # AsTeRICS Grid
-App for creating a flexible grid system that can be used for **Augmentative and Alternative Communication (AAC)**, for **Smart Home control** and as a **webradio** or **YouTube player**.
+Create **grid-based user interfaces** that are **flexible, inclusive and fully accessible**.
 
-## Core features
-These are the most important features of AsTeRICS Grid:
-* **Cross platform**: runs on PC, Smartphone, Tablet, Windows, Linux, Android, iOS
-* **No installation** needed, just open https://grid.asterics.eu/ in the browser
-* Once loaded, AsTeRICS Grid **runs offline** without internet connection
-* Optionally **synchronize configuration** using the cloud (data is end-to-end encrypted)
-* Very **flexible grid system**, layouts are completely customizable
-* **Text-to-speech** in various languages
-* **Internationalization**: create grid sets in multiple languages
-* **Various input possibilities** like Clicking, Tapping (on touchscreen), Hovering, Scanning, Keyboard, Buttons, and even more complex ones like Eye-Tracking, Head-Tracking or use of EMG muscle sensors (using the AsTeRICS Framework)
-* Integrated search for **open AAC symbols** from https://www.opensymbols.org/
-* **Smart Home control** (using the AsTeRICS Framework)
-* **Flexible keyboard layouts** with **word prediction** and **self-learning dictionaries**
-* **Play webradios** (over 25000) using [radio-browser.info](http://www.radio-browser.info/gui/#!/)
-* **Search and play YouTube videos**
+Use it for: 
+* **Augmentative and Alternative Communication (AAC)**: very simple to highly complex communication boards
+* **Media access**: browse and play YouTube, web radios, podcasts
+* **Smart Home control**: operate devices directly or integrate with platforms like [openHAB](https://www.openhab.org/) or [HomeAssistant](https://www.home-assistant.io/)
 
-## Production environments
-There are 3 versions of AsTeRICS Grid online:
+**Accessible to everyone**: can be operated via **mouse click, touch, keyboard, single switch, or eye gaze** — adaptable to any user's abilities.
+
+![AsTeRICS Grid use cases](docs/ag-use-cases.png)
+
+## Features
+
+* **Cross-platform**: works on PC, smartphone, and tablet across Windows, Linux, Android, and iOS
+* **No installation required**, just open [grid.asterics.eu](https://grid.asterics.eu/) in the browser (or install it to your desktop or home screen)
+* **Offline capable**: works without an internet connection
+* Optional **cloud sync**: synchronize your configuration across devices (with **end-to-end encryption**)
+* **Customizable grid system**: flexible layouts tailored to any use case
+* **Wide range of input methods**:  click, touch, hover, scanning, keyboard, switches — or advanced methods like eye tracking, head tracking, or EMG muscle sensors (via the [AsTeRICS Framework](https://www.asterics.eu/get-started/Overview.html))
+
+### AAC related features
+
+* **Text-to-speech** in multiple languages (depending on the device)
+* **Multilingual support**: build communicators that support different languages
+* Integrated search for **free AAC symbols** from [ARASAAC](https://arasaac.org/) and [Open Symbols](https://www.opensymbols.org/)
+* **Word forms**: enable automatic inflections (e.g. conjugations, plurals)
+* **Customizable keyboards** with **word prediction** and **self-learning dictionaries**
+* **Global grid**: define elements that appear across all pages (e.g. for core vocabulary)
+* **Progressive language**: design communicators for various language development levels
+* **Share created sentences** with any other app (e.g. WhatsApp)
+* **Built-in messenger**: chat within the app using text, emojis, or pictograms – powered by [Matrix](https://matrix.org/)
+
+### Smart Home and media access
+
+* **Smart Home control**: directly via HTTP actions or connect with [openHAB](https://www.openhab.org/) or [HomeAssistant](https://www.home-assistant.io/)
+* **Live elements**: display status of the app or external devices
+* **Web radio**: play any radio station - powered by [radio-browser.info](http://www.radio-browser.info/gui/#!/)
+* **Podcasts**: listen to any podcast - powered by [podcastindex.org]()
+* **YouTube access**: search and play videos directly within the app
+
+## Where to Use It
+
+There are three online versions of AsTeRICS Grid:
+
 * https://grid.asterics.eu/ current stable release
 * https://grid.asterics.eu/latest/ current testing (beta) release, possibly unstable
 * http://grid.asterics-foundation.org/ non-https version, but otherwise exactly the same app as https://grid.asterics.eu/ - may be used in cases where interaction with local resources (e.g. HTTP action) is needed and [browsers are refusing it because of mixed content](https://github.com/asterics/AsTeRICS-Grid/discussions/410). 
@@ -38,10 +62,8 @@ Also see [Developer documentation (not finished, maybe outdated)](docs/documenta
 ## Npm scripts
 After `yarn install` the following commands are available:
 1. `npm run start` --> starts a webserver serving the AsTeRICS grid on `http://localhost:9095`, does hot reloading if js-sources change.
-1. `npm run start-legacy` --> same as `start` but js sources are transformed to ES5 using babel.
-1. `npm run start-no-live` --> same as `start` but hot reloading is disabled.
 2. `npm run build` --> builds the js-files in folder `src` to `app/build` folder.
-3. `npm run start-superlogin-dev` --> runs [superlogin](https://github.com/colinskow/superlogin) locally and makes it possible to create "online users" within the locally running application. A local [CouchDb](https://couchdb.apache.org/) instance is necessary in order to work.
+3. `npm run start-auth` --> runs [couch-auth](https://github.com/perfood/couch-auth) locally and makes it possible to create "online users" within the locally running application. A local [CouchDb](https://couchdb.apache.org/) instance is necessary in order to work.
 4. `npm run release` -> releases the current version with a new tag and push it to `gh-pages` branch in order to be served at https://grid.asterics.eu/
 5. `npm run release-latest` -> same as `npm run release` but with destination https://grid.asterics.eu/latest/
 5. `npm run test` -> runs tests of the project using [Jest](https://jestjs.io/).
@@ -76,23 +98,20 @@ Other people and organizations we want to thank:
 * Thanks to [crowdin.com](https://crowdin.com/project/asterics-grid) for providing a free open source license
 * Thanks to [browserstack.com](https://browserstack.com/) for providing us free UI tests on their platform.
 * Thanks to Alex Segler for the great Webradio API [radio-browser.info](http://www.radio-browser.info/) which makes it possible to search and play webradios within AsTeRICS Grid
+* Thanks to [podcastindex.org](https://podcastindex.org/) for a great global listing of podcasts and episodes
 * Thanks to the makers of the API from [opensymbols.org](https://www.opensymbols.org/) which makes it possible to search for open AAC symbols within AsTeRICS Grid
 * Thanks to ResponsiveVoice for providing an free non-commercial version, <a href="https://responsivevoice.org">ResponsiveVoice-NonCommercial</a> licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img title="ResponsiveVoice Text To Speech" src="https://responsivevoice.org/wp-content/uploads/2014/08/95x15.png" alt="95x15" width="95" height="15" /></a>
 * Thanks to [open-meteo.com](https://open-meteo.com/), which provides free weather data, which can be displayed within AsTeRICS Grid
 * Thanks to all the developers of these projects, which are all used by AsTeRICS Grid in production:
-    * [core-js](https://github.com/zloirock/core-js)
     * [couch-auth](https://github.com/perfood/couch-auth)
-    * [dom-i18n](https://github.com/ruyadorno/dom-i18n)
     * [file-saver](https://www.npmjs.com/package/file-saver)
-    * [fontawesome](https://fontawesome.com/)
-    * [GridList](https://github.com/hootsuite/grid)
     * [hls.js](https://github.com/video-dev/hls.js/)
     * [html2canvas](https://github.com/niklasvh/html2canvas)
+    * [interactjs](https://interactjs.io/)
+    * [jspdf](https://github.com/parallax/jsPDF)
     * [jszip](https://stuk.github.io/jszip/)
-    * [jQuery](https://jquery.com/)
-    * [jQuery context menu](https://swisnl.github.io/jQuery-contextMenu/)
-    * [jQuery UI](https://jqueryui.com/)
-    * [loglevel](https://github.com/pimterry/loglevel)
+    * [matrix-js-sdk](https://github.com/matrix-org/matrix-js-sdk)
+    * [n-ary-huffman](https://github.com/lydell/n-ary-huffman)
     * [navigo](https://github.com/krasimir/navigo)
     * [n-ary-huffman](https://github.com/lydell/n-ary-huffman)
     * [Object Model](https://objectmodel.js.org/)
@@ -101,7 +120,13 @@ Other people and organizations we want to thank:
     * [Stanford Javascript Crypto Library (SJCL)](https://crypto.stanford.edu/sjcl/)
     * [superlogin-client](https://www.npmjs.com/package/superlogin-client)
     * [Vue.js](https://vuejs.org/)
+    * [vue-i18n](https://vue-i18n.intlify.dev/)
+    * [vue-multiselect](https://vue-multiselect.js.org/)
     * [Workbox](https://github.com/GoogleChrome/workbox)
-
-## History
-The AsTeRICS Grid evolved out of [AsTeRICS Ergo](https://github.com/asterics/AsTeRICS-Ergo), see [AsTeRICS Ergo Master Plan](https://github.com/asterics/AsTeRICS-Ergo/wiki/Master-Plan-AsTeRICS-Ergo) and [AsTeRICS Ergo Architecture](https://github.com/asterics/AsTeRICS-Ergo/wiki/Architecture) and will eventually replace AsTeRICS Ergo.
+    * [Bootstrap](https://getbootstrap.com/)
+    * [fontawesome](https://fontawesome.com/)
+    * [dom-i18n](https://github.com/ruyadorno/dom-i18n)
+    * [jQuery](https://jquery.com/)
+    * [jQuery context menu](https://swisnl.github.io/jQuery-contextMenu/)
+    * [jQuery UI](https://jqueryui.com/)
+    * [loglevel](https://github.com/pimterry/loglevel)
