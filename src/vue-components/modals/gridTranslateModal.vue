@@ -89,33 +89,42 @@
                                 </div>
                             </div>
                             <div id="translationList">
-                                <h2>{{ $t('nameOfGrid') }}</h2>
-                                <ul>
-                                    <li v-for="data in selectedGrids">
+                                <h2 v-if="gridsWithLabel.length > 0">{{ $t('nameOfGrid') }}</h2>
+                                <ul v-if="gridsWithLabel.length > 0">
+                                    <li v-for="data in gridsWithLabel">
                                         <div class="srow">
                                             <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="data.label[currentLocale]" @change="changedGrid(data)"/>
                                             <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="data.label[chosenLocale]" @change="changedGrid(data)"/>
                                         </div>
                                     </li>
                                 </ul>
-                                <h2>{{ $t('elementLabels') }}</h2>
-                                <ul>
-                                    <li v-for="item in allElements">
-                                        <div v-if="showGridElements(item.grid) && shouldShowMap[item.element.id]" class="srow">
+                                <h2 v-if="actionElems.length > 0">{{ `${$t('actions')} "${$t('GridActionSpeakCustom')}"` }}</h2>
+                                <ul v-if="actionElems.length > 0">
+                                    <li v-for="item in actionElems">
+                                        <div class="srow" v-for="action in item.element.actions" v-if="action.modelName === GridActionSpeakCustom.getModelName()">
+                                            <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" :i18nid="getI18nId(item.grid, item.element, GridActionSpeakCustom.getModelName())" v-model="action.speakText[currentLocale]" @change="changedGrid(item.grid)"/>
+                                            <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" :i18nid="getI18nId(item.grid, item.element, GridActionSpeakCustom.getModelName())" v-model="action.speakText[chosenLocale]" @change="changedGrid(item.grid)"/>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <h2 v-if="firstElements.length || lastElements.length">{{ $t('elementLabels') }}</h2>
+                                <ul v-if="firstElements.length || lastElements.length">
+                                    <li v-for="item in firstElements">
+                                        <div class="srow">
                                             <div class="one columns">
-                                                <img height="25" style="max-width: 100%;" :src="item.element.image ? item.element.image.url || item.element.image.data : ''">
+                                                <img height="25" style="max-width: 100%;" :src="item.element.image ? (item.element.image.url || item.element.image.data) : ''">
                                             </div>
                                             <input type="text" :placeholder="`(${currentLangTranslated})`" class="five columns" :lang="currentLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[currentLocale]" @change="changedGrid(item.grid)"/>
                                             <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[chosenLocale]" @change="changedGrid(item.grid)"/>
                                         </div>
                                     </li>
-                                </ul>
-                                <h2 v-if="anyHasCustomSpeakAction">{{ `${$t('actions')} "${$t('GridActionSpeakCustom')}"` }}</h2>
-                                <ul v-if="anyHasCustomSpeakAction">
-                                    <li v-for="item in allElements" v-if="showGridElements(item.grid)">
-                                        <div class="srow" v-for="action in item.element.actions" v-if="action.modelName === GridActionSpeakCustom.getModelName()">
-                                            <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" :i18nid="getI18nId(item.grid, item.element, GridActionSpeakCustom.getModelName())" v-model="action.speakText[currentLocale]" @change="changedGrid(item.grid)"/>
-                                            <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" :i18nid="getI18nId(item.grid, item.element, GridActionSpeakCustom.getModelName())" v-model="action.speakText[chosenLocale]" @change="changedGrid(item.grid)"/>
+                                    <li v-for="item in lastElements">
+                                        <div class="srow">
+                                            <div class="one columns">
+                                                <img height="25" style="max-width: 100%;" :src="item.element.image ? item.element.image.url || item.element.image.data : ''">
+                                            </div>
+                                            <input type="text" :placeholder="`(${currentLangTranslated})`" class="five columns" :lang="currentLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[currentLocale]" @change="changedGrid(item.grid)"/>
+                                            <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[chosenLocale]" @change="changedGrid(item.grid)"/>
                                         </div>
                                     </li>
                                 </ul>
@@ -146,7 +155,6 @@
     import {GridActionSpeakCustom} from "../../js/model/GridActionSpeakCustom";
     import {util} from "../../js/util/util";
     import {dataService} from "../../js/service/data/dataService";
-    import {localStorageService} from "../../js/service/data/localStorageService";
 
     window.hideKeyboardTranslations = true;
     export default {
@@ -161,7 +169,7 @@
                 allLanguages: i18nService.getAllLanguages(),
                 usedLocales: [],
                 changedGrids: [],
-                shouldShowMap: {} // element-id or action-id => boolean, tells if element should be shown in translate view
+                originalElementInfo: {} // grid-id + element-id => {label: originalLabelObject, hasImage: true/false}, tells if element should be shown in translate view
             }
         },
         computed: {
@@ -180,12 +188,23 @@
             allElements() {
                 let result = [];
                 for (let grid of this.selectedGrids) {
-                    result = result.concat(grid.gridElements.map(el => ({ element: el, grid: grid })));
+                    if (this.showGridElements(grid)) {
+                        result = result.concat(grid.gridElements.map(el => ({ element: el, grid: grid })));
+                    }
                 }
                 return result;
             },
-            anyHasCustomSpeakAction() {
-                return this.allElements.some(item => item.element.actions.some(action => action.modelName === GridActionSpeakCustom.getModelName()));
+            firstElements() {
+                return this.allElements.filter(data => this.originalElementInfo[data.grid.id + data.element.id].label[this.currentLocale]);
+            },
+            lastElements() {
+                return this.allElements.filter(data => !this.originalElementInfo[data.grid.id + data.element.id].label[this.currentLocale] && this.originalElementInfo[data.grid.id + data.element.id].hasImage);
+            },
+            actionElems() {
+                return this.allElements.filter(data => data.element.actions.some(action => action.modelName === GridActionSpeakCustom.getModelName() && action.speakText[this.currentLocale]));
+            },
+            gridsWithLabel() {
+                return this.selectedGrids.filter(grid => this.originalElementInfo[grid.id].label[this.currentLocale]);
             }
         },
         methods: {
@@ -219,7 +238,7 @@
                     let elements2 = $(`#translationList input[lang='${otherLocale}']`).toArray();
                     text = '';
                     for (let i = 0; i < elements.length; i++) {
-                        if (!onlyOtherEmpty || (elements[i].value && !elements2[i].value)) {
+                        if (elements[i].value && (!onlyOtherEmpty || !elements2[i].value)) {
                             text += elements[i].value + '\n';
                         }
                     }
@@ -282,10 +301,15 @@
                 this.allGrids.sort((g1, g2) => i18nService.getTranslation(g1.label).localeCompare(i18nService.getTranslation(g2.label)));
                 this.gridData = this.allGrids.filter(grid => grid.id === this.gridDataId)[0];
                 for (let gridData of this.allGrids) {
+                    this.originalElementInfo[gridData.id] = {
+                        label: JSON.parse(JSON.stringify(gridData.label))
+                    };
                     for (let element of gridData.gridElements) {
-                        let anyLabel = Object.keys(element.label).some(lang => !!element.label[lang]);
-                        let hasImage = element.image && (element.image.url || element.image.data);
-                        this.shouldShowMap[element.id] = anyLabel || hasImage;
+                        let hasImage = element.image && !!(element.image.url || element.image.data);
+                        this.originalElementInfo[gridData.id + element.id] = {
+                            label: JSON.parse(JSON.stringify(element.label)),
+                            hasImage: hasImage
+                        };
                         for (let lang of Object.keys(element.label)) {
                             if (!this.usedLocales.includes(lang) && !!element.label[lang]) {
                                 this.usedLocales.push(lang);
