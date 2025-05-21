@@ -3,6 +3,7 @@
 Live elements can display dynamic information. This can be:
 * **Application / system status**, e.g. current volume or battery level
 * **Date and time** values
+* **Random values**: e.g. dice 1-6
 * **Status of devices**, e.g. smart devices like [Shelly plugs](https://www.shelly.com/de/products/shelly-plug-s-gen3)
 * **Content of external websites**, e.g. current headlines from some news sites
 * **Any other content retrieved by HTTP from any API**, e.g. random jokes or the current weather
@@ -19,6 +20,7 @@ This is how the live element can be configured, see Fig. 1:
    * **Application state**, e.g. current volume, battery state
    * **Action result**, result of an action, e.g. HTTP action retrieving data from an API
    * **Random value**, choosing randomly from a set of values, e.g. dice
+   * **Podcast state**, state of currently played podcast, see [Podcast actions]()
 * **(2) Update interval**: the interval in seconds in which the value should be updated. Not applicable for "Date / time" and "application state", those are updated automatically.
 
 ## Action result - HTTP action
@@ -73,6 +75,13 @@ If "Application state" is selected for display mode, it's possible to select fro
 If "Random value" is selected for display mode, it's possible to specify these values:
 * **Values to choose from**: a semicolon-separated list of values which are used for choosing. For instance `1;2;3;4;5;6` for a dice. Note that also emojis can be used by copying them from a page like [emojicopy.com](https://emojicopy.com/).
 * **Update interval**: interval for automatic update of the element, meaning choosing a random value again. If not specified, there is no automatic update.
+
+## Podcast state
+If "Podcast state" is selected for display mode, the live element shows a state of the currently played podcast. It's possible to select from these states:
+* **Current podcast title**: title of the currently played podcast
+* **Current episode title**: title of the currently played episode
+* **Playback time**: current playback time of the current episode
+* **Remaining time**: remaining playback time of the current episode
 
 ## Update live elements manually
 It's possible to update live elements manually as an element action that can be attached to any element. This makes sense for live elements containing random data or retrieving external information like jokes.

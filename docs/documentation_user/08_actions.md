@@ -13,8 +13,9 @@ This chapter is about actions that can be performed if a grid element is selecte
 * [Collect element action](08_actions.md#collect-element-action): performs actions on [collect elements](01_terms.md#grid-element) in the current grid, e.g. clearing it or copying it's text to clipboard
 * [AsTeRICS Action](08_actions.md#asterics-action): does an action in a running [model](01_terms.md#asterics-model) in the [AsTeRICS Framework](01_terms.md#asterics-framework)
 * [openHAB Action](08_actions.md#openhab-action): allows to do environmental control using devices interfaced by the OpenHAB framework
-* [Web radio action](08_actions.md#web-radio-action): plays a web radio station
-* [YouTube Action](08_actions.md#youtube-action): links to a YouTube video and shows it without leaving the communicator
+* [Web radio action](08_actions.md#web-radio-action): controls playback of web radios
+* [YouTube action](08_actions.md#youtube-action): controls playback of YouTube videos within AsTeRICS Grid
+* [Podcast action](08_actions.md#podcast-action): controls playback of podcasts within AsTeRICS Grid
 * [Change Content Language](08_actions.md#change-content-language): changes the content language (description of grid elements / language of the communicator grid(s)) and the voice
 * [Open webpage in new tab](08_actions.md#open-webpage-in-new-tab): allows to assign an external web page to a cell and opens it in a new tab
 * [HTTP action](08_actions.md#http-action): allows to execute commands on programs and devices providing a REST API through HTTP.
@@ -288,13 +289,14 @@ These are the elements in this configuration dialog:
 16. **Previous page**: navigates to the previous page of search results (if available)
 17. **Next page**: navigates to the next page of search results (if available)
 
-## YouTube Action
+## YouTube action
 
 The YouTube Action allows you to link videos from this web page to the communicator and view them without leavting the communicator. Different control functions can be assigned to the cells for the display of the videos.
 
 Clicking on "Edit" of a "YouTube" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Figure 13):
 
 <img src="./img/action_youtube_en.JPG" width="800"/>
+
 *Figure 13: Configuration possibilites of "YouTube Action"*
 
 The possible actions/functions to choose are (when opening the combo box):
@@ -329,6 +331,39 @@ To add a "YouTube Grid", one grid element hast to be a "YouTube Player", which c
 *Figure 14: Creating a New YouTube Player element"*
 
 Other ("normal") grid elements can be assigned with the functions listed above and a corresponding image can be chosen in the *Image Tab*. In ARASAAC, a collection of multimedia buttons is prepared, just type the word *button* in the *Image search* field of the *Image Tab*. If different grid elements are assigned with the *Play video* functions and are linked to different YouTube videos, the selected video will be played in the "YouTube Player" element, which has been created as shown in Figure 14.
+
+## Podcast action
+
+Podcast actions allow to control playback of podcasts within AsTeRICS Grid. The integrated podcast search uses [podcastindex.org](https://podcastindex.org/), a free web service that provides a global index of podcasts and episodes.
+
+Clicking "Edit" on a "Podcast action" (or creating a new one) shows the following configuration possibilities:
+
+![Web radio action options](./img/action_podcast.png)
+
+*Figure: Configuration options of "Podcast action"*
+
+These are the elements in this configuration dialog:
+
+1. **Podcast action**: choose which podcast action to perform. Can be one of these:
+   * **Play**: play the latest or last heard episode of the selected podcast
+   * **Pause**
+   * **Toggle play/pause**: play or pause, depending on current state
+   * **Step forward**: skip forward by a configurable number of seconds
+   * **Step backward**: skip backward by a configurable number of seconds
+   * **Latest episode**: play the latest episode of selected podcast
+   * **Next episode**: play the next episode of selected podcast
+   * **Previous episode**: play the previous episode of selected podcast
+   * **Volume up**
+   * **Volume down**
+1. **Podcast to play**: select which podcast to play, can be `automatic` (last played) or a specific podcast from the list "selected podcasts" below.
+1. **Manage podcasts**: accordion where it's possible to search and select podcasts 
+1. **Selected podcasts**: list of podcasts selected by the user (afterward available above in "podcast to play")
+1. **Create grid elements for podcasts**: create a grid element for each selected podcast with image of the podcast cover and action to toggle play/pause for this podcast
+1. **Actions for selected podcasts**: rearrange selected podcasts (move up using the `Up` button), test it by playing or remove it from the list of selected podcasts 
+1. **Podcast search**: search for new podcasts with a search term 
+1. **Actions for found podcast list**: test the podcast using `Play` or add it to the selected podcasts using `Select`
+
+There is a [podcast demo configuration](https://grid.asterics.eu/?gridset_filename=podcast_demo.grd.json) available for testing all of these actions.
 
 ## Change Content Language / Voice
 
