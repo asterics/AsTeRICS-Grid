@@ -1280,5 +1280,6 @@
   "autoSpeakIncomingMessages": "Pronunciar automáticamente los mensajes entrantes",
   "podcastToPlay": "Podcast a reproducir",
   "managePodcasts": "Gestionar podcast",
-  "selectedPodcasts": "Podcasts seleccionados"
+  "selectedPodcasts": "Podcasts seleccionados",
+  "hideKeyboards": "Hide keyboards"
 }
