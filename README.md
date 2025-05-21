@@ -2,7 +2,7 @@
 
 ![AsTeRICS Grid use cases](docs/ag-use-cases.png)
 
-Create **grid-based user interfaces** that are **flexible, inclusive and fully accessible**.
+Create **grid-based user interfaces** that are **flexible and fully accessible**.
 
 Use it for: 
 * **Augmentative and Alternative Communication (AAC)**: very simple to highly complex communication boards
