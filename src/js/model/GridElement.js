@@ -31,6 +31,7 @@ class GridElement extends Model({
     x: [Number],
     y: [Number],
     label: [Object, String, undefined], //map locale -> translation, e.g. "de" => LabelDE
+    pronunciation: [Object], //map locale -> pronunciation, e.g. "de" => pronunciationDE
     wordForms: [Model.Array(Object)], //Array of WordForm, removed for performance reasons
     fontSizePct: [Number],
     fontColor: [String],
@@ -137,6 +138,7 @@ GridElement.DEFAULTS = {
     modelName: GridElement.getModelName(),
     modelVersion: constants.MODEL_VERSION,
     label: {},
+    pronunciation: {},
     width: 1,
     height: 1,
     image: new GridImage(),

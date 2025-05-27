@@ -23,6 +23,12 @@
                                     <label for="hideKeyboards">{{ $t('hideKeyboards') }}</label>
                                 </div>
                             </div>
+                            <div class="srow">
+                                <label class="four columns" for="translateType">{{ $t('whatToTranslate') }}</label>
+                                <select class="four columns" id="translateType" v-model="translateType">
+                                    <option v-for="type in TRANSLATE_TYPES" :value="type">{{ $t(type) }}</option>
+                                </select>
+                            </div>
                             <div class="srow mt-4" v-if="usedLocales.length > 0">
                                 <label class="four columns">{{ $t('selectAlreadyUsedLanguages') }}</label>
                                 <span class="eight columns">
@@ -35,7 +41,7 @@
                                         <strong>{{ $t('textsIn') }}</strong> <strong>{{currentLangTranslated}} ({{currentLocale}})</strong>
                                     </div>
                                     <div class="srow">
-                                        <button class="six columns" @click.exact="copy(currentLocale)" @click.ctrl.exact="copy(currentLocale, false, true)" @click.ctrl.shift.exact="copy(currentLocale, true, false)" :title="$t('copyColumn')">
+                                        <button class="six columns" @click.exact="copy(currentLocale)" @click.ctrl.exact="copy(currentLocale, true)" :title="$t('copyColumn')">
                                             <i class="far fa-copy"></i>
                                             <span class="show-mobile">
                                                 <i18n path="copySomething" tag="span">
@@ -46,7 +52,7 @@
                                             </span>
                                             <span class="hide-mobile">{{ $t('copyColumn') }}</span>
                                         </button>
-                                        <button class="six columns" @click.exact="paste(currentLocale)" @click.ctrl.exact="paste(currentLocale, false, true)" @click.ctrl.shift.exact="paste(currentLocale, true)" :title="$t('pasteColumn')">
+                                        <button class="six columns" @click.exact="paste(currentLocale)" @click.ctrl.exact="paste(currentLocale, true)" :title="$t('pasteColumn')">
                                             <i class="far fa-clipboard"></i>
                                             <span class="show-mobile">
                                                 <i18n path="pasteSomething" tag="span">
@@ -67,7 +73,7 @@
                                         </select>
                                     </div>
                                     <div class="srow">
-                                        <button class="six columns" @click.exact="copy(chosenLocale)" @click.ctrl.exact="copy(chosenLocale, false, true)" @click.ctrl.shift.exact="copy(chosenLocale, true, false)" :title="$t('copyColumn')">
+                                        <button class="six columns" @click.exact="copy(chosenLocale)" @click.ctrl.exact="copy(chosenLocale, true)" :title="$t('copyColumn')">
                                             <i class="far fa-copy"></i>
                                             <span class="show-mobile">
                                                 <i18n path="copySomething" tag="span">
@@ -78,7 +84,7 @@
                                             </span>
                                             <span class="hide-mobile">{{ $t('copyColumn') }}</span>
                                         </button>
-                                        <button class="six columns" @click.exact="paste(chosenLocale)" @click.ctrl.exact="paste(chosenLocale, false, true)" @click.ctrl.shift.exact="paste(chosenLocale, true)" :title="$t('pasteColumn')">
+                                        <button class="six columns" @click.exact="paste(chosenLocale)" @click.ctrl.exact="paste(chosenLocale, true)" :title="$t('pasteColumn')">
                                             <i class="far fa-clipboard"></i>
                                             <span class="show-mobile">
                                                 <i18n path="pasteSomething" tag="span">
@@ -93,36 +99,50 @@
                                 </div>
                             </div>
                             <div id="translationList">
-                                <h2 v-if="gridsWithLabel.length > 0">{{ $t('nameOfGrid') }}</h2>
-                                <ul v-if="gridsWithLabel.length > 0">
-                                    <li v-for="data in gridsWithLabel">
-                                        <div class="srow">
-                                            <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="data.label[currentLocale]" @change="changedGrid(data)"/>
-                                            <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="data.label[chosenLocale]" @change="changedGrid(data)"/>
-                                        </div>
-                                    </li>
-                                </ul>
-                                <h2 v-if="actionElems.length > 0">{{ `${$t('actions')} "${$t('GridActionSpeakCustom')}"` }}</h2>
-                                <ul v-if="actionElems.length > 0">
-                                    <li v-for="item in actionElems">
-                                        <div class="srow" v-for="action in item.element.actions" v-if="action.modelName === GridActionSpeakCustom.getModelName()">
-                                            <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" :i18nid="getI18nId(item.grid, item.element, GridActionSpeakCustom.getModelName())" v-model="action.speakText[currentLocale]" @change="changedGrid(item.grid)"/>
-                                            <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" :i18nid="getI18nId(item.grid, item.element, GridActionSpeakCustom.getModelName())" v-model="action.speakText[chosenLocale]" @change="changedGrid(item.grid)"/>
-                                        </div>
-                                    </li>
-                                </ul>
-                                <h2 v-if="translateElements.length">{{ $t('elementLabels') }}</h2>
-                                <ul v-if="translateElements.length">
-                                    <li v-for="item in translateElements">
-                                        <div class="srow">
-                                            <div class="one columns">
-                                                <img height="25" style="max-width: 100%;" :src="item.element.image ? (item.element.image.url || item.element.image.data) : ''">
+                                <div v-if="gridsWithLabel.length > 0 && translateType === TRANSLATE_TYPES.ALL_TEXTS">
+                                    <h2>{{ $t('nameOfGrid') }}</h2>
+                                    <ul>
+                                        <li v-for="data in gridsWithLabel">
+                                            <div class="srow">
+                                                <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" v-model="data.label[currentLocale]" @change="changedGrid(data)"/>
+                                                <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" v-model="data.label[chosenLocale]" @change="changedGrid(data)"/>
                                             </div>
-                                            <input type="text" :placeholder="`(${currentLangTranslated})`" class="five columns" :lang="currentLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[currentLocale]" @change="changedGrid(item.grid)"/>
-                                            <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[chosenLocale]" @change="changedGrid(item.grid)"/>
-                                        </div>
-                                    </li>
-                                </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div v-if="actionElems.length > 0 && translateType === TRANSLATE_TYPES.ALL_TEXTS">
+                                    <h2>{{ `${$t('actions')} "${$t('GridActionSpeakCustom')}"` }}</h2>
+                                    <ul>
+                                        <li v-for="item in actionElems">
+                                            <div class="srow" v-for="action in item.element.actions" v-if="action.modelName === GridActionSpeakCustom.getModelName()">
+                                                <input type="text" :placeholder="`(${currentLangTranslated})`" class="six columns" :lang="currentLocale" :i18nid="getI18nId(item.grid, item.element, GridActionSpeakCustom.getModelName())" v-model="action.speakText[currentLocale]" @change="changedGrid(item.grid)"/>
+                                                <input type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns" :lang="chosenLocale" :i18nid="getI18nId(item.grid, item.element, GridActionSpeakCustom.getModelName())" v-model="action.speakText[chosenLocale]" @change="changedGrid(item.grid)"/>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div v-if="translateElements.length">
+                                    <h2>{{ $t('elementsHeading') }}</h2>
+                                    <ul>
+                                        <li v-for="item in translateElements">
+                                            <div class="srow">
+                                                <div class="one columns">
+                                                    <img height="25" style="max-width: 100%;" :src="item.element.image ? (item.element.image.url || item.element.image.data) : ''">
+                                                </div>
+                                                <input v-if="[TRANSLATE_TYPES.ALL_TEXTS, TRANSLATE_TYPES.ELEMENT_LABELS].includes(translateType)" type="text" :placeholder="`(${currentLangTranslated})`" class="five columns"
+                                                       :lang="currentLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[currentLocale]" @change="changedGrid(item.grid)"/>
+                                                <input v-if="[TRANSLATE_TYPES.ALL_TEXTS, TRANSLATE_TYPES.ELEMENT_LABELS].includes(translateType)" type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns"
+                                                       :lang="chosenLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[chosenLocale]" @change="changedGrid(item.grid)"/>
+                                                <input v-if="translateType === TRANSLATE_TYPES.ELEMENT_PRONUNCIATIONS" type="text" :placeholder="getPronunciationPlaceholder(item.element, currentLocale)" class="five columns"
+                                                       :lang="currentLocale" :i18nid="getI18nId(item.grid, item.element, 'pronunciation')" v-model="item.element.pronunciation[currentLocale]" @change="changedGrid(item.grid)"
+                                                       :data-grid-id="item.grid.id" :data-element-id="item.element.id" :key="item.element.id"/>
+                                                <input v-if="translateType === TRANSLATE_TYPES.ELEMENT_PRONUNCIATIONS" type="text" :placeholder="getPronunciationPlaceholder(item.element, chosenLocale)" class="six columns"
+                                                       :lang="chosenLocale" :i18nid="getI18nId(item.grid, item.element, 'pronunciation')" v-model="item.element.pronunciation[chosenLocale]" @change="changedGrid(item.grid)"
+                                                       :data-grid-id="item.grid.id" :data-element-id="item.element.id" :key="item.grid.id + item.element.id"/>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -152,7 +172,12 @@
     import {dataService} from "../../js/service/data/dataService";
     import { GridData } from '../../js/model/GridData';
 
-    window.hideKeyboardTranslations = true;
+    const TRANSLATE_TYPES = {
+        ALL_TEXTS: "ALL_TEXTS",
+        ELEMENT_LABELS: "ELEMENT_LABELS",
+        ELEMENT_PRONUNCIATIONS: "ELEMENT_PRONUNCIATIONS"
+    }
+
     export default {
         props: ['gridDataId'],
         data: function () {
@@ -166,7 +191,9 @@
                 usedLocales: [],
                 changedGrids: [],
                 hideKeyboards: true,
-                originalElementInfo: {} // grid-id + element-id => {label: originalLabelObject, hasImage: true/false}, tells if element should be shown in translate view
+                originalElementInfo: {}, // grid-id + element-id => {label: originalLabelObject, hasImage: true/false}, tells if element should be shown in translate view
+                translateType: TRANSLATE_TYPES.ALL_TEXTS,
+                TRANSLATE_TYPES: TRANSLATE_TYPES
             }
         },
         computed: {
@@ -238,10 +265,14 @@
             originalHasImage(data) {
                 return this.originalElementInfo[data.grid.id + data.element.id].hasImage;
             },
+            getPronunciationPlaceholder(gridElement, locale) {
+                let label = gridElement.label[locale] || "";
+                return i18nService.t('pronunciationOf', label);
+            },
             getLocaleTranslation(locale) {
                 return i18nService.getTranslationAppLang(this.allLanguages.filter(lang => lang.code === locale)[0]);
             },
-            copy(locale, withKeys, onlyOtherEmpty) {
+            copy(locale, withKeys) {
                 let elements = $(`#translationList input[lang='${locale}']`).toArray();
                 let text = null;
                 if (withKeys) {
@@ -254,14 +285,12 @@
                     let elements2 = $(`#translationList input[lang='${otherLocale}']`).toArray();
                     text = '';
                     for (let i = 0; i < elements.length; i++) {
-                        if (elements[i].value && (!onlyOtherEmpty || !elements2[i].value)) {
-                            text += elements[i].value + '\n';
-                        }
+                        text += elements[i].value + '\n';
                     }
                 }
                 util.copyToClipboard(text);
             },
-            paste(locale, withKeys, onlyEmpty) {
+            paste(locale, withKeys) {
                 util.getClipboardContent().then(result => {
                     if (!result) {
                         return;
@@ -280,20 +309,31 @@
                         }
                         log.info(`inserted ${counter} (of ${array.length}) translations from json from clipboard.`);
                     } else {
-                        let clipBoardTexts = result.trim().split('\n');
+                        let clipBoardTexts = result.trim().split('\n').map(e => e.trim());
                         let elements = $(`#translationList input[lang='${locale}']`).toArray();
                         let otherLocale = locale === this.currentLocale ? this.chosenLocale : this.currentLocale;
                         let elements2 = $(`#translationList input[lang='${otherLocale}']`).toArray();
-                        let clipBoardIndex = 0;
                         for (let i = 0; i < elements.length; i++) {
-                            if ((!onlyEmpty || (!elements[i].value && elements2[i].value)) && clipBoardTexts[clipBoardIndex]) {
-                                $(elements[i]).val(clipBoardTexts[clipBoardIndex]);
+                            let gridId = $(elements[i]).data('grid-id');
+                            let elementId = $(elements[i]).data('element-id');
+                            let element = this.getElement(gridId, elementId) || {};
+                            let label = element.label || {};
+                            let clipBoardText = clipBoardTexts[i] || "";
+                            if (clipBoardText && (label[locale] !== clipBoardText)) {
+                                $(elements[i]).val(clipBoardTexts[i]);
                                 $(elements[i])[0].dispatchEvent(new Event('input'));
-                                clipBoardIndex++;
                             }
                         }
                     }
                 })
+            },
+            getElement(gridId, elementId) {
+                if (!gridId || !elementId) {
+                    return null;
+                }
+                let grid = this.allGrids.find(g => g.id === gridId) || {};
+                let elements = grid.gridElements || [];
+                return elements.find(e => e.id === elementId);
             },
             getI18nId(gridData, gridElement, prefix) {
                 prefix = prefix || '';

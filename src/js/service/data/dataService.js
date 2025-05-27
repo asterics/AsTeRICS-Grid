@@ -78,6 +78,9 @@ dataService.getGrids = function (fullVersion, withoutGlobal) {
                 return;
             }
             let retVal = grids instanceof Array ? grids : [grids];
+            for (let grid of retVal) {
+                gridUtil.ensureDefaults(grid);
+            }
             if (withoutGlobal) {
                 dataService.getMetadata().then((metadata) => {
                     resolve(retVal.filter((grid) => grid && grid.id !== metadata.globalGridId));
