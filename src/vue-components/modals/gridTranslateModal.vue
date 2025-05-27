@@ -133,12 +133,18 @@
                                                        :lang="currentLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[currentLocale]" @change="changedGrid(item.grid)"/>
                                                 <input v-if="[TRANSLATE_TYPES.ALL_TEXTS, TRANSLATE_TYPES.ELEMENT_LABELS].includes(translateType)" type="text" :placeholder="`(${chosenLangTranslated})`" class="six columns"
                                                        :lang="chosenLocale" :i18nid="getI18nId(item.grid, item.element)" v-model="item.element.label[chosenLocale]" @change="changedGrid(item.grid)"/>
-                                                <input v-if="translateType === TRANSLATE_TYPES.ELEMENT_PRONUNCIATIONS" type="text" :placeholder="getPronunciationPlaceholder(item.element, currentLocale)" class="five columns"
-                                                       :lang="currentLocale" :i18nid="getI18nId(item.grid, item.element, 'pronunciation')" v-model="item.element.pronunciation[currentLocale]" @change="changedGrid(item.grid)"
-                                                       :data-grid-id="item.grid.id" :data-element-id="item.element.id" :key="item.element.id"/>
-                                                <input v-if="translateType === TRANSLATE_TYPES.ELEMENT_PRONUNCIATIONS" type="text" :placeholder="getPronunciationPlaceholder(item.element, chosenLocale)" class="six columns"
-                                                       :lang="chosenLocale" :i18nid="getI18nId(item.grid, item.element, 'pronunciation')" v-model="item.element.pronunciation[chosenLocale]" @change="changedGrid(item.grid)"
-                                                       :data-grid-id="item.grid.id" :data-element-id="item.element.id" :key="item.grid.id + item.element.id"/>
+                                                <div v-if="translateType === TRANSLATE_TYPES.ELEMENT_PRONUNCIATIONS" class="five columns" style="position: relative">
+                                                    <input type="text" :placeholder="getPronunciationPlaceholder(item.element, currentLocale)" class="u-full-width"
+                                                           :lang="currentLocale" :i18nid="getI18nId(item.grid, item.element, 'pronunciation')" v-model="item.element.pronunciation[currentLocale]" @change="changedGrid(item.grid)"
+                                                           :data-grid-id="item.grid.id" :data-element-id="item.element.id" :key="item.element.id"/>
+                                                    <button @click="speak(item.element, currentLocale)" class="input-button"><i class="fas fa-play"></i></button>
+                                                </div>
+                                                <div v-if="translateType === TRANSLATE_TYPES.ELEMENT_PRONUNCIATIONS" class="six columns" style="position: relative">
+                                                    <input type="text" :placeholder="getPronunciationPlaceholder(item.element, chosenLocale)" class="u-full-width"
+                                                           :lang="chosenLocale" :i18nid="getI18nId(item.grid, item.element, 'pronunciation')" v-model="item.element.pronunciation[chosenLocale]" @change="changedGrid(item.grid)"
+                                                           :data-grid-id="item.grid.id" :data-element-id="item.element.id" :key="item.grid.id + item.element.id"/>
+                                                    <button @click="speak(item.element, chosenLocale)" class="input-button"><i class="fas fa-play"></i></button>
+                                                </div>
                                             </div>
                                         </li>
                                     </ul>
@@ -171,6 +177,7 @@
     import {util} from "../../js/util/util";
     import {dataService} from "../../js/service/data/dataService";
     import { GridData } from '../../js/model/GridData';
+    import { speechService } from '../../js/service/speechService';
 
     const TRANSLATE_TYPES = {
         ALL_TEXTS: "ALL_TEXTS",
@@ -271,6 +278,13 @@
             },
             getLocaleTranslation(locale) {
                 return i18nService.getTranslationAppLang(this.allLanguages.filter(lang => lang.code === locale)[0]);
+            },
+            speak(element, locale) {
+                let speakText = element.pronunciation[locale] || element.label[locale];
+                speechService.speak(speakText, {
+                    lang: locale,
+                    voiceLangIsTextLang: true
+                });
             },
             copy(locale, withKeys) {
                 let elements = $(`#translationList input[lang='${locale}']`).toArray();
@@ -385,5 +399,16 @@
         font-size: 1.1em;
         margin-top: 1em;
         margin-bottom: 0.5em;
+    }
+
+    .input-button {
+        position: absolute;
+        right: 0;
+        height: 100%;
+        line-height: initial;
+        margin: 0;
+        padding: 0 1em;
+        box-shadow: none;
+        background-color: transparent;
     }
 </style>
