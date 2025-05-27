@@ -141,18 +141,14 @@ async function doAction(gridElement, action, options = {}) {
     switch (action.modelName) {
         case 'GridActionSpeak':
             log.debug('action speak');
-            let langWordFormMap = stateService.getSpeakTextAllLangs(gridElement.id);
-            let labelCopy = JSON.parse(JSON.stringify(gridElement.label));
-            for (let lang of Object.keys(labelCopy).concat(Object.keys(langWordFormMap))) {
-                labelCopy[lang] = langWordFormMap[lang] || gridElement.pronunciation[lang] || labelCopy[lang];
-            }
+            let speakTexts = stateService.getSpeakTextAllLangs(gridElement.id);
             if (gridElement.type === GridElement.ELEMENT_TYPE_PREDICTION) {
-                labelCopy[i18nService.getContentLang()] = predictionService.getLastAppliedPrediction();
+                speakTexts[i18nService.getContentLang()] = predictionService.getLastAppliedPrediction();
             }
             if (gridElement.type === GridElement.ELEMENT_TYPE_LIVE) {
-                labelCopy[i18nService.getContentLang()] = liveElementService.getLastValue(gridElement.id);
+                speakTexts[i18nService.getContentLang()] = liveElementService.getLastValue(gridElement.id);
             }
-            speechService.speak(labelCopy, {
+            speechService.speak(speakTexts, {
                 lang: action.speakLanguage,
                 speakSecondary: true,
                 minEqualPause: minPauseSpeak
