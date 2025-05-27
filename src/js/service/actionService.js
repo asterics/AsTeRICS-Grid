@@ -143,7 +143,9 @@ async function doAction(gridElement, action, options = {}) {
             log.debug('action speak');
             let langWordFormMap = stateService.getSpeakTextAllLangs(gridElement.id);
             let labelCopy = JSON.parse(JSON.stringify(gridElement.label));
-            Object.assign(labelCopy, langWordFormMap);
+            for (let lang of Object.keys(labelCopy).concat(Object.keys(langWordFormMap))) {
+                labelCopy[lang] = langWordFormMap[lang] || gridElement.pronunciation[lang] || labelCopy[lang];
+            }
             if (gridElement.type === GridElement.ELEMENT_TYPE_PREDICTION) {
                 labelCopy[i18nService.getContentLang()] = predictionService.getLastAppliedPrediction();
             }
