@@ -85,9 +85,9 @@ export default {
                 return MetaData.getElementColor(element, this.metadata, color);
             }
             if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH) {
-                let absAdjustment = 50;
+                let absAdjustment = 40;
                 let bgColor = MetaData.getElementColor(element, this.metadata, color);
-                let adjustment = fontUtil.isHexDark(bgColor) ? absAdjustment : absAdjustment * -1;
+                let adjustment = fontUtil.isHexDark(bgColor) ? absAdjustment * 1.5 : absAdjustment * -1;
                 return fontUtil.adjustHexColor(bgColor, adjustment);
             }
             return color;
