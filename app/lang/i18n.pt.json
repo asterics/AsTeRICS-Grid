@@ -1163,6 +1163,7 @@
   "colorMode": "Modo de cor",
   "colorModeBorder": "Limite",
   "colorModeBackground": "Cor do fundo",
+  "colorModeBackgroundBorder": "Color background + border",
   "borderWidth": "Tamanho do bordo",
   "borderRadius": "Canto arredondado",
   "elementMargin": "Espaço entre células",
