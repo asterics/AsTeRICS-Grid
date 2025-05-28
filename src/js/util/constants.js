@@ -171,21 +171,61 @@ constants.COLOR_SCHEME_FITZGERALD_DARK = 'CS_MODIFIED_FITZGERALD_KEY_DARK';
 constants.COLOR_SCHEME_GOOSENS_LIGHT = 'CS_GOOSENS_LIGHT';
 constants.COLOR_SCHEME_GOOSENS_MEDIUM = 'CS_GOOSENS_MEDIUM';
 constants.COLOR_SCHEME_GOOSENS_DARK = 'CS_GOOSENS_DARK';
+constants.COLOR_SCHEME_MONTESSORI_LIGHT = 'CS_MONTESSORI_LIGHT';
+constants.CC_PRONOUN_PERSON_NAME = 'CC_PRONOUN_PERSON_NAME';
+constants.CC_NOUN = 'CC_NOUN';
+constants.CC_VERB = 'CC_VERB';
+constants.CC_DESCRIPTOR = 'CC_DESCRIPTOR';
+constants.CC_SOCIAL_EXPRESSIONS = 'CC_SOCIAL_EXPRESSIONS';
+constants.CC_MISC = 'CC_MISC';
+constants.CC_PLACE = 'CC_PLACE';
+constants.CC_CATEGORY = 'CC_CATEGORY';
+constants.CC_IMPORTANT = 'CC_IMPORTANT';
+constants.CC_OTHERS = 'CC_OTHERS';
+constants.CC_PREPOSITION = 'CC_PREPOSITION';
+constants.CC_QUESTION_NEGATION_PRONOUN = 'CC_QUESTION_NEGATION_PRONOUN';
+constants.CC_ARTICLE = 'CC_ARTICLE';
+constants.CC_ADJECTIVE = 'CC_ADJECTIVE';
+constants.CC_ADVERB = 'CC_ADVERB';
+constants.CC_CONJUNCTION = 'CC_CONJUNCTION';
+constants.CC_INTERJECTION = 'CC_INTERJECTION';
+constants.CS_FITZGERALD_CATEGORIES = [
+    constants.CC_PRONOUN_PERSON_NAME,
+    constants.CC_NOUN,
+    constants.CC_VERB,
+    constants.CC_DESCRIPTOR,
+    constants.CC_SOCIAL_EXPRESSIONS,
+    constants.CC_MISC,
+    constants.CC_PLACE,
+    constants.CC_CATEGORY,
+    constants.CC_IMPORTANT,
+    constants.CC_OTHERS
+];
+constants.CS_GOOSSENS_CATEGORIES = [constants.CC_VERB, constants.CC_DESCRIPTOR, constants.CC_PREPOSITION, constants.CC_NOUN, constants.CC_QUESTION_NEGATION_PRONOUN];
+constants.CS_MONTESSORI_CATEGORIES = [
+    constants.CC_NOUN,
+    constants.CC_ARTICLE,
+    constants.CC_ADJECTIVE,
+    constants.CC_VERB,
+    constants.CC_PREPOSITION,
+    constants.CC_ADVERB,
+    constants.CC_PRONOUN_PERSON_NAME,
+    constants.CC_CONJUNCTION,
+    constants.CC_INTERJECTION
+];
+constants.CS_MAPPING_TO_FITZGERALD = {
+    "CC_ADJECTIVE": constants.CC_DESCRIPTOR,
+    "CC_ADVERB": constants.CC_DESCRIPTOR,
+    "CC_ARTICLE": constants.CC_MISC,
+    "CC_PREPOSITION": constants.CC_MISC,
+    "CC_CONJUNCTION": constants.CC_MISC,
+    "CC_INTERJECTION": constants.CC_SOCIAL_EXPRESSIONS
+};
 constants.DEFAULT_COLOR_SCHEMES = [
     {
         name: constants.COLOR_SCHEME_FITZGERALD_LIGHT,
-        categories: [
-            'CC_PRONOUN_PERSON_NAME',
-            'CC_NOUN',
-            'CC_VERB',
-            'CC_DESCRIPTOR',
-            'CC_SOCIAL_EXPRESSIONS',
-            'CC_MISC',
-            'CC_PLACE',
-            'CC_CATEGORY',
-            'CC_IMPORTANT',
-            'CC_OTHERS'
-        ],
+        categories: constants.CS_FITZGERALD_CATEGORIES,
+        mappings: constants.CS_MAPPING_TO_FITZGERALD,
         colors: [
             '#fdfd96',
             '#ffda89',
@@ -201,18 +241,8 @@ constants.DEFAULT_COLOR_SCHEMES = [
     },
     {
         name: constants.COLOR_SCHEME_FITZGERALD_MEDIUM,
-        categories: [
-            'CC_PRONOUN_PERSON_NAME',
-            'CC_NOUN',
-            'CC_VERB',
-            'CC_DESCRIPTOR',
-            'CC_SOCIAL_EXPRESSIONS',
-            'CC_MISC',
-            'CC_PLACE',
-            'CC_CATEGORY',
-            'CC_IMPORTANT',
-            'CC_OTHERS'
-        ],
+        categories: constants.CS_FITZGERALD_CATEGORIES,
+        mappings: constants.CS_MAPPING_TO_FITZGERALD,
         colors: [
             '#ffff6b',
             '#ffb56b',
@@ -228,18 +258,8 @@ constants.DEFAULT_COLOR_SCHEMES = [
     },
     {
         name: constants.COLOR_SCHEME_FITZGERALD_DARK,
-        categories: [
-            'CC_PRONOUN_PERSON_NAME',
-            'CC_NOUN',
-            'CC_VERB',
-            'CC_DESCRIPTOR',
-            'CC_SOCIAL_EXPRESSIONS',
-            'CC_MISC',
-            'CC_PLACE',
-            'CC_CATEGORY',
-            'CC_IMPORTANT',
-            'CC_OTHERS'
-        ],
+        categories: constants.CS_FITZGERALD_CATEGORIES,
+        mappings: constants.CS_MAPPING_TO_FITZGERALD,
         colors: [
             '#79791F',
             '#804c26',
@@ -255,23 +275,38 @@ constants.DEFAULT_COLOR_SCHEMES = [
     },
     {
         name: constants.COLOR_SCHEME_GOOSENS_LIGHT,
-        categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
+        categories: constants.CS_GOOSSENS_CATEGORIES,
         colors: ['#fdcae1', '#84b6f4', '#c7f3c7', '#fdfd96', '#ffda89']
     },
     {
         name: constants.COLOR_SCHEME_GOOSENS_MEDIUM,
-        categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
+        categories: constants.CS_GOOSSENS_CATEGORIES,
         colors: ['#ff6bff', '#6bb5ff', '#b5ff6b', '#ffff6b', '#ffb56b']
     },
     {
         name: constants.COLOR_SCHEME_GOOSENS_DARK,
-        categories: ['CC_VERB', 'CC_DESCRIPTOR', 'CC_PREPOSITION', 'CC_NOUN', 'CC_QUESTION_NEGATION_PRONOUN'],
+        categories: constants.CS_GOOSSENS_CATEGORIES,
         colors: [
             '#802680',
             '#264c80',
             '#4c8026',
             '#79791F',
             '#804c26']
+    },
+    {
+        name: constants.COLOR_SCHEME_MONTESSORI_LIGHT,
+        categories: constants.CS_MONTESSORI_CATEGORIES,
+        colors: [
+            '#bdbfbf',
+            '#9eccff',
+            '#53a4ff',
+            '#ff9688',
+            '#c7f3c7',
+            '#ffda89',
+            '#bc98f3',
+            '#fdcae1',
+            '#d8af97'
+        ]
     }
 ];
 

@@ -64,6 +64,10 @@ class MetaData extends Model({
         }
         let colorScheme = MetaData.getActiveColorScheme(metadata);
         let index = colorScheme.categories.indexOf(gridElement.colorCategory);
+        if (index === -1 && colorScheme.mappings) {
+            let mapped = colorScheme.mappings[gridElement.colorCategory];
+            index = colorScheme.categories.indexOf(mapped);
+        }
         if (!metadata.colorConfig.colorSchemesActivated || !gridElement.colorCategory || index === -1) {
             return gridElement.backgroundColor || defaultColor || metadata.colorConfig.elementBackgroundColor;
         }
