@@ -221,7 +221,7 @@ constants.DEFAULT_COLOR_SCHEMES = [
             '#ff6bff',
             '#ffffff',
             '#ce6bff',
-            '#bd754e',
+            '#bf9075',
             '#ff704d',
             '#a3a3a3'
         ]
