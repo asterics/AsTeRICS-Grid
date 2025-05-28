@@ -1,7 +1,10 @@
+import { MapCache } from './MapCache';
+
 var fontUtil = {};
 var lastSize = '20px';
 
 let FONT_ADAPT_MAX_ROUNDS = 5;
+let hexToHslCache = new MapCache();
 
 /**
  * returns the optimal font size in px for a given grid element
@@ -182,23 +185,94 @@ fontUtil.getHighContrastColorRgb = function(rgb, lightColor, darkColor) {
             b: rgb[2]
         };
     }
-    let val = rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114;
-    if (val > 149) {
-        return darkColor;
-    } else {
+    if (fontUtil.isRGBDark(rgb)) {
         return lightColor;
+    } else {
+        return darkColor;
     }
+};
+
+fontUtil.isHexDark = function(hex) {
+    let rgb = hexToRgb(hex);
+    return fontUtil.isRGBDark(rgb);
+};
+
+fontUtil.isRGBDark = function(rgb) {
+    let val = rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114;
+    return val <= 149;
+}
+
+fontUtil.adjustHexColor = function(hexString, percent) {
+    let hsl = hexToHSL(hexString);
+    return fontUtil.adjustHSLColor(hsl, percent);
+}
+
+fontUtil.adjustHSLColor = function(hslString, percent) {
+    // Extract H, S, L components
+    const match = hslString.match(/hsl\(\s*(\d+),\s*([\d.]+)%,\s*([\d.]+)%\s*\)/i);
+    if (!match) {
+        return hslString;
+    }
+
+    let h = parseFloat(match[1]);
+    let s = parseFloat(match[2]);
+    let l = parseFloat(match[3]);
+
+    l = Math.min(100, Math.max(0, l * (1 + percent/100)));
+
+    return `hsl(${h}, ${s}%, ${l}%)`;
 };
 
 function hexToRgb(hex) {
     let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
         ? {
-              r: parseInt(result[1], 16),
-              g: parseInt(result[2], 16),
-              b: parseInt(result[3], 16)
-          }
-        : null;
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        }
+        : hex;
+}
+
+function hexToHSL(hex) {
+    if (hexToHslCache.has(hex)) {
+        return hexToHslCache.get(hex);
+    }
+    let rgb = hexToRgb(hex);
+    let r = rgb.r;
+    let g = rgb.g;
+    let b = rgb.b;
+
+    (r /= 255), (g /= 255), (b /= 255);
+    const max = Math.max(r, g, b),
+        min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) {
+        h = s = 0; // achromatic
+    } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r:
+                h = (g - b) / d + (g < b ? 6 : 0);
+                break;
+            case g:
+                h = (b - r) / d + 2;
+                break;
+            case b:
+                h = (r - g) / d + 4;
+                break;
+        }
+        h /= 6;
+    }
+
+    h = Math.round(h * 360);
+    s = Math.round(s * 100);
+    l = Math.round(l * 100);
+
+    let hsl = `hsl(${h}, ${s}%, ${l}%)`;
+    hexToHslCache.set(hex, hsl);
+    return hsl;
 }
 
 function getCssStyle(element, prop) {
