@@ -500,6 +500,9 @@ function getOutputObject(element, options) {
     if (!text) {
         text = getLabel(element);
     }
+    if (!text) {
+        text = stateService.getFirstForm(element);
+    }
     text = util.convertLowerUppercase(text, convertMode);
     return {
         text: text

@@ -153,7 +153,7 @@ stateService.getWordFormsForLang = function(element, lang = '') {
     return formsLang.length > 0 ? formsLang : formsBaseLang;
 };
 
-stateService.getFirstForm = function(element, lang) {
+stateService.getFirstForm = function(element, lang = null) {
     let object = stateService.getFirstFormObject(element, lang);
     return object ? object.value : null;
 };
