@@ -1163,6 +1163,7 @@
   "colorMode": "Tipus de color",
   "colorModeBorder": "Color de la vora",
   "colorModeBackground": "Color de fons",
+  "colorModeBackgroundBorder": "Color background + border",
   "borderWidth": "Amplada de la vora",
   "borderRadius": "Radi de la vora",
   "elementMargin": "Espai entre cel·les",
