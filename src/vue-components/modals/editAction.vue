@@ -7,7 +7,7 @@
             </div>
             <select class="eight columns" id="selectLang" v-model="action.speakLanguage">
                 <option :value="undefined">{{ $t('automaticCurrentLanguage') }}</option>
-                <option v-for="lang in voiceLangs.filter(e => Object.keys(gridElement.label).includes(e.code))" :value="lang.code">
+                <option v-for="lang in voiceLangs" :value="lang.code">
                     {{lang | extractTranslation}}
                 </option>
             </select>
