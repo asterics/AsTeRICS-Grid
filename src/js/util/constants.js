@@ -297,15 +297,15 @@ constants.DEFAULT_COLOR_SCHEMES = [
         name: constants.COLOR_SCHEME_MONTESSORI_LIGHT,
         categories: constants.CS_MONTESSORI_CATEGORIES,
         colors: [
-            '#bdbfbf',
-            '#9eccff',
-            '#53a4ff',
-            '#ff9688',
-            '#c7f3c7',
-            '#ffda89',
-            '#bc98f3',
-            '#fdcae1',
-            '#d8af97'
+            '#e4e4e4',
+            '#e3f5fa',
+            '#E0EFFC',
+            '#FCE8E8',
+            '#C6E2C6',
+            '#fffec7',
+            '#F1E9F4',
+            '#ffddec',
+            '#d6c3b6'
         ]
     }
 ];
