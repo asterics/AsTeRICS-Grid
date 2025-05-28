@@ -1163,6 +1163,7 @@
   "colorMode": "Колірний режим",
   "colorModeBorder": "Колір рамки",
   "colorModeBackground": "Колір фону",
+  "colorModeBackgroundBorder": "Color background + border",
   "borderWidth": "Ширина рамки",
   "borderRadius": "Радіус рамки",
   "elementMargin": "Відстань між елементами",
