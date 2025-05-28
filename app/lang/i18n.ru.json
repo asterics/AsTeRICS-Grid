@@ -1163,6 +1163,7 @@
   "colorMode": "Цветовой режим",
   "colorModeBorder": "Цвет границы",
   "colorModeBackground": "Цвет фона",
+  "colorModeBackgroundBorder": "Color background + border",
   "borderWidth": "Ширина границы",
   "borderRadius": "Радиус границы",
   "elementMargin": "Расстояние между элементами",
