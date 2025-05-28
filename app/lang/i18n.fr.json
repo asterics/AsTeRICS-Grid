@@ -1163,6 +1163,7 @@
   "colorMode": "Color Mode",
   "colorModeBorder": "Color border",
   "colorModeBackground": "Color background",
+  "colorModeBackgroundBorder": "Color background + border",
   "borderWidth": "Border width",
   "borderRadius": "Border radius",
   "elementMargin": "Space between elements",
