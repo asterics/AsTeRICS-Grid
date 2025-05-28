@@ -1163,6 +1163,7 @@
   "colorMode": "Farbmodus",
   "colorModeBorder": "Färbiger Rahmen",
   "colorModeBackground": "Färbiger Hintergrund",
+  "colorModeBackgroundBorder": "Color background + border",
   "borderWidth": "Rahmenbreite",
   "borderRadius": "Rundung der Ecken",
   "elementMargin": "Abstand zwischen Elementen",
