@@ -1163,6 +1163,7 @@
   "colorMode": "מצב צבע",
   "colorModeBorder": "Color border",
   "colorModeBackground": "צבע רקע",
+  "colorModeBackgroundBorder": "Color background + border",
   "borderWidth": "רוחב גבול",
   "borderRadius": "רדיוס מסגרת",
   "elementMargin": "המרחק בין הרכיבים",
