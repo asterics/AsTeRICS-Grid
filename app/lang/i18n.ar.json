@@ -1163,6 +1163,7 @@
   "colorMode": "وضع اللون",
   "colorModeBorder": "حدود اللون",
   "colorModeBackground": "لون الخلفية",
+  "colorModeBackgroundBorder": "Color background + border",
   "borderWidth": "عرض الحدود",
   "borderRadius": "نصف قطر الحدود",
   "elementMargin": "المساحة بين العناصر",
