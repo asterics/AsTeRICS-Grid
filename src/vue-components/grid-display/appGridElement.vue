@@ -62,7 +62,7 @@ export default {
             if (!this.metadata || !this.element) {
                 return '';
             }
-            if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BACKGROUND) {
+            if ([ColorConfig.COLOR_MODE_BACKGROUND, ColorConfig.COLOR_MODE_BOTH].includes(this.metadata.colorConfig.colorMode)) {
                 return MetaData.getElementColor(this.element, this.metadata);
             }
             return this.metadata.colorConfig.elementBackgroundColor;
@@ -83,6 +83,12 @@ export default {
             }
             if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BORDER) {
                 return MetaData.getElementColor(element, this.metadata, color);
+            }
+            if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH) {
+                let absAdjustment = 50;
+                let bgColor = MetaData.getElementColor(element, this.metadata, color);
+                let adjustment = fontUtil.isHexDark(bgColor) ? absAdjustment : absAdjustment * -1;
+                return fontUtil.adjustHexColor(bgColor, adjustment);
             }
             return color;
         },

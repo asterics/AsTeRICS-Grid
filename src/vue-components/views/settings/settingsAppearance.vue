@@ -95,6 +95,7 @@
                     <select id="colorMode" v-model="metadata.colorConfig.colorMode" class="five columns" @change="saveMetadata(metadata)">
                         <option :value="ColorConfig.COLOR_MODE_BACKGROUND">{{ $t('colorModeBackground') }}</option>
                         <option :value="ColorConfig.COLOR_MODE_BORDER">{{ $t('colorModeBorder') }}</option>
+                        <option :value="ColorConfig.COLOR_MODE_BOTH">{{ $t('colorModeBackgroundBorder') }}</option>
                     </select>
                 </div>
                 <div class="srow mt-5">
