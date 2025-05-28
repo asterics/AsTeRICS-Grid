@@ -1163,6 +1163,7 @@
   "colorMode": "Renk Modu",
   "colorModeBorder": "Kenarlık rengi",
   "colorModeBackground": "Arka plan rengi",
+  "colorModeBackgroundBorder": "Color background + border",
   "borderWidth": "Kenarlık genişliği",
   "borderRadius": "Kenarlık yarıçapı",
   "elementMargin": "Öğeler arası boşluk",
