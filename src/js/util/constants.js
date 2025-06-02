@@ -304,15 +304,15 @@ constants.DEFAULT_COLOR_SCHEMES = [
         name: constants.COLOR_SCHEME_MONTESSORI_LIGHT,
         categories: constants.CS_MONTESSORI_CATEGORIES,
         colors: [
-            '#e4e4e4',
-            '#e3f5fa',
-            '#E0EFFC',
-            '#FCE8E8',
-            '#C6E2C6',
-            '#fffec7',
-            '#F1E9F4',
-            '#ffddec',
-            '#d6c3b6'
+            '#ffffff', // noun
+            '#e3f5fa', // article
+            '#eaeffd', // adjective
+            '#FCE8E8', // verb
+            '#dff4df', // preposition
+            '#ffeecf', // adverb
+            '#fbf2ff', // pronoun
+            '#fff0f6', // conjunction
+            '#fbf5e8'  // interjection
         ]
     }
 ];
