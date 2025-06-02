@@ -74,12 +74,12 @@ export default {
     methods: {
         getBorderColor(element) {
             if (!this.metadata || !this.metadata.colorConfig) {
-                return 'gray';
+                return constants.COLORS.GRAY;
             }
             let color = this.metadata.colorConfig.elementBorderColor;
             if (this.metadata.colorConfig.elementBorderColor === constants.DEFAULT_ELEMENT_BORDER_COLOR) {
-                let backgroundColor = this.metadata.colorConfig.gridBackgroundColor || '#ffffff';
-                color = fontUtil.getHighContrastColor(backgroundColor, 'whitesmoke', 'gray');
+                let backgroundColor = this.metadata.colorConfig.gridBackgroundColor || constants.COLORS.WHITE;
+                color = fontUtil.getHighContrastColor(backgroundColor, constants.COLORS.WHITESMOKE, constants.COLORS.GRAY);
             }
             if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BORDER) {
                 return MetaData.getElementColor(element, this.metadata, color);

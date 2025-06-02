@@ -166,8 +166,8 @@ fontUtil.getHighContrastColor = function(hexBackground, lightColor, darkColor) {
     if (!hexBackground || !hexBackground.startsWith('#')) {
         return '';
     }
-    lightColor = lightColor || '#ffffff';
-    darkColor = darkColor || '#000000';
+    lightColor = lightColor || constants.COLORS.WHITE;
+    darkColor = darkColor || constants.colors.BLACK;
     let rgb = hexToRgb(hexBackground);
     return fontUtil.getHighContrastColorRgb(rgb, lightColor, darkColor);
 };
