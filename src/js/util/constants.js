@@ -218,7 +218,8 @@ constants.CS_MONTESSORI_CATEGORIES = [
     constants.CC_ADVERB,
     constants.CC_PRONOUN_PERSON_NAME,
     constants.CC_CONJUNCTION,
-    constants.CC_INTERJECTION
+    constants.CC_INTERJECTION,
+    constants.CC_CATEGORY
 ];
 constants.CS_MAPPING_TO_FITZGERALD = {
     "CC_ADJECTIVE": constants.CC_DESCRIPTOR,
@@ -312,7 +313,8 @@ constants.DEFAULT_COLOR_SCHEMES = [
             '#ffeecf', // adverb
             '#fbf2ff', // pronoun
             '#fff0f6', // conjunction
-            '#fbf5e8'  // interjection
+            '#fbf5e8', // interjection
+            '#e4e4e4'  // category
         ]
     }
 ];
