@@ -3,7 +3,6 @@ import { i18nService } from './i18nService.js';
 import {GridElement} from "../model/GridElement.js";
 import {constants} from "../util/constants.js";
 import {util} from "../util/util.js";
-import {speechService} from "./speechService.js";
 import {dataService} from "./data/dataService.js";
 import {GridActionWordForm} from "../model/GridActionWordForm.js";
 
@@ -154,7 +153,7 @@ stateService.getWordFormsForLang = function(element, lang = '') {
     return formsLang.length > 0 ? formsLang : formsBaseLang;
 };
 
-stateService.getFirstForm = function(element, lang) {
+stateService.getFirstForm = function(element, lang = null) {
     let object = stateService.getFirstFormObject(element, lang);
     return object ? object.value : null;
 };
@@ -194,6 +193,7 @@ stateService.getSpeakText = function (elementOrId, options) {
     return (
         baseForm.pronunciation ||
         baseForm.value ||
+        element.pronunciation[options.lang] ||
         i18nService.getTranslation(element.label, {lang: options.lang}) ||
         i18nService.getTranslation(element.label)
     );
@@ -206,10 +206,7 @@ stateService.getSpeakTextAllLangs = function (elementId) {
         return '';
     }
     let possibleLangs = element.wordForms.map((e) => e.lang);
-    let secondaryVoiceLang = speechService.getSecondaryVoiceLang();
-    if (secondaryVoiceLang) {
-        possibleLangs.push(secondaryVoiceLang);
-    }
+    possibleLangs = possibleLangs.concat(Object.keys(element.label)).concat(Object.keys(element.pronunciation))
     possibleLangs = util.deduplicateArray(possibleLangs);
     for (let lang of possibleLangs) {
         langWordFormMap[lang] = stateService.getSpeakText(element, { lang: lang });
@@ -217,7 +214,7 @@ stateService.getSpeakTextAllLangs = function (elementId) {
     if (!langWordFormMap[i18nService.getContentLang()]) {
         langWordFormMap[i18nService.getContentLang()] = stateService.getSpeakText(element);
     }
-    return langWordFormMap;
+    return JSON.parse(JSON.stringify(langWordFormMap));
 };
 
 stateService.nextWordForm = function (elementId) {

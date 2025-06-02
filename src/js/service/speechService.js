@@ -80,19 +80,18 @@ speechService.speak = function (textOrOject, options = {}) {
         text = textOrOject;
     } else {
         text = i18nService.getTranslation(textOrOject, { lang: langToUse });
-        if (
-            options.voiceLangIsTextLang &&
-            preferredVoiceId &&
-            prefVoiceLang !== langToUse &&
-            getVoicesByLang(langToUse).length > 0
-        ) {
-            preferredVoiceId = null; // use auto voice for language
-        }
     }
     if (!text) {
         return;
     }
     text = text.toLowerCase();
+    if (options.voiceLangIsTextLang &&
+        preferredVoiceId &&
+        i18nService.getBaseLang(prefVoiceLang) !== i18nService.getBaseLang(langToUse) &&
+        getVoicesByLang(langToUse).length > 0
+    ) {
+        preferredVoiceId = null; // use auto voice for language
+    }
     if (text === lastSpeakText && new Date().getTime() - lastSpeakTime < options.minEqualPause) {
         return;
     }

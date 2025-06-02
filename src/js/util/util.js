@@ -71,6 +71,9 @@ util.throttle = function (fn, args, minPauseMs, key) {
  * @param text
  */
 util.copyToClipboard = function copyTextToClipboard(text) {
+    if (!text) {
+        return;
+    }
     let textArea = document.createElement('textarea');
     textArea.value = text;
     document.body.appendChild(textArea);
