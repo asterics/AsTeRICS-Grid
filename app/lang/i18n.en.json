@@ -1167,6 +1167,7 @@
   "setToDefaultSettings": "Set to default settings",
   "setToDefaultSettingsBgColored": "Set to background colored",
   "setToDefaultSettingsBorderColored": "Set to border colored",
+  "setToDefaultSettingsBothColored": "Set to both colored",
   "setToDarkMode": "Set to dark mode",
   "setToLightMode": "Set to light mode",
   "colorMode": "Color Mode",

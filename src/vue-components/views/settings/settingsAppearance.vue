@@ -7,6 +7,7 @@
                     <button @click="toDefault"><span class="fas fa-undo"/> {{ $t('setToDefaultSettings') }}</button>
                     <button @click="toDefaultBgColored"><span class="fas fa-square"/> {{ $t('setToDefaultSettingsBgColored') }}</button>
                     <button @click="toDefaultBorderColored"><span class="far fa-square"/> {{ $t('setToDefaultSettingsBorderColored') }}</button>
+                    <button @click="toDefaultBothColored"><span class="fas fa-square"/><span class="far fa-square"/> {{ $t('setToDefaultSettingsBothColored') }}</button>
                     <button @click="toDarkMode"><span class="fas fa-moon"/> {{ $t('setToDarkMode') }}</button>
                     <button @click="toLightMode"><span class="fas fa-sun"/> {{ $t('setToLightMode') }}</button>
                 </div>
@@ -197,6 +198,12 @@
                 this.metadata.colorConfig.activeColorScheme = this.getColorScheme();
                 this.saveMetadata(this.metadata);
             },
+            toDefaultBothColored() {
+                this.metadata.colorConfig.colorMode = ColorConfig.COLOR_MODE_BOTH;
+                this.metadata.colorConfig.borderWidth = ColorConfig.BORDER_WIDTH_BORDER_COLORED;
+                this.metadata.colorConfig.activeColorScheme = this.getColorScheme();
+                this.saveMetadata(this.metadata);
+            },
             toDarkMode() {
                 this.metadata.colorConfig.gridBackgroundColor = constants.DEFAULT_GRID_BACKGROUND_COLOR_DARK;
                 this.metadata.colorConfig.elementBackgroundColor = constants.DEFAULT_ELEMENT_BACKGROUND_COLOR_DARK;
@@ -213,16 +220,36 @@
             },
             getColorScheme() {
                 let originalScheme = this.metadata.colorConfig.activeColorScheme;
+                let borderColored = this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BORDER;
                 let backgroundColored = this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BACKGROUND;
                 let darkMode = this.metadata.colorConfig.elementBackgroundColor === constants.DEFAULT_ELEMENT_BACKGROUND_COLOR_DARK;
                 if (originalScheme.startsWith(constants.COLOR_SCHEME_FITZGERALD_PREFIX)) {
-                    return backgroundColored ?
-                        (darkMode ? constants.COLOR_SCHEME_FITZGERALD_DARK : constants.COLOR_SCHEME_FITZGERALD_LIGHT) :
-                        constants.COLOR_SCHEME_FITZGERALD_MEDIUM;
-                } else {
-                    return backgroundColored ?
-                        (darkMode ? constants.COLOR_SCHEME_GOOSENS_DARK : constants.COLOR_SCHEME_GOOSENS_LIGHT) :
-                        constants.COLOR_SCHEME_GOOSENS_MEDIUM;
+                    if (backgroundColored) {
+                        return darkMode ? constants.COLOR_SCHEME_FITZGERALD_DARK: constants.COLOR_SCHEME_FITZGERALD_LIGHT;
+                    }
+                    if (borderColored) {
+                        return constants.COLOR_SCHEME_FITZGERALD_MEDIUM;
+                    }
+                    // both colored
+                    return darkMode ? constants.COLOR_SCHEME_FITZGERALD_DARK : constants.COLOR_SCHEME_FITZGERALD_LIGHT;
+                } else if (originalScheme.startsWith(constants.COLOR_SCHEME_GOOSENS_PREFIX)) {
+                    if (backgroundColored) {
+                        return darkMode ? constants.COLOR_SCHEME_GOOSENS_DARK: constants.COLOR_SCHEME_GOOSENS_LIGHT;
+                    }
+                    if (borderColored) {
+                        return constants.COLOR_SCHEME_GOOSENS_MEDIUM;
+                    }
+                    // both colored
+                    return darkMode ? constants.COLOR_SCHEME_FITZGERALD_DARK : constants.COLOR_SCHEME_FITZGERALD_LIGHT;
+                } else if (originalScheme.startsWith(constants.COLOR_SCHEME_MONTESSORI_PREFIX)) {
+                    if (backgroundColored) {
+                        return darkMode ? constants.COLOR_SCHEME_MONTESSORI_DARK: constants.COLOR_SCHEME_MONTESSORI_LIGHT;
+                    }
+                    if (borderColored) {
+                        return constants.COLOR_SCHEME_MONTESSORI_MEDIUM;
+                    }
+                    // both colored
+                    return darkMode ? constants.COLOR_SCHEME_MONTESSORI_DARK: constants.COLOR_SCHEME_MONTESSORI_VERY_LIGHT;
                 }
             },
             getElement(x, y, label, imgUrl, colorCategory) {

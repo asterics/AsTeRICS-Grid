@@ -174,6 +174,7 @@ constants.DEFAULT_GRID_BACKGROUND_COLOR = '#e8e8e8';
 constants.DEFAULT_GRID_BACKGROUND_COLOR_DARK = '#000000';
 constants.COLOR_SCHEME_FITZGERALD_PREFIX = 'CS_MODIFIED_FITZGERALD_KEY';
 constants.COLOR_SCHEME_GOOSENS_PREFIX = 'CS_GOOSENS';
+constants.COLOR_SCHEME_MONTESSORI_PREFIX = 'CS_MONTESSORI';
 constants.COLOR_SCHEME_FITZGERALD_LIGHT = 'CS_MODIFIED_FITZGERALD_KEY_LIGHT';
 constants.COLOR_SCHEME_FITZGERALD_MEDIUM = 'CS_MODIFIED_FITZGERALD_KEY_MEDIUM';
 constants.COLOR_SCHEME_FITZGERALD_DARK = 'CS_MODIFIED_FITZGERALD_KEY_DARK';
@@ -182,6 +183,7 @@ constants.COLOR_SCHEME_GOOSENS_MEDIUM = 'CS_GOOSENS_MEDIUM';
 constants.COLOR_SCHEME_GOOSENS_DARK = 'CS_GOOSENS_DARK';
 constants.COLOR_SCHEME_MONTESSORI_VERY_LIGHT = 'CS_MONTESSORI_VERY_LIGHT';
 constants.COLOR_SCHEME_MONTESSORI_LIGHT = 'CS_MONTESSORI_LIGHT';
+constants.COLOR_SCHEME_MONTESSORI_MEDIUM = 'CS_MONTESSORI_MEDIUM';
 constants.COLOR_SCHEME_MONTESSORI_DARK = 'CS_MONTESSORI_DARK';
 constants.CC_PRONOUN_PERSON_NAME = 'CC_PRONOUN_PERSON_NAME';
 constants.CC_NOUN = 'CC_NOUN';
@@ -233,6 +235,11 @@ constants.CS_MAPPING_TO_FITZGERALD = {
     "CC_CONJUNCTION": constants.CC_MISC,
     "CC_INTERJECTION": constants.CC_SOCIAL_EXPRESSIONS
 };
+
+// very light: for color mode background + border
+// light: for color mode background
+// medium: for color mode border
+// dark: color modes [background] or [background + border] for dark mode
 constants.DEFAULT_COLOR_SCHEMES = [
     {
         name: constants.COLOR_SCHEME_FITZGERALD_LIGHT,
@@ -337,6 +344,22 @@ constants.DEFAULT_COLOR_SCHEMES = [
             '#e4a5ff',
             '#ffa5c9',
             '#f2e5a6',
+            '#d1d1d1'
+        ]
+    },
+    {
+        name: constants.COLOR_SCHEME_MONTESSORI_MEDIUM,
+        categories: constants.CS_MONTESSORI_CATEGORIES,
+        colors: [
+            '#000000',
+            '#4ca6d9',
+            '#1347ae',
+            '#e73a0f',
+            '#04bf82',
+            '#fd9030',
+            '#6118a2',
+            '#f1c9d1',
+            '#aa996b',
             '#d1d1d1'
         ]
     },
