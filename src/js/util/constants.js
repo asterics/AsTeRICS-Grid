@@ -310,10 +310,10 @@ constants.DEFAULT_COLOR_SCHEMES = [
             '#eaeffd', // adjective
             '#FCE8E8', // verb
             '#dff4df', // preposition
-            '#ffeecf', // adverb
+            '#fbf3e4', // adverb
             '#fbf2ff', // pronoun
             '#fff0f6', // conjunction
-            '#fbf5e8', // interjection
+            '#fbf7e4', // interjection
             '#e4e4e4'  // category
         ],
         customBorders: {
