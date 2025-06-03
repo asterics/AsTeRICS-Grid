@@ -202,25 +202,19 @@ fontUtil.isRGBDark = function(rgb) {
     return val <= 149;
 }
 
-fontUtil.adjustHexColor = function(hexString, percent) {
-    let hsl = hexToHSL(hexString);
-    return fontUtil.adjustHSLColor(hsl, percent);
-}
-
-fontUtil.adjustHSLColor = function(hslString, percent) {
-    // Extract H, S, L components
-    const match = hslString.match(/hsl\(\s*(\d+),\s*([\d.]+)%,\s*([\d.]+)%\s*\)/i);
-    if (!match) {
-        return hslString;
+fontUtil.adjustHexColor = function(hexString, percent, returnHex = false) {
+    let hslObject = hexToHSL(hexString);
+    let adjustedHsl = fontUtil.adjustHSLColor(hslObject, percent);
+    if (returnHex) {
+        return hslToHex(adjustedHsl);
+    } else {
+        return `hsl(${adjustedHsl.h}, ${adjustedHsl.s}%, ${adjustedHsl.l}%)`;
     }
+};
 
-    let h = parseFloat(match[1]);
-    let s = parseFloat(match[2]);
-    let l = parseFloat(match[3]);
-
-    l = Math.min(100, Math.max(0, l * (1 + percent/100)));
-
-    return `hsl(${h}, ${s}%, ${l}%)`;
+fontUtil.adjustHSLColor = function(hslObject, percent) {
+    hslObject.l = Math.min(100, Math.max(0, hslObject.l * (1 + percent/100)));
+    return hslObject;
 };
 
 function hexToRgb(hex) {
@@ -234,7 +228,7 @@ function hexToRgb(hex) {
         : hex;
 }
 
-function hexToHSL(hex) {
+function hexToHSL(hex, returnValues = false) {
     if (hexToHslCache.has(hex)) {
         return hexToHslCache.get(hex);
     }
@@ -266,13 +260,26 @@ function hexToHSL(hex) {
         h /= 6;
     }
 
-    h = Math.round(h * 360);
-    s = Math.round(s * 100);
-    l = Math.round(l * 100);
-
-    let hsl = `hsl(${h}, ${s}%, ${l}%)`;
+    let hsl = {
+        h: Math.round(h * 360),
+        s: Math.round(s * 100),
+        l: Math.round(l * 100)
+    };
     hexToHslCache.set(hex, hsl);
     return hsl;
+}
+
+// https://stackoverflow.com/a/44134328/9219743
+function hslToHex(hslObject) {
+    let h = hslObject.h, l = hslObject.l, s = hslObject.s;
+    l /= 100;
+    const a = s * Math.min(l, 1 - l) / 100;
+    const f = n => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
 }
 
 function getCssStyle(element, prop) {
