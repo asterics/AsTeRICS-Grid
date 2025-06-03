@@ -180,7 +180,9 @@ constants.COLOR_SCHEME_FITZGERALD_DARK = 'CS_MODIFIED_FITZGERALD_KEY_DARK';
 constants.COLOR_SCHEME_GOOSENS_LIGHT = 'CS_GOOSENS_LIGHT';
 constants.COLOR_SCHEME_GOOSENS_MEDIUM = 'CS_GOOSENS_MEDIUM';
 constants.COLOR_SCHEME_GOOSENS_DARK = 'CS_GOOSENS_DARK';
+constants.COLOR_SCHEME_MONTESSORI_VERY_LIGHT = 'CS_MONTESSORI_VERY_LIGHT';
 constants.COLOR_SCHEME_MONTESSORI_LIGHT = 'CS_MONTESSORI_LIGHT';
+constants.COLOR_SCHEME_MONTESSORI_DARK = 'CS_MONTESSORI_DARK';
 constants.CC_PRONOUN_PERSON_NAME = 'CC_PRONOUN_PERSON_NAME';
 constants.CC_NOUN = 'CC_NOUN';
 constants.CC_VERB = 'CC_VERB';
@@ -276,11 +278,11 @@ constants.DEFAULT_COLOR_SCHEMES = [
             '#4c8026',
             '#264c80',
             '#802680',
-            '#808080',
+            '#747474',
             '#602680',
             '#52331f',
             '#80261a',
-            '#4d4d4d'
+            '#464646'
         ]
     },
     {
@@ -304,7 +306,7 @@ constants.DEFAULT_COLOR_SCHEMES = [
             '#804c26']
     },
     {
-        name: constants.COLOR_SCHEME_MONTESSORI_LIGHT,
+        name: constants.COLOR_SCHEME_MONTESSORI_VERY_LIGHT,
         categories: constants.CS_MONTESSORI_CATEGORIES,
         colors: [
             '#ffffff', // noun
@@ -321,6 +323,38 @@ constants.DEFAULT_COLOR_SCHEMES = [
         customBorders: {
             "CC_NOUN": '#353535'
         }
+    },
+    {
+        name: constants.COLOR_SCHEME_MONTESSORI_LIGHT,
+        categories: constants.CS_MONTESSORI_CATEGORIES,
+        colors: [
+            '#afafaf',
+            '#a8e0f0',
+            '#a5bbf7',
+            '#f4a8a8',
+            '#ace3ac',
+            '#f2d7a6',
+            '#e4a5ff',
+            '#ffa5c9',
+            '#f2e5a6',
+            '#d1d1d1'
+        ]
+    },
+    {
+        name: constants.COLOR_SCHEME_MONTESSORI_DARK,
+        categories: constants.CS_MONTESSORI_CATEGORIES,
+        colors: [
+            '#464646',
+            '#18728c',
+            '#0d3298',
+            '#931212',
+            '#287728',
+            '#BC5800',
+            '#7500a7',
+            '#a70043',
+            '#807351',
+            '#747474'
+        ]
     }
 ];
 
