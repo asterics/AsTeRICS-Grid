@@ -95,7 +95,9 @@ constants.COLORS = {
     WHITE: '#ffffff',
     WHITESMOKE: '#f5f5f5',
     GRAY: '#808080',
-    BLACK: '#000000'
+    BLACK: '#000000',
+    PREDICT_BACKGROUND: '#FFE4B2',
+    LIVE_BACKGROUND: '#C6ECFD'
 }
 
 constants.PROP_TRANSFER_DONT_CHANGE = "PROP_TRANSFER_DONT_CHANGE";

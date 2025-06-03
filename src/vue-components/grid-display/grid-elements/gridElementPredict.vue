@@ -1,5 +1,5 @@
 <template>
-    <div ref="container" class="grid-item-content" style="background-color: rgb(255,228,178);">
+    <div ref="container" class="grid-item-content">
         <grid-element-text-container :with-image="false" :metadata="metadata" :disable-auto-size-keyboard="true" v-bind="$attrs"/>
     </div>
 </template>

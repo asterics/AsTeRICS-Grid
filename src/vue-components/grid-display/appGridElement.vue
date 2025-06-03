@@ -62,6 +62,12 @@ export default {
             if (!this.metadata || !this.element) {
                 return '';
             }
+            if (this.element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
+                return constants.COLORS.PREDICT_BACKGROUND;
+            }
+            if (this.element.type === GridElement.ELEMENT_TYPE_LIVE) {
+                return this.element.backgroundColor || constants.COLORS.LIVE_BACKGROUND;
+            }
             if ([ColorConfig.COLOR_MODE_BACKGROUND, ColorConfig.COLOR_MODE_BOTH].includes(this.metadata.colorConfig.colorMode)) {
                 return MetaData.getElementColor(this.element, this.metadata);
             }
