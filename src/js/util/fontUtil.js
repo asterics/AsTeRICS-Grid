@@ -212,6 +212,8 @@ fontUtil.adjustHexColor = function(hexString, percent, returnHex = false) {
     }
 };
 
+window.adjustHexColor = fontUtil.adjustHexColor;
+
 fontUtil.adjustHSLColor = function(hslObject, percent) {
     hslObject.l = Math.min(100, Math.max(0, hslObject.l * (1 + percent/100)));
     return hslObject;

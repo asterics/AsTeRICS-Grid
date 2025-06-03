@@ -231,7 +231,7 @@
                         return constants.COLOR_SCHEME_FITZGERALD_MEDIUM;
                     }
                     // both colored
-                    return darkMode ? constants.COLOR_SCHEME_FITZGERALD_DARK : constants.COLOR_SCHEME_FITZGERALD_LIGHT;
+                    return darkMode ? constants.COLOR_SCHEME_FITZGERALD_DARK : constants.COLOR_SCHEME_FITZGERALD_VERY_LIGHT;
                 } else if (originalScheme.startsWith(constants.COLOR_SCHEME_GOOSENS_PREFIX)) {
                     if (backgroundColored) {
                         return darkMode ? constants.COLOR_SCHEME_GOOSENS_DARK: constants.COLOR_SCHEME_GOOSENS_LIGHT;
@@ -240,7 +240,7 @@
                         return constants.COLOR_SCHEME_GOOSENS_MEDIUM;
                     }
                     // both colored
-                    return darkMode ? constants.COLOR_SCHEME_FITZGERALD_DARK : constants.COLOR_SCHEME_FITZGERALD_LIGHT;
+                    return darkMode ? constants.COLOR_SCHEME_GOOSENS_DARK : constants.COLOR_SCHEME_GOOSENS_VERY_LIGHT;
                 } else if (originalScheme.startsWith(constants.COLOR_SCHEME_MONTESSORI_PREFIX)) {
                     if (backgroundColored) {
                         return darkMode ? constants.COLOR_SCHEME_MONTESSORI_DARK: constants.COLOR_SCHEME_MONTESSORI_LIGHT;

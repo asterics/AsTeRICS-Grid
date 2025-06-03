@@ -175,9 +175,11 @@ constants.DEFAULT_GRID_BACKGROUND_COLOR_DARK = '#000000';
 constants.COLOR_SCHEME_FITZGERALD_PREFIX = 'CS_MODIFIED_FITZGERALD_KEY';
 constants.COLOR_SCHEME_GOOSENS_PREFIX = 'CS_GOOSENS';
 constants.COLOR_SCHEME_MONTESSORI_PREFIX = 'CS_MONTESSORI';
+constants.COLOR_SCHEME_FITZGERALD_VERY_LIGHT = 'CS_MODIFIED_FITZGERALD_KEY_VERY_LIGHT';
 constants.COLOR_SCHEME_FITZGERALD_LIGHT = 'CS_MODIFIED_FITZGERALD_KEY_LIGHT';
 constants.COLOR_SCHEME_FITZGERALD_MEDIUM = 'CS_MODIFIED_FITZGERALD_KEY_MEDIUM';
 constants.COLOR_SCHEME_FITZGERALD_DARK = 'CS_MODIFIED_FITZGERALD_KEY_DARK';
+constants.COLOR_SCHEME_GOOSENS_VERY_LIGHT = 'CS_GOOSENS_VERY_LIGHT';
 constants.COLOR_SCHEME_GOOSENS_LIGHT = 'CS_GOOSENS_LIGHT';
 constants.COLOR_SCHEME_GOOSENS_MEDIUM = 'CS_GOOSENS_MEDIUM';
 constants.COLOR_SCHEME_GOOSENS_DARK = 'CS_GOOSENS_DARK';
@@ -242,6 +244,23 @@ constants.CS_MAPPING_TO_FITZGERALD = {
 // dark: color modes [background] or [background + border] for dark mode
 constants.DEFAULT_COLOR_SCHEMES = [
     {
+        name: constants.COLOR_SCHEME_FITZGERALD_VERY_LIGHT,
+        categories: constants.CS_FITZGERALD_CATEGORIES,
+        mappings: constants.CS_MAPPING_TO_FITZGERALD,
+        colors: [
+            '#fafad0',
+            '#fbf3e4',
+            '#dff4df',
+            '#eaeffd',
+            '#fff0f6',
+            '#ffffff',
+            '#fbf2ff',
+            '#ddccc1',
+            '#FCE8E8',
+            '#e4e4e4'
+        ]
+    },
+    {
         name: constants.COLOR_SCHEME_FITZGERALD_LIGHT,
         categories: constants.CS_FITZGERALD_CATEGORIES,
         mappings: constants.CS_MAPPING_TO_FITZGERALD,
@@ -291,6 +310,11 @@ constants.DEFAULT_COLOR_SCHEMES = [
             '#80261a',
             '#464646'
         ]
+    },
+    {
+        name: constants.COLOR_SCHEME_GOOSENS_VERY_LIGHT,
+        categories: constants.CS_GOOSSENS_CATEGORIES,
+        colors: ['#fff0f6', '#eaeffd', '#dff4df', '#fafad0', '#fbf3e4']
     },
     {
         name: constants.COLOR_SCHEME_GOOSENS_LIGHT,
