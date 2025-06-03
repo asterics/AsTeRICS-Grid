@@ -49,6 +49,13 @@ class MetaData extends Model({
         return JSON.stringify(comp1) == JSON.stringify(comp2);
     }
 
+    static getUseColorScheme(metadata) {
+        if (!metadata || !metadata.colorConfig || !metadata.colorConfig.colorSchemesActivated) {
+            return null;
+        }
+        return MetaData.getActiveColorScheme(metadata);
+    }
+
     static getActiveColorScheme(metadata) {
         metadata = metadata || new MetaData();
         return (
@@ -58,20 +65,19 @@ class MetaData extends Model({
         );
     }
 
-    static getElementColor(gridElement, metadata, defaultColor) {
-        if (!metadata || !metadata.colorConfig) {
-            return constants.DEFAULT_ELEMENT_BACKGROUND_COLOR;
+    static getElementColor(gridElement = {}, metadata, fallbackColor) {
+        metadata = metadata || new MetaData();
+        let defaultColor = gridElement.backgroundColor || fallbackColor || metadata.colorConfig.elementBackgroundColor || constants.DEFAULT_ELEMENT_BACKGROUND_COLOR;
+        let colorScheme = MetaData.getUseColorScheme(metadata);
+        if (!colorScheme) {
+            return defaultColor;
         }
-        let colorScheme = MetaData.getActiveColorScheme(metadata);
         let index = colorScheme.categories.indexOf(gridElement.colorCategory);
         if (index === -1 && colorScheme.mappings) {
             let mapped = colorScheme.mappings[gridElement.colorCategory];
             index = colorScheme.categories.indexOf(mapped);
         }
-        if (!metadata.colorConfig.colorSchemesActivated || !gridElement.colorCategory || index === -1) {
-            return gridElement.backgroundColor || defaultColor || metadata.colorConfig.elementBackgroundColor;
-        }
-        return colorScheme.colors[index];
+        return index === -1 ? defaultColor : colorScheme.colors[index];
     }
 
     static getModelName() {

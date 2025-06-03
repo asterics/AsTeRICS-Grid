@@ -85,6 +85,13 @@ export default {
                 return MetaData.getElementColor(element, this.metadata, color);
             }
             if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH) {
+                if (!element.colorCategory) {
+                    return 'transparent';
+                }
+                let colorScheme = MetaData.getUseColorScheme(this.metadata);
+                if (colorScheme && colorScheme.customBorders && colorScheme.customBorders[element.colorCategory]) {
+                    return colorScheme.customBorders[element.colorCategory];
+                }
                 let absAdjustment = 40;
                 let bgColor = MetaData.getElementColor(element, this.metadata, color);
                 let adjustment = fontUtil.isHexDark(bgColor) ? absAdjustment * 1.5 : absAdjustment * -1;

@@ -315,7 +315,10 @@ constants.DEFAULT_COLOR_SCHEMES = [
             '#fff0f6', // conjunction
             '#fbf5e8', // interjection
             '#e4e4e4'  // category
-        ]
+        ],
+        customBorders: {
+            "CC_NOUN": '#353535'
+        }
     }
 ];
 
