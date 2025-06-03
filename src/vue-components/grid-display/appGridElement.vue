@@ -1,7 +1,7 @@
 <template>
     <div class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
          :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: ${cursorType};
-         border: ${borderWidthPx}px solid ${getBorderColor(element)}; background-color: ${backgroundColor}; font-family: ${metadata.textConfig.fontFamily};`">
+         border: ${borderWidthPx}px solid ${getBorderColor(element)}; background-color: ${backgroundColor}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
         <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
@@ -72,6 +72,18 @@ export default {
                 return MetaData.getElementColor(this.element, this.metadata);
             }
             return this.metadata.colorConfig.elementBackgroundColor;
+        },
+        fontColor() {
+            if (!this.metadata || !this.metadata.textConfig) {
+                return constants.COLORS.BLACK;
+            }
+            if (!this.metadata.textConfig.fontColor ||
+                [constants.COLORS.BLACK, constants.COLORS.WHITE].includes(this.metadata.textConfig.fontColor)) {
+                // if not set or set to black or white - do auto-contrast
+                let isDark = fontUtil.isHexDark(this.backgroundColor);
+                return isDark ? constants.COLORS.WHITE : constants.COLORS.BLACK;
+            }
+            return this.metadata.textConfig.fontColor;
         },
         cursorType() {
             return gridUtil.getCursorType(this.metadata, "pointer");
