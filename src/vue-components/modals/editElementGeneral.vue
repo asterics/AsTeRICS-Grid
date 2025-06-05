@@ -12,7 +12,8 @@
         <div class="row">
             <label class="col-sm-2" for="colorCategory">{{ $t('colorCategory') }}</label>
             <div class="col-sm-7">
-                <select class="col-12" id="colorCategory" v-model="gridElement.colorCategory">
+                <select class="col-12" id="colorCategory" v-model="gridElement.colorCategory" @change="colorCategoryNotFitting = false">
+                    <option v-if="colorCategoryNotFitting" :value="colorCategoryNotFitting" disabled selected hidden>{{ $t("categoryFromOtherColorScheme", [$t(colorCategoryNotFitting)]) }}</option>
                     <option :value="undefined">{{ $t('noneSelected') }}</option>
                     <option v-for="category in colorCategories" :value="category">{{ category | translate }}</option>
                 </select>
@@ -84,7 +85,8 @@
                 colorCategories: [],
                 constants: constants,
                 testGridData: null,
-                GridElement: GridElement
+                GridElement: GridElement,
+                colorCategoryNotFitting: false
             }
         },
         methods: {
@@ -104,7 +106,7 @@
                 this.metadata = metadata;
                 this.colorCategories = MetaData.getActiveColorScheme(metadata).categories;
                 if (!this.colorCategories.includes(this.gridElement.colorCategory)) {
-                    this.gridElement.colorCategory = undefined;
+                    this.colorCategoryNotFitting = this.gridElement.colorCategory;
                 }
             })
         },

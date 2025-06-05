@@ -20,7 +20,54 @@ Since AsTeRICS Grid doesn’t have a dedicated team creating grid sets, the avai
 
 ## Which languages are available in AsTeRICS Grid?
 
-The available languages depend on the platform you're using. Check [chapter 11](11_voices.md) for details.  
+The available languages depend on the platform you're using. Check [chapter 11](11_voices.md) for details.
+
+## Issues with online text-to-speech voices (lags, not working)
+AsTeRICS Grid uses voices from these sources:
+* **offline:** voices installed on the operating system (differs depending on platform, Windows has different voices than Android or iOS), e.g. `Microsoft David - English, offline` on a Windows computer
+* **online (best quality):** voices from Microsoft, e.g. `Microsoft Eric Online (Natural), online`. These voices are only available in the Microsoft Edge Browser on a Windows computer.
+* **online (good quality):**, Google voices, e.g. `Google Deutsch, online`. These voices are only available in Google Chrome browser.
+* **online (average quality and sometimes problems with availability):** When using voices from [responsivevoice.org](https://responsivevoice.org/), e.g. `Spanish Female, online`, there can be some delay (e.g. 5 seconds or more) until the label is spoken. There are also random errors accessing the voice service.
+
+As stated the quality and availability of these voices differs, in general **offline voices should be preferred**, because they are most reliable and not depending on an internet connection. Most **problems occur with voices from [responsivevoice.org](https://responsivevoice.org/)**, which is why they only should be used if no alternatives are available.
+
+### Installing additional voices
+On most operating systems it's possible to install additional offline voices and afterwards use them in AsTeRICS Grid.
+
+#### Microsoft Windows 10
+On Windows 10 follow these steps to install additional voices:
+1. go to **language system settings**
+1. click on **add language**
+1. search for the language you want to install
+1. if there is a speech balloon icon next to the language it indicates that a text-to-speech (TTS) voice is available for this language:
+<div align="center"><img width=350 src="https://user-images.githubusercontent.com/2537025/233000407-6d8410b7-834f-45bb-ab06-d4931340071a.png"/></div>
+
+1. If a TTS voice is available for your language, **install it**!
+2. **Restart the computer**: Afterwards the new offline voices should be available in AsTeRICS Grid
+
+#### Android
+Please follow this tutorial from ARASAAC to read about possibilities to install additional offline voices on an Android device: [ARASAAC tutorial for installing voices on Android](https://aulaabierta.arasaac.org/en/dynamic-communicator-asterics-grid-installation-of-speech-synthesis-tts-android)
+
+#### iOS
+With iOS 15 it was possible to use all voices installed on the device within AsTeRICS Grid. With iOS 16 Apple seems to have decided to remove the possibility to use high quality voices within web applications and therefore also to remove them from AsTeRICS Grid. See this [issue on Github about iOS voices](https://github.com/asterics/AsTeRICS-Grid/issues/223) and this [question in the Apple developer forum](https://developer.apple.com/forums/thread/723503) which shows that this isn't a bug, but is behaviour that's intended by Apple. We've contacted Apple directly and asked them to revert this change, but didn't receive an answer. If you're experiencing this issue, you can send feedback to Apple directly: [send feedback to Apple](https://www.apple.com/feedback/ipad/)
+
+**Update**: with iOS 17 the situation became better again, now for most languages at least one higher quality voice is available for AsTeRICS Grid, also see https://github.com/asterics/AsTeRICS-Grid/issues/223#issuecomment-1729299302
+
+## Is there a recommended Tablet which works well with AsTeRICS Grid?
+We recommend Samsung tablets because Samsung makes available high quality offline Speech Synthesis Voices in their Galaxy Store.
+These voices are offered for the most important languages. Example models are the Galaxy Tab A9 or A9+ (good quality/price ratio) or the more expensive Galaxy Tab S9.
+Generally, all Android tablets support an offline text-to-speech engine (and it is important to have voices available offline.)
+You can read more about the topic in an article by ARASAAC here: https://aulaabierta.arasaac.org/comunicador-dinamico-asterics-grid-voces-sintetizadas-tts-android-ios
+We currently don't recommend iOS devcies (iPads) for AsTeRICS grid because Apple restricted the use of offline voices from web applications (like AsTeRICS Grid).
+
+A list of the voices currently available for each system can be downloaded here: [Overview Voices AG](https://github.com/user-attachments/files/17969149/Overview.Voices.AG.pdf) (last updated: 2024-12)
+
+
+Other criteria for selecting a particular tablet model could be:
+* The audio output and quality of the built-in speakers
+* The size and quality of the touchscreen
+* The availablility of protective cases/shells, keyguards (if necessary) or mounting solutions
+* The availability of a USB port in case an assistive switch should be connected via USB - (note that there are also switches with a Bluetooth interface)
 
 ## Can I recover the password of my online user?
 We care about the protection of private data that can be inserted into grids, e.g. images or sound recordings. Therefore we've designed AsTeRICS Grid in a way where only the user itself can see his/her data, nobody else. All data of online users is encrypted using the password of the user. So even if we have access to the database, we cannot see anything but encrypted, unreadable data. While that's great for privacy, it also has this major drawback:

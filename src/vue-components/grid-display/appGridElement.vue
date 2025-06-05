@@ -1,7 +1,7 @@
 <template>
     <div class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
          :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: ${cursorType};
-         border: ${borderWidthPx}px solid ${getBorderColor(element)}; background-color: ${backgroundColor}; font-family: ${metadata.textConfig.fontFamily};`">
+         border: ${borderWidthPx}px solid ${getBorderColor(element)}; background-color: ${backgroundColor}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
         <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
@@ -62,10 +62,28 @@ export default {
             if (!this.metadata || !this.element) {
                 return '';
             }
+            if (this.element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
+                return constants.COLORS.PREDICT_BACKGROUND;
+            }
+            if (this.element.type === GridElement.ELEMENT_TYPE_LIVE) {
+                return this.element.backgroundColor || constants.COLORS.LIVE_BACKGROUND;
+            }
             if ([ColorConfig.COLOR_MODE_BACKGROUND, ColorConfig.COLOR_MODE_BOTH].includes(this.metadata.colorConfig.colorMode)) {
                 return MetaData.getElementColor(this.element, this.metadata);
             }
             return this.metadata.colorConfig.elementBackgroundColor;
+        },
+        fontColor() {
+            if (!this.metadata || !this.metadata.textConfig) {
+                return constants.COLORS.BLACK;
+            }
+            if (!this.metadata.textConfig.fontColor ||
+                [constants.COLORS.BLACK, constants.COLORS.WHITE].includes(this.metadata.textConfig.fontColor)) {
+                // if not set or set to black or white - do auto-contrast
+                let isDark = fontUtil.isHexDark(this.backgroundColor);
+                return isDark ? constants.COLORS.WHITE : constants.COLORS.BLACK;
+            }
+            return this.metadata.textConfig.fontColor;
         },
         cursorType() {
             return gridUtil.getCursorType(this.metadata, "pointer");
@@ -85,6 +103,13 @@ export default {
                 return MetaData.getElementColor(element, this.metadata, color);
             }
             if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH) {
+                if (!element.colorCategory) {
+                    return 'transparent';
+                }
+                let colorScheme = MetaData.getUseColorScheme(this.metadata);
+                if (colorScheme && colorScheme.customBorders && colorScheme.customBorders[element.colorCategory]) {
+                    return colorScheme.customBorders[element.colorCategory];
+                }
                 let absAdjustment = 40;
                 let bgColor = MetaData.getElementColor(element, this.metadata, color);
                 let adjustment = fontUtil.isHexDark(bgColor) ? absAdjustment * 1.5 : absAdjustment * -1;

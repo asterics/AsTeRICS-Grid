@@ -95,7 +95,9 @@ constants.COLORS = {
     WHITE: '#ffffff',
     WHITESMOKE: '#f5f5f5',
     GRAY: '#808080',
-    BLACK: '#000000'
+    BLACK: '#000000',
+    PREDICT_BACKGROUND: '#FFE4B2',
+    LIVE_BACKGROUND: '#C6ECFD'
 }
 
 constants.PROP_TRANSFER_DONT_CHANGE = "PROP_TRANSFER_DONT_CHANGE";
@@ -172,13 +174,19 @@ constants.DEFAULT_GRID_BACKGROUND_COLOR = '#e8e8e8';
 constants.DEFAULT_GRID_BACKGROUND_COLOR_DARK = '#000000';
 constants.COLOR_SCHEME_FITZGERALD_PREFIX = 'CS_MODIFIED_FITZGERALD_KEY';
 constants.COLOR_SCHEME_GOOSENS_PREFIX = 'CS_GOOSENS';
+constants.COLOR_SCHEME_MONTESSORI_PREFIX = 'CS_MONTESSORI';
+constants.COLOR_SCHEME_FITZGERALD_VERY_LIGHT = 'CS_MODIFIED_FITZGERALD_KEY_VERY_LIGHT';
 constants.COLOR_SCHEME_FITZGERALD_LIGHT = 'CS_MODIFIED_FITZGERALD_KEY_LIGHT';
 constants.COLOR_SCHEME_FITZGERALD_MEDIUM = 'CS_MODIFIED_FITZGERALD_KEY_MEDIUM';
 constants.COLOR_SCHEME_FITZGERALD_DARK = 'CS_MODIFIED_FITZGERALD_KEY_DARK';
+constants.COLOR_SCHEME_GOOSENS_VERY_LIGHT = 'CS_GOOSENS_VERY_LIGHT';
 constants.COLOR_SCHEME_GOOSENS_LIGHT = 'CS_GOOSENS_LIGHT';
 constants.COLOR_SCHEME_GOOSENS_MEDIUM = 'CS_GOOSENS_MEDIUM';
 constants.COLOR_SCHEME_GOOSENS_DARK = 'CS_GOOSENS_DARK';
+constants.COLOR_SCHEME_MONTESSORI_VERY_LIGHT = 'CS_MONTESSORI_VERY_LIGHT';
 constants.COLOR_SCHEME_MONTESSORI_LIGHT = 'CS_MONTESSORI_LIGHT';
+constants.COLOR_SCHEME_MONTESSORI_MEDIUM = 'CS_MONTESSORI_MEDIUM';
+constants.COLOR_SCHEME_MONTESSORI_DARK = 'CS_MONTESSORI_DARK';
 constants.CC_PRONOUN_PERSON_NAME = 'CC_PRONOUN_PERSON_NAME';
 constants.CC_NOUN = 'CC_NOUN';
 constants.CC_VERB = 'CC_VERB';
@@ -229,7 +237,29 @@ constants.CS_MAPPING_TO_FITZGERALD = {
     "CC_CONJUNCTION": constants.CC_MISC,
     "CC_INTERJECTION": constants.CC_SOCIAL_EXPRESSIONS
 };
+
+// very light: for color mode background + border
+// light: for color mode background
+// medium: for color mode border
+// dark: color modes [background] or [background + border] for dark mode
 constants.DEFAULT_COLOR_SCHEMES = [
+    {
+        name: constants.COLOR_SCHEME_FITZGERALD_VERY_LIGHT,
+        categories: constants.CS_FITZGERALD_CATEGORIES,
+        mappings: constants.CS_MAPPING_TO_FITZGERALD,
+        colors: [
+            '#fafad0',
+            '#fbf3e4',
+            '#dff4df',
+            '#eaeffd',
+            '#fff0f6',
+            '#ffffff',
+            '#fbf2ff',
+            '#ddccc1',
+            '#FCE8E8',
+            '#e4e4e4'
+        ]
+    },
     {
         name: constants.COLOR_SCHEME_FITZGERALD_LIGHT,
         categories: constants.CS_FITZGERALD_CATEGORIES,
@@ -274,12 +304,17 @@ constants.DEFAULT_COLOR_SCHEMES = [
             '#4c8026',
             '#264c80',
             '#802680',
-            '#808080',
+            '#747474',
             '#602680',
             '#52331f',
             '#80261a',
-            '#4d4d4d'
+            '#464646'
         ]
+    },
+    {
+        name: constants.COLOR_SCHEME_GOOSENS_VERY_LIGHT,
+        categories: constants.CS_GOOSSENS_CATEGORIES,
+        colors: ['#fff0f6', '#eaeffd', '#dff4df', '#fafad0', '#fbf3e4']
     },
     {
         name: constants.COLOR_SCHEME_GOOSENS_LIGHT,
@@ -302,7 +337,7 @@ constants.DEFAULT_COLOR_SCHEMES = [
             '#804c26']
     },
     {
-        name: constants.COLOR_SCHEME_MONTESSORI_LIGHT,
+        name: constants.COLOR_SCHEME_MONTESSORI_VERY_LIGHT,
         categories: constants.CS_MONTESSORI_CATEGORIES,
         colors: [
             '#ffffff', // noun
@@ -310,11 +345,62 @@ constants.DEFAULT_COLOR_SCHEMES = [
             '#eaeffd', // adjective
             '#FCE8E8', // verb
             '#dff4df', // preposition
-            '#ffeecf', // adverb
+            '#fbf3e4', // adverb
             '#fbf2ff', // pronoun
             '#fff0f6', // conjunction
-            '#fbf5e8', // interjection
+            '#fbf7e4', // interjection
             '#e4e4e4'  // category
+        ],
+        customBorders: {
+            "CC_NOUN": '#353535'
+        }
+    },
+    {
+        name: constants.COLOR_SCHEME_MONTESSORI_LIGHT,
+        categories: constants.CS_MONTESSORI_CATEGORIES,
+        colors: [
+            '#afafaf',
+            '#a8e0f0',
+            '#a5bbf7',
+            '#f4a8a8',
+            '#ace3ac',
+            '#f2d7a6',
+            '#e4a5ff',
+            '#ffa5c9',
+            '#f2e5a6',
+            '#d1d1d1'
+        ]
+    },
+    {
+        name: constants.COLOR_SCHEME_MONTESSORI_MEDIUM,
+        categories: constants.CS_MONTESSORI_CATEGORIES,
+        colors: [
+            '#000000',
+            '#4ca6d9',
+            '#1347ae',
+            '#e73a0f',
+            '#04bf82',
+            '#fd9030',
+            '#6118a2',
+            '#f1c9d1',
+            '#aa996b',
+            '#d1d1d1'
+        ]
+    },
+    {
+        name: constants.COLOR_SCHEME_MONTESSORI_DARK,
+        categories: constants.CS_MONTESSORI_CATEGORIES,
+        colors: [
+            '#464646',
+            '#18728c',
+            '#0d3298',
+            '#931212',
+            '#287728',
+            '#BC5800',
+            '#7500a7',
+            '#a70043',
+            '#807351',
+            '#747474'
         ]
     }
 ];
