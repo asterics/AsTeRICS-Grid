@@ -448,12 +448,12 @@ constants.OAUTH_REDIRECT_KEY = 'OAUTH_REDIRECT_KEY';
 
 // constants for OAuth authentication at globalsymbols
 constants.GLOBALSYMBOLS_NAME = 'Global Symbols';
-constants.GLOBALSYMBOLS_BASE_URL = 'http://localhost:3000/';
+constants.GLOBALSYMBOLS_BASE_URL = 'https://gs-stage.co.uk/';
 constants.BOARDBUILDER_BASE_URL = 'http://localhost:4200/';
 constants.OAUTH_CONFIG_GLOBALSYMBOLS = {
     id: 'globalsymbols',
     authority: constants.GLOBALSYMBOLS_BASE_URL,
-    client_id: 'GJa5KKWZrPs4TQfYs0ov7wg20IeurBd6xd9y4HbU-j0',
+    client_id: 'aviO5h2n0MT4ufeRrjsNSCzD2KNz-yV-gV7wlQh9hvY',
     redirect_uri: `${location.origin}${location.pathname}html/oauth-redirect.html`,
     response_type: 'code',
     scope: 'openid profile email boardset:read boardset:write offline_access',
