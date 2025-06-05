@@ -453,7 +453,8 @@ constants.BOARDBUILDER_BASE_URL = 'http://localhost:4200/';
 constants.OAUTH_CONFIG_GLOBALSYMBOLS = {
     id: 'globalsymbols',
     authority: constants.GLOBALSYMBOLS_BASE_URL,
-    client_id: 'aviO5h2n0MT4ufeRrjsNSCzD2KNz-yV-gV7wlQh9hvY',
+    client_id: 'yzq33ZO1d2n9vU0-UiL_TU1EWH2crS1M4zSXU6pf9KU', // gridbeta2
+    //client_id: 'aviO5h2n0MT4ufeRrjsNSCzD2KNz-yV-gV7wlQh9hvY', // localhost
     redirect_uri: `${location.origin}${location.pathname}html/oauth-redirect.html`,
     response_type: 'code',
     scope: 'openid profile email boardset:read boardset:write offline_access',
