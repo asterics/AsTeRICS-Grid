@@ -10,8 +10,7 @@ if [ $# -ge 1 ]; then
   folderName="$1"
 fi
 
-echo $folderName
-exit 0
+echo "releasing to $folderName..."
 
 sshUserHost="u91187759@home708826695.1and1-data.host"
 
