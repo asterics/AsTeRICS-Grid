@@ -39,6 +39,9 @@ scp index.html $sshUserHost:~/$folderName/
 scp unsupported.html $sshUserHost:~/$folderName/
 scp serviceWorker.js $sshUserHost:~/$folderName/
 scp -r app $sshUserHost:~/$folderName/app
+[ -d "html" ] &&  scp -r html $sshUserHost:~/$folderName/html
+ssh $sshUserHost "mkdir -p ~/$folderName/src/js/util"
+scp src/js/util/constants.js $sshUserHost:~/$folderName/src/js/util/constants.js
 
 git checkout .
 
