@@ -1176,7 +1176,7 @@
   "colorMode": "Modo de color",
   "colorModeBorder": "Borde",
   "colorModeBackground": "Fondo",
-  "colorModeBackgroundBorder": "Color de fondo + borde",
+  "colorModeBackgroundBorder": "Fondo + borde",
   "borderWidth": "Grosor del borde",
   "borderRadius": "Redondeado del borde",
   "elementMargin": "Espacio entre celdas",
