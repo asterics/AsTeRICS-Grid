@@ -14,8 +14,5 @@ This documentation is divided in the following parts:
 1. [Data model](05_datamodel.md)
 1. [Data storage](06_data_storage.md)
 1. [Internationalization](07_i18n.md)
-1. [Testing](01_terms.md)
-1. [Development setup](01_terms.md)
-1. [Production setup](01_terms.md)
 
 For general info about collaboration possibilities, see [collaboration.md](collaboration.md).
