@@ -1035,7 +1035,7 @@
   "testVoice": "Test hlasu",
   "pleaseConsiderToDownloadABackup": "Zvažte prosím stažení zálohy vaší konfigurace, abyste byli v bezpečí a neztratili svou práci.",
   "downloadNow": "Stáhnout nyní",
-  "stopRemembering": "Zastavit zapamatování",
+  "stopRemembering": "Přestat připomínat",
   "intervalForRemindingMakeBackups": "Interval pro připomenutí vytvoření zálohy",
   "notifications": "Notifikace",
   "offline": "offline",
