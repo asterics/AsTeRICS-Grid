@@ -1035,7 +1035,7 @@
   "testVoice": "Provar veu",
   "pleaseConsiderToDownloadABackup": "Si us plau, consideri la possibilitat de descarregar una còpia de seguretat del seu comunicador per no perdre la feina feta.",
   "downloadNow": "Descarregar ara",
-  "stopRemembering": "No tornar a recordar-m'ho",
+  "stopReminding": "Stop reminding",
   "intervalForRemindingMakeBackups": "Recordar fer còpies de seguretat cada",
   "notifications": "Notificacions",
   "offline": "fora de línia",
