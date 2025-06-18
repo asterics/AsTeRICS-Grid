@@ -1035,7 +1035,7 @@
   "testVoice": "Stimme testen",
   "pleaseConsiderToDownloadABackup": "Bitte lade zur Sicherheit ein Backup der Konfiguration herunter um sie vor Verlust zu schützen.",
   "downloadNow": "Herunterladen",
-  "stopRemembering": "Nicht mehr erinnern",
+  "stopReminding": "Stop reminding",
   "intervalForRemindingMakeBackups": "Intervall für Backup-Erinnerung",
   "notifications": "Benachrichtigungen",
   "offline": "offline",
