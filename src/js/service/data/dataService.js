@@ -77,16 +77,17 @@ dataService.getGrids = function (fullVersion, withoutGlobal) {
                 resolve([]);
                 return;
             }
-            let retVal = grids instanceof Array ? grids : [grids];
-            for (let grid of retVal) {
+            let returnGrids = grids instanceof Array ? grids : [grids];
+            returnGrids = returnGrids.filter(grid => !!grid);
+            for (let grid of returnGrids) {
                 gridUtil.ensureDefaults(grid);
             }
             if (withoutGlobal) {
                 dataService.getMetadata().then((metadata) => {
-                    resolve(retVal.filter((grid) => grid && grid.id !== metadata.globalGridId));
+                    resolve(returnGrids.filter((grid) => grid.id !== metadata.globalGridId));
                 });
             } else {
-                resolve(retVal.filter((grid) => !!grid));
+                resolve(returnGrids);
             }
         });
     });

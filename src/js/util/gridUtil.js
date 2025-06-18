@@ -574,6 +574,9 @@ gridUtil.getHeightWithBounds = function(gridDataOrElements) {
  * @returns {*}
  */
 gridUtil.ensureDefaults = function(gridData) {
+    if (!gridData) {
+        return;
+    }
     for (let key of Object.keys(GridData.DEFAULTS)) {
         gridData[key] = gridData[key] === undefined ? GridData.DEFAULTS[key] : gridData[key];
     }
