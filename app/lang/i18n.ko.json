@@ -1035,7 +1035,7 @@
   "testVoice": "Test voice",
   "pleaseConsiderToDownloadABackup": "Please consider to download a backup of your configuration in order to be safe of not loosing your work.",
   "downloadNow": "Download now",
-  "stopRemembering": "Stop remembering",
+  "stopReminding": "Stop reminding",
   "intervalForRemindingMakeBackups": "Interval for reminding to make backups",
   "notifications": "Notifications",
   "offline": "offline",

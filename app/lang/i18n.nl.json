@@ -1035,7 +1035,7 @@
   "testVoice": "Stem test",
   "pleaseConsiderToDownloadABackup": "Please consider to download a backup of your configuration in order to be safe of not loosing your work.",
   "downloadNow": "Download nu",
-  "stopRemembering": "Stop met onthouden",
+  "stopReminding": "Stop reminding",
   "intervalForRemindingMakeBackups": "Interval voor herinneringen om back-ups te maken",
   "notifications": "Meldingen",
   "offline": "offline",
