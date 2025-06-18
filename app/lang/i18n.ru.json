@@ -1035,7 +1035,7 @@
   "testVoice": "Проверка голоса",
   "pleaseConsiderToDownloadABackup": "Please consider to download a backup of your configuration in order to be safe of not loosing your work.",
   "downloadNow": "Скачать сейчас",
-  "stopRemembering": "Прекратить напоминать",
+  "stopReminding": "Stop reminding",
   "intervalForRemindingMakeBackups": "Интервал напоминания о необходимости создания резервных копий",
   "notifications": "Уведомления",
   "offline": "не в сети",
