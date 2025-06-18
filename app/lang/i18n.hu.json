@@ -1035,7 +1035,7 @@
   "testVoice": "Hang tesztelése",
   "pleaseConsiderToDownloadABackup": "Please consider to download a backup of your configuration in order to be safe of not loosing your work.",
   "downloadNow": "Letöltés most",
-  "stopRemembering": "Felejts el",
+  "stopReminding": "Stop reminding",
   "intervalForRemindingMakeBackups": "Biztonsági mentés emlékeztető gyakorisága",
   "notifications": "Értesítések",
   "offline": "offline",
