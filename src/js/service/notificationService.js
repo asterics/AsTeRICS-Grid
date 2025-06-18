@@ -50,8 +50,8 @@ notificationService.checkNotifications = async function () {
                 closeOnNavigate: false,
                 actionLink: i18nService.t('downloadNow'),
                 actionLinkFn: downloadConfig,
-                actionLink2: i18nService.t('stopRemembering'),
-                actionLinkFn2: stopRemembering
+                actionLink2: i18nService.t('stopReminding'),
+                actionLinkFn2: stopReminding
             });
         }
     }
@@ -68,7 +68,7 @@ async function downloadConfig() {
     await dataService.markCurrentConfigAsBackedUp();
 }
 
-async function stopRemembering() {
+async function stopReminding() {
     MainVue.clearTooltip();
     notificationConfig.backupNotifyIntervalDays = 0;
     saveNotificationConfig();
