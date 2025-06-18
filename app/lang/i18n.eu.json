@@ -1035,7 +1035,7 @@
   "testVoice": "Ahotsa probatu",
   "pleaseConsiderToDownloadABackup": "Please consider to download a backup of your configuration in order to be safe of not loosing your work.",
   "downloadNow": "Deskargatu orain",
-  "stopRemembering": "Ez gogoratu berriro",
+  "stopReminding": "Stop reminding",
   "intervalForRemindingMakeBackups": "Interval for reminding to make backups",
   "notifications": "Jakinarazpenak",
   "offline": "offline",
