@@ -1035,7 +1035,7 @@
   "testVoice": "Testar voz",
   "pleaseConsiderToDownloadABackup": "Por favor, considere transferir uma cópia de segurança da configuração para não perder o seu trabalho.",
   "downloadNow": "Transferir agora",
-  "stopRemembering": "Parar de lembrar",
+  "stopReminding": "Stop reminding",
   "intervalForRemindingMakeBackups": "Intervalo para lembrar cópias de segurança",
   "notifications": "Notificações",
   "offline": "offline",
