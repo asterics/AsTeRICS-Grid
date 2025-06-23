@@ -27,15 +27,15 @@ let OBF_MANIFEST_FILENAME = 'manifest.json';
 let metadata = null;
 
 obfConverter.gridDataToOBF = function(gridData, manifest, graphList) {
-    let columns = new GridData(gridData).getWidthWithBounds();
     if (gridData.gridElements.some(e => e.width > 1 || e.height > 1)) {
         // normalize elements to size 1 and move them to top left corner, no big element support in obz
         gridData.gridElements = gridData.gridElements.filter(e => e.type === GridElement.ELEMENT_TYPE_NORMAL);
         let xy_full = util.getFilledArray(columns, gridData.rowCount, false);
         moveAllElements(gridData, xy_full, true, false);
         moveAllElements(gridData, xy_full, false, true);
-        columns = new GridData(gridData).getWidth();
     }
+    let columns = gridUtil.getWidthWithBounds(gridData);
+    let rows = gridUtil.getHeightWithBounds(gridData);
     let obfGrid = {
         format: OBF_FORMAT_VERSION,
         id: gridData.id,
@@ -43,9 +43,9 @@ obfConverter.gridDataToOBF = function(gridData, manifest, graphList) {
         locale: i18nService.getContentLang(),
         buttons: [],
         grid: {
-            rows: gridData.rowCount,
+            rows: rows,
             columns: columns,
-            order: new Array(gridData.rowCount).fill(null)
+            order: new Array(rows).fill(null)
         },
         images: []
     };
