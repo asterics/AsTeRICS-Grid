@@ -219,6 +219,8 @@ export default {
                     }
                     MainVue.setTooltip(i18nService.t('sucessfullyExportedDataTo', [constants.GLOBALSYMBOLS_NAME]), tooltipOptions);
                 } catch (e) {
+                    log.warn("error exporting to GS:");
+                    log.warn(e);
                     this.backupInfo.options.progressFn(100);
                     MainVue.setTooltip(i18nService.t('exportingDataToFailedTryAgainLater', [constants.GLOBALSYMBOLS_NAME]), {
                         closeOnNavigate: true,
