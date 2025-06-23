@@ -627,20 +627,12 @@ dataService.importBackupFromPreview = async function(preview, options = {}) {
     options.progressFn(10, i18nService.t('downloadingConfig'));
     options.generateGlobalGrid = preview.generateGlobalGrid || false;
     options.resetHomeBoard = options.generateGlobalGrid;
-    let isOBZ = fileUtil.isObzFile(preview.url);
-    let result = await fileUtil.downloadFile(preview.url, { isBytes: isOBZ });
+    let result = await externalBoardsService.getImportData(preview);
     if (!result) {
         showErrorTooltip('failedToGetBoardData');
         return false;
     }
     options.progressFn(50, i18nService.t('importingData'));
-    if (isOBZ) {
-        let obzFileMap = await fileUtil.readZip(result, {
-            jsonFileExtensions: ['json', 'obf'],
-            defaultEncoding: 'base64'
-        });
-        result = await obfConverter.OBZToImportData(obzFileMap);
-    }
     if (preview.translate && result.grids) {
         for (let grid of result.grids) {
             grid.label[i18nService.getContentLang()] = i18nService.t(i18nService.getTranslation(grid.label));

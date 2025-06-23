@@ -2,7 +2,8 @@ import { constants } from '../../util/constants';
 import { GridPreview } from '../../model/GridPreview';
 import { i18nService } from '../i18nService';
 import { util } from '../../util/util';
-import $ from '../../externals/jquery';
+import { fileUtil } from '../../util/fileUtil';
+import { obfConverter } from '../../util/obfConverter';
 
 let providerAGBoards = {};
 
@@ -59,7 +60,16 @@ providerAGBoards.query = async function (searchTerm = '', options = {}) {
 }
 
 providerAGBoards.getImportData = async function(preview) {
-    return await $.get(BASE_URL + preview.originalData.url);
+    let isOBZ = fileUtil.isObzFile(preview.originalData.url);
+    let result = await fileUtil.downloadFile(preview.url, { isBytes: isOBZ });
+    if (result && isOBZ) {
+        let obzFileMap = await fileUtil.readZip(result, {
+            jsonFileExtensions: ['json', 'obf'],
+            defaultEncoding: 'base64'
+        });
+        result = await obfConverter.OBZToImportData(obzFileMap);
+    }
+    return result;
 }
 
 async function fetchData() {
