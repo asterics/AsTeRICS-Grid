@@ -68,7 +68,7 @@ oauthServiceGlobalSymbols.exportGrids = async function(gridIds, uploadMetadata =
     let result = await $.ajax({
         type: 'POST',
         url: `${constants.GLOBALSYMBOLS_BASE_URL}api/boardbuilder/v1/board_sets/obz`,
-        data: sendData,
+        data: JSON.stringify(sendData),
         headers: {
             "Authorization": `Bearer ${accessToken}`,
             "Content-Type": "application/json"
