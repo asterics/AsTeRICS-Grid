@@ -70,7 +70,8 @@ oauthServiceGlobalSymbols.exportGrids = async function(gridIds, uploadMetadata =
         url: `${constants.GLOBALSYMBOLS_BASE_URL}api/boardbuilder/v1/board_sets/obz`,
         data: sendData,
         headers: {
-            "Authorization": `Bearer ${accessToken}`
+            "Authorization": `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
         }
     });
     progressFn(100);
