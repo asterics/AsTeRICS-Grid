@@ -14,7 +14,7 @@
                     </div>
 
                     <div class="modal-body mt-1">
-                        <nav-tabs :tab-labels="[tab_constants.TAB_EXPORT_FILE, tab_constants.TAB_EXPORT_ONLINE]" v-model="currentTab"></nav-tabs>
+                        <nav-tabs class="mb-5" :tab-labels="[tab_constants.TAB_EXPORT_FILE, tab_constants.TAB_EXPORT_ONLINE]" v-model="currentTab"></nav-tabs>
                         <div v-if="currentTab === tab_constants.TAB_EXPORT_FILE">
                             <export-modal-data-selector v-model="backupInfo" :export-options="exportOptions"></export-modal-data-selector>
                         </div>
