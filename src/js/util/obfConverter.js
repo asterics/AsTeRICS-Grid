@@ -30,7 +30,7 @@ obfConverter.gridDataToOBF = function(gridData, manifest, graphList) {
     if (gridData.gridElements.some(e => e.width > 1 || e.height > 1)) {
         // normalize elements to size 1 and move them to top left corner, no big element support in obz
         gridData.gridElements = gridData.gridElements.filter(e => e.type === GridElement.ELEMENT_TYPE_NORMAL);
-        let xy_full = util.getFilledArray(columns, gridData.rowCount, false);
+        let xy_full = util.getFilledArray(gridUtil.getWidthWithBounds(gridData), gridUtil.getHeightWithBounds(gridData), false);
         moveAllElements(gridData, xy_full, true, false);
         moveAllElements(gridData, xy_full, false, true);
     }
