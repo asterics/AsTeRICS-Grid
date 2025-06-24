@@ -439,7 +439,7 @@ dataService.getBackupData = async function (gridIds, options = {}) {
         let contentLang = i18nService.getContentLang();
         let contentLangBase = i18nService.getContentLangBase();
         for (let grid of backupData.grids) {
-            grid.label[contentLang] = grid.label[contentLang] || grid.label[contentLangBase];
+            grid.label[contentLang] = grid.label[contentLang] || grid.label[contentLangBase] || grid.label[Object.keys(grid.label)[0]] || i18nService.t("newGrid");
             Object.keys(grid.label).forEach((key) => key === contentLang || delete grid.label[key]);
             for (let elem of grid.gridElements) {
                 elem.label[contentLang] = elem.label[contentLang] || elem.label[contentLangBase];
