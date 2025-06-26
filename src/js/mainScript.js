@@ -106,7 +106,9 @@ function initServiceWorker() {
             log.warn('ServiceWorker not supported!');
             return;
         }
-        navigator.serviceWorker.register('./serviceWorker.js').then((reg) => {
+        navigator.serviceWorker.register('./serviceWorker.js', {
+            updateViaCache: 'none'
+        }).then((reg) => {
             let isUpdate = false;
             setInterval(() => {
                 log.debug('Check for serviceworker update...');
