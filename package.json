@@ -47,7 +47,6 @@
   },
   "scripts": {
     "start": "webpack-dev-server",
-    "start-no-live": "webpack-dev-server --liveReload false",
     "start-auth": "node superlogin/start.js",
     "start-auth-ssl": "node superlogin/start.js ssl",
     "build": "jest && webpack --config webpack.config.js --env production",
