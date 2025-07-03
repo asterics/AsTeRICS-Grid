@@ -593,10 +593,6 @@
                             event.preventDefault();
                             this.markAll();
                         }
-                        if (event.code === 'KeyB') {
-                            event.preventDefault();
-                            this.configPropTransfer();
-                        }
                         if (event.code === 'KeyD') {
                             event.preventDefault();
                             this.duplicateElements();

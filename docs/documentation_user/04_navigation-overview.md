@@ -145,7 +145,6 @@ The shortcuts available in edit mode are listed below.
 - `Ctrl + ArrowLeft`: move all elements left
 
 #### Transfer properties
-- `Ctrl + B`: configure property transfer for current selected element
 - `Ctrl + Shift + A`: directly transfer all properties of selected element (`A` like all)
 - `Ctrl + Shift + C`: directly transfer appearance properties of selected element (`C` like color)
 - `Ctrl + Shift + P`: transfer custom properties of selected element (`P` like properties)
