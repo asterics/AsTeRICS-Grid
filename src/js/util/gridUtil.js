@@ -478,10 +478,11 @@ gridUtil.mergeGrids = function(grid, globalGrid, options = {}) {
         let heightFactorNormal = 1;
         let heightFactorGlobal = 1;
         if (gridUtil.getHeight(globalGrid) === 1) {
-            heightFactorGlobal = (heightPercentage * grid.rowCount) / (1 - heightPercentage);
-            heightFactorNormal = 1 / (grid.rowCount * heightPercentage) - 1 / grid.rowCount;
+            let height = gridUtil.getHeightWithBounds(grid);
+            heightFactorGlobal = (heightPercentage * height) / (1 - heightPercentage);
+            heightFactorNormal = 1 / (height * heightPercentage) - 1 / height;
             heightFactorGlobal = Math.round(heightPercentage * 100);
-            heightFactorNormal = Math.round(((1 - heightPercentage) / grid.rowCount) * 100);
+            heightFactorNormal = Math.round(((1 - heightPercentage) / height) * 100);
         }
         let offset = gridUtil.getOffset(globalGrid);
         let factorGrid = autowidth ? gridUtil.getWidth(globalGrid) - offset.x : 1;
