@@ -1300,5 +1300,6 @@
   "podcastToPlay": "Подкаст для воспроизведения",
   "managePodcasts": "Управление подкастами",
   "selectedPodcasts": "Выбранные подкасты",
-  "hideKeyboards": "Скрыть клавиатуры"
+  "hideKeyboards": "Скрыть клавиатуры",
+  "automaticallyAddImages": "Automatically add images"
 }
