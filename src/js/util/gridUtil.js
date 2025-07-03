@@ -540,14 +540,35 @@ gridUtil.hasOutdatedThumbnail = function(gridData) {
 gridUtil.getHash = function(gridData) {
     let string = '';
     gridData.gridElements.forEach((e) => {
-        string += JSON.stringify(e.label) + e.x + e.y;
-        if (e.image && (e.image.data || e.image.url)) {
-            let temp = e.image.data || e.image.url;
-            string += temp.substring(temp.length > 30 ? temp.length - 30 : 0);
-        }
+        string += gridUtil.getElementHash(e, {
+            dontHash: true
+        });
     });
     return encryptionService.getStringHash(string);
 };
+
+/**
+ * gets a SHA256 hash of a grid element for identifying it
+ *
+ * @param element the element to hash
+ * @param options
+ * @param options.dontHash if true hashing with SHA256 is skipped, a plain string including the characteristics of the element is returned instead
+ * @param options.skipPosition if true position values are not included in calculating the hash
+ * @returns {string|*}
+ */
+gridUtil.getElementHash = function(element, options = {}) {
+    options.dontHash = options.dontHash || false;
+    options.skipPosition = options.skipPosition || false;
+    let string = element.id + JSON.stringify(element.label);
+    if (!options.skipPosition) {
+        string += `${element.x}:${element.y}`;
+    }
+    if (element.image && (element.image.data || element.image.url)) {
+        let temp = element.image.data || element.image.url;
+        string += temp.substring(temp.length > 30 ? temp.length - 30 : 0);
+    }
+    return options.dontHash ? string : encryptionService.getStringHash(string);
+}
 
 gridUtil.getWidth = function(gridDataOrElements) {
     let gridElements = getGridElements(gridDataOrElements);
