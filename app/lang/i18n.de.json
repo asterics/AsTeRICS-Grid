@@ -1300,5 +1300,6 @@
   "podcastToPlay": "Abzuspielender Podcast",
   "managePodcasts": "Podcasts verwalten",
   "selectedPodcasts": "Ausgewählte Podcasts",
-  "hideKeyboards": "Keyboards ausblenden"
+  "hideKeyboards": "Keyboards ausblenden",
+  "automaticallyAddImages": "Automatically add images"
 }
