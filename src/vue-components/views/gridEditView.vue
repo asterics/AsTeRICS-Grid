@@ -579,6 +579,16 @@
                             this.configPropTransfer();
                             return;
                         }
+                        if (event.shiftKey && event.code === 'KeyE') {
+                            event.preventDefault();
+                            this.newElements();
+                            return;
+                        }
+                        if (event.code === 'KeyE') {
+                            event.preventDefault();
+                            this.newElement(GridElement.ELEMENT_TYPE_NORMAL);
+                            return;
+                        }
                         if (event.code === 'KeyA') {
                             event.preventDefault();
                             this.markAll();
