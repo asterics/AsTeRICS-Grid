@@ -1300,5 +1300,6 @@
   "podcastToPlay": "Podcast to play",
   "managePodcasts": "Manage podcasts",
   "selectedPodcasts": "Selected podcasts",
-  "hideKeyboards": "Hide keyboards"
+  "hideKeyboards": "Hide keyboards",
+  "automaticallyAddImages": "Automatically add images"
 }
