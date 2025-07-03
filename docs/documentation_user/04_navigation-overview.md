@@ -132,8 +132,8 @@ The shortcuts available in edit mode are listed below.
 - `Ctrl + A`: selects all elements
 - `Ctrl + D`: duplicates selected elements
 - `Ctrl + H`: hide / unhide selected elements
-- `Ctrl + E`: create a new element
-- `Ctrl + Shift + E`: create many new elements
+- `Ctrl + I`: create a new element
+- `Ctrl + Shift + I`: create many new elements
 - `Delete`: deletes selected elements
 - `Ctrl + Z`: Undo
 - `Ctrl + Shift + Z`: Redo

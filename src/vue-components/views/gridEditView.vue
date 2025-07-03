@@ -579,12 +579,12 @@
                             this.configPropTransfer();
                             return;
                         }
-                        if (event.shiftKey && event.code === 'KeyE') {
+                        if (event.shiftKey && event.code === 'KeyI') {
                             event.preventDefault();
                             this.newElements();
                             return;
                         }
-                        if (event.code === 'KeyE') {
+                        if (event.code === 'KeyI') {
                             event.preventDefault();
                             this.newElement(GridElement.ELEMENT_TYPE_NORMAL);
                             return;
