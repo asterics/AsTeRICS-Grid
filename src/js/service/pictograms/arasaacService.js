@@ -136,7 +136,7 @@ arasaacService.getGridImageById = function (arasaacId) {
  *         additional all properties that are received from opensymbols.org API are available: https://www.opensymbols.org/api/v1/symbols/search?q=test
  */
 arasaacService.query = function (search, options, searchLang) {
-    _lastOptions = options;
+    _lastOptions = options || JSON.parse(JSON.stringify(searchProviderInfo.options));
     _lastChunkNr = 1;
     _hasNextChunk = false;
     return queryInternal(search, searchLang, 1, _lastChunkSize);
