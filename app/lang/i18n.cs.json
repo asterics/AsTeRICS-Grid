@@ -1300,5 +1300,6 @@
   "podcastToPlay": "Podcast k přehrání",
   "managePodcasts": "Spravovat podcasty",
   "selectedPodcasts": "Vybrané podcasty",
-  "hideKeyboards": "Skrýt klávesnici"
+  "hideKeyboards": "Skrýt klávesnici",
+  "automaticallyAddImages": "Automatically add images"
 }
