@@ -227,16 +227,58 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         if (element.hidden) {
             continue;
         }
+        // --- Cell Formatting ---
+        // 1. Background color
+        let bgColor = options.printBackground ? util.getRGB(MetaData.getElementColor(element, metadata)) : [255, 255, 255];
+        // 2. Border color
+        let colorConfig = metadata && metadata.colorConfig ? metadata.colorConfig : {};
+        let borderColor = colorConfig.elementBorderColor || constants.DEFAULT_ELEMENT_BORDER_COLOR;
+        let colorMode = colorConfig.colorMode || 'COLOR_MODE_BACKGROUND';
+        if (colorMode === 'COLOR_MODE_BORDER') {
+            borderColor = MetaData.getElementColor(element, metadata, borderColor);
+        } else if (colorMode === 'COLOR_MODE_BOTH') {
+            if (!element.colorCategory) {
+                borderColor = [0,0,0,0]; // transparent
+            } else {
+                // Try to mimic the UI's adjustment logic
+                let colorScheme = MetaData.getUseColorScheme(metadata);
+                if (colorScheme && colorScheme.customBorders && colorScheme.customBorders[element.colorCategory]) {
+                    borderColor = util.hexToRgb(colorScheme.customBorders[element.colorCategory]);
+                } else {
+                    let absAdjustment = 40;
+                    let bgHex = MetaData.getElementColor(element, metadata, borderColor);
+                    let isDark = fontUtil.isHexDark(bgHex);
+                    let adjustment = isDark ? absAdjustment * 1.5 : absAdjustment * -1;
+                    // Use fontUtil.adjustHexColor to get adjusted color
+                    borderColor = util.hexToRgb(fontUtil.adjustHexColor(bgHex, adjustment, true));
+                }
+            }
+        } else if (borderColor === constants.DEFAULT_ELEMENT_BORDER_COLOR) {
+            // Use high-contrast border if default
+            let gridBg = colorConfig.gridBackgroundColor || constants.COLORS.WHITE;
+            borderColor = fontUtil.getHighContrastColor(gridBg, constants.COLORS.WHITESMOKE, constants.COLORS.GRAY);
+            borderColor = util.hexToRgb(borderColor);
+        } else {
+            borderColor = util.hexToRgb(borderColor);
+        }
+        // 3. Border width and radius
+        let borderWidth = colorConfig.borderWidth || 0.1;
+        let borderRadius = colorConfig.borderRadius || 0.4;
+        // Convert borderWidth and borderRadius from percent to mm (approximate)
+        // UI uses pctToPx, but here we use mm, so scale by cell size
         let currentWidth = elementTotalWidth * element.width - 2 * pdfOptions.elementMargin;
         let currentHeight = elementTotalHeight * element.height - 2 * pdfOptions.elementMargin;
         let xStartPos = pdfOptions.docPadding + elementTotalWidth * element.x + pdfOptions.elementMargin;
         let yStartPos = pdfOptions.docPadding + elementTotalHeight * element.y + pdfOptions.elementMargin;
-        let bgColor = options.printBackground ? util.getRGB(MetaData.getElementColor(element, metadata)) : [255, 255, 255];
-        doc.setDrawColor(0);
+        let borderWidthMM = (borderWidth / 100) * Math.min(currentWidth, currentHeight) * 2; // scale up for visibility
+        let borderRadiusMM = (borderRadius / 100) * Math.min(currentWidth, currentHeight) * 2;
+        // --- Draw cell ---
+        doc.setDrawColor(borderColor[0], borderColor[1], borderColor[2]);
+        doc.setLineWidth(borderWidthMM);
         doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
-        doc.roundedRect(xStartPos, yStartPos, currentWidth, currentHeight, 3, 3, 'FD');
+        doc.roundedRect(xStartPos, yStartPos, currentWidth, currentHeight, borderRadiusMM, borderRadiusMM, 'FD');
         if (i18nService.getTranslation(element.label)) {
-            addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, bgColor);
+            await addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, bgColor, metadata);
         }
         await addImageToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos);
         element = new GridElement(element);
@@ -269,63 +311,113 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
     return Promise.all(promises);
 }
 
-function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, bgColor) {
+async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, bgColor, metadata) {
+    // 1. Get label and apply convert mode
     let label = i18nService.getTranslation(element.label);
+    let textConfig = metadata && metadata.textConfig ? metadata.textConfig : {};
     let hasImg = element.image && (element.image.data || element.image.url);
-    let fontSizeMM = hasImg ? currentHeight * (1 - pdfOptions.imgHeightPercentage) : currentHeight / 2;
-    let fontSizePt = (fontSizeMM / 0.352778) * 0.8;
-    let maxWidth = currentWidth - 2 * pdfOptions.textPadding;
+    let convertMode = (element.convertMode !== undefined && element.convertMode !== null) ? element.convertMode : textConfig.convertMode;
     if (convertMode === TextConfig.CONVERT_MODE_UPPERCASE) {
         label = label.toLocaleUpperCase();
     } else if (convertMode === TextConfig.CONVERT_MODE_LOWERCASE) {
         label = label.toLocaleLowerCase();
     }
-    let optimalFontSize = getOptimalFontsize(
-        doc,
-        label,
-        fontSizePt,
-        maxWidth,
-        currentHeight - 2 * pdfOptions.textPadding,
-        !hasImg
-    );
-    let textColor = fontUtil.getHighContrastColorRgb(bgColor);
+
+    // 2. Font family
+    let fontFamily = (element.fontFamily && TextConfig.FONTS.includes(element.fontFamily)) ? element.fontFamily : (textConfig.fontFamily || 'Arial');
+    try {
+        doc.setFont(fontFamily);
+    } catch (e) {
+        doc.setFont('Arial'); // fallback
+    }
+
+    // 3. Font size (percent of cell height, with fitting if needed)
+    let baseFontSizePct = hasImg ? textConfig.fontSizePct : textConfig.onlyTextFontSizePct;
+    if (element.fontSizePct && Number.isFinite(element.fontSizePct)) {
+        baseFontSizePct = element.fontSizePct;
+    }
+    let lineHeight = hasImg ? textConfig.lineHeight : textConfig.onlyTextLineHeight;
+    let maxLines = hasImg ? textConfig.maxLines : 100;
+    let fittingMode = textConfig.fittingMode || TextConfig.TOO_LONG_AUTO;
+    let fontSizeMM = currentHeight * (baseFontSizePct / 100);
+    let fontSizePt = (fontSizeMM / 0.352778) * 0.8;
+    let maxWidth = currentWidth - 2 * pdfOptions.textPadding;
+    let maxHeight = (fontSizePt * lineHeight * maxLines);
+
+    // 4. Font color (element override, fallback, or auto-contrast)
+    let fontColor = element.fontColor || textConfig.fontColor;
+    let textColor;
+    if (!fontColor || fontColor === constants.COLORS.BLACK || fontColor === constants.COLORS.WHITE) {
+        textColor = fontUtil.getHighContrastColorRgb(bgColor);
+    } else {
+        textColor = util.hexToRgb(fontColor);
+    }
     doc.setTextColor(textColor[0], textColor[1], textColor[2]);
-    doc.setFontSize(optimalFontSize);
-    let dim = doc.getTextDimensions(label);
+
+    // 5. Truncation/ellipsis/auto-fit
+    let displayLabel = label;
+    let dim = doc.getTextDimensions(displayLabel);
     let lines = Math.ceil(dim.w / maxWidth);
-    let yOffset = hasImg ? currentHeight - 2 * pdfOptions.elementMargin : (currentHeight - dim.h * lines) / 2;
-    doc.text(label, xStartPos + currentWidth / 2, yStartPos + yOffset, {
-        baseline: hasImg ? 'bottom' : 'top',
+    let actualFontSize = fontSizePt;
+    if (fittingMode === TextConfig.TOO_LONG_AUTO && (dim.w > maxWidth || lines > maxLines)) {
+        // Reduce font size to fit
+        let step = fontSizePt / 10;
+        for (let i = 0; i < 10; i++) {
+            doc.setFontSize(actualFontSize);
+            dim = doc.getTextDimensions(displayLabel);
+            lines = Math.ceil(dim.w / maxWidth);
+            if (dim.w <= maxWidth && lines <= maxLines) break;
+            actualFontSize -= step;
+            if (actualFontSize < 2) break;
+        }
+    } else if (fittingMode === TextConfig.TOO_LONG_TRUNCATE && (dim.w > maxWidth || lines > maxLines)) {
+        // Truncate text
+        let truncated = '';
+        for (let i = 0; i < displayLabel.length; i++) {
+            let test = truncated + displayLabel[i];
+            doc.setFontSize(actualFontSize);
+            dim = doc.getTextDimensions(test);
+            lines = Math.ceil(dim.w / maxWidth);
+            if (dim.w > maxWidth || lines > maxLines) break;
+            truncated = test;
+        }
+        displayLabel = truncated;
+    } else if (fittingMode === TextConfig.TOO_LONG_ELLIPSIS && (dim.w > maxWidth || lines > maxLines)) {
+        // Truncate and add ellipsis
+        let truncated = '';
+        for (let i = 0; i < displayLabel.length; i++) {
+            let test = truncated + displayLabel[i] + '...';
+            doc.setFontSize(actualFontSize);
+            dim = doc.getTextDimensions(test);
+            lines = Math.ceil(dim.w / maxWidth);
+            if (dim.w > maxWidth || lines > maxLines) break;
+            truncated += displayLabel[i];
+        }
+        displayLabel = truncated + '...';
+    }
+    doc.setFontSize(actualFontSize);
+
+    // 6. Text position (above/below image)
+    let textPosition = (element.textPosition !== undefined && element.textPosition !== null) ? element.textPosition : textConfig.textPosition;
+    let yOffset;
+    if (hasImg) {
+        if (textPosition === TextConfig.TEXT_POS_ABOVE) {
+            yOffset = yStartPos + (actualFontSize * lineHeight * maxLines) / 2 + pdfOptions.textPadding;
+        } else {
+            // BELOW (default)
+            yOffset = yStartPos + currentHeight - pdfOptions.textPadding;
+        }
+    } else {
+        // text-only: center vertically
+        yOffset = yStartPos + (currentHeight + actualFontSize * lineHeight) / 2 - pdfOptions.textPadding;
+    }
+
+    // 7. Draw text (centered)
+    doc.text(displayLabel, xStartPos + currentWidth / 2, yOffset, {
+        baseline: hasImg ? (textPosition === TextConfig.TEXT_POS_ABOVE ? 'top' : 'bottom') : 'middle',
         align: 'center',
         maxWidth: maxWidth
     });
-}
-
-function getOptimalFontsize(doc, text, baseSize, maxWidth, maxHeight, multipleLines) {
-    let steps = 10;
-    let size = baseSize;
-    let stepSize = baseSize / 2;
-    for (let i = 0; i < steps; i++) {
-        doc.setFontSize(size);
-        let dim = doc.getTextDimensions(text);
-        if (multipleLines && text.indexOf(' ') !== -1) {
-            let possibleLines = Math.floor(maxHeight / dim.h);
-            let currentLines = Math.ceil(dim.w / maxWidth);
-            if (dim.w / possibleLines > maxWidth * 0.5 || currentLines > possibleLines) {
-                size -= stepSize;
-            } else {
-                size += stepSize;
-            }
-        } else {
-            if (dim.w > maxWidth) {
-                size -= stepSize;
-            } else {
-                size += stepSize;
-            }
-        }
-        stepSize /= 2;
-    }
-    return Math.floor(Math.min(size, baseSize));
 }
 
 async function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, ypos) {
