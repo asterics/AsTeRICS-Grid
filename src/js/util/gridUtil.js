@@ -561,6 +561,7 @@ gridUtil.getElementHash = function(element, options = {}) {
     options.dontHash = options.dontHash || false;
     options.skipPosition = options.skipPosition || false;
     let string = element.id + JSON.stringify(element.label);
+    string += element.backgroundColor + element.colorCategory;
     if (!options.skipPosition) {
         string += `${element.x}:${element.y}`;
     }
