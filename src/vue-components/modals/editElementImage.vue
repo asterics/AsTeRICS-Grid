@@ -28,7 +28,7 @@
         <div class="srow">
             <label for="inputSearch" class="two columns">{{ $t('imageSearch') }}</label>
             <div class="five columns">
-                <input id="inputSearch" type="text" v-model="searchText" @input="searchInput(500, $event)" :placeholder="'SEARCH_IMAGE_PLACEHOLDER' | translate"/>
+                <input id="inputSearch" type="text" v-focus v-model="searchText" @input="searchInput(500, $event)" :placeholder="'SEARCH_IMAGE_PLACEHOLDER' | translate"/>
                 <button @click="clearSearch" :aria-label="$t('clear')"><i class="fas fa-times"></i></button>
             </div>
             <div class="four columns" v-if="searchProvider">
