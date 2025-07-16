@@ -11,6 +11,8 @@
     let referrer = new URL(document.referrer).host;
 
     for (let config of constants.OAUTH_CONFIGS) {
+        console.log("compare", config.authority, new URL(config.authority).host, referrer);
+        console.log(document);
         if (new URL(config.authority).host === referrer) {
             let key = constants.OAUTH_RETURNED_PARAMS_MAP;
             let map = localStorage.getItem(key);
