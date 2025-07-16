@@ -502,10 +502,11 @@ gridUtil.mergeGrids = function(grid, globalGrid, options = {}) {
         let heightFactorNormal = 1;
         let heightFactorGlobal = 1;
         if (gridUtil.getHeight(globalGrid) === 1) {
-            heightFactorGlobal = (heightPercentage * grid.rowCount) / (1 - heightPercentage);
-            heightFactorNormal = 1 / (grid.rowCount * heightPercentage) - 1 / grid.rowCount;
+            let height = gridUtil.getHeightWithBounds(grid);
+            heightFactorGlobal = (heightPercentage * height) / (1 - heightPercentage);
+            heightFactorNormal = 1 / (height * heightPercentage) - 1 / height;
             heightFactorGlobal = Math.round(heightPercentage * 100);
-            heightFactorNormal = Math.round(((1 - heightPercentage) / grid.rowCount) * 100);
+            heightFactorNormal = Math.round(((1 - heightPercentage) / height) * 100);
         }
         let offset = gridUtil.getOffset(globalGrid);
         let factorGrid = autowidth ? gridUtil.getWidth(globalGrid) - offset.x : 1;
@@ -564,18 +565,41 @@ gridUtil.hasOutdatedThumbnail = function(gridData, isHomeGrid) {
 gridUtil.getHash = function(gridData) {
     let string = '';
     gridData.gridElements.forEach((e) => {
-        string += JSON.stringify(e.label) + e.x + e.y;
-        if (e.image && (e.image.data || e.image.url)) {
-            if (e.image.data) {
-                string += e.image.data.substring(e.image.data.length > 30 ? e.image.data.length - 30 : 0);
-            }
-            if (e.image.url) {
-                string += e.image.url;
-            }
-        }
+        string += gridUtil.getElementHash(e, {
+            dontHash: true
+        });
     });
     return encryptionService.getStringHash(string);
 };
+
+/**
+ * gets a SHA256 hash of a grid element for identifying it
+ *
+ * @param element the element to hash
+ * @param options
+ * @param options.dontHash if true hashing with SHA256 is skipped, a plain string including the characteristics of the element is returned instead
+ * @param options.skipPosition if true position values are not included in calculating the hash
+ * @returns {string|*}
+ */
+gridUtil.getElementHash = function(element, options = {}) {
+    options.dontHash = options.dontHash || false;
+    options.skipPosition = options.skipPosition || false;
+    let string = element.id + JSON.stringify(element.label);
+    string += element.backgroundColor + element.colorCategory;
+    if (!options.skipPosition) {
+        string += `${element.x}:${element.y}`;
+    }
+    if (element.image && (element.image.data || element.image.url)) {
+        let e = element;
+        if (e.image.data) {
+            string += e.image.data.substring(e.image.data.length > 30 ? e.image.data.length - 30 : 0);
+        }
+        if (e.image.url) {
+            string += e.image.url;
+        }
+    }
+    return options.dontHash ? string : encryptionService.getStringHash(string);
+}
 
 gridUtil.getWidth = function(gridDataOrElements) {
     let gridElements = getGridElements(gridDataOrElements);
@@ -602,6 +626,9 @@ gridUtil.getHeightWithBounds = function(gridDataOrElements) {
  * @returns {*}
  */
 gridUtil.ensureDefaults = function(gridData) {
+    if (!gridData) {
+        return;
+    }
     for (let key of Object.keys(GridData.DEFAULTS)) {
         gridData[key] = gridData[key] === undefined ? GridData.DEFAULTS[key] : gridData[key];
     }

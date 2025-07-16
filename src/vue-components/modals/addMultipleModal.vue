@@ -29,6 +29,10 @@
                                 <span>{{ $t('noElements') }}</span>
                             </div>
                         </div>
+                        <div class="srow">
+                            <input id="addImages" type="checkbox" v-model="addImages">
+                            <label for="addImages">{{ $t('automaticallyAddImages') }}</label>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -57,6 +61,7 @@
     import {helpService} from "../../js/service/helpService";
     import { gridUtil } from '../../js/util/gridUtil';
     import { util } from '../../js/util/util';
+    import { arasaacService } from '../../js/service/pictograms/arasaacService';
 
     export default {
         props: ['gridData', 'undoService'],
@@ -64,7 +69,8 @@
             return {
                 inputText: "",
                 parsedElems: [],
-                loading: false
+                loading: false,
+                addImages: true
             }
         },
         methods: {
@@ -84,7 +90,7 @@
                     if (thiz.parsedElems.length === 0) return;
                     let gridDataObject = new GridData(this.gridData);
                     let freeCoordinates = gridUtil.getFreeCoordinates(this.gridData);
-                    this.parsedElems.forEach(label => {
+                    for (let label of this.parsedElems) {
                         if (freeCoordinates.length === 0) {
                             freeCoordinates = gridUtil.getFreeCoordinates(gridDataObject);
                         }
@@ -95,13 +101,19 @@
                                 y: gridUtil.getHeightWithBounds(this.gridData)
                             };
                         }
-                        var newElem = new GridElement({
+                        let newElem = new GridElement({
                             label: i18nService.getTranslationObject(label),
                             x: position.x,
                             y: position.y,
                         });
+                        if (thiz.addImages) {
+                            let results = await arasaacService.query(label);
+                            if (results.length > 0) {
+                                newElem.image = results[0];
+                            }
+                        }
                         gridDataObject.gridElements.push(newElem);
-                    });
+                    }
                     await this.undoService.updateGrid(gridDataObject);
                     this.loading = false;
                     this.$emit('reload', gridDataObject);

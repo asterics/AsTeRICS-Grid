@@ -133,7 +133,8 @@ modelUtil.getLatestModelVersionLocal = function () {
  *        A conversion function has the following format:
  *        (object, options) => converted object
  *
- * @return {*} array of converted objects (or a single converted object, if a single object object was passed as "objects")
+ * @return {*} array of converted objects (or a single converted object, if a single object was passed as "objects").
+ *             Objects where conversion failed (e.g. decryption error) are removed.
  */
 modelUtil.convertObjects = function (objects, getConversionFunctionsFunction, conversionOptions) {
     if (!objects || !getConversionFunctionsFunction) {
@@ -147,6 +148,7 @@ modelUtil.convertObjects = function (objects, getConversionFunctionsFunction, co
             objects[i] = filterFn(objects[i], conversionOptions);
         });
     }
+    objects = objects.filter(o => !!o);
     return passedArray ? objects : objects[0];
 }
 

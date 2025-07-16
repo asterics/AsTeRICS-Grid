@@ -579,13 +579,19 @@
                             this.configPropTransfer();
                             return;
                         }
+                        if (event.shiftKey && event.code === 'KeyI') {
+                            event.preventDefault();
+                            this.newElements();
+                            return;
+                        }
+                        if (event.code === 'KeyI') {
+                            event.preventDefault();
+                            this.newElement(GridElement.ELEMENT_TYPE_NORMAL);
+                            return;
+                        }
                         if (event.code === 'KeyA') {
                             event.preventDefault();
                             this.markAll();
-                        }
-                        if (event.code === 'KeyB') {
-                            event.preventDefault();
-                            this.configPropTransfer();
                         }
                         if (event.code === 'KeyD') {
                             event.preventDefault();

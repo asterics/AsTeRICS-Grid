@@ -35,7 +35,7 @@ import { GridActionNavigate } from '../../js/model/GridActionNavigate';
 import { GridActionWebradio } from '../../js/model/GridActionWebradio';
 import { GridActionYoutube } from '../../js/model/GridActionYoutube';
 import { ColorConfig } from '../../js/model/ColorConfig';
-import GridElementLive from './grid-elements/GridElementLive.vue';
+import GridElementLive from './grid-elements/gridElementLive.vue';
 import GridElementMatrixConversation from './grid-elements/gridElementMatrixConversation.vue';
 import { gridUtil } from '../../js/util/gridUtil';
 

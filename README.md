@@ -131,3 +131,7 @@ Other people and organizations we want to thank:
     * [jQuery context menu](https://swisnl.github.io/jQuery-contextMenu/)
     * [jQuery UI](https://jqueryui.com/)
     * [loglevel](https://github.com/pimterry/loglevel)
+
+## License
+
+AsTeRICS Grid and its source code are licensed under the [AGPL-3.0](./LICENSE). All documentation and non-source code in this repository are licensed under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.en).
