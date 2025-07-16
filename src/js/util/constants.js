@@ -449,7 +449,7 @@ constants.OAUTH_REDIRECT_KEY = 'OAUTH_REDIRECT_KEY';
 // constants for OAuth authentication at globalsymbols
 constants.GLOBALSYMBOLS_NAME = 'Global Symbols';
 constants.GLOBALSYMBOLS_BASE_URL = 'https://gs-stage.co.uk/';
-constants.BOARDBUILDER_BASE_URL = 'http://localhost:4200/';
+constants.BOARDBUILDER_BASE_URL = 'https://app.gs-stage.co.uk/';
 constants.OAUTH_CONFIG_GLOBALSYMBOLS = {
     id: 'globalsymbols',
     authority: constants.GLOBALSYMBOLS_BASE_URL,
