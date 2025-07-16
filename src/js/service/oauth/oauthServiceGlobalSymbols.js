@@ -76,7 +76,7 @@ oauthServiceGlobalSymbols.exportGrids = async function(gridIds, uploadMetadata =
     });
     progressFn(100);
     return {
-        externalURL: constants.BOARDBUILDER_BASE_URL + 'boardsets/' + result.id,
+        externalURL: constants.BOARDBUILDER_BASE_URL + 'en/boardsets/' + result.id,
         externalId: result.id
     }
 }
