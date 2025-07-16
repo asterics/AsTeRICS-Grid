@@ -9,7 +9,7 @@
     import {constants} from '../src/js/util/constants.js';
 
     let currentLoginId = window.localStorage.getItem(constants.OAUTH_CURRENT_LOGIN_ID_KEY);
-    //window.localStorage.removeItem(constants.OAUTH_CURRENT_LOGIN_ID_KEY);
+    window.localStorage.removeItem(constants.OAUTH_CURRENT_LOGIN_ID_KEY);
 
     for (let config of constants.OAUTH_CONFIGS) {
         if (config.id === currentLoginId) {
