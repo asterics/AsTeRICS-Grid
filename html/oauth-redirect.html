@@ -8,12 +8,11 @@
 <script type="module">
     import {constants} from '../src/js/util/constants.js';
 
-    let referrer = new URL(document.referrer).host;
+    let currentLoginId = window.localStorage.getItem(constants.OAUTH_CURRENT_LOGIN_ID_KEY);
+    window.localStorage.removeItem(constants.OAUTH_CURRENT_LOGIN_ID_KEY);
 
     for (let config of constants.OAUTH_CONFIGS) {
-        console.log("compare", config.authority, new URL(config.authority).host, referrer);
-        console.log(document);
-        if (new URL(config.authority).host === referrer) {
+        if (config.id === currentLoginId) {
             let key = constants.OAUTH_RETURNED_PARAMS_MAP;
             let map = localStorage.getItem(key);
             map = map ? JSON.parse(map) : {};
@@ -22,6 +21,7 @@
             location.replace(location.origin);
         }
     }
+    console.warn("Oauth response could not be processed!", currentLoginId, constants.OAUTH_CONFIGS, window.location.search);
 </script>
 </body>
 </html>

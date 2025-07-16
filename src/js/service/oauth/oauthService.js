@@ -11,6 +11,7 @@ oauthService.login = async function(config) {
         return;
     }
     try {
+        localStorageService.save(config.OAUTH_CURRENT_LOGIN_ID_KEY, config.id);
         let manager = await initManager(config);
         await manager.signinRedirect();
     } catch (e) {

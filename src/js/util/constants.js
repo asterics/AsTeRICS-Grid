@@ -445,6 +445,7 @@ constants.WORDFORM_TAGS = [
 // local storage keys for OAuth
 constants.OAUTH_RETURNED_PARAMS_MAP = 'OAUTH_RETURNED_PARAMS_MAP';
 constants.OAUTH_REDIRECT_KEY = 'OAUTH_REDIRECT_KEY';
+constants.OAUTH_CURRENT_LOGIN_ID_KEY = 'OAUTH_CURRENT_LOGIN_ID_KEY';
 
 // constants for OAuth authentication at globalsymbols
 constants.GLOBALSYMBOLS_NAME = 'Global Symbols';
