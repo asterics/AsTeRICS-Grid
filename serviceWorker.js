@@ -52,13 +52,18 @@ self.addEventListener('message', (event) => {
 
     caches.open(cacheName).then(async (cache) => {
         let responseCode = await getResponseCode(cache, msg.url);
+        let response = null;
         if (responseCode !== 200) {
             //console.debug(`adding ${msg.url} to cache "${cacheName}".`);
-            let response = await fetch(msg.url);
-            responseCode = response.status;
-            if (responseCode === 200) {
-                await cache.put(msg.url, response);
+            response = await tryFetchImage(msg.url);
+            if (!response) {
+                console.log('error fetching image, trying with no-cors');
+                response = await tryFetchImage(msg.url, 'no-cors');
             }
+            responseCode = response ? response.status : -1;
+        }
+        if (response && responseCode === 200) {
+            await cache.put(msg.url, response);
         }
         sendToClients({type: constants.SW_EVENT_URL_CACHED, url: msg.url, success: responseCode === 200, responseCode: responseCode});
     });
@@ -79,6 +84,16 @@ workbox.routing.registerRoute(({url, request, event}) => {
         credentials: 'omit'
     }
 }));
+
+async function tryFetchImage(url, fetchMode = undefined) {
+    let response = null;
+    try {
+        response = await fetch(url, { mode: fetchMode });
+    } catch (e) {
+        console.log('error fetching image', e.message);
+    }
+    return response;
+}
 
 function shouldCacheImage(url, request) {
     let isOwnHost = url.hostname === 'grid.asterics.eu';
