@@ -60,7 +60,14 @@ self.addEventListener('message', (event) => {
                 console.log('error fetching image, trying with no-cors');
                 response = await tryFetchImage(msg.url, 'no-cors');
             }
-            responseCode = response ? response.status : -1;
+            if (!response) {
+                // probably real network error - both normal fetch and cors-fetch didn't succeed at all
+                responseCode = -1;
+            } else {
+                // if opaque response existing - assuming it succeeded (200) - cannot really check
+                // otherwise use real response status
+                responseCode = response.type === 'opaque' ? 200 : response.status;
+            }
         }
         if (response && responseCode === 200) {
             await cache.put(msg.url, response);
