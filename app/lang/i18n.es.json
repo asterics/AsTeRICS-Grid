@@ -1035,7 +1035,7 @@
   "testVoice": "Probar voz",
   "pleaseConsiderToDownloadABackup": "Por favor, valore hacer una copia de seguridad de su comunicador para no perder su trabajo.",
   "downloadNow": "Descargar ahora",
-  "stopReminding": "Stop reminding",
+  "stopReminding": "Dejar de recordar",
   "intervalForRemindingMakeBackups": "Recordar la realización de copias de seguridad cada",
   "notifications": "Notificaciones",
   "offline": "offline",
@@ -1301,5 +1301,5 @@
   "managePodcasts": "Gestionar podcast",
   "selectedPodcasts": "Podcasts seleccionados",
   "hideKeyboards": "Ocultar teclados",
-  "automaticallyAddImages": "Automatically add images"
+  "automaticallyAddImages": "Añadir imágenes automáticamente"
 }
