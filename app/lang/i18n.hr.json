@@ -1035,7 +1035,7 @@
   "testVoice": "Iprobaj glas",
   "pleaseConsiderToDownloadABackup": "Please consider to download a backup of your configuration in order to be safe of not loosing your work.",
   "downloadNow": "Preuzeti sada",
-  "stopRemembering": "Prestani pamtiti",
+  "stopReminding": "Stop reminding",
   "intervalForRemindingMakeBackups": "Interval za podsjetnik o sigurnosnoj kopiji",
   "notifications": "Obavijesti",
   "offline": "izvan mreže",
@@ -1300,5 +1300,6 @@
   "podcastToPlay": "Podcast to play",
   "managePodcasts": "Manage podcasts",
   "selectedPodcasts": "Selected podcasts",
-  "hideKeyboards": "Hide keyboards"
+  "hideKeyboards": "Hide keyboards",
+  "automaticallyAddImages": "Automatically add images"
 }

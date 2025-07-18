@@ -1035,7 +1035,7 @@
   "testVoice": "Testar voz",
   "pleaseConsiderToDownloadABackup": "Por favor, considere transferir uma cópia de segurança da configuração para não perder o seu trabalho.",
   "downloadNow": "Transferir agora",
-  "stopRemembering": "Parar de lembrar",
+  "stopReminding": "Parar de lembrar",
   "intervalForRemindingMakeBackups": "Intervalo para lembrar cópias de segurança",
   "notifications": "Notificações",
   "offline": "offline",
@@ -1300,5 +1300,6 @@
   "podcastToPlay": "Podcast para reproduzir",
   "managePodcasts": "Gerir podcasts",
   "selectedPodcasts": "Podcasts selecionados",
-  "hideKeyboards": "Ocultar teclados"
+  "hideKeyboards": "Ocultar teclados",
+  "automaticallyAddImages": "Adicionar imagens automaticamente"
 }

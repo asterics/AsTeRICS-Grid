@@ -1035,7 +1035,7 @@
   "testVoice": "اختبار الصوت",
   "pleaseConsiderToDownloadABackup": "يرجى النظر في تحميل نسخة احتياطية من الإعدادات الخاصة بك لكي تكون آمنة من عدم فقدان عملك.",
   "downloadNow": "تحميل الآن",
-  "stopRemembering": "توقف عن التذكر",
+  "stopReminding": "Stop reminding",
   "intervalForRemindingMakeBackups": "الفاصل الزمني للتذكير لإنشاء النسخ الاحتياطي",
   "notifications": "الإشعارات",
   "offline": "غير متصل",
@@ -1300,5 +1300,6 @@
   "podcastToPlay": "Podcast to play",
   "managePodcasts": "Manage podcasts",
   "selectedPodcasts": "Selected podcasts",
-  "hideKeyboards": "Hide keyboards"
+  "hideKeyboards": "Hide keyboards",
+  "automaticallyAddImages": "Automatically add images"
 }
