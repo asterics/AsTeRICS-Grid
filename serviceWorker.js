@@ -82,6 +82,13 @@ workbox.routing.registerRoute(({url, request, event}) => {
 }, new workbox.strategies.CacheFirst());
 
 workbox.routing.registerRoute(({url, request, event}) => {
+    //console.debug(`${url.href} should cache normal: ${shouldCacheNormal(url, request)}`);
+    return shouldCacheStaleWhileRevalidate(url, request);
+}, new workbox.strategies.StaleWhileRevalidate({
+    cacheName: 'stale-while-revalidate-cache'
+}));
+
+workbox.routing.registerRoute(({url, request, event}) => {
     //console.debug(`${url.href} should cache image: ${shouldCacheImage(url, request)}`);
     return shouldCacheImage(url, request);
 }, new workbox.strategies.CacheFirst({
@@ -105,12 +112,16 @@ async function tryFetchImage(url, fetchMode = undefined) {
 function shouldCacheImage(url, request) {
     let isOwnHost = url.hostname === 'grid.asterics.eu';
     let isImageRequest = request.destination === 'image';
-    return !isOwnHost && isImageRequest;
+    return !isOwnHost && isImageRequest && !shouldCacheStaleWhileRevalidate(url);
+}
+
+function shouldCacheStaleWhileRevalidate(url, request) {
+    return url.href.startsWith('https://asterics.github.io/AsTeRICS-Grid-Boards');
 }
 
 function shouldCacheNormal(url, request) {
     let isOwnHost = url.hostname === 'grid.asterics.eu';
-    return !shouldCacheImage(url, request) && isOwnHost;
+    return isOwnHost && !shouldCacheImage(url, request) && !shouldCacheStaleWhileRevalidate(url);
 }
 
 async function getResponseCode(cache, url) {
