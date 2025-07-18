@@ -1035,7 +1035,7 @@
   "testVoice": "Stimme testen",
   "pleaseConsiderToDownloadABackup": "Bitte lade zur Sicherheit ein Backup der Konfiguration herunter um sie vor Verlust zu schützen.",
   "downloadNow": "Herunterladen",
-  "stopReminding": "Stop reminding",
+  "stopReminding": "Nicht mehr erinnern",
   "intervalForRemindingMakeBackups": "Intervall für Backup-Erinnerung",
   "notifications": "Benachrichtigungen",
   "offline": "offline",
@@ -1301,5 +1301,5 @@
   "managePodcasts": "Podcasts verwalten",
   "selectedPodcasts": "Ausgewählte Podcasts",
   "hideKeyboards": "Keyboards ausblenden",
-  "automaticallyAddImages": "Automatically add images"
+  "automaticallyAddImages": "Bilder automatisch hinzufügen"
 }
