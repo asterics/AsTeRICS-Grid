@@ -44,6 +44,10 @@
                             <input id="includeGlobalGrid" type="checkbox" v-model="options.includeGlobalGrid"/>
                             <label for="includeGlobalGrid">{{ $t('includeGlobalGrid') }}</label>
                         </div>
+                        <div class="srow">
+                            <input id="printElementColors" type="checkbox" v-model="options.printElementColors"/>
+                            <label for="printElementColors">{{ $t('printElementColors') }}</label>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -81,6 +85,7 @@
                 options: {
                     exportConnected: true,
                     printBackground: false,
+                    printElementColors: true,
                     showLinks: true,
                     showRegister: false,
                     includeGlobalGrid: true
@@ -111,6 +116,7 @@
                     grids = exportIds.map(id => grids.filter(grid => grid.id === id)[0]);
                     printService.gridsToPdf(grids, {
                         printBackground: this.options.printBackground,
+                        printElementColors: this.options.printElementColors !== false,
                         showLinks: this.options.showLinks,
                         showRegister: this.options.showRegister,
                         includeGlobalGrid: this.options.includeGlobalGrid,

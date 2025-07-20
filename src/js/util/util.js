@@ -512,4 +512,92 @@ util.isOnlyEmojis = function(str) {
     return matches.join('') === str; // If the matched emojis fully cover the input string, return true
 }
 
+/**
+ * Returns the background color for a grid element, matching the UI logic.
+ * @param {Object} element
+ * @param {Object} metadata
+ * @returns {String|Array} Hex string or RGB array
+ */
+util.getElementBackgroundColor = function(element, metadata) {
+    if (!metadata || !element) {
+        return '#ffffff';
+    }
+    const { ColorConfig } = require('../model/ColorConfig.js');
+    const { MetaData } = require('../model/MetaData.js');
+    const { constants } = require('./constants');
+    if (element.type === 'ELEMENT_TYPE_PREDICTION') {
+        return constants.COLORS.PREDICT_BACKGROUND;
+    }
+    if (element.type === 'ELEMENT_TYPE_LIVE') {
+        return element.backgroundColor || constants.COLORS.LIVE_BACKGROUND;
+    }
+    if ([ColorConfig.COLOR_MODE_BACKGROUND, ColorConfig.COLOR_MODE_BOTH].includes(metadata.colorConfig.colorMode)) {
+        return MetaData.getElementColor(element, metadata);
+    }
+    return metadata.colorConfig.elementBackgroundColor;
+};
+
+/**
+ * Returns the font color for a grid element, matching the UI logic.
+ * @param {Object} element
+ * @param {Object} metadata
+ * @param {String|Array} backgroundColor (optional, for contrast)
+ * @returns {String|Array} Hex string or RGB array
+ */
+util.getElementFontColor = function(element, metadata, backgroundColor) {
+    const { constants } = require('./constants');
+    const { fontUtil } = require('./fontUtil');
+    if (!metadata || !metadata.textConfig) {
+        return constants.COLORS.BLACK;
+    }
+    let fontColor = metadata.textConfig.fontColor;
+    if (!fontColor || [constants.COLORS.BLACK, constants.COLORS.WHITE].includes(fontColor)) {
+        // if not set or set to black or white - do auto-contrast
+        let bg = backgroundColor;
+        if (!bg) {
+            bg = util.getElementBackgroundColor(element, metadata);
+        }
+        return fontUtil.isHexDark(bg) ? constants.COLORS.WHITE : constants.COLORS.BLACK;
+    }
+    return fontColor;
+};
+
+/**
+ * Returns the border color for a grid element, matching the UI logic.
+ * @param {Object} element
+ * @param {Object} metadata
+ * @returns {String|Array} Hex string or RGB array
+ */
+util.getElementBorderColor = function(element, metadata) {
+    const { ColorConfig } = require('../model/ColorConfig.js');
+    const { MetaData } = require('../model/MetaData.js');
+    const { constants } = require('./constants');
+    const { fontUtil } = require('./fontUtil');
+    if (!metadata || !metadata.colorConfig) {
+        return constants.COLORS.GRAY;
+    }
+    let color = metadata.colorConfig.elementBorderColor;
+    if (metadata.colorConfig.elementBorderColor === constants.DEFAULT_ELEMENT_BORDER_COLOR) {
+        let backgroundColor = metadata.colorConfig.gridBackgroundColor || constants.COLORS.WHITE;
+        color = fontUtil.getHighContrastColor(backgroundColor, constants.COLORS.WHITESMOKE, constants.COLORS.GRAY);
+    }
+    if (metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BORDER) {
+        return MetaData.getElementColor(element, metadata, color);
+    }
+    if (metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH) {
+        if (!element.colorCategory) {
+            return 'transparent';
+        }
+        let colorScheme = MetaData.getUseColorScheme(metadata);
+        if (colorScheme && colorScheme.customBorders && colorScheme.customBorders[element.colorCategory]) {
+            return colorScheme.customBorders[element.colorCategory];
+        }
+        let absAdjustment = 40;
+        let bgColor = MetaData.getElementColor(element, metadata, color);
+        let adjustment = fontUtil.isHexDark(bgColor) ? absAdjustment * 1.5 : absAdjustment * -1;
+        return fontUtil.adjustHexColor(bgColor, adjustment);
+    }
+    return color;
+};
+
 export { util };
