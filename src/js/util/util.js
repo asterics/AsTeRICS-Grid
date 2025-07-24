@@ -2,6 +2,9 @@ import { TextConfig } from '../model/TextConfig.js';
 import { GridElement } from '../model/GridElement';
 import { constants } from './constants';
 import { imageUtil } from './imageUtil';
+import { ColorConfig } from '../model/ColorConfig.js';
+import { MetaData } from '../model/MetaData.js';
+import { fontUtil } from './fontUtil';
 
 let util = {};
 
@@ -520,15 +523,12 @@ util.isOnlyEmojis = function(str) {
  */
 util.getElementBackgroundColor = function(element, metadata) {
     if (!metadata || !element) {
-        return '#ffffff';
+        return constants.COLORS.WHITE;
     }
-    const { ColorConfig } = require('../model/ColorConfig.js');
-    const { MetaData } = require('../model/MetaData.js');
-    const { constants } = require('./constants');
-    if (element.type === 'ELEMENT_TYPE_PREDICTION') {
+    if (element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
         return constants.COLORS.PREDICT_BACKGROUND;
     }
-    if (element.type === 'ELEMENT_TYPE_LIVE') {
+    if (element.type === GridElement.ELEMENT_TYPE_LIVE) {
         return element.backgroundColor || constants.COLORS.LIVE_BACKGROUND;
     }
     if ([ColorConfig.COLOR_MODE_BACKGROUND, ColorConfig.COLOR_MODE_BOTH].includes(metadata.colorConfig.colorMode)) {
@@ -545,19 +545,14 @@ util.getElementBackgroundColor = function(element, metadata) {
  * @returns {String|Array} Hex string or RGB array
  */
 util.getElementFontColor = function(element, metadata, backgroundColor) {
-    const { constants } = require('./constants');
-    const { fontUtil } = require('./fontUtil');
     if (!metadata || !metadata.textConfig) {
         return constants.COLORS.BLACK;
     }
     let fontColor = metadata.textConfig.fontColor;
     if (!fontColor || [constants.COLORS.BLACK, constants.COLORS.WHITE].includes(fontColor)) {
         // if not set or set to black or white - do auto-contrast
-        let bg = backgroundColor;
-        if (!bg) {
-            bg = util.getElementBackgroundColor(element, metadata);
-        }
-        return fontUtil.isHexDark(bg) ? constants.COLORS.WHITE : constants.COLORS.BLACK;
+        backgroundColor = backgroundColor || util.getElementBackgroundColor(element, metadata);
+        return fontUtil.isHexDark(backgroundColor) ? constants.COLORS.WHITE : constants.COLORS.BLACK;
     }
     return fontColor;
 };
@@ -569,10 +564,6 @@ util.getElementFontColor = function(element, metadata, backgroundColor) {
  * @returns {String|Array} Hex string or RGB array
  */
 util.getElementBorderColor = function(element, metadata) {
-    const { ColorConfig } = require('../model/ColorConfig.js');
-    const { MetaData } = require('../model/MetaData.js');
-    const { constants } = require('./constants');
-    const { fontUtil } = require('./fontUtil');
     if (!metadata || !metadata.colorConfig) {
         return constants.COLORS.GRAY;
     }
