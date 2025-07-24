@@ -211,6 +211,7 @@
   "exportAllChildGrids": "Export all child grids",
   "grids": "grids",
   "insertLinksBetweenPages": "Insert links between pages",
+  "printElementColors": "Print element colors",
   "printBackgroundColor": "Print background color",
   "printIndexAtSideEdge": "Print index at side edge",
   "includeGlobalGrid": "Include global grid",
