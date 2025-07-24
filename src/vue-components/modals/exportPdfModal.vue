@@ -33,6 +33,10 @@
                             <label for="showLinks">{{ $t('insertLinksBetweenPages') }}</label>
                         </div>
                         <div class="srow">
+                            <input id="printElementColors" type="checkbox" v-model="options.printElementColors"/>
+                            <label for="printElementColors">{{ $t('printElementColors') }}</label>
+                        </div>
+                        <div class="srow">
                             <input id="printBackground" type="checkbox" v-model="options.printBackground"/>
                             <label for="printBackground">{{ $t('printBackgroundColor') }}</label>
                         </div>
@@ -43,10 +47,6 @@
                         <div class="srow">
                             <input id="includeGlobalGrid" type="checkbox" v-model="options.includeGlobalGrid"/>
                             <label for="includeGlobalGrid">{{ $t('includeGlobalGrid') }}</label>
-                        </div>
-                        <div class="srow">
-                            <input id="printElementColors" type="checkbox" v-model="options.printElementColors"/>
-                            <label for="printElementColors">{{ $t('printElementColors') }}</label>
                         </div>
                     </div>
 
@@ -116,7 +116,7 @@
                     grids = exportIds.map(id => grids.filter(grid => grid.id === id)[0]);
                     printService.gridsToPdf(grids, {
                         printBackground: this.options.printBackground,
-                        printElementColors: this.options.printElementColors !== false,
+                        printElementColors: this.options.printElementColors,
                         showLinks: this.options.showLinks,
                         showRegister: this.options.showRegister,
                         includeGlobalGrid: this.options.includeGlobalGrid,
