@@ -31,6 +31,21 @@ let patternFontMappings = [
     }
 ];
 
+/**
+ * Converts a color to RGB array format
+ * @param {String|Array} color - Hex string or RGB array
+ * @returns {Array} RGB array
+ */
+function colorToRGB(color) {
+    if (Array.isArray(color)) {
+        return color;
+    } else if (typeof color === 'string' && color.startsWith('#')) {
+        return util.hexToRgb(color);
+    } else {
+        return [0, 0, 0]; // fallback to black
+    }
+}
+
 printService.initPrintHandlers = function () {
     window.addEventListener('beforeprint', () => {
         $('#grid-container').width('27.7cm');
@@ -249,19 +264,13 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         let borderWidthMM = Math.max((borderWidth / 100) * Math.min(currentWidth, currentHeight) * 2, 0.5);
         let borderRadiusMM = (borderRadius / 100) * Math.min(currentWidth, currentHeight) * 2;
         // --- Draw cell ---
-        if (Array.isArray(borderColor)) {
-            doc.setDrawColor(borderColor[0], borderColor[1], borderColor[2]);
-        } else if (typeof borderColor === 'string' && borderColor.startsWith('#')) {
-            let rgb = util.hexToRgb(borderColor);
-            doc.setDrawColor(rgb[0], rgb[1], rgb[2]);
-        } else {
-            doc.setDrawColor(0);
-        }
+        let borderRgb = colorToRGB(borderColor);
+        doc.setDrawColor(borderRgb[0], borderRgb[1], borderRgb[2]);
         doc.setLineWidth(borderWidthMM);
         doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
         doc.roundedRect(xStartPos, yStartPos, currentWidth, currentHeight, borderRadiusMM, borderRadiusMM, 'FD');
         if (i18nService.getTranslation(element.label)) {
-            await addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, bgColor, metadata, useElementColors);
+            addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, bgColor, metadata, useElementColors);
         }
         await addImageToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, metadata);
         element = new GridElement(element);
@@ -307,11 +316,9 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
     }
     // 2. Font family (use only config/global value)
     let fontFamily = textConfig.fontFamily || 'Arial';
-    try {
-        doc.setFont(fontFamily);
-    } catch (e) {
-        doc.setFont('Arial'); // fallback
-    }
+    // Note: Font loading should be handled before calling this function
+    // The font should already be loaded via loadFont() if needed
+    doc.setFont(fontFamily);
     // 3. Font size (percent of cell height, with fitting if needed)
     let baseFontSizePct = hasImg ? textConfig.fontSizePct : textConfig.onlyTextFontSizePct;
     let lineHeight = hasImg ? textConfig.lineHeight : textConfig.onlyTextLineHeight;
@@ -323,14 +330,8 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
     let maxHeight = (fontSizePt * lineHeight * maxLines);
     // 4. Font color (use util)
     let textColor = useElementColors ? util.getElementFontColor(element, metadata, bgColor) : [0,0,0];
-    if (Array.isArray(textColor)) {
-        doc.setTextColor(textColor[0], textColor[1], textColor[2]);
-    } else if (typeof textColor === 'string' && textColor.startsWith('#')) {
-        let rgb = util.hexToRgb(textColor);
-        doc.setTextColor(rgb[0], rgb[1], rgb[2]);
-    } else {
-        doc.setTextColor(0);
-    }
+    let rgb = colorToRGB(textColor);
+    doc.setTextColor(rgb[0], rgb[1], rgb[2]);
     // 5. Truncation/ellipsis/auto-fit (robust)
     let displayLabel = label;
     let dim = doc.getTextDimensions(displayLabel);
