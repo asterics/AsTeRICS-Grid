@@ -522,19 +522,24 @@ util.isOnlyEmojis = function(str) {
  * @returns {String|Array} Hex string or RGB array
  */
 util.getElementBackgroundColor = function(element, metadata) {
-    if (!metadata || !element) {
+    try {
+        if (!metadata || !element) {
+            return constants.COLORS.WHITE;
+        }
+        if (element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
+            return constants.COLORS.PREDICT_BACKGROUND;
+        }
+        if (element.type === GridElement.ELEMENT_TYPE_LIVE) {
+            return element.backgroundColor || constants.COLORS.LIVE_BACKGROUND;
+        }
+        if (metadata.colorConfig && [ColorConfig.COLOR_MODE_BACKGROUND, ColorConfig.COLOR_MODE_BOTH].includes(metadata.colorConfig.colorMode)) {
+            return MetaData.getElementColor(element, metadata);
+        }
+        return metadata.colorConfig && metadata.colorConfig.elementBackgroundColor ? metadata.colorConfig.elementBackgroundColor : constants.COLORS.WHITE;
+    } catch (error) {
+        console.warn('Error in getElementBackgroundColor:', error);
         return constants.COLORS.WHITE;
     }
-    if (element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
-        return constants.COLORS.PREDICT_BACKGROUND;
-    }
-    if (element.type === GridElement.ELEMENT_TYPE_LIVE) {
-        return element.backgroundColor || constants.COLORS.LIVE_BACKGROUND;
-    }
-    if ([ColorConfig.COLOR_MODE_BACKGROUND, ColorConfig.COLOR_MODE_BOTH].includes(metadata.colorConfig.colorMode)) {
-        return MetaData.getElementColor(element, metadata);
-    }
-    return metadata.colorConfig.elementBackgroundColor;
 };
 
 /**
@@ -545,16 +550,21 @@ util.getElementBackgroundColor = function(element, metadata) {
  * @returns {String|Array} Hex string or RGB array
  */
 util.getElementFontColor = function(element, metadata, backgroundColor) {
-    if (!metadata || !metadata.textConfig) {
+    try {
+        if (!metadata || !metadata.textConfig) {
+            return constants.COLORS.BLACK;
+        }
+        let fontColor = metadata.textConfig.fontColor;
+        if (!fontColor || [constants.COLORS.BLACK, constants.COLORS.WHITE].includes(fontColor)) {
+            // if not set or set to black or white - do auto-contrast
+            backgroundColor = backgroundColor || util.getElementBackgroundColor(element, metadata);
+            return fontUtil.isHexDark(backgroundColor) ? constants.COLORS.WHITE : constants.COLORS.BLACK;
+        }
+        return fontColor;
+    } catch (error) {
+        console.warn('Error in getElementFontColor:', error);
         return constants.COLORS.BLACK;
     }
-    let fontColor = metadata.textConfig.fontColor;
-    if (!fontColor || [constants.COLORS.BLACK, constants.COLORS.WHITE].includes(fontColor)) {
-        // if not set or set to black or white - do auto-contrast
-        backgroundColor = backgroundColor || util.getElementBackgroundColor(element, metadata);
-        return fontUtil.isHexDark(backgroundColor) ? constants.COLORS.WHITE : constants.COLORS.BLACK;
-    }
-    return fontColor;
 };
 
 /**
@@ -564,31 +574,36 @@ util.getElementFontColor = function(element, metadata, backgroundColor) {
  * @returns {String|Array} Hex string or RGB array
  */
 util.getElementBorderColor = function(element, metadata) {
-    if (!metadata || !metadata.colorConfig) {
+    try {
+        if (!metadata || !metadata.colorConfig) {
+            return constants.COLORS.GRAY;
+        }
+        let color = metadata.colorConfig.elementBorderColor;
+        if (metadata.colorConfig.elementBorderColor === constants.DEFAULT_ELEMENT_BORDER_COLOR) {
+            let backgroundColor = metadata.colorConfig.gridBackgroundColor || constants.COLORS.WHITE;
+            color = fontUtil.getHighContrastColor(backgroundColor, constants.COLORS.WHITESMOKE, constants.COLORS.GRAY);
+        }
+        if (metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BORDER) {
+            return MetaData.getElementColor(element, metadata, color);
+        }
+        if (metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH) {
+            if (!element.colorCategory) {
+                return 'transparent';
+            }
+            let colorScheme = MetaData.getUseColorScheme(metadata);
+            if (colorScheme && colorScheme.customBorders && colorScheme.customBorders[element.colorCategory]) {
+                return colorScheme.customBorders[element.colorCategory];
+            }
+            let absAdjustment = 40;
+            let bgColor = MetaData.getElementColor(element, metadata, color);
+            let adjustment = fontUtil.isHexDark(bgColor) ? absAdjustment * 1.5 : absAdjustment * -1;
+            return fontUtil.adjustHexColor(bgColor, adjustment);
+        }
+        return color;
+    } catch (error) {
+        console.warn('Error in getElementBorderColor:', error);
         return constants.COLORS.GRAY;
     }
-    let color = metadata.colorConfig.elementBorderColor;
-    if (metadata.colorConfig.elementBorderColor === constants.DEFAULT_ELEMENT_BORDER_COLOR) {
-        let backgroundColor = metadata.colorConfig.gridBackgroundColor || constants.COLORS.WHITE;
-        color = fontUtil.getHighContrastColor(backgroundColor, constants.COLORS.WHITESMOKE, constants.COLORS.GRAY);
-    }
-    if (metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BORDER) {
-        return MetaData.getElementColor(element, metadata, color);
-    }
-    if (metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH) {
-        if (!element.colorCategory) {
-            return 'transparent';
-        }
-        let colorScheme = MetaData.getUseColorScheme(metadata);
-        if (colorScheme && colorScheme.customBorders && colorScheme.customBorders[element.colorCategory]) {
-            return colorScheme.customBorders[element.colorCategory];
-        }
-        let absAdjustment = 40;
-        let bgColor = MetaData.getElementColor(element, metadata, color);
-        let adjustment = fontUtil.isHexDark(bgColor) ? absAdjustment * 1.5 : absAdjustment * -1;
-        return fontUtil.adjustHexColor(bgColor, adjustment);
-    }
-    return color;
 };
 
 export { util };

@@ -71,74 +71,82 @@ printService.initPrintHandlers = function () {
  * @return {Promise<void>}
  */
 printService.gridsToPdf = async function (gridsData, options) {
-    let jsPDF = await import(/* webpackChunkName: "jspdf" */ 'jspdf');
-    options = options || {};
-    let metadata = await dataService.getMetadata();
-    let defaultGlobalGrid = null;
-    if (options.includeGlobalGrid) {
-        defaultGlobalGrid = await dataService.getGlobalGrid();
-    }
-    options.idPageMap = {};
-    options.idParentsMap = {};
-    options.fontPath = '';
-    gridsData.forEach((grid, index) => {
-        options.idPageMap[grid.id] = index + 1;
+    // Add timeout to prevent hanging
+    const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('PDF generation timeout after 5 minutes')), 5 * 60 * 1000);
     });
+    
+    const pdfPromise = (async () => {
+        let jsPDF = await import(/* webpackChunkName: "jspdf" */ 'jspdf');
+        options = options || {};
+        let metadata = await dataService.getMetadata();
+        let defaultGlobalGrid = null;
+        if (options.includeGlobalGrid) {
+            defaultGlobalGrid = await dataService.getGlobalGrid();
+        }
+        options.idPageMap = {};
+        options.idParentsMap = {};
+        options.fontPath = '';
+        gridsData.forEach((grid, index) => {
+            options.idPageMap[grid.id] = index + 1;
+        });
 
-    for (let grid of gridsData) {
-        options.idParentsMap[grid.id] = options.idParentsMap[grid.id] || [];
-        for (let element of grid.gridElements) {
-            element = new GridElement(element);
-            let nav = element.getNavigateGridId();
-            if (nav) {
-                options.idParentsMap[nav] = options.idParentsMap[nav] || [];
-                options.idParentsMap[nav].push(options.idPageMap[grid.id]);
-            }
-            let label = i18nService.getTranslation(element.label);
-            for (let elem of patternFontMappings) {
-                if (elem.pattern && elem.pattern.test && elem.pattern.test(label)) {
-                    options.fontPath = elem.font;
+        for (let grid of gridsData) {
+            options.idParentsMap[grid.id] = options.idParentsMap[grid.id] || [];
+            for (let element of grid.gridElements) {
+                element = new GridElement(element);
+                let nav = element.getNavigateGridId();
+                if (nav) {
+                    options.idParentsMap[nav] = options.idParentsMap[nav] || [];
+                    options.idParentsMap[nav].push(options.idPageMap[grid.id]);
+                }
+                let label = i18nService.getTranslation(element.label);
+                for (let elem of patternFontMappings) {
+                    if (elem.pattern && elem.pattern.test && elem.pattern.test(label)) {
+                        options.fontPath = elem.font;
+                    }
                 }
             }
         }
-    }
-    const doc = new jsPDF.jsPDF({
-        orientation: 'landscape',
-        compress: true
-    });
-    if (options.fontPath) {
-        await loadFont(options.fontPath, doc);
-    }
+        const doc = new jsPDF.jsPDF({
+            orientation: 'landscape',
+            compress: true
+        });
+        if (options.fontPath) {
+            await loadFont(options.fontPath, doc);
+        }
 
-    options.pages = gridsData.length;
-    for (let i = 0; i < gridsData.length && !options.abort; i++) {
-        if (options.progressFn) {
-            options.progressFn(
-                Math.round((100 * i) / gridsData.length),
-                i18nService.t('creatingPageXOfY', i + 1, gridsData.length),
-                () => {
-                    options.abort = true;
-                }
-            );
+        options.pages = gridsData.length;
+        for (let i = 0; i < gridsData.length && !options.abort; i++) {
+            if (options.progressFn) {
+                options.progressFn(
+                    Math.round((100 * i) / gridsData.length),
+                    i18nService.t('creatingPageXOfY', i + 1, gridsData.length),
+                    () => {
+                        options.abort = true;
+                    }
+                );
+            }
+            let globalGrid = defaultGlobalGrid;
+            if (options.includeGlobalGrid && gridsData[i].showGlobalGrid && gridsData[i].globalGridId) {
+                globalGrid = await dataService.getGrid(gridsData[i].globalGridId, false);
+            }
+            globalGrid = gridsData[i].showGlobalGrid !== false ? globalGrid : null;
+            options.page = i + 1;
+            await addGridToPdf(doc, gridsData[i], options, metadata, globalGrid);
+            if (i < gridsData.length - 1) {
+                doc.addPage();
+            }
         }
-        let globalGrid = defaultGlobalGrid;
-        if (options.includeGlobalGrid && gridsData[i].showGlobalGrid && gridsData[i].globalGridId) {
-            globalGrid = await dataService.getGrid(gridsData[i].globalGridId, false);
+        if (!options.abort) {
+            if (options.progressFn) {
+                options.progressFn(100);
+            }
+            doc.save('grids_' + util.getCurrentDateTimeString() + '.pdf');
         }
-        globalGrid = gridsData[i].showGlobalGrid !== false ? globalGrid : null;
-        options.page = i + 1;
-        await addGridToPdf(doc, gridsData[i], options, metadata, globalGrid);
-        if (i < gridsData.length - 1) {
-            doc.addPage();
-        }
-    }
-    if (!options.abort) {
-        if (options.progressFn) {
-            options.progressFn(100);
-        }
-        //window.open(doc.output('bloburl'))
-        doc.save('grid-export.pdf');
-    }
+    })();
+    
+    return Promise.race([pdfPromise, timeoutPromise]);
 };
 
 async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
@@ -242,17 +250,39 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         if (element.hidden) {
             continue;
         }
+        
         // --- Cell Formatting ---
         let colorConfig = metadata && metadata.colorConfig ? metadata.colorConfig : {};
         // Print element colors option
         let useElementColors = options.printElementColors !== false;
         // Color mode: only border
         let onlyBorderMode = colorConfig.colorMode === 'COLOR_MODE_BORDER';
-        let bgColor = [255, 255, 255];
+        let bgColor = [255, 255, 255]; // Default white background
         if (useElementColors && !onlyBorderMode && options.printBackground) {
-            bgColor = util.getRGB(util.getElementBackgroundColor(element, metadata));
+            try {
+                let elementBgColor = util.getElementBackgroundColor(element, metadata);
+                let rgbColor = util.getRGB(elementBgColor);
+                if (rgbColor && Array.isArray(rgbColor) && rgbColor.length === 3) {
+                    bgColor = rgbColor;
+                }
+            } catch (error) {
+                console.warn('Error processing background color for element:', element.id, error);
+                // Keep default white background
+            }
         }
-        let borderColor = useElementColors ? util.getElementBorderColor(element, metadata) : [0, 0, 0];
+        let borderColor = [0, 0, 0]; // Default black border
+        if (useElementColors) {
+            try {
+                let elementBorderColor = util.getElementBorderColor(element, metadata);
+                let rgbBorderColor = util.getRGB(elementBorderColor);
+                if (rgbBorderColor && Array.isArray(rgbBorderColor) && rgbBorderColor.length === 3) {
+                    borderColor = rgbBorderColor;
+                }
+            } catch (error) {
+                console.warn('Error processing border color for element:', element.id, error);
+                // Keep default black border
+            }
+        }
         // 3. Border width and radius
         let borderWidth = colorConfig.borderWidth || 0.1;
         let borderRadius = colorConfig.borderRadius || 0.4;
@@ -329,7 +359,19 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
     let maxWidth = currentWidth - 2 * pdfOptions.textPadding;
     let maxHeight = (fontSizePt * lineHeight * maxLines);
     // 4. Font color (use util)
-    let textColor = useElementColors ? util.getElementFontColor(element, metadata, bgColor) : [0,0,0];
+    let textColor = [0, 0, 0]; // Default black text
+    if (useElementColors) {
+        try {
+            let elementTextColor = util.getElementFontColor(element, metadata, bgColor);
+            let rgbTextColor = util.getRGB(elementTextColor);
+            if (rgbTextColor && Array.isArray(rgbTextColor) && rgbTextColor.length === 3) {
+                textColor = rgbTextColor;
+            }
+        } catch (error) {
+            console.warn('Error processing text color for element:', element.id, error);
+            // Keep default black text
+        }
+    }
     let rgb = colorToRGB(textColor);
     doc.setTextColor(rgb[0], rgb[1], rgb[2]);
     // 5. Truncation/ellipsis/auto-fit (robust)
@@ -338,9 +380,13 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
     let lines = Math.ceil(dim.w / maxWidth);
     let actualFontSize = fontSizePt;
     let minFontSize = 4; // minimum readable font size
-    if (fittingMode === TextConfig.TOO_LONG_AUTO && (dim.w > maxWidth || lines > maxLines)) {
+    
+    // Safety check to prevent infinite loops
+    if (fontSizePt <= 0 || maxWidth <= 0) {
+        actualFontSize = minFontSize;
+    } else if (fittingMode === TextConfig.TOO_LONG_AUTO && (dim.w > maxWidth || lines > maxLines)) {
         // Reduce font size to fit
-        let step = fontSizePt / 10;
+        let step = Math.max(fontSizePt / 10, 0.5); // Ensure minimum step size
         for (let i = 0; i < 20; i++) { // more iterations for robustness
             doc.setFontSize(actualFontSize);
             dim = doc.getTextDimensions(displayLabel);
@@ -355,7 +401,7 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
     } else if (fittingMode === TextConfig.TOO_LONG_TRUNCATE && (dim.w > maxWidth || lines > maxLines)) {
         // Truncate text
         let truncated = '';
-        for (let i = 0; i < displayLabel.length; i++) {
+        for (let i = 0; i < displayLabel.length && i < 100; i++) { // Add safety limit
             let test = truncated + displayLabel[i];
             doc.setFontSize(actualFontSize);
             dim = doc.getTextDimensions(test);
@@ -367,7 +413,7 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
     } else if (fittingMode === TextConfig.TOO_LONG_ELLIPSIS && (dim.w > maxWidth || lines > maxLines)) {
         // Truncate and add ellipsis
         let truncated = '';
-        for (let i = 0; i < displayLabel.length; i++) {
+        for (let i = 0; i < displayLabel.length && i < 100; i++) { // Add safety limit
             let test = truncated + displayLabel[i] + '...';
             doc.setFontSize(actualFontSize);
             dim = doc.getTextDimensions(test);
@@ -390,7 +436,7 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
         }
     } else {
         // text-only: center vertically
-        yOffset = yStartPos + currentHeight / 2 + actualFontSize * lineHeight / 2 - pdfOptions.textPadding;
+        yOffset = yStartPos + currentHeight / 2 + actualFontSize / 2;
     }
     // 7. Draw text (centered)
     doc.text(displayLabel, xStartPos + currentWidth / 2, yOffset, {
