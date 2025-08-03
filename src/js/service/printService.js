@@ -48,12 +48,69 @@ function colorToRGB(color) {
 
 printService.initPrintHandlers = function () {
     window.addEventListener('beforeprint', () => {
+        // Store original dimensions
+        const originalWidth = $('#grid-container').width();
+        const originalHeight = $('#grid-container').height();
+        
+        // Set print-optimized dimensions to prevent cutoff
         $('#grid-container').width('27.7cm');
         $('#grid-container').height('19cm');
+        
+        // Add print-specific CSS to handle border cutoff
+        const printStyle = document.createElement('style');
+        printStyle.id = 'print-style';
+        printStyle.textContent = `
+            @media print {
+                body {
+                    margin: 0 !important;
+                    padding: 0 !important;
+                }
+                #grid-container {
+                    width: 27.7cm !important;
+                    height: 19cm !important;
+                    max-width: none !important;
+                    max-height: none !important;
+                    overflow: visible !important;
+                    transform: none !important;
+                }
+                .item {
+                    page-break-inside: avoid !important;
+                }
+                /* Fix for Firefox border cutoff */
+                @-moz-document url-prefix() {
+                    #grid-container {
+                        width: 26.5cm !important;
+                        margin-right: 1.2cm !important;
+                    }
+                }
+                /* Fix for Safari */
+                @media screen and (-webkit-min-device-pixel-ratio: 0) {
+                    #grid-container {
+                        -webkit-print-color-adjust: exact !important;
+                        color-adjust: exact !important;
+                    }
+                }
+            }
+        `;
+        document.head.appendChild(printStyle);
+        
+        // Store for cleanup
+        window._printOriginalDimensions = { width: originalWidth, height: originalHeight };
     });
+    
     window.addEventListener('afterprint', () => {
-        $('#grid-container').width('');
-        $('#grid-container').height('');
+        // Restore original dimensions
+        if (window._printOriginalDimensions) {
+            $('#grid-container').width(window._printOriginalDimensions.width);
+            $('#grid-container').height(window._printOriginalDimensions.height);
+            delete window._printOriginalDimensions;
+        }
+        
+        // Remove print-specific CSS
+        const printStyle = document.getElementById('print-style');
+        if (printStyle) {
+            printStyle.remove();
+        }
     });
 };
 
@@ -71,82 +128,73 @@ printService.initPrintHandlers = function () {
  * @return {Promise<void>}
  */
 printService.gridsToPdf = async function (gridsData, options) {
-    // Add timeout to prevent hanging
-    const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('PDF generation timeout after 5 minutes')), 5 * 60 * 1000);
+    let jsPDF = await import(/* webpackChunkName: "jspdf" */ 'jspdf');
+    options = options || {};
+    let metadata = await dataService.getMetadata();
+    let defaultGlobalGrid = null;
+    if (options.includeGlobalGrid) {
+        defaultGlobalGrid = await dataService.getGlobalGrid();
+    }
+    options.idPageMap = {};
+    options.idParentsMap = {};
+    options.fontPath = '';
+    gridsData.forEach((grid, index) => {
+        options.idPageMap[grid.id] = index + 1;
     });
-    
-    const pdfPromise = (async () => {
-        let jsPDF = await import(/* webpackChunkName: "jspdf" */ 'jspdf');
-        options = options || {};
-        let metadata = await dataService.getMetadata();
-        let defaultGlobalGrid = null;
-        if (options.includeGlobalGrid) {
-            defaultGlobalGrid = await dataService.getGlobalGrid();
-        }
-        options.idPageMap = {};
-        options.idParentsMap = {};
-        options.fontPath = '';
-        gridsData.forEach((grid, index) => {
-            options.idPageMap[grid.id] = index + 1;
-        });
 
-        for (let grid of gridsData) {
-            options.idParentsMap[grid.id] = options.idParentsMap[grid.id] || [];
-            for (let element of grid.gridElements) {
-                element = new GridElement(element);
-                let nav = element.getNavigateGridId();
-                if (nav) {
-                    options.idParentsMap[nav] = options.idParentsMap[nav] || [];
-                    options.idParentsMap[nav].push(options.idPageMap[grid.id]);
-                }
-                let label = i18nService.getTranslation(element.label);
-                for (let elem of patternFontMappings) {
-                    if (elem.pattern && elem.pattern.test && elem.pattern.test(label)) {
-                        options.fontPath = elem.font;
-                    }
+    for (let grid of gridsData) {
+        options.idParentsMap[grid.id] = options.idParentsMap[grid.id] || [];
+        for (let element of grid.gridElements) {
+            element = new GridElement(element);
+            let nav = element.getNavigateGridId();
+            if (nav) {
+                options.idParentsMap[nav] = options.idParentsMap[nav] || [];
+                options.idParentsMap[nav].push(options.idPageMap[grid.id]);
+            }
+            let label = i18nService.getTranslation(element.label);
+            for (let elem of patternFontMappings) {
+                if (elem.pattern && elem.pattern.test && elem.pattern.test(label)) {
+                    options.fontPath = elem.font;
                 }
             }
         }
-        const doc = new jsPDF.jsPDF({
-            orientation: 'landscape',
-            compress: true
-        });
-        if (options.fontPath) {
-            await loadFont(options.fontPath, doc);
-        }
+    }
+    const doc = new jsPDF.jsPDF({
+        orientation: 'landscape',
+        compress: true
+    });
+    if (options.fontPath) {
+        await loadFont(options.fontPath, doc);
+    }
 
-        options.pages = gridsData.length;
-        for (let i = 0; i < gridsData.length && !options.abort; i++) {
-            if (options.progressFn) {
-                options.progressFn(
-                    Math.round((100 * i) / gridsData.length),
-                    i18nService.t('creatingPageXOfY', i + 1, gridsData.length),
-                    () => {
-                        options.abort = true;
-                    }
-                );
-            }
-            let globalGrid = defaultGlobalGrid;
-            if (options.includeGlobalGrid && gridsData[i].showGlobalGrid && gridsData[i].globalGridId) {
-                globalGrid = await dataService.getGrid(gridsData[i].globalGridId, false);
-            }
-            globalGrid = gridsData[i].showGlobalGrid !== false ? globalGrid : null;
-            options.page = i + 1;
-            await addGridToPdf(doc, gridsData[i], options, metadata, globalGrid);
-            if (i < gridsData.length - 1) {
-                doc.addPage();
-            }
+    options.pages = gridsData.length;
+    for (let i = 0; i < gridsData.length && !options.abort; i++) {
+        if (options.progressFn) {
+            options.progressFn(
+                Math.round((100 * i) / gridsData.length),
+                i18nService.t('creatingPageXOfY', i + 1, gridsData.length),
+                () => {
+                    options.abort = true;
+                }
+            );
         }
-        if (!options.abort) {
-            if (options.progressFn) {
-                options.progressFn(100);
-            }
-            doc.save('grids_' + util.getCurrentDateTimeString() + '.pdf');
+        let globalGrid = defaultGlobalGrid;
+        if (options.includeGlobalGrid && gridsData[i].showGlobalGrid && gridsData[i].globalGridId) {
+            globalGrid = await dataService.getGrid(gridsData[i].globalGridId, false);
         }
-    })();
-    
-    return Promise.race([pdfPromise, timeoutPromise]);
+        globalGrid = gridsData[i].showGlobalGrid !== false ? globalGrid : null;
+        options.page = i + 1;
+        await addGridToPdf(doc, gridsData[i], options, metadata, globalGrid);
+        if (i < gridsData.length - 1) {
+            doc.addPage();
+        }
+    }
+    if (!options.abort) {
+        if (options.progressFn) {
+            options.progressFn(100);
+        }
+        doc.save('grids_' + util.getCurrentDateTimeString() + '.pdf');
+    }
 };
 
 async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
@@ -155,7 +203,14 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
     let DOC_HEIGHT = 210;
 
     gridData = new GridData(gridData);
-    gridData = gridUtil.mergeGrids(gridData, globalGrid, metadata);
+    
+    // Add error handling for grid merging
+    try {
+        gridData = gridUtil.mergeGrids(gridData, globalGrid, metadata);
+    } catch (error) {
+        console.warn('Error merging grids, continuing without global grid:', error);
+        // Continue without global grid if merging fails
+    }
     let hasARASAACImages = gridData.gridElements.reduce(
         (total, element) =>
             total || (element.image && element.image.searchProviderName === arasaacService.SEARCH_PROVIDER_NAME),
@@ -163,9 +218,17 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
     );
     let registerHeight = options.showRegister && options.pages > 1 ? 10 : 0;
     let footerHeight = hasARASAACImages ? 2 * pdfOptions.footerHeight : pdfOptions.footerHeight;
-    let elementTotalWidth = (DOC_WIDTH - 2 * pdfOptions.docPadding) / gridUtil.getWidthWithBounds(gridData);
-    let elementTotalHeight =
-        (DOC_HEIGHT - 2 * pdfOptions.docPadding - footerHeight - registerHeight) / gridUtil.getHeightWithBounds(gridData);
+    
+    // Add safety checks for grid dimensions
+    let gridWidth = gridUtil.getWidthWithBounds(gridData);
+    let gridHeight = gridUtil.getHeightWithBounds(gridData);
+    
+    // Prevent division by zero
+    if (gridWidth <= 0) gridWidth = 1;
+    if (gridHeight <= 0) gridHeight = 1;
+    
+    let elementTotalWidth = (DOC_WIDTH - 2 * pdfOptions.docPadding) / gridWidth;
+    let elementTotalHeight = (DOC_HEIGHT - 2 * pdfOptions.docPadding - footerHeight - registerHeight) / gridHeight;
     if (footerHeight > 0) {
         let yBaseFooter = DOC_HEIGHT - pdfOptions.docPadding - registerHeight;
         let fontSizePt = (pdfOptions.footerHeight * 0.4) / 0.352778;
@@ -561,5 +624,46 @@ async function getMetadataConfig() {
 
 $(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
 $(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
+
+printService.showBrowserPrintInstructions = function(options = {}) {
+    const isFirefox = navigator.userAgent.indexOf('Firefox') !== -1;
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    const isChrome = /Chrome/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent);
+    
+    let browserSpecificTips = '';
+    
+    if (isFirefox) {
+        browserSpecificTips = '<li><strong>Firefox:</strong> Works well but may cut off right border. Use "Scale: Custom" and set to 90% to prevent cutoff.</li>';
+    } else if (isSafari) {
+        browserSpecificTips = '<li><strong>Safari:</strong> May show white pages. Try refreshing the page before printing, or use "Print Background Graphics" option.</li>';
+    } else if (isChrome) {
+        browserSpecificTips = '<li><strong>Chrome:</strong> Works perfectly. No special settings needed.</li>';
+    }
+    
+    return `
+        <div style="padding: 20px; text-align: center;">
+            <h3>Browser Print Instructions</h3>
+            <p>Use your browser's built-in print function for best results:</p>
+            <ol style="text-align: left; display: inline-block;">
+                <li>Press <strong>Ctrl+P</strong> (Windows/Linux) or <strong>Cmd+P</strong> (Mac)</li>
+                <li>Select "Save as PDF" as the destination</li>
+                <li>Choose "Landscape" orientation</li>
+                <li>Set margins to "Minimum" or "None"</li>
+                <li>Enable "Print Background Graphics" if available</li>
+                ${browserSpecificTips}
+                <li>Click "Save"</li>
+            </ol>
+            <p><strong>Note:</strong> Browser print often works better than the custom PDF export.</p>
+        </div>
+    `;
+};
+
+printService.triggerBrowserPrint = function() {
+    const beforePrintEvent = new Event('beforeprint');
+    window.dispatchEvent(beforePrintEvent);
+    setTimeout(() => {
+        window.print();
+    }, 100);
+};
 
 export { printService };
