@@ -476,10 +476,25 @@
             onClick(event) {
                 if (vueApp && !this.isInteracting) {
                     let elementId = $(event.target).closest('.element-container').attr('id');
+                    let containerElement = $(event.target).closest('#grid-container')[0];
                     if (elementId) {
                         vueApp.markElement(elementId);
                     } else {
                         this.unmarkAll();
+                        if (containerElement) {
+                            const newEvent = new MouseEvent("contextmenu", {
+                                bubbles: true,
+                                cancelable: true,
+                                clientX: event.clientX,
+                                clientY: event.clientY,
+                                pageX: event.pageX,
+                                pageY: event.pageY,
+                                screenX: event.screenX,
+                                screenY: event.screenY,
+                                button: 2
+                            });
+                            containerElement.dispatchEvent(newEvent);
+                        }
                     }
                 }
             },
