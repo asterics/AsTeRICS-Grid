@@ -17,8 +17,8 @@ let printService = {};
 let pdfOptions = {
     docPadding: 5,
     footerHeight: 8,
-    textPadding: 3,
-    elementMargin: 1,
+    textPadding: 2,
+    elementMargin: 0.5, // Reduced for better spacing
     imgMargin: 1,
     imgHeightPercentage: 0.8
 };
@@ -56,44 +56,6 @@ printService.initPrintHandlers = function () {
         $('#grid-container').width('27.7cm');
         $('#grid-container').height('19cm');
         
-        // Add print-specific CSS to handle border cutoff
-        const printStyle = document.createElement('style');
-        printStyle.id = 'print-style';
-        printStyle.textContent = `
-            @media print {
-                body {
-                    margin: 0 !important;
-                    padding: 0 !important;
-                }
-                #grid-container {
-                    width: 27.7cm !important;
-                    height: 19cm !important;
-                    max-width: none !important;
-                    max-height: none !important;
-                    overflow: visible !important;
-                    transform: none !important;
-                }
-                .item {
-                    page-break-inside: avoid !important;
-                }
-                /* Fix for Firefox border cutoff */
-                @-moz-document url-prefix() {
-                    #grid-container {
-                        width: 26.5cm !important;
-                        margin-right: 1.2cm !important;
-                    }
-                }
-                /* Fix for Safari */
-                @media screen and (-webkit-min-device-pixel-ratio: 0) {
-                    #grid-container {
-                        -webkit-print-color-adjust: exact !important;
-                        color-adjust: exact !important;
-                    }
-                }
-            }
-        `;
-        document.head.appendChild(printStyle);
-        
         // Store for cleanup
         window._printOriginalDimensions = { width: originalWidth, height: originalHeight };
     });
@@ -104,12 +66,6 @@ printService.initPrintHandlers = function () {
             $('#grid-container').width(window._printOriginalDimensions.width);
             $('#grid-container').height(window._printOriginalDimensions.height);
             delete window._printOriginalDimensions;
-        }
-        
-        // Remove print-specific CSS
-        const printStyle = document.getElementById('print-style');
-        if (printStyle) {
-            printStyle.remove();
         }
     });
 };
@@ -320,6 +276,12 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         let useElementColors = options.printElementColors !== false;
         // Color mode: only border
         let onlyBorderMode = colorConfig.colorMode === 'COLOR_MODE_BORDER';
+        
+        // Get proper spacing from metadata
+        let elementMargin = colorConfig.elementMargin || 0;
+        let elementMarginMM = (elementMargin / 100) * Math.min(elementTotalWidth, elementTotalHeight);
+        let actualElementMargin = Math.max(elementMarginMM, pdfOptions.elementMargin);
+        
         let bgColor = [255, 255, 255]; // Default white background
         if (useElementColors && !onlyBorderMode && options.printBackground) {
             try {
@@ -333,6 +295,7 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
                 // Keep default white background
             }
         }
+        
         let borderColor = [0, 0, 0]; // Default black border
         if (useElementColors) {
             try {
@@ -346,26 +309,47 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
                 // Keep default black border
             }
         }
-        // 3. Border width and radius
+        
+        // Border width and radius - use metadata values properly
         let borderWidth = colorConfig.borderWidth || 0.1;
         let borderRadius = colorConfig.borderRadius || 0.4;
-        let currentWidth = elementTotalWidth * element.width - 2 * pdfOptions.elementMargin;
-        let currentHeight = elementTotalHeight * element.height - 2 * pdfOptions.elementMargin;
-        let xStartPos = pdfOptions.docPadding + elementTotalWidth * element.x + pdfOptions.elementMargin;
-        let yStartPos = pdfOptions.docPadding + elementTotalHeight * element.y + pdfOptions.elementMargin;
-        // Border thickness fix: set minimum
-        let borderWidthMM = Math.max((borderWidth / 100) * Math.min(currentWidth, currentHeight) * 2, 0.5);
-        let borderRadiusMM = (borderRadius / 100) * Math.min(currentWidth, currentHeight) * 2;
+        
+        // Calculate cell dimensions with proper spacing
+        let currentWidth = elementTotalWidth * element.width - 2 * actualElementMargin;
+        let currentHeight = elementTotalHeight * element.height - 2 * actualElementMargin;
+        
+        // Ensure minimum cell size
+        currentWidth = Math.max(currentWidth, 5);
+        currentHeight = Math.max(currentHeight, 5);
+        
+        let xStartPos = pdfOptions.docPadding + elementTotalWidth * element.x + actualElementMargin;
+        let yStartPos = pdfOptions.docPadding + elementTotalHeight * element.y + actualElementMargin;
+        
+        // Border thickness - convert percentage to mm properly
+        let borderWidthMM = Math.max((borderWidth / 100) * Math.min(currentWidth, currentHeight), 0.2);
+        let borderRadiusMM = Math.max((borderRadius / 100) * Math.min(currentWidth, currentHeight), 0.5);
+        
         // --- Draw cell ---
         let borderRgb = colorToRGB(borderColor);
         doc.setDrawColor(borderRgb[0], borderRgb[1], borderRgb[2]);
         doc.setLineWidth(borderWidthMM);
         doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
-        doc.roundedRect(xStartPos, yStartPos, currentWidth, currentHeight, borderRadiusMM, borderRadiusMM, 'FD');
+        
+        // Draw rounded rectangle with proper border
+        if (borderRadiusMM > 0) {
+            doc.roundedRect(xStartPos, yStartPos, currentWidth, currentHeight, borderRadiusMM, borderRadiusMM, 'FD');
+        } else {
+            doc.rect(xStartPos, yStartPos, currentWidth, currentHeight, 'FD');
+        }
+        
+        // Add text if element has a label
         if (i18nService.getTranslation(element.label)) {
             addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, bgColor, metadata, useElementColors);
         }
+        
+        // Add image
         await addImageToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, metadata);
+        
         element = new GridElement(element);
         if (options.showLinks && options.idPageMap[element.getNavigateGridId()]) {
             let targetPage = options.idPageMap[element.getNavigateGridId()];
@@ -399,29 +383,43 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
 function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, bgColor, metadata, useElementColors = true) {
     // 1. Get label and apply convert mode
     let label = i18nService.getTranslation(element.label);
+    if (!label || label.trim() === '') {
+        return; // Don't render empty labels
+    }
+    
     let textConfig = metadata && metadata.textConfig ? metadata.textConfig : {};
     let hasImg = element.image && (element.image.data || element.image.url);
     let convertMode = textConfig.convertMode;
+    
     if (convertMode === TextConfig.CONVERT_MODE_UPPERCASE) {
         label = label.toLocaleUpperCase();
     } else if (convertMode === TextConfig.CONVERT_MODE_LOWERCASE) {
         label = label.toLocaleLowerCase();
     }
-    // 2. Font family (use only config/global value)
+    
+    // 2. Font family - ensure we have a valid font
     let fontFamily = textConfig.fontFamily || 'Arial';
-    // Note: Font loading should be handled before calling this function
-    // The font should already be loaded via loadFont() if needed
+    // Ensure the font is available in jsPDF
+    if (!doc.getFont().fontName.includes(fontFamily)) {
+        fontFamily = 'Arial'; // Fallback to Arial if custom font not loaded
+    }
     doc.setFont(fontFamily);
-    // 3. Font size (percent of cell height, with fitting if needed)
-    let baseFontSizePct = hasImg ? textConfig.fontSizePct : textConfig.onlyTextFontSizePct;
-    let lineHeight = hasImg ? textConfig.lineHeight : textConfig.onlyTextLineHeight;
-    let maxLines = hasImg ? textConfig.maxLines : 100;
+    
+    // 3. Font size calculation - improved sizing logic
+    let baseFontSizePct = hasImg ? (textConfig.fontSizePct || 30) : (textConfig.onlyTextFontSizePct || 40);
+    let lineHeight = hasImg ? (textConfig.lineHeight || 1.2) : (textConfig.onlyTextLineHeight || 1.2);
+    let maxLines = hasImg ? (textConfig.maxLines || 2) : 100;
     let fittingMode = textConfig.fittingMode || TextConfig.TOO_LONG_AUTO;
+    
+    // Calculate font size in mm, then convert to points
     let fontSizeMM = currentHeight * (baseFontSizePct / 100);
-    let fontSizePt = (fontSizeMM / 0.352778) * 0.8;
+    let fontSizePt = Math.max((fontSizeMM / 0.352778), 6); // Minimum 6pt font
+    
+    // Calculate available space for text
     let maxWidth = currentWidth - 2 * pdfOptions.textPadding;
-    let maxHeight = (fontSizePt * lineHeight * maxLines);
-    // 4. Font color (use util)
+    let maxHeight = currentHeight - 2 * pdfOptions.textPadding;
+    
+    // 4. Font color
     let textColor = [0, 0, 0]; // Default black text
     if (useElementColors) {
         try {
@@ -435,78 +433,104 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
             // Keep default black text
         }
     }
+    
     let rgb = colorToRGB(textColor);
     doc.setTextColor(rgb[0], rgb[1], rgb[2]);
-    // 5. Truncation/ellipsis/auto-fit (robust)
-    let displayLabel = label;
-    let dim = doc.getTextDimensions(displayLabel);
-    let lines = Math.ceil(dim.w / maxWidth);
-    let actualFontSize = fontSizePt;
-    let minFontSize = 4; // minimum readable font size
     
-    // Safety check to prevent infinite loops
-    if (fontSizePt <= 0 || maxWidth <= 0) {
-        actualFontSize = minFontSize;
-    } else if (fittingMode === TextConfig.TOO_LONG_AUTO && (dim.w > maxWidth || lines > maxLines)) {
-        // Reduce font size to fit
-        let step = Math.max(fontSizePt / 10, 0.5); // Ensure minimum step size
-        for (let i = 0; i < 20; i++) { // more iterations for robustness
+    // 5. Text fitting and truncation - improved algorithm
+    let displayLabel = label;
+    let actualFontSize = fontSizePt;
+    let minFontSize = 6; // Minimum readable font size
+    
+    // Set initial font size
+    doc.setFontSize(actualFontSize);
+    
+    // Get text dimensions
+    let dim = doc.getTextDimensions(displayLabel);
+    let textWidth = dim.w;
+    let textHeight = dim.h;
+    
+    // Check if text fits
+    let fits = textWidth <= maxWidth && textHeight <= maxHeight;
+    
+    if (!fits && fittingMode === TextConfig.TOO_LONG_AUTO) {
+        // Auto-fit: reduce font size until text fits
+        let step = Math.max(actualFontSize / 20, 0.5);
+        while (!fits && actualFontSize > minFontSize) {
+            actualFontSize -= step;
             doc.setFontSize(actualFontSize);
             dim = doc.getTextDimensions(displayLabel);
-            lines = Math.ceil(dim.w / maxWidth);
-            if ((dim.w <= maxWidth && lines <= maxLines) || actualFontSize <= minFontSize) break;
-            actualFontSize -= step;
-            if (actualFontSize < minFontSize) {
-                actualFontSize = minFontSize;
-                break;
-            }
+            textWidth = dim.w;
+            textHeight = dim.h;
+            fits = textWidth <= maxWidth && textHeight <= maxHeight;
         }
-    } else if (fittingMode === TextConfig.TOO_LONG_TRUNCATE && (dim.w > maxWidth || lines > maxLines)) {
+        actualFontSize = Math.max(actualFontSize, minFontSize);
+    } else if (!fits && fittingMode === TextConfig.TOO_LONG_TRUNCATE) {
         // Truncate text
         let truncated = '';
-        for (let i = 0; i < displayLabel.length && i < 100; i++) { // Add safety limit
+        for (let i = 0; i < displayLabel.length; i++) {
             let test = truncated + displayLabel[i];
             doc.setFontSize(actualFontSize);
             dim = doc.getTextDimensions(test);
-            lines = Math.ceil(dim.w / maxWidth);
-            if (dim.w > maxWidth || lines > maxLines) break;
+            if (dim.w > maxWidth) break;
             truncated = test;
         }
         displayLabel = truncated;
-    } else if (fittingMode === TextConfig.TOO_LONG_ELLIPSIS && (dim.w > maxWidth || lines > maxLines)) {
+    } else if (!fits && fittingMode === TextConfig.TOO_LONG_ELLIPSIS) {
         // Truncate and add ellipsis
         let truncated = '';
-        for (let i = 0; i < displayLabel.length && i < 100; i++) { // Add safety limit
+        for (let i = 0; i < displayLabel.length; i++) {
             let test = truncated + displayLabel[i] + '...';
             doc.setFontSize(actualFontSize);
             dim = doc.getTextDimensions(test);
-            lines = Math.ceil(dim.w / maxWidth);
-            if (dim.w > maxWidth || lines > maxLines) break;
+            if (dim.w > maxWidth) break;
             truncated += displayLabel[i];
         }
         displayLabel = truncated + '...';
     }
+    
+    // Set final font size
     doc.setFontSize(actualFontSize);
-    // 6. Text position (above/below image, or centered)
+    
+    // 6. Text positioning - improved positioning logic
     let textPosition = textConfig.textPosition;
+    let xOffset = xStartPos + currentWidth / 2;
     let yOffset;
+    
     if (hasImg) {
         if (textPosition === TextConfig.TEXT_POS_ABOVE) {
-            yOffset = yStartPos + actualFontSize * lineHeight / 2 + pdfOptions.textPadding;
+            // Text above image
+            yOffset = yStartPos + pdfOptions.textPadding + textHeight / 2;
         } else {
-            // BELOW (default)
-            yOffset = yStartPos + currentHeight - pdfOptions.textPadding - actualFontSize * lineHeight / 2;
+            // Text below image (default)
+            yOffset = yStartPos + currentHeight - pdfOptions.textPadding - textHeight / 2;
         }
     } else {
-        // text-only: center vertically
-        yOffset = yStartPos + currentHeight / 2 + actualFontSize / 2;
+        // Text-only: center vertically
+        yOffset = yStartPos + currentHeight / 2 + textHeight / 2;
     }
-    // 7. Draw text (centered)
-    doc.text(displayLabel, xStartPos + currentWidth / 2, yOffset, {
-        baseline: hasImg ? (textPosition === TextConfig.TEXT_POS_ABOVE ? 'top' : 'bottom') : 'middle',
-        align: 'center',
-        maxWidth: maxWidth
-    });
+    
+    // Ensure text doesn't go outside cell bounds
+    yOffset = Math.max(yOffset, yStartPos + textHeight / 2 + pdfOptions.textPadding);
+    yOffset = Math.min(yOffset, yStartPos + currentHeight - textHeight / 2 - pdfOptions.textPadding);
+    
+    // 7. Draw text
+    try {
+        doc.text(displayLabel, xOffset, yOffset, {
+            baseline: 'middle',
+            align: 'center',
+            maxWidth: maxWidth
+        });
+    } catch (error) {
+        console.warn('Error rendering text for element:', element.id, error);
+        // Fallback: try with smaller font
+        doc.setFontSize(Math.max(actualFontSize * 0.8, minFontSize));
+        doc.text(displayLabel.substring(0, Math.min(displayLabel.length, 10)), xOffset, yOffset, {
+            baseline: 'middle',
+            align: 'center',
+            maxWidth: maxWidth
+        });
+    }
 }
 
 function getOptimalFontsize(doc, text, baseSize, maxWidth, maxHeight, multipleLines) {
@@ -541,55 +565,112 @@ async function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, yp
     if (!hasImage) {
         return Promise.resolve();
     }
+    
     let type = new GridImage(element.image).getImageType();
     let imageData = element.image.data;
     let dim = null;
+    
+    // Load image data if not available
     if (!imageData) {
-        let dataWithDim = await imageUtil.urlToBase64WithDimensions(element.image.url, 500, type);
-        imageData = dataWithDim.data;
-        dim = dataWithDim.dim;
+        try {
+            let dataWithDim = await imageUtil.urlToBase64WithDimensions(element.image.url, 500, type);
+            imageData = dataWithDim.data;
+            dim = dataWithDim.dim;
+        } catch (error) {
+            console.warn('Error loading image for element:', element.id, error);
+            return Promise.resolve();
+        }
     }
+    
     if (!imageData) {
         return Promise.resolve();
     }
+    
+    // Get image dimensions if not available
     if (!dim) {
-        dim = await imageUtil.getImageDimensionsFromDataUrl(imageData);
+        try {
+            dim = await imageUtil.getImageDimensionsFromDataUrl(imageData);
+        } catch (error) {
+            console.warn('Error getting image dimensions for element:', element.id, error);
+            return Promise.resolve();
+        }
     }
-    // Dynamically adjust imgHeightPercentage based on font size
+    
+    // Check if we have valid dimensions
+    if (!dim || !dim.ratio || isNaN(dim.ratio)) {
+        console.warn('Invalid image dimensions for element:', element.id);
+        return Promise.resolve();
+    }
+    
+    // Calculate image size based on text configuration
     let textConfig = metadata && metadata.textConfig ? metadata.textConfig : {};
     let baseFontSizePct = textConfig.fontSizePct || 30;
-    let imgHeightPercentage = 1 - (baseFontSizePct / 100) * 0.8; // shrink image if font is large
-    imgHeightPercentage = Math.max(0.2, Math.min(imgHeightPercentage, 0.8));
+    let hasText = i18nService.getTranslation(element.label);
+    
+    // Adjust image height based on whether there's text and font size
+    let imgHeightPercentage = 0.7; // Default 70% of cell height
+    if (hasText) {
+        // If there's text, reduce image size to make room
+        imgHeightPercentage = Math.max(0.4, Math.min(0.6, 1 - (baseFontSizePct / 100) * 0.8));
+    }
+    
+    // Calculate available space for image
     let maxWidth = elementWidth - 2 * pdfOptions.imgMargin;
     let maxHeight = (elementHeight - 2 * pdfOptions.imgMargin) * imgHeightPercentage;
+    
+    // Ensure minimum size
+    maxWidth = Math.max(maxWidth, 5);
+    maxHeight = Math.max(maxHeight, 5);
+    
+    // Calculate aspect ratio
     let elementRatio = maxWidth / maxHeight;
-    let width = maxWidth,
-        height = maxHeight;
-    let xOffset = 0,
-        yOffset = 0;
-    if (dim.ratio >= elementRatio) {
-        // img has wider ratio than space in element
-        if (!isNaN(dim.ratio)) {
-            height = width / dim.ratio;
-        }
+    let imageRatio = dim.ratio;
+    
+    let width, height, xOffset, yOffset;
+    
+    if (imageRatio >= elementRatio) {
+        // Image is wider than available space - fit to width
+        width = maxWidth;
+        height = width / imageRatio;
+        xOffset = 0;
         yOffset = (maxHeight - height) / 2;
     } else {
-        //img has narrower ratio than space in element
-        if (!isNaN(dim.ratio)) {
-            width = height * dim.ratio;
-        }
+        // Image is taller than available space - fit to height
+        height = maxHeight;
+        width = height * imageRatio;
         xOffset = (maxWidth - width) / 2;
+        yOffset = 0;
     }
+    
+    // Ensure image doesn't exceed cell bounds
+    width = Math.min(width, maxWidth);
+    height = Math.min(height, maxHeight);
+    
+    // Calculate final position
     let x = xpos + pdfOptions.imgMargin + xOffset;
     let y = ypos + pdfOptions.imgMargin + yOffset;
-    if (type === GridImage.IMAGE_TYPES.PNG) {
-        doc.addImage(imageData, 'PNG', x, y, width, height);
-    } else if (type === GridImage.IMAGE_TYPES.JPEG) {
-        doc.addImage(imageData, 'JPEG', x, y, width, height);
-    } else if (type === GridImage.IMAGE_TYPES.SVG) {
-        let pixelWidth = width / 0.084666667; //convert width in mm to pixel at 300dpi
-        let pngBase64 = await imageUtil.base64SvgToBase64Png(imageData, pixelWidth);
-        doc.addImage(pngBase64, type, x, y, width, height);
+    
+    // Ensure minimum size for visibility
+    if (width < 2 || height < 2) {
+        return Promise.resolve();
+    }
+    
+    try {
+        // Add image based on type
+        if (type === GridImage.IMAGE_TYPES.PNG) {
+            doc.addImage(imageData, 'PNG', x, y, width, height);
+        } else if (type === GridImage.IMAGE_TYPES.JPEG) {
+            doc.addImage(imageData, 'JPEG', x, y, width, height);
+        } else if (type === GridImage.IMAGE_TYPES.SVG) {
+            // Convert SVG to PNG for better compatibility
+            let pixelWidth = Math.max(width / 0.084666667, 50); // Minimum 50px width
+            let pngBase64 = await imageUtil.base64SvgToBase64Png(imageData, pixelWidth);
+            if (pngBase64) {
+                doc.addImage(pngBase64, 'PNG', x, y, width, height);
+            }
+        }
+    } catch (error) {
+        console.warn('Error adding image to PDF for element:', element.id, error);
     }
 }
 
@@ -629,15 +710,47 @@ printService.showBrowserPrintInstructions = function(options = {}) {
     const isFirefox = navigator.userAgent.indexOf('Firefox') !== -1;
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     const isChrome = /Chrome/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent);
+    const isEdge = /Edge/.test(navigator.userAgent);
     
     let browserSpecificTips = '';
     
     if (isFirefox) {
-        browserSpecificTips = '<li><strong>Firefox:</strong> Works well but may cut off right border. Use "Scale: Custom" and set to 90% to prevent cutoff.</li>';
+        browserSpecificTips = `
+            <li><strong>Firefox:</strong> 
+                <ul>
+                    <li>Set "Scale: Custom" to 90% to prevent right border cutoff</li>
+                    <li>Enable "Print Background Graphics"</li>
+                    <li>Set margins to "Minimum"</li>
+                </ul>
+            </li>`;
     } else if (isSafari) {
-        browserSpecificTips = '<li><strong>Safari:</strong> May show white pages. Try refreshing the page before printing, or use "Print Background Graphics" option.</li>';
+        browserSpecificTips = `
+            <li><strong>Safari:</strong> 
+                <ul>
+                    <li>Refresh the page before printing if you see blank pages</li>
+                    <li>Enable "Print Background Graphics" in print options</li>
+                    <li>Set "Scale" to 100% or "Fit to Page"</li>
+                    <li>If issues persist, try using the "Save as PDF" option instead</li>
+                </ul>
+            </li>`;
     } else if (isChrome) {
-        browserSpecificTips = '<li><strong>Chrome:</strong> Works perfectly. No special settings needed.</li>';
+        browserSpecificTips = `
+            <li><strong>Chrome:</strong> 
+                <ul>
+                    <li>Works well with default settings</li>
+                    <li>Enable "Background graphics" for best results</li>
+                    <li>Set margins to "Minimum" for maximum space usage</li>
+                </ul>
+            </li>`;
+    } else if (isEdge) {
+        browserSpecificTips = `
+            <li><strong>Edge:</strong> 
+                <ul>
+                    <li>Enable "Print background graphics"</li>
+                    <li>Set margins to "Minimum"</li>
+                    <li>Use "Scale: 100%" for best quality</li>
+                </ul>
+            </li>`;
     }
     
     return `
@@ -650,20 +763,39 @@ printService.showBrowserPrintInstructions = function(options = {}) {
                 <li>Choose "Landscape" orientation</li>
                 <li>Set margins to "Minimum" or "None"</li>
                 <li>Enable "Print Background Graphics" if available</li>
+                <li>Set "Scale" to 100% or "Fit to Page"</li>
                 ${browserSpecificTips}
                 <li>Click "Save"</li>
             </ol>
-            <p><strong>Note:</strong> Browser print often works better than the custom PDF export.</p>
+            <p><strong>Note:</strong> Browser print often provides better text rendering and border display than the custom PDF export.</p>
+            <p><strong>Troubleshooting:</strong> If you experience issues with text truncation or missing borders, try refreshing the page before printing.</p>
         </div>
     `;
 };
 
 printService.triggerBrowserPrint = function() {
-    const beforePrintEvent = new Event('beforeprint');
-    window.dispatchEvent(beforePrintEvent);
-    setTimeout(() => {
-        window.print();
-    }, 100);
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    
+    // For Safari, we need to ensure the page is fully loaded
+    if (isSafari) {
+        // Force a small delay to ensure Safari is ready
+        setTimeout(() => {
+            const beforePrintEvent = new Event('beforeprint');
+            window.dispatchEvent(beforePrintEvent);
+            
+            // Additional delay for Safari
+            setTimeout(() => {
+                window.print();
+            }, 200);
+        }, 100);
+    } else {
+        // For other browsers
+        const beforePrintEvent = new Event('beforeprint');
+        window.dispatchEvent(beforePrintEvent);
+        setTimeout(() => {
+            window.print();
+        }, 100);
+    }
 };
 
 export { printService };
