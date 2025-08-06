@@ -372,10 +372,11 @@
                 $('.element-container').addClass('marked');
                 this.markedElementIds = this.gridData.gridElements.map(e => e.id);
             },
-            markElement(id) {
+            async markElement(id) {
                 if (!id) {
                     return;
                 }
+                await this.$nextTick();
                 util.throttle(() => {
                     if (this.shiftKeyHold && this.markedElementIds.length) {
                         let allElems = this.gridData.gridElements;
@@ -481,7 +482,7 @@
                         vueApp.markElement(elementId);
                     } else {
                         this.unmarkAll();
-                        if (containerElement) {
+                        if (containerElement && this.usingTouchscreen) {
                             const newEvent = new MouseEvent("contextmenu", {
                                 bubbles: true,
                                 cancelable: true,
@@ -736,6 +737,7 @@
         let CONTEXT_ACTION_DO_ACTION = 'CONTEXT_ACTION_DO_ACTION';
 
         var CONTEXT_NEW_GROUP = "CONTEXT_NEW_GROUP";
+        var CONTEXT_NEW_GROUP_REDUCED = "CONTEXT_NEW_GROUP_REDUCED";
         var CONTEXT_NEW_SINGLE = "CONTEXT_NEW_SINGLE";
         var CONTEXT_NEW_MASS = "CONTEXT_NEW_MASS";
         var CONTEXT_NEW_COLLECT = "CONTEXT_NEW_COLLECT";
@@ -761,35 +763,42 @@
         let CONTEXT_PROPERTY_TRANSFER_APPEARANCE = "CONTEXT_PROPERTY_TRANSFER_APPEARANCE";
         let CONTEXT_PROPERTY_TRANSFER_ALL = "CONTEXT_PROPERTY_TRANSFER_ALL";
 
-        var itemsGlobal = {
-            CONTEXT_NEW_GROUP: {
-                name: i18nService.t('new'), icon: "fas fa-plus-circle", items: {
-                    'CONTEXT_NEW_SINGLE': {name: i18nService.t('newElement'), icon: "fas fa-plus"},
-                    'CONTEXT_NEW_MASS': {name: i18nService.t('manyNewElements'), icon: "fas fa-clone"},
-                    'CONTEXT_NEW_COLLECT': {
-                        name: i18nService.t('newCollectElement'),
-                        icon: "fas fa-ellipsis-h"
-                    },
-                    'CONTEXT_NEW_PREDICT': {
-                        name: i18nService.t('newPredictionElement'),
-                        icon: "fas fa-magic"
-                    },
-                    'CONTEXT_NEW_YT_PLAYER': {
-                        name: i18nService.t('newYouTubePlayer'),
-                        icon: "fab fa-youtube"
-                    },
-                    'CONTEXT_NEW_LIVE': {
-                        name: i18nService.t('newLiveElement'),
-                        icon: "fas fa-star-of-life"
-                    },
-                    'CONTEXT_NEW_MATRIX_CONVERSATION': {
-                        name: i18nService.t('newMatrixConversation'),
-                        icon: "fas fa-comments"
-                    }
+        let contextMenuNewGroup = {
+            name: i18nService.t('new'), icon: "fas fa-plus-circle", items: {
+                'CONTEXT_NEW_SINGLE': {name: i18nService.t('newElement'), icon: "fas fa-plus"},
+                'CONTEXT_NEW_MASS': {name: i18nService.t('manyNewElements'), icon: "fas fa-clone"},
+                'CONTEXT_NEW_COLLECT': {
+                    name: i18nService.t('newCollectElement'),
+                    icon: "fas fa-ellipsis-h"
+                },
+                'CONTEXT_NEW_PREDICT': {
+                    name: i18nService.t('newPredictionElement'),
+                    icon: "fas fa-magic"
+                },
+                'CONTEXT_NEW_YT_PLAYER': {
+                    name: i18nService.t('newYouTubePlayer'),
+                    icon: "fab fa-youtube"
+                },
+                'CONTEXT_NEW_LIVE': {
+                    name: i18nService.t('newLiveElement'),
+                    icon: "fas fa-star-of-life"
+                },
+                'CONTEXT_NEW_MATRIX_CONVERSATION': {
+                    name: i18nService.t('newMatrixConversation'),
+                    icon: "fas fa-comments"
                 }
-            },
-            CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
+            }
         };
+
+        var itemsGlobal = {
+            'CONTEXT_NEW_SINGLE': {name: i18nService.t('newElement'), icon: "fas fa-plus"},
+            'CONTEXT_NEW_MASS': {name: i18nService.t('manyNewElements'), icon: "fas fa-clone"},
+            CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
+            CONTEXT_NEW_GROUP_REDUCED: JSON.parse(JSON.stringify(contextMenuNewGroup))
+        };
+        itemsGlobal[CONTEXT_NEW_GROUP_REDUCED].items[CONTEXT_NEW_SINGLE].visible = false;
+        itemsGlobal[CONTEXT_NEW_GROUP_REDUCED].items[CONTEXT_NEW_MASS].visible = false;
+        itemsGlobal[CONTEXT_NEW_GROUP_REDUCED].name = i18nService.t('newSpecialElement');
 
         let itemsTransferProps = {
             'CONTEXT_PROPERTY_TRANSFER_ALL': { name: i18nService.t('transferAll'), icon: 'fas fa-angle-double-right' },
@@ -832,7 +841,7 @@
         var itemsMoreMenuButton = {
             "SELECTED_ELEM_ACTIONS": {name: i18nService.t('selectedElementsContextMenu'), icon: "far fa-square", visible: visibleFn, items: itemsElemNormal},
             separator: { "type": "cm_separator", visible: visibleFn},
-            CONTEXT_NEW_GROUP: itemsGlobal[CONTEXT_NEW_GROUP],
+            CONTEXT_NEW_GROUP: contextMenuNewGroup,
             SEP0: "---------",
             'CONTEXT_COPY_ALL': {name: i18nService.t('copyAllElements'), icon: "fas fa-copy"},
             CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
