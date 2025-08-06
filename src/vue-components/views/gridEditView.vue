@@ -372,10 +372,11 @@
                 $('.element-container').addClass('marked');
                 this.markedElementIds = this.gridData.gridElements.map(e => e.id);
             },
-            markElement(id) {
+            async markElement(id) {
                 if (!id) {
                     return;
                 }
+                await this.$nextTick();
                 util.throttle(() => {
                     if (this.shiftKeyHold && this.markedElementIds.length) {
                         let allElems = this.gridData.gridElements;
