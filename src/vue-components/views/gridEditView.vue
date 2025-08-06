@@ -481,7 +481,7 @@
                         vueApp.markElement(elementId);
                     } else {
                         this.unmarkAll();
-                        if (containerElement) {
+                        if (containerElement && this.usingTouchscreen) {
                             const newEvent = new MouseEvent("contextmenu", {
                                 bubbles: true,
                                 cancelable: true,
