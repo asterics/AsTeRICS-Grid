@@ -1,0 +1,126 @@
+/* Print-specific styles for AsTeRICS Grid */
+
+@media print {
+    /* Global print settings */
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Grid container print optimization */
+    #grid-container {
+        width: 27.7cm !important;
+        height: 19cm !important;
+        max-width: none !important;
+        max-height: none !important;
+        overflow: visible !important;
+        transform: none !important;
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Element container print settings */
+    .element-container {
+        page-break-inside: avoid !important;
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Grid item content print settings */
+    .grid-item-content {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Text container print settings */
+    .text-container {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Image container print settings */
+    .img-container {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Firefox-specific fixes */
+    @-moz-document url-prefix() {
+        #grid-container {
+            width: 26.5cm !important;
+            margin-right: 1.2cm !important;
+        }
+    }
+
+    /* Safari-specific fixes */
+    @media screen and (-webkit-min-device-pixel-ratio: 0) {
+        #grid-container {
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        
+        .element-container {
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        
+        .grid-item-content {
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+    }
+
+    /* Chrome-specific fixes */
+    @media screen and (-webkit-min-device-pixel-ratio: 0) and (min-resolution: 0.001dpcm) {
+        #grid-container {
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        
+        .element-container {
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+    }
+
+    /* Edge-specific fixes */
+    @supports (-ms-ime-align: auto) {
+        #grid-container {
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+    }
+
+    /* Hide non-essential elements during print */
+    .no-print,
+    .print-hide {
+        display: none !important;
+    }
+
+    /* Ensure proper page breaks */
+    .page-break-before {
+        page-break-before: always !important;
+    }
+
+    .page-break-after {
+        page-break-after: always !important;
+    }
+
+    .page-break-inside-avoid {
+        page-break-inside: avoid !important;
+    }
+} 
