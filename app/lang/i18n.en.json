@@ -493,6 +493,7 @@
   "doYouReallyWantDeleteAllImages": "Do you really want to delete all images and symbols from all grids? This cannot be undone.",
   "resetToDefaultConfig": "Reset to default configuration",
   "new": "New",
+  "newSpecialElement": "New special element",
   "newElement": "New Element",
   "manyNewElements": "Many new elements",
   "newCollectElement": "New collect element",
