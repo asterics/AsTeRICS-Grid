@@ -10,6 +10,7 @@ import { arasaacService } from './pictograms/arasaacService.js';
 import $ from "../externals/jquery.js";
 import {constants} from "../util/constants.js";
 import {TextConfig} from "../model/TextConfig.js";
+import { ColorConfig } from "../model/ColorConfig.js";
 import { gridUtil } from '../util/gridUtil';
 import { fontUtil } from '../util/fontUtil';
 
@@ -17,7 +18,7 @@ let printService = {};
 let pdfOptions = {
     docPadding: 5,
     footerHeight: 8,
-    textPadding: 2,
+    textPadding: 3, // Increased from 2 to 3 for better text spacing
     elementMargin: 0.5, // Reduced for better spacing
     imgMargin: 1,
     imgHeightPercentage: 0.8
@@ -94,6 +95,13 @@ printService.gridsToPdf = async function (gridsData, options) {
     options.idPageMap = {};
     options.idParentsMap = {};
     options.fontPath = '';
+    options.customFontFamily = null;
+    
+    // Check if metadata has a custom font family configured
+    if (metadata && metadata.textConfig && metadata.textConfig.fontFamily) {
+        options.customFontFamily = metadata.textConfig.fontFamily;
+    }
+    
     gridsData.forEach((grid, index) => {
         options.idPageMap[grid.id] = index + 1;
     });
@@ -119,9 +127,71 @@ printService.gridsToPdf = async function (gridsData, options) {
         orientation: 'landscape',
         compress: true
     });
+    
+    // Load custom font if specified in metadata
+    if (options.customFontFamily && options.customFontFamily !== 'Arial') {
+        console.log('Attempting to load custom font:', options.customFontFamily);
+        let fontLoaded = false;
+        
+        // Map font names to file names
+        let fontNameMapping = {
+            'Roboto-Regular': 'Roboto-Regular',
+            'OpenDyslexic-Regular': 'OpenDyslexic-Regular', 
+            'Jost-400-Book': 'Jost-400-Book',
+            'Times': 'Times'
+        };
+        
+        let fontFileName = fontNameMapping[options.customFontFamily] || options.customFontFamily;
+        let fontPaths = [
+            `/app/fonts/${fontFileName}.ttf`,
+            `/app/fonts/${fontFileName}.otf`,
+            `/fonts/${fontFileName}.ttf`,
+            `/fonts/${fontFileName}.otf`,
+            `./fonts/${fontFileName}.ttf`,
+            `./fonts/${fontFileName}.otf`,
+            // Try with different naming conventions
+            `/app/fonts/${fontFileName.toLowerCase()}.ttf`,
+            `/app/fonts/${fontFileName.toLowerCase()}.otf`,
+            `/fonts/${fontFileName.toLowerCase()}.ttf`,
+            `/fonts/${fontFileName.toLowerCase()}.otf`
+        ];
+        
+        for (let fontPath of fontPaths) {
+            try {
+                console.log('Trying font path:', fontPath);
+                await loadFont(fontPath, doc);
+                fontLoaded = true;
+                console.info('Successfully loaded custom font:', options.customFontFamily, 'from:', fontPath);
+                break;
+            } catch (error) {
+                console.warn('Could not load font from path:', fontPath, error);
+                // Try next path
+            }
+        }
+        
+        if (!fontLoaded) {
+            console.warn('Could not load custom font:', options.customFontFamily, '- will use Arial as fallback');
+            // Try to use built-in fonts if available
+            if (options.customFontFamily === 'Times') {
+                try {
+                    doc.setFont('Times');
+                    console.log('Using built-in Times font');
+                } catch (error) {
+                    console.warn('Times font not available, using Arial');
+                }
+            }
+        } else {
+            console.log('Custom font loaded successfully, available fonts in doc:', doc.getFont().fontName);
+        }
+    }
+    
+    // Load pattern-based font if needed
     if (options.fontPath) {
         await loadFont(options.fontPath, doc);
     }
+    
+    // Log available fonts for debugging
+    logAvailableFonts(doc);
 
     options.pages = gridsData.length;
     for (let i = 0; i < gridsData.length && !options.abort; i++) {
@@ -274,8 +344,12 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         let colorConfig = metadata && metadata.colorConfig ? metadata.colorConfig : {};
         // Print element colors option
         let useElementColors = options.printElementColors !== false;
-        // Color mode: only border
-        let onlyBorderMode = colorConfig.colorMode === 'COLOR_MODE_BORDER';
+        
+        // Color mode handling - fix the logic for border/background modes
+        let colorMode = colorConfig.colorMode || ColorConfig.COLOR_MODE_BACKGROUND;
+        let onlyBorderMode = colorMode === ColorConfig.COLOR_MODE_BORDER;
+        let onlyBackgroundMode = colorMode === ColorConfig.COLOR_MODE_BACKGROUND;
+        let bothMode = colorMode === ColorConfig.COLOR_MODE_BOTH;
         
         // Get proper spacing from metadata
         let elementMargin = colorConfig.elementMargin || 0;
@@ -283,7 +357,8 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         let actualElementMargin = Math.max(elementMarginMM, pdfOptions.elementMargin);
         
         let bgColor = [255, 255, 255]; // Default white background
-        if (useElementColors && !onlyBorderMode && options.printBackground) {
+        // Apply background color based on color mode
+        if (useElementColors && (onlyBackgroundMode || bothMode) && options.printBackground) {
             try {
                 let elementBgColor = util.getElementBackgroundColor(element, metadata);
                 let rgbColor = util.getRGB(elementBgColor);
@@ -297,7 +372,8 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         }
         
         let borderColor = [0, 0, 0]; // Default black border
-        if (useElementColors) {
+        // Apply border color based on color mode
+        if (useElementColors && (onlyBorderMode || bothMode)) {
             try {
                 let elementBorderColor = util.getElementBorderColor(element, metadata);
                 let rgbBorderColor = util.getRGB(elementBorderColor);
@@ -329,18 +405,45 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         let borderWidthMM = Math.max((borderWidth / 100) * Math.min(currentWidth, currentHeight), 0.2);
         let borderRadiusMM = Math.max((borderRadius / 100) * Math.min(currentWidth, currentHeight), 0.5);
         
+        // Debug logging for border and spacing
+        console.log('Element border config:', {
+            colorMode: colorMode,
+            onlyBorderMode: onlyBorderMode,
+            onlyBackgroundMode: onlyBackgroundMode,
+            bothMode: bothMode,
+            borderWidth: borderWidth,
+            borderWidthMM: borderWidthMM,
+            borderRadius: borderRadius,
+            borderRadiusMM: borderRadiusMM,
+            elementMargin: elementMargin,
+            actualElementMargin: actualElementMargin
+        });
+        
         // --- Draw cell ---
         let borderRgb = colorToRGB(borderColor);
         doc.setDrawColor(borderRgb[0], borderRgb[1], borderRgb[2]);
         doc.setLineWidth(borderWidthMM);
         doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
         
-        // Draw rounded rectangle with proper border
-        if (borderRadiusMM > 0) {
+        // Draw cell with proper border and background
+        if (borderRadiusMM > 0.5) {
+            // Draw rounded rectangle with proper border
             doc.roundedRect(xStartPos, yStartPos, currentWidth, currentHeight, borderRadiusMM, borderRadiusMM, 'FD');
         } else {
+            // Draw regular rectangle
             doc.rect(xStartPos, yStartPos, currentWidth, currentHeight, 'FD');
         }
+        
+        // Debug logging for border drawing
+        console.log('Drawing cell with:', {
+            borderColor: borderColor,
+            borderRgb: borderRgb,
+            borderWidthMM: borderWidthMM,
+            borderRadiusMM: borderRadiusMM,
+            bgColor: bgColor,
+            position: [xStartPos, yStartPos],
+            size: [currentWidth, currentHeight]
+        });
         
         // Add text if element has a label
         if (i18nService.getTranslation(element.label)) {
@@ -389,6 +492,13 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
     
     let textConfig = metadata && metadata.textConfig ? metadata.textConfig : {};
     let hasImg = element.image && (element.image.data || element.image.url);
+    
+    // Debug: Log image detection
+    console.log('Element image:', element.image);
+    console.log('Element has image data:', element.image && element.image.data);
+    console.log('Element has image url:', element.image && element.image.url);
+    console.log('HasImg result:', hasImg);
+    
     let convertMode = textConfig.convertMode;
     
     if (convertMode === TextConfig.CONVERT_MODE_UPPERCASE) {
@@ -399,11 +509,47 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
     
     // 2. Font family - ensure we have a valid font
     let fontFamily = textConfig.fontFamily || 'Arial';
-    // Ensure the font is available in jsPDF
-    if (!doc.getFont().fontName.includes(fontFamily)) {
-        fontFamily = 'Arial'; // Fallback to Arial if custom font not loaded
+    
+    // Debug: Log the configured font family
+    console.log('Element text config fontFamily:', textConfig.fontFamily);
+    console.log('Using font family:', fontFamily);
+    
+    // Try to use the configured font family
+    if (fontFamily && fontFamily !== 'Arial') {
+        try {
+            // Check if we can set the font - if it fails, it will throw an error
+            doc.setFont(fontFamily);
+            console.log('Successfully set font to:', fontFamily);
+            // If we get here, the font is available
+        } catch (error) {
+            console.warn('Font not available, falling back to Arial:', fontFamily, error);
+            // Try alternative font names
+            let alternativeFonts = {
+                'Roboto-Regular': 'Roboto',
+                'OpenDyslexic-Regular': 'OpenDyslexic',
+                'Jost-400-Book': 'Jost',
+                'Times': 'Times'
+            };
+            
+            let alternativeFont = alternativeFonts[fontFamily];
+            if (alternativeFont) {
+                try {
+                    doc.setFont(alternativeFont);
+                    console.log('Successfully set alternative font to:', alternativeFont);
+                    fontFamily = alternativeFont;
+                } catch (altError) {
+                    console.warn('Alternative font also not available, using Arial:', alternativeFont, altError);
+                    fontFamily = 'Arial';
+                    doc.setFont(fontFamily);
+                }
+            } else {
+                fontFamily = 'Arial';
+                doc.setFont(fontFamily);
+            }
+        }
+    } else {
+        doc.setFont(fontFamily);
     }
-    doc.setFont(fontFamily);
     
     // 3. Font size calculation - improved sizing logic
     let baseFontSizePct = hasImg ? (textConfig.fontSizePct || 30) : (textConfig.onlyTextFontSizePct || 40);
@@ -497,22 +643,49 @@ function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, ySt
     let xOffset = xStartPos + currentWidth / 2;
     let yOffset;
     
+    // Debug: Log positioning information
+    console.log('Element has image:', hasImg);
+    console.log('Text position config:', textPosition);
+    console.log('Text position constant ABOVE:', TextConfig.TEXT_POS_ABOVE);
+    console.log('Text position constant BELOW:', TextConfig.TEXT_POS_BELOW);
+    
     if (hasImg) {
         if (textPosition === TextConfig.TEXT_POS_ABOVE) {
-            // Text above image
-            yOffset = yStartPos + pdfOptions.textPadding + textHeight / 2;
+            // Text above image - position at the top with adequate padding and space for image below
+            let topPadding = Math.max(pdfOptions.textPadding * 4, 5); // Increased padding for top positioning
+            yOffset = yStartPos + topPadding + textHeight / 2;
+            console.log('Positioning text ABOVE image, yOffset:', yOffset);
         } else {
-            // Text below image (default)
-            yOffset = yStartPos + currentHeight - pdfOptions.textPadding - textHeight / 2;
+            // Text below image (default) - improved positioning
+            let bottomPadding = Math.max(pdfOptions.textPadding * 2, 3); // More padding for text below
+            yOffset = yStartPos + currentHeight - bottomPadding - textHeight / 2;
+            console.log('Positioning text BELOW image, yOffset:', yOffset);
         }
     } else {
-        // Text-only: center vertically
-        yOffset = yStartPos + currentHeight / 2 + textHeight / 2;
+        // Text-only: perfect vertical centering
+        yOffset = yStartPos + currentHeight / 2;
+        console.log('Positioning text-only in center, yOffset:', yOffset);
     }
     
-    // Ensure text doesn't go outside cell bounds
-    yOffset = Math.max(yOffset, yStartPos + textHeight / 2 + pdfOptions.textPadding);
-    yOffset = Math.min(yOffset, yStartPos + currentHeight - textHeight / 2 - pdfOptions.textPadding);
+    // Ensure text doesn't go outside cell bounds with improved constraints
+    if (hasImg) {
+        if (textPosition === TextConfig.TEXT_POS_ABOVE) {
+            // For text on top, ensure adequate padding from top border and space for image
+            let minTopDistance = Math.max(textHeight / 2 + pdfOptions.textPadding * 3, 5);
+            yOffset = Math.max(yOffset, yStartPos + minTopDistance);
+            // Ensure text doesn't go too far down and leave space for image
+            yOffset = Math.min(yOffset, yStartPos + currentHeight * 0.2); // Keep text in top 20% of cell
+        } else {
+            // For text below image, ensure minimum distance from bottom
+            let minBottomDistance = Math.max(textHeight / 2 + pdfOptions.textPadding * 2, 4);
+            yOffset = Math.min(yOffset, yStartPos + currentHeight - minBottomDistance);
+        }
+    } else {
+        // For text-only cells, ensure perfect centering with minimum padding
+        let minPadding = Math.max(textHeight / 2 + pdfOptions.textPadding, 3);
+        yOffset = Math.max(yOffset, yStartPos + minPadding);
+        yOffset = Math.min(yOffset, yStartPos + currentHeight - minPadding);
+    }
     
     // 7. Draw text
     try {
@@ -606,17 +779,26 @@ async function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, yp
     let textConfig = metadata && metadata.textConfig ? metadata.textConfig : {};
     let baseFontSizePct = textConfig.fontSizePct || 30;
     let hasText = i18nService.getTranslation(element.label);
+    let textPosition = textConfig.textPosition;
     
-    // Adjust image height based on whether there's text and font size
-    let imgHeightPercentage = 0.7; // Default 70% of cell height
+    // Adjust image height and position based on text position
+    let imgHeightPercentage = 0.65; // Default 65% of cell height
+    let imageTopOffset = 0; // Default no offset
+    
     if (hasText) {
-        // If there's text, reduce image size to make room
-        imgHeightPercentage = Math.max(0.4, Math.min(0.6, 1 - (baseFontSizePct / 100) * 0.8));
+        if (textPosition === TextConfig.TEXT_POS_ABOVE) {
+            // Text is at top, position image lower with more space
+            imgHeightPercentage = Math.max(0.25, Math.min(0.45, 1 - (baseFontSizePct / 100) * 1.2));
+            imageTopOffset = Math.max(pdfOptions.textPadding * 4, 6); // Add space for text at top
+        } else {
+            // Text is at bottom, position image higher
+            imgHeightPercentage = Math.max(0.35, Math.min(0.55, 1 - (baseFontSizePct / 100) * 0.9));
+        }
     }
     
     // Calculate available space for image
     let maxWidth = elementWidth - 2 * pdfOptions.imgMargin;
-    let maxHeight = (elementHeight - 2 * pdfOptions.imgMargin) * imgHeightPercentage;
+    let maxHeight = (elementHeight - 2 * pdfOptions.imgMargin - imageTopOffset) * imgHeightPercentage;
     
     // Ensure minimum size
     maxWidth = Math.max(maxWidth, 5);
@@ -633,13 +815,13 @@ async function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, yp
         width = maxWidth;
         height = width / imageRatio;
         xOffset = 0;
-        yOffset = (maxHeight - height) / 2;
+        yOffset = (maxHeight - height) / 2 + imageTopOffset;
     } else {
         // Image is taller than available space - fit to height
         height = maxHeight;
         width = height * imageRatio;
         xOffset = (maxWidth - width) / 2;
-        yOffset = 0;
+        yOffset = imageTopOffset;
     }
     
     // Ensure image doesn't exceed cell bounds
@@ -681,18 +863,43 @@ async function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, yp
  * @return {Promise<void>}
  */
 async function loadFont(path, doc) {
-    let response = await fetch(path).catch((e) => console.error(e));
-    if (!response) {
-        return;
+    try {
+        let response = await fetch(path);
+        if (!response || !response.ok) {
+            console.warn('Could not load font from path:', path);
+            return;
+        }
+        
+        let fontName = path.substring(path.lastIndexOf('/') + 1);
+        // Remove file extension
+        fontName = fontName.replace(/\.(ttf|otf|woff|woff2)$/i, '');
+        
+        console.info('Loading font:', fontName, 'from path:', path);
+        
+        let contentBuffer = await response.arrayBuffer();
+        let contentString = util.arrayBufferToBase64(contentBuffer);
+        if (contentString) {
+            doc.addFileToVFS(fontName, contentString);
+            doc.addFont(fontName, fontName, 'normal');
+            console.info('Successfully loaded font:', fontName);
+        }
+    } catch (error) {
+        console.warn('Error loading font from path:', path, error);
+        // Continue without the font - will fall back to Arial
     }
-    let fontName = path.substring(path.lastIndexOf('/') + 1);
-    log.info('using font', fontName);
-    let contentBuffer = await response.arrayBuffer();
-    let contentString = util.arrayBufferToBase64(contentBuffer);
-    if (contentString) {
-        doc.addFileToVFS(fontName, contentString);
-        doc.addFont(fontName, fontName, 'normal');
-        doc.setFont(fontName);
+}
+
+/**
+ * Check and log available fonts in the document
+ * @param doc the jsPDF doc instance
+ */
+function logAvailableFonts(doc) {
+    try {
+        let currentFont = doc.getFont();
+        console.log('Current font:', currentFont.fontName);
+        console.log('Available fonts in document:', currentFont);
+    } catch (error) {
+        console.warn('Could not get font information:', error);
     }
 }
 
