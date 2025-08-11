@@ -168,6 +168,29 @@ async function doAction(gridElement, action, options = {}) {
                 });
             }
             break;
+        case 'GridActionSpeakLetters':
+            log.debug('action speak letters');
+            let speakTextsLetters = stateService.getSpeakTextAllLangs(gridElement.id);
+            if (gridElement.type === GridElement.ELEMENT_TYPE_PREDICTION) {
+                speakTextsLetters[i18nService.getContentLang()] = predictionService.getLastAppliedPrediction();
+            }
+            if (gridElement.type === GridElement.ELEMENT_TYPE_LIVE) {
+                speakTextsLetters[i18nService.getContentLang()] = liveElementService.getLastValue(gridElement.id);
+            }
+
+            // Get the text to speak letter by letter
+            let langToUse = action.speakLanguage || i18nService.getContentLang();
+            let textToSpell = i18nService.getTranslation(speakTextsLetters, { lang: langToUse });
+
+            if (textToSpell) {
+                // Speak each letter with pauses
+                speechService.speakLetterByLetter(textToSpell, {
+                    lang: action.speakLanguage,
+                    pauseDurationMs: action.pauseDurationMs || 300,
+                    minEqualPause: minPauseSpeak
+                });
+            }
+            break;
         case 'GridActionAudio':
             if (action.dataBase64) {
                 audioUtil.stopAudio();
