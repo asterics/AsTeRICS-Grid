@@ -1,6 +1,7 @@
 {
   "GridActionSpeak": "Speak label",
   "GridActionSpeakCustom": "Speak custom text",
+  "GridActionSpeakLetters": "Speak label letter by letter",
   "GridActionAudio": "Play recorded audio",
   "GridActionWordForm": "Change word forms",
   "GridActionNavigate": "Navigate to other grid",
@@ -977,6 +978,7 @@
   "readElementActionsInAdditionToLabel": "Read element actions in addition to label",
   "generalInputSettings": "General input settings",
   "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimum pause for collecting and speaking the same cell several times in a row",
+  "pauseBetweenLettersMs": "Pause between letters (ms)",
   "backupFileDoesntContainData": "Backup file doesn't contain grid configuration!",
   "currentRecording": "Current recording",
   "recordingSeconds": "Recording... {0}s",

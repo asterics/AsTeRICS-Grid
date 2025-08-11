@@ -1,6 +1,7 @@
 {
   "GridActionSpeak": "Dire l'étiquette",
   "GridActionSpeakCustom": "Dire le texte personnalisé",
+  "GridActionSpeakLetters": "Dire l'étiquette lettre par lettre",
   "GridActionAudio": "Écouter l'enregistrement",
   "GridActionWordForm": "Changer la forme du mot",
   "GridActionNavigate": "Aller à une autre grille",
@@ -976,6 +977,7 @@
   "readElementActionsInAdditionToLabel": "Read element actions in addition to label",
   "generalInputSettings": "Paramètres généraux de saisie",
   "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimum pause for collecting and speaking the same cell several times in a row",
+  "pauseBetweenLettersMs": "Pause entre les lettres (ms)",
   "backupFileDoesntContainData": "Le fichier de sauvegarde ne contient pas la configuration de la grille !",
   "currentRecording": "Enregistrement en cours",
   "recordingSeconds": "Enregistrement... {0}s",
