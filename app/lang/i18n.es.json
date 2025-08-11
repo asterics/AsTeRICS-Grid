@@ -1,6 +1,7 @@
 {
   "GridActionSpeak": "Pronunciar texto de la celda",
   "GridActionSpeakCustom": "Pronunciar texto personalizado",
+  "GridActionSpeakLetters": "Pronunciar texto letra por letra",
   "GridActionAudio": "Grabar voz",
   "GridActionWordForm": "Modificar flexiones gramaticales",
   "GridActionNavigate": "Navegar a otro tablero",
@@ -976,6 +977,7 @@
   "readElementActionsInAdditionToLabel": "Leer acciones de la celda además del texto",
   "generalInputSettings": "Configuración general de las Opciones de entrada",
   "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Pausa mínima para acumular y locutar la misma celda varias veces seguidas",
+  "pauseBetweenLettersMs": "Pausa entre letras (ms)",
   "backupFileDoesntContainData": "¡El archivo importado no contiene una copia de seguridad válida!",
   "currentRecording": "Grabación actual",
   "recordingSeconds": "Grabando... {0}s",

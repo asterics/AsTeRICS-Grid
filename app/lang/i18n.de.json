@@ -1,6 +1,7 @@
 {
   "GridActionSpeak": "Label aussprechen",
   "GridActionSpeakCustom": "Benutzerdefinierten Text aussprechen",
+  "GridActionSpeakLetters": "Label Buchstabe für Buchstabe sprechen",
   "GridActionAudio": "Audioaufnahme abspielen",
   "GridActionWordForm": "Wortformen anpassen",
   "GridActionNavigate": "Zu anderem Grid navigieren",
@@ -976,6 +977,7 @@
   "readElementActionsInAdditionToLabel": "Aktionen des Elements zusätzlich zu Label lesen",
   "generalInputSettings": "Allgemeine Eingabeoptionen",
   "minimumPauseForCollectingAndSpeakingTheSameCellSev": "Minimale Pause um dasselbe Element mehrmals hintereinander zu sammeln / auszusprechen",
+  "pauseBetweenLettersMs": "Pause zwischen Buchstaben (ms)",
   "backupFileDoesntContainData": "Backup-Datei enthält keine Grid-Konfiguration!",
   "currentRecording": "Aktuelle Aufnahme",
   "recordingSeconds": "Wird aufgenommen... {0}s",

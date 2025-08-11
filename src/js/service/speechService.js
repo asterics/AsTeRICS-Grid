@@ -207,6 +207,56 @@ speechService.speakArray = async function (array, progressFn, index) {
     speechService.speakArray(currentSpeakArray, progressFn, index + 1);
 };
 
+/**
+ * speaks text letter by letter with pauses between each letter
+ * @param text the text to speak letter by letter
+ * @param options (optional) options
+ * @param options.lang (optional) language code of preferred voice to use to speak
+ * @param options.pauseDurationMs (optional) pause duration between letters in milliseconds (default: 300)
+ * @param options.minEqualPause (optional) minimum pause between 2 times speaking the same text
+ * @return {Promise<void>}
+ */
+speechService.speakLetterByLetter = async function (text, options = {}) {
+    if (!text) {
+        return;
+    }
+
+    let speaking = await speechService.isSpeaking();
+    if (speaking) {
+        speechService.stopSpeaking();
+    }
+
+    let pauseDuration = options.pauseDurationMs || 300;
+    let letters = text.split('');
+
+    for (let i = 0; i < letters.length; i++) {
+        let letter = letters[i];
+
+        // Skip spaces but add a longer pause
+        if (letter === ' ') {
+            if (i > 0) {
+                await util.sleep(pauseDuration * 2); // Double pause for spaces
+            }
+            continue;
+        }
+
+        // Speak the letter
+        speechService.speak(letter, {
+            lang: options.lang,
+            dontStop: true,
+            minEqualPause: options.minEqualPause || 0
+        });
+
+        // Wait for the letter to finish speaking
+        await speechService.waitForFinishedSpeaking();
+
+        // Add pause between letters (except for the last one)
+        if (i < letters.length - 1) {
+            await util.sleep(pauseDuration);
+        }
+    }
+};
+
 speechService.stopSpeaking = function () {
     currentSpeakArray = [];
     isSpeakingNative = false;

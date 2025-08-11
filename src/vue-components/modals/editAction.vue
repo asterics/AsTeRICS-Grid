@@ -37,6 +37,30 @@
             <input class="eight columns" id="inCustomText" type="text" v-model="action.speakText[getCurrentSpeakLang(action)]" :placeholder="gridElement.type === GridElement.ELEMENT_TYPE_LIVE ? $t('canIncludePlaceholderLike') : ''"/>
         </div>
     </div>
+    <div v-if="action.modelName == 'GridActionSpeakLetters'">
+        <div class="srow">
+            <div class="four columns">
+                <label for="selectLang3" class="normal-text">{{ $t('language') }}</label>
+            </div>
+            <select class="eight columns" id="selectLang3" v-model="action.speakLanguage">
+                <option :value="undefined">{{ $t('automaticCurrentLanguage') }}</option>
+                <option v-for="lang in voiceLangs" :value="lang.code">
+                    {{lang | extractTranslation}}
+                </option>
+            </select>
+        </div>
+        <div class="srow" v-if="action.speakLanguage">
+            <div class="eight columns offset-by-four">
+                <span>{{ $t('label') }}</span><span> ({{ $t('lang.' + action.speakLanguage) }})</span>: {{gridElement.label[action.speakLanguage]}}
+            </div>
+        </div>
+        <div class="srow">
+            <div class="four columns">
+                <label for="pauseDuration" class="normal-text">{{ $t('pauseBetweenLettersMs') }}</label>
+            </div>
+            <input class="eight columns" id="pauseDuration" type="number" min="50" max="2000" step="50" v-model.number="action.pauseDurationMs" :placeholder="300"/>
+        </div>
+    </div>
     <div v-if="action.modelName == 'GridActionAudio'">
         <edit-audio-action :action="action" :grid-data="gridData"></edit-audio-action>
     </div>
