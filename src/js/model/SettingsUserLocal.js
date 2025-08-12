@@ -49,6 +49,14 @@ class SettingsUserLocal {
         this.systemVolume = settings.systemVolume !== undefined ? settings.systemVolume : 100;
         this.systemVolumeMuted = settings.systemVolumeMuted || false;
         this.integrations = settings.integrations || new IntegrationConfigLocal();
+        this.utteranceLogging = settings.utteranceLogging || {
+            enabled: false,
+            maxUtterances: 1000,
+            maxAgeDays: 30,
+            minUtteranceLength: 2,
+            logOnlyManualSpeech: false,
+            excludeKeyboardInput: true
+        };
 
         convertServiceLocal.updateDataModel(this);
     }
