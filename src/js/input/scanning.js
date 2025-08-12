@@ -2,6 +2,7 @@ import { L } from '../util/lquery.js';
 import { inputEventHandler } from './inputEventHandler';
 import { InputEventKey } from '../model/InputEventKey';
 import { InputConfig } from '../model/InputConfig';
+import { VisualIndicators } from '../util/visualIndicators';
 
 let Scanner = {};
 
@@ -18,7 +19,8 @@ Scanner.getInstanceFromConfig = function (inputConfig, itemSelector, scanActiveC
         touchScanning: false,
         inputEventSelect: inputConfig.scanInputs.filter((e) => e.label === InputConfig.SELECT)[0],
         inputEventNext: inputConfig.scanInputs.filter((e) => e.label === InputConfig.NEXT)[0],
-        scanStartWithAction: inputConfig.scanStartWithAction
+        scanStartWithAction: inputConfig.scanStartWithAction,
+        inputConfig: inputConfig
     });
 };
 
@@ -46,6 +48,8 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
     var _scanTimeoutHandler = null;
     var _layoutChangeTimeoutHandler = null;
     var _scanningPaused = false;
+    let _inputConfig = options.inputConfig;
+    let _scanningLine = null;
     var _touchListener = null;
     var _touchElement = null;
     let _inputEventHandler = inputEventHandler.instance();
@@ -265,13 +269,41 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
             }
         }
         _activeListener(L.flattenArray(elems[index]), wrap, scanOptions.restarted);
-        L.removeClass(itemSelector, scanActiveClass);
-        L.addClass(itemSelector, scanInactiveClass);
 
         if (_isScanning) {
-            L.addClass(elems[index], scanActiveClass);
-            L.removeClass(elems, scanInactiveClass);
+            // Apply CSS highlighting if enabled
+            if (!_inputConfig || _inputConfig.showScanHighlight === true) {
+                L.removeClass(itemSelector, scanActiveClass);
+                L.addClass(itemSelector, scanInactiveClass);
+                L.addClass(elems[index], scanActiveClass);
+                L.removeClass(elems, scanInactiveClass);
+            }
             _currentActiveScanElements = elems[index];
+
+            // Show visual scanning line - FORCE FOR TESTING
+            console.log('Scanning line debug:', {
+                inputConfig: _inputConfig,
+                visualIndicatorsEnabled: _inputConfig && _inputConfig.visualIndicatorsEnabled,
+                showScanLine: _inputConfig && _inputConfig.showScanLine,
+                isPerformanceCapable: VisualIndicators.isPerformanceCapable(),
+                scanVertical: scanVertical,
+                elements: elems[index],
+                flattenedElements: L.flattenArray(elems[index])
+            });
+
+            // TEMPORARILY FORCE SCANNING LINE FOR TESTING
+            console.log('FORCING scanning line creation for testing');
+            if (!_scanningLine) {
+                console.log('Creating new scanning line');
+                _scanningLine = VisualIndicators.createScanningLine(
+                    '#grid-container',
+                    scanVertical,
+                    '#ff0000'  // Force red color
+                );
+            }
+            console.log('Showing scanning line for elements:', L.flattenArray(elems[index]));
+            _scanningLine.show(L.flattenArray(elems[index]));
+
             _nextScanFn = () => {
                 scan(elems, { index: index + 1, count: count + 1 });
             };
@@ -286,16 +318,24 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
     }
 
     function spitToSubarrays(array) {
+        console.log('spitToSubarrays called with:', array);
+        console.log('scanBinary:', scanBinary, 'minBinarySplitThreshold:', minBinarySplitThreshold);
+
         var returnArray = [];
         array = array || [];
         var chunk = 1;
         if (scanBinary && array.length > minBinarySplitThreshold) {
             chunk = Math.ceil(array.length / 2);
         }
+
+        console.log('Using chunk size:', chunk);
+
         for (var i = 0, j = array.length; i < j; i += chunk) {
             var temparray = array.slice(i, i + chunk);
             returnArray.push(temparray);
         }
+
+        console.log('spitToSubarrays returning:', returnArray);
         return returnArray;
     }
 
@@ -356,8 +396,17 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
         if (_scanTimeoutHandler) {
             clearTimeout(_scanTimeoutHandler);
         }
-        L.removeClass(itemSelector, scanActiveClass);
-        L.removeClass(itemSelector, scanInactiveClass);
+        // Remove CSS highlighting if it was applied
+        if (!_inputConfig || _inputConfig.showScanHighlight === true) {
+            L.removeClass(itemSelector, scanActiveClass);
+            L.removeClass(itemSelector, scanInactiveClass);
+        }
+
+        // Hide visual scanning line
+        if (_scanningLine) {
+            _scanningLine.hide();
+        }
+
         _inputEventHandler.stopListening();
         _startEventHandler.stopListening();
     };
@@ -365,6 +414,13 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
     thiz.destroy = function () {
         thiz.stopScanning();
         thiz.disableTouchScanning();
+
+        // Clean up visual scanning line
+        if (_scanningLine) {
+            _scanningLine.destroy();
+            _scanningLine = null;
+        }
+
         _inputEventHandler.destroy();
         _startEventHandler.destroy();
     };
@@ -454,15 +510,24 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
      * event listener.
      */
     thiz.select = function () {
+        console.log('Select called, _isScanning:', _isScanning);
         if (_isScanning) {
+            console.log('Select: stopping scanning, current elements:', _currentActiveScanElements);
+            console.log('Select: elements length:', _currentActiveScanElements.length);
+            console.log('Select: flattened length:', L.flattenArray(_currentActiveScanElements).length);
+
             thiz.stopScanning();
             _isScanning = true;
             _scanningDepth++;
+
             if (_currentActiveScanElements.length > 1) {
+                console.log('Select: scanning sub-arrays of current elements');
                 scan(spitToSubarrays(_currentActiveScanElements));
             } else if (L.flattenArray(_currentActiveScanElements).length > 1) {
+                console.log('Select: scanning sub-arrays of flattened elements');
                 scan(spitToSubarrays(L.flattenArray(_currentActiveScanElements)));
             } else {
+                console.log('Select: single element selected, calling selection listener');
                 if (_selectionListener) {
                     _selectionListener(L.flattenArray(_currentActiveScanElements)[0]);
                 }
