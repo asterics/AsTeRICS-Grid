@@ -80,6 +80,7 @@
     import {helpService} from "../../js/service/helpService";
     import {i18nService} from "../../js/service/i18nService.js";
     import {MainVue} from "../../js/vue/mainVue.js";
+    import {modelUtil} from "../../js/util/modelUtil.js";
 
 
     export default {
@@ -123,6 +124,27 @@
             async save() {
                 if (!this.importData || (this.options.resetBeforeImport && !confirm(i18nService.t("doYouWantToDeleteBeforeImporting")))) {
                     return;
+                }
+                if (!this.options.resetBeforeImport) {
+                    let existingGrids = await dataService.getGrids();
+                    let existingNames = existingGrids.map((grid) => i18nService.getTranslation(grid.label));
+                    for (let grid of this.importData.grids) {
+                        let label = i18nService.getTranslation(grid.label);
+                        if (existingNames.includes(label)) {
+                            if (confirm(i18nService.t('CONFIRM_REPLACE_EXISTING_GRID', label))) {
+                                let toDelete = existingGrids.filter(g => i18nService.getTranslation(g.label) === label);
+                                for (let g of toDelete) {
+                                    await dataService.deleteGrid(g.id);
+                                }
+                                existingNames = existingNames.filter(n => n !== label);
+                            } else {
+                                grid.label[i18nService.getContentLang()] = modelUtil.getNewName(label, existingNames);
+                                label = i18nService.getTranslation(grid.label);
+                            }
+                        }
+        
+                        existingNames.push(label);
+                    }
                 }
                 this.$emit('close');
                 if (this.options.resetBeforeImport) {
