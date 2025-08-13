@@ -5,7 +5,7 @@
 Once a user has been created and some grid set has been imported, AsTeRICS Grid always opens the last used user in the "main view", which looks like Figure 1:
 
 ![main view](./img/main_en.jpg)
-*Figure 1: Main view (desktop view on the left, mobile view on the right)*
+_Figure 1: Main view (desktop view on the left, mobile view on the right)_
 
 The elements have this functionality:
 
@@ -21,29 +21,30 @@ The elements have this functionality:
 10. **Help**: find the AsTeRICS Grid user manuel, the ARASAAC tutorial or video tutorials
 11. [**Editing on**](04_navigation-overview.md#editing-on): edit the layout of the grid, add new elements, actions for grid elements
 12. [**Input options**](09_input-options.md): Options about how to select grid elements (e.g. click, hover, scanning)
-13. **Fullscreen**: hide the sidebar and the bar on the top, only showing the current grid 
-14. **Lock**: lock the screen in order to prevent unintended input or changes beside using and navigating the grid 
+13. **Fullscreen**: hide the sidebar and the bar on the top, only showing the current grid
+14. **Lock**: lock the screen in order to prevent unintended input or changes beside using and navigating the grid
 15. **Grid**: demo grid consisting of some grid elements which are navigating to other grids if selected (possible for those which show the grey symbol in the upper right corner)
 16. [**Search function**](04_navigation-overview.md#search-function) (not shown in the Figure): Search for elements in the grid set. You can also use `Ctrl + F` on the keyboard.
 
 ## Search function
+
 Clicking on "Search" in the main view or pressing `Ctrl + F` opens a search dialog. It can also be opened in fullscreen mode by an [element navigation action](08_actions.md#navigate-to-other-grid):
 
 ![change user view](./img/search-dialog.png)
-*Search dialog and search results*
+_Search dialog and search results_
 
 These are the parts of the search dialog:
+
 1. **search term**: text input field for the search term
 2. **result image**: directly navigates to the selected element and highlights it. Keyboard shortcut for first search result: `[Enter]`
 3. **result path**: navigates to the selected element step-by-step by highlighting the path beginning from the home grid. Keyboard shortcut for first search result: `[Ctrl + Enter]`
-
 
 ## Editing on
 
 Clicking on Button "Editing on" (Figure 1.11) opens the edit view where a grid can be adapted, see Figure 2:
 
 ![edit view](./img/edit_en.jpg)
-*Figure 2: Edit view (desktop view on the left, mobile view on the right)*
+_Figure 2: Edit view (desktop view on the left, mobile view on the right)_
 
 The following elements are available in the edit view:
 
@@ -60,12 +61,12 @@ In the "Change User" view it's possible to switch between users or login an exis
 
 ![change user view](./img/login_en.jpg)
 
-*Figure 5: "Change user" view (desktop view on the left, mobile view on the right)*
+_Figure 5: "Change user" view (desktop view on the left, mobile view on the right)_
 
 The following elements are available in the change users view:
 
 1. Open or close the navigation sidebar
-2. **Active offline user**: the currently active user is recognizable by a black user symbol and the word "active" next to the username. The active user is the user whose grids and configuration are currently used and shown in all other views. 
+2. **Active offline user**: the currently active user is recognizable by a black user symbol and the word "active" next to the username. The active user is the user whose grids and configuration are currently used and shown in all other views.
 3. **Inactive online user**: The little cloud symbol indicates an [online user](01_terms.md#user) and the gray user symbol that he is currently inactive, meaning that the user's grids are currently not used.
 4. **Inactive offline user**: The gray user symbol without a cloud indicates an inactive [offline user](01_terms.md#user)
 5. **Open**: sets the user "active" and opens the main view, showing the user's grid(s). Sets all other users inactive, there is always only one active user.
@@ -74,13 +75,17 @@ The following elements are available in the change users view:
 8. **Login with other user**: put in username and password of an existing online user in order to add it to the current device. In order to create a new online or offline user, follow one of the links below.
 9. **Remember checkbox**: if checked, the newly logged in online user will be saved to the device and listed in the list of users in the current user view. If unchecked the user will only be opened temporarily and no user data will be saved on the device (recommended for logging in on foreign devices).
 
+### Sharing users via URL
+
+You can share an online user by sending a link such as `https://grid.asterics.eu/?user=username&password=pw`. Everyone with the link can log in and edit the user's configuration. If the link contains `&uselocalcopy=true`, an offline user is created with a copy of the online user's data so changes do not affect the original user. Note that the credentials remain visible in the URL and can still be used to access the original account.
+
 ## Add online user
 
 In view "add online user" it's possible to register a new online user, Figure 6:
 
 ![add online user view](./img/register_online_en.jpg)
 
-*Figure 6: Add online user view - register*
+_Figure 6: Add online user view - register_
 
 ### Synchronization states
 
@@ -102,53 +107,58 @@ In view "add offline user" it's possible to add a new [offline user](01_terms.md
 
 ![add offline user view](./img/add_offline_en.jpg)
 
-*Figure 7: Add offline user view*
+_Figure 7: Add offline user view_
 
 ## Shortcuts
 
 Note that for macOs `⌘` (command key) can be used instead of `Ctrl`.
 
 These are the global keyboard shortcuts available in AsTeRICS Grid:
-* `Ctrl + Alt + Arrow Right`: change to the next stored user
-* `Ctrl + Backspace`: navigate to the last grid
-* `Ctrl + Pos1`: navigate to the main/home grid
-* `Ctrl + F`: open dialog for searching elements
+
+-   `Ctrl + Alt + Arrow Right`: change to the next stored user
+-   `Ctrl + Backspace`: navigate to the last grid
+-   `Ctrl + Pos1`: navigate to the main/home grid
+-   `Ctrl + F`: open dialog for searching elements
 
 ### Shortcuts in user mode
+
 The shortcuts available in user mode (normal grid view) are listed below.
 
-* `Ctrl + C`: copy current sentence from collection element to clipboard (as image).
+-   `Ctrl + C`: copy current sentence from collection element to clipboard (as image).
 
 ### Shortcuts in edit mode
+
 The shortcuts available in edit mode are listed below.
 
-- `Ctrl + left mouse clicks`: select multiple elements, one after the other
-- `Shift + left mouse clicks`: select multiple connected elements
-- `Escape`: unselect all elements
-- `Ctrl + E`: edit selected element
-- `Ctrl + C`: copy selected elements to clipboard
-- `Ctrl + X`: cut selected elements (copy to clipboard and delete from current grid)
-- `Ctrl + V`: paste elements from clipboard. Elements are pasted at the location of the last interaction (you can click/tap to a free space before pasting). If multiple pasted elements aren't fitting at the current location, they are pasted below the existing elements.
-- `Ctrl + A`: selects all elements
-- `Ctrl + D`: duplicates selected elements
-- `Ctrl + H`: hide / unhide selected elements
-- `Ctrl + I`: create a new element
-- `Ctrl + Shift + I`: create many new elements
-- `Delete`: deletes selected elements
-- `Ctrl + Z`: Undo
-- `Ctrl + Shift + Z`: Redo
+-   `Ctrl + left mouse clicks`: select multiple elements, one after the other
+-   `Shift + left mouse clicks`: select multiple connected elements
+-   `Escape`: unselect all elements
+-   `Ctrl + E`: edit selected element
+-   `Ctrl + C`: copy selected elements to clipboard
+-   `Ctrl + X`: cut selected elements (copy to clipboard and delete from current grid)
+-   `Ctrl + V`: paste elements from clipboard. Elements are pasted at the location of the last interaction (you can click/tap to a free space before pasting). If multiple pasted elements aren't fitting at the current location, they are pasted below the existing elements.
+-   `Ctrl + A`: selects all elements
+-   `Ctrl + D`: duplicates selected elements
+-   `Ctrl + H`: hide / unhide selected elements
+-   `Ctrl + I`: create a new element
+-   `Ctrl + Shift + I`: create many new elements
+-   `Delete`: deletes selected elements
+-   `Ctrl + Z`: Undo
+-   `Ctrl + Shift + Z`: Redo
 
 #### Layout shortcuts
-- `Ctrl + ArrowUp`: move all elements up
-- `Ctrl + ArrowRight`: move all elements right
-- `Ctrl + ArrowDown`: move all elements down
-- `Ctrl + ArrowLeft`: move all elements left
+
+-   `Ctrl + ArrowUp`: move all elements up
+-   `Ctrl + ArrowRight`: move all elements right
+-   `Ctrl + ArrowDown`: move all elements down
+-   `Ctrl + ArrowLeft`: move all elements left
 
 #### Transfer properties
-- `Ctrl + Shift + A`: directly transfer all properties of selected element (`A` like all)
-- `Ctrl + Shift + C`: directly transfer appearance properties of selected element (`C` like color)
-- `Ctrl + Shift + P`: transfer custom properties of selected element (`P` like properties)
-- `Escape`: cancel property transfer mode
-- `Enter`: apply property transfer to selected elements
+
+-   `Ctrl + Shift + A`: directly transfer all properties of selected element (`A` like all)
+-   `Ctrl + Shift + C`: directly transfer appearance properties of selected element (`C` like color)
+-   `Ctrl + Shift + P`: transfer custom properties of selected element (`P` like properties)
+-   `Escape`: cancel property transfer mode
+-   `Enter`: apply property transfer to selected elements
 
 [Back to Overview](README.md)
