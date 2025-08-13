@@ -240,7 +240,7 @@
   "pasteColumn": "Paste column",
   "elements": "elementos",
   "elementsHeading": "Elements",
-  "huffmanInput": "Huffman Input",
+  "huffmanInput": "",
   "huffmanInputMethod2OrMoreInputEvents": "Huffman input method: 2 or more input events",
   "enableHuffmanInput": "Enable huffman input",
   "showNumbers": "Exibir números",
