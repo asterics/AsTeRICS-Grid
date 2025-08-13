@@ -250,6 +250,38 @@ loginService.stopAutoRetryLogin = function () {
     }
 };
 
+loginService.deleteOnlineUser = async function(user) {
+    let session = superlogin.getSession();
+    if (!session || user !== session.user_id) {
+        log.warn("couldn't delete user - not logged in with the user to delete:", user)
+        return false;
+    }
+    try {
+        const response = await fetch(_serverUrl + '/auth/request-deletion', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.token}:${session.password}`
+            },
+            body: JSON.stringify({
+                username: session.user_id,
+                password: localStorageService.getUserSettings(session.user_id).password
+            })
+        });
+
+        if (!response.ok) {
+            log.warn(`HTTP error! Status: ${response.status}`);
+            return false;
+        }
+
+        const data = await response.json();
+        return !!data.success;
+    } catch (error) {
+        console.error('Error:', error);
+    }
+    return false;
+}
+
 function loginInternal(user, hashedPassword, saveUser) {
     if (_tryUser !== user) {
         return Promise.reject(); //call from autologin that is outdated
