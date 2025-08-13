@@ -1093,5 +1093,7 @@
   "defaultDeviceVoice": "Default device voice",
   "fundedBy": "funded by",
   "astericsGridWasFundedWithinProjects": "AsTeRICS Grid was developed within several funded projects",
-  "LAST_LANG": "Previously used language"
+  "LAST_LANG": "Previously used language",
+  "deleteAccount": "Delete account",
+  "CONFIRM_DELETE_ACCOUNT": "Do you really want to delete your account? This action cannot be undone."
 }

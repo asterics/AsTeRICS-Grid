@@ -1301,5 +1301,7 @@
   "managePodcasts": "Podcasts verwalten",
   "selectedPodcasts": "Ausgewählte Podcasts",
   "hideKeyboards": "Keyboards ausblenden",
-  "automaticallyAddImages": "Bilder automatisch hinzufügen"
+  "automaticallyAddImages": "Bilder automatisch hinzufügen",
+  "deleteAccount": "Delete account",
+  "CONFIRM_DELETE_ACCOUNT": "Do you really want to delete your account? This action cannot be undone."
 }

@@ -1301,5 +1301,7 @@
   "managePodcasts": "Керування подкастами",
   "selectedPodcasts": "Вибрані подкасти",
   "hideKeyboards": "Приховати клавіатуру",
-  "automaticallyAddImages": "Automatically add images"
+  "automaticallyAddImages": "Automatically add images",
+  "deleteAccount": "Delete account",
+  "CONFIRM_DELETE_ACCOUNT": "Do you really want to delete your account? This action cannot be undone."
 }
