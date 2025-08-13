@@ -7,7 +7,7 @@ import { databaseService } from './data/databaseService';
 import { Router } from '../router';
 import { webradioService } from './webradioService.js';
 import { MainVue } from '../vue/mainVue.js';
-import {util} from "../util/util.js";
+import { util } from '../util/util.js';
 
 let loginService = {};
 let _loginInfo = null;
@@ -117,7 +117,7 @@ loginService.loginStoredUser = function (user, dontRoute) {
                     resolve();
                 })
                 .catch((reason) => {
-                    log.warn("online login failed!", reason);
+                    log.warn('online login failed!', reason);
                     reject(reason);
                 });
         } else if (savedLocalUsers.includes(user)) {
@@ -153,6 +153,29 @@ loginService.logout = function () {
     }
     _loggedInUser = null;
     _loginInfo = null;
+};
+
+/**
+ * deletes the currently logged in user account on the remote server
+ * @param plainPassword plain user password as typed in
+ * @return {Promise<void>}
+ */
+loginService.deleteAccount = function (plainPassword) {
+    if (!_loggedInUser) {
+        return Promise.reject();
+    }
+    let hashedPassword = encryptionService.getUserPasswordHash(plainPassword);
+    let http = superlogin.getHttp();
+    let baseUrl = superlogin.getConfig().baseUrl;
+    let username = _loggedInUser;
+    return http.post(baseUrl + '/request-deletion', { username: username, password: hashedPassword }).then(() => {
+        let localSettings = localStorageService.getUserSettings(username);
+        localStorageService.removeLocalUser(username);
+        loginService.logout();
+        databaseService.deleteDatabase(username);
+        $(document).trigger(constants.EVENT_USER_DELETED, [username, localSettings]);
+        Router.toLogin();
+    });
 };
 
 /**
@@ -331,7 +354,7 @@ function reasonToErrorCode(reason) {
 function autoRetryLogin(user, hashedPassword, saveUser) {
     loginService.stopAutoRetryLogin();
     _retryCount++;
-    let waitTimeSeconds = Math.min(5 + (2 * _retryCount * _retryCount), 30 * 60); // exponentially rising waiting time, max. 30 minutes about at attempt 30
+    let waitTimeSeconds = Math.min(5 + 2 * _retryCount * _retryCount, 30 * 60); // exponentially rising waiting time, max. 30 minutes about at attempt 30
     waitTimeSeconds = Math.round(waitTimeSeconds * util.getRandom(1, 1.5));
     _autoRetryHandler = setTimeout(function () {
         log.info(`auto-retry for online login user ${user} (attempt ${_retryCount}, waited for ${waitTimeSeconds}s)`);
