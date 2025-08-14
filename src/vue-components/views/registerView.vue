@@ -35,11 +35,11 @@
 
             <div class="srow more-space">
                 <div class="six columns offset-by-two" v-show="!!password && password2 !== null && password === password2">
-                    <i class="fas fa-info-circle" style="color: blue"></i>
+                    <i class="fas fa-exclamation-triangle" style="color: orange"></i>
                     <b>{{ $t('importantInformation') }}</b>
                     <ul style="list-style-type: none; margin-bottom: 0">
-                        <li>{{ $t('yourPasswordWillBeUsedInOrderToEncrypt') }}</li>
-                        <li>{{ $t('usersWillBeDeletedAfterNotLoggingInFor365Days') }}</li>
+                        <li v-html="$t('yourPasswordWillBeUsedInOrderToEncrypt')"></li>
+                        <li v-html="$t('usersWillBeDeletedAfterNotLoggingInFor365Days')"></li>
                     </ul>
                 </div>
             </div>
