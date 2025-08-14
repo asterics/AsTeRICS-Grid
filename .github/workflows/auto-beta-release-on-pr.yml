@@ -112,10 +112,9 @@ jobs:
           username: ${{ secrets.IONOS_SSH_USER }}
           password: ${{ secrets.IONOS_SSH_PASS }}
           compress: true # Compression
-          forceUpload: true # Optional, Force uploading all files, Default to false(upload only newer files).
           localDir: "." # Required, Absolute or relative to cwd.
           remoteDir: ${{ steps.prepare_path.outputs.remote_path }} # Required, Absolute path only.
-          exclude: "src,scripts,superlogin,docs,.husky,.git,.DS_Store,**/node_modules" # Optional. exclude patterns (glob) like .gitignore, use ',' to split, Default to ''.
+          exclude: "src,scripts,superlogin,.gitignore,docs,.husky,.git,.DS_Store,**/node_modules" # Optional. exclude patterns (glob) like .gitignore, use ',' to split, Default to ''.
 
       # Step 8: Log the deployment URL.
       # This step constructs the full URL and prints it to the workflow log.
