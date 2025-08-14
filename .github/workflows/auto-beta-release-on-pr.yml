@@ -85,6 +85,9 @@ jobs:
             REMOTE_USER="${{ github.actor }}"
           fi
 
+          # Remove any trailing dashes that might be created by the sanitization command.
+          SANITIZED_BRANCH=$(echo "$SANITIZED_BRANCH" | sed 's/-$//')
+
           # Construct the full remote path and make it available as a step output.
           FULL_REMOTE_PATH="/kunden/homepages/2/d708826695/htdocs/asterics-grid-beta-github/${REMOTE_USER}/${SANITIZED_BRANCH}"
           echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
