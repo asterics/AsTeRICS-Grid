@@ -144,7 +144,7 @@
                     </div>
                 </div>
                 <div style="margin-top: 4em">
-                    <accordion :acc-label="$t('ADVANCED_SETTINGS')" acc-background-color="white">
+                    <accordion :acc-label="$t('advancedOptions')" acc-background-color="white">
                         <button class="btn-danger" @click="deleteOnlineUser(activeUser)" :disabled="!activeUser || !savedOnlineUsers.includes(activeUser)">
                             <span class="fas fa-trash"></span>
                             <span>{{ $t('deleteOnlineUser') }}</span>
@@ -246,11 +246,12 @@
                 $(document).trigger(constants.EVENT_USER_DELETED, [user, localSettings]);
             },
             async deleteOnlineUser(user) {
-                if (!confirm(i18nService.t('CONFIRM_DELETE_USER_ONLINE', user))) {
+                let givenPassword = prompt(i18nService.t('CONFIRM_DELETE_USER_ONLINE', user));
+                if (givenPassword === null) {
                     return;
                 }
-                let deleted = await loginService.deleteOnlineUser(user);
-                if (deleted) {
+                let deleteStatus = await loginService.deleteOnlineUser(user, givenPassword);
+                if (deleteStatus === loginService.DELETE_SUCCESS) {
                     let localSettings = localStorageService.getUserSettings(user);
                     localStorageService.removeLocalUser(user);
                     databaseService.deleteDatabase(user);
@@ -260,6 +261,10 @@
                     $(document).trigger(constants.EVENT_USER_DELETED, [user, localSettings]);
                     MainVue.setTooltip(i18nService.t('successRemovedOnlineUser', user), {
                         msgType: "success"
+                    });
+                } else if (deleteStatus === loginService.DELETE_FAILED_WRONG_PASSWORD) {
+                    MainVue.setTooltip(i18nService.t('errorRemovingOnlineUserWrongPass', user), {
+                        msgType: "warn"
                     });
                 } else {
                     MainVue.setTooltip(i18nService.t('errorRemovingOnlineUser', user), {

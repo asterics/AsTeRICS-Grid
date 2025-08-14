@@ -10,6 +10,12 @@ import { MainVue } from '../vue/mainVue.js';
 import {util} from "../util/util.js";
 
 let loginService = {};
+
+let DELETE_USER_DEFAULT_PASSWORD = 'delete_my_user';
+loginService.DELETE_SUCCESS = "DELETE_SUCCESS";
+loginService.DELETE_FAILED_GENERAL = "DELETE_FAILED_GENERAL";
+loginService.DELETE_FAILED_WRONG_PASSWORD = "DELETE_FAILED_WRONG_PASSWORD";
+
 let _loginInfo = null;
 let _loggedInUser = null;
 let _tryUser = null;
@@ -250,11 +256,15 @@ loginService.stopAutoRetryLogin = function () {
     }
 };
 
-loginService.deleteOnlineUser = async function(user) {
+loginService.deleteOnlineUser = async function(user, password) {
     let session = superlogin.getSession();
     if (!session || user !== session.user_id) {
         log.warn("couldn't delete user - not logged in with the user to delete:", user)
-        return false;
+        return loginService.DELETE_FAILED_GENERAL;
+    }
+    let hashedUserPassword = localStorageService.getUserSettings(session.user_id).password;
+    if (password !== DELETE_USER_DEFAULT_PASSWORD && encryptionService.getUserPasswordHash(password) !== hashedUserPassword) {
+        return loginService.DELETE_FAILED_WRONG_PASSWORD;
     }
     try {
         const response = await fetch(_serverUrl + '/auth/request-deletion', {
@@ -265,7 +275,7 @@ loginService.deleteOnlineUser = async function(user) {
             },
             body: JSON.stringify({
                 username: session.user_id,
-                password: localStorageService.getUserSettings(session.user_id).password
+                password: hashedUserPassword
             })
         });
 
@@ -275,11 +285,11 @@ loginService.deleteOnlineUser = async function(user) {
         }
 
         const data = await response.json();
-        return !!data.success;
+        return !!data.success ? loginService.DELETE_SUCCESS : loginService.DELETE_FAILED_GENERAL;
     } catch (error) {
         console.error('Error:', error);
     }
-    return false;
+    return loginService.DELETE_FAILED_GENERAL;
 }
 
 function loginInternal(user, hashedPassword, saveUser) {
