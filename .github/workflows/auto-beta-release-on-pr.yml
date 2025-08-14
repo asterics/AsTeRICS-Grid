@@ -114,7 +114,7 @@ jobs:
           compress: true # Compression
           forceUpload: true # Optional, Force uploading all files, Default to false(upload only newer files).
           localDir: "." # Required, Absolute or relative to cwd.
-          remoteDir: ${{ steps.prepare_path.outputs.remote_path }}" # Required, Absolute path only.
+          remoteDir: ${{ steps.prepare_path.outputs.remote_path }} # Required, Absolute path only.
           exclude: "src,scripts,superlogin,docs,.husky,.git,.DS_Store,**/node_modules" # Optional. exclude patterns (glob) like .gitignore, use ',' to split, Default to ''.
 
       # Step 8: Log the deployment URL.
