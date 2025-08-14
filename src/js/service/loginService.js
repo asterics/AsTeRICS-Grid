@@ -167,7 +167,7 @@ loginService.logout = function () {
  *          Promise rejects if registration, login or (optional) initialization of database failed.
  *
  */
-loginService.register = function (user, plainPassword, saveUser) {
+loginService.register = function (user, plainPassword, saveUser = true) {
     _tryUser = user;
     loginService.stopAutoRetryLogin();
     user = user.trim();

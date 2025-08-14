@@ -363,7 +363,6 @@
   "passwordsMatch": "Passwords match",
   "yourPasswordWillBeUsedInOrderToEncrypt": "Your password will be used in order to encrypt your private data, before being synchronized with the cloud. A stronger password means better encryption.",
   "rememberThisUserAndMakeItAvailableForOffline": "Remember this user and make it available for offline use",
-  "doNotCheckIfYouAreUsingAForeignDevice": "Do not check if you are using a foreign device.",
   "register": "Register",
   "registering": "Registering",
   "registeringFailed": "Registering failed",

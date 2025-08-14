@@ -45,14 +45,6 @@
             </div>
             <div class="srow more-space">
                 <div class="six columns offset-by-two" v-show="!!password && password2 !== null && password === password2">
-                    <input type="checkbox" checked v-model="remember" id="inputRemember"/>
-                    <label for="inputRemember"><span>{{ $t('rememberThisUserAndMakeItAvailableForOffline') }}</span></label>
-                    <br/>
-                    <span class="fa fa-info-circle"/> <span>{{ $t('doNotCheckIfYouAreUsingAForeignDevice') }}</span>
-                </div>
-            </div>
-            <div class="srow more-space">
-                <div class="six columns offset-by-two" v-show="!!password && password2 !== null && password === password2">
                     <input type="checkbox" id="checkPrivacy" v-model="privacyConsent"/>
                     <label for="checkPrivacy">
                         <i18n path="iAcceptPrivacyPolicy" tag="span">
@@ -131,7 +123,6 @@
                 usernameValidationCode: null,
                 password: null,
                 password2: null,
-                remember: true,
                 privacyConsent: false,
                 registerSuccess: null,
                 creationTime: new Date().getTime(),
@@ -152,7 +143,7 @@
                     return;
                 }
                 thiz.registerSuccess = undefined;
-                loginService.register(this.user, this.password, this.remember).then(() => {
+                loginService.register(this.user, this.password).then(() => {
                     log.info('successfully registered!');
                     thiz.registerSuccess = true;
                     Router.toMain();
