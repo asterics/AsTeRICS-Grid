@@ -22,7 +22,7 @@ let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
 async function init() {
     let promises = [];
     //timingLogger.initLogging();
-    log.info("this is an automated test deploy from github actions v3");
+    log.info("this is an automated test deploy from github actions v4");
     log.setLevel(log.levels.INFO);
     log.info(
         'AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/' +
