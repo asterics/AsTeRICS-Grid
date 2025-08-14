@@ -111,17 +111,15 @@ jobs:
 
       # Step 5: Deploy the build directory to the SFTP server.
       # This step uses a third-party action to handle the SFTP transfer.
-      - name: Deploy via SFTP
-        uses: wangyucode/sftp-upload-action@v2.0.4
+      - name: Deploy via SCP
+        uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.IONOS_SSH_HOST }} # Recommended to put the credentials in github secrets.
+          host: ${{ secrets.IONOS_SSH_HOST }}
           username: ${{ secrets.IONOS_SSH_USER }}
           password: ${{ secrets.IONOS_SSH_PASS }}
-          compress: true # Compression
-          localDir: "." # Required, Absolute or relative to cwd.
-          remoteDir: ${{ steps.prepare_path.outputs.remote_path }} # Required, Absolute path only.
-          exclude: "src,scripts,superlogin,.gitignore,docs,.husky,.git,.DS_Store,**/node_modules" # Optional. exclude patterns (glob) like .gitignore, use ',' to split, Default to ''.
-
+          source: "app/,serviceWorker.js,unsupported.html,index.html"
+          target: "${{ steps.prepare_path.outputs.remote_path }}"
+          
       # Step 8: Log the deployment URL.
       # This step constructs the full URL and prints it to the workflow log.
       - name: Log Deployment URL
