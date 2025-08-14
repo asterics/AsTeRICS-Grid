@@ -1,0 +1,87 @@
+# This workflow is triggered whenever a pull request is created or updated.
+name: Auto beta release on PR
+
+on:
+  pull_request:
+    # The types of pull request events that will trigger this workflow.
+    # 'opened' for a new PR, 'synchronize' for new commits, and 'reopened'
+    # if a closed PR is opened again.
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build-and-deploy:
+    # This job will run on the latest version of Ubuntu.
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository code. This is the first step in most workflows.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js. Replace this with a different setup action
+      # if you're using a different technology stack (e.g., Python, Ruby).
+      - name: Set up Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Step 3: Install project dependencies.
+      - name: Install dependencies
+        run: npm install
+        
+      # Step 4: Replace dynamic constants in files before building.
+      # This step uses sed to substitute placeholder strings in the source files.
+      - name: Replace constants in source files
+        run: |
+          # Define the tagname with the current date and time.
+          TAG_NAME="release-beta-$(date +%Y-%m-%d-%H.%M/%z)"
+          # Escape the forward slashes for the sed command.
+          TAG_NAME_SED="${TAG_NAME//\//\\/}"
+          
+          # Replace the version and environment placeholders in the specified files.
+          sed -i -e "s/#ASTERICS_GRID_VERSION#/$TAG_NAME_SED/g" src/js/util/constants.js
+          sed -i -e "s/#ASTERICS_GRID_ENV#/BETA/g" src/js/util/constants.js
+          sed -i -e "s/#ASTERICS_GRID_VERSION#/$TAG_NAME_SED/g" src/vue-components/views/aboutView.vue
+          sed -i -e "s/#ASTERICS_GRID_VERSION#/$TAG_NAME_SED/g" serviceWorker.js
+
+      # Step 4: Build the web application. This command creates the production-ready
+      # files, typically in a 'build' or 'dist' directory.
+      - name: Build web application
+        run: npm run build
+
+      # Step 5: Sanitize the branch name and set the full remote path.
+      - name: Prepare remote path variables
+        id: prepare_path
+        run: |
+          # Sanitize the branch name by replacing non-alphanumeric characters with hyphens.
+          SANITIZED_BRANCH=$(echo "${{ github.head_ref }}" | tr -cs '[:alnum:]' '-' | tr '[:upper:]' '[:lower:]')
+          # Construct the full remote path and make it available as a step output.
+          FULL_REMOTE_PATH="/kunden/homepages/2/d708826695/htdocs/asterics-grid-beta-github/${{ github.event.pull_request.user.login }}/${SANITIZED_BRANCH}"
+          echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
+          echo "remote_path=$FULL_REMOTE_PATH" >> $GITHUB_OUTPUT
+
+     # Step 6: Use SSH to connect to the server and delete the existing remote directory.
+      # This is a separate step that runs before the upload.
+      - name: Clean remote directory with SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.IONOS_SSH_HOST }}
+          username: ${{ secrets.IONOS_SSH_USER }}
+          password: ${{ secrets.IONOS_SSH_PASS }}
+          # The command to execute on the remote server. We use the path variable created above.
+          script: |
+            rm -rf "${{ steps.prepare_path.outputs.remote_path }} && mkdir -p "${{ steps.prepare_path.outputs.remote_path }}"
+
+      # Step 5: Deploy the build directory to the SFTP server.
+      # This step uses a third-party action to handle the SFTP transfer.
+      - name: Deploy via SFTP
+        uses: wangyucode/sftp-upload-action@v2.0.4
+        with:
+          host: ${{ secrets.IONOS_SSH_HOST }} # Recommended to put the credentials in github secrets.
+          username: ${{ secrets.IONOS_SSH_USER }}
+          password: ${{ secrets.IONOS_SSH_PASS }}
+          compress: true # Compression
+          forceUpload: true # Optional, Force uploading all files, Default to false(upload only newer files).
+          localDir: "." # Required, Absolute or relative to cwd.
+          remoteDir: "/kunden/homepages/2/d708826695/htdocs/asterics-grid-beta-github/${{ github.event.pull_request.user.login }}/${{ steps.sanitize.outputs.sanitized_branch }}" # Required, Absolute path only.
+          exclude: "src,scripts,superlogin,docs,.husky,.git,.DS_Store,**/node_modules" # Optional. exclude patterns (glob) like .gitignore, use ',' to split, Default to ''.
