@@ -101,7 +101,7 @@ jobs:
           password: ${{ secrets.IONOS_SSH_PASS }}
           # The command to execute on the remote server. We use the path variable created above.
           script: |
-            rm -rf "${{ steps.prepare_path.outputs.remote_path }} && mkdir -p "${{ steps.prepare_path.outputs.remote_path }}"
+            rm -rf "${{ steps.prepare_path.outputs.remote_path }}" && mkdir -p "${{ steps.prepare_path.outputs.remote_path }}"
 
       # Step 5: Deploy the build directory to the SFTP server.
       # This step uses a third-party action to handle the SFTP transfer.
