@@ -17,11 +17,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Determine the branch reference.
+      # This step sets a step output variable with the correct branch reference
+      # depending on whether the workflow was triggered by a pull request or manually.
+      - name: Determine Branch Reference
+        id: get_ref
+        run: |
+          # If the event is a pull request, use the head branch.
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "ref_to_checkout=${{ github.head_ref }}" >> $GITHUB_OUTPUT
+          # Otherwise (for a manual run), use the selected branch.
+          else
+            echo "ref_to_checkout=${{ github.ref }}" >> $GITHUB_OUTPUT
+          fi
+      
       # Step 1: Check out the repository code. This is the first step in most workflows.
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ${{ github.event_name == 'pull_request' ? github.head_ref : github.ref }}
+          ref: ${{ steps.get_ref.outputs.ref_to_checkout }}
 
       # Step 2: Set up Node.js. Replace this with a different setup action
       # if you're using a different technology stack (e.g., Python, Ruby).
