@@ -112,7 +112,7 @@ jobs:
       # Step 5: Deploy the build directory to the SFTP server.
       # This step uses a third-party action to handle the SFTP transfer.
       - name: Deploy via SCP
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ secrets.IONOS_SSH_HOST }}
           username: ${{ secrets.IONOS_SSH_USER }}
@@ -123,6 +123,7 @@ jobs:
       # Step 8: Log the deployment URL.
       # This step constructs the full URL and prints it to the workflow log.
       - name: Log Deployment URL
+        id: log_url
         run: |
           PREVIEW_URL="https://gridbeta-github.asterics-foundation.org/${{ steps.prepare_path.outputs.remote_user }}/${{ steps.prepare_path.outputs.sanitized_branch }}"
           echo "Deployment preview URL: ${PREVIEW_URL}"
@@ -141,7 +142,7 @@ jobs:
             const prUser = context.payload.pull_request.user.login;
             const prBranch = "${{ steps.prepare_path.outputs.sanitized_branch }}";
             const previewUrl = "${{ steps.log_url.outputs.preview_url }}";
-            const message = `🎉 **Beta deployment successful!** 🎉\n\nThis deployment was triggered by **${prUser}** on branch **${prBranch}**.\n\nYou can view the changes in the live preview environment here: ${previewUrl}`;
+            const message = `🎉 **Beta deployment successful!** 🎉\n\nYou can view the changes in the live preview environment here: ${previewUrl}`;
 
             github.rest.issues.createComment({
               owner: context.repo.owner,
