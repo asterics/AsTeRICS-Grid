@@ -86,7 +86,7 @@ jobs:
           fi
 
           # Construct the full remote path and make it available as a step output.
-          FULL_REMOTE_PATH="/var/www/my-web-app-pr-preview/${REMOTE_USER}/${SANITIZED_BRANCH}"
+          FULL_REMOTE_PATH="/kunden/homepages/2/d708826695/htdocs/asterics-grid-beta-github/${REMOTE_USER}/${SANITIZED_BRANCH}"
           echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
           echo "remote_path=$FULL_REMOTE_PATH" >> $GITHUB_OUTPUT
           echo "remote_user=$REMOTE_USER" >> $GITHUB_OUTPUT
@@ -114,5 +114,13 @@ jobs:
           compress: true # Compression
           forceUpload: true # Optional, Force uploading all files, Default to false(upload only newer files).
           localDir: "." # Required, Absolute or relative to cwd.
-          remoteDir: "/kunden/homepages/2/d708826695/htdocs/asterics-grid-beta-github/${{ github.event.pull_request.user.login }}/${{ steps.sanitize.outputs.sanitized_branch }}" # Required, Absolute path only.
+          remoteDir: ${{ steps.prepare_path.outputs.remote_path }}" # Required, Absolute path only.
           exclude: "src,scripts,superlogin,docs,.husky,.git,.DS_Store,**/node_modules" # Optional. exclude patterns (glob) like .gitignore, use ',' to split, Default to ''.
+
+      # Step 8: Log the deployment URL.
+      # This step constructs the full URL and prints it to the workflow log.
+      - name: Log Deployment URL
+        run: |
+          PREVIEW_URL="https://gridbeta-github.asterics-foundation.org/${{ steps.prepare_path.outputs.remote_user }}/${{ steps.prepare_path.outputs.sanitized_branch }}"
+          echo "Deployment preview URL: ${PREVIEW_URL}"
+          echo "preview_url=$PREVIEW_URL" >> $GITHUB_OUTPUT
