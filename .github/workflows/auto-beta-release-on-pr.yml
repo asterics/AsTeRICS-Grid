@@ -126,3 +126,25 @@ jobs:
           PREVIEW_URL="https://gridbeta-github.asterics-foundation.org/${{ steps.prepare_path.outputs.remote_user }}/${{ steps.prepare_path.outputs.sanitized_branch }}"
           echo "Deployment preview URL: ${PREVIEW_URL}"
           echo "preview_url=$PREVIEW_URL" >> $GITHUB_OUTPUT
+
+      # Step 11: Post a comment to the pull request with the preview URL.
+      # This step will only run if the workflow was triggered by a pull request
+      # and the previous deployment step was successful.
+      - name: Post PR comment with preview URL
+        if: success() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // This script uses the GitHub API to post a comment.
+            // The `github` object is pre-configured with a token.
+            const prUser = context.payload.pull_request.user.login;
+            const prBranch = "${{ steps.prepare_path.outputs.sanitized_branch }}";
+            const previewUrl = "${{ steps.log_url.outputs.preview_url }}";
+            const message = `🎉 **Beta deployment successful!** 🎉\n\nThis deployment was triggered by **${prUser}** on branch **${prBranch}**.\n\nYou can view the changes in the live preview environment here: ${previewUrl}`;
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: message
+            });
