@@ -9,12 +9,7 @@ on:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
     # This allows the workflow to be triggered manually from the GitHub UI.
-    # It will prompt for a branch to run against.
-    inputs:
-      branch:
-        description: 'Branch to deploy'
-        required: true
-        default: 'master'
+    # The branch for the deployment will be selected via the built-in "Use workflow from" dropdown.
 
 jobs:
   build-and-deploy:
@@ -26,7 +21,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.branch || github.head_ref }}
+          ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
 
       # Step 2: Set up Node.js. Replace this with a different setup action
       # if you're using a different technology stack (e.g., Python, Ruby).
@@ -65,14 +60,14 @@ jobs:
         run: |
           # Check if the workflow was triggered by a pull request.
           # If so, use the PR user and branch.
-          # Otherwise, it's a manual run, so use the actor and the input branch.
+          # Otherwise, it's a manual run, so use the actor and the workflow's branch.
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             # Sanitize the branch name and construct the remote path for a PR.
             SANITIZED_BRANCH=$(echo "${{ github.head_ref }}" | tr -cs '[:alnum:]' '-' | tr '[:upper:]' '[:lower:]')
             REMOTE_USER="${{ github.event.pull_request.user.login }}"
           else
-            # For a manual workflow_dispatch, use the actor and the specified input branch.
-            SANITIZED_BRANCH=$(echo "${{ github.event.inputs.branch }}" | tr -cs '[:alnum:]' '-' | tr '[:upper:]' '[:lower:]')
+            # For a manual workflow_dispatch, use the actor and the workflow's ref name.
+            SANITIZED_BRANCH=$(echo "${{ github.ref_name }}" | tr -cs '[:alnum:]' '-' | tr '[:upper:]' '[:lower:]')
             REMOTE_USER="${{ github.actor }}"
           fi
 
