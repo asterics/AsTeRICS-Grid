@@ -1,5 +1,5 @@
 # This workflow is triggered whenever a pull request is created or updated.
-name: Auto beta release on PR
+name: Beta release
 
 on:
   pull_request:
@@ -7,6 +7,14 @@ on:
     # 'opened' for a new PR, 'synchronize' for new commits, and 'reopened'
     # if a closed PR is opened again.
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    # This allows the workflow to be triggered manually from the GitHub UI.
+    # It will prompt for a branch to run against.
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'master'
 
 jobs:
   build-and-deploy:
@@ -17,6 +25,8 @@ jobs:
       # Step 1: Check out the repository code. This is the first step in most workflows.
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || github.head_ref }}
 
       # Step 2: Set up Node.js. Replace this with a different setup action
       # if you're using a different technology stack (e.g., Python, Ruby).
@@ -53,12 +63,24 @@ jobs:
       - name: Prepare remote path variables
         id: prepare_path
         run: |
-          # Sanitize the branch name by replacing non-alphanumeric characters with hyphens.
-          SANITIZED_BRANCH=$(echo "${{ github.head_ref }}" | tr -cs '[:alnum:]' '-' | tr '[:upper:]' '[:lower:]')
+          # Check if the workflow was triggered by a pull request.
+          # If so, use the PR user and branch.
+          # Otherwise, it's a manual run, so use the actor and the input branch.
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            # Sanitize the branch name and construct the remote path for a PR.
+            SANITIZED_BRANCH=$(echo "${{ github.head_ref }}" | tr -cs '[:alnum:]' '-' | tr '[:upper:]' '[:lower:]')
+            REMOTE_USER="${{ github.event.pull_request.user.login }}"
+          else
+            # For a manual workflow_dispatch, use the actor and the specified input branch.
+            SANITIZED_BRANCH=$(echo "${{ github.event.inputs.branch }}" | tr -cs '[:alnum:]' '-' | tr '[:upper:]' '[:lower:]')
+            REMOTE_USER="${{ github.actor }}"
+          fi
+
           # Construct the full remote path and make it available as a step output.
-          FULL_REMOTE_PATH="/kunden/homepages/2/d708826695/htdocs/asterics-grid-beta-github/${{ github.event.pull_request.user.login }}/${SANITIZED_BRANCH}"
+          FULL_REMOTE_PATH="/var/www/my-web-app-pr-preview/${REMOTE_USER}/${SANITIZED_BRANCH}"
           echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
           echo "remote_path=$FULL_REMOTE_PATH" >> $GITHUB_OUTPUT
+          echo "remote_user=$REMOTE_USER" >> $GITHUB_OUTPUT
 
      # Step 6: Use SSH to connect to the server and delete the existing remote directory.
       # This is a separate step that runs before the upload.
