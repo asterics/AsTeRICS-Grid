@@ -8,6 +8,7 @@ import { databaseService } from './databaseService';
 import { dataUtil } from '../../util/dataUtil';
 import { pouchDbService } from './pouchDbService';
 import { Dictionary } from '../../model/Dictionary';
+import { UtteranceHistory } from '../../model/UtteranceHistory.js';
 import { obfConverter } from '../../util/obfConverter';
 import { fileUtil } from '../../util/fileUtil';
 import { i18nService } from '../i18nService';
@@ -360,6 +361,55 @@ dataService.getDictionaries = function () {
 dataService.saveDictionary = function (dictionaryData) {
     dictionaryData.isDefault = false;
     return databaseService.saveObject(Dictionary, dictionaryData);
+};
+
+/**
+ * Gets an array of all utterance histories.
+ * @see{UtteranceHistory}
+ *
+ * @return {Promise} resolves to an array of all stored utterance histories.
+ */
+dataService.getUtteranceHistories = function () {
+    return new Promise((resolve) => {
+        databaseService.getObject(UtteranceHistory).then((histories) => {
+            if (!histories) {
+                resolve([]);
+                return;
+            }
+            let retVal =
+                histories instanceof Array
+                    ? histories.map((history) => new UtteranceHistory(history))
+                    : [new UtteranceHistory(histories)];
+            resolve(retVal);
+        });
+    });
+};
+
+/**
+ * Gets the utterance history by ID.
+ * @see{UtteranceHistory}
+ *
+ * @param id the ID of the utterance history
+ * @return {Promise} resolves to an utterance history object that was found
+ */
+dataService.getUtteranceHistory = function (id) {
+    if (!id) {
+        return Promise.resolve(null);
+    }
+    return databaseService.getSingleObject(UtteranceHistory, id).then((result) => {
+        return Promise.resolve(result ? new UtteranceHistory(result) : null);
+    });
+};
+
+/**
+ * Saves an utterance history or updates it, if existing.
+ * @see{UtteranceHistory}
+ *
+ * @param utteranceHistoryData the UtteranceHistory data to save/update
+ * @return {Promise} resolves after operation finished successful
+ */
+dataService.saveUtteranceHistory = function (utteranceHistoryData) {
+    return databaseService.saveObject(UtteranceHistory, utteranceHistoryData);
 };
 
 /**
