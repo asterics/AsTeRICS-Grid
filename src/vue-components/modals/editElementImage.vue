@@ -112,6 +112,7 @@
     import Accordion from "../components/accordion.vue";
     import {openSymbolsService} from "../../js/service/pictograms/openSymbolsService.js";
     import {arasaacService} from "../../js/service/pictograms/arasaacService.js";
+    import {globalSymbolsService} from "../../js/service/pictograms/globalSymbolsService.js";
     import {GridImage} from "../../js/model/GridImage.js";
     import {i18nService} from "../../js/service/i18nService.js";
     import {localStorageService} from "../../js/service/data/localStorageService.js";
@@ -130,7 +131,7 @@
         data: function () {
             return {
                 searchText: null,
-                searchProviders: [arasaacService.getSearchProviderInfo(), openSymbolsService.getSearchProviderInfo()],
+                searchProviders: [arasaacService.getSearchProviderInfo(), openSymbolsService.getSearchProviderInfo(), globalSymbolsService.getSearchProviderInfo()],
                 searchProvider: null,
                 searchResults: null,
                 searchLoading: false,
