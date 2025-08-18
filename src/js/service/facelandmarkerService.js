@@ -17,16 +17,39 @@ const facelandmarkerService = (function () {
     let diagSubscribers = new Set(); // functions receiving diagnostic payload
     let nextId = 1;
 
-    // Pin the WASM runtime to the same version as the npm dependency to avoid mismatch errors
-    const CDN_WASM_PATH = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm';
+    // Candidate WASM roots (try in order). First entry matches our installed npm version.
+    const CDN_WASM_CANDIDATES = [
+        'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22-rc.20250304/wasm',
+        'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm',
+        'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
+    ];
     // Model asset (.task) hosted by MediaPipe
     const MODEL_TASK_URL = 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task';
+
+    async function getFileset() {
+        let lastErr = null;
+        for (const root of CDN_WASM_CANDIDATES) {
+            try {
+                // eslint-disable-next-line no-console
+                console.info('[FaceLandmarker] Trying WASM root:', root);
+                const fileset = await FilesetResolver.forVisionTasks(root);
+                // eslint-disable-next-line no-console
+                console.info('[FaceLandmarker] Loaded WASM files from:', root);
+                return fileset;
+            } catch (e) {
+                lastErr = e;
+                // eslint-disable-next-line no-console
+                console.warn('[FaceLandmarker] Failed to load WASM from', root, e && e.message ? e.message : e);
+            }
+        }
+        throw lastErr || new Error('Failed to load MediaPipe WASM fileset');
+    }
 
     async function ensureInitialized() {
         if (landmarker) return;
         state = 'initializing';
         try {
-            const fileset = await FilesetResolver.forVisionTasks(CDN_WASM_PATH);
+            const fileset = await getFileset();
             // Try GPU first, then gracefully fall back to CPU
             try {
                 landmarker = await FaceLandmarker.createFromOptions(fileset, {
