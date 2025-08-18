@@ -160,6 +160,13 @@
                             <input id="showScanHighlight" type="checkbox" v-model="metadata.inputConfig.showScanHighlight" @change="saveMetadata(metadata)"/>
                             <label for="showScanHighlight">{{ $t('showScanningHighlight') }}</label>
                         </div>
+                        <div class="srow" v-show="metadata.inputConfig.showScanLine">
+                            <input id="scanLineSnapAtCellLevel"
+                                    type="checkbox"
+                                    v-model="metadata.inputConfig.scanLineSnapAtCellLevel"
+                                    @change="saveMetadata(metadata)"/>
+                            <label for="scanLineSnapAtCellLevel">{{ $t('snapScanningLineAtCellLevel') }}</label>
+                        </div>
                     </accordion>
                 </div>
                 <div class="srow mt-3" v-show="metadata.inputConfig.visualIndicatorsEnabled">

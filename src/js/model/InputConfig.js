@@ -58,7 +58,9 @@ class InputConfig extends Model({
     hoverDotColor: [String],
     showHoverProgress: [Boolean],
     showHoverDot: [Boolean],
-    showScanLine: [Boolean]
+    showScanLine: [Boolean],
+    // Scanning line behavior
+    scanLineSnapAtCellLevel: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, InputConfig);
@@ -170,7 +172,8 @@ InputConfig.defaults({
     showHoverProgress: true,
     showHoverDot: false,
     showScanLine: true,
-    showScanHighlight: true
+    showScanHighlight: true,
+    scanLineSnapAtCellLevel: false
 });
 
 export { InputConfig };

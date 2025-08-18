@@ -226,6 +226,7 @@ VisualIndicators.createShrinkingDot = function(element, duration, color = consta
 VisualIndicators.createScanningLine = function(containerSelector, isVertical = false, color = constants.DEFAULT_SCAN_LINE_COLOR) {
     let lineElement = null;
     let container = null;
+    let lastClientRect = null;
 
     const show = (targetElements, durationMs = 0) => {
         if (!targetElements || targetElements.length === 0) {
@@ -276,18 +277,28 @@ VisualIndicators.createScanningLine = function(containerSelector, isVertical = f
         lineElement.style.transitionDuration = `${duration}ms`;
         lineElement.style.transitionTimingFunction = 'linear';
 
+        const lineThickness = 4;
         if (isVertical) {
-            // Vertical scanning line
+            // Vertical scanning line centered within the target's width
+            const centerLeft = relativeLeft + (width / 2) - (lineThickness / 2);
             lineElement.style.top = `${relativeTop}px`;
-            lineElement.style.left = `${relativeLeft - 2}px`;
-            lineElement.style.width = '4px';
+            lineElement.style.left = `${centerLeft}px`;
+            lineElement.style.width = `${lineThickness}px`;
             lineElement.style.height = `${height}px`;
         } else {
-            // Horizontal scanning line
-            lineElement.style.top = `${relativeTop - 2}px`;
+            // Horizontal scanning line centered within the target's height
+            const centerTop = relativeTop + (height / 2) - (lineThickness / 2);
+            lineElement.style.top = `${centerTop}px`;
             lineElement.style.left = `${relativeLeft}px`;
             lineElement.style.width = `${width}px`;
-            lineElement.style.height = '4px';
+            lineElement.style.height = `${lineThickness}px`;
+        }
+
+        // Cache latest client rect (viewport coords) for selection alignment
+        try {
+            lastClientRect = lineElement.getBoundingClientRect();
+        } catch (e) {
+            lastClientRect = null;
         }
     };
 
@@ -296,6 +307,7 @@ VisualIndicators.createScanningLine = function(containerSelector, isVertical = f
             lineElement.parentNode.removeChild(lineElement);
         }
         lineElement = null;
+        lastClientRect = null;
     };
 
     const destroy = () => {
@@ -303,7 +315,13 @@ VisualIndicators.createScanningLine = function(containerSelector, isVertical = f
         container = null;
     };
 
-    return { show, hide, destroy };
+    const getLineCenter = () => {
+        const r = lineElement ? lineElement.getBoundingClientRect() : lastClientRect;
+        if (!r) return null;
+        return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    };
+
+    return { show, hide, destroy, getLineCenter };
 };
 
 export { VisualIndicators };

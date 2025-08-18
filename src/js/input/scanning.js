@@ -61,8 +61,13 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
     let _lastSelectTs = 0;
     const _SAFE_SELECT_WINDOW_MS = 120;
     let _lastScanChangeTs = 0;
-    let _prevActiveScanElements = null;
+    let _prevActiveScanElements = null; // flattened elements active at last change
+    let _prevPrevActiveScanElements = null; // flattened elements active one step before last change
     let _safeWindowMs = 120;
+    let _isSelecting = false;
+    let _lastVisualActiveElements = null; // the elements used to render the scanning line last
+    let _lastVisualUpdateTs = 0;
+    let _lastLineCenter = null;
 
     function init() {
         parseOptions(options);
@@ -281,6 +286,8 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
         // track scan change for timing guards and visual duration tuning
         const nowTs = Date.now();
         _lastScanChangeTs = nowTs;
+        // shift previous pointers: prevPrev <- prev, prev <- current
+        _prevPrevActiveScanElements = _prevActiveScanElements;
         _prevActiveScanElements = flattened;
 
         if (_isScanning) {
@@ -297,6 +304,7 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
             if (_inputConfig && _inputConfig.visualIndicatorsEnabled && _inputConfig.showScanLine && VisualIndicators.isPerformanceCapable()) {
                 // Determine orientation based on scanning depth and vertical setting
                 const isRowLevel = _scanningDepth === 0;
+                const isCellLevel = _scanningDepth >= 1;
                 const isVerticalLine = isRowLevel ? !!scanVertical : !scanVertical; // reverse at cell level
                 const desiredOrientation = isVerticalLine ? 'v' : 'h';
 
@@ -308,22 +316,36 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
                     _scanningLine = VisualIndicators.createScanningLine('#grid-container', isVerticalLine, _inputConfig.scanLineColor || undefined);
                     _scanningLineOrientation = desiredOrientation;
                 }
-                // duration should match the interval until next scan step; teleport (0ms) on wrap
-                let duration = (index === 0 && elems.length > 2) ? (scanTimeoutMs * scanTimeoutFirstElementFactor) : scanTimeoutMs;
-                if (didWrap) {
-                    duration = 0; // teleport between groups
+                // For row/column level: smooth movement. For cell-level: configurable snap vs animate
+                let duration = 0;
+                if (isRowLevel) {
+                    duration = (index === 0 && elems.length > 2) ? (scanTimeoutMs * scanTimeoutFirstElementFactor) : scanTimeoutMs;
+                    if (didWrap) {
+                        duration = 0; // teleport between groups
+                    } else {
+                        // Compute remaining time budget to avoid skimming faster in sub-groups
+                        const elapsed = Date.now() - _lastScanChangeTs;
+                        const remaining = Math.max(0, duration - elapsed);
+                        // Apply a small safety margin so visuals finish just before logic advances
+                        const safety = Math.min(50, Math.floor(duration * 0.1));
+                        duration = Math.max(0, remaining - safety);
+                    }
                 } else {
-                    // Compute remaining time budget to avoid skimming faster in sub-groups
-                    const elapsed = Date.now() - _lastScanChangeTs;
-                    const remaining = Math.max(0, duration - elapsed);
-                    // Apply a small safety margin so visuals finish just before logic advances
-                    const safety = Math.min(50, Math.floor(duration * 0.1));
-                    duration = Math.max(0, remaining - safety);
+                    // Cell-level: snap or animate based on config flag
+                    const snap = (_inputConfig?.scanLineSnapAtCellLevel ?? false);
+                    duration = snap ? 0 : scanTimeoutMs;
                 }
-                _scanningLine.show(L.flattenArray(elems[index]), duration);
+                const visTargets = L.flattenArray(elems[index]);
+                _lastVisualActiveElements = visTargets;
+                _lastVisualUpdateTs = Date.now();
+                if (_scanningLine.getLineCenter) {
+                    _lastLineCenter = _scanningLine.getLineCenter();
+                }
+                _scanningLine.show(visTargets, duration);
             }
 
             _nextScanFn = () => {
+                if (_isSelecting) return; // freeze visual at selection moment
                 scan(elems, { index: index + 1, count: count + 1 });
             };
             if (autoScan) {
@@ -394,7 +416,8 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
         } else {
             _inputEventHandler.onInputEvent(new InputEventKey({ keyCode: 32 }), thiz.select); //space as default key
         }
-        if (options.inputEventNext) {
+        // Only bind NEXT in manual scanning; in auto-scan it causes off-by-one races if bound to same key as SELECT
+        if (options.inputEventNext && !autoScan) {
             _inputEventHandler.onInputEvent(options.inputEventNext, thiz.next);
         }
     }
@@ -540,20 +563,41 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
         _lastSelectTs = now;
 
         if (_isScanning) {
+            _isSelecting = true;
+            // Determine if this select is happening near the scan change boundary
+            const sinceChange = now - _lastScanChangeTs;
+            const isCellLevel = _scanningDepth >= 1;
+
+            // Choose the most reliable active set
+            // Prefer the exact targets used by the scanning line if they were updated very recently
+            let stableActive = [];
+            const boundaryMs = Math.max(60, Math.min(160, Math.floor(scanTimeoutMs * 0.2)));
+            const sinceVisual = now - _lastVisualUpdateTs;
+            if (_lastVisualActiveElements && sinceVisual <= boundaryMs) {
+                stableActive = _lastVisualActiveElements;
+            } else if (isCellLevel && sinceChange <= boundaryMs) {
+                stableActive = (_prevActiveScanElements && _prevActiveScanElements.length)
+                    ? _prevActiveScanElements
+                    : L.flattenArray(_currentActiveScanElements || []);
+            } else {
+                stableActive = L.flattenArray(_currentActiveScanElements || []);
+            }
+
             thiz.stopScanning();
             _isScanning = true;
             _scanningDepth++;
 
-            if (_currentActiveScanElements.length > 1) {
-                scan(spitToSubarrays(_currentActiveScanElements));
-            } else if (L.flattenArray(_currentActiveScanElements).length > 1) {
-                scan(spitToSubarrays(L.flattenArray(_currentActiveScanElements)));
+            if (stableActive.length > 1) {
+                scan(spitToSubarrays(stableActive));
+            } else if (L.flattenArray(stableActive).length > 1) {
+                scan(spitToSubarrays(L.flattenArray(stableActive)));
             } else {
-                if (_selectionListener) {
-                    _selectionListener(L.flattenArray(_currentActiveScanElements)[0]);
+                if (_selectionListener && stableActive.length > 0) {
+                    _selectionListener(L.flattenArray(stableActive)[0]);
                 }
                 thiz.restartScanning();
             }
+            _isSelecting = false;
         }
     };
 
