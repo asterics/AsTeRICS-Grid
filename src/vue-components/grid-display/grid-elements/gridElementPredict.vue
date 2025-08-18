@@ -1,19 +1,23 @@
 <template>
-    <div ref="container" class="grid-item-content" style="display: flex; align-items: center; justify-content: center; gap: 6px;">
-        <img v-if="pictoUrl && showPictos" :src="pictoUrl" alt="" style="max-height: 70%; max-width: 35%; object-fit: contain;"/>
-        <grid-element-text-container :with-image="false" :metadata="metadata" :disable-auto-size-keyboard="true" v-bind="$attrs"/>
+    <div ref="container" class="grid-item-content">
+        <div class="img-container" v-if="pictoUrl && showPictos" :style="`order: ${metadata.textConfig.textPosition === TextConfig.TEXT_POS_BELOW ? 0 : 1}`">
+            <img :src="pictoUrl" draggable="false" alt=""/>
+        </div>
+        <grid-element-text-container :with-image="!!(pictoUrl && showPictos)" :metadata="metadata" :grid-element="gridElement" :container-size="containerSize" :disable-auto-size-keyboard="true" v-bind="$attrs"/>
     </div>
 </template>
 
 <script>
 
 import GridElementTextContainer from './gridElementTextContainer.vue';
+import { TextConfig } from '../../../js/model/TextConfig';
 
 export default {
     components: { GridElementTextContainer },
-    props: ["metadata", "gridElement"],
+    props: ["metadata", "gridElement", "containerSize"],
     data() {
         return {
+            TextConfig: TextConfig,
             pictoUrl: null,
             lastWord: null,
             debounceTimer: null,
