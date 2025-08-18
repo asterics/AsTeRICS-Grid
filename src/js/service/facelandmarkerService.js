@@ -17,23 +17,40 @@ const facelandmarkerService = (function () {
     let diagSubscribers = new Set(); // functions receiving diagnostic payload
     let nextId = 1;
 
-    const CDN_WASM_PATH = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm';
+    // Pin the WASM runtime to the same version as the npm dependency to avoid mismatch errors
+    const CDN_WASM_PATH = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm';
+    // Model asset (.task) hosted by MediaPipe
+    const MODEL_TASK_URL = 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task';
 
     async function ensureInitialized() {
         if (landmarker) return;
         state = 'initializing';
         try {
             const fileset = await FilesetResolver.forVisionTasks(CDN_WASM_PATH);
-            landmarker = await FaceLandmarker.createFromOptions(fileset, {
-                baseOptions: {
-                    modelAssetPath: undefined, // use default bundled
-                    delegate: 'GPU'
-                },
-                runningMode: 'VIDEO',
-                numFaces: 1,
-                outputFaceBlendshapes: true,
-                outputFacialTransformationMatrices: true
-            });
+            // Try GPU first, then gracefully fall back to CPU
+            try {
+                landmarker = await FaceLandmarker.createFromOptions(fileset, {
+                    baseOptions: {
+                        modelAssetPath: MODEL_TASK_URL,
+                        delegate: 'GPU'
+                    },
+                    runningMode: 'VIDEO',
+                    numFaces: 1,
+                    outputFaceBlendshapes: true,
+                    outputFacialTransformationMatrices: true
+                });
+            } catch (gpuErr) {
+                landmarker = await FaceLandmarker.createFromOptions(fileset, {
+                    baseOptions: {
+                        modelAssetPath: MODEL_TASK_URL,
+                        delegate: 'CPU'
+                    },
+                    runningMode: 'VIDEO',
+                    numFaces: 1,
+                    outputFaceBlendshapes: true,
+                    outputFacialTransformationMatrices: true
+                });
+            }
             state = 'idle';
         } catch (e) {
             state = 'error';

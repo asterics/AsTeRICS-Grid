@@ -228,10 +228,14 @@
                                 </div>
                             </div>
                             <div class="srow">
-                                <button class="five columns" @click="toggleFacePreview">
-                                    <span v-if="!facePreview"><span class="fas fa-video"/> <span>{{$t('startCameraPreview')}}</span></span>
+                                <button class="five columns" :disabled="faceLoading" @click="toggleFacePreview">
+                                    <span v-if="faceLoading"><span class="fas fa-spinner fa-spin"/> <span>Starting…</span></span>
+                                    <span v-else-if="!facePreview"><span class="fas fa-video"/> <span>{{$t('startCameraPreview')}}</span></span>
                                     <span v-else><span class="fas fa-video-slash"/> <span>{{$t('stopCameraPreview')}}</span></span>
                                 </button>
+                            </div>
+                            <div class="srow" v-if="faceError">
+                                <small style="color:#b00">{{ faceError }}</small>
                             </div>
                             <div class="srow" v-if="facePreview">
                                 <face-mesh-preview></face-mesh-preview>
@@ -292,6 +296,8 @@ import { facelandmarkerService } from "../../js/service/facelandmarkerService";
                 micRecording: false,
                 micRecordError: false,
                 facePreview: false,
+                faceLoading: false,
+                faceError: '',
                 micValues: {
                     volLive: 0,
                     volMax: 0,
@@ -485,11 +491,15 @@ import { facelandmarkerService } from "../../js/service/facelandmarkerService";
             },
             async toggleFacePreview() {
                 if (!this.facePreview) {
+                    this.faceLoading = true; this.faceError = '';
                     try {
                         await facelandmarkerService.start();
                         this.facePreview = true;
                     } catch (e) {
                         this.facePreview = false;
+                        this.faceError = (e && e.message) ? e.message : 'Camera failed to start';
+                    } finally {
+                        this.faceLoading = false;
                     }
                 } else {
                     this.facePreview = false;
