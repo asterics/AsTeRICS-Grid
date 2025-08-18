@@ -1080,13 +1080,13 @@
   "gazeThreshold": "Gaze threshold",
   "headTiltDegThreshold": "Head tilt threshold (deg)",
   "headMoveThreshold": "Head movement threshold",
+  "gestureThreshold": "Gesture threshold",
   "dwellMs": "Dwell (ms)",
   "debounceMs": "Debounce (ms)",
   "smoothing": "Smoothing",
   "startCameraPreview": "Start camera preview",
   "stopCameraPreview": "Stop camera preview",
-  "noFaceDetected": "No face detected"
-
+  "noFaceDetected": "No face detected",
   "currentlyNotListeningToMicrophone": "Currently not listening to microphone",
   "thresholdLow": "Threshold low",
   "startManuallyByUserInputEvent": "Start manually by user input event",
