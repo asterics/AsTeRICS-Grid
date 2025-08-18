@@ -46,6 +46,18 @@
                             <div class="mt-3">
                                 <a href="javascript:;" class="me-2" @click="copyLink">{{ $t('copyDirectLinkToConfigToClipboard') }}</a>
                                 <span v-if="linkCopied" class="fas fa-check"/>
+                                <span class="mx-2">|</span>
+                                <a href="javascript:;" class="me-2" @click="generateQr" :aria-label="$t('copyDirectLinkToConfigToClipboard') + ' QR'">{{ $t('showQrCode') || 'Show QR code' }}</a>
+                                <span v-if="qrGenerating" class="fas fa-spinner fa-spin" aria-hidden="true"/>
+                            </div>
+                            <div class="mt-3" v-if="showQR" aria-live="polite">
+                                <img :src="qrDataUrl" alt="QR code for direct link" style="max-width: 280px; width: 100%; height: auto;"/>
+                                <div class="mt-2">
+                                    <a v-if="qrDataUrl" :href="qrDataUrl" download="gridset-link-qr.png">{{ $t('downloadQrCodePng') || 'Download QR as PNG' }}</a>
+                                    <span class="mx-2">|</span>
+                                    <a href="javascript:;" @click="printQr">{{ $t('printQrCode') || 'Print QR' }}</a>
+                                    <span v-if="qrError" class="text-danger">{{ qrError }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -82,7 +94,11 @@
             return {
                 selectedImage: this.preview.images[0],
                 i18nService: i18nService,
-                linkCopied: false
+                linkCopied: false,
+                showQR: false,
+                qrDataUrl: null,
+                qrGenerating: false,
+                qrError: null
             }
         },
         methods: {
@@ -94,6 +110,30 @@
                 let link = location.origin + location.pathname + `?${urlParamService.params.PARAM_USE_GRIDSET_FILENAME}=${this.preview.filename}`;
                 util.copyToClipboard(link);
                 this.linkCopied = true;
+            },
+            async generateQr() {
+                this.qrGenerating = true;
+                this.qrError = null;
+                try {
+                    const link = location.origin + location.pathname + `?${urlParamService.params.PARAM_USE_GRIDSET_FILENAME}=${this.preview.filename}`;
+                    const { default: QRCode } = await import('qrcode');
+                    this.qrDataUrl = await QRCode.toDataURL(link, { errorCorrectionLevel: 'M', margin: 1, scale: 6, color: { dark: '#000000', light: '#FFFFFF' } });
+                    this.showQR = true;
+                } catch (e) {
+                    console.error('QR generation failed', e);
+                    this.qrError = this.$t ? this.$t('qrGenerationFailed') : 'QR generation failed';
+                } finally {
+                    this.qrGenerating = false;
+                }
+            },
+            printQr() {
+                if (!this.qrDataUrl) return;
+                const w = window.open('','_blank');
+                if (!w) return;
+                const html = `<!doctype html><html><head><title>QR</title><style>body{margin:0;display:flex;align-items:center;justify-content:center;height:100vh}img{max-width:90vw;max-height:90vh}</style></head><body><img src="${this.qrDataUrl}" alt="QR"><script>window.onload=()=>{setTimeout(()=>window.print(),100)}<\/script></body></html>`;
+                w.document.open();
+                w.document.write(html);
+                w.document.close();
             }
         },
         mounted() {
