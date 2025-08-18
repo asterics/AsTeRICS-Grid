@@ -38,7 +38,7 @@ globalSymbolsService.getSearchProviderInfo = function () {
 globalSymbolsService.query = function (search, options, searchLang) {
     _lastChunkNr = 1;
     _hasNextChunk = false;
-    return queryInternal(search);
+    return queryInternal(search, 1, _lastChunkSize, searchLang);
 };
 
 /**
@@ -58,7 +58,7 @@ globalSymbolsService.hasNextChunk = function () {
     return _hasNextChunk;
 };
 
-function queryInternal(search, chunkNr, chunkSize) {
+function queryInternal(search, chunkNr, chunkSize, lang) {
     chunkSize = chunkSize || _lastChunkSize;
     chunkNr = chunkNr || 1;
     let queriedElements = [];
@@ -67,17 +67,25 @@ function queryInternal(search, chunkNr, chunkSize) {
             return resolve([]);
         }
         if (_lastSearchTerm !== search) {
-            $.get(API_SUGGEST_URL + encodeURIComponent(search), null, function (concepts) {
-                // Flatten pictos from all concepts into a single list
+            let url = API_SUGGEST_URL + encodeURIComponent(search);
+            // GlobalSymbols supports language and language_iso_format (e.g., 639-1, 639-3)
+            if (lang) {
+                const norm = (lang + '').trim();
+                let fmt = '639-1';
+                if (/^[A-Za-z]{3}$/.test(norm)) {
+                    fmt = '639-3';
+                }
+                const langParam = norm.length >= 2 ? norm : norm;
+                url += `&language=${encodeURIComponent(langParam)}&language_iso_format=${encodeURIComponent(fmt)}`;
+            }
+            $.get(url, null, function (concepts) {
                 let flattened = [];
                 if (Array.isArray(concepts)) {
                     for (let c of concepts) {
                         if (c && Array.isArray(c.pictos)) {
                             for (let p of c.pictos) {
                                 if (p && p[globalSymbolsService.PROP_IMAGE_URL]) {
-                                    flattened.push({
-                                        url: p[globalSymbolsService.PROP_IMAGE_URL]
-                                    });
+                                    flattened.push({ url: p[globalSymbolsService.PROP_IMAGE_URL] });
                                 }
                             }
                         }
