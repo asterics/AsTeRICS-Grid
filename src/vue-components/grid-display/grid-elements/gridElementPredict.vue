@@ -63,14 +63,15 @@ export default {
             const $ = (await import('../../../js/externals/jquery.js')).default;
             this._$ = $;
             this._eventName = constants.EVENT_ELEM_TEXT_CHANGED;
-            $(document).on(this._eventName, this.onTextChanged);
+            this._boundListener = (event, id, text) => this.onTextChanged(event, id, text);
+            $(document).on(this._eventName, this._boundListener);
         };
         addListener();
     },
     beforeDestroy() {
         if (this.debounceTimer) clearTimeout(this.debounceTimer);
         if (this._$ && this._eventName) {
-            this._$(document).off(this._eventName, this.onTextChanged);
+            this._$(document).off(this._eventName, this._boundListener || this.onTextChanged);
         }
     }
 }

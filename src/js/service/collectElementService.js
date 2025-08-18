@@ -640,7 +640,8 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
 function triggerPredict() {
     registeredCollectElements.forEach((collectElement) => {
         let predictAction = getActionOfType(collectElement, 'GridActionPredict');
-        if (predictAction && predictAction.suggestOnChange) {
+        const globalRefresh = _localMetadata && _localMetadata.refreshPredictionsWhileTyping;
+        if ((predictAction && predictAction.suggestOnChange) || globalRefresh) {
             predictionService.predict(getPredictText(), dictionaryKey);
         }
     });
@@ -651,6 +652,10 @@ async function getMetadataConfig() {
     duplicatedCollectPause = _localMetadata.inputConfig.globalMinPauseCollectSpeak || 0;
     convertMode = _localMetadata.textConfig.convertMode;
     activateARASAACGrammarAPI = _localMetadata.activateARASAACGrammarAPI;
+    // ensure default for new flag if missing
+    if (typeof _localMetadata.refreshPredictionsWhileTyping === 'undefined') {
+        _localMetadata.refreshPredictionsWhileTyping = false;
+    }
 }
 
 $(window).on(constants.EVENT_GRID_RESIZE, function () {

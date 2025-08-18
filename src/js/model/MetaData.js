@@ -27,7 +27,7 @@ class MetaData extends Model({
         showPictogramsInPredictions: [Boolean],
         pictogramPredictionLang: [String],
         pictogramPredictionProvider: [String],
-
+        refreshPredictionsWhileTyping: [Boolean],
 
     activateARASAACGrammarAPI: [Boolean],
     vocabularyLevel: [Number, null],
@@ -104,6 +104,7 @@ MetaData.defaults({
     inputConfig: new InputConfig(),
     showPictogramsInPredictions: false,
     pictogramPredictionProvider: 'GLOBALSYMBOLS',
+    refreshPredictionsWhileTyping: false,
 
     pictogramPredictionLang: null,
 

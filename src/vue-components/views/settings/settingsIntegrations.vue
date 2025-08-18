@@ -32,6 +32,10 @@
                     <label for="showPictosInPredictions">{{ $t('showPictogramsInPredictions') }}</label>
                 </div>
                 <div class="srow">
+                    <input id="refreshPredictionsWhileTyping" type="checkbox" v-model="metadata.refreshPredictionsWhileTyping" @change="saveMetadata(metadata)"/>
+                    <label for="refreshPredictionsWhileTyping">{{ $t('refreshPredictionsWhileTyping') }}</label>
+                </div>
+                <div class="srow">
                     <label class="three columns" for="pictoPredProvider">{{ $t('searchProvider') }}</label>
                     <select class="five columns" id="pictoPredProvider" v-model="metadata.pictogramPredictionProvider" @change="saveMetadata(metadata)">
                         <option value="GLOBALSYMBOLS">GlobalSymbols</option>
@@ -97,6 +101,18 @@
                 urlValid: null,
                 MODALS: MODALS,
                 currentModal: null
+            }
+        },
+        created() {
+            // Ensure the label exists even if translation keys aren’t present
+            if (!this.$te('refreshPredictionsWhileTyping')) {
+                i18nService.addCustomTranslation('en', 'refreshPredictionsWhileTyping', 'Refresh predictions while typing');
+            }
+        },
+        created() {
+            // ensure default translation exists at runtime even if missing key; fallback to English string
+            if (!this.$te('refreshPredictionsWhileTyping')) {
+                i18n.addCustomTranslation('en', 'refreshPredictionsWhileTyping', 'Refresh predictions while typing');
             }
         },
         methods: {
