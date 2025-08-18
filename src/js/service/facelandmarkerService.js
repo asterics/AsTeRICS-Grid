@@ -206,6 +206,7 @@ const facelandmarkerService = (function () {
         }
 
         const sAlpha = gesture.smoothingAlpha ?? 0.5;
+        const gType = gesture.type || gesture.gestureType;
 
         function dwellCheck(cond) {
             if (cond) {
@@ -217,56 +218,56 @@ const facelandmarkerService = (function () {
         }
 
         // Blink gestures
-        if (gesture.type === 'BLINK_BOTH' || gesture.type === 'BLINK_LEFT' || gesture.type === 'BLINK_RIGHT') {
+        if (gType === 'BLINK_BOTH' || gType === 'BLINK_LEFT' || gType === 'BLINK_RIGHT') {
             const th = gesture.blinkScoreThreshold ?? 0.5;
             const l = smooth('blinkL', blend['eyeBlinkLeft'] || 0, sAlpha);
             const r = smooth('blinkR', blend['eyeBlinkRight'] || 0, sAlpha);
-            if (gesture.type === 'BLINK_BOTH') {
+            if (gType === 'BLINK_BOTH') {
                 return dwellCheck(l > th && r > th);
             }
-            if (gesture.type === 'BLINK_LEFT') return dwellCheck(l > th);
-            if (gesture.type === 'BLINK_RIGHT') return dwellCheck(r > th);
+            if (gType === 'BLINK_LEFT') return dwellCheck(l > th);
+            if (gType === 'BLINK_RIGHT') return dwellCheck(r > th);
         }
 
         // Eye look
-        if (gesture.type && gesture.type.startsWith('EYES_')) {
+        if (gType && gType.startsWith('EYES_')) {
             const th = gesture.gazeScoreThreshold ?? 0.5;
             const left = smooth('lookL', blend['eyeLookLeft'] || 0, sAlpha);
             const right = smooth('lookR', blend['eyeLookRight'] || 0, sAlpha);
             const up = smooth('lookU', blend['eyeLookUp'] || 0, sAlpha);
             const down = smooth('lookD', blend['eyeLookDown'] || 0, sAlpha);
-            if (gesture.type === 'EYES_LEFT') return dwellCheck(left > th && left > right);
-            if (gesture.type === 'EYES_RIGHT') return dwellCheck(right > th && right > left);
-            if (gesture.type === 'EYES_UP') return dwellCheck(up > th && up > down);
-            if (gesture.type === 'EYES_DOWN') return dwellCheck(down > th && down > up);
+            if (gType === 'EYES_LEFT') return dwellCheck(left > th && left > right);
+            if (gType === 'EYES_RIGHT') return dwellCheck(right > th && right > left);
+            if (gType === 'EYES_UP') return dwellCheck(up > th && up > down);
+            if (gType === 'EYES_DOWN') return dwellCheck(down > th && down > up);
         }
 
         // Head tilt (roll angle)
-        if (gesture.type && gesture.type.startsWith('HEAD_TILT')) {
+        if (gType && gType.startsWith('HEAD_TILT')) {
             const degTh = gesture.headTiltDegThreshold ?? 15;
             const rollDeg = getRollDegFromMatrix(mat);
             if (rollDeg == null) return false;
-            if (gesture.type === 'HEAD_TILT_LEFT') return dwellCheck(rollDeg < -degTh);
-            if (gesture.type === 'HEAD_TILT_RIGHT') return dwellCheck(rollDeg > degTh);
+            if (gType === 'HEAD_TILT_LEFT') return dwellCheck(rollDeg < -degTh);
+            if (gType === 'HEAD_TILT_RIGHT') return dwellCheck(rollDeg > degTh);
         }
 
         // Head movement (center offset)
-        if (gesture.type && gesture.type.startsWith('HEAD_') && !gesture.type.startsWith('HEAD_TILT')) {
+        if (gType && gType.startsWith('HEAD_') && !gType.startsWith('HEAD_TILT')) {
             sub._neutral = sub._neutral || estimateFaceBox(landmarks);
             const face = estimateFaceBox(landmarks);
             if (!face || !sub._neutral) return false;
             const dx = (face.cx - sub._neutral.cx) / face.w;
             const dy = (face.cy - sub._neutral.cy) / face.h;
             const th = gesture.headMoveNormThreshold ?? 0.15;
-            if (gesture.type === 'HEAD_LEFT') return dwellCheck(dx < -th);
-            if (gesture.type === 'HEAD_RIGHT') return dwellCheck(dx > th);
-            if (gesture.type === 'HEAD_UP') return dwellCheck(dy < -th);
-            if (gesture.type === 'HEAD_DOWN') return dwellCheck(dy > th);
+            if (gType === 'HEAD_LEFT') return dwellCheck(dx < -th);
+            if (gType === 'HEAD_RIGHT') return dwellCheck(dx > th);
+            if (gType === 'HEAD_UP') return dwellCheck(dy < -th);
+            if (gType === 'HEAD_DOWN') return dwellCheck(dy > th);
         }
 
         // Expression gestures via blendshapes
         const thG = gesture.gazeScoreThreshold ?? 0.5;
-        switch (gesture.type) {
+        switch (gType) {
             case 'BROW_RAISE':
                 return dwellCheck(smooth('brow', (blend['browInnerUp'] || 0), sAlpha) > thG);
             case 'CHEEK_PUFF':

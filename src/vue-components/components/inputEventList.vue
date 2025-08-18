@@ -238,7 +238,7 @@
                                 <small style="color:#b00">{{ faceError }}</small>
                             </div>
                             <div class="srow" v-if="facePreview">
-                                <face-mesh-preview></face-mesh-preview>
+                                <face-mesh-preview :gesture="input"></face-mesh-preview>
                             </div>
                         </div>
                     </div>
