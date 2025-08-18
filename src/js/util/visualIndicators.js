@@ -227,106 +227,68 @@ VisualIndicators.createScanningLine = function(containerSelector, isVertical = f
     let lineElement = null;
     let container = null;
 
-    const show = (targetElements) => {
-        console.log('Scanning line show called with:', targetElements);
+    const show = (targetElements, durationMs = 0) => {
         if (!targetElements || targetElements.length === 0) {
-            console.log('No target elements provided');
             return;
         }
 
-        // Get the container
-        container = document.querySelector(containerSelector) || document.querySelector('#grid-container') || document.querySelector('.area');
-        console.log('Container found:', container, 'using selector:', containerSelector);
-        console.log('Available containers:', {
-            bySelector: document.querySelector(containerSelector),
-            byGridContainer: document.querySelector('#grid-container'),
-            byArea: document.querySelector('.area'),
-            body: document.body
-        });
-
-        if (!container) {
-            console.log('No container found, using body as fallback');
-            container = document.body;
+        // Resolve container and ensure positioning context
+        container = document.querySelector(containerSelector) || document.querySelector('#grid-container') || document.querySelector('.area') || document.body;
+        if (container && getComputedStyle(container).position === 'static') {
+            container.style.position = 'relative';
         }
-        
-        // Remove existing line
-        hide();
-        
-        // Create scanning line element
-        lineElement = document.createElement('div');
-        lineElement.className = 'scanning-line';
-        
+
+        // Create scanning line element once
+        if (!lineElement) {
+            lineElement = document.createElement('div');
+            lineElement.className = 'scanning-line';
+            lineElement.style.position = 'absolute';
+            lineElement.style.backgroundColor = color;
+            lineElement.style.zIndex = '9999';
+            lineElement.style.pointerEvents = 'none';
+            lineElement.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
+            lineElement.style.borderRadius = '5px';
+            lineElement.style.opacity = '0.95';
+            container.appendChild(lineElement);
+        }
+
         // Calculate line position and dimensions based on target elements
         const containerRect = container.getBoundingClientRect();
         let lineRect = { top: Infinity, left: Infinity, right: -Infinity, bottom: -Infinity };
-        
-        // Find bounding box of target elements
-        console.log('Finding bounding box for elements:', targetElements);
         targetElements.forEach(el => {
             const rect = el.getBoundingClientRect();
-            console.log('Element rect:', rect);
             lineRect.top = Math.min(lineRect.top, rect.top);
             lineRect.left = Math.min(lineRect.left, rect.left);
             lineRect.right = Math.max(lineRect.right, rect.right);
             lineRect.bottom = Math.max(lineRect.bottom, rect.bottom);
         });
-        console.log('Final lineRect:', lineRect);
-        
+
         // Position line relative to container
         const relativeTop = lineRect.top - containerRect.top;
         const relativeLeft = lineRect.left - containerRect.left;
-        const width = lineRect.right - lineRect.left;
-        const height = lineRect.bottom - lineRect.top;
+        const width = Math.max(0, lineRect.right - lineRect.left);
+        const height = Math.max(0, lineRect.bottom - lineRect.top);
 
-        console.log('Container rect:', containerRect);
-        console.log('Calculated position:', { relativeTop, relativeLeft, width, height });
-        console.log('isVertical:', isVertical);
-        
+        // Smoothly animate to new position/size; duration matches scanning timeout
+        const duration = Math.max(0, Math.floor(durationMs));
+        const transitionProps = isVertical ? 'top, left, height' : 'top, left, width';
+        lineElement.style.transitionProperty = transitionProps;
+        lineElement.style.transitionDuration = `${duration}ms`;
+        lineElement.style.transitionTimingFunction = 'linear';
+
         if (isVertical) {
             // Vertical scanning line
-            lineElement.style.cssText = `
-                position: absolute;
-                top: ${relativeTop}px;
-                left: ${relativeLeft - 5}px;
-                width: 10px;
-                height: ${height}px;
-                background-color: ${color};
-                z-index: 9999;
-                pointer-events: none;
-                box-shadow: 0 0 10px rgba(0,0,0,0.8);
-                border-radius: 5px;
-                opacity: 0.9;
-            `;
+            lineElement.style.top = `${relativeTop}px`;
+            lineElement.style.left = `${relativeLeft - 2}px`;
+            lineElement.style.width = '4px';
+            lineElement.style.height = `${height}px`;
         } else {
             // Horizontal scanning line
-            lineElement.style.cssText = `
-                position: absolute;
-                top: ${relativeTop - 5}px;
-                left: ${relativeLeft}px;
-                width: ${width}px;
-                height: 10px;
-                background-color: ${color};
-                z-index: 9999;
-                pointer-events: none;
-                box-shadow: 0 0 10px rgba(0,0,0,0.8);
-                border-radius: 5px;
-                opacity: 0.9;
-            `;
+            lineElement.style.top = `${relativeTop - 2}px`;
+            lineElement.style.left = `${relativeLeft}px`;
+            lineElement.style.width = `${width}px`;
+            lineElement.style.height = '4px';
         }
-        
-        container.style.position = 'relative';
-        container.appendChild(lineElement);
-        console.log('Scanning line element created and added:', lineElement);
-
-        // FORCE VISIBILITY FOR TESTING
-        lineElement.style.cssText += `
-            background-color: red !important;
-            z-index: 99999 !important;
-            opacity: 1 !important;
-            display: block !important;
-            visibility: visible !important;
-        `;
-        console.log('Forced line element styles:', lineElement.style.cssText);
     };
 
     const hide = () => {

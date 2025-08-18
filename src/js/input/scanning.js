@@ -50,12 +50,19 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
     var _scanningPaused = false;
     let _inputConfig = options.inputConfig;
     let _scanningLine = null;
+    let _scanningLineOrientation = null;
     var _touchListener = null;
     var _touchElement = null;
     let _inputEventHandler = inputEventHandler.instance();
     let _startEventHandler = inputEventHandler.instance();
     let _nextScanFn = null;
     let _scanningDepth = 0;
+    let _nextScanRaf = null;
+    let _lastSelectTs = 0;
+    const _SAFE_SELECT_WINDOW_MS = 120;
+    let _lastScanChangeTs = 0;
+    let _prevActiveScanElements = null;
+    let _safeWindowMs = 120;
 
     function init() {
         parseOptions(options);
@@ -254,8 +261,9 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
         elems = elems || [];
         let count = scanOptions.count || 0;
         let index = scanOptions.index || 0;
-        let wrap = index === 0;
-        wrap = wrap || index > elems.length - 1;
+        // Detect wrap specifically when stepping past the last index
+        let didWrap = index > elems.length - 1;
+        let wrap = index === 0 || didWrap;
         index = wrap ? 0 : index;
         if (count >= subScanRepeat * elems.length && _scanningDepth !== 0) {
             thiz.restartScanning();
@@ -268,7 +276,12 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
                 return;
             }
         }
-        _activeListener(L.flattenArray(elems[index]), wrap, scanOptions.restarted);
+        const flattened = L.flattenArray(elems[index]);
+        _activeListener(flattened, wrap, scanOptions.restarted);
+        // track scan change for timing guards and visual duration tuning
+        const nowTs = Date.now();
+        _lastScanChangeTs = nowTs;
+        _prevActiveScanElements = flattened;
 
         if (_isScanning) {
             // Apply CSS highlighting if enabled
@@ -280,29 +293,35 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
             }
             _currentActiveScanElements = elems[index];
 
-            // Show visual scanning line - FORCE FOR TESTING
-            console.log('Scanning line debug:', {
-                inputConfig: _inputConfig,
-                visualIndicatorsEnabled: _inputConfig && _inputConfig.visualIndicatorsEnabled,
-                showScanLine: _inputConfig && _inputConfig.showScanLine,
-                isPerformanceCapable: VisualIndicators.isPerformanceCapable(),
-                scanVertical: scanVertical,
-                elements: elems[index],
-                flattenedElements: L.flattenArray(elems[index])
-            });
+            // Visual scanning line (optional)
+            if (_inputConfig && _inputConfig.visualIndicatorsEnabled && _inputConfig.showScanLine && VisualIndicators.isPerformanceCapable()) {
+                // Determine orientation based on scanning depth and vertical setting
+                const isRowLevel = _scanningDepth === 0;
+                const isVerticalLine = isRowLevel ? !!scanVertical : !scanVertical; // reverse at cell level
+                const desiredOrientation = isVerticalLine ? 'v' : 'h';
 
-            // TEMPORARILY FORCE SCANNING LINE FOR TESTING
-            console.log('FORCING scanning line creation for testing');
-            if (!_scanningLine) {
-                console.log('Creating new scanning line');
-                _scanningLine = VisualIndicators.createScanningLine(
-                    '#grid-container',
-                    scanVertical,
-                    '#ff0000'  // Force red color
-                );
+                if (!_scanningLine || _scanningLineOrientation !== desiredOrientation) {
+                    if (_scanningLine) {
+                        // clean up previous orientation instance
+                        _scanningLine.destroy();
+                    }
+                    _scanningLine = VisualIndicators.createScanningLine('#grid-container', isVerticalLine, _inputConfig.scanLineColor || undefined);
+                    _scanningLineOrientation = desiredOrientation;
+                }
+                // duration should match the interval until next scan step; teleport (0ms) on wrap
+                let duration = (index === 0 && elems.length > 2) ? (scanTimeoutMs * scanTimeoutFirstElementFactor) : scanTimeoutMs;
+                if (didWrap) {
+                    duration = 0; // teleport between groups
+                } else {
+                    // Compute remaining time budget to avoid skimming faster in sub-groups
+                    const elapsed = Date.now() - _lastScanChangeTs;
+                    const remaining = Math.max(0, duration - elapsed);
+                    // Apply a small safety margin so visuals finish just before logic advances
+                    const safety = Math.min(50, Math.floor(duration * 0.1));
+                    duration = Math.max(0, remaining - safety);
+                }
+                _scanningLine.show(L.flattenArray(elems[index]), duration);
             }
-            console.log('Showing scanning line for elements:', L.flattenArray(elems[index]));
-            _scanningLine.show(L.flattenArray(elems[index]));
 
             _nextScanFn = () => {
                 scan(elems, { index: index + 1, count: count + 1 });
@@ -311,8 +330,14 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
                 let timeout =
                     index === 0 && elems.length > 2 ? scanTimeoutMs * scanTimeoutFirstElementFactor : scanTimeoutMs;
                 _scanTimeoutHandler = setTimeout(function () {
+                    // If a select just happened, suppress this auto-advance to avoid off-by-one
+                    if (Date.now() - _lastSelectTs <= _SAFE_SELECT_WINDOW_MS) {
+                        return;
+                    }
                     _nextScanFn();
                 }, timeout);
+                // update dynamic safe window proportional to current timeout
+                _safeWindowMs = Math.max(80, Math.min(180, Math.floor(timeout * 0.15)));
             }
         }
     }
@@ -510,24 +535,20 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
      * event listener.
      */
     thiz.select = function () {
-        console.log('Select called, _isScanning:', _isScanning);
-        if (_isScanning) {
-            console.log('Select: stopping scanning, current elements:', _currentActiveScanElements);
-            console.log('Select: elements length:', _currentActiveScanElements.length);
-            console.log('Select: flattened length:', L.flattenArray(_currentActiveScanElements).length);
+        // Debounce select very close to scan-advance to avoid off-by-one select
+        const now = Date.now();
+        _lastSelectTs = now;
 
+        if (_isScanning) {
             thiz.stopScanning();
             _isScanning = true;
             _scanningDepth++;
 
             if (_currentActiveScanElements.length > 1) {
-                console.log('Select: scanning sub-arrays of current elements');
                 scan(spitToSubarrays(_currentActiveScanElements));
             } else if (L.flattenArray(_currentActiveScanElements).length > 1) {
-                console.log('Select: scanning sub-arrays of flattened elements');
                 scan(spitToSubarrays(L.flattenArray(_currentActiveScanElements)));
             } else {
-                console.log('Select: single element selected, calling selection listener');
                 if (_selectionListener) {
                     _selectionListener(L.flattenArray(_currentActiveScanElements)[0]);
                 }
@@ -538,6 +559,11 @@ function ScannerConstructor(itemSelector, scanActiveClass, options) {
 
     thiz.next = function () {
         if (_nextScanFn) {
+            // If select was pressed very recently, skip this advance to prevent selecting the next item instead
+            const sinceSelect = Date.now() - _lastSelectTs;
+            if (sinceSelect <= _safeWindowMs) {
+                return; // ignore this tick
+            }
             clearTimeout(_scanTimeoutHandler);
             _nextScanFn();
         }
