@@ -47,6 +47,16 @@ button.btn-primary:hover {
     background-color: #d4ebf2;
 }
 
+.btn-danger:not(:disabled) {
+    background-color: darkred;
+    color: white;
+}
+
+.btn-danger:hover:not(:disabled), .btn-danger:focus:not(:disabled) {
+    background-color: #c30000;
+    color: white;
+}
+
 *:focus {
     outline: 3px solid lightblue;
 }
