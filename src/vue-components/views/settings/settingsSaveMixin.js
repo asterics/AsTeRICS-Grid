@@ -9,8 +9,25 @@ let settingsSaveMixin = {
     methods: {
         saveMetadata(metadata) {
             this.$emit("changing");
+            
+            // Track pending metadata saves
+            if (!window._pendingMetadataSaves) {
+                window._pendingMetadataSaves = 0;
+            }
+            window._pendingMetadataSaves++;
+            
             util.debounce(async () => {
-                await dataService.saveMetadata(metadata);
+                try {
+                    await dataService.saveMetadata(metadata);
+                    console.log('Metadata saved successfully');
+                } catch (error) {
+                    console.error('Error saving metadata:', error);
+                } finally {
+                    // Decrement pending saves counter
+                    if (window._pendingMetadataSaves > 0) {
+                        window._pendingMetadataSaves--;
+                    }
+                }
                 this.$emit("changed");
             }, SAVE_TIMEOUT_MS, 'SAVE_METADATA');
         },

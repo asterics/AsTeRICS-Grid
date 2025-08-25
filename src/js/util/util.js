@@ -545,7 +545,6 @@ util.getElementBackgroundColor = function(element, metadata) {
 /**
  * Returns the font color for a grid element, matching the UI logic.
  * @param {Object} element
- * @param {Object} metadata
  * @param {String|Array} backgroundColor (optional, for contrast)
  * @returns {String|Array} Hex string or RGB array
  */
@@ -605,5 +604,4 @@ util.getElementBorderColor = function(element, metadata) {
         return constants.COLORS.GRAY;
     }
 };
-
 export { util };
