@@ -7,6 +7,7 @@ import { MainVue } from './vue/mainVue';
 import './../css/gridlist.css';
 import './../css/jquery.contextMenu.css';
 import './../css/holy-grail.css';
+import './../css/print.css';
 import { loginService } from './service/loginService';
 import { urlParamService } from './service/urlParamService';
 import { constants } from './util/constants';

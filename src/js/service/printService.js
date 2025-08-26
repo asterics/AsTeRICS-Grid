@@ -10,6 +10,7 @@ import { arasaacService } from './pictograms/arasaacService.js';
 import $ from "../externals/jquery.js";
 import {constants} from "../util/constants.js";
 import {TextConfig} from "../model/TextConfig.js";
+import { ColorConfig } from "../model/ColorConfig.js";
 import { gridUtil } from '../util/gridUtil';
 import { fontUtil } from '../util/fontUtil';
 
@@ -17,401 +18,1058 @@ let printService = {};
 let pdfOptions = {
     docPadding: 5,
     footerHeight: 8,
-    textPadding: 3,
-    elementMargin: 1,
+    textPadding: null,
+    elementMargin: null,
     imgMargin: 1,
-    imgHeightPercentage: 0.8
+    imgHeightPercentage: 0.8,
+    fontFamily: null,
+    borderWidth: null,
+    borderRadius: null
 };
+
+// Global variables for metadata configuration
 let convertMode = null;
 
-let patternFontMappings = [
-    {
-        pattern: /^[\u0400-\u04FF]+$/,
-        font: '/app/fonts/Arimo-Regular-Cyrillic.ttf'
+function updatePdfOptionsFromMetadata(metadata) {
+    console.log('🔧 Updating PDF options from metadata:', {
+        metadataElementMargin: metadata?.colorConfig?.elementMargin,
+        metadataTextPadding: metadata?.textConfig?.textPadding,
+        metadataFontFamily: metadata?.textConfig?.fontFamily,
+        metadataBorderWidth: metadata?.colorConfig?.borderWidth,
+        metadataBorderRadius: metadata?.colorConfig?.borderRadius
+    });
+
+    const missingFields = [];
+
+    if (metadata?.colorConfig?.elementMargin != null) {
+        pdfOptions.elementMargin = metadata.colorConfig.elementMargin;
+        console.log(`🔧 Updated elementMargin: ${metadata.colorConfig.elementMargin}%`);
+    } else {
+        pdfOptions.elementMargin = 0.5;
+        missingFields.push('colorConfig.elementMargin');
     }
-];
+
+    if (metadata?.textConfig?.textPadding != null) {
+        pdfOptions.textPadding = metadata.textConfig.textPadding;
+        console.log(`🔧 Updated textPadding: ${metadata.textConfig.textPadding}mm`);
+    } else {
+        pdfOptions.textPadding = 3;
+        missingFields.push('textConfig.textPadding');
+    }
+
+    if (metadata?.textConfig?.fontFamily != null) {
+        pdfOptions.fontFamily = metadata.textConfig.fontFamily;
+        console.log(`🔧 Updated fontFamily: ${pdfOptions.fontFamily}`);
+    } else {
+        pdfOptions.fontFamily = 'Jost-400-Book';
+        missingFields.push('textConfig.fontFamily');
+    }
+
+    if (metadata?.colorConfig?.borderWidth != null) {
+        pdfOptions.borderWidth = metadata.colorConfig.borderWidth;
+        console.log(`🔧 Updated borderWidth: ${pdfOptions.borderWidth}%`);
+    } else {
+        pdfOptions.borderWidth = 1;
+        missingFields.push('colorConfig.borderWidth');
+    }
+
+    if (metadata?.colorConfig?.borderRadius != null) {
+        pdfOptions.borderRadius = metadata.colorConfig.borderRadius;
+        console.log(`🔧 Updated borderRadius: ${pdfOptions.borderRadius}%`);
+    } else {
+        pdfOptions.borderRadius = 0;
+        missingFields.push('colorConfig.borderRadius');
+    }
+
+    if (missingFields.length > 0) {
+        console.warn(`⚠️ Missing metadata fields, using defaults: ${missingFields.join(', ')}`);
+        console.log('Metadata received:', JSON.stringify(metadata, null, 2));
+    }
+
+    console.log('🔧 Final PDF options:', JSON.stringify(pdfOptions, null, 2));
+}
+
+let patternFontMappings = [];
+
+function colorToRGB(color) {
+    try {
+        if (Array.isArray(color) && color.length === 3 && color.every(c => typeof c === 'number' && c >= 0 && c <= 255)) {
+            return color;
+        }
+        
+        if (typeof color === 'string' && color.startsWith('#')) {
+            let rgb = util.hexToRGB(color);
+            if (rgb && Array.isArray(rgb) && rgb.length === 3) {
+                return rgb;
+            }
+            throw new Error(`Invalid hex color format: ${color}`);
+        }
+        
+        if (typeof color === 'string' && color.indexOf('rgb') === 0) {
+            let rgb = util.cssRGBToRGB(color);
+            if (rgb && Array.isArray(rgb) && rgb.length === 3) {
+                return rgb;
+            }
+            throw new Error(`Invalid CSS RGB format: ${color}`);
+        }
+        
+        if (typeof color === 'string' && color.toLowerCase() === 'transparent') {
+            return [255, 255, 255];
+        }
+        
+        if (typeof color === 'string') {
+            let namedColors = {
+                'black': [0, 0, 0],
+                'white': [255, 255, 255],
+                'red': [255, 0, 0],
+                'green': [0, 255, 0],
+                'blue': [0, 0, 255],
+                'yellow': [255, 255, 0],
+                'cyan': [0, 255, 255],
+                'magenta': [255, 0, 255],
+                'gray': [128, 128, 128],
+                'grey': [128, 128, 128],
+                'orange': [255, 165, 0],
+                'purple': [128, 0, 128],
+                'brown': [165, 42, 42],
+                'pink': [255, 192, 203]
+            };
+            
+            let lowerColor = color.toLowerCase();
+            if (namedColors[lowerColor]) {
+                return namedColors[lowerColor];
+            }
+        }
+        
+        if (typeof util.getRGB === 'function') {
+            let rgb = util.getRGB(color);
+            if (rgb && Array.isArray(rgb) && rgb.length === 3) {
+                return rgb;
+            }
+        }
+
+        throw new Error(`Unknown color format: ${color}`);
+    } catch (error) {
+        console.error('Error in colorToRGB:', error);
+        return [0, 0, 0];
+    }
+}
 
 printService.initPrintHandlers = function () {
     window.addEventListener('beforeprint', () => {
+        const originalWidth = $('#grid-container').width();
+        const originalHeight = $('#grid-container').height();
+        
         $('#grid-container').width('27.7cm');
         $('#grid-container').height('19cm');
+        
+        window._printOriginalDimensions = { width: originalWidth, height: originalHeight };
     });
+    
     window.addEventListener('afterprint', () => {
-        $('#grid-container').width('');
-        $('#grid-container').height('');
+        if (window._printOriginalDimensions) {
+            $('#grid-container').width(window._printOriginalDimensions.width);
+            $('#grid-container').height(window._printOriginalDimensions.height);
+            delete window._printOriginalDimensions;
+        }
     });
 };
 
-/**
- * Converts given grids to pdf and downloads the pdf file
- *
- * @param gridsData array of GridData to convert to pdf
- * @param options (optional) object containing options
- * @param options.showLinks if true, links on elements are created which are referring to another grid/page
- * @param options.backgroundColor object with r/g/b properties defining a background color for grid elements. Default: white.
- * @param options.includeGlobalGrid if true, the global grid is included to each grid
- * @param options.progressFn a function that is called in order to report progress of the task.
- *                           Parameters passed: <percentage:Number, text:String, abortFn:Function>.
- *                           "abortFn" can be called in order to abort the task.
- * @return {Promise<void>}
- */
-printService.gridsToPdf = async function (gridsData, options) {
-    let jsPDF = await import(/* webpackChunkName: "jspdf" */ 'jspdf');
-    options = options || {};
-    let metadata = await dataService.getMetadata();
-    let defaultGlobalGrid = null;
-    if (options.includeGlobalGrid) {
-        defaultGlobalGrid = await dataService.getGlobalGrid();
-    }
-    options.idPageMap = {};
-    options.idParentsMap = {};
-    options.fontPath = '';
-    gridsData.forEach((grid, index) => {
-        options.idPageMap[grid.id] = index + 1;
-    });
+printService.gridsToPdf = async function (gridsData, options = {}) {
+    try {
+        const jsPDF = await import(/* webpackChunkName: "jspdf" */ 'jspdf');
 
-    for (let grid of gridsData) {
-        options.idParentsMap[grid.id] = options.idParentsMap[grid.id] || [];
-        for (let element of grid.gridElements) {
-            element = new GridElement(element);
-            let nav = element.getNavigateGridId();
-            if (nav) {
-                options.idParentsMap[nav] = options.idParentsMap[nav] || [];
-                options.idParentsMap[nav].push(options.idPageMap[grid.id]);
+        options.printElementColors = options.printElementColors !== false;
+        options.printBackground = options.printBackground !== false;
+
+        await new Promise(resolve => {
+            const checkPendingSaves = () => {
+                console.log('Pending metadata saves:', window._pendingMetadataSaves);
+                if (window._pendingMetadataSaves && window._pendingMetadataSaves > 0) {
+                    setTimeout(checkPendingSaves, 200);
+                } else {
+                    resolve();
+                }
+            };
+            checkPendingSaves();
+        });
+    
+        let metadata = await dataService.getMetadata() || { colorConfig: {}, textConfig: {} };
+        console.log('Initial metadata:', JSON.stringify(metadata, null, 2));
+
+        try {
+            if (typeof MetaData !== 'undefined' && MetaData.getCurrentMetaData) {
+                const alternativeMetadata = MetaData.getCurrentMetaData();
+                if (alternativeMetadata && alternativeMetadata.colorConfig &&
+                    Object.keys(alternativeMetadata.colorConfig).length > Object.keys(metadata.colorConfig).length) {
+                    metadata = alternativeMetadata;
+                    console.log('Using alternative metadata:', JSON.stringify(metadata, null, 2));
+                }
             }
-            let label = i18nService.getTranslation(element.label);
-            for (let elem of patternFontMappings) {
-                if (elem.pattern && elem.pattern.test && elem.pattern.test(label)) {
-                    options.fontPath = elem.font;
+        } catch (e) {
+            console.warn('Could not access MetaData.getCurrentMetaData:', e);
+        }
+
+        updatePdfOptionsFromMetadata(metadata);
+    
+        const defaultGlobalGrid = options.includeGlobalGrid ? await dataService.getGlobalGrid() : null;
+
+        options.idPageMap = {};
+        options.idParentsMap = {};
+        options.customFontFamily = pdfOptions.fontFamily;
+    
+        gridsData.forEach((grid, index) => {
+            options.idPageMap[grid.id] = index + 1;
+        });
+
+        for (let grid of gridsData) {
+            options.idParentsMap[grid.id] = options.idParentsMap[grid.id] || [];
+            for (let element of grid.gridElements) {
+                element = new GridElement(element);
+                let nav = element.getNavigateGridId();
+                if (nav) {
+                    options.idParentsMap[nav] = options.idParentsMap[nav] || [];
+                    options.idParentsMap[nav].push(options.idPageMap[grid.id]);
+                }
+                let label = i18nService.getTranslation(element.label);
+            }
+        }
+
+        const doc = new jsPDF.jsPDF({ orientation: 'landscape', unit: 'mm', compress: true });
+
+        const userFontFamily = pdfOptions.fontFamily;
+        const builtInFonts = ['Arial', 'Helvetica', 'Times', 'Courier', 'Courier New', 'Times New Roman'];
+        
+        let fontLoaded = false;
+        let loadedFontName = 'Helvetica';
+        
+        if (builtInFonts.includes(userFontFamily)) {
+            try {
+                doc.setFont(userFontFamily);
+                if (doc.getTextWidth('Test') > 0) {
+                    options.loadedCustomFont = userFontFamily;
+                    fontLoaded = true;
+                    loadedFontName = userFontFamily;
+                    console.log(`✅ Using built-in font: ${userFontFamily}`);
+                }
+            } catch (error) {
+                console.warn(`⚠️ Built-in font ${userFontFamily} not available:`, error);
+            }
+        }
+        
+        if (!fontLoaded) {
+            for (const fontName of builtInFonts) {
+                if (fontName === userFontFamily) continue;
+                
+                try {
+                    doc.setFont(fontName);
+                    if (doc.getTextWidth('Test') > 0) {
+                        options.loadedCustomFont = fontName;
+                        fontLoaded = true;
+                        loadedFontName = fontName;
+                        console.log(`✅ Using built-in font: ${fontName}`);
+                        break;
+                    }
+                } catch (error) {
+                    console.warn(`⚠️ Built-in font ${fontName} not available:`, error);
                 }
             }
         }
-    }
-    const doc = new jsPDF.jsPDF({
-        orientation: 'landscape',
-        compress: true
-    });
-    if (options.fontPath) {
-        await loadFont(options.fontPath, doc);
-    }
+        
+        if (!fontLoaded) {
+            console.warn(`⚠️ All built-in font attempts failed, using ${loadedFontName} as fallback`);
+            doc.setFont(loadedFontName);
+            options.loadedCustomFont = loadedFontName;
+        }
 
-    options.pages = gridsData.length;
-    for (let i = 0; i < gridsData.length && !options.abort; i++) {
-        if (options.progressFn) {
-            options.progressFn(
-                Math.round((100 * i) / gridsData.length),
-                i18nService.t('creatingPageXOfY', i + 1, gridsData.length),
-                () => {
-                    options.abort = true;
+        options.pages = gridsData.length;
+
+        for (let i = 0; i < gridsData.length && !options.abort; i++) {
+            let currentMetadata = await dataService.getMetadata() || { colorConfig: {}, textConfig: {} };
+            console.log('📋 Database metadata for page', i + 1, ':', JSON.stringify(currentMetadata, null, 2));
+            
+            try {
+                if (typeof window !== 'undefined' && window.metadata) {
+                    const uiMetadata = window.metadata;
+                    console.log('📋 UI metadata found:', JSON.stringify(uiMetadata, null, 2));
+                    
+                    if (uiMetadata.colorConfig && uiMetadata.textConfig) {
+                        currentMetadata = uiMetadata;
+                        console.log('✅ Using UI metadata for page', i + 1);
+                    }
                 }
-            );
+                
+                if (typeof window !== 'undefined' && window.app && window.app.$children && window.app.$children[0]) {
+                    const vueComponent = window.app.$children[0];
+                    if (vueComponent.metadata) {
+                        console.log('📋 Vue component metadata found:', JSON.stringify(vueComponent.metadata, null, 2));
+                        
+                        if (vueComponent.metadata.colorConfig && vueComponent.metadata.textConfig) {
+                            currentMetadata = vueComponent.metadata;
+                            console.log('✅ Using Vue component metadata for page', i + 1);
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn('⚠️ Could not access UI metadata:', e);
+            }
+            
+            metadata = currentMetadata;
+
+            updatePdfOptionsFromMetadata(metadata);
+            
+            console.log('🔍 Validating metadata completeness:');
+            console.log('  - colorConfig.elementMargin:', metadata?.colorConfig?.elementMargin, 'expected: number');
+            console.log('  - colorConfig.borderWidth:', metadata?.colorConfig?.borderWidth, 'expected: number');
+            console.log('  - colorConfig.borderRadius:', metadata?.colorConfig?.borderRadius, 'expected: number');
+            console.log('  - colorConfig.elementBackgroundColor:', metadata?.colorConfig?.elementBackgroundColor, 'expected: color');
+            console.log('  - colorConfig.elementBorderColor:', metadata?.colorConfig?.elementBorderColor, 'expected: color');
+            console.log('  - colorConfig.colorMode:', metadata?.colorConfig?.colorMode, 'expected: string');
+            
+            if (!metadata?.colorConfig?.elementMargin && !metadata?.colorConfig?.borderWidth && !metadata?.colorConfig?.borderRadius) {
+                console.warn('⚠️ WARNING: Critical appearance settings missing from metadata!');
+                console.warn('   This will cause the PDF to use default values instead of user settings.');
+                console.warn('   Try refreshing the page or checking if settings are saved.');
+            }
+
+            let globalGrid = defaultGlobalGrid;
+            if (options.includeGlobalGrid && gridsData[i].showGlobalGrid && gridsData[i].globalGridId) {
+                globalGrid = await dataService.getGrid(gridsData[i].globalGridId, false);
+            }
+            globalGrid = gridsData[i].showGlobalGrid !== false ? globalGrid : null;
+            options.page = i + 1;
+
+            await addGridToPdf(doc, gridsData[i], options, metadata, globalGrid);
+
+            if (i < gridsData.length - 1) {
+                doc.addPage();
+            }
         }
-        let globalGrid = defaultGlobalGrid;
-        if (options.includeGlobalGrid && gridsData[i].showGlobalGrid && gridsData[i].globalGridId) {
-            globalGrid = await dataService.getGrid(gridsData[i].globalGridId, false);
+
+        if (!options.abort) {
+            if (options.progressFn) options.progressFn(100);
+
+            const filename = `grids_${util.getCurrentDateTimeString()}.pdf`;
+            doc.save(filename);
         }
-        globalGrid = gridsData[i].showGlobalGrid !== false ? globalGrid : null;
-        options.page = i + 1;
-        await addGridToPdf(doc, gridsData[i], options, metadata, globalGrid);
-        if (i < gridsData.length - 1) {
-            doc.addPage();
-        }
-    }
-    if (!options.abort) {
-        if (options.progressFn) {
-            options.progressFn(100);
-        }
-        //window.open(doc.output('bloburl'))
-        doc.save('grid-export.pdf');
+    } catch (error) {
+        console.error('Error in PDF generation:', error);
+        throw error;
     }
 };
 
 async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
-    let promises = [];
-    let DOC_WIDTH = 297;
-    let DOC_HEIGHT = 210;
-
-    gridData = new GridData(gridData);
-    gridData = gridUtil.mergeGrids(gridData, globalGrid, metadata);
-    let hasARASAACImages = gridData.gridElements.reduce(
-        (total, element) =>
-            total || (element.image && element.image.searchProviderName === arasaacService.SEARCH_PROVIDER_NAME),
-        false
-    );
-    let registerHeight = options.showRegister && options.pages > 1 ? 10 : 0;
-    let footerHeight = hasARASAACImages ? 2 * pdfOptions.footerHeight : pdfOptions.footerHeight;
-    let elementTotalWidth = (DOC_WIDTH - 2 * pdfOptions.docPadding) / gridUtil.getWidthWithBounds(gridData);
-    let elementTotalHeight =
-        (DOC_HEIGHT - 2 * pdfOptions.docPadding - footerHeight - registerHeight) / gridUtil.getHeightWithBounds(gridData);
-    if (footerHeight > 0) {
-        let yBaseFooter = DOC_HEIGHT - pdfOptions.docPadding - registerHeight;
-        let fontSizePt = (pdfOptions.footerHeight * 0.4) / 0.352778;
-        doc.setTextColor(0);
-        doc.setFontSize(fontSizePt);
-        let textL = i18nService.t('printedByAstericsGrid');
-        let textL2 = i18nService.t('copyrightARASAACPDF');
-        let textC = i18nService.getTranslation(gridData.label);
-        let firstParentPage = options.idParentsMap[gridData.id][0];
-        let yLine1 = hasARASAACImages ? yBaseFooter - pdfOptions.footerHeight : yBaseFooter;
-        if (options.showLinks && firstParentPage) {
-            let prefix = JSON.stringify(options.idParentsMap[gridData.id].slice(0, 5));
-            textC = prefix + ' => ' + textC;
-            let textWidth = doc.getTextWidth(textC);
-            doc.link(
-                DOC_WIDTH / 2 - textWidth / 2,
-                yLine1 - pdfOptions.footerHeight * 0.4,
-                textWidth,
-                pdfOptions.footerHeight * 0.4,
-                { pageNumber: firstParentPage }
-            );
-        }
-        let currentPage = options.idPageMap[gridData.id] || 1;
-        let totalPages = Object.keys(options.idPageMap).length || 1;
-        let textR = currentPage + ' / ' + totalPages;
-        doc.text(textL, pdfOptions.docPadding + pdfOptions.elementMargin, yLine1, {
-            baseline: 'bottom',
-            align: 'left'
-        });
-        if (hasARASAACImages) {
-            doc.text(textL2, pdfOptions.docPadding + pdfOptions.elementMargin, yBaseFooter, {
-                baseline: 'bottom',
-                align: 'left'
-            });
-        }
-        doc.text(textC, DOC_WIDTH / 2, yLine1, {
-            baseline: 'bottom',
-            align: 'center'
-        });
-        doc.text(textR, DOC_WIDTH - pdfOptions.docPadding - pdfOptions.elementMargin, yLine1, {
-            baseline: 'bottom',
-            align: 'right'
-        });
-    }
-    if (registerHeight > 0) {
-        let maxRegisters = 30;
-        let stepSize = 1;
-        let registerCount = options.pages;
-        if (options.pages > maxRegisters) {
-            stepSize = Math.ceil(options.pages / maxRegisters);
-            registerCount = Math.ceil(options.pages / stepSize);
-        }
-        doc.setFillColor(255, 255, 255);
-        doc.setDrawColor(0);
-        doc.roundedRect(0, DOC_HEIGHT - registerHeight, DOC_WIDTH, registerHeight, 0, 0);
-        doc.setFontSize(13);
-        let registerElementWidth = DOC_WIDTH / registerCount;
-        for (let i = 0; i < registerCount; i++) {
-            doc.roundedRect(
-                i * registerElementWidth,
-                DOC_HEIGHT - registerHeight,
-                registerElementWidth,
-                registerHeight,
-                0,
-                0
-            );
-            let maxPage = i * stepSize + 1;
-            if (maxPage <= options.page) {
-                doc.text(
-                    maxPage + '',
-                    i * registerElementWidth + registerElementWidth / 2,
-                    DOC_HEIGHT - registerHeight / 2,
-                    {
-                        baseline: 'middle',
-                        align: 'center'
-                    }
-                );
+    try {
+        const DOC_WIDTH = 297;
+        const DOC_HEIGHT = 210;
+        const PX_TO_MM = 0.264583;
+        
+        function debugCalculation(elementId, setting, uiValue, pdfValue, calculation) {
+            if (Math.abs(uiValue - pdfValue) > 0.02) {
+                console.warn(`🔍 CALCULATION MISMATCH for ${elementId}:`);
+                console.warn(`  Setting: ${setting}`);
+                console.warn(`  UI Value: ${uiValue.toFixed(3)}mm`);
+                console.warn(`  PDF Value: ${pdfValue.toFixed(3)}mm`);
+                console.warn(`  Calculation: ${calculation}`);
+                console.warn(`  Difference: ${Math.abs(uiValue - pdfValue).toFixed(3)}mm`);
             }
         }
-    }
-    for (let element of gridData.gridElements) {
-        if (element.hidden) {
-            continue;
+        
+        console.log('🧪 Testing colorToRGB function:');
+        console.log('  - Test 1: White color:', colorToRGB('#ffffff'));
+        console.log('  - Test 2: Black color:', colorToRGB('#000000'));
+        console.log('  - Test 3: Red color:', colorToRGB('#ff0000'));
+        console.log('  - Test 4: Default background:', colorToRGB(constants.DEFAULT_ELEMENT_BACKGROUND_COLOR));
+    
+        gridData = new GridData(gridData);
+    
+        try {
+            gridData = gridUtil.mergeGrids(gridData, globalGrid, metadata);
+        } catch (error) {
+            console.error('Failed to merge grids:', error);
+            throw new Error(`Failed to merge grids: ${error.message}`);
         }
-        let currentWidth = elementTotalWidth * element.width - 2 * pdfOptions.elementMargin;
-        let currentHeight = elementTotalHeight * element.height - 2 * pdfOptions.elementMargin;
-        let xStartPos = pdfOptions.docPadding + elementTotalWidth * element.x + pdfOptions.elementMargin;
-        let yStartPos = pdfOptions.docPadding + elementTotalHeight * element.y + pdfOptions.elementMargin;
-        let bgColor = options.printBackground ? util.getRGB(MetaData.getElementColor(element, metadata)) : [255, 255, 255];
-        doc.setDrawColor(0);
-        doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
-        doc.roundedRect(xStartPos, yStartPos, currentWidth, currentHeight, 3, 3, 'FD');
-        if (i18nService.getTranslation(element.label)) {
-            addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, bgColor);
+
+        const hasARASAACImages = gridData.gridElements.some(
+            element => element.image && element.image.searchProviderName === arasaacService.SEARCH_PROVIDER_NAME
+        );
+        const registerHeight = options.showRegister && options.pages > 1 ? 10 : 0;
+        const footerHeight = hasARASAACImages ? 2 * pdfOptions.footerHeight : pdfOptions.footerHeight;
+
+        if (metadata?.colorConfig?.gridBackgroundColor) {
+            const gridBgColor = colorToRGB(metadata.colorConfig.gridBackgroundColor);
+            console.log('🎨 Setting grid background color:', metadata.colorConfig.gridBackgroundColor, '→', gridBgColor);
+            doc.setFillColor(...gridBgColor);
+            doc.rect(0, 0, DOC_WIDTH, DOC_HEIGHT, 'F');
         }
-        await addImageToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos);
-        element = new GridElement(element);
-        if (options.showLinks && options.idPageMap[element.getNavigateGridId()]) {
-            let targetPage = options.idPageMap[element.getNavigateGridId()];
-            let iconWidth = Math.max(currentWidth / 10, 7);
-            let offsetX = currentWidth - iconWidth - 1;
-            let offsetY = 1;
-            doc.setDrawColor(255);
+
+        let gridWidth = gridUtil.getWidthWithBounds(gridData) || 1;
+        let gridHeight = gridUtil.getHeightWithBounds(gridData) || 1;
+        let elementTotalWidth = (DOC_WIDTH - 2 * pdfOptions.docPadding) / gridWidth;
+        let elementTotalHeight = (DOC_HEIGHT - 2 * pdfOptions.docPadding - footerHeight - registerHeight) / gridHeight;
+
+        if (options.showRegister && options.pages > 1) {
             doc.setFillColor(90, 113, 122);
-            doc.roundedRect(xStartPos + offsetX, yStartPos + offsetY, iconWidth, iconWidth, 1, 1, 'FD');
-            doc.link(xStartPos, yStartPos, currentWidth, currentHeight, { pageNumber: targetPage });
-            if (targetPage) {
-                let fontSizePt = (iconWidth * 0.6) / 0.352778;
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(fontSizePt);
-                doc.text(
-                    targetPage + '',
-                    xStartPos + offsetX + iconWidth / 2,
-                    yStartPos + offsetY + iconWidth / 2,
-                    {
-                        baseline: 'middle',
-                        align: 'center',
-                        maxWidth: iconWidth
+            doc.rect(0, DOC_HEIGHT - registerHeight, DOC_WIDTH, registerHeight, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(8);
+            doc.text(
+                i18nService.t('pageXOfY', options.page, options.pages),
+                DOC_WIDTH / 2,
+                DOC_HEIGHT - registerHeight / 2,
+                { baseline: 'middle', align: 'center' }
+            );
+        }
+
+        if (hasARASAACImages) {
+            doc.setFillColor(90, 113, 122);
+            doc.rect(0, DOC_HEIGHT - footerHeight, DOC_WIDTH, footerHeight, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(6);
+            doc.text(
+                'ARASAAC - ARASAAC.org',
+                DOC_WIDTH / 2,
+                DOC_HEIGHT - footerHeight / 2,
+                { baseline: 'middle', align: 'center' }
+            );
+        }
+
+        console.log('🔍 DEBUG: Values for PDF generation:');
+        console.log('  - pdfOptions.elementMargin:', pdfOptions.elementMargin, '%');
+        console.log('  - pdfOptions.borderWidth:', pdfOptions.borderWidth, '%');
+        console.log('  - pdfOptions.borderRadius:', pdfOptions.borderRadius, '%');
+        console.log('  - elementTotalWidth:', elementTotalWidth, 'mm');
+        console.log('  - elementTotalHeight:', elementTotalHeight, 'mm');
+        console.log('  - PX_TO_MM:', PX_TO_MM);
+        console.log('  - metadata.colorConfig:', JSON.stringify(metadata?.colorConfig, null, 2));
+        
+        for (const element of gridData.gridElements) {
+            if (element.hidden) continue;
+
+            const colorConfig = metadata?.colorConfig || {};
+            const colorMode = colorConfig.colorMode || ColorConfig.COLOR_MODE_BACKGROUND;
+            const shouldDrawBorder = colorMode === ColorConfig.COLOR_MODE_BORDER || colorMode === ColorConfig.COLOR_MODE_BOTH;
+
+            const elementMargin = pdfOptions.elementMargin;
+            const elementHeightPx = elementTotalHeight * element.height;
+            const elementMarginPx = (elementMargin / 100) * elementHeightPx;
+            const elementMarginMM = elementMarginPx * PX_TO_MM;
+            
+            console.log(`🔍 Element ${element.id} margin calculation:`);
+            console.log(`  - elementMargin: ${elementMargin}%`);
+            console.log(`  - elementHeightPx: ${elementHeightPx}px`);
+            console.log(`  - elementMarginPx: ${elementMarginPx}px`);
+            console.log(`  - elementMarginMM: ${elementMarginMM}mm`);
+            
+            let currentWidth = elementTotalWidth * element.width - 2 * elementMarginMM;
+            let currentHeight = elementTotalHeight * element.height - 2 * elementMarginMM;
+            
+            currentWidth = Math.max(currentWidth, 1);
+            currentHeight = Math.max(currentHeight, 1);
+            
+            let xStartPos = pdfOptions.docPadding + elementTotalWidth * element.x + elementMarginMM;
+            let yStartPos = pdfOptions.docPadding + elementTotalHeight * element.y + elementMarginMM;
+
+            let bgColor = [255, 255, 255];
+            
+            console.log(`🔍 Element ${element.id} background color logic:`);
+            console.log(`  - element.type: ${element.type}`);
+            console.log(`  - colorConfig.colorMode: ${colorConfig.colorMode}`);
+            console.log(`  - element.colorCategory: ${element.colorCategory}`);
+            console.log(`  - colorConfig.colorSchemesActivated: ${colorConfig.colorSchemesActivated}`);
+            console.log(`  - colorConfig.elementBackgroundColor: ${colorConfig.elementBackgroundColor}`);
+            
+            try {
+                if (element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
+                    bgColor = colorToRGB(constants.COLORS.PREDICT_BACKGROUND);
+                } else if (element.type === GridElement.ELEMENT_TYPE_LIVE) {
+                    bgColor = colorToRGB(element.backgroundColor || constants.COLORS.LIVE_BACKGROUND);
+                } else if (colorConfig.colorSchemesActivated && element.colorCategory) {
+                    let colorScheme = MetaData.getUseColorScheme(metadata);
+                    if (colorScheme) {
+                        let index = colorScheme.categories.indexOf(element.colorCategory);
+                        if (index === -1 && colorScheme.mappings) {
+                            let mapped = colorScheme.mappings[element.colorCategory];
+                            index = colorScheme.categories.indexOf(mapped);
+                        }
+                        if (index !== -1) {
+                            bgColor = colorToRGB(colorScheme.colors[index]);
+                        } else {
+                            bgColor = colorToRGB(colorConfig.elementBackgroundColor || constants.DEFAULT_ELEMENT_BACKGROUND_COLOR);
+                        }
                     }
-                );
+                } else {
+                    bgColor = colorToRGB(colorConfig.elementBackgroundColor || constants.DEFAULT_ELEMENT_BACKGROUND_COLOR);
+                }
+            } catch (error) {
+                console.warn('Error getting background color for element:', element.id, error);
+                bgColor = colorToRGB(constants.DEFAULT_ELEMENT_BACKGROUND_COLOR);
+            }
+        
+            console.log(`🎨 Element ${element.id} final background color:`, bgColor);
+            console.log(`  - RGB values: [${bgColor.join(', ')}]`);
+            
+            let borderColor = [0, 0, 0];
+            if (shouldDrawBorder) {
+                try {
+                    let color = colorConfig.elementBorderColor;
+                    if (color === constants.DEFAULT_ELEMENT_BORDER_COLOR) {
+                        let backgroundColor = colorConfig.gridBackgroundColor || constants.COLORS.WHITE;
+                        color = fontUtil.getHighContrastColor(backgroundColor, constants.COLORS.WHITESMOKE, constants.COLORS.GRAY);
+                    }
+                    
+                    if (colorConfig.colorMode === ColorConfig.COLOR_MODE_BORDER) {
+                        color = MetaData.getElementColor(element, metadata, color);
+                    } else if (colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH) {
+                        if (!element.colorCategory) {
+                            color = 'transparent';
+                        } else {
+                            let colorScheme = MetaData.getUseColorScheme(metadata);
+                            if (colorScheme && colorScheme.customBorders && colorScheme.customBorders[element.colorCategory]) {
+                                color = colorScheme.customBorders[element.colorCategory];
+                            } else {
+                                let absAdjustment = 40;
+                                let bgColorForBorder = MetaData.getElementColor(element, metadata, color);
+                                let adjustment = fontUtil.isHexDark(bgColorForBorder) ? absAdjustment * 1.5 : absAdjustment * -1;
+                                color = fontUtil.adjustHexColor(bgColorForBorder, adjustment);
+                            }
+                        }
+                    }
+                    
+                    borderColor = colorToRGB(color);
+                } catch (error) {
+                    console.warn('Error getting border color for element:', element.id, error);
+                    borderColor = colorToRGB(constants.DEFAULT_ELEMENT_BORDER_COLOR);
+                }
+            }
+
+            const borderWidth = pdfOptions.borderWidth;
+            const borderHeightPx = elementTotalHeight * element.height;
+            const borderWidthPx = (borderWidth / 100) * borderHeightPx;
+            let borderWidthMM = borderWidthPx * PX_TO_MM;
+            
+            console.log(`🔍 Element ${element.id} border width calculation:`);
+            console.log(`  - borderWidth: ${borderWidth}%`);
+            console.log(`  - borderHeightPx: ${borderHeightPx}px`);
+            console.log(`  - borderWidthPx: ${borderWidthPx}px`);
+            console.log(`  - borderWidthMM: ${borderWidthMM}mm`);
+            
+            if (borderWidth > 0 && borderWidthMM < 0.05) {
+                borderWidthMM = 0.05;
+                console.log(`  - Applied minimum threshold: ${borderWidthMM}mm`);
+            }
+
+            const borderRadius = pdfOptions.borderRadius;
+            const radiusHeightPx = elementTotalHeight * element.height;
+            const borderRadiusPx = (borderRadius / 100) * radiusHeightPx;
+            let borderRadiusMM = borderRadiusPx * PX_TO_MM;
+            
+            console.log(`🔍 Element ${element.id} border radius calculation:`);
+            console.log(`  - borderRadius: ${borderRadius}%`);
+            console.log(`  - radiusHeightPx: ${radiusHeightPx}px`);
+            console.log(`  - borderRadiusPx: ${borderRadiusPx}px`);
+            console.log(`  - borderRadiusMM: ${borderRadiusMM}mm`);
+
+            const uiElement = $(`#${element.id}`);
+            if (uiElement.length) {
+                const uiBorderWidthPx = parseFloat(uiElement.css('border-width')) || 0;
+                const uiBorderWidthMM = uiBorderWidthPx * PX_TO_MM;
+                const uiBorderRadiusPx = parseFloat(uiElement.css('border-radius')) || 0;
+                const uiBorderRadiusMM = uiBorderRadiusPx * PX_TO_MM;
+                const uiMarginPx = parseFloat(uiElement.css('margin')) || 0;
+                const uiMarginMM = uiMarginPx * PX_TO_MM;
+                const uiBgColor = uiElement.css('background-color');
+                const uiBorderColor = uiElement.css('border-color');
+
+                debugCalculation(element.id, 'Border Width', uiBorderWidthMM, borderWidthMM, 
+                    `UI: ${uiBorderWidthPx}px, PDF: ${borderWidthPx}px * ${PX_TO_MM} = ${borderWidthMM}mm`);
+                
+                debugCalculation(element.id, 'Border Radius', uiBorderRadiusMM, borderRadiusMM, 
+                    `UI: ${uiBorderRadiusPx}px, PDF: ${radiusHeightPx}px * ${borderRadius/100} * ${PX_TO_MM} = ${borderRadiusMM}mm`);
+                
+                debugCalculation(element.id, 'Element Margin', uiMarginMM, elementMarginMM, 
+                    `UI: ${uiMarginPx}px, PDF: ${elementHeightPx}px * ${elementMargin/100} * ${PX_TO_MM} = ${elementMarginMM}mm`);
+                
+                if (uiBgColor && colorToRGB(uiBgColor).join(',') !== bgColor.join(',')) {
+                    console.warn(`Background color mismatch for element ${element.id}: UI=${uiBgColor}, PDF=${bgColor}`);
+                }
+                if (uiBorderColor && colorToRGB(uiBorderColor).join(',') !== borderColor.join(',')) {
+                    console.warn(`Border color mismatch for element ${element.id}: UI=${uiBorderColor}, PDF=${borderColor}`);
+                }
+            }
+
+            console.log(`🎨 Element ${element.id} PDF drawing commands:`);
+            console.log(`  - Setting fill color: [${bgColor.join(', ')}]`);
+            console.log(`  - Setting draw color: [${borderColor.join(', ')}]`);
+            console.log(`  - Setting line width: ${borderWidthMM}mm`);
+            console.log(`  - Drawing at position: (${xStartPos}, ${yStartPos})`);
+            console.log(`  - Dimensions: ${currentWidth}mm x ${currentHeight}mm`);
+            console.log(`  - Border radius: ${borderRadiusMM}mm`);
+            console.log(`  - Will draw border: ${shouldDrawBorder && borderWidthMM > 0}`);
+            
+            const beforeFillColor = doc.getFillColor();
+            const beforeColorStr = Array.isArray(beforeFillColor) ? beforeFillColor.join(', ') : String(beforeFillColor);
+            console.log(`  - Fill color before setting: [${beforeColorStr}]`);
+            
+            doc.setFillColor(...bgColor);
+            doc.setDrawColor(...borderColor);
+            doc.setLineWidth(borderWidthMM);
+            
+            const afterFillColor = doc.getFillColor();
+            const afterColorStr = Array.isArray(afterFillColor) ? afterFillColor.join(', ') : String(afterFillColor);
+            console.log(`  - Fill color after setting: [${afterColorStr}]`);
+            
+            const colorSetSuccessfully = Array.isArray(afterFillColor) && 
+                afterFillColor.length === bgColor.length && 
+                afterFillColor.every((val, idx) => Math.abs(val - bgColor[idx]) < 1);
+            console.log(`  - Color set successfully: ${colorSetSuccessfully}`);
+                
+            if (borderRadiusMM > 0) {
+                console.log(`  - Drawing rounded rectangle with fill`);
+                doc.roundedRect(xStartPos, yStartPos, currentWidth, currentHeight, borderRadiusMM, borderRadiusMM, 'F');
+                if (shouldDrawBorder && borderWidthMM > 0) {
+                    console.log(`  - Drawing rounded rectangle border`);
+                    doc.roundedRect(xStartPos, yStartPos, currentWidth, currentHeight, borderRadiusMM, borderRadiusMM, 'D');
+                }
+            } else {
+                console.log(`  - Drawing regular rectangle with fill`);
+                doc.rect(xStartPos, yStartPos, currentWidth, currentHeight, 'F');
+                if (shouldDrawBorder && borderWidthMM > 0) {
+                    console.log(`  - Drawing regular rectangle border`);
+                    doc.rect(xStartPos, yStartPos, currentWidth, currentHeight, 'D');
+                }
+            }
+        
+            if (i18nService.getTranslation(element.label)) {
+                await addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, bgColor, metadata, options.printElementColors, options);
+            }
+            await addImageToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, metadata);
+        
+            if (options.showLinks && element.type === GridElement.ELEMENT_TYPE_NAVIGATE) {
+                let targetGridId = element.getNavigateGridId();
+                if (targetGridId && options.idPageMap[targetGridId]) {
+                    let targetPage = options.idPageMap[targetGridId];
+                    let iconWidth = Math.min(currentWidth, currentHeight) * 0.2;
+                    let offsetX = currentWidth - iconWidth - 2;
+                    let offsetY = 2;
+                    doc.setDrawColor(255);
+                    doc.setFillColor(90, 113, 122);
+                    doc.roundedRect(xStartPos + offsetX, yStartPos + offsetY, iconWidth, iconWidth, 1, 1, 'FD');
+                    doc.link(xStartPos, yStartPos, currentWidth, currentHeight, { pageNumber: targetPage });
+                    if (targetPage) {
+                        let fontSizePt = (iconWidth * 0.6) / 0.352778;
+                        doc.setTextColor(255, 255, 255);
+                        doc.setFontSize(fontSizePt);
+                        doc.text(
+                            targetPage + '',
+                            xStartPos + offsetX + iconWidth / 2,
+                            yStartPos + offsetY + iconWidth / 2,
+                            {
+                                baseline: 'middle',
+                                align: 'center',
+                                maxWidth: iconWidth
+                            }
+                        );
+                    }
+                }
             }
         }
+    } catch (error) {
+        console.error('Error in addGridToPdf:', error);
+        throw error;
     }
-    return Promise.all(promises);
 }
 
-function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, bgColor) {
-    let label = i18nService.getTranslation(element.label);
-    let hasImg = element.image && (element.image.data || element.image.url);
-    let fontSizeMM = hasImg ? currentHeight * (1 - pdfOptions.imgHeightPercentage) : currentHeight / 2;
-    let fontSizePt = (fontSizeMM / 0.352778) * 0.8;
-    let maxWidth = currentWidth - 2 * pdfOptions.textPadding;
-    if (convertMode === TextConfig.CONVERT_MODE_UPPERCASE) {
-        label = label.toLocaleUpperCase();
-    } else if (convertMode === TextConfig.CONVERT_MODE_LOWERCASE) {
-        label = label.toLocaleLowerCase();
-    }
-    let optimalFontSize = getOptimalFontsize(
-        doc,
-        label,
-        fontSizePt,
-        maxWidth,
-        currentHeight - 2 * pdfOptions.textPadding,
-        !hasImg
-    );
-    let textColor = fontUtil.getHighContrastColorRgb(bgColor);
-    doc.setTextColor(textColor[0], textColor[1], textColor[2]);
-    doc.setFontSize(optimalFontSize);
-    let dim = doc.getTextDimensions(label);
-    let lines = Math.ceil(dim.w / maxWidth);
-    let yOffset = hasImg ? currentHeight - 2 * pdfOptions.elementMargin : (currentHeight - dim.h * lines) / 2;
-    doc.text(label, xStartPos + currentWidth / 2, yStartPos + yOffset, {
-        baseline: hasImg ? 'bottom' : 'top',
-        align: 'center',
-        maxWidth: maxWidth
-    });
-}
+async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPos, yStartPos, bgColor, metadata, useElementColors = true, options) {
+    try {
+        const label = i18nService.getTranslation(element.label);
+        if (!label.trim()) return;
 
-function getOptimalFontsize(doc, text, baseSize, maxWidth, maxHeight, multipleLines) {
-    let steps = 10;
-    let size = baseSize;
-    let stepSize = baseSize / 2;
-    for (let i = 0; i < steps; i++) {
-        doc.setFontSize(size);
-        let dim = doc.getTextDimensions(text);
-        if (multipleLines && text.indexOf(' ') !== -1) {
-            let possibleLines = Math.floor(maxHeight / dim.h);
-            let currentLines = Math.ceil(dim.w / maxWidth);
-            if (dim.w / possibleLines > maxWidth * 0.5 || currentLines > possibleLines) {
-                size -= stepSize;
-            } else {
-                size += stepSize;
+        const textConfig = metadata?.textConfig || {};
+        const hasImg = element.image && (element.image.data || element.image.url);
+
+        let displayLabel = label;
+        if (textConfig.convertMode === TextConfig.CONVERT_MODE_UPPERCASE) {
+            displayLabel = displayLabel.toLocaleUpperCase();
+        } else if (textConfig.convertMode === TextConfig.CONVERT_MODE_LOWERCASE) {
+            displayLabel = displayLabel.toLocaleLowerCase();
+        }
+
+        let fontFamily = textConfig.fontFamily || 'Arial';
+        const fontMapping = {
+            'Jost-400-Book': 'Arial',
+            'Roboto-Regular': 'Arial', 
+            'OpenDyslexic-Regular': 'Arial',
+            'Times': 'Times',
+            'Arial': 'Arial'
+        };
+        
+        fontFamily = fontMapping[fontFamily] || 'Arial';
+        doc.setFont(fontFamily);
+
+        const uiElement = $(`#${element.id}`);
+        let uiFontSizeMM = 0;
+        let uiFontSizePx = 0;
+        let textColor = [0, 0, 0];
+
+        if (uiElement.length) {
+            const uiFontFamily = uiElement.css('font-family').replace(/['"]/g, '');
+            uiFontSizePx = parseFloat(uiElement.css('font-size')) || 16;
+            uiFontSizeMM = uiFontSizePx * 0.264583;
+            const uiTextColor = uiElement.css('color');
+
+            if (uiFontFamily !== fontFamily) {
+                console.warn(`Font family mismatch for element ${element.id}: UI=${uiFontFamily}, PDF=${fontFamily}`);
+            }
+            if (uiTextColor && colorToRGB(uiTextColor).join(',') !== textColor.join(',')) {
+                console.warn(`Text color mismatch for element ${element.id}: UI=${uiTextColor}, PDF=${textColor}`);
             }
         } else {
-            if (dim.w > maxWidth) {
-                size -= stepSize;
-            } else {
-                size += stepSize;
+            console.warn(`UI element not found for ${element.id}. Cannot validate font or text color.`);
+        }
+
+        const baseFontSizePct = hasImg ? (textConfig.fontSizePct || 30) : (textConfig.onlyTextFontSizePct || 40);
+        const lineHeight = hasImg ? (textConfig.lineHeight || 1.2) : (textConfig.onlyTextLineHeight || 1.2);
+        const maxLines = hasImg ? (textConfig.maxLines || 2) : 100;
+        const fittingMode = textConfig.fittingMode || TextConfig.TOO_LONG_AUTO;
+
+        let fontSizeMM = currentHeight * (baseFontSizePct / 100);
+        let fontSizePt = Math.max(fontSizeMM / 0.352778, 6);
+
+        if (uiElement.length && Math.abs(uiFontSizeMM - fontSizeMM) > 0.02) {
+            console.warn(`Font size mismatch for element ${element.id}: UI=${uiFontSizeMM}mm (${uiFontSizePx}px), PDF=${fontSizeMM}mm`);
+            fontSizeMM = uiFontSizeMM;
+            fontSizePt = fontSizeMM / 0.352778;
+        }
+
+        const maxWidth = currentWidth - 2 * pdfOptions.textPadding;
+        const maxHeight = currentHeight - 2 * pdfOptions.textPadding;
+        const effectiveMaxHeight = Math.min(maxHeight, (fontSizePt * 0.352778) * lineHeight * maxLines);
+
+        if (useElementColors) {
+            try {
+                let fontColor = textConfig.fontColor;
+                if (!fontColor || [constants.COLORS.BLACK, constants.COLORS.WHITE].includes(fontColor)) {
+                    let backgroundColor = bgColor.join(',');
+                    textColor = fontUtil.isHexDark(backgroundColor) ? colorToRGB(constants.COLORS.WHITE) : colorToRGB(constants.COLORS.BLACK);
+                } else {
+                    textColor = colorToRGB(fontColor);
+                }
+            } catch (error) {
+                console.warn('Error getting text color for element:', element.id, error);
+                textColor = colorToRGB(constants.COLORS.BLACK);
             }
         }
-        stepSize /= 2;
+        doc.setTextColor(...textColor);
+    
+        let actualFontSize = fontSizePt;
+        doc.setFontSize(actualFontSize);
+        let dim = doc.getTextDimensions(displayLabel);
+        let fits = dim.w <= maxWidth && dim.h <= effectiveMaxHeight;
+    
+        if (!fits && fittingMode === TextConfig.TOO_LONG_AUTO) {
+            const step = actualFontSize / 20;
+            while (!fits && actualFontSize > 6) {
+                actualFontSize -= step;
+                doc.setFontSize(actualFontSize);
+                dim = doc.getTextDimensions(displayLabel);
+                fits = dim.w <= maxWidth && dim.h <= effectiveMaxHeight;
+            }
+            actualFontSize = Math.max(actualFontSize, 6);
+        } else if (!fits && fittingMode === TextConfig.TOO_LONG_TRUNCATE) {
+            let truncated = '';
+            for (let i = 0; i < displayLabel.length; i++) {
+                const test = truncated + displayLabel[i];
+                dim = doc.getTextDimensions(test);
+                if (dim.w > maxWidth) break;
+                truncated = test;
+            }
+            displayLabel = truncated;
+        } else if (!fits && fittingMode === TextConfig.TOO_LONG_ELLIPSIS) {
+            let truncated = '';
+            for (let i = 0; i < displayLabel.length; i++) {
+                const test = truncated + displayLabel[i] + '...';
+                dim = doc.getTextDimensions(test);
+                if (dim.w > maxWidth) break;
+                truncated += displayLabel[i];
+            }
+            displayLabel = truncated + '...';
+        }
+    
+        doc.setFontSize(actualFontSize);
+    
+        const textPosition = textConfig.textPosition;
+        const xOffset = xStartPos + currentWidth / 2;
+        let yOffset = hasImg
+            ? textPosition === TextConfig.TEXT_POS_ABOVE
+                ? yStartPos + pdfOptions.textPadding + dim.h / 2
+                : yStartPos + currentHeight - pdfOptions.textPadding - dim.h / 2
+            : yStartPos + currentHeight / 2;
+
+        doc.text(displayLabel, xOffset, yOffset, {
+            baseline: 'middle',
+            align: 'center',
+            maxWidth
+        });
+    } catch (error) {
+        console.error('Error adding label to PDF:', error);
+        throw error;
     }
-    return Math.floor(Math.min(size, baseSize));
 }
 
-async function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, ypos) {
-    let hasImage = element && element.image && (element.image.data || element.image.url);
-    if (!hasImage) {
-        return Promise.resolve();
-    }
-    let type = new GridImage(element.image).getImageType();
-    let imageData = element.image.data;
-    let dim = null;
-    if (!imageData) {
-        let dataWithDim = await imageUtil.urlToBase64WithDimensions(element.image.url, 500, type);
-        imageData = dataWithDim.data;
-        dim = dataWithDim.dim;
-    }
-    if (!imageData) {
-        return Promise.resolve();
-    }
-    if (!dim) {
-        dim = await imageUtil.getImageDimensionsFromDataUrl(imageData);
-    }
-    let imgHeightPercentage = i18nService.getTranslation(element.label) ? pdfOptions.imgHeightPercentage : 1;
-    let maxWidth = elementWidth - 2 * pdfOptions.imgMargin;
-    let maxHeight = (elementHeight - 2 * pdfOptions.imgMargin) * imgHeightPercentage;
-    let elementRatio = maxWidth / maxHeight;
-    let width = maxWidth,
-        height = maxHeight;
-    let xOffset = 0,
-        yOffset = 0;
-    if (dim.ratio >= elementRatio) {
-        // img has wider ratio than space in element
-        if (!isNaN(dim.ratio)) {
-            height = width / dim.ratio;
+async function addImageToPdf(doc, element, elementWidth, elementHeight, xpos, ypos, metadata) {
+    try {
+        let hasImage = element && element.image && (element.image.data || element.image.url);
+        if (!hasImage) {
+            return Promise.resolve();
         }
-        yOffset = (maxHeight - height) / 2;
-    } else {
-        //img has narrower ratio than space in element
-        if (!isNaN(dim.ratio)) {
-            width = height * dim.ratio;
+    
+        let type = new GridImage(element.image).getImageType();
+        let imageData = element.image.data;
+        let dim = null;
+    
+        if (!imageData) {
+            try {
+                let dataWithDim = await imageUtil.urlToBase64WithDimensions(element.image.url, 500, type);
+                imageData = dataWithDim.data;
+                dim = dataWithDim.dim;
+            } catch (error) {
+                console.warn('Error loading image for element:', element.id, error);
+                return Promise.resolve();
+            }
         }
-        xOffset = (maxWidth - width) / 2;
-    }
-
-    let x = xpos + pdfOptions.imgMargin + xOffset;
-    let y = ypos + pdfOptions.imgMargin + yOffset;
-    if (type === GridImage.IMAGE_TYPES.PNG) {
-        doc.addImage(imageData, 'PNG', x, y, width, height);
-    } else if (type === GridImage.IMAGE_TYPES.JPEG) {
-        doc.addImage(imageData, 'JPEG', x, y, width, height);
-    } else if (type === GridImage.IMAGE_TYPES.SVG) {
-        let pixelWidth = width / 0.084666667; //convert width in mm to pixel at 300dpi
-        let pngBase64 = await imageUtil.base64SvgToBase64Png(imageData, pixelWidth);
-        doc.addImage(pngBase64, type, x, y, width, height);
+    
+        if (!imageData) {
+            return Promise.resolve();
+        }
+    
+        if (!dim) {
+            try {
+                dim = await imageUtil.getImageDimensionsFromDataUrl(imageData);
+            } catch (error) {
+                console.warn('Error getting image dimensions for element:', element.id, error);
+                return Promise.resolve();
+            }
+        }
+    
+        if (!dim || !dim.ratio || isNaN(dim.ratio)) {
+            console.warn('Invalid image dimensions for element:', element.id);
+            return Promise.resolve();
+        }
+    
+        let textConfig = metadata && metadata.textConfig ? metadata.textConfig : {};
+        let baseFontSizePct = textConfig.fontSizePct || 30;
+        let hasText = i18nService.getTranslation(element.label);
+        let textPosition = textConfig.textPosition;
+    
+        let baseImgHeightPercentage = 0.65;
+        let imgHeightPercentage = baseImgHeightPercentage;
+        let imageTopOffset = 0;
+    
+        if (hasText) {
+            if (textPosition === TextConfig.TEXT_POS_ABOVE) {
+                let fontSizeFactor = (baseFontSizePct / 100) * 0.8;
+                imgHeightPercentage = Math.max(0.55, Math.min(0.75, 1 - fontSizeFactor));
+                imageTopOffset = Math.max(pdfOptions.textPadding * 3, 5);
+            } else {
+                let fontSizeFactor = (baseFontSizePct / 100) * 0.7;
+                imgHeightPercentage = Math.max(0.6, Math.min(0.8, 1 - fontSizeFactor));
+            }
+        } else {
+            imgHeightPercentage = 0.8;
+        }
+    
+        let maxWidth = elementWidth - 2 * pdfOptions.imgMargin;
+        let maxHeight = (elementHeight - 2 * pdfOptions.imgMargin - imageTopOffset) * imgHeightPercentage;
+    
+        let elementRatio = maxWidth / maxHeight;
+        let imageRatio = dim.ratio;
+    
+        let width, height, xOffset, yOffset;
+    
+        if (imageRatio >= elementRatio) {
+            width = maxWidth;
+            height = width / imageRatio;
+            xOffset = 0;
+            yOffset = (maxHeight - height) / 2 + imageTopOffset;
+        } else {
+            height = maxHeight;
+            width = height * imageRatio;
+            xOffset = (maxWidth - width) / 2;
+            yOffset = imageTopOffset;
+        }
+    
+        width = Math.max(width, 1);
+        height = Math.max(height, 1);
+    
+        let x = xpos + pdfOptions.imgMargin + xOffset;
+        let y = ypos + pdfOptions.imgMargin + yOffset;
+    
+        try {
+            if (type === GridImage.IMAGE_TYPES.PNG) {
+                doc.addImage(imageData, 'PNG', x, y, width, height);
+            } else if (type === GridImage.IMAGE_TYPES.JPEG) {
+                doc.addImage(imageData, 'JPEG', x, y, width, height);
+            } else if (type === GridImage.IMAGE_TYPES.SVG) {
+                let pixelWidth = width / 0.084666667;
+                let pngBase64 = await imageUtil.base64SvgToBase64Png(imageData, pixelWidth);
+                if (pngBase64) {
+                    doc.addImage(pngBase64, 'PNG', x, y, width, height);
+                }
+            }
+        } catch (error) {
+            console.warn('Error adding image to PDF for element:', element.id, error);
+        }
+    } catch (error) {
+        console.error('Error in addImageToPdf:', error);
+        throw error;
     }
 }
 
-/**
- * load a font from remote and add it to jsPDF doc
- * @param path the path of the font, e.g. '/app/fonts/My-Font.ttf'
- * @param doc the jsPDF doc instance to install the font to
- * @return {Promise<void>}
- */
 async function loadFont(path, doc) {
-    let response = await fetch(path).catch((e) => console.error(e));
-    if (!response) {
-        return;
-    }
-    let fontName = path.substring(path.lastIndexOf('/') + 1);
-    log.info('using font', fontName);
-    let contentBuffer = await response.arrayBuffer();
-    let contentString = util.arrayBufferToBase64(contentBuffer);
-    if (contentString) {
-        doc.addFileToVFS(fontName, contentString);
-        doc.addFont(fontName, fontName, 'normal');
-        doc.setFont(fontName);
+    try {
+        let response = await fetch(path);
+        if (!response || !response.ok) {
+            throw new Error(`Could not load font from ${path}, status: ${response.status}`);
+        }
+
+        let fontName = path.substring(path.lastIndexOf('/') + 1).replace(/\.(ttf|otf)$/i, '');
+        let contentBuffer = await response.arrayBuffer();
+        let contentString = util.arrayBufferToBase64(contentBuffer);
+        if (contentString) {
+            doc.addFileToVFS(fontName, contentString);
+            doc.addFont(fontName, fontName, 'normal');
+            doc.setFont(fontName);
+            if (doc.getTextWidth('Test') > 0) {
+                return true;
+            }
+            throw new Error(`Font ${fontName} loaded but not usable`);
+        }
+        throw new Error(`Failed to convert font ${fontName} to base64`);
+    } catch (error) {
+        console.error('Error loading font:', error);
+        throw error;
     }
 }
 
 async function getMetadataConfig() {
-    let metadata = await dataService.getMetadata();
-    if (metadata.textConfig) {
-        convertMode = metadata.textConfig.convertMode;
+    try {
+        let metadata = await dataService.getMetadata();
+        console.log('getMetadataConfig metadata:', JSON.stringify(metadata, null, 2));
+        if (metadata.textConfig && metadata.colorConfig) {
+            convertMode = metadata.textConfig.convertMode;
+            pdfOptions.textPadding = metadata.textConfig.textPadding ?? 3;
+            pdfOptions.elementMargin = metadata.colorConfig.elementMargin ? metadata.colorConfig.elementMargin / 100 : 0.005;
+            pdfOptions.fontFamily = metadata.textConfig.fontFamily ?? 'Jost-400-Book';
+            pdfOptions.borderWidth = metadata.colorConfig.borderWidth ?? 1;
+            pdfOptions.borderRadius = metadata.colorConfig.borderRadius ?? 0;
+            console.log('Updated pdfOptions:', JSON.stringify(pdfOptions, null, 2));
+        } else {
+            console.warn('Incomplete metadata in getMetadataConfig, applying defaults:', metadata);
+            pdfOptions.textPadding = pdfOptions.textPadding ?? 3;
+            pdfOptions.elementMargin = pdfOptions.elementMargin ?? 0.005;
+            pdfOptions.fontFamily = pdfOptions.fontFamily ?? 'Jost-400-Book';
+            pdfOptions.borderWidth = pdfOptions.borderWidth ?? 1;
+            pdfOptions.borderRadius = pdfOptions.borderRadius ?? 0;
+        }
+    } catch (error) {
+        console.error('Error updating metadata config:', error);
+        pdfOptions.textPadding = pdfOptions.textPadding ?? 3;
+        pdfOptions.elementMargin = pdfOptions.elementMargin ?? 0.005;
+        pdfOptions.fontFamily = pdfOptions.fontFamily ?? 'Jost-400-Book';
+        pdfOptions.borderWidth = pdfOptions.borderWidth ?? 1;
+        pdfOptions.borderRadius = pdfOptions.borderRadius ?? 0;
     }
 }
 
 $(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
 $(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
+
+printService.showBrowserPrintInstructions = function(options = {}) {
+    const isFirefox = navigator.userAgent.indexOf('Firefox') !== -1;
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    const isChrome = /Chrome/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent);
+    const isEdge = /Edge/.test(navigator.userAgent);
+    
+    let browserSpecificTips = '';
+    
+    if (isFirefox) {
+        browserSpecificTips = `
+            <li><strong>Firefox:</strong> 
+                <ul>
+                    <li>Set "Scale: Custom" to 90% to prevent right border cutoff</li>
+                    <li>Enable "Print Background Graphics"</li>
+                    <li>Set margins to "Minimum"</li>
+                </ul>
+            </li>`;
+    } else if (isSafari) {
+        browserSpecificTips = `
+            <li><strong>Safari:</strong> 
+                <ul>
+                    <li>Refresh the page before printing if you see blank pages</li>
+                    <li>Enable "Print Background Graphics" in print options</li>
+                    <li>Set "Scale" to 100% or "Fit to Page"</li>
+                    <li>If issues persist, try using the "Save as PDF" option instead</li>
+                </ul>
+            </li>`;
+    } else if (isChrome) {
+        browserSpecificTips = `
+            <li><strong>Chrome:</strong> 
+                <ul>
+                    <li>Works well with default settings</li>
+                    <li>Enable "Background graphics" for best results</li>
+                    <li>Set margins to "Minimum" for maximum space usage</li>
+                </ul>
+            </li>`;
+    } else if (isEdge) {
+        browserSpecificTips = `
+            <li><strong>Edge:</strong> 
+                <ul>
+                    <li>Enable "Print background graphics"</li>
+                    <li>Set margins to "Minimum"</li>
+                    <li>Use "Scale: 100%" for best quality</li>
+                </ul>
+            </li>`;
+    }
+    
+    return `
+        <div style="padding: 20px; text-align: center;">
+            <h3>Browser Print Instructions</h3>
+            <p>Use your browser's built-in print function for best results:</p>
+            <ol style="text-align: left; display: inline-block;">
+                <li>Press <strong>Ctrl+P</strong> (Windows/Linux) or <strong>Cmd+P</strong> (Mac)</li>
+                <li>Select "Save as PDF" as the destination</li>
+                <li>Choose "Landscape" orientation</li>
+                <li>Set margins to "Minimum" or "None"</li>
+                <li>Enable "Print Background Graphics" if available</li>
+                <li>Set "Scale" to 100% or "Fit to Page"</li>
+                ${browserSpecificTips}
+                <li>Click "Save"</li>
+            </ol>
+            <p><strong>Note:</strong> Browser print often provides better text rendering and border display than the custom PDF export.</p>
+            <p><strong>Troubleshooting:</strong> If you experience issues with text truncation or missing borders, try refreshing the page before printing.</p>
+        </div>
+    `;
+};
+
+printService.triggerBrowserPrint = function() {
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    
+    if (isSafari) {
+        setTimeout(() => {
+            const beforePrintEvent = new Event('beforeprint');
+            window.dispatchEvent(beforePrintEvent);
+            setTimeout(() => {
+                window.print();
+            }, 200);
+        }, 100);
+    } else {
+        const beforePrintEvent = new Event('beforeprint');
+        window.dispatchEvent(beforePrintEvent);
+        setTimeout(() => {
+            window.print();
+        }, 100);
+    }
+};
 
 export { printService };
