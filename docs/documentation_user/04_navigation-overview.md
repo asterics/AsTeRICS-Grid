@@ -7,6 +7,10 @@ Once a user has been created and some grid set has been imported, AsTeRICS Grid 
 ![main view](./img/main_en.jpg)
 *Figure 1: Main view (desktop view on the left, mobile view on the right)*
 
+## Main View {#main-view}
+
+The main view is the central interface of AsTeRICS Grid where users interact with their grids. This view displays the currently selected grid along with the global grid elements.
+
 The elements have this functionality:
 
 1. Open or close the left navigation sidebar
@@ -38,7 +42,7 @@ These are the parts of the search dialog:
 3. **result path**: navigates to the selected element step-by-step by highlighting the path beginning from the home grid. Keyboard shortcut for first search result: `[Ctrl + Enter]`
 
 
-## Editing on
+## Editing on {#edit-view}
 
 Clicking on Button "Editing on" (Figure 1.11) opens the edit view where a grid can be adapted, see Figure 2:
 
@@ -54,7 +58,9 @@ The following elements are available in the edit view:
 5. **More**: opens a menu with additional actions, e.g adding new elements
 6. **Right-click on a grid element**: opens a menu for configuring this element (e.g. edit, delete, copy). On touchscreens open the menu with long tap on the element.
 
-## Change User
+For more detailed information about editing grids, see [Editing grid](06_editing-grid.md).
+
+## Change User {#change-user-view}
 
 In the "Change User" view it's possible to switch between users or login an existing online user (Figure 5):
 
@@ -94,7 +100,7 @@ Online users can have the following synchronization states which are shown at th
 
 ![online user - synchronized symbol](./img/online_user_paused.jpg) **Synchronization paused**: synchronization paused for a short time and will be resumed shortly
 
-![online user - synchronized symbol](./img/online_user_onlineonly.jpg) **Online only**: user is logged in online-only, meaning that configuration is not saved on the current device. Changes still will be saved in the cloud and therefore also be synchronized to other devices where this user is logged in. Users will be logged in online-only if the "remember checkbox" is unchecked when logging in (see [change user view](02_navigation.md#change-user---view)).
+![online user - synchronized symbol](./img/online_user_onlineonly.jpg) **Online only**: user is logged in online-only, meaning that configuration is not saved on the current device. Changes still will be saved in the cloud and therefore also be synchronized to other devices where this user is logged in. Users will be logged in online-only if the "remember checkbox" is unchecked when logging in (see [change user view](04_navigation-overview.md#change-user-view)).
 
 ## Add offline user
 
@@ -103,6 +109,39 @@ In view "add offline user" it's possible to add a new [offline user](01_terms.md
 ![add offline user view](./img/add_offline_en.jpg)
 
 *Figure 7: Add offline user view*
+
+## Manage Grids View {#manage-grids-view}
+
+The manage grids view provides an overview about the current grids of a user. This view is accessible from the main navigation sidebar under "Manage grids".
+
+The following actions for editing the grid are available in the manage grids view:
+
+1. **Name of grid**: type name of the grid and confirm by clicking on the tick
+2. **New grid**: add a new, empty grid
+3. **More**: shows menu with additional actions, e.g. backup the grids to file or restore backups from file
+4. **Show**: open this grid in main view
+5. **Edit**: open this grid in edit view
+6. **Clone**: duplicate this grid, creating a copy of it with a different name
+7. **Delete**: delete this grid
+8. **Export**: saves and downloads this specific grid to a `.grd` file creating a backup of it
+9. **Save as PDF**: saves and downloads the grid as PDF
+10. **Grids to show**: select which grids shall be shown in the grid list
+11. **Sort grids by**: select how the grids in the grid list shall be sorted
+
+For more detailed information about managing grids, see [Editing grid set](05_editing-grid-set.md) and [Editing grid](06_editing-grid.md).
+
+## Manage Dictionaries View {#manage-dictionaries-view}
+
+The manage dictionaries view provides an overview about the current dictionaries of a user. This view is accessible from the main navigation sidebar under "Manage Dictionaries".
+
+In this view you can:
+* View all saved dictionaries
+* Edit existing dictionaries
+* Add new empty dictionaries
+* Import existing dictionaries from files
+* Export dictionaries to files
+
+For more detailed information about dictionaries, see [Dictionaries](10_dictionaries.md).
 
 ## Shortcuts
 

@@ -24,6 +24,22 @@ This chapter is about actions that can be performed if a grid element is selecte
 * [Predefined actions](08_actions.md#predefined-actions): a way to implement other actions, e.g. http actions, with less programming knowledge
 * [Matrix messenger actions](13_matrix-messenger-integration.md#matrix-messenger-actions) in docs about Matrix messenger integration
 
+## Edit Actions Modal {#edit-actions-modal}
+
+The edit actions modal allows you to configure actions for grid elements. This modal is accessible when editing a grid element and clicking on the "Actions" tab.
+
+### Adding Actions
+* **New action**: Select the type of action from the dropdown menu
+* **Add action**: Add the selected action type to the grid element
+
+### Managing Actions
+* **Edit**: Modify the configuration of an existing action
+* **Delete**: Remove an action from the grid element
+* **Test**: Test the action (available for some action types)
+
+### Action Configuration
+Each action type has its own configuration options. See the sections below for detailed information about specific action types.
+
 ## Speak label
 
 Clicking on "Edit" of a "speak label" action (or creating a new one by clicking on *Add action*) shows the following configuration possibilities (Figure 2):

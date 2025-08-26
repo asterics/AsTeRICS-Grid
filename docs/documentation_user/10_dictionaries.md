@@ -21,7 +21,7 @@ The following elements are available in the manage dictionaries view:
 7. **Save**: saves the dictionary as `.json` file
 8. **Edit dictionary name**: change the name of a dictionary
 
-## Edit dictionaries
+## Edit dictionaries {#edit-dictionaries}
 
 In the manage dictionaries view clicking on "Edit" in the list of dictionaries allows to see the details of a dictionary and editing it:
 
@@ -30,7 +30,7 @@ In the manage dictionaries view clicking on "Edit" in the list of dictionaries a
 
 Typing a word or a part of it in the search field filters the list of shown words. Clicking on the recycle bin symbol next to a word deletes it from the dictionary.
 
-### Add words
+### Add words {#add-words}
 
 Clicking on the "Import words" in Figure 2 button opens a modal:
 
