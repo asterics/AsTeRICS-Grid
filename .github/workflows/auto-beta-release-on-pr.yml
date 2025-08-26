@@ -70,19 +70,22 @@ jobs:
             # Sanitize the branch name and construct the remote path for a PR.
             SANITIZED_BRANCH=$(echo "${{ github.head_ref }}" | tr -cs '[:alnum:]' '-' | tr '[:upper:]' '[:lower:]')
             REMOTE_USER="${{ github.event.pull_request.user.login }}"
+            POSTFIX="/pr"
           else
             # For a manual workflow_dispatch, use the actor and the workflow's ref name.
             SANITIZED_BRANCH=$(echo "${{ github.ref_name }}" | tr -cs '[:alnum:]' '-' | tr '[:upper:]' '[:lower:]')
             REMOTE_USER="${{ github.actor }}"
+            POSTFIX=""
           fi
 
           # Remove any trailing dashes that might be created by the sanitization command.
           SANITIZED_BRANCH=$(echo "$SANITIZED_BRANCH" | sed 's/-$//')
 
           # Construct the full remote path and make it available as a step output.
-          FULL_REMOTE_PATH="/kunden/homepages/2/d708826695/htdocs/asterics-grid-beta-github/${REMOTE_USER}/${SANITIZED_BRANCH}"
+          FULL_REMOTE_PATH="/kunden/homepages/2/d708826695/htdocs/asterics-grid-beta-github/${REMOTE_USER}/${SANITIZED_BRANCH}${POSTFIX}"
           echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
           echo "remote_path=$FULL_REMOTE_PATH" >> $GITHUB_OUTPUT
+          echo "remote_path_postfix=$POSTFIX" >> $GITHUB_OUTPUT
           echo "remote_user=$REMOTE_USER" >> $GITHUB_OUTPUT
 
      # Step 6: Use SSH to connect to the server and delete the existing remote directory.
@@ -113,7 +116,7 @@ jobs:
       - name: Log Deployment URL
         id: log_url
         run: |
-          PREVIEW_URL="https://gridbeta-github.asterics-foundation.org/${{ steps.prepare_path.outputs.remote_user }}/${{ steps.prepare_path.outputs.sanitized_branch }}"
+          PREVIEW_URL="https://gridbeta-github.asterics-foundation.org/${{ steps.prepare_path.outputs.remote_user }}/${{ steps.prepare_path.outputs.sanitized_branch }}${{ steps.prepare_path.outputs.remote_path_postfix }}"
           echo "Deployment preview URL: ${PREVIEW_URL}"
           echo "preview_url=$PREVIEW_URL" >> $GITHUB_OUTPUT
 
