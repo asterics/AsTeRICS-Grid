@@ -2,7 +2,7 @@
 name: Beta release
 
 on:
-  pull_request:
+  pull_request_target:
     # The types of pull request events that will trigger this workflow.
     # 'opened' for a new PR, 'synchronize' for new commits, and 'reopened'
     # if a closed PR is opened again.
