@@ -24,10 +24,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}
-          ref:        ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref }}
+          ref:        ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref }}
           fetch-depth: 0
-          persist-credentials: false
 
       # Step 2: Set up Node.js. Replace this with a different setup action
       # if you're using a different technology stack (e.g., Python, Ruby).
