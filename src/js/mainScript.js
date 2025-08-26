@@ -27,7 +27,7 @@ async function init() {
         'AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/' +
             constants.CURRENT_VERSION
     );
-    log.warn("auto build from fork worked! v4");
+    log.warn("auto build from fork worked! v5");
     checkAppVersion();
     initServiceWorker();
     initMatomoAnalytics();
