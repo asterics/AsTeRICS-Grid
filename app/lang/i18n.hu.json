@@ -1067,7 +1067,7 @@
   "homeGrid": "Főtábla",
   "selectHomeGrid": "Kezdőtábla kiválasztása",
   "noneAlwaysOpenLastOpenedGrid": "none (always open last opened grid)",
-  "navigateToHomeGridAfterSelectingAnElement": "Navigate to home grid after selecting an element",
+  "navigateToHomeGridAfterSelectingAnElement": "Ugorjon a főtáblára egy kártya kiválasztása után",
   "showElement": "Show element",
   "showPathToElement": "Show path to element",
   "notShowingAllResultsTryALongerSearchTerm": "Nincs megjelenítve az összes keresési eredmény. Adjon meg hosszabb keresőszót.",
