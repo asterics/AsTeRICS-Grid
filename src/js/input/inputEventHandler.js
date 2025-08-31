@@ -211,7 +211,7 @@ function Constructor() {
     function registerFaceInput(inputEventFace, fn) {
         // Subscribe to facelandmarkerService and map callbacks to fn()
         const unsub = facelandmarkerService.subscribe({
-            type: inputEventFace.gestureType,
+            gestureType: inputEventFace.gestureType,
             blinkScoreThreshold: inputEventFace.blinkScoreThreshold,
             gazeScoreThreshold: inputEventFace.gazeScoreThreshold,
             headTiltDegThreshold: inputEventFace.headTiltDegThreshold,

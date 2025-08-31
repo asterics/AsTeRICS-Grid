@@ -53,15 +53,30 @@ export default {
         case 'EYES_RIGHT': return (b.eyeLookRight||0) - (b.eyeLookLeft||0);
         case 'EYES_UP': return (b.eyeLookUp||0) - (b.eyeLookDown||0);
         case 'EYES_DOWN': return (b.eyeLookDown||0) - (b.eyeLookUp||0);
-        case 'HEAD_TILT_LEFT': return -(this.rollDeg() || 0);
-        case 'HEAD_TILT_RIGHT': return (this.rollDeg() || 0);
-        case 'HEAD_LEFT': return -this.headMoveX();
-        case 'HEAD_RIGHT': return this.headMoveX();
+        case 'HEAD_TILT_LEFT': return (this.rollDeg() || 0);  // Flipped to match user perspective
+        case 'HEAD_TILT_RIGHT': return -(this.rollDeg() || 0); // Flipped to match user perspective
+        case 'HEAD_LEFT': return this.headMoveX();   // Flipped to match user perspective
+        case 'HEAD_RIGHT': return -this.headMoveX(); // Flipped to match user perspective
         case 'HEAD_UP': return -this.headMoveY();
         case 'HEAD_DOWN': return this.headMoveY();
         case 'BROW_RAISE': return b.browInnerUp || 0;
         case 'CHEEK_PUFF': return b.cheekPuff || 0;
-        case 'TONGUE_OUT': return b.tongueOut || 0;
+        case 'TONGUE_OUT':
+          // MediaPipe doesn't provide tongueOut blendshape, estimate from mouth shapes
+          const jawOpen = b.jawOpen || 0;
+          const mouthFunnel = b.mouthFunnel || 0;
+          const mouthPucker = b.mouthPucker || 0;
+          const mouthRollLower = b.mouthRollLower || 0;
+          const mouthShrugLower = b.mouthShrugLower || 0;
+
+          // Combine components (same logic as service)
+          const jawComponent = Math.min(jawOpen * 0.7, 0.35);
+          const funnelComponent = mouthFunnel * 0.5;
+          const puckerComponent = mouthPucker * 0.4;
+          const rollComponent = mouthRollLower * 0.6;
+          const shrugComponent = mouthShrugLower * 0.3;
+
+          return Math.max(0, jawComponent + Math.max(funnelComponent, puckerComponent) + rollComponent + shrugComponent - 0.12);
         case 'SMILE': return ((b.mouthSmileLeft||0) + (b.mouthSmileRight||0))/2;
         case 'FROWN': return ((b.mouthFrownLeft||0) + (b.mouthFrownRight||0))/2;
         case 'JAW_OPEN': return b.jawOpen || 0;
@@ -78,19 +93,96 @@ export default {
       return (Math.round(v * 100) / 100).toFixed(2);
     },
     rollDeg() {
+      // Try landmark-based calculation first (more reliable)
+      const landmarks = this.diag && this.diag.landmarks;
+      if (landmarks && landmarks.length >= 468) {
+        try {
+          const leftEyeOuter = landmarks[33];   // Left eye outer corner
+          const rightEyeOuter = landmarks[263]; // Right eye outer corner
+
+          // Calculate roll angle from eye line
+          const roll = Math.atan2(rightEyeOuter.y - leftEyeOuter.y, rightEyeOuter.x - leftEyeOuter.x) * 180 / Math.PI;
+          return roll;
+        } catch(e) {
+          console.warn('Landmark-based roll calculation failed:', e);
+        }
+      }
+
+      // Fallback to matrix-based calculation
       const mat = this.diag && this.diag.mat;
       try {
-        if (!mat || !mat.data) return 0;
-        const m = mat.data; const m00 = m[0], m10 = m[4];
+        if (!mat) return 0;
+
+        // Handle different matrix formats
+        let matrixData;
+        if (Array.isArray(mat)) {
+          matrixData = mat;
+        } else if (mat.data && Array.isArray(mat.data)) {
+          matrixData = mat.data;
+        } else {
+          return 0;
+        }
+
+        if (matrixData.length < 16) return 0;
+
+        // MediaPipe uses column-major format
+        const m00 = matrixData[0], m10 = matrixData[1];
         return Math.atan2(m10, m00) * 180 / Math.PI;
-      } catch(e){ return 0; }
+      } catch(e){
+        console.warn('Matrix-based roll calculation failed:', e);
+        return 0;
+      }
     },
     headMoveX() {
+      // Try landmark-based yaw calculation first
+      const landmarks = this.diag && this.diag.landmarks;
+      if (landmarks && landmarks.length >= 468) {
+        try {
+          const noseTip = landmarks[1];         // Nose tip
+          const leftFace = landmarks[234];      // Left face edge
+          const rightFace = landmarks[454];     // Right face edge
+
+          const faceCenter = (leftFace.x + rightFace.x) / 2;
+          const faceWidth = Math.abs(rightFace.x - leftFace.x);
+          const noseOffset = (noseTip.x - faceCenter) / faceWidth;
+
+          return noseOffset; // Positive = right, negative = left
+        } catch(e) {
+          console.warn('Landmark-based yaw calculation failed:', e);
+        }
+      }
+
+      // Fallback to face box method
       const fb = this.faceBox();
       if (!fb || !this._neutral) { this._neutral = fb; return 0; }
       return (fb.cx - this._neutral.cx) / fb.w;
     },
     headMoveY() {
+      // Try landmark-based pitch calculation first
+      const landmarks = this.diag && this.diag.landmarks;
+      if (landmarks && landmarks.length >= 468) {
+        try {
+          const leftEyeOuter = landmarks[33];   // Left eye outer corner
+          const rightEyeOuter = landmarks[263]; // Right eye outer corner
+          const noseTip = landmarks[1];         // Nose tip
+          const forehead = landmarks[10];       // Forehead center
+          const chin = landmarks[152];          // Chin bottom
+
+          const faceHeight = Math.abs(forehead.y - chin.y);
+          const eyeLevel = (leftEyeOuter.y + rightEyeOuter.y) / 2;
+          const noseToEyeRatio = (noseTip.y - eyeLevel) / faceHeight;
+
+          // Normalize around baseline (from testing)
+          const neutralBaseline = 0.22;
+          const pitchRatio = (noseToEyeRatio - neutralBaseline) * 5; // Scale for display
+
+          return pitchRatio; // Positive = down, negative = up
+        } catch(e) {
+          console.warn('Landmark-based pitch calculation failed:', e);
+        }
+      }
+
+      // Fallback to face box method
       const fb = this.faceBox();
       if (!fb || !this._neutral) { this._neutral = fb; return 0; }
       return (fb.cy - this._neutral.cy) / fb.h;
