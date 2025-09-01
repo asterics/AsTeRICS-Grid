@@ -94,6 +94,12 @@ export default {
             if (!this.metadata || !this.metadata.colorConfig) {
                 return constants.COLORS.GRAY;
             }
+
+            // If element has a custom border color, use it
+            if (element.borderColor) {
+                return element.borderColor;
+            }
+
             let color = this.metadata.colorConfig.elementBorderColor;
             if (this.metadata.colorConfig.elementBorderColor === constants.DEFAULT_ELEMENT_BORDER_COLOR) {
                 let backgroundColor = this.metadata.colorConfig.gridBackgroundColor || constants.COLORS.WHITE;
