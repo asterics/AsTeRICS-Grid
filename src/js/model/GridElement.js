@@ -35,7 +35,8 @@ class GridElement extends Model({
     wordForms: [Model.Array(Object)], //Array of WordForm, removed for performance reasons
     fontSizePct: [Number],
     fontColor: [String],
-    backgroundColor: [String], // could be renamed to "customColor" since it can be custom border or background color
+    backgroundColor: [String],
+    borderColor: [String],
     colorCategory: [String],
     hidden: [Boolean],
     dontCollect: [Boolean],

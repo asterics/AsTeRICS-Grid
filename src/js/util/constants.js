@@ -121,7 +121,13 @@ constants.TRANSFER_PROPS = {
     },
     BACKGROUND_COLOR: {
         path: 'backgroundColor',
-        label: 'customElementColor',
+        label: 'customBackgroundColor',
+        type: constants.PROP_TRANSFER_TYPES.COLOR,
+        category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE
+    },
+    BORDER_COLOR: {
+        path: 'borderColor',
+        label: 'customBorderColor',
         type: constants.PROP_TRANSFER_TYPES.COLOR,
         category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE
     },
