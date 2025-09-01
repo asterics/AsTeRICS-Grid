@@ -122,8 +122,34 @@
                                 <span>{{ $t('colorSchemeForCategories') }}</span>
                             </label>
                             <select id="colorScheme" class="five columns" v-model="metadata.colorConfig.activeColorScheme" @change="saveMetadata(metadata)">
-                                <option v-for="scheme in constants.DEFAULT_COLOR_SCHEMES" :value="scheme.name">{{scheme.name | translate}}</option>
+                                <optgroup :label="$t('predefinedSchemes')">
+                                    <option v-for="scheme in constants.DEFAULT_COLOR_SCHEMES" :value="scheme.name">{{scheme.name | translate}}</option>
+                                </optgroup>
+                                <optgroup v-if="customColorSchemes.length > 0" :label="$t('customSchemes')">
+                                    <option v-for="scheme in customColorSchemes" :value="scheme.name">{{scheme.displayName}}</option>
+                                </optgroup>
                             </select>
+                        </div>
+                        <div class="srow">
+                            <div class="eight columns offset-by-three">
+                                <button class="button-small me-2" @click="createCustomScheme">
+                                    <i class="fas fa-plus"></i> {{ $t('createCustomScheme') }}
+                                </button>
+                                <button
+                                    class="button-small me-2"
+                                    @click="editCurrentScheme"
+                                    :disabled="!isCurrentSchemeCustom"
+                                    :title="isCurrentSchemeCustom ? $t('editCurrentScheme') : $t('cannotEditPredefinedScheme')"
+                                >
+                                    <i class="fas fa-edit"></i> {{ $t('editScheme') }}
+                                </button>
+                                <button
+                                    class="button-small me-2"
+                                    @click="duplicateCurrentScheme"
+                                >
+                                    <i class="fas fa-copy"></i> {{ $t('duplicateScheme') }}
+                                </button>
+                            </div>
                         </div>
                         <div class="srow">
                             <div class="five columns offset-by-three d-flex" style="height: 1.5em">
@@ -148,6 +174,16 @@
                 <app-grid-display v-if="testGridData" style="max-width: 200px; height: 500px;" :grid-data="testGridData" :metadata="metadata" :watch-for-changes="true"/>
             </div>
         </div>
+
+        <!-- Custom Color Scheme Modal -->
+        <custom-color-scheme-modal
+            v-if="showCustomSchemeModal"
+            :scheme="editingScheme"
+            :metadata="metadata"
+            @scheme-saved="onCustomSchemeSaved"
+            @scheme-deleted="onCustomSchemeDeleted"
+            @close="closeCustomSchemeModal"
+        />
     </div>
 </template>
 
@@ -165,9 +201,11 @@
     import { GridData } from '../../../js/model/GridData';
     import { util } from '../../../js/util/util';
     import { ColorConfig } from '../../../js/model/ColorConfig';
+    import { customColorSchemeService } from '../../../js/service/customColorSchemeService';
+    import CustomColorSchemeModal from '../../modals/customColorSchemeModal.vue';
 
     export default {
-        components: { AppGridDisplay, Accordion, SliderInput },
+        components: { AppGridDisplay, Accordion, SliderInput, CustomColorSchemeModal },
         props: ["metadata", "userSettingsLocal"],
         mixins: [settingsSaveMixin],
         data() {
@@ -178,6 +216,17 @@
                 constants: constants,
                 testGridData: null,
                 testElementLabel: i18nService.t("testElement"),
+                showCustomSchemeModal: false,
+                editingScheme: null
+            }
+        },
+        computed: {
+            customColorSchemes() {
+                return customColorSchemeService.getCustomSchemes(this.metadata);
+            },
+            isCurrentSchemeCustom() {
+                return this.metadata.colorConfig.activeColorScheme &&
+                       this.metadata.colorConfig.activeColorScheme.startsWith(constants.COLOR_SCHEME_CUSTOM_PREFIX);
             }
         },
         methods: {
@@ -275,6 +324,72 @@
                     });
                 }, 200, "RESET_TEST_GRD");
 
+            },
+            createCustomScheme() {
+                this.editingScheme = null;
+                this.showCustomSchemeModal = true;
+            },
+            editCurrentScheme() {
+                if (!this.isCurrentSchemeCustom) {
+                    return;
+                }
+
+                let currentScheme = this.customColorSchemes.find(
+                    scheme => scheme.name === this.metadata.colorConfig.activeColorScheme
+                );
+
+                if (currentScheme) {
+                    this.editingScheme = currentScheme;
+                    this.showCustomSchemeModal = true;
+                }
+            },
+            duplicateCurrentScheme() {
+                let currentScheme = MetaData.getActiveColorScheme(this.metadata);
+                if (!currentScheme) {
+                    return;
+                }
+
+                let baseName = currentScheme.displayName || currentScheme.name.replace(/^CS_/, '').replace(/_/g, ' ');
+                let duplicateName = baseName + ' Copy';
+
+                try {
+                    let duplicatedScheme = customColorSchemeService.duplicateScheme(
+                        currentScheme.name,
+                        duplicateName,
+                        this.metadata
+                    );
+
+                    this.editingScheme = duplicatedScheme;
+                    this.showCustomSchemeModal = true;
+                } catch (error) {
+                    console.error('Error duplicating scheme:', error);
+                    alert(this.$t('errorDuplicatingScheme'));
+                }
+            },
+            async onCustomSchemeSaved(savedScheme) {
+                try {
+                    // The scheme is already saved by the service, just update the active scheme
+                    this.metadata.colorConfig.activeColorScheme = savedScheme.name;
+                    await this.saveMetadata(this.metadata);
+                    this.showCustomSchemeModal = false;
+                    this.editingScheme = null;
+                } catch (error) {
+                    console.error('Error updating active scheme:', error);
+                }
+            },
+            async onCustomSchemeDeleted(deletedSchemeName) {
+                try {
+                    // The scheme is already deleted by the service
+                    this.showCustomSchemeModal = false;
+                    this.editingScheme = null;
+                    // Metadata is already updated by the service
+                } catch (error) {
+                    console.error('Error handling scheme deletion:', error);
+                }
+            },
+            closeCustomSchemeModal() {
+                this.showCustomSchemeModal = false;
+                this.editingScheme = null;
             }
         },
         async mounted() {
@@ -300,5 +415,34 @@
         .settings-area {
             border-right: 0;
         }
+    }
+
+    .button-small {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
+        margin-right: 0.5rem;
+        border: 1px solid #ccc;
+        background-color: #f8f9fa;
+        color: #333;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .button-small:hover:not(:disabled) {
+        background-color: #e9ecef;
+        border-color: #adb5bd;
+    }
+
+    .button-small:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .me-2 {
+        margin-right: 0.5rem;
     }
 </style>
