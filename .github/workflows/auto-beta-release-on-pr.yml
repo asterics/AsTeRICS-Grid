@@ -24,8 +24,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name || github.repository }}
-          ref:        ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.ref }}
+          repository: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}
+          ref:        ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref }}
           fetch-depth: 0
 
       # Step 2: Set up Node.js. Replace this with a different setup action
@@ -66,7 +66,7 @@ jobs:
           # Check if the workflow was triggered by a pull request.
           # If so, use the PR user and branch.
           # Otherwise, it's a manual run, so use the actor and the workflow's branch.
-          if [[ "${{ github.event_name }}" == "pull_request_target" ]]; then
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             # Sanitize the branch name and construct the remote path for a PR.
             SANITIZED_BRANCH=$(echo "${{ github.head_ref }}" | tr -cs '[:alnum:]' '-' | tr '[:upper:]' '[:lower:]')
             REMOTE_USER="${{ github.event.pull_request.user.login }}"
@@ -124,7 +124,7 @@ jobs:
       # This step will only run if the workflow was triggered by a pull request
       # and the previous deployment step was successful.
       - name: Post PR comment with preview URL
-        if: success() && github.event_name == 'pull_request_target'
+        if: success() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
