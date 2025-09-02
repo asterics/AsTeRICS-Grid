@@ -37,6 +37,31 @@
             <input class="eight columns" id="inCustomText" type="text" v-model="action.speakText[getCurrentSpeakLang(action)]" :placeholder="gridElement.type === GridElement.ELEMENT_TYPE_LIVE ? $t('canIncludePlaceholderLike') : ''"/>
         </div>
     </div>
+    <div v-if="action.modelName == 'GridActionSpeakLetters'">
+        <div class="srow">
+            <div class="four columns">
+                <label for="selectLang3" class="normal-text">{{ $t('language') }}</label>
+            </div>
+            <select class="eight columns" id="selectLang3" v-model="action.speakLanguage">
+                <option :value="undefined">{{ $t('automaticCurrentLanguage') }}</option>
+                <option v-for="lang in voiceLangs" :value="lang.code">
+                    {{lang | extractTranslation}}
+                </option>
+            </select>
+        </div>
+        <div class="srow">
+            <div class="four columns">
+                <label for="inLettersText" class="normal-text">{{ $t('textToSpeak') }}</label>
+            </div>
+            <input class="eight columns" id="inLettersText" type="text" v-model="action.speakText[getCurrentSpeakLang(action)]" :placeholder="$t('leaveEmptyToUseElementLabel')"/>
+        </div>
+        <div class="srow">
+            <div class="four columns">
+                <label for="inPauseDuration" class="normal-text">{{ $t('pauseBetweenLettersMs') }}</label>
+            </div>
+            <input class="eight columns" id="inPauseDuration" type="number" min="0" max="5000" step="50" v-model.number="action.pauseDurationMs"/>
+        </div>
+    </div>
     <div v-if="action.modelName == 'GridActionAudio'">
         <edit-audio-action :action="action" :grid-data="gridData"></edit-audio-action>
     </div>
@@ -329,6 +354,7 @@
     import { gridUtil } from '../../js/util/gridUtil';
     import { GridActionSystem } from '../../js/model/GridActionSystem';
     import { GridActionChangeLang } from '../../js/model/GridActionChangeLang';
+    import { GridActionSpeakLetters } from '../../js/model/GridActionSpeakLetters';
     import EditPredefinedAction from './editActionsSub/editPredefinedAction.vue';
     import EditMatrixAction from './editActionsSub/editMatrixAction.vue';
     import EditPodcastAction from './editActionsSub/editPodcastAction.vue';
