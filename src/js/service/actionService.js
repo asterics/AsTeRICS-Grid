@@ -18,6 +18,7 @@ import $ from '../externals/jquery.js';
 import { GridActionAudio } from '../model/GridActionAudio.js';
 import { GridActionSpeak } from '../model/GridActionSpeak.js';
 import { GridActionSpeakCustom } from '../model/GridActionSpeakCustom.js';
+import { GridActionSpeakLetters } from '../model/GridActionSpeakLetters.js';
 import {audioUtil} from "../util/audioUtil.js";
 import {MainVue} from "../vue/mainVue.js";
 import {stateService} from "./stateService.js";
@@ -106,7 +107,7 @@ async function doActions(gridElement, gridId) {
     }
     metadata = metadata || (await dataService.getMetadata());
     let actionTypes = actions.map((a) => a.modelName);
-    let navBackActions = [GridActionAudio.getModelName(), GridActionChangeLang.getModelName(), GridActionSpeak.getModelName(), GridActionSpeakCustom.getModelName()];
+    let navBackActions = [GridActionAudio.getModelName(), GridActionChangeLang.getModelName(), GridActionSpeak.getModelName(), GridActionSpeakCustom.getModelName(), GridActionSpeakLetters.getModelName()];
     let noNavBackActions = GridElement.getActionTypeModelNames().filter((name) => !navBackActions.includes(name));
     if (
         metadata.toHomeAfterSelect &&
@@ -167,6 +168,28 @@ async function doAction(gridElement, action, options = {}) {
                     minEqualPause: minPauseSpeak
                 });
             }
+            break;
+        case 'GridActionSpeakLetters':
+            log.debug('action speak letters');
+            let speakLettersText = action.speakText;
+            if (!speakLettersText) {
+                // If no custom text, use element label
+                speakLettersText = stateService.getSpeakTextAllLangs(gridElement.id);
+                if (gridElement.type === GridElement.ELEMENT_TYPE_PREDICTION) {
+                    speakLettersText[i18nService.getContentLang()] = predictionService.getLastAppliedPrediction();
+                }
+                if (gridElement.type === GridElement.ELEMENT_TYPE_LIVE) {
+                    speakLettersText[i18nService.getContentLang()] = liveElementService.getLastValue(gridElement.id);
+                }
+            } else if (gridElement.type === GridElement.ELEMENT_TYPE_LIVE) {
+                let text = JSON.parse(JSON.stringify(speakLettersText));
+                text[i18nService.getContentLang()] = liveElementService.replacePlaceholder(gridElement, text[i18nService.getContentLang()]);
+                speakLettersText = text;
+            }
+            speechService.speakLetters(speakLettersText, {
+                lang: action.speakLanguage,
+                pauseDurationMs: action.pauseDurationMs || 200
+            });
             break;
         case 'GridActionAudio':
             if (action.dataBase64) {

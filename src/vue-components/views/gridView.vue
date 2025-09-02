@@ -211,15 +211,43 @@
                     if (!Array.isArray(items)) {
                         items = [items];
                     }
-                    if (inputConfig.globalReadActive && items && items.length === 1 && items[0]) {
-                        let text = items[0].ariaLabel || '';
-                        let separatorIndex = text.indexOf(", ");
-                        if (!inputConfig.globalReadAdditionalActions && separatorIndex !== -1 && separatorIndex !== 0) {
-                            text = text.substring(0, separatorIndex);
+                    if (inputConfig.globalReadActive && items && items.length > 0) {
+                        // Check if we're in row/column scanning mode with multiple items
+                        if (items.length > 1 && inputConfig.globalReadActiveFastCount > 0) {
+                            // Fast reading mode for multiple elements
+                            let elementsToRead = Math.min(items.length, inputConfig.globalReadActiveFastCount);
+                            let textsToSpeak = [];
+
+                            for (let i = 0; i < elementsToRead; i++) {
+                                if (items[i]) {
+                                    let text = items[i].ariaLabel || '';
+                                    let separatorIndex = text.indexOf(", ");
+                                    if (!inputConfig.globalReadAdditionalActions && separatorIndex !== -1 && separatorIndex !== 0) {
+                                        text = text.substring(0, separatorIndex);
+                                    }
+                                    if (text.trim()) {
+                                        textsToSpeak.push(text);
+                                    }
+                                }
+                            }
+
+                            if (textsToSpeak.length > 0) {
+                                let combinedText = textsToSpeak.join(', ');
+                                speechService.speak(combinedText, {
+                                    rate: inputConfig.globalReadActiveFastRate || 2
+                                });
+                            }
+                        } else if (items.length === 1 && items[0]) {
+                            // Single element - normal reading
+                            let text = items[0].ariaLabel || '';
+                            let separatorIndex = text.indexOf(", ");
+                            if (!inputConfig.globalReadAdditionalActions && separatorIndex !== -1 && separatorIndex !== 0) {
+                                text = text.substring(0, separatorIndex);
+                            }
+                            speechService.speak(text, {
+                                rate: inputConfig.globalReadActiveRate || 1
+                            });
                         }
-                        speechService.speak(text, {
-                            rate: inputConfig.globalReadActiveRate || 1
-                        });
                     }
 
                     if (inputConfig.globalBeepFeedback) {

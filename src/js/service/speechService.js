@@ -207,6 +207,65 @@ speechService.speakArray = async function (array, progressFn, index) {
     speechService.speakArray(currentSpeakArray, progressFn, index + 1);
 };
 
+/**
+ * Speaks text letter by letter with configurable pause between letters
+ * @param textOrObject text to speak or object with language mappings
+ * @param options options object
+ * @param options.pauseDurationMs pause duration between letters in milliseconds (default: 200)
+ * @param options.lang language to use for speaking
+ * @param options.speakSecondary if true, speak secondary language as well
+ * @param options.rate speech rate
+ * @param options.progressFn function called with current letter index
+ */
+speechService.speakLetters = async function (textOrObject, options = {}) {
+    options = options || {};
+    let pauseDurationMs = options.pauseDurationMs || 200;
+    let text = null;
+    let isString = typeof textOrObject === 'string';
+
+    if (!textOrObject || (!isString && Object.keys(textOrObject).length === 0)) {
+        return;
+    }
+
+    if (isString) {
+        text = textOrObject;
+    } else {
+        let langToUse = options.lang || i18nService.getContentLang();
+        text = textOrObject[langToUse] || textOrObject[Object.keys(textOrObject)[0]] || '';
+    }
+
+    if (!text) {
+        return;
+    }
+
+    // Split text into individual characters, preserving spaces
+    let letters = text.split('');
+
+    for (let i = 0; i < letters.length; i++) {
+        let letter = letters[i];
+
+        // Call progress function if provided
+        if (options.progressFn) {
+            options.progressFn(i);
+        }
+
+        // Skip speaking spaces but still pause
+        if (letter.trim() !== '') {
+            speechService.speak(letter, {
+                lang: options.lang,
+                rate: options.rate,
+                dontStop: true
+            });
+            await speechService.waitForFinishedSpeaking();
+        }
+
+        // Add pause between letters (except for the last one)
+        if (i < letters.length - 1) {
+            await new Promise(resolve => setTimeout(resolve, pauseDurationMs));
+        }
+    }
+};
+
 speechService.stopSpeaking = function () {
     currentSpeakArray = [];
     isSpeakingNative = false;
