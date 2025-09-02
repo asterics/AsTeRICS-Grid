@@ -14,6 +14,7 @@ class InputConfig extends Model({
     globalReadAdditionalActions: [Boolean],
     globalReadActiveFastCount: [Number], //number of elements to read fast during row/column scanning
     globalReadActiveFastRate: [Number], //rate for fast reading during scanning
+    globalReadCollectLetters: [Boolean], //read collect elements letter-by-letter until word completion
     globalBeepFeedback: [Boolean],
     globalMinPauseCollectSpeak: [Number],
     scanEnabled: [Boolean],
@@ -129,6 +130,7 @@ InputConfig.defaults({
     globalReadActiveRate: 1,
     globalReadActiveFastCount: 3,
     globalReadActiveFastRate: 2,
+    globalReadCollectLetters: false,
     globalMinPauseCollectSpeak: 0,
     scanAuto: false,
     scanTimeoutMs: 1000,

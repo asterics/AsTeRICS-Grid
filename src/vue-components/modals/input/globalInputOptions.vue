@@ -32,6 +32,12 @@
                     <label for="readAdditional">{{ $t('readElementActionsInAdditionToLabel') }}</label>
                 </div>
             </div>
+            <div class="srow">
+                <div class="twelve columns">
+                    <input type="checkbox" id="readCollectLetters" v-model="inputConfig.globalReadCollectLetters" @change="changed"/>
+                    <label for="readCollectLetters">{{ $t('readCollectElementsLetterByLetter') }}</label>
+                </div>
+            </div>
         </div>
     </div>
 </template>

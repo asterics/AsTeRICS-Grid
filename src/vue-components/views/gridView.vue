@@ -85,6 +85,7 @@
     import AppGridDisplay from '../grid-display/appGridDisplay.vue';
     import { gridUtil } from '../../js/util/gridUtil';
     import { collectElementService } from '../../js/service/collectElementService';
+    import { GridElement } from '../../js/model/GridElement';
     import { predictionService } from '../../js/service/predictionService';
     import { liveElementService } from '../../js/service/liveElementService';
 
@@ -238,15 +239,59 @@
                                 });
                             }
                         } else if (items.length === 1 && items[0]) {
-                            // Single element - normal reading
-                            let text = items[0].ariaLabel || '';
-                            let separatorIndex = text.indexOf(", ");
-                            if (!inputConfig.globalReadAdditionalActions && separatorIndex !== -1 && separatorIndex !== 0) {
-                                text = text.substring(0, separatorIndex);
+                            // Single element - check if it's a collect element and letter reading is enabled
+                            let element = items[0];
+                            let elementId = element.id;
+                            let gridElement = thiz.renderGridData && thiz.renderGridData.gridElements ?
+                                thiz.renderGridData.gridElements.find(e => e.id === elementId) : null;
+
+                            if (inputConfig.globalReadCollectLetters &&
+                                gridElement &&
+                                gridElement.type === GridElement.ELEMENT_TYPE_COLLECT) {
+                                // Special handling for collect elements - read letter by letter
+                                let collectText = collectElementService.getText() || '';
+                                if (collectText.trim()) {
+                                    // Split into words and incomplete word
+                                    let words = collectText.split(' ');
+                                    let completeWords = words.slice(0, -1); // All but last
+                                    let incompleteWord = words[words.length - 1]; // Last word (might be incomplete)
+
+                                    let textToSpeak = '';
+                                    if (completeWords.length > 0) {
+                                        textToSpeak += completeWords.join(' ') + ' ';
+                                    }
+
+                                    // If there's an incomplete word (no trailing space), spell it out
+                                    if (incompleteWord && !collectText.endsWith(' ')) {
+                                        if (textToSpeak) {
+                                            textToSpeak += '... '; // Separator between complete words and letters
+                                        }
+                                        textToSpeak += incompleteWord.split('').join(' ');
+                                    } else if (incompleteWord) {
+                                        // Complete word (has trailing space)
+                                        textToSpeak += incompleteWord;
+                                    }
+
+                                    speechService.speak(textToSpeak, {
+                                        rate: inputConfig.globalReadActiveRate || 1
+                                    });
+                                } else {
+                                    // Empty collect element
+                                    speechService.speak(i18nService.t('ELEMENT_TYPE_COLLECT'), {
+                                        rate: inputConfig.globalReadActiveRate || 1
+                                    });
+                                }
+                            } else {
+                                // Normal single element reading
+                                let text = element.ariaLabel || '';
+                                let separatorIndex = text.indexOf(", ");
+                                if (!inputConfig.globalReadAdditionalActions && separatorIndex !== -1 && separatorIndex !== 0) {
+                                    text = text.substring(0, separatorIndex);
+                                }
+                                speechService.speak(text, {
+                                    rate: inputConfig.globalReadActiveRate || 1
+                                });
                             }
-                            speechService.speak(text, {
-                                rate: inputConfig.globalReadActiveRate || 1
-                            });
                         }
                     }
 
