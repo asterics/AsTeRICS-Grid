@@ -27,6 +27,7 @@ async function init() {
         'AsTeRICS Grid, release version: https://github.com/asterics/AsTeRICS-Grid/releases/tag/' +
             constants.CURRENT_VERSION
     );
+    log.warn("this is from a foreign fork!");
     checkAppVersion();
     initServiceWorker();
     initMatomoAnalytics();
