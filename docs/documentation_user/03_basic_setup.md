@@ -30,13 +30,26 @@ The following information is important for registering an online user:
 * End-to-end encryption is great for privacy, however it has the drawback that the **data is lost**, if you logout your online account on all devices and forget your password. In this case there is **no possibility of password recovery**, so **remember your password carefully**. It's also highly recommended to **do backups** of your grids (see [Editing grid set](05_editing-grid-set.md)).
 * Usernames must start lowercase, valid characters are [a-z], [0-9] and ["-", "_"], valid length is 3-16 characters.
 
-#### Offline users
+### Online Users {#online-users}
+
+Online users are users whose configuration is automatically synchronized with a cloud storage. This makes it possible to login on different devices while the configuration is always up-to-date on each device.
+
+The following information is important for registering an online user:
+* The only data that is needed are a **username** and a **password**. The username is needed for uniquely identifying a user and the password for securing his account and encrypting the data.
+* If you want to **use AsTeRICS Grid completely anonymously**, just use a username without any relation to your person.
+* Since all data is **end-to-end encrypted** only the user itself can ever see his data and configuration, no server admin or anyone else.
+* End-to-end encryption is great for privacy, however it has the drawback that the **data is lost**, if you logout your online account on all devices and forget your password. In this case there is **no possibility of password recovery**, so **remember your password carefully**. It's also highly recommended to **do backups** of your grids (see [Editing grid set](05_editing-grid-set.md)).
+* Usernames must start lowercase, valid characters are [a-z], [0-9] and ["-", "_"], valid length is 3-16 characters.
+
+### Offline Users {#offline-users}
 
 Offline users are users whose configuration is only saved offline in the storage of the currently used browser. This type of user is perfectly suited for use cases where AsTeRICS Grid is only used on a single device.
 
 The following information is important regarding offline users:
 * All **data of an offline user never leaves the device**, it's stored in a browser-internal database.
 * Usernames must start lowercase, valid characters are [a-z], [0-9] and ["-", "_"], valid length is 3-16 characters.
+
+
 
 ## Choose How to Start View
 

@@ -7,6 +7,14 @@ let GOOGLE_TRANSLATE_BASE_PATH = 'https://translate.google.com/translate?sl=en&t
 //let HELP_FILE_POSTFIX = '.md';
 let HELP_FILE_POSTFIX = '.html';
 
+// Map old file references to actual existing files
+const HELP_FILE_MAPPING = {
+    '02_navigation': '04_navigation-overview',
+    '06_users': '03_basic_setup',
+    '03_appearance_layout': '07_grid-elements',
+    '07_dictionaries': '10_dictionaries'
+};
+
 let _initHelpFile = '';
 let _initHash = '#asterics-grid-user-documentation';
 let _helpFile = _initHelpFile;
@@ -45,7 +53,13 @@ helpService.revertToLastLocation = function () {
  * opens help in a new tab
  */
 helpService.openHelp = function () {
-    let postfix = _helpFile ? _helpFile + HELP_FILE_POSTFIX + _helpHash : _helpHash;
+    // Map old file references to actual existing files
+    let actualFile = _helpFile;
+    if (HELP_FILE_MAPPING[_helpFile]) {
+        actualFile = HELP_FILE_MAPPING[_helpFile];
+    }
+    
+    let postfix = actualFile ? actualFile + HELP_FILE_POSTFIX + _helpHash : _helpHash;
     let link = HELP_BASE_PATH + postfix;
     /*if (i18nService.isCurrentAppLangDE()) {
         link = GOOGLE_TRANSLATE_BASE_PATH + encodeURI(link);

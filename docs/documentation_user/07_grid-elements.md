@@ -33,7 +33,25 @@ These are the options to select:
 
 Cut / Copy / Paste also works across users and browsers on the same device.
 
-## Dialog "Edit grid element"
+## Adding Elements and Layout Options {#adding-elements-and-layout-options}
+
+When editing a grid, you can add new elements and modify the layout:
+
+### Adding New Elements
+* **Normal elements**: Basic grid elements with images and labels
+* **Collect elements**: Elements that collect selected items
+* **Live elements**: Dynamic elements that display real-time data
+* **YouTube player**: Embedded YouTube video players
+
+### Layout Options
+* **Grid size**: Adjust the number of rows and columns
+* **Element positioning**: Drag and drop elements to reposition them
+* **Element sizing**: Resize elements by dragging the bottom-right corner
+* **Grid normalization**: Automatically organize elements in a clean grid layout
+
+For more detailed information about editing grids, see [Editing grid](06_editing-grid.md).
+
+## Dialog "Edit grid element" {#edit-modal}
 
 The dialog "Edit grid element" has different tabs, depending on the [type of the edited element](07_grid-elements.md#types-of-grid-elements):
 * **General**: tab for general settings on the current element, content depends on element type.
