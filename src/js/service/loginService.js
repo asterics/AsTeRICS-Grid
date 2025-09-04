@@ -10,6 +10,12 @@ import { MainVue } from '../vue/mainVue.js';
 import {util} from "../util/util.js";
 
 let loginService = {};
+
+let DELETE_USER_DEFAULT_PASSWORD = 'delete_my_user';
+loginService.DELETE_SUCCESS = "DELETE_SUCCESS";
+loginService.DELETE_FAILED_GENERAL = "DELETE_FAILED_GENERAL";
+loginService.DELETE_FAILED_WRONG_PASSWORD = "DELETE_FAILED_WRONG_PASSWORD";
+
 let _loginInfo = null;
 let _loggedInUser = null;
 let _tryUser = null;
@@ -167,7 +173,7 @@ loginService.logout = function () {
  *          Promise rejects if registration, login or (optional) initialization of database failed.
  *
  */
-loginService.register = function (user, plainPassword, saveUser) {
+loginService.register = function (user, plainPassword, saveUser = true) {
     _tryUser = user;
     loginService.stopAutoRetryLogin();
     user = user.trim();
@@ -249,6 +255,42 @@ loginService.stopAutoRetryLogin = function () {
         _autoRetryHandler = null;
     }
 };
+
+loginService.deleteOnlineUser = async function(user, password) {
+    let session = superlogin.getSession();
+    if (!session || user !== session.user_id) {
+        log.warn("couldn't delete user - not logged in with the user to delete:", user)
+        return loginService.DELETE_FAILED_GENERAL;
+    }
+    let hashedUserPassword = localStorageService.getUserSettings(session.user_id).password;
+    if (password !== DELETE_USER_DEFAULT_PASSWORD && encryptionService.getUserPasswordHash(password) !== hashedUserPassword) {
+        return loginService.DELETE_FAILED_WRONG_PASSWORD;
+    }
+    try {
+        const response = await fetch(_serverUrl + '/auth/request-deletion', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.token}:${session.password}`
+            },
+            body: JSON.stringify({
+                username: session.user_id,
+                password: hashedUserPassword
+            })
+        });
+
+        if (!response.ok) {
+            log.warn(`HTTP error! Status: ${response.status}`);
+            return false;
+        }
+
+        const data = await response.json();
+        return !!data.success ? loginService.DELETE_SUCCESS : loginService.DELETE_FAILED_GENERAL;
+    } catch (error) {
+        console.error('Error:', error);
+    }
+    return loginService.DELETE_FAILED_GENERAL;
+}
 
 function loginInternal(user, hashedPassword, saveUser) {
     if (_tryUser !== user) {
