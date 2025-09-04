@@ -1301,5 +1301,38 @@
   "managePodcasts": "Podcasts verwalten",
   "selectedPodcasts": "Ausgewählte Podcasts",
   "hideKeyboards": "Keyboards ausblenden",
-  "automaticallyAddImages": "Bilder automatisch hinzufügen"
+  "automaticallyAddImages": "Bilder automatisch hinzufügen",
+  "tag": {
+    "10x6": "10x6 Raster",
+    "12x7": "12x7 Raster",
+    "5x3": "5x3 Raster",
+    "10x8": "10x8 Raster",
+    "5x9": "5x9 Raster",
+    "4x7": "4x7 Raster",
+    "5x10": "5x10 Raster",
+    "4x10": "4x10 Raster",
+    "4x5": "4x5 Raster",
+    "4x8": "4x8 Raster",
+    "6x9": "6x9 Raster",
+    "5x4": "5x4 Raster",
+    "6x4": "6x4 Raster",
+    "8x5": "8x5 Raster",
+    "14x8": "14x8 Raster",
+    "ABA": "Angewandte Verhaltensanalyse",
+    "CAA": "Kommunikationshilfe",
+    "NUMERIQUE": "Digital",
+    "ARASAAC": "ARASAAC Symbole",
+    "COMMUNICATOR": "Kommunikator",
+    "BASIC": "Grundlegend",
+    "DEMO": "Demo",
+    "MEDICAL": "Medizinisch",
+    "HOSPITAL": "Krankenhaus",
+    "CommuniKate": "CommuniKate",
+    "INFANT": "Säugling",
+    "OpenAAC": "Offene AAC"
+  },
+  "lang": {
+    "ji": "Jingpho",
+    "sb": "Samburu"
+  }
 }

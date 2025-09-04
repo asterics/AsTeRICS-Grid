@@ -1303,5 +1303,38 @@
   "managePodcasts": "Manage podcasts",
   "selectedPodcasts": "Selected podcasts",
   "hideKeyboards": "Hide keyboards",
-  "automaticallyAddImages": "Automatically add images"
+  "automaticallyAddImages": "Automatically add images",
+  "tag": {
+    "10x6": "10x6 Grid",
+    "12x7": "12x7 Grid",
+    "5x3": "5x3 Grid",
+    "10x8": "10x8 Grid",
+    "5x9": "5x9 Grid",
+    "4x7": "4x7 Grid",
+    "5x10": "5x10 Grid",
+    "4x10": "4x10 Grid",
+    "4x5": "4x5 Grid",
+    "4x8": "4x8 Grid",
+    "6x9": "6x9 Grid",
+    "5x4": "5x4 Grid",
+    "6x4": "6x4 Grid",
+    "8x5": "8x5 Grid",
+    "14x8": "14x8 Grid",
+    "ABA": "Applied Behavior Analysis",
+    "CAA": "Communication Aid",
+    "NUMERIQUE": "Digital",
+    "ARASAAC": "ARASAAC Symbols",
+    "COMMUNICATOR": "Communicator",
+    "BASIC": "Basic",
+    "DEMO": "Demo",
+    "MEDICAL": "Medical",
+    "HOSPITAL": "Hospital",
+    "CommuniKate": "CommuniKate",
+    "INFANT": "Infant",
+    "OpenAAC": "Open AAC"
+  },
+  "lang": {
+    "ji": "Jingpho",
+    "sb": "Samburu"
+  }
 }

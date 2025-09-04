@@ -87,8 +87,10 @@ async function init() {
 init();
 
 function initServiceWorker() {
-    if (!constants.IS_ENVIRONMENT_PROD) {
+    if (!constants.IS_ENVIRONMENT_PROD && !constants.SUPPRESS_DEV_WARNINGS) {
         log.warn('Not installing Service Worker because on development environment.');
+    }
+    if (!constants.IS_ENVIRONMENT_PROD) {
         return;
     }
     if ('serviceWorker' in navigator) {
@@ -156,8 +158,10 @@ function checkAppVersion() {
 }
 
 function initMatomoAnalytics() {
-    if (!constants.IS_ENVIRONMENT_PROD) {
+    if (!constants.IS_ENVIRONMENT_PROD && !constants.SUPPRESS_DEV_WARNINGS) {
         log.warn('Not doing analytics because on development environment.');
+    }
+    if (!constants.IS_ENVIRONMENT_PROD) {
         return;
     }
 
