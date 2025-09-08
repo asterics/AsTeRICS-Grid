@@ -15,7 +15,8 @@ jobs:
   build-and-deploy:
     # The job will only run if the head branch is not 'i10n_master'
     # and the actor is not 'dependabot[bot]'.
-    if: github.head_ref != 'l10n_master' && github.actor != 'dependabot[bot]'
+    #if: github.head_ref != 'l10n_master' && github.actor != 'dependabot[bot]'
+    if: github.actor != 'dependabot[bot]'
     # This job will run on the latest version of Ubuntu.
     runs-on: ubuntu-latest
 
