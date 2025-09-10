@@ -35,23 +35,24 @@ let convertMode = null;
 // NEW: Function to wait for UI updates to complete
 function waitForUIUpdates() {
     return new Promise((resolve) => {
-        // Wait for any pending DOM updates
+        // OPTIMIZED: Reduced wait times for faster PDF generation
         setTimeout(() => {
             // Wait for any pending Vue updates
             if (typeof window !== 'undefined' && typeof vueApp !== 'undefined' && vueApp && vueApp.$nextTick) {
                 vueApp.$nextTick(() => {
-                    // Wait for any pending CSS updates
-                    setTimeout(resolve, 100);
+                    // Reduced CSS update wait time
+                    setTimeout(resolve, 25);
                 });
             } else if (typeof window !== 'undefined' && window.app && window.app.$nextTick) {
                 window.app.$nextTick(() => {
-                    // Wait for any pending CSS updates
-                    setTimeout(resolve, 100);
+                    // Reduced CSS update wait time
+                    setTimeout(resolve, 25);
                 });
             } else {
-                setTimeout(resolve, 100);
+                // Reduced fallback wait time
+                setTimeout(resolve, 25);
             }
-        }, 50);
+        }, 25); // Reduced initial wait time
     });
 }
 
@@ -351,7 +352,8 @@ function colorToRGB(color) {
         
         // Handle HSL color format
         if (typeof color === 'string' && color.toLowerCase().startsWith('hsl')) {
-            let hslMatch = color.match(/hsl\((\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?)%,\s*(\d+(?:\.\d+)?)%\)/i);
+            // More robust regex that handles spaces, decimals, and various formats
+            let hslMatch = color.match(/hsl\(\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)%\s*,\s*(\d+(?:\.\d+)?)%\s*\)/i);
             if (hslMatch) {
                 let h = parseFloat(hslMatch[1]) / 360; // Convert to 0-1 range
                 let s = parseFloat(hslMatch[2]) / 100; // Convert to 0-1 range
@@ -378,11 +380,12 @@ function colorToRGB(color) {
                     b = hue2rgb(p, q, h - 1/3);
                 }
                 
-                return [
-                    Math.round(r * 255),
-                    Math.round(g * 255),
-                    Math.round(b * 255)
-                ];
+                // Ensure RGB values are within valid range
+                const rValue = Math.max(0, Math.min(255, Math.round(r * 255)));
+                const gValue = Math.max(0, Math.min(255, Math.round(g * 255)));
+                const bValue = Math.max(0, Math.min(255, Math.round(b * 255)));
+                
+                return [rValue, gValue, bValue];
             }
         }
 
@@ -423,10 +426,12 @@ printService.initPrintHandlers = function () {
 
 printService.gridsToPdf = async function (gridsData, options = {}) {
     try {
+        console.log('🚀 PDF Generation started with grids:', gridsData.length, 'options:', options);
         const jsPDF = await import(/* webpackChunkName: "jspdf" */ 'jspdf');
 
         options.printElementColors = options.printElementColors !== false;
         options.printBackground = options.printBackground !== false;
+        options.showLinks = options.showLinks !== false; // Enable links by default
 
     await new Promise(resolve => {
             const checkPendingSaves = () => {
@@ -440,11 +445,23 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
         checkPendingSaves();
     });
     
-    // NEW: Force UI synchronization and wait for updates to complete
-    console.log('⏳ Forcing UI synchronization...');
+    // Show initial progress bar immediately
+    if (options.progressFn) {
+        options.progressFn(0, i18nService.t('creatingPDFFile'), () => { options.abort = true; });
+    }
+    
+    // OPTIMIZED: Quick UI synchronization for faster PDF generation
+    console.log('⏳ Quick UI synchronization...');
     forceUISynchronization();
-    await waitForUIUpdates();
+    
+    // Reduced wait time for faster response
+    await new Promise(resolve => setTimeout(resolve, 50));
     console.log('✅ UI synchronization completed, proceeding with PDF generation');
+    
+    // Show progress after synchronization
+    if (options.progressFn) {
+        options.progressFn(5, i18nService.t('creatingPDFFile'), () => { options.abort = true; });
+    }
     
         // NEW: Get the most current UI metadata FIRST
         let uiMetadata = getCurrentUIMetadata();
@@ -468,6 +485,11 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
         console.log('🎯 Final metadata for PDF:', JSON.stringify(metadata, null, 2));
 
     updatePdfOptionsFromMetadata(metadata);
+    
+    // Show progress after metadata processing
+    if (options.progressFn) {
+        options.progressFn(10, i18nService.t('creatingPDFFile'), () => { options.abort = true; });
+    }
     
         const defaultGlobalGrid = options.includeGlobalGrid ? await dataService.getGlobalGrid() : null;
 
@@ -688,16 +710,80 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
             );
         }
 
+        // Always show footer with AsTeRICS and ARASAAC information (white background for printing)
         if (hasARASAACImages) {
-            doc.setFillColor(90, 113, 122);
+            // White background for printing
+            doc.setFillColor(255, 255, 255);
             doc.rect(0, DOC_HEIGHT - footerHeight, DOC_WIDTH, footerHeight, 'F');
-            doc.setTextColor(255, 255, 255);
+            
+            // Black text for better printing
+            doc.setTextColor(0, 0, 0);
             doc.setFontSize(6);
-                doc.text(
-                'ARASAAC - ARASAAC.org',
-                DOC_WIDTH / 2,
-                DOC_HEIGHT - footerHeight / 2,
-                { baseline: 'middle', align: 'center' }
+            
+            // Left side: AsTeRICS Grid information
+            doc.text(
+                'Impreso por AsTeRICS Grid, https://grid.asterics.eu',
+                5,
+                DOC_HEIGHT - footerHeight + 2
+            );
+            
+            // Left side: ARASAAC license information
+            doc.text(
+                'Pictogramas: Sergio Palao - Origen: ARASAAC https://arasaac.org - Licencia: CC (BY-NC-SA)',
+                5,
+                DOC_HEIGHT - footerHeight + 5
+            );
+            
+            // Right side: Page information
+            const elementNumbers = gridData.gridElements ? gridData.gridElements.map((el, idx) => idx + 1).join(',') : '1';
+            const gridName = gridData.name || 'Grid';
+            const pageInfo = `[${elementNumbers}] => ${gridName}`;
+            doc.text(
+                pageInfo,
+                DOC_WIDTH - 5,
+                DOC_HEIGHT - footerHeight + 2,
+                { align: 'right' }
+            );
+            
+            // Page number
+            doc.text(
+                `${options.currentPage || 1}/${options.pages || 1}`,
+                DOC_WIDTH - 5,
+                DOC_HEIGHT - footerHeight + 5,
+                { align: 'right' }
+            );
+        } else {
+            // Even without ARASAAC images, show basic footer
+            doc.setFillColor(255, 255, 255);
+            doc.rect(0, DOC_HEIGHT - footerHeight, DOC_WIDTH, footerHeight, 'F');
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(6);
+            
+            // Left side: AsTeRICS Grid information
+            doc.text(
+                'Impreso por AsTeRICS Grid, https://grid.asterics.eu',
+                5,
+                DOC_HEIGHT - footerHeight + 2
+            );
+            
+            // Right side: Page information
+            const elementNumbers = gridData.gridElements ? gridData.gridElements.map((el, idx) => idx + 1).join(',') : '1';
+            const gridName = gridData.name || 'Grid';
+            const pageInfo = `[${elementNumbers}] => ${gridName}`;
+            doc.text(
+                pageInfo,
+                DOC_WIDTH - 5,
+                DOC_HEIGHT - footerHeight + 2,
+                { align: 'right' }
+            );
+            
+            // Page number
+            doc.text(
+                `${options.currentPage || 1}/${options.pages || 1}`,
+                DOC_WIDTH - 5,
+                DOC_HEIGHT - footerHeight + 5,
+                { align: 'right' }
             );
         }
 
@@ -1069,8 +1155,20 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
             displayLabel = displayLabel.toLocaleLowerCase();
         }
 
+        // Get UI element first
+        const uiElement = $(`#${element.id}`);
+        
         // Use the exact same font logic as the UI
         let fontFamily = textConfig.fontFamily || 'helvetica';
+        
+        // Get font family from UI if available
+        if (uiElement.length && pdfOptions.usePDF) {
+            const uiFontFamily = uiElement.css('font-family').replace(/['"]/g, '');
+            if (uiFontFamily && uiFontFamily !== 'inherit') {
+                fontFamily = uiFontFamily;
+                console.log(`🎨 Using UI font family: ${fontFamily}`);
+            }
+        }
         
         // Map custom fonts to built-in equivalents for jsPDF compatibility
         const fontMapping = {
@@ -1078,11 +1176,21 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
             'Roboto-Regular': 'helvetica', 
             'OpenDyslexic-Regular': 'helvetica',
             'Times': 'times',
-            'Arial': 'helvetica'
+            'Arial': 'helvetica',
+            'serif': 'times',
+            'sans-serif': 'helvetica',
+            'monospace': 'courier'
         };
         
-        // Use mapped font or fallback to helvetica (most reliable)
-        fontFamily = fontMapping[fontFamily] || 'helvetica';
+        // Use mapped font or keep original if it's a standard font
+        const mappedFont = fontMapping[fontFamily];
+        if (mappedFont) {
+            fontFamily = mappedFont;
+            console.log(`🔄 Mapped font: ${fontFamily} -> ${mappedFont}`);
+        } else {
+            // Try to use the original font name if it's not in our mapping
+            console.log(`🎯 Using original font: ${fontFamily}`);
+        }
         
         // Set font with error handling
         try {
@@ -1093,12 +1201,12 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
             fontFamily = 'helvetica';
         }
 
-        const uiElement = $(`#${element.id}`);
         let uiFontSizeMM = 0;
         let uiFontSizePx = 0;
         let textColor = [0, 0, 0];
 
-        if (uiElement.length && pdfOptions.usePDF) {
+        // Validate UI element exists and has proper structure
+        if (uiElement.length && pdfOptions.usePDF && uiElement.is(':visible')) {
             const uiFontFamily = uiElement.css('font-family').replace(/['"]/g, '');
             uiFontSizePx = parseFloat(uiElement.css('font-size')) || 16;
             uiFontSizeMM = uiFontSizePx * 0.264583;
@@ -1113,9 +1221,46 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
         }
 
         // Get base font size percentage (same logic as UI's getBaseFontSizePct)
-        let baseFontSizePct = hasImg ? (textConfig.fontSizePct || 15) : (textConfig.onlyTextFontSizePct || 35);
-        if (element.fontSizePct && Number.isInteger(element.fontSizePct)) {
-            baseFontSizePct = element.fontSizePct;
+        // Use UI values if available, otherwise fall back to metadata
+        let baseFontSizePct;
+        if (uiElement.length && pdfOptions.usePDF) {
+            // Get the actual font size from UI and convert back to percentage
+            const uiFontSizePx = parseFloat(uiElement.css('font-size')) || 16;
+            const containerSize = {
+                width: currentWidth,
+                height: currentHeight
+            };
+            // Calculate what percentage the UI font size represents
+            const viewportHeight = typeof document !== 'undefined' ? document.documentElement.clientHeight : 800;
+            
+            console.log(`📏 Font size calculation for element ${element.id}:`);
+            console.log(`  - UI font size: ${uiFontSizePx}px`);
+            console.log(`  - Viewport height: ${viewportHeight}px`);
+            console.log(`  - Element size: ${currentWidth}x${currentHeight}mm`);
+            
+            // Validate viewport height to prevent division by zero or invalid calculations
+            if (viewportHeight > 0 && uiFontSizePx > 0) {
+                baseFontSizePct = (uiFontSizePx / viewportHeight) * 100;
+                // Ensure reasonable bounds for font size percentage
+                baseFontSizePct = Math.max(1, Math.min(100, baseFontSizePct));
+                console.log(`  - Calculated percentage: ${baseFontSizePct}%`);
+            } else {
+                // Fallback to metadata values if calculation fails
+                baseFontSizePct = hasImg ? (textConfig.fontSizePct || 15) : (textConfig.onlyTextFontSizePct || 35);
+                console.log(`  - Using fallback percentage: ${baseFontSizePct}%`);
+            }
+        } else {
+            // Fallback to metadata values - ensure text-only cells have bigger font size
+            if (hasImg) {
+                // Text + picto cells
+                baseFontSizePct = textConfig.fontSizePct || 15;
+            } else {
+                // Text-only cells - should be bigger
+                baseFontSizePct = textConfig.onlyTextFontSizePct || 35;
+            }
+            if (element.fontSizePct && Number.isInteger(element.fontSizePct)) {
+                baseFontSizePct = element.fontSizePct;
+            }
         }
         
         const lineHeight = hasImg ? (textConfig.lineHeight || 1.5) : (textConfig.onlyTextLineHeight || 1.5);
