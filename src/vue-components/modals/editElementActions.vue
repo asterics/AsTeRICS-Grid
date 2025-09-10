@@ -118,10 +118,10 @@
                 thiz.grids = grids;
                 thiz.grids = thiz.grids.sort((a, b) => i18nService.getTranslation(a.label).localeCompare(i18nService.getTranslation(b.label)));
             });
-            helpService.setHelpLocation('05_actions', '#edit-actions-modal');
+            helpService.setHelpLocation('08_actions', '#edit-actions-modal');
         },
         beforeDestroy() {
-            helpService.setHelpLocation('02_navigation', '#edit-view');
+            helpService.setHelpLocation('04_navigation-overview', '#edit-view');
         }
     }
 </script>

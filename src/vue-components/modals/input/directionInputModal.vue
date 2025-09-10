@@ -176,7 +176,7 @@
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
                 thiz.inputConfig = JSON.parse(JSON.stringify(metadata.inputConfig));
             });
-            helpService.setHelpLocation('04_input_options', '#direction-input');
+            helpService.setHelpLocation('09_input-options', '#direction-input');
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

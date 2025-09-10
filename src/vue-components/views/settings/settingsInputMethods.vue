@@ -15,6 +15,7 @@
     import { arasaacService } from '../../../js/service/pictograms/arasaacService';
     import GlobalInputOptions from '../../modals/input/globalInputOptions.vue';
     import { settingsSaveMixin } from './settingsSaveMixin';
+    import { helpService } from '../../../js/service/helpService';
 
     export default {
         components: { GlobalInputOptions },
@@ -30,6 +31,7 @@
         methods: {
         },
         async mounted() {
+            helpService.setHelpLocation('09_input-options', '#input-options');
         }
     }
 </script>

@@ -204,12 +204,12 @@
                 this.predictionary.loadDictionary(dict.data);
                 this.totalWords = this.predictionary.getWords().length;
                 this.inputSearchWord('');
-                helpService.setHelpLocation('07_dictionaries', '#edit-dictionaries');
+                helpService.setHelpLocation('10_dictionaries', '#edit-dictionaries');
             },
             editFinished() {
                 this.editId = null;
                 this.searchWord = "";
-                helpService.setHelpLocation('02_navigation', '#manage-dictionaries-view');
+                helpService.setHelpLocation('04_navigation-overview', '#manage-dictionaries-view');
             },
             inputSearchWord(input) {
                 let thiz = this;

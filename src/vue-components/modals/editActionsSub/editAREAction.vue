@@ -161,7 +161,7 @@
             if (!this.areModelFile) {
                 this.areModelFile = new AdditionalGridFile();
             }
-            helpService.setHelpLocation('05_actions', '#asterics-action');
+            helpService.setHelpLocation('08_actions', '#asterics-action');
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

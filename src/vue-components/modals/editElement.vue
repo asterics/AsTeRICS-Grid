@@ -208,7 +208,7 @@
         mounted() {
             this.editElementId = this.editElementIdParam;
             this.initInternal();
-            helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
+            helpService.setHelpLocation('07_grid-elements', '#edit-modal');
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

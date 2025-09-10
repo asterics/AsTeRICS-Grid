@@ -2,6 +2,8 @@
 
 [Back to Overview](README.md)
 
+<a id="input-options"></a>
+
 This chapter is about how grid elements can be selected with different input modalities.
 
 Clicking on Button "Input Options" in [Main view](04_navigation-overview.md) opens a menu with the following entries:
@@ -127,7 +129,9 @@ These are the basic elements of an input option dialog as in figure 4:
 5. **Cancel**: close the dialog discarding changes 
 6. **OK**: close the dialog saving and applying changes 
 
-### Mouse/Touch input {#mousetouch-input}
+### Mouse/Touch input
+
+<a id="mousetouch-input"></a>
 
 **Video on YouTube:** [Mouse and touch input](https://www.youtube.com/watch?v=umxrgE0sUjw&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=7&t=0s) (German, but auto-translated subtitles available)
 
@@ -147,7 +151,9 @@ In Advanced Settings there is the additional option "*Directly select element on
 * facilitating operation for people which can't reliably "tap" (quickly put finger on and lifting the finger afterwards) on the touchscreen.
 * when using AsTeRICS Grid with an eyetracker and an additional button for clicking / selecting. Since the mouse controlled via an eyetracker always moves a little bit, in default mode it can happen that instead of selecting an element, the image of an element is dragged. This can be prevented if the selection of the element is done directly at pressing the mouse button.
 
-### Scanning {#scanning}
+### Scanning
+
+<a id="scanning"></a>
 
 **Video on YouTube:** [Input method scanning](https://www.youtube.com/watch?v=L7OF1lKZbLs&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=8&t=0s) (German, but auto-translated subtitles available)
 
@@ -182,7 +188,9 @@ These are the advanced settings for *Scanning*:
   * **Scanning time**: time to wait before highlighting the next scanning group (in milliseconds)
   * **Time factor first element**: the time to keep the first scanning group (e.g. first row/column) highlighted is "Scanning Time" multiplied with this factor. Increasing the time for the first group often improves usability.
 
-### Direction Input {#direction-input}
+### Direction Input
+
+<a id="direction-input"></a>
 
 **Video on YouTube:** [Input method direction input](https://www.youtube.com/watch?v=Ui27d_ZlFz8&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=9&t=0s) (German, but auto-translated subtitles available)
 
@@ -207,7 +215,9 @@ These are the Advanced settings for *Direction Input*:
 * **Wrap around**: if checked navigation continues at the opposite border, so e.g. moving left on the most left element sets the focus to the most right element
 * **Go to start position after select**: if checked the focused element is set to the first element after an element was selected respective 
 
-### Huffman Input {#huffman-input}
+### Huffman Input
+
+<a id="huffman-input"></a>
 
 **Video on YouTube:** [Input method huffman input](https://www.youtube.com/watch?v=2EEmOdOQk98&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=10&t=0s) (German, but auto-translated subtitles available)
 
@@ -242,7 +252,9 @@ These are the Advanced settings for *Huffman Input*:
 * **Number of elements**: by default (if this property is set to `0`) the codes are automatically generated based on the number of elements in the current grid. This means that in one grid the n-th element could have a different code than in an other grid. To prevent this the `number of elements` property can be set to the maximum number of elements that are existing in any grid. Therefore in every grid the n-th element will have the same code.
 * **Color[1-n]**: select the colors of the input events. If e.g. three inputs 1-4 are connected to a red, yellow, green and blue button, the colors can be adapted here in order to match the button colors. Default colors are taken from the ["Wong" color pallete](https://davidmathlogic.com/colorblind/).
 
-### Sequential Input {#sequential-input}
+### Sequential Input
+
+<a id="sequential-input"></a>
 
 **Video on YouTube:** [Input method sequential input](https://www.youtube.com/watch?v=plpOzwMUahw&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=11&t=0s) (German, but auto-translated subtitles available)
 

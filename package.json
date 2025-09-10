@@ -21,6 +21,7 @@
     "navigo": "7.1.2",
     "pouchdb": "^8.0.1",
     "predictionary": "^1.6.0",
+    "shepherd.js": "^14.5.1",
     "superlogin-client": "^0.8.0",
     "vue": "^2.7.15",
     "vue-i18n": "8",

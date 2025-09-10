@@ -7,7 +7,9 @@ Once a user has been created and some grid set has been imported, AsTeRICS Grid 
 ![main view](./img/main_en.jpg)
 *Figure 1: Main view (desktop view on the left, mobile view on the right)*
 
-## Main View {#main-view}
+## Main View
+
+<a id="main-view"></a>
 
 The main view is the central interface of AsTeRICS Grid where users interact with their grids. This view displays the currently selected grid along with the global grid elements.
 
@@ -42,7 +44,9 @@ These are the parts of the search dialog:
 3. **result path**: navigates to the selected element step-by-step by highlighting the path beginning from the home grid. Keyboard shortcut for first search result: `[Ctrl + Enter]`
 
 
-## Editing on {#edit-view}
+## Editing on
+
+<a id="edit-view"></a>
 
 Clicking on Button "Editing on" (Figure 1.11) opens the edit view where a grid can be adapted, see Figure 2:
 
@@ -60,7 +64,9 @@ The following elements are available in the edit view:
 
 For more detailed information about editing grids, see [Editing grid](06_editing-grid.md).
 
-## Change User {#change-user-view}
+## Change User
+
+<a id="change-user-view"></a>
 
 In the "Change User" view it's possible to switch between users or login an existing online user (Figure 5):
 
@@ -110,7 +116,9 @@ In view "add offline user" it's possible to add a new [offline user](01_terms.md
 
 *Figure 7: Add offline user view*
 
-## Manage Grids View {#manage-grids-view}
+## Manage Grids View
+
+<a id="manage-grids-view"></a>
 
 The manage grids view provides an overview about the current grids of a user. This view is accessible from the main navigation sidebar under "Manage grids".
 
@@ -130,7 +138,9 @@ The following actions for editing the grid are available in the manage grids vie
 
 For more detailed information about managing grids, see [Editing grid set](05_editing-grid-set.md) and [Editing grid](06_editing-grid.md).
 
-## Manage Dictionaries View {#manage-dictionaries-view}
+## Manage Dictionaries View
+
+<a id="manage-dictionaries-view"></a>
 
 The manage dictionaries view provides an overview about the current dictionaries of a user. This view is accessible from the main navigation sidebar under "Manage Dictionaries".
 

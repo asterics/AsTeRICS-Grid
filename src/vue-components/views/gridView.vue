@@ -13,6 +13,7 @@
                 <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
             </button>
             <button tabindex="34" v-show="!metadata.locked" @click="MainVue.showSearchModal()" class="spaced small" :aria-label="$t('fullscreen')" :title="$t('searchBtnTitle')"><i class="fas fa-search"/> <span class="hide-mobile">{{ $t('search') }}</span></button>
+            <button tabindex="35" v-show="!metadata.locked" @click="startMainViewTour()" class="spaced small" :aria-label="$t('takeTour')" :title="$t('takeTour')" data-tour-trigger="mainView"><i class="fas fa-map-signs"/> <span class="hide-mobile">{{ $t('takeTour') || 'Tour' }}</span></button>
             <button tabindex="33" v-show="!metadata.locked" @click="lock()" class="small" :aria-label="$t('lock')">
                 <i class="fas fa-lock"></i>
                 <span class="hide-mobile">{{ $t('lock') }}</span>
@@ -87,6 +88,8 @@
     import { collectElementService } from '../../js/service/collectElementService';
     import { predictionService } from '../../js/service/predictionService';
     import { liveElementService } from '../../js/service/liveElementService';
+    import { tourService } from '../../js/service/tourService';
+    import { helpService } from '../../js/service/helpService';
 
     let vueApp = null;
     let UNLOCK_COUNT = 8;
@@ -439,6 +442,9 @@
             },
             async metadataUpdated() {
                 this.metadata = await dataService.getMetadata();
+            },
+            startMainViewTour() {
+                tourService.startTour('mainView');
             }
         },
         created() {
@@ -566,7 +572,10 @@
             },
             trigger: 'left',
             items: contextItems,
-            zIndex: 10
+            zIndex: 10,
+            onShow: function() {
+                helpService.setHelpLocation('09_input-options', '#input-options');
+            }
         });
 
         function handleContextMenu(key, elementId) {

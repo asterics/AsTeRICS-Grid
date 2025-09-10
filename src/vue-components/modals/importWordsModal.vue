@@ -136,7 +136,7 @@
         mounted() {
             this.originalPredictionary = Predictionary.instance();
             this.originalPredictionary.loadDictionary(this.dictData.data, this.dictData.dictionaryKey);
-            helpService.setHelpLocation('07_dictionaries', '#add-words');
+            helpService.setHelpLocation('10_dictionaries', '#add-words');
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

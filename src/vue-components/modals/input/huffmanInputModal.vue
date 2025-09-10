@@ -201,7 +201,7 @@
                 thiz.metadata = JSON.parse(JSON.stringify(metadata));
                 thiz.inputConfig = JSON.parse(JSON.stringify(metadata.inputConfig));
             });
-            helpService.setHelpLocation('04_input_options', '#huffman-input');
+            helpService.setHelpLocation('09_input-options', '#huffman-input');
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

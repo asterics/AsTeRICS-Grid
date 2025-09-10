@@ -24,7 +24,9 @@ This chapter is about actions that can be performed if a grid element is selecte
 * [Predefined actions](08_actions.md#predefined-actions): a way to implement other actions, e.g. http actions, with less programming knowledge
 * [Matrix messenger actions](13_matrix-messenger-integration.md#matrix-messenger-actions) in docs about Matrix messenger integration
 
-## Edit Actions Modal {#edit-actions-modal}
+## Edit Actions Modal
+
+<a id="edit-actions-modal"></a>
 
 The edit actions modal allows you to configure actions for grid elements. This modal is accessible when editing a grid element and clicking on the "Actions" tab.
 

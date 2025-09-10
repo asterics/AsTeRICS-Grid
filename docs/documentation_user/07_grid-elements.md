@@ -33,7 +33,9 @@ These are the options to select:
 
 Cut / Copy / Paste also works across users and browsers on the same device.
 
-## Adding Elements and Layout Options {#adding-elements-and-layout-options}
+## Adding Elements and Layout Options
+
+<a id="adding-elements-and-layout-options"></a>
 
 When editing a grid, you can add new elements and modify the layout:
 
@@ -51,7 +53,9 @@ When editing a grid, you can add new elements and modify the layout:
 
 For more detailed information about editing grids, see [Editing grid](06_editing-grid.md).
 
-## Dialog "Edit grid element" {#edit-modal}
+## Dialog "Edit grid element"
+
+<a id="edit-modal"></a>
 
 The dialog "Edit grid element" has different tabs, depending on the [type of the edited element](07_grid-elements.md#types-of-grid-elements):
 * **General**: tab for general settings on the current element, content depends on element type.
