@@ -461,6 +461,20 @@ function setLabel(element, newLabel) {
     if (!element || !element.label) {
         return;
     }
+
+    // Apply automatic capitalization when setting label
+    // Check if this is an append operation by comparing with current label
+    let currentLabel = getLabel(element);
+    if (currentLabel && newLabel && newLabel.startsWith(currentLabel)) {
+        // This is an append operation, apply capitalization to the appended part
+        let appendedText = newLabel.substring(currentLabel.length);
+        let capitalizedAppended = applyAutoCapitalization(appendedText, true);
+        newLabel = currentLabel + capitalizedAppended;
+    } else {
+        // This is a replacement, apply capitalization to the whole text
+        newLabel = applyAutoCapitalization(newLabel, false);
+    }
+
     element.label[i18nService.getContentLang()] = newLabel;
 }
 
@@ -542,7 +556,106 @@ function getPrintTextOfElement(element) {
     return textObject && textObject.text ? textObject.text : '';
 }
 
+/**
+ * Applies automatic capitalization rules to text based on the current state of collected elements
+ * @param {string} text - The text to potentially capitalize
+ * @param {boolean} isAppending - Whether this text is being appended to existing text
+ * @returns {string} - The text with appropriate capitalization applied
+ */
+function applyAutoCapitalization(text, isAppending = false) {
+    if (!text || typeof text !== 'string') {
+        return text;
+    }
+
+    // Get the current full text to determine context
+    let currentText = getPrintText({ trim: false });
+    let fullText = isAppending ? currentText + text : text;
+
+    // If this is the very first text (empty collect element), capitalize first letter
+    if (!currentText.trim() && !isAppending) {
+        return capitalizeFirstLetter(text);
+    }
+
+    // If appending to existing text, check if we need sentence capitalization
+    if (isAppending && currentText) {
+        return applySentenceCapitalization(currentText, text);
+    }
+
+    // For new text elements, check if previous text ends with sentence punctuation
+    if (!isAppending && currentText) {
+        let trimmedCurrent = currentText.trim();
+        if (trimmedCurrent && /[.!?]$/.test(trimmedCurrent)) {
+            return capitalizeFirstLetter(text);
+        }
+    }
+
+    return text;
+}
+
+/**
+ * Capitalizes the first alphabetic character in a string
+ * @param {string} text - The text to capitalize
+ * @returns {string} - The text with first letter capitalized
+ */
+function capitalizeFirstLetter(text) {
+    if (!text) return text;
+
+    for (let i = 0; i < text.length; i++) {
+        if (/[a-zA-Z]/.test(text[i])) {
+            return text.substring(0, i) + text[i].toUpperCase() + text.substring(i + 1);
+        }
+    }
+    return text;
+}
+
+/**
+ * Applies sentence capitalization when appending text
+ * @param {string} currentText - The existing text in collect elements
+ * @param {string} newText - The text being appended
+ * @returns {string} - The new text with appropriate capitalization
+ */
+function applySentenceCapitalization(currentText, newText) {
+    if (!newText) return newText;
+
+    // Look for sentence-ending punctuation followed by spaces at the end of current text
+    let match = currentText.match(/[.!?](\s*)$/);
+    if (match) {
+        // Found sentence-ending punctuation, capitalize first letter of new text
+        return capitalizeFirstLetter(newText);
+    }
+
+    // Check if the combined text has sentence punctuation that would affect capitalization
+    let combined = currentText + newText;
+    let sentenceEndMatch = combined.match(/[.!?](\s+)([a-zA-Z])/g);
+    if (sentenceEndMatch) {
+        // Apply capitalization to letters following sentence punctuation
+        let result = newText;
+        let searchStart = currentText.length;
+
+        // Find positions in the new text that need capitalization
+        for (let match of sentenceEndMatch) {
+            let matchIndex = combined.indexOf(match, searchStart);
+            if (matchIndex >= currentText.length) {
+                // This match affects the new text
+                let newTextIndex = matchIndex - currentText.length;
+                let letterIndex = newTextIndex + match.length - 1; // Position of the letter to capitalize
+                if (letterIndex >= 0 && letterIndex < result.length) {
+                    result = result.substring(0, letterIndex) +
+                            result[letterIndex].toUpperCase() +
+                            result.substring(letterIndex + 1);
+                }
+            }
+        }
+        return result;
+    }
+
+    return newText;
+}
+
 function addTextElem(text) {
+    // Apply automatic capitalization
+    text = applyAutoCapitalization(text, false);
+
     let newElem = new GridElement({
         label: i18nService.getTranslationObject(text)
     });
