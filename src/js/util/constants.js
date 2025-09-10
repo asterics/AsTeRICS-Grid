@@ -97,7 +97,8 @@ constants.COLORS = {
     GRAY: '#808080',
     BLACK: '#000000',
     PREDICT_BACKGROUND: '#FFE4B2',
-    LIVE_BACKGROUND: '#C6ECFD'
+    LIVE_BACKGROUND: '#C6ECFD',
+    PREFIX_SUFFIX_BACKGROUND: '#FFB366'  // Orange background for prefixes/suffixes
 }
 
 constants.PROP_TRANSFER_DONT_CHANGE = "PROP_TRANSFER_DONT_CHANGE";
@@ -416,6 +417,8 @@ constants.ARASAAC_AUTHOR = 'ARASAAC - CC (BY-NC-SA)';
 constants.ARASAAC_LICENSE_URL = 'https://arasaac.org/terms-of-use';
 
 constants.WORDFORM_TAG_BASE = 'BASE';
+constants.WORDFORM_TAG_PREFIX = 'PREFIX';
+constants.WORDFORM_TAG_SUFFIX = 'SUFFIX';
 constants.WORDFORM_TAGS = [
     constants.WORDFORM_TAG_BASE,
     'NEGATION',
@@ -439,7 +442,9 @@ constants.WORDFORM_TAGS = [
     'PAST',
     'FUTURE',
     'INDEFINITE',
-    'DEFINITE'
+    'DEFINITE',
+    constants.WORDFORM_TAG_PREFIX,
+    constants.WORDFORM_TAG_SUFFIX
 ];
 
 export { constants };
