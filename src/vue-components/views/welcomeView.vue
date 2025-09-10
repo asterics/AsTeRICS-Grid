@@ -62,6 +62,15 @@
                         </template>
                     </i18n>
                 </div>
+                
+                <!-- Interactive Tour Section -->
+                <div class="mt-4 p-3 bg-light rounded">
+                    <h4><i class="fas fa-map-signs me-2"></i>{{ $t('interactiveTour') || 'Interactive Tour' }}</h4>
+                    <p>{{ $t('tourDescription') || 'New to AsTeRICS Grid? Take our interactive tour to learn the basics!' }}</p>
+                    <button class="btn btn-primary" @click="startTour()" data-tour-trigger="welcome">
+                        <i class="fas fa-play me-2"></i>{{ $t('takeTour') || 'Take Tour' }}
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -73,6 +82,7 @@
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import {helpService} from "../../js/service/helpService";
     import {loginService} from "../../js/service/loginService";
+    import {tourService} from "../../js/service/tourService";
 
     export default {
         components: {HeaderIcon},
@@ -97,6 +107,9 @@
             },
             openHelp() {
                 helpService.openHelp();
+            },
+            startTour() {
+                tourService.startTour('welcome');
             }
         },
         mounted() {

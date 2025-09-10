@@ -203,7 +203,7 @@
                 thiz.inputConfig = JSON.parse(JSON.stringify(metadata.inputConfig));
                 thiz.touchScanning = !thiz.inputConfig.mouseclickEnabled;
             });
-            helpService.setHelpLocation('04_input_options', '#scanning');
+            helpService.setHelpLocation('09_input-options', '#scanning');
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

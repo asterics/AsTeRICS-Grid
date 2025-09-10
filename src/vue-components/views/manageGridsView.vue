@@ -9,6 +9,7 @@
             <button tabindex="32" id="moreButton" :aria-label="$t('more')" class="small"><i class="fas fa-ellipsis-v"></i> <span class="hide-mobile">{{ $t('more') }}</span></button>
             <div id="moreButtonMenu"></div>
             <button tabindex="31" @click="addGrid()" class="spaced hide-mobile small"><i class="fas fa-plus"/> <span>{{ $t('newGrid') }}</span></button>
+            <button tabindex="33" @click="startManageGridsTour()" class="spaced small" :aria-label="$t('takeTour')" :title="$t('takeTour')" data-tour-trigger="manageGrids"><i class="fas fa-map-signs"/> <span class="hide-mobile">{{ $t('takeTour') || 'Tour' }}</span></button>
         </header>
         <div class="srow content text-content" v-if="showLoading || grids === null">
             <div class="grid-container grid-mask">
@@ -138,6 +139,7 @@
     import {GridActionNavigate} from "../../js/model/GridActionNavigate.js";
     import { urlParamService } from '../../js/service/urlParamService';
     import { GridImage } from '../../js/model/GridImage';
+    import { tourService } from '../../js/service/tourService';
 
     let ORDER_MODE_KEY = "AG_ALLGRIDS_ORDER_MODE_KEY";
     let SELECTOR_CONTEXTMENU = '#moreButton';
@@ -191,6 +193,9 @@
         methods: {
             importBackup() {
                 document.getElementById('inputFileBackup').click();
+            },
+            startManageGridsTour() {
+                tourService.startTour('manageGrids');
             },
             setSelectedGraphElement(element, dontScroll) {
                 if (!element) return;

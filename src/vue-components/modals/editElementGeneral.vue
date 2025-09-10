@@ -101,7 +101,7 @@
         },
         mounted() {
             this.resetTestGrid();
-            helpService.setHelpLocation('03_appearance_layout', '#edit-modal');
+            helpService.setHelpLocation('07_grid-elements', '#edit-modal');
             dataService.getMetadata().then(metadata => {
                 this.metadata = metadata;
                 this.colorCategories = MetaData.getActiveColorScheme(metadata).categories;

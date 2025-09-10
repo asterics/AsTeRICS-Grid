@@ -12,6 +12,7 @@
                 <button tabindex="31" @click="undo" :aria-label="$t('undo')" :disabled="doingUndoRedo|| !undoService.canUndo()" class="small"><i class="fas fa-undo"></i> <span class="hide-mobile">{{ $t('undo') }}</span></button>
                 <button tabindex="32" @click="redo"  :aria-label="$t('redo')" :disabled="doingUndoRedo || !undoService.canRedo()" class="small spaced"><i class="fas fa-redo"></i> <span class="hide-mobile">{{ $t('redo') }}</span></button>
             </div>
+            <button tabindex="34" @click="startEditViewTour()" class="spaced small" :aria-label="$t('takeTour')" :title="$t('takeTour')" data-tour-trigger="editView"><i class="fas fa-map-signs"/> <span class="hide-mobile">{{ $t('takeTour') || 'Tour' }}</span></button>
         </header>
         <header class="d-flex align-items-center transfer-props-header" role="toolbar" v-if="propTransferObject">
             <div class="me-5">
@@ -84,6 +85,7 @@
     import { liveElementService } from '../../js/service/liveElementService';
     import TransferPropsModal from '../modals/transferPropsModal.vue';
     import { GridElementMatrixConversation } from '../../js/model/GridElementMatrixConversation';
+    import { tourService } from '../../js/service/tourService';
 
     let vueApp = null;
 
@@ -226,6 +228,9 @@
                 } else {
                     Router.toGrid(this.gridData.id);
                 }
+            },
+            startEditViewTour() {
+                tourService.startTour('editView');
             },
             editElement(elementId = null) {
                 if (!elementId && this.markedElementIds.length !== 1) {
