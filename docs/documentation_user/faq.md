@@ -46,7 +46,7 @@ On Windows 10 follow these steps to install additional voices:
 2. **Restart the computer**: Afterwards the new offline voices should be available in AsTeRICS Grid
 
 #### Android
-Please follow this tutorial from ARASAAC to read about possibilities to install additional offline voices on an Android device: [ARASAAC tutorial for installing voices on Android](https://aulaabierta.arasaac.org/en/dynamic-communicator-asterics-grid-installation-of-speech-synthesis-tts-android)
+Please follow this tutorial from ARASAAC to read about possibilities to install additional offline voices on an Android device: [ARASAAC tutorial for installing voices on Android](https://aulaabierta.arasaac.org/en/dinamic-communicator-asterics-grid-synthesised-voices-tts-android-ios)
 
 #### iOS
 With iOS 15 it was possible to use all voices installed on the device within AsTeRICS Grid. With iOS 16 Apple seems to have decided to remove the possibility to use high quality voices within web applications and therefore also to remove them from AsTeRICS Grid. See this [issue on Github about iOS voices](https://github.com/asterics/AsTeRICS-Grid/issues/223) and this [question in the Apple developer forum](https://developer.apple.com/forums/thread/723503) which shows that this isn't a bug, but is behaviour that's intended by Apple. We've contacted Apple directly and asked them to revert this change, but didn't receive an answer. If you're experiencing this issue, you can send feedback to Apple directly: [send feedback to Apple](https://www.apple.com/feedback/ipad/)
