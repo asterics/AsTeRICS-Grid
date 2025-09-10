@@ -5,7 +5,7 @@ import { i18nService } from '../i18nService.js';
 import { dataService } from '../data/dataService.js';
 
 // Minimal LRU cache for (provider|lang|word) -> { url, author, authorURL, searchProviderName }
-const MAX_CACHE_SIZE = 200;
+const MAX_CACHE_SIZE = 1000;
 const cache = new Map(); // key: `${provider}|${lang}|${word}`
 
 function setCache(key, value) {

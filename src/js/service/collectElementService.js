@@ -635,6 +635,9 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
         addTextElem(liveElementService.getLastValue(element.id) + ' ');
     }
     updateCollectElements();
+    // Ensure predictions refresh after any element interaction (works for whole-word pages too)
+    try { predictionService.predict(getPredictText(), dictionaryKey); } catch(e) {}
+
 });
 
 function triggerPredict() {
