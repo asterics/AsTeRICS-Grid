@@ -5,7 +5,7 @@
                 <h3 class="mt-2">{{ $t('applicationLanguage') }}</h3>
                 <div class="srow">
                     <label class="three columns" for="inLanguage">{{ $t('selectLanguage') }}</label>
-                    <select class="five columns" id="inLanguage" v-model="appSettings.appLang" @change="saveAppSettings(appSettings)">
+                    <select class="five columns" id="inLanguage" v-model="displayAppLang" @change="onLanguageChange">
                         <option value="">{{ $t('automatic') }}</option>
                         <option v-for="lang in allLanguages.filter(langObject => appLanguages.includes(langObject.code))" :value="lang.code">{{lang | extractTranslationAppLang}} ({{lang.code}})</option>
                     </select>
@@ -67,7 +67,26 @@
                 allLanguages: i18nService.getAllLanguages()
             }
         },
+        computed: {
+            displayAppLang: {
+                get() {
+                    // Convert null (never set) to "" for display purposes
+                    return this.appSettings.appLang === null ? "" : this.appSettings.appLang;
+                },
+                set(value) {
+                    // This setter is not used since we handle changes in onLanguageChange
+                    this.appSettings.appLang = value;
+                }
+            }
+        },
         methods: {
+            onLanguageChange(event) {
+                let selectedValue = event.target.value;
+                // When user selects "Automatic" (empty string), save it as empty string (explicit choice)
+                // When user selects a specific language, save the language code
+                this.appSettings.appLang = selectedValue;
+                this.saveAppSettings(this.appSettings);
+            }
         },
         async mounted() {
         }
