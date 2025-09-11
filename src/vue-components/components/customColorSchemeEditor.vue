@@ -159,7 +159,26 @@ export default {
         },
         
         createNewScheme() {
-            this.localScheme = constants.createCustomColorScheme('New Theme', this.selectedBaseScheme);
+            const base = this.selectedBaseScheme;
+            let categories, mappings, colors;
+            if (base === 'GOOSENS') {
+                categories = constants.CS_GOOSSENS_CATEGORIES;
+            } else if (base === 'MONTESSORI') {
+                categories = constants.CS_MONTESSORI_CATEGORIES;
+            } else {
+                categories = constants.CS_FITZGERALD_CATEGORIES;
+                mappings = constants.CS_MAPPING_TO_FITZGERALD;
+            }
+            colors = new Array(categories.length).fill('#ffffff');
+            this.localScheme = {
+                name: undefined,
+                displayName: 'New Theme',
+                categories,
+                mappings,
+                colors,
+                isCustom: true
+            };
+            this.$emit('scheme-changed', this.localScheme);
         },
         
         onBaseSchemeChange() {

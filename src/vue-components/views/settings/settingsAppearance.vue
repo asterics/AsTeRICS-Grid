@@ -359,6 +359,14 @@
                         this.metadata.colorConfig.activeColorScheme = activeSchemeId;
                     }
 
+                    // Ensure active scheme exists; if deleted, fall back to default
+                    const activeId = this.metadata.colorConfig.activeColorScheme;
+                    const exists = MetaData.getAllColorSchemes(this.metadata)
+                        .some(s => s.name === activeId);
+                    if (!exists) {
+                        this.metadata.colorConfig.activeColorScheme = constants.DEFAULT_COLOR_SCHEMES[0].name;
+                    }
+
                     // Save metadata using the mixin
                     await this.saveMetadata(this.metadata);
 
