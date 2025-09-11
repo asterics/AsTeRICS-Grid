@@ -1,0 +1,144 @@
+# This workflow is triggered whenever a pull request is created or updated.
+name: Beta release
+
+on:
+  pull_request:
+    # The types of pull request events that will trigger this workflow.
+    # 'opened' for a new PR, 'synchronize' for new commits, and 'reopened'
+    # if a closed PR is opened again.
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    # This allows the workflow to be triggered manually from the GitHub UI.
+    # The branch for the deployment will be selected via the built-in "Use workflow from" dropdown.
+
+jobs:
+  build-and-deploy:
+    # The job will only run if the head branch is not 'i10n_master'
+    # and the actor is not 'dependabot[bot]'.
+    #if: github.head_ref != 'l10n_master' && github.actor != 'dependabot[bot]'
+    if: github.actor != 'dependabot[bot]'
+    # This job will run on the latest version of Ubuntu.
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository code. This is the first step in most workflows.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}
+          ref:        ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref }}
+          fetch-depth: 0
+
+      # Step 2: Set up Node.js. Replace this with a different setup action
+      # if you're using a different technology stack (e.g., Python, Ruby).
+      - name: Set up Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Step 3: Install project dependencies.
+      - name: Install dependencies
+        run: npm install
+        
+      # Step 4: Replace dynamic constants in files before building.
+      # This step uses sed to substitute placeholder strings in the source files.
+      - name: Replace constants in source files
+        run: |
+          # Define the tagname with the current date and time.
+          TAG_NAME="release-beta-$(date +%Y-%m-%d-%H.%M/%z)"
+          # Escape the forward slashes for the sed command.
+          TAG_NAME_SED="${TAG_NAME//\//\\/}"
+          
+          # Replace the version and environment placeholders in the specified files.
+          sed -i -e "s/#ASTERICS_GRID_VERSION#/$TAG_NAME_SED/g" src/js/util/constants.js
+          sed -i -e "s/#ASTERICS_GRID_ENV#/BETA/g" src/js/util/constants.js
+          sed -i -e "s/#ASTERICS_GRID_VERSION#/$TAG_NAME_SED/g" src/vue-components/views/aboutView.vue
+          sed -i -e "s/#ASTERICS_GRID_VERSION#/$TAG_NAME_SED/g" serviceWorker.js
+
+      # Step 4: Build the web application. This command creates the production-ready
+      # files, typically in a 'build' or 'dist' directory.
+      - name: Build web application
+        run: npm run build
+
+      # Step 5: Sanitize the branch name and set the full remote path.
+      - name: Prepare remote path variables
+        id: prepare_path
+        run: |
+          # Check if the workflow was triggered by a pull request.
+          # If so, use the PR user and branch.
+          # Otherwise, it's a manual run, so use the actor and the workflow's branch.
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            # Sanitize the branch name and construct the remote path for a PR.
+            SANITIZED_BRANCH=$(echo "${{ github.head_ref }}" | tr -cs '[:alnum:]' '-' | tr '[:upper:]' '[:lower:]')
+            REMOTE_USER="${{ github.event.pull_request.user.login }}"
+            POSTFIX="/pr"
+          else
+            # For a manual workflow_dispatch, use the actor and the workflow's ref name.
+            SANITIZED_BRANCH=$(echo "${{ github.ref_name }}" | tr -cs '[:alnum:]' '-' | tr '[:upper:]' '[:lower:]')
+            REMOTE_USER="${{ github.actor }}"
+            POSTFIX=""
+          fi
+
+          # Remove any trailing dashes that might be created by the sanitization command.
+          SANITIZED_BRANCH=$(echo "$SANITIZED_BRANCH" | sed 's/-$//')
+
+          # Construct the full remote path and make it available as a step output.
+          FULL_REMOTE_PATH="/kunden/homepages/2/d708826695/htdocs/asterics-grid-beta-github/${REMOTE_USER}/${SANITIZED_BRANCH}${POSTFIX}"
+          echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
+          echo "remote_path=$FULL_REMOTE_PATH" >> $GITHUB_OUTPUT
+          echo "remote_path_postfix=$POSTFIX" >> $GITHUB_OUTPUT
+          echo "remote_user=$REMOTE_USER" >> $GITHUB_OUTPUT
+
+     # Step 6: Use SSH to connect to the server and delete the existing remote directory.
+      # This is a separate step that runs before the upload.
+      - name: Clean remote directory with SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.IONOS_SSH_HOST }}
+          username: ${{ secrets.IONOS_SSH_USER }}
+          password: ${{ secrets.IONOS_SSH_PASS }}
+          # The command to execute on the remote server. We use the path variable created above.
+          script: |
+            rm -rf "${{ steps.prepare_path.outputs.remote_path }}" && mkdir -p "${{ steps.prepare_path.outputs.remote_path }}"
+
+      # Step 5: Deploy the build directory to the SFTP server.
+      # This step uses a third-party action to handle the SFTP transfer.
+      - name: Deploy via SCP
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ secrets.IONOS_SSH_HOST }}
+          username: ${{ secrets.IONOS_SSH_USER }}
+          password: ${{ secrets.IONOS_SSH_PASS }}
+          source: "app/,serviceWorker.js,unsupported.html,index.html"
+          target: "${{ steps.prepare_path.outputs.remote_path }}"
+          
+      # Step 8: Log the deployment URL.
+      # This step constructs the full URL and prints it to the workflow log.
+      - name: Log Deployment URL
+        id: log_url
+        run: |
+          PREVIEW_URL="https://gridbeta-github.asterics-foundation.org/${{ steps.prepare_path.outputs.remote_user }}/${{ steps.prepare_path.outputs.sanitized_branch }}${{ steps.prepare_path.outputs.remote_path_postfix }}"
+          echo "Deployment preview URL: ${PREVIEW_URL}"
+          echo "preview_url=$PREVIEW_URL" >> $GITHUB_OUTPUT
+
+      # Step 11: Post a comment to the pull request with the preview URL.
+      # This step will only run if the workflow was triggered by a pull request
+      # and the previous deployment step was successful.
+      - name: Post PR comment with preview URL
+        if: success() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // This script uses the GitHub API to post a comment.
+            // The `github` object is pre-configured with a token.
+            const prUser = context.payload.pull_request.user.login;
+            const prBranch = "${{ steps.prepare_path.outputs.sanitized_branch }}";
+            const previewUrl = "${{ steps.log_url.outputs.preview_url }}";
+            const message = `🎉 **Beta deployment successful!** 🎉\n\nYou can view the changes in the live preview environment here: ${previewUrl}`;
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: message
+            });
