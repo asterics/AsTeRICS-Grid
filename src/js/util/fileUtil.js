@@ -25,7 +25,7 @@ fileUtil.readZip = async function(file, options = {}) {
         let file = zip.files[filename];
         let type = options.defaultEncoding || 'base64';
         let parseJson = options.jsonFileExtensions.some(ext => filename.endsWith(`.${ext}`));
-        type = parseJson ? 'binarystring' : type;
+        type = parseJson ? 'string' : type;
         promises.push(Promise.resolve().then(async () => {
             let content = await file.async(type);
             readCount++;
