@@ -244,7 +244,7 @@ async function doAction(gridElement, action, options = {}) {
             break;
         case 'GridActionCollectElement':
             log.debug('action collect element');
-            collectElementService.doCollectElementActions(action.action);
+            collectElementService.doCollectElementActions(action.action, gridElement);
             break;
         case 'GridActionWebradio':
             webradioService.doAction(options.gridId, action);
