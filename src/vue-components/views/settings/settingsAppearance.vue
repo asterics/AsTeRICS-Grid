@@ -121,7 +121,7 @@
                             <label class="three columns" for="colorScheme">
                                 <span>{{ $t('colorSchemeForCategories') }}</span>
                             </label>
-                            <select id="colorScheme" class="three columns" v-model="metadata.colorConfig.activeColorScheme" @change="saveMetadata(metadata)">
+                            <select id="colorScheme" class="five columns" v-model="metadata.colorConfig.activeColorScheme" @change="saveMetadata(metadata)">
                                 <optgroup :label="$t('predefinedSchemes')">
                                     <option v-for="scheme in constants.DEFAULT_COLOR_SCHEMES" :value="scheme.name">{{scheme.name | translate}}</option>
                                 </optgroup>
@@ -129,16 +129,19 @@
                                     <option v-for="scheme in customColorSchemes" :value="scheme.name">{{scheme.displayName}}</option>
                                 </optgroup>
                             </select>
-                            <div class="two columns">
-                                <button @click="createCustomScheme" :title="$t('createCustomScheme')">
-                                    <i class="fas fa-plus"></i> {{ $t('createCustomScheme') }}
+                            <div class="four columns d-flex" style="justify-content: flex-end; gap: 0.5rem;">
+                                <button class="button-compact" @click="createCustomScheme" :title="$t('createCustomScheme')">
+                                    <i class="fas fa-plus"></i>
+                                    <span>{{ $t('createCustomScheme') }}</span>
                                 </button>
                                 <button
+                                    class="button-compact"
                                     @click="editCurrentScheme"
                                     :disabled="!isCurrentSchemeCustom"
                                     :title="isCurrentSchemeCustom ? $t('editCurrentScheme') : $t('cannotEditPredefinedScheme')"
                                 >
-                                    <i class="fas fa-pencil-alt"></i> {{ $t('editScheme') }}
+                                    <i class="fas fa-pencil-alt"></i>
+                                    <span>{{ $t('editScheme') }}</span>
                                 </button>
                             </div>
                         </div>
@@ -147,6 +150,7 @@
                                 <div class="flex-grow-1" v-for="(color, index) in MetaData.getActiveColorScheme(metadata).colors" :title="$t(MetaData.getActiveColorScheme(metadata).categories[index])" :style="`background-color: ${color};`"></div>
                             </div>
                         </div>
+
                         <div class="srow">
                             <input id="colorSchemeActive" type="checkbox" v-model="metadata.colorConfig.colorSchemesActivated" @change="saveMetadata(metadata)"/>
                             <label for="colorSchemeActive">
@@ -423,5 +427,16 @@
         margin-right: 0.5rem;
     }
 
+
+
+    /* Compact, half-height buttons without reducing font size */
+    .button-compact {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.35rem 0.7rem; /* reduce vertical padding to cut height ~in half */
+        line-height: 1.1;
+        white-space: nowrap; /* keep label on one line */
+    }
 
 </style>
