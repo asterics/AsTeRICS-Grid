@@ -131,7 +131,7 @@
         data: function () {
             return {
                 searchText: null,
-                searchProviders: [arasaacService.getSearchProviderInfo(), openSymbolsService.getSearchProviderInfo(), globalSymbolsService.getSearchProviderInfo()],
+                searchProviders: [arasaacService.getSearchProviderInfo(), globalSymbolsService.getSearchProviderInfo(), openSymbolsService.getSearchProviderInfo()],
                 searchProvider: null,
                 searchResults: null,
                 searchLoading: false,
