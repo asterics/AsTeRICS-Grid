@@ -129,23 +129,16 @@
                                     <option v-for="scheme in customColorSchemes" :value="scheme.name">{{scheme.displayName}}</option>
                                 </optgroup>
                             </select>
-                            <div class="two columns custom-scheme-buttons">
-                                <button
-                                    class="large-blue-button"
-                                    @click="createCustomScheme"
-                                    :title="$t('createCustomScheme')"
-                                    style="padding: 12px 16px !important; background: #007bff !important; color: white !important; border: 1px solid #007bff !important; font-size: 16px !important; margin-left: 8px !important; height: 48px !important; min-width: 48px !important;"
-                                >
-                                    <i class="fas fa-plus" style="font-size: 14px !important;"></i>
+                            <div class="two columns">
+                                <button @click="createCustomScheme" :title="$t('createCustomScheme')">
+                                    <i class="fas fa-plus"></i> {{ $t('createCustomScheme') }}
                                 </button>
                                 <button
-                                    class="large-blue-button"
                                     @click="editCurrentScheme"
                                     :disabled="!isCurrentSchemeCustom"
                                     :title="isCurrentSchemeCustom ? $t('editCurrentScheme') : $t('cannotEditPredefinedScheme')"
-                                    style="padding: 12px 16px !important; background: #007bff !important; color: white !important; border: 1px solid #007bff !important; font-size: 16px !important; margin-left: 8px !important; height: 48px !important; min-width: 48px !important;"
                                 >
-                                    <i class="fas fa-pencil-alt" style="font-size: 14px !important;"></i>
+                                    <i class="fas fa-pencil-alt"></i> {{ $t('editScheme') }}
                                 </button>
                             </div>
                         </div>
@@ -430,37 +423,5 @@
         margin-right: 0.5rem;
     }
 
-    .color-scheme-button {
-        padding: 0.8rem 1.2rem !important;
-        font-size: 1.2rem !important;
-        margin-left: 0.5rem !important;
-        background-color: #007bff !important;
-        color: white !important;
-        border: 1px solid #007bff !important;
-        border-radius: 6px !important;
-        cursor: pointer !important;
-        transition: all 0.2s !important;
-        min-width: 50px !important;
-        height: 45px !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
 
-    .color-scheme-button:hover:not(:disabled) {
-        background-color: #0056b3 !important;
-        border-color: #0056b3 !important;
-        transform: translateY(-1px) !important;
-    }
-
-    .color-scheme-button:disabled {
-        opacity: 0.6 !important;
-        cursor: not-allowed !important;
-        background-color: #6c757d !important;
-        border-color: #6c757d !important;
-    }
-
-    .color-scheme-button i {
-        font-size: 1.1rem !important;
-    }
 </style>
