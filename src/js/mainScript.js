@@ -15,6 +15,7 @@ import { keyboardShortcuts } from './service/keyboardShortcuts';
 import { i18nService } from './service/i18nService';
 import { printService } from './service/printService';
 import { notificationService } from './service/notificationService.js';
+import { utteranceLoggingService } from './service/utteranceLoggingService.js';
 import { dataService } from './service/data/dataService';
 
 let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
