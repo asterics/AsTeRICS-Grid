@@ -416,6 +416,24 @@ util.mapRange = function(value, fromMin, fromMax, toMin, toMax) {
     return toMin + (scaled * toSpan);
 };
 
+/**
+ * Fetch JSON from a given URL
+ * @param {string} url - The endpoint to fetch from
+ * @param {object} [options] - Optional fetch options (headers, method, etc.)
+ * @returns {Promise<object>} - Parsed JSON response or null if any error
+ */
+util.fetchJson = async function(url, options = {}) {
+    try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            return null;
+        }
+        return await response.json();
+    } catch (e) {
+        return null;
+    }
+};
+
 util.fetchWithTimeout = function (url, timeoutMs) {
     // see https://stackoverflow.com/a/50101022/9219743
     const controller = new AbortController()
