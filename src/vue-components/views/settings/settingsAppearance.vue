@@ -121,7 +121,7 @@
                             <label class="three columns" for="colorScheme">
                                 <span>{{ $t('colorSchemeForCategories') }}</span>
                             </label>
-                            <select id="colorScheme" class="five columns" v-model="metadata.colorConfig.activeColorScheme" @change="saveMetadata(metadata)">
+                            <select id="colorScheme" class="three columns" v-model="metadata.colorConfig.activeColorScheme" @change="saveMetadata(metadata)">
                                 <optgroup :label="$t('predefinedSchemes')">
                                     <option v-for="scheme in constants.DEFAULT_COLOR_SCHEMES" :value="scheme.name">{{scheme.name | translate}}</option>
                                 </optgroup>
@@ -129,25 +129,23 @@
                                     <option v-for="scheme in customColorSchemes" :value="scheme.name">{{scheme.displayName}}</option>
                                 </optgroup>
                             </select>
-                        </div>
-                        <div class="srow">
-                            <div class="eight columns offset-by-three">
-                                <button class="button-small me-2" @click="createCustomScheme">
-                                    <i class="fas fa-plus"></i> {{ $t('createCustomScheme') }}
+                            <div class="two columns custom-scheme-buttons">
+                                <button
+                                    class="large-blue-button"
+                                    @click="createCustomScheme"
+                                    :title="$t('createCustomScheme')"
+                                    style="padding: 12px 16px !important; background: #007bff !important; color: white !important; border: 1px solid #007bff !important; font-size: 16px !important; margin-left: 8px !important; height: 48px !important; min-width: 48px !important;"
+                                >
+                                    <i class="fas fa-plus" style="font-size: 14px !important;"></i>
                                 </button>
                                 <button
-                                    class="button-small me-2"
+                                    class="large-blue-button"
                                     @click="editCurrentScheme"
                                     :disabled="!isCurrentSchemeCustom"
                                     :title="isCurrentSchemeCustom ? $t('editCurrentScheme') : $t('cannotEditPredefinedScheme')"
+                                    style="padding: 12px 16px !important; background: #007bff !important; color: white !important; border: 1px solid #007bff !important; font-size: 16px !important; margin-left: 8px !important; height: 48px !important; min-width: 48px !important;"
                                 >
-                                    <i class="fas fa-edit"></i> {{ $t('editScheme') }}
-                                </button>
-                                <button
-                                    class="button-small me-2"
-                                    @click="duplicateCurrentScheme"
-                                >
-                                    <i class="fas fa-copy"></i> {{ $t('duplicateScheme') }}
+                                    <i class="fas fa-pencil-alt" style="font-size: 14px !important;"></i>
                                 </button>
                             </div>
                         </div>
@@ -179,9 +177,8 @@
         <custom-color-scheme-modal
             v-if="showCustomSchemeModal"
             :scheme="editingScheme"
-            :metadata="metadata"
-            @scheme-saved="onCustomSchemeSaved"
-            @scheme-deleted="onCustomSchemeDeleted"
+            :additional-color-schemes="metadata.colorConfig.additionalColorSchemes || []"
+            @save="onCustomSchemeSaved"
             @close="closeCustomSchemeModal"
         />
     </div>
@@ -201,7 +198,6 @@
     import { GridData } from '../../../js/model/GridData';
     import { util } from '../../../js/util/util';
     import { ColorConfig } from '../../../js/model/ColorConfig';
-    import { customColorSchemeService } from '../../../js/service/customColorSchemeService';
     import CustomColorSchemeModal from '../../modals/customColorSchemeModal.vue';
 
     export default {
@@ -222,7 +218,7 @@
         },
         computed: {
             customColorSchemes() {
-                return customColorSchemeService.getCustomSchemes(this.metadata);
+                return this.metadata.colorConfig.additionalColorSchemes || [];
             },
             isCurrentSchemeCustom() {
                 return this.metadata.colorConfig.activeColorScheme &&
@@ -326,7 +322,19 @@
 
             },
             createCustomScheme() {
-                this.editingScheme = null;
+                // Pre-select current active theme as base scheme
+                let currentScheme = MetaData.getActiveColorScheme(this.metadata);
+                let baseSchemeType = 'FITZGERALD'; // default
+
+                if (currentScheme) {
+                    if (currentScheme.name.includes('GOOSENS')) {
+                        baseSchemeType = 'GOOSENS';
+                    } else if (currentScheme.name.includes('MONTESSORI')) {
+                        baseSchemeType = 'MONTESSORI';
+                    }
+                }
+
+                this.editingScheme = { baseSchemeType }; // Pass base scheme type
                 this.showCustomSchemeModal = true;
             },
             editCurrentScheme() {
@@ -343,48 +351,24 @@
                     this.showCustomSchemeModal = true;
                 }
             },
-            duplicateCurrentScheme() {
-                let currentScheme = MetaData.getActiveColorScheme(this.metadata);
-                if (!currentScheme) {
-                    return;
-                }
 
-                let baseName = currentScheme.displayName || currentScheme.name.replace(/^CS_/, '').replace(/_/g, ' ');
-                let duplicateName = baseName + ' Copy';
-
+            async onCustomSchemeSaved(updatedAdditionalColorSchemes, activeSchemeId) {
                 try {
-                    let duplicatedScheme = customColorSchemeService.duplicateScheme(
-                        currentScheme.name,
-                        duplicateName,
-                        this.metadata
-                    );
+                    // Update the metadata with the new additional color schemes
+                    this.metadata.colorConfig.additionalColorSchemes = updatedAdditionalColorSchemes;
 
-                    this.editingScheme = duplicatedScheme;
-                    this.showCustomSchemeModal = true;
-                } catch (error) {
-                    console.error('Error duplicating scheme:', error);
-                    alert(this.$t('errorDuplicatingScheme'));
-                }
-            },
-            async onCustomSchemeSaved(savedScheme) {
-                try {
-                    // The scheme is already saved by the service, just update the active scheme
-                    this.metadata.colorConfig.activeColorScheme = savedScheme.name;
+                    // Set active scheme if provided
+                    if (activeSchemeId) {
+                        this.metadata.colorConfig.activeColorScheme = activeSchemeId;
+                    }
+
+                    // Save metadata using the mixin
                     await this.saveMetadata(this.metadata);
+
                     this.showCustomSchemeModal = false;
                     this.editingScheme = null;
                 } catch (error) {
-                    console.error('Error updating active scheme:', error);
-                }
-            },
-            async onCustomSchemeDeleted(deletedSchemeName) {
-                try {
-                    // The scheme is already deleted by the service
-                    this.showCustomSchemeModal = false;
-                    this.editingScheme = null;
-                    // Metadata is already updated by the service
-                } catch (error) {
-                    console.error('Error handling scheme deletion:', error);
+                    console.error('Error saving custom schemes:', error);
                 }
             },
             closeCustomSchemeModal() {
@@ -444,5 +428,39 @@
 
     .me-2 {
         margin-right: 0.5rem;
+    }
+
+    .color-scheme-button {
+        padding: 0.8rem 1.2rem !important;
+        font-size: 1.2rem !important;
+        margin-left: 0.5rem !important;
+        background-color: #007bff !important;
+        color: white !important;
+        border: 1px solid #007bff !important;
+        border-radius: 6px !important;
+        cursor: pointer !important;
+        transition: all 0.2s !important;
+        min-width: 50px !important;
+        height: 45px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .color-scheme-button:hover:not(:disabled) {
+        background-color: #0056b3 !important;
+        border-color: #0056b3 !important;
+        transform: translateY(-1px) !important;
+    }
+
+    .color-scheme-button:disabled {
+        opacity: 0.6 !important;
+        cursor: not-allowed !important;
+        background-color: #6c757d !important;
+        border-color: #6c757d !important;
+    }
+
+    .color-scheme-button i {
+        font-size: 1.1rem !important;
     }
 </style>

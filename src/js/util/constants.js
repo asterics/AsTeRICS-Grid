@@ -406,39 +406,6 @@ constants.DEFAULT_COLOR_SCHEMES = [
     }
 ];
 
-// Helper function to create a default custom color scheme structure
-constants.createCustomColorScheme = function(name, baseScheme = 'FITZGERALD') {
-    let categories, mappings, colors;
-
-    if (baseScheme === 'GOOSENS') {
-        categories = constants.CS_GOOSSENS_CATEGORIES;
-        colors = ['#fdcae1', '#84b6f4', '#c7f3c7', '#fdfd96', '#ffda89'];
-    } else if (baseScheme === 'MONTESSORI') {
-        categories = constants.CS_MONTESSORI_CATEGORIES;
-        colors = [
-            '#ffffff', '#e3f5fa', '#eaeffd', '#FCE8E8', '#dff4df',
-            '#fbf3e4', '#fbf2ff', '#fff0f6', '#fbf7e4', '#e4e4e4'
-        ];
-    } else {
-        // Default to Fitzgerald
-        categories = constants.CS_FITZGERALD_CATEGORIES;
-        mappings = constants.CS_MAPPING_TO_FITZGERALD;
-        colors = [
-            '#fdfd96', '#ffda89', '#c7f3c7', '#84b6f4', '#fdcae1',
-            '#ffffff', '#bc98f3', '#d8af97', '#ff9688', '#bdbfbf'
-        ];
-    }
-
-    return {
-        name: constants.COLOR_SCHEME_CUSTOM_PREFIX + '_' + name.toUpperCase().replace(/\s+/g, '_'),
-        displayName: name,
-        categories: categories,
-        mappings: mappings,
-        colors: colors,
-        isCustom: true
-    };
-};
-
 constants.OPTION_TYPES = {
     BOOLEAN: 'BOOLEAN',
     COLOR: 'COLOR',
