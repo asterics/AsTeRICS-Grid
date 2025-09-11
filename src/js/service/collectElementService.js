@@ -72,6 +72,11 @@ collectElementService.initWithGrid = function (gridData, dontAutoPredict) {
                 }, null);
             collectMode = copy.mode || collectMode;
             convertToLowercaseIfKeyboard = copy.convertToLowercase !== false;
+            // Defaults for new/legacy grids that may not have these flags persisted
+            copy.displayUpsideDown = copy.displayUpsideDown !== undefined ? copy.displayUpsideDown : false;
+            copy.isTextRotated = copy.isTextRotated !== undefined ? copy.isTextRotated : false;
+            // Keep reference to owning grid for persistence of toggle state
+            copy.gridId = gridData.id;
             registeredCollectElements.push(copy);
         }
     });
@@ -228,7 +233,7 @@ collectElementService.doCollectElementActions = async function (action, gridElem
 
                 // Save the grid to persist the change
                 // We need to get the grid ID and save it properly
-                let gridId = collectElement.gridId || stateService.getState('currentGridId');
+                let gridId = collectElement.gridId || (stateService.getCurrentGridId && stateService.getCurrentGridId());
                 if (gridId) {
                     let currentGrid = await dataService.getGrid(gridId);
                     if (currentGrid) {
