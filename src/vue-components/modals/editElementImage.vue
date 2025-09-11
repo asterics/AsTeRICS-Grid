@@ -259,10 +259,10 @@
             }
         },
         mounted() {
-            let hasSearchProvider = this.gridElement.image && this.gridElement.image.searchProviderName;
-            let currentSearchProviderName = hasSearchProvider ? this.gridElement.image.searchProviderName : localStorageService.get(EDIT_ELEM_SELECTED_SEARCH_PROVIDER);
-            let currentSearchOptions = hasSearchProvider ? this.gridElement.image.searchProviderOptions : null;
-            this.searchProvider = this.searchProviders.filter(provider => provider.name === currentSearchProviderName)[0] || this.searchProviders[0];
+            let currentSearchProviderName = this.gridElement.image && this.gridElement.image.searchProviderName;
+            let searchProviderToSelect = localStorageService.get(EDIT_ELEM_SELECTED_SEARCH_PROVIDER);
+            let currentSearchOptions = currentSearchProviderName === searchProviderToSelect ? this.gridElement.image.searchProviderOptions : null;
+            this.searchProvider = this.searchProviders.filter(provider => provider.name === searchProviderToSelect)[0] || this.searchProviders[0];
             if (currentSearchOptions) {
                 let currentNames = currentSearchOptions.map(e => e.name);
                 for (let i = 0; i < this.searchProvider.options.length; i++) {
