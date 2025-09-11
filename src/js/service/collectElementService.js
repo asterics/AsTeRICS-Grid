@@ -107,7 +107,7 @@ collectElementService.doARASAACGrammarCorrection = async function() {
     }
 }
 
-collectElementService.doCollectElementActions = async function (action) {
+collectElementService.doCollectElementActions = async function (action, gridElement) {
     if (!action) {
         return;
     }
@@ -218,6 +218,38 @@ collectElementService.doCollectElementActions = async function (action) {
                 })
             );
             break;
+        case GridActionCollectElement.COLLECT_ACTION_TOGGLE_TEXT_ROTATION:
+            console.log('Toggle text rotation action triggered', gridElement);
+            // Find the collect element in the registered collect elements
+            if (registeredCollectElements && registeredCollectElements.length > 0) {
+                let collectElement = registeredCollectElements[0]; // Get the first (and usually only) collect element
+                console.log('Found collect element:', collectElement);
+
+                // Toggle the rotation state for the collect element
+                collectElement.isTextRotated = !collectElement.isTextRotated;
+                console.log('Toggled isTextRotated to:', collectElement.isTextRotated);
+
+                // Save the grid to persist the change
+                // We need to get the grid ID and save it properly
+                let gridId = collectElement.gridId || stateService.getState('currentGridId');
+                if (gridId) {
+                    let currentGrid = await dataService.getGrid(gridId);
+                    if (currentGrid) {
+                        // Find and update the element in the grid
+                        let gridElement = currentGrid.gridElements.find(elem => elem.id === collectElement.id);
+                        if (gridElement) {
+                            gridElement.isTextRotated = collectElement.isTextRotated;
+                            await dataService.saveGrid(currentGrid);
+                        }
+                    }
+                }
+
+                // Update the display
+                updateCollectElements();
+            } else {
+                console.log('No collect element found in registered elements');
+            }
+            break;
     }
     predictionService.predict(getPredictText(), dictionaryKey);
 };
@@ -327,6 +359,22 @@ async function updateCollectElements(isSecondTry) {
         let darkMode = metadata.colorConfig.elementBackgroundColor === constants.DEFAULT_ELEMENT_BACKGROUND_COLOR_DARK;
         let backgroundColor = darkMode ? constants.DEFAULT_COLLECT_ELEMENT_BACKGROUND_COLOR_DARK : constants.DEFAULT_COLLECT_ELEMENT_BACKGROUND_COLOR;
         let textColor = darkMode ? constants.DEFAULT_ELEMENT_FONT_COLOR_DARK : constants.DEFAULT_ELEMENT_FONT_COLOR;
+
+        // Determine if text should be rotated
+        // Logic: toggle reverses the permanent setting
+        // displayUpsideDown=false, isTextRotated=false → normal (false)
+        // displayUpsideDown=false, isTextRotated=true → upside down (true)
+        // displayUpsideDown=true, isTextRotated=false → upside down (true)
+        // displayUpsideDown=true, isTextRotated=true → normal (false)
+        let shouldRotate = collectElement.displayUpsideDown !== collectElement.isTextRotated;
+        let rotationClass = shouldRotate ? ' upside-down' : '';
+        console.log('Collect element rotation check:', {
+            id: collectElement.id,
+            displayUpsideDown: collectElement.displayUpsideDown,
+            isTextRotated: collectElement.isTextRotated,
+            shouldRotate: shouldRotate,
+            rotationClass: rotationClass
+        });
         if (!imageMode) {
             let text = getPrintText();
             $(`#${collectElement.id}`).attr('aria-label', `${text}, ${i18nService.t('ELEMENT_TYPE_COLLECT')}`);
@@ -335,7 +383,7 @@ async function updateCollectElements(isSecondTry) {
                             ${text}
                         </span>`;
             outerContainerJqueryElem.html(
-                (html = `<div class="collect-container" dir="auto" style="height: 100%; flex: 1; background-color: ${backgroundColor}; text-align: justify;">${html}</div>`)
+                (html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; background-color: ${backgroundColor}; text-align: justify;">${html}</div>`)
             );
             fontUtil.adaptFontSize($(`#${collectElement.id}`));
         } else {
@@ -418,7 +466,7 @@ async function updateCollectElements(isSecondTry) {
                              </div>`;
             }
             let additionalCSS = useSingleLine ? 'overflow-x: auto; overflow-y: hidden;' : 'flex-wrap: wrap;';
-            html = `<div class="collect-container" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: ${backgroundColor}; text-align: justify; ${additionalCSS}">
+            html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: ${backgroundColor}; text-align: justify; ${additionalCSS}">
                         <div class="collect-items-container" style="display: flex; flex-direction: row; ">${html}</div>
                     </div>`;
             outerContainerJqueryElem.html(html);
@@ -656,6 +704,8 @@ async function getMetadataConfig() {
 $(window).on(constants.EVENT_GRID_RESIZE, function () {
     setTimeout(updateCollectElements, 500);
 });
+
+
 
 $(document).on(constants.EVENT_USER_CHANGED, clearAll);
 $(document).on(constants.EVENT_CONFIG_RESET, clearAll);

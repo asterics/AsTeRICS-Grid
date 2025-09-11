@@ -41,7 +41,8 @@ class GridActionCollectElement extends Model({
             GridActionCollectElement.COLLECT_ACTION_COPY_CLIPBOARD,
             GridActionCollectElement.COLLECT_ACTION_APPEND_CLIPBOARD,
             GridActionCollectElement.COLLECT_ACTION_CLEAR_CLIPBOARD,
-            GridActionCollectElement.COLLECT_ACTION_TO_YOUTUBE
+            GridActionCollectElement.COLLECT_ACTION_TO_YOUTUBE,
+            GridActionCollectElement.COLLECT_ACTION_TOGGLE_TEXT_ROTATION
         ];
     }
 }
@@ -61,6 +62,7 @@ GridActionCollectElement.COLLECT_ACTION_COPY_CLIPBOARD = 'COLLECT_ACTION_COPY_CL
 GridActionCollectElement.COLLECT_ACTION_APPEND_CLIPBOARD = 'COLLECT_ACTION_APPEND_CLIPBOARD';
 GridActionCollectElement.COLLECT_ACTION_CLEAR_CLIPBOARD = 'COLLECT_ACTION_CLEAR_CLIPBOARD';
 GridActionCollectElement.COLLECT_ACTION_TO_YOUTUBE = 'COLLECT_ACTION_TO_YOUTUBE';
+GridActionCollectElement.COLLECT_ACTION_TOGGLE_TEXT_ROTATION = 'COLLECT_ACTION_TOGGLE_TEXT_ROTATION';
 
 GridActionCollectElement.defaults({
     id: '', //will be replaced by constructor
