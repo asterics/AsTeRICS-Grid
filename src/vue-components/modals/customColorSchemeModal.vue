@@ -23,17 +23,19 @@
                 </div>
                 <div class="modal-footer">
                     <button
+                        class="button-secondary"
+                        @click="$emit('close')"
+                    >
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                        <span>{{ $t('cancel') }}</span>
+                    </button>
+                    <button
                         class="button-primary"
                         @click="saveScheme"
                         :disabled="!isValid"
                     >
-                        {{ isEditMode ? $t('updateScheme') : $t('save') }}
-                    </button>
-                    <button
-                        class="button-secondary"
-                        @click="$emit('close')"
-                    >
-                        {{ $t('cancel') }}
+                        <i class="fas fa-check" aria-hidden="true"></i>
+                        <span>{{ $t('save') }}</span>
                     </button>
                 </div>
             </div>
