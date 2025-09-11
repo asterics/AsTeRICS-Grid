@@ -219,15 +219,12 @@ collectElementService.doCollectElementActions = async function (action, gridElem
             );
             break;
         case GridActionCollectElement.COLLECT_ACTION_TOGGLE_TEXT_ROTATION:
-            console.log('Toggle text rotation action triggered', gridElement);
             // Find the collect element in the registered collect elements
             if (registeredCollectElements && registeredCollectElements.length > 0) {
                 let collectElement = registeredCollectElements[0]; // Get the first (and usually only) collect element
-                console.log('Found collect element:', collectElement);
 
                 // Toggle the rotation state for the collect element
                 collectElement.isTextRotated = !collectElement.isTextRotated;
-                console.log('Toggled isTextRotated to:', collectElement.isTextRotated);
 
                 // Save the grid to persist the change
                 // We need to get the grid ID and save it properly
@@ -246,8 +243,6 @@ collectElementService.doCollectElementActions = async function (action, gridElem
 
                 // Update the display
                 updateCollectElements();
-            } else {
-                console.log('No collect element found in registered elements');
             }
             break;
     }
@@ -368,13 +363,6 @@ async function updateCollectElements(isSecondTry) {
         // displayUpsideDown=true, isTextRotated=true → normal (false)
         let shouldRotate = collectElement.displayUpsideDown !== collectElement.isTextRotated;
         let rotationClass = shouldRotate ? ' upside-down' : '';
-        console.log('Collect element rotation check:', {
-            id: collectElement.id,
-            displayUpsideDown: collectElement.displayUpsideDown,
-            isTextRotated: collectElement.isTextRotated,
-            shouldRotate: shouldRotate,
-            rotationClass: rotationClass
-        });
         if (!imageMode) {
             let text = getPrintText();
             $(`#${collectElement.id}`).attr('aria-label', `${text}, ${i18nService.t('ELEMENT_TYPE_COLLECT')}`);
