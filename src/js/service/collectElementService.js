@@ -721,7 +721,18 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
                 addTextElem(label);
             }
         } else if (label || image || printText) {
-            collectedElements.push(element);
+            // For normal (symbol) elements, apply contextual capitalization non-destructively
+            // by setting a temporary fixedGrammarText used only in the collect bar rendering/speaking
+            let baseText = printText || label || '';
+            let capitalized = applyAutoCapitalization(baseText, false);
+            if (capitalized !== baseText) {
+                // Avoid mutating the original grid element: push a shallow JSON copy
+                let elementCopy = JSON.parse(JSON.stringify(element));
+                elementCopy.fixedGrammarText = capitalized;
+                collectedElements.push(elementCopy);
+            } else {
+                collectedElements.push(element);
+            }
         }
         triggerPredict();
     } else if (element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
