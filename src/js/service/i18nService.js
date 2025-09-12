@@ -85,11 +85,16 @@ i18nService.getContentLangReadable = function () {
 };
 
 i18nService.getAppLang = function () {
-    return i18nService.getCustomAppLang() || i18nService.getBrowserLang();
+    let customLang = i18nService.getCustomAppLang();
+    // If customLang is null (never set), use browser language
+    // If customLang is "" (explicitly set to automatic), use browser language
+    // If customLang is a language code, use that language
+    return customLang || i18nService.getBrowserLang();
 };
 
 i18nService.getCustomAppLang = function () {
-    return currentAppLang || '';
+    // Return null if never set, "" if explicitly automatic, or language code if set
+    return currentAppLang;
 };
 
 i18nService.isCurrentAppLangDE = function () {
@@ -116,12 +121,15 @@ i18nService.setAppLanguage = async function (lang, dontSave) {
     if (!dontSave) {
         localStorageService.saveAppSettings({appLang: lang});
     }
-    currentAppLang = lang || i18nService.getBrowserLang();
-    $('html').prop('lang', currentAppLang);
+    // Store the exact value passed (null, "", or language code)
+    currentAppLang = lang;
+    // But use the resolved language for actual UI language
+    let resolvedLang = i18nService.getAppLang();
+    $('html').prop('lang', resolvedLang);
     await getPredefinedActionTranslations();
-    return loadLanguage(currentAppLang).then(() => {
-        vueI18n.locale = currentAppLang;
-        allLanguages.sort((a, b) => a[currentAppLang].toLowerCase().localeCompare(b[currentAppLang].toLowerCase()));
+    return loadLanguage(resolvedLang).then(() => {
+        vueI18n.locale = resolvedLang;
+        allLanguages.sort((a, b) => a[resolvedLang].toLowerCase().localeCompare(b[resolvedLang].toLowerCase()));
         return Promise.resolve();
     });
 };
