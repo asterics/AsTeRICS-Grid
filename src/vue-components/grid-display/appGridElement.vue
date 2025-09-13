@@ -68,6 +68,12 @@ export default {
             if (this.element.type === GridElement.ELEMENT_TYPE_LIVE) {
                 return this.element.backgroundColor || constants.COLORS.LIVE_BACKGROUND;
             }
+            
+            // Check if element is a prefix or suffix for orange background
+            if (this.element.type === GridElement.ELEMENT_TYPE_NORMAL && this.isPrefixOrSuffix(this.element)) {
+                return constants.COLORS.PREFIX_SUFFIX_BACKGROUND;
+            }
+            
             if ([ColorConfig.COLOR_MODE_BACKGROUND, ColorConfig.COLOR_MODE_BOTH].includes(this.metadata.colorConfig.colorMode)) {
                 return MetaData.getElementColor(this.element, this.metadata);
             }
@@ -208,6 +214,39 @@ export default {
         },
         getBorderWidth() {
             return fontUtil.pctToPx(this.metadata.colorConfig.borderWidth);
+        },
+        isPrefixOrSuffix(element) {
+            if (!element) return false;
+            
+            // Method 1: Check word forms for prefix/suffix flags
+            if (element.wordForms) {
+                for (let wordForm of element.wordForms) {
+                    if (wordForm.isPrefix || wordForm.isSuffix || 
+                        (wordForm.tags && (wordForm.tags.includes('PREFIX') || wordForm.tags.includes('SUFFIX')))) {
+                        return true;
+                    }
+                }
+            }
+            
+            // Method 2: Check element label for common prefixes/suffixes
+            let label = i18nService.getTranslation(element.label);
+            if (!label) return false;
+            
+            label = label.toLowerCase().trim();
+            
+            // Common prefixes
+            let commonPrefixes = ['un', 're', 'pre', 'dis', 'in', 'im', 'non', 'anti', 'de', 'over', 'under', 'out', 'up'];
+            if (commonPrefixes.includes(label)) {
+                return true;
+            }
+            
+            // Common suffixes
+            let commonSuffixes = ['ing', 'ed', 'er', 'est', 'ly', 'tion', 'sion', 'ness', 'ment', 'ful', 'less', 'able', 'ible', 's'];
+            if (commonSuffixes.includes(label)) {
+                return true;
+            }
+            
+            return false;
         }
     },
     async mounted() {

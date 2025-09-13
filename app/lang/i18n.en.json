@@ -1105,6 +1105,8 @@
   "importexportDataTofromAllGrids": "Import/export data to/from all grids",
   "pronunciation": "Pronunciation",
   "pronunciationOf": "Pronunciation of \"{0}\"",
+  "isPrefix": "Is prefix (combines without space before next word)",
+  "isSuffix": "Is suffix (combines without space after previous word)",
   "deleteAll": "Delete all",
   "toggleInCollectionElementIfAddedMultipleTimes": "Toggle in collection element if added multiple times",
   "httpMethod": "HTTP method",

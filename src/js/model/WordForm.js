@@ -4,12 +4,16 @@ class WordForm extends Model({
     lang: [String],
     tags: [Model.Array(String)],
     value: [String],
-    pronunciation: [String]
+    pronunciation: [String],
+    isPrefix: [Boolean],
+    isSuffix: [Boolean]
 }) {}
 
 WordForm.defaults({
     tags: [],
-    value: ''
+    value: '',
+    isPrefix: false,
+    isSuffix: false
 });
 
 export { WordForm };

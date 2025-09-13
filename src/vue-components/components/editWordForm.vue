@@ -22,7 +22,19 @@
                     <button :disabled="!wordForm.pronunciation && !wordForm.value" @click="speechService.speak(wordForm.pronunciation || wordForm.value)" class="px-1 py-0" style="line-height: inherit;"><i class="fas fa-play"/></button>
                 </div>
             </div>
-
+        </div>
+        <div class="srow">
+            <div class="three columns"></div>
+            <div class="nine columns">
+                <label class="srow">
+                    <input type="checkbox" v-model="wordForm.isPrefix"/>
+                    <span>{{ $t('isPrefix') }}</span>
+                </label>
+                <label class="srow">
+                    <input type="checkbox" v-model="wordForm.isSuffix"/>
+                    <span>{{ $t('isSuffix') }}</span>
+                </label>
+            </div>
         </div>
     </div>
 </template>
