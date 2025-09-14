@@ -17,7 +17,7 @@ import { fontUtil } from '../util/fontUtil';
 let printService = {};
 let pdfOptions = {
     docPadding: 5,
-    footerHeight: 8,
+    footerHeight: 12, // Increased from 8 to provide more space
     textPadding: null,
     elementMargin: null,
     imgMargin: 1,
@@ -463,16 +463,23 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
         options.progressFn(5, i18nService.t('creatingPDFFile'), () => { options.abort = true; });
     }
     
-        // NEW: Get the most current UI metadata FIRST
-        let uiMetadata = getCurrentUIMetadata();
-        console.log('🎨 UI Metadata for PDF:', JSON.stringify(uiMetadata, null, 2));
-        
-        // Get database metadata as fallback
+        // Get database metadata first (most reliable)
         let dbMetadata = await dataService.getMetadata() || { colorConfig: {}, textConfig: {} };
         console.log('💾 Database Metadata for PDF:', JSON.stringify(dbMetadata, null, 2));
         
-        // PRIORITY: Use UI metadata if available, otherwise use database metadata
-        let metadata = uiMetadata || dbMetadata;
+        // Try to get UI metadata as enhancement
+        let uiMetadata = getCurrentUIMetadata();
+        console.log('🎨 UI Metadata for PDF:', JSON.stringify(uiMetadata, null, 2));
+        
+        // Use database metadata as base, enhance with UI metadata if available
+        let metadata = dbMetadata;
+        if (uiMetadata) {
+            // Merge UI metadata with database metadata, giving priority to UI for recent changes
+            metadata = {
+                colorConfig: { ...dbMetadata.colorConfig, ...uiMetadata.colorConfig },
+                textConfig: { ...dbMetadata.textConfig, ...uiMetadata.textConfig }
+            };
+        }
         
         // Ensure we have complete metadata structure
         if (!metadata.colorConfig) metadata.colorConfig = {};
@@ -495,35 +502,57 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
 
     options.idPageMap = {};
     options.idParentsMap = {};
-        options.customFontFamily = pdfOptions.fontFamily;
+    options.customFontFamily = pdfOptions.fontFamily;
     
+    // First, map all grids in the export
     gridsData.forEach((grid, index) => {
         options.idPageMap[grid.id] = index + 1;
     });
 
+    // Collect all referenced grid IDs from navigation elements
+    let referencedGridIds = new Set();
     for (let grid of gridsData) {
         options.idParentsMap[grid.id] = options.idParentsMap[grid.id] || [];
         for (let element of grid.gridElements) {
             element = new GridElement(element);
             let nav = element.getNavigateGridId();
             if (nav) {
+                referencedGridIds.add(nav);
                 options.idParentsMap[nav] = options.idParentsMap[nav] || [];
                 options.idParentsMap[nav].push(options.idPageMap[grid.id]);
             }
             let label = i18nService.getTranslation(element.label);
-                // Skip pattern font mapping to avoid 404 errors
-                // We'll use built-in fonts instead
+        }
+    }
+    
+    // Add referenced grids to the page map if they're not already included
+    // This ensures navigation links work even for grids not in the current export
+    if (referencedGridIds.size > 0) {
+        console.log('🔗 Found referenced grids:', Array.from(referencedGridIds));
+        let currentPageCount = gridsData.length;
+        for (let refGridId of referencedGridIds) {
+            if (!options.idPageMap[refGridId]) {
+                // Add a placeholder page number for referenced grids
+                options.idPageMap[refGridId] = currentPageCount + 1;
+                currentPageCount++;
+                console.log(`📍 Added referenced grid ${refGridId} to page map as page ${options.idPageMap[refGridId]}`);
             }
         }
+    }
 
         const doc = new jsPDF.jsPDF({ orientation: 'landscape', unit: 'mm', compress: true });
 
         // Try to use the user's configured font family if it's a built-in font
         const userFontFamily = pdfOptions.fontFamily;
-        const builtInFonts = ['helvetica', 'times', 'courier'];
+        const builtInFonts = [
+            'helvetica', 'times', 'courier', 'symbol', 'zapfdingbats',
+            'helvetica-bold', 'helvetica-italic', 'helvetica-bolditalic',
+            'times-bold', 'times-italic', 'times-bolditalic',
+            'courier-bold', 'courier-italic', 'courier-bolditalic'
+        ];
         
         let fontLoaded = false;
-        let loadedFontName = 'Helvetica'; // Default fallback
+        let loadedFontName = 'helvetica'; // Default fallback
         
         // First, try the user's configured font if it's built-in
         if (builtInFonts.includes(userFontFamily)) {
@@ -720,38 +749,54 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
             doc.setTextColor(0, 0, 0);
             doc.setFontSize(6);
             
+            // Calculate proper spacing - leave 3mm margin from edges
+            const footerMargin = 3;
+            const lineHeight = 3;
+            
             // Left side: AsTeRICS Grid information
             doc.text(
                 'Impreso por AsTeRICS Grid, https://grid.asterics.eu',
-                5,
-                DOC_HEIGHT - footerHeight + 2
+                footerMargin,
+                DOC_HEIGHT - footerHeight + footerMargin + lineHeight
             );
             
             // Left side: ARASAAC license information
             doc.text(
                 'Pictogramas: Sergio Palao - Origen: ARASAAC https://arasaac.org - Licencia: CC (BY-NC-SA)',
-                5,
-                DOC_HEIGHT - footerHeight + 5
+                footerMargin,
+                DOC_HEIGHT - footerHeight + footerMargin + lineHeight * 2
             );
             
-            // Right side: Page information
+            // Right side: Page information - optimize for many pages
             const elementNumbers = gridData.gridElements ? gridData.gridElements.map((el, idx) => idx + 1).join(',') : '1';
             const gridName = gridData.name || 'Grid';
-            const pageInfo = `[${elementNumbers}] => ${gridName}`;
+            
+            // For many pages, show simplified page info to avoid overflow
+            let pageInfo;
+            if (options.pages && options.pages > 20) {
+                // For many pages, show only current page and total
+                pageInfo = `${options.currentPage || 1}/${options.pages || 1}`;
+            } else {
+                // For few pages, show full element numbers
+                pageInfo = `[${elementNumbers}] => ${gridName}`;
+            }
+            
             doc.text(
                 pageInfo,
-                DOC_WIDTH - 5,
-                DOC_HEIGHT - footerHeight + 2,
+                DOC_WIDTH - footerMargin,
+                DOC_HEIGHT - footerHeight + footerMargin + lineHeight,
                 { align: 'right' }
             );
             
-            // Page number
-            doc.text(
-                `${options.currentPage || 1}/${options.pages || 1}`,
-                DOC_WIDTH - 5,
-                DOC_HEIGHT - footerHeight + 5,
-                { align: 'right' }
-            );
+            // Page number (only show if not already shown in pageInfo)
+            if (!(options.pages && options.pages > 20)) {
+                doc.text(
+                    `${options.currentPage || 1}/${options.pages || 1}`,
+                    DOC_WIDTH - footerMargin,
+                    DOC_HEIGHT - footerHeight + footerMargin + lineHeight * 2,
+                    { align: 'right' }
+                );
+            }
         } else {
             // Even without ARASAAC images, show basic footer
             doc.setFillColor(255, 255, 255);
@@ -760,31 +805,47 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
             doc.setTextColor(0, 0, 0);
             doc.setFontSize(6);
             
+            // Calculate proper spacing - leave 3mm margin from edges
+            const footerMargin = 3;
+            const lineHeight = 3;
+            
             // Left side: AsTeRICS Grid information
             doc.text(
                 'Impreso por AsTeRICS Grid, https://grid.asterics.eu',
-                5,
-                DOC_HEIGHT - footerHeight + 2
+                footerMargin,
+                DOC_HEIGHT - footerHeight + footerMargin + lineHeight
             );
             
-            // Right side: Page information
+            // Right side: Page information - optimize for many pages
             const elementNumbers = gridData.gridElements ? gridData.gridElements.map((el, idx) => idx + 1).join(',') : '1';
             const gridName = gridData.name || 'Grid';
-            const pageInfo = `[${elementNumbers}] => ${gridName}`;
+            
+            // For many pages, show simplified page info to avoid overflow
+            let pageInfo;
+            if (options.pages && options.pages > 20) {
+                // For many pages, show only current page and total
+                pageInfo = `${options.currentPage || 1}/${options.pages || 1}`;
+            } else {
+                // For few pages, show full element numbers
+                pageInfo = `[${elementNumbers}] => ${gridName}`;
+            }
+            
             doc.text(
                 pageInfo,
-                DOC_WIDTH - 5,
-                DOC_HEIGHT - footerHeight + 2,
+                DOC_WIDTH - footerMargin,
+                DOC_HEIGHT - footerHeight + footerMargin + lineHeight,
                 { align: 'right' }
             );
             
-            // Page number
-            doc.text(
-                `${options.currentPage || 1}/${options.pages || 1}`,
-                DOC_WIDTH - 5,
-                DOC_HEIGHT - footerHeight + 5,
-                { align: 'right' }
-            );
+            // Page number (only show if not already shown in pageInfo)
+            if (!(options.pages && options.pages > 20)) {
+                doc.text(
+                    `${options.currentPage || 1}/${options.pages || 1}`,
+                    DOC_WIDTH - footerMargin,
+                    DOC_HEIGHT - footerHeight + footerMargin + lineHeight * 2,
+                    { align: 'right' }
+                );
+            }
         }
 
         // Debug: Log all the values being used for calculations (only if verbose)
@@ -1105,34 +1166,47 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         
             if (options.showLinks && element.type === GridElement.ELEMENT_TYPE_NAVIGATE) {
                 let targetGridId = element.getNavigateGridId();
+                console.log(`🔗 Processing navigation element ${element.id}: targetGridId=${targetGridId}`);
+                
                 if (targetGridId && options.idPageMap[targetGridId]) {
                     let targetPage = options.idPageMap[targetGridId];
-                    let iconWidth = Math.min(currentWidth, currentHeight) * 0.2;
-                    let offsetX = currentWidth - iconWidth - 2;
-                    let offsetY = 2;
-            doc.setDrawColor(255);
-            doc.setFillColor(90, 113, 122);
-            doc.roundedRect(xStartPos + offsetX, yStartPos + offsetY, iconWidth, iconWidth, 1, 1, 'FD');
-            doc.link(xStartPos, yStartPos, currentWidth, currentHeight, { pageNumber: targetPage });
-            if (targetPage) {
-                let fontSizePt = (iconWidth * 0.6) / 0.352778;
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(fontSizePt);
-                doc.text(
-                    targetPage + '',
-                    xStartPos + offsetX + iconWidth / 2,
-                    yStartPos + offsetY + iconWidth / 2,
-                    {
-                        baseline: 'middle',
-                        align: 'center',
-                        maxWidth: iconWidth
+                    console.log(`✅ Creating link to page ${targetPage} for element ${element.id}`);
+                    
+                    // Create the clickable link area
+                    doc.link(xStartPos, yStartPos, currentWidth, currentHeight, { pageNumber: targetPage });
+                    
+                    // Add visual indicator (small icon in corner)
+                    let iconWidth = Math.min(currentWidth, currentHeight) * 0.15; // Smaller icon
+                    let offsetX = currentWidth - iconWidth - 1;
+                    let offsetY = 1;
+                    
+                    // Draw background circle
+                    doc.setDrawColor(0, 0, 0);
+                    doc.setFillColor(90, 113, 122);
+                    doc.circle(xStartPos + offsetX + iconWidth/2, yStartPos + offsetY + iconWidth/2, iconWidth/2, 'FD');
+                    
+                    // Add page number text
+                    if (targetPage) {
+                        let fontSizePt = Math.max((iconWidth * 0.4) / 0.352778, 6);
+                        doc.setTextColor(255, 255, 255);
+                        doc.setFontSize(fontSizePt);
+                        doc.text(
+                            targetPage + '',
+                            xStartPos + offsetX + iconWidth / 2,
+                            yStartPos + offsetY + iconWidth / 2,
+                            {
+                                baseline: 'middle',
+                                align: 'center',
+                                maxWidth: iconWidth
+                            }
+                        );
                     }
-                );
+                } else {
+                    console.warn(`⚠️ Navigation element ${element.id} has invalid target: targetGridId=${targetGridId}, available pages:`, Object.keys(options.idPageMap));
+                }
             }
         }
-    }
-        }
-        } catch (error) {
+    } catch (error) {
         console.error('Error in addGridToPdf:', error);
         throw error;
     }
@@ -1179,7 +1253,18 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
             'Arial': 'helvetica',
             'serif': 'times',
             'sans-serif': 'helvetica',
-            'monospace': 'courier'
+            'monospace': 'courier',
+            'Helvetica': 'helvetica',
+            'Times New Roman': 'times',
+            'Courier New': 'courier',
+            'Symbol': 'symbol',
+            'ZapfDingbats': 'zapfdingbats',
+            'Georgia': 'times',
+            'Verdana': 'helvetica',
+            'Tahoma': 'helvetica',
+            'Trebuchet MS': 'helvetica',
+            'Impact': 'helvetica',
+            'Comic Sans MS': 'helvetica'
         };
         
         // Use mapped font or keep original if it's a standard font
@@ -1192,13 +1277,47 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
             console.log(`🎯 Using original font: ${fontFamily}`);
         }
         
+        // Handle font variants (bold, italic, etc.)
+        let finalFontName = fontFamily;
+        const fontVariants = ['bold', 'italic', 'bolditalic'];
+        const baseFont = fontFamily.split('-')[0]; // Get base font name
+        
+        // Check if the font has variants and try them
+        if (fontVariants.some(variant => fontFamily.includes(variant))) {
+            // Font already has variant specified
+            finalFontName = fontFamily;
+        } else {
+            // Try to determine if we need a variant based on CSS
+            if (uiElement.length && pdfOptions.usePDF) {
+                const fontWeight = uiElement.css('font-weight');
+                const fontStyle = uiElement.css('font-style');
+                
+                if (fontWeight && (fontWeight === 'bold' || parseInt(fontWeight) >= 700)) {
+                    if (fontStyle && fontStyle === 'italic') {
+                        finalFontName = `${baseFont}-bolditalic`;
+                    } else {
+                        finalFontName = `${baseFont}-bold`;
+                    }
+                } else if (fontStyle && fontStyle === 'italic') {
+                    finalFontName = `${baseFont}-italic`;
+                }
+            }
+        }
+        
         // Set font with error handling
         try {
-            doc.setFont(fontFamily);
+            doc.setFont(finalFontName);
+            console.log(`✅ Successfully set font: ${finalFontName}`);
         } catch (error) {
-            console.warn(`Font '${fontFamily}' not available, falling back to helvetica`);
-            doc.setFont('helvetica');
-            fontFamily = 'helvetica';
+            console.warn(`Font '${finalFontName}' not available, trying base font '${baseFont}'`);
+            try {
+                doc.setFont(baseFont);
+                console.log(`✅ Using base font: ${baseFont}`);
+            } catch (fallbackError) {
+                console.warn(`Base font '${baseFont}' not available, falling back to helvetica`);
+                doc.setFont('helvetica');
+                finalFontName = 'helvetica';
+            }
         }
 
         let uiFontSizeMM = 0;
@@ -1220,37 +1339,15 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
             }
         }
 
-        // Get base font size percentage (same logic as UI's getBaseFontSizePct)
-        // Use UI values if available, otherwise fall back to metadata
+        // Get base font size percentage - use metadata values directly for reliability
         let baseFontSizePct;
-        if (uiElement.length && pdfOptions.usePDF) {
-            // Get the actual font size from UI and convert back to percentage
-            const uiFontSizePx = parseFloat(uiElement.css('font-size')) || 16;
-            const containerSize = {
-                width: currentWidth,
-                height: currentHeight
-            };
-            // Calculate what percentage the UI font size represents
-            const viewportHeight = typeof document !== 'undefined' ? document.documentElement.clientHeight : 800;
-            
-            console.log(`📏 Font size calculation for element ${element.id}:`);
-            console.log(`  - UI font size: ${uiFontSizePx}px`);
-            console.log(`  - Viewport height: ${viewportHeight}px`);
-            console.log(`  - Element size: ${currentWidth}x${currentHeight}mm`);
-            
-            // Validate viewport height to prevent division by zero or invalid calculations
-            if (viewportHeight > 0 && uiFontSizePx > 0) {
-                baseFontSizePct = (uiFontSizePx / viewportHeight) * 100;
-                // Ensure reasonable bounds for font size percentage
-                baseFontSizePct = Math.max(1, Math.min(100, baseFontSizePct));
-                console.log(`  - Calculated percentage: ${baseFontSizePct}%`);
-            } else {
-                // Fallback to metadata values if calculation fails
-                baseFontSizePct = hasImg ? (textConfig.fontSizePct || 15) : (textConfig.onlyTextFontSizePct || 35);
-                console.log(`  - Using fallback percentage: ${baseFontSizePct}%`);
-            }
+        
+        // Use element-specific font size if available
+        if (element.fontSizePct && Number.isInteger(element.fontSizePct)) {
+            baseFontSizePct = element.fontSizePct;
+            console.log(`📏 Using element-specific font size: ${baseFontSizePct}%`);
         } else {
-            // Fallback to metadata values - ensure text-only cells have bigger font size
+            // Use metadata values - ensure text-only cells have bigger font size
             if (hasImg) {
                 // Text + picto cells
                 baseFontSizePct = textConfig.fontSizePct || 15;
@@ -1258,9 +1355,13 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
                 // Text-only cells - should be bigger
                 baseFontSizePct = textConfig.onlyTextFontSizePct || 35;
             }
-            if (element.fontSizePct && Number.isInteger(element.fontSizePct)) {
-                baseFontSizePct = element.fontSizePct;
-            }
+            console.log(`📏 Using metadata font size: ${baseFontSizePct}% (${hasImg ? 'text+picto' : 'text-only'})`);
+        }
+        
+        // Validate font size percentage
+        if (!baseFontSizePct || baseFontSizePct <= 0) {
+            baseFontSizePct = hasImg ? 15 : 35; // Fallback values
+            console.warn(`⚠️ Invalid font size percentage, using fallback: ${baseFontSizePct}%`);
         }
         
         const lineHeight = hasImg ? (textConfig.lineHeight || 1.5) : (textConfig.onlyTextLineHeight || 1.5);
@@ -1276,11 +1377,17 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
         const fontSizePx = fontUtil.pctToPx(baseFontSizePct, containerSize);
         let fontSizeMM = fontSizePx * PX_TO_MM;
         let fontSizePt = Math.max(fontSizeMM / 0.352778, 6);
-
-        if (uiElement.length && Math.abs(uiFontSizeMM - fontSizeMM) > 0.02) {
-            console.warn(`Font size mismatch for element ${element.id}: UI=${uiFontSizeMM}mm (${uiFontSizePx}px), PDF=${fontSizeMM}mm`);
-            fontSizeMM = uiFontSizeMM;
-            fontSizePt = fontSizeMM / 0.352778;
+        
+        console.log(`📏 Final font size calculation for element ${element.id}:`);
+        console.log(`  - Base percentage: ${baseFontSizePct}%`);
+        console.log(`  - Container size: ${currentWidth}x${currentHeight}mm`);
+        console.log(`  - Calculated font size: ${fontSizePx}px (${fontSizeMM}mm, ${fontSizePt}pt)`);
+        
+        // Ensure minimum font size for readability
+        if (fontSizePt < 6) {
+            fontSizePt = 6;
+            fontSizeMM = fontSizePt * 0.352778;
+            console.log(`  - Adjusted to minimum font size: ${fontSizePt}pt`);
         }
 
         const maxWidth = currentWidth - 2 * pdfOptions.textPadding;
@@ -1300,42 +1407,61 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
         }
         doc.setTextColor(...textColor);
     
-    let actualFontSize = fontSizePt;
-            doc.setFontSize(actualFontSize);
-    let dim = doc.getTextDimensions(displayLabel);
+        let actualFontSize = fontSizePt;
+        doc.setFontSize(actualFontSize);
+        let dim = doc.getTextDimensions(displayLabel);
         let fits = dim.w <= maxWidth && dim.h <= effectiveMaxHeight;
-    
-    if (!fits && fittingMode === TextConfig.TOO_LONG_AUTO) {
-            const step = actualFontSize / 20;
+        
+        // Enhanced text fitting logic to prevent overflow
+        if (!fits && fittingMode === TextConfig.TOO_LONG_AUTO) {
+            const step = Math.max(actualFontSize / 20, 0.5); // Ensure minimum step size
             while (!fits && actualFontSize > 6) {
-            actualFontSize -= step;
-            doc.setFontSize(actualFontSize);
-            dim = doc.getTextDimensions(displayLabel);
+                actualFontSize -= step;
+                doc.setFontSize(actualFontSize);
+                dim = doc.getTextDimensions(displayLabel);
                 fits = dim.w <= maxWidth && dim.h <= effectiveMaxHeight;
-        }
+            }
             actualFontSize = Math.max(actualFontSize, 6);
-    } else if (!fits && fittingMode === TextConfig.TOO_LONG_TRUNCATE) {
-        let truncated = '';
-        for (let i = 0; i < displayLabel.length; i++) {
+        } else if (!fits && fittingMode === TextConfig.TOO_LONG_TRUNCATE) {
+            let truncated = '';
+            for (let i = 0; i < displayLabel.length; i++) {
                 const test = truncated + displayLabel[i];
-            dim = doc.getTextDimensions(test);
-            if (dim.w > maxWidth) break;
-            truncated = test;
+                const testDim = doc.getTextDimensions(test);
+                if (testDim.w > maxWidth) break;
+                truncated = test;
+            }
+            displayLabel = truncated;
+            dim = doc.getTextDimensions(displayLabel);
+        } else if (!fits && fittingMode === TextConfig.TOO_LONG_ELLIPSIS) {
+            let truncated = '';
+            const ellipsis = '...';
+            const ellipsisDim = doc.getTextDimensions(ellipsis);
+            
+            for (let i = 0; i < displayLabel.length; i++) {
+                const test = truncated + displayLabel[i] + ellipsis;
+                const testDim = doc.getTextDimensions(test);
+                if (testDim.w > maxWidth) break;
+                truncated += displayLabel[i];
+            }
+            displayLabel = truncated + ellipsis;
+            dim = doc.getTextDimensions(displayLabel);
         }
-        displayLabel = truncated;
-    } else if (!fits && fittingMode === TextConfig.TOO_LONG_ELLIPSIS) {
-        let truncated = '';
-        for (let i = 0; i < displayLabel.length; i++) {
-                const test = truncated + displayLabel[i] + '...';
-            dim = doc.getTextDimensions(test);
-            if (dim.w > maxWidth) break;
-            truncated += displayLabel[i];
+        
+        // Additional safety check - if text still doesn't fit, force truncation
+        if (dim.w > maxWidth) {
+            let truncated = '';
+            for (let i = 0; i < displayLabel.length; i++) {
+                const test = truncated + displayLabel[i];
+                const testDim = doc.getTextDimensions(test);
+                if (testDim.w > maxWidth) break;
+                truncated = test;
+            }
+            displayLabel = truncated;
+            dim = doc.getTextDimensions(displayLabel);
         }
-        displayLabel = truncated + '...';
-    }
-    
-    doc.setFontSize(actualFontSize);
-    
+        
+        doc.setFontSize(actualFontSize);
+        
         const textPosition = textConfig.textPosition;
         const xOffset = xStartPos + currentWidth / 2;
         let yOffset = hasImg
@@ -1344,10 +1470,13 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
                 : yStartPos + currentHeight - pdfOptions.textPadding - dim.h / 2
             : yStartPos + currentHeight / 2;
 
+        // Ensure text stays within cell boundaries
+        const finalMaxWidth = Math.min(maxWidth, currentWidth - 2 * pdfOptions.textPadding);
+        
         doc.text(displayLabel, xOffset, yOffset, {
             baseline: 'middle',
             align: 'center',
-            maxWidth
+            maxWidth: finalMaxWidth
         });
     } catch (error) {
         console.error('Error adding label to PDF:', error);

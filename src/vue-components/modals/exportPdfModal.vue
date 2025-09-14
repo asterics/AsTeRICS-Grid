@@ -95,6 +95,10 @@
         methods: {
             save() {
                 console.log('📥 Export PDF button clicked');
+                
+                // Close modal immediately and show progress bar
+                this.$emit('close');
+                
                 let exportGrids = null;
                 if (!this.selectedGrid) {
                     exportGrids = this.graphList.map(elem => elem.grid);
@@ -103,6 +107,14 @@
                 }
                 let exportIds = exportGrids.map(grid => grid.id);
                 console.log('📋 Export grids selected:', exportGrids.length, 'IDs:', exportIds);
+                
+                // Show initial progress bar immediately
+                MainVue.showProgressBar(0, {
+                    header: i18nService.t('creatingPDFFile'),
+                    text: i18nService.t('creatingPDFFile'),
+                    closable: true
+                });
+                
                 Promise.resolve().then(async () => {
                     if (exportGrids.length > this.gridsData.length / 2) {
                         return dataService.getGrids(true, true);
@@ -132,7 +144,6 @@
                                 })
                             }
                         });
-                        this.$emit('close');
                     } catch (error) {
                         console.error('Error generating PDF:', error);
                         MainVue.showProgressBar(0, {
@@ -164,7 +175,8 @@
                 if (this.printGridId) {
                     this.selectedGrid = this.gridsData.filter(grid => grid.id === this.printGridId)[0];
                     this.options.exportConnected = false;
-                    this.options.showLinks = false;
+                    // Keep showLinks enabled even for single grid to allow navigation within the grid
+                    // this.options.showLinks = false;
                     this.selectedGridChanged();
                 }
             });
