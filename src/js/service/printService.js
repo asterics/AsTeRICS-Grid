@@ -767,18 +767,18 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
                 DOC_HEIGHT - footerHeight + footerMargin + lineHeight * 2
             );
             
-            // Right side: Page information - optimize for many pages
-            const elementNumbers = gridData.gridElements ? gridData.gridElements.map((el, idx) => idx + 1).join(',') : '1';
+            // Right side: Page information - show grid name and page numbers
             const gridName = gridData.name || 'Grid';
+            const elementCount = gridData.gridElements ? gridData.gridElements.length : 0;
             
-            // For many pages, show simplified page info to avoid overflow
+            // Always show simplified page info to avoid overwhelming users
             let pageInfo;
-            if (options.pages && options.pages > 20) {
-                // For many pages, show only current page and total
+            if (options.pages && options.pages > 1) {
+                // Multi-page export: show current page and total
                 pageInfo = `${options.currentPage || 1}/${options.pages || 1}`;
             } else {
-                // For few pages, show full element numbers
-                pageInfo = `[${elementNumbers}] => ${gridName}`;
+                // Single page: show grid name and element count
+                pageInfo = `${gridName} (${elementCount} elements)`;
             }
             
             doc.text(
@@ -788,10 +788,10 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
                 { align: 'right' }
             );
             
-            // Page number (only show if not already shown in pageInfo)
-            if (!(options.pages && options.pages > 20)) {
+            // Show page number only for multi-page exports
+            if (options.pages && options.pages > 1) {
                 doc.text(
-                    `${options.currentPage || 1}/${options.pages || 1}`,
+                    `Page ${options.currentPage || 1} of ${options.pages || 1}`,
                     DOC_WIDTH - footerMargin,
                     DOC_HEIGHT - footerHeight + footerMargin + lineHeight * 2,
                     { align: 'right' }
@@ -816,18 +816,18 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
                 DOC_HEIGHT - footerHeight + footerMargin + lineHeight
             );
             
-            // Right side: Page information - optimize for many pages
-            const elementNumbers = gridData.gridElements ? gridData.gridElements.map((el, idx) => idx + 1).join(',') : '1';
+            // Right side: Page information - show grid name and page numbers
             const gridName = gridData.name || 'Grid';
+            const elementCount = gridData.gridElements ? gridData.gridElements.length : 0;
             
-            // For many pages, show simplified page info to avoid overflow
+            // Always show simplified page info to avoid overwhelming users
             let pageInfo;
-            if (options.pages && options.pages > 20) {
-                // For many pages, show only current page and total
+            if (options.pages && options.pages > 1) {
+                // Multi-page export: show current page and total
                 pageInfo = `${options.currentPage || 1}/${options.pages || 1}`;
             } else {
-                // For few pages, show full element numbers
-                pageInfo = `[${elementNumbers}] => ${gridName}`;
+                // Single page: show grid name and element count
+                pageInfo = `${gridName} (${elementCount} elements)`;
             }
             
             doc.text(
@@ -837,10 +837,10 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
                 { align: 'right' }
             );
             
-            // Page number (only show if not already shown in pageInfo)
-            if (!(options.pages && options.pages > 20)) {
+            // Show page number only for multi-page exports
+            if (options.pages && options.pages > 1) {
                 doc.text(
-                    `${options.currentPage || 1}/${options.pages || 1}`,
+                    `Page ${options.currentPage || 1} of ${options.pages || 1}`,
                     DOC_WIDTH - footerMargin,
                     DOC_HEIGHT - footerHeight + footerMargin + lineHeight * 2,
                     { align: 'right' }
