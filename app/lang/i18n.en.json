@@ -188,6 +188,10 @@
   "editGridItem": "Edit grid element",
   "newGridItem": "New grid element",
   "label": "Label",
+  "letterCase": "Letter case",
+  "lowercase": "Lowercase",
+  "uppercase": "Uppercase",
+
   "hideElement": "Hide element",
   "image": "Image",
   "chooseFile": "Choose file",

@@ -36,6 +36,14 @@
             </div>
 
             <div class="srow">
+              <label class="three columns">{{ $t('letterCase') }}</label>
+              <div class="nine columns">
+                <label><input type="radio" value="lower" v-model="letterCase"> {{ $t('lowercase') }}</label>
+                <label style="margin-left:1em;"><input type="radio" value="upper" v-model="letterCase" :disabled="!supportsUppercase"> {{ $t('uppercase') }}</label>
+              </div>
+            </div>
+
+            <div class="srow">
               <label class="three columns" for="labelIn">Label</label>
               <input id="labelIn" class="nine columns" v-model="gridLabel" :placeholder="defaultLabel">
             </div>
@@ -101,8 +109,10 @@ export default {
       order: 'frequency',
       includeDigits: false,
       twoHit: false,
+      letterCase: 'lower',
       supportsDigits: false,
       supportsFrequency: false,
+      supportsUppercase: false,
       rows: null,
       cols: null,
       gridLabel: '',
@@ -185,7 +195,11 @@ export default {
       try {
         this.supportsFrequency = await keyboardGeneratorService.supportsFrequency(this.langCode);
       } catch (e) { this.supportsFrequency = false; }
+      try {
+        this.supportsUppercase = await keyboardGeneratorService.supportsUppercase(this.langCode, this.script);
+      } catch (e) { this.supportsUppercase = false; }
       if (!this.supportsFrequency && this.order === 'frequency') this.order = 'alphabetical';
+      if (!this.supportsUppercase && this.letterCase === 'upper') this.letterCase = 'lower';
     },
     async generate() {
       if (!this.langCode) return;
@@ -201,6 +215,7 @@ export default {
           rows: this.rows || undefined,
           cols: this.cols || undefined,
           twoHit: this.twoHit,
+          letterCase: this.letterCase,
         });
         for (const g of grids) {
           // Save sequentially to preserve order and avoid overwhelming storage

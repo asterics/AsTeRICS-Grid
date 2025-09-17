@@ -28,16 +28,33 @@ function toLocaleTag(langCode, script) {
   return langCode;
 }
 
-async function getCharacters(langCode, script, { includeDigits = false } = {}) {
+async function getCharacters(langCode, script, { includeDigits = false, letterCase = 'lower' } = {}) {
+  const tag = toLocaleTag(langCode, script);
   let lower = [];
+  let upper = [];
   if (WA.getLowercase) {
     lower = await WA.getLowercase(langCode, script);
-  } else if (WA.getLanguage) {
-    const lang = await WA.getLanguage(langCode);
-    const alph = lang && lang.alphabet ? lang.alphabet : {};
-    lower = alph.lowercase || alph.lower || alph.base || [];
   }
-  let chars = Array.isArray(lower) ? lower.slice() : [];
+  if (WA.getUppercase) {
+    try { upper = await WA.getUppercase(langCode, script); } catch (e) {}
+  }
+  if ((!lower || lower.length === 0 || !Array.isArray(lower)) || (!upper || upper.length === 0 || !Array.isArray(upper))) {
+    if (WA.getLanguage) {
+      const lang = await WA.getLanguage(langCode);
+      const alph = lang && lang.alphabet ? lang.alphabet : {};
+      lower = (Array.isArray(lower) && lower.length ? lower : (alph.lowercase || alph.lower || alph.base || []));
+      upper = (Array.isArray(upper) && upper.length ? upper : (alph.uppercase || alph.upper || []));
+    }
+  }
+  // Fallback mapping if requested case is missing
+  if (letterCase === 'upper' && (!upper || upper.length === 0)) {
+    upper = (Array.isArray(lower) ? lower.map(c => (typeof c === 'string' ? c.toLocaleUpperCase(tag) : c)) : []);
+  }
+  if (letterCase === 'lower' && (!lower || lower.length === 0) && Array.isArray(upper)) {
+    lower = upper.map(c => (typeof c === 'string' ? c.toLocaleLowerCase(tag) : c));
+  }
+  let base = letterCase === 'upper' ? upper : lower;
+  let chars = Array.isArray(base) ? base.slice() : [];
   const seen = new Set();
   chars = chars.filter((c) => typeof c === 'string' && c.length > 0 && !seen.has(c) && seen.add(c));
 
@@ -114,15 +131,16 @@ async function generateKeyboardGrids({
   rows = null,
   cols = null,
   twoHit = false,
+  letterCase = 'lower',
 } = {}) {
   if (!langCode) throw new Error('langCode is required');
-  const charsRaw = await getCharacters(langCode, script, { includeDigits });
+  const charsRaw = await getCharacters(langCode, script, { includeDigits, letterCase });
   if (!charsRaw || charsRaw.length === 0) {
     throw new Error('No characters available for the selected language/script.');
   }
   const chars = await orderCharacters(langCode, charsRaw, order, script);
 
-  const labelBase = gridLabel || `Keyboard ${langCode}${script ? '-' + script : ''} (${order})`;
+  const labelBase = gridLabel || `Keyboard ${langCode}${script ? '-' + script : ''} (${order}${letterCase === 'upper' ? ', UPPER' : ''})`;
 
   const { rows: R, cols: C } = computePageDims(chars.length, rows, cols);
   if (!R || !C || R < 1 || C < 1) throw new Error('Invalid grid dimensions');
@@ -286,6 +304,21 @@ async function supportsDigits(langCode, script) {
   return false;
 }
 
+async function supportsUppercase(langCode, script) {
+  try {
+    if (WA.getUppercase) {
+      const res = await WA.getUppercase(langCode, script);
+      return Array.isArray(res) ? res.length > 0 : false;
+    }
+    if (WA.getLanguage) {
+      const lang = await WA.getLanguage(langCode);
+      const up = lang && lang.alphabet && (lang.alphabet.uppercase || lang.alphabet.upper);
+      return Array.isArray(up) && up.length > 0;
+    }
+  } catch (e) {}
+  return false;
+}
+
 async function supportsFrequency(langCode) {
   try {
     if (WA.getFrequency) {
@@ -306,6 +339,7 @@ export const keyboardGeneratorService = {
   generateKeyboardGrids,
   generateKeyboardGrid,
   supportsDigits,
+  supportsUppercase,
   supportsFrequency,
 };
 
