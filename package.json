@@ -25,7 +25,7 @@
     "vue": "^2.7.15",
     "vue-i18n": "8",
     "vue-multiselect": "^2.1.8",
-    "worldalphabets": "0.0.21"
+    "worldalphabets": "0.0.23"
   },
   "devDependencies": {
     "@babel/core": "^7.21.8",

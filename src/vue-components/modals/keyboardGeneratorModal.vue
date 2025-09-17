@@ -49,11 +49,28 @@
               </div>
             </div>
 
+            <!-- Layer selection for official layouts -->
+            <div v-if="layoutSource==='official'" class="srow">
+              <label class="three columns" for="layerSel">{{ $t('keyLayer') || 'Layer' }}</label>
+              <div class="nine columns">
+                <select id="layerSel" v-model="layer">
+                  <option value="base">{{ $t('layer_base') || 'Base' }}</option>
+                  <option value="shift">{{ $t('layer_shift') || 'Shift' }}</option>
+                  <option value="caps">{{ $t('layer_caps') || 'Caps' }}</option>
+                  <option value="altgr">{{ $t('layer_altgr') || 'AltGr' }}</option>
+                  <option value="shift_altgr">{{ $t('layer_shift_altgr') || 'Shift+AltGr' }}</option>
+                  <option value="ctrl">{{ $t('layer_ctrl') || 'Ctrl' }}</option>
+                  <option value="alt">{{ $t('layer_alt') || 'Alt' }}</option>
+                </select>
+              </div>
+            </div>
+
+
             <div class="srow">
               <label class="three columns">{{ $t('letterCase') }}</label>
               <div class="nine columns">
-                <label><input type="radio" value="lower" v-model="letterCase"> {{ $t('lowercase') }}</label>
-                <label style="margin-left:1em;"><input type="radio" value="upper" v-model="letterCase" :disabled="!supportsUppercase"> {{ $t('uppercase') }}</label>
+                <label><input type="radio" value="lower" v-model="letterCase" :disabled="layoutSource==='official' && layer!=='base'"> {{ $t('lowercase') }}</label>
+                <label style="margin-left:1em;"><input type="radio" value="upper" v-model="letterCase" :disabled="!supportsUppercase || (layoutSource==='official' && layer!=='base')"> {{ $t('uppercase') }}</label>
               </div>
             </div>
 
@@ -124,6 +141,8 @@
 import './../../css/modal.css';
 import { keyboardGeneratorService } from '../../js/service/keyboardGeneratorService';
 import { dataService } from '../../js/service/data/dataService';
+
+
 import { i18nService } from '../../js/service/i18nService';
 
 export default {
@@ -140,6 +159,8 @@ export default {
       layoutSource: 'generated',
       templateOptions: [],
       selectedLayoutId: '',
+      layer: 'base',
+
       order: 'frequency',
       includeDigits: false,
       twoHit: false,
@@ -281,6 +302,7 @@ export default {
             hideNumberRow: this.hideNumberRow,
             hidePunctuation: this.hidePunctuation,
             gridLabel: this.gridLabel || this.defaultLabel,
+            layer: this.layer,
           });
         } else {
           grids = await keyboardGeneratorService.generateKeyboardGrids({

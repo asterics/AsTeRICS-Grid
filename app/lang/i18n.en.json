@@ -198,6 +198,15 @@
   "noTemplatesForLanguage": "No official layouts available for this language.",
   "hideNumberRow": "Hide number row",
   "hidePunctuation": "Hide punctuation",
+  "keyLayer": "Layer",
+  "layer_base": "Base",
+  "layer_shift": "Shift",
+  "layer_caps": "Caps",
+  "layer_altgr": "AltGr",
+  "layer_shift_altgr": "Shift+AltGr",
+  "layer_ctrl": "Ctrl",
+  "layer_alt": "Alt",
+
 
   "hideElement": "Hide element",
   "image": "Image",

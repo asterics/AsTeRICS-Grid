@@ -201,24 +201,21 @@ async function generateFromTemplate({
   hideNumberRow = false,
   hidePunctuation = false,
   gridLabel = null,
+  layer = 'base',
 } = {}) {
   if (!layoutId) throw new Error('layoutId is required');
   const tag = toLocaleTag(langCode || '', script);
   const kb = await WA.loadKeyboard(layoutId);
   if (!kb || !Array.isArray(kb.keys)) throw new Error('Invalid keyboard layout');
 
-  // Build a pos->character map from base layer for the alphanumeric cluster
-  const posToChar = new Map();
-  for (const k of kb.keys) {
-    if (k.dead || !k.legends || typeof k.legends.base !== 'string') continue;
-    const pos = k.pos || '';
-    if (!isAlnumBlockKeyPos(pos)) continue;
-    let ch = (k.legends.base || '').toString();
-    if (!ch) continue;
-    ch = ch[0];
-    if (hidePunctuation && isPunctuation(ch)) continue;
-    if (isLetter(ch)) ch = (letterCase === 'upper') ? ch.toLocaleUpperCase(tag) : ch.toLocaleLowerCase(tag);
-    posToChar.set(pos, ch);
+  // Extract the selected layer once into a pos -> string map
+  const maps = WA.extractLayers(kb, [layer]);
+  const layerMap = (maps && maps[layer]) ? maps[layer] : {};
+
+  function getCharForCode(code) {
+    const ch = Object.prototype.hasOwnProperty.call(layerMap, code) ? layerMap[code] : null;
+    if (typeof ch === 'string' && ch.length > 0) return ch[0];
+    return null;
   }
 
   // Define canonical row sequences by KeyboardEvent.code
@@ -235,9 +232,13 @@ async function generateFromTemplate({
     if (idx === 0 && hideNumberRow) return; // skip numbers row if requested
     const row = [];
     for (const code of codes) {
-      const ch = posToChar.get(code);
+      let ch = getCharForCode(code);
       if (!ch) continue;
+      // Apply filters/transforms
       if (hidePunctuation && isPunctuation(ch) && code !== 'Space') continue;
+      if (layer === 'base' && isLetter(ch)) {
+        ch = (letterCase === 'upper') ? ch.toLocaleUpperCase(tag) : ch.toLocaleLowerCase(tag);
+      }
       row.push(ch);
     }
     if (row.length) rowsData.push(row);
