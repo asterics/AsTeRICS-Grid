@@ -134,9 +134,41 @@ async function generateKeyboardGrid({
   return grid;
 }
 
+async function supportsDigits(langCode, script) {
+  try {
+    if (WA.getDigits) {
+      const res = await WA.getDigits(langCode, script);
+      if (Array.isArray(res)) return res.length > 0;
+      if (res && typeof res === 'object') return Object.values(res).length > 0;
+      return false;
+    }
+    if (WA.getLanguage) {
+      const lang = await WA.getLanguage(langCode);
+      return !!(lang && Array.isArray(lang.digits) && lang.digits.length > 0);
+    }
+  } catch (e) {}
+  return false;
+}
+
+async function supportsFrequency(langCode) {
+  try {
+    if (WA.getFrequency) {
+      const res = await WA.getFrequency(langCode);
+      return !!(res && typeof res === 'object' && Object.keys(res).length > 0);
+    }
+    if (WA.getLanguage) {
+      const lang = await WA.getLanguage(langCode);
+      return !!(lang && lang.frequency && Object.keys(lang.frequency).length > 0);
+    }
+  } catch (e) {}
+  return false;
+}
+
 export const keyboardGeneratorService = {
   getAvailableCodes,
   getScripts,
   generateKeyboardGrid,
+  supportsDigits,
+  supportsFrequency,
 };
 

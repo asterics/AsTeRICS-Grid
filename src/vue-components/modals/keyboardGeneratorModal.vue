@@ -18,7 +18,7 @@
 
             <div class="srow">
               <label class="three columns" for="scriptSel">Script</label>
-              <select id="scriptSel" class="nine columns" v-model="script">
+              <select id="scriptSel" class="nine columns" v-model="script" @change="onScriptChange">
                 <option :value="undefined">(auto)</option>
                 <option v-for="opt in scriptOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
               </select>
@@ -27,7 +27,7 @@
             <div class="srow">
               <label class="three columns">Ordering</label>
               <div class="nine columns">
-                <label><input type="radio" value="frequency" v-model="order"> Frequency-based</label>
+                <label v-if="supportsFrequency"><input type="radio" value="frequency" v-model="order"> Frequency-based</label>
                 <label style="margin-left:1em;"><input type="radio" value="alphabetical" v-model="order"> Alphabetical</label>
               </div>
             </div>
@@ -47,7 +47,7 @@
               </div>
             </div>
 
-            <div class="srow">
+            <div class="srow" v-if="supportsDigits">
               <input id="includeDigits" type="checkbox" v-model="includeDigits">
               <label for="includeDigits">Include digits</label>
             </div>
@@ -91,6 +91,8 @@ export default {
       script: undefined,
       order: 'frequency',
       includeDigits: false,
+      supportsDigits: false,
+      supportsFrequency: false,
       rows: null,
       cols: null,
       gridLabel: '',
@@ -154,12 +156,26 @@ export default {
       const current = i18nService.getContentLang && i18nService.getContentLang();
       if (current && this.codes.includes(current)) this.langCode = current; else this.langCode = this.codes[0] || '';
       await this.onLangChange();
+      await this.checkCapabilities();
     },
     async onLangChange() {
-      if (!this.langCode) { this.scripts = []; this.scriptOptions = []; this.script = undefined; return; }
+      if (!this.langCode) { this.scripts = []; this.scriptOptions = []; this.script = undefined; this.supportsDigits=false; this.supportsFrequency=false; return; }
       this.scripts = await keyboardGeneratorService.getScripts(this.langCode);
       this.buildScriptOptions();
       if (!this.scripts || this.scripts.length === 0) this.script = undefined;
+      await this.checkCapabilities();
+    },
+    async onScriptChange() {
+      await this.checkCapabilities();
+    },
+    async checkCapabilities() {
+      try {
+        this.supportsDigits = await keyboardGeneratorService.supportsDigits(this.langCode, this.script);
+      } catch (e) { this.supportsDigits = false; }
+      try {
+        this.supportsFrequency = await keyboardGeneratorService.supportsFrequency(this.langCode);
+      } catch (e) { this.supportsFrequency = false; }
+      if (!this.supportsFrequency && this.order === 'frequency') this.order = 'alphabetical';
     },
     async generate() {
       if (!this.langCode) return;
