@@ -122,6 +122,151 @@ function chunkArray(arr, size) {
   return chunks;
 }
 
+// ---------- Official keyboard layouts (templates) ----------
+function getEnglishLangName(langCode) {
+  try {
+    if (window && window.Intl && Intl.DisplayNames) {
+      const dn = new Intl.DisplayNames(['en'], { type: 'language' });
+      // Normalize like 'en', 'sr-Cyrl'
+      const name = dn.of(langCode);
+      return (name || '').toLowerCase();
+    }
+  } catch (e) {}
+  return '';
+}
+
+function isLetter(ch) {
+  if (!ch || typeof ch !== 'string') return false;
+  if (ch.length !== 1) return false;
+  // Works for many scripts: letters change with case; digits/punct/space don't
+  return ch.toUpperCase() !== ch.toLowerCase();
+}
+function isAsciiDigit(ch) {
+  return typeof ch === 'string' && ch.length === 1 && ch >= '0' && ch <= '9';
+}
+function isSpace(ch) { return ch === ' '; }
+function isPunctuation(ch) {
+  if (!ch || typeof ch !== 'string' || ch.length !== 1) return false;
+  if (isSpace(ch) || isAsciiDigit(ch) || isLetter(ch)) return false;
+  return true;
+}
+
+async function getAvailableTemplates(langCode /*, script */) {
+  if (!WA.getAvailableLayouts || !WA.loadKeyboard) return [];
+  const ids = await WA.getAvailableLayouts();
+  const lc = (langCode || '').toLowerCase();
+  const langName = getEnglishLangName(lc);
+  const candidates = ids.filter((id) => {
+    const s = String(id).toLowerCase();
+    if (s.startsWith(lc + '-') || s.startsWith(lc + '_')) return true;
+    if (langName && s.includes('-' + langName)) return true;
+    return false;
+  });
+  // Load small set to get human names
+  const result = [];
+  for (const id of candidates) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      const kb = await WA.loadKeyboard(id);
+      const name = (kb && (kb.name || kb.id)) || id;
+      result.push({ id, name });
+    } catch (e) {
+      result.push({ id, name: id });
+    }
+  }
+  // Sort nicely by name
+  result.sort((a, b) => ('' + a.name).localeCompare(b.name));
+  return result;
+}
+
+function isAlnumBlockKeyPos(pos) {
+  if (!pos) return false;
+  return (
+    pos.startsWith('Key') ||
+    pos.startsWith('Digit') ||
+    pos === 'Minus' || pos === 'Equal' ||
+    pos === 'Backquote' || pos === 'IntlBackslash' || pos === 'Backslash' ||
+    pos === 'BracketLeft' || pos === 'BracketRight' ||
+    pos === 'Semicolon' || pos === 'Quote' ||
+    pos === 'Comma' || pos === 'Period' || pos === 'Slash' ||
+    pos === 'Space'
+  );
+}
+
+async function generateFromTemplate({
+  layoutId,
+  langCode,
+  script,
+  letterCase = 'lower',
+  hideNumberRow = false,
+  hidePunctuation = false,
+  gridLabel = null,
+} = {}) {
+  if (!layoutId) throw new Error('layoutId is required');
+  const tag = toLocaleTag(langCode || '', script);
+  const kb = await WA.loadKeyboard(layoutId);
+  if (!kb || !Array.isArray(kb.keys)) throw new Error('Invalid keyboard layout');
+
+  // Build a pos->character map from base layer for the alphanumeric cluster
+  const posToChar = new Map();
+  for (const k of kb.keys) {
+    if (k.dead || !k.legends || typeof k.legends.base !== 'string') continue;
+    const pos = k.pos || '';
+    if (!isAlnumBlockKeyPos(pos)) continue;
+    let ch = (k.legends.base || '').toString();
+    if (!ch) continue;
+    ch = ch[0];
+    if (hidePunctuation && isPunctuation(ch)) continue;
+    if (isLetter(ch)) ch = (letterCase === 'upper') ? ch.toLocaleUpperCase(tag) : ch.toLocaleLowerCase(tag);
+    posToChar.set(pos, ch);
+  }
+
+  // Define canonical row sequences by KeyboardEvent.code
+  const rowsCodes = [
+    ['Backquote','Digit1','Digit2','Digit3','Digit4','Digit5','Digit6','Digit7','Digit8','Digit9','Digit0','Minus','Equal'],
+    ['KeyQ','KeyW','KeyE','KeyR','KeyT','KeyY','KeyU','KeyI','KeyO','KeyP','BracketLeft','BracketRight','Backslash'],
+    ['KeyA','KeyS','KeyD','KeyF','KeyG','KeyH','KeyJ','KeyK','KeyL','Semicolon','Quote'],
+    ['IntlBackslash','KeyZ','KeyX','KeyC','KeyV','KeyB','KeyN','KeyM','Comma','Period','Slash'],
+    ['Space']
+  ];
+
+  const rowsData = [];
+  rowsCodes.forEach((codes, idx) => {
+    if (idx === 0 && hideNumberRow) return; // skip numbers row if requested
+    const row = [];
+    for (const code of codes) {
+      const ch = posToChar.get(code);
+      if (!ch) continue;
+      if (hidePunctuation && isPunctuation(ch) && code !== 'Space') continue;
+      row.push(ch);
+    }
+    if (row.length) rowsData.push(row);
+  });
+
+  if (!rowsData.length) throw new Error('No printable keys in the selected layout.');
+
+  const rowCount = rowsData.length;
+  const colCount = rowsData.reduce((m, r) => Math.max(m, r.length), 0);
+
+  const labelBase = gridLabel || `Keyboard ${layoutId}${letterCase === 'upper' ? ' (UPPER)' : ''}`;
+  const grid = new GridData({
+    label: i18nService.getTranslationObject(labelBase),
+    gridElements: [],
+    rowCount,
+    minColumnCount: colCount,
+    keyboardMode: GridData.KEYBOARD_ENABLED,
+  });
+
+  for (let y = 0; y < rowCount; y++) {
+    const row = rowsData[y];
+    for (let x = 0; x < row.length; x++) {
+      const val = row[x];
+      grid.gridElements.push(new GridElement({ label: i18nService.getTranslationObject(val), x, y, width: 1, height: 1 }));
+    }
+  }
+  return [grid];
+}
+
 async function generateKeyboardGrids({
   langCode,
   script = undefined,
@@ -336,6 +481,8 @@ async function supportsFrequency(langCode) {
 export const keyboardGeneratorService = {
   getAvailableCodes,
   getScripts,
+  getAvailableTemplates,
+  generateFromTemplate,
   generateKeyboardGrids,
   generateKeyboardGrid,
   supportsDigits,

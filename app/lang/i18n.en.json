@@ -191,6 +191,13 @@
   "letterCase": "Letter case",
   "lowercase": "Lowercase",
   "uppercase": "Uppercase",
+  "layoutSource": "Layout source",
+  "generated": "Generated",
+  "officialLayout": "Official keyboard layout",
+  "template": "Template",
+  "noTemplatesForLanguage": "No official layouts available for this language.",
+  "hideNumberRow": "Hide number row",
+  "hidePunctuation": "Hide punctuation",
 
   "hideElement": "Hide element",
   "image": "Image",

@@ -27,11 +27,25 @@
               </select>
             </div>
 
+            <!-- Layout source: Generated vs Official -->
             <div class="srow">
-              <label class="three columns">Ordering</label>
+              <label class="three columns">{{ $t('layoutSource') || 'Layout source' }}</label>
               <div class="nine columns">
-                <label v-if="supportsFrequency"><input type="radio" value="frequency" v-model="order"> Frequency-based</label>
-                <label style="margin-left:1em;"><input type="radio" value="alphabetical" v-model="order"> Alphabetical</label>
+                <label><input type="radio" value="generated" v-model="layoutSource"> {{ $t('generated') || 'Generated' }}</label>
+                <label style="margin-left:1em;"><input type="radio" value="official" v-model="layoutSource"> {{ $t('officialLayout') || 'Official keyboard layout' }}</label>
+              </div>
+            </div>
+
+            <!-- Official layout template selection and options -->
+            <div v-if="layoutSource==='official'" class="srow">
+              <label class="three columns" for="templateSel">{{ $t('template') || 'Template' }}</label>
+              <div class="nine columns">
+                <select id="templateSel" v-model="selectedLayoutId">
+                  <option v-for="opt in templateOptions" :key="opt.id" :value="opt.id">{{ opt.name }}</option>
+                </select>
+                <div v-if="templateOptions.length===0" style="margin-top:0.5em; color:#666;">
+                  {{ $t('noTemplatesForLanguage') || 'No official layouts available for this language.' }}
+                </div>
               </div>
             </div>
 
@@ -43,29 +57,46 @@
               </div>
             </div>
 
+            <div v-if="layoutSource==='official'" class="srow">
+              <input id="hideNumberRow" type="checkbox" v-model="hideNumberRow">
+              <label for="hideNumberRow">{{ $t('hideNumberRow') || 'Hide number row' }}</label>
+              <span style="margin-left:1em"></span>
+              <input id="hidePunctuation" type="checkbox" v-model="hidePunctuation">
+              <label for="hidePunctuation">{{ $t('hidePunctuation') || 'Hide punctuation' }}</label>
+            </div>
+
+            <!-- Generated options -->
             <div class="srow">
-              <label class="three columns" for="labelIn">Label</label>
-              <input id="labelIn" class="nine columns" v-model="gridLabel" :placeholder="defaultLabel">
+              <label class="three columns">Ordering</label>
+              <div class="nine columns">
+                <label v-if="supportsFrequency"><input type="radio" value="frequency" v-model="order" :disabled="layoutSource==='official'"> Frequency-based</label>
+                <label style="margin-left:1em;"><input type="radio" value="alphabetical" v-model="order" :disabled="layoutSource==='official'"> Alphabetical</label>
+              </div>
             </div>
 
             <div class="srow">
               <label class="three columns">Layout</label>
               <div class="nine columns">
-                <input class="two columns" type="number" min="1" v-model.number="rows" placeholder="rows">
+                <input class="two columns" type="number" min="1" v-model.number="rows" placeholder="rows" :disabled="layoutSource==='official'">
                 <span class="one columns" style="text-align:center;">×</span>
-                <input class="two columns" type="number" min="1" v-model.number="cols" placeholder="cols">
+                <input class="two columns" type="number" min="1" v-model.number="cols" placeholder="cols" :disabled="layoutSource==='official'">
                 <span class="six columns">(leave empty for auto)</span>
               </div>
             </div>
 
             <div class="srow" v-if="supportsDigits">
-              <input id="includeDigits" type="checkbox" v-model="includeDigits">
+              <input id="includeDigits" type="checkbox" v-model="includeDigits" :disabled="layoutSource==='official'">
               <label for="includeDigits">Include digits</label>
             </div>
 
             <div class="srow">
-              <input id="twoHit" type="checkbox" v-model="twoHit">
+              <input id="twoHit" type="checkbox" v-model="twoHit" :disabled="layoutSource==='official'">
               <label for="twoHit">Two-hit layout (split into two pages when possible)</label>
+            </div>
+
+            <div class="srow">
+              <label class="three columns" for="labelIn">Label</label>
+              <input id="labelIn" class="nine columns" v-model="gridLabel" :placeholder="defaultLabel">
             </div>
 
           </div>
@@ -75,7 +106,7 @@
               <button class="four columns offset-by-four" @click="$emit('close')" :title="$t('keyboardEsc')">
                 <i class="fas fa-times"/> <span>{{ $t('cancel') }}</span>
               </button>
-              <button class="four columns" @click="generate" :disabled="!langCode || loading">
+              <button class="four columns" @click="generate" :disabled="!canGenerate || loading">
                 <i v-if="!loading" class="fas fa-check"/>
                 <i v-else class="fas fa-spinner fa-spin"/>
                 <span>Generate</span>
@@ -106,10 +137,15 @@ export default {
       scriptOptions: [],
       langCode: '',
       script: undefined,
+      layoutSource: 'generated',
+      templateOptions: [],
+      selectedLayoutId: '',
       order: 'frequency',
       includeDigits: false,
       twoHit: false,
       letterCase: 'lower',
+      hideNumberRow: false,
+      hidePunctuation: false,
       supportsDigits: false,
       supportsFrequency: false,
       supportsUppercase: false,
@@ -120,7 +156,22 @@ export default {
   },
   computed: {
     defaultLabel() {
+      if (this.layoutSource === 'official') {
+        return `Keyboard ${this.selectedLayoutId || (this.langCode || '')}${this.letterCase==='upper' ? ' (UPPER)' : ''}`;
+      }
       return `Keyboard ${this.langCode || ''}${this.script ? '-' + this.script : ''} (${this.order})`;
+    },
+    canGenerate() {
+      if (!this.langCode) return false;
+      if (this.layoutSource === 'official') {
+        return !!this.selectedLayoutId;
+      }
+      return true;
+    }
+  },
+  watch: {
+    layoutSource() {
+      // No-op; keep selection when switching back and forth
     }
   },
   methods: {
@@ -178,15 +229,28 @@ export default {
       await this.onLangChange();
       await this.checkCapabilities();
     },
+    async loadTemplates() {
+      try {
+        this.templateOptions = await keyboardGeneratorService.getAvailableTemplates(this.langCode, this.script);
+        if (!this.selectedLayoutId || !this.templateOptions.find(t => t.id === this.selectedLayoutId)) {
+          this.selectedLayoutId = (this.templateOptions[0] && this.templateOptions[0].id) || '';
+        }
+      } catch (e) {
+        this.templateOptions = [];
+        this.selectedLayoutId = '';
+      }
+    },
     async onLangChange() {
       if (!this.langCode) { this.scripts = []; this.scriptOptions = []; this.script = undefined; this.supportsDigits=false; this.supportsFrequency=false; return; }
       this.scripts = await keyboardGeneratorService.getScripts(this.langCode);
       this.buildScriptOptions();
       if (!this.scripts || this.scripts.length === 0) this.script = undefined;
       await this.checkCapabilities();
+      await this.loadTemplates();
     },
     async onScriptChange() {
       await this.checkCapabilities();
+      await this.loadTemplates();
     },
     async checkCapabilities() {
       try {
@@ -206,17 +270,31 @@ export default {
       this.loading = true;
       this.errorMsg = '';
       try {
-        const grids = await keyboardGeneratorService.generateKeyboardGrids({
-          langCode: this.langCode,
-          script: this.script,
-          order: this.order,
-          includeDigits: this.includeDigits,
-          gridLabel: this.gridLabel || this.defaultLabel,
-          rows: this.rows || undefined,
-          cols: this.cols || undefined,
-          twoHit: this.twoHit,
-          letterCase: this.letterCase,
-        });
+        let grids;
+        if (this.layoutSource === 'official') {
+          if (!this.selectedLayoutId) throw new Error('No template selected.');
+          grids = await keyboardGeneratorService.generateFromTemplate({
+            layoutId: this.selectedLayoutId,
+            langCode: this.langCode,
+            script: this.script,
+            letterCase: this.letterCase,
+            hideNumberRow: this.hideNumberRow,
+            hidePunctuation: this.hidePunctuation,
+            gridLabel: this.gridLabel || this.defaultLabel,
+          });
+        } else {
+          grids = await keyboardGeneratorService.generateKeyboardGrids({
+            langCode: this.langCode,
+            script: this.script,
+            order: this.order,
+            includeDigits: this.includeDigits,
+            gridLabel: this.gridLabel || this.defaultLabel,
+            rows: this.rows || undefined,
+            cols: this.cols || undefined,
+            twoHit: this.twoHit,
+            letterCase: this.letterCase,
+          });
+        }
         for (const g of grids) {
           // Save sequentially to preserve order and avoid overwhelming storage
           // eslint-disable-next-line no-await-in-loop
