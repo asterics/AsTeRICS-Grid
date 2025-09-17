@@ -4,15 +4,17 @@ This document contains info about for collaborating in the development of AsTeRI
 
 ## Create issues
 Everyone is welcome to [create issues on GitHub](https://github.com/asterics/AsTeRICS-Grid/issues/new). Keep in mind these rules:
-1. **One topic**: every issue should only address a single topic
+1. **One topic**: every issue should only address a single topic.
    * don't create issues like *"I've found this bug and at the same time I have the idea for that feature..."*
-2. **Clear title**: give your issue a meaningful title that helps to quickly identify the main topic
+2. **Avoid huge issues**: huge topics (like *make Asterics WCAG compliant*) should be split to several issues, if possible.
+   * e.g. create sub-issues like *make modals WCAG compliant* and *make keyboard navigation WCAG compliant*, ...
+3. **Clear title**: give your issue a meaningful title that helps to quickly identify the main topic
    * better use something like *"Bug: english computer voice not working on Android"* instead of *"I cannot hear anything"*
-3. For issues **describing a bug**:
+4. For issues **describing a bug**:
    * if possible include **steps how to reproduce the bug**
    * add **details about the device, operating system and used browser**
    * include **error logs** (`Ctrl + Shift + I` to open JavaScript console on desktop browsers)
-4. For issues **describing a new idea or feature**:
+5. For issues **describing a new idea or feature**:
    * explain why this feature is needed in **real life for real persons** (there are many great ideas which aren't really needed or used in real life)
    * if possible provide a proposal how the UI of your new features should look like (e.g. modified screenshots)
 
