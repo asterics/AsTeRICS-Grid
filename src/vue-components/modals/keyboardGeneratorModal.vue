@@ -12,7 +12,7 @@
             <div class="srow">
               <label class="three columns" for="langSel">Language</label>
               <select id="langSel" class="nine columns" v-model="langCode" @change="onLangChange">
-                <option v-for="c in codes" :key="c" :value="c">{{ c }}</option>
+                <option v-for="opt in codeOptions" :key="opt.code" :value="opt.code">{{ opt.label }}</option>
               </select>
             </div>
 
@@ -20,7 +20,7 @@
               <label class="three columns" for="scriptSel">Script</label>
               <select id="scriptSel" class="nine columns" v-model="script">
                 <option :value="undefined">(auto)</option>
-                <option v-for="s in scripts" :key="s" :value="s">{{ s }}</option>
+                <option v-for="opt in scriptOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
               </select>
             </div>
 
@@ -84,7 +84,9 @@ export default {
     return {
       loading: false,
       codes: [],
+      codeOptions: [],
       scripts: [],
+      scriptOptions: [],
       langCode: '',
       script: undefined,
       order: 'frequency',
@@ -100,15 +102,63 @@ export default {
     }
   },
   methods: {
+    bcpTag(code) {
+      if (!code) return code;
+      const parts = code.split('-');
+      if (parts.length === 2) {
+        const p1 = parts[0];
+        const p2 = parts[1];
+        if (p2.length === 2) return `${p1}-${p2.toUpperCase()}`;
+        if (p2.length === 4) return `${p1}-${p2[0].toUpperCase()}${p2.slice(1).toLowerCase()}`;
+      }
+      return code;
+    },
+    langDisplay(code) {
+      try {
+        const byI18n = i18nService.getLangReadable && i18nService.getLangReadable(code);
+        if (byI18n && typeof byI18n === 'string' && byI18n.trim()) return `${byI18n} (${code})`;
+      } catch (e) {}
+      try {
+        if (window.Intl && Intl.DisplayNames) {
+          const ui = (i18nService.getAppLang && i18nService.getAppLang()) || navigator.language || 'en';
+          const dn = new Intl.DisplayNames([ui], { type: 'language' });
+          const name = dn.of(this.bcpTag(code));
+          if (name) return `${name} (${code})`;
+        }
+      } catch (e) {}
+      return code;
+    },
+    scriptDisplay(s) {
+      if (!s) return s;
+      try {
+        if (window.Intl && Intl.DisplayNames) {
+          const ui = (i18nService.getAppLang && i18nService.getAppLang()) || navigator.language || 'en';
+          const dn = new Intl.DisplayNames([ui], { type: 'script' });
+          const name = dn.of(s[0].toUpperCase() + s.slice(1).toLowerCase());
+          if (name) return `${name} (${s})`;
+        }
+      } catch (e) {}
+      return s;
+    },
+    buildLangOptions() {
+      this.codeOptions = (this.codes || []).map(c => ({ code: c, label: this.langDisplay(c) }))
+        .sort((a,b) => (''+a.label).localeCompare(b.label));
+    },
+    buildScriptOptions() {
+      this.scriptOptions = (this.scripts || []).map(s => ({ value: s, label: this.scriptDisplay(s) }))
+        .sort((a,b) => (''+a.label).localeCompare(b.label));
+    },
     async loadCodes() {
       this.codes = await keyboardGeneratorService.getAvailableCodes();
+      this.buildLangOptions();
       const current = i18nService.getContentLang && i18nService.getContentLang();
       if (current && this.codes.includes(current)) this.langCode = current; else this.langCode = this.codes[0] || '';
       await this.onLangChange();
     },
     async onLangChange() {
-      if (!this.langCode) { this.scripts = []; this.script = undefined; return; }
+      if (!this.langCode) { this.scripts = []; this.scriptOptions = []; this.script = undefined; return; }
       this.scripts = await keyboardGeneratorService.getScripts(this.langCode);
+      this.buildScriptOptions();
       if (!this.scripts || this.scripts.length === 0) this.script = undefined;
     },
     async generate() {
