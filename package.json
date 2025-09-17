@@ -24,7 +24,8 @@
     "superlogin-client": "^0.8.0",
     "vue": "^2.7.15",
     "vue-i18n": "8",
-    "vue-multiselect": "^2.1.8"
+    "vue-multiselect": "^2.1.8",
+    "worldalphabets": "0.0.21"
   },
   "devDependencies": {
     "@babel/core": "^7.21.8",

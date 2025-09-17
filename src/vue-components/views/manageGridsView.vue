@@ -110,6 +110,7 @@
         <export-pdf-modal v-if="pdfModal.show" :grids-data="grids" :print-grid-id="pdfModal.printGridId" @close="pdfModal.show = false; pdfModal.printGridId = null;"></export-pdf-modal>
         <export-modal v-if="backupModal.show" :grids-data="grids" :export-options="backupModal.exportOptions" @close="backupModal.show = false"></export-modal>
         <import-modal v-if="importModal.show" @close="importModal.show = false" :reload-fn="reload"></import-modal>
+            <keyboard-generator-modal v-if="keyboardGenModal && keyboardGenModal.show" @close="keyboardGenModal.show = false" @created="(id) => { keyboardGenModal.show = false; reload(id); }"></keyboard-generator-modal>
         <div class="bottom-spacer"></div>
     </div>
 </template>
@@ -139,6 +140,7 @@
     import { urlParamService } from '../../js/service/urlParamService';
     import { GridImage } from '../../js/model/GridImage';
 
+            import KeyboardGeneratorModal from "../modals/keyboardGeneratorModal.vue";
     let ORDER_MODE_KEY = "AG_ALLGRIDS_ORDER_MODE_KEY";
     let SELECTOR_CONTEXTMENU = '#moreButton';
     let SELECT_VALUES = {
@@ -154,7 +156,7 @@
     let vueApp = null;
     let vueConfig = {
         components: {
-            NoGridsPage, ImportModal, ExportModal, ExportPdfModal, GridLinkModal, Accordion, HeaderIcon},
+            NoGridsPage, ImportModal, ExportModal, ExportPdfModal, GridLinkModal, Accordion, HeaderIcon, KeyboardGeneratorModal},
         data() {
             return {
                 metadata: null,
@@ -181,6 +183,9 @@
                     exportOptions: {}
                 },
                 importModal: {
+                    show: false
+                },
+                keyboardGenModal: {
                     show: false
                 },
                 i18nService: i18nService,
@@ -641,6 +646,7 @@
         //see https://swisnl.github.io/jQuery-contextMenu/demo.html
 
         var CONTEXT_NEW = "CONTEXT_NEW";
+        var CONTEXT_GENERATE_KEYBOARD = "CONTEXT_GENERATE_KEYBOARD";
         var CONTEXT_EXPORT = "CONTEXT_EXPORT";
         var CONTEXT_EXPORT_CUSTOM = "CONTEXT_EXPORT_CUSTOM";
         var CONTEXT_IMPORT = "CONTEXT_IMPORT";
@@ -651,6 +657,7 @@
         let noGrids = (() => vueApp.grids.length === 0);
         var itemsMoreMenu = {
             CONTEXT_NEW: {name: i18nService.t('newGrid'), icon: "fas fa-plus"},
+            CONTEXT_GENERATE_KEYBOARD: {name: 'Generate keyboard…', icon: 'fas fa-keyboard'},
             SEP1: "---------",
             CONTEXT_EXPORT: {
                 name: i18nService.t('exportBackupToFile'),
@@ -695,6 +702,10 @@
             switch (key) {
                 case CONTEXT_NEW: {
                     vueApp.addGrid();
+                    break;
+                }
+                case CONTEXT_GENERATE_KEYBOARD: {
+                    vueApp.keyboardGenModal.show = true;
                     break;
                 }
                 case CONTEXT_IMPORT: {
