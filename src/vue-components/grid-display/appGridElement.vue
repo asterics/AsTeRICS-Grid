@@ -95,8 +95,8 @@ export default {
                 return constants.COLORS.GRAY;
             }
 
-            // If element has a custom border color, use it
-            if (element.borderColor) {
+            if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH && element.borderColor) {
+                // element.borderColor only used for color mode "both", see https://github.com/asterics/AsTeRICS-Grid/issues/580#issuecomment-3281187917
                 return element.borderColor;
             }
 
