@@ -442,4 +442,8 @@ constants.WORDFORM_TAGS = [
     'DEFINITE'
 ];
 
+// Utterance logging events
+constants.EVENT_UTTERANCE_LOGGED = 'EVENT_UTTERANCE_LOGGED';
+constants.EVENT_MESSAGE_HISTORY_UPDATED = 'EVENT_MESSAGE_HISTORY_UPDATED';
+
 export { constants };

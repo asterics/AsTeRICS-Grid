@@ -41,6 +41,11 @@
             </div>
         </div>
         <div class="srow">
+            <div class="eleven columns">
+                <settings-utterance-logging :user-settings-local="userSettingsLocal" @changing="$emit('changing')" @changed="$emit('changed')" @show-tooltip="showTooltip"/>
+            </div>
+        </div>
+        <div class="srow">
             <accordion :acc-label="$t('advancedGeneralSettings')" class="eleven columns">
                 <div class="srow">
                     <input id="chkSyncNavigation" type="checkbox" v-model="appSettings.syncNavigation" @change="saveAppSettings(appSettings)"/>
@@ -55,10 +60,11 @@
     import {i18nService} from "../../../js/service/i18nService";
     import Accordion from "../../components/accordion.vue";
     import SliderInput from '../../modals/input/sliderInput.vue';
+    import SettingsUtteranceLogging from './settingsUtteranceLogging.vue';
     import { settingsSaveMixin } from './settingsSaveMixin';
 
     export default {
-        components: { SliderInput, Accordion},
+        components: { SliderInput, Accordion, SettingsUtteranceLogging},
         props: ["metadata", "appSettings", "userSettingsLocal"],
         mixins: [settingsSaveMixin],
         data() {
@@ -68,6 +74,10 @@
             }
         },
         methods: {
+            showTooltip(event) {
+                // Handle tooltip display - could be implemented with a toast notification
+                console.log('Tooltip:', event.text, event.type);
+            }
         },
         async mounted() {
         }
