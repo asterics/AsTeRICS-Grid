@@ -21,6 +21,8 @@ In AsTeRICS Grid a user in general holds a set of grids which realize a specific
 
 #### Online users
 
+<a id="online-users"></a>
+
 Online users are users whose configuration is automatically synchronized with a cloud storage. This makes it possible to login on different devices while the configuration is always up-to-date on each device.
 
 The following information is important for registering an online user:
@@ -31,6 +33,8 @@ The following information is important for registering an online user:
 * Usernames must start lowercase, valid characters are [a-z], [0-9] and ["-", "_"], valid length is 3-16 characters.
 
 #### Offline users
+
+<a id="offline-users"></a>
 
 Offline users are users whose configuration is only saved offline in the storage of the currently used browser. This type of user is perfectly suited for use cases where AsTeRICS Grid is only used on a single device.
 

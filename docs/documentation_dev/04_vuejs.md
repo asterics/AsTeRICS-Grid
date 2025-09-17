@@ -21,7 +21,7 @@ The main Vue wrapper component is defined in [index.html](https://github.com/ast
 <component v-if="component" v-bind:is="component" v-bind="properties" :key="componentKey"></component>
 ```
 
-The method [MainVue.setViewComponent()](https://github.com/asterics/AsTeRICS-Grid/blob/master/src/js/vue/mainVue.js) is used in order to change the currently shown view. This method is primarily used by [router.js](https://github.com/asterics/AsTeRICS-Grid/blob/master/src/js/router.js) which chooses the correct view based on the current [URL hash](https://en.wikipedia.org/wiki/Fragment_identifier) in the address. For instance `https://grid.asterics.eu/#grids` has the hash `#grids` and therefore will render the [manage grids](../documentation_user/02_navigation.md#manage-grids-view) component which is defined in file [manageGridsView.vue](https://github.com/asterics/AsTeRICS-Grid/blob/master/src/vue-components/views/manageGridsView.vue).
+The method [MainVue.setViewComponent()](https://github.com/asterics/AsTeRICS-Grid/blob/master/src/js/vue/mainVue.js) is used in order to change the currently shown view. This method is primarily used by [router.js](https://github.com/asterics/AsTeRICS-Grid/blob/master/src/js/router.js) which chooses the correct view based on the current [URL hash](https://en.wikipedia.org/wiki/Fragment_identifier) in the address. For instance `https://grid.asterics.eu/#grids` has the hash `#grids` and therefore will render the [manage grids](../documentation_user/04_navigation-overview.md#manage-grids-view) component which is defined in file [manageGridsView.vue](https://github.com/asterics/AsTeRICS-Grid/blob/master/src/vue-components/views/manageGridsView.vue).
 
 Figure 1 highlights the Vue.js components that are used for the main view:
 

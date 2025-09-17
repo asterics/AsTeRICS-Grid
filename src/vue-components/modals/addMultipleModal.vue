@@ -122,7 +122,7 @@
             }
         },
         mounted() {
-            helpService.setHelpLocation('03_appearance_layout', '#adding-elements-and-layout-options');
+            helpService.setHelpLocation('07_grid-elements', '#adding-elements-and-layout-options');
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

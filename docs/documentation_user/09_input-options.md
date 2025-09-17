@@ -2,6 +2,8 @@
 
 [Back to Overview](README.md)
 
+<a id="input-options"></a>
+
 This chapter is about how grid elements can be selected with different input modalities.
 
 Clicking on Button "Input Options" in [Main view](04_navigation-overview.md) opens a menu with the following entries:
@@ -129,6 +131,8 @@ These are the basic elements of an input option dialog as in figure 4:
 
 ### Mouse/Touch input
 
+<a id="mousetouch-input"></a>
+
 **Video on YouTube:** [Mouse and touch input](https://www.youtube.com/watch?v=umxrgE0sUjw&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=7&t=0s) (German, but auto-translated subtitles available)
 
 *Mouse/Touch input* has the following options:
@@ -148,6 +152,8 @@ In Advanced Settings there is the additional option "*Directly select element on
 * when using AsTeRICS Grid with an eyetracker and an additional button for clicking / selecting. Since the mouse controlled via an eyetracker always moves a little bit, in default mode it can happen that instead of selecting an element, the image of an element is dragged. This can be prevented if the selection of the element is done directly at pressing the mouse button.
 
 ### Scanning
+
+<a id="scanning"></a>
 
 **Video on YouTube:** [Input method scanning](https://www.youtube.com/watch?v=L7OF1lKZbLs&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=8&t=0s) (German, but auto-translated subtitles available)
 
@@ -184,6 +190,8 @@ These are the advanced settings for *Scanning*:
 
 ### Direction Input
 
+<a id="direction-input"></a>
+
 **Video on YouTube:** [Input method direction input](https://www.youtube.com/watch?v=Ui27d_ZlFz8&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=9&t=0s) (German, but auto-translated subtitles available)
 
 The input method *Direction Input* is suited to be used with 2-5 [input events](09_input_options.md#introduction-to-input-events). It gives the possibility to simply navigate through elements in up to 4 directions.
@@ -208,6 +216,8 @@ These are the Advanced settings for *Direction Input*:
 * **Go to start position after select**: if checked the focused element is set to the first element after an element was selected respective 
 
 ### Huffman Input
+
+<a id="huffman-input"></a>
 
 **Video on YouTube:** [Input method huffman input](https://www.youtube.com/watch?v=2EEmOdOQk98&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=10&t=0s) (German, but auto-translated subtitles available)
 
@@ -243,6 +253,8 @@ These are the Advanced settings for *Huffman Input*:
 * **Color[1-n]**: select the colors of the input events. If e.g. three inputs 1-4 are connected to a red, yellow, green and blue button, the colors can be adapted here in order to match the button colors. Default colors are taken from the ["Wong" color pallete](https://davidmathlogic.com/colorblind/).
 
 ### Sequential Input
+
+<a id="sequential-input"></a>
 
 **Video on YouTube:** [Input method sequential input](https://www.youtube.com/watch?v=plpOzwMUahw&list=PL0UXHkT03dGrIHldlEKR0ZWfNMkShuTNz&index=11&t=0s) (German, but auto-translated subtitles available)
 

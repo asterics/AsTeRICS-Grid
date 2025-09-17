@@ -23,6 +23,8 @@ The following elements are available in the manage dictionaries view:
 
 ## Edit dictionaries
 
+<a id="edit-dictionaries"></a>
+
 In the manage dictionaries view clicking on "Edit" in the list of dictionaries allows to see the details of a dictionary and editing it:
 
 ![edit a dictionary](./img/dictionary_edit_en.jpg)
@@ -31,6 +33,8 @@ In the manage dictionaries view clicking on "Edit" in the list of dictionaries a
 Typing a word or a part of it in the search field filters the list of shown words. Clicking on the recycle bin symbol next to a word deletes it from the dictionary.
 
 ### Add words
+
+<a id="add-words"></a>
 
 Clicking on the "Import words" in Figure 2 button opens a modal:
 

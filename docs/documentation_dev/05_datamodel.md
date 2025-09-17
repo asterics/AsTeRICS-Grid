@@ -18,7 +18,7 @@ Data models defined for AsTeRICS Grid can be found in the folder [src/js/model](
 
 * **GridData**: model for a grid, containing a list of GridElement objects
 * **MetaData**: model for global data, includes various grid-independent data, e.g. InputConfig, ColorConfig, config about integrations.
-* **Dictionary**: saves the configuration of a [predictionary](https://www.npmjs.com/package/predictionary) wordlist, a dictionary shown in the [manage dictionaries view](../documentation_user/02_navigation.md#manage-dictionaries-view)
+* **Dictionary**: saves the configuration of a [predictionary](https://www.npmjs.com/package/predictionary) wordlist, a dictionary shown in the [manage dictionaries view](../documentation_user/04_navigation-overview.md#manage-dictionaries-view)
 * **EncryptedObject**: contains any of the data model objects above serialized as JSON object and encrypted using the [sjcl](https://github.com/bitwiseshiftleft/sjcl) crypto library. In fact every object saved to database is an EncryptedObject containing one of the data model objects listed above.
 
 ## Data models not saved to database
@@ -46,7 +46,7 @@ EncryptedObject has the following two additional properties:
 1. **encryptedDataBase64**: contains the encrypted version of the serialized JSON object which this EncryptedObject actually holds
 1. **encryptedDataBase64Short**: contains the same encrypted serialized JSON object, but all properties longer than 500 characters are removed. This "short" version of the object can be used if not all data is needed, e.g. no image data of grids, but only short data items like the label. The property `encryptedDataBase64Short` is empty (`null`), if it's the same as `encryptedDataBase64` (no long properties) in order to save disk space.
 
-The `GridData` data model contains a property `isShortVersion` which indicates that the current object includes only a short, stripped version of the data, if set to `true`. These short versions of GridData objects are used for the list of grids in the [manage grids view](../documentation_user/02_navigation.md#manage-grids-view) since there the only properties that are needed are `label` and `id`.
+The `GridData` data model contains a property `isShortVersion` which indicates that the current object includes only a short, stripped version of the data, if set to `true`. These short versions of GridData objects are used for the list of grids in the [manage grids view](../documentation_user/04_navigation-overview.md#manage-grids-view) since there the only properties that are needed are `label` and `id`.
 
 [&#x2190; Previous Chapter](04_vuejs.md) [Next Chapter &#x2192;](06_data_storage.md)
 
