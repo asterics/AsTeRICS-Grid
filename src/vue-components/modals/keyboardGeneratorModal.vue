@@ -9,6 +9,9 @@
           </div>
 
           <div class="modal-body">
+            <div v-if="errorMsg" class="srow" style="color:#b00020;">
+              {{ errorMsg }}
+            </div>
             <div class="srow">
               <label class="three columns" for="langSel">Language</label>
               <select id="langSel" class="nine columns" v-model="langCode" @change="onLangChange">
@@ -52,6 +55,11 @@
               <label for="includeDigits">Include digits</label>
             </div>
 
+            <div class="srow">
+              <input id="twoHit" type="checkbox" v-model="twoHit">
+              <label for="twoHit">Two-hit layout (split into two pages when possible)</label>
+            </div>
+
           </div>
 
           <div class="modal-footer">
@@ -83,6 +91,7 @@ export default {
   data() {
     return {
       loading: false,
+      errorMsg: '',
       codes: [],
       codeOptions: [],
       scripts: [],
@@ -91,6 +100,7 @@ export default {
       script: undefined,
       order: 'frequency',
       includeDigits: false,
+      twoHit: false,
       supportsDigits: false,
       supportsFrequency: false,
       rows: null,
@@ -180,8 +190,9 @@ export default {
     async generate() {
       if (!this.langCode) return;
       this.loading = true;
+      this.errorMsg = '';
       try {
-        const grid = await keyboardGeneratorService.generateKeyboardGrid({
+        const grids = await keyboardGeneratorService.generateKeyboardGrids({
           langCode: this.langCode,
           script: this.script,
           order: this.order,
@@ -189,13 +200,19 @@ export default {
           gridLabel: this.gridLabel || this.defaultLabel,
           rows: this.rows || undefined,
           cols: this.cols || undefined,
+          twoHit: this.twoHit,
         });
-        await dataService.saveGrid(grid);
-        this.$emit('created', grid.id);
+        for (const g of grids) {
+          // Save sequentially to preserve order and avoid overwhelming storage
+          // eslint-disable-next-line no-await-in-loop
+          await dataService.saveGrid(g);
+        }
+        this.$emit('created', grids[0].id);
         this.$emit('close');
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Keyboard generation failed', e);
+        this.errorMsg = (e && e.message) ? e.message : 'Keyboard generation failed.';
       } finally {
         this.loading = false;
       }

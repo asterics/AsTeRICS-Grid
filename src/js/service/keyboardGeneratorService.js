@@ -1,5 +1,6 @@
 import { GridData } from '../model/GridData';
 import { GridElement } from '../model/GridElement';
+import { GridActionNavigate } from '../model/GridActionNavigate';
 import { i18nService } from './i18nService';
 import * as WA from 'worldalphabets';
 
@@ -91,47 +92,182 @@ function computeGridDims(n, rows, cols) {
   const approxCols = Math.max(3, Math.min(12, Math.ceil(Math.sqrt(n))));
   return { cols: approxCols, rows: Math.ceil(n / approxCols) };
 }
+function computePageDims(n, rows, cols) {
+  if (rows && cols) return { rows, cols };
+  if (rows && !cols) return { rows, cols: 10 };
+  if (!rows && cols) return { rows: 8, cols };
+  return { rows: 8, cols: 10 };
+}
 
-async function generateKeyboardGrid({
+function chunkArray(arr, size) {
+  const chunks = [];
+  for (let i = 0; i < arr.length; i += size) chunks.push(arr.slice(i, i + size));
+  return chunks;
+}
+
+async function generateKeyboardGrids({
   langCode,
   script = undefined,
-  order = 'frequency', // 'frequency' | 'alphabetical'
+  order = 'frequency',
   includeDigits = false,
   gridLabel = null,
   rows = null,
   cols = null,
+  twoHit = false,
 } = {}) {
   if (!langCode) throw new Error('langCode is required');
   const charsRaw = await getCharacters(langCode, script, { includeDigits });
+  if (!charsRaw || charsRaw.length === 0) {
+    throw new Error('No characters available for the selected language/script.');
+  }
   const chars = await orderCharacters(langCode, charsRaw, order, script);
 
-  const { rows: R, cols: C } = computeGridDims(chars.length, rows, cols);
+  const labelBase = gridLabel || `Keyboard ${langCode}${script ? '-' + script : ''} (${order})`;
 
-  const label = gridLabel || `Keyboard ${langCode}${script ? '-' + script : ''} (${order})`;
-  const grid = new GridData({
-    label: i18nService.getTranslationObject(label),
-    gridElements: [],
-    rowCount: R,
-    minColumnCount: C,
-    keyboardMode: GridData.KEYBOARD_ENABLED,
+  const { rows: R, cols: C } = computePageDims(chars.length, rows, cols);
+  if (!R || !C || R < 1 || C < 1) throw new Error('Invalid grid dimensions');
+
+  const capacityFull = R * C;
+  if (chars.length <= capacityFull) {
+    const grid = new GridData({
+      label: i18nService.getTranslationObject(labelBase),
+      gridElements: [],
+      rowCount: R,
+      minColumnCount: C,
+      keyboardMode: GridData.KEYBOARD_ENABLED,
+    });
+    let i = 0;
+    for (const ch of chars) {
+      const x = i % C;
+      const y = Math.floor(i / C);
+      grid.gridElements.push(
+        new GridElement({
+          label: i18nService.getTranslationObject(ch),
+          x,
+          y,
+          width: 1,
+          height: 1,
+        })
+      );
+      i += 1;
+    }
+    return [grid];
+  }
+
+  // Two-hit: try to fit into 2 pages; if still too big, fall back to regular pagination
+  if (twoHit && chars.length <= capacityFull * 2) {
+    const mid = Math.ceil(chars.length / 2);
+    const halves = [chars.slice(0, mid), chars.slice(mid)];
+    const grids = halves.map((chunk, idx) => {
+      const label = `${labelBase} [${idx + 1}/2]`;
+      return new GridData({
+        label: i18nService.getTranslationObject(label),
+        gridElements: [],
+        rowCount: R,
+        minColumnCount: C,
+        keyboardMode: GridData.KEYBOARD_ENABLED,
+      });
+    });
+    // Link pages and fill content
+    halves.forEach((chunk, idx) => {
+      const grid = grids[idx];
+      const hasPrev = idx > 0;
+      const hasNext = idx < grids.length - 1;
+      if (hasPrev) {
+        grid.gridElements.push(new GridElement({
+          label: i18nService.getTranslationObject('Prev'), x: 0, y: 0, width: 1, height: 1,
+          actions: [new GridActionNavigate({ navType: GridActionNavigate.NAV_TYPES.TO_GRID, toGridId: grids[idx - 1].id })],
+        }));
+      }
+      if (hasNext) {
+        grid.gridElements.push(new GridElement({
+          label: i18nService.getTranslationObject('More'), x: 1, y: 0, width: 1, height: 1,
+          actions: [new GridActionNavigate({ navType: GridActionNavigate.NAV_TYPES.TO_GRID, toGridId: grids[idx + 1].id })],
+        }));
+      }
+      let placed = 0;
+      for (let y = 0; y < R; y++) {
+        for (let x = 0; x < C; x++) {
+          if ((hasPrev && x === 0 && y === 0) || (hasNext && x === 1 && y === 0)) continue;
+          if (placed >= chunk.length) break;
+          const ch = chunk[placed++];
+          grid.gridElements.push(new GridElement({ label: i18nService.getTranslationObject(ch), x, y, width: 1, height: 1 }));
+        }
+      }
+    });
+    return grids;
+  }
+
+  const conservativeCapacity = Math.max(1, capacityFull - 2);
+  const chunks = chunkArray(chars, conservativeCapacity);
+
+  const grids = chunks.map((chunk, idx) => {
+    const label = `${labelBase} [${idx + 1}/${chunks.length}]`;
+    return new GridData({
+      label: i18nService.getTranslationObject(label),
+      gridElements: [],
+      rowCount: R,
+      minColumnCount: C,
+      keyboardMode: GridData.KEYBOARD_ENABLED,
+    });
   });
 
-  let i = 0;
-  for (const ch of chars) {
-    const x = i % C;
-    const y = Math.floor(i / C);
-    grid.gridElements.push(
-      new GridElement({
-        label: i18nService.getTranslationObject(ch),
-        x,
-        y,
-        width: 1,
-        height: 1,
-      })
-    );
-    i += 1;
-  }
-  return grid;
+  grids.forEach((grid, idx) => {
+    const hasPrev = idx > 0;
+    const hasNext = idx < grids.length - 1;
+
+    if (hasPrev) {
+      grid.gridElements.push(
+        new GridElement({
+          label: i18nService.getTranslationObject('Prev'),
+          x: 0,
+          y: 0,
+          width: 1,
+          height: 1,
+          actions: [new GridActionNavigate({ navType: GridActionNavigate.NAV_TYPES.TO_GRID, toGridId: grids[idx - 1].id })],
+        })
+      );
+    }
+    if (hasNext) {
+      grid.gridElements.push(
+        new GridElement({
+          label: i18nService.getTranslationObject('More'),
+          x: 1,
+          y: 0,
+          width: 1,
+          height: 1,
+          actions: [new GridActionNavigate({ navType: GridActionNavigate.NAV_TYPES.TO_GRID, toGridId: grids[idx + 1].id })],
+        })
+      );
+    }
+
+    const chunk = chunks[idx];
+    let placed = 0;
+    for (let y = 0; y < R; y++) {
+      for (let x = 0; x < C; x++) {
+        if ((hasPrev && x === 0 && y === 0) || (hasNext && x === 1 && y === 0)) continue;
+        if (placed >= chunk.length) break;
+        const ch = chunk[placed++];
+        grid.gridElements.push(
+          new GridElement({
+            label: i18nService.getTranslationObject(ch),
+            x,
+            y,
+            width: 1,
+            height: 1,
+          })
+        );
+      }
+    }
+  });
+
+  return grids;
+}
+
+
+async function generateKeyboardGrid(opts = {}) {
+  const pages = await generateKeyboardGrids(opts);
+  return pages[0];
 }
 
 async function supportsDigits(langCode, script) {
@@ -167,6 +303,7 @@ async function supportsFrequency(langCode) {
 export const keyboardGeneratorService = {
   getAvailableCodes,
   getScripts,
+  generateKeyboardGrids,
   generateKeyboardGrid,
   supportsDigits,
   supportsFrequency,
