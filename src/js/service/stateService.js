@@ -28,13 +28,6 @@ stateService.getCurrentGrid = function () {
     return _currentGrid;
 };
 
-stateService.getCurrentGridId = function () {
-    return _currentGrid ? _currentGrid.id : null;
-};
-
-
-
-
 stateService.hasGlobalGridElement = function (elementId) {
     if (!_currentGlobalGrid) {
         return false;

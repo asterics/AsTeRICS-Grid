@@ -75,8 +75,6 @@ collectElementService.initWithGrid = function (gridData, dontAutoPredict) {
             // Defaults for new/legacy grids that may not have these flags persisted
             copy.displayUpsideDown = copy.displayUpsideDown !== undefined ? copy.displayUpsideDown : false;
             copy.isTextRotated = copy.isTextRotated !== undefined ? copy.isTextRotated : false;
-            // Keep reference to owning grid for persistence of toggle state
-            copy.gridId = gridData.id;
             registeredCollectElements.push(copy);
         }
     });
@@ -230,21 +228,6 @@ collectElementService.doCollectElementActions = async function (action, gridElem
 
                 // Toggle the rotation state for the collect element
                 collectElement.isTextRotated = !collectElement.isTextRotated;
-
-                // Save the grid to persist the change
-                // We need to get the grid ID and save it properly
-                let gridId = collectElement.gridId || (stateService.getCurrentGridId && stateService.getCurrentGridId());
-                if (gridId) {
-                    let currentGrid = await dataService.getGrid(gridId);
-                    if (currentGrid) {
-                        // Find and update the element in the grid
-                        let gridElement = currentGrid.gridElements.find(elem => elem.id === collectElement.id);
-                        if (gridElement) {
-                            gridElement.isTextRotated = collectElement.isTextRotated;
-                            await dataService.saveGrid(currentGrid);
-                        }
-                    }
-                }
 
                 // Update the display
                 updateCollectElements();
