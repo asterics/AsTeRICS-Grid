@@ -9,7 +9,8 @@ class GridElementCollect extends GridElement.extend({
     mode: [String],
     singleLine: [Boolean],
     convertToLowercase: [Boolean],
-    textElemSizeFactor: [Number]
+    textElemSizeFactor: [Number],
+    displayUpsideDown: [Boolean]
 }) {
     constructor(props) {
         props = props || {};
@@ -20,6 +21,7 @@ class GridElementCollect extends GridElement.extend({
         props.mode = GridElementCollect.MODE_AUTO;
         props.type = GridElement.ELEMENT_TYPE_COLLECT;
         props.textElemSizeFactor = 1.5;
+        props.displayUpsideDown = props.displayUpsideDown !== undefined ? props.displayUpsideDown : false;
         props.actions = props.actions || [
             new GridActionCollectElement({ action: GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS }),
             new GridActionPredict({ suggestOnChange: true, dictionaryKey: GridActionPredict.USE_DICTIONARY_CURRENT_LANG })
