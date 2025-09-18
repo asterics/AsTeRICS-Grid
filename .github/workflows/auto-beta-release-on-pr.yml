@@ -11,6 +11,11 @@ on:
     # This allows the workflow to be triggered manually from the GitHub UI.
     # The branch for the deployment will be selected via the built-in "Use workflow from" dropdown.
 
+# Ensure only one run per PR (or per manual dispatch) at a time
+concurrency:
+  group: ${{ github.event.pull_request.number || github.ref_name || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
     # The job will only run if the head branch is not 'i10n_master'
