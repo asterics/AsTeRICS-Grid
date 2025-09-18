@@ -60,54 +60,95 @@ jest.mock('./liveElementService.js', () => ({ liveElementService: {} }));
 jest.mock('../util/imageUtil.js', () => ({ imageUtil: {} }));
 jest.mock('../util/util.js', () => ({ util: {} }));
 
-// Implement the capitalization functions for testing
-function capitalizeFirstLetter(text) {
-    if (!text) return text;
+const { i18nService } = require('./i18nService.js');
 
-    for (let i = 0; i < text.length; i++) {
-        if (/[a-zA-Z]/.test(text[i])) {
-            return text.substring(0, i) + text[i].toUpperCase() + text.substring(i + 1);
+// Implement the capitalization functions for testing
+function getLocaleForCapitalization() {
+    if (i18nService && typeof i18nService.getContentLang === 'function') {
+        const locale = i18nService.getContentLang();
+        return locale || undefined;
+    }
+    return undefined;
+}
+
+function isAlphabeticCharacter(char, locale) {
+    if (!char) {
+        return false;
+    }
+    const upper = locale ? char.toLocaleUpperCase(locale) : char.toLocaleUpperCase();
+    const lower = locale ? char.toLocaleLowerCase(locale) : char.toLocaleLowerCase();
+    return upper !== lower;
+}
+
+function capitalizeFirstLetter(text) {
+    if (!text) {
+        return text;
+    }
+
+    const locale = getLocaleForCapitalization();
+    for (let index = 0; index < text.length;) {
+        const codePoint = text.codePointAt(index);
+        const char = String.fromCodePoint(codePoint);
+        const charLength = char.length;
+
+        if (isAlphabeticCharacter(char, locale)) {
+            const upperChar = locale ? char.toLocaleUpperCase(locale) : char.toLocaleUpperCase();
+            return text.slice(0, index) + upperChar + text.slice(index + charLength);
         }
+
+        index += charLength;
     }
     return text;
 }
 
 function applySentenceCapitalization(currentText, newText) {
-    if (!newText) return newText;
-
-    // Look for sentence-ending punctuation followed by spaces at the end of current text
-    let match = currentText.match(/[.!?](\s*)$/);
-    if (match) {
-        // Found sentence-ending punctuation, capitalize first letter of new text
-        return capitalizeFirstLetter(newText);
+    if (!newText) {
+        return newText;
     }
 
-    // Check if the combined text has sentence punctuation that would affect capitalization
-    let combined = currentText + newText;
-    let sentenceEndMatch = combined.match(/[.!?](\s+)([a-zA-Z])/g);
-    if (sentenceEndMatch) {
-        // Apply capitalization to letters following sentence punctuation
-        let result = newText;
-        let searchStart = currentText.length;
+    const locale = getLocaleForCapitalization();
+    let result = newText;
 
-        // Find positions in the new text that need capitalization
-        for (let match of sentenceEndMatch) {
-            let matchIndex = combined.indexOf(match, searchStart);
-            if (matchIndex >= currentText.length) {
-                // This match affects the new text
-                let newTextIndex = matchIndex - currentText.length;
-                let letterIndex = newTextIndex + match.length - 1; // Position of the letter to capitalize
-                if (letterIndex >= 0 && letterIndex < result.length) {
-                    result = result.substring(0, letterIndex) +
-                            result[letterIndex].toUpperCase() +
-                            result.substring(letterIndex + 1);
-                }
+    if (/[.!?](\s*)$/.test(currentText)) {
+        result = capitalizeFirstLetter(result);
+    }
+
+    let transformed = '';
+    let index = 0;
+    let punctuationPending = false;
+    let whitespaceSeen = false;
+
+    while (index < result.length) {
+        const codePoint = result.codePointAt(index);
+        const char = String.fromCodePoint(codePoint);
+        const charLength = char.length;
+
+        if (punctuationPending) {
+            if (/\s/.test(char)) {
+                whitespaceSeen = true;
+                transformed += char;
+            } else if (whitespaceSeen && isAlphabeticCharacter(char, locale)) {
+                const upperChar = locale ? char.toLocaleUpperCase(locale) : char.toLocaleUpperCase();
+                transformed += upperChar;
+                punctuationPending = false;
+                whitespaceSeen = false;
+            } else {
+                transformed += char;
+                punctuationPending = false;
+                whitespaceSeen = false;
+            }
+        } else {
+            transformed += char;
+            if (/[.!?]/.test(char)) {
+                punctuationPending = true;
+                whitespaceSeen = false;
             }
         }
-        return result;
+
+        index += charLength;
     }
 
-    return newText;
+    return transformed;
 }
 
 function applyAutoCapitalization(text, isAppending = false, currentText = '') {
@@ -153,6 +194,11 @@ describe('collectElementService - Automatic Capitalization', () => {
             expect(result).toBe('123Hello');
         });
 
+        test('should capitalize locale-specific letters like ł', () => {
+            const result = applyAutoCapitalization('łukasz', false, '');
+            expect(result).toBe('Łukasz');
+        });
+
         test('should handle empty or null text gracefully', () => {
             expect(applyAutoCapitalization('', false, '')).toBe('');
             expect(applyAutoCapitalization(null, false, '')).toBe(null);
@@ -179,6 +225,11 @@ describe('collectElementService - Automatic Capitalization', () => {
         test('should capitalize after exclamation mark', () => {
             const result = applyAutoCapitalization('that', true, 'Great!');
             expect(result).toBe('That');
+        });
+
+        test('should capitalize non-ASCII letters after punctuation', () => {
+            const result = applyAutoCapitalization('łukasz', true, 'Cześć!');
+            expect(result).toBe('Łukasz');
         });
 
         test('should handle multiple spaces after punctuation', () => {
@@ -219,6 +270,7 @@ describe('collectElementService - Automatic Capitalization', () => {
             expect(capitalizeFirstLetter('hello')).toBe('Hello');
             expect(capitalizeFirstLetter('123hello')).toBe('123Hello');
             expect(capitalizeFirstLetter('HELLO')).toBe('HELLO');
+            expect(capitalizeFirstLetter('łukasz')).toBe('Łukasz');
             expect(capitalizeFirstLetter('')).toBe('');
             expect(capitalizeFirstLetter('123')).toBe('123');
         });
@@ -227,6 +279,7 @@ describe('collectElementService - Automatic Capitalization', () => {
             expect(applySentenceCapitalization('Hello.', 'world')).toBe('World');
             expect(applySentenceCapitalization('Hello?', 'yes')).toBe('Yes');
             expect(applySentenceCapitalization('Hello!', 'great')).toBe('Great');
+            expect(applySentenceCapitalization('Cześć!', 'łukasz')).toBe('Łukasz');
             expect(applySentenceCapitalization('Hello', 'world')).toBe('world');
         });
     });

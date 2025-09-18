@@ -569,8 +569,6 @@ function applyAutoCapitalization(text, isAppending = false) {
 
     // Get the current full text to determine context
     let currentText = getPrintText({ trim: false });
-    let fullText = isAppending ? currentText + text : text;
-
     // If this is the very first text (empty collect element), capitalize first letter
     if (!currentText.trim() && !isAppending) {
         return capitalizeFirstLetter(text);
@@ -597,13 +595,40 @@ function applyAutoCapitalization(text, isAppending = false) {
  * @param {string} text - The text to capitalize
  * @returns {string} - The text with first letter capitalized
  */
-function capitalizeFirstLetter(text) {
-    if (!text) return text;
+function getLocaleForCapitalization() {
+    if (i18nService && typeof i18nService.getContentLang === 'function') {
+        let locale = i18nService.getContentLang();
+        return locale || undefined;
+    }
+    return undefined;
+}
 
-    for (let i = 0; i < text.length; i++) {
-        if (/[a-zA-Z]/.test(text[i])) {
-            return text.substring(0, i) + text[i].toUpperCase() + text.substring(i + 1);
+function isAlphabeticCharacter(char, locale) {
+    if (!char) {
+        return false;
+    }
+    let upper = locale ? char.toLocaleUpperCase(locale) : char.toLocaleUpperCase();
+    let lower = locale ? char.toLocaleLowerCase(locale) : char.toLocaleLowerCase();
+    return upper !== lower;
+}
+
+function capitalizeFirstLetter(text) {
+    if (!text) {
+        return text;
+    }
+
+    let locale = getLocaleForCapitalization();
+    for (let index = 0; index < text.length;) {
+        let codePoint = text.codePointAt(index);
+        let char = String.fromCodePoint(codePoint);
+        let charLength = char.length;
+
+        if (isAlphabeticCharacter(char, locale)) {
+            let upperChar = locale ? char.toLocaleUpperCase(locale) : char.toLocaleUpperCase();
+            return text.slice(0, index) + upperChar + text.slice(index + charLength);
         }
+
+        index += charLength;
     }
     return text;
 }
@@ -615,41 +640,53 @@ function capitalizeFirstLetter(text) {
  * @returns {string} - The new text with appropriate capitalization
  */
 function applySentenceCapitalization(currentText, newText) {
-    if (!newText) return newText;
-
-    // Look for sentence-ending punctuation followed by spaces at the end of current text
-    let match = currentText.match(/[.!?](\s*)$/);
-    if (match) {
-        // Found sentence-ending punctuation, capitalize first letter of new text
-        return capitalizeFirstLetter(newText);
+    if (!newText) {
+        return newText;
     }
 
-    // Check if the combined text has sentence punctuation that would affect capitalization
-    let combined = currentText + newText;
-    let sentenceEndMatch = combined.match(/[.!?](\s+)([a-zA-Z])/g);
-    if (sentenceEndMatch) {
-        // Apply capitalization to letters following sentence punctuation
-        let result = newText;
-        let searchStart = currentText.length;
+    let locale = getLocaleForCapitalization();
+    let result = newText;
 
-        // Find positions in the new text that need capitalization
-        for (let match of sentenceEndMatch) {
-            let matchIndex = combined.indexOf(match, searchStart);
-            if (matchIndex >= currentText.length) {
-                // This match affects the new text
-                let newTextIndex = matchIndex - currentText.length;
-                let letterIndex = newTextIndex + match.length - 1; // Position of the letter to capitalize
-                if (letterIndex >= 0 && letterIndex < result.length) {
-                    result = result.substring(0, letterIndex) +
-                            result[letterIndex].toUpperCase() +
-                            result.substring(letterIndex + 1);
-                }
+    if (/[.!?](\s*)$/.test(currentText)) {
+        result = capitalizeFirstLetter(result);
+    }
+
+    let transformed = '';
+    let index = 0;
+    let punctuationPending = false;
+    let whitespaceSeen = false;
+
+    while (index < result.length) {
+        let codePoint = result.codePointAt(index);
+        let char = String.fromCodePoint(codePoint);
+        let charLength = char.length;
+
+        if (punctuationPending) {
+            if (/\s/.test(char)) {
+                whitespaceSeen = true;
+                transformed += char;
+            } else if (whitespaceSeen && isAlphabeticCharacter(char, locale)) {
+                let upperChar = locale ? char.toLocaleUpperCase(locale) : char.toLocaleUpperCase();
+                transformed += upperChar;
+                punctuationPending = false;
+                whitespaceSeen = false;
+            } else {
+                transformed += char;
+                punctuationPending = false;
+                whitespaceSeen = false;
+            }
+        } else {
+            transformed += char;
+            if (/[.!?]/.test(char)) {
+                punctuationPending = true;
+                whitespaceSeen = false;
             }
         }
-        return result;
+
+        index += charLength;
     }
 
-    return newText;
+    return transformed;
 }
 
 function addTextElem(text) {
