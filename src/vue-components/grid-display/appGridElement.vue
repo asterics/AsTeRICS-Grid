@@ -38,6 +38,7 @@ import { ColorConfig } from '../../js/model/ColorConfig';
 import GridElementLive from './grid-elements/gridElementLive.vue';
 import GridElementMatrixConversation from './grid-elements/gridElementMatrixConversation.vue';
 import { gridUtil } from '../../js/util/gridUtil';
+import { util } from '../../js/util/util';
 
 export default {
     components: { GridElementMatrixConversation, GridElementLive, GridElementNormal, GridElementYoutube, GridElementCollect, GridElementHints, GridElementPredict },
@@ -59,31 +60,10 @@ export default {
             }
         },
         backgroundColor() {
-            if (!this.metadata || !this.element) {
-                return '';
-            }
-            if (this.element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
-                return constants.COLORS.PREDICT_BACKGROUND;
-            }
-            if (this.element.type === GridElement.ELEMENT_TYPE_LIVE) {
-                return this.element.backgroundColor || constants.COLORS.LIVE_BACKGROUND;
-            }
-            if ([ColorConfig.COLOR_MODE_BACKGROUND, ColorConfig.COLOR_MODE_BOTH].includes(this.metadata.colorConfig.colorMode)) {
-                return MetaData.getElementColor(this.element, this.metadata);
-            }
-            return this.metadata.colorConfig.elementBackgroundColor;
+            return util.getElementBackgroundColor(this.element, this.metadata);
         },
         fontColor() {
-            if (!this.metadata || !this.metadata.textConfig) {
-                return constants.COLORS.BLACK;
-            }
-            if (!this.metadata.textConfig.fontColor ||
-                [constants.COLORS.BLACK, constants.COLORS.WHITE].includes(this.metadata.textConfig.fontColor)) {
-                // if not set or set to black or white - do auto-contrast
-                let isDark = fontUtil.isHexDark(this.backgroundColor);
-                return isDark ? constants.COLORS.WHITE : constants.COLORS.BLACK;
-            }
-            return this.metadata.textConfig.fontColor;
+            return util.getElementFontColor(this.element, this.metadata, this.backgroundColor);
         },
         cursorType() {
             return gridUtil.getCursorType(this.metadata, "pointer");
@@ -91,31 +71,7 @@ export default {
     },
     methods: {
         getBorderColor(element) {
-            if (!this.metadata || !this.metadata.colorConfig) {
-                return constants.COLORS.GRAY;
-            }
-            let color = this.metadata.colorConfig.elementBorderColor;
-            if (this.metadata.colorConfig.elementBorderColor === constants.DEFAULT_ELEMENT_BORDER_COLOR) {
-                let backgroundColor = this.metadata.colorConfig.gridBackgroundColor || constants.COLORS.WHITE;
-                color = fontUtil.getHighContrastColor(backgroundColor, constants.COLORS.WHITESMOKE, constants.COLORS.GRAY);
-            }
-            if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BORDER) {
-                return MetaData.getElementColor(element, this.metadata, color);
-            }
-            if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH) {
-                if (!element.colorCategory) {
-                    return 'transparent';
-                }
-                let colorScheme = MetaData.getUseColorScheme(this.metadata);
-                if (colorScheme && colorScheme.customBorders && colorScheme.customBorders[element.colorCategory]) {
-                    return colorScheme.customBorders[element.colorCategory];
-                }
-                let absAdjustment = 40;
-                let bgColor = MetaData.getElementColor(element, this.metadata, color);
-                let adjustment = fontUtil.isHexDark(bgColor) ? absAdjustment * 1.5 : absAdjustment * -1;
-                return fontUtil.adjustHexColor(bgColor, adjustment);
-            }
-            return color;
+            return util.getElementBorderColor(element, this.metadata);
         },
         isEmpty(element) {
             if (element.type === GridElementModel.ELEMENT_TYPE_NORMAL) {
