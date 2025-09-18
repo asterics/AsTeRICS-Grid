@@ -74,7 +74,7 @@ collectElementService.initWithGrid = function (gridData, dontAutoPredict) {
             convertToLowercaseIfKeyboard = copy.convertToLowercase !== false;
             // Defaults for new/legacy grids that may not have these flags persisted
             copy.displayUpsideDown = copy.displayUpsideDown !== undefined ? copy.displayUpsideDown : false;
-            copy.isTextRotated = copy.isTextRotated !== undefined ? copy.isTextRotated : false;
+            copy.rotationToggleActive = false;
             registeredCollectElements.push(copy);
         }
     });
@@ -227,7 +227,7 @@ collectElementService.doCollectElementActions = async function (action, gridElem
                 let collectElement = registeredCollectElements[0]; // Get the first (and usually only) collect element
 
                 // Toggle the rotation state for the collect element
-                collectElement.isTextRotated = !collectElement.isTextRotated;
+                collectElement.rotationToggleActive = !collectElement.rotationToggleActive;
 
                 // Update the display
                 updateCollectElements();
@@ -345,11 +345,9 @@ async function updateCollectElements(isSecondTry) {
 
         // Determine if text should be rotated
         // Logic: toggle reverses the permanent setting
-        // displayUpsideDown=false, isTextRotated=false → normal (false)
-        // displayUpsideDown=false, isTextRotated=true → upside down (true)
-        // displayUpsideDown=true, isTextRotated=false → upside down (true)
-        // displayUpsideDown=true, isTextRotated=true → normal (false)
-        let shouldRotate = collectElement.displayUpsideDown !== collectElement.isTextRotated;
+        // Runtime toggle (rotationToggleActive) inverts the persisted default displayUpsideDown when active.
+        const rotationToggleActive = collectElement.rotationToggleActive === true;
+        let shouldRotate = collectElement.displayUpsideDown !== rotationToggleActive;
         let rotationClass = shouldRotate ? ' upside-down' : '';
         if (!imageMode) {
             let text = getPrintText();
