@@ -33,6 +33,10 @@ This is the workflow if you want to work on an issue:
    * as an alternative fork the project on Github, leave a comment that you're working on the issue and start to work on it in your fork.
 * switch to git branch `master` and update `git checkout master && git pull`
 * create a new branch for your issue (if not working on your own fork). The branch name should be something like `issue#<issue-number>/short-description-of-issue`
+* for commit messages:
+   * include the issue number
+   * try to avoid huge commits, but keep them small, only having one change at a time
+   * e.g. *#123 prevent null pointer exception if user is empty*
 * when you think you've solved the issue, create a PR for merging it to the `master` branch
 * create a comment in the PR referencing the issue number for linking PR and issue
 * a GitHub workflow will automatically create a preview release for testing your changes and comment the link for testing to your PR
