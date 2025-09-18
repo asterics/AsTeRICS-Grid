@@ -44,9 +44,17 @@
                 </div>
                 <slider-input label="fontSize" unit="%" id="fontSize" :show-clear-button="true" min="0" max="70" step="1" v-model.number="gridElement.fontSizePct" @input="resetTestGrid"/>
                 <div class="srow">
-                    <label class="four columns" for="backgroundColor">{{ $t('customElementColor') }}</label>
+                    <label class="four columns" for="backgroundColor">
+                        <span v-if="metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BORDER">{{ $t('customBorderColor') }}</span>
+                        <span v-if="metadata.colorConfig.colorMode !== ColorConfig.COLOR_MODE_BORDER">{{ $t('customBackgroundColor') }}</span>
+                    </label>
                     <input class="five columns" type="color" id="backgroundColor" v-if="gridElement" v-model="gridElement.backgroundColor" @input="gridElement.colorCategory = undefined; resetTestGrid()"/>
                     <button class="two columns" :disabled="!gridElement.backgroundColor" @click="gridElement.backgroundColor = null; resetTestGrid();">{{ $t('clear') }}</button>
+                </div>
+                <div class="srow mb-4" v-if="metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH">
+                    <label class="four columns" for="borderColor">{{ $t('customBorderColor') }}</label>
+                    <input class="five columns" type="color" id="borderColor" v-if="gridElement" v-model="gridElement.borderColor" @input="gridElement.colorCategory = undefined; resetTestGrid()"/>
+                    <button class="two columns" :disabled="!gridElement.borderColor" @click="gridElement.borderColor = null; resetTestGrid();">{{ $t('clear') }}</button>
                 </div>
                 <div class="srow mb-4">
                     <label class="four columns" for="fontColor">
@@ -74,6 +82,7 @@
     import AppGridDisplay from '../grid-display/appGridDisplay.vue';
     import { GridData } from '../../js/model/GridData';
     import { GridElement } from '../../js/model/GridElement';
+    import { ColorConfig } from '../../js/model/ColorConfig';
 
     export default {
         components: { AppGridDisplay, SliderInput, Accordion },
@@ -86,6 +95,7 @@
                 constants: constants,
                 testGridData: null,
                 GridElement: GridElement,
+                ColorConfig: ColorConfig,
                 colorCategoryNotFitting: false
             }
         },
