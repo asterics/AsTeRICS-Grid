@@ -125,7 +125,9 @@
                 MainVue: MainVue,
                 highlightTimeoutHandler: null,
                 highlightedElementId: null,
-                systemActionService: systemActionService
+                systemActionService: systemActionService,
+                pausedByVisibility: false,
+                suppressAudioFeedback: false
             }
         },
         components: {
@@ -209,6 +211,9 @@
                     actionService.doAction(thiz.renderGridData, item.id);
                 };
                 let activeListener = (items, wrap, restarted) => {
+                        if (document.hidden || thiz.suppressAudioFeedback) {
+                            return;
+                        }
                     if (!Array.isArray(items)) {
                         items = [items];
                     }
@@ -512,6 +517,24 @@
             },
             async metadataUpdated() {
                 this.metadata = await dataService.getMetadata();
+            },
+            onVisibilityChanged() {
+                const hidden = document.hidden;
+                if (hidden) {
+                    this.suppressAudioFeedback = true;
+                    try { speechService.stopSpeaking(); } catch (e) {}
+                    try { audioUtil.stopAudio(); } catch (e) {}
+                    if (this.scanner) {
+                        this.scanner.pauseScanning();
+                        this.pausedByVisibility = true;
+                    }
+                } else {
+                    this.suppressAudioFeedback = false;
+                    if (this.pausedByVisibility && this.scanner) {
+                        this.scanner.resumeScanning();
+                    }
+                    this.pausedByVisibility = false;
+                }
             }
         },
         created() {
@@ -522,6 +545,9 @@
             window.addEventListener('resize', this.resizeListener, true);
             $(document).on(constants.EVENT_GRID_RESIZE, this.resizeListener);
             $(document).on(constants.EVENT_METADATA_UPDATED, this.metadataUpdated);
+            document.addEventListener('visibilitychange', this.onVisibilityChanged);
+            window.addEventListener('blur', this.onVisibilityChanged, true);
+            window.addEventListener('focus', this.onVisibilityChanged, true);
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.onExternalUpdate);
@@ -531,6 +557,9 @@
             window.removeEventListener('resize', this.resizeListener, true);
             $(document).off(constants.EVENT_GRID_RESIZE, this.resizeListener);
             $(document).off(constants.EVENT_METADATA_UPDATED, this.metadataUpdated);
+            document.removeEventListener('visibilitychange', this.onVisibilityChanged);
+            window.removeEventListener('blur', this.onVisibilityChanged, true);
+            window.removeEventListener('focus', this.onVisibilityChanged, true);
             stopInputMethods();
             this.setViewPropsUnlocked();
             $.contextMenu('destroy');
