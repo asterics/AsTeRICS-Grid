@@ -72,9 +72,7 @@ collectElementService.initWithGrid = function (gridData, dontAutoPredict) {
                 }, null);
             collectMode = copy.mode || collectMode;
             convertToLowercaseIfKeyboard = copy.convertToLowercase !== false;
-            // Defaults for new/legacy grids that may not have these flags persisted
-            copy.displayUpsideDown = copy.displayUpsideDown !== undefined ? copy.displayUpsideDown : false;
-            copy.rotationToggleActive = false;
+            copy.rotationActive = !!copy.displayUpsideDown;
             registeredCollectElements.push(copy);
         }
     });
@@ -227,7 +225,7 @@ collectElementService.doCollectElementActions = async function (action, gridElem
                 let collectElement = registeredCollectElements[0]; // Get the first (and usually only) collect element
 
                 // Toggle the rotation state for the collect element
-                collectElement.rotationToggleActive = !collectElement.rotationToggleActive;
+                collectElement.rotationActive = !collectElement.rotationActive;
 
                 // Update the display
                 updateCollectElements();
@@ -343,12 +341,7 @@ async function updateCollectElements(isSecondTry) {
         let backgroundColor = darkMode ? constants.DEFAULT_COLLECT_ELEMENT_BACKGROUND_COLOR_DARK : constants.DEFAULT_COLLECT_ELEMENT_BACKGROUND_COLOR;
         let textColor = darkMode ? constants.DEFAULT_ELEMENT_FONT_COLOR_DARK : constants.DEFAULT_ELEMENT_FONT_COLOR;
 
-        // Determine if text should be rotated
-        // Logic: toggle reverses the permanent setting
-        // Runtime toggle (rotationToggleActive) inverts the persisted default displayUpsideDown when active.
-        const rotationToggleActive = collectElement.rotationToggleActive === true;
-        let shouldRotate = collectElement.displayUpsideDown !== rotationToggleActive;
-        let rotationClass = shouldRotate ? ' upside-down' : '';
+        let rotationClass = collectElement.rotationActive ? ' upside-down' : '';
         if (!imageMode) {
             let text = getPrintText();
             $(`#${collectElement.id}`).attr('aria-label', `${text}, ${i18nService.t('ELEMENT_TYPE_COLLECT')}`);
