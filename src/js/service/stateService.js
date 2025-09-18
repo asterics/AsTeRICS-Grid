@@ -24,10 +24,6 @@ stateService.setGlobalGrid = function (gridData) {
     _currentGlobalGrid = gridData;
 };
 
-stateService.getCurrentGrid = function () {
-    return _currentGrid;
-};
-
 stateService.hasGlobalGridElement = function (elementId) {
     if (!_currentGlobalGrid) {
         return false;
