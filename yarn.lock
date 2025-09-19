@@ -3637,10 +3637,10 @@ js-tokens@^4.0.0:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
 
-js-tts-wrapper@0.1.49:
-  version "0.1.49"
-  resolved "https://registry.yarnpkg.com/js-tts-wrapper/-/js-tts-wrapper-0.1.49.tgz#5f7a240a30859acc8d47d74b14ed54df5c1bfdcb"
-  integrity sha512-Oneg/4KC+K4HiuIRDdN45q0suePqrnyemHzVpb4tfkwslfESCHOBbaGAMo0sddytCXlloGg7oLDVaaDKjGEOiA==
+js-tts-wrapper@0.1.50:
+  version "0.1.50"
+  resolved "https://registry.yarnpkg.com/js-tts-wrapper/-/js-tts-wrapper-0.1.50.tgz#872e5cf7e5302b221d131d8413a692e0eb8b878b"
+  integrity sha512-b3iQa/lz5RbW7Q3b6VLAHO9yRuBbFM/WpStnMWtBuwXK15DGhcmNwYzuUMN8PAmF7SciHIkaNvNUJkG0HhmVHg==
   dependencies:
     "@elevenlabs/elevenlabs-js" "^2.1.0"
     aws-sdk "^2.1638.0"

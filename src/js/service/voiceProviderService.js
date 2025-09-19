@@ -10,7 +10,11 @@ const PROVIDER_DEFINITIONS = [
     { id: constants.VOICE_PROVIDER_WATSON, labelKey: "voiceProviderWatson", type: "js", engine: "watson", requiredConfig: ["apiKey", "region", "instanceId"] },
     { id: constants.VOICE_PROVIDER_WITAI, labelKey: "voiceProviderWitai", type: "js", engine: "witai", requiredConfig: ["token"] },
     { id: constants.VOICE_PROVIDER_UPLIFTAI, labelKey: "voiceProviderUpliftai", type: "js", engine: "upliftai", requiredConfig: ["apiKey"] },
-    { id: constants.VOICE_PROVIDER_PLAYHT, labelKey: "voiceProviderPlayht", type: "js", engine: "playht", requiredConfig: ["apiKey", "userId"] }
+    { id: constants.VOICE_PROVIDER_PLAYHT, labelKey: "voiceProviderPlayht", type: "js", engine: "playht", requiredConfig: ["apiKey", "userId"] },
+    { id: constants.VOICE_PROVIDER_POLLY, labelKey: "voiceProviderPolly", type: "js", engine: "polly", requiredConfig: ["region", "accessKeyId", "secretAccessKey"] },
+    { id: constants.VOICE_PROVIDER_OPENAI, labelKey: "voiceProviderOpenai", type: "js", engine: "openai", requiredConfig: ["apiKey"] },
+    { id: constants.VOICE_PROVIDER_GOOGLE, labelKey: "voiceProviderGoogle", type: "js", engine: "google", requiredConfig: ["keyFilename"] },
+    { id: constants.VOICE_PROVIDER_SHERPAONNX_WASM, labelKey: "voiceProviderSherpaOnnxWasm", type: "js", engine: "sherpaonnx-wasm", requiredConfig: [] }
 ];
 
 const clientCache = new Map(); // providerId -> { client, configKey }
@@ -157,7 +161,7 @@ async function speak(providerId, voiceId, text, config, options = {}) {
         if (pitch) {
             client.setProperty?.("pitch", pitch);
         }
-        await client.speak(text, { format: "mp3" });
+        await client.speak(text);
         return true;
     } catch (error) {
         console.error("Failed to speak via provider", providerId, error);

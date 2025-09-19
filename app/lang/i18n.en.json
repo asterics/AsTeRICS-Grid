@@ -1330,5 +1330,14 @@
   "voiceProviderWitaiToken": "Access token",
   "voiceProviderUpliftaiApiKey": "API key",
   "voiceProviderPlayhtApiKey": "API key",
-  "voiceProviderPlayhtUserId": "User ID"
+  "voiceProviderPlayhtUserId": "User ID",
+  "voiceProviderPolly": "Amazon Polly",
+  "voiceProviderPollyRegion": "Region",
+  "voiceProviderPollyAccessKeyId": "Access Key ID",
+  "voiceProviderPollySecretAccessKey": "Secret Access Key",
+  "voiceProviderGoogle": "Google Cloud TTS",
+  "voiceProviderGoogleKeyFile": "Service account key file path (Node-only)",
+  "voiceProviderOpenai": "OpenAI TTS",
+  "voiceProviderOpenaiApiKey": "API key",
+  "voiceProviderSherpaOnnxWasm": "SherpaONNX (WASM)"
 }

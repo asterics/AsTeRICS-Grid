@@ -89,6 +89,10 @@ constants.VOICE_PROVIDER_WATSON = 'watson';
 constants.VOICE_PROVIDER_WITAI = 'witai';
 constants.VOICE_PROVIDER_UPLIFTAI = 'upliftai';
 constants.VOICE_PROVIDER_PLAYHT = 'playht';
+constants.VOICE_PROVIDER_POLLY = 'polly';
+constants.VOICE_PROVIDER_GOOGLE = 'google';
+constants.VOICE_PROVIDER_OPENAI = 'openai';
+constants.VOICE_PROVIDER_SHERPAONNX_WASM = 'sherpaonnx-wasm';
 constants.DEFAULT_VOICE_PROVIDER = constants.VOICE_PROVIDER_SYSTEM;
 
 constants.WEBRADIO_LAST_VOLUME_KEY = 'WEBRADIO_LAST_VOLUME_KEY';

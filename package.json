@@ -12,7 +12,7 @@
     "hls.js": "^0.14.14",
     "html2canvas": "^1.4.1",
     "interactjs": "^1.10.27",
-    "js-tts-wrapper": "0.1.49",
+    "js-tts-wrapper": "0.1.50",
     "jspdf": "^2.3.1",
     "jszip": "3.8.0",
     "matrix-encrypt-attachment": "^1.0.3",

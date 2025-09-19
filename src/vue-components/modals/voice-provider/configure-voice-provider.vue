@@ -88,7 +88,19 @@
         [constants.VOICE_PROVIDER_PLAYHT]: [
             { key: 'apiKey', labelKey: 'voiceProviderPlayhtApiKey', type: 'password' },
             { key: 'userId', labelKey: 'voiceProviderPlayhtUserId', type: 'text' }
-        ]
+        ],
+        [constants.VOICE_PROVIDER_POLLY]: [
+            { key: 'region', labelKey: 'voiceProviderPollyRegion', type: 'text' },
+            { key: 'accessKeyId', labelKey: 'voiceProviderPollyAccessKeyId', type: 'text' },
+            { key: 'secretAccessKey', labelKey: 'voiceProviderPollySecretAccessKey', type: 'password' }
+        ],
+        [constants.VOICE_PROVIDER_OPENAI]: [
+            { key: 'apiKey', labelKey: 'voiceProviderOpenaiApiKey', type: 'password' }
+        ],
+        [constants.VOICE_PROVIDER_GOOGLE]: [
+            { key: 'keyFilename', labelKey: 'voiceProviderGoogleKeyFile', type: 'text' }
+        ],
+        [constants.VOICE_PROVIDER_SHERPAONNX_WASM]: []
     };
 
     export default {
