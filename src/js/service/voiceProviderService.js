@@ -2,6 +2,64 @@
 import { createBrowserTTSClient } from "js-tts-wrapper/browser";
 import { constants } from "../util/constants";
 
+
+// Helper: load a script once
+async function loadScriptOnce(url) {
+    return new Promise((resolve, reject) => {
+        const existing = document.querySelector(`script[src="${url}"]`);
+        if (existing) {
+            if (existing.dataset.loaded === "true") return resolve();
+            existing.addEventListener("load", () => resolve());
+            existing.addEventListener("error", () => reject(new Error(`Failed to load ${url}`)));
+            return;
+        }
+        const s = document.createElement("script");
+        s.src = url;
+        s.async = true;
+        s.dataset.loaded = "false";
+        s.onload = () => {
+            s.dataset.loaded = "true";
+            resolve();
+        };
+        s.onerror = () => reject(new Error(`Failed to load ${url}`));
+        document.head.appendChild(s);
+    });
+}
+
+// Ensure the SherpaONNX (HF TTS variant) runtime is present: Module.calledRun + createOfflineTts
+async function ensureSherpaWasmRuntime(engineConfig = {}) {
+    if (typeof window === "undefined") return;
+    const w = window;
+    const base = (engineConfig.wasmBaseUrl)
+        || (engineConfig.wasmPath ? engineConfig.wasmPath.replace(/\/[^/]*$/, "") : "app/vendor/sherpa-onnx");
+    const b = base.replace(/\/$/, "");
+
+    // If already ready, skip
+    if (typeof w.createOfflineTts === "function" && w.Module && w.Module.calledRun) return;
+
+    w.Module = w.Module || {};
+    // Make sure the Emscripten glue can find .wasm/.data next to it
+    w.Module.locateFile = (p) => `${b}/${p}`;
+
+    // Load Emscripten main glue (initializes Module + calledRun) first
+    await loadScriptOnce(`${b}/sherpa-onnx-wasm-main-tts.js`);
+    // Then load the TTS wrapper that exposes createOfflineTts if still missing
+    if (typeof w.createOfflineTts !== "function") {
+        await loadScriptOnce(`${b}/sherpa-onnx-tts.js`);
+    }
+
+    // Wait until ready
+    await new Promise((resolve, reject) => {
+        const giveUpAt = Date.now() + 15000;
+        const check = () => {
+            if (typeof w.createOfflineTts === "function" && w.Module && w.Module.calledRun) return resolve();
+            if (Date.now() > giveUpAt) return reject(new Error("Timed out waiting for SherpaONNX WASM (HF TTS variant)"));
+            setTimeout(check, 200);
+        };
+        check();
+    });
+}
+
 const PROVIDER_DEFINITIONS = [
     { id: constants.VOICE_PROVIDER_SYSTEM, labelKey: "voiceProviderSystemDefault", type: "native" },
     { id: constants.VOICE_PROVIDER_EXTERNAL, labelKey: "voiceProviderExternalBridge", type: "external" },
@@ -13,7 +71,7 @@ const PROVIDER_DEFINITIONS = [
     { id: constants.VOICE_PROVIDER_PLAYHT, labelKey: "voiceProviderPlayht", type: "js", engine: "playht", requiredConfig: ["apiKey", "userId"] },
     { id: constants.VOICE_PROVIDER_POLLY, labelKey: "voiceProviderPolly", type: "js", engine: "polly", requiredConfig: ["region", "accessKeyId", "secretAccessKey"] },
     { id: constants.VOICE_PROVIDER_OPENAI, labelKey: "voiceProviderOpenai", type: "js", engine: "openai", requiredConfig: ["apiKey"] },
-    { id: constants.VOICE_PROVIDER_GOOGLE, labelKey: "voiceProviderGoogle", type: "js", engine: "google", requiredConfig: ["keyFilename"] },
+    { id: constants.VOICE_PROVIDER_GOOGLE, labelKey: "voiceProviderGoogle", type: "js", engine: "google", requiredConfig: ["apiKey"] },
     { id: constants.VOICE_PROVIDER_SHERPAONNX_WASM, labelKey: "voiceProviderSherpaOnnxWasm", type: "js", engine: "sherpaonnx-wasm", requiredConfig: [] }
 ];
 
@@ -49,6 +107,12 @@ async function checkCredentials(providerId, config) {
 
 function getProviderDefinition(providerId) {
     return PROVIDER_DEFINITIONS.find((provider) => provider.id === providerId) || null;
+}
+
+function isProviderSupportedInEnv(_provider) {
+    // With js-tts-wrapper >= 0.1.51, Google & Polly support browser via REST, and SherpaONNX can auto-load WASM.
+    // Keep this hook for future environment gating if needed.
+    return true;
 }
 
 function getProviders() {
@@ -103,7 +167,26 @@ async function ensureClient(provider, config) {
             console.warn("Failed to stop previous TTS client", provider.id, e);
         }
     }
-    const client = createBrowserTTSClient(provider.engine, config || {});
+    const engineConfig = { ...(config || {}) };
+    // Provide sensible defaults for SherpaONNX WASM auto-loading
+    if (provider.engine === "sherpaonnx-wasm") {
+        if (!engineConfig.wasmPath && !engineConfig.wasmBaseUrl) {
+            // Prefer explicit TTS glue path from official HF space naming
+            engineConfig.wasmPath = "app/vendor/sherpa-onnx/sherpa-onnx-tts.js";
+        }
+        if (!engineConfig.mergedModelsUrl) {
+            engineConfig.mergedModelsUrl = "app/data/merged_models.json";
+        }
+    }
+    // For SherpaONNX WASM (HF TTS), proactively ensure runtime pieces are present
+    if (provider.engine === "sherpaonnx-wasm") {
+        try {
+            await ensureSherpaWasmRuntime(engineConfig);
+        } catch (e) {
+            console.warn("SherpaONNX WASM pre-init did not complete:", e?.message || e);
+        }
+    }
+    const client = createBrowserTTSClient(provider.engine, engineConfig);
     client.on?.("start", () => {
         currentPlayingProviderId = provider.id;
     });
@@ -121,6 +204,9 @@ async function listVoices(providerId, config) {
     if (!provider || provider.type !== "js") {
         return [];
     }
+    if (!isProviderSupportedInEnv(provider)) {
+        return [];
+    }
     if (!isConfigComplete(provider, config)) {
         return [];
     }
@@ -129,7 +215,17 @@ async function listVoices(providerId, config) {
         if (!client) {
             return [];
         }
-        return await client.getVoices();
+        const voices = await client.getVoices();
+        // Normalize Sherpa voices to include languageCodes for filtering in settingsLanguage.vue
+        if (provider.engine === "sherpaonnx-wasm" && Array.isArray(voices)) {
+            return voices.map(v => {
+                if (!v.languageCodes && v.language) {
+                    return { ...v, languageCodes: [{ bcp47: v.language }] };
+                }
+                return v;
+            });
+        }
+        return voices;
     } catch (error) {
         console.warn("Failed to fetch voices for provider", providerId, error);
         return [];
@@ -139,6 +235,10 @@ async function listVoices(providerId, config) {
 async function speak(providerId, voiceId, text, config, options = {}) {
     const provider = getProviderDefinition(providerId);
     if (!provider || provider.type !== "js") {
+        return false;
+    }
+    if (!isProviderSupportedInEnv(provider)) {
+        console.warn("TTS provider not supported in current environment", providerId);
         return false;
     }
     if (!isConfigComplete(provider, config)) {
