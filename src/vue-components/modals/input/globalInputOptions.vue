@@ -14,6 +14,12 @@
             <div class="srow my-2">
                 <slider-input :label="$t('speedForReadingActiveElement')" id="readActiveRate" min="0.1" max="10" step="0.1" decimals="1" v-model.number="inputConfig.globalReadActiveRate" @change="changed"/>
             </div>
+            <div class="srow my-2">
+                <slider-input :label="$t('fastReadElementCount')" id="fastReadCount" min="1" max="10" step="1" decimals="0" v-model.number="inputConfig.globalReadActiveFastCount" @change="changed"/>
+            </div>
+            <div class="srow my-2">
+                <slider-input :label="$t('fastReadSpeed')" id="fastReadRate" min="0.5" max="5" step="0.1" decimals="1" v-model.number="inputConfig.globalReadActiveFastRate" @change="changed"/>
+            </div>
             <div class="srow">
                 <div class="twelve columns">
                     <input type="checkbox" id="beepFeedback" v-model="inputConfig.globalBeepFeedback" @change="changed"/>
@@ -24,6 +30,12 @@
                 <div class="twelve columns">
                     <input type="checkbox" id="readAdditional" v-model="inputConfig.globalReadAdditionalActions" @change="changed"/>
                     <label for="readAdditional">{{ $t('readElementActionsInAdditionToLabel') }}</label>
+                </div>
+            </div>
+            <div class="srow">
+                <div class="twelve columns">
+                    <input type="checkbox" id="readCollectLetters" v-model="inputConfig.globalReadCollectLetters" @change="changed"/>
+                    <label for="readCollectLetters">{{ $t('readCollectElementsLetterByLetter') }}</label>
                 </div>
             </div>
         </div>
