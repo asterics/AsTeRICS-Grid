@@ -98,9 +98,13 @@
             { key: 'apiKey', labelKey: 'voiceProviderOpenaiApiKey', type: 'password' }
         ],
         [constants.VOICE_PROVIDER_GOOGLE]: [
-            { key: 'keyFilename', labelKey: 'voiceProviderGoogleKeyFile', type: 'text' }
+            { key: 'apiKey', labelKey: 'voiceProviderGoogleApiKey', type: 'password' }
         ],
-        [constants.VOICE_PROVIDER_SHERPAONNX_WASM]: []
+        [constants.VOICE_PROVIDER_SHERPAONNX_WASM]: [
+            { key: 'wasmBaseUrl', labelKey: 'voiceProviderSherpaWasmBaseUrl', type: 'text', required: false },
+            { key: 'wasmPath', labelKey: 'voiceProviderSherpaWasmPath', type: 'text', required: false },
+            { key: 'mergedModelsUrl', labelKey: 'voiceProviderSherpaMergedModelsUrl', type: 'text', required: false }
+        ]
     };
 
     export default {
@@ -130,7 +134,12 @@
                     return false;
                 }
                 const config = this.localSettings[this.activeProviderId] || {};
-                return this.fields.every((field) => !!config[field.key]);
+                const requiredFields = this.fields.filter((f) => f.required !== false);
+                if (requiredFields.length === 0) {
+                    // No required fields: allow validation to run (useful for Sherpa WASM)
+                    return true;
+                }
+                return requiredFields.every((field) => !!config[field.key]);
             }
         },
         watch: {
