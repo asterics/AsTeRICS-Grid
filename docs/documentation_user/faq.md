@@ -27,9 +27,9 @@ AsTeRICS Grid uses voices from these sources:
 * **offline:** voices installed on the operating system (differs depending on platform, Windows has different voices than Android or iOS), e.g. `Microsoft David - English, offline` on a Windows computer
 * **online (best quality):** voices from Microsoft, e.g. `Microsoft Eric Online (Natural), online`. These voices are only available in the Microsoft Edge Browser on a Windows computer.
 * **online (good quality):**, Google voices, e.g. `Google Deutsch, online`. These voices are only available in Google Chrome browser.
-* **online (average quality and sometimes problems with availability):** When using voices from [responsivevoice.org](https://responsivevoice.org/), e.g. `Spanish Female, online`, there can be some delay (e.g. 5 seconds or more) until the label is spoken. There are also random errors accessing the voice service.
+* **online (average quality and sometimes problems with availability):** Some cloud voices can take several seconds before they start playing and may fail sporadically when the provider is unreachable.
 
-As stated the quality and availability of these voices differs, in general **offline voices should be preferred**, because they are most reliable and not depending on an internet connection. Most **problems occur with voices from [responsivevoice.org](https://responsivevoice.org/)**, which is why they only should be used if no alternatives are available.
+As stated the quality and availability of these voices differs. In general **offline voices should be preferred**, because they are most reliable and not depending on an internet connection. If you rely on online voices, expect a higher latency and keep an eye on the provider's availability.
 
 ### Installing additional voices
 On most operating systems it's possible to install additional offline voices and afterwards use them in AsTeRICS Grid.
@@ -119,3 +119,4 @@ With the OpenHAB editing action opened,
 ![image](https://github.com/asterics/AsTeRICS-Grid/assets/4621810/8bbe29a5-e5bd-4ece-bd28-ae4bb3c0e0b3)
 
 [Back to Overview](README.md)
+
