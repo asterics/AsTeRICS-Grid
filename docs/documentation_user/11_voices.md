@@ -4,9 +4,9 @@
 
 AsTeRICS Grid uses voices from these sources:
 * **offline:** voices installed on the operating system (differs depending on platform, Windows has different voices than Android or iOS), e.g. `Microsoft David - English, offline` on a Windows computer
-* **online:** voices vary by operation system and browser. With some of the online voices (those from from [responsivevoice.org](https://responsivevoice.org/), e.g. `Spanish Female, online`) there can be some delay (e.g. 5 seconds or more) until the label is spoken. There are also random errors accessing the voice service.
+* **online:** voices vary by operation system and browser. Some cloud services may introduce noticeable delays before speech playback starts and can fail without warning.
 
-In general, **offline voices should be preferred**, because they are most reliable and not depending on an internet connection. Most **problems occur with voices from [responsivevoice.org](https://responsivevoice.org/)**, which is why they only should be used if no alternatives are available. Android tablets offer the best options for a lot of languages.
+In general, **offline voices should be preferred**, because they are most reliable and not depending on an internet connection. If you rely on online voices, expect a higher latency and make sure a stable connection is available.
 
 *Note: Some browsers like Internet Explorer do not support text-to-speech. In these browsers, speak actions will do nothing.*
 
@@ -832,3 +832,4 @@ The following languages don’t seem to function: Assamese (India), Bodo (India)
 | Welsh          | x       |     |         |
 
 [Back to Overview](README.md)
+
