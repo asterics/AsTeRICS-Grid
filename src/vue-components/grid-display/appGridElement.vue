@@ -14,7 +14,6 @@
 </template>
 
 <script>
-
 import { GridElement as GridElementModel, GridElement } from '../../js/model/GridElement';
 import GridElementPredict from './grid-elements/gridElementPredict.vue';
 import GridElementHints from './grid-elements/gridElementHints.vue';
@@ -71,7 +70,42 @@ export default {
     },
     methods: {
         getBorderColor(element) {
-            return util.getElementBorderColor(element, this.metadata);
+            // Prefer util function if available (from pdf-fixes)
+            if (typeof util.getElementBorderColor === "function") {
+                return util.getElementBorderColor(element, this.metadata);
+            }
+
+            // Fallback to master branch logic
+            if (!this.metadata || !this.metadata.colorConfig) {
+                return constants.COLORS.GRAY;
+            }
+
+            if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH && element.borderColor) {
+                return element.borderColor;
+            }
+
+            let color = this.metadata.colorConfig.elementBorderColor;
+            if (this.metadata.colorConfig.elementBorderColor === constants.DEFAULT_ELEMENT_BORDER_COLOR) {
+                let backgroundColor = this.metadata.colorConfig.gridBackgroundColor || constants.COLORS.WHITE;
+                color = fontUtil.getHighContrastColor(backgroundColor, constants.COLORS.WHITESMOKE, constants.COLORS.GRAY);
+            }
+            if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BORDER) {
+                return MetaData.getElementColor(element, this.metadata, color);
+            }
+            if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH) {
+                if (!element.colorCategory) {
+                    return 'transparent';
+                }
+                let colorScheme = MetaData.getUseColorScheme(this.metadata);
+                if (colorScheme && colorScheme.customBorders && colorScheme.customBorders[element.colorCategory]) {
+                    return colorScheme.customBorders[element.colorCategory];
+                }
+                let absAdjustment = 40;
+                let bgColor = MetaData.getElementColor(element, this.metadata, color);
+                let adjustment = fontUtil.isHexDark(bgColor) ? absAdjustment * 1.5 : absAdjustment * -1;
+                return fontUtil.adjustHexColor(bgColor, adjustment);
+            }
+            return color;
         },
         isEmpty(element) {
             if (element.type === GridElementModel.ELEMENT_TYPE_NORMAL) {

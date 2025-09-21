@@ -11,11 +11,17 @@ on:
     # This allows the workflow to be triggered manually from the GitHub UI.
     # The branch for the deployment will be selected via the built-in "Use workflow from" dropdown.
 
+# Ensure only one run per PR (or per manual dispatch) at a time
+concurrency:
+  group: ${{ github.event.pull_request.number || github.ref_name || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
     # The job will only run if the head branch is not 'i10n_master'
     # and the actor is not 'dependabot[bot]'.
-    if: github.head_ref != 'l10n_master' && github.actor != 'dependabot[bot]'
+    #if: github.head_ref != 'l10n_master' && github.actor != 'dependabot[bot]'
+    if: github.actor != 'dependabot[bot]'
     # This job will run on the latest version of Ubuntu.
     runs-on: ubuntu-latest
 
@@ -24,9 +30,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}
-          ref:        ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref }}
-          fetch-depth: 0
+          ref: ${{ github.sha }}
 
       # Step 2: Set up Node.js. Replace this with a different setup action
       # if you're using a different technology stack (e.g., Python, Ruby).
@@ -133,7 +137,7 @@ jobs:
             const prUser = context.payload.pull_request.user.login;
             const prBranch = "${{ steps.prepare_path.outputs.sanitized_branch }}";
             const previewUrl = "${{ steps.log_url.outputs.preview_url }}";
-            const message = `🎉 **Beta deployment successful!** 🎉\n\nYou can view the changes in the live preview environment here: ${previewUrl}`;
+            const message = `🎉 **Beta deployment successful!**: view the changes in live preview environment: ${previewUrl}`;
 
             github.rest.issues.createComment({
               owner: context.repo.owner,

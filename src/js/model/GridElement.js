@@ -35,7 +35,8 @@ class GridElement extends Model({
     wordForms: [Model.Array(Object)], //Array of WordForm, removed for performance reasons
     fontSizePct: [Number],
     fontColor: [String],
-    backgroundColor: [String], // could be renamed to "customColor" since it can be custom border or background color
+    backgroundColor: [String], // also used as border color for color mode: "border", see https://github.com/asterics/AsTeRICS-Grid/issues/580#issuecomment-3281187917
+    borderColor: [String], // only used for color mode: "both"!
     colorCategory: [String],
     hidden: [Boolean],
     dontCollect: [Boolean],

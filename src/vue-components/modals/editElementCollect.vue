@@ -40,6 +40,12 @@
         </div>
         <div class="row">
             <div class="col-12">
+                <input v-if="gridElement" id="displayUpsideDown" type="checkbox" v-model="gridElement.displayUpsideDown"/>
+                <label for="displayUpsideDown">{{ $t('displayTextUpsideDown') }}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
                 <input v-if="gridElement" id="convertToLowercase" type="checkbox" v-model="gridElement.convertToLowercase"/>
                 <label for="convertToLowercase">{{ $t('convertUppercaseKeyboardLettersToLowercase') }}</label>
             </div>
