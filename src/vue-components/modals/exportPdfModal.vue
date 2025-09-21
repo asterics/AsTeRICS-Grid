@@ -94,7 +94,6 @@
         },
         methods: {
             save() {
-                console.log('📥 Export PDF button clicked');
                 
                 // Close modal immediately and show progress bar
                 this.$emit('close');
@@ -106,7 +105,6 @@
                     exportGrids = this.options.exportConnected ? [this.selectedGrid].concat(this.allChildren) : [this.selectedGrid];
                 }
                 let exportIds = exportGrids.map(grid => grid.id);
-                console.log('📋 Export grids selected:', exportGrids.length, 'IDs:', exportIds);
                 
                 // Show initial progress bar immediately
                 MainVue.showProgressBar(0, {
@@ -145,7 +143,6 @@
                             }
                         });
                     } catch (error) {
-                        console.error('Error generating PDF:', error);
                         MainVue.showProgressBar(0, {
                             header: i18nService.t('error'),
                             text: 'Failed to generate PDF: ' + error.message,
@@ -153,7 +150,6 @@
                         });
                     }
                 }).catch((error) => {
-                    console.error('Error loading grids for PDF:', error);
                     MainVue.showProgressBar(0, {
                         header: i18nService.t('error'),
                         text: 'Failed to load grids: ' + error.message,

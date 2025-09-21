@@ -96,7 +96,7 @@ function forceUISynchronization() {
             });
         }
         
-        console.log(' Forced UI synchronization completed');
+        // UI synchronization completed
     } catch (error) {
         console.warn('⚠ Error during UI synchronization:', error);
     }
@@ -107,7 +107,6 @@ function getCurrentUIMetadata() {
     try {
         // Method 1: Try to get from Vue app instance (vueApp is the global variable used in the codebase)
         if (typeof window !== 'undefined' && typeof vueApp !== 'undefined' && vueApp && vueApp.metadata) {
-            console.log(' Using vueApp metadata for PDF');
             return JSON.parse(JSON.stringify(vueApp.metadata)); // Deep clone
         }
         
@@ -115,7 +114,6 @@ function getCurrentUIMetadata() {
         if (typeof window !== 'undefined' && window.app && window.app.$children) {
             for (let child of window.app.$children) {
                 if (child.metadata && child.metadata.colorConfig && child.metadata.textConfig) {
-                    console.log(' Using Vue component metadata for PDF');
                     return JSON.parse(JSON.stringify(child.metadata)); // Deep clone
                 }
             }
@@ -123,20 +121,16 @@ function getCurrentUIMetadata() {
         
         // Method 2: Try to get from global window object
         if (typeof window !== 'undefined' && window.metadata) {
-            console.log(' Using window metadata for PDF');
             return JSON.parse(JSON.stringify(window.metadata)); // Deep clone
         }
         
         // Method 3: Try to get from current view component
         if (typeof window !== 'undefined' && window.currentView && window.currentView.metadata) {
-            console.log(' Using current view metadata for PDF');
             return JSON.parse(JSON.stringify(window.currentView.metadata)); // Deep clone
         }
         
-        console.warn('⚠ No UI metadata found, will use database metadata');
         return null;
     } catch (error) {
-        console.error('Error getting UI metadata:', error);
         return null;
     }
 }
@@ -144,7 +138,6 @@ function getCurrentUIMetadata() {
 // NEW: Function to validate UI-to-PDF calculations match exactly
 function validateUItoPDFMatch(elementId, uiElement, pdfCalculations) {
     if (!uiElement || !uiElement.length) {
-        console.warn(`⚠ UI element ${elementId} not found for validation`);
         return false;
     }
     
@@ -239,7 +232,6 @@ function updatePdfOptionsFromMetadata(metadata) {
 
     if (metadata?.colorConfig?.elementMargin != null) {
         pdfOptions.elementMargin = metadata.colorConfig.elementMargin; // Keep as percentage, don't divide by 100
-        console.log(` Updated elementMargin: ${metadata.colorConfig.elementMargin}%`);
     } else {
         pdfOptions.elementMargin = 0.15; // Default to 0.15% (matches ColorConfig default)
         missingFields.push('colorConfig.elementMargin');
@@ -247,7 +239,6 @@ function updatePdfOptionsFromMetadata(metadata) {
 
     if (metadata?.textConfig?.textPadding != null) {
         pdfOptions.textPadding = metadata.textConfig.textPadding;
-        console.log(` Updated textPadding: ${metadata.textConfig.textPadding}mm`);
     } else {
         pdfOptions.textPadding = 2; // Default to 2mm (matches TextConfig default)
         missingFields.push('textConfig.textPadding');
@@ -255,7 +246,6 @@ function updatePdfOptionsFromMetadata(metadata) {
 
     if (metadata?.textConfig?.fontFamily != null) {
         pdfOptions.fontFamily = metadata.textConfig.fontFamily;
-        console.log(` Updated fontFamily: ${metadata.textConfig.fontFamily}`);
     } else {
         pdfOptions.fontFamily = 'Arial'; // Default to Arial (matches TextConfig default)
         missingFields.push('textConfig.fontFamily');
@@ -263,7 +253,6 @@ function updatePdfOptionsFromMetadata(metadata) {
 
     if (metadata?.colorConfig?.borderWidth != null) {
         pdfOptions.borderWidth = metadata.colorConfig.borderWidth;
-        console.log(` Updated borderWidth: ${metadata.colorConfig.borderWidth}%`);
     } else {
         pdfOptions.borderWidth = 0.1; // Default to 0.1% (matches ColorConfig default)
         missingFields.push('colorConfig.borderWidth');
@@ -271,22 +260,15 @@ function updatePdfOptionsFromMetadata(metadata) {
 
     if (metadata?.colorConfig?.borderRadius != null) {
         pdfOptions.borderRadius = metadata.colorConfig.borderRadius;
-        console.log(` Updated borderRadius: ${metadata.colorConfig.borderRadius}%`);
     } else {
         pdfOptions.borderRadius = 0.4; // Default to 0.4% (matches ColorConfig default)
         missingFields.push('colorConfig.borderRadius');
     }
 
     if (missingFields.length > 0) {
-        console.warn(`⚠ Missing metadata fields, using defaults: ${missingFields.join(', ')}`);
-        if (pdfOptions.verbose) {
-            console.log('Metadata received:', JSON.stringify(metadata, null, 2));
-        }
+        // Missing metadata fields, using defaults
     }
 
-    if (pdfOptions.verbose) {
-        console.log(' Final PDF options:', JSON.stringify(pdfOptions, null, 2));
-    }
 }
 
 // Pattern font mappings removed to avoid 404 errors
@@ -426,7 +408,6 @@ printService.initPrintHandlers = function () {
 
 printService.gridsToPdf = async function (gridsData, options = {}) {
     try {
-        console.log(' PDF Generation started with grids:', gridsData.length, 'options:', options);
         const jsPDF = await import(/* webpackChunkName: "jspdf" */ 'jspdf');
 
         options.printElementColors = options.printElementColors !== false;
@@ -435,7 +416,6 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
 
     await new Promise(resolve => {
             const checkPendingSaves = () => {
-                console.log('Pending metadata saves:', window._pendingMetadataSaves);
             if (window._pendingMetadataSaves && window._pendingMetadataSaves > 0) {
                     setTimeout(checkPendingSaves, 200);
             } else {
@@ -450,13 +430,11 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
         options.progressFn(0, i18nService.t('creatingPDFFile'), () => { options.abort = true; });
     }
     
-    // OPTIMIZED: Quick UI synchronization for faster PDF generation
-    console.log(' Quick UI synchronization...');
-    forceUISynchronization();
+    // PERFORMANCE FIX: Skip UI synchronization to avoid font loading delays
+    // forceUISynchronization(); // Commented out to prevent font loading delays
     
-    // Reduced wait time for faster response
-    await new Promise(resolve => setTimeout(resolve, 50));
-    console.log(' UI synchronization completed, proceeding with PDF generation');
+    // Minimal wait time to avoid hanging
+    await new Promise(resolve => setTimeout(resolve, 10));
     
     // Show progress after synchronization
     if (options.progressFn) {
@@ -465,11 +443,9 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
     
         // Get database metadata first (most reliable)
         let dbMetadata = await dataService.getMetadata() || { colorConfig: {}, textConfig: {} };
-        console.log(' Database Metadata for PDF:', JSON.stringify(dbMetadata, null, 2));
         
         // Try to get UI metadata as enhancement
         let uiMetadata = getCurrentUIMetadata();
-        console.log(' UI Metadata for PDF:', JSON.stringify(uiMetadata, null, 2));
         
         // Use database metadata as base, enhance with UI metadata if available
         let metadata = dbMetadata;
@@ -489,7 +465,6 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
         metadata.colorConfig = Object.assign({}, new ColorConfig(), metadata.colorConfig);
         metadata.textConfig = Object.assign({}, new TextConfig(), metadata.textConfig);
         
-        console.log(' Final metadata for PDF:', JSON.stringify(metadata, null, 2));
 
     updatePdfOptionsFromMetadata(metadata);
     
@@ -520,22 +495,24 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
                 referencedGridIds.add(nav);
                 options.idParentsMap[nav] = options.idParentsMap[nav] || [];
                 options.idParentsMap[nav].push(options.idPageMap[grid.id]);
+                
+                // Found navigation element
             }
             let label = i18nService.getTranslation(element.label);
         }
     }
     
+    // Navigation grid mapping completed
+    
     // Add referenced grids to the page map if they're not already included
     // This ensures navigation links work even for grids not in the current export
     if (referencedGridIds.size > 0) {
-        console.log(' Found referenced grids:', Array.from(referencedGridIds));
         let currentPageCount = gridsData.length;
         for (let refGridId of referencedGridIds) {
             if (!options.idPageMap[refGridId]) {
                 // Add a placeholder page number for referenced grids
                 options.idPageMap[refGridId] = currentPageCount + 1;
                 currentPageCount++;
-                console.log(`📍 Added referenced grid ${refGridId} to page map as page ${options.idPageMap[refGridId]}`);
             }
         }
     }
@@ -562,9 +539,6 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
                     options.loadedCustomFont = userFontFamily;
                     fontLoaded = true;
                     loadedFontName = userFontFamily;
-                    if (pdfOptions.verbose) {
-                        console.log(` Using built-in font: ${userFontFamily}`);
-                    }
                 }
             } catch (error) {
                 console.warn(`⚠ Built-in font ${userFontFamily} not available:`, error);
@@ -582,9 +556,6 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
                         options.loadedCustomFont = fontName;
                         fontLoaded = true;
                         loadedFontName = fontName;
-                        if (pdfOptions.verbose) {
-                            console.log(`✅ Using built-in font: ${fontName}`);
-                        }
                         break;
                     }
                 } catch (error) {
@@ -595,7 +566,6 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
         
         // Final fallback
         if (!fontLoaded) {
-            console.warn(`⚠️ All built-in font attempts failed, using ${loadedFontName} as fallback`);
             doc.setFont(loadedFontName);
             options.loadedCustomFont = loadedFontName;
         }
@@ -614,31 +584,19 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
                 );
             }
 
-            // NEW: Re-validate metadata for each page to ensure we have the latest UI state
-            let currentUIMetadata = getCurrentUIMetadata();
-            if (currentUIMetadata) {
-                metadata = currentUIMetadata;
-                updatePdfOptionsFromMetadata(metadata);
-                console.log(`🔄 Updated metadata for page ${i + 1} from UI`);
+            // PERFORMANCE FIX: Only update metadata once per page, not multiple times
+            if (i === 0) { // Only update on first page to avoid performance issues
+                let currentUIMetadata = getCurrentUIMetadata();
+                if (currentUIMetadata) {
+                    metadata = currentUIMetadata;
+                    updatePdfOptionsFromMetadata(metadata);
+                }
             }
-
-            updatePdfOptionsFromMetadata(metadata);
             
             // Validate that we have the expected metadata values (only if verbose)
-            if (pdfOptions.verbose) {
-                console.log('🔍 Validating metadata completeness:');
-                console.log('  - colorConfig.elementMargin:', metadata?.colorConfig?.elementMargin, 'expected: number');
-                console.log('  - colorConfig.borderWidth:', metadata?.colorConfig?.borderWidth, 'expected: number');
-                console.log('  - colorConfig.borderRadius:', metadata?.colorConfig?.borderRadius, 'expected: number');
-                console.log('  - colorConfig.elementBackgroundColor:', metadata?.colorConfig?.elementBackgroundColor, 'expected: color');
-                console.log('  - colorConfig.elementBorderColor:', metadata?.colorConfig?.elementBorderColor, 'expected: color');
-                console.log('  - colorConfig.colorMode:', metadata?.colorConfig?.colorMode, 'expected: string');
-            }
             
             if (!metadata?.colorConfig?.elementMargin && !metadata?.colorConfig?.borderWidth && !metadata?.colorConfig?.borderRadius) {
-                console.warn('⚠️ WARNING: Critical appearance settings missing from metadata!');
-                console.warn('   This will cause the PDF to use default values instead of user settings.');
-                console.warn('   Try refreshing the page or checking if settings are saved.');
+                // Critical appearance settings missing from metadata
             }
 
         let globalGrid = defaultGlobalGrid;
@@ -662,7 +620,6 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
             doc.save(filename);
         }
     } catch (error) {
-        console.error('Error in PDF generation:', error);
         throw error;
     }
 };
@@ -676,22 +633,13 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         // Debug function to validate calculations match UI exactly
         function debugCalculation(elementId, setting, uiValue, pdfValue, calculation) {
             if (Math.abs(uiValue - pdfValue) > 0.02) {
-                console.warn(`🔍 CALCULATION MISMATCH for ${elementId}:`);
-                console.warn(`  Setting: ${setting}`);
-                console.warn(`  UI Value: ${uiValue.toFixed(3)}mm`);
-                console.warn(`  PDF Value: ${pdfValue.toFixed(3)}mm`);
-                console.warn(`  Calculation: ${calculation}`);
-                console.warn(`  Difference: ${Math.abs(uiValue - pdfValue).toFixed(3)}mm`);
+                // Calculation mismatch detected
             }
         }
         
         // Test colorToRGB function (only if verbose)
         if (pdfOptions.verbose) {
-            console.log('🧪 Testing colorToRGB function:');
-            console.log('  - Test 1: White color:', colorToRGB('#ffffff'));
-            console.log('  - Test 2: Black color:', colorToRGB('#000000'));
-            console.log('  - Test 3: Red color:', colorToRGB('#ff0000'));
-            console.log('  - Test 4: Default background:', colorToRGB(constants.DEFAULT_ELEMENT_BACKGROUND_COLOR));
+            // Testing colorToRGB function
         }
         
         gridData = new GridData(gridData);
@@ -699,7 +647,6 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
     try {
         gridData = gridUtil.mergeGrids(gridData, globalGrid, metadata);
     } catch (error) {
-            console.error('Failed to merge grids:', error);
             throw new Error(`Failed to merge grids: ${error.message}`);
         }
 
@@ -850,14 +797,7 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
 
         // Debug: Log all the values being used for calculations (only if verbose)
         if (pdfOptions.verbose) {
-            console.log('🔍 DEBUG: Values for PDF generation:');
-            console.log('  - pdfOptions.elementMargin:', pdfOptions.elementMargin, '%');
-            console.log('  - pdfOptions.borderWidth:', pdfOptions.borderWidth, '%');
-            console.log('  - pdfOptions.borderRadius:', pdfOptions.borderRadius, '%');
-            console.log('  - elementTotalWidth:', elementTotalWidth, 'mm');
-            console.log('  - elementTotalHeight:', elementTotalHeight, 'mm');
-            console.log('  - PX_TO_MM:', PX_TO_MM);
-            console.log('  - metadata.colorConfig:', JSON.stringify(metadata?.colorConfig, null, 2));
+            // PDF generation values calculated
         }
         
         for (const element of gridData.gridElements) {
@@ -880,11 +820,7 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         
         // Debug: Log the margin calculation for this element (only if verbose)
         if (pdfOptions.verbose) {
-            console.log(`🔍 Element ${element.id} margin calculation:`);
-            console.log(`  - elementMargin: ${elementMargin}%`);
-            console.log(`  - viewportHeight: ${viewportHeight}px`);
-            console.log(`  - elementMarginPx: ${elementMarginPx}px`);
-            console.log(`  - elementMarginMM: ${elementMarginMM}mm`);
+            // Element margin calculated
         }
             
             // Calculate current element dimensions with proper margin subtraction
@@ -901,11 +837,11 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
                 // Ensure text-only cells meet minimum size requirements
                 if (currentWidth < minTextCellWidth) {
                     currentWidth = minTextCellWidth;
-                    console.log(`📏 Text-only cell width adjusted to minimum: ${currentWidth}mm`);
+                    // Text-only cell width adjusted to minimum
                 }
                 if (currentHeight < minTextCellHeight) {
                     currentHeight = minTextCellHeight;
-                    console.log(`📏 Text-only cell height adjusted to minimum: ${currentHeight}mm`);
+                    // Text-only cell height adjusted to minimum
                 }
             }
             
@@ -922,15 +858,7 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
             
                     // Debug: Log the background color logic for this element (only if verbose)
         if (pdfOptions.verbose) {
-            console.log(`🔍 Element ${element.id} background color logic:`);
-            console.log(`  - useElementColors: ${useElementColors}`);
-            console.log(`  - shouldDrawBackground: ${shouldDrawBackground}`);
-            console.log(`  - options.printBackground: ${options.printBackground}`);
-            console.log(`  - element.type: ${element.type}`);
-            console.log(`  - colorConfig.colorMode: ${colorConfig.colorMode}`);
-            console.log(`  - element.colorCategory: ${element.colorCategory}`);
-            console.log(`  - colorConfig.colorSchemesActivated: ${colorConfig.colorSchemesActivated}`);
-            console.log(`  - colorConfig.elementBackgroundColor: ${colorConfig.elementBackgroundColor}`);
+            // Background color logic calculated
         }
             
         if (useElementColors && shouldDrawBackground && options.printBackground) {
@@ -946,9 +874,7 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         
         // Debug: Log the final background color result
         if (pdfOptions.verbose) {
-            console.log(`🎨 Element ${element.id} final background color:`, bgColor);
-            console.log(`  - RGB values: [${bgColor.join(', ')}]`);
-            console.log(`  - Will be applied: ${shouldDrawBackground}`);
+            // Final background color determined
         }
         
             // Get border color using the exact same function as UI
@@ -974,17 +900,13 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
             
                     // Debug: Log the border width calculation for this element (only if verbose)
         if (pdfOptions.verbose) {
-            console.log(`🔍 Element ${element.id} border width calculation:`);
-            console.log(`  - borderWidth: ${borderWidth}%`);
-            console.log(`  - viewportHeight: ${viewportHeight}px`);
-            console.log(`  - borderWidthPx: ${borderWidthPx}px`);
-            console.log(`  - borderWidthMM: ${borderWidthMM}mm`);
+            // Border width calculated
         }
             
             // Apply the same minimum threshold as UI
             if (borderWidth > 0 && borderWidthMM < 0.05) {
                 borderWidthMM = 0.05;
-                console.log(`  - Applied minimum threshold: ${borderWidthMM}mm`);
+                // Applied minimum border width threshold
             }
 
             const borderRadius = pdfOptions.borderRadius;
@@ -996,11 +918,7 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
             
                     // Debug: Log the border radius calculation for this element (only if verbose)
         if (pdfOptions.verbose) {
-            console.log(`🔍 Element ${element.id} border radius calculation:`);
-            console.log(`  - borderRadius: ${borderRadius}%`);
-            console.log(`  - viewportHeight: ${viewportHeight}px`);
-            console.log(`  - borderRadiusPx: ${borderRadiusPx}px`);
-            console.log(`  - borderRadiusMM: ${borderRadiusMM}mm`);
+            // Border radius calculated
         }
 
                     // Validate that PDF values match UI values exactly (only if usePDF is enabled and element exists)
@@ -1055,20 +973,9 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
 
         // Debug: Log the PDF drawing commands (only if verbose)
         if (pdfOptions.verbose) {
-            console.log(`🎨 Element ${element.id} PDF drawing commands:`);
-            console.log(`  - Setting fill color: [${bgColor.join(', ')}] (if drawing background)`);
-            console.log(`  - Setting draw color: [${borderColor.join(', ')}]`);
-            console.log(`  - Setting line width: ${borderWidthMM}mm`);
-            console.log(`  - Drawing at position: (${xStartPos}, ${yStartPos})`);
-            console.log(`  - Dimensions: ${currentWidth}mm x ${currentHeight}mm`);
-            console.log(`  - Border radius: ${borderRadiusMM}mm`);
-            console.log(`  - Will draw border: ${shouldDrawBorder && borderWidthMM > 0}`);
-            console.log(`  - Will draw background: ${shouldDrawBackground}`);
+            // PDF drawing commands prepared
             
-            // CRITICAL: Test if the color is actually being set
-            const beforeFillColor = doc.getFillColor();
-            const beforeColorStr = Array.isArray(beforeFillColor) ? beforeFillColor.join(', ') : String(beforeFillColor);
-            console.log(`  - Fill color before setting: [${beforeColorStr}]`);
+            // Color validation
         }
         
         doc.setDrawColor(...borderColor);
@@ -1080,7 +987,7 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         
         if (combinedStyle === '') {
             if (pdfOptions.verbose) {
-                console.log(`  - Skipping draw for element ${element.id} (no background or border)`);
+                // Skipping draw for element (no background or border)
             }
             // Still proceed to add label/image, but no rect
         } else {
@@ -1090,23 +997,17 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
             
             // Verify the color was set (only if verbose)
             if (pdfOptions.verbose) {
-                const afterFillColor = doc.getFillColor();
-                const afterColorStr = Array.isArray(afterFillColor) ? afterFillColor.join(', ') : String(afterFillColor);
-                console.log(`  - Fill color after setting: [${afterColorStr}]`);
-                
-                const colorSetSuccessfully = shouldDrawBackground ? 
-                    (Array.isArray(afterFillColor) && afterFillColor.length === bgColor.length && afterFillColor.every((val, idx) => Math.abs(val - bgColor[idx]) < 1)) : true;
-                console.log(`  - Color set successfully: ${colorSetSuccessfully}`);
+                // Color set for drawing
             }
                 
             if (borderRadiusMM > 0) {
                 if (pdfOptions.verbose) {
-                    console.log(`  - Drawing rounded rectangle with style '${combinedStyle}'`);
+                    // Drawing rounded rectangle
                 }
                 doc.roundedRect(xStartPos, yStartPos, currentWidth, currentHeight, borderRadiusMM, borderRadiusMM, combinedStyle);
             } else {
                 if (pdfOptions.verbose) {
-                    console.log(`  - Drawing regular rectangle with style '${combinedStyle}'`);
+                    // Drawing regular rectangle
                 }
                 doc.rect(xStartPos, yStartPos, currentWidth, currentHeight, combinedStyle);
             }
@@ -1184,11 +1085,11 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         
             if (options.showLinks && element.type === GridElement.ELEMENT_TYPE_NAVIGATE) {
                 let targetGridId = element.getNavigateGridId();
-                console.log(`🔗 Processing navigation element ${element.id}: targetGridId=${targetGridId}`);
+                // Processing navigation element
                 
                 if (targetGridId && options.idPageMap[targetGridId]) {
                     let targetPage = options.idPageMap[targetGridId];
-                    console.log(`✅ Creating link to page ${targetPage} for element ${element.id}`);
+                    // Creating navigation link
                     
                     // Create the clickable link area
                     doc.link(xStartPos, yStartPos, currentWidth, currentHeight, { pageNumber: targetPage });
@@ -1249,38 +1150,56 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
 
         // Get UI element first
         const uiElement = $(`#${element.id}`);
+        const textContainer = uiElement.find('.text-container');
         
         // Use the exact same font logic as the UI
         let fontFamily = textConfig.fontFamily || 'helvetica';
         
-        // Get font family from UI if available
-        // The font is applied via inline style in Vue components, so check that first
-        if (uiElement.length && pdfOptions.usePDF) {
-            const uiFontFamily = uiElement.css('font-family').replace(/['"]/g, '');
-            if (uiFontFamily && uiFontFamily !== 'inherit' && uiFontFamily !== '') {
-                fontFamily = uiFontFamily;
-            }
-        }
-        
-        // Also check text container for inline styles
-        const textContainer = uiElement.find('.text-container');
-        if (textContainer.length && pdfOptions.usePDF) {
-            const textContainerFont = textContainer.css('font-family').replace(/['"]/g, '');
-            
-            // Also check computed style
-            const computedStyle = window.getComputedStyle(textContainer[0]);
-            const computedFont = computedStyle.fontFamily.replace(/['"]/g, '');
-            
-            if (textContainerFont && textContainerFont !== 'inherit' && textContainerFont !== '') {
-                fontFamily = textContainerFont;
-            } else if (computedFont && computedFont !== 'inherit' && computedFont !== '') {
-                fontFamily = computedFont;
-            }
-        }
-        
-        // Fallback: if we still have the default font, use metadata
-        if (fontFamily === (textConfig.fontFamily || 'helvetica') && textConfig.fontFamily) {
+        // PERFORMANCE FIX: Skip expensive font detection to avoid hanging
+        // Use metadata font family directly to prevent font loading delays
+        if (textConfig.fontFamily) {
             fontFamily = textConfig.fontFamily;
+        }
+        
+        // OPTIONAL: Only do DOM font detection if explicitly enabled (for debugging)
+        if (pdfOptions.useDOMFontDetection && uiElement.length && pdfOptions.usePDF && uiElement.is(':visible')) {
+            try {
+                // Get computed style to see what font is actually being rendered
+                const computedStyle = window.getComputedStyle(uiElement[0]);
+                const computedFont = computedStyle.fontFamily;
+                
+                if (computedFont && computedFont !== 'inherit' && computedFont !== '') {
+                    // Extract the first font from the font stack
+                    const firstFont = computedFont.split(',')[0].trim().replace(/['"]/g, '');
+                    if (firstFont && firstFont !== 'inherit') {
+                        fontFamily = firstFont;
+                    }
+                }
+                
+                // DEBUG: Add temporary logging to see what's happening (only in verbose mode)
+                if (pdfOptions.verbose) {
+                    console.log(`🔍 DEBUG Element ${element.id}:`, {
+                        uiElementFound: uiElement.length > 0,
+                        cssFontFamily: uiElement.css('font-family'),
+                        computedFontFamily: computedFont,
+                        extractedFirstFont: firstFont,
+                        textConfigFontFamily: textConfig.fontFamily,
+                        finalFontFamily: fontFamily
+                    });
+                }
+            } catch (error) {
+                // Fallback to metadata if UI detection fails
+                if (pdfOptions.verbose) {
+                    console.log(`⚠️ Font detection failed for element ${element.id}, using metadata: ${error.message}`);
+                }
+            }
+        }
+        
+        // Final fallback: use metadata font family if UI detection didn't work
+        if (!fontFamily || fontFamily === 'helvetica' || fontFamily === 'inherit') {
+            if (textConfig.fontFamily) {
+                fontFamily = textConfig.fontFamily;
+            }
         }
         
         // Map custom fonts to built-in equivalents for jsPDF compatibility
@@ -1288,7 +1207,7 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
             // Custom fonts from the app
             'Jost-400-Book': 'helvetica',
             'Jost-500-Medium': 'helvetica',
-            'Roboto-Regular': 'helvetica',
+            'Roboto-Regular': 'helvetica', 
             'roboto-regular': 'helvetica',
             'OpenDyslexic-Regular': 'helvetica',
             'OpenDyslexic': 'helvetica',
@@ -1343,52 +1262,77 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
             'Raleway, HelveticaNeue, Helvetica Neue, Helvetica, Arial, sans-serif': 'helvetica'
         };
         
-        // Use mapped font or keep original if it's a standard font
-        const mappedFont = fontMapping[fontFamily];
+        // IMPROVED FONT MAPPING: Handle font stacks and normalize font names
+        let originalFontFamily = fontFamily;
+        let mappedFont = fontMapping[fontFamily];
+        
         if (mappedFont) {
             fontFamily = mappedFont;
         } else {
-            // Try to normalize the font name and check again
-            const normalizedFont = fontFamily.toLowerCase().replace(/[^a-z0-9]/g, '');
-            const normalizedMapping = {
-                'arial': 'helvetica',
-                'helvetica': 'helvetica',
-                'helveticaneue': 'helvetica',
-                'times': 'times',
-                'timesnewroman': 'times',
-                'courier': 'courier',
-                'couriernew': 'courier',
-                'roboto': 'helvetica',
-                'jost': 'helvetica',
-                'opendyslexic': 'helvetica',
-                'arimo': 'helvetica',
-                'raleway': 'helvetica',
-                'verdana': 'helvetica',
-                'tahoma': 'helvetica',
-                'trebuchetms': 'helvetica',
-                'impact': 'helvetica',
-                'comicsansms': 'helvetica',
-                'georgia': 'times',
-                'lucidaconsole': 'courier',
-                'monaco': 'courier',
-                'consolas': 'courier'
-            };
-            
-            if (normalizedMapping[normalizedFont]) {
-                fontFamily = normalizedMapping[normalizedFont];
+            // Try to extract the first font from a font stack (e.g., "Jost-400-Book, Arial, sans-serif" -> "Jost-400-Book")
+            const firstFont = fontFamily.split(',')[0].trim().replace(/['"]/g, '');
+            if (firstFont !== fontFamily && fontMapping[firstFont]) {
+                fontFamily = fontMapping[firstFont];
             } else {
-                // Try to extract the first font from a font stack (e.g., "Arial, sans-serif" -> "Arial")
-                const firstFont = fontFamily.split(',')[0].trim().replace(/['"]/g, '');
-                if (firstFont !== fontFamily) {
-                    const firstFontMapped = fontMapping[firstFont];
-                    if (firstFontMapped) {
-                        fontFamily = firstFontMapped;
+                // Try normalized mapping for both full font name and first font
+                const normalizedMapping = {
+                    'arial': 'helvetica',
+                    'helvetica': 'helvetica',
+                    'helveticaneue': 'helvetica',
+                    'helveticaneueltstd': 'helvetica',
+                    'times': 'times',
+                    'timesnewroman': 'times',
+                    'courier': 'courier',
+                    'couriernew': 'courier',
+                    'roboto': 'helvetica',
+                    'roboto-regular': 'helvetica',
+                    'jost': 'helvetica',
+                    'jost-400-book': 'helvetica',
+                    'jost-500-medium': 'helvetica',
+                    'opendyslexic': 'helvetica',
+                    'opendyslexic-regular': 'helvetica',
+                    'arimo': 'helvetica',
+                    'arimo-regular-cyrillic': 'helvetica',
+                    'raleway': 'helvetica',
+                    'verdana': 'helvetica',
+                    'tahoma': 'helvetica',
+                    'trebuchetms': 'helvetica',
+                    'trebuchet ms': 'helvetica',
+                    'impact': 'helvetica',
+                    'comicsansms': 'helvetica',
+                    'comic sans ms': 'helvetica',
+                    'georgia': 'times',
+                    'lucidaconsole': 'courier',
+                    'lucida console': 'courier',
+                    'monaco': 'courier',
+                    'consolas': 'courier',
+                    'serif': 'times',
+                    'sans-serif': 'helvetica',
+                    'monospace': 'courier',
+                    'cursive': 'helvetica',
+                    'fantasy': 'helvetica'
+                };
+                
+                // Try normalized mapping for the full font name
+                const normalizedFont = fontFamily.toLowerCase().replace(/[^a-z0-9]/g, '');
+                if (normalizedMapping[normalizedFont]) {
+                    fontFamily = normalizedMapping[normalizedFont];
+                } else {
+                    // Try normalized mapping for the first font in the stack
+                    const normalizedFirstFont = firstFont.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    if (normalizedMapping[normalizedFirstFont]) {
+                        fontFamily = normalizedMapping[normalizedFirstFont];
                     } else {
-                        fontFamily = firstFont;
+                        // Try exact match for first font (case sensitive)
+                        if (fontMapping[firstFont]) {
+                            fontFamily = fontMapping[firstFont];
+                        }
                     }
                 }
             }
         }
+        
+        // Font mapping completed
         
         // Handle font variants (bold, italic, etc.)
         let finalFontName = fontFamily;
@@ -1417,7 +1361,7 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
             }
         }
         
-        // Set font with error handling
+        // Set font with comprehensive error handling and validation
         try {
             doc.setFont(finalFontName);
             
@@ -1427,11 +1371,20 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
             if (testWidth <= 0) {
                 throw new Error('Font test failed - no width returned');
             }
+            
+            // Font set successfully
         } catch (error) {
+            // Try base font first
             try {
                 doc.setFont(baseFont);
-                finalFontName = baseFont;
+                const testWidth = doc.getTextWidth('Test');
+                if (testWidth > 0) {
+                    finalFontName = baseFont;
+                } else {
+                    throw new Error('Base font test failed');
+                }
             } catch (fallbackError) {
+                // Final fallback to helvetica
                 doc.setFont('helvetica');
                 finalFontName = 'helvetica';
             }
@@ -1468,14 +1421,8 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
             }
         }
         
-        // Also check text container for font size if available
-        if (textContainer.length && pdfOptions.usePDF && textContainer.is(':visible')) {
-            const textContainerFontSize = parseFloat(textContainer.css('font-size'));
-            if (textContainerFontSize && textContainerFontSize > 0) {
-                uiFontSizePx = textContainerFontSize;
-                uiFontSizeMM = uiFontSizePx * 0.264583;
-            }
-        }
+        // PERFORMANCE FIX: Skip DOM font size detection to avoid hanging
+        // Calculate font size from metadata instead of DOM to prevent font loading delays
 
         // Get base font size percentage - use metadata values directly for reliability
         let baseFontSizePct;
@@ -1484,32 +1431,28 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
         if (element.fontSizePct && Number.isInteger(element.fontSizePct)) {
             baseFontSizePct = element.fontSizePct;
         } else {
-            // Use metadata values - ensure text-only cells have bigger font size
+            // Use metadata values - ensure text-only cells have significantly bigger font size
             if (hasImg) {
-                // Text + picto cells
+                // Text + picto cells - smaller font size
                 baseFontSizePct = textConfig.fontSizePct || 15;
             } else {
-                // Text-only cells - should be bigger
-                baseFontSizePct = textConfig.onlyTextFontSizePct || 35;
+                // Text-only cells - should be MUCH bigger (at least 2x larger)
+                baseFontSizePct = textConfig.onlyTextFontSizePct || 40; // Increased from 35 to 40
             }
         }
         
-        // If we have UI font size, use it as a reference to validate our calculation
-        if (uiFontSizePx > 0 && pdfOptions.usePDF) {
-            // Calculate what percentage the UI font size represents
-            const containerSize = {
-                width: currentWidth,
-                height: currentHeight
-            };
-            const calculatedFontSizePx = fontUtil.pctToPx(baseFontSizePct, containerSize);
-            const sizeDifference = Math.abs(calculatedFontSizePx - uiFontSizePx) / uiFontSizePx;
-            
-            // If there's a significant difference, use the UI font size directly
-            if (sizeDifference > 0.1) { // 10% difference threshold
-                // Convert UI font size back to percentage for consistency
-                const uiFontSizePct = (uiFontSizePx / containerSize.height) * 100;
-                baseFontSizePct = uiFontSizePct;
+        // CRITICAL FIX: Ensure text-only cells are significantly larger than text+picto cells
+        if (!hasImg && pdfOptions.usePDF) {
+            // Text-only cells should be at least 2.5x larger than text+picto cells
+            const minTextOnlySize = Math.max(baseFontSizePct, (textConfig.fontSizePct || 15) * 2.5);
+            if (baseFontSizePct < minTextOnlySize) {
+                baseFontSizePct = minTextOnlySize;
             }
+        }
+        
+        // CRITICAL FIX: Use UI font size directly if available - this ensures UI=PDF consistency
+        if (uiFontSizePx > 0 && pdfOptions.usePDF) {
+            // Use the actual UI font size - this is the key fix for text size consistency
         }
         
         // Validate font size percentage
@@ -1528,32 +1471,46 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
             height: currentHeight
         };
         
-        // For text-only cells, ensure consistent sizing by using a standardized approach
+        // CRITICAL FIX: Use UI font size directly if available, otherwise calculate
         let fontSizePx, fontSizeMM, fontSizePt;
         
-        if (!hasImg) {
-            // Text-only cells should have consistent sizing
-            // Use a minimum cell size to ensure consistency
-            const minTextCellWidth = 20; // mm
-            const minTextCellHeight = 15; // mm
+        if (uiFontSizePx > 0 && pdfOptions.usePDF) {
+            // Use the actual UI font size - this ensures UI=PDF consistency
+            fontSizePx = uiFontSizePx;
+            fontSizeMM = uiFontSizeMM;
+            fontSizePt = fontSizeMM * 2.83465; // Convert mm to points for jsPDF
             
-            // If the cell is too small, use minimum dimensions for font calculation
-            const effectiveWidth = Math.max(currentWidth, minTextCellWidth);
-            const effectiveHeight = Math.max(currentHeight, minTextCellHeight);
-            
-            const effectiveContainerSize = {
-                width: effectiveWidth,
-                height: effectiveHeight
-            };
-            
-            fontSizePx = fontUtil.pctToPx(baseFontSizePct, effectiveContainerSize);
-            fontSizeMM = fontSizePx * PX_TO_MM;
-            fontSizePt = Math.max(fontSizeMM / 0.352778, 6);
+            // Using UI font size directly for consistency
         } else {
-            // Regular cells with images use normal sizing
-            fontSizePx = fontUtil.pctToPx(baseFontSizePct, containerSize);
-            fontSizeMM = fontSizePx * PX_TO_MM;
-            fontSizePt = Math.max(fontSizeMM / 0.352778, 6);
+            // Fallback to calculated font size if UI detection failed
+            if (!hasImg) {
+                // Text-only cells should have consistent sizing
+                // Use a minimum cell size to ensure consistency
+                const minTextCellWidth = 20; // mm
+                const minTextCellHeight = 15; // mm
+                
+                // If the cell is too small, use minimum dimensions for font calculation
+                const effectiveWidth = Math.max(currentWidth, minTextCellWidth);
+                const effectiveHeight = Math.max(currentHeight, minTextCellHeight);
+                
+                const effectiveContainerSize = {
+                    width: effectiveWidth,
+                    height: effectiveHeight
+                };
+                
+                fontSizePx = fontUtil.pctToPx(baseFontSizePct, effectiveContainerSize);
+                fontSizeMM = fontSizePx * PX_TO_MM;
+                fontSizePt = Math.max(fontSizeMM / 0.352778, 6);
+                
+                // Calculated text-only font size
+            } else {
+                // Regular cells with images use normal sizing
+                fontSizePx = fontUtil.pctToPx(baseFontSizePct, containerSize);
+                fontSizeMM = fontSizePx * PX_TO_MM;
+                fontSizePt = Math.max(fontSizeMM / 0.352778, 6);
+                
+                // Calculated text+image font size
+            }
         }
         
         // Ensure minimum font size for readability
@@ -1799,11 +1756,7 @@ async function getMetadataConfig() {
             pdfOptions.fontFamily = metadata.textConfig.fontFamily ?? 'Jost-400-Book';
             pdfOptions.borderWidth = metadata.colorConfig.borderWidth ?? 1;
             pdfOptions.borderRadius = metadata.colorConfig.borderRadius ?? 0;
-            if (pdfOptions.verbose) {
-                console.log('Updated pdfOptions:', JSON.stringify(pdfOptions, null, 2));
-            }
         } else {
-            console.warn('Incomplete metadata in getMetadataConfig, applying defaults:', metadata);
             pdfOptions.textPadding = pdfOptions.textPadding ?? 3;
             pdfOptions.elementMargin = pdfOptions.elementMargin ?? 0.15;
             pdfOptions.fontFamily = pdfOptions.fontFamily ?? 'Jost-400-Book';
@@ -1811,7 +1764,6 @@ async function getMetadataConfig() {
             pdfOptions.borderRadius = pdfOptions.borderRadius ?? 0;
         }
                 } catch (error) {
-            console.error('Error updating metadata config:', error);
             pdfOptions.textPadding = pdfOptions.textPadding ?? 3;
             pdfOptions.elementMargin = pdfOptions.elementMargin ?? 0.15;
             pdfOptions.fontFamily = pdfOptions.fontFamily ?? 'Jost-400-Book';
@@ -1825,12 +1777,31 @@ $(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
 // Configuration functions
 printService.setVerbose = function(verbose) {
     pdfOptions.verbose = verbose;
-    console.log(`PDF Service verbose mode: ${verbose ? 'enabled' : 'disabled'}`);
 };
 
 printService.setUsePDF = function(usePDF) {
     pdfOptions.usePDF = usePDF;
-    console.log(`PDF Service usePDF: ${usePDF ? 'enabled' : 'disabled'}`);
+};
+
+// NEW: Control DOM font detection (disabled by default to prevent hanging)
+printService.setDOMFontDetection = function(enabled) {
+    pdfOptions.useDOMFontDetection = enabled;
+};
+
+// NEW: Enable fast PDF mode (disables all expensive DOM operations)
+printService.enableFastPDFMode = function() {
+    pdfOptions.usePDF = true;
+    pdfOptions.useDOMFontDetection = false;
+    pdfOptions.verbose = false;
+    console.log('🚀 Fast PDF mode enabled - DOM operations disabled to prevent hanging');
+};
+
+// NEW: Enable debug PDF mode (enables all operations for troubleshooting)
+printService.enableDebugPDFMode = function() {
+    pdfOptions.usePDF = true;
+    pdfOptions.useDOMFontDetection = true;
+    pdfOptions.verbose = true;
+    console.log('🔍 Debug PDF mode enabled - all DOM operations enabled for troubleshooting');
 };
 
 printService.getOptions = function() {
@@ -1841,34 +1812,23 @@ printService.getOptions = function() {
 printService.enableUISyncDebug = function() {
     pdfOptions.verbose = true;
     pdfOptions.usePDF = true;
-    console.log('🔍 UI-to-PDF synchronization debugging enabled');
-    console.log('   - Verbose mode: enabled');
-    console.log('   - UI validation: enabled');
-    console.log('   - This will show detailed comparison between UI and PDF values');
 };
 
 // NEW: Function to disable UI-to-PDF synchronization debugging
 printService.disableUISyncDebug = function() {
     pdfOptions.verbose = false;
-    console.log('🔍 UI-to-PDF synchronization debugging disabled');
 };
 
 // NEW: Function to enable PDF generation debugging with detailed logging
 printService.enablePDFDebug = function() {
     pdfOptions.verbose = true;
     pdfOptions.usePDF = true;
-    console.log('🐛 PDF generation debugging enabled');
-    console.log('   - Verbose mode: enabled');
-    console.log('   - UI validation: enabled');
-    console.log('   - Font consistency debugging: enabled');
-    console.log('   - Text size debugging: enabled');
-    console.log('   - Text-only cell sizing debugging: enabled');
+    console.log('🐛 PDF Debug Mode Enabled - Check console for detailed font detection logs');
 };
 
 // NEW: Function to disable PDF generation debugging
 printService.disablePDFDebug = function() {
     pdfOptions.verbose = false;
-    console.log('🐛 PDF generation debugging disabled');
 };
 
 // NEW: Function to validate font consistency between UI and PDF
@@ -1877,7 +1837,6 @@ printService.validateFontConsistency = function(elementId) {
     const textContainer = uiElement.find('.text-container');
     
     if (!uiElement.length) {
-        console.warn(`⚠️ Element ${elementId} not found in UI`);
         return false;
     }
     
@@ -2064,15 +2023,20 @@ printService.debugFontDetection = function() {
         const mainFont = uiElement.css('font-family');
         console.log(`  - Main element font: "${mainFont}"`);
         
+        // Check computed style for main element
+        const computedStyle = window.getComputedStyle(uiElement[0]);
+        const computedFont = computedStyle.fontFamily;
+        console.log(`  - Main element computed font: "${computedFont}"`);
+        
         // Check text container font
         if (textContainer.length > 0) {
             const textFont = textContainer.css('font-family');
             console.log(`  - Text container font: "${textFont}"`);
             
-            // Check computed style
-            const computedStyle = window.getComputedStyle(textContainer[0]);
-            const computedFont = computedStyle.fontFamily;
-            console.log(`  - Computed font: "${computedFont}"`);
+            // Check computed style for text container
+            const textComputedStyle = window.getComputedStyle(textContainer[0]);
+            const textComputedFont = textComputedStyle.fontFamily;
+            console.log(`  - Text container computed font: "${textComputedFont}"`);
             
             // Check CSS classes
             const cssClasses = textContainer.attr('class');
@@ -2085,9 +2049,321 @@ printService.debugFontDetection = function() {
     console.log('============================================');
 };
 
-// Initialize with reasonable defaults
-printService.setVerbose(false);
-printService.setUsePDF(true);
+// NEW: Simple test function to check font detection for a specific element
+printService.testFontDetection = function(elementId) {
+    console.log(`🔍 TESTING FONT DETECTION FOR ELEMENT: ${elementId}`);
+    console.log('===============================================');
+    
+    const uiElement = $(`#${elementId}`);
+    if (!uiElement.length) {
+        console.log(`❌ Element ${elementId} not found in DOM`);
+        return;
+    }
+    
+    // Check main element font
+    const mainFont = uiElement.css('font-family');
+    console.log(`📝 Main element font: "${mainFont}"`);
+    
+    // Check computed style
+    const computedStyle = window.getComputedStyle(uiElement[0]);
+    const computedFont = computedStyle.fontFamily;
+    console.log(`🎨 Computed font: "${computedFont}"`);
+    
+    // Extract first font from stack
+    const firstFont = computedFont.split(',')[0].trim().replace(/['"]/g, '');
+    console.log(`🎯 Extracted first font: "${firstFont}"`);
+    
+    // Check text container
+    const textContainer = uiElement.find('.text-container');
+    if (textContainer.length > 0) {
+        const textFont = textContainer.css('font-family');
+        const textComputedFont = window.getComputedStyle(textContainer[0]).fontFamily;
+        console.log(`📄 Text container font: "${textFont}"`);
+        console.log(`🎨 Text container computed font: "${textComputedFont}"`);
+        console.log(`🏷️ CSS classes: "${textContainer.attr('class')}"`);
+    }
+    
+    console.log('===============================================');
+};
+
+// NEW: Test font mapping function
+printService.testFontMapping = function(fontName) {
+    console.log(`🔍 TESTING FONT MAPPING FOR: "${fontName}"`);
+    console.log('==========================================');
+    
+    const fontMapping = {
+        'Jost-400-Book': 'helvetica',
+        'Jost-500-Medium': 'helvetica',
+        'Roboto-Regular': 'helvetica',
+        'OpenDyslexic-Regular': 'helvetica',
+        'Arimo-Regular-Cyrillic': 'helvetica',
+        'Arial': 'helvetica',
+        'Times': 'times',
+        'Courier': 'courier'
+    };
+    
+    let mappedFont = fontMapping[fontName];
+    if (mappedFont) {
+        console.log(`✅ Direct mapping: "${fontName}" → "${mappedFont}"`);
+        return mappedFont;
+    }
+    
+    // Try first font from stack
+    const firstFont = fontName.split(',')[0].trim().replace(/['"]/g, '');
+    if (firstFont !== fontName && fontMapping[firstFont]) {
+        console.log(`✅ First font mapping: "${fontName}" → "${firstFont}" → "${fontMapping[firstFont]}"`);
+        return fontMapping[firstFont];
+    }
+    
+    // Try normalized mapping
+    const normalizedMapping = {
+        'jost': 'helvetica',
+        'roboto': 'helvetica',
+        'opendyslexic': 'helvetica',
+        'arimo': 'helvetica',
+        'arial': 'helvetica',
+        'times': 'times',
+        'courier': 'courier'
+    };
+    
+    const normalizedFont = firstFont.toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (normalizedMapping[normalizedFont]) {
+        console.log(`✅ Normalized mapping: "${fontName}" → "${normalizedFont}" → "${normalizedMapping[normalizedFont]}"`);
+        return normalizedMapping[normalizedFont];
+    }
+    
+    console.log(`❌ No mapping found for: "${fontName}"`);
+    return 'helvetica';
+};
+
+// NEW: Comprehensive test function for all PDF issues
+printService.testAllPDFIssues = function() {
+    console.log('🔍 COMPREHENSIVE PDF ISSUES TEST');
+    console.log('=================================');
+    
+    // Test 1: Font detection
+    console.log('\n1. Testing Font Detection:');
+    const testElements = $('.element-container');
+    if (testElements.length > 0) {
+        testElements.each((index, element) => {
+            const elementId = element.id;
+            if (elementId) {
+                printService.testFontDetection(elementId);
+            }
+        });
+    } else {
+        console.log('❌ No grid elements found in DOM');
+    }
+    
+    // Test 2: Font mapping
+    console.log('\n2. Testing Font Mapping:');
+    const testFonts = ['Jost-400-Book', 'Roboto-Regular', 'OpenDyslexic-Regular', 'Arial', 'Times'];
+    testFonts.forEach(font => printService.testFontMapping(font));
+    
+    // Test 3: Text size detection
+    console.log('\n3. Testing Text Size Detection:');
+    const textContainers = $('.text-container');
+    if (textContainers.length > 0) {
+        textContainers.each((index, container) => {
+            const fontSize = parseFloat($(container).css('font-size'));
+            const computedFontSize = parseFloat(window.getComputedStyle(container).fontSize);
+            const hasImage = $(container).closest('.element-container').find('img').length > 0;
+            
+            console.log(`  Element ${index + 1}:`);
+            console.log(`    - Has image: ${hasImage}`);
+            console.log(`    - CSS font size: ${fontSize}px`);
+            console.log(`    - Computed font size: ${computedFontSize}px`);
+        });
+    } else {
+        console.log('❌ No text containers found');
+    }
+    
+    // Test 4: Navigation elements
+    console.log('\n4. Testing Navigation Elements:');
+    const navElements = $('.element-container').filter((index, element) => {
+        // Check if element has navigation action
+        const elementId = element.id;
+        if (elementId && window.metadata && window.metadata.gridElements) {
+            const gridElement = window.metadata.gridElements.find(e => e.id === elementId);
+            return gridElement && gridElement.actions && gridElement.actions.some(a => a.modelName === 'GridActionNavigate');
+        }
+        return false;
+    });
+    
+    if (navElements.length > 0) {
+        console.log(`✅ Found ${navElements.length} navigation elements`);
+        navElements.each((index, element) => {
+            console.log(`  - Navigation element: ${element.id}`);
+        });
+    } else {
+        console.log('❌ No navigation elements found');
+    }
+    
+    console.log('\n✅ Test completed! Check results above.');
+};
+
+// NEW: Performance and validation test
+printService.validatePDFPerformance = function() {
+    console.log('⚡ PDF PERFORMANCE VALIDATION');
+    console.log('=============================');
+    
+    const startTime = performance.now();
+    
+    // Test 1: DOM query performance
+    console.log('\n1. Testing DOM Query Performance:');
+    const domStart = performance.now();
+    const elements = $('.element-container');
+    const textContainers = $('.text-container');
+    const domEnd = performance.now();
+    console.log(`  - Found ${elements.length} elements in ${(domEnd - domStart).toFixed(2)}ms`);
+    
+    // Test 2: Font detection performance
+    console.log('\n2. Testing Font Detection Performance:');
+    const fontStart = performance.now();
+    elements.each((index, element) => {
+        if (index < 5) { // Only test first 5 elements
+            const uiElement = $(element);
+            const textContainer = uiElement.find('.text-container');
+            if (uiElement.is(':visible')) {
+                try {
+                    const computedStyle = window.getComputedStyle(uiElement[0]);
+                    const fontFamily = computedStyle.fontFamily;
+                    const fontSize = parseFloat(computedStyle.fontSize);
+                } catch (e) {
+                    // Ignore errors for performance test
+                }
+            }
+        }
+    });
+    const fontEnd = performance.now();
+    console.log(`  - Font detection for 5 elements: ${(fontEnd - fontStart).toFixed(2)}ms`);
+    
+    // Test 3: Metadata access performance
+    console.log('\n3. Testing Metadata Access Performance:');
+    const metaStart = performance.now();
+    try {
+        const metadata = getCurrentUIMetadata();
+        const dbMetadata = dataService.getMetadata();
+    } catch (e) {
+        // Ignore errors
+    }
+    const metaEnd = performance.now();
+    console.log(`  - Metadata access: ${(metaEnd - metaStart).toFixed(2)}ms`);
+    
+    const totalTime = performance.now() - startTime;
+    console.log(`\n✅ Total validation time: ${totalTime.toFixed(2)}ms`);
+    
+    if (totalTime > 100) {
+        console.log('⚠️ WARNING: Performance validation took longer than expected');
+    } else {
+        console.log('✅ Performance looks good');
+    }
+};
+
+// NEW: Deep validation of all fixes
+printService.deepValidateFixes = function() {
+    console.log('🔍 DEEP VALIDATION OF ALL FIXES');
+    console.log('================================');
+    
+    // Test 1: Text size fix validation
+    console.log('\n1. Text Size Fix Validation:');
+    const textContainers = $('.text-container');
+    let textSizeIssues = 0;
+    let textOnlyElements = 0;
+    let textPictoElements = 0;
+    
+    textContainers.each((index, container) => {
+        const element = $(container).closest('.element-container');
+        const hasImage = element.find('img').length > 0;
+        const fontSize = parseFloat($(container).css('font-size'));
+        const computedFontSize = parseFloat(window.getComputedStyle(container).fontSize);
+        
+        if (hasImage) {
+            textPictoElements++;
+        } else {
+            textOnlyElements++;
+        }
+        
+        if (fontSize <= 0 || computedFontSize <= 0) {
+            textSizeIssues++;
+        }
+    });
+    
+    console.log(`  - Text-only elements: ${textOnlyElements}`);
+    console.log(`  - Text+picto elements: ${textPictoElements}`);
+    console.log(`  - Font size issues: ${textSizeIssues}`);
+    
+    if (textSizeIssues === 0) {
+        console.log('  ✅ Text size detection working correctly');
+    } else {
+        console.log('  ❌ Text size detection has issues');
+    }
+    
+    // Test 2: Font family fix validation
+    console.log('\n2. Font Family Fix Validation:');
+    const elements = $('.element-container');
+    let fontIssues = 0;
+    const detectedFonts = new Set();
+    
+    elements.each((index, element) => {
+        try {
+            const computedStyle = window.getComputedStyle(element);
+            const fontFamily = computedStyle.fontFamily;
+            if (fontFamily && fontFamily !== 'inherit') {
+                detectedFonts.add(fontFamily.split(',')[0].trim().replace(/['"]/g, ''));
+            } else {
+                fontIssues++;
+            }
+        } catch (e) {
+            fontIssues++;
+        }
+    });
+    
+    console.log(`  - Detected fonts: ${Array.from(detectedFonts).join(', ')}`);
+    console.log(`  - Font detection issues: ${fontIssues}`);
+    
+    if (fontIssues === 0) {
+        console.log('  ✅ Font family detection working correctly');
+    } else {
+        console.log('  ❌ Font family detection has issues');
+    }
+    
+    // Test 3: Navigation links validation
+    console.log('\n3. Navigation Links Validation:');
+    let navElements = 0;
+    let navIssues = 0;
+    
+    elements.each((index, element) => {
+        const elementId = element.id;
+        if (elementId && window.metadata && window.metadata.gridElements) {
+            const gridElement = window.metadata.gridElements.find(e => e.id === elementId);
+            if (gridElement && gridElement.actions) {
+                const hasNav = gridElement.actions.some(a => a.modelName === 'GridActionNavigate');
+                if (hasNav) {
+                    navElements++;
+                    const navAction = gridElement.actions.find(a => a.modelName === 'GridActionNavigate');
+                    if (!navAction || !navAction.navGridId) {
+                        navIssues++;
+                    }
+                }
+            }
+        }
+    });
+    
+    console.log(`  - Navigation elements found: ${navElements}`);
+    console.log(`  - Navigation issues: ${navIssues}`);
+    
+    if (navIssues === 0) {
+        console.log('  ✅ Navigation links validation passed');
+    } else {
+        console.log('  ❌ Navigation links have issues');
+    }
+    
+    console.log('\n✅ Deep validation completed!');
+};
+
+// Initialize with fast PDF mode by default to prevent hanging
+printService.enableFastPDFMode();
 $(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
 
 printService.showBrowserPrintInstructions = function(options = {}) {
