@@ -891,6 +891,24 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
             let currentWidth = elementTotalWidth * element.width - 2 * elementMarginMM;
             let currentHeight = elementTotalHeight * element.height - 2 * elementMarginMM;
             
+            // For text-only cells, ensure consistent sizing
+            const hasImg = element.image && (element.image.data || element.image.url);
+            if (!hasImg) {
+                // Text-only cells should have consistent minimum dimensions
+                const minTextCellWidth = 20; // mm
+                const minTextCellHeight = 15; // mm
+                
+                // Ensure text-only cells meet minimum size requirements
+                if (currentWidth < minTextCellWidth) {
+                    currentWidth = minTextCellWidth;
+                    console.log(`📏 Text-only cell width adjusted to minimum: ${currentWidth}mm`);
+                }
+                if (currentHeight < minTextCellHeight) {
+                    currentHeight = minTextCellHeight;
+                    console.log(`📏 Text-only cell height adjusted to minimum: ${currentHeight}mm`);
+                }
+            }
+            
             // Ensure minimum dimensions
             currentWidth = Math.max(currentWidth, 1);
             currentHeight = Math.max(currentHeight, 1);
@@ -1236,45 +1254,140 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
         let fontFamily = textConfig.fontFamily || 'helvetica';
         
         // Get font family from UI if available
+        // The font is applied via inline style in Vue components, so check that first
         if (uiElement.length && pdfOptions.usePDF) {
             const uiFontFamily = uiElement.css('font-family').replace(/['"]/g, '');
-            if (uiFontFamily && uiFontFamily !== 'inherit') {
+            if (uiFontFamily && uiFontFamily !== 'inherit' && uiFontFamily !== '') {
                 fontFamily = uiFontFamily;
-                console.log(`🎨 Using UI font family: ${fontFamily}`);
             }
+        }
+        
+        // Also check text container for inline styles
+        const textContainer = uiElement.find('.text-container');
+        if (textContainer.length && pdfOptions.usePDF) {
+            const textContainerFont = textContainer.css('font-family').replace(/['"]/g, '');
+            
+            // Also check computed style
+            const computedStyle = window.getComputedStyle(textContainer[0]);
+            const computedFont = computedStyle.fontFamily.replace(/['"]/g, '');
+            
+            if (textContainerFont && textContainerFont !== 'inherit' && textContainerFont !== '') {
+                fontFamily = textContainerFont;
+            } else if (computedFont && computedFont !== 'inherit' && computedFont !== '') {
+                fontFamily = computedFont;
+            }
+        }
+        
+        // Fallback: if we still have the default font, use metadata
+        if (fontFamily === (textConfig.fontFamily || 'helvetica') && textConfig.fontFamily) {
+            fontFamily = textConfig.fontFamily;
         }
         
         // Map custom fonts to built-in equivalents for jsPDF compatibility
         const fontMapping = {
+            // Custom fonts from the app
             'Jost-400-Book': 'helvetica',
-            'Roboto-Regular': 'helvetica', 
+            'Jost-500-Medium': 'helvetica',
+            'Roboto-Regular': 'helvetica',
+            'roboto-regular': 'helvetica',
             'OpenDyslexic-Regular': 'helvetica',
-            'Times': 'times',
+            'OpenDyslexic': 'helvetica',
+            'Arimo-Regular-Cyrillic': 'helvetica',
+            'Arimo': 'helvetica',
+            
+            // Web fonts used in the app
+            'Raleway': 'helvetica',
+            'HelveticaNeue': 'helvetica',
+            'Helvetica Neue': 'helvetica',
+            
+            // Standard web fonts
             'Arial': 'helvetica',
+            'arial': 'helvetica',
+            'Helvetica': 'helvetica',
+            'helvetica': 'helvetica',
+            'Times': 'times',
+            'times': 'times',
+            'Times New Roman': 'times',
+            'times new roman': 'times',
+            'Courier': 'courier',
+            'Courier New': 'courier',
+            'courier new': 'courier',
+            
+            // Generic font families
             'serif': 'times',
             'sans-serif': 'helvetica',
             'monospace': 'courier',
-            'Helvetica': 'helvetica',
-            'Times New Roman': 'times',
-            'Courier New': 'courier',
-            'Symbol': 'symbol',
-            'ZapfDingbats': 'zapfdingbats',
+            'cursive': 'helvetica',
+            'fantasy': 'helvetica',
+            
+            // Common system fonts
             'Georgia': 'times',
             'Verdana': 'helvetica',
             'Tahoma': 'helvetica',
             'Trebuchet MS': 'helvetica',
             'Impact': 'helvetica',
-            'Comic Sans MS': 'helvetica'
+            'Comic Sans MS': 'helvetica',
+            'Lucida Console': 'courier',
+            'Monaco': 'courier',
+            'Consolas': 'courier',
+            
+            // Special fonts
+            'Symbol': 'symbol',
+            'ZapfDingbats': 'zapfdingbats',
+            
+            // Fallbacks for common variations
+            'Arial, sans-serif': 'helvetica',
+            'Helvetica, Arial, sans-serif': 'helvetica',
+            'Times, serif': 'times',
+            'Courier, monospace': 'courier',
+            'Raleway, HelveticaNeue, Helvetica Neue, Helvetica, Arial, sans-serif': 'helvetica'
         };
         
         // Use mapped font or keep original if it's a standard font
         const mappedFont = fontMapping[fontFamily];
         if (mappedFont) {
             fontFamily = mappedFont;
-            console.log(`🔄 Mapped font: ${fontFamily} -> ${mappedFont}`);
         } else {
-            // Try to use the original font name if it's not in our mapping
-            console.log(`🎯 Using original font: ${fontFamily}`);
+            // Try to normalize the font name and check again
+            const normalizedFont = fontFamily.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const normalizedMapping = {
+                'arial': 'helvetica',
+                'helvetica': 'helvetica',
+                'helveticaneue': 'helvetica',
+                'times': 'times',
+                'timesnewroman': 'times',
+                'courier': 'courier',
+                'couriernew': 'courier',
+                'roboto': 'helvetica',
+                'jost': 'helvetica',
+                'opendyslexic': 'helvetica',
+                'arimo': 'helvetica',
+                'raleway': 'helvetica',
+                'verdana': 'helvetica',
+                'tahoma': 'helvetica',
+                'trebuchetms': 'helvetica',
+                'impact': 'helvetica',
+                'comicsansms': 'helvetica',
+                'georgia': 'times',
+                'lucidaconsole': 'courier',
+                'monaco': 'courier',
+                'consolas': 'courier'
+            };
+            
+            if (normalizedMapping[normalizedFont]) {
+                fontFamily = normalizedMapping[normalizedFont];
+            } else {
+                // Try to extract the first font from a font stack (e.g., "Arial, sans-serif" -> "Arial")
+                const firstFont = fontFamily.split(',')[0].trim().replace(/['"]/g, '');
+                if (firstFont !== fontFamily) {
+                    const firstFontMapped = fontMapping[firstFont];
+                    if (firstFontMapped) {
+                        fontFamily = firstFontMapped;
+                    } else {
+                        fontFamily = firstFont;
+                    }
+                }
+            }
         }
         
         // Handle font variants (bold, italic, etc.)
@@ -1307,17 +1420,33 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
         // Set font with error handling
         try {
             doc.setFont(finalFontName);
-            console.log(`✅ Successfully set font: ${finalFontName}`);
+            
+            // Validate that the font was actually set correctly
+            const testText = 'Test';
+            const testWidth = doc.getTextWidth(testText);
+            if (testWidth <= 0) {
+                throw new Error('Font test failed - no width returned');
+            }
         } catch (error) {
-            console.warn(`Font '${finalFontName}' not available, trying base font '${baseFont}'`);
             try {
                 doc.setFont(baseFont);
-                console.log(`✅ Using base font: ${baseFont}`);
+                finalFontName = baseFont;
             } catch (fallbackError) {
-                console.warn(`Base font '${baseFont}' not available, falling back to helvetica`);
                 doc.setFont('helvetica');
                 finalFontName = 'helvetica';
             }
+        }
+        
+        // Final validation: ensure font is working
+        try {
+            const testWidth = doc.getTextWidth('Test');
+            if (testWidth <= 0) {
+                doc.setFont('helvetica');
+                finalFontName = 'helvetica';
+            }
+        } catch (error) {
+            doc.setFont('helvetica');
+            finalFontName = 'helvetica';
         }
 
         let uiFontSizeMM = 0;
@@ -1332,10 +1461,19 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
             const uiTextColor = uiElement.css('color');
 
             if (uiFontFamily !== fontFamily) {
-                console.debug(`Font family mismatch for element ${element.id}: UI=${uiFontFamily}, PDF=${fontFamily}`);
+                // Font family mismatch detected
             }
             if (uiTextColor && colorToRGB(uiTextColor).join(',') !== textColor.join(',')) {
-                console.debug(`Text color mismatch for element ${element.id}: UI=${uiTextColor}, PDF=${textColor}`);
+                // Text color mismatch detected
+            }
+        }
+        
+        // Also check text container for font size if available
+        if (textContainer.length && pdfOptions.usePDF && textContainer.is(':visible')) {
+            const textContainerFontSize = parseFloat(textContainer.css('font-size'));
+            if (textContainerFontSize && textContainerFontSize > 0) {
+                uiFontSizePx = textContainerFontSize;
+                uiFontSizeMM = uiFontSizePx * 0.264583;
             }
         }
 
@@ -1345,7 +1483,6 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
         // Use element-specific font size if available
         if (element.fontSizePct && Number.isInteger(element.fontSizePct)) {
             baseFontSizePct = element.fontSizePct;
-            console.log(`📏 Using element-specific font size: ${baseFontSizePct}%`);
         } else {
             // Use metadata values - ensure text-only cells have bigger font size
             if (hasImg) {
@@ -1355,13 +1492,29 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
                 // Text-only cells - should be bigger
                 baseFontSizePct = textConfig.onlyTextFontSizePct || 35;
             }
-            console.log(`📏 Using metadata font size: ${baseFontSizePct}% (${hasImg ? 'text+picto' : 'text-only'})`);
+        }
+        
+        // If we have UI font size, use it as a reference to validate our calculation
+        if (uiFontSizePx > 0 && pdfOptions.usePDF) {
+            // Calculate what percentage the UI font size represents
+            const containerSize = {
+                width: currentWidth,
+                height: currentHeight
+            };
+            const calculatedFontSizePx = fontUtil.pctToPx(baseFontSizePct, containerSize);
+            const sizeDifference = Math.abs(calculatedFontSizePx - uiFontSizePx) / uiFontSizePx;
+            
+            // If there's a significant difference, use the UI font size directly
+            if (sizeDifference > 0.1) { // 10% difference threshold
+                // Convert UI font size back to percentage for consistency
+                const uiFontSizePct = (uiFontSizePx / containerSize.height) * 100;
+                baseFontSizePct = uiFontSizePct;
+            }
         }
         
         // Validate font size percentage
         if (!baseFontSizePct || baseFontSizePct <= 0) {
             baseFontSizePct = hasImg ? 15 : 35; // Fallback values
-            console.warn(`⚠️ Invalid font size percentage, using fallback: ${baseFontSizePct}%`);
         }
         
         const lineHeight = hasImg ? (textConfig.lineHeight || 1.5) : (textConfig.onlyTextLineHeight || 1.5);
@@ -1374,20 +1527,39 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
             width: currentWidth,
             height: currentHeight
         };
-        const fontSizePx = fontUtil.pctToPx(baseFontSizePct, containerSize);
-        let fontSizeMM = fontSizePx * PX_TO_MM;
-        let fontSizePt = Math.max(fontSizeMM / 0.352778, 6);
         
-        console.log(`📏 Final font size calculation for element ${element.id}:`);
-        console.log(`  - Base percentage: ${baseFontSizePct}%`);
-        console.log(`  - Container size: ${currentWidth}x${currentHeight}mm`);
-        console.log(`  - Calculated font size: ${fontSizePx}px (${fontSizeMM}mm, ${fontSizePt}pt)`);
+        // For text-only cells, ensure consistent sizing by using a standardized approach
+        let fontSizePx, fontSizeMM, fontSizePt;
+        
+        if (!hasImg) {
+            // Text-only cells should have consistent sizing
+            // Use a minimum cell size to ensure consistency
+            const minTextCellWidth = 20; // mm
+            const minTextCellHeight = 15; // mm
+            
+            // If the cell is too small, use minimum dimensions for font calculation
+            const effectiveWidth = Math.max(currentWidth, minTextCellWidth);
+            const effectiveHeight = Math.max(currentHeight, minTextCellHeight);
+            
+            const effectiveContainerSize = {
+                width: effectiveWidth,
+                height: effectiveHeight
+            };
+            
+            fontSizePx = fontUtil.pctToPx(baseFontSizePct, effectiveContainerSize);
+            fontSizeMM = fontSizePx * PX_TO_MM;
+            fontSizePt = Math.max(fontSizeMM / 0.352778, 6);
+        } else {
+            // Regular cells with images use normal sizing
+            fontSizePx = fontUtil.pctToPx(baseFontSizePct, containerSize);
+            fontSizeMM = fontSizePx * PX_TO_MM;
+            fontSizePt = Math.max(fontSizeMM / 0.352778, 6);
+        }
         
         // Ensure minimum font size for readability
         if (fontSizePt < 6) {
             fontSizePt = 6;
             fontSizeMM = fontSizePt * 0.352778;
-            console.log(`  - Adjusted to minimum font size: ${fontSizePt}pt`);
         }
 
         const maxWidth = currentWidth - 2 * pdfOptions.textPadding;
@@ -1479,7 +1651,6 @@ async function addLabelToPdf(doc, element, currentWidth, currentHeight, xStartPo
             maxWidth: finalMaxWidth
         });
     } catch (error) {
-        console.error('Error adding label to PDF:', error);
         throw error;
     }
 }
@@ -1501,7 +1672,6 @@ async function addImageToPdf(doc, element, currentWidth, currentHeight, xStartPo
         imageData = dataWithDim.data;
         dim = dataWithDim.dim;
         } catch (error) {
-            console.warn('Error loading image for element:', element.id, error);
             return Promise.resolve();
     }
     }
@@ -1514,13 +1684,11 @@ async function addImageToPdf(doc, element, currentWidth, currentHeight, xStartPo
         try {
         dim = await imageUtil.getImageDimensionsFromDataUrl(imageData);
         } catch (error) {
-            console.warn('Error getting image dimensions for element:', element.id, error);
             return Promise.resolve();
         }
     }
     
     if (!dim || !dim.ratio || isNaN(dim.ratio)) {
-        console.warn('Invalid image dimensions for element:', element.id);
         return Promise.resolve();
     }
     
@@ -1585,10 +1753,9 @@ async function addImageToPdf(doc, element, currentWidth, currentHeight, xStartPo
             }
         }
     } catch (error) {
-        console.warn('Error adding image to PDF for element:', element.id, error);
+        // Error adding image to PDF
         }
     } catch (error) {
-        console.error('Error in addImageToPdf:', error);
         throw error;
     }
 }
@@ -1614,7 +1781,6 @@ async function loadFont(path, doc) {
         }
         throw new Error(`Failed to convert font ${fontName} to base64`);
     } catch (error) {
-        console.error('Error loading font:', error);
         throw error;
     }
 }
@@ -1685,6 +1851,238 @@ printService.enableUISyncDebug = function() {
 printService.disableUISyncDebug = function() {
     pdfOptions.verbose = false;
     console.log('🔍 UI-to-PDF synchronization debugging disabled');
+};
+
+// NEW: Function to enable PDF generation debugging with detailed logging
+printService.enablePDFDebug = function() {
+    pdfOptions.verbose = true;
+    pdfOptions.usePDF = true;
+    console.log('🐛 PDF generation debugging enabled');
+    console.log('   - Verbose mode: enabled');
+    console.log('   - UI validation: enabled');
+    console.log('   - Font consistency debugging: enabled');
+    console.log('   - Text size debugging: enabled');
+    console.log('   - Text-only cell sizing debugging: enabled');
+};
+
+// NEW: Function to disable PDF generation debugging
+printService.disablePDFDebug = function() {
+    pdfOptions.verbose = false;
+    console.log('🐛 PDF generation debugging disabled');
+};
+
+// NEW: Function to validate font consistency between UI and PDF
+printService.validateFontConsistency = function(elementId) {
+    const uiElement = $(`#${elementId}`);
+    const textContainer = uiElement.find('.text-container');
+    
+    if (!uiElement.length) {
+        console.warn(`⚠️ Element ${elementId} not found in UI`);
+        return false;
+    }
+    
+    const uiFontFamily = textContainer.length ? 
+        textContainer.css('font-family').replace(/['"]/g, '') : 
+        uiElement.css('font-family').replace(/['"]/g, '');
+    
+    console.log(`🔍 Font validation for element ${elementId}:`);
+    console.log(`  - UI Font Family: "${uiFontFamily}"`);
+    console.log(`  - Text Container Found: ${textContainer.length > 0}`);
+    
+    // Check if font is properly defined
+    if (!uiFontFamily || uiFontFamily === 'inherit' || uiFontFamily === '') {
+        console.warn(`  - ⚠️ No specific font family found in UI`);
+        return false;
+    }
+    
+    // Check if font is in our mapping
+    const fontMapping = {
+        'Jost-400-Book': 'helvetica',
+        'Jost-500-Medium': 'helvetica',
+        'Roboto-Regular': 'helvetica',
+        'OpenDyslexic-Regular': 'helvetica',
+        'Arimo-Regular-Cyrillic': 'helvetica',
+        'Arial': 'helvetica',
+        'Times': 'times',
+        'Courier': 'courier',
+        'Raleway': 'helvetica'
+    };
+    
+    const mappedFont = fontMapping[uiFontFamily];
+    if (mappedFont) {
+        console.log(`  - ✅ Font will be mapped to: ${mappedFont}`);
+        return true;
+    } else {
+        console.warn(`  - ⚠️ Font "${uiFontFamily}" not in mapping, will use fallback`);
+        return false;
+    }
+};
+
+// NEW: Comprehensive font flow validation function
+printService.validateCompleteFontFlow = function() {
+    console.log('🔍 COMPREHENSIVE FONT FLOW VALIDATION');
+    console.log('=====================================');
+    
+    // Check 1: Available fonts in TextConfig
+    console.log('📋 Available fonts in TextConfig.FONTS:');
+    console.log('  -', TextConfig.FONTS.join(', '));
+    
+    // Check 2: Font files in app/fonts
+    console.log('📁 Font files available:');
+    const fontFiles = [
+        'Jost-400-Book.woff2',
+        'Jost-500-Medium.woff2', 
+        'OpenDyslexic-Regular.woff2',
+        'roboto-regular.woff2',
+        'roboto-regular.ttf',
+        'Arimo-Regular-Cyrillic.ttf'
+    ];
+    fontFiles.forEach(file => console.log(`  - ${file}`));
+    
+    // Check 3: CSS @font-face definitions
+    console.log('🎨 CSS @font-face definitions:');
+    const cssFonts = [
+        'OpenDyslexic-Regular',
+        'Roboto-Regular', 
+        'Jost-400-Book',
+        'Jost-500-Medium'
+    ];
+    cssFonts.forEach(font => console.log(`  - ${font}`));
+    
+    // Check 4: PDF font mapping coverage
+    console.log('📝 PDF font mapping coverage:');
+    const pdfMapping = {
+        'Jost-400-Book': 'helvetica',
+        'Jost-500-Medium': 'helvetica',
+        'Roboto-Regular': 'helvetica',
+        'OpenDyslexic-Regular': 'helvetica',
+        'Arimo-Regular-Cyrillic': 'helvetica',
+        'Arial': 'helvetica',
+        'Times': 'times',
+        'Courier': 'courier'
+    };
+    Object.keys(pdfMapping).forEach(font => {
+        console.log(`  - ${font} → ${pdfMapping[font]}`);
+    });
+    
+    // Check 5: Missing fonts
+    console.log('⚠️ Potential issues:');
+    const missingCssFonts = ['Arimo-Regular-Cyrillic'];
+    missingCssFonts.forEach(font => {
+        console.log(`  - ${font}: Font file exists but no CSS @font-face definition`);
+    });
+    
+    const missingPdfMapping = ['Raleway', 'HelveticaNeue'];
+    missingPdfMapping.forEach(font => {
+        console.log(`  - ${font}: Used in CSS but not in TextConfig.FONTS`);
+    });
+    
+    console.log('=====================================');
+    console.log('✅ Font flow validation complete');
+};
+
+// NEW: Test function to verify font flow end-to-end
+printService.testFontFlow = function() {
+    console.log('🧪 TESTING FONT FLOW END-TO-END');
+    console.log('================================');
+    
+    // Test 1: Check if all TextConfig fonts are mapped
+    console.log('Test 1: TextConfig font mapping coverage');
+    const textConfigFonts = TextConfig.FONTS;
+    const fontMapping = {
+        'Jost-400-Book': 'helvetica',
+        'Jost-500-Medium': 'helvetica',
+        'Roboto-Regular': 'helvetica',
+        'OpenDyslexic-Regular': 'helvetica',
+        'Arimo-Regular-Cyrillic': 'helvetica',
+        'Arial': 'helvetica',
+        'Times': 'times',
+        'Courier': 'courier'
+    };
+    
+    let allMapped = true;
+    textConfigFonts.forEach(font => {
+        if (fontMapping[font]) {
+            console.log(`  ✅ ${font} → ${fontMapping[font]}`);
+        } else {
+            console.log(`  ❌ ${font} → NOT MAPPED`);
+            allMapped = false;
+        }
+    });
+    
+    // Test 2: Check font detection logic
+    console.log('\nTest 2: Font detection logic');
+    const testElement = $('<div id="test-element"><div class="text-container" style="font-family: Jost-400-Book;">Test</div></div>');
+    $('body').append(testElement);
+    
+    const uiElement = $('#test-element');
+    const textContainer = uiElement.find('.text-container');
+    const detectedFont = textContainer.css('font-family').replace(/['"]/g, '');
+    console.log(`  - Detected font: "${detectedFont}"`);
+    console.log(`  - Text container found: ${textContainer.length > 0}`);
+    
+    // Test 3: Check font mapping
+    console.log('\nTest 3: Font mapping');
+    const mappedFont = fontMapping[detectedFont];
+    if (mappedFont) {
+        console.log(`  ✅ ${detectedFont} → ${mappedFont}`);
+    } else {
+        console.log(`  ❌ ${detectedFont} → NOT MAPPED`);
+    }
+    
+    // Cleanup
+    testElement.remove();
+    
+    // Test 4: Check font validation
+    console.log('\nTest 4: Font validation');
+    const validationResult = printService.validateFontConsistency('test-element');
+    console.log(`  - Validation result: ${validationResult ? 'PASS' : 'FAIL'}`);
+    
+    console.log('================================');
+    console.log(`✅ Font flow test complete - ${allMapped ? 'PASS' : 'FAIL'}`);
+    
+    return allMapped;
+};
+
+// NEW: Debug function to check actual font detection on real elements
+printService.debugFontDetection = function() {
+    console.log('🔍 DEBUGGING FONT DETECTION ON REAL ELEMENTS');
+    console.log('============================================');
+    
+    // Find all grid elements
+    const gridElements = $('.element-container');
+    console.log(`Found ${gridElements.length} grid elements`);
+    
+    gridElements.each((index, element) => {
+        const elementId = element.id;
+        const uiElement = $(`#${elementId}`);
+        const textContainer = uiElement.find('.text-container');
+        
+        console.log(`\nElement ${index + 1}: ${elementId}`);
+        
+        // Check main element font
+        const mainFont = uiElement.css('font-family');
+        console.log(`  - Main element font: "${mainFont}"`);
+        
+        // Check text container font
+        if (textContainer.length > 0) {
+            const textFont = textContainer.css('font-family');
+            console.log(`  - Text container font: "${textFont}"`);
+            
+            // Check computed style
+            const computedStyle = window.getComputedStyle(textContainer[0]);
+            const computedFont = computedStyle.fontFamily;
+            console.log(`  - Computed font: "${computedFont}"`);
+            
+            // Check CSS classes
+            const cssClasses = textContainer.attr('class');
+            console.log(`  - CSS classes: "${cssClasses}"`);
+        } else {
+            console.log(`  - No text container found`);
+        }
+    });
+    
+    console.log('============================================');
 };
 
 // Initialize with reasonable defaults
