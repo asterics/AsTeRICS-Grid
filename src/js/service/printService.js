@@ -96,9 +96,9 @@ function forceUISynchronization() {
             });
         }
         
-        console.log('🔄 Forced UI synchronization completed');
+        console.log(' Forced UI synchronization completed');
     } catch (error) {
-        console.warn('⚠️ Error during UI synchronization:', error);
+        console.warn('⚠ Error during UI synchronization:', error);
     }
 }
 
@@ -107,7 +107,7 @@ function getCurrentUIMetadata() {
     try {
         // Method 1: Try to get from Vue app instance (vueApp is the global variable used in the codebase)
         if (typeof window !== 'undefined' && typeof vueApp !== 'undefined' && vueApp && vueApp.metadata) {
-            console.log('✅ Using vueApp metadata for PDF');
+            console.log(' Using vueApp metadata for PDF');
             return JSON.parse(JSON.stringify(vueApp.metadata)); // Deep clone
         }
         
@@ -115,7 +115,7 @@ function getCurrentUIMetadata() {
         if (typeof window !== 'undefined' && window.app && window.app.$children) {
             for (let child of window.app.$children) {
                 if (child.metadata && child.metadata.colorConfig && child.metadata.textConfig) {
-                    console.log('✅ Using Vue component metadata for PDF');
+                    console.log(' Using Vue component metadata for PDF');
                     return JSON.parse(JSON.stringify(child.metadata)); // Deep clone
                 }
             }
@@ -123,17 +123,17 @@ function getCurrentUIMetadata() {
         
         // Method 2: Try to get from global window object
         if (typeof window !== 'undefined' && window.metadata) {
-            console.log('✅ Using window metadata for PDF');
+            console.log(' Using window metadata for PDF');
             return JSON.parse(JSON.stringify(window.metadata)); // Deep clone
         }
         
         // Method 3: Try to get from current view component
         if (typeof window !== 'undefined' && window.currentView && window.currentView.metadata) {
-            console.log('✅ Using current view metadata for PDF');
+            console.log(' Using current view metadata for PDF');
             return JSON.parse(JSON.stringify(window.currentView.metadata)); // Deep clone
         }
         
-        console.warn('⚠️ No UI metadata found, will use database metadata');
+        console.warn('⚠ No UI metadata found, will use database metadata');
         return null;
     } catch (error) {
         console.error('Error getting UI metadata:', error);
@@ -144,7 +144,7 @@ function getCurrentUIMetadata() {
 // NEW: Function to validate UI-to-PDF calculations match exactly
 function validateUItoPDFMatch(elementId, uiElement, pdfCalculations) {
     if (!uiElement || !uiElement.length) {
-        console.warn(`⚠️ UI element ${elementId} not found for validation`);
+        console.warn(`⚠ UI element ${elementId} not found for validation`);
         return false;
     }
     
@@ -219,14 +219,14 @@ function validateUItoPDFMatch(elementId, uiElement, pdfCalculations) {
         console.warn(`  Border Color: UI=${uiBorderColor}, PDF=[${pdfCalculations.borderColor.join(', ')}] (${borderColorMatch ? '✅' : '❌'})`);
         console.warn(`  Font Color: UI=${uiColor}, PDF=[${pdfCalculations.fontColor.join(', ')}] (${fontColorMatch ? '✅' : '❌'})`);
     } else {
-        console.log(`✅ UI-to-PDF perfect match for element ${elementId}`);
+        console.log(` UI-to-PDF perfect match for element ${elementId}`);
     }
     
     return allMatch;
 }
 
 function updatePdfOptionsFromMetadata(metadata) {
-    console.log('🔧 Updating PDF options from metadata:', {
+    console.log(' Updating PDF options from metadata:', {
         metadataElementMargin: metadata?.colorConfig?.elementMargin,
         metadataTextPadding: metadata?.textConfig?.textPadding,
         metadataFontFamily: metadata?.textConfig?.fontFamily,
@@ -239,7 +239,7 @@ function updatePdfOptionsFromMetadata(metadata) {
 
     if (metadata?.colorConfig?.elementMargin != null) {
         pdfOptions.elementMargin = metadata.colorConfig.elementMargin; // Keep as percentage, don't divide by 100
-        console.log(`🔧 Updated elementMargin: ${metadata.colorConfig.elementMargin}%`);
+        console.log(` Updated elementMargin: ${metadata.colorConfig.elementMargin}%`);
     } else {
         pdfOptions.elementMargin = 0.15; // Default to 0.15% (matches ColorConfig default)
         missingFields.push('colorConfig.elementMargin');
@@ -247,7 +247,7 @@ function updatePdfOptionsFromMetadata(metadata) {
 
     if (metadata?.textConfig?.textPadding != null) {
         pdfOptions.textPadding = metadata.textConfig.textPadding;
-        console.log(`🔧 Updated textPadding: ${metadata.textConfig.textPadding}mm`);
+        console.log(` Updated textPadding: ${metadata.textConfig.textPadding}mm`);
     } else {
         pdfOptions.textPadding = 2; // Default to 2mm (matches TextConfig default)
         missingFields.push('textConfig.textPadding');
@@ -255,7 +255,7 @@ function updatePdfOptionsFromMetadata(metadata) {
 
     if (metadata?.textConfig?.fontFamily != null) {
         pdfOptions.fontFamily = metadata.textConfig.fontFamily;
-        console.log(`🔧 Updated fontFamily: ${metadata.textConfig.fontFamily}`);
+        console.log(` Updated fontFamily: ${metadata.textConfig.fontFamily}`);
     } else {
         pdfOptions.fontFamily = 'Arial'; // Default to Arial (matches TextConfig default)
         missingFields.push('textConfig.fontFamily');
@@ -263,7 +263,7 @@ function updatePdfOptionsFromMetadata(metadata) {
 
     if (metadata?.colorConfig?.borderWidth != null) {
         pdfOptions.borderWidth = metadata.colorConfig.borderWidth;
-        console.log(`🔧 Updated borderWidth: ${metadata.colorConfig.borderWidth}%`);
+        console.log(` Updated borderWidth: ${metadata.colorConfig.borderWidth}%`);
     } else {
         pdfOptions.borderWidth = 0.1; // Default to 0.1% (matches ColorConfig default)
         missingFields.push('colorConfig.borderWidth');
@@ -271,21 +271,21 @@ function updatePdfOptionsFromMetadata(metadata) {
 
     if (metadata?.colorConfig?.borderRadius != null) {
         pdfOptions.borderRadius = metadata.colorConfig.borderRadius;
-        console.log(`🔧 Updated borderRadius: ${metadata.colorConfig.borderRadius}%`);
+        console.log(` Updated borderRadius: ${metadata.colorConfig.borderRadius}%`);
     } else {
         pdfOptions.borderRadius = 0.4; // Default to 0.4% (matches ColorConfig default)
         missingFields.push('colorConfig.borderRadius');
     }
 
     if (missingFields.length > 0) {
-        console.warn(`⚠️ Missing metadata fields, using defaults: ${missingFields.join(', ')}`);
+        console.warn(`⚠ Missing metadata fields, using defaults: ${missingFields.join(', ')}`);
         if (pdfOptions.verbose) {
             console.log('Metadata received:', JSON.stringify(metadata, null, 2));
         }
     }
 
     if (pdfOptions.verbose) {
-        console.log('🔧 Final PDF options:', JSON.stringify(pdfOptions, null, 2));
+        console.log(' Final PDF options:', JSON.stringify(pdfOptions, null, 2));
     }
 }
 
@@ -426,7 +426,7 @@ printService.initPrintHandlers = function () {
 
 printService.gridsToPdf = async function (gridsData, options = {}) {
     try {
-        console.log('🚀 PDF Generation started with grids:', gridsData.length, 'options:', options);
+        console.log(' PDF Generation started with grids:', gridsData.length, 'options:', options);
         const jsPDF = await import(/* webpackChunkName: "jspdf" */ 'jspdf');
 
         options.printElementColors = options.printElementColors !== false;
@@ -451,12 +451,12 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
     }
     
     // OPTIMIZED: Quick UI synchronization for faster PDF generation
-    console.log('⏳ Quick UI synchronization...');
+    console.log(' Quick UI synchronization...');
     forceUISynchronization();
     
     // Reduced wait time for faster response
     await new Promise(resolve => setTimeout(resolve, 50));
-    console.log('✅ UI synchronization completed, proceeding with PDF generation');
+    console.log(' UI synchronization completed, proceeding with PDF generation');
     
     // Show progress after synchronization
     if (options.progressFn) {
@@ -465,11 +465,11 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
     
         // Get database metadata first (most reliable)
         let dbMetadata = await dataService.getMetadata() || { colorConfig: {}, textConfig: {} };
-        console.log('💾 Database Metadata for PDF:', JSON.stringify(dbMetadata, null, 2));
+        console.log(' Database Metadata for PDF:', JSON.stringify(dbMetadata, null, 2));
         
         // Try to get UI metadata as enhancement
         let uiMetadata = getCurrentUIMetadata();
-        console.log('🎨 UI Metadata for PDF:', JSON.stringify(uiMetadata, null, 2));
+        console.log(' UI Metadata for PDF:', JSON.stringify(uiMetadata, null, 2));
         
         // Use database metadata as base, enhance with UI metadata if available
         let metadata = dbMetadata;
@@ -489,7 +489,7 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
         metadata.colorConfig = Object.assign({}, new ColorConfig(), metadata.colorConfig);
         metadata.textConfig = Object.assign({}, new TextConfig(), metadata.textConfig);
         
-        console.log('🎯 Final metadata for PDF:', JSON.stringify(metadata, null, 2));
+        console.log(' Final metadata for PDF:', JSON.stringify(metadata, null, 2));
 
     updatePdfOptionsFromMetadata(metadata);
     
@@ -528,7 +528,7 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
     // Add referenced grids to the page map if they're not already included
     // This ensures navigation links work even for grids not in the current export
     if (referencedGridIds.size > 0) {
-        console.log('🔗 Found referenced grids:', Array.from(referencedGridIds));
+        console.log(' Found referenced grids:', Array.from(referencedGridIds));
         let currentPageCount = gridsData.length;
         for (let refGridId of referencedGridIds) {
             if (!options.idPageMap[refGridId]) {
@@ -563,11 +563,11 @@ printService.gridsToPdf = async function (gridsData, options = {}) {
                     fontLoaded = true;
                     loadedFontName = userFontFamily;
                     if (pdfOptions.verbose) {
-                        console.log(`✅ Using built-in font: ${userFontFamily}`);
+                        console.log(` Using built-in font: ${userFontFamily}`);
                     }
                 }
             } catch (error) {
-                console.warn(`⚠️ Built-in font ${userFontFamily} not available:`, error);
+                console.warn(`⚠ Built-in font ${userFontFamily} not available:`, error);
             }
         }
         
