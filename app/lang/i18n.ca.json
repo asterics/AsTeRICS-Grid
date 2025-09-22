@@ -944,7 +944,7 @@
   "showAllVoices": "Mostrar totes les veus disponibles",
   "multilingual": "Multiidioma",
   "importPredefinedConfiguration": "Importar comunicador predefinit",
-  "emptyCommunicator": "Nou comunicador",
+  "emptyCommunicator": "Comunicador en blanc",
   "emptyConfigToCreateAnything": "Començar en una configuració en blanc per crear el contingut desitjat.",
   "selectConfiguration": "Seleccionar configuració",
   "languages": "Idiomes",
