@@ -494,7 +494,7 @@
   "importGridsFromFile": "Importar tauler(s) des d'un arxiu",
   "clearAllAndImportFromFile": "Esborrar tot i importar des d'un arxiu",
   "deleteAllGrids": "Esborrar tots els taulers",
-  "deleteAllImages": "Esborrar tots els taulers",
+  "deleteAllImages": "Esborrar totes les imatges",
   "doYouReallyWantDeleteAllImages": "Segur que desitges eliminar totes les imatges i imatges de tots els taulers? Aquesta acció no es pot desfer",
   "resetToDefaultConfig": "Restablir configuració predeterminada",
   "new": "Nou",
