@@ -4,6 +4,8 @@ import { InputEventARE } from '../model/InputEventARE';
 import { areService } from '../service/areService';
 import {InputEventAudio} from "../model/InputEventAudio.js";
 import {audioUtil} from "../util/audioUtil.js";
+import { InputEventFace } from '../model/InputEventFace';
+import { facelandmarkerService } from '../service/facelandmarkerService';
 
 let inputEventHandler = {};
 let allInstances = [];
@@ -201,8 +203,33 @@ function Constructor() {
                 break;
             case InputEventAudio.getModelName():
                 return thiz.onMicVolumeThreshold(fn, inputEvent)
+            case InputEventFace.getModelName():
+                return registerFaceInput(inputEvent, fn)
         }
     };
+
+    function registerFaceInput(inputEventFace, fn) {
+        // Subscribe to facelandmarkerService and map callbacks to fn()
+        const unsub = facelandmarkerService.subscribe({
+            gestureType: inputEventFace.gestureType,
+            blinkScoreThreshold: inputEventFace.blinkScoreThreshold,
+            gazeScoreThreshold: inputEventFace.gazeScoreThreshold,
+            headTiltDegThreshold: inputEventFace.headTiltDegThreshold,
+            headMoveNormThreshold: inputEventFace.headMoveNormThreshold,
+            dwellMs: inputEventFace.dwellMs,
+            debounceMs: inputEventFace.debounceMs,
+            smoothingAlpha: inputEventFace.smoothingAlpha
+        }, fn);
+        // Start service if we're actively listening
+        if (_listening) {
+            facelandmarkerService.start().catch(() => {});
+        }
+        // Return a small handle that mimics register patterns
+        return {
+            destroy: () => unsub()
+        };
+    }
+
 
     function micVolumeCallback(volume, frequency) {
         for (let audioHandler of audioVolumeHandlers) {

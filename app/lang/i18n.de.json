@@ -1057,6 +1057,8 @@
   "volume": "Lautstärke",
   "frequency": "Frequenz",
   "thresholdHigh": "Obere Grenze",
+
+
   "currentlyNotListeningToMicrophone": "Mikrofon nicht aktiv",
   "thresholdLow": "Untere Grenze",
   "startManuallyByUserInputEvent": "Manuell durch Benutzerktion starten",
