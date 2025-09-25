@@ -12,6 +12,7 @@
     "hls.js": "^0.14.14",
     "html2canvas": "^1.4.1",
     "interactjs": "^1.10.27",
+    "js-tts-wrapper": "0.1.51",
     "jspdf": "^2.3.1",
     "jszip": "3.8.0",
     "matrix-encrypt-attachment": "^1.0.3",
@@ -46,9 +47,11 @@
     "webpack-dev-server": "^4.15.0"
   },
   "scripts": {
+    "prestart": "node scripts/download-sherpaonnx-wasm.js || true",
     "start": "webpack-dev-server",
     "start-auth": "node superlogin/start.js",
     "start-auth-ssl": "node superlogin/start.js ssl",
+    "prebuild": "node scripts/download-sherpaonnx-wasm.js || true",
     "build": "jest && webpack --config webpack.config.js --env production",
     "release": "cp scripts/release.sh scripts/release.tmp.sh && sh scripts/release.tmp.sh && rm scripts/release.tmp.sh",
     "release-latest": "cp scripts/releaseLatest.sh scripts/releaseLatest.tmp.sh && sh scripts/releaseLatest.tmp.sh && rm scripts/releaseLatest.tmp.sh",
@@ -56,7 +59,8 @@
     "test": "jest",
     "stats": "webpack --config webpack.config.js --env.production --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json app/build",
     "stats-dev": "webpack --config webpack.config.js --env.nolog --profile --json > stats.json && webpack-bundle-analyzer stats.json app/build",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "sherpa:fetch": "node scripts/download-sherpaonnx-wasm.js"
   },
   "repository": {
     "type": "git",
