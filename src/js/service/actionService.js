@@ -240,7 +240,9 @@ async function doAction(gridElement, action, options = {}) {
             break;
         case 'GridActionPredict':
             log.debug('action predict');
-            predictionService.predict(i18nService.getTranslation(gridElement.label), action.dictionaryKey);
+            predictionService.predict(i18nService.getTranslation(gridElement.label), action.dictionaryKey, {
+                useUtteranceHistory: action.useUtteranceHistory
+            });
             break;
         case 'GridActionCollectElement':
             log.debug('action collect element');
