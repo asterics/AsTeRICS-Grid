@@ -1,9 +1,9 @@
-import {constants} from "../util/constants.js";
-import {audioUtil} from "../util/audioUtil.js";
-import {i18nService} from "./i18nService.js";
-import $ from "../externals/jquery.js";
-import {localStorageService} from "./data/localStorageService.js";
-import {GridActionSpeakCustom} from "../model/GridActionSpeakCustom.js";
+import {constants} from "../../util/constants.js";
+import {audioUtil} from "../../util/audioUtil.js";
+import {i18nService} from "../i18nService.js";
+import $ from "../../externals/jquery.js";
+import {localStorageService} from "../data/localStorageService.js";
+import {GridActionSpeakCustom} from "../../model/GridActionSpeakCustom.js";
 
 let speechServiceExternal = {};
 

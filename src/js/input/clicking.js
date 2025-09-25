@@ -1,5 +1,5 @@
 import { L } from '../util/lquery.js';
-import {speechService} from "../service/speechService.js";
+import {speechService} from "../service/speech/speechService.js";
 
 let Clicker = {};
 

@@ -4,7 +4,7 @@ import { matrixService } from './matrixService';
 import $ from '../../externals/jquery';
 import { constants } from '../../util/constants';
 import { imageUtil } from '../../util/imageUtil';
-import { speechService } from '../speechService';
+import { speechService } from '../speech/speechService';
 
 let matrixAppService = {};
 let currentRoom = null;
