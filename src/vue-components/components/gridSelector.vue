@@ -73,7 +73,17 @@
                 this.grids.sort((a, b) => {
                     return i18nService.getTranslation(a.label).localeCompare(i18nService.getTranslation(b.label));
                 })
-                this.selectGrid(additionalOpts[0] || this.grids[0]);
+                let initialSelection = this.value;
+                if (initialSelection && typeof initialSelection === 'object') {
+                    let matchingGrid = this.grids.find(grid => grid.id === initialSelection.id);
+                    initialSelection = matchingGrid || initialSelection;
+                }
+                if (!initialSelection) {
+                    initialSelection = additionalOpts[0] || this.grids[0];
+                }
+                if (initialSelection) {
+                    this.selectGrid(initialSelection);
+                }
             })
         },
     }

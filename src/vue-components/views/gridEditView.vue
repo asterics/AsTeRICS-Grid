@@ -36,7 +36,7 @@
             <grid-translate-modal v-if="showTranslateModal" :grid-data-id="gridData.id" @close="showTranslateModal = false" @reload="reload"/>
         </div>
         <div>
-            <set-navigation-modal v-if="showNavigateModal" :grid-id="gridData.id" :grid-element-id="editElementId" @close="showNavigateModal = false" @reload="reload"></set-navigation-modal>
+            <set-navigation-modal v-if="showNavigateModal" :grid-id="gridData.id" :grid-data-param="gridData" :grid-element-id="editElementId" @close="showNavigateModal = false" @reload="reload"></set-navigation-modal>
         </div>
         <div>
             <transfer-props-modal v-if="showPropTransferModal" :grid-id="gridData.id" :grid-element-id="editElementId" @start="(propTransferObject) => startPropTransfer(propTransferObject)" @close="showPropTransferModal = false"></transfer-props-modal>

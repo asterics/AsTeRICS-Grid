@@ -26,7 +26,7 @@
                                 </button>
                             </div>
                             <div class="col-12 col-md-6">
-                                <button class="col-12" @click="save()" :disabled="selectedGrid === NAV_CREATE_NEW_GRID && !newName" :title="$t('keyboardCtrlEnter')">
+                                <button class="col-12" @click="save()" :disabled="!gridElement || !selectedGrid || (selectedGrid === NAV_CREATE_NEW_GRID && !newName)" :title="$t('keyboardCtrlEnter')">
                                     <i class="fas fa-check"/> <span>{{ $t('ok') }}</span>
                                 </button>
                             </div>
@@ -52,7 +52,7 @@ import {GridData} from "../../js/model/GridData.js";
 
 export default {
     components: {EditElementHeader, GridSelector},
-    props: ['gridId', 'gridElementId'],
+    props: ['gridId', 'gridElementId', 'gridDataParam'],
     data: function () {
         return {
             gridData: null,
@@ -68,17 +68,32 @@ export default {
         }
     },
     methods: {
+        async initGridContext() {
+            if (this.gridDataParam) {
+                this.gridData = JSON.parse(JSON.stringify(this.gridDataParam));
+            } else {
+                let gridData = await dataService.getGrid(this.gridId);
+                this.gridData = gridData ? JSON.parse(JSON.stringify(gridData)) : null;
+            }
+            if (this.gridData && this.gridData.gridElements) {
+                this.gridElement = this.gridData.gridElements.find(e => e.id === this.gridElementId) || null;
+            } else {
+                this.gridElement = null;
+            }
+        },
         addGrid() {
 
         },
-        save() {
+        async save() {
+            if (!this.gridElement || !this.gridData || !this.selectedGrid) {
+                return;
+            }
             if (this.selectedGrid === this.NAV_CREATE_NEW_GRID && !this.newName) {
                 return;
             }
-            this.saveInternal().then(() => {
-                this.$emit('reload', this.gridData);
-                this.$emit('close');
-            });
+            await this.saveInternal();
+            this.$emit('reload', this.gridData);
+            this.$emit('close');
         },
         async saveInternal() {
             let gridId = null;
@@ -115,12 +130,21 @@ export default {
         }
     },
     async mounted() {
-        dataService.getGrid(this.gridId).then(gridData => {
-            this.gridData = JSON.parse(JSON.stringify(gridData));
-            this.gridElement = this.gridData.gridElements.filter(e => e.id === this.gridElementId)[0];
-        });
-        let grids = await dataService.getGrids(false);
+        await this.initGridContext();
+        let grids = await dataService.getGrids(false) || [];
         this.existingGridNames = grids.map(grid => i18nService.getTranslation(grid.label));
+        if (this.gridElement && this.gridElement.actions) {
+            let navigateAction = this.gridElement.actions.find(action => action.modelName === GridActionNavigate.getModelName());
+            if (navigateAction) {
+                let targetGrid = grids.find(grid => grid.id === navigateAction.toGridId);
+                if (targetGrid) {
+                    this.selectedGrid = targetGrid;
+                    this.$nextTick(() => {
+                        this.selectedGrid = targetGrid;
+                    });
+                }
+            }
+        }
     }
 }
 </script>
