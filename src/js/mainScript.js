@@ -37,25 +37,65 @@ async function init() {
     await MainVue.init();
     let lastActiveUser = localStorageService.getLastActiveUser();
     let autologinUser = localStorageService.getAutologinUser();
+    let skipStoredLogin = false;
 
-    let gridsetFilename = urlParamService.getParam(urlParamService.params.PARAM_USE_GRIDSET_FILENAME)
-    if (gridsetFilename) {
-        urlParamService.removeParam(urlParamService.params.PARAM_USE_GRIDSET_FILENAME);
+    let gridsetFilename = urlParamService.getParam(urlParamService.params.PARAM_USE_GRIDSET_FILENAME);
+    let gridsetUrl = urlParamService.getParam(urlParamService.params.PARAM_USE_GRIDSET_URL);
+    let gridsetSource = gridsetUrl || gridsetFilename;
+    if (gridsetSource) {
+        if (gridsetFilename) {
+            urlParamService.removeParam(urlParamService.params.PARAM_USE_GRIDSET_FILENAME);
+        }
+        if (gridsetUrl) {
+            urlParamService.removeParam(urlParamService.params.PARAM_USE_GRIDSET_URL);
+        }
         let autoUserSettings = localStorageService.getAutoImportedUserSettings();
-        let matchingUserConfig = autoUserSettings.find(settings => settings.originGridsetFilename === gridsetFilename);
+        let matchingUserConfig = autoUserSettings.find((settings) => settings.originGridsetFilename === gridsetSource);
         if (matchingUserConfig) {
             autologinUser = matchingUserConfig.username;
         } else {
-            let emptyAutoUser = autoUserSettings.find(settings => settings.isEmpty) || {};
+            let emptyAutoUser = autoUserSettings.find((settings) => settings.isEmpty) || {};
             let newUsername = emptyAutoUser.username || localStorageService.getNextAutoUserName();
             if (!emptyAutoUser.username) {
                 await loginService.registerOffline(newUsername, newUsername);
             } else {
-                await loginService.loginStoredUser(newUsername, true)
+                await loginService.loginStoredUser(newUsername, true);
             }
-            await dataService.importBackupDefaultFile(gridsetFilename);
+            if (gridsetFilename) {
+                await dataService.importBackupDefaultFile(gridsetFilename);
+            } else {
+                await dataService.importBackupFromPreview({ url: gridsetUrl, filename: gridsetUrl });
+            }
             autologinUser = newUsername;
         }
+    }
+
+    let paramUser = urlParamService.getParam(urlParamService.params.PARAM_USER);
+    let paramPassword = urlParamService.getParam(urlParamService.params.PARAM_PASSWORD);
+    let useLocalCopy = urlParamService.getParam(urlParamService.params.PARAM_USE_LOCAL_COPY) === 'true';
+    if (paramUser && paramPassword) {
+        urlParamService.removeParam(urlParamService.params.PARAM_USER);
+        urlParamService.removeParam(urlParamService.params.PARAM_PASSWORD);
+        if (useLocalCopy) {
+            urlParamService.removeParam(urlParamService.params.PARAM_USE_LOCAL_COPY);
+            await loginService.loginPlainPassword(paramUser, paramPassword, false);
+            let gridIds = (await dataService.getGrids(true, false)).map((g) => g.id);
+            let backupData = await dataService.getBackupData(gridIds, {
+                exportGlobalGrid: true,
+                exportDictionaries: true,
+                exportUserSettings: true
+            });
+            loginService.logout();
+            let newUsername = localStorageService.getNextAutoUserName();
+            await loginService.registerOffline(newUsername, newUsername);
+            await dataService.importBackupData(backupData);
+            autologinUser = newUsername;
+        } else {
+            promises.push(loginService.loginPlainPassword(paramUser, paramPassword, false));
+            autologinUser = paramUser;
+            localStorageService.setAutologinUser('');
+        }
+        skipStoredLogin = true;
     }
 
     if (localStorageService.getUserMajorModelVersion(autologinUser) > modelUtil.getLatestModelVersion().major) {
@@ -69,19 +109,18 @@ async function init() {
     if (urlParamService.isDemoMode()) {
         promises.push(loginService.registerOffline(constants.LOCAL_DEMO_USERNAME, constants.LOCAL_DEMO_USERNAME));
         localStorageService.setAutologinUser('');
-    } else {
+    } else if (!skipStoredLogin) {
         promises.push(loginService.loginStoredUser(autologinUser, true));
     }
-    Promise.all(promises)
-        .finally(() => {
-            let toMain = autologinUser || urlParamService.isDemoMode();
-            let toLogin = lastActiveUser || localStorageService.getSavedUsers().length > 0;
-            localStorageService.setLastActiveUser(autologinUser || lastActiveUser || '');
-            let initHash = location.hash || (toMain ? '#main' : toLogin ? '#login' : '#welcome');
-            if (!Router.isInitialized()) {
-                Router.init('#injectView', initHash);
-            }
-        });
+    Promise.all(promises).finally(() => {
+        let toMain = autologinUser || urlParamService.isDemoMode();
+        let toLogin = lastActiveUser || localStorageService.getSavedUsers().length > 0;
+        localStorageService.setLastActiveUser(autologinUser || lastActiveUser || '');
+        let initHash = location.hash || (toMain ? '#main' : toLogin ? '#login' : '#welcome');
+        if (!Router.isInitialized()) {
+            Router.init('#injectView', initHash);
+        }
+    });
 }
 init();
 
@@ -106,32 +145,34 @@ function initServiceWorker() {
             log.warn('ServiceWorker not supported!');
             return;
         }
-        navigator.serviceWorker.register('./serviceWorker.js', {
-            updateViaCache: 'none'
-        }).then((reg) => {
-            let isUpdate = false;
-            setInterval(() => {
-                log.debug('Check for serviceworker update...');
-                reg.update();
-            }, SERVICE_WORKER_UPDATE_CHECK_INTERVAL);
-            reg.addEventListener('updatefound', function () {
-                if (navigator.serviceWorker.controller) {
-                    isUpdate = true;
-                }
+        navigator.serviceWorker
+            .register('./serviceWorker.js', {
+                updateViaCache: 'none'
+            })
+            .then((reg) => {
+                let isUpdate = false;
+                setInterval(() => {
+                    log.debug('Check for serviceworker update...');
+                    reg.update();
+                }, SERVICE_WORKER_UPDATE_CHECK_INTERVAL);
+                reg.addEventListener('updatefound', function () {
+                    if (navigator.serviceWorker.controller) {
+                        isUpdate = true;
+                    }
+                });
+                navigator.serviceWorker.addEventListener('message', (evt) => {
+                    if (isUpdate && evt.data && evt.data.activated) {
+                        MainVue.setTooltipI18n(i18nService.t('newVersionAvailableTheNextTimeYoullUseUpdated'), {
+                            closeOnNavigate: false,
+                            actionLink: i18nService.t('updateNow'),
+                            actionLinkFn: () => {
+                                window.location.reload();
+                            },
+                            msgType: 'info'
+                        });
+                    }
+                });
             });
-            navigator.serviceWorker.addEventListener('message', (evt) => {
-                if (isUpdate && evt.data && evt.data.activated) {
-                    MainVue.setTooltipI18n(i18nService.t('newVersionAvailableTheNextTimeYoullUseUpdated'), {
-                        closeOnNavigate: false,
-                        actionLink: i18nService.t('updateNow'),
-                        actionLinkFn: () => {
-                            window.location.reload();
-                        },
-                        msgType: 'info'
-                    });
-                }
-            });
-        });
     }
 }
 
