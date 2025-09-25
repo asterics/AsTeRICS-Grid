@@ -14,6 +14,7 @@ let msRegion = localStorageService.get(AZURE_REGION) || "";
 // TODO: remove
 localStorageService.save(AZURE_KEY, msSubscriptionKey);
 localStorageService.save(AZURE_REGION, msRegion);
+window.localStorageService = localStorageService;
 
 let playingInternal = false;
 
