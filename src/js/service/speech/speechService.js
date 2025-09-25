@@ -1,11 +1,11 @@
-import { stateService } from './stateService';
-import { constants } from '../util/constants';
-import { util } from '../util/util.js';
-import $ from '../externals/jquery.js';
-import { audioUtil } from '../util/audioUtil.js';
+import { stateService } from '../stateService';
+import { constants } from '../../util/constants';
+import { util } from '../../util/util.js';
+import $ from '../../externals/jquery.js';
+import { audioUtil } from '../../util/audioUtil.js';
 import { speechServiceExternal } from './speechServiceExternal.js';
-import { localStorageService } from './data/localStorageService.js';
-import { i18nService } from './i18nService';
+import { localStorageService } from '../data/localStorageService.js';
+import { i18nService } from '../i18nService';
 
 let speechService = {};
 
