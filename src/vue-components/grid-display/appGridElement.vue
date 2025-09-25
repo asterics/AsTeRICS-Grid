@@ -14,7 +14,6 @@
 </template>
 
 <script>
-
 import { GridElement as GridElementModel, GridElement } from '../../js/model/GridElement';
 import GridElementPredict from './grid-elements/gridElementPredict.vue';
 import GridElementHints from './grid-elements/gridElementHints.vue';
@@ -38,6 +37,7 @@ import { ColorConfig } from '../../js/model/ColorConfig';
 import GridElementLive from './grid-elements/gridElementLive.vue';
 import GridElementMatrixConversation from './grid-elements/gridElementMatrixConversation.vue';
 import { gridUtil } from '../../js/util/gridUtil';
+import { util } from '../../js/util/util';
 
 export default {
     components: { GridElementMatrixConversation, GridElementLive, GridElementNormal, GridElementYoutube, GridElementCollect, GridElementHints, GridElementPredict },
@@ -59,31 +59,10 @@ export default {
             }
         },
         backgroundColor() {
-            if (!this.metadata || !this.element) {
-                return '';
-            }
-            if (this.element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
-                return constants.COLORS.PREDICT_BACKGROUND;
-            }
-            if (this.element.type === GridElement.ELEMENT_TYPE_LIVE) {
-                return this.element.backgroundColor || constants.COLORS.LIVE_BACKGROUND;
-            }
-            if ([ColorConfig.COLOR_MODE_BACKGROUND, ColorConfig.COLOR_MODE_BOTH].includes(this.metadata.colorConfig.colorMode)) {
-                return MetaData.getElementColor(this.element, this.metadata);
-            }
-            return this.metadata.colorConfig.elementBackgroundColor;
+            return util.getElementBackgroundColor(this.element, this.metadata);
         },
         fontColor() {
-            if (!this.metadata || !this.metadata.textConfig) {
-                return constants.COLORS.BLACK;
-            }
-            if (!this.metadata.textConfig.fontColor ||
-                [constants.COLORS.BLACK, constants.COLORS.WHITE].includes(this.metadata.textConfig.fontColor)) {
-                // if not set or set to black or white - do auto-contrast
-                let isDark = fontUtil.isHexDark(this.backgroundColor);
-                return isDark ? constants.COLORS.WHITE : constants.COLORS.BLACK;
-            }
-            return this.metadata.textConfig.fontColor;
+            return util.getElementFontColor(this.element, this.metadata, this.backgroundColor);
         },
         cursorType() {
             return gridUtil.getCursorType(this.metadata, "pointer");
@@ -91,12 +70,17 @@ export default {
     },
     methods: {
         getBorderColor(element) {
+            // Prefer util function if available (from pdf-fixes)
+            if (typeof util.getElementBorderColor === "function") {
+                return util.getElementBorderColor(element, this.metadata);
+            }
+
+            // Fallback to master branch logic
             if (!this.metadata || !this.metadata.colorConfig) {
                 return constants.COLORS.GRAY;
             }
 
             if (this.metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BOTH && element.borderColor) {
-                // element.borderColor only used for color mode "both", see https://github.com/asterics/AsTeRICS-Grid/issues/580#issuecomment-3281187917
                 return element.borderColor;
             }
 

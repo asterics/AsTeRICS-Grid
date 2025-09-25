@@ -33,6 +33,10 @@
                             <label for="showLinks">{{ $t('insertLinksBetweenPages') }}</label>
                         </div>
                         <div class="srow">
+                            <input id="printElementColors" type="checkbox" v-model="options.printElementColors"/>
+                            <label for="printElementColors">{{ $t('printElementColors') }}</label>
+                        </div>
+                        <div class="srow">
                             <input id="printBackground" type="checkbox" v-model="options.printBackground"/>
                             <label for="printBackground">{{ $t('printBackgroundColor') }}</label>
                         </div>
@@ -81,6 +85,7 @@
                 options: {
                     exportConnected: true,
                     printBackground: false,
+                    printElementColors: true,
                     showLinks: true,
                     showRegister: false,
                     includeGlobalGrid: true
@@ -89,6 +94,10 @@
         },
         methods: {
             save() {
+                
+                // Close modal immediately and show progress bar
+                this.$emit('close');
+                
                 let exportGrids = null;
                 if (!this.selectedGrid) {
                     exportGrids = this.graphList.map(elem => elem.grid);
@@ -96,6 +105,14 @@
                     exportGrids = this.options.exportConnected ? [this.selectedGrid].concat(this.allChildren) : [this.selectedGrid];
                 }
                 let exportIds = exportGrids.map(grid => grid.id);
+                
+                // Show initial progress bar immediately
+                MainVue.showProgressBar(0, {
+                    header: i18nService.t('creatingPDFFile'),
+                    text: i18nService.t('creatingPDFFile'),
+                    closable: true
+                });
+                
                 Promise.resolve().then(async () => {
                     if (exportGrids.length > this.gridsData.length / 2) {
                         return dataService.getGrids(true, true);
@@ -107,23 +124,37 @@
                         }
                         return Promise.resolve(grids);
                     }
-                }).then((grids) => {
+                }).then(async (grids) => {
                     grids = exportIds.map(id => grids.filter(grid => grid.id === id)[0]);
-                    printService.gridsToPdf(grids, {
-                        printBackground: this.options.printBackground,
-                        showLinks: this.options.showLinks,
-                        showRegister: this.options.showRegister,
-                        includeGlobalGrid: this.options.includeGlobalGrid,
-                        progressFn: (progress, text, abortFn) => {
-                            MainVue.showProgressBar(progress, {
-                                header: i18nService.t('creatingPDFFile'),
-                                text: text,
-                                cancelFn: abortFn,
-                                closable: true
-                            })
-                        }
+                    try {
+                        await printService.gridsToPdf(grids, {
+                            printBackground: this.options.printBackground,
+                            printElementColors: this.options.printElementColors,
+                            showLinks: this.options.showLinks,
+                            showRegister: this.options.showRegister,
+                            includeGlobalGrid: this.options.includeGlobalGrid,
+                            progressFn: (progress, text, abortFn) => {
+                                MainVue.showProgressBar(progress, {
+                                    header: i18nService.t('creatingPDFFile'),
+                                    text: text,
+                                    cancelFn: abortFn,
+                                    closable: true
+                                })
+                            }
+                        });
+                    } catch (error) {
+                        MainVue.showProgressBar(0, {
+                            header: i18nService.t('error'),
+                            text: 'Failed to generate PDF: ' + error.message,
+                            closable: true
+                        });
+                    }
+                }).catch((error) => {
+                    MainVue.showProgressBar(0, {
+                        header: i18nService.t('error'),
+                        text: 'Failed to load grids: ' + error.message,
+                        closable: true
                     });
-                    this.$emit('close');
                 });
             },
             selectedGridChanged() {
@@ -140,7 +171,8 @@
                 if (this.printGridId) {
                     this.selectedGrid = this.gridsData.filter(grid => grid.id === this.printGridId)[0];
                     this.options.exportConnected = false;
-                    this.options.showLinks = false;
+                    // Keep showLinks enabled even for single grid to allow navigation within the grid
+                    // this.options.showLinks = false;
                     this.selectedGridChanged();
                 }
             });
