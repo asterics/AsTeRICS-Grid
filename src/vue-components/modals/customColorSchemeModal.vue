@@ -122,8 +122,8 @@ export default {
                 return false;
             }
 
-            // Check required properties
-            if (!scheme.name || !scheme.displayName || !scheme.categories || !scheme.colors) {
+            // Check required properties (name is assigned on save for new schemes)
+            if (!scheme.displayName || !scheme.categories || !scheme.colors) {
                 return false;
             }
 
