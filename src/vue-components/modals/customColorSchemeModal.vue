@@ -191,26 +191,46 @@ export default {
             }
 
             try {
-                // Update the scheme name based on display name if needed
-                if (!this.isEditMode || this.editingScheme.displayName !== this.scheme.displayName) {
+                const isEdit = this.isEditMode;
+                const oldName = isEdit && this.scheme ? this.scheme.name : null;
+
+                // Update the scheme name based on display name if needed (name is derived from displayName)
+                if (!isEdit || this.editingScheme.displayName !== this.scheme.displayName) {
                     this.editingScheme.name = constants.COLOR_SCHEME_CUSTOM_PREFIX + '_' +
                                                this.editingScheme.displayName.toUpperCase().replace(/\s+/g, '_');
                 }
 
-                // Check if updating existing scheme
-                let existingIndex = this.localAdditionalColorSchemes.findIndex(
-                    scheme => scheme.name === this.editingScheme.name
-                );
-
-                if (existingIndex !== -1) {
-                    // Update existing
-                    this.localAdditionalColorSchemes[existingIndex] = this.editingScheme;
+                // In edit mode, rename the existing scheme instead of adding a new entry
+                if (isEdit) {
+                    // Check for name conflicts when renaming
+                    if (this.editingScheme.name !== oldName) {
+                        const conflict = this.localAdditionalColorSchemes.some(s => s.name === this.editingScheme.name);
+                        if (conflict) {
+                            return this.onError(this.$t('schemeNameAlreadyExists'));
+                        }
+                    }
+                    const idx = this.localAdditionalColorSchemes.findIndex(s => s.name === oldName);
+                    if (idx !== -1) {
+                        this.localAdditionalColorSchemes[idx] = this.editingScheme;
+                    } else {
+                        // Fallback: if the old entry is missing, update by new name or add
+                        const byNew = this.localAdditionalColorSchemes.findIndex(s => s.name === this.editingScheme.name);
+                        if (byNew !== -1) this.localAdditionalColorSchemes[byNew] = this.editingScheme;
+                        else this.localAdditionalColorSchemes.push(this.editingScheme);
+                    }
                 } else {
-                    // Add new
-                    this.localAdditionalColorSchemes.push(this.editingScheme);
+                    // Create mode: add or update by new name
+                    const existingIndex = this.localAdditionalColorSchemes.findIndex(
+                        s => s.name === this.editingScheme.name
+                    );
+                    if (existingIndex !== -1) {
+                        this.localAdditionalColorSchemes[existingIndex] = this.editingScheme;
+                    } else {
+                        this.localAdditionalColorSchemes.push(this.editingScheme);
+                    }
                 }
 
-                // Emit the updated array and the active scheme
+                // Emit the updated array and set the active scheme to the saved scheme
                 this.$emit('save', this.localAdditionalColorSchemes, this.editingScheme.name);
                 this.$emit('close');
 
