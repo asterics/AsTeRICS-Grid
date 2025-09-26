@@ -121,7 +121,11 @@ i18nService.setAppLanguage = async function (lang, dontSave) {
     await getPredefinedActionTranslations();
     return loadLanguage(currentAppLang).then(() => {
         vueI18n.locale = currentAppLang;
-        allLanguages.sort((a, b) => a[currentAppLang].toLowerCase().localeCompare(b[currentAppLang].toLowerCase()));
+        allLanguages.sort((a, b) => {
+            const aLabel = (a[currentAppLang] || '').toLowerCase();
+            const bLabel = (b[currentAppLang] || '').toLowerCase();
+            return aLabel.localeCompare(bLabel);
+        });
         return Promise.resolve();
     });
 };

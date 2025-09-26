@@ -13,6 +13,7 @@ import { youtubeService } from './youtubeService';
 import { GridActionYoutube } from '../model/GridActionYoutube';
 import { imageUtil } from '../util/imageUtil.js';
 import { GridElementCollect } from '../model/GridElementCollect.js';
+import { GridImage } from '../model/GridImage.js';
 import { GridActionSpeak } from '../model/GridActionSpeak.js';
 import { GridActionSpeakCustom } from '../model/GridActionSpeakCustom.js';
 import { dataService } from './data/dataService.js';
@@ -38,6 +39,8 @@ let convertToLowercaseIfKeyboard = true;
 let convertMode = null;
 let activateARASAACGrammarAPI = false;
 
+let updateOrigin = 'local';
+
 let duplicatedCollectPause = 0;
 let lastCollectId = null;
 let lastCollectTime = 0;
@@ -47,6 +50,10 @@ let _localMetadata = null;
 
 collectElementService.getText = function () {
     return getPrintText();
+};
+
+collectElementService.getTransferPayload = function () {
+    return buildTransferPayload();
 };
 
 collectElementService.initWithGrid = function (gridData, dontAutoPredict) {
@@ -235,6 +242,27 @@ collectElementService.doCollectElementActions = async function (action, gridElem
     predictionService.predict(getPredictText(), dictionaryKey);
 };
 
+collectElementService.applyTransferPayload = async function (payload, options) {
+    options = options || {};
+    if (!payload || !Array.isArray(payload.elements)) {
+        return false;
+    }
+    const deserialized = payload.elements
+        .map(deserializeCollectedElement)
+        .filter((entry) => !!entry);
+    updateOrigin = options.origin || 'remote';
+    try {
+        if (options.append) {
+            collectedElements = collectedElements.concat(deserialized);
+        } else {
+            collectedElements = deserialized;
+        }
+        await updateCollectElements();
+    } finally {
+        updateOrigin = 'local';
+    }
+    return true;
+};
 collectElementService.addWordFormTagsToLast = function (tags, toggle) {
     let lastElement = collectedElements[collectedElements.length - 1];
     if (lastElement && !lastElement.wordFormFixated) {
@@ -330,6 +358,16 @@ function getActionTypes(elem) {
     return elem.actions.map((action) => action.modelName);
 }
 
+function appendTransferSlot(container, collectElement) {
+    if (!container || !container.length) {
+        return;
+    }
+    const slot = $('<div class="collect-transfer-slot" aria-live="polite"></div>');
+    if (collectElement && collectElement.id) {
+        slot.attr('data-collect-id', collectElement.id);
+    }
+    container.append(slot);
+}
 async function updateCollectElements(isSecondTry) {
     autoCollectImage = collectedElements.some((e) => !!getImageData(e));
     let metadata = _localMetadata || new MetaData();
@@ -353,6 +391,7 @@ async function updateCollectElements(isSecondTry) {
                 (html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; background-color: ${backgroundColor}; text-align: justify;">${html}</div>`)
             );
             fontUtil.adaptFontSize($(`#${collectElement.id}`));
+            appendTransferSlot(outerContainerJqueryElem, collectElement);
         } else {
             $(`#${collectElement.id}`).attr(
                 'aria-label',
@@ -437,6 +476,7 @@ async function updateCollectElements(isSecondTry) {
                         <div class="collect-items-container" style="display: flex; flex-direction: row; ">${html}</div>
                     </div>`;
             outerContainerJqueryElem.html(html);
+            appendTransferSlot(outerContainerJqueryElem, collectElement);
             if (useSingleLine) {
                 let scroll =
                     markedImageIndex !== null
@@ -448,6 +488,12 @@ async function updateCollectElements(isSecondTry) {
                 }
             }
         }
+    }
+    if (!isSecondTry) {
+        $(document).trigger(constants.EVENT_COLLECT_UPDATED, [{
+            origin: updateOrigin,
+            payload: buildTransferPayload(),
+        }]);
     }
 }
 
@@ -565,6 +611,103 @@ function addTextElem(text) {
     collectedElements.push(newElem);
 }
 
+function buildTransferPayload() {
+    return {
+        version: '1',
+        timestamp: Date.now(),
+        elements: collectedElements
+            .map((element) => serializeCollectedElement(element))
+            .filter((entry) => entry !== null),
+    };
+}
+
+function serializeCollectedElement(element) {
+    if (!element) {
+        return null;
+    }
+    const label = getLabel(element);
+    const output =
+        getOutputObject(element, {
+            dontIncludePronunciation: false,
+            dontIncludeAudio: true,
+            inlcudeCorrectedGrammar: true,
+        }) || {};
+    const image = element.image
+        ? {
+              data: element.image.data || null,
+              url: element.image.url || null,
+              author: element.image.author || null,
+              authorURL: element.image.authorURL || null,
+              searchProviderName: element.image.searchProviderName || null,
+          }
+        : null;
+
+    return {
+        type: element.type || null,
+        id: element.id || null,
+        label,
+        text: output.text || label || '',
+        onlyText: !!element.onlyText,
+        image,
+        wordFormTags: element.wordFormTags || [],
+        wordFormId: element.wordFormId || null,
+    };
+}
+
+function deserializeCollectedElement(entry) {
+    if (!entry) {
+        return null;
+    }
+    const baseText = entry.label || entry.text || '';
+    const translation = i18nService.getTranslationObject(baseText);
+    const isOnlyText = entry.onlyText || (!entry.image && !baseText);
+
+    if (isOnlyText) {
+        const textElem = new GridElement({ label: translation });
+        textElem.onlyText = true;
+        if (entry.text) {
+            textElem.fixedGrammarText = entry.text;
+        }
+        return textElem;
+    }
+
+    const imageSource = entry.image;
+    let gridImage = null;
+    if (imageSource) {
+        if (typeof imageSource === 'string') {
+            if (imageSource.startsWith('data:')) {
+                gridImage = new GridImage({ data: imageSource });
+            } else {
+                gridImage = new GridImage({ url: imageSource });
+            }
+        } else if (imageSource.data || imageSource.url) {
+            gridImage = new GridImage({
+                data: imageSource.data || null,
+                url: imageSource.url || null,
+                author: imageSource.author || null,
+                authorURL: imageSource.authorURL || null,
+                searchProviderName: imageSource.searchProviderName || null,
+            });
+        }
+    }
+
+    const props = {
+        label: translation,
+        type: entry.type || GridElement.ELEMENT_TYPE_NORMAL,
+    };
+    if (gridImage) {
+        props.image = gridImage;
+    }
+    const newElement = new GridElement(props);
+    newElement.wordFormTags = entry.wordFormTags || [];
+    if (entry.wordFormId) {
+        newElement.wordFormId = entry.wordFormId;
+    }
+    if (entry.text) {
+        newElement.fixedGrammarText = entry.text;
+    }
+    return newElement;
+}
 $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
     if (lastCollectId === element.id && new Date().getTime() - lastCollectTime < duplicatedCollectPause) {
         return;
@@ -684,3 +827,16 @@ $(document).on(constants.EVENT_USERSETTINGS_UPDATED, () => {
 });
 
 export { collectElementService };
+
+
+
+
+
+
+
+
+
+
+
+
+
