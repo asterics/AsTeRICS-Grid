@@ -15,6 +15,7 @@ import { keyboardShortcuts } from './service/keyboardShortcuts';
 import { i18nService } from './service/i18nService';
 import { printService } from './service/printService';
 import { notificationService } from './service/notificationService.js';
+import { collectTransferService } from './service/collectTransferService';
 import { dataService } from './service/data/dataService';
 
 let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
@@ -35,6 +36,7 @@ async function init() {
     keyboardShortcuts.init();
     notificationService.init();
     await MainVue.init();
+    collectTransferService.init();
     let lastActiveUser = localStorageService.getLastActiveUser();
     let autologinUser = localStorageService.getAutologinUser();
 
@@ -179,3 +181,5 @@ function initMatomoAnalytics() {
         s.parentNode.insertBefore(g, s);
     })();
 }
+
+

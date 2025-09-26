@@ -5,6 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "@klues/couch-auth": "^0.20.1",
+    "@zxing/browser": "^0.1.4",
+    "@zxing/library": "^0.21.3",
     "cors": "^2.8.5",
     "dotenv-flow": "^3.2.0",
     "express": "^4.20.0",
@@ -21,6 +23,7 @@
     "navigo": "7.1.2",
     "pouchdb": "^8.0.1",
     "predictionary": "^1.6.0",
+    "qrcode": "^1.5.3",
     "superlogin-client": "^0.8.0",
     "vue": "^2.7.15",
     "vue-i18n": "8",
