@@ -14,8 +14,9 @@
                     </div>
 
                     <custom-color-scheme-editor
-                        :scheme="editingScheme"
+                        :scheme="isEditMode ? editingScheme : null"
                         :additional-color-schemes="additionalColorSchemes"
+                        :initial-base-scheme="initialBaseScheme"
                         @scheme-changed="onSchemeChanged"
                         @scheme-deleted="onSchemeDeleted"
                         @error="onError"
@@ -66,12 +67,13 @@ export default {
         return {
             errorMessage: '',
             editingScheme: null,
-            localAdditionalColorSchemes: []
+            localAdditionalColorSchemes: [],
+            initialBaseScheme: 'FITZGERALD'
         };
     },
     computed: {
         isEditMode() {
-            return this.scheme !== null;
+            return !!(this.scheme && this.scheme.name);
         },
         isValid() {
             return this.editingScheme &&
@@ -152,10 +154,19 @@ export default {
             if (this.scheme && this.scheme.name) {
                 // Edit mode - create deep copy of scheme
                 this.editingScheme = JSON.parse(JSON.stringify(this.scheme));
+                // In edit mode, base selection is disabled in the editor
             } else {
-                // Create mode - create new scheme with base scheme type from settings
-                let baseSchemeType = (this.scheme && this.scheme.baseSchemeType) ? this.scheme.baseSchemeType : 'FITZGERALD';
-                this.editingScheme = this.createCustomColorScheme('New Theme', baseSchemeType);
+                // Create mode - initialize with the exact base scheme name if provided, otherwise map type -> LIGHT variant
+                if (this.scheme && this.scheme.baseSchemeName) {
+                    this.initialBaseScheme = this.scheme.baseSchemeName;
+                } else if (this.scheme && this.scheme.baseSchemeType) {
+                    this.initialBaseScheme = this.scheme.baseSchemeType === 'GOOSENS' ? constants.COLOR_SCHEME_GOOSENS_LIGHT
+                        : this.scheme.baseSchemeType === 'MONTESSORI' ? constants.COLOR_SCHEME_MONTESSORI_LIGHT
+                        : constants.COLOR_SCHEME_FITZGERALD_LIGHT;
+                } else {
+                    this.initialBaseScheme = constants.COLOR_SCHEME_FITZGERALD_LIGHT;
+                }
+                this.editingScheme = null; // editor will create a new scheme using initialBaseScheme
             }
         },
 

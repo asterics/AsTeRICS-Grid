@@ -24,16 +24,22 @@
             <label class="three columns" for="baseScheme">
                 <span>{{ $t('baseSchemeType') }}</span>
             </label>
-            <select 
-                id="baseScheme" 
-                class="five columns" 
-                v-model="selectedBaseScheme" 
+            <select
+                id="baseScheme"
+                class="five columns"
+                v-model="selectedBaseScheme"
                 @change="onBaseSchemeChange"
                 :disabled="isEditMode"
             >
-                <option value="FITZGERALD">{{ $t('CS_MODIFIED_FITZGERALD_KEY_LIGHT') }}</option>
-                <option value="GOOSENS">{{ $t('CS_GOOSENS_LIGHT') }}</option>
-                <option value="MONTESSORI">{{ $t('CS_MONTESSORI_LIGHT') }}</option>
+                <optgroup :label="$t('predefinedSchemes')">
+                    <option
+                        v-for="scheme in constants.DEFAULT_COLOR_SCHEMES"
+                        :key="scheme.name"
+                        :value="scheme.name"
+                    >
+                        {{ scheme.name | translate }}
+                    </option>
+                </optgroup>
             </select>
         </div>
 
@@ -105,15 +111,20 @@ export default {
         additionalColorSchemes: {
             type: Array,
             required: true
+        },
+        initialBaseScheme: {
+            type: String,
+            default: 'CS_MODIFIED_FITZGERALD_KEY_LIGHT'
         }
     },
     data() {
         return {
             localScheme: null,
-            selectedBaseScheme: 'FITZGERALD',
+            selectedBaseScheme: 'CS_MODIFIED_FITZGERALD_KEY_LIGHT',
             nameError: '',
             isEditMode: false,
-            originalScheme: null
+            originalScheme: null,
+            constants: constants
         };
     },
     computed: {
@@ -142,34 +153,31 @@ export default {
                 this.originalScheme = JSON.parse(JSON.stringify(scheme));
                 this.localScheme = JSON.parse(JSON.stringify(scheme));
                 
-                // Determine base scheme type
+                // Determine base scheme family and set to LIGHT variant for display (select is disabled)
                 if (scheme.categories === constants.CS_GOOSSENS_CATEGORIES) {
-                    this.selectedBaseScheme = 'GOOSENS';
+                    this.selectedBaseScheme = constants.COLOR_SCHEME_GOOSENS_LIGHT;
                 } else if (scheme.categories === constants.CS_MONTESSORI_CATEGORIES) {
-                    this.selectedBaseScheme = 'MONTESSORI';
+                    this.selectedBaseScheme = constants.COLOR_SCHEME_MONTESSORI_LIGHT;
                 } else {
-                    this.selectedBaseScheme = 'FITZGERALD';
+                    this.selectedBaseScheme = constants.COLOR_SCHEME_FITZGERALD_LIGHT;
                 }
             } else {
                 // Create mode
                 this.isEditMode = false;
                 this.originalScheme = null;
+                // Use initialBaseScheme provided by parent (modal) to preselect base scheme (expects a scheme name)
+                this.selectedBaseScheme = this.initialBaseScheme || constants.COLOR_SCHEME_FITZGERALD_LIGHT;
                 this.createNewScheme();
             }
         },
         
         createNewScheme() {
-            const base = this.selectedBaseScheme;
-            let categories, mappings, colors;
-            if (base === 'GOOSENS') {
-                categories = constants.CS_GOOSSENS_CATEGORIES;
-            } else if (base === 'MONTESSORI') {
-                categories = constants.CS_MONTESSORI_CATEGORIES;
-            } else {
-                categories = constants.CS_FITZGERALD_CATEGORIES;
-                mappings = constants.CS_MAPPING_TO_FITZGERALD;
-            }
-            colors = new Array(categories.length).fill('#ffffff');
+            // selectedBaseScheme is the name of a predefined scheme (e.g., CS_GOOSENS_LIGHT)
+            const base = this.constants.DEFAULT_COLOR_SCHEMES.find(s => s.name === this.selectedBaseScheme)
+                || this.constants.DEFAULT_COLOR_SCHEMES[0];
+            const categories = base.categories;
+            const mappings = base.mappings; // may be undefined for some families
+            const colors = JSON.parse(JSON.stringify(base.colors));
             this.localScheme = {
                 name: undefined,
                 displayName: 'New Theme',

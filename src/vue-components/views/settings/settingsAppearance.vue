@@ -319,19 +319,14 @@
 
             },
             createCustomScheme() {
-                // Pre-select current active theme as base scheme
-                let currentScheme = MetaData.getActiveColorScheme(this.metadata);
-                let baseSchemeType = 'FITZGERALD'; // default
+                // Pre-select the exact currently active scheme (variant) as base
+                const currentScheme = MetaData.getActiveColorScheme(this.metadata);
+                const baseSchemeName = currentScheme && currentScheme.name
+                    ? currentScheme.name
+                    : constants.DEFAULT_COLOR_SCHEMES[0].name;
 
-                if (currentScheme) {
-                    if (currentScheme.name.includes('GOOSENS')) {
-                        baseSchemeType = 'GOOSENS';
-                    } else if (currentScheme.name.includes('MONTESSORI')) {
-                        baseSchemeType = 'MONTESSORI';
-                    }
-                }
-
-                this.editingScheme = { baseSchemeType }; // Pass base scheme type
+                // Pass the base scheme name so the modal can initialize precisely
+                this.editingScheme = { baseSchemeName };
                 this.showCustomSchemeModal = true;
             },
             editCurrentScheme() {
