@@ -20,6 +20,10 @@ const DEFAULT_SETTINGS = {
 
 const INTEGRATIONS_TAB = 'TAB_INTEGRATIONS';
 const SETTINGS_NUDGE_INTERVAL_MS = 15000;
+const SETTINGS_TOAST_TIMEOUT_MS = 10000;
+const SHARE_PREFIX = 'AGCTRANSFER:';
+const SHARE_VERSION = 1;
+
 
 let collectTransferService = {};
 let settings = loadSettings();
@@ -68,6 +72,86 @@ function hasRequiredConfig(config = settings) {
     const roomId = (config.roomId || '').trim();
     const token = (config.token || '').trim();
     return Boolean(relayUrl && roomId && token);
+}
+
+function encodeSharePayload(payload) {
+    try {
+        const json = JSON.stringify(payload);
+        const encoded = window.btoa(unescape(encodeURIComponent(json)));
+        return `${SHARE_PREFIX}${encoded}`;
+    } catch (err) {
+        console.warn('[collectTransfer] failed to encode share payload', err);
+        return null;
+    }
+}
+
+function decodeShareString(shareString) {
+    if (!shareString || typeof shareString !== 'string') {
+        return null;
+    }
+    const normalized = shareString.trim();
+    if (!normalized.startsWith(SHARE_PREFIX)) {
+        return null;
+    }
+    const encoded = normalized.substring(SHARE_PREFIX.length);
+    try {
+        const json = decodeURIComponent(escape(window.atob(encoded)));
+        const parsed = JSON.parse(json);
+        if (!parsed || typeof parsed !== 'object' || parsed.version !== SHARE_VERSION) {
+            return null;
+        }
+        return parsed;
+    } catch (err) {
+        console.warn('[collectTransfer] failed to decode share payload', err);
+        return null;
+    }
+}
+function buildShareDescriptor() {
+    if (!hasRequiredConfig()) {
+        return null;
+    }
+    const shareSettings = {
+        relayUrl: normalizeRelayUrl(settings.relayUrl || ''),
+        roomId: (settings.roomId || '').trim(),
+        token: (settings.token || '').trim(),
+        userId: (settings.userId || '').trim(),
+        autoSend: !!settings.autoSend,
+        autoReconnect: settings.autoReconnect !== false,
+    };
+    return {
+        version: SHARE_VERSION,
+        generatedAt: Date.now(),
+        settings: shareSettings,
+    };
+}
+
+function applyShareDescriptor(descriptor) {
+    if (!descriptor || typeof descriptor !== 'object' || descriptor.version !== SHARE_VERSION) {
+        throw new Error('invalid_share_descriptor');
+    }
+    const incoming = descriptor.settings || {};
+    if (!incoming.relayUrl || !incoming.roomId || !incoming.token) {
+        throw new Error('invalid_share_settings');
+    }
+    const normalized = normalizeSettingsInput({
+        relayUrl: incoming.relayUrl,
+        roomId: incoming.roomId,
+        token: incoming.token,
+        userId: incoming.userId || '',
+    });
+    const nextSettings = {
+        ...settings,
+        ...normalized,
+        autoSend: incoming.autoSend === true,
+        autoReconnect: incoming.autoReconnect !== false,
+    };
+    saveSettings(nextSettings);
+    if (nextSettings.autoReconnect && hasRequiredConfig(nextSettings)) {
+        connect();
+    } else {
+        reconnectRequested = false;
+        notifyStatus('disconnected');
+    }
 }
 
 function loadSettings() {
@@ -386,40 +470,10 @@ function statusToText(currentStatus) {
 }
 
 function renderControls() {
-    const slot = $('.collect-transfer-slot');
-    if (!slot.length) {
-        return;
-    }
-    const isConnected = status.state === 'connected';
-    const isConnecting = status.state === 'connecting';
-    const connectLabel = isConnected
-        ? i18nService.t('CTRANSFER_DISCONNECT')
-        : i18nService.t('CTRANSFER_CONNECT');
-    const sendLabel = i18nService.t('CTRANSFER_SEND');
-    const autoSendLabel = i18nService.t('CTRANSFER_AUTO_SEND');
-    const statusLabel = statusToText(status);
-    const disableSend = !isConnected;
-    const connectTitle = !isConnected && !hasRequiredConfig(settings)
-        ? i18nService.t('CTRANSFER_ERROR_MISSING_CONFIG')
-        : '';
-    const connectAttributes = [
-        isConnecting ? 'disabled' : '',
-        connectTitle ? `title="${connectTitle}"` : '',
-    ].filter(Boolean).join(' ');
-    const connectAttrString = connectAttributes ? ` ${connectAttributes}` : '';
-    const markup = `
-        <div class="collect-transfer-controls" role="group" aria-label="${i18nService.t('CTRANSFER_CONTROLS_LABEL')}">
-            <button type="button" class="collect-transfer-connect" aria-pressed="${isConnected}"${connectAttrString}>${connectLabel}</button>
-            <button type="button" class="collect-transfer-send" ${disableSend ? 'disabled' : ''}>${sendLabel}</button>
-            <label class="collect-transfer-autosend">
-                <input type="checkbox" ${settings.autoSend ? 'checked' : ''} class="collect-transfer-autosend-toggle" />
-                <span>${autoSendLabel}</span>
-            </label>
-            <span class="collect-transfer-status" aria-live="polite">${statusLabel}</span>
-        </div>
-    `;
-    slot.html(markup);
+    // collect transfer controls are managed via collect element actions
 }
+
+
 
 function updateUserIdFromLogin() {
     if (!settings.userId) {
@@ -441,7 +495,7 @@ function showMissingConfigGuidance() {
         lastSettingsNudge = now;
         MainVue.setTooltip(i18nService.t('CTRANSFER_ERROR_MISSING_CONFIG'), {
             msgType: 'info',
-            timeout: 8000,
+            timeout: SETTINGS_TOAST_TIMEOUT_MS,
         });
     }
     goToIntegrationsSettings();
@@ -459,29 +513,7 @@ function handleUserChanged() {
 }
 
 function bindDomEvents() {
-    $(document).on('click.collectTransfer', '.collect-transfer-connect', () => {
-        if (status.state === 'connected' || status.state === 'connecting') {
-            disconnect();
-            return;
-        }
-        if (hasRequiredConfig()) {
-            connect();
-            return;
-        }
-        showMissingConfigGuidance();
-    });
-
-    $(document).on('click.collectTransfer', '.collect-transfer-send', () => {
-        sendCollect('manual');
-    });
-
-    $(document).on('change.collectTransfer', '.collect-transfer-autosend-toggle', (event) => {
-        const checked = Boolean(event.target.checked);
-        saveSettings({ autoSend: checked });
-        if (checked && status.state === 'connected' && !suppressAutoSend) {
-            sendCollect('auto');
-        }
-    });
+    // no collect bar UI bindings
 }
 
 function unbindDomEvents() {
@@ -518,6 +550,32 @@ collectTransferService.updateSettings = function (partial) {
 
 collectTransferService.isConnected = function () {
     return status.state === 'connected';
+};
+
+collectTransferService.getShareCode = function () {
+    const descriptor = buildShareDescriptor();
+    if (!descriptor) {
+        return { success: false, reason: 'missing_configuration' };
+    }
+    const code = encodeSharePayload(descriptor);
+    if (!code) {
+        return { success: false, reason: 'encode_failed' };
+    }
+    return { success: true, code, descriptor };
+};
+
+collectTransferService.importShareCode = function (shareString) {
+    const descriptor = decodeShareString(shareString);
+    if (!descriptor) {
+        return { success: false, reason: 'invalid_code' };
+    }
+    try {
+        applyShareDescriptor(descriptor);
+        return { success: true, descriptor };
+    } catch (err) {
+        console.warn('[collectTransfer] failed to import share code', err);
+        return { success: false, reason: err.message || 'import_failed' };
+    }
 };
 
 export { collectTransferService };

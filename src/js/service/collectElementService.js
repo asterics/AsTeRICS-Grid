@@ -1,6 +1,8 @@
 import $ from '../externals/jquery.js';
 import { GridElement } from '../model/GridElement';
 import { speechService } from './speechService';
+import { collectTransferService } from './collectTransferService';
+import { MainVue } from '../vue/mainVue';
 import { constants } from './../util/constants';
 import { util } from './../util/util';
 import { predictionService } from './predictionService';
@@ -200,6 +202,21 @@ collectElementService.doCollectElementActions = async function (action, gridElem
             }
             updateCollectElements();
             break;
+        case GridActionCollectElement.COLLECT_ACTION_SEND_TO_PARTNER: {
+            collectTransferService.sendCollect('manual');
+            break;
+        }
+        case GridActionCollectElement.COLLECT_ACTION_TOGGLE_AUTO_SEND: {
+            const currentSettings = collectTransferService.getSettings();
+            const nextValue = !currentSettings.autoSend;
+            collectTransferService.updateSettings({ autoSend: nextValue });
+            const messageKey = nextValue ? 'CTRANSFER_AUTOSEND_ENABLED' : 'CTRANSFER_AUTOSEND_DISABLED';
+            MainVue.setTooltip(i18nService.t(messageKey), { msgType: 'info', timeout: 4000 });
+            if (nextValue && collectTransferService.isConnected()) {
+                collectTransferService.sendCollect('auto');
+            }
+            break;
+        }
         case GridActionCollectElement.COLLECT_ACTION_SHARE: {
             let blob = await util.getCollectContentBlob();
             await util.shareImageBlob(blob, collectElementService.getText());
@@ -359,14 +376,8 @@ function getActionTypes(elem) {
 }
 
 function appendTransferSlot(container, collectElement) {
-    if (!container || !container.length) {
-        return;
-    }
-    const slot = $('<div class="collect-transfer-slot" aria-live="polite"></div>');
-    if (collectElement && collectElement.id) {
-        slot.attr('data-collect-id', collectElement.id);
-    }
-    container.append(slot);
+    // collect transfer controls are now managed via collect actions
+    return;
 }
 async function updateCollectElements(isSecondTry) {
     autoCollectImage = collectedElements.some((e) => !!getImageData(e));
