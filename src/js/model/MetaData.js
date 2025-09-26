@@ -58,6 +58,18 @@ class MetaData extends Model({
 
     static getActiveColorScheme(metadata) {
         metadata = metadata || new MetaData();
+
+        // First check custom color schemes
+        if (metadata.colorConfig.additionalColorSchemes && metadata.colorConfig.additionalColorSchemes.length > 0) {
+            let customScheme = metadata.colorConfig.additionalColorSchemes.find(
+                (scheme) => scheme.name === metadata.colorConfig.activeColorScheme
+            );
+            if (customScheme) {
+                return customScheme;
+            }
+        }
+
+        // Then check default color schemes
         return (
             constants.DEFAULT_COLOR_SCHEMES.filter(
                 (scheme) => scheme.name === metadata.colorConfig.activeColorScheme
@@ -78,6 +90,74 @@ class MetaData extends Model({
             index = colorScheme.categories.indexOf(mapped);
         }
         return index === -1 ? defaultColor : colorScheme.colors[index];
+    }
+
+    static getAllColorSchemes(metadata) {
+        metadata = metadata || new MetaData();
+        let allSchemes = [...constants.DEFAULT_COLOR_SCHEMES];
+
+        if (metadata.colorConfig.additionalColorSchemes && metadata.colorConfig.additionalColorSchemes.length > 0) {
+            allSchemes = allSchemes.concat(metadata.colorConfig.additionalColorSchemes);
+        }
+
+        return allSchemes;
+    }
+
+    static addCustomColorScheme(metadata, customScheme) {
+        metadata = metadata || new MetaData();
+        if (!metadata.colorConfig.additionalColorSchemes) {
+            metadata.colorConfig.additionalColorSchemes = [];
+        }
+
+        // Ensure unique name
+        let baseName = customScheme.name;
+        let counter = 1;
+        while (MetaData.getAllColorSchemes(metadata).some(scheme => scheme.name === customScheme.name)) {
+            customScheme.name = baseName + '_' + counter;
+            counter++;
+        }
+
+        metadata.colorConfig.additionalColorSchemes.push(customScheme);
+        return customScheme;
+    }
+
+    static updateCustomColorScheme(metadata, updatedScheme) {
+        metadata = metadata || new MetaData();
+        if (!metadata.colorConfig.additionalColorSchemes) {
+            return false;
+        }
+
+        let index = metadata.colorConfig.additionalColorSchemes.findIndex(
+            scheme => scheme.name === updatedScheme.name
+        );
+
+        if (index !== -1) {
+            metadata.colorConfig.additionalColorSchemes[index] = updatedScheme;
+            return true;
+        }
+        return false;
+    }
+
+    static deleteCustomColorScheme(metadata, schemeName) {
+        metadata = metadata || new MetaData();
+        if (!metadata.colorConfig.additionalColorSchemes) {
+            return false;
+        }
+
+        let index = metadata.colorConfig.additionalColorSchemes.findIndex(
+            scheme => scheme.name === schemeName
+        );
+
+        if (index !== -1) {
+            metadata.colorConfig.additionalColorSchemes.splice(index, 1);
+
+            // If the deleted scheme was active, switch to default
+            if (metadata.colorConfig.activeColorScheme === schemeName) {
+                metadata.colorConfig.activeColorScheme = constants.DEFAULT_COLOR_SCHEMES[0].name;
+            }
+            return true;
+        }
+        return false;
     }
 
     static getModelName() {
