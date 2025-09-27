@@ -10,12 +10,15 @@ import { MainVue } from '../vue/mainVue';
 const SETTINGS_KEY = 'AG_COLLECT_TRANSFER_SETTINGS';
 const DEFAULT_SETTINGS = {
     relayUrl: '',
-    roomId: '',
     token: '',
     userId: '',
     autoSend: false,
     autoReceive: true,
     autoReconnect: true,
+    iceUseTurn: false,
+    turnUrl: '',
+    turnUsername: '',
+    turnPassword: '',
 };
 
 const INTEGRATIONS_TAB = 'TAB_INTEGRATIONS';
@@ -23,12 +26,36 @@ const SETTINGS_NUDGE_INTERVAL_MS = 15000;
 const SETTINGS_TOAST_TIMEOUT_MS = 10000;
 const SHARE_PREFIX = 'AGCTRANSFER:';
 const SHARE_VERSION = 1;
+const DEFAULT_ICE_SERVERS = [{ urls: ['stun:stun.l.google.com:19302'] }];
+const DATA_CHANNEL_LABEL = 'collect-transfer';
 
+const log = console;
+
+function buildIceServers(config = settings) {
+    const servers = DEFAULT_ICE_SERVERS.map((entry) => ({ ...entry }));
+    if (config && config.iceUseTurn) {
+        const rawUrl = (config.turnUrl || '').trim();
+        if (rawUrl) {
+            const urls = rawUrl.split(/[\s,]+/).filter(Boolean);
+            const turnEntry = { urls: urls.length > 1 ? urls : urls[0] };
+            if (config.turnUsername) {
+                turnEntry.username = config.turnUsername.trim();
+            }
+            if (typeof config.turnPassword === 'string' && config.turnPassword.length > 0) {
+                turnEntry.credential = config.turnPassword;
+            }
+            servers.push(turnEntry);
+        }
+    }
+    return servers;
+}
 
 let collectTransferService = {};
 let settings = loadSettings();
 let socket = null;
-let joinedRoom = false;
+let socketReady = false;
+let currentRole = null;
+let socketUserId = '';
 let reconnectRequested = false;
 let reconnectTimer = null;
 let status = buildStatus('disconnected');
@@ -36,6 +63,10 @@ let pendingMessages = [];
 let suppressAutoSend = false;
 let initialized = false;
 let lastSettingsNudge = 0;
+let peerConnection = null;
+let dataChannel = null;
+let pendingRemoteCandidates = [];
+let remotePeerUserId = null;
 
 function normalizeRelayUrl(url) {
     if (!url) {
@@ -56,11 +87,15 @@ function normalizeSettingsInput(partial = {}) {
     if (Object.prototype.hasOwnProperty.call(normalized, 'relayUrl')) {
         normalized.relayUrl = normalizeRelayUrl(normalized.relayUrl || '');
     }
-    ['roomId', 'token', 'userId'].forEach((key) => {
+    ['token', 'userId', 'turnUrl', 'turnUsername'].forEach((key) => {
         if (Object.prototype.hasOwnProperty.call(normalized, key) && typeof normalized[key] === 'string') {
             normalized[key] = normalized[key].trim();
         }
     });
+    if (Object.prototype.hasOwnProperty.call(normalized, 'iceUseTurn')) {
+        const value = normalized.iceUseTurn;
+        normalized.iceUseTurn = value === true || value === 'true' || value === 1 || value === '1';
+    }
     return normalized;
 }
 
@@ -69,9 +104,17 @@ function hasRequiredConfig(config = settings) {
         return false;
     }
     const relayUrl = normalizeRelayUrl(config.relayUrl || '');
-    const roomId = (config.roomId || '').trim();
     const token = (config.token || '').trim();
-    return Boolean(relayUrl && roomId && token);
+    if (!relayUrl || !token) {
+        return false;
+    }
+    if (config.iceUseTurn) {
+        const turnUrl = (config.turnUrl || '').trim();
+        if (!turnUrl) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function encodeSharePayload(payload) {
@@ -112,11 +155,14 @@ function buildShareDescriptor() {
     }
     const shareSettings = {
         relayUrl: normalizeRelayUrl(settings.relayUrl || ''),
-        roomId: (settings.roomId || '').trim(),
         token: (settings.token || '').trim(),
         userId: (settings.userId || '').trim(),
         autoSend: !!settings.autoSend,
         autoReconnect: settings.autoReconnect !== false,
+        iceUseTurn: settings.iceUseTurn === true,
+        turnUrl: (settings.turnUrl || '').trim(),
+        turnUsername: (settings.turnUsername || '').trim(),
+        turnPassword: settings.turnPassword || '',
     };
     return {
         version: SHARE_VERSION,
@@ -130,14 +176,17 @@ function applyShareDescriptor(descriptor) {
         throw new Error('invalid_share_descriptor');
     }
     const incoming = descriptor.settings || {};
-    if (!incoming.relayUrl || !incoming.roomId || !incoming.token) {
+    if (!incoming.relayUrl || !incoming.token) {
         throw new Error('invalid_share_settings');
     }
     const normalized = normalizeSettingsInput({
         relayUrl: incoming.relayUrl,
-        roomId: incoming.roomId,
         token: incoming.token,
         userId: incoming.userId || '',
+        iceUseTurn: incoming.iceUseTurn === true,
+        turnUrl: incoming.turnUrl || '',
+        turnUsername: incoming.turnUsername || '',
+        turnPassword: incoming.turnPassword || '',
     });
     const nextSettings = {
         ...settings,
@@ -190,9 +239,44 @@ function getStatus() {
 }
 
 function notifyStatus(state, details = {}) {
-    status = buildStatus(state, details);
+    const enriched = { token: settings.token || '', ...details };
+    status = buildStatus(state, enriched);
     $(document).trigger(constants.EVENT_COLLECT_TRANSFER_STATUS, [getStatus()]);
     renderControls();
+}
+
+function stageToText(details = {}) {
+    const stage = details && details.stage;
+    if (!stage) {
+        return null;
+    }
+    const key = `CTRANSFER_STAGE_${stage.toUpperCase()}`;
+    const peerName = details && details.peer ? details.peer : '';
+    const token = details && details.token ? details.token : (settings.token || '');
+    let param;
+    switch (stage) {
+        case 'awaiting_partner':
+            param = token || i18nService.t('CTRANSFER_STATUS_CONNECTED_PLACEHOLDER');
+            break;
+        case 'waiting_peer':
+            param = peerName || i18nService.t('CTRANSFER_STATUS_CONNECTED_PLACEHOLDER');
+            break;
+        default:
+            if (peerName) {
+                param = peerName;
+            }
+            break;
+    }
+    let text;
+    if (typeof param !== 'undefined') {
+        text = i18nService.t(key, param);
+    } else {
+        text = i18nService.t(key);
+    }
+    if (text && text !== key) {
+        return text;
+    }
+    return null;
 }
 
 function clearReconnectTimer() {
@@ -222,8 +306,16 @@ function closeSocket(manual = false) {
         }
     }
     socket = null;
-    joinedRoom = false;
-    notifyStatus('disconnected', manual ? {} : { reason: 'closed' });
+    socketReady = false;
+    currentRole = null;
+    socketUserId = '';
+    remotePeerUserId = null;
+    cleanupPeerConnection();
+    if (!manual) {
+        notifyStatus('disconnected', { reason: 'closed' });
+    } else if (status.state !== 'disconnected') {
+        notifyStatus('disconnected', {});
+    }
 }
 
 function createMessageId() {
@@ -238,20 +330,299 @@ function queueMessage(message) {
     flushQueue();
 }
 
+function isChannelReady() {
+    return dataChannel && dataChannel.readyState === 'open';
+}
+
 function flushQueue() {
-    if (!socket || !joinedRoom || socket.readyState !== WebSocket.OPEN) {
+    if (!isChannelReady()) {
         return;
     }
     while (pendingMessages.length) {
         const msg = pendingMessages.shift();
         try {
-            socket.send(JSON.stringify(msg));
+            dataChannel.send(JSON.stringify(msg));
         } catch (err) {
             log.error('[collectTransfer] failed to send message', err);
             pendingMessages.unshift(msg);
             break;
         }
     }
+}
+
+function cleanupPeerConnection() {
+    if (dataChannel) {
+        try {
+            dataChannel.close();
+        } catch (err) {
+            log.warn('[collectTransfer] error closing data channel', err);
+        }
+    }
+    dataChannel = null;
+    if (peerConnection) {
+        try {
+            peerConnection.close();
+        } catch (err) {
+            log.warn('[collectTransfer] error closing peer connection', err);
+        }
+    }
+    peerConnection = null;
+    pendingRemoteCandidates = [];
+}
+
+function ensurePeerConnection() {
+    if (peerConnection) {
+        return peerConnection;
+    }
+    if (typeof RTCPeerConnection === 'undefined') {
+        notifyStatus('error', { reason: 'webrtc_unsupported' });
+        log.error('[collectTransfer] RTCPeerConnection not supported in this environment');
+        return null;
+    }
+    let pc;
+    try {
+        const iceServers = buildIceServers(settings);
+        pc = new RTCPeerConnection({ iceServers });
+    } catch (err) {
+        log.error('[collectTransfer] failed to create RTCPeerConnection', err);
+        notifyStatus('error', { reason: 'peer_connection_failed', message: err.message });
+        return null;
+    }
+    pendingRemoteCandidates = [];
+    pc.onicecandidate = (event) => {
+        if (!event.candidate) {
+            return;
+        }
+        const serialized = serializeCandidate(event.candidate);
+        if (serialized) {
+            emitSignal('ice', { token: settings.token, candidate: serialized, userId: socketUserId, role: currentRole });
+        }
+    };
+    pc.onconnectionstatechange = () => {
+        const state = pc.connectionState;
+        if (state === 'failed') {
+            notifyStatus('error', { reason: 'peer_connection_failed' });
+        } else if (state === 'disconnected') {
+            if (status.state === 'connected') {
+                notifyStatus('connecting', { stage: 'waiting_peer', reason: 'peer_disconnected', peer: remotePeerUserId });
+            }
+        }
+    };
+    pc.ondatachannel = (event) => {
+        dataChannel = event.channel;
+        bindDataChannel(dataChannel);
+    };
+    peerConnection = pc;
+    return pc;
+}
+
+function bindDataChannel(channel) {
+    if (!channel) {
+        return;
+    }
+    channel.onopen = () => {
+        notifyStatus('connected', { token: settings.token, peer: remotePeerUserId });
+        flushQueue();
+    };
+    channel.onclose = () => {
+        if (status.state === 'connected') {
+            notifyStatus('connecting', { token: settings.token, stage: 'waiting_peer', reason: 'channel_closed' });
+        }
+    };
+    channel.onerror = (event) => {
+        log.error('[collectTransfer] data channel error', (event && event.error) || event);
+    };
+    channel.onmessage = (event) => {
+        handleDataChannelMessage(event);
+    };
+}
+
+function handleDataChannelMessage(event) {
+    let raw = event.data;
+    if (typeof raw !== 'string') {
+        if (raw instanceof ArrayBuffer && typeof TextDecoder !== 'undefined') {
+            try {
+                raw = new TextDecoder('utf-8').decode(raw);
+            } catch (err) {
+                log.warn('[collectTransfer] failed to decode binary channel message', err);
+                raw = '';
+            }
+        } else {
+            raw = String(raw || '');
+        }
+    }
+    let message;
+    try {
+        message = JSON.parse(raw);
+    } catch (err) {
+        log.warn('[collectTransfer] failed to parse channel message', err);
+        return;
+    }
+    const { type, payload } = message || {};
+    if (type === 'collect') {
+        handleCollect(payload);
+    } else if (type === 'ack') {
+        // no-op for now, ack is informational only
+    } else {
+        log.debug('[collectTransfer] ignoring channel message type', type);
+    }
+}
+
+function serializeCandidate(candidate) {
+    if (!candidate) {
+        return null;
+    }
+    return {
+        candidate: candidate.candidate || null,
+        sdpMid: typeof candidate.sdpMid === 'undefined' ? null : candidate.sdpMid,
+        sdpMLineIndex: typeof candidate.sdpMLineIndex === 'number' ? candidate.sdpMLineIndex : null,
+        usernameFragment: typeof candidate.usernameFragment === 'undefined' ? null : candidate.usernameFragment,
+    };
+}
+
+function emitSignal(type, payload = {}) {
+    if (!socketReady || !socket || socket.readyState !== WebSocket.OPEN) {
+        return false;
+    }
+    try {
+        socket.send(JSON.stringify({ type, payload }));
+        return true;
+    } catch (err) {
+        log.error('[collectTransfer] failed to send signal', err);
+        return false;
+    }
+}
+
+async function startOfferFlow() {
+    if (!socketReady || currentRole !== 'offerer') {
+        return;
+    }
+    const pc = ensurePeerConnection();
+    if (!pc) {
+        return;
+    }
+    if (pc.signalingState && pc.signalingState !== 'stable') {
+        log.debug('[collectTransfer] skipping offer; signalingState=', pc.signalingState);
+        return;
+    }
+    if (!dataChannel || dataChannel.readyState === 'closed') {
+        dataChannel = pc.createDataChannel(DATA_CHANNEL_LABEL, { ordered: true });
+        bindDataChannel(dataChannel);
+    }
+    try {
+        notifyStatus('connecting', { stage: 'awaiting_partner' });
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        emitSignal('offer', { token: settings.token, sdp: offer.sdp, userId: socketUserId });
+        notifyStatus('connecting', { stage: 'awaiting_answer' });
+    } catch (err) {
+        log.error('[collectTransfer] failed to create offer', err);
+        notifyStatus('error', { reason: 'offer_failed', message: err.message });
+    }
+}
+
+function handlePeerLeft(payload = {}) {
+    remotePeerUserId = null;
+    cleanupPeerConnection();
+    currentRole = 'offerer';
+    notifyStatus('connecting', { token: settings.token, stage: 'waiting_peer', peer: payload && payload.userId ? payload.userId : null });
+    if (socketReady) {
+        const pc = ensurePeerConnection();
+        if (pc) {
+            startOfferFlow();
+        }
+    }
+}
+
+async function handleOffer(data = {}) {
+    if (!socketReady) {
+        return;
+    }
+    const pc = ensurePeerConnection();
+    if (!pc || !data.sdp) {
+        return;
+    }
+    currentRole = 'answerer';
+    remotePeerUserId = data.userId || null;
+    try {
+        await pc.setRemoteDescription({ type: 'offer', sdp: data.sdp });
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        emitSignal('answer', { token: settings.token, sdp: answer.sdp, userId: socketUserId });
+        notifyStatus('connecting', { token: settings.token, stage: 'awaiting_peer_channel' });
+        flushPendingRemoteCandidates();
+    } catch (err) {
+        log.error('[collectTransfer] failed to handle offer', err);
+        notifyStatus('error', { reason: 'offer_handle_failed', message: err.message });
+    }
+}
+
+async function handleAnswer(data = {}) {
+    if (!peerConnection || !data.sdp) {
+        return;
+    }
+    try {
+        await peerConnection.setRemoteDescription({ type: 'answer', sdp: data.sdp });
+        remotePeerUserId = data.userId || remotePeerUserId;
+        notifyStatus('connecting', { token: settings.token, stage: 'awaiting_peer_channel' });
+        flushPendingRemoteCandidates();
+    } catch (err) {
+        log.error('[collectTransfer] failed to handle answer', err);
+    }
+}
+
+function flushPendingRemoteCandidates() {
+    if (!peerConnection || !peerConnection.remoteDescription) {
+        return;
+    }
+    const queue = pendingRemoteCandidates.slice();
+    pendingRemoteCandidates = [];
+    queue.forEach((candidateInit) => {
+        peerConnection.addIceCandidate(candidateInit).catch((err) => {
+            log.warn('[collectTransfer] failed to add remote candidate', err);
+        });
+    });
+}
+
+function handleCandidate(data = {}) {
+    if (!data.candidate) {
+        return;
+    }
+    const pc = ensurePeerConnection();
+    if (!pc) {
+        return;
+    }
+    const candidateInit = { ...data.candidate };
+    if (pc.remoteDescription && pc.remoteDescription.type) {
+        pc.addIceCandidate(candidateInit).catch((err) => {
+            log.warn('[collectTransfer] failed to add remote candidate', err);
+        });
+    } else {
+        pendingRemoteCandidates.push(candidateInit);
+    }
+}
+
+function handleSignalError(payload = {}) {
+    const code = payload.code || 'signal_error';
+    if (code === 'token_in_use') {
+        if (currentRole !== 'answerer') {
+            currentRole = 'answerer';
+            cleanupPeerConnection();
+            ensurePeerConnection();
+            emitSignal('answer', { token: settings.token, userId: socketUserId });
+            notifyStatus('connecting', { token: settings.token, stage: 'waiting_offer' });
+        }
+        return;
+    }
+    if (code === 'no_offer') {
+        currentRole = 'offerer';
+        cleanupPeerConnection();
+        ensurePeerConnection();
+        notifyStatus('connecting', { token: settings.token, stage: 'awaiting_partner' });
+        return;
+    }
+    log.warn('[collectTransfer] signaling error', payload);
+    notifyStatus('error', { reason: code, message: payload.message || code });
 }
 
 function connect(options = {}) {
@@ -263,28 +634,31 @@ function connect(options = {}) {
     const merged = { ...settings, ...options };
     const normalized = normalizeSettingsInput({
         relayUrl: merged.relayUrl,
-        roomId: merged.roomId,
         token: merged.token,
         userId: merged.userId,
     });
     const relayUrl = normalized.relayUrl;
-    const roomId = normalized.roomId;
     const token = normalized.token;
 
-    if (!relayUrl || !roomId || !token) {
+    if (!relayUrl || !token) {
         showMissingConfigGuidance();
         notifyStatus('error', { reason: 'missing_configuration' });
         return;
     }
+    if (normalized.iceUseTurn && !(normalized.turnUrl || '').trim()) {
+        showMissingConfigGuidance();
+        notifyStatus('error', { reason: 'missing_turn' });
+        return;
+    }
 
-    const wasRequested = reconnectRequested;
     reconnectRequested = false;
     clearReconnectTimer();
-    if (socket) {
-        closeSocket(true);
-    }
+    closeSocket(true);
+    cleanupPeerConnection();
+    pendingMessages = [];
+
     reconnectRequested = true;
-    notifyStatus('connecting', { relayUrl, roomId });
+    notifyStatus('connecting', { relayUrl, stage: 'websocket' });
 
     try {
         socket = new WebSocket(relayUrl);
@@ -295,22 +669,20 @@ function connect(options = {}) {
         return;
     }
 
+    socketReady = false;
+    currentRole = null;
+    remotePeerUserId = null;
+    socketUserId = normalized.userId || loginService.getLoggedInUsername() || '';
+
     socket.addEventListener('open', () => {
-        const userId = normalized.userId || loginService.getLoggedInUsername() || '';
-        const joinMessage = {
-            type: 'join',
-            payload: {
-                roomId,
-                token,
-                userId,
-            },
-        };
-        try {
-            socket.send(JSON.stringify(joinMessage));
-        } catch (err) {
-            log.error('[collectTransfer] failed to send join payload', err);
-            notifyStatus('error', { reason: 'join_send_failed', message: err.message });
+        socketReady = true;
+        currentRole = 'offerer';
+        const pc = ensurePeerConnection();
+        if (!pc) {
+            return;
         }
+        notifyStatus('connecting', { relayUrl, stage: 'signaling' });
+        startOfferFlow();
     });
 
     socket.addEventListener('message', (event) => {
@@ -326,11 +698,17 @@ function connect(options = {}) {
 
     socket.addEventListener('close', (evt) => {
         const manual = !reconnectRequested;
-        notifyStatus('disconnected', { code: evt.code, reason: evt.reason });
+        socketReady = false;
         socket = null;
-        joinedRoom = false;
+        currentRole = null;
+        socketUserId = '';
+        remotePeerUserId = null;
+        cleanupPeerConnection();
         if (!manual) {
+            notifyStatus('connecting', { stage: 'reconnecting', code: evt.code });
             scheduleReconnect();
+        } else {
+            notifyStatus('disconnected', { code: evt.code, reason: evt.reason });
         }
     });
 
@@ -342,18 +720,19 @@ function connect(options = {}) {
     saveSettings(normalized);
 }
 
+
 function disconnect() {
     reconnectRequested = false;
     clearReconnectTimer();
-    if (socket) {
-        socket.close(1000, 'manual disconnect');
-    } else {
+    remotePeerUserId = null;
+    closeSocket(true);
+    if (!socket) {
         notifyStatus('disconnected');
     }
 }
 
 function sendCollect(source = 'manual', payloadOverride = null) {
-    if (!settings.roomId || !settings.token) {
+    if (!settings.token) {
         notifyStatus('error', { reason: 'missing_configuration' });
         showMissingConfigGuidance();
         return false;
@@ -368,7 +747,6 @@ function sendCollect(source = 'manual', payloadOverride = null) {
         type: 'collect',
         payload: {
             messageId,
-            roomId: settings.roomId,
             senderId: settings.userId || loginService.getLoggedInUsername() || '',
             data: payload,
             source,
@@ -416,18 +794,27 @@ async function handleCollect(payload) {
 function handleMessage(message) {
     const { type, payload } = message || {};
     switch (type) {
-        case 'joined':
-            joinedRoom = true;
-            notifyStatus('connected', { roomId: settings.roomId });
-            flushQueue();
+        case 'offer-registered':
+            currentRole = 'offerer';
+            notifyStatus('connecting', { stage: 'awaiting_partner' });
             break;
-        case 'collect':
-            handleCollect(payload);
+        case 'answer-registered':
+            notifyStatus('connecting', { stage: 'waiting_channel' });
             break;
-        case 'ack':
+        case 'offer':
+            handleOffer(payload || {});
+            break;
+        case 'answer':
+            handleAnswer(payload || {});
+            break;
+        case 'ice':
+            handleCandidate(payload || {});
+            break;
+        case 'peer-disconnected':
+            handlePeerLeft(payload || {});
             break;
         case 'error':
-            notifyStatus('error', payload || {});
+            handleSignalError(payload || {});
             break;
         default:
             log.debug('[collectTransfer] ignoring message type', type);
@@ -447,20 +834,28 @@ function handleCollectUpdated(event, detail = {}) {
 }
 
 function statusToText(currentStatus) {
-    const room = settings.roomId || '';
-    switch (currentStatus.state) {
-        case 'connected':
-            return i18nService.t('CTRANSFER_STATUS_CONNECTED', room);
-        case 'connecting':
-            return i18nService.t('CTRANSFER_STATUS_CONNECTING');
-        case 'error':
-            if (currentStatus.details && currentStatus.details.reason === 'missing_configuration') {
+    const details = currentStatus && currentStatus.details ? currentStatus.details : {};
+    switch ((currentStatus && currentStatus.state) || 'disconnected') {
+        case 'connected': {
+            const display = (details.peer && details.peer.trim()) || (details.token && details.token.trim()) || i18nService.t('CTRANSFER_STATUS_CONNECTED_PLACEHOLDER');
+            return i18nService.t('CTRANSFER_STATUS_CONNECTED', display);
+        }
+        case 'connecting': {
+            const stageText = stageToText(details);
+            return stageText || i18nService.t('CTRANSFER_STATUS_CONNECTING');
+        }
+        case 'error': {
+            if (details.reason === 'missing_configuration') {
                 return i18nService.t('CTRANSFER_ERROR_MISSING_CONFIG');
             }
-            if (currentStatus.details && currentStatus.details.message) {
-                return currentStatus.details.message;
+            if (details.reason === 'missing_turn') {
+                return i18nService.t('CTRANSFER_ERROR_MISSING_TURN');
+            }
+            if (details.message) {
+                return details.message;
             }
             return i18nService.t('CTRANSFER_STATUS_ERROR');
+        }
         default:
             if (!hasRequiredConfig()) {
                 return i18nService.t('CTRANSFER_ERROR_MISSING_CONFIG');
@@ -520,6 +915,25 @@ function unbindDomEvents() {
     $(document).off('.collectTransfer');
 }
 
+function generateToken(length = 8) {
+    const alphabet = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+    const cryptoObj = (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) ? window.crypto : null;
+    let token = '';
+    if (cryptoObj) {
+        const bytes = new Uint32Array(length);
+        cryptoObj.getRandomValues(bytes);
+        for (let i = 0; i < length; i += 1) {
+            token += alphabet[bytes[i] % alphabet.length];
+        }
+        return token;
+    }
+    for (let i = 0; i < length; i += 1) {
+        const index = Math.floor(Math.random() * alphabet.length);
+        token += alphabet[index];
+    }
+    return token;
+}
+
 collectTransferService.init = function () {
     if (initialized) {
         return;
@@ -577,5 +991,7 @@ collectTransferService.importShareCode = function (shareString) {
         return { success: false, reason: err.message || 'import_failed' };
     }
 };
+
+collectTransferService.generateToken = generateToken;
 
 export { collectTransferService };

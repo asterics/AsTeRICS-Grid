@@ -49,16 +49,42 @@
             <input type="text" id="collectTransferRelay" class="seven columns" v-model="transferSettings.relayUrl" @blur="onTransferInput('relayUrl', $event)" placeholder="wss://relay.example/ws"/>
         </div>
         <div class="srow">
-            <label class="three columns" for="collectTransferRoom">{{ $t('CTRANSFER_ROOM_ID_LABEL') }}</label>
-            <input type="text" id="collectTransferRoom" class="seven columns" v-model="transferSettings.roomId" @blur="onTransferInput('roomId', $event)" placeholder="room:example"/>
-        </div>
-        <div class="srow">
             <label class="three columns" for="collectTransferToken">{{ $t('CTRANSFER_TOKEN_LABEL') }}</label>
-            <input type="text" id="collectTransferToken" class="seven columns" v-model="transferSettings.token" @blur="onTransferInput('token', $event)" placeholder="token-xyz" autocomplete="off"/>
+            <div class="seven columns collect-transfer-token-field">
+                <input type="text" id="collectTransferToken" class="u-full-width" v-model="transferSettings.token" @blur="onTransferInput('token', $event)" placeholder="token-xyz" autocomplete="off"/>
+                <button type="button" class="button-secondary token-generate-btn" @click="generateTransferToken">{{ $t('CTRANSFER_TOKEN_GENERATE') }}</button>
+            </div>
         </div>
         <div class="srow">
-            <label class="three columns" for="collectTransferUser">{{ $t('CTRANSFER_USER_ID_LABEL') }}</label>
-            <input type="text" id="collectTransferUser" class="seven columns" v-model="transferSettings.userId" @blur="onTransferInput('userId', $event)" placeholder="user123"/>
+            <div class="three columns"></div>
+            <div class="seven columns">
+                <button type="button" class="button-link" @click="toggleTransferAdvanced">{{ advancedToggleLabel }}</button>
+            </div>
+        </div>
+        <div v-if="showTransferAdvanced" class="collect-transfer-advanced">
+            <div class="srow">
+                <label class="three columns" for="collectTransferUser">{{ $t('CTRANSFER_USER_ID_LABEL') }}</label>
+                <input type="text" id="collectTransferUser" class="seven columns" v-model="transferSettings.userId" @blur="onTransferInput('userId', $event)" placeholder="user123"/>
+            </div>
+            <div class="srow checkbox-row">
+                <label>
+                    <input type="checkbox" :checked="transferSettings.iceUseTurn" @change="onTransferCheckbox('iceUseTurn', $event)" />
+                    <span>{{ $t('CTRANSFER_USE_TURN') }}</span>
+                </label>
+            </div>
+            <p class="info-text" v-if="transferSettings.iceUseTurn">{{ $t('CTRANSFER_TURN_HINT') }}</p>
+            <div class="srow" v-if="transferSettings.iceUseTurn">
+                <label class="three columns" for="collectTransferTurnUrl">{{ $t('CTRANSFER_TURN_URL_LABEL') }}</label>
+                <input type="text" id="collectTransferTurnUrl" class="seven columns" v-model="transferSettings.turnUrl" @blur="onTransferInput('turnUrl', $event)" placeholder="turn:turn.example.org:3478" autocomplete="off"/>
+            </div>
+            <div class="srow" v-if="transferSettings.iceUseTurn">
+                <label class="three columns" for="collectTransferTurnUser">{{ $t('CTRANSFER_TURN_USER_LABEL') }}</label>
+                <input type="text" id="collectTransferTurnUser" class="seven columns" v-model="transferSettings.turnUsername" @blur="onTransferInput('turnUsername', $event)" placeholder="optional username" autocomplete="off"/>
+            </div>
+            <div class="srow" v-if="transferSettings.iceUseTurn">
+                <label class="three columns" for="collectTransferTurnPass">{{ $t('CTRANSFER_TURN_PASS_LABEL') }}</label>
+                <input type="password" id="collectTransferTurnPass" class="seven columns" v-model="transferSettings.turnPassword" @blur="onTransferInput('turnPassword', $event)" placeholder="optional password" autocomplete="off"/>
+            </div>
         </div>
         <div class="srow checkbox-row">
             <label>
@@ -181,7 +207,8 @@
                 qrReader: null,
                 qrReaderControls: null,
                 qrScanActive: false,
-                cameraSupported: !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
+                cameraSupported: !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia),
+                showTransferAdvanced: false
             }
         },
         computed: {
@@ -197,18 +224,25 @@
             connectButtonDisabled() {
                 return (!this.isTransferConnected && !this.canConnect) || (this.isTransferConnecting && !this.isTransferConnected);
             },
+            advancedToggleLabel() {
+                return this.showTransferAdvanced ? this.$t('CTRANSFER_ADVANCED_HIDE') : this.$t('CTRANSFER_ADVANCED_SHOW');
+            },
             transferStatusText() {
                 const state = (this.transferStatus && this.transferStatus.state) || 'disconnected';
                 const details = (this.transferStatus && this.transferStatus.details) || {};
                 if (state === 'connected') {
-                    return this.$t('CTRANSFER_STATUS_CONNECTED', this.transferSettings.roomId || '');
+                    return this.$t('CTRANSFER_STATUS_CONNECTED', this.transferSettings.token || this.$t('CTRANSFER_STATUS_CONNECTED_PLACEHOLDER'));
                 }
                 if (state === 'connecting') {
-                    return this.$t('CTRANSFER_STATUS_CONNECTING');
+                    const stageText = this.getStageText(details);
+                    return stageText || this.$t('CTRANSFER_STATUS_CONNECTING');
                 }
                 if (state === 'error') {
                     if (details.reason === 'missing_configuration') {
                         return this.$t('CTRANSFER_ERROR_MISSING_CONFIG');
+                    }
+                    if (details.reason === 'missing_turn') {
+                        return this.$t('CTRANSFER_ERROR_MISSING_TURN');
                     }
                     return this.$t('CTRANSFER_STATUS_ERROR');
                 }
@@ -219,17 +253,75 @@
             }
         },
         methods: {
+            getStageText(details = {}) {
+                const stage = details && details.stage;
+                if (!stage) {
+                    return '';
+                }
+                const key = `CTRANSFER_STAGE_${stage.toUpperCase()}`;
+                const fallback = key;
+                let param;
+                switch (stage) {
+                    case 'awaiting_partner':
+                        param = details.token || this.transferSettings.token || this.$t('CTRANSFER_STATUS_CONNECTED_PLACEHOLDER');
+                        break;
+                    case 'waiting_peer':
+                        param = details.peer || this.$t('CTRANSFER_STATUS_CONNECTED_PLACEHOLDER');
+                        break;
+                    default:
+                        if (details.peer) {
+                            param = details.peer;
+                        }
+                        break;
+                }
+                let textValue;
+                if (typeof param !== 'undefined') {
+                    textValue = this.$t(key, param);
+                } else {
+                    textValue = this.$t(key);
+                }
+                if (textValue && textValue !== fallback) {
+                    return textValue;
+                }
+                return '';
+            },
             hasRequiredConfig(settings) {
                 if (!settings) {
                     return false;
                 }
                 const relay = (settings.relayUrl || '').trim();
-                const room = (settings.roomId || '').trim();
                 const token = (settings.token || '').trim();
-                return !!(relay && room && token);
+                if (!relay || !token) {
+                    return false;
+                }
+                if (settings.iceUseTurn) {
+                    const turnUrl = (settings.turnUrl || '').trim();
+                    if (!turnUrl) {
+                        return false;
+                    }
+                }
+                return true;
+            },
+            hasAdvancedValues(settings = this.transferSettings) {
+                if (!settings) {
+                    return false;
+                }
+                return Boolean((settings.userId || '').trim() || settings.iceUseTurn || (settings.turnUrl || '').trim() || (settings.turnUsername || '').trim() || (settings.turnPassword || '').length);
+            },
+            toggleTransferAdvanced() {
+                this.showTransferAdvanced = !this.showTransferAdvanced;
+            },
+            generateTransferToken() {
+                const token = collectTransferService.generateToken();
+                collectTransferService.updateSettings({ token });
+                this.refreshTransferSettings();
             },
             refreshTransferSettings() {
-                this.transferSettings = { ...collectTransferService.getSettings() };
+                const nextSettings = { ...collectTransferService.getSettings() };
+                this.transferSettings = nextSettings;
+                if (this.hasAdvancedValues(nextSettings)) {
+                    this.showTransferAdvanced = true;
+                }
             },
             refreshTransferStatus() {
                 this.transferStatus = collectTransferService.getStatus();
@@ -249,10 +341,16 @@
             onTransferInput(field, event) {
                 collectTransferService.updateSettings({ [field]: event.target.value });
                 this.refreshTransferSettings();
+                if (['userId', 'turnUrl', 'turnUsername', 'turnPassword'].includes(field)) {
+                    this.showTransferAdvanced = true;
+                }
             },
             onTransferCheckbox(field, event) {
                 collectTransferService.updateSettings({ [field]: event.target.checked });
                 this.refreshTransferSettings();
+                if (field === 'iceUseTurn' && event.target.checked) {
+                    this.showTransferAdvanced = true;
+                }
             },
             toggleTransferConnection() {
                 if (this.isTransferConnected || this.isTransferConnecting) {

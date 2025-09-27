@@ -32,6 +32,7 @@ let collectElementService = {};
 
 let registeredCollectElements = [];
 let collectedElements = [];
+let remoteCollectedElements = []
 let markedImageIndex = null;
 let keyboardLikeFactor = 0;
 let dictionaryKey = null;
@@ -49,6 +50,32 @@ let lastCollectTime = 0;
 
 let imgDimensionsCache = new MapCache();
 let _localMetadata = null;
+
+function getElementsForCollectElement(collectElement) {
+    if (!collectElement || collectElement.partnerSource !== GridElementCollect.PARTNER_SOURCE_PARTNER) {
+        return collectedElements;
+    }
+    return remoteCollectedElements;
+}
+
+function buildTransferPayloadFromElements(elements) {
+    return {
+        version: '1',
+        timestamp: Date.now(),
+        elements: (elements || []).map((element) => serializeCollectedElement(element)).filter((entry) => entry !== null),
+    };
+}
+
+function buildPrintTextFromElements(elements, options = {}) {
+    const opts = { ...options };
+    opts.trim = opts.trim !== undefined ? opts.trim : true;
+    opts.dontIncludeAudio = true;
+    opts.dontIncludePronunciation = opts.dontIncludePronunciation !== undefined ? opts.dontIncludePronunciation : true;
+    opts.inlcudeCorrectedGrammar = opts.inlcudeCorrectedGrammar !== undefined ? opts.inlcudeCorrectedGrammar : true;
+    const textArray = (elements || []).map((e) => getOutputObject(e, opts).text);
+    const joined = opts.trim ? textArray.join(' ').trim() : textArray.join(' ');
+    return joined.replace(/\s+/g, ' ');
+}
 
 collectElementService.getText = function () {
     return getPrintText();

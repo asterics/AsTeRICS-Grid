@@ -10,7 +10,8 @@ class GridElementCollect extends GridElement.extend({
     singleLine: [Boolean],
     convertToLowercase: [Boolean],
     textElemSizeFactor: [Number],
-    displayUpsideDown: [Boolean]
+    displayUpsideDown: [Boolean],
+    partnerSource: [String]
 }) {
     constructor(props) {
         props = props || {};
@@ -22,6 +23,7 @@ class GridElementCollect extends GridElement.extend({
         props.type = GridElement.ELEMENT_TYPE_COLLECT;
         props.textElemSizeFactor = 1.5;
         props.displayUpsideDown = props.displayUpsideDown !== undefined ? props.displayUpsideDown : false;
+        props.partnerSource = props.partnerSource || GridElementCollect.PARTNER_SOURCE_LOCAL;
         props.actions = props.actions || [
             new GridActionCollectElement({ action: GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS }),
             new GridActionPredict({ suggestOnChange: true, dictionaryKey: GridActionPredict.USE_DICTIONARY_CURRENT_LANG })
@@ -37,6 +39,13 @@ GridElementCollect.MODES = [
     GridElementCollect.MODE_AUTO,
     GridElementCollect.MODE_COLLECT_SEPARATED,
     GridElementCollect.MODE_COLLECT_TEXT
+];
+
+GridElementCollect.PARTNER_SOURCE_LOCAL = "local";
+GridElementCollect.PARTNER_SOURCE_PARTNER = "partner";
+GridElementCollect.PARTNER_SOURCES = [
+    GridElementCollect.PARTNER_SOURCE_LOCAL,
+    GridElementCollect.PARTNER_SOURCE_PARTNER
 ];
 
 export { GridElementCollect };
