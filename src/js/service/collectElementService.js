@@ -52,10 +52,16 @@ let imgDimensionsCache = new MapCache();
 let _localMetadata = null;
 
 function getElementsForCollectElement(collectElement) {
-    if (!collectElement || collectElement.partnerSource !== GridElementCollect.PARTNER_SOURCE_PARTNER) {
+    if (!collectElement) {
         return collectedElements;
     }
-    return remoteCollectedElements;
+    if (collectElement.partnerSource === GridElementCollect.PARTNER_SOURCE_PARTNER) {
+        return remoteCollectedElements;
+    }
+    if (collectElement.partnerSource === GridElementCollect.PARTNER_SOURCE_BOTH) {
+        return remoteCollectedElements.concat(collectedElements);
+    }
+    return collectedElements;
 }
 
 function buildTransferPayloadFromElements(elements) {
@@ -296,10 +302,19 @@ collectElementService.applyTransferPayload = async function (payload, options) {
         .filter((entry) => !!entry);
     updateOrigin = options.origin || 'remote';
     try {
-        if (options.append) {
-            collectedElements = collectedElements.concat(deserialized);
+        const isRemote = updateOrigin === 'remote';
+        if (isRemote) {
+            if (options.append) {
+                remoteCollectedElements = remoteCollectedElements.concat(deserialized);
+            } else {
+                remoteCollectedElements = deserialized;
+            }
         } else {
-            collectedElements = deserialized;
+            if (options.append) {
+                collectedElements = collectedElements.concat(deserialized);
+            } else {
+                collectedElements = deserialized;
+            }
         }
         await updateCollectElements();
     } finally {
@@ -418,8 +433,14 @@ async function updateCollectElements(isSecondTry) {
         let textColor = darkMode ? constants.DEFAULT_ELEMENT_FONT_COLOR_DARK : constants.DEFAULT_ELEMENT_FONT_COLOR;
 
         let rotationClass = collectElement.rotationActive ? ' upside-down' : '';
+        // Only re-render relevant collect elements based on update origin
+        if ((updateOrigin === 'remote' && collectElement.partnerSource === GridElementCollect.PARTNER_SOURCE_LOCAL) ||
+            (updateOrigin === 'local' && collectElement.partnerSource === GridElementCollect.PARTNER_SOURCE_PARTNER)) {
+            continue;
+        }
+        const elementsForThis = getElementsForCollectElement(collectElement);
         if (!imageMode) {
-            let text = getPrintText();
+            let text = buildPrintTextFromElements(elementsForThis);
             $(`#${collectElement.id}`).attr('aria-label', `${text}, ${i18nService.t('ELEMENT_TYPE_COLLECT')}`);
             predictionService.learnFromInput(text, dictionaryKey);
             let html = `<span style="padding: 5px; display: flex; align-items: center; flex: 1; text-align: left; font-weight: bold;">
@@ -446,10 +467,10 @@ async function updateCollectElements(isSecondTry) {
             let textPercentage = 0.85; // precentage of text height compared to text-line height
             let imagePercentage = collectElement.imageHeightPercentage / 100; // percentage of total height used for image
             let useSingleLine = collectElement.singleLine;
-            let imageCount = collectedElements.length;
+            let imageCount = elementsForThis.length;
             let imgContainerHeight = showLabel ? height * imagePercentage : height;
             let imageRatios = [];
-            for (const elem of collectedElements) {
+            for (const elem of elementsForThis) {
                 let imageData = getImageData(elem);
                 if (imageData) {
                     if (elem.image.searchProviderName) {
@@ -475,7 +496,7 @@ async function updateCollectElements(isSecondTry) {
             let lineHeight = height / numLines - imgContainerHeight;
             let textHeight = lineHeight * textPercentage;
             let totalWidth = 0;
-            for (const [index, collectedElement] of collectedElements.entries()) {
+            for (const [index, collectedElement] of elementsForThis.entries()) {
                 let label = getPrintTextOfElement(collectedElement);
                 let image = getImageData(collectedElement);
                 let elemWidth = imgHeight * imageRatios[index] || imgHeight;

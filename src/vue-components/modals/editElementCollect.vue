@@ -50,6 +50,17 @@
                 <label for="convertToLowercase">{{ $t('convertUppercaseKeyboardLettersToLowercase') }}</label>
             </div>
         </div>
+        <div class="row">
+            <label for="partnerSource" class="col-md-5">{{ $t('CTRANSFER_PARTNER_ASSIGNMENT') }}</label>
+            <div class="col-md-4">
+                <select v-if="gridElement" class="col-12" id="partnerSource" v-model="gridElement.partnerSource">
+                    <option :value="GridElementCollect.PARTNER_SOURCE_LOCAL">{{ $t('CTRANSFER_SOURCE_LOCAL') }}</option>
+                    <option :value="GridElementCollect.PARTNER_SOURCE_PARTNER">{{ $t('CTRANSFER_SOURCE_PARTNER') }}</option>
+                    <option :value="GridElementCollect.PARTNER_SOURCE_BOTH">{{ $t('CTRANSFER_SOURCE_BOTH') }}</option>
+                </select>
+            </div>
+        </div>
+
     </div>
 </template>
 

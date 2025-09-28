@@ -1358,6 +1358,10 @@
   "CTRANSFER_QR_TITLE": "Share pairing QR",
   "CTRANSFER_QR_EXPLAIN": "Scan this QR code on another device to copy the relay settings.",
   "CTRANSFER_QR_ERROR": "Could not generate QR code.",
+  "CTRANSFER_QR_EXPLAIN_TOKEN": "Ask your partner to scan this QR or type the token below.",
+  "CTRANSFER_PAIRING_TOKEN_LABEL": "Pairing token",
+  "CTRANSFER_COPY_TOKEN_BUTTON": "Copy token",
+
   "CTRANSFER_SHARE_CODE_LABEL": "Share code",
   "CTRANSFER_COPY_BUTTON": "Copy code",
   "CTRANSFER_COPY_SUCCESS": "Code copied to clipboard.",
@@ -1365,7 +1369,16 @@
   "CTRANSFER_IMPORT_TITLE": "Import pairing settings",
   "CTRANSFER_IMPORT_EXPLAIN": "Scan the QR code or paste the share code from your partner.",
   "CTRANSFER_IMPORT_PLACEHOLDER": "Paste share code here...",
+  "CTRANSFER_IMPORT_RELAY_URL": "Relay URL",
+  "CTRANSFER_IMPORT_TOKEN": "Pairing token",
+  "CTRANSFER_IMPORT_READY": "Looks good — press Apply to save and connect.",
+
   "CTRANSFER_IMPORT_ERROR_EMPTY": "Paste a share code or scan a QR first.",
+  "CTRANSFER_PARTNER_ASSIGNMENT": "Whose messages to display",
+  "CTRANSFER_SOURCE_LOCAL": "Mine",
+  "CTRANSFER_SOURCE_PARTNER": "Partner",
+  "CTRANSFER_SOURCE_BOTH": "Both",
+
   "CTRANSFER_IMPORT_ERROR_INVALID": "The provided share code is not valid.",
   "CTRANSFER_IMPORT_ERROR_UNKNOWN": "Could not import the share code.",
   "CTRANSFER_IMPORT_APPLY": "Apply settings",

@@ -978,6 +978,15 @@ collectTransferService.getShareCode = function () {
     return { success: true, code, descriptor };
 };
 
+
+	collectTransferService.parseShareCode = function (shareString) {
+	    const descriptor = decodeShareString(shareString);
+	    if (!descriptor) {
+	        return { success: false, reason: 'invalid_code' };
+	    }
+	    return { success: true, descriptor };
+	};
+
 collectTransferService.importShareCode = function (shareString) {
     const descriptor = decodeShareString(shareString);
     if (!descriptor) {

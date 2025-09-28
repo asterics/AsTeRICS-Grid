@@ -43,9 +43,11 @@ GridElementCollect.MODES = [
 
 GridElementCollect.PARTNER_SOURCE_LOCAL = "local";
 GridElementCollect.PARTNER_SOURCE_PARTNER = "partner";
+GridElementCollect.PARTNER_SOURCE_BOTH = "both";
 GridElementCollect.PARTNER_SOURCES = [
     GridElementCollect.PARTNER_SOURCE_LOCAL,
-    GridElementCollect.PARTNER_SOURCE_PARTNER
+    GridElementCollect.PARTNER_SOURCE_PARTNER,
+    GridElementCollect.PARTNER_SOURCE_BOTH
 ];
 
 export { GridElementCollect };

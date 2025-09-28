@@ -128,17 +128,24 @@
         <div v-if="currentModal === MODALS.MODAL_TRANSFER_QR" class="transfer-modal-overlay" @click.self="closeModal">
             <div class="transfer-modal-card" role="dialog" aria-modal="true" :aria-label="$t('CTRANSFER_QR_TITLE')">
                 <h4>{{ $t('CTRANSFER_QR_TITLE') }}</h4>
-                <p class="info-text">{{ $t('CTRANSFER_QR_EXPLAIN') }}</p>
-                <div v-if="qrGenerating" class="modal-spinner"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></div>
-                <div v-else-if="transferQrDataUrl" class="qr-wrapper">
-                    <img :src="transferQrDataUrl" class="qr-image" alt="QR"/>
+                <p class="info-text">{{ $t('CTRANSFER_QR_EXPLAIN_TOKEN') }}</p>
+                <div class="qr-wrapper">
+                    <div v-if="qrGenerating" class="modal-spinner"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></div>
+                    <img v-else-if="transferQrDataUrl" :src="transferQrDataUrl" class="qr-image" alt="QR"/>
+                </div>
+                <div v-if="transferShareToken" class="token-section">
+                    <label class="share-code-label">{{ $t('CTRANSFER_PAIRING_TOKEN_LABEL') }}</label>
+                    <div class="token-display" aria-live="polite">{{ transferShareToken }}</div>
+                    <div class="modal-actions separated">
+                        <button type="button" class="button-primary" @click="copyShareToken" :disabled="!transferShareToken">{{ $t('CTRANSFER_COPY_TOKEN_BUTTON') }}</button>
+                    </div>
                 </div>
                 <div v-if="qrError" class="error-text">{{ qrError }}</div>
                 <label class="share-code-label" for="transferShareCode">{{ $t('CTRANSFER_SHARE_CODE_LABEL') }}</label>
                 <textarea id="transferShareCode" class="share-code-box" readonly :value="transferShareCode"></textarea>
                 <div v-if="copyFeedback" class="helper-text">{{ copyFeedback }}</div>
                 <div class="modal-actions">
-                    <button type="button" class="button-primary" @click="copyShareCode" :disabled="!transferShareCode">{{ $t('CTRANSFER_COPY_BUTTON') }}</button>
+                    <button type="button" class="button-secondary" @click="copyShareCode" :disabled="!transferShareCode">{{ $t('CTRANSFER_COPY_BUTTON') }}</button>
                     <button type="button" @click="closeModal">{{ $t('close') }}</button>
                 </div>
             </div>
@@ -149,12 +156,17 @@
                 <p class="info-text">{{ $t('CTRANSFER_IMPORT_EXPLAIN') }}</p>
                 <textarea v-model="importCode" class="share-code-box" :placeholder="$t('CTRANSFER_IMPORT_PLACEHOLDER')"></textarea>
                 <div v-if="importError" class="error-text">{{ importError }}</div>
+                <div v-if="importPreview" class="import-preview">
+                    <div><strong>{{ $t('CTRANSFER_IMPORT_RELAY_URL') }}:</strong> <code>{{ importPreview.settings.relayUrl }}</code></div>
+                    <div><strong>{{ $t('CTRANSFER_IMPORT_TOKEN') }}:</strong> <code>{{ importPreview.settings.token }}</code></div>
+                    <div v-if="canApplyImport" class="helper-text">{{ $t('CTRANSFER_IMPORT_READY') }}</div>
+                </div>
                 <div v-if="cameraSupported" class="scan-section">
                     <video v-show="qrScanActive" ref="transferQrVideo" class="import-video" muted playsinline></video>
                     <button type="button" @click="qrScanActive ? stopCameraScan() : startCameraScan()">{{ qrScanActive ? $t('CTRANSFER_SCAN_STOP') : $t('CTRANSFER_SCAN_START') }}</button>
                 </div>
                 <div class="modal-actions">
-                    <button type="button" class="button-primary" @click="applyShareCode">{{ $t('CTRANSFER_IMPORT_APPLY') }}</button>
+                    <button type="button" class="button-primary" @click="applyShareCode" :disabled="!canApplyImport">{{ $t('CTRANSFER_IMPORT_APPLY') }}</button>
                     <button type="button" @click="closeModal">{{ $t('close') }}</button>
                 </div>
             </div>
@@ -198,6 +210,7 @@
                 statusHandler: null,
                 userChangedHandler: null,
                 transferShareCode: '',
+                transferShareToken: '',
                 transferQrDataUrl: '',
                 qrGenerating: false,
                 qrError: null,
@@ -223,6 +236,16 @@
             },
             connectButtonDisabled() {
                 return (!this.isTransferConnected && !this.canConnect) || (this.isTransferConnecting && !this.isTransferConnected);
+            },
+            importPreview() {
+                const trimmed = (this.importCode || '').trim();
+                if (!trimmed) return null;
+                const result = collectTransferService.parseShareCode(trimmed);
+                return result && result.success ? result.descriptor : null;
+            },
+            canApplyImport() {
+                const d = this.importPreview;
+                return !!(d && d.settings && d.settings.relayUrl && d.settings.token);
             },
             advancedToggleLabel() {
                 return this.showTransferAdvanced ? this.$t('CTRANSFER_ADVANCED_HIDE') : this.$t('CTRANSFER_ADVANCED_SHOW');
@@ -370,6 +393,7 @@
                     return;
                 }
                 this.transferShareCode = result.code;
+                this.transferShareToken = (result.descriptor && result.descriptor.settings && result.descriptor.settings.token) || '';
                 this.qrGenerating = true;
                 this.transferQrDataUrl = '';
                 this.currentModal = MODALS.MODAL_TRANSFER_QR;
@@ -399,6 +423,18 @@
                     this.copyFeedback = this.$t('CTRANSFER_COPY_SUCCESS');
                 } catch (err) {
                     console.warn('[collectTransfer] failed to copy share code', err);
+                    this.copyFeedback = this.$t('CTRANSFER_COPY_ERROR');
+                }
+            },
+            async copyShareToken() {
+                if (!this.transferShareToken) {
+                    return;
+                }
+                try {
+                    await navigator.clipboard.writeText(this.transferShareToken);
+                    this.copyFeedback = this.$t('CTRANSFER_COPY_SUCCESS');
+                } catch (err) {
+                    console.warn('[collectTransfer] failed to copy token', err);
                     this.copyFeedback = this.$t('CTRANSFER_COPY_ERROR');
                 }
             },
@@ -562,45 +598,16 @@
         flex-direction: column;
         gap: 0.75rem;
     }
-    .qr-wrapper {
-        display: flex;
-        justify-content: center;
-    }
-    .qr-image {
-        width: 12rem;
-        height: 12rem;
-    }
-    .share-code-box {
-        width: 100%;
-        min-height: 5rem;
-        font-family: monospace;
-        font-size: 0.9rem;
-        padding: 0.5rem;
-        resize: vertical;
-    }
-    .modal-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-    }
-    .modal-spinner {
-        display: flex;
-        justify-content: center;
-    }
-    .helper-text {
-        color: #2c3e50;
-        font-size: 0.9rem;
-    }
-    .import-video {
-        width: 100%;
-        max-height: 12rem;
-        background: #000;
-        border-radius: 4px;
-    }
-    .scan-section {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
+    .qr-wrapper { display: flex; justify-content: center; align-items: center; margin: 0.5rem 0 1rem; }
+    .qr-image { width: min(80vw, 18rem); height: auto; image-rendering: pixelated; }
+    .share-code-box { width: 100%; min-height: 5rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 0.9rem; padding: 0.5rem; resize: vertical; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 0.5rem; flex-wrap: wrap; }
+    .modal-spinner { display: flex; justify-content: center; }
+    .helper-text { color: #2c3e50; font-size: 0.9rem; }
+    .token-section { margin: 0.5rem 0 1rem; }
+    .token-display { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 1.4rem; letter-spacing: 0.06em; padding: 0.5rem 0.75rem; background: #f6f8fa; border-radius: 6px; word-break: break-all; text-align: center; }
+    .modal-actions.separated { margin-top: 0.5rem; }
+    .import-preview { background: #f6f8fa; border-radius: 6px; padding: 0.5rem 0.75rem; margin: 0.5rem 0 1rem; }
+    .import-video { width: 100%; max-height: 12rem; background: #000; border-radius: 4px; }
+    .scan-section { display: flex; flex-direction: column; gap: 0.5rem; }
 </style>
