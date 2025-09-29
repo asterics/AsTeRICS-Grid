@@ -63,6 +63,7 @@
     import {dataService} from '../../js/service/data/dataService'
     import Predictionary from 'predictionary';
     import {i18nService} from "../../js/service/i18nService";
+    import { getDictionaryCatalogOptions } from '../../js/service/dictionaryCatalog';
     import './../../css/modal.css';
     import {Dictionary} from "../../js/model/Dictionary.js";
     import {modelUtil} from "../../js/util/modelUtil.js";
@@ -81,17 +82,7 @@
         data: function () {
             return {
                 importType: c.SELECT_ONLINE,
-                options: [{
-                    name: i18nService.t('astericsGridGermanDefault'),
-                    downloadUrl: 'https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/app/dictionaries/default_de.json',
-                    type: c.OPTION_TYPE_PREDEFINED,
-                    lang: "de"
-                }, {
-                    name: i18nService.t('astericsGridEnglishDefault'),
-                    downloadUrl: 'https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/app/dictionaries/default_en.json',
-                    type: c.OPTION_TYPE_PREDEFINED,
-                    lang: "en"
-                }],
+                options: [],
                 selectedOption: null,
                 selectedFile: null,
                 c: c,

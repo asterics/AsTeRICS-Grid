@@ -1309,5 +1309,18 @@
   "managePodcasts": "Manage podcasts",
   "selectedPodcasts": "Selected podcasts",
   "hideKeyboards": "Hide keyboards",
-  "automaticallyAddImages": "Automatically add images"
+  "automaticallyAddImages": "Automatically add images",
+  "prediction.enableTitle": "Enable prediction?",
+  "prediction.enableBody": "This gridset uses prediction, but no dictionary is installed. Import a dictionary to enable word predictions.",
+  "prediction.suggested": "Suggested",
+  "prediction.importSuggested": "Import {dictName}",
+  "prediction.chooseDifferent": "Choose a different dictionary…",
+  "prediction.skip": "Not now",
+  "prediction.dontAskAgain": "Don’t ask again",
+  "prediction.backupNote": "Note: Dictionaries are stored locally and included in online backup. This may increase your backup size.",
+  "prediction.downloading": "Downloading {dictName}…",
+  "prediction.installing": "Installing…",
+  "prediction.installed": "Dictionary installed. Prediction is now enabled.",
+  "prediction.offline": "You’re offline. Try again when connected.",
+  "prediction.error": "Couldn’t install the dictionary. Please try again."
 }

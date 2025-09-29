@@ -14,12 +14,15 @@ import NotificationBar from '../../vue-components/components/notificationBar.vue
 import ProgressBarModal from '../../vue-components/modals/progressBarModal.vue';
 import SearchModal from "../../vue-components/modals/searchModal.vue";
 import { systemActionService } from '../service/systemActionService';
+import PredictionEnableModal from '../../vue-components/modals/predictionEnableModal.vue';
+
 
 let MainVue = {};
 let app = null;
 let modalTypes = {
     MODAL_SEARCH: 'MODAL_SEARCH',
-    MODAL_PROGRESSBAR: 'MODAL_PROGRESSBAR'
+    MODAL_PROGRESSBAR: 'MODAL_PROGRESSBAR',
+    MODAL_PREDICTION_ENABLE: 'MODAL_PREDICTION_ENABLE'
 };
 
 MainVue.setViewComponent = function (component, properties) {
@@ -85,6 +88,11 @@ MainVue.showSearchModal = function (options) {
     app.modalOptions = options || {};
 };
 
+MainVue.showPredictionEnableModal = function (options) {
+    app.showModal = modalTypes.MODAL_PREDICTION_ENABLE;
+    app.modalOptions = options || {};
+};
+
 MainVue.searchModalOpened = function() {
     return app.showModal === modalTypes.MODAL_SEARCH;
 };
@@ -95,7 +103,7 @@ MainVue.init = function () {
         app = new Vue({
             i18n: i18n,
             el: '#app',
-            components: { NotificationBar, ProgressBarModal, SearchModal },
+            components: { NotificationBar, ProgressBarModal, SearchModal, PredictionEnableModal },
             data() {
                 return {
                     component: null,

@@ -80,6 +80,9 @@
     import {helpService} from "../../js/service/helpService";
     import {i18nService} from "../../js/service/i18nService.js";
     import {MainVue} from "../../js/vue/mainVue.js";
+    import { localStorageService } from "../../js/service/data/localStorageService";
+    import { gridUtil } from "../../js/util/gridUtil";
+    import { GridElement } from "../../js/model/GridElement";
 
 
     export default {
@@ -156,12 +159,31 @@
                 if (this.reloadFn) {
                     this.reloadFn();
                 }
+                await this.maybeOfferPredictionDictionary();
+                },
+                async maybeOfferPredictionDictionary() {
+                    try {
+                        const settings = localStorageService.getUserSettings();
+                        if (settings && settings.askForDictOnPrediction === false) {
+                            return;
+                        }
+                        const hasPrediction = (this.importData && this.importData.grids || []).some(g => (g.gridElements || []).some(e => e.type === GridElement.ELEMENT_TYPE_PREDICTION));
+                        if (!hasPrediction) return;
+                        const dicts = await dataService.getDictionaries();
+                        if (dicts && dicts.length > 0) return;
+                        const gridLang = gridUtil.getGridsContentLang(this.importData.grids || [], i18nService.getContentLang());
+                        const userLang = i18nService.getContentLang();
+                        const browserLang = (navigator.language || '').toLowerCase();
+                        setTimeout(() => MainVue.showPredictionEnableModal({ candidates: [gridLang, userLang, browserLang] }), 250);
+                    } catch (e) {
+                        // no-op
+                    }
+                },
+                openHelp() {
+                    helpService.openHelp();
+                }
             },
-            openHelp() {
-                helpService.openHelp();
-            }
-        },
-        mounted() {
+            mounted() {
         },
         beforeDestroy() {
             helpService.revertToLastLocation();

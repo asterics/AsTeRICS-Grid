@@ -87,6 +87,7 @@
     import { collectElementService } from '../../js/service/collectElementService';
     import { predictionService } from '../../js/service/predictionService';
     import { liveElementService } from '../../js/service/liveElementService';
+    import { GridElement } from '../../js/model/GridElement';
 
     let vueApp = null;
     let UNLOCK_COUNT = 8;
@@ -319,6 +320,8 @@
                 this.initInputMethods(options);
                 this.highlightElements();
                 await predictionService.initWithElements(this.renderGridData.gridElements);
+                // Offer dictionary if this grid uses prediction and none is installed (covers non-file import flows)
+                await this.maybeOfferPredictionDictionary();
                 collectElementService.initWithGrid(this.renderGridData);
                 liveElementService.initWithElements(this.renderGridData.gridElements);
                 $(document).trigger(constants.EVENT_GRID_LOADED);
@@ -439,6 +442,35 @@
             },
             async metadataUpdated() {
                 this.metadata = await dataService.getMetadata();
+            },
+            async maybeOfferPredictionDictionary() {
+                try {
+                    // Respect per-device/profile preference
+                    const settings = localStorageService.getUserSettings ? localStorageService.getUserSettings() : {};
+                    if (settings && settings.askForDictOnPrediction === false) return;
+
+                    // Avoid repeating within the same session to reduce noise
+                    if (sessionStorage.getItem('PREDICTION_DICT_PROMPT_SHOWN') === '1') return;
+
+                    const elements = (this.renderGridData && this.renderGridData.gridElements) || [];
+                    const hasPrediction = elements.some(e => e.type === GridElement.ELEMENT_TYPE_PREDICTION);
+                    if (!hasPrediction) return;
+
+                    const dicts = await dataService.getDictionaries();
+                    if (dicts && dicts.length > 0) return;
+
+                    const userLang = i18nService.getContentLang();
+                    const gridLang = gridUtil.getGridsContentLang([this.renderGridData], userLang);
+                    const browserLang = (navigator.language || '').toLowerCase();
+
+                    // Delay slightly in case other modals just closed
+                    setTimeout(() => {
+                        sessionStorage.setItem('PREDICTION_DICT_PROMPT_SHOWN', '1');
+                        MainVue.showPredictionEnableModal({ candidates: [gridLang, userLang, browserLang] });
+                    }, 250);
+                } catch (e) {
+                    // best-effort only
+                }
             }
         },
         created() {
