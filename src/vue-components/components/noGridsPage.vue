@@ -64,6 +64,9 @@
     import Accordion from './accordion.vue';
     import { MainVue } from '../../js/vue/mainVue';
     import ConfigPreviewDetail from '../modals/configPreviewDetail.vue';
+    import { gridUtil } from '../../js/util/gridUtil';
+    import { localStorageService } from '../../js/service/data/localStorageService';
+    import { GridElement } from '../../js/model/GridElement';
 
     export default {
         components: { ConfigPreviewDetail, Accordion },
@@ -104,12 +107,31 @@
                     }
                 }).then(async () => {
                     thiz.loading = false;
+                    await thiz.maybeOfferPredictionDictionary();
                     if (preview.translate) { // currently empty config is the only one with .translate prop
                         Router.toEditGrid();
                     } else {
                         Router.toMain();
                     }
                 });
+            },
+            async maybeOfferPredictionDictionary() {
+                try {
+                    const settings = localStorageService.getUserSettings ? localStorageService.getUserSettings() : {};
+                    if (settings && settings.askForDictOnPrediction === false) return;
+
+                    const dicts = await dataService.getDictionaries();
+                    if (dicts && dicts.length > 0) return;
+
+                    const grids = await dataService.getGrids(false, true);
+                    const anyPred = (grids || []).some(g => (g.gridElements || []).some(e => e.type === GridElement.ELEMENT_TYPE_PREDICTION));
+                    if (!anyPred) return;
+
+                    const userLang = i18nService.getContentLang();
+                    const gridLang = gridUtil.getGridsContentLang(grids || [], userLang);
+                    const browserLang = (navigator.language || '').toLowerCase();
+                    setTimeout(() => MainVue.showPredictionEnableModal({ candidates: [gridLang, userLang, browserLang] }), 250);
+                } catch(e) { /* ignore */ }
             }
         },
         async mounted() {

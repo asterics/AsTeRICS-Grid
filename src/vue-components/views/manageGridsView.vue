@@ -138,6 +138,7 @@
     import {GridActionNavigate} from "../../js/model/GridActionNavigate.js";
     import { urlParamService } from '../../js/service/urlParamService';
     import { GridImage } from '../../js/model/GridImage';
+    import { GridElement } from '../../js/model/GridElement';
 
     let ORDER_MODE_KEY = "AG_ALLGRIDS_ORDER_MODE_KEY";
     let SELECTOR_CONTEXTMENU = '#moreButton';
@@ -291,7 +292,25 @@
                     });
                 });
                 this.resetFileInput(event);
-                this.reload();
+                await this.reload();
+                await this.maybeOfferPredictionDictionary();
+            },
+            async maybeOfferPredictionDictionary() {
+                try {
+                    const settings = localStorageService.getUserSettings ? localStorageService.getUserSettings() : {};
+                    if (settings && settings.askForDictOnPrediction === false) return;
+
+                    const dicts = await dataService.getDictionaries();
+                    if (dicts && dicts.length > 0) return;
+
+                    const anyPred = (this.grids || []).some(g => (g.gridElements || []).some(e => e.type === GridElement.ELEMENT_TYPE_PREDICTION));
+                    if (!anyPred) return;
+
+                    const userLang = i18nService.getContentLang();
+                    const gridLang = gridUtil.getGridsContentLang(this.grids || [], userLang);
+                    const browserLang = (navigator.language || '').toLowerCase();
+                    setTimeout(() => MainVue.showPredictionEnableModal({ candidates: [gridLang, userLang, browserLang] }), 250);
+                } catch(e) { /* no-op */ }
             },
             reload: function (openGridId) {
                 let thiz = this;
