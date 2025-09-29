@@ -54,6 +54,9 @@
     import { localStorageService } from '../../js/service/data/localStorageService';
     import { predictionService } from '../../js/service/predictionService';
     import ImportDictionaryModal from './importDictionaryModal.vue';
+    import Predictionary from 'predictionary';
+    import { getDictionaryCatalogOptions, findBestDictionaryForCandidates } from '../../js/service/dictionaryCatalog';
+
 
     export default {
         props: ['options'],
@@ -66,7 +69,8 @@
                 loadingText: '',
                 error: '',
                 showSelector: false,
-                dicts: []
+                dicts: [],
+                catalogOptions: []
             };
         },
         computed: {
@@ -82,7 +86,15 @@
                 this.loading = true;
                 this.loadingText = i18nService.t('prediction.downloading', { dictName: this.suggestion.name });
                 try {
-                    const dictText = await this.requestDict(this.suggestion.downloadUrl);
+                    let dictData;
+                    if (this.suggestion.type === 'GITHUB_FREQUENCYWORDS') {
+                        const raw = await this.requestDict(this.suggestion.downloadUrl, this.suggestion.downloadUrl2);
+                        const pred = Predictionary.instance();
+                        pred.parseWords(raw, { elementSeparator: '\n', rankIsIndex: true });
+                        dictData = pred.dictionaryToJSON();
+                    } else {
+                        dictData = await this.requestDict(this.suggestion.downloadUrl);
+                    }
                     this.loadingText = i18nService.t('prediction.installing');
                     const { Dictionary } = await import('../../js/model/Dictionary');
                     const { modelUtil } = await import('../../js/util/modelUtil');
@@ -90,7 +102,7 @@
                     const existingNames = existing.map(d => d.dictionaryKey);
                     const dict = new Dictionary({
                         dictionaryKey: modelUtil.getNewName(this.suggestion.name, existingNames),
-                        data: dictText,
+                        data: dictData,
                         isDefault: true,
                         lang: this.suggestion.lang
                     });
@@ -124,12 +136,18 @@
                     localStorageService.saveUserSettings({ askForDictOnPrediction: false });
                 }
             },
-            requestDict(url) {
+            requestDict(url, secondTryUrl) {
                 return new Promise((resolve, reject) => {
                     $.ajax({
                         url: url,
-                        dataType: 'text'
-                    }).then(result => resolve(result)).fail(() => reject(i18nService.t('couldNotDownloadDictCheckInternet')));
+                        dataType: 'text',
+                        accepts: { text: 'application/vnd.github.v3.raw' }
+                    }).then(result => resolve(result)).fail(() => {
+                        if (!secondTryUrl) {
+                            return reject(i18nService.t('couldNotDownloadDictCheckInternet'));
+                        }
+                        this.requestDict(secondTryUrl).then(resolve).catch(reject);
+                    });
                 });
             },
             notifyInstalled() {
@@ -139,26 +157,23 @@
                 } catch (e) {}
             },
             computeSuggestion(candidates) {
-                candidates = (candidates || []).filter(Boolean).map(c => (''+c).toLowerCase());
-                const has = (code) => candidates.some(c => c === code || c.startsWith(code + '-'));
-                // Only predefined defaults for now
-                if (has('de')) {
+                const options = this.catalogOptions && this.catalogOptions.length ? this.catalogOptions : getDictionaryCatalogOptions();
+                const suggestion = findBestDictionaryForCandidates(candidates, options);
+                if (!suggestion) {
                     return {
-                        lang: 'de',
-                        name: i18nService.t('astericsGridGermanDefault'),
-                        downloadUrl: 'https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/app/dictionaries/default_de.json'
+                        lang: 'en',
+                        name: i18nService.t('astericsGridEnglishDefault'),
+                        type: 'OPTION_TYPE_PREDEFINED',
+                        downloadUrl: 'https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/app/dictionaries/default_en.json'
                     };
                 }
-                // fallback to English
-                return {
-                    lang: 'en',
-                    name: i18nService.t('astericsGridEnglishDefault'),
-                    downloadUrl: 'https://raw.githubusercontent.com/asterics/AsTeRICS-Grid/master/app/dictionaries/default_en.json'
-                };
+                const type = (suggestion.type && suggestion.type.indexOf('GITHUB') >= 0) ? 'GITHUB_FREQUENCYWORDS' : 'PREDEFINED';
+                return { lang: suggestion.lang, name: suggestion.name, type, downloadUrl: suggestion.downloadUrl, downloadUrl2: suggestion.downloadUrl2 };
             }
         },
         async created() {
             const cands = (this.options && this.options.candidates) || [];
+            this.catalogOptions = getDictionaryCatalogOptions();
             this.suggestion = this.computeSuggestion(cands);
             // load dicts for embedded selector
             try {
