@@ -25,6 +25,11 @@ class MetaData extends Model({
     textConfig: [TextConfig],
     notificationConfig: [NotificationConfig],
     activateARASAACGrammarAPI: [Boolean],
+    // New: Automatic morphology settings
+    activateAutoMorphology: [Boolean],
+    morphTagOrder: [String], // 'flexible' | 'strict'
+    // Phase 2: Smart joins at collect-time
+    activateMorphSmartJoins: [Boolean],
     vocabularyLevel: [Number, null],
     integrations: [Object] // IntegrationConfigSync
 }) {
@@ -99,6 +104,11 @@ MetaData.defaults({
     inputConfig: new InputConfig(),
     globalGridActive: false,
     globalGridHeightPercentage: 17,
+    // Defaults for automatic morphology
+    activateAutoMorphology: false,
+    morphTagOrder: 'flexible',
+    // Defaults for smart joins
+    activateMorphSmartJoins: true, // Enable by default for testing
     vocabularyLevel: null,
     integrations: new IntegrationConfigSync()
 });

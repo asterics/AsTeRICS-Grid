@@ -24,6 +24,27 @@
         </div>
         <div class="srow">
             <div class="eleven columns">
+                <h3 class="mt-2">Grammar</h3>
+                <div class="srow">
+                    <input id="activateAutoMorphology" type="checkbox" v-model="metadata.activateAutoMorphology" @change="saveMetadata(metadata)"/>
+                    <label for="activateAutoMorphology">Enable automatic morphology (morpho‑wasm)</label>
+                </div>
+                <div class="srow" v-if="metadata.activateAutoMorphology">
+                    <label class="three columns" for="morphTagOrder">Tag ordering</label>
+                    <select id="morphTagOrder" class="five columns mb-2" v-model="metadata.morphTagOrder" @change="saveMetadata(metadata)">
+                        <option value="flexible">flexible</option>
+                        <option value="strict">strict</option>
+                    </select>
+                </div>
+                <div class="srow">
+                    <input id="activateMorphSmartJoins" type="checkbox" v-model="metadata.activateMorphSmartJoins" @change="saveMetadata(metadata)"/>
+                    <label for="activateMorphSmartJoins">Smart joins in collected text (experimental)</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="srow">
+            <div class="eleven columns">
                 <h3 class="mt-2">{{ $t('voice') }}</h3>
                 <div class="srow">
                     <label class="three columns" for="inVoice">

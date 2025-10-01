@@ -24,6 +24,8 @@ import {MapCache} from "../util/MapCache.js";
 import { liveElementService } from './liveElementService';
 import { MetaData } from '../model/MetaData';
 import { GridData } from '../model/GridData';
+import { morphologyService } from './morphologyService.js';
+
 
 let collectElementService = {};
 
@@ -37,6 +39,7 @@ let collectMode = GridElementCollect.MODE_AUTO;
 let convertToLowercaseIfKeyboard = true;
 let convertMode = null;
 let activateARASAACGrammarAPI = false;
+let activateMorphSmartJoins = false;
 
 let duplicatedCollectPause = 0;
 let lastCollectId = null;
@@ -48,6 +51,9 @@ let _localMetadata = null;
 collectElementService.getText = function () {
     return getPrintText();
 };
+
+// Ensure we have the latest metadata at startup so toggles are available
+try { getMetadataConfig(); } catch (e) {}
 
 collectElementService.initWithGrid = function (gridData, dontAutoPredict) {
     registeredCollectElements = [];
@@ -108,12 +114,117 @@ collectElementService.doARASAACGrammarCorrection = async function() {
     }
 }
 
+/**
+ * applies both ARASAAC grammar correction and morphological smart joins
+ * @returns {Promise<void>}
+ */
+async function applyGrammarAndJoins() {
+    console.log('🔧 applyGrammarAndJoins: Starting grammar and join processing...');
+    console.log('🔧 applyGrammarAndJoins: collectedElements.length:', collectedElements.length);
+    console.log('🔧 applyGrammarAndJoins: collectedElements:', collectedElements.map(e => ({id: e.id, label: getLabel(e)})));
+
+    // First apply ARASAAC grammar correction if enabled
+    await collectElementService.doARASAACGrammarCorrection();
+
+    // Then apply smart joins if enabled
+    if (activateMorphSmartJoins && morphologyService && morphologyService.smartJoinTextArray) {
+        try {
+            const textOptions = { inlcudeCorrectedGrammar: true, dontIncludePronunciation: true, dontIncludeAudio: true };
+            const textArray = collectedElements.map((e) => getOutputObject(e, textOptions).text).filter(t => !!t);
+            console.log('🔧 applyGrammarAndJoins: Applying smart joins to:', textArray);
+
+            const joined = await morphologyService.smartJoinTextArray(textArray, i18nService.getContentLang());
+            if (joined) {
+                const refined = (joined || '').replace(/\s+/g, ' ').trim();
+                const currentText = getPrintText(textOptions);
+                console.log('🔧 applyGrammarAndJoins: Smart join result:', refined, 'vs current:', currentText);
+
+                if (refined && refined !== currentText) {
+                    console.log('🔧 applyGrammarAndJoins: Updating collect element with refined text');
+
+                    // Create a proper element structure matching existing elements
+                    const tempElement = {
+                        id: 'temp-refined-' + Date.now(),
+                        label: i18nService.getTranslationObject(refined),
+                        type: constants.ELEMENT_TYPE_NORMAL,
+                        actions: [],
+                        tags: [],
+                        wordForms: [],
+                        onlyText: true
+                    };
+
+                    // Clear and replace with refined text
+                    collectedElements.length = 0;
+                    collectedElements.push(tempElement);
+
+                    // Force visual update
+                    await updateCollectElements();
+                }
+            }
+        } catch (e) {
+            console.log('🔧 applyGrammarAndJoins: Error applying smart joins:', e);
+        }
+    }
+
+    console.log('🔧 applyGrammarAndJoins: Grammar and join processing complete');
+}
+
+/**
+ * applies smart joins before speaking (lighter version for speak actions)
+ * @returns {Promise<void>}
+ */
+async function applySmartJoinsBeforeSpeaking() {
+    if (activateMorphSmartJoins && morphologyService && morphologyService.smartJoinTextArray) {
+        try {
+            const textOptions = { inlcudeCorrectedGrammar: true, dontIncludePronunciation: true, dontIncludeAudio: true };
+            const textArray = collectedElements.map((e) => getOutputObject(e, textOptions).text).filter(t => !!t);
+
+            console.log('🔧 applySmartJoinsBeforeSpeaking: Processing', textArray.length, 'elements:', textArray);
+
+            if (textArray.length > 1) {
+                const joined = await morphologyService.smartJoinTextArray(textArray, i18nService.getContentLang());
+                if (joined) {
+                    const refined = (joined || '').replace(/\s+/g, ' ').trim();
+                    const currentText = getPrintText(textOptions);
+                    console.log('🔧 applySmartJoinsBeforeSpeaking: Smart join result:', refined, 'vs current:', currentText);
+
+                    if (refined && refined !== currentText) {
+                        console.log('🔧 applySmartJoinsBeforeSpeaking: Updating collect element with refined text');
+
+                        // Create a proper element structure matching existing elements
+                        const tempElement = {
+                            id: 'temp-refined-' + Date.now(),
+                            label: i18nService.getTranslationObject(refined),
+                            type: constants.ELEMENT_TYPE_NORMAL,
+                            actions: [],
+                            tags: [],
+                            wordForms: [],
+                            onlyText: true
+                        };
+
+                        // Clear and replace with refined text
+                        collectedElements.length = 0;
+                        collectedElements.push(tempElement);
+
+                        // Force visual update
+                        await updateCollectElements();
+                    }
+                }
+            }
+        } catch (e) {
+            console.log('🔧 applySmartJoinsBeforeSpeaking: Error:', e);
+        }
+    }
+}
+
 collectElementService.doCollectElementActions = async function (action, gridElement) {
     if (!action) {
         return;
     }
     if (GridActionCollectElement.isSpeakAction(action)) {
         await collectElementService.doARASAACGrammarCorrection();
+        // Note: Smart joins removed from speak action for safety
+        // Use the grammar button for manual smart joins
     }
     let speakText = getPrintText({ dontIncludePronunciation: false });
     let speakArray = getSpeakArray();
@@ -192,6 +303,9 @@ collectElementService.doCollectElementActions = async function (action, gridElem
                 collectedElements.pop();
             }
             updateCollectElements();
+            break;
+        case GridActionCollectElement.COLLECT_ACTION_APPLY_GRAMMAR:
+            await applyGrammarAndJoins();
             break;
         case GridActionCollectElement.COLLECT_ACTION_SHARE: {
             let blob = await util.getCollectContentBlob();
@@ -343,7 +457,8 @@ async function updateCollectElements(isSecondTry) {
 
         let rotationClass = collectElement.rotationActive ? ' upside-down' : '';
         if (!imageMode) {
-            let text = getPrintText();
+            let textOptions = { inlcudeCorrectedGrammar: true, dontIncludePronunciation: true, dontIncludeAudio: true };
+            let text = getPrintText(textOptions);
             $(`#${collectElement.id}`).attr('aria-label', `${text}, ${i18nService.t('ELEMENT_TYPE_COLLECT')}`);
             predictionService.learnFromInput(text, dictionaryKey);
             let html = `<span style="padding: 5px; display: flex; align-items: center; flex: 1; text-align: left; font-weight: bold;">
@@ -353,6 +468,44 @@ async function updateCollectElements(isSecondTry) {
                 (html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; background-color: ${backgroundColor}; text-align: justify;">${html}</div>`)
             );
             fontUtil.adaptFontSize($(`#${collectElement.id}`));
+            // Async refine with smart joins (if enabled)
+            if (activateMorphSmartJoins && morphologyService && morphologyService.smartJoinTextArray) {
+                try {
+                    // Debug: Check what we have in collectedElements
+                    console.log('🔧 DEBUG: collectedElements count:', collectedElements.length);
+                    if (collectedElements.length > 0) {
+                        console.log('🔧 DEBUG: first element:', collectedElements[0]);
+                        console.log('🔧 DEBUG: first element output:', getOutputObject(collectedElements[0], textOptions));
+                    }
+
+                    const textArray = collectedElements.map((e) => getOutputObject(e, textOptions).text).filter(t => !!t);
+                    console.log('🔧 DEBUG: textArray after mapping:', textArray);
+
+                    // Only process if we have multiple words to join
+                    if (textArray.length > 1) {
+                        console.log('🔧 updateCollectElement: Processing smart joins for:', textArray);
+                        morphologyService.smartJoinTextArray(textArray, i18nService.getContentLang()).then((joined2) => {
+                        console.log('🔧 updateCollectElement: async join result:', joined2);
+                        if (!joined2) return;
+                        let refined = (joined2 || '').replace(/\s+/g, ' ').trim();
+                        console.log('🔧 updateCollectElement: refined text:', refined, 'original:', text);
+                        if (refined && refined !== text) {
+                            console.log('🔧 updateCollectElement: updating UI with refined text:', refined);
+                            $(`#${collectElement.id}`).attr('aria-label', `${refined}, ${i18nService.t('ELEMENT_TYPE_COLLECT')}`);
+                            let html2 = `<span style="padding: 5px; display: flex; align-items: center; flex: 1; text-align: left; font-weight: bold;">
+                                            ${refined}
+                                         </span>`;
+                            outerContainerJqueryElem.html(
+                                `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; background-color: ${backgroundColor}; text-align: justify;">${html2}</div>`
+                            );
+                            fontUtil.adaptFontSize($(`#${collectElement.id}`));
+                        }
+                        }).catch((e) => {
+                            console.log('🔧 updateCollectElement: async join error:', e);
+                        });
+                    }
+                } catch (e) {}
+            }
         } else {
             $(`#${collectElement.id}`).attr(
                 'aria-label',
@@ -539,8 +692,12 @@ function getPrintText(options) {
         options.dontIncludePronunciation !== undefined ? options.dontIncludePronunciation : true;
     options.inlcudeCorrectedGrammar =
         options.inlcudeCorrectedGrammar !== undefined ? options.inlcudeCorrectedGrammar : true;
-    let textArray = collectedElements.map((e) => getOutputObject(e, options).text)
-    let returnValue = options.trim ? textArray.join(' ').trim() : textArray.join(' ');
+    let textArray = collectedElements.map((e) => getOutputObject(e, options).text).filter(t => !!t);
+    let joined = textArray.join(' ');
+    // Smart joins are async, so we can't do them in getPrintText (which is sync)
+    // The async refinement happens in updateCollectElement via smartJoinTextArray
+    console.log('🔧 getPrintText: using simple space join, async refinement happens elsewhere');
+    let returnValue = options.trim ? (joined || '').trim() : (joined || '');
     return returnValue.replace(/\s+/g, ' ');
 }
 
@@ -571,6 +728,8 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
     }
     lastCollectId = element.id;
     lastCollectTime = new Date().getTime();
+
+    console.log('🔧 ELEMENT_EVENT_ID triggered for element:', element.id, 'type:', element.type, 'label:', getLabel(element));
 
     if (element.type === GridElement.ELEMENT_TYPE_COLLECT) {
         return;
@@ -623,6 +782,7 @@ $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
                 addTextElem(label);
             }
         } else if (label || image || printText) {
+            console.log('🔧 Adding element to collectedElements:', element.id, 'label:', label, 'collectedElements.length:', collectedElements.length + 1);
             collectedElements.push(element);
         }
         triggerPredict();
@@ -661,11 +821,23 @@ function triggerPredict() {
     });
 }
 
-async function getMetadataConfig() {
-    _localMetadata = await dataService.getMetadata();
-    duplicatedCollectPause = _localMetadata.inputConfig.globalMinPauseCollectSpeak || 0;
-    convertMode = _localMetadata.textConfig.convertMode;
-    activateARASAACGrammarAPI = _localMetadata.activateARASAACGrammarAPI;
+function getMetadataConfig() {
+    // Defer dataService access to avoid circular import
+    if (!dataService || !dataService.getMetadata) {
+        setTimeout(getMetadataConfig, 100);
+        return;
+    }
+
+    dataService.getMetadata().then(_localMetadata => {
+        duplicatedCollectPause = _localMetadata.inputConfig.globalMinPauseCollectSpeak || 0;
+        convertMode = _localMetadata.textConfig.convertMode;
+        activateARASAACGrammarAPI = _localMetadata.activateARASAACGrammarAPI;
+        activateMorphSmartJoins = !!_localMetadata.activateMorphSmartJoins;
+        if (activateMorphSmartJoins && morphologyService && morphologyService.ensureLanguage) {
+            // Preload language so joins can be synchronous on first use
+            try { morphologyService.ensureLanguage(i18nService.getContentLang()); } catch (e) {}
+        }
+    });
 }
 
 $(window).on(constants.EVENT_GRID_RESIZE, function () {
