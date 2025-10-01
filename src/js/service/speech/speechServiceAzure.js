@@ -77,6 +77,8 @@ speechServiceAzure.isSpeaking = async function () {
 };
 
 speechServiceAzure.getVoices = async function () {
+    msSubscriptionKey = msSubscriptionKey || window.azureKey; // TODO: remove
+    msRegion = msRegion || window.azureRegion; // TODO: remove
     if (!msSubscriptionKey || !msRegion) return [];
 
     try {
@@ -88,6 +90,7 @@ speechServiceAzure.getVoices = async function () {
         });
         if (!res.ok) return [];
         let objects = await res.json();
+        log.warn(objects);
         return objects.map(azureVoice => azureVoiceToAppVoice(azureVoice));
     } catch (e) {
         log.error("Failed to get voices", e);
