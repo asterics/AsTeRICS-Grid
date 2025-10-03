@@ -1,6 +1,7 @@
 import $ from '../externals/jquery.js';
 import { GridElement } from '../model/GridElement';
 import { speechService } from './speechService';
+import { utteranceLoggingService } from './utteranceLoggingService.js';
 import { constants } from './../util/constants';
 import { util } from './../util/util';
 import { predictionService } from './predictionService';
@@ -94,6 +95,59 @@ collectElementService.clearCollectElements = function() {
 }
 
 /**
+ * Adds text to the collect elements
+ * @param {string} text - Text to add
+ */
+collectElementService.addText = function(text) {
+    if (!text || typeof text !== 'string') {
+        return;
+    }
+    addTextElem(text.trim());
+    updateCollectElements();
+    triggerPredict();
+};
+
+/**
+ * Checks if there are registered collect elements
+ * @returns {boolean} True if there are registered collect elements
+ */
+collectElementService.hasRegisteredCollectElements = function() {
+    return registeredCollectElements.length > 0;
+};
+
+/**
+ * Gets a copy of the current collected elements for utterance logging
+ * @returns {Array} Copy of collected elements
+ */
+collectElementService.getCollectedElementsForLogging = function() {
+    // Return a deep copy to avoid issues with references
+    return collectedElements.map(element => JSON.parse(JSON.stringify(element)));
+};
+
+/**
+ * Adds a GridElement to the collected elements (for reconstructing from history)
+ * @param {Object} element - GridElement object to add
+ */
+collectElementService.addElementToCollected = function(element) {
+    if (!element) {
+        return;
+    }
+
+    // Create a proper GridElement instance from the serialized data
+    const gridElement = new GridElement(element);
+    collectedElements.push(gridElement);
+    updateCollectElements();
+    triggerPredict();
+};
+
+/**
+ * Clears all collected elements
+ */
+collectElementService.clearAll = function() {
+    clearAll();
+};
+
+/**
  * does ARASAAC grammar correction for the current collected sentence (if enabled in settings)
  * @returns {Promise<void>}
  */
@@ -125,14 +179,23 @@ collectElementService.doCollectElementActions = async function (action, gridElem
                     updateCollectElements();
                 });
             } else {
-                speechService.speak(speakText);
+                speechService.speak(speakText, {
+                    sourceContext: 'collect-element',
+                    elements: collectElementService.getCollectedElementsForLogging()
+                });
             }
             break;
         case GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS:
-            speechService.speak(speakText);
+            speechService.speak(speakText, {
+                sourceContext: 'collect-element',
+                elements: collectElementService.getCollectedElementsForLogging()
+            });
             break;
         case GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS_CLEAR:
-            speechService.speak(speakText);
+            speechService.speak(speakText, {
+                sourceContext: 'collect-element',
+                elements: collectElementService.getCollectedElementsForLogging()
+            });
             await speechService.waitForFinishedSpeaking();
             clearAll();
             break;
@@ -146,7 +209,10 @@ collectElementService.doCollectElementActions = async function (action, gridElem
                     }
                 });
             } else {
-                speechService.speak(speakText);
+                speechService.speak(speakText, {
+                    sourceContext: 'collect-element',
+                    elements: collectElementService.getCollectedElementsForLogging()
+                });
                 speechService.doAfterFinishedSpeaking(() => {
                     clearAll();
                 });
@@ -232,7 +298,18 @@ collectElementService.doCollectElementActions = async function (action, gridElem
             }
             break;
     }
-    predictionService.predict(getPredictText(), dictionaryKey);
+    // Check if any collect element has a predict action with useUtteranceHistory setting
+    let useUtteranceHistory = true; // Default to true
+    registeredCollectElements.forEach((collectElement) => {
+        let predictAction = getActionOfType(collectElement, 'GridActionPredict');
+        if (predictAction && predictAction.useUtteranceHistory !== undefined) {
+            useUtteranceHistory = predictAction.useUtteranceHistory;
+        }
+    });
+
+    predictionService.predict(getPredictText(), dictionaryKey, {
+        useUtteranceHistory: useUtteranceHistory
+    });
 };
 
 collectElementService.addWordFormTagsToLast = function (tags, toggle) {
@@ -656,7 +733,9 @@ function triggerPredict() {
     registeredCollectElements.forEach((collectElement) => {
         let predictAction = getActionOfType(collectElement, 'GridActionPredict');
         if (predictAction && predictAction.suggestOnChange) {
-            predictionService.predict(getPredictText(), dictionaryKey);
+            predictionService.predict(getPredictText(), dictionaryKey, {
+                useUtteranceHistory: predictAction.useUtteranceHistory
+            });
         }
     });
 }

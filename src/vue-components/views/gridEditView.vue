@@ -84,6 +84,7 @@
     import { liveElementService } from '../../js/service/liveElementService';
     import TransferPropsModal from '../modals/transferPropsModal.vue';
     import { GridElementMatrixConversation } from '../../js/model/GridElementMatrixConversation';
+    import { GridElementMessageHistory } from '../../js/model/GridElementMessageHistory';
 
     let vueApp = null;
 
@@ -323,6 +324,8 @@
                         showEdit = true;
                     } else if (type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION) {
                         newElement = new GridElementMatrixConversation(baseProperties);
+                    } else if (type === GridElement.ELEMENT_TYPE_MESSAGE_HISTORY) {
+                        newElement = new GridElementMessageHistory(baseProperties);
                     }
                     this.gridData.gridElements.push(newElement);
                     await this.updateGridWithUndo();
@@ -745,6 +748,7 @@
         var CONTEXT_NEW_YT_PLAYER = "CONTEXT_NEW_YT_PLAYER";
         var CONTEXT_NEW_LIVE = "CONTEXT_NEW_LIVE";
         var CONTEXT_NEW_MATRIX_CONVERSATION = "CONTEXT_NEW_MATRIX_CONVERSATION";
+        var CONTEXT_NEW_MESSAGE_HISTORY = "CONTEXT_NEW_MESSAGE_HISTORY";
 
         var CONTEXT_LAYOUT_ALL_UP = "CONTEXT_LAYOUT_ALL_UP";
         var CONTEXT_LAYOUT_ALL_RIGHT = "CONTEXT_LAYOUT_ALL_RIGHT";
@@ -786,6 +790,10 @@
                 'CONTEXT_NEW_MATRIX_CONVERSATION': {
                     name: i18nService.t('newMatrixConversation'),
                     icon: "fas fa-comments"
+                },
+                'CONTEXT_NEW_MESSAGE_HISTORY': {
+                    name: i18nService.t('newMessageHistory'),
+                    icon: "fas fa-history"
                 }
             }
         };
@@ -921,6 +929,10 @@
                 }
                 case CONTEXT_NEW_MATRIX_CONVERSATION: {
                     vueApp.newElement(GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION);
+                    break;
+                }
+                case CONTEXT_NEW_MESSAGE_HISTORY: {
+                    vueApp.newElement(GridElement.ELEMENT_TYPE_MESSAGE_HISTORY);
                     break;
                 }
                 case CONTEXT_COPY_ALL: {

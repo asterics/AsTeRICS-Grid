@@ -7,7 +7,8 @@ class GridActionPredict extends Model({
     modelName: String,
     modelVersion: String,
     dictionaryKey: [String, undefined, null],
-    suggestOnChange: [Boolean]
+    suggestOnChange: [Boolean],
+    useUtteranceHistory: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, GridActionPredict);
@@ -28,7 +29,8 @@ GridActionPredict.defaults({
     modelName: GridActionPredict.getModelName(),
     modelVersion: constants.MODEL_VERSION,
     dictionaryKey: null,
-    suggestOnChange: false
+    suggestOnChange: false,
+    useUtteranceHistory: true
 });
 
 export { GridActionPredict };

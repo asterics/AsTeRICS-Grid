@@ -8,6 +8,7 @@ import { localStorageService } from './data/localStorageService.js';
 import { i18nService } from './i18nService.js';
 import { util } from '../util/util.js';
 import { GridActionPredict } from '../model/GridActionPredict';
+import { utteranceLoggingService } from './utteranceLoggingService.js';
 
 let predictionService = {};
 let predictionary = null;
@@ -22,7 +23,7 @@ let _textConvertMode = null;
 let _lastAppliedPrediction = null;
 let _currentValues = {}; // id => prediction
 
-predictionService.predict = function (input, dictionaryKey) {
+predictionService.predict = function (input, dictionaryKey, options = {}) {
     if (input === undefined || registeredPredictElements.length === 0 || !predictionary) {
         return;
     }
@@ -40,10 +41,23 @@ predictionService.predict = function (input, dictionaryKey) {
             _usedKeys.push(dictionaryKey);
         }
     }
+
     let suggestions = predictionary.predict(input, { maxPredicitons: registeredPredictElements.length });
+
+    // Enhance predictions with utterance history if enabled and available
+    if (options.useUtteranceHistory !== false && utteranceLoggingService.isEnabled()) {
+        suggestions = enhancePredictionsWithHistory(input, suggestions, registeredPredictElements.length);
+    }
+
     if(suggestions.length === 0) {
         suggestions = predictionary.predict("", { maxPredicitons: registeredPredictElements.length });
+
+        // Try utterance history for empty input as well
+        if (options.useUtteranceHistory !== false && utteranceLoggingService.isEnabled()) {
+            suggestions = enhancePredictionsWithHistory("", suggestions, registeredPredictElements.length);
+        }
     }
+
     for (let i = 0; i < registeredPredictElements.length; i++) {
         let text = suggestions[i] ? suggestions[i] : '';
         text = util.convertLowerUppercase(text, _textConvertMode);
@@ -175,5 +189,58 @@ async function getMetadataConfig() {
 
 $(document).on(constants.EVENT_USER_CHANGED, getMetadataConfig);
 $(document).on(constants.EVENT_METADATA_UPDATED, getMetadataConfig);
+
+/**
+ * Enhances dictionary-based predictions with utterance history
+ * @param {string} input - Current input text
+ * @param {Array} dictionaryPredictions - Predictions from dictionary
+ * @param {number} maxPredictions - Maximum number of predictions to return
+ * @returns {Array} Enhanced predictions combining dictionary and history
+ */
+function enhancePredictionsWithHistory(input, dictionaryPredictions, maxPredictions) {
+    try {
+        const currentLang = i18nService.getContentLang();
+        const historySuggestions = utteranceLoggingService.getPredictionSuggestions(
+            input,
+            currentLang,
+            Math.max(3, Math.floor(maxPredictions / 2)) // Use up to half slots for history
+        );
+
+        // Convert history suggestions to simple strings
+        const historyTexts = historySuggestions.map(s => s.text);
+
+        // Combine dictionary predictions with history suggestions
+        // Prioritize dictionary predictions but intersperse with history
+        const combined = [];
+        const maxDict = Math.ceil(maxPredictions * 0.7); // 70% dictionary
+        const maxHistory = maxPredictions - maxDict; // 30% history
+
+        // Add dictionary predictions first
+        for (let i = 0; i < Math.min(dictionaryPredictions.length, maxDict); i++) {
+            if (dictionaryPredictions[i] && !combined.includes(dictionaryPredictions[i])) {
+                combined.push(dictionaryPredictions[i]);
+            }
+        }
+
+        // Fill remaining slots with history suggestions
+        for (let i = 0; i < historyTexts.length && combined.length < maxPredictions; i++) {
+            if (historyTexts[i] && !combined.includes(historyTexts[i])) {
+                combined.push(historyTexts[i]);
+            }
+        }
+
+        // If we still have slots, add remaining dictionary predictions
+        for (let i = maxDict; i < dictionaryPredictions.length && combined.length < maxPredictions; i++) {
+            if (dictionaryPredictions[i] && !combined.includes(dictionaryPredictions[i])) {
+                combined.push(dictionaryPredictions[i]);
+            }
+        }
+
+        return combined;
+    } catch (error) {
+        log.warn('Error enhancing predictions with history:', error);
+        return dictionaryPredictions; // Fallback to dictionary predictions only
+    }
+}
 
 export { predictionService };
