@@ -97,12 +97,6 @@
                             <a target="_blank" href="https://www.browserstack.com//">browserstack.com</a>
                         </template>
                     </i18n>
-                    <i18n path="thankResponsiveVoice" tag="div">
-                        <template v-slot:responsiveVoiceUrl>
-                            <a target="_blank" href="https://responsivevoice.org">ResponsiveVoice.org</a>
-                        </template>
-                    </i18n>
-                    <div class="mb-3"><a href="https://responsivevoice.org">ResponsiveVoice-NonCommercial</a> {{ $t('licensedUnder') }} <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img title="ResponsiveVoice Text To Speech" src="app/img/responsive-voice-license.png" alt="95x15" width="95" height="15" /></a></div>
                     <div>
                         {{ $t('thanksToEduardoLleidaSolanoProfessorAtDepartment') }}
                     </div>

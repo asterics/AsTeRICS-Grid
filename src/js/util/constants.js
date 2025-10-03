@@ -76,10 +76,24 @@ constants.IS_MAC = (navigator.platform || ((navigator.userAgentData || {}).platf
 constants.STATE_ACTIVATED_TTS = 'STATE_ACTIVATED_TTS';
 
 constants.VOICE_TYPE_NATIVE = 'VOICE_TYPE_NATIVE';
-constants.VOICE_TYPE_RESPONSIVEVOICE = 'VOICE_TYPE_RESPONSIVEVOICE';
 constants.VOICE_TYPE_EXTERNAL_PLAYING = 'VOICE_TYPE_EXTERNAL_PLAYING';
 constants.VOICE_TYPE_EXTERNAL_DATA = 'VOICE_TYPE_EXTERNAL_DATA';
+constants.VOICE_TYPE_JS_WRAPPER = 'VOICE_TYPE_JS_WRAPPER';
 constants.VOICE_DEVICE_DEFAULT = 'VOICE_DEVICE_DEFAULT';
+
+constants.VOICE_PROVIDER_SYSTEM = 'system';
+constants.VOICE_PROVIDER_EXTERNAL = 'external-service';
+constants.VOICE_PROVIDER_AZURE = 'azure';
+constants.VOICE_PROVIDER_ELEVENLABS = 'elevenlabs';
+constants.VOICE_PROVIDER_WATSON = 'watson';
+constants.VOICE_PROVIDER_WITAI = 'witai';
+constants.VOICE_PROVIDER_UPLIFTAI = 'upliftai';
+constants.VOICE_PROVIDER_PLAYHT = 'playht';
+constants.VOICE_PROVIDER_POLLY = 'polly';
+constants.VOICE_PROVIDER_GOOGLE = 'google';
+constants.VOICE_PROVIDER_OPENAI = 'openai';
+constants.VOICE_PROVIDER_SHERPAONNX_WASM = 'sherpaonnx-wasm';
+constants.DEFAULT_VOICE_PROVIDER = constants.VOICE_PROVIDER_SYSTEM;
 
 constants.WEBRADIO_LAST_VOLUME_KEY = 'WEBRADIO_LAST_VOLUME_KEY';
 constants.PODCAST_LAST_VOLUME_KEY = 'PODCAST_LAST_VOLUME_KEY';
