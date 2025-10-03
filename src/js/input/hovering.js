@@ -2,7 +2,7 @@ import { L } from '../util/lquery.js';
 import $ from '../externals/jquery.js';
 import { inputEventHandler } from './inputEventHandler';
 import { util } from '../util/util';
-import { speechService } from '../service/speechService';
+import { speechService } from '../service/speech/speechService';
 import { i18nService } from '../service/i18nService';
 import { MainVue } from '../vue/mainVue';
 import { stateService } from '../service/stateService';

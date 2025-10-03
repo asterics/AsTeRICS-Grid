@@ -89,6 +89,18 @@ workbox.routing.registerRoute(({url, request, event}) => {
 }));
 
 workbox.routing.registerRoute(({url, request, event}) => {
+    return shouldCacheSpeech(url, request);
+}, new workbox.strategies.CacheFirst({
+    cacheName: 'speech-cache',
+    plugins: [
+        new workbox.expiration.ExpirationPlugin({
+            maxEntries: 1000,
+            purgeOnQuotaError: true
+        })
+    ]
+}));
+
+workbox.routing.registerRoute(({url, request, event}) => {
     //console.debug(`${url.href} should cache image: ${shouldCacheImage(url, request)}`);
     return shouldCacheImage(url, request);
 }, new workbox.strategies.CacheFirst({
@@ -116,12 +128,16 @@ function shouldCacheImage(url, request) {
 }
 
 function shouldCacheStaleWhileRevalidate(url, request) {
-    return url.href.startsWith('https://asterics.github.io/AsTeRICS-Grid-Boards');
+    return url.href.startsWith('https://asterics.github.io/AsTeRICS-Grid-Boards') || url.href.endsWith('tts.speech.microsoft.com/cognitiveservices/voices/list');
 }
 
 function shouldCacheNormal(url, request) {
     let isOwnHost = url.hostname === 'grid.asterics.eu';
     return isOwnHost && !shouldCacheImage(url, request) && !shouldCacheStaleWhileRevalidate(url);
+}
+
+function shouldCacheSpeech(url, request) {
+    return url.href.endsWith('tts.speech.microsoft.com/cognitiveservices/v1');
 }
 
 async function getResponseCode(cache, url) {
