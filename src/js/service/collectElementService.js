@@ -1,6 +1,8 @@
 import $ from '../externals/jquery.js';
 import { GridElement } from '../model/GridElement';
 import { speechService } from './speechService';
+import { collectTransferService } from './collectTransferService';
+import { MainVue } from '../vue/mainVue';
 import { constants } from './../util/constants';
 import { util } from './../util/util';
 import { predictionService } from './predictionService';
@@ -13,6 +15,7 @@ import { youtubeService } from './youtubeService';
 import { GridActionYoutube } from '../model/GridActionYoutube';
 import { imageUtil } from '../util/imageUtil.js';
 import { GridElementCollect } from '../model/GridElementCollect.js';
+import { GridImage } from '../model/GridImage.js';
 import { GridActionSpeak } from '../model/GridActionSpeak.js';
 import { GridActionSpeakCustom } from '../model/GridActionSpeakCustom.js';
 import { dataService } from './data/dataService.js';
@@ -29,6 +32,7 @@ let collectElementService = {};
 
 let registeredCollectElements = [];
 let collectedElements = [];
+let remoteCollectedElements = []
 let markedImageIndex = null;
 let keyboardLikeFactor = 0;
 let dictionaryKey = null;
@@ -38,6 +42,8 @@ let convertToLowercaseIfKeyboard = true;
 let convertMode = null;
 let activateARASAACGrammarAPI = false;
 
+let updateOrigin = 'local';
+
 let duplicatedCollectPause = 0;
 let lastCollectId = null;
 let lastCollectTime = 0;
@@ -45,8 +51,44 @@ let lastCollectTime = 0;
 let imgDimensionsCache = new MapCache();
 let _localMetadata = null;
 
+function getElementsForCollectElement(collectElement) {
+    if (!collectElement) {
+        return collectedElements;
+    }
+    if (collectElement.partnerSource === GridElementCollect.PARTNER_SOURCE_PARTNER) {
+        return remoteCollectedElements;
+    }
+    if (collectElement.partnerSource === GridElementCollect.PARTNER_SOURCE_BOTH) {
+        return remoteCollectedElements.concat(collectedElements);
+    }
+    return collectedElements;
+}
+
+function buildTransferPayloadFromElements(elements) {
+    return {
+        version: '1',
+        timestamp: Date.now(),
+        elements: (elements || []).map((element) => serializeCollectedElement(element)).filter((entry) => entry !== null),
+    };
+}
+
+function buildPrintTextFromElements(elements, options = {}) {
+    const opts = { ...options };
+    opts.trim = opts.trim !== undefined ? opts.trim : true;
+    opts.dontIncludeAudio = true;
+    opts.dontIncludePronunciation = opts.dontIncludePronunciation !== undefined ? opts.dontIncludePronunciation : true;
+    opts.inlcudeCorrectedGrammar = opts.inlcudeCorrectedGrammar !== undefined ? opts.inlcudeCorrectedGrammar : true;
+    const textArray = (elements || []).map((e) => getOutputObject(e, opts).text);
+    const joined = opts.trim ? textArray.join(' ').trim() : textArray.join(' ');
+    return joined.replace(/\s+/g, ' ');
+}
+
 collectElementService.getText = function () {
     return getPrintText();
+};
+
+collectElementService.getTransferPayload = function () {
+    return buildTransferPayload();
 };
 
 collectElementService.initWithGrid = function (gridData, dontAutoPredict) {
@@ -193,6 +235,21 @@ collectElementService.doCollectElementActions = async function (action, gridElem
             }
             updateCollectElements();
             break;
+        case GridActionCollectElement.COLLECT_ACTION_SEND_TO_PARTNER: {
+            collectTransferService.sendCollect('manual');
+            break;
+        }
+        case GridActionCollectElement.COLLECT_ACTION_TOGGLE_AUTO_SEND: {
+            const currentSettings = collectTransferService.getSettings();
+            const nextValue = !currentSettings.autoSend;
+            collectTransferService.updateSettings({ autoSend: nextValue });
+            const messageKey = nextValue ? 'CTRANSFER_AUTOSEND_ENABLED' : 'CTRANSFER_AUTOSEND_DISABLED';
+            MainVue.setTooltip(i18nService.t(messageKey), { msgType: 'info', timeout: 4000 });
+            if (nextValue && collectTransferService.isConnected()) {
+                collectTransferService.sendCollect('auto');
+            }
+            break;
+        }
         case GridActionCollectElement.COLLECT_ACTION_SHARE: {
             let blob = await util.getCollectContentBlob();
             await util.shareImageBlob(blob, collectElementService.getText());
@@ -235,6 +292,36 @@ collectElementService.doCollectElementActions = async function (action, gridElem
     predictionService.predict(getPredictText(), dictionaryKey);
 };
 
+collectElementService.applyTransferPayload = async function (payload, options) {
+    options = options || {};
+    if (!payload || !Array.isArray(payload.elements)) {
+        return false;
+    }
+    const deserialized = payload.elements
+        .map(deserializeCollectedElement)
+        .filter((entry) => !!entry);
+    updateOrigin = options.origin || 'remote';
+    try {
+        const isRemote = updateOrigin === 'remote';
+        if (isRemote) {
+            if (options.append) {
+                remoteCollectedElements = remoteCollectedElements.concat(deserialized);
+            } else {
+                remoteCollectedElements = deserialized;
+            }
+        } else {
+            if (options.append) {
+                collectedElements = collectedElements.concat(deserialized);
+            } else {
+                collectedElements = deserialized;
+            }
+        }
+        await updateCollectElements();
+    } finally {
+        updateOrigin = 'local';
+    }
+    return true;
+};
 collectElementService.addWordFormTagsToLast = function (tags, toggle) {
     let lastElement = collectedElements[collectedElements.length - 1];
     if (lastElement && !lastElement.wordFormFixated) {
@@ -330,6 +417,10 @@ function getActionTypes(elem) {
     return elem.actions.map((action) => action.modelName);
 }
 
+function appendTransferSlot(container, collectElement) {
+    // collect transfer controls are now managed via collect actions
+    return;
+}
 async function updateCollectElements(isSecondTry) {
     autoCollectImage = collectedElements.some((e) => !!getImageData(e));
     let metadata = _localMetadata || new MetaData();
@@ -342,8 +433,14 @@ async function updateCollectElements(isSecondTry) {
         let textColor = darkMode ? constants.DEFAULT_ELEMENT_FONT_COLOR_DARK : constants.DEFAULT_ELEMENT_FONT_COLOR;
 
         let rotationClass = collectElement.rotationActive ? ' upside-down' : '';
+        // Only re-render relevant collect elements based on update origin
+        if ((updateOrigin === 'remote' && collectElement.partnerSource === GridElementCollect.PARTNER_SOURCE_LOCAL) ||
+            (updateOrigin === 'local' && collectElement.partnerSource === GridElementCollect.PARTNER_SOURCE_PARTNER)) {
+            continue;
+        }
+        const elementsForThis = getElementsForCollectElement(collectElement);
         if (!imageMode) {
-            let text = getPrintText();
+            let text = buildPrintTextFromElements(elementsForThis);
             $(`#${collectElement.id}`).attr('aria-label', `${text}, ${i18nService.t('ELEMENT_TYPE_COLLECT')}`);
             predictionService.learnFromInput(text, dictionaryKey);
             let html = `<span style="padding: 5px; display: flex; align-items: center; flex: 1; text-align: left; font-weight: bold;">
@@ -353,6 +450,7 @@ async function updateCollectElements(isSecondTry) {
                 (html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; background-color: ${backgroundColor}; text-align: justify;">${html}</div>`)
             );
             fontUtil.adaptFontSize($(`#${collectElement.id}`));
+            appendTransferSlot(outerContainerJqueryElem, collectElement);
         } else {
             $(`#${collectElement.id}`).attr(
                 'aria-label',
@@ -369,10 +467,10 @@ async function updateCollectElements(isSecondTry) {
             let textPercentage = 0.85; // precentage of text height compared to text-line height
             let imagePercentage = collectElement.imageHeightPercentage / 100; // percentage of total height used for image
             let useSingleLine = collectElement.singleLine;
-            let imageCount = collectedElements.length;
+            let imageCount = elementsForThis.length;
             let imgContainerHeight = showLabel ? height * imagePercentage : height;
             let imageRatios = [];
-            for (const elem of collectedElements) {
+            for (const elem of elementsForThis) {
                 let imageData = getImageData(elem);
                 if (imageData) {
                     if (elem.image.searchProviderName) {
@@ -398,7 +496,7 @@ async function updateCollectElements(isSecondTry) {
             let lineHeight = height / numLines - imgContainerHeight;
             let textHeight = lineHeight * textPercentage;
             let totalWidth = 0;
-            for (const [index, collectedElement] of collectedElements.entries()) {
+            for (const [index, collectedElement] of elementsForThis.entries()) {
                 let label = getPrintTextOfElement(collectedElement);
                 let image = getImageData(collectedElement);
                 let elemWidth = imgHeight * imageRatios[index] || imgHeight;
@@ -437,6 +535,7 @@ async function updateCollectElements(isSecondTry) {
                         <div class="collect-items-container" style="display: flex; flex-direction: row; ">${html}</div>
                     </div>`;
             outerContainerJqueryElem.html(html);
+            appendTransferSlot(outerContainerJqueryElem, collectElement);
             if (useSingleLine) {
                 let scroll =
                     markedImageIndex !== null
@@ -448,6 +547,12 @@ async function updateCollectElements(isSecondTry) {
                 }
             }
         }
+    }
+    if (!isSecondTry) {
+        $(document).trigger(constants.EVENT_COLLECT_UPDATED, [{
+            origin: updateOrigin,
+            payload: buildTransferPayload(),
+        }]);
     }
 }
 
@@ -565,6 +670,103 @@ function addTextElem(text) {
     collectedElements.push(newElem);
 }
 
+function buildTransferPayload() {
+    return {
+        version: '1',
+        timestamp: Date.now(),
+        elements: collectedElements
+            .map((element) => serializeCollectedElement(element))
+            .filter((entry) => entry !== null),
+    };
+}
+
+function serializeCollectedElement(element) {
+    if (!element) {
+        return null;
+    }
+    const label = getLabel(element);
+    const output =
+        getOutputObject(element, {
+            dontIncludePronunciation: false,
+            dontIncludeAudio: true,
+            inlcudeCorrectedGrammar: true,
+        }) || {};
+    const image = element.image
+        ? {
+              data: element.image.data || null,
+              url: element.image.url || null,
+              author: element.image.author || null,
+              authorURL: element.image.authorURL || null,
+              searchProviderName: element.image.searchProviderName || null,
+          }
+        : null;
+
+    return {
+        type: element.type || null,
+        id: element.id || null,
+        label,
+        text: output.text || label || '',
+        onlyText: !!element.onlyText,
+        image,
+        wordFormTags: element.wordFormTags || [],
+        wordFormId: element.wordFormId || null,
+    };
+}
+
+function deserializeCollectedElement(entry) {
+    if (!entry) {
+        return null;
+    }
+    const baseText = entry.label || entry.text || '';
+    const translation = i18nService.getTranslationObject(baseText);
+    const isOnlyText = entry.onlyText || (!entry.image && !baseText);
+
+    if (isOnlyText) {
+        const textElem = new GridElement({ label: translation });
+        textElem.onlyText = true;
+        if (entry.text) {
+            textElem.fixedGrammarText = entry.text;
+        }
+        return textElem;
+    }
+
+    const imageSource = entry.image;
+    let gridImage = null;
+    if (imageSource) {
+        if (typeof imageSource === 'string') {
+            if (imageSource.startsWith('data:')) {
+                gridImage = new GridImage({ data: imageSource });
+            } else {
+                gridImage = new GridImage({ url: imageSource });
+            }
+        } else if (imageSource.data || imageSource.url) {
+            gridImage = new GridImage({
+                data: imageSource.data || null,
+                url: imageSource.url || null,
+                author: imageSource.author || null,
+                authorURL: imageSource.authorURL || null,
+                searchProviderName: imageSource.searchProviderName || null,
+            });
+        }
+    }
+
+    const props = {
+        label: translation,
+        type: entry.type || GridElement.ELEMENT_TYPE_NORMAL,
+    };
+    if (gridImage) {
+        props.image = gridImage;
+    }
+    const newElement = new GridElement(props);
+    newElement.wordFormTags = entry.wordFormTags || [];
+    if (entry.wordFormId) {
+        newElement.wordFormId = entry.wordFormId;
+    }
+    if (entry.text) {
+        newElement.fixedGrammarText = entry.text;
+    }
+    return newElement;
+}
 $(window).on(constants.ELEMENT_EVENT_ID, function (event, element) {
     if (lastCollectId === element.id && new Date().getTime() - lastCollectTime < duplicatedCollectPause) {
         return;
@@ -684,3 +886,16 @@ $(document).on(constants.EVENT_USERSETTINGS_UPDATED, () => {
 });
 
 export { collectElementService };
+
+
+
+
+
+
+
+
+
+
+
+
+

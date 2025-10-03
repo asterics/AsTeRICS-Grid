@@ -48,12 +48,14 @@
         components: { SettingsInputMethods, SettingsAppearance, SettingsIntegrations, SettingsLanguage, SettingsGeneral, NavTabs, HeaderIcon},
         props: [],
         data() {
+            const requestedTab = localStorageService.consumeSettingsDefaultTab();
+            const initialTab = requestedTab && Object.values(TABS).includes(requestedTab) ? requestedTab : TABS.TAB_GENERAL;
             return {
                 metadata: null,
                 appSettings: localStorageService.getAppSettings(),
                 userSettingsLocal: localStorageService.getUserSettings(),
                 TABS: TABS,
-                currentTab: TABS.TAB_GENERAL,
+                currentTab: initialTab,
                 SAVE_STATES: SAVE_STATES,
                 saveState: SAVE_STATES.STATE_INITIAL
             }

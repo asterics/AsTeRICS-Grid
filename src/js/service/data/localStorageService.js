@@ -12,6 +12,7 @@ let GRID_DIMENSIONS_KEY = 'AG_GRID_DIMENSIONS_KEY';
 let CURRENT_VERSION_KEY = 'AG_CURRENT_VERSION_KEY';
 let APP_SETTINGS = 'AG_APP_SETTINGS';
 let USER_SETTINGS = 'AG_USER_SETTINGS';
+let SETTINGS_DEFAULT_TAB_KEY = 'AG_SETTINGS_DEFAULT_TAB';
 
 let localStorageService = {};
 let storage = window.localStorage;
@@ -58,6 +59,22 @@ localStorageService.saveJSON = function (key, value) {
 
 localStorageService.getJSON = function (key) {
     return JSON.parse(localStorageService.get(key));
+};
+
+localStorageService.setSettingsDefaultTab = function (tabKey) {
+    if (!tabKey) {
+        localStorageService.remove(SETTINGS_DEFAULT_TAB_KEY);
+        return;
+    }
+    localStorageService.save(SETTINGS_DEFAULT_TAB_KEY, tabKey);
+};
+
+localStorageService.consumeSettingsDefaultTab = function () {
+    let tabKey = localStorageService.get(SETTINGS_DEFAULT_TAB_KEY);
+    if (tabKey) {
+        localStorageService.remove(SETTINGS_DEFAULT_TAB_KEY);
+    }
+    return tabKey;
 };
 
 /**

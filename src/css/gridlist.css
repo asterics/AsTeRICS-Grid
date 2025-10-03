@@ -67,3 +67,36 @@
   outline-color: darkgray;
   background: #e6e6e6;
 }
+
+.collect-transfer-slot {
+    margin-top: 0.5rem;
+}
+
+.collect-transfer-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.collect-transfer-controls button {
+    font-size: 0.9rem;
+    padding: 0.35rem 0.75rem;
+}
+
+.collect-transfer-controls .collect-transfer-status {
+    min-width: 8rem;
+}
+
+.collect-transfer-token-field input {
+    width: 100%;
+}
+
+.collect-transfer-token-field .token-generate-btn {
+    margin-top: 0.5em;
+    display: inline-block;
+}
+
+.collect-transfer-advanced {
+    margin-top: 1em;
+}
