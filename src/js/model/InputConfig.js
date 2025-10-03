@@ -50,7 +50,17 @@ class InputConfig extends Model({
     huffShowNumbers: [Boolean],
     huffColorWholeElement: [Boolean],
     huffTimeout: [Number],
-    huffMarkInactive: [Boolean]
+    huffMarkInactive: [Boolean],
+    // Visual indicators for accessibility
+    visualIndicatorsEnabled: [Boolean],
+    scanLineColor: [String],
+    hoverProgressColor: [String],
+    hoverDotColor: [String],
+    showHoverProgress: [Boolean],
+    showHoverDot: [Boolean],
+    showScanLine: [Boolean],
+    // Scanning line behavior
+    scanLineSnapAtCellLevel: [Boolean]
 }) {
     constructor(properties, elementToCopy) {
         properties = modelUtil.setDefaults(properties, elementToCopy, InputConfig);
@@ -153,7 +163,17 @@ InputConfig.defaults({
     huffShowNumbers: true,
     huffElementCount: 0,
     huffTimeout: 4000,
-    huffMarkInactive: true
+    huffMarkInactive: true,
+    // Visual indicators for accessibility
+    visualIndicatorsEnabled: true,
+    scanLineColor: constants.DEFAULT_SCAN_LINE_COLOR,
+    hoverProgressColor: constants.DEFAULT_HOVER_PROGRESS_COLOR,
+    hoverDotColor: constants.DEFAULT_HOVER_DOT_COLOR,
+    showHoverProgress: true,
+    showHoverDot: false,
+    showScanLine: true,
+    showScanHighlight: true,
+    scanLineSnapAtCellLevel: false
 });
 
 export { InputConfig };
