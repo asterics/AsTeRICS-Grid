@@ -413,10 +413,18 @@
                 } else {
                     this.renderGridData = gridData;
                 }
+                
+                this.renderGridData.gridElements.forEach(e => {
+                    e.vocabularyHidden = false;
+                    // Apply vocabulary level filtering if a specific level is selected; never hide global grid elements
+                    if (this.metadata.vocabularyLevel !== null && this.metadata.vocabularyLevel !== undefined && !e.isGlobalGridElement) {
+                        // Hide elements without a level OR elements above the selected level
+                        if (!e.vocabularyLevel || e.vocabularyLevel > this.metadata.vocabularyLevel) {
+                            e.vocabularyHidden = true;
+                        }
+                    }
+                });
                 this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.hidden);
-                if (this.metadata.vocabularyLevel) {
-                    this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.vocabularyLevel || e.vocabularyLevel <= this.metadata.vocabularyLevel);
-                }
                 stateService.setCurrentGrid(this.renderGridData);
             },
             onSidebarOpen() {

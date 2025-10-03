@@ -1,14 +1,14 @@
 <template>
-    <div class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
+    <div class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element) || element.vocabularyHidden"
          :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: ${cursorType};
          border: ${borderWidthPx}px solid ${getBorderColor(element)}; background-color: ${backgroundColor}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
-        <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
-        <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
-        <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
-        <grid-element-predict v-if="element.type === GridElement.ELEMENT_TYPE_PREDICTION" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
-        <grid-element-live v-if="element.type === GridElement.ELEMENT_TYPE_LIVE" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
-        <grid-element-matrix-conversation v-if="element.type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" aria-hidden="true"/>
-        <grid-element-hints :grid-element="element" :metadata="metadata" :background-color="backgroundColor"/>
+        <grid-element-normal v-if="!element.vocabularyHidden && element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
+        <grid-element-collect v-if="!element.vocabularyHidden && element.type === GridElement.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
+        <grid-element-youtube v-if="!element.vocabularyHidden && element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
+        <grid-element-predict v-if="!element.vocabularyHidden && element.type === GridElement.ELEMENT_TYPE_PREDICTION" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
+        <grid-element-live v-if="!element.vocabularyHidden && element.type === GridElement.ELEMENT_TYPE_LIVE" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
+        <grid-element-matrix-conversation v-if="!element.vocabularyHidden && element.type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" aria-hidden="true"/>
+        <grid-element-hints v-if="!element.vocabularyHidden" :grid-element="element" :metadata="metadata" :background-color="backgroundColor"/>
         <div v-if="showResizeHandle" class="ui-resizable-handle ui-icon ui-icon-grip-diagonal-se" style="position: absolute; z-index: 2; bottom: 0; right: 0; cursor: se-resize;"></div>
     </div>
 </template>
@@ -61,6 +61,9 @@ export default {
         backgroundColor() {
             if (!this.metadata || !this.element) {
                 return '';
+            }
+            if (this.element.vocabularyHidden) {
+                return constants.COLORS.LIGHTGRAY;
             }
             if (this.element.type === GridElement.ELEMENT_TYPE_PREDICTION) {
                 return constants.COLORS.PREDICT_BACKGROUND;

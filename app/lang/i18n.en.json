@@ -878,6 +878,7 @@
   "openSidebar": "open sidebar",
   "noneSelected": "(none)",
   "allSelected": "(all)",
+  "all": "all",
   "optionalBracket": "(optional)",
   "customBackgroundColor": "Custom background color",
   "customBorderColor": "Custom border color",
