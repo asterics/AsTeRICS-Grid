@@ -1,7 +1,7 @@
 <template>
     <div class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element) || element.vocabularyHidden"
-         :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: ${cursorType};
-         border: ${borderWidthPx}px solid ${getBorderColor(element)}; background-color: ${backgroundColor}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
+         :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: ${element.vocabularyHidden ? 'default' : cursorType};
+         border: ${borderWidthPx}px solid ${getBorderColor(element)}; background-color: ${backgroundColor}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}; pointer-events: ${element.vocabularyHidden ? 'none' : 'auto'}`">
         <grid-element-normal v-if="!element.vocabularyHidden && element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-collect v-if="!element.vocabularyHidden && element.type === GridElement.ELEMENT_TYPE_COLLECT" aria-hidden="true"/>
         <grid-element-youtube v-if="!element.vocabularyHidden && element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
