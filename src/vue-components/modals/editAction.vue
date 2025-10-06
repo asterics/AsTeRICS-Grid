@@ -302,6 +302,16 @@
             </div>
         </div>
     </div>
+    <div v-if="action.modelName === GridActionVocabularyLevel.getModelName()">
+        <div class="srow">
+            <div class="twelve columns">
+                <label for="vocabActionType" class="four columns normal-text">{{ $t('actionType') }}</label>
+                <select id="vocabActionType" class="eight columns" v-model="action.action">
+                    <option v-for="action in GridActionVocabularyLevel.actions" :value="action">{{ action | translate}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
 </div>
 </template>
 
@@ -328,6 +338,7 @@
     import { GridActionPredict } from '../../js/model/GridActionPredict';
     import { gridUtil } from '../../js/util/gridUtil';
     import { GridActionSystem } from '../../js/model/GridActionSystem';
+    import { GridActionVocabularyLevel } from '../../js/model/GridActionVocabularyLevel';
     import { GridActionChangeLang } from '../../js/model/GridActionChangeLang';
     import EditPredefinedAction from './editActionsSub/editPredefinedAction.vue';
     import EditMatrixAction from './editActionsSub/editMatrixAction.vue';
@@ -351,6 +362,7 @@
                 GridActionUART: GridActionUART,
                 GridActionPredict: GridActionPredict,
                 GridActionSystem: GridActionSystem,
+                GridActionVocabularyLevel: GridActionVocabularyLevel,
                 GridActionChangeLang: GridActionChangeLang,
                 GridElement: GridElement,
                 speechService: speechService,

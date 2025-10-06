@@ -21,6 +21,7 @@ import { GridActionSystem } from './GridActionSystem';
 import { GridActionPredefined } from './GridActionPredefined';
 import { GridActionMatrix } from './GridActionMatrix';
 import { GridActionPodcast } from './GridActionPodcast';
+import { GridActionVocabularyLevel } from './GridActionVocabularyLevel';
 
 class GridElement extends Model({
     id: String,
@@ -88,7 +89,8 @@ class GridElement extends Model({
             GridActionUART,
             GridActionSystem,
             GridActionPredefined,
-            GridActionMatrix
+            GridActionMatrix,
+            GridActionVocabularyLevel
         ];
     }
 

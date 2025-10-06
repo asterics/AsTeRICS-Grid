@@ -31,6 +31,7 @@ class SettingsUserLocal {
      * @param settings.systemVolume
      * @param settings.systemVolumeMuted
      * @param settings.integrations
+     * @param settings.temporaryVocabOverride temporarily show all vocabulary (null = use metadata setting, true = show all)
      */
     constructor(settings) {
         settings = settings || {};
@@ -49,6 +50,7 @@ class SettingsUserLocal {
         this.systemVolume = settings.systemVolume !== undefined ? settings.systemVolume : 100;
         this.systemVolumeMuted = settings.systemVolumeMuted || false;
         this.integrations = settings.integrations || new IntegrationConfigLocal();
+        this.temporaryVocabOverride = settings.temporaryVocabOverride !== undefined ? settings.temporaryVocabOverride : null;
 
         convertServiceLocal.updateDataModel(this);
     }

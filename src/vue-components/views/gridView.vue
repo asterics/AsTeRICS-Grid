@@ -416,11 +416,18 @@
                 
                 this.renderGridData.gridElements.forEach(e => {
                     e.vocabularyHidden = false;
-                    // Apply vocabulary level filtering if a specific level is selected; never hide global grid elements
-                    if (this.metadata.vocabularyLevel !== null && this.metadata.vocabularyLevel !== undefined && !e.isGlobalGridElement) {
-                        // Hide elements without a level OR elements above the selected level
-                        if (!e.vocabularyLevel || e.vocabularyLevel > this.metadata.vocabularyLevel) {
-                            e.vocabularyHidden = true;
+                    // Check if temporary override is active
+                    let userSettings = localStorageService.getUserSettings();
+                    if (userSettings.temporaryVocabOverride === true) {
+                        // Show ALL vocabulary
+                        e.vocabularyHidden = false;
+                    } else {
+                        // Apply vocabulary level filtering; never hide global grid elements
+                        if (this.metadata.vocabularyLevel !== null && this.metadata.vocabularyLevel !== undefined && !e.isGlobalGridElement) {
+                            // Hide elements without a level OR elements above the selected level
+                            if (!e.vocabularyLevel || e.vocabularyLevel > this.metadata.vocabularyLevel) {
+                                e.vocabularyHidden = true;
+                            }
                         }
                     }
                 });
@@ -447,6 +454,12 @@
             },
             async metadataUpdated() {
                 this.metadata = await dataService.getMetadata();
+            },
+            async userSettingsUpdated() {
+                if (this.renderGridData) {
+                    let gridData = await dataService.getGrid(this.renderGridData.id, false, true);
+                    await this.recalculateRenderGrid(gridData);
+                }
             }
         },
         created() {
@@ -457,6 +470,7 @@
             window.addEventListener('resize', this.resizeListener, true);
             $(document).on(constants.EVENT_GRID_RESIZE, this.resizeListener);
             $(document).on(constants.EVENT_METADATA_UPDATED, this.metadataUpdated);
+            $(document).on(constants.EVENT_USERSETTINGS_UPDATED, this.userSettingsUpdated);
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.onExternalUpdate);
@@ -466,6 +480,7 @@
             window.removeEventListener('resize', this.resizeListener, true);
             $(document).off(constants.EVENT_GRID_RESIZE, this.resizeListener);
             $(document).off(constants.EVENT_METADATA_UPDATED, this.metadataUpdated);
+            $(document).off(constants.EVENT_USERSETTINGS_UPDATED, this.userSettingsUpdated);
             stopInputMethods();
             this.setViewPropsUnlocked();
             $.contextMenu('destroy');

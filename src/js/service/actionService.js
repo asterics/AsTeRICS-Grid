@@ -26,6 +26,7 @@ import {localStorageService} from "./data/localStorageService.js";
 import {uartService} from './uartService.js';
 import { systemActionService } from './systemActionService';
 import { GridActionSystem } from '../model/GridActionSystem';
+import { GridActionVocabularyLevel } from '../model/GridActionVocabularyLevel';
 import { util } from '../util/util';
 import { liveElementService } from './liveElementService';
 import { GridElementLive } from '../model/GridElementLive';
@@ -278,6 +279,12 @@ async function doAction(gridElement, action, options = {}) {
             break;
         case 'GridActionSystem':
             systemActionService.doAction(action);
+            break;
+        case 'GridActionVocabularyLevel':
+            let userSettings = localStorageService.getUserSettings();
+            userSettings.temporaryVocabOverride = !userSettings.temporaryVocabOverride;
+            localStorageService.saveUserSettings(userSettings);
+            $(document).trigger(constants.EVENT_USERSETTINGS_UPDATED);
             break;
         case 'GridActionPredefined':
             return doPredefinedAction(gridElement, action);
