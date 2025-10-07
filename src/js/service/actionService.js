@@ -217,7 +217,7 @@ async function doAction(gridElement, action, options = {}) {
             } else if (Router.isOnEditPage()) {
                 Router.toEditGrid(action.toGridId);
             } else {
-                Router.toGrid(action.toGridId);
+                Router.toGrid(action.toGridId, null, options.gridId);
             }
             break;
         case 'GridActionARE':

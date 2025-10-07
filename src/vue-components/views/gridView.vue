@@ -278,7 +278,7 @@
                 this.inputMethodsInitialized = true;
             },
             async onNavigateEvent(event, gridData, params) {
-                await this.loadGrid(gridData, { continueInputMethods: true });
+                await this.loadGrid(gridData, { continueInputMethods: true, sourceGridId: params?.sourceGridId });
             },
             async loadGrid(gridData, options = {}) {
                 options.continueInputMethods = options.continueInputMethods || false;
@@ -293,6 +293,13 @@
                     // these two lines before recalculateRenderGrid since it changes gridData!
                     let updateThumbnail = gridUtil.hasOutdatedThumbnail(gridData) && !this.skipThumbnailCheck;
                     let newHash = updateThumbnail ? gridUtil.getHash(gridData) : null;
+
+                    // Track navigation source for vocabulary filtering
+                    if (options.sourceGridId) {
+                        stateService.setNavigatedFromGridId(options.sourceGridId);
+                    } else {
+                        stateService.clearNavigatedFromGridId();
+                    }
 
                     await this.recalculateRenderGrid(gridData);
                     Router.addToGridHistory(this.renderGridData.id);
@@ -416,11 +423,20 @@
                 
                 this.renderGridData.gridElements.forEach(e => {
                     e.vocabularyHidden = false;
-                    // Apply vocabulary level filtering if a specific level is selected; never hide global grid elements
-                    if (this.metadata.vocabularyLevel !== null && this.metadata.vocabularyLevel !== undefined && !e.isGlobalGridElement) {
-                        // Hide elements without a level OR elements above the selected level
-                        if (!e.vocabularyLevel || e.vocabularyLevel > this.metadata.vocabularyLevel) {
-                            e.vocabularyHidden = true;
+                    if (this.metadata.vocabularyLevel !== null && this.metadata.vocabularyLevel !== undefined) {
+                        let navigatedFromGrid = stateService.getNavigatedFromGridId();
+
+                        // Global grid elements always respect vocabulary level
+                        if (e.isGlobalGridElement) {
+                            if (!e.vocabularyLevel || e.vocabularyLevel > this.metadata.vocabularyLevel) {
+                                e.vocabularyHidden = true;
+                            }
+                        }
+                        // Regular elements: skip filtering if navigated from another grid via navigation action
+                        else if (!navigatedFromGrid) {
+                            if (!e.vocabularyLevel || e.vocabularyLevel > this.metadata.vocabularyLevel) {
+                                e.vocabularyHidden = true;
+                            }
                         }
                     }
                 });

@@ -493,6 +493,7 @@ gridUtil.mergeGrids = function(grid, globalGrid, options = {}) {
             if (gridElement.y === 0) {
                 gridElement.height *= heightFactorGlobal;
             }
+            gridElement.isGlobalGridElement = true; // Mark as global grid element
         });
         grid.gridElements.forEach((gridElement) => {
             gridElement.width *= factorGrid;

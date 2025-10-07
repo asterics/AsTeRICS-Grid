@@ -221,10 +221,13 @@ Router.toLastOpenedGrid = function () {
     });
 };
 
-Router.toGrid = function (id, props) {
+Router.toGrid = function (id, props, sourceGridId) {
     if (id) {
         Router.addToGridHistory(id);
         props = props || {};
+        if (sourceGridId) {
+            props.sourceGridId = sourceGridId;
+        }
         urlParamService.setParamsToSearchQuery(props);
         let hash = `#grid/${id}`;
 

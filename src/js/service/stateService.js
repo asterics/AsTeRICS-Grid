@@ -15,9 +15,22 @@ let _currentWordFormTags = [];
 let _currentWordFormIds = {}; //elementId -> id of word form list (for current lang!)
 let _currentWordFormTagsOfElements = {}; //elementId -> list of tags for currently shown wordForm
 let _convertMode = null;
+let _navigatedFromGridId = null; // tracks source grid ID for vocabulary filtering
 
 stateService.setCurrentGrid = function (gridData) {
     _currentGrid = gridData;
+};
+
+stateService.setNavigatedFromGridId = function (gridId) {
+    _navigatedFromGridId = gridId;
+};
+
+stateService.getNavigatedFromGridId = function () {
+    return _navigatedFromGridId;
+};
+
+stateService.clearNavigatedFromGridId = function () {
+    _navigatedFromGridId = null;
 };
 
 stateService.setGlobalGrid = function (gridData) {
