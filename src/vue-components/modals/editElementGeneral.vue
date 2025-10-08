@@ -23,7 +23,7 @@
             <input type="checkbox" id="inputHidden" v-if="gridElement" v-model="gridElement.hidden"/>
             <label for="inputHidden">{{ $t('hideElement') }}</label>
         </div>
-        <div class="srow">
+        <div class="srow" v-if="metadata">
             <accordion :acc-label="$t('advancedOptions')">
                 <div class="row">
                     <label class="col-sm-2" for="vocabularyLevel">{{ $t('vocabularyLevel') }}</label>
