@@ -423,17 +423,12 @@
                 
                 this.renderGridData.gridElements.forEach(e => {
                     e.vocabularyHidden = false;
-                    if (this.metadata.vocabularyLevel !== null && this.metadata.vocabularyLevel !== undefined) {
+                    // Apply vocabulary level filtering if a specific level is selected; never hide global grid elements
+                    if (this.metadata.vocabularyLevel !== null && this.metadata.vocabularyLevel !== undefined && !e.isGlobalGridElement) {
                         let navigatedFromGrid = stateService.getNavigatedFromGridId();
-
-                        // Global grid elements always respect vocabulary level
-                        if (e.isGlobalGridElement) {
-                            if (!e.vocabularyLevel || e.vocabularyLevel > this.metadata.vocabularyLevel) {
-                                e.vocabularyHidden = true;
-                            }
-                        }
                         // Regular elements: skip filtering if navigated from another grid via navigation action
-                        else if (!navigatedFromGrid) {
+                        if (!navigatedFromGrid) {
+                            // Hide elements without a level OR elements above the selected level
                             if (!e.vocabularyLevel || e.vocabularyLevel > this.metadata.vocabularyLevel) {
                                 e.vocabularyHidden = true;
                             }
