@@ -1309,5 +1309,6 @@
   "managePodcasts": "Gestionar podcast",
   "selectedPodcasts": "Podcasts seleccionats",
   "hideKeyboards": "Amagar teclats",
-  "automaticallyAddImages": "Afegir imatges automàticament"
+  "automaticallyAddImages": "Afegir imatges automàticament",
+  "showAllElements": "show all elements"
 }
