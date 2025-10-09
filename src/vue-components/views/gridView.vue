@@ -87,6 +87,7 @@
     import { collectElementService } from '../../js/service/collectElementService';
     import { predictionService } from '../../js/service/predictionService';
     import { liveElementService } from '../../js/service/liveElementService';
+    import { GridElement } from '../../js/model/GridElement';
 
     let vueApp = null;
     let UNLOCK_COUNT = 8;
@@ -401,9 +402,10 @@
             async recalculateRenderGrid(gridData) {
                 // attention: gridData also changes because of "noDeepCopy: true"
                 // just using this.renderGridData for clarity
+                let globalGrid = null;
                 if (gridData.showGlobalGrid) {
-                    let globalGrid = this.globalGridData;
-                    if (gridData.globalGridId) {
+                    globalGrid = this.globalGridData;
+                    if (gridData.globalGridId) { // custom global grid
                         globalGrid = await dataService.getGrid(gridData.globalGridId, false, true);
                     }
                     this.renderGridData = gridUtil.mergeGrids(gridData, globalGrid, {
@@ -413,9 +415,25 @@
                 } else {
                     this.renderGridData = gridData;
                 }
+                this.renderGridData.minColumnCount = gridUtil.getWidthWithBounds(this.renderGridData);
+                this.renderGridData.rowCount = gridUtil.getHeightWithBounds(this.renderGridData);
                 this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.hidden);
                 if (this.metadata.vocabularyLevel) {
-                    this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.vocabularyLevel || e.vocabularyLevel <= this.metadata.vocabularyLevel);
+                    let globalGridElements = globalGrid ? globalGrid.gridElements : [];
+                    let globalGridElemIds = globalGridElements.map(e => e.id);
+                    let normalGridElements = this.renderGridData.gridElements.filter(e => !globalGridElemIds.includes(e.id));
+                    let noneHasVocabLevelGlobal = globalGridElements.every(e => !e.vocabularyLevel);
+                    let noneHasVocabLevelNormal = normalGridElements.every(e => !e.vocabularyLevel);
+                    this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => {
+                        let elemFitsVocabLevel = e.vocabularyLevel && e.vocabularyLevel <= this.metadata.vocabularyLevel;
+                        if (globalGridElemIds.includes(e.id)) {
+                            // is elem in global grid
+                            return noneHasVocabLevelGlobal || elemFitsVocabLevel || e.type !== GridElement.ELEMENT_TYPE_NORMAL;
+                        } else {
+                            // is elem in normal grid
+                            return noneHasVocabLevelNormal || elemFitsVocabLevel || e.type !== GridElement.ELEMENT_TYPE_NORMAL;
+                        }
+                    });
                 }
                 stateService.setCurrentGrid(this.renderGridData);
             },
