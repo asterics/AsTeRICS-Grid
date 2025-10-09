@@ -1309,5 +1309,6 @@
   "managePodcasts": "Spravovat podcasty",
   "selectedPodcasts": "Vybrané podcasty",
   "hideKeyboards": "Skrýt klávesnici",
-  "automaticallyAddImages": "Automatically add images"
+  "automaticallyAddImages": "Automatically add images",
+  "showAllElements": "show all elements"
 }
