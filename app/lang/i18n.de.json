@@ -1309,5 +1309,6 @@
   "managePodcasts": "Podcasts verwalten",
   "selectedPodcasts": "Ausgewählte Podcasts",
   "hideKeyboards": "Keyboards ausblenden",
-  "automaticallyAddImages": "Bilder automatisch hinzufügen"
+  "automaticallyAddImages": "Bilder automatisch hinzufügen",
+  "showAllElements": "show all elements"
 }
