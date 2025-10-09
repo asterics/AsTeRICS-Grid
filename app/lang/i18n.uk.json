@@ -1309,5 +1309,6 @@
   "managePodcasts": "Керування подкастами",
   "selectedPodcasts": "Вибрані подкасти",
   "hideKeyboards": "Приховати клавіатуру",
-  "automaticallyAddImages": "Автоматично додавати зображення"
+  "automaticallyAddImages": "Автоматично додавати зображення",
+  "showAllElements": "show all elements"
 }
