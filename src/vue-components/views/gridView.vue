@@ -87,6 +87,7 @@
     import { collectElementService } from '../../js/service/collectElementService';
     import { predictionService } from '../../js/service/predictionService';
     import { liveElementService } from '../../js/service/liveElementService';
+    import { GridElement } from '../../js/model/GridElement';
 
     let vueApp = null;
     let UNLOCK_COUNT = 8;
@@ -427,10 +428,10 @@
                         let elemFitsVocabLevel = e.vocabularyLevel && e.vocabularyLevel <= this.metadata.vocabularyLevel;
                         if (globalGridElemIds.includes(e.id)) {
                             // is elem in global grid
-                            return noneHasVocabLevelGlobal || elemFitsVocabLevel;
+                            return noneHasVocabLevelGlobal || elemFitsVocabLevel || e.type !== GridElement.ELEMENT_TYPE_NORMAL;
                         } else {
                             // is elem in normal grid
-                            return noneHasVocabLevelNormal || elemFitsVocabLevel;
+                            return noneHasVocabLevelNormal || elemFitsVocabLevel || e.type !== GridElement.ELEMENT_TYPE_NORMAL;
                         }
                     });
                 }
