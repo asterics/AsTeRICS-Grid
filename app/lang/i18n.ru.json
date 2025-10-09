@@ -1309,5 +1309,6 @@
   "managePodcasts": "Управление подкастами",
   "selectedPodcasts": "Выбранные подкасты",
   "hideKeyboards": "Скрыть клавиатуры",
-  "automaticallyAddImages": "Автоматически добавлять изображения"
+  "automaticallyAddImages": "Автоматически добавлять изображения",
+  "showAllElements": "show all elements"
 }
