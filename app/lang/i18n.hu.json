@@ -1309,5 +1309,6 @@
   "managePodcasts": "Podcast-ok kezelése",
   "selectedPodcasts": "Kiválasztott Podcast-ok",
   "hideKeyboards": "Bullentyűzet elrejtése",
-  "automaticallyAddImages": "Képek automatikus hozzáadása"
+  "automaticallyAddImages": "Képek automatikus hozzáadása",
+  "showAllElements": "show all elements"
 }
