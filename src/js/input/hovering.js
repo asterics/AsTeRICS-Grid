@@ -8,6 +8,7 @@ import { MainVue } from '../vue/mainVue';
 import { stateService } from '../service/stateService';
 import { constants } from '../util/constants';
 import { InputConfig } from '../model/InputConfig';
+import { VisualIndicators } from '../util/visualIndicators';
 
 let Hover = {};
 Hover.getInstanceFromConfig = function (inputConfig, itemSelector, options) {
@@ -20,7 +21,8 @@ Hover.getInstanceFromConfig = function (inputConfig, itemSelector, options) {
         inputEventNext: inputConfig.seqInputs.filter((e) => e.label === InputConfig.NEXT)[0],
         timeoutMs: inputConfig.hoverTimeoutMs,
         demoMode: options.demoMode || inputConfig.hoverDisableHoverpane,
-        hideCursor: inputConfig.hoverHideCursor
+        hideCursor: inputConfig.hoverHideCursor,
+        inputConfig: inputConfig
     });
 };
 
@@ -31,6 +33,7 @@ function HoverConstructor(itemSelector, options) {
     let _demoMode = options.demoMode;
     let _selectionListener = options.selectionListener;
     let _activeListener = options.activeListener;
+    let _inputConfig = options.inputConfig;
 
     var _hoverMap = {};
     let _elements = [];
@@ -38,6 +41,7 @@ function HoverConstructor(itemSelector, options) {
     let _lastTouchEvent = null;
     let _touchElementHidden = false;
     let _inputEventHandler = null;
+    let _visualIndicators = {}; // Store visual indicators for each element
 
     function mouseEnter(event, targetParam) {
         var target = targetParam || this;
@@ -122,6 +126,34 @@ function HoverConstructor(itemSelector, options) {
             _activeListener(element);
         }
         if (_hoverTimeoutMs !== 0) {
+            // Create visual indicators if enabled and device is capable
+            if (_inputConfig && _inputConfig.visualIndicatorsEnabled && VisualIndicators.isPerformanceCapable()) {
+                let indicators = {};
+
+                // Create clock progress indicator
+                if (_inputConfig.showHoverProgress) {
+                    indicators.clockProgress = VisualIndicators.createClockProgress(
+                        element,
+                        _hoverTimeoutMs,
+                        _inputConfig.hoverProgressColor
+                    );
+                    indicators.clockProgress.start();
+                }
+
+                // Create shrinking dot indicator
+                if (_inputConfig.showHoverDot) {
+                    indicators.shrinkingDot = VisualIndicators.createShrinkingDot(
+                        element,
+                        _hoverTimeoutMs,
+                        _inputConfig.hoverDotColor
+                    );
+                    indicators.shrinkingDot.start();
+                }
+
+                _visualIndicators[element] = indicators;
+            }
+
+            // Always use the original timeout mechanism for selection
             _hoverMap[element] = setTimeout(function () {
                 if (_selectionListener) {
                     _selectionListener(element);
@@ -137,6 +169,17 @@ function HoverConstructor(itemSelector, options) {
         L.removeClass(element, 'mouseentered');
         clearTimeout(_hoverMap[element]);
         _hoverMap[element] = null;
+
+        // Clean up visual indicators
+        if (_visualIndicators[element]) {
+            Object.values(_visualIndicators[element]).forEach(indicator => {
+                if (indicator && indicator.destroy) {
+                    indicator.destroy();
+                }
+            });
+            delete _visualIndicators[element];
+        }
+
         _lastElement = null;
     }
 
