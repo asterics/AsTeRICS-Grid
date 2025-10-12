@@ -31,7 +31,7 @@
     import Multiselect from 'vue-multiselect';
     import {i18nService} from "../../js/service/i18nService.js";
     import {constants} from "../../js/util/constants.js";
-    import {speechService} from "../../js/service/speechService.js";
+    import {speechService} from "../../js/service/speech/speechService.js";
 
     export default {
         props: ["value", "allowEmpty"],
